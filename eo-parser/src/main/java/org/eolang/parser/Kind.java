@@ -14,12 +14,14 @@ package org.eolang.parser;
  * once the first deeper child appears). The same kind progresses through
  * {@link Openness} states; the kind name itself never regresses.</p>
  *
- * <p>The four kinds in the horizontally-completed set
+ * <p>The three kinds in the horizontally-completed set
  * ({@link #HAPPLICATION}, {@link #REVERSED_WITH_HARGS},
- * {@link #VMETHOD_WITH_HARGS}, {@link #ONLY_PHI_FORMATION}) never
- * receive deeper children and cannot be wrapped by a same-indent
- * {@code .method}. {@link #horizontallyCompleted()} is the single source
- * of truth for that set; R-5.2.3 and R-6.1.1 read it.</p>
+ * {@link #VMETHOD_WITH_HARGS}) never receive deeper children and cannot
+ * be wrapped by a same-indent {@code .method}.
+ * {@link #horizontallyCompleted()} is the single source of truth for
+ * that set; R-5.2.3 and R-6.1.1 read it. An {@link #ONLY_PHI_FORMATION}
+ * with a bare (zero-hargs) φ is instead {@link Openness#OPEN}: its φ
+ * accepts deeper-indent vertical arguments (§4.5).</p>
  *
  * <p>The {@link #TOP_LEVEL} sentinel is not a real expression kind — it is
  * the {@code parent_kind} for entries pushed at indent 0 (R-5.2.11), used
@@ -74,7 +76,9 @@ enum Kind {
     COMPACT_TUPLE,
 
     /**
-     * Only-phi formation {@code expr > [params] > name}. Horizontally completed.
+     * Only-phi formation {@code expr > [params] > name}. Horizontally
+     * completed when the φ (its {@code expr}) carries horizontal args;
+     * otherwise open, so its φ accepts deeper-indent vertical arguments.
      */
     ONLY_PHI_FORMATION,
 
@@ -118,7 +122,22 @@ enum Kind {
     boolean horizontallyCompleted() {
         return this == HAPPLICATION
             || this == REVERSED_WITH_HARGS
-            || this == VMETHOD_WITH_HARGS
-            || this == ONLY_PHI_FORMATION;
+            || this == VMETHOD_WITH_HARGS;
+    }
+
+    /**
+     * Whether this kind opens a formation — a fresh naming scope whose
+     * direct children are named attributes rather than positional
+     * arguments.
+     *
+     * <p>Read by {@link Stack} to stop the only-phi argument-position
+     * flag at a nested formation boundary: inside a formation, naming
+     * resumes as usual (§6.2), so the no-name-on-argument rule of §4.5
+     * must not leak past it.</p>
+     *
+     * @return True iff this kind is a formation
+     */
+    boolean formation() {
+        return this == BARE_FORMATION || this == ONLY_PHI_FORMATION;
     }
 }

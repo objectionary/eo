@@ -27,9 +27,16 @@ import java.util.List;
  *   {@code >>}).</li>
  * </ul>
  *
- * <p>Outer kind: {@link Kind#ONLY_PHI_FORMATION}. Openness:
- * {@link Openness#HORIZONTAL_COMPLETED} — no deeper-indent children
- * permitted (R-6.1.1).</p>
+ * <p>Outer kind: {@link Kind#ONLY_PHI_FORMATION}. Openness depends on
+ * the φ (the LHS): with zero horizontal args the φ is
+ * {@link Openness#OPEN}, so deeper-indent lines attach to it as
+ * vertical application arguments (§4.5) — {@code foo > [x] > bar} with
+ * a body block is {@code [x] > bar} whose φ is {@code foo} applied to
+ * that block. With horizontal args the φ is already a full application
+ * and the line is {@link Openness#HORIZONTAL_COMPLETED} — no body is
+ * accepted. An only-phi argument may not carry a name suffix (the
+ * formation binds only φ); the {@link Stack} flags such arguments and
+ * the close-time check in {@link Eo} rejects a name on them.</p>
  *
  * <p>This iteration accepts identifier and root LHS heads with
  * optional chains and identifier / INT / STAR / STRING / FLOAT /
@@ -84,12 +91,19 @@ final class LnOnlyPhi implements Line {
         final List<String> params = LnOnlyPhi.parseParams(
             body.substring(bracket + 1, close), this.span, bracket + 1
         );
-        final String rhs = body.substring(close + 1);
         final Suffix suffix = new Suffix(
-            rhs, this.span, this.span.indent() + close + 1
+            body.substring(close + 1), this.span, this.span.indent() + close + 1
         );
+        final Span inner = new Span(
+            " ".repeat(this.span.indent()).concat(lhs), this.span.line()
+        );
+        final Tokens tokens = new Tokens(inner.body(), inner);
+        final Value head = tokens.readValue();
+        final List<MethodChain> chain = tokens.readChain();
+        final List<Value> args = tokens.readArgs();
+        final boolean open = args.isEmpty();
         Comments.attach(globals, emit, this.span, suffix.present() || suffix.test());
-        this.transition(stack, suffix);
+        this.transition(stack, suffix, open);
         globals.clearBlanks();
         globals.markEmitted();
         emit.object(
@@ -110,27 +124,29 @@ final class LnOnlyPhi implements Line {
             emit.voidParam(mapped, this.span.line(), column);
             column = column + param.length() + 1;
         }
-        this.emitLhs(emit, lhs);
+        this.emitLhs(emit, head, chain, args, open);
     }
 
     /**
-     * Parse and emit the LHS expression as a single child with
-     * {@code @name='φ'}. The LHS is an application expression — head +
-     * optional chain + optional hargs. Emission mirrors
-     * {@link LnApplication} but the topmost element carries
-     * {@code @name='φ'} and is closed by this method (the formation's
-     * {@code <o>} is what stays open for the {@link Stack.Closer}).
+     * Emit the pre-parsed LHS expression as a single child with
+     * {@code @name='φ'}. Emission mirrors {@link LnApplication}: the
+     * topmost element (head with no chain, or the chain's last link)
+     * carries {@code @name='φ'}. When {@code open} the φ {@code <o>} is
+     * left on the cursor so deeper-indent lines attach to it as
+     * vertical arguments, and the {@link Stack.Closer} closes both it
+     * and the formation; otherwise the φ is closed here (its horizontal
+     * args are complete) and only the formation stays open.
      * @param emit Emitter
-     * @param lhs The LHS substring
+     * @param head The pre-read head value
+     * @param chain The pre-read method chain (may be empty)
+     * @param args The pre-read horizontal args (may be empty)
+     * @param open Whether the φ stays open for vertical arguments
+     * @checkstyle ParameterNumberCheck (10 lines)
      */
-    private void emitLhs(final Emit emit, final String lhs) {
-        final Span inner = new Span(
-            " ".repeat(this.span.indent()).concat(lhs), this.span.line()
-        );
-        final Tokens tokens = new Tokens(inner.body(), inner);
-        final Value head = tokens.readValue();
-        final List<MethodChain> chain = tokens.readChain();
-        final List<Value> args = tokens.readArgs();
+    private void emitLhs(
+        final Emit emit, final Value head, final List<MethodChain> chain,
+        final List<Value> args, final boolean open
+    ) {
         if (chain.isEmpty()) {
             Emissions.openValue(emit, "φ", head, this.span.line());
         } else {
@@ -149,19 +165,28 @@ final class LnOnlyPhi implements Line {
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, this.span.line());
         }
-        emit.close();
+        if (!open) {
+            emit.close();
+        }
     }
 
     /**
-     * Push or replace the stack level per Step B/C/D of §5.2.
+     * Push or replace the stack level per Step B/C/D of §5.2. A bare
+     * (zero-hargs) φ opens the level for vertical arguments; a φ that
+     * already carries horizontal args is horizontally completed.
      * @param stack The stack
      * @param suffix Right-hand-side suffix
+     * @param open Whether the φ has no horizontal args
      */
-    private void transition(final Stack stack, final Suffix suffix) {
+    private void transition(final Stack stack, final Suffix suffix, final boolean open) {
+        final Openness openness;
+        if (open) {
+            openness = Openness.OPEN;
+        } else {
+            openness = Openness.HORIZONTAL_COMPLETED;
+        }
         new Transition(stack, this.span).apply(
-            Kind.ONLY_PHI_FORMATION,
-            Openness.HORIZONTAL_COMPLETED,
-            suffix.present() || suffix.test()
+            Kind.ONLY_PHI_FORMATION, openness, suffix.present() || suffix.test()
         );
     }
 

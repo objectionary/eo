@@ -46,7 +46,7 @@ final class RegexAtomTest {
     @Test
     void throwsClearErrorOnMissingClosingSlash() {
         MatcherAssert.assertThat(
-            "regex without closing slash should throw a clear ExFailure that mentions \"/\" and is not an opaque IndexOutOfBoundsException",
+            "regex without closing slash must terminate with a clear reason about the missing slash, not an opaque IndexOutOfBoundsException",
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
@@ -57,7 +57,7 @@ final class RegexAtomTest {
                 ).take()
             ).toString(),
             Matchers.allOf(
-                Matchers.containsString("/"),
+                Matchers.containsString("slash"),
                 Matchers.not(Matchers.containsString("out of bounds"))
             )
         );

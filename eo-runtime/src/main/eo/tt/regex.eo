@@ -24,6 +24,8 @@
 # /s - Enables dotall mode.
 # /u - Enables Unicode-aware case folding.
 [expression] > regex
+  compile > @
+
   # Compile regular expression into pattern.
   # ```
   # (regex "/[a-z]+/").compiled.matches "hello"
@@ -41,7 +43,8 @@
   # ptn2.matches "hello"                # doesn't recompile regex
   # ```
   # Returns `org.eolang.tt.regex.pattern` object.
-  [] > @ /Q.tt.regex.pattern
+  [] > compile /Q.tt.regex.pattern
+    ? > cant-compile /{string}
 
   # Regular expression compiled into pattern.
   # Here `serialized` is `bytes` which represents serialized structure in memory
@@ -96,11 +99,11 @@
             matched-from-index
               position.plus 1
               to
-          error "Matched block does not exist, can't get next"
+          T "Matched block does not exist, can't get next"
         if. > text
           exists
           group 0
-          error "Matched block does not exist, can't get text"
+          T "Matched block does not exist, can't get text"
 
         # Returns the string subsequence captured by the group
         # by `index` during the `match` operation.
@@ -239,6 +242,25 @@
   # Tests that regex compilation throws error when missing closing slash.
   [] +> throws-on-missing-closing-slash-in-regex
     (regex "/pattern").compiled > @
+
+  # Tests that an invalid pattern body with a `cant-compile` fallback yields the fallback.
+  [] +> tests-invalid-regex-syntax-returns-provided-fallback
+    eq. > @
+      "recovered"
+      (regex "/[a-z/").compile
+        "recovered" > [msg]
+
+  # Tests that a missing slash with a `cant-compile` fallback yields the fallback.
+  [] +> tests-missing-slash-returns-provided-fallback
+    eq. > @
+      "no-slash"
+      (regex "(.)+").compile
+        "no-slash" > [msg]
+
+  # Tests that an invalid pattern with no `cant-compile` fallback yields the bottom
+  # object (⊥) that terminates when used.
+  [] +> throws-on-compiling-invalid-regex-without-fallback
+    (regex "/[a-z/").compile > @
 
   # Tests that regex with capturing groups returns correct group count and content.
   [] +> tests-regex-contains-valid-groups-on-each-matched-block

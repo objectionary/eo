@@ -150,7 +150,9 @@ final class Heaps {
                     )
                 );
             }
-            return offset + length <= this.blocks.get(identifier).length;
+            return offset >= 0
+                && length >= 0
+                && (long) offset + length <= this.blocks.get(identifier).length;
         } finally {
             this.lock.unlock();
         }
@@ -199,8 +201,17 @@ final class Heaps {
                     )
                 );
             }
-            if (this.blocks.get(identifier).length < offset + data.length) {
-                this.resize(identifier, offset + data.length);
+            final long end = (long) offset + data.length;
+            if (end > Integer.MAX_VALUE) {
+                throw new ExFailure(
+                    String.format(
+                        "Block '%d': can't write at offset '%d', resulting size '%d' is too large for int",
+                        identifier, offset, end
+                    )
+                );
+            }
+            if (this.blocks.get(identifier).length < end) {
+                this.resize(identifier, (int) end);
             }
             final byte[] source = this.blocks.get(identifier);
             final int length = source.length;

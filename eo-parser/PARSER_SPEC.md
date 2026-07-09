@@ -483,7 +483,7 @@ There are **four base forms** of name suffix (mutually exclusive on any one line
 | `> [params] > name` | Inline-phi formation with **explicit** name. |
 | `> [params] >>` | Inline-phi formation with **auto-generated** name (the right-hand side `>>` replaces `> name`). |
 
-R-3.10.1. Inline-phi mechanics: the LHS of the leftmost `> [` is the formation's body (assigned to `φ` of the inline-phi formation); the formation itself is named by the suffix on the right. The LHS must fit on the same line — it is horizontal by construction. The line is closed for deeper-indent children (§4.5).
+R-3.10.1. Inline-phi mechanics: the LHS of the leftmost `> [` is the formation's body (assigned to `φ` of the inline-phi formation); the formation itself is named by the suffix on the right. The LHS head must fit on the same line. When the LHS carries no horizontal args its `φ` is open and accepts a deeper-indent vertical-argument block; when the LHS is a happlication the line is closed for deeper-indent children (§4.5).
 
 Examples:
 
@@ -629,23 +629,48 @@ See §3.9. After its child block, the kind remains **`compact-tuple`** but its o
 
 ### 4.5 Inline-phi formation
 
-A line whose suffix is `> [params] > name` is an **`inline-phi-formation`**:
+A line whose suffix is `> [params] > name` is an **`inline-phi-formation`**: the LHS of `> [` is the formation's `φ`, and the bracket params are its voids. Whether the line accepts a deeper-indent body depends on the LHS:
 
-- LHS of `> [` is horizontal by construction.
-- The line is **closed for deeper-indent children** (the body is the LHS, not a vertical block).
-- The line may freely appear as a vertical arg of an enclosing expression — its closure rule applies only to *its own* depth.
+- **Bare φ (LHS has no horizontal args)** — the φ is `open`. Deeper-indent lines attach to it as **vertical application arguments**, exactly as they would under a plain `vapplication` head. So `foo > [x] > bar` with a body block is `[x] > bar` whose `φ` is `foo` applied to that block:
+
+  ```
+  foo > [x] > bar                     ← φ = foo, param = x, name = bar
+    x.plus 42                         ← first vertical arg of foo
+  ```
+
+  is identical in XMIR to:
+
+  ```
+  [x] > bar
+    foo > @
+      x.plus 42
+  ```
+
+- **φ with horizontal args (LHS is a happlication)** — the φ is already a complete application, so the line is **`horizontal-completed`** and accepts no body (R-6.1.1).
+
+- The line may freely appear as a vertical arg of an enclosing expression — the rules above apply only to *its own* depth.
+
+The formation binds only `φ`, so its arguments may not introduce a second named attribute: **an only-phi argument may not carry a name suffix** (`> name`, `>>`, `+> name`). The ban follows the argument down through nested applications and resets inside a nested formation argument, where naming resumes as usual (§6.2). This is the one place a vertical-application argument may not be named (contrast C.3).
+
+Legal — a nested formation argument names its own attributes:
 
 ```
-foo                                   ← vapplication head
-  a                                   ← arg 1
-  b > [x] > bar                       ← arg 2: inline-phi-formation with body=b, param=x, name=bar
+foo > [] >>
+  [y]                                 ← unnamed formation argument
+    z > w                             ← attribute of [y], named as usual
 ```
 
-Illegal:
+Illegal — a name suffix on an only-phi argument:
 
 ```
-io.stdout > [s] >> name
-  some-deeper-arg                     ← rejected: inline-phi line closed for deeper children
+foo > [] >>
+  bar > x                             ← rejected: only-phi argument cannot be named
+```
+
+```
+foo > [] >>
+  bar
+    baz > x                           ← rejected: still in argument position
 ```
 
 ### 4.6 Triple-quoted text block
@@ -711,8 +736,9 @@ R-5.2.2. When popping an entry at indent `K + 2` (so the new top is at indent `K
 **Step B — Same-indent line.** If the top entry now has indent = `N`:
 
 R-5.2.3. **MethodDispatch line dispatch.** If the line's kind is `MethodDispatch` (`.method` continuation):
-  - **(a) Extend:** If the top's openness ∈ {`open`, `vertical-completed`} AND the top's kind is **not** in the horizontally-completed set (Appendix A): extend the top's kind to `vmethod` (or to `vmethod-with-hargs` if the new line carries ≥1 hargs), update `named?` if the line carries a name suffix, leave openness `open` (or transition to `horizontal-completed` if the new kind is `vmethod-with-hargs`).
+  - **(a) Extend:** If the top's openness ∈ {`open`, `vertical-completed`} AND the top's kind is **not** in the horizontally-completed set (Appendix A) AND the top's kind is **not** `inline-phi-formation`: extend the top's kind to `vmethod` (or to `vmethod-with-hargs` if the new line carries ≥1 hargs), update `named?` if the line carries a name suffix, leave openness `open` (or transition to `horizontal-completed` if the new kind is `vmethod-with-hargs`).
   - **(b) Reject — horizontally-completed predecessor:** If the top's openness is `horizontal-completed` (equivalently, kind ∈ horizontally-completed set): error `method continuation not allowed after horizontal application` (§9.9).
+  - **(b′) Reject — only-phi predecessor:** If the top's kind is `inline-phi-formation` (whose bare-φ form is `open` but is not a method-chain host): error `method continuation not allowed after only-phi formation` (§9.9).
 
 R-5.2.4. **Non-MethodDispatch same-indent line.** If the line's kind is **not** MethodDispatch: the top entry is a *completed previous sibling*. Run close-time checks (§5.3) on it, then **replace** it with a new entry built from the new line. The new entry's `parent_kind` is read from the stack entry below.
 
@@ -744,7 +770,7 @@ R-5.3.5. **Test depth.** If the popped entry's name suffix is `+>`, the popped e
   - the popped entry's parent's own `parent_kind` must be `top-level` (otherwise the parent is itself nested, also illegal).
   
   Either failure yields error `test attribute legal only as direct child of top-level object` (R-6.3.3 / §9.9). The first failure case covers a stray `+>` at indent 0; the second covers `+>` at indent ≥ 4.
-R-5.3.6. **Inline-phi closure violation.** If `kind = inline-phi-formation` and the entry had any children pushed under it: error (caught at child-push time, R-5.2.6 + R-4.5).
+R-5.3.6. **Inline-phi argument rules.** An `inline-phi-formation` whose φ carries horizontal args is closed for deeper children (caught at child-push time via R-6.1.1). When its φ is bare, deeper children attach as φ's vertical arguments; because the formation binds only φ, such an argument may not be named — at close time an argument entry that carries a name suffix yields error `argument of an only-phi formation cannot carry a name suffix` (§9.9). The ban propagates down through nested applications and resets at a formation boundary (§4.5).
 
 ### 5.4 End-of-file (FSM action)
 
@@ -760,7 +786,7 @@ These rules state the contract in terms of cross-line behavior. Each rule is mec
 
 A horizontally-completed expression cannot be extended. Specifically:
 
-R-6.1.1. An expression whose outer kind is in the horizontally-completed set (defined once in Appendix A — currently `{happlication, reversed-with-hargs, vmethod-with-hargs, inline-phi-formation}`) admits:
+R-6.1.1. An expression whose outer kind is in the horizontally-completed set (defined once in Appendix A — currently `{happlication, reversed-with-hargs, vmethod-with-hargs}`) admits:
 - No deeper-indent children.
 - No same-indent `.method` continuation.
 
@@ -771,6 +797,8 @@ R-6.1.2. An expression whose outer kind is one of `head`, `hmethod` (0 hargs), `
 R-6.1.3. An expression whose openness is `vertical-completed` — i.e., `vapplication`, `vmethod`, `bare-reversed`, `bare-formation`, or `compact-tuple` whose child block has ended — is:
 - May not receive more deeper-indent children (the block is over).
 - May be wrapped by a same-indent `.method`, which transitions it back to `vmethod` (still `open`).
+
+R-6.1.4. An `inline-phi-formation` is governed by its openness rather than a fixed set membership. A φ with horizontal args starts `horizontal-completed` (R-6.1.1). A bare φ is `open` and admits deeper-indent children — its φ's vertical arguments (§4.5) — but, unlike the open kinds of R-6.1.2, it may **not** be wrapped by a same-indent `.method` (error `method continuation not allowed after only-phi formation`, §5.2.3(b′)); wrapping the formation would misattribute the method as a second attribute.
 
 Examples:
 
@@ -1096,7 +1124,7 @@ For each outer kind, this table fixes the order of `<o>` children inside its emi
 | `hmethod` (single line, 0 hargs) | Emits a **sequence of sibling `<o>`s** under the enclosing parent: (1) the receiver of the chain as the first sibling; (2) one `<o base='.<methodname>' method=''>` per `.method` segment, in source order. Because the whole chain lives on **one source line**, only the last `.method` segment can carry a name suffix (the line's `> name`); intermediate segments on the same line have no syntactic place for their own name. (The intermediate-names provision of R-6.2.3 applies only to `vmethod` chains, where each `.method` is on its own line.) See R-9.0.3 for the convention. |
 | `happlication`, `vapplication` | The outer `<o>` carries `@base = head reference` (or, for chained heads, the last link's `<o>` is the outer one — R-9.0.3.1). Arguments emit as direct children of that `<o>` in source order. |
 | `bare-formation` | (1) void params from the `[...]` head, in source order; (2) all body children — plain, master, and `+>` test attributes — in source order as they appear in the body. The parser does **not** reorder children by category; the category distinction in §1.3 is about role and naming requirements, not emission order. |
-| `inline-phi-formation` | (1) void params from `> [params]` in source order; (2) the LHS expression as a single child with `@name='φ'`. The line is closed for further children (R-6.1.1) — there are no plain, master, or test children for this kind. |
+| `inline-phi-formation` | (1) void params from `> [params]` in source order; (2) the LHS expression as a single child with `@name='φ'`. When the LHS has no horizontal args this `φ` `<o>` stays open, and deeper-indent lines emit inside it as its vertical arguments (`@as='αN'`, per `vapplication`); at close time the φ `<o>` and the formation `<o>` are both closed. When the LHS has horizontal args the φ is closed at emit time and the line accepts no children (R-6.1.1). The formation's other attribute slots stay empty — its only bound attribute is `φ` — so an argument may not carry a name suffix (R-5.3.6). |
 | Atom (formation + `/sig`) | (1) void params in source order; (2) `<o name='λ' atom='<sig>'/>` marker; (3) test attributes (`+>`) in source order |
 | `bare-reversed` (vertical) | (1) the receiver's `<o>` first; (2) each method-arg `<o>` in source order |
 | `reversed-with-hargs` | same as `bare-reversed` — receiver first, args in source order |
@@ -1165,6 +1193,8 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Tab in leading whitespace | `tab character in leading whitespace` |
 | Deeper-indent under horizontally-completed line | `unexpected deeper-indent line — previous expression is closed for children` |
 | `.method` continuation on horizontally-completed previous | `method continuation not allowed after horizontal application` |
+| `.method` continuation on an only-phi formation | `method continuation not allowed after only-phi formation` |
+| Name suffix on an only-phi φ's argument | `argument of an only-phi formation cannot carry a name suffix` |
 | `.method` line at top level, deeper than parent, or with no same-indent sibling | `method continuation has no expression to attach to` |
 | Chained inline-phi suffix `expr > [a] > [b] > name` | `chained inline-phi suffixes are not allowed` |
 | Inline-phi without a name on the right (`expr > [params]` alone) | `inline-phi formation must carry a name on the right` |
@@ -1219,7 +1249,7 @@ R-9.9.3. New error conditions added to the spec must extend this table with a ca
 | `bare-reversed` | 1 line + body | yes (receiver+args) | yes (after) | `name.` vertical form |
 | `reversed-with-hargs` | 1 line | **no** | **no** | `name. arg1 arg2…` |
 | `compact-tuple` | 1 line + body | yes (tuple+direct args) | yes (after) | `head *N` |
-| `inline-phi-formation` | 1 line | **no** | **no** | `expr > [params] > name` |
+| `inline-phi-formation` | 1 line (+ body if bare φ) | yes if φ has 0 hargs (φ's vertical args); **no** if φ has hargs | **no** | `expr > [params] > name`; a bare φ opens for a vertical-argument block (§4.5), and its arguments may not be named (R-5.3.6) |
 | `vapplication` | multi-line | yes while in progress | yes after block closes | head + vertical block |
 | `vmethod` | multi-line | yes while in progress (only if last `.method` has 0 hargs) | yes (more `.method`s extend the chain; same-indent `.method` after block closes wraps it) | chain of `.method` continuations |
 | `vmethod-with-hargs` | multi-line | **no** | **no** | a `.method` continuation line that itself carries ≥1 horizontal args — closes the chain immediately |
@@ -1228,10 +1258,10 @@ R-9.9.3. New error conditions added to the spec must extend this table with a ca
 **Horizontally-completed kinds (the single source of truth)** — these never receive deeper children and cannot be wrapped by same-indent `.method`:
 
 ```
-{ happlication, reversed-with-hargs, vmethod-with-hargs, inline-phi-formation }
+{ happlication, reversed-with-hargs, vmethod-with-hargs }
 ```
 
-R-5.2.3 and R-6.1.1 reference this set; if the set changes, change it here, not in those rules.
+R-5.2.3 and R-6.1.1 reference this set; if the set changes, change it here, not in those rules. An `inline-phi-formation` is **not** a member: its openness depends on its φ (R-6.1.4) — a bare φ is `open` (but still not wrappable by `.method`, §5.2.3(b′)), a φ with hargs is `horizontal-completed`.
 
 ## Appendix B — Per-line shape decision table
 
@@ -1269,7 +1299,7 @@ Reproduced from §3.1 for convenience:
         *                             ← R-3.6: star tuple as head; becomes vapplication
           x.put 2                     ← R-3.6: happlication, horizontally-completed (R-6.1.1)
           loop                        ← R-3.6: bare head
-            x.lt 6 > [i] >>           ← R-3.10 inline-phi: outer = inline-phi-formation, closed for deeper children
+            x.lt 6 > [i] >>           ← R-3.10 inline-phi: outer = inline-phi-formation; φ `x.lt 6` has a harg, so closed for deeper children (§4.5)
             [i] >>                    ← R-3.4: formation
               true
 ```
@@ -1351,7 +1381,7 @@ Notable points:
 - **Horizontal reversed dispatch (`eq. (mod. y 4) 0`)** appears 4× in this snippet. R-3.8.2 and R-6.6.3 govern it.
 - **Receiver as paren group**: `(mod. y 4)` is the receiver of `.eq`. Per R-3.8.2, the first horizontal arg is always the receiver.
 - **`mod. y 4`**: receiver = `y` (just an identifier — receivers don't have to be paren groups), method arg = `4`. Same as `y.mod 4` in regular notation.
-- **`year!` on a vapp arg**: a vapplication's vertical args may each carry an independent name suffix. This is orthogonal to the all-or-nothing binding rule (R-6.6.2 governs `:label` bindings, not `> name` suffixes).
+- **`year!` on a vapp arg**: a vapplication's vertical args may each carry an independent name suffix. This is orthogonal to the all-or-nothing binding rule (R-6.6.2 governs `:label` bindings, not `> name` suffixes). The sole exception is an argument of an only-phi formation's φ, which may not be named (§4.5 / R-5.3.6), since that formation binds only `φ`.
 - **`:y` binding on `leap year:y`**: inside the paren group, `leap` is applied to `year` with binding `:y`. Single-arg application, all-or-nothing trivially satisfied.
 
 This snippet exercises hmethod chains, horizontal reversed dispatch, paren groups, vapplication, name suffixes with `!`, and `:label` bindings — every major construct except text blocks and compact tuples.

@@ -340,13 +340,10 @@
 
   # Checks that division by zero does not return an error object.
   [] +> tests-zero-division
-    try > @
-      seq
-        *
-          2.div 0
-          true
-      false > [e]
-      false
+    seq > @
+      *
+        2.div 0
+        true
 
   # Checks that division by one returns the dividend.
   [] +> tests-division-by-one

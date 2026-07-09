@@ -23,10 +23,10 @@
 # ```
 #
 # This object returns the value of the first true statement.
-[cases] > switch
+[cases empty-cases] > switch
   if. > @
     cases.length.eq 0
-    error "Switch cases are empty"
+    empty-cases "Switch cases are empty"
     if.
       true.eq found.match
       found.head
@@ -102,9 +102,18 @@
           false
           "false2"
 
-  # Tests that switch throws an error when given empty cases array.
+  # Tests that empty switch cases with no fallback yield the bottom object (⊥)
+  # that terminates when used.
   [] +> throws-on-empty-switch
     switch * > @
+
+  # Tests that empty switch cases with a provided fallback yield the fallback.
+  [] +> tests-empty-switch-returns-provided-fallback
+    eq. > @
+      "recovered"
+      switch
+        *
+        "recovered" > [msg]
 
   # Tests that switch works correctly with complex nested conditions and custom objects.
   [] +> tests-switch-complex-case

@@ -26,19 +26,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.60
  */
 @ExtendWith(MktmpResolver.class)
+@SuppressWarnings("PMD.TooManyMethods")
 final class CacheTest {
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void compilesSource(@Mktmp final Path temp) throws Exception {
         final Path base = temp.resolve("cache-folder");
         Files.createDirectories(base);
         final Path source = temp.resolve("source.eo");
         Files.writeString(source, String.format("[] > main%n  (stdout \"Hello, EO!\") > @%n"));
         final Path target = temp.resolve("target.xmir");
-        final Path tail = source.getFileName();
         final String content = "compiled";
-        new Cache(base, p -> content).apply(source, target, tail);
+        new Cache(base, p -> content).apply(source, target, source.getFileName());
         MatcherAssert.assertThat(
             "Target file must be created from source",
             Files.readString(target),
@@ -207,7 +206,6 @@ final class CacheTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void generatesCorrectHashForEntireFolderWithSeveralFiles(
         @Mktmp final Path temp
     ) throws IOException, NoSuchAlgorithmException {
@@ -217,17 +215,22 @@ final class CacheTest {
         Files.createDirectories(source);
         final String first = "file1 content";
         final String second = "file2 content";
-        final String result = String.format("%s%s", first, second);
         Files.writeString(source.resolve("file1.txt"), first, StandardCharsets.UTF_8);
         Files.writeString(source.resolve("file2.txt"), second, StandardCharsets.UTF_8);
-        new Cache(cache, p -> result).apply(
+        new Cache(cache, p -> String.format("%s%s", first, second)).apply(
             source,
             temp.resolve("out.txt"),
             source.getFileName()
         );
         final MessageDigest instance = MessageDigest.getInstance("SHA-256");
-        instance.update(CacheTest.hash(first).getBytes(StandardCharsets.UTF_8));
-        instance.update(CacheTest.hash(second).getBytes(StandardCharsets.UTF_8));
+        instance.update(
+            String.format("file1.txt\u0000%s", CacheTest.hash(first))
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        instance.update(
+            String.format("file2.txt\u0000%s", CacheTest.hash(second))
+                .getBytes(StandardCharsets.UTF_8)
+        );
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for folder with several files",
             Files.readString(
@@ -235,6 +238,38 @@ final class CacheTest {
                 StandardCharsets.UTF_8
             ),
             Matchers.equalTo(Base64.getEncoder().encodeToString(instance.digest()))
+        );
+    }
+
+    @Test
+    void generatesDifferentHashesForFoldersWithDifferentlyNamedIdenticalFiles(
+        @Mktmp final Path temp
+    ) throws IOException {
+        final Path cache = temp.resolve("cache");
+        Files.createDirectories(cache);
+        final String content = "same content";
+        final Path first = temp.resolve("dirA");
+        Files.createDirectories(first);
+        Files.writeString(first.resolve("original-name.eo"), content, StandardCharsets.UTF_8);
+        new Cache(cache, p -> "compiled-a").apply(
+            first, temp.resolve("out-a.txt"), first.getFileName()
+        );
+        final Path second = temp.resolve("dirB");
+        Files.createDirectories(second);
+        Files.writeString(
+            second.resolve("completely-different-name.eo"), content, StandardCharsets.UTF_8
+        );
+        new Cache(cache, p -> "compiled-b").apply(
+            second, temp.resolve("out-b.txt"), second.getFileName()
+        );
+        MatcherAssert.assertThat(
+            "Directories with identical content but differently named files must produce different hashes",
+            Files.readString(cache.resolve("dirA.sha256"), StandardCharsets.UTF_8),
+            Matchers.not(
+                Matchers.equalTo(
+                    Files.readString(cache.resolve("dirB.sha256"), StandardCharsets.UTF_8)
+                )
+            )
         );
     }
 

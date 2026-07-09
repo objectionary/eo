@@ -140,7 +140,7 @@ final class Emissions {
         } else if (value.kind() == Value.Kind.TERM) {
             emit.object(name, "⊥", line, value.pos());
         } else if (value.kind() == Value.Kind.GROUP) {
-            Emissions.openValueGroup(emit, name, value, line);
+            Emissions.group(emit, name, value, line);
         } else {
             emit.object(name, value.raw(), line, value.pos());
         }
@@ -262,6 +262,30 @@ final class Emissions {
             }
         }
         return out.toString();
+    }
+
+    /**
+     * Emit a parenthesised group value, either as an inline-phi formation or
+     * as a nested expression.
+     * @param emit Emitter
+     * @param name Name attribute (or {@code null})
+     * @param value The group value
+     * @param line Source line
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static void group(
+        final Emit emit, final String name, final Value value, final int line
+    ) {
+        final String inner = value.raw().substring(1, value.raw().length() - 1);
+        final int phi = Emissions.topLevelInlinePhi(inner);
+        if (phi >= 0) {
+            Emissions.inlinePhi(emit, name, inner, phi, value.pos() + 1, line);
+        } else {
+            final Span sub = new Span(
+                " ".repeat(value.pos() + 1).concat(inner), line
+            );
+            Emissions.expression(emit, name, new Tokens(sub.body(), sub), line);
+        }
     }
 
     /**

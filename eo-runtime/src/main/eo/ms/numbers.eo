@@ -12,11 +12,13 @@
 [sequence] > numbers
   sequence > @
 
-  # Find max element in the numbers sequence.
-  [] > max
+  # Find max element in the numbers sequence. An empty sequence yields the
+  # caller-supplied `cant-max` fallback, or the bottom object (⊥) when none
+  # was provided.
+  [cant-max] > max
     if. > @
       lst.is-empty
-      error "Can't get the max number from an empty sequence"
+      cant-max "cannot get the max number from an empty sequence"
       reduced
         lst
         ninf
@@ -27,11 +29,13 @@
             max
     list sequence > lst
 
-  # Find min element in the numbers sequence.
-  [] > min
+  # Find min element in the numbers sequence. An empty sequence yields the
+  # caller-supplied `cant-min` fallback, or the bottom object (⊥) when none
+  # was provided.
+  [cant-min] > min
     if. > @
       lst.is-empty
-      error "Can't get the min number from an empty sequence"
+      cant-min "cannot get the min number from an empty sequence"
       reduced
         lst
         pinf
@@ -42,11 +46,27 @@
             min
     list sequence > lst
 
-  # Tests that taking max from empty sequence throws error.
+  # Tests that taking max from an empty sequence with no fallback yields the
+  # bottom object (⊥) that terminates when used.
   (numbers *).max > [] +> throws-on-taking-max-from-empty-sequence-of-numbers
 
-  # Tests that taking min from empty sequence throws error.
+  # Tests that taking min from an empty sequence with no fallback yields the
+  # bottom object (⊥) that terminates when used.
   (numbers *).min > [] +> throws-on-taking-min-from-empty-sequence-of-numbers
+
+  # Tests that max of an empty sequence with a fallback yields the fallback.
+  [] +> tests-max-of-empty-returns-provided-fallback
+    eq. > @
+      "recovered"
+      (numbers *).max
+        "recovered" > [msg]
+
+  # Tests that min of an empty sequence with a fallback yields the fallback.
+  [] +> tests-min-of-empty-returns-provided-fallback
+    eq. > @
+      "recovered"
+      (numbers *).min
+        "recovered" > [msg]
 
   # Tests that max of single-item array returns that item.
   [] +> tests-max-of-one-item-array

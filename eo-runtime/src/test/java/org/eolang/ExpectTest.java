@@ -273,4 +273,48 @@ final class ExpectTest {
             Matchers.equalTo("the 'ρ' attribute (-42) must be greater or equal to zero")
         );
     }
+
+    @Test
+    void failsInTransformingToIntegerForTooLarge() {
+        MatcherAssert.assertThat(
+            "inner class Integer throws error for a number outside int range, instead of saturating",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect.Int(
+                    Expect.at(
+                        new PhApplication(
+                            new PhDefault(),
+                            Phi.RHO,
+                            new Data.ToPhi(1.0e15)
+                        ),
+                        Phi.RHO
+                    )
+                ).it(),
+                "fails with correct error message while transform Phi to Integer"
+            ).getMessage(),
+            Matchers.equalTo("the 'ρ' attribute (1.0E15) must fit into int range")
+        );
+    }
+
+    @Test
+    void failsInTransformingToNonNegativeIntegerForTooLarge() {
+        MatcherAssert.assertThat(
+            "inner class NonNegativeInteger throws error for a number outside int range, instead of saturating",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Expect.Natural(
+                    Expect.at(
+                        new PhApplication(
+                            new PhDefault(),
+                            Phi.RHO,
+                            new Data.ToPhi(1.0e15)
+                        ),
+                        Phi.RHO
+                    )
+                ).it(),
+                "fails with correct error message while transform Phi to NonNegativeInteger"
+            ).getMessage(),
+            Matchers.equalTo("the 'ρ' attribute (1.0E15) must fit into int range")
+        );
+    }
 }

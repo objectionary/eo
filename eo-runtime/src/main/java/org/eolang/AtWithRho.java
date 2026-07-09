@@ -7,6 +7,8 @@ package org.eolang;
 
 /**
  * The attribute that tries to copy object and set \rho to it if it has not already set.
+ * The terminator ⊥ ({@link PhTerminator}) silently ignores this \rho itself, so no container
+ * leaks into it and its cause is not masked as it propagates.
  * This attribute is NOT thread safe!
  * @since 0.36.0
  * @todo #4673:30min The {@link AtWithRho#get()} is not thread safe. If multiple threads

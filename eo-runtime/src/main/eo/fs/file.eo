@@ -487,6 +487,15 @@
             m
     .eq "Hello, world" > @
 
+  # Tests that reading a negative size from a file throws a clean domain error
+  # instead of an uncaught NegativeArraySizeException.
+  [] +> throws-on-reading-negative-size-from-file
+    tmpdir
+    .tmpfile
+    .open > @
+      "r"
+      f.read -5 > [f]
+
   # Tests that attempting to read from a file opened in write-only mode throws an error.
   [] +> throws-on-reading-from-file-with-wrong-mode
     tmpdir

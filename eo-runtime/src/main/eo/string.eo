@@ -45,7 +45,7 @@
     [index csize len] > inclen
       if. > @
         (index.plus csize).gt size
-        error
+        T
           sprintf
             "Expected %d byte character at %d index, but there are not enough bytes for it: %x"
             * csize index as-bytes
@@ -71,7 +71,7 @@
               if.
                 (byte.and p4).eq r4
                 inclen index 4 accum
-                error
+                T
                   sprintf
                     "Unknown byte format (%x), can't recognize character"
                     * byte
@@ -81,13 +81,13 @@
   [start len] > slice
     if. > @
       nstart.lt 0
-      error
+      T
         sprintf
           "Start index must be >= 0, but was %d"
           * nstart
       if.
         nlen.lt 0
-        error
+        T
           sprintf
             "Length to slice must be >= 0, but was %d"
             * nlen
@@ -133,7 +133,7 @@
     [index csize accum result cause] > increase
       if. > @
         (index.plus csize).gt size
-        error
+        T
           sprintf
             "Expected %d byte character at %d index, but there are not enough bytes for it: %x"
             * csize index as-bytes
@@ -155,7 +155,7 @@
         index
         if.
           index.eq size
-          error cause
+          T cause
           if.
             (byte.and p1).eq r1
             increase index 1 accum result cause
@@ -168,7 +168,7 @@
                 if.
                   (byte.and p4).eq r4
                   increase index 4 accum result cause
-                  error
+                  T
                     sprintf
                       "Unknown byte format (%x), can't recognize character"
                       * byte

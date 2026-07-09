@@ -4,29 +4,42 @@
  */
 package org.eolang;
 
-import java.util.Objects;
-
 /**
  * The ⊥ ("bottom") object of φ-calculus — a terminated computation.
  *
  * <p>It is a value that can be carried around — returned, copied, and
- * have attributes bound into it — but it has no data and no behaviour.
+ * have an object put into it — but it has no data and no behaviour.
  * It detonates only when something tries to <em>force</em> it: reading
- * its data ({@link #delta()}) or dispatching an attribute on it
- * ({@link #take(String)}) aborts through an {@link ExFailure}. Because
+ * its data ({@link #delta()}) aborts through an {@link ExFailure}. Because
  * EO {@code try} only intercepts {@link EOerror.ExError}, that failure
  * cannot be caught, so forcing ⊥ terminates the program for good.</p>
  *
  * <p>The remaining operations are tolerant on purpose: {@link #copy()}
- * yields another ⊥, {@link #put(int, Phi)} is a no-op, and the
- * metadata accessors return sentinels. This lets ⊥ propagate through
- * copying and ρ-binding (the dispatch plumbing) and surface the failure
- * at the outer dataization or dispatch, not at the point it was
- * produced.</p>
+ * yields the same ⊥ and {@link #take(String)} yields ⊥ again, so it
+ * propagates through copying and dispatch and surfaces the failure at
+ * the outer dataization, not at the point it was produced.</p>
+ *
+ * <p>A ⊥ may carry a <em>cause</em>: it has a single slot, addressable only
+ * at position 0 (as in {@code T "why it failed"}). A {@code put} at any other
+ * position, or any {@code put} by name other than ρ, aborts — ⊥ has no named
+ * attributes. The ρ-binding the runtime attempts on every take (via
+ * {@link AtWithRho}) is silently ignored, since a ⊥ has no ρ; this keeps its
+ * cause from being masked by a ρ-rejection while it propagates. The first
+ * object put at position 0 is remembered and used as the panic message when
+ * the ⊥ is finally forced. The cause is
+ * write-once and never handed back by {@link #take(String)}, so EO code can
+ * neither read it nor catch it — it exists only to explain the termination
+ * at the very top.</p>
  *
  * @since 0.73.1
  */
 public final class PhTerminator implements Phi {
+
+    /**
+     * The reason this computation terminated, used only as the panic
+     * message when the ⊥ is forced, or {@code null} when none was given.
+     */
+    private Phi cause;
 
     @Override
     public Phi copy() {
@@ -45,12 +58,23 @@ public final class PhTerminator implements Phi {
 
     @Override
     public void put(final int pos, final Phi object) {
-        Objects.requireNonNull(object);
+        if (pos != 0) {
+            throw new ExFailure(
+                "the ⊥ object only accepts a cause at position 0, not %d", pos
+            );
+        }
+        if (this.cause == null) {
+            this.cause = object;
+        }
     }
 
     @Override
     public void put(final String name, final Phi object) {
-        Objects.requireNonNull(object);
+        if (!Phi.RHO.equals(name)) {
+            throw new ExFailure(
+                "the ⊥ object does not accept attributes by name, but got '%s'", name
+            );
+        }
     }
 
     @Override
@@ -65,7 +89,13 @@ public final class PhTerminator implements Phi {
 
     @Override
     public byte[] delta() {
-        throw new ExFailure("the ⊥ object is a terminated computation and cannot be used");
+        final String reason;
+        if (this.cause == null) {
+            reason = "the ⊥ object is a terminated computation and cannot be used";
+        } else {
+            reason = new Dataized(this.cause).asString();
+        }
+        throw new ExFailure(reason);
     }
 
     @Override

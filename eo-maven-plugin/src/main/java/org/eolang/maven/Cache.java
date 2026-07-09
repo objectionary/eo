@@ -146,7 +146,7 @@ final class Cache {
                 stream.filter(Files::isRegularFile)
                     .filter(this.filter::test)
                     .sorted(Comparator.comparing(Path::toString))
-                    .map(p -> new Sha(p).toString())
+                    .map(p -> String.format("%s\u0000%s", dir.relativize(p), new Sha(p)))
                     .map(s -> s.getBytes(StandardCharsets.UTF_8))
                     .forEach(digest::update);
             }

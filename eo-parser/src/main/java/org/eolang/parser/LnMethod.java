@@ -132,6 +132,12 @@ final class LnMethod implements Line {
                 "method continuation not allowed after horizontal application"
             );
         }
+        if (stack.top().kind() == Kind.ONLY_PHI_FORMATION) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "method continuation not allowed after only-phi formation"
+            );
+        }
     }
 
     /**
