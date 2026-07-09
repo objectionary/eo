@@ -82,13 +82,7 @@ final class PhSafeTest {
                 new PhDefault() {
                     @Override
                     public byte[] delta() {
-                        throw new ExAbstract((String) null) {
-                            /**
-                             * Serialization identifier.
-                             */
-                            private static final long serialVersionUID =
-                                6895797670679429822L;
-                        };
+                        throw new ExFailure((String) null, (Throwable) null);
                     }
                 }
             ).delta(),
