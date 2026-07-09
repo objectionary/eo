@@ -85,9 +85,6 @@ public final class Dataized {
             raw.addAll(ex.messages());
             Collections.reverse(raw);
             final Phi enc = ex.enclosure();
-            if (enc.locator().startsWith(String.format("%s.go.to.token.jump:", PhPackage.GLOBAL))) {
-                throw new EOerror.ExError(enc);
-            }
             if (String.format("%s.string", PhPackage.GLOBAL).equals(enc.forma())) {
                 raw.add(
                     String.format(

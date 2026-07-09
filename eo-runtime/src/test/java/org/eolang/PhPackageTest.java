@@ -147,7 +147,7 @@ final class PhPackageTest {
         MatcherAssert.assertThat(
             "Should take an attribute in multiple threads",
             new Together<>(
-                thread -> Phi.Φ.take("go") instanceof PhPackage
+                thread -> Phi.Φ.take("nop") instanceof PhPackage
             ),
             Matchers.allOf(
                 Matchers.not(Matchers.hasItem(true))
@@ -158,7 +158,7 @@ final class PhPackageTest {
     private static Stream<Arguments> attributes() {
         return Stream.of(
             Arguments.of("bytes$eq", EObytes$EOeq.class),
-            Arguments.of("go", EOgo.class)
+            Arguments.of("nop", EOnop.class)
         );
     }
 }
