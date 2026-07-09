@@ -86,6 +86,17 @@ final class Suffix {
     }
 
     /**
+     * Primary ctor — copies fields from a parsed result.
+     * @param result Parsed result
+     */
+    private Suffix(final Parsed result) {
+        this.form = result.form;
+        this.label = result.label;
+        this.sig = result.sig;
+        this.constant = result.constant;
+    }
+
+    /**
      * Parse a suffix only when the tail starts with a suffix marker.
      *
      * <p>This keeps deferred tails, such as a method chain following a
@@ -110,17 +121,6 @@ final class Suffix {
             );
         }
         return suffix;
-    }
-
-    /**
-     * Primary ctor — copies fields from a parsed result.
-     * @param result Parsed result
-     */
-    private Suffix(final Parsed result) {
-        this.form = result.form;
-        this.label = result.label;
-        this.sig = result.sig;
-        this.constant = result.constant;
     }
 
     /**
