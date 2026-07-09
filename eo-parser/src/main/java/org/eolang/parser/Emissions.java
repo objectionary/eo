@@ -20,7 +20,7 @@ import java.util.List;
  * @checkstyle CyclomaticComplexityCheck (600 lines)
  * @checkstyle BooleanExpressionComplexityCheck (600 lines)
  */
-@SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.TooManyMethods", "PMD.CognitiveComplexity"})
+@SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.TooManyMethods"})
 final class Emissions {
 
     /**
@@ -116,21 +116,10 @@ final class Emissions {
                 new Hex(Double.parseDouble(value.raw())).asString()
             );
         } else if (value.kind() == Value.Kind.HEX) {
-            final long hex;
-            try {
-                hex = Long.parseLong(value.raw().substring(2), 16);
-            } catch (final NumberFormatException ex) {
-                final ParseError error = new ParseError(
-                    line, value.pos(),
-                    "hexadecimal literal is out of range"
-                );
-                error.initCause(ex);
-                throw error;
-            }
             emit.object(name, "Φ.number", line, value.pos());
             Emissions.bytesCarrier(
                 emit, line, value.pos(),
-                new Hex((double) hex).asString()
+                new Hex((double) Emissions.parseHex(value, line)).asString()
             );
         } else if (value.kind() == Value.Kind.BYTES) {
             emit.object(name, "Φ.bytes", line, value.pos());
@@ -151,16 +140,7 @@ final class Emissions {
         } else if (value.kind() == Value.Kind.TERM) {
             emit.object(name, "⊥", line, value.pos());
         } else if (value.kind() == Value.Kind.GROUP) {
-            final String inner = value.raw().substring(1, value.raw().length() - 1);
-            final int phi = Emissions.topLevelInlinePhi(inner);
-            if (phi >= 0) {
-                Emissions.inlinePhi(emit, name, inner, phi, value.pos() + 1, line);
-            } else {
-                final Span sub = new Span(
-                    " ".repeat(value.pos() + 1).concat(inner), line
-                );
-                Emissions.expression(emit, name, new Tokens(sub.body(), sub), line);
-            }
+            Emissions.openValueGroup(emit, name, value, line);
         } else {
             emit.object(name, value.raw(), line, value.pos());
         }
@@ -304,6 +284,50 @@ final class Emissions {
             mapped = raw;
         }
         return mapped;
+    }
+
+    /**
+     * Parse the raw hex string of a {@link Value} into a {@code long},
+     * wrapping any {@link NumberFormatException} into a positioned
+     * {@link ParseError}.
+     * @param value The value whose raw text is a hex literal (e.g. {@code 0xFF})
+     * @param line Source line number
+     * @return Parsed long value
+     */
+    private static long parseHex(final Value value, final int line) {
+        try {
+            return Long.parseLong(value.raw().substring(2), 16);
+        } catch (final NumberFormatException ex) {
+            final ParseError error = new ParseError(
+                line, value.pos(), "hexadecimal literal is out of range"
+            );
+            error.initCause(ex);
+            throw error;
+        }
+    }
+
+    /**
+     * Handle a GROUP value: extract the inner expression and emit it
+     * either as an inline phi or as a nested expression.
+     * @param emit Emitter
+     * @param name Name attribute (or {@code null})
+     * @param value The GROUP value
+     * @param line Source line number
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static void openValueGroup(
+        final Emit emit, final String name, final Value value, final int line
+    ) {
+        final String inner = value.raw().substring(1, value.raw().length() - 1);
+        final int phi = Emissions.topLevelInlinePhi(inner);
+        if (phi >= 0) {
+            Emissions.inlinePhi(emit, name, inner, phi, value.pos() + 1, line);
+        } else {
+            final Span sub = new Span(
+                " ".repeat(value.pos() + 1).concat(inner), line
+            );
+            Emissions.expression(emit, name, new Tokens(sub.body(), sub), line);
+        }
     }
 
     /**
