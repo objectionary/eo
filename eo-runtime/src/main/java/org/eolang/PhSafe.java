@@ -200,7 +200,7 @@ public final class PhSafe implements Phi, Atom {
      * @return Result
      * @checkstyle IllegalCatchCheck (20 lines)
      */
-    @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.PreserveStackTrace"})
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private <T> T through(final Supplier<T> action, final String suffix) {
         try {
             return action.get();

@@ -66,7 +66,7 @@ final class PhSafeTest {
                 new PhDefault() {
                     @Override
                     public byte[] delta() {
-                        throw new RuntimeException();
+                        throw new IllegalStateException();
                     }
                 }
             ).delta(),
