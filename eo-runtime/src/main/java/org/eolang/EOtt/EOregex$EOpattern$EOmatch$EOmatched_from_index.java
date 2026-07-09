@@ -20,6 +20,8 @@ import org.eolang.Attr;
 import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExFailure;
+import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -66,22 +68,28 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
     public Phi lambda() {
         final Phi match = this.take(Phi.RHO);
         final Matcher matcher;
+        final String text;
         try {
+            text = new Dataized(match.take("txt")).asString();
             matcher = ((Pattern) new ObjectInputStream(
                 new ByteArrayInputStream(
                     new Dataized(match.take(Phi.RHO).take("serialized")).take()
                 )
-            ).readObject()).matcher(
-                new Dataized(match.take("txt")).asString()
-            );
+            ).readObject()).matcher(text);
         } catch (final IOException | ClassNotFoundException ex) {
             throw new IllegalArgumentException(ex);
         }
-        final boolean found = matcher.find(
-            new Dataized(
-                this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
-            ).asNumber().intValue()
-        );
+        final int start = new Expect.Natural(
+            Expect.at(this, EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
+        ).it();
+        if (start > text.length()) {
+            throw new ExFailure(
+                "the 'start' attribute (%d) must be less than or equal to text length (%d)",
+                start,
+                text.length()
+            );
+        }
+        final boolean found = matcher.find(start);
         final Phi result = match.take("matched");
         if (found) {
             this.fill(result, matcher);
