@@ -7,6 +7,7 @@ package org.eolang;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
@@ -207,15 +208,24 @@ public final class PhSafe implements Phi, Atom {
             throw new EOerror.ExError(ex, this.label(suffix));
         } catch (final ExAbstract ex) {
             throw new EOerror.ExError(
-                new Data.ToPhi(ex.getMessage()),
+                new Data.ToPhi(PhSafe.message(ex)),
                 this.label(suffix)
             );
         } catch (final Throwable ex) {
             throw new EOerror.ExError(
-                new Data.ToPhi(ex.getMessage()),
+                new Data.ToPhi(PhSafe.message(ex)),
                 PhSafe.trace(ex, this.label(suffix))
             );
         }
+    }
+
+    /**
+     * Exception message safe for EO dataization.
+     * @param exp The exception
+     * @return Message
+     */
+    private static String message(final Throwable exp) {
+        return Objects.toString(exp.getMessage(), exp.getClass().getName());
     }
 
     /**

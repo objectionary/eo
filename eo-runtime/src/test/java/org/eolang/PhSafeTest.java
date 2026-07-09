@@ -59,6 +59,44 @@ final class PhSafeTest {
     }
 
     @Test
+    void catchesRuntimeExceptionWithoutMessage() {
+        Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> new PhSafe(
+                new PhDefault() {
+                    @Override
+                    public byte[] delta() {
+                        throw new RuntimeException();
+                    }
+                }
+            ).delta(),
+            "catches an exception with a null message"
+        );
+    }
+
+    @Test
+    void catchesAbstractExceptionWithoutMessage() {
+        Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> new PhSafe(
+                new PhDefault() {
+                    @Override
+                    public byte[] delta() {
+                        throw new ExAbstract((String) null) {
+                            /**
+                             * Serialization identifier.
+                             */
+                            private static final long serialVersionUID =
+                                6895797670679429822L;
+                        };
+                    }
+                }
+            ).delta(),
+            "catches an abstract exception with a null message"
+        );
+    }
+
+    @Test
     void rendersMultiLayeredErrorMessageCorrectly() {
         MatcherAssert.assertThat(
             "rethrows correctly",
