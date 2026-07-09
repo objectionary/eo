@@ -86,6 +86,33 @@ final class Suffix {
     }
 
     /**
+     * Parse a suffix only when the tail starts with a suffix marker.
+     *
+     * <p>This keeps deferred tails, such as a method chain following a
+     * text block, available to line shapes that parse them in a later
+     * iteration.</p>
+     *
+     * @param tail Tail substring (may have leading whitespace)
+     * @param span Source span (for error reporting)
+     * @param home Source column where {@code tail} begins
+     * @return Parsed suffix, or an absent suffix for a deferred tail
+     */
+    static Suffix optional(final String tail, final Span span, final int home) {
+        final int start = Suffix.start(tail);
+        final Suffix suffix;
+        if (start >= tail.length()
+            || tail.charAt(start) == '>'
+            || tail.startsWith("+>", start)) {
+            suffix = new Suffix(tail, span, home);
+        } else {
+            suffix = new Suffix(
+                new Suffix.Parsed(Form.NONE, "", "", false)
+            );
+        }
+        return suffix;
+    }
+
+    /**
      * Primary ctor — copies fields from a parsed result.
      * @param result Parsed result
      */
@@ -215,10 +242,7 @@ final class Suffix {
      * @return Parsed result
      */
     private static Parsed parse(final String tail, final Span span, final int home) {
-        int idx = 0;
-        while (idx < tail.length() && tail.charAt(idx) == ' ') {
-            idx = idx + 1;
-        }
+        final int idx = Suffix.start(tail);
         final Parsed result;
         if (idx >= tail.length()) {
             result = new Suffix.Parsed(Form.NONE, "", "", false);
@@ -235,6 +259,19 @@ final class Suffix {
             );
         }
         return result;
+    }
+
+    /**
+     * Find the first non-space character in a suffix tail.
+     * @param tail Tail substring
+     * @return First non-space index, or the tail length
+     */
+    private static int start(final String tail) {
+        int idx = 0;
+        while (idx < tail.length() && tail.charAt(idx) == ' ') {
+            idx = idx + 1;
+        }
+        return idx;
     }
 
     /**

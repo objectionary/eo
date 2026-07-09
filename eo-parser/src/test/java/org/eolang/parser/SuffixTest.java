@@ -35,6 +35,17 @@ final class SuffixTest {
     }
 
     @Test
+    void leavesDeferredNonSuffixTailAbsent() {
+        MatcherAssert.assertThat(
+            "an optional suffix must leave a deferred method chain untouched",
+            Suffix.optional(
+                ".as-bytes", new Span("\"\"\".as-bytes", 1), 3
+            ).form(),
+            Matchers.equalTo(Suffix.Form.NONE)
+        );
+    }
+
+    @Test
     void parsesExplicitName() {
         final Suffix suffix = new Suffix(" > foo", new Span("[] > foo", 1), 2);
         MatcherAssert.assertThat(

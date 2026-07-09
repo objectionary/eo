@@ -49,7 +49,7 @@ final class LnTextBlock implements Line {
                 "text block closer must start with triple-quote"
             );
         }
-        final Suffix suffix = new Suffix(
+        final Suffix suffix = Suffix.optional(
             body.substring(3), this.span, this.span.indent() + 3
         );
         final String joined = Emissions.unescapeBody(
