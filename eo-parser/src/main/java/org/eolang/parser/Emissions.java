@@ -139,19 +139,9 @@ final class Emissions {
             emit.close();
         } else if (value.kind() == Value.Kind.STRING) {
             emit.object(name, "Φ.string", line, value.pos());
-            final String unescaped;
-            try {
-                unescaped = Emissions.unescape(value.raw());
-            } catch (final NumberFormatException ex) {
-                final ParseError error = new ParseError(
-                    line, value.pos(), "invalid unicode escape in string literal"
-                );
-                error.initCause(ex);
-                throw error;
-            }
             Emissions.bytesCarrier(
                 emit, line, value.pos(),
-                new Hex(unescaped).asString()
+                new Hex(Emissions.unescapeChecked(value, line)).asString()
             );
         } else if (value.kind() == Value.Kind.STAR) {
             emit.object(name, "Φ.tuple", line, value.pos());
@@ -314,6 +304,25 @@ final class Emissions {
             mapped = raw;
         }
         return mapped;
+    }
+
+    /**
+     * Unescape a string literal value, wrapping any {@link NumberFormatException}
+     * (e.g. from an invalid unicode escape) into a positioned {@link ParseError}.
+     * @param value The value whose raw text will be unescaped
+     * @param line Source line number
+     * @return Decoded string content
+     */
+    private static String unescapeChecked(final Value value, final int line) {
+        try {
+            return Emissions.unescape(value.raw());
+        } catch (final NumberFormatException ex) {
+            final ParseError error = new ParseError(
+                line, value.pos(), "invalid unicode escape in string literal"
+            );
+            error.initCause(ex);
+            throw error;
+        }
     }
 
     /**

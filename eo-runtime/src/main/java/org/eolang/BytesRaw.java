@@ -70,9 +70,8 @@ final class BytesRaw implements Bytes {
     @Override
     public Bytes shift(final int bits) {
         final byte[] bytes = this.take();
-        final int abs = bits == Integer.MIN_VALUE ? Integer.MAX_VALUE : Math.abs(bits);
-        final int mod = abs % Byte.SIZE;
-        final int offset = abs / Byte.SIZE;
+        final int mod = Math.abs(bits % Byte.SIZE);
+        final int offset = Math.abs(bits / Byte.SIZE);
         final Bytes shifted;
         if (bits < 0) {
             shifted = BytesRaw.shiftLeft(bytes, mod, offset);
