@@ -56,18 +56,11 @@
 
   # Multiplication of `$` and `x`.
   # Here `x` must be an `org.eolang.i32` object.
+  # Two's-complement wrap: the result is the low 32 bits of the true
+  # 64-bit product, whatever the high half looks like.
   [x] > times
-    if. > @
-      or.
-        left.eq 00-00-00-00
-        left.eq FF-FF-FF-FF
-      i32 right
-      plus.
-        i32 left
-        i32 right
-    (as-i64.times x.as-i32.as-i64).as-bytes > bts
-    bts.slice 0 4 > left
-    bts.slice 4 4 > right
+    i32 right > @
+    (as-i64.times x.as-i32.as-i64).as-bytes.slice 4 4 > right
 
   # Sum of `$` and `x`.
   # Here `x` must be an `org.eolang.i32` object.
@@ -321,3 +314,20 @@
     eq. > @
       2147483647.as-i64.as-i32.times 2.as-i64.as-i32
       -2.as-i64.as-i32
+
+  # Tests that i32 multiplication wraps modulo 2^32 when the true
+  # product's high 4 bytes are neither all-zero nor all-FF. Here
+  # 65536 * 65536 = 2^32, whose i64 encoding is 00-00-00-01-00-00-00-00;
+  # the correct two's-complement wrap discards the high half and yields 0.
+  [] +> tests-i32-times-wraps-modulo-2-pow-32
+    eq. > @
+      65536.as-i64.as-i32.times 65536.as-i64.as-i32
+      0.as-i64.as-i32
+
+  # Tests that i32 multiplication of two mid-range positive values
+  # wraps to the low 32 bits: 100000 * 100000 = 10_000_000_000
+  # = 0x2_540B_E400 (as i64), which as i32 is 1_410_065_408.
+  [] +> tests-i32-times-wraps-large-positive-product
+    eq. > @
+      100000.as-i64.as-i32.times 100000.as-i64.as-i32
+      1410065408.as-i64.as-i32
