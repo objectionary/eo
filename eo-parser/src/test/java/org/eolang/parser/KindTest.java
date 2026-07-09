@@ -22,8 +22,7 @@ final class KindTest {
         names = {
             "HAPPLICATION",
             "REVERSED_WITH_HARGS",
-            "VMETHOD_WITH_HARGS",
-            "ONLY_PHI_FORMATION"
+            "VMETHOD_WITH_HARGS"
         }
     )
     void marksHorizontallyCompletedKinds(final Kind kind) {
@@ -39,7 +38,8 @@ final class KindTest {
         value = Kind.class,
         names = {
             "TOP_LEVEL", "HEAD", "HMETHOD", "BARE_FORMATION", "BARE_REVERSED",
-            "COMPACT_TUPLE", "VAPPLICATION", "VMETHOD", "TEXT_BLOCK"
+            "COMPACT_TUPLE", "ONLY_PHI_FORMATION", "VAPPLICATION", "VMETHOD",
+            "TEXT_BLOCK"
         }
     )
     void leavesOtherKindsOutOfHorizontallyCompletedSet(final Kind kind) {

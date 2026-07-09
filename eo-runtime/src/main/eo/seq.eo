@@ -48,14 +48,13 @@
       [b]
         malloc.for > @
           0.0
-          [m] >>
-            b.put > @
-              lt.
-                seq
-                  *
-                    m.put (m.as-number.plus 1.0)
-                    m.as-number
-                1.1
+          b.put > [m] >>
+            lt.
+              seq
+                *
+                  m.put (m.as-number.plus 1.0)
+                  m.as-number
+              1.1
 
   # Tests that seq step processing and final value return with float greater than comparison.
   [] +> tests-seq-single-dataization-float-greater
@@ -64,14 +63,13 @@
       [b]
         malloc.for > @
           0.0
-          [m] >>
-            b.put > @
-              gt.
-                seq
-                  *
-                    m.put (m.as-number.plus 1.0)
-                    m.as-number
-                0.9
+          b.put > [m] >>
+            gt.
+              seq
+                *
+                  m.put (m.as-number.plus 1.0)
+                  m.as-number
+              0.9
 
   # Tests that seq step processing and final value return with integer less than comparison.
   [] +> tests-seq-single-dataization-int-less
@@ -80,14 +78,13 @@
       [b]
         malloc.for > @
           0
-          [m] >>
-            b.put > @
-              lt.
-                seq
-                  *
-                    m.put (m.as-number.plus 1)
-                    m.as-number
-                2
+          b.put > [m] >>
+            lt.
+              seq
+                *
+                  m.put (m.as-number.plus 1)
+                  m.as-number
+              2
 
   # Tests that seq step processing and final value return with integer than or equal comparison.
   [] +> tests-seq-single-dataization-int-less-or-equal
@@ -96,14 +93,13 @@
       [b]
         malloc.for > @
           0
-          [m] >>
-            b.put > @
-              lte.
-                seq
-                  *
-                    m.put (m.as-number.plus 1)
-                    m.as-number
-                1
+          b.put > [m] >>
+            lte.
+              seq
+                *
+                  m.put (m.as-number.plus 1)
+                  m.as-number
+              1
 
   # This test should have acceptable time to pass.
   [] +> tests-very-long-seq
@@ -162,15 +158,14 @@
       [b]
         malloc.for > @
           0
-          [m] >>
-            b.put > @
-              eq.
-                seq
-                  *
-                    m.put 0
-                    m.put (m.as-number.plus 1)
-                    m.as-number
-                1
+          b.put > [m] >>
+            eq.
+              seq
+                *
+                  m.put 0
+                  m.put (m.as-number.plus 1)
+                  m.as-number
+              1
 
   # Tests that seq properly caches memory when processing array elements.
   [] +> tests-seq-single-dataization-int-equal-to-cache-problem-test
@@ -179,17 +174,16 @@
       [b]
         malloc.for > @
           0
-          [m] >>
-            b.put > @
-              eq.
-                seq
-                  *
-                    at.
-                      * 0 1
-                      m
-                    m.put (m.as-number.plus 1)
+          b.put > [m] >>
+            eq.
+              seq
+                *
+                  at.
+                    * 0 1
                     m
-                1
+                  m.put (m.as-number.plus 1)
+                  m
+              1
 
   # Tests that seq dataizes all steps except the last one and returns the last step's value.
   [] +> tests-seq-calculates-and-returns
