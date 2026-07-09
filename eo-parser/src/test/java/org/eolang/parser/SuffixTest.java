@@ -182,7 +182,7 @@ final class SuffixTest {
     }
 
     @Test
-    void rejectsTrailingGarbageAfterTest() {
+    void rejectsTrailingGarbageAfterPlusGreaterSuffix() {
         Assertions.assertThrows(
             ParseError.class,
             () -> new Suffix(
