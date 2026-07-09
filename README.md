@@ -149,8 +149,8 @@ inside `app` and use it to build the output string:
     tt.sprintf "Hello, %s!" (* name) > @
 ```
 
-Now, the object `app` has two "bound" attributes: `@` and `msg`. The attribute
-`msg` has an abstract object attached to it, with a single "free" attribute
+Now, the object `app` has two "attached" attributes: `@` and `msg`. The attribute
+`msg` has an abstract object attached to it, with a single "void" attribute
 `name`.
 
 This is how you iterate:
@@ -260,7 +260,7 @@ The language is formally grounded in
   [φ-calculus](https://arxiv.org/abs/2111.13384),
   a mathematical model where every entity is an object
   with named attributes, and objects are formed by
-  applying other objects to free attributes.
+  applying other objects to void attributes.
 Unlike languages based on
   [lambda calculus](https://en.wikipedia.org/wiki/Lambda_calculus)
   (e.g. [Haskell](https://www.haskell.org/))
