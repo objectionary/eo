@@ -59,6 +59,38 @@ final class PhSafeTest {
     }
 
     @Test
+    void catchesRuntimeExceptionWithoutMessage() {
+        Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> new PhSafe(
+                new PhDefault() {
+                    @Override
+                    public byte[] delta() {
+                        throw new IllegalStateException();
+                    }
+                }
+            ).delta(),
+            "catches an exception with a null message"
+        );
+    }
+
+    @Test
+    void catchesAbstractExceptionWithoutMessage() {
+        Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> new PhSafe(
+                new PhDefault() {
+                    @Override
+                    public byte[] delta() {
+                        throw new ExFailure((String) null, (Throwable) null);
+                    }
+                }
+            ).delta(),
+            "catches an abstract exception with a null message"
+        );
+    }
+
+    @Test
     void rendersMultiLayeredErrorMessageCorrectly() {
         MatcherAssert.assertThat(
             "rethrows correctly",
