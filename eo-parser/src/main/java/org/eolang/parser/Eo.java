@@ -87,6 +87,46 @@ final class Eo implements Iterable<Directive> {
     }
 
     /**
+     * The index of the substring {@code "> ["} at paren depth 0 (i.e.,
+     * outside of any paren group and outside of strings), or -1 if
+     * none exists. Shared by the {@link Eo#onlyPhi} classifier and
+     * {@link LnOnlyPhi}, so both agree on where an only-phi formation
+     * splits.
+     * @param body Line body to scan
+     * @return Index of the top-level marker, or -1
+     */
+    static int topLevelGreaterBracketIndex(final String body) {
+        int depth = 0;
+        boolean instr = false;
+        int found = -1;
+        int idx = 0;
+        while (idx < body.length() - 2 && found < 0) {
+            final char glyph = body.charAt(idx);
+            if (instr) {
+                if (glyph == '\\' && idx + 1 < body.length()) {
+                    idx = idx + 2;
+                    continue;
+                }
+                if (glyph == '"') {
+                    instr = false;
+                }
+            } else if (glyph == '"') {
+                instr = true;
+            } else if (glyph == '(') {
+                depth = depth + 1;
+            } else if (glyph == ')') {
+                depth = depth - 1;
+            } else if (depth == 0 && glyph == '>'
+                && body.charAt(idx + 1) == ' '
+                && body.charAt(idx + 2) == '[') {
+                found = idx;
+            }
+            idx = idx + 1;
+        }
+        return found;
+    }
+
+    /**
      * Merge a BYTES continuation starting at index {@code start} —
      * concatenates the trailing-dash chunk with subsequent BYTES-only
      * lines at &gt;= the same indent until a chunk without trailing
@@ -493,44 +533,7 @@ final class Eo implements Iterable<Directive> {
      * @return True if the line shape is only-phi
      */
     private static boolean onlyPhi(final Span span) {
-        return Eo.topLevelGreaterBracket(span.body());
-    }
-
-    /**
-     * Whether the body contains the substring {@code "> ["} at paren
-     * depth 0 (i.e., outside of any paren group and outside of strings).
-     * @param body Line body to scan
-     * @return True if such a top-level marker exists
-     */
-    private static boolean topLevelGreaterBracket(final String body) {
-        int depth = 0;
-        boolean instr = false;
-        boolean found = false;
-        int idx = 0;
-        while (idx < body.length() - 2 && !found) {
-            final char glyph = body.charAt(idx);
-            if (instr) {
-                if (glyph == '\\' && idx + 1 < body.length()) {
-                    idx = idx + 2;
-                    continue;
-                }
-                if (glyph == '"') {
-                    instr = false;
-                }
-            } else if (glyph == '"') {
-                instr = true;
-            } else if (glyph == '(') {
-                depth = depth + 1;
-            } else if (glyph == ')') {
-                depth = depth - 1;
-            } else if (depth == 0 && glyph == '>'
-                && body.charAt(idx + 1) == ' '
-                && body.charAt(idx + 2) == '[') {
-                found = true;
-            }
-            idx = idx + 1;
-        }
-        return found;
+        return Eo.topLevelGreaterBracketIndex(span.body()) >= 0;
     }
 
     /**

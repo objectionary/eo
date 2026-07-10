@@ -25,7 +25,13 @@ public final class EOnumber$EOas_i64 extends PhDefault implements Atom {
             0,
             new Data.ToPhi(
                 new BytesOf(
-                    new Expect.Number(Expect.at(this, Phi.RHO)).it().longValue()
+                    Expect.at(this, Phi.RHO)
+                        .that(phi -> new Dataized(phi).asNumber())
+                        .otherwise("must be a number")
+                        .must(number -> number >= Long.MIN_VALUE && number < 0x1p63)
+                        .otherwise("must fit into long range")
+                        .that(Double::longValue)
+                        .it()
                 ).take()
             )
         );

@@ -97,33 +97,6 @@ final class Suffix {
     }
 
     /**
-     * Parse a suffix only when the tail starts with a suffix marker.
-     *
-     * <p>This keeps deferred tails, such as a method chain following a
-     * text block, available to line shapes that parse them in a later
-     * iteration.</p>
-     *
-     * @param tail Tail substring (may have leading whitespace)
-     * @param span Source span (for error reporting)
-     * @param home Source column where {@code tail} begins
-     * @return Parsed suffix, or an absent suffix for a deferred tail
-     */
-    static Suffix optional(final String tail, final Span span, final int home) {
-        final int start = Suffix.start(tail);
-        final Suffix suffix;
-        if (start >= tail.length()
-            || tail.charAt(start) == '>'
-            || tail.startsWith("+>", start)) {
-            suffix = new Suffix(tail, span, home);
-        } else {
-            suffix = new Suffix(
-                new Suffix.Parsed(Form.NONE, "", "", false)
-            );
-        }
-        return suffix;
-    }
-
-    /**
      * The suffix form — one of {@code NONE}, {@code NAME}, {@code AUTO},
      * {@code TEST}.
      * @return Form

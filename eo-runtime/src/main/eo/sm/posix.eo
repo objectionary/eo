@@ -7,7 +7,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint compound-name
 +unlint redundant-object
 
 # Makes a Unix syscall by `name` with POSIX interface.
@@ -18,12 +17,20 @@
   # Makes an actual syscall to operating system
   # Returns `org.eolang.sm.posix.return` object.
   [] > @ /return
+  2 > af-inet
+  -1 > inaddr-none
+  6 > ipproto-tcp
+  # Open flags for a file read descriptor: `O_RDONLY`.
+  0 > open-read-flags
+  # Open flags for a file write descriptor: `O_WRONLY | O_APPEND`.
+  # `O_APPEND` is `0x8` on macos and `0x400` on linux.
+  if. > open-write-flags
+    os.is-macos
+    9
+    1025
+  1 > sock-stream
   0 > stdin-fileno
   1 > stdout-fileno
-  2 > af-inet
-  1 > sock-stream
-  6 > ipproto-tcp
-  -1 > inaddr-none
   # Result of a POSIX syscall with return code and output.
   [code output] > return
     output > @
@@ -33,7 +40,7 @@
   # Here `tv-sec` is seconds since Jan 1, 1970, and `tv-usec` - microseconds.
   [tv-sec tv-usec] > timeval
 
-  # The posix `sockaddr_in` structure.
+  # Posix `sockaddr_in` structure for IPv4 socket addressing.
   [sin-family sin-port sin-addr] > sockaddr-in
     00-00-00-00-00-00-00-00 > sin-zero
     plus. > size
@@ -54,6 +61,22 @@
             "getpid"
             tuple.empty
         0
+
+  # Tests that a file can be opened read-only and closed via the open and close syscalls.
+  [] +> tests-opens-and-closes-file-via-syscall
+    or. > @
+      os.is-windows
+      seq
+        *
+          code.
+            posix
+              "close"
+              * fd
+          fd.gt -1
+    code. > fd
+      posix
+        "open"
+        * "/dev/null" 0
 
   # Tests that a POSIX TCP socket can be opened successfully using the socket syscall.
   [] +> tests-opens-posix-tcp-socket

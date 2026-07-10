@@ -9,16 +9,16 @@
 +unlint redundant-object
 +unlint mandatory-package
 
-# The 64 bits signed integer.
+# Signed 64-bit integer.
 # Here `as-bytes` must be a `bytes` object.
 [as-bytes] > i64
   as-bytes > @
-  times -1.as-i64 > neg
   as-i32.as-i16 > as-i16
+  times -1.as-i64 > neg
 
   # Convert this `org.eolang.i64` to `org.eolang.i32`.
   # When the number is out of i32 bounds, the caller-supplied `cant-convert`
-  # fallback is returned, or the bottom object (⊥) when none was provided,
+  # fallback is returned, or the bottom object when none was provided,
   # which terminates on use.
   [cant-convert] > as-i32
     if. > @
@@ -36,10 +36,9 @@
   # Returns `org.eolang.true` if `$` < `x`.
   # Here `x` must be an `org.eolang.i64` object.
   [x] > lt
-    0.as-i64.gt > @
-      minus
-        i64 value
-    x > value!
+    gt. > @
+      i64 x.as-bytes
+      ^
 
   # Returns `org.eolang.true` if `$` <= `x`.
   # Here `x` must be an `org.eolang.i64` object.
@@ -78,7 +77,7 @@
   # Quotient of the division of `$` by `x` as `org.eolang.i64`.
   # Here `x` must be an `org.eolang.i64` object.
   # When `x` is zero, the division returns the caller-supplied `cant-divide`
-  # fallback instead, or the bottom object (⊥) when none was provided, which
+  # fallback instead, or the bottom object when none was provided, which
   # terminates on use.
   [x] > div /i64
     ? > cant-divide /{string}
@@ -109,7 +108,7 @@
       -234.as-i64.as-i32.as-i64
 
   # Tests that converting i64 to i32 out of bounds with no fallback yields the
-  # bottom object (⊥) that terminates when used.
+  # bottom object that terminates when used.
   3147483647.as-i64.as-i32 > [] +> throws-on-converting-to-i32-if-out-of-bounds
 
   # Tests that an out-of-bounds i64-to-i32 conversion with a fallback yields it.
@@ -156,6 +155,21 @@
       lt.
         10.as-i64
         -5.as-i64
+
+  # Tests that i64 less-than comparison is correct across the full range,
+  # where a subtraction-based implementation would wrap and invert the answer.
+  [] +> tests-i64-less-across-full-range
+    lt. > @
+      -9223372036854775808.as-i64
+      1.as-i64
+
+  # Tests that i64 less-than comparison doesn't wrap when the difference
+  # between the two operands exceeds the i64 range.
+  [] +> tests-i64-less-with-large-difference
+    not. > @
+      lt.
+        5000000000000000000.as-i64
+        -5000000000000000000.as-i64
 
   # Tests that i64 greater-than comparison returns true for larger values.
   [] +> tests-i64-greater-true
@@ -247,7 +261,7 @@
       0.as-i64
 
   # Tests that i64 division by zero with no fallback yields the bottom object
-  # (⊥) that terminates when used.
+  # that terminates when used.
   2.as-i64.div 0.as-i64 > [] +> throws-on-division-i64-by-i64-zero
 
   # Tests that i64 division by zero with a provided fallback yields the fallback.

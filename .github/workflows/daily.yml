@@ -12,12 +12,12 @@ jobs:
     timeout-minutes: 45
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: 20
-      - uses: actions/cache@v5
+      - uses: actions/cache@v6
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-jdk-20-maven-${{ hashFiles('**/pom.xml') }}

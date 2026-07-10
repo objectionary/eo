@@ -9,13 +9,13 @@
 +unlint redundant-object
 +unlint mandatory-package
 
-# The 16 bits signed integer.
+# Signed 16-bit integer.
 # Here `as-bytes` must be a `bytes` object.
 [as-bytes] > i16
   as-bytes > @
-  times -1.as-i64.as-i32.as-i16 > neg
   as-i32.as-i64 > as-i64
   as-i64.as-number > as-number
+  times -1.as-i64.as-i32.as-i16 > neg
 
   # Convert this `org.eolang.i16` to `org.eolang.i32` and return it.
   # The object is an atom because it's not possible to check what
@@ -41,18 +41,11 @@
 
   # Multiplication of `$` and `x`.
   # Here `x` must be an `org.eolang.i16` object.
+  # Two's-complement wrap: the result is the low 16 bits of the true
+  # 32-bit product, whatever the high half looks like.
   [x] > times
-    if. > @
-      or.
-        left.eq 00-00
-        left.eq FF-FF
-      i16 right
-      plus.
-        i16 left
-        i16 right
-    (as-i32.times x.as-i16.as-i32).as-bytes > bts
-    bts.slice 0 2 > left
-    bts.slice 2 2 > right
+    i16 right > @
+    (as-i32.times x.as-i16.as-i32).as-bytes.slice 2 2 > right
 
   # Sum of `$` and `x`.
   # Here `x` must be an `org.eolang.i16` object.
@@ -76,7 +69,7 @@
   # Quotient of the division of `$` by `x`.
   # Here `x` must be an `org.eolang.i16` object.
   # When `x` is zero, the caller-supplied `cant-divide` fallback is returned,
-  # or the bottom object (⊥) when none was provided, which terminates on use.
+  # or the bottom object when none was provided, which terminates on use.
   [x cant-divide] > div
     if. > @
       xval.eq zero
@@ -92,10 +85,10 @@
         plus.
           i16 left
           i16 right
-    x.as-i16 > xval
     (as-i32.div xval.as-i32).as-bytes > bts
     bts.slice 0 2 > left
     bts.slice 2 2 > right
+    x.as-i16 > xval
     00-00 > zero
 
   # Tests that i16 number has correct byte representation.
@@ -232,7 +225,7 @@
       32767.as-i64.as-i32.as-i16
 
   # Tests that i16 division by zero with no fallback yields the bottom object
-  # (⊥) that terminates when used.
+  # that terminates when used.
   2.as-i64.as-i32.as-i16.div 0.as-i64.as-i32.as-i16 > [] +> throws-on-division-i16-by-i16-zero
 
   # Tests that i16 division by zero with a provided fallback yields the fallback.
@@ -273,3 +266,20 @@
     eq. > @
       32767.as-i64.as-i32.as-i16.times 2.as-i64.as-i32.as-i16
       -2.as-i64.as-i32.as-i16
+
+  # Tests that i16 multiplication wraps modulo 2^16 when the true
+  # product's high 2 bytes are neither all-zero nor all-FF. Here
+  # 256 * 256 = 2^16, whose i32 encoding is 00-01-00-00; the correct
+  # two's-complement wrap discards the high half and yields 0.
+  [] +> tests-i16-times-wraps-modulo-2-pow-16
+    eq. > @
+      256.as-i64.as-i32.as-i16.times 256.as-i64.as-i32.as-i16
+      0.as-i64.as-i32.as-i16
+
+  # Tests that i16 multiplication of two mid-range positive values
+  # wraps to the low 16 bits: 300 * 300 = 90000 = 0x0001_5F90 as i32,
+  # which as i16 is 24464.
+  [] +> tests-i16-times-wraps-large-positive-product
+    eq. > @
+      300.as-i64.as-i32.as-i16.times 300.as-i64.as-i32.as-i16
+      24464.as-i64.as-i32.as-i16

@@ -39,9 +39,9 @@
           couple
             prev.entries.with
               [] >>
+                ^.hash > hash
                 tup.head.key > key
                 tup.head.value > value
-                ^.hash > hash
             prev.hashes.with hash
       hash-code-of tup.head.key > hash!
       (rec-rebuild tup.tail).@ > prev
@@ -55,29 +55,13 @@
 
   # Initialized hash map with rebuilt entries.
   [entries] > initialized
-    entries.length > size
-    # Returns `list` of all keys in hash map.
-    # Keys order is not guaranteed.
-    mapped > keys
-      list entries
-      entry.key > [entry]
-    # Returns `list` of all values in hash map.
-    # Values order is not guaranteed.
-    mapped > values
-      list entries
-      entry.value > [entry]
-
-    # Returns `true` if hash map has object by given `key`.
-    # Here `key` must be dataizable.
-    (found key).exists > [key] > has
-
     # Tries to find object in hash map by given `key`.
     # Here `key` must be dataizable.
     # The returned object has two attributes: `exists` and `get`.
     # The `exists` attribute is either `true`, if object was found,
     # or `false` if was not.
     # The `get` attribute takes a fallback and returns either the found
-    # object, or that fallback — the bottom object (⊥) when unbound — if
+    # object, or that fallback (the bottom object when unbound) if
     # the object was not found.
     # @todo #3251:30min Find a way to link hash code and index of key.
     #  Right now map is implemented as `tuple` of objects where every
@@ -121,6 +105,21 @@
               "Object by hash code %d from given key does not exists"
               * hash
 
+    # Returns `true` if hash map has object by given `key`.
+    # Here `key` must be dataizable.
+    (found key).exists > [key] > has
+    # Returns `list` of all keys in hash map.
+    # Keys order is not guaranteed.
+    mapped > keys
+      list entries
+      entry.key > [entry]
+    entries.length > size
+    # Returns `list` of all values in hash map.
+    # Values order is not guaranteed.
+    mapped > values
+      list entries
+      entry.value > [entry]
+
     # Returns the new `map` with added object
     # Replaces if there was one before.
     [key value] > with
@@ -131,9 +130,9 @@
               list entries
               (hash.eq entry.hash).not > [entry] >>
           [] >>
+            ^.hash > hash
             ^.key > key
             ^.value > value
-            ^.hash > hash
       hash-code-of key > hash!
 
     # Returns a new `map`, without element with the given `key`
@@ -199,12 +198,12 @@
   # Tests that finding an element by key in a map works correctly.
   [] +> tests-finds-element-by-key-in-map
     2.eq found.get > @
+    mp.found "two" > found
     map > mp
       *
         map.entry "one" 1
         map.entry "two" 2
         map.entry "three" 3
-    mp.found "two" > found
 
   # Tests that searching for non-existent key returns false exists flag.
   [] +> tests-does-not-find-element-by-key-in-hash-map
@@ -290,7 +289,7 @@
         map.entry "one" 1
 
   # Tests that get on a missing key with no fallback yields the bottom object
-  # (⊥) that terminates when used.
+  # that terminates when used.
   [] +> throws-on-map-get-missing-without-fallback
     (mp.found "absent").get > @
     map > mp

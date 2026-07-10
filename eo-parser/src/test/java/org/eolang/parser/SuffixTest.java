@@ -35,17 +35,6 @@ final class SuffixTest {
     }
 
     @Test
-    void leavesDeferredNonSuffixTailAbsent() {
-        MatcherAssert.assertThat(
-            "an optional suffix must leave a deferred method chain untouched",
-            Suffix.optional(
-                ".as-bytes", new Span("\"\"\".as-bytes", 1), 3
-            ).form(),
-            Matchers.equalTo(Suffix.Form.NONE)
-        );
-    }
-
-    @Test
     void parsesExplicitName() {
         final Suffix suffix = new Suffix(" > foo", new Span("[] > foo", 1), 2);
         MatcherAssert.assertThat(
@@ -225,6 +214,16 @@ final class SuffixTest {
                 new Span("[] +> @", 1), 2
             ),
             "`+> @` must be rejected per R-6.3.5"
+        );
+    }
+
+    @Test
+    void rejectsTrailingGarbageThatIsNotASuffixMarker() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix("x", new Span("5x", 1), 1),
+            "trailing content after a head that is not `>`, `>>`, or `+>` must be rejected,"
+                .concat(" not silently dropped")
         );
     }
 

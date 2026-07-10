@@ -23,6 +23,7 @@ import org.eolang.EOsm.Posix.GetpidSyscall;
 import org.eolang.EOsm.Posix.GettimeofdaySyscall;
 import org.eolang.EOsm.Posix.InetAddrSyscall;
 import org.eolang.EOsm.Posix.ListenSyscall;
+import org.eolang.EOsm.Posix.OpenSyscall;
 import org.eolang.EOsm.Posix.ReadSyscall;
 import org.eolang.EOsm.Posix.RecvSyscall;
 import org.eolang.EOsm.Posix.SendSyscall;
@@ -50,6 +51,7 @@ public final class EOposix$EOφ extends PhDefault implements Atom {
 
     static {
         EOposix$EOφ.SYS_CALLS.put("getpid", GetpidSyscall::new);
+        EOposix$EOφ.SYS_CALLS.put("open", OpenSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("read", ReadSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("write", WriteSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("getenv", GetenvSyscall::new);

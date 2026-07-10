@@ -26,9 +26,9 @@
   # Writes the non-negative `a` as integer part, dot and `places` fraction digits.
   [a] > positive
     concat. (concat. (as-decimal ip) ".".as-bytes) (rec-pad (m.minus (ip.times scale)) places --) > @
-    pow10 places > scale
-    ((a.times scale).plus 0.5).floor > m
     (m.div scale).floor > ip
+    ((a.times scale).plus 0.5).floor > m
+    pow10 places > scale
 
   # Emits exactly `count` least-significant digits of `value`, zero-padded.
   [value count acc] > rec-pad
