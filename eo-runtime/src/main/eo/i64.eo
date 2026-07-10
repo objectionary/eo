@@ -36,10 +36,9 @@
   # Returns `org.eolang.true` if `$` < `x`.
   # Here `x` must be an `org.eolang.i64` object.
   [x] > lt
-    0.as-i64.gt > @
-      minus
-        i64 value
-    x > value!
+    gt. > @
+      i64 x.as-bytes
+      ^
 
   # Returns `org.eolang.true` if `$` <= `x`.
   # Here `x` must be an `org.eolang.i64` object.
@@ -156,6 +155,21 @@
       lt.
         10.as-i64
         -5.as-i64
+
+  # Tests that i64 less-than comparison is correct across the full range,
+  # where a subtraction-based implementation would wrap and invert the answer.
+  [] +> tests-i64-less-across-full-range
+    lt. > @
+      -9223372036854775808.as-i64
+      1.as-i64
+
+  # Tests that i64 less-than comparison doesn't wrap when the difference
+  # between the two operands exceeds the i64 range.
+  [] +> tests-i64-less-with-large-difference
+    not. > @
+      lt.
+        5000000000000000000.as-i64
+        -5000000000000000000.as-i64
 
   # Tests that i64 greater-than comparison returns true for larger values.
   [] +> tests-i64-greater-true
