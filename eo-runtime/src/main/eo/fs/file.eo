@@ -22,17 +22,15 @@
   (Q.fs.path path).@ > as-path
 
   # Returns `org.eolang.true` if current file is a directory, returns
-  # `org.eolang.false` otherwise. Terminates with a ⊥ if the file cannot be
-  # stated. A directory carries the `S_IFDIR` type bits (octal 040000) in its
-  # mode, so flooring the mode divided by 4096 yields 4 for directories.
-  [] > is-directory
+  # `org.eolang.false` otherwise. Returns the `cant-check` fallback when the
+  # file cannot be stated, terminating with a ⊥ if it is left unbound.
+  # A directory carries the `S_IFDIR` type bits (octal 040000) in its mode, so
+  # flooring the mode divided by 4096 yields 4 for directories.
+  [cant-check] > is-directory
     if. > @
       info.code.eq 0
       (info.output.st-mode.div 4096).floor.eq 4
-      T
-        sprintf
-          "Cant check whether the file '%s' is a directory"
-          * path
+      cant-check
     called. > info
       if.
         os.is-windows
@@ -102,15 +100,13 @@
       "unlink"
 
   # Gets the file size in bytes and returns it as `org.eolang.number`.
-  # Terminates with a ⊥ if the file cannot be stated.
-  [] > size
+  # Returns the `cant-measure` fallback when the file cannot be stated,
+  # terminating with a ⊥ if it is left unbound.
+  [cant-measure] > size
     if. > @
       info.code.eq 0
       info.output.st-size
-      T
-        sprintf
-          "Cant get the size of the file '%s'"
-          * path
+      cant-measure
     called. > info
       if.
         os.is-windows
@@ -351,6 +347,16 @@
   # Tests that checking the directory status of an absent file terminates.
   [] +> throws-on-checking-directory-of-absent-file
     tmpdir.tmpfile.deleted.is-directory > @
+
+  # Tests that sizing an absent file returns the provided fallback.
+  [] +> tests-sizing-absent-file-returns-fallback
+    eq. > @
+      -1
+      tmpdir.tmpfile.deleted.size -1
+
+  # Tests that checking an absent file's directory status returns the fallback.
+  [] +> tests-checking-absent-file-returns-fallback
+    tmpdir.tmpfile.deleted.is-directory true > @
 
   # Tests that touching a file twice does not cause errors.
   [] +> tests-does-not-fail-on-double-touching
