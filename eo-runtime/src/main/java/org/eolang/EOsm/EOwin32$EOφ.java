@@ -19,6 +19,7 @@ import org.eolang.EOsm.Win32.BindFuncCall;
 import org.eolang.EOsm.Win32.CloseFuncCall;
 import org.eolang.EOsm.Win32.ClosesocketFuncCall;
 import org.eolang.EOsm.Win32.ConnectFuncCall;
+import org.eolang.EOsm.Win32.CreatFuncCall;
 import org.eolang.EOsm.Win32.GetCurrentProcessIdFuncCall;
 import org.eolang.EOsm.Win32.GetEnvironmentVariableFuncCall;
 import org.eolang.EOsm.Win32.GetSystemTimeFuncCall;
@@ -28,9 +29,12 @@ import org.eolang.EOsm.Win32.OpenFuncCall;
 import org.eolang.EOsm.Win32.ReadFileFuncCall;
 import org.eolang.EOsm.Win32.ReadFuncCall;
 import org.eolang.EOsm.Win32.RecvFuncCall;
+import org.eolang.EOsm.Win32.RenameFuncCall;
+import org.eolang.EOsm.Win32.RmdirFuncCall;
 import org.eolang.EOsm.Win32.SendFuncCall;
 import org.eolang.EOsm.Win32.SocketFuncCall;
 import org.eolang.EOsm.Win32.StatFuncCall;
+import org.eolang.EOsm.Win32.UnlinkFuncCall;
 import org.eolang.EOsm.Win32.WSACleanupFuncCall;
 import org.eolang.EOsm.Win32.WSAGetLastErrorFuncCall;
 import org.eolang.EOsm.Win32.WSAStartupFuncCall;
@@ -45,6 +49,7 @@ import org.eolang.XmirObject;
  * Win32 function call.
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
+ * @checkstyle ClassFanOutComplexityCheck (100 lines)
  */
 @XmirObject(oname = "win32.@")
 @SuppressWarnings("PMD.AvoidDollarSigns")
@@ -62,6 +67,10 @@ public final class EOwin32$EOφ extends PhDefault implements Atom {
         EOwin32$EOφ.FUNCTIONS.put("open", OpenFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("access", AccessFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("stat", StatFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("creat", CreatFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("unlink", UnlinkFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("rmdir", RmdirFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("rename", RenameFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("read", ReadFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("write", WriteFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("close", CloseFuncCall::new);

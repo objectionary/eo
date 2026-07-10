@@ -134,6 +134,36 @@ public interface CStdLib extends Library {
     int stat(String path, Structure statbuf);
 
     /**
+     * Delete a name from the filesystem.
+     * @param path Path to the file
+     * @return Zero on success, -1 on error
+     */
+    int unlink(String path);
+
+    /**
+     * Remove an empty directory.
+     * @param path Path to the directory
+     * @return Zero on success, -1 on error
+     */
+    int rmdir(String path);
+
+    /**
+     * Create a new file, or truncate an existing one, and open it.
+     * @param path Path to the file
+     * @param mode Permission bits for a newly created file
+     * @return File descriptor on success, -1 on error
+     */
+    int creat(String path, int mode);
+
+    /**
+     * Rename a file, moving it between directories if required.
+     * @param from Current path of the file
+     * @param target New path of the file
+     * @return Zero on success, -1 on error
+     */
+    int rename(String from, String target);
+
+    /**
      * Get environment variable.
      * @param name Name of the variable
      * @return Name of the environment variable

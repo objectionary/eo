@@ -28,6 +28,8 @@
     os.is-macos
     9
     1025
+  # Permission bits for a file made by the "creat" syscall: octal 0644.
+  420 > create-mode
   1 > sock-stream
   0 > stdin-fileno
   1 > stdout-fileno

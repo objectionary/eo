@@ -17,11 +17,13 @@ import java.util.Collections;
 /**
  * The Microsoft C runtime (msvcrt), exposing the POSIX-compatible file functions.
  *
- * <p>These functions are exported by the runtime with a leading underscore
- * ({@code _open}, {@code _read}, {@code _close}), so a function mapper prepends
- * it to each declared method name. They return small integer file descriptors,
- * exactly like libc on posix, which is why the win32 file objects can thread
- * them through EO the same way the posix ones do.</p>
+ * <p>Most of these functions are exported by the runtime with a leading
+ * underscore ({@code _open}, {@code _read}, {@code _close}), so a function
+ * mapper prepends it to each declared method name. The exception is the ISO C
+ * {@code rename}, which the runtime exports without an underscore, so the
+ * mapper leaves it alone. They return small integer file descriptors, exactly
+ * like libc on posix, which is why the win32 file objects can thread them
+ * through EO the same way the posix ones do.</p>
  *
  * @since 0.74.0
  */
@@ -35,7 +37,16 @@ public interface Msvcrt extends Library {
         Msvcrt.class,
         Collections.singletonMap(
             Library.OPTION_FUNCTION_MAPPER,
-            (FunctionMapper) (library, method) -> "_".concat(method.getName())
+            (FunctionMapper) (library, method) -> {
+                final String name = method.getName();
+                final String mapped;
+                if ("rename".equals(name)) {
+                    mapped = name;
+                } else {
+                    mapped = "_".concat(name);
+                }
+                return mapped;
+            }
         )
     );
 
@@ -89,4 +100,36 @@ public interface Msvcrt extends Library {
      * @return Zero on success, -1 on error
      */
     int stat(String path, Structure statbuf);
+
+    /**
+     * Deletes a file. Maps to {@code _unlink}.
+     * @param path Path to the file
+     * @return Zero on success, -1 on error
+     */
+    int unlink(String path);
+
+    /**
+     * Removes an empty directory. Maps to {@code _rmdir}.
+     * @param path Path to the directory
+     * @return Zero on success, -1 on error
+     */
+    int rmdir(String path);
+
+    /**
+     * Creates a new file, or truncates an existing one, and opens it. Maps to
+     * {@code _creat}.
+     * @param path Path to the file
+     * @param mode Permission bits for a newly created file
+     * @return File descriptor on success, -1 on error
+     */
+    int creat(String path, int mode);
+
+    /**
+     * Renames a file. Maps to the ISO C {@code rename}, without a leading
+     * underscore.
+     * @param from Current path of the file
+     * @param target New path of the file
+     * @return Zero on success, -1 on error
+     */
+    int rename(String from, String target);
 }

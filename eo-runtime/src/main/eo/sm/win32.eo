@@ -28,6 +28,8 @@
   32768 > open-read-flags
   # Open flags for a file write descriptor: `_O_WRONLY | _O_APPEND | _O_BINARY`.
   32777 > open-write-flags
+  # Permission bits for a file made by the "creat" function: `_S_IREAD | _S_IWRITE`.
+  384 > create-mode
   1 > sock-stream
   -1 > socket-error
   -10 > std-input-handle

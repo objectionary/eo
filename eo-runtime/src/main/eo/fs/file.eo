@@ -10,8 +10,6 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package fs
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
@@ -59,14 +57,24 @@
       exists
       ^
       seq *
-        touch
+        if.
+          descriptor.eq -1
+          T
+            sprintf
+              "Cant touch the file '%s'"
+              * path
+          closed
         ^
-
-    # Creates new empty file and returns `org.eolang.true`.
-    #
-    # Note: This object is intended for internal use only. Please
-    # don't use the object programmatically outside of `file` object.
-    [] > touch /bool
+    code. > descriptor
+      if.
+        os.is-windows
+        win32 "creat" (* path win32.create-mode)
+        posix "creat" (* path posix.create-mode)
+    code. > closed
+      if.
+        os.is-windows
+        win32 "close" (* descriptor)
+        posix "close" (* descriptor)
 
   # If current file exists - deletes it and returns it.
   # If current file does not exist - just returns it.
@@ -74,15 +82,24 @@
     if. > @
       exists
       seq *
-        delete
+        if.
+          outcome.eq 0
+          true
+          T
+            sprintf
+              "Cant delete the file '%s'"
+              * path
         ^
       ^
-
-    # Deletes the file and returns `org.eolang.true`.
-    #
-    # Note: This object is intended for internal use only. Please
-    # don't use the object programmatically outside of `file` object.
-    [] > delete /bool
+    code. > outcome
+      if.
+        os.is-windows
+        win32 operation (* path)
+        posix operation (* path)
+    if. > operation
+      is-directory
+      "rmdir"
+      "unlink"
 
   # Gets the file size in bytes and returns it as `org.eolang.number`.
   # Terminates with a ⊥ if the file cannot be stated.
@@ -103,15 +120,18 @@
   # Moves the current file to `target`, making and returning a new `file` from it.
   [target] > moved
     file > @
-      move
-
-    # Tries to move file from `^.path` to `target`
-    # and returns path of moved file as `org.eolang.string`.
-    # Returns `org.eolang.error` is failed to move the file.
-    #
-    # Note: This object is intended for internal use only. Please
-    # don't use the object programmatically outside of `file` object.
-    [] > move /string
+      if.
+        outcome.eq 0
+        target
+        T
+          sprintf
+            "Cant move the file '%s' to '%s'"
+            * path target
+    code. > outcome
+      if.
+        os.is-windows
+        win32 "rename" (* path target)
+        posix "rename" (* path target)
 
   # Opens the file.
   #
@@ -161,14 +181,14 @@
               "File must exist for given access mod: '%s'"
               * access
           seq *
-            touched.touch
+            touched
             open-file
             ^
         if.
           truncate
           seq *
-            deleted.delete
-            touched.touch
+            deleted
+            touched
             open-file
             ^
           seq *
