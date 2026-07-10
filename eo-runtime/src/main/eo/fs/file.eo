@@ -1,7 +1,9 @@
 +alias tt.contains
 +alias fs.file
 +alias tt.joined
++alias sm.os
 +alias fs.path
++alias sm.posix
 +alias tt.sprintf
 +alias fs.tmpdir
 +architect yegor256@gmail.com
@@ -129,9 +131,14 @@
             touched.touch
             process-file
             ^
-          seq *
-            process-file
-            ^
+          if.
+            read.and os.is-windows.not
+            seq *
+              posix-read-file
+              ^
+            seq *
+              process-file
+              ^
     mode > access!
     (access.eq "r").as-bool > read
     (access.eq "w").as-bool > write
@@ -243,6 +250,50 @@
         # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
         [buffer] > written-bytes /bool
+
+    # Reads the file on posix through the open/read/close syscalls, threading the
+    # descriptor to the provided scope and closing it afterwards.
+    #
+    # Note: This object is intended for internal use only. Please
+    # don't use the object programmatically outside of `file` object.
+    [] > posix-read-file
+      if. > @
+        fd.eq -1
+        T
+          sprintf
+            "Couldn't open file '%s' for reading"
+            * ^.^.path
+        seq *
+          dataized
+            scope
+              posix-file-stream fd
+          code.
+            posix
+              "close"
+              * fd
+          true
+      code. > fd
+        posix
+          "open"
+          * ^.^.path 0
+
+      # Posix file stream backed by a descriptor `fd`, providing read access.
+      #
+      # Note: This object is intended for internal use only. Please
+      # don't use the object programmatically outside of `file` object.
+      [fd] > posix-file-stream
+        # Read `size` amount of bytes from the file via the read syscall.
+        [size] > read
+          (input-block --).read size > @
+
+          # Posix file input block.
+          [buffer] > input-block
+            buffer > @
+            [size] > read
+              seq * > @
+                chunk
+                input-block chunk
+              (posix "read" (* fd size)).output > chunk!
 
   # Tests that the current directory is detected as a directory.
   [] +> tests-check-if-current-directory-is-directory
