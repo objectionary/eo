@@ -21,14 +21,14 @@
   # Makes an actual function call to operating system
   # Returns `org.eolang.sm.win32.return` object.
   [] > @ /return
+  2 > af-inet
+  -1 > inaddr-none
+  -1 > invalid-socket
+  6 > ipproto-tcp
+  1 > sock-stream
+  -1 > socket-error
   -10 > std-input-handle
   -11 > std-output-handle
-  2 > af-inet
-  1 > sock-stream
-  6 > ipproto-tcp
-  -1 > invalid-socket
-  -1 > socket-error
-  -1 > inaddr-none
   02-02 > winsock-version-2-2
   # Result of a Win32 function call with return code and output.
   [code output] > return

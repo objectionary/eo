@@ -144,8 +144,8 @@
         inner.exists.not
       f.exists.not
     (dir tmpdir.tmpfile.deleted).made > d
-    (dir d.tmpfile.deleted).made > inner
     d.tmpfile > f
+    (dir d.tmpfile.deleted).made > inner
 
   # Tests that walking through a directory tree with a glob pattern finds matching files.
   [] +> tests-walks-recursively

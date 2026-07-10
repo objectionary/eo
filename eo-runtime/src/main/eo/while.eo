@@ -110,7 +110,6 @@
   [] +> tests-iterating-tuple-with-while-using-internal-iterator
     data.eq arr.length > @
     * 1 1 1 1 > arr
-    arr.length.plus -1 > max
     malloc.for > data
       0
       [acc] >>
@@ -132,12 +131,12 @@
                           arr.at i
                       iter.put
                         iter.as-number.plus 1
+    arr.length.plus -1 > max
 
   # Tests that while loop can iterate over tuple elements using external iterator.
   [] +> tests-iterating-tuple-with-while-using-external-iterator
     data.eq arr.length > @
     * 1 1 1 1 > arr
-    arr.length.plus -1 > max
     malloc.for > data
       0
       [acc] >>
@@ -154,12 +153,12 @@
                         arr.at iter
                     iter.put
                       iter.as-number.plus 1
+    arr.length.plus -1 > max
 
   # Tests that while loop can iterate over multiple tuple elements without explicit body.
   [] +> tests-iterating-tuple-with-while-without-body-multiple
     data.eq arr.length > @
     * 1 1 1 > arr
-    arr.length > max
     malloc.for > data
       0
       [acc] >>
@@ -184,12 +183,12 @@
                       false
                   true > [i]
                 acc
+    arr.length > max
 
   # Tests that while loop can iterate over single tuple element without explicit body.
   [] +> tests-iterating-tuple-with-while-without-body-single
     data.eq arr.length > @
     * 1 > arr
-    arr.length > max
     malloc.for > data
       0
       [acc] >>
@@ -214,3 +213,4 @@
                       false
                   true > [i]
                 acc
+    arr.length > max

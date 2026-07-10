@@ -29,7 +29,6 @@
       size.eq 0
       0
       reclen 0 0
-    as-bytes.size > size
     80- > p1
     E0- > p2
     F0- > p3
@@ -38,6 +37,7 @@
     C0- > r2
     p2 > r3
     p3 > r4
+    as-bytes.size > size
 
     # Object that checks if `index` + `csize` is out of the string bounds.
     # If not - the new recursion iteration is started with `index` increased by `csize` and
@@ -96,27 +96,6 @@
           ""
           string
             as-bytes.slice bstart blen
-    start > sbts!
-    len > lbts!
-    number sbts > nstart
-    number lbts > nlen
-    as-bytes.size > size
-    nstart.plus nlen > end
-    80- > p1
-    E0- > p2
-    F0- > p3
-    F8- > p4
-    00- > r1
-    C0- > r2
-    p2 > r3
-    p3 > r4
-    recidx > bstart!
-      0
-      0
-      nstart
-      sprintf
-        "Start index (%d) is out of string bounds"
-        * nstart
     minus. > blen
       recidx
         number bstart
@@ -126,6 +105,27 @@
           "Start index + length to slice (%d) is out of string bounds"
           * (nstart.plus nlen)
       bstart
+    recidx > bstart!
+      0
+      0
+      nstart
+      sprintf
+        "Start index (%d) is out of string bounds"
+        * nstart
+    nstart.plus nlen > end
+    len > lbts!
+    number lbts > nlen
+    number sbts > nstart
+    80- > p1
+    E0- > p2
+    F0- > p3
+    F8- > p4
+    00- > r1
+    C0- > r2
+    p2 > r3
+    p3 > r4
+    start > sbts!
+    as-bytes.size > size
 
     # The object checks if `index` + `csize` is not out of the string bounds.
     # If not - the new recursion cycle is started with `index` increased by `csize` and

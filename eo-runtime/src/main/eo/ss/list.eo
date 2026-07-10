@@ -147,16 +147,6 @@
                 idx.lt e
               accum.with item
               accum
-    if. > s!
-      start.gte 0
-      if.
-        start.gte origin.length
-        origin.length
-        start
-      if.
-        origin.length.neg.lte start
-        start.plus origin.length
-        0
     if. > e!
       end.gte 0
       if.
@@ -166,6 +156,16 @@
       if.
         origin.length.neg.lte end
         end.plus origin.length
+        0
+    if. > s!
+      start.gte 0
+      if.
+        start.gte origin.length
+        origin.length
+        start
+      if.
+        origin.length.neg.lte start
+        start.plus origin.length
         0
 
   # Create a new list without the first `shift` elements.

@@ -18,12 +18,12 @@
   # Makes an actual syscall to operating system
   # Returns `org.eolang.sm.posix.return` object.
   [] > @ /return
+  2 > af-inet
+  -1 > inaddr-none
+  6 > ipproto-tcp
+  1 > sock-stream
   0 > stdin-fileno
   1 > stdout-fileno
-  2 > af-inet
-  1 > sock-stream
-  6 > ipproto-tcp
-  -1 > inaddr-none
   # Result of a POSIX syscall with return code and output.
   [code output] > return
     output > @
