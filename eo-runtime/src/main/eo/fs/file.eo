@@ -123,28 +123,18 @@
               * access
           seq *
             touched.touch
-            process-file
+            open-file
             ^
         if.
           truncate
           seq *
             deleted.delete
             touched.touch
-            process-file
+            open-file
             ^
-          if.
-            read
-            if.
-              os.is-windows
-              seq *
-                read-file win32 32768
-                ^
-              seq *
-                read-file posix 0
-                ^
-            seq *
-              process-file
-              ^
+          seq *
+            open-file
+            ^
     mode > access!
     (access.eq "r").as-bool > read
     (access.eq "w").as-bool > write
@@ -257,55 +247,112 @@
         # don't use the object programmatically outside of `file` object.
         [buffer] > written-bytes /bool
 
-    # Reads the file on posix through the open/read/close syscalls, threading the
-    # descriptor to the provided scope and closing it afterwards.
+    # Opens the file through OS syscalls, threading a read descriptor and a write
+    # descriptor to the provided scope and closing them afterwards. The read
+    # descriptor is opened read-only from the beginning, the write descriptor for
+    # appending, mirroring the two independent streams a file provides. The open
+    # flags are the platform's `O_*` values: read is `O_RDONLY` (posix 0, windows
+    # `O_BINARY` 32768), write is `O_WRONLY | O_APPEND` (linux 1025, macos 9,
+    # windows additionally `O_BINARY`, 32777).
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
-    # Reads the file through the given `syscall` object, threading the descriptor
-    # to the provided scope and closing it afterwards. Here `syscall` is `posix` or
-    # `win32`, and `flags` are the platform-specific open flags.
-    #
-    # Note: This object is intended for internal use only. Please
-    # don't use the object programmatically outside of `file` object.
-    [syscall flags] > read-file
+    [] > open-file
       if. > @
-        fd.eq -1
-        T
-          sprintf
-            "Couldn't open file '%s' for reading"
-            * ^.^.path
-        seq *
-          dataized
-            scope
-              read-stream fd
-          code.
-            syscall
-              "close"
-              * fd
-          true
-      code. > fd
-        syscall
-          "open"
-          * ^.^.path flags
+        os.is-windows
+        open-through win32 32768 32777
+        if.
+          os.is-macos
+          open-through posix 0 9
+          open-through posix 0 1025
 
-      # File stream backed by a descriptor `fd`, providing read access via the syscall.
+      # Opens the read and write descriptors through the given `syscall` object
+      # (`posix` or `win32`), threads a stream over them to the scope and closes
+      # both afterwards. Here `read-flags` open the read descriptor and
+      # `write-flags` the write descriptor.
       #
       # Note: This object is intended for internal use only. Please
       # don't use the object programmatically outside of `file` object.
-      [fd] > read-stream
-        # Read `size` amount of bytes from the file via the read syscall.
-        [size] > read
-          (input-block --).read size > @
+      [syscall read-flags write-flags] > open-through
+        if. > @
+          or.
+            read-fd.eq -1
+            write-fd.eq -1
+          T
+            sprintf
+              "Couldn't open file '%s'"
+              * ^.^.^.path
+          seq *
+            dataized
+              scope
+                stream read-fd write-fd
+            code.
+              syscall
+                "close"
+                * read-fd
+            code.
+              syscall
+                "close"
+                * write-fd
+            true
+        code. > read-fd
+          syscall
+            "open"
+            * ^.^.^.path read-flags
+        code. > write-fd
+          syscall
+            "open"
+            * ^.^.^.path write-flags
 
-          # File input block.
-          [buffer] > input-block
-            buffer > @
-            [size] > read
-              seq * > @
-                chunk
-                input-block chunk
-              (syscall "read" (* fd size)).output > chunk!
+        # File stream backed by a read descriptor and a write descriptor,
+        # providing input and output access via the syscalls.
+        #
+        # Note: This object is intended for internal use only. Please
+        # don't use the object programmatically outside of `file` object.
+        [read-fd write-fd] > stream
+          # Read `size` amount of bytes from the file via the read syscall.
+          # Returns an error if the access mode does not allow reading.
+          [size] > read
+            (input-block --).read size > @
+
+            # File input block.
+            [buffer] > input-block
+              buffer > @
+              [size] > read
+                if. > @
+                  readable.not
+                  [] >>
+                    error > @
+                      sprintf
+                        "Can't read from file with provided access mode '%s'"
+                        * access
+                  seq *
+                    chunk
+                    input-block chunk
+                (syscall "read" (* read-fd size)).output > chunk!
+
+          # Write the given `buffer` to the file via the write syscall.
+          # Returns an error if the access mode does not allow writing.
+          [buffer] > write
+            output-block.write buffer > @
+
+            # File output block.
+            [] > output-block
+              true > @
+              [buffer] > write
+                if. > @
+                  writable.not
+                  [] >>
+                    error > @
+                      sprintf
+                        "Can't write to file with provided access mode '%s'"
+                        * access
+                  seq *
+                    code.
+                      syscall
+                        "write"
+                        * write-fd buffer buffer.size
+                    output-block
 
   # Tests that the current directory is detected as a directory.
   [] +> tests-check-if-current-directory-is-directory

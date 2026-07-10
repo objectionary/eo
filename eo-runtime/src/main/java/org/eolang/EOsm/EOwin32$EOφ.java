@@ -33,6 +33,7 @@ import org.eolang.EOsm.Win32.WSACleanupFuncCall;
 import org.eolang.EOsm.Win32.WSAGetLastErrorFuncCall;
 import org.eolang.EOsm.Win32.WSAStartupFuncCall;
 import org.eolang.EOsm.Win32.WriteFileFuncCall;
+import org.eolang.EOsm.Win32.WriteFuncCall;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -58,6 +59,7 @@ public final class EOwin32$EOφ extends PhDefault implements Atom {
         EOwin32$EOφ.FUNCTIONS.put("WriteFile", WriteFileFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("open", OpenFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("read", ReadFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("write", WriteFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("close", CloseFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("GetEnvironmentVariable", GetEnvironmentVariableFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("GetSystemTime", GetSystemTimeFuncCall::new);

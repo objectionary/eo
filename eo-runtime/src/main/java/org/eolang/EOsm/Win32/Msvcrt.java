@@ -56,6 +56,15 @@ public interface Msvcrt extends Library {
     int read(int descriptor, byte[] buffer, int size);
 
     /**
+     * Writes bytes from the buffer to a file descriptor.
+     * @param descriptor File descriptor
+     * @param buffer Buffer to write from
+     * @param size Number of bytes to write
+     * @return Number of bytes written, or -1 on error
+     */
+    int write(int descriptor, byte[] buffer, int size);
+
+    /**
      * Closes a file descriptor.
      * @param descriptor File descriptor
      * @return Zero on success, -1 on error
