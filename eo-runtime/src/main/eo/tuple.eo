@@ -125,7 +125,7 @@
       "with"
 
   # Tests that an out-of-bounds index with no fallback yields the bottom object
-  # (⊥) that terminates when used.
+  # that terminates when used.
   [] +> throws-on-wrong-tuple-at
     at. > @
       * 1 2 3 4

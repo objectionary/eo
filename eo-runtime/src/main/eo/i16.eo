@@ -9,13 +9,13 @@
 +unlint redundant-object
 +unlint mandatory-package
 
-# The 16 bits signed integer.
+# Signed 16-bit integer.
 # Here `as-bytes` must be a `bytes` object.
 [as-bytes] > i16
   as-bytes > @
-  times -1.as-i64.as-i32.as-i16 > neg
   as-i32.as-i64 > as-i64
   as-i64.as-number > as-number
+  times -1.as-i64.as-i32.as-i16 > neg
 
   # Convert this `org.eolang.i16` to `org.eolang.i32` and return it.
   # The object is an atom because it's not possible to check what
@@ -76,7 +76,7 @@
   # Quotient of the division of `$` by `x`.
   # Here `x` must be an `org.eolang.i16` object.
   # When `x` is zero, the caller-supplied `cant-divide` fallback is returned,
-  # or the bottom object (⊥) when none was provided, which terminates on use.
+  # or the bottom object when none was provided, which terminates on use.
   [x cant-divide] > div
     if. > @
       xval.eq zero
@@ -92,10 +92,10 @@
         plus.
           i16 left
           i16 right
-    x.as-i16 > xval
     (as-i32.div xval.as-i32).as-bytes > bts
     bts.slice 0 2 > left
     bts.slice 2 2 > right
+    x.as-i16 > xval
     00-00 > zero
 
   # Tests that i16 number has correct byte representation.
@@ -232,7 +232,7 @@
       32767.as-i64.as-i32.as-i16
 
   # Tests that i16 division by zero with no fallback yields the bottom object
-  # (⊥) that terminates when used.
+  # that terminates when used.
   2.as-i64.as-i32.as-i16.div 0.as-i64.as-i32.as-i16 > [] +> throws-on-division-i16-by-i16-zero
 
   # Tests that i16 division by zero with a provided fallback yields the fallback.

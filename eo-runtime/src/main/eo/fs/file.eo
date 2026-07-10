@@ -14,7 +14,7 @@
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
 
-# The file object in the filesystem.
+# Represents a file in the filesystem for reading and writing.
 [path] > file
   path > @
   # Converts the `file` to a `path`.
@@ -133,25 +133,25 @@
             process-file
             ^
     mode > access!
-    (access.eq "r").as-bool > read
-    (access.eq "w").as-bool > write
-    (access.eq "r+").as-bool > rw
-    (access.eq "w+").as-bool > wr
+    as-bool. > existing
+      read.or rw
     (access.eq "a+").as-bool > ra
+    (access.eq "r").as-bool > read
     as-bool. > readable
       or.
         read.or rw
         wr.or ra
+    (access.eq "r+").as-bool > rw
+    as-bool. > truncate
+      write.or wr
+    (access.eq "w+").as-bool > wr
     as-bool. > writable
       or.
         or.
           write.or rw
           wr.or ra
         (access.eq "a").as-bool
-    as-bool. > existing
-      read.or rw
-    as-bool. > truncate
-      write.or wr
+    (access.eq "w").as-bool > write
 
     # Process current file in the provided scope.
     #
@@ -524,8 +524,8 @@
                   ^.m.put > @
                     f.read 13
               m
-    tmpdir.tmpfile > temp
     temp.path > src
+    tmpdir.tmpfile > temp
 
   # Tests that writing to a file using different file instances works correctly.
   [] +> tests-writes-to-file-from-different-instances
@@ -553,8 +553,8 @@
                           f.read 14
                 m
         .eq "Shrek is love!"
-    tmpdir.tmpfile > temp
     temp.path > src
+    tmpdir.tmpfile > temp
 
   # Tests that sequential reading from a file advances the position correctly.
   [] +> tests-reads-from-file-sequentially

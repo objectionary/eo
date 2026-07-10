@@ -21,12 +21,12 @@
     length.
       string
         slice txt 0 found
-  text > txt!
-  substring > sub!
-  txt.size > tlen!
-  sub.size > slen!
   rec-index-of > found!
     (number tlen).minus slen
+  sub.size > slen!
+  substring > sub!
+  txt.size > tlen!
+  text > txt!
 
   # Recursively searches for substring from end to beginning of text.
   [idx] > rec-index-of

@@ -90,9 +90,9 @@
       #  idempotency is not fully implemented, and we cannot remove some edge case usages, like
       #  here, in `matched`. Don't forget to remove this puzzle.
       [position start from to groups] > matched
-        $ > matched
         groups.length > count
         start.gte 0 > exists
+        $ > matched
         if. > next
           exists
           matched.
@@ -258,7 +258,7 @@
         "no-slash" > [msg]
 
   # Tests that an invalid pattern with no `cant-compile` fallback yields the bottom
-  # object (⊥) that terminates when used.
+  # object that terminates when used.
   [] +> throws-on-compiling-invalid-regex-without-fallback
     (regex "/[a-z/").compile > @
 

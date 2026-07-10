@@ -47,12 +47,12 @@
                   temp
                 tmp
               tmpdir
-          getenv "TMPDIR" > tmpdir!
-          getenv "TMP" > tmp!
+          -- > empty
           getenv "TEMP" > temp!
           getenv "TEMPDIR" > tempdir!
+          getenv "TMP" > tmp!
+          getenv "TMPDIR" > tmpdir!
           getenv "USERPROFILE" > userprofile!
-          -- > empty
 
   # Tests that the global temporary directory exists on the filesystem.
   tmpdir.exists > [] +> global-temp-dir-exists

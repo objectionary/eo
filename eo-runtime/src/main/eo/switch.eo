@@ -6,7 +6,7 @@
 +unlint redundant-object
 +unlint mandatory-package
 
-# The object allows choosing the right options according to case conditions.
+# Object that allows choosing the right options according to case conditions.
 # Parameter `cases` is an array of two-dimensional arrays, which
 # consist of condition bool value and expected value, if this
 # condition is true. For example:
@@ -41,8 +41,8 @@
         previous.match
       previous
       [] >>
-        tup.head.tail.head > match!
         tup.head.head > head
+        tup.head.tail.head > match!
     (rec-case tup.tail).@ > previous
 
   # Tests that switch returns the value from the first true condition case.
@@ -102,7 +102,7 @@
           false
           "false2"
 
-  # Tests that empty switch cases with no fallback yield the bottom object (⊥)
+  # Tests that empty switch cases with no fallback yield the bottom object
   # that terminates when used.
   [] +> throws-on-empty-switch
     switch * > @
