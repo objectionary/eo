@@ -198,6 +198,16 @@ final class SuffixTest {
     }
 
     @Test
+    void rejectsTrailingGarbageThatIsNotASuffixMarker() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix("x", new Span("5x", 1), 1),
+            "trailing content after a head that is not `>`, `>>`, or `+>` must be rejected,"
+                .concat(" not silently dropped")
+        );
+    }
+
+    @Test
     void rejectsNamedSuffixWithoutName() {
         Assertions.assertThrows(
             ParseError.class,
