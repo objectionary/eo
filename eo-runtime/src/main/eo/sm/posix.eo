@@ -20,6 +20,14 @@
   2 > af-inet
   -1 > inaddr-none
   6 > ipproto-tcp
+  # Open flags for a file read descriptor: `O_RDONLY`.
+  0 > open-read-flags
+  # Open flags for a file write descriptor: `O_WRONLY | O_APPEND`.
+  # `O_APPEND` is `0x8` on macos and `0x400` on linux.
+  if. > open-write-flags
+    os.is-macos
+    9
+    1025
   1 > sock-stream
   0 > stdin-fileno
   1 > stdout-fileno
@@ -53,6 +61,22 @@
             "getpid"
             tuple.empty
         0
+
+  # Tests that a file can be opened read-only and closed via the open and close syscalls.
+  [] +> tests-opens-and-closes-file-via-syscall
+    or. > @
+      os.is-windows
+      seq
+        *
+          code.
+            posix
+              "close"
+              * fd
+          fd.gt -1
+    code. > fd
+      posix
+        "open"
+        * "/dev/null" 0
 
   # Tests that a POSIX TCP socket can be opened successfully using the socket syscall.
   [] +> tests-opens-posix-tcp-socket

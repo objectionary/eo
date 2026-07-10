@@ -15,10 +15,10 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * Write syscall.
- * @since 0.40
+ * Open syscall.
+ * @since 0.74.0
  */
-public final class WriteSyscall implements Syscall {
+public final class OpenSyscall implements Syscall {
 
     /**
      * Posix object.
@@ -29,7 +29,7 @@ public final class WriteSyscall implements Syscall {
      * Ctor.
      * @param posix Posix object
      */
-    public WriteSyscall(final Phi posix) {
+    public OpenSyscall(final Phi posix) {
         this.posix = posix;
     }
 
@@ -39,10 +39,9 @@ public final class WriteSyscall implements Syscall {
         result.put(
             0,
             new Data.ToPhi(
-                CStdLib.INSTANCE.write(
-                    new Dataized(params[0]).asNumber().intValue(),
-                    new Dataized(params[1]).take(),
-                    new Dataized(params[2]).asNumber().intValue()
+                CStdLib.INSTANCE.open(
+                    new Dataized(params[0]).asString(),
+                    new Dataized(params[1]).asNumber().intValue()
                 )
             )
         );

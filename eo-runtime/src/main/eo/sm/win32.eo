@@ -24,6 +24,10 @@
   -1 > inaddr-none
   -1 > invalid-socket
   6 > ipproto-tcp
+  # Open flags for a file read descriptor: `_O_RDONLY | _O_BINARY`.
+  32768 > open-read-flags
+  # Open flags for a file write descriptor: `_O_WRONLY | _O_APPEND | _O_BINARY`.
+  32777 > open-write-flags
   1 > sock-stream
   -1 > socket-error
   -10 > std-input-handle

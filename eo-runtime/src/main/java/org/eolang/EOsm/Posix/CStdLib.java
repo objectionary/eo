@@ -105,7 +105,7 @@ public interface CStdLib extends Library {
      * @param size Number of bytes to be written
      * @return Number of bytes was written
      */
-    int write(int descriptor, String buf, int size);
+    int write(int descriptor, byte[] buf, int size);
 
     /**
      * Read bytes from file descriptor.

@@ -6,7 +6,7 @@
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package org.eolang.EOsm.Posix; // NOPMD
+package org.eolang.EOsm.Win32; // NOPMD
 
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -15,35 +15,31 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * Write syscall.
- * @since 0.40
+ * The msvcrt _close function call.
+ * @since 0.74.0
  */
-public final class WriteSyscall implements Syscall {
+public final class CloseFuncCall implements Syscall {
 
     /**
-     * Posix object.
+     * Win32 object.
      */
-    private final Phi posix;
+    private final Phi win;
 
     /**
      * Ctor.
-     * @param posix Posix object
+     * @param win Win32 object
      */
-    public WriteSyscall(final Phi posix) {
-        this.posix = posix;
+    public CloseFuncCall(final Phi win) {
+        this.win = win;
     }
 
     @Override
     public Phi make(final Phi... params) {
-        final Phi result = this.posix.take("return").copy();
+        final Phi result = this.win.take("return").copy();
         result.put(
             0,
             new Data.ToPhi(
-                CStdLib.INSTANCE.write(
-                    new Dataized(params[0]).asNumber().intValue(),
-                    new Dataized(params[1]).take(),
-                    new Dataized(params[2]).asNumber().intValue()
-                )
+                Msvcrt.INSTANCE.close(new Dataized(params[0]).asNumber().intValue())
             )
         );
         result.put(1, new PhDefault());

@@ -1,7 +1,10 @@
 +alias tt.contains
 +alias fs.file
 +alias tt.joined
++alias sm.os
 +alias fs.path
++alias sm.posix
++alias sm.win32
 +alias tt.sprintf
 +alias fs.tmpdir
 +architect yegor256@gmail.com
@@ -104,33 +107,37 @@
   # The second argument `scope` is the scope where file is available as input
   # (the `read` object is available) or output (the `write` object is available).
   #
+  # The third argument `cant-open` is the fallback applied to the failure reason
+  # when the file cannot be opened - it must exist for the mode but does not, or
+  # the open syscall fails. Leaving `cant-open` unbound terminates with a ⊥.
+  #
   # When `file.open` is dataized - it opens file stream, dataizes the `scope`,
   # closes the file stream and returns an original file object.
-  [mode scope] > open
+  [mode scope cant-open] > open
     if. > @
       readable.not.and writable.not
-      error "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
+      T "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
         exists.not
         if.
           existing
-          error
+          cant-open
             sprintf
               "File must exist for given access mod: '%s'"
               * access
           seq *
             touched.touch
-            process-file
+            open-file
             ^
         if.
           truncate
           seq *
             deleted.delete
             touched.touch
-            process-file
+            open-file
             ^
           seq *
-            process-file
+            open-file
             ^
     mode > access!
     as-bool. > existing
@@ -153,96 +160,104 @@
         (access.eq "a").as-bool
     (access.eq "w").as-bool > write
 
-    # Process current file in the provided scope.
-    #
-    # Here file stream is open, then the stream is passed to `scope`,
-    # then given `scope` is dataized and stream is closed.
-    # Returns `org.eolang.true` if there are no errors occurred while `scope`
-    # dataization, returns `org.eolang.error` otherwise.
-    #
-    # The object is stream-safe, which means that stream is closed anyway,
-    # even if errors are occurred while `scope` dataization.
+    # Opens the file through OS syscalls, threading a read descriptor and a write
+    # descriptor to the provided scope and closing them afterwards. The read
+    # descriptor is opened read-only from the beginning, the write descriptor for
+    # appending, mirroring the two independent streams a file provides. The open
+    # flags come from the syscall object's `open-read-flags` and `open-write-flags`.
     #
     # Note: This object is intended for internal use only. Please
-    # don't use the object programmatically outside of the `file` object.
-    [] > process-file /bool
+    # don't use the object programmatically outside of `file` object.
+    [] > open-file
+      if. > @
+        os.is-windows
+        open-through win32
+        open-through posix
 
-    # File stream.
-    # The objects provides an API for using file as input or output.
-    [] > file-stream
-      # Read `size` amount of bytes from file input stream.
-      # Returns new instance of `input-block` with `buffer` read from file, or
-      # returns `org.eolang.error` if access mode does not allow reading operations.
-      [size] > read
-        (input-block --).read > @
-          size
+      # Opens the read and write descriptors through the given `syscall` object
+      # (`posix` or `win32`), threads a stream over them to the scope and closes
+      # both afterwards. The open flags come from the syscall's `open-read-flags`
+      # and `open-write-flags`.
+      #
+      # Note: This object is intended for internal use only. Please
+      # don't use the object programmatically outside of `file` object.
+      [syscall] > open-through
+        if. > @
+          or.
+            read-fd.eq -1
+            write-fd.eq -1
+          cant-open
+            sprintf
+              "Couldn't open file '%s'"
+              * path
+          seq *
+            scope
+              stream read-fd write-fd
+            code.
+              syscall
+                "close"
+                * read-fd
+            code.
+              syscall
+                "close"
+                * write-fd
+            true
+        code. > read-fd
+          syscall
+            "open"
+            * path syscall.open-read-flags
+        code. > write-fd
+          syscall
+            "open"
+            * path syscall.open-write-flags
 
-        # File input block
+        # File stream backed by a read descriptor and a write descriptor,
+        # providing input and output access via the syscalls.
         #
         # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
-        [buffer] > input-block
-          buffer > @
-
-          # Read `size` amount of bytes from file input stream.
-          # Returns new instance of `input-block` with `buffer` read from file, or
-          # returns `org.eolang.error` if provided access mode does not allow reading operations.
+        [read-fd write-fd] > stream
+          # Read `size` amount of bytes from the file via the read syscall.
+          # Terminates with a ⊥ if the access mode does not allow reading.
           [size] > read
-            if. > @
-              readable.not
-              [] >>
-                error > @
-                  sprintf
-                    "Can't read from file with provided access mode '%s'"
-                    * access
-              seq *
-                chunk
-                input-block chunk
-            ^.^.chunk size > chunk!
+            (input-block --).read size > @
 
-        # Bytes, as `org.eolang.bytes`, read from file input stream.
-        #
-        # Note: This object is intended for internal use only. Please
-        # don't use the object programmatically outside of `file` object.
-        [size] > chunk /bytes
+            # File input block.
+            [buffer] > input-block
+              buffer > @
+              [size] > read
+                if. > @
+                  readable.not
+                  T
+                    sprintf
+                      "Can't read from file with provided access mode '%s'"
+                      * access
+                  seq *
+                    chunk
+                    input-block chunk
+                (syscall "read" (* read-fd size)).output > chunk!
 
-      # Writes the given `buffer` to file output stream.
-      # Here `buffer` is either a sequence of bytes or an object that can be
-      # dataized via `as-bytes` object.
-      # Returns new instance of `output-block` ready to write again, or
-      # returns an error if provided access mode does not allow writing operations.
-      [buffer] > write
-        output-block.write buffer > @
-
-        # File output block.
-        #
-        # Note: This object is intended for internal use only. Please
-        # don't use the object programmatically outside of `file` object.
-        [] > output-block
-          true > @
-
-          # Writes the given `buffer` to file output stream.
-          # Here `buffer` is either a sequence of bytes or an object that can be
-          # dataized via `as-bytes` object.
-          # Returns new instance of `output-block` ready to write again, or
-          # returns an error if provided access mode does not allow writing operations.
+          # Write the given `buffer` to the file via the write syscall.
+          # Terminates with a ⊥ if the access mode does not allow writing.
           [buffer] > write
-            if. > @
-              writable.not
-              [] >>
-                error > @
-                  sprintf
-                    "Can't write to file with provided access mode '%s'"
-                    * access
-              seq *
-                written-bytes buffer
-                output-block
+            output-block.write buffer > @
 
-        # Writes given `buffer` of bytes to file output stream and returns `org.eolang.true`.
-        #
-        # Note: This object is intended for internal use only. Please
-        # don't use the object programmatically outside of `file` object.
-        [buffer] > written-bytes /bool
+            # File output block.
+            [] > output-block
+              true > @
+              [buffer] > write
+                if. > @
+                  writable.not
+                  T
+                    sprintf
+                      "Can't write to file with provided access mode '%s'"
+                      * access
+                  seq *
+                    code.
+                      syscall
+                        "write"
+                        * write-fd buffer buffer.size
+                    output-block
 
   # Tests that the current directory is detected as a directory.
   [] +> tests-check-if-current-directory-is-directory
@@ -329,6 +344,19 @@
     .open > @
       "r+"
       f > [f]
+
+  # Tests that opening a non-existent file for reading recovers through the
+  # provided `cant-open` fallback instead of terminating.
+  [] +> tests-recovers-from-opening-missing-file-through-fallback
+    eq. > @
+      "recovered"
+      tmpdir
+      .tmpfile
+      .deleted
+      .open
+        "r"
+        f > [f]
+        "recovered" > [reason]
 
   # Tests that opening a non-existent file in write mode creates the file.
   [] +> tests-touches-absent-file-on-opening-for-writing
