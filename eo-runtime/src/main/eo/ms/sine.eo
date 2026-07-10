@@ -128,3 +128,11 @@
   [] +> tests-sine-of-nan-is-nan
     is-nan. > @
       sine nan
+  # Tests that sine of +inf is nan.
+  [] +> tests-sine-of-positive-infinity-is-nan
+    is-nan. > @
+      sine pinf
+  # Tests that sine of -inf is nan.
+  [] +> tests-sine-of-negative-infinity-is-nan
+    is-nan. > @
+      sine ninf
