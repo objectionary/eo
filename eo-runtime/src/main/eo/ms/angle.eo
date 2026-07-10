@@ -18,6 +18,46 @@
       pi
   # Converts this from degrees to radians.
   angle > radians
++alias ms.pi
++alias ms.sine
++alias ms.cosine
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package ms
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object
+
+# Angle: measure of how much something is tilted or rotated, measured in degrees or radians.
+# When dataized, it shows direction or how two lines meet.
+[value] > angle
+  value > @
+  # Converts this from radians to degrees.
+  angle > degrees
+    div.
+      times 180.0
+      pi
+  # Converts this from degrees to radians.
+  angle > radians
     div.
       times pi
       180.0
+  [] > sin
+    sine value > @
+  [] > cos
+    cosine value > @
+  [] > tan
+    if. > @
+      cosine.eq 0
+      nan
+      sine.div cosine
+    cos > cosine!
+    sin > sine!
+  [] > ctan
+    if. > @
+      sine.eq 0
+      nan
+      cosine.div sine
+    sin > sine!
+    cos > cosine!
