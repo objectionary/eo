@@ -4,7 +4,6 @@
 +alias sm.os
 +alias fs.path
 +alias sm.posix
-+alias sm.syscall
 +alias sm.win32
 +alias tt.sprintf
 +alias fs.tmpdir
@@ -36,15 +35,20 @@
         sprintf
           "Cant check whether the file '%s' is a directory"
           * path
-    (syscall "stat" (* path)).called > info
+    called. > info
+      if.
+        os.is-windows
+        win32 "stat" (* path)
+        posix "stat" (* path)
 
   # Returns `org.eolang.true` if file with current `path` exists in filesystem.
   [] > exists
     eq. > @
       code.
-        syscall
-          "access"
-          * path 0
+        if.
+          os.is-windows
+          win32 "access" (* path 0)
+          posix "access" (* path 0)
       0
 
   # If current file exists - returns the file.
@@ -90,7 +94,11 @@
         sprintf
           "Cant get the size of the file '%s'"
           * path
-    (syscall "stat" (* path)).called > info
+    called. > info
+      if.
+        os.is-windows
+        win32 "stat" (* path)
+        posix "stat" (* path)
 
   # Moves the current file to `target`, making and returning a new `file` from it.
   [target] > moved
