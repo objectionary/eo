@@ -7,6 +7,7 @@ package org.eolang.parser;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StEnvelope;
 import com.yegor256.xsline.StSequence;
+import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
@@ -96,8 +97,10 @@ final class StUnhex extends StEnvelope {
         if (num % 1 == 0) {
             if ("-0.0".equals(num.toString())) {
                 str = "-0";
-            } else {
+            } else if (Math.abs(num) < 0x1p63) {
                 str = Long.toString(num.longValue());
+            } else {
+                str = BigDecimal.valueOf(num).toBigInteger().toString();
             }
         } else {
             str = Double.toString(num);
