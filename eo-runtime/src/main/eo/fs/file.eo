@@ -4,6 +4,7 @@
 +alias sm.os
 +alias fs.path
 +alias sm.posix
++alias sm.syscall
 +alias sm.win32
 +alias tt.sprintf
 +alias fs.tmpdir
@@ -22,18 +23,6 @@
   path > @
   # Converts the `file` to a `path`.
   (Q.fs.path path).@ > as-path
-
-  # Makes a syscall by `name` with `args` through the current OS's native
-  # interface - `win32` on Windows and `posix` everywhere else - returning the
-  # `return` object with its `code` and `output`.
-  #
-  # Note: This object is intended for internal use only. Please
-  # don't use the object programmatically outside of `file` object.
-  [name args] > syscall
-    if. > @
-      os.is-windows
-      win32 name args
-      posix name args
 
   # Returns `org.eolang.true` if current file is a directory, returns
   # `org.eolang.false` otherwise. Terminates with a ⊥ if the file cannot be
