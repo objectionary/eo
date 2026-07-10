@@ -15,6 +15,7 @@
     rec-split * 0 0
   text > bts!
   delimiter > delim!
+  delim.size > delim-size!
   bts.size > len!
 
   # Recursively splits text by delimiter into tuple of substrings.
@@ -28,16 +29,24 @@
             start
             current.minus start
       if.
-        delim.eq
-          slice bts current 1
-        rec-split
-          appended
-          (current.plus 1).as-number
-          (current.plus 1).as-number
+        or.
+          delim-size.eq 0
+          (current.plus delim-size).gt len
         rec-split
           accum
           start
           (current.plus 1).as-number
+        if.
+          delim.eq
+            slice bts current delim-size
+          rec-split
+            appended
+            (current.plus delim-size).as-number
+            (current.plus delim-size).as-number
+          rec-split
+            accum
+            start
+            (current.plus 1).as-number
 
   # Tests that split method divides text into parts using dash delimiter.
   [] +> tests-splits-text-by-dash
@@ -63,3 +72,10 @@
             " "
           1
       6
+
+  # Tests that split correctly handles a multi-character delimiter.
+  [] +> tests-splits-text-by-multi-char-delimiter
+    eq. > @
+      list
+        split "a::b::c" "::"
+      * "a" "b" "c"
