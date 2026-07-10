@@ -4,6 +4,7 @@
 +alias sm.os
 +alias fs.path
 +alias sm.posix
++alias sm.win32
 +alias tt.sprintf
 +alias fs.tmpdir
 +architect yegor256@gmail.com
@@ -132,10 +133,15 @@
             process-file
             ^
           if.
-            read.and os.is-windows.not
-            seq *
-              posix-read-file
-              ^
+            read
+            if.
+              os.is-windows
+              seq *
+                win-read-file
+                ^
+              seq *
+                posix-read-file
+                ^
             seq *
               process-file
               ^
@@ -294,6 +300,50 @@
                 chunk
                 input-block chunk
               (posix "read" (* fd size)).output > chunk!
+
+    # Reads the file on windows through the msvcrt open/read/close functions,
+    # threading the descriptor to the provided scope and closing it afterwards.
+    #
+    # Note: This object is intended for internal use only. Please
+    # don't use the object programmatically outside of `file` object.
+    [] > win-read-file
+      if. > @
+        fd.eq -1
+        T
+          sprintf
+            "Couldn't open file '%s' for reading"
+            * ^.^.path
+        seq *
+          dataized
+            scope
+              win-file-stream fd
+          code.
+            win32
+              "close"
+              * fd
+          true
+      code. > fd
+        win32
+          "open"
+          * ^.^.path 32768
+
+      # Windows file stream backed by a descriptor `fd`, providing read access.
+      #
+      # Note: This object is intended for internal use only. Please
+      # don't use the object programmatically outside of `file` object.
+      [fd] > win-file-stream
+        # Read `size` amount of bytes from the file via the read function.
+        [size] > read
+          (input-block --).read size > @
+
+          # Windows file input block.
+          [buffer] > input-block
+            buffer > @
+            [size] > read
+              seq * > @
+                chunk
+                input-block chunk
+              (win32 "read" (* fd size)).output > chunk!
 
   # Tests that the current directory is detected as a directory.
   [] +> tests-check-if-current-directory-is-directory
