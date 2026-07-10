@@ -25,6 +25,7 @@ import org.eolang.EOsm.Posix.GetpidSyscall;
 import org.eolang.EOsm.Posix.GettimeofdaySyscall;
 import org.eolang.EOsm.Posix.InetAddrSyscall;
 import org.eolang.EOsm.Posix.ListenSyscall;
+import org.eolang.EOsm.Posix.MkdirSyscall;
 import org.eolang.EOsm.Posix.OpenSyscall;
 import org.eolang.EOsm.Posix.ReadSyscall;
 import org.eolang.EOsm.Posix.RecvSyscall;
@@ -45,6 +46,7 @@ import org.eolang.XmirObject;
  * Posix syscall.
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
+ * @checkstyle ClassFanOutComplexityCheck (100 lines)
  */
 @XmirObject(oname = "posix.@")
 @SuppressWarnings("PMD.AvoidDollarSigns")
@@ -63,6 +65,7 @@ public final class EOposix$EOφ extends PhDefault implements Atom {
         EOposix$EOφ.SYS_CALLS.put("creat", CreatSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("unlink", UnlinkSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("rmdir", RmdirSyscall::new);
+        EOposix$EOφ.SYS_CALLS.put("mkdir", MkdirSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("rename", RenameSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("read", ReadSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("write", WriteSyscall::new);

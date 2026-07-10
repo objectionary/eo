@@ -43,6 +43,8 @@
     1024
   # Permission bits for a file made by the "creat" syscall: octal 0644.
   420 > create-mode
+  # Permission bits for a directory made by the "mkdir" syscall: octal 0777.
+  511 > mkdir-mode
   1 > sock-stream
   0 > stdin-fileno
   1 > stdout-fileno

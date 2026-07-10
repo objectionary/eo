@@ -25,6 +25,7 @@ import org.eolang.EOsm.Win32.GetEnvironmentVariableFuncCall;
 import org.eolang.EOsm.Win32.GetSystemTimeFuncCall;
 import org.eolang.EOsm.Win32.InetAddrFuncCall;
 import org.eolang.EOsm.Win32.ListenFuncCall;
+import org.eolang.EOsm.Win32.MkdirFuncCall;
 import org.eolang.EOsm.Win32.OpenFuncCall;
 import org.eolang.EOsm.Win32.ReadFileFuncCall;
 import org.eolang.EOsm.Win32.ReadFuncCall;
@@ -70,6 +71,7 @@ public final class EOwin32$EOφ extends PhDefault implements Atom {
         EOwin32$EOφ.FUNCTIONS.put("creat", CreatFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("unlink", UnlinkFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("rmdir", RmdirFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("mkdir", MkdirFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("rename", RenameFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("read", ReadFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("write", WriteFuncCall::new);

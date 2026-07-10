@@ -1,5 +1,8 @@
 +alias tt.sprintf
 +alias fs.tmpdir
++alias sm.os
++alias sm.posix
++alias sm.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package fs
@@ -16,23 +19,27 @@
   file > @
   true > is-directory
 
-  # Makes a directory together with all required
-  # parent directories and returns the created directory.
+  # Makes a directory together with all required parent directories and returns
+  # the created directory. Terminates with a ⊥ when the directory cannot be
+  # made, since that is a system-level failure.
   [] > made
     if. > @
       ^.exists
       ^
       seq *
-        mkdir
-        ^
-
-    # Makes a directory together with all required
-    # parent directories.
-    # Returns `org.eolang.true` object.
-    #
-    # Note: This object is intended for internal use only. Please
-    # don't use it programmatically outside of `dir` object.
-    [] > mkdir /bool
+        (dir (Q.fs.file ^.as-path.dirname)).made
+        if.
+          outcome.eq 0
+          ^
+          T
+            sprintf
+              "Cant make the directory '%s'"
+              * ^.path
+    code. > outcome
+      if.
+        os.is-windows
+        win32 "mkdir" (* ^.path)
+        posix "mkdir" (* ^.path posix.mkdir-mode)
 
   # Goes through all files in the directory, recursively
   # finding them with the `glob` provided.

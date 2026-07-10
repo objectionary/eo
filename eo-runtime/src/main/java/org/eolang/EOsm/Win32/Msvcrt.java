@@ -27,6 +27,7 @@ import java.util.Collections;
  *
  * @since 0.74.0
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public interface Msvcrt extends Library {
 
     /**
@@ -119,6 +120,14 @@ public interface Msvcrt extends Library {
      * @return Zero on success, -1 on error
      */
     int rmdir(String path);
+
+    /**
+     * Creates a directory. Maps to {@code _mkdir}, which takes no permission
+     * bits, so the mode passed at the EO level is ignored here.
+     * @param path Path to the directory
+     * @return Zero on success, -1 on error
+     */
+    int mkdir(String path);
 
     /**
      * Creates a new file, or truncates an existing one, and opens it. Maps to

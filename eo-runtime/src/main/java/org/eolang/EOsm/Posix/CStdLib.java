@@ -155,6 +155,14 @@ public interface CStdLib extends Library {
     int rmdir(String path);
 
     /**
+     * Create a directory.
+     * @param path Path to the directory
+     * @param mode Permission bits for the new directory
+     * @return Zero on success, -1 on error
+     */
+    int mkdir(String path, int mode);
+
+    /**
      * Create a new file, or truncate an existing one, and open it.
      * @param path Path to the file
      * @param mode Permission bits for a newly created file
