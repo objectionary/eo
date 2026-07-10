@@ -80,3 +80,11 @@
   [] +> tests-cosine-of-nan-is-nan
     is-nan. > @
       cosine nan
+  # Tests that cosine of +inf is nan.
+  [] +> tests-cosine-of-positive-infinity-is-nan
+    is-nan. > @
+      cosine pinf
+  # Tests that cosine of -inf is nan.
+  [] +> tests-cosine-of-negative-infinity-is-nan
+    is-nan. > @
+      cosine ninf
