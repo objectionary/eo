@@ -25,6 +25,7 @@
         1.eq limit
         * text
         rec-nsplit * 0 0 0
+  delimiter.size > delimiter-size!
 
   # Recursively splits text by delimiter up to limit number of times.
   [accum start current count] > rec-nsplit
@@ -37,21 +38,30 @@
             start
             current.minus start
       if.
-        and.
-          delimiter.eq
-            slice text current 1
-          (number count).lt
-            (number limit).minus 1
-        rec-nsplit
-          appended
-          (current.plus 1).as-number
-          (current.plus 1).as-number
-          (count.plus 1).as-number
+        or.
+          delimiter-size.eq 0
+          (current.plus delimiter-size).gt text.size
         rec-nsplit
           accum
           start
           (current.plus 1).as-number
           count
+        if.
+          and.
+            delimiter.eq
+              slice text current delimiter-size
+            (number count).lt
+              (number limit).minus 1
+          rec-nsplit
+            appended
+            (current.plus delimiter-size).as-number
+            (current.plus delimiter-size).as-number
+            (count.plus 1).as-number
+          rec-nsplit
+            accum
+            start
+            (current.plus 1).as-number
+            count
 
   # Tests that nsplit splits with limit 2 correctly.
   [] +> tests-nsplit-with-limit-two
@@ -126,3 +136,13 @@
           "-"
           3
       * "" "a" "b-c"
+
+  # Tests that nsplit correctly handles a multi-character delimiter.
+  [] +> tests-nsplit-with-multi-char-delimiter
+    eq. > @
+      list
+        nsplit
+          "a::b::c::d"
+          "::"
+          2
+      * "a" "b::c::d"
