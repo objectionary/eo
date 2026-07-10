@@ -68,7 +68,7 @@
       ^.exists
       Q.fs.file
         touch.as-bytes
-      error
+      T
         sprintf
           "Directory %s does not exist, can't create temporary file"
           * file
@@ -81,9 +81,9 @@
     [] > touch /string
 
   # Opens the file for I/O operations.
-  # Since current file is a directory - returns an `error`.
+  # Since current file is a directory - terminates with a ⊥.
   [mode scope] > open
-    error > @
+    T > @
       sprintf
         "The file %s is a directory, can't open for I/O operations"
         * file

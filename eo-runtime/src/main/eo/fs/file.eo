@@ -47,22 +47,22 @@
           posix "access" (* path 0)
       0
 
-  # If current file exists - returns the file.
-  # If current file does not exist - create an empty file
-  # in filesystem and returns it.
+  # If current file exists - returns the file. If it does not exist - creates
+  # an empty file and returns it. Terminates with a ⊥ when the file cannot be
+  # created, since that is a system-level failure.
   [] > touched
     if. > @
       exists
       ^
-      seq *
-        if.
-          descriptor.eq -1
-          T
-            sprintf
-              "Cant touch the file '%s'"
-              * path
+      if.
+        descriptor.eq -1
+        T
+          sprintf
+            "Cant touch the file '%s'"
+            * path
+        seq *
           closed
-        ^
+          ^
     code. > descriptor
       if.
         os.is-windows
@@ -74,20 +74,19 @@
         win32 "close" (* descriptor)
         posix "close" (* descriptor)
 
-  # If current file exists - deletes it and returns it.
-  # If current file does not exist - just returns it.
+  # If current file exists - deletes it and returns it. If it does not exist -
+  # just returns it. Terminates with a ⊥ when it cannot be deleted, since that
+  # is a system-level failure.
   [] > deleted
     if. > @
       exists
-      seq *
-        if.
-          outcome.eq 0
-          true
-          T
-            sprintf
-              "Cant delete the file '%s'"
-              * path
+      if.
+        outcome.eq 0
         ^
+        T
+          sprintf
+            "Cant delete the file '%s'"
+            * path
       ^
     code. > outcome
       if.
@@ -113,16 +112,17 @@
         win32 "stat" (* path)
         posix "stat" (* path)
 
-  # Moves the current file to `target`, making and returning a new `file` from it.
+  # Moves the current file to `target`, making and returning a new `file` from
+  # it. Terminates with a ⊥ when the move fails, since that is a system-level
+  # failure.
   [target] > moved
-    file > @
-      if.
-        outcome.eq 0
-        target
-        T
-          sprintf
-            "Cant move the file '%s' to '%s'"
-            * path target
+    if. > @
+      outcome.eq 0
+      file target
+      T
+        sprintf
+          "Cant move the file '%s' to '%s'"
+          * path target
     code. > outcome
       if.
         os.is-windows
@@ -178,27 +178,24 @@
           open-file
           ^
     mode > access!
-    as-bool. > existing
-      read.or rw
-    (access.eq "a+").as-bool > ra
-    (access.eq "r").as-bool > read
-    as-bool. > readable
-      or.
-        read.or rw
-        wr.or ra
-    (access.eq "r+").as-bool > rw
-    as-bool. > truncate
-      write.or wr
-    (access.eq "w+").as-bool > wr
-    as-bool. > writable
-      or.
-        or.
-          write.or rw
-          wr.or ra
-        (access.eq "a").as-bool
-    (access.eq "w").as-bool > write
-    as-bool. > appending
-      ra.or (access.eq "a")
+    # Writable unless opened read-only ("r").
+    (access.eq "r").as-bool.not > writable
+    # Readable unless opened write-only ("w") or append-only ("a").
+    and. > readable
+      (access.eq "w").as-bool.not
+      (access.eq "a").as-bool.not
+    # "r" and "r+" require the file to already exist.
+    or. > existing
+      (access.eq "r").as-bool
+      (access.eq "r+").as-bool
+    # "w" and "w+" truncate the file on open.
+    or. > truncate
+      (access.eq "w").as-bool
+      (access.eq "w+").as-bool
+    # "a" and "a+" append on every write.
+    or. > appending
+      (access.eq "a").as-bool
+      (access.eq "a+").as-bool
 
     # Opens the file through OS syscalls with the flags derived from the access
     # mode, threads a single descriptor to the scope and closes it afterwards.
