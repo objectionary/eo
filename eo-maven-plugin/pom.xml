@@ -539,6 +539,7 @@
                 <exclude>duplicatefinder:.*</exclude>
                 <exclude>xml:/src/test/resources/META-INF/maven/plugin.xml</exclude>
                 <exclude>dependencies:org.hamcrest:hamcrest-core:jar:1.3:compile</exclude>
+                <exclude>dependencies:org.aspectj:aspectjrt</exclude>
               </excludes>
             </configuration>
           </plugin>
