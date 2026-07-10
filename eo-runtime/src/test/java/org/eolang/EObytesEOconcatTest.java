@@ -38,4 +38,40 @@ final class EObytesEOconcatTest {
             Matchers.equalTo("привет mr. ㄤㄠ!")
         );
     }
+
+    @Test
+    void reportsCleanFailureInsteadOfOverflowingArraySize() {
+        MatcherAssert.assertThat(
+            "Concatenation overflowing the maximum array size should report a clean failure via the 'cant-concat' fallback, but it didn't",
+            new Dataized(
+                new PhApplication(
+                    new PhApplication(
+                        new Data.ToPhi(new byte[1_073_741_824]).take("concat").copy(),
+                        "b",
+                        new Data.ToPhi(new byte[1_073_741_824])
+                    ),
+                    "cant-concat",
+                    new EObytesEOconcatTest.Fallback()
+                )
+            ).asString(),
+            Matchers.equalTo("recovered")
+        );
+    }
+
+    /**
+     * Fallback object, mostly for unit tests.
+     * @since 0.74
+     */
+    private static final class Fallback extends PhDefault {
+
+        /**
+         * Ctor.
+         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
+         */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+        Fallback() {
+            this.add("msg", new AtVoid("msg"));
+            this.add("φ", new AtComposite(this, rho -> new Data.ToPhi("recovered")));
+        }
+    }
 }
