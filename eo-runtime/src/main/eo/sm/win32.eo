@@ -30,6 +30,10 @@
   -1 > socket-error
   -1 > inaddr-none
   02-02 > winsock-version-2-2
+  # Open flags for a file read descriptor: `_O_RDONLY | _O_BINARY`.
+  32768 > open-read-flags
+  # Open flags for a file write descriptor: `_O_WRONLY | _O_APPEND | _O_BINARY`.
+  32777 > open-write-flags
   # Result of a Win32 function call with return code and output.
   [code output] > return
     output > @

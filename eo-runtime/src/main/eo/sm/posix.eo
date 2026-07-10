@@ -24,6 +24,14 @@
   1 > sock-stream
   6 > ipproto-tcp
   -1 > inaddr-none
+  # Open flags for a file read descriptor: `O_RDONLY`.
+  0 > open-read-flags
+  # Open flags for a file write descriptor: `O_WRONLY | O_APPEND`.
+  # `O_APPEND` is `0x8` on macos and `0x400` on linux.
+  if. > open-write-flags
+    os.is-macos
+    9
+    1025
   # Result of a POSIX syscall with return code and output.
   [code output] > return
     output > @

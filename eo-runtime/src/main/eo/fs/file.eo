@@ -107,17 +107,21 @@
   # The second argument `scope` is the scope where file is available as input
   # (the `read` object is available) or output (the `write` object is available).
   #
+  # The third argument `cant-open` is the fallback applied to the failure reason
+  # when the file cannot be opened - it must exist for the mode but does not, or
+  # the open syscall fails. Leaving `cant-open` unbound terminates with a ⊥.
+  #
   # When `file.open` is dataized - it opens file stream, dataizes the `scope`,
   # closes the file stream and returns an original file object.
-  [mode scope] > open
+  [mode scope cant-open] > open
     if. > @
       readable.not.and writable.not
-      error "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
+      T "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
         exists.not
         if.
           existing
-          error
+          cant-open
             sprintf
               "File must exist for given access mod: '%s'"
               * access
@@ -160,41 +164,35 @@
     # descriptor to the provided scope and closing them afterwards. The read
     # descriptor is opened read-only from the beginning, the write descriptor for
     # appending, mirroring the two independent streams a file provides. The open
-    # flags are the platform's `O_*` values: read is `O_RDONLY` (posix 0, windows
-    # `O_BINARY` 32768), write is `O_WRONLY | O_APPEND` (linux 1025, macos 9,
-    # windows additionally `O_BINARY`, 32777).
+    # flags come from the syscall object's `open-read-flags` and `open-write-flags`.
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
     [] > open-file
       if. > @
         os.is-windows
-        open-through win32 32768 32777
-        if.
-          os.is-macos
-          open-through posix 0 9
-          open-through posix 0 1025
+        open-through win32
+        open-through posix
 
       # Opens the read and write descriptors through the given `syscall` object
       # (`posix` or `win32`), threads a stream over them to the scope and closes
-      # both afterwards. Here `read-flags` open the read descriptor and
-      # `write-flags` the write descriptor.
+      # both afterwards. The open flags come from the syscall's `open-read-flags`
+      # and `open-write-flags`.
       #
       # Note: This object is intended for internal use only. Please
       # don't use the object programmatically outside of `file` object.
-      [syscall read-flags write-flags] > open-through
+      [syscall] > open-through
         if. > @
           or.
             read-fd.eq -1
             write-fd.eq -1
-          T
+          cant-open
             sprintf
               "Couldn't open file '%s'"
-              * ^.^.^.path
+              * path
           seq *
-            dataized
-              scope
-                stream read-fd write-fd
+            scope
+              stream read-fd write-fd
             code.
               syscall
                 "close"
@@ -207,11 +205,11 @@
         code. > read-fd
           syscall
             "open"
-            * ^.^.^.path read-flags
+            * path syscall.open-read-flags
         code. > write-fd
           syscall
             "open"
-            * ^.^.^.path write-flags
+            * path syscall.open-write-flags
 
         # File stream backed by a read descriptor and a write descriptor,
         # providing input and output access via the syscalls.
@@ -220,7 +218,7 @@
         # don't use the object programmatically outside of `file` object.
         [read-fd write-fd] > stream
           # Read `size` amount of bytes from the file via the read syscall.
-          # Returns an error if the access mode does not allow reading.
+          # Terminates with a ⊥ if the access mode does not allow reading.
           [size] > read
             (input-block --).read size > @
 
@@ -230,18 +228,17 @@
               [size] > read
                 if. > @
                   readable.not
-                  [] >>
-                    error > @
-                      sprintf
-                        "Can't read from file with provided access mode '%s'"
-                        * access
+                  T
+                    sprintf
+                      "Can't read from file with provided access mode '%s'"
+                      * access
                   seq *
                     chunk
                     input-block chunk
                 (syscall "read" (* read-fd size)).output > chunk!
 
           # Write the given `buffer` to the file via the write syscall.
-          # Returns an error if the access mode does not allow writing.
+          # Terminates with a ⊥ if the access mode does not allow writing.
           [buffer] > write
             output-block.write buffer > @
 
@@ -251,11 +248,10 @@
               [buffer] > write
                 if. > @
                   writable.not
-                  [] >>
-                    error > @
-                      sprintf
-                        "Can't write to file with provided access mode '%s'"
-                        * access
+                  T
+                    sprintf
+                      "Can't write to file with provided access mode '%s'"
+                      * access
                   seq *
                     code.
                       syscall
@@ -348,6 +344,19 @@
     .open > @
       "r+"
       f > [f]
+
+  # Tests that opening a non-existent file for reading recovers through the
+  # provided `cant-open` fallback instead of terminating.
+  [] +> tests-recovers-from-opening-missing-file-through-fallback
+    eq. > @
+      "recovered"
+      tmpdir
+      .tmpfile
+      .deleted
+      .open
+        "r"
+        f > [f]
+        "recovered" > [reason]
 
   # Tests that opening a non-existent file in write mode creates the file.
   [] +> tests-touches-absent-file-on-opening-for-writing
