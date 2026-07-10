@@ -13,12 +13,8 @@
 [start end] > range-of-numbers
   if. > @
     and.
-      or.
-        0.eq start
-        1.eq (start.div start)
-      or.
-        0.eq end
-        1.eq (end.div end)
+      start.is-integer
+      end.is-integer
     range
       [] >>
         build ^.start > @
