@@ -13,7 +13,7 @@
 # asin(x) equals pi/2 minus twice asin(sqrt((1 minus x) div 2)), so the Taylor
 # series always runs in its fast region, while arguments outside [-1, 1] and
 # non-finite ones collapse to nan.
-[num] > asine
+[num] > arc-sine
   if. > @
     arg.lt 0
     base.neg
@@ -51,88 +51,88 @@
             poly (depth.plus 1)
 
   # Tests that arc sine of zero is zero.
-  [] +> tests-asine-of-zero-is-zero
+  [] +> tests-arc-sine-of-zero-is-zero
     eq. > @
-      asine 0
+      arc-sine 0
       0
 
   # Tests that arc sine of one equals pi/2.
-  [] +> tests-asine-of-one-is-pi-halves
+  [] +> tests-arc-sine-of-one-is-pi-halves
     lt. > @
       abs
         minus.
-          (asine 1).times 1000
+          (arc-sine 1).times 1000
           (pi.div 2).times 1000
       1
 
   # Tests that arc sine of minus one equals minus pi/2.
-  [] +> tests-asine-of-negative-one-is-minus-pi-halves
+  [] +> tests-arc-sine-of-negative-one-is-minus-pi-halves
     lt. > @
       abs
         minus.
-          (asine -1).times 1000
+          (arc-sine -1).times 1000
           (pi.div 2).neg.times 1000
       1
 
   # Tests that arc sine of one half equals pi/6.
-  [] +> tests-asine-of-half-is-pi-sixths
+  [] +> tests-arc-sine-of-half-is-pi-sixths
     lt. > @
       abs
         minus.
-          (asine 0.5).times 1000
+          (arc-sine 0.5).times 1000
           (pi.div 6).times 1000
       1
 
   # Tests that arc sine of minus one half equals minus pi/6.
-  [] +> tests-asine-of-negative-half-is-minus-pi-sixths
+  [] +> tests-arc-sine-of-negative-half-is-minus-pi-sixths
     lt. > @
       abs
         minus.
-          (asine -0.5).times 1000
+          (arc-sine -0.5).times 1000
           (pi.div 6).neg.times 1000
       1
 
   # Tests that arc sine of 0.6 is about 0.6435 radians.
-  [] +> tests-asine-of-point-six
+  [] +> tests-arc-sine-of-point-six
     lt. > @
       abs
         minus.
-          (asine 0.6).times 1000
+          (arc-sine 0.6).times 1000
           643.5
       1
 
   # Tests that arc sine is an odd function.
-  [] +> tests-asine-is-odd-function
+  [] +> tests-arc-sine-is-odd-function
     lt. > @
       abs
         times.
           plus.
-            asine 0.6
-            asine -0.6
+            arc-sine 0.6
+            arc-sine -0.6
           1000
       1
 
   # Tests that arc sine of a value above one is nan.
-  [] +> tests-asine-above-one-is-nan
+  [] +> tests-arc-sine-above-one-is-nan
     is-nan. > @
-      asine 2
+      arc-sine 2
 
   # Tests that arc sine of a value below minus one is nan.
-  [] +> tests-asine-below-minus-one-is-nan
+  [] +> tests-arc-sine-below-minus-one-is-nan
     is-nan. > @
-      asine -2
+      arc-sine -2
 
   # Tests that arc sine of nan is nan.
-  [] +> tests-asine-of-nan-is-nan
+  [] +> tests-arc-sine-of-nan-is-nan
     is-nan. > @
-      asine nan
+      arc-sine nan
 
   # Tests that arc sine of positive infinity is nan.
-  [] +> tests-asine-of-positive-infinity-is-nan
+  [] +> tests-arc-sine-of-positive-infinity-is-nan
     is-nan. > @
-      asine pinf
+      arc-sine pinf
 
   # Tests that arc sine of negative infinity is nan.
-  [] +> tests-asine-of-negative-infinity-is-nan
+  [] +> tests-arc-sine-of-negative-infinity-is-nan
     is-nan. > @
-      asine ninf
+      arc-sine ninf
