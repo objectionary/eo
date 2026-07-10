@@ -69,15 +69,20 @@
           normalized.eq "//"
           "/"
           string normalized
-      uri > ubts!
       ^.is-absolute.as-bool > is-absolute
-      and. > trailing
-        ubts.size.gt 0
-        eq.
-          ubts.slice
-            ubts.size.plus -1
-            1
-          separator
+      as-bytes. > normalized
+        if.
+          uri.length.eq 0
+          "."
+          concat.
+            if.
+              is-absolute
+              separator.concat path
+              path
+            if.
+              trailing
+              separator
+              --
       Q.tt.joined > path
         separator
         reduced
@@ -104,19 +109,14 @@
                   segment.eq ""
                 accum
                 accum.with segment
-      as-bytes. > normalized
-        if.
-          uri.length.eq 0
-          "."
-          concat.
-            if.
-              is-absolute
-              separator.concat path
-              path
-            if.
-              trailing
-              separator
-              --
+      and. > trailing
+        ubts.size.gt 0
+        eq.
+          ubts.slice
+            ubts.size.plus -1
+            1
+          separator
+      uri > ubts!
 
     # Resolves `other` path against `^.uri` and returns as new `path` from it.
     # The original `uri` and resolving `other` may be:
@@ -174,11 +174,11 @@
               idx
               txt.length.minus
                 number idx
-      uri > pth!
-      string pth > txt
       plus. > idx!
         last-index-of txt separator
         1
+      uri > pth!
+      string pth > txt
 
     # Takes the extension part from the provided `path`, for example:
     # |------------------------------|--------|
@@ -207,8 +207,8 @@
               txt.length.minus
                 number idx
       basename > base!
-      string base > txt
       last-index-of txt "." > idx!
+      string base > txt
 
     # Takes the directory name from the provided `path`, for example:
     # |------------------------------|--------------------|
@@ -235,9 +235,9 @@
           pth
           as-bytes.
             txt.slice 0 len
+      last-index-of txt separator > len!
       uri > pth!
       string pth > txt
-      last-index-of txt separator > len!
 
   # Windows specified path.
   # Here `uri` is file system URI which may contain forward slashes '/'.
@@ -279,12 +279,12 @@
           (index-of pth path.posix.separator).eq -1
           string ubts
           string repl
-        uri > ubts!
         string ubts > pth
         replaced > repl!
           pth
           regex "/\\//"
           separator
+        uri > ubts!
 
       # Returns `true` if current path is absolute, which means:
       # - either path root is root relative (starts with "\")
@@ -311,22 +311,35 @@
             normalized.eq "\\\\"
             separator
             string normalized
-        uri > ubts!
-        (^.is-drive-relative ubts).as-bool > is-drive-relative
-        (^.is-root-relative ubts).as-bool > is-root-relative
         if. > driveless!
           is-drive-relative
           ubts.slice
             2
             ubts.size.plus -2
           ubts
-        and. > trailing
-          ubts.size.gt 0
-          eq.
-            ubts.slice
-              ubts.size.plus -1
-              1
-            separator
+        (^.is-drive-relative ubts).as-bool > is-drive-relative
+        (^.is-root-relative ubts).as-bool > is-root-relative
+        as-bytes. > normalized
+          if.
+            driveless.size.eq 0
+            "."
+            concat.
+              concat.
+                if.
+                  is-drive-relative
+                  if.
+                    (driveless.slice 0 1).eq separator
+                    uri.slice 0 3
+                    uri.slice 0 2
+                  if.
+                    is-root-relative
+                    separator
+                    --
+                path
+              if.
+                trailing
+                separator
+                --
         Q.tt.joined > path!
           separator
           reduced
@@ -355,27 +368,14 @@
                     segment.eq ""
                   accum
                   accum.with segment
-        as-bytes. > normalized
-          if.
-            driveless.size.eq 0
-            "."
-            concat.
-              concat.
-                if.
-                  is-drive-relative
-                  if.
-                    (driveless.slice 0 1).eq separator
-                    uri.slice 0 3
-                    uri.slice 0 2
-                  if.
-                    is-root-relative
-                    separator
-                    --
-                path
-              if.
-                trailing
-                separator
-                --
+        and. > trailing
+          ubts.size.gt 0
+          eq.
+            ubts.slice
+              ubts.size.plus -1
+              1
+            separator
+        uri > ubts!
 
       # Resolves `other` path against `^.uri` and returns as new `path` from it.
       # Original `uri` and `other` path for resolving may be:
@@ -448,11 +448,11 @@
                 idx
                 txt.length.minus
                   number idx
-        uri > pth!
-        string pth > txt
         plus. > idx!
           last-index-of txt separator
           1
+        uri > pth!
+        string pth > txt
 
       # Takes the extension part from the provided `path`, for example:
       # |------------------------------|--------|
@@ -481,8 +481,8 @@
                 txt.length.minus
                   number idx
         basename > base!
-        string base > txt
         last-index-of txt "." > idx!
+        string base > txt
 
       # Takes the directory name from the provided `path`, for example:
       # |------------------------------|--------------------|
@@ -505,9 +505,9 @@
             pth
             as-bytes.
               txt.slice 0 len
+        last-index-of txt separator > len!
         uri > pth!
         string pth > txt
-        last-index-of txt separator > len!
 
   # Tests that the path separator is determined correctly based on the operating system.
   [] +> tests-determines-separator-depending-on-os
