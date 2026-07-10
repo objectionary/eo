@@ -169,27 +169,14 @@
       readable.not.and writable.not
       T "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
-        exists.not
-        if.
-          existing
-          cant-open
-            sprintf
-              "File must exist for given access mod: '%s'"
-              * access
-          seq *
-            touched
-            open-file
-            ^
-        if.
-          truncate
-          seq *
-            deleted
-            touched
-            open-file
-            ^
-          seq *
-            open-file
-            ^
+        existing.and exists.not
+        cant-open
+          sprintf
+            "File must exist for given access mod: '%s'"
+            * access
+        seq *
+          open-file
+          ^
     mode > access!
     as-bool. > existing
       read.or rw
@@ -210,12 +197,11 @@
           wr.or ra
         (access.eq "a").as-bool
     (access.eq "w").as-bool > write
+    as-bool. > appending
+      ra.or (access.eq "a")
 
-    # Opens the file through OS syscalls, threading a read descriptor and a write
-    # descriptor to the provided scope and closing them afterwards. The read
-    # descriptor is opened read-only from the beginning, the write descriptor for
-    # appending, mirroring the two independent streams a file provides. The open
-    # flags come from the syscall object's `open-read-flags` and `open-write-flags`.
+    # Opens the file through OS syscalls with the flags derived from the access
+    # mode, threads a single descriptor to the scope and closes it afterwards.
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
@@ -225,49 +211,66 @@
         open-through win32
         open-through posix
 
-      # Opens the read and write descriptors through the given `syscall` object
-      # (`posix` or `win32`), threads a stream over them to the scope and closes
-      # both afterwards. The open flags come from the syscall's `open-read-flags`
-      # and `open-write-flags`.
+      # Opens the file through the given `syscall` object (`posix` or `win32`)
+      # with the access mode's flags, threads a stream over the single
+      # descriptor to the scope and closes it afterwards. The flags are composed
+      # from the syscall's atomic open flags: a read/write/read-write direction
+      # plus the create, truncate and append bits the mode calls for.
       #
       # Note: This object is intended for internal use only. Please
       # don't use the object programmatically outside of `file` object.
       [syscall] > open-through
         if. > @
-          or.
-            read-fd.eq -1
-            write-fd.eq -1
+          descriptor.eq -1
           cant-open
             sprintf
               "Couldn't open file '%s'"
               * path
           seq *
             scope
-              stream read-fd write-fd
+              stream descriptor
             code.
               syscall
                 "close"
-                * read-fd
-            code.
-              syscall
-                "close"
-                * write-fd
+                * descriptor
             true
-        code. > read-fd
+        code. > descriptor
           syscall
             "open"
-            * path syscall.open-read-flags
-        code. > write-fd
-          syscall
-            "open"
-            * path syscall.open-write-flags
+            * path flags syscall.create-mode
+        plus. > flags
+          plus.
+            plus.
+              direction
+              create-bit
+            truncate-bit
+          append-bit
+        if. > direction
+          readable.and writable
+          syscall.read-write
+          if.
+            writable
+            syscall.write-only
+            syscall.read-only
+        if. > create-bit
+          existing.not
+          syscall.create-flag
+          0
+        if. > truncate-bit
+          truncate
+          syscall.truncate-flag
+          0
+        if. > append-bit
+          appending
+          syscall.append-flag
+          0
 
-        # File stream backed by a read descriptor and a write descriptor,
-        # providing input and output access via the syscalls.
+        # File stream backed by a single descriptor, providing input and output
+        # access via the syscalls.
         #
         # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
-        [read-fd write-fd] > stream
+        [descriptor] > stream
           # Read `size` amount of bytes from the file via the read syscall.
           # Terminates with a ⊥ if the access mode does not allow reading.
           [size] > read
@@ -286,7 +289,7 @@
                   seq *
                     chunk
                     input-block chunk
-                (syscall "read" (* read-fd size)).output > chunk!
+                (syscall "read" (* descriptor size)).output > chunk!
 
           # Write the given `buffer` to the file via the write syscall.
           # Terminates with a ⊥ if the access mode does not allow writing.
@@ -307,7 +310,7 @@
                     code.
                       syscall
                         "write"
-                        * write-fd buffer buffer.size
+                        * descriptor buffer buffer.size
                     output-block
 
   # Tests that the current directory is detected as a directory.
@@ -632,6 +635,11 @@
         .open
           "w"
           f.write "Shrek is love" > [f]
+        file
+          src
+        .open
+          "a"
+          f.write "!" > [f]
         malloc
         .of
           14
@@ -641,13 +649,10 @@
                 file
                   ^.src
                 .open
-                  "a+"
+                  "r"
                   [f] >>
-                    seq > @
-                      *
-                        f.write "!"
-                        ^.m.put
-                          f.read 14
+                    ^.m.put > @
+                      f.read 14
                 m
         .eq "Shrek is love!"
     temp.path > src
@@ -664,13 +669,13 @@
             tmpdir
             .tmpfile
             .open
-              "w+"
+              "w"
+              f.write "Hello, world" > [f]
+            .open
+              "r"
               [f] >>
-                seq > @
-                  *
-                    f.write "Hello, world"
-                    ^.m.put i2
-                (f.read 7).read 5 > i2
+                m.put > @
+                  (f.read 7).read 5
             m
     .eq "world" > @
 

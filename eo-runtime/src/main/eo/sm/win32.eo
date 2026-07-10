@@ -24,10 +24,18 @@
   -1 > inaddr-none
   -1 > invalid-socket
   6 > ipproto-tcp
-  # Open flags for a file read descriptor: `_O_RDONLY | _O_BINARY`.
-  32768 > open-read-flags
-  # Open flags for a file write descriptor: `_O_WRONLY | _O_APPEND | _O_BINARY`.
-  32777 > open-write-flags
+  # Open flag for read-only access: `_O_RDONLY | _O_BINARY`.
+  32768 > read-only
+  # Open flag for write-only access: `_O_WRONLY | _O_BINARY`.
+  32769 > write-only
+  # Open flag for read-write access: `_O_RDWR | _O_BINARY`.
+  32770 > read-write
+  # Open flag to create the file if absent: `_O_CREAT`.
+  256 > create-flag
+  # Open flag to truncate the file: `_O_TRUNC`.
+  512 > truncate-flag
+  # Open flag to append on write: `_O_APPEND`.
+  8 > append-flag
   # Permission bits for a file made by the "creat" function: `_S_IREAD | _S_IWRITE`.
   384 > create-mode
   1 > sock-stream

@@ -86,11 +86,18 @@ public interface CStdLib extends Library {
 
     /**
      * The "open" syscall.
+     *
+     * <p>The native {@code open} is variadic, so {@code mode} is declared as a
+     * trailing varargs: that makes JNA use the variadic calling convention,
+     * without which the creation mode is read from the wrong place on some ABIs
+     * (notably arm64, where variadic arguments are passed on the stack).</p>
+     *
      * @param path Path to file to open
      * @param flags Open flags
+     * @param mode Permission bits used when the flags request file creation
      * @return File descriptor
      */
-    int open(String path, int flags);
+    int open(String path, int flags, Object... mode);
 
     /**
      * Close file descriptor.

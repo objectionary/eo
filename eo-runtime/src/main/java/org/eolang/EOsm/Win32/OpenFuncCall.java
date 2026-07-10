@@ -41,7 +41,8 @@ public final class OpenFuncCall implements Syscall {
             new Data.ToPhi(
                 Msvcrt.INSTANCE.open(
                     new Dataized(params[0]).asString(),
-                    new Dataized(params[1]).asNumber().intValue()
+                    new Dataized(params[1]).asNumber().intValue(),
+                    new Dataized(params[2]).asNumber().intValue()
                 )
             )
         );

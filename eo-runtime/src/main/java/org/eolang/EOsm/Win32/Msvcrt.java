@@ -52,11 +52,16 @@ public interface Msvcrt extends Library {
 
     /**
      * Opens a file and returns a file descriptor.
+     *
+     * <p>The native {@code _open} is variadic, so {@code mode} is a trailing
+     * varargs, making JNA use the variadic calling convention.</p>
+     *
      * @param path Path to the file
      * @param flags Open flags, e.g. {@code _O_RDONLY | _O_BINARY}
+     * @param mode Permission bits used when the flags request file creation
      * @return File descriptor, or -1 on error
      */
-    int open(String path, int flags);
+    int open(String path, int flags, Object... mode);
 
     /**
      * Reads bytes from a file descriptor into the buffer.

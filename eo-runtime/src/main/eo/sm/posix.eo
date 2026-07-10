@@ -20,14 +20,27 @@
   2 > af-inet
   -1 > inaddr-none
   6 > ipproto-tcp
-  # Open flags for a file read descriptor: `O_RDONLY`.
-  0 > open-read-flags
-  # Open flags for a file write descriptor: `O_WRONLY | O_APPEND`.
-  # `O_APPEND` is `0x8` on macos and `0x400` on linux.
-  if. > open-write-flags
+  # Open flag for read-only access: `O_RDONLY`.
+  0 > read-only
+  # Open flag for write-only access: `O_WRONLY`.
+  1 > write-only
+  # Open flag for read-write access: `O_RDWR`.
+  2 > read-write
+  # Open flag to create the file if absent: `O_CREAT` (`0x200` on macos, `0x40` on linux).
+  if. > create-flag
     os.is-macos
-    9
-    1025
+    512
+    64
+  # Open flag to truncate the file: `O_TRUNC` (`0x400` on macos, `0x200` on linux).
+  if. > truncate-flag
+    os.is-macos
+    1024
+    512
+  # Open flag to append on write: `O_APPEND` (`0x8` on macos, `0x400` on linux).
+  if. > append-flag
+    os.is-macos
+    8
+    1024
   # Permission bits for a file made by the "creat" syscall: octal 0644.
   420 > create-mode
   1 > sock-stream
@@ -83,7 +96,7 @@
     code. > fd
       posix
         "open"
-        * "/dev/null" 0
+        * "/dev/null" 0 0
 
   # Tests that a POSIX TCP socket can be opened successfully using the socket syscall.
   [] +> tests-opens-posix-tcp-socket
