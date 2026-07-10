@@ -1,0 +1,63 @@
++alias ms.abs
++alias ms.pi
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package ms
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Degrees of `num` radians as `org.eolang.number`, the same angle expressed in
+# degrees rather than radians, found by scaling the argument by 180 over pi.
+[num] > degrees
+  div. > @
+    value.times 180.0
+    pi
+  number num.as-bytes > value
+
+  # Tests that zero radians is zero degrees.
+  [] +> tests-degrees-of-zero-is-zero
+    eq. > @
+      degrees 0
+      0
+
+  # Tests that pi radians is a half turn of 180 degrees.
+  [] +> tests-degrees-of-pi-is-half-turn
+    lt. > @
+      abs
+        minus.
+          degrees pi
+          180
+      0.0001
+
+  # Tests that pi/2 radians is a quarter turn of 90 degrees.
+  [] +> tests-degrees-of-pi-halves-is-quarter-turn
+    lt. > @
+      abs
+        minus.
+          degrees (pi.div 2)
+          90
+      0.0001
+
+  # Tests that two pi radians is a full turn of 360 degrees.
+  [] +> tests-degrees-of-two-pi-is-full-turn
+    lt. > @
+      abs
+        minus.
+          degrees (pi.times 2)
+          360
+      0.0001
+
+  # Tests that minus pi radians is minus a half turn of 180 degrees.
+  [] +> tests-degrees-of-negative-pi-is-minus-half-turn
+    lt. > @
+      abs
+        minus.
+          degrees pi.neg
+          -180
+      0.0001
+
+  # Tests that degrees of nan is nan.
+  [] +> tests-degrees-of-nan-is-nan
+    is-nan. > @
+      degrees nan
