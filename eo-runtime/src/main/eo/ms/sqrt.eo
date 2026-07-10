@@ -1,15 +1,19 @@
 +alias ms.abs
++alias ms.power
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package ms
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Returns the positive square root of a `num` as `org.eolang.number`.
-[num] > sqrt /number
+# Positive square root of `num` as `org.eolang.number`, taken as `num` raised to
+# the one-half power. A negative argument, negative infinity included, is nan.
+[num] > sqrt
+  if. > @
+    (number num.as-bytes).lt 0
+    nan
+    power num 0.5
   # Tests that sqrt of zero is zero.
   [] +> tests-sqrt-zero
     eq. > @
@@ -24,21 +28,30 @@
 
   # Tests that sqrt of a perfect square.
   [] +> tests-sqrt-four
-    eq. > @
-      sqrt 4.0
-      2.0
+    lt. > @
+      abs
+        minus.
+          sqrt 4.0
+          2.0
+      0.000000001
 
   # Tests that sqrt of a non-perfect square.
   [] +> tests-sqrt-two
-    eq. > @
-      sqrt 2.0
-      1.4142135623730951
+    lt. > @
+      abs
+        minus.
+          sqrt 2.0
+          1.4142135623730951
+      0.000000001
 
   # Tests that sqrt of a fractional number.
   [] +> tests-sqrt-point-five
-    eq. > @
-      sqrt 0.25
-      0.5
+    lt. > @
+      abs
+        minus.
+          sqrt 0.25
+          0.5
+      0.000000001
 
   # Tests that square root of zero equals zero.
   [] +> tests-sqrt-check-zero-input
