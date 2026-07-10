@@ -22,8 +22,8 @@
 # .
 [data] > bytes
   data > @
-  bytes data > as-bytes
   eq 01- > as-bool
+  bytes data > as-bytes
 
   # Converts this chain of eight bytes into a number.
   [cant-convert] > as-number

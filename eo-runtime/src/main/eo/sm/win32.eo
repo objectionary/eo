@@ -38,7 +38,7 @@
   # Structure for "GetSystemTime" function call.
   [year month day day-of-week hour minute second milliseconds] > system-time
 
-  # Win32 `sockaddr_in` structure.
+  # Win32 `sockaddr_in` structure for IPv4 socket addressing.
   [sin-family sin-port sin-addr] > sockaddr-in
     00-00-00-00-00-00-00-00 > sin-zero
     plus. > size

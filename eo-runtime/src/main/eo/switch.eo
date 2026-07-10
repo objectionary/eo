@@ -41,8 +41,8 @@
         previous.match
       previous
       [] >>
-        tup.head.tail.head > match!
         tup.head.head > head
+        tup.head.tail.head > match!
     (rec-case tup.tail).@ > previous
 
   # Tests that switch returns the value from the first true condition case.

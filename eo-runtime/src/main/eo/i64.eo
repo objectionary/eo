@@ -9,12 +9,12 @@
 +unlint redundant-object
 +unlint mandatory-package
 
-# 64-bit signed integer.
+# Signed 64-bit integer.
 # Here `as-bytes` must be a `bytes` object.
 [as-bytes] > i64
   as-bytes > @
-  times -1.as-i64 > neg
   as-i32.as-i16 > as-i16
+  times -1.as-i64 > neg
 
   # Convert this `org.eolang.i64` to `org.eolang.i32`.
   # When the number is out of i32 bounds, the caller-supplied `cant-convert`

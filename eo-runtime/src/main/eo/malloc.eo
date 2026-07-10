@@ -479,8 +479,8 @@
             times.
               num
               num
-          number > num
-            ^.inc m > n!
+          ^.inc m > n!
+          number n > num
       64
     # Increments x and returns its new value.
     [x] > inc

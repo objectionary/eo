@@ -15,8 +15,8 @@
         idx
         (number len).minus idx
   text > bts!
-  bts.size > len!
   first-non-space-index 0 > idx!
+  bts.size > len!
 
   # Recursively finds index of the first non-space character from left.
   [index] > first-non-space-index

@@ -90,8 +90,8 @@
       #  idempotency is not fully implemented, and we cannot remove some edge case usages, like
       #  here, in `matched`. Don't forget to remove this puzzle.
       [position start from to groups] > matched
-        $ > matched
         groups.length > count
+        $ > matched
         start.gte 0 > exists
         if. > next
           exists

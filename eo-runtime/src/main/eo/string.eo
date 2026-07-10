@@ -127,7 +127,7 @@
     start > sbts!
     as-bytes.size > size
 
-    # The object checks if `index` + `csize` is not out of the string bounds.
+    # Checks if `index` + `csize` is not out of the string bounds.
     # If not - the new recursion cycle is started with `index` increased by `csize` and
     # `accum` increased by 1.
     [index csize accum result cause] > increase

@@ -9,13 +9,13 @@
 +unlint redundant-object
 +unlint mandatory-package
 
-# 16-bit signed integer.
+# Signed 16-bit integer.
 # Here `as-bytes` must be a `bytes` object.
 [as-bytes] > i16
   as-bytes > @
-  times -1.as-i64.as-i32.as-i16 > neg
   as-i32.as-i64 > as-i64
   as-i64.as-number > as-number
+  times -1.as-i64.as-i32.as-i16 > neg
 
   # Convert this `org.eolang.i16` to `org.eolang.i32` and return it.
   # The object is an atom because it's not possible to check what
@@ -92,10 +92,10 @@
         plus.
           i16 left
           i16 right
-    x.as-i16 > xval
     (as-i32.div xval.as-i32).as-bytes > bts
     bts.slice 0 2 > left
     bts.slice 2 2 > right
+    x.as-i16 > xval
     00-00 > zero
 
   # Tests that i16 number has correct byte representation.

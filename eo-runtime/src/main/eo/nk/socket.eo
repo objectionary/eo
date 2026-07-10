@@ -135,15 +135,15 @@
   # Note: This object is intended for internal use only. Please do not use
   # the object programmatically outside of `socket` object.
   [address port] > posix-socket
-    code. > sd
-      posix
-        "socket"
-        * posix.af-inet posix.sock-stream posix.ipproto-tcp
     code. > addr
       posix
         "inet_addr"
         * address
     addr.as-i32 > addrint
+    code. > sd
+      posix
+        "socket"
+        * posix.af-inet posix.sock-stream posix.ipproto-tcp
     posix.sockaddr-in > sockaddr
       posix.af-inet.as-i16
       htons port
@@ -255,11 +255,11 @@
                 scope
                   sock.scoped-socket
                     sock.sd
-          ^.^ > sock
           code. > connected
             posix
               "connect"
               * sock.sd sock.sockaddr sock.sockaddr.size
+          ^.^ > sock
         cant-connect
 
     # Listen for connections on a socket.
@@ -310,7 +310,6 @@
                           posix
                             "accept"
                             * sock.sd sock.sockaddr sock.sockaddr.size
-          ^.^ > sock
           code. > bound
             posix
               "bind"
@@ -319,6 +318,7 @@
             posix
               "listen"
               * sock.sd 2048
+          ^.^ > sock
         cant-listen
 
   # Win32 platform specified socket.
@@ -326,20 +326,20 @@
   # Note: This object is intended for internal use only. Please do not use
   # the object programmatically outside of `socket` object.
   [address port] > win-socket
-    code. > sd
-      win32
-        "socket"
-        * win32.af-inet win32.sock-stream win32.ipproto-tcp
     code. > addr
       win32
         "inet_addr"
         * address
     addr.as-i32 > addrint
+    win32 "WSAGetLastError" * > err
+    code. > sd
+      win32
+        "socket"
+        * win32.af-inet win32.sock-stream win32.ipproto-tcp
     win32.sockaddr-in > sockaddr
       win32.af-inet.as-i16
       htons port
       addrint
-    win32 "WSAGetLastError" * > err
 
     # Scoped win32 socket that is passed as argument
     # to scope of `win32-socket.connect`, `win32-socket.listen` and `scoped-socket.accept`.
@@ -461,11 +461,11 @@
                 scope
                   sock.scoped-socket
                     sock.sd
-          ^.^ > sock
           code. > connected
             win32
               "connect"
               * sock.sd sock.sockaddr sock.sockaddr.size
+          ^.^ > sock
         cant-connect
 
     # Listen for connections on a socket.
@@ -516,7 +516,6 @@
                           win32
                             "accept"
                             * sock.sd sock.sockaddr sock.sockaddr.size
-          ^.^ > sock
           code. > bound
             win32
               "bind"
@@ -525,4 +524,5 @@
             win32
               "listen"
               * sock.sd 2048
+          ^.^ > sock
         cant-listen

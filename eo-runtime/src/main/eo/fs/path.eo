@@ -51,9 +51,9 @@
   # A standardized way to represent file or directory locations in a Unix-like system.
   [uri] > posix
     uri > @
-    "/" > separator
-    file uri > as-file
     dir (file uri) > as-dir
+    file uri > as-file
+    "/" > separator
     # Returns `true` if current path is absolute - starts with '/' char.
     and. > is-absolute
       uri.length.gt 0
@@ -257,9 +257,9 @@
     # don't use the object programmatically outside of `path` object.
     [uri] > validated
       uri > @
-      ^.separator > separator
-      file uri > as-file
       dir (file uri) > as-dir
+      file uri > as-file
+      ^.separator > separator
 
       # Returns `true` if given `uri` is drive relative which means it
       # starts with "X:" where 'X' - system drive name.
