@@ -55,6 +55,22 @@
             tuple.empty
         0
 
+  # Tests that a file can be opened read-only and closed via the open and close syscalls.
+  [] +> tests-opens-and-closes-file-via-syscall
+    or. > @
+      os.is-windows
+      seq
+        *
+          code.
+            posix
+              "close"
+              * fd
+          fd.gt -1
+    code. > fd
+      posix
+        "open"
+        * "/dev/null" 0
+
   # Tests that a POSIX TCP socket can be opened successfully using the socket syscall.
   [] +> tests-opens-posix-tcp-socket
     or. > @
