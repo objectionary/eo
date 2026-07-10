@@ -40,6 +40,11 @@
   # Here `tv-sec` is seconds since Jan 1, 1970, and `tv-usec` - microseconds.
   [tv-sec tv-usec] > timeval
 
+  # Stat structure for the "stat" syscall.
+  # Here `st-mode` holds the file type and permission bits, and `st-size`
+  # is the file size in bytes.
+  [st-mode st-size] > stat
+
   # Posix `sockaddr_in` structure for IPv4 socket addressing.
   [sin-family sin-port sin-addr] > sockaddr-in
     00-00-00-00-00-00-00-00 > sin-zero

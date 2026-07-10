@@ -23,11 +23,40 @@
   # Converts the `file` to a `path`.
   (Q.fs.path path).@ > as-path
 
-  # Returns `org.eolang.true` if current file is a directory, returns `org.eolang.false` otherwise.
-  [] > is-directory /bool
+  # Makes a syscall by `name` with `args` through the current OS's native
+  # interface - `win32` on Windows and `posix` everywhere else - returning the
+  # `return` object with its `code` and `output`.
+  #
+  # Note: This object is intended for internal use only. Please
+  # don't use the object programmatically outside of `file` object.
+  [name args] > syscall
+    if. > @
+      os.is-windows
+      win32 name args
+      posix name args
+
+  # Returns `org.eolang.true` if current file is a directory, returns
+  # `org.eolang.false` otherwise. Terminates with a ⊥ if the file cannot be
+  # stated. A directory carries the `S_IFDIR` type bits (octal 040000) in its
+  # mode, so flooring the mode divided by 4096 yields 4 for directories.
+  [] > is-directory
+    if. > @
+      info.code.eq 0
+      (info.output.st-mode.div 4096).floor.eq 4
+      T
+        sprintf
+          "Cant check whether the file '%s' is a directory"
+          * path
+    (syscall "stat" (* path)).called > info
 
   # Returns `org.eolang.true` if file with current `path` exists in filesystem.
-  [] > exists /bool
+  [] > exists
+    eq. > @
+      code.
+        syscall
+          "access"
+          * path 0
+      0
 
   # If current file exists - returns the file.
   # If current file does not exist - create an empty file
@@ -63,7 +92,16 @@
     [] > delete /bool
 
   # Gets the file size in bytes and returns it as `org.eolang.number`.
-  [] > size /number
+  # Terminates with a ⊥ if the file cannot be stated.
+  [] > size
+    if. > @
+      info.code.eq 0
+      info.output.st-size
+      T
+        sprintf
+          "Cant get the size of the file '%s'"
+          * path
+    (syscall "stat" (* path)).called > info
 
   # Moves the current file to `target`, making and returning a new `file` from it.
   [target] > moved
@@ -288,6 +326,14 @@
   # Tests that a newly touched file has zero size.
   [] +> tests-measures-empty-file-after-touching
     tmpdir.tmpfile.deleted.touched.size.eq 0 > @
+
+  # Tests that sizing an absent file terminates instead of returning zero.
+  [] +> throws-on-sizing-absent-file
+    tmpdir.tmpfile.deleted.size > @
+
+  # Tests that checking the directory status of an absent file terminates.
+  [] +> throws-on-checking-directory-of-absent-file
+    tmpdir.tmpfile.deleted.is-directory > @
 
   # Tests that touching a file twice does not cause errors.
   [] +> tests-does-not-fail-on-double-touching

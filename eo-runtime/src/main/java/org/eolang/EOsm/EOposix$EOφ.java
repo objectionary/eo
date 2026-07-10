@@ -14,6 +14,7 @@ import java.util.function.Function;
 import org.eolang.Atom;
 import org.eolang.Dataized;
 import org.eolang.EOsm.Posix.AcceptSyscall;
+import org.eolang.EOsm.Posix.AccessSyscall;
 import org.eolang.EOsm.Posix.BindSyscall;
 import org.eolang.EOsm.Posix.CloseSyscall;
 import org.eolang.EOsm.Posix.ConnectSyscall;
@@ -28,6 +29,7 @@ import org.eolang.EOsm.Posix.ReadSyscall;
 import org.eolang.EOsm.Posix.RecvSyscall;
 import org.eolang.EOsm.Posix.SendSyscall;
 import org.eolang.EOsm.Posix.SocketSyscall;
+import org.eolang.EOsm.Posix.StatSyscall;
 import org.eolang.EOsm.Posix.StrerrorSyscall;
 import org.eolang.EOsm.Posix.WriteSyscall;
 import org.eolang.ExFailure;
@@ -52,6 +54,8 @@ public final class EOposix$EOφ extends PhDefault implements Atom {
     static {
         EOposix$EOφ.SYS_CALLS.put("getpid", GetpidSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("open", OpenSyscall::new);
+        EOposix$EOφ.SYS_CALLS.put("access", AccessSyscall::new);
+        EOposix$EOφ.SYS_CALLS.put("stat", StatSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("read", ReadSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("write", WriteSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("getenv", GetenvSyscall::new);

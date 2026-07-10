@@ -41,6 +41,11 @@
   # Structure for "GetSystemTime" function call.
   [year month day day-of-week hour minute second milliseconds] > system-time
 
+  # Stat structure for the "stat" function call.
+  # Here `st-mode` holds the file type and permission bits, and `st-size`
+  # is the file size in bytes.
+  [st-mode st-size] > stat
+
   # Win32 `sockaddr_in` structure for IPv4 socket addressing.
   [sin-family sin-port sin-addr] > sockaddr-in
     00-00-00-00-00-00-00-00 > sin-zero

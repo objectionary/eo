@@ -11,6 +11,7 @@ package org.eolang.EOsm.Win32; // NOPMD
 import com.sun.jna.FunctionMapper;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.Structure;
 import java.util.Collections;
 
 /**
@@ -70,4 +71,22 @@ public interface Msvcrt extends Library {
      * @return Zero on success, -1 on error
      */
     int close(int descriptor);
+
+    /**
+     * Checks a file's accessibility. Maps to {@code _access}.
+     * @param path Path to the file
+     * @param mode Accessibility check to perform (0 tests for existence)
+     * @return Zero when the check succeeds, -1 on error
+     */
+    int access(String path, int mode);
+
+    /**
+     * Gets a file's status by path. Maps to {@code _stat}, whose
+     * {@code struct _stat} carries a 32-bit {@code st_size}, so it reports
+     * sizes only up to two gigabytes.
+     * @param path Path to the file
+     * @param statbuf Structure to fill with the file's metadata
+     * @return Zero on success, -1 on error
+     */
+    int stat(String path, Structure statbuf);
 }

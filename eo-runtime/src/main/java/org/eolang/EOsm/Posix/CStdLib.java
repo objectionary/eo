@@ -11,6 +11,7 @@ package org.eolang.EOsm.Posix; // NOPMD
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
+import com.sun.jna.Structure;
 import com.sun.jna.ptr.IntByReference;
 import org.eolang.EOsm.SockaddrIn;
 
@@ -115,6 +116,22 @@ public interface CStdLib extends Library {
      * @return Number of bytes was read
      */
     int read(int descriptor, byte[] buf, int size);
+
+    /**
+     * Check a file's accessibility.
+     * @param path Path to the file
+     * @param mode Accessibility check to perform (0 tests for existence)
+     * @return Zero when the check succeeds, -1 on error
+     */
+    int access(String path, int mode);
+
+    /**
+     * Get file status by path.
+     * @param path Path to the file
+     * @param statbuf Structure to fill with the file's metadata
+     * @return Zero on success, -1 on error
+     */
+    int stat(String path, Structure statbuf);
 
     /**
      * Get environment variable.
