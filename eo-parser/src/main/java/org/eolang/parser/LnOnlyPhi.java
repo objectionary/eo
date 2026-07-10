@@ -66,7 +66,7 @@ final class LnOnlyPhi implements Line {
     public void into(final Stack stack, final Globals globals, final Emit emit) {
         Blanks.enterAfterMeta(this.span, globals, emit);
         final String body = this.span.body();
-        final int phi = body.indexOf("> [");
+        final int phi = Eo.topLevelGreaterBracketIndex(body);
         if (phi < 0) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
