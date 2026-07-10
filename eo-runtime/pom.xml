@@ -236,6 +236,8 @@
             <configuration>
               <skipProgramLints>
                 <lint>inconsistent-args</lint>
+              </skipProgramLints>
+              <skipSourceLints>
                 <!--
                   @todo #5378:90min Fix compound-name lint violations in eo-runtime EO sources.
                    Rename hyphenated parameter names such as `cant-divide`, `cant-parse`,
@@ -247,7 +249,7 @@
                    by the rename.
                 -->
                 <lint>compound-name</lint>
-              </skipProgramLints>
+              </skipSourceLints>
               <keepBinaries>
                 <glob>org/eolang/EOfs/package-info.class</glob>
                 <glob>org/eolang/EOms/package-info.class</glob>

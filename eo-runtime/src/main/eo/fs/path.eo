@@ -53,11 +53,11 @@
     uri > @
     dir (file uri) > as-dir
     file uri > as-file
-    "/" > separator
     # Returns `true` if current path is absolute - starts with '/' char.
     and. > is-absolute
       uri.length.gt 0
       (uri.as-bytes.slice 0 1).eq separator
+    "/" > separator
 
     # Return new `path` with normalized uri.
     # Normalization includes:
