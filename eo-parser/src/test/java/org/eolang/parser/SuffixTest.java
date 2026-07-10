@@ -162,6 +162,26 @@ final class SuffixTest {
     }
 
     @Test
+    void rejectsTrailingGarbageAfterAuto() {
+        final Span span = new Span("5 >> garbage", 1);
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix(">> garbage", span, 2),
+            "an auto-name suffix must consume the complete tail"
+        );
+    }
+
+    @Test
+    void rejectsTrailingGarbageAfterPlusGreaterSuffix() {
+        final Span span = new Span("[] +> foo garbage", 1);
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix("+> foo garbage", span, 3),
+            "a test suffix must consume the complete tail"
+        );
+    }
+
+    @Test
     void rejectsBareQSignature() {
         Assertions.assertThrows(
             ParseError.class,

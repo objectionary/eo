@@ -215,10 +215,7 @@ final class Suffix {
      * @return Parsed result
      */
     private static Parsed parse(final String tail, final Span span, final int home) {
-        int idx = 0;
-        while (idx < tail.length() && tail.charAt(idx) == ' ') {
-            idx = idx + 1;
-        }
+        final int idx = Suffix.start(tail);
         final Parsed result;
         if (idx >= tail.length()) {
             result = new Suffix.Parsed(Form.NONE, "", "", false);
@@ -235,6 +232,19 @@ final class Suffix {
             );
         }
         return result;
+    }
+
+    /**
+     * Find the first non-space character in a suffix tail.
+     * @param tail Tail substring
+     * @return First non-space index, or the tail length
+     */
+    private static int start(final String tail) {
+        int idx = 0;
+        while (idx < tail.length() && tail.charAt(idx) == ' ') {
+            idx = idx + 1;
+        }
+        return idx;
     }
 
     /**
@@ -266,6 +276,7 @@ final class Suffix {
                 "test attribute requires a name"
             );
         }
+        Suffix.endsClean(tail, idx, span, home);
         return new Suffix.Parsed(Form.TEST, tail.substring(start, idx), "", false);
     }
 
@@ -294,6 +305,7 @@ final class Suffix {
                 "auto-named atom is forbidden"
             );
         }
+        Suffix.endsClean(tail, trailing, span, home);
         return new Suffix.Parsed(Form.AUTO, "", "", cnst);
     }
 
