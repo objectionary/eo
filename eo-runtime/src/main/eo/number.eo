@@ -1452,5 +1452,16 @@
   # Tests that NaN is not a finite value.
   nan.is-finite.not > [] +> nan-is-not-finite
 
+  # Tests that converting a number far outside i64 range to i64 throws an error,
+  # instead of silently saturating to Long.MAX_VALUE.
+  [] +> throws-on-converting-huge-number-to-i64
+    1.0e30.as-i64 > @
+
+  # Tests the exact upper-boundary case: 2^63 (9.223372036854776e18) has no
+  # int64 representation and must be rejected, even though it equals
+  # (double) Long.MAX_VALUE, which rounds up to 2^63.
+  [] +> throws-on-converting-long-max-boundary-to-i64
+    9.223372036854776e18.as-i64 > @
+
   # Tests that NaN is not an integer.
   nan.is-integer.not > [] +> nan-is-not-integer
