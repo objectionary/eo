@@ -16,10 +16,10 @@
         (number tlen).minus slen
         slen
       sub
-  text > txt!
+  sub.size > slen!
   substring > sub!
   txt.size > tlen!
-  sub.size > slen!
+  text > txt!
 
   # Tests specific functionality ends-with returns true when text ends with given substring.
   [] +> tests-ends-with-substring

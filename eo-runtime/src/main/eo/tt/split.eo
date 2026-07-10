@@ -13,8 +13,8 @@
     len.eq 0
     *
     rec-split * 0 0
-  delimiter > delim!
   text > bts!
+  delimiter > delim!
   bts.size > len!
 
   # Recursively splits text by delimiter into tuple of substrings.

@@ -6,7 +6,7 @@
 +unlint redundant-object
 +unlint mandatory-package
 
-# The object allows choosing the right options according to case conditions.
+# Object that allows choosing the right options according to case conditions.
 # Parameter `cases` is an array of two-dimensional arrays, which
 # consist of condition bool value and expected value, if this
 # condition is true. For example:

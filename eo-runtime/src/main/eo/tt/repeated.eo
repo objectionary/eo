@@ -17,8 +17,8 @@
         "Can't repeat text %d times"
         * amount
     string result
-  text > bts!
   times > amount!
+  text > bts!
   if. > result!
     0.eq amount
     --

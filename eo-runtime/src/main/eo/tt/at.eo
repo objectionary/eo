@@ -19,12 +19,12 @@
         "Given index %d is out of text bounds"
         * index
     slice text index 1
-  text.length > len!
   i > idx!
   if. > index!
     0.gt idx
     (number len).plus idx
     idx
+  text.length > len!
 
   # Tests specific functionality at method returns first character at index 0.
   [] +> tests-returns-first-char

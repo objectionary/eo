@@ -32,11 +32,11 @@
               1
             byte
         as-ascii byte > code
-  as-ascii "Z" > maxcode
-  as-ascii "A" > mincode
   minus. > distance
     as-ascii "a"
     as-ascii "A"
+  as-ascii "Z" > maxcode
+  as-ascii "A" > mincode
 
   # Tests that low-cased converts uppercase text to lowercase.
   [] +> tests-converts-text-to-lower-case

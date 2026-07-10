@@ -9,11 +9,11 @@
 # as a delimiter.
 [text items] > joined
   string bts > @
-  text > delimiter!
   if. > bts!
     items.length.eq 0
     --
     with-delimiter items.head items.tail
+  text > delimiter!
 
   # Recursively concatenates tuple elements with delimiter between them.
   [acc tup] > with-delimiter
