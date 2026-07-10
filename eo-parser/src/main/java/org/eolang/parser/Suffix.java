@@ -229,7 +229,10 @@ final class Suffix {
         } else if (tail.charAt(idx) == '>') {
             result = Suffix.named(tail, idx + 1, span, home);
         } else {
-            result = new Suffix.Parsed(Form.NONE, "", "", false);
+            throw new ParseError(
+                span.line(), home + idx,
+                "trailing garbage after expression"
+            );
         }
         return result;
     }

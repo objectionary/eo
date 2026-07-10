@@ -85,6 +85,37 @@ final class LnTextBlockTest {
     }
 
     @Test
+    void acceptsChainAfterCloserWithoutSuffix() {
+        final Globals globals = new Globals();
+        globals.openTextBlock(1, 0);
+        globals.appendTextLine("hi");
+        final Stack stack = new Stack();
+        new LnTextBlock(new Span("\"\"\".as-bytes", 3))
+            .into(stack, globals, new Emit());
+        MatcherAssert.assertThat(
+            "a `.method` chain right after the closer (deferred, not yet emitted) must not"
+                .concat(" be rejected as trailing garbage"),
+            stack.top().kind(),
+            Matchers.equalTo(Kind.TEXT_BLOCK)
+        );
+    }
+
+    @Test
+    void marksLevelNamedWhenSuffixFollowsChain() {
+        final Globals globals = new Globals();
+        globals.openTextBlock(1, 0);
+        globals.appendTextLine("hi");
+        final Stack stack = new Stack();
+        new LnTextBlock(new Span("\"\"\".as-bytes > greeting", 3))
+            .into(stack, globals, new Emit());
+        MatcherAssert.assertThat(
+            "a `> name` suffix following a deferred chain must still be parsed",
+            stack.top().named(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
     void marksLevelNamedWhenSuffixPresent() {
         final Globals globals = new Globals();
         globals.openTextBlock(1, 0);
