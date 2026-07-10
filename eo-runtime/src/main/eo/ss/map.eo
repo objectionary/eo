@@ -77,7 +77,7 @@
     # The `exists` attribute is either `true`, if object was found,
     # or `false` if was not.
     # The `get` attribute takes a fallback and returns either the found
-    # object, or that fallback — the bottom object (⊥) when unbound — if
+    # object, or that fallback (the bottom object when unbound) if
     # the object was not found.
     # @todo #3251:30min Find a way to link hash code and index of key.
     #  Right now map is implemented as `tuple` of objects where every
@@ -290,7 +290,7 @@
         map.entry "one" 1
 
   # Tests that get on a missing key with no fallback yields the bottom object
-  # (⊥) that terminates when used.
+  # that terminates when used.
   [] +> throws-on-map-get-missing-without-fallback
     (mp.found "absent").get > @
     map > mp

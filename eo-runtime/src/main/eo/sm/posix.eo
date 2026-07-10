@@ -33,7 +33,7 @@
   # Here `tv-sec` is seconds since Jan 1, 1970, and `tv-usec` - microseconds.
   [tv-sec tv-usec] > timeval
 
-  # The posix `sockaddr_in` structure.
+  # Posix `sockaddr_in` structure.
   [sin-family sin-port sin-addr] > sockaddr-in
     00-00-00-00-00-00-00-00 > sin-zero
     plus. > size

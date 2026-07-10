@@ -102,7 +102,7 @@
           false
           "false2"
 
-  # Tests that empty switch cases with no fallback yield the bottom object (⊥)
+  # Tests that empty switch cases with no fallback yield the bottom object
   # that terminates when used.
   [] +> throws-on-empty-switch
     switch * > @

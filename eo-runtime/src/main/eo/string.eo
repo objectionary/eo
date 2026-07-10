@@ -7,7 +7,7 @@
 +unlint redundant-object
 +unlint mandatory-package
 
-# The `string` object represents UTF-8 encoded text strings stored internally
+# Object `string` represents UTF-8 encoded text strings stored internally
 # as byte sequences. It provides Unicode-aware operations for text manipulation
 # including slicing, length calculation, and character-level access.
 # Unicode characters may occupy 1-4 bytes each, so byte length differs from
@@ -39,7 +39,7 @@
     p2 > r3
     p3 > r4
 
-    # The object checks if `index` + `csize` is out of the string bounds.
+    # Object that checks if `index` + `csize` is out of the string bounds.
     # If not - the new recursion iteration is started with `index` increased by `csize` and
     # `accum` increased by 1.
     [index csize len] > inclen
@@ -53,7 +53,7 @@
           index.plus csize
           len.plus 1
 
-    # The object recursively calculates the length of current string considering how many bytes
+    # Object that recursively calculates the length of current string considering how many bytes
     # the character on each iteration must consist of.
     [index accum] > reclen
       if. > @
@@ -143,7 +143,7 @@
           result
           cause
 
-    # The object recursively calculates `index` of bytes representation of the string
+    # Object that recursively calculates `index` of bytes representation of the string
     # where `accum` equals provided `result`.
     # The `cause` here is the description of the error which is thrown when `index` reaches the end
     # of the bytes but `accum` does not reach the `result`.

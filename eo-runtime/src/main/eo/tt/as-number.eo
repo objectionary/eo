@@ -8,7 +8,7 @@
 +spdx SPDX-License-Identifier: MIT
 
 # Returns the original `text` as `number`.
-# If the text is not numeric - the `cant-parse` fallback is returned, or ⊥ when unbound.
+# If the text is not numeric - the `cant-parse` fallback is returned, or the bottom object when unbound.
 [text cant-parse] > as-number
   if. > @
     scanned.length.eq 0
@@ -25,7 +25,7 @@
       5
       as-number "5"
 
-  # Tests that as-number terminates with ⊥ on non-numeric text when no fallback is given.
+  # Tests that as-number terminates on non-numeric text when no fallback is given.
   [] +> throws-on-converting-text-to-number
     as-number "Hello" > @
 

@@ -9,7 +9,7 @@
 
 # Range of numbers from `start` to `end` (soft border) with step = 1.
 # Here `start` and `end` must be `int`s. If they're not, the bottom object
-# (⊥) is returned, which terminates on use.
+# is returned, which terminates on use.
 [start end] > range-of-numbers
   if. > @
     and.

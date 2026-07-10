@@ -8,7 +8,7 @@
 +unlint redundant-object
 +unlint mandatory-package
 
-# The `number` object is an abstraction of a 64-bit floating-point
+# Object `number` is an abstraction of a 64-bit floating-point
 # number that internally is a chain of eight bytes.
 [as-bytes] > number
   as-bytes > @
@@ -108,7 +108,7 @@
   # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > div /number
 
-  # The object rounds down the original `number` to the nearest
+  # Rounds down the original `number` to the nearest
   # whole `number` that is less than or equal to it
   # and returns the result as `org.eolang.number`.
   # For non-finite values (`nan`, `+inf`, `-inf`) the input is returned

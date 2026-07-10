@@ -258,7 +258,7 @@
         "no-slash" > [msg]
 
   # Tests that an invalid pattern with no `cant-compile` fallback yields the bottom
-  # object (⊥) that terminates when used.
+  # object that terminates when used.
   [] +> throws-on-compiling-invalid-regex-without-fallback
     (regex "/[a-z/").compile > @
 

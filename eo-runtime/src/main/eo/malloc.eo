@@ -7,7 +7,7 @@
 +spdx SPDX-License-Identifier: MIT
 +unlint mandatory-package
 
-# The `malloc` object is an abstraction of a storage of data in heap
+# Object `malloc` is an abstraction of a storage of data in heap
 # memory. The implementation of `malloc` is platform dependent. It may
 # use either OS-level or VM-level memory management mechanism.
 #
@@ -116,7 +116,7 @@
       # Read `length` bytes with `offset` from the allocated block in memory and return them
       # as `bytes`. When the requested range is outside the allocated block, the
       # read returns the caller-supplied `cant-read` fallback object instead, or the bottom
-      # object (⊥) when no fallback was provided, which terminates on use.
+      # object when no fallback was provided, which terminates on use.
       [offset length] > read /bytes
         ? > cant-read /{string}
 
@@ -336,7 +336,7 @@
             01-02 > [ex]
 
   # Tests that an out-of-bounds read with no `cant-read` fallback yields the bottom
-  # object (⊥), which terminates the program when dataized.
+  # object, which terminates the program when dataized.
   [] +> throws-on-reading-over-a-limit-without-fallback
     malloc.for > @
       10
