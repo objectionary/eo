@@ -1,0 +1,79 @@
++alias ms.abs
++alias ms.asine
++alias ms.pi
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package ms
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Arc cosine of `num` as `org.eolang.number`, the angle in radians whose cosine
+# is `num`, taken as pi/2 minus the arc sine of the argument, since acos(x)
+# equals pi/2 minus asin(x). Arguments outside [-1, 1] and non-finite ones
+# collapse to nan.
+[num] > acosine
+  minus. > @
+    pi.div 2
+    asine num
+
+  # Tests that arc cosine of one is zero.
+  [] +> tests-acosine-of-one-is-zero
+    eq. > @
+      acosine 1
+      0
+
+  # Tests that arc cosine of zero equals pi/2.
+  [] +> tests-acosine-of-zero-is-pi-halves
+    eq. > @
+      acosine 0
+      pi.div 2
+
+  # Tests that arc cosine of minus one equals pi.
+  [] +> tests-acosine-of-negative-one-is-pi
+    eq. > @
+      acosine -1
+      pi
+
+  # Tests that arc cosine of 0.6 is about 0.9273 radians.
+  [] +> tests-acosine-of-point-six
+    lt. > @
+      abs
+        minus.
+          (acosine 0.6).times 1000
+          927.295
+      1
+
+  # Tests that arc cosine of minus 0.6 is about 2.2143 radians.
+  [] +> tests-acosine-of-negative-point-six
+    lt. > @
+      abs
+        minus.
+          (acosine -0.6).times 1000
+          2214.297
+      1
+
+  # Tests that arc cosine of a value above one is nan.
+  [] +> tests-acosine-above-one-is-nan
+    is-nan. > @
+      acosine 2
+
+  # Tests that arc cosine of a value below minus one is nan.
+  [] +> tests-acosine-below-minus-one-is-nan
+    is-nan. > @
+      acosine -2
+
+  # Tests that arc cosine of nan is nan.
+  [] +> tests-acosine-of-nan-is-nan
+    is-nan. > @
+      acosine nan
+
+  # Tests that arc cosine of positive infinity is nan.
+  [] +> tests-acosine-of-positive-infinity-is-nan
+    is-nan. > @
+      acosine pinf
+
+  # Tests that arc cosine of negative infinity is nan.
+  [] +> tests-acosine-of-negative-infinity-is-nan
+    is-nan. > @
+      acosine ninf

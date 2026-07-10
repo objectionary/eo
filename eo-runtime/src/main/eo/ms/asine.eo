@@ -1,0 +1,138 @@
++alias ms.abs
++alias ms.pi
++alias ms.sqrt
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package ms
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Arc sine of `num` as `org.eolang.number`, the angle in radians whose sine is
+# `num`. An argument above one half is folded toward zero through the identity
+# asin(x) equals pi/2 minus twice asin(sqrt((1 minus x) div 2)), so the Taylor
+# series always runs in its fast region, while arguments outside [-1, 1] and
+# non-finite ones collapse to nan.
+[num] > asine
+  if. > @
+    arg.lt 0
+    base.neg
+    base
+  number num.as-bytes > arg
+  abs arg > mag
+  sqrt ((1.minus mag).div 2) > root
+  if. > base
+    mag.gt 0.5
+    minus.
+      pi.div 2
+      2.times (series root)
+    series mag
+
+  # Taylor sum of arc sine for `point` in [-0.5, 0.5], evaluated through
+  # Horner's scheme so each nested factor folds in the next series ratio.
+  [point] > series
+    point.times (poly 1) > @
+    point.times point > squared
+    30 > terms
+
+    # One Horner factor of the arc-sine series, opened from `depth`.
+    [depth] > poly
+      if. > @
+        depth.gt terms
+        1
+        plus.
+          1
+          times.
+            div.
+              times.
+                ((depth.times 2).minus 1).times ((depth.times 2).minus 1)
+                squared
+              (depth.times 2).times ((depth.times 2).plus 1)
+            poly (depth.plus 1)
+
+  # Tests that arc sine of zero is zero.
+  [] +> tests-asine-of-zero-is-zero
+    eq. > @
+      asine 0
+      0
+
+  # Tests that arc sine of one equals pi/2.
+  [] +> tests-asine-of-one-is-pi-halves
+    lt. > @
+      abs
+        minus.
+          (asine 1).times 1000
+          (pi.div 2).times 1000
+      1
+
+  # Tests that arc sine of minus one equals minus pi/2.
+  [] +> tests-asine-of-negative-one-is-minus-pi-halves
+    lt. > @
+      abs
+        minus.
+          (asine -1).times 1000
+          (pi.div 2).neg.times 1000
+      1
+
+  # Tests that arc sine of one half equals pi/6.
+  [] +> tests-asine-of-half-is-pi-sixths
+    lt. > @
+      abs
+        minus.
+          (asine 0.5).times 1000
+          (pi.div 6).times 1000
+      1
+
+  # Tests that arc sine of minus one half equals minus pi/6.
+  [] +> tests-asine-of-negative-half-is-minus-pi-sixths
+    lt. > @
+      abs
+        minus.
+          (asine -0.5).times 1000
+          (pi.div 6).neg.times 1000
+      1
+
+  # Tests that arc sine of 0.6 is about 0.6435 radians.
+  [] +> tests-asine-of-point-six
+    lt. > @
+      abs
+        minus.
+          (asine 0.6).times 1000
+          643.5
+      1
+
+  # Tests that arc sine is an odd function.
+  [] +> tests-asine-is-odd-function
+    lt. > @
+      abs
+        times.
+          plus.
+            asine 0.6
+            asine -0.6
+          1000
+      1
+
+  # Tests that arc sine of a value above one is nan.
+  [] +> tests-asine-above-one-is-nan
+    is-nan. > @
+      asine 2
+
+  # Tests that arc sine of a value below minus one is nan.
+  [] +> tests-asine-below-minus-one-is-nan
+    is-nan. > @
+      asine -2
+
+  # Tests that arc sine of nan is nan.
+  [] +> tests-asine-of-nan-is-nan
+    is-nan. > @
+      asine nan
+
+  # Tests that arc sine of positive infinity is nan.
+  [] +> tests-asine-of-positive-infinity-is-nan
+    is-nan. > @
+      asine pinf
+
+  # Tests that arc sine of negative infinity is nan.
+  [] +> tests-asine-of-negative-infinity-is-nan
+    is-nan. > @
+      asine ninf
