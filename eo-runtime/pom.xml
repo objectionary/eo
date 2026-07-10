@@ -32,19 +32,19 @@
       -->
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna</artifactId>
-      <version>5.18.1</version>
+      <version>5.19.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
-      <version>2.0.17</version>
+      <version>2.0.18</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>2.0.17</version>
+      <version>2.0.18</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -237,6 +237,19 @@
               <skipProgramLints>
                 <lint>inconsistent-args</lint>
               </skipProgramLints>
+              <skipSourceLints>
+                <!--
+                  @todo #5378:90min Fix compound-name lint violations in eo-runtime EO sources.
+                   Rename hyphenated parameter names such as `cant-divide`, `cant-parse`,
+                   `out-of-bounds`, `empty-cases`, `cant-convert`, `cant-split`, etc.
+                   to single-word alternatives so that the `compound-name` lint
+                   (introduced in objectionary/lints 0.2.11) passes without suppression.
+                   All affected formations are in files under eo-runtime/src/main/eo
+                   and use these names as positional parameters, so callers are unaffected
+                   by the rename.
+                -->
+                <lint>compound-name</lint>
+              </skipSourceLints>
               <keepBinaries>
                 <glob>org/eolang/EOfs/package-info.class</glob>
                 <glob>org/eolang/EOms/package-info.class</glob>
@@ -393,7 +406,7 @@
           <plugin>
             <groupId>org.eolang</groupId>
             <artifactId>hone-maven-plugin</artifactId>
-            <version>0.27.6</version>
+            <version>0.28.0</version>
             <executions>
               <execution>
                 <goals>

@@ -5,10 +5,9 @@
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
 +unlint decorated-formation
-+unlint formation-without-comment
 +unlint mandatory-package
 
-# A boolean value, parameterized by its choice `if`.
+# Boolean value, parameterized by its choice `if`.
 # `if` is a two-argument object that returns either its first argument
 # (for TRUE) or its second one (for FALSE). Both the byte representation
 # and every other operation are derived from this single choice, so no

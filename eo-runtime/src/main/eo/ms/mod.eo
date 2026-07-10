@@ -9,7 +9,7 @@
 # Calculate MOD.
 # An operation that finds the remainder after dividing `x` by `y`. When `y`
 # is zero, the result is the caller-supplied `cant-mod` fallback, or the
-# bottom object (⊥) when none was provided, which terminates on use.
+# bottom object when none was provided, which terminates on use.
 [x y cant-mod] > mod
   if. > @
     divisor.eq 0
@@ -90,7 +90,7 @@
       mod 133 1
       0
 
-  # Tests that mod by zero with no fallback yields the bottom object (⊥)
+  # Tests that mod by zero with no fallback yields the bottom object
   # that terminates when used.
   [] +> throws-on-mod-by-zero
     mod 5 0 > @
