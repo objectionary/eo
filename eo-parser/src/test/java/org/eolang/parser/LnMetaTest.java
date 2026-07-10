@@ -104,11 +104,15 @@ final class LnMetaTest {
 
     @Test
     void rejectsDoubleSpaceBetweenParts() {
-        Assertions.assertThrows(
-            ParseError.class,
-            () -> new LnMeta(new Span("+rt jvm  extra", 1))
-                .into(new Stack(), new Globals(), new Emit()),
-            "double space between parts must be rejected per R-3.2.4"
+        MatcherAssert.assertThat(
+            "the reported column must point at the extra space, not before the parts tail",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnMeta(new Span("+rt jvm  extra", 1))
+                    .into(new Stack(), new Globals(), new Emit()),
+                "double space between parts must be rejected per R-3.2.4"
+            ).pos(),
+            Matchers.equalTo(8)
         );
     }
 

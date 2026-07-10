@@ -65,7 +65,7 @@ final class LnMeta implements Line {
             parts = new ArrayList<>(0);
         } else {
             head = body.substring(1, space);
-            parts = LnMeta.split(body.substring(space + 1), this.span);
+            parts = LnMeta.split(body.substring(space + 1), space + 1, this.span);
         }
         globals.markMeta();
         globals.clearBlanks();
@@ -77,16 +77,17 @@ final class LnMeta implements Line {
      * R-3.2.4 and promoting any bare {@code Q} to {@code Φ} per
      * R-3.2.3 / R-9.3.
      * @param tail Substring after the {@code +name} prefix
+     * @param base Offset of {@code tail} within the line's body
      * @param span Source span (for error reporting)
      * @return Parts in source order
      */
-    private static List<String> split(final String tail, final Span span) {
+    private static List<String> split(final String tail, final int base, final Span span) {
         final List<String> out = new ArrayList<>(2);
         int idx = 0;
         while (idx < tail.length()) {
             if (tail.charAt(idx) == ' ') {
                 throw new ParseError(
-                    span.line(), span.indent() + idx,
+                    span.line(), span.indent() + base + idx,
                     "meta parts must be separated by exactly one space"
                 );
             }
