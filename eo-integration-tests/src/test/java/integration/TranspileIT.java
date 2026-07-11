@@ -97,7 +97,6 @@ final class TranspileIT {
     private static byte[] simpleProgram() {
         return String.join(
             System.lineSeparator(),
-            "# Simple.",
             "[] > simple",
             "  \"hello\" > @"
         ).getBytes(StandardCharsets.UTF_8);
@@ -106,7 +105,6 @@ final class TranspileIT {
     private static byte[] programWithTests() {
         return String.join(
             System.lineSeparator(),
-            "# Simple.",
             "[] > simple",
             "  \"hello\" > @",
             "  [] +> tests-simple-works",

@@ -7,6 +7,7 @@ package org.eolang.parser;
 import com.jcabi.matchers.XhtmlMatchers;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -18,80 +19,76 @@ import org.xembly.Xembler;
 final class CommentsTest {
 
     @Test
-    void attachesCommentToNamedLineAtSameIndent() {
+    void flushesTopBlockIntoComments() {
         final Globals globals = new Globals();
         globals.addComment(new Span("# hello", 1));
+        globals.blank();
         final Emit emit = new Emit();
-        Comments.attach(globals, emit, new Span("[] > foo", 2), true);
+        Comments.seal(globals, emit, new Span("+package foo", 3));
         MatcherAssert.assertThat(
-            "a comment at the same indent must flush to /object/comments when followed by a named line",
+            "the top comment block must flush into /object/comments when the header seals",
             CommentsTest.render(emit),
             XhtmlMatchers.hasXPath("/object/comments/comment[contains(text(),'hello')]")
         );
     }
 
     @Test
-    void clearsBufferAfterAttachment() {
+    void clearsBufferAfterFlush() {
         final Globals globals = new Globals();
         globals.addComment(new Span("# x", 1));
-        Comments.attach(globals, new Emit(), new Span("[] > foo", 2), true);
+        globals.blank();
+        Comments.seal(globals, new Emit(), new Span("[] > foo", 3));
         MatcherAssert.assertThat(
-            "after flushing the comment buffer must be empty so the EOF check stays quiet",
+            "the comment buffer must be empty after the top block flushes",
             globals.pendingComments(),
             Matchers.empty()
         );
     }
 
     @Test
-    void defersAttachmentWhenLineIsUnnamed() {
+    void rejectsBlockWithoutTrailingBlank() {
         final Globals globals = new Globals();
-        globals.addComment(new Span("# orphan", 1));
-        Comments.attach(globals, new Emit(), new Span("foo", 2), false);
-        MatcherAssert.assertThat(
-            "an unnamed follower with no blank must leave the comment buffered for a"
-                .concat(" later same-indent named line — no immediate error"),
-            globals.pendingComments(),
-            Matchers.hasSize(1)
+        globals.addComment(new Span("# doc", 1));
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> Comments.seal(globals, new Emit(), new Span("[] > foo", 2)),
+            "a top comment block not followed by a blank line cannot be sealed"
         );
     }
 
     @Test
-    void defersAttachmentWhenIndentMismatches() {
+    void sealsHeaderZone() {
         final Globals globals = new Globals();
-        globals.addComment(new Span("# at-zero", 1));
-        Comments.attach(globals, new Emit(), new Span("  [] > inner", 2), true);
+        Comments.seal(globals, new Emit(), new Span("+package foo", 1));
         MatcherAssert.assertThat(
-            "a deeper-indent named line with no intervening blank must not attach the"
-                .concat(" buffered comment — it stays pending"),
-            globals.pendingComments(),
-            Matchers.hasSize(1)
-        );
-    }
-
-    @Test
-    void reportsDanglingWhenBlankLineIntervenes() {
-        final Globals globals = new Globals();
-        globals.addComment(new Span("# split", 1));
-        globals.blank();
-        final Emit emit = new Emit();
-        Comments.attach(globals, emit, new Span("[] > foo", 3), true);
-        MatcherAssert.assertThat(
-            "a blank line between comment and named line breaks attachment per R-6.5.2 —"
-                .concat(" the comment must be reported as dangling and the buffer cleared"),
-            CommentsTest.render(emit).contains("comment must precede a named object")
-                && globals.pendingComments().isEmpty(),
+            "the header zone must be sealed once the first meta or object lands",
+            globals.sealed(),
             Matchers.is(true)
         );
     }
 
     @Test
-    void doesNothingWhenBufferEmpty() {
+    void doesNothingWhenAlreadySealed() {
+        final Globals globals = new Globals();
+        globals.seal();
+        globals.addComment(new Span("# late", 1));
         final Emit emit = new Emit();
-        Comments.attach(new Globals(), emit, new Span("[] > foo", 1), true);
+        Comments.seal(globals, emit, new Span("[] > foo", 2));
         MatcherAssert.assertThat(
-            "with no pending comments the helper must not emit anything — directives stay empty",
+            "a second seal cannot flush anything — the header is already closed",
             CommentsTest.render(emit),
-            Matchers.not(XhtmlMatchers.hasXPath("/object/*"))
+            Matchers.not(XhtmlMatchers.hasXPath("/object/comments"))
+        );
+    }
+
+    @Test
+    void emitsNothingWhenBufferEmpty() {
+        final Emit emit = new Emit();
+        Comments.seal(new Globals(), emit, new Span("[] > foo", 1));
+        MatcherAssert.assertThat(
+            "sealing with no pending comments cannot emit any comment element",
+            CommentsTest.render(emit),
+            Matchers.not(XhtmlMatchers.hasXPath("/object/comments"))
         );
     }
 

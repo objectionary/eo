@@ -1,3 +1,6 @@
+# Tuple.
+# An ordered, immutable collection of elements.
+
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -6,17 +9,12 @@
 +unlint redundant-object
 +unlint mandatory-package
 
-# Tuple.
-# An ordered, immutable collection of elements.
 [tail head length] > tuple
-  # Empty tuple.
-  # A tuple with no elements. When dataized, it represents an immutable, empty collection.
   tuple > empty
     T "Can't get tail from the empty tuple"
     T "Can't get head from the empty tuple"
     0
 
-  # Take one element from the tuple, at the given position.
   [i out-of-bounds] > at
     if. > @
       or.
@@ -30,41 +28,34 @@
       length.plus idx
       idx
 
-    # Recursively traverses tuple tail until reaching the target index.
     [tup] > at-fast
       if. > @
         (tup.length.plus -1).eq index
         tup.head
         at-fast tup.tail
 
-  # Create a new tuple with this element added to the end of it.
   [x] > with
     tuple > @
       ^
       x
       (length.plus 1).as-number
 
-  # Tests that tuple creation through special syntax (* 1 2) works correctly.
   [] +> tests-makes-tuple-through-special-syntax
     eq. > @
       (* 1 2).length
       2
 
-  # Tests that empty tuple length can be obtained through special syntax (*.length).
   [] +> tests-gets-lengths-of-empty-tuple-through-special-syntax
     eq. > @
       *.length
       0
 
-  # Check that an empty tuple's .length equals zero.
   [] +> tests-empty-tuple-length
     eq. > @
       (arr *).elements.length
       0
-    # Wrapper object that holds elements tuple for testing purposes.
     [elements] > arr
 
-  # Check that tuple.length works properly for non-empty tuples.
   [] +> tests-non-empty-tuple-length-test
     eq. > @
       arr
@@ -72,17 +63,14 @@
       .elements
       .length
       5
-    # Wrapper object that holds elements tuple for testing purposes.
     [elements] > arr
 
-  # Tests that a tuple bound as an attribute with size 0 has correct length.
   [] +> tests-tuple-as-a-bound-attribute-size-0
     eq. > @
       tup.length
       0
     * > tup
 
-  # Tests that a tuple bound as an attribute with size 1 allows element access.
   [] +> tests-tuple-as-a-bound-attribute-size-1
     eq. > @
       tup.at 0
@@ -90,7 +78,6 @@
     * > tup
       100
 
-  # Tests that a tuple bound as an attribute with size 2 allows access to both elements.
   [] +> tests-tuple-as-a-bound-attribute-size-2
     and. > @
       eq.
@@ -103,7 +90,6 @@
       1
       2
 
-  # Tests that the with method correctly adds an element to an existing tuple.
   [] +> tests-tuple-with
     and. > @
       and.
@@ -124,14 +110,11 @@
       * 1 2 3
       "with"
 
-  # Tests that an out-of-bounds index with no fallback yields the bottom object
-  # that terminates when used.
   [] +> throws-on-wrong-tuple-at
     at. > @
       * 1 2 3 4
       20
 
-  # Tests that an out-of-bounds index with a provided fallback yields the fallback.
   [] +> tests-out-of-bounds-at-returns-provided-fallback
     eq. > @
       "recovered"
@@ -140,7 +123,6 @@
         20
         "recovered" > [msg]
 
-  # Tests that fluent chaining of with method works correctly for tuple construction.
   [] +> tests-tuple-fluent-with
     and. > @
       and.
@@ -155,7 +137,6 @@
         3
     ((*.with 1).with 2).with 3 > arr
 
-  # Tests that fluent chaining of with method works correctly with indented syntax.
   [] +> tests-tuple-fluent-with-indented
     and. > @
       and.
@@ -170,49 +151,41 @@
         3
     ((*.with 1).with 2).with 3 > arr
 
-  # Tests that the length of an explicitly created empty tuple is zero.
   [] +> tests-gets-lengths-of-empty-tuple
     eq. > @
       a.length
       0
     tuple.empty > a
 
-  # Tests that the length of an empty tuple can be accessed directly without intermediate objects.
   [] +> tests-gets-lengths-of-empty-tuple-without-additional-obj
     eq. > @
       tuple.empty.length
       0
 
-  # Tests that getting the head of an empty tuple terminates because it does not exist.
   [] +> throws-on-getting-head-from-empty-tuple
     tuple.empty.head > @
 
-  # Tests that getting the tail of an empty tuple terminates because it does not exist.
   [] +> throws-on-getting-tail-from-empty-tuple
     tuple.empty.tail > @
 
-  # Tests that adding a number to an empty tuple creates a tuple with that element.
   [] +> tests-creates-empty-tuple-with-number
     eq. > @
       a.at 0
       3
     tuple.empty.with 3 > a
 
-  # Tests that the at-fast method correctly retrieves the first element of a tuple.
   [] +> tests-at-fast-with-first-element
     eq. > @
       (arr.at 0).at-fast arr
       100
     * 100 101 102 > arr
 
-  # Tests that the at-fast method correctly retrieves the last element of a tuple.
   [] +> tests-at-fast-with-last-element
     eq. > @
       (arr.at 2).at-fast arr
       102
     * 100 101 102 > arr
 
-  # Tests that fluent chaining starting from empty tuple works with indented keyword syntax.
   [] +> tests-tuple-empty-fluent-with-indented-keyword
     and. > @
       and.
@@ -227,21 +200,18 @@
         3
     ((tuple.empty.with 1).with 2).with 3 > arr
 
-  # Tests that using negative index -1 correctly retrieves the last element of the tuple.
   [] +> tests-tuple-with-negative-index-gets-last
     eq. > @
       arr.at -1
       4
     * 0 1 2 3 4 > arr
 
-  # Tests that using negative index -5 correctly retrieves the first element of a 5-element tuple.
   [] +> tests-tuple-with-negative-index-gets-first
     eq. > @
       arr.at -5
       0
     * 0 1 2 3 4 > arr
 
-  # Tests that accessing a tuple with an out-of-bounds negative index throws an error.
   [] +> throws-on-out-of-tuple-bounds-with-negative-index
     arr.at -6 > @
     * 0 1 2 3 4 > arr

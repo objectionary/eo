@@ -8,11 +8,8 @@ asserts:
   - /object[not(errors)]
   - /object/o[@name='main']/o[@name='foo' and o[@name='x']/following-sibling::o[@name='φ']]
 input: |
-  # Main.
   [] > main
-    # No comments.
     [x] > app
       5 > y
 
-    # Foo.
     "Hello" > [x] > foo

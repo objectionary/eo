@@ -5,7 +5,6 @@
 origin: |
   +package sandbox
 
-  # No comments.
   [args] > main
     Q.io.stdout > @
       args.at
@@ -18,7 +17,6 @@ origin: |
 printed: |
   +package sandbox
 
-  # No comments.
   [args] > main
     io.stdout > @
       args.at

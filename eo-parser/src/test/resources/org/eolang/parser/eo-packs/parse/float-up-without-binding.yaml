@@ -13,11 +13,9 @@ asserts:
   - /object/o[@name='main']/o[@name='foo']/o[not(@base) and @name='c' and not(@as)]
   - /object/o[@name='main']/o[@name='foo']/o[@base='a' and @name='b']/o[not(@base) and not(@name) and @as='abs']
 input: |
-  # Main.
   [] > main
     x > y
       []:0 > o
-    # Foo.
     [] > foo
       a > b
         []:hey > c

@@ -1,11 +1,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-line: 2
+line: 1
 message: |-
-  [2:1] error: 'trailing garbage after expression'
+  [1:1] error: 'trailing garbage after expression'
   5x
    ^
 input: |
-  # No comments
   5x

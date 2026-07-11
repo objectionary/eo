@@ -59,7 +59,7 @@ final class LnFormation implements Line {
         final Suffix suffix = new Suffix(
             tail, this.span, this.span.indent() + close + 1 + LnFormation.bindingWidth(binding)
         );
-        Comments.attach(globals, emit, this.span, suffix.present());
+        Comments.seal(globals, emit, this.span);
         this.transition(stack, suffix);
         globals.clearBlanks();
         globals.markEmitted();

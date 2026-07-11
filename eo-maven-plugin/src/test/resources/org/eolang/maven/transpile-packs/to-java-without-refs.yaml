@@ -15,7 +15,6 @@ asserts:
   - /object/class/java[contains(text(), 'Phi atom = new EOobject$EOatom();')]
   - /object/class/java[contains(text(), 'Phi ratom = new EOobject$EOabstract_object$EOinner_atom();')]
 input: |
-  # No comments.
   [void-attr] > object
     5.plus 5 > bound-attr
 
@@ -33,6 +32,5 @@ input: |
             [] > arg
             []
 
-    # No comments.
     [] > more-object
       10 > num

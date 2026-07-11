@@ -1,3 +1,8 @@
+# Reduce list with index from "start" using the function "func".
+# Here "func" must be an abstract object with three free attributes.
+# The first one for the accumulator, the second one
+# for the element of the collection and the third one for the index.
+
 +alias ss.list
 +alias ss.reducedi
 +architect yegor256@gmail.com
@@ -7,17 +12,12 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Reduce list with index from "start" using the function "func".
-# Here "func" must be an abstract object with three free attributes.
-# The first one for the accumulator, the second one
-# for the element of the collection and the third one for the index.
 [lst start func] > reducedi
   if. > @
     lst.is-empty
     start
     rec-reducedi lst
 
-  # Recursively reduces tuple by applying func to each element with index.
   [tup] > rec-reducedi
     if. > @
       tup.length.eq 1
@@ -30,7 +30,6 @@
         tup.head
         tup.tail.length
 
-  # Tests that reducing a list with index access works correctly.
   [] +> tests-reduce-list-with-index
     eq. > @
       6
@@ -44,7 +43,6 @@
             a.plus
               (* 2 2).at i
 
-  # Tests that reducing a long array of integers with index works correctly.
   [] +> tests-list-reducedi-long-int-array
     eq. > @
       reducedi
@@ -54,7 +52,6 @@
         x.plus a > [a x i]
       1
 
-  # Tests that reducing an array of boolean values with index works correctly.
   [] +> tests-list-reducedi-bools-array
     not. > @
       reducedi
@@ -63,7 +60,6 @@
         true
         x.and a > [a x i]
 
-  # Tests that reducing with nested functions and conditional logic works correctly.
   [] +> tests-list-reducedi-nested-functions
     eq. > @
       reducedi
@@ -72,7 +68,6 @@
         0
         [acc x i]
           check x > @
-          # Checks if element is less than 100 and adds or subtracts it.
           [el] > check
             if. > @
               ^.x.lt 100

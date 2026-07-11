@@ -7,7 +7,6 @@ asserts:
   - /object[not(errors)]
   - //o[@base='.first' and @name='m']/o[1][not(@base) and not(@name) and o[@base='Φ.y']/o[@base='.second']/o[not(@base) and not(@name)]]
 input: |
-  # No comments.
   []
     y > @
       []

@@ -29,7 +29,6 @@ input: |
   +also string
   +decorate string Q.number foo.bar
 
-  # No comments.
   [args] > main
     stdin.x > w
     and > @

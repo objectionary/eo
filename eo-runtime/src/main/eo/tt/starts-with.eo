@@ -1,3 +1,5 @@
+# Checks that `text` starts with `substring`.
+
 +alias tt.slice
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -6,7 +8,6 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Checks that `text` starts with `substring`.
 [text substring] > starts-with
   and. > @
     (number slen).lte tlen
@@ -16,11 +17,9 @@
   txt.size > tlen!
   text > txt!
 
-  # Tests specific functionality starts-with returns true when text begins with given substring.
   [] +> tests-starts-with-substring
     starts-with "Hello, world" "Hello" > @
 
-  # Tests specific functionality starts-with returns false when text does not begin with substring.
   [] +> tests-does-not-start-with-substring
     not. > @
       starts-with "Hello, world" "world"

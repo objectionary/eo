@@ -1,3 +1,15 @@
+# List implements basic operations on collections like reducing, mapping, filtering, etc.
+# Decorates and extends `tuple` to provide functional programming operations.
+#
+# Usage examples:
+# ```
+# list (* 1 2 3)           # Create list from tuple
+# list.is-empty            # Check if empty
+# list.map [x] (x.plus 1)  # Map operation
+# list.filter [x] (x.gt 0) # Filter elements
+# ```
+# .
+
 +alias ss.eachi
 +alias ss.list
 +alias ss.reduced
@@ -11,34 +23,15 @@
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
 
-# List implements basic operations on collections like reducing, mapping, filtering, etc.
-# Decorates and extends `tuple` to provide functional programming operations.
-#
-# Usage examples:
-# ```
-# list (* 1 2 3)           # Create list from tuple
-# list.is-empty            # Check if empty
-# list.map [x] (x.plus 1)  # Map operation
-# list.filter [x] (x.gt 0) # Filter elements
-# ```
-# .
 [origin] > list
   origin > @
-  # Checks if the list contains no elements.
   0.eq origin.length > is-empty
-  # Returns a new list sorted via `.lt` method.
-  # @todo #3251:30min The object does not work. After moving `list` object
-  #  to eo-runtime this is the only method which does not work because it's quite
-  #  hard to implement properly, especially after big changes in EO semantic.
-  #  We need to get it done and write some tests for it.
   origin > sorted
 
-  # Create a new list with this element added to the end of it.
   [x] > with
     list > @
       origin.with x
 
-  # Create a new list with an element inserted by the provided index.
   [index item] > withi
     concat. > @
       with.
@@ -47,15 +40,11 @@
       back
         origin.length.minus index
 
-  # For each collection element dataize the object
-  # Here "func" must be an abstract object with
-  # one free attribute, the element of the collection.
   [func] > each
     eachi > @
       ^
       func item > [item index] >>
 
-  # Create a new list without the `element` which is `.eq` to given one.
   [element] > without
     list > @
       reduced
@@ -67,8 +56,6 @@
             accum
             accum.with item
 
-  # Checks if all elements of the current list are `.eq`
-  # to the all elements of given collection.
   [other] > eq
     and. > @
       eq.
@@ -76,7 +63,6 @@
         other.length
       receq origin other
 
-    # Recursively compares elements of two tuples for equality.
     [first second] > receq
       if. > @
         first.length.eq 0
@@ -85,14 +71,12 @@
           first.head.eq second.head
           receq first.tail second.tail
 
-  # Concatenates current list with given one.
   [passed] > concat
     reducedi > @
       list passed
       ^
       accum.with item > [accum item index]
 
-  # Get the first `index` elements from the start of the list.
   [index] > front
     if. > @
       idx.eq 0
@@ -107,14 +91,12 @@
             rechead origin
     index > idx!
 
-    # Recursively removes tail elements until tuple reaches target length.
     [tup] > rechead
       if. > @
         tup.length.eq idx
         tup
         rechead tup.tail
 
-  # Get the last `index` elements from the end of the list.
   [index] > back
     if. > @
       0.gt start
@@ -131,7 +113,6 @@
     index > idx!
     origin.length.minus idx > start!
 
-  # Get a sublist from `start` index to `end` index (not inclusive).
   [start end] > slice
     if. > @
       (number s).gte e
@@ -168,24 +149,20 @@
         start.plus origin.length
         0
 
-  # Create a new list without the first `shift` elements.
   [shift] > shifted
     slice. > @
       ^
       shift
       origin.length
 
-  # Tests that a list with elements is not empty.
   [] +> tests-list-should-not-be-empty
     not. > @
       is-empty.
         list
           * 1 2
 
-  # Tests that an empty list is empty.
   (list *).is-empty > [] +> list-should-be-empty
 
-  # Tests that a list with three anonymous objects is not empty.
   [] +> tests-list-should-not-be-empty-with-three-objects
     (list xs).is-empty.not > @
     * > xs
@@ -193,13 +170,11 @@
       [y]
       [z]
 
-  # Tests that a list with one anonymous object is not empty.
   [] +> tests-list-should-not-be-empty-with-one-anon-object
     (list xs).is-empty.not > @
     * > xs
       [f]
 
-  # Tests that adding an element to the end of a list works correctly.
   [] +> tests-list-simple-with
     eq. > @
       with.
@@ -208,7 +183,6 @@
         3
       * 1 2 3
 
-  # Tests that inserting an element at a specific index works correctly.
   [] +> tests-simple-insert
     eq. > @
       withi.
@@ -218,7 +192,6 @@
         "hello"
       * 1 2 3 "hello" 4 5
 
-  # Tests that inserting an element at index zero prepends it to the list.
   [] +> tests-insert-with-zero-index
     eq. > @
       withi.
@@ -228,7 +201,6 @@
         "hello"
       * "hello" 1 2 3 4 5
 
-  # Tests that comparing complex nested lists works correctly.
   [] +> tests-complex-objects-list-comparison
     list
       *
@@ -241,7 +213,6 @@
         * 4 0
         * 7 3
 
-  # Tests that iterating over elements without index access works correctly.
   [] +> tests-iterates-with-each
     eq. > @
       malloc.for
@@ -253,7 +224,6 @@
             ^.m.put (^.m.as-number.plus i) > [i] >>
       6
 
-  # Tests that removing all occurrences of a value works correctly.
   [] +> tests-list-without
     eq. > @
       without.
@@ -262,14 +232,12 @@
         2
       * 1 1 1 5
 
-  # Tests that list equality comparison works correctly for equal lists.
   [] +> tests-equality-test
     eq. > @
       list
         * 1 2 3
       * 1 2 3
 
-  # Tests that list equality comparison works correctly for unequal lists.
   [] +> tests-not-equality-test
     not. > @
       eq.
@@ -277,7 +245,6 @@
           * 1 2 3
         * 3 2 1
 
-  # Tests that concatenating two lists works correctly.
   [] +> tests-concatenates-lists
     and. > @
       eq.
@@ -292,7 +259,6 @@
         list (* 2 3)
       0
 
-  # Tests that concatenating a list with a tuple works correctly.
   [] +> tests-concatenates-with-tuple
     eq. > @
       concat.
@@ -301,7 +267,6 @@
         * 2 4
       * 0 1 2 4
 
-  # Tests that getting the first element from a list works correctly.
   [] +> tests-simple-front
     eq. > @
       front.
@@ -310,7 +275,6 @@
         1
       * 1
 
-  # Tests that getting front with zero index returns an empty list.
   [] +> tests-list-front-with-zero-index
     is-empty. > @
       front.
@@ -318,7 +282,6 @@
           * 1 2 3
         0
 
-  # Tests that getting front with length index returns the entire list.
   [] +> tests-list-front-with-length-index
     eq. > @
       front.
@@ -327,7 +290,6 @@
         3
       * 1 2 3
 
-  # Tests that getting front elements works correctly with complex data types.
   [] +> tests-complex-front
     eq. > @
       front.
@@ -336,7 +298,6 @@
         2
       * "foo" 2.2
 
-  # Tests that getting front with negative index returns elements from the end.
   [] +> tests-front-with-negative
     eq. > @
       front.
@@ -345,7 +306,6 @@
         -1
       * 3
 
-  # Tests that getting front with negative index works with complex data types.
   [] +> tests-complex-front-with-negative
     eq. > @
       front.
@@ -354,7 +314,6 @@
         -3
       * 2.2 00-01 "bar"
 
-  # Tests that getting the last elements from a list works correctly.
   [] +> tests-simple-back
     eq. > @
       back.
@@ -363,7 +322,6 @@
         2
       * 4 5
 
-  # Tests that getting back with zero index returns an empty list.
   [] +> tests-zero-index-in-back
     is-empty. > @
       back.
@@ -371,7 +329,6 @@
           * 1 2 3 4 5
         0
 
-  # Tests that getting back with large index returns the entire list.
   [] +> tests-large-index-in-back
     eq. > @
       back.
@@ -380,7 +337,6 @@
         10
       * 1 2 3 4 5
 
-  # Tests that slice works correctly.
   [] +> tests-simple-slice
     eq. > @
       slice.
@@ -390,7 +346,6 @@
         5
       * 2 3 4 5
 
-  # Tests that slice with negative start index works correctly.
   [] +> tests-slice-with-negative-start
     eq. > @
       slice.
@@ -400,7 +355,6 @@
         6
       * 0 3 8
 
-  # Tests that slice with negative end index works correctly.
   [] +> tests-slice-with-negative-end
     eq. > @
       slice.
@@ -410,7 +364,6 @@
         -1
       * "a" 2 3.0 "xyz" 82.42
 
-  # Tests that slice with both negative start and end indices works correctly.
   [] +> tests-slice-with-negative-start-and-end
     eq. > @
       slice.
@@ -420,7 +373,6 @@
         -1
       * 23 0 0
 
-  # Tests that slice with end greater than length works correctly.
   [] +> tests-slice-with-end-gt-length
     eq. > @
       slice.
@@ -430,7 +382,6 @@
         10
       * "bar" "buzz"
 
-  # Tests that slice with start less than negative length works correctly.
   [] +> tests-slice-with-start-lt-negative-length
     eq. > @
       slice.
@@ -440,7 +391,6 @@
         3
       * 9 99 999
 
-  # Tests that slice with end less than negative length returns an empty list.
   [] +> tests-slice-with-end-lt-negative-length
     eq. > @
       slice.
@@ -450,7 +400,6 @@
         -9
       list *
 
-  # Tests that slice with start greater than or equal end (both positive) returns an empty list.
   [] +> tests-slice-with-start-gte-end-both-positive
     eq. > @
       slice.
@@ -460,7 +409,6 @@
         0
       list *
 
-  # Tests that slice with start greater than or equal end (both negative) returns an empty list.
   [] +> tests-slice-with-start-gte-end-both-negative
     eq. > @
       slice.
@@ -470,7 +418,6 @@
         -5
       list *
 
-  # Tests that slice with negative start greater than or equal end returns an empty list.
   [] +> tests-slice-with-negative-start-gte-end
     eq. > @
       slice.
@@ -480,7 +427,6 @@
         3
       list *
 
-  # Tests that slice with start greater than or equal negative end returns an empty list.
   [] +> tests-slice-with-start-gte-negative-end
     eq. > @
       slice.
@@ -490,7 +436,6 @@
         -5
       list *
 
-  # Tests that shifted will work if the shift parameter is less than the list length.
   [] +> tests-shifted-with-shift-less-than-length
     eq. > @
       shifted.
@@ -499,7 +444,6 @@
         2
       * 3 4 5
 
-  # Tests that shifted will work if the shift parameter is greater than the list length.
   [] +> tests-shifted-with-shift-greater-than-length
     eq. > @
       shifted.

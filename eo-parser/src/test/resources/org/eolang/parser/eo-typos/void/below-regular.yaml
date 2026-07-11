@@ -2,10 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 4
+line: 3
 message: "void attribute must be declared above"
 input: |
-  # No comments.
   [] > foo
     6 > six
     ? > x

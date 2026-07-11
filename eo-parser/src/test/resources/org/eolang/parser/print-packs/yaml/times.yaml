@@ -3,7 +3,6 @@
 ---
 # yamllint disable rule:line-length
 origin: |
-  # No comments.
   [] > app
     Q.io.stdout > @
       Q.tt.sprintf
@@ -11,7 +10,6 @@ origin: |
         -1.times 228
 
 printed: |
-  # No comments.
   [] > app
     io.stdout > @
       tt.sprintf

@@ -96,7 +96,6 @@ final class MjAssembleIT {
             "+package one",
             "+version 0.0.0",
             "",
-            "# The seq *-1 leads to error.",
             "[x] > main",
             "  seq *-1 > @",
             "    true"
@@ -110,7 +109,6 @@ final class MjAssembleIT {
             "+package foo.x",
             "+version 0.1.1",
             "",
-            "# Prints Hello World! to stdout.",
             "[x] > main",
             "  (stdout \"Hello World!\" x).print > @"
         );

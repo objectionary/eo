@@ -21,7 +21,6 @@ asserts:
 input: |
   +package test
 
-  # No comments.
   [] > foo
     tuple > @
       tuple

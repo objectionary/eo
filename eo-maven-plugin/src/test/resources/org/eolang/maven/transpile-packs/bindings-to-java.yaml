@@ -14,7 +14,6 @@ asserts:
   - //java/text()[contains(., 'new PhApplication(r, new Bind(0')]
   - //java/text()[contains(., 'new PhApplication(r, new Bind("text"')]
 input: |
-  # No comments.
   [] > main
     stdout x:0 > print1
     stdout x:text > print2

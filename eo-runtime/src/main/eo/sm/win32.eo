@@ -1,3 +1,10 @@
+# Makes a kernel32.dll function call by name.
+#
+# You can access the documentation for kernel32.dll functions by visiting the
+# Windows API Index (https://learn.microsoft.com/en-us/windows/win32/api/index).
+# Use the search functionality to look up specific functions, such as CreateFile, ReadFile,
+# WriteFile, etc.
+
 +alias sm.os
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -10,53 +17,32 @@
 +unlint many-void-attributes
 +unlint redundant-object
 
-# Makes a kernel32.dll function call by name.
-#
-# You can access the documentation for kernel32.dll functions by visiting the
-# Windows API Index (https://learn.microsoft.com/en-us/windows/win32/api/index).
-# Use the search functionality to look up specific functions, such as CreateFile, ReadFile,
-# WriteFile, etc.
 [name args] > win32
-  # Makes an actual function call to operating system
-  # Returns `org.eolang.sm.win32.return` object.
   [] > @ /return
   2 > af-inet
   -1 > inaddr-none
   -1 > invalid-socket
   6 > ipproto-tcp
-  # Open flag for read-only access: `_O_RDONLY | _O_BINARY`.
   32768 > o-rdonly
-  # Open flag for write-only access: `_O_WRONLY | _O_BINARY`.
   32769 > o-wronly
-  # Open flag for read-write access: `_O_RDWR | _O_BINARY`.
   32770 > o-rdwr
-  # Open flag to create the file if absent: `_O_CREAT`.
   256 > o-creat
-  # Open flag to truncate the file: `_O_TRUNC`.
   512 > o-trunc
-  # Open flag to append on write: `_O_APPEND`.
   8 > o-append
-  # Permission bits for a file made by the "creat" function: `_S_IREAD | _S_IWRITE`.
   384 > create-mode
   1 > sock-stream
   -1 > socket-error
   -10 > std-input-handle
   -11 > std-output-handle
   02-02 > winsock-version-2-2
-  # Result of a Win32 function call with return code and output.
   [code output] > return
     output > @
     return code output > called
 
-  # Structure for "GetSystemTime" function call.
   [year month day day-of-week hour minute second milliseconds] > system-time
 
-  # Stat structure for the "stat64" function call.
-  # Here `st-mode` holds the file type and permission bits, and `st-size`
-  # is the file size in bytes.
   [st-mode st-size] > stat64
 
-  # Win32 `sockaddr_in` structure for IPv4 socket addressing.
   [sin-family sin-port sin-addr] > sockaddr-in
     00-00-00-00-00-00-00-00 > sin-zero
     plus. > size
@@ -67,7 +53,6 @@
         sin-addr.size
       sin-zero.size
 
-  # Tests Win32 inet_addr returns correct localhost (127.0.0.1) address.
   [] +> tests-returns-valid-win32-inet-addr-for-localhost
     or. > @
       os.is-windows.not

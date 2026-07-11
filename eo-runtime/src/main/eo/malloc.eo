@@ -1,12 +1,3 @@
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
-+version 0.0.0
-+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
-
 # Object `malloc` is an abstraction of a storage of data in heap
 # memory. The implementation of `malloc` is platform dependent. It may
 # use either OS-level or VM-level memory management mechanism.
@@ -60,15 +51,22 @@
 # ```
 # Here the void attribute in the scope object is memory-block object which provides API to write
 # and read data to the memory.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
+
 [] > malloc
-  # Allocates empty block in memory.
   [scope] > empty
     malloc.of > @
       0
       scope
 
-  # Allocates block in memory for given `object`. After allocation the provided object is dataized
-  # and the data is written into memory.
   [object scope] > for
     malloc.of > @
       bts.size
@@ -78,59 +76,32 @@
           scope m
     (dataized object).as-bytes > bts
 
-  # Allocates block in memory of given `size`. After allocation, `size` zero bytes are
-  # written into memory.
   [size scope] > of
-    # Dataizes given `scope` and returns the result of the dataization as `org.eolang.bytes`.
     [] > @ /bytes
 
-    # Allocated block in memory that provides an API for writing and reading.
     [id] > allocated
       get > @
-      # Just get all the data from the allocated block in memory.
       read 0 size > get
 
-      # Returns size of allocated block in memory as `org.eolang.number`.
       [] > size /number
 
-      # Resizes allocated block in memory and returns `true`.
-      # Here `size` must be positive `number`.
-      # The `error` returned if failed to resize block in memory.
-      # Returns `org.eolang.malloc.of.allocated` object.
-      # @todo #5189:30min Resolve atom return types using the current scope,
-      #  the same way regular FQNs are resolved. Here `/allocated` should mean
-      #  `Q.malloc.of.allocated`, but for now the full path is written explicitly.
-      #  The same applies to `matched-from-index` and `regex` `@` in `tt/regex.eo`,
-      #  which use explicit `/Q....` paths for the same reason and must be resolved
-      #  the same way.
       [size] > resized /Q.malloc.of.allocated
 
-      # Reads the data from block in memory with offset `source` and `length` and writes
-      # to the block with offset `target`.
-      # Returns `true` on success, or `error` on failure.
       [source target length] > copy
         write > @
           target
           read source length
 
-      # Read `length` bytes with `offset` from the allocated block in memory and return them
-      # as `bytes`. When the requested range is outside the allocated block, the
-      # read returns the caller-supplied `cant-read` fallback object instead, or the bottom
-      # object when no fallback was provided, which terminates on use.
       [offset length] > read /bytes
         ? > cant-read /{string}
 
-      # Write `data` with `offset` to the allocated block in memory
-      # and return `true`.
       [offset data] > write /bool
 
-      # Put `object` into the allocated block in memory. The `object` is supposed to be dataizable.
       [object] > put
         seq * > @
           write 0 object
           get
 
-  # Tests that malloc.of can write data into allocated memory block and retrieve it.
   [] +> tests-writes-into-memory-of
     mem.eq 10 > @
     malloc.of > mem
@@ -141,14 +112,12 @@
             m.write 0 10
             m
 
-  # Tests that malloc.for can allocate memory for an object and put new data into it.
   [] +> tests-puts-into-memory-for
     mem.eq 10 > @
     malloc.for > mem
       0
       m.put 10 > [m]
 
-  # Tests that malloc returns the correct size of allocated memory block from scope.
   [] +> tests-returns-size-from-scope
     eq. > @
       malloc.of
@@ -156,7 +125,6 @@
         m.size > [m]
       5
 
-  # Tests that malloc scope can be dataized multiple times correctly.
   [] +> tests-malloc-scope-is-dataized-twice
     eq. > @
       2
@@ -171,7 +139,6 @@
             1
             f.put (f.as-number.plus 1) > [s] >>
 
-  # Tests that malloc.for correctly writes the initial value provided during allocation.
   [] +> tests-malloc-for-writes-first-init-value
     eq. > @
       malloc.for
@@ -179,7 +146,6 @@
         m > [m]
       42
 
-  # Tests that malloc.put overwrites previous data starting from offset 0.
   [] +> tests-malloc-puts-over-the-previous-data
     eq. > @
       42.as-bytes.concat
@@ -193,7 +159,6 @@
             m.put "Hello, world!"
             m.put 42
 
-  # Tests that malloc can rewrite data and increment its own value in memory.
   [] +> tests-malloc-rewrites-and-increments-itself
     mem.eq 6 > @
     malloc.of > mem
@@ -204,25 +169,21 @@
             m.write 0 1
             m.put (m.as-number.plus 5)
 
-  # Tests that two separate malloc objects can store different values independently.
   [] +> tests-writes-into-two-malloc-objects
     and. > @
       (malloc.of 8 (m.put 10 > [m])).eq 10
       (malloc.of 8 (m.put 20 > [m])).eq 20
 
-  # Tests that malloc throws an error when trying to put data larger than allocated space for boolean.
   [] +> throws-on-overflow-boolean-malloc
     malloc.for > @
       false
       m.put 86124867.88 > [m]
 
-  # Tests that malloc throws an error when trying to put a string larger than allocated space.
   [] +> throws-on-overflow-string-malloc
     malloc.for > @
       "Hello"
       m.put "Much longer string!" > [m]
 
-  # Tests that malloc correctly handles integer values within the allocated memory size.
   [] +> tests-malloc-is-strictly-sized-int
     eq. > @
       malloc.for
@@ -230,7 +191,6 @@
         m.put 2556 > [m]
       2556
 
-  # Tests that malloc correctly handles float values and maintains type consistency.
   [] +> tests-malloc-is-strictly-typed-float
     eq. > @
       malloc.for
@@ -238,7 +198,6 @@
         m.put 82.22 > [m]
       82.22
 
-  # Tests that malloc handles string data within the allocated memory size constraints.
   [] +> tests-memory-is-strictly-sized-string
     eq. > @
       malloc.for
@@ -246,19 +205,16 @@
         m.put "Prot" > [m]
       "Proto"
 
-  # Tests that malloc correctly handles boolean values and type consistency.
   [] +> tests-malloc-is-strictly-typed-bool
     malloc.for > @
       false
       m.put true > [m]
 
-  # Tests that malloc assigns a positive unique identifier to each allocated memory block.
   [] +> tests-malloc-gives-id-to-allocated-block
     malloc.of > @
       1
       m.put (m.id.gt 0) > [m]
 
-  # Tests that malloc allocates memory blocks with the exact size specified.
   [] +> tests-malloc-allocates-right-size-block
     malloc.of > @
       1
@@ -267,7 +223,6 @@
           10
           b.put (m.size.eq 10) > [m] >>
 
-  # Tests that malloc can write data to specific offsets and read it back correctly.
   [] +> tests-malloc-writes-and-reads
     malloc.of > @
       1
@@ -284,7 +239,6 @@
                     m.read 0 12
                     "Hello, Jeff!"
 
-  # Tests that malloc correctly concatenates strings when writing with offset overwriting.
   [] +> tests-malloc-concacts-strings-with-offset
     malloc.of > @
       1
@@ -299,7 +253,6 @@
                 b.put
                   (m.read 0 3).eq "XYX"
 
-  # Tests that malloc resizes the block when writing beyond allocated memory bounds with offset.
   [] +> writes-beyond-offset-and-resizes
     malloc.of > @
       1
@@ -308,7 +261,6 @@
           m.write 1 true
           m.size.eq 2
 
-  # Tests that malloc can read data from specific offset with specified length correctly.
   [] +> tests-malloc-reads-with-offset-and-length
     malloc.of > @
       1
@@ -322,8 +274,6 @@
                 b.put
                   (m.read 2 5).eq "Hello"
 
-  # Tests that an out-of-bounds read returns the caller-supplied `cant-read`
-  # fallback object instead of terminating.
   [] +> tests-malloc-read-over-a-limit-returns-fallback
     eq. > @
       01-02
@@ -335,14 +285,11 @@
             10
             01-02 > [ex]
 
-  # Tests that an out-of-bounds read with no `cant-read` fallback yields the bottom
-  # object, which terminates the program when dataized.
   [] +> throws-on-reading-over-a-limit-without-fallback
     malloc.for > @
       10
       m.read 0 100 > [m]
 
-  # Creates memory block of zero bytes (this should be a legal operation).
   [] +> tests-allocates-zero-bytes
     eq. > @
       0
@@ -350,7 +297,6 @@
         0
         m.size > [m]
 
-  # Tests that malloc can increase the allocated block size and preserve existing data.
   [] +> tests-malloc-increases-block-size
     malloc.of > @
       1
@@ -363,7 +309,6 @@
                 (m.resized 6).size.eq 6
                 m.get.eq 01-02-03-04-00-00
 
-  # Tests that malloc can decrease the allocated block size and truncate data accordingly.
   [] +> tests-malloc-decreases-block-size
     malloc.of > @
       1
@@ -376,24 +321,20 @@
                 (m.resized 3).size.eq 3
                 m.get.eq 01-02-03
 
-  # Tests that malloc throws an error when attempting to resize to negative size.
   [] +> throws-on-changing-size-to-negative
     malloc.of > @
       1
       m.resized -1 > [m]
 
-  # Tests that malloc throws an error when attempting to resize to a fractional size.
   [] +> throws-on-changing-size-to-fractional
     malloc.of > @
       1
       m.resized 1.5 > [m]
 
-  # Tests that malloc.empty creates a memory block with zero size.
   [] +> tests-malloc-empty-is-empty
     malloc.empty > @
       m.size.eq 0 > [m]
 
-  # Tests that malloc can copy data from one memory location to another within the same block.
   [] +> tests-copies-data-inside-itself
     malloc.for > @
       01-02-03-04-05
@@ -402,7 +343,6 @@
           m.copy 1 2 2
           m.get.eq 01-02-02-03-05
 
-  # Tests that malloc can copy data from the beginning to the end of the memory block.
   [] +> tests-copies-data-from-start-to-end
     malloc.for > @
       01-02-03-04-05-06
@@ -411,13 +351,11 @@
           m.copy 0 3 3
           m.get.eq 01-02-03-01-02-03
 
-  # Tests that malloc throws an error when copying from an invalid source offset.
   [] +> throws-on-copying-with-wrong-source
     malloc.for > @
       0
       m.copy 9 1 1 > [m]
 
-  # Tests that malloc resizes the block when copying to a target offset beyond allocated memory.
   [] +> copies-and-resizes-to-target
     malloc.for > @
       0
@@ -426,24 +364,20 @@
           m.copy 3 9 1
           m.size.eq 10
 
-  # Tests that malloc throws an error when copying with an invalid length parameter.
   [] +> throws-on-copying-with-wrong-length
     malloc.for > @
       0
       m.copy 3 1 9 > [m]
 
-  # Tests that the runtime calculates expressions only once.
   [] +> tests-calculates-only-once
     eq. > @
       malloc.for
         0
-        # Checks that a is only evaluated once despite multiple negations.
         [m] > x
           seq > @
             *
               a.neg.neg.neg.neg.eq 42
               m
-          # Increments the counter and returns 42.
           [] > a
             seq > @
               *
@@ -451,7 +385,6 @@
                 42
       1
 
-  # Tests that the runtime handles recursion without arguments.
   [] +> tests-recursion-without-arguments
     eq. > @
       malloc.for
@@ -459,7 +392,6 @@
         [m] >>
           func m > @
       0
-    # Decrements n until it reaches zero, then returns it.
     [n] > func
       if. > @
         n.as-number.gt 0
@@ -469,7 +401,6 @@
             ^.func n
         n
 
-  # Tests that the runtime constants defend against side effects.
   [] +> tests-constant-defends-against-side-effects
     eq. > @
       malloc.for
@@ -482,7 +413,6 @@
           ^.inc m > n!
           number n > num
       64
-    # Increments x and returns its new value.
     [x] > inc
       seq > @
         *

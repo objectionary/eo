@@ -8,7 +8,6 @@ asserts:
   - //o[@base='Φ.foo.bar']/o[@base='Φ.x']
   - //o[@base='Φ.foo.bar']/o[@base='Φ.tuple']/o[@base='Φ.y']
 input: |
-  # No comments.
   [] > app
     foo.bar *1 > @
       x

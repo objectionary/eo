@@ -92,7 +92,6 @@ final class MjTranspileTest {
                     "+architect yegor256@gmail.com",
                     "+package examples",
                     "",
-                    "# This is the main abstract object",
                     "[] > x"
                 )
                 ).with("trackTransformationSteps", true)
@@ -132,7 +131,6 @@ final class MjTranspileTest {
                 "+rt jvm org.eolang:eo-runtime:0.0.0",
                 "+unlint not-empty-atom",
                 String.format("+version 0.0.0%n"),
-                "# Atom.",
                 "[x y z] > main /bytes"
                 )
                 .execute(new FakeMaven.Transpile())
@@ -151,10 +149,13 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "TranspileMojo must generate package-info.java files for all of the packages",
             new FakeMaven(temp).withProgram(
-                "+custom-meta",
-                String.format("+package foo.x%n"),
-                "# Simple.",
-                "[] > main"
+                String.join(
+                    System.lineSeparator(),
+                    "+custom-meta",
+                    "+package foo.x",
+                    "",
+                    "[] > main"
+                )
                 )
                 .execute(new FakeMaven.Transpile())
                 .result(),
@@ -171,10 +172,13 @@ final class MjTranspileTest {
             "TranspileMojo must save valid content to package-info.java file",
             new TextOf(
                 new FakeMaven(temp).withProgram(
-                    String.format("+package foo.x%n"),
-                    "# Simple.",
-                    "[] > main",
-                    "  true > @"
+                    String.join(
+                        System.lineSeparator(),
+                        "+package foo.x",
+                        "",
+                        "[] > main",
+                        "  true > @"
+                    )
                     )
                     .execute(new FakeMaven.Transpile())
                     .result()

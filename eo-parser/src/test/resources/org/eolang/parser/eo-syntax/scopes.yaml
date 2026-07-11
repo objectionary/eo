@@ -6,6 +6,5 @@ sheets: []
 asserts:
   - //o[not(@base) and count(o[not(@name='xi🌵')])=1 and @name='aliases']
 input: |
-  # No comments.
   [] > aliases
     a (b (c d)) > scopes

@@ -6,7 +6,6 @@ sheets: []
 asserts:
   - /object[not(errors)]
 input: |
-  # Main.
   [] > main
     x > first
       a

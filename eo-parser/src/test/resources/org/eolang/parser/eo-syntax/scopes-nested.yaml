@@ -8,7 +8,6 @@ asserts:
   - //o[@base='ξ.bar' and count(o)=2]
   - //o[@base='ξ.foobar' and count(o)=2 and o[@base='ξ.foo' and count(o)=2]]
 input: |
-  # No comments.
   [] > aliases
     [x y] > foo
       42 > @

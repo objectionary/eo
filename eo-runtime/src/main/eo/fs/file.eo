@@ -1,3 +1,5 @@
+# Represents a file in the filesystem for reading and writing.
+
 +alias tt.contains
 +alias fs.file
 +alias tt.joined
@@ -15,17 +17,10 @@
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
 
-# Represents a file in the filesystem for reading and writing.
 [path] > file
   path > @
-  # Converts the `file` to a `path`.
   (Q.fs.path path).@ > as-path
 
-  # Returns `org.eolang.true` if current file is a directory, returns
-  # `org.eolang.false` otherwise. Returns the `cant-check` fallback when the
-  # file cannot be stated, terminating with a ⊥ if it is left unbound.
-  # A directory carries the `S_IFDIR` type bits (octal 040000) in its mode, so
-  # flooring the mode divided by 4096 yields 4 for directories.
   [cant-check] > is-directory
     if. > @
       info.code.eq 0
@@ -37,7 +32,6 @@
         win32 "_stat64" (* path)
         posix "stat" (* path)
 
-  # Returns `org.eolang.true` if file with current `path` exists in filesystem.
   [] > exists
     eq. > @
       code.
@@ -47,9 +41,6 @@
           posix "access" (* path 0)
       0
 
-  # If current file exists - returns the file. If it does not exist - creates
-  # an empty file and returns it. Terminates with a ⊥ when the file cannot be
-  # created, since that is a system-level failure.
   [] > touched
     if. > @
       exists
@@ -74,9 +65,6 @@
         win32 "_close" (* descriptor)
         posix "close" (* descriptor)
 
-  # If current file exists - deletes it and returns it. If it does not exist -
-  # just returns it. Terminates with a ⊥ when it cannot be deleted, since that
-  # is a system-level failure.
   [] > deleted
     if. > @
       exists
@@ -102,9 +90,6 @@
       "rmdir"
       "unlink"
 
-  # Gets the file size in bytes and returns it as `org.eolang.number`.
-  # Returns the `cant-measure` fallback when the file cannot be stated,
-  # terminating with a ⊥ if it is left unbound.
   [cant-measure] > size
     if. > @
       info.code.eq 0
@@ -116,9 +101,6 @@
         win32 "_stat64" (* path)
         posix "stat" (* path)
 
-  # Moves the current file to `target`, making and returning a new `file` from
-  # it. Terminates with a ⊥ when the move fails, since that is a system-level
-  # failure.
   [target] > moved
     if. > @
       outcome.eq 0
@@ -133,41 +115,6 @@
         win32 "rename" (* path target)
         posix "rename" (* path target)
 
-  # Opens the file.
-  #
-  # The first argument `mode` defines the operations that are allowed on the file
-  # and how these operations are performed.
-  #
-  # The access mode can be:
-  # |------|-------------|----------------------|-------------------|----------------------|
-  # | Mode | Description | File Existence       | Init pointer pos  | Content Handling     |
-  # |======|=============|======================|===================|======================|
-  # | "r"  | Read only   | Must exist           | Beginning         | No changes           |
-  # |------|-------------|----------------------|-------------------|----------------------|
-  # | "w"  | Write only  | Created if not exist | Beginning         | Truncated if exists, |
-  # |      |             |                      |                   | created if not       |
-  # |------|-------------|----------------------|-------------------|----------------------|
-  # | "a"  | Append only | Created if not exist | End               | No truncation,       |
-  # |      |             |                      |                   | created if not       |
-  # |------|-------------|----------------------|-------------------|----------------------|
-  # | "r+" | Read/Write  | Must exist           | Beginning         | No changes           |
-  # |------|-------------|----------------------|-------------------|----------------------|
-  # | "w+" | Write/Read  | Created if not exist | Beginning         | Truncated if exists, |
-  # |      |             |                      |                   | created if not       |
-  # |------|-------------|----------------------|-------------------|----------------------|
-  # | "a+" | Read/Append | Created if not exist | End (for writing) | No truncation,       |
-  # |      |             |                      |                   | created if not       |
-  # |------|-------------|----------------------|-------------------|----------------------|
-  #
-  # The second argument `scope` is the scope where file is available as input
-  # (the `read` object is available) or output (the `write` object is available).
-  #
-  # The third argument `cant-open` is the fallback applied to the failure reason
-  # when the file cannot be opened - it must exist for the mode but does not, or
-  # the open syscall fails. Leaving `cant-open` unbound terminates with a ⊥.
-  #
-  # When `file.open` is dataized - it opens file stream, dataizes the `scope`,
-  # closes the file stream and returns an original file object.
   [mode scope cant-open] > open
     if. > @
       known.not
@@ -182,36 +129,25 @@
           open-file
           ^
     mode > access!
-    # Writable unless opened read-only ("r").
     (access.eq "r").as-bool.not > writable
-    # Readable unless opened write-only ("w") or append-only ("a").
     and. > readable
       (access.eq "w").as-bool.not
       (access.eq "a").as-bool.not
-    # "r" and "r+" require the file to already exist.
     or. > existing
       (access.eq "r").as-bool
       (access.eq "r+").as-bool
-    # "w" and "w+" truncate the file on open.
     or. > truncate
       (access.eq "w").as-bool
       (access.eq "w+").as-bool
-    # "a" and "a+" append on every write.
     or. > appending
       (access.eq "a").as-bool
       (access.eq "a+").as-bool
-    # A mode is valid only when it names a read, truncate or append family member.
     or. > known
       or.
         existing
         truncate
       appending
 
-    # Opens the file through OS syscalls with the flags derived from the access
-    # mode, threads a single descriptor to the scope and closes it afterwards.
-    #
-    # Note: This object is intended for internal use only. Please
-    # don't use the object programmatically outside of `file` object.
     [] > open-file
       if. > @
         os.is-windows
@@ -230,16 +166,6 @@
             posix "read" > read
             posix "write" > write
 
-      # Opens the file through the given `syscall` adapter, which binds the four
-      # file operations to the platform's real syscalls and decorates the
-      # platform object so its atomic open flags and creation mode stay in reach.
-      # It threads a stream over the single descriptor to the scope and closes it
-      # afterwards. The flags are composed from the adapter's open flags: a
-      # read/write/read-write direction plus the create, truncate and append bits
-      # the mode calls for.
-      #
-      # Note: This object is intended for internal use only. Please
-      # don't use the object programmatically outside of `file` object.
       [syscall] > open-through
         if. > @
           descriptor.eq -1
@@ -282,18 +208,10 @@
           syscall.o-append
           0
 
-        # File stream backed by a single descriptor, providing input and output
-        # access via the syscalls.
-        #
-        # Note: This object is intended for internal use only. Please
-        # don't use the object programmatically outside of `file` object.
         [descriptor] > stream
-          # Read `size` amount of bytes from the file via the read syscall.
-          # Terminates with a ⊥ if the access mode does not allow reading.
           [size] > read
             (input-block --).read size > @
 
-            # File input block.
             [buffer] > input-block
               buffer > @
               [size] > read
@@ -308,12 +226,9 @@
                     input-block chunk
                 (syscall.read (* descriptor size):args).output > chunk!
 
-          # Write the given `buffer` to the file via the write syscall.
-          # Terminates with a ⊥ if the access mode does not allow writing.
           [buffer] > write
             output-block.write buffer > @
 
-            # File output block.
             [] > output-block
               true > @
               [buffer] > write
@@ -328,67 +243,52 @@
                       syscall.write (* descriptor buffer buffer.size):args
                     output-block
 
-  # Tests that the current directory is detected as a directory.
   [] +> tests-check-if-current-directory-is-directory
     (file ".").is-directory > @
 
-  # Tests that a non-existent file is properly detected as not existing.
   [] +> tests-check-if-absent-file-does-not-exist
     (file "absent.tt").exists.not > @
 
-  # Tests that the file object returns itself after deletion operation.
   [] +> tests-returns-self-after-deleting
     temp.deleted.path.eq temp.path > @
     tmpdir.tmpfile > temp
 
-  # Tests that the file object returns itself after touch operation.
   [] +> tests-returns-self-after-touching
     temp.deleted.touched.path.eq temp.path > @
     tmpdir.tmpfile > temp
 
-  # Tests that a file no longer exists after being deleted.
   [] +> tests-checks-file-does-not-exist-after-deleting
     tmpdir.tmpfile.deleted.exists.not > @
 
-  # Tests that touching a file creates it and makes it exist.
   [] +> tests-touches-a-file
     tmpdir.tmpfile.deleted.touched.exists > @
 
-  # Tests that a newly touched file has zero size.
   [] +> tests-measures-empty-file-after-touching
     tmpdir.tmpfile.deleted.touched.size.eq 0 > @
 
-  # Tests that sizing an absent file terminates instead of returning zero.
   [] +> throws-on-sizing-absent-file
     tmpdir.tmpfile.deleted.size > @
 
-  # Tests that checking the directory status of an absent file terminates.
   [] +> throws-on-checking-directory-of-absent-file
     tmpdir.tmpfile.deleted.is-directory > @
 
-  # Tests that sizing an absent file returns the provided fallback.
   [] +> tests-sizing-absent-file-returns-fallback
     eq. > @
       -1
       tmpdir.tmpfile.deleted.size -1
 
-  # Tests that checking an absent file's directory status returns the fallback.
   [] +> tests-checking-absent-file-returns-fallback
     tmpdir.tmpfile.deleted.is-directory true > @
 
-  # Tests that touching a file twice does not cause errors.
   [] +> tests-does-not-fail-on-double-touching
     tmpdir.tmpfile.deleted.touched.touched.exists > @
 
-  # Tests that deleting a file twice does not cause errors.
   [] +> tests-does-not-fail-on-double-deleting
     tmpdir.tmpfile.deleted.deleted.exists.not > @
 
-  # Tests that attempting to touch a file in a non-existent directory throws an error.
   [] +> throws-an-error-on-touching-temp-file-in-absent-dir
     (tmpdir.as-path.resolved "foo").@.tmpfile > @
 
-  # Tests that resolving nested paths and touching files works correctly.
   [] +> tests-resolves-and-touches
     and. > @
       resolved.as-dir.made.tmpfile.exists
@@ -399,15 +299,12 @@
           * "foo" "bar"
     tmpdir.as-path.resolved "foo/bar" > resolved
 
-  # Tests that moving a file to a new location works correctly.
   [] +> tests-moves-a-file
     and. > @
       (temp.moved (sprintf "%s.dest" (* temp.path))).exists
       temp.exists.not
     tmpdir.tmpfile > temp
 
-  # Tests that opening a file with an invalid access mode terminates, even
-  # when the scope never touches the file stream and the result is discarded.
   [] +> throws-on-opening-with-wrong-mode
     seq > @
       *
@@ -418,7 +315,6 @@
           true > [f]
         true
 
-  # Tests that opening a non-existent file in read mode throws an error.
   [] +> throws-on-reading-from-not-existed-file
     tmpdir
     .tmpfile
@@ -427,7 +323,6 @@
       "r"
       f > [f]
 
-  # Tests that opening a non-existent file in rw mode throws an error.
   [] +> throws-on-reading-or-writing-from-not-existed-file
     tmpdir
     .tmpfile
@@ -436,8 +331,6 @@
       "r+"
       f > [f]
 
-  # Tests that opening a non-existent file for reading recovers through the
-  # provided `cant-open` fallback instead of terminating.
   [] +> tests-recovers-from-opening-missing-file-through-fallback
     eq. > @
       "recovered"
@@ -449,7 +342,6 @@
         f > [f]
         "recovered" > [reason]
 
-  # Tests that opening a non-existent file in write mode creates the file.
   [] +> tests-touches-absent-file-on-opening-for-writing
     tmpdir
     .tmpfile
@@ -459,7 +351,6 @@
       true > [f]
     .exists > @
 
-  # Tests that opening a non-existent file in append mode creates the file.
   [] +> tests-touches-absent-file-on-opening-for-appending
     tmpdir
     .tmpfile
@@ -469,7 +360,6 @@
       true > [f]
     .exists > @
 
-  # Tests that opening a non-existent file in wr mode creates the file.
   [] +> tests-touches-absent-file-on-opening-for-writing-or-reading
     tmpdir
     .tmpfile
@@ -479,7 +369,6 @@
       true > [f]
     .exists > @
 
-  # Tests that opening a non-existent file in ra mode creates the file.
   [] +> tests-touches-absent-file-on-opening-for-reading-or-appending
     tmpdir
     .tmpfile
@@ -489,7 +378,6 @@
       true > [f]
     .exists > @
 
-  # Tests that writing data to a file updates the file size correctly.
   [] +> tests-writes-data-to-file
     tmpdir
     .tmpfile
@@ -499,7 +387,6 @@
     .size
     .eq 12 > @
 
-  # Tests that appending data to an existing file increases the file size.
   [] +> tests-appending-data-to-file
     tmpdir
     .tmpfile
@@ -512,7 +399,6 @@
     .size
     .eq 13 > @
 
-  # Tests that opening an existing file in write mode truncates it to zero size.
   [] +> tests-truncates-file-opened-for-writing
     tmpdir
     .tmpfile
@@ -525,7 +411,6 @@
     .size
     .eq 0 > @
 
-  # Tests that opening an existing file in wr mode truncates it to zero size.
   [] +> tests-truncates-file-opened-for-writing-or-reading
     tmpdir
     .tmpfile
@@ -538,7 +423,6 @@
     .size
     .eq 0 > @
 
-  # Tests that opening an existing file in append mode preserves its content.
   [] +> tests-does-not-truncate-file-opened-for-appending
     tmpdir
     .tmpfile
@@ -551,7 +435,6 @@
     .size
     .eq 12 > @
 
-  # Tests that opening an existing file in ra mode preserves its content.
   [] +> tests-does-not-truncate-file-opened-for-reading-or-appending
     tmpdir
     .tmpfile
@@ -564,7 +447,6 @@
     .size
     .eq 12 > @
 
-  # Tests that opening an existing file in read mode preserves its content.
   [] +> tests-does-not-truncate-file-opened-for-reading
     tmpdir
     .tmpfile
@@ -577,7 +459,6 @@
     .size
     .eq 12 > @
 
-  # Tests that attempting to write to a file opened in read-only mode throws an error.
   [] +> throws-on-writing-with-wrong-mode
     tmpdir
     .tmpfile
@@ -585,7 +466,6 @@
       "r"
       f.write "Hello" > [f]
 
-  # Tests that reading data from a file returns the correct content.
   [] +> tests-reads-from-file
     malloc
     .of
@@ -606,8 +486,6 @@
             m
     .eq "Hello, world" > @
 
-  # Tests that reading a negative size from a file throws a clean domain error
-  # instead of an uncaught NegativeArraySizeException.
   [] +> throws-on-reading-negative-size-from-file
     tmpdir
     .tmpfile
@@ -615,7 +493,6 @@
       "r"
       f.read -5 > [f]
 
-  # Tests that attempting to read from a file opened in write-only mode throws an error.
   [] +> throws-on-reading-from-file-with-wrong-mode
     tmpdir
     .tmpfile
@@ -623,7 +500,6 @@
       "w"
       f.read 12 > [f]
 
-  # Tests that reading from a file using different file instances works correctly.
   [] +> tests-reads-from-file-from-different-instances
     seq * > @
       temp.open
@@ -646,7 +522,6 @@
     temp.path > src
     tmpdir.tmpfile > temp
 
-  # Tests that writing to a file using different file instances works correctly.
   [] +> tests-writes-to-file-from-different-instances
     seq > @
       *
@@ -677,7 +552,6 @@
     temp.path > src
     tmpdir.tmpfile > temp
 
-  # Tests that sequential reading from a file advances the position correctly.
   [] +> tests-reads-from-file-sequentially
     malloc
     .of
@@ -698,7 +572,6 @@
             m
     .eq "world" > @
 
-  # Tests that sequential writing to a file appends data correctly.
   [] +> tests-writes-to-file-sequentially
     tmpdir
     .tmpfile

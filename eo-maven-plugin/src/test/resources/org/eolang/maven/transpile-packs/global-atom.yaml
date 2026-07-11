@@ -14,5 +14,4 @@ asserts:
   - /object[not(errors)]
   - /object[not(class) and not(//attr)]
 input: |
-  # No comments.
   [x y z] > global-atom /bytes

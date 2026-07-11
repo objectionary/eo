@@ -17,7 +17,6 @@ asserts:
   - //java[contains(text(), 'r11 = new PhApplication(r11, 0, new PhDefault(new byte[] {(byte) 0x40, (byte) 0x0C, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}));')]
   - //java[contains(text(), 'r = new PhApplication(r, 0, new PhDefault(new byte[] {(byte) 0x01, (byte) 0xAF}));')]
 input: |
-  # No comments.
   [] > data
     true > @
     bool 00- > @

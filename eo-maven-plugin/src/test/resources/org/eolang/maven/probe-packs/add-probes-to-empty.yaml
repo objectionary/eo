@@ -6,6 +6,5 @@ probes:
   - 'foo'
   - 'foo.boom'
 eo: |
-  # No comments.
   [] > app
     Q.foo.boom > @

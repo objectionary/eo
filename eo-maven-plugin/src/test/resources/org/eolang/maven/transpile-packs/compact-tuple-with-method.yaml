@@ -14,7 +14,6 @@ asserts:
   - //java[contains(text(), 'Phi r = new PhDispatch(Phi.Φ, "io");')]
   - //java[contains(text(), 'r = new PhDispatch(r, "stdout");')]
 input: |
-  # No comments.
   [args] > program
     io.stdout > @
       tt.sprintf *1

@@ -25,7 +25,6 @@ asserts:
 input: |-
   +package org.examples
 
-  # No comments.
   [x y] > first
     stdout x > std
     [std] > second

@@ -7,6 +7,5 @@ asserts:
   - /object[not(errors)]
   - /object/o[@base='Φ.bytes' and @name='app']/o[@base='Φ.bytes']/o[text()='00-00-00-00']
 input: |
-  # No comments.
   bytes > app
     00-00-00-00

@@ -14,7 +14,6 @@ eo: |
   +alias io.stdout
   +alias tt.sprintf
 
-  # No comments.
   [args] > simple
     stdout > @
       sprintf *1

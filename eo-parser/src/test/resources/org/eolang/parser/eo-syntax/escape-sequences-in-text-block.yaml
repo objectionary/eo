@@ -7,4 +7,4 @@ asserts:
   - /object[not(errors)]
   # Body Ф must decode to UTF-8 bytes for cyrillic capital Ef (D0 A4).
   - //o[@base='Φ.string' and o[@base='Φ.bytes' and o[text()='D0-A4']]]
-input: "# Unicode escape sequence inside a text block decodes to UTF-8 bytes.\n[] > foo\n  \"\"\"\n  \\u0424\n  \"\"\" > @\n"
+input: "# Unicode escape sequence inside a text block decodes to UTF-8 bytes.\n\n[] > foo\n  \"\"\"\n  \\u0424\n  \"\"\" > @\n"

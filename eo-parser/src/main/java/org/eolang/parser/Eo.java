@@ -452,10 +452,10 @@ final class Eo implements Iterable<Directive> {
     /**
      * End-of-stream checks — §8 of the spec.
      *
-     * <p>Reports unclosed text blocks (R-8.2), dangling comments (R-8.3),
-     * and excessive trailing blanks (R-8.4). EOF stack popping with
-     * close-time checks already ran via {@link Stack#close(Stack.Closer)}.
-     * </p>
+     * <p>Reports unclosed text blocks (R-8.2) and excessive trailing
+     * blanks (R-8.4), and flushes a top comment block left pending in a
+     * comment-only file (R-8.3). EOF stack popping with close-time checks
+     * already ran via {@link Stack#close(Stack.Closer)}.</p>
      *
      * @param globals The global parser state
      * @param emit The directives sink
@@ -471,11 +471,9 @@ final class Eo implements Iterable<Directive> {
             );
         }
         if (!globals.pendingComments().isEmpty()) {
-            final Span head = globals.pendingComments().get(0);
-            emit.error(
-                head.line(), head.indent(),
-                "comment must precede a named object"
-            );
+            final java.util.List<Span> pending = globals.pendingComments();
+            emit.comment(pending, pending.get(pending.size() - 1).line());
+            globals.clearComments();
         }
         if (globals.trailingBlanks() > 1) {
             emit.error(0, 0, "more than one trailing blank line");

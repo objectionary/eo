@@ -22,15 +22,11 @@ input: |
   +bar Some text
   +foo
 
-  # Main.
   [] > main
     500.43.@ > one
-    # No comments.
     "Hello, друг!" > hello!
-    # No comments.
     [tt a] > atom /bytes
 
-    # This unit test is supposed to check the functionality of the corresponding object.
     [] > with-void-phi
       [@] > x
         "Hello" > hello
@@ -39,8 +35,6 @@ input: |
         (five.plus 5).eq 10
         five.hello.eq "Hello"
 
-    # This is very good object
-    # No comments.
     [x] > first
       sprintf *1 > xyz
         "Hello, %s"
@@ -89,23 +83,17 @@ input: |
           b
       oops > spoo
 
-    # No comments.
     [] > obj
       "some" > @
       [] > foo
         ^.@ > @
 
-    # Comments are allowed only in front of top-level objects
-    # `.method` (no hargs) continuations are legal after a vapplication
-    # (the chain already has vertical children) — but vmethod-with-hargs
-    # closes the chain per R-5.2.3(b), so it cannot appear here.
     [] > named
       one.two.three.four.five
         t.o
       .three > a1
       .five > a3
 
-    # vmethod-with-hargs is legal as the terminating link of a chain.
     [] > terminator
       obj > x
       .method y
@@ -113,7 +101,6 @@ input: |
       me
         (now (f (f (f (f 1)))).f):i
 
-    # No comments.
     [] > ooo
       [] > o-1 /bytes
 

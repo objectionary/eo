@@ -20,7 +20,6 @@ sheets:
 asserts:
   - /object[count(//o[@as])=0]
 input: |
-  # No comments.
   [] > foo
     foo > @
       x 42 > i

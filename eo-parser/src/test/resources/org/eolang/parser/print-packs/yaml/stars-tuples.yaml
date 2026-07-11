@@ -3,7 +3,6 @@
 ---
 # yamllint disable rule:line-length
 origin: |
-  # Main.
   [] > main
     * 1 "Hello" x > array
     * > xs
@@ -18,7 +17,6 @@ origin: |
         6:1
 
 printed: |
-  # No comments.
   [] > main
     * > array
       1

@@ -20,17 +20,13 @@ asserts:
   - //java[contains(text(), 'new Bind(1, rr112)')]
   - //java[contains(text(), 'new Bind(2, rr113)')]
 input: |
-  # No comments.
   [] > tuples
-    # No comments.
     [] > foo
       * 1 2 (* 3 4) > @
 
-    # No comments.
     [] > bar
       zz 42 * > tt
 
-    # No comments.
     [] > baz
       """
       абвгд

@@ -1,10 +1,3 @@
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+package io
-+version 0.0.0
-+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
-
 # Makes an `input` from bytes.
 # Here `bts` is sequence of bytes or an object that can be dataized
 # via `as-bytes`.
@@ -27,26 +20,21 @@
 # If requested amount of bytes is more than amount
 # of available bytes - only available bytes are included.
 # If there's no available bytes - empty bytes (`--`) are included.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package io
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
 [bts] > bytes-as-input
-  # Read `size` amount of bytes from `bts`.
-  # Returns new instance of `input-block` with set
-  # sliced `data` and `buffer`.
   [size] > read
     ((input-block bts --).read size).@ > @
 
-    # Bytes-as-input block.
-    #
-    # Attention! The object is for internal usage only, please don't use the object
-    # programmatically outside of `bytes-as-input` object.
-    #
-    # Here `data` is a sequence of bytes that can be read from,
-    # `buffer` is a sequence of bytes that got from previous reading.
     [data buffer] > input-block
       buffer > @
 
-      # Read `size` amount of bytes from `data`.
-      # Returns new instance of `input-block` with set
-      # sliced `data` and `buffer`.
       [size] > read
         if. > @
           available.eq 0
@@ -68,7 +56,6 @@
           available
         size > requested!
 
-  # Tests that bytes-as-input can create an input from bytes and read portions sequentially.
   [] +> tests-makes-an-input-from-bytes-and-reads
     and. > @
       and.

@@ -1,3 +1,8 @@
+# Map `lst` with index. Here "func" must be an abstract
+# object with two free attributes. The first
+# one for the element of the collection, the second one
+# for the index.
+
 +alias ss.list
 +alias ss.reducedi
 +architect yegor256@gmail.com
@@ -7,10 +12,6 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Map `lst` with index. Here "func" must be an abstract
-# object with two free attributes. The first
-# one for the element of the collection, the second one
-# for the index.
 [lst func] > mappedi
   list > @
     reducedi
@@ -20,7 +21,6 @@
         accum.with > @
           func item idx
 
-  # Tests that mapping with index access transforms elements correctly.
   [] +> tests-list-mappedi-should-work
     eq. > @
       mappedi

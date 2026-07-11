@@ -15,126 +15,85 @@ asserts:
   - //java[contains(text(), 'Phi rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr = new PhDefault("')]
   - //java[contains(text(), '((PhDefault) rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr).add("blah39"')]
 input: |
-  # No comments.
   [] > test
     blah0 > @
-    # No comments.
     [] > blah0
       blah1 > @
-      # No comments.
       [] > blah1
         blah2 > @
-        # No comments.
         [] > blah2
           blah3 > @
-          # No comments.
           [] > blah3
             blah4 > @
-            # No comments.
             [] > blah4
               blah5 > @
-              # No comments.
               [] > blah5
                 blah6 > @
-                # No comments.
                 [] > blah6
                   blah7 > @
-                  # No comments.
                   [] > blah7
                     blah8 > @
-                    # No comments.
                     [] > blah8
                       blah9 > @
-                      # No comments.
                       [] > blah9
                         blah10 > @
-                        # No comments.
                         [] > blah10
                           blah11 > @
-                          # No comments.
                           [] > blah11
                             blah12 > @
-                            # No comments.
                             [] > blah12
                               blah13 > @
-                              # No comments.
                               [] > blah13
                                 blah14 > @
-                                # No comments.
                                 [] > blah14
                                   blah15 > @
-                                  # No comments.
                                   [] > blah15
                                     blah16 > @
-                                    # No comments.
                                     [] > blah16
                                       blah17 > @
-                                      # No comments.
                                       [] > blah17
                                         blah18 > @
-                                        # No comments.
                                         [] > blah18
                                           blah19 > @
-                                          # No comments.
                                           [] > blah19
                                             blah20 > @
-                                            # No comments.
                                             [] > blah20
                                               blah21 > @
-                                              # No comments.
                                               [] > blah21
                                                 blah22 > @
-                                                # No comments.
                                                 [] > blah22
                                                   blah23 > @
-                                                  # No comments.
                                                   [] > blah23
                                                     blah24 > @
-                                                    # No comments.
                                                     [] > blah24
                                                       blah25 > @
-                                                      # No comments.
                                                       [] > blah25
                                                         blah26 > @
-                                                        # No comments.
                                                         [] > blah26
                                                           blah27 > @
-                                                          # No comments.
                                                           [] > blah27
                                                             blah28 > @
-                                                            # No comments.
                                                             [] > blah28
                                                               blah29 > @
-                                                              # No comments.
                                                               [] > blah29
                                                                 blah30 > @
-                                                                # No comments.
                                                                 [] > blah30
                                                                   blah31 > @
-                                                                  # No comments.
                                                                   [] > blah31
                                                                     blah32 > @
-                                                                    # No comments.
                                                                     [] > blah32
                                                                       blah33 > @
-                                                                      # No comments.
                                                                       [] > blah33
                                                                         blah34 > @
-                                                                        # No comments.
                                                                         [] > blah34
                                                                           blah35 > @
-                                                                          # No comments.
                                                                           [] > blah35
                                                                             blah36 > @
-                                                                            # No comments.
                                                                             [] > blah36
                                                                               blah37 > @
-                                                                              # No comments.
                                                                               [] > blah37
                                                                                 blah38 > @
-                                                                                # No comments.
                                                                                 [] > blah38
                                                                                   blah39 > @
-                                                                                  # No comments.
                                                                                   [] > blah39
                                                                                     true > @

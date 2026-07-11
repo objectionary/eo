@@ -52,7 +52,6 @@ final class MjPullTest {
     void pullsFromProbes(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp).withProgram(
             String.format("+package foo.x%n"),
-            "# No comments.",
             "[] > main",
             "  Q.io.stdout > @",
             "    \"I am 18 years old\""
@@ -193,7 +192,7 @@ final class MjPullTest {
     void getsAlreadyPulledResultsFromCache(@Mktmp final Path temp) throws Exception {
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
-        final String cached = String.format("# test.%n[] > just-something%n");
+        final String cached = String.format("[] > just-something%n");
         new Saved(
             cached,
             cache
@@ -213,10 +212,13 @@ final class MjPullTest {
             FileTime.fromMillis(System.currentTimeMillis() + 50_000)
         );
         new FakeMaven(temp).withProgram(
-            "+package foo.x",
-            "# No comments.",
-            "[] > main",
-            "  Q.io.stdout > @"
+            String.join(
+                System.lineSeparator(),
+                "+package foo.x",
+                "",
+                "[] > main",
+                "  Q.io.stdout > @"
+            )
             )
             .with("hash", new CommitHash.ChConstant(hash))
             .with("cache", cache.toFile())
