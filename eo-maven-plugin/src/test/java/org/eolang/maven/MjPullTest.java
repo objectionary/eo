@@ -212,9 +212,13 @@ final class MjPullTest {
             FileTime.fromMillis(System.currentTimeMillis() + 50_000)
         );
         new FakeMaven(temp).withProgram(
-            "+package foo.x",
-            "[] > main",
-            "  Q.io.stdout > @"
+            String.join(
+                System.lineSeparator(),
+                "+package foo.x",
+                "",
+                "[] > main",
+                "  Q.io.stdout > @"
+            )
             )
             .with("hash", new CommitHash.ChConstant(hash))
             .with("cache", cache.toFile())
