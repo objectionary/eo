@@ -79,9 +79,10 @@
     <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
     <sonar.organization>objectionary</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <!-- These are thin, near-identical JNA syscall bindings; exclude them from
-         duplication detection -->
-    <sonar.cpd.exclusions>**/EOsm/Win32/**,**/EOsm/Posix/**</sonar.cpd.exclusions>
+    <!-- The EOsm layer is thin, repetitive syscall glue (JNA bindings, per-OS
+         dispatchers, near-identical stat structs); exclude it from duplication
+         detection -->
+    <sonar.cpd.exclusions>**/EOsm/**</sonar.cpd.exclusions>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     <!-- This is the flag that allows to skip unit tests run by maven-surefire-plugin -->
