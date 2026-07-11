@@ -1,3 +1,5 @@
+# Positive square root of `num` as `org.eolang.number`, taken as `num` raised to
+# the one-half power. A negative argument, negative infinity included, is nan.
 +alias ms.abs
 +alias ms.power
 +architect yegor256@gmail.com
@@ -7,26 +9,21 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Positive square root of `num` as `org.eolang.number`, taken as `num` raised to
-# the one-half power. A negative argument, negative infinity included, is nan.
 [num] > sqrt
   if. > @
     (number num.as-bytes).lt 0
     nan
     power num 0.5
-  # Tests that sqrt of zero is zero.
   [] +> tests-sqrt-zero
     eq. > @
       sqrt 0.0
       0.0
 
-  # Tests that the sqrt of one equals one.
   [] +> tests-sqrt-one
     eq. > @
       sqrt 1.0
       1.0
 
-  # Tests that sqrt of a perfect square.
   [] +> tests-sqrt-four
     lt. > @
       abs
@@ -35,7 +32,6 @@
           2.0
       0.000000001
 
-  # Tests that sqrt of a non-perfect square.
   [] +> tests-sqrt-two
     lt. > @
       abs
@@ -44,7 +40,6 @@
           1.4142135623730951
       0.000000001
 
-  # Tests that sqrt of a fractional number.
   [] +> tests-sqrt-point-five
     lt. > @
       abs
@@ -53,7 +48,6 @@
           0.5
       0.000000001
 
-  # Tests that square root of zero equals zero.
   [] +> tests-sqrt-check-zero-input
     lt. > @
       abs
@@ -62,12 +56,10 @@
           sqrt 0
       0.00000000001
 
-  # Tests that square root of negative number returns NaN.
   [] +> tests-sqrt-check-negative-input
     is-nan. > @
       sqrt -0.1
 
-  # Tests that square root calculation works correctly for number input.
   [] +> tests-sqrt-check-float-input
     lt. > @
       abs
@@ -76,18 +68,15 @@
           sqrt 4
       0.00000000001
 
-  # Tests that square root of NaN returns NaN.
   [] +> tests-sqrt-check-nan-input
     is-nan. > @
       sqrt nan
 
-  # Tests that square root of positive infinity equals positive infinity.
   [] +> tests-sqrt-check-infinity-n1
     eq. > @
       sqrt pinf
       pinf
 
-  # Tests that square root of negative infinity returns NaN.
   [] +> tests-sqrt-check-infinity-n2
     is-nan. > @
       sqrt ninf

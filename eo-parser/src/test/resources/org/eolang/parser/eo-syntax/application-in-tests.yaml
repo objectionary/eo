@@ -12,11 +12,8 @@ asserts:
 input: |-
   # Foo.
   [] > foo
-    # Unit test.
     true +> test-works
-    # Unit test.
     false +> always-fails
-    # Unit test.
     eq. +> compares-something
       "foo"
       "bar"

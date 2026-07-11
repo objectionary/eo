@@ -1,3 +1,5 @@
+# Returns last index of `substring` in `text`.
+# If no element was found, it returns -1.
 +alias tt.slice
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -6,8 +8,6 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Returns last index of `substring` in `text`.
-# If no element was found, it returns -1.
 [text substring] > last-index-of
   if. > @
     or.
@@ -28,7 +28,6 @@
   txt.size > tlen!
   text > txt!
 
-  # Recursively searches for substring from end to beginning of text.
   [idx] > rec-index-of
     if. > @
       0.eq idx
@@ -44,25 +43,21 @@
       slice txt idx slen
       sub
 
-  # Tests specific functionality last-index-of finds last occurrence of repeated substring.
   [] +> tests-finds-last-index-of-substring
     eq. > @
       5
       last-index-of "Hey, Hey, Hey" "Hey,"
 
-  # Tests specific functionality last-index-of returns 0 when substring equals entire text.
   [] +> tests-finds-last-index-of-the-same-string
     eq. > @
       0
       last-index-of "Hello" "Hello"
 
-  # Tests specific functionality last-index-of returns -1 for non-existent substring.
   [] +> tests-last-index-of-non-existed-substring
     eq. > @
       -1
       last-index-of "Hello, world" "somebody"
 
-  # Tests specific functionality last-index-of returns -1 for non-existent substring in UTF text.
   [] +> tests-last-index-of-non-existed-substring-with-utf
     eq. > @
       -1
@@ -70,7 +65,6 @@
         "привет, друг!"
         "x"
 
-  # Tests that last-index-of finds correct position of UTF character in text.
   [] +> tests-last-index-of-existed-substring-with-utf
     eq. > @
       3

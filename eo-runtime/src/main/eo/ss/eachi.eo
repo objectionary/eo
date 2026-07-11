@@ -1,3 +1,8 @@
+# For each collection element dataize the object
+# Here "func" must be an abstract object with
+# two free attributes: the element of the
+# collection and its index.
+# The result of `func` must be dataizable.
 +alias ss.list
 +alias ss.reducedi
 +architect yegor256@gmail.com
@@ -7,11 +12,6 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# For each collection element dataize the object
-# Here "func" must be an abstract object with
-# two free attributes: the element of the
-# collection and its index.
-# The result of `func` must be dataizable.
 [lst func] > eachi
   reducedi > @
     lst
@@ -21,7 +21,6 @@
         acc
         func item index
 
-  # Tests that iterating over elements with index access works correctly.
   [] +> tests-iterates-with-eachi
     eq. > @
       malloc.for

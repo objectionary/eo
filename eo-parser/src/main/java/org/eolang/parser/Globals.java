@@ -44,6 +44,14 @@ final class Globals {
     private boolean emitted;
 
     /**
+     * True once the header zone is closed — the first meta directive or
+     * object has landed, so no comment may appear any more (§3.3). The
+     * only legal comment block sits on top of the file, before this
+     * point.
+     */
+    private boolean closed;
+
+    /**
      * True once at least one meta directive has been seen but no
      * non-meta non-blank line has landed yet — drives the
      * "exactly one blank between meta header and the next line"
@@ -90,6 +98,7 @@ final class Globals {
         this.comments = new ArrayList<>(0);
         this.tbody = new ArrayList<>(0);
         this.emitted = false;
+        this.closed = false;
         this.blanks = 0;
         this.trailing = 0;
         this.intext = false;
@@ -109,6 +118,23 @@ final class Globals {
      */
     void markEmitted() {
         this.emitted = true;
+    }
+
+    /**
+     * Whether the header zone is closed — no comment may appear after
+     * this (§3.3).
+     * @return Flag
+     */
+    boolean sealed() {
+        return this.closed;
+    }
+
+    /**
+     * Close the header zone — called once the first meta directive or
+     * object lands, after any top comment block has been flushed.
+     */
+    void seal() {
+        this.closed = true;
     }
 
     /**

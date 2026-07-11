@@ -28,30 +28,23 @@ input: |
         bar > @
           x
 
-    # No comments.
     [] > x
       first > ff
       one > tt
-        # No comments.
         [] > y
           two > @
             input > t!
               "Hello, world!"
-              # No comments.
               [] > oops
                 50 > @
       three t > zz
-      # No comments.
       [] > last
         three 1 > @
 
-    # No comments.
     [ppp] > pp
       one > @
-        # No comments.
         [aaa] > kkk
           1 > ooo
-    # No comments.
     [] > head
       bb > @
         [zz]

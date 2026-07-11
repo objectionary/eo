@@ -69,6 +69,7 @@ final class LnMeta implements Line {
                 body.substring(space + 1), this.span, space + 1
             );
         }
+        Comments.seal(globals, emit, this.span);
         globals.markMeta();
         globals.clearBlanks();
         emit.meta(this.span.line(), head, parts);

@@ -1,3 +1,4 @@
+# Returns the `text` in upper case.
 +alias tt.as-ascii
 +alias ss.bytes-as-array
 +alias ss.list
@@ -10,7 +11,6 @@
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
 
-# Returns the `text` in upper case.
 [text] > up-cased
   string > @
     reduced
@@ -38,13 +38,11 @@
   as-ascii "z" > maxcode!
   as-ascii "a" > mincode!
 
-  # Tests that up-cased converts lowercase text to uppercase.
   [] +> tests-converts-text-to-upper-case
     eq. > @
       "HELLO"
       up-cased "hello"
 
-  # Tests that up-cased converts mixed case text to uppercase.
   [] +> tests-converts-text-with-upper-letters-to-upper-case
     eq. > @
       "HELLO"

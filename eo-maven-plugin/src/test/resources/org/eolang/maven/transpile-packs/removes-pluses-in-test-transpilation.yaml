@@ -21,7 +21,6 @@ input: |
   # This is the list.
   [] > list
     [x] > bar
-    # This unit test is supposed to check the functionality of the corresponding object.
     [] +> tests-iterates-with-eachi
       eq. > @
         malloc.for

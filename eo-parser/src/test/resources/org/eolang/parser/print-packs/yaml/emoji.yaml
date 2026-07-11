@@ -3,13 +3,11 @@
 ---
 # yamllint disable rule:line-length
 origin: |
-  # No comments.
   [] > main
     "🌵" > cactoos
     "😀" > smile
 
 printed: |
-  # No comments.
   [] > main
     "\uD83C\uDF35" > cactoos
     "\uD83D\uDE00" > smile

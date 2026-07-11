@@ -27,7 +27,6 @@ final class OyIndexedTest {
             Matchers.equalTo(
                 String.join(
                     System.lineSeparator(),
-                    "# No comments.",
                     "[] > sprintf",
                     ""
                 )

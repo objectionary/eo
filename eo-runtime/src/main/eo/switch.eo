@@ -1,11 +1,3 @@
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+version 0.0.0
-+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
-
 # Object that allows choosing the right options according to case conditions.
 # Parameter `cases` is an array of two-dimensional arrays, which
 # consist of condition bool value and expected value, if this
@@ -23,6 +15,14 @@
 # ```
 #
 # This object returns the value of the first true statement.
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object
++unlint mandatory-package
+
 [cases empty-cases] > switch
   if. > @
     cases.length.eq 0
@@ -33,7 +33,6 @@
       true
   (rec-case cases).@ > found
 
-  # Recursively searches tuple for the first case with true condition.
   [tup] > rec-case
     if. > @
       and.
@@ -45,7 +44,6 @@
         tup.head.tail.head > match!
     (rec-case tup.tail).@ > previous
 
-  # Tests that switch returns the value from the first true condition case.
   [] +> tests-switch-simple-case
     eq. > @
       switch
@@ -58,7 +56,6 @@
             "2"
       "2"
 
-  # Tests that switch works correctly with string comparison conditions.
   [] +> tests-switch-strings-case
     eq. > @
       switch
@@ -75,7 +72,6 @@
       "password is correct!"
     "swordfish" > password
 
-  # Tests that switch returns the value from the first true case when multiple cases are true.
   [] +> tests-switch-with-several-true-cases
     eq. > @
       switch
@@ -91,7 +87,6 @@
             "TRUE2"
       "TRUE1"
 
-  # Tests that switch returns true when all cases are false.
   [] +> tests-switch-with-all-false-cases
     switch > @
       *
@@ -102,12 +97,9 @@
           false
           "false2"
 
-  # Tests that empty switch cases with no fallback yield the bottom object
-  # that terminates when used.
   [] +> throws-on-empty-switch
     switch * > @
 
-  # Tests that empty switch cases with a provided fallback yield the fallback.
   [] +> tests-empty-switch-returns-provided-fallback
     eq. > @
       "recovered"
@@ -115,7 +107,6 @@
         *
         "recovered" > [msg]
 
-  # Tests that switch works correctly with complex nested conditions and custom objects.
   [] +> tests-switch-complex-case
     eq. > @
       switch
@@ -133,9 +124,6 @@
               c3 > @
             "true case"
       "true case"
-    # Condition that evaluates to false for testing purposes.
     false > c1
-    # Condition that compares unequal strings returning false.
     "1".eq "2" > c2
-    # Condition that evaluates to true for testing purposes.
     true > c3

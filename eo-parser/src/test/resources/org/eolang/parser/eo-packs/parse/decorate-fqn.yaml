@@ -22,7 +22,6 @@ input: |
   +decorate string foo
   +decorate number bar
 
-  # No comments.
   [] > main
     Q.string.joined.with 11- > @
     5.unsafe FF- > num

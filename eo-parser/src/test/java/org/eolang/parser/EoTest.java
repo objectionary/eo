@@ -59,12 +59,24 @@ final class EoTest {
     }
 
     @Test
-    void parsesCommentAttachmentTargetMissing() {
+    void flushesTopCommentBlock() {
         MatcherAssert.assertThat(
-            "a comment block at EOF with no following named object must be reported as dangling",
-            EoTest.render("# orphan comment"),
+            "a comment block on top of the file must flush into /object/comments",
+            EoTest.render("# top doc", "[] > foo"),
+            XhtmlMatchers.hasXPaths(
+                "/object/comments/comment[contains(text(),'top doc')]",
+                "/object[not(errors)]"
+            )
+        );
+    }
+
+    @Test
+    void rejectsCommentAfterObject() {
+        MatcherAssert.assertThat(
+            "a comment after an object cannot be accepted — only the top block is allowed",
+            EoTest.render("[] > foo", "# late", "  bar > @"),
             XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'comment must precede a named object')]"
+                "/object/errors/error[contains(text(),'comment is allowed only on top of the file, before metas')]"
             )
         );
     }

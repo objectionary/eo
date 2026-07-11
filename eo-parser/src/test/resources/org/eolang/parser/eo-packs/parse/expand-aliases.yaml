@@ -17,7 +17,6 @@ input: |
   +alias a b c
   +alias a b c e f
 
-  # No comments.
   [args] > main
     and > @
       (scanner stdin).next-line > line!

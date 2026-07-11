@@ -2,13 +2,11 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 4
+line: 3
 message: |-
-  [4:0] error: 'consecutive blank lines forbidden — at most one blank may separate two non-blank lines (R-6.5.3)'
+  [3:0] error: 'consecutive blank lines forbidden — at most one blank may separate two non-blank lines (R-6.5.3)'
 input: |
-  # No comments.
   [args] > one
 
 
-  # No comments.
   [] > two

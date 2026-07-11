@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 7
+line: 6
 message: |-
-  [7:2] error: 'redundant parentheses around a top-level expression — drop the outer `(` and `)`'
+  [6:2] error: 'redundant parentheses around a top-level expression — drop the outer `(` and `)`'
     (1.plus 2) > y
     ^
 input: |
@@ -12,6 +12,5 @@ input: |
   +package a.b.c
   +version 0.0.0
 
-  # No comments
   [] > x
     (1.plus 2) > y

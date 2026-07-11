@@ -17,9 +17,7 @@ asserts:
 input: |
   # Foo.
   [] > foo
-    # Test.
     [] +> runs-smoothly
       x > @
-    # Something else.
     [] > some-other-method
       boom > @

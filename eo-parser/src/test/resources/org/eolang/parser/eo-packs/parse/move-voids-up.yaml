@@ -10,9 +10,7 @@ asserts:
 input: |
   # Main.
   [] > main
-    # No comments.
     [x] > app
       5 > y
 
-    # Foo.
     "Hello" > [x] > foo

@@ -50,8 +50,8 @@ final class MjLintTest {
     @SuppressWarnings({"PMD.UnitTestContainsTooManyAsserts", "PMD.UnnecessaryLocalRule"})
     void includesDefectDetailsInExceptionMessage(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "# Main object.",
             String.format("+package foo.x%n"),
-            "# No comments.",
             "[] > main",
             "  cti true \"error\" \"msg\" > @"
             );
@@ -79,8 +79,8 @@ final class MjLintTest {
     @Test
     void detectsErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "# Main object.",
             String.format("+package foo.x%n"),
-            "# No comments.",
             "[] > main",
             "  cti true \"error\" \"msg\" > @"
             );
@@ -150,7 +150,6 @@ final class MjLintTest {
                 "+unlint comment-too-short",
                 "+unlint object-has-data",
                 "",
-                "# No comments.",
                 "[x] > main",
                 "  (stdout \"Hello!\" x).print > @"
             );
@@ -180,7 +179,6 @@ final class MjLintTest {
     ) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.format("+package foo.x%n"),
-            "# No comments.",
             "[] > main",
             "  cti true \"error\" \"msg\" > @"
             );
@@ -200,8 +198,8 @@ final class MjLintTest {
     @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void detectsCriticalErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "# Main object.",
             String.format("+package foo.x%n"),
-            "# No comments.",
             "[] > main",
             "  cti true \"critical\" \"msg\" > @"
             );
@@ -228,9 +226,7 @@ final class MjLintTest {
     void detectsWarningWithCorrespondingFlag(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.format("+package foo.x%n"),
-            "# No comments.",
             "[] > main",
-            "  # No comments.",
             "  [] > @",
             "    \"Hello world\" > @"
             )
@@ -255,7 +251,6 @@ final class MjLintTest {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp).withProgram(
                 String.format("+package foo.x%n"),
-                "# No comments.",
                 "[] > main",
                 "  [] > x",
                 "    \"Hello world\" > @"
@@ -270,7 +265,6 @@ final class MjLintTest {
     void failsParsingOnError(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.format("+package foo.x%n"),
-            "# No comments.",
             "[] > main",
             "  seq *-1 > @",
             "    true"
@@ -395,7 +389,6 @@ final class MjLintTest {
             "+package foo.x",
             "+alias a.b.foo",
             "",
-            "# No comments.",
             "[] > main"
         );
         Assertions.assertThrows(
@@ -423,7 +416,6 @@ final class MjLintTest {
             "+alias a.b.nowhere",
             "+unlint unused-alias",
             "",
-            "# No comments.",
             "[] > main",
         };
     }

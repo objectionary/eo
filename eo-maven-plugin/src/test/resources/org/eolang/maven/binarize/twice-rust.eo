@@ -1,10 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
-
 +package custom
 +version 0.0.0
 
-# No comments.
 [] > hello-world-1
   Q.rust > r
     """
@@ -22,7 +20,6 @@
       "rand: 0.5.2"
   true > @
 
-# No comments.
 [] > hello-world-2
   Q.rust > r
     """

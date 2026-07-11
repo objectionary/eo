@@ -14,18 +14,14 @@ asserts:
   - //o[@name='m-3' and o[@base='.as-bytes' and @line and @pos and @name='z' and o[@base='Φ.dataized' and o[@base='.o' and not(@name) and count(o)=1]]]]
   - /object[count(//o[@const])=0]
 input: |
-  # No comments.
   [] > foo
     number > x!
     5 > num!
     2A- > bts!
-    # No comments.
     [] > m!
       a
         b
           c 1 2 > y!
       .o > z!
-    # No comments.
     [] > m-1
-    # No comments.
     [] > m-2

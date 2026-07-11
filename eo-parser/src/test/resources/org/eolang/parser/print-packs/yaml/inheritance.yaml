@@ -3,60 +3,50 @@
 ---
 # yamllint disable rule:line-length
 origin: |
+  # Main.
   +package sandbox
   +alias stdout org.eolang.io.stdout
   +alias sprintf org.eolang.tt.sprintf
   +architect yegor256@gmail.com
 
-  # Main.
   [] > main
-    # No comments.
     [] > base
       memory 0 > x
-      # No comments.
       [self v] > f
         x.write > @
           v
-      # No comments.
       [self v] > g
         self.f > @
           self
           v
 
-    # No comments.
     [] > derived
       base > @
-      # No comments.
       [self v] > f
         self.g > @
           self
           v
 
 printed: |
+  # Main.
   +package sandbox
   +alias stdout Q.org.eolang.io.stdout
   +alias sprintf Q.org.eolang.tt.sprintf
   +architect yegor256@gmail.com
 
-  # No comments.
   [] > main
-    # No comments.
     [] > base
       memory > x
         0
-      # No comments.
       [self v] > f
         ^.x.write > @
           v
-      # No comments.
       [self v] > g
         self.f > @
           self
           v
-    # No comments.
     [] > derived
       ^.base > @
-      # No comments.
       [self v] > f
         self.g > @
           self

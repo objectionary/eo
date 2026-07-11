@@ -1,3 +1,5 @@
+# Returns index of the first occurrence of `wanted` in `lst`.
+# If `lst` has no such element, returns -1.
 +alias ss.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -6,13 +8,10 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Returns index of the first occurrence of `wanted` in `lst`.
-# If `lst` has no such element, returns -1.
 [lst wanted] > index-of
   number > @
     recidx lst
 
-  # Recursively searches for wanted element returning its index.
   [tup] > recidx
     if. > @
       tup.length.eq 0
@@ -26,7 +25,6 @@
         next
     recidx tup.tail > next!
 
-  # Tests that finding the index of an element works correctly.
   [] +> tests-returns-index-of
     eq. > @
       1
@@ -35,7 +33,6 @@
           * 1 2 3
         2
 
-  # Tests that finding the first index of a duplicated element works correctly.
   [] +> tests-returns-first-index-of-element
     eq. > @
       0
@@ -44,7 +41,6 @@
           * -1 2 -1
         -1
 
-  # Tests that index-of returns -1 for non-existent elements.
   [] +> tests-does-not-find-index-of
     eq. > @
       -1
@@ -53,7 +49,6 @@
           * "qwerty" 2 3
         7
 
-  # Tests that finding the index of a string element works correctly.
   [] +> tests-finds-index-of-string
     eq. > @
       1

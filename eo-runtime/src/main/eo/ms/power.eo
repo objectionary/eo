@@ -1,3 +1,8 @@
+# Raises `num` to the power of `x` as `org.eolang.number`. A zero exponent gives
+# one, an integer exponent is expanded by exponentiation-by-squaring so integer
+# results stay exact, and a fractional exponent of a positive base is taken as
+# e raised to `x` times the natural logarithm of the base. Zeros, infinities and
+# nan follow the same IEEE rules that Math.pow obeys.
 +alias ms.abs
 +alias ms.e
 +alias ms.ln
@@ -8,11 +13,6 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Raises `num` to the power of `x` as `org.eolang.number`. A zero exponent gives
-# one, an integer exponent is expanded by exponentiation-by-squaring so integer
-# results stay exact, and a fractional exponent of a positive base is taken as
-# e raised to `x` times the natural logarithm of the base. Zeros, infinities and
-# nan follow the same IEEE rules that Math.pow obeys.
 [num x] > power
   if. > @
     expo.eq 0
@@ -81,8 +81,6 @@
     expo.is-integer
     (expo.div 2).is-integer.not
 
-  # `b` raised to a non-negative integer `n` by exponentiation-by-squaring, so
-  # the product stays exact for as long as it fits a number.
   [b n] > ipow
     if. > @
       n.eq 0
@@ -93,8 +91,6 @@
         b.times (ipow b (n.minus 1))
     ipow b (n.div 2) > half
 
-  # Euler's number raised to a finite `y`, split into a whole part taken by
-  # squaring and a small remainder summed with the Taylor series of exp.
   [y] > expon
     whole.times (fraction 1) > @
     (y.plus 0.5).floor > k
@@ -105,7 +101,6 @@
       1.div (ipow e (abs k))
       ipow e (abs k)
 
-    # One Horner factor of the exponential series, opened from `j`.
     [j] > fraction
       if. > @
         j.gt eterms
@@ -116,250 +111,208 @@
             r.div j
             fraction (j.plus 1)
 
-  # Tests that power operation works correctly for 2^4.
   [] +> tests-power-of-two-to-four
     eq. > @
       power 2 4
       16
 
-  # Tests that any number raised to the power of zero equals 1.
   [] +> tests-power-of-zero-exponent
     eq. > @
       power 2 0
       1
 
-  # Tests that large number raised to large negative power approaches zero.
   [] +> tests-power-large-negative-exponent
     eq. > @
       power 984782 -12341
       0
 
-  # Tests that 3 raised to the power of 2 equals 9.
   [] +> tests-power-of-three-squared
     eq. > @
       power 3 2
       9
 
-  # Tests that zero raised to any positive power equals zero.
   [] +> tests-power-of-zero-base
     eq. > @
       power 0 145
       0
 
-  # Tests that zero raised to a negative power is positive infinity.
   [] +> tests-power-zero-to-negative-odd
     eq. > @
       power 0 -567
       pinf
 
-  # Tests that NaN raised to NaN power results in NaN.
   [] +> tests-power-nan-to-nan-is-nan
     is-nan. > @
       power nan nan
 
-  # Tests that NaN raised to any power results in NaN.
   [] +> tests-power-nan-to-any-is-nan
     is-nan. > @
       power nan 42
 
-  # Tests that any number raised to NaN power results in NaN.
   [] +> tests-power-any-to-nan-is-nan
     is-nan. > @
       power 52 nan
 
-  # Tests that any integer raised to the power of zero equals 1.
   [] +> tests-power-int-to-zero-is-one
     eq. > @
       power 42 0
       1
 
-  # Tests that any float raised to the power of zero equals 1.
   [] +> tests-power-float-to-zero-is-one
     eq. > @
       power 42.5 0
       1
 
-  # Tests that zero raised to negative power equals positive infinity.
   [] +> tests-power-zero-to-negative-is-positive-infinity
     eq. > @
       power 0 -52
       pinf
 
-  # Tests that zero raised to negative infinity equals positive infinity.
   [] +> tests-power-zero-to-negative-infinity-is-positive-infinity
     eq. > @
       power 0 ninf
       pinf
 
-  # Tests that positive integer raised to negative infinity equals zero.
   [] +> tests-power-positive-int-to-negative-infinity-is-zero
     eq. > @
       power 42 ninf
       0
 
-  # Tests that positive float raised to negative infinity equals zero.
   [] +> tests-power-positive-float-to-negative-infinity-is-zero
     eq. > @
       power 42.5 ninf
       0
 
-  # Tests that negative integer raised to negative infinity equals zero.
   [] +> tests-power-negative-int-to-negative-infinity-is-zero
     eq. > @
       power -42 ninf
       0
 
-  # Tests that negative float raised to negative infinity equals zero.
   [] +> tests-power-negative-float-to-negative-infinity-is-zero
     eq. > @
       power -42.5 ninf
       0
 
-  # Tests that positive infinity raised to negative infinity equals zero.
   [] +> tests-power-positive-infinity-to-negative-infinity-is-zero
     eq. > @
       power pinf ninf
       0
 
-  # Tests that negative infinity raised to negative infinity equals zero.
   [] +> tests-power-negative-infinity-to-negative-infinity-is-zero
     eq. > @
       power ninf ninf
       0
 
-  # Tests that positive infinity raised to finite negative power equals zero.
   [] +> tests-power-positive-infinity-to-negative-int-is-zero
     eq. > @
       power pinf -42
       0
 
-  # Tests that positive infinity raised to finite negative float power is zero.
   [] +> tests-power-positive-infinity-to-negative-float-is-zero
     eq. > @
       power pinf -42.2
       0.0
 
-  # Tests that 2 raised to the power of -1 equals 0.5.
   [] +> tests-power-two-to-minus-one
     eq. > @
       power 2 -1
       0.5
 
-  # Tests that 2 raised to the power of -2 equals 0.25.
   [] +> tests-power-two-to-minus-two
     eq. > @
       power 2 -2
       0.25
 
-  # Tests that 2 raised to the power of -3 equals 0.125.
   [] +> tests-power-two-to-minus-three
     eq. > @
       power 2 -3
       0.125
 
-  # Tests that 4 raised to the power of -3 equals 0.015625.
   [] +> tests-power-four-to-minus-three
     eq. > @
       power 4 -3.0
       0.015625
 
-  # Tests that zero raised to a positive integer equals zero.
   [] +> tests-power-zero-to-positive-int-is-zero
     eq. > @
       power 0 4
       0
 
-  # Tests that zero raised to a positive float equals zero.
   [] +> tests-power-zero-to-positive-float-is-zero
     eq. > @
       power 0 4.2
       0
 
-  # Tests that zero raised to positive infinity equals zero.
   [] +> tests-power-zero-to-positive-infinity-is-zero
     eq. > @
       power 0 pinf
       0
 
-  # Tests that negative integer raised to positive infinity is positive infinity.
   [] +> tests-power-negative-int-to-positive-infinity-is-positive-infinity
     eq. > @
       power -10 pinf
       pinf
 
-  # Tests that negative float raised to positive infinity is positive infinity.
   [] +> tests-power-negative-float-to-positive-infinity-is-positive-infinity
     eq. > @
       power -4.2 pinf
       pinf
 
-  # Tests that positive integer raised to positive infinity is positive infinity.
   [] +> tests-power-positive-int-to-positive-infinity-is-positive-infinity
     eq. > @
       power 42 pinf
       pinf
 
-  # Tests that positive float raised to positive infinity is positive infinity.
   [] +> tests-power-positive-float-to-positive-infinity-is-positive-infinity
     eq. > @
       power 42.5 pinf
       pinf
 
-  # Tests that positive infinity raised to a positive integer is positive infinity.
   [] +> tests-power-positive-infinity-to-positive-int-is-positive-infinity
     eq. > @
       power pinf 42
       pinf
 
-  # Tests that positive infinity raised to a positive float is positive infinity.
   [] +> tests-power-positive-infinity-to-positive-float-is-positive-infinity
     eq. > @
       power pinf 10.8
       pinf
 
-  # Tests that positive infinity raised to positive infinity is positive infinity.
   [] +> tests-power-positive-infinity-to-positive-infinity-is-positive-infinity
     eq. > @
       power pinf pinf
       pinf
 
-  # Tests that negative infinity raised to a positive float is positive infinity.
   [] +> tests-power-negative-infinity-to-positive-float-is-positive-infinity
     eq. > @
       power ninf 9.9
       pinf
 
-  # Tests that negative infinity raised to an even positive integer is positive infinity.
   [] +> tests-power-negative-infinity-to-even-int-is-positive-infinity
     eq. > @
       power ninf 10
       pinf
 
-  # Tests that negative infinity raised to an odd positive integer is negative infinity.
   [] +> tests-power-negative-infinity-to-odd-int-is-negative-infinity
     eq. > @
       power ninf 9
       ninf
 
-  # Tests that a positive integer raised to a positive integer is exact.
   [] +> tests-power-positive-int-to-positive-int
     eq. > @
       power 2 3
       8
 
-  # Tests that a positive float raised to a positive integer is exact.
   [] +> tests-power-positive-float-to-positive-int
     eq. > @
       power 3.5 4
       150.0625
 
-  # Tests that four raised to the power of five equals 1024.
   [] +> tests-power-four-to-five
     eq. > @
       power 4 5
       1024
 
-  # Tests that the square root of nine as a fractional power is three.
   [] +> tests-power-square-root-of-nine
     lt. > @
       abs
@@ -368,7 +321,6 @@
           3
       0.000000001
 
-  # Tests that two to the power of one half is the square root of two.
   [] +> tests-power-square-root-of-two
     lt. > @
       abs
@@ -377,7 +329,6 @@
           1.4142135623730951
       0.000000001
 
-  # Tests that twenty-seven to the power of one third is three.
   [] +> tests-power-cube-root-of-twenty-seven
     lt. > @
       abs
@@ -386,7 +337,6 @@
           3
       0.000000001
 
-  # Tests that a fractional power of a negative base is nan.
   [] +> tests-power-fractional-of-negative-is-nan
     is-nan. > @
       power -4 0.5

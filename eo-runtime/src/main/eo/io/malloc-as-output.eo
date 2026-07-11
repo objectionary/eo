@@ -1,10 +1,3 @@
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+package io
-+version 0.0.0
-+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
-
 # Makes an output from allocated block in memory.
 # Here `allocated` is `malloc.of.allocated` object.
 #
@@ -24,31 +17,27 @@
 # Second, you create an output from allocated block in memory.
 # Third, you write read bytes to output
 # After the dataization the object `result` contains read bytes.
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package io
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
 [allocated] > malloc-as-output
-  # Writes bytes contained in `buffer` to the operating system console.
-  # Returns new instance of `output-block` ready to write again.
   [buffer] > write
     (output-block 0).write > @
       buffer
 
-    # Malloc output block.
-    #
-    # Note: This object is intended for internal use only. Please do not use this object
-    # programmatically outside of `malloc-as-output` object.
-    #
-    # Here `offset` is the offset to write to allocated block in memory with.
     [offset] > output-block
       true > @
 
-      # Writes bytes contained in `buffer` to the operating system console.
-      # Returns new instance of `output-block` ready to write again.
       [buffer] > write
         seq * > @
           allocated.write offset buffer
           output-block
             offset.plus buffer.size
 
-  # Tests that malloc-as-output can create an output from allocated memory and write bytes sequentially.
   [] +> tests-makes-an-output-from-malloc-and-writes
     eq. > @
       malloc.of
@@ -60,7 +49,6 @@
               mem
       01-02-03-04-05-06-07-08-09-A0
 
-  # Tests that writing more bytes than allocated resizes the block and stores all bytes.
   [] +> writes-larger-data-than-provided-block
     eq. > @
       malloc.of

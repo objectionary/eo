@@ -20,11 +20,8 @@ asserts:
   - //java[contains(text(), 'rrr = new PhDispatch(rrr, "x")')]
   - //java[contains(text(), 'return rrr;')]
 input: |
-  # No comments.
   [x] > foo
     $ > this
-    # No comments.
     [] > xyz
-      # No comments.
       [] > bar
         this.x > @

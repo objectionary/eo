@@ -14,6 +14,5 @@ asserts:
   - /object[not(errors)]
   - /object/class/java[contains(text(), 'new PhTerminator()')]
 input: |
-  # No comments.
   [] > app
     T > x

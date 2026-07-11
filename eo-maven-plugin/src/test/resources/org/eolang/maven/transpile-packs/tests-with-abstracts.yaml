@@ -27,9 +27,7 @@ asserts:
 input: |
   # A.
   [] > a
-    # No comments.
     [] +> b
-      # No comments.
       [] > c
         d > @
           []

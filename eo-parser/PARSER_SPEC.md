@@ -247,20 +247,24 @@ R-3.2.5. `+` followed by a digit is **not** a meta (see §3.6 — it's a signed-
 
 ### 3.3 Comment — `# text`
 
-R-3.3.1. Leading-space count must be even (derived from R-2.2.1, which applies to every non-blank line including comments — restated here for readability).
-R-3.3.2. Comments collect into a **comment block**, attached to the next named object at the same indent (§6.4).
-R-3.3.3. Inside a comment block, every line must share the same indent.
-R-3.3.4. No blank line inside a comment block (§6.5.1).
-R-3.3.5. At most one blank line may precede a comment block (§6.5.3).
-R-3.3.6. A comment block must be followed by a named object at the same indent; otherwise: error "comment must precede a named object" (§6.4).
-R-3.3.7. **Multiple comment blocks separated by a blank line.** Two comment blocks at the same indent separated by one or more blank lines are *not merged* into one block. Per R-3.3.6, each comment block requires a named object directly after it (no blank line between). Therefore the earlier block is *dangling* (no named object directly follows it) and reported via R-3.3.6 / R-5.4.3; only the latter block attaches.
+A program may carry at most one comment block, and only on top of the file, before all metas and objects (issue #3993). It documents the whole program. Every other comment — indented, after a meta, after an object, or a second block lower down — is rejected. Objects are expected to be self-explanatory; per-object documentation is generated later by external tooling, not written by hand.
 
-R-3.3.8. **Comment indent must match the named object it attaches to.** A comment block at indent `K` may attach only to a named object at indent `K`. If the following named object is at a different indent (deeper or shallower), the comment block is dangling and reported via R-3.3.6.
+R-3.3.1. Leading-space count must be even (derived from R-2.2.1, which applies to every non-blank line including comments — restated here for readability).
+R-3.3.2. The top comment block is a contiguous run of `#` lines at indent 0 on top of the file, before all metas and objects. It collects into a single **comment block** documenting the program (§6.4).
+R-3.3.3. Inside the comment block, every line shares indent 0.
+R-3.3.4. No blank line inside the comment block (§6.5.1).
+R-3.3.5. At most one blank line may precede the comment block (§6.5.3).
+R-3.3.6. A comment is allowed only in the top block. A comment that is indented, follows a meta, follows an object, or opens a second block is rejected: error "comment is allowed only on top of the file, before metas".
 
 ```
-# This is a comment.
+# This is the file-level comment.
 # Continued on the next line.
-[] > foo                              ← the block above attaches here
++package foo
++version 1.0.0
+
+[] > foo
+  # rejected — comments are allowed only on top of the file, before metas
+  [] > bar
 ```
 
 ### 3.4 Formation — `[params] [> name [/sig]]`
@@ -304,7 +308,7 @@ R-3.5.4. **Cross-line ownership of standalone-`.method` rejection.** A `.method`
   - **R-5.2.3(b)** — same-indent `.method` after a horizontally-completed predecessor.
   - **R-5.2.5** — `.method` as a deeper-indent line (no previous sibling at this indent).
   - **R-5.2.10** — `.method` at top level (empty stack).
-  
+
   This rule exists in §3.5 only to point readers at those three locations from the per-line side of the spec.
 
 Cross-line behaviour: covered in §5.2.3. The outer kind a `MethodDispatch` line ultimately becomes is decided there:
@@ -427,7 +431,7 @@ R-3.9.1. Syntactic form: a *head expression* followed by `*` and an optional int
   - a `head` (bare identifier, `*`, or literal — though `*` as head is unusual on a compact-tuple line; see §9.4.2);
   - an `hmethod` with 0 horizontal args (e.g., `foo.bar *`);
   - a `bare-reversed` (e.g., `name. *N`, with the additional constraint of R-3.9.4).
-  
+
   These are the same forms the grammar's `compactTuple : (hmethod | applicable | reversed) SPACE STAR INT?` admits. Heads carrying horizontal args (`happlication`, `reversed-with-hargs`) cannot also carry `*N` — the compact-tuple marker comes after the head and before any args.
 R-3.9.2. The head's vertical children are partitioned:
   - The first `N` children become direct positional arguments of the head.
@@ -500,7 +504,7 @@ R-3.10.5. The LHS of inline-phi (the body, before `> [`) cannot carry its own `!
 R-3.10.6. The LHS of inline-phi must be non-empty: at least one expression with outer kind `head`, `hmethod`, or `happlication` must precede the `> [`. A bare `> [x] > name` with no LHS is rejected. *Note on parentheses:* a paren group is not its own outer kind — it is a head-shape inside `head`/`hmethod`/`happlication` (see R-3.6 "head ... is one of: A paren group `(...)`"). The LHS may therefore appear paren-wrapped, but the kind classification still resolves to one of the three listed above. Two further LHS restrictions tighten the grammar deliberately:
   - The LHS may **not** be a `reversed-with-hargs` line (e.g., `if. a b c > [x] > foo` is rejected).
   - The LHS may **not** be a `bare-formation` (e.g., `[x] > [y] > name` is rejected). The grammar's `onlyphi` rule admits `hformation` as LHS, but horizontal formations are entirely removed from the new spec (R-3.6.5), so this case is rejected by the formation-removal rule as well.
-  
+
   Only the four kinds enumerated above (head, hmethod, happlication, paren group) are permitted as inline-phi LHS.
 R-3.10.7. **Exactly one `> [params]` suffix per line.** Chained inline-phi suffixes (`expr > [a] > [b] > name`) are rejected, even though the underlying grammar can express them. The construct is unused in practice and adds parsing complexity for no gain.
 R-3.10.8. **Inline-phi suffix variants.** The right-hand suffix on an inline-phi line may take any of these forms (optionally with `!` const on the name): `> [params] > name` (explicit name), `> [params] >>` (auto-generated name), `> [params] +> name` (test attribute), or bare `> [params]` (auto-named, equivalent to `> [params] >>`). All four shapes are accepted by the parser; the test-attribute form additionally inherits the depth constraint of R-6.3.3.
@@ -720,7 +724,7 @@ ParserState {
   trailing_blank_count: int            // blank lines since EOF; checked by R-6.5.6 / R-8.4
   in_text_block?: bool                 // currently inside an open triple-quoted block (§3.11)
   text_block_open_line: int            // for unclosed-text-block error
-  pending_comment_block: List<Line>    // comment lines buffered for the next named object (§6.4)
+  pending_comment_block: List<Line>    // top comment lines buffered until the first meta/object flushes them (§6.4)
 }
 ```
 
@@ -768,13 +772,13 @@ R-5.3.4a. **R-5.3.4 and R-5.3.5 are disjoint.** Both rules check the popped entr
 R-5.3.5. **Test depth.** If the popped entry's name suffix is `+>`, the popped entry's *immediate parent* must itself be a top-level formation (sitting at indent 0). Concretely:
   - the popped entry's `parent_kind` must **not** be `top-level` (otherwise the popped entry is itself at indent 0, which is illegal), AND
   - the popped entry's parent's own `parent_kind` must be `top-level` (otherwise the parent is itself nested, also illegal).
-  
+
   Either failure yields error `test attribute legal only as direct child of top-level object` (R-6.3.3 / §9.9). The first failure case covers a stray `+>` at indent 0; the second covers `+>` at indent ≥ 4.
 R-5.3.6. **Inline-phi argument rules.** An `inline-phi-formation` whose φ carries horizontal args is closed for deeper children (caught at child-push time via R-6.1.1). When its φ is bare, deeper children attach as φ's vertical arguments; because the formation binds only φ, such an argument may not be named — at close time an argument entry that carries a name suffix yields error `argument of an only-phi formation cannot carry a name suffix` (§9.9). The ban propagates down through nested applications and resets at a formation boundary (§4.5).
 
 ### 5.4 End-of-file (FSM action)
 
-R-5.4.1. At EOF the FSM pops all remaining stack entries, running close-time checks (§5.3) for each. The semantics, error handling, and additional EOF-only validations (unclosed text block, dangling comment block, trailing blank lines, span-checks across siblings) are specified in **§8 — End-of-stream validation**. This subsection exists only to mark the FSM action; §8 is the authoritative validation pass.
+R-5.4.1. At EOF the FSM pops all remaining stack entries, running close-time checks (§5.3) for each. The semantics, error handling, and additional EOF-only validations (unclosed text block, top comment block flush, trailing blank lines, span-checks across siblings) are specified in **§8 — End-of-stream validation**. This subsection exists only to mark the FSM action; §8 is the authoritative validation pass.
 
 ---
 
@@ -841,7 +845,7 @@ Examples:
 ```
 [] > foo
   x.y.z > name                        ← single-line: name on its only line
-  
+
   tmpdir                              ← intermediate, no name (optional)
   .tmpfile > file                     ← intermediate, named (optional)
   .deleted                            ← intermediate, no name
@@ -857,7 +861,7 @@ Illegal:
 ```
 [] > foo
   x.y.z                               ← rejected: plain child has no name
-  
+
   tmpdir                              ← outer vmethod starts here
   .tmpfile
   .open                               ← rejected: vmethod's naming line carries no suffix
@@ -902,26 +906,26 @@ Illegal:
 
 ### 6.4 Comment attachment
 
-R-6.4.1. A comment block must be immediately followed by a named object at the same indent (no blank line between them).
-R-6.4.2. A comment block not followed by such an object is reported as "comment must precede a named object."
-R-6.4.3. Comments inside an open formation block are deferred until the next named child appears.
+R-6.4.1. The top comment block documents the whole program. It is flushed into `/object/comments` by the first meta or object (§9.5) and, in a comment-only file, at end-of-stream.
+R-6.4.2. A comment that is indented, follows a meta, follows an object, or opens a second block is rejected: "comment is allowed only on top of the file, before metas."
 
 ```
-# Tests that while loop dataizes only the first cycle.
-[] +> tests-while-dataizes                ← comment attaches to this formation
+# Documents the whole program.
++package foo
 
-# This comment leads nowhere.
-                                          ← blank line breaks attachment
-[] > foo                                  ← comment above is dangling — rejected
+[] > foo                                  ← the top block above documents the program
+  [] > bar
+  # rejected — comments are allowed only on top of the file
+  [] > baz
 ```
 
 ### 6.5 Blank-line policy
 
-R-6.5.1. Inside a comment block: blank lines forbidden.
-R-6.5.2. Between a comment block and the named object it documents: blank lines forbidden (enforces R-6.4.1).
-R-6.5.3. Before a master object (formation, atom, inline-phi formation, including `+>` test attributes) — or before its preceding comment block, if any: zero or one blank line.
+R-6.5.1. Inside the top comment block: blank lines forbidden.
+R-6.5.2. (Reserved — the top comment block precedes the metas, not an object.)
+R-6.5.3. Before a master object (formation, atom, inline-phi formation, including `+>` test attributes): zero or one blank line.
 
-*Note on validation timing and indent attribution.* A blank line carries no indent or kind of its own. The legality of a blank line is determined by the *next* non-blank line: when that line is classified, the parser checks whether it is a master (or a comment block leading to a master). If yes, the preceding blank is legal; if no (the next line is a plain child or a non-master continuation), the blank is reported as `blank line not allowed between non-master siblings` (§9.9), with the position of the offending blank line. The blank logically attaches to the indent of the *next non-blank line*, not to whatever was popped during Step A (§5.2.1) when that next line arrives — Step A pops change the stack but not the blank's identity. `pending_blank_count` (§5.1.1) is read at the point the next non-blank line classifies.
+*Note on validation timing and indent attribution.* A blank line carries no indent or kind of its own. The legality of a blank line is determined by the *next* non-blank line: when that line is classified, the parser checks whether it is a master. If yes, the preceding blank is legal; if no (the next line is a plain child or a non-master continuation), the blank is reported as `blank line not allowed between non-master siblings` (§9.9), with the position of the offending blank line. The blank logically attaches to the indent of the *next non-blank line*, not to whatever was popped during Step A (§5.2.1) when that next line arrives — Step A pops change the stack but not the blank's identity. `pending_blank_count` (§5.1.1) is read at the point the next non-blank line classifies.
 R-6.5.4. Between two plain siblings: blank lines forbidden.
 R-6.5.5. After the meta header: exactly one blank line separates metas from whatever follows.
 R-6.5.6. At end-of-file: zero or one trailing blank line; more than one is an error.
@@ -929,15 +933,14 @@ R-6.5.6. At end-of-file: zero or one trailing blank line; more than one is an er
 Examples:
 
 ```
+# Top-of-file comment.
 +architect yegor256@gmail.com
 +version 0.0.0
                                           ← exactly one blank after metas
-# Top-level comment.
 [] > foo
   a > attr1
   b > attr2                               ← no blank between bounds
                                           ← blank legal before next master
-  # Inner comment block.
   [] > inner
     body > x
 ```
@@ -1008,7 +1011,7 @@ After the main loop completes:
 
 R-8.1. Pop all stack entries and run close-time checks (§5.3). **If any close-time check fails**, emit an `<error>` element per R-9.6 and continue popping the remaining entries — one failure does not abort the EOF sweep. This is where `reversed dispatch missing receiver` (R-5.3.2), `object inside formation must have a name` (R-5.3.1), `atom may contain only test attributes` (R-5.3.4), and `compact tuple requires at least N children` (R-5.3.3) typically surface for the outermost open expressions.
 R-8.2. Report any unclosed text block.
-R-8.3. Report a dangling comment block.
+R-8.3. Flush a top comment block still pending in a comment-only file into `/object/comments` (§9.5).
 R-8.4. Report excessive trailing blank lines (>1).
 R-8.5. Run any all-or-nothing binding checks that span the popped entries.
 R-8.6. After all popping and end-of-stream checks complete, the parser emits the closing tags for the `<object>` document. Errors emitted during EOF do not prevent emission of valid XMIR for the rest of the file.
@@ -1137,9 +1140,9 @@ R-9.4.2. The "source order" of vertical children is the order their head lines a
 
 ### 9.5 Comment emission
 
-R-9.5.1. A comment block emits one `<comment>` element inside `/object/comments`. Multiple blocks accumulate as sibling `<comment>` elements.
+R-9.5.1. The top comment block emits one `<comment>` element inside `/object/comments`, documenting the program. At most one block exists per program.
 R-9.5.2. The comment's body is the concatenation of the comment lines with the leading `#` removed from each. Per the `COMMENTARY` token rule (§2.3), a comment line ends on a non-whitespace character — trailing whitespace is already excluded at the token level. The body text is preserved verbatim after the `#`; leading whitespace immediately after the `#` is implementation-defined (typical: strip exactly one space if present).
-R-9.5.3. Comment attachment (which named object the comment documents) is recorded via cross-reference, not by structural nesting in XMIR.
+R-9.5.3. The `<comment>` carries a `line` attribute pointing at the first meta or object that flushed it (the construct it precedes).
 
 ### 9.6 Errors
 
@@ -1220,7 +1223,8 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Mixed bindings in arg group | `argument bindings must be all-or-nothing` |
 | Receiver carrying binding | `reversed-dispatch receiver cannot carry a binding` |
 | Inline binding on non-last method in chain | `inline binding allowed only on the last method in a chain` |
-| Comment block without following object | `comment must precede a named object` |
+| Comment not on top of the file | `comment is allowed only on top of the file, before metas` |
+| Blank line inside the top comment block | `blank line inside the top comment block is not allowed` |
 | Blank line between non-master siblings | `blank line not allowed between non-master siblings` |
 | Unclosed text block | `unclosed text block opened at line N` (N substituted) |
 | Multi-line BYTES continuation indent shallower than opener | `multi-line bytes continuation must not de-indent` |
@@ -1286,12 +1290,12 @@ Reproduced from §3.1 for convenience:
 ### C.1 Mixed-construct walkthrough
 
 ```
+# A program demonstrating most constructs.        ← R-3.3: top comment block, before metas
+# Comment block of two lines.
 +author someone@example.com           ← R-3.2: meta at indent 0
 +version 1.0                          ← meta
                                       ← R-6.5.5: required blank after metas
-# A program demonstrating most constructs.
-# Comment block of two lines.
-[args] > main                         ← R-3.4: top-level formation, attached to the comment block
+[args] > main                         ← R-3.4: top-level formation
   mem.alloc > @                       ← R-3.6: hmethod head (0 hargs), named @; becomes vapplication when children push
     0                                 ← R-5.2.7: deeper child at indent 4, parent=hmethod (not formation), no name required
     [x] >>                            ← R-3.4: nested formation with auto name >>

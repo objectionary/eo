@@ -87,7 +87,6 @@ final class EoSyntaxTest {
                 new EoSyntax(
                     String.join(
                         System.lineSeparator(),
-                        "# No comments.",
                         "[] > x-н, 1".concat(System.lineSeparator())
                     )
                 )::parsed,
@@ -108,7 +107,6 @@ final class EoSyntaxTest {
                         new InputOf(
                             String.join(
                                 System.lineSeparator(),
-                                "# No comments.",
                                 "[] > foo",
                                 "",
                                 "",
@@ -128,7 +126,6 @@ final class EoSyntaxTest {
     void printsProperListingEvenWhenSyntaxIsBroken() throws Exception {
         final String src = String.join(
             System.lineSeparator(),
-            "# No comments.",
             "[] > x-н, 1".concat(System.lineSeparator())
         );
         MatcherAssert.assertThat(
@@ -201,10 +198,8 @@ final class EoSyntaxTest {
                 new InputOf(
                     String.join(
                         System.lineSeparator(),
-                        "# No comments.",
                         "[] > base",
                         "  memory 0 > x",
-                        "  # No comments.",
                         "  [self] > f",
                         "    v > @",
                         "      v".concat(System.lineSeparator())
@@ -636,8 +631,8 @@ final class EoSyntaxTest {
             String.join(crlf.concat(crlf), "1 > x", "2 > y"),
             String.join(eol, "1 > x", "2 > y").concat(eol),
             String.join(eol.concat(eol), "1 > x", "2 > y"),
-            String.join(eol, "# No comments.", "[] > x"),
-            String.join(eol, "# No comments.", "[] > x", "  x ^ > @")
+            "[] > x",
+            String.join(eol, "[] > x", "  x ^ > @")
         );
     }
 }

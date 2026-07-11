@@ -6,11 +6,10 @@ sheets: []
 asserts:
   - /object[not(errors)]
 input: |
+  # Main.
   +package org.eolang
 
-  # Main.
   [] > bool-tests
-    # No comments.
     [] > compares-two-bools
       Q
       .org
@@ -32,7 +31,6 @@ input: |
           .bytes:0
             01-
 
-    # No comments.
     [] > compares-two-different-types
       Q
       .org
@@ -55,7 +53,6 @@ input: |
             00-00-00-00-00-00-00-2A
       .not > @
 
-    # No comments.
     [] > forks-on-condition
       Q
       .org
@@ -106,7 +103,6 @@ input: |
           .bytes:0
             00-00-00-00-00-00-00-2A
 
-    # No comments.
     [] > iterates-over-simple-counter
       Q
       .org
@@ -188,7 +184,6 @@ input: |
             .bytes:0
               00-00-00-00-00-00-00-0B
 
-    # No comments.
     [] > compares-bool-to-bytes
       Q
       .org

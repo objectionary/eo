@@ -16,8 +16,6 @@ asserts:
   - //tests[contains(text(), '@Test')]
   - //tests[contains(text(), 'void test_1()')]
 input: |
-  # No comments.
   [x] > foo /bytes
-    # Test.
     [] +> test-1
       foo > @

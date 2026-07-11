@@ -26,7 +26,6 @@ asserts:
   - //o[@base='Φ.bytes' and @name='sixth' and @const]/o[text()='2A-']
   - //o[@base='ξ.third' and @const and not(@as)]
 input: |
-  # No comments.
   [] > foo
     x > first!
     dataized.as-bytes > second

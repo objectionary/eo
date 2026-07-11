@@ -21,9 +21,9 @@ asserts:
   - //o[@base='Φ.string' and @name='stringY']
   - //o[@base='Φ.string' and @name='textX']
 input: |
+  # Main.
   +package test
 
-  # Main.
   [] > main
     01- > bytesX
     00-02-4F-1A-FF-01 > bytesX

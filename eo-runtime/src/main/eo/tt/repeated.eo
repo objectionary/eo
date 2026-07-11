@@ -1,3 +1,6 @@
+# Returns `text` repeated `times` times.
+# If `times` < 0, the `cant-repeat` fallback is returned, or the bottom object when unbound.
+# If `times` == 0, empty text is returned.
 +alias tt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -6,9 +9,6 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Returns `text` repeated `times` times.
-# If `times` < 0, the `cant-repeat` fallback is returned, or the bottom object when unbound.
-# If `times` == 0, empty text is returned.
 [text times cant-repeat] > repeated
   if. > @
     0.gt amount
@@ -24,7 +24,6 @@
     --
     rec-repeated bts 1
 
-  # Recursively concatenates text bytes to accumulator until index reaches amount.
   [accum index] > rec-repeated
     if. > @
       amount.eq index
@@ -33,13 +32,11 @@
         accum.concat bts
         (index.plus 1).as-number
 
-  # Tests that repeated terminates on a negative count when no fallback is given.
   [] +> throws-on-text-repeating-less-than-zero-times
     repeated > @
       ""
       -1
 
-  # Tests that repeated with a negative count and a fallback yields the fallback.
   [] +> tests-text-repeated-negative-times-returns-provided-fallback
     eq. > @
       "recovered"
@@ -48,13 +45,11 @@
         -1
         "recovered" > [msg]
 
-  # Tests specific functionality repeated method returns empty string when times is zero.
   [] +> tests-text-repeated-zero-times-is-empty
     eq. > @
       ""
       repeated "some" 0
 
-  # Tests specific functionality repeated method repeats text specified number of times.
   [] +> tests-text-repeated-five-times
     eq. > @
       "heyheyheyheyhey"

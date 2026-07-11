@@ -9,7 +9,7 @@ origin: |
       true.eq 01-
       false.eq 00-
 printed: |
-  # No comments.
+  # This unit test is supposed to check the functionality of the corresponding object.
   [] > compares-bool-to-bytes
     and. > @
       true.eq

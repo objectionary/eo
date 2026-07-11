@@ -7,19 +7,15 @@ package org.eolang.parser;
 import java.util.List;
 
 /**
- * Attach buffered comment lines to the next named object — §6.4.
+ * Flush the top comment block and close the header zone — §3.3 / §6.4.
  *
- * <p>A comment block accumulates in {@link Globals#pendingComments()}
- * as each {@link LnComment} arrives. The next named line — any
- * formation, application, method or reversed line whose suffix carries
- * a name — calls {@link #attach(Globals, Emit, Span, boolean)} to
- * either flush the block into {@code /object/comments/comment} (when
- * the line is named, sits at the same indent, and has no intervening
- * blank line — R-6.5.2) or report the block as dangling per
- * R-6.4.2.</p>
- *
- * <p>The buffer is always cleared after the call so a dangling block
- * is not re-reported by the EOF check.</p>
+ * <p>Only one comment block is legal in a program: the block that sits
+ * on top of the file, before all metas and objects (§3.3). It documents
+ * the whole program. As each {@link LnComment} arrives it accumulates in
+ * {@link Globals#pendingComments()}; the first meta directive or object
+ * then calls {@link #seal(Globals, Emit, Span)} to flush that block into
+ * {@code /object/comments/comment} and mark the header zone closed. From
+ * that point on any further comment is rejected by {@link LnComment}.</p>
  *
  * @since 0.1
  */
@@ -32,25 +28,25 @@ final class Comments {
     }
 
     /**
-     * Flush or reject the pending comment block in light of the line
-     * about to be emitted.
+     * Flush the pending top comment block, if any, and close the header
+     * zone.
+     *
+     * <p>Idempotent — after the first call {@link Globals#sealed()} is
+     * true and subsequent calls do nothing, so only the first meta or
+     * object in the file triggers the flush.</p>
+     *
      * @param globals Global parser state
      * @param emit XMIR emitter
-     * @param span Source span of the upcoming line
-     * @param named True when the upcoming line carries a name suffix
-     * @checkstyle ParameterNumberCheck (3 lines)
+     * @param span Source span of the meta or object closing the header
      */
-    static void attach(
-        final Globals globals, final Emit emit, final Span span, final boolean named
-    ) {
-        final List<Span> pending = globals.pendingComments();
-        if (pending.isEmpty()) {
-            return;
-        }
-        final Span head = pending.get(0);
-        if (named && head.indent() == span.indent() && globals.pendingBlanks() == 0) {
-            emit.comment(pending, span.line());
-            globals.clearComments();
+    static void seal(final Globals globals, final Emit emit, final Span span) {
+        if (!globals.sealed()) {
+            final List<Span> pending = globals.pendingComments();
+            if (!pending.isEmpty()) {
+                emit.comment(pending, span.line());
+                globals.clearComments();
+            }
+            globals.seal();
         }
     }
 }

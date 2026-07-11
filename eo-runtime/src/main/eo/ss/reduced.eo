@@ -1,3 +1,7 @@
+# Reduce `lst` from "start" using the function "func".
+# Here "func" must be an abstract object with two free attributes.
+# The first one for the accumulator, the second one for the element
+# of the collection.
 +alias ss.list
 +alias ss.reducedi
 +alias tt.sprintf
@@ -8,17 +12,12 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Reduce `lst` from "start" using the function "func".
-# Here "func" must be an abstract object with two free attributes.
-# The first one for the accumulator, the second one for the element
-# of the collection.
 [lst start func] > reduced
   reducedi > @
     lst
     start
     func accum item > [accum item idx] >>
 
-  # Tests that reducing a list without index access works correctly.
   [] +> tests-list-reduce-without-index
     eq. > @
       reduced
@@ -28,7 +27,6 @@
         a.times x > [a x]
       -24
 
-  # Tests that reducing a list to create a formatted string works correctly.
   [] +> tests-list-reduced-printing
     eq. > @
       reduced

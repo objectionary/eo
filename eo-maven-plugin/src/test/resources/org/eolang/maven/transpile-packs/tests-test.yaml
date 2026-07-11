@@ -20,7 +20,6 @@ asserts:
   - //tests[contains(text(), 'new Dataized(this.take("works")).asBool()')]
   - //tests[contains(text(), 'new Dataized(this.take("throws-on")).asBool();')]
 input: |
-  # No comments.
   [] > some
     7 > yes
     [] +> works

@@ -7,21 +7,14 @@ asserts:
   - //o[@base='.with' and count(o)=2]/o[@base='ξ.foobar.with']
   - //o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=2]/o[@base='ξ.foobar.with']
 input: |
-  # No comments.
   [] > aliases
-    # No comments.
     [] > foo
-      # No comments.
       [y] > with
         42 > @
-    # No comments.
     [] > bar
-      # No comments.
       [x] > with
         foo > @
-    # No comments.
     [] > foobar
-      # No comments.
       [z d] > with
         bar > @
     eq. > @

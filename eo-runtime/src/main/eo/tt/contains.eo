@@ -1,3 +1,4 @@
+# Checks if `text` contains `substring`.
 +alias tt.slice
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -6,7 +7,6 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Checks if `text` contains `substring`.
 [text substring] > contains
   and. > @
     (number tlen).gte slen
@@ -21,7 +21,6 @@
   txt.size > tlen!
   text > txt!
 
-  # Recursively searches for substring presence in text from given index.
   [idx] > rec-contains
     if. > @
       end.eq idx
@@ -33,11 +32,9 @@
       slice txt idx slen
       sub
 
-  # Tests specific functionality contains returns true when text includes given substring.
   [] +> tests-text-contains-substring
     contains "Hello, world!" "o, wo" > @
 
-  # Tests specific functionality contains returns false when text does not include substring.
   [] +> tests-text-does-not-contain-substring
     not. > @
       contains "Hello, world!" "Hey"

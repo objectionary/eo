@@ -1,11 +1,3 @@
-+alias io.console
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+package io
-+version 0.0.0
-+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
-
 # Convenient wrapper `stdout` on `console` object which
 # uses it as output only and allows to print the given argument to console as `string`:
 # ```
@@ -15,13 +7,19 @@
 # ```
 #
 # Here the "Hello, world!" string is printed to the operating system console.
++alias io.console
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package io
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
 [text] > stdout
   seq * > @
     console.write text
     true
 
-  # Prints a simple message to the console. We can't validate
-  # the output, so we just run it and see if it crashes.
   [] +> tests-prints-to-console
     stdout > @
       "Hello, stdout-test!\n"

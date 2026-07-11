@@ -102,7 +102,7 @@ final class LnOnlyPhi implements Line {
         final List<MethodChain> chain = tokens.readChain();
         final List<Value> args = tokens.readArgs();
         final boolean open = args.isEmpty();
-        Comments.attach(globals, emit, this.span, suffix.present() || suffix.test());
+        Comments.seal(globals, emit, this.span);
         this.transition(stack, suffix, open);
         globals.clearBlanks();
         globals.markEmitted();

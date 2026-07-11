@@ -4,7 +4,9 @@
 # yamllint disable rule:line-length
 line: 5
 message: |-
-  argument of an only-phi formation cannot carry a name suffix
+  [5:6] error: 'argument of an only-phi formation cannot carry a name suffix'
+        baz > x
+        ^
 input: |
   # Foo.
   [] > obj

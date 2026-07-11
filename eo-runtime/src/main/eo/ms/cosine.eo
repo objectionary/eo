@@ -1,3 +1,5 @@
+# Cosine of `num` radians as `org.eolang.number`, taken from the sine of the
+# argument advanced by a quarter turn, since cos(x) equals sin(x + pi/2).
 +alias ms.abs
 +alias ms.pi
 +alias ms.sine
@@ -8,12 +10,9 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Cosine of `num` radians as `org.eolang.number`, taken from the sine of the
-# argument advanced by a quarter turn, since cos(x) equals sin(x + pi/2).
 [num] > cosine
   sine (num.plus (pi.div 2)) > @
 
-  # Tests that cosine of zero is one.
   [] +> tests-cosine-of-zero-is-one
     lt. > @
       abs
@@ -22,14 +21,12 @@
           1000
       1
 
-  # Tests that cosine of pi/2 radians is zero.
   [] +> tests-cosine-of-pi-halves-is-zero
     lt. > @
       abs
         (cosine (pi.div 2)).times 1000
       1
 
-  # Tests that cosine of pi radians is minus one.
   [] +> tests-cosine-of-pi-is-minus-one
     lt. > @
       abs
@@ -38,7 +35,6 @@
           -1000
       1
 
-  # Tests that cosine of pi/3 radians is one half.
   [] +> tests-cosine-of-pi-thirds-is-half
     lt. > @
       abs
@@ -47,7 +43,6 @@
           500
       1
 
-  # Tests that cosine is an even function.
   [] +> tests-cosine-is-even-function
     lt. > @
       abs
@@ -58,7 +53,6 @@
           1000
       1
 
-  # Tests that cosine reduces a large angle before evaluation.
   [] +> tests-cosine-reduces-large-angle
     lt. > @
       abs
@@ -67,7 +61,6 @@
           500
       1
 
-  # Tests that cosine of 17 radians reduces to about minus 0.275.
   [] +> tests-cosine-of-seventeen-radians
     lt. > @
       abs
@@ -76,17 +69,14 @@
           -275
       1
 
-  # Tests that cosine of nan is nan.
   [] +> tests-cosine-of-nan-is-nan
     is-nan. > @
       cosine nan
 
-  # Tests that cosine of +inf is nan.
   [] +> tests-cosine-of-positive-infinity-is-nan
     is-nan. > @
       cosine pinf
 
-  # Tests that cosine of -inf is nan.
   [] +> tests-cosine-of-negative-infinity-is-nan
     is-nan. > @
       cosine ninf

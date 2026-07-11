@@ -32,7 +32,6 @@ final class MjResolveTest {
             "+package foo.x",
             "+rt jvm org.eolang:eo-runtime:0.7.0",
             String.format("+version 0.25.0%n"),
-            "# No comments.",
             "[] > main /bytes"
             ).execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
@@ -63,7 +62,6 @@ final class MjResolveTest {
     void resolvesWithoutAnyDependencies(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.format("+package foo.x%n"),
-            "# No comments.",
             "[a b] > main",
             "  plus. > @",
             "    a",
@@ -112,7 +110,6 @@ final class MjResolveTest {
             "+package foo.x",
             "+rt jvm org.eolang:eo-runtime:0.22.1",
             String.format("+version 0.25.0%n"),
-            "# No comments.",
             "[] > main"
         ).execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(

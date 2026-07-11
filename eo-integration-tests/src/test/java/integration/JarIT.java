@@ -48,7 +48,6 @@ final class JarIT {
         new Farea(temp).together(
             f -> classpath[0] = JarIT.compile(
                 f,
-                "# No comments.",
                 "[] > simple",
                 "  Q.io.stdout > @",
                 "    \"Hello, world!\""
@@ -123,7 +122,6 @@ final class JarIT {
         new Farea(temp).together(
             f -> classpath[0] = JarIT.compile(
                 f,
-                "# No comments.",
                 "[] > simple",
                 "  unknown.io.stdout > @",
                 "    \"Hello, world!\""

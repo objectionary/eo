@@ -3,7 +3,6 @@
 ---
 # yamllint disable rule:line-length
 origin: |
-  # No comments.
   [] > app
     Q.io.stdout > @
       """
@@ -12,7 +11,6 @@ origin: |
       """
 
 printed: |
-  # No comments.
   [] > app
     io.stdout > @
       "Hello\nit's me"

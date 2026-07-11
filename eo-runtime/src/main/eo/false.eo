@@ -1,3 +1,6 @@
+# FALSE boolean state.
+# It is the `bool` whose choice returns its second argument, so `if` picks
+# the `right` branch and the byte representation is `00-`.
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -5,8 +8,5 @@
 +spdx SPDX-License-Identifier: MIT
 +unlint mandatory-package
 
-# FALSE boolean state.
-# It is the `bool` whose choice returns its second argument, so `if` picks
-# the `right` branch and the byte representation is `00-`.
 bool > false
   right > [left right]

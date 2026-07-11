@@ -1,3 +1,6 @@
+# Represents sequence of bytes as array.
+# Here `bts` is `bytes` objects, the return value is `tuple` where
+# each element is one `byte`.
 +alias ss.bytes-as-array
 +alias ss.list
 +architect yegor256@gmail.com
@@ -7,15 +10,11 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Represents sequence of bytes as array.
-# Here `bts` is `bytes` objects, the return value is `tuple` where
-# each element is one `byte`.
 [bts] > bytes-as-array
   slice-byte * 0 > @
   bts > data!
   data.size > len!
 
-  # Recursively slices bytes one by one and appends them to tuple.
   [tup index] > slice-byte
     if. > @
       index.lt len
@@ -24,7 +23,6 @@
         (index.plus 1).as-number
       tup
 
-  # Tests that bytes are correctly converted to an array.
   [] +> tests-converts-bytes-to-array
     eq. > @
       list
@@ -32,7 +30,6 @@
           20-1F-EE-B5-FF
       * 20- 1F- EE- B5- FF-
 
-  # Tests that a single byte is correctly converted to an array.
   [] +> tests-single-byte-to-array
     eq. > @
       list
@@ -40,7 +37,6 @@
           1F-
       * 1F-
 
-  # Tests that zero bytes are correctly converted to an empty array.
   [] +> tests-zero-bytes-to-array
     eq. > @
       list

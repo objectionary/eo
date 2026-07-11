@@ -1,10 +1,3 @@
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+version 0.0.0
-+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
-
 # Compile Time Instruction (CTI).
 #
 # The object may be used to add compile time information to
@@ -13,10 +6,16 @@
 # to highlight deprecated methods. EO compiler, when it meets the
 # `cti` object, takes its `message` and prints to the log/console
 # with the `level` severity level (use `INFO`, `WARN`, or `ERROR`).
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
+
 [delegate level message] > cti
   delegate > @
 
-  # Tests that cti prints warning and returns the delegated value.
   [] +> tests-prints-warning-and-delegates
     eq. > @
       cti

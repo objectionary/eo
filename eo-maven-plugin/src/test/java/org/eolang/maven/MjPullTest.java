@@ -52,7 +52,6 @@ final class MjPullTest {
     void pullsFromProbes(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp).withProgram(
             String.format("+package foo.x%n"),
-            "# No comments.",
             "[] > main",
             "  Q.io.stdout > @",
             "    \"I am 18 years old\""
@@ -214,7 +213,6 @@ final class MjPullTest {
         );
         new FakeMaven(temp).withProgram(
             "+package foo.x",
-            "# No comments.",
             "[] > main",
             "  Q.io.stdout > @"
             )

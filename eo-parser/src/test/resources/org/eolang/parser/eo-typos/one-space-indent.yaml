@@ -2,13 +2,12 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 4
+line: 3
 message: |-
-  [4:0] error: 'unexpected odd indent'
+  [3:0] error: 'unexpected odd indent'
      1
   ^
 input: |
-  # No comments
   [] > foo
     *
      1

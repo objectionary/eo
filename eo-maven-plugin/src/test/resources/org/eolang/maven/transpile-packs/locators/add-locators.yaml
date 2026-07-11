@@ -20,15 +20,14 @@ asserts:
   - //o[@base='ξ.e.hello' and @loc='Φ.org.abc.main.tt.α2.φ' and @original-name='main.tt.α2.φ']
   - //o[@base='ξ.ρ.ρ.p' and @loc='Φ.org.abc.main.q' and @original-name='main.q']
 input: |
+  # Main.
   +alias org.abc.foo.b
   +alias x
   +package org.abc
   +home www.abc.com
   +version 0.0.0
 
-  # Main.
   [] > main
-    # No comments.
     [] > a
       b > @
         x

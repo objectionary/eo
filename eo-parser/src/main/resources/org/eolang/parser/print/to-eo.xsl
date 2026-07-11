@@ -11,10 +11,6 @@
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="eol" select="'&#10;'"/>
   <xsl:variable name="auto" select="concat('a', $eo:cactoos)"/>
-  <xsl:variable name="comment">
-    <xsl:text># No comments.</xsl:text>
-    <xsl:value-of select="$eol"/>
-  </xsl:variable>
   <xsl:output method="text" encoding="UTF-8"/>
   <!-- PROGRAM -->
   <xsl:template match="object">
@@ -22,11 +18,29 @@
       <xsl:apply-templates select="sheets|metas"/>
       <xsl:copy-of select="o[1]"/>
       <eo>
+        <xsl:apply-templates select="comments"/>
         <xsl:apply-templates select="license"/>
         <xsl:apply-templates select="metas"/>
         <xsl:apply-templates select="o[1]"/>
       </eo>
     </xsl:copy>
+  </xsl:template>
+  <!-- TOP COMMENT BLOCK -->
+  <xsl:template match="comments">
+    <xsl:for-each select="comment">
+      <xsl:for-each select="tokenize(., $eol)">
+        <xsl:choose>
+          <xsl:when test=". = ''">
+            <xsl:text>#</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text># </xsl:text>
+            <xsl:value-of select="."/>
+          </xsl:otherwise>
+        </xsl:choose>
+        <xsl:value-of select="$eol"/>
+      </xsl:for-each>
+    </xsl:for-each>
   </xsl:template>
   <!-- LICENCE -->
   <xsl:template match="license">
@@ -110,10 +124,6 @@
   <!-- ABSTRACT OR ATOM -->
   <xsl:template match="o[eo:abstract(.) and not(eo:has-data(.))]" mode="head">
     <xsl:param name="indent"/>
-    <xsl:if test="@name and not(starts-with(@name, $auto))">
-      <xsl:value-of select="$comment"/>
-      <xsl:value-of select="$indent"/>
-    </xsl:if>
     <xsl:text>[</xsl:text>
     <xsl:for-each select="o[eo:void(.)]">
       <xsl:if test="position()&gt;1">

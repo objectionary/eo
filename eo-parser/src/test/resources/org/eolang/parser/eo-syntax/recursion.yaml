@@ -5,15 +5,13 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@name='f' and @line='8']
+  - //o[@name='f' and @line='6']
   - //o[@base='ξ.ρ.f']
 input: |
   +home https://github.com/objectionary/eo
   +package test
   +version 0.0.0
 
-  # No comments.
   [args] > main
-    # No comments.
     [n] > f
       f 5 > @

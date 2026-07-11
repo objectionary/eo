@@ -76,7 +76,6 @@ final class ProbesTest {
             new EoSyntax(
                 String.join(
                     System.lineSeparator(),
-                    "# No comments.",
                     "[] > simple",
                     "  Q.io.stdout > @",
                     "    \"Hello, world!\""
@@ -130,7 +129,6 @@ final class ProbesTest {
                 new String[]{
                     "+package foo.x",
                     String.format("+also while%n"),
-                    "# No comments.",
                     "[] > main",
                     "  Q.io.stdout > @",
                     "    Q.tt.sprintf",

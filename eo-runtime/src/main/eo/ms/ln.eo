@@ -1,3 +1,8 @@
+# Natural logarithm of `num` with base `e` as `org.eolang.number`. The argument
+# is folded into [1/e, e] by peeling whole factors of `e` and counting them,
+# then the remainder is summed with the area-hyperbolic-tangent series. The
+# limiting cases follow the usual conventions: zero is negative infinity, a
+# negative number and negative infinity are nan, and positive infinity stays.
 +alias ms.abs
 +alias ms.e
 +architect yegor256@gmail.com
@@ -7,11 +12,6 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Natural logarithm of `num` with base `e` as `org.eolang.number`. The argument
-# is folded into [1/e, e] by peeling whole factors of `e` and counting them,
-# then the remainder is summed with the area-hyperbolic-tangent series. The
-# limiting cases follow the usual conventions: zero is negative infinity, a
-# negative number and negative infinity are nan, and positive infinity stays.
 [num] > ln
   if. > @
     n.is-nan
@@ -28,8 +28,6 @@
           pinf
   number num.as-bytes > n
 
-  # Natural logarithm of a finite positive `p`, recursing by whole steps of `e`
-  # until the value lands in [1/e, e], where the series converges quickly.
   [p] > lnp
     if. > @
       p.gte e
@@ -39,15 +37,12 @@
         (lnp (p.times e)).minus 1
         series p
 
-    # Area-hyperbolic-tangent series for `m` in [1/e, e], summed by Horner's
-    # scheme around the point (m minus 1) div (m plus 1).
     [m] > series
       2.times (t.times (horner 0)) > @
       (m.minus 1).div (m.plus 1) > t
       t.times t > squared
       40 > terms
 
-      # One Horner factor of the logarithm series, opened from `k`.
       [k] > horner
         if. > @
           k.gt terms
@@ -55,35 +50,29 @@
           plus.
             1.div ((k.times 2).plus 1)
             squared.times (horner (k.plus 1))
-  # Tests that natural logarithm of negative float returns NaN.
   [] +> tests-ln-of-negative-float-is-nan
     is-nan. > @
       ln -2.2
 
-  # Tests that natural logarithm of zero equals negative infinity.
   [] +> tests-ln-of-zero-is-negative-infinity
     eq. > @
       ln 0
       ninf
 
-  # Tests that natural logarithm of 1 equals zero.
   [] +> tests-ln-of-one-is-zero
     eq. > @
       ln 1
       0
 
-  # Tests that natural logarithm of e equals 1.
   [] +> tests-ln-of-e-one-is-one
     eq. > @
       ln e
       1
 
-  # Tests that natural logarithm of -42 equals NaN.
   [] +> tests-ln-of-negative-int-is-nan
     is-nan. > @
       ln -42
 
-  # Tests that natural logarithm of a positive number > 1.
   [] +> tests-ln-of-twenty
     lt. > @
       abs
@@ -92,7 +81,6 @@
           2.995732273553991
       0.00000000001
 
-  # Tests that natural logarithm of a fraction (0 < x < 1) is negative.
   [] +> tests-ln-fraction
     lt. > @
       abs
@@ -101,23 +89,19 @@
           -0.6931471805599453
       0.00000000001
 
-  # Tests that natural logarithm of positive infinity equals positive infinity.
   [] +> tests-ln-positive-infinity
     eq. > @
       ln pinf
       pinf
 
-  # Tests that natural logarithm of negative infinity returns NaN.
   [] +> tests-ln-negative-infinity
     is-nan. > @
       ln ninf
 
-  # Tests that natural logarithm of NaN returns NaN.
   [] +> tests-ln-nan
     is-nan. > @
       ln nan
 
-  # Tests that natural logarithm is monotonically increasing.
   [] +> tests-ln-monotonic
     lt. > @
       ln 2

@@ -1,3 +1,4 @@
+# Returns a `tuple` of `strings`: `text` separated by `delimiter`.
 +alias ss.list
 +alias tt.slice
 +architect yegor256@gmail.com
@@ -7,7 +8,6 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Returns a `tuple` of `strings`: `text` separated by `delimiter`.
 [text delimiter] > split
   if. > @
     len.eq 0
@@ -18,7 +18,6 @@
   delim.size > delim-size!
   bts.size > len!
 
-  # Recursively splits text by delimiter into tuple of substrings.
   [accum start current] > rec-split
     if. > @
       len.eq current
@@ -48,21 +47,18 @@
             start
             (current.plus 1).as-number
 
-  # Tests that split method divides text into parts using dash delimiter.
   [] +> tests-splits-text-by-dash
     eq. > @
       list
         split "a-b-c" "-"
       * "a" "b" "c"
 
-  # Tests that split method handles empty strings between delimiters.
   [] +> tests-splits-text-with-empty-strings
     eq. > @
       list
         split "-a-b-" "-"
       * "" "a" "b" ""
 
-  # Tests that split returns proper string objects with correct length.
   [] +> tests-splits-and-returns-strings
     eq. > @
       length.
@@ -73,7 +69,6 @@
           1
       6
 
-  # Tests that split correctly handles a multi-character delimiter.
   [] +> tests-splits-text-by-multi-char-delimiter
     eq. > @
       list

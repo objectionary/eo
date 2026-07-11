@@ -1,3 +1,6 @@
+# Returns a `tuple` of `strings`: `text` is split by `delimiter` with a maximum of `limit` parts.
+# The last element contains the remainder of the string after splitting.
+# If `limit` < 1, the `cant-split` fallback is returned, or the bottom object when unbound.
 +alias ss.list
 +alias tt.slice
 +alias tt.sprintf
@@ -8,9 +11,6 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Returns a `tuple` of `strings`: `text` is split by `delimiter` with a maximum of `limit` parts.
-# The last element contains the remainder of the string after splitting.
-# If `limit` < 1, the `cant-split` fallback is returned, or the bottom object when unbound.
 [text delimiter limit cant-split] > nsplit
   if. > @
     1.gt limit
@@ -27,7 +27,6 @@
         rec-nsplit * 0 0 0
   delimiter.size > delimiter-size!
 
-  # Recursively splits text by delimiter up to limit number of times.
   [accum start current count] > rec-nsplit
     if. > @
       text.size.eq current
@@ -63,7 +62,6 @@
             (current.plus 1).as-number
             count
 
-  # Tests that nsplit splits with limit 2 correctly.
   [] +> tests-nsplit-with-limit-two
     eq. > @
       list
@@ -73,7 +71,6 @@
           2
       * "Cookie:" "a=1; b=2"
 
-  # Tests that nsplit splits with limit 2 on dashes.
   [] +> tests-nsplit-with-dashes-limit-two
     eq. > @
       list
@@ -83,7 +80,6 @@
           2
       * "a" "b-c-d"
 
-  # Tests that nsplit with limit 1 returns entire string.
   [] +> tests-nsplit-with-limit-one
     eq. > @
       list
@@ -93,7 +89,6 @@
           1
       * "a-b-c"
 
-  # Tests that nsplit with limit greater than splits behaves like split.
   [] +> tests-nsplit-with-high-limit
     eq. > @
       list
@@ -103,21 +98,18 @@
           10
       * "a" "b" "c"
 
-  # Tests that nsplit terminates on limit 0 when no fallback is given.
   [] +> throws-on-nsplit-with-limit-zero
     nsplit > @
       "text"
       "-"
       0
 
-  # Tests that nsplit terminates on a negative limit when no fallback is given.
   [] +> throws-on-nsplit-with-negative-limit
     nsplit > @
       "text"
       "-"
       -1
 
-  # Tests that nsplit with an invalid limit and a fallback yields the fallback.
   [] +> tests-nsplit-invalid-limit-returns-provided-fallback
     eq. > @
       "fallback"
@@ -127,7 +119,6 @@
         0
         "fallback" > [msg]
 
-  # Tests that nsplit handles empty strings between delimiters.
   [] +> tests-nsplit-with-empty-strings
     eq. > @
       list
@@ -137,7 +128,6 @@
           3
       * "" "a" "b-c"
 
-  # Tests that nsplit correctly handles a multi-character delimiter.
   [] +> tests-nsplit-with-multi-char-delimiter
     eq. > @
       list

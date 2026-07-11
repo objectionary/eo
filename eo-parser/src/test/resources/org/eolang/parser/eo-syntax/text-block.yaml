@@ -10,18 +10,15 @@ asserts:
 input: |
   # Main.
   [] > main
-    # Two lines
     """
     Hi, there
     Adiós
     """ > txt
-    # Preserve margin
     stdout > marg
       """
       first
        second
       """
-    # Preserve margin
     stdout > mrg
       """
          third
