@@ -267,7 +267,7 @@ final class Suffix {
             );
         }
         final int start = idx;
-        while (idx < tail.length() && !Suffix.terminates(tail.charAt(idx))) {
+        while (idx < tail.length() && !Suffix.endsName(tail.charAt(idx))) {
             idx = idx + 1;
         }
         if (start == idx) {
@@ -276,8 +276,15 @@ final class Suffix {
                 "test attribute requires a name"
             );
         }
+        final String name = tail.substring(start, idx);
+        if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
+            throw new ParseError(
+                span.line(), home + start,
+                "cactus emoji is reserved for auto-names; not allowed in identifiers"
+            );
+        }
         Suffix.endsClean(tail, idx, span, home);
-        return new Suffix.Parsed(Form.TEST, tail.substring(start, idx), "", false);
+        return new Suffix.Parsed(Form.TEST, name, "", false);
     }
 
     /**
