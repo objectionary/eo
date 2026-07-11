@@ -474,8 +474,12 @@ final class Tokens {
     List<MethodChain> readChain() {
         final List<MethodChain> chain = new ArrayList<>(0);
         while (!this.atEnd() && this.dispatchAhead()) {
-            final int dot = this.span.indent() + this.cursor;
-            final boolean fragile = this.consumeDispatch();
+            final boolean fragile = Tokens.fragileAhead(this.body, this.cursor);
+            int dot = this.span.indent() + this.cursor;
+            if (fragile) {
+                dot = dot + 1;
+            }
+            this.consumeDispatch();
             final Value name = this.readMethodName();
             chain.add(new MethodChain(name.raw(), dot, name.end(), fragile));
         }
