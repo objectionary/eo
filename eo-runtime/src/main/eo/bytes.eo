@@ -114,6 +114,8 @@
   [x] > right /bytes
 
   # Concatenation of two byte sequences and returns result as `bytes`.
+  # Fails with a system error when the combined length would exceed the
+  # maximum possible array size.
   [b] > concat /bytes
 
   # Tests that a slice of bytes can be extracted from a larger byte sequence.

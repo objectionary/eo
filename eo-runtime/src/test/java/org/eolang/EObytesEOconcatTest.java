@@ -11,6 +11,7 @@ package org.eolang;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -36,6 +37,24 @@ final class EObytesEOconcatTest {
                 )
             ).asString(),
             Matchers.equalTo("привет mr. ㄤㄠ!")
+        );
+    }
+
+    @Test
+    void failsCleanlyInsteadOfOverflowingArraySize() {
+        MatcherAssert.assertThat(
+            "Concatenation overflowing the maximum array size should fail with a system error, but it didn't",
+            Assertions.assertThrows(
+                EOerror.ExError.class,
+                () -> new Dataized(
+                    new PhApplication(
+                        new Data.ToPhi(new byte[1_073_741_824]).take("concat").copy(),
+                        "b",
+                        new Data.ToPhi(new byte[1_073_741_824])
+                    )
+                ).take()
+            ).getMessage(),
+            Matchers.containsString("too big")
         );
     }
 }
