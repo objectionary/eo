@@ -2,18 +2,15 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 6
+line: 3
 # @todo #3744:60min Error Message Duplicates.
 #  As you can see, we have multiple error messages that are the
 #  same. We should remove duplicates and keep only meaningful error messages.
 message: |-
-  [6:0] error: 'unexpected odd indent'
+  [3:0] error: 'unexpected odd indent'
      *
   ^
 input: |
-  # This is a code snippet from the following issue:
-  # https://github.com/objectionary/eo/issues/3332
-
   [args] > app
     seq > @
      *

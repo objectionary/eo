@@ -9,8 +9,6 @@ asserts:
   - //o[@name='rooted']/o[@name='λ' and @atom='Φ.org.eolang.number']
   - //o[@name='deep']/o[@name='λ' and @atom='x.y.z']
 input: |-
-  # Atoms with various return-type FQN forms.
-
   [] > parent
     [] > dotted /org.eolang.number
 

@@ -6,8 +6,6 @@ sheets: []
 asserts:
   - //o[@name='preserved' and o/o[text()='61-20-20-20-20-62']]
 input: |
-  # Preserve internal whitespace in text blocks.
-
   [] > main
     """
     a    b

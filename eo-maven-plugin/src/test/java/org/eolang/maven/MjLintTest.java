@@ -50,12 +50,14 @@ final class MjLintTest {
     @SuppressWarnings({"PMD.UnitTestContainsTooManyAsserts", "PMD.UnnecessaryLocalRule"})
     void includesDefectDetailsInExceptionMessage(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
-            "# Main object.",
-            "",
-            String.format("+package foo.x%n"),
-            "[] > main",
-            "  cti true \"error\" \"msg\" > @"
-            );
+            String.join(
+                System.lineSeparator(),
+                "+package foo.x",
+                "",
+                "[] > main",
+                "  cti true \"error\" \"msg\" > @"
+            )
+        );
         final IllegalStateException thrown = Assertions.assertThrows(
             IllegalStateException.class,
             () -> maven.execute(new FakeMaven.Lint()),
@@ -80,12 +82,14 @@ final class MjLintTest {
     @Test
     void detectsErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
-            "# Main object.",
-            "",
-            String.format("+package foo.x%n"),
-            "[] > main",
-            "  cti true \"error\" \"msg\" > @"
-            );
+            String.join(
+                System.lineSeparator(),
+                "+package foo.x",
+                "",
+                "[] > main",
+                "  cti true \"error\" \"msg\" > @"
+            )
+        );
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> maven.execute(new FakeMaven.Lint()),
@@ -180,10 +184,14 @@ final class MjLintTest {
         @Mktmp final Path temp
     ) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
-            String.format("+package foo.x%n"),
-            "[] > main",
-            "  cti true \"error\" \"msg\" > @"
-            );
+            String.join(
+                System.lineSeparator(),
+                "+package foo.x",
+                "",
+                "[] > main",
+                "  cti true \"error\" \"msg\" > @"
+            )
+        );
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> maven.execute(new FakeMaven.Lint()),
@@ -200,12 +208,14 @@ final class MjLintTest {
     @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void detectsCriticalErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
-            "# Main object.",
-            "",
-            String.format("+package foo.x%n"),
-            "[] > main",
-            "  cti true \"critical\" \"msg\" > @"
-            );
+            String.join(
+                System.lineSeparator(),
+                "+package foo.x",
+                "",
+                "[] > main",
+                "  cti true \"critical\" \"msg\" > @"
+            )
+        );
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> maven.execute(new FakeMaven.Lint()),

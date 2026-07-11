@@ -6,8 +6,6 @@ sheets: []
 asserts:
   - /object[count(//o[@base='Φ.string'])=7]
 input: |
-  # Main.
-
   [] > main
     "\n" > n
     "\r" > r

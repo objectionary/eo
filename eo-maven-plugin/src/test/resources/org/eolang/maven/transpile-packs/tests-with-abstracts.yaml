@@ -25,8 +25,6 @@ asserts:
   - /object/class/tests[contains(text(), 'PhDefault rrr3 = new PhDefault();')]
   - /object/class/tests[contains(text(), 'void b()')]
 input: |
-  # A.
-
   [] > a
     [] +> b
       [] > c

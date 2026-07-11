@@ -21,8 +21,6 @@ asserts:
   - //tests[contains(text(), '    Assertions.assertTrue(')]
   - //tests[contains(text(), '  }')]
 input: |
-  # Foo.
-
   [name] > foo
     Q.tt.sprintf "Hello, %s!" (* name) > @
     [] +> formats-name

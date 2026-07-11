@@ -192,7 +192,7 @@ final class MjPullTest {
     void getsAlreadyPulledResultsFromCache(@Mktmp final Path temp) throws Exception {
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
-        final String cached = String.format("# test.%n[] > just-something%n");
+        final String cached = String.format("[] > just-something%n");
         new Saved(
             cached,
             cache

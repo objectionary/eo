@@ -3,16 +3,12 @@
 ---
 # yamllint disable rule:line-length
 origin: |
-  # Main.
-
   [] > main
     3.14 > pi
     [] > foo
       2.18 > e
 
 printed: |
-  # Main.
-
   [] > main
     3.14 > pi
     [] > foo

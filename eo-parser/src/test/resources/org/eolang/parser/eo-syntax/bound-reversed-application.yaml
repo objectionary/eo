@@ -10,8 +10,6 @@ asserts:
   - //o[@base='Φ.false.if' and o[@base='Φ.number' and @as='a']]
   - //o[@base='Φ.false.if' and o[@base='Φ.number' and @as='b']]
 input: |
-  # Main.
-
   [] > main
     if. > first
       true

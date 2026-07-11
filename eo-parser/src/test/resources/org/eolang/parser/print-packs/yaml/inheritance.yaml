@@ -3,8 +3,6 @@
 ---
 # yamllint disable rule:line-length
 origin: |
-  # Main.
-
   +package sandbox
   +alias stdout org.eolang.io.stdout
   +alias sprintf org.eolang.tt.sprintf
@@ -29,8 +27,6 @@ origin: |
           v
 
 printed: |
-  # Main.
-
   +package sandbox
   +alias stdout Q.org.eolang.io.stdout
   +alias sprintf Q.org.eolang.tt.sprintf

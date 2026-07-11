@@ -3,15 +3,11 @@
 ---
 # yamllint disable rule:line-length
 origin: |
-  # no.
-
   [] > y
     x > first
       5 > [] >>!
 
 printed: |
-  # no.
-
   [] > y
     x > first
       [] >>!

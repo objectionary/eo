@@ -407,8 +407,6 @@ final class EoSyntaxTest {
             new EoSyntax(
                 String.join(
                     System.lineSeparator(),
-                    "# App.",
-                    "",
                     "[] > app",
                     String.format("  Q.io.stdout \"%s\" > @", input)
                 )

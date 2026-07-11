@@ -7,7 +7,5 @@ asserts:
   - /object[not(errors)]
   - //o[@base='Φ.list' and @name='lst' and o[@as='α0' and @base='Φ.tuple.empty']]
 input: |
-  # Compact tuple with zero children synthesises empty Φ.tuple star.
-
   [] > foo
     list * > lst

@@ -15,8 +15,6 @@ asserts:
   - //tests[contains(text(), 'void runs_smoothly()')]
   - //java[not(contains(text(), 'void some_other_method()'))]
 input: |
-  # Foo.
-
   [] > foo
     [] +> runs-smoothly
       x > @

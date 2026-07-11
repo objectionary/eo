@@ -130,12 +130,12 @@ final class MjRegisterIT {
     ) throws IOException {
         farea.clean();
         farea.files().file("src/main/eo/foo.eo").write(
-            MjRegisterIT.program("# Foo.", "[] > foo", bodies[0])
+            MjRegisterIT.program("[] > foo", bodies[0])
         );
         new AppendedPlugin(farea).value();
         farea.exec(goals);
         farea.files().file("src/main/eo/foo.eo").write(
-            MjRegisterIT.program("# Foo.", "[] > foo", bodies[1])
+            MjRegisterIT.program("[] > foo", bodies[1])
         );
     }
 
@@ -143,8 +143,6 @@ final class MjRegisterIT {
         farea.clean();
         farea.files().file("src/main/eo/foo.eo").write(
             MjRegisterIT.program(
-                "# In this program, we refer to the 'String'",
-                "",
                 "+rt jvm org.eolang:eo-runtime:0.25.0",
                 "",
                 "[] > foo",
@@ -155,8 +153,6 @@ final class MjRegisterIT {
         farea.exec("eo:register", "eo:parse", "eo:probe", "eo:pull", "eo:resolve");
         farea.files().file("src/main/eo/foo.eo").write(
             MjRegisterIT.program(
-                "# In this program, we refer to the 'Number'.",
-                "",
                 "[] > foo",
                 "  42 > @"
             )

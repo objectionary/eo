@@ -19,8 +19,6 @@ asserts:
   - //java[contains(text(), 'Phi rb11 = new PhDispatch(Phi.Φ, "bytes")')]
   - //java[contains(text(), 'Phi r = new PhDispatch(rb, "and");')]
 input: |
-  # Comment.
-
   [] > foo
     and. > q
       or.

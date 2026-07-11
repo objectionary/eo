@@ -21,8 +21,6 @@ asserts:
   - //o[@name='mm' and @base='Φ.number']
   - //o[@base='mm']
 input: |
-  # Main.
-
   [] > main
     [] > app
       foo. > baz

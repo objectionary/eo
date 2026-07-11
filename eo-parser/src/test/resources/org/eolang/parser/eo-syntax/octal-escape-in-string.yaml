@@ -7,7 +7,5 @@ asserts:
   - /object[not(errors)]
   - //o[@base='Φ.string' and o[@base='Φ.bytes' and o[text()='0A-']]]
 input: |
-  # Octal escape \012 must decode to character 10 (newline).
-
   [] > foo
     "\012" > @

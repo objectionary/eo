@@ -72,8 +72,6 @@ final class JarIT {
         new Farea(temp).together(
             f -> classpath[0] = JarIT.compile(
                 f,
-                "# Program with a package.",
-                "",
                 "+package examples",
                 "",
                 "[args] > packaged",
@@ -146,8 +144,6 @@ final class JarIT {
 
     private static String[] appProgram() {
         return new String[]{
-            "# Application.",
-            "",
             "+package examples",
             "+alias examples.fibonacci",
             "+alias io.stdout",
@@ -179,9 +175,6 @@ final class JarIT {
 
     private static String[] fibonacciProgram() {
         return new String[]{
-            "# This is the main abstract object that",
-            "# represents n-th Fibonacci number",
-            "",
             "+package examples",
             "+architect yegor256@gmail.com",
             "",

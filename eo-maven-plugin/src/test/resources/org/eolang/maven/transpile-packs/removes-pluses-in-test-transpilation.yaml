@@ -18,8 +18,6 @@ asserts:
   - //tests[contains(text(), 'tests_iterates_with_eachiφρα1();')]
   - //tests[contains(text(), 'EOΦlisttests_iterates_with_eachiφρα1')]
 input: |
-  # This is the list.
-
   [] > list
     [x] > bar
     [] +> tests-iterates-with-eachi

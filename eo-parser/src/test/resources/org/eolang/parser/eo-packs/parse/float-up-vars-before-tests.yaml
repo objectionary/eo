@@ -11,8 +11,6 @@ asserts:
   - //o[@name='main']/o[@name='+tests-foo']/preceding-sibling::o[contains(@name,'🌵')]
   - //o[@name='main']/o[@name='+tests-foo' and not(following-sibling::o)]
 input: |
-  # Main.
-
   [lst func] > main
     filteredi > @
       lst

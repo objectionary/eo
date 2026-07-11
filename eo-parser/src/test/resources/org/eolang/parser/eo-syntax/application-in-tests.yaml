@@ -10,8 +10,6 @@ asserts:
   - /object/o[@name='foo']/o[@base='Φ.false' and @name='+always-fails']
   - /object/o[@name='foo']/o[@base='.eq' and @name='+compares-something']
 input: |-
-  # Foo.
-
   [] > foo
     true +> test-works
     false +> always-fails

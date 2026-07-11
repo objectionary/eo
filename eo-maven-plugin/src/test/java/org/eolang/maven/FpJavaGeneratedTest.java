@@ -29,7 +29,7 @@ final class FpJavaGeneratedTest {
     @Test
     void placesTheJavaAsInputFiles(@Mktmp final Path temp) throws Exception {
         final Path source = temp.resolve("foo.eo");
-        Files.write(source, String.format("# Foo.%n[] > foo").getBytes(StandardCharsets.UTF_8));
+        Files.write(source, "[] > foo".getBytes(StandardCharsets.UTF_8));
         final Path java = temp.resolve("Foo.java");
         final String content = "public final class Foo {}";
         new FpJavaGenerated(

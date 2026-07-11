@@ -10,8 +10,6 @@ asserts:
   - /object/errors/error[text()='intentional error, ignore it']
 
 input: |
-  # Main.
-
   +package org.eolang
   +version 0.0.0
 

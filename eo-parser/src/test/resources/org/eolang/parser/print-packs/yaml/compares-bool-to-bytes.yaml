@@ -3,15 +3,11 @@
 ---
 # yamllint disable rule:line-length
 origin: |
-  # This unit test is supposed to check the functionality of the corresponding object.
-
   [] > compares-bool-to-bytes
     and. > @
       true.eq 01-
       false.eq 00-
 printed: |
-  # This unit test is supposed to check the functionality of the corresponding object.
-
   [] > compares-bool-to-bytes
     and. > @
       true.eq

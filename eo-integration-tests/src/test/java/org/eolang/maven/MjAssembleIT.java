@@ -91,8 +91,6 @@ final class MjAssembleIT {
     private static String failing() {
         return String.join(
             System.lineSeparator(),
-            "# The seq *-1 leads to error.",
-            "",
             "+alias stdout io.stdout",
             "+home https://github.com/objectionary/eo",
             "+package one",
@@ -107,8 +105,6 @@ final class MjAssembleIT {
     private static String program() {
         return String.join(
             System.lineSeparator(),
-            "# Prints Hello World! to stdout.",
-            "",
             "+alias stdout io.stdout",
             "+package foo.x",
             "+version 0.1.1",

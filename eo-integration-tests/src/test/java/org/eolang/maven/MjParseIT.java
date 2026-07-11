@@ -30,7 +30,7 @@ final class MjParseIT {
             f -> {
                 f.clean();
                 f.files().file("src/main/eo/foo.eo").write(
-                    String.format("# Simple object.%n[] > foo%n").getBytes(StandardCharsets.UTF_8)
+                    String.format("[] > foo%n").getBytes(StandardCharsets.UTF_8)
                 );
                 new AppendedPlugin(f).value()
                     .goals("register", "parse");
