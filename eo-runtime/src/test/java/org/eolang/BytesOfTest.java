@@ -163,4 +163,22 @@ final class BytesOfTest {
             "sshift with negative bits should throw exception, but it didn't"
         );
     }
+
+    @Test
+    void shiftsByIntegerMinValueYieldsZeroWithoutCrashing() {
+        MatcherAssert.assertThat(
+            "shift(Integer.MIN_VALUE) should return all-zero bytes instead of throwing AIOOBE",
+            new BytesOf(0xFFFFFFFFL).shift(Integer.MIN_VALUE).asNumber(Long.class),
+            Matchers.equalTo(0L)
+        );
+    }
+
+    @Test
+    void shiftsByIntegerMaxValueYieldsZero() {
+        MatcherAssert.assertThat(
+            "shift(Integer.MAX_VALUE) should return all-zero bytes for any input",
+            new BytesOf(0xFFFFFFFFL).shift(Integer.MAX_VALUE).asNumber(Long.class),
+            Matchers.equalTo(0L)
+        );
+    }
 }
