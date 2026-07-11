@@ -496,6 +496,12 @@ final class Emissions {
     ) {
         final int bracket = phi + 2;
         final int close = inner.indexOf(']', bracket);
+        if (close < 0) {
+            throw new ParseError(
+                line, column + bracket,
+                "only-phi parameter list missing closing `]`"
+            );
+        }
         final String lhs = inner.substring(0, phi).stripTrailing();
         final String params = inner.substring(bracket + 1, close);
         emit.object(name, null, line, column);

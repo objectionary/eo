@@ -518,6 +518,17 @@ final class LnApplicationTest {
     }
 
     @Test
+    void rejectsUnclosedInlinePhiBracketInGroupArg() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnApplication(new Span("x (a > [b)", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "a `> [` inline-phi marker with no closing `]` inside a paren-group arg must be"
+                .concat(" rejected with a ParseError, not an unchecked exception")
+        );
+    }
+
+    @Test
     void emitsAsAttributeForLabelBinding() {
         final Emit emit = new Emit();
         new LnApplication(new Span("foo a:y b:z > x", 1))
