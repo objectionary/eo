@@ -193,6 +193,20 @@ final class LnApplicationTest {
     }
 
     @Test
+    void recordsDotColumnForFragileChainLinkPos() {
+        final Emit emit = new Emit();
+        new LnApplication(new Span("foo?.bar > x", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a fragile `?.` chain link's @pos must point at the `.`, not at the `?`,"
+                .concat(" matching the standalone-continuation path in LnMethod"),
+            LnApplicationTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/o[@base='.bar' and @pos='4']")
+        );
+    }
+
+    @Test
     void emitsTwoLevelChainAsThreeSiblings() {
         final Emit emit = new Emit();
         new LnApplication(new Span("foo.bar.baz > x", 1))
