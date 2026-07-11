@@ -1,4 +1,9 @@
 # Returns `text` trimmed from both sides.
+# Removes all leading and trailing ASCII whitespace bytes: `20-`
+# (space), `09-` (horizontal tab), `0A-` (line feed), `0B-` (vertical
+# tab), `0C-` (form feed), and `0D-` (carriage return). Delegates to
+# `tt.trimmed-left` and `tt.trimmed-right`, so the strip-set matches
+# `String.strip()` in Java for the ASCII range.
 
 +alias tt.trimmed-left
 +alias tt.trimmed-right
@@ -46,3 +51,18 @@
     eq. > @
       trimmed "        "
       ""
+
+  [] +> tests-trimmed-strips-mixed-ws-both-sides
+    eq. > @
+      trimmed " \t\n\f\rvalue \t\n\f\r"
+      "value"
+
+  [] +> tests-trimmed-preserves-inner-content
+    eq. > @
+      trimmed "no-whitespace"
+      "no-whitespace"
+
+  [] +> tests-trimmed-preserves-inner-whitespace
+    eq. > @
+      trimmed "\t hello world \n"
+      "hello world"
