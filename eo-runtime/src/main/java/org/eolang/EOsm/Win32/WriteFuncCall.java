@@ -39,7 +39,7 @@ public final class WriteFuncCall implements Syscall {
         result.put(
             0,
             new Data.ToPhi(
-                Msvcrt.INSTANCE.write(
+                Msvcrt.INSTANCE._write(
                     new Dataized(params[0]).asNumber().intValue(),
                     new Dataized(params[1]).take(),
                     new Dataized(params[2]).asNumber().intValue()

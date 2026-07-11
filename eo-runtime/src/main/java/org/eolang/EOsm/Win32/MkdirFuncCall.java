@@ -39,7 +39,7 @@ public final class MkdirFuncCall implements Syscall {
         result.put(
             0,
             new Data.ToPhi(
-                Msvcrt.INSTANCE.mkdir(new Dataized(params[0]).asString())
+                Msvcrt.INSTANCE._mkdir(new Dataized(params[0]).asString())
             )
         );
         result.put(1, new PhDefault());

@@ -39,7 +39,7 @@ public final class CloseFuncCall implements Syscall {
         result.put(
             0,
             new Data.ToPhi(
-                Msvcrt.INSTANCE.close(new Dataized(params[0]).asNumber().intValue())
+                Msvcrt.INSTANCE._close(new Dataized(params[0]).asNumber().intValue())
             )
         );
         result.put(1, new PhDefault());

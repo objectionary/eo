@@ -8,48 +8,30 @@
  */
 package org.eolang.EOsm.Win32; // NOPMD
 
-import com.sun.jna.FunctionMapper;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Structure;
-import java.util.Collections;
 
 /**
  * The Microsoft C runtime (msvcrt), exposing the POSIX-compatible file functions.
  *
- * <p>Most of these functions are exported by the runtime with a leading
- * underscore ({@code _open}, {@code _read}, {@code _close}), so a function
- * mapper prepends it to each declared method name. The exception is the ISO C
- * {@code rename}, which the runtime exports without an underscore, so the
- * mapper leaves it alone. They return small integer file descriptors, exactly
- * like libc on posix, which is why the win32 file objects can thread them
- * through EO the same way the posix ones do.</p>
+ * <p>The methods are named after the real msvcrt exports, so most carry a
+ * leading underscore ({@code _open}, {@code _read}, {@code _stat64}); the ISO C
+ * {@code rename} is the one without. They return small integer file descriptors,
+ * exactly like libc on posix, which is why the win32 file objects can thread
+ * them through EO the same way the posix ones do. Binding the real names keeps
+ * the EO side honest and the backend free of any name mapping.</p>
  *
  * @since 0.74.0
+ * @checkstyle MethodNameCheck (1000 lines)
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.MethodNamingConventions", "PMD.TooManyMethods"})
 public interface Msvcrt extends Library {
 
     /**
      * Singleton.
      */
-    Msvcrt INSTANCE = Native.load(
-        "msvcrt",
-        Msvcrt.class,
-        Collections.singletonMap(
-            Library.OPTION_FUNCTION_MAPPER,
-            (FunctionMapper) (library, method) -> {
-                final String name = method.getName();
-                final String mapped;
-                if ("rename".equals(name)) {
-                    mapped = name;
-                } else {
-                    mapped = "_".concat(name);
-                }
-                return mapped;
-            }
-        )
-    );
+    Msvcrt INSTANCE = Native.load("msvcrt", Msvcrt.class);
 
     /**
      * Opens a file and returns a file descriptor.
@@ -62,7 +44,7 @@ public interface Msvcrt extends Library {
      * @param mode Permission bits used when the flags request file creation
      * @return File descriptor, or -1 on error
      */
-    int open(String path, int flags, Object... mode);
+    int _open(String path, int flags, Object... mode);
 
     /**
      * Reads bytes from a file descriptor into the buffer.
@@ -71,7 +53,7 @@ public interface Msvcrt extends Library {
      * @param size Number of bytes to read
      * @return Number of bytes read, or -1 on error
      */
-    int read(int descriptor, byte[] buffer, int size);
+    int _read(int descriptor, byte[] buffer, int size);
 
     /**
      * Writes bytes from the buffer to a file descriptor.
@@ -80,67 +62,64 @@ public interface Msvcrt extends Library {
      * @param size Number of bytes to write
      * @return Number of bytes written, or -1 on error
      */
-    int write(int descriptor, byte[] buffer, int size);
+    int _write(int descriptor, byte[] buffer, int size);
 
     /**
      * Closes a file descriptor.
      * @param descriptor File descriptor
      * @return Zero on success, -1 on error
      */
-    int close(int descriptor);
+    int _close(int descriptor);
 
     /**
-     * Checks a file's accessibility. Maps to {@code _access}.
+     * Checks a file's accessibility.
      * @param path Path to the file
      * @param mode Accessibility check to perform (0 tests for existence)
      * @return Zero when the check succeeds, -1 on error
      */
-    int access(String path, int mode);
+    int _access(String path, int mode);
 
     /**
-     * Gets a file's status by path. Maps to {@code _stat}, whose
-     * {@code struct _stat} carries a 32-bit {@code st_size}, so it reports
-     * sizes only up to two gigabytes.
+     * Gets a file's status by path, filling a {@code struct _stat64} whose
+     * 64-bit {@code st_size} reports sizes past two gigabytes.
      * @param path Path to the file
      * @param statbuf Structure to fill with the file's metadata
      * @return Zero on success, -1 on error
      */
-    int stat(String path, Structure statbuf);
+    int _stat64(String path, Structure statbuf);
 
     /**
-     * Deletes a file. Maps to {@code _unlink}.
+     * Deletes a file.
      * @param path Path to the file
      * @return Zero on success, -1 on error
      */
-    int unlink(String path);
+    int _unlink(String path);
 
     /**
-     * Removes an empty directory. Maps to {@code _rmdir}.
+     * Removes an empty directory.
      * @param path Path to the directory
      * @return Zero on success, -1 on error
      */
-    int rmdir(String path);
+    int _rmdir(String path);
 
     /**
-     * Creates a directory. Maps to {@code _mkdir}, which takes no permission
-     * bits, so the mode passed at the EO level is ignored here.
+     * Creates a directory, taking no permission bits, so the mode passed at the
+     * EO level is ignored here.
      * @param path Path to the directory
      * @return Zero on success, -1 on error
      */
-    int mkdir(String path);
+    int _mkdir(String path);
 
     /**
-     * Creates a new file, or truncates an existing one, and opens it. Maps to
-     * {@code _creat}.
+     * Creates a new file, or truncates an existing one, and opens it.
      * @param path Path to the file
      * @param mode Permission bits for a newly created file
      * @return File descriptor on success, -1 on error
      */
-    int creat(String path, int mode);
+    int _creat(String path, int mode);
 
     /**
-     * Renames a file. Maps to the ISO C {@code rename}, without a leading
-     * underscore.
+     * Renames a file, the ISO C export without a leading underscore.
      * @param from Current path of the file
      * @param target New path of the file
      * @return Zero on success, -1 on error

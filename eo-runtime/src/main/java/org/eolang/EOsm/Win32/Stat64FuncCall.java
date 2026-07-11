@@ -17,16 +17,15 @@ import org.eolang.EOsm.Syscall;
 import org.eolang.Phi;
 
 /**
- * The msvcrt _stat function call.
+ * The msvcrt _stat64 function call.
  *
- * <p>Fills a {@code struct _stat} and hands its mode bits and byte size to EO.
- * That struct keeps a 32-bit {@code st_size}, so sizes are reported only up to
- * two gigabytes; its timestamp tail is over-allocated so a 32- or 64-bit
- * {@code time_t} cannot overrun the buffer.</p>
+ * <p>Fills a {@code struct _stat64} and hands its mode bits and byte size to
+ * EO. That struct carries a 64-bit {@code st_size} and 64-bit
+ * {@code __time64_t} timestamps, so it reports sizes past two gigabytes.</p>
  *
  * @since 0.57.0
  */
-public final class StatFuncCall implements Syscall {
+public final class Stat64FuncCall implements Syscall {
 
     /**
      * Win32 object.
@@ -37,29 +36,29 @@ public final class StatFuncCall implements Syscall {
      * Ctor.
      * @param win Win32 object
      */
-    public StatFuncCall(final Phi win) {
+    public Stat64FuncCall(final Phi win) {
         this.win = win;
     }
 
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.win.take("return").copy();
-        final StatFuncCall.WinStat info = new StatFuncCall.WinStat();
+        final Stat64FuncCall.WinStat info = new Stat64FuncCall.WinStat();
         result.put(
             0,
             new Data.ToPhi(
-                Msvcrt.INSTANCE.stat(new Dataized(params[0]).asString(), info)
+                Msvcrt.INSTANCE._stat64(new Dataized(params[0]).asString(), info)
             )
         );
-        final Phi struct = this.win.take("stat");
+        final Phi struct = this.win.take("stat64");
         struct.put(0, new Data.ToPhi((long) (info.mode & 0xFFFF)));
-        struct.put(1, new Data.ToPhi((long) info.bytes));
+        struct.put(1, new Data.ToPhi(info.bytes));
         result.put(1, struct);
         return result;
     }
 
     /**
-     * The {@code struct _stat} of the Microsoft C runtime.
+     * The {@code struct _stat64} of the Microsoft C runtime.
      * @since 0.74.0
      * @checkstyle VisibilityModifierCheck (60 lines)
      * @checkstyle MagicNumberCheck (60 lines)
@@ -109,10 +108,10 @@ public final class StatFuncCall implements Syscall {
         /**
          * Size in bytes.
          */
-        public int bytes;
+        public long bytes;
 
         /**
-         * Access, modification and change timestamps EO does not read.
+         * Access, modification and change 64-bit timestamps EO does not read.
          */
         public byte[] times;
 

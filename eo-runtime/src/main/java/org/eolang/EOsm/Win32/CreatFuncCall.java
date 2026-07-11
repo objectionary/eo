@@ -39,7 +39,7 @@ public final class CreatFuncCall implements Syscall {
         result.put(
             0,
             new Data.ToPhi(
-                Msvcrt.INSTANCE.creat(
+                Msvcrt.INSTANCE._creat(
                     new Dataized(params[0]).asString(),
                     new Dataized(params[1]).asNumber().intValue()
                 )

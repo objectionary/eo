@@ -34,7 +34,7 @@
     called. > info
       if.
         os.is-windows
-        win32 "stat" (* path)
+        win32 "_stat64" (* path)
         posix "stat" (* path)
 
   # Returns `org.eolang.true` if file with current `path` exists in filesystem.
@@ -43,7 +43,7 @@
       code.
         if.
           os.is-windows
-          win32 "access" (* path 0)
+          win32 "_access" (* path 0)
           posix "access" (* path 0)
       0
 
@@ -66,12 +66,12 @@
     code. > descriptor
       if.
         os.is-windows
-        win32 "creat" (* path win32.create-mode)
+        win32 "_creat" (* path win32.create-mode)
         posix "creat" (* path posix.create-mode)
     code. > closed
       if.
         os.is-windows
-        win32 "close" (* descriptor)
+        win32 "_close" (* descriptor)
         posix "close" (* descriptor)
 
   # If current file exists - deletes it and returns it. If it does not exist -
@@ -91,9 +91,13 @@
     code. > outcome
       if.
         os.is-windows
-        win32 operation (* path)
-        posix operation (* path)
-    if. > operation
+        win32 windows-name (* path)
+        posix posix-name (* path)
+    if. > windows-name
+      is-directory
+      "_rmdir"
+      "_unlink"
+    if. > posix-name
       is-directory
       "rmdir"
       "unlink"
@@ -109,7 +113,7 @@
     called. > info
       if.
         os.is-windows
-        win32 "stat" (* path)
+        win32 "_stat64" (* path)
         posix "stat" (* path)
 
   # Moves the current file to `target`, making and returning a new `file` from
@@ -166,7 +170,7 @@
   # closes the file stream and returns an original file object.
   [mode scope cant-open] > open
     if. > @
-      readable.not.and writable.not
+      known.not
       T "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
         existing.and exists.not
@@ -196,6 +200,12 @@
     or. > appending
       (access.eq "a").as-bool
       (access.eq "a+").as-bool
+    # A mode is valid only when it names a read, truncate or append family member.
+    or. > known
+      or.
+        existing
+        truncate
+      appending
 
     # Opens the file through OS syscalls with the flags derived from the access
     # mode, threads a single descriptor to the scope and closes it afterwards.
@@ -205,14 +215,28 @@
     [] > open-file
       if. > @
         os.is-windows
-        open-through win32
-        open-through posix
+        open-through
+          []
+            win32 > @
+            win32 "_open" > open
+            win32 "_close" > close
+            win32 "_read" > read
+            win32 "_write" > write
+        open-through
+          []
+            posix > @
+            posix "open" > open
+            posix "close" > close
+            posix "read" > read
+            posix "write" > write
 
-      # Opens the file through the given `syscall` object (`posix` or `win32`)
-      # with the access mode's flags, threads a stream over the single
-      # descriptor to the scope and closes it afterwards. The flags are composed
-      # from the syscall's atomic open flags: a read/write/read-write direction
-      # plus the create, truncate and append bits the mode calls for.
+      # Opens the file through the given `syscall` adapter, which binds the four
+      # file operations to the platform's real syscalls and decorates the
+      # platform object so its atomic open flags and creation mode stay in reach.
+      # It threads a stream over the single descriptor to the scope and closes it
+      # afterwards. The flags are composed from the adapter's open flags: a
+      # read/write/read-write direction plus the create, truncate and append bits
+      # the mode calls for.
       #
       # Note: This object is intended for internal use only. Please
       # don't use the object programmatically outside of `file` object.
@@ -227,14 +251,10 @@
             scope
               stream descriptor
             code.
-              syscall
-                "close"
-                * descriptor
+              syscall.close (* descriptor):args
             true
         code. > descriptor
-          syscall
-            "open"
-            * path flags syscall.create-mode
+          syscall.open (* path flags syscall.create-mode):args
         plus. > flags
           plus.
             plus.
@@ -244,22 +264,22 @@
           append-bit
         if. > direction
           readable.and writable
-          syscall.read-write
+          syscall.o-rdwr
           if.
             writable
-            syscall.write-only
-            syscall.read-only
+            syscall.o-wronly
+            syscall.o-rdonly
         if. > create-bit
           existing.not
-          syscall.create-flag
+          syscall.o-creat
           0
         if. > truncate-bit
           truncate
-          syscall.truncate-flag
+          syscall.o-trunc
           0
         if. > append-bit
           appending
-          syscall.append-flag
+          syscall.o-append
           0
 
         # File stream backed by a single descriptor, providing input and output
@@ -286,7 +306,7 @@
                   seq *
                     chunk
                     input-block chunk
-                (syscall "read" (* descriptor size)).output > chunk!
+                (syscall.read (* descriptor size):args).output > chunk!
 
           # Write the given `buffer` to the file via the write syscall.
           # Terminates with a ⊥ if the access mode does not allow writing.
@@ -305,9 +325,7 @@
                       * access
                   seq *
                     code.
-                      syscall
-                        "write"
-                        * descriptor buffer buffer.size
+                      syscall.write (* descriptor buffer buffer.size):args
                     output-block
 
   # Tests that the current directory is detected as a directory.
@@ -388,13 +406,17 @@
       temp.exists.not
     tmpdir.tmpfile > temp
 
-  # Tests that opening a file with an invalid mode throws an error.
+  # Tests that opening a file with an invalid access mode terminates, even
+  # when the scope never touches the file stream and the result is discarded.
   [] +> throws-on-opening-with-wrong-mode
-    tmpdir
-    .tmpfile
-    .open > @
-      "x"
-      f > [f]
+    seq > @
+      *
+        tmpdir
+        .tmpfile
+        .open
+          "x"
+          true > [f]
+        true
 
   # Tests that opening a non-existent file in read mode throws an error.
   [] +> throws-on-reading-from-not-existed-file

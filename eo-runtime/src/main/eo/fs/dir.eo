@@ -38,7 +38,7 @@
     code. > outcome
       if.
         os.is-windows
-        win32 "mkdir" (* ^.path)
+        win32 "_mkdir" (* ^.path)
         posix "mkdir" (* ^.path posix.mkdir-mode)
 
   # Goes through all files in the directory, recursively

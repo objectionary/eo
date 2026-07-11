@@ -39,7 +39,7 @@ public final class UnlinkFuncCall implements Syscall {
         result.put(
             0,
             new Data.ToPhi(
-                Msvcrt.INSTANCE.unlink(new Dataized(params[0]).asString())
+                Msvcrt.INSTANCE._unlink(new Dataized(params[0]).asString())
             )
         );
         result.put(1, new PhDefault());

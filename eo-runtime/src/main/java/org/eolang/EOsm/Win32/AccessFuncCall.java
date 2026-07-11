@@ -39,7 +39,7 @@ public final class AccessFuncCall implements Syscall {
         result.put(
             0,
             new Data.ToPhi(
-                Msvcrt.INSTANCE.access(
+                Msvcrt.INSTANCE._access(
                     new Dataized(params[0]).asString(),
                     new Dataized(params[1]).asNumber().intValue()
                 )

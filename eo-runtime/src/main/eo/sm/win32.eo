@@ -25,17 +25,17 @@
   -1 > invalid-socket
   6 > ipproto-tcp
   # Open flag for read-only access: `_O_RDONLY | _O_BINARY`.
-  32768 > read-only
+  32768 > o-rdonly
   # Open flag for write-only access: `_O_WRONLY | _O_BINARY`.
-  32769 > write-only
+  32769 > o-wronly
   # Open flag for read-write access: `_O_RDWR | _O_BINARY`.
-  32770 > read-write
+  32770 > o-rdwr
   # Open flag to create the file if absent: `_O_CREAT`.
-  256 > create-flag
+  256 > o-creat
   # Open flag to truncate the file: `_O_TRUNC`.
-  512 > truncate-flag
+  512 > o-trunc
   # Open flag to append on write: `_O_APPEND`.
-  8 > append-flag
+  8 > o-append
   # Permission bits for a file made by the "creat" function: `_S_IREAD | _S_IWRITE`.
   384 > create-mode
   1 > sock-stream
@@ -51,10 +51,10 @@
   # Structure for "GetSystemTime" function call.
   [year month day day-of-week hour minute second milliseconds] > system-time
 
-  # Stat structure for the "stat" function call.
+  # Stat structure for the "stat64" function call.
   # Here `st-mode` holds the file type and permission bits, and `st-size`
   # is the file size in bytes.
-  [st-mode st-size] > stat
+  [st-mode st-size] > stat64
 
   # Win32 `sockaddr_in` structure for IPv4 socket addressing.
   [sin-family sin-port sin-addr] > sockaddr-in

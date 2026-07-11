@@ -39,7 +39,7 @@ public final class RmdirFuncCall implements Syscall {
         result.put(
             0,
             new Data.ToPhi(
-                Msvcrt.INSTANCE.rmdir(new Dataized(params[0]).asString())
+                Msvcrt.INSTANCE._rmdir(new Dataized(params[0]).asString())
             )
         );
         result.put(1, new PhDefault());

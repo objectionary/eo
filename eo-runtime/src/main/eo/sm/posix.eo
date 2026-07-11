@@ -21,23 +21,23 @@
   -1 > inaddr-none
   6 > ipproto-tcp
   # Open flag for read-only access: `O_RDONLY`.
-  0 > read-only
+  0 > o-rdonly
   # Open flag for write-only access: `O_WRONLY`.
-  1 > write-only
+  1 > o-wronly
   # Open flag for read-write access: `O_RDWR`.
-  2 > read-write
+  2 > o-rdwr
   # Open flag to create the file if absent: `O_CREAT` (`0x200` on macos, `0x40` on linux).
-  if. > create-flag
+  if. > o-creat
     os.is-macos
     512
     64
   # Open flag to truncate the file: `O_TRUNC` (`0x400` on macos, `0x200` on linux).
-  if. > truncate-flag
+  if. > o-trunc
     os.is-macos
     1024
     512
   # Open flag to append on write: `O_APPEND` (`0x8` on macos, `0x400` on linux).
-  if. > append-flag
+  if. > o-append
     os.is-macos
     8
     1024
