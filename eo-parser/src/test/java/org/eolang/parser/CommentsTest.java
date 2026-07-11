@@ -48,7 +48,8 @@ final class CommentsTest {
         globals.addComment(new Span("# orphan", 1));
         Comments.attach(globals, new Emit(), new Span("foo", 2), false);
         MatcherAssert.assertThat(
-            "an unnamed follower must leave the comment buffered for a later same-indent named line — no immediate error",
+            "an unnamed follower with no blank must leave the comment buffered for a"
+                .concat(" later same-indent named line — no immediate error"),
             globals.pendingComments(),
             Matchers.hasSize(1)
         );
@@ -60,22 +61,26 @@ final class CommentsTest {
         globals.addComment(new Span("# at-zero", 1));
         Comments.attach(globals, new Emit(), new Span("  [] > inner", 2), true);
         MatcherAssert.assertThat(
-            "a deeper-indent named line must not attach the buffered comment — it stays pending",
+            "a deeper-indent named line with no intervening blank must not attach the"
+                .concat(" buffered comment — it stays pending"),
             globals.pendingComments(),
             Matchers.hasSize(1)
         );
     }
 
     @Test
-    void defersAttachmentWhenBlankLineIntervenes() {
+    void reportsDanglingWhenBlankLineIntervenes() {
         final Globals globals = new Globals();
         globals.addComment(new Span("# split", 1));
         globals.blank();
-        Comments.attach(globals, new Emit(), new Span("[] > foo", 3), true);
+        final Emit emit = new Emit();
+        Comments.attach(globals, emit, new Span("[] > foo", 3), true);
         MatcherAssert.assertThat(
-            "a blank line between comment and named line breaks attachment per R-6.5.2 — buffer stays pending until EOF",
-            globals.pendingComments(),
-            Matchers.hasSize(1)
+            "a blank line between comment and named line breaks attachment per R-6.5.2 —"
+                .concat(" the comment must be reported as dangling and the buffer cleared"),
+            CommentsTest.render(emit).contains("comment must precede a named object")
+                && globals.pendingComments().isEmpty(),
+            Matchers.is(true)
         );
     }
 
