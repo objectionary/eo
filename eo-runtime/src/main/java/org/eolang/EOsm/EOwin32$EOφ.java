@@ -14,21 +14,28 @@ import java.util.function.Function;
 import org.eolang.Atom;
 import org.eolang.Dataized;
 import org.eolang.EOsm.Win32.AcceptFuncCall;
+import org.eolang.EOsm.Win32.AccessFuncCall;
 import org.eolang.EOsm.Win32.BindFuncCall;
 import org.eolang.EOsm.Win32.CloseFuncCall;
 import org.eolang.EOsm.Win32.ClosesocketFuncCall;
 import org.eolang.EOsm.Win32.ConnectFuncCall;
+import org.eolang.EOsm.Win32.CreatFuncCall;
 import org.eolang.EOsm.Win32.GetCurrentProcessIdFuncCall;
 import org.eolang.EOsm.Win32.GetEnvironmentVariableFuncCall;
 import org.eolang.EOsm.Win32.GetSystemTimeFuncCall;
 import org.eolang.EOsm.Win32.InetAddrFuncCall;
 import org.eolang.EOsm.Win32.ListenFuncCall;
+import org.eolang.EOsm.Win32.MkdirFuncCall;
 import org.eolang.EOsm.Win32.OpenFuncCall;
 import org.eolang.EOsm.Win32.ReadFileFuncCall;
 import org.eolang.EOsm.Win32.ReadFuncCall;
 import org.eolang.EOsm.Win32.RecvFuncCall;
+import org.eolang.EOsm.Win32.RenameFuncCall;
+import org.eolang.EOsm.Win32.RmdirFuncCall;
 import org.eolang.EOsm.Win32.SendFuncCall;
 import org.eolang.EOsm.Win32.SocketFuncCall;
+import org.eolang.EOsm.Win32.Stat64FuncCall;
+import org.eolang.EOsm.Win32.UnlinkFuncCall;
 import org.eolang.EOsm.Win32.WSACleanupFuncCall;
 import org.eolang.EOsm.Win32.WSAGetLastErrorFuncCall;
 import org.eolang.EOsm.Win32.WSAStartupFuncCall;
@@ -43,6 +50,7 @@ import org.eolang.XmirObject;
  * Win32 function call.
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
+ * @checkstyle ClassFanOutComplexityCheck (100 lines)
  */
 @XmirObject(oname = "win32.@")
 @SuppressWarnings("PMD.AvoidDollarSigns")
@@ -57,10 +65,17 @@ public final class EOwin32$EOφ extends PhDefault implements Atom {
         EOwin32$EOφ.FUNCTIONS.put("GetCurrentProcessId", GetCurrentProcessIdFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("ReadFile", ReadFileFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("WriteFile", WriteFileFuncCall::new);
-        EOwin32$EOφ.FUNCTIONS.put("open", OpenFuncCall::new);
-        EOwin32$EOφ.FUNCTIONS.put("read", ReadFuncCall::new);
-        EOwin32$EOφ.FUNCTIONS.put("write", WriteFuncCall::new);
-        EOwin32$EOφ.FUNCTIONS.put("close", CloseFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("_open", OpenFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("_access", AccessFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("_stat64", Stat64FuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("_creat", CreatFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("_unlink", UnlinkFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("_rmdir", RmdirFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("_mkdir", MkdirFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("rename", RenameFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("_read", ReadFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("_write", WriteFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("_close", CloseFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("GetEnvironmentVariable", GetEnvironmentVariableFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("GetSystemTime", GetSystemTimeFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("WSAStartup", WSAStartupFuncCall::new);

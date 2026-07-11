@@ -23,8 +23,13 @@
   -1 > inaddr-none
   -1 > invalid-socket
   6 > ipproto-tcp
-  32768 > open-read-flags
-  32777 > open-write-flags
+  32768 > o-rdonly
+  32769 > o-wronly
+  32770 > o-rdwr
+  256 > o-creat
+  512 > o-trunc
+  8 > o-append
+  384 > create-mode
   1 > sock-stream
   -1 > socket-error
   -10 > std-input-handle
@@ -35,6 +40,8 @@
     return code output > called
 
   [year month day day-of-week hour minute second milliseconds] > system-time
+
+  [st-mode st-size] > stat64
 
   [sin-family sin-port sin-addr] > sockaddr-in
     00-00-00-00-00-00-00-00 > sin-zero

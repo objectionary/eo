@@ -15,10 +15,10 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * The msvcrt _write function call.
+ * The msvcrt _unlink function call.
  * @since 0.74.0
  */
-public final class WriteFuncCall implements Syscall {
+public final class UnlinkFuncCall implements Syscall {
 
     /**
      * Win32 object.
@@ -29,7 +29,7 @@ public final class WriteFuncCall implements Syscall {
      * Ctor.
      * @param win Win32 object
      */
-    public WriteFuncCall(final Phi win) {
+    public UnlinkFuncCall(final Phi win) {
         this.win = win;
     }
 
@@ -39,11 +39,7 @@ public final class WriteFuncCall implements Syscall {
         result.put(
             0,
             new Data.ToPhi(
-                Msvcrt.INSTANCE._write(
-                    new Dataized(params[0]).asNumber().intValue(),
-                    new Dataized(params[1]).take(),
-                    new Dataized(params[2]).asNumber().intValue()
-                )
+                Msvcrt.INSTANCE._unlink(new Dataized(params[0]).asString())
             )
         );
         result.put(1, new PhDefault());

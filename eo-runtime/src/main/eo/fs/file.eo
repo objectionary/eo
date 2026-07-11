@@ -12,8 +12,6 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package fs
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
@@ -23,122 +21,194 @@
   path > @
   (Q.fs.path path).@ > as-path
 
-  [] > is-directory /bool
+  [cant-check] > is-directory
+    if. > @
+      info.code.eq 0
+      (info.output.st-mode.div 4096).floor.eq 4
+      cant-check
+    called. > info
+      if.
+        os.is-windows
+        win32 "_stat64" (* path)
+        posix "stat" (* path)
 
-  [] > exists /bool
+  [] > exists
+    eq. > @
+      code.
+        if.
+          os.is-windows
+          win32 "_access" (* path 0)
+          posix "access" (* path 0)
+      0
 
   [] > touched
     if. > @
       exists
       ^
-      seq *
-        touch
-        ^
-
-    [] > touch /bool
+      if.
+        descriptor.eq -1
+        T
+          sprintf
+            "Cant touch the file '%s'"
+            * path
+        seq *
+          closed
+          ^
+    code. > descriptor
+      if.
+        os.is-windows
+        win32 "_creat" (* path win32.create-mode)
+        posix "creat" (* path posix.create-mode)
+    code. > closed
+      if.
+        os.is-windows
+        win32 "_close" (* descriptor)
+        posix "close" (* descriptor)
 
   [] > deleted
     if. > @
       exists
-      seq *
-        delete
+      if.
+        outcome.eq 0
         ^
+        T
+          sprintf
+            "Cant delete the file '%s'"
+            * path
       ^
+    code. > outcome
+      if.
+        os.is-windows
+        win32 windows-name (* path)
+        posix posix-name (* path)
+    if. > windows-name
+      is-directory
+      "_rmdir"
+      "_unlink"
+    if. > posix-name
+      is-directory
+      "rmdir"
+      "unlink"
 
-    [] > delete /bool
-
-  [] > size /number
+  [cant-measure] > size
+    if. > @
+      info.code.eq 0
+      info.output.st-size
+      cant-measure
+    called. > info
+      if.
+        os.is-windows
+        win32 "_stat64" (* path)
+        posix "stat" (* path)
 
   [target] > moved
-    file > @
-      move
-
-    [] > move /string
+    if. > @
+      outcome.eq 0
+      file target
+      T
+        sprintf
+          "Cant move the file '%s' to '%s'"
+          * path target
+    code. > outcome
+      if.
+        os.is-windows
+        win32 "rename" (* path target)
+        posix "rename" (* path target)
 
   [mode scope cant-open] > open
     if. > @
-      readable.not.and writable.not
+      known.not
       T "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
-        exists.not
-        if.
-          existing
-          cant-open
-            sprintf
-              "File must exist for given access mod: '%s'"
-              * access
-          seq *
-            touched.touch
-            open-file
-            ^
-        if.
-          truncate
-          seq *
-            deleted.delete
-            touched.touch
-            open-file
-            ^
-          seq *
-            open-file
-            ^
+        existing.and exists.not
+        cant-open
+          sprintf
+            "File must exist for given access mod: '%s'"
+            * access
+        seq *
+          open-file
+          ^
     mode > access!
-    as-bool. > existing
-      read.or rw
-    (access.eq "a+").as-bool > ra
-    (access.eq "r").as-bool > read
-    as-bool. > readable
+    (access.eq "r").as-bool.not > writable
+    and. > readable
+      (access.eq "w").as-bool.not
+      (access.eq "a").as-bool.not
+    or. > existing
+      (access.eq "r").as-bool
+      (access.eq "r+").as-bool
+    or. > truncate
+      (access.eq "w").as-bool
+      (access.eq "w+").as-bool
+    or. > appending
+      (access.eq "a").as-bool
+      (access.eq "a+").as-bool
+    or. > known
       or.
-        read.or rw
-        wr.or ra
-    (access.eq "r+").as-bool > rw
-    as-bool. > truncate
-      write.or wr
-    (access.eq "w+").as-bool > wr
-    as-bool. > writable
-      or.
-        or.
-          write.or rw
-          wr.or ra
-        (access.eq "a").as-bool
-    (access.eq "w").as-bool > write
+        existing
+        truncate
+      appending
 
     [] > open-file
       if. > @
         os.is-windows
-        open-through win32
-        open-through posix
+        open-through
+          []
+            win32 > @
+            win32 "_open" > open
+            win32 "_close" > close
+            win32 "_read" > read
+            win32 "_write" > write
+        open-through
+          []
+            posix > @
+            posix "open" > open
+            posix "close" > close
+            posix "read" > read
+            posix "write" > write
 
       [syscall] > open-through
         if. > @
-          or.
-            read-fd.eq -1
-            write-fd.eq -1
+          descriptor.eq -1
           cant-open
             sprintf
               "Couldn't open file '%s'"
               * path
           seq *
             scope
-              stream read-fd write-fd
+              stream descriptor
             code.
-              syscall
-                "close"
-                * read-fd
-            code.
-              syscall
-                "close"
-                * write-fd
+              syscall.close (* descriptor):args
             true
-        code. > read-fd
-          syscall
-            "open"
-            * path syscall.open-read-flags
-        code. > write-fd
-          syscall
-            "open"
-            * path syscall.open-write-flags
+        code. > descriptor
+          syscall.open (* path flags syscall.create-mode):args
+        plus. > flags
+          plus.
+            plus.
+              direction
+              create-bit
+            truncate-bit
+          append-bit
+        if. > direction
+          readable.and writable
+          syscall.o-rdwr
+          if.
+            writable
+            syscall.o-wronly
+            syscall.o-rdonly
+        if. > create-bit
+          existing.not
+          syscall.o-creat
+          0
+        if. > truncate-bit
+          truncate
+          syscall.o-trunc
+          0
+        if. > append-bit
+          appending
+          syscall.o-append
+          0
 
-        [read-fd write-fd] > stream
+        [descriptor] > stream
           [size] > read
             (input-block --).read size > @
 
@@ -154,7 +224,7 @@
                   seq *
                     chunk
                     input-block chunk
-                (syscall "read" (* read-fd size)).output > chunk!
+                (syscall.read (* descriptor size):args).output > chunk!
 
           [buffer] > write
             output-block.write buffer > @
@@ -170,9 +240,7 @@
                       * access
                   seq *
                     code.
-                      syscall
-                        "write"
-                        * write-fd buffer buffer.size
+                      syscall.write (* descriptor buffer buffer.size):args
                     output-block
 
   [] +> tests-check-if-current-directory-is-directory
@@ -197,6 +265,20 @@
 
   [] +> tests-measures-empty-file-after-touching
     tmpdir.tmpfile.deleted.touched.size.eq 0 > @
+
+  [] +> throws-on-sizing-absent-file
+    tmpdir.tmpfile.deleted.size > @
+
+  [] +> throws-on-checking-directory-of-absent-file
+    tmpdir.tmpfile.deleted.is-directory > @
+
+  [] +> tests-sizing-absent-file-returns-fallback
+    eq. > @
+      -1
+      tmpdir.tmpfile.deleted.size -1
+
+  [] +> tests-checking-absent-file-returns-fallback
+    tmpdir.tmpfile.deleted.is-directory true > @
 
   [] +> tests-does-not-fail-on-double-touching
     tmpdir.tmpfile.deleted.touched.touched.exists > @
@@ -224,11 +306,14 @@
     tmpdir.tmpfile > temp
 
   [] +> throws-on-opening-with-wrong-mode
-    tmpdir
-    .tmpfile
-    .open > @
-      "x"
-      f > [f]
+    seq > @
+      *
+        tmpdir
+        .tmpfile
+        .open
+          "x"
+          true > [f]
+        true
 
   [] +> throws-on-reading-from-not-existed-file
     tmpdir
@@ -444,6 +529,11 @@
         .open
           "w"
           f.write "Shrek is love" > [f]
+        file
+          src
+        .open
+          "a"
+          f.write "!" > [f]
         malloc
         .of
           14
@@ -453,13 +543,10 @@
                 file
                   ^.src
                 .open
-                  "a+"
+                  "r"
                   [f] >>
-                    seq > @
-                      *
-                        f.write "!"
-                        ^.m.put
-                          f.read 14
+                    ^.m.put > @
+                      f.read 14
                 m
         .eq "Shrek is love!"
     temp.path > src
@@ -475,13 +562,13 @@
             tmpdir
             .tmpfile
             .open
-              "w+"
+              "w"
+              f.write "Hello, world" > [f]
+            .open
+              "r"
               [f] >>
-                seq > @
-                  *
-                    f.write "Hello, world"
-                    ^.m.put i2
-                (f.read 7).read 5 > i2
+                m.put > @
+                  (f.read 7).read 5
             m
     .eq "world" > @
 

@@ -3,6 +3,9 @@
 
 +alias tt.sprintf
 +alias fs.tmpdir
++alias sm.os
++alias sm.posix
++alias sm.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package fs
@@ -22,10 +25,19 @@
       ^.exists
       ^
       seq *
-        mkdir
-        ^
-
-    [] > mkdir /bool
+        (dir (Q.fs.file ^.as-path.dirname)).made
+        if.
+          outcome.eq 0
+          ^
+          T
+            sprintf
+              "Cant make the directory '%s'"
+              * ^.path
+    code. > outcome
+      if.
+        os.is-windows
+        win32 "_mkdir" (* ^.path)
+        posix "mkdir" (* ^.path posix.mkdir-mode)
 
   [glob] > walk /tuple
 
@@ -50,7 +62,7 @@
       ^.exists
       Q.fs.file
         touch.as-bytes
-      error
+      T
         sprintf
           "Directory %s does not exist, can't create temporary file"
           * file
@@ -58,7 +70,7 @@
     [] > touch /string
 
   [mode scope] > open
-    error > @
+    T > @
       sprintf
         "The file %s is a directory, can't open for I/O operations"
         * file

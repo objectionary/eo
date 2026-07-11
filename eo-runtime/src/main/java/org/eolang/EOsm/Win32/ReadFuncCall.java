@@ -37,7 +37,7 @@ public final class ReadFuncCall implements Syscall {
     public Phi make(final Phi... params) {
         final int size = new Dataized(params[1]).asNumber().intValue();
         final byte[] buf = new byte[size];
-        final int count = Msvcrt.INSTANCE.read(
+        final int count = Msvcrt.INSTANCE._read(
             new Dataized(params[0]).asNumber().intValue(), buf, size
         );
         final Phi result = this.win.take("return").copy();
