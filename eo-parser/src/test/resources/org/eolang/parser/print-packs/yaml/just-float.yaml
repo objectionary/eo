@@ -4,6 +4,7 @@
 # yamllint disable rule:line-length
 origin: |
   # Main.
+
   [] > main
     3.14 > pi
     [] > foo
@@ -11,6 +12,7 @@ origin: |
 
 printed: |
   # Main.
+
   [] > main
     3.14 > pi
     [] > foo

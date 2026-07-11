@@ -52,7 +52,7 @@
   <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>
   </xsl:template>
-  <xsl:template match="o[some $p in $metas/part[1] satisfies starts-with(@base, $p)]" mode="with-base">
+  <xsl:template match="o[some $p in $metas/part[1] satisfies (@base=$p or starts-with(@base, concat($p, '.')))]" mode="with-base">
     <xsl:variable name="meta" select="$metas[part[1]=current()/@base][1]"/>
     <xsl:choose>
       <xsl:when test="exists($meta)">
@@ -66,7 +66,7 @@
     </xsl:choose>
   </xsl:template>
   <xsl:template match="o" mode="not-equal">
-    <xsl:variable name="meta" select="$metas[starts-with(current()/@base, part[1])][1]"/>
+    <xsl:variable name="meta" select="$metas[starts-with(current()/@base, concat(part[1], '.'))][1]"/>
     <xsl:variable name="after" select="reverse(tokenize(substring-after(@base, concat($meta/part[1], '.')), '\.'))"/>
     <xsl:apply-templates select="." mode="method">
       <xsl:with-param name="meta" select="$meta"/>

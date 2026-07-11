@@ -7,6 +7,7 @@ package org.eolang.parser;
 import com.jcabi.matchers.XhtmlMatchers;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -21,8 +22,9 @@ final class CommentsTest {
     void flushesTopBlockIntoComments() {
         final Globals globals = new Globals();
         globals.addComment(new Span("# hello", 1));
+        globals.blank();
         final Emit emit = new Emit();
-        Comments.seal(globals, emit, new Span("+package foo", 2));
+        Comments.seal(globals, emit, new Span("+package foo", 3));
         MatcherAssert.assertThat(
             "the top comment block must flush into /object/comments when the header seals",
             CommentsTest.render(emit),
@@ -34,11 +36,23 @@ final class CommentsTest {
     void clearsBufferAfterFlush() {
         final Globals globals = new Globals();
         globals.addComment(new Span("# x", 1));
-        Comments.seal(globals, new Emit(), new Span("[] > foo", 2));
+        globals.blank();
+        Comments.seal(globals, new Emit(), new Span("[] > foo", 3));
         MatcherAssert.assertThat(
             "the comment buffer must be empty after the top block flushes",
             globals.pendingComments(),
             Matchers.empty()
+        );
+    }
+
+    @Test
+    void rejectsBlockWithoutTrailingBlank() {
+        final Globals globals = new Globals();
+        globals.addComment(new Span("# doc", 1));
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> Comments.seal(globals, new Emit(), new Span("[] > foo", 2)),
+            "a top comment block not followed by a blank line cannot be sealed"
         );
     }
 

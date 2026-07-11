@@ -255,10 +255,12 @@ R-3.3.3. Inside the comment block, every line shares indent 0.
 R-3.3.4. No blank line inside the comment block (§6.5.1).
 R-3.3.5. At most one blank line may precede the comment block (§6.5.3).
 R-3.3.6. A comment is allowed only in the top block. A comment that is indented, follows a meta, follows an object, or opens a second block is rejected: error "comment is allowed only on top of the file, before metas".
+R-3.3.7. Exactly one blank line must separate the comment block from the first meta or object (§6.5.2). A block immediately followed by a meta or object, with no blank in between, is rejected: error "a blank line must separate the top comment block from the rest of the file".
 
 ```
 # This is the file-level comment.
 # Continued on the next line.
+
 +package foo
 +version 1.0.0
 
@@ -911,6 +913,7 @@ R-6.4.2. A comment that is indented, follows a meta, follows an object, or opens
 
 ```
 # Documents the whole program.
+
 +package foo
 
 [] > foo                                  ← the top block above documents the program
@@ -922,7 +925,7 @@ R-6.4.2. A comment that is indented, follows a meta, follows an object, or opens
 ### 6.5 Blank-line policy
 
 R-6.5.1. Inside the top comment block: blank lines forbidden.
-R-6.5.2. (Reserved — the top comment block precedes the metas, not an object.)
+R-6.5.2. After the top comment block: exactly one blank line separates it from the first meta or object. A block immediately followed by a meta or object, with no blank in between, is rejected: "a blank line must separate the top comment block from the rest of the file".
 R-6.5.3. Before a master object (formation, atom, inline-phi formation, including `+>` test attributes): zero or one blank line.
 
 *Note on validation timing and indent attribution.* A blank line carries no indent or kind of its own. The legality of a blank line is determined by the *next* non-blank line: when that line is classified, the parser checks whether it is a master. If yes, the preceding blank is legal; if no (the next line is a plain child or a non-master continuation), the blank is reported as `blank line not allowed between non-master siblings` (§9.9), with the position of the offending blank line. The blank logically attaches to the indent of the *next non-blank line*, not to whatever was popped during Step A (§5.2.1) when that next line arrives — Step A pops change the stack but not the blank's identity. `pending_blank_count` (§5.1.1) is read at the point the next non-blank line classifies.
@@ -934,6 +937,7 @@ Examples:
 
 ```
 # Top-of-file comment.
+                                          ← exactly one blank after the comment block
 +architect yegor256@gmail.com
 +version 0.0.0
                                           ← exactly one blank after metas
@@ -1225,6 +1229,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Inline binding on non-last method in chain | `inline binding allowed only on the last method in a chain` |
 | Comment not on top of the file | `comment is allowed only on top of the file, before metas` |
 | Blank line inside the top comment block | `blank line inside the top comment block is not allowed` |
+| No blank line after the top comment block | `a blank line must separate the top comment block from the rest of the file` |
 | Blank line between non-master siblings | `blank line not allowed between non-master siblings` |
 | Unclosed text block | `unclosed text block opened at line N` (N substituted) |
 | Multi-line BYTES continuation indent shallower than opener | `multi-line bytes continuation must not de-indent` |
@@ -1292,6 +1297,7 @@ Reproduced from §3.1 for convenience:
 ```
 # A program demonstrating most constructs.        ← R-3.3: top comment block, before metas
 # Comment block of two lines.
+                                      ← R-6.5.2: required blank after the comment block
 +author someone@example.com           ← R-3.2: meta at indent 0
 +version 1.0                          ← meta
                                       ← R-6.5.5: required blank after metas

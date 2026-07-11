@@ -4,6 +4,7 @@
 # yamllint disable rule:line-length
 origin: |
   # Foo.
+
   [] > foo
     [] > f
     as-bytes. > some
@@ -12,6 +13,7 @@ origin: |
 
 printed: |
   # Foo.
+
   [] > foo
     [] > f
     f > some!

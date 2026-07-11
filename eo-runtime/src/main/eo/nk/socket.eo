@@ -41,6 +41,7 @@
 # given scope, closes client socket and returns `bytes` retrieved from scope dataization.
 # On failure at any of the described steps, the fallback of the corresponding operation is
 # returned (or the bottom object when it is left unbound).
+
 +alias sm.os
 +alias sm.posix
 +alias sm.win32

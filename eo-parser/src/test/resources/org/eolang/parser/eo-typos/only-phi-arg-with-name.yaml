@@ -2,13 +2,14 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 4
+line: 5
 message: |-
-  [4:4] error: 'argument of an only-phi formation cannot carry a name suffix'
+  [5:4] error: 'argument of an only-phi formation cannot carry a name suffix'
       bar > x
       ^
 input: |
   # Foo.
+
   [] > obj
     foo > [] >>
       bar > x

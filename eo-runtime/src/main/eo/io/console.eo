@@ -55,6 +55,7 @@
 # ```
 #
 # Sequential reuse maintains the console state across operations.
+
 +alias sm.os
 +alias sm.posix
 +alias sm.win32

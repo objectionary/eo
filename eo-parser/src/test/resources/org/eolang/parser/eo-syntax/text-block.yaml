@@ -9,6 +9,7 @@ asserts:
   - //o[@base='Φ.string' and o/o[text()='74-68-69-72-64']]
 input: |
   # Main.
+
   [] > main
     """
     Hi, there

@@ -14,6 +14,7 @@ asserts:
   - //o[@name='s3' and o/o[text()='41-00-01-09-0A']]
 input: |
   # Main.
+
   [] > main
     42 > i1
     0x12f > i2

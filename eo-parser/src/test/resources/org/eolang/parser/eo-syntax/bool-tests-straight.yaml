@@ -7,6 +7,7 @@ asserts:
   - /object[not(errors)]
 input: |
   # Main.
+
   +package org.eolang
 
   [] > bool-tests

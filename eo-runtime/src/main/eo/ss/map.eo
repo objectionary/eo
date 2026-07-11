@@ -1,6 +1,7 @@
 # Hash-map.
 # Here `pairs` must be a `tuple` of `map.entry` object.
 # The `map.entry.key` must be a dataizable object, `map.entry.value` may be any object.
+
 +alias ss.contains
 +alias ss.filtered
 +alias ss.hash-code-of

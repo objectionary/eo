@@ -8,5 +8,6 @@ asserts:
   - //o[@name='arr' and @base='.with' and o[@base='.with' and o[@base='Φ.tuple.empty.with']]]
 input: |
   # Triple fluent with on the empty tuple.
+
   [] > foo
     ((*.with 1).with 2).with 3 > arr

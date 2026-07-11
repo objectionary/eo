@@ -129,6 +129,7 @@ final class MjTranspileTest {
             "TranspileMojo should not touch atoms, but it did",
             new FakeMaven(temp).withProgram(
                 "# Atom.",
+                "",
                 "+package foo.x",
                 "+rt jvm org.eolang:eo-runtime:0.0.0",
                 "+unlint not-empty-atom",
@@ -152,6 +153,7 @@ final class MjTranspileTest {
             "TranspileMojo must generate package-info.java files for all of the packages",
             new FakeMaven(temp).withProgram(
                 "# Simple.",
+                "",
                 "+custom-meta",
                 String.format("+package foo.x%n"),
                 "[] > main"
@@ -172,6 +174,7 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp).withProgram(
                     "# Simple.",
+                    "",
                     String.format("+package foo.x%n"),
                     "[] > main",
                     "  true > @"

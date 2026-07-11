@@ -26,6 +26,7 @@ asserts:
   - /object/class/tests[contains(text(), 'void b()')]
 input: |
   # A.
+
   [] > a
     [] +> b
       [] > c

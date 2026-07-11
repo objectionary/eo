@@ -209,7 +209,7 @@ final class MjParseTest {
             "Errors are not present in the resulted XMIR, but they should",
             new XMLDocument(
                 new FakeMaven(temp).withProgram(
-                    String.format("# App.%n[] > app"),
+                    String.format("# App.%n%n[] > app"),
                     "main"
                     )
                     .execute(new FakeMaven.Parse())

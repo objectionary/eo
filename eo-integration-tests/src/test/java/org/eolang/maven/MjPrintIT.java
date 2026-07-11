@@ -31,7 +31,7 @@ final class MjPrintIT {
                 f.clean();
                 f.files().file("src/main/eo/foo.eo").write(
                     String.format(
-                        "# This unit test is supposed to check the corresponding object.%n[] > foo%n"
+                        "# This unit test is supposed to check the corresponding object.%n%n[] > foo%n"
                     ).getBytes(StandardCharsets.UTF_8)
                 );
                 new AppendedPlugin(f).value()

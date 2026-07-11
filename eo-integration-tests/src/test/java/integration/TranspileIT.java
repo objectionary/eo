@@ -98,6 +98,7 @@ final class TranspileIT {
         return String.join(
             System.lineSeparator(),
             "# Simple.",
+            "",
             "[] > simple",
             "  \"hello\" > @"
         ).getBytes(StandardCharsets.UTF_8);
@@ -107,6 +108,7 @@ final class TranspileIT {
         return String.join(
             System.lineSeparator(),
             "# Simple.",
+            "",
             "[] > simple",
             "  \"hello\" > @",
             "  [] +> tests-simple-works",

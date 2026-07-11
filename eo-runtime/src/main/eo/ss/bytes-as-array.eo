@@ -1,6 +1,7 @@
 # Represents sequence of bytes as array.
 # Here `bts` is `bytes` objects, the return value is `tuple` where
 # each element is one `byte`.
+
 +alias ss.bytes-as-array
 +alias ss.list
 +architect yegor256@gmail.com

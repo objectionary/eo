@@ -193,6 +193,20 @@ final class LnApplicationTest {
     }
 
     @Test
+    void recordsDotColumnForFragileChainLinkPos() {
+        final Emit emit = new Emit();
+        new LnApplication(new Span("foo?.bar > x", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a fragile `?.` chain link's @pos must point at the `.`, not at the `?`,"
+                .concat(" matching the standalone-continuation path in LnMethod"),
+            LnApplicationTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/o[@base='.bar' and @pos='4']")
+        );
+    }
+
+    @Test
     void emitsTwoLevelChainAsThreeSiblings() {
         final Emit emit = new Emit();
         new LnApplication(new Span("foo.bar.baz > x", 1))
@@ -514,6 +528,17 @@ final class LnApplicationTest {
             "a paren group in arg position must emit as a single nested arg child",
             LnApplicationTest.render(emit),
             XhtmlMatchers.hasXPath("/object/o[@base='foo']/o[@base='a']/o[@base='b']")
+        );
+    }
+
+    @Test
+    void rejectsUnclosedInlinePhiBracketInGroupArg() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnApplication(new Span("x (a > [b)", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "a `> [` inline-phi marker with no closing `]` inside a paren-group arg must be"
+                .concat(" rejected with a ParseError, not an unchecked exception")
         );
     }
 

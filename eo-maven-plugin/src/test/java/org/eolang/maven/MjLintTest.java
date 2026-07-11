@@ -51,6 +51,7 @@ final class MjLintTest {
     void includesDefectDetailsInExceptionMessage(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             "# Main object.",
+            "",
             String.format("+package foo.x%n"),
             "[] > main",
             "  cti true \"error\" \"msg\" > @"
@@ -80,6 +81,7 @@ final class MjLintTest {
     void detectsErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             "# Main object.",
+            "",
             String.format("+package foo.x%n"),
             "[] > main",
             "  cti true \"error\" \"msg\" > @"
@@ -199,6 +201,7 @@ final class MjLintTest {
     void detectsCriticalErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             "# Main object.",
+            "",
             String.format("+package foo.x%n"),
             "[] > main",
             "  cti true \"critical\" \"msg\" > @"

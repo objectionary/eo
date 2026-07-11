@@ -29,6 +29,7 @@ asserts:
   - //o[@base='.and']/o[2][@base='.eq']/o[2][@base='Φ.false']
 input: |
   # Main.
+
   [] > main
     [x] > foo
       a. > one

@@ -1,6 +1,7 @@
 # Reads the single character `char` as its ASCII numeric value (0-255).
 # The byte of `char` is left-padded with a zero byte into a 16-bit word,
 # read as an integer and then expressed as a number.
+
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tt

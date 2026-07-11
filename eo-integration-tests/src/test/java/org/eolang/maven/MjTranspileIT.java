@@ -92,7 +92,6 @@ final class MjTranspileIT {
             System.lineSeparator(),
             "+package one",
             "",
-            "# no comments.",
             "[] > foo",
             "  Q.io.stdout > @",
             "    \"Hello, world!\\n\""
@@ -105,6 +104,7 @@ final class MjTranspileIT {
             "# This is a random program in EO, which supposedly",
             "# complies with all syntactic rules of the language,",
             "# include the requirements for comments.",
+            "",
             "[] > foo",
             "  Q.io.stdout > @",
             "    \"Hello, world!\\n\"",

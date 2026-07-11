@@ -9,6 +9,7 @@ asserts:
   - /object/o[@name='foo']/o[@name='λ']
 input: |-
   # Foo atom together with the tests.
+
   [] > foo /bytes
     eq. +> test-1
       foo

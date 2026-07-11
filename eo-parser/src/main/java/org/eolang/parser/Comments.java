@@ -35,18 +35,30 @@ final class Comments {
      * true and subsequent calls do nothing, so only the first meta or
      * object in the file triggers the flush.</p>
      *
+     * <p>A non-empty top comment block must be separated from the rest
+     * of the file by exactly one blank line (§6.5). If the sealing meta
+     * or object follows the block with no blank in between
+     * ({@link Globals#pendingBlanks()} is zero), the block is rejected.</p>
+     *
      * @param globals Global parser state
      * @param emit XMIR emitter
      * @param span Source span of the meta or object closing the header
      */
     static void seal(final Globals globals, final Emit emit, final Span span) {
-        if (!globals.sealed()) {
-            final List<Span> pending = globals.pendingComments();
-            if (!pending.isEmpty()) {
-                emit.comment(pending, span.line());
-                globals.clearComments();
-            }
-            globals.seal();
+        if (globals.sealed()) {
+            return;
         }
+        final List<Span> pending = globals.pendingComments();
+        if (!pending.isEmpty() && globals.pendingBlanks() == 0) {
+            throw new ParseError(
+                span.line(), span.indent(),
+                "a blank line must separate the top comment block from the rest of the file"
+            );
+        }
+        if (!pending.isEmpty()) {
+            emit.comment(pending, span.line());
+            globals.clearComments();
+        }
+        globals.seal();
     }
 }

@@ -218,6 +218,30 @@ final class SuffixTest {
     }
 
     @Test
+    void rejectsTrailingGarbageAfterPlusGreaterName() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix(
+                " +> bar baz",
+                new Span("[] +> bar baz", 1), 2
+            ),
+            "`+> bar baz` must reject the extra token, not silently drop it"
+        );
+    }
+
+    @Test
+    void rejectsDotInPlusGreaterName() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix(
+                " +> a.b",
+                new Span("[] +> a.b", 1), 2
+            ),
+            "`+> a.b` must be rejected — `.` is not a legal NAME character"
+        );
+    }
+
+    @Test
     void rejectsTrailingGarbageThatIsNotASuffixMarker() {
         Assertions.assertThrows(
             ParseError.class,

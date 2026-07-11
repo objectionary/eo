@@ -1,6 +1,7 @@
 # Returns a `tuple` of `strings`: `text` is split by `delimiter` with a maximum of `limit` parts.
 # The last element contains the remainder of the string after splitting.
 # If `limit` < 1, the `cant-split` fallback is returned, or the bottom object when unbound.
+
 +alias ss.list
 +alias tt.slice
 +alias tt.sprintf

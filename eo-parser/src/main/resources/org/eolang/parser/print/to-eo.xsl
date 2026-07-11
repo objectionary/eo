@@ -41,6 +41,9 @@
         <xsl:value-of select="$eol"/>
       </xsl:for-each>
     </xsl:for-each>
+    <xsl:if test="comment">
+      <xsl:value-of select="$eol"/>
+    </xsl:if>
   </xsl:template>
   <!-- LICENCE -->
   <xsl:template match="license">

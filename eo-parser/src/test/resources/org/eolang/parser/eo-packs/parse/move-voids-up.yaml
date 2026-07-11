@@ -9,6 +9,7 @@ asserts:
   - /object/o[@name='main']/o[@name='foo' and o[@name='x']/following-sibling::o[@name='φ']]
 input: |
   # Main.
+
   [] > main
     [x] > app
       5 > y

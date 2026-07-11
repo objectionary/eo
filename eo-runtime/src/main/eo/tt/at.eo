@@ -1,6 +1,7 @@
 # Retrieve symbol by given index as `text`.
 # If 0 > index >= ^.length, the `out-of-bounds` fallback is returned,
 # or the bottom object when unbound.
+
 +alias tt.slice
 +alias tt.sprintf
 +architect yegor256@gmail.com

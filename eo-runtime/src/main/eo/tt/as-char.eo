@@ -1,5 +1,6 @@
 # Writes the ASCII `code` (0-255) as its single byte, the inverse of `as-ascii`.
 # The number is read as a 64-bit integer and its least-significant byte is taken.
+
 +alias tt.as-ascii
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

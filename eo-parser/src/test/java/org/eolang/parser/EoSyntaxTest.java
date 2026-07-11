@@ -378,6 +378,7 @@ final class EoSyntaxTest {
                         "# Foo.",
                         "# Bar.",
                         "# Xyz.",
+                        "",
                         "[] > foo"
                     )
                 )
@@ -407,6 +408,7 @@ final class EoSyntaxTest {
                 String.join(
                     System.lineSeparator(),
                     "# App.",
+                    "",
                     "[] > app",
                     String.format("  Q.io.stdout \"%s\" > @", input)
                 )
@@ -433,6 +435,7 @@ final class EoSyntaxTest {
                             System.lineSeparator(),
                             "# Top comment.",
                             comment,
+                            "",
                             "[] > foo"
                         )
                     )
@@ -455,6 +458,7 @@ final class EoSyntaxTest {
                         String.join(
                             System.lineSeparator(),
                             "#",
+                            "",
                             "[] > foo"
                         )
                     )

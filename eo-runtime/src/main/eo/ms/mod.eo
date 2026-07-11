@@ -2,6 +2,7 @@
 # An operation that finds the remainder after dividing `x` by `y`. When `y`
 # is zero, the result is the caller-supplied `cant-mod` fallback, or the
 # bottom object when none was provided, which terminates on use.
+
 +alias ms.abs
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

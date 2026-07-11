@@ -7,6 +7,7 @@ asserts:
   - /object/o[count(o[not(@name='xi🌵')])=7]
 input: |
   # Main.
+
   [] > main
     3.1415 > x1
     7.33e-10 > x2

@@ -22,6 +22,7 @@ asserts:
   - //o[@base='Φ.string' and @name='textX']
 input: |
   # Main.
+
   +package test
 
   [] > main

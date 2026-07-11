@@ -2,6 +2,7 @@
 # The argument is reduced into the [-pi, pi] range and the Taylor series
 # is summed through Horner's scheme, so the result stays accurate for
 # angles of any magnitude, while non-finite arguments collapse to nan.
+
 +alias ms.abs
 +alias ms.pi
 +architect yegor256@gmail.com

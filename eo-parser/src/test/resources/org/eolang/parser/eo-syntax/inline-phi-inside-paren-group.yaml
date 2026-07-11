@@ -8,5 +8,6 @@ asserts:
   - //o[@as='α1' and not(@base) and o[@base='∅' and @name='m'] and o[@name='φ' and @base='ξ.m.put']]
 input: |
   # Inline-phi formation inside paren group as argument.
+
   [] > foo
     bar 8 (m.put 10 > [m]) > baz

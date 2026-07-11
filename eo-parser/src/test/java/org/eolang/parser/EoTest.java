@@ -62,7 +62,7 @@ final class EoTest {
     void flushesTopCommentBlock() {
         MatcherAssert.assertThat(
             "a comment block on top of the file must flush into /object/comments",
-            EoTest.render("# top doc", "[] > foo"),
+            EoTest.render("# top doc", "", "[] > foo"),
             XhtmlMatchers.hasXPaths(
                 "/object/comments/comment[contains(text(),'top doc')]",
                 "/object[not(errors)]"
@@ -77,6 +77,17 @@ final class EoTest {
             EoTest.render("[] > foo", "# late", "  bar > @"),
             XhtmlMatchers.hasXPath(
                 "/object/errors/error[contains(text(),'comment is allowed only on top of the file, before metas')]"
+            )
+        );
+    }
+
+    @Test
+    void rejectsTopCommentWithoutBlankBelow() {
+        MatcherAssert.assertThat(
+            "a top comment block not separated from the object by a blank line cannot be accepted",
+            EoTest.render("# top doc", "[] > foo"),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'a blank line must separate the top comment block from the rest of the file')]"
             )
         );
     }

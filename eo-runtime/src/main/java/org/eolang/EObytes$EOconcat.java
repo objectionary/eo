@@ -29,6 +29,14 @@ public final class EObytes$EOconcat extends PhDefault implements Atom {
     public Phi lambda() {
         final byte[] current = new Dataized(this.take(Phi.RHO)).take();
         final byte[] provided = new Dataized(this.take("b")).take();
+        if ((long) current.length + provided.length > Integer.MAX_VALUE) {
+            throw new ExFailure(
+                String.format(
+                    "Can't concatenate bytes of size %d with bytes of size %d: too big",
+                    current.length, provided.length
+                )
+            );
+        }
         final byte[] dest = new byte[current.length + provided.length];
         System.arraycopy(current, 0, dest, 0, current.length);
         System.arraycopy(provided, 0, dest, current.length, provided.length);

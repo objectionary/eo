@@ -143,9 +143,10 @@ final class MjRegisterIT {
         farea.clean();
         farea.files().file("src/main/eo/foo.eo").write(
             MjRegisterIT.program(
+                "# In this program, we refer to the 'String'",
+                "",
                 "+rt jvm org.eolang:eo-runtime:0.25.0",
                 "",
-                "# In this program, we refer to the 'String'",
                 "[] > foo",
                 "  \"42\" > @"
             )
@@ -155,6 +156,7 @@ final class MjRegisterIT {
         farea.files().file("src/main/eo/foo.eo").write(
             MjRegisterIT.program(
                 "# In this program, we refer to the 'Number'.",
+                "",
                 "[] > foo",
                 "  42 > @"
             )
