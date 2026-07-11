@@ -79,6 +79,9 @@
     <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
     <sonar.organization>objectionary</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <!-- These are JNA syscall bindings, exercised through EO tests rather than
+         Java unit tests, so line coverage on them is not meaningful -->
+    <sonar.coverage.exclusions>**/EOsm/Win32/**,**/EOsm/Posix/**</sonar.coverage.exclusions>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     <!-- This is the flag that allows to skip unit tests run by maven-surefire-plugin -->
