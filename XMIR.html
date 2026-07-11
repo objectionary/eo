@@ -951,15 +951,15 @@ setState('element_object_scbox', false);
       <tr>
         <th>Documentation</th>
         <td>
-        Comments may be attached to objects in EO programs, but only to the highest-level formations. These comments
-        provide additional context or explanations for the code, which can be useful for understanding the program's
-        logic and intent. Comments are typically used to document the purpose of the code, describe complex logic, or
-        provide other relevant information that can aid in code maintenance and readability.
+        A program may carry at most one comment block, on top of the file, before all metas and objects. It documents
+        the whole program and provides context or explanations that can be useful for understanding the program's logic
+        and intent. Every other comment is prohibited: objects are expected to be self-explanatory, and per-object
+        documentation is generated later by external tooling rather than written by hand.
       </td>
       </tr>
       <tr>
         <th>Application Data</th>
-        <td>The comment found attached to an object</td>
+        <td>The comment found on top of the program</td>
       </tr>
     </table>
     <div class="sample box">
