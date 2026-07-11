@@ -10,16 +10,18 @@ import java.util.List;
  * Attach buffered comment lines to the next named object — §6.4.
  *
  * <p>A comment block accumulates in {@link Globals#pendingComments()}
- * as each {@link LnComment} arrives. The next named line — any
- * formation, application, method or reversed line whose suffix carries
- * a name — calls {@link #attach(Globals, Emit, Span, boolean)} to
- * either flush the block into {@code /object/comments/comment} (when
- * the line is named, sits at the same indent, and has no intervening
- * blank line — R-6.5.2) or report the block as dangling per
- * R-6.4.2.</p>
- *
- * <p>The buffer is always cleared after the call so a dangling block
- * is not re-reported by the EOF check.</p>
+ * as each {@link LnComment} arrives. Every subsequent line — named or
+ * not — calls {@link #attach(Globals, Emit, Span, boolean)}: a blank
+ * line separating the block from what follows is an immediate
+ * R-6.5.2 violation, reported as dangling per R-6.4.2 and cleared on
+ * the spot. Absent a blank, the block flushes into
+ * {@code /object/comments/comment} as soon as a named line at the
+ * same indent arrives; an unnamed or deeper/shallower-indent line in
+ * between is not itself a violation — the block stays pending so a
+ * later same-indent named line (e.g. the name-bearing tail of a
+ * vertical-continuation chain) can still claim it. Any block left
+ * pending at end of stream is reported dangling by the EOF check in
+ * {@link Eo}.</p>
  *
  * @since 0.1
  */
@@ -48,7 +50,13 @@ final class Comments {
             return;
         }
         final Span head = pending.get(0);
-        if (named && head.indent() == span.indent() && globals.pendingBlanks() == 0) {
+        if (globals.pendingBlanks() > 0) {
+            emit.error(
+                head.line(), head.indent(),
+                "comment must precede a named object"
+            );
+            globals.clearComments();
+        } else if (named && head.indent() == span.indent()) {
             emit.comment(pending, span.line());
             globals.clearComments();
         }

@@ -215,10 +215,7 @@ final class Suffix {
      * @return Parsed result
      */
     private static Parsed parse(final String tail, final Span span, final int home) {
-        int idx = 0;
-        while (idx < tail.length() && tail.charAt(idx) == ' ') {
-            idx = idx + 1;
-        }
+        final int idx = Suffix.start(tail);
         final Parsed result;
         if (idx >= tail.length()) {
             result = new Suffix.Parsed(Form.NONE, "", "", false);
@@ -229,9 +226,25 @@ final class Suffix {
         } else if (tail.charAt(idx) == '>') {
             result = Suffix.named(tail, idx + 1, span, home);
         } else {
-            result = new Suffix.Parsed(Form.NONE, "", "", false);
+            throw new ParseError(
+                span.line(), home + idx,
+                "trailing garbage after expression"
+            );
         }
         return result;
+    }
+
+    /**
+     * Find the first non-space character in a suffix tail.
+     * @param tail Tail substring
+     * @return First non-space index, or the tail length
+     */
+    private static int start(final String tail) {
+        int idx = 0;
+        while (idx < tail.length() && tail.charAt(idx) == ' ') {
+            idx = idx + 1;
+        }
+        return idx;
     }
 
     /**
@@ -254,7 +267,7 @@ final class Suffix {
             );
         }
         final int start = idx;
-        while (idx < tail.length() && !Suffix.terminates(tail.charAt(idx))) {
+        while (idx < tail.length() && !Suffix.endsName(tail.charAt(idx))) {
             idx = idx + 1;
         }
         if (start == idx) {
@@ -263,7 +276,15 @@ final class Suffix {
                 "test attribute requires a name"
             );
         }
-        return new Suffix.Parsed(Form.TEST, tail.substring(start, idx), "", false);
+        final String name = tail.substring(start, idx);
+        if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
+            throw new ParseError(
+                span.line(), home + start,
+                "cactus emoji is reserved for auto-names; not allowed in identifiers"
+            );
+        }
+        Suffix.endsClean(tail, idx, span, home);
+        return new Suffix.Parsed(Form.TEST, name, "", false);
     }
 
     /**
@@ -291,6 +312,7 @@ final class Suffix {
                 "auto-named atom is forbidden"
             );
         }
+        Suffix.endsClean(tail, trailing, span, home);
         return new Suffix.Parsed(Form.AUTO, "", "", cnst);
     }
 

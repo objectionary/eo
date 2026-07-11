@@ -70,6 +70,19 @@ final class EoTest {
     }
 
     @Test
+    void doesNotLeakDanglingCommentToLaterUnrelatedObject() {
+        MatcherAssert.assertThat(
+            "a comment separated from its object by a blank line (dangling per R-6.5.2)"
+                .concat(" must be reported, not silently misattached to a later object"),
+            EoTest.render("# c", "", "[x] > foo", "[y] > bar"),
+            XhtmlMatchers.hasXPaths(
+                "/object/errors/error[contains(text(),'comment must precede a named object')]",
+                "/object[not(comments)]"
+            )
+        );
+    }
+
+    @Test
     void reportsOddIndentError() {
         MatcherAssert.assertThat(
             "a line whose indent is an odd number of spaces must surface the odd-indent error",

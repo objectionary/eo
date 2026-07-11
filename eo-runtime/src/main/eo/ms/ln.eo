@@ -3,14 +3,58 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package ms
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Returns the natural logarithm `num` with base `e` as `org.eolang.number`.
-[num] > ln /number
+# Natural logarithm of `num` with base `e` as `org.eolang.number`. The argument
+# is folded into [1/e, e] by peeling whole factors of `e` and counting them,
+# then the remainder is summed with the area-hyperbolic-tangent series. The
+# limiting cases follow the usual conventions: zero is negative infinity, a
+# negative number and negative infinity are nan, and positive infinity stays.
+[num] > ln
+  if. > @
+    n.is-nan
+    nan
+    if.
+      n.lt 0
+      nan
+      if.
+        n.eq 0
+        ninf
+        if.
+          n.is-finite
+          lnp n
+          pinf
+  number num.as-bytes > n
+
+  # Natural logarithm of a finite positive `p`, recursing by whole steps of `e`
+  # until the value lands in [1/e, e], where the series converges quickly.
+  [p] > lnp
+    if. > @
+      p.gte e
+      (lnp (p.div e)).plus 1
+      if.
+        p.lt (1.div e)
+        (lnp (p.times e)).minus 1
+        series p
+
+    # Area-hyperbolic-tangent series for `m` in [1/e, e], summed by Horner's
+    # scheme around the point (m minus 1) div (m plus 1).
+    [m] > series
+      2.times (t.times (horner 0)) > @
+      (m.minus 1).div (m.plus 1) > t
+      t.times t > squared
+      40 > terms
+
+      # One Horner factor of the logarithm series, opened from `k`.
+      [k] > horner
+        if. > @
+          k.gt terms
+          0
+          plus.
+            1.div ((k.times 2).plus 1)
+            squared.times (horner (k.plus 1))
   # Tests that natural logarithm of negative float returns NaN.
   [] +> tests-ln-of-negative-float-is-nan
     is-nan. > @
@@ -41,9 +85,12 @@
 
   # Tests that natural logarithm of a positive number > 1.
   [] +> tests-ln-of-twenty
-    eq. > @
-      ln 20
-      2.995732273553991
+    lt. > @
+      abs
+        minus.
+          ln 20
+          2.995732273553991
+      0.00000000001
 
   # Tests that natural logarithm of a fraction (0 < x < 1) is negative.
   [] +> tests-ln-fraction

@@ -4,9 +4,9 @@
 # yamllint disable rule:line-length
 line: 3
 message: |-
-  [3:2] error: 'object inside formation must have a name'
+  [3:3] error: 'trailing garbage after expression'
     QQ.io.stdout > @
-    ^
+     ^
 input: |
   # No comments
   [] > foo

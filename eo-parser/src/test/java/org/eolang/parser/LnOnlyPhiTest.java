@@ -157,6 +157,23 @@ final class LnOnlyPhiTest {
     }
 
     @Test
+    void splitsAtTopLevelMarkerNotInsideLhsString() {
+        final Emit emit = new Emit();
+        new LnOnlyPhi(new Span("x.print \"> [\" > [a] > n", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `> [` inside the LHS string literal must not be mistaken for the split marker",
+            LnOnlyPhiTest.render(emit),
+            XhtmlMatchers.hasXPaths(
+                "/object/o[@name='n']/o[@name='a' and @base='∅']",
+                "/object/o[@name='n']/o[@base='x' and not(@name)]",
+                "/object/o[@name='n']/o[@name='φ' and @method='' and @base='.print']"
+            )
+        );
+    }
+
+    @Test
     void rejectsEmptyLhs() {
         Assertions.assertThrows(
             ParseError.class,

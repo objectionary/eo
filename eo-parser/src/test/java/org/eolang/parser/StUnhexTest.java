@@ -122,6 +122,23 @@ final class StUnhexTest {
 
     @ParameterizedTest
     @MethodSource("shifts")
+    void convertsBigIntegerValuedDoubleFromHexToEo(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must exactly print a double above Long range, but it didn't",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    "<p><o base='Φ.number'><o base='Φ.bytes'><o>43-E1-58-E4-60-91-3D-00</o></o></o></p>"
+                )
+            ),
+            XhtmlMatchers.hasXPath("//o[text()='10000000000000000000']")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
     void convertsFloatFromHexToEo(final Shift shift, final String type) {
         MatcherAssert.assertThat(
             String.format("StUnhex by %s must convert float", type),

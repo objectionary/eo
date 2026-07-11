@@ -1,6 +1,6 @@
 +alias ms.abs
 +alias ms.e
-+alias ms.pow
++alias ms.power
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package ms
@@ -10,7 +10,7 @@
 
 # Returns Euler's number raised to the power of a `num`.
 [num] > exp
-  pow e num > @
+  power e num > @
 
   # Tests that exponential function e^1 approximately equals e.
   [] +> tests-exp-check-n0
@@ -35,7 +35,7 @@
     lt. > @
       abs
         minus.
-          pow e 5
+          power e 5
           exp 5
       0.0000001
 
@@ -44,7 +44,7 @@
     lt. > @
       abs
         minus.
-          pow e -10
+          power e -10
           exp -10
       0.000000000001
 

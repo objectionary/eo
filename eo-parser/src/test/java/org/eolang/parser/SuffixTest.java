@@ -162,6 +162,26 @@ final class SuffixTest {
     }
 
     @Test
+    void rejectsTrailingGarbageAfterAuto() {
+        final Span span = new Span("5 >> garbage", 1);
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix(">> garbage", span, 2),
+            "an auto-name suffix must consume the complete tail"
+        );
+    }
+
+    @Test
+    void rejectsTrailingGarbageAfterPlusGreaterSuffix() {
+        final Span span = new Span("[] +> foo garbage", 1);
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix("+> foo garbage", span, 3),
+            "a test suffix must consume the complete tail"
+        );
+    }
+
+    @Test
     void rejectsBareQSignature() {
         Assertions.assertThrows(
             ParseError.class,
@@ -194,6 +214,40 @@ final class SuffixTest {
                 new Span("[] +> @", 1), 2
             ),
             "`+> @` must be rejected per R-6.3.5"
+        );
+    }
+
+    @Test
+    void rejectsTrailingGarbageAfterPlusGreaterName() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix(
+                " +> bar baz",
+                new Span("[] +> bar baz", 1), 2
+            ),
+            "`+> bar baz` must reject the extra token, not silently drop it"
+        );
+    }
+
+    @Test
+    void rejectsDotInPlusGreaterName() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix(
+                " +> a.b",
+                new Span("[] +> a.b", 1), 2
+            ),
+            "`+> a.b` must be rejected — `.` is not a legal NAME character"
+        );
+    }
+
+    @Test
+    void rejectsTrailingGarbageThatIsNotASuffixMarker() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix("x", new Span("5x", 1), 1),
+            "trailing content after a head that is not `>`, `>>`, or `+>` must be rejected,"
+                .concat(" not silently dropped")
         );
     }
 
