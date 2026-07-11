@@ -17,5 +17,6 @@ jobs:
           total=$((ADDITIONS + DELETIONS))
           echo "Total lines changed: ${total}"
           if [ "${total}" -gt "${MAX_LINES_CHANGED}" ]; then
-            echo "::warning::Pull request changes ${total} lines, exceeding the ${MAX_LINES_CHANGED}-line limit; consider breaking it down."
+            echo "Pull request changes ${total} lines, exceeding the ${MAX_LINES_CHANGED}-line limit; consider breaking it down."
+            exit 1
           fi
