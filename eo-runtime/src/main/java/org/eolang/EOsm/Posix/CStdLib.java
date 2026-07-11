@@ -11,6 +11,7 @@ package org.eolang.EOsm.Posix; // NOPMD
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
+import com.sun.jna.Structure;
 import com.sun.jna.ptr.IntByReference;
 import org.eolang.EOsm.SockaddrIn;
 
@@ -85,11 +86,18 @@ public interface CStdLib extends Library {
 
     /**
      * The "open" syscall.
+     *
+     * <p>The native {@code open} is variadic, so {@code mode} is declared as a
+     * trailing varargs: that makes JNA use the variadic calling convention,
+     * without which the creation mode is read from the wrong place on some ABIs
+     * (notably arm64, where variadic arguments are passed on the stack).</p>
+     *
      * @param path Path to file to open
      * @param flags Open flags
+     * @param mode Permission bits used when the flags request file creation
      * @return File descriptor
      */
-    int open(String path, int flags);
+    int open(String path, int flags, Object... mode);
 
     /**
      * Close file descriptor.
@@ -115,6 +123,60 @@ public interface CStdLib extends Library {
      * @return Number of bytes was read
      */
     int read(int descriptor, byte[] buf, int size);
+
+    /**
+     * Check a file's accessibility.
+     * @param path Path to the file
+     * @param mode Accessibility check to perform (0 tests for existence)
+     * @return Zero when the check succeeds, -1 on error
+     */
+    int access(String path, int mode);
+
+    /**
+     * Get file status by path.
+     * @param path Path to the file
+     * @param statbuf Structure to fill with the file's metadata
+     * @return Zero on success, -1 on error
+     */
+    int stat(String path, Structure statbuf);
+
+    /**
+     * Delete a name from the filesystem.
+     * @param path Path to the file
+     * @return Zero on success, -1 on error
+     */
+    int unlink(String path);
+
+    /**
+     * Remove an empty directory.
+     * @param path Path to the directory
+     * @return Zero on success, -1 on error
+     */
+    int rmdir(String path);
+
+    /**
+     * Create a directory.
+     * @param path Path to the directory
+     * @param mode Permission bits for the new directory
+     * @return Zero on success, -1 on error
+     */
+    int mkdir(String path, int mode);
+
+    /**
+     * Create a new file, or truncate an existing one, and open it.
+     * @param path Path to the file
+     * @param mode Permission bits for a newly created file
+     * @return File descriptor on success, -1 on error
+     */
+    int creat(String path, int mode);
+
+    /**
+     * Rename a file, moving it between directories if required.
+     * @param from Current path of the file
+     * @param target New path of the file
+     * @return Zero on success, -1 on error
+     */
+    int rename(String from, String target);
 
     /**
      * Get environment variable.

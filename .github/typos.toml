@@ -20,5 +20,6 @@ extend-ignore-identifiers-re = [
   "splitted",   # valid variable name
   "scrpt",      # valid variable name
   "fle",        # valid variable name
-  "WRONLY"      # POSIX O_WRONLY open flag
+  "WRONLY",     # POSIX O_WRONLY open flag
+  "wronly"      # o-wronly open flag (lowercase)
 ]

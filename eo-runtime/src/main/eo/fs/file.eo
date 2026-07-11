@@ -10,8 +10,6 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package fs
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
@@ -23,60 +21,117 @@
   # Converts the `file` to a `path`.
   (Q.fs.path path).@ > as-path
 
-  # Returns `org.eolang.true` if current file is a directory, returns `org.eolang.false` otherwise.
-  [] > is-directory /bool
+  # Returns `org.eolang.true` if current file is a directory, returns
+  # `org.eolang.false` otherwise. Returns the `cant-check` fallback when the
+  # file cannot be stated, terminating with a ⊥ if it is left unbound.
+  # A directory carries the `S_IFDIR` type bits (octal 040000) in its mode, so
+  # flooring the mode divided by 4096 yields 4 for directories.
+  [cant-check] > is-directory
+    if. > @
+      info.code.eq 0
+      (info.output.st-mode.div 4096).floor.eq 4
+      cant-check
+    called. > info
+      if.
+        os.is-windows
+        win32 "_stat64" (* path)
+        posix "stat" (* path)
 
   # Returns `org.eolang.true` if file with current `path` exists in filesystem.
-  [] > exists /bool
+  [] > exists
+    eq. > @
+      code.
+        if.
+          os.is-windows
+          win32 "_access" (* path 0)
+          posix "access" (* path 0)
+      0
 
-  # If current file exists - returns the file.
-  # If current file does not exist - create an empty file
-  # in filesystem and returns it.
+  # If current file exists - returns the file. If it does not exist - creates
+  # an empty file and returns it. Terminates with a ⊥ when the file cannot be
+  # created, since that is a system-level failure.
   [] > touched
     if. > @
       exists
       ^
-      seq *
-        touch
-        ^
+      if.
+        descriptor.eq -1
+        T
+          sprintf
+            "Cant touch the file '%s'"
+            * path
+        seq *
+          closed
+          ^
+    code. > descriptor
+      if.
+        os.is-windows
+        win32 "_creat" (* path win32.create-mode)
+        posix "creat" (* path posix.create-mode)
+    code. > closed
+      if.
+        os.is-windows
+        win32 "_close" (* descriptor)
+        posix "close" (* descriptor)
 
-    # Creates new empty file and returns `org.eolang.true`.
-    #
-    # Note: This object is intended for internal use only. Please
-    # don't use the object programmatically outside of `file` object.
-    [] > touch /bool
-
-  # If current file exists - deletes it and returns it.
-  # If current file does not exist - just returns it.
+  # If current file exists - deletes it and returns it. If it does not exist -
+  # just returns it. Terminates with a ⊥ when it cannot be deleted, since that
+  # is a system-level failure.
   [] > deleted
     if. > @
       exists
-      seq *
-        delete
+      if.
+        outcome.eq 0
         ^
+        T
+          sprintf
+            "Cant delete the file '%s'"
+            * path
       ^
-
-    # Deletes the file and returns `org.eolang.true`.
-    #
-    # Note: This object is intended for internal use only. Please
-    # don't use the object programmatically outside of `file` object.
-    [] > delete /bool
+    code. > outcome
+      if.
+        os.is-windows
+        win32 windows-name (* path)
+        posix posix-name (* path)
+    if. > windows-name
+      is-directory
+      "_rmdir"
+      "_unlink"
+    if. > posix-name
+      is-directory
+      "rmdir"
+      "unlink"
 
   # Gets the file size in bytes and returns it as `org.eolang.number`.
-  [] > size /number
+  # Returns the `cant-measure` fallback when the file cannot be stated,
+  # terminating with a ⊥ if it is left unbound.
+  [cant-measure] > size
+    if. > @
+      info.code.eq 0
+      info.output.st-size
+      cant-measure
+    called. > info
+      if.
+        os.is-windows
+        win32 "_stat64" (* path)
+        posix "stat" (* path)
 
-  # Moves the current file to `target`, making and returning a new `file` from it.
+  # Moves the current file to `target`, making and returning a new `file` from
+  # it. Terminates with a ⊥ when the move fails, since that is a system-level
+  # failure.
   [target] > moved
-    file > @
-      move
-
-    # Tries to move file from `^.path` to `target`
-    # and returns path of moved file as `org.eolang.string`.
-    # Returns `org.eolang.error` is failed to move the file.
-    #
-    # Note: This object is intended for internal use only. Please
-    # don't use the object programmatically outside of `file` object.
-    [] > move /string
+    if. > @
+      outcome.eq 0
+      file target
+      T
+        sprintf
+          "Cant move the file '%s' to '%s'"
+          * path target
+    code. > outcome
+      if.
+        os.is-windows
+        win32 "rename" (* path target)
+        posix "rename" (* path target)
 
   # Opens the file.
   #
@@ -115,108 +170,124 @@
   # closes the file stream and returns an original file object.
   [mode scope cant-open] > open
     if. > @
-      readable.not.and writable.not
+      known.not
       T "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
-        exists.not
-        if.
-          existing
-          cant-open
-            sprintf
-              "File must exist for given access mod: '%s'"
-              * access
-          seq *
-            touched.touch
-            open-file
-            ^
-        if.
-          truncate
-          seq *
-            deleted.delete
-            touched.touch
-            open-file
-            ^
-          seq *
-            open-file
-            ^
+        existing.and exists.not
+        cant-open
+          sprintf
+            "File must exist for given access mod: '%s'"
+            * access
+        seq *
+          open-file
+          ^
     mode > access!
-    as-bool. > existing
-      read.or rw
-    (access.eq "a+").as-bool > ra
-    (access.eq "r").as-bool > read
-    as-bool. > readable
+    # Writable unless opened read-only ("r").
+    (access.eq "r").as-bool.not > writable
+    # Readable unless opened write-only ("w") or append-only ("a").
+    and. > readable
+      (access.eq "w").as-bool.not
+      (access.eq "a").as-bool.not
+    # "r" and "r+" require the file to already exist.
+    or. > existing
+      (access.eq "r").as-bool
+      (access.eq "r+").as-bool
+    # "w" and "w+" truncate the file on open.
+    or. > truncate
+      (access.eq "w").as-bool
+      (access.eq "w+").as-bool
+    # "a" and "a+" append on every write.
+    or. > appending
+      (access.eq "a").as-bool
+      (access.eq "a+").as-bool
+    # A mode is valid only when it names a read, truncate or append family member.
+    or. > known
       or.
-        read.or rw
-        wr.or ra
-    (access.eq "r+").as-bool > rw
-    as-bool. > truncate
-      write.or wr
-    (access.eq "w+").as-bool > wr
-    as-bool. > writable
-      or.
-        or.
-          write.or rw
-          wr.or ra
-        (access.eq "a").as-bool
-    (access.eq "w").as-bool > write
+        existing
+        truncate
+      appending
 
-    # Opens the file through OS syscalls, threading a read descriptor and a write
-    # descriptor to the provided scope and closing them afterwards. The read
-    # descriptor is opened read-only from the beginning, the write descriptor for
-    # appending, mirroring the two independent streams a file provides. The open
-    # flags come from the syscall object's `open-read-flags` and `open-write-flags`.
+    # Opens the file through OS syscalls with the flags derived from the access
+    # mode, threads a single descriptor to the scope and closes it afterwards.
     #
     # Note: This object is intended for internal use only. Please
     # don't use the object programmatically outside of `file` object.
     [] > open-file
       if. > @
         os.is-windows
-        open-through win32
-        open-through posix
+        open-through
+          []
+            win32 > @
+            win32 "_open" > open
+            win32 "_close" > close
+            win32 "_read" > read
+            win32 "_write" > write
+        open-through
+          []
+            posix > @
+            posix "open" > open
+            posix "close" > close
+            posix "read" > read
+            posix "write" > write
 
-      # Opens the read and write descriptors through the given `syscall` object
-      # (`posix` or `win32`), threads a stream over them to the scope and closes
-      # both afterwards. The open flags come from the syscall's `open-read-flags`
-      # and `open-write-flags`.
+      # Opens the file through the given `syscall` adapter, which binds the four
+      # file operations to the platform's real syscalls and decorates the
+      # platform object so its atomic open flags and creation mode stay in reach.
+      # It threads a stream over the single descriptor to the scope and closes it
+      # afterwards. The flags are composed from the adapter's open flags: a
+      # read/write/read-write direction plus the create, truncate and append bits
+      # the mode calls for.
       #
       # Note: This object is intended for internal use only. Please
       # don't use the object programmatically outside of `file` object.
       [syscall] > open-through
         if. > @
-          or.
-            read-fd.eq -1
-            write-fd.eq -1
+          descriptor.eq -1
           cant-open
             sprintf
               "Couldn't open file '%s'"
               * path
           seq *
             scope
-              stream read-fd write-fd
+              stream descriptor
             code.
-              syscall
-                "close"
-                * read-fd
-            code.
-              syscall
-                "close"
-                * write-fd
+              syscall.close (* descriptor):args
             true
-        code. > read-fd
-          syscall
-            "open"
-            * path syscall.open-read-flags
-        code. > write-fd
-          syscall
-            "open"
-            * path syscall.open-write-flags
+        code. > descriptor
+          syscall.open (* path flags syscall.create-mode):args
+        plus. > flags
+          plus.
+            plus.
+              direction
+              create-bit
+            truncate-bit
+          append-bit
+        if. > direction
+          readable.and writable
+          syscall.o-rdwr
+          if.
+            writable
+            syscall.o-wronly
+            syscall.o-rdonly
+        if. > create-bit
+          existing.not
+          syscall.o-creat
+          0
+        if. > truncate-bit
+          truncate
+          syscall.o-trunc
+          0
+        if. > append-bit
+          appending
+          syscall.o-append
+          0
 
-        # File stream backed by a read descriptor and a write descriptor,
-        # providing input and output access via the syscalls.
+        # File stream backed by a single descriptor, providing input and output
+        # access via the syscalls.
         #
         # Note: This object is intended for internal use only. Please
         # don't use the object programmatically outside of `file` object.
-        [read-fd write-fd] > stream
+        [descriptor] > stream
           # Read `size` amount of bytes from the file via the read syscall.
           # Terminates with a ⊥ if the access mode does not allow reading.
           [size] > read
@@ -235,7 +306,7 @@
                   seq *
                     chunk
                     input-block chunk
-                (syscall "read" (* read-fd size)).output > chunk!
+                (syscall.read (* descriptor size):args).output > chunk!
 
           # Write the given `buffer` to the file via the write syscall.
           # Terminates with a ⊥ if the access mode does not allow writing.
@@ -254,9 +325,7 @@
                       * access
                   seq *
                     code.
-                      syscall
-                        "write"
-                        * write-fd buffer buffer.size
+                      syscall.write (* descriptor buffer buffer.size):args
                     output-block
 
   # Tests that the current directory is detected as a directory.
@@ -289,6 +358,24 @@
   [] +> tests-measures-empty-file-after-touching
     tmpdir.tmpfile.deleted.touched.size.eq 0 > @
 
+  # Tests that sizing an absent file terminates instead of returning zero.
+  [] +> throws-on-sizing-absent-file
+    tmpdir.tmpfile.deleted.size > @
+
+  # Tests that checking the directory status of an absent file terminates.
+  [] +> throws-on-checking-directory-of-absent-file
+    tmpdir.tmpfile.deleted.is-directory > @
+
+  # Tests that sizing an absent file returns the provided fallback.
+  [] +> tests-sizing-absent-file-returns-fallback
+    eq. > @
+      -1
+      tmpdir.tmpfile.deleted.size -1
+
+  # Tests that checking an absent file's directory status returns the fallback.
+  [] +> tests-checking-absent-file-returns-fallback
+    tmpdir.tmpfile.deleted.is-directory true > @
+
   # Tests that touching a file twice does not cause errors.
   [] +> tests-does-not-fail-on-double-touching
     tmpdir.tmpfile.deleted.touched.touched.exists > @
@@ -319,13 +406,17 @@
       temp.exists.not
     tmpdir.tmpfile > temp
 
-  # Tests that opening a file with an invalid mode throws an error.
+  # Tests that opening a file with an invalid access mode terminates, even
+  # when the scope never touches the file stream and the result is discarded.
   [] +> throws-on-opening-with-wrong-mode
-    tmpdir
-    .tmpfile
-    .open > @
-      "x"
-      f > [f]
+    seq > @
+      *
+        tmpdir
+        .tmpfile
+        .open
+          "x"
+          true > [f]
+        true
 
   # Tests that opening a non-existent file in read mode throws an error.
   [] +> throws-on-reading-from-not-existed-file
@@ -563,6 +654,11 @@
         .open
           "w"
           f.write "Shrek is love" > [f]
+        file
+          src
+        .open
+          "a"
+          f.write "!" > [f]
         malloc
         .of
           14
@@ -572,13 +668,10 @@
                 file
                   ^.src
                 .open
-                  "a+"
+                  "r"
                   [f] >>
-                    seq > @
-                      *
-                        f.write "!"
-                        ^.m.put
-                          f.read 14
+                    ^.m.put > @
+                      f.read 14
                 m
         .eq "Shrek is love!"
     temp.path > src
@@ -595,13 +688,13 @@
             tmpdir
             .tmpfile
             .open
-              "w+"
+              "w"
+              f.write "Hello, world" > [f]
+            .open
+              "r"
               [f] >>
-                seq > @
-                  *
-                    f.write "Hello, world"
-                    ^.m.put i2
-                (f.read 7).read 5 > i2
+                m.put > @
+                  (f.read 7).read 5
             m
     .eq "world" > @
 
