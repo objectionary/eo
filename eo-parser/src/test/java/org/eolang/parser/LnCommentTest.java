@@ -52,10 +52,11 @@ final class LnCommentTest {
 
     @Test
     void rejectsIndentedComment() {
-        final Span span = new Span("  # inner", 4);
         Assertions.assertThrows(
             ParseError.class,
-            () -> new LnComment(span).into(new Stack(), new Globals(), new Emit()),
+            () -> new LnComment(
+                new Span("  # inner", 4)
+            ).into(new Stack(), new Globals(), new Emit()),
             "an indented comment cannot sit in the top block"
         );
     }
