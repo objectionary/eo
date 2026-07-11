@@ -114,11 +114,9 @@
   [x] > right /bytes
 
   # Concatenation of two byte sequences and returns result as `bytes`.
-  # When the combined length would exceed the maximum possible array size,
-  # returns the caller-supplied `cant-concat` fallback instead, or the
-  # bottom object when none was provided, which terminates on use.
+  # Fails with a system error when the combined length would exceed the
+  # maximum possible array size.
   [b] > concat /bytes
-    ? > cant-concat /{string}
 
   # Tests that a slice of bytes can be extracted from a larger byte sequence.
   [] +> tests-takes-part-of-bytes
