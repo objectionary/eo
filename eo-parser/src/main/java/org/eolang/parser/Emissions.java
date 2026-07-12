@@ -24,6 +24,11 @@ import java.util.List;
 final class Emissions {
 
     /**
+     * Maximum value of a {@code \NNN} octal byte escape (0o377, one byte).
+     */
+    private static final int MAX_OCTAL_BYTE = 0xFF;
+
+    /**
      * No instances.
      */
     private Emissions() {
@@ -144,7 +149,7 @@ final class Emissions {
                 unescaped = Emissions.unescape(value.raw());
             } catch (final NumberFormatException ex) {
                 final ParseError error = new ParseError(
-                    line, value.pos(), "invalid unicode escape in string literal"
+                    line, value.pos(), "invalid unicode or octal escape in string literal"
                 );
                 error.initCause(ex);
                 throw error;
@@ -361,6 +366,14 @@ final class Emissions {
             && body.charAt(cursor) >= '0' && body.charAt(cursor) <= '7') {
             value = value * 8 + body.charAt(cursor) - '0';
             cursor = cursor + 1;
+        }
+        if (value > Emissions.MAX_OCTAL_BYTE) {
+            throw new NumberFormatException(
+                String.format(
+                    "octal escape \\%s is out of range: value %d exceeds the 1-byte limit of 0o377 (255)",
+                    body.substring(start, cursor), value
+                )
+            );
         }
         out.append((char) value);
         return cursor;
