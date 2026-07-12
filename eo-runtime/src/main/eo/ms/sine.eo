@@ -1,3 +1,8 @@
+# Sine of `num` radians as `org.eolang.number`.
+# The argument is reduced into the [-pi, pi] range and the Taylor series
+# is summed through Horner's scheme, so the result stays accurate for
+# angles of any magnitude, while non-finite arguments collapse to nan.
+
 +alias ms.abs
 +alias ms.pi
 +architect yegor256@gmail.com
@@ -7,10 +12,6 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Sine of `num` radians as `org.eolang.number`.
-# The argument is reduced into the [-pi, pi] range and the Taylor series
-# is summed through Horner's scheme, so the result stays accurate for
-# angles of any magnitude, while non-finite arguments collapse to nan.
 [num] > sine
   reduced.times (factor 1) > @
   number num.as-bytes > arg
@@ -26,7 +27,6 @@
   reduced.times reduced > squared
   15 > terms
 
-  # One Horner factor of the sine series, opened from `depth`.
   [depth] > factor
     if. > @
       depth.gt terms
@@ -39,13 +39,11 @@
             (depth.times 2).times ((depth.times 2).plus 1)
           factor (depth.plus 1)
 
-  # Tests that sine of zero is zero.
   [] +> tests-sine-of-zero-is-zero
     eq. > @
       sine 0
       0
 
-  # Tests that sine of pi/2 radians equals one.
   [] +> tests-sine-of-pi-halves-is-one
     lt. > @
       abs
@@ -54,7 +52,6 @@
           1000
       1
 
-  # Tests that sine of pi/6 radians equals one half.
   [] +> tests-sine-of-pi-sixths-is-half
     lt. > @
       abs
@@ -63,14 +60,12 @@
           500
       1
 
-  # Tests that sine of pi radians equals zero.
   [] +> tests-sine-of-pi-is-zero
     lt. > @
       abs
         (sine pi).times 1000
       1
 
-  # Tests that sine of negative pi/2 radians equals minus one.
   [] +> tests-sine-of-negative-pi-halves-is-minus-one
     lt. > @
       abs
@@ -79,7 +74,6 @@
           -1000
       1
 
-  # Tests that sine of three pi/2 radians equals minus one.
   [] +> tests-sine-of-three-pi-halves-is-minus-one
     lt. > @
       abs
@@ -88,7 +82,6 @@
           -1000
       1
 
-  # Tests that sine is an odd function.
   [] +> tests-sine-is-odd-function
     lt. > @
       abs
@@ -99,14 +92,12 @@
           1000
       1
 
-  # Tests that sine of two pi radians equals zero.
   [] +> tests-sine-of-two-pi-is-zero
     lt. > @
       abs
         (sine (pi.times 2)).times 1000
       1
 
-  # Tests that sine reduces a large angle before summing the series.
   [] +> tests-sine-reduces-large-angle
     lt. > @
       abs
@@ -115,7 +106,6 @@
           500
       1
 
-  # Tests that sine of 17 radians reduces to about minus 0.961.
   [] +> tests-sine-of-seventeen-radians
     lt. > @
       abs
@@ -124,17 +114,14 @@
           -961
       1
 
-  # Tests that sine of nan is nan.
   [] +> tests-sine-of-nan-is-nan
     is-nan. > @
       sine nan
 
-  # Tests that sine of +inf is nan.
   [] +> tests-sine-of-positive-infinity-is-nan
     is-nan. > @
       sine pinf
 
-  # Tests that sine of -inf is nan.
   [] +> tests-sine-of-negative-infinity-is-nan
     is-nan. > @
       sine ninf

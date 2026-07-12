@@ -10,16 +10,13 @@ asserts:
   - /object/errors/error[text()='intentional error, ignore it']
 
 input: |
-  # Main.
   [] > main
-    # No comments.
     [] > foo
       cti > @
         2.times 2
         "error"
         "intentional error, ignore it"
 
-    # No comments.
     [] > app
       Q.io.stdout > @
         Q.tt.sprintf

@@ -8,15 +8,11 @@ asserts:
   - /object/o[count(o[not(@name='xi🌵')])=4]
   - /object/o[@name='foo']/o[@name='λ']
 input: |-
-  # Foo atom together with the tests.
   [] > foo /bytes
-    # Test 1.
     eq. +> test-1
       foo
       "fox"
-    # Test 2.
     [] +> test-2
       foo > @
-    # Test 3.
     [] +> test-3
       foo > i

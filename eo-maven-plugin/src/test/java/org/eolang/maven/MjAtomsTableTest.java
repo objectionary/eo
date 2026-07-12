@@ -31,11 +31,8 @@ final class MjAtomsTableTest {
                         System.lineSeparator(),
                         "+package foo",
                         "",
-                        "# Top object.",
                         "[] > thing",
-                        "  # Atom returning bool.",
                         "  [x] > is-good /bool",
-                        "  # Atom returning number.",
                         "  [] > size /number"
                     )
                 )

@@ -8,25 +8,19 @@ origin: |
   +alias sprintf org.eolang.tt.sprintf
   +architect yegor256@gmail.com
 
-  # Main.
   [] > main
-    # No comments.
     [] > base
       memory 0 > x
-      # No comments.
       [self v] > f
         x.write > @
           v
-      # No comments.
       [self v] > g
         self.f > @
           self
           v
 
-    # No comments.
     [] > derived
       base > @
-      # No comments.
       [self v] > f
         self.g > @
           self
@@ -38,25 +32,19 @@ printed: |
   +alias sprintf Q.org.eolang.tt.sprintf
   +architect yegor256@gmail.com
 
-  # No comments.
   [] > main
-    # No comments.
     [] > base
       memory > x
         0
-      # No comments.
       [self v] > f
         ^.x.write > @
           v
-      # No comments.
       [self v] > g
         self.f > @
           self
           v
-    # No comments.
     [] > derived
       ^.base > @
-      # No comments.
       [self v] > f
         self.g > @
           self

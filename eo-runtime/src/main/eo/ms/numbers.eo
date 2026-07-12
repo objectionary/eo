@@ -1,3 +1,6 @@
+# Sequence of numbers.
+# Here `sequence` must be a `tuple` or any `tuple` decorator of `number` objects.
+
 +alias ss.list
 +alias ss.reduced
 +architect yegor256@gmail.com
@@ -7,14 +10,9 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Sequence of numbers.
-# Here `sequence` must be a `tuple` or any `tuple` decorator of `number` objects.
 [sequence] > numbers
   sequence > @
 
-  # Find max element in the numbers sequence. An empty sequence yields the
-  # caller-supplied `cant-max` fallback, or the bottom object when none
-  # was provided.
   [cant-max] > max
     if. > @
       lst.is-empty
@@ -29,9 +27,6 @@
             max
     list sequence > lst
 
-  # Find min element in the numbers sequence. An empty sequence yields the
-  # caller-supplied `cant-min` fallback, or the bottom object when none
-  # was provided.
   [cant-min] > min
     if. > @
       lst.is-empty
@@ -46,71 +41,57 @@
             min
     list sequence > lst
 
-  # Tests that taking max from an empty sequence with no fallback yields the
-  # bottom object that terminates when used.
   (numbers *).max > [] +> throws-on-taking-max-from-empty-sequence-of-numbers
 
-  # Tests that taking min from an empty sequence with no fallback yields the
-  # bottom object that terminates when used.
   (numbers *).min > [] +> throws-on-taking-min-from-empty-sequence-of-numbers
 
-  # Tests that max of an empty sequence with a fallback yields the fallback.
   [] +> tests-max-of-empty-returns-provided-fallback
     eq. > @
       "recovered"
       (numbers *).max
         "recovered" > [msg]
 
-  # Tests that min of an empty sequence with a fallback yields the fallback.
   [] +> tests-min-of-empty-returns-provided-fallback
     eq. > @
       "recovered"
       (numbers *).min
         "recovered" > [msg]
 
-  # Tests that max of single-item array returns that item.
   [] +> tests-max-of-one-item-array
     eq. > @
       (numbers (* 42)).max
       42
 
-  # Tests that min of single-item array returns that item.
   [] +> tests-min-of-one-item-array
     eq. > @
       (numbers (* 42)).min
       42
 
-  # Tests that max correctly identifies the largest value when it is the first element.
   [] +> tests-max-of-array-is-first
     eq. > @
       (numbers (* 25 12 -2)).max
       25
 
-  # Tests that max correctly identifies the largest value when it is in the middle.
   [] +> tests-max-of-array-is-in-the-center
     eq. > @
       (numbers (* 12 25 -2)).max
       25
 
-  # Tests that max correctly identifies the largest value when it is the last element.
   [] +> tests-max-of-array-is-last
     eq. > @
       (numbers (* 12 -2 25)).max
       25
 
-  # Tests that min correctly identifies the smallest value when it is the first element.
   [] +> tests-min-of-array-is-first
     eq. > @
       (numbers (* -2 25 12)).min
       -2
 
-  # Tests that min correctly identifies the smallest value when it is in the middle.
   [] +> tests-min-of-array-is-in-the-center
     eq. > @
       (numbers (* 12 -2 25)).min
       -2
 
-  # Tests that min correctly identifies the smallest value when it is the last element.
   [] +> tests-min-of-array-is-last
     eq. > @
       (numbers (* 12 25 -2)).min

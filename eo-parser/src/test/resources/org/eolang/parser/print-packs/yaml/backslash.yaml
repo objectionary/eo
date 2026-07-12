@@ -3,12 +3,10 @@
 ---
 # yamllint disable rule:line-length
 origin: |
-  # No comments.
   [] > main
     regex "/^[\\x00-\\x7F]*$/" > rgx
 
 printed: |
-  # No comments.
   [] > main
     regex > rgx
       "/^[\\x00-\\x7F]*$/"

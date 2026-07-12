@@ -2,11 +2,10 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 2
+line: 1
 message: |-
-  [2:7] error: 'trailing garbage after name suffix'
+  [1:7] error: 'trailing garbage after name suffix'
   [] > a [] > b [] > c [] > d hello world
          ^
 input: |
-  # No comments
   [] > a [] > b [] > c [] > d hello world

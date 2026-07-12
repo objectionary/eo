@@ -6,11 +6,10 @@ sheets: []
 asserts:
   - /object[not(errors)]
   - /object[count(o)=1]
-  - //o[@name='iПрИвЕт_кАк-дЕла123_你好' and @line='4']
+  - //o[@name='iПрИвЕт_кАк-дЕла123_你好' and @line='3']
 input: |
   +package test
 
-  # No comments.
   [a bя xты-друг] > iПрИвЕт_кАк-дЕла123_你好
     process. > @
       a

@@ -32,7 +32,6 @@ final class MjResolveTest {
             "+package foo.x",
             "+rt jvm org.eolang:eo-runtime:0.7.0",
             String.format("+version 0.25.0%n"),
-            "# No comments.",
             "[] > main /bytes"
             ).execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
@@ -63,7 +62,6 @@ final class MjResolveTest {
     void resolvesWithoutAnyDependencies(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.format("+package foo.x%n"),
-            "# No comments.",
             "[a b] > main",
             "  plus. > @",
             "    a",
@@ -112,7 +110,6 @@ final class MjResolveTest {
             "+package foo.x",
             "+rt jvm org.eolang:eo-runtime:0.22.1",
             String.format("+version 0.25.0%n"),
-            "# No comments.",
             "[] > main"
         ).execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
@@ -127,10 +124,13 @@ final class MjResolveTest {
         throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withProgram(
-            "+package foo.x",
-            String.format("+rt jvm org.eolang:eo-runtime:0.22.1%n"),
-            "# Main.",
-            "[] > main"
+            String.join(
+                System.lineSeparator(),
+                "+package foo.x",
+                "+rt jvm org.eolang:eo-runtime:0.22.1",
+                "",
+                "[] > main"
+            )
         ).with("ignoreRuntime", true).execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             "The class file must not exist, but it doesn't",
@@ -170,13 +170,11 @@ final class MjResolveTest {
             "+package foo.x",
             "+rt jvm org.eolang:eo-runtime:0.22.1",
             String.format("+version 0.25.0%n"),
-            "# No comment.",
             "[] > main /bytes"
         ).withProgram(
             "+package foo.x",
             "+rt jvm org.eolang:eo-runtime:0.22.0",
             String.format("+version 0.25.0%n"),
-            "# No comment.",
             "[] > main-1 /bytes"
         );
         MatcherAssert.assertThat(
@@ -194,15 +192,21 @@ final class MjResolveTest {
     @Test
     void resolvesWithConflictingDependenciesNoFail(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
-            "+package foo.x",
-            String.format("+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1%n"),
-            "# No comment.",
-            "[] > main /bytes"
-            ).withProgram(
+            String.join(
+                System.lineSeparator(),
                 "+package foo.x",
-                String.format("+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1%n"),
-                "# No comment.",
-                "[] > main-1 /bytes"
+                "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1",
+                "",
+                "[] > main /bytes"
+            )
+            ).withProgram(
+                String.join(
+                    System.lineSeparator(),
+                    "+package foo.x",
+                    "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1",
+                    "",
+                    "[] > main-1 /bytes"
+                )
             );
         maven.with("ignoreVersionConflicts", true)
             .execute(new FakeMaven.Resolve());

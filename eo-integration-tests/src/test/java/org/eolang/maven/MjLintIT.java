@@ -98,7 +98,6 @@ final class MjLintIT {
             "+package foo.x",
             "+version 0.0.0",
             "",
-            "# No comments.",
             "[x] > main",
             "  (stdout \"Hello!\" x).print > @"
         );

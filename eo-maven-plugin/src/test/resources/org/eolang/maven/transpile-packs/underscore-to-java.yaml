@@ -13,6 +13,5 @@ asserts:
   - /object[not(errors)]
   - //java[contains(text(), 'public final class EOfoo__underscore extends PhDefault')]
 input: |
-  # No comments.
   [] > foo_underscore
     * 1 2 (* 3 4) > @

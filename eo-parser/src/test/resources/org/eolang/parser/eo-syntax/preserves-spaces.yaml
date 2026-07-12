@@ -8,7 +8,6 @@ asserts:
   - //o[@name='y' and o/o[text()='20-66-6F-6F']]
   - //o[@name='z' and o/o[text()='66-6F-6F-20']]
 input: |
-  # No comments.
   [] > foo
     "    " > x
     " foo" > y

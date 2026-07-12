@@ -1,3 +1,6 @@
+# Radians of `num` degrees as `org.eolang.number`, the same angle expressed in
+# radians rather than degrees, found by scaling the argument by pi over 180.
+
 +alias ms.abs
 +alias ms.pi
 +architect yegor256@gmail.com
@@ -7,21 +10,17 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Radians of `num` degrees as `org.eolang.number`, the same angle expressed in
-# radians rather than degrees, found by scaling the argument by pi over 180.
 [num] > radians
   div. > @
     value.times pi
     180.0
   number num.as-bytes > value
 
-  # Tests that zero degrees is zero radians.
   [] +> tests-radians-of-zero-is-zero
     eq. > @
       radians 0
       0
 
-  # Tests that a half turn of 180 degrees is pi radians.
   [] +> tests-radians-of-half-turn-is-pi
     lt. > @
       abs
@@ -30,7 +29,6 @@
           pi
       0.0001
 
-  # Tests that a quarter turn of 90 degrees is pi/2 radians.
   [] +> tests-radians-of-quarter-turn-is-pi-halves
     lt. > @
       abs
@@ -39,7 +37,6 @@
           pi.div 2
       0.0001
 
-  # Tests that a full turn of 360 degrees is two pi radians.
   [] +> tests-radians-of-full-turn-is-two-pi
     lt. > @
       abs
@@ -48,7 +45,6 @@
           pi.times 2
       0.0001
 
-  # Tests that minus a half turn of 180 degrees is minus pi radians.
   [] +> tests-radians-of-negative-half-turn-is-minus-pi
     lt. > @
       abs
@@ -57,7 +53,6 @@
           pi.neg
       0.0001
 
-  # Tests that radians of nan is nan.
   [] +> tests-radians-of-nan-is-nan
     is-nan. > @
       radians nan

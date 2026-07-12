@@ -7,21 +7,15 @@ package org.eolang.parser;
 import java.util.List;
 
 /**
- * Attach buffered comment lines to the next named object — §6.4.
+ * Flush the top comment block and close the header zone — §3.3 / §6.4.
  *
- * <p>A comment block accumulates in {@link Globals#pendingComments()}
- * as each {@link LnComment} arrives. Every subsequent line — named or
- * not — calls {@link #attach(Globals, Emit, Span, boolean)}: a blank
- * line separating the block from what follows is an immediate
- * R-6.5.2 violation, reported as dangling per R-6.4.2 and cleared on
- * the spot. Absent a blank, the block flushes into
- * {@code /object/comments/comment} as soon as a named line at the
- * same indent arrives; an unnamed or deeper/shallower-indent line in
- * between is not itself a violation — the block stays pending so a
- * later same-indent named line (e.g. the name-bearing tail of a
- * vertical-continuation chain) can still claim it. Any block left
- * pending at end of stream is reported dangling by the EOF check in
- * {@link Eo}.</p>
+ * <p>Only one comment block is legal in a program: the block that sits
+ * on top of the file, before all metas and objects (§3.3). It documents
+ * the whole program. As each {@link LnComment} arrives it accumulates in
+ * {@link Globals#pendingComments()}; the first meta directive or object
+ * then calls {@link #seal(Globals, Emit, Span)} to flush that block into
+ * {@code /object/comments/comment} and mark the header zone closed. From
+ * that point on any further comment is rejected by {@link LnComment}.</p>
  *
  * @since 0.1
  */
@@ -34,31 +28,37 @@ final class Comments {
     }
 
     /**
-     * Flush or reject the pending comment block in light of the line
-     * about to be emitted.
+     * Flush the pending top comment block, if any, and close the header
+     * zone.
+     *
+     * <p>Idempotent — after the first call {@link Globals#sealed()} is
+     * true and subsequent calls do nothing, so only the first meta or
+     * object in the file triggers the flush.</p>
+     *
+     * <p>A non-empty top comment block must be separated from the rest
+     * of the file by exactly one blank line (§6.5). If the sealing meta
+     * or object follows the block with no blank in between
+     * ({@link Globals#pendingBlanks()} is zero), the block is rejected.</p>
+     *
      * @param globals Global parser state
      * @param emit XMIR emitter
-     * @param span Source span of the upcoming line
-     * @param named True when the upcoming line carries a name suffix
-     * @checkstyle ParameterNumberCheck (3 lines)
+     * @param span Source span of the meta or object closing the header
      */
-    static void attach(
-        final Globals globals, final Emit emit, final Span span, final boolean named
-    ) {
-        final List<Span> pending = globals.pendingComments();
-        if (pending.isEmpty()) {
+    static void seal(final Globals globals, final Emit emit, final Span span) {
+        if (globals.sealed()) {
             return;
         }
-        final Span head = pending.get(0);
-        if (globals.pendingBlanks() > 0) {
-            emit.error(
-                head.line(), head.indent(),
-                "comment must precede a named object"
+        final List<Span> pending = globals.pendingComments();
+        if (!pending.isEmpty() && globals.pendingBlanks() == 0) {
+            throw new ParseError(
+                span.line(), span.indent(),
+                "a blank line must separate the top comment block from the rest of the file"
             );
-            globals.clearComments();
-        } else if (named && head.indent() == span.indent()) {
+        }
+        if (!pending.isEmpty()) {
             emit.comment(pending, span.line());
             globals.clearComments();
         }
+        globals.seal();
     }
 }

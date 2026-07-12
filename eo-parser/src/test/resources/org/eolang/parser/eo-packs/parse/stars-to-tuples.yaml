@@ -9,27 +9,27 @@ asserts:
   - /object/o[count(o)=8]
   - /object/o[count(//o[@star])=0]
   # first
-  - //o[@base='Φ.tuple.empty' and @line=3 and @name='xs']
+  - //o[@base='Φ.tuple.empty' and @line=2 and @name='xs']
   # second
-  - //o[@base='Φ.tuple' and @line=4 and @name='xl']/o[1][@base='Φ.tuple.empty' and @line]
-  - //o[@base='Φ.tuple' and @line=4 and @name='xl']/o[2][@base='Φ.number' and @line]
-  - //o[@base='Φ.tuple' and @line=4 and @name='xl']/o[3][@base='Φ.number' and @line]/o[@base='Φ.bytes']/o[1][@hex and text()='1']
+  - //o[@base='Φ.tuple' and @line=3 and @name='xl']/o[1][@base='Φ.tuple.empty' and @line]
+  - //o[@base='Φ.tuple' and @line=3 and @name='xl']/o[2][@base='Φ.number' and @line]
+  - //o[@base='Φ.tuple' and @line=3 and @name='xl']/o[3][@base='Φ.number' and @line]/o[@base='Φ.bytes']/o[1][@hex and text()='1']
   # third
-  - //o[@base='Φ.tuple' and @line=5]/o[1][@base='Φ.tuple']/o[1][@base='Φ.tuple.empty']
-  - //o[@base='Φ.tuple' and @line=5]/o[1][@base='Φ.tuple']/o[2][@base='Φ.number']
-  - //o[@base='Φ.tuple' and @line=5]/o[1][@base='Φ.tuple']/o[3][@base='Φ.number']/o[@base='Φ.bytes']/o[1][@hex and text()='1']
-  - //o[@base='Φ.tuple' and @line=5]/o[2][@base='Φ.number']
-  - //o[@base='Φ.tuple' and @line=5]/o[3][@base='Φ.number']/o[@base='Φ.bytes']/o[1][@hex and text()='2']
+  - //o[@base='Φ.tuple' and @line=4]/o[1][@base='Φ.tuple']/o[1][@base='Φ.tuple.empty']
+  - //o[@base='Φ.tuple' and @line=4]/o[1][@base='Φ.tuple']/o[2][@base='Φ.number']
+  - //o[@base='Φ.tuple' and @line=4]/o[1][@base='Φ.tuple']/o[3][@base='Φ.number']/o[@base='Φ.bytes']/o[1][@hex and text()='1']
+  - //o[@base='Φ.tuple' and @line=4]/o[2][@base='Φ.number']
+  - //o[@base='Φ.tuple' and @line=4]/o[3][@base='Φ.number']/o[@base='Φ.bytes']/o[1][@hex and text()='2']
   # fourth
-  - //o[@base='.empty' and @line=6]/o[@base='Φ.tuple.empty']
+  - //o[@base='.empty' and @line=5]/o[@base='Φ.tuple.empty']
   # fifth
-  - //o[@base='Φ.tuple' and @line=7]/o[1][@base='Φ.tuple' and @line]/o[1][@base='Φ.tuple' and @line]/o[1][@base='Φ.tuple.empty']
-  - //o[@base='Φ.tuple' and @line=7]/o[1][@base='Φ.tuple' and @line]/o[1][@base='Φ.tuple' and @line]/o[2][@base='.c']
-  - //o[@base='Φ.tuple' and @line=7]/o[1][@base='Φ.tuple' and @line]/o[1][@base='Φ.tuple' and @line]/o[3][@base='Φ.number']/o[@base='Φ.bytes']/o[@hex and text()='1']
-  - //o[@base='Φ.tuple' and @line=7]/o[1][@base='Φ.tuple' and @line]/o[2][@base='.f']
-  - //o[@base='Φ.tuple' and @line=7]/o[1][@base='Φ.tuple' and @line]/o[3][@base='Φ.number']/o[@base='Φ.bytes']/o[@hex and text()='2']
-  - //o[@base='Φ.tuple' and @line=7]/o[2][@base='.i']
-  - //o[@base='Φ.tuple' and @line=7]/o[3][@base='Φ.number']/o[@base='Φ.bytes']/o[@hex and text()='3']
+  - //o[@base='Φ.tuple' and @line=6]/o[1][@base='Φ.tuple' and @line]/o[1][@base='Φ.tuple' and @line]/o[1][@base='Φ.tuple.empty']
+  - //o[@base='Φ.tuple' and @line=6]/o[1][@base='Φ.tuple' and @line]/o[1][@base='Φ.tuple' and @line]/o[2][@base='.c']
+  - //o[@base='Φ.tuple' and @line=6]/o[1][@base='Φ.tuple' and @line]/o[1][@base='Φ.tuple' and @line]/o[3][@base='Φ.number']/o[@base='Φ.bytes']/o[@hex and text()='1']
+  - //o[@base='Φ.tuple' and @line=6]/o[1][@base='Φ.tuple' and @line]/o[2][@base='.f']
+  - //o[@base='Φ.tuple' and @line=6]/o[1][@base='Φ.tuple' and @line]/o[3][@base='Φ.number']/o[@base='Φ.bytes']/o[@hex and text()='2']
+  - //o[@base='Φ.tuple' and @line=6]/o[2][@base='.i']
+  - //o[@base='Φ.tuple' and @line=6]/o[3][@base='Φ.number']/o[@base='Φ.bytes']/o[@hex and text()='3']
   # sixth
   - //o[@base='.elements']/o[@base='arr']/o[@base='Φ.tuple.empty' and @line]
   # seventh
@@ -37,7 +37,6 @@ asserts:
   - //o[@base='.reduced']/o[@base='Φ.tuple.empty' and @line]
   - //o[@base='.reduced']/o[not(@base)]/o[@base='∅' and @name='x']
 input: |
-  # Main.
   [] > main
     * > xs
     * 1 > xl

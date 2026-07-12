@@ -25,7 +25,6 @@ eo: |
   +package custom
   +version 0.0.0
 
-  # No comments.
   [] > app
     Q.tt.text.^.q > s
     Q.tt.sprintf > @
@@ -42,7 +41,6 @@ eo: |
             fibonacci n > f
         true
 
-    # No comments.
     [i] > other
       stdout > @
         sprintf
@@ -50,6 +48,5 @@ eo: |
     $.other 1 > one
     memory 0 > price
 
-    # No comments.
     [p] > set-price
       ^.price.write p > @

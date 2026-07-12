@@ -2,13 +2,12 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 4
+line: 3
 message: |-
-  [4:15] error: 'expected value'
+  [3:15] error: 'expected value'
       malloc 100 [m]>> > @
                  ^
 input: |
-  # No comments
   [] > foo
     bar > @
       malloc 100 [m]>> > @

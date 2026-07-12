@@ -2,13 +2,12 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 5
+line: 4
 message: |-
-  [5:2] error: 'method continuation not allowed after horizontal application'
+  [4:2] error: 'method continuation not allowed after horizontal application'
     .with 2 > arr
     ^
 input: |
-  # No comments.
   [] > foo
     *
     .with 1

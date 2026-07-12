@@ -8,7 +8,6 @@ asserts:
   - //o[@name='bar']/o[@base='∅' and @name='x']
   - //o[@name='bar']/o[@base='Φ.foo' and @name='φ']/o[@base='ξ.x.plus' and @as='α0']
 input: |
-  # No comments.
   [] > obj
     foo > [x] > bar
       x.plus 42

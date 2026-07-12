@@ -2,9 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 3
+line: 2
 message: "expected value"
 input: |
-  # No comments.
   [] > foo
     bar. ? q > m

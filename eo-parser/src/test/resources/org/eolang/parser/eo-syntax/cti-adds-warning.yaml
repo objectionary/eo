@@ -13,9 +13,7 @@ input: |
   +package org.eolang
   +version 0.0.0
 
-  # Main.
   [] > main
-    # This unit test is supposed to check the functionality of the corresponding object.
     [] > just-prints-warning
       eq. > @
         cti
@@ -24,14 +22,12 @@ input: |
           "intentional error, ignore it"
         4
 
-    # No comments.
     [] > foo
       cti > @
         2.times 2
         "warning"
         "intentional error, ignore it"
 
-    # No comments.
     [] > app
       Q.io.stdout > @
         Q.tt.sprintf

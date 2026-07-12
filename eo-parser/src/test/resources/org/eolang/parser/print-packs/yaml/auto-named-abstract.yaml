@@ -3,7 +3,6 @@
 ---
 # yamllint disable rule:line-length
 origin: |
-  # no.
   [] > y
     x > first
       [] >>
@@ -12,7 +11,6 @@ origin: |
       [f]:1 >>
 
 printed: |
-  # No comments.
   [] > y
     x > first
       [] >>

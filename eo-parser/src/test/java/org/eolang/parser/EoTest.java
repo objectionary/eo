@@ -59,25 +59,35 @@ final class EoTest {
     }
 
     @Test
-    void parsesCommentAttachmentTargetMissing() {
+    void flushesTopCommentBlock() {
         MatcherAssert.assertThat(
-            "a comment block at EOF with no following named object must be reported as dangling",
-            EoTest.render("# orphan comment"),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'comment must precede a named object')]"
+            "a comment block on top of the file must flush into /object/comments",
+            EoTest.render("# top doc", "", "[] > foo"),
+            XhtmlMatchers.hasXPaths(
+                "/object/comments/comment[contains(text(),'top doc')]",
+                "/object[not(errors)]"
             )
         );
     }
 
     @Test
-    void doesNotLeakDanglingCommentToLaterUnrelatedObject() {
+    void rejectsCommentAfterObject() {
         MatcherAssert.assertThat(
-            "a comment separated from its object by a blank line (dangling per R-6.5.2)"
-                .concat(" must be reported, not silently misattached to a later object"),
-            EoTest.render("# c", "", "[x] > foo", "[y] > bar"),
-            XhtmlMatchers.hasXPaths(
-                "/object/errors/error[contains(text(),'comment must precede a named object')]",
-                "/object[not(comments)]"
+            "a comment after an object cannot be accepted — only the top block is allowed",
+            EoTest.render("[] > foo", "# late", "  bar > @"),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'comment is allowed only on top of the file, before metas')]"
+            )
+        );
+    }
+
+    @Test
+    void rejectsTopCommentWithoutBlankBelow() {
+        MatcherAssert.assertThat(
+            "a top comment block not separated from the object by a blank line cannot be accepted",
+            EoTest.render("# top doc", "[] > foo"),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'a blank line must separate the top comment block from the rest of the file')]"
             )
         );
     }

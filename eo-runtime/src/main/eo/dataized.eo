@@ -1,12 +1,3 @@
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
-+version 0.0.0
-+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
-
 # Object that dataizes `target`, makes a new instance of `bytes` from given
 # data and behaves as the result
 # `bytes`.
@@ -37,8 +28,17 @@
 # Here, when `.as-bytes` is taken, the `dataized` dataizes (takes `bytes`)
 # from the object `foo` and returns them.
 # The `.as-bytes` is used to prevent double dataization.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
+
 [target] > dataized /bytes
-  # Tests that dataized values are not recalculated on subsequent access.
   [] +> tests-dataized-does-not-do-recalculation
     eq. > @
       malloc.for
@@ -51,12 +51,10 @@
               cached.as-bool
               m
           (dataized func).as-bytes > cached
-          # Function that increments counter in memory for testing.
           [] > func
             ^.m.put (^.m.as-number.plus 1) > @
       1
 
-  # Tests that dataized bytes behave correctly when accessed with exclamation.
   [] +> tests-dataizes-as-bytes-behaves-as-exclamationed
     seq > @
       *
@@ -69,7 +67,6 @@
           1.eq cached1
     (dataized func).as-bytes > cached1
     func > cached2!
-    # Function that increments counter in memory for testing.
     malloc.for > func
       0
       [m]

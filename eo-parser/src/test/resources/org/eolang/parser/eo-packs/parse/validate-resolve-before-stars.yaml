@@ -6,7 +6,7 @@ sheets:
   - /org/eolang/parser/parse/validate-before-stars.xsl
   - /org/eolang/parser/parse/resolve-before-stars.xsl
 asserts:
-  - /object/errors/error[@line='3' and @severity='error']
+  - /object/errors/error[@line='2' and @severity='error']
   - //o[@name='first' and count(o)=1]/o[@base='Φ.tuple' and @star and count(o)=2]
   - //o[@name='second' and count(o)=2]/o[position()=2 and @base='Φ.tuple' and @star and count(o)=2]
   - //o[@name='third' and count(o)=3]/o[position()=3 and @base='Φ.tuple' and @star and count(o)=1]
@@ -14,7 +14,6 @@ asserts:
   - //o[@name='fourth']/o[@base='Φ.tuple' and @star and count(o)=1]
   - /object[count(//o[@before-star])=0]
 input: |
-  # No comments.
   [] > foo
     sprintf *2 > with-error
       x

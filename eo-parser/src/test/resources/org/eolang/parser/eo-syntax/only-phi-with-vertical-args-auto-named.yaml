@@ -9,7 +9,6 @@ asserts:
   - //o[@base='Φ.xyz' and @name='φ']/o[@as='α0' and @base='Φ.number']
   - //o[@base='Φ.xyz' and @name='φ']/o[@as='α1' and @base='ξ.k.minus']
 input: |
-  # No comments.
   [] > obj
     xyz > [k] >>
       33

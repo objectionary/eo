@@ -2,13 +2,12 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 4
+line: 3
 message: |-
-  [4:4] error: 'comment must precede a named object'
+  [3:4] error: 'comment is allowed only on top of the file, before metas'
       # a comment here is prohibited
       ^
 input: |
-  # No comments
   [args] > app
     stdout > @
       # a comment here is prohibited

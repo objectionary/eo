@@ -32,7 +32,6 @@ input: |
   +decorate string my foo
   +foo Some other meta
 
-  # No comments.
   [args] > main
     and > @
       (scanner stdin).next-line > line!

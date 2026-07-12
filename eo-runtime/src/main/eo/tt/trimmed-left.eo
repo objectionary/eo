@@ -1,3 +1,9 @@
+# Returns `text` trimmed from left side.
+# Removes all leading ASCII whitespace bytes: `20-` (space), `09-`
+# (horizontal tab), `0A-` (line feed), `0B-` (vertical tab), `0C-`
+# (form feed), and `0D-` (carriage return). Matches the strip-set
+# used by `String.strip()` in Java for the ASCII range.
+
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tt
@@ -5,7 +11,6 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Returns `text` trimmed from left side.
 [text] > trimmed-left
   if. > @
     0.eq len
@@ -15,40 +20,73 @@
         idx
         (number len).minus idx
   text > bts!
-  first-non-space-index 0 > idx!
+  first-non-ws-index 0 > idx!
   bts.size > len!
 
-  # Recursively finds index of the first non-space character from left.
-  [index] > first-non-space-index
+  [index] > first-non-ws-index
     if. > @
       len.eq index
       index
       if.
-        char.eq 20-
-        first-non-space-index (index.plus 1).as-number
+        is-ws char
+        first-non-ws-index (index.plus 1).as-number
         index
     bts.slice index 1 > char!
 
-  # Tests specific functionality trimmed-left returns empty string when applied to empty text.
+  [c] > is-ws
+    or. > @
+      c.eq 20-
+      or.
+        c.eq 09-
+        or.
+          c.eq 0A-
+          or.
+            c.eq 0B-
+            or.
+              c.eq 0C-
+              c.eq 0D-
+
   [] +> tests-trimmed-left-empty-text
     eq. > @
       trimmed-left ""
       ""
 
-  # Tests specific functionality trimmed-left removes single leading space from text.
   [] +> tests-text-trimmed-left-one-space
     eq. > @
       trimmed-left " s"
       "s"
 
-  # Tests specific functionality trimmed-left removes multiple leading spaces from text.
   [] +> tests-text-trimmed-left-many-spaces
     eq. > @
       trimmed-left "     some"
       "some"
 
-  # Tests specific functionality trimmed-left returns empty string when text contains only spaces.
   [] +> tests-text-trimmed-left-only-spaces
     eq. > @
       trimmed-left "     "
       ""
+
+  [] +> tests-trimmed-left-strips-tab
+    eq. > @
+      trimmed-left "\tvalue"
+      "value"
+
+  [] +> tests-trimmed-left-strips-lf
+    eq. > @
+      trimmed-left "\nvalue"
+      "value"
+
+  [] +> tests-trimmed-left-strips-ff
+    eq. > @
+      trimmed-left "\fvalue"
+      "value"
+
+  [] +> tests-trimmed-left-strips-cr
+    eq. > @
+      trimmed-left "\rvalue"
+      "value"
+
+  [] +> tests-trimmed-left-strips-mixed-ws
+    eq. > @
+      trimmed-left " \t\n\f\rvalue"
+      "value"

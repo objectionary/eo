@@ -20,7 +20,6 @@ asserts:
 input: |
   +decorate string tt.text
 
-  # No comments.
   [] > main
     "Hello" > @
     stringify > y

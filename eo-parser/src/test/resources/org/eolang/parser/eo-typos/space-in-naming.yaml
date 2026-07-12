@@ -2,12 +2,11 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 3
+line: 2
 message: |-
-  [3:4] error: 'expected value'
+  [2:4] error: 'expected value'
     a : b > x
       ^
 input: |
-  # No comments
   [] > hello
     a : b > x

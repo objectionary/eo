@@ -6,11 +6,8 @@ sheets: []
 asserts:
   - //o[@base='ξ.foo' and count(o)=1]
 input: |
-  # No comments.
   [] > aliases
-    # No comments.
     [x] > foo
-      # No comments.
       [y] > @
         42 > @
     eq. > @

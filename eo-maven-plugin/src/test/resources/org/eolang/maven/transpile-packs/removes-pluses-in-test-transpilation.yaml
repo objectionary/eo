@@ -18,10 +18,8 @@ asserts:
   - //tests[contains(text(), 'tests_iterates_with_eachiφρα1();')]
   - //tests[contains(text(), 'EOΦlisttests_iterates_with_eachiφρα1')]
 input: |
-  # This is the list.
   [] > list
     [x] > bar
-    # This unit test is supposed to check the functionality of the corresponding object.
     [] +> tests-iterates-with-eachi
       eq. > @
         malloc.for

@@ -9,6 +9,5 @@ asserts:
   - //o[@name='λ' and @atom]
   - //o[o[@name='λ'] and o[@base='∅']]
 input: |
-  # No comments.
   [] > main
     [x] > foo /bytes

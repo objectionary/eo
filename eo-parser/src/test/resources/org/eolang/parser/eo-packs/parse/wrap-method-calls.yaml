@@ -16,7 +16,6 @@ asserts:
   - //o[@base='a' and @name='xxx']
   - //o[@base='.f2' and @name='last']
 input: |
-  # No comments.
   [args] > app
     stdout > @
       sprintf

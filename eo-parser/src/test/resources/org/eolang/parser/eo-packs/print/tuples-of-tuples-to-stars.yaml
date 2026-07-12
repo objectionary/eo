@@ -22,7 +22,6 @@ asserts:
 input: |
   +package test
 
-  # No comments.
   [] > foo
     * > xs
       * 1 2

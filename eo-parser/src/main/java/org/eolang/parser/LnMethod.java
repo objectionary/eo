@@ -75,7 +75,7 @@ final class LnMethod implements Line {
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
-        Comments.attach(globals, emit, this.span, suffix.present());
+        Comments.seal(globals, emit, this.span);
         if (outer != null && stack.below() != null) {
             stack.below().upgradeArgBinding();
         }

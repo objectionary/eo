@@ -1,10 +1,3 @@
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+version 0.0.0
-+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
-
 # No-operation object `nop`: it ignores its argument and
 # always behaves as TRUE. It is useful for temporarily disabling a
 # test (or any other dataizable expression) without removing the
@@ -18,13 +11,19 @@
 #
 # The wrapped expression is not evaluated, and the surrounding test
 # passes trivially.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
+
 [x] > nop
   true > @
 
-  # Tests that nop ignores its argument and behaves as TRUE.
   [] +> tests-nop-is-true
     nop "anything" > @
 
-  # Tests that nop returns TRUE regardless of the argument type.
   [] +> tests-nop-with-number-is-true
     nop 42 > @

@@ -74,7 +74,7 @@ final class LnApplication implements Line {
                 "redundant parentheses around a top-level expression — drop the outer `(` and `)`"
             );
         }
-        Comments.attach(globals, emit, this.span, suffix.present());
+        Comments.seal(globals, emit, this.span);
         final Kind kind = LnApplication.classify(chain, args);
         final Openness openness;
         if (kind == Kind.HAPPLICATION) {

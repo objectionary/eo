@@ -6,6 +6,5 @@ sheets: []
 asserts:
   - /object[not(errors)]
 input: |
-  # No comments.
   [] > foo
     bar (a > [b]) > @

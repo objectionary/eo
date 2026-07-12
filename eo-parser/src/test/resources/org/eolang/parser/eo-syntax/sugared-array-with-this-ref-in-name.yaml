@@ -8,7 +8,6 @@ asserts:
   - //o[@base='ξ.seq']/o[@base='Φ.x']
   - //o[@base='ξ.seq']//o[@base='Φ.y']
 input: |
-  # No comments.
   [] > app
     $.seq *1 > @
       x

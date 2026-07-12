@@ -1,3 +1,8 @@
+# Returns `text` where all regex target changed to replacement.
+# Here `target` must be a `org.eolang.tt.regex` object.
+# The `replacement` here is a `string` that would be pasted instead of
+# matched text in original one.
+
 +alias tt.regex
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -6,10 +11,6 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-# Returns `text` where all regex target changed to replacement.
-# Here `target` must be a `org.eolang.tt.regex` object.
-# The `replacement` here is a `string` that would be pasted instead of
-# matched text in original one.
 [text target replacement] > replaced
   if. > @
     matched.exists.not
@@ -19,7 +20,6 @@
   (target.match reinit).next > matched
   string bts > reinit
 
-  # Recursively replaces matched blocks with replacement string in text.
   [block accum start] > rec-replaced
     if. > @
       block.exists
@@ -39,7 +39,6 @@
             start
             reinit.length.minus start
 
-  # Tests that replaced returns original text when regex pattern not found.
   [] +> tests-does-not-replaces-if-regex-not-found
     replaced
       "Hello, world"
@@ -49,7 +48,6 @@
     .eq > @
       "Hello, world"
 
-  # Tests that replaced substitutes digit characters with replacement string.
   [] +> tests-replaces-digits-with-string
     replaced
       "Hell0, w0rld"
@@ -59,7 +57,6 @@
     .eq > @
       "Hello, world"
 
-  # Tests that replaced converts forward slashes to backslashes in path.
   [] +> tests-replaces-slashes-to-windows-separator
     replaced
       "C:\\Windows/foo\\bar/hello.txt"
@@ -69,7 +66,6 @@
     .eq > @
       "C:\\Windows\\foo\\bar\\hello.txt"
 
-  # Tests that replaced converts Windows path separators to forward slashes.
   [] +> tests-replaces-windows-path-with-slash
     replaced
       "C:\\Windows\\Users\\AppLocal\\shrek"
@@ -79,7 +75,6 @@
     .eq > @
       "C/Windows/Users/AppLocal/shrek"
 
-  # Tests that replaced removes invalid filename characters from path.
   [] +> tests-sanitizes-windows-path-with-regex
     replaced
       "foo\\bar<:>?*\"|baz\\asdf"

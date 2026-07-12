@@ -1,3 +1,8 @@
+# Makes a Unix syscall by `name` with POSIX interface.
+# Here `args` is a `org.eolang.tuple` of arguments required for
+# the particular syscall.
+# See the linux syscall [table](https://filippo.io/linux-syscall-table) for more info.
+
 +alias sm.os
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -9,60 +14,39 @@
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
 
-# Makes a Unix syscall by `name` with POSIX interface.
-# Here `args` is a `org.eolang.tuple` of arguments required for
-# the particular syscall.
-# See the linux syscall [table](https://filippo.io/linux-syscall-table) for more info.
 [name args] > posix
-  # Makes an actual syscall to operating system
-  # Returns `org.eolang.sm.posix.return` object.
   [] > @ /return
   2 > af-inet
   -1 > inaddr-none
   6 > ipproto-tcp
-  # Open flag for read-only access: `O_RDONLY`.
   0 > o-rdonly
-  # Open flag for write-only access: `O_WRONLY`.
   1 > o-wronly
-  # Open flag for read-write access: `O_RDWR`.
   2 > o-rdwr
-  # Open flag to create the file if absent: `O_CREAT` (`0x200` on macos, `0x40` on linux).
   if. > o-creat
     os.is-macos
     512
     64
-  # Open flag to truncate the file: `O_TRUNC` (`0x400` on macos, `0x200` on linux).
   if. > o-trunc
     os.is-macos
     1024
     512
-  # Open flag to append on write: `O_APPEND` (`0x8` on macos, `0x400` on linux).
   if. > o-append
     os.is-macos
     8
     1024
-  # Permission bits for a file made by the "creat" syscall: octal 0644.
   420 > create-mode
-  # Permission bits for a directory made by the "mkdir" syscall: octal 0777.
   511 > mkdir-mode
   1 > sock-stream
   0 > stdin-fileno
   1 > stdout-fileno
-  # Result of a POSIX syscall with return code and output.
   [code output] > return
     output > @
     return code output > called
 
-  # Timeval structure for "gettimeofday" syscall.
-  # Here `tv-sec` is seconds since Jan 1, 1970, and `tv-usec` - microseconds.
   [tv-sec tv-usec] > timeval
 
-  # Stat structure for the "stat" syscall.
-  # Here `st-mode` holds the file type and permission bits, and `st-size`
-  # is the file size in bytes.
   [st-mode st-size] > stat
 
-  # Posix `sockaddr_in` structure for IPv4 socket addressing.
   [sin-family sin-port sin-addr] > sockaddr-in
     00-00-00-00-00-00-00-00 > sin-zero
     plus. > size
@@ -73,7 +57,6 @@
         sin-addr.size
       sin-zero.size
 
-  # Tests that the getpid POSIX syscall correctly returns a process ID greater than 0.
   [] +> tests-invokes-getpid-correctly
     or. > @
       os.is-windows
@@ -84,7 +67,6 @@
             tuple.empty
         0
 
-  # Tests that a file can be opened read-only and closed via the open and close syscalls.
   [] +> tests-opens-and-closes-file-via-syscall
     or. > @
       os.is-windows
@@ -100,7 +82,6 @@
         "open"
         * "/dev/null" 0 0
 
-  # Tests that a POSIX TCP socket can be opened successfully using the socket syscall.
   [] +> tests-opens-posix-tcp-socket
     or. > @
       os.is-windows
@@ -116,7 +97,6 @@
         "socket"
         * posix.af-inet posix.sock-stream posix.ipproto-tcp
 
-  # Tests that a POSIX TCP socket can be closed successfully using the close syscall.
   [] +> tests-closes-posix-tcp-socket
     or. > @
       os.is-windows
@@ -135,7 +115,6 @@
         "socket"
         * posix.af-inet posix.sock-stream posix.ipproto-tcp
 
-  # Tests POSIX inet_addr returns correct localhost (127.0.0.1) address.
   [] +> tests-returns-valid-posix-inet-addr-for-localhost
     or. > @
       os.is-windows

@@ -158,7 +158,6 @@ final class ProxyIT {
             "+package foo.x.y",
             "+version 0.1.2",
             "",
-            "# Prints Hello Proxy! to stdout.",
             "[x] > main",
             "  (stdout \"Hello Proxy!\" x).print > @"
         );

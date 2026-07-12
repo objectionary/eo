@@ -28,9 +28,7 @@ asserts:
   - //o[@base='.and']/o[2][@base='.eq']/o[1][@base='.as-bytes']/o[@base='Φ.bytes']/o[text()!='']
   - //o[@base='.and']/o[2][@base='.eq']/o[2][@base='Φ.false']
 input: |
-  # Main.
   [] > main
-    # No comment.
     [x] > foo
       a. > one
         b. > two
@@ -43,7 +41,6 @@ input: |
         2
         1
 
-    # This unit test is supposed to check the functionality of the corresponding object.
     [] > compares-bool-to-bytes-reverse
       and. > @
         01-.as-bytes.eq true

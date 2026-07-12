@@ -1,16 +1,3 @@
-+alias sm.os
-+alias sm.posix
-+alias sm.win32
-+alias tt.sprintf
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+package nk
-+version 0.0.0
-+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
-+unlint unit-test-missing
-+unlint redundant-object
-
 # Socket.
 #
 # To connect to the local server as client you should do:
@@ -54,6 +41,20 @@
 # given scope, closes client socket and returns `bytes` retrieved from scope dataization.
 # On failure at any of the described steps, the fallback of the corresponding operation is
 # returned (or the bottom object when it is left unbound).
+
++alias sm.os
++alias sm.posix
++alias sm.win32
++alias tt.sprintf
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package nk
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint unit-test-missing
++unlint redundant-object
+
 [address port] > socket
   if. > @
     os.is-windows
@@ -77,14 +78,6 @@
         0 > startup
         true > cleanup
 
-  # Host TO Network Short.
-  # It is used to convert a `number` port from host byte order to
-  # to `i16` in network byte order (big-endian).
-  # This conversion is necessary because network protocols like TCP/IP use
-  # big-endian byte order, regardless of the host machine's architecture.
-  #
-  # Note: This object is intended for internal use only. Please do not use
-  # the object programmatically outside of `socket` object.
   [port] > htons
     as-i16. > @
       or.
@@ -92,67 +85,31 @@
         (bts.right 8).and FF-
     port.as-i16.as-bytes > bts
 
-  # Makes an `input` from `socket`.
-  # The object allows to use `socket` as input stream and `read` from it sequentially.
-  # Here `recv` must be an object that receives the data from the socket.
-  #
-  # Note: This object is intended for internal use only. Please do not use
-  # the object programmatically outside of `socket` object.
   [recv] > as-input
-    # Read `size` amount of bytes from socket.
-    # Returns new instance of `input-block` with `buffer` read from socket.
     [size] > read
       ((input-block --).read size).@ > @
 
-      # Socket input block.
-      #
-      # Note: This object is intended for internal use only. Please do not use the object
-      # programmatically outside of `socket` object.
       [buffer] > input-block
         buffer > @
 
-        # Read `size` amount of bytes from socket.
-        # Returns new instance of `input-block` with `buffer` read from socket.
         [size] > read
           seq * > @
             chunk
             input-block chunk
           (recv size).as-bytes > chunk
 
-  # Makes an `output` from posix socket.
-  # The object allows to use `socket` as output stream and `write` to it sequentially.
-  # Here `send` must be an object that sends the data to the socket.
-  #
-  # Note: This object is intended for internal use only. Please do not use
-  # the object programmatically outside of `socket` object.
   [send] > as-output
-    # Write given `buffer` to the socket.
-    # Here `buffer` is either sequence of bytes or and object that can be
-    # dataized via `as-bytes` object.
-    # Returns new instance of `output-block` ready to `write` again.
     [buffer] > write
       (output-block.write buffer).@ > @
 
-      # Socket output block.
-      #
-      # Note: This object is intended for internal use only. Please do not use the object
-      # programmatically outside of `console` object.
       [] > output-block
         true > @
 
-        # Writes bytes contained in `buffer` to the socket.
-        # Returns new instance of `output-block` ready to write again.
         [buffer] > write
           seq * > @
             send buffer
             output-block
 
-  # Platform-independent socket implementation, parameterized by the per-OS `sys`
-  # adapter. It resolves the address, creates the socket and prepares the socket
-  # address, then exposes `connect` and `listen` for the two usage modes.
-  #
-  # Note: This object is intended for internal use only. Please do not use
-  # the object programmatically outside of `socket` object.
   [sys] > impl
     code. (sys.raw "inet_addr" (* address)) > addr
     addr.as-i32 > addrint
@@ -165,18 +122,10 @@
       htons port
       addrint
 
-    # Scoped socket that is passed as argument to the scope of `connect`, `listen`
-    # and `accept`. Here `sockfd` is the socket descriptor.
     [sockfd] > scoped-socket
-      # Makes an `input` from the socket, so it can be `read` from sequentially.
       ^.^.as-input recv > as-input
-      # Makes an `output` from the socket, so it can be written to sequentially.
       ^.^.as-output send > as-output
 
-      # Send bytes through the socket.
-      # Here `buffer` must be an object that can be dataized.
-      # On success the `number` of sent bytes is returned, otherwise the `cant-send`
-      # fallback is returned, or the bottom object when unbound.
       [buffer cant-send] > send
         if. > @
           sent.eq -1
@@ -191,10 +140,6 @@
             "send"
             * sockfd buff buff.size 0
 
-      # Receive bytes from the socket.
-      # Here `size` must be a `number` of desired bytes to receive.
-      # On success the received `bytes` are returned, otherwise the `cant-receive`
-      # fallback is returned, or the bottom object when unbound.
       [size cant-receive] > recv
         if. > @
           received.code.eq -1
@@ -208,11 +153,6 @@
             "recv"
             * sockfd size 0
 
-    # Close socket by given descriptor `sockfd`.
-    # Returns `true` on success, terminates with a bottom otherwise.
-    #
-    # Note: This object is intended for internal use only. Please do not use
-    # the object programmatically outside of `socket` object.
     [sockfd] > closed-socket
       if. > @
         closed.eq -1
@@ -226,13 +166,6 @@
           sys.close-name
           * sockfd
 
-    # Runs `scope` over a freshly created socket and guarantees the socket is closed
-    # and the sockets subsystem is cleaned up afterwards, using `seq` ordering rather
-    # than a catch: on a fallback the clean-up still runs, and on a bottom the process
-    # terminates and the OS reclaims the descriptor.
-    #
-    # Note: This object is intended for internal use only. Please do not use
-    # the object programmatically outside of `socket` object.
     [scope cant] > safe-socket
       if. > @
         (sys.startup.eq 0).not
@@ -262,9 +195,6 @@
             * address sys.error-text
         scope
 
-    # Initiate a connection on a socket.
-    # Here `scope` must be an abstract object with one free attribute which will be
-    # set to `scoped-socket` object and used as connector for socket messaging.
     [scope cant-connect] > connect
       safe-socket > @
         [] >>
@@ -284,10 +214,6 @@
           ^.^ > sock
         cant-connect
 
-    # Listen for connections on a socket.
-    # Here `scope` must be an abstract object with one free attribute, but unlike `connect`,
-    # this free attribute is set to abstract object which decorates `scoped-socket` and also
-    # has attribute `accept` to accept other socket connections.
     [scope cant-listen] > listen
       safe-socket > @
         [] >>
@@ -307,11 +233,6 @@
                 [] >>
                   sock.scoped-socket sock.sd > @
 
-                  # Accept incoming connection on socket.
-                  # On success the client socket is returned, otherwise the `cant-accept`
-                  # fallback is returned, or the bottom object when unbound. The client
-                  # socket decorates `scoped-socket`, so `send`, `recv`, `as-input` and
-                  # `as-output` are all available.
                   [scope cant-accept] > accept
                     if. > @
                       client.eq -1

@@ -1,11 +1,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-line: 2
+line: 1
 message: |-
-  [2:5] error: 'trailing garbage after name suffix'
+  [1:5] error: 'trailing garbage after name suffix'
   5 >> garbage
        ^
 input: |
-  # No comments
   5 >> garbage

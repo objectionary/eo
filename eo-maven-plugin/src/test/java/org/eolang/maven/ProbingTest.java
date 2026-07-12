@@ -47,7 +47,6 @@ final class ProbingTest {
             new EoSyntax(
                 String.join(
                     System.lineSeparator(),
-                    "# No comments.",
                     "[] > test",
                     "  Q.io.stdout > @",
                     "    \"Hello!\""

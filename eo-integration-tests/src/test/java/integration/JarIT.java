@@ -48,7 +48,6 @@ final class JarIT {
         new Farea(temp).together(
             f -> classpath[0] = JarIT.compile(
                 f,
-                "# No comments.",
                 "[] > simple",
                 "  Q.io.stdout > @",
                 "    \"Hello, world!\""
@@ -75,7 +74,6 @@ final class JarIT {
                 f,
                 "+package examples",
                 "",
-                "# Program with a package.",
                 "[args] > packaged",
                 "  Q.io.stdout > @",
                 "    \"Hello, world from a program with a package!\""
@@ -123,7 +121,6 @@ final class JarIT {
         new Farea(temp).together(
             f -> classpath[0] = JarIT.compile(
                 f,
-                "# No comments.",
                 "[] > simple",
                 "  unknown.io.stdout > @",
                 "    \"Hello, world!\""
@@ -154,7 +151,6 @@ final class JarIT {
             "+alias tt.sscanf",
             "+architect yegor256@gmail.com",
             "",
-            "# Application.",
             "[args] > app",
             "  number > n",
             "    at. > nn!",
@@ -182,8 +178,6 @@ final class JarIT {
             "+package examples",
             "+architect yegor256@gmail.com",
             "",
-            "# This is the main abstract object that",
-            "# represents n-th Fibonacci number",
             "[n] > fibonacci",
             "  if. > @",
             "    lt.",
