@@ -14,6 +14,7 @@ import com.yegor256.xsline.Xsline;
 import java.util.function.Function;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Synced;
 import org.cactoos.scalar.Unchecked;
 
 /**
@@ -52,7 +53,9 @@ public final class Canonical implements Function<XML, XML> {
      *  there, otherwise it goes to the root {@code Φ}
      */
     public Canonical(final String objects) {
-        this.pipeline = new Unchecked<>(new Sticky<>(new Canonical.Pipeline(objects)));
+        this.pipeline = new Unchecked<>(
+            new Synced<>(new Sticky<>(new Canonical.Pipeline(objects)))
+        );
     }
 
     @Override
