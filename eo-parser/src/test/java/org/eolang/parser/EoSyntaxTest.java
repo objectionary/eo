@@ -243,7 +243,7 @@ final class EoSyntaxTest {
                         "  seq > y".concat(System.lineSeparator())
                     )
                 ),
-                EoSyntax.canonical("Φ.foo.bar")
+                new Canonical("Φ.foo.bar")
             ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/object[not(errors)]",

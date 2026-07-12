@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.function.Function;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
+import org.eolang.parser.Canonical;
 import org.eolang.parser.EoSyntax;
 import org.eolang.parser.OnDefault;
 import org.eolang.parser.OnDetailed;
@@ -58,7 +59,7 @@ final class EoSource {
      * @param input Object source code
      */
     EoSource(final String identifier, final Input input) {
-        this(identifier, input, EoSyntax.canonical(""));
+        this(identifier, input, new Canonical());
     }
 
     /**

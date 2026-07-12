@@ -7,10 +7,6 @@ package org.eolang.parser;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StClasspath;
-import com.yegor256.xsline.TrClasspath;
-import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
@@ -37,58 +33,12 @@ public final class EoSyntax implements Syntax {
      * Canonical XSL pipeline applied to the raw parser output.
      *
      * <p>This one is not aware of any objects, so bare references are
-     * always homed into the root {@code Φ} package. Use
-     * {@link #canonical(String)} to make the pipeline aware of the
-     * objects that exist, so that same-package references can be
-     * resolved automatically (see {@code add-default-package.xsl}).</p>
+     * always homed into the root {@code Φ} package. Use a
+     * {@link Canonical} built with a list of objects to make the
+     * pipeline resolve same-package references automatically (see
+     * {@code add-default-package.xsl}).</p>
      */
-    static final Function<XML, XML> CANONICAL = EoSyntax.canonical("");
-
-    /**
-     * Build the canonical XSL pipeline that is aware of the given
-     * objects when homing bare references into their package.
-     * @param objects Space separated list of fully qualified names of
-     *  all the objects the compiler is aware of. A bare reference is
-     *  resolved into the current package only if such an object exists
-     *  there. May be empty, in which case bare references are always
-     *  homed into the root {@code Φ}.
-     * @return The transformation function
-     */
-    public static Function<XML, XML> canonical(final String objects) {
-        return new Xsline(
-            new TrFull(
-                new TrJoined<>(
-                    new TrClasspath<>(
-                        "/org/eolang/parser/parse/validate-before-stars.xsl",
-                        "/org/eolang/parser/parse/resolve-before-stars.xsl",
-                        "/org/eolang/parser/parse/fragile-dispatch.xsl",
-                        "/org/eolang/parser/parse/wrap-method-calls.xsl",
-                        "/org/eolang/parser/parse/const-to-dataized.xsl",
-                        "/org/eolang/parser/parse/stars-to-tuples.xsl",
-                        "/org/eolang/parser/parse/vars-float-up.xsl",
-                        "/org/eolang/parser/parse/move-voids-up.xsl",
-                        "/org/eolang/parser/parse/validate-objects-count.xsl",
-                        "/org/eolang/parser/parse/build-fqns.xsl",
-                        "/org/eolang/parser/parse/expand-aliases.xsl",
-                        "/org/eolang/parser/parse/resolve-aliases.xsl"
-                    ).back(),
-                    new TrDefault<Shift>(
-                        new StClasspath(
-                            "/org/eolang/parser/parse/add-default-package.xsl",
-                            String.format("objects %s", objects)
-                        )
-                    ),
-                    new TrClasspath<>(
-                        "/org/eolang/parser/parse/roll-bases.xsl",
-                        "/org/eolang/parser/parse/cti-adds-errors.xsl",
-                        "/org/eolang/parser/parse/decorate.xsl",
-                        "/org/eolang/parser/parse/mandatory-as.xsl"
-                    ).back(),
-                    new TrDefault<>(new StHex())
-                )
-            )
-        )::pass;
-    }
+    static final Function<XML, XML> CANONICAL = new Canonical();
 
     /**
      * Text to parse.

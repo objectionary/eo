@@ -89,9 +89,12 @@ final class MjParseTest {
         final CommitHash hash = new ChCached(new ChNarrow(new ChRemote("0.40.5")));
         final Path base = maven.targetPath().resolve(Parsing.DIR);
         final Path target = new Place("foo.x.main").make(base, MjAssemble.XMIR);
+        final String digest = Integer.toHexString(
+            String.format("Φ.%s", maven.programTojo().identifier()).hashCode()
+        );
         new Cache(
             cache.resolve(Parsing.CACHE)
-                .resolve(FakeMaven.pluginVersion())
+                .resolve(String.format("%s-%s", FakeMaven.pluginVersion(), digest))
                 .resolve(hash.value()),
             src -> expected
         ).apply(maven.programTojo().source(), target, base.relativize(target));
