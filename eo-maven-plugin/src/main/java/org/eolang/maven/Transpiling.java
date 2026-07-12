@@ -23,6 +23,8 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -70,6 +72,21 @@ final class Transpiling implements Step {
      * Java extension.
      */
     private static final String JAVA = "java";
+
+    /**
+     * Transpilation train shared by worker threads.
+     */
+    private static final Train<Shift> TRAIN = Transpiling.train();
+
+    /**
+     * Whether the transpilation train has been warmed up.
+     */
+    private static final AtomicBoolean WARMED = new AtomicBoolean(false);
+
+    /**
+     * Lock for warming up the transpilation train.
+     */
+    private static final Lock LOCK = new ReentrantLock();
 
     /**
      * XMIR sources to transpile.
@@ -125,11 +142,6 @@ final class Transpiling implements Step {
     private final Path xslMeasures;
 
     /**
-     * Transpilation train isolated per worker thread.
-     */
-    private final ThreadLocal<Train<Shift>> trains;
-
-    /**
      * Constructor.
      * @param srcs XMIR sources to transpile
      * @param target Target directory
@@ -162,7 +174,6 @@ final class Transpiling implements Step {
         this.trackTransformationSteps = tracking;
         this.transpileTests = tests;
         this.xslMeasures = measures;
-        this.trains = ThreadLocal.withInitial(Transpiling::train);
     }
 
     @Override
@@ -308,12 +319,12 @@ final class Transpiling implements Step {
 
     /**
      * Build XSL transformation function for a source file.
-     * Reuses an isolated XSL train in each worker thread for thread safety.
+     * Reuses a shared XSL train after its first pass has been serialized.
      * @param source Path to source XMIR
      * @return XSL transformation function
      */
     private Function<XML, XML> transpilation(final Path source) {
-        final Train<Shift> measured = this.measured(this.trains.get());
+        final Train<Shift> measured = this.measured(Transpiling.TRAIN);
         final Function<XML, XML> func;
         if (this.trackTransformationSteps) {
             func = xml -> new Xsline(
@@ -329,7 +340,34 @@ final class Transpiling implements Step {
         } else {
             func = new Xsline(measured)::pass;
         }
-        return func;
+        return xml -> Transpiling.pass(func, xml);
+    }
+
+    /**
+     * Apply a transformation after safely warming up the shared train.
+     * @param transformation Transformation to apply
+     * @param xml XMIR to transform
+     * @return Transformed XMIR
+     */
+    private static XML pass(final Function<XML, XML> transformation, final XML xml) {
+        final XML res;
+        if (Transpiling.WARMED.get()) {
+            res = transformation.apply(xml);
+        } else {
+            Transpiling.LOCK.lock();
+            if (Transpiling.WARMED.get()) {
+                Transpiling.LOCK.unlock();
+                res = transformation.apply(xml);
+            } else {
+                try {
+                    res = transformation.apply(xml);
+                    Transpiling.WARMED.set(true);
+                } finally {
+                    Transpiling.LOCK.unlock();
+                }
+            }
+        }
+        return res;
     }
 
     /**
