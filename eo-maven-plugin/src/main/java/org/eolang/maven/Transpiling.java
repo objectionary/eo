@@ -62,24 +62,36 @@ final class Transpiling implements Step {
     static final String PRE = "5-pre-transpile";
 
     /**
-     * Parsing train with XSLs.
+     * Parsing train with XSLs, one instance per thread.
+     * <p>
+     *     A single shared instance is deliberately avoided: {@link TrClasspath}
+     *     and {@link StClasspath} compile their XSL stylesheets lazily on
+     *     first use, and that lazy compilation is not thread-safe. Sharing one
+     *     instance across the {@link Threaded} worker pool races on the same
+     *     underlying compilation cache and can produce truncated or garbled
+     *     Java output. Keeping one instance per thread still lets each worker
+     *     thread reuse its own compiled stylesheets across the sources it
+     *     processes.
+     * </p>
      */
-    static final Train<Shift> TRAIN = new TrFull(
-        new TrJoined<>(
-            new TrClasspath<>(
-                "/org/eolang/maven/transpile/set-locators.xsl",
-                "/org/eolang/maven/transpile/set-original-names.xsl",
-                "/org/eolang/maven/transpile/classes.xsl",
-                "/org/eolang/maven/transpile/tests.xsl",
-                "/org/eolang/maven/transpile/anonymous-to-nested.xsl",
-                "/org/eolang/maven/transpile/package.xsl",
-                "/org/eolang/maven/transpile/attrs.xsl",
-                "/org/eolang/maven/transpile/data.xsl"
-            ).back(),
-            new TrDefault<>(
-                new StClasspath(
-                    "/org/eolang/maven/transpile/to-java.xsl",
-                    String.format("disclaimer %s", new Disclaimer())
+    private static final ThreadLocal<Train<Shift>> TRAIN = ThreadLocal.withInitial(
+        () -> new TrFull(
+            new TrJoined<>(
+                new TrClasspath<>(
+                    "/org/eolang/maven/transpile/set-locators.xsl",
+                    "/org/eolang/maven/transpile/set-original-names.xsl",
+                    "/org/eolang/maven/transpile/classes.xsl",
+                    "/org/eolang/maven/transpile/tests.xsl",
+                    "/org/eolang/maven/transpile/anonymous-to-nested.xsl",
+                    "/org/eolang/maven/transpile/package.xsl",
+                    "/org/eolang/maven/transpile/attrs.xsl",
+                    "/org/eolang/maven/transpile/data.xsl"
+                ).back(),
+                new TrDefault<>(
+                    new StClasspath(
+                        "/org/eolang/maven/transpile/to-java.xsl",
+                        String.format("disclaimer %s", new Disclaimer())
+                    )
                 )
             )
         )
@@ -305,7 +317,7 @@ final class Transpiling implements Step {
      * @return XSL transformation function
      */
     private Function<XML, XML> transpilation(final Path source) {
-        final Train<Shift> measured = this.measured(Transpiling.TRAIN);
+        final Train<Shift> measured = this.measured(Transpiling.TRAIN.get());
         final Function<XML, XML> func;
         if (this.trackTransformationSteps) {
             func = xml -> new Xsline(

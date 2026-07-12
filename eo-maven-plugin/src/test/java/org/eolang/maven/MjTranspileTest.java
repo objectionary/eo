@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -305,7 +306,7 @@ final class MjTranspileTest {
     }
 
     @Test
-    void transpilesSeveralEoProgramsInParallel(@Mktmp final Path temp) throws IOException {
+    void transpilesSeveralEoProgramsInParallel(@Mktmp final Path temp) throws Exception {
         final int total = 30;
         final FakeMaven maven = new FakeMaven(temp);
         for (int prog = 1; prog < total; ++prog) {
@@ -316,16 +317,51 @@ final class MjTranspileTest {
                 String.format("foo/x/%s.eo", main)
             );
         }
-        MatcherAssert.assertThat(
-            "All programs must be transpiled",
-            Files.list(
+        final List<Path> files;
+        try (
+            Stream<Path> list = Files.list(
                 maven
                     .execute(new FakeMaven.Transpile())
                     .generatedPath()
                     .resolve("org/eolang/EOfoo/EOx")
-            ).count(),
-            Matchers.equalTo((long) total)
+            )
+        ) {
+            files = list.collect(Collectors.toList());
+        }
+        MatcherAssert.assertThat(
+            "All programs must be transpiled",
+            files.size(),
+            Matchers.equalTo(total)
         );
+        for (final Path file : files) {
+            final String java = new TextOf(file).asString();
+            if (file.getFileName().toString().startsWith("EOmain")) {
+                MatcherAssert.assertThat(
+                    String.format(
+                        "Generated %s must contain a class declaration, not be truncated/garbled by a concurrent transpilation race",
+                        file
+                    ),
+                    java,
+                    Matchers.containsString("class EOmain")
+                );
+            }
+            MatcherAssert.assertThat(
+                String.format(
+                    "Generated %s must have balanced braces, not be truncated/garbled by a concurrent transpilation race",
+                    file
+                ),
+                MjTranspileTest.balanced(java, '{', '}'),
+                Matchers.equalTo(true)
+            );
+            MatcherAssert.assertThat(
+                String.format(
+                    "Generated %s must have balanced parentheses, not be truncated/garbled by a concurrent transpilation race",
+                    file
+                ),
+                MjTranspileTest.balanced(java, '(', ')'),
+                Matchers.equalTo(true)
+            );
+        }
     }
 
     @Test
@@ -396,5 +432,30 @@ final class MjTranspileTest {
      */
     private static String filename(final Path path) {
         return path.getFileName().toString();
+    }
+
+    /**
+     * Check that every opening bracket has a matching closing one, in order.
+     * @param text Text to check
+     * @param open Opening bracket character
+     * @param close Closing bracket character
+     * @return TRUE if brackets are balanced
+     */
+    private static boolean balanced(final String text, final char open, final char close) {
+        int depth = 0;
+        boolean valid = true;
+        for (int idx = 0; idx < text.length(); ++idx) {
+            final char chr = text.charAt(idx);
+            if (chr == open) {
+                depth = depth + 1;
+            } else if (chr == close) {
+                depth = depth - 1;
+            }
+            if (depth < 0) {
+                valid = false;
+                break;
+            }
+        }
+        return valid && depth == 0;
     }
 }
