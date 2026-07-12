@@ -474,10 +474,7 @@ final class EoSyntaxTest {
                 new String(
                     new EoSyntax(
                         new InputOf(
-                            String.join(
-                                System.lineSeparator(),
-                                "[] > foo\uD83C\uDF35bar".concat(System.lineSeparator())
-                            )
+                            "[] > foo\uD83C\uDF35bar".concat(System.lineSeparator())
                         )
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
                     StandardCharsets.UTF_8
