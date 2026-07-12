@@ -16,32 +16,18 @@ import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for mojas.
  * @since 0.52
- * @todo #5078:60min Re-enable the assemble ITs ({@code assemblesTogether} and
- *  {@code assemblesNotFailWithFailOnError}) once the objectionary remote
- *  registry is re-published with the new parser's syntax. These tests run
- *  {@code mvn package}/{@code mvn test} against tiny EO programs that pull
- *  {@code tuple}, {@code seq}, {@code number}, etc. from the remote registry
- *  into {@code target/eo/2-pull/}. Those pulled {@code .eo} sources still
- *  contain pre-spec syntax (fluent {@code .method} continuation after
- *  horizontal-completed lines, the {@code ?} name-suffix modifier, etc.) that
- *  the new spec-strict parser rejects. The local {@code eo-runtime/src/main/eo/}
- *  files are already rewritten and pass; only the registry's published copies
- *  need a matching re-upload. To re-enable: publish the updated runtime to
- *  objectionary, then drop the {@link Disabled} annotations on both methods.
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjAssembleIT {
 
     @Test
-    @Disabled("registry still serves pre-spec EO sources, see class javadoc")
     void assemblesTogether(@Mktmp final Path temp) throws IOException {
         final String stdout = "target/eo/%s/io/stdout.%s";
         final String parsed = String.format(stdout, "1-parse", "xmir");
@@ -65,7 +51,6 @@ final class MjAssembleIT {
     }
 
     @Test
-    @Disabled("registry still serves pre-spec EO sources, see class javadoc")
     void assemblesNotFailWithFailOnError(@Mktmp final Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
