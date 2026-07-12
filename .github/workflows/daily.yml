@@ -16,13 +16,13 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
-          java-version: 20
+          java-version: 21
       - uses: actions/cache@v6
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-jdk-20-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-jdk-21-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-jdk-20-maven-
+            ${{ runner.os }}-jdk-21-maven-
       - run: .github/daily.sh ${{ github.workspace }}
   report-fail:
     name: Create issue on failure
