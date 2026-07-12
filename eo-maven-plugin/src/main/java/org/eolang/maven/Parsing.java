@@ -116,6 +116,7 @@ final class Parsing implements Step {
     }
 
     @Override
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() {
         final Collection<TjForeign> sources = this.tojos.withSources();
         final String objects = sources.stream()

@@ -12,6 +12,9 @@ import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Xsline;
 import java.util.function.Function;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Unchecked;
 
 /**
  * The canonical XSL pipeline applied to the raw parser output.
@@ -30,9 +33,9 @@ import java.util.function.Function;
 public final class Canonical implements Function<XML, XML> {
 
     /**
-     * The pipeline.
+     * The pipeline, built lazily and only once.
      */
-    private final Function<XML, XML> pipeline;
+    private final Unchecked<Function<XML, XML>> pipeline;
 
     /**
      * Ctor, not aware of any objects.
@@ -49,43 +52,68 @@ public final class Canonical implements Function<XML, XML> {
      *  there, otherwise it goes to the root {@code Φ}
      */
     public Canonical(final String objects) {
-        this.pipeline = new Xsline(
-            new TrFull(
-                new TrJoined<>(
-                    new TrClasspath<>(
-                        "/org/eolang/parser/parse/validate-before-stars.xsl",
-                        "/org/eolang/parser/parse/resolve-before-stars.xsl",
-                        "/org/eolang/parser/parse/fragile-dispatch.xsl",
-                        "/org/eolang/parser/parse/wrap-method-calls.xsl",
-                        "/org/eolang/parser/parse/const-to-dataized.xsl",
-                        "/org/eolang/parser/parse/stars-to-tuples.xsl",
-                        "/org/eolang/parser/parse/vars-float-up.xsl",
-                        "/org/eolang/parser/parse/move-voids-up.xsl",
-                        "/org/eolang/parser/parse/validate-objects-count.xsl",
-                        "/org/eolang/parser/parse/build-fqns.xsl",
-                        "/org/eolang/parser/parse/expand-aliases.xsl",
-                        "/org/eolang/parser/parse/resolve-aliases.xsl"
-                    ).back(),
-                    new TrDefault<Shift>(
-                        new StClasspath(
-                            "/org/eolang/parser/parse/add-default-package.xsl",
-                            String.format("objects %s", objects)
-                        )
-                    ),
-                    new TrClasspath<>(
-                        "/org/eolang/parser/parse/roll-bases.xsl",
-                        "/org/eolang/parser/parse/cti-adds-errors.xsl",
-                        "/org/eolang/parser/parse/decorate.xsl",
-                        "/org/eolang/parser/parse/mandatory-as.xsl"
-                    ).back(),
-                    new TrDefault<>(new StHex())
-                )
-            )
-        )::pass;
+        this.pipeline = new Unchecked<>(new Sticky<>(new Canonical.Pipeline(objects)));
     }
 
     @Override
     public XML apply(final XML xml) {
-        return this.pipeline.apply(xml);
+        return this.pipeline.value().apply(xml);
+    }
+
+    /**
+     * The scalar that builds the canonical pipeline.
+     * @since 0.60
+     */
+    private static final class Pipeline implements Scalar<Function<XML, XML>> {
+
+        /**
+         * Space separated list of fully qualified names of known objects.
+         */
+        private final String objects;
+
+        /**
+         * Ctor.
+         * @param objs Space separated list of known object names
+         */
+        Pipeline(final String objs) {
+            this.objects = objs;
+        }
+
+        @Override
+        public Function<XML, XML> value() {
+            return new Xsline(
+                new TrFull(
+                    new TrJoined<>(
+                        new TrClasspath<>(
+                            "/org/eolang/parser/parse/validate-before-stars.xsl",
+                            "/org/eolang/parser/parse/resolve-before-stars.xsl",
+                            "/org/eolang/parser/parse/fragile-dispatch.xsl",
+                            "/org/eolang/parser/parse/wrap-method-calls.xsl",
+                            "/org/eolang/parser/parse/const-to-dataized.xsl",
+                            "/org/eolang/parser/parse/stars-to-tuples.xsl",
+                            "/org/eolang/parser/parse/vars-float-up.xsl",
+                            "/org/eolang/parser/parse/move-voids-up.xsl",
+                            "/org/eolang/parser/parse/validate-objects-count.xsl",
+                            "/org/eolang/parser/parse/build-fqns.xsl",
+                            "/org/eolang/parser/parse/expand-aliases.xsl",
+                            "/org/eolang/parser/parse/resolve-aliases.xsl"
+                        ).back(),
+                        new TrDefault<Shift>(
+                            new StClasspath(
+                                "/org/eolang/parser/parse/add-default-package.xsl",
+                                String.format("objects %s", this.objects)
+                            )
+                        ),
+                        new TrClasspath<>(
+                            "/org/eolang/parser/parse/roll-bases.xsl",
+                            "/org/eolang/parser/parse/cti-adds-errors.xsl",
+                            "/org/eolang/parser/parse/decorate.xsl",
+                            "/org/eolang/parser/parse/mandatory-as.xsl"
+                        ).back(),
+                        new TrDefault<>(new StHex())
+                    )
+                )
+            )::pass;
+        }
     }
 }
