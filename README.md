@@ -61,6 +61,7 @@ Then, start with a simple EO program in the `app.eo` file:
 
 ```eo
 # Just prints hello.
+
 [args] > app
   io.stdout > @
     "Hello, world!\n"
@@ -112,6 +113,7 @@ argument: a copy of the object `sprintf`:
 
 ```eo
 # Says hello to Jeff.
+
 io.stdout > [] > app
   tt.sprintf
     "Hello, %s!"
@@ -142,6 +144,7 @@ inside `app` and use it to build the output string:
 
 ```eo
 # Says hello to Jeff.
+
 [] > app
   io.stdout (msg "Jeffrey") > @
   [name] > msg
