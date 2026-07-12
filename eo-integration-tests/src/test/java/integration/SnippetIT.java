@@ -22,7 +22,6 @@ import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 
@@ -34,17 +33,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 @ExtendWith(MktmpResolver.class)
 final class SnippetIT {
 
-    @Disabled
     @ParameterizedTest
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     @ClasspathSource(value = "snippets", glob = "**.yaml")
     @SuppressWarnings("unchecked")
-    // @todo #4707:30min Re-enable SnippetIT.runsAllSnippets after the public
-    //  objectionary registry (https://github.com/objectionary/home) migrates
-    //  atom return types from the legacy `?` syntax to the new `/name` form.
-    //  This PR drops the `?` branch from the EO grammar; until the registry
-    //  catches up, MjPull fetches `.eo` files that fail to parse here.
     void runsAllSnippets(final String yml, final @Mktmp Path temp) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(yml));
         Assumptions.assumeFalse(xtory.map().containsKey("skip"));
