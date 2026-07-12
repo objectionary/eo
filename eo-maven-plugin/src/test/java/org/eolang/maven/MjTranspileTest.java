@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import com.sun.source.util.JavacTask;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.xsline.TrDefault;
@@ -12,10 +13,17 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
@@ -305,27 +313,52 @@ final class MjTranspileTest {
     }
 
     @Test
-    void transpilesSeveralEoProgramsInParallel(@Mktmp final Path temp) throws IOException {
-        final int total = 30;
-        final FakeMaven maven = new FakeMaven(temp);
-        for (int prog = 1; prog < total; ++prog) {
-            final String main = String.format("main%s", FakeMaven.suffix(prog));
-            maven.withProgram(
-                this.program.replace("main", main),
-                String.format("foo.x.%s", main),
-                String.format("foo/x/%s.eo", main)
+    void transpilesSeveralEoProgramsInParallel(@Mktmp final Path temp) throws Exception {
+        final int total = Runtime.getRuntime().availableProcessors() * 2;
+        for (int round = 0; round < 2; ++round) {
+            final boolean tracking = round > 0;
+            final FakeMaven maven = new FakeMaven(temp.resolve(String.format("run-%d", round)))
+                .with("cacheEnabled", !tracking)
+                .with("trackTransformationSteps", tracking);
+            for (int prog = 0; prog < total; ++prog) {
+                final String main = String.format("main%s", FakeMaven.suffix(prog));
+                maven.withProgram(
+                    this.program.replace("main", main),
+                    String.format("foo.x.%s", main),
+                    String.format("foo/x/%s.eo", main)
+                );
+            }
+            maven.execute(new FakeMaven.Transpile());
+            final List<Path> generated;
+            try (Stream<Path> files = Files.list(
+                maven.generatedPath().resolve("org/eolang/EOfoo/EOx")
+            )) {
+                generated = files.filter(MjTranspileTest::isJava)
+                    .filter(path -> !"package-info.java".equals(MjTranspileTest.filename(path)))
+                    .collect(Collectors.toList());
+            }
+            MatcherAssert.assertThat(
+                "All programs must be transpiled",
+                generated,
+                Matchers.hasSize(total)
             );
+            MatcherAssert.assertThat(
+                "Every concurrently transpiled Java source must be syntactically valid",
+                MjTranspileTest.syntaxErrors(generated),
+                Matchers.empty()
+            );
+            if (tracking) {
+                try (Stream<Path> steps = Files.walk(
+                    maven.targetPath().resolve(Transpiling.PRE)
+                )) {
+                    MatcherAssert.assertThat(
+                        "Tracked transformation steps must be saved",
+                        steps.anyMatch(Files::isRegularFile),
+                        Matchers.is(true)
+                    );
+                }
+            }
         }
-        MatcherAssert.assertThat(
-            "All programs must be transpiled",
-            Files.list(
-                maven
-                    .execute(new FakeMaven.Transpile())
-                    .generatedPath()
-                    .resolve("org/eolang/EOfoo/EOx")
-            ).count(),
-            Matchers.equalTo((long) total)
-        );
     }
 
     @Test
@@ -396,5 +429,35 @@ final class MjTranspileTest {
      */
     private static String filename(final Path path) {
         return path.getFileName().toString();
+    }
+
+    /**
+     * Find syntax errors in Java sources.
+     * @param sources Java sources
+     * @return Compiler syntax errors
+     * @throws IOException If the sources can't be read
+     */
+    private static List<String> syntaxErrors(final List<Path> sources) throws IOException {
+        final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
+        try (StandardJavaFileManager manager = compiler.getStandardFileManager(
+            diagnostics, null, null
+        )) {
+            final JavacTask task = (JavacTask) compiler.getTask(
+                null,
+                manager,
+                diagnostics,
+                null,
+                null,
+                manager.getJavaFileObjectsFromFiles(
+                    sources.stream().map(Path::toFile).collect(Collectors.toList())
+                )
+            );
+            task.parse();
+        }
+        return diagnostics.getDiagnostics().stream()
+            .filter(diagnostic -> diagnostic.getKind() == Diagnostic.Kind.ERROR)
+            .map(Object::toString)
+            .collect(Collectors.toList());
     }
 }

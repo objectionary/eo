@@ -62,30 +62,6 @@ final class Transpiling implements Step {
     static final String PRE = "5-pre-transpile";
 
     /**
-     * Parsing train with XSLs.
-     */
-    static final Train<Shift> TRAIN = new TrFull(
-        new TrJoined<>(
-            new TrClasspath<>(
-                "/org/eolang/maven/transpile/set-locators.xsl",
-                "/org/eolang/maven/transpile/set-original-names.xsl",
-                "/org/eolang/maven/transpile/classes.xsl",
-                "/org/eolang/maven/transpile/tests.xsl",
-                "/org/eolang/maven/transpile/anonymous-to-nested.xsl",
-                "/org/eolang/maven/transpile/package.xsl",
-                "/org/eolang/maven/transpile/attrs.xsl",
-                "/org/eolang/maven/transpile/data.xsl"
-            ).back(),
-            new TrDefault<>(
-                new StClasspath(
-                    "/org/eolang/maven/transpile/to-java.xsl",
-                    String.format("disclaimer %s", new Disclaimer())
-                )
-            )
-        )
-    );
-
-    /**
      * Cache directory for transpiled sources.
      */
     private static final String CACHE = "transpiled";
@@ -149,6 +125,11 @@ final class Transpiling implements Step {
     private final Path xslMeasures;
 
     /**
+     * Transpilation train isolated per worker thread.
+     */
+    private final ThreadLocal<Train<Shift>> trains;
+
+    /**
      * Constructor.
      * @param srcs XMIR sources to transpile
      * @param target Target directory
@@ -181,6 +162,7 @@ final class Transpiling implements Step {
         this.trackTransformationSteps = tracking;
         this.transpileTests = tests;
         this.xslMeasures = measures;
+        this.trains = ThreadLocal.withInitial(Transpiling::train);
     }
 
     @Override
@@ -265,6 +247,33 @@ final class Transpiling implements Step {
     }
 
     /**
+     * Create a transpilation train with fresh XSL shifts.
+     * @return Transpilation train
+     */
+    private static Train<Shift> train() {
+        return new TrFull(
+            new TrJoined<>(
+                new TrClasspath<>(
+                    "/org/eolang/maven/transpile/set-locators.xsl",
+                    "/org/eolang/maven/transpile/set-original-names.xsl",
+                    "/org/eolang/maven/transpile/classes.xsl",
+                    "/org/eolang/maven/transpile/tests.xsl",
+                    "/org/eolang/maven/transpile/anonymous-to-nested.xsl",
+                    "/org/eolang/maven/transpile/package.xsl",
+                    "/org/eolang/maven/transpile/attrs.xsl",
+                    "/org/eolang/maven/transpile/data.xsl"
+                ).back(),
+                new TrDefault<>(
+                    new StClasspath(
+                        "/org/eolang/maven/transpile/to-java.xsl",
+                        String.format("disclaimer %s", new Disclaimer())
+                    )
+                )
+            )
+        );
+    }
+
+    /**
      * Wrap a train with XSL execution time measurements.
      * @param base The train to wrap
      * @return Measured train
@@ -299,13 +308,12 @@ final class Transpiling implements Step {
 
     /**
      * Build XSL transformation function for a source file.
-     * If {@code trackTransformationSteps} is {@code true} - creates a new {@link Xsline}
-     * for every XMIR in purpose of thread safety.
+     * Reuses an isolated XSL train in each worker thread for thread safety.
      * @param source Path to source XMIR
      * @return XSL transformation function
      */
     private Function<XML, XML> transpilation(final Path source) {
-        final Train<Shift> measured = this.measured(Transpiling.TRAIN);
+        final Train<Shift> measured = this.measured(this.trains.get());
         final Function<XML, XML> func;
         if (this.trackTransformationSteps) {
             func = xml -> new Xsline(
