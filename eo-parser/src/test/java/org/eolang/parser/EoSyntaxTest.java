@@ -229,6 +229,53 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void homesBareReferenceIntoPackageWhenObjectExists() throws IOException {
+        MatcherAssert.assertThat(
+            "bare reference to a same-package object must be homed into the current package",
+            new EoSyntax(
+                new InputOf(
+                    String.join(
+                        System.lineSeparator(),
+                        "+package foo",
+                        "",
+                        "[] > x",
+                        "  bar 42 > @",
+                        "  seq > y".concat(System.lineSeparator())
+                    )
+                ),
+                EoSyntax.canonical("Φ.foo.bar")
+            ).parsed(),
+            XhtmlMatchers.hasXPaths(
+                "/object[not(errors)]",
+                "//o[@base='Φ.foo.bar']",
+                "//o[@base='Φ.seq']"
+            )
+        );
+    }
+
+    @Test
+    void keepsBareReferenceAtRootWhenObjectAbsent() throws IOException {
+        MatcherAssert.assertThat(
+            "bare reference must default to the root Φ when the object is unknown",
+            new EoSyntax(
+                new InputOf(
+                    String.join(
+                        System.lineSeparator(),
+                        "+package foo",
+                        "",
+                        "[] > x",
+                        "  bar 42 > @".concat(System.lineSeparator())
+                    )
+                )
+            ).parsed(),
+            XhtmlMatchers.hasXPaths(
+                "/object[not(errors)]",
+                "//o[@base='Φ.bar']"
+            )
+        );
+    }
+
+    @Test
     void parsesMethodCalls() throws IOException {
         MatcherAssert.assertThat(
             "We expect EO object as method call is parsed successfully",

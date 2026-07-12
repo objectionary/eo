@@ -132,6 +132,66 @@ final class MjParseTest {
     }
 
     @Test
+    void homesBareReferenceToSamePackageObject(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withProgram(
+            String.join(
+                System.lineSeparator(),
+                "+package foo",
+                "",
+                "[] > bar",
+                "  42 > @"
+            ),
+            "foo.bar",
+            "foo/bar.eo"
+        ).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "+package foo",
+                "",
+                "[] > app",
+                "  bar > @"
+            ),
+            "foo.app",
+            "foo/app.eo"
+        );
+        MatcherAssert.assertThat(
+            "bare reference 'bar' must be resolved into the same package as 'Φ.foo.bar'",
+            new XMLDocument(
+                maven.execute(new FakeMaven.Parse()).result().get(
+                    String.format("target/%s/foo/app.%s", Parsing.DIR, MjAssemble.XMIR)
+                )
+            ),
+            XhtmlMatchers.hasXPath("//o[@base='Φ.foo.bar']")
+        );
+    }
+
+    @Test
+    void keepsBareGlobalReferenceAtRoot(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withProgram(
+            String.join(
+                System.lineSeparator(),
+                "+package foo",
+                "",
+                "[] > app",
+                "  bar > @"
+            ),
+            "foo.app",
+            "foo/app.eo"
+        );
+        MatcherAssert.assertThat(
+            "bare reference 'bar' must stay at the root when no 'Φ.foo.bar' object exists",
+            new XMLDocument(
+                maven.execute(new FakeMaven.Parse()).result().get(
+                    String.format("target/%s/foo/app.%s", Parsing.DIR, MjAssemble.XMIR)
+                )
+            ),
+            XhtmlMatchers.hasXPath("//o[@base='Φ.bar']")
+        );
+    }
+
+    @Test
     void crashesIfWrongPackage(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp).withProgram(
             String.join(

@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,9 +15,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.text.TextOf;
+import org.eolang.parser.EoSyntax;
 import org.w3c.dom.Node;
 
 /**
@@ -87,6 +90,20 @@ final class Parsing implements Step {
     private final Path sourcesDir;
 
     /**
+     * Canonical parsing transform, aware of all registered objects, so
+     * that bare same-package references can be resolved automatically.
+     * It is built once in {@link #exec()} and reused for all sources.
+     */
+    private volatile Function<XML, XML> transform;
+
+    /**
+     * Digest of the set of known objects. It is a part of the parse
+     * cache key, so that cached XMIRs are invalidated when the set of
+     * objects changes (a bare reference may be homed differently).
+     */
+    private volatile String digest;
+
+    /**
      * Constructor.
      * @param srcs Foreign tojos catalog
      * @param target Target directory
@@ -115,6 +132,12 @@ final class Parsing implements Step {
     @Override
     public void exec() {
         final Collection<TjForeign> sources = this.tojos.withSources();
+        final String objects = sources.stream()
+            .map(TjForeign::identifier)
+            .map(id -> String.format("Φ.%s", id))
+            .collect(Collectors.joining(" "));
+        this.transform = EoSyntax.canonical(objects);
+        this.digest = Integer.toHexString(objects.hashCode());
         final int total = new Threaded<>(
             new Filtered<>(TjForeign::notParsed, sources),
             this::parsed
@@ -157,7 +180,7 @@ final class Parsing implements Step {
                 new Cache(
                     new CachePath(
                         this.cacheDir.resolve(Parsing.CACHE),
-                        this.version,
+                        String.format("%s-%s", this.version, this.digest),
                         new TojoHash(tojo).get()
                     ),
                     src -> {
@@ -202,7 +225,7 @@ final class Parsing implements Step {
      * @throws IOException If fails to parse
      */
     private Node parsed(final Path source, final String identifier) throws IOException {
-        final EoSource.Xmir xmir = new EoSource(identifier, source).parsed();
+        final EoSource.Xmir xmir = new EoSource(identifier, source, this.transform).parsed();
         Logger.debug(
             Parsing.class,
             "Parsed program '%s' from %[file]s:%n %s",
