@@ -586,6 +586,19 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void rejectsOutOfRangeOctalEscape() throws Exception {
+        MatcherAssert.assertThat(
+            "an out-of-range \\NNN octal escape (value > 0o377) must show up as an /object/errors/error entry, not silently emit a multi-byte value",
+            EoSyntaxTest.raw(
+                String.join(String.valueOf((char) 10), "[] > foo", "  \"\\477\" > @")
+            ).toString(),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'octal')]"
+            )
+        );
+    }
+
+    @Test
     void emitsProgramMetadataAttributes() throws Exception {
         MatcherAssert.assertThat(
             "the <object> root must carry the standard program metadata attributes",
