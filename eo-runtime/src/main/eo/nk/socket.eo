@@ -58,8 +58,25 @@
 [address port] > socket
   if. > @
     os.is-windows
-    win-socket address port
-    posix-socket address port
+    impl
+      []
+        raw > @
+        win32 > raw
+        "closesocket" > close-name
+        sprintf "WSA error code %d" (* (win32 "WSAGetLastError" *).code) > error-text
+        (win32 "WSAStartup" (* win32.winsock-version-2-2)).code > startup
+        if. > cleanup
+          (win32 "WSACleanup" *).code.eq win32.socket-error
+          T "Couldn't clean up the sockets subsystem"
+          true
+    impl
+      []
+        raw > @
+        posix > raw
+        "close" > close-name
+        (posix "strerror" (* (posix "errno" *).code)).code > error-text
+        0 > startup
+        true > cleanup
 
   [port] > htons
     as-i16. > @
@@ -93,23 +110,17 @@
             send buffer
             output-block
 
-  [address port] > posix-socket
-    code. > addr
-      posix
-        "inet_addr"
-        * address
+  [sys] > impl
+    code. (sys.raw "inet_addr" (* address)) > addr
     addr.as-i32 > addrint
     code. > sd
-      posix
+      sys.raw
         "socket"
-        * posix.af-inet posix.sock-stream posix.ipproto-tcp
-    posix.sockaddr-in > sockaddr
-      posix.af-inet.as-i16
+        * sys.af-inet sys.sock-stream sys.ipproto-tcp
+    sys.sockaddr-in > sockaddr
+      sys.af-inet.as-i16
       htons port
       addrint
-    posix > strerror
-      "strerror"
-      * (posix "errno" *).code
 
     [sockfd] > scoped-socket
       ^.^.as-input recv > as-input
@@ -120,12 +131,12 @@
           sent.eq -1
           cant-send
             sprintf
-              "Failed to send message through the socket #%d, reason: %s"
-              * sockfd strerror.code
+              "Failed to send a message through the socket #%d because %s"
+              * sockfd sys.error-text
           sent
         buffer > buff!
         code. > sent
-          posix
+          sys.raw
             "send"
             * sockfd buff buff.size 0
 
@@ -134,11 +145,11 @@
           received.code.eq -1
           cant-receive
             sprintf
-              "Failed to receive data from the socket #%d, reason: %s"
-              * sockfd strerror.code
+              "Failed to receive data from the socket #%d because %s"
+              * sockfd sys.error-text
           received.output
         called. > received
-          posix
+          sys.raw
             "recv"
             * sockfd size 0
 
@@ -147,197 +158,42 @@
         closed.eq -1
         T
           sprintf
-            "Couldn't close the socket #%d because '%s'"
-            * sockfd strerror.code
+            "Couldn't close the socket #%d because %s"
+            * sockfd sys.error-text
         true
       code. > closed
-        posix
-          "close"
+        sys.raw
+          sys.close-name
           * sockfd
 
     [scope cant] > safe-socket
       if. > @
+        (sys.startup.eq 0).not
+        cant
+          sprintf
+            "Couldn't start up the sockets subsystem because %s"
+            * sys.error-text
+        seq *
+          result
+          sys.cleanup
+          result
+      if. > result!
         sd.eq -1
         cant
           sprintf
-            "Couldn't create a socket because '%s'"
-            * strerror.code
-        try
-          if.
-            addr.eq posix.inaddr-none
-            cant
-              sprintf
-                "Couldn't convert an IPv4 address '%s' into a 32-bit integer via 'inet_addr' posix syscall, reason: '%s'"
-                * address strerror.code
-            scope
-          error ex > [ex]
+            "Couldn't create a socket because %s"
+            * sys.error-text
+        seq *
+          used
           closed-socket sd
-
-    [scope cant-connect] > connect
-      safe-socket > @
-        [] >>
-          if. > @
-            connected.eq -1
-            cant-connect
-              sprintf
-                "Couldn't connect to %s:%d on socket #%d because '%s'"
-                * sock.address sock.port sock.sd sock.strerror.code
-            as-bytes.
-              dataized
-                scope
-                  sock.scoped-socket
-                    sock.sd
-          code. > connected
-            posix
-              "connect"
-              * sock.sd sock.sockaddr sock.sockaddr.size
-          ^.^ > sock
-        cant-connect
-
-    [scope cant-listen] > listen
-      safe-socket > @
-        [] >>
-          if. > @
-            bound.eq -1
-            cant-listen
-              sprintf
-                "Couldn't bind the socket #%d to %s:%d because '%s'"
-                * sock.sd sock.address sock.port sock.strerror.code
-            if.
-              listened.eq -1
-              cant-listen
-                sprintf
-                  "Failed to listen to %s:%d on the socket #%d because '%s'"
-                  * sock.address sock.port sock.sd sock.strerror.code
-              as-bytes.
-                dataized
-                  scope
-                    [] >>
-                      sock.scoped-socket sock.sd > @
-
-                      [scope cant-accept] > accept
-                        try > @
-                          if.
-                            client.eq -1
-                            cant-accept
-                              sprintf
-                                "Failed to accept a connection on the socket #%d because '%s'"
-                                * sock.sd sock.strerror.code
-                            as-bytes.
-                              dataized
-                                scope
-                                  sock.scoped-socket
-                                    client
-                          error ex > [ex]
-                          sock.closed-socket client
-                        code. > client
-                          posix
-                            "accept"
-                            * sock.sd sock.sockaddr sock.sockaddr.size
-          code. > bound
-            posix
-              "bind"
-              * sock.sd sock.sockaddr sock.sockaddr.size
-          code. > listened
-            posix
-              "listen"
-              * sock.sd 2048
-          ^.^ > sock
-        cant-listen
-
-  [address port] > win-socket
-    code. > addr
-      win32
-        "inet_addr"
-        * address
-    addr.as-i32 > addrint
-    win32 "WSAGetLastError" * > err
-    code. > sd
-      win32
-        "socket"
-        * win32.af-inet win32.sock-stream win32.ipproto-tcp
-    win32.sockaddr-in > sockaddr
-      win32.af-inet.as-i16
-      htons port
-      addrint
-
-    [sockfd] > scoped-socket
-      ^.^.as-input recv > as-input
-      ^.^.as-output send > as-output
-
-      [buffer cant-send] > send
-        if. > @
-          sent.eq -1
-          cant-send
-            sprintf
-              "Failed to send message through the socket #%d, WSA error code is #%d"
-              * sockfd err.code
-          sent
-        buffer > buff!
-        code. > sent
-          win32
-            "send"
-            * sockfd buff buff.size 0
-
-      [size cant-receive] > recv
-        if. > @
-          received.code.eq -1
-          cant-receive
-            sprintf
-              "Failed to receive data from the socket #%d, WSA error code is #%d"
-              * sockfd err.code
-          received.output
-        called. > received
-          win32
-            "recv"
-            * sockfd size 0
-
-    [sockfd] > closed-socket
-      if. > @
-        closed.eq win32.socket-error
-        T
-          sprintf
-            "Couldn't close a Win32 the socket #%d, WSA error code is #%d"
-            * sockfd err.code
-        true
-      code. > closed
-        win32
-          "closesocket"
-          * sockfd
-
-    [scope cant] > safe-socket
-      if. > @
-        (started.eq 0).not
+          used
+      if. > used!
+        addr.eq sys.inaddr-none
         cant
           sprintf
-            "Couldn't initialize Winsock via 'WSAStartup' call, WSA error code: %d"
-            * started
-        try
-          if.
-            sd.eq -1
-            cant
-              sprintf
-                "Couldn't create a Win32 socket, WSA error code: %d"
-                * err.code
-            try
-              if.
-                addr.eq win32.inaddr-none
-                cant
-                  sprintf
-                    "Couldn't convert an IPv4 address '%s' into a 32-bit integer via 'inet_addr' win32 function call, WSA error code: %d"
-                    * address err.code
-                scope
-              error ex > [ex]
-              closed-socket sd
-          error ex > [ex]
-          if.
-            (win32 "WSACleanup" *).code.eq win32.socket-error
-            T "Couldn't cleanup Winsock resources"
-            true
-      code. > started
-        win32
-          "WSAStartup"
-          * win32.winsock-version-2-2
+            "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s"
+            * address sys.error-text
+        scope
 
     [scope cant-connect] > connect
       safe-socket > @
@@ -346,15 +202,13 @@
             connected.eq -1
             cant-connect
               sprintf
-                "Couldn't connect to '%s:%d' on Win32 socket #%d, WSA error code: %d"
-                * sock.address sock.port sock.sd sock.err.code
-            as-bytes.
-              dataized
-                scope
-                  sock.scoped-socket
-                    sock.sd
+                "Couldn't connect to %s:%d on socket #%d because %s"
+                * sock.address sock.port sock.sd sock.sys.error-text
+            scope
+              sock.scoped-socket
+                sock.sd
           code. > connected
-            win32
+            sock.sys.raw
               "connect"
               * sock.sd sock.sockaddr sock.sockaddr.size
           ^.^ > sock
@@ -367,45 +221,42 @@
             bound.eq -1
             cant-listen
               sprintf
-                "Couldn't bind Win32 socket #%d to '%s:%d', WSA error code: %d"
-                * sock.sd sock.address sock.port sock.err.code
+                "Couldn't bind the socket #%d to %s:%d because %s"
+                * sock.sd sock.address sock.port sock.sys.error-text
             if.
               listened.eq -1
               cant-listen
                 sprintf
-                  "Failed to listen for connections to '%s:%d' on socket #%d, WSA error code: %d"
-                  * sock.address sock.port sock.sd sock.err.code
-              as-bytes.
-                dataized
-                  scope
-                    [] >>
-                      sock.scoped-socket sock.sd > @
+                  "Failed to listen to %s:%d on the socket #%d because %s"
+                  * sock.address sock.port sock.sd sock.sys.error-text
+              scope
+                [] >>
+                  sock.scoped-socket sock.sd > @
 
-                      [scope cant-accept] > accept
-                        try > @
-                          if.
-                            client.eq -1
-                            cant-accept
-                              sprintf
-                                "Failed to accept a connection on Win32 socket #%d, WSA error code: %d"
-                                * sock.sd sock.err.code
-                            as-bytes.
-                              dataized
-                                scope
-                                  sock.scoped-socket
-                                    client
-                          error ex > [ex]
-                          sock.closed-socket client
-                        code. > client
-                          win32
-                            "accept"
-                            * sock.sd sock.sockaddr sock.sockaddr.size
+                  [scope cant-accept] > accept
+                    if. > @
+                      client.eq -1
+                      cant-accept
+                        sprintf
+                          "Failed to accept a connection on the socket #%d because %s"
+                          * sock.sd sock.sys.error-text
+                      seq *
+                        handled
+                        sock.closed-socket client
+                        handled
+                    code. > client
+                      sock.sys.raw
+                        "accept"
+                        * sock.sd sock.sockaddr sock.sockaddr.size
+                    scope > handled!
+                      sock.scoped-socket
+                        client
           code. > bound
-            win32
+            sock.sys.raw
               "bind"
               * sock.sd sock.sockaddr sock.sockaddr.size
           code. > listened
-            win32
+            sock.sys.raw
               "listen"
               * sock.sd 2048
           ^.^ > sock

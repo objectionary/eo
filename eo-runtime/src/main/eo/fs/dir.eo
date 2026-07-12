@@ -138,3 +138,6 @@
         (d.resolved "x/y/z/a.tt").as-file.touched
         (d.as-dir.walk "**/*.tt").length.eq 2
     (dir tmpdir.tmpfile.deleted).made.as-path > d
+
+  [] +> throws-on-walking-absent-directory
+    (dir tmpdir.tmpfile.deleted).walk "**" > @

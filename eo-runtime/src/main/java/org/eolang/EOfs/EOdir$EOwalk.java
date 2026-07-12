@@ -22,6 +22,7 @@ import org.eolang.Attr;
 import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -72,8 +73,8 @@ public final class EOdir$EOwalk extends PhDefault implements Atom {
                     .toArray(Phi[]::new)
             );
         } catch (final IOException ex) {
-            throw new IllegalArgumentException(
-                String.format("Can't walk at %s", path),
+            throw new ExFailure(
+                String.format("Can't walk the directory '%s'", path),
                 ex
             );
         }

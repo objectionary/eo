@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -41,8 +42,8 @@ public final class EOdir$EOtmpfile$EOtouch extends PhDefault implements Atom {
         try {
             path = Files.createTempFile(home, null, null);
         } catch (final IOException ex) {
-            throw new IllegalArgumentException(
-                String.format("Can't created temp file in %s", home),
+            throw new ExFailure(
+                String.format("Can't create a temp file in the directory '%s'", home),
                 ex
             );
         }
