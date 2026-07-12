@@ -1,4 +1,8 @@
 # Returns `text` trimmed from right side.
+# Removes all trailing ASCII whitespace bytes: `20-` (space), `09-`
+# (horizontal tab), `0A-` (line feed), `0B-` (vertical tab), `0C-`
+# (form feed), and `0D-` (carriage return). Matches the strip-set
+# used by `String.strip()` in Java for the ASCII range.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -14,20 +18,33 @@
     string
       bts.slice
         0
-        first-non-space-index
+        first-non-ws-index
           (number len).plus -1
   text > bts!
   bts.size > len!
 
-  [index] > first-non-space-index
+  [index] > first-non-ws-index
     if. > @
       -1.eq index
       0
       if.
-        char.eq 20-
-        first-non-space-index (index.plus -1).as-number
+        is-ws char
+        first-non-ws-index (index.plus -1).as-number
         index.plus 1
     bts.slice index 1 > char!
+
+  [c] > is-ws
+    or. > @
+      c.eq 20-
+      or.
+        c.eq 09-
+        or.
+          c.eq 0A-
+          or.
+            c.eq 0B-
+            or.
+              c.eq 0C-
+              c.eq 0D-
 
   [] +> tests-trimmed-right-empty-text
     eq. > @
@@ -48,3 +65,28 @@
     eq. > @
       trimmed-right "     "
       ""
+
+  [] +> tests-trimmed-right-strips-tab
+    eq. > @
+      trimmed-right "value\t"
+      "value"
+
+  [] +> tests-trimmed-right-strips-lf
+    eq. > @
+      trimmed-right "value\n"
+      "value"
+
+  [] +> tests-trimmed-right-strips-ff
+    eq. > @
+      trimmed-right "value\f"
+      "value"
+
+  [] +> tests-trimmed-right-strips-cr
+    eq. > @
+      trimmed-right "value\r"
+      "value"
+
+  [] +> tests-trimmed-right-strips-mixed-ws
+    eq. > @
+      trimmed-right "value \t\n\f\r"
+      "value"
