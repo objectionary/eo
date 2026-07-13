@@ -7,6 +7,7 @@ package org.eolang;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -24,6 +25,15 @@ final class DataTest {
             "Whole number must render as an integer φ-term, but it didnt",
             new Data.ToPhi(42L).φTerm(),
             Matchers.equalTo("42")
+        );
+    }
+
+    @Test
+    void failsWhenObjectTypeIsUnknown() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new Data.ToPhi(new Object()),
+            "converting an unsupported Java type was expected to fail with ExFailure"
         );
     }
 

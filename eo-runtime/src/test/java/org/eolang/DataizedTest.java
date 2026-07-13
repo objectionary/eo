@@ -56,4 +56,13 @@ final class DataizedTest {
             Matchers.containsString("boom")
         );
     }
+
+    @Test
+    void failsWhenTypeIsUnknown() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new Dataized(new Data.ToPhi(0L)).take(Object.class),
+            "requesting an unsupported type was expected to fail with ExFailure"
+        );
+    }
 }

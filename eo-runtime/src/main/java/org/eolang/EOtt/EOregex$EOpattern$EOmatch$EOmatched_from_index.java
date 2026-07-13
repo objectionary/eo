@@ -78,7 +78,7 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
                 )
             ).readObject()).matcher(text);
         } catch (final IOException | ClassNotFoundException ex) {
-            throw new IllegalArgumentException(ex);
+            throw new ExFailure("cannot deserialize the compiled regex pattern", ex);
         }
         final int start = new Expect.Natural(
             Expect.at(this, EOregex$EOpattern$EOmatch$EOmatched_from_index.START)

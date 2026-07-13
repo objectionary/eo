@@ -270,7 +270,9 @@ final class BytesRaw implements Bytes {
         try {
             expected = type.getField("BYTES").getInt(null);
         } catch (final NoSuchFieldException | IllegalAccessException ex) {
-            throw new IllegalArgumentException(ex);
+            throw new ExFailure(
+                String.format("cannot read the BYTES field of %s", type.getName()), ex
+            );
         }
         if (bytes.length != expected) {
             throw new ExFailure(

@@ -159,11 +159,9 @@ public interface Data {
                 bts.put(0, new PhDefault(((String) obj).getBytes(StandardCharsets.UTF_8)));
                 phi.put(0, bts);
             } else {
-                throw new IllegalArgumentException(
-                    String.format(
-                        "Unknown type of data: %s",
-                        obj.getClass().getCanonicalName()
-                    )
+                throw new ExFailure(
+                    "Unknown type of data: %s",
+                    obj.getClass().getCanonicalName()
                 );
             }
             return phi;

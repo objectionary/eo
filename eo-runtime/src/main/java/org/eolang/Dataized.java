@@ -81,12 +81,10 @@ public final class Dataized {
         } else if (type.equals(Boolean.class)) {
             res = this.asBool();
         } else {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Unknown type \"%s\", bytes are: %s",
-                    type.getCanonicalName(),
-                    Arrays.toString(this.asBytes().take())
-                )
+            throw new ExFailure(
+                "Unknown type \"%s\", bytes are: %s",
+                type.getCanonicalName(),
+                Arrays.toString(this.asBytes().take())
             );
         }
         return type.cast(res);
