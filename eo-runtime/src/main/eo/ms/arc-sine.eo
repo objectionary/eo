@@ -4,9 +4,6 @@
 # series always runs in its fast region, while arguments outside [-1, 1] and
 # non-finite ones collapse to nan.
 
-+alias ms.abs
-+alias ms.pi
-+alias ms.sqrt
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package ms
