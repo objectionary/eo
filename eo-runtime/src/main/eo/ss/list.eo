@@ -11,6 +11,7 @@
 # .
 
 +alias ss.eachi
++alias ss.back
 +alias ss.list
 +alias ss.reducedi
 +alias ss.withouti
@@ -37,6 +38,7 @@
         front index
         item
       back
+        ^
         origin.length.minus index
 
   [func] > each
@@ -71,7 +73,9 @@
       list *
       if.
         0.gt idx
-        back (number idx).neg
+        back
+          ^
+          (number idx).neg
         if.
           (number idx).gte origin.length
           ^
@@ -84,22 +88,6 @@
         tup.length.eq idx
         tup
         rechead tup.tail
-
-  [index] > back
-    if. > @
-      0.gt start
-      ^
-      list
-        reducedi
-          ^
-          *
-          [accum item idx] >>
-            if. > @
-              idx.gte start
-              accum.with item
-              accum
-    index > idx!
-    origin.length.minus idx > start!
 
   [start end] > slice
     if. > @
@@ -293,29 +281,6 @@
           * "foo" 2.2 00-01 "bar"
         -3
       * 2.2 00-01 "bar"
-
-  [] +> tests-simple-back
-    eq. > @
-      back.
-        list
-          * 1 2 3 4 5
-        2
-      * 4 5
-
-  [] +> tests-zero-index-in-back
-    is-empty. > @
-      back.
-        list
-          * 1 2 3 4 5
-        0
-
-  [] +> tests-large-index-in-back
-    eq. > @
-      back.
-        list
-          * 1 2 3 4 5
-        10
-      * 1 2 3 4 5
 
   [] +> tests-simple-slice
     eq. > @
