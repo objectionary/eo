@@ -15,10 +15,9 @@
   reduced > @
     mapped
       substrings
-      contains txt x > [x] >>
+      contains text x > [x] >>
     true
     x.and a > [a x]
-  text > txt!
 
   ++> tests-successful-contains-all
     contains-all "abcdefghijk" (list (* "abc" "ghi")) > @
