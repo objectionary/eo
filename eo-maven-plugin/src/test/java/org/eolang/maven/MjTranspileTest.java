@@ -330,9 +330,11 @@ final class MjTranspileTest {
             }
             maven.execute(new FakeMaven.Transpile());
             final List<Path> generated;
-            try (Stream<Path> files = Files.list(
-                maven.generatedPath().resolve("org/eolang/EOfoo/EOx")
-            )) {
+            try (
+                Stream<Path> files = Files.list(
+                    maven.generatedPath().resolve("org/eolang/EOfoo/EOx")
+                )
+            ) {
                 generated = files.filter(MjTranspileTest::isJava)
                     .filter(path -> !"package-info.java".equals(MjTranspileTest.filename(path)))
                     .collect(Collectors.toList());
@@ -348,9 +350,11 @@ final class MjTranspileTest {
                 Matchers.empty()
             );
             if (tracking) {
-                try (Stream<Path> steps = Files.walk(
-                    maven.targetPath().resolve(Transpiling.PRE)
-                )) {
+                try (
+                    Stream<Path> steps = Files.walk(
+                        maven.targetPath().resolve(Transpiling.PRE)
+                    )
+                ) {
                     MatcherAssert.assertThat(
                         "Tracked transformation steps must be saved",
                         steps.anyMatch(Files::isRegularFile),
@@ -440,9 +444,11 @@ final class MjTranspileTest {
     private static List<String> syntaxErrors(final List<Path> sources) throws IOException {
         final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
-        try (StandardJavaFileManager manager = compiler.getStandardFileManager(
-            diagnostics, null, null
-        )) {
+        try (
+            StandardJavaFileManager manager = compiler.getStandardFileManager(
+                diagnostics, null, null
+            )
+        ) {
             final JavacTask task = (JavacTask) compiler.getTask(
                 null,
                 manager,

@@ -61,6 +61,7 @@ Then, start with a simple EO program in the `app.eo` file:
 
 ```eo
 # Just prints hello.
+
 [args] > app
   io.stdout > @
     "Hello, world!\n"
@@ -112,6 +113,7 @@ argument: a copy of the object `sprintf`:
 
 ```eo
 # Says hello to Jeff.
+
 io.stdout > [] > app
   tt.sprintf
     "Hello, %s!"
@@ -123,10 +125,11 @@ It is being copied with two arguments: `"Hello, %s!"` and `"Jeffrey"`.
 This program can be written using horizontal notation:
 
 ```eo
+# Also says hello to Jeff.
+
 +alias io.stdout
 +alias tt.sprintf
 
-# Also says hello to Jeff.
 [] > app
   stdout (sprintf "Hello, %s!" (* "Jeffrey")) > @
 ```
@@ -142,6 +145,7 @@ inside `app` and use it to build the output string:
 
 ```eo
 # Says hello to Jeff.
+
 [] > app
   io.stdout (msg "Jeffrey") > @
   [name] > msg
