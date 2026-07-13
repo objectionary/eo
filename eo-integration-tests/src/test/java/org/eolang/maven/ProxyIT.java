@@ -23,6 +23,7 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eclipse.jetty.proxy.ProxyHandler;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ConnectHandler;
 import org.hamcrest.MatcherAssert;
@@ -43,8 +44,7 @@ final class ProxyIT {
     void checksThatProxyIsWorking() throws Exception {
         final int port = ProxyIT.free();
         final Server proxy = new Server(port);
-        proxy.setHandler(new ProxyHandler.Forward());
-        proxy.setHandler(new ConnectHandler());
+        proxy.setHandler(ProxyIT.handler());
         proxy.start();
         try {
             MatcherAssert.assertThat(
@@ -61,12 +61,11 @@ final class ProxyIT {
     }
 
     @Test
-    @Disabled("flaky when resolving dependencies through the live proxy, see #5429")
+    @Disabled("still depends on live Maven Central through the proxy, see #5429")
     void checksThatWeCanCompileTheProgramWithProxySet(@Mktmp final Path tmp) throws Exception {
         final int port = ProxyIT.free();
         final Server proxy = new Server(port);
-        proxy.setHandler(new ProxyHandler.Forward());
-        proxy.setHandler(new ConnectHandler());
+        proxy.setHandler(ProxyIT.handler());
         proxy.start();
         final String[] log = {""};
         try {
@@ -85,6 +84,25 @@ final class ProxyIT {
             log[0],
             Matchers.containsString("BUILD SUCCESS")
         );
+    }
+
+    /**
+     * Build a forward proxy handler that also tunnels CONNECT requests.
+     *
+     * <p>{@link ConnectHandler} is a handler wrapper: it serves {@code CONNECT}
+     * requests itself (HTTPS tunneling) and delegates every other request to
+     * the handler nested inside it. Nesting {@link ProxyHandler.Forward} into
+     * it therefore installs both behaviours at once. Calling
+     * {@code setHandler(...)} twice on the server, as it used to be done here,
+     * simply replaced the first handler with the second, so plain HTTP
+     * forwarding was never exercised (see #5110 and #5429).</p>
+     *
+     * @return The combined handler
+     */
+    private static Handler handler() {
+        final ConnectHandler connect = new ConnectHandler();
+        connect.setHandler(new ProxyHandler.Forward());
+        return connect;
     }
 
     private static void shutdown(final Server proxy) throws Exception {
