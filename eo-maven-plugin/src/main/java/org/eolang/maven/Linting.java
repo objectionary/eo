@@ -387,6 +387,13 @@ final class Linting implements Step {
 
     /**
      * Run whole-program analysis.
+     * @todo #5185:30min Remove the redundant defect filter once WPA bug is fixed.
+     *  PkWpa unconditionally appends LtUnlintNonExistingDefectWpa even when excluded
+     *  via Program.without(), making the .without() call ineffective for that lint.
+     *  The workaround is to filter defects by rule name after collection. The WPA bug
+     *  is tracked at https://github.com/objectionary/wpa/issues/62 - remove the
+     *  .filter(defect -> !this.skipProgramLints.contains(defect.rule())) line once
+     *  that issue is resolved and a new WPA version is released.
      * @param pkg Map of program identifiers to their XMIR
      * @return List of defects found
      */
@@ -396,6 +403,7 @@ final class Linting implements Step {
             .without(this.skipProgramLints.toArray(new String[0]))
             .defects()
             .stream()
+            .filter(defect -> !this.skipProgramLints.contains(defect.rule()))
             .filter(defect -> this.skipExperimentalLints || !defect.experimental()).forEach(
                 defect -> {
                     final Node node = pkg.get(defect.object()).inner();
