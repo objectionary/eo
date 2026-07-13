@@ -158,9 +158,9 @@ final class BytesOfTest {
     @Test
     void doesNotSupportNegativeBits() {
         Assertions.assertThrows(
-            UnsupportedOperationException.class,
+            ExFailure.class,
             () -> new BytesOf(Integer.MAX_VALUE).sshift(-1),
-            "sshift with negative bits should throw exception, but it didn't"
+            "sshift with negative bits should fail with ExFailure, but it didn't"
         );
     }
 }

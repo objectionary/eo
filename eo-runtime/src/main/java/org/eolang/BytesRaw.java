@@ -84,7 +84,7 @@ final class BytesRaw implements Bytes {
     @Override
     public Bytes sshift(final int bits) {
         if (bits < 0) {
-            throw new UnsupportedOperationException(
+            throw new ExFailure(
                 "The left sshift (negative bits) is not yet supported"
             );
         }
@@ -122,11 +122,9 @@ final class BytesRaw implements Bytes {
         } else if (Short.class.equals(type)) {
             res = BytesRaw.whenFit(buf, ret, Short.class).getShort();
         } else {
-            throw new UnsupportedOperationException(
-                String.format(
-                    "Can't convert %d bytes to \"%s\"",
-                    ret.length, type.getCanonicalName()
-                )
+            throw new ExFailure(
+                "Can't convert %d bytes to \"%s\"",
+                ret.length, type.getCanonicalName()
             );
         }
         return type.cast(res);
