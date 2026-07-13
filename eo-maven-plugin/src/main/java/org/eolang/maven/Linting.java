@@ -387,6 +387,8 @@ final class Linting implements Step {
 
     /**
      * Run whole-program analysis.
+     * @param pkg Map of program identifiers to their XMIR
+     * @return List of defects found
      * @todo #5185:30min Remove the redundant defect filter once WPA bug is fixed.
      *  PkWpa unconditionally appends LtUnlintNonExistingDefectWpa even when excluded
      *  via Program.without(), making the .without() call ineffective for that lint.
@@ -394,8 +396,6 @@ final class Linting implements Step {
      *  is tracked at https://github.com/objectionary/wpa/issues/62 - remove the
      *  .filter(defect -> !this.skipProgramLints.contains(defect.rule())) line once
      *  that issue is resolved and a new WPA version is released.
-     * @param pkg Map of program identifiers to their XMIR
-     * @return List of defects found
      */
     private List<org.eolang.wpa.Defect> wpa(final Map<String, XML> pkg) {
         final List<org.eolang.wpa.Defect> defects = new ArrayList<>(0);
