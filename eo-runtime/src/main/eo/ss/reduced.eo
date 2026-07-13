@@ -19,7 +19,7 @@
     start
     func accum item > [accum item idx] >>
 
-  [] +> tests-list-reduce-without-index
+  ++> tests-list-reduce-without-index
     eq. > @
       reduced
         list
@@ -28,7 +28,7 @@
         a.times x > [a x]
       -24
 
-  [] +> tests-list-reduced-printing
+  ++> tests-list-reduced-printing
     eq. > @
       reduced
         list

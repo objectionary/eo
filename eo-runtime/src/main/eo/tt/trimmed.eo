@@ -22,47 +22,47 @@
       trimmed-right
         text
 
-  [] +> tests-text-trimmed-one-space-left
+  ++> tests-text-trimmed-one-space-left
     eq. > @
       trimmed " some"
       "some"
 
-  [] +> tests-text-trimmed-one-space-right
+  ++> tests-text-trimmed-one-space-right
     eq. > @
       trimmed "some "
       "some"
 
-  [] +> tests-text-trimmed-one-space-both
+  ++> tests-text-trimmed-one-space-both
     eq. > @
       trimmed " some "
       "some"
 
-  [] +> tests-text-trimmed-many-spaces
+  ++> tests-text-trimmed-many-spaces
     eq. > @
       trimmed "    some     "
       "some"
 
-  [] +> tests-text-trimmed-empty
+  ++> tests-text-trimmed-empty
     eq. > @
       trimmed ""
       ""
 
-  [] +> tests-text-trimmed-only-spaces
+  ++> tests-text-trimmed-only-spaces
     eq. > @
       trimmed "        "
       ""
 
-  [] +> tests-trimmed-strips-mixed-ws-both-sides
+  ++> tests-trimmed-strips-mixed-ws-both-sides
     eq. > @
       trimmed " \t\n\f\rvalue \t\n\f\r"
       "value"
 
-  [] +> tests-trimmed-preserves-inner-content
+  ++> tests-trimmed-preserves-inner-content
     eq. > @
       trimmed "no-whitespace"
       "no-whitespace"
 
-  [] +> tests-trimmed-preserves-inner-whitespace
+  ++> tests-trimmed-preserves-inner-whitespace
     eq. > @
       trimmed "\t hello world \n"
       "hello world"

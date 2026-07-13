@@ -12,16 +12,16 @@
 [text] > is-alpha
   (regex "/^[a-zA-Z]+$/").matches text > @
 
-  [] +> tests-checks-if-simple-text-is-alpha
+  ++> tests-checks-if-simple-text-is-alpha
     is-alpha > @
       "eEo"
 
-  [] +> tests-checks-if-text-with-number-is-not-alpha
+  ++> tests-checks-if-text-with-number-is-not-alpha
     not. > @
       is-alpha
         "ab3d"
 
-  [] +> tests-checks-if-text-with-dashes-is-not-alpha
+  ++> tests-checks-if-text-with-dashes-is-not-alpha
     not. > @
       is-alpha
         "-w-"

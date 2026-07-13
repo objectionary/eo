@@ -21,43 +21,43 @@
 
 [format read] > sscanf /tuple
 
-  [] +> tests-sscanf-with-string
+  ++> tests-sscanf-with-string
     eq. > @
       "hello"
       head.
         sscanf "%s" "hello"
 
-  [] +> tests-sscanf-with-int
+  ++> tests-sscanf-with-int
     eq. > @
       33
       head.
         sscanf "%d" "33"
 
-  [] +> tests-sscanf-with-negative-int
+  ++> tests-sscanf-with-negative-int
     eq. > @
       -42
       head.
         sscanf "%d" "-42"
 
-  [] +> tests-sscanf-with-positive-signed-int
+  ++> tests-sscanf-with-positive-signed-int
     eq. > @
       42
       head.
         sscanf "%d" "+42"
 
-  [] +> tests-sscanf-with-float
+  ++> tests-sscanf-with-float
     eq. > @
       0.24
       head.
         sscanf "%f" "0.24"
 
-  [] +> throws-on-sscanf-with-wrong-format
+  ++> throws-on-sscanf-with-wrong-format
     sscanf "%l" "error" > @
 
-  [] +> throws-on-sscanf-with-oversized-int
+  ++> throws-on-sscanf-with-oversized-int
     sscanf "%d" "99999999999999999999" > @
 
-  [] +> tests-sscanf-with-string-int-float
+  ++> tests-sscanf-with-string-int-float
     eq. > @
       list
         sscanf
@@ -65,31 +65,31 @@
           "hello 33 0.24"
       * "hello" 33 0.24
 
-  [] +> tests-sscanf-with-string-with-ending
+  ++> tests-sscanf-with-string-with-ending
     eq. > @
       "hello"
       head.
         sscanf "%s!" "hello!"
 
-  [] +> tests-sscanf-with-complex-string
+  ++> tests-sscanf-with-complex-string
     eq. > @
       "test"
       head.
         sscanf "some%sstring" "someteststring"
 
-  [] +> tests-sscanf-with-complex-int
+  ++> tests-sscanf-with-complex-int
     eq. > @
       734987259
       head.
         sscanf "!%d!" "!734987259!"
 
-  [] +> tests-sscanf-with-complex-float
+  ++> tests-sscanf-with-complex-float
     eq. > @
       1991.01
       head.
         sscanf "this will be=%f" "this will be=1991.01"
 
-  [] +> tests-sscanf-with-sprintf
+  ++> tests-sscanf-with-sprintf
     eq. > @
       list
         sscanf
@@ -99,7 +99,7 @@
             * "This" 8
       * "This" 8
 
-  [] +> tests-sscanf-complex-case
+  ++> tests-sscanf-complex-case
     eq. > @
       list
         sscanf

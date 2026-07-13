@@ -20,22 +20,22 @@
     x.or a > [a x]
   text > txt!
 
-  [] +> tests-successful-contains-any
+  ++> tests-successful-contains-any
     contains-any "Good morning" (list (* "oo" "goo")) > @
 
-  [] +> tests-not-contains-any
+  ++> tests-not-contains-any
     not. > @
       contains-any "xyzw" (list (* "yx" "zyx" "wx" "abc"))
 
-  [] +> tests-contains-any-vert
+  ++> tests-contains-any-vert
     contains-any > @
       "foo bar buzz"
       list (* "bar" " " "o")
 
-  [] +> test-contains-any-without-substrings
+  ++> test-contains-any-without-substrings
     not. > @
       contains-any "text" (list *)
 
-  [] +> tests-contains-any-for-empty-text-and-without-substrings
+  ++> tests-contains-any-for-empty-text-and-without-substrings
     not. > @
       contains-any "" (list *)

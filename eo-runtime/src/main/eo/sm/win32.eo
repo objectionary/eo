@@ -53,7 +53,7 @@
         sin-addr.size
       sin-zero.size
 
-  [] +> tests-returns-valid-win32-inet-addr-for-localhost
+  ++> tests-returns-valid-win32-inet-addr-for-localhost
     or. > @
       os.is-windows.not
       (code. (win32 "inet_addr" (* "127.0.0.1"))).eq 16777343

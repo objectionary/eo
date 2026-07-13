@@ -18,7 +18,7 @@
     lst
     func item > [item index] >>
 
-  [] +> tests-simple-filtered
+  ++> tests-simple-filtered
     eq. > @
       filtered
         list
@@ -26,7 +26,7 @@
         v.gt 2 > [v]
       * 3 4 5
 
-  [] +> tests-filtered-with-bools
+  ++> tests-filtered-with-bools
     eq. > @
       filtered
         list

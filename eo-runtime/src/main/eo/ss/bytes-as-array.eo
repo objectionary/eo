@@ -24,21 +24,21 @@
         (index.plus 1).as-number
       tup
 
-  [] +> tests-converts-bytes-to-array
+  ++> tests-converts-bytes-to-array
     eq. > @
       list
         bytes-as-array
           20-1F-EE-B5-FF
       * 20- 1F- EE- B5- FF-
 
-  [] +> tests-single-byte-to-array
+  ++> tests-single-byte-to-array
     eq. > @
       list
         bytes-as-array
           1F-
       * 1F-
 
-  [] +> tests-zero-bytes-to-array
+  ++> tests-zero-bytes-to-array
     eq. > @
       list
         bytes-as-array

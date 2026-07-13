@@ -15,19 +15,19 @@
       -1
       index-of lst element
 
-  [] +> tests-list-contains-string
+  ++> tests-list-contains-string
     contains > @
       list
         * "qwerty" "asdfgh" 3 "qwerty"
       "qwerty"
 
-  [] +> tests-list-contains-number
+  ++> tests-list-contains-number
     contains > @
       list
         * "qwerty" "asdfgh" 3 "qwerty"
       3
 
-  [] +> tests-list-does-not-contain
+  ++> tests-list-does-not-contain
     not. > @
       contains
         list

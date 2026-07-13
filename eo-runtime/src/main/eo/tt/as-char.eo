@@ -12,37 +12,37 @@
 [code] > as-char
   code.as-i64.as-bytes.slice 7 1 > @
 
-  [] +> tests-writes-byte-of-uppercase-letter
+  ++> tests-writes-byte-of-uppercase-letter
     eq. > @
       "A"
       string (as-char 65)
 
-  [] +> tests-writes-byte-of-last-uppercase-letter
+  ++> tests-writes-byte-of-last-uppercase-letter
     eq. > @
       "Z"
       string (as-char 90)
 
-  [] +> tests-writes-byte-of-lowercase-letter
+  ++> tests-writes-byte-of-lowercase-letter
     eq. > @
       "z"
       string (as-char 122)
 
-  [] +> tests-writes-byte-of-zero-digit
+  ++> tests-writes-byte-of-zero-digit
     eq. > @
       "0"
       string (as-char 48)
 
-  [] +> tests-writes-byte-of-space
+  ++> tests-writes-byte-of-space
     eq. > @
       " "
       string (as-char 32)
 
-  [] +> tests-writes-byte-of-last-printable
+  ++> tests-writes-byte-of-last-printable
     eq. > @
       "~"
       string (as-char 126)
 
-  [] +> tests-round-trips-through-as-ascii
+  ++> tests-round-trips-through-as-ascii
     eq. > @
       "!"
       string (as-char (as-ascii "!"))

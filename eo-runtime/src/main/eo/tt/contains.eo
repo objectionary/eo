@@ -33,9 +33,9 @@
       slice txt idx slen
       sub
 
-  [] +> tests-text-contains-substring
+  ++> tests-text-contains-substring
     contains "Hello, world!" "o, wo" > @
 
-  [] +> tests-text-does-not-contain-substring
+  ++> tests-text-does-not-contain-substring
     not. > @
       contains "Hello, world!" "Hey"

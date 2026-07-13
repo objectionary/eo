@@ -33,12 +33,12 @@
         accum.concat bts
         (index.plus 1).as-number
 
-  [] +> throws-on-text-repeating-less-than-zero-times
+  ++> throws-on-text-repeating-less-than-zero-times
     repeated > @
       ""
       -1
 
-  [] +> tests-text-repeated-negative-times-returns-provided-fallback
+  ++> tests-text-repeated-negative-times-returns-provided-fallback
     eq. > @
       "recovered"
       repeated
@@ -46,12 +46,12 @@
         -1
         "recovered" > [msg]
 
-  [] +> tests-text-repeated-zero-times-is-empty
+  ++> tests-text-repeated-zero-times-is-empty
     eq. > @
       ""
       repeated "some" 0
 
-  [] +> tests-text-repeated-five-times
+  ++> tests-text-repeated-five-times
     eq. > @
       "heyheyheyheyhey"
       repeated "hey" 5

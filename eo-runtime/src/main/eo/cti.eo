@@ -17,7 +17,7 @@
 [delegate level message] > cti
   delegate > @
 
-  [] +> tests-prints-warning-and-delegates
+  ++> tests-prints-warning-and-delegates
     eq. > @
       cti
         2.times 2

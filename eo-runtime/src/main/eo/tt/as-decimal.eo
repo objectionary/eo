@@ -22,37 +22,37 @@
       concat. (digits q) (as-char ((n.minus (q.times 10)).floor.plus 48))
     (n.div 10).floor > q
 
-  [] +> tests-writes-single-digit
+  ++> tests-writes-single-digit
     eq. > @
       "7"
       string (as-decimal 7)
 
-  [] +> tests-writes-zero
+  ++> tests-writes-zero
     eq. > @
       "0"
       string (as-decimal 0)
 
-  [] +> tests-writes-multi-digit-number
+  ++> tests-writes-multi-digit-number
     eq. > @
       "31415"
       string (as-decimal 31415)
 
-  [] +> tests-writes-negative-number
+  ++> tests-writes-negative-number
     eq. > @
       "-42"
       string (as-decimal -42)
 
-  [] +> tests-truncates-positive-fraction
+  ++> tests-truncates-positive-fraction
     eq. > @
       "42"
       string (as-decimal 42.987)
 
-  [] +> tests-truncates-negative-fraction
+  ++> tests-truncates-negative-fraction
     eq. > @
       "-7"
       string (as-decimal -7.89)
 
-  [] +> tests-writes-number-with-inner-zero
+  ++> tests-writes-number-with-inner-zero
     eq. > @
       "105"
       string (as-decimal 105)
