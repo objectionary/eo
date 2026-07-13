@@ -34,36 +34,40 @@
     bar 42 > @
 
   is compiled as if there was a "+alias foo.bar" meta (i.e. 'bar'
-  becomes 'Φ.foo.bar'), but only when 'bar' is one of the local
-  package objects. The names of all local package objects are
-  provided through the "objects" parameter (space separated), which
-  the eo-maven-plugin fills in. If a bare name is not in that list, it
-  is treated as a global and homed into the root "Φ" (the default
-  behaviour). Thus a bare global like 'seq' (which lives at "Φ.seq",
-  and is not a local package object) is left untouched. When the
-  "objects" parameter is empty (for example, when the parser is used
-  stand-alone), every bare reference falls back to the root "Φ".
+  becomes 'Φ.foo.bar'), but only when 'foo.bar' is one of the local
+  package objects. The qualified names (i.e. "package.name") of all
+  local package objects are provided through the "objects" parameter
+  (space separated), which the eo-maven-plugin fills in. A bare name is
+  homed into the current package only when "package.name" is in that
+  list; otherwise it is treated as a global and homed into the root
+  "Φ" (the default behaviour). Thus a bare global like 'seq' (which
+  lives at "Φ.seq", and is not a local package object) is left
+  untouched, and a name that exists only in some other package is not
+  wrongly homed into the current one. When the "objects" parameter is
+  empty (for example, when the parser is used stand-alone), every bare
+  reference falls back to the root "Φ".
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_specials.xsl"/>
   <!--
-  Space separated list of the names of all objects that belong to a
-  package and are known to the compiler. Used to decide whether a bare
-  reference belongs to the current package or is a global.
+  Space separated list of the qualified names ("package.name") of all
+  objects that belong to a package and are known to the compiler. Used
+  to decide whether a bare reference belongs to the current package or
+  is a global.
   -->
   <xsl:param name="objects" as="xs:string" select="''"/>
   <!-- The package of the current program (empty if there is no "+package" meta). -->
   <xsl:variable name="package" select="string(/object/metas/meta[head='package']/part[1])"/>
-  <!-- Names of all local package objects as a sequence. -->
+  <!-- Qualified names of all local package objects as a sequence. -->
   <xsl:variable name="known" select="tokenize($objects, '\s+')[. != '']"/>
   <!--
   Resolve a bare name to its fully qualified name. If the current
-  program has a package and the name is a local package object, the
-  name is homed into the package; otherwise it goes to the root "Φ".
+  program has a package and "package.name" is a local package object,
+  the name is homed into the package; otherwise it goes to the root "Φ".
   -->
   <xsl:function name="eo:homed" as="xs:string">
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="if ($package != '' and $name = $known) then concat('Φ.', $package, '.', $name) else concat('Φ.', $name)"/>
+    <xsl:sequence select="if ($package != '' and concat($package, '.', $name) = $known) then concat('Φ.', $package, '.', $name) else concat('Φ.', $name)"/>
   </xsl:function>
   <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>

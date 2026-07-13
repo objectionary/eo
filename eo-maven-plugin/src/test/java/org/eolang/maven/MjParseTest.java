@@ -17,7 +17,10 @@ import java.nio.file.attribute.FileTime;
 import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.cactoos.bytes.Sha256DigestOf;
+import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.text.HexOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
@@ -341,8 +344,8 @@ final class MjParseTest {
     /**
      * The parse cache version segment for a program with a single object.
      * It mirrors what {@link Parsing} computes: the plugin version plus a
-     * digest of the local package object names (here, the simple name of
-     * the only object).
+     * SHA-256 digest of the qualified names of the local package objects
+     * (here, the identifier of the only object).
      * @param identifier The tojo identifier of the only registered object
      * @return The version segment used as part of the parse cache path
      */
@@ -350,7 +353,9 @@ final class MjParseTest {
         return String.format(
             "%s-%s",
             FakeMaven.pluginVersion(),
-            Integer.toHexString(identifier.substring(identifier.lastIndexOf('.') + 1).hashCode())
+            new UncheckedText(
+                new HexOf(new Sha256DigestOf(new InputOf(identifier)))
+            ).asString()
         );
     }
 

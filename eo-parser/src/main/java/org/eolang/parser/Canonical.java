@@ -48,10 +48,11 @@ public final class Canonical implements UnaryOperator<XML> {
 
     /**
      * Ctor.
-     * @param objects Space separated names of the local package
-     *  objects the compiler is aware of; a bare reference is homed into
-     *  the current package only if it is one of them, otherwise it goes
-     *  to the root {@code Φ}
+     * @param objects Space separated qualified names ("package.name")
+     *  of the local package objects the compiler is aware of; a bare
+     *  reference is homed into the current package only if
+     *  "package.name" is one of them, otherwise it goes to the root
+     *  {@code Φ}
      */
     public Canonical(final String objects) {
         this.pipeline = new Unchecked<>(
@@ -71,13 +72,13 @@ public final class Canonical implements UnaryOperator<XML> {
     private static final class Pipeline implements Scalar<UnaryOperator<XML>> {
 
         /**
-         * Space separated names of the local package objects.
+         * Space separated qualified names of the local package objects.
          */
         private final String objects;
 
         /**
          * Ctor.
-         * @param objs Space separated names of local package objects
+         * @param objs Space separated qualified names of local package objects
          */
         Pipeline(final String objs) {
             this.objects = objs;

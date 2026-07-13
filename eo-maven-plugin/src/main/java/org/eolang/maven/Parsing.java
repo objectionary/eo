@@ -17,8 +17,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import org.cactoos.bytes.Sha256DigestOf;
+import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
+import org.cactoos.text.HexOf;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.eolang.parser.Canonical;
 import org.w3c.dom.Node;
 
@@ -121,11 +125,15 @@ final class Parsing implements Step {
         final String objects = sources.stream()
             .map(TjForeign::identifier)
             .filter(id -> id.contains("."))
-            .map(id -> id.substring(id.lastIndexOf('.') + 1))
             .distinct()
+            .sorted()
             .collect(Collectors.joining(" "));
         final int total = this.parsed(
-            sources, new Canonical(objects), Integer.toHexString(objects.hashCode())
+            sources,
+            new Canonical(objects),
+            new UncheckedText(
+                new HexOf(new Sha256DigestOf(new InputOf(objects)))
+            ).asString()
         );
         if (0 == total) {
             if (sources.isEmpty()) {
