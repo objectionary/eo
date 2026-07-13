@@ -32,8 +32,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 @SuppressWarnings({
     "PMD.AvoidDuplicateLiterals",
-    "PMD.TooManyMethods",
-    "PMD.UnnecessaryLocalRule"
+    "PMD.TooManyMethods"
 })
 @ExtendWith(MktmpResolver.class)
 final class MjParseTest {
@@ -90,12 +89,9 @@ final class MjParseTest {
         final CommitHash hash = new ChCached(new ChNarrow(new ChRemote("0.40.5")));
         final Path base = maven.targetPath().resolve(Parsing.DIR);
         final Path target = new Place("foo.x.main").make(base, MjAssemble.XMIR);
-        final String digest = Integer.toHexString(
-            String.format("Φ.%s", maven.programTojo().identifier()).hashCode()
-        );
         new Cache(
             cache.resolve(Parsing.CACHE)
-                .resolve(String.format("%s-%s", FakeMaven.pluginVersion(), digest))
+                .resolve(MjParseTest.cacheVersion(maven.programTojo().identifier()))
                 .resolve(hash.value()),
             src -> expected
         ).apply(maven.programTojo().source(), target, base.relativize(target));
@@ -339,6 +335,22 @@ final class MjParseTest {
                 Matchers.equalTo(before),
                 Matchers.equalTo(after)
             )
+        );
+    }
+
+    /**
+     * The parse cache version segment for a program with a single object.
+     * It mirrors what {@link Parsing} computes: the plugin version plus a
+     * digest of the local package object names (here, the simple name of
+     * the only object).
+     * @param identifier The tojo identifier of the only registered object
+     * @return The version segment used as part of the parse cache path
+     */
+    private static String cacheVersion(final String identifier) {
+        return String.format(
+            "%s-%s",
+            FakeMaven.pluginVersion(),
+            Integer.toHexString(identifier.substring(identifier.lastIndexOf('.') + 1).hashCode())
         );
     }
 

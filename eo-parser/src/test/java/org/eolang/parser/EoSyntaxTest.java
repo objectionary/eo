@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.text.StringEscapeUtils;
@@ -243,7 +243,7 @@ final class EoSyntaxTest {
                         "  seq > y".concat(System.lineSeparator())
                     )
                 ),
-                new Canonical("Φ.foo.bar")
+                new Canonical("bar")
             ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/object[not(errors)]",
@@ -676,7 +676,7 @@ final class EoSyntaxTest {
     private static XML raw(final String line) throws Exception {
         return new EoSyntax(
             new InputOf(line.concat(String.valueOf((char) 10))),
-            Function.identity()
+            UnaryOperator.identity()
         ).parsed();
     }
 

@@ -11,7 +11,7 @@ import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Xsline;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Synced;
@@ -20,23 +20,24 @@ import org.cactoos.scalar.Unchecked;
 /**
  * The canonical XSL pipeline applied to the raw parser output.
  *
- * <p>The pipeline may be aware of the objects that exist. When it is,
- * a bare reference in a program with a {@code +package} meta is homed
- * into the current package (as if there was a {@code +alias} meta), but
- * only when the referenced object exists in that package. Otherwise the
- * reference stays at the root {@code Φ}. The awareness is passed to
- * {@code add-default-package.xsl} through the {@code objects} parameter.
- * When nothing is known, bare references are always homed into the
- * root {@code Φ} (see {@code add-default-package.xsl}).</p>
+ * <p>The pipeline may be aware of the local package objects. When it
+ * is, a bare reference in a program with a {@code +package} meta is
+ * homed into the current package (as if there was a {@code +alias}
+ * meta), but only when the name is one of those local package objects.
+ * Otherwise the reference stays at the root {@code Φ} (it is treated
+ * as a global). The awareness is passed to
+ * {@code add-default-package.xsl} through the {@code objects}
+ * parameter. When nothing is known, bare references are always homed
+ * into the root {@code Φ} (see {@code add-default-package.xsl}).</p>
  *
  * @since 0.60
  */
-public final class Canonical implements Function<XML, XML> {
+public final class Canonical implements UnaryOperator<XML> {
 
     /**
      * The pipeline, built lazily and only once.
      */
-    private final Unchecked<Function<XML, XML>> pipeline;
+    private final Unchecked<UnaryOperator<XML>> pipeline;
 
     /**
      * Ctor, not aware of any objects.
@@ -47,10 +48,10 @@ public final class Canonical implements Function<XML, XML> {
 
     /**
      * Ctor.
-     * @param objects Space separated list of fully qualified names of
-     *  all the objects the compiler is aware of; a bare reference is
-     *  homed into the current package only if such an object exists
-     *  there, otherwise it goes to the root {@code Φ}
+     * @param objects Space separated names of the local package
+     *  objects the compiler is aware of; a bare reference is homed into
+     *  the current package only if it is one of them, otherwise it goes
+     *  to the root {@code Φ}
      */
     public Canonical(final String objects) {
         this.pipeline = new Unchecked<>(
@@ -67,23 +68,23 @@ public final class Canonical implements Function<XML, XML> {
      * The scalar that builds the canonical pipeline.
      * @since 0.60
      */
-    private static final class Pipeline implements Scalar<Function<XML, XML>> {
+    private static final class Pipeline implements Scalar<UnaryOperator<XML>> {
 
         /**
-         * Space separated list of fully qualified names of known objects.
+         * Space separated names of the local package objects.
          */
         private final String objects;
 
         /**
          * Ctor.
-         * @param objs Space separated list of known object names
+         * @param objs Space separated names of local package objects
          */
         Pipeline(final String objs) {
             this.objects = objs;
         }
 
         @Override
-        public Function<XML, XML> value() {
+        public UnaryOperator<XML> value() {
             return new Xsline(
                 new TrFull(
                     new TrJoined<>(

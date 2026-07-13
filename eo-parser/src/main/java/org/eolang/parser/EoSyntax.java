@@ -10,7 +10,7 @@ import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
@@ -38,7 +38,7 @@ public final class EoSyntax implements Syntax {
      * pipeline resolve same-package references automatically (see
      * {@code add-default-package.xsl}).</p>
      */
-    static final Function<XML, XML> CANONICAL = new Canonical();
+    static final UnaryOperator<XML> CANONICAL = new Canonical();
 
     /**
      * Text to parse.
@@ -48,7 +48,7 @@ public final class EoSyntax implements Syntax {
     /**
      * Transform XMIR after parsing.
      */
-    private final Function<XML, XML> transform;
+    private final UnaryOperator<XML> transform;
 
     /**
      * Ctor.
@@ -89,7 +89,7 @@ public final class EoSyntax implements Syntax {
      * @param ipt The EO program to parse
      * @param transform Transform XMIR after parsing function
      */
-    public EoSyntax(final Input ipt, final Function<XML, XML> transform) {
+    public EoSyntax(final Input ipt, final UnaryOperator<XML> transform) {
         this.input = ipt;
         this.transform = transform;
     }

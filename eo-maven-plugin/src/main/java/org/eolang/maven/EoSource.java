@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.eolang.parser.Canonical;
@@ -42,7 +42,7 @@ final class EoSource {
     /**
      * Transform that parses EO into XMIR.
      */
-    private final Function<XML, XML> transform;
+    private final UnaryOperator<XML> transform;
 
     /**
      * Ctor.
@@ -68,7 +68,7 @@ final class EoSource {
      * @param source Path to the source file
      * @param transform Transform that parses EO into XMIR
      */
-    EoSource(final String identifier, final Path source, final Function<XML, XML> transform) {
+    EoSource(final String identifier, final Path source, final UnaryOperator<XML> transform) {
         this(identifier, new InputOf(source), transform);
     }
 
@@ -78,7 +78,7 @@ final class EoSource {
      * @param input Object source code
      * @param transform Transform that parses EO into XMIR
      */
-    EoSource(final String identifier, final Input input, final Function<XML, XML> transform) {
+    EoSource(final String identifier, final Input input, final UnaryOperator<XML> transform) {
         this.identifier = identifier;
         this.input = input;
         this.transform = transform;

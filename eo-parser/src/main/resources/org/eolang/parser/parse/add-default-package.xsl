@@ -23,10 +23,10 @@
     hello > @
 
   The default package is the root "Φ", unless the program has a
-  "+package" meta AND the referenced object exists inside that
-  package. In the latter case a bare reference is resolved to the
-  current package, so that objects from the same package don't have
-  to be aliased manually. For example, this program:
+  "+package" meta AND the bare name belongs to an object of the
+  current package. In the latter case a bare reference is resolved to
+  the current package, so that objects from the same package don't
+  have to be aliased manually. For example, this program:
 
   +package foo
 
@@ -34,37 +34,36 @@
     bar 42 > @
 
   is compiled as if there was a "+alias foo.bar" meta (i.e. 'bar'
-  becomes 'Φ.foo.bar'), but only when 'Φ.foo.bar' is a known object.
-  The set of known object FQNs is provided through the "objects"
-  parameter (space separated), which the eo-maven-plugin fills with
-  all the objects it is aware of. Thanks to this existence check a
-  bare global like 'seq' (which lives at the root "Φ.seq", not at
-  "Φ.foo.seq") is left untouched. If the "objects" parameter is
-  empty (for example, when the parser is used stand-alone), the
-  behaviour falls back to the root "Φ" for every bare reference.
+  becomes 'Φ.foo.bar'), but only when 'bar' is one of the local
+  package objects. The names of all local package objects are
+  provided through the "objects" parameter (space separated), which
+  the eo-maven-plugin fills in. If a bare name is not in that list, it
+  is treated as a global and homed into the root "Φ" (the default
+  behaviour). Thus a bare global like 'seq' (which lives at "Φ.seq",
+  and is not a local package object) is left untouched. When the
+  "objects" parameter is empty (for example, when the parser is used
+  stand-alone), every bare reference falls back to the root "Φ".
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_specials.xsl"/>
   <!--
-  Space separated list of fully qualified names of all objects that
-  the compiler is aware of. Used to decide whether a bare reference
-  belongs to the current package.
+  Space separated list of the names of all objects that belong to a
+  package and are known to the compiler. Used to decide whether a bare
+  reference belongs to the current package or is a global.
   -->
   <xsl:param name="objects" as="xs:string" select="''"/>
   <!-- The package of the current program (empty if there is no "+package" meta). -->
   <xsl:variable name="package" select="string(/object/metas/meta[head='package']/part[1])"/>
-  <!-- All known object FQNs as a sequence. -->
+  <!-- Names of all local package objects as a sequence. -->
   <xsl:variable name="known" select="tokenize($objects, '\s+')[. != '']"/>
   <!--
   Resolve a bare name to its fully qualified name. If the current
-  program has a package and an object with such a name exists in that
-  package, the name is homed into the package; otherwise it goes to
-  the root "Φ".
+  program has a package and the name is a local package object, the
+  name is homed into the package; otherwise it goes to the root "Φ".
   -->
   <xsl:function name="eo:homed" as="xs:string">
     <xsl:param name="name" as="xs:string"/>
-    <xsl:variable name="local" select="concat('Φ.', $package, '.', $name)"/>
-    <xsl:sequence select="if ($package != '' and $local = $known) then $local else concat('Φ.', $name)"/>
+    <xsl:sequence select="if ($package != '' and $name = $known) then concat('Φ.', $package, '.', $name) else concat('Φ.', $name)"/>
   </xsl:function>
   <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>

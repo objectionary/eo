@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.text.TextOf;
@@ -116,19 +116,17 @@ final class Parsing implements Step {
     }
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() {
         final Collection<TjForeign> sources = this.tojos.withSources();
         final String objects = sources.stream()
             .map(TjForeign::identifier)
-            .map(id -> String.format("Φ.%s", id))
+            .filter(id -> id.contains("."))
+            .map(id -> id.substring(id.lastIndexOf('.') + 1))
+            .distinct()
             .collect(Collectors.joining(" "));
-        final Function<XML, XML> pipeline = new Canonical(objects);
-        final String digest = Integer.toHexString(objects.hashCode());
-        final int total = new Threaded<>(
-            new Filtered<>(TjForeign::notParsed, sources),
-            tojo -> this.parsed(tojo, pipeline, digest)
-        ).total();
+        final int total = this.parsed(
+            sources, new Canonical(objects), Integer.toHexString(objects.hashCode())
+        );
         if (0 == total) {
             if (sources.isEmpty()) {
                 Logger.info(
@@ -151,6 +149,24 @@ final class Parsing implements Step {
     }
 
     /**
+     * Parse all the given sources to XMIRs, concurrently.
+     * @param sources The sources to parse
+     * @param pipeline The canonical parsing transform to apply
+     * @param digest Digest of the set of known objects (part of the cache key)
+     * @return Amount of parsed tojos
+     */
+    private int parsed(
+        final Collection<TjForeign> sources,
+        final UnaryOperator<XML> pipeline,
+        final String digest
+    ) {
+        return new Threaded<>(
+            new Filtered<>(TjForeign::notParsed, sources),
+            tojo -> this.parsed(tojo, pipeline, digest)
+        ).total();
+    }
+
+    /**
      * Parse EO file to XML.
      * @param tojo The tojo
      * @param pipeline The canonical parsing transform to apply
@@ -159,7 +175,7 @@ final class Parsing implements Step {
      * @throws Exception If fails
      */
     private int parsed(
-        final TjForeign tojo, final Function<XML, XML> pipeline, final String digest
+        final TjForeign tojo, final UnaryOperator<XML> pipeline, final String digest
     ) throws Exception {
         final Path source = tojo.source();
         final String name = tojo.identifier();
@@ -217,7 +233,7 @@ final class Parsing implements Step {
      * @throws IOException If fails to parse
      */
     private Node parsed(
-        final Path source, final String identifier, final Function<XML, XML> pipeline
+        final Path source, final String identifier, final UnaryOperator<XML> pipeline
     ) throws IOException {
         final EoSource.Xmir xmir = new EoSource(identifier, source, pipeline).parsed();
         Logger.debug(
