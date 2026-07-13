@@ -74,7 +74,10 @@ final class ProxyIT {
         try {
             new Farea(tmp).together(
                 f -> {
-                    ProxyIT.setupForProxy(f, tmp, port, ProxyIT.port(repo));
+                    ProxyIT.setupForProxy(f, port, ProxyIT.port(repo));
+                    f.withOpt(
+                        String.format("-Dmaven.repo.local=%s", tmp.resolve("local-repo"))
+                    );
                     f.exec("package");
                     log[0] = f.log().content();
                 }
@@ -156,15 +159,21 @@ final class ProxyIT {
         return ((ServerConnector) server.getConnectors()[0]).getLocalPort();
     }
 
-    private static void shutdown(final Server proxy) throws Exception {
-        if (proxy != null && proxy.isStarted()) {
-            proxy.setStopTimeout(5000);
-            proxy.setStopAtShutdown(true);
-            try {
-                proxy.stop();
-            } finally {
-                proxy.destroy();
-            }
+    /**
+     * Stop the given server, if it is running.
+     *
+     * <p>We deliberately only {@code stop()} it and never {@code destroy()} it:
+     * {@link ProxyHandler} starts a shared Jetty {@code HttpClient} and destroying
+     * one server tears down state that the next test's proxy needs, failing its
+     * start with "Destroyed container cannot be restarted".</p>
+     *
+     * @param server The server to stop
+     * @throws Exception If fails
+     */
+    private static void shutdown(final Server server) throws Exception {
+        if (server != null && server.isStarted()) {
+            server.setStopTimeout(5000L);
+            server.stop();
         }
     }
 
@@ -184,7 +193,7 @@ final class ProxyIT {
     }
 
     private static void setupForProxy(
-        final Farea farea, final Path tmp, final int proxy, final int repo
+        final Farea farea, final int proxy, final int repo
     ) throws IOException {
         farea.clean();
         farea.files()
@@ -197,9 +206,6 @@ final class ProxyIT {
             farea.files().file("settings.xml").write(
                 ProxyIT.settings(proxy, repo).getBytes(StandardCharsets.UTF_8)
             ).path().toString()
-        );
-        farea.withOpt(
-            String.format("-Dmaven.repo.local=%s", tmp.resolve("local-repo"))
         );
     }
 
