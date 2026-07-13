@@ -15,4 +15,11 @@
       <port>${proxy.port}</port>
     </proxy>
   </proxies>
+  <mirrors>
+    <mirror>
+      <id>local-mirror</id>
+      <mirrorOf>*</mirrorOf>
+      <url>http://localhost:${repo.port}/</url>
+    </mirror>
+  </mirrors>
 </settings>
