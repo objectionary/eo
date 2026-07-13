@@ -19,7 +19,6 @@
           element.eq item
           accum
           accum.with item
-
   [] +> tests-list-without
     eq. > @
       without
