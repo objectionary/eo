@@ -83,7 +83,7 @@ public final class Main {
             .filter(Main::isArgument)
             .collect(Collectors.toList());
         if (arguments.isEmpty()) {
-            throw new IllegalStateException(
+            throw new ExFailure(
                 "The name of an object is expected as a command line argument"
             );
         }
@@ -199,7 +199,7 @@ public final class Main {
     private static void run(final List<String> opts) {
         final String obj = opts.get(0);
         if (obj.isEmpty()) {
-            throw new IllegalArgumentException(
+            throw new ExFailure(
                 "The name of the object is an empty string, why?"
             );
         }

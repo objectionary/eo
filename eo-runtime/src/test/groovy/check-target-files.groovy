@@ -9,7 +9,7 @@ List<String> expected = [
   'eo/5-transpile/malloc.xmir',
   'generated-sources/org/eolang/EOseq.java',
   'generated-sources/org/eolang/EOnk/EOsocket.java',
-  'generated-test-sources/org/eolang/EOtryEOAtomTest.java',
+  'generated-test-sources/org/eolang/EObytesTest.java',
   'classes/org/eolang/package-info.class',
   'classes/org/eolang/EOsm/package-info.class',
   'classes/org/eolang/EOms/package-info.class',

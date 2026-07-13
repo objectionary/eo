@@ -10,9 +10,8 @@ package org.eolang;
  * <p>It is a value that can be carried around — returned, copied, and
  * have an object put into it — but it has no data and no behaviour.
  * It detonates only when something tries to <em>force</em> it: reading
- * its data ({@link #delta()}) aborts through an {@link ExFailure}. Because
- * EO {@code try} only intercepts {@link EOerror.ExError}, that failure
- * cannot be caught, so forcing ⊥ terminates the program for good.</p>
+ * its data ({@link #delta()}) aborts through an {@link ExFailure}, which
+ * nothing intercepts, so forcing ⊥ terminates the program for good.</p>
  *
  * <p>The remaining operations are tolerant on purpose: {@link #copy()}
  * yields the same ⊥ and {@link #take(String)} yields ⊥ again, so it
@@ -40,6 +39,22 @@ public final class PhTerminator implements Phi {
      * message when the ⊥ is forced, or {@code null} when none was given.
      */
     private Phi cause;
+
+    /**
+     * Make a ⊥ that already carries the given reason as its cause.
+     *
+     * <p>The reason is remembered and used as the panic message when this ⊥
+     * is finally forced; until then it flows like any other ⊥.</p>
+     *
+     * @param cause The reason for the termination
+     * @return A ⊥ carrying the cause
+     */
+    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
+    public static PhTerminator withCause(final String cause) {
+        final PhTerminator term = new PhTerminator();
+        term.put(0, new Data.ToPhi(cause));
+        return term;
+    }
 
     @Override
     public Phi copy() {

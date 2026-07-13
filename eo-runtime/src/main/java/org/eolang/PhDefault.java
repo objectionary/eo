@@ -172,7 +172,7 @@ public class PhDefault implements Phi, Cloneable {
             copy.attrs = map;
             return copy;
         } catch (final CloneNotSupportedException ex) {
-            throw new IllegalStateException(ex);
+            throw new ExFailure("cannot copy the object", ex);
         }
     }
 
@@ -526,7 +526,7 @@ public class PhDefault implements Phi, Cloneable {
                     )
                 );
             } catch (final IOException ex) {
-                throw new IllegalStateException("Failed to read the atom types table", ex);
+                throw new ExFailure("Failed to read the atom types table", ex);
             }
         }
         return new AtomTypes(table);
