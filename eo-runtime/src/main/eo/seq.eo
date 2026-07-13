@@ -25,18 +25,10 @@
     if.
       steps.length.eq 1
       steps.head
-      loop steps
-  steps.length.plus -1 > end!
-
-  [tup] > loop
-    if. > @
-      and.
-        tup.length.gt 1
-        loop tup.tail
-      tup.head
-      or.
-        (dataized tup.head).as-bool.eq --
-        tup.length.eq end
+      if.
+        (dataized (seq steps.tail)).as-bool
+        steps.head
+        steps.head
 
   [] +> tests-seq-single-dataization-float-less
     malloc.of > @
