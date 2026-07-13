@@ -23,6 +23,7 @@ import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.Expect;
 import org.eolang.PhDefault;
+import org.eolang.PhTerminator;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
@@ -129,8 +130,8 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
 
     /**
      * Fill the matched block as a non-existent one: start is -1 and the from,
-     * to and groups fields hold error objects, exactly as the old not-matched
-     * block did.
+     * to and groups fields hold ⊥, so any attempt to read them terminates
+     * the program with an explanatory cause.
      * @param result The matched block to fill
      */
     private void blank(final Phi result) {
@@ -142,15 +143,17 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
             EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
             new Data.ToPhi(-1)
         );
-        final Phi error = Phi.Φ.take("error");
-        final Phi from = error.copy();
-        from.put(0, new Data.ToPhi("Matched block does not exist, can't get 'from' position"));
-        result.put("from", from);
-        final Phi ending = error.copy();
-        ending.put(0, new Data.ToPhi("Matched block does not exist, can't get 'to' position"));
-        result.put("to", ending);
-        final Phi groups = error.copy();
-        groups.put(0, new Data.ToPhi("Matched block does not exist, can't get groups"));
-        result.put("groups", groups);
+        result.put(
+            "from",
+            PhTerminator.withCause("Matched block does not exist, can't get 'from' position")
+        );
+        result.put(
+            "to",
+            PhTerminator.withCause("Matched block does not exist, can't get 'to' position")
+        );
+        result.put(
+            "groups",
+            PhTerminator.withCause("Matched block does not exist, can't get groups")
+        );
     }
 }

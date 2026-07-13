@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link PhSafeTest}.
+ * Test case for {@link PhSafe}.
  * @since 0.36.0
  */
 final class PhSafeTest {
@@ -37,9 +37,9 @@ final class PhSafeTest {
     @Test
     void catchesRuntimeException() {
         MatcherAssert.assertThat(
-            "rethrows correctly",
+            "wraps a runtime exception into ExFailure with location and cause",
             Assertions.assertThrows(
-                EOerror.ExError.class,
+                ExFailure.class,
                 () -> new PhSafe(
                     new PhDefault() {
                         @Override
@@ -48,12 +48,11 @@ final class PhSafeTest {
                         }
                     }
                 ).delta(),
-                "throws correct class"
-            ).messages(),
-            Matchers.hasItems(
-                Matchers.containsString("o.e.PhSafe#delta()"),
-                Matchers.containsString("(j.l.IllegalArgumentException)"),
-                Matchers.containsString("Error in \"?.Δ\" at unknown:0:0")
+                "was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.allOf(
+                Matchers.containsString("Error in \"?.Δ\" at unknown:0:0"),
+                Matchers.containsString("oops")
             )
         );
     }
@@ -61,7 +60,7 @@ final class PhSafeTest {
     @Test
     void catchesRuntimeExceptionWithoutMessage() {
         Assertions.assertThrows(
-            EOerror.ExError.class,
+            ExFailure.class,
             () -> new PhSafe(
                 new PhDefault() {
                     @Override
@@ -77,7 +76,7 @@ final class PhSafeTest {
     @Test
     void catchesAbstractExceptionWithoutMessage() {
         Assertions.assertThrows(
-            EOerror.ExError.class,
+            ExFailure.class,
             () -> new PhSafe(
                 new PhDefault() {
                     @Override
@@ -93,20 +92,19 @@ final class PhSafeTest {
     @Test
     void rendersMultiLayeredErrorMessageCorrectly() {
         MatcherAssert.assertThat(
-            "rethrows correctly",
+            "accumulates every layer's location around the original cause",
             Assertions.assertThrows(
-                EOerror.ExError.class,
+                ExFailure.class,
                 () -> new PhSafe(
-                    new PhApplication(
-                        new EOerror(),
-                        "message",
-                        new Data.ToPhi("oops")
-                    )
-                ).take("foo"),
-                "throws correct class"
-            ),
-            Matchers.hasToString(
-                Matchers.containsString("Δ = [0x6F6F7073-] = \"oops\"")
+                    new PhSafe(PhTerminator.withCause("oops"), "inner.eo", 1, 2),
+                    "outer.eo", 3, 4
+                ).delta(),
+                "was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.allOf(
+                Matchers.containsString("at outer.eo:3:4"),
+                Matchers.containsString("at inner.eo:1:2"),
+                Matchers.containsString("oops")
             )
         );
     }
@@ -114,22 +112,24 @@ final class PhSafeTest {
     @Test
     void showsFileNameAndLineNumber() {
         MatcherAssert.assertThat(
-            "shows file name and line number",
-            new Dataized(
-                Assertions.assertThrows(
-                    EOerror.ExError.class,
-                    () -> new PhSafe(
-                        new PhDefault() {
-                            @Override
-                            public Phi take(final String name) {
-                                throw new IllegalArgumentException("intentional error");
-                            }
+            "shows file name, line number and the original cause",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new PhSafe(
+                    new PhDefault() {
+                        @Override
+                        public Phi take(final String name) {
+                            throw new IllegalArgumentException("intentional error");
                         }
-                    ).take("foo"),
-                    "throws correct class"
-                ).enclosure()
-            ).take(String.class),
-            Matchers.equalTo("intentional error")
+                    },
+                    "file.eo", 42, 7
+                ).take("foo"),
+                "was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.allOf(
+                Matchers.containsString("file.eo:42:7"),
+                Matchers.containsString("intentional error")
+            )
         );
     }
 }

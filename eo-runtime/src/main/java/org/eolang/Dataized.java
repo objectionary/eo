@@ -6,12 +6,7 @@
 package org.eolang;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A dataized object.
@@ -34,37 +29,20 @@ public final class Dataized {
     private final Phi phi;
 
     /**
-     * Logger.
-     */
-    private final Logger logger;
-
-    /**
      * Ctor.
      * @param src The object
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     public Dataized(final Phi src) {
-        this(src, Logger.getLogger(Dataized.class.getName()));
-    }
-
-    /**
-     * Ctor.
-     * @param src The object
-     * @param log Logger
-     */
-    public Dataized(final Phi src, final Logger log) {
         this.phi = src;
-        this.logger = log;
     }
 
     /**
      * Extracts the data from the EO object as a byte array.
      *
      * <p>This method performs the dataization process, which involves converting
-     * the EO object into a byte array. It logs the dataization process if the
-     * logging level is set to FINE and the current dataization level is within
-     * the maximum allowed level. If an error occurs during dataization, it logs
-     * the error details and rethrows the exception.</p>
+     * the EO object into a byte array. If the object cannot be dataized — for
+     * example when it is a terminated computation (⊥) — the failure propagates
+     * as an {@link ExFailure} and is not caught here.</p>
      *
      * <p>Usage example:</p>
      *
@@ -76,40 +54,8 @@ public final class Dataized {
      *
      * @return The data
      */
-    @SuppressWarnings("PMD.PreserveStackTrace")
     public byte[] take() {
-        try {
-            return this.phi.delta();
-        } catch (final EOerror.ExError ex) {
-            final List<String> raw = new ArrayList<>(ex.messages().size());
-            raw.addAll(ex.messages());
-            Collections.reverse(raw);
-            final Phi enc = ex.enclosure();
-            if (String.format("%s.string", PhPackage.GLOBAL).equals(enc.forma())) {
-                raw.add(
-                    String.format(
-                        "\"%s\"",
-                        new Dataized(enc).take(String.class)
-                    )
-                );
-            }
-            final String fmt = String.format("%%%dd) %%s", (int) Math.log10(raw.size()) + 1);
-            final List<String> clean = new ArrayList<>(raw.size());
-            int idx = 1;
-            for (final String line : raw) {
-                clean.add(String.format(fmt, idx, line));
-                ++idx;
-            }
-            this.logger.log(
-                Level.SEVERE,
-                String.format(
-                    "Dataized to 'error' with %s inside, at:%n  ⇢ %s",
-                    enc.forma(),
-                    String.join("%n  ⇢ ", clean)
-                )
-            );
-            throw new EOerror.ExError(enc);
-        }
+        return this.phi.delta();
     }
 
     /**
