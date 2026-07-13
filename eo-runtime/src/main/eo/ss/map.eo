@@ -106,7 +106,7 @@
             (hash.eq entry.hash).not > [entry] >>
       hash-code-of key > hash!
 
-  [] +> tests-map-rebuilds-itself
+  ++> tests-map-rebuilds-itself
     2.eq mp.size > @
     map > mp
       *
@@ -115,7 +115,7 @@
         map.entry 2 1
         map.entry 2 1
 
-  [] +> tests-map-rebuilds-itself-only-once
+  ++> tests-map-rebuilds-itself-only-once
     eq. > @
       1
       malloc.for
@@ -132,7 +132,7 @@
                 m.put (m.as-number.plus 1)
                 1
 
-  [] +> tests-returns-list-of-keys
+  ++> tests-returns-list-of-keys
     eq. > @
       keys.
         map
@@ -142,7 +142,7 @@
             map.entry 3 4
       * 1 2 3
 
-  [] +> tests-returns-list-of-values
+  ++> tests-returns-list-of-values
     eq. > @
       values.
         map
@@ -152,7 +152,7 @@
             map.entry 3 4
       * 2 3 4
 
-  [] +> tests-finds-element-by-key-in-map
+  ++> tests-finds-element-by-key-in-map
     2.eq found.get > @
     mp.found "two" > found
     map > mp
@@ -161,7 +161,7 @@
         map.entry "two" 2
         map.entry "three" 3
 
-  [] +> tests-does-not-find-element-by-key-in-hash-map
+  ++> tests-does-not-find-element-by-key-in-hash-map
     not. > @
       exists.
         found.
@@ -171,7 +171,7 @@
               map.entry "two" 2
           "three"
 
-  [] +> tests-has-element-with-key-in-hash-map
+  ++> tests-has-element-with-key-in-hash-map
     has. > @
       map
         *
@@ -179,7 +179,7 @@
           map.entry "two" 2
       "two"
 
-  [] +> tests-does-not-have-element-by-key-in-hash-map
+  ++> tests-does-not-have-element-by-key-in-hash-map
     not. > @
       has.
         map
@@ -188,7 +188,7 @@
             map.entry "two" 2
         "three"
 
-  [] +> tests-does-not-change-map-without-non-existed-element
+  ++> tests-does-not-change-map-without-non-existed-element
     eq. > @
       size.
         without.
@@ -198,7 +198,7 @@
           "two"
       1
 
-  [] +> tests-removes-element-from-map-by-key
+  ++> tests-removes-element-from-map-by-key
     and. > @
       1.eq mp.size
       (mp.has "one").not
@@ -208,7 +208,7 @@
         map.entry "two" 2
     .without "one" > mp
 
-  [] +> tests-adds-new-pair-to-hash-map
+  ++> tests-adds-new-pair-to-hash-map
     and. > @
       2.eq mp.size
       mp.has "two"
@@ -217,7 +217,7 @@
         map.entry "one" 1
     .with "two" 2 > mp
 
-  [] +> tests-replaces-value-if-pair-with-key-exists-in-map
+  ++> tests-replaces-value-if-pair-with-key-exists-in-map
     and. > @
       2.eq mp.size
       3.eq (mp.found "two").get
@@ -227,7 +227,7 @@
         map.entry "two" 2
     .with "two" 3 > mp
 
-  [] +> tests-map-get-missing-returns-provided-fallback
+  ++> tests-map-get-missing-returns-provided-fallback
     eq. > @
       "recovered"
       (mp.found "absent").get
@@ -236,7 +236,7 @@
       *
         map.entry "one" 1
 
-  [] +> throws-on-map-get-missing-without-fallback
+  ++> throws-on-map-get-missing-without-fallback
     (mp.found "absent").get > @
     map > mp
       *

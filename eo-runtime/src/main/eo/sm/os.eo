@@ -24,7 +24,7 @@
 
   [] > name /string
 
-  [] +> tests-checks-os-family
+  ++> tests-checks-os-family
     or. > @
       or.
         os.is-windows

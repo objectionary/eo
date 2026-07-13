@@ -22,7 +22,7 @@
         acc
         func item index
 
-  [] +> tests-iterates-with-eachi
+  ++> tests-iterates-with-eachi
     eq. > @
       malloc.for
         0

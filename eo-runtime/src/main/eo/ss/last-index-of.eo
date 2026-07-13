@@ -21,7 +21,7 @@
         tup.tail.length
         reclast tup.tail
 
-  [] +> tests-finds-last-index-of
+  ++> tests-finds-last-index-of
     eq. > @
       1
       last-index-of
@@ -29,7 +29,7 @@
           * "qwerty" 2 3
         2
 
-  [] +> tests-finds-last-index-of-repeated
+  ++> tests-finds-last-index-of-repeated
     eq. > @
       2
       last-index-of
@@ -37,7 +37,7 @@
           * 24 42 24
         24
 
-  [] +> tests-last-index-of-not-found
+  ++> tests-last-index-of-not-found
     eq. > @
       -1
       last-index-of
@@ -45,14 +45,14 @@
           * 1 2 3
         0
 
-  [] +> tests-last-index-of-empty
+  ++> tests-last-index-of-empty
     eq. > @
       -1
       last-index-of
         list *
         "abc"
 
-  [] +> tests-last-index-of-unicode
+  ++> tests-last-index-of-unicode
     eq. > @
       3
       last-index-of

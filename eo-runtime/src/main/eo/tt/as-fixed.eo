@@ -38,37 +38,37 @@
         (count.minus 1).as-number
         concat. (as-char ((value.minus ((value.div 10).floor.times 10)).floor.plus 48)) acc
 
-  [] +> tests-pads-with-trailing-zeros
+  ++> tests-pads-with-trailing-zeros
     eq. > @
       "1.250000"
       string (as-fixed 1.25 6)
 
-  [] +> tests-writes-negative-value
+  ++> tests-writes-negative-value
     eq. > @
       "-2.500000"
       string (as-fixed -2.5 6)
 
-  [] +> tests-rounds-to-last-place
+  ++> tests-rounds-to-last-place
     eq. > @
       "0.123457"
       string (as-fixed 0.123456789 6)
 
-  [] +> tests-carries-rounding-into-integer-part
+  ++> tests-carries-rounding-into-integer-part
     eq. > @
       "1.000000"
       string (as-fixed 0.9999999 6)
 
-  [] +> tests-writes-zero
+  ++> tests-writes-zero
     eq. > @
       "0.000000"
       string (as-fixed 0.0 6)
 
-  [] +> tests-honours-custom-places
+  ++> tests-honours-custom-places
     eq. > @
       "3.14"
       string (as-fixed 3.14159 2)
 
-  [] +> tests-writes-single-place
+  ++> tests-writes-single-place
     eq. > @
       "2.5"
       string (as-fixed 2.5 1)

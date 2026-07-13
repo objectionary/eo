@@ -52,30 +52,30 @@
             1.div ((k.times 2).plus 1)
             squared.times (horner (k.plus 1))
 
-  [] +> tests-ln-of-negative-float-is-nan
+  ++> tests-ln-of-negative-float-is-nan
     is-nan. > @
       ln -2.2
 
-  [] +> tests-ln-of-zero-is-negative-infinity
+  ++> tests-ln-of-zero-is-negative-infinity
     eq. > @
       ln 0
       ninf
 
-  [] +> tests-ln-of-one-is-zero
+  ++> tests-ln-of-one-is-zero
     eq. > @
       ln 1
       0
 
-  [] +> tests-ln-of-e-one-is-one
+  ++> tests-ln-of-e-one-is-one
     eq. > @
       ln e
       1
 
-  [] +> tests-ln-of-negative-int-is-nan
+  ++> tests-ln-of-negative-int-is-nan
     is-nan. > @
       ln -42
 
-  [] +> tests-ln-of-twenty
+  ++> tests-ln-of-twenty
     lt. > @
       abs
         minus.
@@ -83,7 +83,7 @@
           2.995732273553991
       0.00000000001
 
-  [] +> tests-ln-fraction
+  ++> tests-ln-fraction
     lt. > @
       abs
         minus.
@@ -91,20 +91,20 @@
           -0.6931471805599453
       0.00000000001
 
-  [] +> tests-ln-positive-infinity
+  ++> tests-ln-positive-infinity
     eq. > @
       ln pinf
       pinf
 
-  [] +> tests-ln-negative-infinity
+  ++> tests-ln-negative-infinity
     is-nan. > @
       ln ninf
 
-  [] +> tests-ln-nan
+  ++> tests-ln-nan
     is-nan. > @
       ln nan
 
-  [] +> tests-ln-monotonic
+  ++> tests-ln-monotonic
     lt. > @
       ln 2
       ln 3
