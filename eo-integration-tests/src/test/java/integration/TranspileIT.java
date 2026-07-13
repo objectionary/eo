@@ -107,6 +107,7 @@ final class TranspileIT {
             System.lineSeparator(),
             "[] > simple",
             "  \"hello\" > @",
+            "",
             "  [] +> tests-simple-works",
             "    true > @"
         ).getBytes(StandardCharsets.UTF_8);

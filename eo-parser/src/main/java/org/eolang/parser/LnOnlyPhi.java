@@ -94,6 +94,9 @@ final class LnOnlyPhi implements Line {
         final Suffix suffix = new Suffix(
             body.substring(close + 1), this.span, this.span.indent() + close + 1
         );
+        if (suffix.test()) {
+            Blanks.checkTest(this.span, globals, emit);
+        }
         final Span inner = new Span(
             " ".repeat(this.span.indent()).concat(lhs), this.span.line()
         );

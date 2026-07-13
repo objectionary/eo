@@ -12,7 +12,9 @@ input: |-
     eq. +> test-1
       foo
       "fox"
+
     [] +> test-2
       foo > @
+
     [] +> test-3
       foo > i

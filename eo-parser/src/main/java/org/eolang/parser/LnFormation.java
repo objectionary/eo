@@ -59,6 +59,9 @@ final class LnFormation implements Line {
         final Suffix suffix = new Suffix(
             tail, this.span, this.span.indent() + close + 1 + LnFormation.bindingWidth(binding)
         );
+        if (suffix.test()) {
+            Blanks.checkTest(this.span, globals, emit);
+        }
         Comments.seal(globals, emit, this.span);
         this.transition(stack, suffix);
         globals.clearBlanks();
