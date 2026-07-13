@@ -15,6 +15,7 @@
     (number num.as-bytes).lt 0
     nan
     power num 0.5
+
   [] +> tests-sqrt-zero
     eq. > @
       sqrt 0.0

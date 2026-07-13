@@ -9,8 +9,10 @@ package org.eolang.parser;
  * the spec.
  *
  * <p>R-6.5.3 caps consecutive blanks at one (enforced in
- * {@link LnBlank}). R-6.5.4 forbids a blank line before a plain child
- * or between two plain siblings — enforced here by
+ * {@link LnBlank}) and requires exactly one blank line in front of
+ * every {@code +>} test attribute — enforced here by
+ * {@link #checkTest}. R-6.5.4 forbids a blank line before a plain
+ * child or between two plain siblings — enforced here by
  * {@link #checkPlain}.</p>
  *
  * <p>R-6.5.5 requires exactly one blank line between the meta header
@@ -45,6 +47,23 @@ final class Blanks {
             emit.error(
                 span.line(), span.indent(),
                 "blank line before a plain object is forbidden (R-6.5.4); only master objects (formations, atoms, only-phi formations, +> tests) may be preceded by a blank line"
+            );
+        }
+    }
+
+    /**
+     * Report a missing blank line in front of a {@code +>} test
+     * attribute — illegal per R-6.5.3, which requires exactly one
+     * blank line before every test attribute.
+     * @param span The offending line's span (used for error position)
+     * @param globals The global parser state
+     * @param emit The directives sink
+     */
+    static void checkTest(final Span span, final Globals globals, final Emit emit) {
+        if (globals.pendingBlanks() == 0) {
+            emit.error(
+                span.line(), span.indent(),
+                "missing blank line before a `+>` test attribute (R-6.5.3); exactly one blank line must precede every test attribute"
             );
         }
     }

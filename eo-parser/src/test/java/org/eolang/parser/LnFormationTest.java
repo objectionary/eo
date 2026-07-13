@@ -216,6 +216,34 @@ final class LnFormationTest {
     }
 
     @Test
+    void rejectsPlusGreaterAttributeWithoutPrecedingBlankLine() {
+        final Emit emit = new Emit();
+        new LnFormation(new Span("[] +> tests-foo", 2))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `+>` test attribute with no blank line above must emit an R-6.5.3 error",
+            LnFormationTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/errors/error[@line='2']")
+        );
+    }
+
+    @Test
+    void acceptsPlusGreaterAttributeAfterBlankLine() {
+        final Emit emit = new Emit();
+        final Globals globals = new Globals();
+        globals.blank();
+        new LnFormation(new Span("[] +> tests-foo", 2))
+            .into(new Stack(), globals, emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `+>` test attribute preceded by one blank line must not emit any error",
+            LnFormationTest.render(emit),
+            Matchers.not(XhtmlMatchers.hasXPath("/object/errors"))
+        );
+    }
+
+    @Test
     void marksFirstObjectEmittedAfterPush() {
         final Globals globals = new Globals();
         new LnFormation(new Span("[] > foo", 1))

@@ -22,6 +22,8 @@ asserts:
 input: |
   [] > some
     7 > yes
+
     [] +> works
       1.eq 1 > @
+
     false > [] +> throws-on
