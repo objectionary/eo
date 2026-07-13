@@ -82,6 +82,28 @@ final class LevelTest {
     }
 
     @Test
+    void flipsBoundFlag() {
+        final Level level = new Level(
+            2, 3, Kind.HEAD, Openness.OPEN, Kind.BARE_FORMATION, false
+        );
+        level.bind();
+        MatcherAssert.assertThat(
+            "bound() must report true once bind() has been called",
+            level.bound(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void leavesBoundFlagFalseByDefault() {
+        MatcherAssert.assertThat(
+            "a fresh level cannot be bound before bind() is invoked",
+            new Level(0, 1, Kind.HEAD, Openness.OPEN, Kind.TOP_LEVEL, false).bound(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void flipsAtomFlag() {
         final Level level = new Level(
             0, 1, Kind.BARE_FORMATION, Openness.OPEN, Kind.TOP_LEVEL, false

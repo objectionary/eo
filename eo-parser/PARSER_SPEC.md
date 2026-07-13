@@ -541,8 +541,9 @@ world""" > text-value                 ← multi-line string named text-value
 
 R-3.12.1. After an object body in an argument position, `:label` may appear, setting the attribute the argument attaches to.
 R-3.12.2. `:N` (digit) maps to `α0`, `α1`, … positional slot names.
-R-3.12.3. Binding is forbidden inside formation context — plain children carry their name via the name suffix, not the binding (§6.2).
+R-3.12.3. Binding on a formation child is restricted: a child carrying **both** an inline binding and a name suffix (`bar:tag > x`) is rejected, since a plain child carries its name via the suffix, not the binding (§6.2). A child carrying an inline binding and **no** name suffix (`42:x`) is instead an application argument that fills a void slot of the formation — see R-3.12.5. Binding is forbidden at top level.
 R-3.12.4. Binding rules in same-indent groups (§6.6) apply.
+R-3.12.5. **Void-filling argument — formation as formation-plus-application.** An unnamed formation body line of the form `value:name` (an inline binding, no name suffix) supplies `value` to the void `name` of the enclosing formation, exactly as `head arg:name` supplies an argument to an application. The whole formation is thereby read as a *formation applied to that argument* — the phi-calculus `⟦ … name ↦ ∅ ⟧(name ↦ value)`. The line emits an ordinary argument `<o base='…value…' as='name'/>` child of the formation `<o>` (§9.4, inline binding). The void declaration for `name` (from `[…]` or a `? > name` line) is kept; the argument fills it. This makes anonymous formations usable as functions (Haskell) or lambda expressions (Java). Example: `[x] > foo` with body `7 > a`, `x.plus a > @`, `42:x` binds `a → 7`, `φ → x.plus a`, and applies `x → 42`.
 
 ### 3.13 Multi-line BYTES literal
 
@@ -765,7 +766,7 @@ R-5.2.11. Otherwise: the line is the program's top-level object. Push a new entr
 
 When a level record is popped or replaced:
 
-R-5.3.1. **Naming check.** If `parent_kind = formation` or `parent_kind = top-level`, then `named?` must be true. Otherwise: error "object inside formation must have a name" at `start_line`.
+R-5.3.1. **Naming check.** If `parent_kind = formation` or `parent_kind = top-level`, then `named?` must be true, unless the child is a void-filling argument (`bound? = true`, R-3.12.5), which needs no name. Otherwise: error "object inside formation must have a name" at `start_line`.
 R-5.3.2. **Bare reversed completeness.** If `kind = bare-reversed` and `receiver_consumed? = false`: error "reversed dispatch missing receiver."
 R-5.3.3. **Compact tuple count.** If `kind = compact-tuple` and `child_count < compact_tuple_n`: error "compact tuple `*N` requires at least N children, got `child_count`."
 R-5.3.4. **Atom body.** If the popped entry's `parent_is_atom?` is true, the popped entry's kind must be `bare-formation` **AND** its name-suffix form must be `+>` (R-6.3.1). Otherwise: error `atom may contain only test attributes`. (`+>` is a name-suffix variant, not a property of the kind itself; this rule checks both fields.) Note: even when this check passes, the `+>` child must additionally satisfy the depth constraint of R-6.3.3 (verified separately by R-5.3.5); a `+>` child of a *nested* atom fails R-5.3.5 because tests are legal only at indent 2 of a top-level object.
@@ -826,7 +827,7 @@ x.put 2                               ← happlication, horizontally-completed
 
 ### 6.2 Naming inside formations
 
-R-6.2.1. Every expression that is a plain child of a formation **must carry a name suffix** on its naming line.
+R-6.2.1. Every expression that is a plain child of a formation **must carry a name suffix** on its naming line. The sole exception is a void-filling argument (R-3.12.5): a plain child carrying an inline binding (`value:name`) and no name suffix is an application argument to the formation, so it needs no name.
 R-6.2.2. The naming line per outer kind:
 
 | Outer kind | Naming line |

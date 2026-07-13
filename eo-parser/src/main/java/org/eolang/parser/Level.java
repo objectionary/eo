@@ -86,6 +86,14 @@ final class Level {
     private boolean plain;
 
     /**
+     * True when this entry's naming line carried an inline binding
+     * ({@code :label} / {@code :N}). A bound child of a formation is an
+     * application argument that fills a void slot — a formation-plus-
+     * application (#5432) — so it needs no name suffix (R-6.2.1).
+     */
+    private boolean bound;
+
+    /**
      * True when this entry sits in argument position under an only-phi
      * formation's φ — set by {@link Stack} as it propagates the flag
      * down through nested applications and resets it at a formation
@@ -311,6 +319,21 @@ final class Level {
     }
 
     /**
+     * Whether this entry carried an inline binding on its naming line.
+     * @return Bound flag
+     */
+    boolean bound() {
+        return this.bound;
+    }
+
+    /**
+     * Flip {@link #bound()} to true.
+     */
+    void bind() {
+        this.bound = true;
+    }
+
+    /**
      * Flag this entry as an atom (formation with {@code /sig}).
      */
     void mark() {
@@ -390,13 +413,13 @@ final class Level {
      * picked up via {@link #upgradeArgBinding()} is reflected at
      * commit time.</p>
      *
-     * @param bound Whether the child carries an inline binding
+     * @param binding Whether the child carries an inline binding
      * @param span Source span of the child (for error positioning)
      */
-    void observeBinding(final boolean bound, final Span span) {
+    void observeBinding(final boolean binding, final Span span) {
         this.commitArg(span);
         this.argpending = true;
-        this.argbound = bound;
+        this.argbound = binding;
         this.argspan = span;
     }
 

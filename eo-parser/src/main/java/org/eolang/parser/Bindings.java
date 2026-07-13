@@ -82,8 +82,10 @@ final class Bindings {
      * binding mode and rejects mismatches. For {@code BARE_REVERSED}
      * parents the first child is the receiver (no binding allowed);
      * subsequent children participate in the all-or-nothing group. For
-     * formation / top-level parents, any binding is rejected per
-     * R-3.12.3.</p>
+     * a formation parent an <em>unnamed</em> bound child is an
+     * application argument that fills a void slot (a formation-plus-
+     * application, #5432); a binding on a <em>named</em> attribute is
+     * still rejected per R-3.12.3, as is any binding at top level.</p>
      *
      * @param stack Indent stack (the new child is already on top)
      * @param outer Outer binding label, or {@code null} when absent
@@ -91,12 +93,38 @@ final class Bindings {
      */
     static void observeChild(final Stack stack, final String outer, final Span span) {
         final Level parent = stack.below();
-        if (parent == null || parent.kind() == Kind.BARE_FORMATION) {
+        if (parent == null) {
             Bindings.rejectBinding(outer, span);
+        } else if (parent.kind() == Kind.BARE_FORMATION) {
+            Bindings.observeFormationChild(stack.top(), outer, span);
         } else if (parent.kind() == Kind.BARE_REVERSED) {
             Bindings.observeReversedChild(parent, outer, span);
         } else if (Bindings.tracksBindings(parent.kind())) {
             parent.observeBinding(outer != null, span);
+        }
+    }
+
+    /**
+     * Handle a child under a {@link Kind#BARE_FORMATION} parent. A
+     * binding on an unnamed child marks it as an application argument
+     * filling one of the formation's void slots (#5432); a binding on
+     * a named attribute is rejected — a name suffix and an inline
+     * binding cannot combine on a formation child (R-3.12.3).
+     * @param child The formation child (top of stack)
+     * @param outer Outer binding (may be {@code null})
+     * @param span Source span of the child
+     */
+    private static void observeFormationChild(
+        final Level child, final String outer, final Span span
+    ) {
+        if (outer != null) {
+            if (child.named()) {
+                throw new ParseError(
+                    span.line(), span.indent(),
+                    "binding allowed only in argument position"
+                );
+            }
+            child.bind();
         }
     }
 

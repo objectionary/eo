@@ -739,6 +739,21 @@ final class EoTest {
     }
 
     @Test
+    void acceptsVoidFillingArgumentInFormationBody() {
+        MatcherAssert.assertThat(
+            "an unnamed `value:void` body line fills a formation void, turning the formation into a formation-plus-application (#5432)",
+            EoTest.render(
+                "[x] > foo", "  7 > a", "  x.plus a > @", "  42:x"
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object[not(errors)]",
+                "/object/o[@name='foo']/o[@base='∅' and @name='x']",
+                "/object/o[@name='foo']/o[@as='x']"
+            )
+        );
+    }
+
+    @Test
     void rejectsBindingOnVerticalReceiver() {
         MatcherAssert.assertThat(
             "the receiver of a vertical reversed dispatch cannot carry a binding either",
