@@ -75,9 +75,6 @@ final class ProxyIT {
             new Farea(tmp).together(
                 f -> {
                     ProxyIT.setupForProxy(f, port, ProxyIT.port(repo));
-                    f.withOpt(
-                        String.format("-Dmaven.repo.local=%s", tmp.resolve("local-repo"))
-                    );
                     f.exec("package");
                     log[0] = f.log().content();
                 }
@@ -115,13 +112,13 @@ final class ProxyIT {
     /**
      * Start a local HTTP server that serves the local Maven repository.
      *
-     * <p>The build under test resolves everything (the plugin, {@code eo-runtime},
-     * {@code jna} and all their transitive dependencies) through the proxy from
-     * this server instead of from the live Maven Central. Together with an empty
-     * {@code -Dmaven.repo.local} this forces Maven to actually fetch the artifacts
-     * through the forward proxy, yet keeps the test hermetic: no network beyond
-     * localhost is touched. Depending on the live network is what used to make
-     * the test flaky (see #5429).</p>
+     * <p>Maven is pointed at this server through a {@code <mirror>} of {@code *}
+     * in {@code settings.xml}, so every remote access it makes (metadata update
+     * checks, and any artifact not already cached locally) goes through the proxy
+     * to this local server instead of to the live Maven Central. That keeps the
+     * test hermetic — nothing beyond localhost is touched — while still exercising
+     * the forward proxy. Depending on the live network is what used to make the
+     * test flaky (see #5429).</p>
      *
      * @return The started server, listening on an ephemeral port
      * @throws Exception If fails
