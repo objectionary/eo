@@ -28,25 +28,25 @@
     idx
   text.length > len!
 
-  [] +> tests-returns-first-char
+  ++> tests-returns-first-char
     eq. > @
       "s"
       at "some" 0
 
-  [] +> tests-returns-third-char
+  ++> tests-returns-third-char
     eq. > @
       "m"
       at "some" 2
 
-  [] +> tests-returns-char-at-negative-index
+  ++> tests-returns-char-at-negative-index
     eq. > @
       "m"
       at "some" -2
 
-  [] +> throws-on-text-at-index-more-than-length
+  ++> throws-on-text-at-index-more-than-length
     at "some" 10 > @
 
-  [] +> tests-text-at-out-of-bounds-returns-provided-fallback
+  ++> tests-text-at-out-of-bounds-returns-provided-fallback
     eq. > @
       "recovered"
       at

@@ -13,7 +13,7 @@
 [num] > exp
   power e num > @
 
-  [] +> tests-exp-check-n0
+  ++> tests-exp-check-n0
     lt. > @
       abs
         minus.
@@ -21,7 +21,7 @@
           exp 1
       0.00000001
 
-  [] +> tests-exp-check-n1
+  ++> tests-exp-check-n1
     lt. > @
       abs
         minus.
@@ -29,7 +29,7 @@
           exp -1
       0.00000001
 
-  [] +> tests-exp-check-n2
+  ++> tests-exp-check-n2
     lt. > @
       abs
         minus.
@@ -37,7 +37,7 @@
           exp 5
       0.0000001
 
-  [] +> tests-exp-check-n3
+  ++> tests-exp-check-n3
     lt. > @
       abs
         minus.
@@ -45,16 +45,16 @@
           exp -10
       0.000000000001
 
-  [] +> tests-exp-check-nan
+  ++> tests-exp-check-nan
     is-nan. > @
       exp nan
 
-  [] +> tests-exp-check-infinity-n1
+  ++> tests-exp-check-infinity-n1
     eq. > @
       exp pinf
       pinf
 
-  [] +> tests-exp-check-infinity-n2
+  ++> tests-exp-check-infinity-n2
     eq. > @
       exp ninf
       0

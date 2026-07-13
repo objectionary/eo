@@ -149,6 +149,41 @@ final class LnFormationTest {
     }
 
     @Test
+    void emitsPlusPlusGreaterShorthandAsPlusPrefixedAttribute() {
+        final Emit emit = new Emit();
+        new LnFormation(new Span("++> tests-foo", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `++> name` shorthand must emit the same <o name='+<name>'> as `[] +> name`",
+            LnFormationTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/o[@name='+tests-foo' and not(o)]")
+        );
+    }
+
+    @Test
+    void pushesFormationKindForPlusPlusGreaterShorthand() {
+        final Stack stack = new Stack();
+        new LnFormation(new Span("++> tests-foo", 1))
+            .into(stack, new Globals(), new Emit());
+        MatcherAssert.assertThat(
+            "a `++> name` shorthand must push the same BARE_FORMATION level as `[] +> name`",
+            stack.top().kind(),
+            Matchers.equalTo(Kind.BARE_FORMATION)
+        );
+    }
+
+    @Test
+    void rejectsPhiAsPlusPlusGreaterShorthandName() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnFormation(new Span("++> @", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "`++> @` must be rejected per R-6.3.5, exactly as `[] +> @` is"
+        );
+    }
+
+    @Test
     void emitsConstMarkerAttribute() {
         final Emit emit = new Emit();
         new LnFormation(new Span("[] > foo!", 1))

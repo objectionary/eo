@@ -52,7 +52,7 @@
                 a.plus b
           fun b
 
-  [] +> tests-calculates-lineal-integral
+  ++> tests-calculates-lineal-integral
     close-to > @
       as-number.
         integral
@@ -76,7 +76,7 @@
           value
           value.neg
 
-  [] +> tests-calculates-quadratic-integral
+  ++> tests-calculates-quadratic-integral
     close-to > @
       as-number.
         integral
@@ -100,7 +100,7 @@
           value
           value.neg
 
-  [] +> tests-calculates-cube-integral
+  ++> tests-calculates-cube-integral
     close-to > @
       as-number.
         integral

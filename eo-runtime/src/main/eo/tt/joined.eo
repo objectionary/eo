@@ -28,21 +28,21 @@
           acc
         tup.tail
 
-  [] +> tests-joined-no-strings
+  ++> tests-joined-no-strings
     eq. > @
       ""
       joined
         "-"
         *
 
-  [] +> tests-joined-one-string
+  ++> tests-joined-one-string
     eq. > @
       "some"
       joined
         "-"
         * "some"
 
-  [] +> tests-joined-many-strings
+  ++> tests-joined-many-strings
     eq. > @
       "hello-world-dear-friend"
       joined

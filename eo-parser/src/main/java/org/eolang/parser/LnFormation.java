@@ -16,7 +16,9 @@ import java.util.List;
  * parameter name (R-3.4.3). No leading/trailing space inside the
  * brackets (R-3.4.4); exactly one space between parameter names
  * (R-3.4.5). The line may carry an optional name suffix per §3.10,
- * including the atom-signature form {@code > name /sig}.</p>
+ * including the atom-signature form {@code > name /sig}. The shorthand
+ * {@code ++> name} is accepted as sugar for {@code [] +> name} — a
+ * parameterless formation carrying a test suffix (R-6.3.6).</p>
  *
  * <p>Cross-line behaviour: pushes a new {@link Level} at this line's
  * indent (Step C/D) or replaces the current top (Step B), with
@@ -26,7 +28,6 @@ import java.util.List;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class LnFormation implements Line {
 
     /**
@@ -46,19 +47,31 @@ final class LnFormation implements Line {
     public void into(final Stack stack, final Globals globals, final Emit emit) {
         Blanks.enterAfterMeta(this.span, globals, emit);
         final String body = this.span.body();
-        final int close = LnFormation.findClosing(body, this.span);
-        final List<String> params = LnFormation.params(body, close, this.span);
-        final String raw = body.substring(close + 1);
-        final String binding = LnFormation.outerBinding(raw);
-        final String tail;
-        if (binding == null) {
-            tail = raw;
+        final List<String> params;
+        final String binding;
+        final Suffix suffix;
+        if (body.startsWith("++>")) {
+            params = new ArrayList<>(0);
+            binding = null;
+            suffix = new Suffix(
+                body.substring(1), this.span, this.span.indent() + 1
+            );
         } else {
-            tail = raw.substring(1 + binding.length());
+            final int close = LnFormation.findClosing(body, this.span);
+            params = LnFormation.params(body, close, this.span);
+            final String raw = body.substring(close + 1);
+            binding = LnFormation.outerBinding(raw);
+            final String tail;
+            if (binding == null) {
+                tail = raw;
+            } else {
+                tail = raw.substring(1 + binding.length());
+            }
+            suffix = new Suffix(
+                tail, this.span,
+                this.span.indent() + close + 1 + LnFormation.bindingWidth(binding)
+            );
         }
-        final Suffix suffix = new Suffix(
-            tail, this.span, this.span.indent() + close + 1 + LnFormation.bindingWidth(binding)
-        );
         if (suffix.test()) {
             Blanks.checkTest(this.span, globals, emit);
         }

@@ -94,12 +94,12 @@
         trunc
     ^.as-i64.as-number > trunc
 
-  [] +> tests-int-less-true
+  ++> tests-int-less-true
     lt. > @
       10
       50
 
-  [] +> tests-int-less-equal
+  ++> tests-int-less-equal
     eq. > @
       not.
         lt.
@@ -107,7 +107,7 @@
           10
       true
 
-  [] +> tests-int-less-false
+  ++> tests-int-less-false
     eq. > @
       not.
         lt.
@@ -115,14 +115,14 @@
           -5
       true
 
-  [] +> tests-int-greater-true
+  ++> tests-int-greater-true
     eq. > @
       gt.
         -200
         -1000
       true
 
-  [] +> tests-int-greater-false
+  ++> tests-int-greater-false
     eq. > @
       not.
         gt.
@@ -130,7 +130,7 @@
           100
       true
 
-  [] +> tests-int-greater-equal
+  ++> tests-int-greater-equal
     eq. > @
       not.
         gt.
@@ -138,21 +138,21 @@
           0
       true
 
-  [] +> tests-int-leq-true
+  ++> tests-int-leq-true
     eq. > @
       lte.
         -200
         -100
       true
 
-  [] +> tests-int-leq-equal
+  ++> tests-int-leq-equal
     eq. > @
       lte.
         50
         50
       true
 
-  [] +> tests-int-leq-false
+  ++> tests-int-leq-false
     eq. > @
       not.
         lte.
@@ -160,21 +160,21 @@
           -10
       true
 
-  [] +> tests-int-gte-true
+  ++> tests-int-gte-true
     eq. > @
       gte.
         -1000
         -1100
       true
 
-  [] +> tests-int-gte-equal
+  ++> tests-int-gte-equal
     eq. > @
       gte.
         113
         113
       true
 
-  [] +> tests-int-gte-false
+  ++> tests-int-gte-false
     eq. > @
       not.
         gte.
@@ -182,7 +182,7 @@
           10
       true
 
-  [] +> tests-int-equal-to-nan-and-infinites-is-false
+  ++> tests-int-equal-to-nan-and-infinites-is-false
     eq. > @
       and.
         and.
@@ -197,28 +197,28 @@
         (42.eq ninf).eq false
       true
 
-  [] +> tests-int-zero-eq-to-zero
+  ++> tests-int-zero-eq-to-zero
     eq. > @
       eq.
         0
         0
       true
 
-  [] +> tests-int-zero-eq-to-float-zero
+  ++> tests-int-zero-eq-to-float-zero
     eq. > @
       eq.
         0
         0.0
       true
 
-  [] +> tests-int-eq-true
+  ++> tests-int-eq-true
     eq. > @
       eq.
         123
         123
       true
 
-  [] +> tests-int-eq-false
+  ++> tests-int-eq-false
     eq. > @
       not.
         eq.
@@ -226,22 +226,22 @@
           42
       true
 
-  [] +> tests-one-plus-one
+  ++> tests-one-plus-one
     eq. > @
       1.plus 1
       2
 
-  [] +> tests-one-minus-one
+  ++> tests-one-minus-one
     eq. > @
       1.minus 1
       0
 
-  [] +> tests-compares-two-different-number-types
+  ++> tests-compares-two-different-number-types
     eq. > @
       68.eq "12345678"
       false
 
-  [] +> tests-calculates-fibonacci-number-with-recursion
+  ++> tests-calculates-fibonacci-number-with-recursion
     eq. > @
       fibo 4
       3
@@ -253,7 +253,7 @@
           fibo (n.minus 1)
           fibo (n.minus 2)
 
-  [] +> tests-calculates-fibonacci-number-with-tail
+  ++> tests-calculates-fibonacci-number-with-tail
     eq. > @
       fibonacci 4
       3
@@ -276,96 +276,96 @@
           minus1.plus minus2
           rec (n.minus 1) (minus1.plus minus2) minus1
 
-  [] +> tests-zero-division
+  ++> tests-zero-division
     seq > @
       *
         2.div 0
         true
 
-  [] +> tests-division-by-one
+  ++> tests-division-by-one
     eq. > @
       dividend.div 1
       dividend
     -235 > dividend
 
-  [] +> tests-div-for-dividend-greater-than-zero
+  ++> tests-div-for-dividend-greater-than-zero
     eq. > @
       256.div 16
       16
 
-  [] +> tests-div-with-remainder
+  ++> tests-div-with-remainder
     eq. > @
       floor.
         13.div -5
       -3
 
-  [] +> tests-floor-positive-fraction
+  ++> tests-floor-positive-fraction
     eq. > @
       3.7.floor
       3
 
-  [] +> tests-floor-negative-fraction
+  ++> tests-floor-negative-fraction
     eq. > @
       -3.7.floor
       -4
 
-  [] +> tests-floor-negative-small-fraction
+  ++> tests-floor-negative-small-fraction
     eq. > @
       -0.1.floor
       -1
 
-  [] +> tests-floor-of-integer
+  ++> tests-floor-of-integer
     eq. > @
       42.floor
       42
 
-  [] +> tests-floor-of-negative-integer
+  ++> tests-floor-of-negative-integer
     eq. > @
       -5.floor
       -5
 
-  [] +> tests-floor-of-large-positive-integer
+  ++> tests-floor-of-large-positive-integer
     eq. > @
       100000000000000000000.floor
       100000000000000000000
 
-  [] +> tests-floor-of-large-negative-integer
+  ++> tests-floor-of-large-negative-integer
     eq. > @
       -100000000000000000000.floor
       -100000000000000000000
 
-  [] +> tests-floor-of-zero
+  ++> tests-floor-of-zero
     eq. > @
       0.floor
       0
 
-  [] +> tests-div-less-than-one
+  ++> tests-div-less-than-one
     lt. > @
       1.div 5
       1
 
-  [] +> tests-to-bytes-and-backwards
+  ++> tests-to-bytes-and-backwards
     eq. > @
       as-bytes.
         42
       42
 
-  [] +> tests-as-bytes-equals-to-int
+  ++> tests-as-bytes-equals-to-int
     eq. > @
       42
       42.as-bytes
 
-  [] +> tests-as-bytes-equals-to-int-backwards
+  ++> tests-as-bytes-equals-to-int-backwards
     eq. > @
       42.as-bytes
       42
 
-  [] +> tests-multiply-by-zero
+  ++> tests-multiply-by-zero
     eq. > @
       1000.times 0
       0
 
-  [] +> tests-simple-number-is-not-nan
+  ++> tests-simple-number-is-not-nan
     42.5.is-nan.not > @
 
   32.is-integer > [] +> int-number-is-integer
@@ -374,149 +374,149 @@
 
   32.is-finite > [] +> simple-number-is-finite
 
-  [] +> tests-number-with-nan-bytes-is-nan
+  ++> tests-number-with-nan-bytes-is-nan
     (number nan.as-bytes).is-nan > @
 
-  [] +> tests-number-with-infinite-bytes-is-not-finite
+  ++> tests-number-with-infinite-bytes-is-not-finite
     (number pinf.as-bytes).is-finite.not > @
 
-  [] +> tests-positive-infinity-is-equal-to-one-div-zero
+  ++> tests-positive-infinity-is-equal-to-one-div-zero
     eq. > @
       pinf
       1.0.div 0.0
 
-  [] +> tests-positive-infinity-eq-positive-infinity
+  ++> tests-positive-infinity-eq-positive-infinity
     eq. > @
       pinf
       pinf
 
-  [] +> tests-positive-infinity-not-eq-negative-infinity
+  ++> tests-positive-infinity-not-eq-negative-infinity
     not. > @
       eq.
         pinf
         ninf
 
-  [] +> tests-positive-infinity-not-eq-nan
+  ++> tests-positive-infinity-not-eq-nan
     not. > @
       eq.
         pinf
         nan
 
-  [] +> tests-positive-infinity-not-eq-int
+  ++> tests-positive-infinity-not-eq-int
     not. > @
       eq.
         pinf
         42
 
-  [] +> tests-positive-infinity-not-eq-float
+  ++> tests-positive-infinity-not-eq-float
     not. > @
       eq.
         pinf
         42.5
 
-  [] +> tests-positive-infinity-lt-positive-infinity
+  ++> tests-positive-infinity-lt-positive-infinity
     eq. > @
       pinf.lt pinf
       false
 
-  [] +> tests-positive-infinity-not-lt-negative-infinity
+  ++> tests-positive-infinity-not-lt-negative-infinity
     eq. > @
       pinf.lt ninf
       false
 
-  [] +> tests-positive-infinity-not-lt-nan
+  ++> tests-positive-infinity-not-lt-nan
     eq. > @
       pinf.lt nan
       false
 
-  [] +> tests-positive-infinity-not-lt-int
+  ++> tests-positive-infinity-not-lt-int
     eq. > @
       pinf.lt 42
       false
 
-  [] +> tests-positive-infinity-not-lt-float
+  ++> tests-positive-infinity-not-lt-float
     eq. > @
       pinf.lt 42.5
       false
 
-  [] +> tests-positive-infinity-lte-positive-infinity
+  ++> tests-positive-infinity-lte-positive-infinity
     eq. > @
       pinf.lte pinf
       true
 
-  [] +> tests-positive-infinity-not-lte-negative-infinity
+  ++> tests-positive-infinity-not-lte-negative-infinity
     eq. > @
       pinf.lte ninf
       false
 
-  [] +> tests-positive-infinity-not-lte-nan
+  ++> tests-positive-infinity-not-lte-nan
     eq. > @
       pinf.lte nan
       false
 
-  [] +> tests-positive-infinity-not-lte-int
+  ++> tests-positive-infinity-not-lte-int
     eq. > @
       pinf.lte 42
       false
 
-  [] +> tests-positive-infinity-not-lte-float
+  ++> tests-positive-infinity-not-lte-float
     eq. > @
       pinf.lte 42.5
       false
 
-  [] +> tests-positive-infinity-gt-positive-infinity
+  ++> tests-positive-infinity-gt-positive-infinity
     not. > @
       gt.
         pinf
         pinf
 
-  [] +> tests-positive-infinity-gt-negative-infinity
+  ++> tests-positive-infinity-gt-negative-infinity
     gt. > @
       pinf
       ninf
 
-  [] +> tests-positive-infinity-not-gt-nan
+  ++> tests-positive-infinity-not-gt-nan
     not. > @
       gt.
         pinf
         nan
 
-  [] +> tests-positive-infinity-gt-int
+  ++> tests-positive-infinity-gt-int
     gt. > @
       pinf
       42
 
-  [] +> tests-positive-infinity-gt-float
+  ++> tests-positive-infinity-gt-float
     gt. > @
       pinf
       42.5
 
-  [] +> tests-positive-infinity-gte-positive-infinity
+  ++> tests-positive-infinity-gte-positive-infinity
     eq. > @
       pinf.gte pinf
       true
 
-  [] +> tests-positive-infinity-gte-negative-infinity
+  ++> tests-positive-infinity-gte-negative-infinity
     eq. > @
       pinf.gte ninf
       true
 
-  [] +> tests-positive-infinity-not-gte-nan
+  ++> tests-positive-infinity-not-gte-nan
     eq. > @
       pinf.gte nan
       false
 
-  [] +> tests-positive-infinity-gte-int
+  ++> tests-positive-infinity-gte-int
     eq. > @
       pinf.gte 42
       true
 
-  [] +> tests-positive-infinity-gte-float
+  ++> tests-positive-infinity-gte-float
     eq. > @
       pinf.gte 42.5
       true
 
-  [] +> tests-float-equal-to-nan-and-infinites-is-false-highload
+  ++> tests-float-equal-to-nan-and-infinites-is-false-highload
     eq. > @
       and.
         and.
@@ -543,645 +543,645 @@
         (42.5.eq ninf).eq false
       true
 
-  [] +> tests-positive-infinity-times-float-zero
+  ++> tests-positive-infinity-times-float-zero
     eq. > @
       as-bytes.
         pinf.times 0.0
       nan.as-bytes
 
-  [] +> tests-positive-infinity-times-neg-float-zero
+  ++> tests-positive-infinity-times-neg-float-zero
     eq. > @
       as-bytes.
         pinf.times -0.0
       nan.as-bytes
 
-  [] +> tests-positive-infinity-times-int-zero
+  ++> tests-positive-infinity-times-int-zero
     eq. > @
       as-bytes.
         pinf.times 0
       nan.as-bytes
 
-  [] +> tests-positive-infinity-times-nan
+  ++> tests-positive-infinity-times-nan
     eq. > @
       as-bytes.
         pinf.times nan
       nan.as-bytes
 
-  [] +> tests-positive-infinity-times-negative-infinity
+  ++> tests-positive-infinity-times-negative-infinity
     eq. > @
       pinf.times ninf
       ninf
 
-  [] +> tests-positive-infinity-times-positive-infinity
+  ++> tests-positive-infinity-times-positive-infinity
     eq. > @
       pinf.times pinf
       pinf
 
-  [] +> tests-positive-infinity-times-positive-float
+  ++> tests-positive-infinity-times-positive-float
     eq. > @
       pinf.times 42.5
       pinf
 
-  [] +> tests-positive-infinity-times-positive-int
+  ++> tests-positive-infinity-times-positive-int
     eq. > @
       pinf.times 42
       pinf
 
-  [] +> tests-positive-infinity-times-negative-float
+  ++> tests-positive-infinity-times-negative-float
     eq. > @
       pinf.times -42.5
       ninf
 
-  [] +> tests-positive-infinity-times-negative-int
+  ++> tests-positive-infinity-times-negative-int
     eq. > @
       pinf.times -42
       ninf
 
-  [] +> tests-positive-infinity-plus-nan
+  ++> tests-positive-infinity-plus-nan
     eq. > @
       as-bytes.
         pinf.plus nan
       nan.as-bytes
 
-  [] +> tests-positive-infinity-plus-negative-infinity
+  ++> tests-positive-infinity-plus-negative-infinity
     eq. > @
       as-bytes.
         pinf.plus ninf
       nan.as-bytes
 
-  [] +> tests-positive-infinity-plus-positive-infinity
+  ++> tests-positive-infinity-plus-positive-infinity
     eq. > @
       pinf.plus pinf
       pinf
 
-  [] +> tests-positive-infinity-plus-positive-float
+  ++> tests-positive-infinity-plus-positive-float
     eq. > @
       pinf.plus 42.5
       pinf
 
-  [] +> tests-positive-infinity-neg-is-negative-infinity
+  ++> tests-positive-infinity-neg-is-negative-infinity
     eq. > @
       pinf.neg
       ninf
 
-  [] +> tests-positive-infinity-minus-nan
+  ++> tests-positive-infinity-minus-nan
     eq. > @
       as-bytes.
         pinf.minus nan
       nan.as-bytes
 
-  [] +> tests-positive-infinity-minus-positive-infinity
+  ++> tests-positive-infinity-minus-positive-infinity
     eq. > @
       as-bytes.
         pinf.minus pinf
       nan.as-bytes
 
-  [] +> tests-positive-infinity-minus-negative-infinity
+  ++> tests-positive-infinity-minus-negative-infinity
     eq. > @
       pinf.minus ninf
       pinf
 
-  [] +> tests-positive-infinity-minus-positive-float
+  ++> tests-positive-infinity-minus-positive-float
     eq. > @
       pinf.minus 42.5
       pinf
 
-  [] +> tests-positive-infinity-minus-positive-int
+  ++> tests-positive-infinity-minus-positive-int
     eq. > @
       pinf.minus 42
       pinf
 
-  [] +> tests-positive-infinity-minus-negative-float
+  ++> tests-positive-infinity-minus-negative-float
     eq. > @
       pinf.minus -42.5
       pinf
 
-  [] +> tests-positive-infinity-minus-negative-int
+  ++> tests-positive-infinity-minus-negative-int
     eq. > @
       pinf.minus -42
       pinf
 
-  [] +> tests-positive-infinity-div-float-zero
+  ++> tests-positive-infinity-div-float-zero
     eq. > @
       pinf.div 0.0
       pinf
 
-  [] +> tests-positive-infinity-div-neg-float-zero
+  ++> tests-positive-infinity-div-neg-float-zero
     eq. > @
       pinf.div -0.0
       ninf
 
-  [] +> tests-positive-infinity-div-int-zero
+  ++> tests-positive-infinity-div-int-zero
     eq. > @
       pinf.div 0
       pinf
 
-  [] +> tests-positive-infinity-div-neg-int-zero
+  ++> tests-positive-infinity-div-neg-int-zero
     eq. > @
       pinf.div -0
       ninf
 
-  [] +> tests-positive-infinity-div-nan
+  ++> tests-positive-infinity-div-nan
     eq. > @
       as-bytes.
         pinf.div nan
       nan.as-bytes
 
-  [] +> tests-positive-infinity-div-negative-infinity
+  ++> tests-positive-infinity-div-negative-infinity
     eq. > @
       as-bytes.
         pinf.div ninf
       nan.as-bytes
 
-  [] +> tests-positive-infinity-div-positive-infinity
+  ++> tests-positive-infinity-div-positive-infinity
     eq. > @
       as-bytes.
         pinf.div pinf
       nan.as-bytes
 
-  [] +> tests-positive-infinity-div-positive-float
+  ++> tests-positive-infinity-div-positive-float
     eq. > @
       pinf.div 42.5
       pinf
 
-  [] +> tests-positive-infinity-div-positive-int
+  ++> tests-positive-infinity-div-positive-int
     eq. > @
       pinf.div 42
       pinf
 
-  [] +> tests-positive-infinity-div-negative-float
+  ++> tests-positive-infinity-div-negative-float
     eq. > @
       pinf.div -42.5
       ninf
 
-  [] +> tests-positive-infinity-div-negative-int
+  ++> tests-positive-infinity-div-negative-int
     eq. > @
       pinf.div -42
       ninf
 
-  [] +> tests-positive-infinity-as-bytes-is-valid
+  ++> tests-positive-infinity-as-bytes-is-valid
     eq. > @
       pinf.as-bytes
       (1.0.div 0.0).as-bytes
 
-  [] +> tests-positive-infinity-floor-is-equal-to-self
+  ++> tests-positive-infinity-floor-is-equal-to-self
     pinf.floor.eq pinf > @
 
-  [] +> tests-positive-infinity-is-not-nan
+  ++> tests-positive-infinity-is-not-nan
     pinf.is-nan.not > @
 
-  [] +> tests-positive-infinity-is-not-finite
+  ++> tests-positive-infinity-is-not-finite
     pinf.is-finite.not > @
 
-  [] +> tests-positive-infinity-is-not-integer
+  ++> tests-positive-infinity-is-not-integer
     pinf.is-integer.not > @
 
-  [] +> tests-negative-infinity-is-equal-to-one-div-zero
+  ++> tests-negative-infinity-is-equal-to-one-div-zero
     eq. > @
       ninf
       -1.0.div 0.0
 
-  [] +> tests-negative-infinity-eq-negative-infinity
+  ++> tests-negative-infinity-eq-negative-infinity
     eq. > @
       ninf
       ninf
 
-  [] +> tests-negative-infinity-not-eq-positive-infinity
+  ++> tests-negative-infinity-not-eq-positive-infinity
     not. > @
       eq.
         ninf
         pinf
 
-  [] +> tests-negative-infinity-not-eq-nan
+  ++> tests-negative-infinity-not-eq-nan
     not. > @
       eq.
         ninf
         nan
 
-  [] +> tests-negative-infinity-not-eq-int
+  ++> tests-negative-infinity-not-eq-int
     not. > @
       eq.
         ninf
         42
 
-  [] +> tests-negative-infinity-not-eq-float
+  ++> tests-negative-infinity-not-eq-float
     not. > @
       eq.
         ninf
         42.5
 
-  [] +> tests-negative-infinity-lt-negative-infinity
+  ++> tests-negative-infinity-lt-negative-infinity
     eq. > @
       ninf.lt ninf
       false
 
-  [] +> tests-negative-infinity-lt-positive-infinity
+  ++> tests-negative-infinity-lt-positive-infinity
     eq. > @
       ninf.lt pinf
       true
 
-  [] +> tests-negative-infinity-not-lt-nan
+  ++> tests-negative-infinity-not-lt-nan
     eq. > @
       ninf.lt nan
       false
 
-  [] +> tests-negative-infinity-lt-int
+  ++> tests-negative-infinity-lt-int
     lt. > @
       ninf
       42
 
-  [] +> tests-negative-infinity-lt-float
+  ++> tests-negative-infinity-lt-float
     lt. > @
       ninf
       42.5
 
-  [] +> tests-negative-infinity-lte-negative-infinity
+  ++> tests-negative-infinity-lte-negative-infinity
     eq. > @
       ninf.lte ninf
       true
 
-  [] +> tests-negative-infinity-lte-positive-infinity
+  ++> tests-negative-infinity-lte-positive-infinity
     eq. > @
       ninf.lte pinf
       true
 
-  [] +> tests-negative-infinity-not-lte-nan
+  ++> tests-negative-infinity-not-lte-nan
     eq. > @
       ninf.lte nan
       false
 
-  [] +> tests-negative-infinity-lte-int
+  ++> tests-negative-infinity-lte-int
     eq. > @
       ninf.lte 42
       true
 
-  [] +> tests-negative-infinity-lte-float
+  ++> tests-negative-infinity-lte-float
     eq. > @
       ninf.lte 42.5
       true
 
-  [] +> tests-negative-infinity-gt-negative-infinity
+  ++> tests-negative-infinity-gt-negative-infinity
     not. > @
       gt.
         ninf
         ninf
 
-  [] +> tests-negative-infinity-not-gt-positive-infinity
+  ++> tests-negative-infinity-not-gt-positive-infinity
     eq. > @
       ninf.gt pinf
       false
 
-  [] +> tests-negative-infinity-not-gt-nan
+  ++> tests-negative-infinity-not-gt-nan
     eq. > @
       ninf.gt nan
       false
 
-  [] +> tests-negative-infinity-not-gt-int
+  ++> tests-negative-infinity-not-gt-int
     eq. > @
       ninf.gt 42
       false
 
-  [] +> tests-negative-infinity-not-gt-float
+  ++> tests-negative-infinity-not-gt-float
     eq. > @
       ninf.gt 42.5
       false
 
-  [] +> tests-negative-infinity-gte-negative-infinity
+  ++> tests-negative-infinity-gte-negative-infinity
     eq. > @
       ninf.gte ninf
       true
 
-  [] +> tests-negative-infinity-not-gte-positive-infinity
+  ++> tests-negative-infinity-not-gte-positive-infinity
     eq. > @
       ninf.gte pinf
       false
 
-  [] +> tests-negative-infinity-not-gte-nan
+  ++> tests-negative-infinity-not-gte-nan
     eq. > @
       ninf.gte nan
       false
 
-  [] +> tests-negative-infinity-not-gte-int
+  ++> tests-negative-infinity-not-gte-int
     eq. > @
       ninf.gte 42
       false
 
-  [] +> tests-negative-infinity-not-gte-float
+  ++> tests-negative-infinity-not-gte-float
     eq. > @
       ninf.gte 42.5
       false
 
-  [] +> tests-negative-infinity-times-float-zero
+  ++> tests-negative-infinity-times-float-zero
     eq. > @
       as-bytes.
         ninf.times 0.0
       nan.as-bytes
 
-  [] +> tests-negative-infinity-times-neg-float-zero
+  ++> tests-negative-infinity-times-neg-float-zero
     eq. > @
       as-bytes.
         ninf.times -0.0
       nan.as-bytes
 
-  [] +> tests-negative-infinity-times-int-zero
+  ++> tests-negative-infinity-times-int-zero
     eq. > @
       as-bytes.
         ninf.times 0
       nan.as-bytes
 
-  [] +> tests-negative-infinity-times-nan
+  ++> tests-negative-infinity-times-nan
     eq. > @
       as-bytes.
         ninf.times nan
       nan.as-bytes
 
-  [] +> tests-negative-infinity-times-positive-infinity
+  ++> tests-negative-infinity-times-positive-infinity
     eq. > @
       ninf.times pinf
       ninf
 
-  [] +> tests-negative-infinity-times-negative-infinity
+  ++> tests-negative-infinity-times-negative-infinity
     eq. > @
       ninf.times ninf
       pinf
 
-  [] +> tests-negative-infinity-times-positive-float
+  ++> tests-negative-infinity-times-positive-float
     eq. > @
       ninf.times 42.5
       ninf
 
-  [] +> tests-negative-infinity-times-positive-int
+  ++> tests-negative-infinity-times-positive-int
     eq. > @
       ninf.times 42
       ninf
 
-  [] +> tests-negative-infinity-times-negative-float
+  ++> tests-negative-infinity-times-negative-float
     eq. > @
       ninf.times -42.5
       pinf
 
-  [] +> tests-negative-infinity-times-negative-int
+  ++> tests-negative-infinity-times-negative-int
     eq. > @
       ninf.times -42
       pinf
 
-  [] +> tests-negative-infinity-plus-nan
+  ++> tests-negative-infinity-plus-nan
     eq. > @
       as-bytes.
         ninf.plus nan
       nan.as-bytes
 
-  [] +> tests-negative-infinity-plus-positive-infinity
+  ++> tests-negative-infinity-plus-positive-infinity
     eq. > @
       as-bytes.
         ninf.plus pinf
       nan.as-bytes
 
-  [] +> tests-negative-infinity-plus-negative-infinity
+  ++> tests-negative-infinity-plus-negative-infinity
     eq. > @
       ninf
       ninf.plus ninf
 
-  [] +> tests-negative-infinity-plus-positive-float
+  ++> tests-negative-infinity-plus-positive-float
     eq. > @
       ninf.plus 42.5
       ninf
 
-  [] +> tests-negative-infinity-plus-positive-int
+  ++> tests-negative-infinity-plus-positive-int
     eq. > @
       ninf.plus 42
       ninf
 
-  [] +> tests-negative-infinity-plus-negative-float
+  ++> tests-negative-infinity-plus-negative-float
     eq. > @
       ninf.plus -42.5
       ninf
 
-  [] +> tests-negative-infinity-plus-negative-int
+  ++> tests-negative-infinity-plus-negative-int
     eq. > @
       ninf.plus -42
       ninf
 
-  [] +> tests-negative-infinity-neg-is-positive-infinity
+  ++> tests-negative-infinity-neg-is-positive-infinity
     eq. > @
       ninf.neg
       pinf
 
-  [] +> tests-negative-infinity-minus-nan
+  ++> tests-negative-infinity-minus-nan
     eq. > @
       as-bytes.
         ninf.minus nan
       nan.as-bytes
 
-  [] +> tests-negative-infinity-minus-negative-infinity
+  ++> tests-negative-infinity-minus-negative-infinity
     eq. > @
       as-bytes.
         ninf.minus ninf
       nan.as-bytes
 
-  [] +> tests-negative-infinity-minus-positive-infinity
+  ++> tests-negative-infinity-minus-positive-infinity
     eq. > @
       ninf.minus pinf
       ninf
 
-  [] +> tests-negative-infinity-minus-positive-float
+  ++> tests-negative-infinity-minus-positive-float
     eq. > @
       ninf.minus 42.5
       ninf
 
-  [] +> tests-negative-infinity-minus-positive-int
+  ++> tests-negative-infinity-minus-positive-int
     eq. > @
       ninf.minus 42
       ninf
 
-  [] +> tests-negative-infinity-minus-negative-float
+  ++> tests-negative-infinity-minus-negative-float
     eq. > @
       ninf.minus -42.5
       ninf
 
-  [] +> tests-negative-infinity-minus-negative-int
+  ++> tests-negative-infinity-minus-negative-int
     eq. > @
       ninf.minus -42
       ninf
 
-  [] +> tests-negative-infinity-div-float-zero
+  ++> tests-negative-infinity-div-float-zero
     eq. > @
       ninf.div 0.0
       ninf
 
-  [] +> tests-negative-infinity-div-neg-float-zero
+  ++> tests-negative-infinity-div-neg-float-zero
     eq. > @
       ninf.div -0.0
       pinf
 
-  [] +> tests-negative-infinity-div-int-zero
+  ++> tests-negative-infinity-div-int-zero
     eq. > @
       ninf.div 0
       ninf
 
-  [] +> tests-negative-infinity-div-neg-int-zero
+  ++> tests-negative-infinity-div-neg-int-zero
     eq. > @
       ninf.div -0
       pinf
 
-  [] +> tests-negative-infinity-div-nan
+  ++> tests-negative-infinity-div-nan
     eq. > @
       as-bytes.
         ninf.div nan
       nan.as-bytes
 
-  [] +> tests-negative-infinity-div-positive-infinity
+  ++> tests-negative-infinity-div-positive-infinity
     eq. > @
       as-bytes.
         ninf.div pinf
       nan.as-bytes
 
-  [] +> tests-negative-infinity-div-negative-infinity
+  ++> tests-negative-infinity-div-negative-infinity
     eq. > @
       as-bytes.
         ninf.div ninf
       nan.as-bytes
 
-  [] +> tests-negative-infinity-div-positive-float
+  ++> tests-negative-infinity-div-positive-float
     eq. > @
       ninf.div 42.5
       ninf
 
-  [] +> tests-negative-infinity-div-positive-int
+  ++> tests-negative-infinity-div-positive-int
     eq. > @
       ninf.div 42
       ninf
 
-  [] +> tests-negative-infinity-div-negative-float
+  ++> tests-negative-infinity-div-negative-float
     eq. > @
       ninf.div -42.5
       pinf
 
-  [] +> tests-negative-infinity-div-negative-int
+  ++> tests-negative-infinity-div-negative-int
     eq. > @
       ninf.div -42
       pinf
 
-  [] +> tests-negative-infinity-as-bytes-is-valid
+  ++> tests-negative-infinity-as-bytes-is-valid
     eq. > @
       ninf.as-bytes
       (-1.0.div 0.0).as-bytes
 
-  [] +> tests-negative-infinity-floor-is-equal-to-self
+  ++> tests-negative-infinity-floor-is-equal-to-self
     ninf.floor.eq ninf > @
 
-  [] +> tests-negative-infinity-is-not-nan
+  ++> tests-negative-infinity-is-not-nan
     ninf.is-nan.not > @
 
-  [] +> tests-negative-infinity-is-not-finite
+  ++> tests-negative-infinity-is-not-finite
     ninf.is-finite.not > @
 
-  [] +> tests-negative-infinity-is-not-integer
+  ++> tests-negative-infinity-is-not-integer
     ninf.is-integer.not > @
 
-  [] +> tests-nan-not-eq-number
+  ++> tests-nan-not-eq-number
     not. > @
       eq.
         nan
         42
 
-  [] +> tests-nan-not-eq-nan
+  ++> tests-nan-not-eq-nan
     not. > @
       eq.
         nan
         nan
 
-  [] +> tests-nan-not-lt-number
+  ++> tests-nan-not-lt-number
     eq. > @
       nan.lt 42
       false
 
-  [] +> tests-nan-not-lt-nan
+  ++> tests-nan-not-lt-nan
     eq. > @
       nan.lt nan
       false
 
-  [] +> tests-nan-not-lte-number
+  ++> tests-nan-not-lte-number
     eq. > @
       nan.lte 42
       false
 
-  [] +> tests-nan-not-lte-nan
+  ++> tests-nan-not-lte-nan
     eq. > @
       nan.lte nan
       false
 
-  [] +> tests-nan-not-gt-number
+  ++> tests-nan-not-gt-number
     eq. > @
       nan.gt 42
       false
 
-  [] +> tests-nan-not-gt-nan
+  ++> tests-nan-not-gt-nan
     eq. > @
       nan.gt nan
       false
 
-  [] +> tests-nan-not-gte-number
+  ++> tests-nan-not-gte-number
     eq. > @
       nan.gte 42
       false
 
-  [] +> tests-nan-not-gte-nan
+  ++> tests-nan-not-gte-nan
     eq. > @
       nan.gte nan
       false
 
-  [] +> tests-nan-times-number-is-nan
+  ++> tests-nan-times-number-is-nan
     eq. > @
       (nan.times 42).as-bytes
       nan.as-bytes
 
-  [] +> tests-nan-times-nan-is-nan
+  ++> tests-nan-times-nan-is-nan
     eq. > @
       (nan.times nan).as-bytes
       nan.as-bytes
 
-  [] +> tests-nan-div-number-is-nan
+  ++> tests-nan-div-number-is-nan
     eq. > @
       (nan.div 42).as-bytes
       nan.as-bytes
 
-  [] +> tests-nan-div-nan-is-nan
+  ++> tests-nan-div-nan-is-nan
     eq. > @
       (nan.div nan).as-bytes
       nan.as-bytes
 
-  [] +> tests-nan-plus-number-is-nan
+  ++> tests-nan-plus-number-is-nan
     eq. > @
       (nan.plus 42).as-bytes
       nan.as-bytes
 
-  [] +> tests-nan-plus-nan-is-nan
+  ++> tests-nan-plus-nan-is-nan
     eq. > @
       (nan.plus nan).as-bytes
       nan.as-bytes
 
-  [] +> tests-nan-neg-is-nan
+  ++> tests-nan-neg-is-nan
     eq. > @
       nan.@.as-bytes
       nan.as-bytes
 
-  [] +> tests-nan-minus-number-is-nan
+  ++> tests-nan-minus-number-is-nan
     eq. > @
       (nan.minus 42).as-bytes
       nan.as-bytes
 
-  [] +> tests-nan-minus-nan-is-nan
+  ++> tests-nan-minus-nan-is-nan
     eq. > @
       (nan.minus nan).as-bytes
       nan.as-bytes
 
-  [] +> tests-nan-as-bytes-is-bytes-of-zero-div-zero
+  ++> tests-nan-as-bytes-is-bytes-of-zero-div-zero
     eq. > @
       nan.as-bytes
       (0.0.div 0.0).as-bytes
 
-  [] +> tests-nan-floor-is-nan
+  ++> tests-nan-floor-is-nan
     eq. > @
       nan.floor.as-bytes
       nan.as-bytes
@@ -1190,10 +1190,10 @@
 
   nan.is-finite.not > [] +> nan-is-not-finite
 
-  [] +> throws-on-converting-huge-number-to-i64
+  ++> throws-on-converting-huge-number-to-i64
     1.0e30.as-i64 > @
 
-  [] +> throws-on-converting-long-max-boundary-to-i64
+  ++> throws-on-converting-long-max-boundary-to-i64
     9.223372036854776e18.as-i64 > @
 
   nan.is-integer.not > [] +> nan-is-not-integer

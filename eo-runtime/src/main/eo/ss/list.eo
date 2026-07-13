@@ -112,7 +112,7 @@
       shift
       origin.length
 
-  [] +> tests-list-should-not-be-empty
+  ++> tests-list-should-not-be-empty
     not. > @
       is-empty.
         list
@@ -120,19 +120,19 @@
 
   (list *).is-empty > [] +> list-should-be-empty
 
-  [] +> tests-list-should-not-be-empty-with-three-objects
+  ++> tests-list-should-not-be-empty-with-three-objects
     (list xs).is-empty.not > @
     * > xs
       [x]
       [y]
       [z]
 
-  [] +> tests-list-should-not-be-empty-with-one-anon-object
+  ++> tests-list-should-not-be-empty-with-one-anon-object
     (list xs).is-empty.not > @
     * > xs
       [f]
 
-  [] +> tests-list-simple-with
+  ++> tests-list-simple-with
     eq. > @
       with.
         list
@@ -140,7 +140,7 @@
         3
       * 1 2 3
 
-  [] +> tests-simple-insert
+  ++> tests-simple-insert
     eq. > @
       withi.
         list
@@ -149,7 +149,7 @@
         "hello"
       * 1 2 3 "hello" 4 5
 
-  [] +> tests-insert-with-zero-index
+  ++> tests-insert-with-zero-index
     eq. > @
       withi.
         list
@@ -158,7 +158,7 @@
         "hello"
       * "hello" 1 2 3 4 5
 
-  [] +> tests-complex-objects-list-comparison
+  ++> tests-complex-objects-list-comparison
     list
       *
         list (* 0 1)
@@ -170,7 +170,7 @@
         * 4 0
         * 7 3
 
-  [] +> tests-iterates-with-each
+  ++> tests-iterates-with-each
     eq. > @
       malloc.for
         0
@@ -181,20 +181,20 @@
             ^.m.put (^.m.as-number.plus i) > [i] >>
       6
 
-  [] +> tests-equality-test
+  ++> tests-equality-test
     eq. > @
       list
         * 1 2 3
       * 1 2 3
 
-  [] +> tests-not-equality-test
+  ++> tests-not-equality-test
     not. > @
       eq.
         list
           * 1 2 3
         * 3 2 1
 
-  [] +> tests-concatenates-lists
+  ++> tests-concatenates-lists
     and. > @
       eq.
         1
@@ -208,7 +208,7 @@
         list (* 2 3)
       0
 
-  [] +> tests-concatenates-with-tuple
+  ++> tests-concatenates-with-tuple
     eq. > @
       concat.
         list
@@ -225,7 +225,7 @@
         5
       * 2 3 4 5
 
-  [] +> tests-slice-with-negative-start
+  ++> tests-slice-with-negative-start
     eq. > @
       slice.
         list
@@ -234,7 +234,7 @@
         6
       * 0 3 8
 
-  [] +> tests-slice-with-negative-end
+  ++> tests-slice-with-negative-end
     eq. > @
       slice.
         list
@@ -243,7 +243,7 @@
         -1
       * "a" 2 3.0 "xyz" 82.42
 
-  [] +> tests-slice-with-negative-start-and-end
+  ++> tests-slice-with-negative-start-and-end
     eq. > @
       slice.
         list
@@ -252,7 +252,7 @@
         -1
       * 23 0 0
 
-  [] +> tests-slice-with-end-gt-length
+  ++> tests-slice-with-end-gt-length
     eq. > @
       slice.
         list
@@ -261,7 +261,7 @@
         10
       * "bar" "buzz"
 
-  [] +> tests-slice-with-start-lt-negative-length
+  ++> tests-slice-with-start-lt-negative-length
     eq. > @
       slice.
         list
@@ -270,7 +270,7 @@
         3
       * 9 99 999
 
-  [] +> tests-slice-with-end-lt-negative-length
+  ++> tests-slice-with-end-lt-negative-length
     eq. > @
       slice.
         list
@@ -279,7 +279,7 @@
         -9
       list *
 
-  [] +> tests-slice-with-start-gte-end-both-positive
+  ++> tests-slice-with-start-gte-end-both-positive
     eq. > @
       slice.
         list
@@ -288,7 +288,7 @@
         0
       list *
 
-  [] +> tests-slice-with-start-gte-end-both-negative
+  ++> tests-slice-with-start-gte-end-both-negative
     eq. > @
       slice.
         list
@@ -297,7 +297,7 @@
         -5
       list *
 
-  [] +> tests-slice-with-negative-start-gte-end
+  ++> tests-slice-with-negative-start-gte-end
     eq. > @
       slice.
         list
@@ -306,7 +306,7 @@
         3
       list *
 
-  [] +> tests-slice-with-start-gte-negative-end
+  ++> tests-slice-with-start-gte-negative-end
     eq. > @
       slice.
         list
@@ -315,7 +315,7 @@
         -5
       list *
 
-  [] +> tests-shifted-with-shift-less-than-length
+  ++> tests-shifted-with-shift-less-than-length
     eq. > @
       shifted.
         list
@@ -323,7 +323,7 @@
         2
       * 3 4 5
 
-  [] +> tests-shifted-with-shift-greater-than-length
+  ++> tests-shifted-with-shift-greater-than-length
     eq. > @
       shifted.
         list

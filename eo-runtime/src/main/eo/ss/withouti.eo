@@ -20,7 +20,7 @@
           accum
           accum.with item
 
-  [] +> tests-list-withouti
+  ++> tests-list-withouti
     eq. > @
       withouti
         list
@@ -28,7 +28,7 @@
         1
       * 1 3
 
-  [] +> tests-list-withouti-complex-case
+  ++> tests-list-withouti-complex-case
     eq. > @
       foo
         * 1 "text" "f"
@@ -38,7 +38,7 @@
         list a
         0
 
-  [] +> tests-list-withouti-nested-array
+  ++> tests-list-withouti-nested-array
     eq. > @
       withouti
         list

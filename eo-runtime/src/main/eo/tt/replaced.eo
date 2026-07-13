@@ -39,7 +39,7 @@
             start
             reinit.length.minus start
 
-  [] +> tests-does-not-replaces-if-regex-not-found
+  ++> tests-does-not-replaces-if-regex-not-found
     replaced
       "Hello, world"
       regex
@@ -48,7 +48,7 @@
     .eq > @
       "Hello, world"
 
-  [] +> tests-replaces-digits-with-string
+  ++> tests-replaces-digits-with-string
     replaced
       "Hell0, w0rld"
       regex
@@ -57,7 +57,7 @@
     .eq > @
       "Hello, world"
 
-  [] +> tests-replaces-slashes-to-windows-separator
+  ++> tests-replaces-slashes-to-windows-separator
     replaced
       "C:\\Windows/foo\\bar/hello.txt"
       regex
@@ -66,7 +66,7 @@
     .eq > @
       "C:\\Windows\\foo\\bar\\hello.txt"
 
-  [] +> tests-replaces-windows-path-with-slash
+  ++> tests-replaces-windows-path-with-slash
     replaced
       "C:\\Windows\\Users\\AppLocal\\shrek"
       regex
@@ -75,7 +75,7 @@
     .eq > @
       "C/Windows/Users/AppLocal/shrek"
 
-  [] +> tests-sanitizes-windows-path-with-regex
+  ++> tests-sanitizes-windows-path-with-regex
     replaced
       "foo\\bar<:>?*\"|baz\\asdf"
       regex

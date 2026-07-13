@@ -57,7 +57,7 @@
         sin-addr.size
       sin-zero.size
 
-  [] +> tests-invokes-getpid-correctly
+  ++> tests-invokes-getpid-correctly
     or. > @
       os.is-windows
       gt.
@@ -67,7 +67,7 @@
             tuple.empty
         0
 
-  [] +> tests-opens-and-closes-file-via-syscall
+  ++> tests-opens-and-closes-file-via-syscall
     or. > @
       os.is-windows
       seq
@@ -82,7 +82,7 @@
         "open"
         * "/dev/null" 0 0
 
-  [] +> tests-opens-posix-tcp-socket
+  ++> tests-opens-posix-tcp-socket
     or. > @
       os.is-windows
       seq
@@ -97,7 +97,7 @@
         "socket"
         * posix.af-inet posix.sock-stream posix.ipproto-tcp
 
-  [] +> tests-closes-posix-tcp-socket
+  ++> tests-closes-posix-tcp-socket
     or. > @
       os.is-windows
       seq
@@ -115,7 +115,7 @@
         "socket"
         * posix.af-inet posix.sock-stream posix.ipproto-tcp
 
-  [] +> tests-returns-valid-posix-inet-addr-for-localhost
+  ++> tests-returns-valid-posix-inet-addr-for-localhost
     or. > @
       os.is-windows
       (code. (posix "inet_addr" (* "127.0.0.1"))).eq 16777343

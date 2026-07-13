@@ -16,7 +16,7 @@
     lst
     func item > [item idx] >>
 
-  [] +> tests-simple-list-mapping
+  ++> tests-simple-list-mapping
     eq. > @
       mapped
         list

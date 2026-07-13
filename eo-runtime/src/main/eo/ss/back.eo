@@ -25,7 +25,7 @@
   index > idx!
   lst.length.minus idx > start!
 
-  [] +> tests-simple-back
+  ++> tests-simple-back
     eq. > @
       back
         list
@@ -33,14 +33,14 @@
         2
       * 4 5
 
-  [] +> tests-zero-index-in-back
+  ++> tests-zero-index-in-back
     is-empty. > @
       back
         list
           * 1 2 3 4 5
         0
 
-  [] +> tests-large-index-in-back
+  ++> tests-large-index-in-back
     eq. > @
       back
         list

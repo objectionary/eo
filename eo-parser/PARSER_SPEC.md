@@ -198,6 +198,7 @@ Each non-blank, non-comment line is classified into exactly one shape, determine
 | First char (after indent) | Lookahead | Line shape |
 |---|---|---|
 | `+` | followed by digit | signed-number application (see §3.6) |
+| `+` | followed by `+>` | test-attribute shorthand — `++> name` desugars to `[] +> name` (§3.4 / R-6.3.6) |
 | `+` | otherwise | meta directive (§3.2) |
 | `#` | — | comment (§3.3) |
 | `.` | — | method-dispatch line (§3.5) |
@@ -878,6 +879,7 @@ R-6.3.4. Atoms may appear at any nesting depth, with two restrictions:
   - **(a)** A nested atom (one not at indent 0) cannot hold tests (R-6.3.3 — `+>` legal only at indent 2 of top-level) and cannot hold regular children (R-6.3.1 — atoms accept only test children). Therefore a nested atom's body must be **empty**.
   - **(b)** A nested atom is legal only when the containing formation is **not itself an atom**. Atoms inside atoms are rejected: an atom's body may contain only `+>` test attributes (R-6.3.1), and a master child (formation/atom) of an atom is therefore inadmissible regardless of body shape.
 R-6.3.5. A test attribute name must be a `NAME` token. `+> @` (PHI as test name) is rejected even though the underlying grammar's `tname : tarrow (PHI | NAME)` accepts it. Tests are named identifiers; `@` has no meaning as a test name.
+R-6.3.6. **Test-attribute shorthand.** A line whose first non-space characters are `++>` is sugar for a bare parameterless formation with a test suffix: `++> name` ≡ `[] +> name`. The two forms are equivalent in every respect after classification — same XMIR emission (§9.4), same depth constraint (R-6.3.3), same name rules (R-6.3.5). There is no ambiguity with meta directives: metas are legal only before the first object (R-3.2.2), and their names never start with `+`.
 
 Examples:
 

@@ -48,19 +48,19 @@
             start
             (current.plus 1).as-number
 
-  [] +> tests-splits-text-by-dash
+  ++> tests-splits-text-by-dash
     eq. > @
       list
         split "a-b-c" "-"
       * "a" "b" "c"
 
-  [] +> tests-splits-text-with-empty-strings
+  ++> tests-splits-text-with-empty-strings
     eq. > @
       list
         split "-a-b-" "-"
       * "" "a" "b" ""
 
-  [] +> tests-splits-and-returns-strings
+  ++> tests-splits-and-returns-strings
     eq. > @
       length.
         at.
@@ -70,7 +70,7 @@
           1
       6
 
-  [] +> tests-splits-text-by-multi-char-delimiter
+  ++> tests-splits-text-by-multi-char-delimiter
     eq. > @
       list
         split "a::b::c" "::"

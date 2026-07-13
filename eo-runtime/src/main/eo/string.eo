@@ -159,78 +159,78 @@
                       * byte
       as-bytes.slice index 1 > byte
 
-  [] +> tests-calculates-length-of-spaces-only
+  ++> tests-calculates-length-of-spaces-only
     eq. > @
       " ".length
       1
 
-  [] +> tests-turns-string-into-bytes
+  ++> tests-turns-string-into-bytes
     eq. > @
       "€ друг".as-bytes
       E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3
 
-  [] +> tests-bytes-equal-to-string
+  ++> tests-bytes-equal-to-string
     eq. > @
       D0-B4-D1-80-D1-83-D0-B3
       "друг"
 
-  [] +> tests-string-equals-to-bytes
+  ++> tests-string-equals-to-bytes
     eq. > @
       "друг"
       D0-B4-D1-80-D1-83-D0-B3
 
-  [] +> tests-reads-the-length-with-n2-byte-characters
+  ++> tests-reads-the-length-with-n2-byte-characters
     and. > @
       str.length.eq 12
       str.as-bytes.size.eq 16
     "Hello, друг!" > str
 
-  [] +> tests-reads-the-length-with-n3-byte-characters
+  ++> tests-reads-the-length-with-n3-byte-characters
     and. > @
       str.length.eq 16
       str.as-bytes.size.eq 18
     "The अ devanagari" > str
 
-  [] +> tests-reads-the-length-with-n4-byte-characters
+  ++> tests-reads-the-length-with-n4-byte-characters
     and. > @
       str.length.eq 11
       str.as-bytes.size.eq 14
     "The 😀 smile" > str
 
-  [] +> throws-on-taking-length-of-incomplete-n4-byte-character
+  ++> throws-on-taking-length-of-incomplete-n4-byte-character
     (string F0-9F-98).length > @
 
-  [] +> tests-compares-two-different-string-types
+  ++> tests-compares-two-different-string-types
     not. > @
       eq.
         "Hello"
         42
 
-  [] +> tests-compares-string-with-nan
+  ++> tests-compares-string-with-nan
     not. > @
       eq.
         nan
         "друг"
 
-  [] +> tests-compares-string-with-positive-infinity
+  ++> tests-compares-string-with-positive-infinity
     eq. > @
       pinf.eq "друг"
       false
 
-  [] +> tests-compares-string-with-negative-infinity
+  ++> tests-compares-string-with-negative-infinity
     not. > @
       eq.
         ninf
         "друг"
 
-  [] +> tests-text-block-one-line
+  ++> tests-text-block-one-line
     eq. > @
       """
       Abc
       """
       "Abc"
 
-  [] +> tests-text-block-tree-lines
+  ++> tests-text-block-tree-lines
     eq. > @
       """
       e
@@ -239,7 +239,7 @@
       """.as-bytes
       65-0A-65-0A-65
 
-  [] +> tests-text-block-with-margin
+  ++> tests-text-block-with-margin
     eq. > @
       """
        z
@@ -248,25 +248,25 @@
       """.as-bytes
       7A-0A-20-20-79-0A-20-78
 
-  [] +> tests-compares-two-different-strings
+  ++> tests-compares-two-different-strings
     not. > @
       eq.
         "Hello"
         "Good bye"
 
-  [] +> tests-supports-escape-sequences
+  ++> tests-supports-escape-sequences
     eq. > @
       "Hello, \u0434\u0440\u0443\u0433!\n"
       "Hello, друг!\n"
 
-  [] +> tests-supports-escape-sequences-in-text
+  ++> tests-supports-escape-sequences-in-text
     eq. > @
       """
       Hello, \u0434\u0440\u0443\u0433!\n
       """
       "Hello, друг!\n"
 
-  [] +> tests-preserves-indentation-in-text
+  ++> tests-preserves-indentation-in-text
     eq. > @
       """
       a
@@ -275,113 +275,113 @@
       """
       "a\n b\n  c"
 
-  [] +> tests-compares-two-strings
+  ++> tests-compares-two-strings
     eq. > @
       eq.
         "x"
         "x"
       true
 
-  [] +> tests-one-symbol-string-compares
+  ++> tests-one-symbol-string-compares
     eq. > @
       "Ф"
       "Ф"
 
-  [] +> tests-supports-escape-sequences-line-break
+  ++> tests-supports-escape-sequences-line-break
     eq. > @
       "\n"
       "\012"
 
-  [] +> tests-supports-escape-sequences-unicode
+  ++> tests-supports-escape-sequences-unicode
     eq. > @
       "\u0424"
       "Ф"
 
-  [] +> tests-slice-from-start
+  ++> tests-slice-from-start
     eq. > @
       "hello".slice 0 1
       "h"
 
-  [] +> tests-slice-in-the-middle
+  ++> tests-slice-in-the-middle
     eq. > @
       "hello".slice 2 3
       "llo"
 
-  [] +> tests-slice-from-the-end
+  ++> tests-slice-from-the-end
     eq. > @
       "hello".slice 4 1
       "o"
 
-  [] +> tests-slice-empty-string
+  ++> tests-slice-empty-string
     eq. > @
       "".slice 0 0
       ""
 
-  [] +> tests-no-slice-string
+  ++> tests-no-slice-string
     eq. > @
       "no slice".slice 0 0
       ""
 
-  [] +> tests-slice-escape-sequences-line-break
+  ++> tests-slice-escape-sequences-line-break
     eq. > @
       "\n".slice
         0
         "\n".length
       "\012"
 
-  [] +> tests-slice-escape-sequences-unicode
+  ++> tests-slice-escape-sequences-unicode
     eq. > @
       "\u0424".slice
         0
         "\u0424".length
       "Ф"
 
-  [] +> tests-slice-with-n2-byte-characters
+  ++> tests-slice-with-n2-byte-characters
     eq. > @
       "привет".slice 1 2
       "ри"
 
-  [] +> tests-slice-with-n3-byte-characters
+  ++> tests-slice-with-n3-byte-characters
     eq. > @
       "The अ is अ".slice 1 6
       "he अ i"
 
-  [] +> tests-slice-with-n4-byte-characters
+  ++> tests-slice-with-n4-byte-characters
     eq. > @
       "One 😀 and 😀 another".slice 3 8
       " 😀 and 😀"
 
-  [] +> tests-slice-foreign-literals
+  ++> tests-slice-foreign-literals
     eq. > @
       "hello, 大家!".slice
         7
         1
       "大"
 
-  [] +> throws-on-slicing-start-below-zero
+  ++> throws-on-slicing-start-below-zero
     slice. > @
       "some string"
       -1
       1
 
-  [] +> throws-on-slicing-end-below-start
+  ++> throws-on-slicing-end-below-start
     slice. > @
       "some string"
       2
       -1
 
-  [] +> throws-on-slicing-end-greater-actual
+  ++> throws-on-slicing-end-greater-actual
     slice. > @
       "some string"
       7
       5
 
-  [] +> tests-unescapes-slashes
+  ++> tests-unescapes-slashes
     eq. > @
       "x\\b\\f\\u\\r\\t\\n\\'"
       78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27
 
-  [] +> tests-unescapes-symbols
+  ++> tests-unescapes-symbols
     eq. > @
       "\b\f\n\r\t\u27E6"
       08-0C-0A-0D-09-E2-9F-A6

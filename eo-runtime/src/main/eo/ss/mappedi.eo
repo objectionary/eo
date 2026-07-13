@@ -21,7 +21,7 @@
         accum.with > @
           func item idx
 
-  [] +> tests-list-mappedi-should-work
+  ++> tests-list-mappedi-should-work
     eq. > @
       mappedi
         list

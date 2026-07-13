@@ -15,25 +15,24 @@
   reduced > @
     mapped
       substrings
-      contains txt x > [x] >>
+      contains text x > [x] >>
     true
     x.and a > [a x]
-  text > txt!
 
-  [] +> tests-successful-contains-all
+  ++> tests-successful-contains-all
     contains-all "abcdefghijk" (list (* "abc" "ghi")) > @
 
-  [] +> tests-not-contains-all
+  ++> tests-not-contains-all
     not. > @
       contains-all "qwerty" (list (* "qer" "ty" "abc"))
 
-  [] +> tests-contains-all-vert
+  ++> tests-contains-all-vert
     contains-all > @
       "Hello, world!"
       list (* "ell" " " "," "d!")
 
-  [] +> test-contains-all-without-substrings
+  ++> test-contains-all-without-substrings
     contains-all "xyz" (list *) > @
 
-  [] +> tests-contains-all-for-empty-text-and-without-substrings
+  ++> tests-contains-all-for-empty-text-and-without-substrings
     contains-all "" (list *) > @

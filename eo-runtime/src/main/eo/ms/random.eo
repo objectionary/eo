@@ -68,19 +68,19 @@
     clock.as-bytes > tbytes
   clocked system-clock > pseudo
 
-  [] +> tests-random-with-seed
+  ++> tests-random-with-seed
     not. > @
       eq.
         r.next
         r.next.next
     random 51 > r
 
-  [] +> tests-seeded-randoms-are-equal
+  ++> tests-seeded-randoms-are-equal
     eq. > @
       (random 1654).next.next.next
       (random 1654).next.next.next
 
-  [] +> tests-random-is-in-range
+  ++> tests-random-is-in-range
     and. > @
       and.
         and.
@@ -94,7 +94,7 @@
         (rand.next.next.lt 0).not
     (random 123).next > rand
 
-  [] +> tests-two-random-numbers-not-equal
+  ++> tests-two-random-numbers-not-equal
     not. > @
       eq.
         random.clocked 123.as-i64
