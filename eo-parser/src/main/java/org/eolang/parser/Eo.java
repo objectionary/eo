@@ -386,7 +386,7 @@ final class Eo implements Iterable<Directive> {
         } else if (span.head() == '#') {
             line = new LnComment(span);
         } else if (span.head() == '+' && !Eo.signedDigit(span)) {
-            line = new LnMeta(span);
+            line = Eo.plussed(span);
         } else if (span.head() == '[') {
             line = new LnFormation(span);
         } else if (span.head() == '.') {
@@ -422,6 +422,24 @@ final class Eo implements Iterable<Directive> {
                     "line shape not yet implemented in spec parser"
                 );
             };
+        }
+        return line;
+    }
+
+    /**
+     * Classify a {@code +}-headed non-number line (§3.1): the
+     * {@code ++>} test-attribute shorthand desugars to a bare
+     * formation with a {@code +>} suffix (R-6.3.6); anything else is
+     * a meta directive (§3.2).
+     * @param span The line span
+     * @return The line shape
+     */
+    private static Line plussed(final Span span) {
+        final Line line;
+        if (span.body().startsWith("++>")) {
+            line = new LnFormation(span);
+        } else {
+            line = new LnMeta(span);
         }
         return line;
     }
