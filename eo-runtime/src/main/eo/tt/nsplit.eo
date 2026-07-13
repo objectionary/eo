@@ -63,7 +63,7 @@
             (current.plus 1).as-number
             count
 
-  [] +> tests-nsplit-with-limit-two
+  ++> tests-nsplit-with-limit-two
     eq. > @
       list
         nsplit
@@ -72,7 +72,7 @@
           2
       * "Cookie:" "a=1; b=2"
 
-  [] +> tests-nsplit-with-dashes-limit-two
+  ++> tests-nsplit-with-dashes-limit-two
     eq. > @
       list
         nsplit
@@ -81,7 +81,7 @@
           2
       * "a" "b-c-d"
 
-  [] +> tests-nsplit-with-limit-one
+  ++> tests-nsplit-with-limit-one
     eq. > @
       list
         nsplit
@@ -90,7 +90,7 @@
           1
       * "a-b-c"
 
-  [] +> tests-nsplit-with-high-limit
+  ++> tests-nsplit-with-high-limit
     eq. > @
       list
         nsplit
@@ -99,19 +99,19 @@
           10
       * "a" "b" "c"
 
-  [] +> throws-on-nsplit-with-limit-zero
+  ++> throws-on-nsplit-with-limit-zero
     nsplit > @
       "text"
       "-"
       0
 
-  [] +> throws-on-nsplit-with-negative-limit
+  ++> throws-on-nsplit-with-negative-limit
     nsplit > @
       "text"
       "-"
       -1
 
-  [] +> tests-nsplit-invalid-limit-returns-provided-fallback
+  ++> tests-nsplit-invalid-limit-returns-provided-fallback
     eq. > @
       "fallback"
       nsplit
@@ -120,7 +120,7 @@
         0
         "fallback" > [msg]
 
-  [] +> tests-nsplit-with-empty-strings
+  ++> tests-nsplit-with-empty-strings
     eq. > @
       list
         nsplit
@@ -129,7 +129,7 @@
           3
       * "" "a" "b-c"
 
-  [] +> tests-nsplit-with-multi-char-delimiter
+  ++> tests-nsplit-with-multi-char-delimiter
     eq. > @
       list
         nsplit

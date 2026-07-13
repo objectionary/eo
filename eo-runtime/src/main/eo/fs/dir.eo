@@ -75,13 +75,13 @@
         "The file %s is a directory, can't open for I/O operations"
         * file
 
-  [] +> tests-makes-new-directory
+  ++> tests-makes-new-directory
     and. > @
       d.exists
       d.is-directory
     (tmpdir.tmpfile.deleted.as-path.resolved "foo-new").as-dir.made > d
 
-  [] +> tests-deletes-empty-directory
+  ++> tests-deletes-empty-directory
     tmpdir
     .tmpfile
     .deleted
@@ -94,12 +94,12 @@
     .exists
     .not > @
 
-  [] +> throws-on-opening-directory
+  ++> throws-on-opening-directory
     tmpdir.open > @
       "w"
       true > [d]
 
-  [] +> tests-deletes-directory-with-files-recursively
+  ++> tests-deletes-directory-with-files-recursively
     and. > @
       and.
         and.
@@ -113,7 +113,7 @@
     d.tmpfile > first
     d.tmpfile > second
 
-  [] +> tests-deletes-directory-with-file-and-dir
+  ++> tests-deletes-directory-with-file-and-dir
     and. > @
       and.
         and.
@@ -129,7 +129,7 @@
     d.tmpfile > f
     (dir d.tmpfile.deleted).made > inner
 
-  [] +> tests-walks-recursively
+  ++> tests-walks-recursively
     seq > @
       *
         (d.resolved "foo/bar").as-dir.made
@@ -139,5 +139,5 @@
         (d.as-dir.walk "**/*.tt").length.eq 2
     (dir tmpdir.tmpfile.deleted).made.as-path > d
 
-  [] +> throws-on-walking-absent-directory
+  ++> throws-on-walking-absent-directory
     (dir tmpdir.tmpfile.deleted).walk "**" > @

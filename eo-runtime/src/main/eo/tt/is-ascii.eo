@@ -11,15 +11,15 @@
 [text] > is-ascii
   (regex "/^[\\x00-\\x7F]*$/").matches text > @
 
-  [] +> tests-checks-if-text-is-ascii
+  ++> tests-checks-if-text-is-ascii
     is-ascii > @
       "H311oW"
 
-  [] +> tests-checks-if-emoji-is-not-ascii
+  ++> tests-checks-if-emoji-is-not-ascii
     not. > @
       is-ascii
         "🌵"
 
-  [] +> tests-checks-if-string-of-numbers-is-ascii
+  ++> tests-checks-if-string-of-numbers-is-ascii
     is-ascii > @
       "123"

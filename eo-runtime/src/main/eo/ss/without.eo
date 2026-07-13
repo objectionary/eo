@@ -20,7 +20,7 @@
           accum
           accum.with item
 
-  [] +> tests-list-without
+  ++> tests-list-without
     eq. > @
       without
         list

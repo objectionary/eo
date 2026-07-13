@@ -33,13 +33,13 @@
 
     mp.has item > [item] > has
 
-  [] +> tests-set-rebuilds-itself
+  ++> tests-set-rebuilds-itself
     eq. > @
       set
         * 1 2 2
       * 1 2
 
-  [] +> tests-does-not-append-existed-item-to-set
+  ++> tests-does-not-append-existed-item-to-set
     eq. > @
       size.
         with.
@@ -48,7 +48,7 @@
           1
       2
 
-  [] +> tests-appends-new-item-to-set
+  ++> tests-appends-new-item-to-set
     has. > @
       with.
         set
@@ -56,7 +56,7 @@
         3
       3
 
-  [] +> tests-empty-set-has-size-of-zero
+  ++> tests-empty-set-has-size-of-zero
     set
       *
     .size

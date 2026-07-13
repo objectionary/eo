@@ -44,29 +44,29 @@
       slice txt idx slen
       sub
 
-  [] +> tests-finds-last-index-of-substring
+  ++> tests-finds-last-index-of-substring
     eq. > @
       5
       last-index-of "Hey, Hey, Hey" "Hey,"
 
-  [] +> tests-finds-last-index-of-the-same-string
+  ++> tests-finds-last-index-of-the-same-string
     eq. > @
       0
       last-index-of "Hello" "Hello"
 
-  [] +> tests-last-index-of-non-existed-substring
+  ++> tests-last-index-of-non-existed-substring
     eq. > @
       -1
       last-index-of "Hello, world" "somebody"
 
-  [] +> tests-last-index-of-non-existed-substring-with-utf
+  ++> tests-last-index-of-non-existed-substring-with-utf
     eq. > @
       -1
       last-index-of
         "привет, друг!"
         "x"
 
-  [] +> tests-last-index-of-existed-substring-with-utf
+  ++> tests-last-index-of-existed-substring-with-utf
     eq. > @
       3
       last-index-of
