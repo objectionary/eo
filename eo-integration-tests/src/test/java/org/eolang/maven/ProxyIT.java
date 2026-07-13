@@ -19,16 +19,19 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eclipse.jetty.proxy.ProxyHandler;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ConnectHandler;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.util.resource.ResourceFactory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -36,7 +39,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * This tests checks how eo-maven-plugin works when a proxy is set.
  * @since 0.60
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "PMD.TooManyMethods"})
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class ProxyIT {
 
@@ -61,23 +64,24 @@ final class ProxyIT {
     }
 
     @Test
-    @Disabled("still depends on live Maven Central through the proxy, see #5429")
     void checksThatWeCanCompileTheProgramWithProxySet(@Mktmp final Path tmp) throws Exception {
         final int port = ProxyIT.free();
         final Server proxy = new Server(port);
         proxy.setHandler(ProxyIT.handler());
         proxy.start();
+        final Server repo = ProxyIT.repository();
         final String[] log = {""};
         try {
             new Farea(tmp).together(
                 f -> {
-                    ProxyIT.setupForProxy(f, port);
+                    ProxyIT.setupForProxy(f, tmp, port, ProxyIT.port(repo));
                     f.exec("package");
                     log[0] = f.log().content();
                 }
             );
         } finally {
             ProxyIT.shutdown(proxy);
+            ProxyIT.shutdown(repo);
         }
         MatcherAssert.assertThat(
             "We expect the build is successful when a proxy is set",
@@ -103,6 +107,53 @@ final class ProxyIT {
         final ConnectHandler connect = new ConnectHandler();
         connect.setHandler(new ProxyHandler.Forward());
         return connect;
+    }
+
+    /**
+     * Start a local HTTP server that serves the local Maven repository.
+     *
+     * <p>The build under test resolves everything (the plugin, {@code eo-runtime},
+     * {@code jna} and all their transitive dependencies) through the proxy from
+     * this server instead of from the live Maven Central. Together with an empty
+     * {@code -Dmaven.repo.local} this forces Maven to actually fetch the artifacts
+     * through the forward proxy, yet keeps the test hermetic: no network beyond
+     * localhost is touched. Depending on the live network is what used to make
+     * the test flaky (see #5429).</p>
+     *
+     * @return The started server, listening on an ephemeral port
+     * @throws Exception If fails
+     */
+    private static Server repository() throws Exception {
+        final Server server = new Server();
+        final ServerConnector connector = new ServerConnector(server);
+        connector.setHost("localhost");
+        connector.setPort(0);
+        server.addConnector(connector);
+        final ResourceHandler resources = new ResourceHandler();
+        resources.setDirAllowed(false);
+        resources.setBaseResource(
+            ResourceFactory.of(server).newResource(ProxyIT.localRepository())
+        );
+        server.setHandler(resources);
+        server.start();
+        return server;
+    }
+
+    /**
+     * Path to the local Maven repository, usually {@code ~/.m2/repository}.
+     * @return The path
+     */
+    private static Path localRepository() {
+        return Paths.get(System.getProperty("user.home"), ".m2", "repository");
+    }
+
+    /**
+     * The local port the given server is listening on.
+     * @param server The server
+     * @return The port
+     */
+    private static int port(final Server server) {
+        return ((ServerConnector) server.getConnectors()[0]).getLocalPort();
     }
 
     private static void shutdown(final Server proxy) throws Exception {
@@ -132,7 +183,9 @@ final class ProxyIT {
             ).body();
     }
 
-    private static void setupForProxy(final Farea farea, final int port) throws IOException {
+    private static void setupForProxy(
+        final Farea farea, final Path tmp, final int proxy, final int repo
+    ) throws IOException {
         farea.clean();
         farea.files()
             .file("src/main/eo/foo/x/y/main.eo")
@@ -142,8 +195,11 @@ final class ProxyIT {
         farea.withOpt("-s");
         farea.withOpt(
             farea.files().file("settings.xml").write(
-                ProxyIT.settings(port).getBytes(StandardCharsets.UTF_8)
+                ProxyIT.settings(proxy, repo).getBytes(StandardCharsets.UTF_8)
             ).path().toString()
+        );
+        farea.withOpt(
+            String.format("-Dmaven.repo.local=%s", tmp.resolve("local-repo"))
         );
     }
 
@@ -169,13 +225,15 @@ final class ProxyIT {
     }
 
     /**
-     * Returns proxy settings XML with the given port.
-     * @param port Proxy port
+     * Returns proxy settings XML with the given ports.
+     * @param proxy Proxy port
+     * @param repo Local repository server port
      * @return Proxy settings XML
      */
-    private static String settings(final int port) {
+    private static String settings(final int proxy, final int repo) {
         return new UncheckedText(new TextOf(new ResourceOf("proxy-settings.xml")))
             .asString()
-            .replace("${proxy.port}", Integer.toString(port));
+            .replace("${proxy.port}", Integer.toString(proxy))
+            .replace("${repo.port}", Integer.toString(repo));
     }
 }
