@@ -67,7 +67,8 @@
   -->
   <xsl:function name="eo:homed" as="xs:string">
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="if ($package != '' and concat($package, '.', $name) = $known) then concat('Φ.', $package, '.', $name) else concat('Φ.', $name)"/>
+    <xsl:variable name="local" select="concat($package, '.', $name)"/>
+    <xsl:sequence select="concat('Φ.', if ($package != '' and $local = $known) then $local else $name)"/>
   </xsl:function>
   <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>
