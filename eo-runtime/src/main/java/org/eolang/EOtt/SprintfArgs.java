@@ -109,10 +109,8 @@ final class SprintfArgs {
             }
             if (arg >= this.length) {
                 throw new ExFailure(
-                    String.format(
-                        "The argument index %d is out of bounds (total arguments: %d)",
-                        arg, this.length
-                    )
+                    "The argument index %d is out of bounds (total arguments: %d)",
+                    arg, this.length
                 );
             }
             final Phi taken = this.retriever.copy();
@@ -131,10 +129,8 @@ final class SprintfArgs {
     private static Object fmt(final char symbol, final Dataized element) {
         if (!SprintfArgs.CONVERSION.containsKey(symbol)) {
             throw new ExFailure(
-                String.format(
-                    "The format %c is unsupported, only %s formats can be used",
-                    symbol, "%s, %d, %f, %x, %b"
-                )
+                "The format %c is unsupported, only %s formats can be used",
+                symbol, "%s, %d, %f, %x, %b"
             );
         }
         return SprintfArgs.CONVERSION.get(symbol).apply(element);
@@ -150,10 +146,8 @@ final class SprintfArgs {
     private static long toLong(final double number) {
         if (number < Long.MIN_VALUE || number > Long.MAX_VALUE) {
             throw new ExFailure(
-                String.format(
-                    "The number %s doesn't fit into long range for the '%%d' conversion",
-                    number
-                )
+                "The number %s doesn't fit into long range for the '%%d' conversion",
+                number
             );
         }
         return (long) number;
