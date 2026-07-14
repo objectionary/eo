@@ -86,4 +86,24 @@ final class AtVoidTest {
             "AtVoid must throw an exception when resetting attribute"
         );
     }
+
+    @Test
+    void isVacantWhenUnset() {
+        MatcherAssert.assertThat(
+            "Unset void attribute must be vacant, but it wasn't",
+            new AtVoid("empty").vacant(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void isNotVacantWhenSet() {
+        final Attribute attr = new AtVoid("full");
+        attr.put(new PhDefault());
+        MatcherAssert.assertThat(
+            "Set void attribute must not be vacant, but it was",
+            attr.vacant(),
+            Matchers.is(false)
+        );
+    }
 }

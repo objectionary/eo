@@ -32,4 +32,15 @@ public interface Attribute extends Term {
      * @param phi The object to put
      */
     void put(Phi phi);
+
+    /**
+     * Is this a void attribute that hasn't been set yet?
+     *
+     * <p>A vacant attribute is an empty slot ready to receive a value through
+     * positional application. Attributes that already hold a value, and
+     * attributes that are not void at all, are not vacant.</p>
+     *
+     * @return TRUE if it's an unset void attribute
+     */
+    boolean vacant();
 }
