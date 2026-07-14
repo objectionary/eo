@@ -70,8 +70,7 @@ final class SprintfArgsTest {
             "must throw ExFailure, not an internal java.util.Formatter exception"
         );
         MatcherAssert.assertThat(
-            "the ExFailure message must name the out-of-range number, "
-                + "not be swallowed by a second, accidental format pass",
+            "the ExFailure message must name the out-of-range number, not be swallowed by a second, accidental format pass",
             ex.getMessage(),
             Matchers.containsString("doesn't fit into long range")
         );
@@ -88,8 +87,7 @@ final class SprintfArgsTest {
             "must throw ExFailure, not an internal java.util.Formatter exception"
         );
         MatcherAssert.assertThat(
-            "the ExFailure message must name the unsupported format char, "
-                + "not be swallowed by a second, accidental format pass",
+            "the ExFailure message must name the unsupported format char, not be swallowed by a second, accidental format pass",
             ex.getMessage(),
             Matchers.containsString("is unsupported")
         );
