@@ -11,20 +11,16 @@
 
 [lst wanted] > index-of
   number > @
-    recidx lst
+    recidx lst 0
 
-  [tup] > recidx
+  [tup pos] > recidx
     if. > @
       tup.length.eq 0
       -1
       if.
-        next.eq -1
-        if.
-          tup.head.eq wanted
-          tup.tail.length
-          -1
-        next
-    recidx tup.tail > next!
+        tup.head.eq wanted
+        pos
+        recidx tup.tail (pos.plus 1)
 
   ++> tests-returns-index-of
     eq. > @
@@ -57,3 +53,19 @@
         list
           * "asdfgh" "qwerty" 3
         "qwerty"
+
+  ++> tests-finds-first-index-of-non-symmetric-match
+    eq. > @
+      1
+      index-of
+        list
+          * 10 20 30 40 50
+        20
+
+  ++> tests-finds-first-of-repeated-non-symmetric-match
+    eq. > @
+      1
+      index-of
+        list
+          * 10 20 30 40 20
+        20
