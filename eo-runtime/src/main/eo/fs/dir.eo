@@ -18,7 +18,6 @@
 
 [file] > dir
   file > @
-  true > is-directory
 
   [] > made
     if. > @
@@ -141,3 +140,6 @@
 
   ++> throws-on-walking-absent-directory
     (dir tmpdir.tmpfile.deleted).walk "**" > @
+
+  ++> tests-reports-not-a-directory-when-wrapping-regular-file
+    (dir tmpdir.tmpfile.deleted.touched).is-directory.not > @
