@@ -32,6 +32,7 @@ package org.eolang;
  *
  * @since 0.73.1
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class PhTerminator implements Phi {
 
     /**
@@ -111,6 +112,11 @@ public final class PhTerminator implements Phi {
             reason = new Dataized(this.cause).asString();
         }
         throw new ExFailure(reason);
+    }
+
+    @Override
+    public Phi normalized() {
+        return this;
     }
 
     @Override

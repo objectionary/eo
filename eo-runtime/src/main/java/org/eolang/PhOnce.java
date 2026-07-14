@@ -123,6 +123,11 @@ public class PhOnce implements Phi {
     }
 
     @Override
+    public Phi normalized() {
+        return this.object.get().normalized();
+    }
+
+    @Override
     public String φTerm() {
         final String result;
         if (this.term == null) {
