@@ -81,14 +81,13 @@ final class SprintfArgsTest {
         final Phi tuple = Phi.Φ.take("tuple").copy();
         tuple.put("length", new Data.ToPhi(1));
         tuple.put("head", new Data.ToPhi(9_223_372_036_854_775_808.0));
-        final ExFailure ex = Assertions.assertThrows(
-            ExFailure.class,
-            () -> new SprintfArgs("%d", 1L, tuple.take("at")).formatted(),
-            "2^63 must be rejected, not silently saturated to Long.MAX_VALUE (since (double) Long.MAX_VALUE rounds up to exactly 2^63)"
-        );
         MatcherAssert.assertThat(
             "the ExFailure message must name the out-of-range number",
-            ex.getMessage(),
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new SprintfArgs("%d", 1L, tuple.take("at")).formatted(),
+                "2^63 must be rejected, not silently saturated to Long.MAX_VALUE (since (double) Long.MAX_VALUE rounds up to exactly 2^63)"
+            ).getMessage(),
             Matchers.containsString("doesn't fit into long range")
         );
     }
