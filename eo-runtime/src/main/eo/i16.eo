@@ -4,8 +4,6 @@
 +alias tt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
@@ -18,7 +16,12 @@
   as-i64.as-number > as-number
   times -1.as-i64.as-i32.as-i16 > neg
 
-  [] > as-i32 /i32
+  [] > as-i32
+    i32 (prefix.concat as-bytes) > @
+    if. > prefix
+      (as-bytes.and 80-00).eq 00-00
+      00-00
+      FF-FF
 
   as-i32.lt x.as-i16.as-i32 > [x] > lt
 
@@ -77,6 +80,16 @@
     eq. > @
       -200.as-i64.as-i32.as-i16.as-bytes
       FF-38
+
+  ++> tests-i16-as-i32-widens-positive-with-zero-prefix
+    eq. > @
+      42.as-i64.as-i32.as-i16.as-i32.as-bytes
+      00-00-00-2A
+
+  ++> tests-i16-as-i32-widens-negative-with-sign-extension
+    eq. > @
+      -200.as-i64.as-i32.as-i16.as-i32.as-bytes
+      FF-FF-FF-38
 
   ++> tests-i16-less-true
     lt. > @
