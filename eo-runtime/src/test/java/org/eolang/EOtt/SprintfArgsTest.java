@@ -84,10 +84,7 @@ final class SprintfArgsTest {
         final ExFailure ex = Assertions.assertThrows(
             ExFailure.class,
             () -> new SprintfArgs("%d", 1L, tuple.take("at")).formatted(),
-            "2^63 is one past Long.MAX_VALUE and must be rejected, not silently "
-                + "saturated to Long.MAX_VALUE via narrowing (double) Long.MAX_VALUE "
-                + "rounds up to exactly this value, so the boundary check must "
-                + "compare against 2^63 directly rather than against Long.MAX_VALUE"
+            "2^63 must be rejected, not silently saturated to Long.MAX_VALUE (since (double) Long.MAX_VALUE rounds up to exactly 2^63)"
         );
         MatcherAssert.assertThat(
             "the ExFailure message must name the out-of-range number",
