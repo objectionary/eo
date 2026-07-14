@@ -177,10 +177,10 @@
             scope
               stream descriptor
             code.
-              syscall.close (* descriptor):args
+              syscall.close (* descriptor)
             true
         code. > descriptor
-          syscall.open (* path flags syscall.create-mode):args
+          syscall.open (* path flags syscall.create-mode)
         plus. > flags
           plus.
             plus.
@@ -224,7 +224,7 @@
                   seq *
                     chunk
                     input-block chunk
-                (syscall.read (* descriptor size):args).output > chunk!
+                (syscall.read (* descriptor size)).output > chunk!
 
           [buffer] > write
             output-block.write buffer > @
@@ -240,7 +240,7 @@
                       * access
                   seq *
                     code.
-                      syscall.write (* descriptor buffer buffer.size):args
+                      syscall.write (* descriptor buffer buffer.size)
                     output-block
 
   ++> tests-check-if-current-directory-is-directory
