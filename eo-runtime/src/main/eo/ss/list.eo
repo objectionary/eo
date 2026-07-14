@@ -10,7 +10,6 @@
 # ```
 # .
 
-+alias ss.eachi
 +alias ss.back
 +alias ss.front
 +alias ss.list
@@ -43,11 +42,6 @@
       back
         ^
         origin.length.minus index
-
-  [func] > each
-    eachi > @
-      ^
-      func item > [item index] >>
 
   [other] > eq
     and. > @
@@ -170,18 +164,7 @@
         * 4 0
         * 7 3
 
-  ++> tests-iterates-with-each
-    eq. > @
-      malloc.for
-        0
-        [m]
-          list
-            * 1 2 3
-          .each > @
-            ^.m.put (^.m.as-number.plus i) > [i] >>
-      6
-
-  ++> tests-equality-test
+  [] +> tests-equality-test
     eq. > @
       list
         * 1 2 3
