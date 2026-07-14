@@ -97,6 +97,12 @@ final class SprintfArgs {
                         ex
                     );
                 }
+                if (arg < 0L) {
+                    throw new ExFailure(
+                        "The argument index %s must be a positive number (1-based) for the '%%N$' conversion",
+                        digits
+                    );
+                }
             } else {
                 arg = auto;
                 auto += 1L;
