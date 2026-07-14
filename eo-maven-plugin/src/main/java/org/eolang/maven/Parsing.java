@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,9 +15,15 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import org.cactoos.bytes.Sha256DigestOf;
+import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
+import org.cactoos.text.HexOf;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
+import org.eolang.parser.Canonical;
 import org.w3c.dom.Node;
 
 /**
@@ -115,10 +122,19 @@ final class Parsing implements Step {
     @Override
     public void exec() {
         final Collection<TjForeign> sources = this.tojos.withSources();
-        final int total = new Threaded<>(
-            new Filtered<>(TjForeign::notParsed, sources),
-            this::parsed
-        ).total();
+        final String objects = sources.stream()
+            .map(TjForeign::identifier)
+            .filter(id -> id.contains("."))
+            .distinct()
+            .sorted()
+            .collect(Collectors.joining(" "));
+        final int total = this.parsed(
+            sources,
+            new Canonical(objects),
+            new UncheckedText(
+                new HexOf(new Sha256DigestOf(new InputOf(objects)))
+            ).asString()
+        );
         if (0 == total) {
             if (sources.isEmpty()) {
                 Logger.info(
@@ -141,12 +157,34 @@ final class Parsing implements Step {
     }
 
     /**
+     * Parse all the given sources to XMIRs, concurrently.
+     * @param sources The sources to parse
+     * @param pipeline The canonical parsing transform to apply
+     * @param digest Digest of the set of known objects (part of the cache key)
+     * @return Amount of parsed tojos
+     */
+    private int parsed(
+        final Collection<TjForeign> sources,
+        final UnaryOperator<XML> pipeline,
+        final String digest
+    ) {
+        return new Threaded<>(
+            new Filtered<>(TjForeign::notParsed, sources),
+            tojo -> this.parsed(tojo, pipeline, digest)
+        ).total();
+    }
+
+    /**
      * Parse EO file to XML.
      * @param tojo The tojo
+     * @param pipeline The canonical parsing transform to apply
+     * @param digest Digest of the set of known objects (part of the cache key)
      * @return Amount of parsed tojos
      * @throws Exception If fails
      */
-    private int parsed(final TjForeign tojo) throws Exception {
+    private int parsed(
+        final TjForeign tojo, final UnaryOperator<XML> pipeline, final String digest
+    ) throws Exception {
         final Path source = tojo.source();
         final String name = tojo.identifier();
         final Path base = this.targetDir.resolve(Parsing.DIR);
@@ -157,18 +195,18 @@ final class Parsing implements Step {
                 new Cache(
                     new CachePath(
                         this.cacheDir.resolve(Parsing.CACHE),
-                        this.version,
+                        String.format("%s-%s", this.version, digest),
                         new TojoHash(tojo).get()
                     ),
                     src -> {
-                        final Node node = this.parsed(src, name);
+                        final Node node = this.parsed(src, name, pipeline);
                         refs.add(node);
                         return new XMLDocument(node).toString();
                     }
                 )
             ).apply(source, target, base.relativize(target));
         } else {
-            final Node node = this.parsed(source, name);
+            final Node node = this.parsed(source, name, pipeline);
             new Saved(new XMLDocument(node).toString(), target).value();
             refs.add(node);
         }
@@ -198,11 +236,14 @@ final class Parsing implements Step {
      * Source parsed to {@link Node}.
      * @param source Relative source path
      * @param identifier Name of the EO object as tojo identifier
+     * @param pipeline The canonical parsing transform to apply
      * @return Parsed EO object as {@link Node}
      * @throws IOException If fails to parse
      */
-    private Node parsed(final Path source, final String identifier) throws IOException {
-        final EoSource.Xmir xmir = new EoSource(identifier, source).parsed();
+    private Node parsed(
+        final Path source, final String identifier, final UnaryOperator<XML> pipeline
+    ) throws IOException {
+        final EoSource.Xmir xmir = new EoSource(identifier, source, pipeline).parsed();
         Logger.debug(
             Parsing.class,
             "Parsed program '%s' from %[file]s:%n %s",

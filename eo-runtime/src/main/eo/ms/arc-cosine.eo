@@ -3,9 +3,6 @@
 # equals pi/2 minus asin(x). Arguments outside [-1, 1] and non-finite ones
 # collapse to nan.
 
-+alias ms.abs
-+alias ms.arc-sine
-+alias ms.pi
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package ms

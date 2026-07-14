@@ -12,8 +12,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.UnaryOperator;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
+import org.eolang.parser.Canonical;
 import org.eolang.parser.EoSyntax;
 import org.eolang.parser.OnDefault;
 import org.eolang.parser.OnDetailed;
@@ -38,6 +40,11 @@ final class EoSource {
     private final Input input;
 
     /**
+     * Transform that parses EO into XMIR.
+     */
+    private final UnaryOperator<XML> transform;
+
+    /**
      * Ctor.
      * @param identifier Object identifier
      * @param source Path to the source file
@@ -52,8 +59,29 @@ final class EoSource {
      * @param input Object source code
      */
     EoSource(final String identifier, final Input input) {
+        this(identifier, input, new Canonical());
+    }
+
+    /**
+     * Ctor.
+     * @param identifier Object identifier
+     * @param source Path to the source file
+     * @param transform Transform that parses EO into XMIR
+     */
+    EoSource(final String identifier, final Path source, final UnaryOperator<XML> transform) {
+        this(identifier, new InputOf(source), transform);
+    }
+
+    /**
+     * Ctor.
+     * @param identifier Object identifier
+     * @param input Object source code
+     * @param transform Transform that parses EO into XMIR
+     */
+    EoSource(final String identifier, final Input input, final UnaryOperator<XML> transform) {
         this.identifier = identifier;
         this.input = input;
+        this.transform = transform;
     }
 
     /**
@@ -62,7 +90,7 @@ final class EoSource {
      * @throws IOException If fails
      */
     Xmir parsed() throws IOException {
-        final XML xmir = new EoSyntax(this.input).parsed();
+        final XML xmir = new EoSyntax(this.input, this.transform).parsed();
         final List<String> errors = new ArrayList<>(0);
         final Node document = xmir.inner();
         final String name = new OnDetailed(
