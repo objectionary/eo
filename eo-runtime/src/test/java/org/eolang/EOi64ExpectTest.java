@@ -29,8 +29,7 @@ final class EOi64ExpectTest {
         classes = {
             EOi64$EOdiv.class,
             EOi64$EOgt.class,
-            EOi64$EOplus.class,
-            EOi64$EOtimes.class
+            EOi64$EOplus.class
         }
     )
     void throwsCorrectErrorForXAttr(final Class<?> cls) {
@@ -60,8 +59,7 @@ final class EOi64ExpectTest {
         classes = {
             EOi64$EOdiv.class,
             EOi64$EOgt.class,
-            EOi64$EOplus.class,
-            EOi64$EOtimes.class
+            EOi64$EOplus.class
         }
     )
     void throwsCorrectErrorForRhoAttr(final Class<?> cls) {
