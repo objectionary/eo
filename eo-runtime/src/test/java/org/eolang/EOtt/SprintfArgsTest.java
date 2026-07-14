@@ -77,6 +77,43 @@ final class SprintfArgsTest {
     }
 
     @Test
+    void rejectsExactlyTwoToThe63rdInsteadOfSaturating() {
+        final Phi tuple = Phi.Φ.take("tuple").copy();
+        tuple.put("length", new Data.ToPhi(1));
+        tuple.put("head", new Data.ToPhi(9_223_372_036_854_775_808.0));
+        final ExFailure ex = Assertions.assertThrows(
+            ExFailure.class,
+            () -> new SprintfArgs("%d", 1L, tuple.take("at")).formatted(),
+            "2^63 is one past Long.MAX_VALUE and must be rejected, not silently "
+                + "saturated to Long.MAX_VALUE via narrowing (double) Long.MAX_VALUE "
+                + "rounds up to exactly this value, so the boundary check must "
+                + "compare against 2^63 directly rather than against Long.MAX_VALUE"
+        );
+        MatcherAssert.assertThat(
+            "the ExFailure message must name the out-of-range number",
+            ex.getMessage(),
+            Matchers.containsString("doesn't fit into long range")
+        );
+    }
+
+    @Test
+    void acceptsLargestDoubleThatTrulyFitsInLongRange() {
+        // 2^63 - 2048: the representable double one ulp below 2^63 at this
+        // magnitude (doubles have no exact representation for Long.MAX_VALUE
+        // itself — 9_223_372_036_854_775_807.0 as a literal already rounds
+        // up to 2^63, which is exactly the boundary this fix must reject).
+        final double justBelowLimit = 9_223_372_036_854_773_760.0;
+        final Phi tuple = Phi.Φ.take("tuple").copy();
+        tuple.put("length", new Data.ToPhi(1));
+        tuple.put("head", new Data.ToPhi(justBelowLimit));
+        MatcherAssert.assertThat(
+            "a double strictly below 2^63 must still be accepted as a valid long",
+            new SprintfArgs("%d", 1L, tuple.take("at")).formatted(),
+            Matchers.equalTo(new ListOf<>((long) justBelowLimit))
+        );
+    }
+
+    @Test
     void reportsUnsupportedFormatMessageInsteadOfDoubleFormatting() {
         final Phi tuple = Phi.Φ.take("tuple").copy();
         tuple.put("length", new Data.ToPhi(1));
