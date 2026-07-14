@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * A package object, coming from {@link Phi}.
  * @since 0.22
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class PhPackage implements Phi {
 
     /**
@@ -109,6 +110,11 @@ final class PhPackage implements Phi {
     @Override
     public byte[] delta() {
         throw new ExFailure("Can't take #data() from package object \"%s\"", this.pkg);
+    }
+
+    @Override
+    public Phi normalized() {
+        return this;
     }
 
     @Override

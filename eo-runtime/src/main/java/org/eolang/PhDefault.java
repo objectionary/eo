@@ -268,6 +268,25 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
+    public Phi normalized() {
+        this.activate();
+        final Phi result;
+        if (this instanceof Atom) {
+            result = this.take(Phi.LAMBDA).normalized();
+        } else if (this.data == null && this.attrs.containsKey(Phi.PHI)) {
+            final Phi phi = this.take(Phi.PHI).normalized();
+            if (phi instanceof PhTerminator) {
+                result = phi;
+            } else {
+                result = this;
+            }
+        } else {
+            result = this;
+        }
+        return result;
+    }
+
+    @Override
     public String locator() {
         return "?";
     }
