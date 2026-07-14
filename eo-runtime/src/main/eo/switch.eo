@@ -45,7 +45,7 @@
         tup.head.tail.head > match!
     (rec-case tup.tail).@ > previous
 
-  [] +> tests-switch-simple-case
+  ++> tests-switch-simple-case
     eq. > @
       switch
         *
@@ -57,7 +57,7 @@
             "2"
       "2"
 
-  [] +> tests-switch-strings-case
+  ++> tests-switch-strings-case
     eq. > @
       switch
         *
@@ -73,7 +73,7 @@
       "password is correct!"
     "swordfish" > password
 
-  [] +> tests-switch-with-several-true-cases
+  ++> tests-switch-with-several-true-cases
     eq. > @
       switch
         *
@@ -88,7 +88,7 @@
             "TRUE2"
       "TRUE1"
 
-  [] +> tests-switch-with-all-false-cases
+  ++> tests-switch-with-all-false-cases
     switch > @
       *
         *
@@ -98,17 +98,17 @@
           false
           "false2"
 
-  [] +> throws-on-empty-switch
+  ++> throws-on-empty-switch
     switch * > @
 
-  [] +> tests-empty-switch-returns-provided-fallback
+  ++> tests-empty-switch-returns-provided-fallback
     eq. > @
       "recovered"
       switch
         *
         "recovered" > [msg]
 
-  [] +> tests-switch-complex-case
+  ++> tests-switch-complex-case
     eq. > @
       switch
         *

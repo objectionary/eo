@@ -14,27 +14,27 @@
     value.neg
   number num.as-bytes > value
 
-  [] +> tests-abs-int-positive
+  ++> tests-abs-int-positive
     eq. > @
       abs 3
       3
 
-  [] +> tests-abs-int-negative
+  ++> tests-abs-int-negative
     eq. > @
       abs -3
       3
 
-  [] +> tests-abs-zero
+  ++> tests-abs-zero
     eq. > @
       abs 0
       0
 
-  [] +> tests-abs-float-positive
+  ++> tests-abs-float-positive
     eq. > @
       abs 13.5
       13.5
 
-  [] +> tests-abs-float-negative
+  ++> tests-abs-float-negative
     eq. > @
       abs -17.9
       17.9

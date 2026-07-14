@@ -14,15 +14,15 @@
       string
         buf.as-bytes.concat str.as-bytes
 
-  [] +> tests-string-buffer-decorates-string
+  ++> tests-string-buffer-decorates-string
     (string-buffer "Hello").eq "Hello" > @
 
-  [] +> tests-string-buffer-builds-simple-string
+  ++> tests-string-buffer-builds-simple-string
     eq. > @
       ((string-buffer "Hello").with ", ").with "Jeff"
       "Hello, Jeff"
 
-  [] +> tests-string-buffer-decorates-string-after-building
+  ++> tests-string-buffer-decorates-string-after-building
     eq. > @
       ((string-buffer "Hi, ").with "Mark").length
       8

@@ -21,22 +21,22 @@
     scanned.head
   (sscanf "%f" text).at.^ > scanned
 
-  [] +> tests-converts-text-to-number
+  ++> tests-converts-text-to-number
     eq. > @
       5
       as-number "5"
 
-  [] +> throws-on-converting-text-to-number
+  ++> throws-on-converting-text-to-number
     as-number "Hello" > @
 
-  [] +> tests-non-numeric-text-returns-provided-fallback
+  ++> tests-non-numeric-text-returns-provided-fallback
     eq. > @
       42
       as-number
         "Hello"
         42 > [msg]
 
-  [] +> tests-converts-float-text-to-number
+  ++> tests-converts-float-text-to-number
     eq. > @
       3.14
       as-number "3.14"

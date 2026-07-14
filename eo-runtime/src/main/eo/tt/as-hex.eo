@@ -32,27 +32,27 @@
       as-char (h.plus 48)
       as-char (h.plus 55)
 
-  [] +> tests-writes-single-byte
+  ++> tests-writes-single-byte
     eq. > @
       "41"
       string (as-hex "A".as-bytes)
 
-  [] +> tests-joins-bytes-with-hyphens
+  ++> tests-joins-bytes-with-hyphens
     eq. > @
       "4A-65-66-66"
       string (as-hex "Jeff".as-bytes)
 
-  [] +> tests-writes-letter-nibbles
+  ++> tests-writes-letter-nibbles
     eq. > @
       "00-00-00-00-00-00-00-FF"
       string (as-hex 255.as-i64.as-bytes)
 
-  [] +> tests-writes-number-bytes
+  ++> tests-writes-number-bytes
     eq. > @
       "40-45-00-00-00-00-00-00"
       string (as-hex 42.as-bytes)
 
-  [] +> tests-writes-empty-bytes
+  ++> tests-writes-empty-bytes
     eq. > @
       ""
       string (as-hex --)

@@ -14,12 +14,12 @@
     180.0
   number num.as-bytes > value
 
-  [] +> tests-radians-of-zero-is-zero
+  ++> tests-radians-of-zero-is-zero
     eq. > @
       radians 0
       0
 
-  [] +> tests-radians-of-half-turn-is-pi
+  ++> tests-radians-of-half-turn-is-pi
     lt. > @
       abs
         minus.
@@ -27,7 +27,7 @@
           pi
       0.0001
 
-  [] +> tests-radians-of-quarter-turn-is-pi-halves
+  ++> tests-radians-of-quarter-turn-is-pi-halves
     lt. > @
       abs
         minus.
@@ -35,7 +35,7 @@
           pi.div 2
       0.0001
 
-  [] +> tests-radians-of-full-turn-is-two-pi
+  ++> tests-radians-of-full-turn-is-two-pi
     lt. > @
       abs
         minus.
@@ -43,7 +43,7 @@
           pi.times 2
       0.0001
 
-  [] +> tests-radians-of-negative-half-turn-is-minus-pi
+  ++> tests-radians-of-negative-half-turn-is-minus-pi
     lt. > @
       abs
         minus.
@@ -51,6 +51,6 @@
           pi.neg
       0.0001
 
-  [] +> tests-radians-of-nan-is-nan
+  ++> tests-radians-of-nan-is-nan
     is-nan. > @
       radians nan

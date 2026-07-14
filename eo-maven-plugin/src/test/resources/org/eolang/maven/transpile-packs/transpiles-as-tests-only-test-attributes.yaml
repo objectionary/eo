@@ -16,6 +16,7 @@ asserts:
   - //java[not(contains(text(), 'void some_other_method()'))]
 input: |
   [] > foo
+
     [] +> runs-smoothly
       x > @
     [] > some-other-method

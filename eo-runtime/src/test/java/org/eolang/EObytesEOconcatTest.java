@@ -45,7 +45,7 @@ final class EObytesEOconcatTest {
         MatcherAssert.assertThat(
             "Concatenation overflowing the maximum array size should fail with a system error, but it didn't",
             Assertions.assertThrows(
-                EOerror.ExError.class,
+                ExFailure.class,
                 () -> new Dataized(
                     new PhApplication(
                         new Data.ToPhi(new byte[1_073_741_824]).take("concat").copy(),

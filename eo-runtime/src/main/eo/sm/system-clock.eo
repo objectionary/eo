@@ -23,5 +23,5 @@
           timeval.tv-usec.as-i64.div 1000.as-i64
   (posix "gettimeofday" *).output > timeval
 
-  [] +> tests-reads-positive-millis
+  ++> tests-reads-positive-millis
     system-clock.gt 0 > @

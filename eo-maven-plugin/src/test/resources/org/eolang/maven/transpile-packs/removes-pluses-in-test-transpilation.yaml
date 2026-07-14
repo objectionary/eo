@@ -20,6 +20,7 @@ asserts:
 input: |
   [] > list
     [x] > bar
+
     [] +> tests-iterates-with-eachi
       eq. > @
         malloc.for

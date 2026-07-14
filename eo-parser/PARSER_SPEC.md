@@ -92,7 +92,7 @@ The terms below are used precisely throughout this document.
 
 A formation's body block contains child expressions. We distinguish two roles based on syntactic shape:
 
-- **Master child** — a child expression whose outer kind is `bare-formation`, `inline-phi-formation`, or whose name suffix is `/sig` (atom). I.e., children whose role is self-evident from the brackets (`[` head or `> [..] >` mid-line marker). A master child may carry an optional name suffix; it may be preceded by zero or one blank line (§6.5).
+- **Master child** — a child expression whose outer kind is `bare-formation`, `inline-phi-formation`, or whose name suffix is `/sig` (atom). I.e., children whose role is self-evident from the brackets (`[` head or `> [..] >` mid-line marker). A master child may carry an optional name suffix; it may be preceded by zero or one blank line, and when its name suffix is a `+>` test attribute the blank line is mandatory (§6.5).
 - **Plain child** — every other child expression: `head`, `hmethod`, `happlication`, `vapplication`, `vmethod`, `bare-reversed`, `reversed-with-hargs`, `compact-tuple`, or `text-block`. A plain child **must** carry a name suffix on its naming line (§6.2). A plain child may not be preceded by a blank line.
 
 The distinction is structural: master children open a sub-formation visible in the source via brackets, so a name is optional. Plain children would be visually indistinguishable from siblings without an explicit name suffix, so one is required.
@@ -198,6 +198,7 @@ Each non-blank, non-comment line is classified into exactly one shape, determine
 | First char (after indent) | Lookahead | Line shape |
 |---|---|---|
 | `+` | followed by digit | signed-number application (see §3.6) |
+| `+` | followed by `+>` | test-attribute shorthand — `++> name` desugars to `[] +> name` (§3.4 / R-6.3.6) |
 | `+` | otherwise | meta directive (§3.2) |
 | `#` | — | comment (§3.3) |
 | `.` | — | method-dispatch line (§3.5) |
@@ -878,6 +879,7 @@ R-6.3.4. Atoms may appear at any nesting depth, with two restrictions:
   - **(a)** A nested atom (one not at indent 0) cannot hold tests (R-6.3.3 — `+>` legal only at indent 2 of top-level) and cannot hold regular children (R-6.3.1 — atoms accept only test children). Therefore a nested atom's body must be **empty**.
   - **(b)** A nested atom is legal only when the containing formation is **not itself an atom**. Atoms inside atoms are rejected: an atom's body may contain only `+>` test attributes (R-6.3.1), and a master child (formation/atom) of an atom is therefore inadmissible regardless of body shape.
 R-6.3.5. A test attribute name must be a `NAME` token. `+> @` (PHI as test name) is rejected even though the underlying grammar's `tname : tarrow (PHI | NAME)` accepts it. Tests are named identifiers; `@` has no meaning as a test name.
+R-6.3.6. **Test-attribute shorthand.** A line whose first non-space characters are `++>` is sugar for a bare parameterless formation with a test suffix: `++> name` ≡ `[] +> name`. The two forms are equivalent in every respect after classification — same XMIR emission (§9.4), same depth constraint (R-6.3.3), same name rules (R-6.3.5). There is no ambiguity with meta directives: metas are legal only before the first object (R-3.2.2), and their names never start with `+`.
 
 Examples:
 
@@ -926,7 +928,7 @@ R-6.4.2. A comment that is indented, follows a meta, follows an object, or opens
 
 R-6.5.1. Inside the top comment block: blank lines forbidden.
 R-6.5.2. After the top comment block: exactly one blank line separates it from the first meta or object. A block immediately followed by a meta or object, with no blank in between, is rejected: "a blank line must separate the top comment block from the rest of the file".
-R-6.5.3. Before a master object (formation, atom, inline-phi formation, including `+>` test attributes): zero or one blank line.
+R-6.5.3. Before a master object (formation, atom, inline-phi formation): zero or one blank line. Before a `+>` test attribute: exactly one blank line; a test attribute sitting directly under the previous non-blank line is rejected: error "missing blank line before a `+>` test attribute (R-6.5.3); exactly one blank line must precede every test attribute".
 
 *Note on validation timing and indent attribution.* A blank line carries no indent or kind of its own. The legality of a blank line is determined by the *next* non-blank line: when that line is classified, the parser checks whether it is a master. If yes, the preceding blank is legal; if no (the next line is a plain child or a non-master continuation), the blank is reported as `blank line not allowed between non-master siblings` (§9.9), with the position of the offending blank line. The blank logically attaches to the indent of the *next non-blank line*, not to whatever was popped during Step A (§5.2.1) when that next line arrives — Step A pops change the stack but not the blank's identity. `pending_blank_count` (§5.1.1) is read at the point the next non-blank line classifies.
 R-6.5.4. Between two plain siblings: blank lines forbidden.

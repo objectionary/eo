@@ -25,20 +25,12 @@
     if.
       steps.length.eq 1
       steps.head
-      loop steps
-  steps.length.plus -1 > end!
+      if.
+        (dataized (seq steps.tail)).as-bool
+        steps.head
+        steps.head
 
-  [tup] > loop
-    if. > @
-      and.
-        tup.length.gt 1
-        loop tup.tail
-      tup.head
-      or.
-        (dataized tup.head).as-bool.eq --
-        tup.length.eq end
-
-  [] +> tests-seq-single-dataization-float-less
+  ++> tests-seq-single-dataization-float-less
     malloc.of > @
       1
       [b]
@@ -52,7 +44,7 @@
                   m.as-number
               1.1
 
-  [] +> tests-seq-single-dataization-float-greater
+  ++> tests-seq-single-dataization-float-greater
     malloc.of > @
       1
       [b]
@@ -66,7 +58,7 @@
                   m.as-number
               0.9
 
-  [] +> tests-seq-single-dataization-int-less
+  ++> tests-seq-single-dataization-int-less
     malloc.of > @
       1
       [b]
@@ -80,7 +72,7 @@
                   m.as-number
               2
 
-  [] +> tests-seq-single-dataization-int-less-or-equal
+  ++> tests-seq-single-dataization-int-less-or-equal
     malloc.of > @
       1
       [b]
@@ -94,7 +86,7 @@
                   m.as-number
               1
 
-  [] +> tests-very-long-seq
+  ++> tests-very-long-seq
     eq. > @
       true
       seq
@@ -142,7 +134,7 @@
           true
           true
 
-  [] +> tests-seq-single-dataization-int-equal-to-test
+  ++> tests-seq-single-dataization-int-equal-to-test
     malloc.of > @
       1
       [b]
@@ -157,7 +149,7 @@
                   m.as-number
               1
 
-  [] +> tests-seq-single-dataization-int-equal-to-cache-problem-test
+  ++> tests-seq-single-dataization-int-equal-to-cache-problem-test
     malloc.of > @
       1
       [b]
@@ -174,7 +166,7 @@
                   m
               1
 
-  [] +> tests-seq-calculates-and-returns
+  ++> tests-seq-calculates-and-returns
     eq. > @
       1
       seq
@@ -182,7 +174,7 @@
           0
           1
 
-  [] +> tests-seq-calculates-and-returns-object
+  ++> tests-seq-calculates-and-returns-object
     eq. > @
       "Hello!"
       seq

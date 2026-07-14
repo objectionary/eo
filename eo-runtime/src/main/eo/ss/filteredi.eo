@@ -27,7 +27,7 @@
         next
     recfilter tup.tail > next
 
-  [] +> tests-filteredi-with-lt
+  ++> tests-filteredi-with-lt
     eq. > @
       filteredi
         list
@@ -35,7 +35,7 @@
         v.lt 3 > [v i]
       * 1 2
 
-  [] +> tests-filteredi-with-string-length
+  ++> tests-filteredi-with-string-length
     eq. > @
       filteredi
         list
@@ -43,14 +43,14 @@
         v.length.gt 4 > [v i]
       * "Hello"
 
-  [] +> tests-filteredi-with-empty-list
+  ++> tests-filteredi-with-empty-list
     is-empty. > @
       filteredi
         list
           *
         v.lt 3 > [v i]
 
-  [] +> tests-filteredi-by-index
+  ++> tests-filteredi-by-index
     eq. > @
       filteredi
         list
@@ -58,7 +58,7 @@
         i.gt 0 > [v i]
       * 1 4
 
-  [] +> tests-filteredi-with-bools
+  ++> tests-filteredi-with-bools
     eq. > @
       filteredi
         list

@@ -37,12 +37,12 @@
             (depth.times 2).times ((depth.times 2).plus 1)
           factor (depth.plus 1)
 
-  [] +> tests-sine-of-zero-is-zero
+  ++> tests-sine-of-zero-is-zero
     eq. > @
       sine 0
       0
 
-  [] +> tests-sine-of-pi-halves-is-one
+  ++> tests-sine-of-pi-halves-is-one
     lt. > @
       abs
         minus.
@@ -50,7 +50,7 @@
           1000
       1
 
-  [] +> tests-sine-of-pi-sixths-is-half
+  ++> tests-sine-of-pi-sixths-is-half
     lt. > @
       abs
         minus.
@@ -58,13 +58,13 @@
           500
       1
 
-  [] +> tests-sine-of-pi-is-zero
+  ++> tests-sine-of-pi-is-zero
     lt. > @
       abs
         (sine pi).times 1000
       1
 
-  [] +> tests-sine-of-negative-pi-halves-is-minus-one
+  ++> tests-sine-of-negative-pi-halves-is-minus-one
     lt. > @
       abs
         minus.
@@ -72,7 +72,7 @@
           -1000
       1
 
-  [] +> tests-sine-of-three-pi-halves-is-minus-one
+  ++> tests-sine-of-three-pi-halves-is-minus-one
     lt. > @
       abs
         minus.
@@ -80,7 +80,7 @@
           -1000
       1
 
-  [] +> tests-sine-is-odd-function
+  ++> tests-sine-is-odd-function
     lt. > @
       abs
         times.
@@ -90,13 +90,13 @@
           1000
       1
 
-  [] +> tests-sine-of-two-pi-is-zero
+  ++> tests-sine-of-two-pi-is-zero
     lt. > @
       abs
         (sine (pi.times 2)).times 1000
       1
 
-  [] +> tests-sine-reduces-large-angle
+  ++> tests-sine-reduces-large-angle
     lt. > @
       abs
         minus.
@@ -104,7 +104,7 @@
           500
       1
 
-  [] +> tests-sine-of-seventeen-radians
+  ++> tests-sine-of-seventeen-radians
     lt. > @
       abs
         minus.
@@ -112,14 +112,14 @@
           -961
       1
 
-  [] +> tests-sine-of-nan-is-nan
+  ++> tests-sine-of-nan-is-nan
     is-nan. > @
       sine nan
 
-  [] +> tests-sine-of-positive-infinity-is-nan
+  ++> tests-sine-of-positive-infinity-is-nan
     is-nan. > @
       sine pinf
 
-  [] +> tests-sine-of-negative-infinity-is-nan
+  ++> tests-sine-of-negative-infinity-is-nan
     is-nan. > @
       sine ninf

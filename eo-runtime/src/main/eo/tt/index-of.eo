@@ -44,38 +44,38 @@
       slice txt idx slen
       sub
 
-  [] +> tests-index-of-non-existed-substring-with-more-length
+  ++> tests-index-of-non-existed-substring-with-more-length
     eq. > @
       -1
       index-of "Hello" "Somebody"
 
-  [] +> tests-index-of-non-existed-substring-with-same-length
+  ++> tests-index-of-non-existed-substring-with-same-length
     eq. > @
       -1
       index-of "Hello" "world"
 
-  [] +> tests-index-of-non-existed-substring-with-utf
+  ++> tests-index-of-non-existed-substring-with-utf
     eq. > @
       -1
       index-of
         "привет, друг!"
         "x"
 
-  [] +> tests-index-of-existed-substring-with-utf
+  ++> tests-index-of-existed-substring-with-utf
     eq. > @
       3
       index-of
         "привет, друг!"
         "в"
 
-  [] +> tests-returns-valid-index-of-substring
+  ++> tests-returns-valid-index-of-substring
     eq. > @
       6
       index-of
         "Hello \n world"
         "\n"
 
-  [] +> tests-returns-valid-index-of-substring-in-the-end
+  ++> tests-returns-valid-index-of-substring-in-the-end
     eq. > @
       6
       index-of "Hello world" "world"

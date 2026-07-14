@@ -30,7 +30,7 @@
         tup.head
         tup.tail.length
 
-  [] +> tests-reduce-list-with-index
+  ++> tests-reduce-list-with-index
     eq. > @
       6
       reducedi
@@ -43,7 +43,7 @@
             a.plus
               (* 2 2).at i
 
-  [] +> tests-list-reducedi-long-int-array
+  ++> tests-list-reducedi-long-int-array
     eq. > @
       reducedi
         list
@@ -52,7 +52,7 @@
         x.plus a > [a x i]
       1
 
-  [] +> tests-list-reducedi-bools-array
+  ++> tests-list-reducedi-bools-array
     not. > @
       reducedi
         list
@@ -60,7 +60,7 @@
         true
         x.and a > [a x i]
 
-  [] +> tests-list-reducedi-nested-functions
+  ++> tests-list-reducedi-nested-functions
     eq. > @
       reducedi
         list

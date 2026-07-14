@@ -11,7 +11,7 @@
 [num] > cosine
   sine (num.plus (pi.div 2)) > @
 
-  [] +> tests-cosine-of-zero-is-one
+  ++> tests-cosine-of-zero-is-one
     lt. > @
       abs
         minus.
@@ -19,13 +19,13 @@
           1000
       1
 
-  [] +> tests-cosine-of-pi-halves-is-zero
+  ++> tests-cosine-of-pi-halves-is-zero
     lt. > @
       abs
         (cosine (pi.div 2)).times 1000
       1
 
-  [] +> tests-cosine-of-pi-is-minus-one
+  ++> tests-cosine-of-pi-is-minus-one
     lt. > @
       abs
         minus.
@@ -33,7 +33,7 @@
           -1000
       1
 
-  [] +> tests-cosine-of-pi-thirds-is-half
+  ++> tests-cosine-of-pi-thirds-is-half
     lt. > @
       abs
         minus.
@@ -41,7 +41,7 @@
           500
       1
 
-  [] +> tests-cosine-is-even-function
+  ++> tests-cosine-is-even-function
     lt. > @
       abs
         times.
@@ -51,7 +51,7 @@
           1000
       1
 
-  [] +> tests-cosine-reduces-large-angle
+  ++> tests-cosine-reduces-large-angle
     lt. > @
       abs
         minus.
@@ -59,7 +59,7 @@
           500
       1
 
-  [] +> tests-cosine-of-seventeen-radians
+  ++> tests-cosine-of-seventeen-radians
     lt. > @
       abs
         minus.
@@ -67,14 +67,14 @@
           -275
       1
 
-  [] +> tests-cosine-of-nan-is-nan
+  ++> tests-cosine-of-nan-is-nan
     is-nan. > @
       cosine nan
 
-  [] +> tests-cosine-of-positive-infinity-is-nan
+  ++> tests-cosine-of-positive-infinity-is-nan
     is-nan. > @
       cosine pinf
 
-  [] +> tests-cosine-of-negative-infinity-is-nan
+  ++> tests-cosine-of-negative-infinity-is-nan
     is-nan. > @
       cosine ninf

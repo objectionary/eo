@@ -40,23 +40,36 @@
       x
       (length.plus 1).as-number
 
-  [] +> tests-makes-tuple-through-special-syntax
+  [other] > eq
+    and. > @
+      length.eq other.length
+      receq ^ other
+
+    [first second] > receq
+      if. > @
+        first.length.eq 0
+        true
+        and.
+          first.head.eq second.head
+          receq first.tail second.tail
+
+  ++> tests-makes-tuple-through-special-syntax
     eq. > @
       (* 1 2).length
       2
 
-  [] +> tests-gets-lengths-of-empty-tuple-through-special-syntax
+  ++> tests-gets-lengths-of-empty-tuple-through-special-syntax
     eq. > @
       *.length
       0
 
-  [] +> tests-empty-tuple-length
+  ++> tests-empty-tuple-length
     eq. > @
       (arr *).elements.length
       0
     [elements] > arr
 
-  [] +> tests-non-empty-tuple-length-test
+  ++> tests-non-empty-tuple-length-test
     eq. > @
       arr
         * "a" "b" "c" "d" "e"
@@ -65,20 +78,20 @@
       5
     [elements] > arr
 
-  [] +> tests-tuple-as-a-bound-attribute-size-0
+  ++> tests-tuple-as-a-bound-attribute-size-0
     eq. > @
       tup.length
       0
     * > tup
 
-  [] +> tests-tuple-as-a-bound-attribute-size-1
+  ++> tests-tuple-as-a-bound-attribute-size-1
     eq. > @
       tup.at 0
       100
     * > tup
       100
 
-  [] +> tests-tuple-as-a-bound-attribute-size-2
+  ++> tests-tuple-as-a-bound-attribute-size-2
     and. > @
       eq.
         arr.at 0
@@ -90,7 +103,7 @@
       1
       2
 
-  [] +> tests-tuple-with
+  ++> tests-tuple-with
     and. > @
       and.
         and.
@@ -110,12 +123,12 @@
       * 1 2 3
       "with"
 
-  [] +> throws-on-wrong-tuple-at
+  ++> throws-on-wrong-tuple-at
     at. > @
       * 1 2 3 4
       20
 
-  [] +> tests-out-of-bounds-at-returns-provided-fallback
+  ++> tests-out-of-bounds-at-returns-provided-fallback
     eq. > @
       "recovered"
       at.
@@ -123,7 +136,7 @@
         20
         "recovered" > [msg]
 
-  [] +> tests-tuple-fluent-with
+  ++> tests-tuple-fluent-with
     and. > @
       and.
         eq.
@@ -137,7 +150,7 @@
         3
     ((*.with 1).with 2).with 3 > arr
 
-  [] +> tests-tuple-fluent-with-indented
+  ++> tests-tuple-fluent-with-indented
     and. > @
       and.
         eq.
@@ -151,42 +164,42 @@
         3
     ((*.with 1).with 2).with 3 > arr
 
-  [] +> tests-gets-lengths-of-empty-tuple
+  ++> tests-gets-lengths-of-empty-tuple
     eq. > @
       a.length
       0
     tuple.empty > a
 
-  [] +> tests-gets-lengths-of-empty-tuple-without-additional-obj
+  ++> tests-gets-lengths-of-empty-tuple-without-additional-obj
     eq. > @
       tuple.empty.length
       0
 
-  [] +> throws-on-getting-head-from-empty-tuple
+  ++> throws-on-getting-head-from-empty-tuple
     tuple.empty.head > @
 
-  [] +> throws-on-getting-tail-from-empty-tuple
+  ++> throws-on-getting-tail-from-empty-tuple
     tuple.empty.tail > @
 
-  [] +> tests-creates-empty-tuple-with-number
+  ++> tests-creates-empty-tuple-with-number
     eq. > @
       a.at 0
       3
     tuple.empty.with 3 > a
 
-  [] +> tests-at-fast-with-first-element
+  ++> tests-at-fast-with-first-element
     eq. > @
       (arr.at 0).at-fast arr
       100
     * 100 101 102 > arr
 
-  [] +> tests-at-fast-with-last-element
+  ++> tests-at-fast-with-last-element
     eq. > @
       (arr.at 2).at-fast arr
       102
     * 100 101 102 > arr
 
-  [] +> tests-tuple-empty-fluent-with-indented-keyword
+  ++> tests-tuple-empty-fluent-with-indented-keyword
     and. > @
       and.
         eq.
@@ -200,18 +213,40 @@
         3
     ((tuple.empty.with 1).with 2).with 3 > arr
 
-  [] +> tests-tuple-with-negative-index-gets-last
+  ++> tests-tuple-with-negative-index-gets-last
     eq. > @
       arr.at -1
       4
     * 0 1 2 3 4 > arr
 
-  [] +> tests-tuple-with-negative-index-gets-first
+  ++> tests-tuple-with-negative-index-gets-first
     eq. > @
       arr.at -5
       0
     * 0 1 2 3 4 > arr
 
-  [] +> throws-on-out-of-tuple-bounds-with-negative-index
+  ++> throws-on-out-of-tuple-bounds-with-negative-index
     arr.at -6 > @
     * 0 1 2 3 4 > arr
+
+  ++> tests-tuple-equality
+    eq. > @
+      * 1 2 3
+      * 1 2 3
+
+  ++> tests-tuple-not-equality
+    not. > @
+      eq.
+        * 1 2 3
+        * 3 2 1
+
+  ++> tests-tuple-nested-equality
+    eq. > @
+      *
+        * 0 1
+        * 4 0
+        * 7 3
+      *
+        * 0 1
+        * 4 0
+        * 7 3

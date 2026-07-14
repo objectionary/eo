@@ -82,7 +82,7 @@ final class EObytesEOsliceTest {
             new UncheckedText(
                 new TextOf(
                     Assertions.assertThrows(
-                        EOerror.ExError.class,
+                        ExFailure.class,
                         () -> new Dataized(
                             new PhApplication(
                                 new PhApplication(

@@ -5,8 +5,6 @@
 
 package org.eolang;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -18,8 +16,9 @@ import java.util.function.Supplier;
  * of any runtime errors. It is used in the EO runtime to provide
  * a safe processing of any runtime errors in the EO code. If, in any
  * method invocation, a runtime error occurs, it is caught and wrapped
- * into {@link EOerror.ExError} with the location of the error in the
- * EO code.</p>
+ * into an {@link ExFailure} carrying the location of the error in the
+ * EO code. Nothing intercepts an {@link ExFailure}, so the failure
+ * keeps propagating until it terminates the program.</p>
  *
  * @since 0.21
  */
@@ -191,8 +190,8 @@ public final class PhSafe implements Phi, Atom {
      * Helper, for other methods.
      *
      * <p>No matter what happens inside the {@code action}, only
-     * an instance of {@link EOerror.ExError} may be thrown out
-     * of this method.</p>
+     * an instance of {@link ExFailure} may be thrown out of this
+     * method, carrying this layer's location and the original cause.</p>
      *
      * @param action The action
      * @param suffix The suffix to add to the label
@@ -204,17 +203,10 @@ public final class PhSafe implements Phi, Atom {
     private <T> T through(final Supplier<T> action, final String suffix) {
         try {
             return action.get();
-        } catch (final EOerror.ExError ex) {
-            throw new EOerror.ExError(ex, this.label(suffix));
-        } catch (final ExAbstract ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(PhSafe.message(ex)),
-                this.label(suffix)
-            );
         } catch (final Throwable ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(PhSafe.message(ex)),
-                PhSafe.trace(ex, this.label(suffix))
+            throw new ExFailure(
+                String.format("%s; %s", this.label(suffix), PhSafe.message(ex)),
+                ex
             );
         }
     }
@@ -226,45 +218,6 @@ public final class PhSafe implements Phi, Atom {
      */
     private static String message(final Throwable exp) {
         return Objects.toString(exp.getMessage(), exp.getClass().getName());
-    }
-
-    /**
-     * Take stacktrace from exception.
-     * @param exp The exception
-     * @param head The head to add
-     * @return The stacktrace
-     */
-    private static List<String> trace(final Throwable exp, final String head) {
-        final StackTraceElement[] stack = exp.getStackTrace();
-        final List<String> trace = new LinkedList<>();
-        if (stack != null) {
-            for (final StackTraceElement elm : stack) {
-                trace.add(
-                    String.format(
-                        "%s#%s():%d",
-                        PhSafe.shorter(elm.getClassName()),
-                        elm.getMethodName(),
-                        elm.getLineNumber()
-                    )
-                );
-            }
-        }
-        trace.add(
-            String.format(
-                "%s (%s)",
-                head, PhSafe.shorter(exp.getClass().getName())
-            )
-        );
-        return trace;
-    }
-
-    /**
-     * Make class name shorter.
-     * @param full The full name of class
-     * @return Shorter name
-     */
-    private static String shorter(final String full) {
-        return full.replaceAll("(.)[^.]*\\.", "$1.");
     }
 
     /**

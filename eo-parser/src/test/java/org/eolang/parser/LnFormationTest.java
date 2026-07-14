@@ -149,6 +149,41 @@ final class LnFormationTest {
     }
 
     @Test
+    void emitsPlusPlusGreaterShorthandAsPlusPrefixedAttribute() {
+        final Emit emit = new Emit();
+        new LnFormation(new Span("++> tests-foo", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `++> name` shorthand must emit the same <o name='+<name>'> as `[] +> name`",
+            LnFormationTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/o[@name='+tests-foo' and not(o)]")
+        );
+    }
+
+    @Test
+    void pushesFormationKindForPlusPlusGreaterShorthand() {
+        final Stack stack = new Stack();
+        new LnFormation(new Span("++> tests-foo", 1))
+            .into(stack, new Globals(), new Emit());
+        MatcherAssert.assertThat(
+            "a `++> name` shorthand must push the same BARE_FORMATION level as `[] +> name`",
+            stack.top().kind(),
+            Matchers.equalTo(Kind.BARE_FORMATION)
+        );
+    }
+
+    @Test
+    void rejectsPhiAsPlusPlusGreaterShorthandName() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnFormation(new Span("++> @", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "`++> @` must be rejected per R-6.3.5, exactly as `[] +> @` is"
+        );
+    }
+
+    @Test
     void emitsConstMarkerAttribute() {
         final Emit emit = new Emit();
         new LnFormation(new Span("[] > foo!", 1))
@@ -212,6 +247,34 @@ final class LnFormationTest {
             "a same-indent sibling formation must replace the top, leaving depth 1",
             stack.depth(),
             Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void rejectsPlusGreaterAttributeWithoutPrecedingBlankLine() {
+        final Emit emit = new Emit();
+        new LnFormation(new Span("[] +> tests-foo", 2))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `+>` test attribute with no blank line above must emit an R-6.5.3 error",
+            LnFormationTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/errors/error[@line='2']")
+        );
+    }
+
+    @Test
+    void acceptsPlusGreaterAttributeAfterBlankLine() {
+        final Emit emit = new Emit();
+        final Globals globals = new Globals();
+        globals.blank();
+        new LnFormation(new Span("[] +> tests-foo", 2))
+            .into(new Stack(), globals, emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `+>` test attribute preceded by one blank line must not emit any error",
+            LnFormationTest.render(emit),
+            Matchers.not(XhtmlMatchers.hasXPath("/object/errors"))
         );
     }
 

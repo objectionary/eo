@@ -10,9 +10,9 @@
 # ```
 # .
 
-+alias ss.eachi
++alias ss.back
++alias ss.front
 +alias ss.list
-+alias ss.reduced
 +alias ss.reducedi
 +alias ss.withouti
 +architect yegor256@gmail.com
@@ -35,83 +35,19 @@
   [index item] > withi
     concat. > @
       with.
-        front index
+        front
+          ^
+          index
         item
       back
-        origin.length.minus index
-
-  [func] > each
-    eachi > @
-      ^
-      func item > [item index] >>
-
-  [element] > without
-    list > @
-      reduced
         ^
-        *
-        [accum item] >>
-          if. > @
-            element.eq item
-            accum
-            accum.with item
-
-  [other] > eq
-    and. > @
-      eq.
-        origin.length
-        other.length
-      receq origin other
-
-    [first second] > receq
-      if. > @
-        first.length.eq 0
-        true
-        and.
-          first.head.eq second.head
-          receq first.tail second.tail
+        origin.length.minus index
 
   [passed] > concat
     reducedi > @
       list passed
       ^
       accum.with item > [accum item index]
-
-  [index] > front
-    if. > @
-      idx.eq 0
-      list *
-      if.
-        0.gt idx
-        back (number idx).neg
-        if.
-          (number idx).gte origin.length
-          ^
-          list
-            rechead origin
-    index > idx!
-
-    [tup] > rechead
-      if. > @
-        tup.length.eq idx
-        tup
-        rechead tup.tail
-
-  [index] > back
-    if. > @
-      0.gt start
-      ^
-      list
-        reducedi
-          ^
-          *
-          [accum item idx] >>
-            if. > @
-              idx.gte start
-              accum.with item
-              accum
-    index > idx!
-    origin.length.minus idx > start!
 
   [start end] > slice
     if. > @
@@ -155,7 +91,7 @@
       shift
       origin.length
 
-  [] +> tests-list-should-not-be-empty
+  ++> tests-list-should-not-be-empty
     not. > @
       is-empty.
         list
@@ -163,19 +99,19 @@
 
   (list *).is-empty > [] +> list-should-be-empty
 
-  [] +> tests-list-should-not-be-empty-with-three-objects
+  ++> tests-list-should-not-be-empty-with-three-objects
     (list xs).is-empty.not > @
     * > xs
       [x]
       [y]
       [z]
 
-  [] +> tests-list-should-not-be-empty-with-one-anon-object
+  ++> tests-list-should-not-be-empty-with-one-anon-object
     (list xs).is-empty.not > @
     * > xs
       [f]
 
-  [] +> tests-list-simple-with
+  ++> tests-list-simple-with
     eq. > @
       with.
         list
@@ -183,7 +119,7 @@
         3
       * 1 2 3
 
-  [] +> tests-simple-insert
+  ++> tests-simple-insert
     eq. > @
       withi.
         list
@@ -192,7 +128,7 @@
         "hello"
       * 1 2 3 "hello" 4 5
 
-  [] +> tests-insert-with-zero-index
+  ++> tests-insert-with-zero-index
     eq. > @
       withi.
         list
@@ -201,7 +137,7 @@
         "hello"
       * "hello" 1 2 3 4 5
 
-  [] +> tests-complex-objects-list-comparison
+  ++> tests-complex-objects-list-comparison
     list
       *
         list (* 0 1)
@@ -213,39 +149,20 @@
         * 4 0
         * 7 3
 
-  [] +> tests-iterates-with-each
-    eq. > @
-      malloc.for
-        0
-        [m]
-          list
-            * 1 2 3
-          .each > @
-            ^.m.put (^.m.as-number.plus i) > [i] >>
-      6
-
-  [] +> tests-list-without
-    eq. > @
-      without.
-        list
-          * 1 2 1 2 1 5
-        2
-      * 1 1 1 5
-
-  [] +> tests-equality-test
+  ++> tests-equality-test
     eq. > @
       list
         * 1 2 3
       * 1 2 3
 
-  [] +> tests-not-equality-test
+  ++> tests-not-equality-test
     not. > @
       eq.
         list
           * 1 2 3
         * 3 2 1
 
-  [] +> tests-concatenates-lists
+  ++> tests-concatenates-lists
     and. > @
       eq.
         1
@@ -259,83 +176,13 @@
         list (* 2 3)
       0
 
-  [] +> tests-concatenates-with-tuple
+  ++> tests-concatenates-with-tuple
     eq. > @
       concat.
         list
           * 0 1
         * 2 4
       * 0 1 2 4
-
-  [] +> tests-simple-front
-    eq. > @
-      front.
-        list
-          * 1 2 3 4 5
-        1
-      * 1
-
-  [] +> tests-list-front-with-zero-index
-    is-empty. > @
-      front.
-        list
-          * 1 2 3
-        0
-
-  [] +> tests-list-front-with-length-index
-    eq. > @
-      front.
-        list
-          * 1 2 3
-        3
-      * 1 2 3
-
-  [] +> tests-complex-front
-    eq. > @
-      front.
-        list
-          * "foo" 2.2 00-01 "bar"
-        2
-      * "foo" 2.2
-
-  [] +> tests-front-with-negative
-    eq. > @
-      front.
-        list
-          * 1 2 3
-        -1
-      * 3
-
-  [] +> tests-complex-front-with-negative
-    eq. > @
-      front.
-        list
-          * "foo" 2.2 00-01 "bar"
-        -3
-      * 2.2 00-01 "bar"
-
-  [] +> tests-simple-back
-    eq. > @
-      back.
-        list
-          * 1 2 3 4 5
-        2
-      * 4 5
-
-  [] +> tests-zero-index-in-back
-    is-empty. > @
-      back.
-        list
-          * 1 2 3 4 5
-        0
-
-  [] +> tests-large-index-in-back
-    eq. > @
-      back.
-        list
-          * 1 2 3 4 5
-        10
-      * 1 2 3 4 5
 
   [] +> tests-simple-slice
     eq. > @
@@ -346,7 +193,7 @@
         5
       * 2 3 4 5
 
-  [] +> tests-slice-with-negative-start
+  ++> tests-slice-with-negative-start
     eq. > @
       slice.
         list
@@ -355,7 +202,7 @@
         6
       * 0 3 8
 
-  [] +> tests-slice-with-negative-end
+  ++> tests-slice-with-negative-end
     eq. > @
       slice.
         list
@@ -364,7 +211,7 @@
         -1
       * "a" 2 3.0 "xyz" 82.42
 
-  [] +> tests-slice-with-negative-start-and-end
+  ++> tests-slice-with-negative-start-and-end
     eq. > @
       slice.
         list
@@ -373,7 +220,7 @@
         -1
       * 23 0 0
 
-  [] +> tests-slice-with-end-gt-length
+  ++> tests-slice-with-end-gt-length
     eq. > @
       slice.
         list
@@ -382,7 +229,7 @@
         10
       * "bar" "buzz"
 
-  [] +> tests-slice-with-start-lt-negative-length
+  ++> tests-slice-with-start-lt-negative-length
     eq. > @
       slice.
         list
@@ -391,7 +238,7 @@
         3
       * 9 99 999
 
-  [] +> tests-slice-with-end-lt-negative-length
+  ++> tests-slice-with-end-lt-negative-length
     eq. > @
       slice.
         list
@@ -400,7 +247,7 @@
         -9
       list *
 
-  [] +> tests-slice-with-start-gte-end-both-positive
+  ++> tests-slice-with-start-gte-end-both-positive
     eq. > @
       slice.
         list
@@ -409,7 +256,7 @@
         0
       list *
 
-  [] +> tests-slice-with-start-gte-end-both-negative
+  ++> tests-slice-with-start-gte-end-both-negative
     eq. > @
       slice.
         list
@@ -418,7 +265,7 @@
         -5
       list *
 
-  [] +> tests-slice-with-negative-start-gte-end
+  ++> tests-slice-with-negative-start-gte-end
     eq. > @
       slice.
         list
@@ -427,7 +274,7 @@
         3
       list *
 
-  [] +> tests-slice-with-start-gte-negative-end
+  ++> tests-slice-with-start-gte-negative-end
     eq. > @
       slice.
         list
@@ -436,7 +283,7 @@
         -5
       list *
 
-  [] +> tests-shifted-with-shift-less-than-length
+  ++> tests-shifted-with-shift-less-than-length
     eq. > @
       shifted.
         list
@@ -444,7 +291,7 @@
         2
       * 3 4 5
 
-  [] +> tests-shifted-with-shift-greater-than-length
+  ++> tests-shifted-with-shift-greater-than-length
     eq. > @
       shifted.
         list

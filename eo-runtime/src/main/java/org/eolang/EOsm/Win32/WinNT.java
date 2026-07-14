@@ -12,6 +12,7 @@ package org.eolang.EOsm.Win32; // NOPMD
 import com.sun.jna.FromNativeContext;
 import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
+import org.eolang.ExFailure;
 
 /**
  * This module defines the 32-Bit Windows types and constants that are defined
@@ -119,7 +120,7 @@ public interface WinNT extends WinDef, WinBase, BaseTSD {
         @Override
         public void setPointer(final Pointer ptr) {
             if (this.immutable) {
-                throw new UnsupportedOperationException("immutable reference");
+                throw new ExFailure("immutable reference");
             }
             super.setPointer(ptr);
         }

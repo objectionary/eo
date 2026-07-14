@@ -39,12 +39,12 @@
   as-ascii "Z" > maxcode
   as-ascii "A" > mincode
 
-  [] +> tests-converts-text-to-lower-case
+  ++> tests-converts-text-to-lower-case
     eq. > @
       "hello"
       low-cased "HELLO"
 
-  [] +> tests-converts-text-with-low-letters-to-lower-case
+  ++> tests-converts-text-with-low-letters-to-lower-case
     eq. > @
       "hello"
       low-cased "HeLlO"
