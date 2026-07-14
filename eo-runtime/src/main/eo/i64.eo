@@ -48,7 +48,19 @@
       ^.eq value
     x > value!
 
-  [x] > times /i64
+  [x] > times
+    looped 00-00-00-00-00-00-00-00 as-bytes x.as-bytes > @
+    [acc a b] > looped
+      if. > @
+        b.eq 00-00-00-00-00-00-00-00
+        i64 acc
+        looped
+          if.
+            (b.and 00-00-00-00-00-00-00-01).eq 00-00-00-00-00-00-00-01
+            ((i64 acc).plus (i64 a)).as-bytes
+            acc
+          a.left 1
+          b.right 1
 
   [x] > plus /i64
 
@@ -234,3 +246,23 @@
     eq. > @
       1000.as-i64.times 0.as-i64
       0.as-i64
+
+  ++> tests-i64-times-of-two-negatives
+    eq. > @
+      -7.as-i64.times -6.as-i64
+      42.as-i64
+
+  ++> tests-i64-times-of-mixed-signs
+    eq. > @
+      -7.as-i64.times 6.as-i64
+      -42.as-i64
+
+  ++> tests-i64-times-wraps-modulo-2-pow-64
+    eq. > @
+      (i64 40-00-00-00-00-00-00-00).times 4.as-i64
+      0.as-i64
+
+  ++> tests-i64-times-keeps-low-bits-of-large-product
+    eq. > @
+      2147483647.as-i64.times 2147483647.as-i64
+      i64 3F-FF-FF-FF-00-00-00-01

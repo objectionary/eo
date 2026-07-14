@@ -17,7 +17,10 @@ import java.nio.file.attribute.FileTime;
 import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.cactoos.bytes.Sha256DigestOf;
+import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.text.HexOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
@@ -91,7 +94,7 @@ final class MjParseTest {
         final Path target = new Place("foo.x.main").make(base, MjAssemble.XMIR);
         new Cache(
             cache.resolve(Parsing.CACHE)
-                .resolve(FakeMaven.pluginVersion())
+                .resolve(MjParseTest.cacheVersion(maven.programTojo().identifier()))
                 .resolve(hash.value()),
             src -> expected
         ).apply(maven.programTojo().source(), target, base.relativize(target));
@@ -128,6 +131,66 @@ final class MjParseTest {
             Matchers.hasKey(
                 String.format("target/%s/foo/x/main.%s", Parsing.DIR, MjAssemble.XMIR)
             )
+        );
+    }
+
+    @Test
+    void homesBareReferenceToSamePackageObject(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withProgram(
+            String.join(
+                System.lineSeparator(),
+                "+package foo",
+                "",
+                "[] > bar",
+                "  42 > @"
+            ),
+            "foo.bar",
+            "foo/bar.eo"
+        ).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "+package foo",
+                "",
+                "[] > app",
+                "  bar > @"
+            ),
+            "foo.app",
+            "foo/app.eo"
+        );
+        MatcherAssert.assertThat(
+            "bare reference 'bar' must be resolved into the same package as 'Φ.foo.bar'",
+            new XMLDocument(
+                maven.execute(new FakeMaven.Parse()).result().get(
+                    String.format("target/%s/foo/app.%s", Parsing.DIR, MjAssemble.XMIR)
+                )
+            ),
+            XhtmlMatchers.hasXPath("//o[@base='Φ.foo.bar']")
+        );
+    }
+
+    @Test
+    void keepsBareGlobalReferenceAtRoot(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withProgram(
+            String.join(
+                System.lineSeparator(),
+                "+package foo",
+                "",
+                "[] > app",
+                "  bar > @"
+            ),
+            "foo.app",
+            "foo/app.eo"
+        );
+        MatcherAssert.assertThat(
+            "bare reference 'bar' must stay at the root when no 'Φ.foo.bar' object exists",
+            new XMLDocument(
+                maven.execute(new FakeMaven.Parse()).result().get(
+                    String.format("target/%s/foo/app.%s", Parsing.DIR, MjAssemble.XMIR)
+                )
+            ),
+            XhtmlMatchers.hasXPath("//o[@base='Φ.bar']")
         );
     }
 
@@ -275,6 +338,24 @@ final class MjParseTest {
                 Matchers.equalTo(before),
                 Matchers.equalTo(after)
             )
+        );
+    }
+
+    /**
+     * The parse cache version segment for a program with a single object.
+     * It mirrors what {@link Parsing} computes: the plugin version plus a
+     * SHA-256 digest of the qualified names of the local package objects
+     * (here, the identifier of the only object).
+     * @param identifier The tojo identifier of the only registered object
+     * @return The version segment used as part of the parse cache path
+     */
+    private static String cacheVersion(final String identifier) {
+        return String.format(
+            "%s-%s",
+            FakeMaven.pluginVersion(),
+            new UncheckedText(
+                new HexOf(new Sha256DigestOf(new InputOf(identifier)))
+            ).asString()
         );
     }
 

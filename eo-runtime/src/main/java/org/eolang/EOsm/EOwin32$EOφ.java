@@ -20,14 +20,13 @@ import org.eolang.EOsm.Win32.CloseFuncCall;
 import org.eolang.EOsm.Win32.ClosesocketFuncCall;
 import org.eolang.EOsm.Win32.ConnectFuncCall;
 import org.eolang.EOsm.Win32.CreatFuncCall;
-import org.eolang.EOsm.Win32.GetCurrentProcessIdFuncCall;
-import org.eolang.EOsm.Win32.GetEnvironmentVariableFuncCall;
-import org.eolang.EOsm.Win32.GetSystemTimeFuncCall;
+import org.eolang.EOsm.Win32.FtimeFuncCall;
+import org.eolang.EOsm.Win32.GetenvFuncCall;
+import org.eolang.EOsm.Win32.GetpidFuncCall;
 import org.eolang.EOsm.Win32.InetAddrFuncCall;
 import org.eolang.EOsm.Win32.ListenFuncCall;
 import org.eolang.EOsm.Win32.MkdirFuncCall;
 import org.eolang.EOsm.Win32.OpenFuncCall;
-import org.eolang.EOsm.Win32.ReadFileFuncCall;
 import org.eolang.EOsm.Win32.ReadFuncCall;
 import org.eolang.EOsm.Win32.RecvFuncCall;
 import org.eolang.EOsm.Win32.RenameFuncCall;
@@ -39,7 +38,6 @@ import org.eolang.EOsm.Win32.UnlinkFuncCall;
 import org.eolang.EOsm.Win32.WSACleanupFuncCall;
 import org.eolang.EOsm.Win32.WSAGetLastErrorFuncCall;
 import org.eolang.EOsm.Win32.WSAStartupFuncCall;
-import org.eolang.EOsm.Win32.WriteFileFuncCall;
 import org.eolang.EOsm.Win32.WriteFuncCall;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
@@ -62,9 +60,7 @@ public final class EOwin32$EOφ extends PhDefault implements Atom {
     static final Map<String, Function<Phi, Syscall>> FUNCTIONS = new HashMap<>();
 
     static {
-        EOwin32$EOφ.FUNCTIONS.put("GetCurrentProcessId", GetCurrentProcessIdFuncCall::new);
-        EOwin32$EOφ.FUNCTIONS.put("ReadFile", ReadFileFuncCall::new);
-        EOwin32$EOφ.FUNCTIONS.put("WriteFile", WriteFileFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("_getpid", GetpidFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("_open", OpenFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("_access", AccessFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("_stat64", Stat64FuncCall::new);
@@ -76,8 +72,8 @@ public final class EOwin32$EOφ extends PhDefault implements Atom {
         EOwin32$EOφ.FUNCTIONS.put("_read", ReadFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("_write", WriteFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("_close", CloseFuncCall::new);
-        EOwin32$EOφ.FUNCTIONS.put("GetEnvironmentVariable", GetEnvironmentVariableFuncCall::new);
-        EOwin32$EOφ.FUNCTIONS.put("GetSystemTime", GetSystemTimeFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("getenv", GetenvFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("_ftime32_s", FtimeFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("WSAStartup", WSAStartupFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("WSACleanup", WSACleanupFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("WSAGetLastError", WSAGetLastErrorFuncCall::new);

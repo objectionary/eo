@@ -49,6 +49,28 @@ final class PhApplicationTest {
     }
 
     @Test
+    void continuesPartialApplicationPositionally() {
+        MatcherAssert.assertThat(
+            "Positional application must continue into the next unset void, but it didnt",
+            new Dataized(
+                new PhApplication(
+                    new PhApplication(
+                        new PhDefault(
+                            new Attrs(
+                                new Attr("a", new AtVoid("a")),
+                                new Attr("b", new AtVoid("b"))
+                            )
+                        ),
+                        0, new Data.ToPhi(1L)
+                    ),
+                    0, new Data.ToPhi(2L)
+                ).take("b")
+            ).asNumber(),
+            Matchers.equalTo(2.0)
+        );
+    }
+
+    @Test
     void rendersMethodApplicationOnNumberAsTerm() {
         MatcherAssert.assertThat(
             "Method application on a number must render readably in φ-term, but it didnt",

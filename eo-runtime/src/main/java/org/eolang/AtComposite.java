@@ -54,6 +54,11 @@ public final class AtComposite implements Attribute {
     }
 
     @Override
+    public boolean vacant() {
+        return false;
+    }
+
+    @Override
     public String φTerm() {
         return Phi.LAMBDA;
     }

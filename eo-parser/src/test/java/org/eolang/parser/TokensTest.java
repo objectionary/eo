@@ -135,6 +135,34 @@ final class TokensTest {
     }
 
     @Test
+    void readsChainOnHorizontalBytesArg() {
+        final Tokens tokens = new Tokens(
+            "foo 00-01.as-i64", new Span("foo 00-01.as-i64", 1)
+        );
+        tokens.readName();
+        final List<Value> args = tokens.readArgs();
+        MatcherAssert.assertThat(
+            "a BYTES arg of the form `head.m1` must carry its chain — 1 link here",
+            args.get(0).chain(),
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
+    void consumesEntireChainOnBytesArg() {
+        final Tokens tokens = new Tokens(
+            "foo 00-01.as-i64", new Span("foo 00-01.as-i64", 1)
+        );
+        tokens.readName();
+        tokens.readArgs();
+        MatcherAssert.assertThat(
+            "after reading a BYTES arg, its `.method` tail must not be left dangling",
+            tokens.tail(),
+            Matchers.equalTo("")
+        );
+    }
+
+    @Test
     void stopsArgsBeforeSuffixMarker() {
         final Tokens tokens = new Tokens("foo a > x", new Span("foo a > x", 1));
         tokens.readName();

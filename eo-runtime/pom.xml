@@ -236,26 +236,6 @@
             <configuration>
               <skipProgramLints>
                 <lint>inconsistent-args</lint>
-                <!--
-                  @todo #5185:30min Remove this exclusion once WPA issue is fixed.
-                   The 'unlint-non-existing-defect' WPA rule incorrectly flags +unlint
-                   annotations for non-WPA rules (e.g. redundant-object, mandatory-package)
-                   as stale, even when those annotations suppress real defects from the
-                   file-level linter. This is a bug in WPA tracked at
-                   https://github.com/objectionary/wpa/issues/60 - remove this
-                   exclusion once that issue is resolved and a new WPA version is released.
-                -->
-                <lint>unlint-non-existing-defect</lint>
-                <!--
-                  @todo #5185:30min Remove this exclusion once WPA issue is fixed.
-                   The 'incorrect-number-of-attributes' WPA rule falsely flags valid EO
-                   partial application as an error. Applying fewer arguments than the
-                   formal arity is legal in EO - remaining attributes are left void.
-                   This is a bug in WPA tracked at
-                   https://github.com/objectionary/wpa/issues/61 - remove this
-                   exclusion once that issue is resolved and a new WPA version is released.
-                -->
-                <lint>incorrect-number-of-attributes</lint>
               </skipProgramLints>
               <skipSourceLints>
                 <!--
