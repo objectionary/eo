@@ -14,7 +14,6 @@
 +alias ss.front
 +alias ss.list
 +alias ss.reducedi
-+alias ss.slice
 +alias ss.withouti
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -64,13 +63,6 @@
       list passed
       ^
       accum.with item > [accum item index]
-
-
-  [shift] > shifted
-    slice > @
-      ^
-      shift
-      origin.length
 
   ++> tests-list-should-not-be-empty
     not. > @
@@ -165,19 +157,3 @@
         * 2 4
       * 0 1 2 4
 
-
-  ++> tests-shifted-with-shift-less-than-length
-    eq. > @
-      shifted.
-        list
-          * 8 2 3 4 5
-        2
-      * 3 4 5
-
-  ++> tests-shifted-with-shift-greater-than-length
-    eq. > @
-      shifted.
-        list
-          * 8 2 3 4 5
-        6
-      *
