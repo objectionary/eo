@@ -114,8 +114,8 @@ public final class Dataized {
         final byte[] weak = this.take();
         if (weak.length != 1) {
             throw new ExFailure(
-                "Can't dataize given bytes of length > 1 to boolean, bytes are: %s",
-                Arrays.toString(weak)
+                "Can't dataize bytes of length %d to boolean, exactly 1 byte is required, bytes are: %s",
+                weak.length, Arrays.toString(weak)
             );
         }
         return weak[0] == 1;
