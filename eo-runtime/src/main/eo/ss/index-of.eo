@@ -11,16 +11,16 @@
 
 [lst wanted] > index-of
   number > @
-    recidx lst 0
+    recidx lst
 
-  [tup pos] > recidx
+  [tup] > recidx
     if. > @
       tup.length.eq 0
       -1
       if.
         tup.head.eq wanted
-        pos
-        recidx tup.tail (pos.plus 1)
+        lst.length.minus tup.length
+        recidx tup.tail
 
   ++> tests-returns-index-of
     eq. > @

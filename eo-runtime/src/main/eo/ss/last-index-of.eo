@@ -10,9 +10,9 @@
 +spdx SPDX-License-Identifier: MIT
 
 [lst wanted] > last-index-of
-  reclast lst 0 > @
+  reclast lst > @
 
-  [tup pos] > reclast
+  [tup] > reclast
     if. > @
       tup.length.eq 0
       -1
@@ -20,10 +20,10 @@
         next.eq -1
         if.
           tup.head.eq wanted
-          pos
+          lst.length.minus tup.length
           -1
         next
-    reclast tup.tail (pos.plus 1) > next!
+    reclast tup.tail > next!
 
   ++> tests-finds-last-index-of
     eq. > @
