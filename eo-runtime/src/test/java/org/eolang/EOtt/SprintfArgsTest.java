@@ -77,7 +77,7 @@ final class SprintfArgsTest {
     }
 
     @Test
-    void rejectsExactlyTwoToThe63rdInsteadOfSaturating() {
+    void rejectsTwoPowerSixtyThreeInsteadOfSaturating() {
         final Phi tuple = Phi.Φ.take("tuple").copy();
         tuple.put("length", new Data.ToPhi(1));
         tuple.put("head", new Data.ToPhi(9_223_372_036_854_775_808.0));
@@ -94,18 +94,14 @@ final class SprintfArgsTest {
 
     @Test
     void acceptsLargestDoubleThatTrulyFitsInLongRange() {
-        // 2^63 - 2048: the representable double one ulp below 2^63 at this
-        // magnitude (doubles have no exact representation for Long.MAX_VALUE
-        // itself — 9_223_372_036_854_775_807.0 as a literal already rounds
-        // up to 2^63, which is exactly the boundary this fix must reject).
-        final double justBelowLimit = 9_223_372_036_854_773_760.0;
+        final double closest = 9_223_372_036_854_773_760.0;
         final Phi tuple = Phi.Φ.take("tuple").copy();
         tuple.put("length", new Data.ToPhi(1));
-        tuple.put("head", new Data.ToPhi(justBelowLimit));
+        tuple.put("head", new Data.ToPhi(closest));
         MatcherAssert.assertThat(
-            "a double strictly below 2^63 must still be accepted as a valid long",
+            "a double strictly below 2^63 (the representable double one ulp below it, since Long.MAX_VALUE itself isn't exactly representable and rounds up to 2^63) must still be accepted as a valid long",
             new SprintfArgs("%d", 1L, tuple.take("at")).formatted(),
-            Matchers.equalTo(new ListOf<>((long) justBelowLimit))
+            Matchers.equalTo(new ListOf<>((long) closest))
         );
     }
 
