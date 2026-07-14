@@ -235,7 +235,8 @@ final class Emissions {
             || head.kind() == Value.Kind.GROUP
             || head.kind() == Value.Kind.INTEGER
             || head.kind() == Value.Kind.FLOAT
-            || head.kind() == Value.Kind.STRING;
+            || head.kind() == Value.Kind.STRING
+            || head.kind() == Value.Kind.BYTES;
     }
 
     /**
