@@ -12,6 +12,7 @@
 
 +alias ss.eachi
 +alias ss.back
++alias ss.front
 +alias ss.list
 +alias ss.reducedi
 +alias ss.withouti
@@ -35,7 +36,9 @@
   [index item] > withi
     concat. > @
       with.
-        front index
+        front
+          ^
+          index
         item
       back
         ^
@@ -66,28 +69,6 @@
       list passed
       ^
       accum.with item > [accum item index]
-
-  [index] > front
-    if. > @
-      idx.eq 0
-      list *
-      if.
-        0.gt idx
-        back
-          ^
-          (number idx).neg
-        if.
-          (number idx).gte origin.length
-          ^
-          list
-            rechead origin
-    index > idx!
-
-    [tup] > rechead
-      if. > @
-        tup.length.eq idx
-        tup
-        rechead tup.tail
 
   [start end] > slice
     if. > @
@@ -235,54 +216,7 @@
         * 2 4
       * 0 1 2 4
 
-  ++> tests-simple-front
-    eq. > @
-      front.
-        list
-          * 1 2 3 4 5
-        1
-      * 1
-
-  ++> tests-list-front-with-zero-index
-    is-empty. > @
-      front.
-        list
-          * 1 2 3
-        0
-
-  ++> tests-list-front-with-length-index
-    eq. > @
-      front.
-        list
-          * 1 2 3
-        3
-      * 1 2 3
-
-  ++> tests-complex-front
-    eq. > @
-      front.
-        list
-          * "foo" 2.2 00-01 "bar"
-        2
-      * "foo" 2.2
-
-  ++> tests-front-with-negative
-    eq. > @
-      front.
-        list
-          * 1 2 3
-        -1
-      * 3
-
-  ++> tests-complex-front-with-negative
-    eq. > @
-      front.
-        list
-          * "foo" 2.2 00-01 "bar"
-        -3
-      * 2.2 00-01 "bar"
-
-  ++> tests-simple-slice
+  [] +> tests-simple-slice
     eq. > @
       slice.
         list
