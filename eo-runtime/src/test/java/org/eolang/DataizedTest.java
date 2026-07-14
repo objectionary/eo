@@ -65,4 +65,17 @@ final class DataizedTest {
             "requesting an unsupported type was expected to fail with ExFailure"
         );
     }
+
+    @Test
+    void reportsActualLengthWhenBoolIsEmpty() {
+        MatcherAssert.assertThat(
+            "the message must report the true (zero) length, not claim it's over one",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(new PhDefault(new byte[0])).asBool(),
+                "dataizing empty bytes as boolean was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.containsString("length 0")
+        );
+    }
 }
