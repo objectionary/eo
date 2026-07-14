@@ -85,4 +85,20 @@ public interface Phi extends Data, Term {
      * @return Forma of it as {@link String}
      */
     String forma();
+
+    /**
+     * Resolve this object to its normal form, running dispatch, λ and φ but
+     * without extracting its data.
+     *
+     * <p>The point is to reveal whether the object is a terminated
+     * computation (⊥) without forcing it: a ⊥ — whether written as {@code T},
+     * produced by an unset void, or returned by a failing atom — surfaces here
+     * as a {@link PhTerminator} instance, detectable by identity. A genuine,
+     * unrecoverable failure encountered while resolving (a type violation, a
+     * missing Δ) propagates as an {@link ExFailure}, exactly as it would
+     * during dataization.</p>
+     *
+     * @return The object in its normal form
+     */
+    Phi normalized();
 }

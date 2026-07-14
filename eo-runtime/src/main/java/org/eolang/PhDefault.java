@@ -190,7 +190,7 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public void put(final int pos, final Phi object) {
-        this.put(this.attr(pos), object);
+        this.put(this.vacancy(pos), object);
     }
 
     @Override
@@ -265,6 +265,25 @@ public class PhDefault implements Phi, Cloneable {
             );
         }
         return bytes;
+    }
+
+    @Override
+    public Phi normalized() {
+        this.activate();
+        final Phi result;
+        if (this instanceof Atom) {
+            result = this.take(Phi.LAMBDA).normalized();
+        } else if (this.data == null && this.attrs.containsKey(Phi.PHI)) {
+            final Phi phi = this.take(Phi.PHI).normalized();
+            if (phi instanceof PhTerminator) {
+                result = phi;
+            } else {
+                result = this;
+            }
+        } else {
+            result = this;
+        }
+        return result;
     }
 
     @Override
@@ -365,6 +384,36 @@ public class PhDefault implements Phi, Cloneable {
             form = String.join(".", PhPackage.GLOBAL, pkg, name);
         }
         return form;
+    }
+
+    /**
+     * Resolve the attribute name for a positional write, continuing partial
+     * application when needed.
+     *
+     * <p>The attribute at the requested position is used as-is when it can
+     * still receive a value. When it's a void that has already been set — as
+     * happens when a curried object is fed its next argument — the write is
+     * redirected to the first still-unset void that follows, in declaration
+     * order. This is the only case whose behavior changes: previously such a
+     * write threw {@link ExReadOnly}. Positions that point at non-void
+     * attributes keep failing, so passing too many arguments is still
+     * reported.</p>
+     *
+     * @param pos Position of the attribute
+     * @return The name of the attribute to write to
+     */
+    private String vacancy(final int pos) {
+        String name = this.attr(pos);
+        if (!this.attrs.get(name).vacant()) {
+            for (int idx = pos + 1; idx < this.order.size(); ++idx) {
+                final String next = this.order.get(idx);
+                if (this.attrs.get(next).vacant()) {
+                    name = next;
+                    break;
+                }
+            }
+        }
+        return name;
     }
 
     /**

@@ -152,6 +152,11 @@ public final class PhSafe implements Phi, Atom {
     }
 
     @Override
+    public Phi normalized() {
+        return this.through(this.origin::normalized);
+    }
+
+    @Override
     public Phi lambda() {
         return this.through(new AtomSafe(this.origin)::lambda, ".λ");
     }

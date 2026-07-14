@@ -105,6 +105,11 @@ public interface Data {
         }
 
         @Override
+        public Phi normalized() {
+            return this.object.normalized();
+        }
+
+        @Override
         public String φTerm() {
             return this.object.φTerm();
         }

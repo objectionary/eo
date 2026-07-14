@@ -82,6 +82,11 @@ public final class AtVoid implements Attribute {
     }
 
     @Override
+    public boolean vacant() {
+        return this.object.get() == null;
+    }
+
+    @Override
     public String φTerm() {
         final Phi phi = this.object.get();
         final String term;

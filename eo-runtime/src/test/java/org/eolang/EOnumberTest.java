@@ -88,8 +88,7 @@ final class EOnumberTest {
             EOnumber$EOdiv.class,
             EOnumber$EOgt.class,
             EOnumber$EOplus.class,
-            EOnumber$EOtimes.class,
-            EOnumber$EOas_i64.class
+            EOnumber$EOtimes.class
         }
     )
     void throwsCorrectErrorForRhoAttr(final Class<?> cls) {

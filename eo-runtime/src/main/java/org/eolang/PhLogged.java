@@ -98,6 +98,11 @@ public final class PhLogged implements Phi {
     }
 
     @Override
+    public Phi normalized() {
+        return this.origin.normalized();
+    }
+
+    @Override
     public String φTerm() {
         return this.origin.φTerm();
     }

@@ -34,6 +34,32 @@ public interface Msvcrt extends Library {
     Msvcrt INSTANCE = Native.load("msvcrt", Msvcrt.class);
 
     /**
+     * Standard input file descriptor.
+     */
+    int STDIN_FILENO = 0;
+
+    /**
+     * Standard output file descriptor.
+     */
+    int STDOUT_FILENO = 1;
+
+    /**
+     * Open flag for reading only.
+     */
+    int O_RDONLY = 0x0000;
+
+    /**
+     * Open flag for reading and writing.
+     */
+    int O_RDWR = 0x0002;
+
+    /**
+     * Open flag that keeps the bytes untouched, disabling the CRT's text-mode
+     * translation between {@code \n} and {@code \r\n}.
+     */
+    int O_BINARY = 0x8000;
+
+    /**
      * Opens a file and returns a file descriptor.
      *
      * <p>The native {@code _open} is variadic, so {@code mode} is a trailing
@@ -125,4 +151,45 @@ public interface Msvcrt extends Library {
      * @return Zero on success, -1 on error
      */
     int rename(String from, String target);
+
+    /**
+     * Returns the process identifier of the calling process, the CRT
+     * counterpart of Kernel32's {@code GetCurrentProcessId}.
+     * @return Process identifier
+     */
+    int _getpid();
+
+    /**
+     * Gets an environment variable's value, the ISO C export without a leading
+     * underscore.
+     * @param name Name of the variable
+     * @return Value of the variable, or {@code null} when it is not defined
+     */
+    String getenv(String name);
+
+    /**
+     * Gets the current time as seconds and milliseconds since the Unix epoch,
+     * filling a {@code struct __timeb32}. It replaces Kernel32's wall-clock
+     * {@code GetSystemTime}, lining the win32 clock up with the posix
+     * {@code gettimeofday}: like {@code gettimeofday} it hands back the raw
+     * status code, unlike the older {@code _ftime} that returns {@code void}.
+     * @param timeb Structure to fill with the current time
+     * @return Zero on success, an errno value on failure
+     */
+    int _ftime32_s(Structure timeb);
+
+    /**
+     * Duplicates a file descriptor.
+     * @param descriptor File descriptor to duplicate
+     * @return New file descriptor, or -1 on error
+     */
+    int _dup(int descriptor);
+
+    /**
+     * Reassigns a file descriptor to refer to the same file as another one.
+     * @param descriptor File descriptor to duplicate
+     * @param other File descriptor to reassign
+     * @return Zero on success, -1 on error
+     */
+    int _dup2(int descriptor, int other);
 }

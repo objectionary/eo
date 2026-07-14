@@ -1,9 +1,6 @@
 # Cosine of `num` radians as `org.eolang.number`, taken from the sine of the
 # argument advanced by a quarter turn, since cos(x) equals sin(x + pi/2).
 
-+alias ms.abs
-+alias ms.pi
-+alias ms.sine
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package ms

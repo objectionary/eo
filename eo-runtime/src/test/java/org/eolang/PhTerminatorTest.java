@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link PhTerminator}.
  * @since 0.73.1
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class PhTerminatorTest {
 
     @Test
@@ -113,6 +114,33 @@ final class PhTerminatorTest {
         Assertions.assertDoesNotThrow(
             () -> new PhTerminator().put(Phi.RHO, new PhDefault()),
             "binding ρ onto the bottom object must not abort"
+        );
+    }
+
+    @Test
+    void resolvesADataValueToNonBottom() {
+        MatcherAssert.assertThat(
+            "resolving a real data value must not be seen as a bottom",
+            new Data.ToPhi(42L).normalized(),
+            Matchers.not(Matchers.instanceOf(PhTerminator.class))
+        );
+    }
+
+    @Test
+    void resolvesTheBottomToItself() {
+        MatcherAssert.assertThat(
+            "resolving the bottom object must reveal a bottom",
+            new PhTerminator().normalized(),
+            Matchers.instanceOf(PhTerminator.class)
+        );
+    }
+
+    @Test
+    void resolvesALazyDispatchToBottom() {
+        MatcherAssert.assertThat(
+            "a lazy dispatch that yields a bottom must resolve to a PhTerminator without forcing",
+            new PhDispatch(new PhDefault(), "missing").normalized(),
+            Matchers.instanceOf(PhTerminator.class)
         );
     }
 }
