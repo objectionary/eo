@@ -38,6 +38,16 @@ final class SprintfArgs {
      */
     private static final char PERCENT = '%';
 
+    /**
+     * One past the largest {@code double} that still narrows to a valid
+     * {@code long} without saturating: {@code 2^63}, exactly one ulp above
+     * {@link Long#MAX_VALUE}. {@code (double) Long.MAX_VALUE} itself rounds
+     * up to this same value, so comparing against it directly (rather than
+     * against the rounded {@code Long.MAX_VALUE}) is what makes the {@code
+     * >=} guard in {@link #toLong(double)} exact.
+     */
+    private static final double LONG_UPPER_LIMIT = 0x1.0p63;
+
     static {
         SprintfArgs.CONVERSION.put('s', Dataized::asString);
         SprintfArgs.CONVERSION.put('d', element -> SprintfArgs.toLong(element.asNumber()));
@@ -144,7 +154,7 @@ final class SprintfArgs {
      * @return The number as {@code long}
      */
     private static long toLong(final double number) {
-        if (number < Long.MIN_VALUE || number > Long.MAX_VALUE) {
+        if (number < Long.MIN_VALUE || number >= SprintfArgs.LONG_UPPER_LIMIT) {
             throw new ExFailure(
                 "The number %s doesn't fit into long range for the '%%d' conversion",
                 number
