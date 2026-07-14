@@ -43,21 +43,6 @@
         ^
         origin.length.minus index
 
-  [other] > eq
-    and. > @
-      eq.
-        origin.length
-        other.length
-      receq origin other
-
-    [first second] > receq
-      if. > @
-        first.length.eq 0
-        true
-        and.
-          first.head.eq second.head
-          receq first.tail second.tail
-
   [passed] > concat
     reducedi > @
       list passed
@@ -164,7 +149,7 @@
         * 4 0
         * 7 3
 
-  [] +> tests-equality-test
+  ++> tests-equality-test
     eq. > @
       list
         * 1 2 3
