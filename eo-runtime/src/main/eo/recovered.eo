@@ -1,0 +1,50 @@
+# Recover from a terminated computation (⊥).
+# Resolves `value` to its normal form; if that is a ⊥, behaves as
+# `alternative`, otherwise as `value`. This is the only way to intercept a
+# ⊥ and keep going: a ⊥ that is never recovered terminates the program.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
+
+[value alternative] > recovered /bytes
+
+  ++> tests-keeps-the-value-when-not-terminated
+    eq. > @
+      recovered 42 7
+      42
+
+  ++> tests-falls-back-to-alternative-when-terminated
+    eq. > @
+      recovered
+        2.as-i64.div 0.as-i64
+        7
+      7
+
+  ++> tests-recovers-the-inner-recovery
+    eq. > @
+      recovered
+        recovered
+          2.as-i64.div 0.as-i64
+          3.as-i64.div 0.as-i64
+        42
+      42
+
+  ++> tests-recovers-when-a-provided-fallback-terminates
+    eq. > @
+      recovered
+        2.as-i64.div
+          0.as-i64
+          T "cannot divide" > [msg]
+        42
+      42
+
+  ++> throws-when-both-are-terminated
+    recovered > @
+      2.as-i64.div 0.as-i64
+      5.as-i64.div 0.as-i64
