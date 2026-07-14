@@ -1,5 +1,5 @@
 # Wall-clock time source backed by the operating system.
-# Reads the underlying syscall: `gettimeofday` on POSIX, `GetSystemTime` on Windows.
+# Reads the underlying syscall: `gettimeofday` on POSIX, `_ftime32_s` on Windows.
 # Decorates an `i64` holding the current time in milliseconds since the Unix epoch.
 
 +alias sm.os
@@ -16,11 +16,14 @@
   as-i64. > @
     if.
       os.is-windows
-      (win32 "GetSystemTime" *).milliseconds
+      plus.
+        timeb.time.times 1000
+        timeb.millitm
       plus.
         timeval.tv-sec.times 1000
         as-number.
           timeval.tv-usec.as-i64.div 1000.as-i64
+  (win32 "_ftime32_s" *).output > timeb
   (posix "gettimeofday" *).output > timeval
 
   ++> tests-reads-positive-millis

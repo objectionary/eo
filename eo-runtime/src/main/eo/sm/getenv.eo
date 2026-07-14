@@ -19,8 +19,8 @@
     if.
       os.is-windows
       win32
-        "GetEnvironmentVariable"
-        * name 512
+        "getenv"
+        * name
       posix
         "getenv"
         * name
