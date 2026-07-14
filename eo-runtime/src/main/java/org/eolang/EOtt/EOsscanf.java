@@ -151,10 +151,8 @@ public final class EOsscanf extends PhDefault implements Atom {
     private static Phi converted(final char symbol, final String str) {
         if (!EOsscanf.CONVERSION.containsKey(symbol)) {
             throw new ExFailure(
-                String.format(
-                    "The format %c is unsupported, only %s formats can be used",
-                    symbol, "%s, %d, %f"
-                )
+                "The format %c is unsupported, only %s formats can be used",
+                symbol, "%s, %d, %f"
             );
         }
         return EOsscanf.CONVERSION.get(symbol).apply(str);
