@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
  * Tests for {@link SprintfArgs}.
  * @since 0.57.4
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class SprintfArgsTest {
 
     @Test
@@ -64,14 +65,13 @@ final class SprintfArgsTest {
         final Phi tuple = Phi.Φ.take("tuple").copy();
         tuple.put("length", new Data.ToPhi(1));
         tuple.put("head", new Data.ToPhi(1.0e30));
-        final ExFailure ex = Assertions.assertThrows(
-            ExFailure.class,
-            () -> new SprintfArgs("%d", 1L, tuple.take("at")).formatted(),
-            "must throw ExFailure, not an internal java.util.Formatter exception"
-        );
         MatcherAssert.assertThat(
             "the ExFailure message must name the out-of-range number, not be swallowed by a second, accidental format pass",
-            ex.getMessage(),
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new SprintfArgs("%d", 1L, tuple.take("at")).formatted(),
+                "must throw ExFailure, not an internal java.util.Formatter exception"
+            ).getMessage(),
             Matchers.containsString("doesn't fit into long range")
         );
     }
@@ -81,14 +81,13 @@ final class SprintfArgsTest {
         final Phi tuple = Phi.Φ.take("tuple").copy();
         tuple.put("length", new Data.ToPhi(1));
         tuple.put("head", new Data.ToPhi("x"));
-        final ExFailure ex = Assertions.assertThrows(
-            ExFailure.class,
-            () -> new SprintfArgs("%z", 1L, tuple.take("at")).formatted(),
-            "must throw ExFailure, not an internal java.util.Formatter exception"
-        );
         MatcherAssert.assertThat(
             "the ExFailure message must name the unsupported format char, not be swallowed by a second, accidental format pass",
-            ex.getMessage(),
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new SprintfArgs("%z", 1L, tuple.take("at")).formatted(),
+                "must throw ExFailure, not an internal java.util.Formatter exception"
+            ).getMessage(),
             Matchers.containsString("is unsupported")
         );
     }
