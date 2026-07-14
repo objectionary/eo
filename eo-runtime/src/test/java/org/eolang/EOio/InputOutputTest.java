@@ -21,9 +21,7 @@ import java.util.function.Supplier;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.EOsm.Posix.CStdLib;
-import org.eolang.EOsm.Win32.Kernel32;
-import org.eolang.EOsm.Win32.WinBase;
-import org.eolang.EOsm.Win32.WinNT;
+import org.eolang.EOsm.Win32.Msvcrt;
 import org.eolang.PhApplication;
 import org.eolang.PhDispatch;
 import org.eolang.Phi;
@@ -81,9 +79,14 @@ final class InputOutputTest {
     private static final String WRITE = "write";
 
     /**
-     * Write object.
+     * Windows read syscall.
      */
-    private static final String READ_FILE = "ReadFile";
+    private static final String WIN_READ = "_read";
+
+    /**
+     * Windows write syscall.
+     */
+    private static final String WIN_WRITE = "_write";
 
     /**
      * Read object.
@@ -195,6 +198,8 @@ final class InputOutputTest {
 
     /**
      * Redirects windows stdin.
+     * The C runtime keeps its own descriptor table, so the redirection reassigns
+     * descriptor 0 with {@code _dup2}, exactly like the posix helper does.
      * @param temp Temporary directory
      * @param content Content of stdin
      * @param action Action to run
@@ -211,52 +216,43 @@ final class InputOutputTest {
         ).toFile();
         file.deleteOnExit();
         Files.write(file.toPath(), content.getBytes(StandardCharsets.UTF_8));
-        final WinNT.HANDLE handle = Kernel32.INSTANCE.CreateFile(
-            file.getAbsolutePath(),
-            Kernel32.GENERIC_READ,
-            0,
-            null,
-            Kernel32.OPEN_EXISTING,
-            Kernel32.FILE_ATTRIBUTE_NORMAL,
-            null
+        final int descriptor = Msvcrt.INSTANCE._open(
+            file.getAbsolutePath(), Msvcrt.O_RDONLY | Msvcrt.O_BINARY, 0
         );
-        assert handle != WinBase.INVALID_HANDLE_VALUE;
-        final WinNT.HANDLE origin = Kernel32.INSTANCE.GetStdHandle(Kernel32.STD_INPUT_HANDLE);
-        Kernel32.INSTANCE.SetStdHandle(Kernel32.STD_INPUT_HANDLE, handle);
+        assert descriptor >= 0;
+        final int origin = Msvcrt.INSTANCE._dup(Msvcrt.STDIN_FILENO);
+        Msvcrt.INSTANCE._dup2(descriptor, Msvcrt.STDIN_FILENO);
         final byte[] read = action.get();
-        Kernel32.INSTANCE.SetStdHandle(Kernel32.STD_INPUT_HANDLE, origin);
-        Kernel32.INSTANCE.CloseHandle(handle);
+        Msvcrt.INSTANCE._dup2(origin, Msvcrt.STDIN_FILENO);
+        Msvcrt.INSTANCE._close(origin);
+        Msvcrt.INSTANCE._close(descriptor);
         return read;
     }
 
     /**
      * Redirects Windows stdout.
+     * The C runtime keeps its own descriptor table, so the redirection reassigns
+     * descriptor 1 with {@code _dup2}, exactly like the posix helper does.
      * @param temp Temporary directory
      * @param action Action to execute
      * @return Stdout as file
      * @throws IOException If fails to create temporary file
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static File windowsStdout(final Path temp, final Runnable action) throws IOException {
         final File file = Files.createTempFile(
             temp, String.valueOf(action.hashCode()), null
         ).toFile();
         file.deleteOnExit();
-        final WinNT.HANDLE handle = Kernel32.INSTANCE.CreateFile(
-            file.getAbsolutePath(),
-            Kernel32.GENERIC_WRITE,
-            0,
-            null,
-            Kernel32.CREATE_ALWAYS,
-            Kernel32.FILE_ATTRIBUTE_NORMAL,
-            null
+        final int descriptor = Msvcrt.INSTANCE._open(
+            file.getAbsolutePath(), Msvcrt.O_RDWR | Msvcrt.O_BINARY, 0
         );
-        assert handle != WinBase.INVALID_HANDLE_VALUE;
-        final WinNT.HANDLE origin = Kernel32.INSTANCE.GetStdHandle(Kernel32.STD_OUTPUT_HANDLE);
-        Kernel32.INSTANCE.SetStdHandle(Kernel32.STD_OUTPUT_HANDLE, handle);
+        assert descriptor >= 0;
+        final int origin = Msvcrt.INSTANCE._dup(Msvcrt.STDOUT_FILENO);
+        Msvcrt.INSTANCE._dup2(descriptor, Msvcrt.STDOUT_FILENO);
         action.run();
-        Kernel32.INSTANCE.SetStdHandle(Kernel32.STD_OUTPUT_HANDLE, origin);
-        Kernel32.INSTANCE.CloseHandle(handle);
+        Msvcrt.INSTANCE._dup2(origin, Msvcrt.STDOUT_FILENO);
+        Msvcrt.INSTANCE._close(origin);
+        Msvcrt.INSTANCE._close(descriptor);
         return file;
     }
 
@@ -699,7 +695,7 @@ final class InputOutputTest {
     }
 
     /**
-     * Windows 'FileRead' syscall test.
+     * Windows '_read' syscall test.
      * @since 0.40
      */
     @Nested
@@ -722,12 +718,12 @@ final class InputOutputTest {
                                     new PhApplication(
                                         Phi.Φ.take(InputOutputTest.WIN).copy(),
                                         "name",
-                                        new Data.ToPhi(InputOutputTest.READ_FILE)
+                                        new Data.ToPhi(InputOutputTest.WIN_READ)
                                     ),
                                     "args",
                                     new Data.ToPhi(
                                         new Phi[]{
-                                            new Data.ToPhi(Kernel32.STD_INPUT_HANDLE),
+                                            new Data.ToPhi(Msvcrt.STDIN_FILENO),
                                             new Data.ToPhi(content.length()),
                                         }
                                     )
@@ -757,12 +753,12 @@ final class InputOutputTest {
                                     new PhApplication(
                                         Phi.Φ.take(InputOutputTest.WIN).copy(),
                                         0,
-                                        new Data.ToPhi(InputOutputTest.READ_FILE)
+                                        new Data.ToPhi(InputOutputTest.WIN_READ)
                                     ),
                                     1,
                                     new Data.ToPhi(
                                         new Phi[]{
-                                            new Data.ToPhi(Kernel32.STD_INPUT_HANDLE),
+                                            new Data.ToPhi(Msvcrt.STDIN_FILENO),
                                             new Data.ToPhi(content.length() * 2),
                                         }
                                     )
@@ -790,12 +786,12 @@ final class InputOutputTest {
                                 new PhApplication(
                                     Phi.Φ.take(InputOutputTest.WIN).copy(),
                                     0,
-                                    new Data.ToPhi(InputOutputTest.READ_FILE)
+                                    new Data.ToPhi(InputOutputTest.WIN_READ)
                                 ),
                                 1,
                                 new Data.ToPhi(
                                     new Phi[]{
-                                        new Data.ToPhi(Kernel32.STD_INPUT_HANDLE),
+                                        new Data.ToPhi(Msvcrt.STDIN_FILENO),
                                         new Data.ToPhi(10),
                                     }
                                 )
@@ -822,12 +818,12 @@ final class InputOutputTest {
                                 new PhApplication(
                                     Phi.Φ.take(InputOutputTest.WIN).copy(),
                                     0,
-                                    new Data.ToPhi(InputOutputTest.READ_FILE)
+                                    new Data.ToPhi(InputOutputTest.WIN_READ)
                                 ),
                                 1,
                                 new Data.ToPhi(
                                     new Phi[]{
-                                        new Data.ToPhi(Kernel32.STD_INPUT_HANDLE),
+                                        new Data.ToPhi(Msvcrt.STDIN_FILENO),
                                         new Data.ToPhi(5),
                                     }
                                 )
@@ -915,7 +911,7 @@ final class InputOutputTest {
     }
 
     /**
-     * Windows `FileWrite` syscall test.
+     * Windows `_write` syscall test.
      * @since 0.40
      */
     @Nested
@@ -928,7 +924,7 @@ final class InputOutputTest {
             throws IOException {
             final String msg = "writes to windows stdout";
             MatcherAssert.assertThat(
-                "The win32 'WriteFile' call should have written to standard output, but it didn't",
+                "The win32 '_write' call should have written to standard output, but it didn't",
                 Files.readString(
                     Paths.get(
                         InputOutputTest.windowsStdout(
@@ -937,14 +933,14 @@ final class InputOutputTest {
                                 new Dataized(
                                     new PhApplication(
                                         new PhApplication(
-                                            Phi.Φ.take("sm.win32").copy(),
+                                            Phi.Φ.take(InputOutputTest.WIN).copy(),
                                             0,
-                                            new Data.ToPhi("WriteFile")
+                                            new Data.ToPhi(InputOutputTest.WIN_WRITE)
                                         ),
                                         1,
                                         new Data.ToPhi(
                                             new Phi[]{
-                                                new Data.ToPhi(Kernel32.STD_OUTPUT_HANDLE),
+                                                new Data.ToPhi(Msvcrt.STDOUT_FILENO),
                                                 new Data.ToPhi(msg),
                                                 new Data.ToPhi(msg.length()),
                                             }
