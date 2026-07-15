@@ -7,8 +7,6 @@
 # takes the first environment variable in the list TMP, TEMP, USERPROFILE.
 # If none of these are found, it returns the Windows directory (C:\Windows).
 
-+alias fs.dir
-+alias fs.file
 +alias sm.getenv
 +alias sm.os
 +architect yegor256@gmail.com
