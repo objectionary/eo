@@ -90,6 +90,18 @@ final class Pretty {
         for (final Pretty.Node child : node.children) {
             block.append('\n').append(Pretty.layout(child, indent + 1));
         }
+        if (!node.pipes.isEmpty()) {
+            final Optional<String> flat = Pretty.inlined(node.pipes);
+            block.append('\n').append(Pretty.STEP.repeat(indent)).append('|');
+            if (flat.isPresent()) {
+                block.append(' ').append(flat.get()).append(node.pipetail);
+            } else {
+                block.append(node.pipetail);
+                for (final Pretty.Node arg : node.pipes) {
+                    block.append('\n').append(Pretty.layout(arg, indent + 1));
+                }
+            }
+        }
         return block.toString();
     }
 
@@ -193,19 +205,37 @@ final class Pretty {
         private final List<Pretty.Node> children;
 
         /**
+         * The applied arguments of a fused formation-application (§3.14),
+         * rendered on a {@code |} continuation line. Empty for every
+         * object that is not a pipe fusion.
+         */
+        private final List<Pretty.Node> pipes;
+
+        /**
+         * The suffix carried by the {@code |} continuation line (the
+         * name the pipe supplies), possibly empty.
+         */
+        private final String pipetail;
+
+        /**
          * Ctor.
          * @param head The rendered head
          * @param suffix The rendered suffix
          * @param formation Whether it is a formation
          * @param kids The children
+         * @param applied The pipe-applied arguments
+         * @param pipesuffix The {@code |} line's suffix
          * @checkstyle ParameterNumberCheck (5 lines)
          */
         Node(final String head, final String suffix, final boolean formation,
-            final List<Pretty.Node> kids) {
+            final List<Pretty.Node> kids, final List<Pretty.Node> applied,
+            final String pipesuffix) {
             this.base = head;
             this.tail = suffix;
             this.abstractt = formation;
             this.children = kids;
+            this.pipes = applied;
+            this.pipetail = pipesuffix;
         }
 
         /**
@@ -214,13 +244,20 @@ final class Pretty {
          * @return The node
          */
         static Pretty.Node parse(final Xnav line) {
+            final Optional<Xnav> pipe = line.elements(Filter.withName("pipe")).findFirst();
             return new Pretty.Node(
                 line.attribute("base").text().orElse(""),
                 line.attribute("tail").text().orElse(""),
                 "yes".equals(line.attribute("abstract").text().orElse("no")),
                 line.elements(Filter.withName("line"))
                     .map(Pretty.Node::parse)
-                    .collect(Collectors.toList())
+                    .collect(Collectors.toList()),
+                pipe.map(
+                    node -> node.elements(Filter.withName("line"))
+                        .map(Pretty.Node::parse)
+                        .collect(Collectors.toList())
+                ).orElse(List.of()),
+                pipe.flatMap(node -> node.attribute("tail").text()).orElse("")
             );
         }
     }

@@ -76,6 +76,25 @@
     </xsl:if>
     <xsl:value-of select="$eol"/>
   </xsl:template>
+  <!-- FUSED FORMATION-APPLICATION (§3.14): an anonymous formation with
+       applied arguments — non-void children without a name. It cannot be
+       rendered as a plain formation (the args are not attributes), so we
+       emit the pipe form: the formation's named attributes as the body,
+       and the applied args on a `|` continuation carrying the name. -->
+  <xsl:template match="o[eo:abstract(.) and not(eo:has-data(.)) and o[not(eo:void(.)) and not(@name)]]" mode="tree" priority="1">
+    <line abstract="yes" tail="">
+      <xsl:attribute name="base">
+        <xsl:apply-templates select="." mode="head"/>
+      </xsl:attribute>
+      <xsl:apply-templates select="o[not(eo:void(.)) and @name]" mode="tree"/>
+      <pipe>
+        <xsl:attribute name="tail">
+          <xsl:apply-templates select="." mode="tail"/>
+        </xsl:attribute>
+        <xsl:apply-templates select="o[not(eo:void(.)) and not(@name)]" mode="tree"/>
+      </pipe>
+    </line>
+  </xsl:template>
   <!-- OBJECT, NOT FREE ATTRIBUTE -->
   <xsl:template match="o[not(eo:void(.)) and not(@name=$eo:lambda)]" mode="tree">
     <line>

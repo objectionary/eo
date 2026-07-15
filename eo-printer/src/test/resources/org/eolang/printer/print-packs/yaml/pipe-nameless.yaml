@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+origin: |
+  [] > app
+    [x]
+      x.plus x > @
+    | 5 > y
+
+printed: |
+  [] > app
+    [x]
+      x.plus x > @
+    | 5 > y
