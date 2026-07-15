@@ -83,6 +83,9 @@ final class ChainEmission {
         );
         if (this.chain.isEmpty()) {
             Emissions.openValue(this.emit, name, this.head, this.span.line());
+            if (!this.suffix.handle().isEmpty()) {
+                this.emit.local(this.suffix.handle());
+            }
             if (this.suffix.constant()) {
                 this.emit.constant();
             }
@@ -102,6 +105,9 @@ final class ChainEmission {
                 name, ".".concat(last.name()), this.span.line(), last.dot()
             );
             this.emit.method(last.fragile());
+            if (!this.suffix.handle().isEmpty()) {
+                this.emit.local(this.suffix.handle());
+            }
             if (this.suffix.constant()) {
                 this.emit.constant();
             }

@@ -195,6 +195,9 @@ final class LnFormation implements Line {
             suffix.attribute(this.span.line(), this.span.indent()),
             null, this.span.line(), this.span.indent()
         );
+        if (!suffix.handle().isEmpty()) {
+            emit.local(suffix.handle());
+        }
         if (binding != null) {
             emit.slot(Emissions.bindingTag(binding));
         }

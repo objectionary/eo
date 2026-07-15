@@ -163,11 +163,30 @@ final class SuffixTest {
 
     @Test
     void rejectsTrailingGarbageAfterAuto() {
-        final Span span = new Span("5 >> garbage", 1);
+        final Span span = new Span("5 >> foo bar", 1);
         Assertions.assertThrows(
             ParseError.class,
-            () -> new Suffix(">> garbage", span, 2),
-            "an auto-name suffix must consume the complete tail"
+            () -> new Suffix(">> foo bar", span, 2),
+            "an auto-name suffix must consume the complete tail after its handle"
+        );
+    }
+
+    @Test
+    void parsesAutoNameHandle() {
+        MatcherAssert.assertThat(
+            "`>> fibo` must yield Form.AUTO carrying the file-local handle",
+            new Suffix(" >> fibo", new Span("[] >> fibo", 1), 2).handle(),
+            Matchers.equalTo("fibo")
+        );
+    }
+
+    @Test
+    void combinesConstWithHandle() {
+        final Suffix suffix = new Suffix(" >>! fibo", new Span("[] >>! fibo", 1), 2);
+        MatcherAssert.assertThat(
+            "`>>! fibo` must report both the const marker and the handle",
+            suffix.constant() && "fibo".equals(suffix.handle()),
+            Matchers.is(true)
         );
     }
 

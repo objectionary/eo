@@ -3,8 +3,8 @@
 ---
 line: 1
 message: |-
-  [1:5] error: 'trailing garbage after name suffix'
-  5 >> garbage
-       ^
+  [1:9] error: 'trailing garbage after name suffix'
+  5 >> foo bar
+           ^
 input: |
-  5 >> garbage
+  5 >> foo bar
