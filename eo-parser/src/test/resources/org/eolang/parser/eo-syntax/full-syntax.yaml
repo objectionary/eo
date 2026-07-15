@@ -25,7 +25,7 @@ input: |
   [] > main
     500.43.@ > one
     "Hello, друг!" > hello!
-    [tt a] > atom /bytes
+    [qux a] > atom /bytes
 
     [] > with-void-phi
       [@] > x

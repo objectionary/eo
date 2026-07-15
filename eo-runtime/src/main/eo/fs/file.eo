@@ -247,7 +247,7 @@
     (file ".").is-directory > @
 
   ++> tests-check-if-absent-file-does-not-exist
-    (file "absent.tt").exists.not > @
+    (file "absent.txt").exists.not > @
 
   ++> tests-returns-self-after-deleting
     temp.deleted.path.eq temp.path > @

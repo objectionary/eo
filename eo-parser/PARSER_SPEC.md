@@ -819,7 +819,7 @@ foo a b                               ← happlication, horizontally-completed
 .method > result                      ← rejected: cannot wrap horizontal app
 
 io.stdout                             ← hmethod (0 hargs), open
-  tt.sprintf                          ← deeper arg, fine
+  string.sprintf                      ← deeper arg, fine
 
 x.put 2                               ← happlication, horizontally-completed
   something                           ← rejected: closed for deeper children

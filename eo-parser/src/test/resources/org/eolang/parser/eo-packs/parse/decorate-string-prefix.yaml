@@ -14,11 +14,11 @@ sheets:
   - /org/eolang/parser/parse/decorate.xsl
 asserts:
   - /object[not(errors)]
-  - /object/o[@name='main']/o[@name='φ' and @base='Φ.tt.text']/o[@base='Φ.string' and not(@name)]
+  - /object/o[@name='main']/o[@name='φ' and @base='Φ.string.text']/o[@base='Φ.string' and not(@name)]
   - /object/o[@name='main']/o[@name='y' and @base='Φ.stringify']
   - /object/o[@name='main']/o[@name='z' and @base='Φ.strings']
 input: |
-  +decorate string tt.text
+  +decorate string string.text
 
   [] > main
     "Hello" > @

@@ -19,6 +19,6 @@ input: |
 
     [] > app
       Q.io.stdout > @
-        Q.tt.sprintf
+        Q.string.sprintf
           "The result is %d\n"
           foo

@@ -10,7 +10,7 @@ asserts:
 input: |
   +alias io.stdin
   +alias io.stdout
-  +alias tt.scanner
+  +alias string.scanner
   +home https://github.com/objectionary/eo
   +package test
   +version 0.0.0

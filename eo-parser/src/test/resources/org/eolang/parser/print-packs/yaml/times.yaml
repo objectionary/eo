@@ -5,14 +5,14 @@
 origin: |
   [] > app
     Q.io.stdout > @
-      Q.tt.sprintf
+      Q.string.sprintf
         "result is %d\n"
         -1.times 228
 
 printed: |
   [] > app
     io.stdout > @
-      tt.sprintf
+      string.sprintf
         "result is %d\n"
         times.
           -1

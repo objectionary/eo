@@ -5,10 +5,10 @@
 origin: |
   [] > app
     Q.io.stdout > @
-      Q.tt.sprintf ""
+      Q.string.sprintf ""
 
 printed: |
   [] > app
     io.stdout > @
-      tt.sprintf
+      string.sprintf
         ""

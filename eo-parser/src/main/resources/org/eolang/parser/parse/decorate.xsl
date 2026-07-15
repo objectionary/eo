@@ -43,7 +43,7 @@
       some. > @
         with.
           joined.
-            Q.tt.text
+            Q.string.text
               Q.string
     ```
   -->
