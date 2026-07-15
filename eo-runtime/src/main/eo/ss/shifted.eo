@@ -1,0 +1,32 @@
+# Drop the first `shift` elements of `lst`.
+
++alias ss.list
++alias ss.slice
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package ss
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[lst shift] > shifted
+  slice > @
+    lst
+    shift
+    lst.length
+
+  ++> tests-shifted-with-shift-less-than-length
+    eq. > @
+      shifted
+        list
+          * 8 2 3 4 5
+        2
+      * 3 4 5
+
+  ++> tests-shifted-with-shift-greater-than-length
+    eq. > @
+      shifted
+        list
+          * 8 2 3 4 5
+        6
+      *

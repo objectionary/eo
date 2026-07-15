@@ -77,6 +77,35 @@ final class SprintfArgsTest {
     }
 
     @Test
+    void rejectsTwoPowerSixtyThreeInsteadOfSaturating() {
+        final Phi tuple = Phi.Φ.take("tuple").copy();
+        tuple.put("length", new Data.ToPhi(1));
+        tuple.put("head", new Data.ToPhi(9_223_372_036_854_775_808.0));
+        MatcherAssert.assertThat(
+            "the ExFailure message must name the out-of-range number",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new SprintfArgs("%d", 1L, tuple.take("at")).formatted(),
+                "2^63 must be rejected, not silently saturated to Long.MAX_VALUE (since (double) Long.MAX_VALUE rounds up to exactly 2^63)"
+            ).getMessage(),
+            Matchers.containsString("doesn't fit into long range")
+        );
+    }
+
+    @Test
+    void acceptsLargestDoubleThatTrulyFitsInLongRange() {
+        final double closest = 9_223_372_036_854_773_760.0;
+        final Phi tuple = Phi.Φ.take("tuple").copy();
+        tuple.put("length", new Data.ToPhi(1));
+        tuple.put("head", new Data.ToPhi(closest));
+        MatcherAssert.assertThat(
+            "a double strictly below 2^63 (the representable double one ulp below it, since Long.MAX_VALUE itself isn't exactly representable and rounds up to 2^63) must still be accepted as a valid long",
+            new SprintfArgs("%d", 1L, tuple.take("at")).formatted(),
+            Matchers.equalTo(new ListOf<>((long) closest))
+        );
+    }
+
+    @Test
     void reportsUnsupportedFormatMessageInsteadOfDoubleFormatting() {
         final Phi tuple = Phi.Φ.take("tuple").copy();
         tuple.put("length", new Data.ToPhi(1));
