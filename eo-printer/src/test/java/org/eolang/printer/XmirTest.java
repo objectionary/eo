@@ -2,16 +2,21 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.parser;
+package org.eolang.printer;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
+import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.parser.EoSyntax;
+import org.eolang.parser.TrFull;
 import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtStrictAfter;
 import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
+import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
@@ -24,7 +29,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 final class XmirTest {
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/print-packs/yaml", glob = "**.yaml")
+    @ClasspathSource(value = "org/eolang/printer/print-packs/yaml", glob = "**.yaml")
     void printsToEo(final String pack) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
@@ -36,6 +41,28 @@ final class XmirTest {
             ),
             xmir.toEO(),
             Matchers.equalTo(xtory.map().get("printed"))
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/printer/eo-packs/print/", glob = "**.yaml")
+    void checksPrintPacks(final String yaml) {
+        final Xtory story = new XtSticky(
+            new XtStrictAfter(
+                new XtYaml(
+                    yaml,
+                    eo -> new EoSyntax(
+                        String.format("%s%n", eo), new TrDefault<>()
+                    ).parsed(),
+                    new TrFull()
+                )
+            )
+        );
+        Assumptions.assumeTrue(story.map().get("skip") == null);
+        MatcherAssert.assertThat(
+            "The printing XSL sheet should transform XMIR as expected",
+            story,
+            new XtoryMatcher()
         );
     }
 

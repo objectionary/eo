@@ -37,7 +37,7 @@ final class MjPrintTest {
     @Test
     void printsSuccessfully(@Mktmp final Path temp) throws Exception {
         final Path resources = new File(
-            "../eo-parser/src/test/resources/org/eolang/parser/print-packs/xmir"
+            "../eo-printer/src/test/resources/org/eolang/printer/print-packs/xmir"
         ).toPath();
         final Collection<Path> walk = new Walk(resources);
         Assumptions.assumeTrue(!walk.isEmpty());
