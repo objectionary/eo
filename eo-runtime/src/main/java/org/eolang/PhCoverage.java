@@ -27,6 +27,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * every hit is a silent no-op. This class is thread-safe.</p>
  *
  * @since 0.58
+ * @todo #5466:60min Consume the raw coverage file into an LCOV report.
+ *  This decorator only produces a raw, append-only {@code loc:line:pos}
+ *  file of touched locations; nothing reads it yet. Add a reporter (on
+ *  the eo-maven-plugin side, where the transpiler emits every wrapper
+ *  and therefore knows the full set of instrumented locations) that
+ *  merges these raw hits against that full set and produces an LCOV
+ *  ({@code .info}) tracefile plus the covered percentage, so tools like
+ *  Codecov and a build-time threshold can consume it. Until then the
+ *  produced file is not actionable on its own.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class PhCoverage implements Phi {
