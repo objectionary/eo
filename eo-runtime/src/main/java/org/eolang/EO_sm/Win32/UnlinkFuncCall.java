@@ -11,7 +11,6 @@ package org.eolang.EO_sm.Win32; // NOPMD
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.EO_sm.Syscall;
-import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
@@ -36,13 +35,9 @@ public final class UnlinkFuncCall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.win.take("return").copy();
-        result.put(
-            0,
-            new Data.ToPhi(
-                Msvcrt.INSTANCE._unlink(new Dataized(params[0]).asString())
-            )
-        );
-        result.put(1, new PhDefault());
+        final int code = Msvcrt.INSTANCE._unlink(new Dataized(params[0]).asString());
+        result.put(0, new Data.ToPhi(code));
+        result.put(1, new Errno(code).get());
         return result;
     }
 }
