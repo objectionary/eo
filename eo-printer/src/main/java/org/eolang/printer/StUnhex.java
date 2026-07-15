@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.parser;
+package org.eolang.printer;
 
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StEnvelope;
@@ -12,6 +12,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 import org.apache.commons.text.StringEscapeUtils;
+import org.eolang.parser.StXnav;
 
 /**
  * This {@link Shift} turns hex data inside XMIR.

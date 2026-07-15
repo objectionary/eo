@@ -16,7 +16,7 @@ import org.w3c.dom.Node;
  * with what a function suggests using {@link com.github.lombrozo.xnav.Xnav}.
  * @since 0.53.0
  */
-final class StXnav implements Shift {
+public final class StXnav implements Shift {
 
     /**
      * XPath to search for.
@@ -38,7 +38,7 @@ final class StXnav implements Shift {
      * @param path The XPath
      * @param func The function
      */
-    StXnav(final String path, final Consumer<Xnav> func) {
+    public StXnav(final String path, final Consumer<Xnav> func) {
         this("st-xnav", path, func);
     }
 
@@ -48,7 +48,7 @@ final class StXnav implements Shift {
      * @param path The XPath
      * @param func The function
      */
-    StXnav(final String identifier, final String path, final Consumer<Xnav> func) {
+    public StXnav(final String identifier, final String path, final Consumer<Xnav> func) {
         this.identifier = identifier;
         this.xpath = path;
         this.fun = func;
