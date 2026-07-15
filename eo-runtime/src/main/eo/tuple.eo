@@ -250,3 +250,23 @@
         * 0 1
         * 4 0
         * 7 3
+
+  ++> tests-package-tuple-contains-element
+    (* 1 2 3).contains 2 > @
+
+  ++> tests-package-tuple-does-not-contain-element
+    not. > @
+      (* 1 2 3).contains 5
+
+  ++> tests-package-tuple-index-of-element
+    eq. > @
+      (* 10 20 30).index-of 20
+      1
+
+  ++> tests-package-tuple-concatenates-with-another
+    eq. > @
+      (* 0 1).concat (* 2 3)
+      * 0 1 2 3
+
+  ++> tests-package-tuple-contains-via-tuple-namespace
+    tuple.contains (* 1 2 3) 2 > @

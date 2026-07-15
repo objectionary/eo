@@ -51,4 +51,30 @@ final class EOposixTest {
             )
         );
     }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void reportsReasonWhenOpenFails() {
+        MatcherAssert.assertThat(
+            "Failed \"open\" should carry the OS error reason in its output",
+            new Dataized(
+                new PhApplication(
+                    new PhApplication(
+                        Phi.Φ.take("sm.posix").copy(),
+                        "name",
+                        new Data.ToPhi("open")
+                    ),
+                    "args",
+                    new Data.ToPhi(
+                        new Phi[]{
+                            new Data.ToPhi("/eo-5403-absent-directory/file.txt"),
+                            new Data.ToPhi(0),
+                            new Data.ToPhi(0),
+                        }
+                    )
+                ).take("output")
+            ).asString(),
+            Matchers.containsString("No such file")
+        );
+    }
 }

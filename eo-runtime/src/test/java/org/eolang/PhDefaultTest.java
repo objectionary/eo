@@ -34,6 +34,19 @@ final class PhDefaultTest {
     }
 
     @Test
+    void failsClearlyForNullaryPackageExtension() {
+        MatcherAssert.assertThat(
+            "Implicit dispatch to a nullary extension must explain the real problem",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Data.ToPhi(42L).take("pi"),
+                "Applying a receiver to a nullary extension must be rejected"
+            ).getMessage(),
+            Matchers.containsString("takes no arguments")
+        );
+    }
+
+    @Test
     void printsDataAsTerm() {
         MatcherAssert.assertThat(
             "Object with data must render its bytes in φ-term, but it didnt",

@@ -31,13 +31,14 @@
           ^
           T
             sprintf
-              "Cant make the directory '%s'"
-              * ^.path
-    code. > outcome
+              "Cant make the directory '%s': %s"
+              * ^.path created.output
+    called. > created
       if.
         os.is-windows
         win32 "_mkdir" (* ^.path)
         posix "mkdir" (* ^.path posix.mkdir-mode)
+    created.code > outcome
 
   [glob] > walk /tuple
 
