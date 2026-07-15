@@ -29,7 +29,7 @@ final class MjTranspileIT {
     @Test
     void transpilesWithPackage(@Mktmp final Path temp) throws Exception {
         final String java = "EOfoo.java";
-        final String pname = "EOone";
+        final String pname = "EO_one";
         final String pinfo = "package-info.java";
         new Farea(temp).together(
             f -> {
