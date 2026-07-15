@@ -28,7 +28,6 @@ final class EOi64ExpectTest {
     @ValueSource(
         classes = {
             EOi64$EOdiv.class,
-            EOi64$EOgt.class,
             EOi64$EOplus.class
         }
     )
@@ -58,7 +57,6 @@ final class EOi64ExpectTest {
     @ValueSource(
         classes = {
             EOi64$EOdiv.class,
-            EOi64$EOgt.class,
             EOi64$EOplus.class
         }
     )

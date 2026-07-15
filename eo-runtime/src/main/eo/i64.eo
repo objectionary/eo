@@ -40,7 +40,23 @@
       ^.eq value
     x > value!
 
-  [x] > gt /bool
+  [x] > gt
+    if. > @
+      signs-differ
+      self-sign-clear
+      and.
+        difference-sign-clear
+        (difference.as-bytes.eq zero).not
+    ^.minus x > difference
+    00-00-00-00-00-00-00-00 > zero
+    80-00-00-00-00-00-00-00 > sign-mask
+    ^.as-bytes.and sign-mask > self-sign
+    not. > signs-differ
+      eq.
+        self-sign
+        x.as-bytes.and sign-mask
+    self-sign.eq zero > self-sign-clear
+    (difference.as-bytes.and sign-mask).eq zero > difference-sign-clear
 
   [x] > gte
     or. > @
@@ -158,6 +174,22 @@
       gt.
         0.as-i64
         0.as-i64
+
+  ++> tests-i64-greater-max-over-min
+    gt. > @
+      i64 7F-FF-FF-FF-FF-FF-FF-FF
+      i64 80-00-00-00-00-00-00-00
+
+  ++> tests-i64-greater-min-not-over-max
+    not. > @
+      gt.
+        i64 80-00-00-00-00-00-00-00
+        i64 7F-FF-FF-FF-FF-FF-FF-FF
+
+  ++> tests-i64-greater-same-sign-large-negatives
+    gt. > @
+      -5000000000000000000.as-i64
+      -9000000000000000000.as-i64
 
   ++> tests-i64-lte-true
     lte. > @
