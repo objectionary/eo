@@ -10,7 +10,7 @@
       <pattern>%highlight(%-5level) %logger{15} - %msg%n</pattern>
     </encoder>
   </appender>
-  <root level="DEBUG">
+  <root level="INFO">
     <appender-ref ref="STDOUT"/>
   </root>
 </configuration>
