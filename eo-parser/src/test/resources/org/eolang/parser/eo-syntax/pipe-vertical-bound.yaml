@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='ξ.add']/o[@as='foo' and @base='Φ.string']
+  - //o[@base='ξ.add']/o[@as='bar' and @base='Φ.number']
+input: |
+  [] > app
+    [x y] > add
+      x.plus y > @
+    | >>
+      "hello":foo
+      42:bar
