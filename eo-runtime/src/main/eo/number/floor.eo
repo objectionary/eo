@@ -1,0 +1,69 @@
+# Largest integer not greater than `n`. Non-finite numbers and magnitudes
+# beyond the range of exact integers are returned unchanged.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[n] > floor
+  if. > @
+    or.
+      n.is-finite.not
+      or.
+        n.gte 4503599627370496
+        n.lte -4503599627370496
+    n
+    if.
+      trunc.gt n
+      trunc.minus 1
+      trunc
+  n.as-i64.as-number > trunc
+
+  ++> tests-floor-positive-fraction
+    eq. > @
+      3.7.floor
+      3
+
+  ++> tests-floor-negative-fraction
+    eq. > @
+      -3.7.floor
+      -4
+
+  ++> tests-floor-negative-small-fraction
+    eq. > @
+      -0.1.floor
+      -1
+
+  ++> tests-floor-of-integer
+    eq. > @
+      42.floor
+      42
+
+  ++> tests-floor-of-negative-integer
+    eq. > @
+      -5.floor
+      -5
+
+  ++> tests-floor-of-large-positive-integer
+    eq. > @
+      100000000000000000000.floor
+      100000000000000000000
+
+  ++> tests-floor-of-large-negative-integer
+    eq. > @
+      -100000000000000000000.floor
+      -100000000000000000000
+
+  ++> tests-floor-of-zero
+    eq. > @
+      0.floor
+      0
+
+  ++> tests-positive-infinity-floor-is-equal-to-self
+    pinf.floor.eq pinf > @
+
+  ++> tests-negative-infinity-floor-is-equal-to-self
+    ninf.floor.eq ninf > @

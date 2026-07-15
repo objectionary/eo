@@ -1,0 +1,95 @@
+# TRUE when `n` is strictly less than `x`.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[n x] > lt
+  0.gt > @
+    n.minus
+      number value
+  x > value!
+
+  ++> tests-int-less-true
+    lt. > @
+      10
+      50
+
+  ++> tests-int-less-equal
+    eq. > @
+      not.
+        lt.
+          10
+          10
+      true
+
+  ++> tests-int-less-false
+    eq. > @
+      not.
+        lt.
+          10
+          -5
+      true
+
+  ++> tests-positive-infinity-lt-positive-infinity
+    eq. > @
+      pinf.lt pinf
+      false
+
+  ++> tests-positive-infinity-not-lt-negative-infinity
+    eq. > @
+      pinf.lt ninf
+      false
+
+  ++> tests-positive-infinity-not-lt-nan
+    eq. > @
+      pinf.lt nan
+      false
+
+  ++> tests-positive-infinity-not-lt-int
+    eq. > @
+      pinf.lt 42
+      false
+
+  ++> tests-positive-infinity-not-lt-float
+    eq. > @
+      pinf.lt 42.5
+      false
+
+  ++> tests-negative-infinity-lt-negative-infinity
+    eq. > @
+      ninf.lt ninf
+      false
+
+  ++> tests-negative-infinity-lt-positive-infinity
+    eq. > @
+      ninf.lt pinf
+      true
+
+  ++> tests-negative-infinity-not-lt-nan
+    eq. > @
+      ninf.lt nan
+      false
+
+  ++> tests-negative-infinity-lt-int
+    lt. > @
+      ninf
+      42
+
+  ++> tests-negative-infinity-lt-float
+    lt. > @
+      ninf
+      42.5
+
+  ++> tests-nan-not-lt-number
+    eq. > @
+      nan.lt 42
+      false
+
+  ++> tests-nan-not-lt-nan
+    eq. > @
+      nan.lt nan
+      false
