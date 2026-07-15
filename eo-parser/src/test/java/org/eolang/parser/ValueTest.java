@@ -56,7 +56,7 @@ final class ValueTest {
         MatcherAssert.assertThat(
             "Value.Kind must enumerate every kind the parser currently recognises",
             Value.Kind.values().length,
-            Matchers.equalTo(10)
+            Matchers.equalTo(11)
         );
     }
 

@@ -163,6 +163,9 @@ final class Emissions {
             emit.star();
         } else if (value.kind() == Value.Kind.ROOT) {
             emit.object(name, Emissions.rootBase(value.raw()), line, value.pos());
+        } else if (value.kind() == Value.Kind.SELF) {
+            emit.object(name, null, line, value.pos());
+            emit.self();
         } else if (value.kind() == Value.Kind.TERM) {
             emit.object(name, "⊥", line, value.pos());
         } else if (value.kind() == Value.Kind.GROUP) {
@@ -232,6 +235,7 @@ final class Emissions {
     static boolean chainable(final Value head) {
         return head.kind() == Value.Kind.IDENTIFIER
             || head.kind() == Value.Kind.ROOT
+            || head.kind() == Value.Kind.SELF
             || head.kind() == Value.Kind.GROUP
             || head.kind() == Value.Kind.INTEGER
             || head.kind() == Value.Kind.FLOAT

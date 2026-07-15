@@ -311,6 +311,16 @@ final class Emit {
     }
 
     /**
+     * Add the {@code @self=""} attribute to the most recently opened
+     * {@code <o>} — marks a base-less {@code %} self-reference node
+     * (§3.15 / §9.4) whose {@code @base} the {@code resolve-self} reshape
+     * fills in with the enclosing anonymous formation's auto-name.
+     */
+    void self() {
+        this.append(new Directives().attr("self", ""));
+    }
+
+    /**
      * Add the {@code @types="forma …"} attribute to the most recently
      * opened {@code <o>} — the space-separated forma-list of an atom's
      * vertical void error-branch (R-3.4.8). Each token is resolved like

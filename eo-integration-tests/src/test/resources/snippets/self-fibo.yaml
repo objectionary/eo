@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+out:
+  - ".*8 is the 6th number.*"
+file: snippets/self-fibo.eo
+args: ["snippets.self-fibo"]
+eo: |
+  +alias io.stdout
+  +alias string.sprintf
+  +package snippets
+
+  [] > self-fibo
+    [n] >>
+      if. > @
+        n.lt 2
+        n
+        plus.
+          % (n.minus 1)
+          % (n.minus 2)
+    | 6 > num
+    stdout > @
+      sprintf
+        "%d is the %dth number\n"
+        *
+          num
+          6
