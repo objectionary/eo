@@ -1,0 +1,17 @@
+# Bytes as a boolean: TRUE when the single byte equals `01-`, FALSE otherwise.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package bytes
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[bts] > as-bool
+  bts.eq 01- > @
+
+  ++> tests-convertible-to-bool
+    not. > @
+      eq.
+        01-.as-bool
+        00-.as-bool

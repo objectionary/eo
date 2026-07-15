@@ -1,16 +1,17 @@
-# Object `bytes` encapsulates a chain of bytes, providing bitwise operations,
-# numeric conversions, and byte manipulation methods. Objects like `number`, `string`,
-# and integer types (`i16`, `i32`, `i64`) use `bytes` as their internal representation.
+# Object `bytes` encapsulates a chain of bytes, providing the bitwise and
+# structural atoms every data object relies on. Objects like `number`, `string`,
+# and the integer types (`i16`, `i32`, `i64`) use `bytes` as their internal
+# representation, while conversions and derived operations live in the
+# `bytes` package (e.g. `bytes.as-number`, `bytes.xor`).
 #
 # Usage examples:
 # ```
 # bytes 01-02-03       # Creates a 3-byte sequence
 # FF-FF.and 00-FF      # Bitwise AND operation
-# as-bytes.as-number   # Convert 8-byte sequence to number
+# 01-02.as-number      # Convert 8-byte sequence to number
 # ```
 # .
 
-+alias string.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +rt jvm org.eolang:eo-runtime:0.0.0
@@ -21,56 +22,7 @@
 +unlint redundant-object
 +unlint mandatory-package
 
-[data] > bytes
-  data > @
-  eq 01- > as-bool
-  bytes data > as-bytes
-
-  [cant-convert] > as-number
-    if. > @
-      eq nan.as-bytes
-      nan
-      if.
-        eq pinf.as-bytes
-        pinf
-        if.
-          eq ninf.as-bytes
-          ninf
-          if.
-            size.eq 8
-            number as-bytes
-            cant-convert
-              sprintf
-                "Can't convert non 8 length bytes to a number, bytes are %x"
-                * as-bytes
-
-  [cant-convert] > as-i64
-    if. > @
-      size.eq 8
-      i64 as-bytes
-      cant-convert
-        sprintf
-          "Can't convert non 8 length bytes to i64, bytes are %x"
-          * as-bytes
-
-  [cant-convert] > as-i32
-    if. > @
-      size.eq 4
-      i32 as-bytes
-      cant-convert
-        sprintf
-          "Can't convert non 4 length bytes to i32, bytes are %x"
-          * as-bytes
-
-  [cant-convert] > as-i16
-    if. > @
-      size.eq 2
-      i16 as-bytes
-      cant-convert
-        sprintf
-          "Can't convert non 2 length bytes to i16, bytes are %x"
-          * as-bytes
-
+[@] > bytes
   [b] > eq /bool
 
   [] > size /number
@@ -82,18 +34,7 @@
 
   [b] > or /bytes
 
-  [b] > xor
-    or. > @
-      and.
-        ^
-        b.not
-      and.
-        ^.not
-        b
-
   [] > not /bytes
-
-  right x.neg > [x] > left
 
   [x] > right /bytes
 
@@ -127,48 +68,6 @@
       string
         E4-BD-A0-E5-A5-BD-2C-20-D0-B4-D1-80-D1-83-D0-B3-21
       "你好, друг!"
-
-  ++> tests-left-zero
-    not. > @
-      eq.
-        0.as-bytes.left 1
-        -1.as-bytes
-
-  ++> tests-left-with-zero
-    not. > @
-      eq.
-        2.as-bytes.left 0
-        -3.as-bytes
-
-  ++> tests-left-with-odd-neg
-    not. > @
-      eq.
-        -17.as-bytes.left 1
-        33.as-bytes
-
-  ++> tests-left-with-minus-one
-    eq. > @
-      eq.
-        -1.as-bytes.left 3
-        7.as-bytes
-      false
-
-  ++> tests-left-with-even-neg
-    eq. > @
-      FF-FF-FF-FF-FF-FF-FF-EE.left 2
-      00-00-00-00-00-00-00-47.not
-
-  ++> tests-left-with-even-plus
-    not. > @
-      eq.
-        4.as-bytes.left 3
-        -33.as-bytes
-
-  ++> tests-left-with-odd-plus
-    not. > @
-      eq.
-        5.as-bytes.left 3
-        -41.as-bytes
 
   ++> tests-right-with-zero
     not. > @
@@ -259,30 +158,6 @@
         -7.as-bytes.or 23.as-bytes
         0.as-bytes
 
-  ++> tests-xor-with-zero
-    not. > @
-      eq.
-        0.as-bytes.xor 29.as-bytes
-        -30.as-bytes
-
-  ++> tests-xor-with-two-neg
-    not. > @
-      eq.
-        -1.as-bytes.xor -123.as-bytes
-        -123.as-bytes
-
-  ++> tests-xor-with-two-plus
-    not. > @
-      eq.
-        53.as-bytes.xor 24.as-bytes
-        -46.as-bytes
-
-  ++> tests-xor-with-one-neg-one-plus
-    not. > @
-      eq.
-        -36.as-bytes.xor 43.as-bytes
-        8.as-bytes
-
   ++> tests-not-with-zero
     not. > @
       eq.
@@ -322,12 +197,6 @@
           1.as-bytes
           1.as-bytes
       1
-
-  ++> tests-convertible-to-bool
-    not. > @
-      eq.
-        01-.as-bool
-        00-.as-bool
 
   ++> tests-bitwise-works-negative
     eq. > @
@@ -380,16 +249,6 @@
           "world".as-bytes
       "hello world"
 
-  ++> tests-xor-works
-    eq. > @
-      00-00-00-00-8E-EA-4C-B1.xor 00-00-00-00-FF-FF-FF-FF
-      00-00-00-00-71-15-B3-4E
-
-  ++> tests-one-xor-one-as-number
-    eq. > @
-      (1.as-bytes.xor 1.as-bytes).as-number
-      0
-
   ++> tests-or-neg-bytes-with-leading-zeroes
     eq. > @
       00-00-00-00-8E-EA-4C-B1.or FF-FF-FF-FF-00-00-00-00
@@ -399,11 +258,6 @@
     eq. > @
       (00-00-00-00-8E-EA-4C-B1.and FF-FF-FF-FF-00-00-00-00).as-number
       0
-
-  ++> tests-xor-neg-bytes-with-leading-zeroes
-    eq. > @
-      00-00-00-00-8E-EA-4C-B1.xor FF-FF-FF-FF-00-00-00-00
-      FF-FF-FF-FF-8E-EA-4C-B1
 
   ++> tests-or-neg-bytes-without-leading-zeroes
     eq. > @
@@ -415,11 +269,6 @@
       (00-00-00-00-FF-FF-FF-FF.and FF-FF-FF-FF-00-00-00-00).as-number
       0
 
-  ++> tests-xor-neg-bytes-as-number-without-leading-zeroes
-    eq. > @
-      (00-00-00-00-FF-FF-FF-FF.xor FF-FF-FF-FF-00-00-00-00).as-number
-      FF-FF-FF-FF-FF-FF-FF-FF
-
   ++> tests-or-neg-bytes-as-number-with-zero
     eq. > @
       (-4294967296.as-bytes.or 0.as-bytes).as-number
@@ -429,24 +278,6 @@
     eq. > @
       FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
       FF-FF-FF-FF-00-00-00-01
-
-  ++> throws-on-bytes-of-wrong-size-as-number
-    01-01-01-01.as-number > @
-
-  ++> tests-wrong-size-as-number-returns-provided-fallback
-    eq. > @
-      "recovered"
-      01-01-01-01.as-number
-        "recovered" > [msg]
-
-  ++> throws-on-bytes-of-wrong-size-as-i64
-    01-01-01-01.as-i64 > @
-
-  ++> tests-wrong-size-as-i64-returns-provided-fallback
-    eq. > @
-      "recovered"
-      01-01-01-01.as-i64
-        "recovered" > [msg]
 
   ++> throws-on-out-of-bounds-slice
     20-1F-EE-B5-90.slice 3 10 > @
@@ -466,19 +297,3 @@
         2000000000
         2000000000
         "recovered" > [msg]
-
-  ++> tests-bytes-converts-to-i64
-    eq. > @
-      00-00-00-00-00-00-00-2A.as-i64
-      42.as-i64
-
-  ++> tests-bytes-converts-to-i64-and-back
-    eq. > @
-      00-00-00-00-00-00-00-33.as-i64.as-bytes
-      00-00-00-00-00-00-00-33
-
-  ++> tests-bytes-as-i64-as-bytes-not-eq-to-number-as-bytes
-    not. > @
-      eq.
-        00-00-00-00-00-00-00-2A.as-i64.as-bytes
-        42.as-bytes
