@@ -28,7 +28,7 @@
   ++> tests-contains-all-vert
     contains-all > @
       "Hello, world!"
-      (* "ell" " " "," "d!")
+      * "ell" " " "," "d!"
 
   ++> test-contains-all-without-substrings
     contains-all "xyz" * > @

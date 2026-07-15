@@ -29,7 +29,9 @@
     [tup] > rec-rebuild
       if. > @
         tup.length.eq 0
-        couple * *
+        couple
+          *
+          *
         if.
           contains prev.hashes hash
           prev
@@ -87,10 +89,9 @@
     [key value] > with
       map.initialized > @
         with.
-          origin.
-            filtered
-              entries
-              (hash.eq entry.hash).not > [entry] >>
+          filtered
+            entries
+            (hash.eq entry.hash).not > [entry] >>
           [] >>
             ^.hash > hash
             ^.key > key
@@ -99,10 +100,9 @@
 
     [key] > without
       map.initialized > @
-        origin.
-          filtered
-            entries
-            (hash.eq entry.hash).not > [entry] >>
+        filtered
+          entries
+          (hash.eq entry.hash).not > [entry] >>
       hash-code-of key > hash!
 
   ++> tests-map-rebuilds-itself

@@ -29,7 +29,7 @@
   ++> tests-contains-any-vert
     contains-any > @
       "foo bar buzz"
-      (* "bar" " " "o")
+      * "bar" " " "o"
 
   ++> test-contains-any-without-substrings
     not. > @
