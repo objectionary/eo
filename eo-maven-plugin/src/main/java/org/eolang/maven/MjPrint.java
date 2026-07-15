@@ -14,7 +14,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.text.TextOf;
-import org.eolang.parser.Xmir;
+import org.eolang.printer.Xmir;
 
 /**
  * Print XMIR to EO.

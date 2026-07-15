@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.parser;
+package org.eolang.printer;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;

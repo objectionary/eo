@@ -2,25 +2,24 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.parser;
+package org.eolang.printer;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.StFailure;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.function.Consumer;
 import org.cactoos.Proc;
+import org.cactoos.io.InputOf;
+import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.xembly.Directives;
-import org.xembly.ImpossibleModificationException;
-import org.xembly.Xembler;
 
 /**
  * Test case for {@link StEoLogged}.
@@ -42,7 +41,7 @@ final class StEoLoggedTest {
     }
 
     @Test
-    void delegatesWithoutException() throws ImpossibleModificationException {
+    void delegatesWithoutException() throws IOException {
         MatcherAssert.assertThat(
             "We expect that shift will successfully generate output xml",
             new StEoLogged(new StUnhex(), new StEoLoggedTest.FakeLog())
@@ -52,7 +51,7 @@ final class StEoLoggedTest {
     }
 
     @Test
-    void delegatesWithoutLogs() throws ImpossibleModificationException {
+    void delegatesWithoutLogs() throws IOException {
         final StEoLoggedTest.FakeLog log = new StEoLoggedTest.FakeLog();
         new StEoLogged(new StUnhex(), log).apply(1, StEoLoggedTest.example());
         MatcherAssert.assertThat(
@@ -96,24 +95,17 @@ final class StEoLoggedTest {
     }
 
     /**
-     * Example xml.
+     * Example XMIR.
      * <p>
      * {@code
-     * [] > main
-     *   true > x
-     *   false > y
+     * [] > bar
      * }
      * </p>
      * @return XML
+     * @throws IOException If fails to parse
      */
-    private static XML example() throws ImpossibleModificationException {
-        return new XMLDocument(
-            new Xembler(
-                new Directives().append(new DrProgram())
-                    .add("o")
-                    .attr("name", "bar")
-            ).xml()
-        );
+    private static XML example() throws IOException {
+        return new EoSyntax(new InputOf(String.format("[] > bar%n"))).parsed();
     }
 
     /**
