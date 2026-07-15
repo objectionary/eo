@@ -83,7 +83,7 @@ final class Penalty {
      */
     int points() {
         int total = 0;
-        for (final String line : this.code.split("\n", -1)) {
+        for (final String line : this.code.split(String.valueOf('\n'), -1)) {
             total += Penalty.indents(line) * Penalty.INDENT;
             total += Penalty.brackets(line) * Penalty.BRACKET;
             total += Penalty.overflow(line) * Penalty.EXCESS;

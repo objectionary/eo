@@ -20,7 +20,7 @@ final class PenaltyTest {
             "Five levels of indentation should cost fifteen points",
             new Penalty(
                 String.join(
-                    "\n",
+                    System.lineSeparator(),
                     "[] > foo",
                     "  gt. > @",
                     "    42",
@@ -65,7 +65,9 @@ final class PenaltyTest {
             new Penalty("nan.plus negative-infinity > x").points(),
             Matchers.lessThan(
                 new Penalty(
-                    String.join("\n", "nan.plus > x", "  negative-infinity")
+                    String.join(
+                        System.lineSeparator(), "nan.plus > x", "  negative-infinity"
+                    )
                 ).points()
             )
         );

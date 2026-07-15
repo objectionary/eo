@@ -54,7 +54,7 @@ final class Pretty {
         );
         this.root.elements(Filter.withName("line"))
             .findFirst()
-            .map(line -> Pretty.layout(new Pretty.Node(line), 0))
+            .map(line -> Pretty.layout(Pretty.Node.parse(line), 0))
             .ifPresent(out::append);
         return out.append('\n').toString();
     }
@@ -194,15 +194,34 @@ final class Pretty {
 
         /**
          * Ctor.
-         * @param line The {@code <line>} element
+         * @param head The rendered head
+         * @param suffix The rendered suffix
+         * @param formation Whether it is a formation
+         * @param kids The children
+         * @checkstyle ParameterNumberCheck (5 lines)
          */
-        Node(final Xnav line) {
-            this.base = line.attribute("base").text().orElse("");
-            this.tail = line.attribute("tail").text().orElse("");
-            this.abstractt = "yes".equals(line.attribute("abstract").text().orElse("no"));
-            this.children = line.elements(Filter.withName("line"))
-                .map(Pretty.Node::new)
-                .collect(Collectors.toList());
+        Node(final String head, final String suffix, final boolean formation,
+            final List<Pretty.Node> kids) {
+            this.base = head;
+            this.tail = suffix;
+            this.abstractt = formation;
+            this.children = kids;
+        }
+
+        /**
+         * Build a node from a {@code <line>} element.
+         * @param line The {@code <line>} element
+         * @return The node
+         */
+        static Pretty.Node parse(final Xnav line) {
+            return new Pretty.Node(
+                line.attribute("base").text().orElse(""),
+                line.attribute("tail").text().orElse(""),
+                "yes".equals(line.attribute("abstract").text().orElse("no")),
+                line.elements(Filter.withName("line"))
+                    .map(Pretty.Node::parse)
+                    .collect(Collectors.toList())
+            );
         }
     }
 }
