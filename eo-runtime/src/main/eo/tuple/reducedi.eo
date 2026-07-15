@@ -3,6 +3,7 @@
 # The first one for the accumulator, the second one
 # for the element of the collection and the third one for the index.
 
++alias tuple.is-empty
 +alias tuple.list
 +alias tuple.reducedi
 +architect yegor256@gmail.com
@@ -14,7 +15,7 @@
 
 [lst start func] > reducedi
   if. > @
-    lst.is-empty
+    is-empty lst
     start
     rec-reducedi lst
 

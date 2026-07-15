@@ -1,5 +1,6 @@
 # Elements of `lst` from `index` to the end (supports oversized index).
 
++alias tuple.is-empty
 +alias tuple.list
 +alias tuple.reducedi
 +architect yegor256@gmail.com
@@ -34,7 +35,7 @@
       * 4 5
 
   ++> tests-zero-index-in-back
-    is-empty. > @
+    is-empty > @
       back
         list
           * 1 2 3 4 5

@@ -4,7 +4,6 @@
 # Usage examples:
 # ```
 # list (* 1 2 3)           # Create list from tuple
-# list.is-empty            # Check if empty
 # list.map [x] (x.plus 1)  # Map operation
 # list.filter [x] (x.gt 0) # Filter elements
 # ```
@@ -21,28 +20,7 @@
 
 [origin] > list
   origin > @
-  0.eq origin.length > is-empty
   origin > sorted
-
-  ++> tests-list-should-not-be-empty
-    not. > @
-      is-empty.
-        list
-          * 1 2
-
-  (list *).is-empty > [] +> list-should-be-empty
-
-  ++> tests-list-should-not-be-empty-with-three-objects
-    (list xs).is-empty.not > @
-    * > xs
-      [x]
-      [y]
-      [z]
-
-  ++> tests-list-should-not-be-empty-with-one-anon-object
-    (list xs).is-empty.not > @
-    * > xs
-      [f]
 
   ++> tests-complex-objects-list-comparison
     list

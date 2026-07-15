@@ -2,6 +2,7 @@
 # Here `start` and `end` must be `int`s. If they're not, the bottom object
 # is returned, which terminates on use.
 
++alias tuple.is-empty
 +alias tuple.range
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -31,11 +32,11 @@
       * 1 2 3 4 5 6 7 8 9
 
   ++> tests-range-of-numbers-from-ten-to-ten-is-empty
-    is-empty. > @
+    is-empty > @
       range-of-numbers 10 10
 
   ++> tests-range-of-descending-numbers-is-empty
-    is-empty. > @
+    is-empty > @
       range-of-numbers 10 1
 
   ++> tests-range-of-negative-numbers-works-as-well

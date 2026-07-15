@@ -5,6 +5,7 @@
 # for the index. The result of dataization
 # the `func` should be boolean, that is `true` or `false`.
 
++alias tuple.is-empty
 +alias tuple.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -44,7 +45,7 @@
       * "Hello"
 
   ++> tests-filteredi-with-empty-list
-    is-empty. > @
+    is-empty > @
       filteredi
         list
           *
