@@ -40,8 +40,10 @@ final class ReadmeSnippetsIT {
     @ExtendWith(MayBeSlow.class)
     @MethodSource("snippets")
     void validatesReadmeSnippets(final String snippet, @Mktmp final Path temp) throws IOException {
+        final Farea[] built = {null};
         new Farea(temp).together(
             f -> {
+                built[0] = f;
                 f.properties()
                     .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
                     .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
@@ -53,15 +55,11 @@ final class ReadmeSnippetsIT {
                 );
                 f.build().properties().set("directory", "target");
                 new EoSourceRun(f).exec("app");
-                ReadmeSnippetsIT.succeeds(f, snippet);
             }
         );
-    }
-
-    private static void succeeds(final Farea farea, final String snippet) throws IOException {
         MatcherAssert.assertThat(
             String.format("EO snippet was not been executed as expected:%n%s", snippet),
-            farea.log(),
+            built[0].log(),
             new RequisiteMatcher()
                 .with("BUILD SUCCESS")
                 .without("BUILD FAILURE")
