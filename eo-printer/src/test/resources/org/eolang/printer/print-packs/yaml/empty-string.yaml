@@ -10,5 +10,4 @@ origin: |
 printed: |
   [] > app
     io.stdout > @
-      string.sprintf
-        ""
+      string.sprintf ""

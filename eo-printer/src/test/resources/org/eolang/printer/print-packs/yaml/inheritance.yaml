@@ -34,18 +34,12 @@ printed: |
 
   [] > main
     [] > base
-      memory > x
-        0
+      memory 0 > x
       [self v] > f
-        ^.x.write > @
-          v
+        ^.x.write v > @
       [self v] > g
-        self.f > @
-          self
-          v
+        self.f self v > @
     [] > derived
       ^.base > @
       [self v] > f
-        self.g > @
-          self
-          v
+        self.g self v > @

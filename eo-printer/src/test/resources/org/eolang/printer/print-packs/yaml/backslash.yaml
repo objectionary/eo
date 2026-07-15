@@ -8,5 +8,4 @@ origin: |
 
 printed: |
   [] > main
-    regex > rgx
-      "/^[\\x00-\\x7F]*$/"
+    regex "/^[\\x00-\\x7F]*$/" > rgx

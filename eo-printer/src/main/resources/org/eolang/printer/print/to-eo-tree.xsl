@@ -3,27 +3,32 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="to-eo" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="to-eo-tree" version="2.0">
   <!--
-  This one maps XMIR to EO original syntax in straight notation.
-  It's used in Xmir.java class.
+  This one maps XMIR to an intermediate "line tree" that is later
+  laid out into pretty EO source by the Pretty class (penalty-based
+  formatting). Each object becomes a <line> element carrying its
+  rendered head ("base" attribute) and suffix ("tail" attribute),
+  with nested <line> children for its (non-void) attributes. The
+  layout engine decides, per node, whether to render it horizontally
+  (inline) or vertically (indented), picking the option with the
+  lowest penalty.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="eol" select="'&#10;'"/>
-  <xsl:variable name="auto" select="concat('a', $eo:cactoos)"/>
-  <xsl:output method="text" encoding="UTF-8"/>
+  <xsl:output method="xml" encoding="UTF-8"/>
   <!-- PROGRAM -->
   <xsl:template match="object">
-    <xsl:copy>
-      <xsl:apply-templates select="sheets|metas"/>
-      <xsl:copy-of select="o[1]"/>
+    <object>
       <eo>
-        <xsl:apply-templates select="comments"/>
-        <xsl:apply-templates select="license"/>
-        <xsl:apply-templates select="metas"/>
-        <xsl:apply-templates select="o[1]"/>
+        <preamble>
+          <xsl:apply-templates select="comments"/>
+          <xsl:apply-templates select="license"/>
+          <xsl:apply-templates select="metas"/>
+        </preamble>
+        <xsl:apply-templates select="o[1]" mode="tree"/>
       </eo>
-    </xsl:copy>
+    </object>
   </xsl:template>
   <!-- TOP COMMENT BLOCK -->
   <xsl:template match="comments">
@@ -72,20 +77,19 @@
     <xsl:value-of select="$eol"/>
   </xsl:template>
   <!-- OBJECT, NOT FREE ATTRIBUTE -->
-  <xsl:template match="o[not(eo:void(.)) and not(@name=$eo:lambda)]">
-    <xsl:param name="indent" select="''"/>
-    <xsl:if test="position()&gt;1 and parent::objects">
-      <xsl:value-of select="$eol"/>
-    </xsl:if>
-    <xsl:value-of select="$indent"/>
-    <xsl:apply-templates select="." mode="head">
-      <xsl:with-param name="indent" select="$indent"/>
-    </xsl:apply-templates>
-    <xsl:apply-templates select="." mode="tail"/>
-    <xsl:value-of select="$eol"/>
-    <xsl:apply-templates select="o[not(eo:void(.))]">
-      <xsl:with-param name="indent" select="concat('  ', $indent)"/>
-    </xsl:apply-templates>
+  <xsl:template match="o[not(eo:void(.)) and not(@name=$eo:lambda)]" mode="tree">
+    <line>
+      <xsl:attribute name="base">
+        <xsl:apply-templates select="." mode="head"/>
+      </xsl:attribute>
+      <xsl:attribute name="tail">
+        <xsl:apply-templates select="." mode="tail"/>
+      </xsl:attribute>
+      <xsl:attribute name="abstract">
+        <xsl:value-of select="if (eo:abstract(.) and not(eo:has-data(.))) then 'yes' else 'no'"/>
+      </xsl:attribute>
+      <xsl:apply-templates select="o[not(eo:void(.))]" mode="tree"/>
+    </line>
   </xsl:template>
   <!-- BASED -->
   <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
@@ -126,7 +130,6 @@
   </xsl:template>
   <!-- ABSTRACT OR ATOM -->
   <xsl:template match="o[eo:abstract(.) and not(eo:has-data(.))]" mode="head">
-    <xsl:param name="indent"/>
     <xsl:text>[</xsl:text>
     <xsl:for-each select="o[eo:void(.)]">
       <xsl:if test="position()&gt;1">
@@ -186,10 +189,5 @@
   <!-- DATA -->
   <xsl:template match="o[eo:has-data(.)]" mode="head">
     <xsl:value-of select="eo:read-data(.)"/>
-  </xsl:template>
-  <xsl:template match="node()|@*">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-    </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>
