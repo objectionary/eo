@@ -321,6 +321,17 @@ final class Emit {
     }
 
     /**
+     * Add the {@code @local="name"} attribute to the most recently
+     * opened {@code <o>} — the file-local handle of an anonymous
+     * ({@code >> name}) formation (§3.10 / §9.2), resolved and dropped
+     * by the {@code resolve-local-names} reshape.
+     * @param name The file-local handle
+     */
+    void local(final String name) {
+        this.append(new Directives().attr("local", name));
+    }
+
+    /**
      * Add the {@code @types="forma …"} attribute to the most recently
      * opened {@code <o>} — the space-separated forma-list of an atom's
      * vertical void error-branch (R-3.4.8). Each token is resolved like

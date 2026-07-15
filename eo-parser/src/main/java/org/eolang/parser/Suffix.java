@@ -13,7 +13,7 @@ package org.eolang.parser;
  *
  * <ul>
  *   <li>{@code > name} — explicit name binding.</li>
- *   <li>{@code >>} — auto-generated name.</li>
+ *   <li>{@code >>} — auto-generated name, optional handle (§3.10).</li>
  *   <li>{@code +> name} — test attribute.</li>
  *   <li>(empty) — no suffix.</li>
  * </ul>
@@ -53,8 +53,8 @@ final class Suffix {
     private final Form form;
 
     /**
-     * Bound name for {@code NAME} / {@code TEST} forms; empty for
-     * {@code AUTO} / {@code NONE}.
+     * Bound name for {@code NAME} / {@code TEST} forms; the file-local
+     * handle for a {@code >> name} {@code AUTO} suffix; empty otherwise.
      */
     private final String label;
 
@@ -183,6 +183,21 @@ final class Suffix {
     }
 
     /**
+     * The file-local handle carried by a {@code >> name} auto suffix
+     * (§3.10). Empty for a bare {@code >>} and every non-auto form.
+     * @return Handle name, or empty string
+     */
+    String handle() {
+        final String result;
+        if (this.form == Form.AUTO) {
+            result = this.label;
+        } else {
+            result = "";
+        }
+        return result;
+    }
+
+    /**
      * Whether any suffix is present (form is not {@code NONE}).
      * @return Present flag
      */
@@ -288,7 +303,8 @@ final class Suffix {
     }
 
     /**
-     * Parse a {@code >>} (auto) suffix.
+     * Parse a {@code >>} (auto) suffix, optionally carrying a trailing
+     * file-local handle ({@code >> name}, §3.10) kept as the label.
      * @param tail Tail substring
      * @param after Index immediately after {@code >>}
      * @param span Source span
@@ -305,7 +321,24 @@ final class Suffix {
             cnst = true;
             idx = idx + 1;
         }
-        final int trailing = Suffix.skipSpace(tail, idx);
+        final int begin = Suffix.skipSpace(tail, idx);
+        String handle = "";
+        int rest = begin;
+        if (begin < tail.length() && !Suffix.endsName(tail.charAt(begin))) {
+            int end = begin;
+            while (end < tail.length() && !Suffix.endsName(tail.charAt(end))) {
+                end = end + 1;
+            }
+            handle = tail.substring(begin, end);
+            if (handle.codePoints().anyMatch(cp -> cp == 0x1F335)) {
+                throw new ParseError(
+                    span.line(), home + begin,
+                    "cactus emoji is reserved for auto-names; not allowed in identifiers"
+                );
+            }
+            rest = end;
+        }
+        final int trailing = Suffix.skipSpace(tail, rest);
         if (trailing < tail.length() && tail.charAt(trailing) == '/') {
             throw new ParseError(
                 span.line(), home + trailing,
@@ -313,7 +346,7 @@ final class Suffix {
             );
         }
         Suffix.endsClean(tail, trailing, span, home);
-        return new Suffix.Parsed(Form.AUTO, "", "", cnst);
+        return new Suffix.Parsed(Form.AUTO, handle, "", cnst);
     }
 
     /**
@@ -497,7 +530,7 @@ final class Suffix {
         NAME,
 
         /**
-         * Auto-generated name ({@code >>}).
+         * Auto-generated name ({@code >>}), optional handle (§3.10).
          */
         AUTO,
 

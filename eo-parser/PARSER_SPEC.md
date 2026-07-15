@@ -482,7 +482,7 @@ There are **four base forms** of name suffix (mutually exclusive on any one line
 | Form | Meaning |
 | --- | --- |
 | `> name` | Explicit name. Optional trailing `!` for const. Optional ` /sig` to declare an atom. |
-| `>>` | Auto-generated name (deterministic, derived from line and column). Optional `!`. Atom signature forbidden. |
+| `>>` | Auto-generated name (deterministic, derived from line and column). Optional `!`. Optional trailing `NAME` — a file-local handle (R-3.10.12). Atom signature forbidden. |
 | `+> name` | Test attribute. `name` must be a `NAME` token, not `PHI` (`@`) — see R-6.3.5. Legal only at indent level 1 of a top-level object (§6.3). |
 | (none) | Allowed unless the object is a plain child of a formation (§6.2). |
 
@@ -526,6 +526,8 @@ R-3.10.10a. **Anonymous inline-phi as a paren-grouped value.** Inline-phi format
 
 R-3.10.10. `sig` declares the atom's return type. Examples: `/number`, `/bytes`, `/i32`. Dotted form (`/Q.org.eolang.number`) is permitted but rare. A bare `/Q` (root alone, no dot-name) is rejected — the grammar accepts it but the new parser does not. **Other malformed sigs** — bare `/` (empty signature), trailing dot `/Q.`, or sigs starting with `.` — are already rejected by the underlying grammar (`atomBase : (ROOT | NAME) (DOT NAME)*`) and need no separate spec rule. The new parser narrows the grammar in exactly one spot: forbidding `/Q` alone.
 R-3.10.11. The leading `Q` in a dotted `sig` is promoted to `Φ` in XMIR (the source→XMIR mapping table in §9.3 is the single source of truth for all Q→Φ / @→φ / ^→ρ promotions).
+
+R-3.10.12. **File-local handles — `>> name`.** A `>>` auto-name suffix may carry an optional trailing `NAME`: a *file-local handle*. The object stays **anonymous** — it still receives its cactus `@name` (§9.2) and never enters the visible namespace — but `name` becomes a typeable alias for that cactus name, usable anywhere in the same `.eo` file (`resolve-local-names`, §9.2, rewrites references to the cactus name). So an anonymous helper can recurse by its handle or be reached from a sibling — unlike plain `> name`, which would expose `name` on the enclosing object's public surface. Accepted uniformly wherever bare `>>` is (bare formation, inline-phi formation, application); `!` const stays allowed (`>>! name`), `/sig` stays forbidden (R-3.10.2). A handle declared twice in one file is a compile-time error (`duplicate local name 'name'`); a reference with no matching handle is left untouched for later scope resolution. See §9.2 for the emission and the `handle → cactus-name` rewrite.
 
 ### 3.11 Triple-quoted text block — `"""`
 
@@ -1176,6 +1178,8 @@ where U+1F335 is the cactus emoji 🌵. The cactus is the prefix marker; the hyp
 R-9.2.2. The cactus 🌵 is reserved — it is excluded from the `NAME` token (§2.3), so auto-names cannot collide with user-defined names. (The hyphen `-` is permitted inside `NAME` tokens; it does not need exclusion because the cactus prefix already disambiguates auto-names from user names.)
 
 Example: a `>>` suffix at `line=12, pos=5` emits `@name="a🌵12-5"`.
+
+R-9.2.3. **File-local handles (R-3.10.12).** A `>> name` suffix emits the object with its cactus `@name` **and** a `@local="name"` marker; references stay as plain `<o base='name'>`. The first-pass `resolve-local-names` reshape (right after `wrap-applications` / `resolve-self`, before `build-fqns`) collects the per-file `@local → @name` table, rewrites every `@base` equal to a handle into the matching cactus `@name`, and drops the `@local` markers; a handle declared twice is reported there as a `resolve-local-names` check error. Downstream passes see only ordinary references by the reserved cactus name.
 
 ### 9.3 Source-token to XMIR-character mapping
 
