@@ -19,23 +19,19 @@ import java.util.concurrent.ConcurrentHashMap;
  * An object that records a coverage hit of its source location when
  * it is touched, and delegates everything to the origin.
  *
- * <p>The transpiler emits this decorator around every located object
- * when coverage instrumentation is requested. Recording is enabled by
- * the {@code eo.coverage.file} system property: the first time an
- * instrumented object is touched, one {@code loc:line:pos} line is
- * appended to that file, at most once per JVM. Without the property
- * every hit is a silent no-op. This class is thread-safe.</p>
+ * <p>The transpiler emits it around every located object. Recording is
+ * enabled by the {@code eo.coverage.file} system property: on the first
+ * touch, one {@code loc:line:pos} line is appended, at most once per
+ * JVM; without the property every hit is a silent no-op. Thread-safe.</p>
  *
  * @since 0.58
  * @todo #5466:60min Consume the raw coverage file into an LCOV report.
- *  This decorator only produces a raw, append-only {@code loc:line:pos}
- *  file of touched locations; nothing reads it yet. Add a reporter (on
- *  the eo-maven-plugin side, where the transpiler emits every wrapper
- *  and therefore knows the full set of instrumented locations) that
- *  merges these raw hits against that full set and produces an LCOV
- *  ({@code .info}) tracefile plus the covered percentage, so tools like
- *  Codecov and a build-time threshold can consume it. Until then the
- *  produced file is not actionable on its own.
+ *  This decorator only produces a raw {@code loc:line:pos} file of
+ *  touched locations; nothing reads it yet. Add a reporter on the
+ *  eo-maven-plugin side (which knows the full set of instrumented
+ *  locations, since the transpiler emits every wrapper) that merges
+ *  these hits into an LCOV ({@code .info}) tracefile plus a covered
+ *  percentage, so Codecov and a build-time threshold can consume it.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class PhCoverage implements Phi {
@@ -125,9 +121,7 @@ public final class PhCoverage implements Phi {
         return this.origin.φTerm();
     }
 
-    /**
-     * Record one hit of this location, at most once per JVM.
-     */
+    /** Record one hit of this location, at most once per JVM. */
     private void hit() {
         if (PhCoverage.TARGET != null) {
             final String record = String.format("%s:%d:%d%n", this.loc, this.line, this.pos);
@@ -150,7 +144,7 @@ public final class PhCoverage implements Phi {
     }
 
     /**
-     * Resolve the target file from the system property.
+     * Target file from the {@code eo.coverage.file} property.
      * @return The path, or NULL when recording is disabled
      */
     private static Path target() {

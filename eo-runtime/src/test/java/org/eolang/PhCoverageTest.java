@@ -16,9 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link PhCoverage}. The target file is resolved once,
- * when the class is loaded, so the whole scenario lives in a single
- * test method that sets the system property before the first hit.
+ * Test case for {@link PhCoverage}. The whole scenario lives in one
+ * method because the target file is resolved once, at class load.
  * @since 0.58
  */
 @ExtendWith(MktmpResolver.class)
