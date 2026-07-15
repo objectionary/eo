@@ -5,10 +5,10 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='Φ.tt.sprintf']/o[@base='Φ.x']
-  - //o[@base='Φ.tt.sprintf']//o[@base='Φ.y']
+  - //o[@base='Φ.string.sprintf']/o[@base='Φ.x']
+  - //o[@base='Φ.string.sprintf']//o[@base='Φ.y']
 input: |
   [] > app
-    Q.tt.sprintf *1 > @
+    Q.string.sprintf *1 > @
       x
       y

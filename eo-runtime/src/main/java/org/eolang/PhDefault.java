@@ -61,7 +61,7 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * From Java package name to forma.
      */
-    private static final Pattern TO_FORMA = Pattern.compile("(^|\\.)EO");
+    private static final Pattern TO_FORMA = Pattern.compile("(^|\\.)EO_?");
 
     /**
      * No initial attributes.
@@ -226,16 +226,22 @@ public class PhDefault implements Phi, Cloneable {
             } else {
                 object = new PhTerminator();
             }
+            final Phi resolved;
+            if (object instanceof PhTerminator) {
+                resolved = this.extension(name, object);
+            } else {
+                resolved = object;
+            }
             PhDefault.debug(
                 String.format(
                     "%s\uD835\uDD38('%s' for %s) ➜ %s",
                     PhDefault.padding(),
                     name,
                     this,
-                    object
+                    resolved
                 )
             );
-            return object;
+            return resolved;
         } finally {
             final int current = PhDefault.NESTING.get();
             if (current > 0) {
@@ -366,6 +372,50 @@ public class PhDefault implements Phi, Cloneable {
             form = this.packaged(name);
         }
         return form;
+    }
+
+    /**
+     * Resolve an absent attribute as an object living in this object's own
+     * package.
+     *
+     * <p>When {@code (number 42).power} finds no {@code power} attribute, the
+     * runtime looks for an object {@code Φ.number.power} in the package named
+     * after this object's forma. If it exists, it is returned with this object
+     * bound as its first argument, so {@code (number 42).power 3} reads as
+     * {@code number.power 42 3}. When there's no such object, the terminated
+     * computation stays terminated.</p>
+     *
+     * @param name The name of the absent attribute
+     * @param bottom The terminated computation to keep when there's no such object
+     * @return The package object with this bound, or the given {@code bottom}
+     */
+    private Phi extension(final String name, final Phi bottom) {
+        final String forma = this.forma();
+        Phi found = bottom;
+        if (forma.startsWith(String.format("%s.", PhPackage.GLOBAL))) {
+            final String full = String.join(".", forma, name);
+            if (PhDefault.exists(new JavaPath(full).toString())) {
+                found = Phi.Φ.take(full.substring(PhPackage.GLOBAL.length() + 1));
+                found.put(0, this);
+            }
+        }
+        return found;
+    }
+
+    /**
+     * Is there a Java class with this name on the classpath?
+     * @param cls The fully-qualified Java name
+     * @return TRUE if it exists
+     */
+    private static boolean exists(final String cls) {
+        boolean found;
+        try {
+            Class.forName(cls);
+            found = true;
+        } catch (final ClassNotFoundException ex) {
+            found = false;
+        }
+        return found;
     }
 
     /**

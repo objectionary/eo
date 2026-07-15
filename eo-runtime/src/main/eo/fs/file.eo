@@ -1,13 +1,13 @@
 # Represents a file in the filesystem for reading and writing.
 
-+alias tt.contains
++alias string.contains
 +alias fs.file
-+alias tt.joined
++alias string.joined
 +alias sm.os
 +alias fs.path
 +alias sm.posix
 +alias sm.win32
-+alias tt.sprintf
++alias string.sprintf
 +alias fs.tmpdir
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -247,7 +247,7 @@
     (file ".").is-directory > @
 
   ++> tests-check-if-absent-file-does-not-exist
-    (file "absent.tt").exists.not > @
+    (file "absent.txt").exists.not > @
 
   ++> tests-returns-self-after-deleting
     temp.deleted.path.eq temp.path > @

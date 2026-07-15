@@ -21,7 +21,7 @@ The spec is written from simple constructs to complex; each section builds on te
 Special XMIR markers used in this spec:
 
 | Marker | Meaning |
-|---|---|
+| --- | --- |
 | `<o>` | A single EO object node. Carries `name`, `base`, line/column attributes. |
 | `<part>` | Sub-element of a meta directive (§3.2). |
 | `@as='name'` | Attribute on an `<o>` indicating which slot of the parent it fills (used for inline bindings, §3.12). |
@@ -159,10 +159,10 @@ Illegal:
 The parser recognises the following lexical tokens:
 
 | Token | Description / pattern |
-|---|---|
+| --- | --- |
 | `META` | `+` `NAME` followed by zero or more space-separated parts; each part is one or more non-whitespace characters. Parts may contain `:`, `.`, `-`, `/`, e.g. `+rt jvm a.b.c:lib:1.0.0`. |
 | `COMMENTARY` | `#` followed by the rest of the line. |
-| `NAME` | `[a-z]` followed by characters other than space, line break, tab, `,`, `.`, `|`, `'`, `:`, `;`, `!`, `?`, `]`, `[`, `}`, `{`, `)`, `(`, `🌵`. |
+| `NAME` | `[a-z]` followed by characters other than space, line break, tab, `,`, `.`, `\|`, `'`, `:`, `;`, `!`, `?`, `]`, `[`, `}`, `{`, `)`, `(`, `🌵`. |
 | `PHI` | `@` |
 | `RHO` | `^` |
 | `ROOT` | `Q` |
@@ -196,7 +196,7 @@ Each non-blank, non-comment line is classified into exactly one shape, determine
 ### 3.1 Classification table
 
 | First char (after indent) | Lookahead | Line shape |
-|---|---|---|
+| --- | --- | --- |
 | `+` | followed by digit | signed-number application (see §3.6) |
 | `+` | followed by `+>` | test-attribute shorthand — `++> name` desugars to `[] +> name` (§3.4 / R-6.3.6) |
 | `+` | otherwise | meta directive (§3.2) |
@@ -477,7 +477,7 @@ There are **four base forms** of name suffix (mutually exclusive on any one line
 **Base forms:**
 
 | Form | Meaning |
-|---|---|
+| --- | --- |
 | `> name` | Explicit name. Optional trailing `!` for const. Optional ` /sig` to declare an atom. |
 | `>>` | Auto-generated name (deterministic, derived from line and column). Optional `!`. Atom signature forbidden. |
 | `+> name` | Test attribute. `name` must be a `NAME` token, not `PHI` (`@`) — see R-6.3.5. Legal only at indent level 1 of a top-level object (§6.3). |
@@ -486,7 +486,7 @@ There are **four base forms** of name suffix (mutually exclusive on any one line
 **Inline-phi composite forms** (introduce an inline-phi formation as the line's outer kind):
 
 | Form | Meaning |
-|---|---|
+| --- | --- |
 | `> [params] > name` | Inline-phi formation with **explicit** name. |
 | `> [params] >>` | Inline-phi formation with **auto-generated** name (the right-hand side `>>` replaces `> name`). |
 
@@ -819,7 +819,7 @@ foo a b                               ← happlication, horizontally-completed
 .method > result                      ← rejected: cannot wrap horizontal app
 
 io.stdout                             ← hmethod (0 hargs), open
-  tt.sprintf                          ← deeper arg, fine
+  string.sprintf                      ← deeper arg, fine
 
 x.put 2                               ← happlication, horizontally-completed
   something                           ← rejected: closed for deeper children
@@ -831,7 +831,7 @@ R-6.2.1. Every expression that is a plain child of a formation **must carry a na
 R-6.2.2. The naming line per outer kind:
 
 | Outer kind | Naming line |
-|---|---|
+| --- | --- |
 | Single-line expression (`head`, `hmethod`, `happlication`, `reversed-with-hargs`, `inline-phi-formation`) | that line |
 | `vapplication` | the head line (first) |
 | `vmethod` (chain of same-indent `.method` continuations) | the **last** `.method` line |
@@ -1098,7 +1098,7 @@ Example: a `>>` suffix at `line=12, pos=5` emits `@name="a🌵12-5"`.
 ### 9.3 Source-token to XMIR-character mapping
 
 | Source token | XMIR character | Used as |
-|---|---|---|
+| --- | --- | --- |
 | `@` (PHI) | `φ` | `@name='φ'` for the @-attribute |
 | `^` (RHO) | `ρ` | `@base='ρ'` for parent reference |
 | `Q` (ROOT) | `Φ` | `@base='Φ...'` for root-rooted FQNs |
@@ -1109,7 +1109,7 @@ Example: a `>>` suffix at `line=12, pos=5` emits `@name="a🌵12-5"`.
 ### 9.4 Per-construct attribute emission
 
 | Source construct | XMIR effect |
-|---|---|
+| --- | --- |
 | Void parameter `[a b c]` | Each param emits `<o name='<param>' base='∅'/>` as a void child |
 | Const-marker `> name!` | `@const` attribute (empty value: `@const=""`) |
 | Test attribute `[] +> name` | `@name='+<name>'` (the `+` prefix marks it as a test) |
@@ -1128,7 +1128,7 @@ R-9.4.1. `@method` and `@as='αN'` are intermediate attributes; they may be tran
 For each outer kind, this table fixes the order of `<o>` children inside its emitted element. Two implementations must produce identical sibling ordering.
 
 | Outer kind | Children in this order |
-|---|---|
+| --- | --- |
 | `head` | none (single self-contained `<o>` carrying `@base`). |
 | `hmethod` (single line, 0 hargs) | Emits a **sequence of sibling `<o>`s** under the enclosing parent: (1) the receiver of the chain as the first sibling; (2) one `<o base='.<methodname>' method=''>` per `.method` segment, in source order. Because the whole chain lives on **one source line**, only the last `.method` segment can carry a name suffix (the line's `> name`); intermediate segments on the same line have no syntactic place for their own name. (The intermediate-names provision of R-6.2.3 applies only to `vmethod` chains, where each `.method` is on its own line.) See R-9.0.3 for the convention. |
 | `happlication`, `vapplication` | The outer `<o>` carries `@base = head reference` (or, for chained heads, the last link's `<o>` is the outer one — R-9.0.3.1). Arguments emit as direct children of that `<o>` in source order. |
@@ -1167,7 +1167,7 @@ R-9.7.2. The `TEXT` token is delimited by `"""` markers (the opening `"""` must 
 R-9.7.3. **Escape sequence table.** Recognised in both `STRING` and `TEXT`:
 
 | Sequence | Meaning |
-|---|---|
+| --- | --- |
 | `\b` | U+0008 (backspace) |
 | `\t` | U+0009 (tab) |
 | `\n` | U+000A (newline) |
@@ -1196,7 +1196,7 @@ Two parsers should report the same condition with identical message strings for 
 R-9.9.1. Every error condition in this spec has a single canonical text — **including lexical and indent-related errors** (e.g., `unexpected odd indent`, `tab character in leading whitespace`, `invalid signed-number literal`), not only parse-phase errors. The table below assigns one to each. Implementations must use the exact string (with the position prefix as the only variable part).
 
 | Condition | Canonical message |
-|---|---|
+| --- | --- |
 | Odd indent | `unexpected odd indent` |
 | Indent jump > 1 level | `indent increased by more than one level` |
 | Tab in leading whitespace | `tab character in leading whitespace` |
@@ -1252,7 +1252,7 @@ R-9.9.3. New error conditions added to the spec must extend this table with a ca
 **Notation:** a kind's *openness* (open / vertical-completed / horizontal-completed) is a separate dimension from its kind name. The same kind progresses through openness states as more lines arrive; the kind name itself does not change. Below, "after block closes" means the kind's openness has transitioned to `vertical-completed`.
 
 | Outer kind | Cardinality | Open for deeper children? | Wrappable by same-indent `.method`? | Notes |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `head` | 1 line | yes | yes (after) | bare identifier / literal / group, no chain, no hargs |
 | `hmethod` | 1 line | yes (if 0 hargs) | yes (after) | `x.y.z` chained dispatch with 0 hargs only |
 | `happlication` | 1 line | **no** | **no** | head + ≥1 horizontal args. Subsumes "hmethod with hargs" (the chained head doesn't change the outer kind). |
@@ -1279,7 +1279,7 @@ R-5.2.3 and R-6.1.1 reference this set; if the set changes, change it here, not 
 Reproduced from §3.1 for convenience:
 
 | First non-space char | Lookahead | Shape |
-|---|---|---|
+| --- | --- | --- |
 | `+` digit | — | signed-number app (§3.6) |
 | `+` | otherwise | meta (§3.2) |
 | `#` | — | comment (§3.3) |
@@ -1330,7 +1330,7 @@ Source:
 Stack evolution:
 
 | After line | Stack (bottom→top) | Notes |
-|---|---|---|
+| --- | --- | --- |
 | `[] > foo` | `[formation@0{kind=formation, parent=top-level, named?=true, open}]` | bare-formation pushed at indent 0 |
 | `  tmpdir` | `[formation@0, head@2{parent=formation, named?=false, open}]` | head pushed at indent 2; parent kind = formation, so naming will be required at close |
 | `  .tmpfile` | `[formation@0, vmethod@2{parent=formation, named?=false, open}]` | same-indent `.method`, top kind extends to vmethod; still no name |
@@ -1349,7 +1349,7 @@ Source:
 ```
 
 | After line | Stack | Notes |
-|---|---|---|
+| --- | --- | --- |
 | `[] > foo /number` | `[atom@0{kind=formation+atom, parent=top-level, named?=true, open}]` | atom pushed at indent 0 |
 | `  a > bad-child` | `[atom@0, head@2{parent=atom, named?=true, open}]` | plain child pushed under atom |
 | EOF | pop indent-2: R-5.3.4 fires — `parent=atom`, but the popped kind is not `formation + +> suffix` → error "atom may contain only test attributes." | |
@@ -1374,7 +1374,7 @@ Source:
 Line-by-line classification highlights:
 
 | Line | Kind | Outer | Notes |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `[args] > main` | Formation | bare-formation | top-level master |
 | `  [y] > leap` | Formation | bare-formation | master child of `main`, named `leap` (R-1.3) |
 | `    or. > @` | ReversedDispatch | bare-reversed | vertical form, named `@`; opens block awaiting receiver + args |

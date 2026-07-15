@@ -1,0 +1,74 @@
+# Returns last index of `substring` in `text`.
+# If no element was found, it returns -1.
+
++alias string.slice
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text substring] > last-index-of
+  if. > @
+    or.
+      or.
+        (number slen).gt tlen
+        and.
+          slen.eq tlen
+          (sub.eq txt).not
+      found.eq -1
+    -1
+    length.
+      string
+        slice txt 0 found
+  rec-index-of > found!
+    (number tlen).minus slen
+  sub.size > slen!
+  substring > sub!
+  txt.size > tlen!
+  text > txt!
+
+  [idx] > rec-index-of
+    if. > @
+      0.eq idx
+      if.
+        includes
+        idx
+        -1
+      if.
+        includes
+        idx
+        rec-index-of (idx.plus -1).as-number
+    eq. > includes
+      slice txt idx slen
+      sub
+
+  ++> tests-finds-last-index-of-substring
+    eq. > @
+      5
+      last-index-of "Hey, Hey, Hey" "Hey,"
+
+  ++> tests-finds-last-index-of-the-same-string
+    eq. > @
+      0
+      last-index-of "Hello" "Hello"
+
+  ++> tests-last-index-of-non-existed-substring
+    eq. > @
+      -1
+      last-index-of "Hello, world" "somebody"
+
+  ++> tests-last-index-of-non-existed-substring-with-utf
+    eq. > @
+      -1
+      last-index-of
+        "привет, друг!"
+        "x"
+
+  ++> tests-last-index-of-existed-substring-with-utf
+    eq. > @
+      3
+      last-index-of
+        "привет, друг!"
+        "в"

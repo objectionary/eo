@@ -29,7 +29,7 @@ input: |
 
     [] > x
       first > ff
-      one > tt
+      one > qux
         [] > y
           two > @
             input > t!
@@ -47,5 +47,5 @@ input: |
     [] > head
       bb > @
         [zz]
-          tt > @
+          qux > @
             42 > mm

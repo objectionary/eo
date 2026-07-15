@@ -5,19 +5,19 @@
 +package examples
 +alias examples.fibonacci
 +alias io.stdout
-+alias tt.sprintf
-+alias tt.sscanf
++alias string.sprintf
++alias string.sscanf
 +architect yegor256@gmail.com
 
 [args] > app
   number > n
     at. > nn!
-      Q.tt.sscanf
+      Q.string.sscanf
         "%d"
         args.at 0
       0
   at. > e!
-    Q.tt.sscanf
+    Q.string.sscanf
       "%d"
       args.at 1
     0

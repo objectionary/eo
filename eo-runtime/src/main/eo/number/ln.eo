@@ -1,0 +1,108 @@
+# Natural logarithm of `num` with base `e` as `org.eolang.number`. The argument
+# is folded into [1/e, e] by peeling whole factors of `e` and counting them,
+# then the remainder is summed with the area-hyperbolic-tangent series. The
+# limiting cases follow the usual conventions: zero is negative infinity, a
+# negative number and negative infinity are nan, and positive infinity stays.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[num] > ln
+  if. > @
+    n.is-nan
+    nan
+    if.
+      n.lt 0
+      nan
+      if.
+        n.eq 0
+        ninf
+        if.
+          n.is-finite
+          lnp n
+          pinf
+  number num.as-bytes > n
+
+  [p] > lnp
+    if. > @
+      p.gte e
+      (lnp (p.div e)).plus 1
+      if.
+        p.lt (1.div e)
+        (lnp (p.times e)).minus 1
+        series p
+
+    [m] > series
+      2.times (t.times (horner 0)) > @
+      (m.minus 1).div (m.plus 1) > t
+      t.times t > squared
+      40 > terms
+
+      [k] > horner
+        if. > @
+          k.gt terms
+          0
+          plus.
+            1.div ((k.times 2).plus 1)
+            squared.times (horner (k.plus 1))
+
+  ++> tests-ln-of-negative-float-is-nan
+    is-nan. > @
+      ln -2.2
+
+  ++> tests-ln-of-zero-is-negative-infinity
+    eq. > @
+      ln 0
+      ninf
+
+  ++> tests-ln-of-one-is-zero
+    eq. > @
+      ln 1
+      0
+
+  ++> tests-ln-of-e-one-is-one
+    eq. > @
+      ln e
+      1
+
+  ++> tests-ln-of-negative-int-is-nan
+    is-nan. > @
+      ln -42
+
+  ++> tests-ln-of-twenty
+    lt. > @
+      abs
+        minus.
+          ln 20
+          2.995732273553991
+      0.00000000001
+
+  ++> tests-ln-fraction
+    lt. > @
+      abs
+        minus.
+          ln 0.5
+          -0.6931471805599453
+      0.00000000001
+
+  ++> tests-ln-positive-infinity
+    eq. > @
+      ln pinf
+      pinf
+
+  ++> tests-ln-negative-infinity
+    is-nan. > @
+      ln ninf
+
+  ++> tests-ln-nan
+    is-nan. > @
+      ln nan
+
+  ++> tests-ln-monotonic
+    lt. > @
+      ln 2
+      ln 3

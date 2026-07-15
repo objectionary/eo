@@ -61,7 +61,7 @@ final class MjTranspileTest {
     @BeforeEach
     void setUp() throws Exception {
         this.program = new TextOf(new ResourceOf("org/eolang/maven/mess.eo")).asString();
-        this.compiled = "target/generated/org/eolang/EOfoo/EOx/EOmain.java";
+        this.compiled = "target/generated/org/eolang/EO_foo/EO_x/EOmain.java";
     }
 
     @ParameterizedTest
@@ -139,7 +139,7 @@ final class MjTranspileTest {
             Matchers.not(
                 Matchers.allOf(
                     Matchers.hasKey(String.format("target/%s/foo/x/main.xmir", Transpiling.DIR)),
-                    Matchers.hasKey("target/generated/EOcom/EOexample/EOfoo.java")
+                    Matchers.hasKey("target/generated/EO_com/EO_example/EOfoo.java")
                 )
             )
         );
@@ -161,8 +161,8 @@ final class MjTranspileTest {
                 .execute(new FakeMaven.Transpile())
                 .result(),
             Matchers.allOf(
-                Matchers.hasKey("target/generated/org/eolang/EOfoo/package-info.java"),
-                Matchers.hasKey("target/generated/org/eolang/EOfoo/EOx/package-info.java")
+                Matchers.hasKey("target/generated/org/eolang/EO_foo/package-info.java"),
+                Matchers.hasKey("target/generated/org/eolang/EO_foo/EO_x/package-info.java")
             )
         );
     }
@@ -183,11 +183,11 @@ final class MjTranspileTest {
                     )
                     .execute(new FakeMaven.Transpile())
                     .result()
-                    .get("target/generated/org/eolang/EOfoo/EOx/package-info.java")
+                    .get("target/generated/org/eolang/EO_foo/EO_x/package-info.java")
             ).asString(),
             Matchers.allOf(
                 Matchers.containsString("// @org.eolang.XmirPackage(\"foo.x\")"),
-                Matchers.containsString("package org.eolang.EOfoo.EOx;")
+                Matchers.containsString("package org.eolang.EO_foo.EO_x;")
             )
         );
     }
@@ -323,7 +323,7 @@ final class MjTranspileTest {
                 maven
                     .execute(new FakeMaven.Transpile())
                     .generatedPath()
-                    .resolve("org/eolang/EOfoo/EOx")
+                    .resolve("org/eolang/EO_foo/EO_x")
             )
         ) {
             files = list.collect(Collectors.toList());

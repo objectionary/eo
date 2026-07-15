@@ -28,7 +28,7 @@ final class XmirObjectTest {
             ClassPath.from(ClassLoader.getSystemClassLoader())
                 .getAllClasses()
                 .stream().filter(
-                    clazz -> "EOorg.EOeolang".equals(clazz.getPackageName())
+                    clazz -> "EO_org.EO_eolang".equals(clazz.getPackageName())
                         && clazz.getSimpleName().startsWith("EO")
                 )
                 .map(ClassPath.ClassInfo::load).filter(

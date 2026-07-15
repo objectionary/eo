@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD033 MD041 -->
 <img alt="logo" src="https://www.objectionary.com/cactus.svg" height="100px" />
 
 This is a simple example a program written entirely in EO.

@@ -115,7 +115,7 @@ argument: a copy of the object `sprintf`:
 # Says hello to Jeff.
 
 io.stdout > [] > app
-  tt.sprintf
+  string.sprintf
     "Hello, %s!"
     * "Jeffrey"
 ```
@@ -126,7 +126,7 @@ This program can be written using horizontal notation:
 
 ```eo
 +alias io.stdout
-+alias tt.sprintf
++alias string.sprintf
 
 # Also says hello to Jeff.
 [] > app
@@ -148,7 +148,7 @@ inside `app` and use it to build the output string:
 [] > app
   io.stdout (msg "Jeffrey") > @
   [name] > msg
-    tt.sprintf "Hello, %s!" (* name) > @
+    string.sprintf "Hello, %s!" (* name) > @
 ```
 
 Now, the object `app` has two "attached" attributes: `@` and `msg`. The attribute
@@ -165,7 +165,7 @@ malloc.empty > [args] > app
       x.as-number.lt 6 > [i] >>
       seq * > [i] >>
         io.stdout
-          tt.sprintf *1
+          string.sprintf *1
             "%d x %1$d = %d\n"
             x
             x.as-number.times x

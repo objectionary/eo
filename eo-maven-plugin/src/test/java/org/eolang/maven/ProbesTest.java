@@ -49,16 +49,15 @@ final class ProbesTest {
     @Test
     void findsProbes() throws IOException {
         MatcherAssert.assertThat(
-            "We should find 11 objects in the program, but not",
+            "We should find 8 objects in the program, but not",
             new Probes(ProbesTest.xmir()),
             Matchers.allOf(
-                Matchers.iterableWithSize(9),
+                Matchers.iterableWithSize(8),
                 Matchers.hasItems(
                     "while",
                     "io",
                     "io.stdout",
-                    "tt",
-                    "tt.sprintf",
+                    "string.sprintf",
                     "string",
                     "bytes",
                     "number",
@@ -131,7 +130,7 @@ final class ProbesTest {
                     String.format("+also while%n"),
                     "[] > main",
                     "  Q.io.stdout > @",
-                    "    Q.tt.sprintf",
+                    "    Q.string.sprintf",
                     "      \"I am %d years old\"",
                     "      plus.",
                     "        1337",

@@ -54,7 +54,6 @@ final class ReadmeSnippetsIT {
                 );
                 f.build().properties().set("directory", "target");
                 new EoSourceRun(f).exec("app");
-                f.exec("clean", "test");
                 log[0] = f.log().content();
             }
         );

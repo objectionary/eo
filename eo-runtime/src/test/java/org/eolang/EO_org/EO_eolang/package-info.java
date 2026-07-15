@@ -1,0 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+
+/**
+ * Deep package fixtures, tests.
+ * @since 0.73.1
+ * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
+ */
+package org.eolang.EO_org.EO_eolang; // NOPMD

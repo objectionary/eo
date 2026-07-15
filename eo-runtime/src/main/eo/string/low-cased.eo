@@ -1,0 +1,50 @@
+# Returns the `text` in lower case.
+
++alias string.as-ascii
++alias tuple.bytes-as-array
++alias tuple.list
++alias tuple.reduced
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object
+
+[text] > low-cased
+  string > @
+    reduced
+      list
+        bytes-as-array
+          text.as-bytes
+      --
+      [accum byte] >>
+        accum.concat > @
+          if.
+            and.
+              code.lte maxcode
+              code.gte mincode
+            slice.
+              as-bytes.
+                as-i64.
+                  code.plus distance
+              7
+              1
+            byte
+        as-ascii byte > code
+  minus. > distance
+    as-ascii "a"
+    as-ascii "A"
+  as-ascii "Z" > maxcode
+  as-ascii "A" > mincode
+
+  ++> tests-converts-text-to-lower-case
+    eq. > @
+      "hello"
+      low-cased "HELLO"
+
+  ++> tests-converts-text-with-low-letters-to-lower-case
+    eq. > @
+      "hello"
+      low-cased "HeLlO"

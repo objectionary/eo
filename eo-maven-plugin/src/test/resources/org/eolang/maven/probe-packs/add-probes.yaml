@@ -3,9 +3,8 @@
 ---
 # yamllint disable rule:line-length
 probes:
-  - 'tt'
-  - 'tt.sprintf'
-  - 'tt.text'
+  - 'string.sprintf'
+  - 'string.text'
   - 'car'
   - 'car.engine'
   - 'car.engine.start'
@@ -26,8 +25,8 @@ eo: |
   +version 0.0.0
 
   [] > app
-    Q.tt.text.^.q > s
-    Q.tt.sprintf > @
+    Q.string.text.^.q > s
+    Q.string.sprintf > @
       "Hello, world!\n"
     start. > a
       engine.

@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 final class PackageInfos {
 
     /**
-     * Pattern for replacing EO in package.
+     * Pattern for replacing EO (object) or EO_ (package) prefixes in package.
      */
-    private static final Pattern PACKAGE = Pattern.compile("EO");
+    private static final Pattern PACKAGE = Pattern.compile("EO_?");
 
     /**
      * Pattern for replacing first default org.eolang package.

@@ -12,7 +12,7 @@ args: ["simple", "Jeff"]
 target: "eoc"
 eo: |
   +alias io.stdout
-  +alias tt.sprintf
+  +alias string.sprintf
 
   [args] > simple
     stdout > @

@@ -11,13 +11,13 @@ asserts:
   - //o[@name='a' and @loc='Φ.org.abc.main.a' and @original-name='main.a']
   - //o[@base='Φ.x' and @loc='Φ.org.abc.main.a.φ.α0' and @original-name='main.a.φ.α0']
   - //o[@base='Φ.string' and @loc='Φ.org.abc.main.a.φ.α0.α0' and @original-name='main.a.φ.α0.α0']
-  - //o[@base='Φ.x' and @name='tt' and @loc='Φ.org.abc.main.tt' and @original-name='main.tt']
-  - //o[@base='Φ.number' and @loc='Φ.org.abc.main.tt.α0' and @original-name='main.tt.α0']
-  - //o[@base='Φ.tuple.empty' and @loc='Φ.org.abc.main.tt.α1.α0.α0' and @original-name='main.tt.α1.α0.α0']
-  - //o[@base='Φ.number' and @loc='Φ.org.abc.main.tt.α1.α0.α1' and @original-name='main.tt.α1.α0.α1']
-  - //o[not(@base) and @loc='Φ.org.abc.main.tt.α2' and @original-name='main.tt.α2']
-  - //o[@base='∅' and @name='e' and @loc='Φ.org.abc.main.tt.α2.e' and @original-name='main.tt.α2.e']
-  - //o[@base='ξ.e.hello' and @loc='Φ.org.abc.main.tt.α2.φ' and @original-name='main.tt.α2.φ']
+  - //o[@base='Φ.x' and @name='qux' and @loc='Φ.org.abc.main.qux' and @original-name='main.qux']
+  - //o[@base='Φ.number' and @loc='Φ.org.abc.main.qux.α0' and @original-name='main.qux.α0']
+  - //o[@base='Φ.tuple.empty' and @loc='Φ.org.abc.main.qux.α1.α0.α0' and @original-name='main.qux.α1.α0.α0']
+  - //o[@base='Φ.number' and @loc='Φ.org.abc.main.qux.α1.α0.α1' and @original-name='main.qux.α1.α0.α1']
+  - //o[not(@base) and @loc='Φ.org.abc.main.qux.α2' and @original-name='main.qux.α2']
+  - //o[@base='∅' and @name='e' and @loc='Φ.org.abc.main.qux.α2.e' and @original-name='main.qux.α2.e']
+  - //o[@base='ξ.e.hello' and @loc='Φ.org.abc.main.qux.α2.φ' and @original-name='main.qux.α2.φ']
   - //o[@base='ξ.ρ.ρ.p' and @loc='Φ.org.abc.main.q' and @original-name='main.q']
 input: |
   +alias org.abc.foo.b
@@ -31,7 +31,7 @@ input: |
       b > @
         x
           "Hello"
-    x > tt
+    x > qux
       10
       *
         5.1

@@ -4,13 +4,13 @@
 +alias fs.dir
 +alias fs.file
 +alias sm.os
-+alias ss.list
-+alias ss.reduced
-+alias tt.regex
-+alias tt.index-of
-+alias tt.last-index-of
-+alias tt.replaced
-+alias tt.split
++alias tuple.list
++alias tuple.reduced
++alias string.regex
++alias string.index-of
++alias string.last-index-of
++alias string.replaced
++alias string.split
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package fs
@@ -39,7 +39,7 @@
         posix jpath
     string > jpath
       as-bytes.
-        Q.tt.joined
+        Q.string.joined
           separator
           paths
 
@@ -72,7 +72,7 @@
               trailing
               separator
               --
-      Q.tt.joined > path
+      Q.string.joined > path
         separator
         reduced
           list
@@ -248,7 +248,7 @@
                 trailing
                 separator
                 --
-        Q.tt.joined > path!
+        Q.string.joined > path!
           separator
           reduced
             list
