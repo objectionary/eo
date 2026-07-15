@@ -1,0 +1,55 @@
+# Left bit shift of the byte chain `bts` by `x` bits, expressed as a
+# right shift by the negated amount.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package bytes
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[bts x] > left
+  bts.right > @
+    x.neg
+
+  ++> tests-left-zero
+    not. > @
+      eq.
+        0.as-bytes.left 1
+        -1.as-bytes
+
+  ++> tests-left-with-zero
+    not. > @
+      eq.
+        2.as-bytes.left 0
+        -3.as-bytes
+
+  ++> tests-left-with-odd-neg
+    not. > @
+      eq.
+        -17.as-bytes.left 1
+        33.as-bytes
+
+  ++> tests-left-with-minus-one
+    eq. > @
+      eq.
+        -1.as-bytes.left 3
+        7.as-bytes
+      false
+
+  ++> tests-left-with-even-neg
+    eq. > @
+      FF-FF-FF-FF-FF-FF-FF-EE.left 2
+      00-00-00-00-00-00-00-47.not
+
+  ++> tests-left-with-even-plus
+    not. > @
+      eq.
+        4.as-bytes.left 3
+        -33.as-bytes
+
+  ++> tests-left-with-odd-plus
+    not. > @
+      eq.
+        5.as-bytes.left 3
+        -41.as-bytes

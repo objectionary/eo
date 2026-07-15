@@ -1,0 +1,38 @@
+# Bytes as a floating-point `number`: an 8-byte chain reinterpreted as an
+# IEEE 754 double, mapping the special chains to `nan`, `pinf`, and `ninf`.
+# For any other length the `cant-convert` fallback is returned.
+
++alias string.sprintf
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package bytes
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[bts cant-convert] > as-number
+  if. > @
+    bts.eq nan.as-bytes
+    nan
+    if.
+      bts.eq pinf.as-bytes
+      pinf
+      if.
+        bts.eq ninf.as-bytes
+        ninf
+        if.
+          bts.size.eq 8
+          number bts
+          cant-convert
+            sprintf
+              "Can't convert non 8 length bytes to a number, bytes are %x"
+              * bts
+
+  ++> throws-on-bytes-of-wrong-size-as-number
+    01-01-01-01.as-number > @
+
+  ++> tests-wrong-size-as-number-returns-provided-fallback
+    eq. > @
+      "recovered"
+      01-01-01-01.as-number
+        "recovered" > [msg]
