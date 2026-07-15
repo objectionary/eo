@@ -239,7 +239,10 @@ final class JarIT {
         MatcherAssert.assertThat(
             "Project must be successfully built and packaged into jar",
             farea.log(),
-            RequisiteMatcher.SUCCESS
+            new RequisiteMatcher()
+                .with("BUILD SUCCESS")
+                .without("BUILD FAILURE")
+                .without("[ERROR]")
         );
         return String.join(
             File.pathSeparator,
