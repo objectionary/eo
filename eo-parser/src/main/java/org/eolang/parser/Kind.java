@@ -100,6 +100,12 @@ enum Kind {
     VMETHOD_WITH_HARGS,
 
     /**
+     * Pipe application {@code | args} — applies arguments to the
+     * same-indent named formation or pipe above it (§3.14).
+     */
+    PIPE_APPLICATION,
+
+    /**
      * Triple-quoted {@code """…"""} text block.
      */
     TEXT_BLOCK,
@@ -139,5 +145,15 @@ enum Kind {
      */
     boolean formation() {
         return this == BARE_FORMATION || this == ONLY_PHI_FORMATION;
+    }
+
+    /**
+     * Whether a pipe application (§3.14) may attach to a predecessor of
+     * this kind — a formation or another pipe. Read by {@link LnPipe} to
+     * enforce R-3.14.2 / R-5.2.4a.
+     * @return True iff this kind may be a pipe's predecessor
+     */
+    boolean pipeable() {
+        return this.formation() || this == PIPE_APPLICATION;
     }
 }

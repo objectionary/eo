@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='ξ.add' and count(o)=2]
+  - //o[@base='ξ.add' and count(o[@base='Φ.number'])=2]
+input: |
+  [] > app
+    [x y] > add
+      x.plus y > @
+    | >>
+      2
+      3

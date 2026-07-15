@@ -292,6 +292,16 @@ final class Emit {
     }
 
     /**
+     * Add the {@code @pipe=""} attribute to the most recently opened
+     * {@code <o>} — marks a base-less pipe-application node (§3.14 /
+     * §9.4) that the {@code wrap-applications} reshape rewrites into an
+     * application referring to the preceding sibling.
+     */
+    void pipe() {
+        this.append(new Directives().attr("pipe", ""));
+    }
+
+    /**
      * Add the {@code @star=""} attribute to the most recently opened
      * {@code <o>} (§9.4 compact-tuple wrapper marker and §9.4.2 star
      * head).

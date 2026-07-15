@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+asserts:
+  - /object[not(errors)]
+  - /object[not(//o[@pipe])]
+  - //o[@base='foo' and @name='foo5' and count(o)=1]
+  - //o[@base='foo' and @name='foo5']/o[@base='Φ.number']
+  - //o[@name='foo' and not(@base)]
+input: |
+  [] > app
+    [x] > foo
+      x > @
+    | 5 > foo5

@@ -391,6 +391,8 @@ final class Eo implements Iterable<Directive> {
             line = new LnFormation(span);
         } else if (span.head() == '.') {
             line = new LnMethod(span);
+        } else if (span.head() == '|') {
+            line = new LnPipe(span);
         } else if (span.head() == '?') {
             line = Eo.questioned(span);
         } else if (span.head() >= 'a' && span.head() <= 'z') {
