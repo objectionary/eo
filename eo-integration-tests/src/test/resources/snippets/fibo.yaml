@@ -8,7 +8,7 @@ file: snippets/fibo.eo
 args: ["snippets.fibo"]
 eo: |
   +alias io.stdout
-  +alias tt.sprintf
+  +alias string.sprintf
   +package snippets
 
   [] > fibo

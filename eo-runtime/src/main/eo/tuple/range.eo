@@ -1,0 +1,94 @@
+# Range - create a `list` containing a range of elements
+# Here `start` must be an abstract object that must have an object `next` to get
+# next element and object `lt` to compare with the `end` object.
+# Every next element also must have objects `next` and `lt`.
+# The first object in the chain must have a default value
+# e.g.:
+#
+# ```
+# range
+#   []
+#     [num] > build
+#       num > @!
+#       build (@.plus 1) > next
+#     build 1 > @
+#   10
+# ```
+#
+# Here the first argument is an abstract object that has a default value - 1 and
+# it also has object `next`. The next object after first is decorator of
+# `1.plus 1` and also has object `next`. Since these objects are ints - they have
+# object `lt` by default.
+
++alias tuple.list
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package tuple
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object
+
+[start end] > range
+  list > @
+    if.
+      start.lt end
+      appended
+        * start
+        start.next
+      *
+
+  [acc current] > appended
+    if. > @
+      current.lt ^.end
+      ^.appended
+        acc.with current
+        current.next
+      acc
+
+  ++> tests-simple-range-from-one-to-ten
+    eq. > @
+      rng
+      * 1 2 3 4 5 6 7 8 9
+    range > rng
+      []
+        build 1 > @
+        [i] > build
+          i > @
+          ^.build (1.plus @) > next
+      10
+
+  ++> tests-simple-range-with-floats-from-one-to-five
+    eq. > @
+      rng
+      * 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5
+    range > rng
+      []
+        x 1.0 > @
+        [i] > x
+          i > @
+          ^.x (0.5.plus @) > next
+      5.0
+
+  ++> tests-range-with-out-of-bounds
+    eq. > @
+      rng
+      * 1 6
+    range > rng
+      []
+        b 1 > @
+        [num] > b
+          num > @
+          ^.b (5.plus @) > next
+      10
+
+  ++> tests-range-with-wrong-items-is-an-empty-array
+    rng.is-empty > @
+    range > rng
+      []
+        y 10 > @
+        [num] > y
+          num > @
+          [] > next
+            42 > nothing
+      1

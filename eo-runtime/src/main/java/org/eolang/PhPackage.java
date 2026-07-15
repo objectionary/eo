@@ -78,7 +78,12 @@ final class PhPackage implements Phi {
                 );
             }
         } else if (this.objects.containsKey(fqn)) {
-            taken = this.objects.get(fqn).copy();
+            final Phi cached = this.objects.get(fqn);
+            if (cached instanceof PhNest) {
+                taken = cached;
+            } else {
+                taken = cached.copy();
+            }
         } else if (name.contains(".")) {
             final String[] parts = name.split("\\.");
             Phi next = this.take(parts[0]);
@@ -130,11 +135,16 @@ final class PhPackage implements Phi {
     @SuppressWarnings("PMD.PreserveStackTrace")
     private Phi loadPhi(final String fqn) {
         final String target = new JavaPath(fqn).toString();
-        final String pinfo = String.format("%s.package-info", target);
+        final String pinfo = String.format("%s.package-info", new JavaPath(fqn).pkg());
         Phi loaded;
         try {
             Class.forName(pinfo);
-            loaded = new PhPackage(fqn);
+            try {
+                Class.forName(target);
+                loaded = new PhNest(fqn);
+            } catch (final ClassNotFoundException absent) {
+                loaded = new PhPackage(fqn);
+            }
         } catch (final ClassNotFoundException pckg) {
             try {
                 loaded = (Phi) Class.forName(target)

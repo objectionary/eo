@@ -1,0 +1,139 @@
+# Returns a `tuple` of `strings`: `text` is split by `delimiter` with a maximum of `limit` parts.
+# The last element contains the remainder of the string after splitting.
+# If `limit` < 1, the `cant-split` fallback is returned, or the bottom object when unbound.
+
++alias tuple.list
++alias string.slice
++alias string.sprintf
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text delimiter limit cant-split] > nsplit
+  if. > @
+    1.gt limit
+    cant-split
+      sprintf
+        "Invalid limit %d for nsplit, must be at least 1"
+        * limit
+    if.
+      text.size.eq 0
+      *
+      if.
+        1.eq limit
+        * text
+        rec-nsplit * 0 0 0
+  delimiter.size > delimiter-size!
+
+  [accum start current count] > rec-nsplit
+    if. > @
+      text.size.eq current
+      accum.with > appended
+        string
+          slice
+            text
+            start
+            current.minus start
+      if.
+        or.
+          delimiter-size.eq 0
+          (current.plus delimiter-size).gt text.size
+        rec-nsplit
+          accum
+          start
+          (current.plus 1).as-number
+          count
+        if.
+          and.
+            delimiter.eq
+              slice text current delimiter-size
+            (number count).lt
+              (number limit).minus 1
+          rec-nsplit
+            appended
+            (current.plus delimiter-size).as-number
+            (current.plus delimiter-size).as-number
+            (count.plus 1).as-number
+          rec-nsplit
+            accum
+            start
+            (current.plus 1).as-number
+            count
+
+  ++> tests-nsplit-with-limit-two
+    eq. > @
+      list
+        nsplit
+          "Cookie: a=1; b=2"
+          " "
+          2
+      * "Cookie:" "a=1; b=2"
+
+  ++> tests-nsplit-with-dashes-limit-two
+    eq. > @
+      list
+        nsplit
+          "a-b-c-d"
+          "-"
+          2
+      * "a" "b-c-d"
+
+  ++> tests-nsplit-with-limit-one
+    eq. > @
+      list
+        nsplit
+          "a-b-c"
+          "-"
+          1
+      * "a-b-c"
+
+  ++> tests-nsplit-with-high-limit
+    eq. > @
+      list
+        nsplit
+          "a-b-c"
+          "-"
+          10
+      * "a" "b" "c"
+
+  ++> throws-on-nsplit-with-limit-zero
+    nsplit > @
+      "text"
+      "-"
+      0
+
+  ++> throws-on-nsplit-with-negative-limit
+    nsplit > @
+      "text"
+      "-"
+      -1
+
+  ++> tests-nsplit-invalid-limit-returns-provided-fallback
+    eq. > @
+      "fallback"
+      nsplit
+        "text"
+        "-"
+        0
+        "fallback" > [msg]
+
+  ++> tests-nsplit-with-empty-strings
+    eq. > @
+      list
+        nsplit
+          "-a-b-c"
+          "-"
+          3
+      * "" "a" "b-c"
+
+  ++> tests-nsplit-with-multi-char-delimiter
+    eq. > @
+      list
+        nsplit
+          "a::b::c::d"
+          "::"
+          2
+      * "a" "b::c::d"

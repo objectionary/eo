@@ -1,0 +1,35 @@
+# Filter `lst` without index with the function `func`.
+# Here `func` must be an abstract object
+# with one attribute for the element.
+# The result of dataization the `func`
+# should be boolean, that is `true` or `false`.
+
++alias tuple.filteredi
++alias tuple.list
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package tuple
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[lst func] > filtered
+  filteredi > @
+    lst
+    func item > [item index] >>
+
+  ++> tests-simple-filtered
+    eq. > @
+      filtered
+        list
+          * 3 1 4 2 5
+        v.gt 2 > [v]
+      * 3 4 5
+
+  ++> tests-filtered-with-bools
+    eq. > @
+      filtered
+        list
+          * true false true
+        v.not > [v]
+      * false
