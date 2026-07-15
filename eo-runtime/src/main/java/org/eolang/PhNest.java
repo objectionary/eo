@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @since 0.62
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class PhNest implements Phi {
 
     /**

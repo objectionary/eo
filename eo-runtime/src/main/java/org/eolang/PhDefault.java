@@ -393,9 +393,9 @@ public class PhDefault implements Phi, Cloneable {
         final String forma = this.forma();
         Phi found = bottom;
         if (forma.startsWith(String.format("%s.", PhPackage.GLOBAL))) {
-            final String fqn = String.join(".", forma, name);
-            if (PhDefault.exists(new JavaPath(fqn).toString())) {
-                found = Phi.Φ.take(fqn.substring(PhPackage.GLOBAL.length() + 1));
+            final String full = String.join(".", forma, name);
+            if (PhDefault.exists(new JavaPath(full).toString())) {
+                found = Phi.Φ.take(full.substring(PhPackage.GLOBAL.length() + 1));
                 found.put(0, this);
             }
         }

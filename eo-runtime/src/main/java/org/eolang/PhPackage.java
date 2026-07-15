@@ -78,12 +78,7 @@ final class PhPackage implements Phi {
                 );
             }
         } else if (this.objects.containsKey(fqn)) {
-            final Phi cached = this.objects.get(fqn);
-            if (cached instanceof PhNest) {
-                taken = cached;
-            } else {
-                taken = cached.copy();
-            }
+            taken = PhPackage.dispatched(this.objects.get(fqn));
         } else if (name.contains(".")) {
             final String[] parts = name.split("\\.");
             Phi next = this.take(parts[0]);
@@ -125,6 +120,22 @@ final class PhPackage implements Phi {
     @Override
     public String φTerm() {
         return this.pkg;
+    }
+
+    /**
+     * Dispatch a cached object: a nested package stays as is, a plain value is
+     * copied so its owner can bind it.
+     * @param cached The cached object
+     * @return The object to hand out
+     */
+    private static Phi dispatched(final Phi cached) {
+        final Phi result;
+        if (cached instanceof PhNest) {
+            result = cached;
+        } else {
+            result = cached.copy();
+        }
+        return result;
     }
 
     /**

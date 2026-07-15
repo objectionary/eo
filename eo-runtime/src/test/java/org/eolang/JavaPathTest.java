@@ -42,7 +42,9 @@ class JavaPathTest {
     })
     void convertsToPackage(final String name, final String expected) {
         MatcherAssert.assertThat(
-            String.format("JavaPath should convert '%s' to package '%s', but it didn't", name, expected),
+            String.format(
+                "JavaPath should convert '%s' to package '%s', but it didn't", name, expected
+            ),
             new JavaPath(name).pkg(),
             Matchers.equalTo(expected)
         );
