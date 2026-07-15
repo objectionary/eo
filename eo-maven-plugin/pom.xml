@@ -25,6 +25,11 @@
     </dependency>
     <dependency>
       <groupId>org.eolang</groupId>
+      <artifactId>eo-printer</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
       <artifactId>lints</artifactId>
       <version>0.2.11</version>
       <exclusions>

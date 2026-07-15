@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.parser;
+package org.eolang.printer;
 
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
@@ -13,6 +13,7 @@ import com.yegor256.xsline.Xsline;
 import java.util.Collection;
 import java.util.List;
 import javax.xml.namespace.NamespaceContext;
+import org.eolang.parser.TrFull;
 import org.w3c.dom.Node;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXParseException;
@@ -41,11 +42,11 @@ public final class Xmir implements XML {
         new TrFull(
             new TrDefault<>(
                 new StUnhex(),
-                new StClasspath("/org/eolang/parser/print/tuples-to-stars.xsl"),
-                new StClasspath("/org/eolang/parser/print/inline-cactoos.xsl"),
-                new StClasspath("/org/eolang/parser/print/dataized-to-const.xsl"),
-                new StClasspath("/org/eolang/parser/print/unnecessary-as.xsl"),
-                new StClasspath("/org/eolang/parser/print/to-eo.xsl")
+                new StClasspath("/org/eolang/printer/print/tuples-to-stars.xsl"),
+                new StClasspath("/org/eolang/printer/print/inline-cactoos.xsl"),
+                new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl"),
+                new StClasspath("/org/eolang/printer/print/unnecessary-as.xsl"),
+                new StClasspath("/org/eolang/printer/print/to-eo.xsl")
             )
         )
     );

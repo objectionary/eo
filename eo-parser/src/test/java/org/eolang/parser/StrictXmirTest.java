@@ -102,12 +102,10 @@ final class StrictXmirTest {
     void validatesXmirWithLocalSchemaWithoutException(@Mktmp final Path tmp) {
         Assertions.assertDoesNotThrow(
             new StrictXmir(
-                new Xmir(
-                    StrictXmirTest.xmir(
-                        String.format(
-                            "https://www.eolang.org/xsd/XMIR-%s.xsd",
-                            Manifests.read(StrictXmirTest.EO_VERSION)
-                        )
+                StrictXmirTest.xmir(
+                    String.format(
+                        "https://www.eolang.org/xsd/XMIR-%s.xsd",
+                        Manifests.read(StrictXmirTest.EO_VERSION)
                     )
                 ),
                 tmp
@@ -120,12 +118,10 @@ final class StrictXmirTest {
     @ExtendWith(MktmpResolver.class)
     void validatesXmirWithLocalSchemaAndCreatesXsd(@Mktmp final Path tmp) {
         new StrictXmir(
-            new Xmir(
-                StrictXmirTest.xmir(
-                    String.format(
-                        "https://www.eolang.org/xsd/XMIR-%s.xsd",
-                        Manifests.read(StrictXmirTest.EO_VERSION)
-                    )
+            StrictXmirTest.xmir(
+                String.format(
+                    "https://www.eolang.org/xsd/XMIR-%s.xsd",
+                    Manifests.read(StrictXmirTest.EO_VERSION)
                 )
             ),
             tmp
@@ -145,12 +141,10 @@ final class StrictXmirTest {
         Assertions.assertDoesNotThrow(
             new Together<>(
                 thread -> new StrictXmir(
-                    new Xmir(
-                        StrictXmirTest.xmir(
-                            String.format(
-                                "https://www.eolang.org/xsd/XMIR-%s.xsd",
-                                Manifests.read(StrictXmirTest.EO_VERSION)
-                            )
+                    StrictXmirTest.xmir(
+                        String.format(
+                            "https://www.eolang.org/xsd/XMIR-%s.xsd",
+                            Manifests.read(StrictXmirTest.EO_VERSION)
                         )
                     ),
                     tmp
@@ -165,12 +159,10 @@ final class StrictXmirTest {
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void validatesXmirWithLocalSchemaInMultipleThreadsWithTheSameXml(@Mktmp final Path tmp) {
         final XML xml = new StrictXmir(
-            new Xmir(
-                StrictXmirTest.xmir(
-                    String.format(
-                        "https://www.eolang.org/xsd/XMIR-%s.xsd",
-                        Manifests.read(StrictXmirTest.EO_VERSION)
-                    )
+            StrictXmirTest.xmir(
+                String.format(
+                    "https://www.eolang.org/xsd/XMIR-%s.xsd",
+                    Manifests.read(StrictXmirTest.EO_VERSION)
                 )
             ),
             tmp
@@ -189,9 +181,7 @@ final class StrictXmirTest {
         Assertions.assertThrows(
             IllegalArgumentException.class,
             new StrictXmir(
-                new Xmir(
-                    StrictXmirTest.xmir("https://www.invalid-website-uri/XMIR.xsd")
-                ),
+                StrictXmirTest.xmir("https://www.invalid-website-uri/XMIR.xsd"),
                 tmp
             )::inner,
             "validation should fail because of broken URI"
