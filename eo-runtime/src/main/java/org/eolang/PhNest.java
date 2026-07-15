@@ -21,6 +21,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * {@code number.power} reads the extension untouched, while {@code (number 42)}
  * copies into a plain number value.</p>
  *
+ * <p>A single instance is shared across every reference to the package, so it
+ * must never be written to directly: {@link #put(int, Phi)} and
+ * {@link #put(String, Phi)} fail fast, the sole exception being the one-time
+ * {@code ρ} wiring done while the package is being resolved. A caller that
+ * needs to bind arguments must {@link #copy()} first, which collapses this
+ * into a writable plain object.</p>
+ *
  * @since 0.62
  */
 @SuppressWarnings("PMD.TooManyMethods")
@@ -69,12 +76,22 @@ final class PhNest implements Phi {
 
     @Override
     public void put(final int pos, final Phi object) {
-        this.object().put(pos, object);
+        throw new ExFailure(
+            "Can't #put(%d, %s) to package object \"%s\" directly, make a copy first",
+            pos, object, this.pkg
+        );
     }
 
     @Override
     public void put(final String name, final Phi object) {
-        this.object().put(name, object);
+        if (Phi.RHO.equals(name)) {
+            this.object().put(name, object);
+        } else {
+            throw new ExFailure(
+                "Can't #put(%s, %s) to package object \"%s\" directly, make a copy first",
+                name, object, this.pkg
+            );
+        }
     }
 
     @Override
