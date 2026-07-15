@@ -3,7 +3,6 @@
 +alias tuple.back
 +alias tuple.concat
 +alias tuple.front
-+alias tuple.list
 +alias tuple.with
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -26,8 +25,7 @@
   ++> tests-simple-insert
     eq. > @
       withi
-        list
-          * 1 2 3 4 5
+        * 1 2 3 4 5
         3
         "hello"
       * 1 2 3 "hello" 4 5
@@ -35,8 +33,7 @@
   ++> tests-insert-with-zero-index
     eq. > @
       withi
-        list
-          * 1 2 3 4 5
+        * 1 2 3 4 5
         0
         "hello"
       * "hello" 1 2 3 4 5

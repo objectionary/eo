@@ -1,7 +1,6 @@
 # Sublist of `lst` from `start` (inclusive) to `end` (exclusive).
 # Supports negative indices and clamps to list bounds.
 
-+alias tuple.list
 +alias tuple.reducedi
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -13,18 +12,17 @@
 [lst start end] > slice
   if. > @
     (number s).gte e
-    list *
-    list
-      reducedi
-        lst
-        *
-        [accum item idx] >>
-          if. > @
-            and.
-              idx.gte s
-              idx.lt e
-            accum.with item
-            accum
+    *
+    reducedi
+      lst
+      *
+      [accum item idx] >>
+        if. > @
+          and.
+            idx.gte s
+            idx.lt e
+          accum.with item
+          accum
   if. > e!
     end.gte 0
     if.
@@ -49,8 +47,7 @@
   ++> tests-simple-slice
     eq. > @
       slice
-        list
-          * 1 2 3 4 5
+        * 1 2 3 4 5
         1
         5
       * 2 3 4 5
@@ -58,8 +55,7 @@
   ++> tests-slice-with-negative-start
     eq. > @
       slice
-        list
-          * 8 76 -3 0 3 8 -12
+        * 8 76 -3 0 3 8 -12
         -4
         6
       * 0 3 8
@@ -67,8 +63,7 @@
   ++> tests-slice-with-negative-end
     eq. > @
       slice
-        list
-          * "a" 2 3.0 "xyz" 82.42 7
+        * "a" 2 3.0 "xyz" 82.42 7
         0
         -1
       * "a" 2 3.0 "xyz" 82.42
@@ -76,8 +71,7 @@
   ++> tests-slice-with-negative-start-and-end
     eq. > @
       slice
-        list
-          * 8 23 0 0 "foo"
+        * 8 23 0 0 "foo"
         -4
         -1
       * 23 0 0
@@ -85,8 +79,7 @@
   ++> tests-slice-with-end-gt-length
     eq. > @
       slice
-        list
-          * "foo" "bar" "buzz"
+        * "foo" "bar" "buzz"
         1
         10
       * "bar" "buzz"
@@ -94,8 +87,7 @@
   ++> tests-slice-with-start-lt-negative-length
     eq. > @
       slice
-        list
-          * 9 99 999 9999
+        * 9 99 999 9999
         -10
         3
       * 9 99 999
@@ -103,44 +95,39 @@
   ++> tests-slice-with-end-lt-negative-length
     eq. > @
       slice
-        list
-          * "A" "b" "C" "d" "E"
+        * "A" "b" "C" "d" "E"
         2
         -9
-      list *
+      *
 
   ++> tests-slice-with-start-gte-end-both-positive
     eq. > @
       slice
-        list
-          * 3 "-5" 0 "foo"
+        * 3 "-5" 0 "foo"
         2
         0
-      list *
+      *
 
   ++> tests-slice-with-start-gte-end-both-negative
     eq. > @
       slice
-        list
-          * 3 92 -423 0 22 943 -22
+        * 3 92 -423 0 22 943 -22
         -3
         -5
-      list *
+      *
 
   ++> tests-slice-with-negative-start-gte-end
     eq. > @
       slice
-        list
-          * "f" 1 "b" 2 "b" 3
+        * "f" 1 "b" 2 "b" 3
         -1
         3
-      list *
+      *
 
   ++> tests-slice-with-start-gte-negative-end
     eq. > @
       slice
-        list
-          * 8 -2 33-53 -1 33 "Y"
+        * 8 -2 33-53 -1 33 "Y"
         4
         -5
-      list *
+      *

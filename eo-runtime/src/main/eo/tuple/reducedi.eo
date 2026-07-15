@@ -4,7 +4,6 @@
 # for the element of the collection and the third one for the index.
 
 +alias tuple.is-empty
-+alias tuple.list
 +alias tuple.reducedi
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -35,8 +34,7 @@
     eq. > @
       6
       reducedi
-        list
-          * 1 1
+        * 1 1
         0
         [a x i] >>
           plus. > @
@@ -47,8 +45,7 @@
   ++> tests-list-reducedi-long-int-array
     eq. > @
       reducedi
-        list
-          * 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+        * 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
         0
         x.plus a > [a x i]
       1
@@ -56,16 +53,14 @@
   ++> tests-list-reducedi-bools-array
     not. > @
       reducedi
-        list
-          * true true false
+        * true true false
         true
         x.and a > [a x i]
 
   ++> tests-list-reducedi-nested-functions
     eq. > @
       reducedi
-        list
-          * 10 500
+        * 10 500
         0
         [acc x i]
           check x > @

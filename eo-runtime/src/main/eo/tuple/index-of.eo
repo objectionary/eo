@@ -1,7 +1,6 @@
 # Returns index of the first occurrence of `wanted` in `lst`.
 # If `lst` has no such element, returns -1.
 
-+alias tuple.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
@@ -30,30 +29,26 @@
     eq. > @
       1
       index-of
-        list
-          * 1 2 3
+        * 1 2 3
         2
 
   ++> tests-returns-first-index-of-element
     eq. > @
       0
       index-of
-        list
-          * -1 2 -1
+        * -1 2 -1
         -1
 
   ++> tests-does-not-find-index-of
     eq. > @
       -1
       index-of
-        list
-          * "qwerty" 2 3
+        * "qwerty" 2 3
         7
 
   ++> tests-finds-index-of-string
     eq. > @
       1
       index-of
-        list
-          * "asdfgh" "qwerty" 3
+        * "asdfgh" "qwerty" 3
         "qwerty"

@@ -5,7 +5,6 @@
 +alias tuple.contains
 +alias tuple.filtered
 +alias tuple.hash-code-of
-+alias tuple.list
 +alias tuple.mapped
 +alias string.sprintf
 +architect yegor256@gmail.com
@@ -30,7 +29,7 @@
     [tup] > rec-rebuild
       if. > @
         tup.length.eq 0
-        couple * (list *)
+        couple * *
         if.
           contains prev.hashes hash
           prev
@@ -78,11 +77,11 @@
 
     (found key).exists > [key] > has
     mapped > keys
-      list entries
+      entries
       entry.key > [entry]
     entries.length > size
     mapped > values
-      list entries
+      entries
       entry.value > [entry]
 
     [key value] > with
@@ -90,7 +89,7 @@
         with.
           origin.
             filtered
-              list entries
+              entries
               (hash.eq entry.hash).not > [entry] >>
           [] >>
             ^.hash > hash
@@ -102,7 +101,7 @@
       map.initialized > @
         origin.
           filtered
-            list entries
+            entries
             (hash.eq entry.hash).not > [entry] >>
       hash-code-of key > hash!
 

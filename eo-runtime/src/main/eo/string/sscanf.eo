@@ -8,7 +8,6 @@
 # - %f - parse as float and convert to `number`
 # - %s - parse as string and convert to `string`.
 
-+alias tuple.list
 +alias string.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -59,10 +58,9 @@
 
   ++> tests-sscanf-with-string-int-float
     eq. > @
-      list
-        sscanf
-          "%s %d %f"
-          "hello 33 0.24"
+      sscanf
+        "%s %d %f"
+        "hello 33 0.24"
       * "hello" 33 0.24
 
   ++> tests-sscanf-with-string-with-ending
@@ -91,20 +89,18 @@
 
   ++> tests-sscanf-with-sprintf
     eq. > @
-      list
-        sscanf
+      sscanf
+        "%s is about %d?"
+        sprintf
           "%s is about %d?"
-          sprintf
-            "%s is about %d?"
-            * "This" 8
+          * "This" 8
       * "This" 8
 
   ++> tests-sscanf-complex-case
     eq. > @
-      list
-        sscanf
-          "Im%d %s old and this is! Let's calculate %f + %f= %f"
-          "Im18 years old and this is! Let's calculate 99999999.99 + 0.01= 100000000.0"
+      sscanf
+        "Im%d %s old and this is! Let's calculate %f + %f= %f"
+        "Im18 years old and this is! Let's calculate 99999999.99 + 0.01= 100000000.0"
       *
         18
         "years"

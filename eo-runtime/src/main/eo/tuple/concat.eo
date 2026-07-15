@@ -1,6 +1,5 @@
 # Concatenate `lst` with another collection `passed`.
 
-+alias tuple.list
 +alias tuple.reducedi
 +alias tuple.with
 +alias tuple.withouti
@@ -13,7 +12,7 @@
 
 [lst passed] > concat
   reducedi > @
-    list passed
+    passed
     lst
     with accum item > [accum item index]
 
@@ -27,14 +26,13 @@
         * 1 2 3
     withouti > list3
       concat
-        list (* 0 1)
-        list (* 2 3)
+        (* 0 1)
+        (* 2 3)
       0
 
   ++> tests-concatenates-with-tuple
     eq. > @
       concat
-        list
-          * 0 1
+        * 0 1
         * 2 4
       * 0 1 2 4

@@ -1,7 +1,6 @@
 # Returns index of the last occurrence of `wanted` in `lst`.
 # If `lst` has no such element, returns -1.
 
-+alias tuple.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
@@ -25,37 +24,33 @@
     eq. > @
       1
       last-index-of
-        list
-          * "qwerty" 2 3
+        * "qwerty" 2 3
         2
 
   ++> tests-finds-last-index-of-repeated
     eq. > @
       2
       last-index-of
-        list
-          * 24 42 24
+        * 24 42 24
         24
 
   ++> tests-last-index-of-not-found
     eq. > @
       -1
       last-index-of
-        list
-          * 1 2 3
+        * 1 2 3
         0
 
   ++> tests-last-index-of-empty
     eq. > @
       -1
       last-index-of
-        list *
+        *
         "abc"
 
   ++> tests-last-index-of-unicode
     eq. > @
       3
       last-index-of
-        list
-          * "Hi" "Привет" "Hola" "Привет" "こんにちわ"
+        * "Hi" "Привет" "Hola" "Привет" "こんにちわ"
         "Привет"

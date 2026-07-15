@@ -1,6 +1,5 @@
 # Drop the first `shift` elements of `lst`.
 
-+alias tuple.list
 +alias tuple.slice
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -18,15 +17,13 @@
   ++> tests-shifted-with-shift-less-than-length
     eq. > @
       shifted
-        list
-          * 8 2 3 4 5
+        * 8 2 3 4 5
         2
       * 3 4 5
 
   ++> tests-shifted-with-shift-greater-than-length
     eq. > @
       shifted
-        list
-          * 8 2 3 4 5
+        * 8 2 3 4 5
         6
       *

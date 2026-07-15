@@ -6,7 +6,6 @@
 # the `func` should be boolean, that is `true` or `false`.
 
 +alias tuple.is-empty
-+alias tuple.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
@@ -15,8 +14,7 @@
 +spdx SPDX-License-Identifier: MIT
 
 [lst func] > filteredi
-  list > @
-    recfilter lst
+  recfilter lst > @
 
   [tup] > recfilter
     if. > @
@@ -31,38 +29,33 @@
   ++> tests-filteredi-with-lt
     eq. > @
       filteredi
-        list
-          * 3 1 4 2 5
+        * 3 1 4 2 5
         v.lt 3 > [v i]
       * 1 2
 
   ++> tests-filteredi-with-string-length
     eq. > @
       filteredi
-        list
-          * "Hello" "Name" "EO" "List"
+        * "Hello" "Name" "EO" "List"
         v.length.gt 4 > [v i]
       * "Hello"
 
   ++> tests-filteredi-with-empty-list
     is-empty > @
       filteredi
-        list
-          *
+        *
         v.lt 3 > [v i]
 
   ++> tests-filteredi-by-index
     eq. > @
       filteredi
-        list
-          * 3 1 4
+        * 3 1 4
         i.gt 0 > [v i]
       * 1 4
 
   ++> tests-filteredi-with-bools
     eq. > @
       filteredi
-        list
-          * true false true
+        * true false true
         v.not > [v i]
       * false

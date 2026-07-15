@@ -1,7 +1,6 @@
 # Returns `true` if `lst` contains `element`, `false` otherwise.
 
 +alias tuple.index-of
-+alias tuple.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
@@ -17,19 +16,16 @@
 
   ++> tests-list-contains-string
     contains > @
-      list
-        * "qwerty" "asdfgh" 3 "qwerty"
+      * "qwerty" "asdfgh" 3 "qwerty"
       "qwerty"
 
   ++> tests-list-contains-number
     contains > @
-      list
-        * "qwerty" "asdfgh" 3 "qwerty"
+      * "qwerty" "asdfgh" 3 "qwerty"
       3
 
   ++> tests-list-does-not-contain
     not. > @
       contains
-        list
-          * "Привет" "asdfgh" 3 "qwerty"
+        * "Привет" "asdfgh" 3 "qwerty"
         "Hi"
