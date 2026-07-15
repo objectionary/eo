@@ -10,9 +10,6 @@
 # ```
 # .
 
-+alias tuple.back
-+alias tuple.concat
-+alias tuple.front
 +alias tuple.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -26,21 +23,6 @@
   origin > @
   0.eq origin.length > is-empty
   origin > sorted
-
-  [x] > with
-    list > @
-      origin.with x
-
-  [index item] > withi
-    concat > @
-      with.
-        front
-          ^
-          index
-        item
-      back
-        ^
-        origin.length.minus index
 
   ++> tests-list-should-not-be-empty
     not. > @
@@ -61,32 +43,6 @@
     (list xs).is-empty.not > @
     * > xs
       [f]
-
-  ++> tests-list-simple-with
-    eq. > @
-      with.
-        list
-          * 1 2
-        3
-      * 1 2 3
-
-  ++> tests-simple-insert
-    eq. > @
-      withi.
-        list
-          * 1 2 3 4 5
-        3
-        "hello"
-      * 1 2 3 "hello" 4 5
-
-  ++> tests-insert-with-zero-index
-    eq. > @
-      withi.
-        list
-          * 1 2 3 4 5
-        0
-        "hello"
-      * "hello" 1 2 3 4 5
 
   ++> tests-complex-objects-list-comparison
     list
