@@ -5,8 +5,6 @@
 # `string.trimmed-left` and `string.trimmed-right`, so the strip-set matches
 # `String.strip()` in Java for the ASCII range.
 
-+alias string.trimmed-left
-+alias string.trimmed-right
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string

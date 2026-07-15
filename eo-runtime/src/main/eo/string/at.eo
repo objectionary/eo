@@ -2,8 +2,6 @@
 # If 0 > index >= ^.length, the `out-of-bounds` fallback is returned,
 # or the bottom object when unbound.
 
-+alias string.slice
-+alias string.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string

@@ -2,8 +2,6 @@
 # If the text is not numeric, the `cant-parse` fallback is returned,
 # or the bottom object when unbound.
 
-+alias string.sprintf
-+alias string.sscanf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string

@@ -1,7 +1,6 @@
 # Writes the number `n` as signed decimal digits, truncating its fraction
 # towards zero, so that `42.7` becomes `42` and `-42.7` becomes `-42`.
 
-+alias string.as-char
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string

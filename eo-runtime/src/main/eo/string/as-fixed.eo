@@ -2,8 +2,6 @@
 # digits, rounding to the nearest unit in the last place, so that `2.5` with
 # four places becomes `2.5000` and `0.9999999` with six places becomes `1.000000`.
 
-+alias string.as-char
-+alias string.as-decimal
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string

@@ -2,8 +2,6 @@
 # The last element contains the remainder of the string after splitting.
 # If `limit` < 1, the `cant-split` fallback is returned, or the bottom object when unbound.
 
-+alias string.slice
-+alias string.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
