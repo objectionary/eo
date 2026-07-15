@@ -49,16 +49,17 @@
         descriptor.eq -1
         T
           sprintf
-            "Cant touch the file '%s'"
-            * path
+            "Cant touch the file '%s': %s"
+            * path created.output
         seq *
           closed
           ^
-    code. > descriptor
+    called. > created
       if.
         os.is-windows
         win32 "_creat" (* path win32.create-mode)
         posix "creat" (* path posix.create-mode)
+    created.code > descriptor
     code. > closed
       if.
         os.is-windows
@@ -73,14 +74,15 @@
         ^
         T
           sprintf
-            "Cant delete the file '%s'"
-            * path
+            "Cant delete the file '%s': %s"
+            * path removed.output
       ^
-    code. > outcome
+    called. > removed
       if.
         os.is-windows
         win32 windows-name (* path)
         posix posix-name (* path)
+    removed.code > outcome
     if. > windows-name
       is-directory
       "_rmdir"
@@ -107,13 +109,14 @@
       file target
       T
         sprintf
-          "Cant move the file '%s' to '%s'"
-          * path target
-    code. > outcome
+          "Cant move the file '%s' to '%s': %s"
+          * path target renamed.output
+    called. > renamed
       if.
         os.is-windows
         win32 "rename" (* path target)
         posix "rename" (* path target)
+    renamed.code > outcome
 
   [mode scope cant-open] > open
     if. > @
@@ -171,16 +174,17 @@
           descriptor.eq -1
           cant-open
             sprintf
-              "Couldn't open file '%s'"
-              * path
+              "Couldn't open file '%s': %s"
+              * path opened.output
           seq *
             scope
               stream descriptor
             code.
               syscall.close (* descriptor)
             true
-        code. > descriptor
+        called. > opened
           syscall.open (* path flags syscall.create-mode)
+        opened.code > descriptor
         plus. > flags
           plus.
             plus.

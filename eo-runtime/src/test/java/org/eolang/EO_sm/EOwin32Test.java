@@ -57,6 +57,32 @@ final class EOwin32Test {
         );
     }
 
+    @Test
+    @DisabledOnOs({OS.LINUX, OS.MAC})
+    void reportsReasonWhenOpenFails() {
+        MatcherAssert.assertThat(
+            "Failed \"_open\" should carry the OS error reason in its output",
+            new Dataized(
+                new PhApplication(
+                    new PhApplication(
+                        Phi.Φ.take("sm.win32").copy(),
+                        "name",
+                        new Data.ToPhi("_open")
+                    ),
+                    "args",
+                    new Data.ToPhi(
+                        new Phi[]{
+                            new Data.ToPhi("C:\\eo-5403-absent-directory\\file.txt"),
+                            new Data.ToPhi(0),
+                            new Data.ToPhi(0),
+                        }
+                    )
+                ).take("output")
+            ).asString(),
+            Matchers.containsString("No such file")
+        );
+    }
+
     /**
      * Test case for {@link Winsock}.
      * @since 0.40

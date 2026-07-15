@@ -10,6 +10,7 @@ package org.eolang.EO_sm.Win32; // NOPMD
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 
 /**
@@ -192,4 +193,23 @@ public interface Msvcrt extends Library {
      * @return Zero on success, -1 on error
      */
     int _dup2(int descriptor, int other);
+
+    /**
+     * Returns a pointer to the calling thread's {@code errno}.
+     *
+     * <p>The CRT keeps {@code errno} per thread and exposes it through this
+     * function; the {@code errno} macro itself expands to {@code (*_errno())}.
+     * Reading the pointed-to {@code int} right after a failed CRT call gives the
+     * code the call stored, the win32 counterpart of the posix {@code errno}.</p>
+     *
+     * @return Pointer to the calling thread's {@code errno}
+     */
+    Pointer _errno();
+
+    /**
+     * Converts a CRT {@code errno} value into a human-readable message.
+     * @param errnum The error number
+     * @return Error as a string
+     */
+    String strerror(int errnum);
 }
