@@ -125,10 +125,11 @@ It is being copied with two arguments: `"Hello, %s!"` and `"Jeffrey"`.
 This program can be written using horizontal notation:
 
 ```eo
+# Also says hello to Jeff.
+
 +alias io.stdout
 +alias tt.sprintf
 
-# Also says hello to Jeff.
 [] > app
   stdout (sprintf "Hello, %s!" (* "Jeffrey")) > @
 ```
@@ -158,20 +159,26 @@ Now, the object `app` has two "attached" attributes: `@` and `msg`. The attribut
 This is how you iterate:
 
 ```eo
-malloc.empty > [args] > app
-  seq * > [x] >>
-    x.put 2
-    while
-      x.as-number.lt 6 > [i] >>
-      seq * > [i] >>
-        io.stdout
-          tt.sprintf *1
-            "%d x %1$d = %d\n"
-            x
-            x.as-number.times x
-        x.put
-          x.as-number.plus 1
-    true
+# Prints a multiplication table.
+
+[args] > app
+  malloc.for > @
+    0
+    [x] >>
+      seq * > @
+        x.put 2
+        while
+          x.as-number.lt 6 > [i] >>
+          [i] >>
+            seq * > @
+              io.stdout
+                tt.sprintf *1
+                  "%d x %1$d = %d\n"
+                  x
+                  x.as-number.times x
+              x.put
+                x.as-number.plus 1
+        true
 ```
 
 This code will print this:

@@ -10,6 +10,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
+import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -19,7 +20,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -40,7 +40,6 @@ final class ReadmeSnippetsIT {
     @ExtendWith(MayBeSlow.class)
     @MethodSource("snippets")
     void validatesReadmeSnippets(final String snippet, @Mktmp final Path temp) throws IOException {
-        final String[] log = {""};
         new Farea(temp).together(
             f -> {
                 f.properties()
@@ -54,14 +53,19 @@ final class ReadmeSnippetsIT {
                 );
                 f.build().properties().set("directory", "target");
                 new EoSourceRun(f).exec("app");
-                f.exec("clean", "test");
-                log[0] = f.log().content();
+                ReadmeSnippetsIT.succeeds(f, snippet);
             }
         );
+    }
+
+    private static void succeeds(final Farea farea, final String snippet) throws IOException {
         MatcherAssert.assertThat(
             String.format("EO snippet was not been executed as expected:%n%s", snippet),
-            log[0],
-            Matchers.containsString("BUILD SUCCESS")
+            farea.log(),
+            new RequisiteMatcher()
+                .with("BUILD SUCCESS")
+                .without("BUILD FAILURE")
+                .without("[ERROR]")
         );
     }
 
