@@ -8,8 +8,8 @@ file: snippets/foo.eo
 args: ["snippets.foo"]
 eo: |
   +alias io.stdout
+  +alias ms.sine
   +alias tt.sprintf
-  +decorate number ms.angle
   +package snippets
 
   [] > foo
@@ -19,4 +19,4 @@ eo: |
         "Sin of %f is %f"
         *
           x
-          x.sin
+          sine x

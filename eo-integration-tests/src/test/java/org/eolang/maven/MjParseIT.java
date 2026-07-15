@@ -9,6 +9,8 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
+import com.yegor256.farea.RequisiteMatcher;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
@@ -35,12 +37,24 @@ final class MjParseIT {
                 new AppendedPlugin(f).value()
                     .goals("register", "parse");
                 f.exec("compile", String.format("-Deo.cache=%s", temp.resolve("cache")));
+                MjParseIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "the XMIR file is generated",
                     f.files().file("target/eo/1-parse/foo.xmir").exists(),
                     Matchers.is(true)
                 );
             }
+        );
+    }
+
+    private static void succeeds(final Farea farea) throws IOException {
+        MatcherAssert.assertThat(
+            "the build must succeed without errors, but it didn't",
+            farea.log(),
+            new RequisiteMatcher()
+                .with("BUILD SUCCESS")
+                .without("BUILD FAILURE")
+                .without("[ERROR]")
         );
     }
 }

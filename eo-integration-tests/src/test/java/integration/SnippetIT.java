@@ -10,6 +10,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
+import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -56,6 +57,7 @@ final class SnippetIT {
                 f.build().properties().set("directory", SnippetIT.targetDir(xtory));
                 new EoSourceRun(f).exec(xtory.map().get("args"));
                 log[0] = f.log().content();
+                SnippetIT.succeeds(f, yml);
             }
         );
         MatcherAssert.assertThat(
@@ -69,6 +71,17 @@ final class SnippetIT {
                     (Iterable<String>) xtory.map().get("out")
                 )
             )
+        );
+    }
+
+    private static void succeeds(final Farea farea, final String yml) throws IOException {
+        MatcherAssert.assertThat(
+            String.format("'%s' must build without errors, but it didn't", yml),
+            farea.log(),
+            new RequisiteMatcher()
+                .with("BUILD SUCCESS")
+                .without("BUILD FAILURE")
+                .without("[ERROR]")
         );
     }
 

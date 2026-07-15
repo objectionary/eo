@@ -9,6 +9,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
+import com.yegor256.farea.RequisiteMatcher;
 import com.yegor256.tojos.MnCsv;
 import com.yegor256.tojos.TjCached;
 import com.yegor256.tojos.TjDefault;
@@ -48,6 +49,7 @@ final class MjRegisterIT {
                     "eo:register", "eo:parse", "eo:probe", "eo:pull"
                 );
                 f.exec("eo:register");
+                MjRegisterIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "Old pulled files must were removed, but it didn't",
                     temp.resolve("target/eo/2-pull").toFile().exists(),
@@ -67,6 +69,7 @@ final class MjRegisterIT {
                     "eo:register", "eo:parse", "eo:probe", "eo:pull", "eo:resolve"
                 );
                 f.exec("eo:register");
+                MjRegisterIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "Old resolved files must were removed, but it didn't",
                     temp.resolve("target/eo/2-pull").toFile().exists(),
@@ -81,6 +84,7 @@ final class MjRegisterIT {
         new Farea(temp).together(
             f -> {
                 MjRegisterIT.runForeign(f);
+                MjRegisterIT.succeeds(f);
                 final TjSmart foreign = MjRegisterIT.loadForeign(temp);
                 MatcherAssert.assertThat(
                     "Foreign must contain only 3 references to objects, but it doesn't",
@@ -111,6 +115,7 @@ final class MjRegisterIT {
                     "eo:register", "eo:parse", "eo:probe", "eo:pull"
                 );
                 f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
+                MjRegisterIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "Necessary objects must were pulled",
                     temp.resolve("target/eo/2-pull/number.eo").toFile().exists(),
@@ -122,6 +127,17 @@ final class MjRegisterIT {
                     Matchers.is(false)
                 );
             }
+        );
+    }
+
+    private static void succeeds(final Farea farea) throws IOException {
+        MatcherAssert.assertThat(
+            "the build must succeed without errors, but it didn't",
+            farea.log(),
+            new RequisiteMatcher()
+                .with("BUILD SUCCESS")
+                .without("BUILD FAILURE")
+                .without("[ERROR]")
         );
     }
 

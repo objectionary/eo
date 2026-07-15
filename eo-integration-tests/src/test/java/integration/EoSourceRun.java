@@ -6,6 +6,7 @@ package integration;
 
 import com.yegor256.farea.Farea;
 import java.io.IOException;
+import java.nio.file.Paths;
 import org.cactoos.Proc;
 
 /**
@@ -29,6 +30,14 @@ final class EoSourceRun implements Proc<Object> {
 
     @Override
     public void exec(final Object args) throws IOException {
+        new RuntimeSources(
+            Paths.get(System.getProperty("basedir", System.getProperty("user.dir")))
+                .getParent()
+                .resolve("eo-runtime")
+                .resolve("src")
+                .resolve("main")
+                .resolve("eo")
+        ).exec(this.farea);
         new EoMavenPlugin(this.farea)
             .appended()
             .execution("compile")
@@ -36,6 +45,7 @@ final class EoSourceRun implements Proc<Object> {
             .goals("register", "compile", "transpile")
             .configuration()
             .set("failOnWarning", Boolean.FALSE.toString())
+            .set("offline", Boolean.TRUE.toString())
             .set("skipLinting", Boolean.TRUE.toString());
         this.farea.build()
             .plugins()
