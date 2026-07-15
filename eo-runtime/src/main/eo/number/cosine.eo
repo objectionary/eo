@@ -1,0 +1,80 @@
+# Cosine of `num` radians as `org.eolang.number`, taken from the sine of the
+# argument advanced by a quarter turn, since cos(x) equals sin(x + pi/2).
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[num] > cosine
+  sine (num.plus (pi.div 2)) > @
+
+  ++> tests-cosine-of-zero-is-one
+    lt. > @
+      abs
+        minus.
+          (cosine 0).times 1000
+          1000
+      1
+
+  ++> tests-cosine-of-pi-halves-is-zero
+    lt. > @
+      abs
+        (cosine (pi.div 2)).times 1000
+      1
+
+  ++> tests-cosine-of-pi-is-minus-one
+    lt. > @
+      abs
+        minus.
+          (cosine pi).times 1000
+          -1000
+      1
+
+  ++> tests-cosine-of-pi-thirds-is-half
+    lt. > @
+      abs
+        minus.
+          (cosine (pi.div 3)).times 1000
+          500
+      1
+
+  ++> tests-cosine-is-even-function
+    lt. > @
+      abs
+        times.
+          minus.
+            cosine (pi.div 3)
+            cosine ((pi.div 3).neg)
+          1000
+      1
+
+  ++> tests-cosine-reduces-large-angle
+    lt. > @
+      abs
+        minus.
+          (cosine ((pi.times 10).plus (pi.div 3))).times 1000
+          500
+      1
+
+  ++> tests-cosine-of-seventeen-radians
+    lt. > @
+      abs
+        minus.
+          (cosine 17).times 1000
+          -275
+      1
+
+  ++> tests-cosine-of-nan-is-nan
+    is-nan. > @
+      cosine nan
+
+  ++> tests-cosine-of-positive-infinity-is-nan
+    is-nan. > @
+      cosine pinf
+
+  ++> tests-cosine-of-negative-infinity-is-nan
+    is-nan. > @
+      cosine ninf

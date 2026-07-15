@@ -78,7 +78,7 @@ final class PhPackage implements Phi {
                 );
             }
         } else if (this.objects.containsKey(fqn)) {
-            taken = this.objects.get(fqn).copy();
+            taken = PhPackage.dispatched(this.objects.get(fqn));
         } else if (name.contains(".")) {
             final String[] parts = name.split("\\.");
             Phi next = this.take(parts[0]);
@@ -123,6 +123,22 @@ final class PhPackage implements Phi {
     }
 
     /**
+     * Dispatch a cached object: a nested package stays as is, a plain value is
+     * copied so its owner can bind it.
+     * @param cached The cached object
+     * @return The object to hand out
+     */
+    private static Phi dispatched(final Phi cached) {
+        final Phi result;
+        if (cached instanceof PhNest) {
+            result = cached;
+        } else {
+            result = cached.copy();
+        }
+        return result;
+    }
+
+    /**
      * Load phi object by package name from ClassLoader.
      * @param fqn FQN of the EO object
      * @return Phi
@@ -130,11 +146,16 @@ final class PhPackage implements Phi {
     @SuppressWarnings("PMD.PreserveStackTrace")
     private Phi loadPhi(final String fqn) {
         final String target = new JavaPath(fqn).toString();
-        final String pinfo = String.format("%s.package-info", target);
+        final String pinfo = String.format("%s.package-info", new JavaPath(fqn).pkg());
         Phi loaded;
         try {
             Class.forName(pinfo);
-            loaded = new PhPackage(fqn);
+            try {
+                Class.forName(target);
+                loaded = new PhNest(fqn);
+            } catch (final ClassNotFoundException absent) {
+                loaded = new PhPackage(fqn);
+            }
         } catch (final ClassNotFoundException pckg) {
             try {
                 loaded = (Phi) Class.forName(target)

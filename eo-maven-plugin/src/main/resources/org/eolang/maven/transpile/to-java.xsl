@@ -70,6 +70,24 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
+  <!-- Get clean escaped package segment, prefixed to never clash with an object class -->
+  <xsl:function name="eo:clean-package" as="xs:string">
+    <xsl:param name="n" as="xs:string"/>
+    <xsl:value-of select="concat('EO_', replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO'))"/>
+  </xsl:function>
+  <!-- Get Java package name for the EO package, one clean-package per segment -->
+  <xsl:function name="eo:package-name" as="xs:string">
+    <xsl:param name="n" as="xs:string"/>
+    <xsl:variable name="joined">
+      <xsl:for-each select="tokenize($n, '\.')">
+        <xsl:if test="position()!=1">
+          <xsl:text>.</xsl:text>
+        </xsl:if>
+        <xsl:value-of select="eo:clean-package(.)"/>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:value-of select="$joined"/>
+  </xsl:function>
   <!-- Get name for special attributes  -->
   <xsl:function name="eo:attr-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
@@ -221,7 +239,7 @@
       <xsl:text>org.eolang.</xsl:text>
       <xsl:variable name="pkg" select="/object/metas/meta[head='package']/part[1]"/>
       <xsl:if test="$pkg">
-        <xsl:value-of select="eo:class-name($pkg, eo:suffix(../@line, ../@pos))"/>
+        <xsl:value-of select="eo:package-name($pkg)"/>
         <xsl:text>.</xsl:text>
       </xsl:if>
       <xsl:value-of select="eo:class-name(., eo:suffix(../@line, ../@pos))"/>
@@ -851,7 +869,7 @@
     <xsl:text>package org.eolang</xsl:text>
     <xsl:if test="/object/metas/meta[head='package']">
       <xsl:text>.</xsl:text>
-      <xsl:value-of select="eo:class-name(/object/metas/meta[head='package']/tail, '')"/>
+      <xsl:value-of select="eo:package-name(/object/metas/meta[head='package']/tail)"/>
     </xsl:if>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>

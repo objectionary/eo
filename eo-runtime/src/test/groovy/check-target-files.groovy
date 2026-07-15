@@ -8,13 +8,13 @@ List<String> expected = [
   'eo/1-parse/fs/dir.xmir',
   'eo/5-transpile/malloc.xmir',
   'generated-sources/org/eolang/EOseq.java',
-  'generated-sources/org/eolang/EOnk/EOsocket.java',
+  'generated-sources/org/eolang/EO_nk/EOsocket.java',
   'generated-test-sources/org/eolang/EObytesTest.java',
   'classes/org/eolang/package-info.class',
-  'classes/org/eolang/EOsm/package-info.class',
-  'classes/org/eolang/EOms/package-info.class',
-  'classes/org/eolang/EOfs/package-info.class',
-  'classes/org/eolang/EOtt/package-info.class',
+  'classes/org/eolang/EO_sm/package-info.class',
+  'classes/org/eolang/EO_number/package-info.class',
+  'classes/org/eolang/EO_fs/package-info.class',
+  'classes/org/eolang/EO_string/package-info.class',
 ]
 
 for (path in expected) {

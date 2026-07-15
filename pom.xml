@@ -83,7 +83,7 @@
     <!-- The EOsm layer is thin, repetitive syscall glue (JNA bindings, per-OS
          dispatchers, near-identical stat structs); exclude it from duplication
          detection -->
-    <sonar.cpd.exclusions>**/EOsm/**</sonar.cpd.exclusions>
+    <sonar.cpd.exclusions>**/EO_sm/**</sonar.cpd.exclusions>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     <!-- This is the flag that allows to skip unit tests run by maven-surefire-plugin -->

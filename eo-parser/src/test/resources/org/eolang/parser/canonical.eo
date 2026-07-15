@@ -18,7 +18,7 @@
               seq > @
                 *
                   io.stdout
-                    tt.sprintf
+                    string.sprintf
                       "%d x %d = %d\n"
                       *
                         ^.x

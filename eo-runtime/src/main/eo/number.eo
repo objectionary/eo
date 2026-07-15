@@ -1,7 +1,7 @@
 # Object `number` is an abstraction of a 64-bit floating-point
 # number that internally is a chain of eight bytes.
 
-+alias tt.sprintf
++alias string.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +rt jvm org.eolang:eo-runtime:0.0.0

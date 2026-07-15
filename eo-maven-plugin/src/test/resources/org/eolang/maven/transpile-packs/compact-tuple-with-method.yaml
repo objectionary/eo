@@ -16,6 +16,6 @@ asserts:
 input: |
   [args] > program
     io.stdout > @
-      tt.sprintf *1
+      string.sprintf *1
         "Hello, %s\n"
         args.at 0

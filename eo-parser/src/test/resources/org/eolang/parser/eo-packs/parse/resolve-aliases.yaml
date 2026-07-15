@@ -14,18 +14,18 @@ asserts:
   - /object/metas[count(meta)=9]
   - /object/metas/meta[head/text()='also' and tail='Φ.org.eolang.xyz' and part='Φ.org.eolang.xyz']
   - /object/metas/meta[head/text()='decorate' and tail='string my foo' and part='Φ.org.eolang.xyz']
-  - //o[@base='Φ.org.eolang.tt.scanner']
+  - //o[@base='Φ.org.eolang.string.scanner']
   - //o[@base='Φ.org.eolang.io.stdout']
   - //o[@base='and']
   - //o[@base='ξ']
   - //o[@base='ρ']
-  - //o[@base='Φ.tt.regex']
+  - //o[@base='Φ.string.regex']
   - //o[@base='Φ.org.d']
 input: |
-  +alias org.eolang.tt.scanner
+  +alias org.eolang.string.scanner
   +alias stdin org.eolang.io.stdin
   +alias stdout org.eolang.io.stdout
-  +alias custom tt.regex
+  +alias custom string.regex
   +alias my org.eolang.xyz
   +alias a b c org.d
   +also my

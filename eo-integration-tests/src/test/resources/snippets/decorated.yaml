@@ -8,8 +8,8 @@ file: snippets/foo.eo
 args: ["snippets.foo"]
 eo: |
   +alias io.stdout
-  +alias ms.sine
-  +alias tt.sprintf
+  +alias number.sine
+  +alias string.sprintf
   +package snippets
 
   [] > foo

@@ -109,7 +109,7 @@ final class PhPackageTest {
                 "We should throw if package-info.class is missing"
             ).getMessage(),
             Matchers.equalTo(
-                "Couldn't find object 'Φ.test' because there's no class 'org.eolang.EOtest' or package-info class: 'org.eolang.EOtest.package-info', at least one of them must exist"
+                "Couldn't find object 'Φ.test' because there's no class 'org.eolang.EOtest' or package-info class: 'org.eolang.EO_test.package-info', at least one of them must exist"
             )
         );
     }

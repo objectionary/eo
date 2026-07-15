@@ -14,12 +14,12 @@ sheets:
   - /org/eolang/parser/parse/decorate.xsl
 asserts:
   - /object[not(errors)]
-  - /object/o[@name='main']/o[@name='φ' and @base='Φ.foo']/o[@base='Φ.tt.text']/o[@base='Φ.string' and not(@name)]
+  - /object/o[@name='main']/o[@name='φ' and @base='Φ.foo']/o[@base='Φ.string.text']/o[@base='Φ.string' and not(@name)]
   - /object/o[@name='main']/o[@name='num' and @base='Φ.number']
   - /object/o[@name='main']/o[@name='x' and @base='Φ.bar']/o[@base='Φ.bool' and @as='f']/o[@base='Φ.true' and not(@as)]
-  - /object/o[@name='main']/o[@name='tt' and @base='Φ.xyz']/o[@base='Φ.first']/o[@base='Φ.abc' and @as='y']/o[@base='Φ.second' and not(@as)]
+  - /object/o[@name='main']/o[@name='qux' and @base='Φ.xyz']/o[@base='Φ.first']/o[@base='Φ.abc' and @as='y']/o[@base='Φ.second' and not(@as)]
 input: |
-  +decorate string tt.text foo
+  +decorate string string.text foo
   +decorate number
   +decorate true bool
   +decorate first xyz
@@ -30,5 +30,5 @@ input: |
     5 > num
     bar > x
       true:f
-    first > tt
+    first > qux
       second:y

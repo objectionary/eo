@@ -1,0 +1,101 @@
+# Generates a pseudo-random number.
+
++alias sm.system-clock
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object
+
+[seed] > random
+  div. > @
+    seed.as-number
+    00-20-00-00-00-00-00-00.as-i64.as-number
+  random > next
+    as-number.
+      as-i64.
+        and.
+          as-bytes.
+            plus.
+              plus.
+                as-i64.
+                  left.
+                    and.
+                      as-bytes.
+                        times.
+                          as-i64.
+                            and.
+                              as-bytes.
+                                div.
+                                  seed.as-i64
+                                  67108864.as-i64
+                              00-00-00-00-03-FF-FF-FF
+                          25214903917.as-i64
+                      00-00-00-00-03-FF-FF-FF
+                    26
+                as-i64.
+                  times.
+                    as-i64.
+                      and.
+                        seed.as-i64.as-bytes
+                        00-00-00-00-03-FF-FF-FF
+                    25214903917.as-i64
+              11.as-i64
+          00-0F-FF-FF-FF-FF-FF-FF
+
+  [clock] > clocked
+    random > @
+      as-number.
+        plus.
+          as-i64.
+            and.
+              tbytes.left shift1
+              ((one.left 53).as-i64.minus one).as-bytes
+          plus.
+            as-i64.
+              and.
+                tbytes.left shift3
+                ((one.left shift1).as-i64.minus one).as-bytes
+            as-i64.
+              and.
+                tbytes
+                ((one.left shift3).as-i64.minus one).as-bytes
+    00-00-00-00-00-00-00-01 > one
+    35 > shift1
+    17 > shift3
+    clock.as-bytes > tbytes
+  clocked system-clock > pseudo
+
+  ++> tests-random-with-seed
+    not. > @
+      eq.
+        r.next
+        r.next.next
+    random 51 > r
+
+  ++> tests-seeded-randoms-are-equal
+    eq. > @
+      (random 1654).next.next.next
+      (random 1654).next.next.next
+
+  ++> tests-random-is-in-range
+    and. > @
+      and.
+        and.
+          rand.lt 1
+          (rand.lt 0).not
+        and.
+          rand.next.lt 1
+          (rand.next.lt 0).not
+      and.
+        rand.next.next.lt 1
+        (rand.next.next.lt 0).not
+    (random 123).next > rand
+
+  ++> tests-two-random-numbers-not-equal
+    not. > @
+      eq.
+        random.clocked 123.as-i64
+        random.clocked 456.as-i64

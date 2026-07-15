@@ -1,0 +1,81 @@
+# Returns index of `substring` in `text`.
+# If no `substring` was found, it returns -1.
+
++alias string.slice
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text substring] > index-of
+  if. > @
+    or.
+      or.
+        (number slen).gt tlen
+        and.
+          slen.eq tlen
+          (sub.eq txt).not
+      found.eq -1
+    -1
+    length.
+      string
+        slice txt 0 found
+  (number tlen).minus slen > end!
+  rec-index-of 0 > found!
+  sub.size > slen!
+  substring > sub!
+  txt.size > tlen!
+  text > txt!
+
+  [idx] > rec-index-of
+    if. > @
+      end.eq idx
+      if.
+        includes
+        idx
+        -1
+      if.
+        includes
+        idx
+        rec-index-of (idx.plus 1).as-number
+    eq. > includes
+      slice txt idx slen
+      sub
+
+  ++> tests-index-of-non-existed-substring-with-more-length
+    eq. > @
+      -1
+      index-of "Hello" "Somebody"
+
+  ++> tests-index-of-non-existed-substring-with-same-length
+    eq. > @
+      -1
+      index-of "Hello" "world"
+
+  ++> tests-index-of-non-existed-substring-with-utf
+    eq. > @
+      -1
+      index-of
+        "привет, друг!"
+        "x"
+
+  ++> tests-index-of-existed-substring-with-utf
+    eq. > @
+      3
+      index-of
+        "привет, друг!"
+        "в"
+
+  ++> tests-returns-valid-index-of-substring
+    eq. > @
+      6
+      index-of
+        "Hello \n world"
+        "\n"
+
+  ++> tests-returns-valid-index-of-substring-in-the-end
+    eq. > @
+      6
+      index-of "Hello world" "world"

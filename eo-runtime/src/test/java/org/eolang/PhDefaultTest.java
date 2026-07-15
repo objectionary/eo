@@ -7,8 +7,8 @@ package org.eolang;
 import com.yegor256.Together;
 import java.security.SecureRandom;
 import org.cactoos.set.SetOf;
-import org.eolang.EOorg.EOeolang.EOdummy;
-import org.eolang.EOtt.EOsprintf;
+import org.eolang.EO_org.EO_eolang.EOdummy;
+import org.eolang.EO_string.EOsprintf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -470,14 +470,14 @@ final class PhDefaultTest {
         MatcherAssert.assertThat(
             "forma must keep the EO sub-package without its EO marker, but it didnt",
             new EOsprintf().forma(),
-            Matchers.equalTo("Φ.tt.sprintf")
+            Matchers.equalTo("Φ.string.sprintf")
         );
     }
 
     @Test
     void keepsSingleRootPrefixForDeepPackage() {
         MatcherAssert.assertThat(
-            "forma of org.eolang.EOorg.EOeolang object must keep a single org.eolang prefix, but it didnt",
+            "forma of org.eolang.EO_org.EO_eolang object must keep a single org.eolang prefix, but it didnt",
             new EOdummy().forma(),
             Matchers.equalTo("Φ.org.eolang.dummy")
         );
