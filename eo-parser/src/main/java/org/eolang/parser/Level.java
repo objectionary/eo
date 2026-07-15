@@ -68,6 +68,13 @@ final class Level {
     private boolean named;
 
     /**
+     * True once a pipe application (§3.14) has adopted this entry as its
+     * predecessor. A nameless formation is legal in that position because
+     * the pipe supplies its name, so its naming check is waived (R-3.14.2).
+     */
+    private boolean piped;
+
+    /**
      * True if this entry's expression is an atom (formation + {@code /sig}).
      */
     private boolean atom;
@@ -308,6 +315,23 @@ final class Level {
      */
     void name() {
         this.named = true;
+    }
+
+    /**
+     * Whether a pipe application has adopted this entry as its
+     * predecessor (§3.14).
+     * @return Piped flag
+     */
+    boolean piped() {
+        return this.piped;
+    }
+
+    /**
+     * Flip {@link #piped()} to true — a pipe application has claimed this
+     * entry as its predecessor, so a nameless formation here is legal.
+     */
+    void pipe() {
+        this.piped = true;
     }
 
     /**

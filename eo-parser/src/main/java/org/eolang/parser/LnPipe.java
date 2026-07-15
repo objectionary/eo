@@ -17,11 +17,13 @@ import java.util.List;
  *
  * <p>The predecessor (stack top at the pipe's indent) must be a formation
  * ({@link Kind#BARE_FORMATION} / {@link Kind#ONLY_PHI_FORMATION}) or
- * another {@link Kind#PIPE_APPLICATION}, and must be named — a pipe refers
- * to it by name, so an unnamed formation is not a valid target (R-3.14.2).
- * A pipe after a {@code .method} dispatch is rejected (R-3.14.4): the
- * attribute has already been taken, so the formation is no longer in
- * hand.</p>
+ * another {@link Kind#PIPE_APPLICATION} (R-3.14.2). A named predecessor is
+ * referred to by name; a <em>nameless</em> formation is also legal — the
+ * pipe supplies its name and fuses the arguments straight into it, so the
+ * anonymous formation becomes the named application in one node
+ * (R-3.14.7). A pipe predecessor must be named. A pipe after a
+ * {@code .method} dispatch is rejected (R-3.14.4): the attribute has
+ * already been taken, so the formation is no longer in hand.</p>
  *
  * <p>Two forms by whether horizontal args are present (R-3.14.3): the
  * <em>horizontal</em> form {@code | a b} carries its args on the line and
@@ -32,11 +34,14 @@ import java.util.List;
  * pipe may extend it.</p>
  *
  * <p>Emission (R-3.14.7): the line emits a base-less {@code <o pipe=''>}
- * with the args as children; the {@code wrap-applications} reshape sets
- * {@code @base} from the preceding sibling's {@code @name} and drops
- * {@code @pipe}, so downstream passes treat it as a hand-written
- * application of the predecessor by name. The predecessor object stays in
- * place.</p>
+ * with the args as children. The {@code wrap-applications} reshape then
+ * does one of two things. When the predecessor is named it sets
+ * {@code @base} to that name and drops {@code @pipe}, leaving the
+ * predecessor in place — a hand-written application by name. When the
+ * predecessor is a nameless formation it fuses instead: the pipe's name
+ * and argument children move into the formation node and the pipe node is
+ * dropped, giving the phi-calculus {@code ⟦x↦5⟧} — the same XMIR a
+ * {@code (body > [x]) 5} paren group produces.</p>
  *
  * @since 0.1
  */
@@ -59,6 +64,7 @@ final class LnPipe implements Line {
     public void into(final Stack stack, final Globals globals, final Emit emit) {
         Blanks.checkPlain(this.span, globals, emit);
         this.precheck(stack);
+        stack.top().pipe();
         final Tokens tokens = this.piped();
         final List<Value> args = tokens.readArgs();
         Bindings.checkAllOrNothing(args, this.span);
@@ -98,22 +104,35 @@ final class LnPipe implements Line {
 
     /**
      * Validate the pipe has a legal predecessor — a same-indent
-     * formation or pipe that carries a name (R-3.14.2 / R-5.2.4a /
-     * R-5.2.5a / R-5.2.11a). An empty stack, a shallower top (descending
-     * pipe), an unnamed formation, or a non-pipeable kind (a plain value,
-     * an application, or a {@code .method} dispatch) all fail.
+     * formation or pipe (R-3.14.2 / R-5.2.4a / R-5.2.5a / R-5.2.11a). A
+     * formation may be nameless: the pipe supplies its name by fusing
+     * into it (R-3.14.7). A pipe predecessor must be named, since it is
+     * referred to by name. An empty stack, a shallower top (descending
+     * pipe), an unnamed pipe, or a non-pipeable kind (a plain value, an
+     * application, or a {@code .method} dispatch) all fail.
      * @param stack Indent stack
      */
     private void precheck(final Stack stack) {
         if (stack.empty()
             || stack.top().indent() != this.span.indent()
-            || !stack.top().kind().pipeable()
-            || !stack.top().named()) {
+            || !LnPipe.usable(stack.top())) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
-                "a pipe must follow a named formation or another pipe"
+                "a pipe must follow a formation or another named pipe"
             );
         }
+    }
+
+    /**
+     * Whether the top level is a usable pipe predecessor (R-3.14.2): its
+     * kind must be pipeable (a formation or a pipe), and it must be named
+     * unless it is a formation — a nameless formation is fine because the
+     * pipe supplies its name (R-3.14.7).
+     * @param top The stack top
+     * @return True if the pipe may attach to it
+     */
+    private static boolean usable(final Level top) {
+        return top.kind().pipeable() && (top.kind().formation() || top.named());
     }
 
     /**

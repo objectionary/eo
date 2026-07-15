@@ -719,7 +719,7 @@ final class Eo implements Iterable<Directive> {
      * @param emit The directives sink
      */
     private static void checkNaming(final Level level, final Emit emit) {
-        if (!level.named()
+        if (!level.named() && !level.piped()
             && (level.parent() == Kind.TOP_LEVEL
                 || level.parent() == Kind.BARE_FORMATION)) {
             emit.error(
