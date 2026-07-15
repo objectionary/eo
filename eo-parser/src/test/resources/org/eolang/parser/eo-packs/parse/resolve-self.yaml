@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/resolve-self.xsl
+asserts:
+  - /object[not(errors)]
+  - /object[not(//o[@self])]
+  - /object[count(//o[@base='a🌵2-2'])=3]
+  - //o[@base='a🌵2-2']/o[@base='n']
+  - //o[@base='.plus' and @method]/o[@base='Φ.number']
+input: |
+  [] > app
+    [n] >>
+      plus. > @
+        % (n.minus 1)
+        % (n.minus 2)
+      %.plus 1 > x

@@ -83,6 +83,15 @@ final class TokensTest {
     }
 
     @Test
+    void readsSelfValue() {
+        MatcherAssert.assertThat(
+            "readValue must recognise the `%` self-reference token",
+            new Tokens("% 5", new Span("% 5", 1)).readValue().kind(),
+            Matchers.equalTo(Value.Kind.SELF)
+        );
+    }
+
+    @Test
     void readsMethodChain() {
         final Tokens tokens = new Tokens("foo.bar.baz", new Span("foo.bar.baz", 1));
         tokens.readName();

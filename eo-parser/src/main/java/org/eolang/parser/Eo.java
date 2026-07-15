@@ -405,6 +405,7 @@ final class Eo implements Iterable<Directive> {
             || span.head() == '@'
             || span.head() == '^'
             || span.head() == '$'
+            || span.head() == '%'
             || span.head() >= '0' && span.head() <= '9'
             || span.head() >= 'A' && span.head() <= 'F'
             || span.head() == '-'

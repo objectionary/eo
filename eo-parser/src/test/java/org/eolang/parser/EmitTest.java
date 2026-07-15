@@ -306,6 +306,19 @@ final class EmitTest {
     }
 
     @Test
+    void marksObjectAsSelf() {
+        final Emit emit = new Emit();
+        emit.object(null, null, 1, 0);
+        emit.self();
+        emit.close();
+        MatcherAssert.assertThat(
+            "self() must attach @self='' to the most recently opened <o>",
+            EmitTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/o[@self='' and not(@base)]")
+        );
+    }
+
+    @Test
     void setsTextContent() {
         final Emit emit = new Emit();
         emit.object(null, "Φ.bytes", 1, 0);

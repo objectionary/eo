@@ -236,6 +236,14 @@ final class Value {
          * §3.13.1. Single-line form only in this iteration; multi-line
          * continuation lands in a later round.
          */
-        BYTES
+        BYTES,
+
+        /**
+         * {@code SELF} — the {@code %} self-reference (§3.15). Sugar for
+         * the auto-name of the enclosing anonymous ({@code >>}) formation;
+         * emitted as a base-less {@code <o self=''>} marker that the
+         * {@code resolve-self} reshape replaces with that name.
+         */
+        SELF
     }
 }

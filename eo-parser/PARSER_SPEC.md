@@ -168,6 +168,7 @@ The parser recognises the following lexical tokens:
 | `ROOT` | `Q` |
 | `XI` | `$` |
 | `TERM` | `T` — the bottom term (§9.3), similar to `⊥` in 𝜑-calculus. A self-contained single-character token; carries no arguments and no chain. |
+| `SELF` | `%` — self-reference (§3.15). Sugar for the auto-name of the enclosing anonymous (`>>`-named) formation; substituted at compile time. A value: it may carry arguments (`% 5`) and a `.method` chain, like any other head. |
 | `VOID` | `?` — the vertical-void marker (§3.4). A `? > name` body line declares a void attribute, equivalent to listing `name` in `[…]`. |
 | `QDOT` | `?.` — the fragile-dispatch operator (§3.5). Accepted in every position the plain `.` dispatch is, recorded as `@fragile` in XMIR. A `?` immediately followed by `.` is `QDOT`; a `?` followed by space (`? > name`) is `VOID`. |
 | `INT` | optional sign, then `0` or non-zero digit string. |
@@ -210,6 +211,7 @@ Each non-blank, non-comment line is classified into exactly one shape, determine
 | literal (`"…"`, `42`, `--`, `AB-CD`, `0xFF`, signed number) | — | application starting with literal (§3.6) |
 | `*` | — | star tuple as application head (§3.6) |
 | `(` | — | application starting with group (§3.6) |
+| `%` | — | self-reference as application head (§3.15) |
 
 The classifier emits a **line-shape record**:
 
@@ -634,6 +636,35 @@ Illegal:
 
 | 5 > n                               ← rejected: no object above
 ```
+
+### 3.15 Self-reference — `%`
+
+A `%` token is *syntactic sugar for the auto-generated name of the anonymous formation that surrounds it* — the closest ancestor introduced by the `>>` suffix (§3.10). It is not a new reference mechanism: at compile time `%` is simply replaced by that name, exactly as if the (otherwise untypeable) auto-name had been written by hand. Its purpose is recursion without exposing a name — an anonymous helper (`fibo`, say) can call itself with `%` while staying inlined, invisible to the enclosing scope.
+
+R-3.15.1. `%` is a value: it is recognised wherever a value is expected — as a line head (`% (n.minus 1)`), as a horizontal argument, and inside a paren group — and takes horizontal arguments (§3.6) and a `.method` chain (§3.5) with the ordinary application shape.
+
+R-3.15.2. **Scope.** `%` stands for the **nearest enclosing anonymous formation** — the closest ancestor whose auto-generated name carries the cactus prefix (§9.2). A named formation (`> name`) is not a target; reference such an object by its name. A `%` with no enclosing anonymous formation is a compile-time error.
+
+R-3.15.3. **Emission / XMIR.** The parser emits a base-less `<o self=''>` marker; the `resolve-self` reshape (§9) substitutes the name — it sets `@base` to the enclosing anonymous formation's `@name` and drops `@self` — so every downstream pass sees a plain reference by the auto-name. A `%` outside any anonymous formation is rejected there with a `resolve-self` check error (a post-parse check, like the compact-tuple index check, not a §9.9 parser error).
+
+```
+io.stdout > @                         ← prints the 5th Fibonacci number
+  tt.sprintf *1
+    "The 5th Fibonacci number is %d\n"
+    [n] >>                            ← anonymous (auto-named) formation a🌵…
+      if. > @
+        n.lt 2
+        n
+        plus.
+          % (n.minus 1)               ← % = the anonymous formation's auto-name
+          % (n.minus 2)               ← % = the anonymous formation's auto-name
+    | 5                               ← applies the formation to 5 (§3.14)
+
+[] > app
+  % 6 > @                             ← rejected: no enclosing anonymous formation
+```
+
+Outer kind: that of the underlying application (§3.6), since `%` is just a head value.
 
 ---
 
@@ -1154,6 +1185,7 @@ Example: a `>>` suffix at `line=12, pos=5` emits `@name="a🌵12-5"`.
 | `^` (RHO) | `ρ` | `@base='ρ'` for parent reference |
 | `Q` (ROOT) | `Φ` | `@base='Φ...'` for root-rooted FQNs |
 | `$` (XI) | `ξ` | `@base='ξ'` for self reference |
+| `%` (SELF) | — | base-less `<o self=''>` marker; `resolve-self` (§9) later sets `@base` to the enclosing anonymous formation's auto-name (§3.15) |
 | `T` (TERM) | `⊥` | `@base='⊥'` for the bottom term |
 | atom signature head `Q` | `Φ` | `@atom='Φ....'` |
 
