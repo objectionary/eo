@@ -9,6 +9,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
+import com.yegor256.farea.RequisiteMatcher;
 import com.yegor256.tojos.MnCsv;
 import com.yegor256.tojos.TjCached;
 import com.yegor256.tojos.TjDefault;
@@ -49,6 +50,11 @@ final class MjRegisterIT {
                 );
                 f.exec("eo:register");
                 MatcherAssert.assertThat(
+                    "the build must succeed, but it didn't",
+                    f.log(),
+                    RequisiteMatcher.SUCCESS
+                );
+                MatcherAssert.assertThat(
                     "Old pulled files must were removed, but it didn't",
                     temp.resolve("target/eo/2-pull").toFile().exists(),
                     Matchers.is(false)
@@ -68,6 +74,11 @@ final class MjRegisterIT {
                 );
                 f.exec("eo:register");
                 MatcherAssert.assertThat(
+                    "the build must succeed, but it didn't",
+                    f.log(),
+                    RequisiteMatcher.SUCCESS
+                );
+                MatcherAssert.assertThat(
                     "Old resolved files must were removed, but it didn't",
                     temp.resolve("target/eo/2-pull").toFile().exists(),
                     Matchers.is(false)
@@ -81,6 +92,11 @@ final class MjRegisterIT {
         new Farea(temp).together(
             f -> {
                 MjRegisterIT.runForeign(f);
+                MatcherAssert.assertThat(
+                    "the build must succeed, but it didn't",
+                    f.log(),
+                    RequisiteMatcher.SUCCESS
+                );
                 final TjSmart foreign = MjRegisterIT.loadForeign(temp);
                 MatcherAssert.assertThat(
                     "Foreign must contain only 3 references to objects, but it doesn't",
@@ -111,6 +127,11 @@ final class MjRegisterIT {
                     "eo:register", "eo:parse", "eo:probe", "eo:pull"
                 );
                 f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
+                MatcherAssert.assertThat(
+                    "the build must succeed, but it didn't",
+                    f.log(),
+                    RequisiteMatcher.SUCCESS
+                );
                 MatcherAssert.assertThat(
                     "Necessary objects must were pulled",
                     temp.resolve("target/eo/2-pull/number.eo").toFile().exists(),

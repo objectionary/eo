@@ -9,6 +9,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
+import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
@@ -32,6 +33,11 @@ final class MjResolveIT {
                 MjResolveIT.configureFarea(f, version);
                 f.exec("process-classes");
                 MatcherAssert.assertThat(
+                    "the build must succeed, but it didn't",
+                    f.log(),
+                    RequisiteMatcher.SUCCESS
+                );
+                MatcherAssert.assertThat(
                     "the jar file was resolved and unpacked",
                     f.files().file(
                         String.format(
@@ -53,6 +59,11 @@ final class MjResolveIT {
             f -> {
                 MjResolveIT.configureFarea(f, version);
                 f.exec("process-classes");
+                MatcherAssert.assertThat(
+                    "the build must succeed, but it didn't",
+                    f.log(),
+                    RequisiteMatcher.SUCCESS
+                );
                 MatcherAssert.assertThat(
                     "Classifier should not be displayed, if its absent",
                     f.log().content(),
@@ -77,6 +88,11 @@ final class MjResolveIT {
                 f.dependencies()
                     .append("org.eolang", "eo-runtime", "0.40.0");
                 f.exec("process-classes");
+                MatcherAssert.assertThat(
+                    "the build must succeed, but it didn't",
+                    f.log(),
+                    RequisiteMatcher.SUCCESS
+                );
                 MatcherAssert.assertThat(
                     "binary files from the old JAR were removed",
                     f.files().file(

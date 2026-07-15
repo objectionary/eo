@@ -10,6 +10,7 @@ import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Execution;
 import com.yegor256.farea.Farea;
+import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -37,6 +38,11 @@ final class MjAssembleIT {
                 MjAssembleIT.prepare(f, "src/main/eo/foo/x/main.eo", MjAssembleIT.program());
                 f.exec("package");
                 MatcherAssert.assertThat(
+                    "the build must succeed, but it didn't",
+                    f.log(),
+                    RequisiteMatcher.SUCCESS
+                );
+                MatcherAssert.assertThat(
                     String.format("AssembleMojo should have parsed stdout %s, but didn't", parsed),
                     f.files().file(parsed).exists(),
                     Matchers.is(true)
@@ -56,6 +62,11 @@ final class MjAssembleIT {
             f -> {
                 MjAssembleIT.prepare(f, "src/main/eo/one/main.eo", MjAssembleIT.failing());
                 f.exec("test");
+                MatcherAssert.assertThat(
+                    "the build must not fail even when the eo program is invalid, but it did",
+                    f.log(),
+                    RequisiteMatcher.SUCCESS
+                );
                 MatcherAssert.assertThat(
                     "Even if the eo program invalid we still have to parse it, but we didn't",
                     temp.resolve("target/eo/1-parse/one/main.xmir").toAbsolutePath().toFile(),
