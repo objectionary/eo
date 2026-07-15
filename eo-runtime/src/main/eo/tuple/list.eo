@@ -11,10 +11,9 @@
 # .
 
 +alias tuple.back
++alias tuple.concat
 +alias tuple.front
 +alias tuple.list
-+alias tuple.reducedi
-+alias tuple.withouti
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
@@ -33,7 +32,7 @@
       origin.with x
 
   [index item] > withi
-    concat. > @
+    concat > @
       with.
         front
           ^
@@ -42,12 +41,6 @@
       back
         ^
         origin.length.minus index
-
-  [passed] > concat
-    reducedi > @
-      list passed
-      ^
-      accum.with item > [accum item index]
 
   ++> tests-list-should-not-be-empty
     not. > @
@@ -119,25 +112,3 @@
         list
           * 1 2 3
         * 3 2 1
-
-  ++> tests-concatenates-lists
-    and. > @
-      eq.
-        1
-        list3.at 0
-      eq.
-        list3
-        * 1 2 3
-    withouti > list3
-      concat.
-        list (* 0 1)
-        list (* 2 3)
-      0
-
-  ++> tests-concatenates-with-tuple
-    eq. > @
-      concat.
-        list
-          * 0 1
-        * 2 4
-      * 0 1 2 4
