@@ -2,7 +2,6 @@
 # The last element contains the remainder of the string after splitting.
 # If `limit` < 1, the `cant-split` fallback is returned, or the bottom object when unbound.
 
-+alias tuple.list
 +alias string.slice
 +alias string.sprintf
 +architect yegor256@gmail.com
@@ -65,38 +64,34 @@
 
   ++> tests-nsplit-with-limit-two
     eq. > @
-      list
-        nsplit
-          "Cookie: a=1; b=2"
-          " "
-          2
+      nsplit
+        "Cookie: a=1; b=2"
+        " "
+        2
       * "Cookie:" "a=1; b=2"
 
   ++> tests-nsplit-with-dashes-limit-two
     eq. > @
-      list
-        nsplit
-          "a-b-c-d"
-          "-"
-          2
+      nsplit
+        "a-b-c-d"
+        "-"
+        2
       * "a" "b-c-d"
 
   ++> tests-nsplit-with-limit-one
     eq. > @
-      list
-        nsplit
-          "a-b-c"
-          "-"
-          1
+      nsplit
+        "a-b-c"
+        "-"
+        1
       * "a-b-c"
 
   ++> tests-nsplit-with-high-limit
     eq. > @
-      list
-        nsplit
-          "a-b-c"
-          "-"
-          10
+      nsplit
+        "a-b-c"
+        "-"
+        10
       * "a" "b" "c"
 
   ++> throws-on-nsplit-with-limit-zero
@@ -122,18 +117,16 @@
 
   ++> tests-nsplit-with-empty-strings
     eq. > @
-      list
-        nsplit
-          "-a-b-c"
-          "-"
-          3
+      nsplit
+        "-a-b-c"
+        "-"
+        3
       * "" "a" "b-c"
 
   ++> tests-nsplit-with-multi-char-delimiter
     eq. > @
-      list
-        nsplit
-          "a::b::c::d"
-          "::"
-          2
+      nsplit
+        "a::b::c::d"
+        "::"
+        2
       * "a" "b::c::d"

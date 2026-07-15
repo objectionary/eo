@@ -3,7 +3,6 @@
 # the element of the collection. The result of `func` must be dataizable.
 
 +alias tuple.eachi
-+alias tuple.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
@@ -22,14 +21,13 @@
         0
         [m]
           each > @
-            list
-              * 1 2 3
+            * 1 2 3
             ^.m.put (^.m.as-number.plus i) > [i] >>
       6
 
   [] +> tests-each-empty-list
     each > @
-      list *
+      *
       false > [x]
 
   [] +> tests-each-single-element
@@ -38,16 +36,14 @@
         0
         [m]
           each > @
-            list
-              * 7
+            * 7
             ^.m.put (^.m.as-number.plus i) > [i] >>
       7
 
   [] +> tests-each-returns-last-func-result
     eq. > @
       each
-        list
-          * 1 2 3
+        * 1 2 3
         x > [x]
       3
 
@@ -57,7 +53,6 @@
         0
         [m]
           each > @
-            list
-              * 10 20 30
+            * 10 20 30
             ^.m.put (^.m.as-number.plus i) > [i] >>
       60

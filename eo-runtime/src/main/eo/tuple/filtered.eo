@@ -5,7 +5,6 @@
 # should be boolean, that is `true` or `false`.
 
 +alias tuple.filteredi
-+alias tuple.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
@@ -21,15 +20,13 @@
   ++> tests-simple-filtered
     eq. > @
       filtered
-        list
-          * 3 1 4 2 5
+        * 3 1 4 2 5
         v.gt 2 > [v]
       * 3 4 5
 
   ++> tests-filtered-with-bools
     eq. > @
       filtered
-        list
-          * true false true
+        * true false true
         v.not > [v]
       * false

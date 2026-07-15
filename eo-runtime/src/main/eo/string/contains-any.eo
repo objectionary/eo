@@ -1,7 +1,6 @@
 # Checks if `text` contains any element from `substrings`.
 
 +alias string.contains
-+alias tuple.list
 +alias tuple.reduced
 +alias tuple.mapped
 +architect yegor256@gmail.com
@@ -21,21 +20,21 @@
   text > txt!
 
   ++> tests-successful-contains-any
-    contains-any "Good morning" (list (* "oo" "goo")) > @
+    contains-any "Good morning" (* "oo" "goo") > @
 
   ++> tests-not-contains-any
     not. > @
-      contains-any "xyzw" (list (* "yx" "zyx" "wx" "abc"))
+      contains-any "xyzw" (* "yx" "zyx" "wx" "abc")
 
   ++> tests-contains-any-vert
     contains-any > @
       "foo bar buzz"
-      list (* "bar" " " "o")
+      * "bar" " " "o"
 
   ++> test-contains-any-without-substrings
     not. > @
-      contains-any "text" (list *)
+      contains-any "text" *
 
   ++> tests-contains-any-for-empty-text-and-without-substrings
     not. > @
-      contains-any "" (list *)
+      contains-any "" *

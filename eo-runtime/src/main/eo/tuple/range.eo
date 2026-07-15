@@ -21,7 +21,6 @@
 # object `lt` by default.
 
 +alias tuple.is-empty
-+alias tuple.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
@@ -31,13 +30,12 @@
 +unlint redundant-object
 
 [start end] > range
-  list > @
-    if.
-      start.lt end
-      appended
-        * start
-        start.next
-      *
+  if. > @
+    start.lt end
+    appended
+      * start
+      start.next
+    *
 
   [acc current] > appended
     if. > @

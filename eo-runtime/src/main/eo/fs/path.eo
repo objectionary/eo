@@ -4,7 +4,6 @@
 +alias fs.dir
 +alias fs.file
 +alias sm.os
-+alias tuple.list
 +alias tuple.reduced
 +alias string.regex
 +alias string.index-of
@@ -75,10 +74,9 @@
       Q.string.joined > path
         separator
         reduced
-          list
-            split
-              uri
-              separator
+          split
+            uri
+            separator
           *
           [accum segment] >>
             if. > @
@@ -251,10 +249,9 @@
         Q.string.joined > path!
           separator
           reduced
-            list
-              split
-                driveless
-                ^.separator
+            split
+              driveless
+              ^.separator
             *
             [accum segment] >>
               if. > @

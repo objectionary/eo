@@ -3,7 +3,6 @@
 # The first one for the accumulator, the second one for the element
 # of the collection.
 
-+alias tuple.list
 +alias tuple.reducedi
 +alias string.sprintf
 +architect yegor256@gmail.com
@@ -22,8 +21,7 @@
   ++> tests-list-reduce-without-index
     eq. > @
       reduced
-        list
-          * 1 2 3 4
+        * 1 2 3 4
         -1
         a.times x > [a x]
       -24
@@ -31,8 +29,7 @@
   ++> tests-list-reduced-printing
     eq. > @
       reduced
-        list
-          * 0 1
+        * 0 1
         ""
         [acc item]
           acc.concat > @

@@ -1,6 +1,5 @@
 # Returns a `tuple` of `strings`: `text` separated by `delimiter`.
 
-+alias tuple.list
 +alias string.slice
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -50,14 +49,12 @@
 
   ++> tests-splits-text-by-dash
     eq. > @
-      list
-        split "a-b-c" "-"
+      split "a-b-c" "-"
       * "a" "b" "c"
 
   ++> tests-splits-text-with-empty-strings
     eq. > @
-      list
-        split "-a-b-" "-"
+      split "-a-b-" "-"
       * "" "a" "b" ""
 
   ++> tests-splits-and-returns-strings
@@ -72,6 +69,5 @@
 
   ++> tests-splits-text-by-multi-char-delimiter
     eq. > @
-      list
-        split "a::b::c" "::"
+      split "a::b::c" "::"
       * "a" "b" "c"

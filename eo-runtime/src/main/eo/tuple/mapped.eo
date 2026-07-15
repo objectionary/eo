@@ -2,7 +2,6 @@
 # object with one free attribute, for the element
 # of the collection.
 
-+alias tuple.list
 +alias tuple.mappedi
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -19,7 +18,6 @@
   ++> tests-simple-list-mapping
     eq. > @
       mapped
-        list
-          * 1 2 3
+        * 1 2 3
         x.times 2 > [x]
       * 2 4 6

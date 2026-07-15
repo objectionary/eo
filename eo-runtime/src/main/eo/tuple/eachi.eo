@@ -4,7 +4,6 @@
 # collection and its index.
 # The result of `func` must be dataizable.
 
-+alias tuple.list
 +alias tuple.reducedi
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -28,8 +27,7 @@
         0
         [m]
           eachi > @
-            list
-              * 1 2 3
+            * 1 2 3
             [item index] >>
               ^.m.put > @
                 plus.

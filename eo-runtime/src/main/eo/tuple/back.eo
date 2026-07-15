@@ -1,7 +1,6 @@
 # Elements of `lst` from `index` to the end (supports oversized index).
 
 +alias tuple.is-empty
-+alias tuple.list
 +alias tuple.reducedi
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -14,37 +13,33 @@
   if. > @
     0.gt start
     lst
-    list
-      reducedi
-        lst
-        *
-        [accum item idx] >>
-          if. > @
-            idx.gte start
-            accum.with item
-            accum
+    reducedi
+      lst
+      *
+      [accum item idx] >>
+        if. > @
+          idx.gte start
+          accum.with item
+          accum
   index > idx!
   lst.length.minus idx > start!
 
   ++> tests-simple-back
     eq. > @
       back
-        list
-          * 1 2 3 4 5
+        * 1 2 3 4 5
         2
       * 4 5
 
   ++> tests-zero-index-in-back
     is-empty > @
       back
-        list
-          * 1 2 3 4 5
+        * 1 2 3 4 5
         0
 
   ++> tests-large-index-in-back
     eq. > @
       back
-        list
-          * 1 2 3 4 5
+        * 1 2 3 4 5
         10
       * 1 2 3 4 5

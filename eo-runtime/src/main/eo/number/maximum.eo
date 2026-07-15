@@ -3,7 +3,6 @@
 # is dataized with an explanatory message and stands in as the result.
 
 +alias tuple.is-empty
-+alias tuple.list
 +alias tuple.reduced
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -24,7 +23,7 @@
           item.as-number.gt max
           item
           max
-  list sequence > lst
+  sequence > lst
 
   (maximum *) > [] +> throws-on-taking-maximum-from-empty-sequence
 

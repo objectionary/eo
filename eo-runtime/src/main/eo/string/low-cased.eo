@@ -2,7 +2,6 @@
 
 +alias string.as-ascii
 +alias tuple.bytes-as-array
-+alias tuple.list
 +alias tuple.reduced
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -15,9 +14,8 @@
 [text] > low-cased
   string > @
     reduced
-      list
-        bytes-as-array
-          text.as-bytes
+      bytes-as-array
+        text.as-bytes
       --
       [accum byte] >>
         accum.concat > @

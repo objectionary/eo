@@ -1,6 +1,5 @@
 # True when collection `lst` has no elements.
 
-+alias tuple.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
@@ -14,17 +13,16 @@
   ++> tests-list-should-not-be-empty
     not. > @
       is-empty
-        list
-          * 1 2
+        * 1 2
 
   ++> list-should-be-empty
     is-empty > @
-      list *
+      *
 
   ++> tests-list-should-not-be-empty-with-three-objects
     not. > @
       is-empty
-        list xs
+        xs
     * > xs
       [x]
       [y]
@@ -33,6 +31,6 @@
   ++> tests-list-should-not-be-empty-with-one-anon-object
     not. > @
       is-empty
-        list xs
+        xs
     * > xs
       [f]
