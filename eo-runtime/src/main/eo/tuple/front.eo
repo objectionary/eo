@@ -1,6 +1,7 @@
 # Elements of `lst` before `index` (supports negative indices).
 
 +alias tuple.back
++alias tuple.is-empty
 +alias tuple.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -39,8 +40,8 @@
         1
       * 1
 
-  [] +> tests-list-front-with-zero-index
-    is-empty. > @
+  ++> tests-list-front-with-zero-index
+    is-empty > @
       front
         list
           * 1 2 3

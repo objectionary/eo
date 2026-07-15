@@ -2,6 +2,7 @@
 # decorator of `number` objects. An empty sequence has no maximum, so `cant-max`
 # is dataized with an explanatory message and stands in as the result.
 
++alias tuple.is-empty
 +alias tuple.list
 +alias tuple.reduced
 +architect yegor256@gmail.com
@@ -13,7 +14,7 @@
 
 [sequence cant-max] > maximum
   if. > @
-    lst.is-empty
+    is-empty lst
     cant-max "cannot get the maximum number from an empty sequence"
     reduced
       lst
