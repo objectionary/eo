@@ -90,6 +90,7 @@ public final class Canonical implements UnaryOperator<XML> {
                 new TrFull(
                     new TrJoined<>(
                         new TrClasspath<>(
+                            "/org/eolang/parser/parse/wrap-applications.xsl",
                             "/org/eolang/parser/parse/validate-before-stars.xsl",
                             "/org/eolang/parser/parse/resolve-before-stars.xsl",
                             "/org/eolang/parser/parse/fragile-dispatch.xsl",

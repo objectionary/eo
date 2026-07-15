@@ -202,6 +202,7 @@ Each non-blank, non-comment line is classified into exactly one shape, determine
 | `+` | otherwise | meta directive (§3.2) |
 | `#` | — | comment (§3.3) |
 | `.` | — | method-dispatch line (§3.5) |
+| `\|` | — | pipe-application line (§3.14) |
 | `[` | — | formation line (§3.4) |
 | `"""` (start of line, no other content) | — | text-block opener (§3.11) |
 | identifier | ends with `.` followed by space/EOL | reversed-dispatch line (§3.8) |
@@ -588,6 +589,52 @@ size.
 
 **Implication for the classifier.** Before §3.1 runs, the lexer must scan ahead: if a line's last non-whitespace character is `-` and that line contains a partial BYTES token, the lexer consumes additional lines until the BYTES token is complete, then emits a single virtual line for classification. The indent stack (§5) is unaffected — the multi-line BYTES is one expression at one indent.
 
+### 3.14 Pipe application — `| [arg…] [> name]`
+
+A line whose first non-space character is `|` is a *pipe-application line*. It applies arguments to the **same-indent predecessor** — the object declared on the lines just above it — without naming that object at the call site. This is the surface form of phi-calculus *formation-with-application* `⟦…⟧(…)`: the predecessor is formed, then the pipe supplies its arguments. The `|` reads as an up-arrow to "the object above".
+
+R-3.14.1. The `|` is followed by a single space, then either a horizontal argument list (§3.6) or nothing, then an optional name suffix (§3.10). Its tail is parsed exactly as an application's argument list plus suffix — the pipe supplies the arguments; the *head* is the implicit predecessor.
+
+R-3.14.2. **Predecessor requirement.** The stack top at the pipe's indent must be a **formation** (`bare-formation` or `inline-phi-formation`) or another **pipe-application**, and it must be **named** (an explicit `> name` or an auto-generated `>>`). A pipe with no predecessor (top-level / empty stack), a deeper-indent ("descending") pipe, or a pipe whose predecessor is an unnamed formation, a plain value, an application, or any `.method` dispatch is an error. The named requirement is what lets the pipe refer to the predecessor by name (R-3.14.7); an unnamed formation cannot be a pipe target — give it a `>>`.
+
+R-3.14.3. **Two forms**, distinguished by whether horizontal args are present on the line:
+  - **Horizontal form** — `| arg1 arg2 … [> name]` (≥1 arg): the args are the application arguments. The line takes no deeper-indent children (`vertical-completed`), but may still be wrapped by a same-indent `.method` (§3.5) or extended by a following pipe (chained application, R-3.14.5).
+  - **Vertical form** — `| [> name]` (0 args on the line): a deeper-indent argument block follows, exactly as under a `vapplication` head (§4.1). The args become the application arguments.
+
+R-3.14.4. **No pipe after `.method`.** A pipe may follow a formation or another pipe only. Once a `.method` has dispatched an attribute off the predecessor, the formation is no longer the object in hand, so a pipe after a `.method` line (of any completion state) is rejected. Cross-line ownership: §5.2 (R-5.2.4a / R-5.2.5a / R-5.2.11a). Conversely a `.method` **after** a pipe is legal (the pipe application is a complete value); a pipe after a pipe is legal (R-3.14.5).
+
+R-3.14.5. **Chaining.** Consecutive pipe lines build left-associated applications: `| a` then `| b` after formation `F` is `((F a) b)`, two applications. Each pipe in a chain is its own object and so must be named (R-3.14.2 applies to the *predecessor*, which for the second pipe is the first pipe). Contrast a single `| a b` (one application, two args).
+
+R-3.14.6. Name suffix per §3.10: `> name`, `>>`, or none (the last only when the pipe is an unnamed intermediate immediately wrapped by a `.method`, which names the whole chain). The atom signature `/sig` and the test attribute `+> name` are rejected — a pipe is an application, not a formation. All-or-nothing inline binding (§6.6) applies to the argument group.
+
+R-3.14.7. **Emission / XMIR.** A pipe line desugars to an ordinary application whose head is a reference to the (named) predecessor, and the predecessor object stays in place. So `| a > r` after a formation `F` (named `F`) is identical in XMIR to `F a > r`; `| a` then `| b` after `F >>` (auto-name `A`) is `A a` (auto-named) followed by `A′ b`. The parser emits the pipe line as a base-less `<o pipe=''>` with the args as children; the `wrap-applications` reshape (§9) sets `@base` from the preceding sibling's `@name` and drops `@pipe`, so every downstream pass (scope resolution, base rolling) treats it as a hand-written application.
+
+Outer kind: **`pipe-application`** (openness `open` for the vertical form's body, `vertical-completed` for the horizontal form).
+
+```
+[x] > foo                             ← named formation
+  x.plus x > @
+| 5 > foo5                            ← foo5 = foo applied to 5 (i.e. (5).plus 5)
+
+[a b] >>                              ← auto-named (anonymous) formation
+  a.plus b > @
+| 2 3 > pair                          ← one application, two args, referring to the auto-name
+```
+
+Illegal:
+
+```
+6 > six
+| 5 > n                               ← rejected: predecessor `six` is not a formation or pipe
+
+[x] > foo
+  ...
+.x
+| 6 > n                               ← rejected: pipe after a `.method`
+
+| 5 > n                               ← rejected: no object above
+```
+
 ---
 
 ## 4. Multi-line expressions and their outer kinds
@@ -749,9 +796,12 @@ R-5.2.3. **MethodDispatch line dispatch.** If the line's kind is `MethodDispatch
 
 R-5.2.4. **Non-MethodDispatch same-indent line.** If the line's kind is **not** MethodDispatch: the top entry is a *completed previous sibling*. Run close-time checks (§5.3) on it, then **replace** it with a new entry built from the new line. The new entry's `parent_kind` is read from the stack entry below.
 
+R-5.2.4a. **PipeApplication same-indent line.** A `PipeApplication` line (§3.14) is a Non-MethodDispatch line and so replaces the top per R-5.2.4, but first the top must satisfy R-3.14.2: its kind must be `bare-formation`, `inline-phi-formation`, or `pipe-application`, and it must be named. Otherwise error `a pipe must follow a named formation or another pipe` (§9.9). In particular a top whose kind is `vmethod` / `vmethod-with-hargs` (a `.method` was taken off the predecessor) fails this check — R-3.14.4.
+
 **Step C — Deeper line.** If the top entry now has indent < `N`:
 
-R-5.2.5. If the line's kind is `MethodDispatch`: error `method continuation has no expression to attach to`. A `.method` line at indent `N` requires a previous sibling expression at the same indent; a deeper-than-parent position has no such sibling. **This rule is the authoritative owner of the `.method`-as-deeper-line rejection**, including the bare-reversed-receiver edge case (a `.method` line as the first deeper child of a bare-reversed parent). R-5.2.9's "must not start with `.`" condition is enforced *via this rule*; R-5.2.9 itself only manages the `receiver_consumed?` flag.
+R-5.2.5. If the line's kind is `MethodDispatch`: error `method continuation has no expression to attach to`.
+R-5.2.5a. If the line's kind is `PipeApplication`: error `a pipe must follow a named formation or another pipe` — a deeper-indent ("descending") pipe has no same-indent predecessor to apply to. A `.method` line at indent `N` requires a previous sibling expression at the same indent; a deeper-than-parent position has no such sibling. **This rule is the authoritative owner of the `.method`-as-deeper-line rejection**, including the bare-reversed-receiver edge case (a `.method` line as the first deeper child of a bare-reversed parent). R-5.2.9's "must not start with `.`" condition is enforced *via this rule*; R-5.2.9 itself only manages the `receiver_consumed?` flag.
 R-5.2.6. The previous top's openness must be `open`. If `vertical-completed` or `horizontal-completed`: error `unexpected deeper-indent line — previous expression is closed for children`.
 R-5.2.7. `N` must equal `previous_top.indent + 2`. Otherwise: error `indent increased by more than one level`.
 R-5.2.8. Push a new entry. Its `parent_kind` is the previous top's `kind`.
@@ -761,6 +811,7 @@ R-5.2.9. If `parent_kind = bare-reversed` and the previous top's `receiver_consu
 
 R-5.2.10. If the line's kind is `MethodDispatch`: error `method continuation has no expression to attach to` (§9.9). A `.method` line requires a previous-sibling expression at the same indent; an empty stack has no such sibling.
 R-5.2.11. Otherwise: the line is the program's top-level object. Push a new entry with `parent_kind = top-level`. If the line's kind is `Meta` and a non-meta object has already been emitted: error (R-3.2.2).
+R-5.2.11a. If the line's kind is `PipeApplication`: error `a pipe must follow a named formation or another pipe` — an empty stack has no object above to apply to.
 
 ### 5.3 Close-time checks
 
@@ -1264,6 +1315,7 @@ R-9.9.3. New error conditions added to the spec must extend this table with a ca
 | `vapplication` | multi-line | yes while in progress | yes after block closes | head + vertical block |
 | `vmethod` | multi-line | yes while in progress (only if last `.method` has 0 hargs) | yes (more `.method`s extend the chain; same-indent `.method` after block closes wraps it) | chain of `.method` continuations |
 | `vmethod-with-hargs` | multi-line | **no** | **no** | a `.method` continuation line that itself carries ≥1 horizontal args — closes the chain immediately |
+| `pipe-application` | 1 line (+ body if 0 hargs) | yes if 0 hargs (vertical form's args) | yes (after) | `\| [args] [> name]`; applies args to the same-indent named formation/pipe above (§3.14) |
 | `text-block` | multi-line | n/a | yes (after closing `"""`) | `"""…"""` |
 
 **Horizontally-completed kinds (the single source of truth)** — these never receive deeper children and cannot be wrapped by same-indent `.method`:
@@ -1284,6 +1336,7 @@ Reproduced from §3.1 for convenience:
 | `+` | otherwise | meta (§3.2) |
 | `#` | — | comment (§3.3) |
 | `.` | — | method-dispatch line (§3.5) |
+| `\|` | — | pipe-application line (§3.14) |
 | `[` | — | formation (§3.4) |
 | `"""` alone | — | text-block opener (§3.11) |
 | identifier | `.` followed by space/EOL | reversed dispatch (§3.8) |
