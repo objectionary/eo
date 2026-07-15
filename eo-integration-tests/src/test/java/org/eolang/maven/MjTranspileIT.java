@@ -83,9 +83,12 @@ final class MjTranspileIT {
             .goals("register", "parse", "transpile");
         farea.exec("process-sources");
         MatcherAssert.assertThat(
-            "the build must succeed, but it didn't",
+            "the build must succeed without errors, but it didn't",
             farea.log(),
-            RequisiteMatcher.SUCCESS
+            new RequisiteMatcher()
+                .with("BUILD SUCCESS")
+                .without("BUILD FAILURE")
+                .without("[ERROR]")
         );
     }
 

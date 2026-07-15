@@ -33,9 +33,12 @@ final class MjResolveIT {
                 MjResolveIT.configureFarea(f, version);
                 f.exec("process-classes");
                 MatcherAssert.assertThat(
-                    "the build must succeed, but it didn't",
+                    "the build must succeed without errors, but it didn't",
                     f.log(),
-                    RequisiteMatcher.SUCCESS
+                    new RequisiteMatcher()
+                        .with("BUILD SUCCESS")
+                        .without("BUILD FAILURE")
+                        .without("[ERROR]")
                 );
                 MatcherAssert.assertThat(
                     "the jar file was resolved and unpacked",
@@ -60,9 +63,12 @@ final class MjResolveIT {
                 MjResolveIT.configureFarea(f, version);
                 f.exec("process-classes");
                 MatcherAssert.assertThat(
-                    "the build must succeed, but it didn't",
+                    "the build must succeed without errors, but it didn't",
                     f.log(),
-                    RequisiteMatcher.SUCCESS
+                    new RequisiteMatcher()
+                        .with("BUILD SUCCESS")
+                        .without("BUILD FAILURE")
+                        .without("[ERROR]")
                 );
                 MatcherAssert.assertThat(
                     "Classifier should not be displayed, if its absent",
@@ -89,9 +95,12 @@ final class MjResolveIT {
                     .append("org.eolang", "eo-runtime", "0.40.0");
                 f.exec("process-classes");
                 MatcherAssert.assertThat(
-                    "the build must succeed, but it didn't",
+                    "the build must succeed without errors, but it didn't",
                     f.log(),
-                    RequisiteMatcher.SUCCESS
+                    new RequisiteMatcher()
+                        .with("BUILD SUCCESS")
+                        .without("BUILD FAILURE")
+                        .without("[ERROR]")
                 );
                 MatcherAssert.assertThat(
                     "binary files from the old JAR were removed",

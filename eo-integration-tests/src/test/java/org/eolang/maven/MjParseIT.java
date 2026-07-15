@@ -37,9 +37,12 @@ final class MjParseIT {
                     .goals("register", "parse");
                 f.exec("compile", String.format("-Deo.cache=%s", temp.resolve("cache")));
                 MatcherAssert.assertThat(
-                    "the build must succeed, but it didn't",
+                    "the build must succeed without errors, but it didn't",
                     f.log(),
-                    RequisiteMatcher.SUCCESS
+                    new RequisiteMatcher()
+                        .with("BUILD SUCCESS")
+                        .without("BUILD FAILURE")
+                        .without("[ERROR]")
                 );
                 MatcherAssert.assertThat(
                     "the XMIR file is generated",

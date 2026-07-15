@@ -50,9 +50,12 @@ final class MjRegisterIT {
                 );
                 f.exec("eo:register");
                 MatcherAssert.assertThat(
-                    "the build must succeed, but it didn't",
+                    "the build must succeed without errors, but it didn't",
                     f.log(),
-                    RequisiteMatcher.SUCCESS
+                    new RequisiteMatcher()
+                        .with("BUILD SUCCESS")
+                        .without("BUILD FAILURE")
+                        .without("[ERROR]")
                 );
                 MatcherAssert.assertThat(
                     "Old pulled files must were removed, but it didn't",
@@ -74,9 +77,12 @@ final class MjRegisterIT {
                 );
                 f.exec("eo:register");
                 MatcherAssert.assertThat(
-                    "the build must succeed, but it didn't",
+                    "the build must succeed without errors, but it didn't",
                     f.log(),
-                    RequisiteMatcher.SUCCESS
+                    new RequisiteMatcher()
+                        .with("BUILD SUCCESS")
+                        .without("BUILD FAILURE")
+                        .without("[ERROR]")
                 );
                 MatcherAssert.assertThat(
                     "Old resolved files must were removed, but it didn't",
@@ -93,9 +99,12 @@ final class MjRegisterIT {
             f -> {
                 MjRegisterIT.runForeign(f);
                 MatcherAssert.assertThat(
-                    "the build must succeed, but it didn't",
+                    "the build must succeed without errors, but it didn't",
                     f.log(),
-                    RequisiteMatcher.SUCCESS
+                    new RequisiteMatcher()
+                        .with("BUILD SUCCESS")
+                        .without("BUILD FAILURE")
+                        .without("[ERROR]")
                 );
                 final TjSmart foreign = MjRegisterIT.loadForeign(temp);
                 MatcherAssert.assertThat(
@@ -128,9 +137,12 @@ final class MjRegisterIT {
                 );
                 f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
                 MatcherAssert.assertThat(
-                    "the build must succeed, but it didn't",
+                    "the build must succeed without errors, but it didn't",
                     f.log(),
-                    RequisiteMatcher.SUCCESS
+                    new RequisiteMatcher()
+                        .with("BUILD SUCCESS")
+                        .without("BUILD FAILURE")
+                        .without("[ERROR]")
                 );
                 MatcherAssert.assertThat(
                     "Necessary objects must were pulled",

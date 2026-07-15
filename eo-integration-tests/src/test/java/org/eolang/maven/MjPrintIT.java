@@ -44,9 +44,12 @@ final class MjPrintIT {
                     );
                 f.exec("eo:print");
                 MatcherAssert.assertThat(
-                    "the build must succeed, but it didn't",
+                    "the build must succeed without errors, but it didn't",
                     f.log(),
-                    RequisiteMatcher.SUCCESS
+                    new RequisiteMatcher()
+                        .with("BUILD SUCCESS")
+                        .without("BUILD FAILURE")
+                        .without("[ERROR]")
                 );
             }
         );
