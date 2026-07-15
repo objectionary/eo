@@ -97,6 +97,11 @@
       "%99999999999999999999$s"
       * "Jeff"
 
+  ++> throws-on-sprintf-with-zero-positional-index
+    sprintf > @
+      "%0$s"
+      * "first" "second"
+
   ++> formats-numbered-substitution-with-multiple-args
     eq. > @
       "This is the first; This is the first as well; The second; and the 3"

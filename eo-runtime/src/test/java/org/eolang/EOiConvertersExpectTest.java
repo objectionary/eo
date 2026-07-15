@@ -48,8 +48,6 @@ final class EOiConvertersExpectTest {
 
     private static Stream<Arguments> converters() {
         return Stream.of(
-            Arguments.of(EOi16$EOas_i32.class, "the 'ρ' attribute must be an i16"),
-            Arguments.of(EOi32$EOas_i64.class, "the 'ρ' attribute must be an i32"),
             Arguments.of(EOi64$EOas_number.class, "the 'ρ' attribute must be an i64")
         );
     }

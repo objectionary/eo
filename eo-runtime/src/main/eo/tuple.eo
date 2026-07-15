@@ -40,6 +40,19 @@
       x
       (length.plus 1).as-number
 
+  [other] > eq
+    and. > @
+      length.eq other.length
+      receq ^ other
+
+    [first second] > receq
+      if. > @
+        first.length.eq 0
+        true
+        and.
+          first.head.eq second.head
+          receq first.tail second.tail
+
   ++> tests-makes-tuple-through-special-syntax
     eq. > @
       (* 1 2).length
@@ -215,3 +228,25 @@
   ++> throws-on-out-of-tuple-bounds-with-negative-index
     arr.at -6 > @
     * 0 1 2 3 4 > arr
+
+  ++> tests-tuple-equality
+    eq. > @
+      * 1 2 3
+      * 1 2 3
+
+  ++> tests-tuple-not-equality
+    not. > @
+      eq.
+        * 1 2 3
+        * 3 2 1
+
+  ++> tests-tuple-nested-equality
+    eq. > @
+      *
+        * 0 1
+        * 4 0
+        * 7 3
+      *
+        * 0 1
+        * 4 0
+        * 7 3

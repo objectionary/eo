@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.text.StringEscapeUtils;
@@ -225,6 +225,53 @@ final class EoSyntaxTest {
                 ).asString()
             ).parsed(),
             Matchers.not(XhtmlMatchers.hasXPath("//o[@base='Φ.bytes' and not(o)]"))
+        );
+    }
+
+    @Test
+    void homesBareReferenceIntoPackageWhenObjectExists() throws IOException {
+        MatcherAssert.assertThat(
+            "bare reference to a same-package object must be homed into the current package",
+            new EoSyntax(
+                new InputOf(
+                    String.join(
+                        System.lineSeparator(),
+                        "+package foo",
+                        "",
+                        "[] > x",
+                        "  bar 42 > @",
+                        "  seq > y".concat(System.lineSeparator())
+                    )
+                ),
+                new Canonical("foo.bar")
+            ).parsed(),
+            XhtmlMatchers.hasXPaths(
+                "/object[not(errors)]",
+                "//o[@base='Φ.foo.bar']",
+                "//o[@base='Φ.seq']"
+            )
+        );
+    }
+
+    @Test
+    void keepsBareReferenceAtRootWhenObjectAbsent() throws IOException {
+        MatcherAssert.assertThat(
+            "bare reference must default to the root Φ when the object is unknown",
+            new EoSyntax(
+                new InputOf(
+                    String.join(
+                        System.lineSeparator(),
+                        "+package foo",
+                        "",
+                        "[] > x",
+                        "  bar 42 > @".concat(System.lineSeparator())
+                    )
+                )
+            ).parsed(),
+            XhtmlMatchers.hasXPaths(
+                "/object[not(errors)]",
+                "//o[@base='Φ.bar']"
+            )
         );
     }
 
@@ -629,7 +676,7 @@ final class EoSyntaxTest {
     private static XML raw(final String line) throws Exception {
         return new EoSyntax(
             new InputOf(line.concat(String.valueOf((char) 10))),
-            Function.identity()
+            UnaryOperator.identity()
         ).parsed();
     }
 

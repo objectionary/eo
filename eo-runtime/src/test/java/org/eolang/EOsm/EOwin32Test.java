@@ -34,15 +34,15 @@ final class EOwin32Test {
 
     @Test
     @DisabledOnOs({OS.LINUX, OS.MAC})
-    void invokesGetCurrentProcessIdCorrectly() {
+    void invokesGetpidCorrectly() {
         MatcherAssert.assertThat(
-            "The \"GetCurrentProcessId\" function call was expected to work correctly",
+            "The \"_getpid\" function call was expected to work correctly",
             new Dataized(
                 new PhApplication(
                     new PhApplication(
                         Phi.Φ.take("sm.win32").copy(),
                         "name",
-                        new Data.ToPhi("GetCurrentProcessId")
+                        new Data.ToPhi("_getpid")
                     ),
                     "args",
                     Phi.Φ.take("tuple").take("empty")

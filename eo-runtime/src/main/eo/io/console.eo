@@ -115,8 +115,8 @@
             input-block chunk
           output. > chunk!
             win32
-              "ReadFile"
-              * win32.std-input-handle size
+              "_read"
+              * win32.stdin-fileno size
 
     [buffer] > write
       (output-block.write buffer).@ > @
@@ -128,8 +128,8 @@
           seq * > @
             code.
               win32
-                "WriteFile"
-                * win32.std-output-handle buffer buffer.size
+                "_write"
+                * win32.stdout-fileno buffer buffer.size
             output-block
 
   ++> tests-writes-to-console

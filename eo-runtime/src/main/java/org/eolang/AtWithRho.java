@@ -65,6 +65,11 @@ final class AtWithRho implements Attribute {
     }
 
     @Override
+    public boolean vacant() {
+        return this.original.vacant();
+    }
+
+    @Override
     public String φTerm() {
         return this.original.φTerm();
     }

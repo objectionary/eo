@@ -51,7 +51,7 @@ public final class InetAddrFuncCall implements Syscall {
             );
             result.put(0, new Data.ToPhi(Integer.reverseBytes(buffer.getInt(0))));
         } catch (final UnknownHostException exception) {
-            Kernel32.INSTANCE.SetLastError(Winsock.WSAEINVAL);
+            Winsock.INSTANCE.WSASetLastError(Winsock.WSAEINVAL);
             result.put(0, new Data.ToPhi(-1));
         }
         result.put(1, new PhDefault());

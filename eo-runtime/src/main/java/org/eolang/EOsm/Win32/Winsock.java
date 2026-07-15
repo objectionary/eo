@@ -164,4 +164,12 @@ public interface Winsock extends StdCallLibrary {
      * @return The code of the last winsock error
      */
     int WSAGetLastError();
+
+    /**
+     * Set the last winsock error, so a following {@code WSAGetLastError} reads it
+     * back. It is the winsock counterpart of Kernel32's {@code SetLastError} and
+     * writes the same per-thread last-error slot.
+     * @param error The error code to set
+     */
+    void WSASetLastError(int error);
 }
