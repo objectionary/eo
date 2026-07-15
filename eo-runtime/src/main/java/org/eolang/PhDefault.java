@@ -383,7 +383,10 @@ public class PhDefault implements Phi, Cloneable {
      * after this object's forma. If it exists, it is returned with this object
      * bound as its first argument, so {@code (number 42).power 3} reads as
      * {@code number.power 42 3}. When there's no such object, the terminated
-     * computation stays terminated.</p>
+     * computation stays terminated. When the object exists but has no free
+     * positional attribute to receive the bound object (for example a nullary
+     * constant like {@code number.pi}), a clear error is raised instead of the
+     * low-level "attribute is already set / no attributes here" message.</p>
      *
      * @param name The name of the absent attribute
      * @param bottom The terminated computation to keep when there's no such object
@@ -395,8 +398,19 @@ public class PhDefault implements Phi, Cloneable {
         if (forma.startsWith(String.format("%s.", PhPackage.GLOBAL))) {
             final String full = String.join(".", forma, name);
             if (PhDefault.exists(new JavaPath(full).toString())) {
-                found = Phi.Φ.take(full.substring(PhPackage.GLOBAL.length() + 1));
-                found.put(0, this);
+                final Phi taken = Phi.Φ.take(full.substring(PhPackage.GLOBAL.length() + 1));
+                try {
+                    taken.put(0, this);
+                } catch (final ExFailure ex) {
+                    throw new ExFailure(
+                        String.format(
+                            "Object '%s' takes no arguments, so it can't be applied to '%s' via the implicit '%s' form",
+                            full, forma, name
+                        ),
+                        ex
+                    );
+                }
+                found = taken;
             }
         }
         return found;
