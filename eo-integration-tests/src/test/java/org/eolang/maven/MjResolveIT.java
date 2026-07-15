@@ -32,14 +32,7 @@ final class MjResolveIT {
             f -> {
                 MjResolveIT.configureFarea(f, version);
                 f.exec("process-classes");
-                MatcherAssert.assertThat(
-                    "the build must succeed without errors, but it didn't",
-                    f.log(),
-                    new RequisiteMatcher()
-                        .with("BUILD SUCCESS")
-                        .without("BUILD FAILURE")
-                        .without("[ERROR]")
-                );
+                MjResolveIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "the jar file was resolved and unpacked",
                     f.files().file(
@@ -62,14 +55,7 @@ final class MjResolveIT {
             f -> {
                 MjResolveIT.configureFarea(f, version);
                 f.exec("process-classes");
-                MatcherAssert.assertThat(
-                    "the build must succeed without errors, but it didn't",
-                    f.log(),
-                    new RequisiteMatcher()
-                        .with("BUILD SUCCESS")
-                        .without("BUILD FAILURE")
-                        .without("[ERROR]")
-                );
+                MjResolveIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "Classifier should not be displayed, if its absent",
                     f.log().content(),
@@ -94,14 +80,7 @@ final class MjResolveIT {
                 f.dependencies()
                     .append("org.eolang", "eo-runtime", "0.40.0");
                 f.exec("process-classes");
-                MatcherAssert.assertThat(
-                    "the build must succeed without errors, but it didn't",
-                    f.log(),
-                    new RequisiteMatcher()
-                        .with("BUILD SUCCESS")
-                        .without("BUILD FAILURE")
-                        .without("[ERROR]")
-                );
+                MjResolveIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "binary files from the old JAR were removed",
                     f.files().file(
@@ -114,6 +93,17 @@ final class MjResolveIT {
                     Matchers.is(false)
                 );
             }
+        );
+    }
+
+    private static void succeeds(final Farea farea) throws IOException {
+        MatcherAssert.assertThat(
+            "the build must succeed without errors, but it didn't",
+            farea.log(),
+            new RequisiteMatcher()
+                .with("BUILD SUCCESS")
+                .without("BUILD FAILURE")
+                .without("[ERROR]")
         );
     }
 

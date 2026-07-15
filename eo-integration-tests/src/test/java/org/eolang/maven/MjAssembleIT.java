@@ -39,14 +39,7 @@ final class MjAssembleIT {
             f -> {
                 MjAssembleIT.prepare(f, "src/main/eo/foo/x/main.eo", MjAssembleIT.program());
                 f.exec("package");
-                MatcherAssert.assertThat(
-                    "the build must succeed without errors, but it didn't",
-                    f.log(),
-                    new RequisiteMatcher()
-                        .with("BUILD SUCCESS")
-                        .without("BUILD FAILURE")
-                        .without("[ERROR]")
-                );
+                MjAssembleIT.succeeds(f);
                 MatcherAssert.assertThat(
                     String.format("AssembleMojo should have parsed stdout %s, but didn't", parsed),
                     f.files().file(parsed).exists(),
@@ -78,6 +71,17 @@ final class MjAssembleIT {
                     FileMatchers.anExistingFile()
                 );
             }
+        );
+    }
+
+    private static void succeeds(final Farea farea) throws IOException {
+        MatcherAssert.assertThat(
+            "the build must succeed without errors, but it didn't",
+            farea.log(),
+            new RequisiteMatcher()
+                .with("BUILD SUCCESS")
+                .without("BUILD FAILURE")
+                .without("[ERROR]")
         );
     }
 

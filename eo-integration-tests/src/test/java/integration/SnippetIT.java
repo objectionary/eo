@@ -23,7 +23,6 @@ import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 
@@ -31,7 +30,6 @@ import org.junit.jupiter.params.ParameterizedTest;
  * Integration test for simple snippets.
  * @since 0.57
  */
-@Disabled("pulled .eo sources predate the comment-on-top rule and emit [ERROR]")
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
 final class SnippetIT {
@@ -59,14 +57,7 @@ final class SnippetIT {
                 f.build().properties().set("directory", SnippetIT.targetDir(xtory));
                 new EoSourceRun(f).exec(xtory.map().get("args"));
                 log[0] = f.log().content();
-                MatcherAssert.assertThat(
-                    String.format("'%s' must build without errors, but it didn't", yml),
-                    f.log(),
-                    new RequisiteMatcher()
-                        .with("BUILD SUCCESS")
-                        .without("BUILD FAILURE")
-                        .without("[ERROR]")
-                );
+                SnippetIT.succeeds(f, yml);
             }
         );
         MatcherAssert.assertThat(
@@ -80,6 +71,17 @@ final class SnippetIT {
                     (Iterable<String>) xtory.map().get("out")
                 )
             )
+        );
+    }
+
+    private static void succeeds(final Farea farea, final String yml) throws IOException {
+        MatcherAssert.assertThat(
+            String.format("'%s' must build without errors, but it didn't", yml),
+            farea.log(),
+            new RequisiteMatcher()
+                .with("BUILD SUCCESS")
+                .without("BUILD FAILURE")
+                .without("[ERROR]")
         );
     }
 
