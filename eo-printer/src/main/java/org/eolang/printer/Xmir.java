@@ -46,7 +46,7 @@ public final class Xmir implements XML {
                 new StClasspath("/org/eolang/printer/print/inline-cactoos.xsl"),
                 new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl"),
                 new StClasspath("/org/eolang/printer/print/unnecessary-as.xsl"),
-                new StClasspath("/org/eolang/printer/print/to-eo.xsl")
+                new StClasspath("/org/eolang/printer/print/to-eo-tree.xsl")
             )
         )
     );
@@ -117,31 +117,19 @@ public final class Xmir implements XML {
 
     /**
      * Converts XMIR to EO.
+     *
+     * <p>The XMIR is first normalized by a train of XSL transformations
+     * into an intermediate "line tree", which is then laid out as
+     * pretty EO source by {@link Pretty}, using a penalty-based
+     * algorithm to pick the most readable format for every object.</p>
+     *
      * @return EO representation as {@link String}
      */
     public String toEO() {
-        return this.converted(Xmir.FOR_EO, "eo");
-    }
-
-    /**
-     * Converts XMIR.
-     * @param train Train of transformations that prepares XMIR
-     * @param node XML node name
-     * @return XMIR in other representation as {@link String}
-     */
-    private String converted(final Xsline train, final String node) {
-        final XML xmir = train.pass(this.xml);
-        Logger.debug(this, "XMIR after converting to %s:%n%s", node, xmir);
-        return new Xnav(xmir.inner())
-            .element("object")
-            .element(node)
-            .text().orElseThrow(
-                () -> new IllegalStateException(
-                    String.format(
-                        "Couldn't find element '/object/%s' after converting to %s",
-                        node, node
-                    )
-                )
-            );
+        final XML xmir = Xmir.FOR_EO.pass(this.xml);
+        Logger.debug(this, "XMIR after converting to EO tree:%n%s", xmir);
+        return new Pretty(
+            new Xnav(xmir.inner()).element("object").element("eo")
+        ).asString();
     }
 }

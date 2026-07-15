@@ -18,17 +18,8 @@ origin: |
 
 printed: |
   [] > main
-    * > array
-      1
-      "Hello"
-      x
+    * 1 "Hello" x > array
     * > xs
-      *
-        1
-        2
-      *
-        3
-        4
-      *
-        5
-        6
+      * 1 2
+      * 3 4
+      * 5 6

@@ -12,8 +12,4 @@ origin: |
 printed: |
   [] > app
     io.stdout > @
-      tt.sprintf
-        "result is %d\n"
-        times.
-          -1
-          228
+      tt.sprintf "result is %d\n" (times. -1 228)
