@@ -385,3 +385,51 @@
     eq. > @
       "\b\f\n\r\t\u27E6"
       08-0C-0A-0D-09-E2-9F-A6
+
+  ++> tests-package-contains-word-in-sentence
+    "hello, world, how are you?".contains "how" > @
+
+  ++> tests-package-starts-with-prefix
+    "hello, world".starts-with "hello" > @
+
+  ++> tests-package-ends-with-suffix
+    "hello, world".ends-with "world" > @
+
+  ++> tests-package-up-cases-text
+    eq. > @
+      "hello".up-cased
+      "HELLO"
+
+  ++> tests-package-low-cases-text
+    eq. > @
+      "HELLO".low-cased
+      "hello"
+
+  ++> tests-package-trims-surrounding-spaces
+    eq. > @
+      "  spaced  ".trimmed
+      "spaced"
+
+  ++> tests-package-repeats-text
+    eq. > @
+      "ha".repeated 3
+      "hahaha"
+
+  ++> tests-package-finds-index-of-character
+    eq. > @
+      "hello".index-of "l"
+      2
+
+  ++> tests-package-takes-character-at-index
+    eq. > @
+      "some".at 1
+      "o"
+
+  ++> tests-package-detects-digits
+    "2026".is-digit > @
+
+  ++> tests-package-detects-alphabetic-text
+    "eEo".is-alpha > @
+
+  ++> tests-package-contains-via-string-namespace
+    string.contains "hello, world" "world" > @
