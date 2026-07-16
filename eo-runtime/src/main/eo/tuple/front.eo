@@ -1,4 +1,4 @@
-# Elements of `lst` before `index` (supports negative indices).
+# Elements of `list` before `index` (supports negative indices).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -8,7 +8,7 @@
 +spdx SPDX-License-Identifier: MIT
 
 [] > front
-  ? >> lst
+  ? >> list
   ? >> index
   if. > @
     idx.eq 0
@@ -16,12 +16,12 @@
     if.
       0.gt idx
       back
-        lst
+        list
         (number idx).neg
       if.
-        (number idx).gte lst.length
-        lst
-        rechead lst
+        (number idx).gte list.length
+        list
+        rechead list
   index > idx!
 
   [tup] > rechead

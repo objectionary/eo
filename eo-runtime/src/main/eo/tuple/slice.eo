@@ -1,4 +1,4 @@
-# Sublist of `lst` from `start` (inclusive) to `end` (exclusive).
+# Sublist of `list` from `start` (inclusive) to `end` (exclusive).
 # Supports negative indices and clamps to list bounds.
 
 +architect yegor256@gmail.com
@@ -9,14 +9,14 @@
 +spdx SPDX-License-Identifier: MIT
 
 [] > slice
-  ? >> lst
+  ? >> list
   ? >> start
   ? >> end
   if. > @
     (number s).gte e
     *
     reducedi
-      lst
+      list
       *
       [accum item idx] >>
         if. > @
@@ -28,22 +28,22 @@
   if. > e!
     end.gte 0
     if.
-      end.gte lst.length
-      lst.length
+      end.gte list.length
+      list.length
       end
     if.
-      lst.length.neg.lte end
-      end.plus lst.length
+      list.length.neg.lte end
+      end.plus list.length
       0
   if. > s!
     start.gte 0
     if.
-      start.gte lst.length
-      lst.length
+      start.gte list.length
+      list.length
       start
     if.
-      lst.length.neg.lte start
-      start.plus lst.length
+      list.length.neg.lte start
+      start.plus list.length
       0
 
   ++> tests-simple-slice

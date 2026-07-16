@@ -1,4 +1,4 @@
-# Filter `lst` without index with the function `func`.
+# Filter `list` without index with the function `func`.
 # Here `func` must be an abstract object
 # with one attribute for the element.
 # The result of dataization the `func`
@@ -12,10 +12,10 @@
 +spdx SPDX-License-Identifier: MIT
 
 [] > filtered
-  ? >> lst
+  ? >> list
   ? >> func
   filteredi > @
-    lst
+    list
     func item > [item index] >>
 
   ++> tests-simple-filtered
