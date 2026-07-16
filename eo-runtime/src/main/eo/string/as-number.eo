@@ -13,11 +13,11 @@
   if. > @
     scanned.length.eq 0
     cant-parse
-      sprintf
+      printf
         "Can't convert text %s to number"
         * text
     scanned.head
-  (sscanf "%f" text).at.^ > scanned
+  (scanf "%f" text).at.^ > scanned
 
   ++> tests-converts-text-to-number
     eq. > @

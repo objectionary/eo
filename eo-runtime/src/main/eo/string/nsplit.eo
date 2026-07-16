@@ -13,7 +13,7 @@
   if. > @
     1.gt limit
     cant-split
-      sprintf
+      printf
         "Invalid limit %d for nsplit, must be at least 1"
         * limit
     if.

@@ -13,7 +13,7 @@
   if. > @
     0.gt amount
     cant-repeat
-      sprintf
+      printf
         "Can't repeat text %d times"
         * amount
     string result

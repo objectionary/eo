@@ -19,11 +19,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for {@link SprintfArgs}.
+ * Tests for {@link PrintfArgs}.
  * @since 0.57.4
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-final class SprintfArgsTest {
+final class PrintfArgsTest {
 
     @Test
     void returnsArgumentsForNumberedSubstitution() {
@@ -32,8 +32,8 @@ final class SprintfArgsTest {
         final String expected = "Jeff";
         tuple.put("head", new Data.ToPhi(expected));
         MatcherAssert.assertThat(
-            "The sprintf args do not match with expected",
-            new SprintfArgs("Hello, %s! Bye, %1$s!", 1L, tuple.take("at")).formatted(),
+            "The printf args do not match with expected",
+            new PrintfArgs("Hello, %s! Bye, %1$s!", 1L, tuple.take("at")).formatted(),
             Matchers.equalTo(new ListOf<>(expected, expected))
         );
     }
@@ -50,8 +50,8 @@ final class SprintfArgsTest {
         tuple.put("head", new Data.ToPhi(second));
         tuple.put("tail", root);
         MatcherAssert.assertThat(
-            "The sprintf args do not match with expected",
-            new SprintfArgs(
+            "The printf args do not match with expected",
+            new PrintfArgs(
                 "This is the %s! This is %1$s as well! This is the %s",
                 3L,
                 tuple.take("at")
@@ -69,7 +69,7 @@ final class SprintfArgsTest {
             "the ExFailure message must name the out-of-range number, not be swallowed by a second, accidental format pass",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new SprintfArgs("%d", 1L, tuple.take("at")).formatted(),
+                () -> new PrintfArgs("%d", 1L, tuple.take("at")).formatted(),
                 "must throw ExFailure, not an internal java.util.Formatter exception"
             ).getMessage(),
             Matchers.containsString("doesn't fit into long range")
@@ -85,7 +85,7 @@ final class SprintfArgsTest {
             "the ExFailure message must name the out-of-range number",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new SprintfArgs("%d", 1L, tuple.take("at")).formatted(),
+                () -> new PrintfArgs("%d", 1L, tuple.take("at")).formatted(),
                 "2^63 must be rejected, not silently saturated to Long.MAX_VALUE (since (double) Long.MAX_VALUE rounds up to exactly 2^63)"
             ).getMessage(),
             Matchers.containsString("doesn't fit into long range")
@@ -100,7 +100,7 @@ final class SprintfArgsTest {
         tuple.put("head", new Data.ToPhi(closest));
         MatcherAssert.assertThat(
             "a double strictly below 2^63 (the representable double one ulp below it, since Long.MAX_VALUE itself isn't exactly representable and rounds up to 2^63) must still be accepted as a valid long",
-            new SprintfArgs("%d", 1L, tuple.take("at")).formatted(),
+            new PrintfArgs("%d", 1L, tuple.take("at")).formatted(),
             Matchers.equalTo(new ListOf<>((long) closest))
         );
     }
@@ -114,7 +114,7 @@ final class SprintfArgsTest {
             "the ExFailure message must name the unsupported format char, not be swallowed by a second, accidental format pass",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new SprintfArgs("%z", 1L, tuple.take("at")).formatted(),
+                () -> new PrintfArgs("%z", 1L, tuple.take("at")).formatted(),
                 "must throw ExFailure, not an internal java.util.Formatter exception"
             ).getMessage(),
             Matchers.containsString("is unsupported")

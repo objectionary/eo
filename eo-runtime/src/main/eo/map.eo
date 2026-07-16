@@ -2,7 +2,7 @@
 # Here `pairs` must be a `tuple` of `map.entry` object.
 # The `map.entry.key` must be a dataizable object, `map.entry.value` may be any object.
 
-+alias string.sprintf
++alias string.printf
 +alias tuple.contains
 +alias tuple.filtered
 +alias tuple.hash-code-of
@@ -73,7 +73,7 @@
         false > exists
         [cant-get] > get
           cant-get > @
-            sprintf
+            printf
               "Object by hash code %d from given key does not exists"
               * hash
 

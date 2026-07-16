@@ -22,17 +22,17 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * Sprintf.
+ * Printf.
  * @since 0.39.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "sprintf")
-public final class EOsprintf extends PhDefault implements Atom {
+@XmirObject(oname = "printf")
+public final class EOprintf extends PhDefault implements Atom {
 
     /**
      * Ctor.
      */
-    public EOsprintf() {
+    public EOprintf() {
         super(new Attrs(
             new Attr("format", new AtVoid("format")),
             new Attr("args", new AtVoid("args"))
@@ -46,7 +46,7 @@ public final class EOsprintf extends PhDefault implements Atom {
             String.format(
                 Locale.US,
                 format.replaceAll("%\\d+\\$([a-zA-Z])", "%s").replaceAll("%x", "%s"),
-                new SprintfArgs(
+                new PrintfArgs(
                     format,
                     Expect.at(this, "args")
                         .that(phi -> new Dataized(phi.take("length")).asNumber().intValue())

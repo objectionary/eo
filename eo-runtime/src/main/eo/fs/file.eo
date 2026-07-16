@@ -5,7 +5,7 @@
 +alias sm.os
 +alias sm.posix
 +alias sm.win32
-+alias string.sprintf
++alias string.printf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package fs
@@ -45,7 +45,7 @@
       if.
         descriptor.eq -1
         T
-          sprintf
+          printf
             "Cant touch the file '%s': %s"
             * path created.output
         seq *
@@ -70,7 +70,7 @@
         outcome.eq 0
         ^
         T
-          sprintf
+          printf
             "Cant delete the file '%s': %s"
             * path removed.output
       ^
@@ -105,7 +105,7 @@
       outcome.eq 0
       file target
       T
-        sprintf
+        printf
           "Cant move the file '%s' to '%s': %s"
           * path target renamed.output
     called. > renamed
@@ -122,7 +122,7 @@
       if.
         existing.and exists.not
         cant-open
-          sprintf
+          printf
             "File must exist for given access mod: '%s'"
             * access
         seq *
@@ -170,7 +170,7 @@
         if. > @
           descriptor.eq -1
           cant-open
-            sprintf
+            printf
               "Couldn't open file '%s': %s"
               * path opened.output
           seq *
@@ -219,7 +219,7 @@
                 if. > @
                   readable.not
                   T
-                    sprintf
+                    printf
                       "Can't read from file with provided access mode '%s'"
                       * access
                   seq *
@@ -236,7 +236,7 @@
                 if. > @
                   writable.not
                   T
-                    sprintf
+                    printf
                       "Can't write to file with provided access mode '%s'"
                       * access
                   seq *
@@ -302,7 +302,7 @@
 
   ++> tests-moves-a-file
     and. > @
-      (temp.moved (sprintf "%s.dest" (* temp.path))).exists
+      (temp.moved (printf "%s.dest" (* temp.path))).exists
       temp.exists.not
     tmpdir.tmpfile > temp
 

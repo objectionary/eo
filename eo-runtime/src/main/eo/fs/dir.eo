@@ -1,7 +1,7 @@
 # Directory in the file system.
 # Apparently every directory is a file.
 
-+alias string.sprintf
++alias string.printf
 +alias sm.os
 +alias sm.posix
 +alias sm.win32
@@ -29,7 +29,7 @@
           outcome.eq 0
           ^
           T
-            sprintf
+            printf
               "Cant make the directory '%s': %s"
               * ^.path created.output
     called. > created
@@ -63,7 +63,7 @@
       Q.fs.file
         touch.as-bytes
       T
-        sprintf
+        printf
           "Directory %s does not exist, can't create temporary file"
           * file
 
@@ -71,7 +71,7 @@
 
   [mode scope] > open
     T > @
-      sprintf
+      printf
         "The file %s is a directory, can't open for I/O operations"
         * file
 

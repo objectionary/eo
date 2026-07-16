@@ -28,12 +28,12 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * Sscanf.
+ * Scanf.
  * @since 0.39
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "sscanf")
-public final class EOsscanf extends PhDefault implements Atom {
+@XmirObject(oname = "scanf")
+public final class EOscanf extends PhDefault implements Atom {
 
     /**
      * Character conversion.
@@ -41,9 +41,9 @@ public final class EOsscanf extends PhDefault implements Atom {
     private static final Map<Character, Function<String, Phi>> CONVERSION = new HashMap<>();
 
     static {
-        EOsscanf.CONVERSION.put('s', ToPhi::new);
-        EOsscanf.CONVERSION.put('d', str -> new Data.ToPhi(EOsscanf.parsed(str)));
-        EOsscanf.CONVERSION.put('f', str -> new Data.ToPhi(Double.parseDouble(str)));
+        EOscanf.CONVERSION.put('s', ToPhi::new);
+        EOscanf.CONVERSION.put('d', str -> new Data.ToPhi(EOscanf.parsed(str)));
+        EOscanf.CONVERSION.put('f', str -> new Data.ToPhi(Double.parseDouble(str)));
     }
 
     /**
@@ -56,7 +56,7 @@ public final class EOsscanf extends PhDefault implements Atom {
      * @checkstyle CyclomaticComplexityCheck (75 lines)
      * @checkstyle NestedIfDepthCheck (75 lines)
      */
-    public EOsscanf() {
+    public EOscanf() {
         super(new Attrs(
             new Attr("format", new AtVoid("format")),
             new Attr("read", new AtVoid("read"))
@@ -71,9 +71,9 @@ public final class EOsscanf extends PhDefault implements Atom {
         boolean literal = false;
         for (int idx = 0; idx < format.length(); ++idx) {
             final char sym = format.charAt(idx);
-            if (sym == EOsscanf.PERCENT) {
+            if (sym == EOscanf.PERCENT) {
                 if (literal) {
-                    regex.append(EOsscanf.PERCENT);
+                    regex.append(EOscanf.PERCENT);
                     literal = false;
                 } else {
                     literal = true;
@@ -107,13 +107,13 @@ public final class EOsscanf extends PhDefault implements Atom {
         if (matcher.find()) {
             int index = 1;
             while (true) {
-                final int idx = frmt.indexOf(EOsscanf.PERCENT);
+                final int idx = frmt.indexOf(EOscanf.PERCENT);
                 if (idx == -1) {
                     break;
                 }
                 final char sym = frmt.charAt(idx + 1);
-                if (sym != EOsscanf.PERCENT) {
-                    output.add(EOsscanf.converted(sym, matcher.group(index)));
+                if (sym != EOscanf.PERCENT) {
+                    output.add(EOscanf.converted(sym, matcher.group(index)));
                     ++index;
                 }
                 frmt = frmt.substring(idx + 2);
@@ -149,12 +149,12 @@ public final class EOsscanf extends PhDefault implements Atom {
      * @return Phi object depending on format symbol
      */
     private static Phi converted(final char symbol, final String str) {
-        if (!EOsscanf.CONVERSION.containsKey(symbol)) {
+        if (!EOscanf.CONVERSION.containsKey(symbol)) {
             throw new ExFailure(
                 "The format %c is unsupported, only %s formats can be used",
                 symbol, "%s, %d, %f"
             );
         }
-        return EOsscanf.CONVERSION.get(symbol).apply(str);
+        return EOscanf.CONVERSION.get(symbol).apply(str);
     }
 }

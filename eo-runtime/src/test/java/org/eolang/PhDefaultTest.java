@@ -8,7 +8,7 @@ import com.yegor256.Together;
 import java.security.SecureRandom;
 import org.cactoos.set.SetOf;
 import org.eolang.EO_org.EO_eolang.EOdummy;
-import org.eolang.EO_string.EOsprintf;
+import org.eolang.EO_string.EOprintf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -482,8 +482,8 @@ final class PhDefaultTest {
     void keepsSubPackageInForma() {
         MatcherAssert.assertThat(
             "forma must keep the EO sub-package without its EO marker, but it didnt",
-            new EOsprintf().forma(),
-            Matchers.equalTo("Φ.string.sprintf")
+            new EOprintf().forma(),
+            Matchers.equalTo("Φ.string.printf")
         );
     }
 

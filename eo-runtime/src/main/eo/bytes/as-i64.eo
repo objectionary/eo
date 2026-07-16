@@ -2,7 +2,7 @@
 # as two's complement. For any other length the `cant-convert` fallback
 # is returned.
 
-+alias string.sprintf
++alias string.printf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package bytes
@@ -15,7 +15,7 @@
     bts.size.eq 8
     i64 bts
     cant-convert
-      sprintf
+      printf
         "Can't convert non 8 length bytes to i64, bytes are %x"
         * bts
 
