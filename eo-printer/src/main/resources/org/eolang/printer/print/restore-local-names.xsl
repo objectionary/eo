@@ -11,10 +11,14 @@
   "@local='name'" marker; the parser resolves references to the cactus name
   but the readable handle is preserved on the void. Here we put the handle
   back: the void's @name becomes its handle and every @base segment that
-  points at that cactus name is rewritten to the handle, so the printer
-  emits "[name]" and "name" instead of a synthetic "vL_P" placeholder. A
-  non-void "&gt;&gt;" handle (on an anonymous formation) is left to the
-  existing "inline-cactoos" pass, so its @local marker is simply dropped.
+  points at that cactus name is rewritten to the handle, so references read
+  under the handle instead of a synthetic "vL_P" placeholder. The
+  "@local" marker is deliberately KEPT on the void (#5581) so that
+  "to-eo-tree" can print it back as a vertical "? &gt;&gt; name" line and
+  preserve the void's anonymity (§9.2, R-9.2.3), rather than collapsing it
+  into a public "[name]" bracket param. A non-void "&gt;&gt;" handle (on an
+  anonymous formation) is left to the existing "inline-cactoos" pass, so its
+  @local marker is simply dropped.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -28,8 +32,10 @@
   <xsl:template match="o[@local and @base=$eo:empty]/@name">
     <xsl:attribute name="name" select="../@local"/>
   </xsl:template>
-  <!-- Drop the marker (already applied on voids above; unused on formations). -->
-  <xsl:template match="o/@local"/>
+  <!-- Keep the marker on voids so "to-eo-tree" restores the readable
+       "? &gt;&gt; name" handle; drop it on non-void formations, whose
+       handle is inlined away by the "inline-cactoos" pass. -->
+  <xsl:template match="o[not(@base=$eo:empty)]/@local"/>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>

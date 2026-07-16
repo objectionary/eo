@@ -12,4 +12,6 @@ origin: |
 printed: |
   +package org.eolang
 
-  bts.eq 01- > [bts] > as-bool
+  [] > as-bool
+    ? >> bts
+    bts.eq 01- > @
