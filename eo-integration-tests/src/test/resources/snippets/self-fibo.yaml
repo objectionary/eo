@@ -7,7 +7,6 @@ out:
 file: snippets/self-fibo.eo
 args: ["snippets.self-fibo"]
 eo: |
-  +alias io.stdout
   +package snippets
 
   [] > self-fibo
