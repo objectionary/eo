@@ -71,7 +71,7 @@ final class InputOutputTest {
     /**
      * Stdin.
      */
-    private static final String STDIN = "io.stdin";
+    private static final String STDIN = "stdin";
 
     /**
      * Write object.

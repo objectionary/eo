@@ -1,15 +1,20 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# yamllint disable rule:line-length
 origin: |
   +package org.eolang
 
-  [] > as-bool
-    ? >> bts
-    bts.eq 01- > @
+  [x] > foo
+    [] > bar
+      ^.x > @
+    [x] > baz
+      ^.x > @
 
 printed: |
   +package org.eolang
 
-  bts.eq 01- > [bts] > as-bool
+  [x] > foo
+    [] > bar
+      x > @
+    [x] > baz
+      ^.x > @
