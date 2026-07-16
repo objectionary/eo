@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+asserts:
+  - /object[not(errors)]
+  - /object[not(//o[@local])]
+  - //o[@name='a🌵2-2' and @base='∅']
+  - //o[@name='a🌵3-2' and @base='∅']
+  - //o[@base='a🌵3-2' and @name='φ']
+input: |
+  [] > false
+    ? >> left
+    ? >> right
+    right > @
