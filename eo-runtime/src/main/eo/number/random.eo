@@ -1,6 +1,5 @@
 # Generates a pseudo-random number.
 
-+alias sm.system-clock
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
@@ -66,7 +65,7 @@
     35 > shift1
     17 > shift3
     clock.as-bytes > tbytes
-  clocked system-clock > pseudo
+  clocked clock > pseudo
 
   ++> tests-random-with-seed
     not. > @
