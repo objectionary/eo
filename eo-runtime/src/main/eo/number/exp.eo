@@ -15,7 +15,7 @@
   ++> tests-exp-check-n1
     lt. > @
       abs
-        minus. (div. 1 e) (number.exp -1)
+        minus. (1.div e) (number.exp -1)
       1.0E-8
 
   ++> tests-exp-check-n2

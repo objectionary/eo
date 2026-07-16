@@ -61,8 +61,7 @@
         false > exists
         [cant-get] > get
           cant-get > @
-            printf.
-              "Object by hash code %d from given key does not exists"
+            "Object by hash code %d from given key does not exists".printf
               * ^.^.hash
     [key] > has
       exists. (found key) > @
@@ -94,7 +93,7 @@
       tuple.hash-code key > hash!
 
   ++> tests-map-rebuilds-itself
-    eq. 2 mp.size > @
+    2.eq mp.size > @
     map > mp
       *
         map.entry 1 1
@@ -103,8 +102,7 @@
         map.entry 2 1
 
   ++> tests-map-rebuilds-itself-only-once
-    eq. > @
-      1
+    1.eq > @
       malloc.for
         0
         [m]
@@ -131,7 +129,7 @@
       * 2 3 4
 
   ++> tests-finds-element-by-key-in-map
-    eq. 2 found.get > @
+    2.eq found.get > @
     mp.found "two" > found
     map > mp
       *
@@ -171,7 +169,7 @@
 
   ++> tests-removes-element-from-map-by-key
     and. > @
-      eq. 1 mp.size
+      1.eq mp.size
       not. (mp.has "one")
     without. > mp
       map
@@ -180,7 +178,7 @@
 
   ++> tests-adds-new-pair-to-hash-map
     and. > @
-      eq. 2 mp.size
+      2.eq mp.size
       mp.has "two"
     with. > mp
       map
@@ -190,9 +188,8 @@
 
   ++> tests-replaces-value-if-pair-with-key-exists-in-map
     and. > @
-      eq. 2 mp.size
-      eq.
-        3
+      2.eq mp.size
+      3.eq
         get. (mp.found "two")
     with. > mp
       map
@@ -201,8 +198,7 @@
       3
 
   ++> tests-map-get-missing-returns-provided-fallback
-    eq. > @
-      "recovered"
+    "recovered".eq > @
       get.
         mp.found "absent"
         "recovered" > [msg]

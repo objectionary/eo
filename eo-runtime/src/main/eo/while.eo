@@ -44,8 +44,7 @@
     body index > current
 
   ++> tests-while-dataizes-only-first-cycle
-    eq. > @
-      0
+    0.eq > @
       malloc.for
         42
         [m]
@@ -75,14 +74,14 @@
         0
         [m]
           while > @
-            gt. 2 m > [i] >>
+            2.gt m > [i] >>
             m.put (m.as-number.plus 1) > [i] >>
       3
 
   ++> tests-last-while-dataization-object-with-false-condition
     not. > @
       while
-        gt. 1 2 > [i]
+        1.gt 2 > [i]
         true > [i]
 
   ++> tests-while-simple-iteration

@@ -23,18 +23,16 @@
         concat. (concat. (dataized tup.head) delimiter) acc
         tup.tail
 
-  eq. "" (string.joined "-" tuple.empty) ++> tests-joined-no-strings
+  "".eq (string.joined "-" tuple.empty) ++> tests-joined-no-strings
 
   ++> tests-joined-one-string
-    eq. > @
-      "some"
+    "some".eq > @
       string.joined
         "-"
         * "some"
 
   ++> tests-joined-many-strings
-    eq. > @
-      "hello-world-dear-friend"
+    "hello-world-dear-friend".eq > @
       string.joined
         "-"
         * "hello" "world" "dear" "friend"

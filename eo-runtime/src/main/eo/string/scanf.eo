@@ -20,28 +20,23 @@
 [format read] > scanf /tuple
 
   ++> tests-scanf-with-string
-    eq. > @
-      "hello"
+    "hello".eq > @
       head. (string.scanf "%s" "hello")
 
   ++> tests-scanf-with-int
-    eq. > @
-      33
+    33.eq > @
       head. (string.scanf "%d" "33")
 
   ++> tests-scanf-with-negative-int
-    eq. > @
-      -42
+    -42.eq > @
       head. (string.scanf "%d" "-42")
 
   ++> tests-scanf-with-positive-signed-int
-    eq. > @
-      42
+    42.eq > @
       head. (string.scanf "%d" "+42")
 
   ++> tests-scanf-with-float
-    eq. > @
-      0.24
+    0.24.eq > @
       head. (string.scanf "%f" "0.24")
 
   string.scanf "%l" "error" ++> throws-on-scanf-with-wrong-format
@@ -54,23 +49,19 @@
       * "hello" 33 0.24
 
   ++> tests-scanf-with-string-with-ending
-    eq. > @
-      "hello"
+    "hello".eq > @
       head. (string.scanf "%s!" "hello!")
 
   ++> tests-scanf-with-complex-string
-    eq. > @
-      "test"
+    "test".eq > @
       head. (string.scanf "some%sstring" "someteststring")
 
   ++> tests-scanf-with-complex-int
-    eq. > @
-      734987259
+    734987259.eq > @
       head. (string.scanf "!%d!" "!734987259!")
 
   ++> tests-scanf-with-complex-float
-    eq. > @
-      1991.01
+    1991.01.eq > @
       head. (string.scanf "this will be=%f" "this will be=1991.01")
 
   ++> tests-scanf-with-printf

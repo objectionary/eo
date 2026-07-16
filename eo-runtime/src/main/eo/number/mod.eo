@@ -52,8 +52,7 @@
   number.mod 5 0 ++> throws-on-mod-by-zero
 
   ++> tests-mod-by-zero-returns-provided-fallback
-    eq. > @
-      "recovered"
+    "recovered".eq > @
       number.mod
         5
         0

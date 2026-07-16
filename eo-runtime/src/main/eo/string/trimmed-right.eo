@@ -13,7 +13,7 @@
 
 [text] > trimmed-right
   if. > @
-    eq. 0 len
+    0.eq len
     text
     string
       bts.slice 0 (first-non-ws-index (plus. (number len) -1))
@@ -21,7 +21,7 @@
   bts.size > len!
   [index] > first-non-ws-index
     if. > @
-      eq. -1 index
+      -1.eq index
       0
       if.
         is-ws char

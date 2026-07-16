@@ -15,7 +15,7 @@
 
   ++> tests-concatenates-lists
     and. > @
-      eq. 1 (list3.at 0)
+      1.eq (list3.at 0)
       list3.eq
         * 1 2 3
     withouti > list3

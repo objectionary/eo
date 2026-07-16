@@ -14,15 +14,9 @@
     bts.size.eq 2
     i16 bts
     cant-convert
-      printf.
-        "Can't convert non 2 length bytes to i16, bytes are %x"
+      "Can't convert non 2 length bytes to i16, bytes are %x".printf
         * bts
 
-  ++> throws-on-bytes-of-wrong-size-as-i16
-    as-i16. 01-01-01 > @
+  01-01-01.as-i16 ++> throws-on-bytes-of-wrong-size-as-i16
 
-  ++> tests-bytes-converts-to-i16-and-back
-    eq. > @
-      as-bytes.
-        as-i16. 00-33
-      00-33
+  00-33.eq ++> tests-bytes-converts-to-i16-and-back

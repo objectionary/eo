@@ -31,7 +31,7 @@
   as-ascii "Z" > maxcode
   as-ascii "A" > mincode
 
-  eq. "hello" (string.low-cased "HELLO") ++> tests-converts-text-to-lower-case
+  "hello".eq (string.low-cased "HELLO") ++> tests-converts-text-to-lower-case
 
   ++> tests-converts-text-with-low-letters-to-lower-case
-    eq. "hello" (string.low-cased "HeLlO") > @
+    "hello".eq (string.low-cased "HeLlO") > @

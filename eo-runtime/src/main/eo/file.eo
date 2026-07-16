@@ -48,8 +48,7 @@
       if.
         descriptor.eq -1
         T
-          printf.
-            "Cant touch the file '%s': %s"
+          "Cant touch the file '%s': %s".printf
             * path created.output
         seq
           * closed ^
@@ -76,8 +75,7 @@
         outcome.eq 0
         ^
         T
-          printf.
-            "Cant delete the file '%s': %s"
+          "Cant delete the file '%s': %s".printf
             * path removed.output
       ^
     called. > removed
@@ -106,8 +104,7 @@
       outcome.eq 0
       file target
       T
-        printf.
-          "Cant move the file '%s' to '%s': %s"
+        "Cant move the file '%s' to '%s': %s".printf
           * path target renamed.output
     called. > renamed
       sm.os.is-windows.if
@@ -124,8 +121,7 @@
       if.
         existing.and exists.not
         cant-open
-          printf.
-            "File must exist for given access mod: '%s'"
+          "File must exist for given access mod: '%s'".printf
             * access
         seq
           * open-file ^
@@ -167,8 +163,7 @@
         if. > @
           descriptor.eq -1
           ^.^.cant-open
-            printf.
-              "Couldn't open file '%s': %s"
+            "Couldn't open file '%s': %s".printf
               * ^.^.^.path opened.output
           seq
             *
@@ -197,8 +192,7 @@
               [size] > read
                 ^.^.^.^.^.^.readable.not.if > @
                   T
-                    printf.
-                      "Can't read from file with provided access mode '%s'"
+                    "Can't read from file with provided access mode '%s'".printf
                       * ^.^.^.^.^.^.access
                   seq
                     * chunk (^.^.input-block chunk)
@@ -212,8 +206,7 @@
               [buffer] > write
                 ^.^.^.^.^.^.writable.not.if > @
                   T
-                    printf.
-                      "Can't write to file with provided access mode '%s'"
+                    "Can't write to file with provided access mode '%s'".printf
                       * ^.^.^.^.^.^.access
                   seq
                     *
@@ -250,7 +243,7 @@
   mktemp.tmpfile.deleted.is-directory ++> throws-on-checking-directory-of-absent-file
 
   ++> tests-sizing-absent-file-returns-fallback
-    eq. -1 (mktemp.tmpfile.deleted.size -1) > @
+    -1.eq (mktemp.tmpfile.deleted.size -1) > @
 
   ++> tests-checking-absent-file-returns-fallback
     mktemp.tmpfile.deleted.is-directory true > @
@@ -278,8 +271,7 @@
     and. > @
       exists.
         temp.moved
-          printf.
-            "%s.dest"
+          "%s.dest".printf
             * temp.path
       temp.exists.not
     mktemp.tmpfile > temp
@@ -303,8 +295,7 @@
       f > [f]
 
   ++> tests-recovers-from-opening-missing-file-through-fallback
-    eq. > @
-      "recovered"
+    "recovered".eq > @
       mktemp.tmpfile.deleted.open
         "r"
         f > [f]
@@ -445,8 +436,7 @@
         temp.open
           "w"
           f.write "Shrek is love" > [f]
-        eq.
-          "Shrek is love"
+        "Shrek is love".eq
           malloc.of
             13
             [m] >>

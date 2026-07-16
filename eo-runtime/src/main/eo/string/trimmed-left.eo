@@ -13,7 +13,7 @@
 
 [text] > trimmed-left
   if. > @
-    eq. 0 len
+    0.eq len
     text
     string
       bts.slice idx (minus. (number len) idx)

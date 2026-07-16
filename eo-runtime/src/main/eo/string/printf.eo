@@ -21,38 +21,22 @@
 [format args] > printf /string
 
   ++> tests-prints-simple-string
-    eq. > @
-      "Hello, Jeffrey!"
+    "Hello, Jeffrey!".eq > @
       string.printf
         "Hello, %s!"
         * "Jeffrey"
 
   ++> tests-prints-complex-string
-    eq. > @
-      "Привет 3.140000 Jeff X!"
+    "Привет 3.140000 Jeff X!".eq > @
       string.printf
         "Привет %f %s %s!"
         * 3.14 "Jeff" "X"
 
-  ++> tests-prints-bytes-string
-    eq. > @
-      "40-45-00-00-00-00-00-00"
-      string.printf
-        "%x"
-        *
-          as-bytes. 42
+  "40-45-00-00-00-00-00-00".eq (string.printf "%x") ++> tests-prints-bytes-string
 
   ++> tests-formats-all-objects
-    eq. > @
-      "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
-      string.printf
-        "string %s, bytes %x, float %f, int %d, bool %b"
-        *
-          "Jeff"
-          as-bytes. "Jeff"
-          42.3
-          14
-          false
+    "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false".eq > @
+      string.printf "string %s, bytes %x, float %f, int %d, bool %b"
 
   ++> throws-on-printf-with-arguments-that-does-not-match
     string.printf > @
@@ -60,8 +44,7 @@
       * "Jeff"
 
   ++> tests-printf-does-not-fail-if-arguments-more-than-formats
-    eq. > @
-      "Hey"
+    "Hey".eq > @
       string.printf
         "%s"
         * "Hey" "Jeff"
@@ -69,33 +52,19 @@
   string.printf "%o" tuple.empty ++> throws-on-printf-unsupported-format
 
   ++> tests-printf-prints-percents
-    eq. > @
-      "%Jeff"
+    "%Jeff".eq > @
       string.printf
         "%%%s"
         * "Jeff"
 
   ++> tests-printf-does-not-print-i64
     not. > @
-      eq.
-        string.printf
-          "%d"
-          *
-            as-i64. 42
-        "42"
+      eq. (string.printf "%d") "42"
 
-  ++> tests-printf-prints-i64-as-number
-    eq. > @
-      "42"
-      string.printf
-        "%d"
-        *
-          as-number.
-            as-i64. 42
+  "42".eq (string.printf "%d" tuple.empty) ++> tests-printf-prints-i64-as-number
 
   ++> formats-numbered-substitution
-    eq. > @
-      "Hello, Jeff! Bye, Jeff!"
+    "Hello, Jeff! Bye, Jeff!".eq > @
       string.printf
         "Hello, %s! Bye, %1$s!"
         * "Jeff"
@@ -111,36 +80,31 @@
       * "first" "second"
 
   ++> formats-numbered-substitution-with-multiple-args
-    eq. > @
-      "This is the first; This is the first as well; The second; and the 3"
+    "This is the first; This is the first as well; The second; and the 3".eq > @
       string.printf
         "This is the %s; This is the %1$s as well; The %s; and the %d"
         * "first" "second" 3
 
   ++> formats-with-ordered-numbered-substitutions
-    eq. > @
-      "first second second is after first"
+    "first second second is after first".eq > @
       string.printf
         "%s %s %2$s is after %1$s"
         * "first" "second"
 
   ++> truncates-positive-float-towards-zero-as-decimal
-    eq. > @
-      "42"
+    "42".eq > @
       string.printf
         "%d"
         * 42.321
 
   ++> truncates-negative-float-towards-zero-as-decimal
-    eq. > @
-      "-7"
+    "-7".eq > @
       string.printf
         "%d"
         * -7.89
 
   ++> truncates-rather-than-rounds-float-as-decimal
-    eq. > @
-      "9"
+    "9".eq > @
       string.printf
         "%d"
         * 9.99
@@ -151,22 +115,19 @@
       * 1000000000000000000000000000000
 
   ++> formats-float-always-with-six-fraction-digits
-    eq. > @
-      "1.250000"
+    "1.250000".eq > @
       string.printf
         "%f"
         * 1.25
 
   ++> rounds-float-carrying-into-integer-part
-    eq. > @
-      "1.000000"
+    "1.000000".eq > @
       string.printf
         "%f"
         * 0.9999999
 
   ++> formats-zero-float-with-six-fraction-digits
-    eq. > @
-      "0.000000"
+    "0.000000".eq > @
       string.printf
         "%f"
         * 0

@@ -53,7 +53,7 @@
 
   ++> tests-dataizes-as-bytes-behaves-as-exclamationed
     seq > @
-      * cached1 cached2 cached1 cached2 (and. (cached1.eq cached2) (eq. 1 cached1))
+      * cached1 cached2 cached1 cached2 (and. (cached1.eq cached2) (1.eq cached1))
     func > cached1!
     func > cached2!
     malloc.for > func

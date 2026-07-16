@@ -9,7 +9,7 @@
 
 [list index] > back
   if. > @
-    gt. 0 start
+    0.gt start
     list
     reducedi
       list

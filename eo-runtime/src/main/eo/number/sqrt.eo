@@ -24,12 +24,12 @@
 
   lt. (abs (minus. (number.sqrt 0.25) 0.5)) 1.0E-9 ++> tests-sqrt-point-five
 
-  lt. (abs (minus. 0 (number.sqrt 0))) 1.0E-11 ++> tests-sqrt-check-zero-input
+  lt. (abs (0.minus (number.sqrt 0))) 1.0E-11 ++> tests-sqrt-check-zero-input
 
   ++> tests-sqrt-check-negative-input
     is-nan. (number.sqrt -0.1) > @
 
-  lt. (abs (minus. 2 (number.sqrt 4))) 1.0E-11 ++> tests-sqrt-check-float-input
+  lt. (abs (2.minus (number.sqrt 4))) 1.0E-11 ++> tests-sqrt-check-float-input
 
   ++> tests-sqrt-check-nan-input
     is-nan. (number.sqrt nan) > @

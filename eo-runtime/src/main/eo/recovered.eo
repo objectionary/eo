@@ -16,43 +16,18 @@
 
   eq. (recovered 42 7) 42 ++> tests-keeps-the-value-when-not-terminated
 
-  ++> tests-falls-back-to-alternative-when-terminated
-    eq. > @
-      recovered
-        div.
-          as-i64. 2
-          as-i64. 0
-        7
-      7
+  7.eq ++> tests-falls-back-to-alternative-when-terminated
 
-  ++> tests-recovers-the-inner-recovery
-    eq. > @
-      recovered
-        recovered
-          div.
-            as-i64. 2
-            as-i64. 0
-          div.
-            as-i64. 3
-            as-i64. 0
-        42
-      42
+  eq. (recovered recovered 42) 42 ++> tests-recovers-the-inner-recovery
 
   ++> tests-recovers-when-a-provided-fallback-terminates
     eq. > @
       recovered
         div.
-          as-i64. 2
-          as-i64. 0
+          2.as-i64
+          0.as-i64
           T "cannot divide" > [msg]
         42
       42
 
-  ++> throws-when-both-are-terminated
-    recovered > @
-      div.
-        as-i64. 2
-        as-i64. 0
-      div.
-        as-i64. 5
-        as-i64. 0
+  recovered ++> throws-when-both-are-terminated

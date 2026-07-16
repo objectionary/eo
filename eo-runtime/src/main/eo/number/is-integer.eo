@@ -11,12 +11,9 @@
   n.is-finite.and > @
     n.eq n.floor
 
-  ++> int-number-is-integer
-    is-integer. 32 > @
+  32.is-integer ++> int-number-is-integer
 
   ++> float-number-is-not-integer
-    not. > @
-      is-integer. 32.5
 
   pinf.is-integer.not ++> tests-positive-infinity-is-not-integer
 

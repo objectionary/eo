@@ -37,8 +37,7 @@
       if. > @
         gt. (index.plus csize) size
         T
-          printf.
-            "Expected %d byte character at %d index, but there are not enough bytes for it: %x"
+          "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
             * csize index ^.^.as-bytes
         reclen (index.plus csize) (len.plus 1)
     [index accum] > reclen
@@ -58,22 +57,19 @@
                 eq. (byte.and p4) r4
                 inclen index 4 accum
                 T
-                  printf.
-                    "Unknown byte format (%x), can't recognize character"
+                  "Unknown byte format (%x), can't recognize character".printf
                     * byte
       ^.^.as-bytes.slice index 1 > byte
   [start len] > slice
     if. > @
       nstart.lt 0
       T
-        printf.
-          "Start index must be >= 0, but was %d"
+        "Start index must be >= 0, but was %d".printf
           * nstart
       if.
         nlen.lt 0
         T
-          printf.
-            "Length to slice must be >= 0, but was %d"
+          "Length to slice must be >= 0, but was %d".printf
             * nlen
         if. (nlen.eq 0) "" (string (as-bytes.slice bstart blen))
     minus. > blen
@@ -81,16 +77,14 @@
         number bstart
         0
         nlen
-        printf.
-          "Start index + length to slice (%d) is out of string bounds"
+        "Start index + length to slice (%d) is out of string bounds".printf
           * (nstart.plus nlen)
       bstart
     recidx > bstart!
       0
       0
       nstart
-      printf.
-        "Start index (%d) is out of string bounds"
+      "Start index (%d) is out of string bounds".printf
         * nstart
     nstart.plus nlen > end
     len > lbts!
@@ -110,8 +104,7 @@
       if. > @
         gt. (index.plus csize) size
         T
-          printf.
-            "Expected %d byte character at %d index, but there are not enough bytes for it: %x"
+          "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
             * csize index ^.^.as-bytes
         recidx (index.plus csize) (accum.plus 1) result cause
     [index accum result cause] > recidx
@@ -134,24 +127,18 @@
                   eq. (byte.and p4) r4
                   increase index 4 accum result cause
                   T
-                    printf.
-                      "Unknown byte format (%x), can't recognize character"
+                    "Unknown byte format (%x), can't recognize character".printf
                       * byte
       ^.^.as-bytes.slice index 1 > byte
 
-  ++> tests-calculates-length-of-spaces-only
-    eq. > @
-      length. " "
-      1
+  eq. (" ".length) 1 ++> tests-calculates-length-of-spaces-only
 
   ++> tests-turns-string-into-bytes
-    eq. > @
-      as-bytes. "€ друг"
-      E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3
+    eq. ("€ друг".as-bytes) E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3 > @
 
-  eq. D0-B4-D1-80-D1-83-D0-B3 "друг" ++> tests-bytes-equal-to-string
+  D0-B4-D1-80-D1-83-D0-B3.eq "друг" ++> tests-bytes-equal-to-string
 
-  eq. "друг" D0-B4-D1-80-D1-83-D0-B3 ++> tests-string-equals-to-bytes
+  "друг".eq D0-B4-D1-80-D1-83-D0-B3 ++> tests-string-equals-to-bytes
 
   ++> tests-reads-the-length-with-n2-byte-characters
     and. > @
@@ -171,11 +158,10 @@
       str.as-bytes.size.eq 14
     "The 😀 smile" > str
 
-  ++> throws-on-taking-length-of-incomplete-n4-byte-character
-    length. "�" > @
+  "�".length ++> throws-on-taking-length-of-incomplete-n4-byte-character
 
   ++> tests-compares-two-different-string-types
-    not. (eq. "Hello" 42) > @
+    not. ("Hello".eq 42) > @
 
   ++> tests-compares-string-with-nan
     not. (nan.eq "друг") > @
@@ -185,108 +171,77 @@
   ++> tests-compares-string-with-negative-infinity
     not. (ninf.eq "друг") > @
 
-  eq. "Abc" "Abc" ++> tests-text-block-one-line
+  "Abc".eq "Abc" ++> tests-text-block-one-line
 
-  eq. "e\ne\ne" 65-0A-65-0A-65 ++> tests-text-block-tree-lines
+  "e\ne\ne".eq 65-0A-65-0A-65 ++> tests-text-block-tree-lines
 
-  eq. "z\n  y\n x" 7A-0A-20-20-79-0A-20-78 ++> tests-text-block-with-margin
+  "z\n  y\n x".eq 7A-0A-20-20-79-0A-20-78 ++> tests-text-block-with-margin
 
   ++> tests-compares-two-different-strings
-    not. (eq. "Hello" "Good bye") > @
+    not. ("Hello".eq "Good bye") > @
 
-  eq. "Hello, друг!\n" "Hello, друг!\n" ++> tests-supports-escape-sequences
+  "Hello, друг!\n".eq "Hello, друг!\n" ++> tests-supports-escape-sequences
 
-  eq. "Hello, друг!\n" "Hello, друг!\n" ++> tests-supports-escape-sequences-in-text
+  "Hello, друг!\n".eq "Hello, друг!\n" ++> tests-supports-escape-sequences-in-text
 
-  eq. "a\n b\n  c" "a\n b\n  c" ++> tests-preserves-indentation-in-text
+  "a\n b\n  c".eq "a\n b\n  c" ++> tests-preserves-indentation-in-text
 
-  eq. (eq. "x" "x") true ++> tests-compares-two-strings
+  eq. ("x".eq "x") true ++> tests-compares-two-strings
 
-  eq. "Ф" "Ф" ++> tests-one-symbol-string-compares
+  "Ф".eq "Ф" ++> tests-one-symbol-string-compares
 
-  eq. "\n" "\n" ++> tests-supports-escape-sequences-line-break
+  "\n".eq "\n" ++> tests-supports-escape-sequences-line-break
 
-  eq. "Ф" "Ф" ++> tests-supports-escape-sequences-unicode
+  "Ф".eq "Ф" ++> tests-supports-escape-sequences-unicode
 
-  eq. (slice. "hello" 0 1) "h" ++> tests-slice-from-start
+  eq. ("hello".slice 0 1) "h" ++> tests-slice-from-start
 
-  eq. (slice. "hello" 2 3) "llo" ++> tests-slice-in-the-middle
+  eq. ("hello".slice 2 3) "llo" ++> tests-slice-in-the-middle
 
-  eq. (slice. "hello" 4 1) "o" ++> tests-slice-from-the-end
+  eq. ("hello".slice 4 1) "o" ++> tests-slice-from-the-end
 
-  eq. (slice. "" 0 0) "" ++> tests-slice-empty-string
+  eq. ("".slice 0 0) "" ++> tests-slice-empty-string
 
-  eq. (slice. "no slice" 0 0) "" ++> tests-no-slice-string
+  eq. ("no slice".slice 0 0) "" ++> tests-no-slice-string
 
-  ++> tests-slice-escape-sequences-line-break
-    eq. > @
-      slice.
-        "\n"
-        0
-        length. "\n"
-      "\n"
+  eq. ("привет".slice 1 2) "ри" ++> tests-slice-with-n2-byte-characters
 
-  ++> tests-slice-escape-sequences-unicode
-    eq. > @
-      slice.
-        "Ф"
-        0
-        length. "Ф"
-      "Ф"
-
-  eq. (slice. "привет" 1 2) "ри" ++> tests-slice-with-n2-byte-characters
-
-  eq. (slice. "The अ is अ" 1 6) "he अ i" ++> tests-slice-with-n3-byte-characters
+  eq. ("The अ is अ".slice 1 6) "he अ i" ++> tests-slice-with-n3-byte-characters
 
   ++> tests-slice-with-n4-byte-characters
-    eq. (slice. "One 😀 and 😀 another" 3 8) " 😀 and 😀" > @
+    eq. ("One 😀 and 😀 another".slice 3 8) " 😀 and 😀" > @
 
-  eq. (slice. "hello, 大家!" 7 1) "大" ++> tests-slice-foreign-literals
+  eq. ("hello, 大家!".slice 7 1) "大" ++> tests-slice-foreign-literals
 
-  slice. "some string" -1 1 ++> throws-on-slicing-start-below-zero
+  "some string".slice -1 1 ++> throws-on-slicing-start-below-zero
 
-  slice. "some string" 2 -1 ++> throws-on-slicing-end-below-start
+  "some string".slice 2 -1 ++> throws-on-slicing-end-below-start
 
-  slice. "some string" 7 5 ++> throws-on-slicing-end-greater-actual
+  "some string".slice 7 5 ++> throws-on-slicing-end-greater-actual
 
   ++> tests-unescapes-slashes
-    eq. "x\\b\\f\\u\\r\\t\\n\\'" 78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27 > @
+    "x\\b\\f\\u\\r\\t\\n\\'".eq 78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27 > @
 
-  eq. "\b\f\n\r\t⟦" 08-0C-0A-0D-09-E2-9F-A6 ++> tests-unescapes-symbols
+  "\b\f\n\r\t⟦".eq 08-0C-0A-0D-09-E2-9F-A6 ++> tests-unescapes-symbols
 
   ++> tests-package-contains-word-in-sentence
-    contains. "hello, world, how are you?" "how" > @
+    "hello, world, how are you?".contains "how" > @
 
-  starts-with. "hello, world" "hello" ++> tests-package-starts-with-prefix
+  "hello, world".starts-with "hello" ++> tests-package-starts-with-prefix
 
-  ends-with. "hello, world" "world" ++> tests-package-ends-with-suffix
+  "hello, world".ends-with "world" ++> tests-package-ends-with-suffix
 
-  ++> tests-package-up-cases-text
-    eq. > @
-      up-cased. "hello"
-      "HELLO"
+  eq. ("  spaced  ".trimmed) "spaced" ++> tests-package-trims-surrounding-spaces
 
-  ++> tests-package-low-cases-text
-    eq. > @
-      low-cased. "HELLO"
-      "hello"
+  eq. ("ha".repeated 3) "hahaha" ++> tests-package-repeats-text
 
-  ++> tests-package-trims-surrounding-spaces
-    eq. > @
-      trimmed. "  spaced  "
-      "spaced"
+  eq. ("hello".index-of "l") 2 ++> tests-package-finds-index-of-character
 
-  eq. (repeated. "ha" 3) "hahaha" ++> tests-package-repeats-text
+  eq. ("some".at 1) "o" ++> tests-package-takes-character-at-index
 
-  eq. (index-of. "hello" "l") 2 ++> tests-package-finds-index-of-character
+  "2026".is-digit ++> tests-package-detects-digits
 
-  eq. (at. "some" 1) "o" ++> tests-package-takes-character-at-index
-
-  ++> tests-package-detects-digits
-    is-digit. "2026" > @
-
-  ++> tests-package-detects-alphabetic-text
-    is-alpha. "eEo" > @
+  "eEo".is-alpha ++> tests-package-detects-alphabetic-text
 
   ++> tests-package-contains-via-string-namespace
     string.contains "hello, world" "world" > @

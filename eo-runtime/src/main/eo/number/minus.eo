@@ -12,7 +12,7 @@
     neg. (number value)
   x > value!
 
-  eq. (minus. 1 1) 0 ++> tests-one-minus-one
+  eq. (1.minus 1) 0 ++> tests-one-minus-one
 
   ++> tests-positive-infinity-minus-nan
     eq. > @

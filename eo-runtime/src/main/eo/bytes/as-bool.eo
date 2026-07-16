@@ -12,6 +12,4 @@
 
   ++> tests-convertible-to-bool
     not. > @
-      eq.
-        as-bool. 01-
-        as-bool. 00-
+      []

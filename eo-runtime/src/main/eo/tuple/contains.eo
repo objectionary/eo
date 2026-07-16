@@ -9,7 +9,7 @@
 
 [list element] > contains
   not. > @
-    eq. -1 (index-of list element)
+    -1.eq (index-of list element)
 
   ++> tests-list-contains-string
     tuple.contains > @

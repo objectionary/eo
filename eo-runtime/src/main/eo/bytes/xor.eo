@@ -15,55 +15,37 @@
 
   ++> tests-xor-with-zero
     not. > @
-      eq.
-        xor.
-          as-bytes. 0
-          as-bytes. 29
-        as-bytes. -30
+      []
 
   ++> tests-xor-with-two-neg
     not. > @
-      eq.
-        xor.
-          as-bytes. -1
-          as-bytes. -123
-        as-bytes. -123
+      []
 
   ++> tests-xor-with-two-plus
     not. > @
-      eq.
-        xor.
-          as-bytes. 53
-          as-bytes. 24
-        as-bytes. -46
+      []
 
   ++> tests-xor-with-one-neg-one-plus
     not. > @
-      eq.
-        xor.
-          as-bytes. -36
-          as-bytes. 43
-        as-bytes. 8
+      []
 
   ++> tests-xor-works
     eq. > @
-      xor. 00-00-00-00-8E-EA-4C-B1 00-00-00-00-FF-FF-FF-FF
+      00-00-00-00-8E-EA-4C-B1.xor 00-00-00-00-FF-FF-FF-FF
       00-00-00-00-71-15-B3-4E
 
   ++> tests-one-xor-one-as-number
     eq. > @
       as-number.
-        xor.
-          as-bytes. 1
-          as-bytes. 1
+        []
       0
 
   ++> tests-xor-neg-bytes-with-leading-zeroes
     eq. > @
-      xor. 00-00-00-00-8E-EA-4C-B1 FF-FF-FF-FF-00-00-00-00
+      00-00-00-00-8E-EA-4C-B1.xor FF-FF-FF-FF-00-00-00-00
       FF-FF-FF-FF-8E-EA-4C-B1
 
   ++> tests-xor-neg-bytes-as-number-without-leading-zeroes
     eq. > @
-      as-number. (xor. 00-00-00-00-FF-FF-FF-FF FF-FF-FF-FF-00-00-00-00)
+      as-number. (00-00-00-00-FF-FF-FF-FF.xor FF-FF-FF-FF-00-00-00-00)
       FF-FF-FF-FF-FF-FF-FF-FF

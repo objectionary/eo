@@ -12,31 +12,29 @@
 [text i out-of-bounds] > at
   if. > @
     or.
-      gt. 0 index
+      0.gt index
       gte. (number index) len
     out-of-bounds
-      printf.
-        "Given index %d is out of text bounds"
+      "Given index %d is out of text bounds".printf
         * index
     slice text index 1
   i > idx!
   if. > index!
-    gt. 0 idx
+    0.gt idx
     plus. (number len) idx
     idx
   text.length > len!
 
-  eq. "s" (string.at "some" 0) ++> tests-returns-first-char
+  "s".eq (string.at "some" 0) ++> tests-returns-first-char
 
-  eq. "m" (string.at "some" 2) ++> tests-returns-third-char
+  "m".eq (string.at "some" 2) ++> tests-returns-third-char
 
-  eq. "m" (string.at "some" -2) ++> tests-returns-char-at-negative-index
+  "m".eq (string.at "some" -2) ++> tests-returns-char-at-negative-index
 
   string.at "some" 10 ++> throws-on-text-at-index-more-than-length
 
   ++> tests-text-at-out-of-bounds-returns-provided-fallback
-    eq. > @
-      "recovered"
+    "recovered".eq > @
       string.at
         "some"
         10

@@ -11,16 +11,15 @@
 
 [text delimiter limit cant-split] > nsplit
   if. > @
-    gt. 1 limit
+    1.gt limit
     cant-split
-      printf.
-        "Invalid limit %d for nsplit, must be at least 1"
+      "Invalid limit %d for nsplit, must be at least 1".printf
         * limit
     if.
       text.size.eq 0
       tuple.empty
       if.
-        eq. 1 limit
+        1.eq limit
         * text
         rec-nsplit tuple.empty 0 0 0
   delimiter.size > delimiter-size!
@@ -80,8 +79,7 @@
   string.nsplit "text" "-" -1 ++> throws-on-nsplit-with-negative-limit
 
   ++> tests-nsplit-invalid-limit-returns-provided-fallback
-    eq. > @
-      "fallback"
+    "fallback".eq > @
       string.nsplit
         "text"
         "-"

@@ -22,8 +22,7 @@
   tuple.maximum tuple.empty ++> throws-on-taking-maximum-from-empty-sequence
 
   ++> tests-maximum-of-empty-returns-provided-fallback
-    eq. > @
-      "recovered"
+    "recovered".eq > @
       tuple.maximum
         tuple.empty
         "recovered" > [msg]

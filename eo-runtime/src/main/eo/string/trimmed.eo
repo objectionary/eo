@@ -14,7 +14,7 @@
 
 [text] > trimmed
   if. > @
-    eq. 0 text.as-bytes.size
+    0.eq text.as-bytes.size
     text
     trimmed-left (trimmed-right text)
 

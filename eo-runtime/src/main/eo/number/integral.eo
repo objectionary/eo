@@ -39,7 +39,8 @@
       plus.
         fun a
         plus.
-          times. 4 (fun (times. 0.5 (a.plus b)))
+          4.times
+            fun (0.5.times (a.plus b))
           fun b
 
   ++> tests-calculates-lineal-integral

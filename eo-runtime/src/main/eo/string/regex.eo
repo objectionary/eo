@@ -26,7 +26,7 @@
 
 [expression] > regex
   compile > @
-  [cant-compile] > compile /string.regex.pattern
+  [cant-compile] > compile /Q.string.regex.pattern
   [serialized] > pattern
     pattern serialized > compiled
     [txt] > matches
@@ -34,7 +34,7 @@
         next. (match txt)
     [txt] > match
       matched. (matched-from-index 1 0) > next
-      [position start] > matched-from-index /string.regex.pattern.match.matched
+      [position start] > matched-from-index /Q.string.regex.pattern.match.matched
       [position start from to groups] > matched
         groups.length > count
         start.gte 0 > exists
@@ -58,8 +58,8 @@
 
   ++> tests-matched-sequence-has-right-border-indexes
     and. > @
-      eq. 0 n.start
-      and. (eq. 1 n.from) (eq. 6 n.to)
+      0.eq n.start
+      and. (1.eq n.from) (6.eq n.to)
     next. > n
       match. (string.regex "/[a-z]+/") "!hello!"
 
@@ -172,15 +172,13 @@
     compiled. (string.regex "/pattern") > @
 
   ++> tests-invalid-regex-syntax-returns-provided-fallback
-    eq. > @
-      "recovered"
+    "recovered".eq > @
       compile.
         string.regex "/[a-z/"
         "recovered" > [msg]
 
   ++> tests-missing-slash-returns-provided-fallback
-    eq. > @
-      "no-slash"
+    "no-slash".eq > @
       compile.
         string.regex "(.)+"
         "no-slash" > [msg]

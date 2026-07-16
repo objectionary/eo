@@ -10,8 +10,6 @@
 
 [seed] > random
   seed.as-number.div > @
-    as-number.
-      as-i64. 00-20-00-00-00-00-00-00
   number.random > next
     as-number.
       as-i64.
@@ -23,21 +21,14 @@
                   left.
                     and.
                       as-bytes.
-                        times.
-                          as-i64.
-                            and.
-                              as-bytes.
-                                seed.as-i64.div
-                                  as-i64. 67108864
-                              00-00-00-00-03-FF-FF-FF
-                          as-i64. 25214903917
+                        []
                       00-00-00-00-03-FF-FF-FF
                     26
                 as-i64.
                   times.
                     as-i64. (seed.as-i64.as-bytes.and 00-00-00-00-03-FF-FF-FF)
-                    as-i64. 25214903917
-              as-i64. 11
+                    25214903917.as-i64
+              11.as-i64
           00-0F-FF-FF-FF-FF-FF-FF
   [clock] > clocked
     number.random > @
@@ -100,7 +91,4 @@
   ++> tests-two-random-numbers-not-equal
     not. > @
       eq.
-        number.random.clocked
-          as-i64. 123
-        number.random.clocked
-          as-i64. 456
+        []

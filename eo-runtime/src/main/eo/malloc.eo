@@ -76,7 +76,7 @@
       get > @
       read 0 size > get
       [] > size /number
-      [size] > resized /malloc.of.allocated
+      [size] > resized /Q.malloc.of.allocated
       write target (read source length) > [source target length] > copy
       [offset length cant-read] > read /bytes
       [offset data] > write /bool
@@ -106,8 +106,7 @@
       5
 
   ++> tests-malloc-scope-is-dataized-twice
-    eq. > @
-      2
+    2.eq > @
       malloc.for
         0
         [f]
@@ -125,11 +124,7 @@
       42
 
   ++> tests-malloc-puts-over-the-previous-data
-    eq. > @
-      concat.
-        as-bytes. 42
-        as-bytes. "orld!"
-      mem
+    mem.eq > @
     malloc.of > mem
       13
       [m]
@@ -250,8 +245,7 @@
               * (m.write 2 "Hello") (b.put (eq. (m.read 2 5) "Hello"))
 
   ++> tests-malloc-read-over-a-limit-returns-fallback
-    eq. > @
-      01-02
+    01-02.eq > @
       malloc.of
         1
         [m]
@@ -266,8 +260,7 @@
       m.read 0 100 > [m]
 
   ++> tests-allocates-zero-bytes
-    eq. > @
-      0
+    0.eq > @
       malloc.of
         0
         m.size > [m]

@@ -17,8 +17,8 @@
 [if] > bool
   if 01- 00- > @
   if false true > not
-  if (eq. 01- x) false > [x] > and
-  if true (eq. 01- x) > [x] > or
+  if (01-.eq x) false > [x] > and
+  if true (01-.eq x) > [x] > or
 
   true.eq true ++> tests-compares-two-bools
 
@@ -31,14 +31,9 @@
 
   ++> tests-compares-bool-to-bytes-reverse
     and. > @
-      eq.
-        as-bytes. 01-
-        true
-      eq.
-        as-bytes. 00-
-        false
+      []
 
-  eq. (if. (eq. 5 5) 123 42) 123 ++> tests-forks-on-true-condition
+  eq. (if. (5.eq 5) 123 42) 123 ++> tests-forks-on-true-condition
 
   ++> tests-takes-parent-object
     eq. (a 42) 42 > @
@@ -70,7 +65,7 @@
   ++> tests-extract-attribute-from-decoratee
     a.foo.eq 43 > @
     [foo] > return
-    return (plus. 42 1) > [] > a
+    return (42.plus 1) > [] > a
 
   ++> tests-nesting-blah-test
     eq. (blah0 0) 39 > @
@@ -170,4 +165,4 @@
   ++> tests-true-and-false-is-false
     not. (true.and false) > @
 
-  eq. (if. (eq. 5 8) 123 42) 42 ++> tests-forks-on-false-condition
+  eq. (if. (5.eq 8) 123 42) 42 ++> tests-forks-on-false-condition

@@ -14,15 +14,9 @@
     bts.size.eq 4
     i32 bts
     cant-convert
-      printf.
-        "Can't convert non 4 length bytes to i32, bytes are %x"
+      "Can't convert non 4 length bytes to i32, bytes are %x".printf
         * bts
 
-  ++> throws-on-bytes-of-wrong-size-as-i32
-    as-i32. 01-01-01-01-01 > @
+  01-01-01-01-01.as-i32 ++> throws-on-bytes-of-wrong-size-as-i32
 
-  ++> tests-bytes-converts-to-i32-and-back
-    eq. > @
-      as-bytes.
-        as-i32. 00-00-00-33
-      00-00-00-33
+  00-00-00-33.eq ++> tests-bytes-converts-to-i32-and-back

@@ -76,8 +76,7 @@
   switch tuple.empty ++> throws-on-empty-switch
 
   ++> tests-empty-switch-returns-provided-fallback
-    eq. > @
-      "recovered"
+    "recovered".eq > @
       switch
         tuple.empty
         "recovered" > [msg]
@@ -97,5 +96,5 @@
             "true case"
       "true case"
     false > c1
-    eq. "1" "2" > c2
+    "1".eq "2" > c2
     true > c3

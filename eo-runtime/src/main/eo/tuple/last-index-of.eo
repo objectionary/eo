@@ -17,31 +17,27 @@
       if. (tup.head.eq wanted) tup.tail.length (reclast tup.tail)
 
   ++> tests-finds-last-index-of
-    eq. > @
-      1
+    1.eq > @
       tuple.last-index-of
         * "qwerty" 2 3
         2
 
   ++> tests-finds-last-index-of-repeated
-    eq. > @
-      2
+    2.eq > @
       tuple.last-index-of
         * 24 42 24
         24
 
   ++> tests-last-index-of-not-found
-    eq. > @
-      -1
+    -1.eq > @
       tuple.last-index-of
         * 1 2 3
         0
 
-  eq. -1 (tuple.last-index-of tuple.empty "abc") ++> tests-last-index-of-empty
+  -1.eq (tuple.last-index-of tuple.empty "abc") ++> tests-last-index-of-empty
 
   ++> tests-last-index-of-unicode
-    eq. > @
-      3
+    3.eq > @
       tuple.last-index-of
         * "Hi" "Привет" "Hola" "Привет" "こんにちわ"
         "Привет"

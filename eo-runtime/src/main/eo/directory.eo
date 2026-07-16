@@ -26,8 +26,7 @@
             outcome.eq 0
             ^
             T
-              printf.
-                "Cant make the directory '%s': %s"
+              "Cant make the directory '%s': %s".printf
                 * ^.path created.output
     called. > created
       sm.os.is-windows.if
@@ -58,14 +57,12 @@
     ^.exists.if > @
       Q.file touch.as-bytes
       T
-        printf.
-          "Directory %s does not exist, can't create temporary file"
+        "Directory %s does not exist, can't create temporary file".printf
           * file
     [] > touch /string
   [mode scope] > open
     T > @
-      printf.
-        "The file %s is a directory, can't open for I/O operations"
+      "The file %s is a directory, can't open for I/O operations".printf
         * file
 
   ++> tests-makes-new-directory

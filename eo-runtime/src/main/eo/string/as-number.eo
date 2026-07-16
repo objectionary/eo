@@ -13,22 +13,20 @@
   if. > @
     scanned.length.eq 0
     cant-parse
-      printf.
-        "Can't convert text %s to number"
+      "Can't convert text %s to number".printf
         * text
     scanned.head
   ^. > scanned
     at. (scanf "%f" text)
 
-  eq. 5 (string.as-number "5") ++> tests-converts-text-to-number
+  5.eq (string.as-number "5") ++> tests-converts-text-to-number
 
   string.as-number "Hello" ++> throws-on-converting-text-to-number
 
   ++> tests-non-numeric-text-returns-provided-fallback
-    eq. > @
-      42
+    42.eq > @
       string.as-number
         "Hello"
         42 > [msg]
 
-  eq. 3.14 (string.as-number "3.14") ++> tests-converts-float-text-to-number
+  3.14.eq (string.as-number "3.14") ++> tests-converts-float-text-to-number

@@ -19,29 +19,25 @@
     recidx tup.tail > next!
 
   ++> tests-returns-index-of
-    eq. > @
-      1
+    1.eq > @
       tuple.index-of
         * 1 2 3
         2
 
   ++> tests-returns-first-index-of-element
-    eq. > @
-      0
+    0.eq > @
       tuple.index-of
         * -1 2 -1
         -1
 
   ++> tests-does-not-find-index-of
-    eq. > @
-      -1
+    -1.eq > @
       tuple.index-of
         * "qwerty" 2 3
         7
 
   ++> tests-finds-index-of-string
-    eq. > @
-      1
+    1.eq > @
       tuple.index-of
         * "asdfgh" "qwerty" 3
         "qwerty"

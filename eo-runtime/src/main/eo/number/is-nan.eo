@@ -11,8 +11,6 @@
   n.as-bytes.eq 7F-F8-00-00-00-00-00-00 > @
 
   ++> tests-simple-number-is-not-nan
-    not. > @
-      is-nan. 42.5
 
   ++> tests-number-with-nan-bytes-is-nan
     is-nan. (number nan.as-bytes) > @

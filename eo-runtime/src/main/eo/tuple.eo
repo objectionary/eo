@@ -16,11 +16,11 @@
     0
   [i out-of-bounds] > at
     if. > @
-      or. (gt. 0 index) (length.lte index)
+      or. (0.gt index) (length.lte index)
       out-of-bounds "Given index is out of tuple bounds"
       at-fast ^
     i > idx!
-    if. (gt. 0 idx) (length.plus idx) idx > index!
+    if. (0.gt idx) (length.plus idx) idx > index!
     if. (eq. (tup.length.plus -1) index) tup.head (at-fast tup.tail) > [tup] > at-fast
   [x] > with
     tuple > @
@@ -94,8 +94,7 @@
       20
 
   ++> tests-out-of-bounds-at-returns-provided-fallback
-    eq. > @
-      "recovered"
+    "recovered".eq > @
       at.
         * 1 2 3 4
         20

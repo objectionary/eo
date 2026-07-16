@@ -119,13 +119,11 @@
                 1
 
   ++> tests-seq-calculates-and-returns
-    eq. > @
-      1
+    1.eq > @
       seq
         * 0 1
 
   ++> tests-seq-calculates-and-returns-object
-    eq. > @
-      "Hello!"
+    "Hello!".eq > @
       seq
         * 0 "Hello!"

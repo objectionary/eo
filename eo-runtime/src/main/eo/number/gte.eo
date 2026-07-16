@@ -13,13 +13,13 @@
     n.eq value
   x > value!
 
-  eq. (gte. -1000 -1100) true ++> tests-int-gte-true
+  eq. (-1000.gte -1100) true ++> tests-int-gte-true
 
-  eq. (gte. 113 113) true ++> tests-int-gte-equal
+  eq. (113.gte 113) true ++> tests-int-gte-equal
 
   ++> tests-int-gte-false
     eq. > @
-      not. (gte. 0 10)
+      not. (0.gte 10)
       true
 
   eq. (pinf.gte pinf) true ++> tests-positive-infinity-gte-positive-infinity

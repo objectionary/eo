@@ -23,16 +23,12 @@
           bts.size.eq 8
           number bts
           cant-convert
-            printf.
-              "Can't convert non 8 length bytes to a number, bytes are %x"
+            "Can't convert non 8 length bytes to a number, bytes are %x".printf
               * bts
 
-  ++> throws-on-bytes-of-wrong-size-as-number
-    as-number. 01-01-01-01 > @
+  01-01-01-01.as-number ++> throws-on-bytes-of-wrong-size-as-number
 
   ++> tests-wrong-size-as-number-returns-provided-fallback
-    eq. > @
-      "recovered"
-      as-number.
-        01-01-01-01
+    "recovered".eq > @
+      01-01-01-01.as-number
         "recovered" > [msg]

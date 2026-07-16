@@ -18,7 +18,7 @@
         build start > @
         [num] > build
           num > @
-          build (plus. 1 @) > next
+          build (1.plus @) > next
       end
     T "Some of the arguments are not integers"
 

@@ -16,12 +16,12 @@
   number num.as-bytes > arg
   abs arg > mag
   sqrt > root
-    div. (minus. 1 mag) 2
+    div. (1.minus mag) 2
   if. > base
     mag.gt 0.5
     minus.
       pi.div 2
-      times. 2 (series root)
+      2.times (series root)
     series mag
   [point] > series
     point.times (poly 1) > @
@@ -31,8 +31,7 @@
       if. > @
         depth.gt terms
         1
-        plus.
-          1
+        1.plus
           times.
             div.
               times.

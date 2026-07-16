@@ -24,11 +24,12 @@
       p.gte e
       plus. (lnp (p.div e)) 1
       if.
-        p.lt (div. 1 e)
+        p.lt (1.div e)
         minus. (lnp (p.times e)) 1
         series p
     [m] > series
-      times. 2 (t.times (horner 0)) > @
+      2.times > @
+        t.times (horner 0)
       div. (m.minus 1) (m.plus 1) > t
       t.times t > squared
       40 > terms
@@ -37,7 +38,7 @@
           k.gt terms
           0
           plus.
-            div. 1 (plus. (k.times 2) 1)
+            1.div (plus. (k.times 2) 1)
             squared.times (horner (k.plus 1))
 
   ++> tests-ln-of-negative-float-is-nan

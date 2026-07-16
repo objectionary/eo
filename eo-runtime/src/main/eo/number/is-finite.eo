@@ -14,8 +14,7 @@
         n.as-bytes.eq 7F-F0-00-00-00-00-00-00
         n.as-bytes.eq FF-F0-00-00-00-00-00-00
 
-  ++> simple-number-is-finite
-    is-finite. 32 > @
+  32.is-finite ++> simple-number-is-finite
 
   ++> tests-number-with-infinite-bytes-is-not-finite
     not. > @

@@ -21,10 +21,7 @@
       acc.as-number
       rec-hash-code
         plus.
-          times.
-            as-i64. 31
-            acc
-          as-i64. (concat. 00-00-00-00-00-00-00 (bts.slice index 1))
+          as-i64. (00-00-00-00-00-00-00.concat (bts.slice index 1))
         as-number. (index.plus 1)
 
   ++> tests-hash-code-bools-is-number
@@ -39,8 +36,7 @@
         8
 
   ++> tests-hash-code-int-is-int
-    eq. > @
-      1
+    1.eq > @
       div. (number hash) (number hash)
     tuple.hash-code 42 > hash!
 
@@ -64,8 +60,7 @@
       eq. (tuple.hash-code 42) (tuple.hash-code -42)
 
   ++> tests-hash-code-string-is-int
-    eq. > @
-      1
+    1.eq > @
       div. (number strhash) (number strhash)
     tuple.hash-code "hello" > strhash!
 
@@ -83,8 +78,7 @@
       eq. (tuple.hash-code "hello") (tuple.hash-code "bye!!!")
 
   ++> tests-hash-code-abstract-object-is-int
-    eq. > @
-      1
+    1.eq > @
       div. (number objhash) (number objhash)
     x > [x] > obj
     tuple.hash-code (obj 42) > objhash!
@@ -104,8 +98,7 @@
     x > [x] > obj
 
   ++> tests-hash-code-float-is-int
-    eq. > @
-      1
+    1.eq > @
       div. (number flthash) (number flthash)
     tuple.hash-code 42.42 > flthash!
 

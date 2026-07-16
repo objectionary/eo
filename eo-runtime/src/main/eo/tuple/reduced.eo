@@ -31,7 +31,6 @@
         ""
         [acc item]
           acc.concat > @
-            printf.
-              "%d"
+            "%d".printf
               * item
       "01"

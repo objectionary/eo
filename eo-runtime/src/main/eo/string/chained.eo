@@ -11,7 +11,7 @@
 
 [text others] > chained
   if. > @
-    eq. 0 others.length
+    0.eq others.length
     text
     string
       tuple.reduced
@@ -20,11 +20,10 @@
         accum.concat str.as-bytes > [accum str]
 
   ++> tests-chains-with-other-strings
-    eq. > @
-      "Hello, world!"
+    "Hello, world!".eq > @
       string.chained
         "Hello"
         * ", " "world" "!"
 
   ++> tests-returns-same-text-on-chaining-with-no-strings
-    eq. "Some" (string.chained "Some" tuple.empty) > @
+    "Some".eq (string.chained "Some" tuple.empty) > @

@@ -54,8 +54,7 @@
       0
 
   ++> tests-handles-large-data
-    eq. > @
-      20
+    20.eq > @
       malloc.of
         20
         [m]

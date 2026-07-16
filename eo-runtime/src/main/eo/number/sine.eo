@@ -26,8 +26,7 @@
     if. > @
       depth.gt terms
       1
-      minus.
-        1
+      1.minus
         times.
           squared.div
             times. (depth.times 2) (plus. (depth.times 2) 1)

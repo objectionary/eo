@@ -22,8 +22,7 @@
       func (rec-reducedi tup.tail) tup.head tup.tail.length
 
   ++> tests-reduce-list-with-index
-    eq. > @
-      6
+    6.eq > @
       tuple.reducedi
         * 1 1
         0
@@ -57,4 +56,4 @@
         [acc x i]
           check x > @
           if. (x.lt 100) (acc.plus x) (acc.minus x) > [el] > check
-      plus. 10 (minus. 0 500)
+      10.plus (0.minus 500)
