@@ -13,7 +13,10 @@ import java.util.List;
  * <p>Form: {@code lhs > [params] > name}. The {@code lhs} is a
  * horizontal expression that becomes the {@code φ} slot of an
  * anonymous formation; the formation has {@code params} as voids and
- * is named by the right-hand suffix.</p>
+ * is named by the right-hand suffix. The compact test shorthand
+ * {@code lhs ++> name} (R-3.10.8 / R-6.3.6) is accepted as sugar for
+ * {@code lhs > [] +> name} — a parameterless test attribute whose sole
+ * binding is the {@code φ} decoratee {@code lhs}.</p>
  *
  * <p>Mechanics (R-3.10.1):</p>
  *
@@ -67,33 +70,48 @@ final class LnOnlyPhi implements Line {
         Blanks.enterAfterMeta(this.span, globals, emit);
         final String body = this.span.body();
         final int phi = Eo.topLevelGreaterBracketIndex(body);
-        if (phi < 0) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "only-phi formation must contain `> [`"
+        final String lhs;
+        final List<String> params;
+        final Suffix suffix;
+        final int origin;
+        if (phi >= 0) {
+            final int bracket = phi + 2;
+            final int close = body.indexOf(']', bracket);
+            if (close < 0) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent() + bracket,
+                    "only-phi parameter list missing closing `]`"
+                );
+            }
+            lhs = body.substring(0, phi).stripTrailing();
+            params = LnOnlyPhi.parseParams(
+                body.substring(bracket + 1, close), this.span, bracket + 1
             );
-        }
-        final int bracket = phi + 2;
-        final int close = body.indexOf(']', bracket);
-        if (close < 0) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + bracket,
-                "only-phi parameter list missing closing `]`"
+            suffix = new Suffix(
+                body.substring(close + 1), this.span, this.span.indent() + close + 1
             );
+            origin = bracket + 1;
+        } else {
+            final int shorthand = Eo.topLevelPlusPlusArrowIndex(body);
+            if (shorthand < 0) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent(),
+                    "only-phi formation must contain `> [` or `++>`"
+                );
+            }
+            lhs = body.substring(0, shorthand).stripTrailing();
+            params = new ArrayList<>(0);
+            suffix = new Suffix(
+                body.substring(shorthand + 1), this.span, this.span.indent() + shorthand + 1
+            );
+            origin = shorthand;
         }
-        final String lhs = body.substring(0, phi).stripTrailing();
         if (lhs.isEmpty()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
-                "only-phi formation requires a non-empty body before `> [`"
+                "only-phi formation requires a non-empty body before `> [` or `++>`"
             );
         }
-        final List<String> params = LnOnlyPhi.parseParams(
-            body.substring(bracket + 1, close), this.span, bracket + 1
-        );
-        final Suffix suffix = new Suffix(
-            body.substring(close + 1), this.span, this.span.indent() + close + 1
-        );
         if (suffix.test()) {
             Blanks.checkTest(this.span, globals, emit);
         }
@@ -117,7 +135,20 @@ final class LnOnlyPhi implements Line {
         if (suffix.constant()) {
             emit.constant();
         }
-        int column = this.span.indent() + bracket + 1;
+        this.emitVoids(emit, params, origin);
+        this.emitPhi(emit, tokens, open);
+    }
+
+    /**
+     * Emit the only-phi void parameters as {@code ∅}-based children,
+     * mapping {@code @} to {@code φ} (R-3.4.2 / R-9.3) and advancing the
+     * source column across each name and its separating space.
+     * @param emit Emitter
+     * @param params Parameter names in source order
+     * @param origin Source column of the first parameter
+     */
+    private void emitVoids(final Emit emit, final List<String> params, final int origin) {
+        int column = this.span.indent() + origin;
         for (final String param : params) {
             final String mapped;
             if (param.equals("@")) {
@@ -128,7 +159,6 @@ final class LnOnlyPhi implements Line {
             emit.voidParam(mapped, this.span.line(), column);
             column = column + param.length() + 1;
         }
-        this.emitPhi(emit, tokens, open);
     }
 
     /**

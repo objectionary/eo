@@ -27,8 +27,8 @@ import org.xembly.Directive;
  * fall through to a placeholder error pending later additions.</p>
  *
  * @since 0.1
- * @checkstyle CyclomaticComplexityCheck (560 lines)
- * @checkstyle BooleanExpressionComplexityCheck (560 lines)
+ * @checkstyle CyclomaticComplexityCheck (820 lines)
+ * @checkstyle BooleanExpressionComplexityCheck (820 lines)
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.UnnecessaryLocalRule", "PMD.CognitiveComplexity"})
 final class Eo implements Iterable<Directive> {
@@ -96,6 +96,52 @@ final class Eo implements Iterable<Directive> {
      * @return Index of the top-level marker, or -1
      */
     static int topLevelGreaterBracketIndex(final String body) {
+        return Eo.topLevelMarker(
+            body,
+            idx -> body.charAt(idx) == '>'
+                && body.charAt(idx + 1) == ' '
+                && body.charAt(idx + 2) == '['
+        );
+    }
+
+    /**
+     * The index of the {@code ++>} test shorthand marker used in the
+     * inline-phi suffix position ({@code lhs ++> name}, R-3.10.8 /
+     * R-6.3.6), at paren depth 0 and outside strings, or -1 if none
+     * exists. The marker must be preceded by a space, which
+     * distinguishes the suffix use from the head-of-line form
+     * ({@code ++> name}) that {@link Eo#plussed} routes to a bare
+     * formation. Shared by the {@link Eo#onlyPhi} classifier and
+     * {@link LnOnlyPhi}, so both agree on where a compact test
+     * shorthand splits its LHS.
+     * @param body Line body to scan
+     * @return Index of the top-level marker, or -1
+     */
+    static int topLevelPlusPlusArrowIndex(final String body) {
+        return Eo.topLevelMarker(
+            body,
+            idx -> idx > 0 && body.charAt(idx) == '+'
+                && body.charAt(idx - 1) == ' '
+                && body.charAt(idx + 1) == '+'
+                && body.charAt(idx + 2) == '>'
+        );
+    }
+
+    /**
+     * The index of the first position where {@code marker} matches, scanned
+     * at paren depth 0 and outside string literals. Both
+     * {@link Eo#topLevelGreaterBracketIndex} and
+     * {@link Eo#topLevelPlusPlusArrowIndex} drive their three-character
+     * lookahead through this shared skeleton, so the paren/string handling
+     * lives in one place. The scan stops two characters short of the end, so
+     * a marker predicate may safely read {@code idx + 1} and {@code idx + 2}.
+     * @param body Line body to scan
+     * @param marker Predicate testing whether the marker starts at an index
+     * @return Index of the first top-level match, or -1
+     */
+    private static int topLevelMarker(
+        final String body, final java.util.function.IntPredicate marker
+    ) {
         int depth = 0;
         boolean instr = false;
         int found = -1;
@@ -116,9 +162,7 @@ final class Eo implements Iterable<Directive> {
                 depth = depth + 1;
             } else if (glyph == ')') {
                 depth = depth - 1;
-            } else if (depth == 0 && glyph == '>'
-                && body.charAt(idx + 1) == ' '
-                && body.charAt(idx + 2) == '[') {
+            } else if (depth == 0 && marker.test(idx)) {
                 found = idx;
             }
             idx = idx + 1;
@@ -554,14 +598,17 @@ final class Eo implements Iterable<Directive> {
 
     /**
      * Whether an identifier-headed span carries an only-phi
-     * formation suffix {@code > [params] > name} (§3.10 / §4.5). The
-     * detection is a substring search for {@code "> ["}; the
-     * authoritative parse is in {@link LnOnlyPhi}.
+     * formation suffix — either the explicit {@code > [params] > name}
+     * form (detected by a {@code "> ["} search) or the compact
+     * {@code ++> name} test shorthand ({@code lhs ++> name}, R-3.10.8),
+     * which desugars to {@code lhs > [] +> name}. The authoritative
+     * parse is in {@link LnOnlyPhi}.
      * @param span The span
      * @return True if the line shape is only-phi
      */
     private static boolean onlyPhi(final Span span) {
-        return Eo.topLevelGreaterBracketIndex(span.body()) >= 0;
+        return Eo.topLevelGreaterBracketIndex(span.body()) >= 0
+            || Eo.topLevelPlusPlusArrowIndex(span.body()) >= 0;
     }
 
     /**
