@@ -20,12 +20,17 @@
     block.exists.if > @
       rec-replaced
         block.next
-        concat. (accum.concat (reinit.slice start (block.from.minus start))) replacement
+        concat.
+          accum.concat (reinit.slice start (block.from.minus start))
+          replacement
         block.to
-      string (accum.concat (reinit.slice start (reinit.length.minus start)))
+      string
+        accum.concat (reinit.slice start (reinit.length.minus start))
 
   ++> tests-does-not-replaces-if-regex-not-found
-    eq. (string.replaced "Hello, world" (regex "/[0-9]+/") "12345") "Hello, world" > @
+    eq. > @
+      string.replaced "Hello, world" (regex "/[0-9]+/") "12345"
+      "Hello, world"
 
   ++> tests-replaces-digits-with-string
     eq. (string.replaced "Hell0, w0rld" (regex "/[0-9]+/") "o") "Hello, world" > @

@@ -22,17 +22,23 @@ public enum PenaltyKey {
     /**
      * Points charged for each level of indentation on a line.
      */
-    INDENT(3),
+    INDENT(5),
 
     /**
-     * Points charged for each opening parenthesis.
+     * Points charged per opening parenthesis, progressively: the k-th
+     * parenthesis on a line costs k times this weight.
      */
-    BRACKET(7),
+    BRACKET(15),
 
     /**
      * Points charged for each character past {@link #WIDTH}.
      */
-    EXCESS(1),
+    EXCESS(3),
+
+    /**
+     * Points charged for every symbol in the block.
+     */
+    SYMBOL(1),
 
     /**
      * The column after which characters start being charged.

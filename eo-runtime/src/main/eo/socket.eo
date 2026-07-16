@@ -42,9 +42,9 @@
 # On failure at any of the described steps, the fallback of the corresponding operation is
 # returned (or the bottom object when it is left unbound).
 
-+alias os Q.sm.os
-+alias posix Q.sm.posix
-+alias win32 Q.sm.win32
++alias sm.os
++alias sm.posix
++alias sm.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -87,11 +87,15 @@
         0 > startup
         true > cleanup
   [port] > htons
-    as-i16. (or. (left. (bts.and FF-) 8) (and. (bts.right 8) FF-)) > @
+    as-i16. > @
+      or.
+        left. (bts.and FF-) 8
+        and. (bts.right 8) FF-
     port.as-i16.as-bytes > bts
   [recv] > as-input
     [size] > read
-      @. (read. (input-block --) size) > @
+      @. > @
+        read. (input-block --) size
       [buffer] > input-block
         buffer > @
         [size] > read

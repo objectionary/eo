@@ -31,7 +31,8 @@
         as-bytes. "."
       rec-pad (m.minus (ip.times scale)) places --
     floor. (m.div scale) > ip
-    floor. (plus. (a.times scale) 0.5) > m
+    floor. > m
+      plus. (a.times scale) 0.5
     pow10 places > scale
   [value count acc] > rec-pad
     if. > @

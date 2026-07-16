@@ -10,7 +10,8 @@
 
 [n] > floor
   if. > @
-    n.is-finite.not.or (or. (n.gte 4503599627370496) (n.lte -4503599627370496))
+    n.is-finite.not.or
+      or. (n.gte 4503599627370496) (n.lte -4503599627370496)
     n
     if. (trunc.gt n) (trunc.minus 1) trunc
   n.as-i64.as-number > trunc

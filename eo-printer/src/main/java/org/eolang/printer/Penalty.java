@@ -20,10 +20,13 @@ import java.util.Map;
  * <ul>
  *   <li>every level of indentation on a line costs
  *   {@link PenaltyKey#INDENT} points;</li>
- *   <li>every opening parenthesis costs {@link PenaltyKey#BRACKET}
- *   points;</li>
+ *   <li>opening parentheses on a line cost {@link PenaltyKey#BRACKET}
+ *   points progressively — the k-th costs k times the weight, so n on
+ *   one line cost n(n+1)/2 times the weight;</li>
  *   <li>every character sitting past the {@link PenaltyKey#WIDTH}-th
- *   column costs {@link PenaltyKey#EXCESS} point.</li>
+ *   column costs {@link PenaltyKey#EXCESS} point;</li>
+ *   <li>every symbol in the block costs {@link PenaltyKey#SYMBOL}
+ *   point.</li>
  * </ul>
  *
  * <p>All of these weights, together with the indentation
@@ -33,7 +36,7 @@ import java.util.Map;
  * default.</p>
  *
  * <p>For example, with the default weights this snippet has a penalty of
- * 15 (five indents, three points each):</p>
+ * 64 (five indents at five points each, plus 39 symbols):</p>
  *
  * <pre> [] &gt; foo
  *   gt. &gt; @
@@ -41,7 +44,8 @@ import java.util.Map;
  *     bar.hello 88</pre>
  *
  * <p>While this one, rendering the same object differently, scores
- * only 7 (a single opening parenthesis):</p>
+ * only 46 (one opening parenthesis at fifteen points, plus 31
+ * symbols):</p>
  *
  * <pre> 42.gt (bar.hello 88) &gt; [] &gt; foo</pre>
  *
@@ -89,9 +93,11 @@ final class Penalty {
     int points() {
         int total = 0;
         for (final String line : this.code.split(String.valueOf('\n'), -1)) {
+            final int opened = Penalty.brackets(line);
             total += this.indents(line) * this.weight(PenaltyKey.INDENT);
-            total += Penalty.brackets(line) * this.weight(PenaltyKey.BRACKET);
+            total += opened * (opened + 1) / 2 * this.weight(PenaltyKey.BRACKET);
             total += this.overflow(line) * this.weight(PenaltyKey.EXCESS);
+            total += line.length() * this.weight(PenaltyKey.SYMBOL);
         }
         return total;
     }

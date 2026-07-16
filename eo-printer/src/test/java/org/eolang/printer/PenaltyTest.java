@@ -20,7 +20,7 @@ final class PenaltyTest {
     @Test
     void chargesForIndentation() {
         MatcherAssert.assertThat(
-            "Five levels of indentation should cost fifteen points",
+            "Five levels of indentation should cost twenty-five points",
             new Penalty(
                 String.join(
                     System.lineSeparator(),
@@ -28,27 +28,58 @@ final class PenaltyTest {
                     "  gt. > @",
                     "    42",
                     "    bar.hello 88"
-                )
+                ),
+                Collections.singletonMap(PenaltyKey.SYMBOL, 0)
             ).points(),
-            Matchers.equalTo(15)
+            Matchers.equalTo(25)
         );
     }
 
     @Test
     void chargesForParenthesis() {
         MatcherAssert.assertThat(
-            "A single opening parenthesis on one line should cost seven points",
-            new Penalty("42.gt (bar.hello 88) > [] > foo").points(),
-            Matchers.equalTo(7)
+            "A single opening parenthesis on one line should cost fifteen points",
+            new Penalty(
+                "42.gt (bar.hello 88) > [] > foo",
+                Collections.singletonMap(PenaltyKey.SYMBOL, 0)
+            ).points(),
+            Matchers.equalTo(15)
+        );
+    }
+
+    @Test
+    void chargesProgressivelyForParentheses() {
+        MatcherAssert.assertThat(
+            "Two parentheses on one line should cost three bracket-weights",
+            new Penalty(
+                "f (a) (b)",
+                Collections.singletonMap(PenaltyKey.SYMBOL, 0)
+            ).points(),
+            Matchers.equalTo(45)
         );
     }
 
     @Test
     void chargesForOverflow() {
         MatcherAssert.assertThat(
-            "Each character past the 80th column should cost one point",
-            new Penalty(String.join("", java.util.Collections.nCopies(85, "x"))).points(),
-            Matchers.equalTo(5)
+            "Each character past the 80th column should cost three points",
+            new Penalty(
+                String.join("", java.util.Collections.nCopies(85, "x")),
+                Collections.singletonMap(PenaltyKey.SYMBOL, 0)
+            ).points(),
+            Matchers.equalTo(15)
+        );
+    }
+
+    @Test
+    void chargesForSymbols() {
+        final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
+        weights.put(PenaltyKey.INDENT, 0);
+        weights.put(PenaltyKey.BRACKET, 0);
+        MatcherAssert.assertThat(
+            "Every symbol in the block should cost one point",
+            new Penalty("42.gt (bar.hello 88) > [] > foo", weights).points(),
+            Matchers.equalTo(31)
         );
     }
 
@@ -74,6 +105,7 @@ final class PenaltyTest {
     void honoursOverriddenBracketWeight() {
         final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
         weights.put(PenaltyKey.BRACKET, 100);
+        weights.put(PenaltyKey.SYMBOL, 0);
         MatcherAssert.assertThat(
             "A single parenthesis should cost the overridden weight",
             new Penalty("42.gt (bar.hello 88) > [] > foo", weights).points(),
@@ -85,13 +117,14 @@ final class PenaltyTest {
     void honoursOverriddenStepWeight() {
         final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
         weights.put(PenaltyKey.STEP, 4);
+        weights.put(PenaltyKey.SYMBOL, 0);
         MatcherAssert.assertThat(
-            "Two levels of four-space indentation should cost two indents",
+            "Two levels of four-space indentation should cost ten points",
             new Penalty(
                 String.join(System.lineSeparator(), "[] > foo", "        bar"),
                 weights
             ).points(),
-            Matchers.equalTo(6)
+            Matchers.equalTo(10)
         );
     }
 
@@ -99,12 +132,13 @@ final class PenaltyTest {
     void honoursOverriddenWidthWeight() {
         final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
         weights.put(PenaltyKey.WIDTH, 40);
+        weights.put(PenaltyKey.SYMBOL, 0);
         MatcherAssert.assertThat(
             "Characters past the overridden 40th column should be charged",
             new Penalty(
                 String.join("", java.util.Collections.nCopies(45, "x")), weights
             ).points(),
-            Matchers.equalTo(5)
+            Matchers.equalTo(15)
         );
     }
 

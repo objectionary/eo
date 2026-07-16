@@ -29,7 +29,9 @@
       text.size.eq current
       appended
       if.
-        or. (delimiter-size.eq 0) (gt. (current.plus delimiter-size) text.size)
+        or.
+          delimiter-size.eq 0
+          gt. (current.plus delimiter-size) text.size
         rec-nsplit
           accum
           start
@@ -49,7 +51,9 @@
             start
             as-number. (current.plus 1)
             count
-    accum.with (string (slice text start (current.minus start))) > appended
+    accum.with > appended
+      string
+        slice text start (current.minus start)
 
   ++> tests-nsplit-with-limit-two
     eq. > @

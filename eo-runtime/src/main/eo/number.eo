@@ -33,7 +33,8 @@
             magnitude.as-i64
     eq. (as-bytes.and 80-00-00-00-00-00-00-00) 80-00-00-00-00-00-00-00 > negative
     as-number. > exp
-      as-i64. (right. (as-bytes.and 7F-F0-00-00-00-00-00-00) 52)
+      as-i64.
+        right. (as-bytes.and 7F-F0-00-00-00-00-00-00) 52
     or. (as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF) 00-10-00-00-00-00-00-00 > mantissa
     or. > out-of-range
       exp.eq 2047
@@ -52,7 +53,9 @@
         is-nan. (number xbts)
       false
       or.
-        and. (or. (xbts.eq pzero) (xbts.eq nzero)) (or. (bts.eq pzero) (bts.eq nzero))
+        and.
+          or. (xbts.eq pzero) (xbts.eq nzero)
+          or. (bts.eq pzero) (bts.eq nzero)
         bts.eq xbts
     as-bytes > bts!
     as-bytes. -0 > nzero
@@ -81,7 +84,11 @@
       and.
         and.
           and.
-            and. (and. (eq. (eq. 0 nan) false) (eq. (eq. 0 pinf) false)) (eq. (eq. 0 ninf) false)
+            and.
+              and.
+                eq. (eq. 0 nan) false
+                eq. (eq. 0 pinf) false
+              eq. (eq. 0 ninf) false
             eq. (eq. 42 nan) false
           eq. (eq. 42 pinf) false
         eq. (eq. 42 ninf) false
@@ -109,15 +116,27 @@
 
   ++> tests-calculates-fibonacci-number-with-recursion
     eq. (fibo 4) 3 > @
-    if. (n.lt 3) 1 (plus. (fibo (n.minus 1)) (fibo (n.minus 2))) > [n] > fibo
+    [n] > fibo
+      if. > @
+        n.lt 3
+        1
+        plus.
+          fibo (n.minus 1)
+          fibo (n.minus 2)
 
   ++> tests-calculates-fibonacci-number-with-tail
     eq. (fibonacci 4) 3 > @
     [n] > fibonacci
-      if. (n.lt 3) (small n) (rec n 1 1) > @
+      if. > @
+        n.lt 3
+        small n
+        rec n 1 1
       if. (n.eq 2) 1 n > [n] > small
       [n minus1 minus2] > rec
-        if. (n.eq 3) (minus1.plus minus2) (rec (n.minus 1) (minus1.plus minus2) minus1) > @
+        if. > @
+          n.eq 3
+          minus1.plus minus2
+          rec (n.minus 1) (minus1.plus minus2) minus1
 
   ++> tests-zero-division
     seq > @
@@ -195,7 +214,19 @@
         and.
           and.
             and.
-              and. (and. (and. (and. (and. (and. (and. (eq. (eq. 0 nan) false) (eq. (eq. 0 pinf) false)) (eq. (eq. 0 ninf) false)) (eq. (eq. 42.5 nan) false)) (eq. (eq. 42.5 pinf) false)) (eq. (eq. 42.5 ninf) false)) (eq. (eq. 0 nan) false)) (eq. (eq. 0 pinf) false)
+              and.
+                and.
+                  and.
+                    and.
+                      and.
+                        and.
+                          and. (eq. (eq. 0 nan) false) (eq. (eq. 0 pinf) false)
+                          eq. (eq. 0 ninf) false
+                        eq. (eq. 42.5 nan) false
+                      eq. (eq. 42.5 pinf) false
+                    eq. (eq. 42.5 ninf) false
+                  eq. (eq. 0 nan) false
+                eq. (eq. 0 pinf) false
               eq. (eq. 0 ninf) false
             eq. (eq. 42.5 nan) false
           eq. (eq. 42.5 pinf) false

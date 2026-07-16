@@ -30,7 +30,9 @@
     not. (true.eq 42) > @
 
   ++> tests-compares-bool-to-bytes
-    and. (true.eq 01-) (false.eq 00-) > @
+    and. > @
+      true.eq 01-
+      false.eq 00-
 
   ++> tests-compares-bool-to-bytes-reverse
     and. > @
@@ -171,7 +173,9 @@
     true.not.eq false > @
 
   ++> tests-compares-bool-to-string
-    and. (true.eq "\u0001") (false.eq "\u0000") > @
+    and. > @
+      true.eq "\u0001"
+      false.eq "\u0000"
 
   ++> tests-true-and-false-is-false
     not. (true.and false) > @

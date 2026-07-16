@@ -10,7 +10,10 @@
 [input] > input-length
   rec-read input 0 > @
   [input length] > rec-read
-    if. (chunk.size.eq 0) length (rec-read chunk (length.plus chunk.size)) > @
+    if. > @
+      chunk.size.eq 0
+      length
+      rec-read chunk (length.plus chunk.size)
     ^. > chunk
       read. (input.read 4096)
 
@@ -23,5 +26,8 @@
         10
         [m]
           seq > @
-            * (io.input-length (tee-input (bytes-as-input 01-02-03-04-05-06-07-08-09-10) (malloc-as-output m))) m
+            *
+              io.input-length
+                tee-input (bytes-as-input 01-02-03-04-05-06-07-08-09-10) (malloc-as-output m)
+              m
       01-02-03-04-05-06-07-08-09-10

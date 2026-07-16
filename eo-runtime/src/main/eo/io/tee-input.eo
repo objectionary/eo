@@ -47,7 +47,9 @@
         5
         [m]
           seq > @
-            * (read. (read. (read. (io.tee-input (bytes-as-input 01-02-03-04-05) (malloc-as-output m)) 2) 2) 1) m
+            *
+              read. (read. (read. (io.tee-input (bytes-as-input 01-02-03-04-05) (malloc-as-output m)) 2) 2) 1
+              m
       01-02-03-04-05
 
   ++> tests-reads-from-bytes-and-writes-to-two-memory-blocks
@@ -59,5 +61,12 @@
             5
             [m2] >>
               seq > @
-                * (read. (io.tee-input (io.tee-input (bytes-as-input 01-02-03-04-05) (malloc-as-output m2)) (malloc-as-output m1)) 5) (m1.write 5 2A-) m1
+                *
+                  read.
+                    io.tee-input
+                      io.tee-input (bytes-as-input 01-02-03-04-05) (malloc-as-output m2)
+                      malloc-as-output m1
+                    5
+                  m1.write 5 2A-
+                  m1
       01-02-03-04-05-2A

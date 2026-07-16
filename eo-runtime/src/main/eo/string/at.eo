@@ -11,14 +11,19 @@
 
 [text i out-of-bounds] > at
   if. > @
-    or. (gt. 0 index) (gte. (number index) len)
+    or.
+      gt. 0 index
+      gte. (number index) len
     out-of-bounds
       printf.
         "Given index %d is out of text bounds"
         * index
     slice text index 1
   i > idx!
-  if. (gt. 0 idx) (plus. (number len) idx) idx > index!
+  if. > index!
+    gt. 0 idx
+    plus. (number len) idx
+    idx
   text.length > len!
 
   ++> tests-returns-first-char

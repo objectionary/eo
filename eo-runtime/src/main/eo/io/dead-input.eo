@@ -16,5 +16,7 @@
       ^.^.input-block > [size] > read
 
   ++> tests-reads-empty-bytes
-    and. (i1.eq --) (eq. (i1.read 10) --) > @
+    and. > @
+      i1.eq --
+      eq. (i1.read 10) --
     io.dead-input.read 10 > i1

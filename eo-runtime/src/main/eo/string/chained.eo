@@ -1,7 +1,7 @@
 # Returns concatenation of `text` with all `other` strings.
 # Here `others` must be a `tuple` of `strings`.
 
-+alias reduced Q.tuple.reduced
++alias tuple.reduced
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string

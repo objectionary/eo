@@ -1,6 +1,6 @@
 # Represents the current operating system.
 
-+alias regex Q.string.regex
++alias string.regex
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package sm
@@ -14,7 +14,9 @@
 [] > os
   name > @
   [] > is-windows
-    and. (oname.size.gt 6) (eq. (oname.slice 0 7) "Windows") > @
+    and. > @
+      oname.size.gt 6
+      eq. (oname.slice 0 7) "Windows"
     name > oname!
   as-bool. > is-linux
     matches. (string.regex "/linux/i") name

@@ -24,7 +24,10 @@
                     if. > @
                       lt. (left.as-number.plus step) right
                       seq
-                        * (^.^.sum.put (^.^.sum.as-number.plus (^.^.^.subsection left.as-number (left.as-number.plus step)))) (left.put (left.as-number.plus step)) true
+                        *
+                          ^.^.sum.put (^.^.sum.as-number.plus (^.^.^.subsection left.as-number (left.as-number.plus step)))
+                          left.put (left.as-number.plus step)
+                          true
                       false
                   true > [i]
                 sum
@@ -33,7 +36,11 @@
   [a b] > subsection
     times. > @
       div. (b.minus a) 6
-      plus. (fun a) (plus. (times. 4 (fun (times. 0.5 (a.plus b)))) (fun b))
+      plus.
+        fun a
+        plus.
+          times. 4 (fun (times. 0.5 (a.plus b)))
+          fun b
 
   ++> tests-calculates-lineal-integral
     close-to > @

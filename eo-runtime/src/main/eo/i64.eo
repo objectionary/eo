@@ -28,7 +28,9 @@
   [] > as-number /number
   gt. (i64 x.as-bytes) ^ > [x] > lt
   [x] > lte
-    or. (lt value) (^.eq value) > @
+    or. > @
+      lt value
+      ^.eq value
     x > value!
   [x] > gt
     signs-differ.if > @
@@ -39,11 +41,14 @@
     00-00-00-00-00-00-00-00 > zero
     80-00-00-00-00-00-00-00 > sign-mask
     as-bytes.and sign-mask > self-sign
-    not. (self-sign.eq (x.as-bytes.and sign-mask)) > signs-differ
+    not. > signs-differ
+      self-sign.eq (x.as-bytes.and sign-mask)
     self-sign.eq zero > self-sign-clear
     eq. (difference.as-bytes.and sign-mask) zero > difference-sign-clear
   [x] > gte
-    or. (gt value) (^.eq value) > @
+    or. > @
+      gt value
+      ^.eq value
     x > value!
   [x] > times
     looped 00-00-00-00-00-00-00-00 as-bytes x.as-bytes > @
@@ -172,10 +177,13 @@
         as-i64. 0
 
   ++> tests-i64-greater-max-over-min
-    gt. (i64 7F-FF-FF-FF-FF-FF-FF-FF) (i64 80-00-00-00-00-00-00-00) > @
+    gt. > @
+      i64 7F-FF-FF-FF-FF-FF-FF-FF
+      i64 80-00-00-00-00-00-00-00
 
   ++> tests-i64-greater-min-not-over-max
-    not. (gt. (i64 80-00-00-00-00-00-00-00) (i64 7F-FF-FF-FF-FF-FF-FF-FF)) > @
+    not. > @
+      gt. (i64 80-00-00-00-00-00-00-00) (i64 7F-FF-FF-FF-FF-FF-FF-FF)
 
   ++> tests-i64-greater-same-sign-large-negatives
     gt. > @

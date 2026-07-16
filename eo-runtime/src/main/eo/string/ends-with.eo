@@ -10,7 +10,9 @@
 [text substring] > ends-with
   and. > @
     lte. (number slen) tlen
-    eq. (slice txt (minus. (number tlen) slen) slen) sub
+    eq.
+      slice txt (minus. (number tlen) slen) slen
+      sub
   sub.size > slen!
   substring > sub!
   txt.size > tlen!

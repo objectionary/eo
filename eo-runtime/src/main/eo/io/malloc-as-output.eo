@@ -32,7 +32,9 @@
       true > @
       [buffer] > write
         seq > @
-          * (^.^.^.allocated.write offset buffer) (^.^.output-block (offset.plus buffer.size))
+          *
+            ^.^.^.allocated.write offset buffer
+            ^.^.output-block (offset.plus buffer.size)
 
   ++> tests-makes-an-output-from-malloc-and-writes
     eq. > @

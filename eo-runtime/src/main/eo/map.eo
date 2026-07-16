@@ -2,10 +2,10 @@
 # Here `pairs` must be a `tuple` of `map.entry` object.
 # The `map.entry.key` must be a dataizable object, `map.entry.value` may be any object.
 
-+alias contains Q.tuple.contains
-+alias filtered Q.tuple.filtered
-+alias hash-code Q.tuple.hash-code
-+alias mapped Q.tuple.mapped
++alias tuple.contains
++alias tuple.filtered
++alias tuple.hash-code
++alias tuple.mapped
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -96,7 +96,11 @@
   ++> tests-map-rebuilds-itself
     eq. 2 mp.size > @
     map > mp
-      * (map.entry 1 1) (map.entry 1 1) (map.entry 2 1) (map.entry 2 1)
+      *
+        map.entry 1 1
+        map.entry 1 1
+        map.entry 2 1
+        map.entry 2 1
 
   ++> tests-map-rebuilds-itself-only-once
     eq. > @
@@ -130,7 +134,10 @@
     eq. 2 found.get > @
     mp.found "two" > found
     map > mp
-      * (map.entry "one" 1) (map.entry "two" 2) (map.entry "three" 3)
+      *
+        map.entry "one" 1
+        map.entry "two" 2
+        map.entry "three" 3
 
   ++> tests-does-not-find-element-by-key-in-hash-map
     not. > @
@@ -172,7 +179,9 @@
       "one"
 
   ++> tests-adds-new-pair-to-hash-map
-    and. (eq. 2 mp.size) (mp.has "two") > @
+    and. > @
+      eq. 2 mp.size
+      mp.has "two"
     with. > mp
       map
         * (map.entry "one" 1)

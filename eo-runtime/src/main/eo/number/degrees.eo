@@ -16,16 +16,28 @@
     eq. (number.degrees 0) 0 > @
 
   ++> tests-degrees-of-pi-is-half-turn
-    lt. (abs (minus. (number.degrees pi) 180)) 1.0E-4 > @
+    lt. > @
+      abs
+        minus. (number.degrees pi) 180
+      1.0E-4
 
   ++> tests-degrees-of-pi-halves-is-quarter-turn
-    lt. (abs (minus. (number.degrees (pi.div 2)) 90)) 1.0E-4 > @
+    lt. > @
+      abs
+        minus. (number.degrees (pi.div 2)) 90
+      1.0E-4
 
   ++> tests-degrees-of-two-pi-is-full-turn
-    lt. (abs (minus. (number.degrees (pi.times 2)) 360)) 1.0E-4 > @
+    lt. > @
+      abs
+        minus. (number.degrees (pi.times 2)) 360
+      1.0E-4
 
   ++> tests-degrees-of-negative-pi-is-minus-half-turn
-    lt. (abs (minus. (number.degrees pi.neg) -180)) 1.0E-4 > @
+    lt. > @
+      abs
+        minus. (number.degrees pi.neg) -180
+      1.0E-4
 
   ++> tests-degrees-of-nan-is-nan
     is-nan. (number.degrees nan) > @

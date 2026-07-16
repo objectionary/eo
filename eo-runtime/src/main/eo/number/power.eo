@@ -25,7 +25,10 @@
               base.eq 0
               if. (expo.gt 0) 0 pinf
               expo.is-integer.if
-                if. (expo.lt 0) (div. 1 (ipow base (abs expo))) (ipow base (abs expo))
+                if.
+                  expo.lt 0
+                  div. 1 (ipow base (abs expo))
+                  ipow base (abs expo)
                 if. (base.gt 0) (expon (expo.times (ln base))) nan
             if.
               base.gt 0
@@ -38,8 +41,14 @@
                   0
           if.
             expo.gt 0
-            if. (gt. (abs base) 1) pinf (if. (eq. (abs base) 1) nan 0)
-            if. (gt. (abs base) 1) 0 (if. (eq. (abs base) 1) nan pinf)
+            if.
+              gt. (abs base) 1
+              pinf
+              if. (eq. (abs base) 1) nan 0
+            if.
+              gt. (abs base) 1
+              0
+              if. (eq. (abs base) 1) nan pinf
   number num.as-bytes > base
   number x.as-bytes > expo
   expo.is-integer.and > odd-power
@@ -59,9 +68,15 @@
     floor. (y.plus 0.5) > k
     y.minus k > r
     20 > eterms
-    if. (k.lt 0) (div. 1 (ipow e (abs k))) (ipow e (abs k)) > whole
+    if. > whole
+      k.lt 0
+      div. 1 (ipow e (abs k))
+      ipow e (abs k)
     [j] > fraction
-      if. (j.gt eterms) 1 (plus. 1 (times. (r.div j) (fraction (j.plus 1)))) > @
+      if. > @
+        j.gt eterms
+        1
+        plus. 1 (times. (r.div j) (fraction (j.plus 1)))
 
   ++> tests-power-of-two-to-four
     eq. (number.power 2 4) 16 > @
@@ -187,13 +202,22 @@
     eq. (number.power 4 5) 1024 > @
 
   ++> tests-power-square-root-of-nine
-    lt. (abs (minus. (number.power 9 0.5) 3)) 1.0E-9 > @
+    lt. > @
+      abs
+        minus. (number.power 9 0.5) 3
+      1.0E-9
 
   ++> tests-power-square-root-of-two
-    lt. (abs (minus. (number.power 2 0.5) 1.4142135623730951)) 1.0E-9 > @
+    lt. > @
+      abs
+        minus. (number.power 2 0.5) 1.4142135623730951
+      1.0E-9
 
   ++> tests-power-cube-root-of-twenty-seven
-    lt. (abs (minus. (number.power 27 (div. 1 3)) 3)) 1.0E-9 > @
+    lt. > @
+      abs
+        minus. (number.power 27 (div. 1 3)) 3
+      1.0E-9
 
   ++> tests-power-fractional-of-negative-is-nan
     is-nan. (number.power -4 0.5) > @

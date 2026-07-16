@@ -28,7 +28,9 @@
       x
       as-number. (length.plus 1)
   [other] > eq
-    and. (length.eq other.length) (receq ^ other) > @
+    and. > @
+      length.eq other.length
+      receq ^ other
     [first second] > receq
       if. > @
         first.length.eq 0
@@ -69,12 +71,18 @@
     * 100 > tup
 
   ++> tests-tuple-as-a-bound-attribute-size-2
-    and. (eq. (arr.at 0) 1) (eq. (arr.at 1) 2) > @
+    and. > @
+      eq. (arr.at 0) 1
+      eq. (arr.at 1) 2
     * 1 2 > arr
 
   ++> tests-tuple-with
     and. > @
-      and. (and. (eq. (arr.at 0) 1) (eq. (arr.at 1) 2)) (eq. (arr.at 2) 3)
+      and.
+        and.
+          eq. (arr.at 0) 1
+          eq. (arr.at 1) 2
+        eq. (arr.at 2) 3
       eq. (arr.at 3) "with"
     with. > arr
       * 1 2 3
@@ -94,11 +102,19 @@
         "recovered" > [msg]
 
   ++> tests-tuple-fluent-with
-    and. (and. (eq. (arr.at 0) 1) (eq. (arr.at 1) 2)) (eq. (arr.at 2) 3) > @
+    and. > @
+      and.
+        eq. (arr.at 0) 1
+        eq. (arr.at 1) 2
+      eq. (arr.at 2) 3
     with. (with. (tuple.empty.with 1) 2) 3 > arr
 
   ++> tests-tuple-fluent-with-indented
-    and. (and. (eq. (arr.at 0) 1) (eq. (arr.at 1) 2)) (eq. (arr.at 2) 3) > @
+    and. > @
+      and.
+        eq. (arr.at 0) 1
+        eq. (arr.at 1) 2
+      eq. (arr.at 2) 3
     with. (with. (tuple.empty.with 1) 2) 3 > arr
 
   ++> tests-gets-lengths-of-empty-tuple
@@ -127,7 +143,11 @@
     * 100 101 102 > arr
 
   ++> tests-tuple-empty-fluent-with-indented-keyword
-    and. (and. (eq. (arr.at 0) 1) (eq. (arr.at 1) 2)) (eq. (arr.at 2) 3) > @
+    and. > @
+      and.
+        eq. (arr.at 0) 1
+        eq. (arr.at 1) 2
+      eq. (arr.at 2) 3
     with. (with. (tuple.empty.with 1) 2) 3 > arr
 
   ++> tests-tuple-with-negative-index-gets-last

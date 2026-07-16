@@ -19,7 +19,9 @@
     div. (minus. 1 mag) 2
   if. > base
     mag.gt 0.5
-    minus. (pi.div 2) (times. 2 (series root))
+    minus.
+      pi.div 2
+      times. 2 (series root)
     series mag
   [point] > series
     point.times (poly 1) > @
@@ -33,7 +35,11 @@
           1
           times.
             div.
-              times. (times. (minus. (depth.times 2) 1) (minus. (depth.times 2) 1)) squared
+              times.
+                times.
+                  minus. (depth.times 2) 1
+                  minus. (depth.times 2) 1
+                squared
               times. (depth.times 2) (plus. (depth.times 2) 1)
             poly (depth.plus 1)
 
@@ -41,7 +47,12 @@
     eq. (number.arc-sine 0) 0 > @
 
   ++> tests-arc-sine-of-one-is-pi-halves
-    lt. (abs (minus. (times. (number.arc-sine 1) 1000) (times. (pi.div 2) 1000))) 1 > @
+    lt. > @
+      abs
+        minus.
+          times. (number.arc-sine 1) 1000
+          times. (pi.div 2) 1000
+      1
 
   ++> tests-arc-sine-of-negative-one-is-minus-pi-halves
     lt. > @
@@ -54,7 +65,12 @@
       1
 
   ++> tests-arc-sine-of-half-is-pi-sixths
-    lt. (abs (minus. (times. (number.arc-sine 0.5) 1000) (times. (pi.div 6) 1000))) 1 > @
+    lt. > @
+      abs
+        minus.
+          times. (number.arc-sine 0.5) 1000
+          times. (pi.div 6) 1000
+      1
 
   ++> tests-arc-sine-of-negative-half-is-minus-pi-sixths
     lt. > @
@@ -67,10 +83,16 @@
       1
 
   ++> tests-arc-sine-of-point-six
-    lt. (abs (minus. (times. (number.arc-sine 0.6) 1000) 643.5)) 1 > @
+    lt. > @
+      abs
+        minus. (times. (number.arc-sine 0.6) 1000) 643.5
+      1
 
   ++> tests-arc-sine-is-odd-function
-    lt. (abs (times. (plus. (number.arc-sine 0.6) (number.arc-sine -0.6)) 1000)) 1 > @
+    lt. > @
+      abs
+        times. (plus. (number.arc-sine 0.6) (number.arc-sine -0.6)) 1000
+      1
 
   ++> tests-arc-sine-above-one-is-nan
     is-nan. (number.arc-sine 2) > @

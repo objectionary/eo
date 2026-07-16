@@ -19,7 +19,10 @@
     string result
   times > amount!
   text > bts!
-  if. (eq. 0 amount) -- (rec-repeated bts 1) > result!
+  if. > result!
+    eq. 0 amount
+    --
+    rec-repeated bts 1
   [accum index] > rec-repeated
     if. > @
       amount.eq index

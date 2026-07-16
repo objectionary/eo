@@ -7,7 +7,7 @@
 # takes the first environment variable in the list TMP, TEMP, USERPROFILE.
 # If none of these are found, it returns the Windows directory (C:\Windows).
 
-+alias os Q.sm.os
++alias sm.os
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -20,8 +20,17 @@
       string
         [] >>!
           sm.os.is-windows.if > @
-            if. (tmp.eq empty) (if. (temp.eq empty) (if. (userprofile.eq empty) "C:\\Windows" userprofile) temp) tmp
-            if. (tmpdir.eq empty) (if. (tmp.eq empty) (if. (temp.eq empty) (if. (tempdir.eq empty) "/tmp" tempdir) temp) tmp) tmpdir
+            if.
+              tmp.eq empty
+              if. (temp.eq empty) (if. (userprofile.eq empty) "C:\\Windows" userprofile) temp
+              tmp
+            if.
+              tmpdir.eq empty
+              if.
+                tmp.eq empty
+                if. (temp.eq empty) (if. (tempdir.eq empty) "/tmp" tempdir) temp
+                tmp
+              tmpdir
           -- > empty
           as-bytes. (dataized (getenv "TEMP")) > temp
           as-bytes. (dataized (getenv "TEMPDIR")) > tempdir

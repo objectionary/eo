@@ -20,7 +20,7 @@
 # `1.plus 1` and also has object `next`. Since these objects are ints - they have
 # object `lt` by default.
 
-+alias is-empty Q.tuple.is-empty
++alias tuple.is-empty
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -37,7 +37,10 @@
       start.next
     tuple.empty
   [acc current] > appended
-    if. (current.lt end) (appended (acc.with current) current.next) acc > @
+    if. > @
+      current.lt end
+      appended (acc.with current) current.next
+      acc
 
   ++> tests-simple-range-from-one-to-ten
     rng.eq > @

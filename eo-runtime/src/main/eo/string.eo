@@ -156,15 +156,21 @@
     eq. "друг" D0-B4-D1-80-D1-83-D0-B3 > @
 
   ++> tests-reads-the-length-with-n2-byte-characters
-    and. (str.length.eq 12) (str.as-bytes.size.eq 16) > @
+    and. > @
+      str.length.eq 12
+      str.as-bytes.size.eq 16
     "Hello, друг!" > str
 
   ++> tests-reads-the-length-with-n3-byte-characters
-    and. (str.length.eq 16) (str.as-bytes.size.eq 18) > @
+    and. > @
+      str.length.eq 16
+      str.as-bytes.size.eq 18
     "The अ devanagari" > str
 
   ++> tests-reads-the-length-with-n4-byte-characters
-    and. (str.length.eq 11) (str.as-bytes.size.eq 14) > @
+    and. > @
+      str.length.eq 11
+      str.as-bytes.size.eq 14
     "The 😀 smile" > str
 
   ++> throws-on-taking-length-of-incomplete-n4-byte-character

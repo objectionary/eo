@@ -1,10 +1,10 @@
 # Represents a file in the filesystem for reading and writing.
 
-+alias contains Q.string.contains
-+alias joined Q.string.joined
-+alias os Q.sm.os
-+alias posix Q.sm.posix
-+alias win32 Q.sm.win32
++alias string.contains
++alias string.joined
++alias sm.os
++alias sm.posix
++alias sm.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0

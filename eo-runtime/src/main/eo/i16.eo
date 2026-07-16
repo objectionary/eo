@@ -46,7 +46,10 @@
         printf.
           "Can't divide %d by i16 zero"
           * as-i32.as-i64.as-number
-      if. (or. (left.eq zero) (left.eq FF-FF)) (i16 right) (plus. (i16 left) (i16 right))
+      if.
+        or. (left.eq zero) (left.eq FF-FF)
+        i16 right
+        plus. (i16 left) (i16 right)
     as-bytes. (as-i32.div xval.as-i32) > bts
     bts.slice 0 2 > left
     bts.slice 2 2 > right

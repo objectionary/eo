@@ -30,4 +30,7 @@
     eq. "~" (string (string.as-char 126)) > @
 
   ++> tests-round-trips-through-as-ascii
-    eq. "!" (string (string.as-char (as-ascii "!"))) > @
+    eq. > @
+      "!"
+      string
+        string.as-char (as-ascii "!")

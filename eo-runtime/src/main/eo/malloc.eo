@@ -214,7 +214,10 @@
           12
           [m] >>
             seq > @
-              * (m.write 0 "Hello, ") (m.write 7 "Jeff!") (b.put (eq. (m.read 0 12) "Hello, Jeff!"))
+              *
+                m.write 0 "Hello, "
+                m.write 7 "Jeff!"
+                b.put (eq. (m.read 0 12) "Hello, Jeff!")
 
   ++> tests-malloc-concacts-strings-with-offset
     malloc.of > @
@@ -224,7 +227,10 @@
           3
           [m] >>
             seq > @
-              * (m.write 0 "XXX") (m.write 1 "Y") (b.put (eq. (m.read 0 3) "XYX"))
+              *
+                m.write 0 "XXX"
+                m.write 1 "Y"
+                b.put (eq. (m.read 0 3) "XYX")
 
   ++> writes-beyond-offset-and-resizes
     malloc.of > @

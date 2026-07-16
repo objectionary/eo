@@ -57,8 +57,11 @@
         "123"
 
   ++> tests-matched-sequence-has-right-border-indexes
-    and. (eq. 0 n.start) (and. (eq. 1 n.from) (eq. 6 n.to)) > @
-    next. (match. (string.regex "/[a-z]+/") "!hello!") > n
+    and. > @
+      eq. 0 n.start
+      and. (eq. 1 n.from) (eq. 6 n.to)
+    next. > n
+      match. (string.regex "/[a-z]+/") "!hello!"
 
   ++> tests-regex-returns-valid-matched-string-sequence
     eq. > @
@@ -69,54 +72,67 @@
   ++> tests-regex-returns-valid-second-matched-block
     and. > @
       and.
-        and. (and. (second.text.eq "world") (second.position.eq 2)) (second.start.eq 6)
+        and.
+          and. (second.text.eq "world") (second.position.eq 2)
+          second.start.eq 6
         second.from.eq 7
       second.to.eq 12
     next. > second
-      next. (match. (string.regex "/[a-z]+/") "!hello!world!")
+      next.
+        match. (string.regex "/[a-z]+/") "!hello!world!"
 
   ++> throws-on-getting-next-on-not-matched-block
     next. > @
-      next. (match. (string.regex "/[a-z]+/") "123")
+      next.
+        match. (string.regex "/[a-z]+/") "123"
 
   ++> throws-on-getting-from-position-on-not-matched-block
     from. > @
-      next. (match. (string.regex "/[a-z]+/") "123")
+      next.
+        match. (string.regex "/[a-z]+/") "123"
 
   ++> throws-on-getting-to-position-on-not-matched-block
     to. > @
-      next. (match. (string.regex "/[a-z]+/") "123")
+      next.
+        match. (string.regex "/[a-z]+/") "123"
 
   ++> throws-on-getting-groups-count-on-not-matched-block
     count. > @
-      next. (match. (string.regex "/[a-z]+/") "123")
+      next.
+        match. (string.regex "/[a-z]+/") "123"
 
   ++> throws-on-getting-groups-on-not-matched-block
     groups. > @
-      next. (match. (string.regex "/[a-z]+/") "123")
+      next.
+        match. (string.regex "/[a-z]+/") "123"
 
   ++> throws-on-getting-specified-group-on-not-matched-block
     group. > @
-      next. (match. (string.regex "/[a-z]+/") "123")
+      next.
+        match. (string.regex "/[a-z]+/") "123"
       1
 
   ++> throws-on-getting-text-on-not-matched-block
     text. > @
-      next. (match. (string.regex "/[a-z]+/") "123")
+      next.
+        match. (string.regex "/[a-z]+/") "123"
 
   ++> tests-regex-matches-dotall-option
     matches. > @
-      compiled. (string.regex "/(.*)/s")
+      compiled.
+        string.regex "/(.*)/s"
       "too \\n many \\n line \\n Feed\\n"
 
   ++> tests-regex-matches-with-case-insensitive-option
     matches. > @
-      compiled. (string.regex "/(string)/i")
+      compiled.
+        string.regex "/(string)/i"
       "StRiNg"
 
   ++> tests-regex-matches-with-multiline-option
     matches. > @
-      compiled. (string.regex "/(^([0-9]+).*)/m")
+      compiled.
+        string.regex "/(^([0-9]+).*)/m"
       "1 bottle of water on the wall. \\n1 bottle of water."
 
   ++> tests-regex-matches-entire-pattern
@@ -126,26 +142,31 @@
 
   ++> tests-regex-matches-with-regex-unix-lines
     matches. > @
-      compiled. (string.regex "/(.+)/d")
+      compiled.
+        string.regex "/(.+)/d"
       "A\\r\\nB\\rC\\nD"
 
   ++> tests-regex-matches-with-regex-case-insensitive-and-caps
     matches. > @
-      compiled. (string.regex "/(word)/i")
+      compiled.
+        string.regex "/(word)/i"
       "WORD"
 
   ++> tests-regex-ignores-comments-in-string
     matches. > @
-      compiled. (string.regex "/(\\d) #ignore this comment/x")
+      compiled.
+        string.regex "/(\\d) #ignore this comment/x"
       "4"
 
   ++> tests-regex-matches-with-unicode-case-and-insensitive
     matches. > @
-      compiled. (string.regex "/(yildirim)/ui")
+      compiled.
+        string.regex "/(yildirim)/ui"
       "Yıldırım"
 
   ++> throws-on-missing-first-slash-in-regex
-    compiled. (string.regex "(.)+") > @
+    compiled. > @
+      string.regex "(.)+"
 
   ++> throws-on-missing-closing-slash-in-regex
     compiled. (string.regex "/pattern") > @
@@ -170,13 +191,18 @@
   ++> tests-regex-contains-valid-groups-on-each-matched-block
     and. > @
       and.
-        and. (first.count.eq 3) (eq. (first.group 1) "hello")
+        and.
+          first.count.eq 3
+          eq. (first.group 1) "hello"
         eq. (first.group 2) "1"
       and.
-        and. (second.count.eq 3) (eq. (second.group 1) "world")
+        and.
+          second.count.eq 3
+          eq. (second.group 1) "world"
         eq. (second.group 2) "2"
     next. > first
       match.
-        compiled. (string.regex "/([a-z]+)([1-9]{1})/")
+        compiled.
+          string.regex "/([a-z]+)([1-9]{1})/"
         "!hello1!world2"
     first.next > second

@@ -29,13 +29,20 @@
       if. > @
         line.length.eq 0
         string buffer
-        rec-read ^.^.next-line (first.if (buffer.concat line) (concat. (buffer.concat separator) line)) false
+        rec-read
+          ^.^.next-line
+          first.if (buffer.concat line) (concat. (buffer.concat separator) line)
+          false
   [] > next-line
     if. (first.as-bytes.size.eq 0) "" (rec-read first --) > @
     @. (console.read 1) > first
     [input buffer] > rec-read
       if. > @
-        or. (char.eq --) (or. (and. (char.eq "\r") (next.as-bytes.eq "\n")) (char.eq "\n"))
+        or.
+          char.eq --
+          or.
+            and. (char.eq "\r") (next.as-bytes.eq "\n")
+            char.eq "\n"
         string buffer
         rec-read next (buffer.concat char)
       input.as-bytes > char

@@ -37,7 +37,9 @@
   [st-mode st-size] > stat
   [sin-family sin-port sin-addr] > sockaddr-in
     00-00-00-00-00-00-00-00 > sin-zero
-    plus. (plus. (sin-family.size.plus sin-port.size) sin-addr.size) sin-zero.size > size
+    plus. > size
+      plus. (sin-family.size.plus sin-port.size) sin-addr.size
+      sin-zero.size
 
   ++> tests-invokes-getpid-correctly
     os.is-windows.or > @

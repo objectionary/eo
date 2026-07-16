@@ -32,7 +32,11 @@
           times.
             floor. (bval.div 16)
             16
-  if. (h.lt 10) (as-char (h.plus 48)) (as-char (h.plus 55)) > [h] > hex-digit
+  [h] > hex-digit
+    if. > @
+      h.lt 10
+      as-char (h.plus 48)
+      as-char (h.plus 55)
 
   ++> tests-writes-single-byte
     eq. > @

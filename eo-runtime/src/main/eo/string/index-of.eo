@@ -18,7 +18,8 @@
           not. (sub.eq txt)
       found.eq -1
     -1
-    length. (string (slice txt 0 found))
+    length.
+      string (slice txt 0 found)
   minus. (number tlen) slen > end!
   rec-index-of 0 > found!
   sub.size > slen!

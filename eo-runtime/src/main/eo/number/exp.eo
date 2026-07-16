@@ -11,16 +11,28 @@
   power e num > @
 
   ++> tests-exp-check-n0
-    lt. (abs (e.minus (number.exp 1))) 1.0E-8 > @
+    lt. > @
+      abs
+        e.minus (number.exp 1)
+      1.0E-8
 
   ++> tests-exp-check-n1
-    lt. (abs (minus. (div. 1 e) (number.exp -1))) 1.0E-8 > @
+    lt. > @
+      abs
+        minus. (div. 1 e) (number.exp -1)
+      1.0E-8
 
   ++> tests-exp-check-n2
-    lt. (abs (minus. (power e 5) (number.exp 5))) 1.0E-7 > @
+    lt. > @
+      abs
+        minus. (power e 5) (number.exp 5)
+      1.0E-7
 
   ++> tests-exp-check-n3
-    lt. (abs (minus. (power e -10) (number.exp -10))) 1.0E-12 > @
+    lt. > @
+      abs
+        minus. (power e -10) (number.exp -10)
+      1.0E-12
 
   ++> tests-exp-check-nan
     is-nan. (number.exp nan) > @

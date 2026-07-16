@@ -15,9 +15,12 @@
     eq. (buffer "Hello") "Hello" > @
 
   ++> tests-buffer-builds-simple-string
-    eq. (with. (with. (buffer "Hello") ", ") "Jeff") "Hello, Jeff" > @
+    eq. > @
+      with. (with. (buffer "Hello") ", ") "Jeff"
+      "Hello, Jeff"
 
   ++> tests-buffer-decorates-string-after-building
     eq. > @
-      length. (with. (buffer "Hi, ") "Mark")
+      length.
+        with. (buffer "Hi, ") "Mark"
       8

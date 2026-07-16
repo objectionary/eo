@@ -10,13 +10,18 @@
 
 [text items] > joined
   string bts > @
-  if. (items.length.eq 0) -- (with-delimiter items.head items.tail) > bts!
+  if. > bts!
+    items.length.eq 0
+    --
+    with-delimiter items.head items.tail
   text > delimiter!
   [acc tup] > with-delimiter
     if. > @
       tup.length.eq 0
       acc
-      with-delimiter (concat. (concat. (dataized tup.head) delimiter) acc) tup.tail
+      with-delimiter
+        concat. (concat. (dataized tup.head) delimiter) acc
+        tup.tail
 
   ++> tests-joined-no-strings
     eq. "" (string.joined "-" tuple.empty) > @

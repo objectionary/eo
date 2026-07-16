@@ -10,7 +10,9 @@
 [n] > is-finite
   n.is-nan.not.and > @
     not.
-      or. (n.as-bytes.eq 7F-F0-00-00-00-00-00-00) (n.as-bytes.eq FF-F0-00-00-00-00-00-00)
+      or.
+        n.as-bytes.eq 7F-F0-00-00-00-00-00-00
+        n.as-bytes.eq FF-F0-00-00-00-00-00-00
 
   ++> simple-number-is-finite
     is-finite. 32 > @

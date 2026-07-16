@@ -12,7 +12,11 @@
 +spdx SPDX-License-Identifier: MIT
 
 [text] > trimmed-left
-  if. (eq. 0 len) text (string (bts.slice idx (minus. (number len) idx))) > @
+  if. > @
+    eq. 0 len
+    text
+    string
+      bts.slice idx (minus. (number len) idx)
   text > bts!
   first-non-ws-index 0 > idx!
   bts.size > len!
@@ -29,7 +33,13 @@
   [c] > is-ws
     or. > @
       c.eq 20-
-      or. (c.eq 09-) (or. (c.eq 0A-) (or. (c.eq 0B-) (or. (c.eq 0C-) (c.eq 0D-))))
+      or.
+        c.eq 09-
+        or.
+          c.eq 0A-
+          or.
+            c.eq 0B-
+            or. (c.eq 0C-) (c.eq 0D-)
 
   ++> tests-trimmed-left-empty-text
     eq. (string.trimmed-left "") "" > @

@@ -234,7 +234,9 @@
       "hello world"
 
   ++> tests-or-neg-bytes-with-leading-zeroes
-    eq. (or. 00-00-00-00-8E-EA-4C-B1 FF-FF-FF-FF-00-00-00-00) FF-FF-FF-FF-8E-EA-4C-B1 > @
+    eq. > @
+      or. 00-00-00-00-8E-EA-4C-B1 FF-FF-FF-FF-00-00-00-00
+      FF-FF-FF-FF-8E-EA-4C-B1
 
   ++> tests-and-neg-bytes-as-number-with-leading-zeroes
     eq. > @
@@ -242,7 +244,9 @@
       0
 
   ++> tests-or-neg-bytes-without-leading-zeroes
-    eq. (or. 00-00-00-00-FF-FF-FF-FF FF-FF-FF-FF-00-00-00-00) FF-FF-FF-FF-FF-FF-FF-FF > @
+    eq. > @
+      or. 00-00-00-00-FF-FF-FF-FF FF-FF-FF-FF-00-00-00-00
+      FF-FF-FF-FF-FF-FF-FF-FF
 
   ++> tests-and-neg-bytes-as-number-without-leading-zeroes
     eq. > @
@@ -258,7 +262,9 @@
       -4294967296
 
   ++> tests-or-neg-bytes-with-one
-    eq. (or. FF-FF-FF-FF-00-00-00-00 00-00-00-00-00-00-00-01) FF-FF-FF-FF-00-00-00-01 > @
+    eq. > @
+      or. FF-FF-FF-FF-00-00-00-00 00-00-00-00-00-00-00-01
+      FF-FF-FF-FF-00-00-00-01
 
   ++> throws-on-out-of-bounds-slice
     slice. 20-1F-EE-B5-90 3 10 > @
