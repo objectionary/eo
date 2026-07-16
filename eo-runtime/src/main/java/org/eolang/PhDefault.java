@@ -396,7 +396,7 @@ public class PhDefault implements Phi, Cloneable {
      * When there's no such object, the terminated
      * computation stays terminated. When the object exists but has no free
      * positional attribute to receive the bound object (for example a nullary
-     * constant like {@code number.pi}), a clear error is raised instead of the
+     * object like {@code sm.os}), a clear error is raised instead of the
      * low-level "attribute is already set / no attributes here" message.</p>
      *
      * @param name The name of the absent attribute
@@ -413,7 +413,7 @@ public class PhDefault implements Phi, Cloneable {
                 final Phi taken = Phi.Φ.take(full.substring(PhPackage.GLOBAL.length() + 1));
                 try {
                     taken.put(0, this);
-                } catch (final ExFailure ex) {
+                } catch (final ExAbstract ex) {
                     throw new ExFailure(
                         String.format(
                             "Object '%s' takes no arguments, so it can't be applied to '%s' via the implicit '%s' form",
