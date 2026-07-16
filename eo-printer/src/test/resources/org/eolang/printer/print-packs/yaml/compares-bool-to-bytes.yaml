@@ -8,7 +8,4 @@ origin: |
       true.eq 01-
       false.eq 00-
 printed: |
-  [] > compares-bool-to-bytes
-    and. > @
-      true.eq 01-
-      false.eq 00-
+  and. (true.eq 01-) (false.eq 00-) > [] > compares-bool-to-bytes
