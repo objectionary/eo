@@ -12,69 +12,43 @@
   if. > @
     or.
       or.
-        (number slen).gt tlen
+        gt. (number slen) tlen
         and.
           slen.eq tlen
-          (sub.eq txt).not
+          not. (sub.eq txt)
       found.eq -1
     -1
-    length.
-      string
-        slice txt 0 found
-  (number tlen).minus slen > end!
+    length. (string (slice txt 0 found))
+  minus. (number tlen) slen > end!
   rec-index-of 0 > found!
   sub.size > slen!
   substring > sub!
   txt.size > tlen!
   text > txt!
-
   [idx] > rec-index-of
     if. > @
       end.eq idx
-      if.
-        includes
+      includes.if idx -1
+      includes.if
         idx
-        -1
-      if.
-        includes
-        idx
-        rec-index-of (idx.plus 1).as-number
-    eq. > includes
-      slice txt idx slen
-      sub
+        rec-index-of
+          as-number. (idx.plus 1)
+    eq. (slice txt idx slen) sub > includes
 
   ++> tests-index-of-non-existed-substring-with-more-length
-    eq. > @
-      -1
-      index-of "Hello" "Somebody"
+    eq. -1 (string.index-of "Hello" "Somebody") > @
 
   ++> tests-index-of-non-existed-substring-with-same-length
-    eq. > @
-      -1
-      index-of "Hello" "world"
+    eq. -1 (string.index-of "Hello" "world") > @
 
   ++> tests-index-of-non-existed-substring-with-utf
-    eq. > @
-      -1
-      index-of
-        "привет, друг!"
-        "x"
+    eq. -1 (string.index-of "привет, друг!" "x") > @
 
   ++> tests-index-of-existed-substring-with-utf
-    eq. > @
-      3
-      index-of
-        "привет, друг!"
-        "в"
+    eq. 3 (string.index-of "привет, друг!" "в") > @
 
   ++> tests-returns-valid-index-of-substring
-    eq. > @
-      6
-      index-of
-        "Hello \n world"
-        "\n"
+    eq. 6 (string.index-of "Hello \n world" "\n") > @
 
   ++> tests-returns-valid-index-of-substring-in-the-end
-    eq. > @
-      6
-      index-of "Hello world" "world"
+    eq. 6 (string.index-of "Hello world" "world") > @

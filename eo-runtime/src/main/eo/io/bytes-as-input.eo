@@ -30,40 +30,24 @@
 
 [bts] > bytes-as-input
   [size] > read
-    ((input-block bts --).read size).@ > @
-
+    @. (read. (input-block bts --) size) > @
     [data buffer] > input-block
       buffer > @
-
       [size] > read
         if. > @
           available.eq 0
-          input-block -- --
-          input-block
-            as-bytes.
-              data.slice
-                next
-                (number available).minus
-                  number next
-            as-bytes.
-              data.slice 0 next
+          ^.^.input-block -- --
+          ^.^.input-block
+            as-bytes. (data.slice next (minus. (number available) (number next)))
+            as-bytes. (data.slice 0 next)
         data.size > available!
-        if. > next!
-          gt.
-            number available
-            requested
-          requested
-          available
+        if. (gt. (number available) requested) requested available > next!
         size > requested!
 
   ++> tests-makes-an-input-from-bytes-and-reads
     and. > @
-      and.
-        and.
-          i1.eq 01-02-03-04
-          i2.eq 05-06-07-08
-        i3.eq F5-F6
-      (i3.read 2).eq --
-    (bytes-as-input 01-02-03-04-05-06-07-08-F5-F6).read 4 > i1
+      and. (and. (i1.eq 01-02-03-04) (i2.eq 05-06-07-08)) (i3.eq F5-F6)
+      eq. (i3.read 2) --
+    read. (io.bytes-as-input 01-02-03-04-05-06-07-08-F5-F6) 4 > i1
     i1.read 4 > i2
     i2.read 4 > i3

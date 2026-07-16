@@ -7,39 +7,33 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > back
-  ? >> list
-  ? >> index
+[list index] > back
   if. > @
-    0.gt start
+    gt. 0 start
     list
     reducedi
       list
-      *
-      [accum item idx] >>
-        if. > @
-          idx.gte start
-          accum.with item
-          accum
+      tuple.empty
+      if. (idx.gte start) (accum.with item) accum > [accum item idx] >>
   index > idx!
   list.length.minus idx > start!
 
   ++> tests-simple-back
     eq. > @
-      back
+      tuple.back
         * 1 2 3 4 5
         2
       * 4 5
 
   ++> tests-zero-index-in-back
     is-empty > @
-      back
+      tuple.back
         * 1 2 3 4 5
         0
 
   ++> tests-large-index-in-back
     eq. > @
-      back
+      tuple.back
         * 1 2 3 4 5
         10
       * 1 2 3 4 5

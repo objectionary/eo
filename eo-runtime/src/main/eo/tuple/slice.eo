@@ -8,47 +8,26 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > slice
-  ? >> list
-  ? >> start
-  ? >> end
+[list start end] > slice
   if. > @
-    (number s).gte e
-    *
+    gte. (number s) e
+    tuple.empty
     reducedi
       list
-      *
-      [accum item idx] >>
-        if. > @
-          and.
-            idx.gte s
-            idx.lt e
-          accum.with item
-          accum
+      tuple.empty
+      if. (and. (idx.gte s) (idx.lt e)) (accum.with item) accum > [accum item idx] >>
   if. > e!
     end.gte 0
-    if.
-      end.gte list.length
-      list.length
-      end
-    if.
-      list.length.neg.lte end
-      end.plus list.length
-      0
+    if. (end.gte list.length) list.length end
+    if. (list.length.neg.lte end) (end.plus list.length) 0
   if. > s!
     start.gte 0
-    if.
-      start.gte list.length
-      list.length
-      start
-    if.
-      list.length.neg.lte start
-      start.plus list.length
-      0
+    if. (start.gte list.length) list.length start
+    if. (list.length.neg.lte start) (start.plus list.length) 0
 
   ++> tests-simple-slice
     eq. > @
-      slice
+      tuple.slice
         * 1 2 3 4 5
         1
         5
@@ -56,7 +35,7 @@
 
   ++> tests-slice-with-negative-start
     eq. > @
-      slice
+      tuple.slice
         * 8 76 -3 0 3 8 -12
         -4
         6
@@ -64,15 +43,15 @@
 
   ++> tests-slice-with-negative-end
     eq. > @
-      slice
-        * "a" 2 3.0 "xyz" 82.42 7
+      tuple.slice
+        * "a" 2 3 "xyz" 82.42 7
         0
         -1
-      * "a" 2 3.0 "xyz" 82.42
+      * "a" 2 3 "xyz" 82.42
 
   ++> tests-slice-with-negative-start-and-end
     eq. > @
-      slice
+      tuple.slice
         * 8 23 0 0 "foo"
         -4
         -1
@@ -80,7 +59,7 @@
 
   ++> tests-slice-with-end-gt-length
     eq. > @
-      slice
+      tuple.slice
         * "foo" "bar" "buzz"
         1
         10
@@ -88,7 +67,7 @@
 
   ++> tests-slice-with-start-lt-negative-length
     eq. > @
-      slice
+      tuple.slice
         * 9 99 999 9999
         -10
         3
@@ -96,40 +75,40 @@
 
   ++> tests-slice-with-end-lt-negative-length
     eq. > @
-      slice
+      tuple.slice
         * "A" "b" "C" "d" "E"
         2
         -9
-      *
+      tuple.empty
 
   ++> tests-slice-with-start-gte-end-both-positive
     eq. > @
-      slice
+      tuple.slice
         * 3 "-5" 0 "foo"
         2
         0
-      *
+      tuple.empty
 
   ++> tests-slice-with-start-gte-end-both-negative
     eq. > @
-      slice
+      tuple.slice
         * 3 92 -423 0 22 943 -22
         -3
         -5
-      *
+      tuple.empty
 
   ++> tests-slice-with-negative-start-gte-end
     eq. > @
-      slice
+      tuple.slice
         * "f" 1 "b" 2 "b" 3
         -1
         3
-      *
+      tuple.empty
 
   ++> tests-slice-with-start-gte-negative-end
     eq. > @
-      slice
+      tuple.slice
         * 8 -2 33-53 -1 33 "Y"
         4
         -5
-      *
+      tuple.empty

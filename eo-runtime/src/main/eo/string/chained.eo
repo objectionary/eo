@@ -1,7 +1,7 @@
 # Returns concatenation of `text` with all `other` strings.
 # Here `others` must be a `tuple` of `strings`.
 
-+alias tuple.reduced
++alias reduced Q.tuple.reduced
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
@@ -11,10 +11,10 @@
 
 [text others] > chained
   if. > @
-    0.eq others.length
+    eq. 0 others.length
     text
     string
-      reduced
+      tuple.reduced
         others
         text.as-bytes
         accum.concat str.as-bytes > [accum str]
@@ -22,16 +22,9 @@
   ++> tests-chains-with-other-strings
     eq. > @
       "Hello, world!"
-      chained
+      string.chained
         "Hello"
-        *
-          ", "
-          "world"
-          "!"
+        * ", " "world" "!"
 
   ++> tests-returns-same-text-on-chaining-with-no-strings
-    eq. > @
-      "Some"
-      chained
-        "Some"
-        *
+    eq. "Some" (string.chained "Some" tuple.empty) > @

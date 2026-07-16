@@ -11,11 +11,7 @@
   n.times -1 > @
 
   ++> tests-positive-infinity-neg-is-negative-infinity
-    eq. > @
-      pinf.neg
-      ninf
+    pinf.neg.eq ninf > @
 
   ++> tests-negative-infinity-neg-is-positive-infinity
-    eq. > @
-      ninf.neg
-      pinf
+    ninf.neg.eq pinf > @

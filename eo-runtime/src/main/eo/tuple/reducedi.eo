@@ -10,42 +10,30 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > reducedi
-  ? >> list
-  ? >> start
-  ? >> func
-  if. > @
-    is-empty list
-    start
-    rec-reducedi list
-
+[list start func] > reducedi
+  if. (is-empty list) start (rec-reducedi list) > @
   [tup] > rec-reducedi
     if. > @
       tup.length.eq 1
-      func
-        start
-        tup.head
-        0
-      func
-        rec-reducedi tup.tail
-        tup.head
-        tup.tail.length
+      func start tup.head 0
+      func (rec-reducedi tup.tail) tup.head tup.tail.length
 
   ++> tests-reduce-list-with-index
     eq. > @
       6
-      reducedi
+      tuple.reducedi
         * 1 1
         0
         [a x i] >>
-          plus. > @
-            x
+          x.plus > @
             a.plus
-              (* 2 2).at i
+              at.
+                * 2 2
+                i
 
   ++> tests-list-reducedi-long-int-array
     eq. > @
-      reducedi
+      tuple.reducedi
         * 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
         0
         x.plus a > [a x i]
@@ -53,23 +41,17 @@
 
   ++> tests-list-reducedi-bools-array
     not. > @
-      reducedi
+      tuple.reducedi
         * true true false
         true
         x.and a > [a x i]
 
   ++> tests-list-reducedi-nested-functions
     eq. > @
-      reducedi
+      tuple.reducedi
         * 10 500
         0
         [acc x i]
           check x > @
-          [el] > check
-            if. > @
-              ^.x.lt 100
-              ^.acc.plus x
-              ^.acc.minus x
-      plus.
-        10
-        0.minus 500
+          if. (x.lt 100) (acc.plus x) (acc.minus x) > [el] > check
+      plus. 10 (minus. 0 500)

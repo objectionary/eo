@@ -1,7 +1,7 @@
 # Checks if `text` contains any element from `substrings`.
 
-+alias tuple.reduced
-+alias tuple.mapped
++alias reduced Q.tuple.reduced
++alias mapped Q.tuple.mapped
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
@@ -10,8 +10,8 @@
 +spdx SPDX-License-Identifier: MIT
 
 [text substrings] > contains-any
-  reduced > @
-    mapped
+  tuple.reduced > @
+    tuple.mapped
       substrings
       contains txt x > [x] >>
     false
@@ -19,21 +19,23 @@
   text > txt!
 
   ++> tests-successful-contains-any
-    contains-any "Good morning" (* "oo" "goo") > @
+    string.contains-any > @
+      "Good morning"
+      * "oo" "goo"
 
   ++> tests-not-contains-any
     not. > @
-      contains-any "xyzw" (* "yx" "zyx" "wx" "abc")
+      string.contains-any
+        "xyzw"
+        * "yx" "zyx" "wx" "abc"
 
   ++> tests-contains-any-vert
-    contains-any > @
+    string.contains-any > @
       "foo bar buzz"
       * "bar" " " "o"
 
   ++> test-contains-any-without-substrings
-    not. > @
-      contains-any "text" *
+    not. (string.contains-any "text" tuple.empty) > @
 
   ++> tests-contains-any-for-empty-text-and-without-substrings
-    not. > @
-      contains-any "" *
+    not. (string.contains-any "" tuple.empty) > @

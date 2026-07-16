@@ -7,7 +7,7 @@
 # takes the first environment variable in the list TMP, TEMP, USERPROFILE.
 # If none of these are found, it returns the Windows directory (C:\Windows).
 
-+alias sm.os
++alias os Q.sm.os
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -19,42 +19,24 @@
     file
       string
         [] >>!
-          if. > @
-            os.is-windows
-            if.
-              tmp.eq empty
-              if.
-                temp.eq empty
-                if.
-                  userprofile.eq empty
-                  "C:\\Windows"
-                  userprofile
-                temp
-              tmp
-            if.
-              tmpdir.eq empty
-              if.
-                tmp.eq empty
-                if.
-                  temp.eq empty
-                  if.
-                    tempdir.eq empty
-                    "/tmp"
-                    tempdir
-                  temp
-                tmp
-              tmpdir
+          sm.os.is-windows.if > @
+            if. (tmp.eq empty) (if. (temp.eq empty) (if. (userprofile.eq empty) "C:\\Windows" userprofile) temp) tmp
+            if. (tmpdir.eq empty) (if. (tmp.eq empty) (if. (temp.eq empty) (if. (tempdir.eq empty) "/tmp" tempdir) temp) tmp) tmpdir
           -- > empty
-          getenv "TEMP" > temp!
-          getenv "TEMPDIR" > tempdir!
-          getenv "TMP" > tmp!
-          getenv "TMPDIR" > tmpdir!
-          getenv "USERPROFILE" > userprofile!
+          as-bytes. (dataized (getenv "TEMP")) > temp
+          as-bytes. (dataized (getenv "TEMPDIR")) > tempdir
+          as-bytes. (dataized (getenv "TMP")) > tmp
+          as-bytes. (dataized (getenv "TMPDIR")) > tmpdir
+          as-bytes. (dataized (getenv "USERPROFILE")) > userprofile
 
-  mktemp.exists > [] +> global-temp-dir-exists
+  ++> global-temp-dir-exists
+    mktemp.exists > @
 
-  mktemp.is-directory > [] +> global-temp-dir-is-directory
+  ++> global-temp-dir-is-directory
+    mktemp.is-directory > @
 
-  mktemp.path.eq mktemp.path > [] +> returns-the-same-tmpdir
+  ++> returns-the-same-tmpdir
+    mktemp.path.eq mktemp.path > @
 
-  mktemp.tmpfile.exists > [] +> creates-tmpfile
+  ++> creates-tmpfile
+    mktemp.tmpfile.exists > @

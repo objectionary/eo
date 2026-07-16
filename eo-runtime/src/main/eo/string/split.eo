@@ -8,65 +8,49 @@
 +spdx SPDX-License-Identifier: MIT
 
 [text delimiter] > split
-  if. > @
-    len.eq 0
-    *
-    rec-split * 0 0
+  if. (len.eq 0) tuple.empty (rec-split tuple.empty 0 0) > @
   text > bts!
   delimiter > delim!
   delim.size > delim-size!
   bts.size > len!
-
   [accum start current] > rec-split
     if. > @
       len.eq current
-      accum.with > appended
-        string
-          slice
-            bts
-            start
-            current.minus start
+      appended
       if.
-        or.
-          delim-size.eq 0
-          (current.plus delim-size).gt len
+        or. (delim-size.eq 0) (gt. (current.plus delim-size) len)
         rec-split
           accum
           start
-          (current.plus 1).as-number
+          as-number. (current.plus 1)
         if.
-          delim.eq
-            slice bts current delim-size
+          delim.eq (slice bts current delim-size)
           rec-split
             appended
-            (current.plus delim-size).as-number
-            (current.plus delim-size).as-number
+            as-number. (current.plus delim-size)
+            as-number. (current.plus delim-size)
           rec-split
             accum
             start
-            (current.plus 1).as-number
+            as-number. (current.plus 1)
+    accum.with (string (slice bts start (current.minus start))) > appended
 
   ++> tests-splits-text-by-dash
     eq. > @
-      split "a-b-c" "-"
+      string.split "a-b-c" "-"
       * "a" "b" "c"
 
   ++> tests-splits-text-with-empty-strings
     eq. > @
-      split "-a-b-" "-"
+      string.split "-a-b-" "-"
       * "" "a" "b" ""
 
   ++> tests-splits-and-returns-strings
     eq. > @
-      length.
-        at.
-          split
-            "hello world!"
-            " "
-          1
+      length. (at. (string.split "hello world!" " ") 1)
       6
 
   ++> tests-splits-text-by-multi-char-delimiter
     eq. > @
-      split "a::b::c" "::"
+      string.split "a::b::c" "::"
       * "a" "b" "c"

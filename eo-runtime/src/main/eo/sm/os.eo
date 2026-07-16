@@ -1,6 +1,6 @@
 # Represents the current operating system.
 
-+alias string.regex
++alias regex Q.string.regex
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package sm
@@ -13,20 +13,14 @@
 
 [] > os
   name > @
-
   [] > is-windows
-    and. > @
-      oname.size.gt 6
-      (oname.slice 0 7).eq "Windows"
+    and. (oname.size.gt 6) (eq. (oname.slice 0 7) "Windows") > @
     name > oname!
-  ((regex "/linux/i").matches name).as-bool > is-linux
-  ((regex "/mac/i").matches name).as-bool > is-macos
-
+  as-bool. > is-linux
+    matches. (string.regex "/linux/i") name
+  as-bool. > is-macos
+    matches. (string.regex "/mac/i") name
   [] > name /string
 
   ++> tests-checks-os-family
-    or. > @
-      or.
-        os.is-windows
-        os.is-macos
-      os.is-linux
+    or. (sm.os.is-windows.or sm.os.is-macos) sm.os.is-linux > @

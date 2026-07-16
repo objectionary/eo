@@ -1,6 +1,6 @@
 # Returns the `text` in upper case.
 
-+alias tuple.reduced
++alias reduced Q.tuple.reduced
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
@@ -11,19 +11,16 @@
 
 [text] > up-cased
   string > @
-    reduced
+    tuple.reduced
       text.as-bytes.array
       --
       [accum byte] >>
         accum.concat > @
           if.
-            and.
-              code.lte maxcode
-              code.gte mincode
+            and. (code.lte maxcode) (code.gte mincode)
             slice.
               as-bytes.
-                as-i64.
-                  code.minus distance
+                as-i64. (code.minus distance)
               7
               1
             byte
@@ -35,11 +32,7 @@
   as-ascii "a" > mincode!
 
   ++> tests-converts-text-to-upper-case
-    eq. > @
-      "HELLO"
-      up-cased "hello"
+    eq. "HELLO" (string.up-cased "hello") > @
 
   ++> tests-converts-text-with-upper-letters-to-upper-case
-    eq. > @
-      "HELLO"
-      up-cased "HeLlO"
+    eq. "HELLO" (string.up-cased "HeLlO") > @

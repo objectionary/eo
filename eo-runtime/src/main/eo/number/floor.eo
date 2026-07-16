@@ -10,56 +10,49 @@
 
 [n] > floor
   if. > @
-    or.
-      n.is-finite.not
-      or.
-        n.gte 4503599627370496
-        n.lte -4503599627370496
+    n.is-finite.not.or (or. (n.gte 4503599627370496) (n.lte -4503599627370496))
     n
-    if.
-      trunc.gt n
-      trunc.minus 1
-      trunc
+    if. (trunc.gt n) (trunc.minus 1) trunc
   n.as-i64.as-number > trunc
 
   ++> tests-floor-positive-fraction
     eq. > @
-      3.7.floor
+      floor. 3.7
       3
 
   ++> tests-floor-negative-fraction
     eq. > @
-      -3.7.floor
+      floor. -3.7
       -4
 
   ++> tests-floor-negative-small-fraction
     eq. > @
-      -0.1.floor
+      floor. -0.1
       -1
 
   ++> tests-floor-of-integer
     eq. > @
-      42.floor
+      floor. 42
       42
 
   ++> tests-floor-of-negative-integer
     eq. > @
-      -5.floor
+      floor. -5
       -5
 
   ++> tests-floor-of-large-positive-integer
     eq. > @
-      100000000000000000000.floor
+      floor. 100000000000000000000
       100000000000000000000
 
   ++> tests-floor-of-large-negative-integer
     eq. > @
-      -100000000000000000000.floor
+      floor. -100000000000000000000
       -100000000000000000000
 
   ++> tests-floor-of-zero
     eq. > @
-      0.floor
+      floor. 0
       0
 
   ++> tests-positive-infinity-floor-is-equal-to-self

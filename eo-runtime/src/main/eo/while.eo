@@ -31,16 +31,14 @@
 
 [condition body] > while
   if. > @
-    (condition 0).as-bool
+    as-bool. (condition 0)
     loop 0
     false
-
   [index] > loop
     if. > @
-      (condition (index.plus 1)).as-bool
-      seq *
-        current
-        loop (index.plus 1)
+      as-bool. (condition (index.plus 1))
+      seq
+        * current (loop (index.plus 1))
       current
     body index > current
 
@@ -76,14 +74,14 @@
         0
         [m]
           while > @
-            2.gt m > [i] >>
+            gt. 2 m > [i] >>
             m.put (m.as-number.plus 1) > [i] >>
       3
 
   ++> tests-last-while-dataization-object-with-false-condition
     not. > @
       while
-        1.gt 2 > [i]
+        gt. 1 2 > [i]
         true > [i]
 
   ++> tests-while-simple-iteration
@@ -106,20 +104,13 @@
           0
           [iter] >>
             if. > @
-              max.eq 0
-              acc.put
-                acc.as-number.plus
-                  arr.at 0
+              ^.^.max.eq 0
+              acc.put (acc.as-number.plus (^.^.arr.at 0))
               while
-                max.gt iter > [i] >>
+                ^.^.^.max.gt iter > [i] >>
                 [i] >>
                   seq > @
-                    *
-                      acc.put
-                        acc.as-number.plus
-                          arr.at i
-                      iter.put
-                        iter.as-number.plus 1
+                    * (^.^.acc.put (^.^.acc.as-number.plus (^.^.^.arr.at i))) (iter.put (iter.as-number.plus 1))
     arr.length.plus -1 > max
 
   ++> tests-iterating-tuple-with-while-using-external-iterator
@@ -132,15 +123,10 @@
           0
           [iter] >>
             while > @
-              max.gt iter > [i] >>
+              ^.^.^.max.gt iter > [i] >>
               [i] >>
                 seq > @
-                  *
-                    acc.put
-                      acc.as-number.plus
-                        arr.at iter
-                    iter.put
-                      iter.as-number.plus 1
+                  * (^.^.acc.put (^.^.acc.as-number.plus (^.^.^.arr.at iter))) (iter.put (iter.as-number.plus 1))
     arr.length.plus -1 > max
 
   ++> tests-iterating-tuple-with-while-without-body-multiple
@@ -157,16 +143,9 @@
                 while
                   [i] >>
                     if. > @
-                      max.gt iter
+                      ^.^.^.max.gt iter
                       seq
-                        *
-                          acc.put
-                            acc.as-number.plus
-                              arr.at
-                                iter.as-number
-                          iter.put
-                            iter.as-number.plus 1
-                          true
+                        * (^.^.acc.put (^.^.acc.as-number.plus (^.^.^.arr.at iter.as-number))) (iter.put (iter.as-number.plus 1)) true
                       false
                   true > [i]
                 acc
@@ -186,16 +165,9 @@
                 while
                   [i] >>
                     if. > @
-                      max.gt iter
+                      ^.^.^.max.gt iter
                       seq
-                        *
-                          acc.put
-                            acc.as-number.plus
-                              arr.at
-                                iter.as-number
-                          iter.put
-                            iter.as-number.plus 1
-                          true
+                        * (^.^.acc.put (^.^.acc.as-number.plus (^.^.^.arr.at iter.as-number))) (iter.put (iter.as-number.plus 1)) true
                       false
                   true > [i]
                 acc

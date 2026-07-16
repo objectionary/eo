@@ -7,31 +7,25 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > is-empty
-  ? >> list
-  0.eq list.length > @
+[list] > is-empty
+  eq. 0 list.length > @
 
   ++> tests-list-should-not-be-empty
     not. > @
-      is-empty
+      tuple.is-empty
         * 1 2
 
   ++> list-should-be-empty
-    is-empty > @
-      *
+    tuple.is-empty tuple.empty > @
 
   ++> tests-list-should-not-be-empty-with-three-objects
-    not. > @
-      is-empty
-        xs
+    not. (tuple.is-empty xs) > @
     * > xs
       [x]
       [y]
       [z]
 
   ++> tests-list-should-not-be-empty-with-one-anon-object
-    not. > @
-      is-empty
-        xs
+    not. (tuple.is-empty xs) > @
     * > xs
       [f]

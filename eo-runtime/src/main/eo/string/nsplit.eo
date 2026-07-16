@@ -11,102 +11,76 @@
 
 [text delimiter limit cant-split] > nsplit
   if. > @
-    1.gt limit
+    gt. 1 limit
     cant-split
-      "Invalid limit %d for nsplit, must be at least 1".printf
+      printf.
+        "Invalid limit %d for nsplit, must be at least 1"
         * limit
     if.
       text.size.eq 0
-      *
+      tuple.empty
       if.
-        1.eq limit
+        eq. 1 limit
         * text
-        rec-nsplit * 0 0 0
+        rec-nsplit tuple.empty 0 0 0
   delimiter.size > delimiter-size!
-
   [accum start current count] > rec-nsplit
     if. > @
       text.size.eq current
-      accum.with > appended
-        string
-          slice
-            text
-            start
-            current.minus start
+      appended
       if.
-        or.
-          delimiter-size.eq 0
-          (current.plus delimiter-size).gt text.size
+        or. (delimiter-size.eq 0) (gt. (current.plus delimiter-size) text.size)
         rec-nsplit
           accum
           start
-          (current.plus 1).as-number
+          as-number. (current.plus 1)
           count
         if.
           and.
-            delimiter.eq
-              slice text current delimiter-size
-            (number count).lt
-              (number limit).minus 1
+            delimiter.eq (slice text current delimiter-size)
+            lt. (number count) (minus. (number limit) 1)
           rec-nsplit
             appended
-            (current.plus delimiter-size).as-number
-            (current.plus delimiter-size).as-number
-            (count.plus 1).as-number
+            as-number. (current.plus delimiter-size)
+            as-number. (current.plus delimiter-size)
+            as-number. (count.plus 1)
           rec-nsplit
             accum
             start
-            (current.plus 1).as-number
+            as-number. (current.plus 1)
             count
+    accum.with (string (slice text start (current.minus start))) > appended
 
   ++> tests-nsplit-with-limit-two
     eq. > @
-      nsplit
-        "Cookie: a=1; b=2"
-        " "
-        2
+      string.nsplit "Cookie: a=1; b=2" " " 2
       * "Cookie:" "a=1; b=2"
 
   ++> tests-nsplit-with-dashes-limit-two
     eq. > @
-      nsplit
-        "a-b-c-d"
-        "-"
-        2
+      string.nsplit "a-b-c-d" "-" 2
       * "a" "b-c-d"
 
   ++> tests-nsplit-with-limit-one
     eq. > @
-      nsplit
-        "a-b-c"
-        "-"
-        1
+      string.nsplit "a-b-c" "-" 1
       * "a-b-c"
 
   ++> tests-nsplit-with-high-limit
     eq. > @
-      nsplit
-        "a-b-c"
-        "-"
-        10
+      string.nsplit "a-b-c" "-" 10
       * "a" "b" "c"
 
   ++> throws-on-nsplit-with-limit-zero
-    nsplit > @
-      "text"
-      "-"
-      0
+    string.nsplit "text" "-" 0 > @
 
   ++> throws-on-nsplit-with-negative-limit
-    nsplit > @
-      "text"
-      "-"
-      -1
+    string.nsplit "text" "-" -1 > @
 
   ++> tests-nsplit-invalid-limit-returns-provided-fallback
     eq. > @
       "fallback"
-      nsplit
+      string.nsplit
         "text"
         "-"
         0
@@ -114,16 +88,10 @@
 
   ++> tests-nsplit-with-empty-strings
     eq. > @
-      nsplit
-        "-a-b-c"
-        "-"
-        3
+      string.nsplit "-a-b-c" "-" 3
       * "" "a" "b-c"
 
   ++> tests-nsplit-with-multi-char-delimiter
     eq. > @
-      nsplit
-        "a::b::c::d"
-        "::"
-        2
+      string.nsplit "a::b::c::d" "::" 2
       * "a" "b::c::d"

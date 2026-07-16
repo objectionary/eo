@@ -8,49 +8,40 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > index-of
-  ? >> list
-  ? >> wanted
+[list wanted] > index-of
   number > @
     recidx list
-
   [tup] > recidx
     if. > @
       tup.length.eq 0
       -1
-      if.
-        next.eq -1
-        if.
-          tup.head.eq wanted
-          tup.tail.length
-          -1
-        next
+      if. (next.eq -1) (if. (tup.head.eq wanted) tup.tail.length -1) next
     recidx tup.tail > next!
 
   ++> tests-returns-index-of
     eq. > @
       1
-      index-of
+      tuple.index-of
         * 1 2 3
         2
 
   ++> tests-returns-first-index-of-element
     eq. > @
       0
-      index-of
+      tuple.index-of
         * -1 2 -1
         -1
 
   ++> tests-does-not-find-index-of
     eq. > @
       -1
-      index-of
+      tuple.index-of
         * "qwerty" 2 3
         7
 
   ++> tests-finds-index-of-string
     eq. > @
       1
-      index-of
+      tuple.index-of
         * "asdfgh" "qwerty" 3
         "qwerty"

@@ -227,6 +227,7 @@
             <id>compile</id>
             <goals>
               <goal>register</goal>
+              <goal>format</goal>
               <goal>compile</goal>
               <goal>transpile</goal>
               <goal>atoms-table</goal>

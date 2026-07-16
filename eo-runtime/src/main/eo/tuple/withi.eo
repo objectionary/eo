@@ -7,23 +7,14 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > withi
-  ? >> list
-  ? >> index
-  ? >> item
+[list index item] > withi
   concat > @
-    with
-      front
-        list
-        index
-      item
-    back
-      list
-      list.length.minus index
+    with (front list index) item
+    back list (list.length.minus index)
 
   ++> tests-simple-insert
     eq. > @
-      withi
+      tuple.withi
         * 1 2 3 4 5
         3
         "hello"
@@ -31,7 +22,7 @@
 
   ++> tests-insert-with-zero-index
     eq. > @
-      withi
+      tuple.withi
         * 1 2 3 4 5
         0
         "hello"

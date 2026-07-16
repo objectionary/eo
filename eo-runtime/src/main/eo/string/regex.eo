@@ -26,176 +26,157 @@
 
 [expression] > regex
   compile > @
-
-  [] > compile /Q.string.regex.pattern
-    ? > cant-compile /{string}
-
+  [cant-compile] > compile /string.regex.pattern
   [serialized] > pattern
     pattern serialized > compiled
-
-    (match txt).next.exists > [txt] > matches
-
+    [txt] > matches
+      exists. > @
+        next. (match txt)
     [txt] > match
-      (matched-from-index 1 0).matched > next
-
-      [position start] > matched-from-index /Q.string.regex.pattern.match.matched
-
+      matched. (matched-from-index 1 0) > next
+      [position start] > matched-from-index /string.regex.pattern.match.matched
       [position start from to groups] > matched
         groups.length > count
         start.gte 0 > exists
         $ > matched
-        if. > next
-          exists
-          matched.
-            matched-from-index
-              position.plus 1
-              to
+        exists.if > next
+          matched. (matched-from-index (position.plus 1) to)
           T "Matched block does not exist, can't get next"
-        if. > text
-          exists
-          group 0
-          T "Matched block does not exist, can't get text"
-
+        exists.if (group 0) (T "Matched block does not exist, can't get text") > text
         groups.at index > [index] > group
 
   ++> tests-matches-regex-against-the-pattern
-    (regex "/[a-z]+/").compiled.matches "hello" > @
+    matches. > @
+      compiled. (string.regex "/[a-z]+/")
+      "hello"
 
   ++> tests-does-not-matches-regex-against-the-pattern
-    ((regex "/[a-z]+/").compiled.matches "123").not > @
+    not. > @
+      matches.
+        compiled. (string.regex "/[a-z]+/")
+        "123"
 
   ++> tests-matched-sequence-has-right-border-indexes
-    and. > @
-      0.eq n.start
-      and.
-        1.eq n.from
-        6.eq n.to
-    ((regex "/[a-z]+/").match "!hello!").next > n
+    and. (eq. 0 n.start) (and. (eq. 1 n.from) (eq. 6 n.to)) > @
+    next. (match. (string.regex "/[a-z]+/") "!hello!") > n
 
   ++> tests-regex-returns-valid-matched-string-sequence
-    ((regex "/[a-z]+/").match "!hello!").next.text.eq "hello" > @
+    eq. > @
+      text.
+        next. (match. (string.regex "/[a-z]+/") "!hello!")
+      "hello"
 
   ++> tests-regex-returns-valid-second-matched-block
     and. > @
       and.
-        and.
-          and.
-            second.text.eq "world"
-            second.position.eq 2
-          second.start.eq 6
+        and. (and. (second.text.eq "world") (second.position.eq 2)) (second.start.eq 6)
         second.from.eq 7
       second.to.eq 12
-    ((regex "/[a-z]+/").match "!hello!world!").next.next > second
+    next. > second
+      next. (match. (string.regex "/[a-z]+/") "!hello!world!")
 
   ++> throws-on-getting-next-on-not-matched-block
-    ((regex "/[a-z]+/").match "123").next.next > @
+    next. > @
+      next. (match. (string.regex "/[a-z]+/") "123")
 
   ++> throws-on-getting-from-position-on-not-matched-block
-    ((regex "/[a-z]+/").match "123").next.from > @
+    from. > @
+      next. (match. (string.regex "/[a-z]+/") "123")
 
   ++> throws-on-getting-to-position-on-not-matched-block
-    ((regex "/[a-z]+/").match "123").next.to > @
+    to. > @
+      next. (match. (string.regex "/[a-z]+/") "123")
 
   ++> throws-on-getting-groups-count-on-not-matched-block
-    ((regex "/[a-z]+/").match "123").next.count > @
+    count. > @
+      next. (match. (string.regex "/[a-z]+/") "123")
 
   ++> throws-on-getting-groups-on-not-matched-block
-    ((regex "/[a-z]+/").match "123").next.groups > @
+    groups. > @
+      next. (match. (string.regex "/[a-z]+/") "123")
 
   ++> throws-on-getting-specified-group-on-not-matched-block
-    ((regex "/[a-z]+/").match "123").next.group 1 > @
+    group. > @
+      next. (match. (string.regex "/[a-z]+/") "123")
+      1
 
   ++> throws-on-getting-text-on-not-matched-block
-    ((regex "/[a-z]+/").match "123").next.text > @
+    text. > @
+      next. (match. (string.regex "/[a-z]+/") "123")
 
   ++> tests-regex-matches-dotall-option
-    regex
-      "/(.*)/s"
-    .compiled
-    .matches > @
+    matches. > @
+      compiled. (string.regex "/(.*)/s")
       "too \\n many \\n line \\n Feed\\n"
 
   ++> tests-regex-matches-with-case-insensitive-option
-    regex
-      "/(string)/i"
-    .compiled
-    .matches > @
+    matches. > @
+      compiled. (string.regex "/(string)/i")
       "StRiNg"
 
   ++> tests-regex-matches-with-multiline-option
-    regex
-      "/(^([0-9]+).*)/m"
-    .compiled
-    .matches > @
+    matches. > @
+      compiled. (string.regex "/(^([0-9]+).*)/m")
       "1 bottle of water on the wall. \\n1 bottle of water."
 
   ++> tests-regex-matches-entire-pattern
-    regex
-      "/[0-9]/\\d+/"
-    .compiled
-    .matches > @
+    matches. > @
+      compiled. (string.regex "/[0-9]/\\d+/")
       "2/75"
 
   ++> tests-regex-matches-with-regex-unix-lines
-    regex
-      "/(.+)/d"
-    .compiled
-    .matches > @
+    matches. > @
+      compiled. (string.regex "/(.+)/d")
       "A\\r\\nB\\rC\\nD"
 
   ++> tests-regex-matches-with-regex-case-insensitive-and-caps
-    regex
-      "/(word)/i"
-    .compiled
-    .matches > @
+    matches. > @
+      compiled. (string.regex "/(word)/i")
       "WORD"
 
   ++> tests-regex-ignores-comments-in-string
-    regex
-      "/(\\d) #ignore this comment/x"
-    .compiled
-    .matches > @
+    matches. > @
+      compiled. (string.regex "/(\\d) #ignore this comment/x")
       "4"
 
   ++> tests-regex-matches-with-unicode-case-and-insensitive
-    regex
-      "/(yildirim)/ui"
-    .compiled
-    .matches > @
+    matches. > @
+      compiled. (string.regex "/(yildirim)/ui")
       "Yıldırım"
 
   ++> throws-on-missing-first-slash-in-regex
-    (regex "(.)+").compiled > @
+    compiled. (string.regex "(.)+") > @
 
   ++> throws-on-missing-closing-slash-in-regex
-    (regex "/pattern").compiled > @
+    compiled. (string.regex "/pattern") > @
 
   ++> tests-invalid-regex-syntax-returns-provided-fallback
     eq. > @
       "recovered"
-      (regex "/[a-z/").compile
+      compile.
+        string.regex "/[a-z/"
         "recovered" > [msg]
 
   ++> tests-missing-slash-returns-provided-fallback
     eq. > @
       "no-slash"
-      (regex "(.)+").compile
+      compile.
+        string.regex "(.)+"
         "no-slash" > [msg]
 
   ++> throws-on-compiling-invalid-regex-without-fallback
-    (regex "/[a-z/").compile > @
+    compile. (string.regex "/[a-z/") > @
 
   ++> tests-regex-contains-valid-groups-on-each-matched-block
     and. > @
       and.
-        and.
-          first.count.eq 3
-          (first.group 1).eq "hello"
-        (first.group 2).eq "1"
+        and. (first.count.eq 3) (eq. (first.group 1) "hello")
+        eq. (first.group 2) "1"
       and.
-        and.
-          second.count.eq 3
-          (second.group 1).eq "world"
-        (second.group 2).eq "2"
-    ((regex "/([a-z]+)([1-9]{1})/").compiled.match "!hello1!world2").next > first
+        and. (second.count.eq 3) (eq. (second.group 1) "world")
+        eq. (second.group 2) "2"
+    next. > first
+      match.
+        compiled. (string.regex "/([a-z]+)([1-9]{1})/")
+        "!hello1!world2"
     first.next > second

@@ -14,54 +14,37 @@
 [as-bytes] > i64
   as-bytes > @
   as-i32.as-i16 > as-i16
-  times -1.as-i64 > neg
-
+  times > neg
+    as-i64. -1
   [cant-convert] > as-i32
     if. > @
       ^.eq left.as-i64
       left
       cant-convert
-        "Can't convert i64 number %d to i32 because it's out of i32 bounds".printf
+        printf.
+          "Can't convert i64 number %d to i32 because it's out of i32 bounds"
           * as-number
     i32 (as-bytes.slice 4 4) > left
-
   [] > as-number /number
-
-  [x] > lt
-    gt. > @
-      i64 x.as-bytes
-      ^
-
+  gt. (i64 x.as-bytes) ^ > [x] > lt
   [x] > lte
-    or. > @
-      lt value
-      ^.eq value
+    or. (lt value) (^.eq value) > @
     x > value!
-
   [x] > gt
-    if. > @
-      signs-differ
+    signs-differ.if > @
       self-sign-clear
-      and.
-        difference-sign-clear
-        (difference.as-bytes.eq zero).not
-    ^.minus x > difference
+      difference-sign-clear.and
+        not. (difference.as-bytes.eq zero)
+    minus x > difference
     00-00-00-00-00-00-00-00 > zero
     80-00-00-00-00-00-00-00 > sign-mask
-    ^.as-bytes.and sign-mask > self-sign
-    not. > signs-differ
-      eq.
-        self-sign
-        x.as-bytes.and sign-mask
+    as-bytes.and sign-mask > self-sign
+    not. (self-sign.eq (x.as-bytes.and sign-mask)) > signs-differ
     self-sign.eq zero > self-sign-clear
-    (difference.as-bytes.and sign-mask).eq zero > difference-sign-clear
-
+    eq. (difference.as-bytes.and sign-mask) zero > difference-sign-clear
   [x] > gte
-    or. > @
-      gt value
-      ^.eq value
+    or. (gt value) (^.eq value) > @
     x > value!
-
   [x] > times
     looped 00-00-00-00-00-00-00-00 as-bytes x.as-bytes > @
     [acc a b] > looped
@@ -70,229 +53,262 @@
         i64 acc
         looped
           if.
-            (b.and 00-00-00-00-00-00-00-01).eq 00-00-00-00-00-00-00-01
-            ((i64 acc).plus (i64 a)).as-bytes
+            eq. (b.and 00-00-00-00-00-00-00-01) 00-00-00-00-00-00-00-01
+            as-bytes. (plus. (i64 acc) (i64 a))
             acc
           a.left 1
           b.right 1
-
   [x] > plus /i64
-
   [x] > minus
-    plus (i64 value).neg > @
+    plus > @
+      neg. (i64 value)
     x > value!
-
-  [x] > div /i64
-    ? > cant-divide /{string}
+  [x cant-divide] > div /i64
 
   ++> tests-i64-has-valid-bytes
     eq. > @
-      42.as-i64.as-bytes
+      as-bytes.
+        as-i64. 42
       00-00-00-00-00-00-00-2A
 
   ++> tests-i64-as-bytes-is-not-equal-to-number-bytes
     not. > @
       eq.
-        i64 234.as-bytes
-        234.as-i64.as-bytes
+        i64
+          as-bytes. 234
+        as-bytes.
+          as-i64. 234
 
   ++> tests-i64-to-i32-and-back
     eq. > @
-      234.as-i64
-      234.as-i64.as-i32.as-i64
+      as-i64. 234
+      as-i64.
+        as-i32.
+          as-i64. 234
 
   ++> tests-negative-i64-to-i32-and-back
     eq. > @
-      -234.as-i64
-      -234.as-i64.as-i32.as-i64
+      as-i64. -234
+      as-i64.
+        as-i32.
+          as-i64. -234
 
-  3147483647.as-i64.as-i32 > [] +> throws-on-converting-to-i32-if-out-of-bounds
+  ++> throws-on-converting-to-i32-if-out-of-bounds
+    as-i32. > @
+      as-i64. 3147483647
 
   ++> tests-out-of-bounds-i64-as-i32-returns-provided-fallback
     eq. > @
       "recovered"
-      3147483647.as-i64.as-i32
+      as-i32.
+        as-i64. 3147483647
         "recovered" > [msg]
 
   ++> tests-i64-i32-max-converts-without-error
     eq. > @
-      2147483647.as-i64
-      2147483647.as-i64.as-i32.as-i64
+      as-i64. 2147483647
+      as-i64.
+        as-i32.
+          as-i64. 2147483647
 
   ++> tests-i64-i32-min-converts-without-error
     eq. > @
-      -2147483648.as-i64
-      -2147483648.as-i64.as-i32.as-i64
+      as-i64. -2147483648
+      as-i64.
+        as-i32.
+          as-i64. -2147483648
 
-  2147483648.as-i64.as-i32 > [] +> throws-on-converting-i32-max-plus-one-to-i32
+  ++> throws-on-converting-i32-max-plus-one-to-i32
+    as-i32. > @
+      as-i64. 2147483648
 
-  -2147483649.as-i64.as-i32 > [] +> throws-on-converting-i32-min-minus-one-to-i32
+  ++> throws-on-converting-i32-min-minus-one-to-i32
+    as-i32. > @
+      as-i64. -2147483649
 
   ++> tests-i64-less-true
     lt. > @
-      10.as-i64
-      50.as-i64
+      as-i64. 10
+      as-i64. 50
 
   ++> tests-i64-less-equal
     not. > @
       lt.
-        10.as-i64
-        10.as-i64
+        as-i64. 10
+        as-i64. 10
 
   ++> tests-i64-less-false
     not. > @
       lt.
-        10.as-i64
-        -5.as-i64
+        as-i64. 10
+        as-i64. -5
 
   ++> tests-i64-less-across-full-range
     lt. > @
-      -9223372036854775808.as-i64
-      1.as-i64
+      as-i64. -9223372036854776000
+      as-i64. 1
 
   ++> tests-i64-less-with-large-difference
     not. > @
       lt.
-        5000000000000000000.as-i64
-        -5000000000000000000.as-i64
+        as-i64. 5000000000000000000
+        as-i64. -5000000000000000000
 
   ++> tests-i64-greater-true
     gt. > @
-      -200.as-i64
-      -1000.as-i64
+      as-i64. -200
+      as-i64. -1000
 
   ++> tests-i64-greater-false
     not. > @
       gt.
-        0.as-i64
-        100.as-i64
+        as-i64. 0
+        as-i64. 100
 
   ++> tests-i64-greater-equal
     not. > @
       gt.
-        0.as-i64
-        0.as-i64
+        as-i64. 0
+        as-i64. 0
 
   ++> tests-i64-greater-max-over-min
-    gt. > @
-      i64 7F-FF-FF-FF-FF-FF-FF-FF
-      i64 80-00-00-00-00-00-00-00
+    gt. (i64 7F-FF-FF-FF-FF-FF-FF-FF) (i64 80-00-00-00-00-00-00-00) > @
 
   ++> tests-i64-greater-min-not-over-max
-    not. > @
-      gt.
-        i64 80-00-00-00-00-00-00-00
-        i64 7F-FF-FF-FF-FF-FF-FF-FF
+    not. (gt. (i64 80-00-00-00-00-00-00-00) (i64 7F-FF-FF-FF-FF-FF-FF-FF)) > @
 
   ++> tests-i64-greater-same-sign-large-negatives
     gt. > @
-      -5000000000000000000.as-i64
-      -9000000000000000000.as-i64
+      as-i64. -5000000000000000000
+      as-i64. -9000000000000000000
 
   ++> tests-i64-lte-true
     lte. > @
-      -200.as-i64
-      -100.as-i64
+      as-i64. -200
+      as-i64. -100
 
   ++> tests-i64-lte-equal
     lte. > @
-      50.as-i64
-      50.as-i64
+      as-i64. 50
+      as-i64. 50
 
   ++> tests-i64-lte-false
     not. > @
       lte.
-        0.as-i64
-        -10.as-i64
+        as-i64. 0
+        as-i64. -10
 
   ++> tests-i64-gte-true
     gte. > @
-      -1000.as-i64
-      -1100.as-i64
+      as-i64. -1000
+      as-i64. -1100
 
   ++> tests-i64-gte-equal
     gte. > @
-      113.as-i64
-      113.as-i64
+      as-i64. 113
+      as-i64. 113
 
   ++> tests-i64-gte-false
     not. > @
       gte.
-        0.as-i64
-        10.as-i64
+        as-i64. 0
+        as-i64. 10
 
   ++> tests-i64-zero-eq-to-i64-zero
     eq. > @
-      0.@
-      0.@
+      @. 0
+      @. 0
 
   ++> tests-i64-eq-true
     eq. > @
-      123.@
-      123.@
+      @. 123
+      @. 123
 
   ++> tests-i64-eq-false
     not. > @
       eq.
-        123.@
-        42.@
+        @. 123
+        @. 42
 
   ++> tests-i64-one-plus-i64-one
     eq. > @
-      1.as-i64.plus 1.as-i64
-      2.as-i64
+      plus.
+        as-i64. 1
+        as-i64. 1
+      as-i64. 2
 
   ++> tests-i64-one-minus-i64-one
     eq. > @
-      1.as-i64.minus 1.as-i64
-      0.as-i64
+      minus.
+        as-i64. 1
+        as-i64. 1
+      as-i64. 0
 
-  2.as-i64.div 0.as-i64 > [] +> throws-on-division-i64-by-i64-zero
+  ++> throws-on-division-i64-by-i64-zero
+    div. > @
+      as-i64. 2
+      as-i64. 0
 
   ++> tests-i64-div-by-zero-returns-provided-fallback
     eq. > @
       "recovered"
-      2.as-i64.div
-        0.as-i64
+      div.
+        as-i64. 2
+        as-i64. 0
         "recovered" > [msg]
 
   ++> tests-i64-div-by-i64-one
     eq. > @
-      dividend.div 1.as-i64
+      dividend.div
+        as-i64. 1
       dividend
-    -235.as-i64 > dividend
+    as-i64. -235 > dividend
 
   ++> tests-i64-div-with-remainder
     eq. > @
-      13.as-i64.div -5.as-i64
-      -2.as-i64
+      div.
+        as-i64. 13
+        as-i64. -5
+      as-i64. -2
 
   ++> tests-i64-div-less-than-i64-one
     lt. > @
-      1.as-i64.div 5.as-i64
-      1.as-i64
+      div.
+        as-i64. 1
+        as-i64. 5
+      as-i64. 1
 
   ++> tests-i64-multiply-by-zero
     eq. > @
-      1000.as-i64.times 0.as-i64
-      0.as-i64
+      times.
+        as-i64. 1000
+        as-i64. 0
+      as-i64. 0
 
   ++> tests-i64-times-of-two-negatives
     eq. > @
-      -7.as-i64.times -6.as-i64
-      42.as-i64
+      times.
+        as-i64. -7
+        as-i64. -6
+      as-i64. 42
 
   ++> tests-i64-times-of-mixed-signs
     eq. > @
-      -7.as-i64.times 6.as-i64
-      -42.as-i64
+      times.
+        as-i64. -7
+        as-i64. 6
+      as-i64. -42
 
   ++> tests-i64-times-wraps-modulo-2-pow-64
     eq. > @
-      (i64 40-00-00-00-00-00-00-00).times 4.as-i64
-      0.as-i64
+      times.
+        i64 40-00-00-00-00-00-00-00
+        as-i64. 4
+      as-i64. 0
 
   ++> tests-i64-times-keeps-low-bits-of-large-product
     eq. > @
-      2147483647.as-i64.times 2147483647.as-i64
+      times.
+        as-i64. 2147483647
+        as-i64. 2147483647
       i64 3F-FF-FF-FF-00-00-00-01

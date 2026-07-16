@@ -12,62 +12,40 @@
   if. > @
     or.
       or.
-        (number slen).gt tlen
+        gt. (number slen) tlen
         and.
           slen.eq tlen
-          (sub.eq txt).not
+          not. (sub.eq txt)
       found.eq -1
     -1
-    length.
-      string
-        slice txt 0 found
+    length. (string (slice txt 0 found))
   rec-index-of > found!
-    (number tlen).minus slen
+    minus. (number tlen) slen
   sub.size > slen!
   substring > sub!
   txt.size > tlen!
   text > txt!
-
   [idx] > rec-index-of
     if. > @
-      0.eq idx
-      if.
-        includes
+      eq. 0 idx
+      includes.if idx -1
+      includes.if
         idx
-        -1
-      if.
-        includes
-        idx
-        rec-index-of (idx.plus -1).as-number
-    eq. > includes
-      slice txt idx slen
-      sub
+        rec-index-of
+          as-number. (idx.plus -1)
+    eq. (slice txt idx slen) sub > includes
 
   ++> tests-finds-last-index-of-substring
-    eq. > @
-      5
-      last-index-of "Hey, Hey, Hey" "Hey,"
+    eq. 5 (string.last-index-of "Hey, Hey, Hey" "Hey,") > @
 
   ++> tests-finds-last-index-of-the-same-string
-    eq. > @
-      0
-      last-index-of "Hello" "Hello"
+    eq. 0 (string.last-index-of "Hello" "Hello") > @
 
   ++> tests-last-index-of-non-existed-substring
-    eq. > @
-      -1
-      last-index-of "Hello, world" "somebody"
+    eq. -1 (string.last-index-of "Hello, world" "somebody") > @
 
   ++> tests-last-index-of-non-existed-substring-with-utf
-    eq. > @
-      -1
-      last-index-of
-        "привет, друг!"
-        "x"
+    eq. -1 (string.last-index-of "привет, друг!" "x") > @
 
   ++> tests-last-index-of-existed-substring-with-utf
-    eq. > @
-      3
-      last-index-of
-        "привет, друг!"
-        "в"
+    eq. 3 (string.last-index-of "привет, друг!" "в") > @

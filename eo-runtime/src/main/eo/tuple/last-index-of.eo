@@ -8,51 +8,41 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > last-index-of
-  ? >> list
-  ? >> wanted
+[list wanted] > last-index-of
   reclast list > @
-
   [tup] > reclast
     if. > @
       tup.length.eq 0
       -1
-      if.
-        tup.head.eq wanted
-        tup.tail.length
-        reclast tup.tail
+      if. (tup.head.eq wanted) tup.tail.length (reclast tup.tail)
 
   ++> tests-finds-last-index-of
     eq. > @
       1
-      last-index-of
+      tuple.last-index-of
         * "qwerty" 2 3
         2
 
   ++> tests-finds-last-index-of-repeated
     eq. > @
       2
-      last-index-of
+      tuple.last-index-of
         * 24 42 24
         24
 
   ++> tests-last-index-of-not-found
     eq. > @
       -1
-      last-index-of
+      tuple.last-index-of
         * 1 2 3
         0
 
   ++> tests-last-index-of-empty
-    eq. > @
-      -1
-      last-index-of
-        *
-        "abc"
+    eq. -1 (tuple.last-index-of tuple.empty "abc") > @
 
   ++> tests-last-index-of-unicode
     eq. > @
       3
-      last-index-of
+      tuple.last-index-of
         * "Hi" "Привет" "Hola" "Привет" "こんにちわ"
         "Привет"

@@ -8,50 +8,59 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > left
-  ? >> bts
-  ? >> x
-  bts.right > @
-    x.neg
+[bts x] > left
+  bts.right x.neg > @
 
   ++> tests-left-zero
     not. > @
       eq.
-        0.as-bytes.left 1
-        -1.as-bytes
+        left.
+          as-bytes. 0
+          1
+        as-bytes. -1
 
   ++> tests-left-with-zero
     not. > @
       eq.
-        2.as-bytes.left 0
-        -3.as-bytes
+        left.
+          as-bytes. 2
+          0
+        as-bytes. -3
 
   ++> tests-left-with-odd-neg
     not. > @
       eq.
-        -17.as-bytes.left 1
-        33.as-bytes
+        left.
+          as-bytes. -17
+          1
+        as-bytes. 33
 
   ++> tests-left-with-minus-one
     eq. > @
       eq.
-        -1.as-bytes.left 3
-        7.as-bytes
+        left.
+          as-bytes. -1
+          3
+        as-bytes. 7
       false
 
   ++> tests-left-with-even-neg
     eq. > @
-      FF-FF-FF-FF-FF-FF-FF-EE.left 2
-      00-00-00-00-00-00-00-47.not
+      left. FF-FF-FF-FF-FF-FF-FF-EE 2
+      not. 00-00-00-00-00-00-00-47
 
   ++> tests-left-with-even-plus
     not. > @
       eq.
-        4.as-bytes.left 3
-        -33.as-bytes
+        left.
+          as-bytes. 4
+          3
+        as-bytes. -33
 
   ++> tests-left-with-odd-plus
     not. > @
       eq.
-        5.as-bytes.left 3
-        -41.as-bytes
+        left.
+          as-bytes. 5
+          3
+        as-bytes. -41

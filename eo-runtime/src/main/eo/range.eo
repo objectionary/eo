@@ -20,7 +20,7 @@
 # `1.plus 1` and also has object `next`. Since these objects are ints - they have
 # object `lt` by default.
 
-+alias tuple.is-empty
++alias is-empty Q.tuple.is-empty
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -35,54 +35,45 @@
     appended
       * start
       start.next
-    *
-
+    tuple.empty
   [acc current] > appended
-    if. > @
-      current.lt ^.end
-      ^.appended
-        acc.with current
-        current.next
-      acc
+    if. (current.lt end) (appended (acc.with current) current.next) acc > @
 
   ++> tests-simple-range-from-one-to-ten
-    eq. > @
-      rng
+    rng.eq > @
       * 1 2 3 4 5 6 7 8 9
     range > rng
       []
         build 1 > @
         [i] > build
           i > @
-          ^.build (1.plus @) > next
+          build (plus. 1 @) > next
       10
 
   ++> tests-simple-range-with-floats-from-one-to-five
-    eq. > @
-      rng
-      * 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5
+    rng.eq > @
+      * 1 1.5 2 2.5 3 3.5 4 4.5
     range > rng
       []
-        x 1.0 > @
+        x 1 > @
         [i] > x
           i > @
-          ^.x (0.5.plus @) > next
-      5.0
+          x (plus. 0.5 @) > next
+      5
 
   ++> tests-range-with-out-of-bounds
-    eq. > @
-      rng
+    rng.eq > @
       * 1 6
     range > rng
       []
         b 1 > @
         [num] > b
           num > @
-          ^.b (5.plus @) > next
+          b (plus. 5 @) > next
       10
 
   ++> tests-range-with-wrong-items-is-an-empty-array
-    is-empty rng > @
+    tuple.is-empty rng > @
     range > rng
       []
         y 10 > @

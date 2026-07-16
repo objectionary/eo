@@ -26,7 +26,7 @@
       steps.length.eq 1
       steps.head
       if.
-        (dataized (seq steps.tail)).as-bool
+        as-bool. (dataized (seq steps.tail))
         steps.head
         steps.head
 
@@ -35,28 +35,26 @@
       1
       [b]
         malloc.for > @
-          0.0
-          b.put > [m] >>
-            lt.
-              seq
-                *
-                  m.put (m.as-number.plus 1.0)
-                  m.as-number
-              1.1
+          0
+          [m] >>
+            b.put > @
+              lt.
+                seq
+                  * (m.put (m.as-number.plus 1)) m.as-number
+                1.1
 
   ++> tests-seq-single-dataization-float-greater
     malloc.of > @
       1
       [b]
         malloc.for > @
-          0.0
-          b.put > [m] >>
-            gt.
-              seq
-                *
-                  m.put (m.as-number.plus 1.0)
-                  m.as-number
-              0.9
+          0
+          [m] >>
+            b.put > @
+              gt.
+                seq
+                  * (m.put (m.as-number.plus 1)) m.as-number
+                0.9
 
   ++> tests-seq-single-dataization-int-less
     malloc.of > @
@@ -64,13 +62,12 @@
       [b]
         malloc.for > @
           0
-          b.put > [m] >>
-            lt.
-              seq
-                *
-                  m.put (m.as-number.plus 1)
-                  m.as-number
-              2
+          [m] >>
+            b.put > @
+              lt.
+                seq
+                  * (m.put (m.as-number.plus 1)) m.as-number
+                2
 
   ++> tests-seq-single-dataization-int-less-or-equal
     malloc.of > @
@@ -78,61 +75,17 @@
       [b]
         malloc.for > @
           0
-          b.put > [m] >>
-            lte.
-              seq
-                *
-                  m.put (m.as-number.plus 1)
-                  m.as-number
-              1
+          [m] >>
+            b.put > @
+              lte.
+                seq
+                  * (m.put (m.as-number.plus 1)) m.as-number
+                1
 
   ++> tests-very-long-seq
-    eq. > @
-      true
+    true.eq > @
       seq
-        *
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
+        * true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true
 
   ++> tests-seq-single-dataization-int-equal-to-test
     malloc.of > @
@@ -140,14 +93,12 @@
       [b]
         malloc.for > @
           0
-          b.put > [m] >>
-            eq.
-              seq
-                *
-                  m.put 0
-                  m.put (m.as-number.plus 1)
-                  m.as-number
-              1
+          [m] >>
+            b.put > @
+              eq.
+                seq
+                  * (m.put 0) (m.put (m.as-number.plus 1)) m.as-number
+                1
 
   ++> tests-seq-single-dataization-int-equal-to-cache-problem-test
     malloc.of > @
@@ -155,29 +106,26 @@
       [b]
         malloc.for > @
           0
-          b.put > [m] >>
-            eq.
-              seq
-                *
-                  at.
-                    * 0 1
+          [m] >>
+            b.put > @
+              eq.
+                seq
+                  *
+                    at.
+                      * 0 1
+                      m
+                    m.put (m.as-number.plus 1)
                     m
-                  m.put (m.as-number.plus 1)
-                  m
-              1
+                1
 
   ++> tests-seq-calculates-and-returns
     eq. > @
       1
       seq
-        *
-          0
-          1
+        * 0 1
 
   ++> tests-seq-calculates-and-returns-object
     eq. > @
       "Hello!"
       seq
-        *
-          0
-          "Hello!"
+        * 0 "Hello!"

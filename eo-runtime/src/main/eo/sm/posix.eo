@@ -21,18 +21,9 @@
   0 > o-rdonly
   1 > o-wronly
   2 > o-rdwr
-  if. > o-creat
-    os.is-macos
-    512
-    64
-  if. > o-trunc
-    os.is-macos
-    1024
-    512
-  if. > o-append
-    os.is-macos
-    8
-    1024
+  os.is-macos.if 512 64 > o-creat
+  os.is-macos.if 1024 512 > o-trunc
+  os.is-macos.if 8 1024 > o-append
   420 > create-mode
   511 > mkdir-mode
   1 > sock-stream
@@ -42,80 +33,68 @@
   [code output] > return
     output > @
     return code output > called
-
   [tv-sec tv-usec] > timeval
-
   [st-mode st-size] > stat
-
   [sin-family sin-port sin-addr] > sockaddr-in
     00-00-00-00-00-00-00-00 > sin-zero
-    plus. > size
-      plus.
-        plus.
-          sin-family.size
-          sin-port.size
-        sin-addr.size
-      sin-zero.size
+    plus. (plus. (sin-family.size.plus sin-port.size) sin-addr.size) sin-zero.size > size
 
   ++> tests-invokes-getpid-correctly
-    or. > @
-      os.is-windows
+    os.is-windows.or > @
       gt.
-        code.
-          posix
-            "getpid"
-            tuple.empty
+        code. (sm.posix "getpid" tuple.empty)
         0
 
   ++> tests-opens-and-closes-file-via-syscall
-    or. > @
-      os.is-windows
+    os.is-windows.or > @
       seq
         *
           code.
-            posix
+            sm.posix
               "close"
               * fd
           fd.gt -1
     code. > fd
-      posix
+      sm.posix
         "open"
         * "/dev/null" 0 0
 
   ++> tests-opens-posix-tcp-socket
-    or. > @
-      os.is-windows
+    os.is-windows.or > @
       seq
         *
           code.
-            posix
+            sm.posix
               "close"
               * sd
           sd.gt 0
     code. > sd
-      posix
+      sm.posix
         "socket"
-        * posix.af-inet posix.sock-stream posix.ipproto-tcp
+        * sm.posix.af-inet sm.posix.sock-stream sm.posix.ipproto-tcp
 
   ++> tests-closes-posix-tcp-socket
-    or. > @
-      os.is-windows
+    os.is-windows.or > @
       seq
         *
           sd
           not.
             eq.
               code.
-                posix
+                sm.posix
                   "close"
                   * sd
               -1
     code. > sd
-      posix
+      sm.posix
         "socket"
-        * posix.af-inet posix.sock-stream posix.ipproto-tcp
+        * sm.posix.af-inet sm.posix.sock-stream sm.posix.ipproto-tcp
 
   ++> tests-returns-valid-posix-inet-addr-for-localhost
-    or. > @
-      os.is-windows
-      (code. (posix "inet_addr" (* "127.0.0.1"))).eq 16777343
+    os.is-windows.or > @
+      eq.
+        code.
+          sm.posix
+            "inet_addr"
+            * "127.0.0.1"
+        16777343

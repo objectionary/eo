@@ -9,51 +9,49 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > each
-  ? >> list
-  ? >> func
+[list func] > each
   eachi > @
     list
     func item > [item index] >>
 
-  [] +> tests-iterates-with-each
+  ++> tests-iterates-with-each
     eq. > @
       malloc.for
         0
         [m]
-          each > @
+          tuple.each > @
             * 1 2 3
-            ^.m.put (^.m.as-number.plus i) > [i] >>
+            m.put (m.as-number.plus i) > [i] >>
       6
 
-  [] +> tests-each-empty-list
-    each > @
-      *
+  ++> tests-each-empty-list
+    tuple.each > @
+      tuple.empty
       false > [x]
 
-  [] +> tests-each-single-element
+  ++> tests-each-single-element
     eq. > @
       malloc.for
         0
         [m]
-          each > @
+          tuple.each > @
             * 7
-            ^.m.put (^.m.as-number.plus i) > [i] >>
+            m.put (m.as-number.plus i) > [i] >>
       7
 
-  [] +> tests-each-returns-last-func-result
+  ++> tests-each-returns-last-func-result
     eq. > @
-      each
+      tuple.each
         * 1 2 3
         x > [x]
       3
 
-  [] +> tests-each-sums-more-numbers
+  ++> tests-each-sums-more-numbers
     eq. > @
       malloc.for
         0
         [m]
-          each > @
+          tuple.each > @
             * 10 20 30
-            ^.m.put (^.m.as-number.plus i) > [i] >>
+            m.put (m.as-number.plus i) > [i] >>
       60

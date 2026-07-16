@@ -9,72 +9,43 @@
 +spdx SPDX-License-Identifier: MIT
 
 [num] > cosine
-  sine (num.plus (pi.div 2)) > @
+  sine > @
+    num.plus (pi.div 2)
 
   ++> tests-cosine-of-zero-is-one
-    lt. > @
-      abs
-        minus.
-          (cosine 0).times 1000
-          1000
-      1
+    lt. (abs (minus. (times. (number.cosine 0) 1000) 1000)) 1 > @
 
   ++> tests-cosine-of-pi-halves-is-zero
-    lt. > @
-      abs
-        (cosine (pi.div 2)).times 1000
-      1
+    lt. (abs (times. (number.cosine (pi.div 2)) 1000)) 1 > @
 
   ++> tests-cosine-of-pi-is-minus-one
-    lt. > @
-      abs
-        minus.
-          (cosine pi).times 1000
-          -1000
-      1
+    lt. (abs (minus. (times. (number.cosine pi) 1000) -1000)) 1 > @
 
   ++> tests-cosine-of-pi-thirds-is-half
-    lt. > @
-      abs
-        minus.
-          (cosine (pi.div 3)).times 1000
-          500
-      1
+    lt. (abs (minus. (times. (number.cosine (pi.div 3)) 1000) 500)) 1 > @
 
   ++> tests-cosine-is-even-function
     lt. > @
       abs
         times.
           minus.
-            cosine (pi.div 3)
-            cosine ((pi.div 3).neg)
+            number.cosine (pi.div 3)
+            number.cosine
+              neg. (pi.div 3)
           1000
       1
 
   ++> tests-cosine-reduces-large-angle
-    lt. > @
-      abs
-        minus.
-          (cosine ((pi.times 10).plus (pi.div 3))).times 1000
-          500
-      1
+    lt. (abs (minus. (times. (number.cosine (plus. (pi.times 10) (pi.div 3))) 1000) 500)) 1 > @
 
   ++> tests-cosine-of-seventeen-radians
-    lt. > @
-      abs
-        minus.
-          (cosine 17).times 1000
-          -275
-      1
+    lt. (abs (minus. (times. (number.cosine 17) 1000) -275)) 1 > @
 
   ++> tests-cosine-of-nan-is-nan
-    is-nan. > @
-      cosine nan
+    is-nan. (number.cosine nan) > @
 
   ++> tests-cosine-of-positive-infinity-is-nan
-    is-nan. > @
-      cosine pinf
+    is-nan. (number.cosine pinf) > @
 
   ++> tests-cosine-of-negative-infinity-is-nan
-    is-nan. > @
-      cosine ninf
+    is-nan. (number.cosine ninf) > @

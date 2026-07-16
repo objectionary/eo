@@ -7,21 +7,15 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > withouti
-  ? >> list
-  ? >> i
+[list i] > withouti
   reducedi > @
     list
-    *
-    [accum item idx] >>
-      if. > @
-        i.eq idx
-        accum
-        accum.with item
+    tuple.empty
+    if. (i.eq idx) accum (accum.with item) > [accum item idx] >>
 
   ++> tests-list-withouti
     eq. > @
-      withouti
+      tuple.withouti
         * 1 2 3
         1
       * 1 3
@@ -31,14 +25,14 @@
       foo
         * 1 "text" "f"
       * "text" "f"
-    [a] > foo
-      withouti > @
-        a
-        0
+    tuple.withouti a 0 > [a] > foo
 
   ++> tests-list-withouti-nested-array
     eq. > @
-      withouti
-        * "smthg" 27 (* 3 2 1)
+      tuple.withouti
+        *
+          "smthg"
+          27
+          * 3 2 1
         2
       * "smthg" 27

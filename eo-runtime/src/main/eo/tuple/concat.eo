@@ -7,9 +7,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > concat
-  ? >> list
-  ? >> passed
+[list passed] > concat
   reducedi > @
     passed
     list
@@ -17,21 +15,18 @@
 
   ++> tests-concatenates-lists
     and. > @
-      eq.
-        1
-        list3.at 0
-      eq.
-        list3
+      eq. 1 (list3.at 0)
+      list3.eq
         * 1 2 3
     withouti > list3
-      concat
+      tuple.concat
         * 0 1
         * 2 3
       0
 
   ++> tests-concatenates-with-tuple
     eq. > @
-      concat
+      tuple.concat
         * 0 1
         * 2 4
       * 0 1 2 4

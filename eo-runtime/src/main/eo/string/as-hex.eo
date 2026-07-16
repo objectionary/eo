@@ -10,47 +10,58 @@
 
 [bts] > as-hex
   rec-hex 0 -- > @
-
   [index acc] > rec-hex
     if. > @
       index.eq bts.size
       acc
       rec-hex
-        (index.plus 1).as-number
+        as-number. (index.plus 1)
         if.
           index.eq 0
           pair
-          concat. (concat. acc "-".as-bytes) pair
+          concat.
+            acc.concat
+              as-bytes. "-"
+            pair
     as-ascii (bts.slice index 1) > bval
-    concat. (hex-digit (bval.div 16).floor) (hex-digit (bval.minus ((bval.div 16).floor.times 16))) > pair
-
-  [h] > hex-digit
-    if. > @
-      h.lt 10
-      as-char (h.plus 48)
-      as-char (h.plus 55)
+    concat. > pair
+      hex-digit
+        floor. (bval.div 16)
+      hex-digit
+        bval.minus
+          times.
+            floor. (bval.div 16)
+            16
+  if. (h.lt 10) (as-char (h.plus 48)) (as-char (h.plus 55)) > [h] > hex-digit
 
   ++> tests-writes-single-byte
     eq. > @
       "41"
-      string (as-hex "A".as-bytes)
+      string
+        string.as-hex
+          as-bytes. "A"
 
   ++> tests-joins-bytes-with-hyphens
     eq. > @
       "4A-65-66-66"
-      string (as-hex "Jeff".as-bytes)
+      string
+        string.as-hex
+          as-bytes. "Jeff"
 
   ++> tests-writes-letter-nibbles
     eq. > @
       "00-00-00-00-00-00-00-FF"
-      string (as-hex 255.as-i64.as-bytes)
+      string
+        string.as-hex
+          as-bytes.
+            as-i64. 255
 
   ++> tests-writes-number-bytes
     eq. > @
       "40-45-00-00-00-00-00-00"
-      string (as-hex 42.as-bytes)
+      string
+        string.as-hex
+          as-bytes. 42
 
   ++> tests-writes-empty-bytes
-    eq. > @
-      ""
-      string (as-hex --)
+    eq. "" (string (string.as-hex --)) > @

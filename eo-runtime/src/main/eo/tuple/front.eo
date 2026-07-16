@@ -7,66 +7,56 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > front
-  ? >> list
-  ? >> index
+[list index] > front
   if. > @
     idx.eq 0
-    *
+    tuple.empty
     if.
-      0.gt idx
+      gt. 0 idx
       back
         list
-        (number idx).neg
-      if.
-        (number idx).gte list.length
-        list
-        rechead list
+        neg. (number idx)
+      if. (gte. (number idx) list.length) list (rechead list)
   index > idx!
+  if. (tup.length.eq idx) tup (rechead tup.tail) > [tup] > rechead
 
-  [tup] > rechead
-    if. > @
-      tup.length.eq idx
-      tup
-      rechead tup.tail
-
-  [] +> tests-simple-front
+  ++> tests-simple-front
     eq. > @
-      front
+      tuple.front
         * 1 2 3 4 5
         1
       * 1
 
   ++> tests-list-front-with-zero-index
     is-empty > @
-      front
+      tuple.front
         * 1 2 3
         0
 
-  [] +> tests-list-front-with-length-index
+  ++> tests-list-front-with-length-index
     eq. > @
-      front
+      tuple.front
         * 1 2 3
         3
       * 1 2 3
 
-  [] +> tests-complex-front
+  ++> tests-complex-front
     eq. > @
-      front
+      tuple.front
         * "foo" 2.2 00-01 "bar"
         2
       * "foo" 2.2
 
-  [] +> tests-front-with-negative
+  ++> tests-front-with-negative
     eq. > @
-      front
+      tuple.front
         * 1 2 3
         -1
       * 3
 
-  [] +> tests-complex-front-with-negative
+  ++> tests-complex-front-with-negative
     eq. > @
-      front
+      tuple.front
         * "foo" 2.2 00-01 "bar"
         -3
       * 2.2 00-01 "bar"

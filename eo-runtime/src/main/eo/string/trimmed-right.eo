@@ -13,80 +13,49 @@
 
 [text] > trimmed-right
   if. > @
-    0.eq len
+    eq. 0 len
     text
-    string
-      bts.slice
-        0
-        first-non-ws-index
-          (number len).plus -1
+    string (bts.slice 0 (first-non-ws-index (plus. (number len) -1)))
   text > bts!
   bts.size > len!
-
   [index] > first-non-ws-index
     if. > @
-      -1.eq index
+      eq. -1 index
       0
       if.
         is-ws char
-        first-non-ws-index (index.plus -1).as-number
+        first-non-ws-index
+          as-number. (index.plus -1)
         index.plus 1
     bts.slice index 1 > char!
-
   [c] > is-ws
     or. > @
       c.eq 20-
-      or.
-        c.eq 09-
-        or.
-          c.eq 0A-
-          or.
-            c.eq 0B-
-            or.
-              c.eq 0C-
-              c.eq 0D-
+      or. (c.eq 09-) (or. (c.eq 0A-) (or. (c.eq 0B-) (or. (c.eq 0C-) (c.eq 0D-))))
 
   ++> tests-trimmed-right-empty-text
-    eq. > @
-      trimmed-right ""
-      ""
+    eq. (string.trimmed-right "") "" > @
 
   ++> tests-text-trimmed-right-one-space
-    eq. > @
-      trimmed-right "s "
-      "s"
+    eq. (string.trimmed-right "s ") "s" > @
 
   ++> tests-text-trimmed-right-many-spaces
-    eq. > @
-      trimmed-right "some     "
-      "some"
+    eq. (string.trimmed-right "some     ") "some" > @
 
   ++> tests-text-trimmed-right-only-spaces
-    eq. > @
-      trimmed-right "     "
-      ""
+    eq. (string.trimmed-right "     ") "" > @
 
   ++> tests-trimmed-right-strips-tab
-    eq. > @
-      trimmed-right "value\t"
-      "value"
+    eq. (string.trimmed-right "value\t") "value" > @
 
   ++> tests-trimmed-right-strips-lf
-    eq. > @
-      trimmed-right "value\n"
-      "value"
+    eq. (string.trimmed-right "value\n") "value" > @
 
   ++> tests-trimmed-right-strips-ff
-    eq. > @
-      trimmed-right "value\f"
-      "value"
+    eq. (string.trimmed-right "value\f") "value" > @
 
   ++> tests-trimmed-right-strips-cr
-    eq. > @
-      trimmed-right "value\r"
-      "value"
+    eq. (string.trimmed-right "value\r") "value" > @
 
   ++> tests-trimmed-right-strips-mixed-ws
-    eq. > @
-      trimmed-right "value \t\n\f\r"
-      "value"
+    eq. (string.trimmed-right "value \t\n\f\r") "value" > @

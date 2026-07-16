@@ -11,47 +11,22 @@
   power e num > @
 
   ++> tests-exp-check-n0
-    lt. > @
-      abs
-        minus.
-          e
-          exp 1
-      0.00000001
+    lt. (abs (e.minus (number.exp 1))) 1.0E-8 > @
 
   ++> tests-exp-check-n1
-    lt. > @
-      abs
-        minus.
-          1.div e
-          exp -1
-      0.00000001
+    lt. (abs (minus. (div. 1 e) (number.exp -1))) 1.0E-8 > @
 
   ++> tests-exp-check-n2
-    lt. > @
-      abs
-        minus.
-          power e 5
-          exp 5
-      0.0000001
+    lt. (abs (minus. (power e 5) (number.exp 5))) 1.0E-7 > @
 
   ++> tests-exp-check-n3
-    lt. > @
-      abs
-        minus.
-          power e -10
-          exp -10
-      0.000000000001
+    lt. (abs (minus. (power e -10) (number.exp -10))) 1.0E-12 > @
 
   ++> tests-exp-check-nan
-    is-nan. > @
-      exp nan
+    is-nan. (number.exp nan) > @
 
   ++> tests-exp-check-infinity-n1
-    eq. > @
-      exp pinf
-      pinf
+    eq. (number.exp pinf) pinf > @
 
   ++> tests-exp-check-infinity-n2
-    eq. > @
-      exp ninf
-      0
+    eq. (number.exp ninf) 0 > @

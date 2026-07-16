@@ -11,115 +11,73 @@
 +spdx SPDX-License-Identifier: MIT
 
 [num] > sine
-  reduced.times (factor 1) > @
+  reduced.times > @
+    factor 1
   number num.as-bytes > arg
   pi.times 2 > tau
-  minus. > reduced
-    arg
+  arg.minus > reduced
     times.
-      floor.
-        plus.
-          arg.div tau
-          0.5
+      floor. (plus. (arg.div tau) 0.5)
       tau
   reduced.times reduced > squared
   15 > terms
-
   [depth] > factor
     if. > @
       depth.gt terms
       1
-      minus.
-        1
-        times.
-          div.
-            squared
-            (depth.times 2).times ((depth.times 2).plus 1)
-          factor (depth.plus 1)
+      minus. 1 (times. (squared.div (times. (depth.times 2) (plus. (depth.times 2) 1))) (factor (depth.plus 1)))
 
   ++> tests-sine-of-zero-is-zero
-    eq. > @
-      sine 0
-      0
+    eq. (number.sine 0) 0 > @
 
   ++> tests-sine-of-pi-halves-is-one
-    lt. > @
-      abs
-        minus.
-          (sine (pi.div 2)).times 1000
-          1000
-      1
+    lt. (abs (minus. (times. (number.sine (pi.div 2)) 1000) 1000)) 1 > @
 
   ++> tests-sine-of-pi-sixths-is-half
-    lt. > @
-      abs
-        minus.
-          (sine (pi.div 6)).times 1000
-          500
-      1
+    lt. (abs (minus. (times. (number.sine (pi.div 6)) 1000) 500)) 1 > @
 
   ++> tests-sine-of-pi-is-zero
-    lt. > @
-      abs
-        (sine pi).times 1000
-      1
+    lt. (abs (times. (number.sine pi) 1000)) 1 > @
 
   ++> tests-sine-of-negative-pi-halves-is-minus-one
     lt. > @
       abs
         minus.
-          (sine ((pi.div 2).neg)).times 1000
+          times.
+            number.sine
+              neg. (pi.div 2)
+            1000
           -1000
       1
 
   ++> tests-sine-of-three-pi-halves-is-minus-one
-    lt. > @
-      abs
-        minus.
-          (sine ((pi.times 3).div 2)).times 1000
-          -1000
-      1
+    lt. (abs (minus. (times. (number.sine (div. (pi.times 3) 2)) 1000) -1000)) 1 > @
 
   ++> tests-sine-is-odd-function
     lt. > @
       abs
         times.
           plus.
-            sine (pi.div 3)
-            sine ((pi.div 3).neg)
+            number.sine (pi.div 3)
+            number.sine
+              neg. (pi.div 3)
           1000
       1
 
   ++> tests-sine-of-two-pi-is-zero
-    lt. > @
-      abs
-        (sine (pi.times 2)).times 1000
-      1
+    lt. (abs (times. (number.sine (pi.times 2)) 1000)) 1 > @
 
   ++> tests-sine-reduces-large-angle
-    lt. > @
-      abs
-        minus.
-          (sine ((pi.times 10).plus (pi.div 6))).times 1000
-          500
-      1
+    lt. (abs (minus. (times. (number.sine (plus. (pi.times 10) (pi.div 6))) 1000) 500)) 1 > @
 
   ++> tests-sine-of-seventeen-radians
-    lt. > @
-      abs
-        minus.
-          (sine 17).times 1000
-          -961
-      1
+    lt. (abs (minus. (times. (number.sine 17) 1000) -961)) 1 > @
 
   ++> tests-sine-of-nan-is-nan
-    is-nan. > @
-      sine nan
+    is-nan. (number.sine nan) > @
 
   ++> tests-sine-of-positive-infinity-is-nan
-    is-nan. > @
-      sine pinf
+    is-nan. (number.sine pinf) > @
 
   ++> tests-sine-of-negative-infinity-is-nan
-    is-nan. > @
-      sine ninf
+    is-nan. (number.sine ninf) > @

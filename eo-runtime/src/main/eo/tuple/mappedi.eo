@@ -10,19 +10,15 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > mappedi
-  ? >> list
-  ? >> func
+[list func] > mappedi
   reducedi > @
     list
-    *
-    [accum item idx] >>
-      accum.with > @
-        func item idx
+    tuple.empty
+    accum.with (func item idx) > [accum item idx] >>
 
   ++> tests-list-mappedi-should-work
     eq. > @
-      mappedi
+      tuple.mappedi
         * 1 2 3 4
         i.times x > [x i]
       * 0 2 6 12

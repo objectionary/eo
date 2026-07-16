@@ -11,10 +11,11 @@
   n.as-bytes.eq 7F-F8-00-00-00-00-00-00 > @
 
   ++> tests-simple-number-is-not-nan
-    42.5.is-nan.not > @
+    not. > @
+      is-nan. 42.5
 
   ++> tests-number-with-nan-bytes-is-nan
-    (number nan.as-bytes).is-nan > @
+    is-nan. (number nan.as-bytes) > @
 
   ++> tests-positive-infinity-is-not-nan
     pinf.is-nan.not > @
@@ -24,52 +25,49 @@
 
   ++> tests-nan-times-number-is-nan
     eq. > @
-      (nan.times 42).as-bytes
+      as-bytes. (nan.times 42)
       nan.as-bytes
 
   ++> tests-nan-times-nan-is-nan
     eq. > @
-      (nan.times nan).as-bytes
+      as-bytes. (nan.times nan)
       nan.as-bytes
 
   ++> tests-nan-div-number-is-nan
     eq. > @
-      (nan.div 42).as-bytes
+      as-bytes. (nan.div 42)
       nan.as-bytes
 
   ++> tests-nan-div-nan-is-nan
     eq. > @
-      (nan.div nan).as-bytes
+      as-bytes. (nan.div nan)
       nan.as-bytes
 
   ++> tests-nan-plus-number-is-nan
     eq. > @
-      (nan.plus 42).as-bytes
+      as-bytes. (nan.plus 42)
       nan.as-bytes
 
   ++> tests-nan-plus-nan-is-nan
     eq. > @
-      (nan.plus nan).as-bytes
+      as-bytes. (nan.plus nan)
       nan.as-bytes
 
   ++> tests-nan-neg-is-nan
-    eq. > @
-      nan.@.as-bytes
-      nan.as-bytes
+    nan.@.as-bytes.eq nan.as-bytes > @
 
   ++> tests-nan-minus-number-is-nan
     eq. > @
-      (nan.minus 42).as-bytes
+      as-bytes. (nan.minus 42)
       nan.as-bytes
 
   ++> tests-nan-minus-nan-is-nan
     eq. > @
-      (nan.minus nan).as-bytes
+      as-bytes. (nan.minus nan)
       nan.as-bytes
 
   ++> tests-nan-floor-is-nan
-    eq. > @
-      nan.floor.as-bytes
-      nan.as-bytes
+    nan.floor.as-bytes.eq nan.as-bytes > @
 
-  nan.is-nan > [] +> nan-is-nan
+  ++> nan-is-nan
+    nan.is-nan > @

@@ -7,14 +7,12 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > with
-  ? >> list
-  ? >> x
+[list x] > with
   list.with x > @
 
   ++> tests-list-simple-with
     eq. > @
-      with
+      tuple.with
         * 1 2
         3
       * 1 2 3

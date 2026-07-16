@@ -10,41 +10,27 @@
 
 [text items] > joined
   string bts > @
-  if. > bts!
-    items.length.eq 0
-    --
-    with-delimiter items.head items.tail
+  if. (items.length.eq 0) -- (with-delimiter items.head items.tail) > bts!
   text > delimiter!
-
   [acc tup] > with-delimiter
     if. > @
       tup.length.eq 0
       acc
-      with-delimiter
-        concat.
-          concat.
-            dataized tup.head
-            delimiter
-          acc
-        tup.tail
+      with-delimiter (concat. (concat. (dataized tup.head) delimiter) acc) tup.tail
 
   ++> tests-joined-no-strings
-    eq. > @
-      ""
-      joined
-        "-"
-        *
+    eq. "" (string.joined "-" tuple.empty) > @
 
   ++> tests-joined-one-string
     eq. > @
       "some"
-      joined
+      string.joined
         "-"
         * "some"
 
   ++> tests-joined-many-strings
     eq. > @
       "hello-world-dear-friend"
-      joined
+      string.joined
         "-"
         * "hello" "world" "dear" "friend"

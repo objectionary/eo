@@ -11,45 +11,36 @@
 
 [text times cant-repeat] > repeated
   if. > @
-    0.gt amount
+    gt. 0 amount
     cant-repeat
-      "Can't repeat text %d times".printf
+      printf.
+        "Can't repeat text %d times"
         * amount
     string result
   times > amount!
   text > bts!
-  if. > result!
-    0.eq amount
-    --
-    rec-repeated bts 1
-
+  if. (eq. 0 amount) -- (rec-repeated bts 1) > result!
   [accum index] > rec-repeated
     if. > @
       amount.eq index
       accum
       rec-repeated
         accum.concat bts
-        (index.plus 1).as-number
+        as-number. (index.plus 1)
 
   ++> throws-on-text-repeating-less-than-zero-times
-    repeated > @
-      ""
-      -1
+    string.repeated "" -1 > @
 
   ++> tests-text-repeated-negative-times-returns-provided-fallback
     eq. > @
       "recovered"
-      repeated
+      string.repeated
         "x"
         -1
         "recovered" > [msg]
 
   ++> tests-text-repeated-zero-times-is-empty
-    eq. > @
-      ""
-      repeated "some" 0
+    eq. "" (string.repeated "some" 0) > @
 
   ++> tests-text-repeated-five-times
-    eq. > @
-      "heyheyheyheyhey"
-      repeated "hey" 5
+    eq. "heyheyheyheyhey" (string.repeated "hey" 5) > @

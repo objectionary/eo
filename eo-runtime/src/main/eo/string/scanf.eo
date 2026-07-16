@@ -22,73 +22,62 @@
   ++> tests-scanf-with-string
     eq. > @
       "hello"
-      head.
-        scanf "%s" "hello"
+      head. (string.scanf "%s" "hello")
 
   ++> tests-scanf-with-int
     eq. > @
       33
-      head.
-        scanf "%d" "33"
+      head. (string.scanf "%d" "33")
 
   ++> tests-scanf-with-negative-int
     eq. > @
       -42
-      head.
-        scanf "%d" "-42"
+      head. (string.scanf "%d" "-42")
 
   ++> tests-scanf-with-positive-signed-int
     eq. > @
       42
-      head.
-        scanf "%d" "+42"
+      head. (string.scanf "%d" "+42")
 
   ++> tests-scanf-with-float
     eq. > @
       0.24
-      head.
-        scanf "%f" "0.24"
+      head. (string.scanf "%f" "0.24")
 
   ++> throws-on-scanf-with-wrong-format
-    scanf "%l" "error" > @
+    string.scanf "%l" "error" > @
 
   ++> throws-on-scanf-with-oversized-int
-    scanf "%d" "99999999999999999999" > @
+    string.scanf "%d" "99999999999999999999" > @
 
   ++> tests-scanf-with-string-int-float
     eq. > @
-      scanf
-        "%s %d %f"
-        "hello 33 0.24"
+      string.scanf "%s %d %f" "hello 33 0.24"
       * "hello" 33 0.24
 
   ++> tests-scanf-with-string-with-ending
     eq. > @
       "hello"
-      head.
-        scanf "%s!" "hello!"
+      head. (string.scanf "%s!" "hello!")
 
   ++> tests-scanf-with-complex-string
     eq. > @
       "test"
-      head.
-        scanf "some%sstring" "someteststring"
+      head. (string.scanf "some%sstring" "someteststring")
 
   ++> tests-scanf-with-complex-int
     eq. > @
       734987259
-      head.
-        scanf "!%d!" "!734987259!"
+      head. (string.scanf "!%d!" "!734987259!")
 
   ++> tests-scanf-with-complex-float
     eq. > @
       1991.01
-      head.
-        scanf "this will be=%f" "this will be=1991.01"
+      head. (string.scanf "this will be=%f" "this will be=1991.01")
 
   ++> tests-scanf-with-printf
     eq. > @
-      scanf
+      string.scanf
         "%s is about %d?"
         printf
           "%s is about %d?"
@@ -97,12 +86,7 @@
 
   ++> tests-scanf-complex-case
     eq. > @
-      scanf
+      string.scanf
         "Im%d %s old and this is! Let's calculate %f + %f= %f"
         "Im18 years old and this is! Let's calculate 99999999.99 + 0.01= 100000000.0"
-      *
-        18
-        "years"
-        99999999.99
-        0.01
-        100000000.0
+      * 18 "years" 9.999999999E7 0.01 100000000

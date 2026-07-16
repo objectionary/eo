@@ -10,10 +10,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > reduced
-  ? >> list
-  ? >> start
-  ? >> func
+[list start func] > reduced
   reducedi > @
     list
     start
@@ -21,7 +18,7 @@
 
   ++> tests-list-reduce-without-index
     eq. > @
-      reduced
+      tuple.reduced
         * 1 2 3 4
         -1
         a.times x > [a x]
@@ -29,11 +26,12 @@
 
   ++> tests-list-reduced-printing
     eq. > @
-      reduced
+      tuple.reduced
         * 0 1
         ""
         [acc item]
           acc.concat > @
-            "%d".printf
+            printf.
+              "%d"
               * item
       "01"

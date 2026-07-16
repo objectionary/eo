@@ -13,54 +13,31 @@
 +spdx SPDX-License-Identifier: MIT
 
 [text] > trimmed
-  if. > @
-    0.eq text.as-bytes.size
-    text
-    trimmed-left
-      trimmed-right
-        text
+  if. (eq. 0 text.as-bytes.size) text (trimmed-left (trimmed-right text)) > @
 
   ++> tests-text-trimmed-one-space-left
-    eq. > @
-      trimmed " some"
-      "some"
+    eq. (string.trimmed " some") "some" > @
 
   ++> tests-text-trimmed-one-space-right
-    eq. > @
-      trimmed "some "
-      "some"
+    eq. (string.trimmed "some ") "some" > @
 
   ++> tests-text-trimmed-one-space-both
-    eq. > @
-      trimmed " some "
-      "some"
+    eq. (string.trimmed " some ") "some" > @
 
   ++> tests-text-trimmed-many-spaces
-    eq. > @
-      trimmed "    some     "
-      "some"
+    eq. (string.trimmed "    some     ") "some" > @
 
   ++> tests-text-trimmed-empty
-    eq. > @
-      trimmed ""
-      ""
+    eq. (string.trimmed "") "" > @
 
   ++> tests-text-trimmed-only-spaces
-    eq. > @
-      trimmed "        "
-      ""
+    eq. (string.trimmed "        ") "" > @
 
   ++> tests-trimmed-strips-mixed-ws-both-sides
-    eq. > @
-      trimmed " \t\n\f\rvalue \t\n\f\r"
-      "value"
+    eq. (string.trimmed " \t\n\f\rvalue \t\n\f\r") "value" > @
 
   ++> tests-trimmed-preserves-inner-content
-    eq. > @
-      trimmed "no-whitespace"
-      "no-whitespace"
+    eq. (string.trimmed "no-whitespace") "no-whitespace" > @
 
   ++> tests-trimmed-preserves-inner-whitespace
-    eq. > @
-      trimmed "\t hello world \n"
-      "hello world"
+    eq. (string.trimmed "\t hello world \n") "hello world" > @

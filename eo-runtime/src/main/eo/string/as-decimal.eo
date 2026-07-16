@@ -11,47 +11,39 @@
 [n] > as-decimal
   if. > @
     n.lt 0
-    concat. "-".as-bytes (digits (n.times -1))
+    concat.
+      as-bytes. "-"
+      digits (n.times -1)
     digits n
-
   [n] > digits
     if. > @
       n.lt 10
       as-char (n.floor.plus 48)
-      concat. (digits q) (as-char ((n.minus (q.times 10)).floor.plus 48))
-    (n.div 10).floor > q
+      concat.
+        digits q
+        as-char
+          plus.
+            floor. (n.minus (q.times 10))
+            48
+    floor. (n.div 10) > q
 
   ++> tests-writes-single-digit
-    eq. > @
-      "7"
-      string (as-decimal 7)
+    eq. "7" (string (string.as-decimal 7)) > @
 
   ++> tests-writes-zero
-    eq. > @
-      "0"
-      string (as-decimal 0)
+    eq. "0" (string (string.as-decimal 0)) > @
 
   ++> tests-writes-multi-digit-number
-    eq. > @
-      "31415"
-      string (as-decimal 31415)
+    eq. "31415" (string (string.as-decimal 31415)) > @
 
   ++> tests-writes-negative-number
-    eq. > @
-      "-42"
-      string (as-decimal -42)
+    eq. "-42" (string (string.as-decimal -42)) > @
 
   ++> tests-truncates-positive-fraction
-    eq. > @
-      "42"
-      string (as-decimal 42.987)
+    eq. "42" (string (string.as-decimal 42.987)) > @
 
   ++> tests-truncates-negative-fraction
-    eq. > @
-      "-7"
-      string (as-decimal -7.89)
+    eq. "-7" (string (string.as-decimal -7.89)) > @
 
   ++> tests-writes-number-with-inner-zero
-    eq. > @
-      "105"
-      string (as-decimal 105)
+    eq. "105" (string (string.as-decimal 105)) > @

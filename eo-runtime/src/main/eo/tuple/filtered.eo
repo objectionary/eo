@@ -11,23 +11,21 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > filtered
-  ? >> list
-  ? >> func
+[list func] > filtered
   filteredi > @
     list
     func item > [item index] >>
 
   ++> tests-simple-filtered
     eq. > @
-      filtered
+      tuple.filtered
         * 3 1 4 2 5
         v.gt 2 > [v]
       * 3 4 5
 
   ++> tests-filtered-with-bools
     eq. > @
-      filtered
+      tuple.filtered
         * true false true
         v.not > [v]
       * false

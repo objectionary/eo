@@ -27,17 +27,12 @@
 
 [allocated] > malloc-as-output
   [buffer] > write
-    (output-block 0).write > @
-      buffer
-
+    write. (output-block 0) buffer > @
     [offset] > output-block
       true > @
-
       [buffer] > write
-        seq * > @
-          allocated.write offset buffer
-          output-block
-            offset.plus buffer.size
+        seq > @
+          * (^.^.^.allocated.write offset buffer) (^.^.output-block (offset.plus buffer.size))
 
   ++> tests-makes-an-output-from-malloc-and-writes
     eq. > @
@@ -45,9 +40,7 @@
         10
         [mem]
           seq > @
-            *
-              (((malloc-as-output mem).write 01-02-03).write 04-05-06-07).write 08-09-A0
-              mem
+            * (write. (write. (write. (io.malloc-as-output mem) 01-02-03) 04-05-06-07) 08-09-A0) mem
       01-02-03-04-05-06-07-08-09-A0
 
   ++> writes-larger-data-than-provided-block
@@ -55,7 +48,6 @@
       malloc.of
         2
         [mem]
-          seq * > @
-            (malloc-as-output mem).write 01-02-03
-            mem
+          seq > @
+            * (write. (io.malloc-as-output mem) 01-02-03) mem
       01-02-03

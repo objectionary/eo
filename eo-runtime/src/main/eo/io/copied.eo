@@ -19,9 +19,7 @@
 
 [input output] > copied
   input-length > @
-    tee-input
-      input
-      output
+    tee-input input output
 
   ++> tests-copies-all-bytes-and-returns-length
     eq. > @
@@ -29,21 +27,14 @@
         5
         [m]
           seq > @
-            *
-              copied
-                bytes-as-input 01-02-03-04-05
-                malloc-as-output m
-              m
+            * (io.copied (bytes-as-input 01-02-03-04-05) (malloc-as-output m)) m
       01-02-03-04-05
 
   ++> tests-returns-correct-byte-count
     eq. > @
       malloc.of
         10
-        [m]
-          copied > @
-            bytes-as-input 01-02-03-04-05-06-07-08-09-10
-            malloc-as-output m
+        io.copied (bytes-as-input 01-02-03-04-05-06-07-08-09-10) (malloc-as-output m) > [m]
       10
 
   ++> tests-handles-empty-input
@@ -52,21 +43,14 @@
         0
         [m]
           seq > @
-            *
-              copied
-                bytes-as-input --
-                malloc-as-output m
-              m
+            * (io.copied (bytes-as-input --) (malloc-as-output m)) m
       --
 
   ++> tests-returns-zero-for-empty-input
     eq. > @
       malloc.of
         0
-        [m]
-          copied > @
-            bytes-as-input --
-            malloc-as-output m
+        io.copied (bytes-as-input --) (malloc-as-output m) > [m]
       0
 
   ++> tests-handles-large-data
@@ -74,14 +58,7 @@
       20
       malloc.of
         20
-        [m]
-          copied > @
-            bytes-as-input 01-02-03-04-05-06-07-08-09-0A-0B-0C-0D-0E-0F-10-11-12-13-14
-            malloc-as-output m
+        io.copied (bytes-as-input 01-02-03-04-05-06-07-08-09-0A-0B-0C-0D-0E-0F-10-11-12-13-14) (malloc-as-output m) > [m]
 
   ++> tests-handles-dead-input
-    eq. > @
-      copied
-        dead-input
-        dead-output
-      0
+    eq. (io.copied dead-input dead-output) 0 > @

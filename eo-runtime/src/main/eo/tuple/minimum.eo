@@ -16,38 +16,39 @@
     reduced
       lst
       pinf
-      [min item]
-        if. > @
-          min.gt item.as-number
-          item
-          min
+      if. (min.gt item.as-number) item min > [min item]
   sequence > lst
 
-  (minimum *) > [] +> throws-on-taking-minimum-from-empty-sequence
+  ++> throws-on-taking-minimum-from-empty-sequence
+    tuple.minimum tuple.empty > @
 
   ++> tests-minimum-of-empty-returns-provided-fallback
     eq. > @
       "recovered"
-      minimum
-        *
+      tuple.minimum
+        tuple.empty
         "recovered" > [msg]
 
   ++> tests-minimum-of-one-item-array
     eq. > @
-      minimum (* 42)
+      tuple.minimum
+        * 42
       42
 
   ++> tests-minimum-of-array-is-first
     eq. > @
-      minimum (* -2 25 12)
+      tuple.minimum
+        * -2 25 12
       -2
 
   ++> tests-minimum-of-array-is-in-the-center
     eq. > @
-      minimum (* 12 -2 25)
+      tuple.minimum
+        * 12 -2 25
       -2
 
   ++> tests-minimum-of-array-is-last
     eq. > @
-      minimum (* 12 25 -2)
+      tuple.minimum
+        * 12 25 -2
       -2

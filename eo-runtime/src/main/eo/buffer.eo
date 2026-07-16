@@ -9,20 +9,15 @@
 
 [buf] > buffer
   buf > @
-  [str] > with
-    buffer > @
-      string
-        buf.as-bytes.concat str.as-bytes
+  buffer (string (buf.as-bytes.concat str.as-bytes)) > [str] > with
 
   ++> tests-buffer-decorates-string
-    (buffer "Hello").eq "Hello" > @
+    eq. (buffer "Hello") "Hello" > @
 
   ++> tests-buffer-builds-simple-string
-    eq. > @
-      ((buffer "Hello").with ", ").with "Jeff"
-      "Hello, Jeff"
+    eq. (with. (with. (buffer "Hello") ", ") "Jeff") "Hello, Jeff" > @
 
   ++> tests-buffer-decorates-string-after-building
     eq. > @
-      ((buffer "Hi, ").with "Mark").length
+      length. (with. (buffer "Hi, ") "Mark")
       8

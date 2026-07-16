@@ -8,13 +8,15 @@
 +spdx SPDX-License-Identifier: MIT
 
 [n] > is-integer
-  and. > @
-    n.is-finite
+  n.is-finite.and > @
     n.eq n.floor
 
-  32.is-integer > [] +> int-number-is-integer
+  ++> int-number-is-integer
+    is-integer. 32 > @
 
-  32.5.is-integer.not > [] +> float-number-is-not-integer
+  ++> float-number-is-not-integer
+    not. > @
+      is-integer. 32.5
 
   ++> tests-positive-infinity-is-not-integer
     pinf.is-integer.not > @
@@ -22,4 +24,5 @@
   ++> tests-negative-infinity-is-not-integer
     ninf.is-integer.not > @
 
-  nan.is-integer.not > [] +> nan-is-not-integer
+  ++> nan-is-not-integer
+    nan.is-integer.not > @

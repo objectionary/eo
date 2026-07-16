@@ -10,10 +10,9 @@
 [] > dead-output
   [buffer] > write
     output-block > @
-
     [] > output-block
       true > @
+      ^.^.output-block > [buffer] > write
 
-      output-block > [buffer] > write
-
-  dead-output.write 01-02-03 > [] +> writes-bytes-to-nowhere
+  ++> writes-bytes-to-nowhere
+    io.dead-output.write 01-02-03 > @

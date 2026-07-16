@@ -40,22 +40,17 @@
   [code output] > return
     output > @
     return code output > called
-
   [time millitm] > timeb
-
   [st-mode st-size] > stat64
-
   [sin-family sin-port sin-addr] > sockaddr-in
     00-00-00-00-00-00-00-00 > sin-zero
-    plus. > size
-      plus.
-        plus.
-          sin-family.size
-          sin-port.size
-        sin-addr.size
-      sin-zero.size
+    plus. (plus. (sin-family.size.plus sin-port.size) sin-addr.size) sin-zero.size > size
 
   ++> tests-returns-valid-win32-inet-addr-for-localhost
-    or. > @
-      os.is-windows.not
-      (code. (win32 "inet_addr" (* "127.0.0.1"))).eq 16777343
+    os.is-windows.not.or > @
+      eq.
+        code.
+          sm.win32
+            "inet_addr"
+            * "127.0.0.1"
+        16777343

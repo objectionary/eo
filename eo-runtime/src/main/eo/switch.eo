@@ -28,48 +28,33 @@
   if. > @
     cases.length.eq 0
     empty-cases "Switch cases are empty"
-    if.
-      true.eq found.match
-      found.head
-      true
-  (rec-case cases).@ > found
-
+    if. (true.eq found.match) found.head true
+  @. > found
+    rec-case cases
   [tup] > rec-case
     if. > @
-      and.
-        tup.length.gt 1
-        previous.match
+      and. (tup.length.gt 1) previous.match
       previous
       [] >>
         tup.head.head > head
         tup.head.tail.head > match!
-    (rec-case tup.tail).@ > previous
+    @. (rec-case tup.tail) > previous
 
   ++> tests-switch-simple-case
     eq. > @
       switch
         *
-          *
-            false
-            "1"
-          *
-            true
-            "2"
+          * false "1"
+          * true "2"
       "2"
 
   ++> tests-switch-strings-case
     eq. > @
       switch
         *
-          *
-            password.eq "swordfish"
-            "password is correct!"
-          *
-            password.eq ""
-            "empty password is not allowed"
-          *
-            false
-            "password is wrong"
+          * (password.eq "swordfish") "password is correct!"
+          * (password.eq "") "empty password is not allowed"
+          * false "password is wrong"
       "password is correct!"
     "swordfish" > password
 
@@ -77,35 +62,25 @@
     eq. > @
       switch
         *
-          *
-            true
-            "TRUE1"
-          *
-            false
-            "FALSE"
-          *
-            true
-            "TRUE2"
+          * true "TRUE1"
+          * false "FALSE"
+          * true "TRUE2"
       "TRUE1"
 
   ++> tests-switch-with-all-false-cases
     switch > @
       *
-        *
-          false
-          "false1"
-        *
-          false
-          "false2"
+        * false "false1"
+        * false "false2"
 
   ++> throws-on-empty-switch
-    switch * > @
+    switch tuple.empty > @
 
   ++> tests-empty-switch-returns-provided-fallback
     eq. > @
       "recovered"
       switch
-        *
+        tuple.empty
         "recovered" > [msg]
 
   ++> tests-switch-complex-case
@@ -113,18 +88,15 @@
       switch
         *
           *
-            [] >>
-              c1 > @
-            22.0
+            c1 > [] >>
+            22
           *
-            [] >>
-              c2 > @
-            0.0
+            c2 > [] >>
+            0
           *
-            [] >>
-              c3 > @
+            c3 > [] >>
             "true case"
       "true case"
     false > c1
-    "1".eq "2" > c2
+    eq. "1" "2" > c2
     true > c3
