@@ -5,10 +5,9 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - /object[not(//o[@local])]
   - /object/o[@name='foo'][count(o[@base='∅'])=2]
-  - /object/o[@name='foo']/o[@name='a🌵2-2' and @base='∅']
-  - /object/o[@name='foo']/o[@name='a🌵3-2' and @base='∅']
+  - /object/o[@name='foo']/o[@name='a🌵2-2' and @base='∅' and @local='left']
+  - /object/o[@name='foo']/o[@name='a🌵3-2' and @base='∅' and @local='right']
   - //o[@base='ξ.a🌵3-2' and @name='φ']
 input: |
   [] > foo
