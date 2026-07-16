@@ -2,11 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-/*
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
-package org.eolang.EO_nk; // NOPMD
+package org.eolang;
 
 import com.jcabi.log.Logger;
 import com.sun.jna.Native;
@@ -23,18 +19,10 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import org.eolang.AtVoid;
-import org.eolang.Atom;
-import org.eolang.Attr;
-import org.eolang.Attrs;
-import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.EO_sm.Posix.CStdLib;
 import org.eolang.EO_sm.SockaddrIn;
 import org.eolang.EO_sm.Win32.WSAStartupFuncCall;
 import org.eolang.EO_sm.Win32.Winsock;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Nested;
@@ -60,7 +48,7 @@ final class EOsocketTest {
     void connectsToLocalServerViaSocketObject() throws IOException {
         final EOsocketTest.RandomServer server = new EOsocketTest.RandomServer().started();
         try {
-            final Phi socket = Phi.Φ.take("nk.socket").copy();
+            final Phi socket = Phi.Φ.take("socket").copy();
             socket.put(0, new Data.ToPhi(this.localhost()));
             socket.put(1, new Data.ToPhi(server.port));
             final Phi connected = socket.take("connect").copy();
@@ -83,7 +71,7 @@ final class EOsocketTest {
     void returnsFallbackWhenConnectionIsRefused() throws IOException {
         final EOsocketTest.RandomServer refused = new EOsocketTest.RandomServer().started();
         refused.stop();
-        final Phi socket = Phi.Φ.take("nk.socket").copy();
+        final Phi socket = Phi.Φ.take("socket").copy();
         socket.put(0, new Data.ToPhi(this.localhost()));
         socket.put(1, new Data.ToPhi(refused.port));
         final Phi connect = socket.take("connect").copy();
@@ -106,7 +94,7 @@ final class EOsocketTest {
         final int port = random.port;
         final Thread server = new Thread(
             () -> {
-                final Phi socket = Phi.Φ.take("nk.socket").copy();
+                final Phi socket = Phi.Φ.take("socket").copy();
                 socket.put(0, new Data.ToPhi(this.localhost()));
                 socket.put(1, new Data.ToPhi(port));
                 final Phi listened = socket.take("listen").copy();
@@ -116,7 +104,7 @@ final class EOsocketTest {
         );
         server.start();
         Thread.sleep(2000);
-        final Phi socket = Phi.Φ.take("nk.socket").copy();
+        final Phi socket = Phi.Φ.take("socket").copy();
         socket.put(0, new Data.ToPhi(this.localhost()));
         socket.put(1, new Data.ToPhi(port));
         final Phi connected = socket.take("connect").copy();
