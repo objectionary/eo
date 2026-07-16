@@ -5,13 +5,8 @@
 package org.eolang.maven;
 
 /**
- * Which optional diagnostic artifacts the transpiler emits.
- *
- * <p>Both toggles trade runtime or build cost for easier debugging:
- * transformation steps dump the intermediate XMIR of every stage to disk,
- * while locations wrap each dispatched object with a location-carrying
- * {@code PhSafe} so a panic reports its {@code .eo} source position.</p>
- *
+ * Which optional diagnostic artifacts the transpiler emits: transformation
+ * steps (intermediate XMIR dumps) and source locations (PhSafe wrappers).
  * @since 0.73.1
  */
 final class Tracking {

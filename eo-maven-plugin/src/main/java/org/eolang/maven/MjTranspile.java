@@ -55,13 +55,13 @@ public final class MjTranspile extends MjSafe {
     /**
      * Whether to wrap every dispatched object with a location-carrying
      * {@code PhSafe}, so a panic reports its {@code .eo} source position.
-     * Turn it off in release builds to skip the per-dispatch wrapper
-     * overhead, keeping only the failure reason and Java stack trace.
+     * Off by default, so a production build stays lean; turn it on (as
+     * {@code eo-runtime} does for its tests) to keep precise {@code .eo}
+     * locations in panics.
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.trackLocations", required = true, defaultValue = "true")
-    @SuppressWarnings("PMD.ImmutableField")
-    private boolean trackLocations = true;
+    @Parameter(property = "eo.trackLocations")
+    private boolean trackLocations;
 
     @Override
     public void exec() throws IOException {
