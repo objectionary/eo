@@ -611,7 +611,27 @@ R-3.14.5. **Chaining.** Consecutive pipe lines build left-associated application
 
 R-3.14.6. Name suffix per §3.10: `> name`, `>>`, or none (the last only when the pipe is an unnamed intermediate immediately wrapped by a `.method`, which names the whole chain). The atom signature `/sig` and the test attribute `+> name` are rejected — a pipe is an application, not a formation. All-or-nothing inline binding (§6.6) applies to the argument group.
 
-R-3.14.7. **Emission / XMIR.** A pipe line desugars to an ordinary application whose head is a reference to the (named) predecessor, and the predecessor object stays in place. So `| a > r` after a formation `F` (named `F`) is identical in XMIR to `F a > r`; `| a` then `| b` after `F >>` (auto-name `A`) is `A a` (auto-named) followed by `A′ b`. The parser emits the pipe line as a base-less `<o pipe=''>` with the args as children; the `wrap-applications` reshape (§9) sets `@base` from the preceding sibling's `@name` and drops `@pipe`, so every downstream pass (scope resolution, base rolling) treats it as a hand-written application.
+R-3.14.7. **Emission / XMIR.** A pipe line desugars to an ordinary application whose head is a reference to the (named) predecessor. So `| a > r` after a formation `F` (named `F`) is identical in XMIR to `F a > r`; `| a` then `| b` after `F >>` (auto-name `A`) is `A a` (auto-named) followed by `A′ b`. The parser emits the pipe line as a base-less `<o pipe=''>` with the args as children; the `wrap-applications` reshape (§9) sets `@base` from the preceding sibling's `@name` and drops `@pipe`, so every downstream pass (scope resolution, base rolling) treats it as a hand-written application.
+
+R-3.14.8. **Predecessor placement — body vs argument block.** Where the predecessor formation ends up depends on where the pipe sits:
+  - **Body of a formation** (the pipe's parent is abstract): the predecessor stays in place as a named attribute alongside the pipe application, so both are visible to siblings. `[x] > foo` then `| 5 > foo5` yields two attributes, `foo` and `foo5 = foo 5`.
+  - **Argument block** (the pipe's parent is an application, so its siblings are collected as positional arguments): leaving the predecessor in place would make the enclosing application receive it *and* the pipe application as two arguments. Instead the predecessor **floats up** to the nearest enclosing abstract object (via `vars-float-up`, §9) and leaves no argument slot of its own, so the enclosing application receives exactly one argument — the pipe application referring to the floated definition. `wrap-applications` marks such a predecessor with a transient `@float-up`; `vars-float-up` consumes it. For example,
+
+    ```
+    [] > foo
+      bar > @
+        [] > hello
+        | 5
+    ```
+
+    is identical in XMIR to
+
+    ```
+    [] > foo
+      bar > @
+        $.hello 5
+      [] > hello
+    ```
 
 Outer kind: **`pipe-application`** (openness `open` for the vertical form's body, `vertical-completed` for the horizontal form).
 

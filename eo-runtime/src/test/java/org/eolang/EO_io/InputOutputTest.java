@@ -66,7 +66,7 @@ final class InputOutputTest {
     /**
      * Console.
      */
-    private static final String CONSOLE = "io.console";
+    private static final String CONSOLE = "console";
 
     /**
      * Stdin.
