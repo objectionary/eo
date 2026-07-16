@@ -124,8 +124,6 @@ It is being copied with two arguments: `"Hello, %s!"` and `"Jeffrey"`.
 This program can be written using horizontal notation:
 
 ```eo
-+alias stdout
-
 [] > app
   stdout ("Hello, %s!".printf (* "Jeffrey")) > @
 ```

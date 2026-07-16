@@ -11,8 +11,6 @@ file: simple.eo
 args: ["simple", "Jeff"]
 target: "eoc"
 eo: |
-  +alias stdout
-
   [args] > simple
     stdout > @
       "Hello, %s".printf

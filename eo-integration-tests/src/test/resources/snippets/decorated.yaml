@@ -7,7 +7,6 @@ out:
 file: snippets/foo.eo
 args: ["snippets.foo"]
 eo: |
-  +alias stdout
   +alias number.sine
   +package snippets
 
