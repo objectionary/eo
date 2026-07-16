@@ -131,6 +131,9 @@
       <xsl:attribute name="reversed">
         <xsl:value-of select="if (@base and starts-with(@base, '.')) then 'yes' else 'no'"/>
       </xsl:attribute>
+      <xsl:attribute name="data">
+        <xsl:value-of select="if (eo:has-data(.)) then 'yes' else 'no'"/>
+      </xsl:attribute>
       <xsl:apply-templates select="o[not(eo:void(.))]" mode="tree"/>
     </line>
   </xsl:template>

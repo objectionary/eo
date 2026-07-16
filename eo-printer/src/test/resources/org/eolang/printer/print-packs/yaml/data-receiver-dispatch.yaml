@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A dispatch whose receiver is a data literal (number, string, bytes) is
+# stored in XMIR as a reversed head ("plus.") over a data child, because a
+# literal can't fold into a dotted @base the way a named receiver does. The
+# printer weighs that reversed shape against the equivalent suffix shape
+# ("5.plus 3") and keeps the lower-penalty one, just as a named receiver
+# ("foo.plus 3") already prints in suffix form (#5584).
+origin: |
+  [foo] > app
+    5.plus 3 > a
+    -1.times 228 > b
+    "x".eq "y" > c
+    01-.eq 02- > d
+    foo.plus 3 > e
+
+printed: |
+  [foo] > app
+    5.plus 3 > a
+    -1.times 228 > b
+    "x".eq "y" > c
+    01-.eq 02- > d
+    foo.plus 3 > e
