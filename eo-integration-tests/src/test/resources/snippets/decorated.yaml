@@ -9,13 +9,13 @@ args: ["snippets.foo"]
 eo: |
   +alias io.stdout
   +alias number.sine
-  +alias string.sprintf
+  +alias string.printf
   +package snippets
 
   [] > foo
     1.2345 > x
     stdout > @
-      sprintf
+      printf
         "Sin of %f is %f"
         *
           x

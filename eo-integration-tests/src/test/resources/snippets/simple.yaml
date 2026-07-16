@@ -12,10 +12,10 @@ args: ["simple", "Jeff"]
 target: "eoc"
 eo: |
   +alias io.stdout
-  +alias string.sprintf
+  +alias string.printf
 
   [args] > simple
     stdout > @
-      sprintf *1
+      printf *1
         "Hello, %s"
         args.at 0
