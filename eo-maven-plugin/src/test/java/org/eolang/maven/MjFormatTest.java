@@ -65,7 +65,7 @@ final class MjFormatTest {
     }
 
     @Test
-    void autoFixReformatsDivergentSource(@Mktmp final Path temp) throws Exception {
+    void reformatsDivergentSourceWhenAutoFixIsOn(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "the divergent source must be rewritten into its canonical form",
             new TextOf(
