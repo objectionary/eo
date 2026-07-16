@@ -75,10 +75,10 @@
     and. > @
       d.exists
       d.is-directory
-    (tmpdir.tmpfile.deleted.as-path.resolved "foo-new").as-dir.made > d
+    (mktemp.tmpfile.deleted.as-path.resolved "foo-new").as-dir.made > d
 
   ++> tests-deletes-empty-directory
-    tmpdir
+    mktemp
     .tmpfile
     .deleted
     .as-path
@@ -91,7 +91,7 @@
     .not > @
 
   ++> throws-on-opening-directory
-    tmpdir.open > @
+    mktemp.open > @
       "w"
       true > [d]
 
@@ -105,7 +105,7 @@
           d.deleted.exists.not
         first.exists.not
       second.exists.not
-    (dir tmpdir.tmpfile.deleted).made > d
+    (dir mktemp.tmpfile.deleted).made > d
     d.tmpfile > first
     d.tmpfile > second
 
@@ -121,7 +121,7 @@
           d.deleted.exists.not
         inner.exists.not
       f.exists.not
-    (dir tmpdir.tmpfile.deleted).made > d
+    (dir mktemp.tmpfile.deleted).made > d
     d.tmpfile > f
     (dir d.tmpfile.deleted).made > inner
 
@@ -133,7 +133,7 @@
         (d.resolved "x/y/z").as-dir.made
         (d.resolved "x/y/z/a.txt").as-file.touched
         (d.as-dir.walk "**/*.txt").length.eq 2
-    (dir tmpdir.tmpfile.deleted).made.as-path > d
+    (dir mktemp.tmpfile.deleted).made.as-path > d
 
   ++> throws-on-walking-absent-directory
-    (dir tmpdir.tmpfile.deleted).walk "**" > @
+    (dir mktemp.tmpfile.deleted).walk "**" > @
