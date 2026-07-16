@@ -299,8 +299,10 @@ final class Pretty {
 
     /**
      * Render a node inline, as it would appear as an argument (without
-     * its own name suffix), or empty if it can't be inlined safely.
-     * @param node The node
+     * its own name suffix), or empty if it can't be inlined safely. A
+     * data-receiver dispatch is inlined in its suffix shape ({@code
+     * 5.plus 3}), never the reversed one.
+     * @param given The node
      * @return The inlined content, or empty
      */
     private static Optional<String> flat(final Pretty.Node given) {
