@@ -244,43 +244,43 @@
 
   ++> tests-returns-self-after-deleting
     temp.deleted.path.eq temp.path > @
-    tmpdir.tmpfile > temp
+    mktemp.tmpfile > temp
 
   ++> tests-returns-self-after-touching
     temp.deleted.touched.path.eq temp.path > @
-    tmpdir.tmpfile > temp
+    mktemp.tmpfile > temp
 
   ++> tests-checks-file-does-not-exist-after-deleting
-    tmpdir.tmpfile.deleted.exists.not > @
+    mktemp.tmpfile.deleted.exists.not > @
 
   ++> tests-touches-a-file
-    tmpdir.tmpfile.deleted.touched.exists > @
+    mktemp.tmpfile.deleted.touched.exists > @
 
   ++> tests-measures-empty-file-after-touching
-    tmpdir.tmpfile.deleted.touched.size.eq 0 > @
+    mktemp.tmpfile.deleted.touched.size.eq 0 > @
 
   ++> throws-on-sizing-absent-file
-    tmpdir.tmpfile.deleted.size > @
+    mktemp.tmpfile.deleted.size > @
 
   ++> throws-on-checking-directory-of-absent-file
-    tmpdir.tmpfile.deleted.is-directory > @
+    mktemp.tmpfile.deleted.is-directory > @
 
   ++> tests-sizing-absent-file-returns-fallback
     eq. > @
       -1
-      tmpdir.tmpfile.deleted.size -1
+      mktemp.tmpfile.deleted.size -1
 
   ++> tests-checking-absent-file-returns-fallback
-    tmpdir.tmpfile.deleted.is-directory true > @
+    mktemp.tmpfile.deleted.is-directory true > @
 
   ++> tests-does-not-fail-on-double-touching
-    tmpdir.tmpfile.deleted.touched.touched.exists > @
+    mktemp.tmpfile.deleted.touched.touched.exists > @
 
   ++> tests-does-not-fail-on-double-deleting
-    tmpdir.tmpfile.deleted.deleted.exists.not > @
+    mktemp.tmpfile.deleted.deleted.exists.not > @
 
   ++> throws-an-error-on-touching-temp-file-in-absent-dir
-    (tmpdir.as-path.resolved "foo").@.tmpfile > @
+    (mktemp.as-path.resolved "foo").@.tmpfile > @
 
   ++> tests-resolves-and-touches
     and. > @
@@ -290,18 +290,18 @@
         joined
           Q.fs.path.separator
           * "foo" "bar"
-    tmpdir.as-path.resolved "foo/bar" > resolved
+    mktemp.as-path.resolved "foo/bar" > resolved
 
   ++> tests-moves-a-file
     and. > @
       (temp.moved ("%s.dest".printf (* temp.path))).exists
       temp.exists.not
-    tmpdir.tmpfile > temp
+    mktemp.tmpfile > temp
 
   ++> throws-on-opening-with-wrong-mode
     seq > @
       *
-        tmpdir
+        mktemp
         .tmpfile
         .open
           "x"
@@ -309,7 +309,7 @@
         true
 
   ++> throws-on-reading-from-not-existed-file
-    tmpdir
+    mktemp
     .tmpfile
     .deleted
     .open > @
@@ -317,7 +317,7 @@
       f > [f]
 
   ++> throws-on-reading-or-writing-from-not-existed-file
-    tmpdir
+    mktemp
     .tmpfile
     .deleted
     .open > @
@@ -327,7 +327,7 @@
   ++> tests-recovers-from-opening-missing-file-through-fallback
     eq. > @
       "recovered"
-      tmpdir
+      mktemp
       .tmpfile
       .deleted
       .open
@@ -336,7 +336,7 @@
         "recovered" > [reason]
 
   ++> tests-touches-absent-file-on-opening-for-writing
-    tmpdir
+    mktemp
     .tmpfile
     .deleted
     .open
@@ -345,7 +345,7 @@
     .exists > @
 
   ++> tests-touches-absent-file-on-opening-for-appending
-    tmpdir
+    mktemp
     .tmpfile
     .deleted
     .open
@@ -354,7 +354,7 @@
     .exists > @
 
   ++> tests-touches-absent-file-on-opening-for-writing-or-reading
-    tmpdir
+    mktemp
     .tmpfile
     .deleted
     .open
@@ -363,7 +363,7 @@
     .exists > @
 
   ++> tests-touches-absent-file-on-opening-for-reading-or-appending
-    tmpdir
+    mktemp
     .tmpfile
     .deleted
     .open
@@ -372,7 +372,7 @@
     .exists > @
 
   ++> tests-writes-data-to-file
-    tmpdir
+    mktemp
     .tmpfile
     .open
       "w"
@@ -381,7 +381,7 @@
     .eq 12 > @
 
   ++> tests-appending-data-to-file
-    tmpdir
+    mktemp
     .tmpfile
     .open
       "w"
@@ -393,7 +393,7 @@
     .eq 13 > @
 
   ++> tests-truncates-file-opened-for-writing
-    tmpdir
+    mktemp
     .tmpfile
     .open
       "w"
@@ -405,7 +405,7 @@
     .eq 0 > @
 
   ++> tests-truncates-file-opened-for-writing-or-reading
-    tmpdir
+    mktemp
     .tmpfile
     .open
       "w"
@@ -417,7 +417,7 @@
     .eq 0 > @
 
   ++> tests-does-not-truncate-file-opened-for-appending
-    tmpdir
+    mktemp
     .tmpfile
     .open
       "w"
@@ -429,7 +429,7 @@
     .eq 12 > @
 
   ++> tests-does-not-truncate-file-opened-for-reading-or-appending
-    tmpdir
+    mktemp
     .tmpfile
     .open
       "w"
@@ -441,7 +441,7 @@
     .eq 12 > @
 
   ++> tests-does-not-truncate-file-opened-for-reading
-    tmpdir
+    mktemp
     .tmpfile
     .open
       "w"
@@ -453,7 +453,7 @@
     .eq 12 > @
 
   ++> throws-on-writing-with-wrong-mode
-    tmpdir
+    mktemp
     .tmpfile
     .open > @
       "r"
@@ -466,7 +466,7 @@
       [m]
         seq > @
           *
-            tmpdir
+            mktemp
             .tmpfile
             .open
               "w"
@@ -480,14 +480,14 @@
     .eq "Hello, world" > @
 
   ++> throws-on-reading-negative-size-from-file
-    tmpdir
+    mktemp
     .tmpfile
     .open > @
       "r"
       f.read -5 > [f]
 
   ++> throws-on-reading-from-file-with-wrong-mode
-    tmpdir
+    mktemp
     .tmpfile
     .open > @
       "w"
@@ -513,7 +513,7 @@
                     f.read 13
               m
     temp.path > src
-    tmpdir.tmpfile > temp
+    mktemp.tmpfile > temp
 
   ++> tests-writes-to-file-from-different-instances
     seq > @
@@ -543,7 +543,7 @@
                 m
         .eq "Shrek is love!"
     temp.path > src
-    tmpdir.tmpfile > temp
+    mktemp.tmpfile > temp
 
   ++> tests-reads-from-file-sequentially
     malloc
@@ -552,7 +552,7 @@
       [m]
         seq > @
           *
-            tmpdir
+            mktemp
             .tmpfile
             .open
               "w"
@@ -566,7 +566,7 @@
     .eq "world" > @
 
   ++> tests-writes-to-file-sequentially
-    tmpdir
+    mktemp
     .tmpfile
     .open
       "a+"
