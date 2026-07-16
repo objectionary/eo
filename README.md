@@ -63,7 +63,7 @@ Then, start with a simple EO program in the `app.eo` file:
 # Just prints hello.
 
 [args] > app
-  io.stdout > @
+  stdout > @
     "Hello, world!\n"
 ```
 
@@ -93,7 +93,7 @@ with a few required arguments provided.
 This is how a copy of the object `stdout` is made:
 
 ```text
-io.stdout
+stdout
   "Hello, world!\n"
 ```
 
@@ -103,7 +103,7 @@ in front of the line in order to go to the deeper level of nesting.
 This code can also be written in a "horizontal" notation:
 
 ```text
-io.stdout "Hello, world!"
+stdout "Hello, world!"
 ```
 
 Moreover, it's possible to use brackets in order to group arguments and avoid
@@ -114,7 +114,7 @@ argument: a copy of the object `printf`:
 ```eo
 # Says hello to Jeff.
 
-io.stdout > [] > app
+stdout > [] > app
   "Hello, %s!".printf
     * "Jeffrey"
 ```
@@ -124,8 +124,6 @@ It is being copied with two arguments: `"Hello, %s!"` and `"Jeffrey"`.
 This program can be written using horizontal notation:
 
 ```eo
-+alias io.stdout
-
 [] > app
   stdout ("Hello, %s!".printf (* "Jeffrey")) > @
 ```
@@ -143,7 +141,7 @@ inside `app` and use it to build the output string:
 # Says hello to Jeff.
 
 [] > app
-  io.stdout (msg "Jeffrey") > @
+  stdout (msg "Jeffrey") > @
   [name] > msg
     "Hello, %s!".printf (* name) > @
 ```
@@ -161,7 +159,7 @@ malloc.empty > [args] > app
     while
       x.as-number.lt 6 > [i] >>
       seq * > [i] >>
-        io.stdout
+        stdout
           "%d x %1$d = %d\n".printf
             *
               x
