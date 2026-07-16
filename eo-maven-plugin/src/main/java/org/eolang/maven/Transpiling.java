@@ -77,7 +77,7 @@ final class Transpiling implements Step {
      *     processes.
      * </p>
      */
-    private static final ThreadLocal<Map<Boolean, Train<Shift>>> TRAINS =
+    private static final ThreadLocal<Map<String, Train<Shift>>> TRAINS =
         ThreadLocal.withInitial(HashMap::new);
 
     /**
@@ -142,6 +142,12 @@ final class Transpiling implements Step {
     private final Tracking tracking;
 
     /**
+     * The file to record coverage hits into, or NULL when
+     * instrumentation is off.
+     */
+    private final Path coverage;
+
+    /**
      * Constructor.
      * @param srcs XMIR sources to transpile
      * @param target Target directory
@@ -152,8 +158,10 @@ final class Transpiling implements Step {
      * @param tests Whether to transpile tests
      * @param measures Path to the file where XSL measurements are stored
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
-     * @checkstyle ParameterNumberCheck (15 lines)
+     * @param cvrg The coverage file, or NULL when instrumentation is off
+     * @checkstyle ParameterNumberCheck (18 lines)
      */
+    @SuppressWarnings("PMD.ExcessiveParameterList")
     Transpiling(
         final Collection<TjForeign> srcs,
         final Path target,
@@ -163,7 +171,8 @@ final class Transpiling implements Step {
         final String ver,
         final boolean tests,
         final Path measures,
-        final Tracking diagnostics
+        final Tracking diagnostics,
+        final Path cvrg
     ) {
         this.sources = srcs;
         this.targetDir = target;
@@ -174,6 +183,7 @@ final class Transpiling implements Step {
         this.transpileTests = tests;
         this.xslMeasures = measures;
         this.tracking = diagnostics;
+        this.coverage = cvrg;
     }
 
     @Override
@@ -295,17 +305,21 @@ final class Transpiling implements Step {
      * @return The train of XSL shifts
      */
     private Train<Shift> train() {
+        final boolean track = this.tracking.locations();
+        final boolean instrument = this.coverage != null;
         return Transpiling.TRAINS.get().computeIfAbsent(
-            this.tracking.locations(), Transpiling::compiled
+            String.format("%b|%b", track, instrument),
+            ignored -> Transpiling.compiled(track, instrument)
         );
     }
 
     /**
      * Build the train of XSL shifts.
      * @param track Whether generated objects carry their source location
+     * @param instrument Whether located objects are wrapped into {@code PhCoverage}
      * @return The train of XSL shifts
      */
-    private static Train<Shift> compiled(final boolean track) {
+    private static Train<Shift> compiled(final boolean track, final boolean instrument) {
         return new TrFull(
             new TrJoined<>(
                 new TrClasspath<>(
@@ -322,7 +336,8 @@ final class Transpiling implements Step {
                     new StClasspath(
                         "/org/eolang/maven/transpile/to-java.xsl",
                         String.format("disclaimer %s", new Disclaimer()),
-                        String.format("trackLocations %b", track)
+                        String.format("trackLocations %b", track),
+                        String.format("coverage %b", instrument)
                     )
                 )
             )
