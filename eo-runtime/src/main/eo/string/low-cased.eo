@@ -1,6 +1,5 @@
 # Returns the `text` in lower case.
 
-+alias tuple.bytes-as-array
 +alias tuple.reduced
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -13,8 +12,7 @@
 [text] > low-cased
   string > @
     reduced
-      bytes-as-array
-        text.as-bytes
+      text.as-bytes.array
       --
       [accum byte] >>
         accum.concat > @
