@@ -154,6 +154,39 @@ final class StUnhexTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("shifts")
+    void keepsUnicodeGlyphsReadable(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format("StUnhex by %s must keep Unicode glyphs readable, not escape them", type),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<o base='Φ.string'><o base='Φ.bytes'>",
+                        "<o>D0-B4-D1-80-D1-83-D0-B3-20-E4-BD-A0-E5-A5-BD</o>",
+                        "</o></o>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath("//o[text()='\"\u0434\u0440\u0443\u0433 \u4F60\u597D\"']")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
+    void escapesControlCharsAsUnicode(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format("StUnhex by %s must escape non-printable control chars", type),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    "<o base='Φ.string'><o base='Φ.bytes'><o>41-01-07-42</o></o></o>"
+                )
+            ),
+            XhtmlMatchers.hasXPath("//o[text()='\"A\\u0001\\u0007B\"']")
+        );
+    }
+
     private static Stream<Arguments> shifts() {
         return Stream.of(
             Arguments.of(StUnhex.XNAV, "xnav")
