@@ -63,7 +63,7 @@ final class PhPackageTest {
                 "The %s attribute must be set to package object on dispatch",
                 Phi.RHO
             ),
-            pckg.take("dir").take(Phi.RHO),
+            pckg.take("path").take(Phi.RHO),
             Matchers.equalTo(pckg)
         );
     }

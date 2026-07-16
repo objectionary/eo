@@ -42,7 +42,7 @@
 
   [uri] > posix
     uri > @
-    dir (file uri) > as-dir
+    directory (file uri) > as-dir
     file uri > as-file
     and. > is-absolute
       uri.length.gt 0
@@ -174,7 +174,7 @@
 
     [uri] > validated
       uri > @
-      dir (file uri) > as-dir
+      directory (file uri) > as-dir
       file uri > as-file
       ^.separator > separator
 
