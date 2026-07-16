@@ -7,7 +7,7 @@ out:
 file: snippets/auto.eo
 args: ["snippets.auto"]
 eo: |
-  +alias io.stdout
+  +alias stdout
   +package snippets
 
   [] > auto

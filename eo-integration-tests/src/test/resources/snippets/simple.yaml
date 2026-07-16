@@ -11,7 +11,7 @@ file: simple.eo
 args: ["simple", "Jeff"]
 target: "eoc"
 eo: |
-  +alias io.stdout
+  +alias stdout
 
   [args] > simple
     stdout > @
