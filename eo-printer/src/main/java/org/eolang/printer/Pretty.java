@@ -272,7 +272,18 @@ final class Pretty {
 
     /**
      * Inline a list of arguments into one space-separated string,
-     * wrapping in parentheses those that take arguments themselves.
+     * wrapping in parentheses only those that apply arguments of their
+     * own (a real application such as {@code 5.plus 3}).
+     *
+     * <p>The guard weighs the argument in its effective (suffix-resolved)
+     * shape, not its raw one. A data-receiver dispatch such as
+     * {@code 01-.as-bool} is stored as a reversed head over a data child,
+     * so its raw node has a child (the receiver) yet it takes no arguments
+     * and is a single token — {@link #suffixed} folds the receiver back
+     * into the base, leaving no children, so it inlines bare. Wrapping it
+     * as {@code (01-.as-bool)} would produce EO that fails to parse with
+     * "redundant parentheses around a single token" (#5591).</p>
+     *
      * @param args The arguments
      * @return The inlined string, or empty if any argument can't be inlined
      */
@@ -288,7 +299,7 @@ final class Pretty {
             if (joined.length() > 0) {
                 joined.append(' ');
             }
-            if (arg.children.isEmpty()) {
+            if (Pretty.suffixed(arg).orElse(arg).children.isEmpty()) {
                 joined.append(flat.get());
             } else {
                 joined.append('(').append(flat.get()).append(')');
