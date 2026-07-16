@@ -23,7 +23,7 @@
       ^.exists
       ^
       seq *
-        (dir (Q.fs.file ^.as-path.dirname)).made
+        (dir (Q.file ^.as-path.dirname)).made
         if.
           outcome.eq 0
           ^
@@ -58,7 +58,7 @@
   [] > tmpfile
     if. > @
       ^.exists
-      Q.fs.file
+      Q.file
         touch.as-bytes
       T
         "Directory %s does not exist, can't create temporary file".printf
