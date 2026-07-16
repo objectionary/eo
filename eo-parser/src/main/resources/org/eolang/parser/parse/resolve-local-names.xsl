@@ -8,7 +8,9 @@
   The "&gt;&gt; foo" file-local handle (§3.10 / §9.2): the parser emits the
   anonymous object with its cactus @name plus a "@local='foo'" marker. We
   build the per-file "handle -&gt; cactus-name" table and rewrite every @base
-  equal to a handle into that (reserved) cactus name; a handle declared more
+  (a dispatch, "foo &gt; @") and every @as (a named binding, "obj 42:foo")
+  equal to a handle into that (reserved) cactus name, so that a same-file
+  named binding actually fills the handle's void; a handle declared more
   than once is an error. The "@local" marker is deliberately kept on the
   declaring object so that later passes (in particular the printer, see
   #5563) can recover the readable handle from the otherwise-synthetic cactus
@@ -16,10 +18,15 @@
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:key name="handle" match="o[@local]" use="@local"/>
-  <xsl:template match="o[@base and key('handle', @base)]">
+  <xsl:template match="o[(@base and key('handle', @base)) or (@as and key('handle', @as))]">
     <xsl:copy>
-      <xsl:attribute name="base" select="key('handle', @base)[1]/@name"/>
-      <xsl:apply-templates select="@* except @base"/>
+      <xsl:if test="@base">
+        <xsl:attribute name="base" select="if (key('handle', @base)) then key('handle', @base)[1]/@name else @base"/>
+      </xsl:if>
+      <xsl:if test="@as">
+        <xsl:attribute name="as" select="if (key('handle', @as)) then key('handle', @as)[1]/@name else @as"/>
+      </xsl:if>
+      <xsl:apply-templates select="@* except (@base|@as)"/>
       <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
