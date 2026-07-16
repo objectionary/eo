@@ -80,6 +80,49 @@ final class StUnhexTest {
 
     @ParameterizedTest
     @MethodSource("shifts")
+    void keepsUnicodeGlyphsInsteadOfEscaping(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must keep readable Unicode glyphs, but it escaped them",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<p><o base='Φ.string'><o base='Φ.bytes'>",
+                        "<o>E4-BD-A0-E5-A5-BD-2C-20-D0-B4-D1-80-D1-83-D0-B3-21</o></o></o>",
+                        "<o base='Φ.string'><o base='Φ.bytes'>",
+                        "<o>68-65-6C-6C-6F-20-E4-BD-A0-E5-A5-BD</o></o></o></p>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "//o[text()='\"你好, друг!\"']",
+                "//o[text()='\"hello 你好\"']"
+            )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
+    void escapesControlCharactersToUnicode(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must escape non-printable characters to \\uNNNN",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    "<o base='Φ.string'><o base='Φ.bytes'><o>41-00-42</o></o></o>"
+                )
+            ),
+            XhtmlMatchers.hasXPath("//o[text()='\"A\\u0000B\"']")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
     void convertsEmptyStringFromHexToEo(final Shift shift, final String type) {
         MatcherAssert.assertThat(
             String.format("StUnhex by %s must convert empty string", type),

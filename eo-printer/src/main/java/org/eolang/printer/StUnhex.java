@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
-import org.apache.commons.text.StringEscapeUtils;
 import org.eolang.parser.StXnav;
 
 /**
@@ -59,7 +58,7 @@ final class StUnhex extends StEnvelope {
             xnav -> xnav.node().setTextContent(
                 String.format(
                     "\"%s\"",
-                    StringEscapeUtils.escapeJava(
+                    StUnhex.escape(
                         new String(
                             StUnhex.buffer(
                                 StUnhex.undash(xnav.element("o").text().orElse(""))
@@ -107,6 +106,82 @@ final class StUnhex extends StEnvelope {
             str = Double.toString(num);
         }
         return str;
+    }
+
+    /**
+     * Escape a decoded string for printing as an EO string literal.
+     *
+     * <p>Unlike {@code StringEscapeUtils.escapeJava}, which escapes the
+     * entire non-ASCII range to {@code \\uNNNN}, this escaper leaves
+     * printable Unicode glyphs intact (EO sources are UTF-8). Only the
+     * backslash, the double quote and non-printable/control characters
+     * are escaped; the latter fall back to {@code \\uNNNN}.</p>
+     * @param txt The decoded text
+     * @return The escaped text, ready to sit between the quotes
+     */
+    private static String escape(final String txt) {
+        final StringBuilder out = new StringBuilder(txt.length());
+        int idx = 0;
+        while (idx < txt.length()) {
+            final int cpnt = txt.codePointAt(idx);
+            out.append(StUnhex.glyph(cpnt));
+            idx += Character.charCount(cpnt);
+        }
+        return out.toString();
+    }
+
+    /**
+     * Escape a single code point for an EO string literal.
+     * @param cpnt The code point
+     * @return The escaped representation
+     */
+    private static String glyph(final int cpnt) {
+        final String escaped;
+        if (cpnt == '\\') {
+            escaped = "\\\\";
+        } else if (cpnt == '"') {
+            escaped = "\\\"";
+        } else if (cpnt == '\n') {
+            escaped = "\\n";
+        } else if (cpnt == '\t') {
+            escaped = "\\t";
+        } else if (cpnt == '\r') {
+            escaped = "\\r";
+        } else if (cpnt == '\b') {
+            escaped = "\\b";
+        } else if (cpnt == '\f') {
+            escaped = "\\f";
+        } else if (StUnhex.printable(cpnt)) {
+            escaped = new String(Character.toChars(cpnt));
+        } else {
+            final StringBuilder unicode = new StringBuilder(6);
+            for (final char unit : Character.toChars(cpnt)) {
+                unicode.append(String.format("\\u%04X", (int) unit));
+            }
+            escaped = unicode.toString();
+        }
+        return escaped;
+    }
+
+    /**
+     * Whether the code point can be rendered as a glyph inside a UTF-8
+     * EO source, rather than needing a {@code \\uNNNN} escape.
+     * @param cpnt The code point
+     * @return TRUE if it is safe to print verbatim
+     */
+    private static boolean printable(final int cpnt) {
+        final boolean safe;
+        if (Character.isISOControl(cpnt) || !Character.isDefined(cpnt)) {
+            safe = false;
+        } else {
+            final int type = Character.getType(cpnt);
+            safe = type != Character.CONTROL
+                && type != Character.FORMAT
+                && type != Character.SURROGATE
+                && type != Character.PRIVATE_USE
+                && type != Character.UNASSIGNED;
+        }
+        return safe;
     }
 
     /**
