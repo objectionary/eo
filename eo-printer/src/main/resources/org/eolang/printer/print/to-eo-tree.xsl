@@ -92,10 +92,23 @@
   <xsl:template match="meta">
     <xsl:text>+</xsl:text>
     <xsl:value-of select="head"/>
-    <xsl:if test="not(empty(tail/text()))">
-      <xsl:text> </xsl:text>
-      <xsl:value-of select="replace(string(tail), 'Φ', 'Q')"/>
-    </xsl:if>
+    <!-- An alias is stored as two parts: a local name and the fully
+         qualified name (Φ.a.b.c). When the name is just the last dotted
+         segment of the FQN it carries no information, so the idiomatic
+         short form drops it and prints only the FQN with its Φ. root
+         stripped (+alias a.b.c). A genuine rename, where the name
+         differs from that last segment, keeps the two-argument form. -->
+    <xsl:variable name="fqn" select="replace(part[last()], concat('^', $eo:program, '\.'), '')"/>
+    <xsl:choose>
+      <xsl:when test="head = 'alias' and count(part) = 2 and part[1] = tokenize($fqn, '\.')[last()]">
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="$fqn"/>
+      </xsl:when>
+      <xsl:when test="not(empty(tail/text()))">
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="replace(string(tail), $eo:program, 'Q')"/>
+      </xsl:when>
+    </xsl:choose>
     <xsl:value-of select="$eol"/>
   </xsl:template>
   <!-- OBJECT, NOT FREE ATTRIBUTE -->

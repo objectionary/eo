@@ -221,6 +221,8 @@
           change would be silently ignored until the cache is cleared manually.
           -->
           <cacheEnabled>false</cacheEnabled>
+          <!-- Tests assert on precise .eo locations in panics (off by default). -->
+          <trackLocations>true</trackLocations>
         </configuration>
         <executions>
           <execution>

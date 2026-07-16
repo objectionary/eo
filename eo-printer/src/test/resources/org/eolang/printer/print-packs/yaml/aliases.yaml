@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+origin: |
+  +package sandbox
+  +alias sm.os
+  +alias org.eolang.io.stdout
+  +alias custom org.eolang.string.regex
+
+  [] > app
+    os > x
+
+printed: |
+  +package sandbox
+  +alias sm.os
+  +alias org.eolang.io.stdout
+  +alias custom Q.org.eolang.string.regex
+
+  [] > app
+    sm.os > x
