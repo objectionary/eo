@@ -4,12 +4,12 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package tuple
++package bytes
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > bytes-as-array
+[] > array
   ? >> bts
   slice-byte * 0 > @
   bts > data!
@@ -25,18 +25,18 @@
 
   ++> tests-converts-bytes-to-array
     eq. > @
-      bytes-as-array
+      array
         20-1F-EE-B5-FF
       * 20- 1F- EE- B5- FF-
 
   ++> tests-single-byte-to-array
     eq. > @
-      bytes-as-array
+      array
         1F-
       * 1F-
 
   ++> tests-zero-bytes-to-array
     eq. > @
-      bytes-as-array
+      array
         --
       *
