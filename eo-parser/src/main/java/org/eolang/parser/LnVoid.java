@@ -14,6 +14,14 @@ package org.eolang.parser;
  * base='∅'/>} void child (§9.4), which {@code move-voids-up} hoists
  * among the head voids.</p>
  *
+ * <p>The {@code >>} auto-name form is also accepted: {@code ? >> name}
+ * declares a void whose external {@code @name} is an auto-generated
+ * cactus name (unreachable from outside), while {@code name} is a
+ * file-local handle (§3.10 / R-3.10.12) usable within the same
+ * {@code .eo} file. A bare {@code ? >>} is a void with an auto-generated
+ * name and no handle. Filling stays positional, so the auto-generated
+ * external name does not affect how callers bind the void.</p>
+ *
  * <p>In an atom (a formation whose head carries {@code /sig}) the void
  * may carry the forma-list tail — the formas the atom supplies as the
  * arguments of that error branch. They emit as a {@code @types}
@@ -21,9 +29,10 @@ package org.eolang.parser;
  * {@code @atom} by later passes. The forma-list is rejected outside an
  * atom.</p>
  *
- * <p>{@code ? > name} (with the optional tail) is the only shape the
- * {@code ?} marker may take — never an argument, a method receiver, or
- * anywhere else a value is expected. The marker is therefore
+ * <p>{@code ? > name} and {@code ? >> name} (with the optional tail) are
+ * the only shapes the {@code ?} marker may take — never an argument, a
+ * method receiver, or anywhere else a value is expected. The marker is
+ * therefore
  * <em>not</em> a {@link Value} kind; this line is its sole producer.
  * Cross-line behaviour: a closed leaf
  * ({@link Openness#VERTICAL_COMPLETED}), so a void has no children.</p>
@@ -60,10 +69,12 @@ final class LnVoid implements Line {
             head = tail.substring(0, brace);
         }
         final Suffix suffix = new Suffix(head, this.span, this.span.indent() + 1);
-        if (suffix.form() != Suffix.Form.NAME || suffix.constant() || suffix.atom()) {
+        final boolean shape = suffix.form() == Suffix.Form.NAME
+            || suffix.form() == Suffix.Form.AUTO;
+        if (!shape || suffix.constant() || suffix.atom()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
-                "a void attribute must be written as `? > name`"
+                "a void attribute must be written as `? > name` or `? >> name`"
             );
         }
         Comments.seal(globals, emit, this.span);
@@ -82,6 +93,9 @@ final class LnVoid implements Line {
             suffix.attribute(this.span.line(), this.span.indent()),
             "∅", this.span.line(), this.span.indent()
         );
+        if (!suffix.handle().isEmpty()) {
+            emit.local(suffix.handle());
+        }
         if (!formas.isEmpty()) {
             emit.types(formas);
         }

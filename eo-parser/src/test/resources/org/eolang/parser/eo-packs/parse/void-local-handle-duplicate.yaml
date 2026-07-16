@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+asserts:
+  - /object/errors[count(error)=1]
+  - /object/errors/error[@check='resolve-local-names' and @severity='error' and @line='3']
+  - /object[not(//o[@local])]
+input: |
+  [] > app
+    ? >> dup
+    ? >> dup
+    dup > @
