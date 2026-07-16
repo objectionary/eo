@@ -18,7 +18,10 @@
       back
         list
         neg. (number idx)
-      if. (gte. (number idx) list.length) list (rechead list)
+      if.
+        gte. (number idx) list.length
+        list
+        rechead list
   index > idx!
   if. (tup.length.eq idx) tup (rechead tup.tail) > [tup] > rechead
 

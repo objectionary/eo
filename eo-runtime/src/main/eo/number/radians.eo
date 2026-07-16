@@ -23,13 +23,17 @@
   ++> tests-radians-of-quarter-turn-is-pi-halves
     lt. > @
       abs
-        minus. (number.radians 90) (pi.div 2)
+        minus.
+          number.radians 90
+          pi.div 2
       1.0E-4
 
   ++> tests-radians-of-full-turn-is-two-pi
     lt. > @
       abs
-        minus. (number.radians 360) (pi.times 2)
+        minus.
+          number.radians 360
+          pi.times 2
       1.0E-4
 
   ++> tests-radians-of-negative-half-turn-is-minus-pi
@@ -39,4 +43,5 @@
       1.0E-4
 
   ++> tests-radians-of-nan-is-nan
-    is-nan. (number.radians nan) > @
+    is-nan. > @
+      number.radians nan

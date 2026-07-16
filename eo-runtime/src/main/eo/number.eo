@@ -26,7 +26,9 @@
         if.
           exp.eq 1086
           80-00-00-00-00-00-00-00.as-i64
-          negative.if (magnitude.not.as-i64.plus 00-00-00-00-00-00-00-01.as-i64) magnitude.as-i64
+          negative.if
+            magnitude.not.as-i64.plus 00-00-00-00-00-00-00-01.as-i64
+            magnitude.as-i64
     eq. (as-bytes.and 80-00-00-00-00-00-00-00) 80-00-00-00-00-00-00-00 > negative
     as-number. > exp
       as-i64.
@@ -38,7 +40,8 @@
         exp.gt 1086
         and.
           exp.eq 1086
-          not. (negative.and (mantissa.eq 00-10-00-00-00-00-00-00))
+          not.
+            negative.and (mantissa.eq 00-10-00-00-00-00-00-00)
     if. > magnitude
       exp.gte 1075
       mantissa.left (exp.minus 1075)
@@ -158,24 +161,30 @@
   pinf.eq pinf ++> tests-positive-infinity-eq-positive-infinity
 
   ++> tests-positive-infinity-not-eq-negative-infinity
-    not. (pinf.eq ninf) > @
+    not. > @
+      pinf.eq ninf
 
   ++> tests-positive-infinity-not-eq-nan
-    not. (pinf.eq nan) > @
+    not. > @
+      pinf.eq nan
 
   ++> tests-positive-infinity-not-eq-int
-    not. (pinf.eq 42) > @
+    not. > @
+      pinf.eq 42
 
   ++> tests-positive-infinity-not-eq-float
-    not. (pinf.eq 42.5) > @
+    not. > @
+      pinf.eq 42.5
 
   ++> tests-positive-infinity-gt-positive-infinity
-    not. (pinf.gt pinf) > @
+    not. > @
+      pinf.gt pinf
 
   pinf.gt ninf ++> tests-positive-infinity-gt-negative-infinity
 
   ++> tests-positive-infinity-not-gt-nan
-    not. (pinf.gt nan) > @
+    not. > @
+      pinf.gt nan
 
   pinf.gt 42 ++> tests-positive-infinity-gt-int
 
@@ -292,19 +301,24 @@
   ninf.eq ninf ++> tests-negative-infinity-eq-negative-infinity
 
   ++> tests-negative-infinity-not-eq-positive-infinity
-    not. (ninf.eq pinf) > @
+    not. > @
+      ninf.eq pinf
 
   ++> tests-negative-infinity-not-eq-nan
-    not. (ninf.eq nan) > @
+    not. > @
+      ninf.eq nan
 
   ++> tests-negative-infinity-not-eq-int
-    not. (ninf.eq 42) > @
+    not. > @
+      ninf.eq 42
 
   ++> tests-negative-infinity-not-eq-float
-    not. (ninf.eq 42.5) > @
+    not. > @
+      ninf.eq 42.5
 
   ++> tests-negative-infinity-gt-negative-infinity
-    not. (ninf.gt ninf) > @
+    not. > @
+      ninf.gt ninf
 
   eq. (ninf.gt pinf) false ++> tests-negative-infinity-not-gt-positive-infinity
 
@@ -402,10 +416,12 @@
       as-bytes. (-1.div 0)
 
   ++> tests-nan-not-eq-number
-    not. (nan.eq 42) > @
+    not. > @
+      nan.eq 42
 
   ++> tests-nan-not-eq-nan
-    not. (nan.eq nan) > @
+    not. > @
+      nan.eq nan
 
   eq. (nan.gt 42) false ++> tests-nan-not-gt-number
 

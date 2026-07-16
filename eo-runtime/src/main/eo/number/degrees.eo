@@ -39,4 +39,5 @@
       1.0E-4
 
   ++> tests-degrees-of-nan-is-nan
-    is-nan. (number.degrees nan) > @
+    is-nan. > @
+      number.degrees nan

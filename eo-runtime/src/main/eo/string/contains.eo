@@ -11,7 +11,9 @@
   and. > @
     gte. (number tlen) slen
     or.
-      and. (tlen.eq slen) (txt.eq sub)
+      and.
+        tlen.eq slen
+        txt.eq sub
       rec-contains 0
   minus. (number tlen) slen > end!
   sub.size > slen!
@@ -30,4 +32,5 @@
   string.contains "Hello, world!" "o, wo" ++> tests-text-contains-substring
 
   ++> tests-text-does-not-contain-substring
-    not. (string.contains "Hello, world!" "Hey") > @
+    not. > @
+      string.contains "Hello, world!" "Hey"

@@ -14,7 +14,8 @@
     not. 42.5.is-nan > @
 
   ++> tests-number-with-nan-bytes-is-nan
-    is-nan. (number nan.as-bytes) > @
+    is-nan. > @
+      number nan.as-bytes
 
   pinf.is-nan.not ++> tests-positive-infinity-is-not-nan
 

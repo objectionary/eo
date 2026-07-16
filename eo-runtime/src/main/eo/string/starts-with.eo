@@ -19,4 +19,5 @@
   string.starts-with "Hello, world" "Hello" ++> tests-starts-with-substring
 
   ++> tests-does-not-start-with-substring
-    not. (string.starts-with "Hello, world" "world") > @
+    not. > @
+      string.starts-with "Hello, world" "world"

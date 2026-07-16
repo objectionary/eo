@@ -11,7 +11,9 @@
 [n] > as-decimal
   if. > @
     n.lt 0
-    concat. "-".as-bytes (digits (n.times -1))
+    concat.
+      "-".as-bytes
+      digits (n.times -1)
     digits n
   [n] > digits
     if. > @
@@ -23,17 +25,24 @@
           plus.
             floor. (n.minus (q.times 10))
             48
-    floor. (n.div 10) > q
+    floor. > q
+      n.div 10
 
-  "7".eq (string (string.as-decimal 7)) ++> tests-writes-single-digit
+  ++> tests-writes-single-digit
+    "7".eq > @
+      string (string.as-decimal 7)
 
-  "0".eq (string (string.as-decimal 0)) ++> tests-writes-zero
+  ++> tests-writes-zero
+    "0".eq > @
+      string (string.as-decimal 0)
 
   ++> tests-writes-multi-digit-number
     "31415".eq > @
       string (string.as-decimal 31415)
 
-  "-42".eq (string (string.as-decimal -42)) ++> tests-writes-negative-number
+  ++> tests-writes-negative-number
+    "-42".eq > @
+      string (string.as-decimal -42)
 
   ++> tests-truncates-positive-fraction
     "42".eq > @

@@ -22,7 +22,10 @@
           sm.os.is-windows.if > @
             if.
               tmp.eq empty
-              if. (temp.eq empty) (if. (userprofile.eq empty) "C:\\Windows" userprofile) temp
+              if.
+                temp.eq empty
+                if. (userprofile.eq empty) "C:\\Windows" userprofile
+                temp
               tmp
             if.
               tmpdir.eq empty
@@ -32,11 +35,16 @@
                 tmp
               tmpdir
           -- > empty
-          as-bytes. (dataized (getenv "TEMP")) > temp
-          as-bytes. (dataized (getenv "TEMPDIR")) > tempdir
-          as-bytes. (dataized (getenv "TMP")) > tmp
-          as-bytes. (dataized (getenv "TMPDIR")) > tmpdir
-          as-bytes. (dataized (getenv "USERPROFILE")) > userprofile
+          as-bytes. > temp
+            dataized (getenv "TEMP")
+          as-bytes. > tempdir
+            dataized (getenv "TEMPDIR")
+          as-bytes. > tmp
+            dataized (getenv "TMP")
+          as-bytes. > tmpdir
+            dataized (getenv "TMPDIR")
+          as-bytes. > userprofile
+            dataized (getenv "USERPROFILE")
 
   mktemp.exists ++> global-temp-dir-exists
 

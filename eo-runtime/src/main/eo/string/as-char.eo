@@ -11,19 +11,29 @@
 [code] > as-char
   code.as-i64.as-bytes.slice 7 1 > @
 
-  "A".eq (string (string.as-char 65)) ++> tests-writes-byte-of-uppercase-letter
+  ++> tests-writes-byte-of-uppercase-letter
+    "A".eq > @
+      string (string.as-char 65)
 
   ++> tests-writes-byte-of-last-uppercase-letter
     "Z".eq > @
       string (string.as-char 90)
 
-  "z".eq (string (string.as-char 122)) ++> tests-writes-byte-of-lowercase-letter
+  ++> tests-writes-byte-of-lowercase-letter
+    "z".eq > @
+      string (string.as-char 122)
 
-  "0".eq (string (string.as-char 48)) ++> tests-writes-byte-of-zero-digit
+  ++> tests-writes-byte-of-zero-digit
+    "0".eq > @
+      string (string.as-char 48)
 
-  " ".eq (string (string.as-char 32)) ++> tests-writes-byte-of-space
+  ++> tests-writes-byte-of-space
+    " ".eq > @
+      string (string.as-char 32)
 
-  "~".eq (string (string.as-char 126)) ++> tests-writes-byte-of-last-printable
+  ++> tests-writes-byte-of-last-printable
+    "~".eq > @
+      string (string.as-char 126)
 
   ++> tests-round-trips-through-as-ascii
     "!".eq > @

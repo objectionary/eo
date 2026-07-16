@@ -137,7 +137,9 @@
       8
       [m]
         seq > @
-          * (m.write 0 1) (m.put (m.as-number.plus 5))
+          *
+            m.write 0 1
+            m.put (m.as-number.plus 5)
 
   ++> tests-writes-into-two-malloc-objects
     and. > @
@@ -242,7 +244,9 @@
           10
           [m] >>
             seq > @
-              * (m.write 2 "Hello") (b.put (eq. (m.read 2 5) "Hello"))
+              *
+                m.write 2 "Hello"
+                b.put (eq. (m.read 2 5) "Hello")
 
   ++> tests-malloc-read-over-a-limit-returns-fallback
     01-02.eq > @
@@ -353,7 +357,9 @@
       if. > @
         n.as-number.gt 0
         seq
-          * (n.put (n.as-number.minus 1)) (func n)
+          *
+            n.put (n.as-number.minus 1)
+            func n
         n
 
   ++> tests-constant-defends-against-side-effects

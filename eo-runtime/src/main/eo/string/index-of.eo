@@ -37,19 +37,25 @@
     eq. (slice txt idx slen) sub > includes
 
   ++> tests-index-of-non-existed-substring-with-more-length
-    -1.eq (string.index-of "Hello" "Somebody") > @
+    -1.eq > @
+      string.index-of "Hello" "Somebody"
 
   ++> tests-index-of-non-existed-substring-with-same-length
-    -1.eq (string.index-of "Hello" "world") > @
+    -1.eq > @
+      string.index-of "Hello" "world"
 
   ++> tests-index-of-non-existed-substring-with-utf
-    -1.eq (string.index-of "привет, друг!" "x") > @
+    -1.eq > @
+      string.index-of "привет, друг!" "x"
 
   ++> tests-index-of-existed-substring-with-utf
-    3.eq (string.index-of "привет, друг!" "в") > @
+    3.eq > @
+      string.index-of "привет, друг!" "в"
 
   ++> tests-returns-valid-index-of-substring
-    6.eq (string.index-of "Hello \n world" "\n") > @
+    6.eq > @
+      string.index-of "Hello \n world" "\n"
 
   ++> tests-returns-valid-index-of-substring-in-the-end
-    6.eq (string.index-of "Hello world" "world") > @
+    6.eq > @
+      string.index-of "Hello world" "world"

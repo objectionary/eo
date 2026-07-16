@@ -9,7 +9,8 @@
 
 [n x] > lt
   0.gt > @
-    n.minus (number value)
+    n.minus
+      number value
   x > value!
 
   10.lt 50 ++> tests-int-less-true

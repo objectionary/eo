@@ -9,7 +9,9 @@
 
 [buf] > buffer
   buf > @
-  buffer (string (buf.as-bytes.concat str.as-bytes)) > [str] > with
+  [str] > with
+    buffer > @
+      string (buf.as-bytes.concat str.as-bytes)
 
   eq. (buffer "Hello") "Hello" ++> tests-buffer-decorates-string
 

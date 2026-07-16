@@ -17,17 +17,22 @@
 
 [uri] > path
   sm.os.is-windows.if > @
-    win32 (string uri.as-bytes)
-    posix (string uri.as-bytes)
+    win32
+      string uri.as-bytes
+    posix
+      string uri.as-bytes
   sm.os.is-windows.if win32.separator posix.separator > separator
   [paths] > joined
     normalized. > @
-      sm.os.is-windows.if (win32 jpath) (posix jpath)
+      sm.os.is-windows.if
+        win32 jpath
+        posix jpath
     string > jpath
       as-bytes. (string.joined separator paths)
   [uri] > posix
     uri > @
-    directory (file uri) > as-dir
+    directory > as-dir
+      file uri
     file uri > as-file
     and. > is-absolute
       uri.length.gt 0
@@ -58,7 +63,10 @@
                   not. (accum.head.eq "..")
                 accum.tail
                 is-absolute.not.if (accum.with segment) accum
-              if. (or. (segment.eq ".") (segment.eq "")) accum (accum.with segment)
+              if.
+                or. (segment.eq ".") (segment.eq "")
+                accum
+                accum.with segment
       and. > trailing
         ubts.size.gt 0
         eq. (ubts.slice (ubts.size.plus -1) 1) separator
@@ -84,7 +92,9 @@
       string pth > txt
     [] > extname
       if. > @
-        or. (base.size.eq 0) (idx.eq -1)
+        or.
+          base.size.eq 0
+          idx.eq -1
         ""
         string
           as-bytes.
@@ -112,7 +122,8 @@
       file uri > as-file
       ^.separator > separator
       [uri] > is-drive-relative
-        as-bool. (matches. (string.regex "/^[a-zA-Z]:/") uri) > @
+        as-bool. > @
+          matches. (string.regex "/^[a-zA-Z]:/") uri
       [uri] > is-root-relative
         and. > @
           ubts.size.gt 0
@@ -147,7 +158,10 @@
             concat.
               concat.
                 is-drive-relative.if
-                  if. (eq. (driveless.slice 0 1) separator) (uri.slice 0 3) (uri.slice 0 2)
+                  if.
+                    eq. (driveless.slice 0 1) separator
+                    uri.slice 0 3
+                    uri.slice 0 2
                   is-root-relative.if separator --
                 path
               trailing.if separator --
@@ -188,7 +202,8 @@
           if.
             or. (pth.size.eq 0) (idx.eq 0)
             pth
-            as-bytes. (txt.slice idx (txt.length.minus (number idx)))
+            as-bytes.
+              txt.slice idx (txt.length.minus (number idx))
         plus. (string.last-index-of txt separator) 1 > idx!
         uri > pth!
         string pth > txt
@@ -197,7 +212,8 @@
           or. (base.size.eq 0) (idx.eq -1)
           ""
           string
-            as-bytes. (txt.slice idx (txt.length.minus (number idx)))
+            as-bytes.
+              txt.slice idx (txt.length.minus (number idx))
         basename > base!
         string.last-index-of txt "." > idx!
         string base > txt
@@ -285,19 +301,29 @@
       "\\var\\html\\"
 
   ++> tests-resolves-posix-absolute-path-against-other-absolute-path
-    eq. (resolved. (path.posix "/var/temp") "/www/html") "/www/html" > @
+    eq. > @
+      resolved. (path.posix "/var/temp") "/www/html"
+      "/www/html"
 
   ++> tests-resolves-posix-absolute-path-against-other-relative-path
-    eq. (resolved. (path.posix "/var/temp") "./www/html") "/var/temp/www/html" > @
+    eq. > @
+      resolved. (path.posix "/var/temp") "./www/html"
+      "/var/temp/www/html"
 
   ++> tests-resolves-posix-relative-path-against-other-absolute-path
-    eq. (resolved. (path.posix "./var/temp") "/www/html") "/www/html" > @
+    eq. > @
+      resolved. (path.posix "./var/temp") "/www/html"
+      "/www/html"
 
   ++> tests-resolves-posix-relative-path-against-other-relative-path
-    eq. (resolved. (path.posix "./var/temp") "../www/html") "var/www/html" > @
+    eq. > @
+      resolved. (path.posix "./var/temp") "../www/html"
+      "var/www/html"
 
   ++> tests-resolves-win32-relative-path-against-other-relative-path
-    eq. (resolved. (path.win32 ".\\temp\\var") ".\\..\\x") "temp\\x" > @
+    eq. > @
+      resolved. (path.win32 ".\\temp\\var") ".\\..\\x"
+      "temp\\x"
 
   ++> tests-resolves-win32-relative-path-against-other-drive-relative-path
     eq. > @

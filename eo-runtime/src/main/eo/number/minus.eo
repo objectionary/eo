@@ -9,7 +9,8 @@
 
 [n x] > minus
   n.plus > @
-    neg. (number value)
+    neg.
+      number value
   x > value!
 
   eq. (1.minus 1) 0 ++> tests-one-minus-one

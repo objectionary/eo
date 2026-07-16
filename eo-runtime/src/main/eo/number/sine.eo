@@ -29,7 +29,9 @@
       1.minus
         times.
           squared.div
-            times. (depth.times 2) (plus. (depth.times 2) 1)
+            times.
+              depth.times 2
+              plus. (depth.times 2) 1
           factor (depth.plus 1)
 
   eq. (number.sine 0) 0 ++> tests-sine-of-zero-is-zero
@@ -46,7 +48,11 @@
         minus. (times. (number.sine (pi.div 6)) 1000) 500
       1
 
-  lt. (abs (times. (number.sine pi) 1000)) 1 ++> tests-sine-of-pi-is-zero
+  ++> tests-sine-of-pi-is-zero
+    lt. > @
+      abs
+        times. (number.sine pi) 1000
+      1
 
   ++> tests-sine-of-negative-pi-halves-is-minus-one
     lt. > @
@@ -62,7 +68,9 @@
   ++> tests-sine-of-three-pi-halves-is-minus-one
     lt. > @
       abs
-        minus. (times. (number.sine (div. (pi.times 3) 2)) 1000) -1000
+        minus.
+          times. (number.sine (div. (pi.times 3) 2)) 1000
+          -1000
       1
 
   ++> tests-sine-is-odd-function
@@ -86,7 +94,10 @@
     lt. > @
       abs
         minus.
-          times. (number.sine (plus. (pi.times 10) (pi.div 6))) 1000
+          times.
+            number.sine
+              plus. (pi.times 10) (pi.div 6)
+            1000
           500
       1
 
@@ -97,10 +108,13 @@
       1
 
   ++> tests-sine-of-nan-is-nan
-    is-nan. (number.sine nan) > @
+    is-nan. > @
+      number.sine nan
 
   ++> tests-sine-of-positive-infinity-is-nan
-    is-nan. (number.sine pinf) > @
+    is-nan. > @
+      number.sine pinf
 
   ++> tests-sine-of-negative-infinity-is-nan
-    is-nan. (number.sine ninf) > @
+    is-nan. > @
+      number.sine ninf

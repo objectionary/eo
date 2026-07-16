@@ -10,7 +10,8 @@
 
 [num] > cosine
   sine > @
-    num.plus (pi.div 2)
+    num.plus
+      pi.div 2
 
   ++> tests-cosine-of-zero-is-one
     lt. > @
@@ -51,7 +52,10 @@
     lt. > @
       abs
         minus.
-          times. (number.cosine (plus. (pi.times 10) (pi.div 3))) 1000
+          times.
+            number.cosine
+              plus. (pi.times 10) (pi.div 3)
+            1000
           500
       1
 
@@ -62,10 +66,13 @@
       1
 
   ++> tests-cosine-of-nan-is-nan
-    is-nan. (number.cosine nan) > @
+    is-nan. > @
+      number.cosine nan
 
   ++> tests-cosine-of-positive-infinity-is-nan
-    is-nan. (number.cosine pinf) > @
+    is-nan. > @
+      number.cosine pinf
 
   ++> tests-cosine-of-negative-infinity-is-nan
-    is-nan. (number.cosine ninf) > @
+    is-nan. > @
+      number.cosine ninf

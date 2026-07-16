@@ -16,7 +16,8 @@
   if. > @
     0.eq text.as-bytes.size
     text
-    trimmed-left (trimmed-right text)
+    trimmed-left
+      trimmed-right text
 
   eq. (string.trimmed " some") "some" ++> tests-text-trimmed-one-space-left
 

@@ -12,4 +12,5 @@
   bts.eq 01- > @
 
   ++> tests-convertible-to-bool
-    not. (eq. 01-.as-bool 00-.as-bool) > @
+    not. > @
+      eq. 01-.as-bool 00-.as-bool

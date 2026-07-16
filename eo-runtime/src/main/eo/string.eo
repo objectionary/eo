@@ -23,7 +23,10 @@
 [as-bytes] > string
   as-bytes > @
   [] > length
-    if. (size.eq 0) 0 (reclen 0 0) > @
+    if. > @
+      size.eq 0
+      0
+      reclen 0 0
     80- > p1
     E0- > p2
     F0- > p3
@@ -39,7 +42,9 @@
         T
           "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
             * csize index ^.^.as-bytes
-        reclen (index.plus csize) (len.plus 1)
+        reclen
+          index.plus csize
+          len.plus 1
     [index accum] > reclen
       if. > @
         index.eq size
@@ -71,7 +76,10 @@
         T
           "Length to slice must be >= 0, but was %d".printf
             * nlen
-        if. (nlen.eq 0) "" (string (as-bytes.slice bstart blen))
+        if.
+          nlen.eq 0
+          ""
+          string (as-bytes.slice bstart blen)
     minus. > blen
       recidx
         number bstart
@@ -161,15 +169,18 @@
   "�".length ++> throws-on-taking-length-of-incomplete-n4-byte-character
 
   ++> tests-compares-two-different-string-types
-    not. ("Hello".eq 42) > @
+    not. > @
+      "Hello".eq 42
 
   ++> tests-compares-string-with-nan
-    not. (nan.eq "друг") > @
+    not. > @
+      nan.eq "друг"
 
   eq. (pinf.eq "друг") false ++> tests-compares-string-with-positive-infinity
 
   ++> tests-compares-string-with-negative-infinity
-    not. (ninf.eq "друг") > @
+    not. > @
+      ninf.eq "друг"
 
   "Abc".eq "Abc" ++> tests-text-block-one-line
 
@@ -178,7 +189,8 @@
   "z\n  y\n x".eq 7A-0A-20-20-79-0A-20-78 ++> tests-text-block-with-margin
 
   ++> tests-compares-two-different-strings
-    not. ("Hello".eq "Good bye") > @
+    not. > @
+      "Hello".eq "Good bye"
 
   "Hello, друг!\n".eq "Hello, друг!\n" ++> tests-supports-escape-sequences
 

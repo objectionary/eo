@@ -18,15 +18,25 @@
     reducedi
       list
       *
-      if. (and. (idx.gte s) (idx.lt e)) (accum.with item) accum > [accum item idx] >>
+      [accum item idx] >>
+        if. > @
+          and. (idx.gte s) (idx.lt e)
+          accum.with item
+          accum
   if. > e!
     end.gte 0
     if. (end.gte list.length) list.length end
-    if. (list.length.neg.lte end) (end.plus list.length) 0
+    if.
+      list.length.neg.lte end
+      end.plus list.length
+      0
   if. > s!
     start.gte 0
     if. (start.gte list.length) list.length start
-    if. (list.length.neg.lte start) (start.plus list.length) 0
+    if.
+      list.length.neg.lte start
+      start.plus list.length
+      0
 
   ++> tests-simple-slice
     eq. > @

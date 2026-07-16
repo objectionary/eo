@@ -21,7 +21,8 @@
       ^
       seq
         *
-          made. (directory (Q.file ^.as-path.dirname))
+          made.
+            directory (Q.file ^.as-path.dirname)
           if.
             outcome.eq 0
             ^
@@ -88,19 +89,24 @@
         and. (first.exists.and second.exists) d.deleted.exists.not
         first.exists.not
       second.exists.not
-    made. (directory mktemp.tmpfile.deleted) > d
+    made. > d
+      directory mktemp.tmpfile.deleted
     d.tmpfile > first
     d.tmpfile > second
 
   ++> tests-deletes-directory-with-file-and-dir
     and. > @
       and.
-        and. (and. (inner.is-directory.and inner.exists) f.exists) d.deleted.exists.not
+        and.
+          and. (inner.is-directory.and inner.exists) f.exists
+          d.deleted.exists.not
         inner.exists.not
       f.exists.not
-    made. (directory mktemp.tmpfile.deleted) > d
+    made. > d
+      directory mktemp.tmpfile.deleted
     d.tmpfile > f
-    made. (directory d.tmpfile.deleted) > inner
+    made. > inner
+      directory d.tmpfile.deleted
 
   ++> tests-walks-recursively
     seq > @

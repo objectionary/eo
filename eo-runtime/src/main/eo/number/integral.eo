@@ -25,7 +25,9 @@
                       lt. (left.as-number.plus step) right
                       seq
                         *
-                          ^.^.sum.put (^.^.sum.as-number.plus (^.^.^.subsection left.as-number (left.as-number.plus step)))
+                          ^.^.sum.put
+                            ^.^.sum.as-number.plus
+                              ^.^.^.subsection left.as-number (left.as-number.plus step)
                           left.put (left.as-number.plus step)
                           true
                       false
@@ -54,7 +56,9 @@
       49.5
       1.0E-7
     [value operand err] > close-to
-      lte. (minus. (abs (value.minus operand)) err) 0 > @
+      lte. > @
+        minus. (abs (value.minus operand)) err
+        0
       if. (value.gte 0) value value.neg > [value] > abs
 
   ++> tests-calculates-quadratic-integral
@@ -68,7 +72,9 @@
       333
       1.0E-7
     [value operand err] > close-to
-      lte. (minus. (abs (value.minus operand)) err) 0 > @
+      lte. > @
+        minus. (abs (value.minus operand)) err
+        0
       if. (value.gte 0) value value.neg > [value] > abs
 
   ++> tests-calculates-cube-integral
@@ -82,5 +88,7 @@
       2499.75
       1.0E-7
     [value operand err] > close-to
-      lte. (minus. (abs (value.minus operand)) err) 0 > @
+      lte. > @
+        minus. (abs (value.minus operand)) err
+        0
       if. (value.gte 0) value value.neg > [value] > abs

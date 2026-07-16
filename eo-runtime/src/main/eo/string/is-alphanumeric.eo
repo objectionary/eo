@@ -16,4 +16,5 @@
   string.is-alphanumeric "ab3d" ++> tests-checks-if-text-with-number-is-alphanumeric
 
   ++> tests-checks-if-text-with-dashes-is-not-alphanumeric
-    not. (string.is-alphanumeric "-w-") > @
+    not. > @
+      string.is-alphanumeric "-w-"

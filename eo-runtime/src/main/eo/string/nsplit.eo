@@ -43,7 +43,9 @@
         if.
           and.
             delimiter.eq (slice text current delimiter-size)
-            lt. (number count) (minus. (number limit) 1)
+            lt.
+              number count
+              minus. (number limit) 1
           rec-nsplit
             appended
             as-number. (current.plus delimiter-size)

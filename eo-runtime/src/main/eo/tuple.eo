@@ -16,12 +16,21 @@
     0
   [i out-of-bounds] > at
     if. > @
-      or. (0.gt index) (length.lte index)
+      or.
+        0.gt index
+        length.lte index
       out-of-bounds "Given index is out of tuple bounds"
       at-fast ^
     i > idx!
-    if. (0.gt idx) (length.plus idx) idx > index!
-    if. (eq. (tup.length.plus -1) index) tup.head (at-fast tup.tail) > [tup] > at-fast
+    if. > index!
+      0.gt idx
+      length.plus idx
+      idx
+    [tup] > at-fast
+      if. > @
+        eq. (tup.length.plus -1) index
+        tup.head
+        at-fast tup.tail
   [x] > with
     tuple > @
       ^
@@ -35,7 +44,9 @@
       if. > @
         first.length.eq 0
         true
-        and. (first.head.eq second.head) (receq first.tail second.tail)
+        and.
+          first.head.eq second.head
+          receq first.tail second.tail
 
   ++> tests-makes-tuple-through-special-syntax
     eq. > @
@@ -108,7 +119,9 @@
         eq. (arr.at 0) 1
         eq. (arr.at 1) 2
       eq. (arr.at 2) 3
-    with. (with. (tuple.empty.with 1) 2) 3 > arr
+    with. > arr
+      with. (tuple.empty.with 1) 2
+      3
 
   ++> tests-tuple-fluent-with-indented
     and. > @
@@ -116,7 +129,9 @@
         eq. (arr.at 0) 1
         eq. (arr.at 1) 2
       eq. (arr.at 2) 3
-    with. (with. (tuple.empty.with 1) 2) 3 > arr
+    with. > arr
+      with. (tuple.empty.with 1) 2
+      3
 
   ++> tests-gets-lengths-of-empty-tuple
     a.length.eq 0 > @
@@ -134,11 +149,15 @@
     tuple.empty.with 3 > a
 
   ++> tests-at-fast-with-first-element
-    eq. (at-fast. (arr.at 0) arr) 100 > @
+    eq. > @
+      at-fast. (arr.at 0) arr
+      100
     * 100 101 102 > arr
 
   ++> tests-at-fast-with-last-element
-    eq. (at-fast. (arr.at 2) arr) 102 > @
+    eq. > @
+      at-fast. (arr.at 2) arr
+      102
     * 100 101 102 > arr
 
   ++> tests-tuple-empty-fluent-with-indented-keyword
@@ -147,7 +166,9 @@
         eq. (arr.at 0) 1
         eq. (arr.at 1) 2
       eq. (arr.at 2) 3
-    with. (with. (tuple.empty.with 1) 2) 3 > arr
+    with. > arr
+      with. (tuple.empty.with 1) 2
+      3
 
   ++> tests-tuple-with-negative-index-gets-last
     eq. (arr.at -1) 4 > @

@@ -15,8 +15,12 @@
   times > neg
     as-i32. -1.as-i64
   [] > as-i64
-    i64 (prefix.concat as-bytes) > @
-    if. (eq. (as-bytes.and 80-00-00-00) 00-00-00-00) 00-00-00-00 FF-FF-FF-FF > prefix
+    i64 > @
+      prefix.concat as-bytes
+    if. > prefix
+      eq. (as-bytes.and 80-00-00-00) 00-00-00-00
+      00-00-00-00
+      FF-FF-FF-FF
   [cant-convert] > as-i16
     if. > @
       ^.eq left.as-i32
@@ -24,7 +28,8 @@
       cant-convert
         "Can't convert i32 number %d to i16 because it's out of i16 bounds".printf
           * as-i64.as-number
-    i16 (as-bytes.slice 2 2) > left
+    i16 > left
+      as-bytes.slice 2 2
   as-i64.lt x.as-i32.as-i64 > [x] > lt
   as-i64.lte x.as-i32.as-i64 > [x] > lte
   as-i64.gt x.as-i32.as-i64 > [x] > gt
@@ -37,10 +42,15 @@
       4
   [x] > plus
     if. > @
-      or. (left.eq 00-00-00-00) (left.eq FF-FF-FF-FF)
+      or.
+        left.eq 00-00-00-00
+        left.eq FF-FF-FF-FF
       i32 right
-      plus. (i32 left) (i32 right)
-    as-bytes. (as-i64.plus x.as-i32.as-i64) > bts
+      plus.
+        i32 left
+        i32 right
+    as-bytes. > bts
+      as-i64.plus x.as-i32.as-i64
     bts.slice 0 4 > left
     bts.slice 4 4 > right
   plus x.as-i32.neg > [x] > minus
@@ -51,10 +61,15 @@
         "Can't divide %d by i32 zero".printf
           * as-i64.as-number
       if.
-        or. (left.eq zero) (left.eq FF-FF-FF-FF)
+        or.
+          left.eq zero
+          left.eq FF-FF-FF-FF
         i32 right
-        plus. (i32 left) (i32 right)
-    as-bytes. (as-i64.div xval.as-i64) > bts
+        plus.
+          i32 left
+          i32 right
+    as-bytes. > bts
+      as-i64.div xval.as-i64
     bts.slice 0 4 > left
     bts.slice 4 4 > right
     x.as-i32 > xval

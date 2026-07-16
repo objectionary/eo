@@ -17,7 +17,10 @@
 
   eq. (number.arc-cosine 1) 0 ++> tests-arc-cosine-of-one-is-zero
 
-  eq. (number.arc-cosine 0) (pi.div 2) ++> tests-arc-cosine-of-zero-is-pi-halves
+  ++> tests-arc-cosine-of-zero-is-pi-halves
+    eq. > @
+      number.arc-cosine 0
+      pi.div 2
 
   eq. (number.arc-cosine -1) pi ++> tests-arc-cosine-of-negative-one-is-pi
 
@@ -34,16 +37,21 @@
       1
 
   ++> tests-arc-cosine-above-one-is-nan
-    is-nan. (number.arc-cosine 2) > @
+    is-nan. > @
+      number.arc-cosine 2
 
   ++> tests-arc-cosine-below-minus-one-is-nan
-    is-nan. (number.arc-cosine -2) > @
+    is-nan. > @
+      number.arc-cosine -2
 
   ++> tests-arc-cosine-of-nan-is-nan
-    is-nan. (number.arc-cosine nan) > @
+    is-nan. > @
+      number.arc-cosine nan
 
   ++> tests-arc-cosine-of-positive-infinity-is-nan
-    is-nan. (number.arc-cosine pinf) > @
+    is-nan. > @
+      number.arc-cosine pinf
 
   ++> tests-arc-cosine-of-negative-infinity-is-nan
-    is-nan. (number.arc-cosine ninf) > @
+    is-nan. > @
+      number.arc-cosine ninf

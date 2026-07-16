@@ -114,20 +114,27 @@
               exists. (mp.found 1)
               m
           map > mp
-            * (map.entry (m.put (m.as-number.plus 1)) 1)
+            *
+              map.entry (m.put (m.as-number.plus 1)) 1
 
   ++> tests-returns-list-of-keys
     eq. > @
       keys.
         map
-          * (map.entry 1 2) (map.entry 2 3) (map.entry 3 4)
+          *
+            map.entry 1 2
+            map.entry 2 3
+            map.entry 3 4
       * 1 2 3
 
   ++> tests-returns-list-of-values
     eq. > @
       values.
         map
-          * (map.entry 1 2) (map.entry 2 3) (map.entry 3 4)
+          *
+            map.entry 1 2
+            map.entry 2 3
+            map.entry 3 4
       * 2 3 4
 
   ++> tests-finds-element-by-key-in-map
@@ -150,7 +157,9 @@
   ++> tests-has-element-with-key-in-hash-map
     has. > @
       map
-        * (map.entry "one" 1) (map.entry "two" 2)
+        *
+          map.entry "one" 1
+          map.entry "two" 2
       "two"
 
   ++> tests-does-not-have-element-by-key-in-hash-map
@@ -175,7 +184,9 @@
       not. (mp.has "one")
     without. > mp
       map
-        * (map.entry "one" 1) (map.entry "two" 2)
+        *
+          map.entry "one" 1
+          map.entry "two" 2
       "one"
 
   ++> tests-adds-new-pair-to-hash-map
@@ -195,7 +206,9 @@
         get. (mp.found "two")
     with. > mp
       map
-        * (map.entry "one" 1) (map.entry "two" 2)
+        *
+          map.entry "one" 1
+          map.entry "two" 2
       "two"
       3
 
@@ -208,6 +221,7 @@
       * (map.entry "one" 1)
 
   ++> throws-on-map-get-missing-without-fallback
-    get. (mp.found "absent") > @
+    get. > @
+      mp.found "absent"
     map > mp
       * (map.entry "one" 1)

@@ -23,7 +23,8 @@
       rec-hash-code
         plus.
           times. 31.as-i64 acc
-          as-i64. (00-00-00-00-00-00-00.concat (bts.slice index 1))
+          as-i64.
+            00-00-00-00-00-00-00.concat (bts.slice index 1)
         as-number. (index.plus 1)
 
   ++> tests-hash-code-bools-is-number
@@ -39,7 +40,9 @@
 
   ++> tests-hash-code-int-is-int
     1.eq > @
-      div. (number hash) (number hash)
+      div.
+        number hash
+        number hash
     tuple.hash-code 42 > hash!
 
   ++> tests-hash-codes-of-the-same-nums-are-equal
@@ -55,15 +58,21 @@
 
   ++> tests-hash-codes-of-different-ints-are-not-equal
     not. > @
-      eq. (tuple.hash-code 42) (tuple.hash-code 24)
+      eq.
+        tuple.hash-code 42
+        tuple.hash-code 24
 
   ++> tests-hash-codes-of-different-sign-ints-are-not-equal
     not. > @
-      eq. (tuple.hash-code 42) (tuple.hash-code -42)
+      eq.
+        tuple.hash-code 42
+        tuple.hash-code -42
 
   ++> tests-hash-code-string-is-int
     1.eq > @
-      div. (number strhash) (number strhash)
+      div.
+        number strhash
+        number strhash
     tuple.hash-code "hello" > strhash!
 
   ++> tests-hash-codes-of-the-same-strings-are-equal
@@ -73,17 +82,24 @@
 
   ++> tests-hash-codes-of-same-length-strings-are-not-equal
     not. > @
-      eq. (tuple.hash-code "one") (tuple.hash-code "two")
+      eq.
+        tuple.hash-code "one"
+        tuple.hash-code "two"
 
   ++> tests-hash-codes-of-different-strings-are-not-equal
     not. > @
-      eq. (tuple.hash-code "hello") (tuple.hash-code "bye!!!")
+      eq.
+        tuple.hash-code "hello"
+        tuple.hash-code "bye!!!"
 
   ++> tests-hash-code-abstract-object-is-int
     1.eq > @
-      div. (number objhash) (number objhash)
+      div.
+        number objhash
+        number objhash
     x > [x] > obj
-    tuple.hash-code (obj 42) > objhash!
+    tuple.hash-code > objhash!
+      obj 42
 
   ++> tests-hash-codes-of-the-same-abstract-objects-are-equal
     eq. > @
@@ -101,7 +117,9 @@
 
   ++> tests-hash-code-float-is-int
     1.eq > @
-      div. (number flthash) (number flthash)
+      div.
+        number flthash
+        number flthash
     tuple.hash-code 42.42 > flthash!
 
   ++> tests-hash-codes-of-the-same-floats-are-equal
@@ -118,8 +136,12 @@
 
   ++> tests-hash-codes-of-different-floats-are-not-equal
     not. > @
-      eq. (tuple.hash-code 3.14) (tuple.hash-code 2.72)
+      eq.
+        tuple.hash-code 3.14
+        tuple.hash-code 2.72
 
   ++> tests-hash-codes-of-different-sign-floats-are-not-equal
     not. > @
-      eq. (tuple.hash-code 3.22) (tuple.hash-code -3.22)
+      eq.
+        tuple.hash-code 3.22
+        tuple.hash-code -3.22

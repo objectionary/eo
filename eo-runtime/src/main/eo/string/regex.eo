@@ -40,9 +40,12 @@
         start.gte 0 > exists
         $ > matched
         exists.if > next
-          matched. (matched-from-index (position.plus 1) to)
+          matched.
+            matched-from-index (position.plus 1) to
           T "Matched block does not exist, can't get next"
-        exists.if (group 0) (T "Matched block does not exist, can't get text") > text
+        exists.if > text
+          group 0
+          T "Matched block does not exist, can't get text"
         groups.at index > [index] > group
 
   ++> tests-matches-regex-against-the-pattern
@@ -59,14 +62,17 @@
   ++> tests-matched-sequence-has-right-border-indexes
     and. > @
       0.eq n.start
-      and. (1.eq n.from) (6.eq n.to)
+      and.
+        1.eq n.from
+        6.eq n.to
     next. > n
       match. (string.regex "/[a-z]+/") "!hello!"
 
   ++> tests-regex-returns-valid-matched-string-sequence
     eq. > @
       text.
-        next. (match. (string.regex "/[a-z]+/") "!hello!")
+        next.
+          match. (string.regex "/[a-z]+/") "!hello!"
       "hello"
 
   ++> tests-regex-returns-valid-second-matched-block
@@ -169,7 +175,8 @@
       string.regex "(.)+"
 
   ++> throws-on-missing-closing-slash-in-regex
-    compiled. (string.regex "/pattern") > @
+    compiled. > @
+      string.regex "/pattern"
 
   ++> tests-invalid-regex-syntax-returns-provided-fallback
     "recovered".eq > @
@@ -184,7 +191,8 @@
         "no-slash" > [msg]
 
   ++> throws-on-compiling-invalid-regex-without-fallback
-    compile. (string.regex "/[a-z/") > @
+    compile. > @
+      string.regex "/[a-z/"
 
   ++> tests-regex-contains-valid-groups-on-each-matched-block
     and. > @

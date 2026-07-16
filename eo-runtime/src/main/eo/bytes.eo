@@ -59,7 +59,10 @@
     not. > @
       eq. (right. -38.as-bytes 1) 18.as-bytes
 
-  eq. (eq. (right. 36.as-bytes 2) -10.as-bytes) false ++> tests-right-with-even-plus
+  ++> tests-right-with-even-plus
+    eq. > @
+      eq. (right. 36.as-bytes 2) -10.as-bytes
+      false
 
   ++> tests-right-with-odd-plus
     not. > @
@@ -147,7 +150,9 @@
   eq. (--.concat --) -- ++> tests-concat-empty
 
   ++> tests-concat-strings
-    eq. (string (concat. "hello ".as-bytes "world".as-bytes)) "hello world" > @
+    eq. > @
+      string (concat. "hello ".as-bytes "world".as-bytes)
+      "hello world"
 
   ++> tests-or-neg-bytes-with-leading-zeroes
     eq. > @

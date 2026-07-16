@@ -26,7 +26,8 @@
       steps.length.eq 1
       steps.head
       if.
-        as-bool. (dataized (seq steps.tail))
+        as-bool.
+          dataized (seq steps.tail)
         steps.head
         steps.head
 

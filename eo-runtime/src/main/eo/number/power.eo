@@ -56,11 +56,14 @@
       if.
         is-integer. (n.div 2)
         half.times half
-        b.times (ipow b (n.minus 1))
+        b.times
+          ipow b (n.minus 1)
     ipow b (n.div 2) > half
   [y] > expon
-    whole.times (fraction 1) > @
-    floor. (y.plus 0.5) > k
+    whole.times > @
+      fraction 1
+    floor. > k
+      y.plus 0.5
     y.minus k > r
     20 > eterms
     if. > whole
@@ -73,7 +76,9 @@
         j.gt eterms
         1
         1.plus
-          times. (r.div j) (fraction (j.plus 1))
+          times.
+            r.div j
+            fraction (j.plus 1)
 
   eq. (number.power 2 4) 16 ++> tests-power-of-two-to-four
 
@@ -88,19 +93,23 @@
   eq. (number.power 0 -567) pinf ++> tests-power-zero-to-negative-odd
 
   ++> tests-power-nan-to-nan-is-nan
-    is-nan. (number.power nan nan) > @
+    is-nan. > @
+      number.power nan nan
 
   ++> tests-power-nan-to-any-is-nan
-    is-nan. (number.power nan 42) > @
+    is-nan. > @
+      number.power nan 42
 
   ++> tests-power-any-to-nan-is-nan
-    is-nan. (number.power 52 nan) > @
+    is-nan. > @
+      number.power 52 nan
 
   eq. (number.power 42 0) 1 ++> tests-power-int-to-zero-is-one
 
   eq. (number.power 42.5 0) 1 ++> tests-power-float-to-zero-is-one
 
-  eq. (number.power 0 -52) pinf ++> tests-power-zero-to-negative-is-positive-infinity
+  ++> tests-power-zero-to-negative-is-positive-infinity
+    eq. (number.power 0 -52) pinf > @
 
   ++> tests-power-zero-to-negative-infinity-is-positive-infinity
     eq. (number.power 0 ninf) pinf > @
@@ -198,7 +207,8 @@
       1.0E-9
 
   ++> tests-power-fractional-of-negative-is-nan
-    is-nan. (number.power -4 0.5) > @
+    is-nan. > @
+      number.power -4 0.5
 
   eq. (2.power 4) 16 ++> tests-power-as-method-on-number
 

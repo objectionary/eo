@@ -21,11 +21,13 @@
       rec-replaced
         block.next
         concat.
-          accum.concat (reinit.slice start (block.from.minus start))
+          accum.concat
+            reinit.slice start (block.from.minus start)
           replacement
         block.to
       string
-        accum.concat (reinit.slice start (reinit.length.minus start))
+        accum.concat
+          reinit.slice start (reinit.length.minus start)
 
   ++> tests-does-not-replaces-if-regex-not-found
     eq. > @
@@ -33,7 +35,9 @@
       "Hello, world"
 
   ++> tests-replaces-digits-with-string
-    eq. (string.replaced "Hell0, w0rld" (regex "/[0-9]+/") "o") "Hello, world" > @
+    eq. > @
+      string.replaced "Hell0, w0rld" (regex "/[0-9]+/") "o"
+      "Hello, world"
 
   ++> tests-replaces-slashes-to-windows-separator
     eq. > @
@@ -47,5 +51,8 @@
 
   ++> tests-sanitizes-windows-path-with-regex
     eq. > @
-      string.replaced "foo\\bar<:>?*\"|baz\\asdf" (regex "/[<>:\\\"\\/\\|\\?\\*\\x00-\\x1F]/") ""
+      string.replaced
+        "foo\\bar<:>?*\"|baz\\asdf"
+        regex "/[<>:\\\"\\/\\|\\?\\*\\x00-\\x1F]/"
+        ""
       "foo\\barbaz\\asdf"

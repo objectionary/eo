@@ -17,7 +17,8 @@
         * text
     scanned.head
   ^. > scanned
-    at. (scanf "%f" text)
+    at.
+      scanf "%f" text
 
   5.eq (string.as-number "5") ++> tests-converts-text-to-number
 

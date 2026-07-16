@@ -17,7 +17,10 @@
     if.
       n.lt 0
       nan
-      if. (n.eq 0) ninf (n.is-finite.if (lnp n) pinf)
+      if.
+        n.eq 0
+        ninf
+        n.is-finite.if (lnp n) pinf
   number num.as-bytes > n
   [p] > lnp
     if. > @
@@ -30,7 +33,9 @@
     [m] > series
       2.times > @
         t.times (horner 0)
-      div. (m.minus 1) (m.plus 1) > t
+      div. > t
+        m.minus 1
+        m.plus 1
       t.times t > squared
       40 > terms
       [k] > horner
@@ -42,7 +47,8 @@
             squared.times (horner (k.plus 1))
 
   ++> tests-ln-of-negative-float-is-nan
-    is-nan. (number.ln -2.2) > @
+    is-nan. > @
+      number.ln -2.2
 
   eq. (number.ln 0) ninf ++> tests-ln-of-zero-is-negative-infinity
 
@@ -51,7 +57,8 @@
   eq. (number.ln e) 1 ++> tests-ln-of-e-one-is-one
 
   ++> tests-ln-of-negative-int-is-nan
-    is-nan. (number.ln -42) > @
+    is-nan. > @
+      number.ln -42
 
   ++> tests-ln-of-twenty
     lt. > @
@@ -68,9 +75,14 @@
   eq. (number.ln pinf) pinf ++> tests-ln-positive-infinity
 
   ++> tests-ln-negative-infinity
-    is-nan. (number.ln ninf) > @
+    is-nan. > @
+      number.ln ninf
 
   ++> tests-ln-nan
-    is-nan. (number.ln nan) > @
+    is-nan. > @
+      number.ln nan
 
-  lt. (number.ln 2) (number.ln 3) ++> tests-ln-monotonic
+  ++> tests-ln-monotonic
+    lt. > @
+      number.ln 2
+      number.ln 3

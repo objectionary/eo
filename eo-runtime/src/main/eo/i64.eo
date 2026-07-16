@@ -22,7 +22,8 @@
       cant-convert
         "Can't convert i64 number %d to i32 because it's out of i32 bounds".printf
           * as-number
-    i32 (as-bytes.slice 4 4) > left
+    i32 > left
+      as-bytes.slice 4 4
   [] > as-number /number
   gt. (i64 x.as-bytes) ^ > [x] > lt
   [x] > lte
@@ -57,7 +58,8 @@
         looped
           if.
             eq. (b.and 00-00-00-00-00-00-00-01) 00-00-00-00-00-00-00-01
-            as-bytes. (plus. (i64 acc) (i64 a))
+            as-bytes.
+              plus. (i64 acc) (i64 a)
             acc
           a.left 1
           b.right 1
@@ -121,23 +123,28 @@
   lt. 10.as-i64 50.as-i64 ++> tests-i64-less-true
 
   ++> tests-i64-less-equal
-    not. (lt. 10.as-i64 10.as-i64) > @
+    not. > @
+      lt. 10.as-i64 10.as-i64
 
   ++> tests-i64-less-false
-    not. (lt. 10.as-i64 -5.as-i64) > @
+    not. > @
+      lt. 10.as-i64 -5.as-i64
 
   lt. -9223372036854776000.as-i64 1.as-i64 ++> tests-i64-less-across-full-range
 
   ++> tests-i64-less-with-large-difference
-    not. (lt. 5000000000000000000.as-i64 -5000000000000000000.as-i64) > @
+    not. > @
+      lt. 5000000000000000000.as-i64 -5000000000000000000.as-i64
 
   gt. -200.as-i64 -1000.as-i64 ++> tests-i64-greater-true
 
   ++> tests-i64-greater-false
-    not. (gt. 0.as-i64 100.as-i64) > @
+    not. > @
+      gt. 0.as-i64 100.as-i64
 
   ++> tests-i64-greater-equal
-    not. (gt. 0.as-i64 0.as-i64) > @
+    not. > @
+      gt. 0.as-i64 0.as-i64
 
   ++> tests-i64-greater-max-over-min
     gt. > @
@@ -146,7 +153,9 @@
 
   ++> tests-i64-greater-min-not-over-max
     not. > @
-      gt. (i64 80-00-00-00-00-00-00-00) (i64 7F-FF-FF-FF-FF-FF-FF-FF)
+      gt.
+        i64 80-00-00-00-00-00-00-00
+        i64 7F-FF-FF-FF-FF-FF-FF-FF
 
   ++> tests-i64-greater-same-sign-large-negatives
     gt. -5000000000000000000.as-i64 -9000000000000000000.as-i64 > @
@@ -156,21 +165,24 @@
   lte. 50.as-i64 50.as-i64 ++> tests-i64-lte-equal
 
   ++> tests-i64-lte-false
-    not. (lte. 0.as-i64 -10.as-i64) > @
+    not. > @
+      lte. 0.as-i64 -10.as-i64
 
   gte. -1000.as-i64 -1100.as-i64 ++> tests-i64-gte-true
 
   gte. 113.as-i64 113.as-i64 ++> tests-i64-gte-equal
 
   ++> tests-i64-gte-false
-    not. (gte. 0.as-i64 10.as-i64) > @
+    not. > @
+      gte. 0.as-i64 10.as-i64
 
   eq. 0.@ 0.@ ++> tests-i64-zero-eq-to-i64-zero
 
   eq. 123.@ 123.@ ++> tests-i64-eq-true
 
   ++> tests-i64-eq-false
-    not. (eq. 123.@ 42.@) > @
+    not. > @
+      eq. 123.@ 42.@
 
   eq. (plus. 1.as-i64 1.as-i64) 2.as-i64 ++> tests-i64-one-plus-i64-one
 
@@ -200,7 +212,9 @@
   eq. (times. -7.as-i64 6.as-i64) -42.as-i64 ++> tests-i64-times-of-mixed-signs
 
   ++> tests-i64-times-wraps-modulo-2-pow-64
-    eq. (times. (i64 40-00-00-00-00-00-00-00) 4.as-i64) 0.as-i64 > @
+    eq. > @
+      times. (i64 40-00-00-00-00-00-00-00) 4.as-i64
+      0.as-i64
 
   ++> tests-i64-times-keeps-low-bits-of-large-product
     eq. > @

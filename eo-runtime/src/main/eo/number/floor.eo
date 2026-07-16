@@ -11,9 +11,14 @@
 [n] > floor
   if. > @
     n.is-finite.not.or
-      or. (n.gte 4503599627370496) (n.lte -4503599627370496)
+      or.
+        n.gte 4503599627370496
+        n.lte -4503599627370496
     n
-    if. (trunc.gt n) (trunc.minus 1) trunc
+    if.
+      trunc.gt n
+      trunc.minus 1
+      trunc
   n.as-i64.as-number > trunc
 
   eq. 3.7.floor 3 ++> tests-floor-positive-fraction

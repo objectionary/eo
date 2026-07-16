@@ -34,4 +34,5 @@
   "HELLO".eq (string.up-cased "hello") ++> tests-converts-text-to-upper-case
 
   ++> tests-converts-text-with-upper-letters-to-upper-case
-    "HELLO".eq (string.up-cased "HeLlO") > @
+    "HELLO".eq > @
+      string.up-cased "HeLlO"

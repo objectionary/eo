@@ -11,7 +11,8 @@
 
 [char] > as-ascii
   as-number. > @
-    as-i16. (00-.concat char.as-bytes)
+    as-i16.
+      00-.concat char.as-bytes
 
   65.eq (string.as-ascii "A") ++> tests-reads-code-of-uppercase-letter
 

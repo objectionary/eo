@@ -12,7 +12,9 @@
 [n places] > as-fixed
   if. > @
     n.lt 0
-    concat. "-".as-bytes (positive (n.times -1))
+    concat.
+      "-".as-bytes
+      positive (n.times -1)
     positive n
   [p] > pow10
     if. > @
@@ -26,7 +28,8 @@
     concat. > @
       concat. (as-decimal ip) ".".as-bytes
       rec-pad (m.minus (ip.times scale)) places --
-    floor. (m.div scale) > ip
+    floor. > ip
+      m.div scale
     floor. > m
       plus. (a.times scale) 0.5
     pow10 places > scale
@@ -64,8 +67,14 @@
     "1.000000".eq > @
       string (string.as-fixed 0.9999999 6)
 
-  "0.000000".eq (string (string.as-fixed 0 6)) ++> tests-writes-zero
+  ++> tests-writes-zero
+    "0.000000".eq > @
+      string (string.as-fixed 0 6)
 
-  "3.14".eq (string (string.as-fixed 3.14159 2)) ++> tests-honours-custom-places
+  ++> tests-honours-custom-places
+    "3.14".eq > @
+      string (string.as-fixed 3.14159 2)
 
-  "2.5".eq (string (string.as-fixed 2.5 1)) ++> tests-writes-single-place
+  ++> tests-writes-single-place
+    "2.5".eq > @
+      string (string.as-fixed 2.5 1)

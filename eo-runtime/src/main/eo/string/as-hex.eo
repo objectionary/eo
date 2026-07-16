@@ -16,8 +16,12 @@
       acc
       rec-hex
         as-number. (index.plus 1)
-        if. (index.eq 0) pair (concat. (acc.concat "-".as-bytes) pair)
-    as-ascii (bts.slice index 1) > bval
+        if.
+          index.eq 0
+          pair
+          concat. (acc.concat "-".as-bytes) pair
+    as-ascii > bval
+      bts.slice index 1
     concat. > pair
       hex-digit
         floor. (bval.div 16)
@@ -32,7 +36,9 @@
       as-char (h.plus 48)
       as-char (h.plus 55)
 
-  "41".eq (string (string.as-hex "A".as-bytes)) ++> tests-writes-single-byte
+  ++> tests-writes-single-byte
+    "41".eq > @
+      string (string.as-hex "A".as-bytes)
 
   ++> tests-joins-bytes-with-hyphens
     "4A-65-66-66".eq > @
@@ -48,4 +54,6 @@
     "40-45-00-00-00-00-00-00".eq > @
       string (string.as-hex 42.as-bytes)
 
-  "".eq (string (string.as-hex --)) ++> tests-writes-empty-bytes
+  ++> tests-writes-empty-bytes
+    "".eq > @
+      string (string.as-hex --)

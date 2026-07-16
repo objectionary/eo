@@ -31,7 +31,8 @@
 
 [condition body] > while
   if. > @
-    as-bool. (condition 0)
+    as-bool.
+      condition 0
     loop 0
     false
   [index] > loop

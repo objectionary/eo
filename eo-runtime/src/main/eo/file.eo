@@ -216,7 +216,8 @@
                       ^.^.output-block
 
   ++> tests-check-if-current-directory-is-directory
-    is-directory. (file ".") > @
+    is-directory. > @
+      file "."
 
   ++> tests-check-if-absent-file-does-not-exist
     not. > @
@@ -240,10 +241,12 @@
 
   mktemp.tmpfile.deleted.size ++> throws-on-sizing-absent-file
 
-  mktemp.tmpfile.deleted.is-directory ++> throws-on-checking-directory-of-absent-file
+  ++> throws-on-checking-directory-of-absent-file
+    mktemp.tmpfile.deleted.is-directory > @
 
   ++> tests-sizing-absent-file-returns-fallback
-    -1.eq (mktemp.tmpfile.deleted.size -1) > @
+    -1.eq > @
+      mktemp.tmpfile.deleted.size -1
 
   ++> tests-checking-absent-file-returns-fallback
     mktemp.tmpfile.deleted.is-directory true > @

@@ -37,16 +37,21 @@
     eq. (slice txt idx slen) sub > includes
 
   ++> tests-finds-last-index-of-substring
-    5.eq (string.last-index-of "Hey, Hey, Hey" "Hey,") > @
+    5.eq > @
+      string.last-index-of "Hey, Hey, Hey" "Hey,"
 
   ++> tests-finds-last-index-of-the-same-string
-    0.eq (string.last-index-of "Hello" "Hello") > @
+    0.eq > @
+      string.last-index-of "Hello" "Hello"
 
   ++> tests-last-index-of-non-existed-substring
-    -1.eq (string.last-index-of "Hello, world" "somebody") > @
+    -1.eq > @
+      string.last-index-of "Hello, world" "somebody"
 
   ++> tests-last-index-of-non-existed-substring-with-utf
-    -1.eq (string.last-index-of "привет, друг!" "x") > @
+    -1.eq > @
+      string.last-index-of "привет, друг!" "x"
 
   ++> tests-last-index-of-existed-substring-with-utf
-    3.eq (string.last-index-of "привет, друг!" "в") > @
+    3.eq > @
+      string.last-index-of "привет, друг!" "в"

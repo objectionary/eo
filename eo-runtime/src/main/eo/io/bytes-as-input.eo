@@ -49,7 +49,9 @@
   ++> tests-makes-an-input-from-bytes-and-reads
     and. > @
       and.
-        and. (i1.eq 01-02-03-04) (i2.eq 05-06-07-08)
+        and.
+          i1.eq 01-02-03-04
+          i2.eq 05-06-07-08
         i3.eq F5-F6
       eq. (i3.read 2) --
     read. (io.bytes-as-input 01-02-03-04-05-06-07-08-F5-F6) 4 > i1

@@ -24,7 +24,8 @@
       2.times (series root)
     series mag
   [point] > series
-    point.times (poly 1) > @
+    point.times > @
+      poly 1
     point.times point > squared
     30 > terms
     [depth] > poly
@@ -39,7 +40,9 @@
                   minus. (depth.times 2) 1
                   minus. (depth.times 2) 1
                 squared
-              times. (depth.times 2) (plus. (depth.times 2) 1)
+              times.
+                depth.times 2
+                plus. (depth.times 2) 1
             poly (depth.plus 1)
 
   eq. (number.arc-sine 0) 0 ++> tests-arc-sine-of-zero-is-zero
@@ -93,16 +96,21 @@
       1
 
   ++> tests-arc-sine-above-one-is-nan
-    is-nan. (number.arc-sine 2) > @
+    is-nan. > @
+      number.arc-sine 2
 
   ++> tests-arc-sine-below-minus-one-is-nan
-    is-nan. (number.arc-sine -2) > @
+    is-nan. > @
+      number.arc-sine -2
 
   ++> tests-arc-sine-of-nan-is-nan
-    is-nan. (number.arc-sine nan) > @
+    is-nan. > @
+      number.arc-sine nan
 
   ++> tests-arc-sine-of-positive-infinity-is-nan
-    is-nan. (number.arc-sine pinf) > @
+    is-nan. > @
+      number.arc-sine pinf
 
   ++> tests-arc-sine-of-negative-infinity-is-nan
-    is-nan. (number.arc-sine ninf) > @
+    is-nan. > @
+      number.arc-sine ninf

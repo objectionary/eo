@@ -17,7 +17,8 @@
     as-i16.
       as-i32. -1.as-i64
   [] > as-i32
-    i32 (prefix.concat as-bytes) > @
+    i32 > @
+      prefix.concat as-bytes
     if. (eq. (as-bytes.and 80-00) 00-00) 00-00 FF-FF > prefix
   as-i32.lt x.as-i16.as-i32 > [x] > lt
   as-i32.lte x.as-i16.as-i32 > [x] > lte
@@ -31,10 +32,15 @@
       2
   [x] > plus
     if. > @
-      or. (left.eq 00-00) (left.eq FF-FF)
+      or.
+        left.eq 00-00
+        left.eq FF-FF
       i16 right
-      plus. (i16 left) (i16 right)
-    as-bytes. (as-i32.plus x.as-i16.as-i32) > bts
+      plus.
+        i16 left
+        i16 right
+    as-bytes. > bts
+      as-i32.plus x.as-i16.as-i32
     bts.slice 0 2 > left
     bts.slice 2 2 > right
   plus x.as-i16.neg > [x] > minus
@@ -45,10 +51,15 @@
         "Can't divide %d by i16 zero".printf
           * as-i32.as-i64.as-number
       if.
-        or. (left.eq zero) (left.eq FF-FF)
+        or.
+          left.eq zero
+          left.eq FF-FF
         i16 right
-        plus. (i16 left) (i16 right)
-    as-bytes. (as-i32.div xval.as-i32) > bts
+        plus.
+          i16 left
+          i16 right
+    as-bytes. > bts
+      as-i32.div xval.as-i32
     bts.slice 0 2 > left
     bts.slice 2 2 > right
     x.as-i16 > xval

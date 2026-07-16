@@ -21,13 +21,15 @@
       *
 
   ++> tests-list-should-not-be-empty-with-three-objects
-    not. (tuple.is-empty xs) > @
+    not. > @
+      tuple.is-empty xs
     * > xs
       [x]
       [y]
       [z]
 
   ++> tests-list-should-not-be-empty-with-one-anon-object
-    not. (tuple.is-empty xs) > @
+    not. > @
+      tuple.is-empty xs
     * > xs
       [f]

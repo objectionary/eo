@@ -31,11 +31,17 @@
         string buffer
         rec-read
           ^.^.next-line
-          first.if (buffer.concat line) (concat. (buffer.concat separator) line)
+          first.if
+            buffer.concat line
+            concat. (buffer.concat separator) line
           false
   [] > next-line
-    if. (first.as-bytes.size.eq 0) "" (rec-read first --) > @
-    @. (console.read 1) > first
+    if. > @
+      first.as-bytes.size.eq 0
+      ""
+      rec-read first --
+    @. > first
+      console.read 1
     [input buffer] > rec-read
       if. > @
         or.

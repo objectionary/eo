@@ -21,4 +21,5 @@
   string.ends-with "Hello world!" "world!" ++> tests-ends-with-substring
 
   ++> tests-does-not-end-with-substring
-    not. (string.ends-with "Hello world!" "Hello") > @
+    not. > @
+      string.ends-with "Hello world!" "Hello"

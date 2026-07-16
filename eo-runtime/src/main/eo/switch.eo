@@ -38,7 +38,8 @@
       [] >>
         tup.head.head > head
         tup.head.tail.head > match!
-    @. (rec-case tup.tail) > previous
+    @. > previous
+      rec-case tup.tail
 
   ++> tests-switch-simple-case
     eq. > @
