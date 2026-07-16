@@ -14,7 +14,5 @@ printed: |
   +package org.eolang
 
   [x] > foo
-    [] > bar
-      x > @
-    [x] > baz
-      ^.x > @
+    x > [] > bar
+    ^.x > [x] > baz
