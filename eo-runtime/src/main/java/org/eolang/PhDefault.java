@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -67,6 +68,12 @@ public class PhDefault implements Phi, Cloneable {
      * No initial attributes.
      */
     private static final Map<String, Attribute> NONE = Collections.emptyMap();
+
+    /**
+     * Structural attribute names that can never be a package extension, so a
+     * miss on them must not probe the classpath.
+     */
+    private static final Set<String> SPECIAL = Set.of(Phi.LAMBDA, Phi.PHI, Phi.RHO);
 
     /**
      * Data.
@@ -399,9 +406,10 @@ public class PhDefault implements Phi, Cloneable {
     private Phi extension(final String name, final Phi bottom) {
         final String forma = this.forma();
         Phi found = bottom;
-        if (forma.startsWith(String.format("%s.", PhPackage.GLOBAL))) {
+        if (!PhDefault.SPECIAL.contains(name)
+            && forma.startsWith(String.format("%s.", PhPackage.GLOBAL))) {
             final String full = String.join(".", forma, name);
-            if (PhDefault.exists(new JavaPath(full).toString())) {
+            if (OnClasspath.has(new JavaPath(full).toString())) {
                 final Phi taken = Phi.Φ.take(full.substring(PhPackage.GLOBAL.length() + 1));
                 try {
                     taken.put(0, this);
@@ -416,22 +424,6 @@ public class PhDefault implements Phi, Cloneable {
                 }
                 found = taken;
             }
-        }
-        return found;
-    }
-
-    /**
-     * Is there a Java class with this name on the classpath?
-     * @param cls The fully-qualified Java name
-     * @return TRUE if it exists
-     */
-    private static boolean exists(final String cls) {
-        boolean found;
-        try {
-            Class.forName(cls);
-            found = true;
-        } catch (final ClassNotFoundException ex) {
-            found = false;
         }
         return found;
     }
