@@ -154,14 +154,19 @@
   </xsl:template>
   <!-- ABSTRACT OR ATOM -->
   <xsl:template match="o[eo:abstract(.) and not(eo:has-data(.))]" mode="head">
-    <xsl:text>[</xsl:text>
-    <xsl:for-each select="o[eo:void(.)]">
-      <xsl:if test="position()&gt;1">
-        <xsl:text> </xsl:text>
-      </xsl:if>
-      <xsl:value-of select="@name"/>
-    </xsl:for-each>
-    <xsl:text>]</xsl:text>
+    <!-- A test attribute with no void params collapses its empty `[]`
+         head into the `++&gt;` suffix (see the tail template), so it emits
+         no head of its own. -->
+    <xsl:if test="not(eo:test-attr(.) and empty(o[eo:void(.)]))">
+      <xsl:text>[</xsl:text>
+      <xsl:for-each select="o[eo:void(.)]">
+        <xsl:if test="position()&gt;1">
+          <xsl:text> </xsl:text>
+        </xsl:if>
+        <xsl:value-of select="@name"/>
+      </xsl:for-each>
+      <xsl:text>]</xsl:text>
+    </xsl:if>
   </xsl:template>
   <!-- TAIL: SUFFIX, NAME, CONST, ATOM -->
   <xsl:template match="o" mode="tail">
@@ -179,7 +184,17 @@
     <xsl:if test="@name">
       <xsl:choose>
         <xsl:when test="eo:test-attr(.)">
-          <xsl:text> +&gt; </xsl:text>
+          <xsl:choose>
+            <!-- No void params: collapse the empty `[]` head into a
+                 single `++&gt; name` head (the head template emits
+                 nothing in this case). -->
+            <xsl:when test="empty(o[eo:void(.)])">
+              <xsl:text>++&gt; </xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text> +&gt; </xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
           <xsl:value-of select="substring-after(@name, '+')"/>
         </xsl:when>
         <xsl:when test="starts-with(@name, concat('a', $eo:cactoos))">
