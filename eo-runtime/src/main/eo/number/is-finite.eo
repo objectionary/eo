@@ -1,0 +1,29 @@
+# TRUE when `n` is neither infinite nor not-a-number.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[n] > is-finite
+  and. > @
+    n.is-nan.not
+    not.
+      or.
+        n.as-bytes.eq 7F-F0-00-00-00-00-00-00
+        n.as-bytes.eq FF-F0-00-00-00-00-00-00
+
+  32.is-finite > [] +> simple-number-is-finite
+
+  ++> tests-number-with-infinite-bytes-is-not-finite
+    (number pinf.as-bytes).is-finite.not > @
+
+  ++> tests-positive-infinity-is-not-finite
+    pinf.is-finite.not > @
+
+  ++> tests-negative-infinity-is-not-finite
+    ninf.is-finite.not > @
+
+  nan.is-finite.not > [] +> nan-is-not-finite

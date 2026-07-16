@@ -1,0 +1,92 @@
+# Difference of `n` and `x`, defined as `n` plus the negation of `x`.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[n x] > minus
+  n.plus > @
+    (number value).neg
+  x > value!
+
+  ++> tests-one-minus-one
+    eq. > @
+      1.minus 1
+      0
+
+  ++> tests-positive-infinity-minus-nan
+    eq. > @
+      as-bytes.
+        pinf.minus nan
+      nan.as-bytes
+
+  ++> tests-positive-infinity-minus-positive-infinity
+    eq. > @
+      as-bytes.
+        pinf.minus pinf
+      nan.as-bytes
+
+  ++> tests-positive-infinity-minus-negative-infinity
+    eq. > @
+      pinf.minus ninf
+      pinf
+
+  ++> tests-positive-infinity-minus-positive-float
+    eq. > @
+      pinf.minus 42.5
+      pinf
+
+  ++> tests-positive-infinity-minus-positive-int
+    eq. > @
+      pinf.minus 42
+      pinf
+
+  ++> tests-positive-infinity-minus-negative-float
+    eq. > @
+      pinf.minus -42.5
+      pinf
+
+  ++> tests-positive-infinity-minus-negative-int
+    eq. > @
+      pinf.minus -42
+      pinf
+
+  ++> tests-negative-infinity-minus-nan
+    eq. > @
+      as-bytes.
+        ninf.minus nan
+      nan.as-bytes
+
+  ++> tests-negative-infinity-minus-negative-infinity
+    eq. > @
+      as-bytes.
+        ninf.minus ninf
+      nan.as-bytes
+
+  ++> tests-negative-infinity-minus-positive-infinity
+    eq. > @
+      ninf.minus pinf
+      ninf
+
+  ++> tests-negative-infinity-minus-positive-float
+    eq. > @
+      ninf.minus 42.5
+      ninf
+
+  ++> tests-negative-infinity-minus-positive-int
+    eq. > @
+      ninf.minus 42
+      ninf
+
+  ++> tests-negative-infinity-minus-negative-float
+    eq. > @
+      ninf.minus -42.5
+      ninf
+
+  ++> tests-negative-infinity-minus-negative-int
+    eq. > @
+      ninf.minus -42
+      ninf

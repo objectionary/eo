@@ -1,0 +1,96 @@
+# TRUE when `n` is less than or equal to `x`.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[n x] > lte
+  or. > @
+    n.lt value
+    n.eq value
+  x > value!
+
+  ++> tests-int-leq-true
+    eq. > @
+      lte.
+        -200
+        -100
+      true
+
+  ++> tests-int-leq-equal
+    eq. > @
+      lte.
+        50
+        50
+      true
+
+  ++> tests-int-leq-false
+    eq. > @
+      not.
+        lte.
+          0
+          -10
+      true
+
+  ++> tests-positive-infinity-lte-positive-infinity
+    eq. > @
+      pinf.lte pinf
+      true
+
+  ++> tests-positive-infinity-not-lte-negative-infinity
+    eq. > @
+      pinf.lte ninf
+      false
+
+  ++> tests-positive-infinity-not-lte-nan
+    eq. > @
+      pinf.lte nan
+      false
+
+  ++> tests-positive-infinity-not-lte-int
+    eq. > @
+      pinf.lte 42
+      false
+
+  ++> tests-positive-infinity-not-lte-float
+    eq. > @
+      pinf.lte 42.5
+      false
+
+  ++> tests-negative-infinity-lte-negative-infinity
+    eq. > @
+      ninf.lte ninf
+      true
+
+  ++> tests-negative-infinity-lte-positive-infinity
+    eq. > @
+      ninf.lte pinf
+      true
+
+  ++> tests-negative-infinity-not-lte-nan
+    eq. > @
+      ninf.lte nan
+      false
+
+  ++> tests-negative-infinity-lte-int
+    eq. > @
+      ninf.lte 42
+      true
+
+  ++> tests-negative-infinity-lte-float
+    eq. > @
+      ninf.lte 42.5
+      true
+
+  ++> tests-nan-not-lte-number
+    eq. > @
+      nan.lte 42
+      false
+
+  ++> tests-nan-not-lte-nan
+    eq. > @
+      nan.lte nan
+      false
