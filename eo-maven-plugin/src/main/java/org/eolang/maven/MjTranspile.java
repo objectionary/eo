@@ -52,6 +52,17 @@ public final class MjTranspile extends MjSafe {
     @SuppressWarnings("PMD.ImmutableField")
     private boolean transpileTests = true;
 
+    /**
+     * Whether to wrap every dispatched object with a location-carrying
+     * {@code PhSafe}, so a panic reports its {@code .eo} source position.
+     * Turn it off in release builds to skip the per-dispatch wrapper
+     * overhead, keeping only the failure reason and Java stack trace.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.trackLocations", required = true, defaultValue = "true")
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean trackLocations = true;
+
     @Override
     public void exec() throws IOException {
         new Timed(
@@ -62,9 +73,9 @@ public final class MjTranspile extends MjSafe {
                 this.cache.toPath(),
                 this.cacheEnabled,
                 this.plugin.getVersion(),
-                this.trackTransformationSteps,
                 this.transpileTests,
-                this.xslMeasures.toPath()
+                this.xslMeasures.toPath(),
+                new Tracking(this.trackTransformationSteps, this.trackLocations)
             )
         ).exec();
         if (this.addSourcesRoot) {

@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -62,7 +64,8 @@ final class Transpiling implements Step {
     static final String PRE = "5-pre-transpile";
 
     /**
-     * Parsing train with XSLs, one instance per thread.
+     * Parsing trains with XSLs, one per thread, keyed by whether source
+     * locations are tracked.
      * <p>
      *     A single shared instance is deliberately avoided: {@link TrClasspath}
      *     and {@link StClasspath} compile their XSL stylesheets lazily on
@@ -74,28 +77,8 @@ final class Transpiling implements Step {
      *     processes.
      * </p>
      */
-    private static final ThreadLocal<Train<Shift>> TRAIN = ThreadLocal.withInitial(
-        () -> new TrFull(
-            new TrJoined<>(
-                new TrClasspath<>(
-                    "/org/eolang/maven/transpile/set-locators.xsl",
-                    "/org/eolang/maven/transpile/set-original-names.xsl",
-                    "/org/eolang/maven/transpile/classes.xsl",
-                    "/org/eolang/maven/transpile/tests.xsl",
-                    "/org/eolang/maven/transpile/anonymous-to-nested.xsl",
-                    "/org/eolang/maven/transpile/package.xsl",
-                    "/org/eolang/maven/transpile/attrs.xsl",
-                    "/org/eolang/maven/transpile/data.xsl"
-                ).back(),
-                new TrDefault<>(
-                    new StClasspath(
-                        "/org/eolang/maven/transpile/to-java.xsl",
-                        String.format("disclaimer %s", new Disclaimer())
-                    )
-                )
-            )
-        )
-    );
+    private static final ThreadLocal<Map<Boolean, Train<Shift>>> TRAINS =
+        ThreadLocal.withInitial(HashMap::new);
 
     /**
      * Cache directory for transpiled sources.
@@ -142,13 +125,6 @@ final class Transpiling implements Step {
     private final String version;
 
     /**
-     * Whether to track transformation steps into intermediate XMIR files.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @SuppressWarnings("PMD.LongVariable")
-    private final boolean trackTransformationSteps;
-
-    /**
      * Whether to transpile tests.
      * @checkstyle MemberNameCheck (5 lines)
      */
@@ -161,6 +137,11 @@ final class Transpiling implements Step {
     private final Path xslMeasures;
 
     /**
+     * Which optional diagnostic artifacts to emit while transpiling.
+     */
+    private final Tracking tracking;
+
+    /**
      * Constructor.
      * @param srcs XMIR sources to transpile
      * @param target Target directory
@@ -168,9 +149,9 @@ final class Transpiling implements Step {
      * @param cache Base cache directory
      * @param enabled Whether caching is enabled
      * @param ver Plugin version string
-     * @param tracking Whether to track transformation steps
      * @param tests Whether to transpile tests
      * @param measures Path to the file where XSL measurements are stored
+     * @param diagnostics Which diagnostic artifacts to emit while transpiling
      * @checkstyle ParameterNumberCheck (15 lines)
      */
     Transpiling(
@@ -180,9 +161,9 @@ final class Transpiling implements Step {
         final Path cache,
         final boolean enabled,
         final String ver,
-        final boolean tracking,
         final boolean tests,
-        final Path measures
+        final Path measures,
+        final Tracking diagnostics
     ) {
         this.sources = srcs;
         this.targetDir = target;
@@ -190,9 +171,9 @@ final class Transpiling implements Step {
         this.cacheDir = cache;
         this.cacheEnabled = enabled;
         this.version = ver;
-        this.trackTransformationSteps = tracking;
         this.transpileTests = tests;
         this.xslMeasures = measures;
+        this.tracking = diagnostics;
     }
 
     @Override
@@ -310,16 +291,55 @@ final class Transpiling implements Step {
     }
 
     /**
+     * The train for this thread, built once per location-tracking value.
+     * @return The train of XSL shifts
+     */
+    private Train<Shift> train() {
+        return Transpiling.TRAINS.get().computeIfAbsent(
+            this.tracking.locations(), Transpiling::compiled
+        );
+    }
+
+    /**
+     * Build the train of XSL shifts.
+     * @param track Whether generated objects carry their source location
+     * @return The train of XSL shifts
+     */
+    private static Train<Shift> compiled(final boolean track) {
+        return new TrFull(
+            new TrJoined<>(
+                new TrClasspath<>(
+                    "/org/eolang/maven/transpile/set-locators.xsl",
+                    "/org/eolang/maven/transpile/set-original-names.xsl",
+                    "/org/eolang/maven/transpile/classes.xsl",
+                    "/org/eolang/maven/transpile/tests.xsl",
+                    "/org/eolang/maven/transpile/anonymous-to-nested.xsl",
+                    "/org/eolang/maven/transpile/package.xsl",
+                    "/org/eolang/maven/transpile/attrs.xsl",
+                    "/org/eolang/maven/transpile/data.xsl"
+                ).back(),
+                new TrDefault<>(
+                    new StClasspath(
+                        "/org/eolang/maven/transpile/to-java.xsl",
+                        String.format("disclaimer %s", new Disclaimer()),
+                        String.format("trackLocations %b", track)
+                    )
+                )
+            )
+        );
+    }
+
+    /**
      * Build XSL transformation function for a source file.
-     * If {@code trackTransformationSteps} is {@code true} - creates a new {@link Xsline}
+     * If transformation steps are tracked - creates a new {@link Xsline}
      * for every XMIR in purpose of thread safety.
      * @param source Path to source XMIR
      * @return XSL transformation function
      */
     private Function<XML, XML> transpilation(final Path source) {
-        final Train<Shift> measured = this.measured(Transpiling.TRAIN.get());
+        final Train<Shift> measured = this.measured(this.train());
         final Function<XML, XML> func;
-        if (this.trackTransformationSteps) {
+        if (this.tracking.steps()) {
             func = xml -> new Xsline(
                 new TrSpy(
                     measured,

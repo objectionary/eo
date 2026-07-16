@@ -193,6 +193,37 @@ final class MjTranspileTest {
     }
 
     @Test
+    void wrapsDispatchedObjectsWithPhSafeByDefault(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "TranspileMojo must wrap dispatched objects with PhSafe by default, but it did not",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(String.format("+package foo.x%n%n[] > main%n  42.plus 1 > @"))
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get("target/generated/org/eolang/EO_foo/EO_x/EOmain.java")
+            ).asString(),
+            Matchers.containsString("new PhSafe(")
+        );
+    }
+
+    @Test
+    void omitsPhSafeWrappersWhenLocationTrackingDisabled(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "TranspileMojo must not wrap dispatched objects with PhSafe when location tracking is off, but it did",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(String.format("+package foo.x%n%n[] > main%n  42.plus 1 > @"))
+                    .with("trackLocations", false)
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get("target/generated/org/eolang/EO_foo/EO_x/EOmain.java")
+            ).asString(),
+            Matchers.not(Matchers.containsString("new PhSafe("))
+        );
+    }
+
+    @Test
     void recompilesIfModified(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
