@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='fibo']/o[@name='+fibo-of-one-is-one' and count(o)=1]
+  - /object/o[@name='fibo']/o[@name='+fibo-of-one-is-one']/o[@name='φ']
+  - /object/o[@name='fibo']/o[@name='+fibo-fits-the-shorthand' and count(o)=1]
+  - /object/o[@name='fibo']/o[@name='+fibo-fits-the-shorthand']/o[@name='φ']
+input: |
+  [n] > fibo
+
+    n.eq 1 ++> fibo-of-one-is-one
+
+    true ++> fibo-fits-the-shorthand
