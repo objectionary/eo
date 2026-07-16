@@ -3,7 +3,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="to-eo-tree" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="to-eo-tree" version="2.0">
   <!--
   This one maps XMIR to an intermediate "line tree" that is later
   laid out into pretty EO source by the Pretty class (penalty-based
@@ -17,6 +17,28 @@
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="eol" select="'&#10;'"/>
   <xsl:output method="xml" encoding="UTF-8"/>
+  <!-- Translate a dotted path to EO surface form: ρ -> ^, φ -> @. -->
+  <xsl:function name="eo:translate-path" as="xs:string">
+    <xsl:param name="path" as="xs:string"/>
+    <xsl:sequence select="string-join(for $seg in tokenize($path, '\.') return (if ($seg = $eo:rho) then '^' else if ($seg = $eo:phi) then '@' else $seg), '.')"/>
+  </xsl:function>
+  <!-- Render a base as an EO head: drop implicit ξ./Φ. roots, render a
+       leading dot as reversed dispatch, map ξ/ρ/φ/Φ and every segment. -->
+  <xsl:function name="eo:surface" as="xs:string">
+    <xsl:param name="base" as="xs:string"/>
+    <xsl:sequence select="if (starts-with($base, '.')) then concat(eo:translate-path(substring($base, 2)), '.') else if (starts-with($base, concat($eo:program, '.'))) then eo:translate-path(substring-after($base, concat($eo:program, '.'))) else if (starts-with($base, concat($eo:xi, '.'))) then eo:translate-path(substring-after($base, concat($eo:xi, '.'))) else if ($base = $eo:xi) then '$' else if ($base = $eo:program) then 'Q' else eo:translate-path($base)"/>
+  </xsl:function>
+  <!-- First name segment of a program-rooted base (Φ.foo.bar -> foo). -->
+  <xsl:function name="eo:root-name" as="xs:string">
+    <xsl:param name="base" as="xs:string"/>
+    <xsl:variable name="rest" select="substring-after($base, concat($eo:program, '.'))"/>
+    <xsl:sequence select="if (contains($rest, '.')) then substring-before($rest, '.') else $rest"/>
+  </xsl:function>
+  <!-- Rewrite surviving cactus names (a🌵L-P) to a valid id (vL_P). -->
+  <xsl:function name="eo:printable" as="xs:string">
+    <xsl:param name="text" as="xs:string"/>
+    <xsl:sequence select="replace($text, concat('a', $eo:cactoos, '(\d+)-(\d+)'), 'v$1_$2')"/>
+  </xsl:function>
   <!-- PROGRAM -->
   <xsl:template match="object">
     <object>
@@ -79,14 +101,22 @@
   <!-- OBJECT, NOT FREE ATTRIBUTE -->
   <xsl:template match="o[not(eo:void(.)) and not(@name=$eo:lambda)]" mode="tree">
     <line>
-      <xsl:attribute name="base">
+      <xsl:variable name="head">
         <xsl:apply-templates select="." mode="head"/>
-      </xsl:attribute>
-      <xsl:attribute name="tail">
+      </xsl:variable>
+      <xsl:variable name="suffix">
         <xsl:apply-templates select="." mode="tail"/>
-      </xsl:attribute>
+      </xsl:variable>
+      <xsl:attribute name="base" select="eo:printable(string($head))"/>
+      <xsl:attribute name="tail" select="eo:printable(string($suffix))"/>
       <xsl:attribute name="abstract">
         <xsl:value-of select="if (eo:abstract(.) and not(eo:has-data(.))) then 'yes' else 'no'"/>
+      </xsl:attribute>
+      <xsl:attribute name="test">
+        <xsl:value-of select="if (eo:test-attr(.)) then 'yes' else 'no'"/>
+      </xsl:attribute>
+      <xsl:attribute name="reversed">
+        <xsl:value-of select="if (@base and starts-with(@base, '.')) then 'yes' else 'no'"/>
       </xsl:attribute>
       <xsl:apply-templates select="o[not(eo:void(.))]" mode="tree"/>
     </line>
@@ -98,33 +128,16 @@
       <xsl:when test="@star">
         <xsl:text>*</xsl:text>
       </xsl:when>
+      <xsl:when test="@base=$eo:bottom">
+        <xsl:text>T</xsl:text>
+      </xsl:when>
+      <xsl:when test="starts-with(@base, concat($eo:program, '.')) and exists(ancestor::o/o[@name = eo:root-name(current()/@base)])">
+        <!-- The plain top-level name would be shadowed by an in-scope
+             attribute, so keep the explicit Q. root to disambiguate. -->
+        <xsl:value-of select="concat('Q.', eo:translate-path(substring-after(@base, concat($eo:program, '.'))))"/>
+      </xsl:when>
       <xsl:otherwise>
-        <xsl:choose>
-          <xsl:when test="@base=$eo:bottom">
-            <xsl:text>T</xsl:text>
-          </xsl:when>
-          <xsl:when test="starts-with(@base, 'Φ.')">
-            <xsl:value-of select="substring-after(@base, 'Φ.')"/>
-          </xsl:when>
-          <xsl:when test="starts-with(@base, 'ξ.')">
-            <xsl:choose>
-              <xsl:when test="contains(@base, $eo:rho)">
-                <xsl:text>^</xsl:text>
-                <xsl:value-of select="substring-after(@base, 'ξ.ρ')"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="substring-after(@base, 'ξ.')"/>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:when>
-          <xsl:when test="starts-with(@base, '.')">
-            <xsl:value-of select="substring(@base, 2)"/>
-            <xsl:text>.</xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="@base"/>
-          </xsl:otherwise>
-        </xsl:choose>
+        <xsl:value-of select="eo:surface(@base)"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -154,6 +167,10 @@
     </xsl:if>
     <xsl:if test="@name">
       <xsl:choose>
+        <xsl:when test="eo:test-attr(.)">
+          <xsl:text> +&gt; </xsl:text>
+          <xsl:value-of select="substring-after(@name, '+')"/>
+        </xsl:when>
         <xsl:when test="starts-with(@name, concat('a', $eo:cactoos))">
           <xsl:text> &gt;&gt;</xsl:text>
         </xsl:when>
