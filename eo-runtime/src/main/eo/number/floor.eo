@@ -56,8 +56,6 @@
       floor. 0
       0
 
-  ++> tests-positive-infinity-floor-is-equal-to-self
-    pinf.floor.eq pinf > @
+  pinf.floor.eq pinf ++> tests-positive-infinity-floor-is-equal-to-self
 
-  ++> tests-negative-infinity-floor-is-equal-to-self
-    ninf.floor.eq ninf > @
+  ninf.floor.eq ninf ++> tests-negative-infinity-floor-is-equal-to-self

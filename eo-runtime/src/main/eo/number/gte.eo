@@ -13,49 +13,35 @@
     n.eq value
   x > value!
 
-  ++> tests-int-gte-true
-    eq. (gte. -1000 -1100) true > @
+  eq. (gte. -1000 -1100) true ++> tests-int-gte-true
 
-  ++> tests-int-gte-equal
-    eq. (gte. 113 113) true > @
+  eq. (gte. 113 113) true ++> tests-int-gte-equal
 
   ++> tests-int-gte-false
     eq. > @
       not. (gte. 0 10)
       true
 
-  ++> tests-positive-infinity-gte-positive-infinity
-    eq. (pinf.gte pinf) true > @
+  eq. (pinf.gte pinf) true ++> tests-positive-infinity-gte-positive-infinity
 
-  ++> tests-positive-infinity-gte-negative-infinity
-    eq. (pinf.gte ninf) true > @
+  eq. (pinf.gte ninf) true ++> tests-positive-infinity-gte-negative-infinity
 
-  ++> tests-positive-infinity-not-gte-nan
-    eq. (pinf.gte nan) false > @
+  eq. (pinf.gte nan) false ++> tests-positive-infinity-not-gte-nan
 
-  ++> tests-positive-infinity-gte-int
-    eq. (pinf.gte 42) true > @
+  eq. (pinf.gte 42) true ++> tests-positive-infinity-gte-int
 
-  ++> tests-positive-infinity-gte-float
-    eq. (pinf.gte 42.5) true > @
+  eq. (pinf.gte 42.5) true ++> tests-positive-infinity-gte-float
 
-  ++> tests-negative-infinity-gte-negative-infinity
-    eq. (ninf.gte ninf) true > @
+  eq. (ninf.gte ninf) true ++> tests-negative-infinity-gte-negative-infinity
 
-  ++> tests-negative-infinity-not-gte-positive-infinity
-    eq. (ninf.gte pinf) false > @
+  eq. (ninf.gte pinf) false ++> tests-negative-infinity-not-gte-positive-infinity
 
-  ++> tests-negative-infinity-not-gte-nan
-    eq. (ninf.gte nan) false > @
+  eq. (ninf.gte nan) false ++> tests-negative-infinity-not-gte-nan
 
-  ++> tests-negative-infinity-not-gte-int
-    eq. (ninf.gte 42) false > @
+  eq. (ninf.gte 42) false ++> tests-negative-infinity-not-gte-int
 
-  ++> tests-negative-infinity-not-gte-float
-    eq. (ninf.gte 42.5) false > @
+  eq. (ninf.gte 42.5) false ++> tests-negative-infinity-not-gte-float
 
-  ++> tests-nan-not-gte-number
-    eq. (nan.gte 42) false > @
+  eq. (nan.gte 42) false ++> tests-nan-not-gte-number
 
-  ++> tests-nan-not-gte-nan
-    eq. (nan.gte nan) false > @
+  eq. (nan.gte nan) false ++> tests-nan-not-gte-nan

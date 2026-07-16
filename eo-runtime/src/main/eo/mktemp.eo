@@ -38,14 +38,10 @@
           as-bytes. (dataized (getenv "TMPDIR")) > tmpdir
           as-bytes. (dataized (getenv "USERPROFILE")) > userprofile
 
-  ++> global-temp-dir-exists
-    mktemp.exists > @
+  mktemp.exists ++> global-temp-dir-exists
 
-  ++> global-temp-dir-is-directory
-    mktemp.is-directory > @
+  mktemp.is-directory ++> global-temp-dir-is-directory
 
-  ++> returns-the-same-tmpdir
-    mktemp.path.eq mktemp.path > @
+  mktemp.path.eq mktemp.path ++> returns-the-same-tmpdir
 
-  ++> creates-tmpfile
-    mktemp.tmpfile.exists > @
+  mktemp.tmpfile.exists ++> creates-tmpfile

@@ -124,11 +124,9 @@
   ++> tests-gets-lengths-of-empty-tuple-without-additional-obj
     tuple.empty.length.eq 0 > @
 
-  ++> throws-on-getting-head-from-empty-tuple
-    tuple.empty.head > @
+  tuple.empty.head ++> throws-on-getting-head-from-empty-tuple
 
-  ++> throws-on-getting-tail-from-empty-tuple
-    tuple.empty.tail > @
+  tuple.empty.tail ++> throws-on-getting-tail-from-empty-tuple
 
   ++> tests-creates-empty-tuple-with-number
     eq. (a.at 0) 3 > @

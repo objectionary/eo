@@ -37,8 +37,7 @@
         * 1 2 3
         0
 
-  ++> tests-last-index-of-empty
-    eq. -1 (tuple.last-index-of tuple.empty "abc") > @
+  eq. -1 (tuple.last-index-of tuple.empty "abc") ++> tests-last-index-of-empty
 
   ++> tests-last-index-of-unicode
     eq. > @

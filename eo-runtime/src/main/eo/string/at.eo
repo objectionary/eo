@@ -26,17 +26,13 @@
     idx
   text.length > len!
 
-  ++> tests-returns-first-char
-    eq. "s" (string.at "some" 0) > @
+  eq. "s" (string.at "some" 0) ++> tests-returns-first-char
 
-  ++> tests-returns-third-char
-    eq. "m" (string.at "some" 2) > @
+  eq. "m" (string.at "some" 2) ++> tests-returns-third-char
 
-  ++> tests-returns-char-at-negative-index
-    eq. "m" (string.at "some" -2) > @
+  eq. "m" (string.at "some" -2) ++> tests-returns-char-at-negative-index
 
-  ++> throws-on-text-at-index-more-than-length
-    string.at "some" 10 > @
+  string.at "some" 10 ++> throws-on-text-at-index-more-than-length
 
   ++> tests-text-at-out-of-bounds-returns-provided-fallback
     eq. > @

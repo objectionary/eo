@@ -27,23 +27,16 @@
             48
     floor. (n.div 10) > q
 
-  ++> tests-writes-single-digit
-    eq. "7" (string (string.as-decimal 7)) > @
+  eq. "7" (string (string.as-decimal 7)) ++> tests-writes-single-digit
 
-  ++> tests-writes-zero
-    eq. "0" (string (string.as-decimal 0)) > @
+  eq. "0" (string (string.as-decimal 0)) ++> tests-writes-zero
 
-  ++> tests-writes-multi-digit-number
-    eq. "31415" (string (string.as-decimal 31415)) > @
+  eq. "31415" (string (string.as-decimal 31415)) ++> tests-writes-multi-digit-number
 
-  ++> tests-writes-negative-number
-    eq. "-42" (string (string.as-decimal -42)) > @
+  eq. "-42" (string (string.as-decimal -42)) ++> tests-writes-negative-number
 
-  ++> tests-truncates-positive-fraction
-    eq. "42" (string (string.as-decimal 42.987)) > @
+  eq. "42" (string (string.as-decimal 42.987)) ++> tests-truncates-positive-fraction
 
-  ++> tests-truncates-negative-fraction
-    eq. "-7" (string (string.as-decimal -7.89)) > @
+  eq. "-7" (string (string.as-decimal -7.89)) ++> tests-truncates-negative-fraction
 
-  ++> tests-writes-number-with-inner-zero
-    eq. "105" (string (string.as-decimal 105)) > @
+  eq. "105" (string (string.as-decimal 105)) ++> tests-writes-number-with-inner-zero

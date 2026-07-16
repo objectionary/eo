@@ -15,8 +15,7 @@
       tuple.is-empty
         * 1 2
 
-  ++> list-should-be-empty
-    tuple.is-empty tuple.empty > @
+  tuple.is-empty tuple.empty ++> list-should-be-empty
 
   ++> tests-list-should-not-be-empty-with-three-objects
     not. (tuple.is-empty xs) > @

@@ -31,8 +31,7 @@
         accum.concat bts
         as-number. (index.plus 1)
 
-  ++> throws-on-text-repeating-less-than-zero-times
-    string.repeated "" -1 > @
+  string.repeated "" -1 ++> throws-on-text-repeating-less-than-zero-times
 
   ++> tests-text-repeated-negative-times-returns-provided-fallback
     eq. > @
@@ -42,8 +41,6 @@
         -1
         "recovered" > [msg]
 
-  ++> tests-text-repeated-zero-times-is-empty
-    eq. "" (string.repeated "some" 0) > @
+  eq. "" (string.repeated "some" 0) ++> tests-text-repeated-zero-times-is-empty
 
-  ++> tests-text-repeated-five-times
-    eq. "heyheyheyheyhey" (string.repeated "hey" 5) > @
+  eq. "heyheyheyheyhey" (string.repeated "hey" 5) ++> tests-text-repeated-five-times

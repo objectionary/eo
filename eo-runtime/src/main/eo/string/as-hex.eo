@@ -67,5 +67,4 @@
         string.as-hex
           as-bytes. 42
 
-  ++> tests-writes-empty-bytes
-    eq. "" (string (string.as-hex --)) > @
+  eq. "" (string (string.as-hex --)) ++> tests-writes-empty-bytes

@@ -18,23 +18,17 @@
     text
     trimmed-left (trimmed-right text)
 
-  ++> tests-text-trimmed-one-space-left
-    eq. (string.trimmed " some") "some" > @
+  eq. (string.trimmed " some") "some" ++> tests-text-trimmed-one-space-left
 
-  ++> tests-text-trimmed-one-space-right
-    eq. (string.trimmed "some ") "some" > @
+  eq. (string.trimmed "some ") "some" ++> tests-text-trimmed-one-space-right
 
-  ++> tests-text-trimmed-one-space-both
-    eq. (string.trimmed " some ") "some" > @
+  eq. (string.trimmed " some ") "some" ++> tests-text-trimmed-one-space-both
 
-  ++> tests-text-trimmed-many-spaces
-    eq. (string.trimmed "    some     ") "some" > @
+  eq. (string.trimmed "    some     ") "some" ++> tests-text-trimmed-many-spaces
 
-  ++> tests-text-trimmed-empty
-    eq. (string.trimmed "") "" > @
+  eq. (string.trimmed "") "" ++> tests-text-trimmed-empty
 
-  ++> tests-text-trimmed-only-spaces
-    eq. (string.trimmed "        ") "" > @
+  eq. (string.trimmed "        ") "" ++> tests-text-trimmed-only-spaces
 
   ++> tests-trimmed-strips-mixed-ws-both-sides
     eq. (string.trimmed " \t\n\f\rvalue \t\n\f\r") "value" > @

@@ -40,29 +40,22 @@
             c.eq 0B-
             or. (c.eq 0C-) (c.eq 0D-)
 
-  ++> tests-trimmed-right-empty-text
-    eq. (string.trimmed-right "") "" > @
+  eq. (string.trimmed-right "") "" ++> tests-trimmed-right-empty-text
 
-  ++> tests-text-trimmed-right-one-space
-    eq. (string.trimmed-right "s ") "s" > @
+  eq. (string.trimmed-right "s ") "s" ++> tests-text-trimmed-right-one-space
 
   ++> tests-text-trimmed-right-many-spaces
     eq. (string.trimmed-right "some     ") "some" > @
 
-  ++> tests-text-trimmed-right-only-spaces
-    eq. (string.trimmed-right "     ") "" > @
+  eq. (string.trimmed-right "     ") "" ++> tests-text-trimmed-right-only-spaces
 
-  ++> tests-trimmed-right-strips-tab
-    eq. (string.trimmed-right "value\t") "value" > @
+  eq. (string.trimmed-right "value\t") "value" ++> tests-trimmed-right-strips-tab
 
-  ++> tests-trimmed-right-strips-lf
-    eq. (string.trimmed-right "value\n") "value" > @
+  eq. (string.trimmed-right "value\n") "value" ++> tests-trimmed-right-strips-lf
 
-  ++> tests-trimmed-right-strips-ff
-    eq. (string.trimmed-right "value\f") "value" > @
+  eq. (string.trimmed-right "value\f") "value" ++> tests-trimmed-right-strips-ff
 
-  ++> tests-trimmed-right-strips-cr
-    eq. (string.trimmed-right "value\r") "value" > @
+  eq. (string.trimmed-right "value\r") "value" ++> tests-trimmed-right-strips-cr
 
   ++> tests-trimmed-right-strips-mixed-ws
     eq. (string.trimmed-right "value \t\n\f\r") "value" > @

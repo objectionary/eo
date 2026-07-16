@@ -44,11 +44,9 @@
       0.24
       head. (string.scanf "%f" "0.24")
 
-  ++> throws-on-scanf-with-wrong-format
-    string.scanf "%l" "error" > @
+  string.scanf "%l" "error" ++> throws-on-scanf-with-wrong-format
 
-  ++> throws-on-scanf-with-oversized-int
-    string.scanf "%d" "99999999999999999999" > @
+  string.scanf "%d" "99999999999999999999" ++> throws-on-scanf-with-oversized-int
 
   ++> tests-scanf-with-string-int-float
     eq. > @

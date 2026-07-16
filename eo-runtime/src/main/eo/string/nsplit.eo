@@ -75,11 +75,9 @@
       string.nsplit "a-b-c" "-" 10
       * "a" "b" "c"
 
-  ++> throws-on-nsplit-with-limit-zero
-    string.nsplit "text" "-" 0 > @
+  string.nsplit "text" "-" 0 ++> throws-on-nsplit-with-limit-zero
 
-  ++> throws-on-nsplit-with-negative-limit
-    string.nsplit "text" "-" -1 > @
+  string.nsplit "text" "-" -1 ++> throws-on-nsplit-with-negative-limit
 
   ++> tests-nsplit-invalid-limit-returns-provided-fallback
     eq. > @

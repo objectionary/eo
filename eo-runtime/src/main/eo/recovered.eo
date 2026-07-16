@@ -14,8 +14,7 @@
 
 [value alternative] > recovered /bytes
 
-  ++> tests-keeps-the-value-when-not-terminated
-    eq. (recovered 42 7) 42 > @
+  eq. (recovered 42 7) 42 ++> tests-keeps-the-value-when-not-terminated
 
   ++> tests-falls-back-to-alternative-when-terminated
     eq. > @

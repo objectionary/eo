@@ -73,8 +73,7 @@
         * false "false1"
         * false "false2"
 
-  ++> throws-on-empty-switch
-    switch tuple.empty > @
+  switch tuple.empty ++> throws-on-empty-switch
 
   ++> tests-empty-switch-returns-provided-fallback
     eq. > @

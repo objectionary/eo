@@ -31,5 +31,4 @@
       bytes.array 1F-
       * 1F-
 
-  ++> tests-zero-bytes-to-array
-    eq. (bytes.array --) tuple.empty > @
+  eq. (bytes.array --) tuple.empty ++> tests-zero-bytes-to-array

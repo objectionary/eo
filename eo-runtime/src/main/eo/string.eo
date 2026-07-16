@@ -149,11 +149,9 @@
       as-bytes. "€ друг"
       E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3
 
-  ++> tests-bytes-equal-to-string
-    eq. D0-B4-D1-80-D1-83-D0-B3 "друг" > @
+  eq. D0-B4-D1-80-D1-83-D0-B3 "друг" ++> tests-bytes-equal-to-string
 
-  ++> tests-string-equals-to-bytes
-    eq. "друг" D0-B4-D1-80-D1-83-D0-B3 > @
+  eq. "друг" D0-B4-D1-80-D1-83-D0-B3 ++> tests-string-equals-to-bytes
 
   ++> tests-reads-the-length-with-n2-byte-characters
     and. > @
@@ -182,59 +180,43 @@
   ++> tests-compares-string-with-nan
     not. (nan.eq "друг") > @
 
-  ++> tests-compares-string-with-positive-infinity
-    eq. (pinf.eq "друг") false > @
+  eq. (pinf.eq "друг") false ++> tests-compares-string-with-positive-infinity
 
   ++> tests-compares-string-with-negative-infinity
     not. (ninf.eq "друг") > @
 
-  ++> tests-text-block-one-line
-    eq. "Abc" "Abc" > @
+  eq. "Abc" "Abc" ++> tests-text-block-one-line
 
-  ++> tests-text-block-tree-lines
-    eq. "e\ne\ne" 65-0A-65-0A-65 > @
+  eq. "e\ne\ne" 65-0A-65-0A-65 ++> tests-text-block-tree-lines
 
-  ++> tests-text-block-with-margin
-    eq. "z\n  y\n x" 7A-0A-20-20-79-0A-20-78 > @
+  eq. "z\n  y\n x" 7A-0A-20-20-79-0A-20-78 ++> tests-text-block-with-margin
 
   ++> tests-compares-two-different-strings
     not. (eq. "Hello" "Good bye") > @
 
-  ++> tests-supports-escape-sequences
-    eq. "Hello, друг!\n" "Hello, друг!\n" > @
+  eq. "Hello, друг!\n" "Hello, друг!\n" ++> tests-supports-escape-sequences
 
-  ++> tests-supports-escape-sequences-in-text
-    eq. "Hello, друг!\n" "Hello, друг!\n" > @
+  eq. "Hello, друг!\n" "Hello, друг!\n" ++> tests-supports-escape-sequences-in-text
 
-  ++> tests-preserves-indentation-in-text
-    eq. "a\n b\n  c" "a\n b\n  c" > @
+  eq. "a\n b\n  c" "a\n b\n  c" ++> tests-preserves-indentation-in-text
 
-  ++> tests-compares-two-strings
-    eq. (eq. "x" "x") true > @
+  eq. (eq. "x" "x") true ++> tests-compares-two-strings
 
-  ++> tests-one-symbol-string-compares
-    eq. "Ф" "Ф" > @
+  eq. "Ф" "Ф" ++> tests-one-symbol-string-compares
 
-  ++> tests-supports-escape-sequences-line-break
-    eq. "\n" "\n" > @
+  eq. "\n" "\n" ++> tests-supports-escape-sequences-line-break
 
-  ++> tests-supports-escape-sequences-unicode
-    eq. "Ф" "Ф" > @
+  eq. "Ф" "Ф" ++> tests-supports-escape-sequences-unicode
 
-  ++> tests-slice-from-start
-    eq. (slice. "hello" 0 1) "h" > @
+  eq. (slice. "hello" 0 1) "h" ++> tests-slice-from-start
 
-  ++> tests-slice-in-the-middle
-    eq. (slice. "hello" 2 3) "llo" > @
+  eq. (slice. "hello" 2 3) "llo" ++> tests-slice-in-the-middle
 
-  ++> tests-slice-from-the-end
-    eq. (slice. "hello" 4 1) "o" > @
+  eq. (slice. "hello" 4 1) "o" ++> tests-slice-from-the-end
 
-  ++> tests-slice-empty-string
-    eq. (slice. "" 0 0) "" > @
+  eq. (slice. "" 0 0) "" ++> tests-slice-empty-string
 
-  ++> tests-no-slice-string
-    eq. (slice. "no slice" 0 0) "" > @
+  eq. (slice. "no slice" 0 0) "" ++> tests-no-slice-string
 
   ++> tests-slice-escape-sequences-line-break
     eq. > @
@@ -252,41 +234,32 @@
         length. "Ф"
       "Ф"
 
-  ++> tests-slice-with-n2-byte-characters
-    eq. (slice. "привет" 1 2) "ри" > @
+  eq. (slice. "привет" 1 2) "ри" ++> tests-slice-with-n2-byte-characters
 
-  ++> tests-slice-with-n3-byte-characters
-    eq. (slice. "The अ is अ" 1 6) "he अ i" > @
+  eq. (slice. "The अ is अ" 1 6) "he अ i" ++> tests-slice-with-n3-byte-characters
 
   ++> tests-slice-with-n4-byte-characters
     eq. (slice. "One 😀 and 😀 another" 3 8) " 😀 and 😀" > @
 
-  ++> tests-slice-foreign-literals
-    eq. (slice. "hello, 大家!" 7 1) "大" > @
+  eq. (slice. "hello, 大家!" 7 1) "大" ++> tests-slice-foreign-literals
 
-  ++> throws-on-slicing-start-below-zero
-    slice. "some string" -1 1 > @
+  slice. "some string" -1 1 ++> throws-on-slicing-start-below-zero
 
-  ++> throws-on-slicing-end-below-start
-    slice. "some string" 2 -1 > @
+  slice. "some string" 2 -1 ++> throws-on-slicing-end-below-start
 
-  ++> throws-on-slicing-end-greater-actual
-    slice. "some string" 7 5 > @
+  slice. "some string" 7 5 ++> throws-on-slicing-end-greater-actual
 
   ++> tests-unescapes-slashes
     eq. "x\\b\\f\\u\\r\\t\\n\\'" 78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27 > @
 
-  ++> tests-unescapes-symbols
-    eq. "\b\f\n\r\t⟦" 08-0C-0A-0D-09-E2-9F-A6 > @
+  eq. "\b\f\n\r\t⟦" 08-0C-0A-0D-09-E2-9F-A6 ++> tests-unescapes-symbols
 
   ++> tests-package-contains-word-in-sentence
     contains. "hello, world, how are you?" "how" > @
 
-  ++> tests-package-starts-with-prefix
-    starts-with. "hello, world" "hello" > @
+  starts-with. "hello, world" "hello" ++> tests-package-starts-with-prefix
 
-  ++> tests-package-ends-with-suffix
-    ends-with. "hello, world" "world" > @
+  ends-with. "hello, world" "world" ++> tests-package-ends-with-suffix
 
   ++> tests-package-up-cases-text
     eq. > @
@@ -303,14 +276,11 @@
       trimmed. "  spaced  "
       "spaced"
 
-  ++> tests-package-repeats-text
-    eq. (repeated. "ha" 3) "hahaha" > @
+  eq. (repeated. "ha" 3) "hahaha" ++> tests-package-repeats-text
 
-  ++> tests-package-finds-index-of-character
-    eq. (index-of. "hello" "l") 2 > @
+  eq. (index-of. "hello" "l") 2 ++> tests-package-finds-index-of-character
 
-  ++> tests-package-takes-character-at-index
-    eq. (at. "some" 1) "o" > @
+  eq. (at. "some" 1) "o" ++> tests-package-takes-character-at-index
 
   ++> tests-package-detects-digits
     is-digit. "2026" > @

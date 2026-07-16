@@ -240,17 +240,14 @@
   ++> tests-checks-file-does-not-exist-after-deleting
     mktemp.tmpfile.deleted.exists.not > @
 
-  ++> tests-touches-a-file
-    mktemp.tmpfile.deleted.touched.exists > @
+  mktemp.tmpfile.deleted.touched.exists ++> tests-touches-a-file
 
   ++> tests-measures-empty-file-after-touching
     mktemp.tmpfile.deleted.touched.size.eq 0 > @
 
-  ++> throws-on-sizing-absent-file
-    mktemp.tmpfile.deleted.size > @
+  mktemp.tmpfile.deleted.size ++> throws-on-sizing-absent-file
 
-  ++> throws-on-checking-directory-of-absent-file
-    mktemp.tmpfile.deleted.is-directory > @
+  mktemp.tmpfile.deleted.is-directory ++> throws-on-checking-directory-of-absent-file
 
   ++> tests-sizing-absent-file-returns-fallback
     eq. -1 (mktemp.tmpfile.deleted.size -1) > @

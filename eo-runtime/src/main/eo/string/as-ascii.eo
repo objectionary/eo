@@ -13,29 +13,20 @@
   as-number. > @
     as-i16. (concat. 00- char.as-bytes)
 
-  ++> tests-reads-code-of-uppercase-letter
-    eq. 65 (string.as-ascii "A") > @
+  eq. 65 (string.as-ascii "A") ++> tests-reads-code-of-uppercase-letter
 
-  ++> tests-reads-code-of-last-uppercase-letter
-    eq. 90 (string.as-ascii "Z") > @
+  eq. 90 (string.as-ascii "Z") ++> tests-reads-code-of-last-uppercase-letter
 
-  ++> tests-reads-code-of-lowercase-letter
-    eq. 97 (string.as-ascii "a") > @
+  eq. 97 (string.as-ascii "a") ++> tests-reads-code-of-lowercase-letter
 
-  ++> tests-reads-code-of-last-lowercase-letter
-    eq. 122 (string.as-ascii "z") > @
+  eq. 122 (string.as-ascii "z") ++> tests-reads-code-of-last-lowercase-letter
 
-  ++> tests-reads-code-of-zero-digit
-    eq. 48 (string.as-ascii "0") > @
+  eq. 48 (string.as-ascii "0") ++> tests-reads-code-of-zero-digit
 
-  ++> tests-reads-code-of-nine-digit
-    eq. 57 (string.as-ascii "9") > @
+  eq. 57 (string.as-ascii "9") ++> tests-reads-code-of-nine-digit
 
-  ++> tests-reads-code-of-space
-    eq. 32 (string.as-ascii " ") > @
+  eq. 32 (string.as-ascii " ") ++> tests-reads-code-of-space
 
-  ++> tests-reads-code-of-punctuation
-    eq. 33 (string.as-ascii "!") > @
+  eq. 33 (string.as-ascii "!") ++> tests-reads-code-of-punctuation
 
-  ++> tests-reads-code-of-last-printable
-    eq. 126 (string.as-ascii "~") > @
+  eq. 126 (string.as-ascii "~") ++> tests-reads-code-of-last-printable

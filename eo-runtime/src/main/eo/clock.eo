@@ -25,5 +25,4 @@
   output. > timeval
     sm.posix "gettimeofday" tuple.empty
 
-  ++> tests-reads-positive-millis
-    clock.gt 0 > @
+  clock.gt 0 ++> tests-reads-positive-millis

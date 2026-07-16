@@ -19,8 +19,7 @@
       if. (min.gt item.as-number) item min > [min item]
   sequence > lst
 
-  ++> throws-on-taking-minimum-from-empty-sequence
-    tuple.minimum tuple.empty > @
+  tuple.minimum tuple.empty ++> throws-on-taking-minimum-from-empty-sequence
 
   ++> tests-minimum-of-empty-returns-provided-fallback
     eq. > @

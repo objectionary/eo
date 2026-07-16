@@ -52,5 +52,4 @@
                   * sm.win32.stderr-fileno buffer buffer.size
               ^.^.output-block
 
-  ++> tests-prints-to-stderr
-    stderr "Hello, stderr-test!\n" > @
+  stderr "Hello, stderr-test!\n" ++> tests-prints-to-stderr

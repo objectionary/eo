@@ -21,11 +21,8 @@
     not. > @
       is-finite. (number pinf.as-bytes)
 
-  ++> tests-positive-infinity-is-not-finite
-    pinf.is-finite.not > @
+  pinf.is-finite.not ++> tests-positive-infinity-is-not-finite
 
-  ++> tests-negative-infinity-is-not-finite
-    ninf.is-finite.not > @
+  ninf.is-finite.not ++> tests-negative-infinity-is-not-finite
 
-  ++> nan-is-not-finite
-    nan.is-finite.not > @
+  nan.is-finite.not ++> nan-is-not-finite

@@ -38,11 +38,8 @@
       tuple.range-of-numbers -5 0
       * -5 -4 -3 -2 -1
 
-  ++> throws-on-range-of-numbers-with-non-number-start
-    tuple.range-of-numbers 1.2 3 > @
+  tuple.range-of-numbers 1.2 3 ++> throws-on-range-of-numbers-with-non-number-start
 
-  ++> throws-on-range-of-numbers-with-not-number-end
-    tuple.range-of-numbers 1 2.5 > @
+  tuple.range-of-numbers 1 2.5 ++> throws-on-range-of-numbers-with-not-number-end
 
-  ++> throws-on-range-of-not-numbers
-    tuple.range-of-numbers 1.5 5.2 > @
+  tuple.range-of-numbers 1.5 5.2 ++> throws-on-range-of-not-numbers

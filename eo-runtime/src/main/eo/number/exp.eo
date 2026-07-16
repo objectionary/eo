@@ -10,11 +10,7 @@
 [num] > exp
   power e num > @
 
-  ++> tests-exp-check-n0
-    lt. > @
-      abs
-        e.minus (number.exp 1)
-      1.0E-8
+  lt. (abs (e.minus (number.exp 1))) 1.0E-8 ++> tests-exp-check-n0
 
   ++> tests-exp-check-n1
     lt. > @
@@ -37,8 +33,6 @@
   ++> tests-exp-check-nan
     is-nan. (number.exp nan) > @
 
-  ++> tests-exp-check-infinity-n1
-    eq. (number.exp pinf) pinf > @
+  eq. (number.exp pinf) pinf ++> tests-exp-check-infinity-n1
 
-  ++> tests-exp-check-infinity-n2
-    eq. (number.exp ninf) 0 > @
+  eq. (number.exp ninf) 0 ++> tests-exp-check-infinity-n2

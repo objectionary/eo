@@ -14,50 +14,27 @@
     nan
     power num 0.5
 
-  ++> tests-sqrt-zero
-    eq. (number.sqrt 0) 0 > @
+  eq. (number.sqrt 0) 0 ++> tests-sqrt-zero
 
-  ++> tests-sqrt-one
-    eq. (number.sqrt 1) 1 > @
+  eq. (number.sqrt 1) 1 ++> tests-sqrt-one
 
-  ++> tests-sqrt-four
-    lt. > @
-      abs
-        minus. (number.sqrt 4) 2
-      1.0E-9
+  lt. (abs (minus. (number.sqrt 4) 2)) 1.0E-9 ++> tests-sqrt-four
 
-  ++> tests-sqrt-two
-    lt. > @
-      abs
-        minus. (number.sqrt 2) 1.4142135623730951
-      1.0E-9
+  lt. (abs (minus. (number.sqrt 2) 1.4142135623730951)) 1.0E-9 ++> tests-sqrt-two
 
-  ++> tests-sqrt-point-five
-    lt. > @
-      abs
-        minus. (number.sqrt 0.25) 0.5
-      1.0E-9
+  lt. (abs (minus. (number.sqrt 0.25) 0.5)) 1.0E-9 ++> tests-sqrt-point-five
 
-  ++> tests-sqrt-check-zero-input
-    lt. > @
-      abs
-        minus. 0 (number.sqrt 0)
-      1.0E-11
+  lt. (abs (minus. 0 (number.sqrt 0))) 1.0E-11 ++> tests-sqrt-check-zero-input
 
   ++> tests-sqrt-check-negative-input
     is-nan. (number.sqrt -0.1) > @
 
-  ++> tests-sqrt-check-float-input
-    lt. > @
-      abs
-        minus. 2 (number.sqrt 4)
-      1.0E-11
+  lt. (abs (minus. 2 (number.sqrt 4))) 1.0E-11 ++> tests-sqrt-check-float-input
 
   ++> tests-sqrt-check-nan-input
     is-nan. (number.sqrt nan) > @
 
-  ++> tests-sqrt-check-infinity-n1
-    eq. (number.sqrt pinf) pinf > @
+  eq. (number.sqrt pinf) pinf ++> tests-sqrt-check-infinity-n1
 
   ++> tests-sqrt-check-infinity-n2
     is-nan. (number.sqrt ninf) > @

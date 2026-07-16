@@ -12,8 +12,7 @@
   div. (value.times pi) 180 > @
   number num.as-bytes > value
 
-  ++> tests-radians-of-zero-is-zero
-    eq. (number.radians 0) 0 > @
+  eq. (number.radians 0) 0 ++> tests-radians-of-zero-is-zero
 
   ++> tests-radians-of-half-turn-is-pi
     lt. > @

@@ -43,14 +43,11 @@
   ++> tests-ln-of-negative-float-is-nan
     is-nan. (number.ln -2.2) > @
 
-  ++> tests-ln-of-zero-is-negative-infinity
-    eq. (number.ln 0) ninf > @
+  eq. (number.ln 0) ninf ++> tests-ln-of-zero-is-negative-infinity
 
-  ++> tests-ln-of-one-is-zero
-    eq. (number.ln 1) 0 > @
+  eq. (number.ln 1) 0 ++> tests-ln-of-one-is-zero
 
-  ++> tests-ln-of-e-one-is-one
-    eq. (number.ln e) 1 > @
+  eq. (number.ln e) 1 ++> tests-ln-of-e-one-is-one
 
   ++> tests-ln-of-negative-int-is-nan
     is-nan. (number.ln -42) > @
@@ -67,8 +64,7 @@
         minus. (number.ln 0.5) -0.6931471805599453
       1.0E-11
 
-  ++> tests-ln-positive-infinity
-    eq. (number.ln pinf) pinf > @
+  eq. (number.ln pinf) pinf ++> tests-ln-positive-infinity
 
   ++> tests-ln-negative-infinity
     is-nan. (number.ln ninf) > @
@@ -76,7 +72,4 @@
   ++> tests-ln-nan
     is-nan. (number.ln nan) > @
 
-  ++> tests-ln-monotonic
-    lt. > @
-      number.ln 2
-      number.ln 3
+  lt. (number.ln 2) (number.ln 3) ++> tests-ln-monotonic

@@ -12,8 +12,7 @@
   div. (value.times 180) pi > @
   number num.as-bytes > value
 
-  ++> tests-degrees-of-zero-is-zero
-    eq. (number.degrees 0) 0 > @
+  eq. (number.degrees 0) 0 ++> tests-degrees-of-zero-is-zero
 
   ++> tests-degrees-of-pi-is-half-turn
     lt. > @

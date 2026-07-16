@@ -118,5 +118,4 @@
                   * sm.win32.stdout-fileno buffer buffer.size
               ^.^.output-block
 
-  ++> tests-writes-to-console
-    console.write "Hello, console-test!\n" > @
+  console.write "Hello, console-test!\n" ++> tests-writes-to-console

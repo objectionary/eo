@@ -23,8 +23,7 @@
         concat. (concat. (dataized tup.head) delimiter) acc
         tup.tail
 
-  ++> tests-joined-no-strings
-    eq. "" (string.joined "-" tuple.empty) > @
+  eq. "" (string.joined "-" tuple.empty) ++> tests-joined-no-strings
 
   ++> tests-joined-one-string
     eq. > @

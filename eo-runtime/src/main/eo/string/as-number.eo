@@ -20,11 +20,9 @@
   ^. > scanned
     at. (scanf "%f" text)
 
-  ++> tests-converts-text-to-number
-    eq. 5 (string.as-number "5") > @
+  eq. 5 (string.as-number "5") ++> tests-converts-text-to-number
 
-  ++> throws-on-converting-text-to-number
-    string.as-number "Hello" > @
+  string.as-number "Hello" ++> throws-on-converting-text-to-number
 
   ++> tests-non-numeric-text-returns-provided-fallback
     eq. > @
@@ -33,5 +31,4 @@
         "Hello"
         42 > [msg]
 
-  ++> tests-converts-float-text-to-number
-    eq. 3.14 (string.as-number "3.14") > @
+  eq. 3.14 (string.as-number "3.14") ++> tests-converts-float-text-to-number

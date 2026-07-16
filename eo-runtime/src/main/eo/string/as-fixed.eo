@@ -52,11 +52,9 @@
               48
           acc
 
-  ++> tests-pads-with-trailing-zeros
-    eq. "1.250000" (string (string.as-fixed 1.25 6)) > @
+  eq. "1.250000" (string (string.as-fixed 1.25 6)) ++> tests-pads-with-trailing-zeros
 
-  ++> tests-writes-negative-value
-    eq. "-2.500000" (string (string.as-fixed -2.5 6)) > @
+  eq. "-2.500000" (string (string.as-fixed -2.5 6)) ++> tests-writes-negative-value
 
   ++> tests-rounds-to-last-place
     eq. "0.123457" (string (string.as-fixed 0.123456789 6)) > @
@@ -64,11 +62,8 @@
   ++> tests-carries-rounding-into-integer-part
     eq. "1.000000" (string (string.as-fixed 0.9999999 6)) > @
 
-  ++> tests-writes-zero
-    eq. "0.000000" (string (string.as-fixed 0 6)) > @
+  eq. "0.000000" (string (string.as-fixed 0 6)) ++> tests-writes-zero
 
-  ++> tests-honours-custom-places
-    eq. "3.14" (string (string.as-fixed 3.14159 2)) > @
+  eq. "3.14" (string (string.as-fixed 3.14159 2)) ++> tests-honours-custom-places
 
-  ++> tests-writes-single-place
-    eq. "2.5" (string (string.as-fixed 2.5 1)) > @
+  eq. "2.5" (string (string.as-fixed 2.5 1)) ++> tests-writes-single-place

@@ -33,8 +33,7 @@
       "Hello, world!"
       * "ell" " " "," "d!"
 
-  ++> test-contains-all-without-substrings
-    string.contains-all "xyz" tuple.empty > @
+  string.contains-all "xyz" tuple.empty ++> test-contains-all-without-substrings
 
   ++> tests-contains-all-for-empty-text-and-without-substrings
     string.contains-all "" tuple.empty > @

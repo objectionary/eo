@@ -66,8 +66,7 @@
         "%s"
         * "Hey" "Jeff"
 
-  ++> throws-on-printf-unsupported-format
-    string.printf "%o" tuple.empty > @
+  string.printf "%o" tuple.empty ++> throws-on-printf-unsupported-format
 
   ++> tests-printf-prints-percents
     eq. > @

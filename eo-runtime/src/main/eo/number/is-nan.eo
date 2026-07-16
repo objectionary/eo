@@ -17,11 +17,9 @@
   ++> tests-number-with-nan-bytes-is-nan
     is-nan. (number nan.as-bytes) > @
 
-  ++> tests-positive-infinity-is-not-nan
-    pinf.is-nan.not > @
+  pinf.is-nan.not ++> tests-positive-infinity-is-not-nan
 
-  ++> tests-negative-infinity-is-not-nan
-    ninf.is-nan.not > @
+  ninf.is-nan.not ++> tests-negative-infinity-is-not-nan
 
   ++> tests-nan-times-number-is-nan
     eq. > @
@@ -53,8 +51,7 @@
       as-bytes. (nan.plus nan)
       nan.as-bytes
 
-  ++> tests-nan-neg-is-nan
-    nan.@.as-bytes.eq nan.as-bytes > @
+  nan.@.as-bytes.eq nan.as-bytes ++> tests-nan-neg-is-nan
 
   ++> tests-nan-minus-number-is-nan
     eq. > @
@@ -66,8 +63,6 @@
       as-bytes. (nan.minus nan)
       nan.as-bytes
 
-  ++> tests-nan-floor-is-nan
-    nan.floor.as-bytes.eq nan.as-bytes > @
+  nan.floor.as-bytes.eq nan.as-bytes ++> tests-nan-floor-is-nan
 
-  ++> nan-is-nan
-    nan.is-nan > @
+  nan.is-nan ++> nan-is-nan

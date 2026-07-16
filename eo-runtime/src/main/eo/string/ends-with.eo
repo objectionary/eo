@@ -18,8 +18,7 @@
   txt.size > tlen!
   text > txt!
 
-  ++> tests-ends-with-substring
-    string.ends-with "Hello world!" "world!" > @
+  string.ends-with "Hello world!" "world!" ++> tests-ends-with-substring
 
   ++> tests-does-not-end-with-substring
     not. (string.ends-with "Hello world!" "Hello") > @

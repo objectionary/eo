@@ -12,8 +12,7 @@
     neg. (number value)
   x > value!
 
-  ++> tests-one-minus-one
-    eq. (minus. 1 1) 0 > @
+  eq. (minus. 1 1) 0 ++> tests-one-minus-one
 
   ++> tests-positive-infinity-minus-nan
     eq. > @
@@ -25,20 +24,15 @@
       as-bytes. (pinf.minus pinf)
       nan.as-bytes
 
-  ++> tests-positive-infinity-minus-negative-infinity
-    eq. (pinf.minus ninf) pinf > @
+  eq. (pinf.minus ninf) pinf ++> tests-positive-infinity-minus-negative-infinity
 
-  ++> tests-positive-infinity-minus-positive-float
-    eq. (pinf.minus 42.5) pinf > @
+  eq. (pinf.minus 42.5) pinf ++> tests-positive-infinity-minus-positive-float
 
-  ++> tests-positive-infinity-minus-positive-int
-    eq. (pinf.minus 42) pinf > @
+  eq. (pinf.minus 42) pinf ++> tests-positive-infinity-minus-positive-int
 
-  ++> tests-positive-infinity-minus-negative-float
-    eq. (pinf.minus -42.5) pinf > @
+  eq. (pinf.minus -42.5) pinf ++> tests-positive-infinity-minus-negative-float
 
-  ++> tests-positive-infinity-minus-negative-int
-    eq. (pinf.minus -42) pinf > @
+  eq. (pinf.minus -42) pinf ++> tests-positive-infinity-minus-negative-int
 
   ++> tests-negative-infinity-minus-nan
     eq. > @
@@ -50,17 +44,12 @@
       as-bytes. (ninf.minus ninf)
       nan.as-bytes
 
-  ++> tests-negative-infinity-minus-positive-infinity
-    eq. (ninf.minus pinf) ninf > @
+  eq. (ninf.minus pinf) ninf ++> tests-negative-infinity-minus-positive-infinity
 
-  ++> tests-negative-infinity-minus-positive-float
-    eq. (ninf.minus 42.5) ninf > @
+  eq. (ninf.minus 42.5) ninf ++> tests-negative-infinity-minus-positive-float
 
-  ++> tests-negative-infinity-minus-positive-int
-    eq. (ninf.minus 42) ninf > @
+  eq. (ninf.minus 42) ninf ++> tests-negative-infinity-minus-positive-int
 
-  ++> tests-negative-infinity-minus-negative-float
-    eq. (ninf.minus -42.5) ninf > @
+  eq. (ninf.minus -42.5) ninf ++> tests-negative-infinity-minus-negative-float
 
-  ++> tests-negative-infinity-minus-negative-int
-    eq. (ninf.minus -42) ninf > @
+  eq. (ninf.minus -42) ninf ++> tests-negative-infinity-minus-negative-int

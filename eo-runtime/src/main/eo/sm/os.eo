@@ -24,5 +24,4 @@
     matches. (string.regex "/mac/i") name
   [] > name /string
 
-  ++> tests-checks-os-family
-    or. (sm.os.is-windows.or sm.os.is-macos) sm.os.is-linux > @
+  or. (sm.os.is-windows.or sm.os.is-macos) sm.os.is-linux ++> tests-checks-os-family

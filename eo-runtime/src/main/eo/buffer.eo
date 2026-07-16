@@ -11,8 +11,7 @@
   buf > @
   buffer (string (buf.as-bytes.concat str.as-bytes)) > [str] > with
 
-  ++> tests-buffer-decorates-string
-    eq. (buffer "Hello") "Hello" > @
+  eq. (buffer "Hello") "Hello" ++> tests-buffer-decorates-string
 
   ++> tests-buffer-builds-simple-string
     eq. > @
