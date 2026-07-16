@@ -17,11 +17,15 @@
         * limit
     if.
       text.size.eq 0
-      tuple.empty
+      *
       if.
         1.eq limit
         * text
-        rec-nsplit tuple.empty 0 0 0
+        rec-nsplit
+          *
+          0
+          0
+          0
   delimiter.size > delimiter-size!
   [accum start current count] > rec-nsplit
     if. > @

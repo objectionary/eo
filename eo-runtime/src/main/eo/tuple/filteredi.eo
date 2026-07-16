@@ -12,12 +12,14 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list func] > filteredi
+[] > filteredi
+  ? >> list
+  ? >> func
   recfilter list > @
   [tup] > recfilter
     if. > @
       tup.length.eq 0
-      tuple.empty
+      *
       if. (func tup.head tup.tail.length) (next.with tup.head) next
     recfilter tup.tail > next
 
@@ -38,7 +40,7 @@
   ++> tests-filteredi-with-empty-list
     is-empty > @
       tuple.filteredi
-        tuple.empty
+        *
         v.lt 3 > [v i]
 
   ++> tests-filteredi-by-index

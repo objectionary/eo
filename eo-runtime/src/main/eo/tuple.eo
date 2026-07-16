@@ -49,7 +49,9 @@
   ++> tests-empty-tuple-length
     eq. > @
       length.
-        elements. (arr tuple.empty)
+        elements.
+          arr
+            *
       0
     [elements] > arr
 
@@ -64,7 +66,7 @@
 
   ++> tests-tuple-as-a-bound-attribute-size-0
     tup.length.eq 0 > @
-    tuple.empty > tup
+    * > tup
 
   ++> tests-tuple-as-a-bound-attribute-size-1
     eq. (tup.at 0) 100 > @
@@ -118,7 +120,7 @@
 
   ++> tests-gets-lengths-of-empty-tuple
     a.length.eq 0 > @
-    tuple.empty > a
+    * > a
 
   ++> tests-gets-lengths-of-empty-tuple-without-additional-obj
     tuple.empty.length.eq 0 > @

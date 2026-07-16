@@ -131,10 +131,10 @@
                       * byte
       ^.^.as-bytes.slice index 1 > byte
 
-  eq. (" ".length) 1 ++> tests-calculates-length-of-spaces-only
+  eq. " ".length 1 ++> tests-calculates-length-of-spaces-only
 
   ++> tests-turns-string-into-bytes
-    eq. ("€ друг".as-bytes) E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3 > @
+    eq. "€ друг".as-bytes E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3 > @
 
   D0-B4-D1-80-D1-83-D0-B3.eq "друг" ++> tests-bytes-equal-to-string
 
@@ -204,6 +204,10 @@
 
   eq. ("no slice".slice 0 0) "" ++> tests-no-slice-string
 
+  eq. ("\n".slice 0 "\n".length) "\n" ++> tests-slice-escape-sequences-line-break
+
+  eq. ("Ф".slice 0 "Ф".length) "Ф" ++> tests-slice-escape-sequences-unicode
+
   eq. ("привет".slice 1 2) "ри" ++> tests-slice-with-n2-byte-characters
 
   eq. ("The अ is अ".slice 1 6) "he अ i" ++> tests-slice-with-n3-byte-characters
@@ -231,7 +235,11 @@
 
   "hello, world".ends-with "world" ++> tests-package-ends-with-suffix
 
-  eq. ("  spaced  ".trimmed) "spaced" ++> tests-package-trims-surrounding-spaces
+  eq. "hello".up-cased "HELLO" ++> tests-package-up-cases-text
+
+  eq. "HELLO".low-cased "hello" ++> tests-package-low-cases-text
+
+  eq. "  spaced  ".trimmed "spaced" ++> tests-package-trims-surrounding-spaces
 
   eq. ("ha".repeated 3) "hahaha" ++> tests-package-repeats-text
 

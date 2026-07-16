@@ -7,7 +7,9 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list shift] > shifted
+[] > shifted
+  ? >> list
+  ? >> shift
   slice list shift list.length > @
 
   ++> tests-shifted-with-shift-less-than-length
@@ -22,4 +24,4 @@
       tuple.shifted
         * 8 2 3 4 5
         6
-      tuple.empty
+      *

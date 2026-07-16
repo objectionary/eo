@@ -20,13 +20,15 @@
     initialized > @
       if.
         pairs.length.eq 0
-        tuple.empty
+        *
         entries. (rec-rebuild pairs)
     [entries hashes] > couple
     [tup] > rec-rebuild
       if. > @
         tup.length.eq 0
-        couple tuple.empty tuple.empty
+        couple
+          *
+          *
         if.
           tuple.contains prev.hashes hash
           prev

@@ -47,5 +47,7 @@
 
   ++> tests-empty-set-has-size-of-zero
     eq. > @
-      size. (set tuple.empty)
+      size.
+        set
+          *
       0

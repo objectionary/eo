@@ -19,12 +19,14 @@
       if. (item.as-number.gt max) item max > [max item]
   sequence > lst
 
-  tuple.maximum tuple.empty ++> throws-on-taking-maximum-from-empty-sequence
+  ++> throws-on-taking-maximum-from-empty-sequence
+    tuple.maximum > @
+      *
 
   ++> tests-maximum-of-empty-returns-provided-fallback
     "recovered".eq > @
       tuple.maximum
-        tuple.empty
+        *
         "recovered" > [msg]
 
   ++> tests-maximum-of-one-item-array

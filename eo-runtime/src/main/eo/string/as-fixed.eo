@@ -12,9 +12,7 @@
 [n places] > as-fixed
   if. > @
     n.lt 0
-    concat.
-      "-".as-bytes
-      positive (n.times -1)
+    concat. "-".as-bytes (positive (n.times -1))
     positive n
   [p] > pow10
     if. > @
@@ -26,6 +24,7 @@
         10
   [a] > positive
     concat. > @
+      concat. (as-decimal ip) ".".as-bytes
       rec-pad (m.minus (ip.times scale)) places --
     floor. (m.div scale) > ip
     floor. > m

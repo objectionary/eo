@@ -39,89 +39,98 @@
       size. (20-1F-EE-B5-90-EE-BB.slice 2 3)
       3
 
+  eq. F1-20-5F-EC-B5-90-32.size 7 ++> tests-counts-size-of-bytes
+
   "你好, друг!".eq "你好, друг!" ++> tests-turns-bytes-into-a-string
 
   ++> tests-right-with-zero
     not. > @
-      []
+      eq. (right. 0.as-bytes 2) -1.as-bytes
 
   ++> tests-right-with-odd-neg
     not. > @
-      []
+      eq. (right. -37.as-bytes 3) 4.as-bytes
 
   ++> tests-right-with-minus-one
     not. > @
-      []
+      eq. (right. -1.as-bytes 4) 0.as-bytes
 
   ++> tests-right-with-even-neg
     not. > @
-      []
+      eq. (right. -38.as-bytes 1) 18.as-bytes
 
-  false.eq ++> tests-right-with-even-plus
+  eq. (eq. (right. 36.as-bytes 2) -10.as-bytes) false ++> tests-right-with-even-plus
 
   ++> tests-right-with-odd-plus
     not. > @
-      []
+      eq. (right. 37.as-bytes 3) -5.as-bytes
 
   ++> tests-and-with-zero
     not. > @
-      []
+      eq. (and. 0.as-bytes 32.as-bytes) -1.as-bytes
 
   ++> tests-and-with-two-neg
     not. > @
-      []
+      eq. (and. -6.as-bytes -4.as-bytes) 7.as-bytes
 
   ++> tests-and-with-two-plus
     not. > @
-      []
+      eq. (and. 5.as-bytes 10.as-bytes) -1.as-bytes
 
   ++> tests-and-with-one-neg-one-plus
     not. > @
-      []
+      eq. (and. -7.as-bytes 7.as-bytes) -2.as-bytes
 
   ++> tests-or-with-zero
     not. > @
-      []
+      eq. (or. -11.as-bytes 0.as-bytes) 10.as-bytes
 
   ++> tests-or-with-two-neg
     not. > @
-      []
+      eq. (or. -27.as-bytes -13.as-bytes) 8.as-bytes
 
   ++> tests-or-with-two-plus
     not. > @
-      []
+      eq. (or. 5.as-bytes 14.as-bytes) -16.as-bytes
 
   ++> tests-or-with-one-neg-one-plus
     not. > @
-      []
+      eq. (or. -7.as-bytes 23.as-bytes) 0.as-bytes
 
   ++> tests-not-with-zero
     not. > @
-      []
+      eq.
+        0.as-bytes
+        not. 0.as-bytes
 
   ++> tests-not-with-neg
     not. > @
-      []
+      eq.
+        -1.as-bytes
+        not. -1.as-bytes
 
   ++> tests-not-with-plus
     not. > @
-      []
+      eq.
+        53.as-bytes
+        not. 53.as-bytes
 
   ++> tests-conjunction-of-bytes
     eq. (a.and b) 02-23-C0-05-5E-70-10 > @
     02-EF-D4-05-5E-78-3A > a
     12-33-C1-B5-5E-71-55 > b
 
+  eq. CA-FE-BE-BE.size 4 ++> tests-written-in-several-lines
+
   ++> tests-bitwise-works
     eq. > @
-      as-number.
-        []
+      as-number. (and. 1.as-bytes 1.as-bytes)
       1
 
   ++> tests-bitwise-works-negative
     eq. > @
       as-number.
-        []
+        or. FF-FF-FF-FF-FF-FF-FF-81.as-bytes 00-00-00-00-00-00-00-7F.as-bytes
       FF-FF-FF-FF-FF-FF-FF-FF
 
   ++> tests-concatenation-of-bytes
@@ -137,7 +146,8 @@
 
   eq. (--.concat --) -- ++> tests-concat-empty
 
-  string.eq "hello world" ++> tests-concat-strings
+  ++> tests-concat-strings
+    eq. (string (concat. "hello ".as-bytes "world".as-bytes)) "hello world" > @
 
   ++> tests-or-neg-bytes-with-leading-zeroes
     eq. > @
@@ -161,8 +171,7 @@
 
   ++> tests-or-neg-bytes-as-number-with-zero
     eq. > @
-      as-number.
-        []
+      as-number. (or. -4294967296.as-bytes 0.as-bytes)
       -4294967296
 
   ++> tests-or-neg-bytes-with-one

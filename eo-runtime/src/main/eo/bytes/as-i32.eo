@@ -19,4 +19,7 @@
 
   01-01-01-01-01.as-i32 ++> throws-on-bytes-of-wrong-size-as-i32
 
-  00-00-00-33.eq ++> tests-bytes-converts-to-i32-and-back
+  ++> tests-bytes-converts-to-i32-and-back
+    eq. > @
+      as-bytes. 00-00-00-33.as-i32
+      00-00-00-33

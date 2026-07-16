@@ -44,7 +44,10 @@
   ++> tests-invokes-getpid-correctly
     os.is-windows.or > @
       gt.
-        code. (sm.posix "getpid" tuple.empty)
+        code.
+          sm.posix
+            "getpid"
+            *
         0
 
   ++> tests-opens-and-closes-file-via-syscall

@@ -9,4 +9,8 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-bts > [bts] > as-bytes
+[] > as-bytes
+  ? >> bts
+  bts > @
+
+  eq. 20-1F-EE.as-bytes 20-1F-EE ++> tests-bytes-as-bytes-is-itself

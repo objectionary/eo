@@ -7,7 +7,8 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list] > is-empty
+[] > is-empty
+  ? >> list
   0.eq list.length > @
 
   ++> tests-list-should-not-be-empty
@@ -15,7 +16,9 @@
       tuple.is-empty
         * 1 2
 
-  tuple.is-empty tuple.empty ++> list-should-be-empty
+  ++> list-should-be-empty
+    tuple.is-empty > @
+      *
 
   ++> tests-list-should-not-be-empty-with-three-objects
     not. (tuple.is-empty xs) > @

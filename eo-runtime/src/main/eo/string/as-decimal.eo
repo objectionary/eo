@@ -11,9 +11,7 @@
 [n] > as-decimal
   if. > @
     n.lt 0
-    concat.
-      "-".as-bytes
-      digits (n.times -1)
+    concat. "-".as-bytes (digits (n.times -1))
     digits n
   [n] > digits
     if. > @

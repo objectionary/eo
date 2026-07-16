@@ -124,7 +124,7 @@
       42
 
   ++> tests-malloc-puts-over-the-previous-data
-    mem.eq > @
+    eq. (concat. 42.as-bytes "orld!".as-bytes) mem > @
     malloc.of > mem
       13
       [m]

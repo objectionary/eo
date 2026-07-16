@@ -26,7 +26,7 @@
         if.
           exp.eq 1086
           80-00-00-00-00-00-00-00.as-i64
-          negative.if magnitude.as-i64
+          negative.if (magnitude.not.as-i64.plus 00-00-00-00-00-00-00-01.as-i64) magnitude.as-i64
     eq. (as-bytes.and 80-00-00-00-00-00-00-00) 80-00-00-00-00-00-00-00 > negative
     as-number. > exp
       as-i64.
@@ -144,6 +144,12 @@
       -3
 
   lt. (1.div 5) 1 ++> tests-div-less-than-one
+
+  eq. 42.as-bytes 42 ++> tests-to-bytes-and-backwards
+
+  42.eq 42.as-bytes ++> tests-as-bytes-equals-to-int
+
+  eq. 42.as-bytes 42 ++> tests-as-bytes-equals-to-int-backwards
 
   eq. (1000.times 0) 0 ++> tests-multiply-by-zero
 
@@ -422,26 +428,45 @@
       1000000000000000000000000000000.as-i64
         "recovered" > [msg]
 
-  00-00-00-00-00-00-00-03.eq ++> tests-as-i64-truncates-positive-toward-zero
+  ++> tests-as-i64-truncates-positive-toward-zero
+    eq. > @
+      as-bytes. 3.7.as-i64
+      00-00-00-00-00-00-00-03
 
-  FF-FF-FF-FF-FF-FF-FF-FD.eq ++> tests-as-i64-truncates-negative-toward-zero
+  ++> tests-as-i64-truncates-negative-toward-zero
+    eq. > @
+      as-bytes. -3.7.as-i64
+      FF-FF-FF-FF-FF-FF-FF-FD
 
-  00-00-00-00-00-00-00-00.eq ++> tests-as-i64-converts-fraction-below-one-to-zero
+  ++> tests-as-i64-converts-fraction-below-one-to-zero
+    eq. > @
+      as-bytes. 0.5.as-i64
+      00-00-00-00-00-00-00-00
 
-  00-00-00-00-00-00-00-00.eq ++> tests-as-i64-converts-negative-zero-to-zero
+  ++> tests-as-i64-converts-negative-zero-to-zero
+    eq. > @
+      as-bytes. -0.as-i64
+      00-00-00-00-00-00-00-00
 
-  0D-E0-B6-B3-A7-64-00-00.eq ++> tests-as-i64-converts-large-number-with-left-shift
+  ++> tests-as-i64-converts-large-number-with-left-shift
+    eq. > @
+      as-bytes. 1000000000000000000.as-i64
+      0D-E0-B6-B3-A7-64-00-00
 
-  80-00-00-00-00-00-00-00.eq ++> tests-as-i64-converts-long-min-boundary
+  ++> tests-as-i64-converts-long-min-boundary
+    eq. > @
+      as-bytes. -9223372036854776000.as-i64
+      80-00-00-00-00-00-00-00
 
   eq. (2.power 4) 16 ++> tests-package-raises-to-power
+
+  eq. -17.9.abs 17.9 ++> tests-package-absolute-of-negative
 
   eq. (7.mod 3) 1 ++> tests-package-modulo-of-two-numbers
 
   ++> tests-package-square-root-approximates
     lt. > @
-      abs.
-        []
+      abs. (minus. 9.sqrt 3)
       1.0E-9
 
   eq. (number.power 2 5) 32 ++> tests-package-power-via-number-namespace

@@ -8,26 +8,28 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[b x] > xor
+[] > xor
+  ? >> b
+  ? >> x
   or. > @
     b.and x.not
     b.not.and x
 
   ++> tests-xor-with-zero
     not. > @
-      []
+      eq. (xor. 0.as-bytes 29.as-bytes) -30.as-bytes
 
   ++> tests-xor-with-two-neg
     not. > @
-      []
+      eq. (xor. -1.as-bytes -123.as-bytes) -123.as-bytes
 
   ++> tests-xor-with-two-plus
     not. > @
-      []
+      eq. (xor. 53.as-bytes 24.as-bytes) -46.as-bytes
 
   ++> tests-xor-with-one-neg-one-plus
     not. > @
-      []
+      eq. (xor. -36.as-bytes 43.as-bytes) 8.as-bytes
 
   ++> tests-xor-works
     eq. > @
@@ -36,8 +38,7 @@
 
   ++> tests-one-xor-one-as-number
     eq. > @
-      as-number.
-        []
+      as-number. (xor. 1.as-bytes 1.as-bytes)
       0
 
   ++> tests-xor-neg-bytes-with-leading-zeroes

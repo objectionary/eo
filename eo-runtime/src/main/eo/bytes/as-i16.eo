@@ -19,4 +19,7 @@
 
   01-01-01.as-i16 ++> throws-on-bytes-of-wrong-size-as-i16
 
-  00-33.eq ++> tests-bytes-converts-to-i16-and-back
+  ++> tests-bytes-converts-to-i16-and-back
+    eq. > @
+      as-bytes. 00-33.as-i16
+      00-33

@@ -62,14 +62,20 @@
         "closesocket" > close-name
         "WSA error code %d".printf > error-text
           *
-            code. (sm.win32 "WSAGetLastError" tuple.empty)
+            code.
+              sm.win32
+                "WSAGetLastError"
+                *
         code. > startup
           sm.win32
             "WSAStartup"
             * sm.win32.winsock-version-2-2
         if. > cleanup
           eq.
-            code. (sm.win32 "WSACleanup" tuple.empty)
+            code.
+              sm.win32
+                "WSACleanup"
+                *
             sm.win32.socket-error
           T "Couldn't clean up the sockets subsystem"
           true
@@ -82,7 +88,10 @@
           sm.posix
             "strerror"
             *
-              code. (sm.posix "errno" tuple.empty)
+              code.
+                sm.posix
+                  "errno"
+                  *
         0 > startup
         true > cleanup
   [port] > htons

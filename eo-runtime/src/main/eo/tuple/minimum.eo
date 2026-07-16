@@ -19,12 +19,14 @@
       if. (min.gt item.as-number) item min > [min item]
   sequence > lst
 
-  tuple.minimum tuple.empty ++> throws-on-taking-minimum-from-empty-sequence
+  ++> throws-on-taking-minimum-from-empty-sequence
+    tuple.minimum > @
+      *
 
   ++> tests-minimum-of-empty-returns-provided-fallback
     "recovered".eq > @
       tuple.minimum
-        tuple.empty
+        *
         "recovered" > [msg]
 
   ++> tests-minimum-of-one-item-array

@@ -7,10 +7,12 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list element] > without
+[] > without
+  ? >> list
+  ? >> element
   reduced > @
     list
-    tuple.empty
+    *
     if. (element.eq item) accum (accum.with item) > [accum item] >>
 
   ++> tests-list-without

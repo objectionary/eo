@@ -16,9 +16,23 @@
     if. (trunc.gt n) (trunc.minus 1) trunc
   n.as-i64.as-number > trunc
 
+  eq. 3.7.floor 3 ++> tests-floor-positive-fraction
+
+  eq. -3.7.floor -4 ++> tests-floor-negative-fraction
+
+  eq. -0.1.floor -1 ++> tests-floor-negative-small-fraction
+
+  eq. 42.floor 42 ++> tests-floor-of-integer
+
+  eq. -5.floor -5 ++> tests-floor-of-negative-integer
+
   ++> tests-floor-of-large-positive-integer
+    eq. 100000000000000000000.floor 100000000000000000000 > @
 
   ++> tests-floor-of-large-negative-integer
+    eq. -100000000000000000000.floor -100000000000000000000 > @
+
+  eq. 0.floor 0 ++> tests-floor-of-zero
 
   pinf.floor.eq pinf ++> tests-positive-infinity-floor-is-equal-to-self
 

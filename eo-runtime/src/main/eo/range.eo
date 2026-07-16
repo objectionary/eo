@@ -35,7 +35,7 @@
     appended
       * start
       start.next
-    tuple.empty
+    *
   [acc current] > appended
     if. > @
       current.lt end

@@ -32,11 +32,17 @@
         "Привет %f %s %s!"
         * 3.14 "Jeff" "X"
 
-  "40-45-00-00-00-00-00-00".eq (string.printf "%x") ++> tests-prints-bytes-string
+  ++> tests-prints-bytes-string
+    "40-45-00-00-00-00-00-00".eq > @
+      string.printf
+        "%x"
+        * 42.as-bytes
 
   ++> tests-formats-all-objects
     "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false".eq > @
-      string.printf "string %s, bytes %x, float %f, int %d, bool %b"
+      string.printf
+        "string %s, bytes %x, float %f, int %d, bool %b"
+        * "Jeff" "Jeff".as-bytes 42.3 14 false
 
   ++> throws-on-printf-with-arguments-that-does-not-match
     string.printf > @
@@ -49,7 +55,10 @@
         "%s"
         * "Hey" "Jeff"
 
-  string.printf "%o" tuple.empty ++> throws-on-printf-unsupported-format
+  ++> throws-on-printf-unsupported-format
+    string.printf > @
+      "%o"
+      *
 
   ++> tests-printf-prints-percents
     "%Jeff".eq > @
@@ -59,9 +68,18 @@
 
   ++> tests-printf-does-not-print-i64
     not. > @
-      eq. (string.printf "%d") "42"
+      eq.
+        string.printf
+          "%d"
+          * 42.as-i64
+        "42"
 
-  "42".eq (string.printf "%d" tuple.empty) ++> tests-printf-prints-i64-as-number
+  ++> tests-printf-prints-i64-as-number
+    "42".eq > @
+      string.printf
+        "%d"
+        *
+          as-number. 42.as-i64
 
   ++> formats-numbered-substitution
     "Hello, Jeff! Bye, Jeff!".eq > @

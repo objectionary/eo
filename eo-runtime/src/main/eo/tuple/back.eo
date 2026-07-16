@@ -7,13 +7,15 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list index] > back
+[] > back
+  ? >> list
+  ? >> index
   if. > @
     0.gt start
     list
     reducedi
       list
-      tuple.empty
+      *
       if. (idx.gte start) (accum.with item) accum > [accum item idx] >>
   index > idx!
   list.length.minus idx > start!

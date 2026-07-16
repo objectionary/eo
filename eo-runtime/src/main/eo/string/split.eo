@@ -10,8 +10,11 @@
 [text delimiter] > split
   if. > @
     len.eq 0
-    tuple.empty
-    rec-split tuple.empty 0 0
+    *
+    rec-split
+      *
+      0
+      0
   text > bts!
   delimiter > delim!
   delim.size > delim-size!

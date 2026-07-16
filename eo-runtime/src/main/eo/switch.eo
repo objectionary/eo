@@ -73,12 +73,14 @@
         * false "false1"
         * false "false2"
 
-  switch tuple.empty ++> throws-on-empty-switch
+  ++> throws-on-empty-switch
+    switch > @
+      *
 
   ++> tests-empty-switch-returns-provided-fallback
     "recovered".eq > @
       switch
-        tuple.empty
+        *
         "recovered" > [msg]
 
   ++> tests-switch-complex-case

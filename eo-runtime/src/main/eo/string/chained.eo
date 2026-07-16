@@ -26,4 +26,7 @@
         * ", " "world" "!"
 
   ++> tests-returns-same-text-on-chaining-with-no-strings
-    "Some".eq (string.chained "Some" tuple.empty) > @
+    "Some".eq > @
+      string.chained
+        "Some"
+        *

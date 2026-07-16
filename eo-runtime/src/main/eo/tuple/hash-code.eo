@@ -11,7 +11,8 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[input] > hash-code
+[] > hash-code
+  ? >> input
   rec-hash-code 0 0 > @
   input.as-bytes > bts!
   bts.size > size!
@@ -21,6 +22,7 @@
       acc.as-number
       rec-hash-code
         plus.
+          times. 31.as-i64 acc
           as-i64. (00-00-00-00-00-00-00.concat (bts.slice index 1))
         as-number. (index.plus 1)
 

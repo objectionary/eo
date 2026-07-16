@@ -35,7 +35,13 @@
       * "bar" " " "o"
 
   ++> test-contains-any-without-substrings
-    not. (string.contains-any "text" tuple.empty) > @
+    not. > @
+      string.contains-any
+        "text"
+        *
 
   ++> tests-contains-any-for-empty-text-and-without-substrings
-    not. (string.contains-any "" tuple.empty) > @
+    not. > @
+      string.contains-any
+        ""
+        *
