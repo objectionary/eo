@@ -12,4 +12,4 @@ origin: |
 printed: |
   [] > app
     io.stdout > @
-      string.sprintf "result is %d\n" (times. -1 228)
+      string.sprintf "result is %d\n" (-1.times 228)
