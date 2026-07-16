@@ -233,7 +233,22 @@
         <xsl:variable name="lambda-atom" select="string(./o[@name=$eo:lambda]/@atom)"/>
         <xsl:choose>
           <xsl:when test="starts-with($lambda-atom, 'Φ.')">
-            <xsl:value-of select="substring-after($lambda-atom, 'Φ.')"/>
+            <xsl:variable name="rest" select="substring-after($lambda-atom, 'Φ.')"/>
+            <xsl:choose>
+              <!--
+                A multi-segment signature (e.g. "Φ.malloc.of.allocated") must
+                stay rooted: on reparse a dotted @atom is not re-homed, so
+                dropping the root would yield an XSD-invalid fqn. A single-name
+                signature (e.g. "Φ.bytes") re-resolves to its root on reparse,
+                so the implicit root is dropped for idiomatic output.
+              -->
+              <xsl:when test="contains($rest, '.')">
+                <xsl:value-of select="concat('Q.', $rest)"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="$rest"/>
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="$lambda-atom"/>
