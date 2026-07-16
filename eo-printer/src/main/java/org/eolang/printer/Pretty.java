@@ -116,6 +116,9 @@ final class Pretty {
             .append(node.base)
             .append(node.tail);
         for (final Pretty.Node child : node.children) {
+            if (child.test) {
+                block.append('\n');
+            }
             block.append('\n').append(this.layout(child, indent + 1));
         }
         return block.toString();
@@ -180,7 +183,9 @@ final class Pretty {
      */
     private static Optional<String> flat(final Pretty.Node node) {
         final Optional<String> result;
-        if (node.abstractt || !node.tail.isEmpty() || "*".equals(node.base)) {
+        if (node.reversed && node.children.size() <= 1) {
+            result = Optional.empty();
+        } else if (node.abstractt || !node.tail.isEmpty() || "*".equals(node.base)) {
             result = Optional.empty();
         } else if (node.children.isEmpty()) {
             result = Optional.of(node.base);
@@ -216,6 +221,18 @@ final class Pretty {
         private final boolean abstractt;
 
         /**
+         * Whether this object is a test attribute ({@code +> name}),
+         * which R-6.5.3 requires to be preceded by a blank line.
+         */
+        private final boolean test;
+
+        /**
+         * Whether this object is a reversed dispatch ({@code method.});
+         * a receiver-only one cannot be inlined as an argument.
+         */
+        private final boolean reversed;
+
+        /**
          * The children (arguments or bindings), in order.
          */
         private final List<Pretty.Node> children;
@@ -225,14 +242,18 @@ final class Pretty {
          * @param head The rendered head
          * @param suffix The rendered suffix
          * @param formation Whether it is a formation
+         * @param attr Whether it is a test attribute
+         * @param rev Whether it is a reversed dispatch
          * @param kids The children
          * @checkstyle ParameterNumberCheck (5 lines)
          */
         Node(final String head, final String suffix, final boolean formation,
-            final List<Pretty.Node> kids) {
+            final boolean attr, final boolean rev, final List<Pretty.Node> kids) {
             this.base = head;
             this.tail = suffix;
             this.abstractt = formation;
+            this.test = attr;
+            this.reversed = rev;
             this.children = kids;
         }
 
@@ -246,6 +267,8 @@ final class Pretty {
                 line.attribute("base").text().orElse(""),
                 line.attribute("tail").text().orElse(""),
                 "yes".equals(line.attribute("abstract").text().orElse("no")),
+                "yes".equals(line.attribute("test").text().orElse("no")),
+                "yes".equals(line.attribute("reversed").text().orElse("no")),
                 line.elements(Filter.withName("line"))
                     .map(Pretty.Node::parse)
                     .collect(Collectors.toList())

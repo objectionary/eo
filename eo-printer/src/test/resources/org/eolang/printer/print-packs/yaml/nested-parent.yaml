@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+origin: |
+  +package org.eolang
+
+  [] > foo
+    [] > bar
+      ^.^.x > @
+
+printed: |
+  +package org.eolang
+
+  [] > foo
+    [] > bar
+      ^.^.x > @

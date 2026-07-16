@@ -202,6 +202,34 @@ final class LnOnlyPhiTest {
     }
 
     @Test
+    void acceptsReversedDispatchLhs() {
+        final Emit emit = new Emit();
+        new LnOnlyPhi(new Span("if. > [t] >> rec", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a trailing-dot LHS must emit its φ as a reversed dispatch — <o base='.if' name='φ'> with no @method — and the voids as children",
+            LnOnlyPhiTest.render(emit),
+            XhtmlMatchers.hasXPaths(
+                "/object/o/o[@name='t' and @base='∅']",
+                "/object/o/o[@name='φ' and @base='.if' and not(@method)]"
+            )
+        );
+    }
+
+    @Test
+    void marksReversedDispatchLhsCompletedWithHargs() {
+        final Stack stack = new Stack();
+        new LnOnlyPhi(new Span("if. cond then else > [t] > pair", 1))
+            .into(stack, new Globals(), new Emit());
+        MatcherAssert.assertThat(
+            "a reversed-dispatch φ carrying horizontal args cannot accept a body — must be HORIZONTAL_COMPLETED",
+            stack.top().openness(),
+            Matchers.equalTo(Openness.HORIZONTAL_COMPLETED)
+        );
+    }
+
+    @Test
     void rejectsEmptyLhs() {
         Assertions.assertThrows(
             ParseError.class,

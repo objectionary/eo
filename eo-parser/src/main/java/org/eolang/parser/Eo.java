@@ -452,16 +452,25 @@ final class Eo implements Iterable<Directive> {
      * the identifier-headed and root-headed line groups (§3.1):
      * reversed dispatch, only-phi formation, compact tuple, or plain
      * application.
+     *
+     * <p>An only-phi formation ({@code lhs > [voids] > name}) is
+     * recognised before a bare reversed dispatch, so a trailing-dot LHS
+     * carrying an inline void suffix ({@code if. > [t] >> rec}) is
+     * routed to {@link LnOnlyPhi} — which understands the {@code [voids]}
+     * suffix — rather than to {@link LnReversed}, which would hand the
+     * whole {@code > [t] >> rec} tail to the void-unaware suffix parser
+     * and reject the leading {@code [} as trailing garbage.</p>
+     *
      * @param span The line span
      * @param reversed Whether the line is a reversed dispatch
      * @return The line shape
      */
     private static Line applicative(final Span span, final boolean reversed) {
         final Line line;
-        if (reversed) {
-            line = new LnReversed(span);
-        } else if (Eo.onlyPhi(span)) {
+        if (Eo.onlyPhi(span)) {
             line = new LnOnlyPhi(span);
+        } else if (reversed) {
+            line = new LnReversed(span);
         } else if (Eo.compactTuple(span)) {
             line = new LnCompactTuple(span);
         } else {
