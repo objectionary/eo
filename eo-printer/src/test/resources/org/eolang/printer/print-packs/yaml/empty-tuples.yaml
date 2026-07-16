@@ -3,15 +3,16 @@
 ---
 # yamllint disable rule:line-length
 origin: |
-  +package org.eolang
-
-  [] > as-bool
-    ? >> bts
-    bts.eq 01- > @
+  [] > main
+    * > empty
+    set * > s
+    slice-byte * 0 > sb
 
 printed: |
-  +package org.eolang
-
-  [] > as-bool
-    ? >> bts
-    bts.eq 01- > @
+  [] > main
+    * > empty
+    set > s
+      *
+    slice-byte > sb
+      *
+      0

@@ -3,8 +3,10 @@
 ---
 # yamllint disable rule:line-length
 # A void declared with a file-local handle ("? >> name", R-3.10.12) must
-# print back under that readable handle, not a synthetic "vL_P" placeholder
-# (#5563). The handle survives even when referenced from a sibling
+# print back under that readable handle as a vertical "? >> name" line,
+# not a synthetic "vL_P" placeholder (#5563) and not a public "[name]"
+# bracket param (#5581) — the ">>" form keeps the void anonymous (§9.2,
+# R-9.2.3). The handle survives even when referenced from a sibling
 # attribute (here "wanted" inside "reclast", whose redundant "^." parent
 # hop is dropped per #5564).
 origin: |
@@ -26,7 +28,9 @@ origin: |
 printed: |
   +package tuple
 
-  [list wanted] > last-index-of
+  [] > last-index-of
+    ? >> list
+    ? >> wanted
     reclast list > @
     [tup] > reclast
       if. > @

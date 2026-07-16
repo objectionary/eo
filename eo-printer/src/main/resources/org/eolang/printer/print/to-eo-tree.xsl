@@ -134,8 +134,16 @@
       <xsl:attribute name="data">
         <xsl:value-of select="if (eo:has-data(.)) then 'yes' else 'no'"/>
       </xsl:attribute>
-      <xsl:apply-templates select="o[not(eo:void(.))]" mode="tree"/>
+      <xsl:apply-templates select="o[not(eo:void(.)) or @local]" mode="tree"/>
     </line>
+  </xsl:template>
+  <!-- VOID WITH FILE-LOCAL HANDLE -->
+  <!-- A void declared "? &gt;&gt; name" (R-3.10.12) keeps its @local handle
+       through "restore-local-names"; it is printed as a vertical body line
+       to preserve the void's anonymity (§9.2, R-9.2.3) instead of being
+       collapsed into a public "[name]" bracket param (#5581). -->
+  <xsl:template match="o[eo:void(.) and @local]" mode="tree">
+    <line base="?" tail="{concat(' &gt;&gt; ', @local)}" abstract="no" test="no" reversed="no"/>
   </xsl:template>
   <!-- BASED -->
   <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
@@ -175,7 +183,7 @@
          no head of its own. -->
     <xsl:if test="not(eo:test-attr(.) and empty(o[eo:void(.)]))">
       <xsl:text>[</xsl:text>
-      <xsl:for-each select="o[eo:void(.)]">
+      <xsl:for-each select="o[eo:void(.) and not(@local)]">
         <xsl:if test="position()&gt;1">
           <xsl:text> </xsl:text>
         </xsl:if>
