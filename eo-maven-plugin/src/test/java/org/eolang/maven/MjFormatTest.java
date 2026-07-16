@@ -93,7 +93,9 @@ final class MjFormatTest {
                     .result()
                     .get("foo/x/main.eo")
             ).asString(),
-            Matchers.containsString("\n        org.eolang.io.stdout")
+            Matchers.containsString(
+                String.valueOf('\n').concat("        org.eolang.io.stdout")
+            )
         );
     }
 
