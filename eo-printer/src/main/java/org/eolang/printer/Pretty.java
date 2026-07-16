@@ -151,9 +151,17 @@ final class Pretty {
     }
 
     /**
-     * Render a formation in the compact inline-phi form
-     * ({@code <phi> > [params] > name}, R-3.10.8 §4.5), when its only
+     * Render a formation in the compact inline-phi form, when its only
      * attribute is the {@code φ} decoratee.
+     *
+     * <p>A formation with a {@code [params]} head collapses to
+     * {@code <phi> > [params] > name} (R-3.10.8 §4.5). A test attribute
+     * with no void params has an empty head — the head template renders
+     * it through the {@code ++> name} shorthand — so it collapses to
+     * {@code <phi> ++> name} (R-3.10.8 / R-6.3.6, issue #5567), the
+     * decoratee sitting in front of the {@code ++>} marker instead of a
+     * bracket. An empty head occurs only for that no-void test attribute,
+     * so it selects the shorthand separator here.</p>
      *
      * <p>This applies only when {@code @} is the sole binding; a
      * formation with any other attribute keeps the vertical layout. The
@@ -163,21 +171,21 @@ final class Pretty {
      * penalty/width check then decides whether this single line is
      * actually preferable.</p>
      *
-     * <p>It also requires a real {@code [params]} head: a test attribute
-     * with no void params is rendered through the {@code ++> name}
-     * shorthand (its head is empty), which has no bracket to sit the
-     * inline-phi expression in front of, so it stays vertical.</p>
-     *
      * @param node The formation node
      * @param indent The indentation level
      * @return The single line, or empty if the inline-phi form doesn't apply
      */
     private Optional<String> phi(final Pretty.Node node, final int indent) {
         final Optional<String> result;
-        if (!node.base.isEmpty()
-            && node.children.size() == 1
+        if (node.children.size() == 1
             && " > @".equals(node.children.get(0).tail)) {
             final Pretty.Node decoratee = node.children.get(0);
+            final String middle;
+            if (node.base.isEmpty()) {
+                middle = " ";
+            } else {
+                middle = " > ".concat(node.base);
+            }
             result = Pretty.flat(
                 new Pretty.Node(
                     decoratee.base, "", decoratee.abstractt,
@@ -186,8 +194,7 @@ final class Pretty {
             ).map(
                 value -> new StringBuilder(this.step().repeat(indent))
                     .append(value)
-                    .append(" > ")
-                    .append(node.base)
+                    .append(middle)
                     .append(node.tail)
                     .toString()
             );
