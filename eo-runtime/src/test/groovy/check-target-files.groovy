@@ -13,7 +13,6 @@ List<String> expected = [
   'classes/org/eolang/package-info.class',
   'classes/org/eolang/EO_sm/package-info.class',
   'classes/org/eolang/EO_number/package-info.class',
-  'classes/org/eolang/EO_fs/package-info.class',
   'classes/org/eolang/EO_string/package-info.class',
 ]
 
