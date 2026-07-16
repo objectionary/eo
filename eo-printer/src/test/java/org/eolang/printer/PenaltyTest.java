@@ -20,7 +20,7 @@ final class PenaltyTest {
     @Test
     void chargesForIndentation() {
         MatcherAssert.assertThat(
-            "Five levels of indentation should cost twenty-five points",
+            "Five levels of indentation should cost fifteen points",
             new Penalty(
                 String.join(
                     System.lineSeparator(),
@@ -31,7 +31,7 @@ final class PenaltyTest {
                 ),
                 Collections.singletonMap(PenaltyKey.SYMBOL, 0)
             ).points(),
-            Matchers.equalTo(25)
+            Matchers.equalTo(15)
         );
     }
 
@@ -107,12 +107,12 @@ final class PenaltyTest {
         weights.put(PenaltyKey.STEP, 4);
         weights.put(PenaltyKey.SYMBOL, 0);
         MatcherAssert.assertThat(
-            "Two levels of four-space indentation should cost ten points",
+            "Two levels of four-space indentation should cost six points",
             new Penalty(
                 String.join(System.lineSeparator(), "[] > foo", "        bar"),
                 weights
             ).points(),
-            Matchers.equalTo(10)
+            Matchers.equalTo(6)
         );
     }
 

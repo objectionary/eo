@@ -22,4 +22,5 @@ printed: |
       args.at args.length.neg
     nan.plus negative-infinity > not-a-number
     text-of > txt
-      input-of (args.at not-a-number)
+      input-of
+        args.at not-a-number

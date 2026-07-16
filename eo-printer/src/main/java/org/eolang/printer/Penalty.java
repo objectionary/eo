@@ -36,7 +36,7 @@ import java.util.Map;
  * default.</p>
  *
  * <p>For example, with the default weights this snippet has a penalty of
- * 64 (five indents at five points each, plus 39 symbols):</p>
+ * 54 (five indents at three points each, plus 39 symbols):</p>
  *
  * <pre> [] &gt; foo
  *   gt. &gt; @
