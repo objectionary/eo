@@ -133,7 +133,9 @@ final class Pretty {
      */
     private Optional<String> horizontal(final Pretty.Node node, final int indent) {
         final Optional<String> result;
-        if (node.abstractt || node.children.isEmpty()) {
+        if (node.abstractt) {
+            result = this.phi(node, indent);
+        } else if (node.children.isEmpty()) {
             result = Optional.empty();
         } else {
             result = Pretty.inlined(node.children).map(
@@ -144,6 +146,53 @@ final class Pretty {
                     .append(node.tail)
                     .toString()
             );
+        }
+        return result;
+    }
+
+    /**
+     * Render a formation in the compact inline-phi form
+     * ({@code <phi> > [params] > name}, R-3.10.8 §4.5), when its only
+     * attribute is the {@code φ} decoratee.
+     *
+     * <p>This applies only when {@code @} is the sole binding; a
+     * formation with any other attribute keeps the vertical layout. The
+     * decoratee itself is inlined through the usual {@link #flat} path,
+     * so a decoratee that can't be inlined (a nested formation, a tuple)
+     * yields empty and the caller falls back to the vertical shape; the
+     * penalty/width check then decides whether this single line is
+     * actually preferable.</p>
+     *
+     * <p>It also requires a real {@code [params]} head: a test attribute
+     * with no void params is rendered through the {@code ++> name}
+     * shorthand (its head is empty), which has no bracket to sit the
+     * inline-phi expression in front of, so it stays vertical.</p>
+     *
+     * @param node The formation node
+     * @param indent The indentation level
+     * @return The single line, or empty if the inline-phi form doesn't apply
+     */
+    private Optional<String> phi(final Pretty.Node node, final int indent) {
+        final Optional<String> result;
+        if (!node.base.isEmpty()
+            && node.children.size() == 1
+            && " > @".equals(node.children.get(0).tail)) {
+            final Pretty.Node decoratee = node.children.get(0);
+            result = Pretty.flat(
+                new Pretty.Node(
+                    decoratee.base, "", decoratee.abstractt,
+                    false, decoratee.reversed, decoratee.children
+                )
+            ).map(
+                value -> new StringBuilder(this.step().repeat(indent))
+                    .append(value)
+                    .append(" > ")
+                    .append(node.base)
+                    .append(node.tail)
+                    .toString()
+            );
+        } else {
+            result = Optional.empty();
         }
         return result;
     }
@@ -216,7 +265,9 @@ final class Pretty {
 
         /**
          * Whether this object is a formation (its children are
-         * bindings, so it is always laid out vertically).
+         * bindings, so it is laid out vertically, unless its only
+         * binding is the {@code φ} decoratee and the compact inline-phi
+         * form fits on one line).
          */
         private final boolean abstractt;
 

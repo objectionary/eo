@@ -5,11 +5,18 @@
 origin: |
   +package org.eolang
 
-  [] > as-bool
-    ? >> bts
-    bts.eq 01- > @
+  [] > examples
+    [] > foo
+      a > @
+    [size] > read
+      ^.^.input-block > @
+    [x] > nop
+      true > @
 
 printed: |
   +package org.eolang
 
-  bts.eq 01- > [bts] > as-bool
+  [] > examples
+    a > [] > foo
+    ^.^.input-block > [size] > read
+    true > [x] > nop
