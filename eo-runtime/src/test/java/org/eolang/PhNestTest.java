@@ -48,4 +48,13 @@ final class PhNestTest {
             "A copy of a package object must accept a put, but it didn't"
         );
     }
+
+    @Test
+    void handsOutExtensionWithoutBindingPackageAsRho() {
+        MatcherAssert.assertThat(
+            "Explicit dispatch must leave ρ unbound so the receiver convention stays α0-only, but ρ was set",
+            Phi.Φ.take("number").take("power").hasRho(),
+            Matchers.is(false)
+        );
+    }
 }

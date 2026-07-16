@@ -381,8 +381,12 @@ public class PhDefault implements Phi, Cloneable {
      * <p>When {@code (number 42).power} finds no {@code power} attribute, the
      * runtime looks for an object {@code Φ.number.power} in the package named
      * after this object's forma. If it exists, it is returned with this object
-     * bound as its first argument, so {@code (number 42).power 3} reads as
-     * {@code number.power 42 3}. When there's no such object, the terminated
+     * bound as its first argument ({@code α0}), so {@code (number 42).power 3}
+     * reads as {@code number.power 42 3}. The receiver of a package extension
+     * always lives in {@code α0}: implicit dispatch binds it here, while
+     * explicit dispatch through the namespace ({@code number.power 42 3})
+     * leaves the slot for the caller to fill (see {@code PhNest.extension}).
+     * When there's no such object, the terminated
      * computation stays terminated. When the object exists but has no free
      * positional attribute to receive the bound object (for example a nullary
      * constant like {@code number.pi}), a clear error is raised instead of the

@@ -142,15 +142,25 @@ final class PhNest implements Phi {
 
     /**
      * Take an extension object from the package, as it is, without binding.
+     *
+     * <p>The receiver of a package extension always lives in positional
+     * attribute {@code α0}, never in {@code ρ}. Explicit dispatch through the
+     * package namespace (for example {@code number.power 2 4}) is a plain
+     * access: nothing is bound here and the caller supplies every argument,
+     * the first of which plays the receiver's role. This mirrors implicit
+     * dispatch, where {@link PhDefault} binds the receiver into {@code α0} of
+     * the same extension (see {@code PhDefault.extension}). Binding {@code ρ}
+     * here would be misleading — the package object standing behind
+     * {@code number} is not a usable receiver value — so it is deliberately
+     * left untouched.</p>
+     *
      * @param name The name of the extension
      * @return The extension object
      */
     private Phi extension(final String name) {
         final String fqn = String.join(".", this.pkg, name);
         if (!this.objects.containsKey(fqn)) {
-            final Phi loaded = PhNest.load(new JavaPath(fqn).toString());
-            loaded.put(Phi.RHO, this);
-            this.objects.put(fqn, loaded);
+            this.objects.put(fqn, PhNest.load(new JavaPath(fqn).toString()));
         }
         return this.objects.get(fqn).copy();
     }
