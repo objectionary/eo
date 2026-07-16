@@ -9,9 +9,11 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[lst func] > each
+[] > each
+  ? >> list
+  ? >> func
   eachi > @
-    lst
+    list
     func item > [item index] >>
 
   [] +> tests-iterates-with-each

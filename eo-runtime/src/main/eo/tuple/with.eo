@@ -1,4 +1,4 @@
-# Append element `x` to the end of collection `lst`.
+# Append element `x` to the end of collection `list`.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -7,8 +7,10 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[lst x] > with
-  lst.with x > @
+[] > with
+  ? >> list
+  ? >> x
+  list.with x > @
 
   ++> tests-list-simple-with
     eq. > @

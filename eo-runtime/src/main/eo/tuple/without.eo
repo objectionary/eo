@@ -1,4 +1,4 @@
-# Create a new list without all occurrences of `element` in `lst`.
+# Create a new list without all occurrences of `element` in `list`.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -7,9 +7,11 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[lst element] > without
+[] > without
+  ? >> list
+  ? >> element
   reduced > @
-    lst
+    list
     *
     [accum item] >>
       if. > @

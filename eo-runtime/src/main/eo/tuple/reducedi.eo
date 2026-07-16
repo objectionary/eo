@@ -10,11 +10,14 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[lst start func] > reducedi
+[] > reducedi
+  ? >> list
+  ? >> start
+  ? >> func
   if. > @
-    is-empty lst
+    is-empty list
     start
-    rec-reducedi lst
+    rec-reducedi list
 
   [tup] > rec-reducedi
     if. > @

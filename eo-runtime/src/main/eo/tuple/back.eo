@@ -1,4 +1,4 @@
-# Elements of `lst` from `index` to the end (supports oversized index).
+# Elements of `list` from `index` to the end (supports oversized index).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -7,12 +7,14 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[lst index] > back
+[] > back
+  ? >> list
+  ? >> index
   if. > @
     0.gt start
-    lst
+    list
     reducedi
-      lst
+      list
       *
       [accum item idx] >>
         if. > @
@@ -20,7 +22,7 @@
           accum.with item
           accum
   index > idx!
-  lst.length.minus idx > start!
+  list.length.minus idx > start!
 
   ++> tests-simple-back
     eq. > @

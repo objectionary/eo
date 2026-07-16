@@ -8,14 +8,16 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[bts b] > xor
+[] > xor
+  ? >> b
+  ? >> x
   or. > @
     and.
-      bts
-      b.not
-    and.
-      bts.not
       b
+      x.not
+    and.
+      b.not
+      x
 
   ++> tests-xor-with-zero
     not. > @

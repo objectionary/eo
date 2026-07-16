@@ -1,5 +1,5 @@
-# Returns index of the last occurrence of `wanted` in `lst`.
-# If `lst` has no such element, returns -1.
+# Returns index of the last occurrence of `wanted` in `list`.
+# If `list` has no such element, returns -1.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -8,8 +8,10 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[lst wanted] > last-index-of
-  reclast lst > @
+[] > last-index-of
+  ? >> list
+  ? >> wanted
+  reclast list > @
 
   [tup] > reclast
     if. > @

@@ -1,5 +1,5 @@
-# Returns index of the first occurrence of `wanted` in `lst`.
-# If `lst` has no such element, returns -1.
+# Returns index of the first occurrence of `wanted` in `list`.
+# If `list` has no such element, returns -1.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -8,9 +8,11 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[lst wanted] > index-of
+[] > index-of
+  ? >> list
+  ? >> wanted
   number > @
-    recidx lst
+    recidx list
 
   [tup] > recidx
     if. > @

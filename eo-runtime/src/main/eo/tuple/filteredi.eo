@@ -1,4 +1,4 @@
-# Filter `lst` with index with the function `func`.
+# Filter `list` with index with the function `func`.
 # Here `func` must be an abstract
 # object with two attributes. The first
 # one for the element, the second one
@@ -12,8 +12,10 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[lst func] > filteredi
-  recfilter lst > @
+[] > filteredi
+  ? >> list
+  ? >> func
+  recfilter list > @
 
   [tup] > recfilter
     if. > @
