@@ -54,21 +54,21 @@ public final class MjFormat extends MjSafe {
      * Points charged for each level of indentation on a line.
      * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.penalty.indent")
+    @Parameter(property = "eo.penaltyIndent")
     private Integer penaltyIndent;
 
     /**
      * Points charged for each opening parenthesis.
      * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.penalty.bracket")
+    @Parameter(property = "eo.penaltyBracket")
     private Integer penaltyBracket;
 
     /**
      * Points charged for each character past the allowed width.
      * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.penalty.excess")
+    @Parameter(property = "eo.penaltyExcess")
     private Integer penaltyExcess;
 
     /**
