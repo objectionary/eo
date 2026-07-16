@@ -3,32 +3,21 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
-package org.eolang.EO_fs; // NOPMD
+package org.eolang;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.eolang.Atom;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.ExFailure;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
 
 /**
- * Dir.tmpfile.touch.
+ * Directory.tmpfile.touch.
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-@XmirObject(oname = "dir.tmpfile.touch")
+@XmirObject(oname = "directory.tmpfile.touch")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOdir$EOtmpfile$EOtouch extends PhDefault implements Atom {
+public final class EOdirectory$EOtmpfile$EOtouch extends PhDefault implements Atom {
 
     @Override
 

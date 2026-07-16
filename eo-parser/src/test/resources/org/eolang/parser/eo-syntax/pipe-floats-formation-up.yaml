@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='Φ.bar' and count(o)=1]
+  - //o[@base='Φ.bar']/o[@base='ξ.hello' and o[@base='Φ.number']]
+  - //o[@name='foo']/o[@name='hello' and not(@base)]
+input: |
+  [] > foo
+    bar > @
+      [] > hello
+      | 5

@@ -80,6 +80,25 @@ final class MjFormatTest {
         );
     }
 
+    @Test
+    void appliesCustomIndentationStep(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "the printer must indent with the configured number of spaces",
+            new TextOf(
+                new FakeMaven(temp)
+                    .with("autoFix", true)
+                    .with("step", 4)
+                    .withProgram(MjFormatTest.canonical(new HelloWorld().asString()))
+                    .execute(MjFormat.class)
+                    .result()
+                    .get("foo/x/main.eo")
+            ).asString(),
+            Matchers.containsString(
+                String.valueOf('\n').concat("        org.eolang.io.stdout")
+            )
+        );
+    }
+
     /**
      * Reformat a program into its canonical EO layout.
      * @param program The EO program

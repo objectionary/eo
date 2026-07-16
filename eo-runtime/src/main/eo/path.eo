@@ -10,7 +10,6 @@
 +alias string.split
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package fs
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
@@ -42,7 +41,7 @@
 
   [uri] > posix
     uri > @
-    dir (file uri) > as-dir
+    directory (file uri) > as-dir
     file uri > as-file
     and. > is-absolute
       uri.length.gt 0
@@ -174,7 +173,7 @@
 
     [uri] > validated
       uri > @
-      dir (file uri) > as-dir
+      directory (file uri) > as-dir
       file uri > as-file
       ^.separator > separator
 

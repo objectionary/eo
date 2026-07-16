@@ -6,7 +6,9 @@ package org.eolang.printer;
 
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -27,9 +29,9 @@ import java.util.stream.Collectors;
 final class Pretty {
 
     /**
-     * The width of a single indentation level, in spaces.
+     * The default weights: an empty map, so every key uses its fallback.
      */
-    private static final String STEP = "  ";
+    private static final Map<PenaltyKey, Integer> DEFAULTS = Collections.emptyMap();
 
     /**
      * The {@code <eo>} element produced by {@code to-eo-tree.xsl}.
@@ -37,11 +39,26 @@ final class Pretty {
     private final Xnav root;
 
     /**
-     * Ctor.
+     * The overridden penalty weights, by key.
+     */
+    private final Map<PenaltyKey, Integer> weights;
+
+    /**
+     * Ctor, using the default penalty weights.
      * @param element The {@code <eo>} element
      */
     Pretty(final Xnav element) {
+        this(element, Pretty.DEFAULTS);
+    }
+
+    /**
+     * Ctor.
+     * @param element The {@code <eo>} element
+     * @param config The overridden weights; absent keys use their defaults
+     */
+    Pretty(final Xnav element, final Map<PenaltyKey, Integer> config) {
         this.root = element;
+        this.weights = config;
     }
 
     /**
@@ -54,9 +71,19 @@ final class Pretty {
         );
         this.root.elements(Filter.withName("line"))
             .findFirst()
-            .map(line -> Pretty.layout(Pretty.Node.parse(line), 0))
+            .map(line -> this.layout(Pretty.Node.parse(line), 0))
             .ifPresent(out::append);
         return out.append('\n').toString();
+    }
+
+    /**
+     * A single level of indentation, whose width is the {@code STEP} weight.
+     * @return The indentation string
+     */
+    private String step() {
+        return " ".repeat(
+            this.weights.getOrDefault(PenaltyKey.STEP, PenaltyKey.STEP.fallback())
+        );
     }
 
     /**
@@ -66,11 +93,12 @@ final class Pretty {
      * @param indent The indentation level
      * @return The rendered block
      */
-    private static String layout(final Pretty.Node node, final int indent) {
-        String best = Pretty.vertical(node, indent);
-        final Optional<String> flat = Pretty.horizontal(node, indent);
+    private String layout(final Pretty.Node node, final int indent) {
+        String best = this.vertical(node, indent);
+        final Optional<String> flat = this.horizontal(node, indent);
         if (flat.isPresent()
-            && new Penalty(flat.get()).points() < new Penalty(best).points()) {
+            && new Penalty(flat.get(), this.weights).points()
+            < new Penalty(best, this.weights).points()) {
             best = flat.get();
         }
         return best;
@@ -83,15 +111,15 @@ final class Pretty {
      * @param indent The indentation level
      * @return The rendered block
      */
-    private static String vertical(final Pretty.Node node, final int indent) {
-        final StringBuilder block = new StringBuilder(Pretty.STEP.repeat(indent))
+    private String vertical(final Pretty.Node node, final int indent) {
+        final StringBuilder block = new StringBuilder(this.step().repeat(indent))
             .append(node.base)
             .append(node.tail);
         for (final Pretty.Node child : node.children) {
             if (child.test) {
                 block.append('\n');
             }
-            block.append('\n').append(Pretty.layout(child, indent + 1));
+            block.append('\n').append(this.layout(child, indent + 1));
         }
         return block.toString();
     }
@@ -103,13 +131,13 @@ final class Pretty {
      * @param indent The indentation level
      * @return The single line, or empty if inlining is impossible
      */
-    private static Optional<String> horizontal(final Pretty.Node node, final int indent) {
+    private Optional<String> horizontal(final Pretty.Node node, final int indent) {
         final Optional<String> result;
         if (node.abstractt || node.children.isEmpty()) {
             result = Optional.empty();
         } else {
             result = Pretty.inlined(node.children).map(
-                args -> new StringBuilder(Pretty.STEP.repeat(indent))
+                args -> new StringBuilder(this.step().repeat(indent))
                     .append(node.base)
                     .append(' ')
                     .append(args)
