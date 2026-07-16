@@ -13,8 +13,7 @@
   if. > @
     scanned.length.eq 0
     cant-parse
-      printf
-        "Can't convert text %s to number"
+      "Can't convert text %s to number".printf
         * text
     scanned.head
   (scanf "%f" text).at.^ > scanned

@@ -5,7 +5,6 @@
 +alias sm.os
 +alias sm.posix
 +alias sm.win32
-+alias string.printf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package fs
@@ -45,8 +44,7 @@
       if.
         descriptor.eq -1
         T
-          printf
-            "Cant touch the file '%s': %s"
+          "Cant touch the file '%s': %s".printf
             * path created.output
         seq *
           closed
@@ -70,8 +68,7 @@
         outcome.eq 0
         ^
         T
-          printf
-            "Cant delete the file '%s': %s"
+          "Cant delete the file '%s': %s".printf
             * path removed.output
       ^
     called. > removed
@@ -105,8 +102,7 @@
       outcome.eq 0
       file target
       T
-        printf
-          "Cant move the file '%s' to '%s': %s"
+        "Cant move the file '%s' to '%s': %s".printf
           * path target renamed.output
     called. > renamed
       if.
@@ -122,8 +118,7 @@
       if.
         existing.and exists.not
         cant-open
-          printf
-            "File must exist for given access mod: '%s'"
+          "File must exist for given access mod: '%s'".printf
             * access
         seq *
           open-file
@@ -170,8 +165,7 @@
         if. > @
           descriptor.eq -1
           cant-open
-            printf
-              "Couldn't open file '%s': %s"
+            "Couldn't open file '%s': %s".printf
               * path opened.output
           seq *
             scope
@@ -219,8 +213,7 @@
                 if. > @
                   readable.not
                   T
-                    printf
-                      "Can't read from file with provided access mode '%s'"
+                    "Can't read from file with provided access mode '%s'".printf
                       * access
                   seq *
                     chunk
@@ -236,8 +229,7 @@
                 if. > @
                   writable.not
                   T
-                    printf
-                      "Can't write to file with provided access mode '%s'"
+                    "Can't write to file with provided access mode '%s'".printf
                       * access
                   seq *
                     code.
@@ -302,7 +294,7 @@
 
   ++> tests-moves-a-file
     and. > @
-      (temp.moved (printf "%s.dest" (* temp.path))).exists
+      (temp.moved ("%s.dest".printf (* temp.path))).exists
       temp.exists.not
     tmpdir.tmpfile > temp
 

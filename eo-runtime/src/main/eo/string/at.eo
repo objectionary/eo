@@ -15,8 +15,7 @@
       0.gt index
       (number index).gte len
     out-of-bounds
-      printf
-        "Given index %d is out of text bounds"
+      "Given index %d is out of text bounds".printf
         * index
     slice text index 1
   i > idx!

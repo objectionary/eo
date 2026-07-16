@@ -8,7 +8,6 @@ file: snippets/fibo.eo
 args: ["snippets.fibo"]
 eo: |
   +alias io.stdout
-  +alias string.printf
   +package snippets
 
   [] > fibo
@@ -20,8 +19,7 @@ eo: |
           f (n.minus 1)
           f (n.minus 2)
     stdout > @
-      printf
-        "%d is the %dth number\n"
+      "%d is the %dth number\n".printf
         *
           f 6
           6
