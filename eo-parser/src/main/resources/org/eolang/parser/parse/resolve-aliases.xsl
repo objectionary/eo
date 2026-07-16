@@ -49,7 +49,7 @@
       <xsl:value-of separator=" " select="for $t in tokenize(., ' ') return (/object/metas/meta[head='alias' and part[1]=$t]/part[last()], $t)[1]"/>
     </xsl:attribute>
   </xsl:template>
-  <xsl:template match="/object/metas/meta[head='also' or head='decorate']/(tail|part)">
+  <xsl:template match="/object/metas/meta[head='also']/(tail|part)">
     <xsl:variable name="meta" select="/object/metas/meta[head='alias' and part[1] = current()/text()]"/>
     <xsl:copy>
       <xsl:choose>

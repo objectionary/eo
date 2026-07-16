@@ -81,7 +81,7 @@
       <xsl:value-of separator=" " select="for $t in tokenize(., ' ') return if (contains($t, '.') or $t=$eo:phi or $t=$eo:program or $t=$eo:rho or $t=$eo:empty or $t=$eo:xi or $t=$eo:bottom or $t=/object/metas/meta[head='alias']/part[1]) then $t else concat('Φ.', $t)"/>
     </xsl:attribute>
   </xsl:template>
-  <xsl:template match="/object/metas/meta[head='also' or head='decorate']/(tail|part)">
+  <xsl:template match="/object/metas/meta[head='also']/(tail|part)">
     <xsl:apply-templates select="." mode="meta"/>
   </xsl:template>
   <xsl:template match="*[not(contains(text(), ' '))]" mode="meta">

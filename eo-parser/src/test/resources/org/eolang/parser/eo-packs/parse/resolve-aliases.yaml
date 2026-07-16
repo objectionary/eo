@@ -11,9 +11,8 @@ asserts:
   - /object[not(errors)]
   - /object[count(o)=1]
   - /object/metas/meta[head='foo']
-  - /object/metas[count(meta)=9]
+  - /object/metas[count(meta)=8]
   - /object/metas/meta[head/text()='also' and tail='Φ.org.eolang.xyz' and part='Φ.org.eolang.xyz']
-  - /object/metas/meta[head/text()='decorate' and tail='string my foo' and part='Φ.org.eolang.xyz']
   - //o[@base='Φ.org.eolang.string.scanner']
   - //o[@base='Φ.org.eolang.io.stdout']
   - //o[@base='and']
@@ -29,7 +28,6 @@ input: |
   +alias my org.eolang.xyz
   +alias a b c org.d
   +also my
-  +decorate string my foo
   +foo Some other meta
 
   [args] > main
