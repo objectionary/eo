@@ -5,7 +5,6 @@
 package org.eolang.parser;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,7 +19,8 @@ import java.util.List;
  *
  * <ul>
  *   <li>LHS is parsed as an application expression (head + optional
- *   chain + optional hargs). Its outermost {@code <o>} carries
+ *   chain + optional hargs) or a reversed dispatch ({@code if.}) via
+ *   {@link Emissions#expression}. Its outermost {@code <o>} carries
  *   {@code @name='φ'} per the emission shape.</li>
  *   <li>Params inside the brackets become void children of the
  *   formation, emitted before the φ slot.</li>
@@ -47,7 +47,6 @@ import java.util.List;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class LnOnlyPhi implements Line {
 
     /**
@@ -101,9 +100,11 @@ final class LnOnlyPhi implements Line {
         final Span inner = new Span(
             " ".repeat(this.span.indent()).concat(lhs), this.span.line()
         );
-        final LnOnlyPhi.Lhs left = LnOnlyPhi.Lhs.read(inner);
+        final Tokens tokens = new Tokens(inner.body(), inner);
+        final boolean open = LnOnlyPhi.bare(tokens);
+        tokens.seek(0);
         Comments.seal(globals, emit, this.span);
-        this.transition(stack, suffix, left.open());
+        this.transition(stack, suffix, open);
         globals.clearBlanks();
         globals.markEmitted();
         emit.object(
@@ -127,7 +128,69 @@ final class LnOnlyPhi implements Line {
             emit.voidParam(mapped, this.span.line(), column);
             column = column + param.length() + 1;
         }
-        left.emit(emit, this.span.line(), this.span.indent());
+        this.emitPhi(emit, tokens, open);
+    }
+
+    /**
+     * Emit the LHS as the formation's {@code φ} slot via
+     * {@link Emissions#expression} — which handles a head + chain, or a
+     * reversed dispatch ({@code if.}), leaving the outermost {@code <o>}
+     * open. When {@code open} that φ stays on the cursor so deeper-indent
+     * lines attach to it as vertical arguments (the {@link Stack.Closer}
+     * closes it and the formation); otherwise its horizontal args are
+     * complete and it is closed here.
+     * @param emit Emitter
+     * @param tokens Token reader rewound to the LHS head
+     * @param open Whether the φ stays open for vertical arguments
+     */
+    private void emitPhi(final Emit emit, final Tokens tokens, final boolean open) {
+        Emissions.expression(emit, "φ", tokens, this.span.line());
+        if (!open) {
+            emit.close();
+        }
+    }
+
+    /**
+     * Whether the only-phi LHS carries no horizontal args, so its φ
+     * stays {@link Openness#OPEN} for deeper-indent vertical arguments
+     * (§4.5); otherwise the φ is a full application and the formation is
+     * {@link Openness#HORIZONTAL_COMPLETED}. The LHS may be a reversed
+     * dispatch ({@code if. > [t] >> rec}), whose trailing dot is skipped
+     * exactly as {@link Emissions#expression} does so both agree on the
+     * arg boundary. Consumes the token stream; callers rewind before
+     * emitting.
+     * @param tokens Token reader positioned at the LHS head
+     * @return True if the φ has no horizontal args
+     */
+    private static boolean bare(final Tokens tokens) {
+        if (LnOnlyPhi.reversedAhead(tokens, tokens.readValue())) {
+            tokens.seek(tokens.cursor() + 1);
+        } else {
+            tokens.readChain();
+        }
+        return tokens.readArgs().isEmpty();
+    }
+
+    /**
+     * Whether the cursor sits at a reversed-dispatch dot after the head
+     * — an identifier head immediately followed by a {@code .} that ends
+     * the body or precedes a space (§3.8). Mirrors
+     * {@link Emissions#expression} so the arg boundary agrees.
+     * @param tokens Token reader positioned after the head
+     * @param head The just-read head value
+     * @return True when a reversed-dispatch dot follows the head
+     */
+    private static boolean reversedAhead(final Tokens tokens, final Value head) {
+        final boolean result;
+        if (head.kind() == Value.Kind.IDENTIFIER
+            && !tokens.atEnd() && tokens.current() == '.') {
+            final int probe = tokens.cursor() + 1;
+            result = probe >= tokens.body().length()
+                || tokens.body().charAt(probe) == ' ';
+        } else {
+            result = false;
+        }
+        return result;
     }
 
     /**
@@ -188,168 +251,5 @@ final class LnOnlyPhi implements Line {
             }
         }
         return out;
-    }
-
-    /**
-     * A parsed only-phi LHS expression — the head, optional method
-     * chain and horizontal args that become the formation's {@code φ}
-     * slot (§3.10 / §4.5).
-     *
-     * <p>The LHS is either an ordinary application ({@code x.plus},
-     * {@code foo bar}) or a reversed dispatch ({@code if.}, §3.8). A
-     * reversed LHS opens a new dispatch chain — {@code <o base='.if'>}
-     * with {@code @name='φ'} and no {@code @method}, mirroring
-     * {@link LnReversed} — while an ordinary LHS emits its head (and
-     * any {@code .method} chain) verbatim, the topmost element carrying
-     * {@code @name='φ'}.</p>
-     *
-     * @since 0.1
-     */
-    private static final class Lhs {
-
-        /**
-         * Whether the LHS is a reversed dispatch ({@code name.}).
-         */
-        private final boolean reversed;
-
-        /**
-         * Whether the reversed dispatch is fragile ({@code ?.}).
-         */
-        private final boolean fragile;
-
-        /**
-         * The head value (a reversed-dispatch head is already symbol-mapped).
-         */
-        private final Value head;
-
-        /**
-         * The {@code .method} chain (empty for a reversed dispatch).
-         */
-        private final List<MethodChain> chain;
-
-        /**
-         * The horizontal arguments (may be empty).
-         */
-        private final List<Value> args;
-
-        /**
-         * Ctor.
-         * @param reversed Reversed-dispatch flag
-         * @param fragile Fragile-dispatch flag
-         * @param head Head value
-         * @param chain Method chain
-         * @param args Horizontal args
-         * @checkstyle ParameterNumberCheck (10 lines)
-         */
-        private Lhs(
-            final boolean reversed, final boolean fragile, final Value head,
-            final List<MethodChain> chain, final List<Value> args
-        ) {
-            this.reversed = reversed;
-            this.fragile = fragile;
-            this.head = head;
-            this.chain = chain;
-            this.args = args;
-        }
-
-        /**
-         * Parse the LHS expression from the (indent-stripped) inner span.
-         * @param inner The LHS span
-         * @return The parsed LHS
-         */
-        static LnOnlyPhi.Lhs read(final Span inner) {
-            final Tokens tokens = new Tokens(inner.body(), inner);
-            final Value header;
-            final List<MethodChain> links;
-            final List<Value> arguments;
-            final boolean frag;
-            final boolean rev = LnOnlyPhi.Lhs.reversedDispatch(inner.body());
-            if (rev) {
-                header = LnReversed.readHead(tokens);
-                frag = tokens.consumeDispatch();
-                links = Collections.emptyList();
-                arguments = tokens.readArgs();
-            } else {
-                header = tokens.readValue();
-                links = tokens.readChain();
-                arguments = tokens.readArgs();
-                frag = false;
-            }
-            return new LnOnlyPhi.Lhs(rev, frag, header, links, arguments);
-        }
-
-        /**
-         * Whether the φ has no horizontal args and so stays open for
-         * deeper-indent vertical arguments (§4.5).
-         * @return Open flag
-         */
-        boolean open() {
-            return this.args.isEmpty();
-        }
-
-        /**
-         * Emit the LHS as the formation's {@code φ} slot. When
-         * {@link #open()} the φ {@code <o>} is left on the cursor so
-         * deeper-indent lines attach to it as vertical arguments (and
-         * the {@link Stack.Closer} closes both it and the formation);
-         * otherwise the φ is closed here (its horizontal args are
-         * complete) and only the formation stays open.
-         * @param emit Emitter
-         * @param line Source line
-         * @param indent Source indent (φ column for a reversed dispatch)
-         */
-        void emit(final Emit emit, final int line, final int indent) {
-            if (this.reversed) {
-                emit.object("φ", ".".concat(this.head.raw()), line, indent);
-                if (this.fragile) {
-                    emit.fragile();
-                }
-            } else if (this.chain.isEmpty()) {
-                Emissions.openValue(emit, "φ", this.head, line);
-            } else {
-                Emissions.openValue(emit, null, this.head, line);
-                emit.close();
-                for (int idx = 0; idx < this.chain.size() - 1; idx = idx + 1) {
-                    final MethodChain link = this.chain.get(idx);
-                    emit.object(null, ".".concat(link.name()), line, link.dot());
-                    emit.method(link.fragile());
-                    emit.close();
-                }
-                final MethodChain last = this.chain.get(this.chain.size() - 1);
-                emit.object("φ", ".".concat(last.name()), line, last.dot());
-                emit.method(last.fragile());
-            }
-            for (final Value arg : this.args) {
-                Emissions.emitArg(emit, arg, line);
-            }
-            if (!this.open()) {
-                emit.close();
-            }
-        }
-
-        /**
-         * Whether an only-phi LHS body is a reversed dispatch — a single
-         * head token (a {@code NAME} or a {@code @}/{@code ^}/{@code $}
-         * root, optionally suffixed by the fragile {@code ?}) immediately
-         * followed by a {@code .} that ends the body or is followed by a
-         * space (§3.8). Mirrors {@link Eo}'s line classifier so the
-         * split agrees with how the line was routed here.
-         * @param body The indent-stripped LHS body
-         * @return True if the LHS is a reversed dispatch
-         */
-        private static boolean reversedDispatch(final String body) {
-            final int dot = body.indexOf('.');
-            final boolean result;
-            if (dot <= 0 || dot + 1 < body.length() && body.charAt(dot + 1) != ' ') {
-                result = false;
-            } else {
-                int end = dot;
-                if (body.charAt(dot - 1) == '?') {
-                    end = dot - 1;
-                }
-                result = body.substring(0, end).indexOf(' ') < 0;
-            }
-            return result;
-        }
     }
 }
