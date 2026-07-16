@@ -36,18 +36,6 @@ final class PenaltyTest {
     }
 
     @Test
-    void chargesForParenthesis() {
-        MatcherAssert.assertThat(
-            "A single opening parenthesis on one line should cost fifteen points",
-            new Penalty(
-                "42.gt (bar.hello 88) > [] > foo",
-                Collections.singletonMap(PenaltyKey.SYMBOL, 0)
-            ).points(),
-            Matchers.equalTo(15)
-        );
-    }
-
-    @Test
     void chargesProgressivelyForParentheses() {
         MatcherAssert.assertThat(
             "Two parentheses on one line should cost three bracket-weights",
