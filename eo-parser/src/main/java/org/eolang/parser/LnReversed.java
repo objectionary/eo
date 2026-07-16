@@ -115,6 +115,27 @@ final class LnReversed implements Line {
     }
 
     /**
+     * Read the reversed-dispatch head — either a {@code NAME}
+     * identifier or one of the root tokens {@code @} / {@code ^} /
+     * {@code $} (mapped to {@code φ} / {@code ρ} / {@code ξ} per
+     * R-9.3). The cursor is left at the trailing dot.
+     * @param tokens Token reader positioned at the head
+     * @return Head value with the XMIR symbol already mapped
+     */
+    static Value readHead(final Tokens tokens) {
+        final Value value;
+        if (!tokens.atEnd() && LnReversed.rootHead(tokens.current())) {
+            final int start = tokens.cursor();
+            final String mapped = LnReversed.rootSymbol(tokens.current());
+            tokens.seek(start + 1);
+            value = new Value(Value.Kind.IDENTIFIER, mapped, start, start + 1);
+        } else {
+            value = tokens.readName();
+        }
+        return value;
+    }
+
+    /**
      * Push or replace the stack level per Step B/C/D of §5.2.
      * @param stack The stack
      * @param suffix The parsed suffix
@@ -126,27 +147,6 @@ final class LnReversed implements Line {
         final Stack stack, final Suffix suffix, final Kind kind, final Openness openness
     ) {
         new Transition(stack, this.span).apply(kind, openness, suffix.present());
-    }
-
-    /**
-     * Read the reversed-dispatch head — either a {@code NAME}
-     * identifier or one of the root tokens {@code @} / {@code ^} /
-     * {@code $} (mapped to {@code φ} / {@code ρ} / {@code ξ} per
-     * R-9.3). The cursor is left at the trailing dot.
-     * @param tokens Token reader positioned at the head
-     * @return Head value with the XMIR symbol already mapped
-     */
-    private static Value readHead(final Tokens tokens) {
-        final Value value;
-        if (!tokens.atEnd() && LnReversed.rootHead(tokens.current())) {
-            final int start = tokens.cursor();
-            final String mapped = LnReversed.rootSymbol(tokens.current());
-            tokens.seek(start + 1);
-            value = new Value(Value.Kind.IDENTIFIER, mapped, start, start + 1);
-        } else {
-            value = tokens.readName();
-        }
-        return value;
     }
 
     /**

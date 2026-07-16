@@ -202,6 +202,63 @@ final class LnOnlyPhiTest {
     }
 
     @Test
+    void acceptsReversedDispatchLhs() {
+        final Emit emit = new Emit();
+        new LnOnlyPhi(new Span("if. > [t] >> rec", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a trailing-dot LHS must emit its φ as a reversed dispatch — <o base='.if' name='φ'> with no @method — and the voids as children",
+            LnOnlyPhiTest.render(emit),
+            XhtmlMatchers.hasXPaths(
+                "/object/o/o[@name='t' and @base='∅']",
+                "/object/o/o[@name='φ' and @base='.if' and not(@method)]"
+            )
+        );
+    }
+
+    @Test
+    void opensReversedDispatchLhsForVerticalArgs() {
+        final Stack stack = new Stack();
+        new LnOnlyPhi(new Span("if. > [t] >> rec", 1))
+            .into(stack, new Globals(), new Emit());
+        MatcherAssert.assertThat(
+            "a bare reversed-dispatch φ must stay OPEN so its receiver and method args attach as deeper-indent lines",
+            stack.top().openness(),
+            Matchers.equalTo(Openness.OPEN)
+        );
+    }
+
+    @Test
+    void marksReversedDispatchLhsCompletedWithHargs() {
+        final Stack stack = new Stack();
+        new LnOnlyPhi(new Span("if. cond then else > [t] > pair", 1))
+            .into(stack, new Globals(), new Emit());
+        MatcherAssert.assertThat(
+            "a reversed-dispatch φ carrying horizontal args cannot accept a body — must be HORIZONTAL_COMPLETED",
+            stack.top().openness(),
+            Matchers.equalTo(Openness.HORIZONTAL_COMPLETED)
+        );
+    }
+
+    @Test
+    void emitsReversedDispatchLhsHorizontalArgsAsChildren() {
+        final Emit emit = new Emit();
+        new LnOnlyPhi(new Span("if. cond then else > [t] > pair", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a reversed-dispatch φ with horizontal args must emit them as children of the dispatch <o>",
+            LnOnlyPhiTest.render(emit),
+            XhtmlMatchers.hasXPaths(
+                "/object/o[@name='pair']/o[@name='φ' and @base='.if']/o[1][@base='cond']",
+                "/object/o[@name='pair']/o[@name='φ' and @base='.if']/o[2][@base='then']",
+                "/object/o[@name='pair']/o[@name='φ' and @base='.if']/o[3][@base='else']"
+            )
+        );
+    }
+
+    @Test
     void rejectsEmptyLhs() {
         Assertions.assertThrows(
             ParseError.class,

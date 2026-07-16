@@ -750,6 +750,42 @@ final class EoTest {
     }
 
     @Test
+    void acceptsInlineVoidsOnReversedDispatch() {
+        MatcherAssert.assertThat(
+            "a trailing-dot object carrying an inline void suffix must parse with no errors, just like the method form",
+            EoTest.render(
+                "[x] > obj",
+                "  if. > [t] >> rec",
+                "    t.eq 0",
+                "    1",
+                "    2",
+                "  rec x > @"
+            ),
+            XhtmlMatchers.hasXPath("/object[not(errors)]")
+        );
+    }
+
+    @Test
+    void desugarsReversedDispatchInlineVoidsToPhiShape() {
+        MatcherAssert.assertThat(
+            "the one-line `if. > [t] >> rec` sugar must desugar to the same φ-as-reversed-dispatch shape as its two-line equivalent",
+            EoTest.render(
+                "[x] > obj",
+                "  if. > [t] >> rec",
+                "    t.eq 0",
+                "    1",
+                "    2",
+                "  rec x > @"
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object/o[@name='obj']/o[@local='rec']/o[@name='t' and @base='∅']",
+                "/object/o[@name='obj']/o[@local='rec']/o[@name='φ' and @base='.if' and not(@method)]",
+                "/object/o[@name='obj']/o[@local='rec']/o[@name='φ' and @base='.if']/o[@base='.eq']"
+            )
+        );
+    }
+
+    @Test
     void mergesMultiLineBytesAcrossTwoLines() {
         MatcherAssert.assertThat(
             "two BYTES lines with trailing dash on the first must merge into one Φ.bytes token",
