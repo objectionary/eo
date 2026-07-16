@@ -10,6 +10,5 @@ origin: |
 
 printed: |
   [] > app
-    [x] > foo
-      x.plus x > @
+    x.plus x > [x] > foo
     foo 5 > foo5
