@@ -35,11 +35,8 @@ printed: |
   [] > main
     [] > base
       memory 0 > x
-      [self v] > f
-        x.write v > @
-      [self v] > g
-        self.f self v > @
+      x.write v > [self v] > f
+      self.f self v > [self v] > g
     [] > derived
       base > @
-      [self v] > f
-        self.g self v > @
+      self.g self v > [self v] > f
