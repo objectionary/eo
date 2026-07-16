@@ -20,6 +20,7 @@ import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -84,6 +85,24 @@ final class Transpiling implements Step {
      * Cache directory for transpiled sources.
      */
     private static final String CACHE = "transpiled";
+
+    /**
+     * The XSL steps of the transpile train, in order, ending with
+     * {@code to-java.xsl}. Kept as a single list so both the train in
+     * {@link #compiled(boolean)} and the cache-key fingerprint in
+     * {@link #version()} are derived from the same source.
+     */
+    private static final String[] XSLS = {
+        "/org/eolang/maven/transpile/set-locators.xsl",
+        "/org/eolang/maven/transpile/set-original-names.xsl",
+        "/org/eolang/maven/transpile/classes.xsl",
+        "/org/eolang/maven/transpile/tests.xsl",
+        "/org/eolang/maven/transpile/anonymous-to-nested.xsl",
+        "/org/eolang/maven/transpile/package.xsl",
+        "/org/eolang/maven/transpile/attrs.xsl",
+        "/org/eolang/maven/transpile/data.xsl",
+        "/org/eolang/maven/transpile/to-java.xsl",
+    };
 
     /**
      * Java extension.
@@ -211,7 +230,7 @@ final class Transpiling implements Step {
         if (this.cacheEnabled) {
             new ConcurrentCache(
                 new Cache(
-                    new CachePath(cdir, this.version, hsh.get()),
+                    new CachePath(cdir, this.version(), hsh.get()),
                     src -> {
                         rewrite.compareAndSet(false, true);
                         final String res = transform.apply(xmir).toString();
@@ -309,24 +328,30 @@ final class Transpiling implements Step {
         return new TrFull(
             new TrJoined<>(
                 new TrClasspath<>(
-                    "/org/eolang/maven/transpile/set-locators.xsl",
-                    "/org/eolang/maven/transpile/set-original-names.xsl",
-                    "/org/eolang/maven/transpile/classes.xsl",
-                    "/org/eolang/maven/transpile/tests.xsl",
-                    "/org/eolang/maven/transpile/anonymous-to-nested.xsl",
-                    "/org/eolang/maven/transpile/package.xsl",
-                    "/org/eolang/maven/transpile/attrs.xsl",
-                    "/org/eolang/maven/transpile/data.xsl"
+                    Arrays.copyOf(Transpiling.XSLS, Transpiling.XSLS.length - 1)
                 ).back(),
                 new TrDefault<>(
                     new StClasspath(
-                        "/org/eolang/maven/transpile/to-java.xsl",
+                        Transpiling.XSLS[Transpiling.XSLS.length - 1],
                         String.format("disclaimer %s", new Disclaimer()),
                         String.format("trackLocations %b", track)
                     )
                 )
             )
         );
+    }
+
+    /**
+     * Cache-key version segment: the plugin version combined with a
+     * fingerprint of the bundled transpile XSLs. Folding the XSL
+     * content in means that a change in the transformation logic
+     * invalidates the global transpile cache even when the plugin
+     * version is unchanged (a constant {@code -SNAPSHOT} during
+     * development), see #5578.
+     * @return The version segment for {@link CachePath}
+     */
+    private String version() {
+        return String.format("%s-%s", this.version, new Fingerprint(Transpiling.XSLS).get());
     }
 
     /**
@@ -421,7 +446,7 @@ final class Transpiling implements Step {
     private Supplier<Path> cached(final String hsh, final String jname) {
         return new CachePath(
             this.cacheDir.resolve(Transpiling.CACHE),
-            this.version,
+            this.version(),
             hsh,
             this.generatedDir.relativize(
                 new Place(jname).make(
