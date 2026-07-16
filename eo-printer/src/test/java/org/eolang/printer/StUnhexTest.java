@@ -154,6 +154,30 @@ final class StUnhexTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("shifts")
+    void keepsGlyphsButEscapesControls(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must keep glyphs readable and escape only control chars",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<o base='Φ.string'><o base='Φ.bytes'>",
+                        "<o>41-01-07-D0-B4-D1-80-D1-83-D0-B3</o>",
+                        "</o></o>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                "//o[text()='\"A\\u0001\\u0007\u0434\u0440\u0443\u0433\"']"
+            )
+        );
+    }
+
     private static Stream<Arguments> shifts() {
         return Stream.of(
             Arguments.of(StUnhex.XNAV, "xnav")
