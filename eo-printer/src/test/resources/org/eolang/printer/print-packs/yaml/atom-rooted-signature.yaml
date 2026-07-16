@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+origin: |
+  +package org.eolang
+
+  [size] > resized /Q.malloc.of.allocated
+
+printed: |
+  +package org.eolang
+
+  [size] > resized /Q.malloc.of.allocated
