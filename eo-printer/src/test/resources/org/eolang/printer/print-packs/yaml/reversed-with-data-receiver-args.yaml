@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# When a reversed dispatch ("eq.") inlines its arguments, an argument that is
+# itself a data-receiver dispatch ("01-.as-bool") is a single token: it has a
+# receiver child but takes no arguments of its own. It must inline bare, never
+# wrapped as "(01-.as-bool)", which would produce EO that fails to parse with
+# "redundant parentheses around a single token" (#5591). Only an argument that
+# actually applies arguments (and therefore contains a space, like "5.plus 3")
+# gets parenthesized.
+origin: |
+  [] > app
+    not. > @
+      eq.
+        01-.as-bool
+        00-.as-bool
+
+printed: |
+  [] > app
+    not. > @
+      eq. 01-.as-bool 00-.as-bool
