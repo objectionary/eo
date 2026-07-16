@@ -7,16 +7,16 @@
 # takes the first environment variable in the list TMP, TEMP, USERPROFILE.
 # If none of these are found, it returns the Windows directory (C:\Windows).
 
-+alias sm.getenv
++alias fs.dir
++alias fs.file
 +alias sm.os
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package fs
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > tmpdir
+[] > mktemp
   dir > @
     file
       string
@@ -53,10 +53,10 @@
           getenv "TMPDIR" > tmpdir!
           getenv "USERPROFILE" > userprofile!
 
-  tmpdir.exists > [] +> global-temp-dir-exists
+  mktemp.exists > [] +> global-temp-dir-exists
 
-  tmpdir.is-directory > [] +> global-temp-dir-is-directory
+  mktemp.is-directory > [] +> global-temp-dir-is-directory
 
-  tmpdir.path.eq tmpdir.path > [] +> returns-the-same-tmpdir
+  mktemp.path.eq mktemp.path > [] +> returns-the-same-tmpdir
 
-  tmpdir.tmpfile.exists > [] +> creates-tmpfile
+  mktemp.tmpfile.exists > [] +> creates-tmpfile
