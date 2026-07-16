@@ -89,11 +89,40 @@ final class Pretty {
     /**
      * Lay out a node as a (possibly multi-line) block at the given
      * indentation, picking the rendering with the lowest penalty.
+     *
+     * <p>When the node is a reversed dispatch on a lone data receiver
+     * ({@code plus. 5 3}), its equivalent suffix shape ({@code 5.plus 3})
+     * is laid out too and the lower-penalty one is kept — the same
+     * penalty comparison that already decides inline versus vertical. The
+     * suffix shape is never longer and its vertical form has one fewer
+     * child line, so it can only tie or win; a tie (both fit the width)
+     * resolves to the suffix, the shorter and more readable form.</p>
+     *
      * @param node The node
      * @param indent The indentation level
      * @return The rendered block
      */
     private String layout(final Pretty.Node node, final int indent) {
+        String best = this.shaped(node, indent);
+        final Optional<Pretty.Node> suffix = Pretty.suffixed(node);
+        if (suffix.isPresent()) {
+            final String alt = this.shaped(suffix.get(), indent);
+            if (new Penalty(alt, this.weights).points()
+                <= new Penalty(best, this.weights).points()) {
+                best = alt;
+            }
+        }
+        return best;
+    }
+
+    /**
+     * Lay out a single shape of a node, picking the lower-penalty of its
+     * vertical and horizontal renderings.
+     * @param node The node
+     * @param indent The indentation level
+     * @return The rendered block
+     */
+    private String shaped(final Pretty.Node node, final int indent) {
         String best = this.vertical(node, indent);
         final Optional<String> flat = this.horizontal(node, indent);
         if (flat.isPresent()
@@ -102,6 +131,43 @@ final class Pretty {
             best = flat.get();
         }
         return best;
+    }
+
+    /**
+     * The suffix shape of a reversed dispatch on a lone data receiver, if
+     * this node is one.
+     *
+     * <p>A data-receiver dispatch is stored as a reversed head
+     * ({@code plus.}) whose first child is the data literal receiver, since
+     * a literal cannot fold into a dotted {@code @base} the way a named
+     * receiver does. This rebuilds it in suffix position — the receiver
+     * glued to the method ({@code 5.plus}) with the remaining arguments
+     * kept as children — so both shapes can be weighed against each other.
+     * A compound receiver (one with children of its own) has no suffix
+     * form and yields empty, leaving the reversed head untouched.</p>
+     *
+     * @param node The node
+     * @return The suffix-shaped node, or empty if it doesn't apply
+     */
+    private static Optional<Pretty.Node> suffixed(final Pretty.Node node) {
+        Optional<Pretty.Node> result = Optional.empty();
+        if (node.reversed && !node.children.isEmpty()) {
+            final Pretty.Node receiver = node.children.get(0);
+            if (receiver.data && receiver.children.isEmpty()
+                && receiver.tail.isEmpty()) {
+                result = Optional.of(
+                    new Pretty.Node(
+                        String.join(
+                            ".", receiver.base,
+                            node.base.substring(0, node.base.length() - 1)
+                        ),
+                        node.tail, node.abstractt, node.test, false, false,
+                        node.children.subList(1, node.children.size())
+                    )
+                );
+            }
+        }
+        return result;
     }
 
     /**
@@ -189,7 +255,7 @@ final class Pretty {
             result = Pretty.flat(
                 new Pretty.Node(
                     decoratee.base, "", decoratee.abstractt,
-                    false, decoratee.reversed, decoratee.children
+                    false, decoratee.reversed, decoratee.data, decoratee.children
                 )
             ).map(
                 value -> new StringBuilder(this.step().repeat(indent))
@@ -237,8 +303,9 @@ final class Pretty {
      * @param node The node
      * @return The inlined content, or empty
      */
-    private static Optional<String> flat(final Pretty.Node node) {
+    private static Optional<String> flat(final Pretty.Node given) {
         final Optional<String> result;
+        final Pretty.Node node = Pretty.suffixed(given).orElse(given);
         if (node.reversed && node.children.size() <= 1) {
             result = Optional.empty();
         } else if (node.abstractt || !node.tail.isEmpty() || "*".equals(node.base)) {
@@ -291,6 +358,13 @@ final class Pretty {
         private final boolean reversed;
 
         /**
+         * Whether this object is a data literal (number, string, bytes),
+         * so it may sit as a receiver in the suffix form of a reversed
+         * dispatch ({@code 5.plus} instead of {@code plus. 5}).
+         */
+        private final boolean data;
+
+        /**
          * The children (arguments or bindings), in order.
          */
         private final List<Pretty.Node> children;
@@ -302,16 +376,19 @@ final class Pretty {
          * @param formation Whether it is a formation
          * @param attr Whether it is a test attribute
          * @param rev Whether it is a reversed dispatch
+         * @param literal Whether it is a data literal
          * @param kids The children
          * @checkstyle ParameterNumberCheck (5 lines)
          */
         Node(final String head, final String suffix, final boolean formation,
-            final boolean attr, final boolean rev, final List<Pretty.Node> kids) {
+            final boolean attr, final boolean rev, final boolean literal,
+            final List<Pretty.Node> kids) {
             this.base = head;
             this.tail = suffix;
             this.abstractt = formation;
             this.test = attr;
             this.reversed = rev;
+            this.data = literal;
             this.children = kids;
         }
 
@@ -327,6 +404,7 @@ final class Pretty {
                 "yes".equals(line.attribute("abstract").text().orElse("no")),
                 "yes".equals(line.attribute("test").text().orElse("no")),
                 "yes".equals(line.attribute("reversed").text().orElse("no")),
+                "yes".equals(line.attribute("data").text().orElse("no")),
                 line.elements(Filter.withName("line"))
                     .map(Pretty.Node::parse)
                     .collect(Collectors.toList())
