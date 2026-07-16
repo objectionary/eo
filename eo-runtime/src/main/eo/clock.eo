@@ -2,14 +2,16 @@
 # Reads the underlying syscall: `gettimeofday` on POSIX, `_ftime32_s` on Windows.
 # Decorates an `i64` holding the current time in milliseconds since the Unix epoch.
 
++alias sm.os
++alias sm.posix
++alias sm.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package sm
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > system-clock
+[] > clock
   as-i64. > @
     if.
       os.is-windows
@@ -24,4 +26,4 @@
   (posix "gettimeofday" *).output > timeval
 
   ++> tests-reads-positive-millis
-    system-clock.gt 0 > @
+    clock.gt 0 > @
