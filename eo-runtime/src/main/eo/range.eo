@@ -20,13 +20,14 @@
 # `1.plus 1` and also has object `next`. Since these objects are ints - they have
 # object `lt` by default.
 
++alias tuple.is-empty
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package tuple
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
++unlint mandatory-package
 
 [start end] > range
   if. > @

@@ -2,7 +2,6 @@
 # IEEE 754 double, mapping the special chains to `nan`, `pinf`, and `ninf`.
 # For any other length the `cant-convert` fallback is returned.
 
-+alias string.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package bytes
@@ -24,8 +23,7 @@
           bts.size.eq 8
           number bts
           cant-convert
-            sprintf
-              "Can't convert non 8 length bytes to a number, bytes are %x"
+            "Can't convert non 8 length bytes to a number, bytes are %x".printf
               * bts
 
   ++> throws-on-bytes-of-wrong-size-as-number

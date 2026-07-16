@@ -18,17 +18,17 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for {@code string.sscanf} with signed integer inputs.
+ * Tests for {@code string.scanf} with signed integer inputs.
  * @since 0.57.4
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class SscanfNegativeIntegerTest {
+final class ScanfNegativeIntegerTest {
 
     @Test
     void parsesNegativeIntegerWithDecimalFormat() {
         MatcherAssert.assertThat(
-            "sscanf with \"%d\" should preserve the leading minus sign for negative integers",
-            new Dataized(SscanfNegativeIntegerTest.first("%d", "-42")).asNumber().longValue(),
+            "scanf with \"%d\" should preserve the leading minus sign for negative integers",
+            new Dataized(ScanfNegativeIntegerTest.first("%d", "-42")).asNumber().longValue(),
             Matchers.equalTo(-42L)
         );
     }
@@ -36,8 +36,8 @@ final class SscanfNegativeIntegerTest {
     @Test
     void parsesPositiveIntegerWithLeadingPlusSign() {
         MatcherAssert.assertThat(
-            "sscanf with \"%d\" should accept an optional leading plus sign",
-            new Dataized(SscanfNegativeIntegerTest.first("%d", "+42")).asNumber().longValue(),
+            "scanf with \"%d\" should accept an optional leading plus sign",
+            new Dataized(ScanfNegativeIntegerTest.first("%d", "+42")).asNumber().longValue(),
             Matchers.equalTo(42L)
         );
     }
@@ -45,22 +45,22 @@ final class SscanfNegativeIntegerTest {
     @Test
     void parsesPlainPositiveIntegerWithDecimalFormat() {
         MatcherAssert.assertThat(
-            "sscanf with \"%d\" should still parse plain unsigned integers",
-            new Dataized(SscanfNegativeIntegerTest.first("%d", "42")).asNumber().longValue(),
+            "scanf with \"%d\" should still parse plain unsigned integers",
+            new Dataized(ScanfNegativeIntegerTest.first("%d", "42")).asNumber().longValue(),
             Matchers.equalTo(42L)
         );
     }
 
     /**
-     * Build a {@code string.sscanf} call and return the first parsed item.
-     * @param format Format string for {@code sscanf}
-     * @param read Input string for {@code sscanf}
+     * Build a {@code string.scanf} call and return the first parsed item.
+     * @param format Format string for {@code scanf}
+     * @param read Input string for {@code scanf}
      * @return Phi at index 0 of the resulting tuple
      */
     private static Phi first(final String format, final String read) {
         final Phi item = new PhApplication(
             new PhApplication(
-                Phi.Φ.take("string.sscanf").copy(),
+                Phi.Φ.take("string.scanf").copy(),
                 "format", new Data.ToPhi(format)
             ),
             "read", new Data.ToPhi(read)

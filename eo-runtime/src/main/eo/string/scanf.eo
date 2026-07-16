@@ -17,87 +17,87 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[format read] > sscanf /tuple
+[format read] > scanf /tuple
 
-  ++> tests-sscanf-with-string
+  ++> tests-scanf-with-string
     eq. > @
       "hello"
       head.
-        sscanf "%s" "hello"
+        scanf "%s" "hello"
 
-  ++> tests-sscanf-with-int
+  ++> tests-scanf-with-int
     eq. > @
       33
       head.
-        sscanf "%d" "33"
+        scanf "%d" "33"
 
-  ++> tests-sscanf-with-negative-int
+  ++> tests-scanf-with-negative-int
     eq. > @
       -42
       head.
-        sscanf "%d" "-42"
+        scanf "%d" "-42"
 
-  ++> tests-sscanf-with-positive-signed-int
+  ++> tests-scanf-with-positive-signed-int
     eq. > @
       42
       head.
-        sscanf "%d" "+42"
+        scanf "%d" "+42"
 
-  ++> tests-sscanf-with-float
+  ++> tests-scanf-with-float
     eq. > @
       0.24
       head.
-        sscanf "%f" "0.24"
+        scanf "%f" "0.24"
 
-  ++> throws-on-sscanf-with-wrong-format
-    sscanf "%l" "error" > @
+  ++> throws-on-scanf-with-wrong-format
+    scanf "%l" "error" > @
 
-  ++> throws-on-sscanf-with-oversized-int
-    sscanf "%d" "99999999999999999999" > @
+  ++> throws-on-scanf-with-oversized-int
+    scanf "%d" "99999999999999999999" > @
 
-  ++> tests-sscanf-with-string-int-float
+  ++> tests-scanf-with-string-int-float
     eq. > @
-      sscanf
+      scanf
         "%s %d %f"
         "hello 33 0.24"
       * "hello" 33 0.24
 
-  ++> tests-sscanf-with-string-with-ending
+  ++> tests-scanf-with-string-with-ending
     eq. > @
       "hello"
       head.
-        sscanf "%s!" "hello!"
+        scanf "%s!" "hello!"
 
-  ++> tests-sscanf-with-complex-string
+  ++> tests-scanf-with-complex-string
     eq. > @
       "test"
       head.
-        sscanf "some%sstring" "someteststring"
+        scanf "some%sstring" "someteststring"
 
-  ++> tests-sscanf-with-complex-int
+  ++> tests-scanf-with-complex-int
     eq. > @
       734987259
       head.
-        sscanf "!%d!" "!734987259!"
+        scanf "!%d!" "!734987259!"
 
-  ++> tests-sscanf-with-complex-float
+  ++> tests-scanf-with-complex-float
     eq. > @
       1991.01
       head.
-        sscanf "this will be=%f" "this will be=1991.01"
+        scanf "this will be=%f" "this will be=1991.01"
 
-  ++> tests-sscanf-with-sprintf
+  ++> tests-scanf-with-printf
     eq. > @
-      sscanf
+      scanf
         "%s is about %d?"
-        sprintf
+        printf
           "%s is about %d?"
           * "This" 8
       * "This" 8
 
-  ++> tests-sscanf-complex-case
+  ++> tests-scanf-complex-case
     eq. > @
-      sscanf
+      scanf
         "Im%d %s old and this is! Let's calculate %f + %f= %f"
         "Im18 years old and this is! Let's calculate 99999999.99 + 0.01= 100000000.0"
       *

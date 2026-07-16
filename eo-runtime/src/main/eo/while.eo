@@ -4,8 +4,7 @@
 # while > last
 #   i.lt 5 > [i]
 #   [i]
-#     Q.string.sprintf > @
-#       "Iteration %d\n"
+#     "Iteration %d\n".printf > @
 #       * i
 # ```
 #

@@ -109,28 +109,25 @@ io.stdout "Hello, world!"
 Moreover, it's possible to use brackets in order to group arguments and avoid
 ambiguity. For example, instead of using a plain string `"Hello, world!"`
 we may want to create a copy of the object `stdout` with a more complex
-argument: a copy of the object `sprintf`:
+argument: a copy of the object `printf`:
 
 ```eo
 # Says hello to Jeff.
 
 io.stdout > [] > app
-  string.sprintf
-    "Hello, %s!"
+  "Hello, %s!".printf
     * "Jeffrey"
 ```
 
-Here, the object `sprintf` is also [abstract][abstract objects].
+Here, the object `printf` is also [abstract][abstract objects].
 It is being copied with two arguments: `"Hello, %s!"` and `"Jeffrey"`.
 This program can be written using horizontal notation:
 
 ```eo
 +alias io.stdout
-+alias string.sprintf
 
-# Also says hello to Jeff.
 [] > app
-  stdout (sprintf "Hello, %s!" (* "Jeffrey")) > @
+  stdout ("Hello, %s!".printf (* "Jeffrey")) > @
 ```
 
 The special attribute `@` denotes an object that is being
@@ -148,7 +145,7 @@ inside `app` and use it to build the output string:
 [] > app
   io.stdout (msg "Jeffrey") > @
   [name] > msg
-    string.sprintf "Hello, %s!" (* name) > @
+    "Hello, %s!".printf (* name) > @
 ```
 
 Now, the object `app` has two "attached" attributes: `@` and `msg`. The attribute
@@ -165,10 +162,10 @@ malloc.empty > [args] > app
       x.as-number.lt 6 > [i] >>
       seq * > [i] >>
         io.stdout
-          string.sprintf *1
-            "%d x %1$d = %d\n"
-            x
-            x.as-number.times x
+          "%d x %1$d = %d\n".printf
+            *
+              x
+              x.as-number.times x
         x.put
           x.as-number.plus 1
     true

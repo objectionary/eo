@@ -45,7 +45,6 @@
 +alias sm.os
 +alias sm.posix
 +alias sm.win32
-+alias string.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package nk
@@ -63,7 +62,7 @@
         raw > @
         win32 > raw
         "closesocket" > close-name
-        sprintf "WSA error code %d" (* (win32 "WSAGetLastError" *).code) > error-text
+        "WSA error code %d".printf (* (win32 "WSAGetLastError" *).code) > error-text
         (win32 "WSAStartup" (* win32.winsock-version-2-2)).code > startup
         if. > cleanup
           (win32 "WSACleanup" *).code.eq win32.socket-error
@@ -130,8 +129,7 @@
         if. > @
           sent.eq -1
           cant-send
-            sprintf
-              "Failed to send a message through the socket #%d because %s"
+            "Failed to send a message through the socket #%d because %s".printf
               * sockfd sys.error-text
           sent
         buffer > buff!
@@ -144,8 +142,7 @@
         if. > @
           received.code.eq -1
           cant-receive
-            sprintf
-              "Failed to receive data from the socket #%d because %s"
+            "Failed to receive data from the socket #%d because %s".printf
               * sockfd sys.error-text
           received.output
         called. > received
@@ -157,8 +154,7 @@
       if. > @
         closed.eq -1
         T
-          sprintf
-            "Couldn't close the socket #%d because %s"
+          "Couldn't close the socket #%d because %s".printf
             * sockfd sys.error-text
         true
       code. > closed
@@ -170,8 +166,7 @@
       if. > @
         (sys.startup.eq 0).not
         cant
-          sprintf
-            "Couldn't start up the sockets subsystem because %s"
+          "Couldn't start up the sockets subsystem because %s".printf
             * sys.error-text
         seq *
           result
@@ -180,8 +175,7 @@
       if. > result!
         sd.eq -1
         cant
-          sprintf
-            "Couldn't create a socket because %s"
+          "Couldn't create a socket because %s".printf
             * sys.error-text
         seq *
           used
@@ -190,8 +184,7 @@
       if. > used!
         addr.eq sys.inaddr-none
         cant
-          sprintf
-            "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s"
+          "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s".printf
             * address sys.error-text
         scope
 
@@ -201,8 +194,7 @@
           if. > @
             connected.eq -1
             cant-connect
-              sprintf
-                "Couldn't connect to %s:%d on socket #%d because %s"
+              "Couldn't connect to %s:%d on socket #%d because %s".printf
                 * sock.address sock.port sock.sd sock.sys.error-text
             scope
               sock.scoped-socket
@@ -220,14 +212,12 @@
           if. > @
             bound.eq -1
             cant-listen
-              sprintf
-                "Couldn't bind the socket #%d to %s:%d because %s"
+              "Couldn't bind the socket #%d to %s:%d because %s".printf
                 * sock.sd sock.address sock.port sock.sys.error-text
             if.
               listened.eq -1
               cant-listen
-                sprintf
-                  "Failed to listen to %s:%d on the socket #%d because %s"
+                "Failed to listen to %s:%d on the socket #%d because %s".printf
                   * sock.address sock.port sock.sd sock.sys.error-text
               scope
                 [] >>
@@ -237,8 +227,7 @@
                     if. > @
                       client.eq -1
                       cant-accept
-                        sprintf
-                          "Failed to accept a connection on the socket #%d because %s"
+                        "Failed to accept a connection on the socket #%d because %s".printf
                           * sock.sd sock.sys.error-text
                       seq *
                         handled

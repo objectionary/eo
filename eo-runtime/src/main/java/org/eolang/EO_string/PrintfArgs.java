@@ -23,10 +23,10 @@ import org.eolang.ExFailure;
 import org.eolang.Phi;
 
 /**
- * Sprintf arguments.
+ * Printf arguments.
  * @since 0.57.4
  */
-final class SprintfArgs {
+final class PrintfArgs {
 
     /**
      * Character conversion.
@@ -49,11 +49,11 @@ final class SprintfArgs {
     private static final double LONG_UPPER_LIMIT = 0x1.0p63;
 
     static {
-        SprintfArgs.CONVERSION.put('s', Dataized::asString);
-        SprintfArgs.CONVERSION.put('d', element -> SprintfArgs.toLong(element.asNumber()));
-        SprintfArgs.CONVERSION.put('f', Dataized::asNumber);
-        SprintfArgs.CONVERSION.put('x', element -> SprintfArgs.bytesToHex(element.take()));
-        SprintfArgs.CONVERSION.put('b', Dataized::asBool);
+        PrintfArgs.CONVERSION.put('s', Dataized::asString);
+        PrintfArgs.CONVERSION.put('d', element -> PrintfArgs.toLong(element.asNumber()));
+        PrintfArgs.CONVERSION.put('f', Dataized::asNumber);
+        PrintfArgs.CONVERSION.put('x', element -> PrintfArgs.bytesToHex(element.take()));
+        PrintfArgs.CONVERSION.put('b', Dataized::asBool);
     }
 
     /**
@@ -77,7 +77,7 @@ final class SprintfArgs {
      * @param len The length
      * @param phi Phi attribute
      */
-    SprintfArgs(final String fmt, final long len, final Phi phi) {
+    PrintfArgs(final String fmt, final long len, final Phi phi) {
         this.format = fmt;
         this.length = len;
         this.retriever = phi;
@@ -90,7 +90,7 @@ final class SprintfArgs {
         while (matcher.find()) {
             final String positional = matcher.group(1);
             final char symbol = matcher.group(2).charAt(0);
-            if (symbol == SprintfArgs.PERCENT) {
+            if (symbol == PrintfArgs.PERCENT) {
                 continue;
             }
             final long arg;
@@ -125,7 +125,7 @@ final class SprintfArgs {
             }
             final Phi taken = this.retriever.copy();
             taken.put(0, new Data.ToPhi(arg));
-            arguments.add(SprintfArgs.fmt(symbol, new Dataized(taken)));
+            arguments.add(PrintfArgs.fmt(symbol, new Dataized(taken)));
         }
         return arguments;
     }
@@ -137,13 +137,13 @@ final class SprintfArgs {
      * @return Formatted object
      */
     private static Object fmt(final char symbol, final Dataized element) {
-        if (!SprintfArgs.CONVERSION.containsKey(symbol)) {
+        if (!PrintfArgs.CONVERSION.containsKey(symbol)) {
             throw new ExFailure(
                 "The format %c is unsupported, only %s formats can be used",
                 symbol, "%s, %d, %f, %x, %b"
             );
         }
-        return SprintfArgs.CONVERSION.get(symbol).apply(element);
+        return PrintfArgs.CONVERSION.get(symbol).apply(element);
     }
 
     /**
@@ -154,7 +154,7 @@ final class SprintfArgs {
      * @return The number as {@code long}
      */
     private static long toLong(final double number) {
-        if (number < Long.MIN_VALUE || number >= SprintfArgs.LONG_UPPER_LIMIT) {
+        if (number < Long.MIN_VALUE || number >= PrintfArgs.LONG_UPPER_LIMIT) {
             throw new ExFailure(
                 "The number %s doesn't fit into long range for the '%%d' conversion",
                 number

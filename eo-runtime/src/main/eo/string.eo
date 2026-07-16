@@ -12,7 +12,6 @@
 # ```
 # .
 
-+alias string.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -43,8 +42,7 @@
       if. > @
         (index.plus csize).gt size
         T
-          sprintf
-            "Expected %d byte character at %d index, but there are not enough bytes for it: %x"
+          "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
             * csize index as-bytes
         reclen
           index.plus csize
@@ -67,8 +65,7 @@
                 (byte.and p4).eq r4
                 inclen index 4 accum
                 T
-                  sprintf
-                    "Unknown byte format (%x), can't recognize character"
+                  "Unknown byte format (%x), can't recognize character".printf
                     * byte
       as-bytes.slice index 1 > byte
 
@@ -76,14 +73,12 @@
     if. > @
       nstart.lt 0
       T
-        sprintf
-          "Start index must be >= 0, but was %d"
+        "Start index must be >= 0, but was %d".printf
           * nstart
       if.
         nlen.lt 0
         T
-          sprintf
-            "Length to slice must be >= 0, but was %d"
+          "Length to slice must be >= 0, but was %d".printf
             * nlen
         if.
           nlen.eq 0
@@ -95,16 +90,14 @@
         number bstart
         0
         nlen
-        sprintf
-          "Start index + length to slice (%d) is out of string bounds"
+        "Start index + length to slice (%d) is out of string bounds".printf
           * (nstart.plus nlen)
       bstart
     recidx > bstart!
       0
       0
       nstart
-      sprintf
-        "Start index (%d) is out of string bounds"
+      "Start index (%d) is out of string bounds".printf
         * nstart
     nstart.plus nlen > end
     len > lbts!
@@ -125,8 +118,7 @@
       if. > @
         (index.plus csize).gt size
         T
-          sprintf
-            "Expected %d byte character at %d index, but there are not enough bytes for it: %x"
+          "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
             * csize index as-bytes
         recidx
           index.plus csize
@@ -154,8 +146,7 @@
                   (byte.and p4).eq r4
                   increase index 4 accum result cause
                   T
-                    sprintf
-                      "Unknown byte format (%x), can't recognize character"
+                    "Unknown byte format (%x), can't recognize character".printf
                       * byte
       as-bytes.slice index 1 > byte
 

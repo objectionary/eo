@@ -2,7 +2,6 @@
 # as two's complement. For any other length the `cant-convert` fallback
 # is returned.
 
-+alias string.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package bytes
@@ -15,8 +14,7 @@
     bts.size.eq 2
     i16 bts
     cant-convert
-      sprintf
-        "Can't convert non 2 length bytes to i16, bytes are %x"
+      "Can't convert non 2 length bytes to i16, bytes are %x".printf
         * bts
 
   ++> throws-on-bytes-of-wrong-size-as-i16
