@@ -5,17 +5,18 @@
 origin: |
   +package org.eolang
 
-  [x] > dataized /bytes
-
-    ++> tests-something
-      eq. > @
-        x
-        x
+  [] > examples
+    [] > foo
+      a > @
+    [size] > read
+      ^.^.input-block > @
+    [x] > nop
+      true > @
 
 printed: |
   +package org.eolang
 
-  [x] > dataized /bytes
-
-    ++> tests-something
-      x.eq x > @
+  [] > examples
+    a > [] > foo
+    ^.^.input-block > [size] > read
+    true > [x] > nop

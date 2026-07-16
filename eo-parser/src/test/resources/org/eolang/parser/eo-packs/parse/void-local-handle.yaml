@@ -6,9 +6,8 @@ sheets:
   - /org/eolang/parser/parse/resolve-local-names.xsl
 asserts:
   - /object[not(errors)]
-  - /object[not(//o[@local])]
-  - //o[@name='a🌵2-2' and @base='∅']
-  - //o[@name='a🌵3-2' and @base='∅']
+  - //o[@name='a🌵2-2' and @base='∅' and @local='left']
+  - //o[@name='a🌵3-2' and @base='∅' and @local='right']
   - //o[@base='a🌵3-2' and @name='φ']
 input: |
   [] > false

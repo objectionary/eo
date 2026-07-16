@@ -123,6 +123,11 @@
   </xsl:template>
   <!-- BASED -->
   <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
+    <!-- A base of the form "ξ.ρ.name…" is a single parent hop onto a
+         name that lives in the enclosing scope. -->
+    <xsl:variable name="rho-prefix" select="concat($eo:xi, '.', $eo:rho, '.')"/>
+    <xsl:variable name="rest" select="substring-after(@base, $rho-prefix)"/>
+    <xsl:variable name="first" select="if (contains($rest, '.')) then substring-before($rest, '.') else $rest"/>
     <xsl:choose>
       <!-- NOT OPTIMIZED TUPLE -->
       <xsl:when test="@star">
@@ -135,6 +140,12 @@
         <!-- The plain top-level name would be shadowed by an in-scope
              attribute, so keep the explicit Q. root to disambiguate. -->
         <xsl:value-of select="concat('Q.', eo:translate-path(substring-after(@base, concat($eo:program, '.'))))"/>
+      </xsl:when>
+      <xsl:when test="starts-with(@base, $rho-prefix) and $first != '' and $first != $eo:rho and $first != $eo:phi and $first != $eo:xi and $first != $eo:program and empty(ancestor::o[not(@base)][1]/o[@name=$first]) and exists(ancestor::o[not(@base)][2]/o[@name=$first])">
+        <!-- The single leading "^." parent hop is redundant: the name is
+             absent from the immediate scope but present in its parent, so
+             plain scope resolution re-derives the very same hop. Drop it. -->
+        <xsl:value-of select="eo:translate-path($rest)"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="eo:surface(@base)"/>
