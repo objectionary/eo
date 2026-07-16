@@ -19,6 +19,17 @@
       <xsl:apply-templates select="$arg" mode="no-as"/>
     </xsl:copy>
   </xsl:template>
+  <!--
+    An empty tuple is stored as the bare "Φ.tuple.empty" base. Render it as
+    the "*" star shorthand with no elements, mirroring how non-empty tuples
+    are lowered to stars above.
+  -->
+  <xsl:template match="o[@base = 'Φ.tuple.empty']">
+    <xsl:copy>
+      <xsl:apply-templates select="@*"/>
+      <xsl:attribute name="star"/>
+    </xsl:copy>
+  </xsl:template>
   <xsl:template match="o" mode="inner">
     <xsl:if test="@base = 'Φ.tuple'">
       <xsl:variable name="arg">
