@@ -36,10 +36,10 @@ printed: |
     [] > base
       memory 0 > x
       [self v] > f
-        ^.x.write v > @
+        x.write v > @
       [self v] > g
         self.f self v > @
     [] > derived
-      ^.base > @
+      base > @
       [self v] > f
         self.g self v > @

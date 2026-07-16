@@ -123,6 +123,11 @@
   </xsl:template>
   <!-- BASED -->
   <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
+    <!-- A base of the form "ξ.ρ.name…" is a single parent hop onto a
+         name that lives in the enclosing scope. -->
+    <xsl:variable name="rho-prefix" select="concat($eo:xi, '.', $eo:rho, '.')"/>
+    <xsl:variable name="rest" select="substring-after(@base, $rho-prefix)"/>
+    <xsl:variable name="first" select="if (contains($rest, '.')) then substring-before($rest, '.') else $rest"/>
     <xsl:choose>
       <!-- NOT OPTIMIZED TUPLE -->
       <xsl:when test="@star">
@@ -136,6 +141,12 @@
              attribute, so keep the explicit Q. root to disambiguate. -->
         <xsl:value-of select="concat('Q.', eo:translate-path(substring-after(@base, concat($eo:program, '.'))))"/>
       </xsl:when>
+      <xsl:when test="starts-with(@base, $rho-prefix) and $first != '' and $first != $eo:rho and $first != $eo:phi and $first != $eo:xi and $first != $eo:program and empty(ancestor::o[not(@base)][1]/o[@name=$first]) and exists(ancestor::o[not(@base)][2]/o[@name=$first])">
+        <!-- The single leading "^." parent hop is redundant: the name is
+             absent from the immediate scope but present in its parent, so
+             plain scope resolution re-derives the very same hop. Drop it. -->
+        <xsl:value-of select="eo:translate-path($rest)"/>
+      </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="eo:surface(@base)"/>
       </xsl:otherwise>
@@ -143,14 +154,19 @@
   </xsl:template>
   <!-- ABSTRACT OR ATOM -->
   <xsl:template match="o[eo:abstract(.) and not(eo:has-data(.))]" mode="head">
-    <xsl:text>[</xsl:text>
-    <xsl:for-each select="o[eo:void(.)]">
-      <xsl:if test="position()&gt;1">
-        <xsl:text> </xsl:text>
-      </xsl:if>
-      <xsl:value-of select="@name"/>
-    </xsl:for-each>
-    <xsl:text>]</xsl:text>
+    <!-- A test attribute with no void params collapses its empty `[]`
+         head into the `++&gt;` suffix (see the tail template), so it emits
+         no head of its own. -->
+    <xsl:if test="not(eo:test-attr(.) and empty(o[eo:void(.)]))">
+      <xsl:text>[</xsl:text>
+      <xsl:for-each select="o[eo:void(.)]">
+        <xsl:if test="position()&gt;1">
+          <xsl:text> </xsl:text>
+        </xsl:if>
+        <xsl:value-of select="@name"/>
+      </xsl:for-each>
+      <xsl:text>]</xsl:text>
+    </xsl:if>
   </xsl:template>
   <!-- TAIL: SUFFIX, NAME, CONST, ATOM -->
   <xsl:template match="o" mode="tail">
@@ -168,7 +184,17 @@
     <xsl:if test="@name">
       <xsl:choose>
         <xsl:when test="eo:test-attr(.)">
-          <xsl:text> +&gt; </xsl:text>
+          <xsl:choose>
+            <!-- No void params: collapse the empty `[]` head into a
+                 single `++&gt; name` head (the head template emits
+                 nothing in this case). -->
+            <xsl:when test="empty(o[eo:void(.)])">
+              <xsl:text>++&gt; </xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text> +&gt; </xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
           <xsl:value-of select="substring-after(@name, '+')"/>
         </xsl:when>
         <xsl:when test="starts-with(@name, concat('a', $eo:cactoos))">

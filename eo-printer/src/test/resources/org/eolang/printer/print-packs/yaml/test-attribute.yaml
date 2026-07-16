@@ -17,5 +17,5 @@ printed: |
 
   [x] > dataized /bytes
 
-    [] +> tests-something
-      ^.x.eq ^.x > @
+    ++> tests-something
+      x.eq x > @

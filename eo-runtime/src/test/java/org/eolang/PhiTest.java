@@ -17,14 +17,11 @@ final class PhiTest {
     @Test
     void takesPackage() {
         MatcherAssert.assertThat(
-            "Phi should resolve and invoke method from io.stdout package, but it didn't",
+            "Phi should resolve and invoke method from root stdout object, but it didn't",
             new Dataized(
                 new PhDispatch(
                     new PhApplication(
-                        new PhDispatch(
-                            Phi.Φ.take("io"),
-                            "stdout"
-                        ),
+                        Phi.Φ.take("stdout"),
                         0,
                         new Data.ToPhi("Hello, world")
                     ),
@@ -38,11 +35,11 @@ final class PhiTest {
     @Test
     void takesStandardPackage() {
         MatcherAssert.assertThat(
-            "Phi should resolve and invoke method from org.eolang.io.stdout package, but it didn't",
+            "Phi should resolve and invoke method from org.eolang.stdout object, but it didn't",
             new Dataized(
                 new PhDispatch(
                     new PhApplication(
-                        Phi.Φ.take("io.stdout").copy(),
+                        Phi.Φ.take("stdout").copy(),
                         0, new Data.ToPhi("Hello, world")
                     ),
                     "text"
