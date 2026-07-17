@@ -31,7 +31,8 @@
                 true > [i]
               sum
             ^.^.b > right
-            as-number. (div. (right.minus left) ^.^.n) > step
+            as-number. > step
+              div. (right.minus left) ^.^.n
   [a b] > subsection
     times. > @
       div. (b.minus a) 6
@@ -39,7 +40,8 @@
         fun a
         plus.
           4.times
-            fun (0.5.times (a.plus b))
+            fun
+              0.5.times (a.plus b)
           fun b
 
   ++> tests-calculates-lineal-integral

@@ -21,7 +21,8 @@
       if.
         pairs.length.eq 0
         *
-        entries. (rec-rebuild pairs)
+        entries.
+          rec-rebuild pairs
     [entries hashes] > couple
     [tup] > rec-rebuild
       if. > @
@@ -40,11 +41,15 @@
                 tup.head.value > value
             prev.hashes.with hash
       tuple.hash-code tup.head.key > hash!
-      @. (rec-rebuild tup.tail) > prev
+      @. > prev
+        rec-rebuild tup.tail
   [key value] > entry
   [entries] > initialized
     [key] > found
-      if. (size.eq 0) not-found (rec-key-search entries) > @
+      if. > @
+        size.eq 0
+        not-found
+        rec-key-search entries
       tuple.hash-code key > hash!
       [tup] > rec-key-search
         if. > @
@@ -58,14 +63,16 @@
                 true > exists
                 ^.^.tup.head.value > [cant-get] > get
               not-found
-        @. (rec-key-search tup.tail) > prev
+        @. > prev
+          rec-key-search tup.tail
       [] > not-found
         false > exists
         cant-get > [cant-get] > get
           "Object by hash code %d from given key does not exists".printf
             * ^.^.hash
     [key] > has
-      exists. (found key) > @
+      exists. > @
+        found key
     tuple.mapped > keys
       entries
       entry.key > [entry]
@@ -171,7 +178,8 @@
   ++> tests-removes-element-from-map-by-key
     and. > @
       1.eq mp.size
-      not. (mp.has "one")
+      not.
+        mp.has "one"
     without. > mp
       map *
         map.entry "one" 1
@@ -192,7 +200,8 @@
     and. > @
       2.eq mp.size
       3.eq
-        get. (mp.found "two")
+        get.
+          mp.found "two"
     with. > mp
       map *
         map.entry "one" 1

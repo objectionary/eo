@@ -15,7 +15,8 @@
       index.eq bts.size
       acc
       rec-hex
-        as-number. (index.plus 1)
+        as-number.
+          index.plus 1
         if.
           index.eq 0
           pair
@@ -24,7 +25,8 @@
       bts.slice index 1
     concat. > pair
       hex-digit
-        floor. (bval.div 16)
+        floor.
+          bval.div 16
       hex-digit
         bval.minus
           times.
@@ -33,16 +35,20 @@
   [h] > hex-digit
     if. > @
       h.lt 10
-      as-char (h.plus 48)
-      as-char (h.plus 55)
+      as-char
+        h.plus 48
+      as-char
+        h.plus 55
 
   ++> tests-writes-single-byte
     "41".eq > @
-      string (as-hex "A".as-bytes)
+      string
+        as-hex "A".as-bytes
 
   ++> tests-joins-bytes-with-hyphens
     "4A-65-66-66".eq > @
-      string (as-hex "Jeff".as-bytes)
+      string
+        as-hex "Jeff".as-bytes
 
   eq. ++> tests-writes-letter-nibbles
     "00-00-00-00-00-00-00-FF"
@@ -52,8 +58,10 @@
 
   ++> tests-writes-number-bytes
     "40-45-00-00-00-00-00-00".eq > @
-      string (as-hex 42.as-bytes)
+      string
+        as-hex 42.as-bytes
 
   ++> tests-writes-empty-bytes
     "".eq > @
-      string (as-hex --)
+      string
+        as-hex --

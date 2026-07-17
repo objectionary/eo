@@ -80,8 +80,49 @@
               1
 
   true.eq ++> tests-very-long-seq
-    seq
-      * true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true true
+    seq *
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
 
   ++> tests-seq-single-dataization-int-equal-to-test
     malloc.of > @

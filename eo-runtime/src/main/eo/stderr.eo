@@ -28,7 +28,8 @@
   sm.os.is-windows.if windows-output posix-output > output
   [] > posix-output
     [buffer] > write
-      @. (output-block.write buffer) > @
+      @. > @
+        output-block.write buffer
       [] > output-block
         true > @
         seq > [buffer] > write
@@ -40,7 +41,8 @@
             ^.^.output-block
   [] > windows-output
     [buffer] > write
-      @. (output-block.write buffer) > @
+      @. > @
+        output-block.write buffer
       [] > output-block
         true > @
         seq > [buffer] > write

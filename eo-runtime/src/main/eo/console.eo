@@ -81,7 +81,8 @@
               "read"
               * sm.posix.stdin-fileno size
     [buffer] > write
-      @. (output-block.write buffer) > @
+      @. > @
+        output-block.write buffer
       [] > output-block
         true > @
         seq > [buffer] > write
@@ -105,7 +106,8 @@
               "_read"
               * sm.win32.stdin-fileno size
     [buffer] > write
-      @. (output-block.write buffer) > @
+      @. > @
+        output-block.write buffer
       [] > output-block
         true > @
         seq > [buffer] > write

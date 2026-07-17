@@ -32,9 +32,11 @@
     pattern serialized > compiled
     [txt] > matches
       exists. > @
-        next. (match txt)
+        next.
+          match txt
     [txt] > match
-      matched. (matched-from-index 1 0) > next
+      matched. > next
+        matched-from-index 1 0
       [position start] > matched-from-index /Q.string.regex.pattern.match.matched
       [position start from to groups] > matched
         groups.length > count
@@ -57,7 +59,8 @@
   ++> tests-does-not-matches-regex-against-the-pattern
     not. > @
       matches.
-        compiled. (regex "/[a-z]+/")
+        compiled.
+          regex "/[a-z]+/"
         "123"
 
   ++> tests-matched-sequence-has-right-border-indexes
@@ -79,7 +82,9 @@
     and. > @
       and.
         and.
-          and. (second.text.eq "world") (second.position.eq 2)
+          and.
+            second.text.eq "world"
+            second.position.eq 2
           second.start.eq 6
         second.from.eq 7
       second.to.eq 12

@@ -49,8 +49,9 @@
     if. > [tup] > rec-delete
       tup.length.eq 0
       true
-      seq
-        * tup.head.deleted (rec-delete tup.tail)
+      seq *
+        tup.head.deleted
+        rec-delete tup.tail
   [] > tmpfile
     ^.exists.if > @
       Q.file touch.as-bytes
@@ -65,7 +66,8 @@
   ++> tests-makes-new-directory
     d.exists.and d.is-directory > @
     made. > d
-      as-dir. (mktemp.tmpfile.deleted.as-path.resolved "foo-new")
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-new"
 
   ++> tests-deletes-empty-directory
     not. > @
@@ -107,17 +109,23 @@
   ++> tests-walks-recursively
     seq * > @
       made.
-        as-dir. (d.resolved "foo/bar")
+        as-dir.
+          d.resolved "foo/bar"
       touched.
-        as-file. (d.resolved "foo/bar/test.txt")
+        as-file.
+          d.resolved "foo/bar/test.txt"
       made.
-        as-dir. (d.resolved "x/y/z")
+        as-dir.
+          d.resolved "x/y/z"
       touched.
-        as-file. (d.resolved "x/y/z/a.txt")
+        as-file.
+          d.resolved "x/y/z/a.txt"
       eq.
-        length. (d.as-dir.walk "**/*.txt")
+        length.
+          d.as-dir.walk "**/*.txt"
         2
     as-path. > d
-      made. (directory mktemp.tmpfile.deleted)
+      made.
+        directory mktemp.tmpfile.deleted
 
   walk. (directory mktemp.tmpfile.deleted) "**" --> on-walking-absent-directory

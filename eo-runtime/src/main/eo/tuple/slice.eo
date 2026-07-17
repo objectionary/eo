@@ -13,14 +13,18 @@
   ? >> start
   ? >> end
   if. > @
-    gte. (number s) e
+    gte.
+      number s
+      e
     *
     reducedi
       list
       *
       [accum item idx] >>
         if. > @
-          and. (idx.gte s) (idx.lt e)
+          and.
+            idx.gte s
+            idx.lt e
           accum.with item
           accum
   if. > e!

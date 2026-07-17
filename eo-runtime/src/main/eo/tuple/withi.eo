@@ -12,8 +12,12 @@
   ? >> index
   ? >> item
   concat > @
-    with (front list index) item
-    back list (list.length.minus index)
+    with
+      front list index
+      item
+    back
+      list
+      list.length.minus index
 
   eq. ++> tests-simple-insert
     withi

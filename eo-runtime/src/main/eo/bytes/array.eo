@@ -19,8 +19,10 @@
   if. > [tup index] > slice-byte
     index.lt len
     slice-byte
-      tup.with (bts.slice index 1)
-      as-number. (index.plus 1)
+      tup.with
+        bts.slice index 1
+      as-number.
+        index.plus 1
     tup
 
   eq. ++> tests-converts-bytes-to-array

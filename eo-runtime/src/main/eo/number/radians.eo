@@ -9,7 +9,9 @@
 +spdx SPDX-License-Identifier: MIT
 
 [num] > radians
-  div. (value.times pi) 180 > @
+  div. > @
+    value.times pi
+    180
   number num.as-bytes > value
 
   eq. (radians 0) 0 ++> tests-radians-of-zero-is-zero

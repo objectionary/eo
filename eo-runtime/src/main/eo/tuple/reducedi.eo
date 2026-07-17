@@ -58,4 +58,5 @@
         [acc x i]
           check x > @
           if. (x.lt 100) (acc.plus x) (acc.minus x) > [el] > check
-      10.plus (0.minus 500)
+      10.plus
+        0.minus 500

@@ -9,7 +9,9 @@
 
 [text substring] > ends-with
   and. > @
-    lte. (number slen) tlen
+    lte.
+      number slen
+      tlen
     eq.
       slice txt (minus. (number tlen) slen) slen
       sub

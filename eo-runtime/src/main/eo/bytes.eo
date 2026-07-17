@@ -120,7 +120,9 @@
         not. 53.as-bytes
 
   ++> tests-conjunction-of-bytes
-    eq. (a.and b) 02-23-C0-05-5E-70-10 > @
+    eq. > @
+      a.and b
+      02-23-C0-05-5E-70-10
     02-EF-D4-05-5E-78-3A > a
     12-33-C1-B5-5E-71-55 > b
 
@@ -137,7 +139,9 @@
     FF-FF-FF-FF-FF-FF-FF-FF
 
   ++> tests-concatenation-of-bytes
-    eq. (a.concat b) 02-EF-D4-05-5E-78-3A-12-33-C1-B5-5E-71-55 > @
+    eq. > @
+      a.concat b
+      02-EF-D4-05-5E-78-3A-12-33-C1-B5-5E-71-55
     02-EF-D4-05-5E-78-3A > a
     12-33-C1-B5-5E-71-55 > b
 
@@ -151,7 +155,8 @@
 
   ++> tests-concat-strings
     eq. > @
-      string (concat. "hello ".as-bytes "world".as-bytes)
+      string
+        concat. "hello ".as-bytes "world".as-bytes
       "hello world"
 
   ++> tests-or-neg-bytes-with-leading-zeroes

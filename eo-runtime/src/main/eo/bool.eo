@@ -41,7 +41,9 @@
   eq. (if. (5.eq 5) 123 42) 123 ++> tests-forks-on-true-condition
 
   ++> tests-takes-parent-object
-    eq. (a 42) 42 > @
+    eq. > @
+      a 42
+      42
     [x] > a
       take > @
       x > [] > take
@@ -73,11 +75,15 @@
     return (42.plus 1) > [] > a
 
   ++> tests-nesting-blah-test
-    eq. (blah0 0) 39 > @
+    eq. > @
+      blah0 0
+      39
     [x] > blah0
-      blah1 (x.plus 1) > @
+      blah1 > @
+        x.plus 1
       [x] > blah1
-        blah2 (x.plus 1) > @
+        blah2 > @
+          x.plus 1
         [x] > blah2
           blah3 (x.plus 1) > @
           [x] > blah3

@@ -28,7 +28,9 @@
   eq. (eq. (left. -1.as-bytes 3) 7.as-bytes) false ++> tests-left-with-minus-one
 
   ++> tests-left-with-even-neg
-    eq. (FF-FF-FF-FF-FF-FF-FF-EE.left 2) 00-00-00-00-00-00-00-47.not > @
+    eq. > @
+      FF-FF-FF-FF-FF-FF-FF-EE.left 2
+      00-00-00-00-00-00-00-47.not
 
   ++> tests-left-with-even-plus
     not. > @

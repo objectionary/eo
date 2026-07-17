@@ -23,7 +23,9 @@
 
 [input output] > tee-input
   [size] > read
-    read. (input-block input output --) size > @
+    read. > @
+      input-block input output --
+      size
     [input output buffer] > input-block
       buffer > @
       [size] > read
@@ -38,7 +40,10 @@
     eq. > @
       malloc.of
         5
-        read. (tee-input (bytes-as-input 01-02-03-04-05) (malloc-as-output mem)) 5 > [mem]
+        [mem]
+          read. > @
+            tee-input (bytes-as-input 01-02-03-04-05) (malloc-as-output mem)
+            5
       01-02-03-04-05
 
   ++> tests-reads-from-bytes-and-writes-to-memory-by-portions

@@ -20,7 +20,8 @@
   [] > abs-mod
     absx.minus > @
       absy.times
-        floor. (absx.div absy)
+        floor.
+          absx.div absy
     abs dividend > absx
     abs divisor > absy
 

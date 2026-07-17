@@ -53,8 +53,7 @@
       * 1 2
     2
 
-  ++> tests-gets-lengths-of-empty-tuple-through-special-syntax
-    tuple.empty.length.eq 0 > @
+  tuple.empty.length.eq 0 ++> tests-gets-lengths-of-empty-tuple-through-special-syntax
 
   ++> tests-empty-tuple-length
     eq. > @
@@ -79,7 +78,9 @@
     * > tup
 
   ++> tests-tuple-as-a-bound-attribute-size-1
-    eq. (tup.at 0) 100 > @
+    eq. > @
+      tup.at 0
+      100
     * 100 > tup
 
   ++> tests-tuple-as-a-bound-attribute-size-2
@@ -135,15 +136,16 @@
     a.length.eq 0 > @
     * > a
 
-  ++> tests-gets-lengths-of-empty-tuple-without-additional-obj
-    tuple.empty.length.eq 0 > @
+  tuple.empty.length.eq 0 ++> tests-gets-lengths-of-empty-tuple-without-additional-obj
 
   tuple.empty.head --> on-getting-head-from-empty-tuple
 
   tuple.empty.tail --> on-getting-tail-from-empty-tuple
 
   ++> tests-creates-empty-tuple-with-number
-    eq. (a.at 0) 3 > @
+    eq. > @
+      a.at 0
+      3
     tuple.empty.with 3 > a
 
   ++> tests-at-fast-with-first-element
@@ -169,11 +171,15 @@
       3
 
   ++> tests-tuple-with-negative-index-gets-last
-    eq. (arr.at -1) 4 > @
+    eq. > @
+      arr.at -1
+      4
     * 0 1 2 3 4 > arr
 
   ++> tests-tuple-with-negative-index-gets-first
-    eq. (arr.at -5) 0 > @
+    eq. > @
+      arr.at -5
+      0
     * 0 1 2 3 4 > arr
 
   --> on-out-of-tuple-bounds-with-negative-index

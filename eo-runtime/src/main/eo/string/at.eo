@@ -21,7 +21,9 @@
   i > idx!
   if. > index!
     0.gt idx
-    plus. (number len) idx
+    plus.
+      number len
+      idx
     idx
   text.length > len!
 

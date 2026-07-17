@@ -52,4 +52,5 @@
         string buffer
         rec-read next (buffer.concat char)
       input.as-bytes > char
-      @. (input.read 1) > next
+      @. > next
+        input.read 1

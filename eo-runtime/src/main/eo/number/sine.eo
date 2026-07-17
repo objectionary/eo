@@ -39,13 +39,17 @@
   ++> tests-sine-of-pi-halves-is-one
     lt. > @
       abs
-        minus. (times. (sine (pi.div 2)) 1000) 1000
+        minus.
+          times. (sine (pi.div 2)) 1000
+          1000
       1
 
   ++> tests-sine-of-pi-sixths-is-half
     lt. > @
       abs
-        minus. (times. (sine (pi.div 6)) 1000) 500
+        minus.
+          times. (sine (pi.div 6)) 1000
+          500
       1
 
   ++> tests-sine-of-pi-is-zero
@@ -68,7 +72,10 @@
     lt. > @
       abs
         minus.
-          times. (sine (div. (pi.times 3) 2)) 1000
+          times.
+            sine
+              div. (pi.times 3) 2
+            1000
           -1000
       1
 

@@ -60,4 +60,6 @@
   eq. (trimmed-right "value\r") "value" ++> tests-trimmed-right-strips-cr
 
   ++> tests-trimmed-right-strips-mixed-ws
-    eq. (trimmed-right "value \t\n\f\r") "value" > @
+    eq. > @
+      trimmed-right "value \t\n\f\r"
+      "value"

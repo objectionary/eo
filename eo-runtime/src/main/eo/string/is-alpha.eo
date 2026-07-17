@@ -9,7 +9,9 @@
 +spdx SPDX-License-Identifier: MIT
 
 [text] > is-alpha
-  matches. (regex "/^[a-zA-Z]+$/") text > @
+  matches. > @
+    regex "/^[a-zA-Z]+$/"
+    text
 
   is-alpha "eEo" ++> tests-checks-if-simple-text-is-alpha
 

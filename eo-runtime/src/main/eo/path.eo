@@ -28,7 +28,8 @@
         win32 jpath
         posix jpath
     string > jpath
-      as-bytes. (string.joined separator paths)
+      as-bytes.
+        string.joined separator paths
   [uri] > posix
     uri > @
     directory > as-dir
@@ -82,7 +83,9 @@
     [] > basename
       string > @
         if.
-          or. (pth.size.eq 0) (idx.eq 0)
+          or.
+            pth.size.eq 0
+            idx.eq 0
           pth
           as-bytes.
             txt.slice idx (txt.length.minus (number idx))
@@ -104,7 +107,9 @@
     [] > dirname
       string > @
         if.
-          or. (pth.size.eq 0) (len.eq -1)
+          or.
+            pth.size.eq 0
+            len.eq -1
           pth
           as-bytes. (txt.slice 0 len)
       string.last-index-of txt separator > len!
@@ -113,11 +118,13 @@
   [uri] > win32
     validated > @
       string
-        as-bytes. (validated.separated-correctly uri)
+        as-bytes.
+          validated.separated-correctly uri
     "\\" > separator
     [uri] > validated
       uri > @
-      directory (file uri) > as-dir
+      directory > as-dir
+        file uri
       file uri > as-file
       ^.separator > separator
       [uri] > is-drive-relative
@@ -147,9 +154,13 @@
       [] > normalized
         ^.^.validated > @
           if. (normalized.eq "\\\\") separator (string normalized)
-        is-drive-relative.if (ubts.slice 2 (ubts.size.plus -2)) ubts > driveless!
-        as-bool. (^.is-drive-relative ubts) > is-drive-relative
-        as-bool. (^.is-root-relative ubts) > is-root-relative
+        is-drive-relative.if > driveless!
+          ubts.slice 2 (ubts.size.plus -2)
+          ubts
+        as-bool. > is-drive-relative
+          ^.is-drive-relative ubts
+        as-bool. > is-root-relative
+          ^.is-root-relative ubts
         as-bytes. > normalized
           if.
             driveless.size.eq 0
@@ -210,7 +221,9 @@
         string pth > txt
       [] > extname
         if. > @
-          or. (base.size.eq 0) (idx.eq -1)
+          or.
+            base.size.eq 0
+            idx.eq -1
           ""
           string
             as-bytes.
@@ -236,14 +249,18 @@
     is-absolute.
       path.posix "/var/www/html"
     not.
-      is-absolute. (path.posix "foo/bar/baz")
+      is-absolute.
+        path.posix "foo/bar/baz"
 
   and. ++> tests-detects-absolute-win32-path
     and.
-      is-absolute. (path.win32 "C:\\Windows\\Users")
-      is-absolute. (path.win32 "\\Windows\\Users")
+      is-absolute.
+        path.win32 "C:\\Windows\\Users"
+      is-absolute.
+        path.win32 "\\Windows\\Users"
     not.
-      is-absolute. (path.win32 "temp\\var")
+      is-absolute.
+        path.win32 "temp\\var"
 
   eq. ++> tests-normalizes-posix-path
     normalized.

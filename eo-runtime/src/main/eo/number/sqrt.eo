@@ -10,7 +10,9 @@
 
 [num] > sqrt
   if. > @
-    lt. (number num.as-bytes) 0
+    lt.
+      number num.as-bytes
+      0
     nan
     power num 0.5
 
@@ -39,7 +41,8 @@
   ++> tests-sqrt-check-zero-input
     lt. > @
       abs
-        0.minus (sqrt 0)
+        0.minus
+          sqrt 0
       1.0E-11
 
   ++> tests-sqrt-check-negative-input
@@ -49,7 +52,8 @@
   ++> tests-sqrt-check-float-input
     lt. > @
       abs
-        2.minus (sqrt 4)
+        2.minus
+          sqrt 4
       1.0E-11
 
   ++> tests-sqrt-check-nan-input

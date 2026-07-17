@@ -13,45 +13,55 @@
     n.lt 0
     concat.
       "-".as-bytes
-      digits (n.times -1)
+      digits
+        n.times -1
     digits n
   [n] > digits
     if. > @
       n.lt 10
-      as-char (n.floor.plus 48)
+      as-char
+        n.floor.plus 48
       concat.
         digits q
         as-char
           plus.
-            floor. (n.minus (q.times 10))
+            floor.
+              n.minus (q.times 10)
             48
     floor. > q
       n.div 10
 
   ++> tests-writes-single-digit
     "7".eq > @
-      string (as-decimal 7)
+      string
+        as-decimal 7
 
   ++> tests-writes-zero
     "0".eq > @
-      string (as-decimal 0)
+      string
+        as-decimal 0
 
   ++> tests-writes-multi-digit-number
     "31415".eq > @
-      string (as-decimal 31415)
+      string
+        as-decimal 31415
 
   ++> tests-writes-negative-number
     "-42".eq > @
-      string (as-decimal -42)
+      string
+        as-decimal -42
 
   ++> tests-truncates-positive-fraction
     "42".eq > @
-      string (as-decimal 42.987)
+      string
+        as-decimal 42.987
 
   ++> tests-truncates-negative-fraction
     "-7".eq > @
-      string (as-decimal -7.89)
+      string
+        as-decimal -7.89
 
   ++> tests-writes-number-with-inner-zero
     "105".eq > @
-      string (as-decimal 105)
+      string
+        as-decimal 105

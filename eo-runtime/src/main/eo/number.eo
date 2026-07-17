@@ -29,11 +29,15 @@
           negative.if
             magnitude.not.as-i64.plus 00-00-00-00-00-00-00-01.as-i64
             magnitude.as-i64
-    eq. (as-bytes.and 80-00-00-00-00-00-00-00) 80-00-00-00-00-00-00-00 > negative
+    eq. > negative
+      as-bytes.and 80-00-00-00-00-00-00-00
+      80-00-00-00-00-00-00-00
     as-number. > exp
       as-i64.
         right. (as-bytes.and 7F-F0-00-00-00-00-00-00) 52
-    or. (as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF) 00-10-00-00-00-00-00-00 > mantissa
+    or. > mantissa
+      as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
+      00-10-00-00-00-00-00-00
     or. > out-of-range
       exp.eq 2047
       or.
@@ -44,17 +48,24 @@
             negative.and (mantissa.eq 00-10-00-00-00-00-00-00)
     if. > magnitude
       exp.gte 1075
-      mantissa.left (exp.minus 1075)
-      mantissa.right (1075.minus exp)
+      mantissa.left
+        exp.minus 1075
+      mantissa.right
+        1075.minus exp
   [x] > eq
     if. > @
       ^.is-nan.or
-        is-nan. (number xbts)
+        is-nan.
+          number xbts
       false
       or.
         and.
-          or. (xbts.eq pzero) (xbts.eq nzero)
-          or. (bts.eq pzero) (bts.eq nzero)
+          or.
+            xbts.eq pzero
+            xbts.eq nzero
+          or.
+            bts.eq pzero
+            bts.eq nzero
         bts.eq xbts
     as-bytes > bts!
     -0.as-bytes > nzero
@@ -108,7 +119,9 @@
   eq. (68.eq "12345678") false ++> tests-compares-two-different-number-types
 
   ++> tests-calculates-fibonacci-number-with-recursion
-    eq. (fibo 4) 3 > @
+    eq. > @
+      fibo 4
+      3
     [n] > fibo
       if. > @
         n.lt 3
@@ -118,7 +131,9 @@
           fibo (n.minus 2)
 
   ++> tests-calculates-fibonacci-number-with-tail
-    eq. (fibonacci 4) 3 > @
+    eq. > @
+      fibonacci 4
+      3
     [n] > fibonacci
       if. > @
         n.lt 3
@@ -132,10 +147,14 @@
           rec (n.minus 1) (minus1.plus minus2) minus1
 
   seq ++> tests-zero-division
-    * (2.div 0) true
+    *
+      2.div 0
+      true
 
   ++> tests-division-by-one
-    eq. (dividend.div 1) dividend > @
+    eq. > @
+      dividend.div 1
+      dividend
     -235 > dividend
 
   eq. (256.div 16) 16 ++> tests-div-for-dividend-greater-than-zero
@@ -201,7 +220,9 @@
                     and.
                       and.
                         and.
-                          and. (eq. (0.eq nan) false) (eq. (0.eq pinf) false)
+                          and.
+                            eq. (0.eq nan) false
+                            eq. (0.eq pinf) false
                           eq. (0.eq ninf) false
                         eq. (42.5.eq nan) false
                       eq. (42.5.eq pinf) false

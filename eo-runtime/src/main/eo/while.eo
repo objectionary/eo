@@ -38,10 +38,12 @@
   [index] > loop
     if. > @
       as-bool.
-        condition (index.plus 1)
+        condition
+          index.plus 1
       seq *
         current
-        loop (index.plus 1)
+        loop
+          index.plus 1
       current
     body index > current
 
@@ -107,7 +109,8 @@
           [iter] >>
             if. > @
               ^.^.max.eq 0
-              acc.put (acc.as-number.plus (^.^.arr.at 0))
+              acc.put
+                acc.as-number.plus (^.^.arr.at 0)
               while
                 ^.^.^.max.gt iter > [i] >>
                 seq > [i] >>
@@ -147,7 +150,8 @@
                 if. > [i] >>
                   ^.^.^.max.gt iter
                   seq *
-                    ^.^.acc.put (^.^.acc.as-number.plus (^.^.^.arr.at iter.as-number))
+                    ^.^.acc.put
+                      ^.^.acc.as-number.plus (^.^.^.arr.at iter.as-number)
                     iter.put (iter.as-number.plus 1)
                     true
                   false
@@ -169,7 +173,8 @@
                 if. > [i] >>
                   ^.^.^.max.gt iter
                   seq *
-                    ^.^.acc.put (^.^.acc.as-number.plus (^.^.^.arr.at iter.as-number))
+                    ^.^.acc.put
+                      ^.^.acc.as-number.plus (^.^.^.arr.at iter.as-number)
                     iter.put (iter.as-number.plus 1)
                     true
                   false

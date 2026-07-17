@@ -24,16 +24,19 @@
         times. 31.as-i64 acc
         as-i64.
           00-00-00-00-00-00-00.concat (bts.slice index 1)
-      as-number. (index.plus 1)
+      as-number.
+        index.plus 1
 
   and. ++> tests-hash-code-bools-is-number
     eq.
       size.
-        as-bytes. (hash-code true)
+        as-bytes.
+          hash-code true
       8
     eq.
       size.
-        as-bytes. (hash-code false)
+        as-bytes.
+          hash-code false
       8
 
   ++> tests-hash-code-int-is-int
@@ -109,8 +112,10 @@
   ++> tests-hash-codes-of-different-abstract-objects-are-not-equal
     not. > @
       eq.
-        hash-code (obj 42)
-        hash-code (obj "42")
+        hash-code
+          obj 42
+        hash-code
+          obj "42"
     x > [x] > obj
 
   ++> tests-hash-code-float-is-int

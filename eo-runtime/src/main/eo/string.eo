@@ -112,7 +112,11 @@
       T
         "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
           * csize index ^.^.as-bytes
-      recidx (index.plus csize) (accum.plus 1) result cause
+      recidx
+        index.plus csize
+        accum.plus 1
+        result
+        cause
     [index accum result cause] > recidx
       if. > @
         accum.eq result
@@ -225,7 +229,9 @@
   eq. ("The अ is अ".slice 1 6) "he अ i" ++> tests-slice-with-n3-byte-characters
 
   ++> tests-slice-with-n4-byte-characters
-    eq. ("One 😀 and 😀 another".slice 3 8) " 😀 and 😀" > @
+    eq. > @
+      "One 😀 and 😀 another".slice 3 8
+      " 😀 and 😀"
 
   eq. ("hello, 大家!".slice 7 1) "大" ++> tests-slice-foreign-literals
 

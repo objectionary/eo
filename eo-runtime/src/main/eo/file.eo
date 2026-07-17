@@ -20,7 +20,8 @@
     if. > @
       info.code.eq 0
       eq.
-        floor. (info.output.st-mode.div 4096)
+        floor.
+          info.output.st-mode.div 4096
         4
       cant-check
     called. > info
@@ -126,22 +127,33 @@
           * open-file ^
     mode > access!
     not. > writable
-      as-bool. (access.eq "r")
+      as-bool.
+        access.eq "r"
     and. > readable
       not.
-        as-bool. (access.eq "w")
+        as-bool.
+          access.eq "w"
       not.
-        as-bool. (access.eq "a")
+        as-bool.
+          access.eq "a"
     or. > existing
-      as-bool. (access.eq "r")
-      as-bool. (access.eq "r+")
+      as-bool.
+        access.eq "r"
+      as-bool.
+        access.eq "r+"
     or. > truncate
-      as-bool. (access.eq "w")
-      as-bool. (access.eq "w+")
+      as-bool.
+        access.eq "w"
+      as-bool.
+        access.eq "w+"
     or. > appending
-      as-bool. (access.eq "a")
-      as-bool. (access.eq "a+")
-    or. (existing.or truncate) appending > known
+      as-bool.
+        access.eq "a"
+      as-bool.
+        access.eq "a+"
+    or. > known
+      existing.or truncate
+      appending
     [] > open-file
       sm.os.is-windows.if > @
         open-through
@@ -174,7 +186,9 @@
           syscall.open
             * ^.^.^.path flags syscall.create-mode
         opened.code > descriptor
-        plus. (plus. (direction.plus create-bit) truncate-bit) append-bit > flags
+        plus. > flags
+          plus. (direction.plus create-bit) truncate-bit
+          append-bit
         if. > direction
           ^.^.readable.and ^.^.writable
           syscall.o-rdwr
@@ -217,7 +231,8 @@
 
   ++> tests-check-if-absent-file-does-not-exist
     not. > @
-      exists. (file "absent.txt")
+      exists.
+        file "absent.txt"
 
   ++> tests-returns-self-after-deleting
     temp.deleted.path.eq temp.path > @
@@ -249,12 +264,12 @@
   ++> tests-does-not-fail-on-double-touching
     mktemp.tmpfile.deleted.touched.touched.exists > @
 
-  ++> tests-does-not-fail-on-double-deleting
-    mktemp.tmpfile.deleted.deleted.exists.not > @
+  mktemp.tmpfile.deleted.deleted.exists.not ++> tests-does-not-fail-on-double-deleting
 
   --> an-error-on-touching-temp-file-in-absent-dir
     tmpfile. > @
-      @. (mktemp.as-path.resolved "foo")
+      @.
+        mktemp.as-path.resolved "foo"
 
   ++> tests-resolves-and-touches
     resolved.as-dir.made.tmpfile.exists.and > @

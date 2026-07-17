@@ -13,7 +13,8 @@
   ++> tests-exp-check-n0
     lt. > @
       abs
-        e.minus (exp 1)
+        e.minus
+          exp 1
       1.0E-8
 
   ++> tests-exp-check-n1

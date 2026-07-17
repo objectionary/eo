@@ -27,7 +27,8 @@
     accum
     rec-repeated
       accum.concat bts
-      as-number. (index.plus 1)
+      as-number.
+        index.plus 1
 
   repeated "" -1 --> on-text-repeating-less-than-zero-times
 

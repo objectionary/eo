@@ -19,9 +19,12 @@
       found.eq -1
     -1
     length.
-      string (slice txt 0 found)
+      string
+        slice txt 0 found
   rec-index-of > found!
-    minus. (number tlen) slen
+    minus.
+      number tlen
+      slen
   sub.size > slen!
   substring > sub!
   txt.size > tlen!
@@ -34,7 +37,9 @@
         idx
         rec-index-of
           as-number. (idx.plus -1)
-    eq. (slice txt idx slen) sub > includes
+    eq. > includes
+      slice txt idx slen
+      sub
 
   ++> tests-finds-last-index-of-substring
     5.eq > @

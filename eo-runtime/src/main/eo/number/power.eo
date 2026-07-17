@@ -33,7 +33,10 @@
             if.
               base.gt 0
               if. (expo.gt 0) pinf 0
-              if. (expo.gt 0) (odd-power.if ninf pinf) (odd-power.if 0.neg 0)
+              if.
+                expo.gt 0
+                odd-power.if ninf pinf
+                odd-power.if 0.neg 0
           if.
             expo.gt 0
             if.
@@ -48,17 +51,21 @@
   number x.as-bytes > expo
   expo.is-integer.and > odd-power
     not.
-      is-integer. (expo.div 2)
+      is-integer.
+        expo.div 2
   [b n] > ipow
     if. > @
       n.eq 0
       1
       if.
-        is-integer. (n.div 2)
+        is-integer.
+          n.div 2
         half.times half
         b.times
           ipow b (n.minus 1)
-    ipow b (n.div 2) > half
+    ipow > half
+      b
+      n.div 2
   [y] > expon
     whole.times > @
       fraction 1
@@ -111,28 +118,37 @@
   eq. (power 0 -52) pinf ++> tests-power-zero-to-negative-is-positive-infinity
 
   ++> tests-power-zero-to-negative-infinity-is-positive-infinity
-    eq. (power 0 ninf) pinf > @
+    eq. > @
+      power 0 ninf
+      pinf
 
   eq. (power 42 ninf) 0 ++> tests-power-positive-int-to-negative-infinity-is-zero
 
-  ++> tests-power-positive-float-to-negative-infinity-is-zero
-    eq. (power 42.5 ninf) 0 > @
+  eq. (power 42.5 ninf) 0 ++> tests-power-positive-float-to-negative-infinity-is-zero
 
   eq. (power -42 ninf) 0 ++> tests-power-negative-int-to-negative-infinity-is-zero
 
   ++> tests-power-negative-float-to-negative-infinity-is-zero
-    eq. (power -42.5 ninf) 0 > @
+    eq. > @
+      power -42.5 ninf
+      0
 
   ++> tests-power-positive-infinity-to-negative-infinity-is-zero
-    eq. (power pinf ninf) 0 > @
+    eq. > @
+      power pinf ninf
+      0
 
   ++> tests-power-negative-infinity-to-negative-infinity-is-zero
-    eq. (power ninf ninf) 0 > @
+    eq. > @
+      power ninf ninf
+      0
 
   eq. (power pinf -42) 0 ++> tests-power-positive-infinity-to-negative-int-is-zero
 
   ++> tests-power-positive-infinity-to-negative-float-is-zero
-    eq. (power pinf -42.2) 0 > @
+    eq. > @
+      power pinf -42.2
+      0
 
   eq. (power 2 -1) 0.5 ++> tests-power-two-to-minus-one
 
@@ -149,34 +165,54 @@
   eq. (power 0 pinf) 0 ++> tests-power-zero-to-positive-infinity-is-zero
 
   ++> tests-power-negative-int-to-positive-infinity-is-positive-infinity
-    eq. (power -10 pinf) pinf > @
+    eq. > @
+      power -10 pinf
+      pinf
 
   ++> tests-power-negative-float-to-positive-infinity-is-positive-infinity
-    eq. (power -4.2 pinf) pinf > @
+    eq. > @
+      power -4.2 pinf
+      pinf
 
   ++> tests-power-positive-int-to-positive-infinity-is-positive-infinity
-    eq. (power 42 pinf) pinf > @
+    eq. > @
+      power 42 pinf
+      pinf
 
   ++> tests-power-positive-float-to-positive-infinity-is-positive-infinity
-    eq. (power 42.5 pinf) pinf > @
+    eq. > @
+      power 42.5 pinf
+      pinf
 
   ++> tests-power-positive-infinity-to-positive-int-is-positive-infinity
-    eq. (power pinf 42) pinf > @
+    eq. > @
+      power pinf 42
+      pinf
 
   ++> tests-power-positive-infinity-to-positive-float-is-positive-infinity
-    eq. (power pinf 10.8) pinf > @
+    eq. > @
+      power pinf 10.8
+      pinf
 
   ++> tests-power-positive-infinity-to-positive-infinity-is-positive-infinity
-    eq. (power pinf pinf) pinf > @
+    eq. > @
+      power pinf pinf
+      pinf
 
   ++> tests-power-negative-infinity-to-positive-float-is-positive-infinity
-    eq. (power ninf 9.9) pinf > @
+    eq. > @
+      power ninf 9.9
+      pinf
 
   ++> tests-power-negative-infinity-to-even-int-is-positive-infinity
-    eq. (power ninf 10) pinf > @
+    eq. > @
+      power ninf 10
+      pinf
 
   ++> tests-power-negative-infinity-to-odd-int-is-negative-infinity
-    eq. (power ninf 9) ninf > @
+    eq. > @
+      power ninf 9
+      ninf
 
   eq. (power 2 3) 8 ++> tests-power-positive-int-to-positive-int
 

@@ -16,7 +16,9 @@
     0.eq len
     text
     string
-      bts.slice idx (minus. (number len) idx)
+      bts.slice
+        idx
+        minus. (number len) idx
   text > bts!
   first-non-ws-index 0 > idx!
   bts.size > len!

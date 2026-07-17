@@ -35,15 +35,19 @@
     signs-differ.if > @
       self-sign-clear
       difference-sign-clear.and
-        not. (difference.as-bytes.eq zero)
+        not.
+          difference.as-bytes.eq zero
     minus x > difference
     00-00-00-00-00-00-00-00 > zero
     80-00-00-00-00-00-00-00 > sign-mask
     as-bytes.and sign-mask > self-sign
     not. > signs-differ
-      self-sign.eq (x.as-bytes.and sign-mask)
+      self-sign.eq
+        x.as-bytes.and sign-mask
     self-sign.eq zero > self-sign-clear
-    eq. (difference.as-bytes.and sign-mask) zero > difference-sign-clear
+    eq. > difference-sign-clear
+      difference.as-bytes.and sign-mask
+      zero
   [x] > gte
     or. > @
       gt value
@@ -65,7 +69,8 @@
   [x] > plus /i64
   [x] > minus
     plus > @
-      neg. (i64 value)
+      neg.
+        i64 value
     x > value!
   [x] > div /i64
     ? > cant-divide /{string}
@@ -193,7 +198,9 @@
         "recovered" > [msg]
 
   ++> tests-i64-div-by-i64-one
-    eq. (dividend.div 1.as-i64) dividend > @
+    eq. > @
+      dividend.div 1.as-i64
+      dividend
     -235.as-i64 > dividend
 
   eq. (div. 13.as-i64 -5.as-i64) -2.as-i64 ++> tests-i64-div-with-remainder

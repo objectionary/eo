@@ -18,7 +18,8 @@
 
   ++> tests-number-with-infinite-bytes-is-not-finite
     not. > @
-      is-finite. (number pinf.as-bytes)
+      is-finite.
+        number pinf.as-bytes
 
   pinf.is-finite.not ++> tests-positive-infinity-is-not-finite
 

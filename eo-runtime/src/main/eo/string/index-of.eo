@@ -19,8 +19,11 @@
       found.eq -1
     -1
     length.
-      string (slice txt 0 found)
-  minus. (number tlen) slen > end!
+      string
+        slice txt 0 found
+  minus. > end!
+    number tlen
+    slen
   rec-index-of 0 > found!
   sub.size > slen!
   substring > sub!
@@ -34,7 +37,9 @@
         idx
         rec-index-of
           as-number. (idx.plus 1)
-    eq. (slice txt idx slen) sub > includes
+    eq. > includes
+      slice txt idx slen
+      sub
 
   ++> tests-index-of-non-existed-substring-with-more-length
     -1.eq > @

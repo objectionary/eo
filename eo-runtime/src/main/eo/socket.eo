@@ -112,7 +112,8 @@
           as-bytes. (^.^.^.recv size) > chunk
   [send] > as-output
     [buffer] > write
-      @. (output-block.write buffer) > @
+      @. > @
+        output-block.write buffer
       [] > output-block
         true > @
         seq > [buffer] > write
@@ -167,7 +168,8 @@
           * sockfd
     [scope cant] > safe-socket
       if. > @
-        not. (sys.startup.eq 0)
+        not.
+          sys.startup.eq 0
         cant
           "Couldn't start up the sockets subsystem because %s".printf
             * sys.error-text

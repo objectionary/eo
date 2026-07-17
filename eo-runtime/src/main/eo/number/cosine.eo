@@ -34,7 +34,9 @@
   ++> tests-cosine-of-pi-thirds-is-half
     lt. > @
       abs
-        minus. (times. (cosine (pi.div 3)) 1000) 500
+        minus.
+          times. (cosine (pi.div 3)) 1000
+          500
       1
 
   lt. ++> tests-cosine-is-even-function

@@ -18,11 +18,14 @@
   malloc.of > @
     0
     seq > [m] >>
-      * (copied input (malloc-as-output m)) m
+      *
+        copied input (malloc-as-output m)
+        m
 
   ++> tests-bytes-to-input-and-back
     eq. > @
-      input-as-bytes (bytes-as-input bts)
+      input-as-bytes
+        bytes-as-input bts
       bts
     01-02-03-04-05-06-07-08 > bts
 

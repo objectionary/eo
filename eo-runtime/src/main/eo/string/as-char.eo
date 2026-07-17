@@ -13,29 +13,36 @@
 
   ++> tests-writes-byte-of-uppercase-letter
     "A".eq > @
-      string (as-char 65)
+      string
+        as-char 65
 
   ++> tests-writes-byte-of-last-uppercase-letter
     "Z".eq > @
-      string (as-char 90)
+      string
+        as-char 90
 
   ++> tests-writes-byte-of-lowercase-letter
     "z".eq > @
-      string (as-char 122)
+      string
+        as-char 122
 
   ++> tests-writes-byte-of-zero-digit
     "0".eq > @
-      string (as-char 48)
+      string
+        as-char 48
 
   ++> tests-writes-byte-of-space
     " ".eq > @
-      string (as-char 32)
+      string
+        as-char 32
 
   ++> tests-writes-byte-of-last-printable
     "~".eq > @
-      string (as-char 126)
+      string
+        as-char 126
 
   ++> tests-round-trips-through-as-ascii
     "!".eq > @
       string
-        as-char (as-ascii "!")
+        as-char
+          as-ascii "!"

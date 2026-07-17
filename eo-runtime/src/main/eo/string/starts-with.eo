@@ -9,8 +9,12 @@
 
 [text substring] > starts-with
   and. > @
-    lte. (number slen) tlen
-    eq. (slice txt 0 slen) sub
+    lte.
+      number slen
+      tlen
+    eq.
+      slice txt 0 slen
+      sub
   sub.size > slen!
   substring > sub!
   txt.size > tlen!

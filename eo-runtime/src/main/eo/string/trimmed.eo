@@ -32,10 +32,16 @@
   eq. (trimmed "        ") "" ++> tests-text-trimmed-only-spaces
 
   ++> tests-trimmed-strips-mixed-ws-both-sides
-    eq. (trimmed " \t\n\f\rvalue \t\n\f\r") "value" > @
+    eq. > @
+      trimmed " \t\n\f\rvalue \t\n\f\r"
+      "value"
 
   ++> tests-trimmed-preserves-inner-content
-    eq. (trimmed "no-whitespace") "no-whitespace" > @
+    eq. > @
+      trimmed "no-whitespace"
+      "no-whitespace"
 
   ++> tests-trimmed-preserves-inner-whitespace
-    eq. (trimmed "\t hello world \n") "hello world" > @
+    eq. > @
+      trimmed "\t hello world \n"
+      "hello world"

@@ -20,7 +20,10 @@
     if. > @
       tup.length.eq 0
       *
-      if. (func tup.head tup.tail.length) (next.with tup.head) next
+      if.
+        func tup.head tup.tail.length
+        next.with tup.head
+        next
     recfilter tup.tail > next
 
   ++> tests-filteredi-with-lt

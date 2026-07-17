@@ -17,7 +17,8 @@
       plus. (timeb.time.times 1000) timeb.millitm
       plus.
         timeval.tv-sec.times 1000
-        as-number. (timeval.tv-usec.as-i64.div 1000.as-i64)
+        as-number.
+          timeval.tv-usec.as-i64.div 1000.as-i64
   output. > timeb
     sm.win32
       "_ftime32_s"

@@ -12,16 +12,22 @@
 +spdx SPDX-License-Identifier: MIT
 
 [num] > arc-sine
-  if. (arg.lt 0) base.neg base > @
+  if. > @
+    arg.lt 0
+    base.neg
+    base
   number num.as-bytes > arg
   abs arg > mag
   sqrt > root
-    div. (1.minus mag) 2
+    div.
+      1.minus mag
+      2
   if. > base
     mag.gt 0.5
     minus.
       pi.div 2
-      2.times (series root)
+      2.times
+        series root
     series mag
   [point] > series
     point.times > @
@@ -90,7 +96,11 @@
   ++> tests-arc-sine-is-odd-function
     lt. > @
       abs
-        times. (plus. (arc-sine 0.6) (arc-sine -0.6)) 1000
+        times.
+          plus.
+            arc-sine 0.6
+            arc-sine -0.6
+          1000
       1
 
   ++> tests-arc-sine-above-one-is-nan

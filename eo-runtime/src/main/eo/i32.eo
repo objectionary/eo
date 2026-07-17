@@ -37,7 +37,8 @@
   [x] > times
     i32 right > @
     slice. > right
-      as-bytes. (as-i64.times x.as-i32.as-i64)
+      as-bytes.
+        as-i64.times x.as-i32.as-i64
       4
       4
   [x] > plus

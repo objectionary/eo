@@ -75,10 +75,12 @@
   eq. ++> tests-seeded-randoms-are-equal
     next.
       next.
-        next. (random 1654)
+        next.
+          random 1654
     next.
       next.
-        next. (random 1654)
+        next.
+          random 1654
 
   ++> tests-random-is-in-range
     and. > @
@@ -91,7 +93,8 @@
           not. (rand.next.lt 0)
       and.
         rand.next.next.lt 1
-        not. (rand.next.next.lt 0)
+        not.
+          rand.next.next.lt 0
     next. > rand
       random 123
 
