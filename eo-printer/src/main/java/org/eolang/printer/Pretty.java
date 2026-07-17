@@ -247,14 +247,18 @@ final class Pretty {
      * and keep the verbose layout; a reversed dispatch that also carries
      * arguments ({@code if.} with its branches) does get the hybrid.</p>
      *
-     * <p>The hybrid is also withheld when any decoratee argument carries a
-     * name suffix ({@code [left] >>}, {@code malloc.for > [b]}, {@code
-     * b.put > [m] >>}). Those arguments become the body of the collapsed
-     * only-phi formation, and an only-phi formation may hold nothing but its
-     * {@code φ} decoratee, so a named line there fails to parse with
-     * "argument of an only-phi formation cannot carry a name suffix"
-     * (issue #5598). Keeping the verbose {@code  > @} layout gives the
-     * decoratee its own scope, where named arguments are legal.</p>
+     * <p>The hybrid is also withheld when any line in the decoratee's whole
+     * subtree carries a name suffix ({@code [left] >>}, {@code malloc.for >
+     * [b]}, {@code b.put > [m] >>}). The decoratee's subtree becomes the body
+     * of the collapsed only-phi formation, and an only-phi formation may hold
+     * nothing but its {@code φ} decoratee, so a named line anywhere within it
+     * fails to parse with "an auto-named attribute cannot be a named attribute
+     * of an only-phi formation, which binds only its φ decoratee" (issues
+     * #5598, #5604). A direct child is not enough to check: the offending line
+     * may be nested deeper — inside a tuple, a dispatch, or an application —
+     * where a shallow guard would miss it (issue #5604). Keeping the verbose
+     * {@code  > @} layout gives the decoratee its own scope, where named
+     * arguments are legal.</p>
      *
      * @param node The formation node
      * @param indent The indentation level
@@ -281,7 +285,7 @@ final class Pretty {
             final boolean applied = !decoratee.abstractt && !decoratee.children.isEmpty()
                 && !(decoratee.reversed && decoratee.children.size() <= 1);
             final boolean unnamed = decoratee.children.stream()
-                .allMatch(kid -> kid.tail.isEmpty());
+                .allMatch(Pretty.Node::nameless);
             if (value.isPresent()) {
                 result = Optional.of(
                     new StringBuilder(this.step().repeat(indent))
@@ -456,6 +460,24 @@ final class Pretty {
                     .map(Pretty.Node::parse)
                     .collect(Collectors.toList())
             );
+        }
+
+        /**
+         * Whether this node carries no name suffix anywhere in its subtree.
+         *
+         * <p>A line is "named" when its {@code tail} holds a {@code > name},
+         * {@code > [params]} or {@code >>} suffix. This walks the node and all
+         * its descendants, so a named line nested below the top level — inside
+         * a tuple, a dispatch, or an application — is caught too. It decides
+         * whether a decoratee's whole subtree is safe to fold into a compact
+         * only-phi formation, which binds nothing but its {@code φ} decoratee
+         * (issue #5604).</p>
+         *
+         * @return True when neither this node nor any descendant is named
+         */
+        boolean nameless() {
+            return this.tail.isEmpty()
+                && this.children.stream().allMatch(Pretty.Node::nameless);
         }
     }
 }
