@@ -116,8 +116,8 @@ final class Pretty {
     }
 
     /**
-     * Lay out a single shape of a node, picking the lower-penalty of its
-     * vertical and horizontal renderings.
+     * Lay out a single shape of a node, picking the lowest-penalty of its
+     * vertical, horizontal and trailing-star renderings.
      * @param node The node
      * @param indent The indentation level
      * @return The rendered block
@@ -129,6 +129,12 @@ final class Pretty {
             && new Penalty(flat.get(), this.weights).points()
             < new Penalty(best, this.weights).points()) {
             best = flat.get();
+        }
+        final Optional<String> star = this.starred(node, indent);
+        if (star.isPresent()
+            && new Penalty(star.get(), this.weights).points()
+            < new Penalty(best, this.weights).points()) {
+            best = star.get();
         }
         return best;
     }
@@ -303,6 +309,62 @@ final class Pretty {
                         indent
                     )
                 );
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Render an application whose last child is a tuple as a hybrid: the
+     * head glued to a trailing {@code *} on one line, with the tuple's
+     * elements laid out vertically beneath at one deeper indent.
+     *
+     * <p>The ordinary {@code seq *} idiom is a tuple applied as the last
+     * argument of an object. Rendered verbosely it becomes {@code seq} on
+     * one line, a lone {@code *} on the next, and the elements one level
+     * deeper still — a line taller and an indent wider than the source a
+     * human writes. This keeps the {@code *} at the tail of the head's line
+     * ({@code seq *}) and pulls the elements up one level, mirroring the
+     * hybrid inline-phi form (issues #5594, #5615). A trailing {@code *}
+     * absorbs exactly the indented siblings beneath it into the tuple, so
+     * this shape is the same tree as the verbose one, with no before-star
+     * ambiguity.</p>
+     *
+     * <p>It applies only to a plain (non-formation, non-reversed)
+     * application whose final child is a non-empty, unnamed star; any
+     * preceding arguments must inline. The elements are always laid out
+     * vertically, so the genuinely ambiguous fully-horizontal
+     * {@code head * a b} — the before-star territory — is never produced
+     * here. The result is only a candidate: {@link #shaped} keeps it only
+     * when its penalty beats the plain vertical and horizontal renderings,
+     * so a short tuple that fits inline as {@code seq}, {@code * 1 2} on the
+     * next line is left alone.</p>
+     *
+     * @param node The node
+     * @param indent The indentation level
+     * @return The rendered block, or empty if the trailing-star form doesn't apply
+     */
+    private Optional<String> starred(final Pretty.Node node, final int indent) {
+        Optional<String> result = Optional.empty();
+        if (!node.abstractt && !node.reversed && !node.children.isEmpty()) {
+            final Pretty.Node star = node.children.get(node.children.size() - 1);
+            if ("*".equals(star.base) && !star.abstractt
+                && !star.children.isEmpty() && star.tail.isEmpty()) {
+                final Optional<String> head;
+                if (node.children.size() == 1) {
+                    head = Optional.of(node.base);
+                } else {
+                    head = Pretty.inlined(
+                        node.children.subList(0, node.children.size() - 1)
+                    ).map(args -> String.join(" ", node.base, args));
+                }
+                result = head.map(text -> this.vertical(
+                    new Pretty.Node(
+                        String.join(" ", text, star.base), node.tail,
+                        false, false, false, false, star.children
+                    ),
+                    indent
+                ));
             }
         }
         return result;

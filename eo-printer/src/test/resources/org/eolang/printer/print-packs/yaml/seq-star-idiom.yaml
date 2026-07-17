@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+origin: |
+  [] > foo
+    seq > @
+      *
+        bar.deleted
+        if.
+          outcome.eq 0
+          ^
+          T
+            "Cant delete '%s': %s".printf
+              * path created.output
+
+printed: |
+  [] > foo
+    seq * > @
+      bar.deleted
+      if.
+        outcome.eq 0
+        ^
+        T
+          "Cant delete '%s': %s".printf
+            * path created.output
