@@ -332,9 +332,14 @@ final class Pretty {
      * ambiguity.</p>
      *
      * <p>It applies only to a plain (non-formation, non-reversed)
-     * application whose final child is a non-empty, unnamed star; any
-     * preceding arguments must inline. The elements are always laid out
-     * vertically, so the genuinely ambiguous fully-horizontal
+     * application whose sole child is a non-empty, unnamed star. The star
+     * must be the only child: a bare trailing {@code *} absorbs the
+     * indented siblings into the tuple, so the shape round-trips only when
+     * nothing else shares the head's line. A preceding argument
+     * ({@code sm.win32 "getenv" *}) would make the parser read a complete
+     * application with an empty tuple and reject the indented child, so
+     * {@link #tuply()} bars that case (issue #5622). The elements are always
+     * laid out vertically, so the genuinely ambiguous fully-horizontal
      * {@code head * a b} — the before-star territory — is never produced
      * here. The result is only a candidate: {@link #shaped} keeps it only
      * when its penalty beats the plain vertical and horizontal renderings,
@@ -348,11 +353,8 @@ final class Pretty {
     private Optional<String> starred(final Pretty.Node node, final int indent) {
         Optional<String> result = Optional.empty();
         if (node.tuply()) {
-            final List<Pretty.Node> kids = node.children;
-            result = Pretty.inlined(kids.subList(0, kids.size() - 1)).map(
-                args -> this.vertical(
-                    kids.get(kids.size() - 1).glued(node, args), indent
-                )
+            result = Optional.of(
+                this.vertical(node.children.get(0).glued(node), indent)
             );
         }
         return result;
@@ -536,15 +538,21 @@ final class Pretty {
          *
          * <p>A formation lays its children out as bindings and a reversed
          * dispatch keeps its receiver first, so neither is a plain
-         * application and neither qualifies. The last child must itself be
-         * a gluable star (see {@link #stars()}).</p>
+         * application and neither qualifies. The star must be the head's
+         * only child: a bare trailing {@code *} absorbs the indented
+         * siblings beneath it into the tuple, so this round-trips only for
+         * the genuine {@code seq *} idiom. When a preceding argument shares
+         * the line ({@code sm.win32 "getenv" *}), the parser reads it as a
+         * complete application with an empty tuple and rejects the indented
+         * child, so the hybrid must not fire (issue #5622). The single child
+         * must itself be a gluable star (see {@link #stars()}).</p>
          *
          * @return True when the trailing-star hybrid form is applicable
          */
         boolean tuply() {
-            final int last = this.children.size() - 1;
-            return !this.abstractt && !this.reversed && last >= 0
-                && this.children.get(last).stars();
+            return !this.abstractt && !this.reversed
+                && this.children.size() == 1
+                && this.children.get(0).stars();
         }
 
         /**
@@ -561,19 +569,17 @@ final class Pretty {
          * Build the synthetic node that renders this tuple glued to the
          * tail of {@code applier}'s line: {@code head *} on one line (with
          * the applier's own name suffix), the tuple's elements as children.
+         *
+         * <p>The star is the applier's only child (see {@link #tuply()}), so
+         * nothing precedes it on the line — the head is the applier's bare
+         * base glued straight to the {@code *}.</p>
+         *
          * @param applier The object applying this tuple
-         * @param args The applier's inlined leading arguments, if any
          * @return The glued node, laid out vertically by the caller
          */
-        Pretty.Node glued(final Pretty.Node applier, final String args) {
-            final String head;
-            if (args.isEmpty()) {
-                head = applier.base;
-            } else {
-                head = String.join(" ", applier.base, args);
-            }
+        Pretty.Node glued(final Pretty.Node applier) {
             return new Pretty.Node(
-                String.join(" ", head, this.base), applier.tail,
+                String.join(" ", applier.base, this.base), applier.tail,
                 false, false, false, false, this.children
             );
         }
