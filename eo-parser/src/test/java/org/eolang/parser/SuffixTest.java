@@ -99,7 +99,7 @@ final class SuffixTest {
     }
 
     @Test
-    void reportsMinusGreaterAsTest() {
+    void reportsMinusGreaterAsThrowingAttribute() {
         MatcherAssert.assertThat(
             "`-> name` must report test() == true so the blank-line rule applies",
             new Suffix(" -> on-add", new Span("[] -> on-add", 1), 2).test(),
