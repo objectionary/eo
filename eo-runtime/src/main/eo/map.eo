@@ -233,7 +233,7 @@
       *
         map.entry "one" 1
 
-  ++> throws-on-map-get-missing-without-fallback
+  --> on-map-get-missing-without-fallback
     (mp.found "absent").get > @
     map > mp
       *

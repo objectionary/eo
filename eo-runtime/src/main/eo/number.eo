@@ -709,16 +709,16 @@
       nan.as-bytes
       (0.0.div 0.0).as-bytes
 
-  ++> throws-on-converting-huge-number-to-i64
+  --> on-converting-huge-number-to-i64
     1.0E30.as-i64 > @
 
-  ++> throws-on-converting-long-max-boundary-to-i64
+  --> on-converting-long-max-boundary-to-i64
     9.223372036854776E18.as-i64 > @
 
-  ++> throws-on-converting-nan-to-i64
+  --> on-converting-nan-to-i64
     nan.as-i64 > @
 
-  ++> throws-on-converting-positive-infinity-to-i64
+  --> on-converting-positive-infinity-to-i64
     pinf.as-i64 > @
 
   ++> tests-out-of-range-as-i64-returns-provided-fallback

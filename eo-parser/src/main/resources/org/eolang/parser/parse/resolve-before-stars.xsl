@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="resolve-before-stars" version="2.0">
   <!--
-    Converts such XMIR with @before-star attributes:
+  Converts such XMIR with @before-star attributes:
 
-    <o base="seq" before-star="2">
-      <o base="1".../>
-      <o base="2".../>
-      <o base="3".../>
-      <o base="4".../>
-    </o>
+  <o base="seq" before-star="2">
+  <o base="1".../>
+  <o base="2".../>
+  <o base="3".../>
+  <o base="4".../>
+  </o>
 
-    Into the next one:
+  Into the next one:
 
-    <o base="seq">
-      <o base="1".../>
-      <o base="2".../>
-      <o base="tuple" star="">
-        <o base="3".../>
-        <o base="4".../>
-      </o>
-    </o>
+  <o base="seq">
+  <o base="1".../>
+  <o base="2".../>
+  <o base="tuple" star="">
+  <o base="3".../>
+  <o base="4".../>
+  </o>
+  </o>
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@before-star]">

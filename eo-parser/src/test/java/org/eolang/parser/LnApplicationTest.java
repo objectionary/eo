@@ -645,6 +645,19 @@ final class LnApplicationTest {
     }
 
     @Test
+    void acceptsLowercaseExponentFloatHead() {
+        Assertions.assertDoesNotThrow(
+            () -> {
+                final Emit emit = new Emit();
+                new LnApplication(new Span("1.0e30 > x", 1))
+                    .into(new Stack(), new Globals(), emit);
+                emit.close();
+            },
+            "lowercase e must match Double.toString's E so StUnhex output re-parses"
+        );
+    }
+
+    @Test
     void emitsBytesHead() {
         final Emit emit = new Emit();
         new LnApplication(new Span("CA-FE > x", 1))

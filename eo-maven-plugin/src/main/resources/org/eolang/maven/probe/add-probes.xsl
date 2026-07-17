@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="add-probes" version="2.0" exclude-result-prefixes="eo xs">
   <!--
   For every object FQN add probe meta
   with fully qualified name of the object.
   For instance, for object:
-   <o base=".abc" ... >
-     <o base=".edf" ... >
-       <o base="Q.number"/>
-     </o>
-   </o>
+  <o base=".abc" ... >
+  <o base=".edf" ... >
+  <o base="Q.number"/>
+  </o>
+  </o>
 
   The next metas will be added:
-   <meta>
-     <head>probe</head>
-     <tail>Φ.org</tail>
-     <part>Φ.org</part>
-   </meta>
-   <meta>
-     <head>probe</head>
-     <tail>Φ.org.number</tail>
-     <part>Φ.org.number</part>
-   </meta>
-   <meta>
-     <head>probe</head>
-     <tail>Φ.org.number.edf</tail>
-     <part>Φ.org.number.edf</part>
-   </meta>
-   <meta>
-     <head>probe</head>
-     <tail>Φ.org.number.edf.abc</tail>
-     <part>Φ.org.number.edf.abc</part>
-   </meta>
+  <meta>
+  <head>probe</head>
+  <tail>Φ.org</tail>
+  <part>Φ.org</part>
+  </meta>
+  <meta>
+  <head>probe</head>
+  <tail>Φ.org.number</tail>
+  <part>Φ.org.number</part>
+  </meta>
+  <meta>
+  <head>probe</head>
+  <tail>Φ.org.number.edf</tail>
+  <part>Φ.org.number.edf</part>
+  </meta>
+  <meta>
+  <head>probe</head>
+  <tail>Φ.org.number.edf.abc</tail>
+  <part>Φ.org.number.edf.abc</part>
+  </meta>
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>

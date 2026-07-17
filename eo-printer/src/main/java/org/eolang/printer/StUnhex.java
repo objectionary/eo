@@ -7,9 +7,11 @@ package org.eolang.printer;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StEnvelope;
 import com.yegor256.xsline.StSequence;
-import java.math.BigDecimal;
 import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import org.eolang.parser.StXnav;
 
@@ -55,17 +57,13 @@ final class StUnhex extends StEnvelope {
         ),
         new StXnav(
             StUnhex.elements("string"),
-            xnav -> xnav.node().setTextContent(
-                String.format(
-                    "\"%s\"",
-                    StUnhex.escape(
-                        new String(
-                            StUnhex.buffer(
-                                StUnhex.undash(xnav.element("o").text().orElse(""))
-                            ).array(),
-                            StandardCharsets.UTF_8
-                        )
-                    )
+            xnav -> StUnhex.decode(
+                StUnhex.buffer(
+                    StUnhex.undash(xnav.element("o").text().orElse(""))
+                ).array()
+            ).ifPresent(
+                decoded -> xnav.node().setTextContent(
+                    String.format("\"%s\"", StUnhex.escape(decoded))
                 )
             )
         )
@@ -88,7 +86,7 @@ final class StUnhex extends StEnvelope {
 
     /**
      * Convert given number to string.
-     * Prints as int if fractional part of number is 0.
+     * Prints as int when the fractional part is zero and the magnitude fits in long.
      * @param num Number to convert
      * @return Number converted to string
      */
@@ -100,7 +98,7 @@ final class StUnhex extends StEnvelope {
             } else if (Math.abs(num) < 0x1p63) {
                 str = Long.toString(num.longValue());
             } else {
-                str = BigDecimal.valueOf(num).toBigInteger().toString();
+                str = Double.toString(num).replace('E', 'e');
             }
         } else {
             str = Double.toString(num);
@@ -126,6 +124,34 @@ final class StUnhex extends StEnvelope {
             buffer.position(0);
         }
         return buffer;
+    }
+
+    /**
+     * Strictly decode UTF-8 bytes into a string.
+     * The lenient JDK decoder ({@code new String(bytes, UTF_8)}) silently
+     * replaces malformed or incomplete sequences with {@code U+FFFD}, which
+     * does not round-trip: re-parsing the printed literal yields the bytes
+     * {@code EF-BF-BD} instead of the original ones, so a pure formatting pass
+     * would change the program. A strict decoder reports such input instead,
+     * and this method returns {@link Optional#empty()} for it, leaving the
+     * caller to keep the explicit {@code Φ.string}/{@code Φ.bytes} structure.
+     * @param bytes The raw bytes
+     * @return The decoded string, or empty if the bytes are not valid UTF-8
+     */
+    private static Optional<String> decode(final byte[] bytes) {
+        Optional<String> result;
+        try {
+            result = Optional.of(
+                StandardCharsets.UTF_8.newDecoder()
+                    .onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT)
+                    .decode(ByteBuffer.wrap(bytes))
+                    .toString()
+            );
+        } catch (final CharacterCodingException ex) {
+            result = Optional.empty();
+        }
+        return result;
     }
 
     /**

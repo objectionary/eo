@@ -2,6 +2,12 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
 origin: |
   +package sandbox
   +alias stdout org.eolang.io.stdout

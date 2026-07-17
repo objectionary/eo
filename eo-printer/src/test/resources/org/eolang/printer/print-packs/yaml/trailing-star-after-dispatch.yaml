@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A tuple applied to a dotted method dispatch ("literal".printf) must keep the
+# ordinary "* elem" child, never the trailing-star hybrid ("literal".printf *).
+# A bare trailing star is absorbed by the parser only after a plain leading
+# application (seq *, map *), not after a method dispatch, where it reads as a
+# complete application with an empty tuple and drops the indented element. The
+# dispatch is stored reversed (so tuply() already rejects it), but suffixed()
+# rebuilds it non-reversed with the star as its only child, and that shape was
+# eligible for the hybrid, making format non-idempotent and lossy for string.eo
+# and socket.eo (issues #5622, #5624).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+origin: |
+  [nstart nlen code] > main
+    "Start index + length to slice (%d) is out of string bounds".printf > long
+      * (nstart.plus nlen)
+    "Start index (%d) is out of string bounds".printf > short
+      * nstart
+    "WSA error code %d".printf > wsa
+      * code.as-int
+
+printed: |
+  [nstart nlen code] > main
+    "Start index + length to slice (%d) is out of string bounds".printf > long
+      * (nstart.plus nlen)
+    "Start index (%d) is out of string bounds".printf > short
+      * nstart
+    "WSA error code %d".printf > wsa
+      * code.as-int

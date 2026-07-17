@@ -8,11 +8,14 @@
  */
 package org.eolang.EO_sm.Posix; // NOPMD
 
+import com.sun.jna.FunctionMapper;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.Platform;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.ptr.IntByReference;
+import java.util.Collections;
 import org.eolang.EO_sm.SockaddrIn;
 
 /**
@@ -25,7 +28,7 @@ public interface CStdLib extends Library {
     /**
      * C STDLIB instance.
      */
-    CStdLib INSTANCE = Native.load("c", CStdLib.class);
+    CStdLib INSTANCE = CStdLib.load();
 
     /**
      * Standard input file descriptor.
@@ -224,8 +227,8 @@ public interface CStdLib extends Library {
     /**
      * Listen for incoming connections on socket.
      * @param sockfd Socket descriptor
-     * @param backlog Specifies the queue length for completely established sockets
-     *  waiting to be accepted
+     * @param backlog Specifies the queue length for completely established
+     *  sockets waiting to be accepted
      * @return Zero on success, -1 on error
      */
     int listen(int sockfd, int backlog);
@@ -235,8 +238,8 @@ public interface CStdLib extends Library {
      * @param sockfd Socket descriptor
      * @param addr Address structure
      * @param addrlen The size of the address structure
-     * @return On success, file descriptor for the accepted socket (a nonnegative integer)
-     *  is returned. On error, -1 is returned
+     * @return On success, file descriptor for the accepted socket
+     *  (a nonnegative integer) is returned. On error, -1 is returned
      */
     int accept(int sockfd, SockaddrIn addr, IntByReference addrlen);
 
@@ -277,4 +280,40 @@ public interface CStdLib extends Library {
      * @return Error as string
      */
     String strerror(int errno);
+
+    /**
+     * Load the C standard library.
+     *
+     * <p>On Intel macOS, {@code dlsym("stat")} resolves to the legacy
+     * 32-bit-inode version whose struct layout differs from the 64-bit-inode
+     * one used by {@link StatSyscall.Mac}. We remap {@code stat} to
+     * {@code stat$INODE64} to get the right layout. On arm64 macOS and
+     * Linux the plain {@code stat} symbol already uses that layout.</p>
+     *
+     * @return Loaded CStdLib instance
+     */
+    private static CStdLib load() {
+        final CStdLib result;
+        if (Platform.isMac() && !Platform.isARM()) {
+            result = Native.load(
+                "c",
+                CStdLib.class,
+                Collections.singletonMap(
+                    Library.OPTION_FUNCTION_MAPPER,
+                    (FunctionMapper) (lib, method) -> {
+                        final String mapped;
+                        if ("stat".equals(method.getName())) {
+                            mapped = "stat$INODE64";
+                        } else {
+                            mapped = method.getName();
+                        }
+                        return mapped;
+                    }
+                )
+            );
+        } else {
+            result = Native.load("c", CStdLib.class);
+        }
+        return result;
+    }
 }

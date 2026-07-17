@@ -17,7 +17,7 @@
       "Can't convert non 8 length bytes to i64, bytes are %x".printf
         * bts
 
-  ++> throws-on-bytes-of-wrong-size-as-i64
+  --> on-bytes-of-wrong-size-as-i64
     01-01-01-01.as-i64 > @
 
   ++> tests-wrong-size-as-i64-returns-provided-fallback

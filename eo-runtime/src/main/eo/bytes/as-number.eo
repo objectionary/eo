@@ -26,7 +26,7 @@
             "Can't convert non 8 length bytes to a number, bytes are %x".printf
               * bts
 
-  ++> throws-on-bytes-of-wrong-size-as-number
+  --> on-bytes-of-wrong-size-as-number
     01-01-01-01.as-number > @
 
   ++> tests-wrong-size-as-number-returns-provided-fallback

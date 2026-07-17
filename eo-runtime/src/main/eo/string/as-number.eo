@@ -23,7 +23,7 @@
       5
       as-number "5"
 
-  ++> throws-on-converting-text-to-number
+  --> on-converting-text-to-number
     as-number "Hello" > @
 
   ++> tests-non-numeric-text-returns-provided-fallback

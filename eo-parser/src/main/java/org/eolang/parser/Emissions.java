@@ -4,7 +4,6 @@
  */
 package org.eolang.parser;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -312,7 +311,7 @@ final class Emissions {
         } else {
             canonical = Double.toString(parsed);
         }
-        if (!value.raw().equals(canonical)) {
+        if (!value.raw().equalsIgnoreCase(canonical)) {
             throw new ParseError(
                 line, value.pos(),
                 String.format(
@@ -341,7 +340,7 @@ final class Emissions {
         } else if (Math.abs(num) < 0x1p63) {
             str = Long.toString((long) num);
         } else {
-            str = BigDecimal.valueOf(num).toBigInteger().toString();
+            str = Double.toString(num).replace('E', 'e');
         }
         return str;
     }

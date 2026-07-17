@@ -16,7 +16,9 @@ import java.util.List;
  * is named by the right-hand suffix. The compact test shorthand
  * {@code lhs ++> name} (R-3.10.8 / R-6.3.6) is accepted as sugar for
  * {@code lhs > [] +> name} — a parameterless test attribute whose sole
- * binding is the {@code φ} decoratee {@code lhs}.</p>
+ * binding is the {@code φ} decoratee {@code lhs}. The throwing
+ * counterpart {@code lhs --> name} is sugar for {@code lhs > [] -> name}.
+ * </p>
  *
  * <p>Mechanics (R-3.10.1):</p>
  *
@@ -92,11 +94,11 @@ final class LnOnlyPhi implements Line {
             );
             origin = bracket + 1;
         } else {
-            final int shorthand = Eo.topLevelPlusPlusArrowIndex(body);
+            final int shorthand = LnOnlyPhi.shorthandArrow(body);
             if (shorthand < 0) {
                 throw new ParseError(
                     this.span.line(), this.span.indent(),
-                    "only-phi formation must contain `> [` or `++>`"
+                    "only-phi formation must contain `> [`, `++>` or `-->`"
                 );
             }
             lhs = body.substring(0, shorthand).stripTrailing();
@@ -137,6 +139,21 @@ final class LnOnlyPhi implements Line {
         }
         this.emitVoids(emit, params, origin);
         this.emitPhi(emit, tokens, open);
+    }
+
+    /**
+     * The top-level index of the compact test shorthand on an inline-phi
+     * line — the truthy {@code ++>} or, failing that, the throwing
+     * {@code -->} marker — or -1 when neither is present.
+     * @param body The line body
+     * @return Index of the shorthand marker, or -1
+     */
+    private static int shorthandArrow(final String body) {
+        int idx = Eo.topLevelPlusPlusArrowIndex(body);
+        if (idx < 0) {
+            idx = Eo.topLevelMinusMinusArrowIndex(body);
+        }
+        return idx;
     }
 
     /**

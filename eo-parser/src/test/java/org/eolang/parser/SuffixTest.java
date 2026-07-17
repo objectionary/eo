@@ -81,6 +81,54 @@ final class SuffixTest {
     }
 
     @Test
+    void parsesMinusGreaterAttribute() {
+        MatcherAssert.assertThat(
+            "`-> name` must yield Form.THROWS with the parsed name",
+            new Suffix(" -> throws-on-add", new Span("[] -> throws-on-add", 1), 2).form(),
+            Matchers.equalTo(Suffix.Form.THROWS)
+        );
+    }
+
+    @Test
+    void carriesMinusGreaterName() {
+        MatcherAssert.assertThat(
+            "a throwing test suffix's label() must be the identifier after `->`",
+            new Suffix(" -> on-add", new Span("[] -> on-add", 1), 2).label(),
+            Matchers.equalTo("on-add")
+        );
+    }
+
+    @Test
+    void reportsMinusGreaterAsThrowingAttribute() {
+        MatcherAssert.assertThat(
+            "`-> name` must report test() == true so the blank-line rule applies",
+            new Suffix(" -> on-add", new Span("[] -> on-add", 1), 2).test(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void marksMinusGreaterAttributeWithMinusPrefix() {
+        MatcherAssert.assertThat(
+            "a throwing test's XMIR name must carry the `-` marker prefix",
+            new Suffix(" -> on-add", new Span("[] -> on-add", 1), 2).attribute(1, 2),
+            Matchers.equalTo("-on-add")
+        );
+    }
+
+    @Test
+    void rejectsMinusGreaterWithPhi() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix(
+                " -> @",
+                new Span("[] -> @", 1), 2
+            ),
+            "`-> @` must be rejected — a test name must be an identifier, not @"
+        );
+    }
+
+    @Test
     void detectsConstMarkerOnNamedSuffix() {
         MatcherAssert.assertThat(
             "`> name!` must report constant() == true",

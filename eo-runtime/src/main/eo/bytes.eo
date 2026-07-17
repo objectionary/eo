@@ -279,7 +279,7 @@
       FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
       FF-FF-FF-FF-00-00-00-01
 
-  ++> throws-on-out-of-bounds-slice
+  --> on-out-of-bounds-slice
     20-1F-EE-B5-90.slice 3 10 > @
 
   ++> tests-out-of-bounds-slice-returns-provided-fallback

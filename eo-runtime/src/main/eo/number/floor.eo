@@ -49,13 +49,13 @@
 
   ++> tests-floor-of-large-positive-integer
     eq. > @
-      100000000000000000000.floor
-      100000000000000000000
+      1.0E20.floor
+      1.0E20
 
   ++> tests-floor-of-large-negative-integer
     eq. > @
-      -100000000000000000000.floor
-      -100000000000000000000
+      -1.0E20.floor
+      -1.0E20
 
   ++> tests-floor-of-zero
     eq. > @

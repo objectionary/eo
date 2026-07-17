@@ -89,7 +89,7 @@
     .exists
     .not > @
 
-  ++> throws-on-opening-directory
+  --> on-opening-directory
     mktemp.open > @
       "w"
       true > [d]
@@ -134,5 +134,5 @@
         (d.as-dir.walk "**/*.txt").length.eq 2
     (directory mktemp.tmpfile.deleted).made.as-path > d
 
-  ++> throws-on-walking-absent-directory
+  --> on-walking-absent-directory
     (directory mktemp.tmpfile.deleted).walk "**" > @

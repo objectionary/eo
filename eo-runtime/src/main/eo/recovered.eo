@@ -44,7 +44,7 @@
         42
       42
 
-  ++> throws-when-both-are-terminated
+  --> when-both-are-terminated
     recovered > @
       2.as-i64.div 0.as-i64
       5.as-i64.div 0.as-i64

@@ -103,7 +103,8 @@ Four base forms (mutually exclusive on any given line) plus their modifiers; §3
 
 - **`> name`** — explicit name binding. May carry modifiers: `!` (const) and `/sig` (atom signature). The modifiers are not separate forms — they decorate the `> name` base.
 - **`>>`** — auto-generated name. May carry `!` (const). `/sig` is forbidden on `>>` (R-3.10.2).
-- **`+> name`** — test attribute (§6.3). `name` must be a `NAME` token.
+- **`+> name`** — truthy test attribute (§6.3). `name` must be a `NAME` token.
+- **`-> name`** — throwing test attribute (§6.3): the test is expected to throw an exception. Parallel to `+>` in every respect (same `NAME`-token rule, same depth constraint R-6.3.3, same mandatory blank line R-6.5.3); only the emitted marker prefix differs (`-` instead of `+`, §9.4).
 - **(none)** — no suffix. Legal except when the object is a plain child of a formation (§6.2).
 
 A composite inline-phi suffix `> [params] > name` (or `> [params] >>`) introduces an inline-phi formation as the line's outer kind (§3.10, §4.5). This is not a separate base form — it embeds one of the base forms on its right side.
@@ -201,6 +202,8 @@ Each non-blank, non-comment line is classified into exactly one shape, determine
 | `+` | followed by digit | signed-number application (see §3.6) |
 | `+` | followed by `+>` | test-attribute shorthand — `++> name` desugars to `[] +> name` (§3.4 / R-6.3.6) |
 | `+` | otherwise | meta directive (§3.2) |
+| `-` | followed by `->` | throwing-test-attribute shorthand — `--> name` desugars to `[] -> name` (§3.4 / R-6.3.6) |
+| `-` | otherwise | application starting with literal — signed number, `--` empty bytes, etc. (§3.6) |
 | `#` | — | comment (§3.3) |
 | `.` | — | method-dispatch line (§3.5) |
 | `\|` | — | pipe-application line (§3.14) |
@@ -223,7 +226,7 @@ LineShape {
                TextBlockClose }
   outer_kind: OuterKind     // see §4 / Appendix A
   has_name_suffix: bool
-  name_suffix: NameForm     // > name | >> | +> name | > name /sig | none
+  name_suffix: NameForm     // > name | >> | +> name | -> name | > name /sig | none
   has_horizontal_args: bool
   horizontal_arg_count: int
   has_inline_phi: bool      // line ends with `> [...] >`
@@ -483,7 +486,8 @@ There are **four base forms** of name suffix (mutually exclusive on any one line
 | --- | --- |
 | `> name` | Explicit name. Optional trailing `!` for const. Optional ` /sig` to declare an atom. |
 | `>>` | Auto-generated name (deterministic, derived from line and column). Optional `!`. Optional trailing `NAME` — a file-local handle (R-3.10.12). Atom signature forbidden. |
-| `+> name` | Test attribute. `name` must be a `NAME` token, not `PHI` (`@`) — see R-6.3.5. Legal only at indent level 1 of a top-level object (§6.3). |
+| `+> name` | Truthy test attribute. `name` must be a `NAME` token, not `PHI` (`@`) — see R-6.3.5. Legal only at indent level 1 of a top-level object (§6.3). |
+| `-> name` | Throwing test attribute — expected to throw. Same rules as `+> name`; emits the `-` marker prefix instead of `+` (§9.4). |
 | (none) | Allowed unless the object is a plain child of a formation (§6.2). |
 
 **Inline-phi composite forms** (introduce an inline-phi formation as the line's outer kind):
@@ -513,7 +517,7 @@ R-3.10.6. The LHS of inline-phi must be non-empty: at least one expression with 
 
   Only the four kinds enumerated above (head, hmethod, happlication, paren group) are permitted as inline-phi LHS.
 R-3.10.7. **Exactly one `> [params]` suffix per line.** Chained inline-phi suffixes (`expr > [a] > [b] > name`) are rejected, even though the underlying grammar can express them. The construct is unused in practice and adds parsing complexity for no gain.
-R-3.10.8. **Inline-phi suffix variants.** The right-hand suffix on an inline-phi line may take any of these forms (optionally with `!` const on the name): `> [params] > name` (explicit name), `> [params] >>` (auto-generated name), `> [params] +> name` (test attribute), or bare `> [params]` (auto-named, equivalent to `> [params] >>`). All four shapes are accepted by the parser; the test-attribute form additionally inherits the depth constraint of R-6.3.3. **Compact test shorthand `++>`.** A parameterless test attribute whose only binding is the `φ` decoratee also has a collapsed spelling that merges the empty `[]` param list with the `++>` head shorthand (R-6.3.6): `lhs ++> name` is sugar for `lhs > [] +> name`. The `++>` marker is recognised in this inline-phi suffix position only when preceded by a space (a leading `++>` at the head of a line is the bare-formation shorthand of R-6.3.6, not an inline-phi suffix). XMIR emission is identical to the expanded `> [] +> name` form.
+R-3.10.8. **Inline-phi suffix variants.** The right-hand suffix on an inline-phi line may take any of these forms (optionally with `!` const on the name): `> [params] > name` (explicit name), `> [params] >>` (auto-generated name), `> [params] +> name` (truthy test attribute), `> [params] -> name` (throwing test attribute), or bare `> [params]` (auto-named, equivalent to `> [params] >>`). All shapes are accepted by the parser; the test-attribute forms additionally inherit the depth constraint of R-6.3.3. **Compact test shorthand `++>` / `-->`.** A parameterless test attribute whose only binding is the `φ` decoratee also has a collapsed spelling that merges the empty `[]` param list with the `++>` (truthy) or `-->` (throwing) head shorthand (R-6.3.6): `lhs ++> name` is sugar for `lhs > [] +> name`, and `lhs --> name` is sugar for `lhs > [] -> name`. The `++>` / `-->` marker is recognised in this inline-phi suffix position only when preceded by a space (a leading `++>` / `-->` at the head of a line is the bare-formation shorthand of R-6.3.6, not an inline-phi suffix). XMIR emission is identical to the expanded `> [] +> name` / `> [] -> name` form.
 R-3.10.9. Anything after the name is reported as "unexpected content" without aborting the line.
 R-3.10.10a. **Anonymous inline-phi as a paren-grouped value.** Inline-phi formations are normally line-level suffixes (R-3.10.1), but the bare form `body > [params]` (no `> name` / `>>` / `+> name` on the right) is **also legal inside a paren group** as a value-level expression: `(body > [params])`. The group then evaluates to an anonymous formation with the given params and `body` bound to its `φ` slot; the enclosing context (a horizontal arg, the LHS of a binding, etc.) supplies any naming. Only the bare (anonymous) form is permitted in this position — `(body > [params] > name)`, `(body > [params] >>)`, and `(body > [params] +> name)` are rejected: naming and test attributes must attach at line level. The construct is rare; the canonical use is passing a one-parameter formation as a horizontal arg without dedicating a separate line, e.g. `malloc.of 8 (m.put 10 > [m])`.
 
@@ -873,7 +877,7 @@ When a level record is popped or replaced:
 R-5.3.1. **Naming check.** If `parent_kind = formation` or `parent_kind = top-level`, then `named?` must be true. Otherwise: error "object inside formation must have a name" at `start_line`.
 R-5.3.2. **Bare reversed completeness.** If `kind = bare-reversed` and `receiver_consumed? = false`: error "reversed dispatch missing receiver."
 R-5.3.3. **Compact tuple count.** If `kind = compact-tuple` and `child_count < compact_tuple_n`: error "compact tuple `*N` requires at least N children, got `child_count`."
-R-5.3.4. **Atom body.** If the popped entry's `parent_is_atom?` is true, the popped entry's kind must be `bare-formation` **AND** its name-suffix form must be `+>` (R-6.3.1). Otherwise: error `atom may contain only test attributes`. (`+>` is a name-suffix variant, not a property of the kind itself; this rule checks both fields.) Note: even when this check passes, the `+>` child must additionally satisfy the depth constraint of R-6.3.3 (verified separately by R-5.3.5); a `+>` child of a *nested* atom fails R-5.3.5 because tests are legal only at indent 2 of a top-level object.
+R-5.3.4. **Atom body.** If the popped entry's `parent_is_atom?` is true, the popped entry's kind must be `bare-formation` **AND** its name-suffix form must be a test attribute (`+>` or `->`) (R-6.3.1). Otherwise: error `atom may contain only test attributes`. (`+>` is a name-suffix variant, not a property of the kind itself; this rule checks both fields.) Note: even when this check passes, the `+>` child must additionally satisfy the depth constraint of R-6.3.3 (verified separately by R-5.3.5); a `+>` child of a *nested* atom fails R-5.3.5 because tests are legal only at indent 2 of a top-level object.
 
 R-5.3.4a. **R-5.3.4 and R-5.3.5 are disjoint.** Both rules check the popped entry's suffix and parent, but on disjoint conditions: R-5.3.4 fires *only when* the popped entry is **not** a `+>` test (so it can't have `+>` to feed R-5.3.5); R-5.3.5 fires *only when* the popped entry **is** a `+>` test (so the atom-body check passes vacuously). A single popped entry cannot trigger both rules. Multiple errors per source line are possible only when the line introduces *multiple* level records that each independently fail (e.g., a nested atom *and* a deeply-placed test in the same file), but in that case each error attaches to its own entry's `start_line`.
 R-5.3.5. **Test depth.** If the popped entry's name suffix is `+>`, the popped entry's *immediate parent* must itself be a top-level formation (sitting at indent 0). Concretely:
@@ -976,14 +980,14 @@ Illegal:
 
 ### 6.3 Atoms and test attributes
 
-R-6.3.1. A formation declared with `/sig` suffix on its name is an **atom**. An atom may contain only test attributes (`+>`); regular bound or master children are rejected.
+R-6.3.1. A formation declared with `/sig` suffix on its name is an **atom**. An atom may contain only test attributes (truthy `+>` or throwing `->`); regular bound or master children are rejected.
 R-6.3.2. A non-atom formation may contain any mix of plain children, master children, and test attributes.
-R-6.3.3. A test attribute (`+>`) is legal **only** at indent level 1 (indent 2 spaces) — i.e., as a direct child of the top-level object. Test attributes at any other depth are rejected.
+R-6.3.3. A test attribute (`+>` truthy or `->` throwing) is legal **only** at indent level 1 (indent 2 spaces) — i.e., as a direct child of the top-level object. Test attributes at any other depth are rejected.
 R-6.3.4. Atoms may appear at any nesting depth, with two restrictions:
   - **(a)** A nested atom (one not at indent 0) cannot hold tests (R-6.3.3 — `+>` legal only at indent 2 of top-level) and cannot hold regular children (R-6.3.1 — atoms accept only test children). Therefore a nested atom's body must be **empty**.
   - **(b)** A nested atom is legal only when the containing formation is **not itself an atom**. Atoms inside atoms are rejected: an atom's body may contain only `+>` test attributes (R-6.3.1), and a master child (formation/atom) of an atom is therefore inadmissible regardless of body shape.
-R-6.3.5. A test attribute name must be a `NAME` token. `+> @` (PHI as test name) is rejected even though the underlying grammar's `tname : tarrow (PHI | NAME)` accepts it. Tests are named identifiers; `@` has no meaning as a test name.
-R-6.3.6. **Test-attribute shorthand.** A line whose first non-space characters are `++>` is sugar for a bare parameterless formation with a test suffix: `++> name` ≡ `[] +> name`. The two forms are equivalent in every respect after classification — same XMIR emission (§9.4), same depth constraint (R-6.3.3), same name rules (R-6.3.5). There is no ambiguity with meta directives: metas are legal only before the first object (R-3.2.2), and their names never start with `+`. The same `++>` marker is also accepted in the **inline-phi suffix position** (`lhs ++> name` ≡ `lhs > [] +> name`, R-3.10.8), where a space precedes it; there it binds the LHS to the test attribute's sole `φ` decoratee.
+R-6.3.5. A test attribute name (truthy `+>` or throwing `->`) must be a `NAME` token. `+> @` / `-> @` (PHI as test name) is rejected even though the underlying grammar's `tname : tarrow (PHI | NAME)` accepts it. Tests are named identifiers; `@` has no meaning as a test name.
+R-6.3.6. **Test-attribute shorthand.** A line whose first non-space characters are `++>` (truthy) or `-->` (throwing) is sugar for a bare parameterless formation with a test suffix: `++> name` ≡ `[] +> name`, `--> name` ≡ `[] -> name`. The two forms are equivalent in every respect after classification — same XMIR emission (§9.4), same depth constraint (R-6.3.3), same name rules (R-6.3.5). There is no ambiguity with meta directives: metas are legal only before the first object (R-3.2.2), start with `+`, and their names never begin with `+>`; a `-`-headed line is never a meta. The same `++>` / `-->` markers are also accepted in the **inline-phi suffix position** (`lhs ++> name` ≡ `lhs > [] +> name`, `lhs --> name` ≡ `lhs > [] -> name`, R-3.10.8), where a space precedes them; there they bind the LHS to the test attribute's sole `φ` decoratee. The throwing shorthand and its expanded `[] -> name` form select `Assertions.assertThrows` at transpile time purely from the `-` marker (§9.4); the truthy forms select `Assertions.assertTrue`.
 
 Examples:
 
@@ -1219,7 +1223,8 @@ R-9.2.3. **File-local handles (R-3.10.12).** A `>> name` suffix emits the object
 | --- | --- |
 | Void parameter `[a b c]` | Each param emits `<o name='<param>' base='∅'/>` as a void child |
 | Const-marker `> name!` | `@const` attribute (empty value: `@const=""`) |
-| Test attribute `[] +> name` | `@name='+<name>'` (the `+` prefix marks it as a test) |
+| Truthy test attribute `[] +> name` | `@name='+<name>'` (the `+` prefix marks it as a truthy test; transpiles to `Assertions.assertTrue`) |
+| Throwing test attribute `[] -> name` | `@name='-<name>'` (the `-` prefix marks it as a throwing test; transpiles to `Assertions.assertThrows`) |
 | Atom signature `> name /sig` | A wrapper `<o>` carries the user-given `@name='<name>'`. Children, in order: (1) void params from the `[…]` head, in source order; (2) the marker `<o name='λ' atom='<sig>'/>` immediately after the voids; (3) any test attributes (`+>`) that follow. Example: `[a b] > foo /bar` emits `<o name='foo'><o name='a' base='∅'/><o name='b' base='∅'/><o name='λ' atom='bar'/>...</o>` |
 | Compact tuple `*N` | A synthetic wrapper `<o base='Φ.tuple' star=''>` is emitted as the *last* child of the head, containing the tupled portion of the children. The first `N` children stay as direct positional args; the remaining children go inside this wrapper. The `@star` attribute lives on the wrapper, never on the head. See R-3.9.2 for the partition. |
 | Inline binding `:label` | `@as='label'` on the argument `<o>` |
@@ -1239,9 +1244,9 @@ For each outer kind, this table fixes the order of `<o>` children inside its emi
 | `head` | none (single self-contained `<o>` carrying `@base`). |
 | `hmethod` (single line, 0 hargs) | Emits a **sequence of sibling `<o>`s** under the enclosing parent: (1) the receiver of the chain as the first sibling; (2) one `<o base='.<methodname>' method=''>` per `.method` segment, in source order. Because the whole chain lives on **one source line**, only the last `.method` segment can carry a name suffix (the line's `> name`); intermediate segments on the same line have no syntactic place for their own name. (The intermediate-names provision of R-6.2.3 applies only to `vmethod` chains, where each `.method` is on its own line.) See R-9.0.3 for the convention. |
 | `happlication`, `vapplication` | The outer `<o>` carries `@base = head reference` (or, for chained heads, the last link's `<o>` is the outer one — R-9.0.3.1). Arguments emit as direct children of that `<o>` in source order. |
-| `bare-formation` | (1) void params from the `[...]` head, in source order; (2) all body children — plain, master, and `+>` test attributes — in source order as they appear in the body. The parser does **not** reorder children by category; the category distinction in §1.3 is about role and naming requirements, not emission order. |
+| `bare-formation` | (1) void params from the `[...]` head, in source order; (2) all body children — plain, master, and `+>` / `->` test attributes — in source order as they appear in the body. The parser does **not** reorder children by category; the category distinction in §1.3 is about role and naming requirements, not emission order. |
 | `inline-phi-formation` | (1) void params from `> [params]` in source order; (2) the LHS expression as a single child with `@name='φ'`. When the LHS has no horizontal args this `φ` `<o>` stays open, and deeper-indent lines emit inside it as its vertical arguments (`@as='αN'`, per `vapplication`); at close time the φ `<o>` and the formation `<o>` are both closed. When the LHS has horizontal args the φ is closed at emit time and the line accepts no children (R-6.1.1). The formation's other attribute slots stay empty — its only bound attribute is `φ` — so an argument may not carry a name suffix (R-5.3.6). |
-| Atom (formation + `/sig`) | (1) void params in source order; (2) `<o name='λ' atom='<sig>'/>` marker; (3) test attributes (`+>`) in source order |
+| Atom (formation + `/sig`) | (1) void params in source order; (2) `<o name='λ' atom='<sig>'/>` marker; (3) test attributes (`+>` / `->`) in source order |
 | `bare-reversed` (vertical) | (1) the receiver's `<o>` first; (2) each method-arg `<o>` in source order |
 | `reversed-with-hargs` | same as `bare-reversed` — receiver first, args in source order |
 | `vmethod`, `vmethod-with-hargs` | Same shape as `hmethod` (R-9.0.3): the chain emits as **flat siblings** under the enclosing parent — the receiver first, then one `<o base='.<methodname>' method=''>` per `.method` continuation line in source order. The chain's outermost user-given name attaches to the last link. For `vmethod-with-hargs`, any horizontal args on the final `.method` line appear as children of that final link's `<o>`, in source order. Intermediate optional names (R-6.2.3) attach to their respective link `<o>`s. (Downstream `wrap-method-calls.xsl` folds the flat siblings into nested form — outside the parser's contract.) |

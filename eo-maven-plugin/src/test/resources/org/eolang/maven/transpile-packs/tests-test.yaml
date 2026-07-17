@@ -15,10 +15,11 @@ asserts:
   - //java[contains(text(), 'yes')]
   - //tests[contains(text(), '@Test')]
   - //tests[contains(text(), 'void works() throws java.lang.Exception')]
-  - //tests[contains(text(), 'void throws_on() throws java.lang.Exception')]
-  - //tests[contains(text(), 'Assertions.assertThrows(Exception.class, () -> {')]
+  - //tests[contains(text(), 'Assertions.assertTrue(')]
   - //tests[contains(text(), 'new Dataized(this.take("works")).asBool()')]
-  - //tests[contains(text(), 'new Dataized(this.take("throws-on")).asBool();')]
+  - //tests[contains(text(), 'void _on_overflow() throws java.lang.Exception')]
+  - //tests[contains(text(), 'Assertions.assertThrows(Exception.class, () -> {')]
+  - //tests[contains(text(), 'new Dataized(this.take("-on-overflow")).asBool();')]
 input: |
   [] > some
     7 > yes
@@ -26,4 +27,4 @@ input: |
     [] +> works
       1.eq 1 > @
 
-    false > [] +> throws-on
+    false > [] -> on-overflow

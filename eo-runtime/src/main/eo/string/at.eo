@@ -40,7 +40,7 @@
       "m"
       at "some" -2
 
-  ++> throws-on-text-at-index-more-than-length
+  --> on-text-at-index-more-than-length
     at "some" 10 > @
 
   ++> tests-text-at-out-of-bounds-returns-provided-fallback

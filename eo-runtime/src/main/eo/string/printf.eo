@@ -48,7 +48,7 @@
         "string %s, bytes %x, float %f, int %d, bool %b"
         * "Jeff" "Jeff".as-bytes 42.3 14 false
 
-  ++> throws-on-printf-with-arguments-that-does-not-match
+  --> on-printf-with-arguments-that-does-not-match
     printf > @
       "%s%s"
       * "Jeff"
@@ -60,7 +60,7 @@
         "%s"
         * "Hey" "Jeff"
 
-  ++> throws-on-printf-unsupported-format
+  --> on-printf-unsupported-format
     printf "%o" * > @
 
   ++> tests-printf-prints-percents
@@ -92,12 +92,12 @@
         "Hello, %s! Bye, %1$s!"
         * "Jeff"
 
-  ++> throws-on-printf-with-oversized-positional-index
+  --> on-printf-with-oversized-positional-index
     printf > @
       "%99999999999999999999$s"
       * "Jeff"
 
-  ++> throws-on-printf-with-zero-positional-index
+  --> on-printf-with-zero-positional-index
     printf > @
       "%0$s"
       * "first" "second"
@@ -137,7 +137,7 @@
         "%d"
         * 9.99
 
-  ++> throws-on-formatting-huge-number-as-decimal
+  --> on-formatting-huge-number-as-decimal
     printf > @
       "%d"
       * 1.0E30

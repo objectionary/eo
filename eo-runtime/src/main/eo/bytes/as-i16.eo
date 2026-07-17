@@ -17,7 +17,7 @@
       "Can't convert non 2 length bytes to i16, bytes are %x".printf
         * bts
 
-  ++> throws-on-bytes-of-wrong-size-as-i16
+  --> on-bytes-of-wrong-size-as-i16
     01-01-01.as-i16 > @
 
   ++> tests-bytes-converts-to-i16-and-back
