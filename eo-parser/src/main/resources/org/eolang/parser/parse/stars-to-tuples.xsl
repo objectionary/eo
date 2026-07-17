@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="stars-to-tuples" version="2.0">
   <!--
-    Converts such XMIR with @star attributes:
+  Converts such XMIR with @star attributes:
 
-    <o star="" base="tuple">
-      <o base="1".../>
-      <o base="2".../>
-      <o base="3".../>
-    </o>
+  <o star="" base="tuple">
+  <o base="1".../>
+  <o base="2".../>
+  <o base="3".../>
+  </o>
 
-    Into the next one without @star:
+  Into the next one without @star:
 
-    <o base="Φ.tuple">
-      <o base="Φ.tuple">
-        <o base="Φ.tuple">
-          <o base="Φ.tuple.empty"/>
-          <o base="1"/>
-          <o base="Φ.number">
-            <o base="Φ.bytes" hex="">1</o>
-          </o>
-        </o>
-        <o base="2"/>
-        <o base="Φ.number">
-          <o base="Φ.bytes" hex="">2</o>
-        </o>
-      </o>
-      <o base="3"/>
-      <o base="Φ.number">
-        <o base="Φ.bytes" hex="">3</o>
-      </o>
-    </o>
+  <o base="Φ.tuple">
+  <o base="Φ.tuple">
+  <o base="Φ.tuple">
+  <o base="Φ.tuple.empty"/>
+  <o base="1"/>
+  <o base="Φ.number">
+  <o base="Φ.bytes" hex="">1</o>
+  </o>
+  </o>
+  <o base="2"/>
+  <o base="Φ.number">
+  <o base="Φ.bytes" hex="">2</o>
+  </o>
+  </o>
+  <o base="3"/>
+  <o base="Φ.number">
+  <o base="Φ.bytes" hex="">3</o>
+  </o>
+  </o>
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@star]">

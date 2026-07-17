@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -80,9 +80,11 @@
     <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
     <sonar.organization>objectionary</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <!-- The EOsm layer is thin, repetitive syscall glue (JNA bindings, per-OS
-         dispatchers, near-identical stat structs); exclude it from duplication
-         detection -->
+    <!--
+    The EOsm layer is thin, repetitive syscall glue (JNA bindings, per-OS
+    dispatchers, near-identical stat structs); exclude it from duplication
+    detection
+    -->
     <sonar.cpd.exclusions>**/EO_sm/**</sonar.cpd.exclusions>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
@@ -108,9 +110,11 @@
       <dependency>
         <groupId>xml-apis</groupId>
         <artifactId>xml-apis</artifactId>
-        <!-- The artifact xml-apis:xml-apis:jar:2.0.2
-         has been relocated to xml-apis:xml-apis:jar:1.0.b2.
-         The most recent version in 1.4.01 -->
+        <!--
+        The artifact xml-apis:xml-apis:jar:2.0.2
+        has been relocated to xml-apis:xml-apis:jar:1.0.b2.
+        The most recent version in 1.4.01
+        -->
         <version>2.0.2</version>
       </dependency>
       <dependency>
@@ -322,8 +326,8 @@
     cache (every fork pull request) stalls on dead-host timeouts and
     the qulice job burns its whole budget before a single check runs.
     @todo #5284:30min Drop this override once com.jcabi:parent no
-     longer declares the decommissioned oss.sonatype.org plugin
-     repository, so plugin resolution relies on the parent again.
+    longer declares the decommissioned oss.sonatype.org plugin
+    repository, so plugin resolution relies on the parent again.
     -->
     <pluginRepository>
       <id>oss.sonatype.org</id>

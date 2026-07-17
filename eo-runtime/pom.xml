@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -15,11 +15,13 @@
   <name>eo-runtime</name>
   <description>EO runtime library</description>
   <properties>
-    <!--  This is required for later correct replacement of argline  -->
+    <!-- This is required for later correct replacement of argline -->
     <argLine/>
-    <!-- Enables atom return-type checking in AtomTyped (default off, see #5280).
-         Off because atoms with error-branches return a union the declared forma
-         cannot express; set to true to verify return types. -->
+    <!--
+    Enables atom return-type checking in AtomTyped (default off, see #5280).
+    Off because atoms with error-branches return a union the declared forma
+    cannot express; set to true to verify return types.
+    -->
     <eo.typing>false</eo.typing>
   </properties>
   <dependencies>
@@ -190,11 +192,13 @@
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>
           </systemPropertyVariables>
-          <!-- Default surefire plugin corrupts native stdout. It means the text that was
+          <!--
+          Default surefire plugin corrupts native stdout. It means the text that was
           printed in native method will not be printed in 'mvn clean install'. This configuration
-           switches surefire communication channel from default to TCP/IP and solves the bug.
-           More detailed: https://stackoverflow.com/questions/55272870/surefire-maven-plugin-corrupted-stdout-by-directly-writing-to-native-stream-in
-           and https://maven.apache.org/surefire/maven-surefire-plugin/examples/process-communication.html-->
+          switches surefire communication channel from default to TCP/IP and solves the bug.
+          More detailed: https://stackoverflow.com/questions/55272870/surefire-maven-plugin-corrupted-stdout-by-directly-writing-to-native-stream-in
+          and https://maven.apache.org/surefire/maven-surefire-plugin/examples/process-communication.html
+          -->
           <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
           <properties>
             <configurationParameters>
@@ -241,14 +245,14 @@
               </skipProgramLints>
               <skipSourceLints>
                 <!--
-                  @todo #5378:90min Fix compound-name lint violations in eo-runtime EO sources.
-                   Rename hyphenated parameter names such as `cant-divide`, `cant-parse`,
-                   `out-of-bounds`, `empty-cases`, `cant-convert`, `cant-split`, etc.
-                   to single-word alternatives so that the `compound-name` lint
-                   (introduced in objectionary/lints 0.2.11) passes without suppression.
-                   All affected formations are in files under eo-runtime/src/main/eo
-                   and use these names as positional parameters, so callers are unaffected
-                   by the rename.
+                @todo #5378:90min Fix compound-name lint violations in eo-runtime EO sources.
+                Rename hyphenated parameter names such as `cant-divide`, `cant-parse`,
+                `out-of-bounds`, `empty-cases`, `cant-convert`, `cant-split`, etc.
+                to single-word alternatives so that the `compound-name` lint
+                (introduced in objectionary/lints 0.2.11) passes without suppression.
+                All affected formations are in files under eo-runtime/src/main/eo
+                and use these names as positional parameters, so callers are unaffected
+                by the rename.
                 -->
                 <lint>compound-name</lint>
               </skipSourceLints>
