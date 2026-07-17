@@ -8,11 +8,14 @@
  */
 package org.eolang.EO_sm.Posix; // NOPMD
 
+import com.sun.jna.FunctionMapper;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.Platform;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.ptr.IntByReference;
+import java.util.Collections;
 import org.eolang.EO_sm.SockaddrIn;
 
 /**
@@ -24,8 +27,23 @@ public interface CStdLib extends Library {
 
     /**
      * C STDLIB instance.
+     *
+     * <p>On Intel macOS, {@code dlsym("stat")} resolves to the legacy 32-bit-inode version
+     * whose struct layout differs from the 64-bit-inode one. We remap to {@code stat$INODE64}
+     * to match the {@link StatSyscall.Mac} struct. On arm64 macOS and all Linux platforms the
+     * plain {@code stat} symbol already uses the 64-bit-inode layout.</p>
      */
-    CStdLib INSTANCE = Native.load("c", CStdLib.class);
+    CStdLib INSTANCE = Platform.isMac() && !Platform.isARM()
+        ? Native.load(
+            "c",
+            CStdLib.class,
+            Collections.singletonMap(
+                Library.OPTION_FUNCTION_MAPPER,
+                (FunctionMapper) (lib, method) ->
+                    "stat".equals(method.getName()) ? "stat$INODE64" : method.getName()
+            )
+        )
+        : Native.load("c", CStdLib.class);
 
     /**
      * Standard input file descriptor.
