@@ -44,6 +44,13 @@ import java.util.List;
  * formation binds only φ); the {@link Stack} flags such arguments and
  * the close-time check in {@link Eo} rejects a name on them.</p>
  *
+ * <p>A compact-tuple LHS (R-3.9.1 + R-3.10.6) — a head with a trailing
+ * {@code *N} marker, e.g. {@code seq * > [m]} — keeps the φ
+ * {@link Openness#OPEN} and flags the level {@link Level#star()}, so its
+ * deeper-indent lines are absorbed into a {@code Φ.tuple} as §3.9 does
+ * for a bare {@link LnCompactTuple} rather than {@link #bare(Tokens)}
+ * reading the {@code *} as a completed empty-tuple argument.</p>
+ *
  * <p>This iteration accepts identifier and root LHS heads with
  * optional chains and identifier / INT / STAR / STRING / FLOAT /
  * ROOT horizontal args. R-3.10.6 LHS restrictions are honoured by
@@ -52,6 +59,7 @@ import java.util.List;
  *
  * @since 0.1
  */
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.UnnecessaryLocalRule"})
 final class LnOnlyPhi implements Line {
 
     /**
@@ -120,11 +128,8 @@ final class LnOnlyPhi implements Line {
         final Span inner = new Span(
             " ".repeat(this.span.indent()).concat(lhs), this.span.line()
         );
-        final Tokens tokens = new Tokens(inner.body(), inner);
-        final boolean open = LnOnlyPhi.bare(tokens);
-        tokens.seek(0);
         Comments.seal(globals, emit, this.span);
-        this.transition(stack, suffix, open);
+        final Tokens tokens = this.slot(stack, suffix, inner);
         globals.clearBlanks();
         globals.markEmitted();
         emit.object(
@@ -138,7 +143,30 @@ final class LnOnlyPhi implements Line {
             emit.constant();
         }
         this.emitVoids(emit, params, origin);
-        this.emitPhi(emit, tokens, open);
+        this.emitPhi(emit, tokens, stack.top().openness() == Openness.OPEN);
+    }
+
+    /**
+     * Parse the LHS into the φ token reader and push the formation
+     * level, detecting a trailing compact-tuple marker {@code *N}
+     * (R-3.9.1 + R-3.10.6) that keeps the φ {@link Openness#OPEN} and
+     * flags the level {@link Level#star()} for tuple elements.
+     * @param stack The stack
+     * @param suffix Right-hand-side suffix
+     * @param inner The LHS as an indent-aligned span
+     * @return The φ token reader rewound to the head
+     */
+    private Tokens slot(final Stack stack, final Suffix suffix, final Span inner) {
+        final int stars = LnOnlyPhi.compactStar(inner.body());
+        final Tokens tokens = LnOnlyPhi.reader(inner, stars);
+        final boolean open = stars >= 0 || LnOnlyPhi.bare(tokens);
+        tokens.seek(0);
+        final Level level = this.transition(stack, suffix, open);
+        if (stars >= 0) {
+            level.compact(stars);
+            level.markStar();
+        }
+        return tokens;
     }
 
     /**
@@ -247,17 +275,88 @@ final class LnOnlyPhi implements Line {
      * @param stack The stack
      * @param suffix Right-hand-side suffix
      * @param open Whether the φ has no horizontal args
+     * @return The pushed-or-replaced level
      */
-    private void transition(final Stack stack, final Suffix suffix, final boolean open) {
+    private Level transition(final Stack stack, final Suffix suffix, final boolean open) {
         final Openness openness;
         if (open) {
             openness = Openness.OPEN;
         } else {
             openness = Openness.HORIZONTAL_COMPLETED;
         }
-        new Transition(stack, this.span).apply(
+        return new Transition(stack, this.span).apply(
             Kind.ONLY_PHI_FORMATION, openness, suffix.named()
         );
+    }
+
+    /**
+     * The {@code N} of a trailing compact-tuple marker {@code *N} on the
+     * inline-phi LHS ({@code head *N}, R-3.9.1 + R-3.10.6), or -1 when
+     * the LHS is not a compact-tuple head — its head must be a single
+     * space-free token that is not a reversed dispatch (no trailing dot).
+     * @param lhs The LHS body
+     * @return The N count, or -1 when not a compact-tuple head
+     */
+    private static int compactStar(final String lhs) {
+        final int space = lhs.indexOf(' ');
+        final int result;
+        if (space > 0 && lhs.charAt(space - 1) != '.'
+            && space + 1 < lhs.length() && lhs.charAt(space + 1) == '*') {
+            result = LnOnlyPhi.starCount(lhs, space + 2);
+        } else {
+            result = -1;
+        }
+        return result;
+    }
+
+    /**
+     * The φ token reader: the whole LHS when {@code stars} is -1, or the
+     * head with the trailing {@code *N} marker stripped (up to the first
+     * space) when a compact tuple was detected.
+     * @param inner The LHS as an indent-aligned span
+     * @param stars The compact-tuple N, or -1
+     * @return A fresh token reader over the φ head
+     */
+    private static Tokens reader(final Span inner, final int stars) {
+        final String lhs = inner.body();
+        final String head;
+        if (stars < 0) {
+            head = lhs;
+        } else {
+            head = lhs.substring(0, lhs.indexOf(' '));
+        }
+        final Span span = new Span(
+            " ".repeat(inner.indent()).concat(head), inner.line()
+        );
+        return new Tokens(span.body(), span);
+    }
+
+    /**
+     * The non-negative integer {@code N} spelled from {@code from} to the
+     * end of {@code lhs} (0 when empty, R-3.9.1), or -1 when any character
+     * is not a digit (which also rejects trailing horizontal arguments).
+     * @param lhs The LHS body
+     * @param from Index of the first character after {@code *}
+     * @return The N count, or -1 when the tail is not all digits
+     */
+    private static int starCount(final String lhs, final int from) {
+        int count = 0;
+        boolean digits = true;
+        for (int idx = from; idx < lhs.length(); idx = idx + 1) {
+            final char glyph = lhs.charAt(idx);
+            if (glyph >= '0' && glyph <= '9') {
+                count = count * 10 + glyph - '0';
+            } else {
+                digits = false;
+            }
+        }
+        final int result;
+        if (digits) {
+            result = count;
+        } else {
+            result = -1;
+        }
+        return result;
     }
 
     /**
