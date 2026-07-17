@@ -4,10 +4,10 @@
 # yamllint disable rule:line-length
 line: 3
 message: |-
-  [3:4] error: 'argument of an only-phi formation cannot carry a name suffix'
-      bar > x
+  [3:4] error: 'foo cannot be a named attribute of only-phi formation bar, which binds only its φ decoratee'
+      b > foo
       ^
 input: |
   [] > obj
-    foo > [] >>
-      bar > x
+    a > [] > bar
+      b > foo

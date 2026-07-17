@@ -4,6 +4,9 @@
  */
 package org.eolang.printer;
 
+import java.util.Collections;
+import java.util.Map;
+
 /**
  * Penalty of a piece of EO source code.
  *
@@ -16,14 +19,21 @@ package org.eolang.printer;
  *
  * <ul>
  *   <li>every level of indentation on a line costs
- *   {@link #INDENT} points;</li>
- *   <li>every opening parenthesis costs {@link #BRACKET} points;</li>
- *   <li>every character sitting past the {@link #WIDTH}-th column
- *   costs {@link #OVERFLOW} point.</li>
+ *   {@link PenaltyKey#INDENT} points;</li>
+ *   <li>every opening parenthesis costs {@link PenaltyKey#BRACKET}
+ *   points;</li>
+ *   <li>every character sitting past the {@link PenaltyKey#WIDTH}-th
+ *   column costs {@link PenaltyKey#EXCESS} point.</li>
  * </ul>
  *
- * <p>For example, this snippet has a penalty of 15 (five indents,
- * three points each):</p>
+ * <p>All of these weights, together with the indentation
+ * {@link PenaltyKey#STEP}, are tunable: they are read from a
+ * {@code Map<PenaltyKey, Integer>} supplied to the constructor, and any
+ * key absent from that map falls back to its {@link PenaltyKey#fallback()}
+ * default.</p>
+ *
+ * <p>For example, with the default weights this snippet has a penalty of
+ * 15 (five indents, three points each):</p>
  *
  * <pre> [] &gt; foo
  *   gt. &gt; @
@@ -40,29 +50,9 @@ package org.eolang.printer;
 final class Penalty {
 
     /**
-     * Points charged for each level of indentation on a line.
+     * The default weights: an empty map, so every key uses its fallback.
      */
-    private static final int INDENT = 3;
-
-    /**
-     * Points charged for each opening parenthesis.
-     */
-    private static final int BRACKET = 7;
-
-    /**
-     * Points charged for each character past {@link #WIDTH}.
-     */
-    private static final int EXCESS = 1;
-
-    /**
-     * The column after which characters start being charged.
-     */
-    private static final int WIDTH = 80;
-
-    /**
-     * The width of a single indentation level, in spaces.
-     */
-    private static final int STEP = 2;
+    private static final Map<PenaltyKey, Integer> DEFAULTS = Collections.emptyMap();
 
     /**
      * The EO source code to score.
@@ -70,11 +60,26 @@ final class Penalty {
     private final String code;
 
     /**
-     * Ctor.
+     * The overridden weights, by key.
+     */
+    private final Map<PenaltyKey, Integer> weights;
+
+    /**
+     * Ctor, using the default weights for every key.
      * @param source The EO source code
      */
     Penalty(final String source) {
+        this(source, Penalty.DEFAULTS);
+    }
+
+    /**
+     * Ctor.
+     * @param source The EO source code
+     * @param config The overridden weights; absent keys use their defaults
+     */
+    Penalty(final String source, final Map<PenaltyKey, Integer> config) {
         this.code = source;
+        this.weights = config;
     }
 
     /**
@@ -84,11 +89,20 @@ final class Penalty {
     int points() {
         int total = 0;
         for (final String line : this.code.split(String.valueOf('\n'), -1)) {
-            total += Penalty.indents(line) * Penalty.INDENT;
-            total += Penalty.brackets(line) * Penalty.BRACKET;
-            total += Penalty.overflow(line) * Penalty.EXCESS;
+            total += this.indents(line) * this.weight(PenaltyKey.INDENT);
+            total += Penalty.brackets(line) * this.weight(PenaltyKey.BRACKET);
+            total += this.overflow(line) * this.weight(PenaltyKey.EXCESS);
         }
         return total;
+    }
+
+    /**
+     * The weight of a key, or its default if not overridden.
+     * @param key The key
+     * @return The weight in points
+     */
+    private int weight(final PenaltyKey key) {
+        return this.weights.getOrDefault(key, key.fallback());
     }
 
     /**
@@ -96,12 +110,21 @@ final class Penalty {
      * @param line The line
      * @return The number of levels
      */
-    private static int indents(final String line) {
+    private int indents(final String line) {
         int spaces = 0;
         while (spaces < line.length() && line.charAt(spaces) == ' ') {
             ++spaces;
         }
-        return spaces / Penalty.STEP;
+        return spaces / this.weight(PenaltyKey.STEP);
+    }
+
+    /**
+     * Count characters past the allowed width.
+     * @param line The line
+     * @return The number of overflowing characters
+     */
+    private int overflow(final String line) {
+        return Math.max(0, line.length() - this.weight(PenaltyKey.WIDTH));
     }
 
     /**
@@ -117,14 +140,5 @@ final class Penalty {
             }
         }
         return count;
-    }
-
-    /**
-     * Count characters past the allowed width.
-     * @param line The line
-     * @return The number of overflowing characters
-     */
-    private static int overflow(final String line) {
-        return Math.max(0, line.length() - Penalty.WIDTH);
     }
 }

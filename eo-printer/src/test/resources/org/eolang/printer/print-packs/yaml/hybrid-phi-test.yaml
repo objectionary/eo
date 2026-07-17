@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+origin: |
+  +package org.eolang
+
+  [x] > dataized /bytes
+
+    ++> tests-list-front-with-zero-index
+      is-empty > @
+        tuple.front
+          * 1 2 3
+          0
+
+printed: |
+  +package org.eolang
+
+  [x] > dataized /bytes
+
+    is-empty ++> tests-list-front-with-zero-index
+      tuple.front
+        * 1 2 3
+        0

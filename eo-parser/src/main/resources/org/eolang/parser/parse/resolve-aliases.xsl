@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="resolve-aliases" version="2.0">
   <!--
@@ -49,7 +49,7 @@
       <xsl:value-of separator=" " select="for $t in tokenize(., ' ') return (/object/metas/meta[head='alias' and part[1]=$t]/part[last()], $t)[1]"/>
     </xsl:attribute>
   </xsl:template>
-  <xsl:template match="/object/metas/meta[head='also' or head='decorate']/(tail|part)">
+  <xsl:template match="/object/metas/meta[head='also']/(tail|part)">
     <xsl:variable name="meta" select="/object/metas/meta[head='alias' and part[1] = current()/text()]"/>
     <xsl:copy>
       <xsl:choose>

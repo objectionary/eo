@@ -79,7 +79,7 @@ final class LnPipe implements Line {
             openness = Openness.VERTICAL_COMPLETED;
         }
         new Transition(stack, this.span).apply(
-            Kind.PIPE_APPLICATION, openness, suffix.present()
+            Kind.PIPE_APPLICATION, openness, suffix.named()
         );
         globals.clearBlanks();
         globals.markEmitted();

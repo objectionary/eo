@@ -193,6 +193,37 @@ final class MjTranspileTest {
     }
 
     @Test
+    void omitsPhSafeWrappersByDefault(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "TranspileMojo must skip PhSafe wrappers by default, but it did not",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(String.format("+package foo.x%n%n[] > main%n  42.plus 1 > @"))
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(this.compiled)
+            ).asString(),
+            Matchers.not(Matchers.containsString("new PhSafe("))
+        );
+    }
+
+    @Test
+    void wrapsDispatchedObjectsWithPhSafeWhenEnabled(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "TranspileMojo must wrap dispatched objects with PhSafe when enabled, but it did not",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(String.format("+package foo.x%n%n[] > main%n  42.plus 1 > @"))
+                    .with("trackLocations", true)
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(this.compiled)
+            ).asString(),
+            Matchers.containsString("new PhSafe(")
+        );
+    }
+
+    @Test
     void recompilesIfModified(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven

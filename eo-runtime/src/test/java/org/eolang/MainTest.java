@@ -105,9 +105,9 @@ final class MainTest {
     void executesJvmFullRunWithError() {
         MatcherAssert.assertThat(
             "Fails with the proper error message",
-            MainTest.stderr(Main.VERBOSE, "io.stdout"),
+            MainTest.stderr(Main.VERBOSE, "stdout"),
             Matchers.containsString(
-                "Error in \"Φ.io.stdout.φ.Δ\" "
+                "Error in \"Φ.stdout.φ.Δ\" "
             )
         );
     }

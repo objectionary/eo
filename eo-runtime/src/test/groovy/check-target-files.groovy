@@ -5,7 +5,7 @@
 List<String> expected = [
   'eo-foreign.csv',
   'eo/1-parse/bytes.xmir',
-  'eo/1-parse/fs/dir.xmir',
+  'eo/1-parse/directory.xmir',
   'eo/5-transpile/malloc.xmir',
   'generated-sources/org/eolang/EOseq.java',
   'generated-sources/org/eolang/EOsocket.java',
@@ -13,7 +13,6 @@ List<String> expected = [
   'classes/org/eolang/package-info.class',
   'classes/org/eolang/EO_sm/package-info.class',
   'classes/org/eolang/EO_number/package-info.class',
-  'classes/org/eolang/EO_fs/package-info.class',
   'classes/org/eolang/EO_string/package-info.class',
 ]
 

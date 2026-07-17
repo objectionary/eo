@@ -6,7 +6,6 @@
 +alias sm.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package fs
 +rt jvm org.eolang:eo-runtime:0.0.0
 +rt node eo2js-runtime:0.0.0
 +version 0.0.0
@@ -14,7 +13,7 @@
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
 
-[file] > dir
+[file] > directory
   file > @
   true > is-directory
 
@@ -23,7 +22,7 @@
       ^.exists
       ^
       seq *
-        (dir (Q.file ^.as-path.dirname)).made
+        (directory (Q.file ^.as-path.dirname)).made
         if.
           outcome.eq 0
           ^
@@ -105,7 +104,7 @@
           d.deleted.exists.not
         first.exists.not
       second.exists.not
-    (dir mktemp.tmpfile.deleted).made > d
+    (directory mktemp.tmpfile.deleted).made > d
     d.tmpfile > first
     d.tmpfile > second
 
@@ -121,9 +120,9 @@
           d.deleted.exists.not
         inner.exists.not
       f.exists.not
-    (dir mktemp.tmpfile.deleted).made > d
+    (directory mktemp.tmpfile.deleted).made > d
     d.tmpfile > f
-    (dir d.tmpfile.deleted).made > inner
+    (directory d.tmpfile.deleted).made > inner
 
   ++> tests-walks-recursively
     seq > @
@@ -133,7 +132,7 @@
         (d.resolved "x/y/z").as-dir.made
         (d.resolved "x/y/z/a.txt").as-file.touched
         (d.as-dir.walk "**/*.txt").length.eq 2
-    (dir mktemp.tmpfile.deleted).made.as-path > d
+    (directory mktemp.tmpfile.deleted).made.as-path > d
 
   ++> throws-on-walking-absent-directory
-    (dir mktemp.tmpfile.deleted).walk "**" > @
+    (directory mktemp.tmpfile.deleted).walk "**" > @

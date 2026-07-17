@@ -11,7 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > hash-code-of
+[] > hash-code
   ? >> input
   rec-hash-code 0 0 > @
   input.as-bytes > bts!
@@ -30,68 +30,68 @@
               bts.slice index 1
         (index.plus 1).as-number
 
-  ++> tests-hash-code-of-bools-is-number
+  ++> tests-hash-code-bools-is-number
     and. > @
-      (hash-code-of true).as-bytes.size.eq 8
-      (hash-code-of false).as-bytes.size.eq 8
+      (hash-code true).as-bytes.size.eq 8
+      (hash-code false).as-bytes.size.eq 8
 
-  ++> tests-hash-code-of-int-is-int
+  ++> tests-hash-code-int-is-int
     eq. > @
       1
       div.
         number hash
         number hash
-    hash-code-of 42 > hash!
+    hash-code 42 > hash!
 
   ++> tests-hash-codes-of-the-same-nums-are-equal
     eq. > @
-      hash-code-of num
-      hash-code-of num
+      hash-code num
+      hash-code num
     123456789012345678 > num
 
   ++> tests-hash-codes-of-the-same-ints-are-equal
     eq. > @
-      hash-code-of 42
-      hash-code-of 42
+      hash-code 42
+      hash-code 42
 
   ++> tests-hash-codes-of-different-ints-are-not-equal
     not. > @
       eq.
-        hash-code-of 42
-        hash-code-of 24
+        hash-code 42
+        hash-code 24
 
   ++> tests-hash-codes-of-different-sign-ints-are-not-equal
     not. > @
       eq.
-        hash-code-of 42
-        hash-code-of -42
+        hash-code 42
+        hash-code -42
 
-  ++> tests-hash-code-of-string-is-int
+  ++> tests-hash-code-string-is-int
     eq. > @
       1
       div.
         number strhash
         number strhash
-    hash-code-of "hello" > strhash!
+    hash-code "hello" > strhash!
 
   ++> tests-hash-codes-of-the-same-strings-are-equal
     eq. > @
-      hash-code-of "Hello"
-      hash-code-of "Hello"
+      hash-code "Hello"
+      hash-code "Hello"
 
   ++> tests-hash-codes-of-same-length-strings-are-not-equal
     not. > @
       eq.
-        hash-code-of "one"
-        hash-code-of "two"
+        hash-code "one"
+        hash-code "two"
 
   ++> tests-hash-codes-of-different-strings-are-not-equal
     not. > @
       eq.
-        hash-code-of "hello"
-        hash-code-of "bye!!!"
+        hash-code "hello"
+        hash-code "bye!!!"
 
-  ++> tests-hash-code-of-abstract-object-is-int
+  ++> tests-hash-code-abstract-object-is-int
     eq. > @
       1
       div.
@@ -99,12 +99,12 @@
         number objhash
     [x] > obj
       x > @
-    hash-code-of (obj 42) > objhash!
+    hash-code (obj 42) > objhash!
 
   ++> tests-hash-codes-of-the-same-abstract-objects-are-equal
     eq. > @
-      hash-code-of val
-      hash-code-of val
+      hash-code val
+      hash-code val
     [x] > obj
       x > @
     obj 42 > val
@@ -112,39 +112,39 @@
   ++> tests-hash-codes-of-different-abstract-objects-are-not-equal
     not. > @
       eq.
-        hash-code-of (obj 42)
-        hash-code-of (obj "42")
+        hash-code (obj 42)
+        hash-code (obj "42")
     [x] > obj
       x > @
 
-  ++> tests-hash-code-of-float-is-int
+  ++> tests-hash-code-float-is-int
     eq. > @
       1
       div.
         number flthash
         number flthash
-    hash-code-of 42.42 > flthash!
+    hash-code 42.42 > flthash!
 
   ++> tests-hash-codes-of-the-same-floats-are-equal
     eq. > @
-      hash-code-of emergency
-      hash-code-of emergency
+      hash-code emergency
+      hash-code emergency
     0.911 > emergency
 
   ++> tests-hash-codes-of-the-same-bigvals-are-equal
     eq. > @
-      hash-code-of bigval
-      hash-code-of bigval
+      hash-code bigval
+      hash-code bigval
     42.42e42 > bigval!
 
   ++> tests-hash-codes-of-different-floats-are-not-equal
     not. > @
       eq.
-        hash-code-of 3.14
-        hash-code-of 2.72
+        hash-code 3.14
+        hash-code 2.72
 
   ++> tests-hash-codes-of-different-sign-floats-are-not-equal
     not. > @
       eq.
-        hash-code-of 3.22
-        hash-code-of -3.22
+        hash-code 3.22
+        hash-code -3.22

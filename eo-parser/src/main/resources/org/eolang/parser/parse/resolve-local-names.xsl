@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" id="resolve-local-names" version="2.0">
   <!--
   The "&gt;&gt; foo" file-local handle (§3.10 / §9.2): the parser emits the
   anonymous object with its cactus @name plus a "@local='foo'" marker. We
-  build the per-file "handle -&gt; cactus-name" table, rewrite every @base
-  equal to a handle into that (reserved) cactus name, and drop the markers;
-  a handle declared more than once is an error.
+  build the per-file "handle -&gt; cactus-name" table and rewrite every @base
+  equal to a handle into that (reserved) cactus name; a handle declared more
+  than once is an error. The "@local" marker is deliberately kept on the
+  declaring object so that later passes (in particular the printer, see
+  #5563) can recover the readable handle from the otherwise-synthetic cactus
+  name instead of printing a placeholder like "vL_P".
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:key name="handle" match="o[@local]" use="@local"/>
@@ -20,7 +23,6 @@
       <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o/@local"/>
   <xsl:template match="/object">
     <xsl:copy>
       <xsl:apply-templates select="(node() except errors)|@*"/>

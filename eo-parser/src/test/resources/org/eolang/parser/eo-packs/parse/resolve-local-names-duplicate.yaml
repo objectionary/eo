@@ -7,7 +7,7 @@ sheets:
 asserts:
   - /object/errors[count(error)=1]
   - /object/errors/error[@check='resolve-local-names' and @severity='error' and @line='4']
-  - /object[not(//o[@local])]
+  - /object[count(//o[@local='dup'])=2]
 input: |
   [] > app
     [n] >> dup

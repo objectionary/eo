@@ -3,11 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
-package org.eolang.EO_fs; // NOPMD
+package org.eolang;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -16,30 +12,20 @@ import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
-import org.eolang.AtVoid;
-import org.eolang.Atom;
-import org.eolang.Attr;
-import org.eolang.Attrs;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.ExFailure;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
 
 /**
- * Dir.walk.
+ * Directory.walk.
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-@XmirObject(oname = "dir.walk")
+@XmirObject(oname = "directory.walk")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOdir$EOwalk extends PhDefault implements Atom {
+public final class EOdirectory$EOwalk extends PhDefault implements Atom {
 
     /**
      * Ctor.
      */
-    public EOdir$EOwalk() {
+    public EOdirectory$EOwalk() {
         super(new Attrs(new Attr("glob", new AtVoid("glob"))));
     }
 

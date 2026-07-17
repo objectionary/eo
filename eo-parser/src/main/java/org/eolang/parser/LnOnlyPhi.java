@@ -13,13 +13,17 @@ import java.util.List;
  * <p>Form: {@code lhs > [params] > name}. The {@code lhs} is a
  * horizontal expression that becomes the {@code φ} slot of an
  * anonymous formation; the formation has {@code params} as voids and
- * is named by the right-hand suffix.</p>
+ * is named by the right-hand suffix. The compact test shorthand
+ * {@code lhs ++> name} (R-3.10.8 / R-6.3.6) is accepted as sugar for
+ * {@code lhs > [] +> name} — a parameterless test attribute whose sole
+ * binding is the {@code φ} decoratee {@code lhs}.</p>
  *
  * <p>Mechanics (R-3.10.1):</p>
  *
  * <ul>
  *   <li>LHS is parsed as an application expression (head + optional
- *   chain + optional hargs). Its outermost {@code <o>} carries
+ *   chain + optional hargs) or a reversed dispatch ({@code if.}) via
+ *   {@link Emissions#expression}. Its outermost {@code <o>} carries
  *   {@code @name='φ'} per the emission shape.</li>
  *   <li>Params inside the brackets become void children of the
  *   formation, emitted before the φ slot.</li>
@@ -46,7 +50,6 @@ import java.util.List;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class LnOnlyPhi implements Line {
 
     /**
@@ -67,33 +70,48 @@ final class LnOnlyPhi implements Line {
         Blanks.enterAfterMeta(this.span, globals, emit);
         final String body = this.span.body();
         final int phi = Eo.topLevelGreaterBracketIndex(body);
-        if (phi < 0) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "only-phi formation must contain `> [`"
+        final String lhs;
+        final List<String> params;
+        final Suffix suffix;
+        final int origin;
+        if (phi >= 0) {
+            final int bracket = phi + 2;
+            final int close = body.indexOf(']', bracket);
+            if (close < 0) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent() + bracket,
+                    "only-phi parameter list missing closing `]`"
+                );
+            }
+            lhs = body.substring(0, phi).stripTrailing();
+            params = LnOnlyPhi.parseParams(
+                body.substring(bracket + 1, close), this.span, bracket + 1
             );
-        }
-        final int bracket = phi + 2;
-        final int close = body.indexOf(']', bracket);
-        if (close < 0) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + bracket,
-                "only-phi parameter list missing closing `]`"
+            suffix = new Suffix(
+                body.substring(close + 1), this.span, this.span.indent() + close + 1
             );
+            origin = bracket + 1;
+        } else {
+            final int shorthand = Eo.topLevelPlusPlusArrowIndex(body);
+            if (shorthand < 0) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent(),
+                    "only-phi formation must contain `> [` or `++>`"
+                );
+            }
+            lhs = body.substring(0, shorthand).stripTrailing();
+            params = new ArrayList<>(0);
+            suffix = new Suffix(
+                body.substring(shorthand + 1), this.span, this.span.indent() + shorthand + 1
+            );
+            origin = shorthand;
         }
-        final String lhs = body.substring(0, phi).stripTrailing();
         if (lhs.isEmpty()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
-                "only-phi formation requires a non-empty body before `> [`"
+                "only-phi formation requires a non-empty body before `> [` or `++>`"
             );
         }
-        final List<String> params = LnOnlyPhi.parseParams(
-            body.substring(bracket + 1, close), this.span, bracket + 1
-        );
-        final Suffix suffix = new Suffix(
-            body.substring(close + 1), this.span, this.span.indent() + close + 1
-        );
         if (suffix.test()) {
             Blanks.checkTest(this.span, globals, emit);
         }
@@ -101,10 +119,8 @@ final class LnOnlyPhi implements Line {
             " ".repeat(this.span.indent()).concat(lhs), this.span.line()
         );
         final Tokens tokens = new Tokens(inner.body(), inner);
-        final Value head = tokens.readValue();
-        final List<MethodChain> chain = tokens.readChain();
-        final List<Value> args = tokens.readArgs();
-        final boolean open = args.isEmpty();
+        final boolean open = LnOnlyPhi.bare(tokens);
+        tokens.seek(0);
         Comments.seal(globals, emit, this.span);
         this.transition(stack, suffix, open);
         globals.clearBlanks();
@@ -119,7 +135,20 @@ final class LnOnlyPhi implements Line {
         if (suffix.constant()) {
             emit.constant();
         }
-        int column = this.span.indent() + bracket + 1;
+        this.emitVoids(emit, params, origin);
+        this.emitPhi(emit, tokens, open);
+    }
+
+    /**
+     * Emit the only-phi void parameters as {@code ∅}-based children,
+     * mapping {@code @} to {@code φ} (R-3.4.2 / R-9.3) and advancing the
+     * source column across each name and its separating space.
+     * @param emit Emitter
+     * @param params Parameter names in source order
+     * @param origin Source column of the first parameter
+     */
+    private void emitVoids(final Emit emit, final List<String> params, final int origin) {
+        int column = this.span.indent() + origin;
         for (final String param : params) {
             final String mapped;
             if (param.equals("@")) {
@@ -130,50 +159,68 @@ final class LnOnlyPhi implements Line {
             emit.voidParam(mapped, this.span.line(), column);
             column = column + param.length() + 1;
         }
-        this.emitLhs(emit, head, chain, args, open);
     }
 
     /**
-     * Emit the pre-parsed LHS expression as a single child with
-     * {@code @name='φ'}. Emission mirrors {@link LnApplication}: the
-     * topmost element (head with no chain, or the chain's last link)
-     * carries {@code @name='φ'}. When {@code open} the φ {@code <o>} is
-     * left on the cursor so deeper-indent lines attach to it as
-     * vertical arguments, and the {@link Stack.Closer} closes both it
-     * and the formation; otherwise the φ is closed here (its horizontal
-     * args are complete) and only the formation stays open.
+     * Emit the LHS as the formation's {@code φ} slot via
+     * {@link Emissions#expression} — which handles a head + chain, or a
+     * reversed dispatch ({@code if.}), leaving the outermost {@code <o>}
+     * open. When {@code open} that φ stays on the cursor so deeper-indent
+     * lines attach to it as vertical arguments (the {@link Stack.Closer}
+     * closes it and the formation); otherwise its horizontal args are
+     * complete and it is closed here.
      * @param emit Emitter
-     * @param head The pre-read head value
-     * @param chain The pre-read method chain (may be empty)
-     * @param args The pre-read horizontal args (may be empty)
+     * @param tokens Token reader rewound to the LHS head
      * @param open Whether the φ stays open for vertical arguments
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
-    private void emitLhs(
-        final Emit emit, final Value head, final List<MethodChain> chain,
-        final List<Value> args, final boolean open
-    ) {
-        if (chain.isEmpty()) {
-            Emissions.openValue(emit, "φ", head, this.span.line());
-        } else {
-            Emissions.openValue(emit, null, head, this.span.line());
-            emit.close();
-            for (int idx = 0; idx < chain.size() - 1; idx = idx + 1) {
-                final MethodChain link = chain.get(idx);
-                emit.object(null, ".".concat(link.name()), this.span.line(), link.dot());
-                emit.method(link.fragile());
-                emit.close();
-            }
-            final MethodChain last = chain.get(chain.size() - 1);
-            emit.object("φ", ".".concat(last.name()), this.span.line(), last.dot());
-            emit.method(last.fragile());
-        }
-        for (final Value arg : args) {
-            Emissions.emitArg(emit, arg, this.span.line());
-        }
+    private void emitPhi(final Emit emit, final Tokens tokens, final boolean open) {
+        Emissions.expression(emit, "φ", tokens, this.span.line());
         if (!open) {
             emit.close();
         }
+    }
+
+    /**
+     * Whether the only-phi LHS carries no horizontal args, so its φ
+     * stays {@link Openness#OPEN} for deeper-indent vertical arguments
+     * (§4.5); otherwise the φ is a full application and the formation is
+     * {@link Openness#HORIZONTAL_COMPLETED}. The LHS may be a reversed
+     * dispatch ({@code if. > [t] >> rec}), whose trailing dot is skipped
+     * exactly as {@link Emissions#expression} does so both agree on the
+     * arg boundary. Consumes the token stream; callers rewind before
+     * emitting.
+     * @param tokens Token reader positioned at the LHS head
+     * @return True if the φ has no horizontal args
+     */
+    private static boolean bare(final Tokens tokens) {
+        if (LnOnlyPhi.reversedAhead(tokens, tokens.readValue())) {
+            tokens.seek(tokens.cursor() + 1);
+        } else {
+            tokens.readChain();
+        }
+        return tokens.readArgs().isEmpty();
+    }
+
+    /**
+     * Whether the cursor sits at a reversed-dispatch dot after the head
+     * — an identifier head immediately followed by a {@code .} that ends
+     * the body or precedes a space (§3.8). Mirrors
+     * {@link Emissions#expression} so the arg boundary agrees.
+     * @param tokens Token reader positioned after the head
+     * @param head The just-read head value
+     * @return True when a reversed-dispatch dot follows the head
+     */
+    private static boolean reversedAhead(final Tokens tokens, final Value head) {
+        final boolean result;
+        if (head.kind() == Value.Kind.IDENTIFIER
+            && !tokens.atEnd() && tokens.current() == '.') {
+            final int probe = tokens.cursor() + 1;
+            result = probe >= tokens.body().length()
+                || tokens.body().charAt(probe) == ' ';
+        } else {
+            result = false;
+        }
+        return result;
     }
 
     /**
@@ -192,7 +239,7 @@ final class LnOnlyPhi implements Line {
             openness = Openness.HORIZONTAL_COMPLETED;
         }
         new Transition(stack, this.span).apply(
-            Kind.ONLY_PHI_FORMATION, openness, suffix.present() || suffix.test()
+            Kind.ONLY_PHI_FORMATION, openness, suffix.named()
         );
     }
 

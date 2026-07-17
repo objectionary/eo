@@ -7,7 +7,6 @@ out:
 file: snippets/fibo.eo
 args: ["snippets.fibo"]
 eo: |
-  +alias io.stdout
   +package snippets
 
   [] > fibo

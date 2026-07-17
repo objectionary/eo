@@ -8,6 +8,4 @@ origin: |
       Q.string.sprintf ""
 
 printed: |
-  [] > app
-    io.stdout > @
-      string.sprintf ""
+  io.stdout (string.sprintf "") > [] > app

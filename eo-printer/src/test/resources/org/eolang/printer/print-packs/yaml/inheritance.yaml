@@ -28,18 +28,15 @@ origin: |
 
 printed: |
   +package sandbox
-  +alias stdout Q.org.eolang.io.stdout
-  +alias sprintf Q.org.eolang.string.sprintf
+  +alias org.eolang.io.stdout
+  +alias org.eolang.string.sprintf
   +architect yegor256@gmail.com
 
   [] > main
     [] > base
       memory 0 > x
-      [self v] > f
-        ^.x.write v > @
-      [self v] > g
-        self.f self v > @
+      x.write v > [self v] > f
+      self.f self v > [self v] > g
     [] > derived
-      ^.base > @
-      [self v] > f
-        self.g self v > @
+      base > @
+      self.g self v > [self v] > f

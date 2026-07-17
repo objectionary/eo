@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="tuples-to-stars" version="2.0">
   <!--
-    Performs the reverse operation of "/org/eolang/parser/stars-to-tuples.xsl"
+  Performs the reverse operation of "/org/eolang/parser/stars-to-tuples.xsl"
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[starts-with(@base, 'Φ.tuple') and o[1][starts-with(@base, 'Φ.tuple')]]">
+  <xsl:template match="o[@base = 'Φ.tuple' and o[1][starts-with(@base, 'Φ.tuple')]]">
     <xsl:variable name="arg">
       <xsl:apply-templates select="o[2]"/>
     </xsl:variable>
@@ -19,8 +19,19 @@
       <xsl:apply-templates select="$arg" mode="no-as"/>
     </xsl:copy>
   </xsl:template>
+  <!--
+  An empty tuple is stored as the bare "Φ.tuple.empty" base. Render it as
+  the "*" star shorthand with no elements, mirroring how non-empty tuples
+  are lowered to stars above.
+  -->
+  <xsl:template match="o[@base = 'Φ.tuple.empty']">
+    <xsl:copy>
+      <xsl:apply-templates select="@*"/>
+      <xsl:attribute name="star"/>
+    </xsl:copy>
+  </xsl:template>
   <xsl:template match="o" mode="inner">
-    <xsl:if test="starts-with(@base, 'Φ.tuple')">
+    <xsl:if test="@base = 'Φ.tuple'">
       <xsl:variable name="arg">
         <xsl:apply-templates select="o[2]"/>
       </xsl:variable>

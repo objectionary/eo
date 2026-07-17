@@ -38,6 +38,7 @@
   1 > sock-stream
   0 > stdin-fileno
   1 > stdout-fileno
+  2 > stderr-fileno
   [code output] > return
     output > @
     return code output > called

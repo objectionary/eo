@@ -30,7 +30,7 @@ final class AtomTypesTest {
     void returnsEmptyForUndeclaredAtom() {
         MatcherAssert.assertThat(
             "Table must return empty forma for an atom that declares no type, but it didnt",
-            new AtomTypes(Collections.emptyMap()).declared("Φ.io.stdout"),
+            new AtomTypes(Collections.emptyMap()).declared("Φ.stdout"),
             Matchers.equalTo("")
         );
     }

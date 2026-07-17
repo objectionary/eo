@@ -323,8 +323,10 @@ final class Emit {
     /**
      * Add the {@code @local="name"} attribute to the most recently
      * opened {@code <o>} — the file-local handle of an anonymous
-     * ({@code >> name}) formation (§3.10 / §9.2), resolved and dropped
-     * by the {@code resolve-local-names} reshape.
+     * ({@code >> name}) formation (§3.10 / §9.2). The
+     * {@code resolve-local-names} reshape uses it to resolve references
+     * and keeps it on the declaring object so the readable handle can be
+     * recovered later (for example by the printer, see #5563).
      * @param name The file-local handle
      */
     void local(final String name) {

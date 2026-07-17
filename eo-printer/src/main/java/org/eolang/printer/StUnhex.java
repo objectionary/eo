@@ -7,11 +7,9 @@ package org.eolang.printer;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StEnvelope;
 import com.yegor256.xsline.StSequence;
-import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
-import org.apache.commons.text.StringEscapeUtils;
 import org.eolang.parser.StXnav;
 
 /**
@@ -59,7 +57,7 @@ final class StUnhex extends StEnvelope {
             xnav -> xnav.node().setTextContent(
                 String.format(
                     "\"%s\"",
-                    StringEscapeUtils.escapeJava(
+                    StUnhex.escape(
                         new String(
                             StUnhex.buffer(
                                 StUnhex.undash(xnav.element("o").text().orElse(""))
@@ -89,7 +87,7 @@ final class StUnhex extends StEnvelope {
 
     /**
      * Convert given number to string.
-     * Prints as int if fractional part of number is 0.
+     * Prints as int when the fractional part is zero and the magnitude fits in long.
      * @param num Number to convert
      * @return Number converted to string
      */
@@ -101,7 +99,7 @@ final class StUnhex extends StEnvelope {
             } else if (Math.abs(num) < 0x1p63) {
                 str = Long.toString(num.longValue());
             } else {
-                str = BigDecimal.valueOf(num).toBigInteger().toString();
+                str = Double.toString(num).replace('E', 'e');
             }
         } else {
             str = Double.toString(num);
@@ -127,6 +125,56 @@ final class StUnhex extends StEnvelope {
             buffer.position(0);
         }
         return buffer;
+    }
+
+    /**
+     * Escape a decoded string for an EO string literal. Only the
+     * characters an EO literal actually requires are escaped — the
+     * backslash, the double quote, and the control characters (as
+     * {@code \n}, {@code \t}, {@code \r}, {@code \b}, {@code \f}, or a
+     * {@code \\uXXXX} fallback). Printable Unicode glyphs are left
+     * intact, since EO sources are UTF-8.
+     * @param txt The decoded text
+     * @return The escaped text, ready to sit between double quotes
+     */
+    private static String escape(final String txt) {
+        final StringBuilder out = new StringBuilder(txt.length());
+        int idx = 0;
+        while (idx < txt.length()) {
+            final int point = txt.codePointAt(idx);
+            out.append(StUnhex.escaped(point));
+            idx += Character.charCount(point);
+        }
+        return out.toString();
+    }
+
+    /**
+     * Escape a single code point for an EO string literal.
+     * @param point The code point
+     * @return The verbatim glyph, or its escape sequence
+     */
+    private static String escaped(final int point) {
+        final String result;
+        if (point == '\\') {
+            result = "\\\\";
+        } else if (point == '"') {
+            result = "\\\"";
+        } else if (point == '\n') {
+            result = "\\n";
+        } else if (point == '\t') {
+            result = "\\t";
+        } else if (point == '\r') {
+            result = "\\r";
+        } else if (point == '\b') {
+            result = "\\b";
+        } else if (point == '\f') {
+            result = "\\f";
+        } else if (Character.isISOControl(point)) {
+            result = String.format("\\u%04x", point);
+        } else {
+            result = new String(Character.toChars(point));
+        }
+        return result;
     }
 
     /**

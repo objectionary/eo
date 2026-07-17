@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="wrap-data" version="2.0">
   <!--
   Converts this:
 
   <o base=".bytes">
-    <o base=".eolang">
-      <o base=".org">
-        <o base="Q"/>
-      </o>
-    </o>
-    00-00-00-00
+  <o base=".eolang">
+  <o base=".org">
+  <o base="Q"/>
+  </o>
+  </o>
+  00-00-00-00
   </o>
 
   to this:

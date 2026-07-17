@@ -66,12 +66,12 @@ final class InputOutputTest {
     /**
      * Console.
      */
-    private static final String CONSOLE = "io.console";
+    private static final String CONSOLE = "console";
 
     /**
      * Stdin.
      */
-    private static final String STDIN = "io.stdin";
+    private static final String STDIN = "stdin";
 
     /**
      * Write object.

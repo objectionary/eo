@@ -14,7 +14,7 @@
 
 [path] > file
   path > @
-  (Q.fs.path path).@ > as-path
+  (Q.path path).@ > as-path
 
   [cant-check] > is-directory
     if. > @
@@ -287,7 +287,7 @@
       contains
         resolved
         joined
-          Q.fs.path.separator
+          Q.path.separator
           * "foo" "bar"
     mktemp.as-path.resolved "foo/bar" > resolved
 

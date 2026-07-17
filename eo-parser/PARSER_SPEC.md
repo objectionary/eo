@@ -513,7 +513,7 @@ R-3.10.6. The LHS of inline-phi must be non-empty: at least one expression with 
 
   Only the four kinds enumerated above (head, hmethod, happlication, paren group) are permitted as inline-phi LHS.
 R-3.10.7. **Exactly one `> [params]` suffix per line.** Chained inline-phi suffixes (`expr > [a] > [b] > name`) are rejected, even though the underlying grammar can express them. The construct is unused in practice and adds parsing complexity for no gain.
-R-3.10.8. **Inline-phi suffix variants.** The right-hand suffix on an inline-phi line may take any of these forms (optionally with `!` const on the name): `> [params] > name` (explicit name), `> [params] >>` (auto-generated name), `> [params] +> name` (test attribute), or bare `> [params]` (auto-named, equivalent to `> [params] >>`). All four shapes are accepted by the parser; the test-attribute form additionally inherits the depth constraint of R-6.3.3.
+R-3.10.8. **Inline-phi suffix variants.** The right-hand suffix on an inline-phi line may take any of these forms (optionally with `!` const on the name): `> [params] > name` (explicit name), `> [params] >>` (auto-generated name), `> [params] +> name` (test attribute), or bare `> [params]` (auto-named, equivalent to `> [params] >>`). All four shapes are accepted by the parser; the test-attribute form additionally inherits the depth constraint of R-6.3.3. **Compact test shorthand `++>`.** A parameterless test attribute whose only binding is the `φ` decoratee also has a collapsed spelling that merges the empty `[]` param list with the `++>` head shorthand (R-6.3.6): `lhs ++> name` is sugar for `lhs > [] +> name`. The `++>` marker is recognised in this inline-phi suffix position only when preceded by a space (a leading `++>` at the head of a line is the bare-formation shorthand of R-6.3.6, not an inline-phi suffix). XMIR emission is identical to the expanded `> [] +> name` form.
 R-3.10.9. Anything after the name is reported as "unexpected content" without aborting the line.
 R-3.10.10a. **Anonymous inline-phi as a paren-grouped value.** Inline-phi formations are normally line-level suffixes (R-3.10.1), but the bare form `body > [params]` (no `> name` / `>>` / `+> name` on the right) is **also legal inside a paren group** as a value-level expression: `(body > [params])`. The group then evaluates to an anonymous formation with the given params and `body` bound to its `φ` slot; the enclosing context (a horizontal arg, the LHS of a binding, etc.) supplies any naming. Only the bare (anonymous) form is permitted in this position — `(body > [params] > name)`, `(body > [params] >>)`, and `(body > [params] +> name)` are rejected: naming and test attributes must attach at line level. The construct is rare; the canonical use is passing a one-parameter formation as a horizontal arg without dedicating a separate line, e.g. `malloc.of 8 (m.put 10 > [m])`.
 
@@ -611,7 +611,27 @@ R-3.14.5. **Chaining.** Consecutive pipe lines build left-associated application
 
 R-3.14.6. Name suffix per §3.10: `> name`, `>>`, or none (the last only when the pipe is an unnamed intermediate immediately wrapped by a `.method`, which names the whole chain). The atom signature `/sig` and the test attribute `+> name` are rejected — a pipe is an application, not a formation. All-or-nothing inline binding (§6.6) applies to the argument group.
 
-R-3.14.7. **Emission / XMIR.** A pipe line desugars to an ordinary application whose head is a reference to the (named) predecessor, and the predecessor object stays in place. So `| a > r` after a formation `F` (named `F`) is identical in XMIR to `F a > r`; `| a` then `| b` after `F >>` (auto-name `A`) is `A a` (auto-named) followed by `A′ b`. The parser emits the pipe line as a base-less `<o pipe=''>` with the args as children; the `wrap-applications` reshape (§9) sets `@base` from the preceding sibling's `@name` and drops `@pipe`, so every downstream pass (scope resolution, base rolling) treats it as a hand-written application.
+R-3.14.7. **Emission / XMIR.** A pipe line desugars to an ordinary application whose head is a reference to the (named) predecessor. So `| a > r` after a formation `F` (named `F`) is identical in XMIR to `F a > r`; `| a` then `| b` after `F >>` (auto-name `A`) is `A a` (auto-named) followed by `A′ b`. The parser emits the pipe line as a base-less `<o pipe=''>` with the args as children; the `wrap-applications` reshape (§9) sets `@base` from the preceding sibling's `@name` and drops `@pipe`, so every downstream pass (scope resolution, base rolling) treats it as a hand-written application.
+
+R-3.14.8. **Predecessor placement — body vs argument block.** Where the predecessor formation ends up depends on where the pipe sits:
+  - **Body of a formation** (the pipe's parent is abstract): the predecessor stays in place as a named attribute alongside the pipe application, so both are visible to siblings. `[x] > foo` then `| 5 > foo5` yields two attributes, `foo` and `foo5 = foo 5`.
+  - **Argument block** (the pipe's parent is an application, so its siblings are collected as positional arguments): leaving the predecessor in place would make the enclosing application receive it *and* the pipe application as two arguments. Instead the predecessor **floats up** to the nearest enclosing abstract object (via `vars-float-up`, §9) and leaves no argument slot of its own, so the enclosing application receives exactly one argument — the pipe application referring to the floated definition. `wrap-applications` marks such a predecessor with a transient `@float-up`; `vars-float-up` consumes it. For example,
+
+    ```
+    [] > foo
+      bar > @
+        [] > hello
+        | 5
+    ```
+
+    is identical in XMIR to
+
+    ```
+    [] > foo
+      bar > @
+        $.hello 5
+      [] > hello
+    ```
 
 Outer kind: **`pipe-application`** (openness `open` for the vertical form's body, `vertical-completed` for the horizontal form).
 
@@ -963,7 +983,7 @@ R-6.3.4. Atoms may appear at any nesting depth, with two restrictions:
   - **(a)** A nested atom (one not at indent 0) cannot hold tests (R-6.3.3 — `+>` legal only at indent 2 of top-level) and cannot hold regular children (R-6.3.1 — atoms accept only test children). Therefore a nested atom's body must be **empty**.
   - **(b)** A nested atom is legal only when the containing formation is **not itself an atom**. Atoms inside atoms are rejected: an atom's body may contain only `+>` test attributes (R-6.3.1), and a master child (formation/atom) of an atom is therefore inadmissible regardless of body shape.
 R-6.3.5. A test attribute name must be a `NAME` token. `+> @` (PHI as test name) is rejected even though the underlying grammar's `tname : tarrow (PHI | NAME)` accepts it. Tests are named identifiers; `@` has no meaning as a test name.
-R-6.3.6. **Test-attribute shorthand.** A line whose first non-space characters are `++>` is sugar for a bare parameterless formation with a test suffix: `++> name` ≡ `[] +> name`. The two forms are equivalent in every respect after classification — same XMIR emission (§9.4), same depth constraint (R-6.3.3), same name rules (R-6.3.5). There is no ambiguity with meta directives: metas are legal only before the first object (R-3.2.2), and their names never start with `+`.
+R-6.3.6. **Test-attribute shorthand.** A line whose first non-space characters are `++>` is sugar for a bare parameterless formation with a test suffix: `++> name` ≡ `[] +> name`. The two forms are equivalent in every respect after classification — same XMIR emission (§9.4), same depth constraint (R-6.3.3), same name rules (R-6.3.5). There is no ambiguity with meta directives: metas are legal only before the first object (R-3.2.2), and their names never start with `+`. The same `++>` marker is also accepted in the **inline-phi suffix position** (`lhs ++> name` ≡ `lhs > [] +> name`, R-3.10.8), where a space precedes it; there it binds the LHS to the test attribute's sole `φ` decoratee.
 
 Examples:
 
@@ -1179,7 +1199,7 @@ R-9.2.2. The cactus 🌵 is reserved — it is excluded from the `NAME` token (�
 
 Example: a `>>` suffix at `line=12, pos=5` emits `@name="a🌵12-5"`.
 
-R-9.2.3. **File-local handles (R-3.10.12).** A `>> name` suffix emits the object with its cactus `@name` **and** a `@local="name"` marker; references stay as plain `<o base='name'>`. The first-pass `resolve-local-names` reshape (right after `wrap-applications` / `resolve-self`, before `build-fqns`) collects the per-file `@local → @name` table, rewrites every `@base` equal to a handle into the matching cactus `@name`, and drops the `@local` markers; a handle declared twice is reported there as a `resolve-local-names` check error. Downstream passes see only ordinary references by the reserved cactus name.
+R-9.2.3. **File-local handles (R-3.10.12).** A `>> name` suffix emits the object with its cactus `@name` **and** a `@local="name"` marker; references stay as plain `<o base='name'>`. The first-pass `resolve-local-names` reshape (right after `wrap-applications` / `resolve-self`, before `build-fqns`) collects the per-file `@local → @name` table and rewrites every `@base` equal to a handle into the matching cactus `@name`; a handle declared twice is reported there as a `resolve-local-names` check error. The `@local` marker is **kept** on the declaring object so that the readable handle can be recovered from the otherwise-synthetic cactus name — in particular by the printer, which prints `? >> name` voids back under their handle rather than a `vL_P` placeholder (#5563). Downstream compilation passes reference the reserved cactus name and ignore the marker.
 
 ### 9.3 Source-token to XMIR-character mapping
 
@@ -1290,7 +1310,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Deeper-indent under horizontally-completed line | `unexpected deeper-indent line — previous expression is closed for children` |
 | `.method` continuation on horizontally-completed previous | `method continuation not allowed after horizontal application` |
 | `.method` continuation on an only-phi formation | `method continuation not allowed after only-phi formation` |
-| Name suffix on an only-phi φ's argument | `argument of an only-phi formation cannot carry a name suffix` |
+| Name suffix on an only-phi φ's argument | `<name> cannot be a named attribute of only-phi formation <formation>, which binds only its φ decoratee` (the formation is described generically as `an only-phi formation` when anonymous) |
 | `.method` line at top level, deeper than parent, or with no same-indent sibling | `method continuation has no expression to attach to` |
 | Chained inline-phi suffix `expr > [a] > [b] > name` | `chained inline-phi suffixes are not allowed` |
 | Inline-phi without a name on the right (`expr > [params]` alone) | `inline-phi formation must carry a name on the right` |

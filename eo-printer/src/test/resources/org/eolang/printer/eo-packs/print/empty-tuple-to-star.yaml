@@ -4,23 +4,25 @@
 # yamllint disable rule:line-length
 sheets:
   - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/validate-before-stars.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
   - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
   - /org/eolang/parser/parse/vars-float-up.xsl
   - /org/eolang/parser/parse/build-fqns.xsl
   - /org/eolang/parser/parse/expand-aliases.xsl
   - /org/eolang/parser/parse/resolve-aliases.xsl
   - /org/eolang/parser/parse/add-default-package.xsl
   - /org/eolang/parser/parse/roll-bases.xsl
-  - /org/eolang/parser/parse/decorate.xsl
+  - /org/eolang/printer/print/tuples-to-stars.xsl
 asserts:
-  - /object[not(errors)]
-  - /object/o[@name='main']/o[@name='φ' and @base='Φ.string.text']/o[@base='Φ.string' and not(@name)]
-  - /object/o[@name='main']/o[@name='y' and @base='Φ.stringify']
-  - /object/o[@name='main']/o[@name='z' and @base='Φ.strings']
+  - /object/o[@name='foo']/o[@name='empty' and @base='Φ.tuple.empty' and @star and count(o)=0]
+  - /object/o[@name='foo']/o[@name='nested']/o[@base='Φ.tuple.empty' and @star and count(o)=0]
 input: |
-  +decorate string string.text
+  +package test
 
-  [] > main
-    "Hello" > @
-    stringify > y
-    strings > z
+  [] > foo
+    tuple.empty > empty
+    set > nested
+      tuple.empty

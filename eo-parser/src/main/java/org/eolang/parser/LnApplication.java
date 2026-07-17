@@ -143,7 +143,7 @@ final class LnApplication implements Line {
     private void transition(
         final Stack stack, final Suffix suffix, final Kind kind, final Openness openness
     ) {
-        new Transition(stack, this.span).apply(kind, openness, suffix.present());
+        new Transition(stack, this.span).apply(kind, openness, suffix.named());
     }
 
     /**

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="vars-float-up" version="2.0">
   <!--
@@ -9,18 +9,18 @@
   an abstract objects:
 
   [] > test
-    hello
-      foo > x
-        15
+  hello
+  foo > x
+  15
 
   We move "x" declaration to the nearest abstract object
   and make it its attribute:
 
   [] > test
-    foo > x
-      15
-    hello
-      x
+  foo > x
+  15
+  hello
+  x
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -43,7 +43,7 @@
       <xsl:if test="not(@name) and @as">
         <xsl:attribute name="as" select="@as"/>
       </xsl:if>
-      <xsl:apply-templates select="@* except @as"/>
+      <xsl:apply-templates select="@* except (@as, @float-up)"/>
       <xsl:apply-templates select="node()[not(self::o and eo:test-attr(.))]"/>
       <xsl:for-each select="o/descendant::o[@name]">
         <xsl:if test="ancestor::o[eo:abstract(.)][1]/generate-id() = generate-id($o)">
@@ -62,6 +62,14 @@
       <xsl:apply-templates select="@as"/>
     </xsl:element>
   </xsl:template>
+  <!--
+  A pipe predecessor in an argument block (@float-up, set by
+  wrap-applications for #5526): its definition floats up like any other
+  named object, but it leaves no in-place argument slot — the pipe
+  application that follows it is the sole argument. So we drop the
+  in-place occurrence entirely instead of replacing it with a reference.
+  -->
+  <xsl:template match="o[@float-up and @name and ancestor::o[1][not(eo:abstract(.))]]" priority="2"/>
   <xsl:template match="node()|@*" mode="#all">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>

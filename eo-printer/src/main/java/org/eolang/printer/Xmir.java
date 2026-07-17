@@ -11,7 +11,9 @@ import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import javax.xml.namespace.NamespaceContext;
 import org.eolang.parser.TrFull;
 import org.w3c.dom.Node;
@@ -42,6 +44,7 @@ public final class Xmir implements XML {
         new TrFull(
             new TrDefault<>(
                 new StUnhex(),
+                new StClasspath("/org/eolang/printer/print/restore-local-names.xsl"),
                 new StClasspath("/org/eolang/printer/print/tuples-to-stars.xsl"),
                 new StClasspath("/org/eolang/printer/print/inline-cactoos.xsl"),
                 new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl"),
@@ -52,16 +55,36 @@ public final class Xmir implements XML {
     );
 
     /**
+     * The default weights: an empty map, so every key uses its fallback.
+     */
+    private static final Map<PenaltyKey, Integer> DEFAULTS = Collections.emptyMap();
+
+    /**
      * The XML.
      */
     private final XML xml;
 
     /**
-     * Ctor.
+     * The overridden penalty weights, by key.
+     */
+    private final Map<PenaltyKey, Integer> weights;
+
+    /**
+     * Ctor, using the default formatting weights.
      * @param src The source
      */
     public Xmir(final XML src) {
+        this(src, Xmir.DEFAULTS);
+    }
+
+    /**
+     * Ctor.
+     * @param src The source
+     * @param config The formatting weights; absent keys use their defaults
+     */
+    public Xmir(final XML src, final Map<PenaltyKey, Integer> config) {
         this.xml = src;
+        this.weights = config;
     }
 
     @Override
@@ -129,7 +152,8 @@ public final class Xmir implements XML {
         final XML xmir = Xmir.FOR_EO.pass(this.xml);
         Logger.debug(this, "XMIR after converting to EO tree:%n%s", xmir);
         return new Pretty(
-            new Xnav(xmir.inner()).element("object").element("eo")
+            new Xnav(xmir.inner()).element("object").element("eo"),
+            this.weights
         ).asString();
     }
 }

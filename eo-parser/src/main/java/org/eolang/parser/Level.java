@@ -62,10 +62,21 @@ final class Level {
     private Openness openness;
 
     /**
-     * True once this entry's naming line has carried a name suffix
-     * ({@code > name}, {@code >>}, or {@code +> name}).
+     * The source name on this entry's naming line ({@code foo} for
+     * {@code > foo}, the handle for {@code >> foo}, empty for a bare
+     * {@code >>}), or {@code null} when unnamed. Doubles as the named
+     * flag ({@link #named()}) and names the offender in §4.5 errors.
      */
-    private boolean named;
+    private String label;
+
+    /**
+     * The source name of the only-phi formation this entry argues
+     * (empty when anonymous), or {@code null} when it is not such an
+     * argument. Set by {@link Stack} (see {@link #argues(String)});
+     * doubles as the argument flag ({@link #argument()}) and names the
+     * formation in §4.5 errors.
+     */
+    private String formation;
 
     /**
      * True if this entry's expression is an atom (formation + {@code /sig}).
@@ -84,15 +95,6 @@ final class Level {
      * voids must precede every other attribute).
      */
     private boolean plain;
-
-    /**
-     * True when this entry sits in argument position under an only-phi
-     * formation's φ — set by {@link Stack} as it propagates the flag
-     * down through nested applications and resets it at a formation
-     * boundary. Read at close time to reject a name suffix on such an
-     * argument (§4.5).
-     */
-    private boolean argument;
 
     /**
      * For {@link Kind#COMPACT_TUPLE}: the {@code N} count from {@code *N}.
@@ -162,7 +164,6 @@ final class Level {
         this.openness = state;
         this.parent = parent;
         this.patom = patom;
-        this.named = false;
         this.atom = false;
         this.taken = false;
         this.count = 0;
@@ -223,7 +224,55 @@ final class Level {
      * @return Named flag
      */
     boolean named() {
-        return this.named;
+        return this.label != null;
+    }
+
+    /**
+     * The name a child of this entry should use for its governing
+     * only-phi formation: this entry's own name when it is the
+     * {@link Kind#ONLY_PHI_FORMATION}, otherwise the name propagated
+     * onto it (see {@link #argues(String)}). Never {@code null} — an
+     * anonymous formation propagates as the empty string.
+     * @return Governing formation name (possibly empty)
+     */
+    String governingFormation() {
+        final String owner;
+        if (this.kind == Kind.ONLY_PHI_FORMATION) {
+            owner = this.label;
+        } else {
+            owner = this.formation;
+        }
+        final String result;
+        if (owner == null) {
+            result = "";
+        } else {
+            result = owner;
+        }
+        return result;
+    }
+
+    /**
+     * The §4.5 diagnostic naming the offending attribute and the
+     * formation (generic when auto-named / anonymous).
+     * @return The error message
+     */
+    String onlyPhiNamingError() {
+        final String owner;
+        if (this.formation == null || this.formation.isEmpty()) {
+            owner = "an only-phi formation";
+        } else {
+            owner = String.format("only-phi formation %s", this.formation);
+        }
+        final String attribute;
+        if (this.label == null || this.label.isEmpty()) {
+            attribute = "an auto-named attribute";
+        } else {
+            attribute = this.label;
+        }
+        return String.format(
+            "%s cannot be a named attribute of %s, which binds only its φ decoratee",
+            attribute, owner
+        );
     }
 
     /**
@@ -247,7 +296,7 @@ final class Level {
      * @return Argument-position flag
      */
     boolean argument() {
-        return this.argument;
+        return this.formation != null;
     }
 
     /**
@@ -260,14 +309,16 @@ final class Level {
      */
     boolean argumentative() {
         return this.kind == Kind.ONLY_PHI_FORMATION
-            || this.argument && !this.kind.formation();
+            || this.formation != null && !this.kind.formation();
     }
 
     /**
-     * Flag this entry as an argument of an only-phi formation's φ.
+     * Flag this entry as an argument of an only-phi formation's φ,
+     * recording the formation's name for the §4.5 diagnostic.
+     * @param owner The formation's name (empty if anonymous, non-null)
      */
-    void argues() {
-        this.argument = true;
+    void argues(final String owner) {
+        this.formation = owner;
     }
 
     /**
@@ -304,10 +355,13 @@ final class Level {
     }
 
     /**
-     * Flip {@link #named()} to true.
+     * Record the suffix's source name, which also marks the entry named
+     * ({@link #named()}).
+     * @param text The name label (empty for a bare {@code >>}); never
+     *  {@code null}
      */
-    void name() {
-        this.named = true;
+    void name(final String text) {
+        this.label = text;
     }
 
     /**

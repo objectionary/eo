@@ -35,6 +35,7 @@
   -1 > socket-error
   0 > stdin-fileno
   1 > stdout-fileno
+  2 > stderr-fileno
   02-02 > winsock-version-2-2
   [code output] > return
     output > @

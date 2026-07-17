@@ -133,7 +133,7 @@ final class StUnhexTest {
                     "<p><o base='Φ.number'><o base='Φ.bytes'><o>43-E1-58-E4-60-91-3D-00</o></o></o></p>"
                 )
             ),
-            XhtmlMatchers.hasXPath("//o[text()='10000000000000000000']")
+            XhtmlMatchers.hasXPath("//o[text()='1.0e19']")
         );
     }
 
@@ -150,6 +150,30 @@ final class StUnhexTest {
             Matchers.anyOf(
                 XhtmlMatchers.hasXPath("//o[text()='2393807.3656386123']"),
                 XhtmlMatchers.hasXPath("//o[text()='2.3938073656386123e6']")
+            )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
+    void keepsGlyphsButEscapesControls(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must keep glyphs readable and escape only control chars",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<o base='Φ.string'><o base='Φ.bytes'>",
+                        "<o>41-01-07-D0-B4-D1-80-D1-83-D0-B3</o>",
+                        "</o></o>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                "//o[text()='\"A\\u0001\\u0007\u0434\u0440\u0443\u0433\"']"
             )
         );
     }
