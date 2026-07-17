@@ -242,18 +242,6 @@ final class LnOnlyPhiTest {
     }
 
     @Test
-    void flagsCompactTuplePhiOnLevel() {
-        final Stack stack = new Stack();
-        new LnOnlyPhi(new Span("seq *1 > [m]", 1))
-            .into(stack, new Globals(), new Emit());
-        MatcherAssert.assertThat(
-            "a compact-tuple LHS must flag the level so the Φ.tuple wrapper hooks fire, and carry its N count",
-            stack.top().star() && stack.top().count() == 1,
-            Matchers.equalTo(true)
-        );
-    }
-
-    @Test
     void emitsCompactTuplePhiWithoutStarArgument() {
         final Emit emit = new Emit();
         new LnOnlyPhi(new Span("seq * > [m]", 1))

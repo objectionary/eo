@@ -774,9 +774,9 @@ final class Eo implements Iterable<Directive> {
      * level pops. Two kinds open a second {@code <o>} and so emit an
      * extra close: a compact tuple (its {@code Φ.tuple} wrapper) and an
      * open only-phi formation (its φ application, left open for vertical
-     * arguments per §4.5). An only-phi formation whose φ is itself a
-     * compact tuple ({@code seq * > [m]}) opens both — the wrapper closes
-     * before the φ.</p>
+     * arguments per §4.5). An only-phi formation whose φ is a compact
+     * tuple ({@code seq * > [m]}) opens both — the wrapper closes
+     * first.</p>
      *
      * <p>Checks: R-5.3.1 (naming requirement for plain children of
      * formations and top-level objects), the only-phi argument-naming
@@ -840,8 +840,7 @@ final class Eo implements Iterable<Directive> {
      * the empty {@code Φ.tuple star=""} wrapper (when {@code N} matched
      * the children exactly and nothing was emitted yet) or close the
      * already-open wrapper. Shared by a {@link Kind#COMPACT_TUPLE} head
-     * and an only-phi formation whose φ is a compact tuple
-     * ({@link Level#star()}).
+     * and a {@link Level#star()} only-phi φ.
      * @param level The compact-tuple level
      * @param emit The directives sink
      */
@@ -869,9 +868,8 @@ final class Eo implements Iterable<Directive> {
     /**
      * Pre-child hostarts (§3.9 / R-3.9.2): emit the synthesised
      * {@code Φ.tuple} wrapper exactly once when a compact-tuple parent —
-     * a {@link Kind#COMPACT_TUPLE} head or an only-phi φ compact tuple
-     * ({@link Level#star()}) — has accumulated its first N direct
-     * children.
+     * a {@link Kind#COMPACT_TUPLE} head or a {@link Level#star()} only-phi
+     * φ — has accumulated its first N direct children.
      * @param parent The parent level
      * @param emit The directives sink
      */

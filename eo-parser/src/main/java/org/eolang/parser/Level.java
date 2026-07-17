@@ -117,9 +117,9 @@ final class Level {
     /**
      * For a {@link Kind#ONLY_PHI_FORMATION} whose φ is a compact tuple
      * ({@code seq * > [m]}, R-3.9.1 + R-3.10.6): true so the φ absorbs
-     * deeper-indent lines into a {@code Φ.tuple} wrapper exactly like a
-     * {@link Kind#COMPACT_TUPLE} head, using {@link #count}, {@link
-     * #children}, and {@link #tupled}.
+     * deeper-indent lines into a {@code Φ.tuple} wrapper like a
+     * {@link Kind#COMPACT_TUPLE} head, reusing {@link #count} /
+     * {@link #children} / {@link #tupled}.
      */
     private boolean star;
 
@@ -443,10 +443,9 @@ final class Level {
     }
 
     /**
-     * Flag this only-phi formation's φ as a compact tuple, so the
-     * {@code Φ.tuple} wrapper mechanics ({@link #child()}, {@link
-     * #openTuple()}, {@link #tupled()}) apply to its deeper-indent
-     * children exactly as for a {@link Kind#COMPACT_TUPLE} head.
+     * Flag this only-phi φ as a compact tuple, so the {@code Φ.tuple}
+     * wrapper mechanics apply to its children as for a
+     * {@link Kind#COMPACT_TUPLE} head.
      */
     void markStar() {
         this.star = true;
