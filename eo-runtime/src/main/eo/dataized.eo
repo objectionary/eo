@@ -64,5 +64,7 @@
     func > cached2!
     malloc.for > func
       0
-      seq > [m]
-        * true (m.put (m.as-number.plus 1))
+      seq * > [m]
+        true
+        m.put
+          m.as-number.plus 1

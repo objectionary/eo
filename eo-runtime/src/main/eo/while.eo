@@ -113,10 +113,9 @@
                 acc.as-number.plus (^.^.arr.at 0)
               while
                 ^.^.^.max.gt iter > [i] >>
-                seq > [i] >>
-                  *
-                    ^.^.acc.put (^.^.acc.as-number.plus (^.^.^.arr.at i))
-                    iter.put (iter.as-number.plus 1)
+                seq * > [i] >>
+                  ^.^.acc.put (^.^.acc.as-number.plus (^.^.^.arr.at i))
+                  iter.put (iter.as-number.plus 1)
     arr.length.plus -1 > max
 
   ++> tests-iterating-tuple-with-while-using-external-iterator
@@ -130,10 +129,9 @@
           [iter] >>
             while > @
               ^.^.^.max.gt iter > [i] >>
-              seq > [i] >>
-                *
-                  ^.^.acc.put (^.^.acc.as-number.plus (^.^.^.arr.at iter))
-                  iter.put (iter.as-number.plus 1)
+              seq * > [i] >>
+                ^.^.acc.put (^.^.acc.as-number.plus (^.^.^.arr.at iter))
+                iter.put (iter.as-number.plus 1)
     arr.length.plus -1 > max
 
   ++> tests-iterating-tuple-with-while-without-body-multiple

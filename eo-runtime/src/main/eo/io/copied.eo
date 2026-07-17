@@ -25,10 +25,11 @@
     eq. > @
       malloc.of
         5
-        seq > [m]
-          *
-            copied (bytes-as-input 01-02-03-04-05) (malloc-as-output m)
-            m
+        seq * > [m]
+          copied
+            bytes-as-input 01-02-03-04-05
+            malloc-as-output m
+          m
       01-02-03-04-05
 
   ++> tests-returns-correct-byte-count
@@ -45,10 +46,11 @@
     eq. > @
       malloc.of
         0
-        seq > [m]
-          *
-            copied (bytes-as-input --) (malloc-as-output m)
-            m
+        seq * > [m]
+          copied
+            bytes-as-input --
+            malloc-as-output m
+          m
       --
 
   ++> tests-returns-zero-for-empty-input

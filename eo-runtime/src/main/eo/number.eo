@@ -146,10 +146,9 @@
           minus1.plus minus2
           rec (n.minus 1) (minus1.plus minus2) minus1
 
-  seq ++> tests-zero-division
-    *
-      2.div 0
-      true
+  seq * ++> tests-zero-division
+    2.div 0
+    true
 
   ++> tests-division-by-one
     eq. > @

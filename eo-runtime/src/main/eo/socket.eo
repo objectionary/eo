@@ -116,8 +116,9 @@
         output-block.write buffer
       [] > output-block
         true > @
-        seq > [buffer] > write
-          * (^.^.^.send buffer) ^.^.output-block
+        seq * > [buffer] > write
+          ^.^.^.send buffer
+          ^.^.output-block
   [sys] > impl
     code. > addr
       sys.raw

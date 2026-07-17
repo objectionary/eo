@@ -32,25 +32,23 @@
         output-block.write buffer
       [] > output-block
         true > @
-        seq > [buffer] > write
-          *
-            code.
-              sm.posix
-                "write"
-                * sm.posix.stderr-fileno buffer buffer.size
-            ^.^.output-block
+        seq * > [buffer] > write
+          code.
+            sm.posix
+              "write"
+              * sm.posix.stderr-fileno buffer buffer.size
+          ^.^.output-block
   [] > windows-output
     [buffer] > write
       @. > @
         output-block.write buffer
       [] > output-block
         true > @
-        seq > [buffer] > write
-          *
-            code.
-              sm.win32
-                "_write"
-                * sm.win32.stderr-fileno buffer buffer.size
-            ^.^.output-block
+        seq * > [buffer] > write
+          code.
+            sm.win32
+              "_write"
+              * sm.win32.stderr-fileno buffer buffer.size
+          ^.^.output-block
 
   stderr "Hello, stderr-test!\n" ++> tests-prints-to-stderr

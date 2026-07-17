@@ -17,10 +17,9 @@
 [input] > input-as-bytes
   malloc.of > @
     0
-    seq > [m] >>
-      *
-        copied input (malloc-as-output m)
-        m
+    seq * > [m] >>
+      copied input (malloc-as-output m)
+      m
 
   ++> tests-bytes-to-input-and-back
     eq. > @

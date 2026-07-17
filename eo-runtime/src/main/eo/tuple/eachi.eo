@@ -17,8 +17,9 @@
   reducedi > @
     list
     true
-    seq > [acc item index] >>
-      * acc (func item index)
+    seq * > [acc item index] >>
+      acc
+      func item index
 
   ++> tests-iterates-with-eachi
     eq. > @

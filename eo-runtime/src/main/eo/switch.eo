@@ -63,10 +63,9 @@
       * true "TRUE2"
     "TRUE1"
 
-  switch ++> tests-switch-with-all-false-cases
-    *
-      * false "false1"
-      * false "false2"
+  switch * ++> tests-switch-with-all-false-cases
+    * false "false1"
+    * false "false2"
 
   switch --> on-empty-switch
     *

@@ -66,10 +66,9 @@
   [object scope] > for
     malloc.of > @
       bts.size
-      seq > [m] >>
-        *
-          m.write 0 bts
-          scope m
+      seq * > [m] >>
+        m.write 0 bts
+        scope m
     object > bts!
   [size scope] > of
     [] > @ /bytes
@@ -81,15 +80,17 @@
       write target (read source length) > [source target length] > copy
       [offset length cant-read] > read /bytes
       [offset data] > write /bool
-      seq > [object] > put
-        * (write 0 object) get
+      seq * > [object] > put
+        write 0 object
+        get
 
   ++> tests-writes-into-memory-of
     mem.eq 10 > @
     malloc.of > mem
       8
-      seq > [m]
-        * (m.write 0 10) m
+      seq * > [m]
+        m.write 0 10
+        m
 
   ++> tests-puts-into-memory-for
     mem.eq 10 > @
@@ -128,19 +129,18 @@
       mem
     malloc.of > mem
       13
-      seq > [m]
-        *
-          m.put "Hello, world!"
-          m.put 42
+      seq * > [m]
+        m.put "Hello, world!"
+        m.put 42
 
   ++> tests-malloc-rewrites-and-increments-itself
     mem.eq 6 > @
     malloc.of > mem
       8
-      seq > [m]
-        *
-          m.write 0 1
-          m.put (m.as-number.plus 5)
+      seq * > [m]
+        m.write 0 1
+        m.put
+          m.as-number.plus 5
 
   ++> tests-writes-into-two-malloc-objects
     and. > @
@@ -210,12 +210,11 @@
       [b]
         malloc.of > @
           12
-          seq > [m] >>
-            *
-              m.write 0 "Hello, "
-              m.write 7 "Jeff!"
-              b.put
-                eq. (m.read 0 12) "Hello, Jeff!"
+          seq * > [m] >>
+            m.write 0 "Hello, "
+            m.write 7 "Jeff!"
+            b.put
+              eq. (m.read 0 12) "Hello, Jeff!"
 
   ++> tests-malloc-concacts-strings-with-offset
     malloc.of > @
@@ -223,20 +222,18 @@
       [b]
         malloc.of > @
           3
-          seq > [m] >>
-            *
-              m.write 0 "XXX"
-              m.write 1 "Y"
-              b.put
-                eq. (m.read 0 3) "XYX"
+          seq * > [m] >>
+            m.write 0 "XXX"
+            m.write 1 "Y"
+            b.put
+              eq. (m.read 0 3) "XYX"
 
   ++> writes-beyond-offset-and-resizes
     malloc.of > @
       1
-      seq > [m]
-        *
-          m.write 1 true
-          m.size.eq 2
+      seq * > [m]
+        m.write 1 true
+        m.size.eq 2
 
   ++> tests-malloc-reads-with-offset-and-length
     malloc.of > @
@@ -244,11 +241,10 @@
       [b]
         malloc.of > @
           10
-          seq > [m] >>
-            *
-              m.write 2 "Hello"
-              b.put
-                eq. (m.read 2 5) "Hello"
+          seq * > [m] >>
+            m.write 2 "Hello"
+            b.put
+              eq. (m.read 2 5) "Hello"
 
   ++> tests-malloc-read-over-a-limit-returns-fallback
     01-02.eq > @
@@ -329,10 +325,9 @@
   ++> copies-and-resizes-to-target
     malloc.for > @
       0
-      seq > [m]
-        *
-          m.copy 3 9 1
-          m.size.eq 10
+      seq * > [m]
+        m.copy 3 9 1
+        m.size.eq 10
 
   --> on-copying-with-wrong-length
     malloc.for > @
@@ -347,8 +342,10 @@
       seq * > @
         a.neg.neg.neg.neg.eq 42
         m
-      seq > [] > a
-        * (m.put (m.as-number.plus 1)) 42
+      seq * > [] > a
+        m.put
+          m.as-number.plus 1
+        42
 
   ++> tests-recursion-without-arguments
     eq. > @
@@ -373,8 +370,7 @@
           inc m > n!
           number n > num
       64
-    seq > [x] > inc
-      *
-        x.put
-          x.as-number.plus 1
-        x.as-number
+    seq * > [x] > inc
+      x.put
+        x.as-number.plus 1
+      x.as-number
