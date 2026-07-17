@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="unnecessary-as" version="2.0">
   <!--
-    Performs the reverse operation of "/org/eolang/parser/mandatory-as.xsl"
+  Performs the reverse operation of "/org/eolang/parser/mandatory-as.xsl"
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:function name="eo:all-alphas">

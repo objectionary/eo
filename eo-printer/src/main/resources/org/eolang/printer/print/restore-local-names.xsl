@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="restore-local-names" version="2.0">
   <!--
@@ -23,8 +23,10 @@
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:key name="void-handle" match="o[@local and @base=$eo:empty]" use="@name"/>
-  <!-- References: rewrite each cactus segment that names a handled void
-       back into the readable handle. -->
+  <!--
+  References: rewrite each cactus segment that names a handled void
+  back into the readable handle.
+  -->
   <xsl:template match="@base">
     <xsl:attribute name="base" select="string-join(for $seg in tokenize(., '\.') return (if (key('void-handle', $seg)) then key('void-handle', $seg)[1]/@local else $seg), '.')"/>
   </xsl:template>
@@ -32,9 +34,11 @@
   <xsl:template match="o[@local and @base=$eo:empty]/@name">
     <xsl:attribute name="name" select="../@local"/>
   </xsl:template>
-  <!-- Keep the marker on voids so "to-eo-tree" restores the readable
-       "? &gt;&gt; name" handle; drop it on non-void formations, whose
-       handle is inlined away by the "inline-cactoos" pass. -->
+  <!--
+  Keep the marker on voids so "to-eo-tree" restores the readable
+  "? &gt;&gt; name" handle; drop it on non-void formations, whose
+  handle is inlined away by the "inline-cactoos" pass.
+  -->
   <xsl:template match="o[not(@base=$eo:empty)]/@local"/>
   <xsl:template match="node()|@*">
     <xsl:copy>

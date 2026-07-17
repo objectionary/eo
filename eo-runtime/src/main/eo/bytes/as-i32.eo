@@ -17,8 +17,10 @@
       "Can't convert non 4 length bytes to i32, bytes are %x".printf
         * bts
 
-  01-01-01-01-01.as-i32 ++> throws-on-bytes-of-wrong-size-as-i32
+  --> on-bytes-of-wrong-size-as-i32
+    01-01-01-01-01.as-i32 > @
 
-  eq. ++> tests-bytes-converts-to-i32-and-back
-    as-bytes. 00-00-00-33.as-i32
-    00-00-00-33
+  ++> tests-bytes-converts-to-i32-and-back
+    eq. > @
+      00-00-00-33.as-i32.as-bytes
+      00-00-00-33

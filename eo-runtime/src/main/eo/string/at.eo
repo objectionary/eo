@@ -13,7 +13,7 @@
   if. > @
     or.
       0.gt index
-      gte. (number index) len
+      (number index).gte len
     out-of-bounds
       "Given index %d is out of text bounds".printf
         * index
@@ -21,20 +21,31 @@
   i > idx!
   if. > index!
     0.gt idx
-    plus. (number len) idx
+    (number len).plus idx
     idx
   text.length > len!
 
-  "s".eq (at "some" 0) ++> tests-returns-first-char
+  ++> tests-returns-first-char
+    eq. > @
+      "s"
+      at "some" 0
 
-  "m".eq (at "some" 2) ++> tests-returns-third-char
+  ++> tests-returns-third-char
+    eq. > @
+      "m"
+      at "some" 2
 
-  "m".eq (at "some" -2) ++> tests-returns-char-at-negative-index
+  ++> tests-returns-char-at-negative-index
+    eq. > @
+      "m"
+      at "some" -2
 
-  at "some" 10 ++> throws-on-text-at-index-more-than-length
+  --> on-text-at-index-more-than-length
+    at "some" 10 > @
 
   ++> tests-text-at-out-of-bounds-returns-provided-fallback
-    "recovered".eq > @
+    eq. > @
+      "recovered"
       at
         "some"
         10

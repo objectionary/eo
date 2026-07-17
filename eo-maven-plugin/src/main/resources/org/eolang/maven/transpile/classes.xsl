@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="classes" version="2.0">
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
@@ -43,7 +43,7 @@
       <xsl:text>&gt;</xsl:text>
     </xsl:if>
   </xsl:template>
-  <xsl:template match="object/o[not(eo:atom(.)) or (eo:atom(.) and count(./o[contains(@name, '+')])&gt;0)]" priority="1">
+  <xsl:template match="object/o[not(eo:atom(.)) or (eo:atom(.) and count(./o[eo:test-attr(.)])&gt;0)]" priority="1">
     <xsl:apply-templates select="." mode="class"/>
   </xsl:template>
   <xsl:template match="object/o[@base and @name]" priority="2">

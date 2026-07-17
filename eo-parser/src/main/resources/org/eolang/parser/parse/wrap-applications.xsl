@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="wrap-applications" version="2.0">
   <!--
@@ -10,7 +10,7 @@
 
   <o name="foo"/>              (the formation, named)
   <o pipe="" name="foo5">      (| 5 > foo5)
-    <o base="Φ.number">5</o>
+  <o base="Φ.number">5</o>
   </o>
 
   We rewrite the @pipe node into an ordinary application whose @base

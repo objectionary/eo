@@ -18,7 +18,9 @@ import java.util.List;
  * (R-3.4.5). The line may carry an optional name suffix per §3.10,
  * including the atom-signature form {@code > name /sig}. The shorthand
  * {@code ++> name} is accepted as sugar for {@code [] +> name} — a
- * parameterless formation carrying a test suffix (R-6.3.6).</p>
+ * parameterless formation carrying a truthy test suffix (R-6.3.6); its
+ * throwing counterpart {@code --> name} is sugar for {@code [] -> name}.
+ * </p>
  *
  * <p>Cross-line behaviour: pushes a new {@link Level} at this line's
  * indent (Step C/D) or replaces the current top (Step B), with
@@ -50,7 +52,7 @@ final class LnFormation implements Line {
         final List<String> params;
         final String binding;
         final Suffix suffix;
-        if (body.startsWith("++>")) {
+        if (body.startsWith("++>") || body.startsWith("-->")) {
             params = new ArrayList<>(0);
             binding = null;
             suffix = new Suffix(

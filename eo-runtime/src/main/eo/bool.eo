@@ -52,7 +52,7 @@
         ^.^.^.x.eq 42 > [] > @
     42 > x
 
-  ++> throws-when-applies-to-closed-object
+  --> when-applies-to-closed-object
     closed true > @
     x > [x] > a
     a false > closed

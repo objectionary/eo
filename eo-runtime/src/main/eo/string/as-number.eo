@@ -16,18 +16,24 @@
       "Can't convert text %s to number".printf
         * text
     scanned.head
-  ^. > scanned
-    at.
-      scanf "%f" text
+  (scanf "%f" text).at.^ > scanned
 
-  5.eq (as-number "5") ++> tests-converts-text-to-number
+  ++> tests-converts-text-to-number
+    eq. > @
+      5
+      as-number "5"
 
-  as-number "Hello" ++> throws-on-converting-text-to-number
+  --> on-converting-text-to-number
+    as-number "Hello" > @
 
   ++> tests-non-numeric-text-returns-provided-fallback
-    42.eq > @
+    eq. > @
+      42
       as-number
         "Hello"
         42 > [msg]
 
-  3.14.eq (as-number "3.14") ++> tests-converts-float-text-to-number
+  ++> tests-converts-float-text-to-number
+    eq. > @
+      3.14
+      as-number "3.14"

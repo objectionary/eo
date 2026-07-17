@@ -16,67 +16,80 @@
 [file] > directory
   file > @
   true > is-directory
+
   [] > made
-    ^.exists.if > @
+    if. > @
+      ^.exists
       ^
-      seq
-        *
-          made.
-            directory (Q.file ^.as-path.dirname)
-          if.
-            outcome.eq 0
-            ^
-            T
-              "Cant make the directory '%s': %s".printf
-                * ^.path created.output
-    called. > created
-      sm.os.is-windows.if
-        sm.win32
-          "_mkdir"
-          * ^.path
-        sm.posix
-          "mkdir"
-          * ^.path sm.posix.mkdir-mode
-    created.code > outcome
-  [glob] > walk /tuple
-  [] > deleted
-    ^.exists.if > @
-      seq
-        *
-          rec-delete
-            ^.
-              at. (walk "**")
+      seq *
+        (directory (Q.file ^.as-path.dirname)).made
+        if.
+          outcome.eq 0
           ^
+          T
+            "Cant make the directory '%s': %s".printf
+              * ^.path created.output
+    called. > created
+      if.
+        os.is-windows
+        win32 "_mkdir" (* ^.path)
+        posix "mkdir" (* ^.path posix.mkdir-mode)
+    created.code > outcome
+
+  [glob] > walk /tuple
+
+  [] > deleted
+    if. > @
+      ^.exists
+      seq *
+        rec-delete (walk "**").at.^
+        ^
       ^
-    if. > [tup] > rec-delete
-      tup.length.eq 0
-      true
-      seq
-        * tup.head.deleted (rec-delete tup.tail)
+
+    [tup] > rec-delete
+      if. > @
+        tup.length.eq 0
+        true
+        seq *
+          tup.head.deleted
+          rec-delete tup.tail
+
   [] > tmpfile
-    ^.exists.if > @
-      Q.file touch.as-bytes
+    if. > @
+      ^.exists
+      Q.file
+        touch.as-bytes
       T
         "Directory %s does not exist, can't create temporary file".printf
           * file
+
     [] > touch /string
-  T > [mode scope] > open
-    "The file %s is a directory, can't open for I/O operations".printf
-      * file
+
+  [mode scope] > open
+    T > @
+      "The file %s is a directory, can't open for I/O operations".printf
+        * file
 
   ++> tests-makes-new-directory
-    d.exists.and d.is-directory > @
-    made. > d
-      as-dir. (mktemp.tmpfile.deleted.as-path.resolved "foo-new")
+    and. > @
+      d.exists
+      d.is-directory
+    (mktemp.tmpfile.deleted.as-path.resolved "foo-new").as-dir.made > d
 
   ++> tests-deletes-empty-directory
-    not. > @
-      exists.
-        deleted.
-          made.
-            as-dir. (mktemp.tmpfile.deleted.as-path.resolved "bar-empty")
+    mktemp
+    .tmpfile
+    .deleted
+    .as-path
+    .resolved
+      "bar-empty"
+    .as-dir
+    .made
+    .deleted
+    .exists
+    .not > @
 
-  ++> throws-on-opening-directory
+  --> on-opening-directory
     mktemp.open > @
       "w"
       true > [d]
@@ -84,11 +97,14 @@
   ++> tests-deletes-directory-with-files-recursively
     and. > @
       and.
-        and. (first.exists.and second.exists) d.deleted.exists.not
+        and.
+          and.
+            first.exists
+            second.exists
+          d.deleted.exists.not
         first.exists.not
       second.exists.not
-    made. > d
-      directory mktemp.tmpfile.deleted
+    (directory mktemp.tmpfile.deleted).made > d
     d.tmpfile > first
     d.tmpfile > second
 
@@ -96,32 +112,27 @@
     and. > @
       and.
         and.
-          and. (inner.is-directory.and inner.exists) f.exists
+          and.
+            and.
+              inner.is-directory
+              inner.exists
+            f.exists
           d.deleted.exists.not
         inner.exists.not
       f.exists.not
-    made. > d
-      directory mktemp.tmpfile.deleted
+    (directory mktemp.tmpfile.deleted).made > d
     d.tmpfile > f
-    made. > inner
-      directory d.tmpfile.deleted
+    (directory d.tmpfile.deleted).made > inner
 
   ++> tests-walks-recursively
     seq > @
       *
-        made.
-          as-dir. (d.resolved "foo/bar")
-        touched.
-          as-file. (d.resolved "foo/bar/test.txt")
-        made.
-          as-dir. (d.resolved "x/y/z")
-        touched.
-          as-file. (d.resolved "x/y/z/a.txt")
-        eq.
-          length. (d.as-dir.walk "**/*.txt")
-          2
-    as-path. > d
-      made. (directory mktemp.tmpfile.deleted)
+        (d.resolved "foo/bar").as-dir.made
+        (d.resolved "foo/bar/test.txt").as-file.touched
+        (d.resolved "x/y/z").as-dir.made
+        (d.resolved "x/y/z/a.txt").as-file.touched
+        (d.as-dir.walk "**/*.txt").length.eq 2
+    (directory mktemp.tmpfile.deleted).made.as-path > d
 
-  ++> throws-on-walking-absent-directory
-    walk. (directory mktemp.tmpfile.deleted) "**" > @
+  --> on-walking-absent-directory
+    (directory mktemp.tmpfile.deleted).walk "**" > @

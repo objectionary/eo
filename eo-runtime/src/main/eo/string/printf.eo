@@ -20,49 +20,55 @@
 
 [format args] > printf /string
 
-  eq. ++> tests-prints-simple-string
-    "Hello, Jeffrey!"
-    printf
-      "Hello, %s!"
-      * "Jeffrey"
+  ++> tests-prints-simple-string
+    eq. > @
+      "Hello, Jeffrey!"
+      printf
+        "Hello, %s!"
+        * "Jeffrey"
 
-  eq. ++> tests-prints-complex-string
-    "Привет 3.140000 Jeff X!"
-    printf
-      "Привет %f %s %s!"
-      * 3.14 "Jeff" "X"
+  ++> tests-prints-complex-string
+    eq. > @
+      "Привет 3.140000 Jeff X!"
+      printf
+        "Привет %f %s %s!"
+        * 3.14 "Jeff" "X"
 
-  eq. ++> tests-prints-bytes-string
-    "40-45-00-00-00-00-00-00"
-    printf
-      "%x"
-      * 42.as-bytes
+  ++> tests-prints-bytes-string
+    eq. > @
+      "40-45-00-00-00-00-00-00"
+      printf
+        "%x"
+        * 42.as-bytes
 
-  eq. ++> tests-formats-all-objects
-    "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
-    printf
-      "string %s, bytes %x, float %f, int %d, bool %b"
-      * "Jeff" "Jeff".as-bytes 42.3 14 false
+  ++> tests-formats-all-objects
+    eq. > @
+      "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
+      printf
+        "string %s, bytes %x, float %f, int %d, bool %b"
+        * "Jeff" "Jeff".as-bytes 42.3 14 false
 
-  printf ++> throws-on-printf-with-arguments-that-does-not-match
-    "%s%s"
-    * "Jeff"
-
-  eq. ++> tests-printf-does-not-fail-if-arguments-more-than-formats
-    "Hey"
-    printf
-      "%s"
-      * "Hey" "Jeff"
-
-  printf ++> throws-on-printf-unsupported-format
-    "%o"
-    *
-
-  eq. ++> tests-printf-prints-percents
-    "%Jeff"
-    printf
-      "%%%s"
+  --> on-printf-with-arguments-that-does-not-match
+    printf > @
+      "%s%s"
       * "Jeff"
+
+  ++> tests-printf-does-not-fail-if-arguments-more-than-formats
+    eq. > @
+      "Hey"
+      printf
+        "%s"
+        * "Hey" "Jeff"
+
+  --> on-printf-unsupported-format
+    printf "%o" * > @
+
+  ++> tests-printf-prints-percents
+    eq. > @
+      "%Jeff"
+      printf
+        "%%%s"
+        * "Jeff"
 
   ++> tests-printf-does-not-print-i64
     not. > @
@@ -72,75 +78,87 @@
           * 42.as-i64
         "42"
 
-  eq. ++> tests-printf-prints-i64-as-number
-    "42"
-    printf
-      "%d"
-      *
-        as-number. 42.as-i64
+  ++> tests-printf-prints-i64-as-number
+    eq. > @
+      "42"
+      printf
+        "%d"
+        * 42.as-i64.as-number
 
-  eq. ++> formats-numbered-substitution
-    "Hello, Jeff! Bye, Jeff!"
-    printf
-      "Hello, %s! Bye, %1$s!"
+  ++> formats-numbered-substitution
+    eq. > @
+      "Hello, Jeff! Bye, Jeff!"
+      printf
+        "Hello, %s! Bye, %1$s!"
+        * "Jeff"
+
+  --> on-printf-with-oversized-positional-index
+    printf > @
+      "%99999999999999999999$s"
       * "Jeff"
 
-  printf ++> throws-on-printf-with-oversized-positional-index
-    "%99999999999999999999$s"
-    * "Jeff"
-
-  printf ++> throws-on-printf-with-zero-positional-index
-    "%0$s"
-    * "first" "second"
-
-  eq. ++> formats-numbered-substitution-with-multiple-args
-    "This is the first; This is the first as well; The second; and the 3"
-    printf
-      "This is the %s; This is the %1$s as well; The %s; and the %d"
-      * "first" "second" 3
-
-  eq. ++> formats-with-ordered-numbered-substitutions
-    "first second second is after first"
-    printf
-      "%s %s %2$s is after %1$s"
+  --> on-printf-with-zero-positional-index
+    printf > @
+      "%0$s"
       * "first" "second"
 
-  eq. ++> truncates-positive-float-towards-zero-as-decimal
-    "42"
-    printf
+  ++> formats-numbered-substitution-with-multiple-args
+    eq. > @
+      "This is the first; This is the first as well; The second; and the 3"
+      printf
+        "This is the %s; This is the %1$s as well; The %s; and the %d"
+        * "first" "second" 3
+
+  ++> formats-with-ordered-numbered-substitutions
+    eq. > @
+      "first second second is after first"
+      printf
+        "%s %s %2$s is after %1$s"
+        * "first" "second"
+
+  ++> truncates-positive-float-towards-zero-as-decimal
+    eq. > @
+      "42"
+      printf
+        "%d"
+        * 42.321
+
+  ++> truncates-negative-float-towards-zero-as-decimal
+    eq. > @
+      "-7"
+      printf
+        "%d"
+        * -7.89
+
+  ++> truncates-rather-than-rounds-float-as-decimal
+    eq. > @
+      "9"
+      printf
+        "%d"
+        * 9.99
+
+  --> on-formatting-huge-number-as-decimal
+    printf > @
       "%d"
-      * 42.321
+      * 1.0e30
 
-  eq. ++> truncates-negative-float-towards-zero-as-decimal
-    "-7"
-    printf
-      "%d"
-      * -7.89
+  ++> formats-float-always-with-six-fraction-digits
+    eq. > @
+      "1.250000"
+      printf
+        "%f"
+        * 1.25
 
-  eq. ++> truncates-rather-than-rounds-float-as-decimal
-    "9"
-    printf
-      "%d"
-      * 9.99
+  ++> rounds-float-carrying-into-integer-part
+    eq. > @
+      "1.000000"
+      printf
+        "%f"
+        * 0.9999999
 
-  printf ++> throws-on-formatting-huge-number-as-decimal
-    "%d"
-    * 1000000000000000000000000000000
-
-  eq. ++> formats-float-always-with-six-fraction-digits
-    "1.250000"
-    printf
-      "%f"
-      * 1.25
-
-  eq. ++> rounds-float-carrying-into-integer-part
-    "1.000000"
-    printf
-      "%f"
-      * 0.9999999
-
-  eq. ++> formats-zero-float-with-six-fraction-digits
-    "0.000000"
-    printf
-      "%f"
-      * 0
+  ++> formats-zero-float-with-six-fraction-digits
+    eq. > @
+      "0.000000"
+      printf
+        "%f"
+        * 0.0

@@ -22,22 +22,34 @@
     0.eq amount
     --
     rec-repeated bts 1
-  if. > [accum index] > rec-repeated
-    amount.eq index
-    accum
-    rec-repeated
-      accum.concat bts
-      as-number. (index.plus 1)
 
-  repeated "" -1 ++> throws-on-text-repeating-less-than-zero-times
+  [accum index] > rec-repeated
+    if. > @
+      amount.eq index
+      accum
+      rec-repeated
+        accum.concat bts
+        (index.plus 1).as-number
+
+  --> on-text-repeating-less-than-zero-times
+    repeated > @
+      ""
+      -1
 
   ++> tests-text-repeated-negative-times-returns-provided-fallback
-    "recovered".eq > @
+    eq. > @
+      "recovered"
       repeated
         "x"
         -1
         "recovered" > [msg]
 
-  "".eq (repeated "some" 0) ++> tests-text-repeated-zero-times-is-empty
+  ++> tests-text-repeated-zero-times-is-empty
+    eq. > @
+      ""
+      repeated "some" 0
 
-  "heyheyheyheyhey".eq (repeated "hey" 5) ++> tests-text-repeated-five-times
+  ++> tests-text-repeated-five-times
+    eq. > @
+      "heyheyheyheyhey"
+      repeated "hey" 5

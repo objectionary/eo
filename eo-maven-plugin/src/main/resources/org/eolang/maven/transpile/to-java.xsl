@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="to-java" version="2.0">
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
@@ -27,7 +27,7 @@
       <xsl:value-of select="$TAB"/>
     </xsl:for-each>
   </xsl:function>
-  <!-- Get clean escaped object name  -->
+  <!-- Get clean escaped object name -->
   <xsl:function name="eo:clean" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
     <xsl:value-of select="concat('EO', replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO'))"/>
@@ -89,7 +89,7 @@
     </xsl:variable>
     <xsl:value-of select="$joined"/>
   </xsl:function>
-  <!-- Get name for special attributes  -->
+  <!-- Get name for special attributes -->
   <xsl:function name="eo:attr-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
     <xsl:param name="wrap" as="xs:boolean"/>
@@ -128,7 +128,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <!-- Convert location to class name  -->
+  <!-- Convert location to class name -->
   <xsl:function name="eo:loc-to-class">
     <xsl:param name="loc"/>
     <xsl:value-of select="concat('EO', replace(translate(string-join(tokenize($loc, '\.'), ''), '-', '_'), $eo:cactoos, $eo:alpha))"/>
@@ -215,7 +215,7 @@
     <xsl:text>import org.eolang.*;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <!-- Class. Entry point  -->
+  <!-- Class. Entry point -->
   <xsl:template match="class">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
@@ -231,7 +231,7 @@
       </xsl:if>
     </xsl:copy>
   </xsl:template>
-  <!-- Class name  -->
+  <!-- Class name -->
   <xsl:template match="class/@name">
     <xsl:attribute name="name">
       <xsl:value-of select="."/>
@@ -246,7 +246,7 @@
       <xsl:value-of select="eo:class-name(., eo:suffix(../@line, ../@pos))"/>
     </xsl:attribute>
   </xsl:template>
-  <!-- Class body  -->
+  <!-- Class body -->
   <xsl:template match="class" mode="body">
     <xsl:apply-templates select="xmir"/>
     <xsl:value-of select="eo:eol(0)"/>
@@ -281,7 +281,7 @@
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <!-- Nested classes for anonymous abstract objects  -->
+  <!-- Nested classes for anonymous abstract objects -->
   <xsl:template match="nested">
     <xsl:variable name="name" select="eo:loc-to-class(eo:escape-plus(@loc))"/>
     <xsl:value-of select="eo:eol(1)"/>
@@ -308,7 +308,7 @@
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <!-- Xmir comment  -->
+  <!-- Xmir comment -->
   <xsl:template match="xmir">
     <xsl:text>/**</xsl:text>
     <xsl:for-each select="tokenize(text(), '&#10;')">
@@ -372,7 +372,7 @@
         <xsl:value-of select="parent::*/@loc"/>
       </xsl:message>
     </xsl:if>
-    <xsl:if test="not(contains($name, '+'))">
+    <xsl:if test="not(eo:test-attr(.))">
       <xsl:value-of select="eo:eol($indent)"/>
       <xsl:if test="$context!='this'">
         <xsl:text>((PhDefault) </xsl:text>
@@ -401,13 +401,13 @@
     <xsl:text>")</xsl:text>
   </xsl:template>
   <!--
-    Atom as attribute.
-    We use new Function<>() {...} syntax instead of lambdas from Java 8 because
-    1. java does not manage to compile the code with 17+ nested lambdas.
-       It just freezes and fails in 5-10 min with heap overflow error.
-       So we can't compile nested-blah-test from true.eo.
-       We haven't reported the bug to openjdk yet, but we will
-    2. it just works faster because dynamic dispatch is not happened
+  Atom as attribute.
+  We use new Function<>() {...} syntax instead of lambdas from Java 8 because
+  1. java does not manage to compile the code with 17+ nested lambdas.
+  It just freezes and fails in 5-10 min with heap overflow error.
+  So we can't compile nested-blah-test from true.eo.
+  We haven't reported the bug to openjdk yet, but we will
+  2. it just works faster because dynamic dispatch is not happened
   -->
   <xsl:template match="atom">
     <xsl:param name="parent"/>
@@ -646,7 +646,7 @@
       <xsl:text>");</xsl:text>
     </xsl:if>
   </xsl:template>
-  <!-- Application  -->
+  <!-- Application -->
   <xsl:template match="*" mode="application">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
@@ -797,7 +797,7 @@
         <xsl:value-of select="parent::*/@loc"/>
       </xsl:message>
     </xsl:if>
-    <xsl:if test="contains($name, '+')">
+    <xsl:if test="eo:test-attr(.)">
       <xsl:value-of select="eo:eol($indent)"/>
       <xsl:if test="$context!='this'">
         <xsl:text>((PhDefault) </xsl:text>
@@ -833,7 +833,7 @@
         <xsl:text>() throws java.lang.Exception {</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
         <xsl:choose>
-          <xsl:when test="starts-with(eo:escape-plus(@name), 'throws')">
+          <xsl:when test="starts-with(@name, '-')">
             <xsl:text>Assertions.assertThrows(Exception.class, () -&gt; {</xsl:text>
             <xsl:apply-templates select="." mode="dataized">
               <xsl:with-param name="indent" select="3"/>
@@ -876,7 +876,7 @@
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <!-- License with disclaimer  -->
+  <!-- License with disclaimer -->
   <xsl:template match="/object" mode="license">
     <xsl:text>/* </xsl:text>
     <xsl:value-of select="$disclaimer"/>

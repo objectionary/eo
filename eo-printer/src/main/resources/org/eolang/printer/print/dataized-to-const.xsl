@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="dataized-to-const" version="2.0">
   <!--
-    Performs the reverse operation of "/org/eolang/parser/const-to-dataized.xsl"
+  Performs the reverse operation of "/org/eolang/parser/const-to-dataized.xsl"
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -18,7 +18,7 @@
           <xsl:attribute name="name" select="@name"/>
           <xsl:attribute name="const"/>
           <xsl:for-each select="$argument/o">
-            <xsl:copy-of select="."/>
+            <xsl:apply-templates select="."/>
           </xsl:for-each>
           <xsl:if test="eo:has-data($argument)">
             <xsl:value-of select="$argument"/>

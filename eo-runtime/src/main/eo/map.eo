@@ -21,7 +21,9 @@
       if.
         pairs.length.eq 0
         *
-        entries. (rec-rebuild pairs)
+        entries.
+          rec-rebuild
+            pairs
     [entries hashes] > couple
     [tup] > rec-rebuild
       if. > @
@@ -30,7 +32,7 @@
           *
           *
         if.
-          tuple.contains prev.hashes hash
+          contains prev.hashes hash
           prev
           couple
             prev.entries.with
@@ -39,59 +41,67 @@
                 tup.head.key > key
                 tup.head.value > value
             prev.hashes.with hash
-      tuple.hash-code tup.head.key > hash!
-      @. (rec-rebuild tup.tail) > prev
+      hash-code tup.head.key > hash!
+      (rec-rebuild tup.tail).@ > prev
+
   [key value] > entry
+
   [entries] > initialized
     [key] > found
-      if. (size.eq 0) not-found (rec-key-search entries) > @
-      tuple.hash-code key > hash!
+      if. > @
+        size.eq 0
+        not-found
+        rec-key-search entries
+      hash-code key > hash!
       [tup] > rec-key-search
         if. > @
           tup.length.eq 0
           not-found
-          prev.exists.if
+          if.
+            prev.exists
             prev
             if.
               tup.head.hash.eq hash
               [] >>
                 true > exists
-                ^.^.tup.head.value > [cant-get] > get
+                [cant-get] > get
+                  tup.head.value > @
               not-found
-        @. (rec-key-search tup.tail) > prev
+        (rec-key-search tup.tail).@ > prev
       [] > not-found
         false > exists
-        cant-get > [cant-get] > get
-          "Object by hash code %d from given key does not exists".printf
-            * ^.^.hash
-    [key] > has
-      exists. (found key) > @
-    tuple.mapped > keys
+        [cant-get] > get
+          cant-get > @
+            "Object by hash code %d from given key does not exists".printf
+              * hash
+
+    (found key).exists > [key] > has
+    mapped > keys
       entries
       entry.key > [entry]
     entries.length > size
-    tuple.mapped > values
+    mapped > values
       entries
       entry.value > [entry]
+
     [key value] > with
       map.initialized > @
         with.
-          tuple.filtered
+          filtered
             entries
-            [entry] >>
-              not. (hash.eq entry.hash) > @
+            (hash.eq entry.hash).not > [entry] >>
           [] >>
             ^.hash > hash
             ^.key > key
             ^.value > value
-      tuple.hash-code key > hash!
+      hash-code key > hash!
+
     [key] > without
       map.initialized > @
-        tuple.filtered
+        filtered
           entries
-          [entry] >>
-            not. (hash.eq entry.hash) > @
-      tuple.hash-code key > hash!
+          (hash.eq entry.hash).not > [entry] >>
+      hash-code key > hash!
 
   ++> tests-map-rebuilds-itself
     2.eq mp.size > @
@@ -103,36 +113,41 @@
         map.entry 2 1
 
   ++> tests-map-rebuilds-itself-only-once
-    1.eq > @
+    eq. > @
+      1
       malloc.for
         0
         [m]
           seq > @
             *
-              exists. (mp.found 1)
-              exists. (mp.found 1)
+              (mp.found 1).exists
+              (mp.found 1).exists
               m
           map > mp
             *
-              map.entry (m.put (m.as-number.plus 1)) 1
+              map.entry
+                m.put (m.as-number.plus 1)
+                1
 
-  eq. ++> tests-returns-list-of-keys
-    keys.
-      map
-        *
-          map.entry 1 2
-          map.entry 2 3
-          map.entry 3 4
-    * 1 2 3
+  ++> tests-returns-list-of-keys
+    eq. > @
+      keys.
+        map
+          *
+            map.entry 1 2
+            map.entry 2 3
+            map.entry 3 4
+      * 1 2 3
 
-  eq. ++> tests-returns-list-of-values
-    values.
-      map
-        *
-          map.entry 1 2
-          map.entry 2 3
-          map.entry 3 4
-    * 2 3 4
+  ++> tests-returns-list-of-values
+    eq. > @
+      values.
+        map
+          *
+            map.entry 1 2
+            map.entry 2 3
+            map.entry 3 4
+      * 2 3 4
 
   ++> tests-finds-element-by-key-in-map
     2.eq found.get > @
@@ -148,75 +163,78 @@
       exists.
         found.
           map
-            * (map.entry "one" 1) (map.entry "two" 2)
+            *
+              map.entry "one" 1
+              map.entry "two" 2
           "three"
 
-  has. ++> tests-has-element-with-key-in-hash-map
-    map
-      *
-        map.entry "one" 1
-        map.entry "two" 2
-    "two"
+  ++> tests-has-element-with-key-in-hash-map
+    has. > @
+      map
+        *
+          map.entry "one" 1
+          map.entry "two" 2
+      "two"
 
   ++> tests-does-not-have-element-by-key-in-hash-map
     not. > @
       has.
         map
-          * (map.entry "one" 1) (map.entry "two" 2)
+          *
+            map.entry "one" 1
+            map.entry "two" 2
         "three"
 
-  eq. ++> tests-does-not-change-map-without-non-existed-element
-    size.
-      without.
-        map
-          * (map.entry "one" 1)
-        "two"
-    1
+  ++> tests-does-not-change-map-without-non-existed-element
+    eq. > @
+      size.
+        without.
+          map
+            *
+              map.entry "one" 1
+          "two"
+      1
 
   ++> tests-removes-element-from-map-by-key
     and. > @
       1.eq mp.size
-      not. (mp.has "one")
-    without. > mp
-      map
-        *
-          map.entry "one" 1
-          map.entry "two" 2
-      "one"
+      (mp.has "one").not
+    map
+      *
+        map.entry "one" 1
+        map.entry "two" 2
+    .without "one" > mp
 
   ++> tests-adds-new-pair-to-hash-map
     and. > @
       2.eq mp.size
       mp.has "two"
-    with. > mp
-      map
-        * (map.entry "one" 1)
-      "two"
-      2
+    map
+      *
+        map.entry "one" 1
+    .with "two" 2 > mp
 
   ++> tests-replaces-value-if-pair-with-key-exists-in-map
     and. > @
       2.eq mp.size
-      3.eq
-        get. (mp.found "two")
-    with. > mp
-      map
-        *
-          map.entry "one" 1
-          map.entry "two" 2
-      "two"
-      3
+      3.eq (mp.found "two").get
+    map
+      *
+        map.entry "one" 1
+        map.entry "two" 2
+    .with "two" 3 > mp
 
   ++> tests-map-get-missing-returns-provided-fallback
-    "recovered".eq > @
-      get.
-        mp.found "absent"
+    eq. > @
+      "recovered"
+      (mp.found "absent").get
         "recovered" > [msg]
     map > mp
-      * (map.entry "one" 1)
+      *
+        map.entry "one" 1
 
-  ++> throws-on-map-get-missing-without-fallback
-    get. > @
-      mp.found "absent"
+  --> on-map-get-missing-without-fallback
+    (mp.found "absent").get > @
     map > mp
-      * (map.entry "one" 1)
+      *
+        map.entry "one" 1
