@@ -247,6 +247,15 @@ final class Pretty {
      * and keep the verbose layout; a reversed dispatch that also carries
      * arguments ({@code if.} with its branches) does get the hybrid.</p>
      *
+     * <p>The hybrid is also withheld when any decoratee argument carries a
+     * name suffix ({@code [left] >>}, {@code malloc.for > [b]}, {@code
+     * b.put > [m] >>}). Those arguments become the body of the collapsed
+     * only-phi formation, and an only-phi formation may hold nothing but its
+     * {@code φ} decoratee, so a named line there fails to parse with
+     * "argument of an only-phi formation cannot carry a name suffix"
+     * (issue #5598). Keeping the verbose {@code  > @} layout gives the
+     * decoratee its own scope, where named arguments are legal.</p>
+     *
      * @param node The formation node
      * @param indent The indentation level
      * @return The rendered block, or empty if the inline-phi form doesn't apply
@@ -269,6 +278,10 @@ final class Pretty {
                     false, decoratee.reversed, decoratee.data, decoratee.children
                 )
             );
+            final boolean applied = !decoratee.abstractt && !decoratee.children.isEmpty()
+                && !(decoratee.reversed && decoratee.children.size() <= 1);
+            final boolean unnamed = decoratee.children.stream()
+                .allMatch(kid -> kid.tail.isEmpty());
             if (value.isPresent()) {
                 result = Optional.of(
                     new StringBuilder(this.step().repeat(indent))
@@ -276,8 +289,7 @@ final class Pretty {
                         .append(marker)
                         .toString()
                 );
-            } else if (!decoratee.abstractt && !decoratee.children.isEmpty()
-                && !(decoratee.reversed && decoratee.children.size() <= 1)) {
+            } else if (applied && unnamed) {
                 result = Optional.of(
                     this.vertical(
                         new Pretty.Node(
