@@ -30,28 +30,28 @@
 
   ++> tests-writes-single-digit
     "7".eq > @
-      string (string.as-decimal 7)
+      string (as-decimal 7)
 
   ++> tests-writes-zero
     "0".eq > @
-      string (string.as-decimal 0)
+      string (as-decimal 0)
 
   ++> tests-writes-multi-digit-number
     "31415".eq > @
-      string (string.as-decimal 31415)
+      string (as-decimal 31415)
 
   ++> tests-writes-negative-number
     "-42".eq > @
-      string (string.as-decimal -42)
+      string (as-decimal -42)
 
   ++> tests-truncates-positive-fraction
     "42".eq > @
-      string (string.as-decimal 42.987)
+      string (as-decimal 42.987)
 
   ++> tests-truncates-negative-fraction
     "-7".eq > @
-      string (string.as-decimal -7.89)
+      string (as-decimal -7.89)
 
   ++> tests-writes-number-with-inner-zero
     "105".eq > @
-      string (string.as-decimal 105)
+      string (as-decimal 105)

@@ -18,30 +18,28 @@
     x.or a > [a x]
   text > txt!
 
-  ++> tests-successful-contains-any
-    string.contains-any > @
-      "Good morning"
-      * "oo" "goo"
+  contains-any ++> tests-successful-contains-any
+    "Good morning"
+    * "oo" "goo"
 
   ++> tests-not-contains-any
     not. > @
-      string.contains-any
+      contains-any
         "xyzw"
         * "yx" "zyx" "wx" "abc"
 
-  ++> tests-contains-any-vert
-    string.contains-any > @
-      "foo bar buzz"
-      * "bar" " " "o"
+  contains-any ++> tests-contains-any-vert
+    "foo bar buzz"
+    * "bar" " " "o"
 
   ++> test-contains-any-without-substrings
     not. > @
-      string.contains-any
+      contains-any
         "text"
         *
 
   ++> tests-contains-any-for-empty-text-and-without-substrings
     not. > @
-      string.contains-any
+      contains-any
         ""
         *

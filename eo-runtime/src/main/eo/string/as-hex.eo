@@ -38,22 +38,22 @@
 
   ++> tests-writes-single-byte
     "41".eq > @
-      string (string.as-hex "A".as-bytes)
+      string (as-hex "A".as-bytes)
 
   ++> tests-joins-bytes-with-hyphens
     "4A-65-66-66".eq > @
-      string (string.as-hex "Jeff".as-bytes)
+      string (as-hex "Jeff".as-bytes)
 
-  ++> tests-writes-letter-nibbles
-    "00-00-00-00-00-00-00-FF".eq > @
-      string
-        string.as-hex
-          as-bytes. 255.as-i64
+  eq. ++> tests-writes-letter-nibbles
+    "00-00-00-00-00-00-00-FF"
+    string
+      as-hex
+        as-bytes. 255.as-i64
 
   ++> tests-writes-number-bytes
     "40-45-00-00-00-00-00-00".eq > @
-      string (string.as-hex 42.as-bytes)
+      string (as-hex 42.as-bytes)
 
   ++> tests-writes-empty-bytes
     "".eq > @
-      string (string.as-hex --)
+      string (as-hex --)

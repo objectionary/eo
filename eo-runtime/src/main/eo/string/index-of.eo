@@ -38,24 +38,20 @@
 
   ++> tests-index-of-non-existed-substring-with-more-length
     -1.eq > @
-      string.index-of "Hello" "Somebody"
+      index-of "Hello" "Somebody"
 
   ++> tests-index-of-non-existed-substring-with-same-length
     -1.eq > @
-      string.index-of "Hello" "world"
+      index-of "Hello" "world"
 
   ++> tests-index-of-non-existed-substring-with-utf
     -1.eq > @
-      string.index-of "привет, друг!" "x"
+      index-of "привет, друг!" "x"
 
-  ++> tests-index-of-existed-substring-with-utf
-    3.eq > @
-      string.index-of "привет, друг!" "в"
+  3.eq (index-of "привет, друг!" "в") ++> tests-index-of-existed-substring-with-utf
 
-  ++> tests-returns-valid-index-of-substring
-    6.eq > @
-      string.index-of "Hello \n world" "\n"
+  6.eq (index-of "Hello \n world" "\n") ++> tests-returns-valid-index-of-substring
 
   ++> tests-returns-valid-index-of-substring-in-the-end
     6.eq > @
-      string.index-of "Hello world" "world"
+      index-of "Hello world" "world"

@@ -24,20 +24,20 @@
     abs dividend > absx
     abs divisor > absy
 
-  eq. (number.mod 1 2) 1 ++> tests-mod-n1-n2
+  eq. (mod 1 2) 1 ++> tests-mod-n1-n2
 
-  eq. (number.mod 0 5) 0 ++> tests-mod-n0-n5
+  eq. (mod 0 5) 0 ++> tests-mod-n0-n5
 
-  eq. (number.mod 0 -15) 0 ++> tests-mod-n0-n15-neg
+  eq. (mod 0 -15) 0 ++> tests-mod-n0-n15-neg
 
-  eq. (number.mod -1 7) -1 ++> tests-mod-n1-neg-n7
+  eq. (mod -1 7) -1 ++> tests-mod-n1-neg-n7
 
-  eq. (number.mod 16 -200) 16 ++> tests-mod-n16-n200-neg
+  eq. (mod 16 -200) 16 ++> tests-mod-n16-n200-neg
 
   ++> tests-div-mod-compatibility
     eq. > @
       plus.
-        number.mod dividend divisor
+        mod dividend divisor
         divisor.times
           as-number.
             as-i64. (dividend.div divisor)
@@ -45,15 +45,15 @@
     -13 > dividend
     5 > divisor
 
-  eq. (number.mod -1 5) -1 ++> tests-mod-dividend-less-than-divisor
+  eq. (mod -1 5) -1 ++> tests-mod-dividend-less-than-divisor
 
-  eq. (number.mod 133 1) 0 ++> tests-mod-dividend-by-one
+  eq. (mod 133 1) 0 ++> tests-mod-dividend-by-one
 
-  number.mod 5 0 ++> throws-on-mod-by-zero
+  mod 5 0 ++> throws-on-mod-by-zero
 
   ++> tests-mod-by-zero-returns-provided-fallback
     "recovered".eq > @
-      number.mod
+      mod
         5
         0
         "recovered" > [msg]

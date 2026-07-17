@@ -23,26 +23,26 @@
         next
     recidx tup.tail > next!
 
-  ++> tests-returns-index-of
-    1.eq > @
-      tuple.index-of
-        * 1 2 3
-        2
+  eq. ++> tests-returns-index-of
+    1
+    index-of
+      * 1 2 3
+      2
 
-  ++> tests-returns-first-index-of-element
-    0.eq > @
-      tuple.index-of
-        * -1 2 -1
-        -1
+  eq. ++> tests-returns-first-index-of-element
+    0
+    index-of
+      * -1 2 -1
+      -1
 
-  ++> tests-does-not-find-index-of
-    -1.eq > @
-      tuple.index-of
-        * "qwerty" 2 3
-        7
+  eq. ++> tests-does-not-find-index-of
+    -1
+    index-of
+      * "qwerty" 2 3
+      7
 
-  ++> tests-finds-index-of-string
-    1.eq > @
-      tuple.index-of
-        * "asdfgh" "qwerty" 3
-        "qwerty"
+  eq. ++> tests-finds-index-of-string
+    1
+    index-of
+      * "asdfgh" "qwerty" 3
+      "qwerty"

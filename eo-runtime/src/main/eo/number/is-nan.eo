@@ -21,47 +21,47 @@
 
   ninf.is-nan.not ++> tests-negative-infinity-is-not-nan
 
-  ++> tests-nan-times-number-is-nan
-    eq. > @
-      as-bytes. (nan.times 42)
-      nan.as-bytes
+  eq. ++> tests-nan-times-number-is-nan
+    as-bytes.
+      nan.times 42
+    nan.as-bytes
 
-  ++> tests-nan-times-nan-is-nan
-    eq. > @
-      as-bytes. (nan.times nan)
-      nan.as-bytes
+  eq. ++> tests-nan-times-nan-is-nan
+    as-bytes.
+      nan.times nan
+    nan.as-bytes
 
-  ++> tests-nan-div-number-is-nan
-    eq. > @
-      as-bytes. (nan.div 42)
-      nan.as-bytes
+  eq. ++> tests-nan-div-number-is-nan
+    as-bytes.
+      nan.div 42
+    nan.as-bytes
 
-  ++> tests-nan-div-nan-is-nan
-    eq. > @
-      as-bytes. (nan.div nan)
-      nan.as-bytes
+  eq. ++> tests-nan-div-nan-is-nan
+    as-bytes.
+      nan.div nan
+    nan.as-bytes
 
-  ++> tests-nan-plus-number-is-nan
-    eq. > @
-      as-bytes. (nan.plus 42)
-      nan.as-bytes
+  eq. ++> tests-nan-plus-number-is-nan
+    as-bytes.
+      nan.plus 42
+    nan.as-bytes
 
-  ++> tests-nan-plus-nan-is-nan
-    eq. > @
-      as-bytes. (nan.plus nan)
-      nan.as-bytes
+  eq. ++> tests-nan-plus-nan-is-nan
+    as-bytes.
+      nan.plus nan
+    nan.as-bytes
 
   nan.@.as-bytes.eq nan.as-bytes ++> tests-nan-neg-is-nan
 
-  ++> tests-nan-minus-number-is-nan
-    eq. > @
-      as-bytes. (nan.minus 42)
-      nan.as-bytes
+  eq. ++> tests-nan-minus-number-is-nan
+    as-bytes.
+      nan.minus 42
+    nan.as-bytes
 
-  ++> tests-nan-minus-nan-is-nan
-    eq. > @
-      as-bytes. (nan.minus nan)
-      nan.as-bytes
+  eq. ++> tests-nan-minus-nan-is-nan
+    as-bytes.
+      nan.minus nan
+    nan.as-bytes
 
   nan.floor.as-bytes.eq nan.as-bytes ++> tests-nan-floor-is-nan
 

@@ -20,17 +20,16 @@
             seq > @
               *
                 while
-                  [i] >>
-                    if. > @
-                      lt. (left.as-number.plus step) right
-                      seq
-                        *
-                          ^.^.sum.put
-                            ^.^.sum.as-number.plus
-                              ^.^.^.subsection left.as-number (left.as-number.plus step)
-                          left.put (left.as-number.plus step)
-                          true
-                      false
+                  if. > [i] >>
+                    lt. (left.as-number.plus step) right
+                    seq
+                      *
+                        ^.^.sum.put
+                          ^.^.sum.as-number.plus
+                            ^.^.^.subsection left.as-number (left.as-number.plus step)
+                        left.put (left.as-number.plus step)
+                        true
+                    false
                   true > [i]
                 sum
             ^.^.b > right
@@ -48,7 +47,7 @@
   ++> tests-calculates-lineal-integral
     close-to > @
       as-number.
-        number.integral
+        integral
           x > [x]
           1
           10
@@ -64,7 +63,7 @@
   ++> tests-calculates-quadratic-integral
     close-to > @
       as-number.
-        number.integral
+        integral
           x.times x > [x]
           1
           10
@@ -80,7 +79,7 @@
   ++> tests-calculates-cube-integral
     close-to > @
       as-number.
-        number.integral
+        integral
           times. (x.times x) x > [x]
           1
           10

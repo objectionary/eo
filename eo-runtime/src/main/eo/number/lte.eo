@@ -17,10 +17,10 @@
 
   eq. (50.lte 50) true ++> tests-int-leq-equal
 
-  ++> tests-int-leq-false
-    eq. > @
-      not. (0.lte -10)
-      true
+  eq. ++> tests-int-leq-false
+    not.
+      0.lte -10
+    true
 
   eq. (pinf.lte pinf) true ++> tests-positive-infinity-lte-positive-infinity
 

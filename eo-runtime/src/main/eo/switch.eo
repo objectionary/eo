@@ -41,13 +41,12 @@
     @. > previous
       rec-case tup.tail
 
-  ++> tests-switch-simple-case
-    eq. > @
-      switch
-        *
-          * false "1"
-          * true "2"
-      "2"
+  eq. ++> tests-switch-simple-case
+    switch
+      *
+        * false "1"
+        * true "2"
+    "2"
 
   ++> tests-switch-strings-case
     eq. > @
@@ -59,24 +58,21 @@
       "password is correct!"
     "swordfish" > password
 
-  ++> tests-switch-with-several-true-cases
-    eq. > @
-      switch
-        *
-          * true "TRUE1"
-          * false "FALSE"
-          * true "TRUE2"
-      "TRUE1"
-
-  ++> tests-switch-with-all-false-cases
-    switch > @
+  eq. ++> tests-switch-with-several-true-cases
+    switch
       *
-        * false "false1"
-        * false "false2"
+        * true "TRUE1"
+        * false "FALSE"
+        * true "TRUE2"
+    "TRUE1"
 
-  ++> throws-on-empty-switch
-    switch > @
-      *
+  switch ++> tests-switch-with-all-false-cases
+    *
+      * false "false1"
+      * false "false2"
+
+  switch ++> throws-on-empty-switch
+    *
 
   ++> tests-empty-switch-returns-provided-fallback
     "recovered".eq > @

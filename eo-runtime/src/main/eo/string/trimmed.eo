@@ -19,23 +19,23 @@
     trimmed-left
       trimmed-right text
 
-  eq. (string.trimmed " some") "some" ++> tests-text-trimmed-one-space-left
+  eq. (trimmed " some") "some" ++> tests-text-trimmed-one-space-left
 
-  eq. (string.trimmed "some ") "some" ++> tests-text-trimmed-one-space-right
+  eq. (trimmed "some ") "some" ++> tests-text-trimmed-one-space-right
 
-  eq. (string.trimmed " some ") "some" ++> tests-text-trimmed-one-space-both
+  eq. (trimmed " some ") "some" ++> tests-text-trimmed-one-space-both
 
-  eq. (string.trimmed "    some     ") "some" ++> tests-text-trimmed-many-spaces
+  eq. (trimmed "    some     ") "some" ++> tests-text-trimmed-many-spaces
 
-  eq. (string.trimmed "") "" ++> tests-text-trimmed-empty
+  eq. (trimmed "") "" ++> tests-text-trimmed-empty
 
-  eq. (string.trimmed "        ") "" ++> tests-text-trimmed-only-spaces
+  eq. (trimmed "        ") "" ++> tests-text-trimmed-only-spaces
 
   ++> tests-trimmed-strips-mixed-ws-both-sides
-    eq. (string.trimmed " \t\n\f\rvalue \t\n\f\r") "value" > @
+    eq. (trimmed " \t\n\f\rvalue \t\n\f\r") "value" > @
 
   ++> tests-trimmed-preserves-inner-content
-    eq. (string.trimmed "no-whitespace") "no-whitespace" > @
+    eq. (trimmed "no-whitespace") "no-whitespace" > @
 
   ++> tests-trimmed-preserves-inner-whitespace
-    eq. (string.trimmed "\t hello world \n") "hello world" > @
+    eq. (trimmed "\t hello world \n") "hello world" > @

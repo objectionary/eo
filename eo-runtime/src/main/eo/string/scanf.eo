@@ -19,63 +19,69 @@
 
 [format read] > scanf /tuple
 
-  ++> tests-scanf-with-string
-    "hello".eq > @
-      head. (string.scanf "%s" "hello")
+  eq. ++> tests-scanf-with-string
+    "hello"
+    head.
+      scanf "%s" "hello"
 
-  ++> tests-scanf-with-int
-    33.eq > @
-      head. (string.scanf "%d" "33")
+  eq. ++> tests-scanf-with-int
+    33
+    head.
+      scanf "%d" "33"
 
-  ++> tests-scanf-with-negative-int
-    -42.eq > @
-      head. (string.scanf "%d" "-42")
+  eq. ++> tests-scanf-with-negative-int
+    -42
+    head.
+      scanf "%d" "-42"
 
-  ++> tests-scanf-with-positive-signed-int
-    42.eq > @
-      head. (string.scanf "%d" "+42")
+  eq. ++> tests-scanf-with-positive-signed-int
+    42
+    head.
+      scanf "%d" "+42"
 
-  ++> tests-scanf-with-float
-    0.24.eq > @
-      head. (string.scanf "%f" "0.24")
+  eq. ++> tests-scanf-with-float
+    0.24
+    head.
+      scanf "%f" "0.24"
 
-  string.scanf "%l" "error" ++> throws-on-scanf-with-wrong-format
+  scanf "%l" "error" ++> throws-on-scanf-with-wrong-format
 
-  string.scanf "%d" "99999999999999999999" ++> throws-on-scanf-with-oversized-int
+  scanf "%d" "99999999999999999999" ++> throws-on-scanf-with-oversized-int
 
-  ++> tests-scanf-with-string-int-float
-    eq. > @
-      string.scanf "%s %d %f" "hello 33 0.24"
-      * "hello" 33 0.24
+  eq. ++> tests-scanf-with-string-int-float
+    scanf "%s %d %f" "hello 33 0.24"
+    * "hello" 33 0.24
 
-  ++> tests-scanf-with-string-with-ending
-    "hello".eq > @
-      head. (string.scanf "%s!" "hello!")
+  eq. ++> tests-scanf-with-string-with-ending
+    "hello"
+    head.
+      scanf "%s!" "hello!"
 
-  ++> tests-scanf-with-complex-string
-    "test".eq > @
-      head. (string.scanf "some%sstring" "someteststring")
+  eq. ++> tests-scanf-with-complex-string
+    "test"
+    head.
+      scanf "some%sstring" "someteststring"
 
-  ++> tests-scanf-with-complex-int
-    734987259.eq > @
-      head. (string.scanf "!%d!" "!734987259!")
+  eq. ++> tests-scanf-with-complex-int
+    734987259
+    head.
+      scanf "!%d!" "!734987259!"
 
-  ++> tests-scanf-with-complex-float
-    1991.01.eq > @
-      head. (string.scanf "this will be=%f" "this will be=1991.01")
+  eq. ++> tests-scanf-with-complex-float
+    1991.01
+    head.
+      scanf "this will be=%f" "this will be=1991.01"
 
-  ++> tests-scanf-with-printf
-    eq. > @
-      string.scanf
+  eq. ++> tests-scanf-with-printf
+    scanf
+      "%s is about %d?"
+      printf
         "%s is about %d?"
-        printf
-          "%s is about %d?"
-          * "This" 8
-      * "This" 8
+        * "This" 8
+    * "This" 8
 
-  ++> tests-scanf-complex-case
-    eq. > @
-      string.scanf
-        "Im%d %s old and this is! Let's calculate %f + %f= %f"
-        "Im18 years old and this is! Let's calculate 99999999.99 + 0.01= 100000000.0"
-      * 18 "years" 9.999999999E7 0.01 100000000
+  eq. ++> tests-scanf-complex-case
+    scanf
+      "Im%d %s old and this is! Let's calculate %f + %f= %f"
+      "Im18 years old and this is! Let's calculate 99999999.99 + 0.01= 100000000.0"
+    * 18 "years" 9.999999999E7 0.01 100000000

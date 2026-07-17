@@ -21,7 +21,7 @@
 
   ++> tests-list-reduce-without-index
     eq. > @
-      tuple.reduced
+      reduced
         * 1 2 3 4
         -1
         a.times x > [a x]
@@ -29,11 +29,10 @@
 
   ++> tests-list-reduced-printing
     eq. > @
-      tuple.reduced
+      reduced
         * 0 1
         ""
-        [acc item]
-          acc.concat > @
-            "%d".printf
-              * item
+        acc.concat > [acc item]
+          "%d".printf
+            * item
       "01"

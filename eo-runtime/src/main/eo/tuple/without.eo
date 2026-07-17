@@ -15,9 +15,8 @@
     *
     if. (element.eq item) accum (accum.with item) > [accum item] >>
 
-  ++> tests-list-without
-    eq. > @
-      tuple.without
-        * 1 2 1 2 1 5
-        2
-      * 1 1 1 5
+  eq. ++> tests-list-without
+    without
+      * 1 2 1 2 1 5
+      2
+    * 1 1 1 5

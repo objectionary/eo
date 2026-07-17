@@ -38,23 +38,21 @@
     eq. > @
       malloc.of
         5
-        [mem]
-          read. > @
-            io.tee-input (bytes-as-input 01-02-03-04-05) (malloc-as-output mem)
-            5
+        read. (tee-input (bytes-as-input 01-02-03-04-05) (malloc-as-output mem)) 5 > [mem]
       01-02-03-04-05
 
   ++> tests-reads-from-bytes-and-writes-to-memory-by-portions
     eq. > @
       malloc.of
         5
-        [m]
-          seq > @
-            *
+        seq > [m]
+          *
+            read.
               read.
-                read. (read. (io.tee-input (bytes-as-input 01-02-03-04-05) (malloc-as-output m)) 2) 2
-                1
-              m
+                read. (tee-input (bytes-as-input 01-02-03-04-05) (malloc-as-output m)) 2
+                2
+              1
+            m
       01-02-03-04-05
 
   ++> tests-reads-from-bytes-and-writes-to-two-memory-blocks
@@ -64,14 +62,13 @@
         [m1]
           malloc.of > @
             5
-            [m2] >>
-              seq > @
-                *
-                  read.
-                    io.tee-input
-                      io.tee-input (bytes-as-input 01-02-03-04-05) (malloc-as-output m2)
-                      malloc-as-output m1
-                    5
-                  m1.write 5 2A-
-                  m1
+            seq > [m2] >>
+              *
+                read.
+                  tee-input
+                    tee-input (bytes-as-input 01-02-03-04-05) (malloc-as-output m2)
+                    malloc-as-output m1
+                  5
+                m1.write 5 2A-
+                m1
       01-02-03-04-05-2A

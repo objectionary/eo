@@ -45,23 +45,19 @@
       string
         slice bts start (current.minus start)
 
-  ++> tests-splits-text-by-dash
-    eq. > @
-      string.split "a-b-c" "-"
-      * "a" "b" "c"
+  eq. ++> tests-splits-text-by-dash
+    split "a-b-c" "-"
+    * "a" "b" "c"
 
-  ++> tests-splits-text-with-empty-strings
-    eq. > @
-      string.split "-a-b-" "-"
-      * "" "a" "b" ""
+  eq. ++> tests-splits-text-with-empty-strings
+    split "-a-b-" "-"
+    * "" "a" "b" ""
 
-  ++> tests-splits-and-returns-strings
-    eq. > @
-      length.
-        at. (string.split "hello world!" " ") 1
-      6
+  eq. ++> tests-splits-and-returns-strings
+    length.
+      at. (split "hello world!" " ") 1
+    6
 
-  ++> tests-splits-text-by-multi-char-delimiter
-    eq. > @
-      string.split "a::b::c" "::"
-      * "a" "b" "c"
+  eq. ++> tests-splits-text-by-multi-char-delimiter
+    split "a::b::c" "::"
+    * "a" "b" "c"

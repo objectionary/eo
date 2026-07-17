@@ -29,8 +29,8 @@
           as-number. (idx.plus 1)
     eq. (slice txt idx slen) sub > includes
 
-  string.contains "Hello, world!" "o, wo" ++> tests-text-contains-substring
+  contains "Hello, world!" "o, wo" ++> tests-text-contains-substring
 
   ++> tests-text-does-not-contain-substring
     not. > @
-      string.contains "Hello, world!" "Hey"
+      contains "Hello, world!" "Hey"

@@ -26,19 +26,18 @@
 
   ++> tests-reduce-list-with-index
     6.eq > @
-      tuple.reducedi
+      reducedi
         * 1 1
         0
-        [a x i] >>
-          x.plus > @
-            a.plus
-              at.
-                * 2 2
-                i
+        x.plus > [a x i] >>
+          a.plus
+            at.
+              * 2 2
+              i
 
   ++> tests-list-reducedi-long-int-array
     eq. > @
-      tuple.reducedi
+      reducedi
         * 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
         0
         x.plus a > [a x i]
@@ -46,14 +45,14 @@
 
   ++> tests-list-reducedi-bools-array
     not. > @
-      tuple.reducedi
+      reducedi
         * true true false
         true
         x.and a > [a x i]
 
   ++> tests-list-reducedi-nested-functions
     eq. > @
-      tuple.reducedi
+      reducedi
         * 10 500
         0
         [acc x i]

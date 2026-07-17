@@ -19,14 +19,14 @@
         text.as-bytes
         accum.concat str.as-bytes > [accum str]
 
-  ++> tests-chains-with-other-strings
-    "Hello, world!".eq > @
-      string.chained
-        "Hello"
-        * ", " "world" "!"
+  eq. ++> tests-chains-with-other-strings
+    "Hello, world!"
+    chained
+      "Hello"
+      * ", " "world" "!"
 
-  ++> tests-returns-same-text-on-chaining-with-no-strings
-    "Some".eq > @
-      string.chained
-        "Some"
-        *
+  eq. ++> tests-returns-same-text-on-chaining-with-no-strings
+    "Some"
+    chained
+      "Some"
+      *

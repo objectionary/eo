@@ -18,7 +18,7 @@
 
   ++> tests-simple-list-mapping
     eq. > @
-      tuple.mapped
+      mapped
         * 1 2 3
         x.times 2 > [x]
       * 2 4 6

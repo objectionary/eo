@@ -20,8 +20,7 @@
       with. (with. (buffer "Hello") ", ") "Jeff"
       "Hello, Jeff"
 
-  ++> tests-buffer-decorates-string-after-building
-    eq. > @
-      length.
-        with. (buffer "Hi, ") "Mark"
-      8
+  eq. ++> tests-buffer-decorates-string-after-building
+    length.
+      with. (buffer "Hi, ") "Mark"
+    8

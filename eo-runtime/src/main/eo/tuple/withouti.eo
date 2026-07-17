@@ -15,26 +15,24 @@
     *
     if. (i.eq idx) accum (accum.with item) > [accum item idx] >>
 
-  ++> tests-list-withouti
-    eq. > @
-      tuple.withouti
-        * 1 2 3
-        1
-      * 1 3
+  eq. ++> tests-list-withouti
+    withouti
+      * 1 2 3
+      1
+    * 1 3
 
   ++> tests-list-withouti-complex-case
     eq. > @
       foo
         * 1 "text" "f"
       * "text" "f"
-    tuple.withouti a 0 > [a] > foo
+    withouti a 0 > [a] > foo
 
-  ++> tests-list-withouti-nested-array
-    eq. > @
-      tuple.withouti
-        *
-          "smthg"
-          27
-          * 3 2 1
-        2
-      * "smthg" 27
+  eq. ++> tests-list-withouti-nested-array
+    withouti
+      *
+        "smthg"
+        27
+        * 3 2 1
+      2
+    * "smthg" 27

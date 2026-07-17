@@ -14,4 +14,4 @@
       true > @
       ^.^.output-block > [buffer] > write
 
-  io.dead-output.write 01-02-03 ++> writes-bytes-to-nowhere
+  dead-output.write 01-02-03 ++> writes-bytes-to-nowhere

@@ -15,15 +15,15 @@
 
   10.lt 50 ++> tests-int-less-true
 
-  ++> tests-int-less-equal
-    eq. > @
-      not. (10.lt 10)
-      true
+  eq. ++> tests-int-less-equal
+    not.
+      10.lt 10
+    true
 
-  ++> tests-int-less-false
-    eq. > @
-      not. (10.lt -5)
-      true
+  eq. ++> tests-int-less-false
+    not.
+      10.lt -5
+    true
 
   eq. (pinf.lt pinf) false ++> tests-positive-infinity-lt-positive-infinity
 

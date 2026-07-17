@@ -54,19 +54,18 @@
         tuple.reduced
           string.split uri separator
           *
-          [accum segment] >>
-            if. > @
-              segment.eq ".."
-              if.
-                and.
-                  accum.length.gt 0
-                  not. (accum.head.eq "..")
-                accum.tail
-                is-absolute.not.if (accum.with segment) accum
-              if.
-                or. (segment.eq ".") (segment.eq "")
-                accum
-                accum.with segment
+          if. > [accum segment] >>
+            segment.eq ".."
+            if.
+              and.
+                accum.length.gt 0
+                not. (accum.head.eq "..")
+              accum.tail
+              is-absolute.not.if (accum.with segment) accum
+            if.
+              or. (segment.eq ".") (segment.eq "")
+              accum
+              accum.with segment
       and. > trailing
         ubts.size.gt 0
         eq. (ubts.slice (ubts.size.plus -1) 1) separator
@@ -170,16 +169,18 @@
           tuple.reduced
             string.split driveless separator
             *
-            [accum segment] >>
-              if. > @
-                segment.eq ".."
-                if.
-                  and.
-                    accum.length.gt 0
-                    not. (accum.head.eq "..")
-                  accum.tail
-                  if. (is-root-relative.not.and is-drive-relative.not) (accum.with segment) accum
-                if. (or. (segment.eq ".") (segment.eq "")) accum (accum.with segment)
+            if. > [accum segment] >>
+              segment.eq ".."
+              if.
+                and.
+                  accum.length.gt 0
+                  not. (accum.head.eq "..")
+                accum.tail
+                if. (is-root-relative.not.and is-drive-relative.not) (accum.with segment) accum
+              if.
+                or. (segment.eq ".") (segment.eq "")
+                accum
+                accum.with segment
         and. > trailing
           ubts.size.gt 0
           eq. (ubts.slice (ubts.size.plus -1) 1) separator
@@ -231,74 +232,73 @@
     path.separator.eq > @
       sm.os.is-windows.if path.win32.separator path.posix.separator
 
-  ++> tests-detects-absolute-posix-path
-    and. > @
-      is-absolute. (path.posix "/var/www/html")
-      not.
-        is-absolute. (path.posix "foo/bar/baz")
+  and. ++> tests-detects-absolute-posix-path
+    is-absolute.
+      path.posix "/var/www/html"
+    not.
+      is-absolute. (path.posix "foo/bar/baz")
 
-  ++> tests-detects-absolute-win32-path
-    and. > @
-      and.
-        is-absolute. (path.win32 "C:\\Windows\\Users")
-        is-absolute. (path.win32 "\\Windows\\Users")
-      not.
-        is-absolute. (path.win32 "temp\\var")
+  and. ++> tests-detects-absolute-win32-path
+    and.
+      is-absolute. (path.win32 "C:\\Windows\\Users")
+      is-absolute. (path.win32 "\\Windows\\Users")
+    not.
+      is-absolute. (path.win32 "temp\\var")
 
-  ++> tests-normalizes-posix-path
-    eq. > @
-      normalized. (path.posix "/foo/bar/.//./baz//../x/")
-      "/foo/bar/x/"
+  eq. ++> tests-normalizes-posix-path
+    normalized.
+      path.posix "/foo/bar/.//./baz//../x/"
+    "/foo/bar/x/"
 
-  ++> tests-normalizes-posix-relative-path
-    eq. > @
-      normalized. (path.posix "../../foo/./bar/../x/../y")
-      "../../foo/y"
+  eq. ++> tests-normalizes-posix-relative-path
+    normalized.
+      path.posix "../../foo/./bar/../x/../y"
+    "../../foo/y"
 
-  ++> tests-normalizes-empty-posix-path-to-current-dir
-    eq. > @
-      normalized. (path.posix "")
-      "."
+  eq. ++> tests-normalizes-empty-posix-path-to-current-dir
+    normalized.
+      path.posix ""
+    "."
 
-  ++> tests-normalizes-path-to-root
-    eq. > @
-      normalized. (path.posix "/foo/bar/baz/../../../../")
-      "/"
+  eq. ++> tests-normalizes-path-to-root
+    normalized.
+      path.posix "/foo/bar/baz/../../../../"
+    "/"
 
-  ++> tests-normalizes-absolute-win32-path-without-drive
-    eq. > @
-      normalized. (path.win32 "\\Windows\\Users\\..\\App\\\\.\\Local\\\\")
-      "\\Windows\\App\\Local\\"
+  eq. ++> tests-normalizes-absolute-win32-path-without-drive
+    normalized.
+      path.win32 "\\Windows\\Users\\..\\App\\\\.\\Local\\\\"
+    "\\Windows\\App\\Local\\"
 
-  ++> tests-normalizes-absolute-win32-path-with-drive
-    eq. > @
-      normalized. (path.win32 "C:\\Windows\\\\..\\Users\\.\\AppLocal")
-      "C:\\Users\\AppLocal"
+  eq. ++> tests-normalizes-absolute-win32-path-with-drive
+    normalized.
+      path.win32 "C:\\Windows\\\\..\\Users\\.\\AppLocal"
+    "C:\\Users\\AppLocal"
 
-  ++> tests-normalizes-relative-win32-path
-    eq. > @
-      normalized. (path.win32 "..\\..\\foo\\bar\\..\\x\\y\\\\")
-      "..\\..\\foo\\x\\y\\"
+  eq. ++> tests-normalizes-relative-win32-path
+    normalized.
+      path.win32 "..\\..\\foo\\bar\\..\\x\\y\\\\"
+    "..\\..\\foo\\x\\y\\"
 
-  ++> tests-normalizes-empty-win32-driveless-path-to-current-dir
-    eq. > @
-      normalized. (path.win32 "")
-      "."
+  eq. ++> tests-normalizes-empty-win32-driveless-path-to-current-dir
+    normalized.
+      path.win32 ""
+    "."
 
-  ++> tests-normalizes-win32-path-down-to-drive-with-separator
-    eq. > @
-      normalized. (path.win32 "C:\\Windows\\..")
-      "C:\\"
+  eq. ++> tests-normalizes-win32-path-down-to-drive-with-separator
+    normalized.
+      path.win32 "C:\\Windows\\.."
+    "C:\\"
 
-  ++> tests-normalizes-win32-path-down-to-drive-without-separator
-    eq. > @
-      normalized. (path.win32 "C:hello\\..")
-      "C:"
+  eq. ++> tests-normalizes-win32-path-down-to-drive-without-separator
+    normalized.
+      path.win32 "C:hello\\.."
+    "C:"
 
-  ++> tests-normalizes-win32-path-with-replacing-slashes
-    eq. > @
-      normalized. (path.win32 "/var/www/../html/")
-      "\\var\\html\\"
+  eq. ++> tests-normalizes-win32-path-with-replacing-slashes
+    normalized.
+      path.win32 "/var/www/../html/"
+    "\\var\\html\\"
 
   ++> tests-resolves-posix-absolute-path-against-other-absolute-path
     eq. > @
@@ -365,71 +365,63 @@
       resolved. (path.win32 "\\users\\local") "\\hello\\var"
       "\\hello\\var"
 
-  ++> tests-takes-valid-basename
-    eq. > @
-      basename.
-        path.joined
-          * "var" "www" "html" "hello.eo"
-      "hello.eo"
-
-  ++> tests-returns-empty-basename-from-path-ended-with-separator
-    eq. > @
-      basename.
-        path.joined
-          * "var" "www" "html" path.separator
-      ""
-
-  ++> tests-returns-base-with-backslash-in-path-on-posix
-    eq. > @
-      basename. (path.posix "/var/www/html/foo\\bar")
-      "foo\\bar"
-
-  ++> tests-returns-the-same-string-if-no-separator-is-found
-    eq. > @
-      basename. (path "Somebody")
-      "Somebody"
-
-  ++> tests-takes-file-extname
-    eq. > @
-      extname.
-        path.joined
-          * "var" "www" "hello.txt"
-      ".txt"
-
-  ++> tests-does-not-take-extname-on-file-without-extension
-    eq. > @
-      extname.
-        path.joined
-          * "var" "www" "html"
-      ""
-
-  ++> tests-does-not-take-extname-if-ends-with-separator
-    eq. > @
-      extname.
-        path.joined
-          * "var" "www" path.separator
-      ""
-
-  ++> tests-returns-valid-dirname-from-file-path
-    eq. > @
-      dirname.
-        path.joined
-          * "var" "www" "hello.txt"
+  eq. ++> tests-takes-valid-basename
+    basename.
       path.joined
-        * "var" "www"
+        * "var" "www" "html" "hello.eo"
+    "hello.eo"
 
-  ++> tests-returns-valid-dirname-from-dir-path
-    eq. > @
-      dirname.
-        path.joined
-          * "var" "www" path.separator
+  eq. ++> tests-returns-empty-basename-from-path-ended-with-separator
+    basename.
       path.joined
-        * "var" "www"
+        * "var" "www" "html" path.separator
+    ""
 
-  ++> tests-returns-valid-dirname-from-file-path-without-extension
-    eq. > @
-      dirname.
-        path.joined
-          * "var" "www" "html"
+  eq. ++> tests-returns-base-with-backslash-in-path-on-posix
+    basename.
+      path.posix "/var/www/html/foo\\bar"
+    "foo\\bar"
+
+  eq. ++> tests-returns-the-same-string-if-no-separator-is-found
+    basename.
+      path "Somebody"
+    "Somebody"
+
+  eq. ++> tests-takes-file-extname
+    extname.
       path.joined
-        * "var" "www"
+        * "var" "www" "hello.txt"
+    ".txt"
+
+  eq. ++> tests-does-not-take-extname-on-file-without-extension
+    extname.
+      path.joined
+        * "var" "www" "html"
+    ""
+
+  eq. ++> tests-does-not-take-extname-if-ends-with-separator
+    extname.
+      path.joined
+        * "var" "www" path.separator
+    ""
+
+  eq. ++> tests-returns-valid-dirname-from-file-path
+    dirname.
+      path.joined
+        * "var" "www" "hello.txt"
+    path.joined
+      * "var" "www"
+
+  eq. ++> tests-returns-valid-dirname-from-dir-path
+    dirname.
+      path.joined
+        * "var" "www" path.separator
+    path.joined
+      * "var" "www"
+
+  eq. ++> tests-returns-valid-dirname-from-file-path-without-extension
+    dirname.
+      path.joined
+        * "var" "www" "html"
+    path.joined
+      * "var" "www"

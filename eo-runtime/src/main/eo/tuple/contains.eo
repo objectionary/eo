@@ -14,18 +14,16 @@
     -1.eq
       index-of list element
 
-  ++> tests-list-contains-string
-    tuple.contains > @
-      * "qwerty" "asdfgh" 3 "qwerty"
-      "qwerty"
+  contains ++> tests-list-contains-string
+    * "qwerty" "asdfgh" 3 "qwerty"
+    "qwerty"
 
-  ++> tests-list-contains-number
-    tuple.contains > @
-      * "qwerty" "asdfgh" 3 "qwerty"
-      3
+  contains ++> tests-list-contains-number
+    * "qwerty" "asdfgh" 3 "qwerty"
+    3
 
   ++> tests-list-does-not-contain
     not. > @
-      tuple.contains
+      contains
         * "Привет" "asdfgh" 3 "qwerty"
         "Hi"

@@ -15,15 +15,15 @@
 
   eq. (1.minus 1) 0 ++> tests-one-minus-one
 
-  ++> tests-positive-infinity-minus-nan
-    eq. > @
-      as-bytes. (pinf.minus nan)
-      nan.as-bytes
+  eq. ++> tests-positive-infinity-minus-nan
+    as-bytes.
+      pinf.minus nan
+    nan.as-bytes
 
-  ++> tests-positive-infinity-minus-positive-infinity
-    eq. > @
-      as-bytes. (pinf.minus pinf)
-      nan.as-bytes
+  eq. ++> tests-positive-infinity-minus-positive-infinity
+    as-bytes.
+      pinf.minus pinf
+    nan.as-bytes
 
   eq. (pinf.minus ninf) pinf ++> tests-positive-infinity-minus-negative-infinity
 
@@ -35,15 +35,15 @@
 
   eq. (pinf.minus -42) pinf ++> tests-positive-infinity-minus-negative-int
 
-  ++> tests-negative-infinity-minus-nan
-    eq. > @
-      as-bytes. (ninf.minus nan)
-      nan.as-bytes
+  eq. ++> tests-negative-infinity-minus-nan
+    as-bytes.
+      ninf.minus nan
+    nan.as-bytes
 
-  ++> tests-negative-infinity-minus-negative-infinity
-    eq. > @
-      as-bytes. (ninf.minus ninf)
-      nan.as-bytes
+  eq. ++> tests-negative-infinity-minus-negative-infinity
+    as-bytes.
+      ninf.minus ninf
+    nan.as-bytes
 
   eq. (ninf.minus pinf) ninf ++> tests-negative-infinity-minus-positive-infinity
 

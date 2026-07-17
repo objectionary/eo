@@ -20,14 +20,14 @@
     at.
       scanf "%f" text
 
-  5.eq (string.as-number "5") ++> tests-converts-text-to-number
+  5.eq (as-number "5") ++> tests-converts-text-to-number
 
-  string.as-number "Hello" ++> throws-on-converting-text-to-number
+  as-number "Hello" ++> throws-on-converting-text-to-number
 
   ++> tests-non-numeric-text-returns-provided-fallback
     42.eq > @
-      string.as-number
+      as-number
         "Hello"
         42 > [msg]
 
-  3.14.eq (string.as-number "3.14") ++> tests-converts-float-text-to-number
+  3.14.eq (as-number "3.14") ++> tests-converts-float-text-to-number

@@ -48,12 +48,11 @@
               at. (walk "**")
           ^
       ^
-    [tup] > rec-delete
-      if. > @
-        tup.length.eq 0
-        true
-        seq
-          * tup.head.deleted (rec-delete tup.tail)
+    if. > [tup] > rec-delete
+      tup.length.eq 0
+      true
+      seq
+        * tup.head.deleted (rec-delete tup.tail)
   [] > tmpfile
     ^.exists.if > @
       Q.file touch.as-bytes
@@ -61,10 +60,9 @@
         "Directory %s does not exist, can't create temporary file".printf
           * file
     [] > touch /string
-  [mode scope] > open
-    T > @
-      "The file %s is a directory, can't open for I/O operations".printf
-        * file
+  T > [mode scope] > open
+    "The file %s is a directory, can't open for I/O operations".printf
+      * file
 
   ++> tests-makes-new-directory
     d.exists.and d.is-directory > @

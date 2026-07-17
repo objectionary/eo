@@ -12,19 +12,19 @@
   div. (value.times pi) 180 > @
   number num.as-bytes > value
 
-  eq. (number.radians 0) 0 ++> tests-radians-of-zero-is-zero
+  eq. (radians 0) 0 ++> tests-radians-of-zero-is-zero
 
   ++> tests-radians-of-half-turn-is-pi
     lt. > @
       abs
-        minus. (number.radians 180) pi
+        minus. (radians 180) pi
       1.0E-4
 
   ++> tests-radians-of-quarter-turn-is-pi-halves
     lt. > @
       abs
         minus.
-          number.radians 90
+          radians 90
           pi.div 2
       1.0E-4
 
@@ -32,16 +32,16 @@
     lt. > @
       abs
         minus.
-          number.radians 360
+          radians 360
           pi.times 2
       1.0E-4
 
   ++> tests-radians-of-negative-half-turn-is-minus-pi
     lt. > @
       abs
-        minus. (number.radians -180) pi.neg
+        minus. (radians -180) pi.neg
       1.0E-4
 
   ++> tests-radians-of-nan-is-nan
     is-nan. > @
-      number.radians nan
+      radians nan

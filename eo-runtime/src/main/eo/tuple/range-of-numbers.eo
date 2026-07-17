@@ -24,26 +24,22 @@
       end
     T "Some of the arguments are not integers"
 
-  ++> tests-simple-range-of-numbers-from-one-to-ten
-    eq. > @
-      tuple.range-of-numbers 1 10
-      * 1 2 3 4 5 6 7 8 9
+  eq. ++> tests-simple-range-of-numbers-from-one-to-ten
+    range-of-numbers 1 10
+    * 1 2 3 4 5 6 7 8 9
 
   ++> tests-range-of-numbers-from-ten-to-ten-is-empty
     is-empty > @
-      tuple.range-of-numbers 10 10
+      range-of-numbers 10 10
 
-  ++> tests-range-of-descending-numbers-is-empty
-    is-empty > @
-      tuple.range-of-numbers 10 1
+  is-empty (range-of-numbers 10 1) ++> tests-range-of-descending-numbers-is-empty
 
-  ++> tests-range-of-negative-numbers-works-as-well
-    eq. > @
-      tuple.range-of-numbers -5 0
-      * -5 -4 -3 -2 -1
+  eq. ++> tests-range-of-negative-numbers-works-as-well
+    range-of-numbers -5 0
+    * -5 -4 -3 -2 -1
 
-  tuple.range-of-numbers 1.2 3 ++> throws-on-range-of-numbers-with-non-number-start
+  range-of-numbers 1.2 3 ++> throws-on-range-of-numbers-with-non-number-start
 
-  tuple.range-of-numbers 1 2.5 ++> throws-on-range-of-numbers-with-not-number-end
+  range-of-numbers 1 2.5 ++> throws-on-range-of-numbers-with-not-number-end
 
-  tuple.range-of-numbers 1.5 5.2 ++> throws-on-range-of-not-numbers
+  range-of-numbers 1.5 5.2 ++> throws-on-range-of-not-numbers

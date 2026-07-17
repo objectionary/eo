@@ -54,6 +54,6 @@
           i2.eq 05-06-07-08
         i3.eq F5-F6
       eq. (i3.read 2) --
-    read. (io.bytes-as-input 01-02-03-04-05-06-07-08-F5-F6) 4 > i1
+    read. (bytes-as-input 01-02-03-04-05-06-07-08-F5-F6) 4 > i1
     i1.read 4 > i2
     i2.read 4 > i3

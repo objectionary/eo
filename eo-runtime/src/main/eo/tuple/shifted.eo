@@ -12,16 +12,14 @@
   ? >> shift
   slice list shift list.length > @
 
-  ++> tests-shifted-with-shift-less-than-length
-    eq. > @
-      tuple.shifted
-        * 8 2 3 4 5
-        2
-      * 3 4 5
+  eq. ++> tests-shifted-with-shift-less-than-length
+    shifted
+      * 8 2 3 4 5
+      2
+    * 3 4 5
 
-  ++> tests-shifted-with-shift-greater-than-length
-    eq. > @
-      tuple.shifted
-        * 8 2 3 4 5
-        6
-      *
+  eq. ++> tests-shifted-with-shift-greater-than-length
+    shifted
+      * 8 2 3 4 5
+      6
+    *

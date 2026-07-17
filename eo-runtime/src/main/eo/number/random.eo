@@ -11,7 +11,7 @@
 [seed] > random
   seed.as-number.div > @
     as-number. 00-20-00-00-00-00-00-00.as-i64
-  number.random > next
+  random > next
     as-number.
       as-i64.
         and.
@@ -37,7 +37,7 @@
               11.as-i64
           00-0F-FF-FF-FF-FF-FF-FF
   [clock] > clocked
-    number.random > @
+    random > @
       as-number.
         plus.
           as-i64.
@@ -70,16 +70,15 @@
   ++> tests-random-with-seed
     not. > @
       r.next.eq r.next.next
-    number.random 51 > r
+    random 51 > r
 
-  ++> tests-seeded-randoms-are-equal
-    eq. > @
+  eq. ++> tests-seeded-randoms-are-equal
+    next.
       next.
-        next.
-          next. (number.random 1654)
+        next. (random 1654)
+    next.
       next.
-        next.
-          next. (number.random 1654)
+        next. (random 1654)
 
   ++> tests-random-is-in-range
     and. > @
@@ -94,10 +93,10 @@
         rand.next.next.lt 1
         not. (rand.next.next.lt 0)
     next. > rand
-      number.random 123
+      random 123
 
   ++> tests-two-random-numbers-not-equal
     not. > @
       eq.
-        number.random.clocked 123.as-i64
-        number.random.clocked 456.as-i64
+        random.clocked 123.as-i64
+        random.clocked 456.as-i64

@@ -25,17 +25,17 @@
     idx
   text.length > len!
 
-  "s".eq (string.at "some" 0) ++> tests-returns-first-char
+  "s".eq (at "some" 0) ++> tests-returns-first-char
 
-  "m".eq (string.at "some" 2) ++> tests-returns-third-char
+  "m".eq (at "some" 2) ++> tests-returns-third-char
 
-  "m".eq (string.at "some" -2) ++> tests-returns-char-at-negative-index
+  "m".eq (at "some" -2) ++> tests-returns-char-at-negative-index
 
-  string.at "some" 10 ++> throws-on-text-at-index-more-than-length
+  at "some" 10 ++> throws-on-text-at-index-more-than-length
 
   ++> tests-text-at-out-of-bounds-returns-provided-fallback
     "recovered".eq > @
-      string.at
+      at
         "some"
         10
         "recovered" > [msg]

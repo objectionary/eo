@@ -20,7 +20,7 @@
 
   ++> tests-list-mappedi-should-work
     eq. > @
-      tuple.mappedi
+      mappedi
         * 1 2 3 4
         i.times x > [x i]
       * 0 2 6 12

@@ -60,44 +60,38 @@
       string
         slice text start (current.minus start)
 
-  ++> tests-nsplit-with-limit-two
-    eq. > @
-      string.nsplit "Cookie: a=1; b=2" " " 2
-      * "Cookie:" "a=1; b=2"
+  eq. ++> tests-nsplit-with-limit-two
+    nsplit "Cookie: a=1; b=2" " " 2
+    * "Cookie:" "a=1; b=2"
 
-  ++> tests-nsplit-with-dashes-limit-two
-    eq. > @
-      string.nsplit "a-b-c-d" "-" 2
-      * "a" "b-c-d"
+  eq. ++> tests-nsplit-with-dashes-limit-two
+    nsplit "a-b-c-d" "-" 2
+    * "a" "b-c-d"
 
-  ++> tests-nsplit-with-limit-one
-    eq. > @
-      string.nsplit "a-b-c" "-" 1
-      * "a-b-c"
+  eq. ++> tests-nsplit-with-limit-one
+    nsplit "a-b-c" "-" 1
+    * "a-b-c"
 
-  ++> tests-nsplit-with-high-limit
-    eq. > @
-      string.nsplit "a-b-c" "-" 10
-      * "a" "b" "c"
+  eq. ++> tests-nsplit-with-high-limit
+    nsplit "a-b-c" "-" 10
+    * "a" "b" "c"
 
-  string.nsplit "text" "-" 0 ++> throws-on-nsplit-with-limit-zero
+  nsplit "text" "-" 0 ++> throws-on-nsplit-with-limit-zero
 
-  string.nsplit "text" "-" -1 ++> throws-on-nsplit-with-negative-limit
+  nsplit "text" "-" -1 ++> throws-on-nsplit-with-negative-limit
 
   ++> tests-nsplit-invalid-limit-returns-provided-fallback
     "fallback".eq > @
-      string.nsplit
+      nsplit
         "text"
         "-"
         0
         "fallback" > [msg]
 
-  ++> tests-nsplit-with-empty-strings
-    eq. > @
-      string.nsplit "-a-b-c" "-" 3
-      * "" "a" "b-c"
+  eq. ++> tests-nsplit-with-empty-strings
+    nsplit "-a-b-c" "-" 3
+    * "" "a" "b-c"
 
-  ++> tests-nsplit-with-multi-char-delimiter
-    eq. > @
-      string.nsplit "a::b::c::d" "::" 2
-      * "a" "b::c::d"
+  eq. ++> tests-nsplit-with-multi-char-delimiter
+    nsplit "a::b::c::d" "::" 2
+    * "a" "b::c::d"

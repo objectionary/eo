@@ -14,20 +14,20 @@
     as-i16.
       00-.concat char.as-bytes
 
-  65.eq (string.as-ascii "A") ++> tests-reads-code-of-uppercase-letter
+  65.eq (as-ascii "A") ++> tests-reads-code-of-uppercase-letter
 
-  90.eq (string.as-ascii "Z") ++> tests-reads-code-of-last-uppercase-letter
+  90.eq (as-ascii "Z") ++> tests-reads-code-of-last-uppercase-letter
 
-  97.eq (string.as-ascii "a") ++> tests-reads-code-of-lowercase-letter
+  97.eq (as-ascii "a") ++> tests-reads-code-of-lowercase-letter
 
-  122.eq (string.as-ascii "z") ++> tests-reads-code-of-last-lowercase-letter
+  122.eq (as-ascii "z") ++> tests-reads-code-of-last-lowercase-letter
 
-  48.eq (string.as-ascii "0") ++> tests-reads-code-of-zero-digit
+  48.eq (as-ascii "0") ++> tests-reads-code-of-zero-digit
 
-  57.eq (string.as-ascii "9") ++> tests-reads-code-of-nine-digit
+  57.eq (as-ascii "9") ++> tests-reads-code-of-nine-digit
 
-  32.eq (string.as-ascii " ") ++> tests-reads-code-of-space
+  32.eq (as-ascii " ") ++> tests-reads-code-of-space
 
-  33.eq (string.as-ascii "!") ++> tests-reads-code-of-punctuation
+  33.eq (as-ascii "!") ++> tests-reads-code-of-punctuation
 
-  126.eq (string.as-ascii "~") ++> tests-reads-code-of-last-printable
+  126.eq (as-ascii "~") ++> tests-reads-code-of-last-printable

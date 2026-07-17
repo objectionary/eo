@@ -25,34 +25,34 @@
 
   ++> tests-filteredi-with-lt
     eq. > @
-      tuple.filteredi
+      filteredi
         * 3 1 4 2 5
         v.lt 3 > [v i]
       * 1 2
 
   ++> tests-filteredi-with-string-length
     eq. > @
-      tuple.filteredi
+      filteredi
         * "Hello" "Name" "EO" "List"
         v.length.gt 4 > [v i]
       * "Hello"
 
   ++> tests-filteredi-with-empty-list
     is-empty > @
-      tuple.filteredi
+      filteredi
         *
         v.lt 3 > [v i]
 
   ++> tests-filteredi-by-index
     eq. > @
-      tuple.filteredi
+      filteredi
         * 3 1 4
         i.gt 0 > [v i]
       * 1 4
 
   ++> tests-filteredi-with-bools
     eq. > @
-      tuple.filteredi
+      filteredi
         * true false true
         v.not > [v i]
       * false

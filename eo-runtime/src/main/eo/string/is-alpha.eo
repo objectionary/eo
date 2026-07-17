@@ -11,12 +11,12 @@
 [text] > is-alpha
   matches. (regex "/^[a-zA-Z]+$/") text > @
 
-  string.is-alpha "eEo" ++> tests-checks-if-simple-text-is-alpha
+  is-alpha "eEo" ++> tests-checks-if-simple-text-is-alpha
 
   ++> tests-checks-if-text-with-number-is-not-alpha
     not. > @
-      string.is-alpha "ab3d"
+      is-alpha "ab3d"
 
   ++> tests-checks-if-text-with-dashes-is-not-alpha
     not. > @
-      string.is-alpha "-w-"
+      is-alpha "-w-"

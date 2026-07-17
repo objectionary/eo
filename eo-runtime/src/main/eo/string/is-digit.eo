@@ -11,26 +11,25 @@
 [text] > is-digit
   matches. (regex "/^[0-9]+$/") text > @
 
-  string.is-digit "2026" ++> tests-checks-if-number-text-is-digit
+  is-digit "2026" ++> tests-checks-if-number-text-is-digit
 
   ++> tests-checks-if-text-with-letter-is-not-digit
     not. > @
-      string.is-digit "1a2"
+      is-digit "1a2"
 
-  string.is-digit "7" ++> tests-checks-if-single-digit-is-digit
+  is-digit "7" ++> tests-checks-if-single-digit-is-digit
 
   ++> tests-checks-if-empty-text-is-not-digit
     not. > @
-      string.is-digit ""
+      is-digit ""
 
   ++> tests-checks-if-text-with-space-is-not-digit
     not. > @
-      string.is-digit "12 34"
+      is-digit "12 34"
 
   ++> tests-checks-if-text-with-special-character-is-not-digit
     not. > @
-      string.is-digit "1🌵2"
+      is-digit "1🌵2"
 
   ++> tests-checks-if-very-long-number-is-digit
-    string.is-digit > @
-      "123456789012345678901234567890123456789012345678901234567890"
+    is-digit "123456789012345678901234567890123456789012345678901234567890" > @

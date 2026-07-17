@@ -11,12 +11,12 @@
   if. (value.gte 0) value value.neg > @
   number num.as-bytes > value
 
-  eq. (number.abs 3) 3 ++> tests-abs-int-positive
+  eq. (abs 3) 3 ++> tests-abs-int-positive
 
-  eq. (number.abs -3) 3 ++> tests-abs-int-negative
+  eq. (abs -3) 3 ++> tests-abs-int-negative
 
-  eq. (number.abs 0) 0 ++> tests-abs-zero
+  eq. (abs 0) 0 ++> tests-abs-zero
 
-  eq. (number.abs 13.5) 13.5 ++> tests-abs-float-positive
+  eq. (abs 13.5) 13.5 ++> tests-abs-float-positive
 
-  eq. (number.abs -17.9) 17.9 ++> tests-abs-float-negative
+  eq. (abs -17.9) 17.9 ++> tests-abs-float-negative

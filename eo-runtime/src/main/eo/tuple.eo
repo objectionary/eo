@@ -31,11 +31,11 @@
         eq. (tup.length.plus -1) index
         tup.head
         at-fast tup.tail
-  [x] > with
-    tuple > @
-      ^
-      x
-      as-number. (length.plus 1)
+  tuple > [x] > with
+    ^
+    x
+    as-number.
+      length.plus 1
   [other] > eq
     and. > @
       length.eq other.length
@@ -48,11 +48,10 @@
           first.head.eq second.head
           receq first.tail second.tail
 
-  ++> tests-makes-tuple-through-special-syntax
-    eq. > @
-      length.
-        * 1 2
-      2
+  eq. ++> tests-makes-tuple-through-special-syntax
+    length.
+      * 1 2
+    2
 
   ++> tests-gets-lengths-of-empty-tuple-through-special-syntax
     tuple.empty.length.eq 0 > @
@@ -101,10 +100,9 @@
       * 1 2 3
       "with"
 
-  ++> throws-on-wrong-tuple-at
-    at. > @
-      * 1 2 3 4
-      20
+  at. ++> throws-on-wrong-tuple-at
+    * 1 2 3 4
+    20
 
   ++> tests-out-of-bounds-at-returns-provided-fallback
     "recovered".eq > @
@@ -182,10 +180,9 @@
     arr.at -6 > @
     * 0 1 2 3 4 > arr
 
-  ++> tests-tuple-equality
-    eq. > @
-      * 1 2 3
-      * 1 2 3
+  eq. ++> tests-tuple-equality
+    * 1 2 3
+    * 1 2 3
 
   ++> tests-tuple-not-equality
     not. > @
@@ -193,21 +190,19 @@
         * 1 2 3
         * 3 2 1
 
-  ++> tests-tuple-nested-equality
-    eq. > @
-      *
-        * 0 1
-        * 4 0
-        * 7 3
-      *
-        * 0 1
-        * 4 0
-        * 7 3
+  eq. ++> tests-tuple-nested-equality
+    *
+      * 0 1
+      * 4 0
+      * 7 3
+    *
+      * 0 1
+      * 4 0
+      * 7 3
 
-  ++> tests-package-tuple-contains-element
-    contains. > @
-      * 1 2 3
-      2
+  contains. ++> tests-package-tuple-contains-element
+    * 1 2 3
+    2
 
   ++> tests-package-tuple-does-not-contain-element
     not. > @
@@ -215,21 +210,18 @@
         * 1 2 3
         5
 
-  ++> tests-package-tuple-index-of-element
-    eq. > @
-      index-of.
-        * 10 20 30
-        20
-      1
+  eq. ++> tests-package-tuple-index-of-element
+    index-of.
+      * 10 20 30
+      20
+    1
 
-  ++> tests-package-tuple-concatenates-with-another
-    eq. > @
-      concat.
-        * 0 1
-        * 2 3
-      * 0 1 2 3
+  eq. ++> tests-package-tuple-concatenates-with-another
+    concat.
+      * 0 1
+      * 2 3
+    * 0 1 2 3
 
-  ++> tests-package-tuple-contains-via-tuple-namespace
-    tuple.contains > @
-      * 1 2 3
-      2
+  tuple.contains ++> tests-package-tuple-contains-via-tuple-namespace
+    * 1 2 3
+    2

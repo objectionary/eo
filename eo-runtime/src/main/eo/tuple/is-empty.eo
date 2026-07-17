@@ -13,16 +13,15 @@
 
   ++> tests-list-should-not-be-empty
     not. > @
-      tuple.is-empty
+      is-empty
         * 1 2
 
-  ++> list-should-be-empty
-    tuple.is-empty > @
-      *
+  is-empty ++> list-should-be-empty
+    *
 
   ++> tests-list-should-not-be-empty-with-three-objects
     not. > @
-      tuple.is-empty xs
+      is-empty xs
     * > xs
       [x]
       [y]
@@ -30,6 +29,6 @@
 
   ++> tests-list-should-not-be-empty-with-one-anon-object
     not. > @
-      tuple.is-empty xs
+      is-empty xs
     * > xs
       [f]

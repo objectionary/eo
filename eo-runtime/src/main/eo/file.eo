@@ -31,17 +31,16 @@
         sm.posix
           "stat"
           * path
-  [] > exists
-    eq. > @
-      code.
-        sm.os.is-windows.if
-          sm.win32
-            "_access"
-            * path 0
-          sm.posix
-            "access"
-            * path 0
-      0
+  eq. > [] > exists
+    code.
+      sm.os.is-windows.if
+        sm.win32
+          "_access"
+          * path 0
+        sm.posix
+          "access"
+          * path 0
+    0
   [] > touched
     exists.if > @
       ^
@@ -203,17 +202,16 @@
             output-block.write buffer > @
             [] > output-block
               true > @
-              [buffer] > write
-                ^.^.^.^.^.^.writable.not.if > @
-                  T
-                    "Can't write to file with provided access mode '%s'".printf
-                      * ^.^.^.^.^.^.access
-                  seq
-                    *
-                      code.
-                        ^.^.^.^.syscall.write
-                          * ^.^.^.descriptor buffer buffer.size
-                      ^.^.output-block
+              ^.^.^.^.^.^.writable.not.if > [buffer] > write
+                T
+                  "Can't write to file with provided access mode '%s'".printf
+                    * ^.^.^.^.^.^.access
+                seq
+                  *
+                    code.
+                      ^.^.^.^.syscall.write
+                        * ^.^.^.descriptor buffer buffer.size
+                    ^.^.output-block
 
   ++> tests-check-if-current-directory-is-directory
     is-directory. > @

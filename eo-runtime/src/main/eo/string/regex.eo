@@ -48,15 +48,15 @@
           T "Matched block does not exist, can't get text"
         groups.at index > [index] > group
 
-  ++> tests-matches-regex-against-the-pattern
-    matches. > @
-      compiled. (string.regex "/[a-z]+/")
-      "hello"
+  matches. ++> tests-matches-regex-against-the-pattern
+    compiled.
+      regex "/[a-z]+/"
+    "hello"
 
   ++> tests-does-not-matches-regex-against-the-pattern
     not. > @
       matches.
-        compiled. (string.regex "/[a-z]+/")
+        compiled. (regex "/[a-z]+/")
         "123"
 
   ++> tests-matched-sequence-has-right-border-indexes
@@ -66,14 +66,13 @@
         1.eq n.from
         6.eq n.to
     next. > n
-      match. (string.regex "/[a-z]+/") "!hello!"
+      match. (regex "/[a-z]+/") "!hello!"
 
-  ++> tests-regex-returns-valid-matched-string-sequence
-    eq. > @
-      text.
-        next.
-          match. (string.regex "/[a-z]+/") "!hello!"
-      "hello"
+  eq. ++> tests-regex-returns-valid-matched-string-sequence
+    text.
+      next.
+        match. (regex "/[a-z]+/") "!hello!"
+    "hello"
 
   ++> tests-regex-returns-valid-second-matched-block
     and. > @
@@ -85,114 +84,106 @@
       second.to.eq 12
     next. > second
       next.
-        match. (string.regex "/[a-z]+/") "!hello!world!"
+        match. (regex "/[a-z]+/") "!hello!world!"
 
   ++> throws-on-getting-next-on-not-matched-block
     next. > @
       next.
-        match. (string.regex "/[a-z]+/") "123"
+        match. (regex "/[a-z]+/") "123"
 
   ++> throws-on-getting-from-position-on-not-matched-block
     from. > @
       next.
-        match. (string.regex "/[a-z]+/") "123"
+        match. (regex "/[a-z]+/") "123"
 
   ++> throws-on-getting-to-position-on-not-matched-block
     to. > @
       next.
-        match. (string.regex "/[a-z]+/") "123"
+        match. (regex "/[a-z]+/") "123"
 
   ++> throws-on-getting-groups-count-on-not-matched-block
     count. > @
       next.
-        match. (string.regex "/[a-z]+/") "123"
+        match. (regex "/[a-z]+/") "123"
 
   ++> throws-on-getting-groups-on-not-matched-block
     groups. > @
       next.
-        match. (string.regex "/[a-z]+/") "123"
+        match. (regex "/[a-z]+/") "123"
 
-  ++> throws-on-getting-specified-group-on-not-matched-block
-    group. > @
-      next.
-        match. (string.regex "/[a-z]+/") "123"
-      1
+  group. ++> throws-on-getting-specified-group-on-not-matched-block
+    next.
+      match. (regex "/[a-z]+/") "123"
+    1
 
   ++> throws-on-getting-text-on-not-matched-block
     text. > @
       next.
-        match. (string.regex "/[a-z]+/") "123"
+        match. (regex "/[a-z]+/") "123"
 
-  ++> tests-regex-matches-dotall-option
-    matches. > @
-      compiled.
-        string.regex "/(.*)/s"
-      "too \\n many \\n line \\n Feed\\n"
+  matches. ++> tests-regex-matches-dotall-option
+    compiled.
+      regex "/(.*)/s"
+    "too \\n many \\n line \\n Feed\\n"
 
-  ++> tests-regex-matches-with-case-insensitive-option
-    matches. > @
-      compiled.
-        string.regex "/(string)/i"
-      "StRiNg"
+  matches. ++> tests-regex-matches-with-case-insensitive-option
+    compiled.
+      regex "/(string)/i"
+    "StRiNg"
 
-  ++> tests-regex-matches-with-multiline-option
-    matches. > @
-      compiled.
-        string.regex "/(^([0-9]+).*)/m"
-      "1 bottle of water on the wall. \\n1 bottle of water."
+  matches. ++> tests-regex-matches-with-multiline-option
+    compiled.
+      regex "/(^([0-9]+).*)/m"
+    "1 bottle of water on the wall. \\n1 bottle of water."
 
-  ++> tests-regex-matches-entire-pattern
-    matches. > @
-      compiled. (string.regex "/[0-9]/\\d+/")
-      "2/75"
+  matches. ++> tests-regex-matches-entire-pattern
+    compiled.
+      regex "/[0-9]/\\d+/"
+    "2/75"
 
-  ++> tests-regex-matches-with-regex-unix-lines
-    matches. > @
-      compiled.
-        string.regex "/(.+)/d"
-      "A\\r\\nB\\rC\\nD"
+  matches. ++> tests-regex-matches-with-regex-unix-lines
+    compiled.
+      regex "/(.+)/d"
+    "A\\r\\nB\\rC\\nD"
 
-  ++> tests-regex-matches-with-regex-case-insensitive-and-caps
-    matches. > @
-      compiled.
-        string.regex "/(word)/i"
-      "WORD"
+  matches. ++> tests-regex-matches-with-regex-case-insensitive-and-caps
+    compiled.
+      regex "/(word)/i"
+    "WORD"
 
-  ++> tests-regex-ignores-comments-in-string
-    matches. > @
-      compiled.
-        string.regex "/(\\d) #ignore this comment/x"
-      "4"
+  matches. ++> tests-regex-ignores-comments-in-string
+    compiled.
+      regex "/(\\d) #ignore this comment/x"
+    "4"
 
-  ++> tests-regex-matches-with-unicode-case-and-insensitive
-    matches. > @
-      compiled.
-        string.regex "/(yildirim)/ui"
-      "Yıldırım"
+  matches. ++> tests-regex-matches-with-unicode-case-and-insensitive
+    compiled.
+      regex "/(yildirim)/ui"
+    "Yıldırım"
 
   ++> throws-on-missing-first-slash-in-regex
     compiled. > @
-      string.regex "(.)+"
+      regex "(.)+"
 
   ++> throws-on-missing-closing-slash-in-regex
     compiled. > @
-      string.regex "/pattern"
+      regex "/pattern"
 
   ++> tests-invalid-regex-syntax-returns-provided-fallback
     "recovered".eq > @
       compile.
-        string.regex "/[a-z/"
+        regex "/[a-z/"
         "recovered" > [msg]
 
   ++> tests-missing-slash-returns-provided-fallback
     "no-slash".eq > @
       compile.
-        string.regex "(.)+"
+        regex "(.)+"
         "no-slash" > [msg]
 
   ++> throws-on-compiling-invalid-regex-without-fallback
     compile. > @
-      string.regex "/[a-z/"
+      regex "/[a-z/"
 
   ++> tests-regex-contains-valid-groups-on-each-matched-block
     and. > @
@@ -209,6 +200,6 @@
     next. > first
       match.
         compiled.
-          string.regex "/([a-z]+)([1-9]{1})/"
+          regex "/([a-z]+)([1-9]{1})/"
         "!hello1!world2"
     first.next > second

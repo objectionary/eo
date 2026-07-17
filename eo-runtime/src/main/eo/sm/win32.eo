@@ -48,11 +48,10 @@
       plus. (sin-family.size.plus sin-port.size) sin-addr.size
       sin-zero.size
 
-  ++> tests-returns-valid-win32-inet-addr-for-localhost
-    os.is-windows.not.or > @
-      eq.
-        code.
-          sm.win32
-            "inet_addr"
-            * "127.0.0.1"
-        16777343
+  os.is-windows.not.or ++> tests-returns-valid-win32-inet-addr-for-localhost
+    eq.
+      code.
+        win32
+          "inet_addr"
+          * "127.0.0.1"
+      16777343

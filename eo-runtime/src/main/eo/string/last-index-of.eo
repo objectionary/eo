@@ -38,20 +38,20 @@
 
   ++> tests-finds-last-index-of-substring
     5.eq > @
-      string.last-index-of "Hey, Hey, Hey" "Hey,"
+      last-index-of "Hey, Hey, Hey" "Hey,"
 
   ++> tests-finds-last-index-of-the-same-string
     0.eq > @
-      string.last-index-of "Hello" "Hello"
+      last-index-of "Hello" "Hello"
 
   ++> tests-last-index-of-non-existed-substring
     -1.eq > @
-      string.last-index-of "Hello, world" "somebody"
+      last-index-of "Hello, world" "somebody"
 
   ++> tests-last-index-of-non-existed-substring-with-utf
     -1.eq > @
-      string.last-index-of "привет, друг!" "x"
+      last-index-of "привет, друг!" "x"
 
   ++> tests-last-index-of-existed-substring-with-utf
     3.eq > @
-      string.last-index-of "привет, друг!" "в"
+      last-index-of "привет, друг!" "в"

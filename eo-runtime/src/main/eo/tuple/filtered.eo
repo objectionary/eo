@@ -20,14 +20,14 @@
 
   ++> tests-simple-filtered
     eq. > @
-      tuple.filtered
+      filtered
         * 3 1 4 2 5
         v.gt 2 > [v]
       * 3 4 5
 
   ++> tests-filtered-with-bools
     eq. > @
-      tuple.filtered
+      filtered
         * true false true
         v.not > [v]
       * false

@@ -31,28 +31,25 @@
 
   ++> tests-does-not-replaces-if-regex-not-found
     eq. > @
-      string.replaced "Hello, world" (regex "/[0-9]+/") "12345"
+      replaced "Hello, world" (regex "/[0-9]+/") "12345"
       "Hello, world"
 
   ++> tests-replaces-digits-with-string
     eq. > @
-      string.replaced "Hell0, w0rld" (regex "/[0-9]+/") "o"
+      replaced "Hell0, w0rld" (regex "/[0-9]+/") "o"
       "Hello, world"
 
   ++> tests-replaces-slashes-to-windows-separator
     eq. > @
-      string.replaced "C:\\Windows/foo\\bar/hello.txt" (regex "/\\//") "\\"
+      replaced "C:\\Windows/foo\\bar/hello.txt" (regex "/\\//") "\\"
       "C:\\Windows\\foo\\bar\\hello.txt"
 
   ++> tests-replaces-windows-path-with-slash
     eq. > @
-      string.replaced "C:\\Windows\\Users\\AppLocal\\shrek" (regex "/[\\\\:]+/") "/"
+      replaced "C:\\Windows\\Users\\AppLocal\\shrek" (regex "/[\\\\:]+/") "/"
       "C/Windows/Users/AppLocal/shrek"
 
   ++> tests-sanitizes-windows-path-with-regex
     eq. > @
-      string.replaced
-        "foo\\bar<:>?*\"|baz\\asdf"
-        regex "/[<>:\\\"\\/\\|\\?\\*\\x00-\\x1F]/"
-        ""
+      replaced "foo\\bar<:>?*\"|baz\\asdf" (regex "/[<>:\\\"\\/\\|\\?\\*\\x00-\\x1F]/") ""
       "foo\\barbaz\\asdf"

@@ -38,90 +38,79 @@
       start.plus list.length
       0
 
-  ++> tests-simple-slice
-    eq. > @
-      tuple.slice
-        * 1 2 3 4 5
-        1
-        5
-      * 2 3 4 5
+  eq. ++> tests-simple-slice
+    slice
+      * 1 2 3 4 5
+      1
+      5
+    * 2 3 4 5
 
-  ++> tests-slice-with-negative-start
-    eq. > @
-      tuple.slice
-        * 8 76 -3 0 3 8 -12
-        -4
-        6
-      * 0 3 8
+  eq. ++> tests-slice-with-negative-start
+    slice
+      * 8 76 -3 0 3 8 -12
+      -4
+      6
+    * 0 3 8
 
-  ++> tests-slice-with-negative-end
-    eq. > @
-      tuple.slice
-        * "a" 2 3 "xyz" 82.42 7
-        0
-        -1
-      * "a" 2 3 "xyz" 82.42
+  eq. ++> tests-slice-with-negative-end
+    slice
+      * "a" 2 3 "xyz" 82.42 7
+      0
+      -1
+    * "a" 2 3 "xyz" 82.42
 
-  ++> tests-slice-with-negative-start-and-end
-    eq. > @
-      tuple.slice
-        * 8 23 0 0 "foo"
-        -4
-        -1
-      * 23 0 0
+  eq. ++> tests-slice-with-negative-start-and-end
+    slice
+      * 8 23 0 0 "foo"
+      -4
+      -1
+    * 23 0 0
 
-  ++> tests-slice-with-end-gt-length
-    eq. > @
-      tuple.slice
-        * "foo" "bar" "buzz"
-        1
-        10
-      * "bar" "buzz"
+  eq. ++> tests-slice-with-end-gt-length
+    slice
+      * "foo" "bar" "buzz"
+      1
+      10
+    * "bar" "buzz"
 
-  ++> tests-slice-with-start-lt-negative-length
-    eq. > @
-      tuple.slice
-        * 9 99 999 9999
-        -10
-        3
-      * 9 99 999
+  eq. ++> tests-slice-with-start-lt-negative-length
+    slice
+      * 9 99 999 9999
+      -10
+      3
+    * 9 99 999
 
-  ++> tests-slice-with-end-lt-negative-length
-    eq. > @
-      tuple.slice
-        * "A" "b" "C" "d" "E"
-        2
-        -9
-      *
+  eq. ++> tests-slice-with-end-lt-negative-length
+    slice
+      * "A" "b" "C" "d" "E"
+      2
+      -9
+    *
 
-  ++> tests-slice-with-start-gte-end-both-positive
-    eq. > @
-      tuple.slice
-        * 3 "-5" 0 "foo"
-        2
-        0
-      *
+  eq. ++> tests-slice-with-start-gte-end-both-positive
+    slice
+      * 3 "-5" 0 "foo"
+      2
+      0
+    *
 
-  ++> tests-slice-with-start-gte-end-both-negative
-    eq. > @
-      tuple.slice
-        * 3 92 -423 0 22 943 -22
-        -3
-        -5
-      *
+  eq. ++> tests-slice-with-start-gte-end-both-negative
+    slice
+      * 3 92 -423 0 22 943 -22
+      -3
+      -5
+    *
 
-  ++> tests-slice-with-negative-start-gte-end
-    eq. > @
-      tuple.slice
-        * "f" 1 "b" 2 "b" 3
-        -1
-        3
-      *
+  eq. ++> tests-slice-with-negative-start-gte-end
+    slice
+      * "f" 1 "b" 2 "b" 3
+      -1
+      3
+    *
 
-  ++> tests-slice-with-start-gte-negative-end
-    eq. > @
-      tuple.slice
-        * 8 -2 33-53 -1 33 "Y"
-        4
-        -5
-      *
+  eq. ++> tests-slice-with-start-gte-negative-end
+    slice
+      * 8 -2 33-53 -1 33 "Y"
+      4
+      -5
+    *

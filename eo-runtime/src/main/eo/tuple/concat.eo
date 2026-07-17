@@ -21,14 +21,13 @@
       list3.eq
         * 1 2 3
     withouti > list3
-      tuple.concat
+      concat
         * 0 1
         * 2 3
       0
 
-  ++> tests-concatenates-with-tuple
-    eq. > @
-      tuple.concat
-        * 0 1
-        * 2 4
-      * 0 1 2 4
+  eq. ++> tests-concatenates-with-tuple
+    concat
+      * 0 1
+      * 2 4
+    * 0 1 2 4

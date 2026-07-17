@@ -80,138 +80,134 @@
             r.div j
             fraction (j.plus 1)
 
-  eq. (number.power 2 4) 16 ++> tests-power-of-two-to-four
+  eq. (power 2 4) 16 ++> tests-power-of-two-to-four
 
-  eq. (number.power 2 0) 1 ++> tests-power-of-zero-exponent
+  eq. (power 2 0) 1 ++> tests-power-of-zero-exponent
 
-  eq. (number.power 984782 -12341) 0 ++> tests-power-large-negative-exponent
+  eq. (power 984782 -12341) 0 ++> tests-power-large-negative-exponent
 
-  eq. (number.power 3 2) 9 ++> tests-power-of-three-squared
+  eq. (power 3 2) 9 ++> tests-power-of-three-squared
 
-  eq. (number.power 0 145) 0 ++> tests-power-of-zero-base
+  eq. (power 0 145) 0 ++> tests-power-of-zero-base
 
-  eq. (number.power 0 -567) pinf ++> tests-power-zero-to-negative-odd
+  eq. (power 0 -567) pinf ++> tests-power-zero-to-negative-odd
 
   ++> tests-power-nan-to-nan-is-nan
     is-nan. > @
-      number.power nan nan
+      power nan nan
 
   ++> tests-power-nan-to-any-is-nan
     is-nan. > @
-      number.power nan 42
+      power nan 42
 
   ++> tests-power-any-to-nan-is-nan
     is-nan. > @
-      number.power 52 nan
+      power 52 nan
 
-  eq. (number.power 42 0) 1 ++> tests-power-int-to-zero-is-one
+  eq. (power 42 0) 1 ++> tests-power-int-to-zero-is-one
 
-  eq. (number.power 42.5 0) 1 ++> tests-power-float-to-zero-is-one
+  eq. (power 42.5 0) 1 ++> tests-power-float-to-zero-is-one
 
-  ++> tests-power-zero-to-negative-is-positive-infinity
-    eq. (number.power 0 -52) pinf > @
+  eq. (power 0 -52) pinf ++> tests-power-zero-to-negative-is-positive-infinity
 
   ++> tests-power-zero-to-negative-infinity-is-positive-infinity
-    eq. (number.power 0 ninf) pinf > @
+    eq. (power 0 ninf) pinf > @
 
-  ++> tests-power-positive-int-to-negative-infinity-is-zero
-    eq. (number.power 42 ninf) 0 > @
+  eq. (power 42 ninf) 0 ++> tests-power-positive-int-to-negative-infinity-is-zero
 
   ++> tests-power-positive-float-to-negative-infinity-is-zero
-    eq. (number.power 42.5 ninf) 0 > @
+    eq. (power 42.5 ninf) 0 > @
 
-  ++> tests-power-negative-int-to-negative-infinity-is-zero
-    eq. (number.power -42 ninf) 0 > @
+  eq. (power -42 ninf) 0 ++> tests-power-negative-int-to-negative-infinity-is-zero
 
   ++> tests-power-negative-float-to-negative-infinity-is-zero
-    eq. (number.power -42.5 ninf) 0 > @
+    eq. (power -42.5 ninf) 0 > @
 
   ++> tests-power-positive-infinity-to-negative-infinity-is-zero
-    eq. (number.power pinf ninf) 0 > @
+    eq. (power pinf ninf) 0 > @
 
   ++> tests-power-negative-infinity-to-negative-infinity-is-zero
-    eq. (number.power ninf ninf) 0 > @
+    eq. (power ninf ninf) 0 > @
 
-  ++> tests-power-positive-infinity-to-negative-int-is-zero
-    eq. (number.power pinf -42) 0 > @
+  eq. (power pinf -42) 0 ++> tests-power-positive-infinity-to-negative-int-is-zero
 
   ++> tests-power-positive-infinity-to-negative-float-is-zero
-    eq. (number.power pinf -42.2) 0 > @
+    eq. (power pinf -42.2) 0 > @
 
-  eq. (number.power 2 -1) 0.5 ++> tests-power-two-to-minus-one
+  eq. (power 2 -1) 0.5 ++> tests-power-two-to-minus-one
 
-  eq. (number.power 2 -2) 0.25 ++> tests-power-two-to-minus-two
+  eq. (power 2 -2) 0.25 ++> tests-power-two-to-minus-two
 
-  eq. (number.power 2 -3) 0.125 ++> tests-power-two-to-minus-three
+  eq. (power 2 -3) 0.125 ++> tests-power-two-to-minus-three
 
-  eq. (number.power 4 -3) 0.015625 ++> tests-power-four-to-minus-three
+  eq. (power 4 -3) 0.015625 ++> tests-power-four-to-minus-three
 
-  eq. (number.power 0 4) 0 ++> tests-power-zero-to-positive-int-is-zero
+  eq. (power 0 4) 0 ++> tests-power-zero-to-positive-int-is-zero
 
-  eq. (number.power 0 4.2) 0 ++> tests-power-zero-to-positive-float-is-zero
+  eq. (power 0 4.2) 0 ++> tests-power-zero-to-positive-float-is-zero
 
-  eq. (number.power 0 pinf) 0 ++> tests-power-zero-to-positive-infinity-is-zero
+  eq. (power 0 pinf) 0 ++> tests-power-zero-to-positive-infinity-is-zero
 
   ++> tests-power-negative-int-to-positive-infinity-is-positive-infinity
-    eq. (number.power -10 pinf) pinf > @
+    eq. (power -10 pinf) pinf > @
 
   ++> tests-power-negative-float-to-positive-infinity-is-positive-infinity
-    eq. (number.power -4.2 pinf) pinf > @
+    eq. (power -4.2 pinf) pinf > @
 
   ++> tests-power-positive-int-to-positive-infinity-is-positive-infinity
-    eq. (number.power 42 pinf) pinf > @
+    eq. (power 42 pinf) pinf > @
 
   ++> tests-power-positive-float-to-positive-infinity-is-positive-infinity
-    eq. (number.power 42.5 pinf) pinf > @
+    eq. (power 42.5 pinf) pinf > @
 
   ++> tests-power-positive-infinity-to-positive-int-is-positive-infinity
-    eq. (number.power pinf 42) pinf > @
+    eq. (power pinf 42) pinf > @
 
   ++> tests-power-positive-infinity-to-positive-float-is-positive-infinity
-    eq. (number.power pinf 10.8) pinf > @
+    eq. (power pinf 10.8) pinf > @
 
   ++> tests-power-positive-infinity-to-positive-infinity-is-positive-infinity
-    eq. (number.power pinf pinf) pinf > @
+    eq. (power pinf pinf) pinf > @
 
   ++> tests-power-negative-infinity-to-positive-float-is-positive-infinity
-    eq. (number.power ninf 9.9) pinf > @
+    eq. (power ninf 9.9) pinf > @
 
   ++> tests-power-negative-infinity-to-even-int-is-positive-infinity
-    eq. (number.power ninf 10) pinf > @
+    eq. (power ninf 10) pinf > @
 
   ++> tests-power-negative-infinity-to-odd-int-is-negative-infinity
-    eq. (number.power ninf 9) ninf > @
+    eq. (power ninf 9) ninf > @
 
-  eq. (number.power 2 3) 8 ++> tests-power-positive-int-to-positive-int
+  eq. (power 2 3) 8 ++> tests-power-positive-int-to-positive-int
 
-  eq. (number.power 3.5 4) 150.0625 ++> tests-power-positive-float-to-positive-int
+  eq. (power 3.5 4) 150.0625 ++> tests-power-positive-float-to-positive-int
 
-  eq. (number.power 4 5) 1024 ++> tests-power-four-to-five
+  eq. (power 4 5) 1024 ++> tests-power-four-to-five
 
   ++> tests-power-square-root-of-nine
     lt. > @
       abs
-        minus. (number.power 9 0.5) 3
+        minus. (power 9 0.5) 3
       1.0E-9
 
   ++> tests-power-square-root-of-two
     lt. > @
       abs
-        minus. (number.power 2 0.5) 1.4142135623730951
+        minus. (power 2 0.5) 1.4142135623730951
       1.0E-9
 
   ++> tests-power-cube-root-of-twenty-seven
     lt. > @
       abs
-        minus. (number.power 27 (1.div 3)) 3
+        minus. (power 27 (1.div 3)) 3
       1.0E-9
 
   ++> tests-power-fractional-of-negative-is-nan
     is-nan. > @
-      number.power -4 0.5
+      power -4 0.5
 
   eq. (2.power 4) 16 ++> tests-power-as-method-on-number
 
   eq. (3.power 2) 9 ++> tests-power-as-method-with-receiver-bound
 
-  eq. (number.power 2 4) 16 ++> tests-power-via-number-namespace
+  eq. (power 2 4) 16 ++> tests-power-via-number-namespace

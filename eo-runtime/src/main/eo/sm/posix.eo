@@ -41,26 +41,25 @@
       plus. (sin-family.size.plus sin-port.size) sin-addr.size
       sin-zero.size
 
-  ++> tests-invokes-getpid-correctly
-    os.is-windows.or > @
-      gt.
-        code.
-          sm.posix
-            "getpid"
-            *
-        0
+  os.is-windows.or ++> tests-invokes-getpid-correctly
+    gt.
+      code.
+        posix
+          "getpid"
+          *
+      0
 
   ++> tests-opens-and-closes-file-via-syscall
     os.is-windows.or > @
       seq
         *
           code.
-            sm.posix
+            posix
               "close"
               * fd
           fd.gt -1
     code. > fd
-      sm.posix
+      posix
         "open"
         * "/dev/null" 0 0
 
@@ -69,14 +68,14 @@
       seq
         *
           code.
-            sm.posix
+            posix
               "close"
               * sd
           sd.gt 0
     code. > sd
-      sm.posix
+      posix
         "socket"
-        * sm.posix.af-inet sm.posix.sock-stream sm.posix.ipproto-tcp
+        * posix.af-inet posix.sock-stream posix.ipproto-tcp
 
   ++> tests-closes-posix-tcp-socket
     os.is-windows.or > @
@@ -86,20 +85,19 @@
           not.
             eq.
               code.
-                sm.posix
+                posix
                   "close"
                   * sd
               -1
     code. > sd
-      sm.posix
+      posix
         "socket"
-        * sm.posix.af-inet sm.posix.sock-stream sm.posix.ipproto-tcp
+        * posix.af-inet posix.sock-stream posix.ipproto-tcp
 
-  ++> tests-returns-valid-posix-inet-addr-for-localhost
-    os.is-windows.or > @
-      eq.
-        code.
-          sm.posix
-            "inet_addr"
-            * "127.0.0.1"
-        16777343
+  os.is-windows.or ++> tests-returns-valid-posix-inet-addr-for-localhost
+    eq.
+      code.
+        posix
+          "inet_addr"
+          * "127.0.0.1"
+      16777343

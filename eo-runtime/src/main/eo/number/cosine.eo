@@ -16,44 +16,43 @@
   ++> tests-cosine-of-zero-is-one
     lt. > @
       abs
-        minus. (times. (number.cosine 0) 1000) 1000
+        minus. (times. (cosine 0) 1000) 1000
       1
 
   ++> tests-cosine-of-pi-halves-is-zero
     lt. > @
       abs
-        times. (number.cosine (pi.div 2)) 1000
+        times. (cosine (pi.div 2)) 1000
       1
 
   ++> tests-cosine-of-pi-is-minus-one
     lt. > @
       abs
-        minus. (times. (number.cosine pi) 1000) -1000
+        minus. (times. (cosine pi) 1000) -1000
       1
 
   ++> tests-cosine-of-pi-thirds-is-half
     lt. > @
       abs
-        minus. (times. (number.cosine (pi.div 3)) 1000) 500
+        minus. (times. (cosine (pi.div 3)) 1000) 500
       1
 
-  ++> tests-cosine-is-even-function
-    lt. > @
-      abs
-        times.
-          minus.
-            number.cosine (pi.div 3)
-            number.cosine
-              neg. (pi.div 3)
-          1000
-      1
+  lt. ++> tests-cosine-is-even-function
+    abs
+      times.
+        minus.
+          cosine (pi.div 3)
+          cosine
+            neg. (pi.div 3)
+        1000
+    1
 
   ++> tests-cosine-reduces-large-angle
     lt. > @
       abs
         minus.
           times.
-            number.cosine
+            cosine
               plus. (pi.times 10) (pi.div 3)
             1000
           500
@@ -62,17 +61,17 @@
   ++> tests-cosine-of-seventeen-radians
     lt. > @
       abs
-        minus. (times. (number.cosine 17) 1000) -275
+        minus. (times. (cosine 17) 1000) -275
       1
 
   ++> tests-cosine-of-nan-is-nan
     is-nan. > @
-      number.cosine nan
+      cosine nan
 
   ++> tests-cosine-of-positive-infinity-is-nan
     is-nan. > @
-      number.cosine pinf
+      cosine pinf
 
   ++> tests-cosine-of-negative-infinity-is-nan
     is-nan. > @
-      number.cosine ninf
+      cosine ninf

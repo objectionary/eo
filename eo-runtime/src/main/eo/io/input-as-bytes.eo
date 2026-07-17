@@ -17,15 +17,13 @@
 [input] > input-as-bytes
   malloc.of > @
     0
-    [m] >>
-      seq > @
-        * (copied input (malloc-as-output m)) m
+    seq > [m] >>
+      * (copied input (malloc-as-output m)) m
 
   ++> tests-bytes-to-input-and-back
     eq. > @
-      io.input-as-bytes (bytes-as-input bts)
+      input-as-bytes (bytes-as-input bts)
       bts
     01-02-03-04-05-06-07-08 > bts
 
-  ++> tests-returns-empty-bytes-from-dead-input
-    eq. (io.input-as-bytes dead-input) -- > @
+  eq. (input-as-bytes dead-input) -- ++> tests-returns-empty-bytes-from-dead-input

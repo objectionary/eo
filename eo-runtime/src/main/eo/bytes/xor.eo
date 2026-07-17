@@ -36,17 +36,17 @@
       00-00-00-00-8E-EA-4C-B1.xor 00-00-00-00-FF-FF-FF-FF
       00-00-00-00-71-15-B3-4E
 
-  ++> tests-one-xor-one-as-number
-    eq. > @
-      as-number. (xor. 1.as-bytes 1.as-bytes)
-      0
+  eq. ++> tests-one-xor-one-as-number
+    as-number.
+      xor. 1.as-bytes 1.as-bytes
+    0
 
   ++> tests-xor-neg-bytes-with-leading-zeroes
     eq. > @
       00-00-00-00-8E-EA-4C-B1.xor FF-FF-FF-FF-00-00-00-00
       FF-FF-FF-FF-8E-EA-4C-B1
 
-  ++> tests-xor-neg-bytes-as-number-without-leading-zeroes
-    eq. > @
-      as-number. (00-00-00-00-FF-FF-FF-FF.xor FF-FF-FF-FF-00-00-00-00)
-      FF-FF-FF-FF-FF-FF-FF-FF
+  eq. ++> tests-xor-neg-bytes-as-number-without-leading-zeroes
+    as-number.
+      00-00-00-00-FF-FF-FF-FF.xor FF-FF-FF-FF-00-00-00-00
+    FF-FF-FF-FF-FF-FF-FF-FF

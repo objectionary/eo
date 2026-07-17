@@ -31,8 +31,8 @@
   as-ascii "z" > maxcode!
   as-ascii "a" > mincode!
 
-  "HELLO".eq (string.up-cased "hello") ++> tests-converts-text-to-upper-case
+  "HELLO".eq (up-cased "hello") ++> tests-converts-text-to-upper-case
 
   ++> tests-converts-text-with-upper-letters-to-upper-case
     "HELLO".eq > @
-      string.up-cased "HeLlO"
+      up-cased "HeLlO"

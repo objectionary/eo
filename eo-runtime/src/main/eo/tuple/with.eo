@@ -12,9 +12,8 @@
   ? >> x
   list.with x > @
 
-  ++> tests-list-simple-with
-    eq. > @
-      tuple.with
-        * 1 2
-        3
-      * 1 2 3
+  eq. ++> tests-list-simple-with
+    with
+      * 1 2
+      3
+    * 1 2 3

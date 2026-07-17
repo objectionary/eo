@@ -16,14 +16,13 @@
       "-".as-bytes
       positive (n.times -1)
     positive n
-  [p] > pow10
-    if. > @
-      p.eq 0
-      1
-      times.
-        pow10
-          as-number. (p.minus 1)
-        10
+  if. > [p] > pow10
+    p.eq 0
+    1
+    times.
+      pow10
+        as-number. (p.minus 1)
+      10
   [a] > positive
     concat. > @
       concat. (as-decimal ip) ".".as-bytes
@@ -33,48 +32,47 @@
     floor. > m
       plus. (a.times scale) 0.5
     pow10 places > scale
-  [value count acc] > rec-pad
-    if. > @
-      count.eq 0
-      acc
-      rec-pad
-        floor. (value.div 10)
-        as-number. (count.minus 1)
-        concat.
-          as-char
-            plus.
-              floor.
-                value.minus
-                  times.
-                    floor. (value.div 10)
-                    10
-              48
-          acc
+  if. > [value count acc] > rec-pad
+    count.eq 0
+    acc
+    rec-pad
+      floor. (value.div 10)
+      as-number. (count.minus 1)
+      concat.
+        as-char
+          plus.
+            floor.
+              value.minus
+                times.
+                  floor. (value.div 10)
+                  10
+            48
+        acc
 
   ++> tests-pads-with-trailing-zeros
     "1.250000".eq > @
-      string (string.as-fixed 1.25 6)
+      string (as-fixed 1.25 6)
 
   ++> tests-writes-negative-value
     "-2.500000".eq > @
-      string (string.as-fixed -2.5 6)
+      string (as-fixed -2.5 6)
 
   ++> tests-rounds-to-last-place
     "0.123457".eq > @
-      string (string.as-fixed 0.123456789 6)
+      string (as-fixed 0.123456789 6)
 
   ++> tests-carries-rounding-into-integer-part
     "1.000000".eq > @
-      string (string.as-fixed 0.9999999 6)
+      string (as-fixed 0.9999999 6)
 
   ++> tests-writes-zero
     "0.000000".eq > @
-      string (string.as-fixed 0 6)
+      string (as-fixed 0 6)
 
   ++> tests-honours-custom-places
     "3.14".eq > @
-      string (string.as-fixed 3.14159 2)
+      string (as-fixed 3.14159 2)
 
   ++> tests-writes-single-place
     "2.5".eq > @
-      string (string.as-fixed 2.5 1)
+      string (as-fixed 2.5 1)

@@ -20,22 +20,19 @@
   index > idx!
   list.length.minus idx > start!
 
-  ++> tests-simple-back
-    eq. > @
-      tuple.back
-        * 1 2 3 4 5
-        2
-      * 4 5
-
-  ++> tests-zero-index-in-back
-    is-empty > @
-      tuple.back
-        * 1 2 3 4 5
-        0
-
-  ++> tests-large-index-in-back
-    eq. > @
-      tuple.back
-        * 1 2 3 4 5
-        10
+  eq. ++> tests-simple-back
+    back
       * 1 2 3 4 5
+      2
+    * 4 5
+
+  is-empty ++> tests-zero-index-in-back
+    back
+      * 1 2 3 4 5
+      0
+
+  eq. ++> tests-large-index-in-back
+    back
+      * 1 2 3 4 5
+      10
+    * 1 2 3 4 5
