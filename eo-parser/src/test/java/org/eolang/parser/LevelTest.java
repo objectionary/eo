@@ -64,7 +64,7 @@ final class LevelTest {
         final Level level = new Level(
             0, 1, Kind.BARE_FORMATION, Openness.OPEN, Kind.TOP_LEVEL, false
         );
-        level.name();
+        level.name("foo");
         MatcherAssert.assertThat(
             "named() must report true once name() has been called",
             level.named(),

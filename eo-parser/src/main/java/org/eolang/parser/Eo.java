@@ -787,7 +787,7 @@ final class Eo implements Iterable<Directive> {
         if (level.argument() && level.named()) {
             emit.error(
                 level.start(), level.indent(),
-                "argument of an only-phi formation cannot carry a name suffix"
+                level.onlyPhiNamingError()
             );
         }
     }
