@@ -18,11 +18,13 @@ import java.util.stream.Collectors;
  * <p>It takes the intermediate "line tree" produced by
  * {@code to-eo-tree.xsl} (an {@code <eo>} element with a {@code
  * <preamble>} and nested {@code <line>} elements) and lays it out as
- * EO source. For every object it considers two renderings — a
- * vertical one, where the arguments go on their own indented lines,
- * and a horizontal one, where they are inlined (wrapped in
- * parentheses when needed) — and keeps the one with the smaller
- * {@link Penalty}. The decision is made recursively, bottom-up.</p>
+ * EO source. For every object it considers a few renderings — a
+ * vertical one, where the arguments go on their own indented lines, a
+ * horizontal one, where they are inlined (wrapped in parentheses when
+ * needed), and, for a tuple applied at the tail, a hybrid that glues
+ * the {@code *} to the head's line — and keeps the one with the
+ * smaller {@link Penalty}. The decision is made recursively,
+ * bottom-up.</p>
  *
  * @since 0.57.0
  */
@@ -44,6 +46,11 @@ final class Pretty {
     private final Map<PenaltyKey, Integer> weights;
 
     /**
+     * A single level of indentation, whose width is the {@code STEP} weight.
+     */
+    private final String tab;
+
+    /**
      * Ctor, using the default penalty weights.
      * @param element The {@code <eo>} element
      */
@@ -55,10 +62,14 @@ final class Pretty {
      * Ctor.
      * @param element The {@code <eo>} element
      * @param config The overridden weights; absent keys use their defaults
+     * @checkstyle ConstructorsCodeFreeCheck (10 lines)
      */
     Pretty(final Xnav element, final Map<PenaltyKey, Integer> config) {
         this.root = element;
         this.weights = config;
+        this.tab = " ".repeat(
+            config.getOrDefault(PenaltyKey.STEP, PenaltyKey.STEP.fallback())
+        );
     }
 
     /**
@@ -74,16 +85,6 @@ final class Pretty {
             .map(line -> this.layout(Pretty.Node.parse(line), 0))
             .ifPresent(out::append);
         return out.append('\n').toString();
-    }
-
-    /**
-     * A single level of indentation, whose width is the {@code STEP} weight.
-     * @return The indentation string
-     */
-    private String step() {
-        return " ".repeat(
-            this.weights.getOrDefault(PenaltyKey.STEP, PenaltyKey.STEP.fallback())
-        );
     }
 
     /**
@@ -116,8 +117,8 @@ final class Pretty {
     }
 
     /**
-     * Lay out a single shape of a node, picking the lower-penalty of its
-     * vertical and horizontal renderings.
+     * Lay out a single shape of a node, picking the lowest-penalty of its
+     * vertical, horizontal and trailing-star renderings.
      * @param node The node
      * @param indent The indentation level
      * @return The rendered block
@@ -129,6 +130,12 @@ final class Pretty {
             && new Penalty(flat.get(), this.weights).points()
             < new Penalty(best, this.weights).points()) {
             best = flat.get();
+        }
+        final Optional<String> star = this.starred(node, indent);
+        if (star.isPresent()
+            && new Penalty(star.get(), this.weights).points()
+            < new Penalty(best, this.weights).points()) {
+            best = star.get();
         }
         return best;
     }
@@ -178,7 +185,7 @@ final class Pretty {
      * @return The rendered block
      */
     private String vertical(final Pretty.Node node, final int indent) {
-        final StringBuilder block = new StringBuilder(this.step().repeat(indent))
+        final StringBuilder block = new StringBuilder(this.tab.repeat(indent))
             .append(node.base)
             .append(node.tail);
         for (final Pretty.Node child : node.children) {
@@ -205,7 +212,7 @@ final class Pretty {
             result = Optional.empty();
         } else {
             result = Pretty.inlined(node.children).map(
-                args -> new StringBuilder(this.step().repeat(indent))
+                args -> new StringBuilder(this.tab.repeat(indent))
                     .append(node.base)
                     .append(' ')
                     .append(args)
@@ -288,7 +295,7 @@ final class Pretty {
                 .allMatch(Pretty.Node::nameless);
             if (value.isPresent()) {
                 result = Optional.of(
-                    new StringBuilder(this.step().repeat(indent))
+                    new StringBuilder(this.tab.repeat(indent))
                         .append(value.get())
                         .append(marker)
                         .toString()
@@ -304,6 +311,49 @@ final class Pretty {
                     )
                 );
             }
+        }
+        return result;
+    }
+
+    /**
+     * Render an application whose last child is a tuple as a hybrid: the
+     * head glued to a trailing {@code *} on one line, with the tuple's
+     * elements laid out vertically beneath at one deeper indent.
+     *
+     * <p>The ordinary {@code seq *} idiom is a tuple applied as the last
+     * argument of an object. Rendered verbosely it becomes {@code seq} on
+     * one line, a lone {@code *} on the next, and the elements one level
+     * deeper still — a line taller and an indent wider than the source a
+     * human writes. This keeps the {@code *} at the tail of the head's line
+     * ({@code seq *}) and pulls the elements up one level, mirroring the
+     * hybrid inline-phi form (issues #5594, #5615). A trailing {@code *}
+     * absorbs exactly the indented siblings beneath it into the tuple, so
+     * this shape is the same tree as the verbose one, with no before-star
+     * ambiguity.</p>
+     *
+     * <p>It applies only to a plain (non-formation, non-reversed)
+     * application whose final child is a non-empty, unnamed star; any
+     * preceding arguments must inline. The elements are always laid out
+     * vertically, so the genuinely ambiguous fully-horizontal
+     * {@code head * a b} — the before-star territory — is never produced
+     * here. The result is only a candidate: {@link #shaped} keeps it only
+     * when its penalty beats the plain vertical and horizontal renderings,
+     * so a short tuple that fits inline as {@code seq}, {@code * 1 2} on the
+     * next line is left alone.</p>
+     *
+     * @param node The node
+     * @param indent The indentation level
+     * @return The rendered block, or empty if the trailing-star form doesn't apply
+     */
+    private Optional<String> starred(final Pretty.Node node, final int indent) {
+        Optional<String> result = Optional.empty();
+        if (node.tuply()) {
+            final List<Pretty.Node> kids = node.children;
+            result = Pretty.inlined(kids.subList(0, kids.size() - 1)).map(
+                args -> this.vertical(
+                    kids.get(kids.size() - 1).glued(node, args), indent
+                )
+            );
         }
         return result;
     }
@@ -478,6 +528,54 @@ final class Pretty {
         boolean nameless() {
             return this.tail.isEmpty()
                 && this.children.stream().allMatch(Pretty.Node::nameless);
+        }
+
+        /**
+         * Whether this node is a plain application whose last child is a
+         * tuple that can be glued to its head as a trailing {@code *}.
+         *
+         * <p>A formation lays its children out as bindings and a reversed
+         * dispatch keeps its receiver first, so neither is a plain
+         * application and neither qualifies. The last child must itself be
+         * a gluable star (see {@link #stars()}).</p>
+         *
+         * @return True when the trailing-star hybrid form is applicable
+         */
+        boolean tuply() {
+            final int last = this.children.size() - 1;
+            return !this.abstractt && !this.reversed && last >= 0
+                && this.children.get(last).stars();
+        }
+
+        /**
+         * Whether this node is a non-empty, unnamed {@code *} tuple — one
+         * that may be glued to the tail of an applying object's line.
+         * @return True when this node is a gluable star
+         */
+        boolean stars() {
+            return "*".equals(this.base) && !this.abstractt
+                && !this.children.isEmpty() && this.tail.isEmpty();
+        }
+
+        /**
+         * Build the synthetic node that renders this tuple glued to the
+         * tail of {@code applier}'s line: {@code head *} on one line (with
+         * the applier's own name suffix), the tuple's elements as children.
+         * @param applier The object applying this tuple
+         * @param args The applier's inlined leading arguments, if any
+         * @return The glued node, laid out vertically by the caller
+         */
+        Pretty.Node glued(final Pretty.Node applier, final String args) {
+            final String head;
+            if (args.isEmpty()) {
+                head = applier.base;
+            } else {
+                head = String.join(" ", applier.base, args);
+            }
+            return new Pretty.Node(
+                String.join(" ", head, this.base), applier.tail,
+                false, false, false, false, this.children
+            );
         }
     }
 }
