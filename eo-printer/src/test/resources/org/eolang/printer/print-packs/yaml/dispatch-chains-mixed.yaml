@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Mixed method-dispatch chains. A named receiver folds into the suffix form
+# (a.plus, a.plus b), but a compound receiver with children of its own cannot,
+# so its dispatch stays in the reversed head form (div. (a.plus b) c,
+# and. over its two comparisons). Weighs suffix against reversed and lays each
+# out at the lower penalty.
+origin: |
+  [a b c] > math
+    a.plus (b.times c) > weighted
+    a.plus b > sum
+    (a.plus b).div c > mean
+    (a.gt b).and (b.gt c) > sorted
+
+printed: |
+  [a b c] > math
+    a.plus > weighted
+      b.times c
+    a.plus b > sum
+    div. (a.plus b) c > mean
+    and. > sorted
+      a.gt b
+      b.gt c

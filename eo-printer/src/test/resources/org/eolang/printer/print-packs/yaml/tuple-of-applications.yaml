@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A tuple whose elements are themselves applications ("pair" of two arguments)
+# is laid out vertically, each element on its own line, beside the formation it
+# refers to.
+origin: |
+  [] > pairs
+    * (pair "a" 1) (pair "b" 2) > items
+    [k v] > pair
+      k > key
+      v > value
+
+printed: |
+  [] > pairs
+    * > items
+      pair "a" 1
+      pair "b" 2
+    [k v] > pair
+      k > key
+      v > value

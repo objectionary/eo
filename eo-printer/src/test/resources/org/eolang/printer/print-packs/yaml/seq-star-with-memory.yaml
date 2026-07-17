@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The positive counterpart to trailing-star-after-dispatch: a tuple applied to
+# a plain "seq" head (not a dotted dispatch) does glue as "seq *", its
+# statements pulled up one level. A bare trailing star is absorbed by the
+# parser after a plain leading application, so this round-trips (issues #5615,
+# #5624).
+origin: |
+  [] > counter
+    memory 0 > state
+    seq > @
+      *
+        state.write 0
+        state.write (state.as-int.plus 1)
+        state.as-int
+
+printed: |
+  [] > counter
+    memory 0 > state
+    seq * > @
+      state.write 0
+      state.write (state.as-int.plus 1)
+      state.as-int
