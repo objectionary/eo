@@ -15,7 +15,7 @@ package org.eolang.printer;
  * one aesthetic is no longer baked into the tool.</p>
  *
  * @since 0.57.0
- * @checkstyle MagicNumberCheck (40 lines)
+ * @checkstyle MagicNumberCheck (46 lines)
  */
 public enum PenaltyKey {
 
@@ -39,6 +39,12 @@ public enum PenaltyKey {
      * Points charged for every symbol in the block.
      */
     SYMBOL(1),
+
+    /**
+     * Points charged for each space that applies an argument — every
+     * space on a line beyond its leading indentation.
+     */
+    APPLICATION(7),
 
     /**
      * The column after which characters start being charged.

@@ -2,12 +2,18 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
+# A tuple applied to a lone "seq > @" decoratee whose formation has no other
+# binding: the formation collapses through the inline-phi form into
+# "seq > [] > foo" with the star laid out beneath, which beats the "seq *" glue
+# here. The glue itself is shown by seq-star-with-memory, whose formation
+# carries a second binding and so cannot collapse.
 penalties:
   INDENT: 3
   BRACKET: 7
   EXCESS: 1
   WIDTH: 80
   STEP: 2
+  APPLICATION: 7
 origin: |
   [] > foo
     seq > @
@@ -21,8 +27,8 @@ origin: |
               * path created.output
 
 printed: |
-  [] > foo
-    seq * > @
+  seq > [] > foo
+    *
       bar.deleted
       if.
         outcome.eq 0

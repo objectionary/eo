@@ -26,7 +26,10 @@ import java.util.Map;
  *   <li>every character sitting past the {@link PenaltyKey#WIDTH}-th
  *   column costs {@link PenaltyKey#EXCESS} point;</li>
  *   <li>every symbol in the block costs {@link PenaltyKey#SYMBOL}
- *   point.</li>
+ *   point;</li>
+ *   <li>every space that applies an argument — one past the leading
+ *   indentation of a line — costs {@link PenaltyKey#APPLICATION}
+ *   points.</li>
  * </ul>
  *
  * <p>All of these weights, together with the indentation
@@ -36,7 +39,8 @@ import java.util.Map;
  * default.</p>
  *
  * <p>For example, with the default weights this snippet has a penalty of
- * 54 (five indents at three points each, plus 39 symbols):</p>
+ * 89 (five indents at three points each, 39 symbols, plus five
+ * application spaces at seven points each):</p>
  *
  * <pre> [] &gt; foo
  *   gt. &gt; @
@@ -44,8 +48,8 @@ import java.util.Map;
  *     bar.hello 88</pre>
  *
  * <p>While this one, rendering the same object differently, scores
- * only 46 (one opening parenthesis at fifteen points, plus 31
- * symbols):</p>
+ * only 88 (one opening parenthesis at fifteen points, 31 symbols, plus
+ * six application spaces at seven points each):</p>
  *
  * <pre> 42.gt (bar.hello 88) &gt; [] &gt; foo</pre>
  *
@@ -98,6 +102,7 @@ final class Penalty {
             total += opened * (opened + 1) / 2 * this.weight(PenaltyKey.BRACKET);
             total += this.overflow(line) * this.weight(PenaltyKey.EXCESS);
             total += line.length() * this.weight(PenaltyKey.SYMBOL);
+            total += Penalty.applications(line) * this.weight(PenaltyKey.APPLICATION);
         }
         return total;
     }
@@ -131,6 +136,26 @@ final class Penalty {
      */
     private int overflow(final String line) {
         return Math.max(0, line.length() - this.weight(PenaltyKey.WIDTH));
+    }
+
+    /**
+     * Count application spaces in a line: every space beyond the leading
+     * indentation.
+     * @param line The line
+     * @return The number of application spaces
+     */
+    private static int applications(final String line) {
+        int lead = 0;
+        while (lead < line.length() && line.charAt(lead) == ' ') {
+            ++lead;
+        }
+        int total = 0;
+        for (int idx = lead; idx < line.length(); ++idx) {
+            if (line.charAt(idx) == ' ') {
+                ++total;
+            }
+        }
+        return total;
     }
 
     /**

@@ -13,6 +13,7 @@ penalties:
   EXCESS: 1
   WIDTH: 80
   STEP: 2
+  APPLICATION: 7
 origin: |
   [] > counter
     memory 0 > state
@@ -27,5 +28,6 @@ printed: |
     memory 0 > state
     seq * > @
       state.write 0
-      state.write (state.as-int.plus 1)
+      state.write
+        state.as-int.plus 1
       state.as-int

@@ -17,6 +17,7 @@ penalties:
   EXCESS: 1
   WIDTH: 80
   STEP: 2
+  APPLICATION: 7
 origin: |
   [nstart nlen code] > main
     "Start index + length to slice (%d) is out of string bounds".printf > long
@@ -29,7 +30,8 @@ origin: |
 printed: |
   [nstart nlen code] > main
     "Start index + length to slice (%d) is out of string bounds".printf > long
-      * (nstart.plus nlen)
+      *
+        nstart.plus nlen
     "Start index (%d) is out of string bounds".printf > short
       * nstart
     "WSA error code %d".printf > wsa
