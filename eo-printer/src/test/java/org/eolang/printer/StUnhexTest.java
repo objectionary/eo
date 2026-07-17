@@ -19,6 +19,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  * Test case for {@link StUnhex}.
  * @since 0.29.0
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class StUnhexTest {
 
     @ParameterizedTest
@@ -174,6 +175,25 @@ final class StUnhexTest {
             ),
             XhtmlMatchers.hasXPath(
                 "//o[text()='\"A\\u0001\\u0007\u0434\u0440\u0443\u0433\"']"
+            )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
+    void keepsMalformedBytesUnconverted(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must not lossily decode invalid UTF-8, but it did",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    "<p><o base='Φ.string'><o base='Φ.bytes'><o>F0-9F-98</o></o></o></p>"
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                "//o[@base='Φ.string' and o[@base='Φ.bytes' and not(o) and text()='F0-9F-98']]"
             )
         );
     }
