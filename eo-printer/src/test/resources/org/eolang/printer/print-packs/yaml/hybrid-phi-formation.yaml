@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+origin: |
+  +package org.eolang
+
+  [acc index] > rec-hash-code
+    if. > @
+      index.eq acc
+      acc
+      plus.
+        * 1 2 3
+        0
+
+printed: |
+  +package org.eolang
+
+  if. > [acc index] > rec-hash-code
+    index.eq acc
+    acc
+    plus.
+      * 1 2 3
+      0

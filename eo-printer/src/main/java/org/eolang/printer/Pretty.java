@@ -231,18 +231,28 @@ final class Pretty {
      *
      * <p>This applies only when {@code @} is the sole binding; a
      * formation with any other attribute keeps the vertical layout. The
-     * decoratee itself is inlined through the usual {@link #flat} path,
-     * so a decoratee that can't be inlined (a nested formation, a tuple)
-     * yields empty and the caller falls back to the vertical shape; the
-     * penalty/width check then decides whether this single line is
-     * actually preferable.</p>
+     * decoratee itself is inlined through the usual {@link #flat} path.
+     * When that fails because the decoratee's arguments must go vertical (a
+     * tuple, a nested formation), a hybrid multi-line form is returned
+     * instead: the decoratee's head kept in front of the marker
+     * ({@code head ++> name} or {@code head > [params] > name}) with the
+     * arguments laid out beneath, mirroring the ordinary {@code head > name}
+     * plus vertical-args layout and saving one line and one indent level
+     * over the verbose shape (issue #5594). Either way the result is only a
+     * candidate — the penalty/width check in {@link #shaped} keeps it only
+     * when it beats the plain vertical rendering. A formation decoratee
+     * (its bindings are vertical, not arguments) and a receiver-only
+     * reversed dispatch ({@code not.} with just its receiver, mirroring the
+     * rejection in {@link #flat}) have no hybrid form, so they yield empty
+     * and keep the verbose layout; a reversed dispatch that also carries
+     * arguments ({@code if.} with its branches) does get the hybrid.</p>
      *
      * @param node The formation node
      * @param indent The indentation level
-     * @return The single line, or empty if the inline-phi form doesn't apply
+     * @return The rendered block, or empty if the inline-phi form doesn't apply
      */
     private Optional<String> phi(final Pretty.Node node, final int indent) {
-        final Optional<String> result;
+        Optional<String> result = Optional.empty();
         if (node.children.size() == 1
             && " > @".equals(node.children.get(0).tail)) {
             final Pretty.Node decoratee = node.children.get(0);
@@ -252,20 +262,32 @@ final class Pretty {
             } else {
                 middle = " > ".concat(node.base);
             }
-            result = Pretty.flat(
+            final String marker = middle.concat(node.tail);
+            final Optional<String> value = Pretty.flat(
                 new Pretty.Node(
                     decoratee.base, "", decoratee.abstractt,
                     false, decoratee.reversed, decoratee.data, decoratee.children
                 )
-            ).map(
-                value -> new StringBuilder(this.step().repeat(indent))
-                    .append(value)
-                    .append(middle)
-                    .append(node.tail)
-                    .toString()
             );
-        } else {
-            result = Optional.empty();
+            if (value.isPresent()) {
+                result = Optional.of(
+                    new StringBuilder(this.step().repeat(indent))
+                        .append(value.get())
+                        .append(marker)
+                        .toString()
+                );
+            } else if (!decoratee.abstractt && !decoratee.children.isEmpty()
+                && !(decoratee.reversed && decoratee.children.size() <= 1)) {
+                result = Optional.of(
+                    this.vertical(
+                        new Pretty.Node(
+                            decoratee.base, marker, false, false,
+                            decoratee.reversed, decoratee.data, decoratee.children
+                        ),
+                        indent
+                    )
+                );
+            }
         }
         return result;
     }
