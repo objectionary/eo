@@ -116,8 +116,17 @@ final class Pretty {
     }
 
     /**
-     * Lay out a single shape of a node, picking the lower-penalty of its
-     * vertical and horizontal renderings.
+     * Lay out a single shape of a node, picking the lowest-penalty of its
+     * candidate renderings.
+     *
+     * <p>The vertical rendering is always available. The horizontal
+     * (single-line) one is tried when the node can be inlined. For a
+     * formation whose only binding is the {@code φ} decoratee, when no
+     * single line exists (the decoratee's arguments must go vertical),
+     * the {@link #hybrid} form — the compact inline-phi marker with the
+     * arguments beneath — is offered instead, so the penalty search can
+     * prefer it over the fully verbose vertical shape (issue #5594).</p>
+     *
      * @param node The node
      * @param indent The indentation level
      * @return The rendered block
@@ -129,6 +138,13 @@ final class Pretty {
             && new Penalty(flat.get(), this.weights).points()
             < new Penalty(best, this.weights).points()) {
             best = flat.get();
+        } else if (flat.isEmpty()) {
+            final Optional<String> hybrid = this.hybrid(node, indent);
+            if (hybrid.isPresent()
+                && new Penalty(hybrid.get(), this.weights).points()
+                < new Penalty(best, this.weights).points()) {
+                best = hybrid.get();
+            }
         }
         return best;
     }
@@ -233,9 +249,10 @@ final class Pretty {
      * formation with any other attribute keeps the vertical layout. The
      * decoratee itself is inlined through the usual {@link #flat} path,
      * so a decoratee that can't be inlined (a nested formation, a tuple)
-     * yields empty and the caller falls back to the vertical shape; the
-     * penalty/width check then decides whether this single line is
-     * actually preferable.</p>
+     * yields empty here; the caller then falls back to either the
+     * {@link #hybrid} form (marker compacted, arguments vertical) or the
+     * fully verbose vertical shape, whichever the penalty/width check
+     * prefers.</p>
      *
      * @param node The formation node
      * @param indent The indentation level
@@ -243,15 +260,8 @@ final class Pretty {
      */
     private Optional<String> phi(final Pretty.Node node, final int indent) {
         final Optional<String> result;
-        if (node.children.size() == 1
-            && " > @".equals(node.children.get(0).tail)) {
+        if (Pretty.decorated(node)) {
             final Pretty.Node decoratee = node.children.get(0);
-            final String middle;
-            if (node.base.isEmpty()) {
-                middle = " ";
-            } else {
-                middle = " > ".concat(node.base);
-            }
             result = Pretty.flat(
                 new Pretty.Node(
                     decoratee.base, "", decoratee.abstractt,
@@ -260,14 +270,102 @@ final class Pretty {
             ).map(
                 value -> new StringBuilder(this.step().repeat(indent))
                     .append(value)
-                    .append(middle)
-                    .append(node.tail)
+                    .append(Pretty.marker(node))
                     .toString()
             );
         } else {
             result = Optional.empty();
         }
         return result;
+    }
+
+    /**
+     * Render a formation in the hybrid inline-phi form: the decoratee's
+     * head sitting in front of the marker, with the decoratee's arguments
+     * laid out vertically below.
+     *
+     * <p>This is the multi-line counterpart of {@link #phi}. When the
+     * decoratee has arguments that cannot all be inlined onto one line
+     * (a tuple, a nested formation), {@link #phi} yields empty and the
+     * fully-inline single line is unavailable. The verbose fallback then
+     * repeats the marker on its own line and pushes the decoratee a level
+     * deeper ({@code ++> name} / {@code > name} above {@code head > @}
+     * above the arguments). This form instead keeps the compact marker —
+     * {@code head ++> name} (or {@code head > [params] > name}) — and hangs
+     * the arguments directly beneath, mirroring the ordinary
+     * {@code head > name} plus vertical-args layout, saving one line and
+     * one indent level (issue #5594). It is offered as a candidate; the
+     * penalty search keeps it only when it beats the verbose vertical
+     * shape.</p>
+     *
+     * <p>It applies only to a decoratee with children that is not a
+     * formation and is not a receiver-only reversed dispatch: a childless
+     * decoratee already inlines through {@link #phi}, a formation
+     * decoratee lays its bindings out vertically rather than as arguments,
+     * and a reversed dispatch with just its receiver keeps the verbose
+     * layout (mirroring the receiver-only rejection in {@link #flat}), so
+     * none of them has a hybrid form. A reversed dispatch that also carries
+     * arguments ({@code if.} with its branches) does, laid out with the
+     * receiver and arguments beneath, exactly as its verbose {@code > @}
+     * body already was.</p>
+     *
+     * @param node The formation node
+     * @param indent The indentation level
+     * @return The rendered block, or empty if the hybrid form doesn't apply
+     */
+    private Optional<String> hybrid(final Pretty.Node node, final int indent) {
+        Optional<String> result = Optional.empty();
+        if (Pretty.decorated(node)) {
+            final Pretty.Node decoratee = node.children.get(0);
+            if (!decoratee.abstractt && !decoratee.children.isEmpty()
+                && !(decoratee.reversed && decoratee.children.size() <= 1)) {
+                result = Optional.of(
+                    this.vertical(
+                        new Pretty.Node(
+                            decoratee.base, Pretty.marker(node), false, false,
+                            decoratee.reversed, decoratee.data, decoratee.children
+                        ),
+                        indent
+                    )
+                );
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Whether this node is a formation whose only binding is the
+     * {@code φ} decoratee, and so is a candidate for the compact
+     * inline-phi renderings.
+     * @param node The node
+     * @return True if the node has a lone {@code > @} decoratee
+     */
+    private static boolean decorated(final Pretty.Node node) {
+        return node.abstractt
+            && node.children.size() == 1
+            && " > @".equals(node.children.get(0).tail);
+    }
+
+    /**
+     * The compact inline-phi marker that trails the decoratee: the piece
+     * that replaces the decoratee's own {@code > @} suffix.
+     *
+     * <p>An empty formation head (a no-void test attribute) renders through
+     * the {@code ++> name} shorthand, already carried in the node's tail, so
+     * only a separating space is prepended. A {@code [params]} head is
+     * spliced in as {@code > [params]} before the {@code > name} tail.</p>
+     *
+     * @param node The formation node
+     * @return The trailing marker string
+     */
+    private static String marker(final Pretty.Node node) {
+        final String middle;
+        if (node.base.isEmpty()) {
+            middle = " ";
+        } else {
+            middle = " > ".concat(node.base);
+        }
+        return middle.concat(node.tail);
     }
 
     /**
