@@ -47,10 +47,11 @@ final class Transition {
      * {@code named} is true.
      * @param kind Outer kind for the level
      * @param openness Openness for the level
-     * @param named Whether the line carries a name suffix
+     * @param label The suffix's source name, or {@code null} when the
+     *  line carries no name suffix
      * @return The pushed-or-replaced level
      */
-    Level apply(final Kind kind, final Openness openness, final boolean named) {
+    Level apply(final Kind kind, final Openness openness, final String label) {
         final Level level;
         if (this.stack.empty() || this.stack.top().indent() < this.span.indent()) {
             if (!this.stack.empty() && this.span.indent() != this.stack.top().indent() + 2) {
@@ -69,8 +70,8 @@ final class Transition {
         } else {
             level = this.stack.replace(this.span.line(), kind, openness);
         }
-        if (named) {
-            level.name();
+        if (label != null) {
+            level.name(label);
         }
         return level;
     }

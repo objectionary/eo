@@ -1310,7 +1310,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Deeper-indent under horizontally-completed line | `unexpected deeper-indent line — previous expression is closed for children` |
 | `.method` continuation on horizontally-completed previous | `method continuation not allowed after horizontal application` |
 | `.method` continuation on an only-phi formation | `method continuation not allowed after only-phi formation` |
-| Name suffix on an only-phi φ's argument | `argument of an only-phi formation cannot carry a name suffix` |
+| Name suffix on an only-phi φ's argument | `<name> cannot be a named attribute of only-phi formation <formation>, which binds only its φ decoratee` (the formation is described generically as `an only-phi formation` when anonymous) |
 | `.method` line at top level, deeper than parent, or with no same-indent sibling | `method continuation has no expression to attach to` |
 | Chained inline-phi suffix `expr > [a] > [b] > name` | `chained inline-phi suffixes are not allowed` |
 | Inline-phi without a name on the right (`expr > [params]` alone) | `inline-phi formation must carry a name on the right` |

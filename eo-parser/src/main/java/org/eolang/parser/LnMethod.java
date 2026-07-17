@@ -107,7 +107,7 @@ final class LnMethod implements Line {
         top.become(kind);
         top.close(openness);
         if (suffix.present()) {
-            top.name();
+            top.name(suffix.label());
         }
         globals.clearBlanks();
         globals.markEmitted();
