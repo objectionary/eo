@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="vars-float-up" version="2.0">
   <!--
@@ -9,18 +9,18 @@
   an abstract objects:
 
   [] > test
-    hello
-      foo > x
-        15
+  hello
+  foo > x
+  15
 
   We move "x" declaration to the nearest abstract object
   and make it its attribute:
 
   [] > test
-    foo > x
-      15
-    hello
-      x
+  foo > x
+  15
+  hello
+  x
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>

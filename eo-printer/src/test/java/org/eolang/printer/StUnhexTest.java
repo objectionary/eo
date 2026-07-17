@@ -133,7 +133,7 @@ final class StUnhexTest {
                     "<p><o base='Φ.number'><o base='Φ.bytes'><o>43-E1-58-E4-60-91-3D-00</o></o></o></p>"
                 )
             ),
-            XhtmlMatchers.hasXPath("//o[text()='10000000000000000000']")
+            XhtmlMatchers.hasXPath("//o[text()='1.0e19']")
         );
     }
 

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eo="https://www.eolang.org" id="add-default-package" version="2.0">
   <!--
   Here we go through all objects that are not:
-    1. methods (starts with .)
-    2. @, Q, ^ or $
-    3. mentioned in aliases
+  1. methods (starts with .)
+  2. @, Q, ^ or $
+  3. mentioned in aliases
 
   and add default package to them.
 
@@ -20,7 +20,7 @@
 
   # No comment.
   [] > app
-    hello > @
+  hello > @
 
   The default package is the root "Φ", unless the program has a
   "+package" meta AND the bare name belongs to an object of the
@@ -31,7 +31,7 @@
   +package foo
 
   [] > x
-    bar 42 > @
+  bar 42 > @
 
   is compiled as if there was a "+alias foo.bar" meta (i.e. 'bar'
   becomes 'Φ.foo.bar'), but only when 'foo.bar' is one of the local

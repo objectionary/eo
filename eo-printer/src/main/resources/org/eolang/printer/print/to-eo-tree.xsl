@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="to-eo-tree" version="2.0">
   <!--
@@ -22,8 +22,10 @@
     <xsl:param name="path" as="xs:string"/>
     <xsl:sequence select="string-join(for $seg in tokenize($path, '\.') return (if ($seg = $eo:rho) then '^' else if ($seg = $eo:phi) then '@' else $seg), '.')"/>
   </xsl:function>
-  <!-- Render a base as an EO head: drop implicit ξ./Φ. roots, render a
-       leading dot as reversed dispatch, map ξ/ρ/φ/Φ and every segment. -->
+  <!--
+  Render a base as an EO head: drop implicit ξ./Φ. roots, render a
+  leading dot as reversed dispatch, map ξ/ρ/φ/Φ and every segment.
+  -->
   <xsl:function name="eo:surface" as="xs:string">
     <xsl:param name="base" as="xs:string"/>
     <xsl:sequence select="if (starts-with($base, '.')) then concat(eo:translate-path(substring($base, 2)), '.') else if (starts-with($base, concat($eo:program, '.'))) then eo:translate-path(substring-after($base, concat($eo:program, '.'))) else if (starts-with($base, concat($eo:xi, '.'))) then eo:translate-path(substring-after($base, concat($eo:xi, '.'))) else if ($base = $eo:xi) then '$' else if ($base = $eo:program) then 'Q' else eo:translate-path($base)"/>
@@ -92,12 +94,14 @@
   <xsl:template match="meta">
     <xsl:text>+</xsl:text>
     <xsl:value-of select="head"/>
-    <!-- An alias is stored as two parts: a local name and the fully
-         qualified name (Φ.a.b.c). When the name is just the last dotted
-         segment of the FQN it carries no information, so the idiomatic
-         short form drops it and prints only the FQN with its Φ. root
-         stripped (+alias a.b.c). A genuine rename, where the name
-         differs from that last segment, keeps the two-argument form. -->
+    <!--
+    An alias is stored as two parts: a local name and the fully
+    qualified name (Φ.a.b.c). When the name is just the last dotted
+    segment of the FQN it carries no information, so the idiomatic
+    short form drops it and prints only the FQN with its Φ. root
+    stripped (+alias a.b.c). A genuine rename, where the name
+    differs from that last segment, keeps the two-argument form.
+    -->
     <xsl:variable name="fqn" select="replace(part[last()], concat('^', $eo:program, '\.'), '')"/>
     <xsl:choose>
       <xsl:when test="head = 'alias' and count(part) = 2 and part[1] = tokenize($fqn, '\.')[last()]">
@@ -138,23 +142,29 @@
     </line>
   </xsl:template>
   <!-- VOID WITH FILE-LOCAL HANDLE -->
-  <!-- A void declared "? &gt;&gt; name" (R-3.10.12) keeps its @local handle
-       through "restore-local-names"; it is printed as a vertical body line
-       to preserve the void's anonymity (§9.2, R-9.2.3) instead of being
-       collapsed into a public "[name]" bracket param (#5581). -->
+  <!--
+  A void declared "? &gt;&gt; name" (R-3.10.12) keeps its @local handle
+  through "restore-local-names"; it is printed as a vertical body line
+  to preserve the void's anonymity (§9.2, R-9.2.3) instead of being
+  collapsed into a public "[name]" bracket param (#5581).
+  -->
   <xsl:template match="o[eo:void(.) and @local]" mode="tree">
     <line base="?" tail="{concat(' &gt;&gt; ', @local)}" abstract="no" test="no" reversed="no"/>
   </xsl:template>
   <!-- BASED -->
   <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
-    <!-- A base of the form "ξ.ρ.name…" is a single parent hop onto a
-         name that lives in the enclosing scope. -->
+    <!--
+    A base of the form "ξ.ρ.name…" is a single parent hop onto a
+    name that lives in the enclosing scope.
+    -->
     <xsl:variable name="rho-prefix" select="concat($eo:xi, '.', $eo:rho, '.')"/>
     <xsl:variable name="rest" select="substring-after(@base, $rho-prefix)"/>
     <xsl:variable name="first" select="if (contains($rest, '.')) then substring-before($rest, '.') else $rest"/>
-    <!-- The current program's "+package" and the "Φ.<package>." prefix a
-         self-reference to a same-file object carries after being homed
-         into the package (add-default-package / build-fqns). -->
+    <!--
+    The current program's "+package" and the "Φ.<package>." prefix a
+    self-reference to a same-file object carries after being homed
+    into the package (add-default-package / build-fqns).
+    -->
     <xsl:variable name="package" select="string(/object/metas/meta[head='package']/part[1])"/>
     <xsl:variable name="self-prefix" select="concat($eo:program, '.', $package, '.')"/>
     <xsl:variable name="self-rest" select="substring-after(@base, $self-prefix)"/>
@@ -168,25 +178,31 @@
         <xsl:text>T</xsl:text>
       </xsl:when>
       <xsl:when test="starts-with(@base, concat($eo:program, '.')) and exists(ancestor::o/o[@name = eo:root-name(current()/@base)])">
-        <!-- The plain top-level name would be shadowed by an in-scope
-             attribute, so keep the explicit Q. root to disambiguate. -->
+        <!--
+        The plain top-level name would be shadowed by an in-scope
+        attribute, so keep the explicit Q. root to disambiguate.
+        -->
         <xsl:value-of select="concat('Q.', eo:translate-path(substring-after(@base, concat($eo:program, '.'))))"/>
       </xsl:when>
       <xsl:when test="$package != '' and starts-with(@base, $self-prefix) and $self-first = /object/o[1]/@name and empty(ancestor::o/o[@name = $self-first])">
-        <!-- The base names this program's own top-level object through its
-             fully-qualified "Φ.<package>.<name>…" form. The source wrote it
-             bare and every other same-package reference prints bare, so drop
-             the redundant "Φ.<package>." prefix and render the bare name. If
-             an in-scope attribute shadows that name, this branch is skipped:
-             either the package segment is shadowed too (kept "Q."-rooted by
-             the branch above) or the qualified "<package>.<name>" survives
-             through the otherwise branch, both of which resolve correctly. -->
+        <!--
+        The base names this program's own top-level object through its
+        fully-qualified "Φ.<package>.<name>…" form. The source wrote it
+        bare and every other same-package reference prints bare, so drop
+        the redundant "Φ.<package>." prefix and render the bare name. If
+        an in-scope attribute shadows that name, this branch is skipped:
+        either the package segment is shadowed too (kept "Q."-rooted by
+        the branch above) or the qualified "<package>.<name>" survives
+        through the otherwise branch, both of which resolve correctly.
+        -->
         <xsl:value-of select="eo:translate-path($self-rest)"/>
       </xsl:when>
       <xsl:when test="starts-with(@base, $rho-prefix) and $first != '' and $first != $eo:rho and $first != $eo:phi and $first != $eo:xi and $first != $eo:program and empty(ancestor::o[not(@base)][1]/o[@name=$first]) and exists(ancestor::o[not(@base)][2]/o[@name=$first])">
-        <!-- The single leading "^." parent hop is redundant: the name is
-             absent from the immediate scope but present in its parent, so
-             plain scope resolution re-derives the very same hop. Drop it. -->
+        <!--
+        The single leading "^." parent hop is redundant: the name is
+        absent from the immediate scope but present in its parent, so
+        plain scope resolution re-derives the very same hop. Drop it.
+        -->
         <xsl:value-of select="eo:translate-path($rest)"/>
       </xsl:when>
       <xsl:otherwise>
@@ -196,9 +212,11 @@
   </xsl:template>
   <!-- ABSTRACT OR ATOM -->
   <xsl:template match="o[eo:abstract(.) and not(eo:has-data(.))]" mode="head">
-    <!-- A test attribute with no void params collapses its empty `[]`
-         head into the `++&gt;` suffix (see the tail template), so it emits
-         no head of its own. -->
+    <!--
+    A test attribute with no void params collapses its empty `[]`
+    head into the `++&gt;` suffix (see the tail template), so it emits
+    no head of its own.
+    -->
     <xsl:if test="not(eo:test-attr(.) and empty(o[eo:void(.)]))">
       <xsl:text>[</xsl:text>
       <xsl:for-each select="o[eo:void(.) and not(@local)]">
@@ -226,15 +244,19 @@
     <xsl:if test="@name">
       <xsl:choose>
         <xsl:when test="eo:test-attr(.)">
-          <!-- The marker char is a plus for a truthy test (`+name`) or
-               a minus for a throwing test (`-name`); it doubles into
-               the head-of-line shorthand and stays single for the
-               mid-line suffix. -->
+          <!--
+          The marker char is a plus for a truthy test (`+name`) or a
+          minus for a throwing test (`-name`); it doubles into the
+          head-of-line shorthand and stays single for the mid-line
+          suffix.
+          -->
           <xsl:variable name="marker" select="substring(@name, 1, 1)"/>
           <xsl:choose>
-            <!-- No void params: collapse the empty `[]` head into the
-                 single doubled-marker head-of-line shorthand (the head
-                 template emits nothing in this case). -->
+            <!--
+            No void params: collapse the empty `[]` head into the
+            single doubled-marker head-of-line shorthand (the head
+            template emits nothing in this case).
+            -->
             <xsl:when test="empty(o[eo:void(.)])">
               <xsl:value-of select="$marker"/>
               <xsl:value-of select="$marker"/>
@@ -274,11 +296,11 @@
             <xsl:variable name="rest" select="substring-after($lambda-atom, 'Φ.')"/>
             <xsl:choose>
               <!--
-                A multi-segment signature (e.g. "Φ.malloc.of.allocated") must
-                stay rooted: on reparse a dotted @atom is not re-homed, so
-                dropping the root would yield an XSD-invalid fqn. A single-name
-                signature (e.g. "Φ.bytes") re-resolves to its root on reparse,
-                so the implicit root is dropped for idiomatic output.
+              A multi-segment signature (e.g. "Φ.malloc.of.allocated") must
+              stay rooted: on reparse a dotted @atom is not re-homed, so
+              dropping the root would yield an XSD-invalid fqn. A single-name
+              signature (e.g. "Φ.bytes") re-resolves to its root on reparse,
+              so the implicit root is dropped for idiomatic output.
               -->
               <xsl:when test="contains($rest, '.')">
                 <xsl:value-of select="concat('Q.', $rest)"/>
