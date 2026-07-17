@@ -8,6 +8,12 @@
 # printer weighs that reversed shape against the equivalent suffix shape
 # ("5.plus 3") and keeps the lower-penalty one, just as a named receiver
 # ("foo.plus 3") already prints in suffix form (#5584).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
 origin: |
   [foo] > app
     5.plus 3 > a

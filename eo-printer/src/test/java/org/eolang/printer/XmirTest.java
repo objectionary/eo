@@ -8,6 +8,8 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
+import java.util.EnumMap;
+import java.util.Map;
 import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
@@ -33,7 +35,9 @@ final class XmirTest {
     void printsToEo(final String pack) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
-        final Xmir xmir = this.asXmir((String) xtory.map().get("origin"));
+        final Xmir xmir = this.asXmir(
+            (String) xtory.map().get("origin"), this.weights(xtory)
+        );
         MatcherAssert.assertThat(
             String.format(
                 "Result EO should be equal to original EO, XMIR is:%n%s",
@@ -49,13 +53,16 @@ final class XmirTest {
     void printsToParseableEo(final String pack) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
-        final String printed = this.asXmir((String) xtory.map().get("origin")).toEO();
+        final Map<PenaltyKey, Integer> weights = this.weights(xtory);
+        final String printed = this.asXmir(
+            (String) xtory.map().get("origin"), weights
+        ).toEO();
         MatcherAssert.assertThat(
             String.format(
                 "Printed EO should be reprintable to the very same EO, but was:%n%s",
                 printed
             ),
-            this.asXmir(printed).toEO(),
+            this.asXmir(printed, weights).toEO(),
             Matchers.equalTo(printed)
         );
     }
@@ -85,15 +92,45 @@ final class XmirTest {
     /**
      * Convert EO to XMIR.
      * @param program Program in EOLANG
+     * @param config The penalty weights to print with
      * @return XMIR
      */
-    private Xmir asXmir(final String program) throws IOException {
+    private Xmir asXmir(final String program, final Map<PenaltyKey, Integer> config)
+        throws IOException {
         final XML xml = new EoSyntax(new InputOf(program)).parsed();
         MatcherAssert.assertThat(
             "Original EO should be parsed without errors",
             xml,
             Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
         );
-        return new Xmir(xml);
+        return new Xmir(xml, config);
+    }
+
+    /**
+     * Read the penalty weights from a story's {@code penalties} block.
+     *
+     * <p>Every print-pack pins the full set of {@link PenaltyKey} weights, so
+     * the expected layout is deterministic and does not depend on the defaults
+     * baked into the printer. The block is a plain mapping of key name to
+     * integer.</p>
+     *
+     * @param xtory The story
+     * @return The weights, by key
+     */
+    private Map<PenaltyKey, Integer> weights(final Xtory xtory) {
+        final Object block = xtory.map().get("penalties");
+        MatcherAssert.assertThat(
+            "Each print-pack must declare a 'penalties' block",
+            block,
+            Matchers.notNullValue()
+        );
+        final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
+        for (final Map.Entry<?, ?> entry : ((Map<?, ?>) block).entrySet()) {
+            weights.put(
+                PenaltyKey.valueOf((String) entry.getKey()),
+                ((Number) entry.getValue()).intValue()
+            );
+        }
+        return weights;
     }
 }
