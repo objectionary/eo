@@ -35,16 +35,11 @@
                 tmp
               tmpdir
           -- > empty
-          as-bytes. > temp
-            dataized (getenv "TEMP")
-          as-bytes. > tempdir
-            dataized (getenv "TEMPDIR")
-          as-bytes. > tmp
-            dataized (getenv "TMP")
-          as-bytes. > tmpdir
-            dataized (getenv "TMPDIR")
-          as-bytes. > userprofile
-            dataized (getenv "USERPROFILE")
+          getenv "TEMP" > temp!
+          getenv "TEMPDIR" > tempdir!
+          getenv "TMP" > tmp!
+          getenv "TMPDIR" > tmpdir!
+          getenv "USERPROFILE" > userprofile!
 
   mktemp.exists ++> global-temp-dir-exists
 

@@ -51,13 +51,12 @@
 
   ++> tests-opens-and-closes-file-via-syscall
     os.is-windows.or > @
-      seq
-        *
-          code.
-            posix
-              "close"
-              * fd
-          fd.gt -1
+      seq *
+        code.
+          posix
+            "close"
+            * fd
+        fd.gt -1
     code. > fd
       posix
         "open"
@@ -65,13 +64,12 @@
 
   ++> tests-opens-posix-tcp-socket
     os.is-windows.or > @
-      seq
-        *
-          code.
-            posix
-              "close"
-              * sd
-          sd.gt 0
+      seq *
+        code.
+          posix
+            "close"
+            * sd
+        sd.gt 0
     code. > sd
       posix
         "socket"
@@ -79,16 +77,15 @@
 
   ++> tests-closes-posix-tcp-socket
     os.is-windows.or > @
-      seq
-        *
-          sd
-          not.
-            eq.
-              code.
-                posix
-                  "close"
-                  * sd
-              -1
+      seq *
+        sd
+        not.
+          eq.
+            code.
+              posix
+                "close"
+                * sd
+            -1
     code. > sd
       posix
         "socket"

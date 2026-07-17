@@ -130,7 +130,7 @@
     eq. > @
       hash-code bigval
       hash-code bigval
-    42420000000000000000000000000000000000000000 > bigval!
+    4.242e43 > bigval!
 
   ++> tests-hash-codes-of-different-floats-are-not-equal
     not. > @

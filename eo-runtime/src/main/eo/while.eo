@@ -39,8 +39,9 @@
     if. > @
       as-bool.
         condition (index.plus 1)
-      seq
-        * current (loop (index.plus 1))
+      seq *
+        current
+        loop (index.plus 1)
       current
     body index > current
 
@@ -141,19 +142,17 @@
         malloc.for > @
           0
           [iter] >>
-            seq > @
-              *
-                while
-                  if. > [i] >>
-                    ^.^.^.max.gt iter
-                    seq
-                      *
-                        ^.^.acc.put (^.^.acc.as-number.plus (^.^.^.arr.at iter.as-number))
-                        iter.put (iter.as-number.plus 1)
-                        true
-                    false
-                  true > [i]
-                acc
+            seq * > @
+              while
+                if. > [i] >>
+                  ^.^.^.max.gt iter
+                  seq *
+                    ^.^.acc.put (^.^.acc.as-number.plus (^.^.^.arr.at iter.as-number))
+                    iter.put (iter.as-number.plus 1)
+                    true
+                  false
+                true > [i]
+              acc
     arr.length > max
 
   ++> tests-iterating-tuple-with-while-without-body-single
@@ -165,17 +164,15 @@
         malloc.for > @
           0
           [iter] >>
-            seq > @
-              *
-                while
-                  if. > [i] >>
-                    ^.^.^.max.gt iter
-                    seq
-                      *
-                        ^.^.acc.put (^.^.acc.as-number.plus (^.^.^.arr.at iter.as-number))
-                        iter.put (iter.as-number.plus 1)
-                        true
-                    false
-                  true > [i]
-                acc
+            seq * > @
+              while
+                if. > [i] >>
+                  ^.^.^.max.gt iter
+                  seq *
+                    ^.^.acc.put (^.^.acc.as-number.plus (^.^.^.arr.at iter.as-number))
+                    iter.put (iter.as-number.plus 1)
+                    true
+                  false
+                true > [i]
+              acc
     arr.length > max

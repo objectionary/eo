@@ -91,8 +91,10 @@
           0
           b.put > [m] >>
             eq.
-              seq
-                * (m.put 0) (m.put (m.as-number.plus 1)) m.as-number
+              seq *
+                m.put 0
+                m.put (m.as-number.plus 1)
+                m.as-number
               1
 
   ++> tests-seq-single-dataization-int-equal-to-cache-problem-test
@@ -103,13 +105,12 @@
           0
           b.put > [m] >>
             eq.
-              seq
-                *
-                  at.
-                    * 0 1
-                    m
-                  m.put (m.as-number.plus 1)
+              seq *
+                at.
+                  * 0 1
                   m
+                m.put (m.as-number.plus 1)
+                m
               1
 
   eq. ++> tests-seq-calculates-and-returns

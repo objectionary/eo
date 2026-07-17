@@ -31,11 +31,9 @@
 
   eq. -5.floor -5 ++> tests-floor-of-negative-integer
 
-  ++> tests-floor-of-large-positive-integer
-    eq. 100000000000000000000.floor 100000000000000000000 > @
+  eq. 1.0e20.floor 1.0e20 ++> tests-floor-of-large-positive-integer
 
-  ++> tests-floor-of-large-negative-integer
-    eq. -100000000000000000000.floor -100000000000000000000 > @
+  eq. -1.0e20.floor -1.0e20 ++> tests-floor-of-large-negative-integer
 
   eq. 0.floor 0 ++> tests-floor-of-zero
 

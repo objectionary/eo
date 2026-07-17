@@ -17,21 +17,19 @@
         malloc.for > @
           a
           [left] >>
-            seq > @
-              *
-                while
-                  if. > [i] >>
-                    lt. (left.as-number.plus step) right
-                    seq
-                      *
-                        ^.^.sum.put
-                          ^.^.sum.as-number.plus
-                            ^.^.^.subsection left.as-number (left.as-number.plus step)
-                        left.put (left.as-number.plus step)
-                        true
-                    false
-                  true > [i]
-                sum
+            seq * > @
+              while
+                if. > [i] >>
+                  lt. (left.as-number.plus step) right
+                  seq *
+                    ^.^.sum.put
+                      ^.^.sum.as-number.plus
+                        ^.^.^.subsection left.as-number (left.as-number.plus step)
+                    left.put (left.as-number.plus step)
+                    true
+                  false
+                true > [i]
+              sum
             ^.^.b > right
             as-number. (div. (right.minus left) ^.^.n) > step
   [a b] > subsection

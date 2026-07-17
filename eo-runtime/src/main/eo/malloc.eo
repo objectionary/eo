@@ -350,10 +350,9 @@
       0
     if. > [n] > func
       n.as-number.gt 0
-      seq
-        *
-          n.put (n.as-number.minus 1)
-          func n
+      seq *
+        n.put (n.as-number.minus 1)
+        func n
       n
 
   ++> tests-constant-defends-against-side-effects
