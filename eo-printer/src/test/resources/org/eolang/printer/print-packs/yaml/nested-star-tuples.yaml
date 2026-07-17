@@ -3,11 +3,9 @@
 ---
 # yamllint disable rule:line-length
 # Tuples nested inside a formation, exercising the star renderings together:
-# a tuple of plain data inlines on one line, a tuple that takes star arguments
-# ("(* ...)") cannot inline (a bare star has no flat form) so it and its
-# elements go vertical, and a tuple laid out vertically keeps its indented
-# star and dispatch children. The printer must canonicalise all of them and
-# round-trip the result.
+# a tuple of plain data inlines, a tuple taking star arguments ("(* ...)")
+# goes vertical (a bare star has no flat form), and a vertical tuple keeps its
+# indented star and dispatch children.
 origin: |
   [] > foo
     * abc 4.3 "test" > first

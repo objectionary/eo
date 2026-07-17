@@ -3,10 +3,8 @@
 ---
 # yamllint disable rule:line-length
 # Mixed method-dispatch chains. A named receiver folds into the suffix form
-# (a.plus, a.plus b), but a compound receiver with children of its own cannot,
-# so its dispatch stays in the reversed head form (div. (a.plus b) c,
-# and. over its two comparisons). Weighs suffix against reversed and lays each
-# out at the lower penalty.
+# (a.plus b), but a compound receiver cannot, so its dispatch stays reversed
+# (div. (a.plus b) c, and. over its two comparisons).
 origin: |
   [a b c] > math
     a.plus (b.times c) > weighted
