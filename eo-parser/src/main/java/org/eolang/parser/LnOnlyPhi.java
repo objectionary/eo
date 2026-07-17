@@ -44,6 +44,15 @@ import java.util.List;
  * formation binds only φ); the {@link Stack} flags such arguments and
  * the close-time check in {@link Eo} rejects a name on them.</p>
  *
+ * <p>A compact-tuple LHS (R-3.9.1 + R-3.10.6) — a head with a trailing
+ * {@code *N} marker, e.g. {@code seq * > [m]} — is a further open case:
+ * the φ stays {@link Openness#OPEN} and its deeper-indent lines are
+ * absorbed into a synthesised {@code Φ.tuple} exactly as §3.9 does for a
+ * bare {@link LnCompactTuple}, rather than {@link #bare(Tokens)} reading
+ * the {@code *} as a completed empty-tuple horizontal argument. The
+ * level is flagged {@link Level#star()} and reuses the {@code Φ.tuple}
+ * wrapper hooks in {@link Eo}.</p>
+ *
  * <p>This iteration accepts identifier and root LHS heads with
  * optional chains and identifier / INT / STAR / STRING / FLOAT /
  * ROOT horizontal args. R-3.10.6 LHS restrictions are honoured by
@@ -120,11 +129,28 @@ final class LnOnlyPhi implements Line {
         final Span inner = new Span(
             " ".repeat(this.span.indent()).concat(lhs), this.span.line()
         );
-        final Tokens tokens = new Tokens(inner.body(), inner);
-        final boolean open = LnOnlyPhi.bare(tokens);
-        tokens.seek(0);
+        final int marker = LnOnlyPhi.compactMarker(new Tokens(inner.body(), inner));
+        final Tokens tokens;
+        final boolean open;
+        if (marker < 0) {
+            tokens = new Tokens(inner.body(), inner);
+            open = LnOnlyPhi.bare(tokens);
+            tokens.seek(0);
+        } else {
+            final Span head = new Span(
+                " ".repeat(this.span.indent())
+                    .concat(inner.body().substring(0, marker)),
+                this.span.line()
+            );
+            tokens = new Tokens(head.body(), head);
+            open = true;
+        }
         Comments.seal(globals, emit, this.span);
-        this.transition(stack, suffix, open);
+        final Level level = this.transition(stack, suffix, open);
+        if (marker >= 0) {
+            level.compact(LnOnlyPhi.starCount(inner.body(), marker));
+            level.markStar();
+        }
         globals.clearBlanks();
         globals.markEmitted();
         emit.object(
@@ -247,17 +273,89 @@ final class LnOnlyPhi implements Line {
      * @param stack The stack
      * @param suffix Right-hand-side suffix
      * @param open Whether the φ has no horizontal args
+     * @return The pushed-or-replaced level
      */
-    private void transition(final Stack stack, final Suffix suffix, final boolean open) {
+    private Level transition(final Stack stack, final Suffix suffix, final boolean open) {
         final Openness openness;
         if (open) {
             openness = Openness.OPEN;
         } else {
             openness = Openness.HORIZONTAL_COMPLETED;
         }
-        new Transition(stack, this.span).apply(
+        return new Transition(stack, this.span).apply(
             Kind.ONLY_PHI_FORMATION, openness, suffix.named()
         );
+    }
+
+    /**
+     * The index in the LHS of the space that begins a trailing
+     * compact-tuple marker {@code *N} (R-3.9.1) — a {@code head}
+     * (identifier / root / literal, with an optional dotted chain)
+     * followed by {@code ' *'}, optional digits, and nothing after — or
+     * -1 when the LHS is not a compact-tuple head. A reversed-dispatch
+     * LHS never qualifies (§3.9 excludes it), so its trailing dot is
+     * checked first. Detecting the marker lets {@link LnOnlyPhi} keep the
+     * φ {@link Openness#OPEN} and route deeper-indent lines into the
+     * star's {@code Φ.tuple} instead of {@link #bare(Tokens)} reading the
+     * {@code *} as a completed empty-tuple argument (R-3.10.6). Consumes
+     * the token stream.
+     * @param tokens Token reader positioned at the LHS head
+     * @return Index of the marker's leading space, or -1
+     */
+    private static int compactMarker(final Tokens tokens) {
+        final int result;
+        if (LnOnlyPhi.reversedAhead(tokens, tokens.readValue())) {
+            result = -1;
+        } else {
+            tokens.readChain();
+            result = LnOnlyPhi.trailingStar(tokens);
+        }
+        return result;
+    }
+
+    /**
+     * Whether the cursor sits at a trailing compact-tuple marker — a
+     * {@code ' *'} followed only by optional digits to the end of the
+     * body — and, if so, the index of its leading space.
+     * @param tokens Token reader positioned after the head and chain
+     * @return Index of the marker's leading space, or -1
+     */
+    private static int trailingStar(final Tokens tokens) {
+        int result = -1;
+        final int space = tokens.cursor();
+        if (!tokens.atEnd() && tokens.current() == ' ') {
+            tokens.seek(space + 1);
+            if (!tokens.atEnd() && tokens.current() == '*') {
+                tokens.seek(tokens.cursor() + 1);
+                while (!tokens.atEnd()
+                    && tokens.current() >= '0' && tokens.current() <= '9') {
+                    tokens.seek(tokens.cursor() + 1);
+                }
+                if (tokens.atEnd()) {
+                    result = space;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Read the {@code N} of a trailing compact-tuple marker {@code *N}
+     * at {@code marker} in {@code lhs} — the digits after {@code ' *'},
+     * defaulting to 0 when absent (R-3.9.1).
+     * @param lhs The LHS body
+     * @param marker Index of the marker's leading space
+     * @return The N count
+     */
+    private static int starCount(final String lhs, final int marker) {
+        int count = 0;
+        int idx = marker + 2;
+        while (idx < lhs.length()
+            && lhs.charAt(idx) >= '0' && lhs.charAt(idx) <= '9') {
+            count = count * 10 + lhs.charAt(idx) - '0';
+            idx = idx + 1;
+        }
+        return count;
     }
 
     /**

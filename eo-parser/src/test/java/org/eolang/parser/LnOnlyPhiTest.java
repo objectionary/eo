@@ -230,6 +230,43 @@ final class LnOnlyPhiTest {
     }
 
     @Test
+    void keepsPhiOpenForCompactTupleLhs() {
+        final Stack stack = new Stack();
+        new LnOnlyPhi(new Span("seq * > [m]", 1))
+            .into(stack, new Globals(), new Emit());
+        MatcherAssert.assertThat(
+            "a compact-tuple LHS (`seq * > [m]`) must keep the φ OPEN so deeper lines become tuple elements, not close it as a completed empty-tuple argument",
+            stack.top().openness(),
+            Matchers.equalTo(Openness.OPEN)
+        );
+    }
+
+    @Test
+    void flagsCompactTuplePhiOnLevel() {
+        final Stack stack = new Stack();
+        new LnOnlyPhi(new Span("seq *1 > [m]", 1))
+            .into(stack, new Globals(), new Emit());
+        MatcherAssert.assertThat(
+            "a compact-tuple LHS must flag the level so the Φ.tuple wrapper hooks fire, and carry its N count",
+            stack.top().star() && stack.top().count() == 1,
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void emitsCompactTuplePhiWithoutStarArgument() {
+        final Emit emit = new Emit();
+        new LnOnlyPhi(new Span("seq * > [m]", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "the compact-tuple `*` must not be read as a horizontal empty-tuple argument of the φ — the φ stays a bare `seq` open for tuple elements",
+            LnOnlyPhiTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/o/o[@name='φ' and @base='seq' and not(o)]")
+        );
+    }
+
+    @Test
     void rejectsEmptyLhs() {
         Assertions.assertThrows(
             ParseError.class,

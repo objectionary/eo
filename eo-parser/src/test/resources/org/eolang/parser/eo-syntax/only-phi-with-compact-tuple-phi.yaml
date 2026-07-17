@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='result']/o[@base='∅' and @name='m']
+  - //o[@name='result']/o[@base='Φ.seq' and @name='φ']
+  - //o[@name='result']/o[@base='Φ.seq' and @name='φ']//o[@base='Φ.copied']/o[@base='Φ.a']
+  - //o[@name='result']/o[@base='Φ.seq' and @name='φ']//o[@base='ξ.m']
+input: |
+  [] > obj
+    seq * > [m] > result
+      copied a
+      m

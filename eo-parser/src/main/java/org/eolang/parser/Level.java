@@ -115,6 +115,15 @@ final class Level {
     private boolean tupled;
 
     /**
+     * For a {@link Kind#ONLY_PHI_FORMATION} whose φ is a compact tuple
+     * ({@code seq * > [m]}, R-3.9.1 + R-3.10.6): true so the φ absorbs
+     * deeper-indent lines into a {@code Φ.tuple} wrapper exactly like a
+     * {@link Kind#COMPACT_TUPLE} head, using {@link #count}, {@link
+     * #children}, and {@link #tupled}.
+     */
+    private boolean star;
+
+    /**
      * Cross-line binding mode for arg-bearing parents — 0 unset, 1
      * all-unbound, 2 all-bound. Updated by
      * {@link #observeBinding(boolean, Span)} per R-6.6.2.
@@ -169,6 +178,7 @@ final class Level {
         this.count = 0;
         this.children = 0;
         this.tupled = false;
+        this.star = false;
     }
 
     /**
@@ -420,6 +430,26 @@ final class Level {
      */
     boolean tupled() {
         return this.tupled;
+    }
+
+    /**
+     * Whether this only-phi formation's φ is a compact tuple that
+     * absorbs deeper-indent lines as {@code Φ.tuple} elements (R-3.9.1
+     * + R-3.10.6).
+     * @return Compact-φ flag
+     */
+    boolean star() {
+        return this.star;
+    }
+
+    /**
+     * Flag this only-phi formation's φ as a compact tuple, so the
+     * {@code Φ.tuple} wrapper mechanics ({@link #child()}, {@link
+     * #openTuple()}, {@link #tupled()}) apply to its deeper-indent
+     * children exactly as for a {@link Kind#COMPACT_TUPLE} head.
+     */
+    void markStar() {
+        this.star = true;
     }
 
     /**
