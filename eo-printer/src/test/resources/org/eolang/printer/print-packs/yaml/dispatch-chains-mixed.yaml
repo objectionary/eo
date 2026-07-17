@@ -5,6 +5,12 @@
 # Mixed method-dispatch chains. A named receiver folds into the suffix form
 # (a.plus b), but a compound receiver cannot, so its dispatch stays reversed
 # (div. (a.plus b) c, and. over its two comparisons).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
 origin: |
   [a b c] > math
     a.plus (b.times c) > weighted

@@ -6,6 +6,12 @@
 # inline-phi form (width.times height > [width height] > rectangle), sitting
 # beside two applications of it — one inlined, one whose compound receivers
 # keep the reversed dispatch vertical (plus. over two rectangle applications).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
 origin: |
   [] > shapes
     [width height] > rectangle

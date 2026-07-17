@@ -7,6 +7,12 @@
 # statements pulled up one level. A bare trailing star is absorbed by the
 # parser after a plain leading application, so this round-trips (issues #5615,
 # #5624).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
 origin: |
   [] > counter
     memory 0 > state

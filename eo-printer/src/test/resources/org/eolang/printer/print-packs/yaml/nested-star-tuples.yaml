@@ -6,6 +6,12 @@
 # a tuple of plain data inlines, a tuple taking star arguments ("(* ...)")
 # goes vertical (a bare star has no flat form), and a vertical tuple keeps its
 # indented star and dispatch children.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
 origin: |
   [] > foo
     * abc 4.3 "test" > first

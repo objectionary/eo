@@ -9,6 +9,12 @@
 # "redundant parentheses around a single token" (#5591). Only an argument that
 # actually applies arguments (and therefore contains a space, like "5.plus 3")
 # gets parenthesized.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
 origin: |
   [] > app
     not. > @

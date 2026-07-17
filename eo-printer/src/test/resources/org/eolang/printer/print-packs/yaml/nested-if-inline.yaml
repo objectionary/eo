@@ -6,6 +6,12 @@
 # single line when it fits: the inner if. inlines in parentheses as an
 # argument of the outer one, and the whole expression collapses through the
 # inline-phi form into the formation's head.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
 origin: |
   [x] > classify
     if. > @

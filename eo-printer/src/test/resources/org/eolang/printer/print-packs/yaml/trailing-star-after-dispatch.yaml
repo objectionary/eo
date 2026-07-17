@@ -11,6 +11,12 @@
 # rebuilds it non-reversed with the star as its only child, and that shape was
 # eligible for the hybrid, making format non-idempotent and lossy for string.eo
 # and socket.eo (issues #5622, #5624).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
 origin: |
   [nstart nlen code] > main
     "Start index + length to slice (%d) is out of string bounds".printf > long
