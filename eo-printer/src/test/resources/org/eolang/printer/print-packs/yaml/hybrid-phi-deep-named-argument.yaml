@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+origin: |
+  +package org.eolang
+
+  [] > foo
+
+    ++> tests-reduce-list-with-index
+      eq. > @
+        6
+        reducedi
+          * 1 1
+          0
+          [a x i] >>
+            plus. > @
+              x
+              a
+printed: |
+  +package org.eolang
+
+  [] > foo
+
+    ++> tests-reduce-list-with-index
+      6.eq > @
+        reducedi
+          * 1 1
+          0
+          x.plus a > [a x i] >>
