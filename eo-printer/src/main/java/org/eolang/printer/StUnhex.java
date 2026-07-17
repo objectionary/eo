@@ -7,7 +7,6 @@ package org.eolang.printer;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StEnvelope;
 import com.yegor256.xsline.StSequence;
-import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
@@ -88,7 +87,7 @@ final class StUnhex extends StEnvelope {
 
     /**
      * Convert given number to string.
-     * Prints as int if fractional part of number is 0.
+     * Prints as int when the fractional part is zero and the magnitude fits in long.
      * @param num Number to convert
      * @return Number converted to string
      */
@@ -100,7 +99,7 @@ final class StUnhex extends StEnvelope {
             } else if (Math.abs(num) < 0x1p63) {
                 str = Long.toString(num.longValue());
             } else {
-                str = BigDecimal.valueOf(num).toBigInteger().toString();
+                str = Double.toString(num).replace('E', 'e');
             }
         } else {
             str = Double.toString(num);
