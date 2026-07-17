@@ -9,6 +9,12 @@
 # R-9.2.3). The handle survives even when referenced from a sibling
 # attribute (here "wanted" inside "reclast", whose redundant "^." parent
 # hop is dropped per #5564).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
 origin: |
   +package tuple
 

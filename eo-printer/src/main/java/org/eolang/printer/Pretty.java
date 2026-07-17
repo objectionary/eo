@@ -547,12 +547,37 @@ final class Pretty {
          * child, so the hybrid must not fire (issue #5622). The single child
          * must itself be a gluable star (see {@link #stars()}).</p>
          *
+         * <p>The head must also be a plain base, not a dotted method dispatch
+         * ({@code "literal".printf}, {@code 5.plus}). A bare trailing
+         * {@code *} is absorbed by the parser only after a plain leading
+         * application ({@code seq *}, {@code map *}, {@code switch *}); after
+         * a method dispatch it reads as a complete application with an empty
+         * tuple and rejects the indented elements. A data-receiver dispatch
+         * is stored reversed and so already fails the {@code !reversed} guard,
+         * but {@link #suffixed} rebuilds it as a non-reversed, single-child
+         * node whose base is exactly such a dispatch, and that alternative is
+         * weighed for the hybrid too — barring a dotted base here keeps it,
+         * and any genuine dotted dispatch, on the ordinary {@code * elem}
+         * child that round-trips (issue #5624).</p>
+         *
          * @return True when the trailing-star hybrid form is applicable
          */
         boolean tuply() {
-            return !this.abstractt && !this.reversed
+            return this.gluer()
                 && this.children.size() == 1
                 && this.children.get(0).stars();
+        }
+
+        /**
+         * Whether this node is a plain application head onto which a
+         * trailing {@code *} may be glued: not a formation, not a reversed
+         * dispatch, and not a dotted method dispatch. See {@link #tuply()}
+         * for why a dotted base ({@code "literal".printf}, {@code 5.plus})
+         * is excluded (issue #5624).
+         * @return True when the head can carry a glued trailing star
+         */
+        boolean gluer() {
+            return !this.abstractt && !this.reversed && this.base.indexOf('.') < 0;
         }
 
         /**

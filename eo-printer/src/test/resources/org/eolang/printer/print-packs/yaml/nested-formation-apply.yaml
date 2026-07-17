@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A nested formation whose only binding is its phi decoratee collapses to the
+# inline-phi form (width.times height > [width height] > rectangle), sitting
+# beside two applications of it — one inlined, one whose compound receivers
+# keep the reversed dispatch vertical (plus. over two rectangle applications).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+origin: |
+  [] > shapes
+    [width height] > rectangle
+      width.times height > @
+    rectangle 3 4 > area
+    (rectangle 3 4).plus (rectangle 1 2) > total
+
+printed: |
+  [] > shapes
+    width.times height > [width height] > rectangle
+    rectangle 3 4 > area
+    plus. > total
+      rectangle 3 4
+      rectangle 1 2

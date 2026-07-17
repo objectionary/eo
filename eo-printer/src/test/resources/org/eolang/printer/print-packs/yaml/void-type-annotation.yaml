@@ -8,6 +8,12 @@
 # type annotation (#5614). A single-name forma re-resolves to its root, so
 # its implicit "Φ." is dropped; a multi-segment forma keeps its "Q." root,
 # mirroring the atom's own "/sig" rendering.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
 origin: |
   +package org.eolang
 
