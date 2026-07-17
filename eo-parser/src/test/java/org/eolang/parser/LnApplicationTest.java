@@ -602,6 +602,49 @@ final class LnApplicationTest {
     }
 
     @Test
+    void rejectsOverPreciseFloatHead() {
+        MatcherAssert.assertThat(
+            "a FLOAT literal with dead trailing digits must name the offender and its Double.toString form",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnApplication(new Span("2.7182818284590452354 > e", 1))
+                    .into(new Stack(), new Globals(), new Emit())
+            ).getMessage(),
+            Matchers.equalTo(
+                "2.7182818284590452354 is over-precise, write 2.718281828459045 instead"
+            )
+        );
+    }
+
+    @Test
+    void rejectsOverPreciseIntegerHead() {
+        MatcherAssert.assertThat(
+            "an INTEGER past the exact double integer range must suggest the rounded spelling",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnApplication(new Span("9007199254740993 > x", 1))
+                    .into(new Stack(), new Globals(), new Emit())
+            ).getMessage(),
+            Matchers.equalTo(
+                "9007199254740993 is over-precise, write 9007199254740992 instead"
+            )
+        );
+    }
+
+    @Test
+    void acceptsCanonicalFloatHead() {
+        final Emit emit = new Emit();
+        new LnApplication(new Span("0.1 > x", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "0.1 is already Double.toString's shortest form and must parse",
+            LnApplicationTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/o[@name='x' and @base='Φ.number']")
+        );
+    }
+
+    @Test
     void emitsBytesHead() {
         final Emit emit = new Emit();
         new LnApplication(new Span("CA-FE > x", 1))

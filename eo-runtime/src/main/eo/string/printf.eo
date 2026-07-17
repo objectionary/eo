@@ -140,7 +140,7 @@
   ++> throws-on-formatting-huge-number-as-decimal
     printf > @
       "%d"
-      * 1.0e30
+      * 1.0E30
 
   ++> formats-float-always-with-six-fraction-digits
     eq. > @

@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -115,11 +116,7 @@ final class Emissions {
         final Emit emit, final String name, final Value value, final int line
     ) {
         if (value.kind() == Value.Kind.INTEGER || value.kind() == Value.Kind.FLOAT) {
-            emit.object(name, "Φ.number", line, value.pos());
-            Emissions.bytesCarrier(
-                emit, line, value.pos(),
-                new Hex(Double.parseDouble(value.raw())).asString()
-            );
+            Emissions.number(emit, name, value, line);
         } else if (value.kind() == Value.Kind.HEX) {
             final long hex;
             try {
@@ -293,6 +290,60 @@ final class Emissions {
             }
         }
         return out.toString();
+    }
+
+    /**
+     * Emit an {@code INTEGER} or {@code FLOAT} as {@code Φ.number},
+     * rejecting literals that do not match their IEEE-754 round-trip
+     * spelling.
+     * @param emit Emitter
+     * @param name Name attribute (or {@code null})
+     * @param value Integer or float value
+     * @param line Source line
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static void number(
+        final Emit emit, final String name, final Value value, final int line
+    ) {
+        final double parsed = Double.parseDouble(value.raw());
+        final String canonical;
+        if (value.kind() == Value.Kind.INTEGER) {
+            canonical = Emissions.canonicalInteger(parsed);
+        } else {
+            canonical = Double.toString(parsed);
+        }
+        if (!value.raw().equals(canonical)) {
+            throw new ParseError(
+                line, value.pos(),
+                String.format(
+                    "%s is over-precise, write %s instead",
+                    value.raw(), canonical
+                )
+            );
+        }
+        emit.object(name, "Φ.number", line, value.pos());
+        Emissions.bytesCarrier(
+            emit, line, value.pos(),
+            new Hex(parsed).asString()
+        );
+    }
+
+    /**
+     * Canonical decimal form of a whole-valued double, matching the
+     * integer branch of the printer's {@code StUnhex.number}.
+     * @param num Parsed numeric value
+     * @return Shortest integer spelling for {@code num}
+     */
+    private static String canonicalInteger(final double num) {
+        final String str;
+        if ("-0.0".equals(Double.toString(num))) {
+            str = "-0";
+        } else if (Math.abs(num) < 0x1p63) {
+            str = Long.toString((long) num);
+        } else {
+            str = BigDecimal.valueOf(num).toBigInteger().toString();
+        }
+        return str;
     }
 
     /**

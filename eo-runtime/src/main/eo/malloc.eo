@@ -177,7 +177,7 @@
   ++> throws-on-overflow-boolean-malloc
     malloc.for > @
       false
-      m.put 86124867.88 > [m]
+      m.put 8.612486788E7 > [m]
 
   ++> throws-on-overflow-string-malloc
     malloc.for > @

@@ -16,7 +16,7 @@
         minus.
           e
           exp 1
-      0.00000001
+      1.0E-8
 
   ++> tests-exp-check-n1
     lt. > @
@@ -24,7 +24,7 @@
         minus.
           1.div e
           exp -1
-      0.00000001
+      1.0E-8
 
   ++> tests-exp-check-n2
     lt. > @
@@ -32,7 +32,7 @@
         minus.
           power e 5
           exp 5
-      0.0000001
+      1.0E-7
 
   ++> tests-exp-check-n3
     lt. > @
@@ -40,7 +40,7 @@
         minus.
           power e -10
           exp -10
-      0.000000000001
+      1.0E-12
 
   ++> tests-exp-check-nan
     is-nan. > @

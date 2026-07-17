@@ -79,7 +79,7 @@
         minus.
           ln 20
           2.995732273553991
-      0.00000000001
+      1.0E-11
 
   ++> tests-ln-fraction
     lt. > @
@@ -87,7 +87,7 @@
         minus.
           ln 0.5
           -0.6931471805599453
-      0.00000000001
+      1.0E-11
 
   ++> tests-ln-positive-infinity
     eq. > @

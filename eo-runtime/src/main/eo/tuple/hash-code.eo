@@ -47,7 +47,7 @@
     eq. > @
       hash-code num
       hash-code num
-    123456789012345678 > num
+    123456789012345680 > num
 
   ++> tests-hash-codes-of-the-same-ints-are-equal
     eq. > @
@@ -135,7 +135,7 @@
     eq. > @
       hash-code bigval
       hash-code bigval
-    42.42e42 > bigval!
+    4.242E43 > bigval!
 
   ++> tests-hash-codes-of-different-floats-are-not-equal
     not. > @
