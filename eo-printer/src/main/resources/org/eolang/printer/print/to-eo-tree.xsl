@@ -152,6 +152,13 @@
     <xsl:variable name="rho-prefix" select="concat($eo:xi, '.', $eo:rho, '.')"/>
     <xsl:variable name="rest" select="substring-after(@base, $rho-prefix)"/>
     <xsl:variable name="first" select="if (contains($rest, '.')) then substring-before($rest, '.') else $rest"/>
+    <!-- The current program's "+package" and the "Φ.<package>." prefix a
+         self-reference to a same-file object carries after being homed
+         into the package (add-default-package / build-fqns). -->
+    <xsl:variable name="package" select="string(/object/metas/meta[head='package']/part[1])"/>
+    <xsl:variable name="self-prefix" select="concat($eo:program, '.', $package, '.')"/>
+    <xsl:variable name="self-rest" select="substring-after(@base, $self-prefix)"/>
+    <xsl:variable name="self-first" select="if (contains($self-rest, '.')) then substring-before($self-rest, '.') else $self-rest"/>
     <xsl:choose>
       <!-- NOT OPTIMIZED TUPLE -->
       <xsl:when test="@star">
@@ -164,6 +171,17 @@
         <!-- The plain top-level name would be shadowed by an in-scope
              attribute, so keep the explicit Q. root to disambiguate. -->
         <xsl:value-of select="concat('Q.', eo:translate-path(substring-after(@base, concat($eo:program, '.'))))"/>
+      </xsl:when>
+      <xsl:when test="$package != '' and starts-with(@base, $self-prefix) and $self-first = /object/o[1]/@name and empty(ancestor::o/o[@name = $self-first])">
+        <!-- The base names this program's own top-level object through its
+             fully-qualified "Φ.<package>.<name>…" form. The source wrote it
+             bare and every other same-package reference prints bare, so drop
+             the redundant "Φ.<package>." prefix and render the bare name. If
+             an in-scope attribute shadows that name, this branch is skipped:
+             either the package segment is shadowed too (kept "Q."-rooted by
+             the branch above) or the qualified "<package>.<name>" survives
+             through the otherwise branch, both of which resolve correctly. -->
+        <xsl:value-of select="eo:translate-path($self-rest)"/>
       </xsl:when>
       <xsl:when test="starts-with(@base, $rho-prefix) and $first != '' and $first != $eo:rho and $first != $eo:phi and $first != $eo:xi and $first != $eo:program and empty(ancestor::o[not(@base)][1]/o[@name=$first]) and exists(ancestor::o[not(@base)][2]/o[@name=$first])">
         <!-- The single leading "^." parent hop is redundant: the name is
