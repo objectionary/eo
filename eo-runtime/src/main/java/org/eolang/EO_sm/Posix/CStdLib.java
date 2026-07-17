@@ -27,23 +27,38 @@ public interface CStdLib extends Library {
 
     /**
      * C STDLIB instance.
-     *
-     * <p>On Intel macOS, {@code dlsym("stat")} resolves to the legacy 32-bit-inode version
-     * whose struct layout differs from the 64-bit-inode one. We remap to {@code stat$INODE64}
-     * to match the {@link StatSyscall.Mac} struct. On arm64 macOS and all Linux platforms the
-     * plain {@code stat} symbol already uses the 64-bit-inode layout.</p>
      */
-    CStdLib INSTANCE = Platform.isMac() && !Platform.isARM()
-        ? Native.load(
-            "c",
-            CStdLib.class,
-            Collections.singletonMap(
-                Library.OPTION_FUNCTION_MAPPER,
-                (FunctionMapper) (lib, method) ->
-                    "stat".equals(method.getName()) ? "stat$INODE64" : method.getName()
-            )
-        )
-        : Native.load("c", CStdLib.class);
+    CStdLib INSTANCE = CStdLib.load();
+
+    /**
+     * Load the C standard library.
+     *
+     * <p>On Intel macOS, {@code dlsym("stat")} resolves to the legacy
+     * 32-bit-inode version whose struct layout differs from the 64-bit-inode
+     * one used by {@link StatSyscall.Mac}. We remap {@code stat} to
+     * {@code stat$INODE64} to get the right layout. On arm64 macOS and
+     * Linux the plain {@code stat} symbol already uses that layout.</p>
+     *
+     * @return Loaded CStdLib instance
+     */
+    private static CStdLib load() {
+        if (Platform.isMac() && !Platform.isARM()) {
+            return Native.load(
+                "c",
+                CStdLib.class,
+                Collections.singletonMap(
+                    Library.OPTION_FUNCTION_MAPPER,
+                    (FunctionMapper) (lib, method) -> {
+                        if ("stat".equals(method.getName())) {
+                            return "stat$INODE64";
+                        }
+                        return method.getName();
+                    }
+                )
+            );
+        }
+        return Native.load("c", CStdLib.class);
+    }
 
     /**
      * Standard input file descriptor.
