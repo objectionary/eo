@@ -18,7 +18,7 @@
           <xsl:attribute name="name" select="@name"/>
           <xsl:attribute name="const"/>
           <xsl:for-each select="$argument/o">
-            <xsl:copy-of select="."/>
+            <xsl:apply-templates select="."/>
           </xsl:for-each>
           <xsl:if test="eo:has-data($argument)">
             <xsl:value-of select="$argument"/>
