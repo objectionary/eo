@@ -16,7 +16,9 @@ import java.util.List;
  * is named by the right-hand suffix. The compact test shorthand
  * {@code lhs ++> name} (R-3.10.8 / R-6.3.6) is accepted as sugar for
  * {@code lhs > [] +> name} — a parameterless test attribute whose sole
- * binding is the {@code φ} decoratee {@code lhs}.</p>
+ * binding is the {@code φ} decoratee {@code lhs}. The throwing
+ * counterpart {@code lhs --> name} is sugar for {@code lhs > [] -> name}.
+ * </p>
  *
  * <p>Mechanics (R-3.10.1):</p>
  *
@@ -92,11 +94,14 @@ final class LnOnlyPhi implements Line {
             );
             origin = bracket + 1;
         } else {
-            final int shorthand = Eo.topLevelPlusPlusArrowIndex(body);
+            int shorthand = Eo.topLevelPlusPlusArrowIndex(body);
+            if (shorthand < 0) {
+                shorthand = Eo.topLevelMinusMinusArrowIndex(body);
+            }
             if (shorthand < 0) {
                 throw new ParseError(
                     this.span.line(), this.span.indent(),
-                    "only-phi formation must contain `> [` or `++>`"
+                    "only-phi formation must contain `> [`, `++>` or `-->`"
                 );
             }
             lhs = body.substring(0, shorthand).stripTrailing();

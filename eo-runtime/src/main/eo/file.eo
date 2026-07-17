@@ -258,10 +258,10 @@
   ++> tests-measures-empty-file-after-touching
     mktemp.tmpfile.deleted.touched.size.eq 0 > @
 
-  ++> throws-on-sizing-absent-file
+  --> on-sizing-absent-file
     mktemp.tmpfile.deleted.size > @
 
-  ++> throws-on-checking-directory-of-absent-file
+  --> on-checking-directory-of-absent-file
     mktemp.tmpfile.deleted.is-directory > @
 
   ++> tests-sizing-absent-file-returns-fallback
@@ -278,7 +278,7 @@
   ++> tests-does-not-fail-on-double-deleting
     mktemp.tmpfile.deleted.deleted.exists.not > @
 
-  ++> throws-an-error-on-touching-temp-file-in-absent-dir
+  --> an-error-on-touching-temp-file-in-absent-dir
     (mktemp.as-path.resolved "foo").@.tmpfile > @
 
   ++> tests-resolves-and-touches
@@ -297,7 +297,7 @@
       temp.exists.not
     mktemp.tmpfile > temp
 
-  ++> throws-on-opening-with-wrong-mode
+  --> on-opening-with-wrong-mode
     seq > @
       *
         mktemp
@@ -307,7 +307,7 @@
           true > [f]
         true
 
-  ++> throws-on-reading-from-not-existed-file
+  --> on-reading-from-not-existed-file
     mktemp
     .tmpfile
     .deleted
@@ -315,7 +315,7 @@
       "r"
       f > [f]
 
-  ++> throws-on-reading-or-writing-from-not-existed-file
+  --> on-reading-or-writing-from-not-existed-file
     mktemp
     .tmpfile
     .deleted
@@ -451,7 +451,7 @@
     .size
     .eq 12 > @
 
-  ++> throws-on-writing-with-wrong-mode
+  --> on-writing-with-wrong-mode
     mktemp
     .tmpfile
     .open > @
@@ -478,14 +478,14 @@
             m
     .eq "Hello, world" > @
 
-  ++> throws-on-reading-negative-size-from-file
+  --> on-reading-negative-size-from-file
     mktemp
     .tmpfile
     .open > @
       "r"
       f.read -5 > [f]
 
-  ++> throws-on-reading-from-file-with-wrong-mode
+  --> on-reading-from-file-with-wrong-mode
     mktemp
     .tmpfile
     .open > @

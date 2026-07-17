@@ -14,7 +14,8 @@ package org.eolang.parser;
  * <ul>
  *   <li>{@code > name} — explicit name binding.</li>
  *   <li>{@code >>} — auto-generated name, optional handle (§3.10).</li>
- *   <li>{@code +> name} — test attribute.</li>
+ *   <li>{@code +> name} — truthy test attribute.</li>
+ *   <li>{@code -> name} — throwing test attribute (expected to throw).</li>
  *   <li>(empty) — no suffix.</li>
  * </ul>
  *
@@ -166,6 +167,8 @@ final class Suffix {
             name = Suffix.phi(this.label);
         } else if (this.form == Form.TEST) {
             name = "+".concat(this.label);
+        } else if (this.form == Form.THROWS) {
+            name = "-".concat(this.label);
         } else if (this.form == Form.AUTO) {
             name = new AutoName(line, indent).asString();
         } else {
@@ -184,11 +187,12 @@ final class Suffix {
     }
 
     /**
-     * Whether this suffix is a test attribute ({@code +> name}).
+     * Whether this suffix is a test attribute — either a truthy
+     * {@code +> name} or a throwing {@code -> name}.
      * @return Test flag
      */
     boolean test() {
-        return this.form == Form.TEST;
+        return this.form == Form.TEST || this.form == Form.THROWS;
     }
 
     /**
@@ -252,7 +256,9 @@ final class Suffix {
         if (idx >= tail.length()) {
             result = new Suffix.Parsed(Form.NONE, "", "", false);
         } else if (tail.startsWith("+>", idx)) {
-            result = Suffix.test(tail, idx + 2, span, home);
+            result = Suffix.test(tail, idx + 2, span, home, Form.TEST);
+        } else if (tail.startsWith("->", idx)) {
+            result = Suffix.test(tail, idx + 2, span, home, Form.THROWS);
         } else if (tail.startsWith(">>", idx)) {
             result = Suffix.auto(tail, idx + 2, span, home);
         } else if (tail.charAt(idx) == '>') {
@@ -280,16 +286,20 @@ final class Suffix {
     }
 
     /**
-     * Parse a {@code +> name} suffix.
+     * Parse a test-attribute suffix — the truthy {@code +> name}
+     * ({@link Form#TEST}) or the throwing {@code -> name}
+     * ({@link Form#THROWS}). Both share the same {@code NAME}-token
+     * grammar; only the resulting form and marker prefix differ.
      * @param tail Tail substring
-     * @param after Index immediately after {@code +>}
+     * @param after Index immediately after the two-character marker
      * @param span Source span
      * @param home Source column where tail begins
+     * @param form The form to record ({@code TEST} or {@code THROWS})
      * @return Parsed result
      * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static Parsed test(
-        final String tail, final int after, final Span span, final int home
+        final String tail, final int after, final Span span, final int home, final Form form
     ) {
         int idx = Suffix.skipSpace(tail, after);
         if (idx < tail.length() && tail.charAt(idx) == '@') {
@@ -316,7 +326,7 @@ final class Suffix {
             );
         }
         Suffix.endsClean(tail, idx, span, home);
-        return new Suffix.Parsed(Form.TEST, name, "", false);
+        return new Suffix.Parsed(form, name, "", false);
     }
 
     /**
@@ -552,9 +562,15 @@ final class Suffix {
         AUTO,
 
         /**
-         * Test attribute ({@code +> name}).
+         * Truthy test attribute ({@code +> name}).
          */
-        TEST
+        TEST,
+
+        /**
+         * Throwing test attribute ({@code -> name}) — the test is
+         * expected to throw an exception.
+         */
+        THROWS
     }
 
     /**

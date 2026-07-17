@@ -31,7 +31,7 @@
         accum.concat bts
         (index.plus 1).as-number
 
-  ++> throws-on-text-repeating-less-than-zero-times
+  --> on-text-repeating-less-than-zero-times
     repeated > @
       ""
       -1

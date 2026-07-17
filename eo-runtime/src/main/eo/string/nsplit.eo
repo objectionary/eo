@@ -91,13 +91,13 @@
         10
       * "a" "b" "c"
 
-  ++> throws-on-nsplit-with-limit-zero
+  --> on-nsplit-with-limit-zero
     nsplit > @
       "text"
       "-"
       0
 
-  ++> throws-on-nsplit-with-negative-limit
+  --> on-nsplit-with-negative-limit
     nsplit > @
       "text"
       "-"

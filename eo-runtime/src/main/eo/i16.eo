@@ -191,7 +191,7 @@
       -32768.as-i64.as-i32.as-i16.minus 1.as-i64.as-i32.as-i16
       32767.as-i64.as-i32.as-i16
 
-  2.as-i64.as-i32.as-i16.div 0.as-i64.as-i32.as-i16 > [] +> throws-on-division-i16-by-i16-zero
+  2.as-i64.as-i32.as-i16.div 0.as-i64.as-i32.as-i16 > [] -> on-division-i16-by-i16-zero
 
   ++> tests-i16-div-by-zero-returns-provided-fallback
     eq. > @

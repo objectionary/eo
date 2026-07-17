@@ -123,7 +123,7 @@
       * 1 2 3
       "with"
 
-  ++> throws-on-wrong-tuple-at
+  --> on-wrong-tuple-at
     at. > @
       * 1 2 3 4
       20
@@ -175,10 +175,10 @@
       tuple.empty.length
       0
 
-  ++> throws-on-getting-head-from-empty-tuple
+  --> on-getting-head-from-empty-tuple
     tuple.empty.head > @
 
-  ++> throws-on-getting-tail-from-empty-tuple
+  --> on-getting-tail-from-empty-tuple
     tuple.empty.tail > @
 
   ++> tests-creates-empty-tuple-with-number
@@ -225,7 +225,7 @@
       0
     * 0 1 2 3 4 > arr
 
-  ++> throws-on-out-of-tuple-bounds-with-negative-index
+  --> on-out-of-tuple-bounds-with-negative-index
     arr.at -6 > @
     * 0 1 2 3 4 > arr
 

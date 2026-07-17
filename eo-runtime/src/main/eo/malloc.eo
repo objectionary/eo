@@ -174,12 +174,12 @@
       (malloc.of 8 (m.put 10 > [m])).eq 10
       (malloc.of 8 (m.put 20 > [m])).eq 20
 
-  ++> throws-on-overflow-boolean-malloc
+  --> on-overflow-boolean-malloc
     malloc.for > @
       false
       m.put 86124867.88 > [m]
 
-  ++> throws-on-overflow-string-malloc
+  --> on-overflow-string-malloc
     malloc.for > @
       "Hello"
       m.put "Much longer string!" > [m]
@@ -285,7 +285,7 @@
             10
             01-02 > [ex]
 
-  ++> throws-on-reading-over-a-limit-without-fallback
+  --> on-reading-over-a-limit-without-fallback
     malloc.for > @
       10
       m.read 0 100 > [m]
@@ -321,12 +321,12 @@
                 (m.resized 3).size.eq 3
                 m.get.eq 01-02-03
 
-  ++> throws-on-changing-size-to-negative
+  --> on-changing-size-to-negative
     malloc.of > @
       1
       m.resized -1 > [m]
 
-  ++> throws-on-changing-size-to-fractional
+  --> on-changing-size-to-fractional
     malloc.of > @
       1
       m.resized 1.5 > [m]
@@ -351,7 +351,7 @@
           m.copy 0 3 3
           m.get.eq 01-02-03-01-02-03
 
-  ++> throws-on-copying-with-wrong-source
+  --> on-copying-with-wrong-source
     malloc.for > @
       0
       m.copy 9 1 1 > [m]
@@ -364,7 +364,7 @@
           m.copy 3 9 1
           m.size.eq 10
 
-  ++> throws-on-copying-with-wrong-length
+  --> on-copying-with-wrong-length
     malloc.for > @
       0
       m.copy 3 1 9 > [m]

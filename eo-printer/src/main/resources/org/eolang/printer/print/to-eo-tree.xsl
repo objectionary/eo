@@ -226,18 +226,27 @@
     <xsl:if test="@name">
       <xsl:choose>
         <xsl:when test="eo:test-attr(.)">
+          <!-- The marker char is `+` for a truthy test (`+name`) or `-`
+               for a throwing test (`-name`); it doubles into the
+               head-of-line shorthand (`++&gt;` / `--&gt;`) and stays
+               single for the mid-line suffix (`+&gt;` / `-&gt;`). -->
+          <xsl:variable name="marker" select="substring(@name, 1, 1)"/>
           <xsl:choose>
             <!-- No void params: collapse the empty `[]` head into a
-                 single `++&gt; name` head (the head template emits
-                 nothing in this case). -->
+                 single `++&gt; name` / `--&gt; name` head (the head
+                 template emits nothing in this case). -->
             <xsl:when test="empty(o[eo:void(.)])">
-              <xsl:text>++&gt; </xsl:text>
+              <xsl:value-of select="$marker"/>
+              <xsl:value-of select="$marker"/>
+              <xsl:text>&gt; </xsl:text>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:text> +&gt; </xsl:text>
+              <xsl:text> </xsl:text>
+              <xsl:value-of select="$marker"/>
+              <xsl:text>&gt; </xsl:text>
             </xsl:otherwise>
           </xsl:choose>
-          <xsl:value-of select="substring-after(@name, '+')"/>
+          <xsl:value-of select="substring(@name, 2)"/>
         </xsl:when>
         <xsl:when test="starts-with(@name, concat('a', $eo:cactoos))">
           <xsl:text> &gt;&gt;</xsl:text>

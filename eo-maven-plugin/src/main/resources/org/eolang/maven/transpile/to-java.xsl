@@ -372,7 +372,7 @@
         <xsl:value-of select="parent::*/@loc"/>
       </xsl:message>
     </xsl:if>
-    <xsl:if test="not(contains($name, '+'))">
+    <xsl:if test="not(eo:test-attr(.))">
       <xsl:value-of select="eo:eol($indent)"/>
       <xsl:if test="$context!='this'">
         <xsl:text>((PhDefault) </xsl:text>
@@ -797,7 +797,7 @@
         <xsl:value-of select="parent::*/@loc"/>
       </xsl:message>
     </xsl:if>
-    <xsl:if test="contains($name, '+')">
+    <xsl:if test="eo:test-attr(.)">
       <xsl:value-of select="eo:eol($indent)"/>
       <xsl:if test="$context!='this'">
         <xsl:text>((PhDefault) </xsl:text>
@@ -833,7 +833,7 @@
         <xsl:text>() throws java.lang.Exception {</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
         <xsl:choose>
-          <xsl:when test="starts-with(eo:escape-plus(@name), 'throws')">
+          <xsl:when test="starts-with(@name, '-')">
             <xsl:text>Assertions.assertThrows(Exception.class, () -&gt; {</xsl:text>
             <xsl:apply-templates select="." mode="dataized">
               <xsl:with-param name="indent" select="3"/>

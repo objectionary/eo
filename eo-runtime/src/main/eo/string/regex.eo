@@ -87,25 +87,25 @@
       second.to.eq 12
     ((regex "/[a-z]+/").match "!hello!world!").next.next > second
 
-  ++> throws-on-getting-next-on-not-matched-block
+  --> on-getting-next-on-not-matched-block
     ((regex "/[a-z]+/").match "123").next.next > @
 
-  ++> throws-on-getting-from-position-on-not-matched-block
+  --> on-getting-from-position-on-not-matched-block
     ((regex "/[a-z]+/").match "123").next.from > @
 
-  ++> throws-on-getting-to-position-on-not-matched-block
+  --> on-getting-to-position-on-not-matched-block
     ((regex "/[a-z]+/").match "123").next.to > @
 
-  ++> throws-on-getting-groups-count-on-not-matched-block
+  --> on-getting-groups-count-on-not-matched-block
     ((regex "/[a-z]+/").match "123").next.count > @
 
-  ++> throws-on-getting-groups-on-not-matched-block
+  --> on-getting-groups-on-not-matched-block
     ((regex "/[a-z]+/").match "123").next.groups > @
 
-  ++> throws-on-getting-specified-group-on-not-matched-block
+  --> on-getting-specified-group-on-not-matched-block
     ((regex "/[a-z]+/").match "123").next.group 1 > @
 
-  ++> throws-on-getting-text-on-not-matched-block
+  --> on-getting-text-on-not-matched-block
     ((regex "/[a-z]+/").match "123").next.text > @
 
   ++> tests-regex-matches-dotall-option
@@ -164,10 +164,10 @@
     .matches > @
       "Yıldırım"
 
-  ++> throws-on-missing-first-slash-in-regex
+  --> on-missing-first-slash-in-regex
     (regex "(.)+").compiled > @
 
-  ++> throws-on-missing-closing-slash-in-regex
+  --> on-missing-closing-slash-in-regex
     (regex "/pattern").compiled > @
 
   ++> tests-invalid-regex-syntax-returns-provided-fallback
@@ -182,7 +182,7 @@
       (regex "(.)+").compile
         "no-slash" > [msg]
 
-  ++> throws-on-compiling-invalid-regex-without-fallback
+  --> on-compiling-invalid-regex-without-fallback
     (regex "/[a-z/").compile > @
 
   ++> tests-regex-contains-valid-groups-on-each-matched-block

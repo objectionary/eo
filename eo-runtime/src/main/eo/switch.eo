@@ -98,7 +98,7 @@
           false
           "false2"
 
-  ++> throws-on-empty-switch
+  --> on-empty-switch
     switch * > @
 
   ++> tests-empty-switch-returns-provided-fallback

@@ -23,7 +23,7 @@
           min
   sequence > lst
 
-  (minimum *) > [] +> throws-on-taking-minimum-from-empty-sequence
+  (minimum *) > [] -> on-taking-minimum-from-empty-sequence
 
   ++> tests-minimum-of-empty-returns-provided-fallback
     eq. > @
