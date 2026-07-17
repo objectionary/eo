@@ -118,9 +118,17 @@
       is-finite.not
       $
       if.
-        trunc.gt $
-        trunc.minus 1
-        trunc
+        or.
+          gte 9223372036854775808.0
+          lte -9223372036854775808.0
+        $
+        if.
+          as-bytes.eq -0.as-bytes
+          $
+          if.
+            trunc.gt $
+            trunc.minus 1
+            trunc
     as-i64.as-number > trunc
 
   # Tests that less-than comparison returns true when first number is smaller.
@@ -390,6 +398,26 @@
     eq. > @
       -42.floor
       -42
+
+  # Tests that floor of NaN returns NaN.
+  [] +> tests-floor-of-nan
+    nan.floor.is-nan > @
+
+  # Tests that floor of positive infinity returns positive infinity.
+  [] +> tests-floor-of-positive-infinity
+    positive-infinity.floor.eq positive-infinity > @
+
+  # Tests that floor of negative infinity returns negative infinity.
+  [] +> tests-floor-of-negative-infinity
+    negative-infinity.floor.eq negative-infinity > @
+
+  # Tests that floor of a large positive number returns the number itself.
+  [] +> tests-floor-of-large-number
+    9223372036854775808.0.floor.eq 9223372036854775808.0 > @
+
+  # Tests that floor of negative zero preserves its sign.
+  [] +> tests-floor-of-negative-zero
+    -0.0.floor.as-bytes.eq -0.0.as-bytes > @
 
   # Tests that division result can be less than one.
   [] +> tests-div-less-than-one
