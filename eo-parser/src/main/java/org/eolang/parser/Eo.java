@@ -466,19 +466,7 @@ final class Eo implements Iterable<Directive> {
             line = Eo.questioned(span);
         } else if (span.head() >= 'a' && span.head() <= 'z') {
             line = Eo.applicative(span, Eo.reversedDispatch(span));
-        } else if (span.head() == '*'
-            || span.head() == '"'
-            || span.head() == '('
-            || span.head() == 'Q'
-            || span.head() == 'T'
-            || span.head() == '@'
-            || span.head() == '^'
-            || span.head() == '$'
-            || span.head() == '%'
-            || span.head() >= '0' && span.head() <= '9'
-            || span.head() >= 'A' && span.head() <= 'F'
-            || span.head() == '-'
-            || Eo.signedDigit(span)) {
+        } else if (Eo.rootHead(span)) {
             line = Eo.applicative(span, Eo.rootReversedDispatch(span));
         } else if (span.body().codePoints().findFirst().orElse(0) == 0x1F335) {
             line = (stack, globals, emit) -> {
@@ -578,6 +566,31 @@ final class Eo implements Iterable<Directive> {
         if (globals.trailingBlanks() > 1) {
             emit.error(0, 0, "more than one trailing blank line");
         }
+    }
+
+    /**
+     * Whether a line head starts a root-headed application group (§3.1) —
+     * a literal, group, star, or one of the root/self tokens. Factored
+     * out of {@link #classify} so that method's path complexity stays
+     * within bounds; the alternatives are unchanged.
+     * @param span The span
+     * @return True if the head belongs to the root-headed group
+     */
+    private static boolean rootHead(final Span span) {
+        final char head = span.head();
+        return head == '*'
+            || head == '"'
+            || head == '('
+            || head == 'Q'
+            || head == 'T'
+            || head == '@'
+            || head == '^'
+            || head == '$'
+            || head == '%'
+            || head >= '0' && head <= '9'
+            || head >= 'A' && head <= 'F'
+            || head == '-'
+            || Eo.signedDigit(span);
     }
 
     /**

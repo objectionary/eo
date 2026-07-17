@@ -94,10 +94,7 @@ final class LnOnlyPhi implements Line {
             );
             origin = bracket + 1;
         } else {
-            int shorthand = Eo.topLevelPlusPlusArrowIndex(body);
-            if (shorthand < 0) {
-                shorthand = Eo.topLevelMinusMinusArrowIndex(body);
-            }
+            final int shorthand = LnOnlyPhi.shorthandArrow(body);
             if (shorthand < 0) {
                 throw new ParseError(
                     this.span.line(), this.span.indent(),
@@ -142,6 +139,21 @@ final class LnOnlyPhi implements Line {
         }
         this.emitVoids(emit, params, origin);
         this.emitPhi(emit, tokens, open);
+    }
+
+    /**
+     * The top-level index of the compact test shorthand on an inline-phi
+     * line — the truthy {@code ++>} or, failing that, the throwing
+     * {@code -->} marker — or -1 when neither is present.
+     * @param body The line body
+     * @return Index of the shorthand marker, or -1
+     */
+    private static int shorthandArrow(final String body) {
+        int idx = Eo.topLevelPlusPlusArrowIndex(body);
+        if (idx < 0) {
+            idx = Eo.topLevelMinusMinusArrowIndex(body);
+        }
+        return idx;
     }
 
     /**
