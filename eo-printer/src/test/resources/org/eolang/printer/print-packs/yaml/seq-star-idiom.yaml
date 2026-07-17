@@ -3,10 +3,12 @@
 ---
 # yamllint disable rule:line-length
 # A tuple applied to a lone "seq > @" decoratee whose formation has no other
-# binding: the formation collapses through the inline-phi form into
-# "seq > [] > foo" with the star laid out beneath, which beats the "seq *" glue
-# here. The glue itself is shown by seq-star-with-memory, whose formation
-# carries a second binding and so cannot collapse.
+# binding: the formation collapses through the inline-phi form and the trailing
+# star glues onto that same line as "seq * > [] > foo", the tuple's elements
+# pulled up beneath it. The parser absorbs a compact tuple in inline-phi
+# position (issue #5626), so this round-trips. Contrast seq-star-with-memory,
+# whose formation carries a second binding and so keeps the plain "seq *"
+# binding without the inline-phi collapse.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -27,12 +29,11 @@ origin: |
               * path created.output
 
 printed: |
-  seq > [] > foo
-    *
-      bar.deleted
-      if.
-        outcome.eq 0
-        ^
-        T
-          "Cant delete '%s': %s".printf
-            * path created.output
+  seq * > [] > foo
+    bar.deleted
+    if.
+      outcome.eq 0
+      ^
+      T
+        "Cant delete '%s': %s".printf
+          * path created.output

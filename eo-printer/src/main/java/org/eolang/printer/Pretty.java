@@ -245,9 +245,11 @@ final class Pretty {
      * ({@code head ++> name} or {@code head > [params] > name}) with the
      * arguments laid out beneath, mirroring the ordinary {@code head > name}
      * plus vertical-args layout and saving one line and one indent level
-     * over the verbose shape (issue #5594). Either way the result is only a
-     * candidate — the penalty/width check in {@link #shaped} keeps it only
-     * when it beats the plain vertical rendering. A formation decoratee
+     * over the verbose shape (issue #5594); when those arguments are a lone
+     * tuple the star is glued onto the head line too ({@link #hybrid}). Either
+     * way the result is only a candidate — the penalty/width check in
+     * {@link #shaped} keeps it only when it beats the plain vertical
+     * rendering. A formation decoratee
      * (its bindings are vertical, not arguments) and a receiver-only
      * reversed dispatch ({@code not.} with just its receiver, mirroring the
      * rejection in {@link #flat}) have no hybrid form, so they yield empty
@@ -302,13 +304,7 @@ final class Pretty {
                 );
             } else if (applied && unnamed) {
                 result = Optional.of(
-                    this.vertical(
-                        new Pretty.Node(
-                            decoratee.base, marker, false, false,
-                            decoratee.reversed, decoratee.data, decoratee.children
-                        ),
-                        indent
-                    )
+                    this.vertical(decoratee.hybrid(marker), indent)
                 );
             }
         }
@@ -607,6 +603,35 @@ final class Pretty {
                 String.join(" ", applier.base, this.base), applier.tail,
                 false, false, false, false, this.children
             );
+        }
+
+        /**
+         * Build the body of the hybrid inline-phi form for this decoratee: its
+         * head kept in front of {@code marker}, its arguments as children.
+         *
+         * <p>When this decoratee applies a lone tuple ({@code seq *}), the
+         * trailing {@code *} is glued onto that head line ({@code seq * > [m]})
+         * through {@link #glued} and the tuple's elements become the children,
+         * mirroring the {@code starred} idiom and saving a line and an indent
+         * level; the parser absorbs a compact tuple in inline-phi position, so
+         * this round-trips (issue #5626). Otherwise the arguments stay as this
+         * node's children, laid out vertically by the caller.</p>
+         *
+         * @param marker The inline-phi marker ({@code  > [params] > name})
+         * @return The body node to lay out vertically
+         */
+        Pretty.Node hybrid(final String marker) {
+            final Pretty.Node plain = new Pretty.Node(
+                this.base, marker, false, false,
+                this.reversed, this.data, this.children
+            );
+            final Pretty.Node body;
+            if (this.tuply()) {
+                body = this.children.get(0).glued(plain);
+            } else {
+                body = plain;
+            }
+            return body;
         }
     }
 }
