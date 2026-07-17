@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+origin: |
+  +package tuple
+
+  [] > concat
+    ? >> list
+    ? >> passed
+    withouti > list3
+      Q.tuple.concat
+        * 0 1
+        * 2 3
+      0
+
+printed: |
+  +package tuple
+
+  [] > concat
+    ? >> list
+    ? >> passed
+    withouti > list3
+      concat
+        * 0 1
+        * 2 3
+      0
