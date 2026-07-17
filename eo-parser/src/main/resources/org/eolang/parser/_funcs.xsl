@@ -27,7 +27,7 @@
   </xsl:function>
   <xsl:function name="eo:test-attr" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="starts-with($o/@name, '+')"/>
+    <xsl:sequence select="starts-with($o/@name, '+') or starts-with($o/@name, '-')"/>
   </xsl:function>
   <!-- BYTES TO STRING -->
   <xsl:function name="eo:bytes-to-string" as="xs:string">

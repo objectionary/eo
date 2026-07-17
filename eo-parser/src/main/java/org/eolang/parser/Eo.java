@@ -128,6 +128,29 @@ final class Eo implements Iterable<Directive> {
     }
 
     /**
+     * The index of the {@code -->} throwing-test shorthand marker used
+     * in the inline-phi suffix position ({@code lhs --> name}, the
+     * throwing counterpart of {@code ++>}), at paren depth 0 and
+     * outside strings, or -1 if none exists. The marker must be
+     * preceded by a space, which distinguishes the suffix use from the
+     * head-of-line form ({@code --> name}) that {@link Eo#classify}
+     * routes to a bare formation. Shared by the {@link Eo#onlyPhi}
+     * classifier and {@link LnOnlyPhi}, so both agree on where a
+     * compact throwing-test shorthand splits its LHS.
+     * @param body Line body to scan
+     * @return Index of the top-level marker, or -1
+     */
+    static int topLevelMinusMinusArrowIndex(final String body) {
+        return Eo.topLevelMarker(
+            body,
+            idx -> idx > 0 && body.charAt(idx) == '-'
+                && body.charAt(idx - 1) == ' '
+                && body.charAt(idx + 1) == '-'
+                && body.charAt(idx + 2) == '>'
+        );
+    }
+
+    /**
      * The index of the first position where {@code marker} matches, scanned
      * at paren depth 0 and outside string literals. Both
      * {@link Eo#topLevelGreaterBracketIndex} and
@@ -431,6 +454,8 @@ final class Eo implements Iterable<Directive> {
             line = new LnComment(span);
         } else if (span.head() == '+' && !Eo.signedDigit(span)) {
             line = Eo.plussed(span);
+        } else if (span.head() == '-' && span.body().startsWith("-->")) {
+            line = new LnFormation(span);
         } else if (span.head() == '[') {
             line = new LnFormation(span);
         } else if (span.head() == '.') {
@@ -441,19 +466,7 @@ final class Eo implements Iterable<Directive> {
             line = Eo.questioned(span);
         } else if (span.head() >= 'a' && span.head() <= 'z') {
             line = Eo.applicative(span, Eo.reversedDispatch(span));
-        } else if (span.head() == '*'
-            || span.head() == '"'
-            || span.head() == '('
-            || span.head() == 'Q'
-            || span.head() == 'T'
-            || span.head() == '@'
-            || span.head() == '^'
-            || span.head() == '$'
-            || span.head() == '%'
-            || span.head() >= '0' && span.head() <= '9'
-            || span.head() >= 'A' && span.head() <= 'F'
-            || span.head() == '-'
-            || Eo.signedDigit(span)) {
+        } else if (Eo.rootHead(span)) {
             line = Eo.applicative(span, Eo.rootReversedDispatch(span));
         } else if (span.body().codePoints().findFirst().orElse(0) == 0x1F335) {
             line = (stack, globals, emit) -> {
@@ -477,7 +490,8 @@ final class Eo implements Iterable<Directive> {
      * Classify a {@code +}-headed non-number line (§3.1): the
      * {@code ++>} test-attribute shorthand desugars to a bare
      * formation with a {@code +>} suffix (R-6.3.6); anything else is
-     * a meta directive (§3.2).
+     * a meta directive (§3.2). The throwing counterpart {@code -->}
+     * is {@code -}-headed and handled directly in {@link #classify}.
      * @param span The line span
      * @return The line shape
      */
@@ -555,6 +569,31 @@ final class Eo implements Iterable<Directive> {
     }
 
     /**
+     * Whether a line head starts a root-headed application group (§3.1) —
+     * a literal, group, star, or one of the root/self tokens. Factored
+     * out of {@link #classify} so that method's path complexity stays
+     * within bounds; the alternatives are unchanged.
+     * @param span The span
+     * @return True if the head belongs to the root-headed group
+     */
+    private static boolean rootHead(final Span span) {
+        final char head = span.head();
+        return head == '*'
+            || head == '"'
+            || head == '('
+            || head == 'Q'
+            || head == 'T'
+            || head == '@'
+            || head == '^'
+            || head == '$'
+            || head == '%'
+            || head >= '0' && head <= '9'
+            || head >= 'A' && head <= 'F'
+            || head == '-'
+            || Eo.signedDigit(span);
+    }
+
+    /**
      * Determine whether a {@code +}-headed span is the start of a signed
      * number (per R-3.2.5) rather than a meta directive.
      * @param span The span (its head is {@code +})
@@ -608,7 +647,8 @@ final class Eo implements Iterable<Directive> {
      */
     private static boolean onlyPhi(final Span span) {
         return Eo.topLevelGreaterBracketIndex(span.body()) >= 0
-            || Eo.topLevelPlusPlusArrowIndex(span.body()) >= 0;
+            || Eo.topLevelPlusPlusArrowIndex(span.body()) >= 0
+            || Eo.topLevelMinusMinusArrowIndex(span.body()) >= 0;
     }
 
     /**
@@ -641,7 +681,8 @@ final class Eo implements Iterable<Directive> {
 
     /**
      * Whether the body starting at {@code from} begins with a suffix
-     * marker (R-3.10) — {@code >}, {@code >>}, or {@code +>}.
+     * marker (R-3.10) — {@code >}, {@code >>}, {@code +>}, or the
+     * throwing-test {@code ->}.
      * @param body Line body
      * @param from Index to inspect
      * @return True if a suffix marker starts here
@@ -654,7 +695,7 @@ final class Eo implements Iterable<Directive> {
             starts = true;
         } else {
             starts = from + 1 < body.length()
-                && body.charAt(from) == '+'
+                && (body.charAt(from) == '+' || body.charAt(from) == '-')
                 && body.charAt(from + 1) == '>';
         }
         return starts;

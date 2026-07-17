@@ -76,7 +76,7 @@
       mod 133 1
       0
 
-  ++> throws-on-mod-by-zero
+  --> on-mod-by-zero
     mod 5 0 > @
 
   ++> tests-mod-by-zero-returns-provided-fallback

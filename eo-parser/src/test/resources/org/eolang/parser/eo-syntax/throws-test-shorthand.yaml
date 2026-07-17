@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='fibo']/o[@name='-fibo-first-is-not-zero']
+  - /object/o[@name='fibo']/o[@name='-fibo-fits-the-shorthand' and count(o)=1]
+input: |
+  [n] > fibo
+    if. > @
+      n.lt 2
+      1
+      plus.
+        fibo (n.minus 1)
+        fibo (n.minus 2)
+
+    --> fibo-first-is-not-zero
+      eq. > @
+        1
+        fibo 1
+
+    --> fibo-fits-the-shorthand
+      true > @

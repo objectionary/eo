@@ -72,7 +72,7 @@
             42
     42 > x
 
-  ++> throws-when-applies-to-closed-object
+  --> when-applies-to-closed-object
     closed true > @
     [x] > a
       x > @

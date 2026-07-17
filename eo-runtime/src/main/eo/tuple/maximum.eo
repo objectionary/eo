@@ -23,7 +23,7 @@
           max
   sequence > lst
 
-  (maximum *) > [] +> throws-on-taking-maximum-from-empty-sequence
+  (maximum *) > [] -> on-taking-maximum-from-empty-sequence
 
   ++> tests-maximum-of-empty-returns-provided-fallback
     eq. > @

@@ -49,10 +49,10 @@
       head.
         scanf "%f" "0.24"
 
-  ++> throws-on-scanf-with-wrong-format
+  --> on-scanf-with-wrong-format
     scanf "%l" "error" > @
 
-  ++> throws-on-scanf-with-oversized-int
+  --> on-scanf-with-oversized-int
     scanf "%d" "99999999999999999999" > @
 
   ++> tests-scanf-with-string-int-float

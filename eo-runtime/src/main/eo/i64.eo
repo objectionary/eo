@@ -106,7 +106,7 @@
       -234.as-i64
       -234.as-i64.as-i32.as-i64
 
-  3147483647.as-i64.as-i32 > [] +> throws-on-converting-to-i32-if-out-of-bounds
+  3147483647.as-i64.as-i32 > [] -> on-converting-to-i32-if-out-of-bounds
 
   ++> tests-out-of-bounds-i64-as-i32-returns-provided-fallback
     eq. > @
@@ -124,9 +124,9 @@
       -2147483648.as-i64
       -2147483648.as-i64.as-i32.as-i64
 
-  2147483648.as-i64.as-i32 > [] +> throws-on-converting-i32-max-plus-one-to-i32
+  2147483648.as-i64.as-i32 > [] -> on-converting-i32-max-plus-one-to-i32
 
-  -2147483649.as-i64.as-i32 > [] +> throws-on-converting-i32-min-minus-one-to-i32
+  -2147483649.as-i64.as-i32 > [] -> on-converting-i32-min-minus-one-to-i32
 
   ++> tests-i64-less-true
     lt. > @
@@ -247,7 +247,7 @@
       1.as-i64.minus 1.as-i64
       0.as-i64
 
-  2.as-i64.div 0.as-i64 > [] +> throws-on-division-i64-by-i64-zero
+  2.as-i64.div 0.as-i64 > [] -> on-division-i64-by-i64-zero
 
   ++> tests-i64-div-by-zero-returns-provided-fallback
     eq. > @

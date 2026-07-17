@@ -188,7 +188,7 @@
       str.as-bytes.size.eq 14
     "The 😀 smile" > str
 
-  ++> throws-on-taking-length-of-incomplete-n4-byte-character
+  --> on-taking-length-of-incomplete-n4-byte-character
     (string F0-9F-98).length > @
 
   ++> tests-compares-two-different-string-types
@@ -349,19 +349,19 @@
         1
       "大"
 
-  ++> throws-on-slicing-start-below-zero
+  --> on-slicing-start-below-zero
     slice. > @
       "some string"
       -1
       1
 
-  ++> throws-on-slicing-end-below-start
+  --> on-slicing-end-below-start
     slice. > @
       "some string"
       2
       -1
 
-  ++> throws-on-slicing-end-greater-actual
+  --> on-slicing-end-greater-actual
     slice. > @
       "some string"
       7

@@ -107,10 +107,10 @@
       -123.as-i64.as-i32
       -123.as-i64.as-i32.as-i16.as-i32
 
-  ++> throws-on-converting-i16-max-plus-one-to-i16
+  --> on-converting-i16-max-plus-one-to-i16
     32768.as-i64.as-i32.as-i16 > @
 
-  ++> throws-on-converting-i16-min-minus-one-to-i16
+  --> on-converting-i16-min-minus-one-to-i16
     -32769.as-i64.as-i32.as-i16 > @
 
   ++> tests-i32-less-true
@@ -215,7 +215,7 @@
       -2147483648.as-i64.as-i32.minus 1.as-i64.as-i32
       2147483647.as-i64.as-i32
 
-  2.as-i64.as-i32.div 0.as-i64.as-i32 > [] +> throws-on-division-i32-by-i32-zero
+  2.as-i64.as-i32.div 0.as-i64.as-i32 > [] -> on-division-i32-by-i32-zero
 
   ++> tests-i32-div-by-zero-returns-provided-fallback
     eq. > @
@@ -224,7 +224,7 @@
         0.as-i64.as-i32
         "recovered" > [msg]
 
-  247483647.as-i64.as-i32.as-i16 > [] +> throws-on-converting-to-i16-if-out-of-bounds
+  247483647.as-i64.as-i32.as-i16 > [] -> on-converting-to-i16-if-out-of-bounds
 
   ++> tests-out-of-bounds-i32-as-i16-returns-provided-fallback
     eq. > @

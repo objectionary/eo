@@ -44,11 +44,11 @@
       range-of-numbers -5 0
       * -5 -4 -3 -2 -1
 
-  ++> throws-on-range-of-numbers-with-non-number-start
+  --> on-range-of-numbers-with-non-number-start
     range-of-numbers 1.2 3 > @
 
-  ++> throws-on-range-of-numbers-with-not-number-end
+  --> on-range-of-numbers-with-not-number-end
     range-of-numbers 1 2.5 > @
 
-  ++> throws-on-range-of-not-numbers
+  --> on-range-of-not-numbers
     range-of-numbers 1.5 5.2 > @
