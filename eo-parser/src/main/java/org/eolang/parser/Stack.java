@@ -166,7 +166,6 @@ final class Stack {
     ) {
         final Kind parent;
         final boolean patom;
-        final boolean argues;
         if (this.levels.isEmpty()) {
             if (indent != 0) {
                 throw new IllegalStateException(
@@ -177,7 +176,6 @@ final class Stack {
             }
             parent = Kind.TOP_LEVEL;
             patom = false;
-            argues = false;
         } else {
             final Level under = this.top();
             if (indent != under.indent() + Stack.STEP) {
@@ -190,16 +188,12 @@ final class Stack {
             }
             parent = under.kind();
             patom = under.atom();
-            argues = under.argumentative();
             under.observeVoid(kind, line, indent);
         }
         if (!this.levels.isEmpty()) {
             this.opener.beforeChild(this.top());
         }
         final Level fresh = new Level(indent, line, kind, openness, parent, patom);
-        if (argues) {
-            fresh.argues();
-        }
         this.levels.add(fresh);
         if (parent == Kind.BARE_REVERSED) {
             final Level host = this.levels.get(this.levels.size() - 2);
@@ -250,23 +244,17 @@ final class Stack {
         final int indent = old.indent();
         final Kind parent;
         final boolean patom;
-        final boolean argues;
         if (this.levels.isEmpty()) {
             parent = Kind.TOP_LEVEL;
             patom = false;
-            argues = false;
         } else {
             final Level under = this.top();
             parent = under.kind();
             patom = under.atom();
-            argues = under.argumentative();
             under.observeVoid(kind, line, indent);
             this.opener.beforeChild(under);
         }
         final Level fresh = new Level(indent, line, kind, openness, parent, patom);
-        if (argues) {
-            fresh.argues();
-        }
         this.levels.add(fresh);
         return fresh;
     }

@@ -769,9 +769,7 @@ final class Eo implements Iterable<Directive> {
 
     /**
      * Report naming violations on the popped level: a plain child of a
-     * formation or top-level object that lacks a name (R-5.3.1), and an
-     * only-phi argument that carries one — the formation binds only φ,
-     * so its φ's arguments may not be named (§4.5).
+     * formation or top-level object that lacks a name (R-5.3.1).
      * @param level The level being closed
      * @param emit The directives sink
      */
@@ -782,12 +780,6 @@ final class Eo implements Iterable<Directive> {
             emit.error(
                 level.start(), level.indent(),
                 "object inside formation must have a name"
-            );
-        }
-        if (level.argument() && level.named()) {
-            emit.error(
-                level.start(), level.indent(),
-                "argument of an only-phi formation cannot carry a name suffix"
             );
         }
     }

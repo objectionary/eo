@@ -38,9 +38,7 @@ import java.util.List;
  * a body block is {@code [x] > bar} whose φ is {@code foo} applied to
  * that block. With horizontal args the φ is already a full application
  * and the line is {@link Openness#HORIZONTAL_COMPLETED} — no body is
- * accepted. An only-phi argument may not carry a name suffix (the
- * formation binds only φ); the {@link Stack} flags such arguments and
- * the close-time check in {@link Eo} rejects a name on them.</p>
+ * accepted.</p>
  *
  * <p>This iteration accepts identifier and root LHS heads with
  * optional chains and identifier / INT / STAR / STRING / FLOAT /

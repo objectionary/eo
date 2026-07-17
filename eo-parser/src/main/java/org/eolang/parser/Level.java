@@ -86,15 +86,6 @@ final class Level {
     private boolean plain;
 
     /**
-     * True when this entry sits in argument position under an only-phi
-     * formation's φ — set by {@link Stack} as it propagates the flag
-     * down through nested applications and resets it at a formation
-     * boundary. Read at close time to reject a name suffix on such an
-     * argument (§4.5).
-     */
-    private boolean argument;
-
-    /**
      * For {@link Kind#COMPACT_TUPLE}: the {@code N} count from {@code *N}.
      */
     private int count;
@@ -240,34 +231,6 @@ final class Level {
      */
     boolean taken() {
         return this.taken;
-    }
-
-    /**
-     * Whether this entry is an argument of an only-phi formation's φ.
-     * @return Argument-position flag
-     */
-    boolean argument() {
-        return this.argument;
-    }
-
-    /**
-     * Whether a child pushed under this entry sits in argument position
-     * of an only-phi formation's φ (§4.5): true for a direct child of
-     * the only-phi entry, and for a deeper child that stays in argument
-     * position — the flag propagates down through nested applications
-     * but resets at a formation boundary, where naming resumes.
-     * @return True if a child of this entry is an only-phi argument
-     */
-    boolean argumentative() {
-        return this.kind == Kind.ONLY_PHI_FORMATION
-            || this.argument && !this.kind.formation();
-    }
-
-    /**
-     * Flag this entry as an argument of an only-phi formation's φ.
-     */
-    void argues() {
-        this.argument = true;
     }
 
     /**
