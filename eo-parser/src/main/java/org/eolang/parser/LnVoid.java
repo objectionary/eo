@@ -79,7 +79,7 @@ final class LnVoid implements Line {
         }
         Comments.seal(globals, emit, this.span);
         final Level level = new Transition(stack, this.span).apply(
-            Kind.VOID, Openness.VERTICAL_COMPLETED, suffix.present()
+            Kind.VOID, Openness.VERTICAL_COMPLETED, suffix.named()
         );
         if (!formas.isEmpty() && !level.patom()) {
             throw new ParseError(

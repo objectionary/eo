@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 line: 4
 message: |-
-  [4:6] error: 'argument of an only-phi formation cannot carry a name suffix'
+  [4:6] error: 'x cannot be a named attribute of an only-phi formation, which binds only its φ decoratee'
         baz > x
         ^
 input: |

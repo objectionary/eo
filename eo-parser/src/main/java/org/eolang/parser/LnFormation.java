@@ -140,7 +140,7 @@ final class LnFormation implements Line {
             );
         }
         if (suffix.present()) {
-            level.name();
+            level.name(suffix.label());
         }
         if (suffix.atom()) {
             level.mark();

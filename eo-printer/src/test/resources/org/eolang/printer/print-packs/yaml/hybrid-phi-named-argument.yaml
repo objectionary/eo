@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+origin: |
+  +package org.eolang
+
+  [x] > foo
+    malloc.of > @
+      8
+      [sum] >>
+        malloc.for > @
+          a
+          [left] >>
+            b > @
+printed: |
+  +package org.eolang
+
+  [x] > foo
+    malloc.of > @
+      8
+      [sum] >>
+        malloc.for > @
+          a
+          b > [left] >>

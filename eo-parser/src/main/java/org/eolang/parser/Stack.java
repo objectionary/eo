@@ -167,6 +167,7 @@ final class Stack {
         final Kind parent;
         final boolean patom;
         final boolean argues;
+        final String owner;
         if (this.levels.isEmpty()) {
             if (indent != 0) {
                 throw new IllegalStateException(
@@ -178,6 +179,7 @@ final class Stack {
             parent = Kind.TOP_LEVEL;
             patom = false;
             argues = false;
+            owner = "";
         } else {
             final Level under = this.top();
             if (indent != under.indent() + Stack.STEP) {
@@ -191,6 +193,7 @@ final class Stack {
             parent = under.kind();
             patom = under.atom();
             argues = under.argumentative();
+            owner = under.governingFormation();
             under.observeVoid(kind, line, indent);
         }
         if (!this.levels.isEmpty()) {
@@ -198,7 +201,7 @@ final class Stack {
         }
         final Level fresh = new Level(indent, line, kind, openness, parent, patom);
         if (argues) {
-            fresh.argues();
+            fresh.argues(owner);
         }
         this.levels.add(fresh);
         if (parent == Kind.BARE_REVERSED) {
@@ -251,21 +254,24 @@ final class Stack {
         final Kind parent;
         final boolean patom;
         final boolean argues;
+        final String owner;
         if (this.levels.isEmpty()) {
             parent = Kind.TOP_LEVEL;
             patom = false;
             argues = false;
+            owner = "";
         } else {
             final Level under = this.top();
             parent = under.kind();
             patom = under.atom();
             argues = under.argumentative();
+            owner = under.governingFormation();
             under.observeVoid(kind, line, indent);
             this.opener.beforeChild(under);
         }
         final Level fresh = new Level(indent, line, kind, openness, parent, patom);
         if (argues) {
-            fresh.argues();
+            fresh.argues(owner);
         }
         this.levels.add(fresh);
         return fresh;

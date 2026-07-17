@@ -20,7 +20,7 @@ final class TransitionTest {
     void pushesFreshLevelOntoEmptyStack() {
         final Stack stack = new Stack();
         final Level level = new Transition(stack, new Span("alpha", 1))
-            .apply(Kind.HEAD, Openness.OPEN, false);
+            .apply(Kind.HEAD, Openness.OPEN, null);
         MatcherAssert.assertThat(
             "the first apply on an empty stack must push a level whose kind matches the request",
             level.kind(),
@@ -32,9 +32,9 @@ final class TransitionTest {
     void pushesDeeperLevelWhenIndentStepsByExactlyTwo() {
         final Stack stack = new Stack();
         new Transition(stack, new Span("beta", 1))
-            .apply(Kind.BARE_FORMATION, Openness.OPEN, false);
+            .apply(Kind.BARE_FORMATION, Openness.OPEN, null);
         final Level level = new Transition(stack, new Span("  gamma", 2))
-            .apply(Kind.HEAD, Openness.OPEN, false);
+            .apply(Kind.HEAD, Openness.OPEN, null);
         MatcherAssert.assertThat(
             "applying at deeper indent must produce a level whose parent kind matches the stack top",
             level.parent(),
@@ -46,11 +46,11 @@ final class TransitionTest {
     void rejectsIndentJumpGreaterThanOneLevel() {
         final Stack stack = new Stack();
         new Transition(stack, new Span("delta", 1))
-            .apply(Kind.BARE_FORMATION, Openness.OPEN, false);
+            .apply(Kind.BARE_FORMATION, Openness.OPEN, null);
         Assertions.assertThrows(
             ParseError.class,
             () -> new Transition(stack, new Span("    epsilon", 2))
-                .apply(Kind.HEAD, Openness.OPEN, false),
+                .apply(Kind.HEAD, Openness.OPEN, null),
             "indent jump of four spaces from indent zero must be rejected"
         );
     }
@@ -59,11 +59,11 @@ final class TransitionTest {
     void rejectsDeeperChildUnderHorizontallyCompletedParent() {
         final Stack stack = new Stack();
         new Transition(stack, new Span("zeta", 1))
-            .apply(Kind.HAPPLICATION, Openness.HORIZONTAL_COMPLETED, false);
+            .apply(Kind.HAPPLICATION, Openness.HORIZONTAL_COMPLETED, null);
         Assertions.assertThrows(
             ParseError.class,
             () -> new Transition(stack, new Span("  eta", 2))
-                .apply(Kind.HEAD, Openness.OPEN, false),
+                .apply(Kind.HEAD, Openness.OPEN, null),
             "a horizontally-completed parent cannot accept a deeper-indent child"
         );
     }
@@ -72,9 +72,9 @@ final class TransitionTest {
     void replacesLevelWhenLineAtSameIndentArrives() {
         final Stack stack = new Stack();
         new Transition(stack, new Span("theta", 1))
-            .apply(Kind.HEAD, Openness.OPEN, false);
+            .apply(Kind.HEAD, Openness.OPEN, null);
         final Level level = new Transition(stack, new Span("iota", 2))
-            .apply(Kind.HAPPLICATION, Openness.HORIZONTAL_COMPLETED, false);
+            .apply(Kind.HAPPLICATION, Openness.HORIZONTAL_COMPLETED, null);
         MatcherAssert.assertThat(
             "applying at the same indent must replace the top level's kind in place",
             level.kind(),
@@ -83,24 +83,24 @@ final class TransitionTest {
     }
 
     @Test
-    void marksLevelAsNamedWhenFlagIsTrue() {
+    void marksLevelAsNamedWhenLabelIsGiven() {
         final Stack stack = new Stack();
         final Level level = new Transition(stack, new Span("kappa", 1))
-            .apply(Kind.HEAD, Openness.OPEN, true);
+            .apply(Kind.HEAD, Openness.OPEN, "mu");
         MatcherAssert.assertThat(
-            "applying with named=true must record the level as carrying a name suffix",
+            "applying with a non-null label must record the level as carrying a name suffix",
             level.named(),
             Matchers.is(true)
         );
     }
 
     @Test
-    void leavesLevelUnnamedWhenFlagIsFalse() {
+    void leavesLevelUnnamedWhenLabelIsNull() {
         final Stack stack = new Stack();
         final Level level = new Transition(stack, new Span("lambda", 1))
-            .apply(Kind.HEAD, Openness.OPEN, false);
+            .apply(Kind.HEAD, Openness.OPEN, null);
         MatcherAssert.assertThat(
-            "applying with named=false must leave the level without a name flag",
+            "applying with a null label must leave the level without a name flag",
             level.named(),
             Matchers.is(false)
         );

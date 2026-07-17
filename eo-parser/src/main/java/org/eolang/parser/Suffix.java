@@ -114,6 +114,23 @@ final class Suffix {
     }
 
     /**
+     * The suffix's source name, or {@code null} when no suffix is
+     * present — distinguishing a bare {@code >>} (present, empty handle)
+     * from no suffix, so a caller can mark a level named yet record an
+     * empty display name.
+     * @return Source name (possibly empty), or {@code null}
+     */
+    String named() {
+        final String result;
+        if (this.present()) {
+            result = this.label;
+        } else {
+            result = null;
+        }
+        return result;
+    }
+
+    /**
      * Atom signature. Empty if no {@code /sig} was present.
      * @return Signature, with leading {@code Q} promoted to {@code Φ}
      */
