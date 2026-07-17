@@ -41,6 +41,19 @@
     <xsl:param name="text" as="xs:string"/>
     <xsl:sequence select="replace($text, concat('a', $eo:cactoos, '(\d+)-(\d+)'), 'v$1_$2')"/>
   </xsl:function>
+  <!--
+  Render a stored signature (an atom's "/sig" or a void forma) as its EO
+  surface form. A single-name "Φ.name" re-resolves to its root on
+  reparse, so the implicit root is dropped; a multi-segment
+  "Φ.a.b.c" must stay rooted (a dotted signature is not re-homed) and
+  keeps an explicit "Q." root. Names with no "Φ." root pass through.
+  -->
+  <xsl:function name="eo:signature" as="xs:string">
+    <xsl:param name="sig" as="xs:string"/>
+    <xsl:variable name="root" select="concat($eo:program, '.')"/>
+    <xsl:variable name="rest" select="substring-after($sig, $root)"/>
+    <xsl:sequence select="if (starts-with($sig, $root)) then (if (contains($rest, '.')) then concat('Q.', $rest) else $rest) else $sig"/>
+  </xsl:function>
   <!-- PROGRAM -->
   <xsl:template match="object">
     <object>
@@ -138,7 +151,7 @@
       <xsl:attribute name="data">
         <xsl:value-of select="if (eo:has-data(.)) then 'yes' else 'no'"/>
       </xsl:attribute>
-      <xsl:apply-templates select="o[not(eo:void(.)) or @local]" mode="tree"/>
+      <xsl:apply-templates select="o[not(eo:void(.)) or @local or @types]" mode="tree"/>
     </line>
   </xsl:template>
   <!-- VOID WITH FILE-LOCAL HANDLE -->
@@ -148,8 +161,29 @@
   to preserve the void's anonymity (§9.2, R-9.2.3) instead of being
   collapsed into a public "[name]" bracket param (#5581).
   -->
-  <xsl:template match="o[eo:void(.) and @local]" mode="tree">
+  <xsl:template match="o[eo:void(.) and @local and not(@types)]" mode="tree">
     <line base="?" tail="{concat(' &gt;&gt; ', @local)}" abstract="no" test="no" reversed="no"/>
+  </xsl:template>
+  <!-- VOID WITH TYPE ANNOTATION -->
+  <!--
+  A void carrying a forma-list tail ("? &gt; name /{forma …}", R-3.4.8) —
+  the argument formas of an atom's error branch — is printed as a
+  vertical body line so its "/{...}" annotation survives. A bracket param
+  cannot express a type, so folding it into "[...]" would silently drop
+  the signature and change the object's shape while still parsing (#5614).
+  Each forma has its implicit Φ. root stripped, mirroring the atom's own
+  "/sig" rendering.
+  -->
+  <xsl:template match="o[eo:void(.) and @types]" mode="tree">
+    <xsl:variable name="formas" select="string-join(for $t in tokenize(@types, ' ') return eo:signature($t), ' ')"/>
+    <xsl:choose>
+      <xsl:when test="@local">
+        <line base="?" tail="{concat(' &gt;&gt; ', @local, ' /{', $formas, '}')}" abstract="no" test="no" reversed="no"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <line base="?" tail="{concat(' &gt; ', @name, ' /{', $formas, '}')}" abstract="no" test="no" reversed="no"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <!-- BASED -->
   <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
@@ -219,7 +253,7 @@
     -->
     <xsl:if test="not(eo:test-attr(.) and empty(o[eo:void(.)]))">
       <xsl:text>[</xsl:text>
-      <xsl:for-each select="o[eo:void(.) and not(@local)]">
+      <xsl:for-each select="o[eo:void(.) and not(@local) and not(@types)]">
         <xsl:if test="position()&gt;1">
           <xsl:text> </xsl:text>
         </xsl:if>
@@ -289,31 +323,14 @@
         <xsl:text>!</xsl:text>
       </xsl:if>
       <xsl:if test="eo:atom(.)">
-        <xsl:text> /</xsl:text>
-        <xsl:variable name="lambda-atom" select="string(./o[@name=$eo:lambda]/@atom)"/>
-        <xsl:choose>
-          <xsl:when test="starts-with($lambda-atom, 'Φ.')">
-            <xsl:variable name="rest" select="substring-after($lambda-atom, 'Φ.')"/>
-            <xsl:choose>
-              <!--
-              A multi-segment signature (e.g. "Φ.malloc.of.allocated") must
-              stay rooted: on reparse a dotted @atom is not re-homed, so
-              dropping the root would yield an XSD-invalid fqn. A single-name
-              signature (e.g. "Φ.bytes") re-resolves to its root on reparse,
-              so the implicit root is dropped for idiomatic output.
-              -->
-              <xsl:when test="contains($rest, '.')">
-                <xsl:value-of select="concat('Q.', $rest)"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="$rest"/>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$lambda-atom"/>
-          </xsl:otherwise>
-        </xsl:choose>
+        <!--
+        A multi-segment signature (e.g. "Φ.malloc.of.allocated") stays
+        rooted: on reparse a dotted @atom is not re-homed, so dropping the
+        root would yield an XSD-invalid fqn. A single-name signature (e.g.
+        "Φ.bytes") re-resolves to its root on reparse, so the implicit
+        root is dropped for idiomatic output.
+        -->
+        <xsl:value-of select="concat(' /', eo:signature(string(./o[@name=$eo:lambda]/@atom)))"/>
       </xsl:if>
     </xsl:if>
   </xsl:template>
