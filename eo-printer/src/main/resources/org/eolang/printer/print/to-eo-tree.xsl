@@ -226,14 +226,14 @@
     <xsl:if test="@name">
       <xsl:choose>
         <xsl:when test="eo:test-attr(.)">
-          <!-- The marker char is `+` for a truthy test (`+name`) or `-`
-               for a throwing test (`-name`); it doubles into the
-               head-of-line shorthand (`++&gt;` / `--&gt;`) and stays
-               single for the mid-line suffix (`+&gt;` / `-&gt;`). -->
+          <!-- The marker char is a plus for a truthy test (`+name`) or
+               a minus for a throwing test (`-name`); it doubles into
+               the head-of-line shorthand and stays single for the
+               mid-line suffix. -->
           <xsl:variable name="marker" select="substring(@name, 1, 1)"/>
           <xsl:choose>
-            <!-- No void params: collapse the empty `[]` head into a
-                 single `++&gt; name` / `--&gt; name` head (the head
+            <!-- No void params: collapse the empty `[]` head into the
+                 single doubled-marker head-of-line shorthand (the head
                  template emits nothing in this case). -->
             <xsl:when test="empty(o[eo:void(.)])">
               <xsl:value-of select="$marker"/>
