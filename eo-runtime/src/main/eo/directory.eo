@@ -33,7 +33,7 @@
       if.
         os.is-windows
         win32 "_mkdir" (* ^.path)
-        posix "mkdir" (* ^.path posix.mkdir-mode)
+        posix "mkdir" (* ^.path posix.mkdirmode)
     created.code > outcome
 
   [glob] > walk /tuple

@@ -37,7 +37,7 @@ public final class EOregex$EOcompile extends PhDefault implements Atom {
     /**
      * Name of the error-branch void that holds the caller's compile fallback.
      */
-    private static final String FALLBACK = "cant-compile";
+    private static final String FALLBACK = "cantcompile";
 
     /**
      * Ctor.

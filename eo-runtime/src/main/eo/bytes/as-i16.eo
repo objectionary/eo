@@ -1,5 +1,5 @@
 # Bytes as a signed 16-bit integer `i16`: a 2-byte chain reinterpreted
-# as two's complement. For any other length the `cant-convert` fallback
+# as two's complement. For any other length the `cantconvert` fallback
 # is returned.
 
 +architect yegor256@gmail.com
@@ -9,11 +9,11 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[bts cant-convert] > as-i16
+[bts cantconvert] > as-i16
   if. > @
     bts.size.eq 2
     i16 bts
-    cant-convert
+    cantconvert
       "Can't convert non 2 length bytes to i16, bytes are %x".printf
         * bts
 
