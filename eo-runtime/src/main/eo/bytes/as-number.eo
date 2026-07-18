@@ -1,6 +1,6 @@
 # Bytes as a floating-point `number`: an 8-byte chain reinterpreted as an
 # IEEE 754 double, mapping the special chains to `nan`, `pinf`, and `ninf`.
-# For any other length the `cant-convert` fallback is returned.
+# For any other length the `cantconvert` fallback is returned.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -9,7 +9,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[bts cant-convert] > as-number
+[bts cantconvert] > as-number
   if. > @
     bts.eq nan.as-bytes
     nan
@@ -22,7 +22,7 @@
         if.
           bts.size.eq 8
           number bts
-          cant-convert
+          cantconvert
             "Can't convert non 8 length bytes to a number, bytes are %x".printf
               * bts
 

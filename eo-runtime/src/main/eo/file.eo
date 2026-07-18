@@ -16,11 +16,11 @@
   path > @
   (Q.path path).@ > as-path
 
-  [cant-check] > is-directory
+  [cantcheck] > is-directory
     if. > @
       info.code.eq 0
-      (info.output.st-mode.div 4096).floor.eq 4
-      cant-check
+      (info.output.stmode.div 4096).floor.eq 4
+      cantcheck
     called. > info
       if.
         os.is-windows
@@ -51,8 +51,8 @@
     called. > created
       if.
         os.is-windows
-        win32 "_creat" (* path win32.create-mode)
-        posix "creat" (* path posix.create-mode)
+        win32 "_creat" (* path win32.createmode)
+        posix "creat" (* path posix.createmode)
     created.code > descriptor
     code. > closed
       if.
@@ -73,23 +73,23 @@
     called. > removed
       if.
         os.is-windows
-        win32 windows-name (* path)
-        posix posix-name (* path)
+        win32 windowsname (* path)
+        posix posixname (* path)
     removed.code > outcome
-    if. > windows-name
+    if. > windowsname
       is-directory
       "_rmdir"
       "_unlink"
-    if. > posix-name
+    if. > posixname
       is-directory
       "rmdir"
       "unlink"
 
-  [cant-measure] > size
+  [cantmeasure] > size
     if. > @
       info.code.eq 0
-      info.output.st-size
-      cant-measure
+      info.output.stsize
+      cantmeasure
     called. > info
       if.
         os.is-windows
@@ -110,13 +110,13 @@
         posix "rename" (* path target)
     renamed.code > outcome
 
-  [mode scope cant-open] > open
+  [mode scope cantopen] > open
     if. > @
       known.not
       T "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
         existing.and exists.not
-        cant-open
+        cantopen
           "File must exist for given access mod: '%s'".printf
             * access
         seq *
@@ -163,7 +163,7 @@
       [syscall] > open-through
         if. > @
           descriptor.eq -1
-          cant-open
+          cantopen
             "Couldn't open file '%s': %s".printf
               * path opened.output
           seq *
@@ -173,33 +173,33 @@
               syscall.close (* descriptor)
             true
         called. > opened
-          syscall.open (* path flags syscall.create-mode)
+          syscall.open (* path flags syscall.createmode)
         opened.code > descriptor
         plus. > flags
           plus.
             plus.
               direction
-              create-bit
-            truncate-bit
-          append-bit
+              createbit
+            truncatebit
+          appendbit
         if. > direction
           readable.and writable
-          syscall.o-rdwr
+          syscall.ordwr
           if.
             writable
-            syscall.o-wronly
-            syscall.o-rdonly
-        if. > create-bit
+            syscall.owronly
+            syscall.ordonly
+        if. > createbit
           existing.not
-          syscall.o-creat
+          syscall.ocreat
           0
-        if. > truncate-bit
+        if. > truncatebit
           truncate
-          syscall.o-trunc
+          syscall.otrunc
           0
-        if. > append-bit
+        if. > appendbit
           appending
-          syscall.o-append
+          syscall.oappend
           0
 
         [descriptor] > stream

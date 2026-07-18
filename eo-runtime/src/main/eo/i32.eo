@@ -21,11 +21,11 @@
       00-00-00-00
       FF-FF-FF-FF
 
-  [cant-convert] > as-i16
+  [cantconvert] > as-i16
     if. > @
       ^.eq left.as-i32
       left
-      cant-convert
+      cantconvert
         "Can't convert i32 number %d to i16 because it's out of i16 bounds".printf
           * as-i64.as-number
     i16 (as-bytes.slice 2 2) > left
@@ -57,10 +57,10 @@
 
   plus x.as-i32.neg > [x] > minus
 
-  [x cant-divide] > div
+  [x cantdivide] > div
     if. > @
       xval.eq zero
-      cant-divide
+      cantdivide
         "Can't divide %d by i32 zero".printf
           * as-i64.as-number
       if.

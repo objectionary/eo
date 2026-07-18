@@ -23,7 +23,7 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
     /**
      * Name of the error-branch void that holds the caller's slice fallback.
      */
-    private static final String FALLBACK = "cant-slice";
+    private static final String FALLBACK = "cantslice";
 
     /**
      * Ctor.

@@ -64,14 +64,14 @@
               tup.head.hash.eq hash
               [] >>
                 true > exists
-                [cant-get] > get
+                [cantget] > get
                   tup.head.value > @
               not-found
         (rec-key-search tup.tail).@ > prev
       [] > not-found
         false > exists
-        [cant-get] > get
-          cant-get > @
+        [cantget] > get
+          cantget > @
             "Object by hash code %d from given key does not exists".printf
               * hash
 

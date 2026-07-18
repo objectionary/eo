@@ -24,10 +24,10 @@
 +unlint redundant-object
 +unlint mandatory-package
 
-[cases empty-cases] > switch
+[cases emptycases] > switch
   if. > @
     cases.length.eq 0
-    empty-cases "Switch cases are empty"
+    emptycases "Switch cases are empty"
     if.
       true.eq found.match
       found.head
