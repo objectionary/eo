@@ -774,7 +774,9 @@ final class Eo implements Iterable<Directive> {
      * level pops. Two kinds open a second {@code <o>} and so emit an
      * extra close: a compact tuple (its {@code Φ.tuple} wrapper) and an
      * open only-phi formation (its φ application, left open for vertical
-     * arguments per §4.5).</p>
+     * arguments per §4.5). An only-phi formation whose φ is a compact
+     * tuple ({@code seq * > [m]}) opens both — the wrapper closes
+     * first.</p>
      *
      * <p>Checks: R-5.3.1 (naming requirement for plain children of
      * formations and top-level objects), the only-phi argument-naming
@@ -798,7 +800,7 @@ final class Eo implements Iterable<Directive> {
                 "reversed dispatch missing receiver"
             );
         }
-        if (level.kind() == Kind.COMPACT_TUPLE) {
+        if (level.kind() == Kind.COMPACT_TUPLE || level.star()) {
             Eo.closeCompactTuple(level, emit);
         }
         if (level.kind() == Kind.ONLY_PHI_FORMATION
@@ -837,7 +839,8 @@ final class Eo implements Iterable<Directive> {
      * Compact-tuple close: report under-count, then either synthesise
      * the empty {@code Φ.tuple star=""} wrapper (when {@code N} matched
      * the children exactly and nothing was emitted yet) or close the
-     * already-open wrapper.
+     * already-open wrapper. Shared by a {@link Kind#COMPACT_TUPLE} head
+     * and a {@link Level#star()} only-phi φ.
      * @param level The compact-tuple level
      * @param emit The directives sink
      */
@@ -864,13 +867,14 @@ final class Eo implements Iterable<Directive> {
 
     /**
      * Pre-child hostarts (§3.9 / R-3.9.2): emit the synthesised
-     * {@code Φ.tuple} wrapper exactly once when a compact-tuple parent
-     * has accumulated its first N direct children.
+     * {@code Φ.tuple} wrapper exactly once when a compact-tuple parent —
+     * a {@link Kind#COMPACT_TUPLE} head or a {@link Level#star()} only-phi
+     * φ — has accumulated its first N direct children.
      * @param parent The parent level
      * @param emit The directives sink
      */
     private static void beforeChild(final Level parent, final Emit emit) {
-        if (parent.kind() == Kind.COMPACT_TUPLE
+        if ((parent.kind() == Kind.COMPACT_TUPLE || parent.star())
             && !parent.tupled()
             && parent.children() == parent.count()) {
             emit.object(
