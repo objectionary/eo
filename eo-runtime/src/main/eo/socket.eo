@@ -79,8 +79,8 @@
   [port] > htons
     as-i16. > @
       or.
-        (bts.and FF-).left 8
-        (bts.right 8).and FF-
+        (bts.and 00-FF).left 8
+        (bts.right 8).and 00-FF
     port.as-i16.as-bytes > bts
 
   [recv] > as-input
