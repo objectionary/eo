@@ -339,7 +339,10 @@ final class Emissions {
      * @param parsed Result of {@code Double.parseDouble(raw)}
      * @return True when the literal is over-precise
      */
-    @SuppressWarnings("PMD.AvoidDecimalLiteralsInBigDecimalConstructor")
+    @SuppressWarnings({
+        "PMD.AvoidDecimalLiteralsInBigDecimalConstructor",
+        "java:S2111"
+    })
     private static boolean overPrecise(final String raw, final double parsed) {
         final BigDecimal written = new BigDecimal(raw);
         return written.compareTo(new BigDecimal(parsed)) != 0

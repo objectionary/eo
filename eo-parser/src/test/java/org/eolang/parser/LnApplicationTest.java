@@ -370,8 +370,7 @@ final class LnApplicationTest {
     void rejectsIntegerArgWithLeadingZero() {
         Assertions.assertThrows(
             ParseError.class,
-            () -> new LnApplication(new Span("foo 07", 1))
-                .into(new Stack(), new Globals(), new Emit()),
+            () -> LnApplicationTest.parseLine("foo 07"),
             "an INT arg with a leading zero must be rejected per R-9.8.1"
         );
     }
@@ -454,8 +453,7 @@ final class LnApplicationTest {
     void rejectsStringWithInvalidUnicodeEscape() {
         Assertions.assertThrows(
             ParseError.class,
-            () -> new LnApplication(new Span("\"\\uZZZZ\" > x", 1))
-                .into(new Stack(), new Globals(), new Emit()),
+            () -> LnApplicationTest.parseLine("\"\\uZZZZ\" > x"),
             "a string with a non-hex \\u escape must be rejected, not crash"
         );
     }
@@ -535,8 +533,7 @@ final class LnApplicationTest {
     void rejectsUnclosedInlinePhiBracketInGroupArg() {
         Assertions.assertThrows(
             ParseError.class,
-            () -> new LnApplication(new Span("x (a > [b)", 1))
-                .into(new Stack(), new Globals(), new Emit()),
+            () -> LnApplicationTest.parseLine("x (a > [b)"),
             "a `> [` inline-phi marker with no closing `]` inside a paren-group arg must be"
                 .concat(" rejected with a ParseError, not an unchecked exception")
         );
@@ -594,8 +591,7 @@ final class LnApplicationTest {
     void rejectsOversizedHexHead() {
         Assertions.assertThrows(
             ParseError.class,
-            () -> new LnApplication(new Span("0x10000000000000000 > x", 1))
-                .into(new Stack(), new Globals(), new Emit()),
+            () -> LnApplicationTest.parseLine("0x10000000000000000 > x"),
             "a HEX literal wider than a signed 64-bit long must raise a positioned"
                 .concat(" ParseError instead of an uncaught NumberFormatException")
         );
@@ -607,8 +603,7 @@ final class LnApplicationTest {
             "a FLOAT literal with dead trailing digits must name the offender and its Double.toString form",
             Assertions.assertThrows(
                 ParseError.class,
-                () -> new LnApplication(new Span("2.7182818284590452354 > e", 1))
-                    .into(new Stack(), new Globals(), new Emit())
+                () -> LnApplicationTest.parseLine("2.7182818284590452354 > e")
             ).getMessage(),
             Matchers.equalTo(
                 "2.7182818284590452354 is over-precise, write 2.718281828459045 instead"
@@ -622,8 +617,7 @@ final class LnApplicationTest {
             "an INTEGER past the exact double integer range must suggest the rounded spelling",
             Assertions.assertThrows(
                 ParseError.class,
-                () -> new LnApplication(new Span("9007199254740993 > x", 1))
-                    .into(new Stack(), new Globals(), new Emit())
+                () -> LnApplicationTest.parseLine("9007199254740993 > x")
             ).getMessage(),
             Matchers.equalTo(
                 "9007199254740993 is over-precise, write 9007199254740992 instead"
@@ -647,12 +641,7 @@ final class LnApplicationTest {
     @Test
     void acceptsPlusSignedIntegerHead() {
         Assertions.assertDoesNotThrow(
-            () -> {
-                final Emit emit = new Emit();
-                new LnApplication(new Span("+42 > x", 1))
-                    .into(new Stack(), new Globals(), emit);
-                emit.close();
-            },
+            () -> LnApplicationTest.parseLine("+42 > x"),
             "a leading + does not change the double and must not be called over-precise"
         );
     }
@@ -660,12 +649,7 @@ final class LnApplicationTest {
     @Test
     void acceptsTrailingZeroFloatHead() {
         Assertions.assertDoesNotThrow(
-            () -> {
-                final Emit emit = new Emit();
-                new LnApplication(new Span("1.50 > x", 1))
-                    .into(new Stack(), new Globals(), emit);
-                emit.close();
-            },
+            () -> LnApplicationTest.parseLine("1.50 > x"),
             "trailing zeros that do not change the double must not be called over-precise"
         );
     }
@@ -673,12 +657,7 @@ final class LnApplicationTest {
     @Test
     void acceptsLowercaseExponentFloatHead() {
         Assertions.assertDoesNotThrow(
-            () -> {
-                final Emit emit = new Emit();
-                new LnApplication(new Span("1.0e30 > x", 1))
-                    .into(new Stack(), new Globals(), emit);
-                emit.close();
-            },
+            () -> LnApplicationTest.parseLine("1.0e30 > x"),
             "lowercase e must match Double.toString's E so StUnhex output re-parses"
         );
     }
@@ -689,8 +668,7 @@ final class LnApplicationTest {
             "Long.MAX_VALUE is not an exact double and must suggest Double.toString form",
             Assertions.assertThrows(
                 ParseError.class,
-                () -> new LnApplication(new Span("9223372036854775807 > x", 1))
-                    .into(new Stack(), new Globals(), new Emit())
+                () -> LnApplicationTest.parseLine("9223372036854775807 > x")
             ).getMessage(),
             Matchers.equalTo(
                 "9223372036854775807 is over-precise, write 9.223372036854776E18 instead"
@@ -766,6 +744,15 @@ final class LnApplicationTest {
             stack.depth(),
             Matchers.equalTo(1)
         );
+    }
+
+    /**
+     * Parse one application line into a fresh stack and emit.
+     * @param body Line body
+     */
+    private static void parseLine(final String body) {
+        new LnApplication(new Span(body, 1))
+            .into(new Stack(), new Globals(), new Emit());
     }
 
     /**
