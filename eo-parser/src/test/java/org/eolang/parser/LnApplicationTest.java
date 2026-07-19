@@ -645,6 +645,32 @@ final class LnApplicationTest {
     }
 
     @Test
+    void acceptsPlusSignedIntegerHead() {
+        Assertions.assertDoesNotThrow(
+            () -> {
+                final Emit emit = new Emit();
+                new LnApplication(new Span("+42 > x", 1))
+                    .into(new Stack(), new Globals(), emit);
+                emit.close();
+            },
+            "a leading + does not change the double and must not be called over-precise"
+        );
+    }
+
+    @Test
+    void acceptsTrailingZeroFloatHead() {
+        Assertions.assertDoesNotThrow(
+            () -> {
+                final Emit emit = new Emit();
+                new LnApplication(new Span("1.50 > x", 1))
+                    .into(new Stack(), new Globals(), emit);
+                emit.close();
+            },
+            "trailing zeros that do not change the double must not be called over-precise"
+        );
+    }
+
+    @Test
     void acceptsLowercaseExponentFloatHead() {
         Assertions.assertDoesNotThrow(
             () -> {
@@ -654,6 +680,21 @@ final class LnApplicationTest {
                 emit.close();
             },
             "lowercase e must match Double.toString's E so StUnhex output re-parses"
+        );
+    }
+
+    @Test
+    void rejectsOverPreciseLargeIntegerHead() {
+        MatcherAssert.assertThat(
+            "Long.MAX_VALUE is not an exact double and must suggest Double.toString form",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnApplication(new Span("9223372036854775807 > x", 1))
+                    .into(new Stack(), new Globals(), new Emit())
+            ).getMessage(),
+            Matchers.equalTo(
+                "9223372036854775807 is over-precise, write 9.223372036854776E18 instead"
+            )
         );
     }
 
