@@ -99,6 +99,12 @@ public final class EOscanf extends PhDefault implements Atom {
                 }
             }
         }
+        if (literal) {
+            throw new ExFailure(
+                "The format string '%s' ends with a dangling '%%' and no specifier after it",
+                format
+            );
+        }
         final Matcher matcher = Pattern.compile(regex.toString()).matcher(
             new Dataized(this.take("read")).asString()
         );
