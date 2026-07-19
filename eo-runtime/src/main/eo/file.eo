@@ -19,7 +19,7 @@
   [cant-check] > is-directory
     if. > @
       info.code.eq 0
-      (info.output.st-mode.div 4096).floor.eq 4
+      (info.output.mode.div 4096).floor.eq 4
       cant-check
     called. > info
       if.
@@ -51,8 +51,8 @@
     called. > created
       if.
         os.is-windows
-        win32 "_creat" (* path win32.create-mode)
-        posix "creat" (* path posix.create-mode)
+        win32 "_creat" (* path win32.mode)
+        posix "creat" (* path posix.mode)
     created.code > descriptor
     code. > closed
       if.
@@ -73,14 +73,14 @@
     called. > removed
       if.
         os.is-windows
-        win32 windows-name (* path)
-        posix posix-name (* path)
+        win32 win (* path)
+        posix unix (* path)
     removed.code > outcome
-    if. > windows-name
+    if. > win
       is-directory
       "_rmdir"
       "_unlink"
-    if. > posix-name
+    if. > unix
       is-directory
       "rmdir"
       "unlink"
@@ -88,7 +88,7 @@
   [cant-measure] > size
     if. > @
       info.code.eq 0
-      info.output.st-size
+      info.output.size
       cant-measure
     called. > info
       if.
@@ -173,33 +173,33 @@
               syscall.close (* descriptor)
             true
         called. > opened
-          syscall.open (* path flags syscall.create-mode)
+          syscall.open (* path flags syscall.mode)
         opened.code > descriptor
         plus. > flags
           plus.
             plus.
               direction
-              create-bit
-            truncate-bit
-          append-bit
+              creat
+            trunc
+          append
         if. > direction
           readable.and writable
-          syscall.o-rdwr
+          syscall.rdwr
           if.
             writable
-            syscall.o-wronly
-            syscall.o-rdonly
-        if. > create-bit
+            syscall.wronly
+            syscall.rdonly
+        if. > creat
           existing.not
-          syscall.o-creat
+          syscall.creat
           0
-        if. > truncate-bit
+        if. > trunc
           truncate
-          syscall.o-trunc
+          syscall.trunc
           0
-        if. > append-bit
+        if. > append
           appending
-          syscall.o-append
+          syscall.append
           0
 
         [descriptor] > stream

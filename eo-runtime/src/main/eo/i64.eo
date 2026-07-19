@@ -40,21 +40,21 @@
 
   [x] > gt
     if. > @
-      signs-differ
-      self-sign-clear
+      differ
+      positive
       and.
-        difference-sign-clear
+        greater
         (difference.as-bytes.eq zero).not
     ^.minus x > difference
     00-00-00-00-00-00-00-00 > zero
-    80-00-00-00-00-00-00-00 > sign-mask
-    ^.as-bytes.and sign-mask > self-sign
-    not. > signs-differ
+    80-00-00-00-00-00-00-00 > mask
+    ^.as-bytes.and mask > sign
+    not. > differ
       eq.
-        self-sign
-        x.as-bytes.and sign-mask
-    self-sign.eq zero > self-sign-clear
-    (difference.as-bytes.and sign-mask).eq zero > difference-sign-clear
+        sign
+        x.as-bytes.and mask
+    sign.eq zero > positive
+    (difference.as-bytes.and mask).eq zero > greater
 
   [x] > gte
     or. > @

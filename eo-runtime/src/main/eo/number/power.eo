@@ -50,11 +50,11 @@
               if.
                 expo.gt 0
                 if.
-                  odd-power
+                  odd
                   ninf
                   pinf
                 if.
-                  odd-power
+                  odd
                   0.neg
                   0
           if.
@@ -75,7 +75,7 @@
                 pinf
   number num.as-bytes > base
   number x.as-bytes > expo
-  and. > odd-power
+  and. > odd
     expo.is-integer
     (expo.div 2).is-integer.not
 

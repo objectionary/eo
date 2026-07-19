@@ -42,7 +42,7 @@
             code.
               posix
                 "write"
-                * posix.stderr-fileno buffer buffer.size
+                * posix.stderr buffer buffer.size
             output-block
 
   [] > windows-output
@@ -57,7 +57,7 @@
             code.
               win32
                 "_write"
-                * win32.stderr-fileno buffer buffer.size
+                * win32.stderr buffer buffer.size
             output-block
 
   ++> tests-prints-to-stderr

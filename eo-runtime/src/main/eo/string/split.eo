@@ -14,7 +14,7 @@
     rec-split * 0 0
   text > bts!
   delimiter > delim!
-  delim.size > delim-size!
+  delim.size > size!
   bts.size > len!
 
   [accum start current] > rec-split
@@ -28,19 +28,19 @@
             current.minus start
       if.
         or.
-          delim-size.eq 0
-          (current.plus delim-size).gt len
+          size.eq 0
+          (current.plus size).gt len
         rec-split
           accum
           start
           (current.plus 1).as-number
         if.
           delim.eq
-            slice bts current delim-size
+            slice bts current size
           rec-split
             appended
-            (current.plus delim-size).as-number
-            (current.plus delim-size).as-number
+            (current.plus size).as-number
+            (current.plus size).as-number
           rec-split
             accum
             start

@@ -22,7 +22,7 @@
         1.eq limit
         * text
         rec-nsplit * 0 0 0
-  delimiter.size > delimiter-size!
+  delimiter.size > size!
 
   [accum start current count] > rec-nsplit
     if. > @
@@ -35,8 +35,8 @@
             current.minus start
       if.
         or.
-          delimiter-size.eq 0
-          (current.plus delimiter-size).gt text.size
+          size.eq 0
+          (current.plus size).gt text.size
         rec-nsplit
           accum
           start
@@ -45,13 +45,13 @@
         if.
           and.
             delimiter.eq
-              slice text current delimiter-size
+              slice text current size
             (number count).lt
               (number limit).minus 1
           rec-nsplit
             appended
-            (current.plus delimiter-size).as-number
-            (current.plus delimiter-size).as-number
+            (current.plus size).as-number
+            (current.plus size).as-number
             (count.plus 1).as-number
           rec-nsplit
             accum
