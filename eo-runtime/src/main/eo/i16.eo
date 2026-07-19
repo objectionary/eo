@@ -49,10 +49,10 @@
 
   plus x.as-i16.neg > [x] > minus
 
-  [x cantdivide] > div
+  [x cant-divide] > div
     if. > @
       xval.eq zero
-      cantdivide
+      cant-divide
         "Can't divide %d by i16 zero".printf
           * as-i32.as-i64.as-number
       if.

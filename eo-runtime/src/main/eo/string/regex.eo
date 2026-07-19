@@ -28,7 +28,7 @@
   compile > @
 
   [] > compile /Q.string.regex.pattern
-    ? > cantcompile /{string}
+    ? > cant-compile /{string}
 
   [serialized] > pattern
     pattern serialized > compiled

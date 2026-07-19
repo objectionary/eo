@@ -28,7 +28,7 @@
   [] > size /number
 
   [start len] > slice /bytes
-    ? > cantslice /{string}
+    ? > cant-slice /{string}
 
   [b] > and /bytes
 

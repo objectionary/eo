@@ -15,12 +15,12 @@
     T "Can't get head from the empty tuple"
     0
 
-  [i outofbounds] > at
+  [i fallback] > at
     if. > @
       or.
         0.gt index
         length.lte index
-      outofbounds "Given index is out of tuple bounds"
+      fallback "Given index is out of tuple bounds"
       at-fast ^
     i > idx!
     if. > index!

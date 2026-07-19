@@ -21,7 +21,7 @@ public final class EOi64$EOdiv extends PhDefault implements Atom {
     /**
      * Name of the error-branch void that holds the caller's divide-by-zero fallback.
      */
-    private static final String FALLBACK = "cantdivide";
+    private static final String FALLBACK = "cant-divide";
 
     /**
      * Ctor.

@@ -15,47 +15,47 @@
 
 [name args] > posix
   [] > @ /return
-  2 > afinet
-  -1 > inaddrnone
-  6 > ipprototcp
-  0 > ordonly
-  1 > owronly
-  2 > ordwr
-  if. > ocreat
+  2 > inet
+  -1 > none
+  6 > tcp
+  0 > rdonly
+  1 > wronly
+  2 > rdwr
+  if. > creat
     os.is-macos
     512
     64
-  if. > otrunc
+  if. > trunc
     os.is-macos
     1024
     512
-  if. > oappend
+  if. > append
     os.is-macos
     8
     1024
-  420 > createmode
-  511 > mkdirmode
-  1 > sockstream
-  0 > stdinfileno
-  1 > stdoutfileno
-  2 > stderrfileno
+  420 > mode
+  511 > permissions
+  1 > stream
+  0 > stdin
+  1 > stdout
+  2 > stderr
   [code output] > return
     output > @
     return code output > called
 
-  [tvsec tvusec] > timeval
+  [seconds micros] > timeval
 
-  [stmode stsize] > stat
+  [mode size] > stat
 
-  [sinfamily sinport sinaddr] > sockaddr-in
-    00-00-00-00-00-00-00-00 > sinzero
+  [family port address] > sockaddr-in
+    00-00-00-00-00-00-00-00 > padding
     plus. > size
       plus.
         plus.
-          sinfamily.size
-          sinport.size
-        sinaddr.size
-      sinzero.size
+          family.size
+          port.size
+        address.size
+      padding.size
 
   ++> tests-invokes-getpid-correctly
     or. > @
@@ -95,7 +95,7 @@
     code. > sd
       posix
         "socket"
-        * posix.afinet posix.sockstream posix.ipprototcp
+        * posix.inet posix.stream posix.tcp
 
   ++> tests-closes-posix-tcp-socket
     or. > @
@@ -113,7 +113,7 @@
     code. > sd
       posix
         "socket"
-        * posix.afinet posix.sockstream posix.ipprototcp
+        * posix.inet posix.stream posix.tcp
 
   ++> tests-returns-valid-posix-inet-addr-for-localhost
     or. > @

@@ -243,6 +243,21 @@
               <skipProgramLints>
                 <lint>inconsistent-args</lint>
               </skipProgramLints>
+              <skipSourceLints>
+                <!--
+                @todo #5611:30min Remove this compound-name suppression once eo-maven-plugin
+                depends on a lints release that contains the fix for objectionary/lints#1030.
+                All genuinely compound names in eo-runtime EO sources (out-of-range, sign-mask,
+                sin-family, etc.) were already renamed to single-word alternatives in this PR.
+                The only remaining violations are the idiomatic `cant-` prefixed names
+                (cant-divide, cant-convert, cant-read, etc.), which objectionary/lints#1030
+                (fixed upstream by objectionary/lints#1031, merged 2026-07-16 but not yet in a
+                published release as of lints 0.2.11) explicitly says are OK and should not be
+                renamed. Bump the <lints> version dependency in eo-maven-plugin/pom.xml once a
+                release containing that fix is published, then delete this suppression.
+                -->
+                <lint>compound-name</lint>
+              </skipSourceLints>
               <keepBinaries>
                 <glob>org/eolang/EO_fs/package-info.class</glob>
                 <glob>org/eolang/EO_number/package-info.class</glob>

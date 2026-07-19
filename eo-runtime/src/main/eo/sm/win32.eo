@@ -20,40 +20,40 @@
 
 [name args] > win32
   [] > @ /return
-  2 > afinet
-  -1 > inaddrnone
-  -1 > invalidsocket
-  6 > ipprototcp
-  32768 > ordonly
-  32769 > owronly
-  32770 > ordwr
-  256 > ocreat
-  512 > otrunc
-  8 > oappend
-  384 > createmode
-  1 > sockstream
-  -1 > socketerror
-  0 > stdinfileno
-  1 > stdoutfileno
-  2 > stderrfileno
-  02-02 > winsockversion22
+  2 > inet
+  -1 > none
+  -1 > invalid
+  6 > tcp
+  32768 > rdonly
+  32769 > wronly
+  32770 > rdwr
+  256 > creat
+  512 > trunc
+  8 > append
+  384 > mode
+  1 > stream
+  -1 > failure
+  0 > stdin
+  1 > stdout
+  2 > stderr
+  02-02 > version
   [code output] > return
     output > @
     return code output > called
 
   [time millitm] > timeb
 
-  [stmode stsize] > stat64
+  [mode size] > stat64
 
-  [sinfamily sinport sinaddr] > sockaddr-in
-    00-00-00-00-00-00-00-00 > sinzero
+  [family port address] > sockaddr-in
+    00-00-00-00-00-00-00-00 > padding
     plus. > size
       plus.
         plus.
-          sinfamily.size
-          sinport.size
-        sinaddr.size
-      sinzero.size
+          family.size
+          port.size
+        address.size
+      padding.size
 
   ++> tests-returns-valid-win32-inet-addr-for-localhost
     or. > @

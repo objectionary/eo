@@ -21,7 +21,7 @@ public final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements
     /**
      * Name of the error-branch void that holds the caller's read fallback.
      */
-    private static final String FALLBACK = "cantread";
+    private static final String FALLBACK = "cant-read";
 
     /**
      * Ctor.

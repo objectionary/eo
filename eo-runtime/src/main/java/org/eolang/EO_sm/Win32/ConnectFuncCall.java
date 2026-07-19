@@ -45,10 +45,10 @@ public final class ConnectFuncCall implements Syscall {
                 Winsock.INSTANCE.connect(
                     new Dataized(params[0]).asNumber().intValue(),
                     new SockaddrIn(
-                        new Dataized(params[1].take("sinfamily")).take(Short.class),
-                        new Dataized(params[1].take("sinport")).take(Short.class),
-                        new Dataized(params[1].take("sinaddr")).take(Integer.class),
-                        new Dataized(params[1].take("sinzero")).take()
+                        new Dataized(params[1].take("family")).take(Short.class),
+                        new Dataized(params[1].take("port")).take(Short.class),
+                        new Dataized(params[1].take("address")).take(Integer.class),
+                        new Dataized(params[1].take("padding")).take()
                     ),
                     new Dataized(params[2]).asNumber().intValue()
                 )

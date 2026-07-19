@@ -93,7 +93,7 @@
           read source length
 
       [offset length] > read /bytes
-        ? > cantread /{string}
+        ? > cant-read /{string}
 
       [offset data] > write /bool
 

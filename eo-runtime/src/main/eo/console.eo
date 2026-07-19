@@ -85,7 +85,7 @@
           output. > chunk!
             posix
               "read"
-              * posix.stdinfileno size
+              * posix.stdin size
 
     [buffer] > write
       (output-block.write buffer).@ > @
@@ -98,7 +98,7 @@
             code.
               posix
                 "write"
-                * posix.stdoutfileno buffer buffer.size
+                * posix.stdout buffer buffer.size
             output-block
 
   [] > windows-console
@@ -115,7 +115,7 @@
           output. > chunk!
             win32
               "_read"
-              * win32.stdinfileno size
+              * win32.stdin size
 
     [buffer] > write
       (output-block.write buffer).@ > @
@@ -128,7 +128,7 @@
             code.
               win32
                 "_write"
-                * win32.stdoutfileno buffer buffer.size
+                * win32.stdout buffer buffer.size
             output-block
 
   ++> tests-writes-to-console

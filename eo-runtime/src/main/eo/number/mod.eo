@@ -1,6 +1,6 @@
 # Calculate MOD.
 # An operation that finds the remainder after dividing `x` by `y`. When `y`
-# is zero, the result is the caller-supplied `cantmod` fallback, or the
+# is zero, the result is the caller-supplied `cant-mod` fallback, or the
 # bottom object when none was provided, which terminates on use.
 
 +architect yegor256@gmail.com
@@ -10,10 +10,10 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[x y cantmod] > mod
+[x y cant-mod] > mod
   if. > @
     divisor.eq 0
-    cantmod "cannot calculate mod by zero"
+    cant-mod "cannot calculate mod by zero"
     if.
       dividend.gt 0
       abs-mod

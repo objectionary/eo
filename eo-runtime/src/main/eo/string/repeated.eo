@@ -1,5 +1,5 @@
 # Returns `text` repeated `times` times.
-# If `times` < 0, the `cantrepeat` fallback is returned, or the bottom object when unbound.
+# If `times` < 0, the `cant-repeat` fallback is returned, or the bottom object when unbound.
 # If `times` == 0, empty text is returned.
 
 +architect yegor256@gmail.com
@@ -9,10 +9,10 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text times cantrepeat] > repeated
+[text times cant-repeat] > repeated
   if. > @
     0.gt amount
-    cantrepeat
+    cant-repeat
       "Can't repeat text %d times".printf
         * amount
     string result

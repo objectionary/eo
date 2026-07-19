@@ -16,11 +16,11 @@
   as-i32.as-i16 > as-i16
   times -1.as-i64 > neg
 
-  [cantconvert] > as-i32
+  [cant-convert] > as-i32
     if. > @
       ^.eq left.as-i64
       left
-      cantconvert
+      cant-convert
         "Can't convert i64 number %d to i32 because it's out of i32 bounds".printf
           * as-number
     i32 (as-bytes.slice 4 4) > left
@@ -40,21 +40,21 @@
 
   [x] > gt
     if. > @
-      signsdiffer
-      selfsignclear
+      differ
+      positive
       and.
-        differencesignclear
+        greater
         (difference.as-bytes.eq zero).not
     ^.minus x > difference
     00-00-00-00-00-00-00-00 > zero
-    80-00-00-00-00-00-00-00 > signmask
-    ^.as-bytes.and signmask > selfsign
-    not. > signsdiffer
+    80-00-00-00-00-00-00-00 > mask
+    ^.as-bytes.and mask > sign
+    not. > differ
       eq.
-        selfsign
-        x.as-bytes.and signmask
-    selfsign.eq zero > selfsignclear
-    (difference.as-bytes.and signmask).eq zero > differencesignclear
+        sign
+        x.as-bytes.and mask
+    sign.eq zero > positive
+    (difference.as-bytes.and mask).eq zero > greater
 
   [x] > gte
     or. > @
@@ -83,7 +83,7 @@
     x > value!
 
   [x] > div /i64
-    ? > cantdivide /{string}
+    ? > cant-divide /{string}
 
   ++> tests-i64-has-valid-bytes
     eq. > @
