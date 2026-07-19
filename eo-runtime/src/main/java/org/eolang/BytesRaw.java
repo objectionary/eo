@@ -40,8 +40,8 @@ final class BytesRaw implements Bytes {
     @Override
     public Bytes and(final Bytes other) {
         final byte[] first = this.take();
-        final byte[] second = other.take();
-        for (int index = 0; index < Math.min(first.length, second.length); index += 1) {
+        final byte[] second = BytesRaw.ofSameLength(first, other, "and");
+        for (int index = 0; index < first.length; index += 1) {
             first[index] = (byte) (first[index] & second[index]);
         }
         return new BytesOf(first);
@@ -50,8 +50,8 @@ final class BytesRaw implements Bytes {
     @Override
     public Bytes or(final Bytes other) {
         final byte[] first = this.take();
-        final byte[] second = other.take();
-        for (int index = 0; index < Math.min(first.length, second.length); index += 1) {
+        final byte[] second = BytesRaw.ofSameLength(first, other, "or");
+        for (int index = 0; index < first.length; index += 1) {
             first[index] = (byte) (first[index] | second[index]);
         }
         return new BytesOf(first);
@@ -60,8 +60,8 @@ final class BytesRaw implements Bytes {
     @Override
     public Bytes xor(final Bytes other) {
         final byte[] first = this.take();
-        final byte[] second = other.take();
-        for (int index = 0; index < Math.min(first.length, second.length); index += 1) {
+        final byte[] second = BytesRaw.ofSameLength(first, other, "xor");
+        for (int index = 0; index < first.length; index += 1) {
             first[index] = (byte) (first[index] ^ second[index]);
         }
         return new BytesOf(first);
@@ -176,6 +176,26 @@ final class BytesRaw implements Bytes {
     @Override
     public int hashCode() {
         return Arrays.hashCode(this.data);
+    }
+
+    /**
+     * Take the bytes of the other operand, checking they are of the same length.
+     * @param first The bytes of the receiver
+     * @param other The other operand
+     * @param operation The name of the operation, for the error message
+     * @return The bytes of the other operand
+     */
+    private static byte[] ofSameLength(
+        final byte[] first, final Bytes other, final String operation
+    ) {
+        final byte[] second = other.take();
+        if (first.length != second.length) {
+            throw new ExFailure(
+                "bytes.%s requires operands of the same length, got %d and %d",
+                operation, first.length, second.length
+            );
+        }
+        return second;
     }
 
     /**

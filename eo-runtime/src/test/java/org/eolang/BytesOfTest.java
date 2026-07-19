@@ -163,4 +163,37 @@ final class BytesOfTest {
             "sshift with negative bits should fail with ExFailure, but it didn't"
         );
     }
+
+    @Test
+    void doesNotSupportAndOfDifferentLength() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new BytesOf(new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF}).and(
+                new BytesOf(new byte[]{(byte) 0x0F})
+            ),
+            "'and' of operands with different lengths should fail with ExFailure, but it didn't"
+        );
+    }
+
+    @Test
+    void doesNotSupportOrOfDifferentLength() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new BytesOf(new byte[]{(byte) 0x01, (byte) 0x02}).or(
+                new BytesOf(new byte[]{(byte) 0x03, (byte) 0x04, (byte) 0x05, (byte) 0x06})
+            ),
+            "'or' of operands with different lengths should fail with ExFailure, but it didn't"
+        );
+    }
+
+    @Test
+    void doesNotSupportXorOfDifferentLength() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new BytesOf(new byte[]{(byte) 0x01, (byte) 0x02}).xor(
+                new BytesOf(new byte[]{(byte) 0x03, (byte) 0x04, (byte) 0x05, (byte) 0x06})
+            ),
+            "'xor' of operands with different lengths should fail with ExFailure, but it didn't"
+        );
+    }
 }
