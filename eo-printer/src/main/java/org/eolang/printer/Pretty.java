@@ -51,6 +51,11 @@ final class Pretty {
     private final String tab;
 
     /**
+     * The column past which a line overflows, the {@code WIDTH} weight.
+     */
+    private final int width;
+
+    /**
      * Ctor, using the default penalty weights.
      * @param element The {@code <eo>} element
      */
@@ -62,13 +67,16 @@ final class Pretty {
      * Ctor.
      * @param element The {@code <eo>} element
      * @param config The overridden weights; absent keys use their defaults
-     * @checkstyle ConstructorsCodeFreeCheck (10 lines)
+     * @checkstyle ConstructorsCodeFreeCheck (12 lines)
      */
     Pretty(final Xnav element, final Map<PenaltyKey, Integer> config) {
         this.root = element;
         this.weights = config;
         this.tab = " ".repeat(
             config.getOrDefault(PenaltyKey.STEP, PenaltyKey.STEP.fallback())
+        );
+        this.width = config.getOrDefault(
+            PenaltyKey.WIDTH, PenaltyKey.WIDTH.fallback()
         );
     }
 
@@ -245,7 +253,11 @@ final class Pretty {
      * ({@code head ++> name} or {@code head > [params] > name}) with the
      * arguments laid out beneath, mirroring the ordinary {@code head > name}
      * plus vertical-args layout and saving one line and one indent level
-     * over the verbose shape (issue #5594). Either way the result is only a
+     * over the verbose shape (issue #5594). The flat one-liner is kept while
+     * it fits the {@code WIDTH} limit, but once it overflows (or cannot be
+     * built) the hybrid is used instead, rather than gating the hybrid behind
+     * the one-liner's absence and falling back to the verbose shape when the
+     * one-liner overflows (issue #5635). Either way the result is only a
      * candidate — the penalty/width check in {@link #shaped} keeps it only
      * when it beats the plain vertical rendering. A formation decoratee
      * (its bindings are vertical, not arguments) and a receiver-only
@@ -283,24 +295,20 @@ final class Pretty {
                 middle = " > ".concat(node.base);
             }
             final String marker = middle.concat(node.tail);
-            final Optional<String> value = Pretty.flat(
+            final Optional<String> flat = Pretty.flat(
                 new Pretty.Node(
                     decoratee.base, "", decoratee.abstractt,
                     false, decoratee.reversed, decoratee.data, decoratee.children
                 )
+            ).map(
+                inlined -> this.tab.repeat(indent).concat(inlined).concat(marker)
             );
             final boolean applied = !decoratee.abstractt && !decoratee.children.isEmpty()
                 && !(decoratee.reversed && decoratee.children.size() <= 1);
             final boolean unnamed = decoratee.children.stream()
                 .allMatch(Pretty.Node::nameless);
-            if (value.isPresent()) {
-                result = Optional.of(
-                    new StringBuilder(this.tab.repeat(indent))
-                        .append(value.get())
-                        .append(marker)
-                        .toString()
-                );
-            } else if (applied && unnamed) {
+            if (applied && unnamed
+                && flat.map(line -> line.length() > this.width).orElse(true)) {
                 result = Optional.of(
                     this.vertical(
                         new Pretty.Node(
@@ -310,6 +318,8 @@ final class Pretty {
                         indent
                     )
                 );
+            } else {
+                result = flat;
             }
         }
         return result;
