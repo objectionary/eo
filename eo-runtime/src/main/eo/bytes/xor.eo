@@ -62,3 +62,6 @@
     eq. > @
       (00-00-00-00-FF-FF-FF-FF.xor FF-FF-FF-FF-00-00-00-00).as-number
       FF-FF-FF-FF-FF-FF-FF-FF
+
+  --> on-xor-with-different-lengths
+    20-1F.xor CA-FE-BE > @
