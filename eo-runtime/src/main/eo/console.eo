@@ -77,9 +77,10 @@
           seq > @
             * chunk (^.^.input-block chunk)
           output. > chunk!
-            sm.posix
+            sm.posix *1
               "read"
-              * sm.posix.stdin size
+              sm.posix.stdin
+              size
     [buffer] > write
       @. > @
         output-block.write buffer
@@ -87,9 +88,11 @@
         true > @
         seq * > [buffer] > write
           code.
-            sm.posix
+            sm.posix *1
               "write"
-              * sm.posix.stdout buffer buffer.size
+              sm.posix.stdout
+              buffer
+              buffer.size
           ^.^.output-block
   [] > windows-console
     [size] > read
@@ -101,9 +104,10 @@
           seq > @
             * chunk (^.^.input-block chunk)
           output. > chunk!
-            sm.win32
+            sm.win32 *1
               "_read"
-              * sm.win32.stdin size
+              sm.win32.stdin
+              size
     [buffer] > write
       @. > @
         output-block.write buffer
@@ -111,9 +115,11 @@
         true > @
         seq * > [buffer] > write
           code.
-            sm.win32
+            sm.win32 *1
               "_write"
-              * sm.win32.stdout buffer buffer.size
+              sm.win32.stdout
+              buffer
+              buffer.size
           ^.^.output-block
 
   console.write "Hello, console-test!\n" ++> tests-writes-to-console

@@ -67,9 +67,9 @@
                 "WSAGetLastError"
                 *
         code. > startup
-          sm.win32
+          sm.win32 *1
             "WSAStartup"
-            * sm.win32.version
+            sm.win32.version
         if. > cleanup
           eq.
             code.
@@ -85,13 +85,12 @@
         sm.posix > raw
         "close" > close
         code. > message
-          sm.posix
+          sm.posix *1
             "strerror"
-            *
-              code.
-                sm.posix
-                  "errno"
-                  *
+            code.
+              sm.posix
+                "errno"
+                *
         0 > startup
         true > cleanup
   [port] > htons
@@ -121,14 +120,16 @@
           ^.^.output-block
   [sys] > impl
     code. > addr
-      sys.raw
+      sys.raw *1
         "inet_addr"
-        * address
+        address
     addr.as-i32 > addrint
     code. > sd
-      sys.raw
+      sys.raw *1
         "socket"
-        * sys.inet sys.stream sys.tcp
+        sys.inet
+        sys.stream
+        sys.tcp
     sys.sockaddr-in > sockaddr
       sys.inet.as-i16
       htons port
@@ -145,9 +146,12 @@
           sent
         buffer > buff!
         code. > sent
-          ^.^.sys.raw
+          ^.^.sys.raw *1
             "send"
-            * sockfd buff buff.size 0
+            sockfd
+            buff
+            buff.size
+            0
       [size cant-receive] > recv
         if. > @
           received.code.eq -1
@@ -156,9 +160,11 @@
               * sockfd ^.^.sys.message
           received.output
         called. > received
-          ^.^.sys.raw
+          ^.^.sys.raw *1
             "recv"
-            * sockfd size 0
+            sockfd
+            size
+            0
     [sockfd] > closed-socket
       if. > @
         closed.eq -1
@@ -167,9 +173,9 @@
             * sockfd sys.message
         true
       code. > closed
-        sys.raw
+        sys.raw *1
           sys.close
-          * sockfd
+          sockfd
     [scope cant] > safe-socket
       if. > @
         not.
@@ -202,9 +208,11 @@
                 * sock.address sock.port sock.sd sock.sys.message
             scope (sock.scoped-socket sock.sd)
           code. > connected
-            sock.sys.raw
+            sock.sys.raw *1
               "connect"
-              * sock.sd sock.sockaddr sock.sockaddr.size
+              sock.sd
+              sock.sockaddr
+              sock.sockaddr.size
           ^.^ > sock
         cant-connect
     [scope cant-listen] > listen
@@ -232,17 +240,22 @@
                       seq
                         * handled (^.^.sock.closed-socket client) handled
                     code. > client
-                      ^.^.sock.sys.raw
+                      ^.^.sock.sys.raw *1
                         "accept"
-                        * ^.^.sock.sd ^.^.sock.sockaddr ^.^.sock.sockaddr.size
+                        ^.^.sock.sd
+                        ^.^.sock.sockaddr
+                        ^.^.sock.sockaddr.size
                     scope (^.^.sock.scoped-socket client) > handled!
           code. > bound
-            sock.sys.raw
+            sock.sys.raw *1
               "bind"
-              * sock.sd sock.sockaddr sock.sockaddr.size
+              sock.sd
+              sock.sockaddr
+              sock.sockaddr.size
           code. > listened
-            sock.sys.raw
+            sock.sys.raw *1
               "listen"
-              * sock.sd 2048
+              sock.sd
+              2048
           ^.^ > sock
         cant-listen

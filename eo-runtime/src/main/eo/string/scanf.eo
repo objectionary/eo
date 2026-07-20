@@ -77,9 +77,10 @@
   eq. ++> tests-scanf-with-printf
     scanf
       "%s is about %d?"
-      printf
+      printf *1
         "%s is about %d?"
-        * "This" 8
+        "This"
+        8
     * "This" 8
 
   eq. ++> tests-scanf-complex-case

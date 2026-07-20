@@ -51,7 +51,7 @@
   os.is-windows.not.or ++> tests-returns-valid-win32-inet-addr-for-localhost
     eq.
       code.
-        win32
+        win32 *1
           "inet_addr"
-          * "127.0.0.1"
+          "127.0.0.1"
       16777343

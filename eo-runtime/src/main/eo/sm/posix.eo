@@ -53,27 +53,31 @@
     os.is-windows.or > @
       seq *
         code.
-          posix
+          posix *1
             "close"
-            * fd
+            fd
         fd.gt -1
     code. > fd
-      posix
+      posix *1
         "open"
-        * "/dev/null" 0 0
+        "/dev/null"
+        0
+        0
 
   ++> tests-opens-posix-tcp-socket
     os.is-windows.or > @
       seq *
         code.
-          posix
+          posix *1
             "close"
-            * sd
+            sd
         sd.gt 0
     code. > sd
-      posix
+      posix *1
         "socket"
-        * posix.inet posix.stream posix.tcp
+        posix.inet
+        posix.stream
+        posix.tcp
 
   ++> tests-closes-posix-tcp-socket
     os.is-windows.or > @
@@ -82,19 +86,21 @@
         not.
           eq.
             code.
-              posix
+              posix *1
                 "close"
-                * sd
+                sd
             -1
     code. > sd
-      posix
+      posix *1
         "socket"
-        * posix.inet posix.stream posix.tcp
+        posix.inet
+        posix.stream
+        posix.tcp
 
   os.is-windows.or ++> tests-returns-valid-posix-inet-addr-for-localhost
     eq.
       code.
-        posix
+        posix *1
           "inet_addr"
-          * "127.0.0.1"
+          "127.0.0.1"
       16777343

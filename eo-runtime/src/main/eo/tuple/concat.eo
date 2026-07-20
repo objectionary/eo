@@ -22,13 +22,15 @@
       list3.eq
         * 1 2 3
     withouti > list3
-      concat
+      concat *1
         * 0 1
-        * 2 3
+        2
+        3
       0
 
   eq. ++> tests-concatenates-with-tuple
-    concat
+    concat *1
       * 0 1
-      * 2 4
+      2
+      4
     * 0 1 2 4

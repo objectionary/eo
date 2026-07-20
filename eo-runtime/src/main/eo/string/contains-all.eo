@@ -17,19 +17,25 @@
     true
     x.and a > [a x]
 
-  contains-all ++> tests-successful-contains-all
+  contains-all *1 ++> tests-successful-contains-all
     "abcdefghijk"
-    * "abc" "ghi"
+    "abc"
+    "ghi"
 
   ++> tests-not-contains-all
     not. > @
-      contains-all
+      contains-all *1
         "qwerty"
-        * "qer" "ty" "abc"
+        "qer"
+        "ty"
+        "abc"
 
-  contains-all ++> tests-contains-all-vert
+  contains-all *1 ++> tests-contains-all-vert
     "Hello, world!"
-    * "ell" " " "," "d!"
+    "ell"
+    " "
+    ","
+    "d!"
 
   contains-all ++> test-contains-all-without-substrings
     "xyz"

@@ -30,12 +30,13 @@
               * ^.path created.output
     called. > created
       sm.os.is-windows.if
-        sm.win32
+        sm.win32 *1
           "_mkdir"
-          * ^.path
-        sm.posix
+          ^.path
+        sm.posix *1
           "mkdir"
-          * ^.path sm.posix.permissions
+          ^.path
+          sm.posix.permissions
     created.code > outcome
   [glob] > walk /tuple
   [] > deleted

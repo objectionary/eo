@@ -16,9 +16,9 @@
 [name] > getenv
   output. > @
     sm.os.is-windows.if
-      sm.win32
+      sm.win32 *1
         "getenv"
-        * name
-      sm.posix
+        name
+      sm.posix *1
         "getenv"
-        * name
+        name

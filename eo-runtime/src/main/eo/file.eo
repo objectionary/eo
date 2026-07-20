@@ -26,21 +26,23 @@
       cant-check
     called. > info
       sm.os.is-windows.if
-        sm.win32
+        sm.win32 *1
           "_stat64"
-          * path
-        sm.posix
+          path
+        sm.posix *1
           "stat"
-          * path
+          path
   eq. > [] > exists
     code.
       sm.os.is-windows.if
-        sm.win32
+        sm.win32 *1
           "_access"
-          * path 0
-        sm.posix
+          path
+          0
+        sm.posix *1
           "access"
-          * path 0
+          path
+          0
     0
   [] > touched
     exists.if > @
@@ -54,21 +56,23 @@
           * closed ^
     called. > created
       sm.os.is-windows.if
-        sm.win32
+        sm.win32 *1
           "_creat"
-          * path sm.win32.mode
-        sm.posix
+          path
+          sm.win32.mode
+        sm.posix *1
           "creat"
-          * path sm.posix.mode
+          path
+          sm.posix.mode
     created.code > descriptor
     code. > closed
       sm.os.is-windows.if
-        sm.win32
+        sm.win32 *1
           "_close"
-          * descriptor
-        sm.posix
+          descriptor
+        sm.posix *1
           "close"
-          * descriptor
+          descriptor
   [] > deleted
     exists.if > @
       if.
@@ -80,12 +84,12 @@
       ^
     called. > removed
       sm.os.is-windows.if
-        sm.win32
+        sm.win32 *1
           win
-          * path
-        sm.posix
+          path
+        sm.posix *1
           unix
-          * path
+          path
     removed.code > outcome
     is-directory.if "_rmdir" "_unlink" > win
     is-directory.if "rmdir" "unlink" > unix
@@ -96,12 +100,12 @@
       cant-measure
     called. > info
       sm.os.is-windows.if
-        sm.win32
+        sm.win32 *1
           "_stat64"
-          * path
-        sm.posix
+          path
+        sm.posix *1
           "stat"
-          * path
+          path
   [target] > moved
     if. > @
       outcome.eq 0
@@ -111,12 +115,14 @@
           * path target renamed.output
     called. > renamed
       sm.os.is-windows.if
-        sm.win32
+        sm.win32 *1
           "rename"
-          * path target
-        sm.posix
+          path
+          target
+        sm.posix *1
           "rename"
-          * path target
+          path
+          target
     renamed.code > outcome
   [mode scope cant-open] > open
     known.not.if > @
@@ -278,9 +284,10 @@
     resolved.as-dir.made.tmpfile.exists.and > @
       string.contains
         resolved
-        string.joined
+        string.joined *1
           Q.path.separator
-          * "foo" "bar"
+          "foo"
+          "bar"
     mktemp.as-path.resolved "foo/bar" > resolved
 
   ++> tests-moves-a-file

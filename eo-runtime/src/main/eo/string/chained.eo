@@ -21,9 +21,11 @@
 
   eq. ++> tests-chains-with-other-strings
     "Hello, world!"
-    chained
+    chained *1
       "Hello"
-      * ", " "world" "!"
+      ", "
+      "world"
+      "!"
 
   eq. ++> tests-returns-same-text-on-chaining-with-no-strings
     "Some"

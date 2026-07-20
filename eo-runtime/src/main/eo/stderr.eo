@@ -34,9 +34,11 @@
         true > @
         seq * > [buffer] > write
           code.
-            sm.posix
+            sm.posix *1
               "write"
-              * sm.posix.stderr buffer buffer.size
+              sm.posix.stderr
+              buffer
+              buffer.size
           ^.^.output-block
   [] > windows-output
     [buffer] > write
@@ -46,9 +48,11 @@
         true > @
         seq * > [buffer] > write
           code.
-            sm.win32
+            sm.win32 *1
               "_write"
-              * sm.win32.stderr buffer buffer.size
+              sm.win32.stderr
+              buffer
+              buffer.size
           ^.^.output-block
 
   stderr "Hello, stderr-test!\n" ++> tests-prints-to-stderr

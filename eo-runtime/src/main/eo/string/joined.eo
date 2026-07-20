@@ -32,12 +32,15 @@
 
   eq. ++> tests-joined-one-string
     "some"
-    joined
+    joined *1
       "-"
-      * "some"
+      "some"
 
   eq. ++> tests-joined-many-strings
     "hello-world-dear-friend"
-    joined
+    joined *1
       "-"
-      * "hello" "world" "dear" "friend"
+      "hello"
+      "world"
+      "dear"
+      "friend"
