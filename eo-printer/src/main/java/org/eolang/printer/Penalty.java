@@ -21,8 +21,10 @@ import java.util.Map;
  *   <li>every level of indentation on a line costs
  *   {@link PenaltyKey#INDENT} points;</li>
  *   <li>every opening parenthesis costs {@link PenaltyKey#BRACKET}
- *   points, doubled when it opens inside an already-open bracket, since
- *   nested brackets hurt readability more than flat ones;</li>
+ *   points, multiplied by its nesting depth plus one, so a top-level
+ *   bracket costs the flat weight, a bracket nested one level deep costs
+ *   twice as much, two levels deep three times, and so on, since deeper
+ *   nesting hurts readability more;</li>
  *   <li>every explicit phi attribute {@code @} costs
  *   {@link PenaltyKey#PHI} points;</li>
  *   <li>every character sitting past the {@link PenaltyKey#WIDTH}-th
@@ -135,10 +137,12 @@ final class Penalty {
     /**
      * Weighted count of opening parentheses in a line.
      *
-     * <p>Each opening parenthesis counts as one unit at nesting depth zero
-     * and as two units when it opens inside an already-open bracket, so that
-     * nested brackets are charged double the flat {@link PenaltyKey#BRACKET}
-     * weight.</p>
+     * <p>The cost grows progressively with nesting depth: an opening
+     * parenthesis at depth zero counts as one unit, the next one nested
+     * inside it as two, the one inside that as three, and so on. In other
+     * words, a parenthesis opening with {@code depth} brackets already open
+     * counts as {@code depth + 1} units of the flat {@link PenaltyKey#BRACKET}
+     * weight, so the printer leans away from deeply nested one-liners.</p>
      *
      * @param line The line
      * @return The weighted number of parentheses
@@ -149,11 +153,7 @@ final class Penalty {
         for (int idx = 0; idx < line.length(); ++idx) {
             final char chr = line.charAt(idx);
             if (chr == '(') {
-                if (depth > 0) {
-                    count += 2;
-                } else {
-                    ++count;
-                }
+                count += depth + 1;
                 ++depth;
             } else if (chr == ')' && depth > 0) {
                 --depth;

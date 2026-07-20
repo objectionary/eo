@@ -50,14 +50,10 @@ final class PenaltyTest {
             new Penalty("42.gt (bar.hello 88) > [] > foo").points(),
             Matchers.equalTo(7)
         );
-    }
-
-    @Test
-    void chargesNestedParenthesisDouble() {
         MatcherAssert.assertThat(
-            "A nested parenthesis should cost twice the flat weight, so two brackets total three units",
-            new Penalty("(foo (bar 42))").points(),
-            Matchers.equalTo(21)
+            "Nesting should raise the cost progressively: depths one and two charge two and three units",
+            new Penalty("(a (b (c 1)))").points(),
+            Matchers.equalTo(42)
         );
     }
 
