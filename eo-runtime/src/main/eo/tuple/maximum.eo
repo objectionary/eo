@@ -12,11 +12,16 @@
 [sequence cant-max] > maximum
   if. > @
     is-empty lst
-    cant-max "cannot get the maximum number from an empty sequence"
+    cant-max
+      "cannot get the maximum number from an empty sequence"
     reduced
       lst
       ninf
-      (item.as-number.gt max).if item max > [max item]
+      [max item]
+        if. > @
+          item.as-number.gt max
+          item
+          max
   sequence > lst
 
   maximum --> on-taking-maximum-from-empty-sequence
@@ -34,16 +39,22 @@
     42
 
   eq. ++> tests-maximum-of-array-is-first
-    maximum
-      * 25 12 -2
+    maximum *
+      25
+      12
+      -2
     25
 
   eq. ++> tests-maximum-of-array-is-in-the-center
-    maximum
-      * 12 25 -2
+    maximum *
+      12
+      25
+      -2
     25
 
   eq. ++> tests-maximum-of-array-is-last
-    maximum
-      * 12 -2 25
+    maximum *
+      12
+      -2
+      25
     25

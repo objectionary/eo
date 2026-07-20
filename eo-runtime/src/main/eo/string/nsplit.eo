@@ -35,7 +35,11 @@
         or.
           size.eq 0
           (current.plus size).gt text.size
-        rec-nsplit accum start (current.plus 1).as-number count
+        rec-nsplit
+          accum
+          start
+          (current.plus 1).as-number
+          count
         if.
           and.
             delimiter.eq
@@ -47,30 +51,64 @@
             (current.plus size).as-number
             (current.plus size).as-number
             (count.plus 1).as-number
-          rec-nsplit accum start (current.plus 1).as-number count
+          rec-nsplit
+            accum
+            start
+            (current.plus 1).as-number
+            count
     accum.with > appended
       string
-        slice text start (current.minus start)
+        slice
+          text
+          start
+          current.minus start
 
   eq. ++> tests-nsplit-with-limit-two
-    nsplit "Cookie: a=1; b=2" " " 2
-    * "Cookie:" "a=1; b=2"
+    nsplit
+      "Cookie: a=1; b=2"
+      " "
+      2
+    *
+      "Cookie:"
+      "a=1; b=2"
 
   eq. ++> tests-nsplit-with-dashes-limit-two
-    nsplit "a-b-c-d" "-" 2
-    * "a" "b-c-d"
+    nsplit
+      "a-b-c-d"
+      "-"
+      2
+    *
+      "a"
+      "b-c-d"
 
   eq. ++> tests-nsplit-with-limit-one
-    nsplit "a-b-c" "-" 1
+    nsplit
+      "a-b-c"
+      "-"
+      1
     * "a-b-c"
 
   eq. ++> tests-nsplit-with-high-limit
-    nsplit "a-b-c" "-" 10
-    * "a" "b" "c"
+    nsplit
+      "a-b-c"
+      "-"
+      10
+    *
+      "a"
+      "b"
+      "c"
 
-  nsplit "text" "-" 0 --> on-nsplit-with-limit-zero
+  --> on-nsplit-with-limit-zero
+    nsplit > @
+      "text"
+      "-"
+      0
 
-  nsplit "text" "-" -1 --> on-nsplit-with-negative-limit
+  --> on-nsplit-with-negative-limit
+    nsplit > @
+      "text"
+      "-"
+      -1
 
   ++> tests-nsplit-invalid-limit-returns-provided-fallback
     "fallback".eq > @
@@ -81,9 +119,20 @@
         "fallback" > [msg]
 
   eq. ++> tests-nsplit-with-empty-strings
-    nsplit "-a-b-c" "-" 3
-    * "" "a" "b-c"
+    nsplit
+      "-a-b-c"
+      "-"
+      3
+    *
+      ""
+      "a"
+      "b-c"
 
   eq. ++> tests-nsplit-with-multi-char-delimiter
-    nsplit "a::b::c::d" "::" 2
-    * "a" "b::c::d"
+    nsplit
+      "a::b::c::d"
+      "::"
+      2
+    *
+      "a"
+      "b::c::d"

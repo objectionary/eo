@@ -21,14 +21,36 @@
 
   eq. ++> tests-simple-insert
     withi
-      * 1 2 3 4 5
+      *
+        1
+        2
+        3
+        4
+        5
       3
       "hello"
-    * 1 2 3 "hello" 4 5
+    *
+      1
+      2
+      3
+      "hello"
+      4
+      5
 
   eq. ++> tests-insert-with-zero-index
     withi
-      * 1 2 3 4 5
+      *
+        1
+        2
+        3
+        4
+        5
       0
       "hello"
-    * "hello" 1 2 3 4 5
+    *
+      "hello"
+      1
+      2
+      3
+      4
+      5

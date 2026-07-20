@@ -31,8 +31,10 @@
         index.plus 1
 
   and. ++> tests-hash-code-bools-is-number
-    (hash-code true).as-bytes.size.eq 8
-    (hash-code false).as-bytes.size.eq 8
+    (hash-code true).as-bytes.size.eq
+      8
+    (hash-code false).as-bytes.size.eq
+      8
 
   ++> tests-hash-code-int-is-int
     1.eq > @

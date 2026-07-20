@@ -17,19 +17,27 @@
 
   ++> tests-xor-with-zero
     not. > @
-      (0.as-bytes.xor 29.as-bytes).eq -30.as-bytes
+      eq.
+        0.as-bytes.xor 29.as-bytes
+        -30.as-bytes
 
   ++> tests-xor-with-two-neg
     not. > @
-      (-1.as-bytes.xor -123.as-bytes).eq -123.as-bytes
+      eq.
+        -1.as-bytes.xor -123.as-bytes
+        -123.as-bytes
 
   ++> tests-xor-with-two-plus
     not. > @
-      (53.as-bytes.xor 24.as-bytes).eq -46.as-bytes
+      eq.
+        53.as-bytes.xor 24.as-bytes
+        -46.as-bytes
 
   ++> tests-xor-with-one-neg-one-plus
     not. > @
-      (-36.as-bytes.xor 43.as-bytes).eq 8.as-bytes
+      eq.
+        -36.as-bytes.xor 43.as-bytes
+        8.as-bytes
 
   eq. ++> tests-xor-works
     00-00-00-00-8E-EA-4C-B1.xor 00-00-00-00-FF-FF-FF-FF
@@ -46,4 +54,5 @@
       00-00-00-00-FF-FF-FF-FF.xor FF-FF-FF-FF-00-00-00-00
     FF-FF-FF-FF-FF-FF-FF-FF
 
-  20-1F.xor CA-FE-BE --> on-xor-with-different-lengths
+  --> on-xor-with-different-lengths
+    20-1F.xor CA-FE-BE > @

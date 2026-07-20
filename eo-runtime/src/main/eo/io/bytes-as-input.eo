@@ -31,7 +31,9 @@
 [bts] > bytes-as-input
   [size] > read
     @. > @
-      (input-block bts --).read size
+      read.
+        input-block bts --
+        size
     [data buffer] > input-block
       buffer > @
       [size] > read
@@ -46,7 +48,10 @@
                   number next
             (data.slice 0 next).as-bytes
         data.size > available!
-        ((number available).gt requested).if requested available > next!
+        if. > next!
+          (number available).gt requested
+          requested
+          available
         size > requested!
 
   ++> tests-makes-an-input-from-bytes-and-reads
@@ -56,7 +61,9 @@
           i1.eq 01-02-03-04
           i2.eq 05-06-07-08
         i3.eq F5-F6
-      (i3.read 2).eq --
+      eq.
+        i3.read 2
+        --
     read. > i1
       bytes-as-input 01-02-03-04-05-06-07-08-F5-F6
       4

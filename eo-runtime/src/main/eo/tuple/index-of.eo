@@ -19,30 +19,45 @@
       -1
       if.
         next.eq -1
-        (tup.head.eq wanted).if tup.tail.length -1
+        if.
+          tup.head.eq wanted
+          tup.tail.length
+          -1
         next
     recidx tup.tail > next!
 
   eq. ++> tests-returns-index-of
     1
     index-of
-      * 1 2 3
+      *
+        1
+        2
+        3
       2
 
   eq. ++> tests-returns-first-index-of-element
     0
     index-of
-      * -1 2 -1
+      *
+        -1
+        2
+        -1
       -1
 
   eq. ++> tests-does-not-find-index-of
     -1
     index-of
-      * "qwerty" 2 3
+      *
+        "qwerty"
+        2
+        3
       7
 
   eq. ++> tests-finds-index-of-string
     1
     index-of
-      * "asdfgh" "qwerty" 3
+      *
+        "asdfgh"
+        "qwerty"
+        3
       "qwerty"

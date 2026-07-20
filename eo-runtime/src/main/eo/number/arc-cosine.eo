@@ -15,26 +15,36 @@
     pi.div 2
     arc-sine num
 
-  (arc-cosine 1).eq 0 ++> tests-arc-cosine-of-one-is-zero
+  ++> tests-arc-cosine-of-one-is-zero
+    eq. > @
+      arc-cosine 1
+      0
 
   ++> tests-arc-cosine-of-zero-is-pi-halves
     eq. > @
       arc-cosine 0
       pi.div 2
 
-  (arc-cosine -1).eq pi ++> tests-arc-cosine-of-negative-one-is-pi
+  ++> tests-arc-cosine-of-negative-one-is-pi
+    eq. > @
+      arc-cosine -1
+      pi
 
   lt. ++> tests-arc-cosine-of-point-six
     abs
       minus.
-        (arc-cosine 0.6).times 1000
+        times.
+          arc-cosine 0.6
+          1000
         927.295
     1
 
   lt. ++> tests-arc-cosine-of-negative-point-six
     abs
       minus.
-        (arc-cosine -0.6).times 1000
+        times.
+          arc-cosine -0.6
+          1000
         2214.297
     1
 

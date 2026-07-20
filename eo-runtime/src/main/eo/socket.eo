@@ -77,7 +77,8 @@
                 "WSACleanup"
                 *
             sm.win32.failure
-          T "Couldn't clean up the sockets subsystem"
+          T
+            "Couldn't clean up the sockets subsystem"
           true
     impl
       []
@@ -96,13 +97,19 @@
   [port] > htons
     as-i16. > @
       or.
-        (bts.and 00-FF).left 8
-        (bts.right 8).and 00-FF
+        left.
+          bts.and 00-FF
+          8
+        and.
+          bts.right 8
+          00-FF
     port.as-i16.as-bytes > bts
   [recv] > as-input
     [size] > read
       @. > @
-        (input-block --).read size
+        read.
+          input-block --
+          size
       [buffer] > input-block
         buffer > @
         [size] > read
@@ -182,15 +189,19 @@
         cant
           "Couldn't start up the sockets subsystem because %s".printf
             * sys.message
-        seq
-          * result sys.cleanup result
+        seq *
+          result
+          sys.cleanup
+          result
       if. > result!
         sd.eq -1
         cant
           "Couldn't create a socket because %s".printf
             * sys.message
-        seq
-          * used (closed-socket sd) used
+        seq *
+          used
+          closed-socket sd
+          used
       if. > used!
         addr.eq sys.none
         cant
@@ -233,8 +244,10 @@
                       cant-accept
                         "Failed to accept a connection on the socket #%d because %s".printf
                           * ^.^.sock.sd ^.^.sock.sys.message
-                      seq
-                        * handled (^.^.sock.closed-socket client) handled
+                      seq *
+                        handled
+                        ^.^.sock.closed-socket client
+                        handled
                     code. > client
                       ^.^.sock.sys.raw *1
                         "accept"

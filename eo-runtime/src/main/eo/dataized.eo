@@ -45,8 +45,11 @@
       malloc.for
         0
         [m]
-          seq > @
-            * cached.as-number cached.as-bytes cached.as-bool m
+          seq * > @
+            cached.as-number
+            cached.as-bytes
+            cached.as-bool
+            m
           func > cached!
           m.put (m.as-number.plus 1) > [] > func
       1

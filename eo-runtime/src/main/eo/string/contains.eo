@@ -29,11 +29,22 @@
       end.eq idx
       includes
       includes.or
-        rec-contains (idx.plus 1).as-number
+        rec-contains
+          (idx.plus 1).as-number
     eq. > includes
-      slice txt idx slen
+      slice
+        txt
+        idx
+        slen
       sub
 
-  contains "Hello, world!" "o, wo" ++> tests-text-contains-substring
+  ++> tests-text-contains-substring
+    contains > @
+      "Hello, world!"
+      "o, wo"
 
-  (contains "Hello, world!" "Hey").not ++> tests-text-does-not-contain-substring
+  ++> tests-text-does-not-contain-substring
+    not. > @
+      contains
+        "Hello, world!"
+        "Hey"

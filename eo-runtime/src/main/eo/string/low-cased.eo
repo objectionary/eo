@@ -19,7 +19,9 @@
           if.
             (code.lte maxcode).and
               code.gte mincode
-            (code.plus distance).as-i64.as-bytes.slice 7 1
+            (code.plus distance).as-i64.as-bytes.slice
+              7
+              1
             byte
         as-ascii byte > code
   minus. > distance
@@ -30,7 +32,9 @@
   as-ascii > mincode
     "A"
 
-  "hello".eq (low-cased "HELLO") ++> tests-converts-text-to-lower-case
+  ++> tests-converts-text-to-lower-case
+    "hello".eq > @
+      low-cased "HELLO"
 
   eq. ++> tests-converts-text-with-low-letters-to-lower-case
     "hello"

@@ -108,11 +108,14 @@
       malloc.for
         0
         [m]
-          seq > @
-            * (mp.found 1).exists (mp.found 1).exists m
+          seq * > @
+            (mp.found 1).exists
+            (mp.found 1).exists
+            m
           map * > mp
             map.entry
-              m.put (m.as-number.plus 1)
+              m.put
+                m.as-number.plus 1
               1
 
   eq. ++> tests-returns-list-of-keys
@@ -121,7 +124,10 @@
         map.entry 1 2
         map.entry 2 3
         map.entry 3 4
-    * 1 2 3
+    *
+      1
+      2
+      3
 
   eq. ++> tests-returns-list-of-values
     values.
@@ -129,7 +135,10 @@
         map.entry 1 2
         map.entry 2 3
         map.entry 3 4
-    * 2 3 4
+    *
+      2
+      3
+      4
 
   ++> tests-finds-element-by-key-in-map
     2.eq found.get > @
@@ -194,7 +203,9 @@
   ++> tests-replaces-value-if-pair-with-key-exists-in-map
     and. > @
       2.eq mp.size
-      3.eq (mp.found "two").get
+      3.eq
+        get.
+          mp.found "two"
     with. > mp
       map *
         map.entry "one" 1

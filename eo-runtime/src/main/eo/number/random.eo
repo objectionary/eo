@@ -45,7 +45,9 @@
                 as-bytes.
                   (one.left shift1).as-i64.minus one
             as-i64.
-              tbytes.and ((one.left shift3).as-i64.minus one).as-bytes
+              tbytes.and
+                as-bytes.
+                  (one.left shift3).as-i64.minus one
     00-00-00-00-00-00-00-01 > one
     35 > shift1
     17 > shift3

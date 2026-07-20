@@ -18,7 +18,9 @@
     i64 > @
       prefix.concat as-bytes
     if. > prefix
-      (as-bytes.and 80-00-00-00).eq 00-00-00-00
+      eq.
+        as-bytes.and 80-00-00-00
+        00-00-00-00
       00-00-00-00
       FF-FF-FF-FF
   [cant-convert] > as-i16
@@ -36,7 +38,9 @@
   as-i64.gte x.as-i32.as-i64 > [x] > gte
   [x] > times
     i32 right > @
-    (as-i64.times x.as-i32.as-i64).as-bytes.slice 4 4 > right
+    (as-i64.times x.as-i32.as-i64).as-bytes.slice > right
+      4
+      4
   [x] > plus
     if. > @
       or.
@@ -48,8 +52,12 @@
         i32 right
     as-bytes. > bts
       as-i64.plus x.as-i32.as-i64
-    bts.slice 0 4 > left
-    bts.slice 4 4 > right
+    bts.slice > left
+      0
+      4
+    bts.slice > right
+      4
+      4
   plus x.as-i32.neg > [x] > minus
   [x cant-divide] > div
     if. > @
@@ -67,8 +75,12 @@
           i32 right
     as-bytes. > bts
       as-i64.div xval.as-i64
-    bts.slice 0 4 > left
-    bts.slice 4 4 > right
+    bts.slice > left
+      0
+      4
+    bts.slice > right
+      4
+      4
     x.as-i32 > xval
     00-00-00-00 > zero
 
@@ -144,7 +156,8 @@
     -2147483648.as-i64.as-i32.minus 1.as-i64.as-i32
     2147483647.as-i64.as-i32
 
-  2.as-i64.as-i32.div 0.as-i64.as-i32 --> on-division-i32-by-i32-zero
+  --> on-division-i32-by-i32-zero
+    2.as-i64.as-i32.div 0.as-i64.as-i32 > @
 
   ++> tests-i32-div-by-zero-returns-provided-fallback
     "recovered".eq > @

@@ -12,4 +12,6 @@
 
 string > eol
   as-bytes.
-    sm.os.is-windows.if "\r\n" "\n"
+    sm.os.is-windows.if
+      "\r\n"
+      "\n"

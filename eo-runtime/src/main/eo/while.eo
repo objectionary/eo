@@ -100,7 +100,11 @@
 
   ++> tests-iterating-tuple-with-while-using-internal-iterator
     data.eq arr.length > @
-    * 1 1 1 1 > arr
+    * > arr
+      1
+      1
+      1
+      1
     malloc.for > data
       0
       [acc] >>
@@ -109,18 +113,24 @@
           [iter] >>
             (^.^.max.eq 0).if > @
               acc.put
-                acc.as-number.plus (^.^.arr.at 0)
+                acc.as-number.plus
+                  ^.^.arr.at 0
               while
                 ^.^.^.max.gt iter > [i] >>
                 seq * > [i] >>
                   ^.^.acc.put
                     ^.^.acc.as-number.plus (^.^.^.arr.at i)
-                  iter.put (iter.as-number.plus 1)
+                  iter.put
+                    iter.as-number.plus 1
     arr.length.plus -1 > max
 
   ++> tests-iterating-tuple-with-while-using-external-iterator
     data.eq arr.length > @
-    * 1 1 1 1 > arr
+    * > arr
+      1
+      1
+      1
+      1
     malloc.for > data
       0
       [acc] >>
@@ -131,13 +141,18 @@
               ^.^.^.max.gt iter > [i] >>
               seq * > [i] >>
                 ^.^.acc.put
-                  ^.^.acc.as-number.plus (^.^.^.arr.at iter)
-                iter.put (iter.as-number.plus 1)
+                  ^.^.acc.as-number.plus
+                    ^.^.^.arr.at iter
+                iter.put
+                  iter.as-number.plus 1
     arr.length.plus -1 > max
 
   ++> tests-iterating-tuple-with-while-without-body-multiple
     data.eq arr.length > @
-    * 1 1 1 > arr
+    * > arr
+      1
+      1
+      1
     malloc.for > data
       0
       [acc] >>

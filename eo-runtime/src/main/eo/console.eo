@@ -72,7 +72,9 @@
   [] > posix-console
     [size] > read
       @. > @
-        (input-block --).read size
+        read.
+          input-block --
+          size
       [buffer] > input-block
         buffer > @
         [size] > read
@@ -100,7 +102,9 @@
   [] > windows-console
     [size] > read
       @. > @
-        (input-block --).read size
+        read.
+          input-block --
+          size
       [buffer] > input-block
         buffer > @
         [size] > read

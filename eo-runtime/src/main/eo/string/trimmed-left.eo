@@ -18,7 +18,9 @@
     string
       bts.slice
         idx
-        (number len).minus idx
+        minus.
+          number len
+          idx
   text > bts!
   first-non-ws-index > idx!
     0
@@ -29,9 +31,12 @@
       index
       if.
         is-ws char
-        first-non-ws-index (index.plus 1).as-number
+        first-non-ws-index
+          (index.plus 1).as-number
         index
-    bts.slice index 1 > char!
+    bts.slice > char!
+      index
+      1
   or. > [c] > is-ws
     c.eq 20-
     or.
@@ -43,22 +48,50 @@
           (c.eq 0C-).or
             c.eq 0D-
 
-  (trimmed-left "").eq "" ++> tests-trimmed-left-empty-text
+  ++> tests-trimmed-left-empty-text
+    eq. > @
+      trimmed-left ""
+      ""
 
-  (trimmed-left " s").eq "s" ++> tests-text-trimmed-left-one-space
+  ++> tests-text-trimmed-left-one-space
+    eq. > @
+      trimmed-left
+        " s"
+      "s"
 
-  (trimmed-left "     some").eq "some" ++> tests-text-trimmed-left-many-spaces
+  ++> tests-text-trimmed-left-many-spaces
+    eq. > @
+      trimmed-left
+        "     some"
+      "some"
 
-  (trimmed-left "     ").eq "" ++> tests-text-trimmed-left-only-spaces
+  ++> tests-text-trimmed-left-only-spaces
+    eq. > @
+      trimmed-left
+        "     "
+      ""
 
-  (trimmed-left "\tvalue").eq "value" ++> tests-trimmed-left-strips-tab
+  ++> tests-trimmed-left-strips-tab
+    eq. > @
+      trimmed-left "\tvalue"
+      "value"
 
-  (trimmed-left "\nvalue").eq "value" ++> tests-trimmed-left-strips-lf
+  ++> tests-trimmed-left-strips-lf
+    eq. > @
+      trimmed-left "\nvalue"
+      "value"
 
-  (trimmed-left "\fvalue").eq "value" ++> tests-trimmed-left-strips-ff
+  ++> tests-trimmed-left-strips-ff
+    eq. > @
+      trimmed-left "\fvalue"
+      "value"
 
-  (trimmed-left "\rvalue").eq "value" ++> tests-trimmed-left-strips-cr
+  ++> tests-trimmed-left-strips-cr
+    eq. > @
+      trimmed-left "\rvalue"
+      "value"
 
   eq. ++> tests-trimmed-left-strips-mixed-ws
-    trimmed-left " \t\n\f\rvalue"
+    trimmed-left
+      " \t\n\f\rvalue"
     "value"

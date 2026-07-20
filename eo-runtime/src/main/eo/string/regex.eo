@@ -41,11 +41,15 @@
         $ > matched
         exists.if > next
           matched.
-            matched-from-index (position.plus 1) to
-          T "Matched block does not exist, can't get next"
+            matched-from-index
+              position.plus 1
+              to
+          T
+            "Matched block does not exist, can't get next"
         exists.if > text
           group 0
-          T "Matched block does not exist, can't get text"
+          T
+            "Matched block does not exist, can't get text"
         groups.at index > [index] > group
 
   matches. ++> tests-matches-regex-against-the-pattern
@@ -55,7 +59,8 @@
 
   ++> tests-does-not-matches-regex-against-the-pattern
     not. > @
-      (regex "/[a-z]+/").compiled.matches "123"
+      (regex "/[a-z]+/").compiled.matches
+        "123"
 
   ++> tests-matched-sequence-has-right-border-indexes
     and. > @
@@ -64,12 +69,16 @@
         1.eq n.from
         6.eq n.to
     next. > n
-      (regex "/[a-z]+/").match "!hello!"
+      match.
+        regex "/[a-z]+/"
+        "!hello!"
 
   eq. ++> tests-regex-returns-valid-matched-string-sequence
     text.
       next.
-        (regex "/[a-z]+/").match "!hello!"
+        match.
+          regex "/[a-z]+/"
+          "!hello!"
     "hello"
 
   ++> tests-regex-returns-valid-second-matched-block
@@ -83,42 +92,58 @@
       second.to.eq 12
     next. > second
       next.
-        (regex "/[a-z]+/").match "!hello!world!"
+        match.
+          regex "/[a-z]+/"
+          "!hello!world!"
 
   --> on-getting-next-on-not-matched-block
     next. > @
       next.
-        (regex "/[a-z]+/").match "123"
+        match.
+          regex "/[a-z]+/"
+          "123"
 
   --> on-getting-from-position-on-not-matched-block
     from. > @
       next.
-        (regex "/[a-z]+/").match "123"
+        match.
+          regex "/[a-z]+/"
+          "123"
 
   --> on-getting-to-position-on-not-matched-block
     to. > @
       next.
-        (regex "/[a-z]+/").match "123"
+        match.
+          regex "/[a-z]+/"
+          "123"
 
   --> on-getting-groups-count-on-not-matched-block
     count. > @
       next.
-        (regex "/[a-z]+/").match "123"
+        match.
+          regex "/[a-z]+/"
+          "123"
 
   --> on-getting-groups-on-not-matched-block
     groups. > @
       next.
-        (regex "/[a-z]+/").match "123"
+        match.
+          regex "/[a-z]+/"
+          "123"
 
   group. --> on-getting-specified-group-on-not-matched-block
     next.
-      (regex "/[a-z]+/").match "123"
+      match.
+        regex "/[a-z]+/"
+        "123"
     1
 
   --> on-getting-text-on-not-matched-block
     text. > @
       next.
-        (regex "/[a-z]+/").match "123"
+        match.
+          regex "/[a-z]+/"
+          "123"
 
   matches. ++> tests-regex-matches-dotall-option
     compiled.
@@ -152,7 +177,8 @@
 
   matches. ++> tests-regex-ignores-comments-in-string
     compiled.
-      regex "/(\\d) #ignore this comment/x"
+      regex
+        "/(\\d) #ignore this comment/x"
     "4"
 
   matches. ++> tests-regex-matches-with-unicode-case-and-insensitive
@@ -164,7 +190,9 @@
     compiled. > @
       regex "(.)+"
 
-  (regex "/pattern").compiled --> on-missing-closing-slash-in-regex
+  --> on-missing-closing-slash-in-regex
+    compiled. > @
+      regex "/pattern"
 
   ++> tests-invalid-regex-syntax-returns-provided-fallback
     "recovered".eq > @
@@ -186,12 +214,16 @@
         and.
           first.count.eq 3
           (first.group 1).eq "hello"
-        (first.group 2).eq "1"
+        eq.
+          first.group 2
+          "1"
       and.
         and.
           second.count.eq 3
           (second.group 1).eq "world"
-        (second.group 2).eq "2"
+        eq.
+          second.group 2
+          "2"
     next. > first
       match.
         compiled.

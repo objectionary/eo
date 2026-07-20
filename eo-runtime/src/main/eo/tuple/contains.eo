@@ -15,15 +15,27 @@
       index-of list element
 
   contains ++> tests-list-contains-string
-    * "qwerty" "asdfgh" 3 "qwerty"
+    *
+      "qwerty"
+      "asdfgh"
+      3
+      "qwerty"
     "qwerty"
 
   contains ++> tests-list-contains-number
-    * "qwerty" "asdfgh" 3 "qwerty"
+    *
+      "qwerty"
+      "asdfgh"
+      3
+      "qwerty"
     3
 
   ++> tests-list-does-not-contain
     not. > @
       contains
-        * "Привет" "asdfgh" 3 "qwerty"
+        *
+          "Привет"
+          "asdfgh"
+          3
+          "qwerty"
         "Hi"

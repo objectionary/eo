@@ -77,7 +77,10 @@
       read 0 size > get
       [] > size /number
       [size] > resized /Q.malloc.of.allocated
-      write target (read source length) > [source target length] > copy
+      [source target length] > copy
+        write > @
+          target
+          read source length
       [offset length cant-read] > read /bytes
       [offset data] > write /bool
       seq * > [object] > put
@@ -130,7 +133,8 @@
     malloc.of > mem
       13
       seq * > [m]
-        m.put "Hello, world!"
+        m.put
+          "Hello, world!"
         m.put 42
 
   ++> tests-malloc-rewrites-and-increments-itself
@@ -194,7 +198,9 @@
   ++> tests-malloc-gives-id-to-allocated-block
     malloc.of > @
       1
-      m.put (m.id.gt 0) > [m]
+      [m]
+        m.put > @
+          m.id.gt 0
 
   ++> tests-malloc-allocates-right-size-block
     malloc.of > @
@@ -211,10 +217,13 @@
         malloc.of > @
           12
           seq * > [m] >>
-            m.write 0 "Hello, "
+            m.write
+              0
+              "Hello, "
             m.write 7 "Jeff!"
             b.put
-              (m.read 0 12).eq "Hello, Jeff!"
+              (m.read 0 12).eq
+                "Hello, Jeff!"
 
   ++> tests-malloc-concacts-strings-with-offset
     malloc.of > @
@@ -226,7 +235,8 @@
             m.write 0 "XXX"
             m.write 1 "Y"
             b.put
-              (m.read 0 3).eq "XYX"
+              (m.read 0 3).eq
+                "XYX"
 
   ++> writes-beyond-offset-and-resizes
     malloc.of > @
@@ -244,7 +254,8 @@
           seq * > [m] >>
             m.write 2 "Hello"
             b.put
-              (m.read 2 5).eq "Hello"
+              (m.read 2 5).eq
+                "Hello"
 
   ++> tests-malloc-read-over-a-limit-returns-fallback
     01-02.eq > @
@@ -329,7 +340,10 @@
     malloc.for > @
       0
       seq * > [m]
-        m.copy 3 9 1
+        m.copy
+          3
+          9
+          1
         m.size.eq 10
 
   --> on-copying-with-wrong-length

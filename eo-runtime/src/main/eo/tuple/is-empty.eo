@@ -14,8 +14,9 @@
 
   ++> tests-list-should-not-be-empty
     not. > @
-      is-empty
-        * 1 2
+      is-empty *
+        1
+        2
 
   is-empty ++> list-should-be-empty
     *

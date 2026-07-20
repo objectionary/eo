@@ -25,7 +25,12 @@
     if.
       steps.length.eq 1
       steps.head
-      (dataized (seq steps.tail)).as-bool.if steps.head steps.head
+      if.
+        as-bool.
+          dataized
+            seq steps.tail
+        steps.head
+        steps.head
 
   ++> tests-seq-single-dataization-float-less
     malloc.of > @
@@ -36,7 +41,8 @@
           b.put > [m] >>
             lt.
               seq *
-                m.put (m.as-number.plus 1)
+                m.put
+                  m.as-number.plus 1
                 m.as-number
               1.1
 
@@ -49,7 +55,8 @@
           b.put > [m] >>
             gt.
               seq *
-                m.put (m.as-number.plus 1)
+                m.put
+                  m.as-number.plus 1
                 m.as-number
               0.9
 
@@ -62,7 +69,8 @@
           b.put > [m] >>
             lt.
               seq *
-                m.put (m.as-number.plus 1)
+                m.put
+                  m.as-number.plus 1
                 m.as-number
               2
 
@@ -75,7 +83,8 @@
           b.put > [m] >>
             lte.
               seq *
-                m.put (m.as-number.plus 1)
+                m.put
+                  m.as-number.plus 1
                 m.as-number
               1
 
@@ -134,7 +143,8 @@
             eq.
               seq *
                 m.put 0
-                m.put (m.as-number.plus 1)
+                m.put
+                  m.as-number.plus 1
                 m.as-number
               1
 
@@ -150,16 +160,19 @@
                 at.
                   * 0 1
                   m
-                m.put (m.as-number.plus 1)
+                m.put
+                  m.as-number.plus 1
                 m
               1
 
   eq. ++> tests-seq-calculates-and-returns
     1
-    seq
-      * 0 1
+    seq *
+      0
+      1
 
   eq. ++> tests-seq-calculates-and-returns-object
     "Hello!"
-    seq
-      * 0 "Hello!"
+    seq *
+      0
+      "Hello!"

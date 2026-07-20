@@ -28,9 +28,12 @@
       0
       if.
         is-ws char
-        first-non-ws-index (index.plus -1).as-number
+        first-non-ws-index
+          (index.plus -1).as-number
         index.plus 1
-    bts.slice index 1 > char!
+    bts.slice > char!
+      index
+      1
   or. > [c] > is-ws
     c.eq 20-
     or.
@@ -42,22 +45,50 @@
           (c.eq 0C-).or
             c.eq 0D-
 
-  (trimmed-right "").eq "" ++> tests-trimmed-right-empty-text
+  ++> tests-trimmed-right-empty-text
+    eq. > @
+      trimmed-right ""
+      ""
 
-  (trimmed-right "s ").eq "s" ++> tests-text-trimmed-right-one-space
+  ++> tests-text-trimmed-right-one-space
+    eq. > @
+      trimmed-right
+        "s "
+      "s"
 
-  (trimmed-right "some     ").eq "some" ++> tests-text-trimmed-right-many-spaces
+  ++> tests-text-trimmed-right-many-spaces
+    eq. > @
+      trimmed-right
+        "some     "
+      "some"
 
-  (trimmed-right "     ").eq "" ++> tests-text-trimmed-right-only-spaces
+  ++> tests-text-trimmed-right-only-spaces
+    eq. > @
+      trimmed-right
+        "     "
+      ""
 
-  (trimmed-right "value\t").eq "value" ++> tests-trimmed-right-strips-tab
+  ++> tests-trimmed-right-strips-tab
+    eq. > @
+      trimmed-right "value\t"
+      "value"
 
-  (trimmed-right "value\n").eq "value" ++> tests-trimmed-right-strips-lf
+  ++> tests-trimmed-right-strips-lf
+    eq. > @
+      trimmed-right "value\n"
+      "value"
 
-  (trimmed-right "value\f").eq "value" ++> tests-trimmed-right-strips-ff
+  ++> tests-trimmed-right-strips-ff
+    eq. > @
+      trimmed-right "value\f"
+      "value"
 
-  (trimmed-right "value\r").eq "value" ++> tests-trimmed-right-strips-cr
+  ++> tests-trimmed-right-strips-cr
+    eq. > @
+      trimmed-right "value\r"
+      "value"
 
   eq. ++> tests-trimmed-right-strips-mixed-ws
-    trimmed-right "value \t\n\f\r"
+    trimmed-right
+      "value \t\n\f\r"
     "value"

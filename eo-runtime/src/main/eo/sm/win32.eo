@@ -39,13 +39,17 @@
   02-02 > version
   [code output] > return
     output > @
-    return code output > called
+    return > called
+      code
+      output
   [time millitm] > timeb
   [mode size] > stat64
   [family port address] > sockaddr-in
     00-00-00-00-00-00-00-00 > padding
     plus. > size
-      (family.size.plus port.size).plus address.size
+      plus.
+        family.size.plus port.size
+        address.size
       padding.size
 
   os.is-windows.not.or ++> tests-returns-valid-win32-inet-addr-for-localhost

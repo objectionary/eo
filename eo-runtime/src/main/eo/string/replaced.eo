@@ -13,7 +13,10 @@
 [text target replacement] > replaced
   matched.exists.not.if > @
     reinit
-    rec-replaced matched "" matched.start
+    rec-replaced
+      matched
+      ""
+      matched.start
   text > bts!
   next. > matched
     target.match reinit
@@ -24,12 +27,16 @@
       block.next
       concat.
         accum.concat
-          reinit.slice start (block.from.minus start)
+          reinit.slice
+            start
+            block.from.minus start
         replacement
       block.to
     string
       accum.concat
-        reinit.slice start (reinit.length.minus start)
+        reinit.slice
+          start
+          reinit.length.minus start
 
   eq. ++> tests-does-not-replaces-if-regex-not-found
     replaced

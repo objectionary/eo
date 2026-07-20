@@ -13,13 +13,23 @@
       number slen
       tlen
     eq.
-      slice txt 0 slen
+      slice
+        txt
+        0
+        slen
       sub
   sub.size > slen!
   substring > sub!
   txt.size > tlen!
   text > txt!
 
-  starts-with "Hello, world" "Hello" ++> tests-starts-with-substring
+  ++> tests-starts-with-substring
+    starts-with > @
+      "Hello, world"
+      "Hello"
 
-  (starts-with "Hello, world" "world").not ++> tests-does-not-start-with-substring
+  ++> tests-does-not-start-with-substring
+    not. > @
+      starts-with
+        "Hello, world"
+        "world"

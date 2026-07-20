@@ -39,7 +39,9 @@
     file uri > as-file
     and. > is-absolute
       uri.length.gt 0
-      (uri.as-bytes.slice 0 1).eq separator
+      eq.
+        uri.as-bytes.slice 0 1
+        separator
     "/" > separator
     [] > normalized
       ^.^.posix > @
@@ -53,7 +55,9 @@
           uri.length.eq 0
           "."
           concat.
-            is-absolute.if (separator.concat path) path
+            is-absolute.if
+              separator.concat path
+              path
             trailing.if separator --
       string.joined > path
         separator
@@ -63,9 +67,12 @@
           if. > [accum segment] >>
             segment.eq ".."
             if.
-              (accum.length.gt 0).and (accum.head.eq "..").not
+              (accum.length.gt 0).and
+                (accum.head.eq "..").not
               accum.tail
-              is-absolute.not.if (accum.with segment) accum
+              is-absolute.not.if
+                accum.with segment
+                accum
             if.
               (segment.eq ".").or
                 segment.eq ""
@@ -74,7 +81,9 @@
       and. > trailing
         ubts.size.gt 0
         eq.
-          ubts.slice (ubts.size.plus -1) 1
+          ubts.slice
+            ubts.size.plus -1
+            1
           separator
       uri > ubts!
     [other] > resolved
@@ -82,7 +91,8 @@
         ^.^.posix
           string
             if.
-              (obts.slice 0 1).eq separator
+              (obts.slice 0 1).eq
+                separator
               obts
               (uri.concat separator).concat obts
       other.as-bytes > obts
@@ -95,8 +105,11 @@
           as-bytes.
             txt.slice
               idx
-              txt.length.minus (number idx)
-      (string.last-index-of txt separator).plus 1 > idx!
+              txt.length.minus
+                number idx
+      plus. > idx!
+        string.last-index-of txt separator
+        1
       uri > pth!
       string pth > txt
     [] > extname
@@ -109,7 +122,8 @@
           as-bytes.
             txt.slice
               idx
-              txt.length.minus (number idx)
+              txt.length.minus
+                number idx
       basename > base!
       string.last-index-of txt "." > idx!
       string base > txt
@@ -125,7 +139,9 @@
       string pth > txt
   [uri] > win32
     validated > @
-      string (validated.separated-correctly uri).as-bytes
+      string
+        as-bytes.
+          validated.separated-correctly uri
     "\\" > separator
     [uri] > validated
       uri > @
@@ -139,15 +155,20 @@
       [uri] > is-root-relative
         and. > @
           ubts.size.gt 0
-          (ubts.slice 0 1).eq separator
+          (ubts.slice 0 1).eq
+            separator
         uri > ubts!
       [uri] > separated-correctly
         if. > @
-          (string.index-of pth path.posix.separator).eq -1
+          (string.index-of pth path.posix.separator).eq
+            -1
           string ubts
           string repl
         string ubts > pth
-        string.replaced pth (string.regex "/\\//") separator > repl!
+        string.replaced > repl!
+          pth
+          string.regex "/\\//"
+          separator
         uri > ubts!
       [] > is-absolute
         if. > @
@@ -163,7 +184,9 @@
             separator
             string normalized
         is-drive-relative.if > driveless!
-          ubts.slice 2 (ubts.size.plus -2)
+          ubts.slice
+            2
+            ubts.size.plus -2
           ubts
         as-bool. > is-drive-relative
           ^.is-drive-relative ubts
@@ -189,7 +212,8 @@
             if. > [accum segment] >>
               segment.eq ".."
               if.
-                (accum.length.gt 0).and (accum.head.eq "..").not
+                (accum.length.gt 0).and
+                  (accum.head.eq "..").not
                 accum.tail
                 (is-root-relative.not.and is-drive-relative.not).if
                   accum.with segment
@@ -201,7 +225,11 @@
                 accum.with segment
         and. > trailing
           ubts.size.gt 0
-          (ubts.slice (ubts.size.plus -1) 1).eq separator
+          eq.
+            ubts.slice
+              ubts.size.plus -1
+              1
+            separator
         uri > ubts!
       [other] > resolved
         normalized. > @
@@ -223,8 +251,13 @@
               idx.eq 0
             pth
             as-bytes.
-              txt.slice idx (txt.length.minus (number idx))
-        (string.last-index-of txt separator).plus 1 > idx!
+              txt.slice
+                idx
+                txt.length.minus
+                  number idx
+        plus. > idx!
+          string.last-index-of txt separator
+          1
         uri > pth!
         string pth > txt
       [] > extname
@@ -234,7 +267,10 @@
           ""
           string
             as-bytes.
-              txt.slice idx (txt.length.minus (number idx))
+              txt.slice
+                idx
+                txt.length.minus
+                  number idx
         basename > base!
         string.last-index-of txt "." > idx!
         string base > txt
@@ -250,7 +286,9 @@
         string pth > txt
 
   path.separator.eq ++> tests-determines-separator-depending-on-os
-    sm.os.is-windows.if path.win32.separator path.posix.separator
+    sm.os.is-windows.if
+      path.win32.separator
+      path.posix.separator
 
   and. ++> tests-detects-absolute-posix-path
     is-absolute.
@@ -399,13 +437,21 @@
   eq. ++> tests-takes-valid-basename
     basename.
       path.joined
-        * "var" "www" "html" "hello.eo"
+        *
+          "var"
+          "www"
+          "html"
+          "hello.eo"
     "hello.eo"
 
   eq. ++> tests-returns-empty-basename-from-path-ended-with-separator
     basename.
       path.joined
-        * "var" "www" "html" path.separator
+        *
+          "var"
+          "www"
+          "html"
+          path.separator
     ""
 
   eq. ++> tests-returns-base-with-backslash-in-path-on-posix
@@ -421,38 +467,56 @@
   eq. ++> tests-takes-file-extname
     extname.
       path.joined
-        * "var" "www" "hello.txt"
+        *
+          "var"
+          "www"
+          "hello.txt"
     ".txt"
 
   eq. ++> tests-does-not-take-extname-on-file-without-extension
     extname.
       path.joined
-        * "var" "www" "html"
+        *
+          "var"
+          "www"
+          "html"
     ""
 
   eq. ++> tests-does-not-take-extname-if-ends-with-separator
     extname.
       path.joined
-        * "var" "www" path.separator
+        *
+          "var"
+          "www"
+          path.separator
     ""
 
   eq. ++> tests-returns-valid-dirname-from-file-path
     dirname.
       path.joined
-        * "var" "www" "hello.txt"
+        *
+          "var"
+          "www"
+          "hello.txt"
     path.joined
       * "var" "www"
 
   eq. ++> tests-returns-valid-dirname-from-dir-path
     dirname.
       path.joined
-        * "var" "www" path.separator
+        *
+          "var"
+          "www"
+          path.separator
     path.joined
       * "var" "www"
 
   eq. ++> tests-returns-valid-dirname-from-file-path-without-extension
     dirname.
       path.joined
-        * "var" "www" "html"
+        *
+          "var"
+          "www"
+          "html"
     path.joined
       * "var" "www"

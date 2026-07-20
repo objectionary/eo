@@ -47,7 +47,10 @@
 
   ++> tests-forks-on-true-condition
     eq. > @
-      (5.eq 5).if 123 42
+      if.
+        5.eq 5
+        123
+        42
       123
 
   ++> tests-takes-parent-object
@@ -72,8 +75,10 @@
   ++> tests-app-that-calls-func
     output.eq 2 > @
     [] > app
-      f > @
-        * 1 2 3
+      f * > @
+        1
+        2
+        3
       [args] > f
         2 > @
         1 > a
@@ -103,11 +108,14 @@
             blah4 > @
               x.plus 1
             [x] > blah4
-              blah5 (x.plus 1) > @
+              blah5 > @
+                x.plus 1
               [x] > blah5
-                blah6 (x.plus 1) > @
+                blah6 > @
+                  x.plus 1
                 [x] > blah6
-                  blah7 (x.plus 1) > @
+                  blah7 > @
+                    x.plus 1
                   [x] > blah7
                     blah8 (x.plus 1) > @
                     [x] > blah8
@@ -194,5 +202,8 @@
 
   ++> tests-forks-on-false-condition
     eq. > @
-      (5.eq 8).if 123 42
+      if.
+        5.eq 8
+        123
+        42
       42

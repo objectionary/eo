@@ -21,11 +21,14 @@
       p.eq 0
       1
       times.
-        pow10 (p.minus 1).as-number
+        pow10
+          (p.minus 1).as-number
         10
   [a] > positive
     concat. > @
-      (as-decimal ip).concat ".".as-bytes
+      concat.
+        as-decimal ip
+        ".".as-bytes
       rec-pad
         m.minus
           ip.times scale
@@ -34,7 +37,9 @@
     floor. > ip
       m.div scale
     floor. > m
-      (a.times scale).plus 0.5
+      plus.
+        a.times scale
+        0.5
     pow10 places > scale
   if. > [value count acc] > rec-pad
     count.eq 0

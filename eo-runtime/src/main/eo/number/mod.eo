@@ -13,7 +13,8 @@
 [x y cant-mod] > mod
   if. > @
     divisor.eq 0
-    cant-mod "cannot calculate mod by zero"
+    cant-mod
+      "cannot calculate mod by zero"
     if.
       dividend.gt 0
       abs-mod
@@ -24,34 +25,61 @@
     y.as-bytes
   [] > abs-mod
     absx.minus > @
-      absy.times (absx.div absy).floor
+      absy.times
+        floor.
+          absx.div absy
     abs dividend > absx
     abs divisor > absy
 
-  (mod 1 2).eq 1 ++> tests-mod-n1-n2
+  ++> tests-mod-n1-n2
+    eq. > @
+      mod 1 2
+      1
 
-  (mod 0 5).eq 0 ++> tests-mod-n0-n5
+  ++> tests-mod-n0-n5
+    eq. > @
+      mod 0 5
+      0
 
-  (mod 0 -15).eq 0 ++> tests-mod-n0-n15-neg
+  ++> tests-mod-n0-n15-neg
+    eq. > @
+      mod 0 -15
+      0
 
-  (mod -1 7).eq -1 ++> tests-mod-n1-neg-n7
+  ++> tests-mod-n1-neg-n7
+    eq. > @
+      mod -1 7
+      -1
 
-  (mod 16 -200).eq 16 ++> tests-mod-n16-n200-neg
+  ++> tests-mod-n16-n200-neg
+    eq. > @
+      mod 16 -200
+      16
 
   ++> tests-div-mod-compatibility
     eq. > @
       plus.
         mod dividend divisor
-        divisor.times (dividend.div divisor).as-i64.as-number
+        divisor.times
+          (dividend.div divisor).as-i64.as-number
       dividend
     -13 > dividend
     5 > divisor
 
-  (mod -1 5).eq -1 ++> tests-mod-dividend-less-than-divisor
+  ++> tests-mod-dividend-less-than-divisor
+    eq. > @
+      mod -1 5
+      -1
 
-  (mod 133 1).eq 0 ++> tests-mod-dividend-by-one
+  ++> tests-mod-dividend-by-one
+    eq. > @
+      mod 133 1
+      0
 
-  mod 5 0 --> on-mod-by-zero
+  --> on-mod-by-zero
+    mod > @
+      5
+      0
 
   ++> tests-mod-by-zero-returns-provided-fallback
     "recovered".eq > @

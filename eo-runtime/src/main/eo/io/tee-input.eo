@@ -24,7 +24,10 @@
 [input output] > tee-input
   [size] > read
     read. > @
-      input-block input output --
+      input-block
+        input
+        output
+        --
       size
     [input output buffer] > input-block
       buffer > @

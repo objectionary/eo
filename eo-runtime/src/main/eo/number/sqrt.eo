@@ -14,28 +14,42 @@
       number num.as-bytes
       0
     nan
-    power num 0.5
+    power
+      num
+      0.5
 
-  (sqrt 0).eq 0 ++> tests-sqrt-zero
+  ++> tests-sqrt-zero
+    eq. > @
+      sqrt 0
+      0
 
-  (sqrt 1).eq 1 ++> tests-sqrt-one
+  ++> tests-sqrt-one
+    eq. > @
+      sqrt 1
+      1
 
   ++> tests-sqrt-four
     lt. > @
       abs
-        (sqrt 4).minus 2
+        minus.
+          sqrt 4
+          2
       1.0E-9
 
   ++> tests-sqrt-two
     lt. > @
       abs
-        (sqrt 2).minus 1.4142135623730951
+        minus.
+          sqrt 2
+          1.4142135623730951
       1.0E-9
 
   ++> tests-sqrt-point-five
     lt. > @
       abs
-        (sqrt 0.25).minus 0.5
+        minus.
+          sqrt 0.25
+          0.5
       1.0E-9
 
   ++> tests-sqrt-check-zero-input
@@ -56,6 +70,9 @@
 
   (sqrt nan).is-nan ++> tests-sqrt-check-nan-input
 
-  (sqrt pinf).eq pinf ++> tests-sqrt-check-infinity-n1
+  ++> tests-sqrt-check-infinity-n1
+    eq. > @
+      sqrt pinf
+      pinf
 
   (sqrt ninf).is-nan ++> tests-sqrt-check-infinity-n2

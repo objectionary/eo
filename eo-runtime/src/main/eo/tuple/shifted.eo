@@ -17,12 +17,25 @@
 
   eq. ++> tests-shifted-with-shift-less-than-length
     shifted
-      * 8 2 3 4 5
+      *
+        8
+        2
+        3
+        4
+        5
       2
-    * 3 4 5
+    *
+      3
+      4
+      5
 
   eq. ++> tests-shifted-with-shift-greater-than-length
     shifted
-      * 8 2 3 4 5
+      *
+        8
+        2
+        3
+        4
+        5
       6
     *

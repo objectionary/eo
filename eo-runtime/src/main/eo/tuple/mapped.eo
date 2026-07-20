@@ -19,6 +19,12 @@
   ++> tests-simple-list-mapping
     eq. > @
       mapped
-        * 1 2 3
+        *
+          1
+          2
+          3
         x.times 2 > [x]
-      * 2 4 6
+      *
+        2
+        4
+        6

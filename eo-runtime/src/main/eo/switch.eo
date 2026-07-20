@@ -27,7 +27,8 @@
 [cases fallback] > switch
   if. > @
     cases.length.eq 0
-    fallback "Switch cases are empty"
+    fallback
+      "Switch cases are empty"
     if.
       true.eq found.match
       found.head
@@ -36,7 +37,9 @@
     rec-case cases
   [tup] > rec-case
     if. > @
-      (tup.length.gt 1).and previous.match
+      and.
+        tup.length.gt 1
+        previous.match
       previous
       [] >>
         tup.head.head > head
@@ -53,9 +56,15 @@
   ++> tests-switch-strings-case
     eq. > @
       switch *
-        * (password.eq "swordfish") "password is correct!"
-        * (password.eq "") "empty password is not allowed"
-        * false "password is wrong"
+        *
+          password.eq "swordfish"
+          "password is correct!"
+        *
+          password.eq ""
+          "empty password is not allowed"
+        *
+          false
+          "password is wrong"
       "password is correct!"
     "swordfish" > password
 
@@ -67,8 +76,12 @@
     "TRUE1"
 
   switch * ++> tests-switch-with-all-false-cases
-    * false "false1"
-    * false "false2"
+    *
+      false
+      "false1"
+    *
+      false
+      "false2"
 
   switch --> on-empty-switch
     *

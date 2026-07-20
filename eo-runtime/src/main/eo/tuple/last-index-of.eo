@@ -24,19 +24,28 @@
   eq. ++> tests-finds-last-index-of
     1
     last-index-of
-      * "qwerty" 2 3
+      *
+        "qwerty"
+        2
+        3
       2
 
   eq. ++> tests-finds-last-index-of-repeated
     2
     last-index-of
-      * 24 42 24
+      *
+        24
+        42
+        24
       24
 
   eq. ++> tests-last-index-of-not-found
     -1
     last-index-of
-      * 1 2 3
+      *
+        1
+        2
+        3
       0
 
   eq. ++> tests-last-index-of-empty
@@ -48,5 +57,10 @@
   eq. ++> tests-last-index-of-unicode
     3
     last-index-of
-      * "Hi" "Привет" "Hola" "Привет" "こんにちわ"
+      *
+        "Hi"
+        "Привет"
+        "Hola"
+        "Привет"
+        "こんにちわ"
       "Привет"

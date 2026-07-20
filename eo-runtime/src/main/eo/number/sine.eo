@@ -20,7 +20,9 @@
   arg.minus > reduced
     times.
       floor.
-        (arg.div tau).plus 0.5
+        plus.
+          arg.div tau
+          0.5
       tau
   reduced.times > squared
     reduced
@@ -36,7 +38,10 @@
         factor
           depth.plus 1
 
-  (sine 0).eq 0 ++> tests-sine-of-zero-is-zero
+  ++> tests-sine-of-zero-is-zero
+    eq. > @
+      sine 0
+      0
 
   lt. ++> tests-sine-of-pi-halves-is-one
     abs
@@ -61,7 +66,9 @@
   ++> tests-sine-of-pi-is-zero
     lt. > @
       abs
-        (sine pi).times 1000
+        times.
+          sine pi
+          1000
       1
 
   lt. ++> tests-sine-of-negative-pi-halves-is-minus-one
@@ -116,7 +123,9 @@
   lt. ++> tests-sine-of-seventeen-radians
     abs
       minus.
-        (sine 17).times 1000
+        times.
+          sine 17
+          1000
         -961
     1
 

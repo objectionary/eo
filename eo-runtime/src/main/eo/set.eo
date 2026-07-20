@@ -27,22 +27,28 @@
     mp.has item > [item] > has
 
   eq. ++> tests-set-rebuilds-itself
-    set
-      * 1 2 2
-    * 1 2
+    set *
+      1
+      2
+      2
+    *
+      1
+      2
 
   eq. ++> tests-does-not-append-existed-item-to-set
     size.
       with.
-        set
-          * 1 2
+        set *
+          1
+          2
         1
     2
 
   has. ++> tests-appends-new-item-to-set
     with.
-      set
-        * 1 2
+      set *
+        1
+        2
       3
     3
 

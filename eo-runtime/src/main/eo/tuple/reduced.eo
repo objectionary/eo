@@ -22,7 +22,11 @@
   ++> tests-list-reduce-without-index
     eq. > @
       reduced
-        * 1 2 3 4
+        *
+          1
+          2
+          3
+          4
         -1
         a.times x > [a x]
       -24

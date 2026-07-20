@@ -45,7 +45,16 @@
 
   ++> tests-simple-range-from-one-to-ten
     rng.eq > @
-      * 1 2 3 4 5 6 7 8 9
+      *
+        1
+        2
+        3
+        4
+        5
+        6
+        7
+        8
+        9
     range > rng
       []
         build 1 > @
@@ -57,7 +66,15 @@
 
   ++> tests-simple-range-with-floats-from-one-to-five
     rng.eq > @
-      * 1 1.5 2 2.5 3 3.5 4 4.5
+      *
+        1
+        1.5
+        2
+        2.5
+        3
+        3.5
+        4
+        4.5
     range > rng
       []
         x 1 > @

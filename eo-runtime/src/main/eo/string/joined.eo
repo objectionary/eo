@@ -14,14 +14,18 @@
   if. > bts!
     items.length.eq 0
     --
-    with-delimiter items.head items.tail
+    with-delimiter
+      items.head
+      items.tail
   text > delimiter!
   if. > [acc tup] > with-delimiter
     tup.length.eq 0
     acc
     with-delimiter
       concat.
-        (dataized tup.head).concat delimiter
+        concat.
+          dataized tup.head
+          delimiter
         acc
       tup.tail
 

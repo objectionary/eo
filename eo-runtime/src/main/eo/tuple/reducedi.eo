@@ -20,7 +20,10 @@
     rec-reducedi list
   if. > [tup] > rec-reducedi
     tup.length.eq 1
-    func start tup.head 0
+    func
+      start
+      tup.head
+      0
     func
       rec-reducedi tup.tail
       tup.head
@@ -40,7 +43,52 @@
   ++> tests-list-reducedi-long-int-array
     eq. > @
       reducedi
-        * 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+        *
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          1
         0
         x.plus a > [a x i]
       1
@@ -48,7 +96,10 @@
   ++> tests-list-reducedi-bools-array
     not. > @
       reducedi
-        * true true false
+        *
+          true
+          true
+          false
         true
         x.and a > [a x i]
 

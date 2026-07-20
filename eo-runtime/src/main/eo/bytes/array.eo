@@ -27,7 +27,12 @@
 
   eq. ++> tests-converts-bytes-to-array
     array 20-1F-EE-B5-FF
-    * 20- 1F- EE- B5- FF-
+    *
+      20-
+      1F-
+      EE-
+      B5-
+      FF-
 
   eq. ++> tests-single-byte-to-array
     array 1F-

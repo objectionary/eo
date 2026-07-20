@@ -27,17 +27,39 @@
 
   eq. ++> tests-simple-back
     back
-      * 1 2 3 4 5
+      *
+        1
+        2
+        3
+        4
+        5
       2
-    * 4 5
+    *
+      4
+      5
 
   is-empty ++> tests-zero-index-in-back
     back
-      * 1 2 3 4 5
+      *
+        1
+        2
+        3
+        4
+        5
       0
 
   eq. ++> tests-large-index-in-back
     back
-      * 1 2 3 4 5
+      *
+        1
+        2
+        3
+        4
+        5
       10
-    * 1 2 3 4 5
+    *
+      1
+      2
+      3
+      4
+      5

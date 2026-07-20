@@ -16,7 +16,9 @@
   lt. ++> tests-cosine-of-zero-is-one
     abs
       minus.
-        (cosine 0).times 1000
+        times.
+          cosine 0
+          1000
         1000
     1
 
@@ -31,7 +33,9 @@
   lt. ++> tests-cosine-of-pi-is-minus-one
     abs
       minus.
-        (cosine pi).times 1000
+        times.
+          cosine pi
+          1000
         -1000
     1
 
@@ -69,7 +73,9 @@
   lt. ++> tests-cosine-of-seventeen-radians
     abs
       minus.
-        (cosine 17).times 1000
+        times.
+          cosine 17
+          1000
         -275
     1
 

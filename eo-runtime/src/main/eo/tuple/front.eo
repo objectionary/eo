@@ -15,9 +15,14 @@
     *
     if.
       0.gt idx
-      back list (number idx).neg
+      back
+        list
+        neg.
+          number idx
       if.
-        (number idx).gte list.length
+        gte.
+          number idx
+          list.length
         list
         rechead list
   index > idx!
@@ -29,35 +34,65 @@
 
   eq. ++> tests-simple-front
     front
-      * 1 2 3 4 5
+      *
+        1
+        2
+        3
+        4
+        5
       1
     * 1
 
   is-empty ++> tests-list-front-with-zero-index
     front
-      * 1 2 3
+      *
+        1
+        2
+        3
       0
 
   eq. ++> tests-list-front-with-length-index
     front
-      * 1 2 3
+      *
+        1
+        2
+        3
       3
-    * 1 2 3
+    *
+      1
+      2
+      3
 
   eq. ++> tests-complex-front
     front
-      * "foo" 2.2 00-01 "bar"
+      *
+        "foo"
+        2.2
+        00-01
+        "bar"
       2
-    * "foo" 2.2
+    *
+      "foo"
+      2.2
 
   eq. ++> tests-front-with-negative
     front
-      * 1 2 3
+      *
+        1
+        2
+        3
       -1
     * 3
 
   eq. ++> tests-complex-front-with-negative
     front
-      * "foo" 2.2 00-01 "bar"
+      *
+        "foo"
+        2.2
+        00-01
+        "bar"
       -3
-    * 2.2 00-01 "bar"
+    *
+      2.2
+      00-01
+      "bar"

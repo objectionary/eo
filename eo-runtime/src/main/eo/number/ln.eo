@@ -20,7 +20,9 @@
       if.
         n.eq 0
         ninf
-        n.is-finite.if (lnp n) pinf
+        n.is-finite.if
+          lnp n
+          pinf
   number > n
     num.as-bytes
   [p] > lnp
@@ -59,27 +61,43 @@
 
   (ln -2.2).is-nan ++> tests-ln-of-negative-float-is-nan
 
-  (ln 0).eq ninf ++> tests-ln-of-zero-is-negative-infinity
+  ++> tests-ln-of-zero-is-negative-infinity
+    eq. > @
+      ln 0
+      ninf
 
-  (ln 1).eq 0 ++> tests-ln-of-one-is-zero
+  ++> tests-ln-of-one-is-zero
+    eq. > @
+      ln 1
+      0
 
-  (ln e).eq 1 ++> tests-ln-of-e-one-is-one
+  ++> tests-ln-of-e-one-is-one
+    eq. > @
+      ln e
+      1
 
   (ln -42).is-nan ++> tests-ln-of-negative-int-is-nan
 
   ++> tests-ln-of-twenty
     lt. > @
       abs
-        (ln 20).minus 2.995732273553991
+        minus.
+          ln 20
+          2.995732273553991
       1.0E-11
 
   ++> tests-ln-fraction
     lt. > @
       abs
-        (ln 0.5).minus -0.6931471805599453
+        minus.
+          ln 0.5
+          -0.6931471805599453
       1.0E-11
 
-  (ln pinf).eq pinf ++> tests-ln-positive-infinity
+  ++> tests-ln-positive-infinity
+    eq. > @
+      ln pinf
+      pinf
 
   (ln ninf).is-nan ++> tests-ln-negative-infinity
 

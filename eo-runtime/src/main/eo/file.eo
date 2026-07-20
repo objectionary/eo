@@ -19,7 +19,8 @@
   [cant-check] > is-directory
     if. > @
       info.code.eq 0
-      (info.output.mode.div 4096).floor.eq 4
+      (info.output.mode.div 4096).floor.eq
+        4
       cant-check
     called. > info
       sm.os.is-windows.if
@@ -49,8 +50,9 @@
         T
           "Cant touch the file '%s': %s".printf
             * path created.output
-        seq
-          * closed ^
+        seq *
+          closed
+          ^
     called. > created
       sm.os.is-windows.if
         sm.win32 *1
@@ -88,8 +90,12 @@
           unix
           path
     removed.code > outcome
-    is-directory.if "_rmdir" "_unlink" > win
-    is-directory.if "rmdir" "unlink" > unix
+    is-directory.if > win
+      "_rmdir"
+      "_unlink"
+    is-directory.if > unix
+      "rmdir"
+      "unlink"
   [cant-measure] > size
     if. > @
       info.code.eq 0
@@ -123,14 +129,16 @@
     renamed.code > outcome
   [mode scope cant-open] > open
     known.not.if > @
-      T "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
+      T
+        "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
         existing.and exists.not
         cant-open
           "File must exist for given access mod: '%s'".printf
             * access
-        seq
-          * open-file ^
+        seq *
+          open-file
+          ^
     mode > access!
     (access.eq "r").as-bool.not > writable
     (access.eq "w").as-bool.not.and > readable
@@ -200,8 +208,9 @@
                   T
                     "Can't read from file with provided access mode '%s'".printf
                       * ^.^.^.^.^.^.access
-                  seq
-                    * chunk (^.^.input-block chunk)
+                  seq *
+                    chunk
+                    ^.^.input-block chunk
                 output. > chunk!
                   ^.^.^.^.syscall.read
                     * ^.^.^.descriptor size
@@ -480,7 +489,9 @@
                 "w"
                 f.write "Hello, world" > [f]
               "r"
-              m.put ((f.read 7).read 5) > [f] >>
+              [f] >>
+                m.put > @
+                  (f.read 7).read 5
             m
       "world"
 

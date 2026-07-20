@@ -12,11 +12,16 @@
 [sequence cant-min] > minimum
   if. > @
     is-empty lst
-    cant-min "cannot get the minimum number from an empty sequence"
+    cant-min
+      "cannot get the minimum number from an empty sequence"
     reduced
       lst
       pinf
-      (min.gt item.as-number).if item min > [min item]
+      [min item]
+        if. > @
+          min.gt item.as-number
+          item
+          min
   sequence > lst
 
   minimum --> on-taking-minimum-from-empty-sequence
@@ -34,16 +39,22 @@
     42
 
   eq. ++> tests-minimum-of-array-is-first
-    minimum
-      * -2 25 12
+    minimum *
+      -2
+      25
+      12
     -2
 
   eq. ++> tests-minimum-of-array-is-in-the-center
-    minimum
-      * 12 -2 25
+    minimum *
+      12
+      -2
+      25
     -2
 
   eq. ++> tests-minimum-of-array-is-last
-    minimum
-      * 12 25 -2
+    minimum *
+      12
+      25
+      -2
     -2

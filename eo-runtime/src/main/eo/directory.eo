@@ -43,7 +43,8 @@
   [] > deleted
     ^.exists.if > @
       seq *
-        rec-delete (walk "**").at.^
+        rec-delete
+          (walk "**").at.^
         ^
       ^
     if. > [tup] > rec-delete
@@ -79,7 +80,9 @@
   ++> tests-deletes-directory-with-files-recursively
     and. > @
       and.
-        (first.exists.and second.exists).and d.deleted.exists.not
+        and.
+          first.exists.and second.exists
+          d.deleted.exists.not
         first.exists.not
       second.exists.not
     made. > d
@@ -107,7 +110,11 @@
       (d.resolved "foo/bar/test.txt").as-file.touched
       (d.resolved "x/y/z").as-dir.made
       (d.resolved "x/y/z/a.txt").as-file.touched
-      (d.as-dir.walk "**/*.txt").length.eq 2
+      (d.as-dir.walk "**/*.txt").length.eq
+        2
     (directory mktemp.tmpfile.deleted).made.as-path > d
 
-  (directory mktemp.tmpfile.deleted).walk "**" --> on-walking-absent-directory
+  --> on-walking-absent-directory
+    walk. > @
+      directory mktemp.tmpfile.deleted
+      "**"

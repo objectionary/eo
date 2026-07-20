@@ -27,29 +27,61 @@
         or.
           size.eq 0
           (current.plus size).gt len
-        rec-split accum start (current.plus 1).as-number
+        rec-split
+          accum
+          start
+          (current.plus 1).as-number
         if.
           delim.eq
             slice bts current size
-          rec-split appended (current.plus size).as-number (current.plus size).as-number
-          rec-split accum start (current.plus 1).as-number
+          rec-split
+            appended
+            (current.plus size).as-number
+            (current.plus size).as-number
+          rec-split
+            accum
+            start
+            (current.plus 1).as-number
     accum.with > appended
       string
-        slice bts start (current.minus start)
+        slice
+          bts
+          start
+          current.minus start
 
   eq. ++> tests-splits-text-by-dash
-    split "a-b-c" "-"
-    * "a" "b" "c"
+    split
+      "a-b-c"
+      "-"
+    *
+      "a"
+      "b"
+      "c"
 
   eq. ++> tests-splits-text-with-empty-strings
-    split "-a-b-" "-"
-    * "" "a" "b" ""
+    split
+      "-a-b-"
+      "-"
+    *
+      ""
+      "a"
+      "b"
+      ""
 
   eq. ++> tests-splits-and-returns-strings
     length.
-      (split "hello world!" " ").at 1
+      at.
+        split
+          "hello world!"
+          " "
+        1
     6
 
   eq. ++> tests-splits-text-by-multi-char-delimiter
-    split "a::b::c" "::"
-    * "a" "b" "c"
+    split
+      "a::b::c"
+      "::"
+    *
+      "a"
+      "b"
+      "c"

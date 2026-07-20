@@ -14,7 +14,9 @@
 [] > clock
   as-i64. > @
     sm.os.is-windows.if
-      (timeb.time.times 1000).plus timeb.millitm
+      plus.
+        timeb.time.times 1000
+        timeb.millitm
       plus.
         timeval.seconds.times 1000
         as-number.

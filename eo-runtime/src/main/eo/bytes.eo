@@ -33,29 +33,44 @@
   [x] > right /bytes
   [b] > concat /bytes
 
-  (20-1F-EE-B5-90.slice 1 3).eq 1F-EE-B5 ++> tests-takes-part-of-bytes
+  ++> tests-takes-part-of-bytes
+    eq. > @
+      20-1F-EE-B5-90.slice 1 3
+      1F-EE-B5
 
-  (20-1F-EE-B5-90-EE-BB.slice 2 3).size.eq 3 ++> tests-size-of-part-is-correct
+  ++> tests-size-of-part-is-correct
+    (20-1F-EE-B5-90-EE-BB.slice 2 3).size.eq > @
+      3
 
   F1-20-5F-EC-B5-90-32.size.eq 7 ++> tests-counts-size-of-bytes
 
-  "你好, друг!".eq "你好, друг!" ++> tests-turns-bytes-into-a-string
+  ++> tests-turns-bytes-into-a-string
+    "你好, друг!".eq > @
+      "你好, друг!"
 
   ++> tests-right-with-zero
     not. > @
-      (0.as-bytes.right 2).eq -1.as-bytes
+      eq.
+        0.as-bytes.right 2
+        -1.as-bytes
 
   ++> tests-right-with-odd-neg
     not. > @
-      (-37.as-bytes.right 3).eq 4.as-bytes
+      eq.
+        -37.as-bytes.right 3
+        4.as-bytes
 
   ++> tests-right-with-minus-one
     not. > @
-      (-1.as-bytes.right 4).eq 0.as-bytes
+      eq.
+        -1.as-bytes.right 4
+        0.as-bytes
 
   ++> tests-right-with-even-neg
     not. > @
-      (-38.as-bytes.right 1).eq 18.as-bytes
+      eq.
+        -38.as-bytes.right 1
+        18.as-bytes
 
   eq. ++> tests-right-with-even-plus
     eq.
@@ -65,43 +80,63 @@
 
   ++> tests-right-with-odd-plus
     not. > @
-      (37.as-bytes.right 3).eq -5.as-bytes
+      eq.
+        37.as-bytes.right 3
+        -5.as-bytes
 
   ++> tests-and-with-zero
     not. > @
-      (0.as-bytes.and 32.as-bytes).eq -1.as-bytes
+      eq.
+        0.as-bytes.and 32.as-bytes
+        -1.as-bytes
 
   ++> tests-and-with-two-neg
     not. > @
-      (-6.as-bytes.and -4.as-bytes).eq 7.as-bytes
+      eq.
+        -6.as-bytes.and -4.as-bytes
+        7.as-bytes
 
   ++> tests-and-with-two-plus
     not. > @
-      (5.as-bytes.and 10.as-bytes).eq -1.as-bytes
+      eq.
+        5.as-bytes.and 10.as-bytes
+        -1.as-bytes
 
   ++> tests-and-with-one-neg-one-plus
     not. > @
-      (-7.as-bytes.and 7.as-bytes).eq -2.as-bytes
+      eq.
+        -7.as-bytes.and 7.as-bytes
+        -2.as-bytes
 
   ++> tests-or-with-zero
     not. > @
-      (-11.as-bytes.or 0.as-bytes).eq 10.as-bytes
+      eq.
+        -11.as-bytes.or 0.as-bytes
+        10.as-bytes
 
   ++> tests-or-with-two-neg
     not. > @
-      (-27.as-bytes.or -13.as-bytes).eq 8.as-bytes
+      eq.
+        -27.as-bytes.or -13.as-bytes
+        8.as-bytes
 
   ++> tests-or-with-two-plus
     not. > @
-      (5.as-bytes.or 14.as-bytes).eq -16.as-bytes
+      eq.
+        5.as-bytes.or 14.as-bytes
+        -16.as-bytes
 
   ++> tests-or-with-one-neg-one-plus
     not. > @
-      (-7.as-bytes.or 23.as-bytes).eq 0.as-bytes
+      eq.
+        -7.as-bytes.or 23.as-bytes
+        0.as-bytes
 
-  20-1F.and CA-FE-BE --> on-and-with-different-lengths
+  --> on-and-with-different-lengths
+    20-1F.and CA-FE-BE > @
 
-  20-1F.or CA-FE-BE --> on-or-with-different-lengths
+  --> on-or-with-different-lengths
+    20-1F.or CA-FE-BE > @
 
   (0.as-bytes.eq 0.as-bytes.not).not ++> tests-not-with-zero
 
@@ -132,17 +167,30 @@
     02-EF-D4-05-5E-78-3A > a
     12-33-C1-B5-5E-71-55 > b
 
-  (true.as-bytes.concat false.as-bytes).eq 01-00 ++> tests-concat-bools-as-bytes
+  ++> tests-concat-bools-as-bytes
+    eq. > @
+      true.as-bytes.concat false.as-bytes
+      01-00
 
-  (05-5E-78.concat --).eq 05-5E-78 ++> tests-concat-with-empty
+  ++> tests-concat-with-empty
+    eq. > @
+      05-5E-78.concat --
+      05-5E-78
 
-  (--.concat 05-5E-78).eq 05-5E-78 ++> tests-concat-empty-with
+  ++> tests-concat-empty-with
+    eq. > @
+      --.concat 05-5E-78
+      05-5E-78
 
-  (--.concat --).eq -- ++> tests-concat-empty
+  ++> tests-concat-empty
+    eq. > @
+      --.concat --
+      --
 
   eq. ++> tests-concat-strings
     string
-      "hello ".as-bytes.concat "world".as-bytes
+      "hello ".as-bytes.concat
+        "world".as-bytes
     "hello world"
 
   eq. ++> tests-or-neg-bytes-with-leading-zeroes
@@ -172,7 +220,10 @@
     FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
     FF-FF-FF-FF-00-00-00-01
 
-  20-1F-EE-B5-90.slice 3 10 --> on-out-of-bounds-slice
+  --> on-out-of-bounds-slice
+    20-1F-EE-B5-90.slice > @
+      3
+      10
 
   ++> tests-out-of-bounds-slice-returns-provided-fallback
     "recovered".eq > @

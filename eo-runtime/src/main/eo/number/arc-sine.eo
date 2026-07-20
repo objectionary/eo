@@ -52,40 +52,59 @@
           poly
             depth.plus 1
 
-  (arc-sine 0).eq 0 ++> tests-arc-sine-of-zero-is-zero
+  ++> tests-arc-sine-of-zero-is-zero
+    eq. > @
+      arc-sine 0
+      0
 
   lt. ++> tests-arc-sine-of-one-is-pi-halves
     abs
       minus.
-        (arc-sine 1).times 1000
-        (pi.div 2).times 1000
+        times.
+          arc-sine 1
+          1000
+        times.
+          pi.div 2
+          1000
     1
 
   lt. ++> tests-arc-sine-of-negative-one-is-minus-pi-halves
     abs
       minus.
-        (arc-sine -1).times 1000
-        (pi.div 2).neg.times 1000
+        times.
+          arc-sine -1
+          1000
+        (pi.div 2).neg.times
+          1000
     1
 
   lt. ++> tests-arc-sine-of-half-is-pi-sixths
     abs
       minus.
-        (arc-sine 0.5).times 1000
-        (pi.div 6).times 1000
+        times.
+          arc-sine 0.5
+          1000
+        times.
+          pi.div 6
+          1000
     1
 
   lt. ++> tests-arc-sine-of-negative-half-is-minus-pi-sixths
     abs
       minus.
-        (arc-sine -0.5).times 1000
-        (pi.div 6).neg.times 1000
+        times.
+          arc-sine -0.5
+          1000
+        (pi.div 6).neg.times
+          1000
     1
 
   lt. ++> tests-arc-sine-of-point-six
     abs
       minus.
-        (arc-sine 0.6).times 1000
+        times.
+          arc-sine 0.6
+          1000
         643.5
     1
 
