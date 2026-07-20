@@ -55,6 +55,9 @@
   --> on-scanf-with-oversized-int
     scanf "%d" "99999999999999999999" > @
 
+  --> on-scanf-with-dangling-percent
+    scanf "hello%" "hello" > @
+
   ++> tests-scanf-with-string-int-float
     eq. > @
       scanf

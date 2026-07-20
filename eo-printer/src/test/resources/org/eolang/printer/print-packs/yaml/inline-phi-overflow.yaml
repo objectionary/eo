@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The phi decoratee inlines fully, but the flat one-liner overflows the width
+# limit and loses to the vertical form. The hybrid collapse is still cheaper
+# than the verbose " > @" fallback, so it must be built even when the one-liner
+# is available (issue #5635).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+origin: |
+  +package org.eolang
+
+  [] > cosine
+
+    ++> tests-cosine-of-pi-thirds-is-half
+      lt. > @
+        abs
+          minus.
+            (cosine (pi.div 3)).times 1000
+            500
+        1
+
+printed: |
+  +package org.eolang
+
+  [] > cosine
+
+    lt. ++> tests-cosine-of-pi-thirds-is-half
+      abs (minus. (times. (cosine (pi.div 3)) 1000) 500)
+      1

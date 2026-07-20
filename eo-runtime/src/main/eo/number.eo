@@ -18,7 +18,7 @@
 
   [cant-convert] > as-i64
     if. > @
-      out-of-range
+      overflow
       cant-convert
         "Can't convert number %f to i64 because it's out of i64 bounds".printf
           * ^
@@ -37,7 +37,7 @@
     (as-bytes.and 80-00-00-00-00-00-00-00).eq 80-00-00-00-00-00-00-00 > negative
     ((as-bytes.and 7F-F0-00-00-00-00-00-00).right 52).as-i64.as-number > exp
     (as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF).or 00-10-00-00-00-00-00-00 > mantissa
-    or. > out-of-range
+    or. > overflow
       exp.eq 2047
       or.
         exp.gt 1086

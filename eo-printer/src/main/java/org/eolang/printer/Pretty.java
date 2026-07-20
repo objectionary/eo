@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Penalty-based pretty printer of EO code.
@@ -51,6 +50,11 @@ final class Pretty {
     private final String tab;
 
     /**
+     * The column past which a line overflows, the {@code WIDTH} weight.
+     */
+    private final int width;
+
+    /**
      * Ctor, using the default penalty weights.
      * @param element The {@code <eo>} element
      */
@@ -62,13 +66,16 @@ final class Pretty {
      * Ctor.
      * @param element The {@code <eo>} element
      * @param config The overridden weights; absent keys use their defaults
-     * @checkstyle ConstructorsCodeFreeCheck (10 lines)
+     * @checkstyle ConstructorsCodeFreeCheck (12 lines)
      */
     Pretty(final Xnav element, final Map<PenaltyKey, Integer> config) {
         this.root = element;
         this.weights = config;
         this.tab = " ".repeat(
             config.getOrDefault(PenaltyKey.STEP, PenaltyKey.STEP.fallback())
+        );
+        this.width = config.getOrDefault(
+            PenaltyKey.WIDTH, PenaltyKey.WIDTH.fallback()
         );
     }
 
@@ -82,7 +89,7 @@ final class Pretty {
         );
         this.root.elements(Filter.withName("line"))
             .findFirst()
-            .map(line -> this.layout(Pretty.Node.parse(line), 0))
+            .map(line -> this.layout(Node.parse(line), 0))
             .ifPresent(out::append);
         return out.append('\n').toString();
     }
@@ -103,9 +110,9 @@ final class Pretty {
      * @param indent The indentation level
      * @return The rendered block
      */
-    private String layout(final Pretty.Node node, final int indent) {
+    private String layout(final Node node, final int indent) {
         String best = this.shaped(node, indent);
-        final Optional<Pretty.Node> suffix = Pretty.suffixed(node);
+        final Optional<Node> suffix = Pretty.suffixed(node);
         if (suffix.isPresent()) {
             final String alt = this.shaped(suffix.get(), indent);
             if (new Penalty(alt, this.weights).points()
@@ -123,7 +130,7 @@ final class Pretty {
      * @param indent The indentation level
      * @return The rendered block
      */
-    private String shaped(final Pretty.Node node, final int indent) {
+    private String shaped(final Node node, final int indent) {
         String best = this.vertical(node, indent);
         final Optional<String> flat = this.horizontal(node, indent);
         if (flat.isPresent()
@@ -156,14 +163,14 @@ final class Pretty {
      * @param node The node
      * @return The suffix-shaped node, or empty if it doesn't apply
      */
-    private static Optional<Pretty.Node> suffixed(final Pretty.Node node) {
-        Optional<Pretty.Node> result = Optional.empty();
+    private static Optional<Node> suffixed(final Node node) {
+        Optional<Node> result = Optional.empty();
         if (node.reversed && !node.children.isEmpty()) {
-            final Pretty.Node receiver = node.children.get(0);
+            final Node receiver = node.children.get(0);
             if (receiver.data && receiver.children.isEmpty()
                 && receiver.tail.isEmpty()) {
                 result = Optional.of(
-                    new Pretty.Node(
+                    new Node(
                         String.join(
                             ".", receiver.base,
                             node.base.substring(0, node.base.length() - 1)
@@ -184,11 +191,11 @@ final class Pretty {
      * @param indent The indentation level
      * @return The rendered block
      */
-    private String vertical(final Pretty.Node node, final int indent) {
+    private String vertical(final Node node, final int indent) {
         final StringBuilder block = new StringBuilder(this.tab.repeat(indent))
             .append(node.base)
             .append(node.tail);
-        for (final Pretty.Node child : node.children) {
+        for (final Node child : node.children) {
             if (child.test) {
                 block.append('\n');
             }
@@ -204,7 +211,7 @@ final class Pretty {
      * @param indent The indentation level
      * @return The single line, or empty if inlining is impossible
      */
-    private Optional<String> horizontal(final Pretty.Node node, final int indent) {
+    private Optional<String> horizontal(final Node node, final int indent) {
         final Optional<String> result;
         if (node.abstractt) {
             result = this.phi(node, indent);
@@ -245,7 +252,11 @@ final class Pretty {
      * ({@code head ++> name} or {@code head > [params] > name}) with the
      * arguments laid out beneath, mirroring the ordinary {@code head > name}
      * plus vertical-args layout and saving one line and one indent level
-     * over the verbose shape (issue #5594). Either way the result is only a
+     * over the verbose shape (issue #5594). The flat one-liner is kept while
+     * it fits the {@code WIDTH} limit, but once it overflows (or cannot be
+     * built) the hybrid is used instead, rather than gating the hybrid behind
+     * the one-liner's absence and falling back to the verbose shape when the
+     * one-liner overflows (issue #5635). Either way the result is only a
      * candidate — the penalty/width check in {@link #shaped} keeps it only
      * when it beats the plain vertical rendering. A formation decoratee
      * (its bindings are vertical, not arguments) and a receiver-only
@@ -271,11 +282,11 @@ final class Pretty {
      * @param indent The indentation level
      * @return The rendered block, or empty if the inline-phi form doesn't apply
      */
-    private Optional<String> phi(final Pretty.Node node, final int indent) {
+    private Optional<String> phi(final Node node, final int indent) {
         Optional<String> result = Optional.empty();
         if (node.children.size() == 1
             && " > @".equals(node.children.get(0).tail)) {
-            final Pretty.Node decoratee = node.children.get(0);
+            final Node decoratee = node.children.get(0);
             final String middle;
             if (node.base.isEmpty()) {
                 middle = " ";
@@ -283,33 +294,31 @@ final class Pretty {
                 middle = " > ".concat(node.base);
             }
             final String marker = middle.concat(node.tail);
-            final Optional<String> value = Pretty.flat(
-                new Pretty.Node(
+            final Optional<String> flat = Pretty.flat(
+                new Node(
                     decoratee.base, "", decoratee.abstractt,
                     false, decoratee.reversed, decoratee.data, decoratee.children
                 )
+            ).map(
+                inlined -> this.tab.repeat(indent).concat(inlined).concat(marker)
             );
             final boolean applied = !decoratee.abstractt && !decoratee.children.isEmpty()
                 && !(decoratee.reversed && decoratee.children.size() <= 1);
             final boolean unnamed = decoratee.children.stream()
-                .allMatch(Pretty.Node::nameless);
-            if (value.isPresent()) {
-                result = Optional.of(
-                    new StringBuilder(this.tab.repeat(indent))
-                        .append(value.get())
-                        .append(marker)
-                        .toString()
-                );
-            } else if (applied && unnamed) {
+                .allMatch(Node::nameless);
+            if (applied && unnamed
+                && flat.map(line -> line.length() > this.width).orElse(true)) {
                 result = Optional.of(
                     this.vertical(
-                        new Pretty.Node(
+                        new Node(
                             decoratee.base, marker, false, false,
                             decoratee.reversed, decoratee.data, decoratee.children
                         ),
                         indent
                     )
                 );
+            } else {
+                result = flat;
             }
         }
         return result;
@@ -350,7 +359,7 @@ final class Pretty {
      * @param indent The indentation level
      * @return The rendered block, or empty if the trailing-star form doesn't apply
      */
-    private Optional<String> starred(final Pretty.Node node, final int indent) {
+    private Optional<String> starred(final Node node, final int indent) {
         Optional<String> result = Optional.empty();
         if (node.tuply()) {
             result = Optional.of(
@@ -377,10 +386,10 @@ final class Pretty {
      * @param args The arguments
      * @return The inlined string, or empty if any argument can't be inlined
      */
-    private static Optional<String> inlined(final List<Pretty.Node> args) {
+    private static Optional<String> inlined(final List<Node> args) {
         final StringBuilder joined = new StringBuilder();
         Optional<String> result = Optional.of("");
-        for (final Pretty.Node arg : args) {
+        for (final Node arg : args) {
             final Optional<String> flat = Pretty.flat(arg);
             if (flat.isEmpty()) {
                 result = Optional.empty();
@@ -406,9 +415,9 @@ final class Pretty {
      * @param given The node
      * @return The inlined content, or empty
      */
-    private static Optional<String> flat(final Pretty.Node given) {
+    private static Optional<String> flat(final Node given) {
         final Optional<String> result;
-        final Pretty.Node node = Pretty.suffixed(given).orElse(given);
+        final Node node = Pretty.suffixed(given).orElse(given);
         if (node.reversed && node.children.size() <= 1) {
             result = Optional.empty();
         } else if (node.abstractt || !node.tail.isEmpty() || "*".equals(node.base)) {
@@ -420,193 +429,5 @@ final class Pretty {
                 .map(args -> String.join(" ", node.base, args));
         }
         return result;
-    }
-
-    /**
-     * A node of the intermediate line tree.
-     * @since 0.57.0
-     */
-    private static final class Node {
-
-        /**
-         * The rendered head of the object (base, method, formation
-         * params, data literal or {@code *}).
-         */
-        private final String base;
-
-        /**
-         * The rendered suffix ({@code > name}, {@code >>}, {@code !},
-         * {@code /atom} or {@code :label}), possibly empty.
-         */
-        private final String tail;
-
-        /**
-         * Whether this object is a formation (its children are
-         * bindings, so it is laid out vertically, unless its only
-         * binding is the {@code φ} decoratee and the compact inline-phi
-         * form fits on one line).
-         */
-        private final boolean abstractt;
-
-        /**
-         * Whether this object is a test attribute ({@code +> name}),
-         * which R-6.5.3 requires to be preceded by a blank line.
-         */
-        private final boolean test;
-
-        /**
-         * Whether this object is a reversed dispatch ({@code method.});
-         * a receiver-only one cannot be inlined as an argument.
-         */
-        private final boolean reversed;
-
-        /**
-         * Whether this object is a data literal (number, string, bytes),
-         * so it may sit as a receiver in the suffix form of a reversed
-         * dispatch ({@code 5.plus} instead of {@code plus. 5}).
-         */
-        private final boolean data;
-
-        /**
-         * The children (arguments or bindings), in order.
-         */
-        private final List<Pretty.Node> children;
-
-        /**
-         * Ctor.
-         * @param head The rendered head
-         * @param suffix The rendered suffix
-         * @param formation Whether it is a formation
-         * @param attr Whether it is a test attribute
-         * @param rev Whether it is a reversed dispatch
-         * @param literal Whether it is a data literal
-         * @param kids The children
-         * @checkstyle ParameterNumberCheck (5 lines)
-         */
-        Node(final String head, final String suffix, final boolean formation,
-            final boolean attr, final boolean rev, final boolean literal,
-            final List<Pretty.Node> kids) {
-            this.base = head;
-            this.tail = suffix;
-            this.abstractt = formation;
-            this.test = attr;
-            this.reversed = rev;
-            this.data = literal;
-            this.children = kids;
-        }
-
-        /**
-         * Build a node from a {@code <line>} element.
-         * @param line The {@code <line>} element
-         * @return The node
-         */
-        static Pretty.Node parse(final Xnav line) {
-            return new Pretty.Node(
-                line.attribute("base").text().orElse(""),
-                line.attribute("tail").text().orElse(""),
-                "yes".equals(line.attribute("abstract").text().orElse("no")),
-                "yes".equals(line.attribute("test").text().orElse("no")),
-                "yes".equals(line.attribute("reversed").text().orElse("no")),
-                "yes".equals(line.attribute("data").text().orElse("no")),
-                line.elements(Filter.withName("line"))
-                    .map(Pretty.Node::parse)
-                    .collect(Collectors.toList())
-            );
-        }
-
-        /**
-         * Whether this node carries no name suffix anywhere in its subtree.
-         *
-         * <p>A line is "named" when its {@code tail} holds a {@code > name},
-         * {@code > [params]} or {@code >>} suffix. This walks the node and all
-         * its descendants, so a named line nested below the top level — inside
-         * a tuple, a dispatch, or an application — is caught too. It decides
-         * whether a decoratee's whole subtree is safe to fold into a compact
-         * only-phi formation, which binds nothing but its {@code φ} decoratee
-         * (issue #5604).</p>
-         *
-         * @return True when neither this node nor any descendant is named
-         */
-        boolean nameless() {
-            return this.tail.isEmpty()
-                && this.children.stream().allMatch(Pretty.Node::nameless);
-        }
-
-        /**
-         * Whether this node is a plain application whose last child is a
-         * tuple that can be glued to its head as a trailing {@code *}.
-         *
-         * <p>A formation lays its children out as bindings and a reversed
-         * dispatch keeps its receiver first, so neither is a plain
-         * application and neither qualifies. The star must be the head's
-         * only child: a bare trailing {@code *} absorbs the indented
-         * siblings beneath it into the tuple, so this round-trips only for
-         * the genuine {@code seq *} idiom. When a preceding argument shares
-         * the line ({@code sm.win32 "getenv" *}), the parser reads it as a
-         * complete application with an empty tuple and rejects the indented
-         * child, so the hybrid must not fire (issue #5622). The single child
-         * must itself be a gluable star (see {@link #stars()}).</p>
-         *
-         * <p>The head must also be a plain base, not a dotted method dispatch
-         * ({@code "literal".printf}, {@code 5.plus}). A bare trailing
-         * {@code *} is absorbed by the parser only after a plain leading
-         * application ({@code seq *}, {@code map *}, {@code switch *}); after
-         * a method dispatch it reads as a complete application with an empty
-         * tuple and rejects the indented elements. A data-receiver dispatch
-         * is stored reversed and so already fails the {@code !reversed} guard,
-         * but {@link #suffixed} rebuilds it as a non-reversed, single-child
-         * node whose base is exactly such a dispatch, and that alternative is
-         * weighed for the hybrid too — barring a dotted base here keeps it,
-         * and any genuine dotted dispatch, on the ordinary {@code * elem}
-         * child that round-trips (issue #5624).</p>
-         *
-         * @return True when the trailing-star hybrid form is applicable
-         */
-        boolean tuply() {
-            return this.gluer()
-                && this.children.size() == 1
-                && this.children.get(0).stars();
-        }
-
-        /**
-         * Whether this node is a plain application head onto which a
-         * trailing {@code *} may be glued: not a formation, not a reversed
-         * dispatch, and not a dotted method dispatch. See {@link #tuply()}
-         * for why a dotted base ({@code "literal".printf}, {@code 5.plus})
-         * is excluded (issue #5624).
-         * @return True when the head can carry a glued trailing star
-         */
-        boolean gluer() {
-            return !this.abstractt && !this.reversed && this.base.indexOf('.') < 0;
-        }
-
-        /**
-         * Whether this node is a non-empty, unnamed {@code *} tuple — one
-         * that may be glued to the tail of an applying object's line.
-         * @return True when this node is a gluable star
-         */
-        boolean stars() {
-            return "*".equals(this.base) && !this.abstractt
-                && !this.children.isEmpty() && this.tail.isEmpty();
-        }
-
-        /**
-         * Build the synthetic node that renders this tuple glued to the
-         * tail of {@code applier}'s line: {@code head *} on one line (with
-         * the applier's own name suffix), the tuple's elements as children.
-         *
-         * <p>The star is the applier's only child (see {@link #tuply()}), so
-         * nothing precedes it on the line — the head is the applier's bare
-         * base glued straight to the {@code *}.</p>
-         *
-         * @param applier The object applying this tuple
-         * @return The glued node, laid out vertically by the caller
-         */
-        Pretty.Node glued(final Pretty.Node applier) {
-            return new Pretty.Node(
-                String.join(" ", applier.base, this.base), applier.tail,
-                false, false, false, false, this.children
-            );
-        }
     }
 }

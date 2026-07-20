@@ -19,9 +19,9 @@
         timeb.time.times 1000
         timeb.millitm
       plus.
-        timeval.tv-sec.times 1000
+        timeval.seconds.times 1000
         as-number.
-          timeval.tv-usec.as-i64.div 1000.as-i64
+          timeval.micros.as-i64.div 1000.as-i64
   (win32 "_ftime32_s" *).output > timeb
   (posix "gettimeofday" *).output > timeval
 
