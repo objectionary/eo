@@ -18,16 +18,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test for {@link EOscanf}.
+ * Tests for {@code string.scanf} with a dangling {@code %} in the format.
  * @since 0.40
  */
-final class EOscanfTest {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class ScanfDanglingPercentTest {
 
     @Test
     void failsWithClearMessageOnDanglingPercent() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new Dataized(EOscanfTest.scanned("hello%", "hello")).take(),
+            () -> new Dataized(ScanfDanglingPercentTest.scanned("hello%", "hello")).take(),
             "scanf with a dangling '%' at the end of the format should fail with ExFailure, but it didn't"
         );
     }
