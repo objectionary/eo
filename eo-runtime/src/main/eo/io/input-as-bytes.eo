@@ -28,4 +28,6 @@
       bts
     01-02-03-04-05-06-07-08 > bts
 
-  eq. (input-as-bytes dead-input) -- ++> tests-returns-empty-bytes-from-dead-input
+  eq. ++> tests-returns-empty-bytes-from-dead-input
+    input-as-bytes dead-input
+    --

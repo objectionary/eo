@@ -22,35 +22,33 @@
       tau
   reduced.times reduced > squared
   15 > terms
-  [depth] > factor
-    if. > @
-      depth.gt terms
-      1
-      1.minus
-        times.
-          squared.div
-            times.
-              depth.times 2
-              plus. (depth.times 2) 1
-          factor (depth.plus 1)
+  if. > [depth] > factor
+    depth.gt terms
+    1
+    1.minus
+      times.
+        squared.div
+          times.
+            depth.times 2
+            plus. (depth.times 2) 1
+        factor
+          depth.plus 1
 
   eq. (sine 0) 0 ++> tests-sine-of-zero-is-zero
 
-  ++> tests-sine-of-pi-halves-is-one
-    lt. > @
-      abs
-        minus.
-          times. (sine (pi.div 2)) 1000
-          1000
-      1
+  lt. ++> tests-sine-of-pi-halves-is-one
+    abs
+      minus.
+        times. (sine (pi.div 2)) 1000
+        1000
+    1
 
-  ++> tests-sine-of-pi-sixths-is-half
-    lt. > @
-      abs
-        minus.
-          times. (sine (pi.div 6)) 1000
-          500
-      1
+  lt. ++> tests-sine-of-pi-sixths-is-half
+    abs
+      minus.
+        times. (sine (pi.div 6)) 1000
+        500
+    1
 
   ++> tests-sine-of-pi-is-zero
     lt. > @
@@ -68,16 +66,15 @@
         -1000
     1
 
-  ++> tests-sine-of-three-pi-halves-is-minus-one
-    lt. > @
-      abs
-        minus.
-          times.
-            sine
-              div. (pi.times 3) 2
-            1000
-          -1000
-      1
+  lt. ++> tests-sine-of-three-pi-halves-is-minus-one
+    abs
+      minus.
+        times.
+          sine
+            div. (pi.times 3) 2
+          1000
+        -1000
+    1
 
   lt. ++> tests-sine-is-odd-function
     abs
@@ -95,22 +92,22 @@
         times. (sine (pi.times 2)) 1000
       1
 
-  ++> tests-sine-reduces-large-angle
-    lt. > @
-      abs
-        minus.
-          times.
-            sine
-              plus. (pi.times 10) (pi.div 6)
-            1000
-          500
-      1
+  lt. ++> tests-sine-reduces-large-angle
+    abs
+      minus.
+        times.
+          sine
+            plus. (pi.times 10) (pi.div 6)
+          1000
+        500
+    1
 
-  ++> tests-sine-of-seventeen-radians
-    lt. > @
-      abs
-        minus. (times. (sine 17) 1000) -961
-      1
+  lt. ++> tests-sine-of-seventeen-radians
+    abs
+      minus.
+        times. (sine 17) 1000
+        -961
+    1
 
   ++> tests-sine-of-nan-is-nan
     is-nan. > @

@@ -20,13 +20,12 @@
     reducedi
       list
       *
-      [accum item idx] >>
-        if. > @
-          and.
-            idx.gte s
-            idx.lt e
-          accum.with item
-          accum
+      if. > [accum item idx] >>
+        and.
+          idx.gte s
+          idx.lt e
+        accum.with item
+        accum
   if. > e!
     end.gte 0
     if. (end.gte list.length) list.length end

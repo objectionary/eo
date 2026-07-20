@@ -33,16 +33,17 @@
             ^.^.b > right
             as-number. > step
               div. (right.minus left) ^.^.n
-  [a b] > subsection
-    times. > @
-      div. (b.minus a) 6
+  times. > [a b] > subsection
+    div.
+      b.minus a
+      6
+    plus.
+      fun a
       plus.
-        fun a
-        plus.
-          4.times
-            fun
-              0.5.times (a.plus b)
-          fun b
+        4.times
+          fun
+            0.5.times (a.plus b)
+        fun b
 
   ++> tests-calculates-lineal-integral
     close-to > @

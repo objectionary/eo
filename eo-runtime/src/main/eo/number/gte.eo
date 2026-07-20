@@ -34,7 +34,9 @@
 
   eq. (ninf.gte ninf) true ++> tests-negative-infinity-gte-negative-infinity
 
-  eq. (ninf.gte pinf) false ++> tests-negative-infinity-not-gte-positive-infinity
+  eq. ++> tests-negative-infinity-not-gte-positive-infinity
+    ninf.gte pinf
+    false
 
   eq. (ninf.gte nan) false ++> tests-negative-infinity-not-gte-nan
 

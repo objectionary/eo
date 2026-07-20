@@ -24,7 +24,9 @@
 
   eq. (pinf.lte pinf) true ++> tests-positive-infinity-lte-positive-infinity
 
-  eq. (pinf.lte ninf) false ++> tests-positive-infinity-not-lte-negative-infinity
+  eq. ++> tests-positive-infinity-not-lte-negative-infinity
+    pinf.lte ninf
+    false
 
   eq. (pinf.lte nan) false ++> tests-positive-infinity-not-lte-nan
 

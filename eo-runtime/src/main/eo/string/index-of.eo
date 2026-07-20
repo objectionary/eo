@@ -41,22 +41,26 @@
       slice txt idx slen
       sub
 
-  ++> tests-index-of-non-existed-substring-with-more-length
-    -1.eq > @
-      index-of "Hello" "Somebody"
+  eq. ++> tests-index-of-non-existed-substring-with-more-length
+    -1
+    index-of "Hello" "Somebody"
 
-  ++> tests-index-of-non-existed-substring-with-same-length
-    -1.eq > @
-      index-of "Hello" "world"
+  eq. ++> tests-index-of-non-existed-substring-with-same-length
+    -1
+    index-of "Hello" "world"
 
-  ++> tests-index-of-non-existed-substring-with-utf
-    -1.eq > @
-      index-of "привет, друг!" "x"
+  eq. ++> tests-index-of-non-existed-substring-with-utf
+    -1
+    index-of "привет, друг!" "x"
 
-  3.eq (index-of "привет, друг!" "в") ++> tests-index-of-existed-substring-with-utf
+  eq. ++> tests-index-of-existed-substring-with-utf
+    3
+    index-of "привет, друг!" "в"
 
-  6.eq (index-of "Hello \n world" "\n") ++> tests-returns-valid-index-of-substring
+  eq. ++> tests-returns-valid-index-of-substring
+    6
+    index-of "Hello \n world" "\n"
 
-  ++> tests-returns-valid-index-of-substring-in-the-end
-    6.eq > @
-      index-of "Hello world" "world"
+  eq. ++> tests-returns-valid-index-of-substring-in-the-end
+    6
+    index-of "Hello world" "world"

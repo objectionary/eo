@@ -28,11 +28,11 @@
     range-of-numbers 1 10
     * 1 2 3 4 5 6 7 8 9
 
-  ++> tests-range-of-numbers-from-ten-to-ten-is-empty
-    is-empty > @
-      range-of-numbers 10 10
+  is-empty ++> tests-range-of-numbers-from-ten-to-ten-is-empty
+    range-of-numbers 10 10
 
-  is-empty (range-of-numbers 10 1) ++> tests-range-of-descending-numbers-is-empty
+  is-empty ++> tests-range-of-descending-numbers-is-empty
+    range-of-numbers 10 1
 
   eq. ++> tests-range-of-negative-numbers-works-as-well
     range-of-numbers -5 0

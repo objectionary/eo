@@ -15,13 +15,14 @@
     --
     with-delimiter items.head items.tail
   text > delimiter!
-  [acc tup] > with-delimiter
-    if. > @
-      tup.length.eq 0
-      acc
-      with-delimiter
-        concat. (concat. (dataized tup.head) delimiter) acc
-        tup.tail
+  if. > [acc tup] > with-delimiter
+    tup.length.eq 0
+    acc
+    with-delimiter
+      concat.
+        concat. (dataized tup.head) delimiter
+        acc
+      tup.tail
 
   eq. ++> tests-joined-no-strings
     ""

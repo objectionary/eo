@@ -66,71 +66,54 @@
 +spdx SPDX-License-Identifier: MIT
 
 [] > console
-  if. > @
-    os.is-windows
-    windows-console
-    posix-console
-
+  sm.os.is-windows.if windows-console posix-console > @
   [] > posix-console
     [size] > read
-      ((input-block --).read size).@ > @
-
+      @. > @
+        read. (input-block --) size
       [buffer] > input-block
         buffer > @
-
         [size] > read
-          seq * > @
-            chunk
-            input-block chunk
+          seq > @
+            * chunk (^.^.input-block chunk)
           output. > chunk!
-            posix
+            sm.posix
               "read"
-              * posix.stdin size
-
+              * sm.posix.stdin size
     [buffer] > write
-      (output-block.write buffer).@ > @
-
+      @. > @
+        output-block.write buffer
       [] > output-block
         true > @
-
-        [buffer] > write
-          seq * > @
-            code.
-              posix
-                "write"
-                * posix.stdout buffer buffer.size
-            output-block
-
+        seq * > [buffer] > write
+          code.
+            sm.posix
+              "write"
+              * sm.posix.stdout buffer buffer.size
+          ^.^.output-block
   [] > windows-console
     [size] > read
-      ((input-block --).read size).@ > @
-
+      @. > @
+        read. (input-block --) size
       [buffer] > input-block
         buffer > @
-
         [size] > read
-          seq * > @
-            chunk
-            input-block chunk
+          seq > @
+            * chunk (^.^.input-block chunk)
           output. > chunk!
-            win32
+            sm.win32
               "_read"
-              * win32.stdin size
-
+              * sm.win32.stdin size
     [buffer] > write
-      (output-block.write buffer).@ > @
-
+      @. > @
+        output-block.write buffer
       [] > output-block
         true > @
+        seq * > [buffer] > write
+          code.
+            sm.win32
+              "_write"
+              * sm.win32.stdout buffer buffer.size
+          ^.^.output-block
 
-        [buffer] > write
-          seq * > @
-            code.
-              win32
-                "_write"
-                * win32.stdout buffer buffer.size
-            output-block
-
-  ++> tests-writes-to-console
-    console.write > @
-      "Hello, console-test!\n"
+  console.write "Hello, console-test!\n" ++> tests-writes-to-console

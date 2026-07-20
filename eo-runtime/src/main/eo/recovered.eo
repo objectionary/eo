@@ -16,19 +16,19 @@
 
   eq. (recovered 42 7) 42 ++> tests-keeps-the-value-when-not-terminated
 
-  ++> tests-falls-back-to-alternative-when-terminated
-    eq. > @
-      recovered (div. 2.as-i64 0.as-i64) 7
+  eq. ++> tests-falls-back-to-alternative-when-terminated
+    recovered
+      div. 2.as-i64 0.as-i64
       7
+    7
 
-  ++> tests-recovers-the-inner-recovery
-    eq. > @
+  eq. ++> tests-recovers-the-inner-recovery
+    recovered
       recovered
-        recovered
-          div. 2.as-i64 0.as-i64
-          div. 3.as-i64 0.as-i64
-        42
+        div. 2.as-i64 0.as-i64
+        div. 3.as-i64 0.as-i64
       42
+    42
 
   ++> tests-recovers-when-a-provided-fallback-terminates
     eq. > @
@@ -40,7 +40,6 @@
         42
       42
 
-  --> when-both-are-terminated
-    recovered > @
-      div. 2.as-i64 0.as-i64
-      div. 5.as-i64 0.as-i64
+  recovered --> when-both-are-terminated
+    div. 2.as-i64 0.as-i64
+    div. 5.as-i64 0.as-i64

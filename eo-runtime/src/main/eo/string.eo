@@ -143,8 +143,9 @@
 
   eq. " ".length 1 ++> tests-calculates-length-of-spaces-only
 
-  ++> tests-turns-string-into-bytes
-    eq. "€ друг".as-bytes E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3 > @
+  eq. ++> tests-turns-string-into-bytes
+    "€ друг".as-bytes
+    E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3
 
   D0-B4-D1-80-D1-83-D0-B3.eq "друг" ++> tests-bytes-equal-to-string
 
@@ -198,7 +199,9 @@
 
   "Hello, друг!\n".eq "Hello, друг!\n" ++> tests-supports-escape-sequences
 
-  "Hello, друг!\n".eq "Hello, друг!\n" ++> tests-supports-escape-sequences-in-text
+  eq. ++> tests-supports-escape-sequences-in-text
+    "Hello, друг!\n"
+    "Hello, друг!\n"
 
   "a\n b\n  c".eq "a\n b\n  c" ++> tests-preserves-indentation-in-text
 
@@ -220,7 +223,9 @@
 
   eq. ("no slice".slice 0 0) "" ++> tests-no-slice-string
 
-  eq. ("\n".slice 0 "\n".length) "\n" ++> tests-slice-escape-sequences-line-break
+  eq. ++> tests-slice-escape-sequences-line-break
+    "\n".slice 0 "\n".length
+    "\n"
 
   eq. ("Ф".slice 0 "Ф".length) "Ф" ++> tests-slice-escape-sequences-unicode
 
@@ -228,10 +233,9 @@
 
   eq. ("The अ is अ".slice 1 6) "he अ i" ++> tests-slice-with-n3-byte-characters
 
-  ++> tests-slice-with-n4-byte-characters
-    eq. > @
-      "One 😀 and 😀 another".slice 3 8
-      " 😀 and 😀"
+  eq. ++> tests-slice-with-n4-byte-characters
+    "One 😀 and 😀 another".slice 3 8
+    " 😀 and 😀"
 
   eq. ("hello, 大家!".slice 7 1) "大" ++> tests-slice-foreign-literals
 
@@ -241,13 +245,15 @@
 
   "some string".slice 7 5 --> on-slicing-end-greater-actual
 
-  ++> tests-unescapes-slashes
-    "x\\b\\f\\u\\r\\t\\n\\'".eq 78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27 > @
+  eq. ++> tests-unescapes-slashes
+    "x\\b\\f\\u\\r\\t\\n\\'"
+    78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27
 
   "\b\f\n\r\t⟦".eq 08-0C-0A-0D-09-E2-9F-A6 ++> tests-unescapes-symbols
 
-  ++> tests-package-contains-word-in-sentence
-    "hello, world, how are you?".contains "how" > @
+  contains. ++> tests-package-contains-word-in-sentence
+    "hello, world, how are you?"
+    "how"
 
   "hello, world".starts-with "hello" ++> tests-package-starts-with-prefix
 
@@ -269,5 +275,6 @@
 
   "eEo".is-alpha ++> tests-package-detects-alphabetic-text
 
-  ++> tests-package-contains-via-string-namespace
-    string.contains "hello, world" "world" > @
+  string.contains ++> tests-package-contains-via-string-namespace
+    "hello, world"
+    "world"

@@ -43,15 +43,14 @@
         m.plus 1
       t.times t > squared
       40 > terms
-      [k] > horner
-        if. > @
-          k.gt terms
-          0
-          plus.
-            1.div
-              plus. (k.times 2) 1
-            squared.times
-              horner (k.plus 1)
+      if. > [k] > horner
+        k.gt terms
+        0
+        plus.
+          1.div
+            plus. (k.times 2) 1
+          squared.times
+            horner (k.plus 1)
 
   ++> tests-ln-of-negative-float-is-nan
     is-nan. > @

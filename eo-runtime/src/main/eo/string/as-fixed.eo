@@ -68,10 +68,10 @@
       string
         as-fixed 0.123456789 6
 
-  ++> tests-carries-rounding-into-integer-part
-    "1.000000".eq > @
-      string
-        as-fixed 0.9999999 6
+  eq. ++> tests-carries-rounding-into-integer-part
+    "1.000000"
+    string
+      as-fixed 0.9999999 6
 
   ++> tests-writes-zero
     "0.000000".eq > @

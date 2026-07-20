@@ -41,8 +41,8 @@
       string
         as-char 126
 
-  ++> tests-round-trips-through-as-ascii
-    "!".eq > @
-      string
-        as-char
-          as-ascii "!"
+  eq. ++> tests-round-trips-through-as-ascii
+    "!"
+    string
+      as-char
+        as-ascii "!"

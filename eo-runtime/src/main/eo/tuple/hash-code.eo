@@ -52,10 +52,9 @@
       hash-code num
     123456789012345680 > num
 
-  ++> tests-hash-codes-of-the-same-ints-are-equal
-    eq. > @
-      hash-code 42
-      hash-code 42
+  eq. ++> tests-hash-codes-of-the-same-ints-are-equal
+    hash-code 42
+    hash-code 42
 
   ++> tests-hash-codes-of-different-ints-are-not-equal
     not. > @
@@ -76,10 +75,9 @@
         number strhash
     hash-code "hello" > strhash!
 
-  ++> tests-hash-codes-of-the-same-strings-are-equal
-    eq. > @
-      hash-code "Hello"
-      hash-code "Hello"
+  eq. ++> tests-hash-codes-of-the-same-strings-are-equal
+    hash-code "Hello"
+    hash-code "Hello"
 
   ++> tests-hash-codes-of-same-length-strings-are-not-equal
     not. > @

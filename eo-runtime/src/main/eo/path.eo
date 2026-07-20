@@ -241,9 +241,8 @@
         uri > pth!
         string pth > txt
 
-  ++> tests-determines-separator-depending-on-os
-    path.separator.eq > @
-      sm.os.is-windows.if path.win32.separator path.posix.separator
+  path.separator.eq ++> tests-determines-separator-depending-on-os
+    sm.os.is-windows.if path.win32.separator path.posix.separator
 
   and. ++> tests-detects-absolute-posix-path
     is-absolute.
@@ -317,70 +316,83 @@
       path.win32 "/var/www/../html/"
     "\\var\\html\\"
 
-  ++> tests-resolves-posix-absolute-path-against-other-absolute-path
-    eq. > @
-      resolved. (path.posix "/var/temp") "/www/html"
+  eq. ++> tests-resolves-posix-absolute-path-against-other-absolute-path
+    resolved.
+      path.posix "/var/temp"
       "/www/html"
+    "/www/html"
 
-  ++> tests-resolves-posix-absolute-path-against-other-relative-path
-    eq. > @
-      resolved. (path.posix "/var/temp") "./www/html"
-      "/var/temp/www/html"
+  eq. ++> tests-resolves-posix-absolute-path-against-other-relative-path
+    resolved.
+      path.posix "/var/temp"
+      "./www/html"
+    "/var/temp/www/html"
 
-  ++> tests-resolves-posix-relative-path-against-other-absolute-path
-    eq. > @
-      resolved. (path.posix "./var/temp") "/www/html"
+  eq. ++> tests-resolves-posix-relative-path-against-other-absolute-path
+    resolved.
+      path.posix "./var/temp"
       "/www/html"
+    "/www/html"
 
-  ++> tests-resolves-posix-relative-path-against-other-relative-path
-    eq. > @
-      resolved. (path.posix "./var/temp") "../www/html"
-      "var/www/html"
+  eq. ++> tests-resolves-posix-relative-path-against-other-relative-path
+    resolved.
+      path.posix "./var/temp"
+      "../www/html"
+    "var/www/html"
 
-  ++> tests-resolves-win32-relative-path-against-other-relative-path
-    eq. > @
-      resolved. (path.win32 ".\\temp\\var") ".\\..\\x"
-      "temp\\x"
+  eq. ++> tests-resolves-win32-relative-path-against-other-relative-path
+    resolved.
+      path.win32 ".\\temp\\var"
+      ".\\..\\x"
+    "temp\\x"
 
-  ++> tests-resolves-win32-relative-path-against-other-drive-relative-path
-    eq. > @
-      resolved. (path.win32 ".\\temp\\var") "C:\\Windows\\Users"
+  eq. ++> tests-resolves-win32-relative-path-against-other-drive-relative-path
+    resolved.
+      path.win32 ".\\temp\\var"
       "C:\\Windows\\Users"
+    "C:\\Windows\\Users"
 
-  ++> tests-resolves-win32-relative-path-against-other-root-relative-path
-    eq. > @
-      resolved. (path.win32 ".\\temp\\var") "\\Windows\\Users"
+  eq. ++> tests-resolves-win32-relative-path-against-other-root-relative-path
+    resolved.
+      path.win32 ".\\temp\\var"
       "\\Windows\\Users"
+    "\\Windows\\Users"
 
-  ++> tests-resolves-win32-drive-relative-path-against-other-relative-path
-    eq. > @
-      resolved. (path.win32 "C:\\users\\local") ".\\var\\temp"
-      "C:\\users\\local\\var\\temp"
+  eq. ++> tests-resolves-win32-drive-relative-path-against-other-relative-path
+    resolved.
+      path.win32 "C:\\users\\local"
+      ".\\var\\temp"
+    "C:\\users\\local\\var\\temp"
 
-  ++> tests-resolves-win32-drive-relative-path-against-other-drive-relative-path
-    eq. > @
-      resolved. (path.win32 "C:\\users\\local") "D:\\local\\var"
+  eq. ++> tests-resolves-win32-drive-relative-path-against-other-drive-relative-path
+    resolved.
+      path.win32 "C:\\users\\local"
       "D:\\local\\var"
+    "D:\\local\\var"
 
-  ++> tests-resolves-win32-drive-relative-path-against-other-root-relative-path
-    eq. > @
-      resolved. (path.win32 "C:\\users\\local") "\\local\\var"
-      "C:\\local\\var"
+  eq. ++> tests-resolves-win32-drive-relative-path-against-other-root-relative-path
+    resolved.
+      path.win32 "C:\\users\\local"
+      "\\local\\var"
+    "C:\\local\\var"
 
-  ++> tests-resolves-win32-root-relative-path-against-other-relative-path
-    eq. > @
-      resolved. (path.win32 "\\users\\local") ".\\hello\\var"
-      "\\users\\local\\hello\\var"
+  eq. ++> tests-resolves-win32-root-relative-path-against-other-relative-path
+    resolved.
+      path.win32 "\\users\\local"
+      ".\\hello\\var"
+    "\\users\\local\\hello\\var"
 
-  ++> tests-resolves-win32-root-relative-path-against-other-drive-relative-path
-    eq. > @
-      resolved. (path.win32 "\\users\\local") "D:\\hello\\var"
+  eq. ++> tests-resolves-win32-root-relative-path-against-other-drive-relative-path
+    resolved.
+      path.win32 "\\users\\local"
       "D:\\hello\\var"
+    "D:\\hello\\var"
 
-  ++> tests-resolves-win32-root-relative-path-against-other-root-relative-path
-    eq. > @
-      resolved. (path.win32 "\\users\\local") "\\hello\\var"
+  eq. ++> tests-resolves-win32-root-relative-path-against-other-root-relative-path
+    resolved.
+      path.win32 "\\users\\local"
       "\\hello\\var"
+    "\\hello\\var"
 
   eq. ++> tests-takes-valid-basename
     basename.

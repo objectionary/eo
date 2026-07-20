@@ -12,14 +12,13 @@
   ? >> list
   ? >> wanted
   reclast list > @
-  [tup] > reclast
-    if. > @
-      tup.length.eq 0
-      -1
-      if.
-        tup.head.eq wanted
-        tup.tail.length
-        reclast tup.tail
+  if. > [tup] > reclast
+    tup.length.eq 0
+    -1
+    if.
+      tup.head.eq wanted
+      tup.tail.length
+      reclast tup.tail
 
   eq. ++> tests-finds-last-index-of
     1

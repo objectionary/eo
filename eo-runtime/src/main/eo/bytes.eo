@@ -60,10 +60,11 @@
     not. > @
       eq. (right. -38.as-bytes 1) 18.as-bytes
 
-  ++> tests-right-with-even-plus
-    eq. > @
-      eq. (right. 36.as-bytes 2) -10.as-bytes
-      false
+  eq. ++> tests-right-with-even-plus
+    eq.
+      right. 36.as-bytes 2
+      -10.as-bytes
+    false
 
   ++> tests-right-with-odd-plus
     not. > @
@@ -101,11 +102,9 @@
     not. > @
       eq. (or. -7.as-bytes 23.as-bytes) 0.as-bytes
 
-  --> on-and-with-different-lengths
-    20-1F.and CA-FE-BE > @
+  20-1F.and CA-FE-BE --> on-and-with-different-lengths
 
-  --> on-or-with-different-lengths
-    20-1F.or CA-FE-BE > @
+  20-1F.or CA-FE-BE --> on-or-with-different-lengths
 
   ++> tests-not-with-zero
     not. > @
@@ -151,7 +150,9 @@
     02-EF-D4-05-5E-78-3A > a
     12-33-C1-B5-5E-71-55 > b
 
-  eq. (true.as-bytes.concat false.as-bytes) 01-00 ++> tests-concat-bools-as-bytes
+  eq. ++> tests-concat-bools-as-bytes
+    true.as-bytes.concat false.as-bytes
+    01-00
 
   eq. (05-5E-78.concat --) 05-5E-78 ++> tests-concat-with-empty
 
@@ -159,26 +160,23 @@
 
   eq. (--.concat --) -- ++> tests-concat-empty
 
-  ++> tests-concat-strings
-    eq. > @
-      string
-        concat. "hello ".as-bytes "world".as-bytes
-      "hello world"
+  eq. ++> tests-concat-strings
+    string
+      concat. "hello ".as-bytes "world".as-bytes
+    "hello world"
 
-  ++> tests-or-neg-bytes-with-leading-zeroes
-    eq. > @
-      00-00-00-00-8E-EA-4C-B1.or FF-FF-FF-FF-00-00-00-00
-      FF-FF-FF-FF-8E-EA-4C-B1
+  eq. ++> tests-or-neg-bytes-with-leading-zeroes
+    00-00-00-00-8E-EA-4C-B1.or FF-FF-FF-FF-00-00-00-00
+    FF-FF-FF-FF-8E-EA-4C-B1
 
   eq. ++> tests-and-neg-bytes-as-number-with-leading-zeroes
     as-number.
       00-00-00-00-8E-EA-4C-B1.and FF-FF-FF-FF-00-00-00-00
     0
 
-  ++> tests-or-neg-bytes-without-leading-zeroes
-    eq. > @
-      00-00-00-00-FF-FF-FF-FF.or FF-FF-FF-FF-00-00-00-00
-      FF-FF-FF-FF-FF-FF-FF-FF
+  eq. ++> tests-or-neg-bytes-without-leading-zeroes
+    00-00-00-00-FF-FF-FF-FF.or FF-FF-FF-FF-00-00-00-00
+    FF-FF-FF-FF-FF-FF-FF-FF
 
   eq. ++> tests-and-neg-bytes-as-number-without-leading-zeroes
     as-number.
@@ -190,10 +188,9 @@
       or. -4294967296.as-bytes 0.as-bytes
     -4294967296
 
-  ++> tests-or-neg-bytes-with-one
-    eq. > @
-      FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
-      FF-FF-FF-FF-00-00-00-01
+  eq. ++> tests-or-neg-bytes-with-one
+    FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
+    FF-FF-FF-FF-00-00-00-01
 
   20-1F-EE-B5-90.slice 3 10 --> on-out-of-bounds-slice
 

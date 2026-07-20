@@ -36,11 +36,12 @@
       * start
       start.next
     *
-  [acc current] > appended
-    if. > @
-      current.lt end
-      appended (acc.with current) current.next
-      acc
+  if. > [acc current] > appended
+    current.lt end
+    appended
+      acc.with current
+      current.next
+    acc
 
   ++> tests-simple-range-from-one-to-ten
     rng.eq > @

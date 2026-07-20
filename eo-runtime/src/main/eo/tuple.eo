@@ -14,7 +14,6 @@
     T "Can't get tail from the empty tuple"
     T "Can't get head from the empty tuple"
     0
-
   [i fallback] > at
     if. > @
       or.
@@ -27,110 +26,86 @@
       0.gt idx
       length.plus idx
       idx
-
-    [tup] > at-fast
-      if. > @
-        (tup.length.plus -1).eq index
-        tup.head
-        at-fast tup.tail
-
-  [x] > with
-    tuple > @
-      ^
-      x
-      (length.plus 1).as-number
-
+    if. > [tup] > at-fast
+      eq. (tup.length.plus -1) index
+      tup.head
+      at-fast tup.tail
+  tuple > [x] > with
+    ^
+    x
+    as-number.
+      length.plus 1
   [other] > eq
     and. > @
       length.eq other.length
       receq ^ other
+    if. > [first second] > receq
+      first.length.eq 0
+      true
+      and.
+        first.head.eq second.head
+        receq first.tail second.tail
 
-    [first second] > receq
-      if. > @
-        first.length.eq 0
-        true
-        and.
-          first.head.eq second.head
-          receq first.tail second.tail
+  eq. ++> tests-makes-tuple-through-special-syntax
+    length.
+      * 1 2
+    2
 
-  ++> tests-makes-tuple-through-special-syntax
-    eq. > @
-      (* 1 2).length
-      2
-
-  ++> tests-gets-lengths-of-empty-tuple-through-special-syntax
-    eq. > @
-      *.length
-      0
+  tuple.empty.length.eq ++> tests-gets-lengths-of-empty-tuple-through-special-syntax
+    0
 
   ++> tests-empty-tuple-length
     eq. > @
-      (arr *).elements.length
+      length.
+        elements.
+          arr
+            *
       0
     [elements] > arr
 
   ++> tests-non-empty-tuple-length-test
     eq. > @
-      arr
-        * "a" "b" "c" "d" "e"
-      .elements
-      .length
+      length.
+        elements.
+          arr
+            * "a" "b" "c" "d" "e"
       5
     [elements] > arr
 
   ++> tests-tuple-as-a-bound-attribute-size-0
-    eq. > @
-      tup.length
-      0
+    tup.length.eq 0 > @
     * > tup
 
   ++> tests-tuple-as-a-bound-attribute-size-1
     eq. > @
       tup.at 0
       100
-    * > tup
-      100
+    * 100 > tup
 
   ++> tests-tuple-as-a-bound-attribute-size-2
     and. > @
-      eq.
-        arr.at 0
-        1
-      eq.
-        arr.at 1
-        2
-    * > arr
-      1
-      2
+      eq. (arr.at 0) 1
+      eq. (arr.at 1) 2
+    * 1 2 > arr
 
   ++> tests-tuple-with
     and. > @
       and.
         and.
-          eq.
-            arr.at 0
-            1
-          eq.
-            arr.at 1
-            2
-        eq.
-          arr.at 2
-          3
-      eq.
-        arr.at 3
-        "with"
+          eq. (arr.at 0) 1
+          eq. (arr.at 1) 2
+        eq. (arr.at 2) 3
+      eq. (arr.at 3) "with"
     with. > arr
       * 1 2 3
       "with"
 
-  --> on-wrong-tuple-at
-    at. > @
-      * 1 2 3 4
-      20
+  at. --> on-wrong-tuple-at
+    * 1 2 3 4
+    20
 
   ++> tests-out-of-bounds-at-returns-provided-fallback
-    eq. > @
-      "recovered"
+    "recovered".eq > @
       at.
         * 1 2 3 4
         20
@@ -139,47 +114,33 @@
   ++> tests-tuple-fluent-with
     and. > @
       and.
-        eq.
-          arr.at 0
-          1
-        eq.
-          arr.at 1
-          2
-      eq.
-        arr.at 2
-        3
-    ((*.with 1).with 2).with 3 > arr
+        eq. (arr.at 0) 1
+        eq. (arr.at 1) 2
+      eq. (arr.at 2) 3
+    with. > arr
+      with. (tuple.empty.with 1) 2
+      3
 
   ++> tests-tuple-fluent-with-indented
     and. > @
       and.
-        eq.
-          arr.at 0
-          1
-        eq.
-          arr.at 1
-          2
-      eq.
-        arr.at 2
-        3
-    ((*.with 1).with 2).with 3 > arr
+        eq. (arr.at 0) 1
+        eq. (arr.at 1) 2
+      eq. (arr.at 2) 3
+    with. > arr
+      with. (tuple.empty.with 1) 2
+      3
 
   ++> tests-gets-lengths-of-empty-tuple
-    eq. > @
-      a.length
-      0
-    tuple.empty > a
+    a.length.eq 0 > @
+    * > a
 
-  ++> tests-gets-lengths-of-empty-tuple-without-additional-obj
-    eq. > @
-      tuple.empty.length
-      0
+  tuple.empty.length.eq ++> tests-gets-lengths-of-empty-tuple-without-additional-obj
+    0
 
-  --> on-getting-head-from-empty-tuple
-    tuple.empty.head > @
+  tuple.empty.head --> on-getting-head-from-empty-tuple
 
-  --> on-getting-tail-from-empty-tuple
-    tuple.empty.tail > @
+  tuple.empty.tail --> on-getting-tail-from-empty-tuple
 
   ++> tests-creates-empty-tuple-with-number
     eq. > @
@@ -189,29 +150,25 @@
 
   ++> tests-at-fast-with-first-element
     eq. > @
-      (arr.at 0).at-fast arr
+      at-fast. (arr.at 0) arr
       100
     * 100 101 102 > arr
 
   ++> tests-at-fast-with-last-element
     eq. > @
-      (arr.at 2).at-fast arr
+      at-fast. (arr.at 2) arr
       102
     * 100 101 102 > arr
 
   ++> tests-tuple-empty-fluent-with-indented-keyword
     and. > @
       and.
-        eq.
-          arr.at 0
-          1
-        eq.
-          arr.at 1
-          2
-      eq.
-        arr.at 2
-        3
-    ((tuple.empty.with 1).with 2).with 3 > arr
+        eq. (arr.at 0) 1
+        eq. (arr.at 1) 2
+      eq. (arr.at 2) 3
+    with. > arr
+      with. (tuple.empty.with 1) 2
+      3
 
   ++> tests-tuple-with-negative-index-gets-last
     eq. > @
@@ -229,10 +186,9 @@
     arr.at -6 > @
     * 0 1 2 3 4 > arr
 
-  ++> tests-tuple-equality
-    eq. > @
-      * 1 2 3
-      * 1 2 3
+  eq. ++> tests-tuple-equality
+    * 1 2 3
+    * 1 2 3
 
   ++> tests-tuple-not-equality
     not. > @
@@ -240,33 +196,38 @@
         * 1 2 3
         * 3 2 1
 
-  ++> tests-tuple-nested-equality
-    eq. > @
-      *
-        * 0 1
-        * 4 0
-        * 7 3
-      *
-        * 0 1
-        * 4 0
-        * 7 3
+  eq. ++> tests-tuple-nested-equality
+    *
+      * 0 1
+      * 4 0
+      * 7 3
+    *
+      * 0 1
+      * 4 0
+      * 7 3
 
-  ++> tests-package-tuple-contains-element
-    (* 1 2 3).contains 2 > @
+  contains. ++> tests-package-tuple-contains-element
+    * 1 2 3
+    2
 
   ++> tests-package-tuple-does-not-contain-element
     not. > @
-      (* 1 2 3).contains 5
+      contains.
+        * 1 2 3
+        5
 
-  ++> tests-package-tuple-index-of-element
-    eq. > @
-      (* 10 20 30).index-of 20
-      1
+  eq. ++> tests-package-tuple-index-of-element
+    index-of.
+      * 10 20 30
+      20
+    1
 
-  ++> tests-package-tuple-concatenates-with-another
-    eq. > @
-      (* 0 1).concat (* 2 3)
-      * 0 1 2 3
+  eq. ++> tests-package-tuple-concatenates-with-another
+    concat.
+      * 0 1
+      * 2 3
+    * 0 1 2 3
 
-  ++> tests-package-tuple-contains-via-tuple-namespace
-    tuple.contains (* 1 2 3) 2 > @
+  tuple.contains ++> tests-package-tuple-contains-via-tuple-namespace
+    * 1 2 3
+    2

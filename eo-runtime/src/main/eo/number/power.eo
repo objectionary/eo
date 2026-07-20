@@ -15,129 +15,88 @@
   if. > @
     expo.eq 0
     1
-    if.
-      base.is-nan
+    base.is-nan.if
       nan
-      if.
-        expo.is-nan
+      expo.is-nan.if
         nan
-        if.
-          expo.is-finite
-          if.
-            base.is-finite
+        expo.is-finite.if
+          base.is-finite.if
             if.
               base.eq 0
-              if.
-                expo.gt 0
-                0
-                pinf
-              if.
-                expo.is-integer
+              if. (expo.gt 0) 0 pinf
+              expo.is-integer.if
                 if.
                   expo.lt 0
                   1.div (ipow base (abs expo))
                   ipow base (abs expo)
-                if.
-                  base.gt 0
-                  expon (expo.times (ln base))
-                  nan
+                if. (base.gt 0) (expon (expo.times (ln base))) nan
             if.
               base.gt 0
+              if. (expo.gt 0) pinf 0
               if.
                 expo.gt 0
-                pinf
-                0
-              if.
-                expo.gt 0
-                if.
-                  odd
-                  ninf
-                  pinf
-                if.
-                  odd
-                  0.neg
-                  0
+                odd.if ninf pinf
+                odd.if 0.neg 0
           if.
             expo.gt 0
             if.
-              (abs base).gt 1
+              gt. (abs base) 1
               pinf
-              if.
-                (abs base).eq 1
-                nan
-                0
+              if. (eq. (abs base) 1) nan 0
             if.
-              (abs base).gt 1
+              gt. (abs base) 1
               0
-              if.
-                (abs base).eq 1
-                nan
-                pinf
+              if. (eq. (abs base) 1) nan pinf
   number num.as-bytes > base
   number x.as-bytes > expo
-  and. > odd
-    expo.is-integer
-    (expo.div 2).is-integer.not
-
+  expo.is-integer.and > odd
+    not.
+      is-integer.
+        expo.div 2
   [b n] > ipow
     if. > @
       n.eq 0
       1
       if.
-        (n.div 2).is-integer
+        is-integer.
+          n.div 2
         half.times half
-        b.times (ipow b (n.minus 1))
-    ipow b (n.div 2) > half
-
+        b.times
+          ipow b (n.minus 1)
+    ipow > half
+      b
+      n.div 2
   [y] > expon
-    whole.times (fraction 1) > @
-    (y.plus 0.5).floor > k
+    whole.times > @
+      fraction 1
+    floor. > k
+      y.plus 0.5
     y.minus k > r
     20 > eterms
     if. > whole
       k.lt 0
-      1.div (ipow e (abs k))
+      1.div
+        ipow e (abs k)
       ipow e (abs k)
-
-    [j] > fraction
-      if. > @
-        j.gt eterms
-        1
-        plus.
-          1
-          times.
-            r.div j
-            fraction (j.plus 1)
-
-  ++> tests-power-of-two-to-four
-    eq. > @
-      power 2 4
-      16
-
-  ++> tests-power-of-zero-exponent
-    eq. > @
-      power 2 0
+    if. > [j] > fraction
+      j.gt eterms
       1
+      1.plus
+        times.
+          r.div j
+          fraction (j.plus 1)
 
-  ++> tests-power-large-negative-exponent
-    eq. > @
-      power 984782 -12341
-      0
+  eq. (power 2 4) 16 ++> tests-power-of-two-to-four
 
-  ++> tests-power-of-three-squared
-    eq. > @
-      power 3 2
-      9
+  eq. (power 2 0) 1 ++> tests-power-of-zero-exponent
 
-  ++> tests-power-of-zero-base
-    eq. > @
-      power 0 145
-      0
+  eq. (power 984782 -12341) 0 ++> tests-power-large-negative-exponent
 
-  ++> tests-power-zero-to-negative-odd
-    eq. > @
-      power 0 -567
-      pinf
+  eq. (power 3 2) 9 ++> tests-power-of-three-squared
+
+  eq. (power 0 145) 0 ++> tests-power-of-zero-base
+
+  eq. (power 0 -567) pinf ++> tests-power-zero-to-negative-odd
 
   ++> tests-power-nan-to-nan-is-nan
     is-nan. > @
@@ -151,205 +110,132 @@
     is-nan. > @
       power 52 nan
 
-  ++> tests-power-int-to-zero-is-one
-    eq. > @
-      power 42 0
-      1
+  eq. (power 42 0) 1 ++> tests-power-int-to-zero-is-one
 
-  ++> tests-power-float-to-zero-is-one
-    eq. > @
-      power 42.5 0
-      1
+  eq. (power 42.5 0) 1 ++> tests-power-float-to-zero-is-one
 
-  ++> tests-power-zero-to-negative-is-positive-infinity
-    eq. > @
-      power 0 -52
-      pinf
+  eq. (power 0 -52) pinf ++> tests-power-zero-to-negative-is-positive-infinity
 
-  ++> tests-power-zero-to-negative-infinity-is-positive-infinity
-    eq. > @
-      power 0 ninf
-      pinf
+  eq. ++> tests-power-zero-to-negative-infinity-is-positive-infinity
+    power 0 ninf
+    pinf
 
-  ++> tests-power-positive-int-to-negative-infinity-is-zero
-    eq. > @
-      power 42 ninf
-      0
+  eq. ++> tests-power-positive-int-to-negative-infinity-is-zero
+    power 42 ninf
+    0
 
-  ++> tests-power-positive-float-to-negative-infinity-is-zero
-    eq. > @
-      power 42.5 ninf
-      0
+  eq. ++> tests-power-positive-float-to-negative-infinity-is-zero
+    power 42.5 ninf
+    0
 
-  ++> tests-power-negative-int-to-negative-infinity-is-zero
-    eq. > @
-      power -42 ninf
-      0
+  eq. ++> tests-power-negative-int-to-negative-infinity-is-zero
+    power -42 ninf
+    0
 
-  ++> tests-power-negative-float-to-negative-infinity-is-zero
-    eq. > @
-      power -42.5 ninf
-      0
+  eq. ++> tests-power-negative-float-to-negative-infinity-is-zero
+    power -42.5 ninf
+    0
 
-  ++> tests-power-positive-infinity-to-negative-infinity-is-zero
-    eq. > @
-      power pinf ninf
-      0
+  eq. ++> tests-power-positive-infinity-to-negative-infinity-is-zero
+    power pinf ninf
+    0
 
-  ++> tests-power-negative-infinity-to-negative-infinity-is-zero
-    eq. > @
-      power ninf ninf
-      0
+  eq. ++> tests-power-negative-infinity-to-negative-infinity-is-zero
+    power ninf ninf
+    0
 
-  ++> tests-power-positive-infinity-to-negative-int-is-zero
-    eq. > @
-      power pinf -42
-      0
+  eq. ++> tests-power-positive-infinity-to-negative-int-is-zero
+    power pinf -42
+    0
 
-  ++> tests-power-positive-infinity-to-negative-float-is-zero
-    eq. > @
-      power pinf -42.2
-      0.0
+  eq. ++> tests-power-positive-infinity-to-negative-float-is-zero
+    power pinf -42.2
+    0
 
-  ++> tests-power-two-to-minus-one
-    eq. > @
-      power 2 -1
-      0.5
+  eq. (power 2 -1) 0.5 ++> tests-power-two-to-minus-one
 
-  ++> tests-power-two-to-minus-two
-    eq. > @
-      power 2 -2
-      0.25
+  eq. (power 2 -2) 0.25 ++> tests-power-two-to-minus-two
 
-  ++> tests-power-two-to-minus-three
-    eq. > @
-      power 2 -3
-      0.125
+  eq. (power 2 -3) 0.125 ++> tests-power-two-to-minus-three
 
-  ++> tests-power-four-to-minus-three
-    eq. > @
-      power 4 -3.0
-      0.015625
+  eq. (power 4 -3) 0.015625 ++> tests-power-four-to-minus-three
 
-  ++> tests-power-zero-to-positive-int-is-zero
-    eq. > @
-      power 0 4
-      0
+  eq. (power 0 4) 0 ++> tests-power-zero-to-positive-int-is-zero
 
-  ++> tests-power-zero-to-positive-float-is-zero
-    eq. > @
-      power 0 4.2
-      0
+  eq. (power 0 4.2) 0 ++> tests-power-zero-to-positive-float-is-zero
 
-  ++> tests-power-zero-to-positive-infinity-is-zero
-    eq. > @
-      power 0 pinf
-      0
+  eq. (power 0 pinf) 0 ++> tests-power-zero-to-positive-infinity-is-zero
 
-  ++> tests-power-negative-int-to-positive-infinity-is-positive-infinity
-    eq. > @
-      power -10 pinf
-      pinf
+  eq. ++> tests-power-negative-int-to-positive-infinity-is-positive-infinity
+    power -10 pinf
+    pinf
 
-  ++> tests-power-negative-float-to-positive-infinity-is-positive-infinity
-    eq. > @
-      power -4.2 pinf
-      pinf
+  eq. ++> tests-power-negative-float-to-positive-infinity-is-positive-infinity
+    power -4.2 pinf
+    pinf
 
-  ++> tests-power-positive-int-to-positive-infinity-is-positive-infinity
-    eq. > @
-      power 42 pinf
-      pinf
+  eq. ++> tests-power-positive-int-to-positive-infinity-is-positive-infinity
+    power 42 pinf
+    pinf
 
-  ++> tests-power-positive-float-to-positive-infinity-is-positive-infinity
-    eq. > @
-      power 42.5 pinf
-      pinf
+  eq. ++> tests-power-positive-float-to-positive-infinity-is-positive-infinity
+    power 42.5 pinf
+    pinf
 
-  ++> tests-power-positive-infinity-to-positive-int-is-positive-infinity
-    eq. > @
-      power pinf 42
-      pinf
+  eq. ++> tests-power-positive-infinity-to-positive-int-is-positive-infinity
+    power pinf 42
+    pinf
 
-  ++> tests-power-positive-infinity-to-positive-float-is-positive-infinity
-    eq. > @
-      power pinf 10.8
-      pinf
+  eq. ++> tests-power-positive-infinity-to-positive-float-is-positive-infinity
+    power pinf 10.8
+    pinf
 
-  ++> tests-power-positive-infinity-to-positive-infinity-is-positive-infinity
-    eq. > @
-      power pinf pinf
-      pinf
+  eq. ++> tests-power-positive-infinity-to-positive-infinity-is-positive-infinity
+    power pinf pinf
+    pinf
 
-  ++> tests-power-negative-infinity-to-positive-float-is-positive-infinity
-    eq. > @
-      power ninf 9.9
-      pinf
+  eq. ++> tests-power-negative-infinity-to-positive-float-is-positive-infinity
+    power ninf 9.9
+    pinf
 
-  ++> tests-power-negative-infinity-to-even-int-is-positive-infinity
-    eq. > @
-      power ninf 10
-      pinf
+  eq. ++> tests-power-negative-infinity-to-even-int-is-positive-infinity
+    power ninf 10
+    pinf
 
-  ++> tests-power-negative-infinity-to-odd-int-is-negative-infinity
-    eq. > @
-      power ninf 9
-      ninf
+  eq. ++> tests-power-negative-infinity-to-odd-int-is-negative-infinity
+    power ninf 9
+    ninf
 
-  ++> tests-power-positive-int-to-positive-int
-    eq. > @
-      power 2 3
-      8
+  eq. (power 2 3) 8 ++> tests-power-positive-int-to-positive-int
 
-  ++> tests-power-positive-float-to-positive-int
-    eq. > @
-      power 3.5 4
-      150.0625
+  eq. (power 3.5 4) 150.0625 ++> tests-power-positive-float-to-positive-int
 
-  ++> tests-power-four-to-five
-    eq. > @
-      power 4 5
-      1024
+  eq. (power 4 5) 1024 ++> tests-power-four-to-five
 
   ++> tests-power-square-root-of-nine
     lt. > @
       abs
-        minus.
-          power 9 0.5
-          3
-      0.000000001
+        minus. (power 9 0.5) 3
+      1.0E-9
 
-  ++> tests-power-square-root-of-two
-    lt. > @
-      abs
-        minus.
-          power 2 0.5
-          1.4142135623730951
-      0.000000001
+  lt. ++> tests-power-square-root-of-two
+    abs
+      minus. (power 2 0.5) 1.4142135623730951
+    1.0E-9
 
-  ++> tests-power-cube-root-of-twenty-seven
-    lt. > @
-      abs
-        minus.
-          power 27 (1.div 3)
-          3
-      0.000000001
+  lt. ++> tests-power-cube-root-of-twenty-seven
+    abs
+      minus.
+        power 27 (1.div 3)
+        3
+    1.0E-9
 
   ++> tests-power-fractional-of-negative-is-nan
     is-nan. > @
       power -4 0.5
 
-  ++> tests-power-as-method-on-number
-    eq. > @
-      2.power 4
-      16
+  eq. (2.power 4) 16 ++> tests-power-as-method-on-number
 
-  ++> tests-power-as-method-with-receiver-bound
-    eq. > @
-      3.power 2
-      9
+  eq. (3.power 2) 9 ++> tests-power-as-method-with-receiver-bound
 
-  ++> tests-power-via-number-namespace
-    eq. > @
-      number.power 2 4
-      16
+  eq. (power 2 4) 16 ++> tests-power-via-number-namespace

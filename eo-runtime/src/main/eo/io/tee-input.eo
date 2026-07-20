@@ -40,10 +40,11 @@
     eq. > @
       malloc.of
         5
-        [mem]
-          read. > @
-            tee-input (bytes-as-input 01-02-03-04-05) (malloc-as-output mem)
-            5
+        read. > [mem]
+          tee-input
+            bytes-as-input 01-02-03-04-05
+            malloc-as-output mem
+          5
       01-02-03-04-05
 
   ++> tests-reads-from-bytes-and-writes-to-memory-by-portions

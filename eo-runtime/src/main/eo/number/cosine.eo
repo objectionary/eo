@@ -13,31 +13,34 @@
     num.plus
       pi.div 2
 
-  ++> tests-cosine-of-zero-is-one
-    lt. > @
-      abs
-        minus. (times. (cosine 0) 1000) 1000
-      1
+  lt. ++> tests-cosine-of-zero-is-one
+    abs
+      minus.
+        times. (cosine 0) 1000
+        1000
+    1
 
-  ++> tests-cosine-of-pi-halves-is-zero
-    lt. > @
-      abs
-        times. (cosine (pi.div 2)) 1000
-      1
+  lt. ++> tests-cosine-of-pi-halves-is-zero
+    abs
+      times.
+        cosine
+          pi.div 2
+        1000
+    1
 
-  ++> tests-cosine-of-pi-is-minus-one
-    lt. > @
-      abs
-        minus. (times. (cosine pi) 1000) -1000
-      1
+  lt. ++> tests-cosine-of-pi-is-minus-one
+    abs
+      minus.
+        times. (cosine pi) 1000
+        -1000
+    1
 
-  ++> tests-cosine-of-pi-thirds-is-half
-    lt. > @
-      abs
-        minus.
-          times. (cosine (pi.div 3)) 1000
-          500
-      1
+  lt. ++> tests-cosine-of-pi-thirds-is-half
+    abs
+      minus.
+        times. (cosine (pi.div 3)) 1000
+        500
+    1
 
   lt. ++> tests-cosine-is-even-function
     abs
@@ -49,22 +52,22 @@
         1000
     1
 
-  ++> tests-cosine-reduces-large-angle
-    lt. > @
-      abs
-        minus.
-          times.
-            cosine
-              plus. (pi.times 10) (pi.div 3)
-            1000
-          500
-      1
+  lt. ++> tests-cosine-reduces-large-angle
+    abs
+      minus.
+        times.
+          cosine
+            plus. (pi.times 10) (pi.div 3)
+          1000
+        500
+    1
 
-  ++> tests-cosine-of-seventeen-radians
-    lt. > @
-      abs
-        minus. (times. (cosine 17) 1000) -275
-      1
+  lt. ++> tests-cosine-of-seventeen-radians
+    abs
+      minus.
+        times. (cosine 17) 1000
+        -275
+    1
 
   ++> tests-cosine-of-nan-is-nan
     is-nan. > @

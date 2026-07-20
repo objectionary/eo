@@ -33,6 +33,6 @@
 
   "HELLO".eq (up-cased "hello") ++> tests-converts-text-to-upper-case
 
-  ++> tests-converts-text-with-upper-letters-to-upper-case
-    "HELLO".eq > @
-      up-cased "HeLlO"
+  eq. ++> tests-converts-text-with-upper-letters-to-upper-case
+    "HELLO"
+    up-cased "HeLlO"

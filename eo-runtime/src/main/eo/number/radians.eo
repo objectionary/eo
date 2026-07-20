@@ -16,33 +16,29 @@
 
   eq. (radians 0) 0 ++> tests-radians-of-zero-is-zero
 
-  ++> tests-radians-of-half-turn-is-pi
-    lt. > @
-      abs
-        minus. (radians 180) pi
-      1.0E-4
+  lt. ++> tests-radians-of-half-turn-is-pi
+    abs
+      minus. (radians 180) pi
+    1.0E-4
 
-  ++> tests-radians-of-quarter-turn-is-pi-halves
-    lt. > @
-      abs
-        minus.
-          radians 90
-          pi.div 2
-      1.0E-4
+  lt. ++> tests-radians-of-quarter-turn-is-pi-halves
+    abs
+      minus.
+        radians 90
+        pi.div 2
+    1.0E-4
 
-  ++> tests-radians-of-full-turn-is-two-pi
-    lt. > @
-      abs
-        minus.
-          radians 360
-          pi.times 2
-      1.0E-4
+  lt. ++> tests-radians-of-full-turn-is-two-pi
+    abs
+      minus.
+        radians 360
+        pi.times 2
+    1.0E-4
 
-  ++> tests-radians-of-negative-half-turn-is-minus-pi
-    lt. > @
-      abs
-        minus. (radians -180) pi.neg
-      1.0E-4
+  lt. ++> tests-radians-of-negative-half-turn-is-minus-pi
+    abs
+      minus. (radians -180) pi.neg
+    1.0E-4
 
   ++> tests-radians-of-nan-is-nan
     is-nan. > @

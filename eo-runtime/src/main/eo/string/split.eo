@@ -11,62 +11,53 @@
   if. > @
     len.eq 0
     *
-    rec-split * 0 0
+    rec-split
+      *
+      0
+      0
   text > bts!
   delimiter > delim!
   delim.size > size!
   bts.size > len!
-
   [accum start current] > rec-split
     if. > @
       len.eq current
-      accum.with > appended
-        string
-          slice
-            bts
-            start
-            current.minus start
+      appended
       if.
         or.
           size.eq 0
-          (current.plus size).gt len
+          gt. (current.plus size) len
         rec-split
           accum
           start
-          (current.plus 1).as-number
+          as-number. (current.plus 1)
         if.
-          delim.eq
-            slice bts current size
+          delim.eq (slice bts current size)
           rec-split
             appended
-            (current.plus size).as-number
-            (current.plus size).as-number
+            as-number. (current.plus size)
+            as-number. (current.plus size)
           rec-split
             accum
             start
-            (current.plus 1).as-number
+            as-number. (current.plus 1)
+    accum.with > appended
+      string
+        slice bts start (current.minus start)
 
-  ++> tests-splits-text-by-dash
-    eq. > @
-      split "a-b-c" "-"
-      * "a" "b" "c"
+  eq. ++> tests-splits-text-by-dash
+    split "a-b-c" "-"
+    * "a" "b" "c"
 
-  ++> tests-splits-text-with-empty-strings
-    eq. > @
-      split "-a-b-" "-"
-      * "" "a" "b" ""
+  eq. ++> tests-splits-text-with-empty-strings
+    split "-a-b-" "-"
+    * "" "a" "b" ""
 
-  ++> tests-splits-and-returns-strings
-    eq. > @
-      length.
-        at.
-          split
-            "hello world!"
-            " "
-          1
-      6
+  eq. ++> tests-splits-and-returns-strings
+    length.
+      at. (split "hello world!" " ") 1
+    6
 
-  ++> tests-splits-text-by-multi-char-delimiter
-    eq. > @
-      split "a::b::c" "::"
-      * "a" "b" "c"
+  eq. ++> tests-splits-text-by-multi-char-delimiter
+    split "a::b::c" "::"
+    * "a" "b" "c"

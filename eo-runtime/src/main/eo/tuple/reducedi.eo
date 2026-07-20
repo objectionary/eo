@@ -18,11 +18,10 @@
     is-empty list
     start
     rec-reducedi list
-  [tup] > rec-reducedi
-    if. > @
-      tup.length.eq 1
-      func start tup.head 0
-      func (rec-reducedi tup.tail) tup.head tup.tail.length
+  if. > [tup] > rec-reducedi
+    tup.length.eq 1
+    func start tup.head 0
+    func (rec-reducedi tup.tail) tup.head tup.tail.length
 
   ++> tests-reduce-list-with-index
     6.eq > @
