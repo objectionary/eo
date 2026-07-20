@@ -2,12 +2,6 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# A void carrying an atom error-branch forma-list ("? > name /{forma …}",
-# R-3.4.8) must print back as a vertical "? > name /{...}" body line, not
-# be folded into a "[name]" bracket param that silently drops the "/{...}"
-# type annotation (#5614). A single-name forma re-resolves to its root, so
-# its implicit "Φ." is dropped; a multi-segment forma keeps its "Q." root,
-# mirroring the atom's own "/sig" rendering.
 penalties:
   INDENT: 3
   BRACKET: 7

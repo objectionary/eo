@@ -2,12 +2,6 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# A tuple applied to a "seq > @" decoratee inside a parameterised only-phi
-# formation "[m]". The formation collapses to the inline-phi form and the
-# trailing star glues onto its line as "seq * > [m]", the tuple's elements
-# (which reference the void param m) pulled up beneath it. The parser absorbs
-# a compact tuple in inline-phi position (issue #5626), so this round-trips —
-# it is the compact shape the io/copied.eo and malloc.eo test sources use.
 penalties:
   INDENT: 3
   BRACKET: 7

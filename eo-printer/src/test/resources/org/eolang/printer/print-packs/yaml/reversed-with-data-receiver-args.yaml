@@ -2,15 +2,6 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# When a reversed dispatch ("eq.") folds into suffix position, its receiver
-# ("01-.as-bool") — itself a data-receiver dispatch — is a single token: it has
-# a receiver child but takes no arguments of its own. It must glue bare
-# ("01-.as-bool.eq"), never wrapped as "(01-.as-bool)", which would produce EO
-# that fails to parse with "redundant parentheses around a single token"
-# (#5591). Only a receiver or argument that actually applies arguments (and
-# therefore contains a space, like "5.plus 3") gets parenthesized. The compact
-# suffix chain wins on penalty and the only-phi formation collapses onto one
-# line (#5650).
 penalties:
   INDENT: 3
   BRACKET: 7

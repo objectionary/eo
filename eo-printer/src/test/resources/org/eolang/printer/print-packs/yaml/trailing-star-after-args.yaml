@@ -2,14 +2,6 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# A tuple applied after one or more leading positional arguments is the valid
-# compact-tuple case "head *N" (N>=1, section 3.9): the marker sits on the head
-# line and every argument, leading ones included, becomes an indented sibling.
-# Earlier (issue #5622) the printer bailed to the verbose "* elem" child to
-# avoid the invalid before-star form "sm.win32 "getenv" *", which the parser
-# reads as an empty tuple. The "*N" marker is a different, valid spelling that
-# round-trips after a dotted dispatch too, so it is emitted instead of the
-# verbose child (issue #5648).
 penalties:
   INDENT: 3
   BRACKET: 7

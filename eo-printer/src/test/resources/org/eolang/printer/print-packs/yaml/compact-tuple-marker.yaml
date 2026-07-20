@@ -2,14 +2,6 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# The compact-tuple marker "head *N" (N>=1, section 3.9) is the canonical
-# spelling of a tuple applied after N leading positional arguments: the "*N"
-# marker sits on the head line and every argument, the leading ones and the
-# tuple's elements alike, becomes an indented sibling. It is emitted even when
-# the verbose "* elem" child would inline onto fewer lines, and it round-trips
-# after a dotted method dispatch too (issue #5648, see also the parser's
-# compact-tuple-with-method.yaml). The marker never becomes the invalid
-# before-star form "head args *" removed by #5622.
 penalties:
   INDENT: 3
   BRACKET: 7
