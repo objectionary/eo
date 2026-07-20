@@ -20,10 +20,13 @@ import java.util.Optional;
  * EO source. For every object it considers a few renderings — a
  * vertical one, where the arguments go on their own indented lines, a
  * horizontal one, where they are inlined (wrapped in parentheses when
- * needed), and, for a tuple applied at the tail, a hybrid that glues
- * the {@code *} to the head's line — and keeps the one with the
- * smaller {@link Penalty}. The decision is made recursively,
- * bottom-up.</p>
+ * needed), and, for a tuple applied at the tail, a hybrid that carries
+ * the {@code *N} compact-tuple marker on the head's line — and keeps the
+ * one with the smaller {@link Penalty}. The decision is made recursively,
+ * bottom-up. The one exception to the penalty vote is the {@code *N}
+ * marker for {@code N >= 1} leading arguments (issue #5648): being the
+ * canonical spelling of a tuple applied after positional arguments, it is
+ * always emitted, never the verbose {@code * elem} child.</p>
  *
  * @since 0.57.0
  */
@@ -126,25 +129,40 @@ final class Pretty {
     /**
      * Lay out a single shape of a node, picking the lowest-penalty of its
      * vertical, horizontal and trailing-star renderings.
+     *
+     * <p>The compact-tuple {@code *N} marker for {@code N >= 1} leading
+     * arguments (issue #5648) is an exception to the penalty vote: it is the
+     * canonical spelling of a tuple applied after positional arguments, so it
+     * is emitted whenever it applies, even when the verbose {@code * elem}
+     * child inlines onto fewer lines. The bare {@code *} idiom
+     * ({@code N == 0}) stays a mere candidate — a short tuple that fits
+     * inline as {@code seq}, {@code * 1 2} on the next line is left alone.</p>
+     *
      * @param node The node
      * @param indent The indentation level
      * @return The rendered block
      */
     private String shaped(final Node node, final int indent) {
-        String best = this.vertical(node, indent);
-        final Optional<String> flat = this.horizontal(node, indent);
-        if (flat.isPresent()
-            && new Penalty(flat.get(), this.weights).points()
-            < new Penalty(best, this.weights).points()) {
-            best = flat.get();
-        }
         final Optional<String> star = this.starred(node, indent);
-        if (star.isPresent()
-            && new Penalty(star.get(), this.weights).points()
-            < new Penalty(best, this.weights).points()) {
-            best = star.get();
+        final String result;
+        if (star.isPresent() && node.children.size() > 1) {
+            result = star.get();
+        } else {
+            String best = this.vertical(node, indent);
+            final Optional<String> flat = this.horizontal(node, indent);
+            if (flat.isPresent()
+                && new Penalty(flat.get(), this.weights).points()
+                < new Penalty(best, this.weights).points()) {
+                best = flat.get();
+            }
+            if (star.isPresent()
+                && new Penalty(star.get(), this.weights).points()
+                < new Penalty(best, this.weights).points()) {
+                best = star.get();
+            }
+            result = best;
         }
-        return best;
+        return result;
     }
 
     /**
@@ -326,34 +344,38 @@ final class Pretty {
 
     /**
      * Render an application whose last child is a tuple as a hybrid: the
-     * head glued to a trailing {@code *} on one line, with the tuple's
-     * elements laid out vertically beneath at one deeper indent.
+     * head carrying a trailing {@code *N} marker on one line, with every
+     * argument laid out vertically beneath at one deeper indent.
      *
-     * <p>The ordinary {@code seq *} idiom is a tuple applied as the last
+     * <p>The ordinary {@code seq *} idiom is a tuple applied as the sole
      * argument of an object. Rendered verbosely it becomes {@code seq} on
      * one line, a lone {@code *} on the next, and the elements one level
      * deeper still — a line taller and an indent wider than the source a
      * human writes. This keeps the {@code *} at the tail of the head's line
      * ({@code seq *}) and pulls the elements up one level, mirroring the
-     * hybrid inline-phi form (issues #5594, #5615). A trailing {@code *}
-     * absorbs exactly the indented siblings beneath it into the tuple, so
-     * this shape is the same tree as the verbose one, with no before-star
-     * ambiguity.</p>
+     * hybrid inline-phi form (issues #5594, #5615). When the tuple follows
+     * {@code N >= 1} leading positional arguments, the compact-tuple marker
+     * {@code *N} (§3.9) carries the count on the head's line
+     * ({@code sprintf *1}) and every argument — the leading ones and the
+     * tuple's elements alike — becomes an indented sibling (issue #5648).
+     * Either way the shape is the same tree as the verbose one, with no
+     * before-star ambiguity.</p>
      *
-     * <p>It applies only to a plain (non-formation, non-reversed)
-     * application whose sole child is a non-empty, unnamed star. The star
-     * must be the only child: a bare trailing {@code *} absorbs the
-     * indented siblings into the tuple, so the shape round-trips only when
-     * nothing else shares the head's line. A preceding argument
-     * ({@code sm.win32 "getenv" *}) would make the parser read a complete
-     * application with an empty tuple and reject the indented child, so
-     * {@link #tuply()} bars that case (issue #5622). The elements are always
-     * laid out vertically, so the genuinely ambiguous fully-horizontal
-     * {@code head * a b} — the before-star territory — is never produced
-     * here. The result is only a candidate: {@link #shaped} keeps it only
-     * when its penalty beats the plain vertical and horizontal renderings,
-     * so a short tuple that fits inline as {@code seq}, {@code * 1 2} on the
-     * next line is left alone.</p>
+     * <p>It applies to a plain (non-formation, non-reversed) application
+     * whose last child is a non-empty, unnamed star. When the star is the
+     * sole child ({@code N == 0}), the bare {@code *} absorbs the indented
+     * siblings into the tuple and the head must be a plain base, not a
+     * dotted method dispatch: after {@code "literal".printf *} the parser
+     * reads a complete application with an empty tuple and drops the
+     * indented element, so {@link #tuply()} bars that case (issues #5622,
+     * #5624). The {@code *N} marker ({@code N >= 1}) sits on the head line
+     * rather than being glued after arguments, so it round-trips after a
+     * dotted dispatch too ({@code string.sprintf *1}). The genuinely
+     * ambiguous before-star form {@code head args *} is never produced. The
+     * result is only a candidate: {@link #shaped} keeps it only when its
+     * penalty beats the plain vertical and horizontal renderings, so a short
+     * tuple that fits inline as {@code seq}, {@code * 1 2} on the next line
+     * is left alone.</p>
      *
      * @param node The node
      * @param indent The indentation level
@@ -362,9 +384,7 @@ final class Pretty {
     private Optional<String> starred(final Node node, final int indent) {
         Optional<String> result = Optional.empty();
         if (node.tuply()) {
-            result = Optional.of(
-                this.vertical(node.children.get(0).glued(node), indent)
-            );
+            result = Optional.of(this.vertical(node.glued(), indent));
         }
         return result;
     }
