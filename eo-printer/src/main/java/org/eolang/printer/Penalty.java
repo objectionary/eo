@@ -25,6 +25,8 @@ import java.util.Map;
  *   <li>opening parentheses on a line cost {@link PenaltyKey#BRACKET}
  *   points progressively — the k-th costs k times the weight, so n on
  *   one line cost n(n+1)/2 times the weight;</li>
+ *   <li>every explicit phi attribute {@code @} costs
+ *   {@link PenaltyKey#PHI} points;</li>
  *   <li>every character sitting past the {@link PenaltyKey#WIDTH}-th
  *   column costs {@link PenaltyKey#EXCESS} point;</li>
  *   <li>every symbol in the block costs {@link PenaltyKey#SYMBOL}
@@ -44,9 +46,9 @@ import java.util.Map;
  * default.</p>
  *
  * <p>For example, with the default weights this snippet has a penalty of
- * 89 (five indents at three points each, 39 symbols, plus five
- * application spaces at seven points each — all name bindings, so no
- * surcharge):</p>
+ * 99 (five indents at two points each, one explicit {@code @} at fifteen,
+ * 39 symbols, plus five application spaces at seven points each — all name
+ * bindings, so no surcharge):</p>
  *
  * <pre> [] &gt; foo
  *   gt. &gt; @
@@ -113,6 +115,7 @@ final class Penalty {
             final int applied = Penalty.applied(line);
             total += this.indents(line) * this.weight(PenaltyKey.INDENT);
             total += opened * (opened + 1) / 2 * this.weight(PenaltyKey.BRACKET);
+            total += Penalty.phis(line) * this.weight(PenaltyKey.PHI);
             total += this.overflow(line) * this.weight(PenaltyKey.EXCESS);
             total += line.length() * this.weight(PenaltyKey.SYMBOL);
             total += (spaces + applied * (applied - 1))
@@ -250,6 +253,21 @@ final class Penalty {
         int count = 0;
         for (int idx = 0; idx < line.length(); ++idx) {
             if (line.charAt(idx) == '(') {
+                ++count;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Count explicit phi attributes ({@code @}) in a line.
+     * @param line The line
+     * @return The number of phi attributes
+     */
+    private static int phis(final String line) {
+        int count = 0;
+        for (int idx = 0; idx < line.length(); ++idx) {
+            if (line.charAt(idx) == '@') {
                 ++count;
             }
         }

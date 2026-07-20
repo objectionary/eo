@@ -23,7 +23,7 @@ final class PenaltyTest {
         weights.put(PenaltyKey.SYMBOL, 0);
         weights.put(PenaltyKey.SPACE, 0);
         MatcherAssert.assertThat(
-            "Five levels of indentation should cost ten points",
+            "Five levels of indentation, with one explicit phi, should cost twenty five points",
             new Penalty(
                 String.join(
                     System.lineSeparator(),
@@ -34,7 +34,19 @@ final class PenaltyTest {
                 ),
                 weights
             ).points(),
-            Matchers.equalTo(10)
+            Matchers.equalTo(25)
+        );
+    }
+
+    @Test
+    void chargesForPhi() {
+        final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
+        weights.put(PenaltyKey.SYMBOL, 0);
+        weights.put(PenaltyKey.SPACE, 0);
+        MatcherAssert.assertThat(
+            "Two explicit phi attributes on one line should cost thirty points",
+            new Penalty("@.eq @", weights).points(),
+            Matchers.equalTo(30)
         );
     }
 
