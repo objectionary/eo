@@ -22,8 +22,7 @@
 
   5.eq (as-number "5") ++> tests-converts-text-to-number
 
-  --> on-converting-text-to-number
-    as-number "Hello" > @
+  as-number "Hello" --> on-converting-text-to-number
 
   ++> tests-non-numeric-text-returns-provided-fallback
     42.eq > @

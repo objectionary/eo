@@ -111,6 +111,20 @@ final class PenaltyTest {
     }
 
     @Test
+    void treatsThrowingTestMarkerAsBinding() {
+        final Map<PenaltyKey, Integer> weights =
+            Collections.singletonMap(PenaltyKey.SYMBOL, 0);
+        MatcherAssert.assertThat(
+            "The throwing-test marker should bind a name like ++>, not apply arguments",
+            new Penalty("foo --> name", weights).points(),
+            Matchers.allOf(
+                Matchers.equalTo(new Penalty("foo ++> name", weights).points()),
+                Matchers.lessThan(new Penalty("foo bar name", weights).points())
+            )
+        );
+    }
+
+    @Test
     void chargesNothingForEmptyCode() {
         MatcherAssert.assertThat(
             "Empty code should have zero penalty",

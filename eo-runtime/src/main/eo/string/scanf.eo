@@ -29,20 +29,11 @@
 
   0.24.eq (scanf "%f" "0.24").head ++> tests-scanf-with-float
 
-  --> on-scanf-with-wrong-format
-    scanf > @
-      "%l"
-      "error"
+  scanf "%l" "error" --> on-scanf-with-wrong-format
 
-  --> on-scanf-with-oversized-int
-    scanf > @
-      "%d"
-      "99999999999999999999"
+  scanf "%d" "99999999999999999999" --> on-scanf-with-oversized-int
 
-  --> on-scanf-with-dangling-percent
-    scanf > @
-      "hello%"
-      "hello"
+  scanf "hello%" "hello" --> on-scanf-with-dangling-percent
 
   eq. ++> tests-scanf-with-string-int-float
     scanf
