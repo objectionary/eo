@@ -20,9 +20,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * it is touched, and delegates everything to the origin.
  *
  * <p>The transpiler emits it around every located object. Recording is
- * enabled by the {@code eo.coverage.file} system property: on the first
+ * enabled by the {@code eo.coverageFile} system property: on the first
  * touch, one {@code loc:line:pos} line is appended, at most once per
- * JVM; without the property every hit is a silent no-op. Thread-safe.</p>
+ * JVM; without the property every hit is a silent no-op. The property
+ * is re-read on every touch (not cached at class load), since this
+ * class is now instantiated around every located object in every EO
+ * program: the very first one touched anywhere in the JVM would
+ * otherwise freeze a stale answer for the rest of the run. Thread-safe.</p>
  *
  * @since 0.58
  * @todo #5466:60min Consume the raw coverage file into an LCOV report.
@@ -32,15 +36,22 @@ import java.util.concurrent.ConcurrentHashMap;
  *  locations, since the transpiler emits every wrapper) that merges
  *  these hits into an LCOV ({@code .info}) tracefile plus a covered
  *  percentage, so Codecov and a build-time threshold can consume it.
+ * @todo #5466:30min Thread the coverageFile path from build time to
+ *  run time. The {@code eo.coverageFile} Maven property on the
+ *  {@code transpile} goal only flips a boolean that decides whether
+ *  {@code PhCoverage} wrapping is emitted into the compiled classes;
+ *  the actual file value is discarded after that and never reaches
+ *  the later process that runs the compiled program, so this system
+ *  property must currently be set a second time, by hand, at JVM
+ *  launch. Wire eo-runtime's test execution (surefire
+ *  systemPropertyVariables or similar) to forward the same value
+ *  automatically, so one {@code -DcoverageFile=...} flag is enough.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class PhCoverage implements Phi {
 
     /** Locations already written in this JVM. */
     private static final Set<String> SEEN = ConcurrentHashMap.newKeySet();
-
-    /** The file to append hits to, or NULL when recording is disabled. */
-    private static final Path TARGET = PhCoverage.target();
 
     /** The origin. */
     private final Phi origin;
@@ -123,19 +134,20 @@ public final class PhCoverage implements Phi {
 
     /** Record one hit of this location, at most once per JVM. */
     private void hit() {
-        if (PhCoverage.TARGET != null) {
+        final Path target = PhCoverage.target();
+        if (target != null) {
             final String record = String.format("%s:%d:%d%n", this.loc, this.line, this.pos);
             if (PhCoverage.SEEN.add(record)) {
                 try {
                     Files.write(
-                        PhCoverage.TARGET,
+                        target,
                         record.getBytes(StandardCharsets.UTF_8),
                         StandardOpenOption.CREATE,
                         StandardOpenOption.APPEND
                     );
                 } catch (final IOException ex) {
                     throw new UncheckedIOException(
-                        String.format("Failed to append a coverage hit to '%s'", PhCoverage.TARGET),
+                        String.format("Failed to append a coverage hit to '%s'", target),
                         ex
                     );
                 }
@@ -144,11 +156,11 @@ public final class PhCoverage implements Phi {
     }
 
     /**
-     * Target file from the {@code eo.coverage.file} property.
+     * Target file from the {@code eo.coverageFile} property.
      * @return The path, or NULL when recording is disabled
      */
     private static Path target() {
-        final String path = System.getProperty("eo.coverage.file");
+        final String path = System.getProperty("eo.coverageFile");
         final Path result;
         if (path == null || path.isEmpty()) {
             result = null;
