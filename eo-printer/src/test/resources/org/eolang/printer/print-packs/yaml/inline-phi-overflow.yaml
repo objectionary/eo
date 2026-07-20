@@ -2,6 +2,12 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
+# The hybrid collapse is still cheaper than the verbose " > @" fallback, so it
+# must be built even when the one-liner is available (issue #5635). The deeply
+# nested application, however, now loses to the vertical form: the depth-scaled
+# bracket penalty charges each parenthesis more the deeper it nests, so
+# "abs (((...)))" is dearer than breaking the argument onto its own line
+# (issue #5659).
 penalties:
   INDENT: 3
   BRACKET: 7

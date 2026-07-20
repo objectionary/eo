@@ -17,14 +17,16 @@ import java.util.Map;
  * {@link Pretty} to choose, among all possible renderings of the same
  * object, the one that reads best.</p>
  *
- * <p>The score is a sum of three components, computed over all lines:</p>
+ * <p>The score is a sum of six components, computed over all lines:</p>
  *
  * <ul>
  *   <li>every level of indentation on a line costs
  *   {@link PenaltyKey#INDENT} points;</li>
- *   <li>opening parentheses on a line cost {@link PenaltyKey#BRACKET}
- *   points progressively — the k-th costs k times the weight, so n on
- *   one line cost n(n+1)/2 times the weight;</li>
+ *   <li>every opening parenthesis costs {@link PenaltyKey#BRACKET}
+ *   points, multiplied by its nesting depth plus one, so a top-level
+ *   bracket costs the flat weight, a bracket nested one level deep costs
+ *   twice as much, two levels deep three times, and so on, since deeper
+ *   nesting hurts readability more;</li>
  *   <li>every explicit phi attribute {@code @} costs
  *   {@link PenaltyKey#PHI} points;</li>
  *   <li>every character sitting past the {@link PenaltyKey#WIDTH}-th
@@ -110,11 +112,10 @@ final class Penalty {
     int points() {
         int total = 0;
         for (final String line : this.code.split(String.valueOf('\n'), -1)) {
-            final int opened = Penalty.brackets(line);
             final int spaces = Penalty.spaces(line);
             final int applied = Penalty.applied(line);
             total += this.indents(line) * this.weight(PenaltyKey.INDENT);
-            total += opened * (opened + 1) / 2 * this.weight(PenaltyKey.BRACKET);
+            total += Penalty.brackets(line) * this.weight(PenaltyKey.BRACKET);
             total += Penalty.phis(line) * this.weight(PenaltyKey.PHI);
             total += this.overflow(line) * this.weight(PenaltyKey.EXCESS);
             total += line.length() * this.weight(PenaltyKey.SYMBOL);
@@ -247,15 +248,28 @@ final class Penalty {
     }
 
     /**
-     * Count opening parentheses in a line.
+     * Weighted count of opening parentheses in a line.
+     *
+     * <p>The cost grows progressively with nesting depth: an opening
+     * parenthesis at depth zero counts as one unit, the next one nested
+     * inside it as two, the one inside that as three, and so on. In other
+     * words, a parenthesis opening with {@code depth} brackets already open
+     * counts as {@code depth + 1} units of the flat {@link PenaltyKey#BRACKET}
+     * weight, so the printer leans away from deeply nested one-liners.</p>
+     *
      * @param line The line
-     * @return The number of parentheses
+     * @return The weighted number of parentheses
      */
     private static int brackets(final String line) {
         int count = 0;
+        int depth = 0;
         for (int idx = 0; idx < line.length(); ++idx) {
-            if (line.charAt(idx) == '(') {
-                ++count;
+            final char chr = line.charAt(idx);
+            if (chr == '(') {
+                count += depth + 1;
+                ++depth;
+            } else if (chr == ')' && depth > 0) {
+                --depth;
             }
         }
         return count;

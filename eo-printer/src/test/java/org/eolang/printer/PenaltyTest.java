@@ -10,6 +10,8 @@ import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link Penalty}.
@@ -50,15 +52,22 @@ final class PenaltyTest {
         );
     }
 
-    @Test
-    void chargesProgressivelyForParentheses() {
+    @ParameterizedTest
+    @CsvSource({
+        "'f (a) (b)', 38",
+        "'(a (b (c 1)))', 114"
+    })
+    void chargesForParentheses(final String code, final int points) {
         final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
         weights.put(PenaltyKey.SYMBOL, 0);
         weights.put(PenaltyKey.SPACE, 0);
         MatcherAssert.assertThat(
-            "Two parentheses on one line should cost three bracket-weights",
-            new Penalty("f (a) (b)", weights).points(),
-            Matchers.equalTo(57)
+            String.format(
+                "The parentheses in %s should cost %d points, deeper nesting charged more",
+                code, points
+            ),
+            new Penalty(code, weights).points(),
+            Matchers.equalTo(points)
         );
     }
 
@@ -111,11 +120,11 @@ final class PenaltyTest {
     }
 
     @Test
-    void treatsThrowingTestMarkerAsBinding() {
+    void treatsThrowingMarkerAsBinding() {
         final Map<PenaltyKey, Integer> weights =
             Collections.singletonMap(PenaltyKey.SYMBOL, 0);
         MatcherAssert.assertThat(
-            "The throwing-test marker should bind a name like ++>, not apply arguments",
+            "The throwing marker --> should bind a name like ++>, not apply arguments",
             new Penalty("foo --> name", weights).points(),
             Matchers.allOf(
                 Matchers.equalTo(new Penalty("foo ++> name", weights).points()),

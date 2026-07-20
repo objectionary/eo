@@ -12,10 +12,10 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link Penalty}'s handling of overridden weights.
+ * Test case for {@link PenaltyKey} weights and their overrides.
  * @since 0.57.0
  */
-final class PenaltyOverridesTest {
+final class PenaltyKeyTest {
 
     @Test
     void chargesDefaultsForAbsentKeys() {
