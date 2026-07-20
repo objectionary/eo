@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Penalty-based pretty printer of EO code.
@@ -21,10 +20,13 @@ import java.util.stream.Collectors;
  * EO source. For every object it considers a few renderings — a
  * vertical one, where the arguments go on their own indented lines, a
  * horizontal one, where they are inlined (wrapped in parentheses when
- * needed), and, for a tuple applied at the tail, a hybrid that glues
- * the {@code *} to the head's line — and keeps the one with the
- * smaller {@link Penalty}. The decision is made recursively,
- * bottom-up.</p>
+ * needed), and, for a tuple applied at the tail, a hybrid that carries
+ * the {@code *N} compact-tuple marker on the head's line — and keeps the
+ * one with the smaller {@link Penalty}. The decision is made recursively,
+ * bottom-up. The one exception to the penalty vote is the {@code *N}
+ * marker for {@code N >= 1} leading arguments (issue #5648): being the
+ * canonical spelling of a tuple applied after positional arguments, it is
+ * always emitted, never the verbose {@code * elem} child.</p>
  *
  * @since 0.57.0
  */
@@ -90,7 +92,7 @@ final class Pretty {
         );
         this.root.elements(Filter.withName("line"))
             .findFirst()
-            .map(line -> this.layout(Pretty.Node.parse(line), 0))
+            .map(line -> this.layout(Node.parse(line), 0))
             .ifPresent(out::append);
         return out.append('\n').toString();
     }
@@ -111,9 +113,9 @@ final class Pretty {
      * @param indent The indentation level
      * @return The rendered block
      */
-    private String layout(final Pretty.Node node, final int indent) {
+    private String layout(final Node node, final int indent) {
         String best = this.shaped(node, indent);
-        final Optional<Pretty.Node> suffix = Pretty.suffixed(node);
+        final Optional<Node> suffix = Pretty.suffixed(node);
         if (suffix.isPresent()) {
             final String alt = this.shaped(suffix.get(), indent);
             if (new Penalty(alt, this.weights).points()
@@ -127,25 +129,40 @@ final class Pretty {
     /**
      * Lay out a single shape of a node, picking the lowest-penalty of its
      * vertical, horizontal and trailing-star renderings.
+     *
+     * <p>The compact-tuple {@code *N} marker for {@code N >= 1} leading
+     * arguments (issue #5648) is an exception to the penalty vote: it is the
+     * canonical spelling of a tuple applied after positional arguments, so it
+     * is emitted whenever it applies, even when the verbose {@code * elem}
+     * child inlines onto fewer lines. The bare {@code *} idiom
+     * ({@code N == 0}) stays a mere candidate — a short tuple that fits
+     * inline as {@code seq}, {@code * 1 2} on the next line is left alone.</p>
+     *
      * @param node The node
      * @param indent The indentation level
      * @return The rendered block
      */
-    private String shaped(final Pretty.Node node, final int indent) {
-        String best = this.vertical(node, indent);
-        final Optional<String> flat = this.horizontal(node, indent);
-        if (flat.isPresent()
-            && new Penalty(flat.get(), this.weights).points()
-            < new Penalty(best, this.weights).points()) {
-            best = flat.get();
-        }
+    private String shaped(final Node node, final int indent) {
         final Optional<String> star = this.starred(node, indent);
-        if (star.isPresent()
-            && new Penalty(star.get(), this.weights).points()
-            < new Penalty(best, this.weights).points()) {
-            best = star.get();
+        final String result;
+        if (star.isPresent() && node.children.size() > 1) {
+            result = star.get();
+        } else {
+            String best = this.vertical(node, indent);
+            final Optional<String> flat = this.horizontal(node, indent);
+            if (flat.isPresent()
+                && new Penalty(flat.get(), this.weights).points()
+                < new Penalty(best, this.weights).points()) {
+                best = flat.get();
+            }
+            if (star.isPresent()
+                && new Penalty(star.get(), this.weights).points()
+                < new Penalty(best, this.weights).points()) {
+                best = star.get();
+            }
+            result = best;
         }
-        return best;
+        return result;
     }
 
     /**
@@ -164,14 +181,14 @@ final class Pretty {
      * @param node The node
      * @return The suffix-shaped node, or empty if it doesn't apply
      */
-    private static Optional<Pretty.Node> suffixed(final Pretty.Node node) {
-        Optional<Pretty.Node> result = Optional.empty();
+    private static Optional<Node> suffixed(final Node node) {
+        Optional<Node> result = Optional.empty();
         if (node.reversed && !node.children.isEmpty()) {
-            final Pretty.Node receiver = node.children.get(0);
+            final Node receiver = node.children.get(0);
             if (receiver.data && receiver.children.isEmpty()
                 && receiver.tail.isEmpty()) {
                 result = Optional.of(
-                    new Pretty.Node(
+                    new Node(
                         String.join(
                             ".", receiver.base,
                             node.base.substring(0, node.base.length() - 1)
@@ -192,11 +209,11 @@ final class Pretty {
      * @param indent The indentation level
      * @return The rendered block
      */
-    private String vertical(final Pretty.Node node, final int indent) {
+    private String vertical(final Node node, final int indent) {
         final StringBuilder block = new StringBuilder(this.tab.repeat(indent))
             .append(node.base)
             .append(node.tail);
-        for (final Pretty.Node child : node.children) {
+        for (final Node child : node.children) {
             if (child.test) {
                 block.append('\n');
             }
@@ -212,7 +229,7 @@ final class Pretty {
      * @param indent The indentation level
      * @return The single line, or empty if inlining is impossible
      */
-    private Optional<String> horizontal(final Pretty.Node node, final int indent) {
+    private Optional<String> horizontal(final Node node, final int indent) {
         final Optional<String> result;
         if (node.abstractt) {
             result = this.phi(node, indent);
@@ -285,11 +302,11 @@ final class Pretty {
      * @param indent The indentation level
      * @return The rendered block, or empty if the inline-phi form doesn't apply
      */
-    private Optional<String> phi(final Pretty.Node node, final int indent) {
+    private Optional<String> phi(final Node node, final int indent) {
         Optional<String> result = Optional.empty();
         if (node.children.size() == 1
             && " > @".equals(node.children.get(0).tail)) {
-            final Pretty.Node decoratee = node.children.get(0);
+            final Node decoratee = node.children.get(0);
             final String middle;
             if (node.base.isEmpty()) {
                 middle = " ";
@@ -298,7 +315,7 @@ final class Pretty {
             }
             final String marker = middle.concat(node.tail);
             final Optional<String> flat = Pretty.flat(
-                new Pretty.Node(
+                new Node(
                     decoratee.base, "", decoratee.abstractt,
                     false, decoratee.reversed, decoratee.data, decoratee.children
                 )
@@ -308,7 +325,7 @@ final class Pretty {
             final boolean applied = !decoratee.abstractt && !decoratee.children.isEmpty()
                 && !(decoratee.reversed && decoratee.children.size() <= 1);
             final boolean unnamed = decoratee.children.stream()
-                .allMatch(Pretty.Node::nameless);
+                .allMatch(Node::nameless);
             if (applied && unnamed
                 && flat.map(line -> line.length() > this.width).orElse(true)) {
                 result = Optional.of(
@@ -323,45 +340,47 @@ final class Pretty {
 
     /**
      * Render an application whose last child is a tuple as a hybrid: the
-     * head glued to a trailing {@code *} on one line, with the tuple's
-     * elements laid out vertically beneath at one deeper indent.
+     * head carrying a trailing {@code *N} marker on one line, with every
+     * argument laid out vertically beneath at one deeper indent.
      *
-     * <p>The ordinary {@code seq *} idiom is a tuple applied as the last
+     * <p>The ordinary {@code seq *} idiom is a tuple applied as the sole
      * argument of an object. Rendered verbosely it becomes {@code seq} on
      * one line, a lone {@code *} on the next, and the elements one level
      * deeper still — a line taller and an indent wider than the source a
      * human writes. This keeps the {@code *} at the tail of the head's line
      * ({@code seq *}) and pulls the elements up one level, mirroring the
-     * hybrid inline-phi form (issues #5594, #5615). A trailing {@code *}
-     * absorbs exactly the indented siblings beneath it into the tuple, so
-     * this shape is the same tree as the verbose one, with no before-star
-     * ambiguity.</p>
+     * hybrid inline-phi form (issues #5594, #5615). When the tuple follows
+     * {@code N >= 1} leading positional arguments, the compact-tuple marker
+     * {@code *N} (§3.9) carries the count on the head's line
+     * ({@code sprintf *1}) and every argument — the leading ones and the
+     * tuple's elements alike — becomes an indented sibling (issue #5648).
+     * Either way the shape is the same tree as the verbose one, with no
+     * before-star ambiguity.</p>
      *
-     * <p>It applies only to a plain (non-formation, non-reversed)
-     * application whose sole child is a non-empty, unnamed star. The star
-     * must be the only child: a bare trailing {@code *} absorbs the
-     * indented siblings into the tuple, so the shape round-trips only when
-     * nothing else shares the head's line. A preceding argument
-     * ({@code sm.win32 "getenv" *}) would make the parser read a complete
-     * application with an empty tuple and reject the indented child, so
-     * {@link #tuply()} bars that case (issue #5622). The elements are always
-     * laid out vertically, so the genuinely ambiguous fully-horizontal
-     * {@code head * a b} — the before-star territory — is never produced
-     * here. The result is only a candidate: {@link #shaped} keeps it only
-     * when its penalty beats the plain vertical and horizontal renderings,
-     * so a short tuple that fits inline as {@code seq}, {@code * 1 2} on the
-     * next line is left alone.</p>
+     * <p>It applies to a plain (non-formation, non-reversed) application
+     * whose last child is a non-empty, unnamed star. When the star is the
+     * sole child ({@code N == 0}), the bare {@code *} absorbs the indented
+     * siblings into the tuple and the head must be a plain base, not a
+     * dotted method dispatch: after {@code "literal".printf *} the parser
+     * reads a complete application with an empty tuple and drops the
+     * indented element, so {@link #tuply()} bars that case (issues #5622,
+     * #5624). The {@code *N} marker ({@code N >= 1}) sits on the head line
+     * rather than being glued after arguments, so it round-trips after a
+     * dotted dispatch too ({@code string.sprintf *1}). The genuinely
+     * ambiguous before-star form {@code head args *} is never produced. The
+     * result is only a candidate: {@link #shaped} keeps it only when its
+     * penalty beats the plain vertical and horizontal renderings, so a short
+     * tuple that fits inline as {@code seq}, {@code * 1 2} on the next line
+     * is left alone.</p>
      *
      * @param node The node
      * @param indent The indentation level
      * @return The rendered block, or empty if the trailing-star form doesn't apply
      */
-    private Optional<String> starred(final Pretty.Node node, final int indent) {
+    private Optional<String> starred(final Node node, final int indent) {
         Optional<String> result = Optional.empty();
         if (node.tuply()) {
-            result = Optional.of(
-                this.vertical(node.children.get(0).glued(node), indent)
-            );
+            result = Optional.of(this.vertical(node.glued(), indent));
         }
         return result;
     }
@@ -383,10 +402,10 @@ final class Pretty {
      * @param args The arguments
      * @return The inlined string, or empty if any argument can't be inlined
      */
-    private static Optional<String> inlined(final List<Pretty.Node> args) {
+    private static Optional<String> inlined(final List<Node> args) {
         final StringBuilder joined = new StringBuilder();
         Optional<String> result = Optional.of("");
-        for (final Pretty.Node arg : args) {
+        for (final Node arg : args) {
             final Optional<String> flat = Pretty.flat(arg);
             if (flat.isEmpty()) {
                 result = Optional.empty();
@@ -412,9 +431,9 @@ final class Pretty {
      * @param given The node
      * @return The inlined content, or empty
      */
-    private static Optional<String> flat(final Pretty.Node given) {
+    private static Optional<String> flat(final Node given) {
         final Optional<String> result;
-        final Pretty.Node node = Pretty.suffixed(given).orElse(given);
+        final Node node = Pretty.suffixed(given).orElse(given);
         if (node.reversed && node.children.size() <= 1) {
             result = Optional.empty();
         } else if (node.abstractt || !node.tail.isEmpty() || "*".equals(node.base)) {
@@ -426,222 +445,5 @@ final class Pretty {
                 .map(args -> String.join(" ", node.base, args));
         }
         return result;
-    }
-
-    /**
-     * A node of the intermediate line tree.
-     * @since 0.57.0
-     */
-    private static final class Node {
-
-        /**
-         * The rendered head of the object (base, method, formation
-         * params, data literal or {@code *}).
-         */
-        private final String base;
-
-        /**
-         * The rendered suffix ({@code > name}, {@code >>}, {@code !},
-         * {@code /atom} or {@code :label}), possibly empty.
-         */
-        private final String tail;
-
-        /**
-         * Whether this object is a formation (its children are
-         * bindings, so it is laid out vertically, unless its only
-         * binding is the {@code φ} decoratee and the compact inline-phi
-         * form fits on one line).
-         */
-        private final boolean abstractt;
-
-        /**
-         * Whether this object is a test attribute ({@code +> name}),
-         * which R-6.5.3 requires to be preceded by a blank line.
-         */
-        private final boolean test;
-
-        /**
-         * Whether this object is a reversed dispatch ({@code method.});
-         * a receiver-only one cannot be inlined as an argument.
-         */
-        private final boolean reversed;
-
-        /**
-         * Whether this object is a data literal (number, string, bytes),
-         * so it may sit as a receiver in the suffix form of a reversed
-         * dispatch ({@code 5.plus} instead of {@code plus. 5}).
-         */
-        private final boolean data;
-
-        /**
-         * The children (arguments or bindings), in order.
-         */
-        private final List<Pretty.Node> children;
-
-        /**
-         * Ctor.
-         * @param head The rendered head
-         * @param suffix The rendered suffix
-         * @param formation Whether it is a formation
-         * @param attr Whether it is a test attribute
-         * @param rev Whether it is a reversed dispatch
-         * @param literal Whether it is a data literal
-         * @param kids The children
-         * @checkstyle ParameterNumberCheck (5 lines)
-         */
-        Node(final String head, final String suffix, final boolean formation,
-            final boolean attr, final boolean rev, final boolean literal,
-            final List<Pretty.Node> kids) {
-            this.base = head;
-            this.tail = suffix;
-            this.abstractt = formation;
-            this.test = attr;
-            this.reversed = rev;
-            this.data = literal;
-            this.children = kids;
-        }
-
-        /**
-         * Build a node from a {@code <line>} element.
-         * @param line The {@code <line>} element
-         * @return The node
-         */
-        static Pretty.Node parse(final Xnav line) {
-            return new Pretty.Node(
-                line.attribute("base").text().orElse(""),
-                line.attribute("tail").text().orElse(""),
-                "yes".equals(line.attribute("abstract").text().orElse("no")),
-                "yes".equals(line.attribute("test").text().orElse("no")),
-                "yes".equals(line.attribute("reversed").text().orElse("no")),
-                "yes".equals(line.attribute("data").text().orElse("no")),
-                line.elements(Filter.withName("line"))
-                    .map(Pretty.Node::parse)
-                    .collect(Collectors.toList())
-            );
-        }
-
-        /**
-         * Whether this node carries no name suffix anywhere in its subtree.
-         *
-         * <p>A line is "named" when its {@code tail} holds a {@code > name},
-         * {@code > [params]} or {@code >>} suffix. This walks the node and all
-         * its descendants, so a named line nested below the top level — inside
-         * a tuple, a dispatch, or an application — is caught too. It decides
-         * whether a decoratee's whole subtree is safe to fold into a compact
-         * only-phi formation, which binds nothing but its {@code φ} decoratee
-         * (issue #5604).</p>
-         *
-         * @return True when neither this node nor any descendant is named
-         */
-        boolean nameless() {
-            return this.tail.isEmpty()
-                && this.children.stream().allMatch(Pretty.Node::nameless);
-        }
-
-        /**
-         * Whether this node is a plain application whose last child is a
-         * tuple that can be glued to its head as a trailing {@code *}.
-         *
-         * <p>A formation lays its children out as bindings and a reversed
-         * dispatch keeps its receiver first, so neither is a plain
-         * application and neither qualifies. The star must be the head's
-         * only child: a bare trailing {@code *} absorbs the indented
-         * siblings beneath it into the tuple, so this round-trips only for
-         * the genuine {@code seq *} idiom. When a preceding argument shares
-         * the line ({@code sm.win32 "getenv" *}), the parser reads it as a
-         * complete application with an empty tuple and rejects the indented
-         * child, so the hybrid must not fire (issue #5622). The single child
-         * must itself be a gluable star (see {@link #stars()}).</p>
-         *
-         * <p>The head must also be a plain base, not a dotted method dispatch
-         * ({@code "literal".printf}, {@code 5.plus}). A bare trailing
-         * {@code *} is absorbed by the parser only after a plain leading
-         * application ({@code seq *}, {@code map *}, {@code switch *}); after
-         * a method dispatch it reads as a complete application with an empty
-         * tuple and rejects the indented elements. A data-receiver dispatch
-         * is stored reversed and so already fails the {@code !reversed} guard,
-         * but {@link #suffixed} rebuilds it as a non-reversed, single-child
-         * node whose base is exactly such a dispatch, and that alternative is
-         * weighed for the hybrid too — barring a dotted base here keeps it,
-         * and any genuine dotted dispatch, on the ordinary {@code * elem}
-         * child that round-trips (issue #5624).</p>
-         *
-         * @return True when the trailing-star hybrid form is applicable
-         */
-        boolean tuply() {
-            return this.gluer()
-                && this.children.size() == 1
-                && this.children.get(0).stars();
-        }
-
-        /**
-         * Whether this node is a plain application head onto which a
-         * trailing {@code *} may be glued: not a formation, not a reversed
-         * dispatch, and not a dotted method dispatch. See {@link #tuply()}
-         * for why a dotted base ({@code "literal".printf}, {@code 5.plus})
-         * is excluded (issue #5624).
-         * @return True when the head can carry a glued trailing star
-         */
-        boolean gluer() {
-            return !this.abstractt && !this.reversed && this.base.indexOf('.') < 0;
-        }
-
-        /**
-         * Whether this node is a non-empty, unnamed {@code *} tuple — one
-         * that may be glued to the tail of an applying object's line.
-         * @return True when this node is a gluable star
-         */
-        boolean stars() {
-            return "*".equals(this.base) && !this.abstractt
-                && !this.children.isEmpty() && this.tail.isEmpty();
-        }
-
-        /**
-         * Build the synthetic node that renders this tuple glued to the
-         * tail of {@code applier}'s line: {@code head *} on one line (with
-         * the applier's own name suffix), the tuple's elements as children.
-         *
-         * <p>The star is the applier's only child (see {@link #tuply()}), so
-         * nothing precedes it on the line — the head is the applier's bare
-         * base glued straight to the {@code *}.</p>
-         *
-         * @param applier The object applying this tuple
-         * @return The glued node, laid out vertically by the caller
-         */
-        Pretty.Node glued(final Pretty.Node applier) {
-            return new Pretty.Node(
-                String.join(" ", applier.base, this.base), applier.tail,
-                false, false, false, false, this.children
-            );
-        }
-
-        /**
-         * Build the body of the hybrid inline-phi form for this decoratee: its
-         * head kept in front of {@code marker}, its arguments as children.
-         *
-         * <p>When this decoratee applies a lone tuple ({@code seq *}), the
-         * trailing {@code *} is glued onto that head line ({@code seq * > [m]})
-         * through {@link #glued} and the tuple's elements become the children,
-         * mirroring the {@code starred} idiom and saving a line and an indent
-         * level; the parser absorbs a compact tuple in inline-phi position, so
-         * this round-trips (issue #5626). Otherwise the arguments stay as this
-         * node's children, laid out vertically by the caller.</p>
-         *
-         * @param marker The inline-phi marker ({@code  > [params] > name})
-         * @return The body node to lay out vertically
-         */
-        Pretty.Node hybrid(final String marker) {
-            final Pretty.Node plain = new Pretty.Node(
-                this.base, marker, false, false,
-                this.reversed, this.data, this.children
-            );
-            final Pretty.Node body;
-            if (this.tuply()) {
-                body = this.children.get(0).glued(plain);
-            } else {
-                body = plain;
-            }
-            return body;
-        }
     }
 }

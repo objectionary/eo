@@ -42,4 +42,7 @@ printed: |
     if. > [tup] > reclast
       tup.length.eq 0
       -1
-      if. (tup.head.eq wanted) tup.tail.length (reclast tup.tail)
+      if.
+        tup.head.eq wanted
+        tup.tail.length
+        reclast tup.tail

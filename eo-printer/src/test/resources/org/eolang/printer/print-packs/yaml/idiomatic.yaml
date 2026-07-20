@@ -44,9 +44,11 @@ printed: |
     if. > @
       plus.
         this
-          n.minus
+          n.minus *2
             "家"
             x
-            * "Hello, друг" 2.18 true
+            "Hello, друг"
+            2.18
+            true
         bar (n.plus "hello, 大家!")
     4.55 > x!

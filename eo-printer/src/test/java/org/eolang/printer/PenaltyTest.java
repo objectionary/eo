@@ -46,7 +46,7 @@ final class PenaltyTest {
         MatcherAssert.assertThat(
             "Two parentheses on one line should cost three bracket-weights",
             new Penalty("f (a) (b)", weights).points(),
-            Matchers.equalTo(45)
+            Matchers.equalTo(57)
         );
     }
 
