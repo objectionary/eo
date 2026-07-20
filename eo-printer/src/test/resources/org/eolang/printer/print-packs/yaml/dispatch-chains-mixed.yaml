@@ -2,9 +2,6 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# Mixed method-dispatch chains. A named receiver folds into the suffix form
-# (a.plus b), but a compound receiver cannot, so its dispatch stays reversed
-# (div. (a.plus b) c, and. over its two comparisons).
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -24,9 +21,6 @@ printed: |
     a.plus > weighted
       b.times c
     a.plus b > sum
-    div. > mean
-      a.plus b
-      c
-    and. > sorted
-      a.gt b
+    (a.plus b).div c > mean
+    (a.gt b).and > sorted
       b.gt c

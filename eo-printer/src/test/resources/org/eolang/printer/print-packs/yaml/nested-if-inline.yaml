@@ -2,10 +2,6 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# A chain of nested "if." dispatches. The inner if. inlines in parentheses as
-# an argument of the outer one, but the outer if. stays vertical: at these
-# weights the fully-collapsed single line (two brackets, many application
-# spaces) costs more than the inline-phi form would save.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -25,7 +21,6 @@ origin: |
 
 printed: |
   [x] > classify
-    if. > @
-      x.lt 0
+    (x.lt 0).if > @
       "negative"
-      if. (x.eq 0) "zero" "positive"
+      (x.eq 0).if "zero" "positive"

@@ -2,10 +2,6 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# A nested formation whose only binding is its phi decoratee collapses to the
-# inline-phi form (width.times height > [width height] > rectangle), sitting
-# beside two applications of it — one inlined, one whose compound receivers
-# keep the reversed dispatch vertical (plus. over two rectangle applications).
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -24,6 +20,5 @@ printed: |
   [] > shapes
     width.times height > [width height] > rectangle
     rectangle 3 4 > area
-    plus. > total
-      rectangle 3 4
+    (rectangle 3 4).plus > total
       rectangle 1 2

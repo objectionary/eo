@@ -16,6 +16,5 @@ origin: |
       false.eq 00-
 printed: |
   [] > compares-bool-to-bytes
-    and. > @
-      true.eq 01-
+    (true.eq 01-).and > @
       false.eq 00-

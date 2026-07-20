@@ -101,13 +101,18 @@ final class Pretty {
      * Lay out a node as a (possibly multi-line) block at the given
      * indentation, picking the rendering with the lowest penalty.
      *
-     * <p>When the node is a reversed dispatch on a lone data receiver
-     * ({@code plus. 5 3}), its equivalent suffix shape ({@code 5.plus 3})
-     * is laid out too and the lower-penalty one is kept — the same
-     * penalty comparison that already decides inline versus vertical. The
-     * suffix shape is never longer and its vertical form has one fewer
-     * child line, so it can only tie or win; a tie (both fit the width)
-     * resolves to the suffix, the shorter and more readable form.</p>
+     * <p>When the node is a reversed dispatch whose receiver has a one-line
+     * inline form ({@code plus. 5 3}, {@code div. (a.plus b) c},
+     * {@code ^. read. (input.read 4096)}), its equivalent suffix shape
+     * ({@code 5.plus 3}, {@code (a.plus b).div c},
+     * {@code (input.read 4096).read.^}) is laid out too and the lower-penalty
+     * one is kept — the same penalty comparison that already decides inline
+     * versus vertical. A lone-data or plain-chain receiver glues bare and its
+     * suffix can only tie or win, so a tie (both fit the width) resolves to
+     * the suffix, the shorter form; a compound receiver pays a {@code BRACKET}
+     * for its parentheses, so its suffix is kept only when the saved
+     * indentation and repeated base characters outweigh that one bracket
+     * (#5650).</p>
      *
      * @param node The node
      * @param indent The indentation level
@@ -166,17 +171,30 @@ final class Pretty {
     }
 
     /**
-     * The suffix shape of a reversed dispatch on a lone data receiver, if
-     * this node is one.
+     * The suffix shape of a reversed dispatch, if this node is one whose
+     * receiver has a one-line inline form.
      *
-     * <p>A data-receiver dispatch is stored as a reversed head
-     * ({@code plus.}) whose first child is the data literal receiver, since
-     * a literal cannot fold into a dotted {@code @base} the way a named
-     * receiver does. This rebuilds it in suffix position — the receiver
-     * glued to the method ({@code 5.plus}) with the remaining arguments
-     * kept as children — so both shapes can be weighed against each other.
-     * A compound receiver (one with children of its own) has no suffix
-     * form and yields empty, leaving the reversed head untouched.</p>
+     * <p>A dispatch is stored as a reversed head ({@code plus.},
+     * {@code div.}) whose first child is the receiver whenever the receiver
+     * cannot fold into a dotted {@code @base} the way a named identifier does:
+     * a data literal ({@code 5}, {@code "x"}, {@code 01-}) or a compound
+     * expression ({@code input.read 4096}, {@code a.plus b}). This rebuilds it
+     * in suffix position — the receiver glued to the method with the remaining
+     * arguments kept as children — so both shapes can be weighed against each
+     * other in {@link #layout}.</p>
+     *
+     * <p>The receiver is inlined through {@link #flat} and glued to the
+     * method as {@code receiver.method}. A receiver that itself applies
+     * arguments ({@code input.read 4096}, {@code a.plus b}) is wrapped in
+     * parentheses ({@code (input.read 4096).read}, {@code (a.plus b).div c}),
+     * exactly as {@link #inlined} wraps such an argument; a receiver that is a
+     * single token or a plain dispatch chain ({@code 5}, {@code 01-.as-bool},
+     * {@code (input.read 4096).read}) is glued bare, since redundant
+     * parentheses around a single token fail to parse (#5591). The parenthesis
+     * cost is modelled by {@code BRACKET}, so {@link #layout} keeps the suffix
+     * shape only when it beats the reversed vertical form on penalty; a
+     * receiver with no one-line inline form yields empty and leaves the
+     * reversed head untouched (#5650).</p>
      *
      * @param node The node
      * @return The suffix-shaped node, or empty if it doesn't apply
@@ -185,19 +203,24 @@ final class Pretty {
         Optional<Node> result = Optional.empty();
         if (node.reversed && !node.children.isEmpty()) {
             final Node receiver = node.children.get(0);
-            if (receiver.data && receiver.children.isEmpty()
-                && receiver.tail.isEmpty()) {
-                result = Optional.of(
-                    new Node(
+            result = Pretty.flat(receiver).map(
+                inline -> {
+                    final String glued;
+                    if (Pretty.suffixed(receiver).orElse(receiver).children.isEmpty()) {
+                        glued = inline;
+                    } else {
+                        glued = "(".concat(inline).concat(")");
+                    }
+                    return new Node(
                         String.join(
-                            ".", receiver.base,
+                            ".", glued,
                             node.base.substring(0, node.base.length() - 1)
                         ),
                         node.tail, node.abstractt, node.test, false, false,
                         node.children.subList(1, node.children.size())
-                    )
-                );
-            }
+                    );
+                }
+            );
         }
         return result;
     }

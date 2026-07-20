@@ -2,13 +2,6 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# A tuple applied to a lone "seq > @" decoratee whose formation has no other
-# binding: the formation collapses through the inline-phi form and the trailing
-# star glues onto that same line as "seq * > [] > foo", the tuple's elements
-# pulled up beneath it. The parser absorbs a compact tuple in inline-phi
-# position (issue #5626), so this round-trips. Contrast seq-star-with-memory,
-# whose formation carries a second binding and so keeps the plain "seq *"
-# binding without the inline-phi collapse.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -31,8 +24,7 @@ origin: |
 printed: |
   seq * > [] > foo
     bar.deleted
-    if.
-      outcome.eq 0
+    (outcome.eq 0).if
       ^
       T
         "Cant delete '%s': %s".printf
