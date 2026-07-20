@@ -20,10 +20,13 @@ import java.util.Optional;
  * EO source. For every object it considers a few renderings — a
  * vertical one, where the arguments go on their own indented lines, a
  * horizontal one, where they are inlined (wrapped in parentheses when
- * needed), and, for a tuple applied at the tail, a hybrid that glues
- * the {@code *} to the head's line — and keeps the one with the
- * smaller {@link Penalty}. The decision is made recursively,
- * bottom-up.</p>
+ * needed), and, for a tuple applied at the tail, a hybrid that carries
+ * the {@code *N} compact-tuple marker on the head's line — and keeps the
+ * one with the smaller {@link Penalty}. The decision is made recursively,
+ * bottom-up. The one exception to the penalty vote is the {@code *N}
+ * marker for {@code N >= 1} leading arguments (issue #5648): being the
+ * canonical spelling of a tuple applied after positional arguments, it is
+ * always emitted, never the verbose {@code * elem} child.</p>
  *
  * @since 0.57.0
  */
@@ -98,13 +101,18 @@ final class Pretty {
      * Lay out a node as a (possibly multi-line) block at the given
      * indentation, picking the rendering with the lowest penalty.
      *
-     * <p>When the node is a reversed dispatch on a lone data receiver
-     * ({@code plus. 5 3}), its equivalent suffix shape ({@code 5.plus 3})
-     * is laid out too and the lower-penalty one is kept — the same
-     * penalty comparison that already decides inline versus vertical. The
-     * suffix shape is never longer and its vertical form has one fewer
-     * child line, so it can only tie or win; a tie (both fit the width)
-     * resolves to the suffix, the shorter and more readable form.</p>
+     * <p>When the node is a reversed dispatch whose receiver has a one-line
+     * inline form ({@code plus. 5 3}, {@code div. (a.plus b) c},
+     * {@code ^. read. (input.read 4096)}), its equivalent suffix shape
+     * ({@code 5.plus 3}, {@code (a.plus b).div c},
+     * {@code (input.read 4096).read.^}) is laid out too and the lower-penalty
+     * one is kept — the same penalty comparison that already decides inline
+     * versus vertical. A lone-data or plain-chain receiver glues bare and its
+     * suffix can only tie or win, so a tie (both fit the width) resolves to
+     * the suffix, the shorter form; a compound receiver pays a {@code BRACKET}
+     * for its parentheses, so its suffix is kept only when the saved
+     * indentation and repeated base characters outweigh that one bracket
+     * (#5650).</p>
      *
      * @param node The node
      * @param indent The indentation level
@@ -126,39 +134,67 @@ final class Pretty {
     /**
      * Lay out a single shape of a node, picking the lowest-penalty of its
      * vertical, horizontal and trailing-star renderings.
+     *
+     * <p>The compact-tuple {@code *N} marker for {@code N >= 1} leading
+     * arguments (issue #5648) is an exception to the penalty vote: it is the
+     * canonical spelling of a tuple applied after positional arguments, so it
+     * is emitted whenever it applies, even when the verbose {@code * elem}
+     * child inlines onto fewer lines. The bare {@code *} idiom
+     * ({@code N == 0}) stays a mere candidate — a short tuple that fits
+     * inline as {@code seq}, {@code * 1 2} on the next line is left alone.</p>
+     *
      * @param node The node
      * @param indent The indentation level
      * @return The rendered block
      */
     private String shaped(final Node node, final int indent) {
-        String best = this.vertical(node, indent);
-        final Optional<String> flat = this.horizontal(node, indent);
-        if (flat.isPresent()
-            && new Penalty(flat.get(), this.weights).points()
-            < new Penalty(best, this.weights).points()) {
-            best = flat.get();
-        }
         final Optional<String> star = this.starred(node, indent);
-        if (star.isPresent()
-            && new Penalty(star.get(), this.weights).points()
-            < new Penalty(best, this.weights).points()) {
-            best = star.get();
+        final String result;
+        if (star.isPresent() && node.children.size() > 1) {
+            result = star.get();
+        } else {
+            String best = this.vertical(node, indent);
+            final Optional<String> flat = this.horizontal(node, indent);
+            if (flat.isPresent()
+                && new Penalty(flat.get(), this.weights).points()
+                < new Penalty(best, this.weights).points()) {
+                best = flat.get();
+            }
+            if (star.isPresent()
+                && new Penalty(star.get(), this.weights).points()
+                < new Penalty(best, this.weights).points()) {
+                best = star.get();
+            }
+            result = best;
         }
-        return best;
+        return result;
     }
 
     /**
-     * The suffix shape of a reversed dispatch on a lone data receiver, if
-     * this node is one.
+     * The suffix shape of a reversed dispatch, if this node is one whose
+     * receiver has a one-line inline form.
      *
-     * <p>A data-receiver dispatch is stored as a reversed head
-     * ({@code plus.}) whose first child is the data literal receiver, since
-     * a literal cannot fold into a dotted {@code @base} the way a named
-     * receiver does. This rebuilds it in suffix position — the receiver
-     * glued to the method ({@code 5.plus}) with the remaining arguments
-     * kept as children — so both shapes can be weighed against each other.
-     * A compound receiver (one with children of its own) has no suffix
-     * form and yields empty, leaving the reversed head untouched.</p>
+     * <p>A dispatch is stored as a reversed head ({@code plus.},
+     * {@code div.}) whose first child is the receiver whenever the receiver
+     * cannot fold into a dotted {@code @base} the way a named identifier does:
+     * a data literal ({@code 5}, {@code "x"}, {@code 01-}) or a compound
+     * expression ({@code input.read 4096}, {@code a.plus b}). This rebuilds it
+     * in suffix position — the receiver glued to the method with the remaining
+     * arguments kept as children — so both shapes can be weighed against each
+     * other in {@link #layout}.</p>
+     *
+     * <p>The receiver is inlined through {@link #flat} and glued to the
+     * method as {@code receiver.method}. A receiver that itself applies
+     * arguments ({@code input.read 4096}, {@code a.plus b}) is wrapped in
+     * parentheses ({@code (input.read 4096).read}, {@code (a.plus b).div c}),
+     * exactly as {@link #inlined} wraps such an argument; a receiver that is a
+     * single token or a plain dispatch chain ({@code 5}, {@code 01-.as-bool},
+     * {@code (input.read 4096).read}) is glued bare, since redundant
+     * parentheses around a single token fail to parse (#5591). The parenthesis
+     * cost is modelled by {@code BRACKET}, so {@link #layout} keeps the suffix
+     * shape only when it beats the reversed vertical form on penalty; a
+     * receiver with no one-line inline form yields empty and leaves the
+     * reversed head untouched (#5650).</p>
      *
      * @param node The node
      * @return The suffix-shaped node, or empty if it doesn't apply
@@ -167,19 +203,24 @@ final class Pretty {
         Optional<Node> result = Optional.empty();
         if (node.reversed && !node.children.isEmpty()) {
             final Node receiver = node.children.get(0);
-            if (receiver.data && receiver.children.isEmpty()
-                && receiver.tail.isEmpty()) {
-                result = Optional.of(
-                    new Node(
+            result = Pretty.flat(receiver).map(
+                inline -> {
+                    final String glued;
+                    if (Pretty.suffixed(receiver).orElse(receiver).children.isEmpty()) {
+                        glued = inline;
+                    } else {
+                        glued = "(".concat(inline).concat(")");
+                    }
+                    return new Node(
                         String.join(
-                            ".", receiver.base,
+                            ".", glued,
                             node.base.substring(0, node.base.length() - 1)
                         ),
                         node.tail, node.abstractt, node.test, false, false,
                         node.children.subList(1, node.children.size())
-                    )
-                );
-            }
+                    );
+                }
+            );
         }
         return result;
     }
@@ -326,34 +367,38 @@ final class Pretty {
 
     /**
      * Render an application whose last child is a tuple as a hybrid: the
-     * head glued to a trailing {@code *} on one line, with the tuple's
-     * elements laid out vertically beneath at one deeper indent.
+     * head carrying a trailing {@code *N} marker on one line, with every
+     * argument laid out vertically beneath at one deeper indent.
      *
-     * <p>The ordinary {@code seq *} idiom is a tuple applied as the last
+     * <p>The ordinary {@code seq *} idiom is a tuple applied as the sole
      * argument of an object. Rendered verbosely it becomes {@code seq} on
      * one line, a lone {@code *} on the next, and the elements one level
      * deeper still — a line taller and an indent wider than the source a
      * human writes. This keeps the {@code *} at the tail of the head's line
      * ({@code seq *}) and pulls the elements up one level, mirroring the
-     * hybrid inline-phi form (issues #5594, #5615). A trailing {@code *}
-     * absorbs exactly the indented siblings beneath it into the tuple, so
-     * this shape is the same tree as the verbose one, with no before-star
-     * ambiguity.</p>
+     * hybrid inline-phi form (issues #5594, #5615). When the tuple follows
+     * {@code N >= 1} leading positional arguments, the compact-tuple marker
+     * {@code *N} (§3.9) carries the count on the head's line
+     * ({@code sprintf *1}) and every argument — the leading ones and the
+     * tuple's elements alike — becomes an indented sibling (issue #5648).
+     * Either way the shape is the same tree as the verbose one, with no
+     * before-star ambiguity.</p>
      *
-     * <p>It applies only to a plain (non-formation, non-reversed)
-     * application whose sole child is a non-empty, unnamed star. The star
-     * must be the only child: a bare trailing {@code *} absorbs the
-     * indented siblings into the tuple, so the shape round-trips only when
-     * nothing else shares the head's line. A preceding argument
-     * ({@code sm.win32 "getenv" *}) would make the parser read a complete
-     * application with an empty tuple and reject the indented child, so
-     * {@link #tuply()} bars that case (issue #5622). The elements are always
-     * laid out vertically, so the genuinely ambiguous fully-horizontal
-     * {@code head * a b} — the before-star territory — is never produced
-     * here. The result is only a candidate: {@link #shaped} keeps it only
-     * when its penalty beats the plain vertical and horizontal renderings,
-     * so a short tuple that fits inline as {@code seq}, {@code * 1 2} on the
-     * next line is left alone.</p>
+     * <p>It applies to a plain (non-formation, non-reversed) application
+     * whose last child is a non-empty, unnamed star. When the star is the
+     * sole child ({@code N == 0}), the bare {@code *} absorbs the indented
+     * siblings into the tuple and the head must be a plain base, not a
+     * dotted method dispatch: after {@code "literal".printf *} the parser
+     * reads a complete application with an empty tuple and drops the
+     * indented element, so {@link #tuply()} bars that case (issues #5622,
+     * #5624). The {@code *N} marker ({@code N >= 1}) sits on the head line
+     * rather than being glued after arguments, so it round-trips after a
+     * dotted dispatch too ({@code string.sprintf *1}). The genuinely
+     * ambiguous before-star form {@code head args *} is never produced. The
+     * result is only a candidate: {@link #shaped} keeps it only when its
+     * penalty beats the plain vertical and horizontal renderings, so a short
+     * tuple that fits inline as {@code seq}, {@code * 1 2} on the next line
+     * is left alone.</p>
      *
      * @param node The node
      * @param indent The indentation level
@@ -362,9 +407,7 @@ final class Pretty {
     private Optional<String> starred(final Node node, final int indent) {
         Optional<String> result = Optional.empty();
         if (node.tuply()) {
-            result = Optional.of(
-                this.vertical(node.children.get(0).glued(node), indent)
-            );
+            result = Optional.of(this.vertical(node.glued(), indent));
         }
         return result;
     }

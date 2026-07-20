@@ -2,6 +2,11 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
+# A reversed dispatch ("and.") over two compound comparison receivers packs
+# back into suffix position ("(true.eq 01-).and (false.eq 00-)") when that
+# beats the reversed shape on penalty: the two parenthesized comparisons cost
+# the same either way, so the shorter suffix form wins and the whole formation
+# collapses through the inline-phi form onto one line (#5650).
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -14,4 +19,4 @@ origin: |
       true.eq 01-
       false.eq 00-
 printed: |
-  and. (true.eq 01-) (false.eq 00-) > [] > compares-bool-to-bytes
+  (true.eq 01-).and (false.eq 00-) > [] > compares-bool-to-bytes

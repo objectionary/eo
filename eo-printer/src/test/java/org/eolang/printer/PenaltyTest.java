@@ -20,7 +20,7 @@ final class PenaltyTest {
     @Test
     void chargesForIndentation() {
         MatcherAssert.assertThat(
-            "Five levels of indentation should cost fifteen points",
+            "Five levels of indentation, with one explicit phi, should cost thirty points",
             new Penalty(
                 String.join(
                     System.lineSeparator(),
@@ -30,7 +30,16 @@ final class PenaltyTest {
                     "    bar.hello 88"
                 )
             ).points(),
-            Matchers.equalTo(15)
+            Matchers.equalTo(30)
+        );
+    }
+
+    @Test
+    void chargesForPhi() {
+        MatcherAssert.assertThat(
+            "Two explicit phi attributes on one line should cost thirty points",
+            new Penalty("@.eq @").points(),
+            Matchers.equalTo(30)
         );
     }
 

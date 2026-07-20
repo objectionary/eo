@@ -6,6 +6,7 @@ package org.eolang.printer;
 
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -139,50 +140,72 @@ final class Node {
 
     /**
      * Whether this node is a plain application whose last child is a
-     * tuple that can be glued to its head as a trailing {@code *}.
+     * tuple that can be compacted onto its head as a trailing
+     * {@code *N} marker.
      *
      * <p>A formation lays its children out as bindings and a reversed
      * dispatch keeps its receiver first, so neither is a plain
-     * application and neither qualifies. The star must be the head's
-     * only child: a bare trailing {@code *} absorbs the indented
-     * siblings beneath it into the tuple, so this round-trips only for
-     * the genuine {@code seq *} idiom. When a preceding argument shares
-     * the line ({@code sm.win32 "getenv" *}), the parser reads it as a
-     * complete application with an empty tuple and rejects the indented
-     * child, so the hybrid must not fire (issue #5622). The single child
-     * must itself be a gluable star (see {@link #stars()}).</p>
+     * application and neither qualifies (a reversed compact-tuple head
+     * such as {@code joined. *1} is not yet parseable). A bare tuple
+     * head ({@code base == "*"}) is a tuple literal, not an object
+     * applying a trailing tuple, so it is excluded too: its own elements
+     * are already tuple elements and gluing a {@code *N} marker onto it
+     * ({@code * *2}) would be a confusing self-application, never the
+     * intended compaction. The last child must itself be a gluable star
+     * (see {@link #stars()}); any leading children are the {@code N}
+     * positional arguments the marker keeps in front of the tuple.</p>
      *
-     * <p>The head must also be a plain base, not a dotted method dispatch
-     * ({@code "literal".printf}, {@code 5.plus}). A bare trailing
+     * <p>When the star is the sole child ({@code N == 0}) the head must
+     * be a plain base, not a dotted method dispatch
+     * ({@code "literal".printf}, {@code 5.plus}). The bare trailing
      * {@code *} is absorbed by the parser only after a plain leading
-     * application ({@code seq *}, {@code map *}, {@code switch *}); after
-     * a method dispatch it reads as a complete application with an empty
-     * tuple and rejects the indented elements. A data-receiver dispatch
-     * is stored reversed and so already fails the {@code !reversed} guard,
-     * but {@link Pretty#suffixed} rebuilds it as a non-reversed, single-child
-     * node whose base is exactly such a dispatch, and that alternative is
-     * weighed for the hybrid too — barring a dotted base here keeps it,
-     * and any genuine dotted dispatch, on the ordinary {@code * elem}
-     * child that round-trips (issue #5624).</p>
+     * application ({@code seq *}, {@code map *}); after a method dispatch
+     * it reads as a complete application with an empty tuple and rejects
+     * the indented elements. A data-receiver dispatch is stored reversed
+     * and so already fails the {@code !reversed} guard, but
+     * {@link Pretty#suffixed} rebuilds it as a non-reversed, single-child
+     * node whose base is exactly such a dispatch — barring a dotted base
+     * for {@code N == 0} keeps it, and any genuine dotted dispatch, on the
+     * ordinary {@code * elem} child that round-trips (issues #5622,
+     * #5624). With {@code N >= 1} the count sits on the head's line, so
+     * the {@code *N} marker round-trips after a dotted dispatch too
+     * ({@code string.sprintf *1}) and a dotted base is allowed
+     * (issue #5648).</p>
      *
      * @return True when the trailing-star hybrid form is applicable
      */
     boolean tuply() {
-        return this.gluer()
-            && this.children.size() == 1
-            && this.children.get(0).stars();
+        final int size = this.children.size();
+        return size > 0
+            && this.marked()
+            && this.children.get(size - 1).stars()
+            && this.absorbed(size);
     }
 
     /**
-     * Whether this node is a plain application head onto which a
-     * trailing {@code *} may be glued: not a formation, not a reversed
-     * dispatch, and not a dotted method dispatch. See {@link #tuply()}
-     * for why a dotted base ({@code "literal".printf}, {@code 5.plus})
-     * is excluded (issue #5624).
-     * @return True when the head can carry a glued trailing star
+     * Whether this head can carry a trailing-star marker at all: not a
+     * formation (its children are bindings), not a reversed dispatch (a
+     * reversed compact-tuple head is not yet parseable), and not a bare
+     * tuple literal ({@code base == "*"}), whose elements are already
+     * tuple elements.
+     * @return True when the head may take a {@code *N} marker
      */
-    boolean gluer() {
-        return !this.abstractt && !this.reversed && this.base.indexOf('.') < 0;
+    boolean marked() {
+        return !this.abstractt && !this.reversed && !"*".equals(this.base);
+    }
+
+    /**
+     * Whether the trailing tuple is absorbed correctly at the given
+     * child count. With {@code N >= 1} leading arguments the {@code *N}
+     * marker sits on the head's line, so a dotted method dispatch is
+     * fine; with the bare {@code *} ({@code N == 0}) the head must be a
+     * plain base, since after a method dispatch the parser reads a
+     * complete application with an empty tuple (issues #5622, #5624).
+     * @param size The number of children
+     * @return True when the shape round-trips at this count
+     */
+    boolean absorbed(final int size) {
+        return size > 1 || this.base.indexOf('.') < 0;
     }
 
     /**
@@ -196,21 +219,36 @@ final class Node {
     }
 
     /**
-     * Build the synthetic node that renders this tuple glued to the
-     * tail of {@code applier}'s line: {@code head *} on one line (with
-     * the applier's own name suffix), the tuple's elements as children.
+     * Build the synthetic node that renders this application with its
+     * trailing tuple compacted to a {@code *N} marker: {@code head *N}
+     * on one line (with the node's own name suffix), every argument as
+     * an indented child.
      *
-     * <p>The star is the applier's only child (see {@link #tuply()}), so
-     * nothing precedes it on the line — the head is the applier's bare
-     * base glued straight to the {@code *}.</p>
+     * <p>The last child is the gluable star (see {@link #tuply()}); the
+     * {@code N} children in front of it are the leading positional
+     * arguments the marker keeps. The head line carries {@code head *N},
+     * where {@code N} is that leading count, and the children are the
+     * leading arguments followed by the tuple's own elements. When
+     * {@code N == 0} the bare {@code *} is written (the {@code seq *}
+     * idiom), matching the parser's default count of zero.</p>
      *
-     * @param applier The object applying this tuple
      * @return The glued node, laid out vertically by the caller
      */
-    Node glued(final Node applier) {
+    Node glued() {
+        final int last = this.children.size() - 1;
+        final List<Node> kids = new ArrayList<>(
+            this.children.subList(0, last)
+        );
+        kids.addAll(this.children.get(last).children);
+        final String marker;
+        if (last == 0) {
+            marker = "*";
+        } else {
+            marker = "*".concat(Integer.toString(last));
+        }
         return new Node(
-            String.join(" ", applier.base, this.base), applier.tail,
-            false, false, false, false, this.children
+            String.join(" ", this.base, marker), this.tail,
+            false, false, false, false, kids
         );
     }
 }

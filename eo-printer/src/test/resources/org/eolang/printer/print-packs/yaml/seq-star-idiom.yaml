@@ -21,11 +21,10 @@ origin: |
               * path created.output
 
 printed: |
-  [] > foo
-    seq * > @
+  seq > [] > foo
+    *
       bar.deleted
-      if.
-        outcome.eq 0
+      (outcome.eq 0).if
         ^
         T
           "Cant delete '%s': %s".printf
