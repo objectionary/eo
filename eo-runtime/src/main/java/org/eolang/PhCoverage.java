@@ -28,24 +28,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * program: the very first one touched anywhere in the JVM would
  * otherwise freeze a stale answer for the rest of the run. Thread-safe.</p>
  *
+ * <p>The {@code coverageFile} parameter of eo-maven-plugin's
+ * {@code transpile} goal ({@code MjTranspile}) controls whether the
+ * transpiler wraps located objects into this decorator in the first
+ * place; see its javadoc for the remaining gaps (the LCOV report and
+ * threading this same file to the process that runs the compiled
+ * program).</p>
+ *
  * @since 0.58
- * @todo #5466:60min Consume the raw coverage file into an LCOV report.
- *  This decorator only produces a raw {@code loc:line:pos} file of
- *  touched locations; nothing reads it yet. Add a reporter on the
- *  eo-maven-plugin side (which knows the full set of instrumented
- *  locations, since the transpiler emits every wrapper) that merges
- *  these hits into an LCOV ({@code .info}) tracefile plus a covered
- *  percentage, so Codecov and a build-time threshold can consume it.
- * @todo #5466:30min Thread the coverageFile path from build time to
- *  run time. The {@code eo.coverageFile} Maven property on the
- *  {@code transpile} goal only flips a boolean that decides whether
- *  {@code PhCoverage} wrapping is emitted into the compiled classes;
- *  the actual file value is discarded after that and never reaches
- *  the later process that runs the compiled program, so this system
- *  property must currently be set a second time, by hand, at JVM
- *  launch. Wire eo-runtime's test execution (surefire
- *  systemPropertyVariables or similar) to forward the same value
- *  automatically, so one {@code -DcoverageFile=...} flag is enough.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class PhCoverage implements Phi {

@@ -89,6 +89,15 @@ public final class MjTranspile extends MjSafe {
      *  threshold (for example 80 percent), mirroring how the existing
      *  {@code jacoco} profile binds a {@code check} goal with per-metric
      *  thresholds.
+     * @todo #5466:30min Forward this file to the JVM that runs the
+     *  compiled program. This parameter only decides, at transpile
+     *  time, whether {@code PhCoverage} wrapping gets emitted into the
+     *  generated Java; the path itself is discarded afterwards and
+     *  never reaches the process that later runs the instrumented
+     *  code, which reads its own {@code eo.coverageFile} system
+     *  property instead. Wire eo-runtime's test execution (surefire
+     *  {@code systemPropertyVariables} or similar) to pass this same
+     *  value through, so one setting is enough end to end.
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.coverageFile")
