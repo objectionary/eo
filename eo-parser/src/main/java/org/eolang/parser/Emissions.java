@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -115,11 +116,7 @@ final class Emissions {
         final Emit emit, final String name, final Value value, final int line
     ) {
         if (value.kind() == Value.Kind.INTEGER || value.kind() == Value.Kind.FLOAT) {
-            emit.object(name, "Φ.number", line, value.pos());
-            Emissions.bytesCarrier(
-                emit, line, value.pos(),
-                new Hex(Double.parseDouble(value.raw())).asString()
-            );
+            Emissions.number(emit, name, value, line);
         } else if (value.kind() == Value.Kind.HEX) {
             final long hex;
             try {
@@ -293,6 +290,83 @@ final class Emissions {
             }
         }
         return out.toString();
+    }
+
+    /**
+     * Emit an {@code INTEGER} or {@code FLOAT} as {@code Φ.number},
+     * rejecting literals whose exact decimal value differs from the
+     * IEEE-754 double they parse to (dead trailing digits). Alternate
+     * spellings of the same value ({@code +42}, {@code 1.50}) are kept.
+     * @param emit Emitter
+     * @param name Name attribute (or {@code null})
+     * @param value Integer or float value
+     * @param line Source line
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static void number(
+        final Emit emit, final String name, final Value value, final int line
+    ) {
+        final double parsed = Double.parseDouble(value.raw());
+        if (!Double.isFinite(parsed) || Emissions.overPrecise(value.raw(), parsed)) {
+            final String canonical;
+            if (value.kind() == Value.Kind.INTEGER) {
+                canonical = Emissions.canonicalInteger(parsed);
+            } else {
+                canonical = Double.toString(parsed);
+            }
+            throw new ParseError(
+                line, value.pos(),
+                String.format(
+                    "%s is over-precise, write %s instead",
+                    value.raw(), canonical
+                )
+            );
+        }
+        emit.object(name, "Φ.number", line, value.pos());
+        Emissions.bytesCarrier(
+            emit, line, value.pos(),
+            new Hex(parsed).asString()
+        );
+    }
+
+    /**
+     * Whether {@code raw} claims a decimal value the parsed double does
+     * not hold. Accepts any spelling of the exact binary value
+     * ({@code +42}, {@code 1.50}, full digit forms of exact powers of
+     * two) and any spelling of {@link Double#toString(double)}'s
+     * shortest form ({@code 0.1}); rejects only dead extra digits.
+     * @param raw Source literal text
+     * @param parsed Result of {@code Double.parseDouble(raw)}
+     * @return True when the literal is over-precise
+     */
+    @SuppressWarnings({
+        "PMD.AvoidDecimalLiteralsInBigDecimalConstructor",
+        "java:S2111"
+    })
+    private static boolean overPrecise(final String raw, final double parsed) {
+        final BigDecimal written = new BigDecimal(raw);
+        return written.compareTo(new BigDecimal(parsed)) != 0
+            && written.compareTo(BigDecimal.valueOf(parsed)) != 0;
+    }
+
+    /**
+     * Suggested replacement spelling for a whole-valued double.
+     * Mirrors the integer branch of the printer's {@code StUnhex.number},
+     * except the large-magnitude arm keeps {@code Double.toString}'s
+     * uppercase {@code E} so the suggestion itself re-parses as FLOAT.
+     * @param num Parsed numeric value
+     * @return Shortest integer-oriented spelling for {@code num}
+     */
+    private static String canonicalInteger(final double num) {
+        final String str;
+        if (Double.isFinite(num) && "-0.0".equals(Double.toString(num))) {
+            str = "-0";
+        } else if (Double.isFinite(num) && Math.abs(num) < 0x1p63) {
+            str = Long.toString((long) num);
+        } else {
+            str = Double.toString(num);
+        }
+        return str;
     }
 
     /**
