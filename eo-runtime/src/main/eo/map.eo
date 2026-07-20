@@ -60,7 +60,7 @@
             (tup.head.hash.eq hash).if
               [] >>
                 true > exists
-                ^.^.tup.head.value > [cant-get] > get
+                tup.head.value > [cant-get] > get
               not-found
         @. > prev
           rec-key-search tup.tail
@@ -68,7 +68,7 @@
         false > exists
         cant-get > [cant-get] > get
           "Object by hash code %d from given key does not exists".printf
-            * ^.^.hash
+            * hash
     (found key).exists > [key] > has
     tuple.mapped > keys
       entries

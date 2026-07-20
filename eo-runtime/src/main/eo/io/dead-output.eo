@@ -12,6 +12,6 @@
     output-block > @
     [] > output-block
       true > @
-      ^.^.output-block > [buffer] > write
+      output-block > [buffer] > write
 
   dead-output.write 01-02-03 ++> writes-bytes-to-nowhere

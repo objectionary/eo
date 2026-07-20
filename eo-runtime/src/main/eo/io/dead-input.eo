@@ -13,7 +13,7 @@
     input-block > @
     [] > input-block
       -- > @
-      ^.^.input-block > [size] > read
+      input-block > [size] > read
 
   ++> tests-reads-empty-bytes
     and. > @

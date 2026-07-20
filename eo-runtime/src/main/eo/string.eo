@@ -42,7 +42,7 @@
         size
       T
         "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
-          * csize index ^.^.as-bytes
+          * csize index as-bytes
       reclen
         index.plus csize
         len.plus 1
@@ -65,7 +65,7 @@
                 T
                   "Unknown byte format (%x), can't recognize character".printf
                     * byte
-      ^.^.as-bytes.slice index 1 > byte
+      as-bytes.slice index 1 > byte
   [start len] > slice
     if. > @
       nstart.lt 0
@@ -117,7 +117,7 @@
         size
       T
         "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
-          * csize index ^.^.as-bytes
+          * csize index as-bytes
       recidx
         index.plus csize
         accum.plus 1
@@ -160,7 +160,7 @@
                   T
                     "Unknown byte format (%x), can't recognize character".printf
                       * byte
-      ^.^.as-bytes.slice index 1 > byte
+      as-bytes.slice index 1 > byte
 
   " ".length.eq 1 ++> tests-calculates-length-of-spaces-only
 

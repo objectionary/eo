@@ -64,7 +64,7 @@
   ++> tests-takes-parent-through-attribute
     [] > @
       [] > @
-        ^.^.^.x.eq 42 > [] > @
+        x.eq 42 > [] > @
     42 > x
 
   --> when-applies-to-closed-object

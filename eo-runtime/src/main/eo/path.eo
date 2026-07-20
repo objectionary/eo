@@ -44,7 +44,7 @@
         separator
     "/" > separator
     [] > normalized
-      ^.^.posix > @
+      posix > @
         if.
           normalized.eq "//"
           "/"
@@ -88,7 +88,7 @@
       uri > ubts!
     [other] > resolved
       normalized. > @
-        ^.^.posix
+        posix
           string
             if.
               (obts.slice 0 1).eq
@@ -179,7 +179,7 @@
               is-drive-relative ubts
         uri > ubts!
       [] > normalized
-        ^.^.validated > @
+        validated > @
           (normalized.eq "\\\\").if
             separator
             string normalized
@@ -233,7 +233,7 @@
         uri > ubts!
       [other] > resolved
         normalized. > @
-          ^.^.validated
+          validated
             string
               (is-drive-relative valid).as-bool.if
                 valid

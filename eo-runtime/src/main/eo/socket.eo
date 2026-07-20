@@ -115,8 +115,8 @@
         [size] > read
           seq * > @
             chunk
-            ^.^.input-block chunk
-          (^.^.^.recv size).as-bytes > chunk
+            input-block chunk
+          (recv size).as-bytes > chunk
   [send] > as-output
     [buffer] > write
       @. > @
@@ -124,8 +124,8 @@
       [] > output-block
         true > @
         seq * > [buffer] > write
-          ^.^.^.send buffer
-          ^.^.output-block
+          send buffer
+          output-block
   [sys] > impl
     code. > addr
       sys.raw *1
@@ -150,11 +150,11 @@
           sent.eq -1
           cant-send
             "Failed to send a message through the socket #%d because %s".printf
-              * sockfd ^.^.sys.message
+              * sockfd sys.message
           sent
         buffer > buff!
         code. > sent
-          ^.^.sys.raw *1
+          sys.raw *1
             "send"
             sockfd
             buff
@@ -165,10 +165,10 @@
           received.code.eq -1
           cant-receive
             "Failed to receive data from the socket #%d because %s".printf
-              * sockfd ^.^.sys.message
+              * sockfd sys.message
           received.output
         called. > received
-          ^.^.sys.raw *1
+          sys.raw *1
             "recv"
             sockfd
             size
@@ -206,7 +206,7 @@
         addr.eq sys.none
         cant
           "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s".printf
-            * ^.^.address sys.message
+            * address sys.message
         scope
     [scope cant-connect] > connect
       safe-socket > @
@@ -243,18 +243,18 @@
                     (client.eq -1).if > @
                       cant-accept
                         "Failed to accept a connection on the socket #%d because %s".printf
-                          * ^.^.sock.sd ^.^.sock.sys.message
+                          * sock.sd sock.sys.message
                       seq *
                         handled
-                        ^.^.sock.closed-socket client
+                        sock.closed-socket client
                         handled
                     code. > client
-                      ^.^.sock.sys.raw *1
+                      sock.sys.raw *1
                         "accept"
-                        ^.^.sock.sd
-                        ^.^.sock.sockaddr
-                        ^.^.sock.sockaddr.size
-                    scope (^.^.sock.scoped-socket client) > handled!
+                        sock.sd
+                        sock.sockaddr
+                        sock.sockaddr.size
+                    scope (sock.scoped-socket client) > handled!
           code. > bound
             sock.sys.raw *1
               "bind"

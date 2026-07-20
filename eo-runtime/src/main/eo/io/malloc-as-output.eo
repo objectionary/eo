@@ -33,8 +33,8 @@
     [offset] > output-block
       true > @
       seq * > [buffer] > write
-        ^.^.^.allocated.write offset buffer
-        ^.^.output-block
+        allocated.write offset buffer
+        output-block
           offset.plus buffer.size
 
   ++> tests-makes-an-output-from-malloc-and-writes

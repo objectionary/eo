@@ -80,7 +80,7 @@
         [size] > read
           seq * > @
             chunk
-            ^.^.input-block chunk
+            input-block chunk
           output. > chunk!
             sm.posix *1
               "read"
@@ -98,7 +98,7 @@
               sm.posix.stdout
               buffer
               buffer.size
-          ^.^.output-block
+          output-block
   [] > windows-console
     [size] > read
       @. > @
@@ -110,7 +110,7 @@
         [size] > read
           seq * > @
             chunk
-            ^.^.input-block chunk
+            input-block chunk
           output. > chunk!
             sm.win32 *1
               "_read"
@@ -128,6 +128,6 @@
               sm.win32.stdout
               buffer
               buffer.size
-          ^.^.output-block
+          output-block
 
   console.write "Hello, console-test!\n" ++> tests-writes-to-console

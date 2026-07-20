@@ -41,7 +41,7 @@
               sm.posix.stderr
               buffer
               buffer.size
-          ^.^.output-block
+          output-block
   [] > windows-output
     [buffer] > write
       @. > @
@@ -55,6 +55,6 @@
               sm.win32.stderr
               buffer
               buffer.size
-          ^.^.output-block
+          output-block
 
   stderr "Hello, stderr-test!\n" ++> tests-prints-to-stderr

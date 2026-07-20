@@ -34,7 +34,7 @@
       [size] > read
         seq * > @
           written
-          ^.^.input-block chunk written chunk.as-bytes
+          input-block chunk written chunk.as-bytes
         (input.read size).read.^ > chunk
         (output.write chunk).write.^ > written
 

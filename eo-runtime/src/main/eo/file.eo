@@ -174,11 +174,11 @@
       [syscall] > open-through
         if. > @
           descriptor.eq -1
-          ^.^.cant-open
+          cant-open
             "Couldn't open file '%s': %s".printf
-              * ^.^.^.path opened.output
+              * path opened.output
           seq *
-            ^.^.scope
+            scope
               stream descriptor
             code.
               syscall.close
@@ -186,47 +186,47 @@
             true
         called. > opened
           syscall.open
-            * ^.^.^.path flags syscall.mode
+            * path flags syscall.mode
         opened.code > descriptor
         plus. > flags
           (direction.plus creat).plus trunc
           append
         if. > direction
-          ^.^.readable.and ^.^.writable
+          readable.and writable
           syscall.rdwr
-          ^.^.writable.if syscall.wronly syscall.rdonly
-        ^.^.existing.not.if syscall.creat 0 > creat
-        ^.^.truncate.if syscall.trunc 0 > trunc
-        ^.^.appending.if syscall.append 0 > append
+          writable.if syscall.wronly syscall.rdonly
+        existing.not.if syscall.creat 0 > creat
+        truncate.if syscall.trunc 0 > trunc
+        appending.if syscall.append 0 > append
         [descriptor] > stream
           [size] > read
             (input-block --).read size > @
             [buffer] > input-block
               buffer > @
               [size] > read
-                ^.^.^.^.^.^.readable.not.if > @
+                readable.not.if > @
                   T
                     "Can't read from file with provided access mode '%s'".printf
-                      * ^.^.^.^.^.^.access
+                      * access
                   seq *
                     chunk
-                    ^.^.input-block chunk
+                    input-block chunk
                 output. > chunk!
-                  ^.^.^.^.syscall.read
-                    * ^.^.^.descriptor size
+                  syscall.read
+                    * descriptor size
           [buffer] > write
             output-block.write buffer > @
             [] > output-block
               true > @
-              ^.^.^.^.^.^.writable.not.if > [buffer] > write
+              writable.not.if > [buffer] > write
                 T
                   "Can't write to file with provided access mode '%s'".printf
-                    * ^.^.^.^.^.^.access
+                    * access
                 seq *
                   code.
-                    ^.^.^.^.syscall.write
-                      * ^.^.^.descriptor buffer buffer.size
-                  ^.^.output-block
+                    syscall.write
+                      * descriptor buffer buffer.size
+                  output-block
 
   (file ".").is-directory ++> tests-check-if-current-directory-is-directory
 

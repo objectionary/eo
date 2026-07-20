@@ -111,15 +111,15 @@
         malloc.for > @
           0
           [iter] >>
-            (^.^.max.eq 0).if > @
+            (max.eq 0).if > @
               acc.put
                 acc.as-number.plus
-                  ^.^.arr.at 0
+                  arr.at 0
               while
-                ^.^.^.max.gt iter > [i] >>
+                max.gt iter > [i] >>
                 seq * > [i] >>
-                  ^.^.acc.put
-                    ^.^.acc.as-number.plus (^.^.^.arr.at i)
+                  acc.put
+                    acc.as-number.plus (arr.at i)
                   iter.put
                     iter.as-number.plus 1
     arr.length.plus -1 > max
@@ -138,11 +138,11 @@
           0
           [iter] >>
             while > @
-              ^.^.^.max.gt iter > [i] >>
+              max.gt iter > [i] >>
               seq * > [i] >>
-                ^.^.acc.put
-                  ^.^.acc.as-number.plus
-                    ^.^.^.arr.at iter
+                acc.put
+                  acc.as-number.plus
+                    arr.at iter
                 iter.put
                   iter.as-number.plus 1
     arr.length.plus -1 > max
@@ -162,10 +162,10 @@
             seq * > @
               while
                 if. > [i] >>
-                  ^.^.^.max.gt iter
+                  max.gt iter
                   seq *
-                    ^.^.acc.put
-                      ^.^.acc.as-number.plus (^.^.^.arr.at iter.as-number)
+                    acc.put
+                      acc.as-number.plus (arr.at iter.as-number)
                     iter.put (iter.as-number.plus 1)
                     true
                   false
@@ -185,10 +185,10 @@
             seq * > @
               while
                 if. > [i] >>
-                  ^.^.^.max.gt iter
+                  max.gt iter
                   seq *
-                    ^.^.acc.put
-                      ^.^.acc.as-number.plus (^.^.^.arr.at iter.as-number)
+                    acc.put
+                      acc.as-number.plus (arr.at iter.as-number)
                     iter.put (iter.as-number.plus 1)
                     true
                   false

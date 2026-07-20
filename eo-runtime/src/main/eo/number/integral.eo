@@ -22,17 +22,17 @@
                 if. > [i] >>
                   (left.as-number.plus step).lt right
                   seq *
-                    ^.^.sum.put
-                      ^.^.sum.as-number.plus
-                        ^.^.^.subsection left.as-number (left.as-number.plus step)
+                    sum.put
+                      sum.as-number.plus
+                        subsection left.as-number (left.as-number.plus step)
                     left.put (left.as-number.plus step)
                     true
                   false
                 true > [i]
               sum
-            ^.^.b > right
+            b > right
             as-number. > step
-              (right.minus left).div ^.^.n
+              (right.minus left).div n
   times. > [a b] > subsection
     div.
       b.minus a

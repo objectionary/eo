@@ -39,8 +39,8 @@
       [size] > read
         if. > @
           available.eq 0
-          ^.^.input-block -- --
-          ^.^.input-block
+          input-block -- --
+          input-block
             as-bytes.
               data.slice
                 next

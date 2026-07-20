@@ -32,7 +32,7 @@
       line.length.eq 0
       string buffer
       rec-read
-        ^.^.next-line
+        next-line
         first.if
           buffer.concat line
           (buffer.concat separator).concat line
