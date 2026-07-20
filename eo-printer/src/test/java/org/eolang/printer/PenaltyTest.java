@@ -45,6 +45,39 @@ final class PenaltyTest {
         );
     }
 
+    @Test
+    void chargesForSuffixIf() {
+        MatcherAssert.assertThat(
+            "A suffix if dispatch should cost fifty points",
+            new Penalty("foo.if a b c").points(),
+            Matchers.equalTo(50)
+        );
+    }
+
+    @Test
+    void chargesNothingForPrefixIf() {
+        MatcherAssert.assertThat(
+            "A prefix if dispatch should be free",
+            new Penalty("if. foo a b c").points(),
+            Matchers.equalTo(0)
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "'foo.iffy a b', 0",
+        "'foo.if a b', 50",
+        "'foo.if', 50",
+        "'x.if.gt y', 50"
+    })
+    void chargesForSuffixIfAsWholeWord(final String code, final int points) {
+        MatcherAssert.assertThat(
+            String.format("The if suffix in %s should cost %d points", code, points),
+            new Penalty(code).points(),
+            Matchers.equalTo(points)
+        );
+    }
+
     @ParameterizedTest
     @CsvSource({
         "'42.gt (bar.hello 88) > [] > foo', 7",
