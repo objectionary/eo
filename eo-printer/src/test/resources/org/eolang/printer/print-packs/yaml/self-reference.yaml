@@ -27,7 +27,8 @@ printed: |
     ? >> list
     ? >> passed
     withouti > list3
-      concat
+      concat *1
         * 0 1
-        * 2 3
+        2
+        3
       0
