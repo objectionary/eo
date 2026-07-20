@@ -6,11 +6,14 @@
 # single line when it fits: each dispatch folds its compound comparison
 # receiver into suffix position ("(x.lt 0).if ..."), the inner one inlines in
 # parentheses as an argument of the outer, and the whole expression collapses
-# through the inline-phi form into the formation's head (#5650).
+# through the inline-phi form into the formation's head (#5650). The suffix
+# "if" penalty (#5665) is disabled here (IF: 0) so the suffix fold is still
+# chosen and the collapse can be demonstrated.
 penalties:
   INDENT: 3
   BRACKET: 7
   EXCESS: 1
+  IF: 0
   WIDTH: 80
   STEP: 2
 origin: |
