@@ -54,6 +54,11 @@
     <xsl:variable name="rest" select="substring-after($sig, $root)"/>
     <xsl:sequence select="if (starts-with($sig, $root)) then (if (contains($rest, '.')) then concat('Q.', $rest) else $rest) else $sig"/>
   </xsl:function>
+  <!-- Count the leading run of consecutive ρ segments in a sequence. -->
+  <xsl:function name="eo:rho-run" as="xs:integer">
+    <xsl:param name="segments" as="xs:string*"/>
+    <xsl:sequence select="if (empty($segments) or $segments[1] != $eo:rho) then 0 else 1 + eo:rho-run(subsequence($segments, 2))"/>
+  </xsl:function>
   <!-- PROGRAM -->
   <xsl:template match="object">
     <object>
@@ -188,12 +193,17 @@
   <!-- BASED -->
   <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
     <!--
-    A base of the form "ξ.ρ.name…" is a single parent hop onto a
-    name that lives in the enclosing scope.
+    A base of the form "ξ.ρ…ρ.name…" is a run of parent hops onto a
+    name that lives in an enclosing scope. "rho-count" counts the
+    consecutive leading "ρ" segments after the "ξ." root, "hop-name" is
+    the first segment past that run and "hop-rest" is that segment plus
+    any trailing segments.
     -->
     <xsl:variable name="rho-prefix" select="concat($eo:xi, '.', $eo:rho, '.')"/>
-    <xsl:variable name="rest" select="substring-after(@base, $rho-prefix)"/>
-    <xsl:variable name="first" select="if (contains($rest, '.')) then substring-before($rest, '.') else $rest"/>
+    <xsl:variable name="segments" select="tokenize(@base, '\.')"/>
+    <xsl:variable name="rho-count" select="if ($segments[1] = $eo:xi) then eo:rho-run(subsequence($segments, 2)) else 0"/>
+    <xsl:variable name="hop-name" select="if (count($segments) &gt; $rho-count + 1) then $segments[$rho-count + 2] else ''"/>
+    <xsl:variable name="hop-rest" select="string-join(subsequence($segments, $rho-count + 2), '.')"/>
     <!--
     The current program's "+package" and the "Φ.<package>." prefix a
     self-reference to a same-file object carries after being homed
@@ -231,13 +241,14 @@
         -->
         <xsl:value-of select="eo:translate-path($self-rest)"/>
       </xsl:when>
-      <xsl:when test="starts-with(@base, $rho-prefix) and $first != '' and $first != $eo:rho and $first != $eo:phi and $first != $eo:xi and $first != $eo:program and empty(ancestor::o[not(@base)][1]/o[@name=$first]) and exists(ancestor::o[not(@base)][2]/o[@name=$first])">
+      <xsl:when test="starts-with(@base, $rho-prefix) and $hop-name != '' and $hop-name != $eo:rho and $hop-name != $eo:phi and $hop-name != $eo:xi and $hop-name != $eo:program and (every $i in 1 to $rho-count satisfies empty(ancestor::o[not(@base)][$i]/o[@name=$hop-name])) and exists(ancestor::o[not(@base)][$rho-count + 1]/o[@name=$hop-name])">
         <!--
-        The single leading "^." parent hop is redundant: the name is
-        absent from the immediate scope but present in its parent, so
-        plain scope resolution re-derives the very same hop. Drop it.
+        The run of leading "^." parent hops is redundant: the name is
+        absent from each of the N nearer enclosing formations but
+        present in the (N+1)-th, so plain scope resolution re-derives
+        exactly the very same ρ-chain of length N. Drop the whole run.
         -->
-        <xsl:value-of select="eo:translate-path($rest)"/>
+        <xsl:value-of select="eo:translate-path($hop-rest)"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="eo:surface(@base)"/>
