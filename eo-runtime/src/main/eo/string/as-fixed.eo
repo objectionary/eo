@@ -12,22 +12,20 @@
 [n places] > as-fixed
   if. > @
     n.lt 0
-    concat.
-      "-".as-bytes
+    "-".as-bytes.concat
       positive
         n.times -1
     positive n
-  if. > [p] > pow10
-    p.eq 0
-    1
-    times.
-      pow10
-        as-number.
-          p.minus 1
-      10
+  [p] > pow10
+    if. > @
+      p.eq 0
+      1
+      times.
+        pow10 (p.minus 1).as-number
+        10
   [a] > positive
     concat. > @
-      concat. (as-decimal ip) ".".as-bytes
+      (as-decimal ip).concat ".".as-bytes
       rec-pad
         m.minus
           ip.times scale
@@ -36,7 +34,7 @@
     floor. > ip
       m.div scale
     floor. > m
-      plus. (a.times scale) 0.5
+      (a.times scale).plus 0.5
     pow10 places > scale
   if. > [value count acc] > rec-pad
     count.eq 0
@@ -48,13 +46,7 @@
         count.minus 1
       concat.
         as-char
-          plus.
-            floor.
-              value.minus
-                times.
-                  floor. (value.div 10)
-                  10
-            48
+          (value.minus ((value.div 10).floor.times 10)).floor.plus 48
         acc
 
   ++> tests-pads-with-trailing-zeros

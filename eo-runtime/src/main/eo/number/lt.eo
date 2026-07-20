@@ -15,36 +15,30 @@
 
   10.lt 50 ++> tests-int-less-true
 
-  eq. ++> tests-int-less-equal
-    not.
-      10.lt 10
-    true
+  (10.lt 10).not.eq true ++> tests-int-less-equal
 
-  eq. ++> tests-int-less-false
-    not.
-      10.lt -5
-    true
+  (10.lt -5).not.eq true ++> tests-int-less-false
 
-  eq. (pinf.lt pinf) false ++> tests-positive-infinity-lt-positive-infinity
+  (pinf.lt pinf).eq false ++> tests-positive-infinity-lt-positive-infinity
 
-  eq. (pinf.lt ninf) false ++> tests-positive-infinity-not-lt-negative-infinity
+  (pinf.lt ninf).eq false ++> tests-positive-infinity-not-lt-negative-infinity
 
-  eq. (pinf.lt nan) false ++> tests-positive-infinity-not-lt-nan
+  (pinf.lt nan).eq false ++> tests-positive-infinity-not-lt-nan
 
-  eq. (pinf.lt 42) false ++> tests-positive-infinity-not-lt-int
+  (pinf.lt 42).eq false ++> tests-positive-infinity-not-lt-int
 
-  eq. (pinf.lt 42.5) false ++> tests-positive-infinity-not-lt-float
+  (pinf.lt 42.5).eq false ++> tests-positive-infinity-not-lt-float
 
-  eq. (ninf.lt ninf) false ++> tests-negative-infinity-lt-negative-infinity
+  (ninf.lt ninf).eq false ++> tests-negative-infinity-lt-negative-infinity
 
-  eq. (ninf.lt pinf) true ++> tests-negative-infinity-lt-positive-infinity
+  (ninf.lt pinf).eq true ++> tests-negative-infinity-lt-positive-infinity
 
-  eq. (ninf.lt nan) false ++> tests-negative-infinity-not-lt-nan
+  (ninf.lt nan).eq false ++> tests-negative-infinity-not-lt-nan
 
   ninf.lt 42 ++> tests-negative-infinity-lt-int
 
   ninf.lt 42.5 ++> tests-negative-infinity-lt-float
 
-  eq. (nan.lt 42) false ++> tests-nan-not-lt-number
+  (nan.lt 42).eq false ++> tests-nan-not-lt-number
 
-  eq. (nan.lt nan) false ++> tests-nan-not-lt-nan
+  (nan.lt nan).eq false ++> tests-nan-not-lt-nan

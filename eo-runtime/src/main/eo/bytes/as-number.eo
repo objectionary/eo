@@ -19,8 +19,7 @@
       if.
         bts.eq ninf.as-bytes
         ninf
-        if.
-          bts.size.eq 8
+        (bts.size.eq 8).if
           number bts
           cant-convert
             "Can't convert non 8 length bytes to a number, bytes are %x".printf

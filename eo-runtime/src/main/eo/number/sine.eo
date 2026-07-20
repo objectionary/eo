@@ -16,10 +16,7 @@
   number num.as-bytes > arg
   pi.times 2 > tau
   arg.minus > reduced
-    times.
-      floor.
-        plus. (arg.div tau) 0.5
-      tau
+    ((arg.div tau).plus 0.5).floor.times tau
   reduced.times reduced > squared
   15 > terms
   if. > [depth] > factor
@@ -28,45 +25,37 @@
     1.minus
       times.
         squared.div
-          times.
-            depth.times 2
-            plus. (depth.times 2) 1
+          (depth.times 2).times
+            (depth.times 2).plus 1
         factor
           depth.plus 1
 
-  eq. (sine 0) 0 ++> tests-sine-of-zero-is-zero
+  (sine 0).eq 0 ++> tests-sine-of-zero-is-zero
 
   lt. ++> tests-sine-of-pi-halves-is-one
     abs
       minus.
-        times.
-          sine (pi.div 2)
-          1000
+        (sine (pi.div 2)).times 1000
         1000
     1
 
   lt. ++> tests-sine-of-pi-sixths-is-half
     abs
       minus.
-        times.
-          sine (pi.div 6)
-          1000
+        (sine (pi.div 6)).times 1000
         500
     1
 
   ++> tests-sine-of-pi-is-zero
     lt. > @
       abs
-        times. (sine pi) 1000
+        (sine pi).times 1000
       1
 
   lt. ++> tests-sine-of-negative-pi-halves-is-minus-one
     abs
       minus.
-        times.
-          sine
-            neg. (pi.div 2)
-          1000
+        (sine (pi.div 2).neg).times 1000
         -1000
     1
 
@@ -75,7 +64,7 @@
       minus.
         times.
           sine
-            div. (pi.times 3) 2
+            (pi.times 3).div 2
           1000
         -1000
     1
@@ -85,17 +74,14 @@
       times.
         plus.
           sine (pi.div 3)
-          sine
-            neg. (pi.div 3)
+          sine (pi.div 3).neg
         1000
     1
 
   ++> tests-sine-of-two-pi-is-zero
     lt. > @
       abs
-        times.
-          sine (pi.times 2)
-          1000
+        (sine (pi.times 2)).times 1000
       1
 
   lt. ++> tests-sine-reduces-large-angle
@@ -103,8 +89,7 @@
       minus.
         times.
           sine
-            plus.
-              pi.times 10
+            (pi.times 10).plus
               pi.div 6
           1000
         500
@@ -113,18 +98,12 @@
   lt. ++> tests-sine-of-seventeen-radians
     abs
       minus.
-        times. (sine 17) 1000
+        (sine 17).times 1000
         -961
     1
 
-  ++> tests-sine-of-nan-is-nan
-    is-nan. > @
-      sine nan
+  (sine nan).is-nan ++> tests-sine-of-nan-is-nan
 
-  ++> tests-sine-of-positive-infinity-is-nan
-    is-nan. > @
-      sine pinf
+  (sine pinf).is-nan ++> tests-sine-of-positive-infinity-is-nan
 
-  ++> tests-sine-of-negative-infinity-is-nan
-    is-nan. > @
-      sine ninf
+  (sine ninf).is-nan ++> tests-sine-of-negative-infinity-is-nan

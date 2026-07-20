@@ -96,19 +96,19 @@
   [port] > htons
     as-i16. > @
       or.
-        left. (bts.and 00-FF) 8
-        and. (bts.right 8) 00-FF
+        (bts.and 00-FF).left 8
+        (bts.right 8).and 00-FF
     port.as-i16.as-bytes > bts
   [recv] > as-input
     [size] > read
       @. > @
-        read. (input-block --) size
+        (input-block --).read size
       [buffer] > input-block
         buffer > @
         [size] > read
           seq > @
             * chunk (^.^.input-block chunk)
-          as-bytes. (^.^.^.recv size) > chunk
+          (^.^.^.recv size).as-bytes > chunk
   [send] > as-output
     [buffer] > write
       @. > @
@@ -138,8 +138,7 @@
       ^.^.as-input recv > as-input
       ^.^.as-output send > as-output
       [buffer cant-send] > send
-        if. > @
-          sent.eq -1
+        (sent.eq -1).if > @
           cant-send
             "Failed to send a message through the socket #%d because %s".printf
               * sockfd ^.^.sys.message
@@ -153,8 +152,7 @@
             buff.size
             0
       [size cant-receive] > recv
-        if. > @
-          received.code.eq -1
+        (received.code.eq -1).if > @
           cant-receive
             "Failed to receive data from the socket #%d because %s".printf
               * sockfd ^.^.sys.message
@@ -177,9 +175,7 @@
           sys.close
           sockfd
     [scope cant] > safe-socket
-      if. > @
-        not.
-          sys.startup.eq 0
+      (sys.startup.eq 0).not.if > @
         cant
           "Couldn't start up the sockets subsystem because %s".printf
             * sys.message
@@ -201,8 +197,7 @@
     [scope cant-connect] > connect
       safe-socket > @
         [] >>
-          if. > @
-            connected.eq -1
+          (connected.eq -1).if > @
             cant-connect
               "Couldn't connect to %s:%d on socket #%d because %s".printf
                 * sock.address sock.port sock.sd sock.sys.message
@@ -218,13 +213,11 @@
     [scope cant-listen] > listen
       safe-socket > @
         [] >>
-          if. > @
-            bound.eq -1
+          (bound.eq -1).if > @
             cant-listen
               "Couldn't bind the socket #%d to %s:%d because %s".printf
                 * sock.sd sock.address sock.port sock.sys.message
-            if.
-              listened.eq -1
+            (listened.eq -1).if
               cant-listen
                 "Failed to listen to %s:%d on the socket #%d because %s".printf
                   * sock.address sock.port sock.sd sock.sys.message
@@ -232,8 +225,7 @@
                 [] >>
                   sock.scoped-socket sock.sd > @
                   [scope cant-accept] > accept
-                    if. > @
-                      client.eq -1
+                    (client.eq -1).if > @
                       cant-accept
                         "Failed to accept a connection on the socket #%d because %s".printf
                           * ^.^.sock.sd ^.^.sock.sys.message

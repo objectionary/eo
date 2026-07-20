@@ -13,7 +13,7 @@
   if. > @
     or.
       0.gt index
-      gte. (number index) len
+      (number index).gte len
     fallback
       "Given index %d is out of text bounds".printf
         * index
@@ -21,9 +21,7 @@
   i > idx!
   if. > index!
     0.gt idx
-    plus.
-      number len
-      idx
+    (number len).plus idx
     idx
   text.length > len!
 

@@ -24,9 +24,7 @@
 
   true.as-bool ++> tests-true-as-bool
 
-  ++> tests-compares-two-different-bool-types
-    not. > @
-      true.eq 42
+  (true.eq 42).not ++> tests-compares-two-different-bool-types
 
   ++> tests-compares-bool-to-bytes
     and. > @
@@ -34,18 +32,13 @@
       false.eq 00-
 
   and. ++> tests-compares-bool-to-bytes-reverse
-    eq. 01-.as-bytes true
-    eq. 00-.as-bytes false
+    01-.as-bytes.eq true
+    00-.as-bytes.eq false
 
-  ++> tests-forks-on-true-condition
-    eq. > @
-      if. (5.eq 5) 123 42
-      123
+  ((5.eq 5).if 123 42).eq 123 ++> tests-forks-on-true-condition
 
   ++> tests-takes-parent-object
-    eq. > @
-      a 42
-      42
+    (a 42).eq 42 > @
     [x] > a
       take > @
       x > [] > take
@@ -77,9 +70,7 @@
     return (42.plus 1) > [] > a
 
   ++> tests-nesting-blah-test
-    eq. > @
-      blah0 0
-      39
+    (blah0 0).eq 39 > @
     [x] > blah0
       blah1 > @
         x.plus 1
@@ -178,11 +169,6 @@
       true.eq "\u0001"
       false.eq "\u0000"
 
-  ++> tests-true-and-false-is-false
-    not. > @
-      true.and false
+  (true.and false).not ++> tests-true-and-false-is-false
 
-  ++> tests-forks-on-false-condition
-    eq. > @
-      if. (5.eq 8) 123 42
-      42
+  ((5.eq 8).if 123 42).eq 42 ++> tests-forks-on-false-condition

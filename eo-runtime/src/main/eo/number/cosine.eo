@@ -16,7 +16,7 @@
   lt. ++> tests-cosine-of-zero-is-one
     abs
       minus.
-        times. (cosine 0) 1000
+        (cosine 0).times 1000
         1000
     1
 
@@ -31,16 +31,14 @@
   lt. ++> tests-cosine-of-pi-is-minus-one
     abs
       minus.
-        times. (cosine pi) 1000
+        (cosine pi).times 1000
         -1000
     1
 
   lt. ++> tests-cosine-of-pi-thirds-is-half
     abs
       minus.
-        times.
-          cosine (pi.div 3)
-          1000
+        (cosine (pi.div 3)).times 1000
         500
     1
 
@@ -49,8 +47,7 @@
       times.
         minus.
           cosine (pi.div 3)
-          cosine
-            neg. (pi.div 3)
+          cosine (pi.div 3).neg
         1000
     1
 
@@ -59,8 +56,7 @@
       minus.
         times.
           cosine
-            plus.
-              pi.times 10
+            (pi.times 10).plus
               pi.div 3
           1000
         500
@@ -69,18 +65,12 @@
   lt. ++> tests-cosine-of-seventeen-radians
     abs
       minus.
-        times. (cosine 17) 1000
+        (cosine 17).times 1000
         -275
     1
 
-  ++> tests-cosine-of-nan-is-nan
-    is-nan. > @
-      cosine nan
+  (cosine nan).is-nan ++> tests-cosine-of-nan-is-nan
 
-  ++> tests-cosine-of-positive-infinity-is-nan
-    is-nan. > @
-      cosine pinf
+  (cosine pinf).is-nan ++> tests-cosine-of-positive-infinity-is-nan
 
-  ++> tests-cosine-of-negative-infinity-is-nan
-    is-nan. > @
-      cosine ninf
+  (cosine ninf).is-nan ++> tests-cosine-of-negative-infinity-is-nan

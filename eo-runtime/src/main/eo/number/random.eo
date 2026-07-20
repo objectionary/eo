@@ -9,8 +9,7 @@
 +unlint redundant-object
 
 [seed] > random
-  seed.as-number.div > @
-    as-number. 00-20-00-00-00-00-00-00.as-i64
+  seed.as-number.div 00-20-00-00-00-00-00-00.as-i64.as-number > @
   random > next
     as-number.
       as-i64.
@@ -20,19 +19,11 @@
               plus.
                 as-i64.
                   left.
-                    and.
-                      as-bytes.
-                        times.
-                          as-i64.
-                            and.
-                              as-bytes. (seed.as-i64.div 67108864.as-i64)
-                              00-00-00-00-03-FF-FF-FF
-                          25214903917.as-i64
+                    (((seed.as-i64.div 67108864.as-i64).as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times 25214903917.as-i64).as-bytes.and
                       00-00-00-00-03-FF-FF-FF
                     26
                 as-i64.
-                  times.
-                    as-i64. (seed.as-i64.as-bytes.and 00-00-00-00-03-FF-FF-FF)
+                  (seed.as-i64.as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times
                     25214903917.as-i64
               11.as-i64
           00-0F-FF-FF-FF-FF-FF-FF
@@ -41,26 +32,14 @@
       as-number.
         plus.
           as-i64.
-            and.
-              tbytes.left shift1
-              as-bytes.
-                minus.
-                  as-i64. (one.left 53)
-                  one
+            (tbytes.left shift1).and
+              ((one.left 53).as-i64.minus one).as-bytes
           plus.
             as-i64.
-              and.
-                tbytes.left shift3
-                as-bytes.
-                  minus.
-                    as-i64. (one.left shift1)
-                    one
+              (tbytes.left shift3).and
+                ((one.left shift1).as-i64.minus one).as-bytes
             as-i64.
-              tbytes.and
-                as-bytes.
-                  minus.
-                    as-i64. (one.left shift3)
-                    one
+              tbytes.and ((one.left shift3).as-i64.minus one).as-bytes
     00-00-00-00-00-00-00-01 > one
     35 > shift1
     17 > shift3
@@ -73,28 +52,19 @@
     random 51 > r
 
   eq. ++> tests-seeded-randoms-are-equal
-    next.
-      next.
-        next.
-          random 1654
-    next.
-      next.
-        next.
-          random 1654
+    (random 1654).next.next.next
+    (random 1654).next.next.next
 
   ++> tests-random-is-in-range
     and. > @
       and.
-        and.
-          rand.lt 1
-          not. (rand.lt 0)
-        and.
-          rand.next.lt 1
-          not. (rand.next.lt 0)
+        (rand.lt 1).and
+          (rand.lt 0).not
+        (rand.next.lt 1).and
+          (rand.next.lt 0).not
       and.
         rand.next.next.lt 1
-        not.
-          rand.next.next.lt 0
+        (rand.next.next.lt 0).not
     next. > rand
       random 123
 

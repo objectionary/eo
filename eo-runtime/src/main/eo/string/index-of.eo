@@ -12,10 +12,9 @@
   if. > @
     or.
       or.
-        gt. (number slen) tlen
-        and.
-          slen.eq tlen
-          not. (sub.eq txt)
+        (number slen).gt tlen
+        (slen.eq tlen).and
+          (sub.eq txt).not
       found.eq -1
     -1
     length.
@@ -35,11 +34,8 @@
       includes.if idx -1
       includes.if
         idx
-        rec-index-of
-          as-number. (idx.plus 1)
-    eq. > includes
-      slice txt idx slen
-      sub
+        rec-index-of (idx.plus 1).as-number
+    (slice txt idx slen).eq sub > includes
 
   eq. ++> tests-index-of-non-existed-substring-with-more-length
     -1

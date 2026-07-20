@@ -32,9 +32,7 @@
       if.
         p.lt
           1.div e
-        minus.
-          lnp (p.times e)
-          1
+        (lnp (p.times e)).minus 1
         series p
     [m] > series
       2.times > @
@@ -50,45 +48,37 @@
         0
         plus.
           1.div
-            plus. (k.times 2) 1
+            (k.times 2).plus 1
           squared.times
             horner (k.plus 1)
 
-  ++> tests-ln-of-negative-float-is-nan
-    is-nan. > @
-      ln -2.2
+  (ln -2.2).is-nan ++> tests-ln-of-negative-float-is-nan
 
-  eq. (ln 0) ninf ++> tests-ln-of-zero-is-negative-infinity
+  (ln 0).eq ninf ++> tests-ln-of-zero-is-negative-infinity
 
-  eq. (ln 1) 0 ++> tests-ln-of-one-is-zero
+  (ln 1).eq 0 ++> tests-ln-of-one-is-zero
 
-  eq. (ln e) 1 ++> tests-ln-of-e-one-is-one
+  (ln e).eq 1 ++> tests-ln-of-e-one-is-one
 
-  ++> tests-ln-of-negative-int-is-nan
-    is-nan. > @
-      ln -42
+  (ln -42).is-nan ++> tests-ln-of-negative-int-is-nan
 
   ++> tests-ln-of-twenty
     lt. > @
       abs
-        minus. (ln 20) 2.995732273553991
+        (ln 20).minus 2.995732273553991
       1.0E-11
 
   ++> tests-ln-fraction
     lt. > @
       abs
-        minus. (ln 0.5) -0.6931471805599453
+        (ln 0.5).minus -0.6931471805599453
       1.0E-11
 
-  eq. (ln pinf) pinf ++> tests-ln-positive-infinity
+  (ln pinf).eq pinf ++> tests-ln-positive-infinity
 
-  ++> tests-ln-negative-infinity
-    is-nan. > @
-      ln ninf
+  (ln ninf).is-nan ++> tests-ln-negative-infinity
 
-  ++> tests-ln-nan
-    is-nan. > @
-      ln nan
+  (ln nan).is-nan ++> tests-ln-nan
 
   ++> tests-ln-monotonic
     lt. > @

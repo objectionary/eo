@@ -20,31 +20,26 @@
   ++> tests-exp-check-n1
     lt. > @
       abs
-        minus.
-          1.div e
+        (1.div e).minus
           exp -1
       1.0E-8
 
   ++> tests-exp-check-n2
     lt. > @
       abs
-        minus.
-          power e 5
+        (power e 5).minus
           exp 5
       1.0E-7
 
   ++> tests-exp-check-n3
     lt. > @
       abs
-        minus.
-          power e -10
+        (power e -10).minus
           exp -10
       1.0E-12
 
-  ++> tests-exp-check-nan
-    is-nan. > @
-      exp nan
+  (exp nan).is-nan ++> tests-exp-check-nan
 
-  eq. (exp pinf) pinf ++> tests-exp-check-infinity-n1
+  (exp pinf).eq pinf ++> tests-exp-check-infinity-n1
 
-  eq. (exp ninf) 0 ++> tests-exp-check-infinity-n2
+  (exp ninf).eq 0 ++> tests-exp-check-infinity-n2

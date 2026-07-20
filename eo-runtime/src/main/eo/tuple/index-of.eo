@@ -19,7 +19,7 @@
       -1
       if.
         next.eq -1
-        if. (tup.head.eq wanted) tup.tail.length -1
+        (tup.head.eq wanted).if tup.tail.length -1
         next
     recidx tup.tail > next!
 

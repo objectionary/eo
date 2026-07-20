@@ -14,8 +14,6 @@
 
   is-ascii "H311oW" ++> tests-checks-if-text-is-ascii
 
-  ++> tests-checks-if-emoji-is-not-ascii
-    not. > @
-      is-ascii "🌵"
+  (is-ascii "🌵").not ++> tests-checks-if-emoji-is-not-ascii
 
   is-ascii "123" ++> tests-checks-if-string-of-numbers-is-ascii

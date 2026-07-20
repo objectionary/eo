@@ -19,10 +19,7 @@
   [cant-check] > is-directory
     if. > @
       info.code.eq 0
-      eq.
-        floor.
-          info.output.mode.div 4096
-        4
+      (info.output.mode.div 4096).floor.eq 4
       cant-check
     called. > info
       sm.os.is-windows.if
@@ -94,10 +91,7 @@
     is-directory.if "_rmdir" "_unlink" > win
     is-directory.if "rmdir" "unlink" > unix
   [cant-measure] > size
-    if. > @
-      info.code.eq 0
-      info.output.size
-      cant-measure
+    (info.code.eq 0).if info.output.size cant-measure > @
     called. > info
       sm.os.is-windows.if
         sm.win32 *1
@@ -135,34 +129,19 @@
         seq
           * open-file ^
     mode > access!
-    not. > writable
-      as-bool.
-        access.eq "r"
-    and. > readable
-      not.
-        as-bool.
-          access.eq "w"
-      not.
-        as-bool.
-          access.eq "a"
-    or. > existing
-      as-bool.
-        access.eq "r"
+    (access.eq "r").as-bool.not > writable
+    (access.eq "w").as-bool.not.and > readable
+      (access.eq "a").as-bool.not
+    (access.eq "r").as-bool.or > existing
       as-bool.
         access.eq "r+"
-    or. > truncate
-      as-bool.
-        access.eq "w"
+    (access.eq "w").as-bool.or > truncate
       as-bool.
         access.eq "w+"
-    or. > appending
-      as-bool.
-        access.eq "a"
+    (access.eq "a").as-bool.or > appending
       as-bool.
         access.eq "a+"
-    or. > known
-      existing.or truncate
-      appending
+    (existing.or truncate).or appending > known
     [] > open-file
       sm.os.is-windows.if > @
         open-through
@@ -180,8 +159,7 @@
             sm.posix "read" > read
             sm.posix "write" > write
       [syscall] > open-through
-        if. > @
-          descriptor.eq -1
+        (descriptor.eq -1).if > @
           ^.^.cant-open
             "Couldn't open file '%s': %s".printf
               * ^.^.^.path opened.output
@@ -195,11 +173,8 @@
           syscall.open
             * ^.^.^.path flags syscall.mode
         opened.code > descriptor
-        plus. > flags
-          plus. (direction.plus creat) trunc
-          append
-        if. > direction
-          ^.^.readable.and ^.^.writable
+        ((direction.plus creat).plus trunc).plus append > flags
+        (^.^.readable.and ^.^.writable).if > direction
           syscall.rdwr
           ^.^.writable.if syscall.wronly syscall.rdonly
         ^.^.existing.not.if syscall.creat 0 > creat
@@ -207,7 +182,7 @@
         ^.^.appending.if syscall.append 0 > append
         [descriptor] > stream
           [size] > read
-            read. (input-block --) size > @
+            (input-block --).read size > @
             [buffer] > input-block
               buffer > @
               [size] > read
@@ -234,14 +209,9 @@
                       * ^.^.^.descriptor buffer buffer.size
                   ^.^.output-block
 
-  ++> tests-check-if-current-directory-is-directory
-    is-directory. > @
-      file "."
+  (file ".").is-directory ++> tests-check-if-current-directory-is-directory
 
-  ++> tests-check-if-absent-file-does-not-exist
-    not. > @
-      exists.
-        file "absent.txt"
+  (file "absent.txt").exists.not ++> tests-check-if-absent-file-does-not-exist
 
   ++> tests-returns-self-after-deleting
     temp.deleted.path.eq temp.path > @
@@ -276,9 +246,7 @@
   mktemp.tmpfile.deleted.deleted.exists.not ++> tests-does-not-fail-on-double-deleting
 
   --> an-error-on-touching-temp-file-in-absent-dir
-    tmpfile. > @
-      @.
-        mktemp.as-path.resolved "foo"
+    (mktemp.as-path.resolved "foo").@.tmpfile > @
 
   ++> tests-resolves-and-touches
     resolved.as-dir.made.tmpfile.exists.and > @
@@ -461,8 +429,7 @@
           13
           [m] >>
             seq * > @
-              open.
-                file src
+              (file src).open
                 "r"
                 m.put (f.read 13) > [f] >>
               m
@@ -483,8 +450,7 @@
           14
           [m] >>
             seq * > @
-              open.
-                file src
+              (file src).open
                 "r"
                 m.put (f.read 14) > [f] >>
               m
@@ -503,7 +469,7 @@
                 "w"
                 f.write "Hello, world" > [f]
               "r"
-              m.put (read. (f.read 7) 5) > [f] >>
+              m.put ((f.read 7).read 5) > [f] >>
             m
       "world"
 
@@ -512,5 +478,5 @@
       size.
         mktemp.tmpfile.open
           "a+"
-          write. (f.write "Hello, world") "!" > [f]
+          (f.write "Hello, world").write "!" > [f]
       13

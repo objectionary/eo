@@ -30,9 +30,7 @@
 +unlint mandatory-package
 
 [condition body] > while
-  if. > @
-    as-bool.
-      condition 0
+  (condition 0).as-bool.if > @
     loop 0
     false
   [index] > loop
@@ -107,8 +105,7 @@
         malloc.for > @
           0
           [iter] >>
-            if. > @
-              ^.^.max.eq 0
+            (^.^.max.eq 0).if > @
               acc.put
                 acc.as-number.plus (^.^.arr.at 0)
               while

@@ -13,37 +13,32 @@
     n.eq value
   x > value!
 
-  eq. (-1000.gte -1100) true ++> tests-int-gte-true
+  (-1000.gte -1100).eq true ++> tests-int-gte-true
 
-  eq. (113.gte 113) true ++> tests-int-gte-equal
+  (113.gte 113).eq true ++> tests-int-gte-equal
 
-  eq. ++> tests-int-gte-false
-    not.
-      0.gte 10
-    true
+  (0.gte 10).not.eq true ++> tests-int-gte-false
 
-  eq. (pinf.gte pinf) true ++> tests-positive-infinity-gte-positive-infinity
+  (pinf.gte pinf).eq true ++> tests-positive-infinity-gte-positive-infinity
 
-  eq. (pinf.gte ninf) true ++> tests-positive-infinity-gte-negative-infinity
+  (pinf.gte ninf).eq true ++> tests-positive-infinity-gte-negative-infinity
 
-  eq. (pinf.gte nan) false ++> tests-positive-infinity-not-gte-nan
+  (pinf.gte nan).eq false ++> tests-positive-infinity-not-gte-nan
 
-  eq. (pinf.gte 42) true ++> tests-positive-infinity-gte-int
+  (pinf.gte 42).eq true ++> tests-positive-infinity-gte-int
 
-  eq. (pinf.gte 42.5) true ++> tests-positive-infinity-gte-float
+  (pinf.gte 42.5).eq true ++> tests-positive-infinity-gte-float
 
-  eq. (ninf.gte ninf) true ++> tests-negative-infinity-gte-negative-infinity
+  (ninf.gte ninf).eq true ++> tests-negative-infinity-gte-negative-infinity
 
-  eq. ++> tests-negative-infinity-not-gte-positive-infinity
-    ninf.gte pinf
-    false
+  (ninf.gte pinf).eq false ++> tests-negative-infinity-not-gte-positive-infinity
 
-  eq. (ninf.gte nan) false ++> tests-negative-infinity-not-gte-nan
+  (ninf.gte nan).eq false ++> tests-negative-infinity-not-gte-nan
 
-  eq. (ninf.gte 42) false ++> tests-negative-infinity-not-gte-int
+  (ninf.gte 42).eq false ++> tests-negative-infinity-not-gte-int
 
-  eq. (ninf.gte 42.5) false ++> tests-negative-infinity-not-gte-float
+  (ninf.gte 42.5).eq false ++> tests-negative-infinity-not-gte-float
 
-  eq. (nan.gte 42) false ++> tests-nan-not-gte-number
+  (nan.gte 42).eq false ++> tests-nan-not-gte-number
 
-  eq. (nan.gte nan) false ++> tests-nan-not-gte-nan
+  (nan.gte nan).eq false ++> tests-nan-not-gte-nan

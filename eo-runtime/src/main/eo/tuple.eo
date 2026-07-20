@@ -27,14 +27,10 @@
       length.plus idx
       idx
     if. > [tup] > at-fast
-      eq. (tup.length.plus -1) index
+      (tup.length.plus -1).eq index
       tup.head
       at-fast tup.tail
-  tuple > [x] > with
-    ^
-    x
-    as-number.
-      length.plus 1
+  tuple ^ x (length.plus 1).as-number > [x] > with
   [other] > eq
     and. > @
       length.eq other.length
@@ -77,25 +73,23 @@
     * > tup
 
   ++> tests-tuple-as-a-bound-attribute-size-1
-    eq. > @
-      tup.at 0
-      100
+    (tup.at 0).eq 100 > @
     * 100 > tup
 
   ++> tests-tuple-as-a-bound-attribute-size-2
     and. > @
-      eq. (arr.at 0) 1
-      eq. (arr.at 1) 2
+      (arr.at 0).eq 1
+      (arr.at 1).eq 2
     * 1 2 > arr
 
   ++> tests-tuple-with
     and. > @
       and.
         and.
-          eq. (arr.at 0) 1
-          eq. (arr.at 1) 2
-        eq. (arr.at 2) 3
-      eq. (arr.at 3) "with"
+          (arr.at 0).eq 1
+          (arr.at 1).eq 2
+        (arr.at 2).eq 3
+      (arr.at 3).eq "with"
     with. > arr
       * 1 2 3
       "with"
@@ -114,21 +108,21 @@
   ++> tests-tuple-fluent-with
     and. > @
       and.
-        eq. (arr.at 0) 1
-        eq. (arr.at 1) 2
-      eq. (arr.at 2) 3
+        (arr.at 0).eq 1
+        (arr.at 1).eq 2
+      (arr.at 2).eq 3
     with. > arr
-      with. (tuple.empty.with 1) 2
+      (tuple.empty.with 1).with 2
       3
 
   ++> tests-tuple-fluent-with-indented
     and. > @
       and.
-        eq. (arr.at 0) 1
-        eq. (arr.at 1) 2
-      eq. (arr.at 2) 3
+        (arr.at 0).eq 1
+        (arr.at 1).eq 2
+      (arr.at 2).eq 3
     with. > arr
-      with. (tuple.empty.with 1) 2
+      (tuple.empty.with 1).with 2
       3
 
   ++> tests-gets-lengths-of-empty-tuple
@@ -143,43 +137,37 @@
   tuple.empty.tail --> on-getting-tail-from-empty-tuple
 
   ++> tests-creates-empty-tuple-with-number
-    eq. > @
-      a.at 0
-      3
+    (a.at 0).eq 3 > @
     tuple.empty.with 3 > a
 
   ++> tests-at-fast-with-first-element
     eq. > @
-      at-fast. (arr.at 0) arr
+      (arr.at 0).at-fast arr
       100
     * 100 101 102 > arr
 
   ++> tests-at-fast-with-last-element
     eq. > @
-      at-fast. (arr.at 2) arr
+      (arr.at 2).at-fast arr
       102
     * 100 101 102 > arr
 
   ++> tests-tuple-empty-fluent-with-indented-keyword
     and. > @
       and.
-        eq. (arr.at 0) 1
-        eq. (arr.at 1) 2
-      eq. (arr.at 2) 3
+        (arr.at 0).eq 1
+        (arr.at 1).eq 2
+      (arr.at 2).eq 3
     with. > arr
-      with. (tuple.empty.with 1) 2
+      (tuple.empty.with 1).with 2
       3
 
   ++> tests-tuple-with-negative-index-gets-last
-    eq. > @
-      arr.at -1
-      4
+    (arr.at -1).eq 4 > @
     * 0 1 2 3 4 > arr
 
   ++> tests-tuple-with-negative-index-gets-first
-    eq. > @
-      arr.at -5
-      0
+    (arr.at -5).eq 0 > @
     * 0 1 2 3 4 > arr
 
   --> on-out-of-tuple-bounds-with-negative-index

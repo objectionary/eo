@@ -14,9 +14,7 @@
       chunk.size.eq 0
       length
       rec-read chunk (length.plus chunk.size)
-    ^. > chunk
-      read.
-        input.read 4096
+    (input.read 4096).read.^ > chunk
 
   eq. ++> tests-reads-all-bytes-and-returns-length
     input-length

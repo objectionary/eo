@@ -9,12 +9,8 @@
 
 [text substring] > starts-with
   and. > @
-    lte.
-      number slen
-      tlen
-    eq.
-      slice txt 0 slen
-      sub
+    (number slen).lte tlen
+    (slice txt 0 slen).eq sub
   sub.size > slen!
   substring > sub!
   txt.size > tlen!
@@ -22,6 +18,4 @@
 
   starts-with "Hello, world" "Hello" ++> tests-starts-with-substring
 
-  ++> tests-does-not-start-with-substring
-    not. > @
-      starts-with "Hello, world" "world"
+  (starts-with "Hello, world" "world").not ++> tests-does-not-start-with-substring

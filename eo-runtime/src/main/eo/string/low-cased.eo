@@ -17,14 +17,9 @@
       [accum byte] >>
         accum.concat > @
           if.
-            and.
-              code.lte maxcode
+            (code.lte maxcode).and
               code.gte mincode
-            slice.
-              as-bytes.
-                as-i64. (code.plus distance)
-              7
-              1
+            (code.plus distance).as-i64.as-bytes.slice 7 1
             byte
         as-ascii byte > code
   minus. > distance

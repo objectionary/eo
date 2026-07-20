@@ -13,8 +13,7 @@
 
   32.is-integer ++> int-number-is-integer
 
-  ++> float-number-is-not-integer
-    not. 32.5.is-integer > @
+  32.5.is-integer.not ++> float-number-is-not-integer
 
   pinf.is-integer.not ++> tests-positive-infinity-is-not-integer
 

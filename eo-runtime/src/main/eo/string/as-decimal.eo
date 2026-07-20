@@ -11,8 +11,7 @@
 [n] > as-decimal
   if. > @
     n.lt 0
-    concat.
-      "-".as-bytes
+    "-".as-bytes.concat
       digits
         n.times -1
     digits n
@@ -24,10 +23,7 @@
       concat.
         digits q
         as-char
-          plus.
-            floor.
-              n.minus (q.times 10)
-            48
+          (n.minus (q.times 10)).floor.plus 48
     floor. > q
       n.div 10
 

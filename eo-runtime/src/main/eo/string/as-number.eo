@@ -16,9 +16,7 @@
       "Can't convert text %s to number".printf
         * text
     scanned.head
-  ^. > scanned
-    at.
-      scanf "%f" text
+  (scanf "%f" text).at.^ > scanned
 
   5.eq (as-number "5") ++> tests-converts-text-to-number
 

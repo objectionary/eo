@@ -20,7 +20,7 @@
     acc
     with-delimiter
       concat.
-        concat. (dataized tup.head) delimiter
+        (dataized tup.head).concat delimiter
         acc
       tup.tail
 

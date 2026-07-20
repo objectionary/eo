@@ -19,17 +19,17 @@
     trimmed-left
       trimmed-right text
 
-  eq. (trimmed " some") "some" ++> tests-text-trimmed-one-space-left
+  (trimmed " some").eq "some" ++> tests-text-trimmed-one-space-left
 
-  eq. (trimmed "some ") "some" ++> tests-text-trimmed-one-space-right
+  (trimmed "some ").eq "some" ++> tests-text-trimmed-one-space-right
 
-  eq. (trimmed " some ") "some" ++> tests-text-trimmed-one-space-both
+  (trimmed " some ").eq "some" ++> tests-text-trimmed-one-space-both
 
-  eq. (trimmed "    some     ") "some" ++> tests-text-trimmed-many-spaces
+  (trimmed "    some     ").eq "some" ++> tests-text-trimmed-many-spaces
 
-  eq. (trimmed "") "" ++> tests-text-trimmed-empty
+  (trimmed "").eq "" ++> tests-text-trimmed-empty
 
-  eq. (trimmed "        ") "" ++> tests-text-trimmed-only-spaces
+  (trimmed "        ").eq "" ++> tests-text-trimmed-only-spaces
 
   eq. ++> tests-trimmed-strips-mixed-ws-both-sides
     trimmed " \t\n\f\rvalue \t\n\f\r"

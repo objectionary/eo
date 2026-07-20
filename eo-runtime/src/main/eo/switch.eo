@@ -28,15 +28,12 @@
   if. > @
     cases.length.eq 0
     fallback "Switch cases are empty"
-    if.
-      true.eq found.match
-      found.head
-      true
+    (true.eq found.match).if found.head true
   @. > found
     rec-case cases
   [tup] > rec-case
     if. > @
-      and. (tup.length.gt 1) previous.match
+      (tup.length.gt 1).and previous.match
       previous
       [] >>
         tup.head.head > head

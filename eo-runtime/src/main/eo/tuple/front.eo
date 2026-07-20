@@ -15,12 +15,9 @@
     *
     if.
       0.gt idx
-      back
-        list
-        neg.
-          number idx
+      back list (number idx).neg
       if.
-        gte. (number idx) list.length
+        (number idx).gte list.length
         list
         rechead list
   index > idx!

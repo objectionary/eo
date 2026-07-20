@@ -20,7 +20,7 @@
             seq * > @
               while
                 if. > [i] >>
-                  lt. (left.as-number.plus step) right
+                  (left.as-number.plus step).lt right
                   seq *
                     ^.^.sum.put
                       ^.^.sum.as-number.plus
@@ -32,11 +32,9 @@
               sum
             ^.^.b > right
             as-number. > step
-              div. (right.minus left) ^.^.n
+              (right.minus left).div ^.^.n
   times. > [a b] > subsection
-    div.
-      b.minus a
-      6
+    (b.minus a).div 6
     plus.
       fun a
       plus.
@@ -57,11 +55,9 @@
       1.0E-7
     [value operand err] > close-to
       lte. > @
-        minus.
-          abs (value.minus operand)
-          err
+        (abs (value.minus operand)).minus err
         0
-      if. (value.gte 0) value value.neg > [value] > abs
+      (value.gte 0).if value value.neg > [value] > abs
 
   ++> tests-calculates-quadratic-integral
     close-to > @
@@ -75,17 +71,15 @@
       1.0E-7
     [value operand err] > close-to
       lte. > @
-        minus.
-          abs (value.minus operand)
-          err
+        (abs (value.minus operand)).minus err
         0
-      if. (value.gte 0) value value.neg > [value] > abs
+      (value.gte 0).if value value.neg > [value] > abs
 
   ++> tests-calculates-cube-integral
     close-to > @
       as-number.
         integral
-          times. (x.times x) x > [x]
+          (x.times x).times x > [x]
           1
           10
           100
@@ -93,8 +87,6 @@
       1.0E-7
     [value operand err] > close-to
       lte. > @
-        minus.
-          abs (value.minus operand)
-          err
+        (abs (value.minus operand)).minus err
         0
-      if. (value.gte 0) value value.neg > [value] > abs
+      (value.gte 0).if value value.neg > [value] > abs

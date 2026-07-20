@@ -13,35 +13,26 @@
   ? >> start
   ? >> end
   if. > @
-    gte.
-      number s
-      e
+    (number s).gte e
     *
     reducedi
       list
       *
       if. > [accum item idx] >>
-        and.
-          idx.gte s
+        (idx.gte s).and
           idx.lt e
         accum.with item
         accum
   if. > e!
     end.gte 0
-    if.
-      end.gte list.length
-      list.length
-      end
+    (end.gte list.length).if list.length end
     if.
       list.length.neg.lte end
       end.plus list.length
       0
   if. > s!
     start.gte 0
-    if.
-      start.gte list.length
-      list.length
-      start
+    (start.gte list.length).if list.length start
     if.
       list.length.neg.lte start
       start.plus list.length

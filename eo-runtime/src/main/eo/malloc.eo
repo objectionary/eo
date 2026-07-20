@@ -124,9 +124,7 @@
       42
 
   ++> tests-malloc-puts-over-the-previous-data
-    eq. > @
-      concat. 42.as-bytes "orld!".as-bytes
-      mem
+    (42.as-bytes.concat "orld!".as-bytes).eq mem > @
     malloc.of > mem
       13
       seq * > [m]
@@ -214,7 +212,7 @@
             m.write 0 "Hello, "
             m.write 7 "Jeff!"
             b.put
-              eq. (m.read 0 12) "Hello, Jeff!"
+              (m.read 0 12).eq "Hello, Jeff!"
 
   ++> tests-malloc-concacts-strings-with-offset
     malloc.of > @
@@ -226,7 +224,7 @@
             m.write 0 "XXX"
             m.write 1 "Y"
             b.put
-              eq. (m.read 0 3) "XYX"
+              (m.read 0 3).eq "XYX"
 
   ++> writes-beyond-offset-and-resizes
     malloc.of > @
@@ -244,7 +242,7 @@
           seq * > [m] >>
             m.write 2 "Hello"
             b.put
-              eq. (m.read 2 5) "Hello"
+              (m.read 2 5).eq "Hello"
 
   ++> tests-malloc-read-over-a-limit-returns-fallback
     01-02.eq > @
@@ -275,9 +273,7 @@
           01-02-03-04
           b.put > [m] >>
             and.
-              eq.
-                size. (m.resized 6)
-                6
+              (m.resized 6).size.eq 6
               m.get.eq 01-02-03-04-00-00
 
   ++> tests-malloc-decreases-block-size
@@ -286,12 +282,10 @@
       [b]
         malloc.for > @
           01-02-03-04-05
-          b.put > [m] >>
-            and.
-              eq.
-                size. (m.resized 3)
-                3
-              m.get.eq 01-02-03
+          [m] >>
+            b.put > @
+              ((m.resized 3).size.eq 3).and
+                m.get.eq 01-02-03
 
   --> on-changing-size-to-negative
     malloc.of > @
@@ -311,16 +305,14 @@
     malloc.for > @
       01-02-03-04-05
       [m]
-        and. > @
-          m.copy 1 2 2
+        (m.copy 1 2 2).and > @
           m.get.eq 01-02-02-03-05
 
   ++> tests-copies-data-from-start-to-end
     malloc.for > @
       01-02-03-04-05-06
       [m]
-        and. > @
-          m.copy 0 3 3
+        (m.copy 0 3 3).and > @
           m.get.eq 01-02-03-01-02-03
 
   --> on-copying-with-wrong-source
@@ -341,9 +333,7 @@
       m.copy 3 1 9 > [m]
 
   ++> tests-calculates-only-once
-    eq. > @
-      malloc.for 0 x
-      1
+    (malloc.for 0 x).eq 1 > @
     [m] > x
       seq * > @
         a.neg.neg.neg.neg.eq 42

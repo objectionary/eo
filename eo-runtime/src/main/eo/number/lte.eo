@@ -13,37 +13,32 @@
     n.eq value
   x > value!
 
-  eq. (-200.lte -100) true ++> tests-int-leq-true
+  (-200.lte -100).eq true ++> tests-int-leq-true
 
-  eq. (50.lte 50) true ++> tests-int-leq-equal
+  (50.lte 50).eq true ++> tests-int-leq-equal
 
-  eq. ++> tests-int-leq-false
-    not.
-      0.lte -10
-    true
+  (0.lte -10).not.eq true ++> tests-int-leq-false
 
-  eq. (pinf.lte pinf) true ++> tests-positive-infinity-lte-positive-infinity
+  (pinf.lte pinf).eq true ++> tests-positive-infinity-lte-positive-infinity
 
-  eq. ++> tests-positive-infinity-not-lte-negative-infinity
-    pinf.lte ninf
-    false
+  (pinf.lte ninf).eq false ++> tests-positive-infinity-not-lte-negative-infinity
 
-  eq. (pinf.lte nan) false ++> tests-positive-infinity-not-lte-nan
+  (pinf.lte nan).eq false ++> tests-positive-infinity-not-lte-nan
 
-  eq. (pinf.lte 42) false ++> tests-positive-infinity-not-lte-int
+  (pinf.lte 42).eq false ++> tests-positive-infinity-not-lte-int
 
-  eq. (pinf.lte 42.5) false ++> tests-positive-infinity-not-lte-float
+  (pinf.lte 42.5).eq false ++> tests-positive-infinity-not-lte-float
 
-  eq. (ninf.lte ninf) true ++> tests-negative-infinity-lte-negative-infinity
+  (ninf.lte ninf).eq true ++> tests-negative-infinity-lte-negative-infinity
 
-  eq. (ninf.lte pinf) true ++> tests-negative-infinity-lte-positive-infinity
+  (ninf.lte pinf).eq true ++> tests-negative-infinity-lte-positive-infinity
 
-  eq. (ninf.lte nan) false ++> tests-negative-infinity-not-lte-nan
+  (ninf.lte nan).eq false ++> tests-negative-infinity-not-lte-nan
 
-  eq. (ninf.lte 42) true ++> tests-negative-infinity-lte-int
+  (ninf.lte 42).eq true ++> tests-negative-infinity-lte-int
 
-  eq. (ninf.lte 42.5) true ++> tests-negative-infinity-lte-float
+  (ninf.lte 42.5).eq true ++> tests-negative-infinity-lte-float
 
-  eq. (nan.lte 42) false ++> tests-nan-not-lte-number
+  (nan.lte 42).eq false ++> tests-nan-not-lte-number
 
-  eq. (nan.lte nan) false ++> tests-nan-not-lte-nan
+  (nan.lte nan).eq false ++> tests-nan-not-lte-nan

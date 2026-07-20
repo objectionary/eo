@@ -83,7 +83,7 @@
     "42"
     printf *1
       "%d"
-      as-number. 42.as-i64
+      42.as-i64.as-number
 
   eq. ++> formats-numbered-substitution
     "Hello, Jeff! Bye, Jeff!"

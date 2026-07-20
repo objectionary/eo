@@ -15,23 +15,17 @@
       index.eq bts.size
       acc
       rec-hex
-        as-number.
-          index.plus 1
-        if.
-          index.eq 0
+        (index.plus 1).as-number
+        (index.eq 0).if
           pair
-          concat. (acc.concat "-".as-bytes) pair
+          (acc.concat "-".as-bytes).concat pair
     as-ascii > bval
       bts.slice index 1
     concat. > pair
-      hex-digit
-        floor.
-          bval.div 16
+      hex-digit (bval.div 16).floor
       hex-digit
         bval.minus
-          times.
-            floor. (bval.div 16)
-            16
+          (bval.div 16).floor.times 16
   [h] > hex-digit
     if. > @
       h.lt 10
@@ -53,8 +47,7 @@
   eq. ++> tests-writes-letter-nibbles
     "00-00-00-00-00-00-00-FF"
     string
-      as-hex
-        as-bytes. 255.as-i64
+      as-hex 255.as-i64.as-bytes
 
   eq. ++> tests-writes-number-bytes
     "40-45-00-00-00-00-00-00"

@@ -14,32 +14,31 @@
 
 [value alternative] > recovered /bytes
 
-  eq. (recovered 42 7) 42 ++> tests-keeps-the-value-when-not-terminated
+  (recovered 42 7).eq 42 ++> tests-keeps-the-value-when-not-terminated
 
   eq. ++> tests-falls-back-to-alternative-when-terminated
     recovered
-      div. 2.as-i64 0.as-i64
+      2.as-i64.div 0.as-i64
       7
     7
 
   eq. ++> tests-recovers-the-inner-recovery
     recovered
       recovered
-        div. 2.as-i64 0.as-i64
-        div. 3.as-i64 0.as-i64
+        2.as-i64.div 0.as-i64
+        3.as-i64.div 0.as-i64
       42
     42
 
   ++> tests-recovers-when-a-provided-fallback-terminates
     eq. > @
       recovered
-        div.
-          2.as-i64
+        2.as-i64.div
           0.as-i64
           T "cannot divide" > [msg]
         42
       42
 
   recovered --> when-both-are-terminated
-    div. 2.as-i64 0.as-i64
-    div. 5.as-i64 0.as-i64
+    2.as-i64.div 0.as-i64
+    5.as-i64.div 0.as-i64

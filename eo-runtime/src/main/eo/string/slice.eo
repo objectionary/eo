@@ -12,6 +12,4 @@
 [text start len] > slice
   text.slice start len > @
 
-  eq. ++> tests-text-slices-the-origin-string
-    slice "Hello, world!" 7 5
-    "world"
+  (slice "Hello, world!" 7 5).eq "world" ++> tests-text-slices-the-origin-string

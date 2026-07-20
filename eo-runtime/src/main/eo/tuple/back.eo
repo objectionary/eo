@@ -16,7 +16,7 @@
     reducedi
       list
       *
-      if. (idx.gte start) (accum.with item) accum > [accum item idx] >>
+      (idx.gte start).if (accum.with item) accum > [accum item idx] >>
   index > idx!
   list.length.minus idx > start!
 

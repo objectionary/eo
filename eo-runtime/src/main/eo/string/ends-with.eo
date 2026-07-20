@@ -9,13 +9,11 @@
 
 [text substring] > ends-with
   and. > @
-    lte.
-      number slen
-      tlen
+    (number slen).lte tlen
     eq.
       slice
         txt
-        minus. (number tlen) slen
+        (number tlen).minus slen
         slen
       sub
   sub.size > slen!
@@ -25,6 +23,4 @@
 
   ends-with "Hello world!" "world!" ++> tests-ends-with-substring
 
-  ++> tests-does-not-end-with-substring
-    not. > @
-      ends-with "Hello world!" "Hello"
+  (ends-with "Hello world!" "Hello").not ++> tests-does-not-end-with-substring

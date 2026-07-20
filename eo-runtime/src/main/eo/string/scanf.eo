@@ -19,30 +19,15 @@
 
 [format read] > scanf /tuple
 
-  eq. ++> tests-scanf-with-string
-    "hello"
-    head.
-      scanf "%s" "hello"
+  "hello".eq (scanf "%s" "hello").head ++> tests-scanf-with-string
 
-  eq. ++> tests-scanf-with-int
-    33
-    head.
-      scanf "%d" "33"
+  33.eq (scanf "%d" "33").head ++> tests-scanf-with-int
 
-  eq. ++> tests-scanf-with-negative-int
-    -42
-    head.
-      scanf "%d" "-42"
+  -42.eq (scanf "%d" "-42").head ++> tests-scanf-with-negative-int
 
-  eq. ++> tests-scanf-with-positive-signed-int
-    42
-    head.
-      scanf "%d" "+42"
+  42.eq (scanf "%d" "+42").head ++> tests-scanf-with-positive-signed-int
 
-  eq. ++> tests-scanf-with-float
-    0.24
-    head.
-      scanf "%f" "0.24"
+  0.24.eq (scanf "%f" "0.24").head ++> tests-scanf-with-float
 
   scanf "%l" "error" --> on-scanf-with-wrong-format
 
@@ -54,10 +39,7 @@
     scanf "%s %d %f" "hello 33 0.24"
     * "hello" 33 0.24
 
-  eq. ++> tests-scanf-with-string-with-ending
-    "hello"
-    head.
-      scanf "%s!" "hello!"
+  "hello".eq (scanf "%s!" "hello!").head ++> tests-scanf-with-string-with-ending
 
   eq. ++> tests-scanf-with-complex-string
     "test"

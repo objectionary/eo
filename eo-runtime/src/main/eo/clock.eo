@@ -14,11 +14,10 @@
 [] > clock
   as-i64. > @
     sm.os.is-windows.if
-      plus. (timeb.time.times 1000) timeb.millitm
+      (timeb.time.times 1000).plus timeb.millitm
       plus.
         timeval.seconds.times 1000
-        as-number.
-          timeval.micros.as-i64.div 1000.as-i64
+        (timeval.micros.as-i64.div 1000.as-i64).as-number
   output. > timeb
     sm.win32
       "_ftime32_s"

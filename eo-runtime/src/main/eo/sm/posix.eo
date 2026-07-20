@@ -38,7 +38,7 @@
   [family port address] > sockaddr-in
     00-00-00-00-00-00-00-00 > padding
     plus. > size
-      plus. (family.size.plus port.size) address.size
+      (family.size.plus port.size).plus address.size
       padding.size
 
   os.is-windows.or ++> tests-invokes-getpid-correctly

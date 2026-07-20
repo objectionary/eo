@@ -25,11 +25,7 @@
     if.
       steps.length.eq 1
       steps.head
-      if.
-        as-bool.
-          dataized (seq steps.tail)
-        steps.head
-        steps.head
+      (dataized (seq steps.tail)).as-bool.if steps.head steps.head
 
   ++> tests-seq-single-dataization-float-less
     malloc.of > @

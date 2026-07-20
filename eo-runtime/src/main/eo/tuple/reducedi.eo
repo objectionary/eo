@@ -60,8 +60,7 @@
         [acc x i]
           check x > @
           [el] > check
-            if. > @
-              x.lt 100
+            (x.lt 100).if > @
               acc.plus x
               acc.minus x
       10.plus

@@ -23,19 +23,15 @@
 
 [input output] > tee-input
   [size] > read
-    read. > @
-      input-block input output --
-      size
+    (input-block input output --).read size > @
     [input output buffer] > input-block
       buffer > @
       [size] > read
         seq * > @
           written
           ^.^.input-block chunk written chunk.as-bytes
-        ^. > chunk
-          read. (input.read size)
-        ^. > written
-          write. (output.write chunk)
+        (input.read size).read.^ > chunk
+        (output.write chunk).write.^ > written
 
   ++> tests-reads-from-bytes-and-writes-to-memory
     eq. > @

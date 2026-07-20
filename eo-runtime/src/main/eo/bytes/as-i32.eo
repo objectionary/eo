@@ -20,5 +20,5 @@
   01-01-01-01-01.as-i32 --> on-bytes-of-wrong-size-as-i32
 
   eq. ++> tests-bytes-converts-to-i32-and-back
-    as-bytes. 00-00-00-33.as-i32
+    00-00-00-33.as-i32.as-bytes
     00-00-00-33

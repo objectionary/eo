@@ -13,7 +13,7 @@
       number value
   x > value!
 
-  eq. (1.minus 1) 0 ++> tests-one-minus-one
+  (1.minus 1).eq 0 ++> tests-one-minus-one
 
   eq. ++> tests-positive-infinity-minus-nan
     as-bytes.
@@ -25,15 +25,15 @@
       pinf.minus pinf
     nan.as-bytes
 
-  eq. (pinf.minus ninf) pinf ++> tests-positive-infinity-minus-negative-infinity
+  (pinf.minus ninf).eq pinf ++> tests-positive-infinity-minus-negative-infinity
 
-  eq. (pinf.minus 42.5) pinf ++> tests-positive-infinity-minus-positive-float
+  (pinf.minus 42.5).eq pinf ++> tests-positive-infinity-minus-positive-float
 
-  eq. (pinf.minus 42) pinf ++> tests-positive-infinity-minus-positive-int
+  (pinf.minus 42).eq pinf ++> tests-positive-infinity-minus-positive-int
 
-  eq. (pinf.minus -42.5) pinf ++> tests-positive-infinity-minus-negative-float
+  (pinf.minus -42.5).eq pinf ++> tests-positive-infinity-minus-negative-float
 
-  eq. (pinf.minus -42) pinf ++> tests-positive-infinity-minus-negative-int
+  (pinf.minus -42).eq pinf ++> tests-positive-infinity-minus-negative-int
 
   eq. ++> tests-negative-infinity-minus-nan
     as-bytes.
@@ -45,12 +45,12 @@
       ninf.minus ninf
     nan.as-bytes
 
-  eq. (ninf.minus pinf) ninf ++> tests-negative-infinity-minus-positive-infinity
+  (ninf.minus pinf).eq ninf ++> tests-negative-infinity-minus-positive-infinity
 
-  eq. (ninf.minus 42.5) ninf ++> tests-negative-infinity-minus-positive-float
+  (ninf.minus 42.5).eq ninf ++> tests-negative-infinity-minus-positive-float
 
-  eq. (ninf.minus 42) ninf ++> tests-negative-infinity-minus-positive-int
+  (ninf.minus 42).eq ninf ++> tests-negative-infinity-minus-positive-int
 
-  eq. (ninf.minus -42.5) ninf ++> tests-negative-infinity-minus-negative-float
+  (ninf.minus -42.5).eq ninf ++> tests-negative-infinity-minus-negative-float
 
-  eq. (ninf.minus -42) ninf ++> tests-negative-infinity-minus-negative-int
+  (ninf.minus -42).eq ninf ++> tests-negative-infinity-minus-negative-int

@@ -15,20 +15,17 @@
 
   ++> tests-left-zero
     not. > @
-      eq. (left. 0.as-bytes 1) -1.as-bytes
+      (0.as-bytes.left 1).eq -1.as-bytes
 
   ++> tests-left-with-zero
     not. > @
-      eq. (left. 2.as-bytes 0) -3.as-bytes
+      (2.as-bytes.left 0).eq -3.as-bytes
 
   ++> tests-left-with-odd-neg
     not. > @
-      eq. (left. -17.as-bytes 1) 33.as-bytes
+      (-17.as-bytes.left 1).eq 33.as-bytes
 
-  ++> tests-left-with-minus-one
-    eq. > @
-      eq. (left. -1.as-bytes 3) 7.as-bytes
-      false
+  ((-1.as-bytes.left 3).eq 7.as-bytes).eq false ++> tests-left-with-minus-one
 
   eq. ++> tests-left-with-even-neg
     FF-FF-FF-FF-FF-FF-FF-EE.left 2
@@ -36,8 +33,8 @@
 
   ++> tests-left-with-even-plus
     not. > @
-      eq. (left. 4.as-bytes 3) -33.as-bytes
+      (4.as-bytes.left 3).eq -33.as-bytes
 
   ++> tests-left-with-odd-plus
     not. > @
-      eq. (left. 5.as-bytes 3) -41.as-bytes
+      (5.as-bytes.left 3).eq -41.as-bytes

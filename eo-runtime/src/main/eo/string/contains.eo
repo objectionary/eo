@@ -9,9 +9,7 @@
 
 [text substring] > contains
   and. > @
-    gte.
-      number tlen
-      slen
+    (number tlen).gte slen
     or.
       and.
         tlen.eq slen
@@ -29,14 +27,9 @@
       end.eq idx
       includes
       includes.or
-        rec-contains
-          as-number. (idx.plus 1)
-    eq. > includes
-      slice txt idx slen
-      sub
+        rec-contains (idx.plus 1).as-number
+    (slice txt idx slen).eq sub > includes
 
   contains "Hello, world!" "o, wo" ++> tests-text-contains-substring
 
-  ++> tests-text-does-not-contain-substring
-    not. > @
-      contains "Hello, world!" "Hey"
+  (contains "Hello, world!" "Hey").not ++> tests-text-does-not-contain-substring
