@@ -32,9 +32,7 @@
   as-ascii > mincode!
     "a"
 
-  ++> tests-converts-text-to-upper-case
-    "HELLO".eq > @
-      up-cased "hello"
+  "HELLO".eq (up-cased "hello") ++> tests-converts-text-to-upper-case
 
   eq. ++> tests-converts-text-with-upper-letters-to-upper-case
     "HELLO"

@@ -87,9 +87,7 @@
   ++> tests-extract-attribute-from-decoratee
     a.foo.eq 43 > @
     [foo] > return
-    [] > a
-      return > @
-        42.plus 1
+    return (42.plus 1) > [] > a
 
   ++> tests-nesting-blah-test
     eq. > @

@@ -15,27 +15,12 @@
   number > value
     num.as-bytes
 
-  ++> tests-abs-int-positive
-    eq. > @
-      abs 3
-      3
+  (abs 3).eq 3 ++> tests-abs-int-positive
 
-  ++> tests-abs-int-negative
-    eq. > @
-      abs -3
-      3
+  (abs -3).eq 3 ++> tests-abs-int-negative
 
-  ++> tests-abs-zero
-    eq. > @
-      abs 0
-      0
+  (abs 0).eq 0 ++> tests-abs-zero
 
-  ++> tests-abs-float-positive
-    eq. > @
-      abs 13.5
-      13.5
+  (abs 13.5).eq 13.5 ++> tests-abs-float-positive
 
-  ++> tests-abs-float-negative
-    eq. > @
-      abs -17.9
-      17.9
+  (abs -17.9).eq 17.9 ++> tests-abs-float-negative

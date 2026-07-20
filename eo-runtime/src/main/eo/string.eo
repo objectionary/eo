@@ -198,10 +198,7 @@
 
   (nan.eq "друг").not ++> tests-compares-string-with-nan
 
-  ++> tests-compares-string-with-positive-infinity
-    eq. > @
-      pinf.eq "друг"
-      false
+  (pinf.eq "друг").eq false ++> tests-compares-string-with-positive-infinity
 
   (ninf.eq "друг").not ++> tests-compares-string-with-negative-infinity
 
@@ -227,10 +224,7 @@
     "a\n b\n  c".eq > @
       "a\n b\n  c"
 
-  ++> tests-compares-two-strings
-    eq. > @
-      "x".eq "x"
-      true
+  ("x".eq "x").eq true ++> tests-compares-two-strings
 
   "Ф".eq "Ф" ++> tests-one-symbol-string-compares
 
@@ -337,20 +331,11 @@
     "  spaced  ".trimmed.eq > @
       "spaced"
 
-  ++> tests-package-repeats-text
-    eq. > @
-      "ha".repeated 3
-      "hahaha"
+  ("ha".repeated 3).eq "hahaha" ++> tests-package-repeats-text
 
-  ++> tests-package-finds-index-of-character
-    eq. > @
-      "hello".index-of "l"
-      2
+  ("hello".index-of "l").eq 2 ++> tests-package-finds-index-of-character
 
-  ++> tests-package-takes-character-at-index
-    eq. > @
-      "some".at 1
-      "o"
+  ("some".at 1).eq "o" ++> tests-package-takes-character-at-index
 
   "2026".is-digit ++> tests-package-detects-digits
 

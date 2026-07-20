@@ -30,7 +30,4 @@
       name
   [] > name /string
 
-  ++> tests-checks-os-family
-    or. > @
-      os.is-windows.or os.is-macos
-      os.is-linux
+  (os.is-windows.or os.is-macos).or os.is-linux ++> tests-checks-os-family

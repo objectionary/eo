@@ -336,15 +336,9 @@
 
   (power -4 0.5).is-nan ++> tests-power-fractional-of-negative-is-nan
 
-  ++> tests-power-as-method-on-number
-    eq. > @
-      2.power 4
-      16
+  (2.power 4).eq 16 ++> tests-power-as-method-on-number
 
-  ++> tests-power-as-method-with-receiver-bound
-    eq. > @
-      3.power 2
-      9
+  (3.power 2).eq 9 ++> tests-power-as-method-with-receiver-bound
 
   ++> tests-power-via-number-namespace
     eq. > @

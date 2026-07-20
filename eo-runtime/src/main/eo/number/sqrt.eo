@@ -18,15 +18,9 @@
       num
       0.5
 
-  ++> tests-sqrt-zero
-    eq. > @
-      sqrt 0
-      0
+  (sqrt 0).eq 0 ++> tests-sqrt-zero
 
-  ++> tests-sqrt-one
-    eq. > @
-      sqrt 1
-      1
+  (sqrt 1).eq 1 ++> tests-sqrt-one
 
   ++> tests-sqrt-four
     lt. > @
@@ -70,9 +64,6 @@
 
   (sqrt nan).is-nan ++> tests-sqrt-check-nan-input
 
-  ++> tests-sqrt-check-infinity-n1
-    eq. > @
-      sqrt pinf
-      pinf
+  (sqrt pinf).eq pinf ++> tests-sqrt-check-infinity-n1
 
   (sqrt ninf).is-nan ++> tests-sqrt-check-infinity-n2

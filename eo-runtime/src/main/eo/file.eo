@@ -240,8 +240,7 @@
     temp.deleted.touched.path.eq temp.path > @
     mktemp.tmpfile > temp
 
-  ++> tests-checks-file-does-not-exist-after-deleting
-    mktemp.tmpfile.deleted.exists.not > @
+  mktemp.tmpfile.deleted.exists.not ++> tests-checks-file-does-not-exist-after-deleting
 
   mktemp.tmpfile.deleted.touched.exists ++> tests-touches-a-file
 
@@ -259,11 +258,9 @@
   mktemp.tmpfile.deleted.is-directory ++> tests-checking-absent-file-returns-fallback
     true
 
-  ++> tests-does-not-fail-on-double-touching
-    mktemp.tmpfile.deleted.touched.touched.exists > @
+  mktemp.tmpfile.deleted.touched.touched.exists ++> tests-does-not-fail-on-double-touching
 
-  ++> tests-does-not-fail-on-double-deleting
-    mktemp.tmpfile.deleted.deleted.exists.not > @
+  mktemp.tmpfile.deleted.deleted.exists.not ++> tests-does-not-fail-on-double-deleting
 
   --> an-error-on-touching-temp-file-in-absent-dir
     (mktemp.as-path.resolved "foo").@.tmpfile > @
@@ -489,9 +486,7 @@
                 "w"
                 f.write "Hello, world" > [f]
               "r"
-              [f] >>
-                m.put > @
-                  (f.read 7).read 5
+              m.put ((f.read 7).read 5) > [f] >>
             m
       "world"
 

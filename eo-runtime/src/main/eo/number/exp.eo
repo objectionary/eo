@@ -45,12 +45,6 @@
 
   (exp nan).is-nan ++> tests-exp-check-nan
 
-  ++> tests-exp-check-infinity-n1
-    eq. > @
-      exp pinf
-      pinf
+  (exp pinf).eq pinf ++> tests-exp-check-infinity-n1
 
-  ++> tests-exp-check-infinity-n2
-    eq. > @
-      exp ninf
-      0
+  (exp ninf).eq 0 ++> tests-exp-check-infinity-n2

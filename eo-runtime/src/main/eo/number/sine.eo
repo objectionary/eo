@@ -38,10 +38,7 @@
         factor
           depth.plus 1
 
-  ++> tests-sine-of-zero-is-zero
-    eq. > @
-      sine 0
-      0
+  (sine 0).eq 0 ++> tests-sine-of-zero-is-zero
 
   lt. ++> tests-sine-of-pi-halves-is-one
     abs

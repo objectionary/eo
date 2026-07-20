@@ -17,11 +17,7 @@
     reduced
       lst
       pinf
-      [min item]
-        if. > @
-          min.gt item.as-number
-          item
-          min
+      (min.gt item.as-number).if item min > [min item]
   sequence > lst
 
   minimum --> on-taking-minimum-from-empty-sequence

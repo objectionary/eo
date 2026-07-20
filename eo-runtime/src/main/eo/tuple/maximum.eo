@@ -17,11 +17,7 @@
     reduced
       lst
       ninf
-      [max item]
-        if. > @
-          item.as-number.gt max
-          item
-          max
+      (item.as-number.gt max).if item max > [max item]
   sequence > lst
 
   maximum --> on-taking-maximum-from-empty-sequence

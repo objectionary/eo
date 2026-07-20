@@ -21,9 +21,7 @@
     [item] > with
       set.initialized > @
         mp.with item true
-    [item] > without
-      set.initialized > @
-        mp.without item
+    set.initialized (mp.without item) > [item] > without
     mp.has item > [item] > has
 
   eq. ++> tests-set-rebuilds-itself

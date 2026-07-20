@@ -61,20 +61,11 @@
 
   (ln -2.2).is-nan ++> tests-ln-of-negative-float-is-nan
 
-  ++> tests-ln-of-zero-is-negative-infinity
-    eq. > @
-      ln 0
-      ninf
+  (ln 0).eq ninf ++> tests-ln-of-zero-is-negative-infinity
 
-  ++> tests-ln-of-one-is-zero
-    eq. > @
-      ln 1
-      0
+  (ln 1).eq 0 ++> tests-ln-of-one-is-zero
 
-  ++> tests-ln-of-e-one-is-one
-    eq. > @
-      ln e
-      1
+  (ln e).eq 1 ++> tests-ln-of-e-one-is-one
 
   (ln -42).is-nan ++> tests-ln-of-negative-int-is-nan
 
@@ -94,10 +85,7 @@
           -0.6931471805599453
       1.0E-11
 
-  ++> tests-ln-positive-infinity
-    eq. > @
-      ln pinf
-      pinf
+  (ln pinf).eq pinf ++> tests-ln-positive-infinity
 
   (ln ninf).is-nan ++> tests-ln-negative-infinity
 

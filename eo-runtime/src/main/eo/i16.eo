@@ -92,33 +92,23 @@
 
   10.as-i64.as-i32.as-i16.lt 50.as-i64.as-i32.as-i16 ++> tests-i16-less-true
 
-  ++> tests-i16-less-equal
-    not. > @
-      10.as-i64.as-i32.as-i16.lt 10.as-i64.as-i32.as-i16
+  (10.as-i64.as-i32.as-i16.lt 10.as-i64.as-i32.as-i16).not ++> tests-i16-less-equal
 
-  ++> tests-i16-less-false
-    not. > @
-      10.as-i64.as-i32.as-i16.lt -5.as-i64.as-i32.as-i16
+  (10.as-i64.as-i32.as-i16.lt -5.as-i64.as-i32.as-i16).not ++> tests-i16-less-false
 
   gt. ++> tests-i16-greater-true
     -200.as-i64.as-i32.as-i16
     -1000.as-i64.as-i32.as-i16
 
-  ++> tests-i16-greater-false
-    not. > @
-      0.as-i64.as-i32.as-i16.gt 100.as-i64.as-i32.as-i16
+  (0.as-i64.as-i32.as-i16.gt 100.as-i64.as-i32.as-i16).not ++> tests-i16-greater-false
 
-  ++> tests-i16-greater-equal
-    not. > @
-      0.as-i64.as-i32.as-i16.gt 0.as-i64.as-i32.as-i16
+  (0.as-i64.as-i32.as-i16.gt 0.as-i64.as-i32.as-i16).not ++> tests-i16-greater-equal
 
   -200.as-i64.as-i32.as-i16.lte -100.as-i64.as-i32.as-i16 ++> tests-i16-lte-true
 
   50.as-i64.as-i32.as-i16.lte 50.as-i64.as-i32.as-i16 ++> tests-i16-lte-equal
 
-  ++> tests-i16-lte-false
-    not. > @
-      0.as-i64.as-i32.as-i16.lte -10.as-i64.as-i32.as-i16
+  (0.as-i64.as-i32.as-i16.lte -10.as-i64.as-i32.as-i16).not ++> tests-i16-lte-false
 
   gte. ++> tests-i16-gte-true
     -1000.as-i64.as-i32.as-i16
@@ -152,8 +142,9 @@
     -32768.as-i64.as-i32.as-i16.minus 1.as-i64.as-i32.as-i16
     32767.as-i64.as-i32.as-i16
 
-  --> on-division-i16-by-i16-zero
-    2.as-i64.as-i32.as-i16.div 0.as-i64.as-i32.as-i16 > @
+  div. --> on-division-i16-by-i16-zero
+    2.as-i64.as-i32.as-i16
+    0.as-i64.as-i32.as-i16
 
   ++> tests-i16-div-by-zero-returns-provided-fallback
     "recovered".eq > @

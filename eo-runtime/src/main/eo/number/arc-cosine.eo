@@ -15,20 +15,14 @@
     pi.div 2
     arc-sine num
 
-  ++> tests-arc-cosine-of-one-is-zero
-    eq. > @
-      arc-cosine 1
-      0
+  (arc-cosine 1).eq 0 ++> tests-arc-cosine-of-one-is-zero
 
   ++> tests-arc-cosine-of-zero-is-pi-halves
     eq. > @
       arc-cosine 0
       pi.div 2
 
-  ++> tests-arc-cosine-of-negative-one-is-pi
-    eq. > @
-      arc-cosine -1
-      pi
+  (arc-cosine -1).eq pi ++> tests-arc-cosine-of-negative-one-is-pi
 
   lt. ++> tests-arc-cosine-of-point-six
     abs

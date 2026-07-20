@@ -16,8 +16,7 @@
 
   32.is-finite ++> simple-number-is-finite
 
-  ++> tests-number-with-infinite-bytes-is-not-finite
-    (number pinf.as-bytes).is-finite.not > @
+  (number pinf.as-bytes).is-finite.not ++> tests-number-with-infinite-bytes-is-not-finite
 
   pinf.is-finite.not ++> tests-positive-infinity-is-not-finite
 

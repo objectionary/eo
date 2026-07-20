@@ -13,74 +13,32 @@
     n.eq value
   x > value!
 
-  ++> tests-int-leq-true
-    eq. > @
-      -200.lte -100
-      true
+  (-200.lte -100).eq true ++> tests-int-leq-true
 
-  ++> tests-int-leq-equal
-    eq. > @
-      50.lte 50
-      true
+  (50.lte 50).eq true ++> tests-int-leq-equal
 
   (0.lte -10).not.eq true ++> tests-int-leq-false
 
-  ++> tests-positive-infinity-lte-positive-infinity
-    eq. > @
-      pinf.lte pinf
-      true
+  (pinf.lte pinf).eq true ++> tests-positive-infinity-lte-positive-infinity
 
-  ++> tests-positive-infinity-not-lte-negative-infinity
-    eq. > @
-      pinf.lte ninf
-      false
+  (pinf.lte ninf).eq false ++> tests-positive-infinity-not-lte-negative-infinity
 
-  ++> tests-positive-infinity-not-lte-nan
-    eq. > @
-      pinf.lte nan
-      false
+  (pinf.lte nan).eq false ++> tests-positive-infinity-not-lte-nan
 
-  ++> tests-positive-infinity-not-lte-int
-    eq. > @
-      pinf.lte 42
-      false
+  (pinf.lte 42).eq false ++> tests-positive-infinity-not-lte-int
 
-  ++> tests-positive-infinity-not-lte-float
-    eq. > @
-      pinf.lte 42.5
-      false
+  (pinf.lte 42.5).eq false ++> tests-positive-infinity-not-lte-float
 
-  ++> tests-negative-infinity-lte-negative-infinity
-    eq. > @
-      ninf.lte ninf
-      true
+  (ninf.lte ninf).eq true ++> tests-negative-infinity-lte-negative-infinity
 
-  ++> tests-negative-infinity-lte-positive-infinity
-    eq. > @
-      ninf.lte pinf
-      true
+  (ninf.lte pinf).eq true ++> tests-negative-infinity-lte-positive-infinity
 
-  ++> tests-negative-infinity-not-lte-nan
-    eq. > @
-      ninf.lte nan
-      false
+  (ninf.lte nan).eq false ++> tests-negative-infinity-not-lte-nan
 
-  ++> tests-negative-infinity-lte-int
-    eq. > @
-      ninf.lte 42
-      true
+  (ninf.lte 42).eq true ++> tests-negative-infinity-lte-int
 
-  ++> tests-negative-infinity-lte-float
-    eq. > @
-      ninf.lte 42.5
-      true
+  (ninf.lte 42.5).eq true ++> tests-negative-infinity-lte-float
 
-  ++> tests-nan-not-lte-number
-    eq. > @
-      nan.lte 42
-      false
+  (nan.lte 42).eq false ++> tests-nan-not-lte-number
 
-  ++> tests-nan-not-lte-nan
-    eq. > @
-      nan.lte nan
-      false
+  (nan.lte nan).eq false ++> tests-nan-not-lte-nan

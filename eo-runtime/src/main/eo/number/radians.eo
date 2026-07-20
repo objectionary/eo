@@ -15,10 +15,7 @@
   number > value
     num.as-bytes
 
-  ++> tests-radians-of-zero-is-zero
-    eq. > @
-      radians 0
-      0
+  (radians 0).eq 0 ++> tests-radians-of-zero-is-zero
 
   ++> tests-radians-of-half-turn-is-pi
     lt. > @

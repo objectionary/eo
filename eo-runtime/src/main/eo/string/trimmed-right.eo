@@ -45,10 +45,7 @@
           (c.eq 0C-).or
             c.eq 0D-
 
-  ++> tests-trimmed-right-empty-text
-    eq. > @
-      trimmed-right ""
-      ""
+  (trimmed-right "").eq "" ++> tests-trimmed-right-empty-text
 
   ++> tests-text-trimmed-right-one-space
     eq. > @
@@ -68,25 +65,13 @@
         "     "
       ""
 
-  ++> tests-trimmed-right-strips-tab
-    eq. > @
-      trimmed-right "value\t"
-      "value"
+  (trimmed-right "value\t").eq "value" ++> tests-trimmed-right-strips-tab
 
-  ++> tests-trimmed-right-strips-lf
-    eq. > @
-      trimmed-right "value\n"
-      "value"
+  (trimmed-right "value\n").eq "value" ++> tests-trimmed-right-strips-lf
 
-  ++> tests-trimmed-right-strips-ff
-    eq. > @
-      trimmed-right "value\f"
-      "value"
+  (trimmed-right "value\f").eq "value" ++> tests-trimmed-right-strips-ff
 
-  ++> tests-trimmed-right-strips-cr
-    eq. > @
-      trimmed-right "value\r"
-      "value"
+  (trimmed-right "value\r").eq "value" ++> tests-trimmed-right-strips-cr
 
   eq. ++> tests-trimmed-right-strips-mixed-ws
     trimmed-right

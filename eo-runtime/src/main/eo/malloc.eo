@@ -198,9 +198,7 @@
   ++> tests-malloc-gives-id-to-allocated-block
     malloc.of > @
       1
-      [m]
-        m.put > @
-          m.id.gt 0
+      m.put (m.id.gt 0) > [m]
 
   ++> tests-malloc-allocates-right-size-block
     malloc.of > @

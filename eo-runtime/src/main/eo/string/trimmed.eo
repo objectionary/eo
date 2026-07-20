@@ -43,10 +43,7 @@
         "    some     "
       "some"
 
-  ++> tests-text-trimmed-empty
-    eq. > @
-      trimmed ""
-      ""
+  (trimmed "").eq "" ++> tests-text-trimmed-empty
 
   ++> tests-text-trimmed-only-spaces
     eq. > @

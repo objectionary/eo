@@ -52,10 +52,7 @@
           poly
             depth.plus 1
 
-  ++> tests-arc-sine-of-zero-is-zero
-    eq. > @
-      arc-sine 0
-      0
+  (arc-sine 0).eq 0 ++> tests-arc-sine-of-zero-is-zero
 
   lt. ++> tests-arc-sine-of-one-is-pi-halves
     abs
