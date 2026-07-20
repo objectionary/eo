@@ -21,8 +21,8 @@ origin: |
               * path created.output
 
 printed: |
-  [] > foo
-    seq * > @
+  seq > [] > foo
+    *
       bar.deleted
       (outcome.eq 0).if
         ^

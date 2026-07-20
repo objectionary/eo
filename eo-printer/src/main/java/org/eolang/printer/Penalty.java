@@ -22,6 +22,8 @@ import java.util.Map;
  *   {@link PenaltyKey#INDENT} points;</li>
  *   <li>every opening parenthesis costs {@link PenaltyKey#BRACKET}
  *   points;</li>
+ *   <li>every explicit phi attribute {@code @} costs
+ *   {@link PenaltyKey#PHI} points;</li>
  *   <li>every character sitting past the {@link PenaltyKey#WIDTH}-th
  *   column costs {@link PenaltyKey#EXCESS} point.</li>
  * </ul>
@@ -33,7 +35,8 @@ import java.util.Map;
  * default.</p>
  *
  * <p>For example, with the default weights this snippet has a penalty of
- * 15 (five indents, three points each):</p>
+ * 30 (five indents at three points each, plus one explicit {@code @} at
+ * fifteen):</p>
  *
  * <pre> [] &gt; foo
  *   gt. &gt; @
@@ -91,6 +94,7 @@ final class Penalty {
         for (final String line : this.code.split(String.valueOf('\n'), -1)) {
             total += this.indents(line) * this.weight(PenaltyKey.INDENT);
             total += Penalty.brackets(line) * this.weight(PenaltyKey.BRACKET);
+            total += Penalty.phis(line) * this.weight(PenaltyKey.PHI);
             total += this.overflow(line) * this.weight(PenaltyKey.EXCESS);
         }
         return total;
@@ -136,6 +140,21 @@ final class Penalty {
         int count = 0;
         for (int idx = 0; idx < line.length(); ++idx) {
             if (line.charAt(idx) == '(') {
+                ++count;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Count explicit phi attributes ({@code @}) in a line.
+     * @param line The line
+     * @return The number of phi attributes
+     */
+    private static int phis(final String line) {
+        int count = 0;
+        for (int idx = 0; idx < line.length(); ++idx) {
+            if (line.charAt(idx) == '@') {
                 ++count;
             }
         }
