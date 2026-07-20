@@ -8,7 +8,7 @@ penalties:
   EXCESS: 1
   WIDTH: 80
   STEP: 2
-  APPLICATION: 7
+  SPACE: 7
 origin: |
   [] > pairs
     * (pair "a" 1) (pair "b" 2) > items
@@ -19,8 +19,12 @@ origin: |
 printed: |
   [] > pairs
     * > items
-      pair "a" 1
-      pair "b" 2
+      pair
+        "a"
+        1
+      pair
+        "b"
+        2
     [k v] > pair
       k > key
       v > value

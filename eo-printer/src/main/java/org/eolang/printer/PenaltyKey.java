@@ -41,10 +41,14 @@ public enum PenaltyKey {
     SYMBOL(1),
 
     /**
-     * Points charged for each space that applies an argument — every
-     * space on a line beyond its leading indentation.
+     * Points charged for each space on a line beyond the leading
+     * indentation. The genuine argument-applying spaces among them (name
+     * bindings such as {@code >} do not count) additionally pay a
+     * super-linear surcharge at this same weight, so {@code r} of them cost
+     * {@code r} squared, rather than {@code r}, times the weight and longer
+     * applications grow super-linearly more expensive.
      */
-    APPLICATION(7),
+    SPACE(7),
 
     /**
      * The column after which characters start being charged.

@@ -8,7 +8,7 @@ penalties:
   EXCESS: 1
   WIDTH: 80
   STEP: 2
-  APPLICATION: 7
+  SPACE: 7
 origin: |
   [a b c] > math
     a.plus (b.times c) > weighted
@@ -21,6 +21,7 @@ printed: |
     a.plus > weighted
       b.times c
     a.plus b > sum
-    (a.plus b).div c > mean
+    (a.plus b).div > mean
+      c
     (a.gt b).and > sorted
       b.gt c

@@ -8,7 +8,7 @@ penalties:
   EXCESS: 1
   WIDTH: 80
   STEP: 2
-  APPLICATION: 7
+  SPACE: 7
 origin: |
   +package org.eolang
 
@@ -27,5 +27,8 @@ printed: |
 
     is-empty ++> tests-list-front-with-zero-index
       tuple.front
-        * 1 2 3
+        *
+          1
+          2
+          3
         0

@@ -8,7 +8,7 @@ penalties:
   EXCESS: 1
   WIDTH: 80
   STEP: 2
-  APPLICATION: 7
+  SPACE: 7
 origin: |
   [x] > classify
     if. > @
@@ -23,4 +23,6 @@ printed: |
   [x] > classify
     (x.lt 0).if > @
       "negative"
-      (x.eq 0).if "zero" "positive"
+      (x.eq 0).if
+        "zero"
+        "positive"
