@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+origin: |
+  +package org.eolang
+
+  [x] > foo
+    [] > bar
+      [x] > baz
+        ^.^.x > @
+
+printed: |
+  +package org.eolang
+
+  [x] > foo
+    [] > bar
+      ^.^.x > [x] > baz
