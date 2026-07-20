@@ -21,7 +21,8 @@ import java.util.Map;
  *   <li>every level of indentation on a line costs
  *   {@link PenaltyKey#INDENT} points;</li>
  *   <li>every opening parenthesis costs {@link PenaltyKey#BRACKET}
- *   points;</li>
+ *   points, doubled when it opens inside an already-open bracket, since
+ *   nested brackets hurt readability more than flat ones;</li>
  *   <li>every explicit phi attribute {@code @} costs
  *   {@link PenaltyKey#PHI} points;</li>
  *   <li>every character sitting past the {@link PenaltyKey#WIDTH}-th
@@ -132,15 +133,30 @@ final class Penalty {
     }
 
     /**
-     * Count opening parentheses in a line.
+     * Weighted count of opening parentheses in a line.
+     *
+     * <p>Each opening parenthesis counts as one unit at nesting depth zero
+     * and as two units when it opens inside an already-open bracket, so that
+     * nested brackets are charged double the flat {@link PenaltyKey#BRACKET}
+     * weight.</p>
+     *
      * @param line The line
-     * @return The number of parentheses
+     * @return The weighted number of parentheses
      */
     private static int brackets(final String line) {
         int count = 0;
+        int depth = 0;
         for (int idx = 0; idx < line.length(); ++idx) {
-            if (line.charAt(idx) == '(') {
-                ++count;
+            final char chr = line.charAt(idx);
+            if (chr == '(') {
+                if (depth > 0) {
+                    count += 2;
+                } else {
+                    ++count;
+                }
+                ++depth;
+            } else if (chr == ')' && depth > 0) {
+                --depth;
             }
         }
         return count;

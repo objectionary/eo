@@ -53,6 +53,15 @@ final class PenaltyTest {
     }
 
     @Test
+    void chargesNestedParenthesisDouble() {
+        MatcherAssert.assertThat(
+            "A nested parenthesis should cost twice the flat weight, so two brackets total three units",
+            new Penalty("(foo (bar 42))").points(),
+            Matchers.equalTo(21)
+        );
+    }
+
+    @Test
     void chargesForOverflow() {
         MatcherAssert.assertThat(
             "Each character past the 80th column should cost one point",
