@@ -88,14 +88,37 @@ final class MjFormatTest {
                 new FakeMaven(temp)
                     .with("autoFix", true)
                     .with("step", 4)
-                    .withProgram(MjFormatTest.canonical(new HelloWorld().asString()))
+                    .withProgram(MjFormatTest.canonical(MjFormatTest.nested()))
                     .execute(MjFormat.class)
                     .result()
                     .get("foo/x/main.eo")
             ).asString(),
             Matchers.containsString(
-                String.valueOf('\n').concat("        org.eolang.io.stdout")
+                String.valueOf('\n').concat("        x > first")
             )
+        );
+    }
+
+    /**
+     * A program that stays multi-line whatever the layout weights are.
+     *
+     * <p>A nested formation with two bindings never collapses onto a single
+     * line — an only-phi formation binds nothing but its {@code φ} decoratee —
+     * so its deepest lines sit two indentation levels in and expose the
+     * configured {@code step}, unlike a compact one-liner such as
+     * {@code (stdout "Hello!" x).print > [x] > main}.</p>
+     *
+     * @return The EO program source
+     */
+    private static String nested() {
+        return String.join(
+            System.lineSeparator(),
+            "+package foo.x",
+            "",
+            "[x] > main",
+            "  [] > inner",
+            "    x > first",
+            "    x > second"
         );
     }
 

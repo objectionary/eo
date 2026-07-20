@@ -24,8 +24,7 @@ printed: |
   [] > foo
     seq * > @
       bar.deleted
-      if.
-        outcome.eq 0
+      (outcome.eq 0).if
         ^
         T
           "Cant delete '%s': %s".printf

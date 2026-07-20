@@ -3,8 +3,12 @@
 ---
 # yamllint disable rule:line-length
 # Mixed method-dispatch chains. A named receiver folds into the suffix form
-# (a.plus b), but a compound receiver cannot, so its dispatch stays reversed
-# (div. (a.plus b) c, and. over its two comparisons).
+# (a.plus b). A compound receiver is also folded into a parenthesized suffix
+# ((a.plus b).div c) whenever that beats the reversed shape on penalty (#5650):
+# div's single bracket costs the same either way, so the shorter suffix wins,
+# but "and." over two parenthesized comparisons pays two brackets, which the
+# reversed vertical form (two short child lines) undercuts, so it stays
+# reversed.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -23,7 +27,7 @@ printed: |
     a.plus > weighted
       b.times c
     a.plus b > sum
-    div. (a.plus b) c > mean
+    (a.plus b).div c > mean
     and. > sorted
       a.gt b
       b.gt c
