@@ -370,7 +370,8 @@ final class LnApplicationTest {
     void rejectsIntegerArgWithLeadingZero() {
         Assertions.assertThrows(
             ParseError.class,
-            () -> LnApplicationTest.parseLine("foo 07"),
+            () -> new LnApplication(new Span("foo 07", 1))
+                .into(new Stack(), new Globals(), new Emit()),
             "an INT arg with a leading zero must be rejected per R-9.8.1"
         );
     }
@@ -453,7 +454,8 @@ final class LnApplicationTest {
     void rejectsStringWithInvalidUnicodeEscape() {
         Assertions.assertThrows(
             ParseError.class,
-            () -> LnApplicationTest.parseLine("\"\\uZZZZ\" > x"),
+            () -> new LnApplication(new Span("\"\\uZZZZ\" > x", 1))
+                .into(new Stack(), new Globals(), new Emit()),
             "a string with a non-hex \\u escape must be rejected, not crash"
         );
     }
@@ -533,7 +535,8 @@ final class LnApplicationTest {
     void rejectsUnclosedInlinePhiBracketInGroupArg() {
         Assertions.assertThrows(
             ParseError.class,
-            () -> LnApplicationTest.parseLine("x (a > [b)"),
+            () -> new LnApplication(new Span("x (a > [b)", 1))
+                .into(new Stack(), new Globals(), new Emit()),
             "a `> [` inline-phi marker with no closing `]` inside a paren-group arg must be"
                 .concat(" rejected with a ParseError, not an unchecked exception")
         );
@@ -591,7 +594,8 @@ final class LnApplicationTest {
     void rejectsOversizedHexHead() {
         Assertions.assertThrows(
             ParseError.class,
-            () -> LnApplicationTest.parseLine("0x10000000000000000 > x"),
+            () -> new LnApplication(new Span("0x10000000000000000 > x", 1))
+                .into(new Stack(), new Globals(), new Emit()),
             "a HEX literal wider than a signed 64-bit long must raise a positioned"
                 .concat(" ParseError instead of an uncaught NumberFormatException")
         );
@@ -658,7 +662,7 @@ final class LnApplicationTest {
     void acceptsLowercaseExponentFloatHead() {
         Assertions.assertDoesNotThrow(
             () -> LnApplicationTest.parseLine("1.0e30 > x"),
-            "lowercase e must match Double.toString's E so StUnhex output re-parses"
+            "lowercase e is an alternate spelling of the same double and must be accepted"
         );
     }
 

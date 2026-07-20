@@ -710,10 +710,10 @@
       (0.0.div 0.0).as-bytes
 
   --> on-converting-huge-number-to-i64
-    1.0E30.as-i64 > @
+    1.0e30.as-i64 > @
 
   --> on-converting-long-max-boundary-to-i64
-    9.223372036854776E18.as-i64 > @
+    9.223372036854776e18.as-i64 > @
 
   --> on-converting-nan-to-i64
     nan.as-i64 > @
@@ -724,7 +724,7 @@
   ++> tests-out-of-range-as-i64-returns-provided-fallback
     eq. > @
       "recovered"
-      1.0E30.as-i64
+      1.0e30.as-i64
         "recovered" > [msg]
 
   ++> tests-as-i64-truncates-positive-toward-zero
@@ -749,12 +749,12 @@
 
   ++> tests-as-i64-converts-large-number-with-left-shift
     eq. > @
-      1.0E18.as-i64.as-bytes
+      1.0e18.as-i64.as-bytes
       0D-E0-B6-B3-A7-64-00-00
 
   ++> tests-as-i64-converts-long-min-boundary
     eq. > @
-      -9.223372036854776E18.as-i64.as-bytes
+      -9.223372036854776e18.as-i64.as-bytes
       80-00-00-00-00-00-00-00
 
   ++> tests-package-raises-to-power
@@ -775,7 +775,7 @@
   ++> tests-package-square-root-approximates
     lt. > @
       (9.sqrt.minus 3).abs
-      1.0E-9
+      0.000000001
 
   ++> tests-package-power-via-number-namespace
     eq. > @

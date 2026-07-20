@@ -25,7 +25,7 @@
         minus.
           degrees pi
           180
-      1.0E-4
+      0.0001
 
   ++> tests-degrees-of-pi-halves-is-quarter-turn
     lt. > @
@@ -33,7 +33,7 @@
         minus.
           degrees (pi.div 2)
           90
-      1.0E-4
+      0.0001
 
   ++> tests-degrees-of-two-pi-is-full-turn
     lt. > @
@@ -41,7 +41,7 @@
         minus.
           degrees (pi.times 2)
           360
-      1.0E-4
+      0.0001
 
   ++> tests-degrees-of-negative-pi-is-minus-half-turn
     lt. > @
@@ -49,7 +49,7 @@
         minus.
           degrees pi.neg
           -180
-      1.0E-4
+      0.0001
 
   ++> tests-degrees-of-nan-is-nan
     is-nan. > @

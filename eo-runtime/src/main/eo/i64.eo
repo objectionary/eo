@@ -147,7 +147,7 @@
 
   ++> tests-i64-less-across-full-range
     lt. > @
-      -9.223372036854776E18.as-i64
+      -9223372036854775808.as-i64
       1.as-i64
 
   ++> tests-i64-less-with-large-difference

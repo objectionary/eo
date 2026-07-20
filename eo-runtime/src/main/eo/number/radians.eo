@@ -25,7 +25,7 @@
         minus.
           radians 180
           pi
-      1.0E-4
+      0.0001
 
   ++> tests-radians-of-quarter-turn-is-pi-halves
     lt. > @
@@ -33,7 +33,7 @@
         minus.
           radians 90
           pi.div 2
-      1.0E-4
+      0.0001
 
   ++> tests-radians-of-full-turn-is-two-pi
     lt. > @
@@ -41,7 +41,7 @@
         minus.
           radians 360
           pi.times 2
-      1.0E-4
+      0.0001
 
   ++> tests-radians-of-negative-half-turn-is-minus-pi
     lt. > @
@@ -49,7 +49,7 @@
         minus.
           radians -180
           pi.neg
-      1.0E-4
+      0.0001
 
   ++> tests-radians-of-nan-is-nan
     is-nan. > @

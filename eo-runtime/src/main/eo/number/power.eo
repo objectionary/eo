@@ -317,7 +317,7 @@
         minus.
           power 9 0.5
           3
-      1.0E-9
+      0.000000001
 
   ++> tests-power-square-root-of-two
     lt. > @
@@ -325,7 +325,7 @@
         minus.
           power 2 0.5
           1.4142135623730951
-      1.0E-9
+      0.000000001
 
   ++> tests-power-cube-root-of-twenty-seven
     lt. > @
@@ -333,7 +333,7 @@
         minus.
           power 27 (1.div 3)
           3
-      1.0E-9
+      0.000000001
 
   ++> tests-power-fractional-of-negative-is-nan
     is-nan. > @
