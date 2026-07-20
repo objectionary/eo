@@ -30,6 +30,11 @@ public enum PenaltyKey {
     BRACKET(7),
 
     /**
+     * Points charged for each explicit phi attribute {@code @} on a line.
+     */
+    PHI(15),
+
+    /**
      * Points charged for each character past {@link #WIDTH}.
      */
     EXCESS(1),
