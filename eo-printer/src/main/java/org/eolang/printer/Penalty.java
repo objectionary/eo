@@ -21,7 +21,10 @@ import java.util.Map;
  *   <li>every level of indentation on a line costs
  *   {@link PenaltyKey#INDENT} points;</li>
  *   <li>every opening parenthesis costs {@link PenaltyKey#BRACKET}
- *   points;</li>
+ *   points, multiplied by its nesting depth plus one, so a top-level
+ *   bracket costs the flat weight, a bracket nested one level deep costs
+ *   twice as much, two levels deep three times, and so on, since deeper
+ *   nesting hurts readability more;</li>
  *   <li>every explicit phi attribute {@code @} costs
  *   {@link PenaltyKey#PHI} points;</li>
  *   <li>every character sitting past the {@link PenaltyKey#WIDTH}-th
@@ -132,15 +135,28 @@ final class Penalty {
     }
 
     /**
-     * Count opening parentheses in a line.
+     * Weighted count of opening parentheses in a line.
+     *
+     * <p>The cost grows progressively with nesting depth: an opening
+     * parenthesis at depth zero counts as one unit, the next one nested
+     * inside it as two, the one inside that as three, and so on. In other
+     * words, a parenthesis opening with {@code depth} brackets already open
+     * counts as {@code depth + 1} units of the flat {@link PenaltyKey#BRACKET}
+     * weight, so the printer leans away from deeply nested one-liners.</p>
+     *
      * @param line The line
-     * @return The number of parentheses
+     * @return The weighted number of parentheses
      */
     private static int brackets(final String line) {
         int count = 0;
+        int depth = 0;
         for (int idx = 0; idx < line.length(); ++idx) {
-            if (line.charAt(idx) == '(') {
-                ++count;
+            final char chr = line.charAt(idx);
+            if (chr == '(') {
+                count += depth + 1;
+                ++depth;
+            } else if (chr == ')' && depth > 0) {
+                --depth;
             }
         }
         return count;

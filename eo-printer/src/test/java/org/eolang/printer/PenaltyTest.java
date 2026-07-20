@@ -10,6 +10,8 @@ import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link Penalty}.
@@ -43,12 +45,19 @@ final class PenaltyTest {
         );
     }
 
-    @Test
-    void chargesForParenthesis() {
+    @ParameterizedTest
+    @CsvSource({
+        "'42.gt (bar.hello 88) > [] > foo', 7",
+        "'(a (b (c 1)))', 42"
+    })
+    void chargesForParentheses(final String code, final int points) {
         MatcherAssert.assertThat(
-            "A single opening parenthesis on one line should cost seven points",
-            new Penalty("42.gt (bar.hello 88) > [] > foo").points(),
-            Matchers.equalTo(7)
+            String.format(
+                "The parentheses in %s should cost %d points, deeper nesting charged more",
+                code, points
+            ),
+            new Penalty(code).points(),
+            Matchers.equalTo(points)
         );
     }
 
