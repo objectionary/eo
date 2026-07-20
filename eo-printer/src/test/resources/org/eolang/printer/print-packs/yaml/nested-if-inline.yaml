@@ -3,9 +3,10 @@
 ---
 # yamllint disable rule:line-length
 # A chain of nested "if." dispatches written vertically packs back onto a
-# single line when it fits: the inner if. inlines in parentheses as an
-# argument of the outer one, and the whole expression collapses through the
-# inline-phi form into the formation's head.
+# single line when it fits: each dispatch folds its compound comparison
+# receiver into suffix position ("(x.lt 0).if ..."), the inner one inlines in
+# parentheses as an argument of the outer, and the whole expression collapses
+# through the inline-phi form into the formation's head (#5650).
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -23,4 +24,4 @@ origin: |
         "positive"
 
 printed: |
-  if. (x.lt 0) "negative" (if. (x.eq 0) "zero" "positive") > [x] > classify
+  (x.lt 0).if "negative" ((x.eq 0).if "zero" "positive") > [x] > classify
