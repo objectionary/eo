@@ -156,8 +156,7 @@
     -2147483648.as-i64.as-i32.minus 1.as-i64.as-i32
     2147483647.as-i64.as-i32
 
-  --> on-division-i32-by-i32-zero
-    2.as-i64.as-i32.div 0.as-i64.as-i32 > @
+  2.as-i64.as-i32.div 0.as-i64.as-i32 --> on-division-i32-by-i32-zero
 
   ++> tests-i32-div-by-zero-returns-provided-fallback
     "recovered".eq > @

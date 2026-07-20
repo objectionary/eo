@@ -167,8 +167,7 @@
 
   (1.as-i64.minus 1.as-i64).eq 0.as-i64 ++> tests-i64-one-minus-i64-one
 
-  --> on-division-i64-by-i64-zero
-    2.as-i64.div 0.as-i64 > @
+  2.as-i64.div 0.as-i64 --> on-division-i64-by-i64-zero
 
   ++> tests-i64-div-by-zero-returns-provided-fallback
     "recovered".eq > @

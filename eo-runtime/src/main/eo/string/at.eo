@@ -44,10 +44,7 @@
     "m".eq > @
       at "some" -2
 
-  --> on-text-at-index-more-than-length
-    at > @
-      "some"
-      10
+  at "some" 10 --> on-text-at-index-more-than-length
 
   ++> tests-text-at-out-of-bounds-returns-provided-fallback
     "recovered".eq > @

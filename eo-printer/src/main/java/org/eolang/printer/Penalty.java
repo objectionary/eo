@@ -179,8 +179,9 @@ final class Penalty {
      * make up an application's length.
      *
      * <p>Only the spaces that apply an argument to an object count. A space
-     * that sits next to a name-binding marker ({@code >}, {@code >>} or
-     * {@code ++>}) binds a name rather than applying an argument, and the
+     * that sits next to a name-binding marker ({@code >}, {@code >>},
+     * {@code ++>} or {@code -->}) binds a name rather than applying an
+     * argument, and the
      * spaces between the void attributes inside a formation's {@code [..]}
      * head are not applications either; neither is counted. So
      * {@code foo > [] > bar} has no application spaces, while
@@ -238,10 +239,11 @@ final class Penalty {
     /**
      * Is this token a name-binding marker rather than an applied argument?
      * @param token The token
-     * @return TRUE for {@code >}, {@code >>} and {@code ++>}
+     * @return TRUE for {@code >}, {@code >>}, {@code ++>} and {@code -->}
      */
     private static boolean binding(final String token) {
-        return ">".equals(token) || ">>".equals(token) || "++>".equals(token);
+        return ">".equals(token) || ">>".equals(token)
+            || "++>".equals(token) || "-->".equals(token);
     }
 
     /**
