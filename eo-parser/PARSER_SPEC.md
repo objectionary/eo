@@ -1326,6 +1326,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | More than one space between meta parts (R-3.2.4) | `meta parts must be separated by exactly one space` |
 | Test attribute name is `@` (PHI) instead of NAME (R-6.3.5) | `test attribute name must be an identifier, not @` |
 | Leading-zero in integer literal (R-9.8.1, e.g., `007`) | `integer literal must not have leading zeros` |
+| Decimal `INT`/`FLOAT` literal whose exact decimal value differs from the IEEE-754 double it parses to (dead digits; e.g., `2.7182818284590452354`). Alternate spellings of the same value (`+42`, `1.50`) are accepted. | `<literal> is over-precise, write <canonical> instead` (literal and canonical substituted) |
 | `+` followed by digit but the digit-run forms an invalid `INT`/`FLOAT` (R-3.2.5, e.g., `+1foo`) | `invalid signed-number literal` |
 | Nested atom inside another atom (R-6.3.4 (b)) | `atom may not contain a nested atom` |
 | `[x]` as a bare argument (horizontal anonym in arg position) | `horizontal formation not allowed as argument` |

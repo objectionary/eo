@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 2
+message: |-
+  [2:2] error: '2.7182818284590452354 is over-precise, write 2.718281828459045 instead'
+    2.7182818284590452354 > e
+    ^
+input: |
+  [] > app
+    2.7182818284590452354 > e
