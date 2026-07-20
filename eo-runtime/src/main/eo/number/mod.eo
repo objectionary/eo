@@ -76,10 +76,7 @@
       mod 133 1
       0
 
-  --> on-mod-by-zero
-    mod > @
-      5
-      0
+  mod 5 0 --> on-mod-by-zero
 
   ++> tests-mod-by-zero-returns-provided-fallback
     "recovered".eq > @

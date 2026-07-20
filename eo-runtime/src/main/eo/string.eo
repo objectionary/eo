@@ -190,9 +190,7 @@
       str.as-bytes.size.eq 14
     "The 😀 smile" > str
 
-  --> on-taking-length-of-incomplete-n4-byte-character
-    length. > @
-      string F0-9F-98
+  (string F0-9F-98).length --> on-taking-length-of-incomplete-n4-byte-character
 
   ("Hello".eq 42).not ++> tests-compares-two-different-string-types
 

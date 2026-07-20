@@ -32,10 +32,7 @@
       as-number.
         index.plus 1
 
-  --> on-text-repeating-less-than-zero-times
-    repeated > @
-      ""
-      -1
+  repeated "" -1 --> on-text-repeating-less-than-zero-times
 
   ++> tests-text-repeated-negative-times-returns-provided-fallback
     "recovered".eq > @

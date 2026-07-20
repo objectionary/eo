@@ -130,11 +130,9 @@
         -7.as-bytes.or 23.as-bytes
         0.as-bytes
 
-  --> on-and-with-different-lengths
-    20-1F.and CA-FE-BE > @
+  20-1F.and CA-FE-BE --> on-and-with-different-lengths
 
-  --> on-or-with-different-lengths
-    20-1F.or CA-FE-BE > @
+  20-1F.or CA-FE-BE --> on-or-with-different-lengths
 
   (0.as-bytes.eq 0.as-bytes.not).not ++> tests-not-with-zero
 
@@ -206,10 +204,7 @@
     FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
     FF-FF-FF-FF-00-00-00-01
 
-  --> on-out-of-bounds-slice
-    20-1F-EE-B5-90.slice > @
-      3
-      10
+  20-1F-EE-B5-90.slice 3 10 --> on-out-of-bounds-slice
 
   ++> tests-out-of-bounds-slice-returns-provided-fallback
     "recovered".eq > @

@@ -96,12 +96,7 @@
           regex "/[a-z]+/"
           "!hello!world!"
 
-  --> on-getting-next-on-not-matched-block
-    next. > @
-      next.
-        match.
-          regex "/[a-z]+/"
-          "123"
+  ((regex "/[a-z]+/").match "123").next.next --> on-getting-next-on-not-matched-block
 
   --> on-getting-from-position-on-not-matched-block
     from. > @
@@ -138,12 +133,7 @@
         "123"
     1
 
-  --> on-getting-text-on-not-matched-block
-    text. > @
-      next.
-        match.
-          regex "/[a-z]+/"
-          "123"
+  ((regex "/[a-z]+/").match "123").next.text --> on-getting-text-on-not-matched-block
 
   matches. ++> tests-regex-matches-dotall-option
     compiled.
@@ -186,13 +176,9 @@
       regex "/(yildirim)/ui"
     "Yıldırım"
 
-  --> on-missing-first-slash-in-regex
-    compiled. > @
-      regex "(.)+"
+  (regex "(.)+").compiled --> on-missing-first-slash-in-regex
 
-  --> on-missing-closing-slash-in-regex
-    compiled. > @
-      regex "/pattern"
+  (regex "/pattern").compiled --> on-missing-closing-slash-in-regex
 
   ++> tests-invalid-regex-syntax-returns-provided-fallback
     "recovered".eq > @

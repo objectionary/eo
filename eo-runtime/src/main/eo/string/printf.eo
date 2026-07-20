@@ -50,10 +50,9 @@
       14
       false
 
-  --> on-printf-with-arguments-that-does-not-match
-    printf *1 > @
-      "%s%s"
-      "Jeff"
+  printf *1 --> on-printf-with-arguments-that-does-not-match
+    "%s%s"
+    "Jeff"
 
   eq. ++> tests-printf-does-not-fail-if-arguments-more-than-formats
     "Hey"
@@ -92,10 +91,9 @@
       "Hello, %s! Bye, %1$s!"
       "Jeff"
 
-  --> on-printf-with-oversized-positional-index
-    printf *1 > @
-      "%99999999999999999999$s"
-      "Jeff"
+  printf *1 --> on-printf-with-oversized-positional-index
+    "%99999999999999999999$s"
+    "Jeff"
 
   printf *1 --> on-printf-with-zero-positional-index
     "%0$s"
@@ -135,10 +133,9 @@
       "%d"
       9.99
 
-  --> on-formatting-huge-number-as-decimal
-    printf *1 > @
-      "%d"
-      1.0e30
+  printf *1 --> on-formatting-huge-number-as-decimal
+    "%d"
+    1.0e30
 
   eq. ++> formats-float-always-with-six-fraction-digits
     "1.250000"
