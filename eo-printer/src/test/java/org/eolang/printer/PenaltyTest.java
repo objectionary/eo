@@ -23,7 +23,7 @@ final class PenaltyTest {
         weights.put(PenaltyKey.SYMBOL, 0);
         weights.put(PenaltyKey.APPLICATION, 0);
         MatcherAssert.assertThat(
-            "Five levels of indentation should cost fifteen points",
+            "Five levels of indentation should cost ten points",
             new Penalty(
                 String.join(
                     System.lineSeparator(),
@@ -34,7 +34,7 @@ final class PenaltyTest {
                 ),
                 weights
             ).points(),
-            Matchers.equalTo(15)
+            Matchers.equalTo(10)
         );
     }
 

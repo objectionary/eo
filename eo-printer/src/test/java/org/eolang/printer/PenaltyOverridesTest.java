@@ -46,12 +46,12 @@ final class PenaltyOverridesTest {
         weights.put(PenaltyKey.SYMBOL, 0);
         weights.put(PenaltyKey.APPLICATION, 0);
         MatcherAssert.assertThat(
-            "Two levels of four-space indentation should cost six points",
+            "Two levels of four-space indentation should cost four points",
             new Penalty(
                 String.join(System.lineSeparator(), "[] > foo", "        bar"),
                 weights
             ).points(),
-            Matchers.equalTo(6)
+            Matchers.equalTo(4)
         );
     }
 

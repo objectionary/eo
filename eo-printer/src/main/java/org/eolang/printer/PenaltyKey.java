@@ -22,7 +22,7 @@ public enum PenaltyKey {
     /**
      * Points charged for each level of indentation on a line.
      */
-    INDENT(3),
+    INDENT(2),
 
     /**
      * Points charged per opening parenthesis, progressively: the k-th
