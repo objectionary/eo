@@ -31,7 +31,7 @@ final class PenaltyOverridesTest {
         final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
         weights.put(PenaltyKey.BRACKET, 100);
         weights.put(PenaltyKey.SYMBOL, 0);
-        weights.put(PenaltyKey.APPLICATION, 0);
+        weights.put(PenaltyKey.SPACE, 0);
         MatcherAssert.assertThat(
             "A single parenthesis should cost the overridden weight",
             new Penalty("42.gt (bar.hello 88) > [] > foo", weights).points(),
@@ -44,7 +44,7 @@ final class PenaltyOverridesTest {
         final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
         weights.put(PenaltyKey.STEP, 4);
         weights.put(PenaltyKey.SYMBOL, 0);
-        weights.put(PenaltyKey.APPLICATION, 0);
+        weights.put(PenaltyKey.SPACE, 0);
         MatcherAssert.assertThat(
             "Two levels of four-space indentation should cost four points",
             new Penalty(
@@ -72,7 +72,7 @@ final class PenaltyOverridesTest {
     @Test
     void honoursOverriddenApplicationWeight() {
         final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
-        weights.put(PenaltyKey.APPLICATION, 100);
+        weights.put(PenaltyKey.SPACE, 100);
         weights.put(PenaltyKey.SYMBOL, 0);
         MatcherAssert.assertThat(
             "A single application space should cost the overridden weight",

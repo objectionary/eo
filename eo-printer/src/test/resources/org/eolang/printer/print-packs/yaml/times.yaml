@@ -8,7 +8,7 @@ penalties:
   EXCESS: 1
   WIDTH: 80
   STEP: 2
-  APPLICATION: 7
+  SPACE: 7
 origin: |
   [] > app
     Q.io.stdout > @
@@ -19,4 +19,6 @@ origin: |
 printed: |
   [] > app
     io.stdout > @
-      string.sprintf "result is %d\n" (-1.times 228)
+      string.sprintf
+        "result is %d\n"
+        -1.times 228

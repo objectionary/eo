@@ -8,7 +8,7 @@ penalties:
   EXCESS: 1
   WIDTH: 80
   STEP: 2
-  APPLICATION: 7
+  SPACE: 7
 origin: |
   [] > app
     Q.io.stdout > @
@@ -18,4 +18,6 @@ origin: |
       """
 
 printed: |
-  io.stdout "Hello\nit's me" > [] > app
+  [] > app
+    io.stdout > @
+      "Hello\nit's me"

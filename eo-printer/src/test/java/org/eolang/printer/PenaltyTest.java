@@ -21,7 +21,7 @@ final class PenaltyTest {
     void chargesForIndentation() {
         final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
         weights.put(PenaltyKey.SYMBOL, 0);
-        weights.put(PenaltyKey.APPLICATION, 0);
+        weights.put(PenaltyKey.SPACE, 0);
         MatcherAssert.assertThat(
             "Five levels of indentation should cost ten points",
             new Penalty(
@@ -42,7 +42,7 @@ final class PenaltyTest {
     void chargesProgressivelyForParentheses() {
         final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
         weights.put(PenaltyKey.SYMBOL, 0);
-        weights.put(PenaltyKey.APPLICATION, 0);
+        weights.put(PenaltyKey.SPACE, 0);
         MatcherAssert.assertThat(
             "Two parentheses on one line should cost three bracket-weights",
             new Penalty("f (a) (b)", weights).points(),
@@ -67,7 +67,7 @@ final class PenaltyTest {
         final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
         weights.put(PenaltyKey.INDENT, 0);
         weights.put(PenaltyKey.BRACKET, 0);
-        weights.put(PenaltyKey.APPLICATION, 0);
+        weights.put(PenaltyKey.SPACE, 0);
         MatcherAssert.assertThat(
             "Every symbol in the block should cost one point",
             new Penalty("42.gt (bar.hello 88) > [] > foo", weights).points(),
@@ -78,12 +78,23 @@ final class PenaltyTest {
     @Test
     void chargesForApplications() {
         MatcherAssert.assertThat(
-            "Each non-indentation space should cost seven points",
+            "Four application spaces should cost four squared times seven points",
             new Penalty(
                 "foo 4 5 6 7",
                 Collections.singletonMap(PenaltyKey.SYMBOL, 0)
             ).points(),
-            Matchers.equalTo(28)
+            Matchers.equalTo(112)
+        );
+    }
+
+    @Test
+    void chargesApplicationsSuperLinearly() {
+        final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
+        weights.put(PenaltyKey.SYMBOL, 0);
+        MatcherAssert.assertThat(
+            "Doubling the applied arguments should more than double the charge",
+            new Penalty("foo a b c d", weights).points(),
+            Matchers.greaterThan(2 * new Penalty("foo a b", weights).points())
         );
     }
 
@@ -99,7 +110,7 @@ final class PenaltyTest {
     @Test
     void prefersHorizontalOverDeepVertical() {
         final Map<PenaltyKey, Integer> weights =
-            Collections.singletonMap(PenaltyKey.APPLICATION, 0);
+            Collections.singletonMap(PenaltyKey.SPACE, 0);
         MatcherAssert.assertThat(
             "The flatter rendering should score lower than the deeply nested one",
             new Penalty("nan.plus negative-infinity > x", weights).points(),
