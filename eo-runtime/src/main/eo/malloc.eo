@@ -81,7 +81,8 @@
         write > @
           target
           read source length
-      [offset length cant-read] > read /bytes
+      [offset length] > read /bytes
+        ? > cant-read /{string}
       [offset data] > write /bool
       seq * > [object] > put
         write 0 object
