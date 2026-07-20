@@ -16,7 +16,9 @@
   reducedi > @
     list
     *
-    accum.with (func item idx) > [accum item idx] >>
+    [accum item idx] >>
+      accum.with > @
+        func item idx
 
   ++> tests-list-mappedi-should-work
     eq. > @

@@ -34,13 +34,16 @@
             as-number. > step
               (right.minus left).div ^.^.n
   times. > [a b] > subsection
-    (b.minus a).div 6
+    div.
+      b.minus a
+      6
     plus.
       fun a
       plus.
         4.times
           fun
-            0.5.times (a.plus b)
+            0.5.times
+              a.plus b
         fun b
 
   ++> tests-calculates-lineal-integral
@@ -55,7 +58,10 @@
       1.0E-7
     [value operand err] > close-to
       lte. > @
-        (abs (value.minus operand)).minus err
+        minus.
+          abs
+            value.minus operand
+          err
         0
       (value.gte 0).if value value.neg > [value] > abs
 
@@ -71,7 +77,10 @@
       1.0E-7
     [value operand err] > close-to
       lte. > @
-        (abs (value.minus operand)).minus err
+        minus.
+          abs
+            value.minus operand
+          err
         0
       (value.gte 0).if value value.neg > [value] > abs
 
@@ -87,6 +96,9 @@
       1.0E-7
     [value operand err] > close-to
       lte. > @
-        (abs (value.minus operand)).minus err
+        minus.
+          abs
+            value.minus operand
+          err
         0
       (value.gte 0).if value value.neg > [value] > abs

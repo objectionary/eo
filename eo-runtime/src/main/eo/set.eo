@@ -18,8 +18,12 @@
   [mp] > initialized
     mp.keys > @
     mp.size > size
-    set.initialized (mp.with item true) > [item] > with
-    set.initialized (mp.without item) > [item] > without
+    [item] > with
+      set.initialized > @
+        mp.with item true
+    [item] > without
+      set.initialized > @
+        mp.without item
     mp.has item > [item] > has
 
   eq. ++> tests-set-rebuilds-itself

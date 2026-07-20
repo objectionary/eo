@@ -25,8 +25,10 @@
   minus. > distance
     as-ascii "a"
     as-ascii "A"
-  as-ascii "Z" > maxcode
-  as-ascii "A" > mincode
+  as-ascii > maxcode
+    "Z"
+  as-ascii > mincode
+    "A"
 
   "hello".eq (low-cased "HELLO") ++> tests-converts-text-to-lower-case
 

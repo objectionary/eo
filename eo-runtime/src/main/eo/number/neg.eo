@@ -8,7 +8,8 @@
 +spdx SPDX-License-Identifier: MIT
 
 [n] > neg
-  n.times -1 > @
+  n.times > @
+    -1
 
   pinf.neg.eq ninf ++> tests-positive-infinity-neg-is-negative-infinity
 

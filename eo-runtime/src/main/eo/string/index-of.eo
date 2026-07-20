@@ -13,7 +13,8 @@
     or.
       or.
         (number slen).gt tlen
-        (slen.eq tlen).and
+        and.
+          slen.eq tlen
           (sub.eq txt).not
       found.eq -1
     -1
@@ -23,7 +24,8 @@
   minus. > end!
     number tlen
     slen
-  rec-index-of 0 > found!
+  rec-index-of > found!
+    0
   sub.size > slen!
   substring > sub!
   txt.size > tlen!
@@ -35,7 +37,9 @@
       includes.if
         idx
         rec-index-of (idx.plus 1).as-number
-    (slice txt idx slen).eq sub > includes
+    eq. > includes
+      slice txt idx slen
+      sub
 
   eq. ++> tests-index-of-non-existed-substring-with-more-length
     -1

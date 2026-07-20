@@ -106,8 +106,9 @@
       [buffer] > input-block
         buffer > @
         [size] > read
-          seq > @
-            * chunk (^.^.input-block chunk)
+          seq * > @
+            chunk
+            ^.^.input-block chunk
           (^.^.^.recv size).as-bytes > chunk
   [send] > as-output
     [buffer] > write
@@ -138,7 +139,8 @@
       ^.^.as-input recv > as-input
       ^.^.as-output send > as-output
       [buffer cant-send] > send
-        (sent.eq -1).if > @
+        if. > @
+          sent.eq -1
           cant-send
             "Failed to send a message through the socket #%d because %s".printf
               * sockfd ^.^.sys.message
@@ -152,7 +154,8 @@
             buff.size
             0
       [size cant-receive] > recv
-        (received.code.eq -1).if > @
+        if. > @
+          received.code.eq -1
           cant-receive
             "Failed to receive data from the socket #%d because %s".printf
               * sockfd ^.^.sys.message
@@ -201,7 +204,8 @@
             cant-connect
               "Couldn't connect to %s:%d on socket #%d because %s".printf
                 * sock.address sock.port sock.sd sock.sys.message
-            scope (sock.scoped-socket sock.sd)
+            scope
+              sock.scoped-socket sock.sd
           code. > connected
             sock.sys.raw *1
               "connect"

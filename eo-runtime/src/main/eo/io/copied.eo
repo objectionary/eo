@@ -56,7 +56,10 @@
     eq. > @
       malloc.of
         0
-        copied (bytes-as-input --) (malloc-as-output m) > [m]
+        [m]
+          copied > @
+            bytes-as-input --
+            malloc-as-output m
       0
 
   ++> tests-handles-large-data

@@ -73,7 +73,9 @@
     * > tup
 
   ++> tests-tuple-as-a-bound-attribute-size-1
-    (tup.at 0).eq 100 > @
+    eq. > @
+      tup.at 0
+      100
     * 100 > tup
 
   ++> tests-tuple-as-a-bound-attribute-size-2
@@ -137,7 +139,9 @@
   tuple.empty.tail --> on-getting-tail-from-empty-tuple
 
   ++> tests-creates-empty-tuple-with-number
-    (a.at 0).eq 3 > @
+    eq. > @
+      a.at 0
+      3
     tuple.empty.with 3 > a
 
   ++> tests-at-fast-with-first-element
@@ -163,11 +167,15 @@
       3
 
   ++> tests-tuple-with-negative-index-gets-last
-    (arr.at -1).eq 4 > @
+    eq. > @
+      arr.at -1
+      4
     * 0 1 2 3 4 > arr
 
   ++> tests-tuple-with-negative-index-gets-first
-    (arr.at -5).eq 0 > @
+    eq. > @
+      arr.at -5
+      0
     * 0 1 2 3 4 > arr
 
   --> on-out-of-tuple-bounds-with-negative-index

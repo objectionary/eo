@@ -21,13 +21,17 @@
       string uri.as-bytes
     posix
       string uri.as-bytes
-  sm.os.is-windows.if win32.separator posix.separator > separator
+  sm.os.is-windows.if > separator
+    win32.separator
+    posix.separator
   [paths] > joined
     normalized. > @
       sm.os.is-windows.if
         win32 jpath
         posix jpath
-    string (string.joined separator paths).as-bytes > jpath
+    string > jpath
+      as-bytes.
+        string.joined separator paths
   [uri] > posix
     uri > @
     directory > as-dir
@@ -39,12 +43,14 @@
     "/" > separator
     [] > normalized
       ^.^.posix > @
-        (normalized.eq "//").if
+        if.
+          normalized.eq "//"
           "/"
           string normalized
       ^.is-absolute.as-bool > is-absolute
       as-bytes. > normalized
-        (uri.length.eq 0).if
+        if.
+          uri.length.eq 0
           "."
           concat.
             is-absolute.if (separator.concat path) path
@@ -67,7 +73,9 @@
               accum.with segment
       and. > trailing
         ubts.size.gt 0
-        (ubts.slice (ubts.size.plus -1) 1).eq separator
+        eq.
+          ubts.slice (ubts.size.plus -1) 1
+          separator
       uri > ubts!
     [other] > resolved
       normalized. > @
@@ -85,18 +93,23 @@
             idx.eq 0
           pth
           as-bytes.
-            txt.slice idx (txt.length.minus (number idx))
+            txt.slice
+              idx
+              txt.length.minus (number idx)
       (string.last-index-of txt separator).plus 1 > idx!
       uri > pth!
       string pth > txt
     [] > extname
       if. > @
-        (base.size.eq 0).or
+        or.
+          base.size.eq 0
           idx.eq -1
         ""
         string
           as-bytes.
-            txt.slice idx (txt.length.minus (number idx))
+            txt.slice
+              idx
+              txt.length.minus (number idx)
       basename > base!
       string.last-index-of txt "." > idx!
       string base > txt
@@ -124,7 +137,8 @@
         as-bool. > @
           (string.regex "/^[a-zA-Z]:/").matches uri
       [uri] > is-root-relative
-        (ubts.size.gt 0).and > @
+        and. > @
+          ubts.size.gt 0
           (ubts.slice 0 1).eq separator
         uri > ubts!
       [uri] > separated-correctly
@@ -136,7 +150,8 @@
         string.replaced pth (string.regex "/\\//") separator > repl!
         uri > ubts!
       [] > is-absolute
-        (ubts.size.eq 0).if > @
+        if. > @
+          ubts.size.eq 0
           false
           (is-root-relative ubts).or
             (ubts.size.gt 1).and
@@ -144,12 +159,16 @@
         uri > ubts!
       [] > normalized
         ^.^.validated > @
-          (normalized.eq "\\\\").if separator (string normalized)
+          (normalized.eq "\\\\").if
+            separator
+            string normalized
         is-drive-relative.if > driveless!
           ubts.slice 2 (ubts.size.plus -2)
           ubts
-        (^.is-drive-relative ubts).as-bool > is-drive-relative
-        (^.is-root-relative ubts).as-bool > is-root-relative
+        as-bool. > is-drive-relative
+          ^.is-drive-relative ubts
+        as-bool. > is-root-relative
+          ^.is-root-relative ubts
         as-bytes. > normalized
           (driveless.size.eq 0).if
             "."
@@ -180,7 +199,8 @@
                   segment.eq ""
                 accum
                 accum.with segment
-        (ubts.size.gt 0).and > trailing
+        and. > trailing
+          ubts.size.gt 0
           (ubts.slice (ubts.size.plus -1) 1).eq separator
         uri > ubts!
       [other] > resolved
@@ -299,55 +319,81 @@
     "\\var\\html\\"
 
   eq. ++> tests-resolves-posix-absolute-path-against-other-absolute-path
-    (path.posix "/var/temp").resolved "/www/html"
+    resolved.
+      path.posix "/var/temp"
+      "/www/html"
     "/www/html"
 
   eq. ++> tests-resolves-posix-absolute-path-against-other-relative-path
-    (path.posix "/var/temp").resolved "./www/html"
+    resolved.
+      path.posix "/var/temp"
+      "./www/html"
     "/var/temp/www/html"
 
   eq. ++> tests-resolves-posix-relative-path-against-other-absolute-path
-    (path.posix "./var/temp").resolved "/www/html"
+    resolved.
+      path.posix "./var/temp"
+      "/www/html"
     "/www/html"
 
   eq. ++> tests-resolves-posix-relative-path-against-other-relative-path
-    (path.posix "./var/temp").resolved "../www/html"
+    resolved.
+      path.posix "./var/temp"
+      "../www/html"
     "var/www/html"
 
   eq. ++> tests-resolves-win32-relative-path-against-other-relative-path
-    (path.win32 ".\\temp\\var").resolved ".\\..\\x"
+    resolved.
+      path.win32 ".\\temp\\var"
+      ".\\..\\x"
     "temp\\x"
 
   eq. ++> tests-resolves-win32-relative-path-against-other-drive-relative-path
-    (path.win32 ".\\temp\\var").resolved "C:\\Windows\\Users"
+    resolved.
+      path.win32 ".\\temp\\var"
+      "C:\\Windows\\Users"
     "C:\\Windows\\Users"
 
   eq. ++> tests-resolves-win32-relative-path-against-other-root-relative-path
-    (path.win32 ".\\temp\\var").resolved "\\Windows\\Users"
+    resolved.
+      path.win32 ".\\temp\\var"
+      "\\Windows\\Users"
     "\\Windows\\Users"
 
   eq. ++> tests-resolves-win32-drive-relative-path-against-other-relative-path
-    (path.win32 "C:\\users\\local").resolved ".\\var\\temp"
+    resolved.
+      path.win32 "C:\\users\\local"
+      ".\\var\\temp"
     "C:\\users\\local\\var\\temp"
 
   eq. ++> tests-resolves-win32-drive-relative-path-against-other-drive-relative-path
-    (path.win32 "C:\\users\\local").resolved "D:\\local\\var"
+    resolved.
+      path.win32 "C:\\users\\local"
+      "D:\\local\\var"
     "D:\\local\\var"
 
   eq. ++> tests-resolves-win32-drive-relative-path-against-other-root-relative-path
-    (path.win32 "C:\\users\\local").resolved "\\local\\var"
+    resolved.
+      path.win32 "C:\\users\\local"
+      "\\local\\var"
     "C:\\local\\var"
 
   eq. ++> tests-resolves-win32-root-relative-path-against-other-relative-path
-    (path.win32 "\\users\\local").resolved ".\\hello\\var"
+    resolved.
+      path.win32 "\\users\\local"
+      ".\\hello\\var"
     "\\users\\local\\hello\\var"
 
   eq. ++> tests-resolves-win32-root-relative-path-against-other-drive-relative-path
-    (path.win32 "\\users\\local").resolved "D:\\hello\\var"
+    resolved.
+      path.win32 "\\users\\local"
+      "D:\\hello\\var"
     "D:\\hello\\var"
 
   eq. ++> tests-resolves-win32-root-relative-path-against-other-root-relative-path
-    (path.win32 "\\users\\local").resolved "\\hello\\var"
+    resolved.
+      path.win32 "\\users\\local"
+      "\\hello\\var"
     "\\hello\\var"
 
   eq. ++> tests-takes-valid-basename

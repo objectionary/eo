@@ -27,7 +27,9 @@
 
 [allocated] > malloc-as-output
   [buffer] > write
-    (output-block 0).write buffer > @
+    write. > @
+      output-block 0
+      buffer
     [offset] > output-block
       true > @
       seq * > [buffer] > write

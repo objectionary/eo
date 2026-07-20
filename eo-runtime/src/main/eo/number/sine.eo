@@ -13,11 +13,17 @@
 [num] > sine
   reduced.times > @
     factor 1
-  number num.as-bytes > arg
-  pi.times 2 > tau
+  number > arg
+    num.as-bytes
+  pi.times > tau
+    2
   arg.minus > reduced
-    ((arg.div tau).plus 0.5).floor.times tau
-  reduced.times reduced > squared
+    times.
+      floor.
+        (arg.div tau).plus 0.5
+      tau
+  reduced.times > squared
+    reduced
   15 > terms
   if. > [depth] > factor
     depth.gt terms
@@ -35,14 +41,20 @@
   lt. ++> tests-sine-of-pi-halves-is-one
     abs
       minus.
-        (sine (pi.div 2)).times 1000
+        times.
+          sine
+            pi.div 2
+          1000
         1000
     1
 
   lt. ++> tests-sine-of-pi-sixths-is-half
     abs
       minus.
-        (sine (pi.div 6)).times 1000
+        times.
+          sine
+            pi.div 6
+          1000
         500
     1
 
@@ -55,7 +67,9 @@
   lt. ++> tests-sine-of-negative-pi-halves-is-minus-one
     abs
       minus.
-        (sine (pi.div 2).neg).times 1000
+        times.
+          sine (pi.div 2).neg
+          1000
         -1000
     1
 
@@ -73,7 +87,8 @@
     abs
       times.
         plus.
-          sine (pi.div 3)
+          sine
+            pi.div 3
           sine (pi.div 3).neg
         1000
     1
@@ -81,7 +96,10 @@
   ++> tests-sine-of-two-pi-is-zero
     lt. > @
       abs
-        (sine (pi.times 2)).times 1000
+        times.
+          sine
+            pi.times 2
+          1000
       1
 
   lt. ++> tests-sine-reduces-large-angle

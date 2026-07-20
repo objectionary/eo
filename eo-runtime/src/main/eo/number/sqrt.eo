@@ -10,7 +10,9 @@
 
 [num] > sqrt
   if. > @
-    (number num.as-bytes).lt 0
+    lt.
+      number num.as-bytes
+      0
     nan
     power num 0.5
 

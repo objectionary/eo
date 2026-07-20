@@ -43,7 +43,8 @@
       console.read 1
     [input buffer] > rec-read
       if. > @
-        (char.eq --).or
+        or.
+          char.eq --
           or.
             (char.eq "\r").and
               next.as-bytes.eq "\n"

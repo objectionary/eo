@@ -8,7 +8,9 @@
 +spdx SPDX-License-Identifier: MIT
 
 [num] > exp
-  power e num > @
+  power > @
+    e
+    num
 
   ++> tests-exp-check-n0
     lt. > @
@@ -20,21 +22,24 @@
   ++> tests-exp-check-n1
     lt. > @
       abs
-        (1.div e).minus
+        minus.
+          1.div e
           exp -1
       1.0E-8
 
   ++> tests-exp-check-n2
     lt. > @
       abs
-        (power e 5).minus
+        minus.
+          power e 5
           exp 5
       1.0E-7
 
   ++> tests-exp-check-n3
     lt. > @
       abs
-        (power e -10).minus
+        minus.
+          power e -10
           exp -10
       1.0E-12
 

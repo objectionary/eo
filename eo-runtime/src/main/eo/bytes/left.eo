@@ -11,7 +11,8 @@
 [] > left
   ? >> bts
   ? >> x
-  bts.right x.neg > @
+  bts.right > @
+    x.neg
 
   ++> tests-left-zero
     not. > @
@@ -25,7 +26,10 @@
     not. > @
       (-17.as-bytes.left 1).eq 33.as-bytes
 
-  ((-1.as-bytes.left 3).eq 7.as-bytes).eq false ++> tests-left-with-minus-one
+  ++> tests-left-with-minus-one
+    eq. > @
+      (-1.as-bytes.left 3).eq 7.as-bytes
+      false
 
   eq. ++> tests-left-with-even-neg
     FF-FF-FF-FF-FF-FF-FF-EE.left 2

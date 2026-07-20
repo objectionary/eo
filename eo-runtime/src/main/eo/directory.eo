@@ -21,8 +21,10 @@
       ^
       seq *
         made.
-          directory (Q.file ^.as-path.dirname)
-        (outcome.eq 0).if
+          directory
+            Q.file ^.as-path.dirname
+        if.
+          outcome.eq 0
           ^
           T
             "Cant make the directory '%s': %s".printf

@@ -10,7 +10,8 @@
 [] > with
   ? >> list
   ? >> x
-  list.with x > @
+  list.with > @
+    x
 
   eq. ++> tests-list-simple-with
     with

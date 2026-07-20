@@ -9,7 +9,8 @@
 +unlint redundant-object
 
 [seed] > random
-  seed.as-number.div 00-20-00-00-00-00-00-00.as-i64.as-number > @
+  seed.as-number.div > @
+    00-20-00-00-00-00-00-00.as-i64.as-number
   random > next
     as-number.
       as-i64.
@@ -19,7 +20,10 @@
               plus.
                 as-i64.
                   left.
-                    (((seed.as-i64.div 67108864.as-i64).as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times 25214903917.as-i64).as-bytes.and
+                    and.
+                      as-bytes.
+                        ((seed.as-i64.div 67108864.as-i64).as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times
+                          25214903917.as-i64
                       00-00-00-00-03-FF-FF-FF
                     26
                 as-i64.
@@ -33,18 +37,21 @@
         plus.
           as-i64.
             (tbytes.left shift1).and
-              ((one.left 53).as-i64.minus one).as-bytes
+              as-bytes.
+                (one.left 53).as-i64.minus one
           plus.
             as-i64.
               (tbytes.left shift3).and
-                ((one.left shift1).as-i64.minus one).as-bytes
+                as-bytes.
+                  (one.left shift1).as-i64.minus one
             as-i64.
               tbytes.and ((one.left shift3).as-i64.minus one).as-bytes
     00-00-00-00-00-00-00-01 > one
     35 > shift1
     17 > shift3
     clock.as-bytes > tbytes
-  clocked clock > pseudo
+  clocked > pseudo
+    clock
 
   ++> tests-random-with-seed
     not. > @
@@ -58,13 +65,16 @@
   ++> tests-random-is-in-range
     and. > @
       and.
-        (rand.lt 1).and
+        and.
+          rand.lt 1
           (rand.lt 0).not
-        (rand.next.lt 1).and
+        and.
+          rand.next.lt 1
           (rand.next.lt 0).not
       and.
         rand.next.next.lt 1
-        (rand.next.next.lt 0).not
+        not.
+          rand.next.next.lt 0
     next. > rand
       random 123
 

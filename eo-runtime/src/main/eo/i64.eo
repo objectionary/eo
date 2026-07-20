@@ -14,7 +14,8 @@
 [as-bytes] > i64
   as-bytes > @
   as-i32.as-i16 > as-i16
-  times -1.as-i64 > neg
+  times > neg
+    -1.as-i64
   [cant-convert] > as-i32
     if. > @
       ^.eq left.as-i64
@@ -43,7 +44,9 @@
       sign.eq
         x.as-bytes.and mask
     sign.eq zero > positive
-    (difference.as-bytes.and mask).eq zero > greater
+    eq. > greater
+      difference.as-bytes.and mask
+      zero
   [x] > gte
     or. > @
       gt value
@@ -65,7 +68,9 @@
         b.right 1
   [x] > plus /i64
   [x] > minus
-    plus (i64 value).neg > @
+    plus > @
+      neg.
+        i64 value
     x > value!
   [x] > div /i64
     ? > cant-divide /{string}
@@ -164,7 +169,9 @@
         "recovered" > [msg]
 
   ++> tests-i64-div-by-i64-one
-    (dividend.div 1.as-i64).eq dividend > @
+    eq. > @
+      dividend.div 1.as-i64
+      dividend
     -235.as-i64 > dividend
 
   (13.as-i64.div -5.as-i64).eq -2.as-i64 ++> tests-i64-div-with-remainder
@@ -178,7 +185,9 @@
   (-7.as-i64.times 6.as-i64).eq -42.as-i64 ++> tests-i64-times-of-mixed-signs
 
   eq. ++> tests-i64-times-wraps-modulo-2-pow-64
-    (i64 40-00-00-00-00-00-00-00).times 4.as-i64
+    times.
+      i64 40-00-00-00-00-00-00-00
+      4.as-i64
     0.as-i64
 
   eq. ++> tests-i64-times-keeps-low-bits-of-large-product

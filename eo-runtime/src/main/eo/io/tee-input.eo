@@ -23,7 +23,9 @@
 
 [input output] > tee-input
   [size] > read
-    (input-block input output --).read size > @
+    read. > @
+      input-block input output --
+      size
     [input output buffer] > input-block
       buffer > @
       [size] > read
@@ -52,7 +54,9 @@
           read.
             read.
               read.
-                tee-input (bytes-as-input 01-02-03-04-05) (malloc-as-output m)
+                tee-input
+                  bytes-as-input 01-02-03-04-05
+                  malloc-as-output m
                 2
               2
             1
@@ -69,7 +73,9 @@
             seq * > [m2] >>
               read.
                 tee-input
-                  tee-input (bytes-as-input 01-02-03-04-05) (malloc-as-output m2)
+                  tee-input
+                    bytes-as-input 01-02-03-04-05
+                    malloc-as-output m2
                   malloc-as-output m1
                 5
               m1.write 5 2A-

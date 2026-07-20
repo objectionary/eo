@@ -46,7 +46,11 @@
         count.minus 1
       concat.
         as-char
-          (value.minus ((value.div 10).floor.times 10)).floor.plus 48
+          plus.
+            floor.
+              value.minus
+                (value.div 10).floor.times 10
+            48
         acc
 
   ++> tests-pads-with-trailing-zeros

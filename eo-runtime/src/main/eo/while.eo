@@ -30,7 +30,9 @@
 +unlint mandatory-package
 
 [condition body] > while
-  (condition 0).as-bool.if > @
+  if. > @
+    as-bool.
+      condition 0
     loop 0
     false
   [index] > loop
@@ -111,7 +113,8 @@
               while
                 ^.^.^.max.gt iter > [i] >>
                 seq * > [i] >>
-                  ^.^.acc.put (^.^.acc.as-number.plus (^.^.^.arr.at i))
+                  ^.^.acc.put
+                    ^.^.acc.as-number.plus (^.^.^.arr.at i)
                   iter.put (iter.as-number.plus 1)
     arr.length.plus -1 > max
 

@@ -58,7 +58,9 @@
       (-38.as-bytes.right 1).eq 18.as-bytes
 
   eq. ++> tests-right-with-even-plus
-    (36.as-bytes.right 2).eq -10.as-bytes
+    eq.
+      36.as-bytes.right 2
+      -10.as-bytes
     false
 
   ++> tests-right-with-odd-plus
@@ -108,7 +110,9 @@
   (53.as-bytes.eq 53.as-bytes.not).not ++> tests-not-with-plus
 
   ++> tests-conjunction-of-bytes
-    (a.and b).eq 02-23-C0-05-5E-70-10 > @
+    eq. > @
+      a.and b
+      02-23-C0-05-5E-70-10
     02-EF-D4-05-5E-78-3A > a
     12-33-C1-B5-5E-71-55 > b
 
@@ -122,7 +126,9 @@
     FF-FF-FF-FF-FF-FF-FF-FF
 
   ++> tests-concatenation-of-bytes
-    (a.concat b).eq 02-EF-D4-05-5E-78-3A-12-33-C1-B5-5E-71-55 > @
+    eq. > @
+      a.concat b
+      02-EF-D4-05-5E-78-3A-12-33-C1-B5-5E-71-55
     02-EF-D4-05-5E-78-3A > a
     12-33-C1-B5-5E-71-55 > b
 

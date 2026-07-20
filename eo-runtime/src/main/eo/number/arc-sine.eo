@@ -16,10 +16,14 @@
     arg.lt 0
     base.neg
     base
-  number num.as-bytes > arg
-  abs arg > mag
+  number > arg
+    num.as-bytes
+  abs > mag
+    arg
   sqrt > root
-    (1.minus mag).div 2
+    div.
+      1.minus mag
+      2
   if. > base
     mag.gt 0.5
     minus.
@@ -39,12 +43,14 @@
         times.
           div.
             times.
-              ((depth.times 2).minus 1).times
+              times.
+                (depth.times 2).minus 1
                 (depth.times 2).minus 1
               squared
             (depth.times 2).times
               (depth.times 2).plus 1
-          poly (depth.plus 1)
+          poly
+            depth.plus 1
 
   (arc-sine 0).eq 0 ++> tests-arc-sine-of-zero-is-zero
 
@@ -86,7 +92,8 @@
   lt. ++> tests-arc-sine-is-odd-function
     abs
       times.
-        (arc-sine 0.6).plus
+        plus.
+          arc-sine 0.6
           arc-sine -0.6
         1000
     1

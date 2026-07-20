@@ -91,7 +91,10 @@
     is-directory.if "_rmdir" "_unlink" > win
     is-directory.if "rmdir" "unlink" > unix
   [cant-measure] > size
-    (info.code.eq 0).if info.output.size cant-measure > @
+    if. > @
+      info.code.eq 0
+      info.output.size
+      cant-measure
     called. > info
       sm.os.is-windows.if
         sm.win32 *1
@@ -141,7 +144,9 @@
     (access.eq "a").as-bool.or > appending
       as-bool.
         access.eq "a+"
-    (existing.or truncate).or appending > known
+    or. > known
+      existing.or truncate
+      appending
     [] > open-file
       sm.os.is-windows.if > @
         open-through
@@ -159,12 +164,14 @@
             sm.posix "read" > read
             sm.posix "write" > write
       [syscall] > open-through
-        (descriptor.eq -1).if > @
+        if. > @
+          descriptor.eq -1
           ^.^.cant-open
             "Couldn't open file '%s': %s".printf
               * ^.^.^.path opened.output
           seq *
-            ^.^.scope (stream descriptor)
+            ^.^.scope
+              stream descriptor
             code.
               syscall.close
                 * descriptor
@@ -173,8 +180,11 @@
           syscall.open
             * ^.^.^.path flags syscall.mode
         opened.code > descriptor
-        ((direction.plus creat).plus trunc).plus append > flags
-        (^.^.readable.and ^.^.writable).if > direction
+        plus. > flags
+          (direction.plus creat).plus trunc
+          append
+        if. > direction
+          ^.^.readable.and ^.^.writable
           syscall.rdwr
           ^.^.writable.if syscall.wronly syscall.rdonly
         ^.^.existing.not.if syscall.creat 0 > creat
@@ -243,7 +253,8 @@
   ++> tests-does-not-fail-on-double-touching
     mktemp.tmpfile.deleted.touched.touched.exists > @
 
-  mktemp.tmpfile.deleted.deleted.exists.not ++> tests-does-not-fail-on-double-deleting
+  ++> tests-does-not-fail-on-double-deleting
+    mktemp.tmpfile.deleted.deleted.exists.not > @
 
   --> an-error-on-touching-temp-file-in-absent-dir
     (mktemp.as-path.resolved "foo").@.tmpfile > @

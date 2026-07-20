@@ -17,7 +17,8 @@
   text > bts!
   next. > matched
     target.match reinit
-  string bts > reinit
+  string > reinit
+    bts
   block.exists.if > [block accum start] > rec-replaced
     rec-replaced
       block.next

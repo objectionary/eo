@@ -10,7 +10,10 @@
 [] > shifted
   ? >> list
   ? >> shift
-  slice list shift list.length > @
+  slice > @
+    list
+    shift
+    list.length
 
   eq. ++> tests-shifted-with-shift-less-than-length
     shifted

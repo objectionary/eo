@@ -57,7 +57,8 @@
             if.
               (byte.and p3).eq r3
               inclen index 3 accum
-              ((byte.and p4).eq r4).if
+              if.
+                (byte.and p4).eq r4
                 inclen index 4 accum
                 T
                   "Unknown byte format (%x), can't recognize character".printf
@@ -74,16 +75,19 @@
         T
           "Length to slice must be >= 0, but was %d".printf
             * nlen
-        (nlen.eq 0).if
+        if.
+          nlen.eq 0
           ""
-          string (as-bytes.slice bstart blen)
+          string
+            as-bytes.slice bstart blen
     minus. > blen
       recidx
         number bstart
         0
         nlen
         "Start index + length to slice (%d) is out of string bounds".printf
-          * (nstart.plus nlen)
+          *
+            nstart.plus nlen
       bstart
     recidx > bstart!
       0
@@ -119,7 +123,8 @@
       if. > @
         accum.eq result
         index
-        (index.eq size).if
+        if.
+          index.eq size
           T cause
           if.
             (byte.and p1).eq r1
@@ -127,9 +132,11 @@
             if.
               (byte.and p2).eq r2
               increase index 2 accum result cause
-              ((byte.and p3).eq r3).if
+              if.
+                (byte.and p3).eq r3
                 increase index 3 accum result cause
-                ((byte.and p4).eq r4).if
+                if.
+                  (byte.and p4).eq r4
                   increase index 4 accum result cause
                   T
                     "Unknown byte format (%x), can't recognize character".printf

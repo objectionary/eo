@@ -21,7 +21,8 @@
         n.eq 0
         ninf
         n.is-finite.if (lnp n) pinf
-  number num.as-bytes > n
+  number > n
+    num.as-bytes
   [p] > lnp
     if. > @
       p.gte e
@@ -32,7 +33,10 @@
       if.
         p.lt
           1.div e
-        (lnp (p.times e)).minus 1
+        minus.
+          lnp
+            p.times e
+          1
         series p
     [m] > series
       2.times > @
@@ -50,7 +54,8 @@
           1.div
             (k.times 2).plus 1
           squared.times
-            horner (k.plus 1)
+            horner
+              k.plus 1
 
   (ln -2.2).is-nan ++> tests-ln-of-negative-float-is-nan
 

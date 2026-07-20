@@ -15,10 +15,20 @@
 +unlint mandatory-package
 
 [if] > bool
-  if 01- 00- > @
-  if false true > not
-  if (01-.eq x) false > [x] > and
-  if true (01-.eq x) > [x] > or
+  if > @
+    01-
+    00-
+  if > not
+    false
+    true
+  [x] > and
+    if > @
+      01-.eq x
+      false
+  [x] > or
+    if > @
+      true
+      01-.eq x
 
   true.eq true ++> tests-compares-two-bools
 
@@ -35,10 +45,15 @@
     01-.as-bytes.eq true
     00-.as-bytes.eq false
 
-  ((5.eq 5).if 123 42).eq 123 ++> tests-forks-on-true-condition
+  ++> tests-forks-on-true-condition
+    eq. > @
+      (5.eq 5).if 123 42
+      123
 
   ++> tests-takes-parent-object
-    (a 42).eq 42 > @
+    eq. > @
+      a 42
+      42
     [x] > a
       take > @
       x > [] > take
@@ -67,10 +82,14 @@
   ++> tests-extract-attribute-from-decoratee
     a.foo.eq 43 > @
     [foo] > return
-    return (42.plus 1) > [] > a
+    [] > a
+      return > @
+        42.plus 1
 
   ++> tests-nesting-blah-test
-    (blah0 0).eq 39 > @
+    eq. > @
+      blah0 0
+      39
     [x] > blah0
       blah1 > @
         x.plus 1
@@ -78,9 +97,11 @@
         blah2 > @
           x.plus 1
         [x] > blah2
-          blah3 (x.plus 1) > @
+          blah3 > @
+            x.plus 1
           [x] > blah3
-            blah4 (x.plus 1) > @
+            blah4 > @
+              x.plus 1
             [x] > blah4
               blah5 (x.plus 1) > @
               [x] > blah5
@@ -171,4 +192,7 @@
 
   (true.and false).not ++> tests-true-and-false-is-false
 
-  ((5.eq 8).if 123 42).eq 42 ++> tests-forks-on-false-condition
+  ++> tests-forks-on-false-condition
+    eq. > @
+      (5.eq 8).if 123 42
+      42

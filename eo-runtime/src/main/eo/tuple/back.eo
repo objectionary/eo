@@ -16,9 +16,14 @@
     reducedi
       list
       *
-      (idx.gte start).if (accum.with item) accum > [accum item idx] >>
+      [accum item idx] >>
+        if. > @
+          idx.gte start
+          accum.with item
+          accum
   index > idx!
-  list.length.minus idx > start!
+  list.length.minus > start!
+    idx
 
   eq. ++> tests-simple-back
     back

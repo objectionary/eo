@@ -17,7 +17,8 @@
       (timeb.time.times 1000).plus timeb.millitm
       plus.
         timeval.seconds.times 1000
-        (timeval.micros.as-i64.div 1000.as-i64).as-number
+        as-number.
+          timeval.micros.as-i64.div 1000.as-i64
   output. > timeb
     sm.win32
       "_ftime32_s"

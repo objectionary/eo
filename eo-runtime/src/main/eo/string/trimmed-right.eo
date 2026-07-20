@@ -37,7 +37,8 @@
       c.eq 09-
       or.
         c.eq 0A-
-        (c.eq 0B-).or
+        or.
+          c.eq 0B-
           (c.eq 0C-).or
             c.eq 0D-
 

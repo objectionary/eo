@@ -25,10 +25,12 @@
               (expo.gt 0).if 0 pinf
               expo.is-integer.if
                 (expo.lt 0).if
-                  1.div (ipow base (abs expo))
+                  1.div
+                    ipow base (abs expo)
                   ipow base (abs expo)
                 (base.gt 0).if
-                  expon (expo.times (ln base))
+                  expon
+                    expo.times (ln base)
                   nan
             (base.gt 0).if
               (expo.gt 0).if pinf 0
@@ -44,9 +46,12 @@
               (abs base).gt 1
               0
               ((abs base).eq 1).if nan pinf
-  number num.as-bytes > base
-  number x.as-bytes > expo
-  expo.is-integer.and (expo.div 2).is-integer.not > odd
+  number > base
+    num.as-bytes
+  number > expo
+    x.as-bytes
+  expo.is-integer.and > odd
+    (expo.div 2).is-integer.not
   [b n] > ipow
     if. > @
       n.eq 0
@@ -69,13 +74,17 @@
       k.lt 0
       1.div
         ipow e (abs k)
-      ipow e (abs k)
+      ipow
+        e
+        abs k
     if. > [j] > fraction
       j.gt eterms
       1
       1.plus
-        (r.div j).times
-          fraction (j.plus 1)
+        times.
+          r.div j
+          fraction
+            j.plus 1
 
   (power 2 4).eq 16 ++> tests-power-of-two-to-four
 

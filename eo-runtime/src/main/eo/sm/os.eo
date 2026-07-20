@@ -19,9 +19,13 @@
       (oname.slice 0 7).eq "Windows"
     name > oname!
   as-bool. > is-linux
-    (string.regex "/linux/i").matches name
+    matches.
+      string.regex "/linux/i"
+      name
   as-bool. > is-macos
-    (string.regex "/mac/i").matches name
+    matches.
+      string.regex "/mac/i"
+      name
   [] > name /string
 
   (os.is-windows.or os.is-macos).or os.is-linux ++> tests-checks-os-family

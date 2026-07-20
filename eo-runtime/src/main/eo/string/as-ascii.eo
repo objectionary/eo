@@ -10,7 +10,9 @@
 +spdx SPDX-License-Identifier: MIT
 
 [char] > as-ascii
-  (00-.concat char.as-bytes).as-i16.as-number > @
+  as-number. > @
+    as-i16.
+      00-.concat char.as-bytes
 
   65.eq (as-ascii "A") ++> tests-reads-code-of-uppercase-letter
 

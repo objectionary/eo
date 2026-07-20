@@ -12,7 +12,8 @@
 [as-bytes] > i32
   as-bytes > @
   as-i64.as-number > as-number
-  times -1.as-i64.as-i32 > neg
+  times > neg
+    -1.as-i64.as-i32
   [] > as-i64
     i64 > @
       prefix.concat as-bytes
@@ -57,10 +58,12 @@
         "Can't divide %d by i32 zero".printf
           * as-i64.as-number
       if.
-        (left.eq zero).or
+        or.
+          left.eq zero
           left.eq FF-FF-FF-FF
         i32 right
-        (i32 left).plus
+        plus.
+          i32 left
           i32 right
     as-bytes. > bts
       as-i64.div xval.as-i64
@@ -157,7 +160,9 @@
         "recovered" > [msg]
 
   ++> tests-i32-div-by-i32-one
-    (dividend.div 1.as-i64.as-i32).eq dividend > @
+    eq. > @
+      dividend.div 1.as-i64.as-i32
+      dividend
     -235.as-i64.as-i32 > dividend
 
   eq. ++> tests-i32-div-with-remainder

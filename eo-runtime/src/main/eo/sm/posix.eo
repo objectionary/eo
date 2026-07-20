@@ -21,9 +21,15 @@
   0 > rdonly
   1 > wronly
   2 > rdwr
-  os.is-macos.if 512 64 > creat
-  os.is-macos.if 1024 512 > trunc
-  os.is-macos.if 8 1024 > append
+  os.is-macos.if > creat
+    512
+    64
+  os.is-macos.if > trunc
+    1024
+    512
+  os.is-macos.if > append
+    8
+    1024
   420 > mode
   511 > permissions
   1 > stream

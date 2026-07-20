@@ -183,11 +183,13 @@
   ++> tests-regex-contains-valid-groups-on-each-matched-block
     and. > @
       and.
-        (first.count.eq 3).and
+        and.
+          first.count.eq 3
           (first.group 1).eq "hello"
         (first.group 2).eq "1"
       and.
-        (second.count.eq 3).and
+        and.
+          second.count.eq 3
           (second.group 1).eq "world"
         (second.group 2).eq "2"
     next. > first

@@ -21,7 +21,8 @@
       if.
         pairs.length.eq 0
         *
-        (rec-rebuild pairs).entries
+        entries.
+          rec-rebuild pairs
     [entries hashes] > couple
     [tup] > rec-rebuild
       if. > @
@@ -29,7 +30,8 @@
         couple
           *
           *
-        (tuple.contains prev.hashes hash).if
+        if.
+          tuple.contains prev.hashes hash
           prev
           couple
             prev.entries.with
@@ -50,7 +52,8 @@
         rec-key-search entries
       tuple.hash-code key > hash!
       [tup] > rec-key-search
-        (tup.length.eq 0).if > @
+        if. > @
+          tup.length.eq 0
           not-found
           prev.exists.if
             prev
@@ -59,7 +62,8 @@
                 true > exists
                 ^.^.tup.head.value > [cant-get] > get
               not-found
-        (rec-key-search tup.tail).@ > prev
+        @. > prev
+          rec-key-search tup.tail
       [] > not-found
         false > exists
         cant-get > [cant-get] > get
@@ -107,7 +111,9 @@
           seq > @
             * (mp.found 1).exists (mp.found 1).exists m
           map * > mp
-            map.entry (m.put (m.as-number.plus 1)) 1
+            map.entry
+              m.put (m.as-number.plus 1)
+              1
 
   eq. ++> tests-returns-list-of-keys
     keys.

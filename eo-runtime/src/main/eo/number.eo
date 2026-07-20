@@ -23,23 +23,30 @@
       if.
         exp.lt 1023
         00-00-00-00-00-00-00-00.as-i64
-        (exp.eq 1086).if
+        if.
+          exp.eq 1086
           80-00-00-00-00-00-00-00.as-i64
           negative.if
             magnitude.not.as-i64.plus 00-00-00-00-00-00-00-01.as-i64
             magnitude.as-i64
-    (as-bytes.and 80-00-00-00-00-00-00-00).eq 80-00-00-00-00-00-00-00 > negative
+    eq. > negative
+      as-bytes.and 80-00-00-00-00-00-00-00
+      80-00-00-00-00-00-00-00
     as-number. > exp
       as-i64.
         (as-bytes.and 7F-F0-00-00-00-00-00-00).right 52
-    (as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF).or 00-10-00-00-00-00-00-00 > mantissa
+    or. > mantissa
+      as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
+      00-10-00-00-00-00-00-00
     or. > overflow
       exp.eq 2047
       or.
         exp.gt 1086
-        (exp.eq 1086).and
+        and.
+          exp.eq 1086
           not.
-            negative.and (mantissa.eq 00-10-00-00-00-00-00-00)
+            negative.and
+              mantissa.eq 00-10-00-00-00-00-00-00
     if. > magnitude
       exp.gte 1075
       mantissa.left
@@ -99,17 +106,23 @@
   (68.eq "12345678").eq false ++> tests-compares-two-different-number-types
 
   ++> tests-calculates-fibonacci-number-with-recursion
-    (fibo 4).eq 3 > @
+    eq. > @
+      fibo 4
+      3
     [n] > fibo
       if. > @
         n.lt 3
         1
         plus.
-          fibo (n.minus 1)
-          fibo (n.minus 2)
+          fibo
+            n.minus 1
+          fibo
+            n.minus 2
 
   ++> tests-calculates-fibonacci-number-with-tail
-    (fibonacci 4).eq 3 > @
+    eq. > @
+      fibonacci 4
+      3
     [n] > fibonacci
       if. > @
         n.lt 3
@@ -129,7 +142,9 @@
     true
 
   ++> tests-division-by-one
-    (dividend.div 1).eq dividend > @
+    eq. > @
+      dividend.div 1
+      dividend
     -235 > dividend
 
   (256.div 16).eq 16 ++> tests-div-for-dividend-greater-than-zero

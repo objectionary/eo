@@ -12,7 +12,8 @@
     value.gte 0
     value
     value.neg
-  number num.as-bytes > value
+  number > value
+    num.as-bytes
 
   (abs 3).eq 3 ++> tests-abs-int-positive
 

@@ -124,7 +124,9 @@
       42
 
   ++> tests-malloc-puts-over-the-previous-data
-    (42.as-bytes.concat "orld!".as-bytes).eq mem > @
+    eq. > @
+      42.as-bytes.concat "orld!".as-bytes
+      mem
     malloc.of > mem
       13
       seq * > [m]
@@ -284,7 +286,8 @@
           01-02-03-04-05
           [m] >>
             b.put > @
-              ((m.resized 3).size.eq 3).and
+              and.
+                (m.resized 3).size.eq 3
                 m.get.eq 01-02-03
 
   --> on-changing-size-to-negative
@@ -305,14 +308,16 @@
     malloc.for > @
       01-02-03-04-05
       [m]
-        (m.copy 1 2 2).and > @
+        and. > @
+          m.copy 1 2 2
           m.get.eq 01-02-02-03-05
 
   ++> tests-copies-data-from-start-to-end
     malloc.for > @
       01-02-03-04-05-06
       [m]
-        (m.copy 0 3 3).and > @
+        and. > @
+          m.copy 0 3 3
           m.get.eq 01-02-03-01-02-03
 
   --> on-copying-with-wrong-source
@@ -333,7 +338,9 @@
       m.copy 3 1 9 > [m]
 
   ++> tests-calculates-only-once
-    (malloc.for 0 x).eq 1 > @
+    eq. > @
+      malloc.for 0 x
+      1
     [m] > x
       seq * > @
         a.neg.neg.neg.neg.eq 42
@@ -362,7 +369,8 @@
       malloc.for
         7
         [m] >>
-          m.put (num.times num) > @
+          m.put > @
+            num.times num
           inc m > n!
           number n > num
       64

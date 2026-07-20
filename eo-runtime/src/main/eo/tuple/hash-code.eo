@@ -13,7 +13,9 @@
 
 [] > hash-code
   ? >> input
-  rec-hash-code 0 0 > @
+  rec-hash-code > @
+    0
+    0
   input.as-bytes > bts!
   bts.size > size!
   if. > [acc index] > rec-hash-code
@@ -23,7 +25,8 @@
       plus.
         31.as-i64.times acc
         as-i64.
-          00-00-00-00-00-00-00.concat (bts.slice index 1)
+          00-00-00-00-00-00-00.concat
+            bts.slice index 1
       as-number.
         index.plus 1
 

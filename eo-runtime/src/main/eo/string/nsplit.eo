@@ -32,12 +32,14 @@
       text.size.eq current
       appended
       if.
-        (size.eq 0).or
+        or.
+          size.eq 0
           (current.plus size).gt text.size
         rec-nsplit accum start (current.plus 1).as-number count
         if.
           and.
-            delimiter.eq (slice text current size)
+            delimiter.eq
+              slice text current size
             (number count).lt
               (number limit).minus 1
           rec-nsplit

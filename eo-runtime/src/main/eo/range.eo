@@ -51,7 +51,8 @@
         build 1 > @
         [i] > build
           i > @
-          build (1.plus @) > next
+          build > next
+            1.plus @
       10
 
   ++> tests-simple-range-with-floats-from-one-to-five
@@ -62,7 +63,8 @@
         x 1 > @
         [i] > x
           i > @
-          x (0.5.plus @) > next
+          x > next
+            0.5.plus @
       5
 
   ++> tests-range-with-out-of-bounds
@@ -73,7 +75,8 @@
         b 1 > @
         [num] > b
           num > @
-          b (5.plus @) > next
+          b > next
+            5.plus @
       10
 
   ++> tests-range-with-wrong-items-is-an-empty-array

@@ -25,7 +25,9 @@
   seq * > @
     output.write text
     true
-  sm.os.is-windows.if windows-output posix-output > output
+  sm.os.is-windows.if > output
+    windows-output
+    posix-output
   [] > posix-output
     [buffer] > write
       @. > @
