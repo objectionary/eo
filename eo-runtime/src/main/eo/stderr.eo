@@ -25,30 +25,41 @@
   seq * > @
     output.write text
     true
-  sm.os.is-windows.if windows-output posix-output > output
+  if. > output
+    os.is-windows
+    windows-output
+    posix-output
+
   [] > posix-output
     [buffer] > write
-      @. > @
-        output-block.write buffer
+      (output-block.write buffer).@ > @
+
       [] > output-block
         true > @
-        seq * > [buffer] > write
-          code.
-            sm.posix
-              "write"
-              * sm.posix.stderr-fileno buffer buffer.size
-          ^.^.output-block
+
+        [buffer] > write
+          seq * > @
+            code.
+              posix
+                "write"
+                * posix.stderr buffer buffer.size
+            output-block
+
   [] > windows-output
     [buffer] > write
-      @. > @
-        output-block.write buffer
+      (output-block.write buffer).@ > @
+
       [] > output-block
         true > @
-        seq * > [buffer] > write
-          code.
-            sm.win32
-              "_write"
-              * sm.win32.stderr-fileno buffer buffer.size
-          ^.^.output-block
 
-  stderr "Hello, stderr-test!\n" ++> tests-prints-to-stderr
+        [buffer] > write
+          seq * > @
+            code.
+              win32
+                "_write"
+                * win32.stderr buffer buffer.size
+            output-block
+
+  ++> tests-prints-to-stderr
+    stderr > @
+      "Hello, stderr-test!\n"

@@ -54,141 +54,139 @@
 +unlint redundant-object
 
 [address port] > socket
-  sm.os.is-windows.if > @
+  if. > @
+    os.is-windows
     impl
       []
         raw > @
-        sm.win32 > raw
-        "closesocket" > close-name
-        "WSA error code %d".printf > error-text
-          *
-            code.
-              sm.win32
-                "WSAGetLastError"
-                *
-        code. > startup
-          sm.win32
-            "WSAStartup"
-            * sm.win32.winsock-version-2-2
+        win32 > raw
+        "closesocket" > close
+        "WSA error code %d".printf (* (win32 "WSAGetLastError" *).code) > message
+        (win32 "WSAStartup" (* win32.version)).code > startup
         if. > cleanup
-          eq.
-            code.
-              sm.win32
-                "WSACleanup"
-                *
-            sm.win32.socket-error
+          (win32 "WSACleanup" *).code.eq win32.failure
           T "Couldn't clean up the sockets subsystem"
           true
     impl
       []
         raw > @
-        sm.posix > raw
-        "close" > close-name
-        code. > error-text
-          sm.posix
-            "strerror"
-            *
-              code.
-                sm.posix
-                  "errno"
-                  *
+        posix > raw
+        "close" > close
+        (posix "strerror" (* (posix "errno" *).code)).code > message
         0 > startup
         true > cleanup
+
   [port] > htons
     as-i16. > @
       or.
-        left. (bts.and FF-) 8
-        and. (bts.right 8) FF-
+        (bts.and 00-FF).left 8
+        (bts.right 8).and 00-FF
     port.as-i16.as-bytes > bts
+
   [recv] > as-input
     [size] > read
-      @. > @
-        read. (input-block --) size
+      ((input-block --).read size).@ > @
+
       [buffer] > input-block
         buffer > @
+
         [size] > read
-          seq > @
-            * chunk (^.^.input-block chunk)
-          as-bytes. (^.^.^.recv size) > chunk
+          seq * > @
+            chunk
+            input-block chunk
+          (recv size).as-bytes > chunk
+
   [send] > as-output
     [buffer] > write
-      @. > @
-        output-block.write buffer
+      (output-block.write buffer).@ > @
+
       [] > output-block
         true > @
-        seq * > [buffer] > write
-          ^.^.^.send buffer
-          ^.^.output-block
+
+        [buffer] > write
+          seq * > @
+            send buffer
+            output-block
+
   [sys] > impl
-    code. > addr
-      sys.raw
-        "inet_addr"
-        * address
+    code. (sys.raw "inet_addr" (* address)) > addr
     addr.as-i32 > addrint
     code. > sd
       sys.raw
         "socket"
-        * sys.af-inet sys.sock-stream sys.ipproto-tcp
-    sys.sockaddr-in sys.af-inet.as-i16 (htons port) addrint > sockaddr
+        * sys.inet sys.stream sys.tcp
+    sys.sockaddr-in > sockaddr
+      sys.inet.as-i16
+      htons port
+      addrint
+
     [sockfd] > scoped-socket
       ^.^.as-input recv > as-input
       ^.^.as-output send > as-output
+
       [buffer cant-send] > send
         if. > @
           sent.eq -1
           cant-send
             "Failed to send a message through the socket #%d because %s".printf
-              * sockfd ^.^.sys.error-text
+              * sockfd sys.message
           sent
         buffer > buff!
         code. > sent
-          ^.^.sys.raw
+          sys.raw
             "send"
             * sockfd buff buff.size 0
+
       [size cant-receive] > recv
         if. > @
           received.code.eq -1
           cant-receive
             "Failed to receive data from the socket #%d because %s".printf
-              * sockfd ^.^.sys.error-text
+              * sockfd sys.message
           received.output
         called. > received
-          ^.^.sys.raw
+          sys.raw
             "recv"
             * sockfd size 0
+
     [sockfd] > closed-socket
       if. > @
         closed.eq -1
         T
           "Couldn't close the socket #%d because %s".printf
-            * sockfd sys.error-text
+            * sockfd sys.message
         true
       code. > closed
         sys.raw
-          sys.close-name
+          sys.close
           * sockfd
+
     [scope cant] > safe-socket
       if. > @
-        not.
-          sys.startup.eq 0
+        (sys.startup.eq 0).not
         cant
           "Couldn't start up the sockets subsystem because %s".printf
-            * sys.error-text
-        seq
-          * result sys.cleanup result
+            * sys.message
+        seq *
+          result
+          sys.cleanup
+          result
       if. > result!
         sd.eq -1
         cant
           "Couldn't create a socket because %s".printf
-            * sys.error-text
-        seq
-          * used (closed-socket sd) used
+            * sys.message
+        seq *
+          used
+          closed-socket sd
+          used
       if. > used!
-        addr.eq sys.inaddr-none
+        addr.eq sys.none
         cant
           "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s".printf
-            * ^.^.address sys.error-text
+            * address sys.message
         scope
+
     [scope cant-connect] > connect
       safe-socket > @
         [] >>
@@ -196,14 +194,17 @@
             connected.eq -1
             cant-connect
               "Couldn't connect to %s:%d on socket #%d because %s".printf
-                * sock.address sock.port sock.sd sock.sys.error-text
-            scope (sock.scoped-socket sock.sd)
+                * sock.address sock.port sock.sd sock.sys.message
+            scope
+              sock.scoped-socket
+                sock.sd
           code. > connected
             sock.sys.raw
               "connect"
               * sock.sd sock.sockaddr sock.sockaddr.size
           ^.^ > sock
         cant-connect
+
     [scope cant-listen] > listen
       safe-socket > @
         [] >>
@@ -211,28 +212,33 @@
             bound.eq -1
             cant-listen
               "Couldn't bind the socket #%d to %s:%d because %s".printf
-                * sock.sd sock.address sock.port sock.sys.error-text
+                * sock.sd sock.address sock.port sock.sys.message
             if.
               listened.eq -1
               cant-listen
                 "Failed to listen to %s:%d on the socket #%d because %s".printf
-                  * sock.address sock.port sock.sd sock.sys.error-text
+                  * sock.address sock.port sock.sd sock.sys.message
               scope
                 [] >>
                   sock.scoped-socket sock.sd > @
+
                   [scope cant-accept] > accept
                     if. > @
                       client.eq -1
                       cant-accept
                         "Failed to accept a connection on the socket #%d because %s".printf
-                          * ^.^.sock.sd ^.^.sock.sys.error-text
-                      seq
-                        * handled (^.^.sock.closed-socket client) handled
+                          * sock.sd sock.sys.message
+                      seq *
+                        handled
+                        sock.closed-socket client
+                        handled
                     code. > client
-                      ^.^.sock.sys.raw
+                      sock.sys.raw
                         "accept"
-                        * ^.^.sock.sd ^.^.sock.sockaddr ^.^.sock.sockaddr.size
-                    scope (^.^.sock.scoped-socket client) > handled!
+                        * sock.sd sock.sockaddr sock.sockaddr.size
+                    scope > handled!
+                      sock.scoped-socket
+                        client
           code. > bound
             sock.sys.raw
               "bind"

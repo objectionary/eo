@@ -43,10 +43,10 @@ public final class BindSyscall implements Syscall {
                 CStdLib.INSTANCE.bind(
                     new Dataized(params[0]).asNumber().intValue(),
                     new SockaddrIn(
-                        new Dataized(params[1].take("sin-family")).take(Short.class),
-                        new Dataized(params[1].take("sin-port")).take(Short.class),
-                        new Dataized(params[1].take("sin-addr")).take(Integer.class),
-                        new Dataized(params[1].take("sin-zero")).take()
+                        new Dataized(params[1].take("family")).take(Short.class),
+                        new Dataized(params[1].take("port")).take(Short.class),
+                        new Dataized(params[1].take("address")).take(Integer.class),
+                        new Dataized(params[1].take("padding")).take()
                     ),
                     new Dataized(params[2]).asNumber().intValue()
                 )

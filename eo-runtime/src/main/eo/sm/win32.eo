@@ -20,38 +20,42 @@
 
 [name args] > win32
   [] > @ /return
-  2 > af-inet
-  -1 > inaddr-none
-  -1 > invalid-socket
-  6 > ipproto-tcp
-  32768 > o-rdonly
-  32769 > o-wronly
-  32770 > o-rdwr
-  256 > o-creat
-  512 > o-trunc
-  8 > o-append
-  384 > create-mode
-  1 > sock-stream
-  -1 > socket-error
-  0 > stdin-fileno
-  1 > stdout-fileno
-  2 > stderr-fileno
-  02-02 > winsock-version-2-2
+  2 > inet
+  -1 > none
+  -1 > invalid
+  6 > tcp
+  32768 > rdonly
+  32769 > wronly
+  32770 > rdwr
+  256 > creat
+  512 > trunc
+  8 > append
+  384 > mode
+  1 > stream
+  -1 > failure
+  0 > stdin
+  1 > stdout
+  2 > stderr
+  02-02 > version
   [code output] > return
     output > @
     return code output > called
-  [time millitm] > timeb
-  [st-mode st-size] > stat64
-  [sin-family sin-port sin-addr] > sockaddr-in
-    00-00-00-00-00-00-00-00 > sin-zero
-    plus. > size
-      plus. (sin-family.size.plus sin-port.size) sin-addr.size
-      sin-zero.size
 
-  os.is-windows.not.or ++> tests-returns-valid-win32-inet-addr-for-localhost
-    eq.
-      code.
-        win32
-          "inet_addr"
-          * "127.0.0.1"
-      16777343
+  [time millitm] > timeb
+
+  [mode size] > stat64
+
+  [family port address] > sockaddr-in
+    00-00-00-00-00-00-00-00 > padding
+    plus. > size
+      plus.
+        plus.
+          family.size
+          port.size
+        address.size
+      padding.size
+
+  ++> tests-returns-valid-win32-inet-addr-for-localhost
+    or. > @
+      os.is-windows.not
+      (code. (win32 "inet_addr" (* "127.0.0.1"))).eq 16777343

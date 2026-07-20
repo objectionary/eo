@@ -11,53 +11,62 @@
   if. > @
     len.eq 0
     *
-    rec-split
-      *
-      0
-      0
+    rec-split * 0 0
   text > bts!
   delimiter > delim!
-  delim.size > delim-size!
+  delim.size > size!
   bts.size > len!
+
   [accum start current] > rec-split
     if. > @
       len.eq current
-      appended
+      accum.with > appended
+        string
+          slice
+            bts
+            start
+            current.minus start
       if.
         or.
-          delim-size.eq 0
-          gt. (current.plus delim-size) len
+          size.eq 0
+          (current.plus size).gt len
         rec-split
           accum
           start
-          as-number. (current.plus 1)
+          (current.plus 1).as-number
         if.
-          delim.eq (slice bts current delim-size)
+          delim.eq
+            slice bts current size
           rec-split
             appended
-            as-number. (current.plus delim-size)
-            as-number. (current.plus delim-size)
+            (current.plus size).as-number
+            (current.plus size).as-number
           rec-split
             accum
             start
-            as-number. (current.plus 1)
-    accum.with > appended
-      string
-        slice bts start (current.minus start)
+            (current.plus 1).as-number
 
-  eq. ++> tests-splits-text-by-dash
-    split "a-b-c" "-"
-    * "a" "b" "c"
+  ++> tests-splits-text-by-dash
+    eq. > @
+      split "a-b-c" "-"
+      * "a" "b" "c"
 
-  eq. ++> tests-splits-text-with-empty-strings
-    split "-a-b-" "-"
-    * "" "a" "b" ""
+  ++> tests-splits-text-with-empty-strings
+    eq. > @
+      split "-a-b-" "-"
+      * "" "a" "b" ""
 
-  eq. ++> tests-splits-and-returns-strings
-    length.
-      at. (split "hello world!" " ") 1
-    6
+  ++> tests-splits-and-returns-strings
+    eq. > @
+      length.
+        at.
+          split
+            "hello world!"
+            " "
+          1
+      6
 
-  eq. ++> tests-splits-text-by-multi-char-delimiter
-    split "a::b::c" "::"
-    * "a" "b" "c"
+  ++> tests-splits-text-by-multi-char-delimiter
+    eq. > @
+      split "a::b::c" "::"
+      * "a" "b" "c"

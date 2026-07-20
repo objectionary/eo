@@ -101,6 +101,12 @@
     not. > @
       eq. (or. -7.as-bytes 23.as-bytes) 0.as-bytes
 
+  --> on-and-with-different-lengths
+    20-1F.and CA-FE-BE > @
+
+  --> on-or-with-different-lengths
+    20-1F.or CA-FE-BE > @
+
   ++> tests-not-with-zero
     not. > @
       eq.

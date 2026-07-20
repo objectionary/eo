@@ -1,5 +1,5 @@
 # Retrieve symbol by given index as `text`.
-# If 0 > index >= ^.length, the `out-of-bounds` fallback is returned,
+# If 0 > index >= ^.length, the `fallback` value is returned,
 # or the bottom object when unbound.
 
 +architect yegor256@gmail.com
@@ -9,34 +9,43 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text i out-of-bounds] > at
+[text i fallback] > at
   if. > @
     or.
       0.gt index
-      gte. (number index) len
-    out-of-bounds
+      (number index).gte len
+    fallback
       "Given index %d is out of text bounds".printf
         * index
     slice text index 1
   i > idx!
   if. > index!
     0.gt idx
-    plus.
-      number len
-      idx
+    (number len).plus idx
     idx
   text.length > len!
 
-  "s".eq (at "some" 0) ++> tests-returns-first-char
+  ++> tests-returns-first-char
+    eq. > @
+      "s"
+      at "some" 0
 
-  "m".eq (at "some" 2) ++> tests-returns-third-char
+  ++> tests-returns-third-char
+    eq. > @
+      "m"
+      at "some" 2
 
-  "m".eq (at "some" -2) ++> tests-returns-char-at-negative-index
+  ++> tests-returns-char-at-negative-index
+    eq. > @
+      "m"
+      at "some" -2
 
-  at "some" 10 --> on-text-at-index-more-than-length
+  --> on-text-at-index-more-than-length
+    at "some" 10 > @
 
   ++> tests-text-at-out-of-bounds-returns-provided-fallback
-    "recovered".eq > @
+    eq. > @
+      "recovered"
       at
         "some"
         10

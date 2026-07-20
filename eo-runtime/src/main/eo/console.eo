@@ -66,54 +66,71 @@
 +spdx SPDX-License-Identifier: MIT
 
 [] > console
-  sm.os.is-windows.if windows-console posix-console > @
+  if. > @
+    os.is-windows
+    windows-console
+    posix-console
+
   [] > posix-console
     [size] > read
-      @. > @
-        read. (input-block --) size
+      ((input-block --).read size).@ > @
+
       [buffer] > input-block
         buffer > @
+
         [size] > read
-          seq > @
-            * chunk (^.^.input-block chunk)
+          seq * > @
+            chunk
+            input-block chunk
           output. > chunk!
-            sm.posix
+            posix
               "read"
-              * sm.posix.stdin-fileno size
+              * posix.stdin size
+
     [buffer] > write
-      @. > @
-        output-block.write buffer
+      (output-block.write buffer).@ > @
+
       [] > output-block
         true > @
-        seq * > [buffer] > write
-          code.
-            sm.posix
-              "write"
-              * sm.posix.stdout-fileno buffer buffer.size
-          ^.^.output-block
+
+        [buffer] > write
+          seq * > @
+            code.
+              posix
+                "write"
+                * posix.stdout buffer buffer.size
+            output-block
+
   [] > windows-console
     [size] > read
-      @. > @
-        read. (input-block --) size
+      ((input-block --).read size).@ > @
+
       [buffer] > input-block
         buffer > @
+
         [size] > read
-          seq > @
-            * chunk (^.^.input-block chunk)
+          seq * > @
+            chunk
+            input-block chunk
           output. > chunk!
-            sm.win32
+            win32
               "_read"
-              * sm.win32.stdin-fileno size
+              * win32.stdin size
+
     [buffer] > write
-      @. > @
-        output-block.write buffer
+      (output-block.write buffer).@ > @
+
       [] > output-block
         true > @
-        seq * > [buffer] > write
-          code.
-            sm.win32
-              "_write"
-              * sm.win32.stdout-fileno buffer buffer.size
-          ^.^.output-block
 
-  console.write "Hello, console-test!\n" ++> tests-writes-to-console
+        [buffer] > write
+          seq * > @
+            code.
+              win32
+                "_write"
+                * win32.stdout buffer buffer.size
+            output-block
+
+  ++> tests-writes-to-console
+    console.write > @
+      "Hello, console-test!\n"
