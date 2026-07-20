@@ -2,11 +2,12 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# A chain of nested "if." dispatches written vertically packs back onto a
-# single line when it fits: each dispatch folds its compound comparison
-# receiver into suffix position ("(x.lt 0).if ..."), the inner one inlines in
-# parentheses as an argument of the outer, and the whole expression collapses
-# through the inline-phi form into the formation's head (#5650).
+# A chain of nested "if" dispatches stays in prefix form ("if. ..."): even
+# though the compound comparison receivers could fold into suffix position and
+# collapse the whole expression onto a single line (#5650), the suffix "if"
+# penalty (#5665) makes prefix notation cheaper, so "if" is never dispatched
+# after its object. The inner "if" still inlines its arguments on one line, but
+# in prefix form.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -24,4 +25,8 @@ origin: |
         "positive"
 
 printed: |
-  (x.lt 0).if "negative" ((x.eq 0).if "zero" "positive") > [x] > classify
+  [x] > classify
+    if. > @
+      x.lt 0
+      "negative"
+      if. (x.eq 0) "zero" "positive"
