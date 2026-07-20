@@ -129,7 +129,10 @@
       sys.raw
         "socket"
         * sys.inet sys.stream sys.tcp
-    sys.sockaddr-in sys.inet.as-i16 (htons port) addrint > sockaddr
+    sys.sockaddr-in > sockaddr
+      sys.inet.as-i16
+      htons port
+      addrint
     [sockfd] > scoped-socket
       ^.^.as-input recv > as-input
       ^.^.as-output send > as-output

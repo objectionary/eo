@@ -57,7 +57,9 @@
       1.0E-7
     [value operand err] > close-to
       lte. > @
-        minus. (abs (value.minus operand)) err
+        minus.
+          abs (value.minus operand)
+          err
         0
       if. (value.gte 0) value value.neg > [value] > abs
 
@@ -73,7 +75,9 @@
       1.0E-7
     [value operand err] > close-to
       lte. > @
-        minus. (abs (value.minus operand)) err
+        minus.
+          abs (value.minus operand)
+          err
         0
       if. (value.gte 0) value value.neg > [value] > abs
 
@@ -89,6 +93,8 @@
       1.0E-7
     [value operand err] > close-to
       lte. > @
-        minus. (abs (value.minus operand)) err
+        minus.
+          abs (value.minus operand)
+          err
         0
       if. (value.gte 0) value value.neg > [value] > abs

@@ -29,8 +29,9 @@
     [input output buffer] > input-block
       buffer > @
       [size] > read
-        seq > @
-          * written (^.^.input-block chunk written chunk.as-bytes)
+        seq * > @
+          written
+          ^.^.input-block chunk written chunk.as-bytes
         ^. > chunk
           read. (input.read size)
         ^. > written

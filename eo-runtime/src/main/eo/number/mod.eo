@@ -14,7 +14,10 @@
   if. > @
     divisor.eq 0
     cant-mod "cannot calculate mod by zero"
-    if. (dividend.gt 0) abs-mod abs-mod.neg
+    if.
+      dividend.gt 0
+      abs-mod
+      abs-mod.neg
   number x.as-bytes > dividend
   number y.as-bytes > divisor
   [] > abs-mod

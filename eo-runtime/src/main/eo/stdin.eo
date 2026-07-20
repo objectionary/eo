@@ -46,7 +46,9 @@
         or.
           char.eq --
           or.
-            and. (char.eq "\r") (next.as-bytes.eq "\n")
+            and.
+              char.eq "\r"
+              next.as-bytes.eq "\n"
             char.eq "\n"
         string buffer
         rec-read next (buffer.concat char)

@@ -62,7 +62,9 @@
         if.
           eq. (b.and 00-00-00-00-00-00-00-01) 00-00-00-00-00-00-00-01
           as-bytes.
-            plus. (i64 acc) (i64 a)
+            plus.
+              i64 acc
+              i64 a
           acc
         a.left 1
         b.right 1

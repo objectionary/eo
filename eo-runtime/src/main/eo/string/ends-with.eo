@@ -13,7 +13,10 @@
       number slen
       tlen
     eq.
-      slice txt (minus. (number tlen) slen) slen
+      slice
+        txt
+        minus. (number tlen) slen
+        slen
       sub
   sub.size > slen!
   substring > sub!

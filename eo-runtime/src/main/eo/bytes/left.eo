@@ -25,7 +25,10 @@
     not. > @
       eq. (left. -17.as-bytes 1) 33.as-bytes
 
-  eq. (eq. (left. -1.as-bytes 3) 7.as-bytes) false ++> tests-left-with-minus-one
+  ++> tests-left-with-minus-one
+    eq. > @
+      eq. (left. -1.as-bytes 3) 7.as-bytes
+      false
 
   eq. ++> tests-left-with-even-neg
     FF-FF-FF-FF-FF-FF-FF-EE.left 2

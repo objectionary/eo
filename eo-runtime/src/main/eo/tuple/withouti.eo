@@ -13,7 +13,11 @@
   reducedi > @
     list
     *
-    if. (i.eq idx) accum (accum.with item) > [accum item idx] >>
+    [accum item idx] >>
+      if. > @
+        i.eq idx
+        accum
+        accum.with item
 
   eq. ++> tests-list-withouti
     withouti

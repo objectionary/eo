@@ -90,7 +90,10 @@
     is-directory.if "_rmdir" "_unlink" > win
     is-directory.if "rmdir" "unlink" > unix
   [cant-measure] > size
-    if. (info.code.eq 0) info.output.size cant-measure > @
+    if. > @
+      info.code.eq 0
+      info.output.size
+      cant-measure
     called. > info
       sm.os.is-windows.if
         sm.win32
@@ -186,7 +189,9 @@
           syscall.open
             * ^.^.^.path flags syscall.mode
         opened.code > descriptor
-        plus. (plus. (direction.plus creat) trunc) append > flags
+        plus. > flags
+          plus. (direction.plus creat) trunc
+          append
         if. > direction
           ^.^.readable.and ^.^.writable
           syscall.rdwr

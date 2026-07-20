@@ -28,7 +28,11 @@
   [a] > positive
     concat. > @
       concat. (as-decimal ip) ".".as-bytes
-      rec-pad (m.minus (ip.times scale)) places --
+      rec-pad
+        m.minus
+          ip.times scale
+        places
+        --
     floor. > ip
       m.div scale
     floor. > m

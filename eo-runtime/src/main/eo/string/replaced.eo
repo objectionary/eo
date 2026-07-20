@@ -31,19 +31,31 @@
         reinit.slice start (reinit.length.minus start)
 
   eq. ++> tests-does-not-replaces-if-regex-not-found
-    replaced "Hello, world" (regex "/[0-9]+/") "12345"
+    replaced
+      "Hello, world"
+      regex "/[0-9]+/"
+      "12345"
     "Hello, world"
 
   eq. ++> tests-replaces-digits-with-string
-    replaced "Hell0, w0rld" (regex "/[0-9]+/") "o"
+    replaced
+      "Hell0, w0rld"
+      regex "/[0-9]+/"
+      "o"
     "Hello, world"
 
   eq. ++> tests-replaces-slashes-to-windows-separator
-    replaced "C:\\Windows/foo\\bar/hello.txt" (regex "/\\//") "\\"
+    replaced
+      "C:\\Windows/foo\\bar/hello.txt"
+      regex "/\\//"
+      "\\"
     "C:\\Windows\\foo\\bar\\hello.txt"
 
   eq. ++> tests-replaces-windows-path-with-slash
-    replaced "C:\\Windows\\Users\\AppLocal\\shrek" (regex "/[\\\\:]+/") "/"
+    replaced
+      "C:\\Windows\\Users\\AppLocal\\shrek"
+      regex "/[\\\\:]+/"
+      "/"
     "C/Windows/Users/AppLocal/shrek"
 
   eq. ++> tests-sanitizes-windows-path-with-regex

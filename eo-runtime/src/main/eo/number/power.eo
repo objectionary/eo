@@ -29,7 +29,10 @@
                   expo.lt 0
                   1.div (ipow base (abs expo))
                   ipow base (abs expo)
-                if. (base.gt 0) (expon (expo.times (ln base))) nan
+                if.
+                  base.gt 0
+                  expon (expo.times (ln base))
+                  nan
             if.
               base.gt 0
               if. (expo.gt 0) pinf 0

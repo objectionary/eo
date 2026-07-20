@@ -41,7 +41,10 @@
     "/" > separator
     [] > normalized
       ^.^.posix > @
-        if. (normalized.eq "//") "/" (string normalized)
+        if.
+          normalized.eq "//"
+          "/"
+          string normalized
       ^.is-absolute.as-bool > is-absolute
       as-bytes. > normalized
         if.
@@ -69,7 +72,9 @@
               accum.with segment
       and. > trailing
         ubts.size.gt 0
-        eq. (ubts.slice (ubts.size.plus -1) 1) separator
+        eq.
+          ubts.slice (ubts.size.plus -1) 1
+          separator
       uri > ubts!
     [other] > resolved
       normalized. > @
@@ -149,7 +154,9 @@
           false
           or.
             is-root-relative ubts
-            and. (ubts.size.gt 1) (is-drive-relative ubts)
+            and.
+              ubts.size.gt 1
+              is-drive-relative ubts
         uri > ubts!
       [] > normalized
         ^.^.validated > @
@@ -212,7 +219,9 @@
       [] > basename
         string > @
           if.
-            or. (pth.size.eq 0) (idx.eq 0)
+            or.
+              pth.size.eq 0
+              idx.eq 0
             pth
             as-bytes.
               txt.slice idx (txt.length.minus (number idx))
@@ -234,7 +243,9 @@
       [] > dirname
         string > @
           if.
-            or. (pth.size.eq 0) (len.eq -1)
+            or.
+              pth.size.eq 0
+              len.eq -1
             pth
             as-bytes. (txt.slice 0 len)
         string.last-index-of txt separator > len!

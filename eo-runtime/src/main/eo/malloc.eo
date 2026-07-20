@@ -310,12 +310,18 @@
   ++> tests-copies-data-inside-itself
     malloc.for > @
       01-02-03-04-05
-      and. (m.copy 1 2 2) (m.get.eq 01-02-02-03-05) > [m]
+      [m]
+        and. > @
+          m.copy 1 2 2
+          m.get.eq 01-02-02-03-05
 
   ++> tests-copies-data-from-start-to-end
     malloc.for > @
       01-02-03-04-05-06
-      and. (m.copy 0 3 3) (m.get.eq 01-02-03-01-02-03) > [m]
+      [m]
+        and. > @
+          m.copy 0 3 3
+          m.get.eq 01-02-03-01-02-03
 
   --> on-copying-with-wrong-source
     malloc.for > @

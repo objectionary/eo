@@ -39,8 +39,9 @@
           0
           b.put > [m] >>
             lt.
-              seq
-                * (m.put (m.as-number.plus 1)) m.as-number
+              seq *
+                m.put (m.as-number.plus 1)
+                m.as-number
               1.1
 
   ++> tests-seq-single-dataization-float-greater
@@ -51,8 +52,9 @@
           0
           b.put > [m] >>
             gt.
-              seq
-                * (m.put (m.as-number.plus 1)) m.as-number
+              seq *
+                m.put (m.as-number.plus 1)
+                m.as-number
               0.9
 
   ++> tests-seq-single-dataization-int-less
@@ -63,8 +65,9 @@
           0
           b.put > [m] >>
             lt.
-              seq
-                * (m.put (m.as-number.plus 1)) m.as-number
+              seq *
+                m.put (m.as-number.plus 1)
+                m.as-number
               2
 
   ++> tests-seq-single-dataization-int-less-or-equal
@@ -75,8 +78,9 @@
           0
           b.put > [m] >>
             lte.
-              seq
-                * (m.put (m.as-number.plus 1)) m.as-number
+              seq *
+                m.put (m.as-number.plus 1)
+                m.as-number
               1
 
   true.eq ++> tests-very-long-seq

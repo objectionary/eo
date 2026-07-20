@@ -28,7 +28,7 @@ public enum PenaltyKey {
      * Points charged per opening parenthesis, progressively: the k-th
      * parenthesis on a line costs k times this weight.
      */
-    BRACKET(15),
+    BRACKET(19),
 
     /**
      * Points charged for each character past {@link #WIDTH}.
