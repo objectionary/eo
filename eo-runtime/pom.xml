@@ -23,14 +23,6 @@
     cannot express; set to true to verify return types.
     -->
     <eo.typing>false</eo.typing>
-    <!--
-    Empty by default, so ${eo.coverageFile} always resolves to an empty
-    string instead of staying an unresolved literal. -Deo.coverageFile=...
-    on the command line both drives PhCoverage instrumentation at
-    transpile time and, via the surefire systemPropertyVariables below,
-    reaches the JVM that runs the instrumented tests, see #5673.
-    -->
-    <eo.coverageFile/>
   </properties>
   <dependencies>
     <dependency>
@@ -196,7 +188,6 @@
           <systemPropertyVariables>
             <eo.version>${project.version}</eo.version>
             <eo.typing>${eo.typing}</eo.typing>
-            <eo.coverageFile>${eo.coverageFile}</eo.coverageFile>
             <java.util.logging.config.file>
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>
@@ -305,6 +296,39 @@
     </plugins>
   </build>
   <profiles>
+    <profile>
+      <!--
+      Only activates when -Deo.coverageFile=... is actually passed (activation
+      by property presence, regardless of value). This forwards that same
+      value to the JVM that runs the tests, so PhCoverage instrumentation
+      (transpile time) and PhCoverage.hit() (runtime) agree on one file, see
+      #5673. Kept as a property-activated profile, and not a plain
+      systemPropertyVariables entry referencing ${eo.coverageFile} directly,
+      because a POM property with that exact name would also feed
+      MjTranspile's own eo.coverageFile parameter (they intentionally share
+      the name), and Maven resolves an empty File-typed parameter value to
+      the project basedir rather than to nothing, which would silently turn
+      instrumentation on for every build.
+      -->
+      <id>coverage-file</id>
+      <activation>
+        <property>
+          <name>eo.coverageFile</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <systemPropertyVariables combine.children="append">
+                <eo.coverageFile>${eo.coverageFile}</eo.coverageFile>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>jacoco</id>
       <build>
