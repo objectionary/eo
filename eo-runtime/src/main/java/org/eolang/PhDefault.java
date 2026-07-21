@@ -396,7 +396,7 @@ public class PhDefault implements Phi, Cloneable {
      * When there's no such object, the terminated
      * computation stays terminated. When the object exists but has no free
      * positional attribute to receive the bound object (for example a nullary
-     * object like {@code os}), a clear error is raised instead of the
+     * object like {@code io.dead-input}), a clear error is raised instead of the
      * low-level "attribute is already set / no attributes here" message.</p>
      *
      * @param name The name of the absent attribute
