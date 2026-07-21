@@ -15,7 +15,7 @@ package org.eolang.printer;
  * one aesthetic is no longer baked into the tool.</p>
  *
  * @since 0.57.0
- * @checkstyle MagicNumberCheck (46 lines)
+ * @checkstyle MagicNumberCheck (55 lines)
  */
 public enum PenaltyKey {
 
@@ -34,6 +34,12 @@ public enum PenaltyKey {
      * Points charged for each explicit phi attribute {@code @} on a line.
      */
     PHI(15),
+
+    /**
+     * Points charged for each {@code if} emitted as a suffix attribute
+     * ({@code foo.if}), to keep {@code if} in prefix form ({@code if. foo}).
+     */
+    IF(50),
 
     /**
      * Points charged for each character past {@link #WIDTH}.

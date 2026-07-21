@@ -17,7 +17,7 @@ import java.util.Map;
  * {@link Pretty} to choose, among all possible renderings of the same
  * object, the one that reads best.</p>
  *
- * <p>The score is a sum of six components, computed over all lines:</p>
+ * <p>The score is a sum of several components, computed over all lines:</p>
  *
  * <ul>
  *   <li>every level of indentation on a line costs
@@ -29,6 +29,9 @@ import java.util.Map;
  *   nesting hurts readability more;</li>
  *   <li>every explicit phi attribute {@code @} costs
  *   {@link PenaltyKey#PHI} points;</li>
+ *   <li>every {@code if} dispatched in suffix position ({@code foo.if})
+ *   costs {@link PenaltyKey#IF} points, so the printer keeps {@code if}
+ *   in prefix form ({@code if. foo});</li>
  *   <li>every character sitting past the {@link PenaltyKey#WIDTH}-th
  *   column costs {@link PenaltyKey#EXCESS} point;</li>
  *   <li>every symbol in the block costs {@link PenaltyKey#SYMBOL}
@@ -117,6 +120,7 @@ final class Penalty {
             total += this.indents(line) * this.weight(PenaltyKey.INDENT);
             total += Penalty.brackets(line) * this.weight(PenaltyKey.BRACKET);
             total += Penalty.phis(line) * this.weight(PenaltyKey.PHI);
+            total += Penalty.ifs(line) * this.weight(PenaltyKey.IF);
             total += this.overflow(line) * this.weight(PenaltyKey.EXCESS);
             total += line.length() * this.weight(PenaltyKey.SYMBOL);
             total += (spaces + applied * (applied - 1))
@@ -288,5 +292,40 @@ final class Penalty {
             }
         }
         return count;
+    }
+
+    /**
+     * Count {@code if} attributes dispatched in suffix position
+     * ({@code foo.if}) in a line.
+     *
+     * <p>Only the suffix form {@code .if}, taken as a whole word (followed by
+     * a non-identifier character or the end of the line), is counted. The
+     * prefix form {@code if.} never begins with a dot, so it stays free, and
+     * longer names such as {@code .iffy} are left untouched.</p>
+     *
+     * @param line The line
+     * @return The number of suffix {@code if} attributes
+     */
+    private static int ifs(final String line) {
+        int count = 0;
+        final String needle = ".if";
+        int idx = line.indexOf(needle);
+        while (idx >= 0) {
+            final int after = idx + needle.length();
+            if (after >= line.length() || !Penalty.identifier(line.charAt(after))) {
+                ++count;
+            }
+            idx = line.indexOf(needle, idx + 1);
+        }
+        return count;
+    }
+
+    /**
+     * Is this character allowed inside an EO identifier?
+     * @param chr The character
+     * @return TRUE if it continues an identifier
+     */
+    private static boolean identifier(final char chr) {
+        return Character.isLetterOrDigit(chr) || chr == '-' || chr == '_';
     }
 }

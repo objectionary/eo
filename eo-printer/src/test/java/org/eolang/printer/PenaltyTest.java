@@ -40,15 +40,26 @@ final class PenaltyTest {
         );
     }
 
-    @Test
-    void chargesForPhi() {
+    @ParameterizedTest
+    @CsvSource({
+        "'@.eq @', 30",
+        "'foo.if a b c', 50",
+        "'if. foo a b c', 0",
+        "'foo.iffy a b', 0",
+        "'foo.if', 50",
+        "'x.if.gt y', 50"
+    })
+    void chargesForLineAttributes(final String code, final int points) {
         final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
         weights.put(PenaltyKey.SYMBOL, 0);
         weights.put(PenaltyKey.SPACE, 0);
         MatcherAssert.assertThat(
-            "Two explicit phi attributes on one line should cost thirty points",
-            new Penalty("@.eq @", weights).points(),
-            Matchers.equalTo(30)
+            String.format(
+                "The line attributes in %s should cost %d points, phi and suffix if charged",
+                code, points
+            ),
+            new Penalty(code, weights).points(),
+            Matchers.equalTo(points)
         );
     }
 

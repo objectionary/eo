@@ -2,6 +2,13 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
+# A chain of nested "if" dispatches stays in prefix form ("if. ..."): even
+# though the compound comparison receivers could fold into suffix position and
+# collapse the whole expression onto a single line (#5650), the suffix "if"
+# penalty (#5665) makes prefix notation cheaper, so "if" is never dispatched
+# after its object. The inner "if" keeps its arguments on separate lines too,
+# since the per-symbol and per-space penalties make a single inline line dearer
+# than the vertical layout.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -21,8 +28,10 @@ origin: |
 
 printed: |
   [x] > classify
-    (x.lt 0).if > @
+    if. > @
+      x.lt 0
       "negative"
-      (x.eq 0).if
+      if.
+        x.eq 0
         "zero"
         "positive"
