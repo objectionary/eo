@@ -3,7 +3,7 @@
 # provide a `read` object that takes the amount of bytes to read and
 # returns an input block - a dataizable portion of bytes that also has
 # its own `read` to fetch the next portion. See `input.dead`,
-# `input.as-bytes`, `input.length`, `input.tee`, and `bytes.to-input`.
+# `input.as-bytes`, `input.length`, `input.tee`, and `bytes.as-input`.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
