@@ -356,14 +356,12 @@ final class Pretty {
                 .allMatch(Node::nameless);
             if (applied && unnamed) {
                 final String hybrid = this.vertical(decoratee.hybrid(marker), indent);
-                if (flat.map(
-                    line -> new Penalty(hybrid, this.weights).points()
-                        < new Penalty(line, this.weights).points()
-                ).orElse(true)) {
-                    result = Optional.of(hybrid);
-                } else {
-                    result = flat;
-                }
+                result = Optional.of(
+                    flat.filter(
+                        line -> new Penalty(line, this.weights).points()
+                            <= new Penalty(hybrid, this.weights).points()
+                    ).orElse(hybrid)
+                );
             } else {
                 result = flat;
             }
