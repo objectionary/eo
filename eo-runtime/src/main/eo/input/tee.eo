@@ -40,33 +40,31 @@
         (input.read size).read.^ > chunk
         (output.write chunk).write.^ > written
 
-  ++> tests-reads-from-bytes-and-writes-to-memory
-    eq. > @
-      malloc.of
+  eq. ++> tests-reads-from-bytes-and-writes-to-memory
+    malloc.of
+      5
+      read. > [mem]
+        Q.input.tee
+          bytes.to-input 01-02-03-04-05
+          io.malloc-as-output mem
         5
-        read. > [mem]
-          Q.input.tee
-            bytes.to-input 01-02-03-04-05
-            io.malloc-as-output mem
-          5
-      01-02-03-04-05
+    01-02-03-04-05
 
-  ++> tests-reads-from-bytes-and-writes-to-memory-by-portions
-    eq. > @
-      malloc.of
-        5
-        seq * > [m]
+  eq. ++> tests-reads-from-bytes-and-writes-to-memory-by-portions
+    malloc.of
+      5
+      seq * > [m]
+        read.
           read.
             read.
-              read.
-                Q.input.tee
-                  bytes.to-input 01-02-03-04-05
-                  io.malloc-as-output m
-                2
+              Q.input.tee
+                bytes.to-input 01-02-03-04-05
+                io.malloc-as-output m
               2
-            1
-          m
-      01-02-03-04-05
+            2
+          1
+        m
+    01-02-03-04-05
 
   ++> tests-reads-from-bytes-and-writes-to-two-memory-blocks
     eq. > @

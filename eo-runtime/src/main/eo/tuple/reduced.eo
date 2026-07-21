@@ -21,24 +21,22 @@
       accum
       item
 
-  ++> tests-list-reduce-without-index
-    eq. > @
-      reduced
-        *
-          1
-          2
-          3
-          4
-        -1
-        a.times x > [a x]
-      -24
+  eq. ++> tests-list-reduce-without-index
+    reduced
+      *
+        1
+        2
+        3
+        4
+      -1
+      a.times x > [a x]
+    -24
 
-  ++> tests-list-reduced-printing
-    eq. > @
-      reduced
-        * 0 1
-        ""
-        acc.concat > [acc item]
-          "%d".printf
-            * item
-      "01"
+  eq. ++> tests-list-reduced-printing
+    reduced
+      * 0 1
+      ""
+      acc.concat > [acc item]
+        "%d".printf
+          * item
+    "01"

@@ -86,11 +86,11 @@
   switch --> on-empty-switch
     *
 
-  ++> tests-empty-switch-returns-provided-fallback
-    "recovered".eq > @
-      switch
-        *
-        "recovered" > [msg]
+  eq. ++> tests-empty-switch-returns-provided-fallback
+    "recovered"
+    switch
+      *
+      "recovered" > [msg]
 
   ++> tests-switch-complex-case
     eq. > @

@@ -157,18 +157,18 @@
 
   2.as-i64.as-i32.div 0.as-i64.as-i32 --> on-division-i32-by-i32-zero
 
-  ++> tests-i32-div-by-zero-returns-provided-fallback
-    "recovered".eq > @
-      2.as-i64.as-i32.div
-        0.as-i64.as-i32
-        "recovered" > [msg]
+  eq. ++> tests-i32-div-by-zero-returns-provided-fallback
+    "recovered"
+    2.as-i64.as-i32.div
+      0.as-i64.as-i32
+      "recovered" > [msg]
 
   247483647.as-i64.as-i32.as-i16 --> on-converting-to-i16-if-out-of-bounds
 
-  ++> tests-out-of-bounds-i32-as-i16-returns-provided-fallback
-    "recovered".eq > @
-      247483647.as-i64.as-i32.as-i16
-        "recovered" > [msg]
+  eq. ++> tests-out-of-bounds-i32-as-i16-returns-provided-fallback
+    "recovered"
+    247483647.as-i64.as-i32.as-i16
+      "recovered" > [msg]
 
   ++> tests-i32-div-by-i32-one
     eq. > @

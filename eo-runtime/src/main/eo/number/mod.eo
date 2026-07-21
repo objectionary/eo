@@ -85,9 +85,9 @@
     5
     0
 
-  ++> tests-mod-by-zero-returns-provided-fallback
-    "recovered".eq > @
-      mod
-        5
-        0
-        "recovered" > [msg]
+  eq. ++> tests-mod-by-zero-returns-provided-fallback
+    "recovered"
+    mod
+      5
+      0
+      "recovered" > [msg]

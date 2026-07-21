@@ -54,9 +54,9 @@
     "some"
     10
 
-  ++> tests-text-at-out-of-bounds-returns-provided-fallback
-    "recovered".eq > @
-      at
-        "some"
-        10
-        "recovered" > [msg]
+  eq. ++> tests-text-at-out-of-bounds-returns-provided-fallback
+    "recovered"
+    at
+      "some"
+      10
+      "recovered" > [msg]

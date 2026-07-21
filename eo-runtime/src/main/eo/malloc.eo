@@ -103,12 +103,11 @@
       0
       m.put 10 > [m]
 
-  ++> tests-returns-size-from-scope
-    eq. > @
-      malloc.of
-        5
-        m.size > [m]
+  eq. ++> tests-returns-size-from-scope
+    malloc.of
       5
+      m.size > [m]
+    5
 
   ++> tests-malloc-scope-is-dataized-twice
     2.eq > @
@@ -122,12 +121,11 @@
             f.put > [s] >>
               f.as-number.plus 1
 
-  ++> tests-malloc-for-writes-first-init-value
-    eq. > @
-      malloc.for
-        42
-        m > [m]
+  eq. ++> tests-malloc-for-writes-first-init-value
+    malloc.for
       42
+      m > [m]
+    42
 
   ++> tests-malloc-puts-over-the-previous-data
     eq. > @
@@ -149,61 +147,53 @@
         m.put
           m.as-number.plus 5
 
-  ++> tests-writes-into-two-malloc-objects
-    and. > @
-      eq.
-        malloc.of
-          8
-          m.put 10 > [m]
-        10
-      eq.
-        malloc.of
-          8
-          m.put 20 > [m]
-        20
+  and. ++> tests-writes-into-two-malloc-objects
+    eq.
+      malloc.of
+        8
+        m.put 10 > [m]
+      10
+    eq.
+      malloc.of
+        8
+        m.put 20 > [m]
+      20
 
-  --> on-overflow-boolean-malloc
-    malloc.for > @
-      false
-      m.put 8.612486788E7 > [m]
+  malloc.for --> on-overflow-boolean-malloc
+    false
+    m.put 8.612486788E7 > [m]
 
-  --> on-overflow-string-malloc
-    malloc.for > @
+  malloc.for --> on-overflow-string-malloc
+    "Hello"
+    m.put > [m]
+      "Much longer string!"
+
+  eq. ++> tests-malloc-is-strictly-sized-int
+    malloc.for
+      12248
+      m.put 2556 > [m]
+    2556
+
+  eq. ++> tests-malloc-is-strictly-typed-float
+    malloc.for
+      245.88
+      m.put 82.22 > [m]
+    82.22
+
+  eq. ++> tests-memory-is-strictly-sized-string
+    malloc.for
       "Hello"
-      m.put > [m]
-        "Much longer string!"
+      m.put "Prot" > [m]
+    "Proto"
 
-  ++> tests-malloc-is-strictly-sized-int
-    eq. > @
-      malloc.for
-        12248
-        m.put 2556 > [m]
-      2556
+  malloc.for ++> tests-malloc-is-strictly-typed-bool
+    false
+    m.put true > [m]
 
-  ++> tests-malloc-is-strictly-typed-float
-    eq. > @
-      malloc.for
-        245.88
-        m.put 82.22 > [m]
-      82.22
-
-  ++> tests-memory-is-strictly-sized-string
-    eq. > @
-      malloc.for
-        "Hello"
-        m.put "Prot" > [m]
-      "Proto"
-
-  ++> tests-malloc-is-strictly-typed-bool
-    malloc.for > @
-      false
-      m.put true > [m]
-
-  ++> tests-malloc-gives-id-to-allocated-block
-    malloc.of > @
-      1
-      m.put > [m]
-        m.id.gt 0
+  malloc.of ++> tests-malloc-gives-id-to-allocated-block
+    1
+    m.put > [m]
+      m.id.gt 0
 
   ++> tests-malloc-allocates-right-size-block
     malloc.of > @
@@ -242,12 +232,11 @@
               (m.read 0 3).eq
                 "XYX"
 
-  ++> writes-beyond-offset-and-resizes
-    malloc.of > @
-      1
-      seq * > [m]
-        m.write 1 true
-        m.size.eq 2
+  malloc.of ++> writes-beyond-offset-and-resizes
+    1
+    seq * > [m]
+      m.write 1 true
+      m.size.eq 2
 
   ++> tests-malloc-reads-with-offset-and-length
     malloc.of > @
@@ -261,26 +250,26 @@
               (m.read 2 5).eq
                 "Hello"
 
-  ++> tests-malloc-read-over-a-limit-returns-fallback
-    01-02.eq > @
-      malloc.of
-        1
-        [m]
-          m.read > @
-            0
-            10
-            01-02 > [ex]
-
-  --> on-reading-over-a-limit-without-fallback
-    malloc.for > @
-      10
-      m.read 0 100 > [m]
-
-  ++> tests-allocates-zero-bytes
-    0.eq > @
-      malloc.of
+  eq. ++> tests-malloc-read-over-a-limit-returns-fallback
+    01-02
+    malloc.of
+      1
+      m.read > [m]
         0
-        m.size > [m]
+        10
+        01-02 > [ex]
+
+  malloc.for --> on-reading-over-a-limit-without-fallback
+    10
+    m.read > [m]
+      0
+      100
+
+  eq. ++> tests-allocates-zero-bytes
+    0
+    malloc.of
+      0
+      m.size > [m]
 
   ++> tests-malloc-increases-block-size
     malloc.of > @
@@ -304,65 +293,57 @@
               (m.resized 3).size.eq 3
               m.get.eq 01-02-03
 
-  --> on-changing-size-to-negative
-    malloc.of > @
-      1
-      m.resized -1 > [m]
+  malloc.of --> on-changing-size-to-negative
+    1
+    m.resized -1 > [m]
 
-  --> on-changing-size-to-fractional
-    malloc.of > @
-      1
-      m.resized 1.5 > [m]
+  malloc.of --> on-changing-size-to-fractional
+    1
+    m.resized 1.5 > [m]
 
-  ++> tests-malloc-empty-is-empty
-    malloc.empty > @
-      m.size.eq 0 > [m]
+  malloc.empty ++> tests-malloc-empty-is-empty
+    m.size.eq 0 > [m]
 
-  ++> tests-copies-data-inside-itself
-    malloc.for > @
-      01-02-03-04-05
-      and. > [m]
-        m.copy
-          1
-          2
-          2
-        m.get.eq 01-02-02-03-05
-
-  ++> tests-copies-data-from-start-to-end
-    malloc.for > @
-      01-02-03-04-05-06
-      and. > [m]
-        m.copy
-          0
-          3
-          3
-        m.get.eq 01-02-03-01-02-03
-
-  --> on-copying-with-wrong-source
-    malloc.for > @
-      0
-      m.copy > [m]
-        9
+  malloc.for ++> tests-copies-data-inside-itself
+    01-02-03-04-05
+    and. > [m]
+      m.copy
         1
-        1
+        2
+        2
+      m.get.eq 01-02-02-03-05
 
-  ++> copies-and-resizes-to-target
-    malloc.for > @
-      0
-      seq * > [m]
-        m.copy
-          3
-          9
-          1
-        m.size.eq 10
-
-  --> on-copying-with-wrong-length
-    malloc.for > @
-      0
-      m.copy > [m]
+  malloc.for ++> tests-copies-data-from-start-to-end
+    01-02-03-04-05-06
+    and. > [m]
+      m.copy
+        0
         3
-        1
+        3
+      m.get.eq 01-02-03-01-02-03
+
+  malloc.for --> on-copying-with-wrong-source
+    0
+    m.copy > [m]
+      9
+      1
+      1
+
+  malloc.for ++> copies-and-resizes-to-target
+    0
+    seq * > [m]
+      m.copy
+        3
         9
+        1
+      m.size.eq 10
+
+  malloc.for --> on-copying-with-wrong-length
+    0
+    m.copy > [m]
+      3
+      1
+      9
 
   ++> tests-calculates-only-once
     eq. > @

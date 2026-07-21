@@ -125,8 +125,8 @@
 
   02-.as-i8.div 00-.as-i8 --> on-division-i8-by-i8-zero
 
-  ++> tests-i8-div-by-zero-returns-provided-fallback
-    "recovered".eq > @
-      02-.as-i8.div
-        00-.as-i8
-        "recovered" > [msg]
+  eq. ++> tests-i8-div-by-zero-returns-provided-fallback
+    "recovered"
+    02-.as-i8.div
+      00-.as-i8
+      "recovered" > [msg]

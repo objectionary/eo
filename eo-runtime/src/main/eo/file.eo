@@ -281,29 +281,26 @@
       temp.exists.not
     mktemp.tmpfile > temp
 
-  --> on-opening-with-wrong-mode
-    seq * > @
-      mktemp.tmpfile.open
-        "x"
-        true > [f]
-      true
+  seq * --> on-opening-with-wrong-mode
+    mktemp.tmpfile.open
+      "x"
+      true > [f]
+    true
 
-  --> on-reading-from-not-existed-file
-    mktemp.tmpfile.deleted.open > @
+  mktemp.tmpfile.deleted.open --> on-reading-from-not-existed-file
+    "r"
+    f > [f]
+
+  mktemp.tmpfile.deleted.open --> on-reading-or-writing-from-not-existed-file
+    "r+"
+    f > [f]
+
+  eq. ++> tests-recovers-from-opening-missing-file-through-fallback
+    "recovered"
+    mktemp.tmpfile.deleted.open
       "r"
       f > [f]
-
-  --> on-reading-or-writing-from-not-existed-file
-    mktemp.tmpfile.deleted.open > @
-      "r+"
-      f > [f]
-
-  ++> tests-recovers-from-opening-missing-file-through-fallback
-    "recovered".eq > @
-      mktemp.tmpfile.deleted.open
-        "r"
-        f > [f]
-        "recovered" > [reason]
+      "recovered" > [reason]
 
   ++> tests-touches-absent-file-on-opening-for-writing
     exists. > @
@@ -329,84 +326,77 @@
         "a+"
         true > [f]
 
-  ++> tests-writes-data-to-file
-    eq. > @
-      size.
+  eq. ++> tests-writes-data-to-file
+    size.
+      mktemp.tmpfile.open
+        "w"
+        f.write > [f]
+          "Hello, world"
+    12
+
+  eq. ++> tests-appending-data-to-file
+    size.
+      open.
         mktemp.tmpfile.open
           "w"
           f.write "Hello, world" > [f]
-      12
+        "a"
+        f.write "!" > [f]
+    13
 
-  ++> tests-appending-data-to-file
-    eq. > @
-      size.
-        open.
-          mktemp.tmpfile.open
-            "w"
-            f.write "Hello, world" > [f]
-          "a"
-          f.write "!" > [f]
-      13
-
-  ++> tests-truncates-file-opened-for-writing
-    eq. > @
-      size.
-        open.
-          mktemp.tmpfile.open
-            "w"
-            f.write "Hello, world" > [f]
+  eq. ++> tests-truncates-file-opened-for-writing
+    size.
+      open.
+        mktemp.tmpfile.open
           "w"
-          true > [f]
-      0
+          f.write "Hello, world" > [f]
+        "w"
+        true > [f]
+    0
 
-  ++> tests-truncates-file-opened-for-writing-or-reading
-    eq. > @
-      size.
-        open.
-          mktemp.tmpfile.open
-            "w"
-            f.write "Hello, world" > [f]
-          "w+"
-          true > [f]
-      0
+  eq. ++> tests-truncates-file-opened-for-writing-or-reading
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "w+"
+        true > [f]
+    0
 
-  ++> tests-does-not-truncate-file-opened-for-appending
-    eq. > @
-      size.
-        open.
-          mktemp.tmpfile.open
-            "w"
-            f.write "Hello, world" > [f]
-          "a"
-          true > [f]
-      12
+  eq. ++> tests-does-not-truncate-file-opened-for-appending
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "a"
+        true > [f]
+    12
 
-  ++> tests-does-not-truncate-file-opened-for-reading-or-appending
-    eq. > @
-      size.
-        open.
-          mktemp.tmpfile.open
-            "w"
-            f.write "Hello, world" > [f]
-          "a+"
-          true > [f]
-      12
+  eq. ++> tests-does-not-truncate-file-opened-for-reading-or-appending
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "a+"
+        true > [f]
+    12
 
-  ++> tests-does-not-truncate-file-opened-for-reading
-    eq. > @
-      size.
-        open.
-          mktemp.tmpfile.open
-            "w"
-            f.write "Hello, world" > [f]
-          "r"
-          true > [f]
-      12
+  eq. ++> tests-does-not-truncate-file-opened-for-reading
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "r"
+        true > [f]
+    12
 
-  --> on-writing-with-wrong-mode
-    mktemp.tmpfile.open > @
-      "r"
-      f.write "Hello" > [f]
+  mktemp.tmpfile.open --> on-writing-with-wrong-mode
+    "r"
+    f.write "Hello" > [f]
 
   ++> tests-reads-from-file
     eq. > @
@@ -424,15 +414,13 @@
             m
       "Hello, world"
 
-  --> on-reading-negative-size-from-file
-    mktemp.tmpfile.open > @
-      "r"
-      f.read -5 > [f]
+  mktemp.tmpfile.open --> on-reading-negative-size-from-file
+    "r"
+    f.read -5 > [f]
 
-  --> on-reading-from-file-with-wrong-mode
-    mktemp.tmpfile.open > @
-      "w"
-      f.read 12 > [f]
+  mktemp.tmpfile.open --> on-reading-from-file-with-wrong-mode
+    "w"
+    f.read 12 > [f]
 
   ++> tests-reads-from-file-from-different-instances
     seq * > @
@@ -493,12 +481,11 @@
             m
       "world"
 
-  ++> tests-writes-to-file-sequentially
-    eq. > @
-      size.
-        mktemp.tmpfile.open
-          "a+"
-          write. > [f]
-            f.write "Hello, world"
-            "!"
-      13
+  eq. ++> tests-writes-to-file-sequentially
+    size.
+      mktemp.tmpfile.open
+        "a+"
+        write. > [f]
+          f.write "Hello, world"
+          "!"
+    13

@@ -113,8 +113,8 @@
 
   00-00-00-02.as-u32.div 00-00-00-00.as-u32 --> on-division-u32-by-u32-zero
 
-  ++> tests-u32-div-by-zero-returns-provided-fallback
-    "recovered".eq > @
-      00-00-00-02.as-u32.div
-        00-00-00-00.as-u32
-        "recovered" > [msg]
+  eq. ++> tests-u32-div-by-zero-returns-provided-fallback
+    "recovered"
+    00-00-00-02.as-u32.div
+      00-00-00-00.as-u32
+      "recovered" > [msg]

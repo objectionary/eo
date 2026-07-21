@@ -19,10 +19,10 @@
 
   01-01-01-01.as-i64 --> on-bytes-of-wrong-size-as-i64
 
-  ++> tests-wrong-size-as-i64-returns-provided-fallback
-    "recovered".eq > @
-      01-01-01-01.as-i64
-        "recovered" > [msg]
+  eq. ++> tests-wrong-size-as-i64-returns-provided-fallback
+    "recovered"
+    01-01-01-01.as-i64
+      "recovered" > [msg]
 
   00-00-00-00-00-00-00-2A.as-i64.eq 42.as-i64 ++> tests-bytes-converts-to-i64
 

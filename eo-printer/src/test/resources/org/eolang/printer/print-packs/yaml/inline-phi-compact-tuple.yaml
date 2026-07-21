@@ -19,9 +19,8 @@ origin: |
           m
 
 printed: |
-  [] > foo
-    malloc.of > @
-      5
-      seq * > [m]
-        m.write 0 10
-        m
+  malloc.of > [] > foo
+    5
+    seq * > [m]
+      m.write 0 10
+      m

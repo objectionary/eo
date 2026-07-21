@@ -143,11 +143,11 @@
     2.as-i64.as-i32.as-i16
     0.as-i64.as-i32.as-i16
 
-  ++> tests-i16-div-by-zero-returns-provided-fallback
-    "recovered".eq > @
-      2.as-i64.as-i32.as-i16.div
-        0.as-i64.as-i32.as-i16
-        "recovered" > [msg]
+  eq. ++> tests-i16-div-by-zero-returns-provided-fallback
+    "recovered"
+    2.as-i64.as-i32.as-i16.div
+      0.as-i64.as-i32.as-i16
+      "recovered" > [msg]
 
   ++> tests-i16-div-by-i16-one
     eq. > @

@@ -28,7 +28,7 @@
 
   01-01-01-01.as-number --> on-bytes-of-wrong-size-as-number
 
-  ++> tests-wrong-size-as-number-returns-provided-fallback
-    "recovered".eq > @
-      01-01-01-01.as-number
-        "recovered" > [msg]
+  eq. ++> tests-wrong-size-as-number-returns-provided-fallback
+    "recovered"
+    01-01-01-01.as-number
+      "recovered" > [msg]

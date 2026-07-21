@@ -26,11 +26,11 @@
   maximum --> on-taking-maximum-from-empty-sequence
     *
 
-  ++> tests-maximum-of-empty-returns-provided-fallback
-    "recovered".eq > @
-      maximum
-        *
-        "recovered" > [msg]
+  eq. ++> tests-maximum-of-empty-returns-provided-fallback
+    "recovered"
+    maximum
+      *
+      "recovered" > [msg]
 
   eq. ++> tests-maximum-of-one-item-array
     maximum

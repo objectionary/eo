@@ -27,14 +27,13 @@
       bytes.to-input 01-02-03-04-05-06-07-08-09-10
     10
 
-  ++> tests-copies-all-bytes-to-output-and-returns-length
-    eq. > @
-      malloc.of
-        10
-        seq * > [m]
-          Q.input.length
-            Q.input.tee
-              bytes.to-input 01-02-03-04-05-06-07-08-09-10
-              io.malloc-as-output m
-          m
-      01-02-03-04-05-06-07-08-09-10
+  eq. ++> tests-copies-all-bytes-to-output-and-returns-length
+    malloc.of
+      10
+      seq * > [m]
+        Q.input.length
+          Q.input.tee
+            bytes.to-input 01-02-03-04-05-06-07-08-09-10
+            io.malloc-as-output m
+        m
+    01-02-03-04-05-06-07-08-09-10

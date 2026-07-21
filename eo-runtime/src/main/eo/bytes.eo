@@ -224,16 +224,16 @@
     3
     10
 
-  ++> tests-out-of-bounds-slice-returns-provided-fallback
-    "recovered".eq > @
-      20-1F-EE-B5-90.slice
-        3
-        10
-        "recovered" > [msg]
+  eq. ++> tests-out-of-bounds-slice-returns-provided-fallback
+    "recovered"
+    20-1F-EE-B5-90.slice
+      3
+      10
+      "recovered" > [msg]
 
-  ++> tests-slice-with-overflowing-start-plus-len-returns-fallback
-    "recovered".eq > @
-      20-1F-EE-B5-90.slice
-        2000000000
-        2000000000
-        "recovered" > [msg]
+  eq. ++> tests-slice-with-overflowing-start-plus-len-returns-fallback
+    "recovered"
+    20-1F-EE-B5-90.slice
+      2000000000
+      2000000000
+      "recovered" > [msg]
