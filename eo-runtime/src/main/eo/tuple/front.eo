@@ -9,25 +9,24 @@
 
 [list index] > front
   if. > @
-    idx.eq 0
+    index.eq 0
     *
     if.
-      0.gt idx
+      0.gt index
       back
         list
         neg.
-          number idx
+          number index
       if.
         gte.
-          number idx
+          number index
           list.length
         list
-        rechead list
-  index > idx!
-  if. > [tup] > rechead
-    tup.length.eq idx
-    tup
-    rechead tup.tail
+        r list
+  if. > [t] > r
+    t.length.eq index
+    t
+    r t.tail
 
   eq. ++> tests-complex-front
     front
