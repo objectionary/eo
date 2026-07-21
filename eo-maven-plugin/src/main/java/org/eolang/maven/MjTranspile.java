@@ -70,7 +70,11 @@ public final class MjTranspile extends MjSafe {
      * not set (the default), no instrumentation happens; when set,
      * every located object in the generated Java is wrapped into
      * {@code PhCoverage}, which appends a hit to this file the first
-     * time the object is touched at runtime.
+     * time the object is touched at runtime. Setting the same
+     * {@code eo.coverageFile} system property also reaches the JVM
+     * that later runs the instrumented code, since {@code eo-runtime}
+     * forwards it to surefire's {@code systemPropertyVariables} (see
+     * its {@code pom.xml}); one setting is enough end to end.
      * @todo #5466:60min Turn raw coverage hits into an LCOV report.
      *  Right now this parameter only produces a raw, append-only
      *  {@code loc:line:pos} file: the runtime {@code PhCoverage}
@@ -89,15 +93,6 @@ public final class MjTranspile extends MjSafe {
      *  threshold (for example 80 percent), mirroring how the existing
      *  {@code jacoco} profile binds a {@code check} goal with per-metric
      *  thresholds.
-     * @todo #5466:30min Forward this file to the JVM that runs the
-     *  compiled program. This parameter only decides, at transpile
-     *  time, whether {@code PhCoverage} wrapping gets emitted into the
-     *  generated Java; the path itself is discarded afterwards and
-     *  never reaches the process that later runs the instrumented
-     *  code, which reads its own {@code eo.coverageFile} system
-     *  property instead. Wire eo-runtime's test execution (surefire
-     *  {@code systemPropertyVariables} or similar) to pass this same
-     *  value through, so one setting is enough end to end.
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.coverageFile")
