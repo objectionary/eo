@@ -113,8 +113,8 @@
 
   02-.as-u8.div 00-.as-u8 --> on-division-u8-by-u8-zero
 
-  ++> tests-u8-div-by-zero-returns-provided-fallback
-    "recovered".eq > @
-      02-.as-u8.div
-        00-.as-u8
-        "recovered" > [msg]
+  eq. ++> tests-u8-div-by-zero-returns-provided-fallback
+    "recovered"
+    02-.as-u8.div
+      00-.as-u8
+      "recovered" > [msg]

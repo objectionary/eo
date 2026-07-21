@@ -259,14 +259,14 @@
           map.entry "Aa" 1
         "BB"
 
-  ++> tests-falls-back-for-absent-key-colliding-with-stored-one
-    "recovered".eq > @
-      get.
-        found.
-          map *
-            map.entry "Aa" 1
-          "BB"
-        "recovered" > [msg]
+  eq. ++> tests-falls-back-for-absent-key-colliding-with-stored-one
+    "recovered"
+    get.
+      found.
+        map *
+          map.entry "Aa" 1
+        "BB"
+      "recovered" > [msg]
 
   ++> tests-adds-key-colliding-with-existing-one
     and. > @

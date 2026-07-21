@@ -108,13 +108,13 @@
     "-"
     -1
 
-  ++> tests-nsplit-invalid-limit-returns-provided-fallback
-    "fallback".eq > @
-      nsplit
-        "text"
-        "-"
-        0
-        "fallback" > [msg]
+  eq. ++> tests-nsplit-invalid-limit-returns-provided-fallback
+    "fallback"
+    nsplit
+      "text"
+      "-"
+      0
+      "fallback" > [msg]
 
   eq. ++> tests-nsplit-with-empty-strings
     nsplit

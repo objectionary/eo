@@ -180,17 +180,17 @@
 
   (regex "/pattern").compiled --> on-missing-closing-slash-in-regex
 
-  ++> tests-invalid-regex-syntax-returns-provided-fallback
-    "recovered".eq > @
-      compile.
-        regex "/[a-z/"
-        "recovered" > [msg]
+  eq. ++> tests-invalid-regex-syntax-returns-provided-fallback
+    "recovered"
+    compile.
+      regex "/[a-z/"
+      "recovered" > [msg]
 
-  ++> tests-missing-slash-returns-provided-fallback
-    "no-slash".eq > @
-      compile.
-        regex "(.)+"
-        "no-slash" > [msg]
+  eq. ++> tests-missing-slash-returns-provided-fallback
+    "no-slash"
+    compile.
+      regex "(.)+"
+      "no-slash" > [msg]
 
   (regex "/[a-z/").compile --> on-compiling-invalid-regex-without-fallback
 

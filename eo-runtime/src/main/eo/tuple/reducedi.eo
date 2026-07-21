@@ -40,58 +40,57 @@
               * 2 2
               i
 
-  ++> tests-list-reducedi-long-int-array
-    eq. > @
-      reducedi
-        *
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          0
-          1
+  eq. ++> tests-list-reducedi-long-int-array
+    reducedi
+      *
         0
-        x.plus a > [a x i]
-      1
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        1
+      0
+      x.plus a > [a x i]
+    1
 
   ++> tests-list-reducedi-bools-array
     not. > @

@@ -1,0 +1,44 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The "tests-malloc-for-writes-first-init-value" test attribute from
+# malloc.eo: its phi (the reversed "eq.") applies regular arguments, one of
+# which is an anonymous formation "m > [m]" nested inside "malloc.for". The
+# only-phi fold used to be withheld because the recursive "nameless" guard
+# treated the anonymous object's inner " > @" phi decoratee as a name. A phi
+# decoratee is exactly what an only-phi formation binds, so a nested anonymous
+# object is a legal argument: the cheaper hybrid ("eq. ++> ...") must be built.
+# Auto-named attributes (">>") still withhold it (see hybrid-phi-named-argument).
+penalties:
+  INDENT: 2
+  BRACKET: 19
+  PHI: 15
+  IF: 50
+  EXCESS: 3
+  SYMBOL: 1
+  SPACE: 7
+  WIDTH: 80
+  STEP: 2
+origin: |
+  +package org.eolang
+
+  [] > foo
+
+    ++> tests-malloc-for-writes-first-init-value
+      eq. > @
+        malloc.for
+          42
+          m > [m]
+        42
+
+printed: |
+  +package org.eolang
+
+  [] > foo
+
+    eq. ++> tests-malloc-for-writes-first-init-value
+      malloc.for
+        42
+        m > [m]
+      42

@@ -26,11 +26,11 @@
 
   as-number "Hello" --> on-converting-text-to-number
 
-  ++> tests-non-numeric-text-returns-provided-fallback
-    42.eq > @
-      as-number
-        "Hello"
-        42 > [msg]
+  eq. ++> tests-non-numeric-text-returns-provided-fallback
+    42
+    as-number
+      "Hello"
+      42 > [msg]
 
   eq. ++> tests-converts-float-text-to-number
     3.14

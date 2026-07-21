@@ -130,16 +130,16 @@
       4
     20
 
-  ++> tests-out-of-bounds-at-returns-provided-fallback
-    "recovered".eq > @
-      at.
-        *
-          1
-          2
-          3
-          4
-        20
-        "recovered" > [msg]
+  eq. ++> tests-out-of-bounds-at-returns-provided-fallback
+    "recovered"
+    at.
+      *
+        1
+        2
+        3
+        4
+      20
+      "recovered" > [msg]
 
   ++> tests-tuple-fluent-with
     and. > @

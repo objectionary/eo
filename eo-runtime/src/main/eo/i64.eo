@@ -95,10 +95,10 @@
 
   3147483647.as-i64.as-i32 --> on-converting-to-i32-if-out-of-bounds
 
-  ++> tests-out-of-bounds-i64-as-i32-returns-provided-fallback
-    "recovered".eq > @
-      3147483647.as-i64.as-i32
-        "recovered" > [msg]
+  eq. ++> tests-out-of-bounds-i64-as-i32-returns-provided-fallback
+    "recovered"
+    3147483647.as-i64.as-i32
+      "recovered" > [msg]
 
   eq. ++> tests-i64-i32-max-converts-without-error
     2147483647.as-i64
@@ -172,11 +172,11 @@
 
   2.as-i64.div 0.as-i64 --> on-division-i64-by-i64-zero
 
-  ++> tests-i64-div-by-zero-returns-provided-fallback
-    "recovered".eq > @
-      2.as-i64.div
-        0.as-i64
-        "recovered" > [msg]
+  eq. ++> tests-i64-div-by-zero-returns-provided-fallback
+    "recovered"
+    2.as-i64.div
+      0.as-i64
+      "recovered" > [msg]
 
   ++> tests-i64-div-by-i64-one
     eq. > @

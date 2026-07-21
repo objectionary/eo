@@ -69,10 +69,9 @@
     not. > @
       (mktemp.tmpfile.deleted.as-path.resolved "bar-empty").as-dir.made.deleted.exists
 
-  --> on-opening-directory
-    mktemp.open > @
-      "w"
-      true > [d]
+  mktemp.open --> on-opening-directory
+    "w"
+    true > [d]
 
   ++> tests-deletes-directory-with-files-recursively
     and. > @

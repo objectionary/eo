@@ -109,8 +109,8 @@
 
   00-02.as-u16.div 00-00.as-u16 --> on-division-u16-by-u16-zero
 
-  ++> tests-u16-div-by-zero-returns-provided-fallback
-    "recovered".eq > @
-      00-02.as-u16.div
-        00-00.as-u16
-        "recovered" > [msg]
+  eq. ++> tests-u16-div-by-zero-returns-provided-fallback
+    "recovered"
+    00-02.as-u16.div
+      00-00.as-u16
+      "recovered" > [msg]

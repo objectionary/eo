@@ -36,12 +36,12 @@
     ""
     -1
 
-  ++> tests-text-repeated-negative-times-returns-provided-fallback
-    "recovered".eq > @
-      repeated
-        "x"
-        -1
-        "recovered" > [msg]
+  eq. ++> tests-text-repeated-negative-times-returns-provided-fallback
+    "recovered"
+    repeated
+      "x"
+      -1
+      "recovered" > [msg]
 
   eq. ++> tests-text-repeated-zero-times-is-empty
     ""

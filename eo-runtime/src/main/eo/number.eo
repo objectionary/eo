@@ -548,10 +548,10 @@
 
   pinf.as-i64 --> on-converting-positive-infinity-to-i64
 
-  ++> tests-out-of-range-as-i64-returns-provided-fallback
-    "recovered".eq > @
-      1.0e30.as-i64
-        "recovered" > [msg]
+  eq. ++> tests-out-of-range-as-i64-returns-provided-fallback
+    "recovered"
+    1.0e30.as-i64
+      "recovered" > [msg]
 
   eq. ++> tests-as-i64-truncates-positive-toward-zero
     3.7.as-i64.as-bytes

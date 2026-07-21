@@ -124,17 +124,25 @@ final class Node {
      * Whether this node carries no name suffix anywhere in its subtree.
      *
      * <p>A line is "named" when its {@code tail} holds a {@code > name},
-     * {@code > [params]} or {@code >>} suffix. This walks the node and all
-     * its descendants, so a named line nested below the top level — inside
-     * a tuple, a dispatch, or an application — is caught too. It decides
-     * whether a decoratee's whole subtree is safe to fold into a compact
-     * only-phi formation, which binds nothing but its {@code φ} decoratee
-     * (issue #5604).</p>
+     * {@code > [params] > name} or {@code >>} suffix — a named or auto-named
+     * attribute. This walks the node and all its descendants, so a named line
+     * nested below the top level — inside a tuple, a dispatch, or an
+     * application — is caught too. It decides whether a decoratee's whole
+     * subtree is safe to fold into a compact only-phi formation, which binds
+     * nothing but its {@code φ} decoratee (issue #5604).</p>
+     *
+     * <p>A bare {@code > @} suffix is not a name: it marks the {@code φ}
+     * decoratee, which is exactly what an only-phi formation binds, so a
+     * nested anonymous object (an argument such as {@code m > [m]}, whose
+     * subtree carries an inner {@code m > @}) is legal and must not withhold
+     * the fold. Only a genuine named or auto-named attribute ({@code > name},
+     * {@code >>}) does, since those cannot be attributes of an only-phi
+     * formation.</p>
      *
      * @return True when neither this node nor any descendant is named
      */
     boolean nameless() {
-        return this.tail.isEmpty()
+        return (this.tail.isEmpty() || " > @".equals(this.tail))
             && this.children.stream().allMatch(Node::nameless);
     }
 

@@ -180,8 +180,8 @@
     00-00-00-00-00-00-00-02.as-u64
     00-00-00-00-00-00-00-00.as-u64
 
-  ++> tests-u64-div-by-zero-returns-provided-fallback
-    "recovered".eq > @
-      00-00-00-00-00-00-00-02.as-u64.div
-        00-00-00-00-00-00-00-00.as-u64
-        "recovered" > [msg]
+  eq. ++> tests-u64-div-by-zero-returns-provided-fallback
+    "recovered"
+    00-00-00-00-00-00-00-02.as-u64.div
+      00-00-00-00-00-00-00-00.as-u64
+      "recovered" > [msg]

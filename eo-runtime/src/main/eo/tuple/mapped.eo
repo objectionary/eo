@@ -16,15 +16,14 @@
     list
     func item > [item idx] >>
 
-  ++> tests-simple-list-mapping
-    eq. > @
-      mapped
-        *
-          1
-          2
-          3
-        x.times 2 > [x]
+  eq. ++> tests-simple-list-mapping
+    mapped
       *
+        1
         2
-        4
-        6
+        3
+      x.times 2 > [x]
+    *
+      2
+      4
+      6
