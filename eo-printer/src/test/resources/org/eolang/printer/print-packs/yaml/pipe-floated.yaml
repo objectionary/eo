@@ -11,11 +11,12 @@ penalties:
   SPACE: 7
 origin: |
   [] > app
-    [x] > foo
-      x.plus x > @
-    | 5 > foo5
-
+    and > result
+      [x] > bar
+        x > @
+      | 5 > baz
 printed: |
   [] > app
-    x.plus x > [x] > foo
-    | 5 > foo5
+    and baz > result
+    x > [x] > bar
+    | 5 > baz

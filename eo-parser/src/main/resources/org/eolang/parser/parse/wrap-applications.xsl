@@ -13,12 +13,19 @@
   <o base="Φ.number">5</o>
   </o>
 
-  We rewrite the @pipe node into an ordinary application whose @base
-  refers to the preceding sibling by its @name, and drop @pipe. The
-  preceding sibling (the formation, or a previous pipe) is left in
-  place, so `| 5 > foo5` after `[x] > foo` is identical in XMIR to
-  `foo 5 > foo5`. Chained pipes read the previous pipe's @name the same
-  way, building left-associated applications.
+  We rewrite the @pipe node into an application whose @base refers to
+  the preceding sibling by its @name. The preceding sibling (the
+  formation, or a previous pipe) is left in place, so `| 5 > foo5`
+  after `[x] > foo` is semantically identical to `foo 5 > foo5`.
+  Chained pipes read the previous pipe's @name the same way, building
+  left-associated applications.
+
+  The @pipe marker is KEPT on the application (it used to be dropped
+  here) so that the printer can round-trip the compact `| args > name`
+  continuation line instead of expanding it into a two-line vertical
+  application (#5684). It is a cosmetic hint only: downstream passes and
+  the compiler read @base for semantics and ignore @pipe, exactly as
+  they ignore the @local handle preserved for the same reason (#5681).
 
   When the pipe sits inside an argument block (its parent has a @base,
   so its siblings are collected as positional arguments), leaving the
@@ -34,7 +41,7 @@
       <xsl:attribute name="base">
         <xsl:value-of select="preceding-sibling::o[1]/@name"/>
       </xsl:attribute>
-      <xsl:apply-templates select="@* except @pipe"/>
+      <xsl:apply-templates select="@*"/>
       <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>

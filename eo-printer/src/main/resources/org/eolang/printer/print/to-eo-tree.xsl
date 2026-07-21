@@ -190,6 +190,21 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  <!-- PIPE APPLICATION (§3.14) -->
+  <!--
+  A "| args &gt; name" continuation line (R-3.14.7). The parser rewrote
+  it into an application of its same-indent predecessor, pointing @base
+  at that predecessor's name but keeping the @pipe marker (#5684). We
+  restore the compact "|" head only when that predecessor is still the
+  immediately preceding sibling, so the emitted pipe has a valid target
+  directly above it — the base then reads "ξ.&lt;name&gt;" (or the bare
+  "&lt;name&gt;" if reference resolution has not rooted it). When the
+  predecessor has floated away (#5526) the guard fails and the node
+  prints as an ordinary application, which round-trips just as safely.
+  -->
+  <xsl:template match="o[@pipe and (@base = concat($eo:xi, '.', preceding-sibling::o[1]/@name) or @base = preceding-sibling::o[1]/@name)]" mode="head" priority="2">
+    <xsl:text>|</xsl:text>
+  </xsl:template>
   <!-- BASED -->
   <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
     <!--
