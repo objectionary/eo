@@ -7,13 +7,14 @@
 #   [m]
 #     read. > @
 #       tee-input
-#         bytes-as-input 01-02-03-04-05
+#         bytes.to-input 01-02-03-04-05
 #         malloc-as-output m
 #       5
 # ```
 # After dataization `copied` is equal to `01-02-03-04-05` which are read
 # from memory.
 
++alias bytes.to-input
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package io
@@ -44,7 +45,7 @@
         5
         read. > [mem]
           tee-input
-            bytes-as-input 01-02-03-04-05
+            bytes.to-input 01-02-03-04-05
             malloc-as-output mem
           5
       01-02-03-04-05
@@ -58,7 +59,7 @@
             read.
               read.
                 tee-input
-                  bytes-as-input 01-02-03-04-05
+                  bytes.to-input 01-02-03-04-05
                   malloc-as-output m
                 2
               2
@@ -77,7 +78,7 @@
               read.
                 tee-input
                   tee-input
-                    bytes-as-input 01-02-03-04-05
+                    bytes.to-input 01-02-03-04-05
                     malloc-as-output m2
                   malloc-as-output m1
                 5

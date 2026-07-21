@@ -3,7 +3,7 @@
 # via `as-bytes`.
 # Here's how you can read portions of bytes from the input:
 # ```
-# bytes-as-input > i
+# to-input > i
 #   01-02-03-04-05-06-07-08-F5-F6
 # seq > @
 #   *
@@ -23,12 +23,12 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package io
++package bytes
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[bts] > bytes-as-input
+[bts] > to-input
   [size] > read
     @. > @
       read.
@@ -65,7 +65,7 @@
         i3.read 2
         --
     read. > i1
-      bytes-as-input 01-02-03-04-05-06-07-08-F5-F6
+      to-input 01-02-03-04-05-06-07-08-F5-F6
       4
     i1.read 4 > i2
     i2.read 4 > i3
