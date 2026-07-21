@@ -162,3 +162,24 @@
       printf
         "%f"
         * 0.0
+
+  ++> formats-float-with-precision
+    eq. > @
+      "3.14"
+      printf
+        "%.2f"
+        * 3.14159
+
+  ++> formats-integer-with-width
+    eq. > @
+      "   42"
+      printf
+        "%5d"
+        * 42
+
+  ++> formats-string-left-justified-with-width
+    eq. > @
+      "x         "
+      printf
+        "%-10s"
+        * "x"

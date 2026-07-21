@@ -106,6 +106,18 @@ final class PrintfArgsTest {
     }
 
     @Test
+    void countsOneArgumentPerSpecifierWithWidthAndPrecision() {
+        final Phi tuple = Phi.Φ.take("tuple").copy();
+        tuple.put("length", new Data.ToPhi(1));
+        tuple.put("head", new Data.ToPhi(3.14159));
+        MatcherAssert.assertThat(
+            "a specifier carrying precision must still consume exactly one argument",
+            new PrintfArgs("%.2f", 1L, tuple.take("at")).formatted(),
+            Matchers.equalTo(new ListOf<>(3.14159))
+        );
+    }
+
+    @Test
     void reportsUnsupportedFormatMessageInsteadOfDoubleFormatting() {
         final Phi tuple = Phi.Φ.take("tuple").copy();
         tuple.put("length", new Data.ToPhi(1));
