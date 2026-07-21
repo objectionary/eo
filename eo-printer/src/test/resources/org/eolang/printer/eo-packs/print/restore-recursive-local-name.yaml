@@ -1,0 +1,50 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A recursive helper declared with a file-local handle ("? >> rec", whose
+# body calls "rec" again) compiles to an auto-named abstract that references
+# its own name. Since #5677 the "inline-cactoos" pass keeps it in place, so
+# it reaches the printer and its name must survive. "restore-local-names"
+# treats such a self-referential formation like a handled void (#5681): it
+# promotes the "@local" handle to the visible "@name", rewrites the
+# self-references back to the handle, and keeps the "@local" marker so
+# "to-eo-tree" can print "&gt;&gt; name" instead of an anonymous
+# "&gt;&gt;" bound to synthetic "vL_P" references.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-self.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/validate-before-stars.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/printer/print/restore-local-names.xsl
+asserts:
+  # The self-referential formation keeps its readable handle: its cactus
+  # @name is promoted to the handle and the @local marker is preserved.
+  - /object/o[@name='foo']/o[@name='reclast' and @local='reclast' and not(@base)]
+  # Its self-reference is rewritten back to the handle, not a cactus name.
+  - /object/o[@name='foo']/o[@name='reclast']//o[contains(@base, 'reclast')]
+  # The outer reference to it is rewritten to the handle as well.
+  - /object/o[@name='foo']/o[contains(@base, 'reclast')]/o[contains(@base, 'list')]
+  # No synthetic cactus name for the formation survives anywhere.
+  - /object[not(.//o[contains(@name, '🌵') and @local='reclast'])]
+input: |
+  [] > foo
+    reclast > @
+      list
+    if. > [tup] >> reclast
+      tup.length.eq 0
+      -1
+      reclast tup.tail

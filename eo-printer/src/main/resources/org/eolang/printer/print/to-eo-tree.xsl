@@ -315,6 +315,17 @@
           </xsl:choose>
           <xsl:value-of select="substring(@name, 2)"/>
         </xsl:when>
+        <xsl:when test="@local">
+          <!--
+          A non-void formation declared with a file-local handle
+          ("&gt;&gt; name", R-3.10.12): a recursive helper kept in place by
+          "inline-cactoos" (#5677) whose "@local" marker "restore-local-names"
+          preserves (#5681). It is printed with its readable handle under the
+          double-arrow, not as an anonymous "&gt;&gt;".
+          -->
+          <xsl:text> &gt;&gt; </xsl:text>
+          <xsl:value-of select="@local"/>
+        </xsl:when>
         <xsl:when test="starts-with(@name, concat('a', $eo:cactoos))">
           <xsl:text> &gt;&gt;</xsl:text>
         </xsl:when>
