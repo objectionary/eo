@@ -2,35 +2,35 @@
 #
 # Example usage:
 # ```
-# input-as-bytes > bts
+# as-bytes > bts
 #   bytes.to-input 01-02-03-04-05
 # ```
 # After dataization, `bts` equals `01-02-03-04-05`.
 
 +alias bytes.to-input
++alias io.copied
++alias io.malloc-as-output
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package io
++package input
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[input] > input-as-bytes
+[input] > as-bytes
   malloc.of > @
     0
     seq * > [m] >>
-      copied
+      io.copied
         input
-        malloc-as-output m
+        io.malloc-as-output m
       m
 
   ++> tests-bytes-to-input-and-back
     eq. > @
-      input-as-bytes
+      Q.input.as-bytes
         bytes.to-input bts
       bts
     01-02-03-04-05-06-07-08 > bts
 
-  eq. ++> tests-returns-empty-bytes-from-dead-input
-    input-as-bytes dead-input
-    --
+  (Q.input.as-bytes dead).eq -- ++> tests-returns-empty-bytes-from-dead-input

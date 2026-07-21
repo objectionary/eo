@@ -1,0 +1,16 @@
+# Input is an abstract source of bytes that can be read sequentially.
+# Any input decorates the object bound to its `@` attribute, which must
+# provide a `read` object that takes the amount of bytes to read and
+# returns an input block - a dataizable portion of bytes that also has
+# its own `read` to fetch the next portion. See `input.dead`,
+# `input.as-bytes`, `input.length`, `bytes.to-input`, and `io.tee-input`.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
++unlint unit-test-missing
+
+[φ] > input
