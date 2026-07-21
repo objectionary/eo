@@ -4,13 +4,13 @@
 # Example usage:
 # ```
 # copied > total-bytes
-#   bytes.to-input 01-02-03-04-05
+#   bytes.as-input 01-02-03-04-05
 #   io.malloc-as-output memory
 # ```
 # After dataization, `total-bytes` equals 5, and all bytes have been
 # copied from input to output.
 
-+alias bytes.to-input
++alias bytes.as-input
 +alias io.malloc-as-output
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -30,7 +30,7 @@
       5
       seq * > [m]
         Q.input.copied
-          bytes.to-input 01-02-03-04-05
+          bytes.as-input 01-02-03-04-05
           io.malloc-as-output m
         m
     01-02-03-04-05
@@ -39,7 +39,7 @@
     malloc.of
       10
       Q.input.copied > [m]
-        bytes.to-input 01-02-03-04-05-06-07-08-09-10
+        bytes.as-input 01-02-03-04-05-06-07-08-09-10
         io.malloc-as-output m
     10
 
@@ -48,7 +48,7 @@
       0
       seq * > [m]
         Q.input.copied
-          bytes.to-input --
+          bytes.as-input --
           io.malloc-as-output m
         m
     --
@@ -57,7 +57,7 @@
     malloc.of
       0
       Q.input.copied > [m]
-        bytes.to-input --
+        bytes.as-input --
         io.malloc-as-output m
     0
 
@@ -66,7 +66,7 @@
     malloc.of
       20
       Q.input.copied > [m]
-        bytes.to-input 01-02-03-04-05-06-07-08-09-0A-0B-0C-0D-0E-0F-10-11-12-13-14
+        bytes.as-input 01-02-03-04-05-06-07-08-09-0A-0B-0C-0D-0E-0F-10-11-12-13-14
         io.malloc-as-output m
 
   eq. ++> tests-handles-dead-input

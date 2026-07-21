@@ -3,11 +3,11 @@
 # Example usage:
 # ```
 # as-bytes > bts
-#   bytes.to-input 01-02-03-04-05
+#   bytes.as-input 01-02-03-04-05
 # ```
 # After dataization, `bts` equals `01-02-03-04-05`.
 
-+alias bytes.to-input
++alias bytes.as-input
 +alias io.malloc-as-output
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -25,10 +25,10 @@
         io.malloc-as-output m
       m
 
-  ++> tests-bytes-to-input-and-back
+  ++> tests-bytes-as-input-and-back
     eq. > @
       Q.input.as-bytes
-        bytes.to-input bts
+        bytes.as-input bts
       bts
     01-02-03-04-05-06-07-08 > bts
 
