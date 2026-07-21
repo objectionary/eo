@@ -89,23 +89,39 @@
 
   (2A-.as-i8.eq 2B-.as-i8).not ++> tests-i8-eq-false
 
-  (01-.as-i8.plus 01-.as-i8).eq 02-.as-i8 ++> tests-i8-one-plus-i8-one
+  eq. ++> tests-i8-one-plus-i8-one
+    01-.as-i8.plus 01-.as-i8
+    02-.as-i8
 
-  (7F-.as-i8.plus 01-.as-i8).eq 80-.as-i8 ++> tests-i8-plus-with-overflow
+  eq. ++> tests-i8-plus-with-overflow
+    7F-.as-i8.plus 01-.as-i8
+    80-.as-i8
 
   2A-.as-i8.neg.eq D6-.as-i8 ++> tests-i8-negation
 
-  (01-.as-i8.minus 01-.as-i8).eq 00-.as-i8 ++> tests-i8-one-minus-i8-one
+  eq. ++> tests-i8-one-minus-i8-one
+    01-.as-i8.minus 01-.as-i8
+    00-.as-i8
 
-  (80-.as-i8.minus 01-.as-i8).eq 7F-.as-i8 ++> tests-i8-minus-with-overflow
+  eq. ++> tests-i8-minus-with-overflow
+    80-.as-i8.minus 01-.as-i8
+    7F-.as-i8
 
-  (06-.as-i8.times 07-.as-i8).eq 2A-.as-i8 ++> tests-i8-times
+  eq. ++> tests-i8-times
+    06-.as-i8.times 07-.as-i8
+    2A-.as-i8
 
-  (FF-.as-i8.times FF-.as-i8).eq 01-.as-i8 ++> tests-i8-times-of-two-negatives
+  eq. ++> tests-i8-times-of-two-negatives
+    FF-.as-i8.times FF-.as-i8
+    01-.as-i8
 
-  (0D-.as-i8.div FB-.as-i8).eq FE-.as-i8 ++> tests-i8-div-with-remainder
+  eq. ++> tests-i8-div-with-remainder
+    0D-.as-i8.div FB-.as-i8
+    FE-.as-i8
 
-  (C8-.as-i8.div 01-.as-i8).eq C8-.as-i8 ++> tests-i8-div-by-i8-one
+  eq. ++> tests-i8-div-by-i8-one
+    C8-.as-i8.div 01-.as-i8
+    C8-.as-i8
 
   02-.as-i8.div 00-.as-i8 --> on-division-i8-by-i8-zero
 

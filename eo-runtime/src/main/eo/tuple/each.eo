@@ -23,7 +23,8 @@
         [m]
           each > @
             * 1 2 3
-            m.put (m.as-number.plus i) > [i] >>
+            m.put > [i] >>
+              m.as-number.plus i
       6
 
   ++> tests-each-empty-list
@@ -38,7 +39,8 @@
         [m]
           each > @
             * 7
-            m.put (m.as-number.plus i) > [i] >>
+            m.put > [i] >>
+              m.as-number.plus i
       7
 
   ++> tests-each-returns-last-func-result
@@ -58,5 +60,6 @@
         [m]
           each > @
             * 10 20 30
-            m.put (m.as-number.plus i) > [i] >>
+            m.put > [i] >>
+              m.as-number.plus i
       60

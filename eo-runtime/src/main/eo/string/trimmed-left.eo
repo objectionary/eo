@@ -47,33 +47,40 @@
           (c.eq 0C-).or
             c.eq 0D-
 
-  (trimmed-left "").eq "" ++> tests-trimmed-left-empty-text
+  eq. ++> tests-trimmed-left-empty-text
+    trimmed-left ""
+    ""
 
-  ++> tests-text-trimmed-left-one-space
-    eq. > @
-      trimmed-left
-        " s"
-      "s"
+  eq. ++> tests-text-trimmed-left-one-space
+    trimmed-left
+      " s"
+    "s"
 
-  ++> tests-text-trimmed-left-many-spaces
-    eq. > @
-      trimmed-left
-        "     some"
-      "some"
+  eq. ++> tests-text-trimmed-left-many-spaces
+    trimmed-left
+      "     some"
+    "some"
 
-  ++> tests-text-trimmed-left-only-spaces
-    eq. > @
-      trimmed-left
-        "     "
-      ""
+  eq. ++> tests-text-trimmed-left-only-spaces
+    trimmed-left
+      "     "
+    ""
 
-  (trimmed-left "\tvalue").eq "value" ++> tests-trimmed-left-strips-tab
+  eq. ++> tests-trimmed-left-strips-tab
+    trimmed-left "\tvalue"
+    "value"
 
-  (trimmed-left "\nvalue").eq "value" ++> tests-trimmed-left-strips-lf
+  eq. ++> tests-trimmed-left-strips-lf
+    trimmed-left "\nvalue"
+    "value"
 
-  (trimmed-left "\fvalue").eq "value" ++> tests-trimmed-left-strips-ff
+  eq. ++> tests-trimmed-left-strips-ff
+    trimmed-left "\fvalue"
+    "value"
 
-  (trimmed-left "\rvalue").eq "value" ++> tests-trimmed-left-strips-cr
+  eq. ++> tests-trimmed-left-strips-cr
+    trimmed-left "\rvalue"
+    "value"
 
   eq. ++> tests-trimmed-left-strips-mixed-ws
     trimmed-left

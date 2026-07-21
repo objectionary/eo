@@ -62,8 +62,14 @@
       -2
       -1
 
-  range-of-numbers 1.2 3 --> on-range-of-numbers-with-non-number-start
+  range-of-numbers --> on-range-of-numbers-with-non-number-start
+    1.2
+    3
 
-  range-of-numbers 1 2.5 --> on-range-of-numbers-with-not-number-end
+  range-of-numbers --> on-range-of-numbers-with-not-number-end
+    1
+    2.5
 
-  range-of-numbers 1.5 5.2 --> on-range-of-not-numbers
+  range-of-numbers --> on-range-of-not-numbers
+    1.5
+    5.2

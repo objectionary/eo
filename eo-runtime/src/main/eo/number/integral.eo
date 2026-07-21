@@ -63,11 +63,10 @@
             value.minus operand
           err
         0
-      [value] > abs
-        if. > @
-          value.gte 0
-          value
-          value.neg
+      if. > [value] > abs
+        value.gte 0
+        value
+        value.neg
 
   ++> tests-calculates-quadratic-integral
     close-to > @
@@ -86,11 +85,10 @@
             value.minus operand
           err
         0
-      [value] > abs
-        if. > @
-          value.gte 0
-          value
-          value.neg
+      if. > [value] > abs
+        value.gte 0
+        value
+        value.neg
 
   ++> tests-calculates-cube-integral
     close-to > @
@@ -109,8 +107,7 @@
             value.minus operand
           err
         0
-      [value] > abs
-        if. > @
-          value.gte 0
-          value
-          value.neg
+      if. > [value] > abs
+        value.gte 0
+        value
+        value.neg

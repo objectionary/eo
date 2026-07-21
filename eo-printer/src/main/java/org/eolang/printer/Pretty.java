@@ -53,11 +53,6 @@ final class Pretty {
     private final String tab;
 
     /**
-     * The column past which a line overflows, the {@code WIDTH} weight.
-     */
-    private final int width;
-
-    /**
      * Ctor, using the default penalty weights.
      * @param element The {@code <eo>} element
      */
@@ -76,9 +71,6 @@ final class Pretty {
         this.weights = config;
         this.tab = " ".repeat(
             config.getOrDefault(PenaltyKey.STEP, PenaltyKey.STEP.fallback())
-        );
-        this.width = config.getOrDefault(
-            PenaltyKey.WIDTH, PenaltyKey.WIDTH.fallback()
         );
     }
 
@@ -305,13 +297,16 @@ final class Pretty {
      * plus vertical-args layout and saving one line and one indent level
      * over the verbose shape (issue #5594); when those arguments are a lone
      * tuple the star is glued onto the head line too ({@link #hybrid}). The
-     * flat one-liner is kept while it fits the {@code WIDTH} limit, but once
-     * it overflows (or cannot be built) the hybrid is used instead, rather
-     * than gating the hybrid behind the one-liner's absence and falling back
-     * to the verbose shape when the one-liner overflows (issue #5635). Either
-     * way the result is only a candidate — the penalty/width check in
-     * {@link #shaped} keeps it only when it beats the plain vertical
-     * rendering. A formation decoratee
+     * flat one-liner and the hybrid are both built and the lower-penalty of
+     * the two is returned, rather than discriminating between them by whether
+     * the one-liner fits the {@code WIDTH} limit: the hybrid drops the
+     * {@code @} (saving its {@code PHI} charge) and lifts the arguments one
+     * indent level, so it is often cheaper even when the one-liner fits, and a
+     * width check would hide it whenever the one-liner did not overflow (issue
+     * #5700, the residual case #5635 left open). When the one-liner cannot be
+     * built at all, the hybrid is used unconditionally. Either way the result
+     * is only a candidate — the penalty check in {@link #shaped} keeps it only
+     * when it beats the plain vertical rendering. A formation decoratee
      * (its bindings are vertical, not arguments) and a receiver-only
      * reversed dispatch ({@code not.} with just its receiver, mirroring the
      * rejection in {@link #flat}) have no hybrid form, so they yield empty
@@ -359,11 +354,16 @@ final class Pretty {
                 && !(decoratee.reversed && decoratee.children.size() <= 1);
             final boolean unnamed = decoratee.children.stream()
                 .allMatch(Node::nameless);
-            if (applied && unnamed
-                && flat.map(line -> line.length() > this.width).orElse(true)) {
-                result = Optional.of(
-                    this.vertical(decoratee.hybrid(marker), indent)
-                );
+            if (applied && unnamed) {
+                final String hybrid = this.vertical(decoratee.hybrid(marker), indent);
+                if (flat.map(
+                    line -> new Penalty(hybrid, this.weights).points()
+                        < new Penalty(line, this.weights).points()
+                ).orElse(true)) {
+                    result = Optional.of(hybrid);
+                } else {
+                    result = flat;
+                }
             } else {
                 result = flat;
             }

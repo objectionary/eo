@@ -25,7 +25,9 @@
     i32 > left
       as-bytes.slice 4 4
   [] > as-number /number
-  (i64 x.as-bytes).gt ^ > [x] > lt
+  gt. > [x] > lt
+    i64 x.as-bytes
+    ^
   [x] > lte
     or. > @
       lt value
@@ -89,9 +91,7 @@
 
   234.as-i64.eq 234.as-i64.as-i32.as-i64 ++> tests-i64-to-i32-and-back
 
-  eq. ++> tests-negative-i64-to-i32-and-back
-    -234.as-i64
-    -234.as-i64.as-i32.as-i64
+  -234.as-i64.eq -234.as-i64.as-i32.as-i64 ++> tests-negative-i64-to-i32-and-back
 
   3147483647.as-i64.as-i32 --> on-converting-to-i32-if-out-of-bounds
 
@@ -162,9 +162,13 @@
 
   (123.@.eq 42.@).not ++> tests-i64-eq-false
 
-  (1.as-i64.plus 1.as-i64).eq 2.as-i64 ++> tests-i64-one-plus-i64-one
+  eq. ++> tests-i64-one-plus-i64-one
+    1.as-i64.plus 1.as-i64
+    2.as-i64
 
-  (1.as-i64.minus 1.as-i64).eq 0.as-i64 ++> tests-i64-one-minus-i64-one
+  eq. ++> tests-i64-one-minus-i64-one
+    1.as-i64.minus 1.as-i64
+    0.as-i64
 
   2.as-i64.div 0.as-i64 --> on-division-i64-by-i64-zero
 
@@ -180,15 +184,25 @@
       dividend
     -235.as-i64 > dividend
 
-  (13.as-i64.div -5.as-i64).eq -2.as-i64 ++> tests-i64-div-with-remainder
+  eq. ++> tests-i64-div-with-remainder
+    13.as-i64.div -5.as-i64
+    -2.as-i64
 
-  (1.as-i64.div 5.as-i64).lt 1.as-i64 ++> tests-i64-div-less-than-i64-one
+  lt. ++> tests-i64-div-less-than-i64-one
+    1.as-i64.div 5.as-i64
+    1.as-i64
 
-  (1000.as-i64.times 0.as-i64).eq 0.as-i64 ++> tests-i64-multiply-by-zero
+  eq. ++> tests-i64-multiply-by-zero
+    1000.as-i64.times 0.as-i64
+    0.as-i64
 
-  (-7.as-i64.times -6.as-i64).eq 42.as-i64 ++> tests-i64-times-of-two-negatives
+  eq. ++> tests-i64-times-of-two-negatives
+    -7.as-i64.times -6.as-i64
+    42.as-i64
 
-  (-7.as-i64.times 6.as-i64).eq -42.as-i64 ++> tests-i64-times-of-mixed-signs
+  eq. ++> tests-i64-times-of-mixed-signs
+    -7.as-i64.times 6.as-i64
+    -42.as-i64
 
   eq. ++> tests-i64-times-wraps-modulo-2-pow-64
     times.

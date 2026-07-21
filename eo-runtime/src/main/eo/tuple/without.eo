@@ -13,11 +13,10 @@
   reduced > @
     list
     *
-    [accum item] >>
-      if. > @
-        element.eq item
-        accum
-        accum.with item
+    if. > [accum item] >>
+      element.eq item
+      accum
+      accum.with item
 
   eq. ++> tests-list-without
     without

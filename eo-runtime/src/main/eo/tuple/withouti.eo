@@ -13,11 +13,10 @@
   reducedi > @
     list
     *
-    [accum item idx] >>
-      if. > @
-        i.eq idx
-        accum
-        accum.with item
+    if. > [accum item idx] >>
+      i.eq idx
+      accum
+      accum.with item
 
   eq. ++> tests-list-withouti
     withouti
@@ -37,7 +36,9 @@
         "text"
         "f"
       * "text" "f"
-    withouti a 0 > [a] > foo
+    withouti > [a] > foo
+      a
+      0
 
   eq. ++> tests-list-withouti-nested-array
     withouti

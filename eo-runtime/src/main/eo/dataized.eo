@@ -51,7 +51,8 @@
             cached.as-bool
             m
           func > cached!
-          m.put (m.as-number.plus 1) > [] > func
+          m.put > [] > func
+            m.as-number.plus 1
       1
 
   ++> tests-dataizes-as-bytes-behaves-as-exclamationed

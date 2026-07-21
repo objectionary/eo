@@ -35,12 +35,11 @@
         index
       tup.head
       at-fast tup.tail
-  [x] > with
-    tuple > @
-      ^
-      x
-      as-number.
-        length.plus 1
+  tuple > [x] > with
+    ^
+    x
+    as-number.
+      length.plus 1
   [other] > eq
     and. > @
       length.eq other.length

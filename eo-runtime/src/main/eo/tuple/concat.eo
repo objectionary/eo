@@ -13,7 +13,9 @@
   reducedi > @
     passed
     list
-    with accum item > [accum item index]
+    with > [accum item index]
+      accum
+      item
 
   ++> tests-concatenates-lists
     and. > @

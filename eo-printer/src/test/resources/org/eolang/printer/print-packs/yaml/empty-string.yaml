@@ -15,4 +15,5 @@ origin: |
       Q.string.sprintf ""
 
 printed: |
-  io.stdout (string.sprintf "") > [] > app
+  io.stdout > [] > app
+    string.sprintf ""

@@ -98,9 +98,15 @@
       "b"
       "c"
 
-  nsplit "text" "-" 0 --> on-nsplit-with-limit-zero
+  nsplit --> on-nsplit-with-limit-zero
+    "text"
+    "-"
+    0
 
-  nsplit "text" "-" -1 --> on-nsplit-with-negative-limit
+  nsplit --> on-nsplit-with-negative-limit
+    "text"
+    "-"
+    -1
 
   ++> tests-nsplit-invalid-limit-returns-provided-fallback
     "fallback".eq > @

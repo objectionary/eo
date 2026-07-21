@@ -33,15 +33,22 @@
   [x] > right /bytes
   [b] > concat /bytes
 
-  (20-1F-EE-B5-90.slice 1 3).eq 1F-EE-B5 ++> tests-takes-part-of-bytes
+  eq. ++> tests-takes-part-of-bytes
+    20-1F-EE-B5-90.slice
+      1
+      3
+    1F-EE-B5
 
-  (20-1F-EE-B5-90-EE-BB.slice 2 3).size.eq 3 ++> tests-size-of-part-is-correct
+  eq. ++> tests-size-of-part-is-correct
+    size.
+      20-1F-EE-B5-90-EE-BB.slice 2 3
+    3
 
   F1-20-5F-EC-B5-90-32.size.eq 7 ++> tests-counts-size-of-bytes
 
-  ++> tests-turns-bytes-into-a-string
-    "你好, друг!".eq > @
-      "你好, друг!"
+  eq. ++> tests-turns-bytes-into-a-string
+    "你好, друг!"
+    "你好, друг!"
 
   ++> tests-right-with-zero
     not. > @
@@ -146,7 +153,10 @@
 
   CA-FE-BE-BE.size.eq 4 ++> tests-written-in-several-lines
 
-  (1.as-bytes.and 1.as-bytes).as-number.eq 1 ++> tests-bitwise-works
+  eq. ++> tests-bitwise-works
+    as-number.
+      1.as-bytes.and 1.as-bytes
+    1
 
   eq. ++> tests-bitwise-works-negative
     as-number.
@@ -160,13 +170,21 @@
     02-EF-D4-05-5E-78-3A > a
     12-33-C1-B5-5E-71-55 > b
 
-  (true.as-bytes.concat false.as-bytes).eq 01-00 ++> tests-concat-bools-as-bytes
+  eq. ++> tests-concat-bools-as-bytes
+    true.as-bytes.concat false.as-bytes
+    01-00
 
-  (05-5E-78.concat --).eq 05-5E-78 ++> tests-concat-with-empty
+  eq. ++> tests-concat-with-empty
+    05-5E-78.concat --
+    05-5E-78
 
-  (--.concat 05-5E-78).eq 05-5E-78 ++> tests-concat-empty-with
+  eq. ++> tests-concat-empty-with
+    --.concat 05-5E-78
+    05-5E-78
 
-  (--.concat --).eq -- ++> tests-concat-empty
+  eq. ++> tests-concat-empty
+    --.concat --
+    --
 
   eq. ++> tests-concat-strings
     string
@@ -201,7 +219,10 @@
     FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
     FF-FF-FF-FF-00-00-00-01
 
-  20-1F-EE-B5-90.slice 3 10 --> on-out-of-bounds-slice
+  slice. --> on-out-of-bounds-slice
+    20-1F-EE-B5-90
+    3
+    10
 
   ++> tests-out-of-bounds-slice-returns-provided-fallback
     "recovered".eq > @

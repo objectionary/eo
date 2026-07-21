@@ -18,52 +18,53 @@
       num
       0.5
 
-  (sqrt 0).eq 0 ++> tests-sqrt-zero
+  eq. ++> tests-sqrt-zero
+    sqrt 0
+    0
 
-  (sqrt 1).eq 1 ++> tests-sqrt-one
+  eq. ++> tests-sqrt-one
+    sqrt 1
+    1
 
-  ++> tests-sqrt-four
-    lt. > @
-      abs
-        minus.
-          sqrt 4
-          2
-      1.0E-9
+  lt. ++> tests-sqrt-four
+    abs
+      minus.
+        sqrt 4
+        2
+    1.0E-9
 
-  ++> tests-sqrt-two
-    lt. > @
-      abs
-        minus.
-          sqrt 2
-          1.4142135623730951
-      1.0E-9
+  lt. ++> tests-sqrt-two
+    abs
+      minus.
+        sqrt 2
+        1.4142135623730951
+    1.0E-9
 
-  ++> tests-sqrt-point-five
-    lt. > @
-      abs
-        minus.
-          sqrt 0.25
-          0.5
-      1.0E-9
+  lt. ++> tests-sqrt-point-five
+    abs
+      minus.
+        sqrt 0.25
+        0.5
+    1.0E-9
 
-  ++> tests-sqrt-check-zero-input
-    lt. > @
-      abs
-        0.minus
-          sqrt 0
-      1.0E-11
+  lt. ++> tests-sqrt-check-zero-input
+    abs
+      0.minus
+        sqrt 0
+    1.0E-11
 
   (sqrt -0.1).is-nan ++> tests-sqrt-check-negative-input
 
-  ++> tests-sqrt-check-float-input
-    lt. > @
-      abs
-        2.minus
-          sqrt 4
-      1.0E-11
+  lt. ++> tests-sqrt-check-float-input
+    abs
+      2.minus
+        sqrt 4
+    1.0E-11
 
   (sqrt nan).is-nan ++> tests-sqrt-check-nan-input
 
-  (sqrt pinf).eq pinf ++> tests-sqrt-check-infinity-n1
+  eq. ++> tests-sqrt-check-infinity-n1
+    sqrt pinf
+    pinf
 
   (sqrt ninf).is-nan ++> tests-sqrt-check-infinity-n2
