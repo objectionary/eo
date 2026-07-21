@@ -103,6 +103,37 @@ final class MjTranspileTest {
     }
 
     @Test
+    void wrapsObjectsIntoPhCoverageWhenFileIsSet(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "the generated Java must wrap located objects into PhCoverage when coverageFile is set",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(this.program)
+                    .with("coverageFile", temp.resolve("hits.txt").toFile())
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(this.compiled)
+            ).asString(),
+            Matchers.containsString("new PhCoverage(")
+        );
+    }
+
+    @Test
+    void keepsGeneratedJavaFreeOfPhCoverageByDefault(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "the generated Java must not mention PhCoverage when coverageFile is not set",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(this.program)
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(this.compiled)
+            ).asString(),
+            Matchers.not(Matchers.containsString("PhCoverage"))
+        );
+    }
+
+    @Test
     void throwsDetailedError(@Mktmp final Path temp) {
         final IllegalStateException exception = Assertions.assertThrows(
             IllegalStateException.class,
