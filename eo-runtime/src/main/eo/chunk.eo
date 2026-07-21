@@ -28,21 +28,21 @@
 
 [id] > chunk
   get > @
-  read > get
-    0
-    size
-  [] > size /Q.number
-  [size] > resized /Q.chunk
   write > [source target length] > copy
     target
     read
       source
       length
-  [offset length] > read /Q.bytes
-    ? > cant-read /{Q.string}
-  [offset data] > write /Q.bool
+  read > get
+    0
+    size
   seq * > [object] > put
     write
       0
       object
     get
+  [offset length] > read /Q.bytes
+    ? > cant-read /{Q.string}
+  [size] > resized /Q.chunk
+  [] > size /Q.number
+  [offset data] > write /Q.bool

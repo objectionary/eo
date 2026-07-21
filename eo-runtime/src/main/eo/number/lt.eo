@@ -13,8 +13,6 @@
       number value
   x > value!
 
-  10.lt 50 ++> tests-int-less-true
-
   eq. ++> tests-int-less-equal
     not.
       10.lt 10
@@ -25,25 +23,19 @@
       10.lt -5
     true
 
-  eq. ++> tests-positive-infinity-lt-positive-infinity
-    pinf.lt pinf
+  10.lt 50 ++> tests-int-less-true
+
+  eq. ++> tests-nan-not-lt-nan
+    nan.lt nan
     false
 
-  eq. ++> tests-positive-infinity-not-lt-negative-infinity
-    pinf.lt ninf
+  eq. ++> tests-nan-not-lt-number
+    nan.lt 42
     false
 
-  eq. ++> tests-positive-infinity-not-lt-nan
-    pinf.lt nan
-    false
+  ninf.lt 42.5 ++> tests-negative-infinity-lt-float
 
-  eq. ++> tests-positive-infinity-not-lt-int
-    pinf.lt 42
-    false
-
-  eq. ++> tests-positive-infinity-not-lt-float
-    pinf.lt 42.5
-    false
+  ninf.lt 42 ++> tests-negative-infinity-lt-int
 
   eq. ++> tests-negative-infinity-lt-negative-infinity
     ninf.lt ninf
@@ -57,14 +49,22 @@
     ninf.lt nan
     false
 
-  ninf.lt 42 ++> tests-negative-infinity-lt-int
-
-  ninf.lt 42.5 ++> tests-negative-infinity-lt-float
-
-  eq. ++> tests-nan-not-lt-number
-    nan.lt 42
+  eq. ++> tests-positive-infinity-lt-positive-infinity
+    pinf.lt pinf
     false
 
-  eq. ++> tests-nan-not-lt-nan
-    nan.lt nan
+  eq. ++> tests-positive-infinity-not-lt-float
+    pinf.lt 42.5
+    false
+
+  eq. ++> tests-positive-infinity-not-lt-int
+    pinf.lt 42
+    false
+
+  eq. ++> tests-positive-infinity-not-lt-nan
+    pinf.lt nan
+    false
+
+  eq. ++> tests-positive-infinity-not-lt-negative-infinity
+    pinf.lt ninf
     false

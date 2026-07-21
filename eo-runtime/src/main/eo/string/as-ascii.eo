@@ -14,9 +14,13 @@
     as-i16.
       00-.concat char.as-bytes
 
-  eq. ++> tests-reads-code-of-uppercase-letter
-    65
-    as-ascii "A"
+  eq. ++> tests-reads-code-of-last-lowercase-letter
+    122
+    as-ascii "z"
+
+  eq. ++> tests-reads-code-of-last-printable
+    126
+    as-ascii "~"
 
   eq. ++> tests-reads-code-of-last-uppercase-letter
     90
@@ -26,27 +30,23 @@
     97
     as-ascii "a"
 
-  eq. ++> tests-reads-code-of-last-lowercase-letter
-    122
-    as-ascii "z"
-
-  eq. ++> tests-reads-code-of-zero-digit
-    48
-    as-ascii "0"
-
   eq. ++> tests-reads-code-of-nine-digit
     57
     as-ascii "9"
+
+  eq. ++> tests-reads-code-of-punctuation
+    33
+    as-ascii "!"
 
   eq. ++> tests-reads-code-of-space
     32
     as-ascii
       " "
 
-  eq. ++> tests-reads-code-of-punctuation
-    33
-    as-ascii "!"
+  eq. ++> tests-reads-code-of-uppercase-letter
+    65
+    as-ascii "A"
 
-  eq. ++> tests-reads-code-of-last-printable
-    126
-    as-ascii "~"
+  eq. ++> tests-reads-code-of-zero-digit
+    48
+    as-ascii "0"

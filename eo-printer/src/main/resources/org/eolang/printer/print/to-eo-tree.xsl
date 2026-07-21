@@ -156,7 +156,25 @@
       <xsl:attribute name="data">
         <xsl:value-of select="if (eo:has-data(.)) then 'yes' else 'no'"/>
       </xsl:attribute>
-      <xsl:apply-templates select="o[not(eo:void(.)) or @local or @types]" mode="tree"/>
+      <!--
+      Formation attributes are emitted in a canonical order so that
+      textually-reordered but logically-identical bodies print the same
+      way (idempotent, diff-friendly output — #5706). The ordering is:
+      vertical void body lines first, then the decoratee (@name = φ),
+      then every other bound attribute alphabetically by name, and test
+      attributes last (also alphabetically). Two kinds of body keep
+      their source order untouched: application arguments (positional,
+      so their order carries meaning) and any body carrying a pipe
+      continuation ("| args", §3.14), whose "|" line must stay directly
+      below the named formation it applies to (R-3.14.7) — reordering
+      would strand it. In both cases the sort key collapses to a
+      constant, and since xsl:sort is stable the original order stands.
+      -->
+      <xsl:variable name="sortable" select="eo:abstract(.) and empty(o[@pipe])"/>
+      <xsl:apply-templates select="o[not(eo:void(.)) or @local or @types]" mode="tree">
+        <xsl:sort data-type="number" select="if (not($sortable)) then 0 else if (eo:void(.)) then 1 else if (@name = $eo:phi) then 2 else if (eo:test-attr(.)) then 4 else 3"/>
+        <xsl:sort select="if (not($sortable) or eo:void(.) or @name = $eo:phi) then '' else string(@name)"/>
+      </xsl:apply-templates>
     </line>
   </xsl:template>
   <!-- VOID WITH FILE-LOCAL HANDLE -->

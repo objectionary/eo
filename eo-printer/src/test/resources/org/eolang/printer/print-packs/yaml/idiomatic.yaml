@@ -39,8 +39,6 @@ printed: |
   +meta2 long tail
 
   [x x2 x3] > idiomatic
-    5 > iTest_me
-    [] > rr /Q.number
     if. > @
       plus.
         this
@@ -52,4 +50,6 @@ printed: |
             true
         bar
           n.plus "hello, 大家!"
+    5 > iTest_me
+    [] > rr /Q.number
     4.55 > x!

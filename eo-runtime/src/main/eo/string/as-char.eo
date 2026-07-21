@@ -13,10 +13,16 @@
     7
     1
 
-  eq. ++> tests-writes-byte-of-uppercase-letter
-    "A"
+  eq. ++> tests-round-trips-through-as-ascii
+    "!"
     string
-      as-char 65
+      as-char
+        as-ascii "!"
+
+  eq. ++> tests-writes-byte-of-last-printable
+    "~"
+    string
+      as-char 126
 
   eq. ++> tests-writes-byte-of-last-uppercase-letter
     "Z"
@@ -28,23 +34,17 @@
     string
       as-char 122
 
-  eq. ++> tests-writes-byte-of-zero-digit
-    "0"
-    string
-      as-char 48
-
   eq. ++> tests-writes-byte-of-space
     " "
     string
       as-char 32
 
-  eq. ++> tests-writes-byte-of-last-printable
-    "~"
+  eq. ++> tests-writes-byte-of-uppercase-letter
+    "A"
     string
-      as-char 126
+      as-char 65
 
-  eq. ++> tests-round-trips-through-as-ascii
-    "!"
+  eq. ++> tests-writes-byte-of-zero-digit
+    "0"
     string
-      as-char
-        as-ascii "!"
+      as-char 48

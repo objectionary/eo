@@ -12,28 +12,9 @@
 
 [as-bytes] > u8
   as-bytes > @
-  as-i16.as-number > as-number
   i16 > [] > as-i16
     00-.concat as-bytes
-  as-i16.lt x.as-u8.as-i16 > [x] > lt
-  as-i16.lte x.as-u8.as-i16 > [x] > lte
-  as-i16.gt x.as-u8.as-i16 > [x] > gt
-  as-i16.gte x.as-u8.as-i16 > [x] > gte
-  [x] > times
-    u8 right > @
-    (as-i16.times x.as-u8.as-i16).as-bytes.slice > right
-      1
-      1
-  [x] > plus
-    u8 right > @
-    (as-i16.plus x.as-u8.as-i16).as-bytes.slice > right
-      1
-      1
-  [x] > minus
-    u8 right > @
-    (as-i16.minus x.as-u8.as-i16).as-bytes.slice > right
-      1
-      1
+  as-i16.as-number > as-number
   [x cant-divide] > div
     if. > @
       xval.eq zero
@@ -46,42 +27,65 @@
       1
     x.as-u8 > xval
     00- > zero
-
-  2A-.as-u8.as-bytes.eq 2A- ++> tests-u8-has-valid-bytes
+  as-i16.gt x.as-u8.as-i16 > [x] > gt
+  as-i16.gte x.as-u8.as-i16 > [x] > gte
+  as-i16.lt x.as-u8.as-i16 > [x] > lt
+  as-i16.lte x.as-u8.as-i16 > [x] > lte
+  [x] > minus
+    u8 right > @
+    (as-i16.minus x.as-u8.as-i16).as-bytes.slice > right
+      1
+      1
+  [x] > plus
+    u8 right > @
+    (as-i16.plus x.as-u8.as-i16).as-bytes.slice > right
+      1
+      1
+  [x] > times
+    u8 right > @
+    (as-i16.times x.as-u8.as-i16).as-bytes.slice > right
+      1
+      1
 
   FF-.as-u8.as-i16.as-bytes.eq 00-FF ++> tests-u8-as-i16-widens-with-zero-prefix
 
-  255.as-i64.as-i32.as-i16.eq FF-.as-u8.as-i16 ++> tests-u8-max-byte-is-unsigned
-
   FF-.as-u8.as-number.eq 255 ++> tests-u8-as-number-is-unsigned
 
-  0A-.as-u8.lt 32-.as-u8 ++> tests-u8-less-true
+  eq. ++> tests-u8-div-by-u8-one
+    FF-.as-u8.div 01-.as-u8
+    FF-.as-u8
 
-  (0A-.as-u8.lt 0A-.as-u8).not ++> tests-u8-less-equal
+  eq. ++> tests-u8-div-by-zero-returns-provided-fallback
+    "recovered"
+    02-.as-u8.div
+      00-.as-u8
+      "recovered" > [msg]
+
+  eq. ++> tests-u8-div-is-unsigned
+    C8-.as-u8.div 03-.as-u8
+    42-.as-u8
+
+  (2A-.as-u8.eq 2B-.as-u8).not ++> tests-u8-eq-false
+
+  2A-.as-u8.eq 2A-.as-u8 ++> tests-u8-eq-true
 
   FF-.as-u8.gt 01-.as-u8 ++> tests-u8-greater-treats-high-bit-as-magnitude
-
-  (FF-.as-u8.lt 01-.as-u8).not ++> tests-u8-high-bit-not-less-than-one
-
-  00-.as-u8.lt FF-.as-u8 ++> tests-u8-zero-less-than-max
-
-  32-.as-u8.lte 32-.as-u8 ++> tests-u8-lte-equal
 
   32-.as-u8.gte 32-.as-u8 ++> tests-u8-gte-equal
 
   (00-.as-u8.gte 0A-.as-u8).not ++> tests-u8-gte-false
 
-  2A-.as-u8.eq 2A-.as-u8 ++> tests-u8-eq-true
+  2A-.as-u8.as-bytes.eq 2A- ++> tests-u8-has-valid-bytes
 
-  (2A-.as-u8.eq 2B-.as-u8).not ++> tests-u8-eq-false
+  (FF-.as-u8.lt 01-.as-u8).not ++> tests-u8-high-bit-not-less-than-one
 
-  eq. ++> tests-u8-one-plus-u8-one
-    01-.as-u8.plus 01-.as-u8
-    02-.as-u8
+  (0A-.as-u8.lt 0A-.as-u8).not ++> tests-u8-less-equal
 
-  eq. ++> tests-u8-plus-with-overflow
-    FF-.as-u8.plus 01-.as-u8
-    00-.as-u8
+  0A-.as-u8.lt 32-.as-u8 ++> tests-u8-less-true
+
+  32-.as-u8.lte 32-.as-u8 ++> tests-u8-lte-equal
+
+  255.as-i64.as-i32.as-i16.eq FF-.as-u8.as-i16 ++> tests-u8-max-byte-is-unsigned
 
   eq. ++> tests-u8-minus
     05-.as-u8.minus 03-.as-u8
@@ -91,30 +95,26 @@
     00-.as-u8.minus 01-.as-u8
     FF-.as-u8
 
+  eq. ++> tests-u8-one-plus-u8-one
+    01-.as-u8.plus 01-.as-u8
+    02-.as-u8
+
+  eq. ++> tests-u8-plus-with-overflow
+    FF-.as-u8.plus 01-.as-u8
+    00-.as-u8
+
   eq. ++> tests-u8-times
     06-.as-u8.times 07-.as-u8
     2A-.as-u8
-
-  eq. ++> tests-u8-times-wraps-modulo-2-pow-8
-    10-.as-u8.times 10-.as-u8
-    00-.as-u8
 
   eq. ++> tests-u8-times-wraps-large-product
     FF-.as-u8.times FF-.as-u8
     01-.as-u8
 
-  eq. ++> tests-u8-div-is-unsigned
-    C8-.as-u8.div 03-.as-u8
-    42-.as-u8
+  eq. ++> tests-u8-times-wraps-modulo-2-pow-8
+    10-.as-u8.times 10-.as-u8
+    00-.as-u8
 
-  eq. ++> tests-u8-div-by-u8-one
-    FF-.as-u8.div 01-.as-u8
-    FF-.as-u8
+  00-.as-u8.lt FF-.as-u8 ++> tests-u8-zero-less-than-max
 
   02-.as-u8.div 00-.as-u8 --> on-division-u8-by-u8-zero
-
-  eq. ++> tests-u8-div-by-zero-returns-provided-fallback
-    "recovered"
-    02-.as-u8.div
-      00-.as-u8
-      "recovered" > [msg]

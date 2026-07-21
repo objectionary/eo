@@ -20,9 +20,9 @@ origin: |
 
 printed: |
   [] > counter
-    memory 0 > state
     seq * > @
       state.write 0
       state.write
         state.as-int.plus 1
       state.as-int
+    memory 0 > state

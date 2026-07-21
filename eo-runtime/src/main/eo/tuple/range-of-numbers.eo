@@ -26,26 +26,6 @@
     T
       "Some of the arguments are not integers"
 
-  eq. ++> tests-simple-range-of-numbers-from-one-to-ten
-    range-of-numbers
-      1
-      10
-    *
-      1
-      2
-      3
-      4
-      5
-      6
-      7
-      8
-      9
-
-  is-empty ++> tests-range-of-numbers-from-ten-to-ten-is-empty
-    range-of-numbers
-      10
-      10
-
   is-empty ++> tests-range-of-descending-numbers-is-empty
     range-of-numbers
       10
@@ -62,6 +42,30 @@
       -2
       -1
 
+  is-empty ++> tests-range-of-numbers-from-ten-to-ten-is-empty
+    range-of-numbers
+      10
+      10
+
+  eq. ++> tests-simple-range-of-numbers-from-one-to-ten
+    range-of-numbers
+      1
+      10
+    *
+      1
+      2
+      3
+      4
+      5
+      6
+      7
+      8
+      9
+
+  range-of-numbers --> on-range-of-not-numbers
+    1.5
+    5.2
+
   range-of-numbers --> on-range-of-numbers-with-non-number-start
     1.2
     3
@@ -69,7 +73,3 @@
   range-of-numbers --> on-range-of-numbers-with-not-number-end
     1
     2.5
-
-  range-of-numbers --> on-range-of-not-numbers
-    1.5
-    5.2

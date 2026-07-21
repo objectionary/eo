@@ -19,6 +19,20 @@
     trimmed-left
       trimmed-right text
 
+  eq. ++> tests-text-trimmed-empty
+    trimmed ""
+    ""
+
+  eq. ++> tests-text-trimmed-many-spaces
+    trimmed
+      "    some     "
+    "some"
+
+  eq. ++> tests-text-trimmed-one-space-both
+    trimmed
+      " some "
+    "some"
+
   eq. ++> tests-text-trimmed-one-space-left
     trimmed
       " some"
@@ -29,29 +43,10 @@
       "some "
     "some"
 
-  eq. ++> tests-text-trimmed-one-space-both
-    trimmed
-      " some "
-    "some"
-
-  eq. ++> tests-text-trimmed-many-spaces
-    trimmed
-      "    some     "
-    "some"
-
-  eq. ++> tests-text-trimmed-empty
-    trimmed ""
-    ""
-
   eq. ++> tests-text-trimmed-only-spaces
     trimmed
       "        "
     ""
-
-  eq. ++> tests-trimmed-strips-mixed-ws-both-sides
-    trimmed
-      " \t\n\f\rvalue \t\n\f\r"
-    "value"
 
   eq. ++> tests-trimmed-preserves-inner-content
     trimmed "no-whitespace"
@@ -61,3 +56,8 @@
     trimmed
       "\t hello world \n"
     "hello world"
+
+  eq. ++> tests-trimmed-strips-mixed-ws-both-sides
+    trimmed
+      " \t\n\f\rvalue \t\n\f\r"
+    "value"

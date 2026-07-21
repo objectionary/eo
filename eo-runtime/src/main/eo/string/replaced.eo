@@ -20,7 +20,6 @@
   text > bts!
   next. > matched
     target.match reinit
-  string bts > reinit
   block.exists.if > [block accum start] > rec-replaced
     rec-replaced
       block.next
@@ -36,6 +35,7 @@
         reinit.slice
           start
           reinit.length.minus start
+  string bts > reinit
 
   eq. ++> tests-does-not-replaces-if-regex-not-found
     replaced

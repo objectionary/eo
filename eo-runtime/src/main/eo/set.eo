@@ -17,21 +17,20 @@
         map.entry item true > [item]
   [mp] > initialized
     mp.keys > @
+    mp.has item > [item] > has
     mp.size > size
     set.initialized > [item] > with
       mp.with item true
     set.initialized > [item] > without
       mp.without item
-    mp.has item > [item] > has
 
-  eq. ++> tests-set-rebuilds-itself
-    set *
-      1
-      2
-      2
-    *
-      1
-      2
+  has. ++> tests-appends-new-item-to-set
+    with.
+      set *
+        1
+        2
+      3
+    3
 
   eq. ++> tests-does-not-append-existed-item-to-set
     size.
@@ -42,16 +41,17 @@
         1
     2
 
-  has. ++> tests-appends-new-item-to-set
-    with.
-      set *
-        1
-        2
-      3
-    3
-
   eq. ++> tests-empty-set-has-size-of-zero
     size.
       set
         *
     0
+
+  eq. ++> tests-set-rebuilds-itself
+    set *
+      1
+      2
+      2
+    *
+      1
+      2

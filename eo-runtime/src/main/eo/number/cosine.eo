@@ -13,14 +13,19 @@
     num.plus
       pi.div 2
 
-  lt. ++> tests-cosine-of-zero-is-one
+  lt. ++> tests-cosine-is-even-function
     abs
-      minus.
-        times.
-          cosine 0
-          1000
+      times.
+        minus.
+          cosine
+            pi.div 3
+          cosine (pi.div 3).neg
         1000
     1
+
+  (cosine nan).is-nan ++> tests-cosine-of-nan-is-nan
+
+  (cosine ninf).is-nan ++> tests-cosine-of-negative-infinity-is-nan
 
   lt. ++> tests-cosine-of-pi-halves-is-zero
     abs
@@ -49,13 +54,23 @@
         500
     1
 
-  lt. ++> tests-cosine-is-even-function
+  (cosine pinf).is-nan ++> tests-cosine-of-positive-infinity-is-nan
+
+  lt. ++> tests-cosine-of-seventeen-radians
     abs
-      times.
-        minus.
-          cosine
-            pi.div 3
-          cosine (pi.div 3).neg
+      minus.
+        times.
+          cosine 17
+          1000
+        -275
+    1
+
+  lt. ++> tests-cosine-of-zero-is-one
+    abs
+      minus.
+        times.
+          cosine 0
+          1000
         1000
     1
 
@@ -69,18 +84,3 @@
           1000
         500
     1
-
-  lt. ++> tests-cosine-of-seventeen-radians
-    abs
-      minus.
-        times.
-          cosine 17
-          1000
-        -275
-    1
-
-  (cosine nan).is-nan ++> tests-cosine-of-nan-is-nan
-
-  (cosine pinf).is-nan ++> tests-cosine-of-positive-infinity-is-nan
-
-  (cosine ninf).is-nan ++> tests-cosine-of-negative-infinity-is-nan

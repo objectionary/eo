@@ -10,22 +10,11 @@
 [n] > is-nan
   n.as-bytes.eq 7F-F8-00-00-00-00-00-00 > @
 
-  42.5.is-nan.not ++> tests-simple-number-is-not-nan
+  nan.is-nan ++> nan-is-nan
 
-  (number nan.as-bytes).is-nan ++> tests-number-with-nan-bytes-is-nan
-
-  pinf.is-nan.not ++> tests-positive-infinity-is-not-nan
-
-  ninf.is-nan.not ++> tests-negative-infinity-is-not-nan
-
-  eq. ++> tests-nan-times-number-is-nan
+  eq. ++> tests-nan-div-nan-is-nan
     as-bytes.
-      nan.times 42
-    nan.as-bytes
-
-  eq. ++> tests-nan-times-nan-is-nan
-    as-bytes.
-      nan.times nan
+      nan.div nan
     nan.as-bytes
 
   eq. ++> tests-nan-div-number-is-nan
@@ -33,9 +22,23 @@
       nan.div 42
     nan.as-bytes
 
-  eq. ++> tests-nan-div-nan-is-nan
+  nan.floor.as-bytes.eq nan.as-bytes ++> tests-nan-floor-is-nan
+
+  eq. ++> tests-nan-minus-nan-is-nan
     as-bytes.
-      nan.div nan
+      nan.minus nan
+    nan.as-bytes
+
+  eq. ++> tests-nan-minus-number-is-nan
+    as-bytes.
+      nan.minus 42
+    nan.as-bytes
+
+  nan.@.as-bytes.eq nan.as-bytes ++> tests-nan-neg-is-nan
+
+  eq. ++> tests-nan-plus-nan-is-nan
+    as-bytes.
+      nan.plus nan
     nan.as-bytes
 
   eq. ++> tests-nan-plus-number-is-nan
@@ -43,23 +46,20 @@
       nan.plus 42
     nan.as-bytes
 
-  eq. ++> tests-nan-plus-nan-is-nan
+  eq. ++> tests-nan-times-nan-is-nan
     as-bytes.
-      nan.plus nan
+      nan.times nan
     nan.as-bytes
 
-  nan.@.as-bytes.eq nan.as-bytes ++> tests-nan-neg-is-nan
-
-  eq. ++> tests-nan-minus-number-is-nan
+  eq. ++> tests-nan-times-number-is-nan
     as-bytes.
-      nan.minus 42
+      nan.times 42
     nan.as-bytes
 
-  eq. ++> tests-nan-minus-nan-is-nan
-    as-bytes.
-      nan.minus nan
-    nan.as-bytes
+  ninf.is-nan.not ++> tests-negative-infinity-is-not-nan
 
-  nan.floor.as-bytes.eq nan.as-bytes ++> tests-nan-floor-is-nan
+  (number nan.as-bytes).is-nan ++> tests-number-with-nan-bytes-is-nan
 
-  nan.is-nan ++> nan-is-nan
+  pinf.is-nan.not ++> tests-positive-infinity-is-not-nan
+
+  42.5.is-nan.not ++> tests-simple-number-is-not-nan

@@ -42,8 +42,6 @@
               ^.kbts > kbts
               tup.head.key > key
               tup.head.value > value
-      tuple.hash-code kbts > hash!
-      tup.head.key.as-bytes > kbts!
       if. > [ent] > has-key
         ent.length.eq 0
         false
@@ -52,6 +50,8 @@
             ent.head.kbts.eq kbts
           true
           has-key ent.tail
+      tuple.hash-code kbts > hash!
+      tup.head.key.as-bytes > kbts!
       @. > prev
         rec-rebuild tup.tail
   [key value] > entry
@@ -63,6 +63,11 @@
         rec-key-search entries
       tuple.hash-code kbts > hash!
       key.as-bytes > kbts!
+      [] > not-found
+        false > exists
+        cant-get > [cant-get] > get
+          "Object by hash code %d from given key does not exists".printf
+            * hash
       [tup] > rec-key-search
         if. > @
           tup.length.eq 0
@@ -78,11 +83,6 @@
               not-found
         @. > prev
           rec-key-search tup.tail
-      [] > not-found
-        false > exists
-        cant-get > [cant-get] > get
-          "Object by hash code %d from given key does not exists".printf
-            * hash
     (found key).exists > [key] > has
     tuple.mapped > keys
       entries
@@ -118,6 +118,107 @@
       tuple.hash-code kbts > hash!
       key.as-bytes > kbts!
 
+  ++> tests-adds-key-colliding-with-existing-one
+    and. > @
+      2.eq mp.size
+      2.eq
+        get.
+          mp.found "BB"
+    with. > mp
+      map *
+        map.entry "Aa" 1
+      "BB"
+      2
+
+  ++> tests-adds-new-pair-to-hash-map
+    and. > @
+      2.eq mp.size
+      mp.has "two"
+    with. > mp
+      map *
+        map.entry "one" 1
+      "two"
+      2
+
+  eq. ++> tests-does-not-change-map-without-non-existed-element
+    size.
+      without.
+        map *
+          map.entry "one" 1
+        "two"
+    1
+
+  ++> tests-does-not-find-element-by-key-in-hash-map
+    not. > @
+      exists.
+        found.
+          map *
+            map.entry "one" 1
+            map.entry "two" 2
+          "three"
+
+  ++> tests-does-not-have-absent-key-colliding-with-stored-one
+    not. > @
+      has.
+        map *
+          map.entry "Aa" 1
+        "BB"
+
+  ++> tests-does-not-have-element-by-key-in-hash-map
+    not. > @
+      has.
+        map *
+          map.entry "one" 1
+          map.entry "two" 2
+        "three"
+
+  eq. ++> tests-falls-back-for-absent-key-colliding-with-stored-one
+    "recovered"
+    get.
+      found.
+        map *
+          map.entry "Aa" 1
+        "BB"
+      "recovered" > [msg]
+
+  ++> tests-finds-element-by-key-in-map
+    2.eq found.get > @
+    mp.found "two" > found
+    map * > mp
+      map.entry "one" 1
+      map.entry "two" 2
+      map.entry "three" 3
+
+  ++> tests-finds-value-of-each-key-with-colliding-hash-codes
+    and. > @
+      1.eq first.get
+      2.eq second.get
+    mp.found "Aa" > first
+    map * > mp
+      map.entry "Aa" 1
+      map.entry "BB" 2
+    mp.found "BB" > second
+
+  has. ++> tests-has-element-with-key-in-hash-map
+    map *
+      map.entry "one" 1
+      map.entry "two" 2
+    "two"
+
+  ++> tests-keeps-both-keys-with-colliding-hash-codes
+    2.eq mp.size > @
+    map * > mp
+      map.entry "Aa" 1
+      map.entry "BB" 2
+
+  ++> tests-map-get-missing-returns-provided-fallback
+    "recovered".eq > @
+      get.
+        mp.found "absent"
+        "recovered" > [msg]
+    map * > mp
+      map.entry "one" 1
+
   ++> tests-map-rebuilds-itself
     2.eq mp.size > @
     map * > mp
@@ -141,6 +242,39 @@
                 m.as-number.plus 1
               1
 
+  ++> tests-removes-element-from-map-by-key
+    and. > @
+      1.eq mp.size
+      not.
+        mp.has "one"
+    without. > mp
+      map *
+        map.entry "one" 1
+        map.entry "two" 2
+      "one"
+
+  ++> tests-removes-only-the-given-key-of-colliding-ones
+    (mp.has "Aa").not.and > @
+      mp.has "BB"
+    without. > mp
+      map *
+        map.entry "Aa" 1
+        map.entry "BB" 2
+      "Aa"
+
+  ++> tests-replaces-value-if-pair-with-key-exists-in-map
+    and. > @
+      2.eq mp.size
+      3.eq
+        get.
+          mp.found "two"
+    with. > mp
+      map *
+        map.entry "one" 1
+        map.entry "two" 2
+      "two"
+      3
+
   eq. ++> tests-returns-list-of-keys
     keys.
       map *
@@ -162,140 +296,6 @@
       2
       3
       4
-
-  ++> tests-finds-element-by-key-in-map
-    2.eq found.get > @
-    mp.found "two" > found
-    map * > mp
-      map.entry "one" 1
-      map.entry "two" 2
-      map.entry "three" 3
-
-  ++> tests-does-not-find-element-by-key-in-hash-map
-    not. > @
-      exists.
-        found.
-          map *
-            map.entry "one" 1
-            map.entry "two" 2
-          "three"
-
-  has. ++> tests-has-element-with-key-in-hash-map
-    map *
-      map.entry "one" 1
-      map.entry "two" 2
-    "two"
-
-  ++> tests-does-not-have-element-by-key-in-hash-map
-    not. > @
-      has.
-        map *
-          map.entry "one" 1
-          map.entry "two" 2
-        "three"
-
-  eq. ++> tests-does-not-change-map-without-non-existed-element
-    size.
-      without.
-        map *
-          map.entry "one" 1
-        "two"
-    1
-
-  ++> tests-removes-element-from-map-by-key
-    and. > @
-      1.eq mp.size
-      not.
-        mp.has "one"
-    without. > mp
-      map *
-        map.entry "one" 1
-        map.entry "two" 2
-      "one"
-
-  ++> tests-adds-new-pair-to-hash-map
-    and. > @
-      2.eq mp.size
-      mp.has "two"
-    with. > mp
-      map *
-        map.entry "one" 1
-      "two"
-      2
-
-  ++> tests-replaces-value-if-pair-with-key-exists-in-map
-    and. > @
-      2.eq mp.size
-      3.eq
-        get.
-          mp.found "two"
-    with. > mp
-      map *
-        map.entry "one" 1
-        map.entry "two" 2
-      "two"
-      3
-
-  ++> tests-keeps-both-keys-with-colliding-hash-codes
-    2.eq mp.size > @
-    map * > mp
-      map.entry "Aa" 1
-      map.entry "BB" 2
-
-  ++> tests-finds-value-of-each-key-with-colliding-hash-codes
-    and. > @
-      1.eq first.get
-      2.eq second.get
-    mp.found "Aa" > first
-    map * > mp
-      map.entry "Aa" 1
-      map.entry "BB" 2
-    mp.found "BB" > second
-
-  ++> tests-does-not-have-absent-key-colliding-with-stored-one
-    not. > @
-      has.
-        map *
-          map.entry "Aa" 1
-        "BB"
-
-  eq. ++> tests-falls-back-for-absent-key-colliding-with-stored-one
-    "recovered"
-    get.
-      found.
-        map *
-          map.entry "Aa" 1
-        "BB"
-      "recovered" > [msg]
-
-  ++> tests-adds-key-colliding-with-existing-one
-    and. > @
-      2.eq mp.size
-      2.eq
-        get.
-          mp.found "BB"
-    with. > mp
-      map *
-        map.entry "Aa" 1
-      "BB"
-      2
-
-  ++> tests-removes-only-the-given-key-of-colliding-ones
-    (mp.has "Aa").not.and > @
-      mp.has "BB"
-    without. > mp
-      map *
-        map.entry "Aa" 1
-        map.entry "BB" 2
-      "Aa"
-
-  ++> tests-map-get-missing-returns-provided-fallback
-    "recovered".eq > @
-      get.
-        mp.found "absent"
-        "recovered" > [msg]
-    map * > mp
-      map.entry "one" 1
 
   --> on-map-get-missing-without-fallback
     get. > @

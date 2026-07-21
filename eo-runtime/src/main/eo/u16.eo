@@ -12,28 +12,9 @@
 
 [as-bytes] > u16
   as-bytes > @
-  as-i32.as-number > as-number
   i32 > [] > as-i32
     00-00.concat as-bytes
-  as-i32.lt x.as-u16.as-i32 > [x] > lt
-  as-i32.lte x.as-u16.as-i32 > [x] > lte
-  as-i32.gt x.as-u16.as-i32 > [x] > gt
-  as-i32.gte x.as-u16.as-i32 > [x] > gte
-  [x] > times
-    u16 right > @
-    (as-i32.times x.as-u16.as-i32).as-bytes.slice > right
-      2
-      2
-  [x] > plus
-    u16 right > @
-    (as-i32.plus x.as-u16.as-i32).as-bytes.slice > right
-      2
-      2
-  [x] > minus
-    u16 right > @
-    (as-i32.minus x.as-u16.as-i32).as-bytes.slice > right
-      2
-      2
+  as-i32.as-number > as-number
   [x cant-divide] > div
     if. > @
       xval.eq zero
@@ -46,8 +27,25 @@
       2
     x.as-u16 > xval
     00-00 > zero
-
-  00-2A.as-u16.as-bytes.eq 00-2A ++> tests-u16-has-valid-bytes
+  as-i32.gt x.as-u16.as-i32 > [x] > gt
+  as-i32.gte x.as-u16.as-i32 > [x] > gte
+  as-i32.lt x.as-u16.as-i32 > [x] > lt
+  as-i32.lte x.as-u16.as-i32 > [x] > lte
+  [x] > minus
+    u16 right > @
+    (as-i32.minus x.as-u16.as-i32).as-bytes.slice > right
+      2
+      2
+  [x] > plus
+    u16 right > @
+    (as-i32.plus x.as-u16.as-i32).as-bytes.slice > right
+      2
+      2
+  [x] > times
+    u16 right > @
+    (as-i32.times x.as-u16.as-i32).as-bytes.slice > right
+      2
+      2
 
   eq. ++> tests-u16-as-i32-widens-with-zero-prefix
     FF-FF.as-u16.as-i32.as-bytes
@@ -55,33 +53,39 @@
 
   FF-FF.as-u16.as-number.eq 65535 ++> tests-u16-as-number-is-unsigned
 
-  00-0A.as-u16.lt 00-32.as-u16 ++> tests-u16-less-true
+  eq. ++> tests-u16-div-by-u16-one
+    FF-FF.as-u16.div 00-01.as-u16
+    FF-FF.as-u16
 
-  (00-0A.as-u16.lt 00-0A.as-u16).not ++> tests-u16-less-equal
+  eq. ++> tests-u16-div-by-zero-returns-provided-fallback
+    "recovered"
+    00-02.as-u16.div
+      00-00.as-u16
+      "recovered" > [msg]
+
+  eq. ++> tests-u16-div-is-unsigned
+    FF-FF.as-u16.div 00-02.as-u16
+    7F-FF.as-u16
+
+  (00-2A.as-u16.eq 00-2B.as-u16).not ++> tests-u16-eq-false
+
+  00-2A.as-u16.eq 00-2A.as-u16 ++> tests-u16-eq-true
 
   FF-FF.as-u16.gt 00-01.as-u16 ++> tests-u16-greater-treats-high-bit-as-magnitude
-
-  (FF-FF.as-u16.lt 00-01.as-u16).not ++> tests-u16-high-bit-not-less-than-one
-
-  00-00.as-u16.lt FF-FF.as-u16 ++> tests-u16-zero-less-than-max
-
-  00-32.as-u16.lte 00-32.as-u16 ++> tests-u16-lte-equal
 
   00-32.as-u16.gte 00-32.as-u16 ++> tests-u16-gte-equal
 
   (00-00.as-u16.gte 00-0A.as-u16).not ++> tests-u16-gte-false
 
-  00-2A.as-u16.eq 00-2A.as-u16 ++> tests-u16-eq-true
+  00-2A.as-u16.as-bytes.eq 00-2A ++> tests-u16-has-valid-bytes
 
-  (00-2A.as-u16.eq 00-2B.as-u16).not ++> tests-u16-eq-false
+  (FF-FF.as-u16.lt 00-01.as-u16).not ++> tests-u16-high-bit-not-less-than-one
 
-  eq. ++> tests-u16-one-plus-u16-one
-    00-01.as-u16.plus 00-01.as-u16
-    00-02.as-u16
+  (00-0A.as-u16.lt 00-0A.as-u16).not ++> tests-u16-less-equal
 
-  eq. ++> tests-u16-plus-with-overflow
-    FF-FF.as-u16.plus 00-01.as-u16
-    00-00.as-u16
+  00-0A.as-u16.lt 00-32.as-u16 ++> tests-u16-less-true
+
+  00-32.as-u16.lte 00-32.as-u16 ++> tests-u16-lte-equal
 
   eq. ++> tests-u16-minus
     00-05.as-u16.minus 00-03.as-u16
@@ -91,6 +95,14 @@
     00-00.as-u16.minus 00-01.as-u16
     FF-FF.as-u16
 
+  eq. ++> tests-u16-one-plus-u16-one
+    00-01.as-u16.plus 00-01.as-u16
+    00-02.as-u16
+
+  eq. ++> tests-u16-plus-with-overflow
+    FF-FF.as-u16.plus 00-01.as-u16
+    00-00.as-u16
+
   eq. ++> tests-u16-times
     00-06.as-u16.times 00-07.as-u16
     00-2A.as-u16
@@ -99,18 +111,6 @@
     01-00.as-u16.times 01-00.as-u16
     00-00.as-u16
 
-  eq. ++> tests-u16-div-is-unsigned
-    FF-FF.as-u16.div 00-02.as-u16
-    7F-FF.as-u16
-
-  eq. ++> tests-u16-div-by-u16-one
-    FF-FF.as-u16.div 00-01.as-u16
-    FF-FF.as-u16
+  00-00.as-u16.lt FF-FF.as-u16 ++> tests-u16-zero-less-than-max
 
   00-02.as-u16.div 00-00.as-u16 --> on-division-u16-by-u16-zero
-
-  eq. ++> tests-u16-div-by-zero-returns-provided-fallback
-    "recovered"
-    00-02.as-u16.div
-      00-00.as-u16
-      "recovered" > [msg]

@@ -28,6 +28,15 @@
         acc
       tup.tail
 
+  eq. ++> tests-joined-many-strings
+    "hello-world-dear-friend"
+    joined *1
+      "-"
+      "hello"
+      "world"
+      "dear"
+      "friend"
+
   eq. ++> tests-joined-no-strings
     ""
     joined
@@ -39,12 +48,3 @@
     joined *1
       "-"
       "some"
-
-  eq. ++> tests-joined-many-strings
-    "hello-world-dear-friend"
-    joined *1
-      "-"
-      "hello"
-      "world"
-      "dear"
-      "friend"

@@ -14,16 +14,6 @@
   reduced.times > @
     factor 1
   number num.as-bytes > arg
-  pi.times 2 > tau
-  arg.minus > reduced
-    times.
-      floor.
-        plus.
-          arg.div tau
-          0.5
-      tau
-  reduced.times reduced > squared
-  15 > terms
   if. > [depth] > factor
     depth.gt terms
     1
@@ -34,10 +24,39 @@
             (depth.times 2).plus 1
         factor
           depth.plus 1
+  arg.minus > reduced
+    times.
+      floor.
+        plus.
+          arg.div tau
+          0.5
+      tau
+  reduced.times reduced > squared
+  pi.times 2 > tau
+  15 > terms
 
-  eq. ++> tests-sine-of-zero-is-zero
-    sine 0
-    0
+  lt. ++> tests-sine-is-odd-function
+    abs
+      times.
+        plus.
+          sine
+            pi.div 3
+          sine (pi.div 3).neg
+        1000
+    1
+
+  (sine nan).is-nan ++> tests-sine-of-nan-is-nan
+
+  (sine ninf).is-nan ++> tests-sine-of-negative-infinity-is-nan
+
+  lt. ++> tests-sine-of-negative-pi-halves-is-minus-one
+    abs
+      minus.
+        times.
+          sine (pi.div 2).neg
+          1000
+        -1000
+    1
 
   lt. ++> tests-sine-of-pi-halves-is-one
     abs
@@ -46,6 +65,13 @@
           sine
             pi.div 2
           1000
+        1000
+    1
+
+  lt. ++> tests-sine-of-pi-is-zero
+    abs
+      times.
+        sine pi
         1000
     1
 
@@ -59,20 +85,15 @@
         500
     1
 
-  lt. ++> tests-sine-of-pi-is-zero
-    abs
-      times.
-        sine pi
-        1000
-    1
+  (sine pinf).is-nan ++> tests-sine-of-positive-infinity-is-nan
 
-  lt. ++> tests-sine-of-negative-pi-halves-is-minus-one
+  lt. ++> tests-sine-of-seventeen-radians
     abs
       minus.
         times.
-          sine (pi.div 2).neg
+          sine 17
           1000
-        -1000
+        -961
     1
 
   lt. ++> tests-sine-of-three-pi-halves-is-minus-one
@@ -85,16 +106,6 @@
         -1000
     1
 
-  lt. ++> tests-sine-is-odd-function
-    abs
-      times.
-        plus.
-          sine
-            pi.div 3
-          sine (pi.div 3).neg
-        1000
-    1
-
   lt. ++> tests-sine-of-two-pi-is-zero
     abs
       times.
@@ -102,6 +113,10 @@
           pi.times 2
         1000
     1
+
+  eq. ++> tests-sine-of-zero-is-zero
+    sine 0
+    0
 
   lt. ++> tests-sine-reduces-large-angle
     abs
@@ -113,18 +128,3 @@
           1000
         500
     1
-
-  lt. ++> tests-sine-of-seventeen-radians
-    abs
-      minus.
-        times.
-          sine 17
-          1000
-        -961
-    1
-
-  (sine nan).is-nan ++> tests-sine-of-nan-is-nan
-
-  (sine pinf).is-nan ++> tests-sine-of-positive-infinity-is-nan
-
-  (sine ninf).is-nan ++> tests-sine-of-negative-infinity-is-nan

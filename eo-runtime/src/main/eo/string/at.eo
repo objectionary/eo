@@ -32,6 +32,12 @@
     idx
   text.length > len!
 
+  eq. ++> tests-returns-char-at-negative-index
+    "m"
+    at
+      "some"
+      -2
+
   eq. ++> tests-returns-first-char
     "s"
     at
@@ -44,19 +50,13 @@
       "some"
       2
 
-  eq. ++> tests-returns-char-at-negative-index
-    "m"
-    at
-      "some"
-      -2
-
-  at --> on-text-at-index-more-than-length
-    "some"
-    10
-
   eq. ++> tests-text-at-out-of-bounds-returns-provided-fallback
     "recovered"
     at
       "some"
       10
       "recovered" > [msg]
+
+  at --> on-text-at-index-more-than-length
+    "some"
+    10

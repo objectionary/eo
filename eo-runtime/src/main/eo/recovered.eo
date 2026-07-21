@@ -14,17 +14,17 @@
 
 [value alternative] > recovered /Q.bytes
 
-  eq. ++> tests-keeps-the-value-when-not-terminated
-    recovered
-      42
-      7
-    42
-
   eq. ++> tests-falls-back-to-alternative-when-terminated
     recovered
       2.as-i64.div 0.as-i64
       7
     7
+
+  eq. ++> tests-keeps-the-value-when-not-terminated
+    recovered
+      42
+      7
+    42
 
   eq. ++> tests-recovers-the-inner-recovery
     recovered

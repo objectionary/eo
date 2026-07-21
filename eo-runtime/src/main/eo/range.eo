@@ -43,6 +43,29 @@
       current.next
     acc
 
+  ++> tests-range-with-out-of-bounds
+    rng.eq > @
+      * 1 6
+    range > rng
+      []
+        b 1 > @
+        [num] > b
+          num > @
+          b > next
+            5.plus @
+      10
+
+  ++> tests-range-with-wrong-items-is-an-empty-array
+    tuple.is-empty rng > @
+    range > rng
+      []
+        y 10 > @
+        [num] > y
+          num > @
+          [] > next
+            42 > nothing
+      1
+
   ++> tests-simple-range-from-one-to-ten
     rng.eq > @
       *
@@ -83,26 +106,3 @@
           x > next
             0.5.plus @
       5
-
-  ++> tests-range-with-out-of-bounds
-    rng.eq > @
-      * 1 6
-    range > rng
-      []
-        b 1 > @
-        [num] > b
-          num > @
-          b > next
-            5.plus @
-      10
-
-  ++> tests-range-with-wrong-items-is-an-empty-array
-    tuple.is-empty rng > @
-    range > rng
-      []
-        y 10 > @
-        [num] > y
-          num > @
-          [] > next
-            42 > nothing
-      1

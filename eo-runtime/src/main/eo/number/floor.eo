@@ -21,22 +21,22 @@
       trunc
   n.as-i64.as-number > trunc
 
-  3.7.floor.eq 3 ++> tests-floor-positive-fraction
-
   -3.7.floor.eq -4 ++> tests-floor-negative-fraction
 
   -0.1.floor.eq -1 ++> tests-floor-negative-small-fraction
 
   42.floor.eq 42 ++> tests-floor-of-integer
 
-  -5.floor.eq -5 ++> tests-floor-of-negative-integer
+  -1.0e20.floor.eq -1.0e20 ++> tests-floor-of-large-negative-integer
 
   1.0e20.floor.eq 1.0e20 ++> tests-floor-of-large-positive-integer
 
-  -1.0e20.floor.eq -1.0e20 ++> tests-floor-of-large-negative-integer
+  -5.floor.eq -5 ++> tests-floor-of-negative-integer
 
   0.floor.eq 0 ++> tests-floor-of-zero
 
-  pinf.floor.eq pinf ++> tests-positive-infinity-floor-is-equal-to-self
+  3.7.floor.eq 3 ++> tests-floor-positive-fraction
 
   ninf.floor.eq ninf ++> tests-negative-infinity-floor-is-equal-to-self
+
+  pinf.floor.eq pinf ++> tests-positive-infinity-floor-is-equal-to-self
