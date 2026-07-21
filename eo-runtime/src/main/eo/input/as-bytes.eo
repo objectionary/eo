@@ -8,7 +8,6 @@
 # After dataization, `bts` equals `01-02-03-04-05`.
 
 +alias bytes.to-input
-+alias io.copied
 +alias io.malloc-as-output
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -21,7 +20,7 @@
   malloc.of > @
     0
     seq * > [m] >>
-      io.copied
+      Q.input.copied
         input
         io.malloc-as-output m
       m
