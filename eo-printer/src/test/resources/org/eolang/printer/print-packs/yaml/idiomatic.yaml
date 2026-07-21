@@ -16,7 +16,7 @@ origin: |
 
   [x x2 x3] > idiomatic
     5 > iTest_me
-    [] > rr /number
+    [] > rr /Q.number
     if. > @
       plus.
         this
@@ -40,7 +40,7 @@ printed: |
 
   [x x2 x3] > idiomatic
     5 > iTest_me
-    [] > rr /number
+    [] > rr /Q.number
     if. > @
       plus.
         this

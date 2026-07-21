@@ -43,16 +43,16 @@
   </xsl:function>
   <!--
   Render a stored signature (an atom's "/sig" or a void forma) as its EO
-  surface form. A single-name "Φ.name" re-resolves to its root on
-  reparse, so the implicit root is dropped; a multi-segment
-  "Φ.a.b.c" must stay rooted (a dotted signature is not re-homed) and
-  keeps an explicit "Q." root. Names with no "Φ." root pass through.
+  surface form. A rooted "Φ.name" always keeps an explicit "Q." root, so
+  every rooted signature reads uniformly and re-parses directly back to its
+  "Φ." root instead of relying on a bare name being re-homed. Names with no
+  "Φ." root pass through.
   -->
   <xsl:function name="eo:signature" as="xs:string">
     <xsl:param name="sig" as="xs:string"/>
     <xsl:variable name="root" select="concat($eo:program, '.')"/>
     <xsl:variable name="rest" select="substring-after($sig, $root)"/>
-    <xsl:sequence select="if (starts-with($sig, $root)) then (if (contains($rest, '.')) then concat('Q.', $rest) else $rest) else $sig"/>
+    <xsl:sequence select="if (starts-with($sig, $root)) then concat('Q.', $rest) else $sig"/>
   </xsl:function>
   <!-- Count the leading run of consecutive ρ segments in a sequence. -->
   <xsl:function name="eo:rho-run" as="xs:integer">
