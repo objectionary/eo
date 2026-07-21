@@ -23,6 +23,14 @@
     cannot express; set to true to verify return types.
     -->
     <eo.typing>false</eo.typing>
+    <!--
+    Empty by default, so ${eo.coverageFile} always resolves to an empty
+    string instead of staying an unresolved literal. -Deo.coverageFile=...
+    on the command line both drives PhCoverage instrumentation at
+    transpile time and, via the surefire systemPropertyVariables below,
+    reaches the JVM that runs the instrumented tests, see #5673.
+    -->
+    <eo.coverageFile/>
   </properties>
   <dependencies>
     <dependency>
@@ -188,6 +196,7 @@
           <systemPropertyVariables>
             <eo.version>${project.version}</eo.version>
             <eo.typing>${eo.typing}</eo.typing>
+            <eo.coverageFile>${eo.coverageFile}</eo.coverageFile>
             <java.util.logging.config.file>
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>
