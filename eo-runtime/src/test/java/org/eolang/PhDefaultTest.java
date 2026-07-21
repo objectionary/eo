@@ -39,7 +39,7 @@ final class PhDefaultTest {
             "Implicit dispatch to a nullary extension must explain the real problem",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new PhDefault("Φ.io").take("dead-input"),
+                () -> new PhDefault("Φ.input").take("dead"),
                 "Applying a receiver to a nullary extension must be rejected"
             ).getMessage(),
             Matchers.containsString("takes no arguments")
