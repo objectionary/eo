@@ -154,3 +154,21 @@
     printf *1
       "%f"
       0
+
+  eq. ++> formats-width-with-leading-spaces
+    "   42"
+    printf *1
+      "%5d"
+      42
+
+  eq. ++> formats-precision-to-two-decimals
+    "3.14"
+    printf *1
+      "%.2f"
+      3.1415
+
+  eq. ++> formats-left-justified-with-trailing-spaces
+    "x         "
+    printf *1
+      "%-10s"
+      "x"

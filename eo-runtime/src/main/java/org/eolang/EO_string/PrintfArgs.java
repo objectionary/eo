@@ -39,6 +39,19 @@ final class PrintfArgs {
     private static final char PERCENT = '%';
 
     /**
+     * A single {@code printf} specifier. Group 1 is the optional {@code N$}
+     * positional index; an optional run of flags, an optional width and an
+     * optional {@code .precision} are then skipped; group 2 is the conversion
+     * character. Skipping the flags, width and precision keeps exactly one
+     * argument counted per specifier such as {@code %5d}, {@code %.2f} or
+     * {@code %-10s}, matching what {@code String.format} consumes on the
+     * formatting side.
+     */
+    private static final Pattern SPECIFIER = Pattern.compile(
+        "%(\\d+\\$)?[-#+ 0,(]*\\d*(?:\\.\\d+)?([a-zA-Z%])"
+    );
+
+    /**
      * One past the largest {@code double} that still narrows to a valid
      * {@code long} without saturating: {@code 2^63}, exactly one ulp above
      * {@link Long#MAX_VALUE}. {@code (double) Long.MAX_VALUE} itself rounds
@@ -85,7 +98,7 @@ final class PrintfArgs {
 
     List<Object> formatted() {
         final List<Object> arguments = new ArrayList<>(0);
-        final Matcher matcher = Pattern.compile("%(\\d+\\$)?([a-zA-Z%])").matcher(this.format);
+        final Matcher matcher = PrintfArgs.SPECIFIER.matcher(this.format);
         long auto = 0L;
         while (matcher.find()) {
             final String positional = matcher.group(1);
