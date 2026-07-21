@@ -5,7 +5,9 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -63,6 +65,44 @@ public final class MjTranspile extends MjSafe {
     @Parameter(property = "eo.trackLocations")
     private boolean trackLocations;
 
+    /**
+     * The file to record EO object coverage hits into. When it is
+     * not set (the default), no instrumentation happens; when set,
+     * every located object in the generated Java is wrapped into
+     * {@code PhCoverage}, which appends a hit to this file the first
+     * time the object is touched at runtime.
+     * @todo #5466:60min Turn raw coverage hits into an LCOV report.
+     *  Right now this parameter only produces a raw, append-only
+     *  {@code loc:line:pos} file: the runtime {@code PhCoverage}
+     *  decorator writes every touched location into it, but nothing
+     *  consumes that file yet. Add a reporter step that merges those
+     *  raw hits against the full set of instrumented locations, which
+     *  the transpiler already knows because it emits every wrapper,
+     *  and produces an LCOV ({@code .info}) tracefile plus the covered
+     *  percentage. LCOV is chosen because Codecov and Coveralls
+     *  consume it directly.
+     * @todo #5466:30min Enforce a minimum EO object coverage in eo-runtime.
+     *  Once the LCOV report from the puzzle above exists, set
+     *  {@code coverageFile} on the {@code transpile} execution in
+     *  {@code eo-runtime/pom.xml} and fail the build when the covered
+     *  percentage of dataized {@code .eo} objects drops below a
+     *  threshold (for example 80 percent), mirroring how the existing
+     *  {@code jacoco} profile binds a {@code check} goal with per-metric
+     *  thresholds.
+     * @todo #5466:30min Forward this file to the JVM that runs the
+     *  compiled program. This parameter only decides, at transpile
+     *  time, whether {@code PhCoverage} wrapping gets emitted into the
+     *  generated Java; the path itself is discarded afterwards and
+     *  never reaches the process that later runs the instrumented
+     *  code, which reads its own {@code eo.coverageFile} system
+     *  property instead. Wire eo-runtime's test execution (surefire
+     *  {@code systemPropertyVariables} or similar) to pass this same
+     *  value through, so one setting is enough end to end.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.coverageFile")
+    private File coverageFile;
+
     @Override
     public void exec() throws IOException {
         new Timed(
@@ -75,7 +115,8 @@ public final class MjTranspile extends MjSafe {
                 this.plugin.getVersion(),
                 this.transpileTests,
                 this.xslMeasures.toPath(),
-                new Tracking(this.trackTransformationSteps, this.trackLocations)
+                new Tracking(this.trackTransformationSteps, this.trackLocations),
+                MjTranspile.path(this.coverageFile)
             )
         ).exec();
         if (this.addSourcesRoot) {
@@ -95,5 +136,20 @@ public final class MjTranspile extends MjSafe {
                 gtests
             );
         }
+    }
+
+    /**
+     * The path of the given file, or NULL when the file is not set.
+     * @param file The file, possibly NULL
+     * @return The path, or NULL
+     */
+    private static Path path(final File file) {
+        final Path result;
+        if (file == null) {
+            result = null;
+        } else {
+            result = file.toPath();
+        }
+        return result;
     }
 }
