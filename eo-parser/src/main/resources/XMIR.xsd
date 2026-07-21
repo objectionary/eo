@@ -156,6 +156,21 @@
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="pipe" type="xs:string">
+      <xs:annotation>
+        <xs:appinfo>The marker of a pipe-application continuation line "| args &gt; name" (§3.14)</xs:appinfo>
+        <xs:documentation>
+          A cosmetic marker kept on the application node that a "|" pipe line
+          (R-3.14.7) parses into. The "wrap-applications" pass sets the node's
+          "base" to the preceding sibling's name so the semantics match a
+          hand-written application, but retains this marker so the printer can
+          round-trip the compact "| args &gt; name" continuation line instead
+          of expanding it into a two-line vertical application (#5684).
+          Downstream passes and the compiler read "base" and ignore this
+          marker.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="loc" type="locator"/>
     <xs:attribute name="atom" type="fqn">
       <xs:annotation>

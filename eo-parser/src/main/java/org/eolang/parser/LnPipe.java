@@ -33,10 +33,13 @@ import java.util.List;
  *
  * <p>Emission (R-3.14.7): the line emits a base-less {@code <o pipe=''>}
  * with the args as children; the {@code wrap-applications} reshape sets
- * {@code @base} from the preceding sibling's {@code @name} and drops
- * {@code @pipe}, so downstream passes treat it as a hand-written
- * application of the predecessor by name. The predecessor object stays in
- * place.</p>
+ * {@code @base} from the preceding sibling's {@code @name}, so downstream
+ * passes treat it as a hand-written application of the predecessor by
+ * name. The predecessor object stays in place. The {@code @pipe} marker
+ * itself is retained (not dropped) so the printer can round-trip the
+ * compact {@code | args > name} line rather than expand it into a
+ * two-line vertical application (#5684); it is a cosmetic hint that
+ * downstream passes and the compiler ignore.</p>
  *
  * @since 0.1
  */

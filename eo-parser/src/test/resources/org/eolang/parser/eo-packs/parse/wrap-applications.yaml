@@ -6,10 +6,9 @@ sheets:
   - /org/eolang/parser/parse/wrap-applications.xsl
 asserts:
   - /object[not(errors)]
-  - /object[not(//o[@pipe])]
-  - //o[@base='foo' and @name='foo5' and count(o)=1]
+  - //o[@base='foo' and @name='foo5' and @pipe='' and count(o)=1]
   - //o[@base='foo' and @name='foo5']/o[@base='Φ.number']
-  - //o[@name='foo' and not(@base)]
+  - //o[@name='foo' and not(@base) and not(@pipe)]
 input: |
   [] > app
     [x] > foo
