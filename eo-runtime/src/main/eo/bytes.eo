@@ -23,15 +23,15 @@
 +unlint mandatory-package
 
 [@] > bytes
-  [b] > eq /bool
-  [] > size /number
-  [start len] > slice /bytes
-    ? > cant-slice /{string}
-  [b] > and /bytes
-  [b] > or /bytes
-  [] > not /bytes
-  [x] > right /bytes
-  [b] > concat /bytes
+  [b] > eq /Q.bool
+  [] > size /Q.number
+  [start len] > slice /Q.bytes
+    ? > cant-slice /{Q.string}
+  [b] > and /Q.bytes
+  [b] > or /Q.bytes
+  [] > not /Q.bytes
+  [x] > right /Q.bytes
+  [b] > concat /Q.bytes
 
   eq. ++> tests-takes-part-of-bytes
     20-1F-EE-B5-90.slice

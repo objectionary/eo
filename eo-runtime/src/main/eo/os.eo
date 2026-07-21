@@ -28,7 +28,7 @@
     matches.
       string.regex "/mac/i"
       name
-  [] > name /string
+  [] > name /Q.string
 
   or. ++> tests-checks-os-family
     os.is-windows.or os.is-macos

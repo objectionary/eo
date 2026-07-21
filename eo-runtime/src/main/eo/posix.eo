@@ -14,7 +14,7 @@
 +unlint redundant-object
 
 [name args] > posix
-  [] > @ /return
+  [] > @ /Q.return
   2 > inet
   -1 > none
   6 > tcp

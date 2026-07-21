@@ -12,7 +12,7 @@ penalties:
 origin: |
   +package org.eolang
 
-  [x] > dataized /bytes
+  [x] > dataized /Q.bytes
 
     ++> tests-list-front-with-zero-index
       is-empty > @
@@ -23,7 +23,7 @@ origin: |
 printed: |
   +package org.eolang
 
-  [x] > dataized /bytes
+  [x] > dataized /Q.bytes
 
     is-empty ++> tests-list-front-with-zero-index
       tuple.front
