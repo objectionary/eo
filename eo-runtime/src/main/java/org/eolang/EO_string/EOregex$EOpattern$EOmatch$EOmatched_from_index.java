@@ -120,7 +120,8 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
         if (matcher.groupCount() > 0) {
             groups = new Phi[matcher.groupCount() + 1];
             for (int idx = 0; idx < groups.length; ++idx) {
-                groups[idx] = new Data.ToPhi(matcher.group(idx));
+                final String captured = matcher.group(idx);
+                groups[idx] = new Data.ToPhi(captured == null ? "" : captured);
             }
         } else {
             groups = new Phi[]{new Data.ToPhi(matcher.group())};

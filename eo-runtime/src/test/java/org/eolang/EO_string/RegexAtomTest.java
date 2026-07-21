@@ -110,6 +110,31 @@ final class RegexAtomTest {
     }
 
     @Test
+    void readsFromWhenOptionalGroupDoesNotParticipate() {
+        final Phi matched = RegexAtomTest.optionalGroupMatch();
+        MatcherAssert.assertThat(
+            "match with a non-participating optional group must not crash when reading from",
+            new Dataized(matched.take("from")).asNumber(),
+            Matchers.equalTo(0.0)
+        );
+        MatcherAssert.assertThat(
+            "non-participating optional capture must be an empty string, not absent",
+            new Dataized(
+                new PhApplication(
+                    matched.take("group").copy(),
+                    new Bind("index", new Data.ToPhi(2))
+                )
+            ).asString(),
+            Matchers.equalTo("")
+        );
+        MatcherAssert.assertThat(
+            "group slots must stay aligned with groupCount+1 even when a group does not participate",
+            new Dataized(matched.take("count")).asNumber(),
+            Matchers.equalTo(3.0)
+        );
+    }
+
+    @Test
     void rejectsStartIndexAfterTextEnd() {
         MatcherAssert.assertThat(
             String.format(
@@ -121,6 +146,24 @@ final class RegexAtomTest {
                 Matchers.containsString(RegexAtomTest.start()),
                 Matchers.containsString("must be less than or equal to text length")
             )
+        );
+    }
+
+    /**
+     * Build matched-from-index for /(a)(b)?/ against "a".
+     * @return Matched block
+     */
+    private static Phi optionalGroupMatch() {
+        return new PhApplication(
+            new PhApplication(
+                new PhApplication(
+                    Phi.Φ.take("string.regex").copy(),
+                    "expression", new Data.ToPhi("/(a)(b)?/")
+                ).take("compiled").take("match").copy(),
+                "txt", new Data.ToPhi("a")
+            ).take("matched-from-index").copy(),
+            new Bind(RegexAtomTest.position(), new Data.ToPhi(1)),
+            new Bind(RegexAtomTest.start(), new Data.ToPhi(0))
         );
     }
 
