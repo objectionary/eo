@@ -16,7 +16,7 @@ import org.eolang.Phi;
  * Convert {@link EO_org.EO_eolang.EOtuple} of arguments to Java array.
  * @since 0.40.0
  */
-final class TupleToArray implements Supplier<Phi[]> {
+public final class TupleToArray implements Supplier<Phi[]> {
 
     /**
      * Tuple of arguments.
@@ -27,7 +27,7 @@ final class TupleToArray implements Supplier<Phi[]> {
      * Ctor.
      * @param tup Tuple of arguments
      */
-    TupleToArray(final Phi tup) {
+    public TupleToArray(final Phi tup) {
         this.tuple = tup;
     }
 

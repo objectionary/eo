@@ -6,13 +6,9 @@
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package org.eolang.EO_sm; // NOPMD
+package org.eolang;
 
 import java.lang.management.ManagementFactory;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.PhApplication;
-import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -35,7 +31,7 @@ final class EOposixTest {
             new Dataized(
                 new PhApplication(
                     new PhApplication(
-                        Phi.Φ.take("sm.posix").copy(),
+                        Phi.Φ.take("posix").copy(),
                         "name",
                         new Data.ToPhi("getpid")
                     ),
@@ -60,7 +56,7 @@ final class EOposixTest {
             new Dataized(
                 new PhApplication(
                     new PhApplication(
-                        Phi.Φ.take("sm.posix").copy(),
+                        Phi.Φ.take("posix").copy(),
                         "name",
                         new Data.ToPhi("open")
                     ),

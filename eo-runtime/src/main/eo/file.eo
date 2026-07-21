@@ -2,9 +2,6 @@
 
 +alias string.contains
 +alias string.joined
-+alias sm.os
-+alias sm.posix
-+alias sm.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -23,21 +20,21 @@
         4
       cant-check
     called. > info
-      sm.os.is-windows.if
-        sm.win32 *1
+      os.is-windows.if
+        win32 *1
           "_stat64"
           path
-        sm.posix *1
+        posix *1
           "stat"
           path
   eq. > [] > exists
     code.
-      sm.os.is-windows.if
-        sm.win32 *1
+      os.is-windows.if
+        win32 *1
           "_access"
           path
           0
-        sm.posix *1
+        posix *1
           "access"
           path
           0
@@ -54,22 +51,22 @@
           closed
           ^
     called. > created
-      sm.os.is-windows.if
-        sm.win32 *1
+      os.is-windows.if
+        win32 *1
           "_creat"
           path
-          sm.win32.mode
-        sm.posix *1
+          win32.mode
+        posix *1
           "creat"
           path
-          sm.posix.mode
+          posix.mode
     created.code > descriptor
     code. > closed
-      sm.os.is-windows.if
-        sm.win32 *1
+      os.is-windows.if
+        win32 *1
           "_close"
           descriptor
-        sm.posix *1
+        posix *1
           "close"
           descriptor
   [] > deleted
@@ -82,11 +79,11 @@
             * path removed.output
       ^
     called. > removed
-      sm.os.is-windows.if
-        sm.win32 *1
+      os.is-windows.if
+        win32 *1
           win
           path
-        sm.posix *1
+        posix *1
           unix
           path
     removed.code > outcome
@@ -102,11 +99,11 @@
       info.output.size
       cant-measure
     called. > info
-      sm.os.is-windows.if
-        sm.win32 *1
+      os.is-windows.if
+        win32 *1
           "_stat64"
           path
-        sm.posix *1
+        posix *1
           "stat"
           path
   [target] > moved
@@ -117,12 +114,12 @@
         "Cant move the file '%s' to '%s': %s".printf
           * path target renamed.output
     called. > renamed
-      sm.os.is-windows.if
-        sm.win32 *1
+      os.is-windows.if
+        win32 *1
           "rename"
           path
           target
-        sm.posix *1
+        posix *1
           "rename"
           path
           target
@@ -156,21 +153,21 @@
       existing.or truncate
       appending
     [] > open-file
-      sm.os.is-windows.if > @
+      os.is-windows.if > @
         open-through
           []
-            sm.win32 > @
-            sm.win32 "_open" > open
-            sm.win32 "_close" > close
-            sm.win32 "_read" > read
-            sm.win32 "_write" > write
+            win32 > @
+            win32 "_open" > open
+            win32 "_close" > close
+            win32 "_read" > read
+            win32 "_write" > write
         open-through
           []
-            sm.posix > @
-            sm.posix "open" > open
-            sm.posix "close" > close
-            sm.posix "read" > read
-            sm.posix "write" > write
+            posix > @
+            posix "open" > open
+            posix "close" > close
+            posix "read" > read
+            posix "write" > write
       [syscall] > open-through
         if. > @
           descriptor.eq -1

@@ -6,13 +6,13 @@
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package org.eolang.EO_sm; // NOPMD
+package org.eolang;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import org.eolang.Atom;
-import org.eolang.Dataized;
+import org.eolang.EO_sm.Syscall;
+import org.eolang.EO_sm.TupleToArray;
 import org.eolang.EO_sm.Win32.AcceptFuncCall;
 import org.eolang.EO_sm.Win32.AccessFuncCall;
 import org.eolang.EO_sm.Win32.BindFuncCall;
@@ -39,10 +39,6 @@ import org.eolang.EO_sm.Win32.WSACleanupFuncCall;
 import org.eolang.EO_sm.Win32.WSAGetLastErrorFuncCall;
 import org.eolang.EO_sm.Win32.WSAStartupFuncCall;
 import org.eolang.EO_sm.Win32.WriteFuncCall;
-import org.eolang.ExFailure;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
 
 /**
  * Win32 function call.
