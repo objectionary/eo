@@ -26,13 +26,11 @@
       -1.eq index
       0
       if.
-        is-ws char
+        is-ws
+          bts.slice index 1 > char!
         first-non-ws-index
           (index.plus -1).as-number
         index.plus 1
-    bts.slice > char!
-      index
-      1
   or. > [c] > is-ws
     c.eq 20-
     or.

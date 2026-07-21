@@ -40,12 +40,11 @@
       and.
         tup.length.gt 1
         previous.match
-      previous
+      @. > previous
+        rec-case tup.tail
       [] >>
         tup.head.head > head
         tup.head.tail.head > match!
-    @. > previous
-      rec-case tup.tail
 
   eq. ++> tests-empty-switch-returns-provided-fallback
     "recovered"

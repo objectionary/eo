@@ -23,8 +23,7 @@
           tup.head.eq wanted
           tup.tail.length
           -1
-        next
-    recidx tup.tail > next!
+        recidx tup.tail > next!
 
   eq. ++> tests-does-not-find-index-of
     -1

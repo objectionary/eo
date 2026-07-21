@@ -34,13 +34,11 @@
           left.eq FF-FF
         i16 right
         plus.
-          i16 left
+          i16
+            bts.slice 0 2 > left
           i16 right
     as-bytes. > bts
       as-i32.div xval.as-i32
-    bts.slice > left
-      0
-      2
     bts.slice > right
       2
       2
@@ -59,21 +57,19 @@
         left.eq FF-FF
       i16 right
       plus.
-        i16 left
+        i16
+          bts.slice 0 2 > left
         i16 right
     as-bytes. > bts
       as-i32.plus x.as-i16.as-i32
-    bts.slice > left
-      0
-      2
     bts.slice > right
       2
       2
   [x] > times
-    i16 right > @
-    (as-i32.times x.as-i16.as-i32).as-bytes.slice > right
-      2
-      2
+    i16 > @
+      (as-i32.times x.as-i16.as-i32).as-bytes.slice > right
+        2
+        2
 
   eq. ++> tests-i16-as-i32-widens-negative-with-sign-extension
     -200.as-i64.as-i32.as-i16.as-i32.as-bytes
@@ -86,8 +82,7 @@
   ++> tests-i16-div-by-i16-one
     eq. > @
       dividend.div 1.as-i64.as-i32.as-i16
-      dividend
-    -235.as-i64.as-i32.as-i16 > dividend
+      -235.as-i64.as-i32.as-i16 > dividend
 
   eq. ++> tests-i16-div-by-zero-returns-provided-fallback
     "recovered"

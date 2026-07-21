@@ -14,9 +14,8 @@
       chunk.size.eq 0
       length
       rec-read
-        chunk
+        (input.read 4096).read.^ > chunk
         length.plus chunk.size
-    (input.read 4096).read.^ > chunk
   | > @
     input
     0

@@ -29,17 +29,13 @@
           negative.if
             magnitude.not.as-i64.plus 00-00-00-00-00-00-00-01.as-i64
             magnitude.as-i64
-    as-number. > exp
-      as-i64.
-        right.
-          as-bytes.and 7F-F0-00-00-00-00-00-00
-          52
     if. > magnitude
       exp.gte 1075
       mantissa.left
         exp.minus 1075
       mantissa.right
-        1075.minus exp
+        1075.minus
+          ((as-bytes.and 7F-F0-00-00-00-00-00-00).right 52).as-i64.as-number > exp
     or. > mantissa
       as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
       00-10-00-00-00-00-00-00
@@ -162,8 +158,7 @@
   ++> tests-division-by-one
     eq. > @
       dividend.div 1
-      dividend
-    -235 > dividend
+      -235 > dividend
 
   eq. ++> tests-float-equal-to-nan-and-infinites-is-false-highload
     and.

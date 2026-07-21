@@ -22,8 +22,7 @@
       if.
         func tup.head tup.tail.length
         next.with tup.head
-        next
-    recfilter tup.tail > next
+        recfilter tup.tail > next
   | list > @
 
   eq. ++> tests-filteredi-with-lt

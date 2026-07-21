@@ -17,35 +17,35 @@
   as-i16.as-number > as-number
   [x cant-divide] > div
     if. > @
-      xval.eq zero
+      xval.eq
+        00- > zero
       cant-divide
         "Can't divide %d by u8 zero".printf
           * as-number
-      u8 quotient
-    (as-i16.div xval.as-i16).as-bytes.slice > quotient
-      1
-      1
+      u8
+        (as-i16.div xval.as-i16).as-bytes.slice > quotient
+          1
+          1
     x.as-u8 > xval
-    00- > zero
   as-i16.gt x.as-u8.as-i16 > [x] > gt
   as-i16.gte x.as-u8.as-i16 > [x] > gte
   as-i16.lt x.as-u8.as-i16 > [x] > lt
   as-i16.lte x.as-u8.as-i16 > [x] > lte
   [x] > minus
-    u8 right > @
-    (as-i16.minus x.as-u8.as-i16).as-bytes.slice > right
-      1
-      1
+    u8 > @
+      (as-i16.minus x.as-u8.as-i16).as-bytes.slice > right
+        1
+        1
   [x] > plus
-    u8 right > @
-    (as-i16.plus x.as-u8.as-i16).as-bytes.slice > right
-      1
-      1
+    u8 > @
+      (as-i16.plus x.as-u8.as-i16).as-bytes.slice > right
+        1
+        1
   [x] > times
-    u8 right > @
-    (as-i16.times x.as-u8.as-i16).as-bytes.slice > right
-      1
-      1
+    u8 > @
+      (as-i16.times x.as-u8.as-i16).as-bytes.slice > right
+        1
+        1
 
   FF-.as-u8.as-i16.as-bytes.eq 00-FF ++> tests-u8-as-i16-widens-with-zero-prefix
 

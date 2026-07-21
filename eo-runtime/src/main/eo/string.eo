@@ -63,8 +63,8 @@
                 inclen index 4 accum
                 T
                   "Unknown byte format (%x), can't recognize character".printf
-                    * byte
-      as-bytes.slice index 1 > byte
+                    *
+                      as-bytes.slice index 1 > byte
     as-bytes.size > size
   [start len] > slice
     if. > @
@@ -81,16 +81,16 @@
           nlen.eq 0
           ""
           string
-            as-bytes.slice bstart blen
-    minus. > blen
-      recidx
-        number bstart
-        0
-        nlen
-        "Start index + length to slice (%d) is out of string bounds".printf
-          *
-            nstart.plus nlen
-      bstart
+            as-bytes.slice
+              bstart
+              minus. > blen
+                recidx
+                  number bstart
+                  0
+                  nlen
+                  "Start index + length to slice (%d) is out of string bounds".printf
+                    * (nstart.plus nlen)
+                bstart
     recidx > bstart!
       0
       0
@@ -110,9 +110,10 @@
         accum.plus 1
         result
         cause
-    len > lbts!
-    number lbts > nlen
-    number sbts > nstart
+    number > nlen
+      len > lbts!
+    number > nstart
+      start > sbts!
     80- > p1
     E0- > p2
     F0- > p3
@@ -152,9 +153,8 @@
                   increase index 4 accum result cause
                   T
                     "Unknown byte format (%x), can't recognize character".printf
-                      * byte
-      as-bytes.slice index 1 > byte
-    start > sbts!
+                      *
+                        as-bytes.slice index 1 > byte
     as-bytes.size > size
 
   D0-B4-D1-80-D1-83-D0-B3.eq "друг" ++> tests-bytes-equal-to-string
