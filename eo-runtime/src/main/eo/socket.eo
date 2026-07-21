@@ -42,9 +42,6 @@
 # On failure at any of the described steps, the fallback of the corresponding operation is
 # returned (or the bottom object when it is left unbound).
 
-+alias sm.os
-+alias sm.posix
-+alias sm.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -54,42 +51,42 @@
 +unlint redundant-object
 
 [address port] > socket
-  sm.os.is-windows.if > @
+  os.is-windows.if > @
     impl
       []
         raw > @
-        sm.win32 > raw
+        win32 > raw
         "closesocket" > close
         "WSA error code %d".printf > message
           *
             code.
-              sm.win32
+              win32
                 "WSAGetLastError"
                 *
         code. > startup
-          sm.win32 *1
+          win32 *1
             "WSAStartup"
-            sm.win32.version
+            win32.version
         if. > cleanup
           eq.
             code.
-              sm.win32
+              win32
                 "WSACleanup"
                 *
-            sm.win32.failure
+            win32.failure
           T
             "Couldn't clean up the sockets subsystem"
           true
     impl
       []
         raw > @
-        sm.posix > raw
+        posix > raw
         "close" > close
         code. > message
-          sm.posix *1
+          posix *1
             "strerror"
             code.
-              sm.posix
+              posix
                 "errno"
                 *
         0 > startup

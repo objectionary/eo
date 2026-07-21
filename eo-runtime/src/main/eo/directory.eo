@@ -1,9 +1,6 @@
 # Directory in the file system.
 # Apparently every directory is a file.
 
-+alias sm.os
-+alias sm.posix
-+alias sm.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +rt jvm org.eolang:eo-runtime:0.0.0
@@ -30,14 +27,14 @@
             "Cant make the directory '%s': %s".printf
               * ^.path created.output
     called. > created
-      sm.os.is-windows.if
-        sm.win32 *1
+      os.is-windows.if
+        win32 *1
           "_mkdir"
           ^.path
-        sm.posix *1
+        posix *1
           "mkdir"
           ^.path
-          sm.posix.permissions
+          posix.permissions
     created.code > outcome
   [glob] > walk /tuple
   [] > deleted

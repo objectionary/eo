@@ -6,15 +6,11 @@
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package org.eolang.EO_sm; // NOPMD
+package org.eolang;
 
 import java.lang.management.ManagementFactory;
-import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.EO_sm.Win32.WSAStartupFuncCall;
 import org.eolang.EO_sm.Win32.Winsock;
-import org.eolang.PhApplication;
-import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Nested;
@@ -40,7 +36,7 @@ final class EOwin32Test {
             new Dataized(
                 new PhApplication(
                     new PhApplication(
-                        Phi.Φ.take("sm.win32").copy(),
+                        Phi.Φ.take("win32").copy(),
                         "name",
                         new Data.ToPhi("_getpid")
                     ),
@@ -65,7 +61,7 @@ final class EOwin32Test {
             new Dataized(
                 new PhApplication(
                     new PhApplication(
-                        Phi.Φ.take("sm.win32").copy(),
+                        Phi.Φ.take("win32").copy(),
                         "name",
                         new Data.ToPhi("_open")
                     ),

@@ -1,7 +1,6 @@
 # Path `path` that is hierarchical and composed of a sequence of
 # directory and file name elements separated by a special separator or delimiter.
 
-+alias sm.os
 +alias tuple.reduced
 +alias string.regex
 +alias string.index-of
@@ -16,17 +15,17 @@
 +unlint redundant-object
 
 [uri] > path
-  sm.os.is-windows.if > @
+  os.is-windows.if > @
     win32
       string uri.as-bytes
     posix
       string uri.as-bytes
-  sm.os.is-windows.if > separator
+  os.is-windows.if > separator
     win32.separator
     posix.separator
   [paths] > joined
     normalized. > @
-      sm.os.is-windows.if
+      os.is-windows.if
         win32 jpath
         posix jpath
     string > jpath
@@ -293,7 +292,7 @@
         string pth > txt
 
   path.separator.eq ++> tests-determines-separator-depending-on-os
-    sm.os.is-windows.if
+    os.is-windows.if
       path.win32.separator
       path.posix.separator
 

@@ -7,13 +7,7 @@
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package org.eolang.EO_sm; // NOPMD
-
-import org.eolang.Atom;
-import org.eolang.Data;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
+package org.eolang;
 
 /**
  * Os.name.

@@ -6,13 +6,11 @@
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package org.eolang.EO_sm; // NOPMD
+package org.eolang;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import org.eolang.Atom;
-import org.eolang.Dataized;
 import org.eolang.EO_sm.Posix.AcceptSyscall;
 import org.eolang.EO_sm.Posix.AccessSyscall;
 import org.eolang.EO_sm.Posix.BindSyscall;
@@ -37,10 +35,8 @@ import org.eolang.EO_sm.Posix.StatSyscall;
 import org.eolang.EO_sm.Posix.StrerrorSyscall;
 import org.eolang.EO_sm.Posix.UnlinkSyscall;
 import org.eolang.EO_sm.Posix.WriteSyscall;
-import org.eolang.ExFailure;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
+import org.eolang.EO_sm.Syscall;
+import org.eolang.EO_sm.TupleToArray;
 
 /**
  * Posix syscall.
