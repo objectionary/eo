@@ -110,6 +110,27 @@ final class RegexAtomTest {
     }
 
     @Test
+    void readsFromWhenOptionalGroupDoesNotParticipate() {
+        MatcherAssert.assertThat(
+            "match with a non-participating optional group must not crash when reading from",
+            new Dataized(
+                new PhApplication(
+                    new PhApplication(
+                        new PhApplication(
+                            Phi.Φ.take("string.regex").copy(),
+                            "expression", new Data.ToPhi("/(a)(b)?/")
+                        ).take("compiled").take("match").copy(),
+                        "txt", new Data.ToPhi("a")
+                    ).take("matched-from-index").copy(),
+                    new Bind(RegexAtomTest.position(), new Data.ToPhi(1)),
+                    new Bind(RegexAtomTest.start(), new Data.ToPhi(0))
+                ).take("from")
+            ).asNumber(),
+            Matchers.equalTo(0.0)
+        );
+    }
+
+    @Test
     void rejectsStartIndexAfterTextEnd() {
         MatcherAssert.assertThat(
             String.format(
