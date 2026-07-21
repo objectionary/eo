@@ -13,10 +13,8 @@
 [num] > sine
   reduced.times > @
     factor 1
-  number > arg
-    num.as-bytes
-  pi.times > tau
-    2
+  number num.as-bytes > arg
+  pi.times 2 > tau
   arg.minus > reduced
     times.
       floor.
@@ -24,8 +22,7 @@
           arg.div tau
           0.5
       tau
-  reduced.times > squared
-    reduced
+  reduced.times reduced > squared
   15 > terms
   if. > [depth] > factor
     depth.gt terms

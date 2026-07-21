@@ -22,8 +22,7 @@
           number len
           idx
   text > bts!
-  first-non-ws-index > idx!
-    0
+  first-non-ws-index 0 > idx!
   bts.size > len!
   [index] > first-non-ws-index
     if. > @

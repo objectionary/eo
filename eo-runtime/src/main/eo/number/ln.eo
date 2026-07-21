@@ -23,8 +23,7 @@
         n.is-finite.if
           lnp n
           pinf
-  number > n
-    num.as-bytes
+  number num.as-bytes > n
   [p] > lnp
     if. > @
       p.gte e

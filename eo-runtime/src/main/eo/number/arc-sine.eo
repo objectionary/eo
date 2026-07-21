@@ -16,10 +16,8 @@
     arg.lt 0
     base.neg
     base
-  number > arg
-    num.as-bytes
-  abs > mag
-    arg
+  number num.as-bytes > arg
+  abs arg > mag
   sqrt > root
     div.
       1.minus mag

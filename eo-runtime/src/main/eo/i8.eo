@@ -13,8 +13,7 @@
 [as-bytes] > i8
   as-bytes > @
   as-i16.as-number > as-number
-  times > neg
-    FF-.as-i8
+  times FF-.as-i8 > neg
   [] > as-i16
     i16 > @
       prefix.concat as-bytes

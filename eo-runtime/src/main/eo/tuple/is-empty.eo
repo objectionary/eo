@@ -9,8 +9,7 @@
 
 [] > is-empty
   ? >> list
-  0.eq > @
-    list.length
+  0.eq list.length > @
 
   ++> tests-list-should-not-be-empty
     not. > @

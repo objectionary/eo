@@ -11,8 +11,7 @@
 [] > left
   ? >> bts
   ? >> x
-  bts.right > @
-    x.neg
+  bts.right x.neg > @
 
   ++> tests-left-zero
     not. > @

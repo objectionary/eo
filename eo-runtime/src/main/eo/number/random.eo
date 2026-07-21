@@ -9,8 +9,7 @@
 +unlint redundant-object
 
 [seed] > random
-  seed.as-number.div > @
-    00-20-00-00-00-00-00-00.as-i64.as-number
+  seed.as-number.div 00-20-00-00-00-00-00-00.as-i64.as-number > @
   random > next
     as-number.
       as-i64.
@@ -52,8 +51,7 @@
     35 > shift1
     17 > shift3
     clock.as-bytes > tbytes
-  clocked > pseudo
-    clock
+  clocked clock > pseudo
 
   ++> tests-random-with-seed
     not. > @
