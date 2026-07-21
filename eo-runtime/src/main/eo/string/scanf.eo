@@ -17,7 +17,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[format read] > scanf /tuple
+[format read] > scanf /Q.tuple
 
   "hello".eq (scanf "%s" "hello").head ++> tests-scanf-with-string
 

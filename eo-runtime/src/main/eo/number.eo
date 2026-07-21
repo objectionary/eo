@@ -72,10 +72,10 @@
     -0.as-bytes > nzero
     0.as-bytes > pzero
     x > xbts!
-  [x] > gt /bool
-  [x] > times /number
-  [x] > plus /number
-  [x] > div /number
+  [x] > gt /Q.bool
+  [x] > times /Q.number
+  [x] > plus /Q.number
+  [x] > div /Q.number
 
   (-200.gt -1000).eq true ++> tests-int-greater-true
 

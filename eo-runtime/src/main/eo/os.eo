@@ -28,6 +28,6 @@
     matches.
       string.regex "/mac/i"
       name
-  [] > name /string
+  [] > name /Q.string
 
   (os.is-windows.or os.is-macos).or os.is-linux ++> tests-checks-os-family

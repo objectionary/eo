@@ -36,7 +36,7 @@
           ^.path
           posix.permissions
     created.code > outcome
-  [glob] > walk /tuple
+  [glob] > walk /Q.tuple
   [] > deleted
     ^.exists.if > @
       seq *
@@ -56,7 +56,7 @@
       T
         "Directory %s does not exist, can't create temporary file".printf
           * file
-    [] > touch /string
+    [] > touch /Q.string
   T > [mode scope] > open
     "The file %s is a directory, can't open for I/O operations".printf
       * file

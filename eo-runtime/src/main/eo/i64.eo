@@ -24,7 +24,7 @@
           * as-number
     i32 > left
       as-bytes.slice 4 4
-  [] > as-number /number
+  [] > as-number /Q.number
   (i64 x.as-bytes).gt ^ > [x] > lt
   [x] > lte
     or. > @
@@ -70,14 +70,14 @@
       00-00-00-00-00-00-00-00
       as-bytes
       x.as-bytes
-  [x] > plus /i64
+  [x] > plus /Q.i64
   [x] > minus
     plus > @
       neg.
         i64 value
     x > value!
-  [x] > div /i64
-    ? > cant-divide /{string}
+  [x] > div /Q.i64
+    ? > cant-divide /{Q.string}
 
   42.as-i64.as-bytes.eq 00-00-00-00-00-00-00-2A ++> tests-i64-has-valid-bytes
 
