@@ -464,8 +464,8 @@ final class PhDefaultTest {
     void rendersFormaFromXmirLocator() {
         MatcherAssert.assertThat(
             "Named nested object must report the forma taken from its XMIR locator, but it didnt",
-            new PhDefault("Φ.malloc.of.allocated").forma(),
-            Matchers.equalTo("Φ.malloc.of.allocated")
+            new PhDefault("Φ.chunk").forma(),
+            Matchers.equalTo("Φ.chunk")
         );
     }
 

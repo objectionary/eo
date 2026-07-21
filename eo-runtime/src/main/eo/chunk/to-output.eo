@@ -1,31 +1,28 @@
-# Makes an output from allocated block in memory.
-# Here `allocated` is `malloc.of.allocated` object.
+# Makes an output from a `chunk` of memory. Here `allocated` is a `chunk`.
 #
-# Imagine you want to read bytes from `console` and save them
-# to block in memory.
-# Here's how you can do it:
+# Because this object lives in the `chunk` package, it is available on any
+# chunk as `chunk.to-output` (package extension), so there is no need to
+# reference it explicitly:
+#
 # ```
 # malloc.of > result
 #   10
 #   [mem]
 #     console.read 10 > input
-#     malloc-as-output mem > output
+#     mem.to-output > output
 #     output.write input > @
 # ```
 #
-# First, you read 10 bytes from `console`.
-# Second, you create an output from allocated block in memory.
-# Third, you write read bytes to output
-# After the dataization the object `result` contains read bytes.
+# After dataization, `result` holds the bytes written to the chunk.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package io
++package chunk
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[allocated] > malloc-as-output
+[allocated] > to-output
   [buffer] > write
     write. > @
       output-block 0
@@ -43,7 +40,7 @@
       seq * > [mem]
         write.
           write.
-            (malloc-as-output mem).write 01-02-03
+            (to-output mem).write 01-02-03
             04-05-06-07
           08-09-A0
         mem
@@ -54,7 +51,15 @@
       2
       seq * > [mem]
         write.
-          malloc-as-output mem
+          to-output mem
           01-02-03
+        mem
+    01-02-03
+
+  eq. ++> tests-makes-an-output-via-chunk-extension
+    malloc.of
+      3
+      seq * > [mem]
+        mem.to-output.write 01-02-03
         mem
     01-02-03

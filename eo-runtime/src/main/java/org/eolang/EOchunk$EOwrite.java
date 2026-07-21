@@ -10,18 +10,18 @@
 package org.eolang;
 
 /**
- * Malloc.of.allocated.write object.
+ * Chunk.write object.
  * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "malloc.of.allocated.write")
+@XmirObject(oname = "chunk.write")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOmalloc$EOof$EOallocated$EOwrite extends PhDefault implements Atom {
+public final class EOchunk$EOwrite extends PhDefault implements Atom {
 
     /**
      * Ctor.
      */
-    public EOmalloc$EOof$EOallocated$EOwrite() {
+    public EOchunk$EOwrite() {
         super(new Attrs(
             new Attr("offset", new AtVoid("offset")),
             new Attr("data", new AtVoid("data"))

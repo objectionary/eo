@@ -10,13 +10,13 @@
 package org.eolang;
 
 /**
- * Malloc.of.allocated.read object.
+ * Chunk.read object.
  * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "malloc.of.allocated.read")
+@XmirObject(oname = "chunk.read")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements Atom {
+public final class EOchunk$EOread extends PhDefault implements Atom {
 
     /**
      * Name of the error-branch void that holds the caller's read fallback.
@@ -26,13 +26,13 @@ public final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements
     /**
      * Ctor.
      */
-    public EOmalloc$EOof$EOallocated$EOread() {
+    public EOchunk$EOread() {
         super(new Attrs(
             new Attr("offset", new AtVoid("offset")),
             new Attr("length", new AtVoid("length")),
             new Attr(
-                EOmalloc$EOof$EOallocated$EOread.FALLBACK,
-                new AtVoid(EOmalloc$EOof$EOallocated$EOread.FALLBACK)
+                EOchunk$EOread.FALLBACK,
+                new AtVoid(EOchunk$EOread.FALLBACK)
             )
         ));
     }
@@ -65,7 +65,7 @@ public final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements
         if (Heaps.INSTANCE.fits(id, offset, length)) {
             result = new Data.ToPhi(Heaps.INSTANCE.read(id, offset, length));
         } else {
-            result = this.take(EOmalloc$EOof$EOallocated$EOread.FALLBACK);
+            result = this.take(EOchunk$EOread.FALLBACK);
             result.put(
                 0,
                 new Data.ToPhi(

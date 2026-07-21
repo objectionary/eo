@@ -10,13 +10,13 @@
 package org.eolang;
 
 /**
- * Malloc.of.allocated.size object.
+ * Chunk.size object.
  * @since 0.41.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "malloc.of.allocated.size")
+@XmirObject(oname = "chunk.size")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOmalloc$EOof$EOallocated$EOsize extends PhDefault implements Atom {
+public final class EOchunk$EOsize extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {

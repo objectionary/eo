@@ -26,7 +26,7 @@ public final class EOmalloc$EOof$EOφ extends PhDefault implements Atom {
         );
         final Phi res;
         try {
-            final Phi allocated = rho.take("allocated");
+            final Phi allocated = rho.take("allocated").copy();
             allocated.put("id", new Data.ToPhi((long) identifier));
             final Phi scope = rho.take("scope").copy();
             scope.put(0, allocated);
