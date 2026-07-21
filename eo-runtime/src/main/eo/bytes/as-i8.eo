@@ -1,0 +1,22 @@
+# Bytes as a signed 8-bit integer `i8`: a single byte reinterpreted
+# as two's complement. For any other length the `cant-convert` fallback
+# is returned.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package bytes
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[bts cant-convert] > as-i8
+  if. > @
+    bts.size.eq 1
+    i8 bts
+    cant-convert
+      "Can't convert non 1 length bytes to i8, bytes are %x".printf
+        * bts
+
+  01-01.as-i8 --> on-bytes-of-wrong-size-as-i8
+
+  2A-.as-i8.as-bytes.eq 2A- ++> tests-bytes-converts-to-i8-and-back

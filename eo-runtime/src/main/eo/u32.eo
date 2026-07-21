@@ -1,0 +1,121 @@
+# Unsigned 32-bit integer.
+# Here `as-bytes` must be a `bytes` object of exactly four bytes,
+# interpreted without a sign.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object
++unlint mandatory-package
+
+[as-bytes] > u32
+  as-bytes > @
+  as-i64.as-number > as-number
+  [] > as-i64
+    i64 > @
+      00-00-00-00.concat as-bytes
+  as-i64.lt x.as-u32.as-i64 > [x] > lt
+  as-i64.lte x.as-u32.as-i64 > [x] > lte
+  as-i64.gt x.as-u32.as-i64 > [x] > gt
+  as-i64.gte x.as-u32.as-i64 > [x] > gte
+  [x] > times
+    u32 right > @
+    (as-i64.times x.as-u32.as-i64).as-bytes.slice > right
+      4
+      4
+  [x] > plus
+    u32 right > @
+    (as-i64.plus x.as-u32.as-i64).as-bytes.slice > right
+      4
+      4
+  [x] > minus
+    u32 right > @
+    (as-i64.minus x.as-u32.as-i64).as-bytes.slice > right
+      4
+      4
+  [x cant-divide] > div
+    if. > @
+      xval.eq zero
+      cant-divide
+        "Can't divide %d by u32 zero".printf
+          * as-number
+      u32 quotient
+    (as-i64.div xval.as-i64).as-bytes.slice > quotient
+      4
+      4
+    x.as-u32 > xval
+    00-00-00-00 > zero
+
+  00-00-00-2A.as-u32.as-bytes.eq 00-00-00-2A ++> tests-u32-has-valid-bytes
+
+  eq. ++> tests-u32-as-i64-widens-with-zero-prefix
+    FF-FF-FF-FF.as-u32.as-i64.as-bytes
+    00-00-00-00-FF-FF-FF-FF
+
+  FF-FF-FF-FF.as-u32.as-number.eq 4294967295 ++> tests-u32-as-number-is-unsigned
+
+  00-00-00-0A.as-u32.lt 00-00-00-32.as-u32 ++> tests-u32-less-true
+
+  (00-00-00-0A.as-u32.lt 00-00-00-0A.as-u32).not ++> tests-u32-less-equal
+
+  gt. ++> tests-u32-greater-treats-high-bit-as-magnitude
+    FF-FF-FF-FF.as-u32
+    00-00-00-01.as-u32
+
+  ++> tests-u32-high-bit-not-less-than-one
+    not. > @
+      FF-FF-FF-FF.as-u32.lt 00-00-00-01.as-u32
+
+  00-00-00-00.as-u32.lt FF-FF-FF-FF.as-u32 ++> tests-u32-zero-less-than-max
+
+  00-00-00-32.as-u32.lte 00-00-00-32.as-u32 ++> tests-u32-lte-equal
+
+  00-00-00-32.as-u32.gte 00-00-00-32.as-u32 ++> tests-u32-gte-equal
+
+  (00-00-00-00.as-u32.gte 00-00-00-0A.as-u32).not ++> tests-u32-gte-false
+
+  00-00-00-2A.as-u32.eq 00-00-00-2A.as-u32 ++> tests-u32-eq-true
+
+  (00-00-00-2A.as-u32.eq 00-00-00-2B.as-u32).not ++> tests-u32-eq-false
+
+  eq. ++> tests-u32-one-plus-u32-one
+    00-00-00-01.as-u32.plus 00-00-00-01.as-u32
+    00-00-00-02.as-u32
+
+  eq. ++> tests-u32-plus-with-overflow
+    FF-FF-FF-FF.as-u32.plus 00-00-00-01.as-u32
+    00-00-00-00.as-u32
+
+  eq. ++> tests-u32-minus
+    00-00-00-05.as-u32.minus 00-00-00-03.as-u32
+    00-00-00-02.as-u32
+
+  eq. ++> tests-u32-minus-with-underflow
+    00-00-00-00.as-u32.minus 00-00-00-01.as-u32
+    FF-FF-FF-FF.as-u32
+
+  eq. ++> tests-u32-times
+    00-00-00-06.as-u32.times 00-00-00-07.as-u32
+    00-00-00-2A.as-u32
+
+  eq. ++> tests-u32-times-wraps-modulo-2-pow-32
+    00-01-00-00.as-u32.times 00-01-00-00.as-u32
+    00-00-00-00.as-u32
+
+  eq. ++> tests-u32-div-is-unsigned
+    FF-FF-FF-FF.as-u32.div 00-00-00-02.as-u32
+    7F-FF-FF-FF.as-u32
+
+  eq. ++> tests-u32-div-by-u32-one
+    FF-FF-FF-FF.as-u32.div 00-00-00-01.as-u32
+    FF-FF-FF-FF.as-u32
+
+  00-00-00-02.as-u32.div 00-00-00-00.as-u32 --> on-division-u32-by-u32-zero
+
+  ++> tests-u32-div-by-zero-returns-provided-fallback
+    "recovered".eq > @
+      00-00-00-02.as-u32.div
+        00-00-00-00.as-u32
+        "recovered" > [msg]
