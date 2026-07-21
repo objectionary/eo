@@ -14,8 +14,7 @@
 
 [as-bytes] > u64
   as-bytes > @
-  as-bytes.xor > flip
-    80-00-00-00-00-00-00-00
+  as-bytes.xor 80-00-00-00-00-00-00-00 > flip
   plus. > [] > as-number
     as-number.
       i64 as-bytes

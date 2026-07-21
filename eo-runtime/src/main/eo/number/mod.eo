@@ -19,10 +19,8 @@
       dividend.gt 0
       abs-mod
       abs-mod.neg
-  number > dividend
-    x.as-bytes
-  number > divisor
-    y.as-bytes
+  number x.as-bytes > dividend
+  number y.as-bytes > divisor
   [] > abs-mod
     absx.minus > @
       absy.times
@@ -31,30 +29,15 @@
     abs dividend > absx
     abs divisor > absy
 
-  ++> tests-mod-n1-n2
-    eq. > @
-      mod 1 2
-      1
+  (mod 1 2).eq 1 ++> tests-mod-n1-n2
 
-  ++> tests-mod-n0-n5
-    eq. > @
-      mod 0 5
-      0
+  (mod 0 5).eq 0 ++> tests-mod-n0-n5
 
-  ++> tests-mod-n0-n15-neg
-    eq. > @
-      mod 0 -15
-      0
+  (mod 0 -15).eq 0 ++> tests-mod-n0-n15-neg
 
-  ++> tests-mod-n1-neg-n7
-    eq. > @
-      mod -1 7
-      -1
+  (mod -1 7).eq -1 ++> tests-mod-n1-neg-n7
 
-  ++> tests-mod-n16-n200-neg
-    eq. > @
-      mod 16 -200
-      16
+  (mod 16 -200).eq 16 ++> tests-mod-n16-n200-neg
 
   ++> tests-div-mod-compatibility
     eq. > @
@@ -66,15 +49,9 @@
     -13 > dividend
     5 > divisor
 
-  ++> tests-mod-dividend-less-than-divisor
-    eq. > @
-      mod -1 5
-      -1
+  (mod -1 5).eq -1 ++> tests-mod-dividend-less-than-divisor
 
-  ++> tests-mod-dividend-by-one
-    eq. > @
-      mod 133 1
-      0
+  (mod 133 1).eq 0 ++> tests-mod-dividend-by-one
 
   mod 5 0 --> on-mod-by-zero
 

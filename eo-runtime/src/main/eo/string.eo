@@ -148,12 +148,7 @@
                 cause
               if.
                 (byte.and p3).eq r3
-                increase
-                  index
-                  3
-                  accum
-                  result
-                  cause
+                increase index 3 accum result cause
                 if.
                   (byte.and p4).eq r4
                   increase index 4 accum result cause
@@ -230,25 +225,13 @@
 
   "Ф".eq "Ф" ++> tests-supports-escape-sequences-unicode
 
-  ++> tests-slice-from-start
-    eq. > @
-      "hello".slice 0 1
-      "h"
+  ("hello".slice 0 1).eq "h" ++> tests-slice-from-start
 
-  ++> tests-slice-in-the-middle
-    eq. > @
-      "hello".slice 2 3
-      "llo"
+  ("hello".slice 2 3).eq "llo" ++> tests-slice-in-the-middle
 
-  ++> tests-slice-from-the-end
-    eq. > @
-      "hello".slice 4 1
-      "o"
+  ("hello".slice 4 1).eq "o" ++> tests-slice-from-the-end
 
-  ++> tests-slice-empty-string
-    eq. > @
-      "".slice 0 0
-      ""
+  ("".slice 0 0).eq "" ++> tests-slice-empty-string
 
   ++> tests-no-slice-string
     eq. > @
@@ -257,20 +240,11 @@
         0
       ""
 
-  ++> tests-slice-escape-sequences-line-break
-    eq. > @
-      "\n".slice 0 "\n".length
-      "\n"
+  ("\n".slice 0 "\n".length).eq "\n" ++> tests-slice-escape-sequences-line-break
 
-  ++> tests-slice-escape-sequences-unicode
-    eq. > @
-      "Ф".slice 0 "Ф".length
-      "Ф"
+  ("Ф".slice 0 "Ф".length).eq "Ф" ++> tests-slice-escape-sequences-unicode
 
-  ++> tests-slice-with-n2-byte-characters
-    eq. > @
-      "привет".slice 1 2
-      "ри"
+  ("привет".slice 1 2).eq "ри" ++> tests-slice-with-n2-byte-characters
 
   ++> tests-slice-with-n3-byte-characters
     eq. > @

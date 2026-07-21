@@ -12,8 +12,7 @@
   div. > @
     value.times pi
     180
-  number > value
-    num.as-bytes
+  number num.as-bytes > value
 
   (radians 0).eq 0 ++> tests-radians-of-zero-is-zero
 

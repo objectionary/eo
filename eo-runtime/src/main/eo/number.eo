@@ -462,7 +462,4 @@
 
   (9.sqrt.minus 3).abs.lt 1.0E-9 ++> tests-package-square-root-approximates
 
-  ++> tests-package-power-via-number-namespace
-    eq. > @
-      number.power 2 5
-      32
+  (number.power 2 5).eq 32 ++> tests-package-power-via-number-namespace

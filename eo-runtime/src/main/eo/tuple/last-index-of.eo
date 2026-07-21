@@ -11,8 +11,7 @@
 [] > last-index-of
   ? >> list
   ? >> wanted
-  reclast > @
-    list
+  reclast list > @
   if. > [tup] > reclast
     tup.length.eq 0
     -1

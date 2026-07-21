@@ -22,8 +22,7 @@
           accum.with item
           accum
   index > idx!
-  list.length.minus > start!
-    idx
+  list.length.minus idx > start!
 
   eq. ++> tests-simple-back
     back

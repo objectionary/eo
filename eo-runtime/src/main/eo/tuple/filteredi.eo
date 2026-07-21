@@ -15,8 +15,7 @@
 [] > filteredi
   ? >> list
   ? >> func
-  recfilter > @
-    list
+  recfilter list > @
   [tup] > recfilter
     if. > @
       tup.length.eq 0

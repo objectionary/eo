@@ -14,8 +14,7 @@
 [as-bytes] > i64
   as-bytes > @
   as-i32.as-i16 > as-i16
-  times > neg
-    -1.as-i64
+  times -1.as-i64 > neg
   [cant-convert] > as-i32
     if. > @
       ^.eq left.as-i64

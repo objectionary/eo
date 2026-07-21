@@ -140,8 +140,18 @@ final class Pretty {
      * canonical spelling of a tuple applied after positional arguments, so it
      * is emitted whenever it applies, even when the verbose {@code * elem}
      * child inlines onto fewer lines. The bare {@code *} idiom
-     * ({@code N == 0}) stays a mere candidate — a short tuple that fits
-     * inline as {@code seq}, {@code * 1 2} on the next line is left alone.</p>
+     * ({@code N == 0}) stays a mere candidate — it competes on penalty like
+     * any other horizontal rendering, so a short tuple such as {@code * 1 2}
+     * inlines whenever that one-liner is no worse than laying the elements out
+     * vertically (see the tie rule below).</p>
+     *
+     * <p>Between the vertical and horizontal renderings a tie resolves to the
+     * flatter horizontal one-liner: the comparison is {@code <=}, not {@code <},
+     * so an object whose inlined form scores exactly as much as its vertical
+     * form ({@code | list > @} versus {@code | > @} over an indented
+     * {@code list}, where the application space is offset by the saved indent)
+     * stays on one line, the same tie rule {@link #layout} already uses for the
+     * suffix comparison (issue #5686).</p>
      *
      * @param node The node
      * @param indent The indentation level
@@ -157,7 +167,7 @@ final class Pretty {
             final Optional<String> flat = this.horizontal(node, indent);
             if (flat.isPresent()
                 && new Penalty(flat.get(), this.weights).points()
-                < new Penalty(best, this.weights).points()) {
+                <= new Penalty(best, this.weights).points()) {
                 best = flat.get();
             }
             if (star.isPresent()
@@ -393,8 +403,8 @@ final class Pretty {
      * ambiguous before-star form {@code head args *} is never produced. The
      * result is only a candidate: {@link #shaped} keeps it only when its
      * penalty beats the plain vertical and horizontal renderings, so a short
-     * tuple that fits inline as {@code seq}, {@code * 1 2} on the next line
-     * is left alone.</p>
+     * tuple whose one-line {@code * 1 2} form is no worse than the vertical one
+     * stays inline as that bare tuple rather than the hybrid star.</p>
      *
      * @param node The node
      * @param indent The indentation level

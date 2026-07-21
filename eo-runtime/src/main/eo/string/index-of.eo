@@ -29,8 +29,7 @@
   minus. > end!
     number tlen
     slen
-  rec-index-of > found!
-    0
+  rec-index-of 0 > found!
   sub.size > slen!
   substring > sub!
   txt.size > tlen!

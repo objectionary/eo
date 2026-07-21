@@ -12,8 +12,7 @@
   div. > @
     value.times 180
     pi
-  number > value
-    num.as-bytes
+  number num.as-bytes > value
 
   (degrees 0).eq 0 ++> tests-degrees-of-zero-is-zero
 

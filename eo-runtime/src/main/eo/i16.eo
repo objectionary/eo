@@ -13,8 +13,7 @@
   as-bytes > @
   as-i32.as-i64 > as-i64
   as-i64.as-number > as-number
-  times > neg
-    -1.as-i64.as-i32.as-i16
+  times -1.as-i64.as-i32.as-i16 > neg
   [] > as-i32
     i32 > @
       prefix.concat as-bytes
