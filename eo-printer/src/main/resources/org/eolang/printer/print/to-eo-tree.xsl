@@ -283,7 +283,17 @@
         <xsl:if test="position()&gt;1">
           <xsl:text> </xsl:text>
         </xsl:if>
-        <xsl:value-of select="@name"/>
+        <xsl:choose>
+          <xsl:when test="@name = $eo:phi">
+            <xsl:value-of select="'@'"/>
+          </xsl:when>
+          <xsl:when test="@name = $eo:rho">
+            <xsl:value-of select="'^'"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="@name"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:for-each>
       <xsl:text>]</xsl:text>
     </xsl:if>
