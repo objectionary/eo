@@ -54,10 +54,6 @@
       ^.eq value
     x > value!
   [x] > times
-    looped > @
-      00-00-00-00-00-00-00-00
-      as-bytes
-      x.as-bytes
     if. > [acc a b] > looped
       b.eq 00-00-00-00-00-00-00-00
       i64 acc
@@ -70,6 +66,10 @@
           acc
         a.left 1
         b.right 1
+    | > @
+      00-00-00-00-00-00-00-00
+      as-bytes
+      x.as-bytes
   [x] > plus /i64
   [x] > minus
     plus > @

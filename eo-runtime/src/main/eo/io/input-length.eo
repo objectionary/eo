@@ -9,9 +9,6 @@
 +spdx SPDX-License-Identifier: MIT
 
 [input] > input-length
-  rec-read > @
-    input
-    0
   [input length] > rec-read
     if. > @
       chunk.size.eq 0
@@ -20,6 +17,9 @@
         chunk
         length.plus chunk.size
     (input.read 4096).read.^ > chunk
+  | > @
+    input
+    0
 
   eq. ++> tests-reads-all-bytes-and-returns-length
     input-length

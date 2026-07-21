@@ -15,7 +15,6 @@
 [] > filteredi
   ? >> list
   ? >> func
-  recfilter list > @
   [tup] > recfilter
     if. > @
       tup.length.eq 0
@@ -25,6 +24,7 @@
         next.with tup.head
         next
     recfilter tup.tail > next
+  | list > @
 
   ++> tests-filteredi-with-lt
     eq. > @
