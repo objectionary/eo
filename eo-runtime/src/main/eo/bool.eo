@@ -30,15 +30,17 @@
       true
       01-.eq x
 
-  ++> tests-if-result-answers-right-method-of-chosen-branch
-    eq. > @
-      (true.if 00-00-00-00-00-00-00-05 00-00-00-00-00-00-00-09).right 1
-      00-00-00-00-00-00-00-02
+  eq. ++> tests-if-result-answers-right-method-of-chosen-branch
+    right.
+      true.if 00-00-00-00-00-00-00-05 00-00-00-00-00-00-00-09
+      1
+    00-00-00-00-00-00-00-02
 
-  ++> tests-if-result-answers-left-method-of-chosen-branch
-    eq. > @
-      (false.if 00-00-00-00-00-00-00-09 00-00-00-00-00-00-00-05).left 1
-      00-00-00-00-00-00-00-0A
+  eq. ++> tests-if-result-answers-left-method-of-chosen-branch
+    left.
+      false.if 00-00-00-00-00-00-00-09 00-00-00-00-00-00-00-05
+      1
+    00-00-00-00-00-00-00-0A
 
   true.eq true ++> tests-compares-two-bools
 
