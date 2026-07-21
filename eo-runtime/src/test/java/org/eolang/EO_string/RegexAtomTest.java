@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
  * Tests for the regex atom.
  * @since 0.57.4
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "PMD.TooManyMethods"})
 final class RegexAtomTest {
 
     @Test
@@ -111,25 +111,32 @@ final class RegexAtomTest {
 
     @Test
     void readsFromWhenOptionalGroupDoesNotParticipate() {
-        final Phi matched = RegexAtomTest.optionalGroupMatch();
         MatcherAssert.assertThat(
             "match with a non-participating optional group must not crash when reading from",
-            new Dataized(matched.take("from")).asNumber(),
+            new Dataized(RegexAtomTest.optionalGroupMatch().take("from")).asNumber(),
             Matchers.equalTo(0.0)
         );
+    }
+
+    @Test
+    void readsEmptyStringForNonParticipatingOptionalGroup() {
         MatcherAssert.assertThat(
             "non-participating optional capture must be an empty string, not absent",
             new Dataized(
                 new PhApplication(
-                    matched.take("group").copy(),
+                    RegexAtomTest.optionalGroupMatch().take("group").copy(),
                     new Bind("index", new Data.ToPhi(2))
                 )
             ).asString(),
             Matchers.equalTo("")
         );
+    }
+
+    @Test
+    void keepsGroupSlotsAlignedWhenOptionalGroupDoesNotParticipate() {
         MatcherAssert.assertThat(
             "group slots must stay aligned with groupCount+1 even when a group does not participate",
-            new Dataized(matched.take("count")).asNumber(),
+            new Dataized(RegexAtomTest.optionalGroupMatch().take("count")).asNumber(),
             Matchers.equalTo(3.0)
         );
     }

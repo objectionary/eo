@@ -12,6 +12,7 @@ package org.eolang.EO_string; // NOPMD
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eolang.AtVoid;
@@ -120,8 +121,9 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
         if (matcher.groupCount() > 0) {
             groups = new Phi[matcher.groupCount() + 1];
             for (int idx = 0; idx < groups.length; ++idx) {
-                final String captured = matcher.group(idx);
-                groups[idx] = new Data.ToPhi(captured == null ? "" : captured);
+                groups[idx] = new Data.ToPhi(
+                    Optional.ofNullable(matcher.group(idx)).orElse("")
+                );
             }
         } else {
             groups = new Phi[]{new Data.ToPhi(matcher.group())};
