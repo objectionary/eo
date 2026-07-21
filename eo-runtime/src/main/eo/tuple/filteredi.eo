@@ -15,8 +15,6 @@
 [] > filteredi
   ? >> list
   ? >> func
-  recfilter > @
-    list
   [tup] > recfilter
     if. > @
       tup.length.eq 0
@@ -24,54 +22,53 @@
       if.
         func tup.head tup.tail.length
         next.with tup.head
-        next
-    recfilter tup.tail > next
+        recfilter tup.tail > next
+  | list > @
 
-  ++> tests-filteredi-with-lt
-    eq. > @
-      filteredi
-        *
-          3
-          1
-          4
-          2
-          5
-        v.lt 3 > [v i]
-      * 1 2
+  eq. ++> tests-filteredi-with-lt
+    filteredi
+      *
+        3
+        1
+        4
+        2
+        5
+      v.lt 3 > [v i]
+    *
+      1
+      2
 
-  ++> tests-filteredi-with-string-length
-    eq. > @
-      filteredi
-        *
-          "Hello"
-          "Name"
-          "EO"
-          "List"
-        v.length.gt 4 > [v i]
-      * "Hello"
+  eq. ++> tests-filteredi-with-string-length
+    filteredi
+      *
+        "Hello"
+        "Name"
+        "EO"
+        "List"
+      v.length.gt 4 > [v i]
+    * "Hello"
 
-  ++> tests-filteredi-with-empty-list
-    is-empty > @
-      filteredi
-        *
-        v.lt 3 > [v i]
+  is-empty ++> tests-filteredi-with-empty-list
+    filteredi
+      *
+      v.lt 3 > [v i]
 
-  ++> tests-filteredi-by-index
-    eq. > @
-      filteredi
-        *
-          3
-          1
-          4
-        i.gt 0 > [v i]
-      * 1 4
+  eq. ++> tests-filteredi-by-index
+    filteredi
+      *
+        3
+        1
+        4
+      i.gt 0 > [v i]
+    *
+      1
+      4
 
-  ++> tests-filteredi-with-bools
-    eq. > @
-      filteredi
-        *
-          true
-          false
-          true
-        v.not > [v i]
-      * false
+  eq. ++> tests-filteredi-with-bools
+    filteredi
+      *
+        true
+        false
+        true
+      v.not > [v i]
+    * false

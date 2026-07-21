@@ -43,16 +43,16 @@
   </xsl:function>
   <!--
   Render a stored signature (an atom's "/sig" or a void forma) as its EO
-  surface form. A single-name "Φ.name" re-resolves to its root on
-  reparse, so the implicit root is dropped; a multi-segment
-  "Φ.a.b.c" must stay rooted (a dotted signature is not re-homed) and
-  keeps an explicit "Q." root. Names with no "Φ." root pass through.
+  surface form. A rooted "Φ.name" always keeps an explicit "Q." root, so
+  every rooted signature reads uniformly and re-parses directly back to its
+  "Φ." root instead of relying on a bare name being re-homed. Names with no
+  "Φ." root pass through.
   -->
   <xsl:function name="eo:signature" as="xs:string">
     <xsl:param name="sig" as="xs:string"/>
     <xsl:variable name="root" select="concat($eo:program, '.')"/>
     <xsl:variable name="rest" select="substring-after($sig, $root)"/>
-    <xsl:sequence select="if (starts-with($sig, $root)) then (if (contains($rest, '.')) then concat('Q.', $rest) else $rest) else $sig"/>
+    <xsl:sequence select="if (starts-with($sig, $root)) then concat('Q.', $rest) else $sig"/>
   </xsl:function>
   <!-- Count the leading run of consecutive ρ segments in a sequence. -->
   <xsl:function name="eo:rho-run" as="xs:integer">
@@ -156,7 +156,25 @@
       <xsl:attribute name="data">
         <xsl:value-of select="if (eo:has-data(.)) then 'yes' else 'no'"/>
       </xsl:attribute>
-      <xsl:apply-templates select="o[not(eo:void(.)) or @local or @types]" mode="tree"/>
+      <!--
+      Formation attributes are emitted in a canonical order so that
+      textually-reordered but logically-identical bodies print the same
+      way (idempotent, diff-friendly output — #5706). The ordering is:
+      vertical void body lines first, then the decoratee (@name = φ),
+      then every other bound attribute alphabetically by name, and test
+      attributes last (also alphabetically). Two kinds of body keep
+      their source order untouched: application arguments (positional,
+      so their order carries meaning) and any body carrying a pipe
+      continuation ("| args", §3.14), whose "|" line must stay directly
+      below the named formation it applies to (R-3.14.7) — reordering
+      would strand it. In both cases the sort key collapses to a
+      constant, and since xsl:sort is stable the original order stands.
+      -->
+      <xsl:variable name="sortable" select="eo:abstract(.) and empty(o[@pipe])"/>
+      <xsl:apply-templates select="o[not(eo:void(.)) or @local or @types]" mode="tree">
+        <xsl:sort data-type="number" select="if (not($sortable)) then 0 else if (eo:void(.)) then 1 else if (@name = $eo:phi) then 2 else if (eo:test-attr(.)) then 4 else 3"/>
+        <xsl:sort select="if (not($sortable) or eo:void(.) or @name = $eo:phi) then '' else string(@name)"/>
+      </xsl:apply-templates>
     </line>
   </xsl:template>
   <!-- VOID WITH FILE-LOCAL HANDLE -->
@@ -189,6 +207,21 @@
         <line base="?" tail="{concat(' &gt; ', @name, ' /{', $formas, '}')}" abstract="no" test="no" reversed="no"/>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+  <!-- PIPE APPLICATION (§3.14) -->
+  <!--
+  A "| args &gt; name" continuation line (R-3.14.7). The parser rewrote
+  it into an application of its same-indent predecessor, pointing @base
+  at that predecessor's name but keeping the @pipe marker (#5684). We
+  restore the compact "|" head only when that predecessor is still the
+  immediately preceding sibling, so the emitted pipe has a valid target
+  directly above it — the base then reads "ξ.&lt;name&gt;" (or the bare
+  "&lt;name&gt;" if reference resolution has not rooted it). When the
+  predecessor has floated away (#5526) the guard fails and the node
+  prints as an ordinary application, which round-trips just as safely.
+  -->
+  <xsl:template match="o[@pipe and (@base = concat($eo:xi, '.', preceding-sibling::o[1]/@name) or @base = preceding-sibling::o[1]/@name)]" mode="head" priority="2">
+    <xsl:text>|</xsl:text>
   </xsl:template>
   <!-- BASED -->
   <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
@@ -268,7 +301,17 @@
         <xsl:if test="position()&gt;1">
           <xsl:text> </xsl:text>
         </xsl:if>
-        <xsl:value-of select="@name"/>
+        <xsl:choose>
+          <xsl:when test="@name = $eo:phi">
+            <xsl:value-of select="'@'"/>
+          </xsl:when>
+          <xsl:when test="@name = $eo:rho">
+            <xsl:value-of select="'^'"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="@name"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:for-each>
       <xsl:text>]</xsl:text>
     </xsl:if>
@@ -314,6 +357,17 @@
             </xsl:otherwise>
           </xsl:choose>
           <xsl:value-of select="substring(@name, 2)"/>
+        </xsl:when>
+        <xsl:when test="@local">
+          <!--
+          A non-void formation declared with a file-local handle
+          ("&gt;&gt; name", R-3.10.12): a recursive helper kept in place by
+          "inline-cactoos" (#5677) whose "@local" marker "restore-local-names"
+          preserves (#5681). It is printed with its readable handle under the
+          double-arrow, not as an anonymous "&gt;&gt;".
+          -->
+          <xsl:text> &gt;&gt; </xsl:text>
+          <xsl:value-of select="@local"/>
         </xsl:when>
         <xsl:when test="starts-with(@name, concat('a', $eo:cactoos))">
           <xsl:text> &gt;&gt;</xsl:text>

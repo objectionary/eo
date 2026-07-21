@@ -27,15 +27,6 @@
       size.eq 0
       0
       reclen 0 0
-    80- > p1
-    E0- > p2
-    F0- > p3
-    F8- > p4
-    00- > r1
-    C0- > r2
-    p2 > r3
-    p3 > r4
-    as-bytes.size > size
     if. > [index csize len] > inclen
       gt.
         index.plus csize
@@ -46,6 +37,14 @@
       reclen
         index.plus csize
         len.plus 1
+    80- > p1
+    E0- > p2
+    F0- > p3
+    F8- > p4
+    00- > r1
+    C0- > r2
+    p2 > r3
+    p3 > r4
     [index accum] > reclen
       if. > @
         index.eq size
@@ -64,8 +63,9 @@
                 inclen index 4 accum
                 T
                   "Unknown byte format (%x), can't recognize character".printf
-                    * byte
-      as-bytes.slice index 1 > byte
+                    *
+                      as-bytes.slice index 1 > byte
+    as-bytes.size > size
   [start len] > slice
     if. > @
       nstart.lt 0
@@ -81,16 +81,16 @@
           nlen.eq 0
           ""
           string
-            as-bytes.slice bstart blen
-    minus. > blen
-      recidx
-        number bstart
-        0
-        nlen
-        "Start index + length to slice (%d) is out of string bounds".printf
-          *
-            nstart.plus nlen
-      bstart
+            as-bytes.slice
+              bstart
+              minus. > blen
+                recidx
+                  number bstart
+                  0
+                  nlen
+                  "Start index + length to slice (%d) is out of string bounds".printf
+                    * (nstart.plus nlen)
+                bstart
     recidx > bstart!
       0
       0
@@ -98,19 +98,6 @@
       "Start index (%d) is out of string bounds".printf
         * nstart
     nstart.plus nlen > end
-    len > lbts!
-    number lbts > nlen
-    number sbts > nstart
-    80- > p1
-    E0- > p2
-    F0- > p3
-    F8- > p4
-    00- > r1
-    C0- > r2
-    p2 > r3
-    p3 > r4
-    start > sbts!
-    as-bytes.size > size
     if. > [index csize accum result cause] > increase
       gt.
         index.plus csize
@@ -123,6 +110,18 @@
         accum.plus 1
         result
         cause
+    number > nlen
+      len > lbts!
+    number > nstart
+      start > sbts!
+    80- > p1
+    E0- > p2
+    F0- > p3
+    F8- > p4
+    00- > r1
+    C0- > r2
+    p2 > r3
+    p3 > r4
     [index accum result cause] > recidx
       if. > @
         accum.eq result
@@ -148,29 +147,89 @@
                 cause
               if.
                 (byte.and p3).eq r3
-                increase
-                  index
-                  3
-                  accum
-                  result
-                  cause
+                increase index 3 accum result cause
                 if.
                   (byte.and p4).eq r4
                   increase index 4 accum result cause
                   T
                     "Unknown byte format (%x), can't recognize character".printf
-                      * byte
-      as-bytes.slice index 1 > byte
-
-  " ".length.eq 1 ++> tests-calculates-length-of-spaces-only
-
-  eq. ++> tests-turns-string-into-bytes
-    "€ друг".as-bytes
-    E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3
+                      *
+                        as-bytes.slice index 1 > byte
+    as-bytes.size > size
 
   D0-B4-D1-80-D1-83-D0-B3.eq "друг" ++> tests-bytes-equal-to-string
 
-  "друг".eq D0-B4-D1-80-D1-83-D0-B3 ++> tests-string-equals-to-bytes
+  eq. ++> tests-calculates-length-of-spaces-only
+    " ".length
+    1
+
+  (nan.eq "друг").not ++> tests-compares-string-with-nan
+
+  (ninf.eq "друг").not ++> tests-compares-string-with-negative-infinity
+
+  eq. ++> tests-compares-string-with-positive-infinity
+    pinf.eq "друг"
+    false
+
+  ("Hello".eq 42).not ++> tests-compares-two-different-string-types
+
+  ("Hello".eq "Good bye").not ++> tests-compares-two-different-strings
+
+  eq. ++> tests-compares-two-strings
+    "x".eq "x"
+    true
+
+  eq. ++> tests-no-slice-string
+    "no slice".slice
+      0
+      0
+    ""
+
+  "Ф".eq "Ф" ++> tests-one-symbol-string-compares
+
+  string.contains ++> tests-package-contains-via-string-namespace
+    "hello, world"
+    "world"
+
+  contains. ++> tests-package-contains-word-in-sentence
+    "hello, world, how are you?"
+    "how"
+
+  "eEo".is-alpha ++> tests-package-detects-alphabetic-text
+
+  "2026".is-digit ++> tests-package-detects-digits
+
+  ends-with. ++> tests-package-ends-with-suffix
+    "hello, world"
+    "world"
+
+  eq. ++> tests-package-finds-index-of-character
+    "hello".index-of "l"
+    2
+
+  "HELLO".low-cased.eq "hello" ++> tests-package-low-cases-text
+
+  eq. ++> tests-package-repeats-text
+    "ha".repeated 3
+    "hahaha"
+
+  starts-with. ++> tests-package-starts-with-prefix
+    "hello, world"
+    "hello"
+
+  eq. ++> tests-package-takes-character-at-index
+    "some".at 1
+    "o"
+
+  eq. ++> tests-package-trims-surrounding-spaces
+    "  spaced  ".trimmed
+    "spaced"
+
+  "hello".up-cased.eq "HELLO" ++> tests-package-up-cases-text
+
+  eq. ++> tests-preserves-indentation-in-text
+    "a\n b\n  c"
+    "a\n b\n  c"
 
   ++> tests-reads-the-length-with-n2-byte-characters
     and. > @
@@ -190,94 +249,59 @@
       str.as-bytes.size.eq 14
     "The 😀 smile" > str
 
-  (string F0-9F-98).length --> on-taking-length-of-incomplete-n4-byte-character
+  eq. ++> tests-slice-empty-string
+    "".slice
+      0
+      0
+    ""
 
-  ("Hello".eq 42).not ++> tests-compares-two-different-string-types
+  eq. ++> tests-slice-escape-sequences-line-break
+    "\n".slice
+      0
+      "\n".length
+    "\n"
 
-  (nan.eq "друг").not ++> tests-compares-string-with-nan
+  eq. ++> tests-slice-escape-sequences-unicode
+    "Ф".slice
+      0
+      "Ф".length
+    "Ф"
 
-  (pinf.eq "друг").eq false ++> tests-compares-string-with-positive-infinity
+  eq. ++> tests-slice-foreign-literals
+    "hello, 大家!".slice
+      7
+      1
+    "大"
 
-  (ninf.eq "друг").not ++> tests-compares-string-with-negative-infinity
+  eq. ++> tests-slice-from-start
+    "hello".slice
+      0
+      1
+    "h"
 
-  "Abc".eq "Abc" ++> tests-text-block-one-line
+  eq. ++> tests-slice-from-the-end
+    "hello".slice
+      4
+      1
+    "o"
 
-  "e\ne\ne".eq 65-0A-65-0A-65 ++> tests-text-block-tree-lines
+  eq. ++> tests-slice-in-the-middle
+    "hello".slice
+      2
+      3
+    "llo"
 
-  ++> tests-text-block-with-margin
-    "z\n  y\n x".eq > @
-      7A-0A-20-20-79-0A-20-78
+  eq. ++> tests-slice-with-n2-byte-characters
+    "привет".slice
+      1
+      2
+    "ри"
 
-  ("Hello".eq "Good bye").not ++> tests-compares-two-different-strings
-
-  ++> tests-supports-escape-sequences
-    "Hello, друг!\n".eq > @
-      "Hello, друг!\n"
-
-  eq. ++> tests-supports-escape-sequences-in-text
-    "Hello, друг!\n"
-    "Hello, друг!\n"
-
-  ++> tests-preserves-indentation-in-text
-    "a\n b\n  c".eq > @
-      "a\n b\n  c"
-
-  ("x".eq "x").eq true ++> tests-compares-two-strings
-
-  "Ф".eq "Ф" ++> tests-one-symbol-string-compares
-
-  "\n".eq "\n" ++> tests-supports-escape-sequences-line-break
-
-  "Ф".eq "Ф" ++> tests-supports-escape-sequences-unicode
-
-  ++> tests-slice-from-start
-    eq. > @
-      "hello".slice 0 1
-      "h"
-
-  ++> tests-slice-in-the-middle
-    eq. > @
-      "hello".slice 2 3
-      "llo"
-
-  ++> tests-slice-from-the-end
-    eq. > @
-      "hello".slice 4 1
-      "o"
-
-  ++> tests-slice-empty-string
-    eq. > @
-      "".slice 0 0
-      ""
-
-  ++> tests-no-slice-string
-    eq. > @
-      "no slice".slice
-        0
-        0
-      ""
-
-  ++> tests-slice-escape-sequences-line-break
-    eq. > @
-      "\n".slice 0 "\n".length
-      "\n"
-
-  ++> tests-slice-escape-sequences-unicode
-    eq. > @
-      "Ф".slice 0 "Ф".length
-      "Ф"
-
-  ++> tests-slice-with-n2-byte-characters
-    eq. > @
-      "привет".slice 1 2
-      "ри"
-
-  ++> tests-slice-with-n3-byte-characters
-    eq. > @
-      "The अ is अ".slice
-        1
-        6
-      "he अ i"
+  eq. ++> tests-slice-with-n3-byte-characters
+    "The अ is अ".slice
+      1
+      6
+    "he अ i"
 
   eq. ++> tests-slice-with-n4-byte-characters
     "One 😀 and 😀 another".slice
@@ -285,27 +309,31 @@
       8
     " 😀 and 😀"
 
-  ++> tests-slice-foreign-literals
-    eq. > @
-      "hello, 大家!".slice
-        7
-        1
-      "大"
+  "друг".eq D0-B4-D1-80-D1-83-D0-B3 ++> tests-string-equals-to-bytes
 
-  --> on-slicing-start-below-zero
-    "some string".slice > @
-      -1
-      1
+  eq. ++> tests-supports-escape-sequences
+    "Hello, друг!\n"
+    "Hello, друг!\n"
 
-  --> on-slicing-end-below-start
-    "some string".slice > @
-      2
-      -1
+  eq. ++> tests-supports-escape-sequences-in-text
+    "Hello, друг!\n"
+    "Hello, друг!\n"
 
-  --> on-slicing-end-greater-actual
-    "some string".slice > @
-      7
-      5
+  "\n".eq "\n" ++> tests-supports-escape-sequences-line-break
+
+  "Ф".eq "Ф" ++> tests-supports-escape-sequences-unicode
+
+  "Abc".eq "Abc" ++> tests-text-block-one-line
+
+  "e\ne\ne".eq 65-0A-65-0A-65 ++> tests-text-block-tree-lines
+
+  eq. ++> tests-text-block-with-margin
+    "z\n  y\n x"
+    7A-0A-20-20-79-0A-20-78
+
+  eq. ++> tests-turns-string-into-bytes
+    "€ друг".as-bytes
+    E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3
 
   eq. ++> tests-unescapes-slashes
     "x\\b\\f\\u\\r\\t\\n\\'"
@@ -313,32 +341,19 @@
 
   "\b\f\n\r\t⟦".eq 08-0C-0A-0D-09-E2-9F-A6 ++> tests-unescapes-symbols
 
-  contains. ++> tests-package-contains-word-in-sentence
-    "hello, world, how are you?"
-    "how"
+  slice. --> on-slicing-end-below-start
+    "some string"
+    2
+    -1
 
-  "hello, world".starts-with "hello" ++> tests-package-starts-with-prefix
+  slice. --> on-slicing-end-greater-actual
+    "some string"
+    7
+    5
 
-  "hello, world".ends-with "world" ++> tests-package-ends-with-suffix
+  slice. --> on-slicing-start-below-zero
+    "some string"
+    -1
+    1
 
-  "hello".up-cased.eq "HELLO" ++> tests-package-up-cases-text
-
-  "HELLO".low-cased.eq "hello" ++> tests-package-low-cases-text
-
-  ++> tests-package-trims-surrounding-spaces
-    "  spaced  ".trimmed.eq > @
-      "spaced"
-
-  ("ha".repeated 3).eq "hahaha" ++> tests-package-repeats-text
-
-  ("hello".index-of "l").eq 2 ++> tests-package-finds-index-of-character
-
-  ("some".at 1).eq "o" ++> tests-package-takes-character-at-index
-
-  "2026".is-digit ++> tests-package-detects-digits
-
-  "eEo".is-alpha ++> tests-package-detects-alphabetic-text
-
-  string.contains ++> tests-package-contains-via-string-namespace
-    "hello, world"
-    "world"
+  (string F0-9F-98).length --> on-taking-length-of-incomplete-n4-byte-character

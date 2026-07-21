@@ -56,12 +56,12 @@ final class InputOutputTest {
     /**
      * Posix.
      */
-    private static final String POSIX = "sm.posix";
+    private static final String POSIX = "posix";
 
     /**
      * Win32.
      */
-    private static final String WIN = "sm.win32";
+    private static final String WIN = "win32";
 
     /**
      * Console.

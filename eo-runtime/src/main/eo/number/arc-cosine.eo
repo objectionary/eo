@@ -15,23 +15,17 @@
     pi.div 2
     arc-sine num
 
-  (arc-cosine 1).eq 0 ++> tests-arc-cosine-of-one-is-zero
+  (arc-cosine 2).is-nan ++> tests-arc-cosine-above-one-is-nan
 
-  ++> tests-arc-cosine-of-zero-is-pi-halves
-    eq. > @
-      arc-cosine 0
-      pi.div 2
+  (arc-cosine -2).is-nan ++> tests-arc-cosine-below-minus-one-is-nan
 
-  (arc-cosine -1).eq pi ++> tests-arc-cosine-of-negative-one-is-pi
+  (arc-cosine nan).is-nan ++> tests-arc-cosine-of-nan-is-nan
 
-  lt. ++> tests-arc-cosine-of-point-six
-    abs
-      minus.
-        times.
-          arc-cosine 0.6
-          1000
-        927.295
-    1
+  (arc-cosine ninf).is-nan ++> tests-arc-cosine-of-negative-infinity-is-nan
+
+  eq. ++> tests-arc-cosine-of-negative-one-is-pi
+    arc-cosine -1
+    pi
 
   lt. ++> tests-arc-cosine-of-negative-point-six
     abs
@@ -42,12 +36,21 @@
         2214.297
     1
 
-  (arc-cosine 2).is-nan ++> tests-arc-cosine-above-one-is-nan
+  eq. ++> tests-arc-cosine-of-one-is-zero
+    arc-cosine 1
+    0
 
-  (arc-cosine -2).is-nan ++> tests-arc-cosine-below-minus-one-is-nan
-
-  (arc-cosine nan).is-nan ++> tests-arc-cosine-of-nan-is-nan
+  lt. ++> tests-arc-cosine-of-point-six
+    abs
+      minus.
+        times.
+          arc-cosine 0.6
+          1000
+        927.295
+    1
 
   (arc-cosine pinf).is-nan ++> tests-arc-cosine-of-positive-infinity-is-nan
 
-  (arc-cosine ninf).is-nan ++> tests-arc-cosine-of-negative-infinity-is-nan
+  eq. ++> tests-arc-cosine-of-zero-is-pi-halves
+    arc-cosine 0
+    pi.div 2

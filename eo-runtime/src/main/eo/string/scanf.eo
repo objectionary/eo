@@ -11,50 +11,229 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[format read] > scanf /tuple
-
-  "hello".eq (scanf "%s" "hello").head ++> tests-scanf-with-string
-
-  33.eq (scanf "%d" "33").head ++> tests-scanf-with-int
-
-  -42.eq (scanf "%d" "-42").head ++> tests-scanf-with-negative-int
-
-  42.eq (scanf "%d" "+42").head ++> tests-scanf-with-positive-signed-int
-
-  0.24.eq (scanf "%f" "0.24").head ++> tests-scanf-with-float
-
-  scanf "%l" "error" --> on-scanf-with-wrong-format
-
-  scanf "%d" "99999999999999999999" --> on-scanf-with-oversized-int
-
-  scanf "hello%" "hello" --> on-scanf-with-dangling-percent
-
-  eq. ++> tests-scanf-with-string-int-float
-    scanf
-      "%s %d %f"
-      "hello 33 0.24"
+[format read] > scanf
+  extracted > @
+    tokens.at > pattern
+      0
+      T
+    tokens.at > specifiers
+      1
+      T
+  [ch] > escaped
+    metachar.if > @
+      chained *1 > escaped-char
+        "\\"
+        ch
+      ch
+    metachars.contains ch > metachar
+    * > metachars
+      "\\"
+      "^"
+      "$"
+      "."
+      "|"
+      "?"
+      "*"
+      "+"
+      "("
+      ")"
+      "["
+      "]"
+      "{"
+      "}"
+      "/"
+  [pattern specifiers] > extracted
+    convert > @
+      1
+      *
+    [text] > as-float
+      negative.if > @
+        magnitude.times -1 > negated
+        has-fraction.if > magnitude
+          plus. > with-fraction
+            fold-digits
+              slice
+                unsigned
+                0
+                index-of unsigned "." > dot
+            div. > fraction
+              fold-digits
+                slice
+                  unsigned
+                  dot.plus 1
+                  places
+              10.power places
+          fold-digits unsigned > whole
+      not. > has-fraction
+        dot.eq -1
+      eq. > negative
+        slice
+          text
+          0
+          1
+        "-"
+      unsigned.length.minus > places
+        dot.plus 1
+      negative.or > signed-prefix
+        eq.
+          slice text 0 1
+          "+"
+      signed-prefix.if > unsigned
+        slice
+          text
+          1
+          text.length.minus 1
+        text
+    [text] > as-integer
+      if. > @
+        digits.length.gt 19
+        overflow-message > overflow
+        negative.if > signed
+          folded.times -1 > negated
+          fold-digits > folded
+            signed-prefix.if > digits
+              slice
+                text
+                1
+                text.length.minus 1
+              text
+      eq. > negative
+        slice
+          text
+          0
+          1
+        "-"
+      T > overflow-message
+        "The number doesn't fit into long range for the '%d' conversion"
+      negative.or > signed-prefix
+        eq.
+          slice text 0 1
+          "+"
+    [group acc] > convert
+      matched.exists.not.if > @
+        *
+        if. > next-group
+          group.gt specifiers.length
+          acc
+          convert > next
+            group.plus 1
+            acc.with
+              converted
+                specifiers.at
+                  group.minus 1
+                  T
+                matched.group group
+    [spec text] > converted
+      if. > @
+        spec.eq "s"
+        text
+        if. > as-number-value
+          spec.eq "d"
+          as-integer text > as-integer-value
+          as-float text > as-float-value
+    [text] > fold-digits
+      rec 0 0 > @
+      [index acc] > rec
+        if. > @
+          index.eq text.length
+          acc
+          rec > next
+            index.plus 1
+            (acc.times 10).plus
+              minus.
+                as-ascii
+                  slice text index 1
+                48
+    match. > found
+      regex
+        chained *1 > wrapped
+          "/"
+          pattern
+          "/"
+      read
+    found.next > matched
+  [pos accumulated found pending] > tokenize
+    if. > @
+      pos.gte format.length
+      pending.if *1 > ended
+        dangling-message > dangling
+        accumulated
+        found
+      pending.if > continued
+        if.
+          ch.eq "%"
+          tokenize
+            pos.plus 1
+            chained *1
+              accumulated
+              "%"
+            found
+            false
+          if.
+            ch.eq "d"
+            tokenize
+              pos.plus 1
+              chained *1
+                accumulated
+                "([+-]?\\d+)"
+              found.with "d"
+              false
+            if.
+              ch.eq "f"
+              tokenize
+                pos.plus 1
+                chained *1
+                  accumulated
+                  "([+-]?\\d+(?:\\.\\d+)?)"
+                found.with "f"
+                false
+              if.
+                ch.eq "s"
+                tokenize
+                  pos.plus 1
+                  chained *1
+                    accumulated
+                    "(\\S+)"
+                  found.with "s"
+                  false
+                T "Unsupported format specifier" > unsupported-message
+        if.
+          ch.eq "%"
+          tokenize
+            pos.plus 1
+            accumulated
+            found
+            true
+          tokenize
+            pos.plus 1
+            chained *1
+              accumulated
+              escaped > piece
+                slice format pos 1 > ch
+            found
+            false
+    T > dangling-message
+      "The format string ends with a dangling percent and no specifier after it"
+  tokenize > tokens
+    0
+    ""
     *
-      "hello"
-      33
-      0.24
+    false
 
-  "hello".eq (scanf "%s!" "hello!").head ++> tests-scanf-with-string-with-ending
-
-  eq. ++> tests-scanf-with-complex-string
-    "test"
-    head.
-      scanf "some%sstring" "someteststring"
-
-  eq. ++> tests-scanf-with-complex-int
-    734987259
-    head.
-      scanf "!%d!" "!734987259!"
+  eq. ++> tests-scanf-complex-case
+    scanf
+      "Im%d %s old and this is! Let's calculate %f + %f= %f"
+      "Im18 years old and this is! Let's calculate 99999999.99 + 0.01= 100000000.0"
+    *
+      18
+      "years"
+      9.999999999E7
+      0.01
+      100000000
 
   eq. ++> tests-scanf-with-complex-float
     1991.01
@@ -62,6 +241,36 @@
       scanf
         "this will be=%f"
         "this will be=1991.01"
+
+  eq. ++> tests-scanf-with-complex-int
+    734987259
+    head.
+      scanf "!%d!" "!734987259!"
+
+  eq. ++> tests-scanf-with-complex-string
+    "test"
+    head.
+      scanf "some%sstring" "someteststring"
+
+  eq. ++> tests-scanf-with-float
+    0.24
+    head.
+      scanf "%f" "0.24"
+
+  eq. ++> tests-scanf-with-int
+    33
+    head.
+      scanf "%d" "33"
+
+  eq. ++> tests-scanf-with-negative-int
+    -42
+    head.
+      scanf "%d" "-42"
+
+  eq. ++> tests-scanf-with-positive-signed-int
+    42
+    head.
+      scanf "%d" "+42"
 
   eq. ++> tests-scanf-with-printf
     scanf
@@ -74,13 +283,33 @@
       "This"
       8
 
-  eq. ++> tests-scanf-complex-case
+  eq. ++> tests-scanf-with-string
+    "hello"
+    head.
+      scanf "%s" "hello"
+
+  eq. ++> tests-scanf-with-string-int-float
     scanf
-      "Im%d %s old and this is! Let's calculate %f + %f= %f"
-      "Im18 years old and this is! Let's calculate 99999999.99 + 0.01= 100000000.0"
+      "%s %d %f"
+      "hello 33 0.24"
     *
-      18
-      "years"
-      9.999999999E7
-      0.01
-      100000000
+      "hello"
+      33
+      0.24
+
+  eq. ++> tests-scanf-with-string-with-ending
+    "hello"
+    head.
+      scanf "%s!" "hello!"
+
+  scanf --> on-scanf-with-dangling-percent
+    "hello%"
+    "hello"
+
+  scanf --> on-scanf-with-oversized-int
+    "%d"
+    "99999999999999999999"
+
+  scanf --> on-scanf-with-wrong-format
+    "%l"
+    "error"

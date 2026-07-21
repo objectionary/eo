@@ -21,44 +21,43 @@
       as-char
         n.floor.plus 48
       concat.
-        digits q
+        digits
+          (n.div 10).floor > q
         as-char
           (n.minus (q.times 10)).floor.plus
             48
-    floor. > q
-      n.div 10
 
-  ++> tests-writes-single-digit
-    "7".eq > @
-      string
-        as-decimal 7
+  eq. ++> tests-truncates-negative-fraction
+    "-7"
+    string
+      as-decimal -7.89
 
-  ++> tests-writes-zero
-    "0".eq > @
-      string
-        as-decimal 0
+  eq. ++> tests-truncates-positive-fraction
+    "42"
+    string
+      as-decimal 42.987
 
-  ++> tests-writes-multi-digit-number
-    "31415".eq > @
-      string
-        as-decimal 31415
+  eq. ++> tests-writes-multi-digit-number
+    "31415"
+    string
+      as-decimal 31415
 
-  ++> tests-writes-negative-number
-    "-42".eq > @
-      string
-        as-decimal -42
+  eq. ++> tests-writes-negative-number
+    "-42"
+    string
+      as-decimal -42
 
-  ++> tests-truncates-positive-fraction
-    "42".eq > @
-      string
-        as-decimal 42.987
+  eq. ++> tests-writes-number-with-inner-zero
+    "105"
+    string
+      as-decimal 105
 
-  ++> tests-truncates-negative-fraction
-    "-7".eq > @
-      string
-        as-decimal -7.89
+  eq. ++> tests-writes-single-digit
+    "7"
+    string
+      as-decimal 7
 
-  ++> tests-writes-number-with-inner-zero
-    "105".eq > @
-      string
-        as-decimal 105
+  eq. ++> tests-writes-zero
+    "0"
+    string
+      as-decimal 0

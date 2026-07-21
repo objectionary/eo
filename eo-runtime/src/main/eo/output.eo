@@ -1,0 +1,15 @@
+# Output is an abstract destination of bytes that can be written sequentially.
+# Any output decorates the object bound to its `@` attribute, which must
+# provide a `write` object that takes the bytes to write and returns an
+# output block ready to write the next portion. See `output.dead` and
+# `chunk.to-output`.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
++unlint unit-test-missing
+
+[@] > output

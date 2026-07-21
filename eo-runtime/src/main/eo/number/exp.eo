@@ -12,39 +12,39 @@
     e
     num
 
-  ++> tests-exp-check-n0
-    lt. > @
-      abs
-        e.minus
-          exp 1
-      1.0E-8
+  eq. ++> tests-exp-check-infinity-n1
+    exp pinf
+    pinf
 
-  ++> tests-exp-check-n1
-    lt. > @
-      abs
-        minus.
-          1.div e
-          exp -1
-      1.0E-8
+  eq. ++> tests-exp-check-infinity-n2
+    exp ninf
+    0
 
-  ++> tests-exp-check-n2
-    lt. > @
-      abs
-        minus.
-          power e 5
-          exp 5
-      1.0E-7
+  lt. ++> tests-exp-check-n0
+    abs
+      e.minus
+        exp 1
+    1.0E-8
 
-  ++> tests-exp-check-n3
-    lt. > @
-      abs
-        minus.
-          power e -10
-          exp -10
-      1.0E-12
+  lt. ++> tests-exp-check-n1
+    abs
+      minus.
+        1.div e
+        exp -1
+    1.0E-8
+
+  lt. ++> tests-exp-check-n2
+    abs
+      minus.
+        power e 5
+        exp 5
+    1.0E-7
+
+  lt. ++> tests-exp-check-n3
+    abs
+      minus.
+        power e -10
+        exp -10
+    1.0E-12
 
   (exp nan).is-nan ++> tests-exp-check-nan
-
-  (exp pinf).eq pinf ++> tests-exp-check-infinity-n1
-
-  (exp ninf).eq 0 ++> tests-exp-check-infinity-n2

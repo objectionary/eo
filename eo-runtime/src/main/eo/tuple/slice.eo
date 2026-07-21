@@ -14,38 +14,37 @@
   ? >> end
   if. > @
     gte.
-      number s
-      e
+      number
+        if. > s!
+          start.gte 0
+          if.
+            start.gte list.length
+            list.length
+            start
+          if.
+            list.length.neg.lte start
+            start.plus list.length
+            0
+      if. > e!
+        end.gte 0
+        if.
+          end.gte list.length
+          list.length
+          end
+        if.
+          list.length.neg.lte end
+          end.plus list.length
+          0
     *
     reducedi
       list
       *
       if. > [accum item idx] >>
         and.
-          idx.gte s
-          idx.lt e
+          idx.gte ^.s
+          idx.lt ^.e
         accum.with item
         accum
-  if. > e!
-    end.gte 0
-    if.
-      end.gte list.length
-      list.length
-      end
-    if.
-      list.length.neg.lte end
-      end.plus list.length
-      0
-  if. > s!
-    start.gte 0
-    if.
-      start.gte list.length
-      list.length
-      start
-    if.
-      list.length.neg.lte start
-      start.plus list.length
-      0
 
   eq. ++> tests-simple-slice
     slice
@@ -63,22 +62,29 @@
       4
       5
 
-  eq. ++> tests-slice-with-negative-start
+  eq. ++> tests-slice-with-end-gt-length
     slice
       *
-        8
-        76
-        -3
-        0
-        3
-        8
-        -12
-      -4
-      6
+        "foo"
+        "bar"
+        "buzz"
+      1
+      10
     *
-      0
-      3
-      8
+      "bar"
+      "buzz"
+
+  eq. ++> tests-slice-with-end-lt-negative-length
+    slice
+      *
+        "A"
+        "b"
+        "C"
+        "d"
+        "E"
+      2
+      -9
+    *
 
   eq. ++> tests-slice-with-negative-end
     slice
@@ -98,6 +104,23 @@
       "xyz"
       82.42
 
+  eq. ++> tests-slice-with-negative-start
+    slice
+      *
+        8
+        76
+        -3
+        0
+        3
+        8
+        -12
+      -4
+      6
+    *
+      0
+      3
+      8
+
   eq. ++> tests-slice-with-negative-start-and-end
     slice
       *
@@ -113,53 +136,17 @@
       0
       0
 
-  eq. ++> tests-slice-with-end-gt-length
+  eq. ++> tests-slice-with-negative-start-gte-end
     slice
       *
-        "foo"
-        "bar"
-        "buzz"
-      1
-      10
-    *
-      "bar"
-      "buzz"
-
-  eq. ++> tests-slice-with-start-lt-negative-length
-    slice
-      *
-        9
-        99
-        999
-        9999
-      -10
-      3
-    *
-      9
-      99
-      999
-
-  eq. ++> tests-slice-with-end-lt-negative-length
-    slice
-      *
-        "A"
+        "f"
+        1
         "b"
-        "C"
-        "d"
-        "E"
-      2
-      -9
-    *
-
-  eq. ++> tests-slice-with-start-gte-end-both-positive
-    slice
-      *
+        2
+        "b"
         3
-        "-5"
-        0
-        "foo"
-      2
-      0
+      -1
+      3
     *
 
   eq. ++> tests-slice-with-start-gte-end-both-negative
@@ -176,17 +163,15 @@
       -5
     *
 
-  eq. ++> tests-slice-with-negative-start-gte-end
+  eq. ++> tests-slice-with-start-gte-end-both-positive
     slice
       *
-        "f"
-        1
-        "b"
-        2
-        "b"
         3
-      -1
-      3
+        "-5"
+        0
+        "foo"
+      2
+      0
     *
 
   eq. ++> tests-slice-with-start-gte-negative-end
@@ -201,3 +186,17 @@
       4
       -5
     *
+
+  eq. ++> tests-slice-with-start-lt-negative-length
+    slice
+      *
+        9
+        99
+        999
+        9999
+      -10
+      3
+    *
+      9
+      99
+      999

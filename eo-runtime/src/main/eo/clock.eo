@@ -2,9 +2,6 @@
 # Reads the underlying syscall: `gettimeofday` on POSIX, `_ftime32_s` on Windows.
 # Decorates an `i64` holding the current time in milliseconds since the Unix epoch.
 
-+alias sm.os
-+alias sm.posix
-+alias sm.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -13,7 +10,7 @@
 
 [] > clock
   as-i64. > @
-    sm.os.is-windows.if
+    os.is-windows.if
       plus.
         timeb.time.times 1000
         timeb.millitm
@@ -22,11 +19,11 @@
         as-number.
           timeval.micros.as-i64.div 1000.as-i64
   output. > timeb
-    sm.win32
+    win32
       "_ftime32_s"
       *
   output. > timeval
-    sm.posix
+    posix
       "gettimeofday"
       *
 

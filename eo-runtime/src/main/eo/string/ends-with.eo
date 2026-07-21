@@ -14,24 +14,21 @@
       tlen
     eq.
       slice
-        txt
+        text > txt!
         minus.
           number tlen
           slen
         slen
-      sub
+      substring > sub!
   sub.size > slen!
-  substring > sub!
   txt.size > tlen!
-  text > txt!
-
-  ++> tests-ends-with-substring
-    ends-with > @
-      "Hello world!"
-      "world!"
 
   ++> tests-does-not-end-with-substring
     not. > @
       ends-with
         "Hello world!"
         "Hello"
+
+  ends-with ++> tests-ends-with-substring
+    "Hello world!"
+    "world!"

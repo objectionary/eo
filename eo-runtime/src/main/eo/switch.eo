@@ -40,12 +40,34 @@
       and.
         tup.length.gt 1
         previous.match
-      previous
+      @. > previous
+        rec-case tup.tail
       [] >>
         tup.head.head > head
         tup.head.tail.head > match!
-    @. > previous
-      rec-case tup.tail
+
+  eq. ++> tests-empty-switch-returns-provided-fallback
+    "recovered"
+    switch
+      *
+      "recovered" > [msg]
+
+  ++> tests-switch-complex-case
+    eq. > @
+      switch *
+        *
+          c1 > [] >>
+          22
+        *
+          c2 > [] >>
+          0
+        *
+          c3 > [] >>
+          "true case"
+      "true case"
+    false > c1
+    "1".eq "2" > c2
+    true > c3
 
   eq. ++> tests-switch-simple-case
     switch *
@@ -68,13 +90,6 @@
       "password is correct!"
     "swordfish" > password
 
-  eq. ++> tests-switch-with-several-true-cases
-    switch *
-      * true "TRUE1"
-      * false "FALSE"
-      * true "TRUE2"
-    "TRUE1"
-
   switch * ++> tests-switch-with-all-false-cases
     *
       false
@@ -83,28 +98,12 @@
       false
       "false2"
 
+  eq. ++> tests-switch-with-several-true-cases
+    switch *
+      * true "TRUE1"
+      * false "FALSE"
+      * true "TRUE2"
+    "TRUE1"
+
   switch --> on-empty-switch
     *
-
-  ++> tests-empty-switch-returns-provided-fallback
-    "recovered".eq > @
-      switch
-        *
-        "recovered" > [msg]
-
-  ++> tests-switch-complex-case
-    eq. > @
-      switch *
-        *
-          c1 > [] >>
-          22
-        *
-          c2 > [] >>
-          0
-        *
-          c3 > [] >>
-          "true case"
-      "true case"
-    false > c1
-    "1".eq "2" > c2
-    true > c3

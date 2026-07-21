@@ -12,7 +12,7 @@ penalties:
 origin: |
   +package org.eolang
 
-  [x] > dataized /bytes
+  [x] > dataized /Q.bytes
 
     --> on-something
       eq. > @
@@ -22,6 +22,6 @@ origin: |
 printed: |
   +package org.eolang
 
-  [x] > dataized /bytes
+  [x] > dataized /Q.bytes
 
     x.eq x --> on-something

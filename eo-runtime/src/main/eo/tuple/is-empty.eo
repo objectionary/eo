@@ -9,8 +9,10 @@
 
 [] > is-empty
   ? >> list
-  0.eq > @
-    list.length
+  0.eq list.length > @
+
+  is-empty ++> list-should-be-empty
+    *
 
   ++> tests-list-should-not-be-empty
     not. > @
@@ -18,19 +20,16 @@
         1
         2
 
-  is-empty ++> list-should-be-empty
-    *
+  ++> tests-list-should-not-be-empty-with-one-anon-object
+    not. > @
+      is-empty
+        * > xs
+          [f]
 
   ++> tests-list-should-not-be-empty-with-three-objects
     not. > @
-      is-empty xs
-    * > xs
-      [x]
-      [y]
-      [z]
-
-  ++> tests-list-should-not-be-empty-with-one-anon-object
-    not. > @
-      is-empty xs
-    * > xs
-      [f]
+      is-empty
+        * > xs
+          [x]
+          [y]
+          [z]

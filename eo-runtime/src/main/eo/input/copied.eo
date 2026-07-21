@@ -1,0 +1,75 @@
+# Copies all bytes from the provided `input` to the provided `output`
+# and returns the total number of bytes copied.
+#
+# Example usage:
+# ```
+# copied > total-bytes
+#   bytes.as-input 01-02-03-04-05
+#   memory.to-output
+# ```
+# After dataization, `total-bytes` equals 5, and all bytes have been
+# copied from input to output.
+
++alias bytes.as-input
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package input
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[input output] > copied
+  Q.input.length > @
+    Q.input.tee
+      input
+      output
+
+  eq. ++> tests-copies-all-bytes-and-returns-length
+    malloc.of
+      5
+      seq * > [m]
+        Q.input.copied
+          bytes.as-input 01-02-03-04-05
+          m.to-output
+        m
+    01-02-03-04-05
+
+  eq. ++> tests-handles-dead-input
+    Q.input.copied
+      Q.input.dead
+      Q.output.dead
+    0
+
+  eq. ++> tests-handles-empty-input
+    malloc.of
+      0
+      seq * > [m]
+        Q.input.copied
+          bytes.as-input --
+          m.to-output
+        m
+    --
+
+  eq. ++> tests-handles-large-data
+    20
+    malloc.of
+      20
+      Q.input.copied > [m]
+        bytes.as-input 01-02-03-04-05-06-07-08-09-0A-0B-0C-0D-0E-0F-10-11-12-13-14
+        m.to-output
+
+  eq. ++> tests-returns-correct-byte-count
+    malloc.of
+      10
+      Q.input.copied > [m]
+        bytes.as-input 01-02-03-04-05-06-07-08-09-10
+        m.to-output
+    10
+
+  eq. ++> tests-returns-zero-for-empty-input
+    malloc.of
+      0
+      Q.input.copied > [m]
+        bytes.as-input --
+        m.to-output
+    0

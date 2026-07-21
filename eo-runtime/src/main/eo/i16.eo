@@ -11,10 +11,6 @@
 
 [as-bytes] > i16
   as-bytes > @
-  as-i32.as-i64 > as-i64
-  as-i64.as-number > as-number
-  times > neg
-    -1.as-i64.as-i32.as-i16
   [] > as-i32
     i32 > @
       prefix.concat as-bytes
@@ -24,33 +20,8 @@
         00-00
       00-00
       FF-FF
-  as-i32.lt x.as-i16.as-i32 > [x] > lt
-  as-i32.lte x.as-i16.as-i32 > [x] > lte
-  as-i32.gt x.as-i16.as-i32 > [x] > gt
-  as-i32.gte x.as-i16.as-i32 > [x] > gte
-  [x] > times
-    i16 right > @
-    (as-i32.times x.as-i16.as-i32).as-bytes.slice > right
-      2
-      2
-  [x] > plus
-    if. > @
-      or.
-        left.eq 00-00
-        left.eq FF-FF
-      i16 right
-      plus.
-        i16 left
-        i16 right
-    as-bytes. > bts
-      as-i32.plus x.as-i16.as-i32
-    bts.slice > left
-      0
-      2
-    bts.slice > right
-      2
-      2
-  plus x.as-i16.neg > [x] > minus
+  as-i32.as-i64 > as-i64
+  as-i64.as-number > as-number
   [x cant-divide] > div
     if. > @
       xval.eq zero
@@ -63,68 +34,113 @@
           left.eq FF-FF
         i16 right
         plus.
-          i16 left
+          i16
+            bts.slice 0 2 > left
           i16 right
     as-bytes. > bts
       as-i32.div xval.as-i32
-    bts.slice > left
-      0
-      2
     bts.slice > right
       2
       2
     x.as-i16 > xval
     00-00 > zero
-
-  42.as-i64.as-i32.as-i16.as-bytes.eq 00-2A ++> tests-i16-has-valid-bytes
-
-  eq. ++> tests-negative-i16-has-valid-bytes
-    -200.as-i64.as-i32.as-i16.as-bytes
-    FF-38
-
-  eq. ++> tests-i16-as-i32-widens-positive-with-zero-prefix
-    42.as-i64.as-i32.as-i16.as-i32.as-bytes
-    00-00-00-2A
+  as-i32.gt x.as-i16.as-i32 > [x] > gt
+  as-i32.gte x.as-i16.as-i32 > [x] > gte
+  as-i32.lt x.as-i16.as-i32 > [x] > lt
+  as-i32.lte x.as-i16.as-i32 > [x] > lte
+  plus x.as-i16.neg > [x] > minus
+  times -1.as-i64.as-i32.as-i16 > neg
+  [x] > plus
+    if. > @
+      or.
+        left.eq 00-00
+        left.eq FF-FF
+      i16 right
+      plus.
+        i16
+          bts.slice 0 2 > left
+        i16 right
+    as-bytes. > bts
+      as-i32.plus x.as-i16.as-i32
+    bts.slice > right
+      2
+      2
+  [x] > times
+    i16 > @
+      (as-i32.times x.as-i16.as-i32).as-bytes.slice > right
+        2
+        2
 
   eq. ++> tests-i16-as-i32-widens-negative-with-sign-extension
     -200.as-i64.as-i32.as-i16.as-i32.as-bytes
     FF-FF-FF-38
 
-  10.as-i64.as-i32.as-i16.lt 50.as-i64.as-i32.as-i16 ++> tests-i16-less-true
+  eq. ++> tests-i16-as-i32-widens-positive-with-zero-prefix
+    42.as-i64.as-i32.as-i16.as-i32.as-bytes
+    00-00-00-2A
 
-  (10.as-i64.as-i32.as-i16.lt 10.as-i64.as-i32.as-i16).not ++> tests-i16-less-equal
+  ++> tests-i16-div-by-i16-one
+    eq. > @
+      dividend.div 1.as-i64.as-i32.as-i16
+      -235.as-i64.as-i32.as-i16 > dividend
 
-  (10.as-i64.as-i32.as-i16.lt -5.as-i64.as-i32.as-i16).not ++> tests-i16-less-false
+  eq. ++> tests-i16-div-by-zero-returns-provided-fallback
+    "recovered"
+    2.as-i64.as-i32.as-i16.div
+      0.as-i64.as-i32.as-i16
+      "recovered" > [msg]
+
+  lt. ++> tests-i16-div-less-than-i16-one
+    1.as-i64.as-i32.as-i16.div 5.as-i64.as-i32.as-i16
+    1.as-i64.as-i32.as-i16
+
+  eq. ++> tests-i16-div-with-remainder
+    13.as-i64.as-i32.as-i16.div -5.as-i64.as-i32.as-i16
+    -2.as-i64.as-i32.as-i16
+
+  (123.as-i64.as-i32.as-i16.eq 42.as-i64.as-i32.as-i16).not ++> tests-i16-eq-false
+
+  123.as-i64.as-i32.as-i16.eq 123.as-i64.as-i32.as-i16 ++> tests-i16-eq-true
+
+  (0.as-i64.as-i32.as-i16.gt 0.as-i64.as-i32.as-i16).not ++> tests-i16-greater-equal
+
+  (0.as-i64.as-i32.as-i16.gt 100.as-i64.as-i32.as-i16).not ++> tests-i16-greater-false
 
   gt. ++> tests-i16-greater-true
     -200.as-i64.as-i32.as-i16
     -1000.as-i64.as-i32.as-i16
 
-  (0.as-i64.as-i32.as-i16.gt 100.as-i64.as-i32.as-i16).not ++> tests-i16-greater-false
+  113.as-i64.as-i32.as-i16.gte 113.as-i64.as-i32.as-i16 ++> tests-i16-gte-equal
 
-  (0.as-i64.as-i32.as-i16.gt 0.as-i64.as-i32.as-i16).not ++> tests-i16-greater-equal
+  (0.as-i64.as-i32.as-i16.gte 10.as-i64.as-i32.as-i16).not ++> tests-i16-gte-false
 
-  -200.as-i64.as-i32.as-i16.lte -100.as-i64.as-i32.as-i16 ++> tests-i16-lte-true
+  -1000.as-i64.as-i32.as-i16.gte -1100.as-i64.as-i32.as-i16 ++> tests-i16-gte-true
+
+  42.as-i64.as-i32.as-i16.as-bytes.eq 00-2A ++> tests-i16-has-valid-bytes
+
+  (10.as-i64.as-i32.as-i16.lt 10.as-i64.as-i32.as-i16).not ++> tests-i16-less-equal
+
+  (10.as-i64.as-i32.as-i16.lt -5.as-i64.as-i32.as-i16).not ++> tests-i16-less-false
+
+  10.as-i64.as-i32.as-i16.lt 50.as-i64.as-i32.as-i16 ++> tests-i16-less-true
 
   50.as-i64.as-i32.as-i16.lte 50.as-i64.as-i32.as-i16 ++> tests-i16-lte-equal
 
   (0.as-i64.as-i32.as-i16.lte -10.as-i64.as-i32.as-i16).not ++> tests-i16-lte-false
 
-  gte. ++> tests-i16-gte-true
-    -1000.as-i64.as-i32.as-i16
-    -1100.as-i64.as-i32.as-i16
+  -200.as-i64.as-i32.as-i16.lte -100.as-i64.as-i32.as-i16 ++> tests-i16-lte-true
 
-  113.as-i64.as-i32.as-i16.gte 113.as-i64.as-i32.as-i16 ++> tests-i16-gte-equal
+  eq. ++> tests-i16-minus-with-overflow
+    -32768.as-i64.as-i32.as-i16.minus 1.as-i64.as-i32.as-i16
+    32767.as-i64.as-i32.as-i16
 
-  (0.as-i64.as-i32.as-i16.gte 10.as-i64.as-i32.as-i16).not ++> tests-i16-gte-false
-
-  eq. ++> tests-i16-zero-eq-to-i16-zero
-    0.as-i64.as-i32.as-i16
+  eq. ++> tests-i16-multiply-by-zero
+    1000.as-i64.as-i32.as-i16.times 0.as-i64.as-i32.as-i16
     0.as-i64.as-i32.as-i16
 
-  123.as-i64.as-i32.as-i16.eq 123.as-i64.as-i32.as-i16 ++> tests-i16-eq-true
-
-  (123.as-i64.as-i32.as-i16.eq 42.as-i64.as-i32.as-i16).not ++> tests-i16-eq-false
+  eq. ++> tests-i16-one-minus-i16-one
+    1.as-i64.as-i32.as-i16.minus 1.as-i64.as-i32.as-i16
+    0.as-i64.as-i32.as-i16
 
   eq. ++> tests-i16-one-plus-i16-one
     1.as-i64.as-i32.as-i16.plus 1.as-i64.as-i32.as-i16
@@ -134,50 +150,26 @@
     32767.as-i64.as-i32.as-i16.plus 1.as-i64.as-i32.as-i16
     -32768.as-i64.as-i32.as-i16
 
-  eq. ++> tests-i16-one-minus-i16-one
-    1.as-i64.as-i32.as-i16.minus 1.as-i64.as-i32.as-i16
-    0.as-i64.as-i32.as-i16
-
-  eq. ++> tests-i16-minus-with-overflow
-    -32768.as-i64.as-i32.as-i16.minus 1.as-i64.as-i32.as-i16
-    32767.as-i64.as-i32.as-i16
-
-  div. --> on-division-i16-by-i16-zero
-    2.as-i64.as-i32.as-i16
-    0.as-i64.as-i32.as-i16
-
-  ++> tests-i16-div-by-zero-returns-provided-fallback
-    "recovered".eq > @
-      2.as-i64.as-i32.as-i16.div
-        0.as-i64.as-i32.as-i16
-        "recovered" > [msg]
-
-  ++> tests-i16-div-by-i16-one
-    eq. > @
-      dividend.div 1.as-i64.as-i32.as-i16
-      dividend
-    -235.as-i64.as-i32.as-i16 > dividend
-
-  eq. ++> tests-i16-div-with-remainder
-    13.as-i64.as-i32.as-i16.div -5.as-i64.as-i32.as-i16
-    -2.as-i64.as-i32.as-i16
-
-  lt. ++> tests-i16-div-less-than-i16-one
-    1.as-i64.as-i32.as-i16.div 5.as-i64.as-i32.as-i16
-    1.as-i64.as-i32.as-i16
-
-  eq. ++> tests-i16-multiply-by-zero
-    1000.as-i64.as-i32.as-i16.times 0.as-i64.as-i32.as-i16
-    0.as-i64.as-i32.as-i16
-
   eq. ++> tests-i16-times-with-overflow
     32767.as-i64.as-i32.as-i16.times 2.as-i64.as-i32.as-i16
     -2.as-i64.as-i32.as-i16
+
+  eq. ++> tests-i16-times-wraps-large-positive-product
+    300.as-i64.as-i32.as-i16.times 300.as-i64.as-i32.as-i16
+    24464.as-i64.as-i32.as-i16
 
   eq. ++> tests-i16-times-wraps-modulo-2-pow-16
     256.as-i64.as-i32.as-i16.times 256.as-i64.as-i32.as-i16
     0.as-i64.as-i32.as-i16
 
-  eq. ++> tests-i16-times-wraps-large-positive-product
-    300.as-i64.as-i32.as-i16.times 300.as-i64.as-i32.as-i16
-    24464.as-i64.as-i32.as-i16
+  eq. ++> tests-i16-zero-eq-to-i16-zero
+    0.as-i64.as-i32.as-i16
+    0.as-i64.as-i32.as-i16
+
+  eq. ++> tests-negative-i16-has-valid-bytes
+    -200.as-i64.as-i32.as-i16.as-bytes
+    FF-38
+
+  div. --> on-division-i16-by-i16-zero
+    2.as-i64.as-i32.as-i16
+    0.as-i64.as-i32.as-i16

@@ -12,13 +12,13 @@ penalties:
 origin: |
   +package org.eolang
 
-  [start len] > slice /bytes
-    ? > cant-slice /{string}
-    ? > bad-range /{string Q.a.b.c}
+  [start len] > slice /Q.bytes
+    ? > cant-slice /{Q.string}
+    ? > bad-range /{Q.string Q.a.b.c}
 
 printed: |
   +package org.eolang
 
-  [start len] > slice /bytes
-    ? > cant-slice /{string}
-    ? > bad-range /{string Q.a.b.c}
+  [start len] > slice /Q.bytes
+    ? > cant-slice /{Q.string}
+    ? > bad-range /{Q.string Q.a.b.c}

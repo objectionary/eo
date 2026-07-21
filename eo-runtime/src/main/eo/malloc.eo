@@ -62,7 +62,9 @@
 +unlint mandatory-package
 
 [] > malloc
-  malloc.of 0 scope > [scope] > empty
+  malloc.of > [scope] > empty
+    0
+    scope
   [object scope] > for
     malloc.of > @
       bts.size
@@ -71,72 +73,173 @@
         scope m
     object > bts!
   [size scope] > of
-    [] > @ /bytes
-    [id] > allocated
-      get > @
-      read 0 size > get
-      [] > size /number
-      [size] > resized /Q.malloc.of.allocated
-      [source target length] > copy
-        write > @
-          target
-          read source length
-      [offset length] > read /bytes
-        ? > cant-read /{string}
-      [offset data] > write /bool
-      seq * > [object] > put
-        write 0 object
-        get
+    [] > @ /Q.bytes
+    chunk > allocated
 
-  ++> tests-writes-into-memory-of
-    mem.eq 10 > @
-    malloc.of > mem
-      8
-      seq * > [m]
-        m.write 0 10
-        m
+  malloc.for ++> copies-and-resizes-to-target
+    0
+    seq * > [m]
+      m.copy
+        3
+        9
+        1
+      m.size.eq 10
 
-  ++> tests-puts-into-memory-for
-    mem.eq 10 > @
-    malloc.for > mem
+  eq. ++> tests-allocates-zero-bytes
+    0
+    malloc.of
       0
-      m.put 10 > [m]
+      m.size > [m]
 
-  ++> tests-returns-size-from-scope
+  ++> tests-calculates-only-once
     eq. > @
-      malloc.of
-        5
-        m.size > [m]
-      5
-
-  ++> tests-malloc-scope-is-dataized-twice
-    2.eq > @
-      malloc.for
-        0
-        [f]
-          seq > @
-            * second second
-          malloc.of > second
-            1
-            f.put (f.as-number.plus 1) > [s] >>
-
-  ++> tests-malloc-for-writes-first-init-value
-    eq. > @
-      malloc.for
+      malloc.for 0 x
+      1
+    [m] > x
+      seq * > @
+        a.neg.neg.neg.neg.eq 42
+        m
+      seq * > [] > a
+        m.put
+          m.as-number.plus 1
         42
-        m > [m]
+
+  ++> tests-constant-defends-against-side-effects
+    eq. > @
+      malloc.for
+        7
+        [m] >>
+          m.put > @
+            num.times
+              number > num
+                inc m > n!
+      64
+    seq * > [x] > inc
+      x.put
+        x.as-number.plus 1
+      x.as-number
+
+  malloc.for ++> tests-copies-data-from-start-to-end
+    01-02-03-04-05-06
+    and. > [m]
+      m.copy
+        0
+        3
+        3
+      m.get.eq 01-02-03-01-02-03
+
+  malloc.for ++> tests-copies-data-inside-itself
+    01-02-03-04-05
+    and. > [m]
+      m.copy
+        1
+        2
+        2
+      m.get.eq 01-02-02-03-05
+
+  ++> tests-malloc-allocates-right-size-block
+    malloc.of > @
+      1
+      [b]
+        malloc.of > @
+          10
+          b.put > [m] >>
+            m.size.eq 10
+
+  ++> tests-malloc-concacts-strings-with-offset
+    malloc.of > @
+      1
+      [b]
+        malloc.of > @
+          3
+          seq * > [m] >>
+            m.write 0 "XXX"
+            m.write 1 "Y"
+            b.put
+              (m.read 0 3).eq
+                "XYX"
+
+  ++> tests-malloc-decreases-block-size
+    malloc.of > @
+      1
+      [b]
+        malloc.for > @
+          01-02-03-04-05
+          b.put > [m] >>
+            and.
+              (m.resized 3).size.eq 3
+              m.get.eq 01-02-03
+
+  malloc.empty ++> tests-malloc-empty-is-empty
+    m.size.eq 0 > [m]
+
+  eq. ++> tests-malloc-for-writes-first-init-value
+    malloc.for
       42
+      m > [m]
+    42
+
+  malloc.of ++> tests-malloc-gives-id-to-allocated-block
+    1
+    m.put > [m]
+      m.id.gt 0
+
+  ++> tests-malloc-increases-block-size
+    malloc.of > @
+      1
+      [b]
+        malloc.for > @
+          01-02-03-04
+          b.put > [m] >>
+            and.
+              (m.resized 6).size.eq 6
+              m.get.eq 01-02-03-04-00-00
+
+  eq. ++> tests-malloc-is-strictly-sized-int
+    malloc.for
+      12248
+      m.put 2556 > [m]
+    2556
+
+  malloc.for ++> tests-malloc-is-strictly-typed-bool
+    false
+    m.put true > [m]
+
+  eq. ++> tests-malloc-is-strictly-typed-float
+    malloc.for
+      245.88
+      m.put 82.22 > [m]
+    82.22
 
   ++> tests-malloc-puts-over-the-previous-data
     eq. > @
       42.as-bytes.concat "orld!".as-bytes
-      mem
-    malloc.of > mem
-      13
-      seq * > [m]
-        m.put
-          "Hello, world!"
-        m.put 42
+      malloc.of > mem
+        13
+        seq * > [m]
+          m.put "Hello, world!"
+          m.put 42
+
+  eq. ++> tests-malloc-read-over-a-limit-returns-fallback
+    01-02
+    malloc.of
+      1
+      m.read > [m]
+        0
+        10
+        01-02 > [ex]
+
+  ++> tests-malloc-reads-with-offset-and-length
+    malloc.of > @
+      1
+      [b]
+        malloc.of > @
+          10
+          seq * > [m] >>
+            m.write 2 "Hello"
+            b.put
+              (m.read 2 5).eq
+                "Hello"
 
   ++> tests-malloc-rewrites-and-increments-itself
     mem.eq 6 > @
@@ -147,67 +250,17 @@
         m.put
           m.as-number.plus 5
 
-  ++> tests-writes-into-two-malloc-objects
-    and. > @
-      eq.
-        malloc.of
-          8
-          m.put 10 > [m]
-        10
-      eq.
-        malloc.of
-          8
-          m.put 20 > [m]
-        20
-
-  --> on-overflow-boolean-malloc
-    malloc.for > @
-      false
-      m.put 8.612486788E7 > [m]
-
-  --> on-overflow-string-malloc
-    malloc.for > @
-      "Hello"
-      m.put "Much longer string!" > [m]
-
-  ++> tests-malloc-is-strictly-sized-int
-    eq. > @
+  ++> tests-malloc-scope-is-dataized-twice
+    2.eq > @
       malloc.for
-        12248
-        m.put 2556 > [m]
-      2556
-
-  ++> tests-malloc-is-strictly-typed-float
-    eq. > @
-      malloc.for
-        245.88
-        m.put 82.22 > [m]
-      82.22
-
-  ++> tests-memory-is-strictly-sized-string
-    eq. > @
-      malloc.for
-        "Hello"
-        m.put "Prot" > [m]
-      "Proto"
-
-  ++> tests-malloc-is-strictly-typed-bool
-    malloc.for > @
-      false
-      m.put true > [m]
-
-  ++> tests-malloc-gives-id-to-allocated-block
-    malloc.of > @
-      1
-      m.put (m.id.gt 0) > [m]
-
-  ++> tests-malloc-allocates-right-size-block
-    malloc.of > @
-      1
-      [b]
-        malloc.of > @
-          10
-          b.put (m.size.eq 10) > [m] >>
+        0
+        [f]
+          seq > @
+            * second second
+          malloc.of > second
+            1
+            f.put > [s] >>
+              f.as-number.plus 1
 
   ++> tests-malloc-writes-and-reads
     malloc.of > @
@@ -224,144 +277,17 @@
               (m.read 0 12).eq
                 "Hello, Jeff!"
 
-  ++> tests-malloc-concacts-strings-with-offset
-    malloc.of > @
-      1
-      [b]
-        malloc.of > @
-          3
-          seq * > [m] >>
-            m.write 0 "XXX"
-            m.write 1 "Y"
-            b.put
-              (m.read 0 3).eq
-                "XYX"
+  eq. ++> tests-memory-is-strictly-sized-string
+    malloc.for
+      "Hello"
+      m.put "Prot" > [m]
+    "Proto"
 
-  ++> writes-beyond-offset-and-resizes
-    malloc.of > @
-      1
-      seq * > [m]
-        m.write 1 true
-        m.size.eq 2
-
-  ++> tests-malloc-reads-with-offset-and-length
-    malloc.of > @
-      1
-      [b]
-        malloc.of > @
-          10
-          seq * > [m] >>
-            m.write 2 "Hello"
-            b.put
-              (m.read 2 5).eq
-                "Hello"
-
-  ++> tests-malloc-read-over-a-limit-returns-fallback
-    01-02.eq > @
-      malloc.of
-        1
-        [m]
-          m.read > @
-            0
-            10
-            01-02 > [ex]
-
-  --> on-reading-over-a-limit-without-fallback
-    malloc.for > @
-      10
-      m.read 0 100 > [m]
-
-  ++> tests-allocates-zero-bytes
-    0.eq > @
-      malloc.of
-        0
-        m.size > [m]
-
-  ++> tests-malloc-increases-block-size
-    malloc.of > @
-      1
-      [b]
-        malloc.for > @
-          01-02-03-04
-          b.put > [m] >>
-            and.
-              (m.resized 6).size.eq 6
-              m.get.eq 01-02-03-04-00-00
-
-  ++> tests-malloc-decreases-block-size
-    malloc.of > @
-      1
-      [b]
-        malloc.for > @
-          01-02-03-04-05
-          [m] >>
-            b.put > @
-              and.
-                (m.resized 3).size.eq 3
-                m.get.eq 01-02-03
-
-  --> on-changing-size-to-negative
-    malloc.of > @
-      1
-      m.resized -1 > [m]
-
-  --> on-changing-size-to-fractional
-    malloc.of > @
-      1
-      m.resized 1.5 > [m]
-
-  ++> tests-malloc-empty-is-empty
-    malloc.empty > @
-      m.size.eq 0 > [m]
-
-  ++> tests-copies-data-inside-itself
-    malloc.for > @
-      01-02-03-04-05
-      [m]
-        and. > @
-          m.copy 1 2 2
-          m.get.eq 01-02-02-03-05
-
-  ++> tests-copies-data-from-start-to-end
-    malloc.for > @
-      01-02-03-04-05-06
-      [m]
-        and. > @
-          m.copy 0 3 3
-          m.get.eq 01-02-03-01-02-03
-
-  --> on-copying-with-wrong-source
-    malloc.for > @
+  ++> tests-puts-into-memory-for
+    mem.eq 10 > @
+    malloc.for > mem
       0
-      m.copy 9 1 1 > [m]
-
-  ++> copies-and-resizes-to-target
-    malloc.for > @
-      0
-      seq * > [m]
-        m.copy
-          3
-          9
-          1
-        m.size.eq 10
-
-  --> on-copying-with-wrong-length
-    malloc.for > @
-      0
-      m.copy 3 1 9 > [m]
-
-  ++> tests-calculates-only-once
-    eq. > @
-      malloc.for 0 x
-      1
-    [m] > x
-      seq * > @
-        a.neg.neg.neg.neg.eq 42
-        m
-      seq * > [] > a
-        m.put
-          m.as-number.plus 1
-        42
+      m.put 10 > [m]
 
   ++> tests-recursion-without-arguments
     eq. > @
@@ -377,17 +303,71 @@
         func n
       n
 
-  ++> tests-constant-defends-against-side-effects
-    eq. > @
-      malloc.for
-        7
-        [m] >>
-          m.put > @
-            num.times num
-          inc m > n!
-          number n > num
-      64
-    seq * > [x] > inc
-      x.put
-        x.as-number.plus 1
-      x.as-number
+  eq. ++> tests-returns-size-from-scope
+    malloc.of
+      5
+      m.size > [m]
+    5
+
+  ++> tests-writes-into-memory-of
+    mem.eq 10 > @
+    malloc.of > mem
+      8
+      seq * > [m]
+        m.write 0 10
+        m
+
+  and. ++> tests-writes-into-two-malloc-objects
+    eq.
+      malloc.of
+        8
+        m.put 10 > [m]
+      10
+    eq.
+      malloc.of
+        8
+        m.put 20 > [m]
+      20
+
+  malloc.of ++> writes-beyond-offset-and-resizes
+    1
+    seq * > [m]
+      m.write 1 true
+      m.size.eq 2
+
+  malloc.of --> on-changing-size-to-fractional
+    1
+    m.resized 1.5 > [m]
+
+  malloc.of --> on-changing-size-to-negative
+    1
+    m.resized -1 > [m]
+
+  malloc.for --> on-copying-with-wrong-length
+    0
+    m.copy > [m]
+      3
+      1
+      9
+
+  malloc.for --> on-copying-with-wrong-source
+    0
+    m.copy > [m]
+      9
+      1
+      1
+
+  malloc.for --> on-overflow-boolean-malloc
+    false
+    m.put 8.612486788E7 > [m]
+
+  malloc.for --> on-overflow-string-malloc
+    "Hello"
+    m.put > [m]
+      "Much longer string!"
+
+  malloc.for --> on-reading-over-a-limit-without-fallback
+    10
+    m.read > [m]
+      0
+      100

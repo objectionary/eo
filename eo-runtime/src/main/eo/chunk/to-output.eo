@@ -1,0 +1,65 @@
+# Makes an output from a `chunk` of memory. Here `allocated` is a `chunk`.
+#
+# Because this object lives in the `chunk` package, it is available on any
+# chunk as `chunk.to-output` (package extension), so there is no need to
+# reference it explicitly:
+#
+# ```
+# malloc.of > result
+#   10
+#   [mem]
+#     console.read 10 > input
+#     mem.to-output > output
+#     output.write input > @
+# ```
+#
+# After dataization, `result` holds the bytes written to the chunk.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package chunk
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[allocated] > to-output
+  [buffer] > write
+    write. > @
+      output-block 0
+      buffer
+    [offset] > output-block
+      true > @
+      seq * > [buffer] > write
+        allocated.write offset buffer
+        output-block
+          offset.plus buffer.size
+
+  eq. ++> tests-makes-an-output-from-malloc-and-writes
+    malloc.of
+      10
+      seq * > [mem]
+        write.
+          write.
+            (to-output mem).write 01-02-03
+            04-05-06-07
+          08-09-A0
+        mem
+    01-02-03-04-05-06-07-08-09-A0
+
+  eq. ++> tests-makes-an-output-via-chunk-extension
+    malloc.of
+      3
+      seq * > [mem]
+        mem.to-output.write 01-02-03
+        mem
+    01-02-03
+
+  eq. ++> writes-larger-data-than-provided-block
+    malloc.of
+      2
+      seq * > [mem]
+        write.
+          to-output mem
+          01-02-03
+        mem
+    01-02-03

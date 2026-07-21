@@ -2,9 +2,6 @@
 
 +alias string.contains
 +alias string.joined
-+alias sm.os
-+alias sm.posix
-+alias sm.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -16,62 +13,6 @@
   path > @
   @. > as-path
     Q.path path
-  [cant-check] > is-directory
-    if. > @
-      info.code.eq 0
-      (info.output.mode.div 4096).floor.eq
-        4
-      cant-check
-    called. > info
-      sm.os.is-windows.if
-        sm.win32 *1
-          "_stat64"
-          path
-        sm.posix *1
-          "stat"
-          path
-  eq. > [] > exists
-    code.
-      sm.os.is-windows.if
-        sm.win32 *1
-          "_access"
-          path
-          0
-        sm.posix *1
-          "access"
-          path
-          0
-    0
-  [] > touched
-    exists.if > @
-      ^
-      if.
-        descriptor.eq -1
-        T
-          "Cant touch the file '%s': %s".printf
-            * path created.output
-        seq *
-          closed
-          ^
-    called. > created
-      sm.os.is-windows.if
-        sm.win32 *1
-          "_creat"
-          path
-          sm.win32.mode
-        sm.posix *1
-          "creat"
-          path
-          sm.posix.mode
-    created.code > descriptor
-    code. > closed
-      sm.os.is-windows.if
-        sm.win32 *1
-          "_close"
-          descriptor
-        sm.posix *1
-          "close"
-          descriptor
   [] > deleted
     exists.if > @
       if.
@@ -81,32 +22,39 @@
           "Cant delete the file '%s': %s".printf
             * path removed.output
       ^
-    called. > removed
-      sm.os.is-windows.if
-        sm.win32 *1
-          win
-          path
-        sm.posix *1
-          unix
-          path
     removed.code > outcome
-    is-directory.if > win
-      "_rmdir"
-      "_unlink"
-    is-directory.if > unix
-      "rmdir"
-      "unlink"
-  [cant-measure] > size
+    called. > removed
+      os.is-windows.if
+        win32 *1
+          is-directory.if "_rmdir" "_unlink" > win
+          path
+        posix *1
+          is-directory.if "rmdir" "unlink" > unix
+          path
+  eq. > [] > exists
+    code.
+      os.is-windows.if
+        win32 *1
+          "_access"
+          path
+          0
+        posix *1
+          "access"
+          path
+          0
+    0
+  [cant-check] > is-directory
     if. > @
       info.code.eq 0
-      info.output.size
-      cant-measure
+      (info.output.mode.div 4096).floor.eq
+        4
+      cant-check
     called. > info
-      sm.os.is-windows.if
-        sm.win32 *1
+      os.is-windows.if
+        win32 *1
           "_stat64"
           path
-        sm.posix *1
+        posix *1
           "stat"
           path
   [target] > moved
@@ -116,17 +64,17 @@
       T
         "Cant move the file '%s' to '%s': %s".printf
           * path target renamed.output
-    called. > renamed
-      sm.os.is-windows.if
-        sm.win32 *1
-          "rename"
-          path
-          target
-        sm.posix *1
-          "rename"
-          path
-          target
     renamed.code > outcome
+    called. > renamed
+      os.is-windows.if
+        win32 *1
+          "rename"
+          path
+          target
+        posix *1
+          "rename"
+          path
+          target
   [mode scope cant-open] > open
     known.not.if > @
       T
@@ -135,42 +83,37 @@
         existing.and exists.not
         cant-open
           "File must exist for given access mod: '%s'".printf
-            * access
+            *
+              mode > access!
         seq *
           open-file
           ^
-    mode > access!
-    (access.eq "r").as-bool.not > writable
-    (access.eq "w").as-bool.not.and > readable
-      (access.eq "a").as-bool.not
     (access.eq "r").as-bool.or > existing
       as-bool.
         access.eq "r+"
-    (access.eq "w").as-bool.or > truncate
-      as-bool.
-        access.eq "w+"
-    (access.eq "a").as-bool.or > appending
-      as-bool.
-        access.eq "a+"
     or. > known
-      existing.or truncate
-      appending
+      existing.or
+        (access.eq "w").as-bool.or > truncate
+          (access.eq "w+").as-bool
+      (access.eq "a").as-bool.or > appending
+        as-bool.
+          access.eq "a+"
     [] > open-file
-      sm.os.is-windows.if > @
+      os.is-windows.if > @
         open-through
           []
-            sm.win32 > @
-            sm.win32 "_open" > open
-            sm.win32 "_close" > close
-            sm.win32 "_read" > read
-            sm.win32 "_write" > write
+            win32 > @
+            win32 "_close" > close
+            win32 "_open" > open
+            win32 "_read" > read
+            win32 "_write" > write
         open-through
           []
-            sm.posix > @
-            sm.posix "open" > open
-            sm.posix "close" > close
-            sm.posix "read" > read
-            sm.posix "write" > write
+            posix > @
+            posix "close" > close
+            posix "open" > open
+            posix "read" > read
+            posix "write" > write
       [syscall] > open-through
         if. > @
           descriptor.eq -1
@@ -184,20 +127,22 @@
               syscall.close
                 * descriptor
             true
-        called. > opened
-          syscall.open
-            * path flags syscall.mode
         opened.code > descriptor
-        plus. > flags
-          (direction.plus creat).plus trunc
-          append
         if. > direction
           readable.and writable
           syscall.rdwr
           writable.if syscall.wronly syscall.rdonly
-        existing.not.if syscall.creat 0 > creat
-        truncate.if syscall.trunc 0 > trunc
-        appending.if syscall.append 0 > append
+        called. > opened
+          syscall.open
+            *
+              path
+              plus. > flags
+                plus.
+                  direction.plus
+                    existing.not.if syscall.creat 0 > creat
+                  ^.^.truncate.if syscall.trunc 0 > trunc
+                ^.^.appending.if syscall.append 0 > append
+              syscall.mode
         [descriptor] > stream
           [size] > read
             (input-block --).read size > @
@@ -207,7 +152,7 @@
                 readable.not.if > @
                   T
                     "Can't read from file with provided access mode '%s'".printf
-                      * access
+                      * ^.^.^.^.^.^.access
                   seq *
                     chunk
                     input-block chunk
@@ -221,59 +166,113 @@
               writable.not.if > [buffer] > write
                 T
                   "Can't write to file with provided access mode '%s'".printf
-                    * access
+                    * ^.^.^.^.^.^.access
                 seq *
                   code.
                     syscall.write
                       * descriptor buffer buffer.size
                   output-block
+    (access.eq "w").as-bool.not.and > readable
+      (access.eq "a").as-bool.not
+    (access.eq "r").as-bool.not > writable
+  [cant-measure] > size
+    if. > @
+      info.code.eq 0
+      info.output.size
+      cant-measure
+    called. > info
+      os.is-windows.if
+        win32 *1
+          "_stat64"
+          path
+        posix *1
+          "stat"
+          path
+  [] > touched
+    exists.if > @
+      ^
+      if.
+        descriptor.eq -1
+        T
+          "Cant touch the file '%s': %s".printf
+            * path created.output
+        seq *
+          code. > closed
+            os.is-windows.if
+              win32 *1
+                "_close"
+                descriptor
+              posix *1
+                "close"
+                descriptor
+          ^
+    called. > created
+      os.is-windows.if
+        win32 *1
+          "_creat"
+          path
+          win32.mode
+        posix *1
+          "creat"
+          path
+          posix.mode
+    created.code > descriptor
 
-  (file ".").is-directory ++> tests-check-if-current-directory-is-directory
+  eq. ++> tests-appending-data-to-file
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "a"
+        f.write "!" > [f]
+    13
 
   (file "absent.txt").exists.not ++> tests-check-if-absent-file-does-not-exist
 
-  ++> tests-returns-self-after-deleting
-    temp.deleted.path.eq temp.path > @
-    mktemp.tmpfile > temp
-
-  ++> tests-returns-self-after-touching
-    temp.deleted.touched.path.eq temp.path > @
-    mktemp.tmpfile > temp
-
-  mktemp.tmpfile.deleted.exists.not ++> tests-checks-file-does-not-exist-after-deleting
-
-  mktemp.tmpfile.deleted.touched.exists ++> tests-touches-a-file
-
-  mktemp.tmpfile.deleted.touched.size.eq ++> tests-measures-empty-file-after-touching
-    0
-
-  mktemp.tmpfile.deleted.size --> on-sizing-absent-file
-
-  mktemp.tmpfile.deleted.is-directory --> on-checking-directory-of-absent-file
-
-  eq. ++> tests-sizing-absent-file-returns-fallback
-    -1
-    mktemp.tmpfile.deleted.size -1
+  (file ".").is-directory ++> tests-check-if-current-directory-is-directory
 
   mktemp.tmpfile.deleted.is-directory ++> tests-checking-absent-file-returns-fallback
     true
 
-  mktemp.tmpfile.deleted.touched.touched.exists ++> tests-does-not-fail-on-double-touching
+  mktemp.tmpfile.deleted.exists.not ++> tests-checks-file-does-not-exist-after-deleting
 
   mktemp.tmpfile.deleted.deleted.exists.not ++> tests-does-not-fail-on-double-deleting
 
-  --> an-error-on-touching-temp-file-in-absent-dir
-    (mktemp.as-path.resolved "foo").@.tmpfile > @
+  mktemp.tmpfile.deleted.touched.touched.exists ++> tests-does-not-fail-on-double-touching
 
-  ++> tests-resolves-and-touches
-    resolved.as-dir.made.tmpfile.exists.and > @
-      string.contains
-        resolved
-        string.joined *1
-          Q.path.separator
-          "foo"
-          "bar"
-    mktemp.as-path.resolved "foo/bar" > resolved
+  eq. ++> tests-does-not-truncate-file-opened-for-appending
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "a"
+        true > [f]
+    12
+
+  eq. ++> tests-does-not-truncate-file-opened-for-reading
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "r"
+        true > [f]
+    12
+
+  eq. ++> tests-does-not-truncate-file-opened-for-reading-or-appending
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "a+"
+        true > [f]
+    12
+
+  mktemp.tmpfile.deleted.touched.size.eq ++> tests-measures-empty-file-after-touching
+    0
 
   ++> tests-moves-a-file
     and. > @
@@ -283,133 +282,6 @@
             * temp.path
       temp.exists.not
     mktemp.tmpfile > temp
-
-  --> on-opening-with-wrong-mode
-    seq * > @
-      mktemp.tmpfile.open
-        "x"
-        true > [f]
-      true
-
-  --> on-reading-from-not-existed-file
-    mktemp.tmpfile.deleted.open > @
-      "r"
-      f > [f]
-
-  --> on-reading-or-writing-from-not-existed-file
-    mktemp.tmpfile.deleted.open > @
-      "r+"
-      f > [f]
-
-  ++> tests-recovers-from-opening-missing-file-through-fallback
-    "recovered".eq > @
-      mktemp.tmpfile.deleted.open
-        "r"
-        f > [f]
-        "recovered" > [reason]
-
-  ++> tests-touches-absent-file-on-opening-for-writing
-    exists. > @
-      mktemp.tmpfile.deleted.open
-        "w"
-        true > [f]
-
-  ++> tests-touches-absent-file-on-opening-for-appending
-    exists. > @
-      mktemp.tmpfile.deleted.open
-        "a"
-        true > [f]
-
-  ++> tests-touches-absent-file-on-opening-for-writing-or-reading
-    exists. > @
-      mktemp.tmpfile.deleted.open
-        "w+"
-        true > [f]
-
-  ++> tests-touches-absent-file-on-opening-for-reading-or-appending
-    exists. > @
-      mktemp.tmpfile.deleted.open
-        "a+"
-        true > [f]
-
-  ++> tests-writes-data-to-file
-    eq. > @
-      size.
-        mktemp.tmpfile.open
-          "w"
-          f.write "Hello, world" > [f]
-      12
-
-  ++> tests-appending-data-to-file
-    eq. > @
-      size.
-        open.
-          mktemp.tmpfile.open
-            "w"
-            f.write "Hello, world" > [f]
-          "a"
-          f.write "!" > [f]
-      13
-
-  ++> tests-truncates-file-opened-for-writing
-    eq. > @
-      size.
-        open.
-          mktemp.tmpfile.open
-            "w"
-            f.write "Hello, world" > [f]
-          "w"
-          true > [f]
-      0
-
-  ++> tests-truncates-file-opened-for-writing-or-reading
-    eq. > @
-      size.
-        open.
-          mktemp.tmpfile.open
-            "w"
-            f.write "Hello, world" > [f]
-          "w+"
-          true > [f]
-      0
-
-  ++> tests-does-not-truncate-file-opened-for-appending
-    eq. > @
-      size.
-        open.
-          mktemp.tmpfile.open
-            "w"
-            f.write "Hello, world" > [f]
-          "a"
-          true > [f]
-      12
-
-  ++> tests-does-not-truncate-file-opened-for-reading-or-appending
-    eq. > @
-      size.
-        open.
-          mktemp.tmpfile.open
-            "w"
-            f.write "Hello, world" > [f]
-          "a+"
-          true > [f]
-      12
-
-  ++> tests-does-not-truncate-file-opened-for-reading
-    eq. > @
-      size.
-        open.
-          mktemp.tmpfile.open
-            "w"
-            f.write "Hello, world" > [f]
-          "r"
-          true > [f]
-      12
-
-  --> on-writing-with-wrong-mode
-    mktemp.tmpfile.open > @
-      "r"
-      f.write "Hello" > [f]
 
   ++> tests-reads-from-file
     eq. > @
@@ -422,25 +294,17 @@
                 "w"
                 f.write "Hello, world" > [f]
               "r"
-              m.put (f.read 12) > [f] >>
+              m.put > [f] >>
+                f.read 12
             m
       "Hello, world"
-
-  --> on-reading-negative-size-from-file
-    mktemp.tmpfile.open > @
-      "r"
-      f.read -5 > [f]
-
-  --> on-reading-from-file-with-wrong-mode
-    mktemp.tmpfile.open > @
-      "w"
-      f.read 12 > [f]
 
   ++> tests-reads-from-file-from-different-instances
     seq * > @
       temp.open
         "w"
-        f.write "Shrek is love" > [f]
+        f.write > [f]
+          "Shrek is love"
       "Shrek is love".eq
         malloc.of
           13
@@ -448,30 +312,9 @@
             seq * > @
               (file src).open
                 "r"
-                m.put (f.read 13) > [f] >>
+                m.put > [f] >>
+                  f.read 13
               m
-    temp.path > src
-    mktemp.tmpfile > temp
-
-  ++> tests-writes-to-file-from-different-instances
-    seq * > @
-      temp.open
-        "w"
-        f.write "Shrek is love" > [f]
-      open.
-        file src
-        "a"
-        f.write "!" > [f]
-      eq.
-        malloc.of
-          14
-          [m] >>
-            seq * > @
-              (file src).open
-                "r"
-                m.put (f.read 14) > [f] >>
-              m
-        "Shrek is love!"
     temp.path > src
     mktemp.tmpfile > temp
 
@@ -486,14 +329,155 @@
                 "w"
                 f.write "Hello, world" > [f]
               "r"
-              m.put ((f.read 7).read 5) > [f] >>
+              m.put > [f] >>
+                (f.read 7).read 5
             m
       "world"
 
-  ++> tests-writes-to-file-sequentially
-    eq. > @
-      size.
+  eq. ++> tests-recovers-from-opening-missing-file-through-fallback
+    "recovered"
+    mktemp.tmpfile.deleted.open
+      "r"
+      f > [f]
+      "recovered" > [reason]
+
+  ++> tests-resolves-and-touches
+    resolved.as-dir.made.tmpfile.exists.and > @
+      string.contains
+        mktemp.as-path.resolved "foo/bar" > resolved
+        string.joined *1
+          Q.path.separator
+          "foo"
+          "bar"
+
+  ++> tests-returns-self-after-deleting
+    temp.deleted.path.eq temp.path > @
+    mktemp.tmpfile > temp
+
+  ++> tests-returns-self-after-touching
+    temp.deleted.touched.path.eq temp.path > @
+    mktemp.tmpfile > temp
+
+  eq. ++> tests-sizing-absent-file-returns-fallback
+    -1
+    mktemp.tmpfile.deleted.size -1
+
+  mktemp.tmpfile.deleted.touched.exists ++> tests-touches-a-file
+
+  ++> tests-touches-absent-file-on-opening-for-appending
+    exists. > @
+      mktemp.tmpfile.deleted.open
+        "a"
+        true > [f]
+
+  ++> tests-touches-absent-file-on-opening-for-reading-or-appending
+    exists. > @
+      mktemp.tmpfile.deleted.open
+        "a+"
+        true > [f]
+
+  ++> tests-touches-absent-file-on-opening-for-writing
+    exists. > @
+      mktemp.tmpfile.deleted.open
+        "w"
+        true > [f]
+
+  ++> tests-touches-absent-file-on-opening-for-writing-or-reading
+    exists. > @
+      mktemp.tmpfile.deleted.open
+        "w+"
+        true > [f]
+
+  eq. ++> tests-truncates-file-opened-for-writing
+    size.
+      open.
         mktemp.tmpfile.open
-          "a+"
-          (f.write "Hello, world").write "!" > [f]
-      13
+          "w"
+          f.write "Hello, world" > [f]
+        "w"
+        true > [f]
+    0
+
+  eq. ++> tests-truncates-file-opened-for-writing-or-reading
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "w+"
+        true > [f]
+    0
+
+  eq. ++> tests-writes-data-to-file
+    size.
+      mktemp.tmpfile.open
+        "w"
+        f.write > [f]
+          "Hello, world"
+    12
+
+  ++> tests-writes-to-file-from-different-instances
+    seq * > @
+      temp.open
+        "w"
+        f.write > [f]
+          "Shrek is love"
+      open.
+        file
+          temp.path > src
+        "a"
+        f.write "!" > [f]
+      eq.
+        malloc.of
+          14
+          [m] >>
+            seq * > @
+              (file ^.src).open
+                "r"
+                m.put > [f] >>
+                  f.read 14
+              m
+        "Shrek is love!"
+    mktemp.tmpfile > temp
+
+  eq. ++> tests-writes-to-file-sequentially
+    size.
+      mktemp.tmpfile.open
+        "a+"
+        write. > [f]
+          f.write "Hello, world"
+          "!"
+    13
+
+  --> an-error-on-touching-temp-file-in-absent-dir
+    (mktemp.as-path.resolved "foo").@.tmpfile > @
+
+  mktemp.tmpfile.deleted.is-directory --> on-checking-directory-of-absent-file
+
+  seq * --> on-opening-with-wrong-mode
+    mktemp.tmpfile.open
+      "x"
+      true > [f]
+    true
+
+  mktemp.tmpfile.open --> on-reading-from-file-with-wrong-mode
+    "w"
+    f.read 12 > [f]
+
+  mktemp.tmpfile.deleted.open --> on-reading-from-not-existed-file
+    "r"
+    f > [f]
+
+  mktemp.tmpfile.open --> on-reading-negative-size-from-file
+    "r"
+    f.read -5 > [f]
+
+  mktemp.tmpfile.deleted.open --> on-reading-or-writing-from-not-existed-file
+    "r+"
+    f > [f]
+
+  mktemp.tmpfile.deleted.size --> on-sizing-absent-file
+
+  mktemp.tmpfile.open --> on-writing-with-wrong-mode
+    "r"
+    f.write "Hello" > [f]

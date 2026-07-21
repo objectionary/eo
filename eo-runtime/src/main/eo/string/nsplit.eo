@@ -26,7 +26,6 @@
           0
           0
           0
-  delimiter.size > size!
   [accum start current count] > rec-nsplit
     if. > @
       text.size.eq current
@@ -62,15 +61,15 @@
           text
           start
           current.minus start
+  delimiter.size > size!
 
-  eq. ++> tests-nsplit-with-limit-two
+  eq. ++> tests-nsplit-invalid-limit-returns-provided-fallback
+    "fallback"
     nsplit
-      "Cookie: a=1; b=2"
-      " "
-      2
-    *
-      "Cookie:"
-      "a=1; b=2"
+      "text"
+      "-"
+      0
+      "fallback" > [msg]
 
   eq. ++> tests-nsplit-with-dashes-limit-two
     nsplit
@@ -80,35 +79,6 @@
     *
       "a"
       "b-c-d"
-
-  eq. ++> tests-nsplit-with-limit-one
-    nsplit
-      "a-b-c"
-      "-"
-      1
-    * "a-b-c"
-
-  eq. ++> tests-nsplit-with-high-limit
-    nsplit
-      "a-b-c"
-      "-"
-      10
-    *
-      "a"
-      "b"
-      "c"
-
-  nsplit "text" "-" 0 --> on-nsplit-with-limit-zero
-
-  nsplit "text" "-" -1 --> on-nsplit-with-negative-limit
-
-  ++> tests-nsplit-invalid-limit-returns-provided-fallback
-    "fallback".eq > @
-      nsplit
-        "text"
-        "-"
-        0
-        "fallback" > [msg]
 
   eq. ++> tests-nsplit-with-empty-strings
     nsplit
@@ -120,6 +90,32 @@
       "a"
       "b-c"
 
+  eq. ++> tests-nsplit-with-high-limit
+    nsplit
+      "a-b-c"
+      "-"
+      10
+    *
+      "a"
+      "b"
+      "c"
+
+  eq. ++> tests-nsplit-with-limit-one
+    nsplit
+      "a-b-c"
+      "-"
+      1
+    * "a-b-c"
+
+  eq. ++> tests-nsplit-with-limit-two
+    nsplit
+      "Cookie: a=1; b=2"
+      " "
+      2
+    *
+      "Cookie:"
+      "a=1; b=2"
+
   eq. ++> tests-nsplit-with-multi-char-delimiter
     nsplit
       "a::b::c::d"
@@ -128,3 +124,13 @@
     *
       "a"
       "b::c::d"
+
+  nsplit --> on-nsplit-with-limit-zero
+    "text"
+    "-"
+    0
+
+  nsplit --> on-nsplit-with-negative-limit
+    "text"
+    "-"
+    -1

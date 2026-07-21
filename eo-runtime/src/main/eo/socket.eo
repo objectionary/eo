@@ -42,9 +42,6 @@
 # On failure at any of the described steps, the fallback of the corresponding operation is
 # returned (or the bottom object when it is left unbound).
 
-+alias sm.os
-+alias sm.posix
-+alias sm.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -54,56 +51,46 @@
 +unlint redundant-object
 
 [address port] > socket
-  sm.os.is-windows.if > @
+  os.is-windows.if > @
     impl
       []
         raw > @
-        sm.win32 > raw
+        if. > cleanup
+          eq.
+            code.
+              win32
+                "WSACleanup"
+                *
+            win32.failure
+          T
+            "Couldn't clean up the sockets subsystem"
+          true
         "closesocket" > close
         "WSA error code %d".printf > message
           *
             code.
-              sm.win32
+              win32
                 "WSAGetLastError"
                 *
+        win32 > raw
         code. > startup
-          sm.win32 *1
+          win32 *1
             "WSAStartup"
-            sm.win32.version
-        if. > cleanup
-          eq.
-            code.
-              sm.win32
-                "WSACleanup"
-                *
-            sm.win32.failure
-          T
-            "Couldn't clean up the sockets subsystem"
-          true
+            win32.version
     impl
       []
         raw > @
-        sm.posix > raw
+        true > cleanup
         "close" > close
         code. > message
-          sm.posix *1
+          posix *1
             "strerror"
             code.
-              sm.posix
+              posix
                 "errno"
                 *
+        posix > raw
         0 > startup
-        true > cleanup
-  [port] > htons
-    as-i16. > @
-      or.
-        left.
-          bts.and 00-FF
-          8
-        and.
-          bts.right 8
-          00-FF
-    port.as-i16.as-bytes > bts
   [recv] > as-input
     [size] > read
       @. > @
@@ -126,53 +113,21 @@
         seq * > [buffer] > write
           send buffer
           output-block
+  [port] > htons
+    as-i16. > @
+      or.
+        left.
+          bts.and 00-FF
+          8
+        and.
+          bts.right 8
+          00-FF
+    port.as-i16.as-bytes > bts
   [sys] > impl
     code. > addr
       sys.raw *1
         "inet_addr"
         address
-    addr.as-i32 > addrint
-    code. > sd
-      sys.raw *1
-        "socket"
-        sys.inet
-        sys.stream
-        sys.tcp
-    sys.sockaddr-in > sockaddr
-      sys.inet.as-i16
-      htons port
-      addrint
-    [sockfd] > scoped-socket
-      ^.^.as-input recv > as-input
-      ^.^.as-output send > as-output
-      [buffer cant-send] > send
-        if. > @
-          sent.eq -1
-          cant-send
-            "Failed to send a message through the socket #%d because %s".printf
-              * sockfd sys.message
-          sent
-        buffer > buff!
-        code. > sent
-          sys.raw *1
-            "send"
-            sockfd
-            buff
-            buff.size
-            0
-      [size cant-receive] > recv
-        if. > @
-          received.code.eq -1
-          cant-receive
-            "Failed to receive data from the socket #%d because %s".printf
-              * sockfd sys.message
-          received.output
-        called. > received
-          sys.raw *1
-            "recv"
-            sockfd
-            size
-            0
     [sockfd] > closed-socket
       if. > @
         closed.eq -1
@@ -184,32 +139,6 @@
         sys.raw *1
           sys.close
           sockfd
-    [scope cant] > safe-socket
-      if. > @
-        not.
-          sys.startup.eq 0
-        cant
-          "Couldn't start up the sockets subsystem because %s".printf
-            * sys.message
-        seq *
-          result
-          sys.cleanup
-          result
-      if. > result!
-        sd.eq -1
-        cant
-          "Couldn't create a socket because %s".printf
-            * sys.message
-        seq *
-          used
-          closed-socket sd
-          used
-      if. > used!
-        addr.eq sys.none
-        cant
-          "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s".printf
-            * address sys.message
-        scope
     [scope cant-connect] > connect
       safe-socket > @
         [] >>
@@ -274,3 +203,68 @@
               2048
           ^.^ > sock
         cant-listen
+    [scope cant] > safe-socket
+      if. > @
+        not.
+          sys.startup.eq 0
+        cant
+          "Couldn't start up the sockets subsystem because %s".printf
+            * sys.message
+        seq *
+          result
+          sys.cleanup
+          result
+      if. > result!
+        sd.eq -1
+        cant
+          "Couldn't create a socket because %s".printf
+            * sys.message
+        seq *
+          used
+          closed-socket sd
+          used
+      if. > used!
+        addr.eq sys.none
+        cant
+          "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s".printf
+            * address sys.message
+        scope
+    [sockfd] > scoped-socket
+      ^.^.as-input recv > as-input
+      ^.^.as-output send > as-output
+      [size cant-receive] > recv
+        if. > @
+          received.code.eq -1
+          cant-receive
+            "Failed to receive data from the socket #%d because %s".printf
+              * sockfd sys.message
+          received.output
+        called. > received
+          sys.raw *1
+            "recv"
+            sockfd
+            size
+            0
+      [buffer cant-send] > send
+        if. > @
+          sent.eq -1
+          cant-send
+            "Failed to send a message through the socket #%d because %s".printf
+              * sockfd sys.message
+          code. > sent
+            sys.raw *1
+              "send"
+              sockfd
+              buffer > buff!
+              buff.size
+              0
+    code. > sd
+      sys.raw *1
+        "socket"
+        sys.inet
+        sys.stream
+        sys.tcp
+    sys.sockaddr-in > sockaddr
+      sys.inet.as-i16
+      htons port
+      addr.as-i32 > addrint

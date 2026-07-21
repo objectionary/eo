@@ -1,0 +1,53 @@
+# Range of natural numbers from `start` to `end` (soft border) with step = 1.
+# The `r` is an instance of `range`, which provides `start` and `end`.
+
++alias tuple.is-empty
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package range
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object
+
+[r] > naturals
+  range > @
+    [] >>
+      build r.start > @
+      [num] > build
+        num > @
+        build > next
+          1.plus @
+    r.end
+
+  tuple.is-empty ++> tests-naturals-descending-is-empty
+    naturals
+      range 10 1
+
+  tuple.is-empty ++> tests-naturals-from-ten-to-ten-is-empty
+    naturals
+      range 10 10
+
+  eq. ++> tests-naturals-negative-works-as-well
+    naturals
+      range -5 0
+    *
+      -5
+      -4
+      -3
+      -2
+      -1
+
+  eq. ++> tests-simple-naturals-from-one-to-ten
+    naturals
+      range 1 10
+    *
+      1
+      2
+      3
+      4
+      5
+      6
+      7
+      8
+      9

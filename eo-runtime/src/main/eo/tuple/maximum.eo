@@ -17,26 +17,11 @@
     reduced
       lst
       ninf
-      [max item]
-        if. > @
-          item.as-number.gt max
-          item
-          max
+      if. > [max item]
+        item.as-number.gt max
+        item
+        max
   sequence > lst
-
-  maximum --> on-taking-maximum-from-empty-sequence
-    *
-
-  ++> tests-maximum-of-empty-returns-provided-fallback
-    "recovered".eq > @
-      maximum
-        *
-        "recovered" > [msg]
-
-  eq. ++> tests-maximum-of-one-item-array
-    maximum
-      * 42
-    42
 
   eq. ++> tests-maximum-of-array-is-first
     maximum *
@@ -58,3 +43,17 @@
       -2
       25
     25
+
+  eq. ++> tests-maximum-of-empty-returns-provided-fallback
+    "recovered"
+    maximum
+      *
+      "recovered" > [msg]
+
+  eq. ++> tests-maximum-of-one-item-array
+    maximum
+      * 42
+    42
+
+  maximum --> on-taking-maximum-from-empty-sequence
+    *

@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case verifying {@link Expect}-based error messages
- * raised by {@link EOmalloc$EOof$EOallocated$EOwrite} and
+ * raised by {@link EOchunk$EOwrite} and
  * the {@code malloc.of.@} atom when their integer attributes
  * are invalid.
  * @since 0.51
@@ -27,7 +27,7 @@ final class EOmallocWritePhiExpectTest {
                 ExAbstract.class,
                 () -> new Dataized(
                     new PhApplication(
-                        new EOmalloc$EOof$EOallocated$EOwrite(),
+                        new EOchunk$EOwrite(),
                         Phi.RHO,
                         new PhApplication(
                             new EOmallocWritePhiExpectTest.Dummy(),
@@ -51,7 +51,7 @@ final class EOmallocWritePhiExpectTest {
                 () -> new Dataized(
                     new PhApplication(
                         new PhApplication(
-                            new EOmalloc$EOof$EOallocated$EOwrite(),
+                            new EOchunk$EOwrite(),
                             Phi.RHO,
                             new PhApplication(
                                 new EOmallocWritePhiExpectTest.Dummy(),

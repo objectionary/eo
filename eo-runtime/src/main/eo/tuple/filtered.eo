@@ -18,27 +18,25 @@
     list
     func item > [item index] >>
 
-  ++> tests-simple-filtered
-    eq. > @
-      filtered
-        *
-          3
-          1
-          4
-          2
-          5
-        v.gt 2 > [v]
+  eq. ++> tests-filtered-with-bools
+    filtered
+      *
+        true
+        false
+        true
+      v.not > [v]
+    * false
+
+  eq. ++> tests-simple-filtered
+    filtered
       *
         3
+        1
         4
+        2
         5
-
-  ++> tests-filtered-with-bools
-    eq. > @
-      filtered
-        *
-          true
-          false
-          true
-        v.not > [v]
-      * false
+      v.gt 2 > [v]
+    *
+      3
+      4
+      5

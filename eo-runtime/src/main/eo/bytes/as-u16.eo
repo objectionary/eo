@@ -1,0 +1,22 @@
+# Bytes as an unsigned 16-bit integer `u16`: a 2-byte chain reinterpreted
+# without a sign. For any other length the `cant-convert` fallback
+# is returned.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package bytes
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[bts cant-convert] > as-u16
+  if. > @
+    bts.size.eq 2
+    u16 bts
+    cant-convert
+      "Can't convert non 2 length bytes to u16, bytes are %x".printf
+        * bts
+
+  00-33.as-u16.as-bytes.eq 00-33 ++> tests-bytes-converts-to-u16-and-back
+
+  01-01-01.as-u16 --> on-bytes-of-wrong-size-as-u16

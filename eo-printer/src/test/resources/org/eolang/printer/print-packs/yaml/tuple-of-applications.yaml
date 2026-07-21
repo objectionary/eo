@@ -19,12 +19,8 @@ origin: |
 printed: |
   [] > pairs
     * > items
-      pair
-        "a"
-        1
-      pair
-        "b"
-        2
+      pair "a" 1
+      pair "b" 2
     [k v] > pair
       k > key
       v > value

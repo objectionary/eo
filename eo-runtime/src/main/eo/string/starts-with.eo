@@ -11,25 +11,21 @@
   and. > @
     lte.
       number slen
-      tlen
+      txt.size > tlen!
     eq.
       slice
-        txt
+        text > txt!
         0
         slen
-      sub
+      substring > sub!
   sub.size > slen!
-  substring > sub!
-  txt.size > tlen!
-  text > txt!
-
-  ++> tests-starts-with-substring
-    starts-with > @
-      "Hello, world"
-      "Hello"
 
   ++> tests-does-not-start-with-substring
     not. > @
       starts-with
         "Hello, world"
         "world"
+
+  starts-with ++> tests-starts-with-substring
+    "Hello, world"
+    "Hello"

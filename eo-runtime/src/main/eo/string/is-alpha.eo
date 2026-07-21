@@ -15,6 +15,6 @@
 
   is-alpha "eEo" ++> tests-checks-if-simple-text-is-alpha
 
-  (is-alpha "ab3d").not ++> tests-checks-if-text-with-number-is-not-alpha
-
   (is-alpha "-w-").not ++> tests-checks-if-text-with-dashes-is-not-alpha
+
+  (is-alpha "ab3d").not ++> tests-checks-if-text-with-number-is-not-alpha

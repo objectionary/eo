@@ -16,21 +16,19 @@
   reducedi > @
     list
     *
-    [accum item idx] >>
-      accum.with > @
-        func item idx
+    accum.with > [accum item idx] >>
+      func item idx
 
-  ++> tests-list-mappedi-should-work
-    eq. > @
-      mappedi
-        *
-          1
-          2
-          3
-          4
-        i.times x > [x i]
+  eq. ++> tests-list-mappedi-should-work
+    mappedi
       *
-        0
+        1
         2
-        6
-        12
+        3
+        4
+      i.times x > [x i]
+    *
+      0
+      2
+      6
+      12

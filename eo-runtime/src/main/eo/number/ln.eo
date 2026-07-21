@@ -21,10 +21,9 @@
         n.eq 0
         ninf
         n.is-finite.if
-          lnp n
+          lnp
+            number num.as-bytes > n
           pinf
-  number > n
-    num.as-bytes
   [p] > lnp
     if. > @
       p.gte e
@@ -44,11 +43,6 @@
       2.times > @
         t.times
           horner 0
-      div. > t
-        m.minus 1
-        m.plus 1
-      t.times t > squared
-      40 > terms
       if. > [k] > horner
         k.gt terms
         0
@@ -58,40 +52,50 @@
           squared.times
             horner
               k.plus 1
+      t.times > squared
+        div. > t
+          m.minus 1
+          m.plus 1
+      40 > terms
 
-  (ln -2.2).is-nan ++> tests-ln-of-negative-float-is-nan
+  lt. ++> tests-ln-fraction
+    abs
+      minus.
+        ln 0.5
+        -0.6931471805599453
+    1.0E-11
 
-  (ln 0).eq ninf ++> tests-ln-of-zero-is-negative-infinity
-
-  (ln 1).eq 0 ++> tests-ln-of-one-is-zero
-
-  (ln e).eq 1 ++> tests-ln-of-e-one-is-one
-
-  (ln -42).is-nan ++> tests-ln-of-negative-int-is-nan
-
-  ++> tests-ln-of-twenty
-    lt. > @
-      abs
-        minus.
-          ln 20
-          2.995732273553991
-      1.0E-11
-
-  ++> tests-ln-fraction
-    lt. > @
-      abs
-        minus.
-          ln 0.5
-          -0.6931471805599453
-      1.0E-11
-
-  (ln pinf).eq pinf ++> tests-ln-positive-infinity
-
-  (ln ninf).is-nan ++> tests-ln-negative-infinity
+  lt. ++> tests-ln-monotonic
+    ln 2
+    ln 3
 
   (ln nan).is-nan ++> tests-ln-nan
 
-  ++> tests-ln-monotonic
-    lt. > @
-      ln 2
-      ln 3
+  (ln ninf).is-nan ++> tests-ln-negative-infinity
+
+  eq. ++> tests-ln-of-e-one-is-one
+    ln e
+    1
+
+  (ln -2.2).is-nan ++> tests-ln-of-negative-float-is-nan
+
+  (ln -42).is-nan ++> tests-ln-of-negative-int-is-nan
+
+  eq. ++> tests-ln-of-one-is-zero
+    ln 1
+    0
+
+  lt. ++> tests-ln-of-twenty
+    abs
+      minus.
+        ln 20
+        2.995732273553991
+    1.0E-11
+
+  eq. ++> tests-ln-of-zero-is-negative-infinity
+    ln 0
+    ninf
+
+  eq. ++> tests-ln-positive-infinity
+    ln pinf
+    pinf

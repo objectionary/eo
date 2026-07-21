@@ -13,9 +13,6 @@
 
 [] > hash-code
   ? >> input
-  rec-hash-code > @
-    0
-    0
   input.as-bytes > bts!
   bts.size > size!
   if. > [acc index] > rec-hash-code
@@ -29,6 +26,9 @@
             bts.slice index 1
       as-number.
         index.plus 1
+  | > @
+    0
+    0
 
   and. ++> tests-hash-code-bools-is-number
     (hash-code true).as-bytes.size.eq

@@ -46,6 +46,28 @@
               a.plus b
         fun b
 
+  ++> tests-calculates-cube-integral
+    close-to > @
+      as-number.
+        integral
+          (x.times x).times x > [x]
+          1
+          10
+          100
+      2499.75
+      1.0E-7
+    [value operand err] > close-to
+      lte. > @
+        minus.
+          abs
+            value.minus operand
+          err
+        0
+      if. > [value] > abs
+        value.gte 0
+        value
+        value.neg
+
   ++> tests-calculates-lineal-integral
     close-to > @
       as-number.
@@ -63,11 +85,10 @@
             value.minus operand
           err
         0
-      [value] > abs
-        if. > @
-          value.gte 0
-          value
-          value.neg
+      if. > [value] > abs
+        value.gte 0
+        value
+        value.neg
 
   ++> tests-calculates-quadratic-integral
     close-to > @
@@ -86,31 +107,7 @@
             value.minus operand
           err
         0
-      [value] > abs
-        if. > @
-          value.gte 0
-          value
-          value.neg
-
-  ++> tests-calculates-cube-integral
-    close-to > @
-      as-number.
-        integral
-          (x.times x).times x > [x]
-          1
-          10
-          100
-      2499.75
-      1.0E-7
-    [value operand err] > close-to
-      lte. > @
-        minus.
-          abs
-            value.minus operand
-          err
-        0
-      [value] > abs
-        if. > @
-          value.gte 0
-          value
-          value.neg
+      if. > [value] > abs
+        value.gte 0
+        value
+        value.neg

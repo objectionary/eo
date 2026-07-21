@@ -15,36 +15,41 @@
     cant-repeat
       "Can't repeat text %d times".printf
         * amount
-    string result
+    string
+      if. > result!
+        0.eq amount
+        --
+        rec-repeated
+          text > bts!
+          1
   times > amount!
-  text > bts!
-  if. > result!
-    0.eq amount
-    --
-    rec-repeated
-      bts
-      1
   if. > [accum index] > rec-repeated
     amount.eq index
     accum
     rec-repeated
-      accum.concat bts
+      accum.concat ^.bts
       as-number.
         index.plus 1
 
-  repeated "" -1 --> on-text-repeating-less-than-zero-times
+  eq. ++> tests-text-repeated-five-times
+    "heyheyheyheyhey"
+    repeated
+      "hey"
+      5
 
-  ++> tests-text-repeated-negative-times-returns-provided-fallback
-    "recovered".eq > @
-      repeated
-        "x"
-        -1
-        "recovered" > [msg]
+  eq. ++> tests-text-repeated-negative-times-returns-provided-fallback
+    "recovered"
+    repeated
+      "x"
+      -1
+      "recovered" > [msg]
 
-  ++> tests-text-repeated-zero-times-is-empty
-    "".eq > @
-      repeated "some" 0
+  eq. ++> tests-text-repeated-zero-times-is-empty
+    ""
+    repeated
+      "some"
+      0
 
-  ++> tests-text-repeated-five-times
-    "heyheyheyheyhey".eq > @
-      repeated "hey" 5
+  repeated --> on-text-repeating-less-than-zero-times
+    ""
+    -1

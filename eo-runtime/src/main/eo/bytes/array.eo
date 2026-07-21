@@ -11,9 +11,6 @@
 
 [] > array
   ? >> bts
-  slice-byte > @
-    *
-    0
   bts > data!
   data.size > len!
   if. > [tup index] > slice-byte
@@ -24,6 +21,9 @@
       as-number.
         index.plus 1
     tup
+  | > @
+    *
+    0
 
   eq. ++> tests-converts-bytes-to-array
     array 20-1F-EE-B5-FF

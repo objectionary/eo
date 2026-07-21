@@ -1,0 +1,34 @@
+# Reads all bytes from the provided `input` and returns them as bytes.
+#
+# Example usage:
+# ```
+# as-bytes > bts
+#   bytes.as-input 01-02-03-04-05
+# ```
+# After dataization, `bts` equals `01-02-03-04-05`.
+
++alias bytes.as-input
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package input
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[input] > as-bytes
+  malloc.of > @
+    0
+    seq * > [m] >>
+      Q.input.copied input m.to-output
+      m
+
+  ++> tests-bytes-as-input-and-back
+    eq. > @
+      Q.input.as-bytes
+        bytes.as-input bts
+      bts
+    01-02-03-04-05-06-07-08 > bts
+
+  eq. ++> tests-returns-empty-bytes-from-dead-input
+    Q.input.as-bytes dead
+    --

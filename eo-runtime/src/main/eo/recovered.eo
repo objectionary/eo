@@ -12,18 +12,19 @@
 +spdx SPDX-License-Identifier: MIT
 +unlint mandatory-package
 
-[value alternative] > recovered /bytes
-
-  ++> tests-keeps-the-value-when-not-terminated
-    eq. > @
-      recovered 42 7
-      42
+[value alternative] > recovered /Q.bytes
 
   eq. ++> tests-falls-back-to-alternative-when-terminated
     recovered
       2.as-i64.div 0.as-i64
       7
     7
+
+  eq. ++> tests-keeps-the-value-when-not-terminated
+    recovered
+      42
+      7
+    42
 
   eq. ++> tests-recovers-the-inner-recovery
     recovered
@@ -33,14 +34,14 @@
       42
     42
 
-  ++> tests-recovers-when-a-provided-fallback-terminates
-    eq. > @
-      recovered
-        2.as-i64.div
-          0.as-i64
-          T "cannot divide" > [msg]
-        42
+  eq. ++> tests-recovers-when-a-provided-fallback-terminates
+    recovered
+      2.as-i64.div
+        0.as-i64
+        T > [msg]
+          "cannot divide"
       42
+    42
 
   recovered --> when-both-are-terminated
     2.as-i64.div 0.as-i64

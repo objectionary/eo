@@ -39,7 +39,7 @@ final class PhDefaultTest {
             "Implicit dispatch to a nullary extension must explain the real problem",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new PhDefault("Φ.sm").take("os"),
+                () -> new PhDefault("Φ.input").take("dead"),
                 "Applying a receiver to a nullary extension must be rejected"
             ).getMessage(),
             Matchers.containsString("takes no arguments")
@@ -464,8 +464,8 @@ final class PhDefaultTest {
     void rendersFormaFromXmirLocator() {
         MatcherAssert.assertThat(
             "Named nested object must report the forma taken from its XMIR locator, but it didnt",
-            new PhDefault("Φ.malloc.of.allocated").forma(),
-            Matchers.equalTo("Φ.malloc.of.allocated")
+            new PhDefault("Φ.chunk").forma(),
+            Matchers.equalTo("Φ.chunk")
         );
     }
 

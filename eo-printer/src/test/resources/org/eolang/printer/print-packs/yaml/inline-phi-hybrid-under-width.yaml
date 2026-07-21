@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The only-phi "copy" formation from malloc.eo: its phi applies regular
+# arguments and its flat one-liner
+# "write target (read source length) > [source target length] > copy" fits
+# under 80 columns, yet the compact hybrid is strictly cheaper — it drops the
+# "@" (saving the PHI charge), sheds the bracket the one-liner needs around
+# "(read source length)", and lifts the arguments one indent level. The printer
+# must therefore hand the hybrid to the penalty vote even when the one-liner
+# fits the width, not only when it overflows (issue #5700, the residual case
+# #5635 left open). These are the default weights the issue reasons about.
+penalties:
+  INDENT: 2
+  BRACKET: 19
+  PHI: 15
+  IF: 50
+  EXCESS: 3
+  SYMBOL: 1
+  SPACE: 7
+  WIDTH: 80
+  STEP: 2
+origin: |
+  +package org.eolang
+
+  [] > examples
+    [id] > allocated
+      [source target length] > copy
+        write > @
+          target
+          read source length
+
+printed: |
+  +package org.eolang
+
+  [] > examples
+    [id] > allocated
+      write > [source target length] > copy
+        target
+        read source length

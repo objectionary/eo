@@ -8,7 +8,9 @@
 # penalty (#5665) makes prefix notation cheaper, so "if" is never dispatched
 # after its object. The inner "if" keeps its arguments on separate lines too,
 # since the per-symbol and per-space penalties make a single inline line dearer
-# than the vertical layout.
+# than the vertical layout. The outer only-phi formation still collapses to the
+# cheaper inline-phi hybrid ("if. > [x] > classify"), which drops the "@" and
+# lifts the branches one indent level (#5700).
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -27,11 +29,10 @@ origin: |
         "positive"
 
 printed: |
-  [x] > classify
-    if. > @
-      x.lt 0
-      "negative"
-      if.
-        x.eq 0
-        "zero"
-        "positive"
+  if. > [x] > classify
+    x.lt 0
+    "negative"
+    if.
+      x.eq 0
+      "zero"
+      "positive"

@@ -25,15 +25,8 @@
         slice
           txt
           0
-          found
-  rec-index-of > found!
-    minus.
-      number tlen
-      slen
-  sub.size > slen!
-  substring > sub!
-  txt.size > tlen!
-  text > txt!
+          rec-index-of > found!
+            (number tlen).minus slen
   [idx] > rec-index-of
     if. > @
       0.eq idx
@@ -48,6 +41,10 @@
         idx
         slen
       sub
+  sub.size > slen!
+  substring > sub!
+  txt.size > tlen!
+  text > txt!
 
   eq. ++> tests-finds-last-index-of-substring
     5
@@ -61,6 +58,12 @@
       "Hello"
       "Hello"
 
+  eq. ++> tests-last-index-of-existed-substring-with-utf
+    3
+    last-index-of
+      "привет, друг!"
+      "в"
+
   eq. ++> tests-last-index-of-non-existed-substring
     -1
     last-index-of
@@ -72,9 +75,3 @@
     last-index-of
       "привет, друг!"
       "x"
-
-  eq. ++> tests-last-index-of-existed-substring-with-utf
-    3
-    last-index-of
-      "привет, друг!"
-      "в"

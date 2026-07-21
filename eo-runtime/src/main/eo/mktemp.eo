@@ -7,7 +7,6 @@
 # takes the first environment variable in the list TMP, TEMP, USERPROFILE.
 # If none of these are found, it returns the Windows directory (C:\Windows).
 
-+alias sm.os
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -19,7 +18,7 @@
     file
       string
         [] >>!
-          sm.os.is-windows.if > @
+          os.is-windows.if > @
             if.
               tmp.eq empty
               if.
@@ -27,7 +26,7 @@
                 if.
                   userprofile.eq empty
                   "C:\\Windows"
-                  userprofile
+                  getenv "USERPROFILE" > userprofile!
                 temp
               tmp
             if.
@@ -39,21 +38,18 @@
                   if.
                     tempdir.eq empty
                     "/tmp"
-                    tempdir
+                    getenv "TEMPDIR" > tempdir!
                   temp
                 tmp
-              tmpdir
+              getenv "TMPDIR" > tmpdir!
           -- > empty
           getenv "TEMP" > temp!
-          getenv "TEMPDIR" > tempdir!
           getenv "TMP" > tmp!
-          getenv "TMPDIR" > tmpdir!
-          getenv "USERPROFILE" > userprofile!
+
+  mktemp.tmpfile.exists ++> creates-tmpfile
 
   mktemp.exists ++> global-temp-dir-exists
 
   mktemp.is-directory ++> global-temp-dir-is-directory
 
   mktemp.path.eq mktemp.path ++> returns-the-same-tmpdir
-
-  mktemp.tmpfile.exists ++> creates-tmpfile

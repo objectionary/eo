@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A recursive helper declared with a cactus name (`? >> rec`, whose body
+# calls `rec` again) compiles to an auto-named abstract that references its
+# own name. Inlining it used to copy that self-reference back in and fire
+# the "inline-cactoos" template forever (see issue #5677). The guard leaves
+# both the reference and the self-referential abstraction in place instead.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-self.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/validate-before-stars.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/printer/print/inline-cactoos.xsl
+asserts:
+  # The self-referential abstraction is not dropped: it keeps its cactus
+  # name and its file-local handle.
+  - /object/o[@name='foo']/o[@name='a🌵4-2' and @local='reclast' and not(@base)]
+  # The self-reference inside its body is left intact (the recursion stays).
+  - /object/o[@name='foo']/o[@name='a🌵4-2']//o[contains(@base, 'a🌵4-2')]
+  # The outer reference to it is not inlined: it is still a reference (carries
+  # a cactus @base) and still holds its own `list` argument, rather than being
+  # replaced by a copy of the abstraction's body.
+  - /object/o[@name='foo']/o[contains(@base, 'a🌵4-2')]/o[contains(@base, 'list')]
+input: |
+  [] > foo
+    reclast > @
+      list
+    if. > [tup] >> reclast
+      tup.length.eq 0
+      -1
+      reclast tup.tail

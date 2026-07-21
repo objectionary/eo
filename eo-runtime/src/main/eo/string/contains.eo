@@ -15,33 +15,31 @@
     or.
       and.
         tlen.eq slen
-        txt.eq sub
+        txt.eq
+          substring > sub!
       rec-contains 0
   minus. > end!
     number tlen
     slen
-  sub.size > slen!
-  substring > sub!
-  txt.size > tlen!
-  text > txt!
   [idx] > rec-contains
     if. > @
       end.eq idx
-      includes
+      eq. > includes
+        slice
+          txt
+          idx
+          slen
+        ^.sub
       includes.or
         rec-contains
           (idx.plus 1).as-number
-    eq. > includes
-      slice
-        txt
-        idx
-        slen
-      sub
+  sub.size > slen!
+  txt.size > tlen!
+  text > txt!
 
-  ++> tests-text-contains-substring
-    contains > @
-      "Hello, world!"
-      "o, wo"
+  contains ++> tests-text-contains-substring
+    "Hello, world!"
+    "o, wo"
 
   ++> tests-text-does-not-contain-substring
     not. > @

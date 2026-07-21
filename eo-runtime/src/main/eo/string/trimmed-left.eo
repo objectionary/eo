@@ -22,21 +22,17 @@
           number len
           idx
   text > bts!
-  first-non-ws-index > idx!
-    0
-  bts.size > len!
   [index] > first-non-ws-index
     if. > @
       len.eq index
       index
       if.
-        is-ws char
+        is-ws
+          bts.slice index 1 > char!
         first-non-ws-index
           (index.plus 1).as-number
         index
-    bts.slice > char!
-      index
-      1
+  first-non-ws-index 0 > idx!
   or. > [c] > is-ws
     c.eq 20-
     or.
@@ -47,36 +43,44 @@
           c.eq 0B-
           (c.eq 0C-).or
             c.eq 0D-
+  bts.size > len!
 
-  (trimmed-left "").eq "" ++> tests-trimmed-left-empty-text
+  eq. ++> tests-text-trimmed-left-many-spaces
+    trimmed-left
+      "     some"
+    "some"
 
-  ++> tests-text-trimmed-left-one-space
-    eq. > @
-      trimmed-left
-        " s"
-      "s"
+  eq. ++> tests-text-trimmed-left-one-space
+    trimmed-left
+      " s"
+    "s"
 
-  ++> tests-text-trimmed-left-many-spaces
-    eq. > @
-      trimmed-left
-        "     some"
-      "some"
+  eq. ++> tests-text-trimmed-left-only-spaces
+    trimmed-left
+      "     "
+    ""
 
-  ++> tests-text-trimmed-left-only-spaces
-    eq. > @
-      trimmed-left
-        "     "
-      ""
+  eq. ++> tests-trimmed-left-empty-text
+    trimmed-left ""
+    ""
 
-  (trimmed-left "\tvalue").eq "value" ++> tests-trimmed-left-strips-tab
+  eq. ++> tests-trimmed-left-strips-cr
+    trimmed-left "\rvalue"
+    "value"
 
-  (trimmed-left "\nvalue").eq "value" ++> tests-trimmed-left-strips-lf
+  eq. ++> tests-trimmed-left-strips-ff
+    trimmed-left "\fvalue"
+    "value"
 
-  (trimmed-left "\fvalue").eq "value" ++> tests-trimmed-left-strips-ff
-
-  (trimmed-left "\rvalue").eq "value" ++> tests-trimmed-left-strips-cr
+  eq. ++> tests-trimmed-left-strips-lf
+    trimmed-left "\nvalue"
+    "value"
 
   eq. ++> tests-trimmed-left-strips-mixed-ws
     trimmed-left
       " \t\n\f\rvalue"
+    "value"
+
+  eq. ++> tests-trimmed-left-strips-tab
+    trimmed-left "\tvalue"
     "value"

@@ -14,10 +14,9 @@
     start
     len
 
-  ++> tests-text-slices-the-origin-string
-    eq. > @
-      slice
-        "Hello, world!"
-        7
-        5
-      "world"
+  eq. ++> tests-text-slices-the-origin-string
+    slice
+      "Hello, world!"
+      7
+      5
+    "world"

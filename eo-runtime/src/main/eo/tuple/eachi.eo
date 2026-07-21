@@ -28,7 +28,6 @@
         [m]
           eachi > @
             * 1 2 3
-            [item index] >>
-              m.put > @
-                (m.as-number.plus item).plus index
+            m.put > [item index] >>
+              (m.as-number.plus item).plus index
       9

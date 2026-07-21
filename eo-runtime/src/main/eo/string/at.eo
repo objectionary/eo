@@ -32,23 +32,31 @@
     idx
   text.length > len!
 
-  ++> tests-returns-first-char
-    "s".eq > @
-      at "some" 0
+  eq. ++> tests-returns-char-at-negative-index
+    "m"
+    at
+      "some"
+      -2
 
-  ++> tests-returns-third-char
-    "m".eq > @
-      at "some" 2
+  eq. ++> tests-returns-first-char
+    "s"
+    at
+      "some"
+      0
 
-  ++> tests-returns-char-at-negative-index
-    "m".eq > @
-      at "some" -2
+  eq. ++> tests-returns-third-char
+    "m"
+    at
+      "some"
+      2
 
-  at "some" 10 --> on-text-at-index-more-than-length
+  eq. ++> tests-text-at-out-of-bounds-returns-provided-fallback
+    "recovered"
+    at
+      "some"
+      10
+      "recovered" > [msg]
 
-  ++> tests-text-at-out-of-bounds-returns-provided-fallback
-    "recovered".eq > @
-      at
-        "some"
-        10
-        "recovered" > [msg]
+  at --> on-text-at-index-more-than-length
+    "some"
+    10

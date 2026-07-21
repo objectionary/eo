@@ -1,0 +1,50 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A recursive helper named with a file-local handle ("&gt;&gt; name",
+# R-3.10.12) whose body calls itself. Since #5677 the "inline-cactoos" pass
+# correctly keeps such a self-referential formation in place instead of
+# inlining it away, so it reaches the printer and its name must survive.
+# "restore-local-names" promotes the "@local" handle back to the visible
+# name and rewrites the self-references to it, and "to-eo-tree" prints the
+# handle under a double-arrow. Without the fix (#5681) the name is dropped:
+# the formation prints as an anonymous "[tup] &gt;&gt;" and its
+# self-references as the synthetic "v6_2" placeholder.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  +package tuple
+
+  [] > last-index-of
+    ? >> list
+    ? >> wanted
+    reclast list > @
+    [tup] >> reclast
+      if. > @
+        tup.length.eq 0
+        -1
+        if.
+          tup.head.eq wanted
+          tup.tail.length
+          reclast tup.tail
+
+printed: |
+  +package tuple
+
+  [] > last-index-of
+    ? >> list
+    ? >> wanted
+    reclast list > @
+    if. > [tup] >> reclast
+      tup.length.eq 0
+      -1
+      if.
+        tup.head.eq wanted
+        tup.tail.length
+        reclast tup.tail

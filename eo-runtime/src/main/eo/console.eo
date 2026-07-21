@@ -56,9 +56,6 @@
 #
 # Sequential reuse maintains the console state across operations.
 
-+alias sm.os
-+alias sm.posix
-+alias sm.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -66,7 +63,7 @@
 +spdx SPDX-License-Identifier: MIT
 
 [] > console
-  sm.os.is-windows.if > @
+  os.is-windows.if > @
     windows-console
     posix-console
   [] > posix-console
@@ -82,9 +79,9 @@
             chunk
             input-block chunk
           output. > chunk!
-            sm.posix *1
+            posix *1
               "read"
-              sm.posix.stdin
+              posix.stdin
               size
     [buffer] > write
       @. > @
@@ -93,9 +90,9 @@
         true > @
         seq * > [buffer] > write
           code.
-            sm.posix *1
+            posix *1
               "write"
-              sm.posix.stdout
+              posix.stdout
               buffer
               buffer.size
           output-block
@@ -112,9 +109,9 @@
             chunk
             input-block chunk
           output. > chunk!
-            sm.win32 *1
+            win32 *1
               "_read"
-              sm.win32.stdin
+              win32.stdin
               size
     [buffer] > write
       @. > @
@@ -123,11 +120,12 @@
         true > @
         seq * > [buffer] > write
           code.
-            sm.win32 *1
+            win32 *1
               "_write"
-              sm.win32.stdout
+              win32.stdout
               buffer
               buffer.size
           output-block
 
-  console.write "Hello, console-test!\n" ++> tests-writes-to-console
+  console.write ++> tests-writes-to-console
+    "Hello, console-test!\n"

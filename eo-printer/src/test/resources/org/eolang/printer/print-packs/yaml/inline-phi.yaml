@@ -25,5 +25,5 @@ printed: |
 
   [] > examples
     a > [] > foo
-    ^.^.input-block > [size] > read
     true > [x] > nop
+    ^.^.input-block > [size] > read

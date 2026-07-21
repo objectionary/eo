@@ -1,0 +1,114 @@
+# Makes a Unix syscall by `name` with POSIX interface.
+# Here `args` is a `org.eolang.tuple` of arguments required for
+# the particular syscall.
+# See the linux syscall [table](https://filippo.io/linux-syscall-table) for more info.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
++unlint redundant-object
+
+[name args] > posix
+  [] > @ /Q.return
+  os.is-macos.if > append
+    8
+    1024
+  os.is-macos.if > creat
+    512
+    64
+  2 > inet
+  420 > mode
+  -1 > none
+  511 > permissions
+  0 > rdonly
+  2 > rdwr
+  [code output] > return
+    output > @
+    return > called
+      code
+      output
+  [family port address] > sockaddr-in
+    00-00-00-00-00-00-00-00 > padding
+    plus. > size
+      plus.
+        family.size.plus port.size
+        address.size
+      padding.size
+  [mode size] > stat
+  2 > stderr
+  0 > stdin
+  1 > stdout
+  1 > stream
+  6 > tcp
+  [seconds micros] > timeval
+  os.is-macos.if > trunc
+    1024
+    512
+  1 > wronly
+
+  ++> tests-closes-posix-tcp-socket
+    os.is-windows.or > @
+      seq *
+        sd
+        not.
+          eq.
+            code.
+              posix *1
+                "close"
+                sd
+            -1
+    code. > sd
+      posix *1
+        "socket"
+        posix.inet
+        posix.stream
+        posix.tcp
+
+  os.is-windows.or ++> tests-invokes-getpid-correctly
+    gt.
+      code.
+        posix
+          "getpid"
+          *
+      0
+
+  ++> tests-opens-and-closes-file-via-syscall
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "close"
+            code. > fd
+              posix *1
+                "open"
+                "/dev/null"
+                0
+                0
+        fd.gt -1
+
+  ++> tests-opens-posix-tcp-socket
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "close"
+            code. > sd
+              posix *1
+                "socket"
+                posix.inet
+                posix.stream
+                posix.tcp
+        sd.gt 0
+
+  os.is-windows.or ++> tests-returns-valid-posix-inet-addr-for-localhost
+    eq.
+      code.
+        posix *1
+          "inet_addr"
+          "127.0.0.1"
+      16777343
