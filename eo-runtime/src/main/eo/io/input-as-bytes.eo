@@ -3,10 +3,11 @@
 # Example usage:
 # ```
 # input-as-bytes > bts
-#   bytes-as-input 01-02-03-04-05
+#   bytes.to-input 01-02-03-04-05
 # ```
 # After dataization, `bts` equals `01-02-03-04-05`.
 
++alias bytes.to-input
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package io
@@ -26,7 +27,7 @@
   ++> tests-bytes-to-input-and-back
     eq. > @
       input-as-bytes
-        bytes-as-input bts
+        bytes.to-input bts
       bts
     01-02-03-04-05-06-07-08 > bts
 
