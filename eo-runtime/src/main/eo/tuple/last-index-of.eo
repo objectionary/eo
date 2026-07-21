@@ -9,13 +9,13 @@
 +spdx SPDX-License-Identifier: MIT
 
 [list wanted] > last-index-of
-  if. > [t] > rec
+  if. > [t] > r
     t.length.eq 0
     -1
     if.
       t.head.eq wanted
       t.tail.length
-      rec t.tail
+      r t.tail
   | list > @
 
   eq. ++> tests-finds-last-index-of
