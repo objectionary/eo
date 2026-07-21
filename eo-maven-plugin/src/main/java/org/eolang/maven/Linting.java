@@ -253,12 +253,18 @@ final class Linting implements Step {
                 )
             );
         }
-        if (counts.get(Severity.WARNING) > 0 && this.failOnWarning) {
-            throw new IllegalStateException(
-                String.format(
-                    "In %d XMIR files, we found %s (use -Deo.failOnWarning=false to ignore):%n%s",
-                    programs.size(), sum, details
-                )
+        if (counts.get(Severity.WARNING) > 0) {
+            if (this.failOnWarning) {
+                throw new IllegalStateException(
+                    String.format(
+                        "In %d XMIR files, we found %s (use -Deo.failOnWarning=false to ignore):%n%s",
+                        programs.size(), sum, details
+                    )
+                );
+            }
+            Logger.info(
+                this,
+                "Use -Deo.failOnWarning=true to fail the build on warnings, currently it's set to false"
             );
         }
     }
