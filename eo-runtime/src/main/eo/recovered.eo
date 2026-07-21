@@ -19,21 +19,19 @@
       recovered 42 7
       42
 
-  ++> tests-falls-back-to-alternative-when-terminated
-    eq. > @
+  eq. ++> tests-falls-back-to-alternative-when-terminated
+    recovered
+      2.as-i64.div 0.as-i64
+      7
+    7
+
+  eq. ++> tests-recovers-the-inner-recovery
+    recovered
       recovered
         2.as-i64.div 0.as-i64
-        7
-      7
-
-  ++> tests-recovers-the-inner-recovery
-    eq. > @
-      recovered
-        recovered
-          2.as-i64.div 0.as-i64
-          3.as-i64.div 0.as-i64
-        42
+        3.as-i64.div 0.as-i64
       42
+    42
 
   ++> tests-recovers-when-a-provided-fallback-terminates
     eq. > @
@@ -44,7 +42,6 @@
         42
       42
 
-  --> when-both-are-terminated
-    recovered > @
-      2.as-i64.div 0.as-i64
-      5.as-i64.div 0.as-i64
+  recovered --> when-both-are-terminated
+    2.as-i64.div 0.as-i64
+    5.as-i64.div 0.as-i64

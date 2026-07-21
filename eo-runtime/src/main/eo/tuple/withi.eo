@@ -13,26 +13,44 @@
   ? >> item
   concat > @
     with
-      front
-        list
-        index
+      front list index
       item
     back
       list
       list.length.minus index
 
-  ++> tests-simple-insert
-    eq. > @
-      withi
-        * 1 2 3 4 5
+  eq. ++> tests-simple-insert
+    withi
+      *
+        1
+        2
         3
-        "hello"
-      * 1 2 3 "hello" 4 5
+        4
+        5
+      3
+      "hello"
+    *
+      1
+      2
+      3
+      "hello"
+      4
+      5
 
-  ++> tests-insert-with-zero-index
-    eq. > @
-      withi
-        * 1 2 3 4 5
-        0
-        "hello"
-      * "hello" 1 2 3 4 5
+  eq. ++> tests-insert-with-zero-index
+    withi
+      *
+        1
+        2
+        3
+        4
+        5
+      0
+      "hello"
+    *
+      "hello"
+      1
+      2
+      3
+      4
+      5

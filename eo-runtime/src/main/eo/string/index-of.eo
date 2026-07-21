@@ -12,7 +12,9 @@
   if. > @
     or.
       or.
-        (number slen).gt tlen
+        gt.
+          number slen
+          tlen
         and.
           slen.eq tlen
           (sub.eq txt).not
@@ -20,61 +22,66 @@
     -1
     length.
       string
-        slice txt 0 found
-  (number tlen).minus slen > end!
-  rec-index-of 0 > found!
+        slice
+          txt
+          0
+          found
+  minus. > end!
+    number tlen
+    slen
+  rec-index-of > found!
+    0
   sub.size > slen!
   substring > sub!
   txt.size > tlen!
   text > txt!
-
   [idx] > rec-index-of
     if. > @
       end.eq idx
-      if.
-        includes
+      includes.if idx -1
+      includes.if
         idx
-        -1
-      if.
-        includes
-        idx
-        rec-index-of (idx.plus 1).as-number
+        rec-index-of
+          (idx.plus 1).as-number
     eq. > includes
-      slice txt idx slen
+      slice
+        txt
+        idx
+        slen
       sub
 
-  ++> tests-index-of-non-existed-substring-with-more-length
-    eq. > @
-      -1
-      index-of "Hello" "Somebody"
+  eq. ++> tests-index-of-non-existed-substring-with-more-length
+    -1
+    index-of
+      "Hello"
+      "Somebody"
 
-  ++> tests-index-of-non-existed-substring-with-same-length
-    eq. > @
-      -1
-      index-of "Hello" "world"
+  eq. ++> tests-index-of-non-existed-substring-with-same-length
+    -1
+    index-of
+      "Hello"
+      "world"
 
-  ++> tests-index-of-non-existed-substring-with-utf
-    eq. > @
-      -1
-      index-of
-        "привет, друг!"
-        "x"
+  eq. ++> tests-index-of-non-existed-substring-with-utf
+    -1
+    index-of
+      "привет, друг!"
+      "x"
 
-  ++> tests-index-of-existed-substring-with-utf
-    eq. > @
-      3
-      index-of
-        "привет, друг!"
-        "в"
+  eq. ++> tests-index-of-existed-substring-with-utf
+    3
+    index-of
+      "привет, друг!"
+      "в"
 
-  ++> tests-returns-valid-index-of-substring
-    eq. > @
-      6
-      index-of
-        "Hello \n world"
-        "\n"
+  eq. ++> tests-returns-valid-index-of-substring
+    6
+    index-of
+      "Hello \n world"
+      "\n"
 
-  ++> tests-returns-valid-index-of-substring-in-the-end
-    eq. > @
-      6
-      index-of "Hello world" "world"
+  eq. ++> tests-returns-valid-index-of-substring-in-the-end
+    6
+    index-of
+      "Hello world"
+      "world"

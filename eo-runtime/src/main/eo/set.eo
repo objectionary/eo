@@ -12,49 +12,46 @@
 [lst] > set
   initialized > @
     map
-      mapped
+      tuple.mapped
         lst
         map.entry item true > [item]
-
   [mp] > initialized
     mp.keys > @
     mp.size > size
-
     [item] > with
       set.initialized > @
         mp.with item true
-
-    [item] > without
-      set.initialized > @
-        mp.without item
-
+    set.initialized (mp.without item) > [item] > without
     mp.has item > [item] > has
 
-  ++> tests-set-rebuilds-itself
-    eq. > @
-      set
-        * 1 2 2
-      * 1 2
-
-  ++> tests-does-not-append-existed-item-to-set
-    eq. > @
-      size.
-        with.
-          set
-            * 1 2
-          1
+  eq. ++> tests-set-rebuilds-itself
+    set *
+      1
+      2
+      2
+    *
+      1
       2
 
-  ++> tests-appends-new-item-to-set
-    has. > @
+  eq. ++> tests-does-not-append-existed-item-to-set
+    size.
       with.
-        set
-          * 1 2
-        3
-      3
+        set *
+          1
+          2
+        1
+    2
 
-  ++> tests-empty-set-has-size-of-zero
-    set
-      *
-    .size
-    .eq 0 > @
+  has. ++> tests-appends-new-item-to-set
+    with.
+      set *
+        1
+        2
+      3
+    3
+
+  eq. ++> tests-empty-set-has-size-of-zero
+    size.
+      set
+        *
+    0

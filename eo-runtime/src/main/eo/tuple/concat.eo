@@ -17,21 +17,27 @@
 
   ++> tests-concatenates-lists
     and. > @
-      eq.
-        1
+      1.eq
         list3.at 0
-      eq.
-        list3
-        * 1 2 3
+      list3.eq
+        *
+          1
+          2
+          3
     withouti > list3
-      concat
+      concat *1
         * 0 1
-        * 2 3
+        2
+        3
       0
 
-  ++> tests-concatenates-with-tuple
-    eq. > @
-      concat
-        * 0 1
-        * 2 4
-      * 0 1 2 4
+  eq. ++> tests-concatenates-with-tuple
+    concat *1
+      * 0 1
+      2
+      4
+    *
+      0
+      1
+      2
+      4

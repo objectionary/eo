@@ -19,8 +19,7 @@
     file
       string
         [] >>!
-          if. > @
-            os.is-windows
+          sm.os.is-windows.if > @
             if.
               tmp.eq empty
               if.
@@ -51,10 +50,10 @@
           getenv "TMPDIR" > tmpdir!
           getenv "USERPROFILE" > userprofile!
 
-  mktemp.exists > [] +> global-temp-dir-exists
+  mktemp.exists ++> global-temp-dir-exists
 
-  mktemp.is-directory > [] +> global-temp-dir-is-directory
+  mktemp.is-directory ++> global-temp-dir-is-directory
 
-  mktemp.path.eq mktemp.path > [] +> returns-the-same-tmpdir
+  mktemp.path.eq mktemp.path ++> returns-the-same-tmpdir
 
-  mktemp.tmpfile.exists > [] +> creates-tmpfile
+  mktemp.tmpfile.exists ++> creates-tmpfile

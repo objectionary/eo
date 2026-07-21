@@ -9,10 +9,7 @@
 
 [] > as-bool
   ? >> bts
-  bts.eq 01- > @
+  bts.eq > @
+    01-
 
-  ++> tests-convertible-to-bool
-    not. > @
-      eq.
-        01-.as-bool
-        00-.as-bool
+  (01-.as-bool.eq 00-.as-bool).not ++> tests-convertible-to-bool

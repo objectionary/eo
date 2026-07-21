@@ -4,7 +4,9 @@
  */
 package org.eolang.printer;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,7 +33,15 @@ import java.util.Map;
  *   costs {@link PenaltyKey#IF} points, so the printer keeps {@code if}
  *   in prefix form ({@code if. foo});</li>
  *   <li>every character sitting past the {@link PenaltyKey#WIDTH}-th
- *   column costs {@link PenaltyKey#EXCESS} point.</li>
+ *   column costs {@link PenaltyKey#EXCESS} point;</li>
+ *   <li>every symbol in the block costs {@link PenaltyKey#SYMBOL}
+ *   point;</li>
+ *   <li>every space on a line past the leading indentation costs
+ *   {@link PenaltyKey#SPACE} points, and the genuine argument-applying
+ *   spaces among them (name bindings such as {@code >} do not count) pay
+ *   an extra super-linear surcharge: r such spaces cost r squared, rather
+ *   than r, times the weight, so longer applications grow super-linearly
+ *   more expensive while name bindings are left alone.</li>
  * </ul>
  *
  * <p>All of these weights, together with the indentation
@@ -41,16 +51,23 @@ import java.util.Map;
  * default.</p>
  *
  * <p>For example, with the default weights this snippet has a penalty of
- * 30 (five indents at three points each, plus one explicit {@code @} at
- * fifteen):</p>
+ * 99 (five indents at two points each, one explicit {@code @} at fifteen,
+ * 39 symbols, plus five application spaces at seven points each — all name
+ * bindings, so no surcharge):</p>
  *
  * <pre> [] &gt; foo
  *   gt. &gt; @
  *     42
  *     bar.hello 88</pre>
  *
- * <p>While this one, rendering the same object differently, scores
- * only 7 (a single opening parenthesis):</p>
+ * <p>This one, rendering the same object on a single line, scores 106:
+ * one opening parenthesis at nineteen points, 31 symbols, and six
+ * application spaces at seven points (42) of which two genuinely apply
+ * arguments — {@code 42.gt} to {@code (bar.hello 88)}, and
+ * {@code bar.hello} to {@code 88} — so those two pay the surcharge that
+ * takes them from 2 to 2 squared, i.e. 4, times the weight (an extra
+ * 14). The super-linear charge is what pushes the printer away from a
+ * sprawling application:</p>
  *
  * <pre> 42.gt (bar.hello 88) &gt; [] &gt; foo</pre>
  *
@@ -98,11 +115,17 @@ final class Penalty {
     int points() {
         int total = 0;
         for (final String line : this.code.split(String.valueOf('\n'), -1)) {
+            final int spaces = Penalty.spaces(line);
+            final int applied = Penalty.applied(line);
             total += this.indents(line) * this.weight(PenaltyKey.INDENT);
             total += Penalty.brackets(line) * this.weight(PenaltyKey.BRACKET);
             total += Penalty.phis(line) * this.weight(PenaltyKey.PHI);
             total += Penalty.ifs(line) * this.weight(PenaltyKey.IF);
-            total += this.overflow(line) * this.weight(PenaltyKey.EXCESS);
+            total += Math.max(0, line.length() - this.weight(PenaltyKey.WIDTH))
+                * this.weight(PenaltyKey.EXCESS);
+            total += line.length() * this.weight(PenaltyKey.SYMBOL);
+            total += (spaces + applied * (applied - 1))
+                * this.weight(PenaltyKey.SPACE);
         }
         return total;
     }
@@ -130,12 +153,94 @@ final class Penalty {
     }
 
     /**
-     * Count characters past the allowed width.
+     * Count the spaces in a line beyond the leading indentation.
      * @param line The line
-     * @return The number of overflowing characters
+     * @return The number of spaces
      */
-    private int overflow(final String line) {
-        return Math.max(0, line.length() - this.weight(PenaltyKey.WIDTH));
+    private static int spaces(final String line) {
+        int lead = 0;
+        while (lead < line.length() && line.charAt(lead) == ' ') {
+            ++lead;
+        }
+        int total = 0;
+        for (int idx = lead; idx < line.length(); ++idx) {
+            if (line.charAt(idx) == ' ') {
+                ++total;
+            }
+        }
+        return total;
+    }
+
+    /**
+     * Count the genuine argument-applying spaces in a line — the ones that
+     * make up an application's length.
+     *
+     * <p>Only the spaces that apply an argument to an object count. A space
+     * that sits next to a name-binding marker ({@code >}, {@code >>},
+     * {@code ++>} or {@code -->}) binds a name rather than applying an
+     * argument, and the
+     * spaces between the void attributes inside a formation's {@code [..]}
+     * head are not applications either; neither is counted. So
+     * {@code foo > [] > bar} has no application spaces, while
+     * {@code foo bar 42 44} has three. This count drives the super-linear
+     * surcharge in {@link #points()}, so longer applications grow more
+     * expensive while name bindings are left alone.</p>
+     *
+     * @param line The line
+     * @return The number of argument-applying spaces
+     */
+    private static int applied(final String line) {
+        int lead = 0;
+        while (lead < line.length() && line.charAt(lead) == ' ') {
+            ++lead;
+        }
+        final String[] tokens = Penalty.tokens(line.substring(lead));
+        int total = 0;
+        for (int idx = 0; idx + 1 < tokens.length; ++idx) {
+            if (!Penalty.binding(tokens[idx]) && !Penalty.binding(tokens[idx + 1])) {
+                ++total;
+            }
+        }
+        return total;
+    }
+
+    /**
+     * Split a line's content into space-separated tokens, keeping the void
+     * attributes inside a formation's {@code [..]} head together as one
+     * token so their separators are not mistaken for applications.
+     * @param text The line content, past the leading indentation
+     * @return The tokens
+     */
+    private static String[] tokens(final String text) {
+        final List<String> out = new ArrayList<>(0);
+        final StringBuilder token = new StringBuilder(0);
+        int square = 0;
+        for (int idx = 0; idx < text.length(); ++idx) {
+            final char chr = text.charAt(idx);
+            if (chr == '[') {
+                ++square;
+            } else if (chr == ']') {
+                --square;
+            }
+            if (chr == ' ' && square == 0) {
+                out.add(token.toString());
+                token.setLength(0);
+            } else {
+                token.append(chr);
+            }
+        }
+        out.add(token.toString());
+        return out.toArray(new String[0]);
+    }
+
+    /**
+     * Is this token a name-binding marker rather than an applied argument?
+     * @param token The token
+     * @return TRUE for {@code >}, {@code >>}, {@code ++>} and {@code -->}
+     */
+    private static boolean binding(final String token) {
+        return ">".equals(token) || ">>".equals(token)
+            || "++>".equals(token) || "-->".equals(token);
     }
 
     /**
@@ -199,20 +304,16 @@ final class Penalty {
         int idx = line.indexOf(needle);
         while (idx >= 0) {
             final int after = idx + needle.length();
-            if (after >= line.length() || !Penalty.identifier(line.charAt(after))) {
+            if (after >= line.length()) {
                 ++count;
+            } else {
+                final char next = line.charAt(after);
+                if (!Character.isLetterOrDigit(next) && next != '-' && next != '_') {
+                    ++count;
+                }
             }
             idx = line.indexOf(needle, idx + 1);
         }
         return count;
-    }
-
-    /**
-     * Is this character allowed inside an EO identifier?
-     * @param chr The character
-     * @return TRUE if it continues an identifier
-     */
-    private static boolean identifier(final char chr) {
-        return Character.isLetterOrDigit(chr) || chr == '-' || chr == '_';
     }
 }

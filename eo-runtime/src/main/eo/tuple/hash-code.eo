@@ -13,31 +13,31 @@
 
 [] > hash-code
   ? >> input
-  rec-hash-code 0 0 > @
+  rec-hash-code > @
+    0
+    0
   input.as-bytes > bts!
   bts.size > size!
+  if. > [acc index] > rec-hash-code
+    index.eq size
+    acc.as-number
+    rec-hash-code
+      plus.
+        31.as-i64.times acc
+        as-i64.
+          00-00-00-00-00-00-00.concat
+            bts.slice index 1
+      as-number.
+        index.plus 1
 
-  [acc index] > rec-hash-code
-    if. > @
-      index.eq size
-      acc.as-number
-      rec-hash-code
-        plus.
-          31.as-i64.times acc
-          as-i64.
-            concat.
-              00-00-00-00-00-00-00
-              bts.slice index 1
-        (index.plus 1).as-number
-
-  ++> tests-hash-code-bools-is-number
-    and. > @
-      (hash-code true).as-bytes.size.eq 8
-      (hash-code false).as-bytes.size.eq 8
+  and. ++> tests-hash-code-bools-is-number
+    (hash-code true).as-bytes.size.eq
+      8
+    (hash-code false).as-bytes.size.eq
+      8
 
   ++> tests-hash-code-int-is-int
-    eq. > @
-      1
+    1.eq > @
       div.
         number hash
         number hash
@@ -49,10 +49,9 @@
       hash-code num
     123456789012345680 > num
 
-  ++> tests-hash-codes-of-the-same-ints-are-equal
-    eq. > @
-      hash-code 42
-      hash-code 42
+  eq. ++> tests-hash-codes-of-the-same-ints-are-equal
+    hash-code 42
+    hash-code 42
 
   ++> tests-hash-codes-of-different-ints-are-not-equal
     not. > @
@@ -67,17 +66,15 @@
         hash-code -42
 
   ++> tests-hash-code-string-is-int
-    eq. > @
-      1
+    1.eq > @
       div.
         number strhash
         number strhash
     hash-code "hello" > strhash!
 
-  ++> tests-hash-codes-of-the-same-strings-are-equal
-    eq. > @
-      hash-code "Hello"
-      hash-code "Hello"
+  eq. ++> tests-hash-codes-of-the-same-strings-are-equal
+    hash-code "Hello"
+    hash-code "Hello"
 
   ++> tests-hash-codes-of-same-length-strings-are-not-equal
     not. > @
@@ -92,34 +89,32 @@
         hash-code "bye!!!"
 
   ++> tests-hash-code-abstract-object-is-int
-    eq. > @
-      1
+    1.eq > @
       div.
         number objhash
         number objhash
-    [x] > obj
-      x > @
-    hash-code (obj 42) > objhash!
+    x > [x] > obj
+    hash-code > objhash!
+      obj 42
 
   ++> tests-hash-codes-of-the-same-abstract-objects-are-equal
     eq. > @
       hash-code val
       hash-code val
-    [x] > obj
-      x > @
+    x > [x] > obj
     obj 42 > val
 
   ++> tests-hash-codes-of-different-abstract-objects-are-not-equal
     not. > @
       eq.
-        hash-code (obj 42)
-        hash-code (obj "42")
-    [x] > obj
-      x > @
+        hash-code
+          obj 42
+        hash-code
+          obj "42"
+    x > [x] > obj
 
   ++> tests-hash-code-float-is-int
-    eq. > @
-      1
+    1.eq > @
       div.
         number flthash
         number flthash
@@ -135,7 +130,7 @@
     eq. > @
       hash-code bigval
       hash-code bigval
-    42.42e42 > bigval!
+    4.242e43 > bigval!
 
   ++> tests-hash-codes-of-different-floats-are-not-equal
     not. > @

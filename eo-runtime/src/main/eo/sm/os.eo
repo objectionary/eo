@@ -13,20 +13,21 @@
 
 [] > os
   name > @
-
   [] > is-windows
     and. > @
       oname.size.gt 6
-      (oname.slice 0 7).eq "Windows"
+      eq.
+        oname.slice 0 7
+        "Windows"
     name > oname!
-  ((regex "/linux/i").matches name).as-bool > is-linux
-  ((regex "/mac/i").matches name).as-bool > is-macos
-
+  as-bool. > is-linux
+    matches.
+      string.regex "/linux/i"
+      name
+  as-bool. > is-macos
+    matches.
+      string.regex "/mac/i"
+      name
   [] > name /string
 
-  ++> tests-checks-os-family
-    or. > @
-      or.
-        os.is-windows
-        os.is-macos
-      os.is-linux
+  (os.is-windows.or os.is-macos).or os.is-linux ++> tests-checks-os-family

@@ -13,84 +13,32 @@
     n.eq value
   x > value!
 
-  ++> tests-int-gte-true
-    eq. > @
-      gte.
-        -1000
-        -1100
-      true
+  (-1000.gte -1100).eq true ++> tests-int-gte-true
 
-  ++> tests-int-gte-equal
-    eq. > @
-      gte.
-        113
-        113
-      true
+  (113.gte 113).eq true ++> tests-int-gte-equal
 
-  ++> tests-int-gte-false
-    eq. > @
-      not.
-        gte.
-          0
-          10
-      true
+  (0.gte 10).not.eq true ++> tests-int-gte-false
 
-  ++> tests-positive-infinity-gte-positive-infinity
-    eq. > @
-      pinf.gte pinf
-      true
+  (pinf.gte pinf).eq true ++> tests-positive-infinity-gte-positive-infinity
 
-  ++> tests-positive-infinity-gte-negative-infinity
-    eq. > @
-      pinf.gte ninf
-      true
+  (pinf.gte ninf).eq true ++> tests-positive-infinity-gte-negative-infinity
 
-  ++> tests-positive-infinity-not-gte-nan
-    eq. > @
-      pinf.gte nan
-      false
+  (pinf.gte nan).eq false ++> tests-positive-infinity-not-gte-nan
 
-  ++> tests-positive-infinity-gte-int
-    eq. > @
-      pinf.gte 42
-      true
+  (pinf.gte 42).eq true ++> tests-positive-infinity-gte-int
 
-  ++> tests-positive-infinity-gte-float
-    eq. > @
-      pinf.gte 42.5
-      true
+  (pinf.gte 42.5).eq true ++> tests-positive-infinity-gte-float
 
-  ++> tests-negative-infinity-gte-negative-infinity
-    eq. > @
-      ninf.gte ninf
-      true
+  (ninf.gte ninf).eq true ++> tests-negative-infinity-gte-negative-infinity
 
-  ++> tests-negative-infinity-not-gte-positive-infinity
-    eq. > @
-      ninf.gte pinf
-      false
+  (ninf.gte pinf).eq false ++> tests-negative-infinity-not-gte-positive-infinity
 
-  ++> tests-negative-infinity-not-gte-nan
-    eq. > @
-      ninf.gte nan
-      false
+  (ninf.gte nan).eq false ++> tests-negative-infinity-not-gte-nan
 
-  ++> tests-negative-infinity-not-gte-int
-    eq. > @
-      ninf.gte 42
-      false
+  (ninf.gte 42).eq false ++> tests-negative-infinity-not-gte-int
 
-  ++> tests-negative-infinity-not-gte-float
-    eq. > @
-      ninf.gte 42.5
-      false
+  (ninf.gte 42.5).eq false ++> tests-negative-infinity-not-gte-float
 
-  ++> tests-nan-not-gte-number
-    eq. > @
-      nan.gte 42
-      false
+  (nan.gte 42).eq false ++> tests-nan-not-gte-number
 
-  ++> tests-nan-not-gte-nan
-    eq. > @
-      nan.gte nan
-      false
+  (nan.gte nan).eq false ++> tests-nan-not-gte-nan

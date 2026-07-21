@@ -6,14 +6,16 @@
 # though the compound comparison receivers could fold into suffix position and
 # collapse the whole expression onto a single line (#5650), the suffix "if"
 # penalty (#5665) makes prefix notation cheaper, so "if" is never dispatched
-# after its object. The inner "if" still inlines its arguments on one line, but
-# in prefix form.
+# after its object. The inner "if" keeps its arguments on separate lines too,
+# since the per-symbol and per-space penalties make a single inline line dearer
+# than the vertical layout.
 penalties:
   INDENT: 3
   BRACKET: 7
   EXCESS: 1
   WIDTH: 80
   STEP: 2
+  SPACE: 7
 origin: |
   [x] > classify
     if. > @
@@ -29,4 +31,7 @@ printed: |
     if. > @
       x.lt 0
       "negative"
-      if. (x.eq 0) "zero" "positive"
+      if.
+        x.eq 0
+        "zero"
+        "positive"

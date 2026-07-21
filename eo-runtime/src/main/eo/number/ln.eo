@@ -12,8 +12,7 @@
 +spdx SPDX-License-Identifier: MIT
 
 [num] > ln
-  if. > @
-    n.is-nan
+  n.is-nan.if > @
     nan
     if.
       n.lt 0
@@ -21,57 +20,54 @@
       if.
         n.eq 0
         ninf
-        if.
-          n.is-finite
+        n.is-finite.if
           lnp n
           pinf
-  number num.as-bytes > n
-
+  number > n
+    num.as-bytes
   [p] > lnp
     if. > @
       p.gte e
-      (lnp (p.div e)).plus 1
+      plus.
+        lnp
+          p.div e
+        1
       if.
-        p.lt (1.div e)
-        (lnp (p.times e)).minus 1
+        p.lt
+          1.div e
+        minus.
+          lnp
+            p.times e
+          1
         series p
-
     [m] > series
-      2.times (t.times (horner 0)) > @
-      (m.minus 1).div (m.plus 1) > t
+      2.times > @
+        t.times
+          horner 0
+      div. > t
+        m.minus 1
+        m.plus 1
       t.times t > squared
       40 > terms
+      if. > [k] > horner
+        k.gt terms
+        0
+        plus.
+          1.div
+            (k.times 2).plus 1
+          squared.times
+            horner
+              k.plus 1
 
-      [k] > horner
-        if. > @
-          k.gt terms
-          0
-          plus.
-            1.div ((k.times 2).plus 1)
-            squared.times (horner (k.plus 1))
+  (ln -2.2).is-nan ++> tests-ln-of-negative-float-is-nan
 
-  ++> tests-ln-of-negative-float-is-nan
-    is-nan. > @
-      ln -2.2
+  (ln 0).eq ninf ++> tests-ln-of-zero-is-negative-infinity
 
-  ++> tests-ln-of-zero-is-negative-infinity
-    eq. > @
-      ln 0
-      ninf
+  (ln 1).eq 0 ++> tests-ln-of-one-is-zero
 
-  ++> tests-ln-of-one-is-zero
-    eq. > @
-      ln 1
-      0
+  (ln e).eq 1 ++> tests-ln-of-e-one-is-one
 
-  ++> tests-ln-of-e-one-is-one
-    eq. > @
-      ln e
-      1
-
-  ++> tests-ln-of-negative-int-is-nan
-    is-nan. > @
-      ln -42
+  (ln -42).is-nan ++> tests-ln-of-negative-int-is-nan
 
   ++> tests-ln-of-twenty
     lt. > @
@@ -79,7 +75,7 @@
         minus.
           ln 20
           2.995732273553991
-      0.00000000001
+      1.0E-11
 
   ++> tests-ln-fraction
     lt. > @
@@ -87,20 +83,13 @@
         minus.
           ln 0.5
           -0.6931471805599453
-      0.00000000001
+      1.0E-11
 
-  ++> tests-ln-positive-infinity
-    eq. > @
-      ln pinf
-      pinf
+  (ln pinf).eq pinf ++> tests-ln-positive-infinity
 
-  ++> tests-ln-negative-infinity
-    is-nan. > @
-      ln ninf
+  (ln ninf).is-nan ++> tests-ln-negative-infinity
 
-  ++> tests-ln-nan
-    is-nan. > @
-      ln nan
+  (ln nan).is-nan ++> tests-ln-nan
 
   ++> tests-ln-monotonic
     lt. > @

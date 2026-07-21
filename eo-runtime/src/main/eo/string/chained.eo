@@ -14,24 +14,21 @@
     0.eq others.length
     text
     string
-      reduced
+      tuple.reduced
         others
         text.as-bytes
         accum.concat str.as-bytes > [accum str]
 
-  ++> tests-chains-with-other-strings
-    eq. > @
-      "Hello, world!"
-      chained
-        "Hello"
-        *
-          ", "
-          "world"
-          "!"
+  eq. ++> tests-chains-with-other-strings
+    "Hello, world!"
+    chained *1
+      "Hello"
+      ", "
+      "world"
+      "!"
 
-  ++> tests-returns-same-text-on-chaining-with-no-strings
-    eq. > @
+  eq. ++> tests-returns-same-text-on-chaining-with-no-strings
+    "Some"
+    chained
       "Some"
-      chained
-        "Some"
-        *
+      *

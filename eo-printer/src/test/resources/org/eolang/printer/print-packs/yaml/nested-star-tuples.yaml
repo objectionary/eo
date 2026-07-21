@@ -2,16 +2,13 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# Tuples nested inside a formation, exercising the star renderings together:
-# a tuple of plain data inlines, a tuple taking star arguments ("(* ...)")
-# goes vertical (a bare star has no flat form), and a vertical tuple keeps its
-# indented star and dispatch children.
 penalties:
   INDENT: 3
   BRACKET: 7
   EXCESS: 1
   WIDTH: 80
   STEP: 2
+  SPACE: 7
 origin: |
   [] > foo
     * abc 4.3 "test" > first
@@ -23,12 +20,25 @@ origin: |
 
 printed: |
   [] > foo
-    * abc 4.3 "test" > first
+    * > first
+      abc
+      4.3
+      "test"
     * > second
       bar
-      * "foo bar"
-      * 1 3 4
+      *
+        "foo bar"
+      *
+        1
+        3
+        4
     * > third
-      * 4 5 6 6
-      test
-        * 5 6 6
+      *
+        4
+        5
+        6
+        6
+      test *
+        5
+        6
+        6

@@ -22,24 +22,44 @@
           accum.with item
           accum
   index > idx!
-  list.length.minus idx > start!
+  list.length.minus > start!
+    idx
 
-  ++> tests-simple-back
-    eq. > @
-      back
-        * 1 2 3 4 5
+  eq. ++> tests-simple-back
+    back
+      *
+        1
         2
-      * 4 5
+        3
+        4
+        5
+      2
+    *
+      4
+      5
 
-  ++> tests-zero-index-in-back
-    is-empty > @
-      back
-        * 1 2 3 4 5
-        0
+  is-empty ++> tests-zero-index-in-back
+    back
+      *
+        1
+        2
+        3
+        4
+        5
+      0
 
-  ++> tests-large-index-in-back
-    eq. > @
-      back
-        * 1 2 3 4 5
-        10
-      * 1 2 3 4 5
+  eq. ++> tests-large-index-in-back
+    back
+      *
+        1
+        2
+        3
+        4
+        5
+      10
+    *
+      1
+      2
+      3
+      4
+      5

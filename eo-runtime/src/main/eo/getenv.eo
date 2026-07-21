@@ -15,11 +15,10 @@
 
 [name] > getenv
   output. > @
-    if.
-      os.is-windows
-      win32
+    sm.os.is-windows.if
+      sm.win32 *1
         "getenv"
-        * name
-      posix
+        name
+      sm.posix *1
         "getenv"
-        * name
+        name

@@ -15,36 +15,35 @@
 +unlint mandatory-package
 
 [if] > bool
-  if 01- 00- > @
-  if false true > not
-
-  if (01-.eq x) false > [x] > and
-
-  if true (01-.eq x) > [x] > or
-
-  ++> tests-compares-two-bools
-    eq. > @
+  if > @
+    01-
+    00-
+  if > not
+    false
+    true
+  [x] > and
+    if > @
+      01-.eq x
+      false
+  [x] > or
+    if > @
       true
-      true
+      01-.eq x
 
-  ++> tests-true-as-bool
-    true.as-bool > @
+  true.eq true ++> tests-compares-two-bools
 
-  ++> tests-compares-two-different-bool-types
-    not. > @
-      eq.
-        true
-        42
+  true.as-bool ++> tests-true-as-bool
+
+  (true.eq 42).not ++> tests-compares-two-different-bool-types
 
   ++> tests-compares-bool-to-bytes
     and. > @
       true.eq 01-
       false.eq 00-
 
-  ++> tests-compares-bool-to-bytes-reverse
-    and. > @
-      01-.as-bytes.eq true
-      00-.as-bytes.eq false
+  and. ++> tests-compares-bool-to-bytes-reverse
+    01-.as-bytes.eq true
+    00-.as-bytes.eq false
 
   ++> tests-forks-on-true-condition
     eq. > @
@@ -60,65 +59,61 @@
       42
     [x] > a
       take > @
-      [] > take
-        ^.x > @
+      x > [] > take
 
   ++> tests-takes-parent-through-attribute
     [] > @
       [] > @
-        [] > @
-          eq. > @
-            x
-            42
+        x.eq 42 > [] > @
     42 > x
 
   --> when-applies-to-closed-object
     closed true > @
-    [x] > a
-      x > @
+    x > [x] > a
     a false > closed
 
   ++> tests-app-that-calls-func
-    eq. > @
-      output
-      2
+    output.eq 2 > @
     [] > app
-      f > @
-        * 1 2 3
+      f * > @
+        1
+        2
+        3
       [args] > f
         2 > @
         1 > a
     app > output
 
   ++> tests-extract-attribute-from-decoratee
-    eq. > @
-      a.foo
-      43
+    a.foo.eq 43 > @
     [foo] > return
-    [] > a
-      ^.return > @
-        plus.
-          42
-          1
+    return (42.plus 1) > [] > a
 
   ++> tests-nesting-blah-test
     eq. > @
       blah0 0
       39
     [x] > blah0
-      blah1 (x.plus 1) > @
+      blah1 > @
+        x.plus 1
       [x] > blah1
-        blah2 (x.plus 1) > @
+        blah2 > @
+          x.plus 1
         [x] > blah2
-          blah3 (x.plus 1) > @
+          blah3 > @
+            x.plus 1
           [x] > blah3
-            blah4 (x.plus 1) > @
+            blah4 > @
+              x.plus 1
             [x] > blah4
-              blah5 (x.plus 1) > @
+              blah5 > @
+                x.plus 1
               [x] > blah5
-                blah6 (x.plus 1) > @
+                blah6 > @
+                  x.plus 1
                 [x] > blah6
-                  blah7 (x.plus 1) > @
+                  blah7 > @
+                    x.plus 1
                   [x] > blah7
                     blah8 (x.plus 1) > @
                     [x] > blah8
@@ -183,8 +178,7 @@
                                                                                 blah38 (x.plus 1) > @
                                                                                 [x] > blah38
                                                                                   blah39 (x.plus 1) > @
-                                                                                  [x] > blah39
-                                                                                    x > @
+                                                                                  x > [x] > blah39
 
   ++> tests-compiles-correctly-with-long-duplicate-names
     true > @
@@ -195,21 +189,14 @@
             [] > long-object-name
               42 > x
 
-  ++> tests-true-not-is-false
-    eq. > @
-      true.not
-      false
+  true.not.eq false ++> tests-true-not-is-false
 
   ++> tests-compares-bool-to-string
     and. > @
-      true.eq "\001"
-      false.eq "\000"
+      true.eq "\u0001"
+      false.eq "\u0000"
 
-  ++> tests-true-and-false-is-false
-    not. > @
-      and.
-        true
-        false
+  (true.and false).not ++> tests-true-and-false-is-false
 
   ++> tests-forks-on-false-condition
     eq. > @

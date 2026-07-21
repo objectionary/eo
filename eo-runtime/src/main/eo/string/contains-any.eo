@@ -10,30 +10,42 @@
 +spdx SPDX-License-Identifier: MIT
 
 [text substrings] > contains-any
-  reduced > @
-    mapped
+  tuple.reduced > @
+    tuple.mapped
       substrings
       contains txt x > [x] >>
     false
     x.or a > [a x]
   text > txt!
 
-  ++> tests-successful-contains-any
-    contains-any "Good morning" (* "oo" "goo") > @
+  contains-any *1 ++> tests-successful-contains-any
+    "Good morning"
+    "oo"
+    "goo"
 
   ++> tests-not-contains-any
     not. > @
-      contains-any "xyzw" (* "yx" "zyx" "wx" "abc")
+      contains-any *1
+        "xyzw"
+        "yx"
+        "zyx"
+        "wx"
+        "abc"
 
-  ++> tests-contains-any-vert
-    contains-any > @
-      "foo bar buzz"
-      * "bar" " " "o"
+  contains-any *1 ++> tests-contains-any-vert
+    "foo bar buzz"
+    "bar"
+    " "
+    "o"
 
   ++> test-contains-any-without-substrings
     not. > @
-      contains-any "text" *
+      contains-any
+        "text"
+        *
 
   ++> tests-contains-any-for-empty-text-and-without-substrings
     not. > @
-      contains-any "" *
+      contains-any
+        ""
+        *

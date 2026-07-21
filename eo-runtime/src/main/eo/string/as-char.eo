@@ -9,39 +9,42 @@
 +spdx SPDX-License-Identifier: MIT
 
 [code] > as-char
-  code.as-i64.as-bytes.slice 7 1 > @
+  code.as-i64.as-bytes.slice > @
+    7
+    1
 
   ++> tests-writes-byte-of-uppercase-letter
-    eq. > @
-      "A"
-      string (as-char 65)
+    "A".eq > @
+      string
+        as-char 65
 
   ++> tests-writes-byte-of-last-uppercase-letter
-    eq. > @
-      "Z"
-      string (as-char 90)
+    "Z".eq > @
+      string
+        as-char 90
 
   ++> tests-writes-byte-of-lowercase-letter
-    eq. > @
-      "z"
-      string (as-char 122)
+    "z".eq > @
+      string
+        as-char 122
 
   ++> tests-writes-byte-of-zero-digit
-    eq. > @
-      "0"
-      string (as-char 48)
+    "0".eq > @
+      string
+        as-char 48
 
   ++> tests-writes-byte-of-space
-    eq. > @
-      " "
-      string (as-char 32)
+    " ".eq > @
+      string
+        as-char 32
 
   ++> tests-writes-byte-of-last-printable
-    eq. > @
-      "~"
-      string (as-char 126)
+    "~".eq > @
+      string
+        as-char 126
 
-  ++> tests-round-trips-through-as-ascii
-    eq. > @
-      "!"
-      string (as-char (as-ascii "!"))
+  eq. ++> tests-round-trips-through-as-ascii
+    "!"
+    string
+      as-char
+        as-ascii "!"

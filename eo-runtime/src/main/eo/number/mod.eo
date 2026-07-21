@@ -13,17 +13,18 @@
 [x y cant-mod] > mod
   if. > @
     divisor.eq 0
-    cant-mod "cannot calculate mod by zero"
+    cant-mod
+      "cannot calculate mod by zero"
     if.
       dividend.gt 0
       abs-mod
       abs-mod.neg
-  number x.as-bytes > dividend
-  number y.as-bytes > divisor
-
+  number > dividend
+    x.as-bytes
+  number > divisor
+    y.as-bytes
   [] > abs-mod
-    minus. > @
-      absx
+    absx.minus > @
       absy.times
         floor.
           absx.div absy
@@ -59,8 +60,7 @@
     eq. > @
       plus.
         mod dividend divisor
-        times.
-          divisor
+        divisor.times
           (dividend.div divisor).as-i64.as-number
       dividend
     -13 > dividend
@@ -76,12 +76,10 @@
       mod 133 1
       0
 
-  --> on-mod-by-zero
-    mod 5 0 > @
+  mod 5 0 --> on-mod-by-zero
 
   ++> tests-mod-by-zero-returns-provided-fallback
-    eq. > @
-      "recovered"
+    "recovered".eq > @
       mod
         5
         0

@@ -2,15 +2,6 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# A method chain on a compound receiver keeps the compact one-liner a human
-# wrote ("(input.read 4096).read.^") instead of being de-compacted into a
-# three-line nested reversed dispatch. The dispatch is stored reversed because
-# neither the outer "^" receiver "(input.read 4096).read" nor the inner "read"
-# receiver "input.read 4096" folds into a dotted base; the printer rebuilds
-# each in suffix position, wrapping only the receiver that applies arguments
-# ("input.read 4096") in parentheses, and keeps the suffix shape because its
-# single bracket beats the extra indentation and repeated base characters of
-# the reversed vertical form (#5650).
 penalties:
   INDENT: 3
   BRACKET: 7

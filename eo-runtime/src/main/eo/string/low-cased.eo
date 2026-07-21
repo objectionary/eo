@@ -11,19 +11,15 @@
 
 [text] > low-cased
   string > @
-    reduced
+    tuple.reduced
       text.as-bytes.array
       --
       [accum byte] >>
         accum.concat > @
           if.
-            and.
-              code.lte maxcode
+            (code.lte maxcode).and
               code.gte mincode
-            slice.
-              as-bytes.
-                as-i64.
-                  code.plus distance
+            (code.plus distance).as-i64.as-bytes.slice
               7
               1
             byte
@@ -31,15 +27,13 @@
   minus. > distance
     as-ascii "a"
     as-ascii "A"
-  as-ascii "Z" > maxcode
-  as-ascii "A" > mincode
+  as-ascii > maxcode
+    "Z"
+  as-ascii > mincode
+    "A"
 
-  ++> tests-converts-text-to-lower-case
-    eq. > @
-      "hello"
-      low-cased "HELLO"
+  "hello".eq (low-cased "HELLO") ++> tests-converts-text-to-lower-case
 
-  ++> tests-converts-text-with-low-letters-to-lower-case
-    eq. > @
-      "hello"
-      low-cased "HeLlO"
+  eq. ++> tests-converts-text-with-low-letters-to-lower-case
+    "hello"
+    low-cased "HeLlO"

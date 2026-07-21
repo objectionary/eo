@@ -16,106 +16,110 @@
     arg.lt 0
     base.neg
     base
-  number num.as-bytes > arg
-  abs arg > mag
-  sqrt ((1.minus mag).div 2) > root
+  number > arg
+    num.as-bytes
+  abs > mag
+    arg
+  sqrt > root
+    div.
+      1.minus mag
+      2
   if. > base
     mag.gt 0.5
     minus.
       pi.div 2
-      2.times (series root)
+      2.times
+        series root
     series mag
-
   [point] > series
-    point.times (poly 1) > @
+    point.times > @
+      poly 1
     point.times point > squared
     30 > terms
-
-    [depth] > poly
-      if. > @
-        depth.gt terms
-        1
-        plus.
-          1
-          times.
-            div.
-              times.
-                ((depth.times 2).minus 1).times ((depth.times 2).minus 1)
-                squared
-              (depth.times 2).times ((depth.times 2).plus 1)
-            poly (depth.plus 1)
-
-  ++> tests-arc-sine-of-zero-is-zero
-    eq. > @
-      arc-sine 0
-      0
-
-  ++> tests-arc-sine-of-one-is-pi-halves
-    lt. > @
-      abs
-        minus.
-          (arc-sine 1).times 1000
-          (pi.div 2).times 1000
+    if. > [depth] > poly
+      depth.gt terms
       1
-
-  ++> tests-arc-sine-of-negative-one-is-minus-pi-halves
-    lt. > @
-      abs
-        minus.
-          (arc-sine -1).times 1000
-          (pi.div 2).neg.times 1000
-      1
-
-  ++> tests-arc-sine-of-half-is-pi-sixths
-    lt. > @
-      abs
-        minus.
-          (arc-sine 0.5).times 1000
-          (pi.div 6).times 1000
-      1
-
-  ++> tests-arc-sine-of-negative-half-is-minus-pi-sixths
-    lt. > @
-      abs
-        minus.
-          (arc-sine -0.5).times 1000
-          (pi.div 6).neg.times 1000
-      1
-
-  ++> tests-arc-sine-of-point-six
-    lt. > @
-      abs
-        minus.
-          (arc-sine 0.6).times 1000
-          643.5
-      1
-
-  ++> tests-arc-sine-is-odd-function
-    lt. > @
-      abs
+      1.plus
         times.
-          plus.
-            arc-sine 0.6
-            arc-sine -0.6
+          div.
+            times.
+              times.
+                (depth.times 2).minus 1
+                (depth.times 2).minus 1
+              squared
+            (depth.times 2).times
+              (depth.times 2).plus 1
+          poly
+            depth.plus 1
+
+  (arc-sine 0).eq 0 ++> tests-arc-sine-of-zero-is-zero
+
+  lt. ++> tests-arc-sine-of-one-is-pi-halves
+    abs
+      minus.
+        times.
+          arc-sine 1
           1000
-      1
+        times.
+          pi.div 2
+          1000
+    1
 
-  ++> tests-arc-sine-above-one-is-nan
-    is-nan. > @
-      arc-sine 2
+  lt. ++> tests-arc-sine-of-negative-one-is-minus-pi-halves
+    abs
+      minus.
+        times.
+          arc-sine -1
+          1000
+        (pi.div 2).neg.times
+          1000
+    1
 
-  ++> tests-arc-sine-below-minus-one-is-nan
-    is-nan. > @
-      arc-sine -2
+  lt. ++> tests-arc-sine-of-half-is-pi-sixths
+    abs
+      minus.
+        times.
+          arc-sine 0.5
+          1000
+        times.
+          pi.div 6
+          1000
+    1
 
-  ++> tests-arc-sine-of-nan-is-nan
-    is-nan. > @
-      arc-sine nan
+  lt. ++> tests-arc-sine-of-negative-half-is-minus-pi-sixths
+    abs
+      minus.
+        times.
+          arc-sine -0.5
+          1000
+        (pi.div 6).neg.times
+          1000
+    1
 
-  ++> tests-arc-sine-of-positive-infinity-is-nan
-    is-nan. > @
-      arc-sine pinf
+  lt. ++> tests-arc-sine-of-point-six
+    abs
+      minus.
+        times.
+          arc-sine 0.6
+          1000
+        643.5
+    1
 
-  ++> tests-arc-sine-of-negative-infinity-is-nan
-    is-nan. > @
-      arc-sine ninf
+  lt. ++> tests-arc-sine-is-odd-function
+    abs
+      times.
+        plus.
+          arc-sine 0.6
+          arc-sine -0.6
+        1000
+    1
+
+  (arc-sine 2).is-nan ++> tests-arc-sine-above-one-is-nan
+
+  (arc-sine -2).is-nan ++> tests-arc-sine-below-minus-one-is-nan
+
+  (arc-sine nan).is-nan ++> tests-arc-sine-of-nan-is-nan
+
+  (arc-sine pinf).is-nan ++> tests-arc-sine-of-positive-infinity-is-nan
+
+  (arc-sine ninf).is-nan ++> tests-arc-sine-of-negative-infinity-is-nan

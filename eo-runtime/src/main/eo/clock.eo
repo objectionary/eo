@@ -13,8 +13,7 @@
 
 [] > clock
   as-i64. > @
-    if.
-      os.is-windows
+    sm.os.is-windows.if
       plus.
         timeb.time.times 1000
         timeb.millitm
@@ -22,8 +21,13 @@
         timeval.seconds.times 1000
         as-number.
           timeval.micros.as-i64.div 1000.as-i64
-  (win32 "_ftime32_s" *).output > timeb
-  (posix "gettimeofday" *).output > timeval
+  output. > timeb
+    sm.win32
+      "_ftime32_s"
+      *
+  output. > timeval
+    sm.posix
+      "gettimeofday"
+      *
 
-  ++> tests-reads-positive-millis
-    clock.gt 0 > @
+  clock.gt 0 ++> tests-reads-positive-millis

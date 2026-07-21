@@ -11,48 +11,56 @@
 [] > last-index-of
   ? >> list
   ? >> wanted
-  reclast list > @
+  reclast > @
+    list
+  if. > [tup] > reclast
+    tup.length.eq 0
+    -1
+    if.
+      tup.head.eq wanted
+      tup.tail.length
+      reclast tup.tail
 
-  [tup] > reclast
-    if. > @
-      tup.length.eq 0
-      -1
-      if.
-        tup.head.eq wanted
-        tup.tail.length
-        reclast tup.tail
-
-  ++> tests-finds-last-index-of
-    eq. > @
-      1
-      last-index-of
-        * "qwerty" 2 3
+  eq. ++> tests-finds-last-index-of
+    1
+    last-index-of
+      *
+        "qwerty"
         2
-
-  ++> tests-finds-last-index-of-repeated
-    eq. > @
+        3
       2
-      last-index-of
-        * 24 42 24
+
+  eq. ++> tests-finds-last-index-of-repeated
+    2
+    last-index-of
+      *
         24
+        42
+        24
+      24
 
-  ++> tests-last-index-of-not-found
-    eq. > @
-      -1
-      last-index-of
-        * 1 2 3
-        0
+  eq. ++> tests-last-index-of-not-found
+    -1
+    last-index-of
+      *
+        1
+        2
+        3
+      0
 
-  ++> tests-last-index-of-empty
-    eq. > @
-      -1
-      last-index-of
-        *
-        "abc"
+  eq. ++> tests-last-index-of-empty
+    -1
+    last-index-of
+      *
+      "abc"
 
-  ++> tests-last-index-of-unicode
-    eq. > @
-      3
-      last-index-of
-        * "Hi" "Привет" "Hola" "Привет" "こんにちわ"
+  eq. ++> tests-last-index-of-unicode
+    3
+    last-index-of
+      *
+        "Hi"
         "Привет"
+        "Hola"
+        "Привет"
+        "こんにちわ"
+      "Привет"

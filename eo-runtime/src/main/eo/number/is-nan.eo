@@ -8,68 +8,35 @@
 +spdx SPDX-License-Identifier: MIT
 
 [n] > is-nan
-  n.as-bytes.eq 7F-F8-00-00-00-00-00-00 > @
+  n.as-bytes.eq > @
+    7F-F8-00-00-00-00-00-00
 
-  ++> tests-simple-number-is-not-nan
-    42.5.is-nan.not > @
+  42.5.is-nan.not ++> tests-simple-number-is-not-nan
 
-  ++> tests-number-with-nan-bytes-is-nan
-    (number nan.as-bytes).is-nan > @
+  (number nan.as-bytes).is-nan ++> tests-number-with-nan-bytes-is-nan
 
-  ++> tests-positive-infinity-is-not-nan
-    pinf.is-nan.not > @
+  pinf.is-nan.not ++> tests-positive-infinity-is-not-nan
 
-  ++> tests-negative-infinity-is-not-nan
-    ninf.is-nan.not > @
+  ninf.is-nan.not ++> tests-negative-infinity-is-not-nan
 
-  ++> tests-nan-times-number-is-nan
-    eq. > @
-      (nan.times 42).as-bytes
-      nan.as-bytes
+  (nan.times 42).as-bytes.eq nan.as-bytes ++> tests-nan-times-number-is-nan
 
-  ++> tests-nan-times-nan-is-nan
-    eq. > @
-      (nan.times nan).as-bytes
-      nan.as-bytes
+  (nan.times nan).as-bytes.eq nan.as-bytes ++> tests-nan-times-nan-is-nan
 
-  ++> tests-nan-div-number-is-nan
-    eq. > @
-      (nan.div 42).as-bytes
-      nan.as-bytes
+  (nan.div 42).as-bytes.eq nan.as-bytes ++> tests-nan-div-number-is-nan
 
-  ++> tests-nan-div-nan-is-nan
-    eq. > @
-      (nan.div nan).as-bytes
-      nan.as-bytes
+  (nan.div nan).as-bytes.eq nan.as-bytes ++> tests-nan-div-nan-is-nan
 
-  ++> tests-nan-plus-number-is-nan
-    eq. > @
-      (nan.plus 42).as-bytes
-      nan.as-bytes
+  (nan.plus 42).as-bytes.eq nan.as-bytes ++> tests-nan-plus-number-is-nan
 
-  ++> tests-nan-plus-nan-is-nan
-    eq. > @
-      (nan.plus nan).as-bytes
-      nan.as-bytes
+  (nan.plus nan).as-bytes.eq nan.as-bytes ++> tests-nan-plus-nan-is-nan
 
-  ++> tests-nan-neg-is-nan
-    eq. > @
-      nan.@.as-bytes
-      nan.as-bytes
+  nan.@.as-bytes.eq nan.as-bytes ++> tests-nan-neg-is-nan
 
-  ++> tests-nan-minus-number-is-nan
-    eq. > @
-      (nan.minus 42).as-bytes
-      nan.as-bytes
+  (nan.minus 42).as-bytes.eq nan.as-bytes ++> tests-nan-minus-number-is-nan
 
-  ++> tests-nan-minus-nan-is-nan
-    eq. > @
-      (nan.minus nan).as-bytes
-      nan.as-bytes
+  (nan.minus nan).as-bytes.eq nan.as-bytes ++> tests-nan-minus-nan-is-nan
 
-  ++> tests-nan-floor-is-nan
-    eq. > @
-      nan.floor.as-bytes
-      nan.as-bytes
+  nan.floor.as-bytes.eq nan.as-bytes ++> tests-nan-floor-is-nan
 
-  nan.is-nan > [] +> nan-is-nan
+  nan.is-nan ++> nan-is-nan

@@ -8,6 +8,7 @@ penalties:
   EXCESS: 1
   WIDTH: 80
   STEP: 2
+  SPACE: 7
 origin: |
   +meta1
   +meta2 short
@@ -49,5 +50,6 @@ printed: |
             "Hello, друг"
             2.18
             true
-        bar (n.plus "hello, 大家!")
+        bar
+          n.plus "hello, 大家!"
     4.55 > x!

@@ -22,37 +22,34 @@
 
 [] > stdin
   all-lines > @
-
   [] > all-lines
-    rec-read next-line -- true > @
+    rec-read > @
+      next-line
+      --
+      true
     eol > separator!
-
-    [line buffer first] > rec-read
-      if. > @
-        line.length.eq 0
-        string buffer
-        rec-read
-          next-line
-          if.
-            first
-            buffer.concat line
-            (buffer.concat separator).concat line
-          false
-
+    if. > [line buffer first] > rec-read
+      line.length.eq 0
+      string buffer
+      rec-read
+        next-line
+        first.if
+          buffer.concat line
+          (buffer.concat separator).concat line
+        false
   [] > next-line
     if. > @
       first.as-bytes.size.eq 0
       ""
       rec-read first --
-    (console.read 1).@ > first
-
+    @. > first
+      console.read 1
     [input buffer] > rec-read
       if. > @
         or.
           char.eq --
           or.
-            and.
-              char.eq "\r"
+            (char.eq "\r").and
               next.as-bytes.eq "\n"
             char.eq "\n"
         string buffer
@@ -60,4 +57,5 @@
           next
           buffer.concat char
       input.as-bytes > char
-      (input.read 1).@ > next
+      @. > next
+        input.read 1

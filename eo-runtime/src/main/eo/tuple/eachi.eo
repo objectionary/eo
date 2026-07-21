@@ -17,10 +17,9 @@
   reducedi > @
     list
     true
-    [acc item index] >>
-      seq * > @
-        acc
-        func item index
+    seq * > [acc item index] >>
+      acc
+      func item index
 
   ++> tests-iterates-with-eachi
     eq. > @
@@ -30,8 +29,6 @@
           eachi > @
             * 1 2 3
             [item index] >>
-              ^.m.put > @
-                plus.
-                  ^.m.as-number.plus item
-                  index
+              m.put > @
+                (m.as-number.plus item).plus index
       9

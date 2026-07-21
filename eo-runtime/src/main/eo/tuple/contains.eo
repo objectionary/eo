@@ -11,22 +11,31 @@
   ? >> list
   ? >> element
   not. > @
-    eq.
-      -1
+    -1.eq
       index-of list element
 
-  ++> tests-list-contains-string
-    contains > @
-      * "qwerty" "asdfgh" 3 "qwerty"
+  contains ++> tests-list-contains-string
+    *
       "qwerty"
-
-  ++> tests-list-contains-number
-    contains > @
-      * "qwerty" "asdfgh" 3 "qwerty"
+      "asdfgh"
       3
+      "qwerty"
+    "qwerty"
+
+  contains ++> tests-list-contains-number
+    *
+      "qwerty"
+      "asdfgh"
+      3
+      "qwerty"
+    3
 
   ++> tests-list-does-not-contain
     not. > @
       contains
-        * "Привет" "asdfgh" 3 "qwerty"
+        *
+          "Привет"
+          "asdfgh"
+          3
+          "qwerty"
         "Hi"

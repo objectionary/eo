@@ -9,18 +9,12 @@
 +spdx SPDX-License-Identifier: MIT
 
 [text] > is-alphanumeric
-  (regex "/^[A-Za-z0-9]+$/").matches > @
+  matches. > @
+    regex "/^[A-Za-z0-9]+$/"
     text
 
-  ++> tests-checks-if-simple-text-is-alphanumeric
-    is-alphanumeric > @
-      "eEo"
+  is-alphanumeric "eEo" ++> tests-checks-if-simple-text-is-alphanumeric
 
-  ++> tests-checks-if-text-with-number-is-alphanumeric
-    is-alphanumeric > @
-      "ab3d"
+  is-alphanumeric "ab3d" ++> tests-checks-if-text-with-number-is-alphanumeric
 
-  ++> tests-checks-if-text-with-dashes-is-not-alphanumeric
-    not. > @
-      is-alphanumeric
-        "-w-"
+  (is-alphanumeric "-w-").not ++> tests-checks-if-text-with-dashes-is-not-alphanumeric

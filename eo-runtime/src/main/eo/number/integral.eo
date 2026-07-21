@@ -19,38 +19,32 @@
           [left] >>
             seq * > @
               while
-                [i] >>
-                  if. > @
-                    (left.as-number.plus step).lt right
-                    seq *
-                      sum.put
-                        sum.as-number.plus
-                          subsection
-                            left.as-number
-                            left.as-number.plus step
-                      left.put
-                        left.as-number.plus step
-                      true
-                    false
+                if. > [i] >>
+                  (left.as-number.plus step).lt right
+                  seq *
+                    sum.put
+                      sum.as-number.plus
+                        subsection left.as-number (left.as-number.plus step)
+                    left.put (left.as-number.plus step)
+                    true
+                  false
                 true > [i]
               sum
             b > right
-            ((right.minus left).div n).as-number > step
-  [a b] > subsection
-    times. > @
-      div.
-        b.minus a
-        6.0
+            as-number. > step
+              (right.minus left).div n
+  times. > [a b] > subsection
+    div.
+      b.minus a
+      6
+    plus.
+      fun a
       plus.
-        fun a
-        plus.
-          times.
-            4.0
-            fun
-              times.
-                0.5
-                a.plus b
-          fun b
+        4.times
+          fun
+            0.5.times
+              a.plus b
+        fun b
 
   ++> tests-calculates-lineal-integral
     close-to > @
@@ -61,8 +55,7 @@
           10
           15
       49.5
-      0.0000001
-
+      1.0E-7
     [value operand err] > close-to
       lte. > @
         minus.
@@ -85,8 +78,7 @@
           10
           100
       333
-      0.0000001
-
+      1.0E-7
     [value operand err] > close-to
       lte. > @
         minus.
@@ -109,8 +101,7 @@
           10
           100
       2499.75
-      0.0000001
-
+      1.0E-7
     [value operand err] > close-to
       lte. > @
         minus.

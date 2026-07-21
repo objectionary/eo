@@ -22,8 +22,6 @@
 [x] > nop
   true > @
 
-  ++> tests-nop-is-true
-    nop "anything" > @
+  nop "anything" ++> tests-nop-is-true
 
-  ++> tests-nop-with-number-is-true
-    nop 42 > @
+  nop 42 ++> tests-nop-with-number-is-true

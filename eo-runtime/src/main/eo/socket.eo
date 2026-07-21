@@ -54,76 +54,97 @@
 +unlint redundant-object
 
 [address port] > socket
-  if. > @
-    os.is-windows
+  sm.os.is-windows.if > @
     impl
       []
         raw > @
-        win32 > raw
+        sm.win32 > raw
         "closesocket" > close
-        "WSA error code %d".printf (* (win32 "WSAGetLastError" *).code) > message
-        (win32 "WSAStartup" (* win32.version)).code > startup
+        "WSA error code %d".printf > message
+          *
+            code.
+              sm.win32
+                "WSAGetLastError"
+                *
+        code. > startup
+          sm.win32 *1
+            "WSAStartup"
+            sm.win32.version
         if. > cleanup
-          (win32 "WSACleanup" *).code.eq win32.failure
-          T "Couldn't clean up the sockets subsystem"
+          eq.
+            code.
+              sm.win32
+                "WSACleanup"
+                *
+            sm.win32.failure
+          T
+            "Couldn't clean up the sockets subsystem"
           true
     impl
       []
         raw > @
-        posix > raw
+        sm.posix > raw
         "close" > close
-        (posix "strerror" (* (posix "errno" *).code)).code > message
+        code. > message
+          sm.posix *1
+            "strerror"
+            code.
+              sm.posix
+                "errno"
+                *
         0 > startup
         true > cleanup
-
   [port] > htons
     as-i16. > @
       or.
-        (bts.and 00-FF).left 8
-        (bts.right 8).and 00-FF
+        left.
+          bts.and 00-FF
+          8
+        and.
+          bts.right 8
+          00-FF
     port.as-i16.as-bytes > bts
-
   [recv] > as-input
     [size] > read
-      ((input-block --).read size).@ > @
-
+      @. > @
+        read.
+          input-block --
+          size
       [buffer] > input-block
         buffer > @
-
         [size] > read
           seq * > @
             chunk
             input-block chunk
           (recv size).as-bytes > chunk
-
   [send] > as-output
     [buffer] > write
-      (output-block.write buffer).@ > @
-
+      @. > @
+        output-block.write buffer
       [] > output-block
         true > @
-
-        [buffer] > write
-          seq * > @
-            send buffer
-            output-block
-
+        seq * > [buffer] > write
+          send buffer
+          output-block
   [sys] > impl
-    code. (sys.raw "inet_addr" (* address)) > addr
+    code. > addr
+      sys.raw *1
+        "inet_addr"
+        address
     addr.as-i32 > addrint
     code. > sd
-      sys.raw
+      sys.raw *1
         "socket"
-        * sys.inet sys.stream sys.tcp
+        sys.inet
+        sys.stream
+        sys.tcp
     sys.sockaddr-in > sockaddr
       sys.inet.as-i16
       htons port
       addrint
-
     [sockfd] > scoped-socket
       ^.^.as-input recv > as-input
       ^.^.as-output send > as-output
-
       [buffer cant-send] > send
         if. > @
           sent.eq -1
@@ -133,10 +154,12 @@
           sent
         buffer > buff!
         code. > sent
-          sys.raw
+          sys.raw *1
             "send"
-            * sockfd buff buff.size 0
-
+            sockfd
+            buff
+            buff.size
+            0
       [size cant-receive] > recv
         if. > @
           received.code.eq -1
@@ -145,10 +168,11 @@
               * sockfd sys.message
           received.output
         called. > received
-          sys.raw
+          sys.raw *1
             "recv"
-            * sockfd size 0
-
+            sockfd
+            size
+            0
     [sockfd] > closed-socket
       if. > @
         closed.eq -1
@@ -157,13 +181,13 @@
             * sockfd sys.message
         true
       code. > closed
-        sys.raw
+        sys.raw *1
           sys.close
-          * sockfd
-
+          sockfd
     [scope cant] > safe-socket
       if. > @
-        (sys.startup.eq 0).not
+        not.
+          sys.startup.eq 0
         cant
           "Couldn't start up the sockets subsystem because %s".printf
             * sys.message
@@ -186,7 +210,6 @@
           "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s".printf
             * address sys.message
         scope
-
     [scope cant-connect] > connect
       safe-socket > @
         [] >>
@@ -196,15 +219,15 @@
               "Couldn't connect to %s:%d on socket #%d because %s".printf
                 * sock.address sock.port sock.sd sock.sys.message
             scope
-              sock.scoped-socket
-                sock.sd
+              sock.scoped-socket sock.sd
           code. > connected
-            sock.sys.raw
+            sock.sys.raw *1
               "connect"
-              * sock.sd sock.sockaddr sock.sockaddr.size
+              sock.sd
+              sock.sockaddr
+              sock.sockaddr.size
           ^.^ > sock
         cant-connect
-
     [scope cant-listen] > listen
       safe-socket > @
         [] >>
@@ -221,7 +244,6 @@
               scope
                 [] >>
                   sock.scoped-socket sock.sd > @
-
                   [scope cant-accept] > accept
                     if. > @
                       client.eq -1
@@ -233,19 +255,22 @@
                         sock.closed-socket client
                         handled
                     code. > client
-                      sock.sys.raw
+                      sock.sys.raw *1
                         "accept"
-                        * sock.sd sock.sockaddr sock.sockaddr.size
-                    scope > handled!
-                      sock.scoped-socket
-                        client
+                        sock.sd
+                        sock.sockaddr
+                        sock.sockaddr.size
+                    scope (sock.scoped-socket client) > handled!
           code. > bound
-            sock.sys.raw
+            sock.sys.raw *1
               "bind"
-              * sock.sd sock.sockaddr sock.sockaddr.size
+              sock.sd
+              sock.sockaddr
+              sock.sockaddr.size
           code. > listened
-            sock.sys.raw
+            sock.sys.raw *1
               "listen"
-              * sock.sd 2048
+              sock.sd
+              2048
           ^.^ > sock
         cant-listen

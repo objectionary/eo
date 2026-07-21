@@ -10,27 +10,37 @@
 +spdx SPDX-License-Identifier: MIT
 
 [text substrings] > contains-all
-  reduced > @
-    mapped
+  tuple.reduced > @
+    tuple.mapped
       substrings
       contains text x > [x] >>
     true
     x.and a > [a x]
 
-  ++> tests-successful-contains-all
-    contains-all "abcdefghijk" (* "abc" "ghi") > @
+  contains-all *1 ++> tests-successful-contains-all
+    "abcdefghijk"
+    "abc"
+    "ghi"
 
   ++> tests-not-contains-all
     not. > @
-      contains-all "qwerty" (* "qer" "ty" "abc")
+      contains-all *1
+        "qwerty"
+        "qer"
+        "ty"
+        "abc"
 
-  ++> tests-contains-all-vert
-    contains-all > @
-      "Hello, world!"
-      * "ell" " " "," "d!"
+  contains-all *1 ++> tests-contains-all-vert
+    "Hello, world!"
+    "ell"
+    " "
+    ","
+    "d!"
 
-  ++> test-contains-all-without-substrings
-    contains-all "xyz" * > @
+  contains-all ++> test-contains-all-without-substrings
+    "xyz"
+    *
 
-  ++> tests-contains-all-for-empty-text-and-without-substrings
-    contains-all "" * > @
+  contains-all ++> tests-contains-all-for-empty-text-and-without-substrings
+    ""
+    *

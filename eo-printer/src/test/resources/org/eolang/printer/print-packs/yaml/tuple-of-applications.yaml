@@ -2,15 +2,13 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# A tuple whose elements are themselves applications ("pair" of two arguments)
-# is laid out vertically, each element on its own line, beside the formation it
-# refers to.
 penalties:
   INDENT: 3
   BRACKET: 7
   EXCESS: 1
   WIDTH: 80
   STEP: 2
+  SPACE: 7
 origin: |
   [] > pairs
     * (pair "a" 1) (pair "b" 2) > items
@@ -21,8 +19,12 @@ origin: |
 printed: |
   [] > pairs
     * > items
-      pair "a" 1
-      pair "b" 2
+      pair
+        "a"
+        1
+      pair
+        "b"
+        2
     [k v] > pair
       k > key
       v > value

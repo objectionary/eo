@@ -10,14 +10,12 @@
 
 [num] > degrees
   div. > @
-    value.times 180.0
+    value.times 180
     pi
-  number num.as-bytes > value
+  number > value
+    num.as-bytes
 
-  ++> tests-degrees-of-zero-is-zero
-    eq. > @
-      degrees 0
-      0
+  (degrees 0).eq 0 ++> tests-degrees-of-zero-is-zero
 
   ++> tests-degrees-of-pi-is-half-turn
     lt. > @
@@ -25,32 +23,29 @@
         minus.
           degrees pi
           180
-      0.0001
+      1.0E-4
 
-  ++> tests-degrees-of-pi-halves-is-quarter-turn
-    lt. > @
-      abs
-        minus.
-          degrees (pi.div 2)
-          90
-      0.0001
+  lt. ++> tests-degrees-of-pi-halves-is-quarter-turn
+    abs
+      minus.
+        degrees
+          pi.div 2
+        90
+    1.0E-4
 
-  ++> tests-degrees-of-two-pi-is-full-turn
-    lt. > @
-      abs
-        minus.
-          degrees (pi.times 2)
-          360
-      0.0001
+  lt. ++> tests-degrees-of-two-pi-is-full-turn
+    abs
+      minus.
+        degrees
+          pi.times 2
+        360
+    1.0E-4
 
-  ++> tests-degrees-of-negative-pi-is-minus-half-turn
-    lt. > @
-      abs
-        minus.
-          degrees pi.neg
-          -180
-      0.0001
+  lt. ++> tests-degrees-of-negative-pi-is-minus-half-turn
+    abs
+      minus.
+        degrees pi.neg
+        -180
+    1.0E-4
 
-  ++> tests-degrees-of-nan-is-nan
-    is-nan. > @
-      degrees nan
+  (degrees nan).is-nan ++> tests-degrees-of-nan-is-nan

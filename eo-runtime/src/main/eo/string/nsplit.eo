@@ -21,18 +21,16 @@
       if.
         1.eq limit
         * text
-        rec-nsplit * 0 0 0
+        rec-nsplit
+          *
+          0
+          0
+          0
   delimiter.size > size!
-
   [accum start current count] > rec-nsplit
     if. > @
       text.size.eq current
-      accum.with > appended
-        string
-          slice
-            text
-            start
-            current.minus start
+      appended
       if.
         or.
           size.eq 0
@@ -58,72 +56,75 @@
             start
             (current.plus 1).as-number
             count
+    accum.with > appended
+      string
+        slice
+          text
+          start
+          current.minus start
 
-  ++> tests-nsplit-with-limit-two
-    eq. > @
-      nsplit
-        "Cookie: a=1; b=2"
-        " "
-        2
-      * "Cookie:" "a=1; b=2"
+  eq. ++> tests-nsplit-with-limit-two
+    nsplit
+      "Cookie: a=1; b=2"
+      " "
+      2
+    *
+      "Cookie:"
+      "a=1; b=2"
 
-  ++> tests-nsplit-with-dashes-limit-two
-    eq. > @
-      nsplit
-        "a-b-c-d"
-        "-"
-        2
-      * "a" "b-c-d"
-
-  ++> tests-nsplit-with-limit-one
-    eq. > @
-      nsplit
-        "a-b-c"
-        "-"
-        1
-      * "a-b-c"
-
-  ++> tests-nsplit-with-high-limit
-    eq. > @
-      nsplit
-        "a-b-c"
-        "-"
-        10
-      * "a" "b" "c"
-
-  --> on-nsplit-with-limit-zero
-    nsplit > @
-      "text"
+  eq. ++> tests-nsplit-with-dashes-limit-two
+    nsplit
+      "a-b-c-d"
       "-"
-      0
+      2
+    *
+      "a"
+      "b-c-d"
 
-  --> on-nsplit-with-negative-limit
-    nsplit > @
-      "text"
+  eq. ++> tests-nsplit-with-limit-one
+    nsplit
+      "a-b-c"
       "-"
-      -1
+      1
+    * "a-b-c"
+
+  eq. ++> tests-nsplit-with-high-limit
+    nsplit
+      "a-b-c"
+      "-"
+      10
+    *
+      "a"
+      "b"
+      "c"
+
+  nsplit "text" "-" 0 --> on-nsplit-with-limit-zero
+
+  nsplit "text" "-" -1 --> on-nsplit-with-negative-limit
 
   ++> tests-nsplit-invalid-limit-returns-provided-fallback
-    eq. > @
-      "fallback"
+    "fallback".eq > @
       nsplit
         "text"
         "-"
         0
         "fallback" > [msg]
 
-  ++> tests-nsplit-with-empty-strings
-    eq. > @
-      nsplit
-        "-a-b-c"
-        "-"
-        3
-      * "" "a" "b-c"
+  eq. ++> tests-nsplit-with-empty-strings
+    nsplit
+      "-a-b-c"
+      "-"
+      3
+    *
+      ""
+      "a"
+      "b-c"
 
-  ++> tests-nsplit-with-multi-char-delimiter
-    eq. > @
-      nsplit
-        "a::b::c::d"
-        "::"
-        2
-      * "a" "b::c::d"
+  eq. ++> tests-nsplit-with-multi-char-delimiter
+    nsplit
+      "a::b::c::d"
+      "::"
+      2
+    *
+      "a"
+      "b::c::d"

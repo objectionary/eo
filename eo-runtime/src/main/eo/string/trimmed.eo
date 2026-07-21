@@ -17,50 +17,50 @@
     0.eq text.as-bytes.size
     text
     trimmed-left
-      trimmed-right
-        text
+      trimmed-right text
 
   ++> tests-text-trimmed-one-space-left
     eq. > @
-      trimmed " some"
+      trimmed
+        " some"
       "some"
 
   ++> tests-text-trimmed-one-space-right
     eq. > @
-      trimmed "some "
+      trimmed
+        "some "
       "some"
 
   ++> tests-text-trimmed-one-space-both
     eq. > @
-      trimmed " some "
+      trimmed
+        " some "
       "some"
 
   ++> tests-text-trimmed-many-spaces
     eq. > @
-      trimmed "    some     "
+      trimmed
+        "    some     "
       "some"
 
-  ++> tests-text-trimmed-empty
-    eq. > @
-      trimmed ""
-      ""
+  (trimmed "").eq "" ++> tests-text-trimmed-empty
 
   ++> tests-text-trimmed-only-spaces
     eq. > @
-      trimmed "        "
+      trimmed
+        "        "
       ""
 
-  ++> tests-trimmed-strips-mixed-ws-both-sides
-    eq. > @
-      trimmed " \t\n\f\rvalue \t\n\f\r"
-      "value"
+  eq. ++> tests-trimmed-strips-mixed-ws-both-sides
+    trimmed
+      " \t\n\f\rvalue \t\n\f\r"
+    "value"
 
-  ++> tests-trimmed-preserves-inner-content
-    eq. > @
-      trimmed "no-whitespace"
-      "no-whitespace"
+  eq. ++> tests-trimmed-preserves-inner-content
+    trimmed "no-whitespace"
+    "no-whitespace"
 
-  ++> tests-trimmed-preserves-inner-whitespace
-    eq. > @
-      trimmed "\t hello world \n"
-      "hello world"
+  eq. ++> tests-trimmed-preserves-inner-whitespace
+    trimmed
+      "\t hello world \n"
+    "hello world"

@@ -19,6 +19,4 @@
     console.write text
     true
 
-  ++> tests-prints-to-console
-    stdout > @
-      "Hello, stdout-test!\n"
+  stdout "Hello, stdout-test!\n" ++> tests-prints-to-console

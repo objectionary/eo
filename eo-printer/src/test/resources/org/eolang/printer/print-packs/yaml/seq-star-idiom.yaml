@@ -8,6 +8,7 @@ penalties:
   EXCESS: 1
   WIDTH: 80
   STEP: 2
+  SPACE: 7
 origin: |
   [] > foo
     seq > @
@@ -21,12 +22,11 @@ origin: |
               * path created.output
 
 printed: |
-  seq > [] > foo
-    *
-      bar.deleted
-      if.
-        outcome.eq 0
-        ^
-        T
-          "Cant delete '%s': %s".printf
-            * path created.output
+  seq * > [] > foo
+    bar.deleted
+    if.
+      outcome.eq 0
+      ^
+      T
+        "Cant delete '%s': %s".printf
+          * path created.output

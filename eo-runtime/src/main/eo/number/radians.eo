@@ -11,13 +11,11 @@
 [num] > radians
   div. > @
     value.times pi
-    180.0
-  number num.as-bytes > value
+    180
+  number > value
+    num.as-bytes
 
-  ++> tests-radians-of-zero-is-zero
-    eq. > @
-      radians 0
-      0
+  (radians 0).eq 0 ++> tests-radians-of-zero-is-zero
 
   ++> tests-radians-of-half-turn-is-pi
     lt. > @
@@ -25,32 +23,27 @@
         minus.
           radians 180
           pi
-      0.0001
+      1.0E-4
 
-  ++> tests-radians-of-quarter-turn-is-pi-halves
-    lt. > @
-      abs
-        minus.
-          radians 90
-          pi.div 2
-      0.0001
+  lt. ++> tests-radians-of-quarter-turn-is-pi-halves
+    abs
+      minus.
+        radians 90
+        pi.div 2
+    1.0E-4
 
-  ++> tests-radians-of-full-turn-is-two-pi
-    lt. > @
-      abs
-        minus.
-          radians 360
-          pi.times 2
-      0.0001
+  lt. ++> tests-radians-of-full-turn-is-two-pi
+    abs
+      minus.
+        radians 360
+        pi.times 2
+    1.0E-4
 
-  ++> tests-radians-of-negative-half-turn-is-minus-pi
-    lt. > @
-      abs
-        minus.
-          radians -180
-          pi.neg
-      0.0001
+  lt. ++> tests-radians-of-negative-half-turn-is-minus-pi
+    abs
+      minus.
+        radians -180
+        pi.neg
+    1.0E-4
 
-  ++> tests-radians-of-nan-is-nan
-    is-nan. > @
-      radians nan
+  (radians nan).is-nan ++> tests-radians-of-nan-is-nan

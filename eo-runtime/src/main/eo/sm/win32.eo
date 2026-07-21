@@ -39,23 +39,23 @@
   02-02 > version
   [code output] > return
     output > @
-    return code output > called
-
+    return > called
+      code
+      output
   [time millitm] > timeb
-
   [mode size] > stat64
-
   [family port address] > sockaddr-in
     00-00-00-00-00-00-00-00 > padding
     plus. > size
       plus.
-        plus.
-          family.size
-          port.size
+        family.size.plus port.size
         address.size
       padding.size
 
-  ++> tests-returns-valid-win32-inet-addr-for-localhost
-    or. > @
-      os.is-windows.not
-      (code. (win32 "inet_addr" (* "127.0.0.1"))).eq 16777343
+  os.is-windows.not.or ++> tests-returns-valid-win32-inet-addr-for-localhost
+    eq.
+      code.
+        win32 *1
+          "inet_addr"
+          "127.0.0.1"
+      16777343

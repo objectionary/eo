@@ -17,27 +17,19 @@
       "Can't convert non 8 length bytes to i64, bytes are %x".printf
         * bts
 
-  --> on-bytes-of-wrong-size-as-i64
-    01-01-01-01.as-i64 > @
+  01-01-01-01.as-i64 --> on-bytes-of-wrong-size-as-i64
 
   ++> tests-wrong-size-as-i64-returns-provided-fallback
-    eq. > @
-      "recovered"
+    "recovered".eq > @
       01-01-01-01.as-i64
         "recovered" > [msg]
 
-  ++> tests-bytes-converts-to-i64
-    eq. > @
-      00-00-00-00-00-00-00-2A.as-i64
-      42.as-i64
+  00-00-00-00-00-00-00-2A.as-i64.eq 42.as-i64 ++> tests-bytes-converts-to-i64
 
-  ++> tests-bytes-converts-to-i64-and-back
-    eq. > @
-      00-00-00-00-00-00-00-33.as-i64.as-bytes
-      00-00-00-00-00-00-00-33
+  eq. ++> tests-bytes-converts-to-i64-and-back
+    00-00-00-00-00-00-00-33.as-i64.as-bytes
+    00-00-00-00-00-00-00-33
 
   ++> tests-bytes-as-i64-as-bytes-not-eq-to-number-as-bytes
     not. > @
-      eq.
-        00-00-00-00-00-00-00-2A.as-i64.as-bytes
-        42.as-bytes
+      00-00-00-00-00-00-00-2A.as-i64.as-bytes.eq 42.as-bytes

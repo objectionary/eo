@@ -8,15 +8,16 @@
 +spdx SPDX-License-Identifier: MIT
 
 [num] > exp
-  power e num > @
+  power > @
+    e
+    num
 
   ++> tests-exp-check-n0
     lt. > @
       abs
-        minus.
-          e
+        e.minus
           exp 1
-      0.00000001
+      1.0E-8
 
   ++> tests-exp-check-n1
     lt. > @
@@ -24,7 +25,7 @@
         minus.
           1.div e
           exp -1
-      0.00000001
+      1.0E-8
 
   ++> tests-exp-check-n2
     lt. > @
@@ -32,7 +33,7 @@
         minus.
           power e 5
           exp 5
-      0.0000001
+      1.0E-7
 
   ++> tests-exp-check-n3
     lt. > @
@@ -40,18 +41,10 @@
         minus.
           power e -10
           exp -10
-      0.000000000001
+      1.0E-12
 
-  ++> tests-exp-check-nan
-    is-nan. > @
-      exp nan
+  (exp nan).is-nan ++> tests-exp-check-nan
 
-  ++> tests-exp-check-infinity-n1
-    eq. > @
-      exp pinf
-      pinf
+  (exp pinf).eq pinf ++> tests-exp-check-infinity-n1
 
-  ++> tests-exp-check-infinity-n2
-    eq. > @
-      exp ninf
-      0
+  (exp ninf).eq 0 ++> tests-exp-check-infinity-n2

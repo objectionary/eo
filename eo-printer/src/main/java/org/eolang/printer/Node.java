@@ -251,4 +251,34 @@ final class Node {
             false, false, false, false, kids
         );
     }
+
+    /**
+     * Build the body of the hybrid inline-phi form for this decoratee: its
+     * head kept in front of {@code marker}, its arguments as children.
+     *
+     * <p>When this decoratee applies a trailing tuple ({@code seq *},
+     * {@code sprintf *1}), the {@code *N} marker is glued onto that head
+     * line ({@code seq * > [m]}) through {@link #glued} and every argument
+     * becomes a child, mirroring the {@code starred} idiom and saving a
+     * line and an indent level; the parser absorbs a compact tuple in
+     * inline-phi position, so this round-trips (issue #5626). Otherwise
+     * the arguments stay as this node's children, laid out vertically by
+     * the caller.</p>
+     *
+     * @param marker The inline-phi marker ({@code  > [params] > name})
+     * @return The body node to lay out vertically
+     */
+    Node hybrid(final String marker) {
+        final Node plain = new Node(
+            this.base, marker, false, false,
+            this.reversed, this.data, this.children
+        );
+        final Node body;
+        if (this.tuply()) {
+            body = plain.glued();
+        } else {
+            body = plain;
+        }
+        return body;
+    }
 }

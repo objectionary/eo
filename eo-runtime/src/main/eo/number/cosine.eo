@@ -9,72 +9,78 @@
 +spdx SPDX-License-Identifier: MIT
 
 [num] > cosine
-  sine (num.plus (pi.div 2)) > @
+  sine > @
+    num.plus
+      pi.div 2
 
-  ++> tests-cosine-of-zero-is-one
-    lt. > @
-      abs
-        minus.
-          (cosine 0).times 1000
-          1000
-      1
-
-  ++> tests-cosine-of-pi-halves-is-zero
-    lt. > @
-      abs
-        (cosine (pi.div 2)).times 1000
-      1
-
-  ++> tests-cosine-of-pi-is-minus-one
-    lt. > @
-      abs
-        minus.
-          (cosine pi).times 1000
-          -1000
-      1
-
-  ++> tests-cosine-of-pi-thirds-is-half
-    lt. > @
-      abs
-        minus.
-          (cosine (pi.div 3)).times 1000
-          500
-      1
-
-  ++> tests-cosine-is-even-function
-    lt. > @
-      abs
+  lt. ++> tests-cosine-of-zero-is-one
+    abs
+      minus.
         times.
-          minus.
-            cosine (pi.div 3)
-            cosine ((pi.div 3).neg)
+          cosine 0
           1000
-      1
+        1000
+    1
 
-  ++> tests-cosine-reduces-large-angle
-    lt. > @
-      abs
+  lt. ++> tests-cosine-of-pi-halves-is-zero
+    abs
+      times.
+        cosine
+          pi.div 2
+        1000
+    1
+
+  lt. ++> tests-cosine-of-pi-is-minus-one
+    abs
+      minus.
+        times.
+          cosine pi
+          1000
+        -1000
+    1
+
+  lt. ++> tests-cosine-of-pi-thirds-is-half
+    abs
+      minus.
+        times.
+          cosine
+            pi.div 3
+          1000
+        500
+    1
+
+  lt. ++> tests-cosine-is-even-function
+    abs
+      times.
         minus.
-          (cosine ((pi.times 10).plus (pi.div 3))).times 1000
-          500
-      1
+          cosine
+            pi.div 3
+          cosine (pi.div 3).neg
+        1000
+    1
 
-  ++> tests-cosine-of-seventeen-radians
-    lt. > @
-      abs
-        minus.
-          (cosine 17).times 1000
-          -275
-      1
+  lt. ++> tests-cosine-reduces-large-angle
+    abs
+      minus.
+        times.
+          cosine
+            (pi.times 10).plus
+              pi.div 3
+          1000
+        500
+    1
 
-  ++> tests-cosine-of-nan-is-nan
-    is-nan. > @
-      cosine nan
+  lt. ++> tests-cosine-of-seventeen-radians
+    abs
+      minus.
+        times.
+          cosine 17
+          1000
+        -275
+    1
 
-  ++> tests-cosine-of-positive-infinity-is-nan
-    is-nan. > @
-      cosine pinf
+  (cosine nan).is-nan ++> tests-cosine-of-nan-is-nan
 
-  ++> tests-cosine-of-negative-infinity-is-nan
-    is-nan. > @
-      cosine ninf
+  (cosine pinf).is-nan ++> tests-cosine-of-positive-infinity-is-nan
+
+  (cosine ninf).is-nan ++> tests-cosine-of-negative-infinity-is-nan

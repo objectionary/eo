@@ -12,7 +12,8 @@
 [sequence cant-min] > minimum
   if. > @
     is-empty lst
-    cant-min "cannot get the minimum number from an empty sequence"
+    cant-min
+      "cannot get the minimum number from an empty sequence"
     reduced
       lst
       pinf
@@ -23,31 +24,37 @@
           min
   sequence > lst
 
-  (minimum *) > [] -> on-taking-minimum-from-empty-sequence
+  minimum --> on-taking-minimum-from-empty-sequence
+    *
 
   ++> tests-minimum-of-empty-returns-provided-fallback
-    eq. > @
-      "recovered"
+    "recovered".eq > @
       minimum
         *
         "recovered" > [msg]
 
-  ++> tests-minimum-of-one-item-array
-    eq. > @
-      minimum (* 42)
-      42
+  eq. ++> tests-minimum-of-one-item-array
+    minimum
+      * 42
+    42
 
-  ++> tests-minimum-of-array-is-first
-    eq. > @
-      minimum (* -2 25 12)
+  eq. ++> tests-minimum-of-array-is-first
+    minimum *
       -2
+      25
+      12
+    -2
 
-  ++> tests-minimum-of-array-is-in-the-center
-    eq. > @
-      minimum (* 12 -2 25)
+  eq. ++> tests-minimum-of-array-is-in-the-center
+    minimum *
+      12
       -2
+      25
+    -2
 
-  ++> tests-minimum-of-array-is-last
-    eq. > @
-      minimum (* 12 25 -2)
+  eq. ++> tests-minimum-of-array-is-last
+    minimum *
+      12
+      25
       -2
+    -2

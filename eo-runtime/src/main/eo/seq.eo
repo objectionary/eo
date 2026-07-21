@@ -26,7 +26,9 @@
       steps.length.eq 1
       steps.head
       if.
-        (dataized (seq steps.tail)).as-bool
+        as-bool.
+          dataized
+            seq steps.tail
         steps.head
         steps.head
 
@@ -35,13 +37,13 @@
       1
       [b]
         malloc.for > @
-          0.0
+          0
           b.put > [m] >>
             lt.
-              seq
-                *
-                  m.put (m.as-number.plus 1.0)
-                  m.as-number
+              seq *
+                m.put
+                  m.as-number.plus 1
+                m.as-number
               1.1
 
   ++> tests-seq-single-dataization-float-greater
@@ -49,13 +51,13 @@
       1
       [b]
         malloc.for > @
-          0.0
+          0
           b.put > [m] >>
             gt.
-              seq
-                *
-                  m.put (m.as-number.plus 1.0)
-                  m.as-number
+              seq *
+                m.put
+                  m.as-number.plus 1
+                m.as-number
               0.9
 
   ++> tests-seq-single-dataization-int-less
@@ -66,10 +68,10 @@
           0
           b.put > [m] >>
             lt.
-              seq
-                *
-                  m.put (m.as-number.plus 1)
-                  m.as-number
+              seq *
+                m.put
+                  m.as-number.plus 1
+                m.as-number
               2
 
   ++> tests-seq-single-dataization-int-less-or-equal
@@ -80,59 +82,56 @@
           0
           b.put > [m] >>
             lte.
-              seq
-                *
-                  m.put (m.as-number.plus 1)
-                  m.as-number
+              seq *
+                m.put
+                  m.as-number.plus 1
+                m.as-number
               1
 
-  ++> tests-very-long-seq
-    eq. > @
+  true.eq ++> tests-very-long-seq
+    seq *
       true
-      seq
-        *
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
-          true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
+      true
 
   ++> tests-seq-single-dataization-int-equal-to-test
     malloc.of > @
@@ -142,11 +141,11 @@
           0
           b.put > [m] >>
             eq.
-              seq
-                *
-                  m.put 0
-                  m.put (m.as-number.plus 1)
-                  m.as-number
+              seq *
+                m.put 0
+                m.put
+                  m.as-number.plus 1
+                m.as-number
               1
 
   ++> tests-seq-single-dataization-int-equal-to-cache-problem-test
@@ -157,27 +156,23 @@
           0
           b.put > [m] >>
             eq.
-              seq
-                *
-                  at.
-                    * 0 1
-                    m
-                  m.put (m.as-number.plus 1)
+              seq *
+                at.
+                  * 0 1
                   m
+                m.put
+                  m.as-number.plus 1
+                m
               1
 
-  ++> tests-seq-calculates-and-returns
-    eq. > @
+  eq. ++> tests-seq-calculates-and-returns
+    1
+    seq *
+      0
       1
-      seq
-        *
-          0
-          1
 
-  ++> tests-seq-calculates-and-returns-object
-    eq. > @
+  eq. ++> tests-seq-calculates-and-returns-object
+    "Hello!"
+    seq *
+      0
       "Hello!"
-      seq
-        *
-          0
-          "Hello!"

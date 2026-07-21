@@ -293,13 +293,15 @@ final class Pretty {
      * ({@code head ++> name} or {@code head > [params] > name}) with the
      * arguments laid out beneath, mirroring the ordinary {@code head > name}
      * plus vertical-args layout and saving one line and one indent level
-     * over the verbose shape (issue #5594). The flat one-liner is kept while
-     * it fits the {@code WIDTH} limit, but once it overflows (or cannot be
-     * built) the hybrid is used instead, rather than gating the hybrid behind
-     * the one-liner's absence and falling back to the verbose shape when the
-     * one-liner overflows (issue #5635). Either way the result is only a
-     * candidate — the penalty/width check in {@link #shaped} keeps it only
-     * when it beats the plain vertical rendering. A formation decoratee
+     * over the verbose shape (issue #5594); when those arguments are a lone
+     * tuple the star is glued onto the head line too ({@link #hybrid}). The
+     * flat one-liner is kept while it fits the {@code WIDTH} limit, but once
+     * it overflows (or cannot be built) the hybrid is used instead, rather
+     * than gating the hybrid behind the one-liner's absence and falling back
+     * to the verbose shape when the one-liner overflows (issue #5635). Either
+     * way the result is only a candidate — the penalty/width check in
+     * {@link #shaped} keeps it only when it beats the plain vertical
+     * rendering. A formation decoratee
      * (its bindings are vertical, not arguments) and a receiver-only
      * reversed dispatch ({@code not.} with just its receiver, mirroring the
      * rejection in {@link #flat}) have no hybrid form, so they yield empty
@@ -350,13 +352,7 @@ final class Pretty {
             if (applied && unnamed
                 && flat.map(line -> line.length() > this.width).orElse(true)) {
                 result = Optional.of(
-                    this.vertical(
-                        new Node(
-                            decoratee.base, marker, false, false,
-                            decoratee.reversed, decoratee.data, decoratee.children
-                        ),
-                        indent
-                    )
+                    this.vertical(decoratee.hybrid(marker), indent)
                 );
             } else {
                 result = flat;

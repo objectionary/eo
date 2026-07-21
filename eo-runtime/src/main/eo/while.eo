@@ -31,22 +31,24 @@
 
 [condition body] > while
   if. > @
-    (condition 0).as-bool
+    as-bool.
+      condition 0
     loop 0
     false
-
   [index] > loop
     if. > @
-      (condition (index.plus 1)).as-bool
+      as-bool.
+        condition
+          index.plus 1
       seq *
         current
-        loop (index.plus 1)
+        loop
+          index.plus 1
       current
     body index > current
 
   ++> tests-while-dataizes-only-first-cycle
-    eq. > @
-      0
+    0.eq > @
       malloc.for
         42
         [m]
@@ -98,7 +100,11 @@
 
   ++> tests-iterating-tuple-with-while-using-internal-iterator
     data.eq arr.length > @
-    * 1 1 1 1 > arr
+    * > arr
+      1
+      1
+      1
+      1
     malloc.for > data
       0
       [acc] >>
@@ -112,19 +118,20 @@
                   arr.at 0
               while
                 max.gt iter > [i] >>
-                [i] >>
-                  seq > @
-                    *
-                      acc.put
-                        acc.as-number.plus
-                          arr.at i
-                      iter.put
-                        iter.as-number.plus 1
+                seq * > [i] >>
+                  acc.put
+                    acc.as-number.plus (arr.at i)
+                  iter.put
+                    iter.as-number.plus 1
     arr.length.plus -1 > max
 
   ++> tests-iterating-tuple-with-while-using-external-iterator
     data.eq arr.length > @
-    * 1 1 1 1 > arr
+    * > arr
+      1
+      1
+      1
+      1
     malloc.for > data
       0
       [acc] >>
@@ -133,43 +140,38 @@
           [iter] >>
             while > @
               max.gt iter > [i] >>
-              [i] >>
-                seq > @
-                  *
-                    acc.put
-                      acc.as-number.plus
-                        arr.at iter
-                    iter.put
-                      iter.as-number.plus 1
+              seq * > [i] >>
+                acc.put
+                  acc.as-number.plus
+                    arr.at iter
+                iter.put
+                  iter.as-number.plus 1
     arr.length.plus -1 > max
 
   ++> tests-iterating-tuple-with-while-without-body-multiple
     data.eq arr.length > @
-    * 1 1 1 > arr
+    * > arr
+      1
+      1
+      1
     malloc.for > data
       0
       [acc] >>
         malloc.for > @
           0
           [iter] >>
-            seq > @
-              *
-                while
-                  [i] >>
-                    if. > @
-                      max.gt iter
-                      seq
-                        *
-                          acc.put
-                            acc.as-number.plus
-                              arr.at
-                                iter.as-number
-                          iter.put
-                            iter.as-number.plus 1
-                          true
-                      false
-                  true > [i]
-                acc
+            seq * > @
+              while
+                if. > [i] >>
+                  max.gt iter
+                  seq *
+                    acc.put
+                      acc.as-number.plus (arr.at iter.as-number)
+                    iter.put (iter.as-number.plus 1)
+                    true
+                  false
+                true > [i]
+              acc
     arr.length > max
 
   ++> tests-iterating-tuple-with-while-without-body-single
@@ -181,22 +183,16 @@
         malloc.for > @
           0
           [iter] >>
-            seq > @
-              *
-                while
-                  [i] >>
-                    if. > @
-                      max.gt iter
-                      seq
-                        *
-                          acc.put
-                            acc.as-number.plus
-                              arr.at
-                                iter.as-number
-                          iter.put
-                            iter.as-number.plus 1
-                          true
-                      false
-                  true > [i]
-                acc
+            seq * > @
+              while
+                if. > [i] >>
+                  max.gt iter
+                  seq *
+                    acc.put
+                      acc.as-number.plus (arr.at iter.as-number)
+                    iter.put (iter.as-number.plus 1)
+                    true
+                  false
+                true > [i]
+              acc
     arr.length > max

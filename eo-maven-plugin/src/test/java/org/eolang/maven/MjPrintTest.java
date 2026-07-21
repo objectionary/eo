@@ -93,12 +93,53 @@ final class MjPrintTest {
             ).parsed().toString(),
             temp.resolve("xmir/foo/x/main.xmir")
         ).value();
-        final Map<String, Path> result = new FakeMaven(temp)
+        final FakeMaven maven = new FakeMaven(temp)
             .with("printSourcesDir", temp.resolve("xmir").toFile())
             .with("printOutputDir", temp.resolve("eo").toFile())
-            .with("printReversed", reversed)
-            .execute(MjPrint.class)
-            .result();
+            .with("printReversed", reversed);
+        final Object pins = xtory.map().get("penalties");
+        if (pins != null) {
+            for (final Map.Entry<?, ?> pin : ((Map<?, ?>) pins).entrySet()) {
+                final String param = MjPrintTest.param(pin.getKey().toString());
+                if (!param.isEmpty()) {
+                    maven.with(param, ((Number) pin.getValue()).intValue());
+                }
+            }
+        }
+        final Map<String, Path> result = maven.execute(MjPrint.class).result();
         return new TextOf(result.get("eo/foo/x/main.eo"));
+    }
+
+    /**
+     * Translate a penalty-block key into the matching print-mojo parameter
+     * name, so a pack is laid out under the weights it pins rather than the
+     * printer's defaults; an unmatched key yields empty and lets that weight
+     * fall back to its default.
+     * @param key The penalty key, as spelled in the pack's block
+     * @return The mojo parameter name, or empty
+     */
+    private static String param(final String key) {
+        final String param;
+        switch (key) {
+            case "INDENT":
+                param = "penaltyIndent";
+                break;
+            case "BRACKET":
+                param = "penaltyBracket";
+                break;
+            case "EXCESS":
+                param = "penaltyExcess";
+                break;
+            case "WIDTH":
+                param = "width";
+                break;
+            case "STEP":
+                param = "step";
+                break;
+            default:
+                param = "";
+                break;
+        }
+        return param;
     }
 }

@@ -9,36 +9,21 @@
 +spdx SPDX-License-Identifier: MIT
 
 [text] > is-digit
-  (regex "/^[0-9]+$/").matches text > @
+  matches. > @
+    regex "/^[0-9]+$/"
+    text
 
-  ++> tests-checks-if-number-text-is-digit
-    is-digit > @
-      "2026"
+  is-digit "2026" ++> tests-checks-if-number-text-is-digit
 
-  ++> tests-checks-if-text-with-letter-is-not-digit
-    not. > @
-      is-digit
-        "1a2"
+  (is-digit "1a2").not ++> tests-checks-if-text-with-letter-is-not-digit
 
-  ++> tests-checks-if-single-digit-is-digit
-    is-digit > @
-      "7"
+  is-digit "7" ++> tests-checks-if-single-digit-is-digit
 
-  ++> tests-checks-if-empty-text-is-not-digit
-    not. > @
-      is-digit
-        ""
+  (is-digit "").not ++> tests-checks-if-empty-text-is-not-digit
 
-  ++> tests-checks-if-text-with-space-is-not-digit
-    not. > @
-      is-digit
-        "12 34"
+  (is-digit "12 34").not ++> tests-checks-if-text-with-space-is-not-digit
 
-  ++> tests-checks-if-text-with-special-character-is-not-digit
-    not. > @
-      is-digit
-        "1🌵2"
+  (is-digit "1🌵2").not ++> tests-checks-if-text-with-special-character-is-not-digit
 
-  ++> tests-checks-if-very-long-number-is-digit
-    is-digit > @
-      "123456789012345678901234567890123456789012345678901234567890"
+  is-digit ++> tests-checks-if-very-long-number-is-digit
+    "123456789012345678901234567890123456789012345678901234567890"

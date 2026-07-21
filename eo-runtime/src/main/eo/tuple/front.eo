@@ -17,56 +17,82 @@
       0.gt idx
       back
         list
-        (number idx).neg
+        neg.
+          number idx
       if.
-        (number idx).gte list.length
+        gte.
+          number idx
+          list.length
         list
         rechead list
   index > idx!
-
   [tup] > rechead
     if. > @
       tup.length.eq idx
       tup
       rechead tup.tail
 
-  [] +> tests-simple-front
-    eq. > @
-      front
-        * 1 2 3 4 5
+  eq. ++> tests-simple-front
+    front
+      *
         1
-      * 1
-
-  ++> tests-list-front-with-zero-index
-    is-empty > @
-      front
-        * 1 2 3
-        0
-
-  [] +> tests-list-front-with-length-index
-    eq. > @
-      front
-        * 1 2 3
-        3
-      * 1 2 3
-
-  [] +> tests-complex-front
-    eq. > @
-      front
-        * "foo" 2.2 00-01 "bar"
         2
-      * "foo" 2.2
+        3
+        4
+        5
+      1
+    * 1
 
-  [] +> tests-front-with-negative
-    eq. > @
-      front
-        * 1 2 3
-        -1
-      * 3
+  is-empty ++> tests-list-front-with-zero-index
+    front
+      *
+        1
+        2
+        3
+      0
 
-  [] +> tests-complex-front-with-negative
-    eq. > @
-      front
-        * "foo" 2.2 00-01 "bar"
-        -3
-      * 2.2 00-01 "bar"
+  eq. ++> tests-list-front-with-length-index
+    front
+      *
+        1
+        2
+        3
+      3
+    *
+      1
+      2
+      3
+
+  eq. ++> tests-complex-front
+    front
+      *
+        "foo"
+        2.2
+        00-01
+        "bar"
+      2
+    *
+      "foo"
+      2.2
+
+  eq. ++> tests-front-with-negative
+    front
+      *
+        1
+        2
+        3
+      -1
+    * 3
+
+  eq. ++> tests-complex-front-with-negative
+    front
+      *
+        "foo"
+        2.2
+        00-01
+        "bar"
+      -3
+    *
+      2.2
+      00-01
+      "bar"

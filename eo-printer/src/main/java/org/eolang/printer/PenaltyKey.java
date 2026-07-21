@@ -15,19 +15,20 @@ package org.eolang.printer;
  * one aesthetic is no longer baked into the tool.</p>
  *
  * @since 0.57.0
- * @checkstyle MagicNumberCheck (50 lines)
+ * @checkstyle MagicNumberCheck (55 lines)
  */
 public enum PenaltyKey {
 
     /**
      * Points charged for each level of indentation on a line.
      */
-    INDENT(3),
+    INDENT(2),
 
     /**
-     * Points charged for each opening parenthesis.
+     * Points charged per opening parenthesis, progressively: the k-th
+     * parenthesis on a line costs k times this weight.
      */
-    BRACKET(7),
+    BRACKET(19),
 
     /**
      * Points charged for each explicit phi attribute {@code @} on a line.
@@ -43,7 +44,22 @@ public enum PenaltyKey {
     /**
      * Points charged for each character past {@link #WIDTH}.
      */
-    EXCESS(1),
+    EXCESS(3),
+
+    /**
+     * Points charged for every symbol in the block.
+     */
+    SYMBOL(1),
+
+    /**
+     * Points charged for each space on a line beyond the leading
+     * indentation. The genuine argument-applying spaces among them (name
+     * bindings such as {@code >} do not count) additionally pay a
+     * super-linear surcharge at this same weight, so {@code r} of them cost
+     * {@code r} squared, rather than {@code r}, times the weight and longer
+     * applications grow super-linearly more expensive.
+     */
+    SPACE(7),
 
     /**
      * The column after which characters start being charged.

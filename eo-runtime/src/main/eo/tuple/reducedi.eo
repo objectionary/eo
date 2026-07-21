@@ -18,35 +18,77 @@
     is-empty list
     start
     rec-reducedi list
-
-  [tup] > rec-reducedi
-    if. > @
-      tup.length.eq 1
-      func
-        start
-        tup.head
-        0
-      func
-        rec-reducedi tup.tail
-        tup.head
-        tup.tail.length
+  if. > [tup] > rec-reducedi
+    tup.length.eq 1
+    func
+      start
+      tup.head
+      0
+    func
+      rec-reducedi tup.tail
+      tup.head
+      tup.tail.length
 
   ++> tests-reduce-list-with-index
-    eq. > @
-      6
+    6.eq > @
       reducedi
         * 1 1
         0
-        [a x i] >>
-          plus. > @
-            x
-            a.plus
-              (* 2 2).at i
+        x.plus > [a x i] >>
+          a.plus
+            at.
+              * 2 2
+              i
 
   ++> tests-list-reducedi-long-int-array
     eq. > @
       reducedi
-        * 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+        *
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          1
         0
         x.plus a > [a x i]
       1
@@ -54,7 +96,10 @@
   ++> tests-list-reducedi-bools-array
     not. > @
       reducedi
-        * true true false
+        *
+          true
+          true
+          false
         true
         x.and a > [a x i]
 
@@ -67,9 +112,8 @@
           check x > @
           [el] > check
             if. > @
-              ^.x.lt 100
-              ^.acc.plus x
-              ^.acc.minus x
-      plus.
-        10
+              x.lt 100
+              acc.plus x
+              acc.minus x
+      10.plus
         0.minus 500

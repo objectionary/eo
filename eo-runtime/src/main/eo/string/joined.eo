@@ -9,42 +9,43 @@
 +spdx SPDX-License-Identifier: MIT
 
 [text items] > joined
-  string bts > @
+  string > @
+    bts
   if. > bts!
     items.length.eq 0
     --
-    with-delimiter items.head items.tail
+    with-delimiter
+      items.head
+      items.tail
   text > delimiter!
-
-  [acc tup] > with-delimiter
-    if. > @
-      tup.length.eq 0
-      acc
-      with-delimiter
+  if. > [acc tup] > with-delimiter
+    tup.length.eq 0
+    acc
+    with-delimiter
+      concat.
         concat.
-          concat.
-            dataized tup.head
-            delimiter
-          acc
-        tup.tail
+          dataized tup.head
+          delimiter
+        acc
+      tup.tail
 
-  ++> tests-joined-no-strings
-    eq. > @
-      ""
-      joined
-        "-"
-        *
+  eq. ++> tests-joined-no-strings
+    ""
+    joined
+      "-"
+      *
 
-  ++> tests-joined-one-string
-    eq. > @
+  eq. ++> tests-joined-one-string
+    "some"
+    joined *1
+      "-"
       "some"
-      joined
-        "-"
-        * "some"
 
-  ++> tests-joined-many-strings
-    eq. > @
-      "hello-world-dear-friend"
-      joined
-        "-"
-        * "hello" "world" "dear" "friend"
+  eq. ++> tests-joined-many-strings
+    "hello-world-dear-friend"
+    joined *1
+      "-"
+      "hello"
+      "world"
+      "dear"
+      "friend"

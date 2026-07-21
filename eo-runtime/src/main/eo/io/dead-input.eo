@@ -11,14 +11,14 @@
 [] > dead-input
   [size] > read
     input-block > @
-
     [] > input-block
       -- > @
-
       input-block > [size] > read
 
   ++> tests-reads-empty-bytes
     and. > @
       i1.eq --
-      (i1.read 10).eq --
+      eq.
+        i1.read 10
+        --
     dead-input.read 10 > i1
