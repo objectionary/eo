@@ -45,10 +45,11 @@ final class PrintfArgs {
      * character. Skipping the flags, width and precision keeps exactly one
      * argument counted per specifier such as {@code %5d}, {@code %.2f} or
      * {@code %-10s}, matching what {@code String.format} consumes on the
-     * formatting side.
+     * formatting side. Possessive quantifiers keep the scan linear in the
+     * length of the format string, with no backtracking.
      */
     private static final Pattern SPECIFIER = Pattern.compile(
-        "%(\\d+\\$)?[-#+ 0,(]*\\d*(?:\\.\\d+)?([a-zA-Z%])"
+        "%(\\d++\\$)?+[-#+ 0,(]*+\\d*+(?:\\.\\d++)?+([a-zA-Z%])"
     );
 
     /**

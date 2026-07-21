@@ -137,11 +137,11 @@ final class PrintfArgsTest {
     void collectsArgumentForPrecisionSpecifier() {
         final Phi tuple = Phi.Φ.take("tuple").copy();
         tuple.put("length", new Data.ToPhi(1));
-        tuple.put("head", new Data.ToPhi(3.14159));
+        tuple.put("head", new Data.ToPhi(3.141_59));
         MatcherAssert.assertThat(
             "a specifier with a precision, like %.2f, must still collect its argument",
             new PrintfArgs("%.2f", 1L, tuple.take("at")).formatted(),
-            Matchers.equalTo(new ListOf<>(3.14159))
+            Matchers.equalTo(new ListOf<>(3.141_59))
         );
     }
 
