@@ -2,15 +2,15 @@
 # Here `pairs` must be a `tuple` of `map.entry` object.
 # The `map.entry.key` must be a dataizable object, `map.entry.value` may be any object.
 # Two keys are the same only when their hash codes and their raw bytes are equal.
-# A hash code alone is not enough, since `tuple.hash-code` is a `31 * acc + byte`
+# A hash code alone is not enough, since `bytes.hash` is a `31 * acc + byte`
 # polynomial and therefore has collisions, e.g. `"Aa"` and `"BB"` both hash to 2112.
 # Comparing hash codes only would make such distinct keys overwrite each other.
 # Every key is dataized to bytes exactly once, when the map is built, and the
 # hash code is derived from those bytes rather than from the key itself,
 # so that keys with side effects are never evaluated more than once.
 
++alias bytes.hash
 +alias tuple.filtered
-+alias tuple.hash-code
 +alias tuple.mapped
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -50,7 +50,7 @@
             ent.head.kbts.eq ^.kbts
           true
           has-key ent.tail
-      tuple.hash-code > hash!
+      bytes.hash > hash!
         tup.head.key.as-bytes > kbts!
       @. > prev
         rec-rebuild tup.tail
@@ -61,7 +61,7 @@
         size.eq 0
         not-found
         rec-key-search entries
-      tuple.hash-code > hash!
+      bytes.hash > hash!
         key.as-bytes > kbts!
       [] > not-found
         false > exists
@@ -103,7 +103,7 @@
             ^.kbts > kbts
             ^.key > key
             ^.value > value
-      tuple.hash-code > hash!
+      bytes.hash > hash!
         key.as-bytes > kbts!
     [key] > without
       map.initialized > @
@@ -113,7 +113,7 @@
             not. > @
               (hash.eq entry.hash).and
                 ^.kbts.eq entry.kbts
-      tuple.hash-code > hash!
+      bytes.hash > hash!
         key.as-bytes > kbts!
 
   ++> tests-adds-key-colliding-with-existing-one
