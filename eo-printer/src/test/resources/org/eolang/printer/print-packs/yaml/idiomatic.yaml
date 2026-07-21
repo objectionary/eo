@@ -44,7 +44,7 @@ printed: |
         this
           n.minus *2
             "家"
-            x
+            4.55 > x!
             "Hello, друг"
             2.18
             true
@@ -52,4 +52,3 @@ printed: |
           n.plus "hello, 大家!"
     5 > iTest_me
     [] > rr /Q.number
-    4.55 > x!

@@ -15,22 +15,21 @@
     cant-repeat
       "Can't repeat text %d times".printf
         * amount
-    string result
+    string
+      if. > result!
+        0.eq amount
+        --
+        rec-repeated
+          text > bts!
+          1
   times > amount!
-  text > bts!
   if. > [accum index] > rec-repeated
     amount.eq index
     accum
     rec-repeated
-      accum.concat bts
+      accum.concat ^.bts
       as-number.
         index.plus 1
-  if. > result!
-    0.eq amount
-    --
-    rec-repeated
-      bts
-      1
 
   eq. ++> tests-text-repeated-five-times
     "heyheyheyheyhey"

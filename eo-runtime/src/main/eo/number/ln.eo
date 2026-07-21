@@ -21,7 +21,8 @@
         n.eq 0
         ninf
         n.is-finite.if
-          lnp n
+          lnp
+            number num.as-bytes > n
           pinf
   [p] > lnp
     if. > @
@@ -51,12 +52,11 @@
           squared.times
             horner
               k.plus 1
-      t.times t > squared
-      div. > t
-        m.minus 1
-        m.plus 1
+      t.times > squared
+        div. > t
+          m.minus 1
+          m.plus 1
       40 > terms
-  number num.as-bytes > n
 
   lt. ++> tests-ln-fraction
     abs

@@ -41,9 +41,10 @@
     if. > @
       first.as-bytes.size.eq 0
       ""
-      rec-read first --
-    @. > first
-      console.read 1
+      rec-read
+        @. > first
+          console.read 1
+        --
     [input buffer] > rec-read
       if. > @
         or.
@@ -54,8 +55,6 @@
             char.eq "\n"
         string buffer
         rec-read
-          next
-          buffer.concat char
-      input.as-bytes > char
-      @. > next
-        input.read 1
+          (input.read 1).@ > next
+          buffer.concat
+            input.as-bytes > char

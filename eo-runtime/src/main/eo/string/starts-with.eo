@@ -11,17 +11,14 @@
   and. > @
     lte.
       number slen
-      tlen
+      txt.size > tlen!
     eq.
       slice
-        txt
+        text > txt!
         0
         slen
-      sub
+      substring > sub!
   sub.size > slen!
-  substring > sub!
-  txt.size > tlen!
-  text > txt!
 
   ++> tests-does-not-start-with-substring
     not. > @

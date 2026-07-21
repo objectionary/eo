@@ -21,12 +21,11 @@
       as-char
         n.floor.plus 48
       concat.
-        digits q
+        digits
+          (n.div 10).floor > q
         as-char
           (n.minus (q.times 10)).floor.plus
             48
-    floor. > q
-      n.div 10
 
   eq. ++> tests-truncates-negative-fraction
     "-7"

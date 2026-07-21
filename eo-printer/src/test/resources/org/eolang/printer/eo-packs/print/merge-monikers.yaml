@@ -1,0 +1,50 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The parser hoists a `> value` binding to the enclosing formation no matter
+# where it is written, so the moniker form (the binding at its bare-reference
+# site) and the expanded form (a standalone binding plus a bare reference)
+# parse to the same XMIR. This sheet merges the standalone binding back onto
+# the first bare `ξ.value` reference, dropping the separate line. The
+# method-dispatch uses (`value.gte`, `value.neg`) cannot host the binding and
+# stay as references.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-self.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/validate-before-stars.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+  - /org/eolang/printer/print/merge-monikers.xsl
+asserts:
+  # The standalone binding is no longer a direct attribute of the formation.
+  - /object/o[@name='abs' and not(o[@name='value'])]
+  # It now lives at the first bare-reference site, inside the `if.` block,
+  # keeping the reference's positional marker and gaining the binding's base
+  # and child.
+  - /object/o[@name='abs']/o[@name='φ' and @base='.if']/o[@name='value' and @base='Φ.number' and @as='α0']/o[@base='ξ.num.as-bytes']
+  # The method-dispatch uses stay as references.
+  - /object/o[@name='abs']/o[@name='φ']/o[@base='ξ.value.gte']
+  - /object/o[@name='abs']/o[@name='φ']/o[@base='ξ.value.neg']
+input: |
+  +package number
+
+  [num] > abs
+    if. > @
+      value.gte 0
+      value
+      value.neg
+    number num.as-bytes > value

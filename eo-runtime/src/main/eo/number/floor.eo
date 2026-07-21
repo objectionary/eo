@@ -18,8 +18,7 @@
     if.
       trunc.gt n
       trunc.minus 1
-      trunc
-  n.as-i64.as-number > trunc
+      n.as-i64.as-number > trunc
 
   -3.7.floor.eq -4 ++> tests-floor-negative-fraction
 

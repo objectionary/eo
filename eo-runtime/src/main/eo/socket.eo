@@ -128,7 +128,6 @@
       sys.raw *1
         "inet_addr"
         address
-    addr.as-i32 > addrint
     [sockfd] > closed-socket
       if. > @
         closed.eq -1
@@ -252,15 +251,13 @@
           cant-send
             "Failed to send a message through the socket #%d because %s".printf
               * sockfd sys.message
-          sent
-        buffer > buff!
-        code. > sent
-          sys.raw *1
-            "send"
-            sockfd
-            buff
-            buff.size
-            0
+          code. > sent
+            sys.raw *1
+              "send"
+              sockfd
+              buffer > buff!
+              buff.size
+              0
     code. > sd
       sys.raw *1
         "socket"
@@ -270,4 +267,4 @@
     sys.sockaddr-in > sockaddr
       sys.inet.as-i16
       htons port
-      addrint
+      addr.as-i32 > addrint

@@ -14,16 +14,14 @@
       tlen
     eq.
       slice
-        txt
+        text > txt!
         minus.
           number tlen
           slen
         slen
-      sub
+      substring > sub!
   sub.size > slen!
-  substring > sub!
   txt.size > tlen!
-  text > txt!
 
   ++> tests-does-not-end-with-substring
     not. > @

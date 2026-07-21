@@ -83,14 +83,13 @@
         code.
           posix *1
             "close"
-            fd
+            code. > fd
+              posix *1
+                "open"
+                "/dev/null"
+                0
+                0
         fd.gt -1
-    code. > fd
-      posix *1
-        "open"
-        "/dev/null"
-        0
-        0
 
   ++> tests-opens-posix-tcp-socket
     os.is-windows.or > @
@@ -98,14 +97,13 @@
         code.
           posix *1
             "close"
-            sd
+            code. > sd
+              posix *1
+                "socket"
+                posix.inet
+                posix.stream
+                posix.tcp
         sd.gt 0
-    code. > sd
-      posix *1
-        "socket"
-        posix.inet
-        posix.stream
-        posix.tcp
 
   os.is-windows.or ++> tests-returns-valid-posix-inet-addr-for-localhost
     eq.

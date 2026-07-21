@@ -10,8 +10,8 @@
 [n x] > lt
   0.gt > @
     n.minus
-      number value
-  x > value!
+      number
+        x > value!
 
   eq. ++> tests-int-less-equal
     not.
