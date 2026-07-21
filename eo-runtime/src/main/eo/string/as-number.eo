@@ -20,7 +20,9 @@
     at.
       scanf "%f" text
 
-  5.eq (as-number "5") ++> tests-converts-text-to-number
+  eq. ++> tests-converts-text-to-number
+    5
+    as-number "5"
 
   as-number "Hello" --> on-converting-text-to-number
 
@@ -30,4 +32,6 @@
         "Hello"
         42 > [msg]
 
-  3.14.eq (as-number "3.14") ++> tests-converts-float-text-to-number
+  eq. ++> tests-converts-float-text-to-number
+    3.14
+    as-number "3.14"

@@ -60,10 +60,9 @@
     eq. > @
       malloc.of
         0
-        [m]
-          Q.input.copied > @
-            bytes.to-input --
-            io.malloc-as-output m
+        Q.input.copied > [m]
+          bytes.to-input --
+          io.malloc-as-output m
       0
 
   ++> tests-handles-large-data
@@ -74,4 +73,8 @@
           bytes.to-input 01-02-03-04-05-06-07-08-09-0A-0B-0C-0D-0E-0F-10-11-12-13-14
           io.malloc-as-output m
 
-  (Q.input.copied Q.input.dead Q.output.dead).eq 0 ++> tests-handles-dead-input
+  eq. ++> tests-handles-dead-input
+    Q.input.copied
+      Q.input.dead
+      Q.output.dead
+    0

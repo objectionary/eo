@@ -14,15 +14,16 @@
     pi
   number num.as-bytes > value
 
-  (degrees 0).eq 0 ++> tests-degrees-of-zero-is-zero
+  eq. ++> tests-degrees-of-zero-is-zero
+    degrees 0
+    0
 
-  ++> tests-degrees-of-pi-is-half-turn
-    lt. > @
-      abs
-        minus.
-          degrees pi
-          180
-      1.0E-4
+  lt. ++> tests-degrees-of-pi-is-half-turn
+    abs
+      minus.
+        degrees pi
+        180
+    1.0E-4
 
   lt. ++> tests-degrees-of-pi-halves-is-quarter-turn
     abs

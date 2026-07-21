@@ -419,7 +419,8 @@
                 "w"
                 f.write "Hello, world" > [f]
               "r"
-              m.put (f.read 12) > [f] >>
+              m.put > [f] >>
+                f.read 12
             m
       "Hello, world"
 
@@ -437,7 +438,8 @@
     seq * > @
       temp.open
         "w"
-        f.write "Shrek is love" > [f]
+        f.write > [f]
+          "Shrek is love"
       "Shrek is love".eq
         malloc.of
           13
@@ -445,7 +447,8 @@
             seq * > @
               (file src).open
                 "r"
-                m.put (f.read 13) > [f] >>
+                m.put > [f] >>
+                  f.read 13
               m
     temp.path > src
     mktemp.tmpfile > temp
@@ -454,7 +457,8 @@
     seq * > @
       temp.open
         "w"
-        f.write "Shrek is love" > [f]
+        f.write > [f]
+          "Shrek is love"
       open.
         file src
         "a"
@@ -466,7 +470,8 @@
             seq * > @
               (file src).open
                 "r"
-                m.put (f.read 14) > [f] >>
+                m.put > [f] >>
+                  f.read 14
               m
         "Shrek is love!"
     temp.path > src
@@ -483,7 +488,8 @@
                 "w"
                 f.write "Hello, world" > [f]
               "r"
-              m.put ((f.read 7).read 5) > [f] >>
+              m.put > [f] >>
+                (f.read 7).read 5
             m
       "world"
 
@@ -492,5 +498,7 @@
       size.
         mktemp.tmpfile.open
           "a+"
-          (f.write "Hello, world").write "!" > [f]
+          write. > [f]
+            f.write "Hello, world"
+            "!"
       13

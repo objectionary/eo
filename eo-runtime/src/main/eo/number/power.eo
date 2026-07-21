@@ -108,17 +108,41 @@
           fraction
             j.plus 1
 
-  (power 2 4).eq 16 ++> tests-power-of-two-to-four
+  eq. ++> tests-power-of-two-to-four
+    power
+      2
+      4
+    16
 
-  (power 2 0).eq 1 ++> tests-power-of-zero-exponent
+  eq. ++> tests-power-of-zero-exponent
+    power
+      2
+      0
+    1
 
-  (power 984782 -12341).eq 0 ++> tests-power-large-negative-exponent
+  eq. ++> tests-power-large-negative-exponent
+    power
+      984782
+      -12341
+    0
 
-  (power 3 2).eq 9 ++> tests-power-of-three-squared
+  eq. ++> tests-power-of-three-squared
+    power
+      3
+      2
+    9
 
-  (power 0 145).eq 0 ++> tests-power-of-zero-base
+  eq. ++> tests-power-of-zero-base
+    power
+      0
+      145
+    0
 
-  (power 0 -567).eq pinf ++> tests-power-zero-to-negative-odd
+  eq. ++> tests-power-zero-to-negative-odd
+    power
+      0
+      -567
+    pinf
 
   (power nan nan).is-nan ++> tests-power-nan-to-nan-is-nan
 
@@ -126,11 +150,23 @@
 
   (power 52 nan).is-nan ++> tests-power-any-to-nan-is-nan
 
-  (power 42 0).eq 1 ++> tests-power-int-to-zero-is-one
+  eq. ++> tests-power-int-to-zero-is-one
+    power
+      42
+      0
+    1
 
-  (power 42.5 0).eq 1 ++> tests-power-float-to-zero-is-one
+  eq. ++> tests-power-float-to-zero-is-one
+    power
+      42.5
+      0
+    1
 
-  (power 0 -52).eq pinf ++> tests-power-zero-to-negative-is-positive-infinity
+  eq. ++> tests-power-zero-to-negative-is-positive-infinity
+    power
+      0
+      -52
+    pinf
 
   eq. ++> tests-power-zero-to-negative-infinity-is-positive-infinity
     power
@@ -138,7 +174,11 @@
       ninf
     pinf
 
-  (power 42 ninf).eq 0 ++> tests-power-positive-int-to-negative-infinity-is-zero
+  eq. ++> tests-power-positive-int-to-negative-infinity-is-zero
+    power
+      42
+      ninf
+    0
 
   eq. ++> tests-power-positive-float-to-negative-infinity-is-zero
     power
@@ -182,19 +222,47 @@
       -42.2
     0
 
-  (power 2 -1).eq 0.5 ++> tests-power-two-to-minus-one
+  eq. ++> tests-power-two-to-minus-one
+    power
+      2
+      -1
+    0.5
 
-  (power 2 -2).eq 0.25 ++> tests-power-two-to-minus-two
+  eq. ++> tests-power-two-to-minus-two
+    power
+      2
+      -2
+    0.25
 
-  (power 2 -3).eq 0.125 ++> tests-power-two-to-minus-three
+  eq. ++> tests-power-two-to-minus-three
+    power
+      2
+      -3
+    0.125
 
-  (power 4 -3).eq 0.015625 ++> tests-power-four-to-minus-three
+  eq. ++> tests-power-four-to-minus-three
+    power
+      4
+      -3
+    0.015625
 
-  (power 0 4).eq 0 ++> tests-power-zero-to-positive-int-is-zero
+  eq. ++> tests-power-zero-to-positive-int-is-zero
+    power
+      0
+      4
+    0
 
-  (power 0 4.2).eq 0 ++> tests-power-zero-to-positive-float-is-zero
+  eq. ++> tests-power-zero-to-positive-float-is-zero
+    power
+      0
+      4.2
+    0
 
-  (power 0 pinf).eq 0 ++> tests-power-zero-to-positive-infinity-is-zero
+  eq. ++> tests-power-zero-to-positive-infinity-is-zero
+    power
+      0
+      pinf
+    0
 
   eq. ++> tests-power-negative-int-to-positive-infinity-is-positive-infinity
     power
@@ -256,19 +324,30 @@
       9
     ninf
 
-  (power 2 3).eq 8 ++> tests-power-positive-int-to-positive-int
+  eq. ++> tests-power-positive-int-to-positive-int
+    power
+      2
+      3
+    8
 
-  (power 3.5 4).eq 150.0625 ++> tests-power-positive-float-to-positive-int
+  eq. ++> tests-power-positive-float-to-positive-int
+    power
+      3.5
+      4
+    150.0625
 
-  (power 4 5).eq 1024 ++> tests-power-four-to-five
+  eq. ++> tests-power-four-to-five
+    power
+      4
+      5
+    1024
 
-  ++> tests-power-square-root-of-nine
-    lt. > @
-      abs
-        minus.
-          power 9 0.5
-          3
-      1.0E-9
+  lt. ++> tests-power-square-root-of-nine
+    abs
+      minus.
+        power 9 0.5
+        3
+    1.0E-9
 
   lt. ++> tests-power-square-root-of-two
     abs
@@ -288,8 +367,16 @@
 
   (power -4 0.5).is-nan ++> tests-power-fractional-of-negative-is-nan
 
-  (2.power 4).eq 16 ++> tests-power-as-method-on-number
+  eq. ++> tests-power-as-method-on-number
+    2.power 4
+    16
 
-  (3.power 2).eq 9 ++> tests-power-as-method-with-receiver-bound
+  eq. ++> tests-power-as-method-with-receiver-bound
+    3.power 2
+    9
 
-  (power 2 4).eq 16 ++> tests-power-via-number-namespace
+  eq. ++> tests-power-via-number-namespace
+    power
+      2
+      4
+    16

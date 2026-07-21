@@ -109,9 +109,7 @@
 
   (0.as-i64.as-i32.as-i16.lte -10.as-i64.as-i32.as-i16).not ++> tests-i16-lte-false
 
-  gte. ++> tests-i16-gte-true
-    -1000.as-i64.as-i32.as-i16
-    -1100.as-i64.as-i32.as-i16
+  -1000.as-i64.as-i32.as-i16.gte -1100.as-i64.as-i32.as-i16 ++> tests-i16-gte-true
 
   113.as-i64.as-i32.as-i16.gte 113.as-i64.as-i32.as-i16 ++> tests-i16-gte-equal
 

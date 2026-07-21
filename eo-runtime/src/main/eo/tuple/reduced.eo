@@ -17,7 +17,9 @@
   reducedi > @
     list
     start
-    func accum item > [accum item idx] >>
+    func > [accum item idx] >>
+      accum
+      item
 
   ++> tests-list-reduce-without-index
     eq. > @

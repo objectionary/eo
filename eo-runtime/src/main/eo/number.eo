@@ -77,11 +77,19 @@
   [x] > plus /Q.number
   [x] > div /Q.number
 
-  (-200.gt -1000).eq true ++> tests-int-greater-true
+  eq. ++> tests-int-greater-true
+    -200.gt -1000
+    true
 
-  (0.gt 100).not.eq true ++> tests-int-greater-false
+  eq. ++> tests-int-greater-false
+    not.
+      0.gt 100
+    true
 
-  (0.gt 0).not.eq true ++> tests-int-greater-equal
+  eq. ++> tests-int-greater-equal
+    not.
+      0.gt 0
+    true
 
   eq. ++> tests-int-equal-to-nan-and-infinites-is-false
     and.
@@ -101,31 +109,43 @@
         false
     true
 
-  (0.eq 0).eq true ++> tests-int-zero-eq-to-zero
+  eq. ++> tests-int-zero-eq-to-zero
+    0.eq 0
+    true
 
-  (0.eq 0).eq true ++> tests-int-zero-eq-to-float-zero
+  eq. ++> tests-int-zero-eq-to-float-zero
+    0.eq 0
+    true
 
-  (123.eq 123).eq true ++> tests-int-eq-true
+  eq. ++> tests-int-eq-true
+    123.eq 123
+    true
 
-  (123.eq 42).not.eq true ++> tests-int-eq-false
+  eq. ++> tests-int-eq-false
+    not.
+      123.eq 42
+    true
 
-  (1.plus 1).eq 2 ++> tests-one-plus-one
+  eq. ++> tests-one-plus-one
+    1.plus 1
+    2
 
-  (68.eq "12345678").eq false ++> tests-compares-two-different-number-types
+  eq. ++> tests-compares-two-different-number-types
+    68.eq "12345678"
+    false
 
   ++> tests-calculates-fibonacci-number-with-recursion
     eq. > @
       fibo 4
       3
-    [n] > fibo
-      if. > @
-        n.lt 3
-        1
-        plus.
-          fibo
-            n.minus 1
-          fibo
-            n.minus 2
+    if. > [n] > fibo
+      n.lt 3
+      1
+      plus.
+        fibo
+          n.minus 1
+        fibo
+          n.minus 2
 
   ++> tests-calculates-fibonacci-number-with-tail
     eq. > @
@@ -139,11 +159,10 @@
           n
           1
           1
-      [n] > small
-        if. > @
-          n.eq 2
-          1
-          n
+      if. > [n] > small
+        n.eq 2
+        1
+        n
       if. > [n minus1 minus2] > rec
         n.eq 3
         minus1.plus minus2
@@ -162,11 +181,18 @@
       dividend
     -235 > dividend
 
-  (256.div 16).eq 16 ++> tests-div-for-dividend-greater-than-zero
+  eq. ++> tests-div-for-dividend-greater-than-zero
+    256.div 16
+    16
 
-  (13.div -5).floor.eq -3 ++> tests-div-with-remainder
+  eq. ++> tests-div-with-remainder
+    floor.
+      13.div -5
+    -3
 
-  (1.div 5).lt 1 ++> tests-div-less-than-one
+  lt. ++> tests-div-less-than-one
+    1.div 5
+    1
 
   42.as-bytes.eq 42 ++> tests-to-bytes-and-backwards
 
@@ -174,9 +200,12 @@
 
   42.as-bytes.eq 42 ++> tests-as-bytes-equals-to-int-backwards
 
-  (1000.times 0).eq 0 ++> tests-multiply-by-zero
+  eq. ++> tests-multiply-by-zero
+    1000.times 0
+    0
 
-  pinf.eq (1.div 0) ++> tests-positive-infinity-is-equal-to-one-div-zero
+  pinf.eq ++> tests-positive-infinity-is-equal-to-one-div-zero
+    1.div 0
 
   pinf.eq pinf ++> tests-positive-infinity-eq-positive-infinity
 
@@ -247,38 +276,68 @@
       pinf.times nan
     nan.as-bytes
 
-  (pinf.times ninf).eq ninf ++> tests-positive-infinity-times-negative-infinity
+  eq. ++> tests-positive-infinity-times-negative-infinity
+    pinf.times ninf
+    ninf
 
-  (pinf.times pinf).eq pinf ++> tests-positive-infinity-times-positive-infinity
+  eq. ++> tests-positive-infinity-times-positive-infinity
+    pinf.times pinf
+    pinf
 
-  (pinf.times 42.5).eq pinf ++> tests-positive-infinity-times-positive-float
+  eq. ++> tests-positive-infinity-times-positive-float
+    pinf.times 42.5
+    pinf
 
-  (pinf.times 42).eq pinf ++> tests-positive-infinity-times-positive-int
+  eq. ++> tests-positive-infinity-times-positive-int
+    pinf.times 42
+    pinf
 
-  (pinf.times -42.5).eq ninf ++> tests-positive-infinity-times-negative-float
+  eq. ++> tests-positive-infinity-times-negative-float
+    pinf.times -42.5
+    ninf
 
-  (pinf.times -42).eq ninf ++> tests-positive-infinity-times-negative-int
+  eq. ++> tests-positive-infinity-times-negative-int
+    pinf.times -42
+    ninf
 
-  (pinf.plus nan).as-bytes.eq nan.as-bytes ++> tests-positive-infinity-plus-nan
+  eq. ++> tests-positive-infinity-plus-nan
+    as-bytes.
+      pinf.plus nan
+    nan.as-bytes
 
   eq. ++> tests-positive-infinity-plus-negative-infinity
     as-bytes.
       pinf.plus ninf
     nan.as-bytes
 
-  (pinf.plus pinf).eq pinf ++> tests-positive-infinity-plus-positive-infinity
+  eq. ++> tests-positive-infinity-plus-positive-infinity
+    pinf.plus pinf
+    pinf
 
-  (pinf.plus 42.5).eq pinf ++> tests-positive-infinity-plus-positive-float
+  eq. ++> tests-positive-infinity-plus-positive-float
+    pinf.plus 42.5
+    pinf
 
-  (pinf.div 0).eq pinf ++> tests-positive-infinity-div-float-zero
+  eq. ++> tests-positive-infinity-div-float-zero
+    pinf.div 0
+    pinf
 
-  (pinf.div -0).eq ninf ++> tests-positive-infinity-div-neg-float-zero
+  eq. ++> tests-positive-infinity-div-neg-float-zero
+    pinf.div -0
+    ninf
 
-  (pinf.div 0).eq pinf ++> tests-positive-infinity-div-int-zero
+  eq. ++> tests-positive-infinity-div-int-zero
+    pinf.div 0
+    pinf
 
-  (pinf.div -0).eq ninf ++> tests-positive-infinity-div-neg-int-zero
+  eq. ++> tests-positive-infinity-div-neg-int-zero
+    pinf.div -0
+    ninf
 
-  (pinf.div nan).as-bytes.eq nan.as-bytes ++> tests-positive-infinity-div-nan
+  eq. ++> tests-positive-infinity-div-nan
+    as-bytes.
+      pinf.div nan
+    nan.as-bytes
 
   eq. ++> tests-positive-infinity-div-negative-infinity
     as-bytes.
@@ -290,19 +349,28 @@
       pinf.div pinf
     nan.as-bytes
 
-  (pinf.div 42.5).eq pinf ++> tests-positive-infinity-div-positive-float
+  eq. ++> tests-positive-infinity-div-positive-float
+    pinf.div 42.5
+    pinf
 
-  (pinf.div 42).eq pinf ++> tests-positive-infinity-div-positive-int
+  eq. ++> tests-positive-infinity-div-positive-int
+    pinf.div 42
+    pinf
 
-  (pinf.div -42.5).eq ninf ++> tests-positive-infinity-div-negative-float
+  eq. ++> tests-positive-infinity-div-negative-float
+    pinf.div -42.5
+    ninf
 
-  (pinf.div -42).eq ninf ++> tests-positive-infinity-div-negative-int
+  eq. ++> tests-positive-infinity-div-negative-int
+    pinf.div -42
+    ninf
 
   pinf.as-bytes.eq ++> tests-positive-infinity-as-bytes-is-valid
     as-bytes.
       1.div 0
 
-  ninf.eq (-1.div 0) ++> tests-negative-infinity-is-equal-to-one-div-zero
+  ninf.eq ++> tests-negative-infinity-is-equal-to-one-div-zero
+    -1.div 0
 
   ninf.eq ninf ++> tests-negative-infinity-eq-negative-infinity
 
@@ -316,13 +384,21 @@
 
   (ninf.gt ninf).not ++> tests-negative-infinity-gt-negative-infinity
 
-  (ninf.gt pinf).eq false ++> tests-negative-infinity-not-gt-positive-infinity
+  eq. ++> tests-negative-infinity-not-gt-positive-infinity
+    ninf.gt pinf
+    false
 
-  (ninf.gt nan).eq false ++> tests-negative-infinity-not-gt-nan
+  eq. ++> tests-negative-infinity-not-gt-nan
+    ninf.gt nan
+    false
 
-  (ninf.gt 42).eq false ++> tests-negative-infinity-not-gt-int
+  eq. ++> tests-negative-infinity-not-gt-int
+    ninf.gt 42
+    false
 
-  (ninf.gt 42.5).eq false ++> tests-negative-infinity-not-gt-float
+  eq. ++> tests-negative-infinity-not-gt-float
+    ninf.gt 42.5
+    false
 
   eq. ++> tests-negative-infinity-times-float-zero
     as-bytes.
@@ -344,44 +420,79 @@
       ninf.times nan
     nan.as-bytes
 
-  (ninf.times pinf).eq ninf ++> tests-negative-infinity-times-positive-infinity
+  eq. ++> tests-negative-infinity-times-positive-infinity
+    ninf.times pinf
+    ninf
 
-  (ninf.times ninf).eq pinf ++> tests-negative-infinity-times-negative-infinity
+  eq. ++> tests-negative-infinity-times-negative-infinity
+    ninf.times ninf
+    pinf
 
-  (ninf.times 42.5).eq ninf ++> tests-negative-infinity-times-positive-float
+  eq. ++> tests-negative-infinity-times-positive-float
+    ninf.times 42.5
+    ninf
 
-  (ninf.times 42).eq ninf ++> tests-negative-infinity-times-positive-int
+  eq. ++> tests-negative-infinity-times-positive-int
+    ninf.times 42
+    ninf
 
-  (ninf.times -42.5).eq pinf ++> tests-negative-infinity-times-negative-float
+  eq. ++> tests-negative-infinity-times-negative-float
+    ninf.times -42.5
+    pinf
 
-  (ninf.times -42).eq pinf ++> tests-negative-infinity-times-negative-int
+  eq. ++> tests-negative-infinity-times-negative-int
+    ninf.times -42
+    pinf
 
-  (ninf.plus nan).as-bytes.eq nan.as-bytes ++> tests-negative-infinity-plus-nan
+  eq. ++> tests-negative-infinity-plus-nan
+    as-bytes.
+      ninf.plus nan
+    nan.as-bytes
 
   eq. ++> tests-negative-infinity-plus-positive-infinity
     as-bytes.
       ninf.plus pinf
     nan.as-bytes
 
-  ninf.eq (ninf.plus ninf) ++> tests-negative-infinity-plus-negative-infinity
+  ninf.eq ++> tests-negative-infinity-plus-negative-infinity
+    ninf.plus ninf
 
-  (ninf.plus 42.5).eq ninf ++> tests-negative-infinity-plus-positive-float
+  eq. ++> tests-negative-infinity-plus-positive-float
+    ninf.plus 42.5
+    ninf
 
-  (ninf.plus 42).eq ninf ++> tests-negative-infinity-plus-positive-int
+  eq. ++> tests-negative-infinity-plus-positive-int
+    ninf.plus 42
+    ninf
 
-  (ninf.plus -42.5).eq ninf ++> tests-negative-infinity-plus-negative-float
+  eq. ++> tests-negative-infinity-plus-negative-float
+    ninf.plus -42.5
+    ninf
 
-  (ninf.plus -42).eq ninf ++> tests-negative-infinity-plus-negative-int
+  eq. ++> tests-negative-infinity-plus-negative-int
+    ninf.plus -42
+    ninf
 
-  (ninf.div 0).eq ninf ++> tests-negative-infinity-div-float-zero
+  eq. ++> tests-negative-infinity-div-float-zero
+    ninf.div 0
+    ninf
 
-  (ninf.div -0).eq pinf ++> tests-negative-infinity-div-neg-float-zero
+  eq. ++> tests-negative-infinity-div-neg-float-zero
+    ninf.div -0
+    pinf
 
-  (ninf.div 0).eq ninf ++> tests-negative-infinity-div-int-zero
+  eq. ++> tests-negative-infinity-div-int-zero
+    ninf.div 0
+    ninf
 
-  (ninf.div -0).eq pinf ++> tests-negative-infinity-div-neg-int-zero
+  eq. ++> tests-negative-infinity-div-neg-int-zero
+    ninf.div -0
+    pinf
 
-  (ninf.div nan).as-bytes.eq nan.as-bytes ++> tests-negative-infinity-div-nan
+  eq. ++> tests-negative-infinity-div-nan
+    as-bytes.
+      ninf.div nan
+    nan.as-bytes
 
   eq. ++> tests-negative-infinity-div-positive-infinity
     as-bytes.
@@ -393,13 +504,21 @@
       ninf.div ninf
     nan.as-bytes
 
-  (ninf.div 42.5).eq ninf ++> tests-negative-infinity-div-positive-float
+  eq. ++> tests-negative-infinity-div-positive-float
+    ninf.div 42.5
+    ninf
 
-  (ninf.div 42).eq ninf ++> tests-negative-infinity-div-positive-int
+  eq. ++> tests-negative-infinity-div-positive-int
+    ninf.div 42
+    ninf
 
-  (ninf.div -42.5).eq pinf ++> tests-negative-infinity-div-negative-float
+  eq. ++> tests-negative-infinity-div-negative-float
+    ninf.div -42.5
+    pinf
 
-  (ninf.div -42).eq pinf ++> tests-negative-infinity-div-negative-int
+  eq. ++> tests-negative-infinity-div-negative-int
+    ninf.div -42
+    pinf
 
   ninf.as-bytes.eq ++> tests-negative-infinity-as-bytes-is-valid
     as-bytes.
@@ -409,9 +528,13 @@
 
   (nan.eq nan).not ++> tests-nan-not-eq-nan
 
-  (nan.gt 42).eq false ++> tests-nan-not-gt-number
+  eq. ++> tests-nan-not-gt-number
+    nan.gt 42
+    false
 
-  (nan.gt nan).eq false ++> tests-nan-not-gt-nan
+  eq. ++> tests-nan-not-gt-nan
+    nan.gt nan
+    false
 
   nan.as-bytes.eq ++> tests-nan-as-bytes-is-bytes-of-zero-div-zero
     as-bytes.
@@ -454,12 +577,23 @@
     -9.223372036854776e18.as-i64.as-bytes
     80-00-00-00-00-00-00-00
 
-  (2.power 4).eq 16 ++> tests-package-raises-to-power
+  eq. ++> tests-package-raises-to-power
+    2.power 4
+    16
 
   -17.9.abs.eq 17.9 ++> tests-package-absolute-of-negative
 
-  (7.mod 3).eq 1 ++> tests-package-modulo-of-two-numbers
+  eq. ++> tests-package-modulo-of-two-numbers
+    7.mod 3
+    1
 
-  (9.sqrt.minus 3).abs.lt 1.0E-9 ++> tests-package-square-root-approximates
+  lt. ++> tests-package-square-root-approximates
+    abs.
+      9.sqrt.minus 3
+    1.0E-9
 
-  (number.power 2 5).eq 32 ++> tests-package-power-via-number-namespace
+  eq. ++> tests-package-power-via-number-namespace
+    number.power
+      2
+      5
+    32

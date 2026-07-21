@@ -157,7 +157,9 @@
                       * byte
       as-bytes.slice index 1 > byte
 
-  " ".length.eq 1 ++> tests-calculates-length-of-spaces-only
+  eq. ++> tests-calculates-length-of-spaces-only
+    " ".length
+    1
 
   eq. ++> tests-turns-string-into-bytes
     "€ друг".as-bytes
@@ -191,7 +193,9 @@
 
   (nan.eq "друг").not ++> tests-compares-string-with-nan
 
-  (pinf.eq "друг").eq false ++> tests-compares-string-with-positive-infinity
+  eq. ++> tests-compares-string-with-positive-infinity
+    pinf.eq "друг"
+    false
 
   (ninf.eq "друг").not ++> tests-compares-string-with-negative-infinity
 
@@ -199,25 +203,27 @@
 
   "e\ne\ne".eq 65-0A-65-0A-65 ++> tests-text-block-tree-lines
 
-  ++> tests-text-block-with-margin
-    "z\n  y\n x".eq > @
-      7A-0A-20-20-79-0A-20-78
+  eq. ++> tests-text-block-with-margin
+    "z\n  y\n x"
+    7A-0A-20-20-79-0A-20-78
 
   ("Hello".eq "Good bye").not ++> tests-compares-two-different-strings
 
-  ++> tests-supports-escape-sequences
-    "Hello, друг!\n".eq > @
-      "Hello, друг!\n"
+  eq. ++> tests-supports-escape-sequences
+    "Hello, друг!\n"
+    "Hello, друг!\n"
 
   eq. ++> tests-supports-escape-sequences-in-text
     "Hello, друг!\n"
     "Hello, друг!\n"
 
-  ++> tests-preserves-indentation-in-text
-    "a\n b\n  c".eq > @
-      "a\n b\n  c"
+  eq. ++> tests-preserves-indentation-in-text
+    "a\n b\n  c"
+    "a\n b\n  c"
 
-  ("x".eq "x").eq true ++> tests-compares-two-strings
+  eq. ++> tests-compares-two-strings
+    "x".eq "x"
+    true
 
   "Ф".eq "Ф" ++> tests-one-symbol-string-compares
 
@@ -225,33 +231,59 @@
 
   "Ф".eq "Ф" ++> tests-supports-escape-sequences-unicode
 
-  ("hello".slice 0 1).eq "h" ++> tests-slice-from-start
+  eq. ++> tests-slice-from-start
+    "hello".slice
+      0
+      1
+    "h"
 
-  ("hello".slice 2 3).eq "llo" ++> tests-slice-in-the-middle
+  eq. ++> tests-slice-in-the-middle
+    "hello".slice
+      2
+      3
+    "llo"
 
-  ("hello".slice 4 1).eq "o" ++> tests-slice-from-the-end
+  eq. ++> tests-slice-from-the-end
+    "hello".slice
+      4
+      1
+    "o"
 
-  ("".slice 0 0).eq "" ++> tests-slice-empty-string
+  eq. ++> tests-slice-empty-string
+    "".slice
+      0
+      0
+    ""
 
-  ++> tests-no-slice-string
-    eq. > @
-      "no slice".slice
-        0
-        0
-      ""
+  eq. ++> tests-no-slice-string
+    "no slice".slice
+      0
+      0
+    ""
 
-  ("\n".slice 0 "\n".length).eq "\n" ++> tests-slice-escape-sequences-line-break
+  eq. ++> tests-slice-escape-sequences-line-break
+    "\n".slice
+      0
+      "\n".length
+    "\n"
 
-  ("Ф".slice 0 "Ф".length).eq "Ф" ++> tests-slice-escape-sequences-unicode
+  eq. ++> tests-slice-escape-sequences-unicode
+    "Ф".slice
+      0
+      "Ф".length
+    "Ф"
 
-  ("привет".slice 1 2).eq "ри" ++> tests-slice-with-n2-byte-characters
+  eq. ++> tests-slice-with-n2-byte-characters
+    "привет".slice
+      1
+      2
+    "ри"
 
-  ++> tests-slice-with-n3-byte-characters
-    eq. > @
-      "The अ is अ".slice
-        1
-        6
-      "he अ i"
+  eq. ++> tests-slice-with-n3-byte-characters
+    "The अ is अ".slice
+      1
+      6
+    "he अ i"
 
   eq. ++> tests-slice-with-n4-byte-characters
     "One 😀 and 😀 another".slice
@@ -259,27 +291,26 @@
       8
     " 😀 and 😀"
 
-  ++> tests-slice-foreign-literals
-    eq. > @
-      "hello, 大家!".slice
-        7
-        1
-      "大"
-
-  --> on-slicing-start-below-zero
-    "some string".slice > @
-      -1
-      1
-
-  --> on-slicing-end-below-start
-    "some string".slice > @
-      2
-      -1
-
-  --> on-slicing-end-greater-actual
-    "some string".slice > @
+  eq. ++> tests-slice-foreign-literals
+    "hello, 大家!".slice
       7
-      5
+      1
+    "大"
+
+  slice. --> on-slicing-start-below-zero
+    "some string"
+    -1
+    1
+
+  slice. --> on-slicing-end-below-start
+    "some string"
+    2
+    -1
+
+  slice. --> on-slicing-end-greater-actual
+    "some string"
+    7
+    5
 
   eq. ++> tests-unescapes-slashes
     "x\\b\\f\\u\\r\\t\\n\\'"
@@ -291,23 +322,33 @@
     "hello, world, how are you?"
     "how"
 
-  "hello, world".starts-with "hello" ++> tests-package-starts-with-prefix
+  starts-with. ++> tests-package-starts-with-prefix
+    "hello, world"
+    "hello"
 
-  "hello, world".ends-with "world" ++> tests-package-ends-with-suffix
+  ends-with. ++> tests-package-ends-with-suffix
+    "hello, world"
+    "world"
 
   "hello".up-cased.eq "HELLO" ++> tests-package-up-cases-text
 
   "HELLO".low-cased.eq "hello" ++> tests-package-low-cases-text
 
-  ++> tests-package-trims-surrounding-spaces
-    "  spaced  ".trimmed.eq > @
-      "spaced"
+  eq. ++> tests-package-trims-surrounding-spaces
+    "  spaced  ".trimmed
+    "spaced"
 
-  ("ha".repeated 3).eq "hahaha" ++> tests-package-repeats-text
+  eq. ++> tests-package-repeats-text
+    "ha".repeated 3
+    "hahaha"
 
-  ("hello".index-of "l").eq 2 ++> tests-package-finds-index-of-character
+  eq. ++> tests-package-finds-index-of-character
+    "hello".index-of "l"
+    2
 
-  ("some".at 1).eq "o" ++> tests-package-takes-character-at-index
+  eq. ++> tests-package-takes-character-at-index
+    "some".at 1
+    "o"
 
   "2026".is-digit ++> tests-package-detects-digits
 

@@ -43,7 +43,10 @@
     00-00-00-00-8E-EA-4C-B1.xor 00-00-00-00-FF-FF-FF-FF
     00-00-00-00-71-15-B3-4E
 
-  (1.as-bytes.xor 1.as-bytes).as-number.eq 0 ++> tests-one-xor-one-as-number
+  eq. ++> tests-one-xor-one-as-number
+    as-number.
+      1.as-bytes.xor 1.as-bytes
+    0
 
   eq. ++> tests-xor-neg-bytes-with-leading-zeroes
     00-00-00-00-8E-EA-4C-B1.xor FF-FF-FF-FF-00-00-00-00

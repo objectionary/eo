@@ -79,7 +79,8 @@
         [m]
           while > @
             2.gt m > [i] >>
-            m.put (m.as-number.plus 1) > [i] >>
+            m.put > [i] >>
+              m.as-number.plus 1
       3
 
   ++> tests-last-while-dataization-object-with-false-condition

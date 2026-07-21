@@ -38,10 +38,9 @@
         slen
       sub
 
-  ++> tests-text-contains-substring
-    contains > @
-      "Hello, world!"
-      "o, wo"
+  contains ++> tests-text-contains-substring
+    "Hello, world!"
+    "o, wo"
 
   ++> tests-text-does-not-contain-substring
     not. > @

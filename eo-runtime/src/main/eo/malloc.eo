@@ -62,7 +62,9 @@
 +unlint mandatory-package
 
 [] > malloc
-  malloc.of 0 scope > [scope] > empty
+  malloc.of > [scope] > empty
+    0
+    scope
   [object scope] > for
     malloc.of > @
       bts.size
@@ -71,19 +73,18 @@
         scope m
     object > bts!
   [size scope] > of
-    [] > @ /Q.bytes
+    [] > @ /bytes
     [id] > allocated
       get > @
       read 0 size > get
-      [] > size /Q.number
+      [] > size /number
       [size] > resized /Q.malloc.of.allocated
-      [source target length] > copy
-        write > @
-          target
-          read source length
-      [offset length] > read /Q.bytes
-        ? > cant-read /{Q.string}
-      [offset data] > write /Q.bool
+      write > [source target length] > copy
+        target
+        read source length
+      [offset length] > read /bytes
+        ? > cant-read /{string}
+      [offset data] > write /bool
       seq * > [object] > put
         write 0 object
         get
@@ -118,7 +119,8 @@
             * second second
           malloc.of > second
             1
-            f.put (f.as-number.plus 1) > [s] >>
+            f.put > [s] >>
+              f.as-number.plus 1
 
   ++> tests-malloc-for-writes-first-init-value
     eq. > @
@@ -168,7 +170,8 @@
   --> on-overflow-string-malloc
     malloc.for > @
       "Hello"
-      m.put "Much longer string!" > [m]
+      m.put > [m]
+        "Much longer string!"
 
   ++> tests-malloc-is-strictly-sized-int
     eq. > @
@@ -199,7 +202,8 @@
   ++> tests-malloc-gives-id-to-allocated-block
     malloc.of > @
       1
-      m.put (m.id.gt 0) > [m]
+      m.put > [m]
+        m.id.gt 0
 
   ++> tests-malloc-allocates-right-size-block
     malloc.of > @
@@ -207,7 +211,8 @@
       [b]
         malloc.of > @
           10
-          b.put (m.size.eq 10) > [m] >>
+          b.put > [m] >>
+            m.size.eq 10
 
   ++> tests-malloc-writes-and-reads
     malloc.of > @
@@ -294,11 +299,10 @@
       [b]
         malloc.for > @
           01-02-03-04-05
-          [m] >>
-            b.put > @
-              and.
-                (m.resized 3).size.eq 3
-                m.get.eq 01-02-03
+          b.put > [m] >>
+            and.
+              (m.resized 3).size.eq 3
+              m.get.eq 01-02-03
 
   --> on-changing-size-to-negative
     malloc.of > @
@@ -317,23 +321,30 @@
   ++> tests-copies-data-inside-itself
     malloc.for > @
       01-02-03-04-05
-      [m]
-        and. > @
-          m.copy 1 2 2
-          m.get.eq 01-02-02-03-05
+      and. > [m]
+        m.copy
+          1
+          2
+          2
+        m.get.eq 01-02-02-03-05
 
   ++> tests-copies-data-from-start-to-end
     malloc.for > @
       01-02-03-04-05-06
-      [m]
-        and. > @
-          m.copy 0 3 3
-          m.get.eq 01-02-03-01-02-03
+      and. > [m]
+        m.copy
+          0
+          3
+          3
+        m.get.eq 01-02-03-01-02-03
 
   --> on-copying-with-wrong-source
     malloc.for > @
       0
-      m.copy 9 1 1 > [m]
+      m.copy > [m]
+        9
+        1
+        1
 
   ++> copies-and-resizes-to-target
     malloc.for > @
@@ -348,7 +359,10 @@
   --> on-copying-with-wrong-length
     malloc.for > @
       0
-      m.copy 3 1 9 > [m]
+      m.copy > [m]
+        3
+        1
+        9
 
   ++> tests-calculates-only-once
     eq. > @

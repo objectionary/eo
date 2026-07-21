@@ -35,7 +35,9 @@
         factor
           depth.plus 1
 
-  (sine 0).eq 0 ++> tests-sine-of-zero-is-zero
+  eq. ++> tests-sine-of-zero-is-zero
+    sine 0
+    0
 
   lt. ++> tests-sine-of-pi-halves-is-one
     abs
@@ -57,13 +59,12 @@
         500
     1
 
-  ++> tests-sine-of-pi-is-zero
-    lt. > @
-      abs
-        times.
-          sine pi
-          1000
-      1
+  lt. ++> tests-sine-of-pi-is-zero
+    abs
+      times.
+        sine pi
+        1000
+    1
 
   lt. ++> tests-sine-of-negative-pi-halves-is-minus-one
     abs
@@ -94,14 +95,13 @@
         1000
     1
 
-  ++> tests-sine-of-two-pi-is-zero
-    lt. > @
-      abs
-        times.
-          sine
-            pi.times 2
-          1000
-      1
+  lt. ++> tests-sine-of-two-pi-is-zero
+    abs
+      times.
+        sine
+          pi.times 2
+        1000
+    1
 
   lt. ++> tests-sine-reduces-large-angle
     abs

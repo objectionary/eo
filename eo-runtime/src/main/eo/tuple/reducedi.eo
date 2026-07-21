@@ -110,10 +110,9 @@
         0
         [acc x i]
           check x > @
-          [el] > check
-            if. > @
-              x.lt 100
-              acc.plus x
-              acc.minus x
+          if. > [el] > check
+            x.lt 100
+            acc.plus x
+            acc.minus x
       10.plus
         0.minus 500

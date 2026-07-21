@@ -17,8 +17,7 @@ origin: |
         -1.times 228
 
 printed: |
-  [] > app
-    io.stdout > @
-      string.sprintf
-        "result is %d\n"
-        -1.times 228
+  io.stdout > [] > app
+    string.sprintf
+      "result is %d\n"
+      -1.times 228

@@ -13,9 +13,8 @@
 [as-bytes] > u8
   as-bytes > @
   as-i16.as-number > as-number
-  [] > as-i16
-    i16 > @
-      00-.concat as-bytes
+  i16 > [] > as-i16
+    00-.concat as-bytes
   as-i16.lt x.as-u8.as-i16 > [x] > lt
   as-i16.lte x.as-u8.as-i16 > [x] > lte
   as-i16.gt x.as-u8.as-i16 > [x] > gt
@@ -76,15 +75,25 @@
 
   (2A-.as-u8.eq 2B-.as-u8).not ++> tests-u8-eq-false
 
-  (01-.as-u8.plus 01-.as-u8).eq 02-.as-u8 ++> tests-u8-one-plus-u8-one
+  eq. ++> tests-u8-one-plus-u8-one
+    01-.as-u8.plus 01-.as-u8
+    02-.as-u8
 
-  (FF-.as-u8.plus 01-.as-u8).eq 00-.as-u8 ++> tests-u8-plus-with-overflow
+  eq. ++> tests-u8-plus-with-overflow
+    FF-.as-u8.plus 01-.as-u8
+    00-.as-u8
 
-  (05-.as-u8.minus 03-.as-u8).eq 02-.as-u8 ++> tests-u8-minus
+  eq. ++> tests-u8-minus
+    05-.as-u8.minus 03-.as-u8
+    02-.as-u8
 
-  (00-.as-u8.minus 01-.as-u8).eq FF-.as-u8 ++> tests-u8-minus-with-underflow
+  eq. ++> tests-u8-minus-with-underflow
+    00-.as-u8.minus 01-.as-u8
+    FF-.as-u8
 
-  (06-.as-u8.times 07-.as-u8).eq 2A-.as-u8 ++> tests-u8-times
+  eq. ++> tests-u8-times
+    06-.as-u8.times 07-.as-u8
+    2A-.as-u8
 
   eq. ++> tests-u8-times-wraps-modulo-2-pow-8
     10-.as-u8.times 10-.as-u8
@@ -94,9 +103,13 @@
     FF-.as-u8.times FF-.as-u8
     01-.as-u8
 
-  (C8-.as-u8.div 03-.as-u8).eq 42-.as-u8 ++> tests-u8-div-is-unsigned
+  eq. ++> tests-u8-div-is-unsigned
+    C8-.as-u8.div 03-.as-u8
+    42-.as-u8
 
-  (FF-.as-u8.div 01-.as-u8).eq FF-.as-u8 ++> tests-u8-div-by-u8-one
+  eq. ++> tests-u8-div-by-u8-one
+    FF-.as-u8.div 01-.as-u8
+    FF-.as-u8
 
   02-.as-u8.div 00-.as-u8 --> on-division-u8-by-u8-zero
 

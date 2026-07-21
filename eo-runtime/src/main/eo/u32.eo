@@ -13,9 +13,8 @@
 [as-bytes] > u32
   as-bytes > @
   as-i64.as-number > as-number
-  [] > as-i64
-    i64 > @
-      00-00-00-00.concat as-bytes
+  i64 > [] > as-i64
+    00-00-00-00.concat as-bytes
   as-i64.lt x.as-u32.as-i64 > [x] > lt
   as-i64.lte x.as-u32.as-i64 > [x] > lte
   as-i64.gt x.as-u32.as-i64 > [x] > gt

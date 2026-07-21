@@ -30,7 +30,9 @@
   as-ascii "Z" > maxcode
   as-ascii "A" > mincode
 
-  "hello".eq (low-cased "HELLO") ++> tests-converts-text-to-lower-case
+  eq. ++> tests-converts-text-to-lower-case
+    "hello"
+    low-cased "HELLO"
 
   eq. ++> tests-converts-text-with-low-letters-to-lower-case
     "hello"

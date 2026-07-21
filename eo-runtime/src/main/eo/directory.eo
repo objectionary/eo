@@ -111,4 +111,6 @@
         2
     (directory mktemp.tmpfile.deleted).made.as-path > d
 
-  (directory mktemp.tmpfile.deleted).walk "**" --> on-walking-absent-directory
+  walk. --> on-walking-absent-directory
+    directory mktemp.tmpfile.deleted
+    "**"

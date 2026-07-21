@@ -127,4 +127,5 @@
               buffer.size
           output-block
 
-  console.write "Hello, console-test!\n" ++> tests-writes-to-console
+  console.write ++> tests-writes-to-console
+    "Hello, console-test!\n"
