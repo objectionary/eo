@@ -9,13 +9,12 @@
 +spdx SPDX-License-Identifier: MIT
 
 [bts] > as-hex
-  [h] > hex-digit
-    if. > @
-      h.lt 10
-      as-char
-        h.plus 48
-      as-char
-        h.plus 55
+  if. > [h] > hex-digit
+    h.lt 10
+    as-char
+      h.plus 48
+    as-char
+      h.plus 55
   [index acc] > rec-hex
     if. > @
       index.eq bts.size
@@ -40,10 +39,10 @@
     0
     --
 
-  ++> tests-writes-single-byte
-    "41".eq > @
-      string
-        as-hex "A".as-bytes
+  eq. ++> tests-writes-single-byte
+    "41"
+    string
+      as-hex "A".as-bytes
 
   eq. ++> tests-joins-bytes-with-hyphens
     "4A-65-66-66"
@@ -60,7 +59,7 @@
     string
       as-hex 42.as-bytes
 
-  ++> tests-writes-empty-bytes
-    "".eq > @
-      string
-        as-hex --
+  eq. ++> tests-writes-empty-bytes
+    ""
+    string
+      as-hex --

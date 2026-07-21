@@ -18,4 +18,5 @@ origin: |
       """
 
 printed: |
-  io.stdout "Hello\nit's me" > [] > app
+  io.stdout > [] > app
+    "Hello\nit's me"

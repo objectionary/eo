@@ -13,32 +13,63 @@
     n.eq value
   x > value!
 
-  (-200.lte -100).eq true ++> tests-int-leq-true
+  eq. ++> tests-int-leq-true
+    -200.lte -100
+    true
 
-  (50.lte 50).eq true ++> tests-int-leq-equal
+  eq. ++> tests-int-leq-equal
+    50.lte 50
+    true
 
-  (0.lte -10).not.eq true ++> tests-int-leq-false
+  eq. ++> tests-int-leq-false
+    not.
+      0.lte -10
+    true
 
-  (pinf.lte pinf).eq true ++> tests-positive-infinity-lte-positive-infinity
+  eq. ++> tests-positive-infinity-lte-positive-infinity
+    pinf.lte pinf
+    true
 
-  (pinf.lte ninf).eq false ++> tests-positive-infinity-not-lte-negative-infinity
+  eq. ++> tests-positive-infinity-not-lte-negative-infinity
+    pinf.lte ninf
+    false
 
-  (pinf.lte nan).eq false ++> tests-positive-infinity-not-lte-nan
+  eq. ++> tests-positive-infinity-not-lte-nan
+    pinf.lte nan
+    false
 
-  (pinf.lte 42).eq false ++> tests-positive-infinity-not-lte-int
+  eq. ++> tests-positive-infinity-not-lte-int
+    pinf.lte 42
+    false
 
-  (pinf.lte 42.5).eq false ++> tests-positive-infinity-not-lte-float
+  eq. ++> tests-positive-infinity-not-lte-float
+    pinf.lte 42.5
+    false
 
-  (ninf.lte ninf).eq true ++> tests-negative-infinity-lte-negative-infinity
+  eq. ++> tests-negative-infinity-lte-negative-infinity
+    ninf.lte ninf
+    true
 
-  (ninf.lte pinf).eq true ++> tests-negative-infinity-lte-positive-infinity
+  eq. ++> tests-negative-infinity-lte-positive-infinity
+    ninf.lte pinf
+    true
 
-  (ninf.lte nan).eq false ++> tests-negative-infinity-not-lte-nan
+  eq. ++> tests-negative-infinity-not-lte-nan
+    ninf.lte nan
+    false
 
-  (ninf.lte 42).eq true ++> tests-negative-infinity-lte-int
+  eq. ++> tests-negative-infinity-lte-int
+    ninf.lte 42
+    true
 
-  (ninf.lte 42.5).eq true ++> tests-negative-infinity-lte-float
+  eq. ++> tests-negative-infinity-lte-float
+    ninf.lte 42.5
+    true
 
-  (nan.lte 42).eq false ++> tests-nan-not-lte-number
+  eq. ++> tests-nan-not-lte-number
+    nan.lte 42
+    false
 
-  (nan.lte nan).eq false ++> tests-nan-not-lte-nan
+  eq. ++> tests-nan-not-lte-nan
+    nan.lte nan
+    false

@@ -19,21 +19,42 @@
 
 [format read] > scanf /tuple
 
-  "hello".eq (scanf "%s" "hello").head ++> tests-scanf-with-string
+  eq. ++> tests-scanf-with-string
+    "hello"
+    head.
+      scanf "%s" "hello"
 
-  33.eq (scanf "%d" "33").head ++> tests-scanf-with-int
+  eq. ++> tests-scanf-with-int
+    33
+    head.
+      scanf "%d" "33"
 
-  -42.eq (scanf "%d" "-42").head ++> tests-scanf-with-negative-int
+  eq. ++> tests-scanf-with-negative-int
+    -42
+    head.
+      scanf "%d" "-42"
 
-  42.eq (scanf "%d" "+42").head ++> tests-scanf-with-positive-signed-int
+  eq. ++> tests-scanf-with-positive-signed-int
+    42
+    head.
+      scanf "%d" "+42"
 
-  0.24.eq (scanf "%f" "0.24").head ++> tests-scanf-with-float
+  eq. ++> tests-scanf-with-float
+    0.24
+    head.
+      scanf "%f" "0.24"
 
-  scanf "%l" "error" --> on-scanf-with-wrong-format
+  scanf --> on-scanf-with-wrong-format
+    "%l"
+    "error"
 
-  scanf "%d" "99999999999999999999" --> on-scanf-with-oversized-int
+  scanf --> on-scanf-with-oversized-int
+    "%d"
+    "99999999999999999999"
 
-  scanf "hello%" "hello" --> on-scanf-with-dangling-percent
+  scanf --> on-scanf-with-dangling-percent
+    "hello%"
+    "hello"
 
   eq. ++> tests-scanf-with-string-int-float
     scanf
@@ -44,7 +65,10 @@
       33
       0.24
 
-  "hello".eq (scanf "%s!" "hello!").head ++> tests-scanf-with-string-with-ending
+  eq. ++> tests-scanf-with-string-with-ending
+    "hello"
+    head.
+      scanf "%s!" "hello!"
 
   eq. ++> tests-scanf-with-complex-string
     "test"

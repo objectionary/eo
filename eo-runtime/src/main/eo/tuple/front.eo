@@ -26,11 +26,10 @@
         list
         rechead list
   index > idx!
-  [tup] > rechead
-    if. > @
-      tup.length.eq idx
-      tup
-      rechead tup.tail
+  if. > [tup] > rechead
+    tup.length.eq idx
+    tup
+    rechead tup.tail
 
   eq. ++> tests-simple-front
     front

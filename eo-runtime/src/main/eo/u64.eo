@@ -24,22 +24,18 @@
         80-00-00-00-00-00-00-00
       1.8446744073709552e19
       0
-  [x] > lt
-    lt. > @
-      i64 flip
-      i64 x.as-u64.flip
-  [x] > lte
-    lte. > @
-      i64 flip
-      i64 x.as-u64.flip
-  [x] > gt
-    gt. > @
-      i64 flip
-      i64 x.as-u64.flip
-  [x] > gte
-    gte. > @
-      i64 flip
-      i64 x.as-u64.flip
+  lt. > [x] > lt
+    i64 flip
+    i64 x.as-u64.flip
+  lte. > [x] > lte
+    i64 flip
+    i64 x.as-u64.flip
+  gt. > [x] > gt
+    i64 flip
+    i64 x.as-u64.flip
+  gte. > [x] > gte
+    i64 flip
+    i64 x.as-u64.flip
   [x] > plus
     u64 sum.as-bytes > @
     plus. > sum

@@ -32,4 +32,6 @@
       bts
     01-02-03-04-05-06-07-08 > bts
 
-  (Q.input.as-bytes dead).eq -- ++> tests-returns-empty-bytes-from-dead-input
+  eq. ++> tests-returns-empty-bytes-from-dead-input
+    Q.input.as-bytes dead
+    --

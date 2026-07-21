@@ -29,15 +29,35 @@
     abs dividend > absx
     abs divisor > absy
 
-  (mod 1 2).eq 1 ++> tests-mod-n1-n2
+  eq. ++> tests-mod-n1-n2
+    mod
+      1
+      2
+    1
 
-  (mod 0 5).eq 0 ++> tests-mod-n0-n5
+  eq. ++> tests-mod-n0-n5
+    mod
+      0
+      5
+    0
 
-  (mod 0 -15).eq 0 ++> tests-mod-n0-n15-neg
+  eq. ++> tests-mod-n0-n15-neg
+    mod
+      0
+      -15
+    0
 
-  (mod -1 7).eq -1 ++> tests-mod-n1-neg-n7
+  eq. ++> tests-mod-n1-neg-n7
+    mod
+      -1
+      7
+    -1
 
-  (mod 16 -200).eq 16 ++> tests-mod-n16-n200-neg
+  eq. ++> tests-mod-n16-n200-neg
+    mod
+      16
+      -200
+    16
 
   ++> tests-div-mod-compatibility
     eq. > @
@@ -49,11 +69,21 @@
     -13 > dividend
     5 > divisor
 
-  (mod -1 5).eq -1 ++> tests-mod-dividend-less-than-divisor
+  eq. ++> tests-mod-dividend-less-than-divisor
+    mod
+      -1
+      5
+    -1
 
-  (mod 133 1).eq 0 ++> tests-mod-dividend-by-one
+  eq. ++> tests-mod-dividend-by-one
+    mod
+      133
+      1
+    0
 
-  mod 5 0 --> on-mod-by-zero
+  mod --> on-mod-by-zero
+    5
+    0
 
   ++> tests-mod-by-zero-returns-provided-fallback
     "recovered".eq > @

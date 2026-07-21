@@ -21,14 +21,12 @@
   if > not
     false
     true
-  [x] > and
-    if > @
-      01-.eq x
-      false
-  [x] > or
-    if > @
-      true
-      01-.eq x
+  if > [x] > and
+    01-.eq x
+    false
+  if > [x] > or
+    true
+    01-.eq x
 
   true.eq true ++> tests-compares-two-bools
 
@@ -36,22 +34,20 @@
 
   (true.eq 42).not ++> tests-compares-two-different-bool-types
 
-  ++> tests-compares-bool-to-bytes
-    and. > @
-      true.eq 01-
-      false.eq 00-
+  and. ++> tests-compares-bool-to-bytes
+    true.eq 01-
+    false.eq 00-
 
   and. ++> tests-compares-bool-to-bytes-reverse
     01-.as-bytes.eq true
     00-.as-bytes.eq false
 
-  ++> tests-forks-on-true-condition
-    eq. > @
-      if.
-        5.eq 5
-        123
-        42
+  eq. ++> tests-forks-on-true-condition
+    if.
+      5.eq 5
       123
+      42
+    123
 
   ++> tests-takes-parent-object
     eq. > @
@@ -87,7 +83,8 @@
   ++> tests-extract-attribute-from-decoratee
     a.foo.eq 43 > @
     [foo] > return
-    return (42.plus 1) > [] > a
+    return > [] > a
+      42.plus 1
 
   ++> tests-nesting-blah-test
     eq. > @
@@ -191,17 +188,15 @@
 
   true.not.eq false ++> tests-true-not-is-false
 
-  ++> tests-compares-bool-to-string
-    and. > @
-      true.eq "\u0001"
-      false.eq "\u0000"
+  and. ++> tests-compares-bool-to-string
+    true.eq "\u0001"
+    false.eq "\u0000"
 
   (true.and false).not ++> tests-true-and-false-is-false
 
-  ++> tests-forks-on-false-condition
-    eq. > @
-      if.
-        5.eq 8
-        123
-        42
+  eq. ++> tests-forks-on-false-condition
+    if.
+      5.eq 8
+      123
       42
+    42

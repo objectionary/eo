@@ -15,6 +15,6 @@ origin: |
       true.eq 01-
       false.eq 00-
 printed: |
-  [] > compares-bool-to-bytes
-    (true.eq 01-).and > @
-      false.eq 00-
+  and. > [] > compares-bool-to-bytes
+    true.eq 01-
+    false.eq 00-

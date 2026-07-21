@@ -31,12 +31,11 @@
         -17.as-bytes.left 1
         33.as-bytes
 
-  ++> tests-left-with-minus-one
-    eq. > @
-      eq.
-        -1.as-bytes.left 3
-        7.as-bytes
-      false
+  eq. ++> tests-left-with-minus-one
+    eq.
+      -1.as-bytes.left 3
+      7.as-bytes
+    false
 
   eq. ++> tests-left-with-even-neg
     FF-FF-FF-FF-FF-FF-FF-EE.left 2
