@@ -1,0 +1,192 @@
+# Unsigned 64-bit integer.
+# Here `as-bytes` must be a `bytes` object of exactly eight bytes,
+# interpreted without a sign. Addition, subtraction and multiplication
+# share the bit pattern of their signed `i64` counterparts, while
+# comparisons and division are made unsigned.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object
++unlint mandatory-package
+
+[as-bytes] > u64
+  as-bytes > @
+  as-bytes.xor > flip
+    80-00-00-00-00-00-00-00
+  plus. > [] > as-number
+    as-number.
+      i64 as-bytes
+    if.
+      eq.
+        as-bytes.and 80-00-00-00-00-00-00-00
+        80-00-00-00-00-00-00-00
+      1.8446744073709552e19
+      0
+  [x] > lt
+    lt. > @
+      i64 flip
+      i64 x.as-u64.flip
+  [x] > lte
+    lte. > @
+      i64 flip
+      i64 x.as-u64.flip
+  [x] > gt
+    gt. > @
+      i64 flip
+      i64 x.as-u64.flip
+  [x] > gte
+    gte. > @
+      i64 flip
+      i64 x.as-u64.flip
+  [x] > plus
+    u64 sum.as-bytes > @
+    plus. > sum
+      i64 as-bytes
+      i64 x.as-u64.as-bytes
+  [x] > minus
+    u64 diff.as-bytes > @
+    minus. > diff
+      i64 as-bytes
+      i64 x.as-u64.as-bytes
+  [x] > times
+    u64 product.as-bytes > @
+    times. > product
+      i64 as-bytes
+      i64 x.as-u64.as-bytes
+  [x cant-divide] > div
+    if. > @
+      d.as-bytes.eq 00-00-00-00-00-00-00-00
+      cant-divide
+        "Can't divide %d by u64 zero".printf
+          * as-number
+      if.
+        eq.
+          d.as-bytes.and 80-00-00-00-00-00-00-00
+          80-00-00-00-00-00-00-00
+        if.
+          gte d
+          u64 00-00-00-00-00-00-00-01
+          u64 00-00-00-00-00-00-00-00
+        final
+    x.as-u64 > d
+    left. > q0
+      as-bytes.
+        div.
+          i64
+            as-bytes.right 1
+          i64 d.as-bytes
+      1
+    times. > prod
+      u64 q0
+      d
+    minus prod > rem
+    plus. > q0plus1
+      u64 q0
+      u64 00-00-00-00-00-00-00-01
+    if. > final
+      rem.gte d
+      q0plus1
+      u64 q0
+
+  eq. ++> tests-u64-has-valid-bytes
+    00-00-00-00-00-00-00-2A.as-u64.as-bytes
+    00-00-00-00-00-00-00-2A
+
+  00-00-00-00-00-00-00-2A.as-u64.as-number.eq 42 ++> tests-u64-as-number-small
+
+  gt. ++> tests-u64-as-number-is-unsigned
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.as-number
+    0
+
+  lt. ++> tests-u64-less-true
+    00-00-00-00-00-00-00-0A.as-u64
+    00-00-00-00-00-00-00-32.as-u64
+
+  ++> tests-u64-less-equal
+    not. > @
+      00-00-00-00-00-00-00-0A.as-u64.lt 00-00-00-00-00-00-00-0A.as-u64
+
+  gt. ++> tests-u64-greater-treats-high-bit-as-magnitude
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64
+    00-00-00-00-00-00-00-01.as-u64
+
+  ++> tests-u64-high-bit-not-less-than-one
+    not. > @
+      FF-FF-FF-FF-FF-FF-FF-FF.as-u64.lt 00-00-00-00-00-00-00-01.as-u64
+
+  lt. ++> tests-u64-zero-less-than-max
+    00-00-00-00-00-00-00-00.as-u64
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64
+
+  lte. ++> tests-u64-lte-equal
+    00-00-00-00-00-00-00-32.as-u64
+    00-00-00-00-00-00-00-32.as-u64
+
+  gte. ++> tests-u64-gte-equal
+    00-00-00-00-00-00-00-32.as-u64
+    00-00-00-00-00-00-00-32.as-u64
+
+  ++> tests-u64-gte-false
+    not. > @
+      00-00-00-00-00-00-00-00.as-u64.gte 00-00-00-00-00-00-00-0A.as-u64
+
+  eq. ++> tests-u64-eq-true
+    00-00-00-00-00-00-00-2A.as-u64
+    00-00-00-00-00-00-00-2A.as-u64
+
+  eq. ++> tests-u64-one-plus-u64-one
+    00-00-00-00-00-00-00-01.as-u64.plus 00-00-00-00-00-00-00-01.as-u64
+    00-00-00-00-00-00-00-02.as-u64
+
+  eq. ++> tests-u64-plus-with-overflow
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.plus 00-00-00-00-00-00-00-01.as-u64
+    00-00-00-00-00-00-00-00.as-u64
+
+  eq. ++> tests-u64-minus
+    00-00-00-00-00-00-00-05.as-u64.minus 00-00-00-00-00-00-00-03.as-u64
+    00-00-00-00-00-00-00-02.as-u64
+
+  eq. ++> tests-u64-minus-with-underflow
+    00-00-00-00-00-00-00-00.as-u64.minus 00-00-00-00-00-00-00-01.as-u64
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64
+
+  eq. ++> tests-u64-times
+    00-00-00-00-00-00-00-06.as-u64.times 00-00-00-00-00-00-00-07.as-u64
+    00-00-00-00-00-00-00-2A.as-u64
+
+  eq. ++> tests-u64-times-wraps-modulo-2-pow-64
+    00-00-00-01-00-00-00-00.as-u64.times 00-00-00-01-00-00-00-00.as-u64
+    00-00-00-00-00-00-00-00.as-u64
+
+  eq. ++> tests-u64-div-is-unsigned
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.div 00-00-00-00-00-00-00-02.as-u64
+    7F-FF-FF-FF-FF-FF-FF-FF.as-u64
+
+  eq. ++> tests-u64-div-by-large-divisor
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.div 80-00-00-00-00-00-00-00.as-u64
+    00-00-00-00-00-00-00-01.as-u64
+
+  eq. ++> tests-u64-div-small-not-reaching-large-divisor
+    00-00-00-00-00-00-00-0A.as-u64.div 80-00-00-00-00-00-00-00.as-u64
+    00-00-00-00-00-00-00-00.as-u64
+
+  eq. ++> tests-u64-div-with-remainder
+    00-00-00-00-00-00-00-2A.as-u64.div 00-00-00-00-00-00-00-05.as-u64
+    00-00-00-00-00-00-00-08.as-u64
+
+  eq. ++> tests-u64-div-by-u64-one
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.div 00-00-00-00-00-00-00-01.as-u64
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64
+
+  div. --> on-division-u64-by-u64-zero
+    00-00-00-00-00-00-00-02.as-u64
+    00-00-00-00-00-00-00-00.as-u64
+
+  ++> tests-u64-div-by-zero-returns-provided-fallback
+    "recovered".eq > @
+      00-00-00-00-00-00-00-02.as-u64.div
+        00-00-00-00-00-00-00-00.as-u64
+        "recovered" > [msg]

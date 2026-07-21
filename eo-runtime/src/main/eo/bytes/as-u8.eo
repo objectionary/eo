@@ -1,0 +1,22 @@
+# Bytes as an unsigned 8-bit integer `u8`: a single byte reinterpreted
+# without a sign. For any other length the `cant-convert` fallback
+# is returned.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package bytes
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[bts cant-convert] > as-u8
+  if. > @
+    bts.size.eq 1
+    u8 bts
+    cant-convert
+      "Can't convert non 1 length bytes to u8, bytes are %x".printf
+        * bts
+
+  01-01.as-u8 --> on-bytes-of-wrong-size-as-u8
+
+  2A-.as-u8.as-bytes.eq 2A- ++> tests-bytes-converts-to-u8-and-back
