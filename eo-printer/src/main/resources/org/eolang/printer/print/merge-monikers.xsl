@@ -7,23 +7,13 @@
   <!--
   Merges a standalone named binding back onto its bare-reference use site,
   restoring the shorter "moniker" spelling. The parser hoists a `> name`
-  to the enclosing formation no matter where it is written, so this code:
-
-  [num] > abs
-    if. > @
-      value.gte 0
-      number num.as-bytes > value
-      value.neg
-
-  parses to the same object graph as this longer form, which the printer
-  would otherwise re-emit:
-
-  [num] > abs
-    if. > @
-      value.gte 0
-      value
-      value.neg
-    number num.as-bytes > value
+  binding up to its enclosing formation regardless of where it is written,
+  so the moniker spelling (the binding written in place of its bare
+  reference, such as `number num.as-bytes > value` sitting where a bare
+  `value` would appear) and the expanded spelling the printer would
+  otherwise emit (a bare `value` reference plus a separate `... > value`
+  binding line) parse to one and the same object graph. This pass turns
+  the expanded spelling back into the moniker.
 
   For each formation, a named bound attribute that is neither void, `φ`,
   a test, nor pipe-floated is merged onto its bare `ξ.<name>` reference
