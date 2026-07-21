@@ -121,7 +121,8 @@ final class Penalty {
             total += Penalty.brackets(line) * this.weight(PenaltyKey.BRACKET);
             total += Penalty.phis(line) * this.weight(PenaltyKey.PHI);
             total += Penalty.ifs(line) * this.weight(PenaltyKey.IF);
-            total += this.overflow(line) * this.weight(PenaltyKey.EXCESS);
+            total += Math.max(0, line.length() - this.weight(PenaltyKey.WIDTH))
+                * this.weight(PenaltyKey.EXCESS);
             total += line.length() * this.weight(PenaltyKey.SYMBOL);
             total += (spaces + applied * (applied - 1))
                 * this.weight(PenaltyKey.SPACE);
@@ -149,15 +150,6 @@ final class Penalty {
             ++spaces;
         }
         return spaces / this.weight(PenaltyKey.STEP);
-    }
-
-    /**
-     * Count characters past the allowed width.
-     * @param line The line
-     * @return The number of overflowing characters
-     */
-    private int overflow(final String line) {
-        return Math.max(0, line.length() - this.weight(PenaltyKey.WIDTH));
     }
 
     /**
@@ -312,20 +304,16 @@ final class Penalty {
         int idx = line.indexOf(needle);
         while (idx >= 0) {
             final int after = idx + needle.length();
-            if (after >= line.length() || !Penalty.identifier(line.charAt(after))) {
+            if (after >= line.length()) {
                 ++count;
+            } else {
+                final char next = line.charAt(after);
+                if (!Character.isLetterOrDigit(next) && next != '-' && next != '_') {
+                    ++count;
+                }
             }
             idx = line.indexOf(needle, idx + 1);
         }
         return count;
-    }
-
-    /**
-     * Is this character allowed inside an EO identifier?
-     * @param chr The character
-     * @return TRUE if it continues an identifier
-     */
-    private static boolean identifier(final char chr) {
-        return Character.isLetterOrDigit(chr) || chr == '-' || chr == '_';
     }
 }
