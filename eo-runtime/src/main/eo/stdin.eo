@@ -23,10 +23,6 @@
 [] > stdin
   all-lines > @
   [] > all-lines
-    rec-read > @
-      next-line
-      --
-      true
     eol > separator!
     if. > [line buffer first] > rec-read
       line.length.eq 0
@@ -37,6 +33,10 @@
           buffer.concat line
           (buffer.concat separator).concat line
         false
+    | > @
+      next-line
+      --
+      true
   [] > next-line
     if. > @
       first.as-bytes.size.eq 0
