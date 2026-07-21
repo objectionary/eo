@@ -47,45 +47,6 @@
     @. > previous
       rec-case tup.tail
 
-  eq. ++> tests-switch-simple-case
-    switch *
-      * false "1"
-      * true "2"
-    "2"
-
-  ++> tests-switch-strings-case
-    eq. > @
-      switch *
-        *
-          password.eq "swordfish"
-          "password is correct!"
-        *
-          password.eq ""
-          "empty password is not allowed"
-        *
-          false
-          "password is wrong"
-      "password is correct!"
-    "swordfish" > password
-
-  eq. ++> tests-switch-with-several-true-cases
-    switch *
-      * true "TRUE1"
-      * false "FALSE"
-      * true "TRUE2"
-    "TRUE1"
-
-  switch * ++> tests-switch-with-all-false-cases
-    *
-      false
-      "false1"
-    *
-      false
-      "false2"
-
-  switch --> on-empty-switch
-    *
-
   eq. ++> tests-empty-switch-returns-provided-fallback
     "recovered"
     switch
@@ -108,3 +69,42 @@
     false > c1
     "1".eq "2" > c2
     true > c3
+
+  eq. ++> tests-switch-simple-case
+    switch *
+      * false "1"
+      * true "2"
+    "2"
+
+  ++> tests-switch-strings-case
+    eq. > @
+      switch *
+        *
+          password.eq "swordfish"
+          "password is correct!"
+        *
+          password.eq ""
+          "empty password is not allowed"
+        *
+          false
+          "password is wrong"
+      "password is correct!"
+    "swordfish" > password
+
+  switch * ++> tests-switch-with-all-false-cases
+    *
+      false
+      "false1"
+    *
+      false
+      "false2"
+
+  eq. ++> tests-switch-with-several-true-cases
+    switch *
+      * true "TRUE1"
+      * false "FALSE"
+      * true "TRUE2"
+    "TRUE1"
+
+  switch --> on-empty-switch
+    *

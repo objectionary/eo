@@ -17,6 +17,6 @@
       "Can't convert non 2 length bytes to u16, bytes are %x".printf
         * bts
 
-  01-01-01.as-u16 --> on-bytes-of-wrong-size-as-u16
-
   00-33.as-u16.as-bytes.eq 00-33 ++> tests-bytes-converts-to-u16-and-back
+
+  01-01-01.as-u16 --> on-bytes-of-wrong-size-as-u16

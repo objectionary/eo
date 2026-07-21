@@ -14,15 +14,13 @@
     pi
   number num.as-bytes > value
 
-  eq. ++> tests-degrees-of-zero-is-zero
-    degrees 0
-    0
+  (degrees nan).is-nan ++> tests-degrees-of-nan-is-nan
 
-  lt. ++> tests-degrees-of-pi-is-half-turn
+  lt. ++> tests-degrees-of-negative-pi-is-minus-half-turn
     abs
       minus.
-        degrees pi
-        180
+        degrees pi.neg
+        -180
     1.0E-4
 
   lt. ++> tests-degrees-of-pi-halves-is-quarter-turn
@@ -33,6 +31,13 @@
         90
     1.0E-4
 
+  lt. ++> tests-degrees-of-pi-is-half-turn
+    abs
+      minus.
+        degrees pi
+        180
+    1.0E-4
+
   lt. ++> tests-degrees-of-two-pi-is-full-turn
     abs
       minus.
@@ -41,11 +46,6 @@
         360
     1.0E-4
 
-  lt. ++> tests-degrees-of-negative-pi-is-minus-half-turn
-    abs
-      minus.
-        degrees pi.neg
-        -180
-    1.0E-4
-
-  (degrees nan).is-nan ++> tests-degrees-of-nan-is-nan
+  eq. ++> tests-degrees-of-zero-is-zero
+    degrees 0
+    0

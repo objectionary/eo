@@ -14,14 +14,6 @@
     -1.eq
       index-of list element
 
-  contains ++> tests-list-contains-string
-    *
-      "qwerty"
-      "asdfgh"
-      3
-      "qwerty"
-    "qwerty"
-
   contains ++> tests-list-contains-number
     *
       "qwerty"
@@ -29,6 +21,14 @@
       3
       "qwerty"
     3
+
+  contains ++> tests-list-contains-string
+    *
+      "qwerty"
+      "asdfgh"
+      3
+      "qwerty"
+    "qwerty"
 
   ++> tests-list-does-not-contain
     not. > @

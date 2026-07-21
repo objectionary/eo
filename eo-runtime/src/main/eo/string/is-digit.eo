@@ -13,13 +13,13 @@
     regex "/^[0-9]+$/"
     text
 
-  is-digit "2026" ++> tests-checks-if-number-text-is-digit
+  (is-digit "").not ++> tests-checks-if-empty-text-is-not-digit
 
-  (is-digit "1a2").not ++> tests-checks-if-text-with-letter-is-not-digit
+  is-digit "2026" ++> tests-checks-if-number-text-is-digit
 
   is-digit "7" ++> tests-checks-if-single-digit-is-digit
 
-  (is-digit "").not ++> tests-checks-if-empty-text-is-not-digit
+  (is-digit "1a2").not ++> tests-checks-if-text-with-letter-is-not-digit
 
   (is-digit "12 34").not ++> tests-checks-if-text-with-space-is-not-digit
 

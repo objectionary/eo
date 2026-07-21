@@ -12,6 +12,14 @@
     e
     num
 
+  eq. ++> tests-exp-check-infinity-n1
+    exp pinf
+    pinf
+
+  eq. ++> tests-exp-check-infinity-n2
+    exp ninf
+    0
+
   lt. ++> tests-exp-check-n0
     abs
       e.minus
@@ -40,11 +48,3 @@
     1.0E-12
 
   (exp nan).is-nan ++> tests-exp-check-nan
-
-  eq. ++> tests-exp-check-infinity-n1
-    exp pinf
-    pinf
-
-  eq. ++> tests-exp-check-infinity-n2
-    exp ninf
-    0

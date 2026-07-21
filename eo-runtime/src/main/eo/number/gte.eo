@@ -13,10 +13,6 @@
     n.eq value
   x > value!
 
-  eq. ++> tests-int-gte-true
-    -1000.gte -1100
-    true
-
   eq. ++> tests-int-gte-equal
     113.gte 113
     true
@@ -26,50 +22,54 @@
       0.gte 10
     true
 
-  eq. ++> tests-positive-infinity-gte-positive-infinity
-    pinf.gte pinf
+  eq. ++> tests-int-gte-true
+    -1000.gte -1100
     true
 
-  eq. ++> tests-positive-infinity-gte-negative-infinity
-    pinf.gte ninf
-    true
-
-  eq. ++> tests-positive-infinity-not-gte-nan
-    pinf.gte nan
-    false
-
-  eq. ++> tests-positive-infinity-gte-int
-    pinf.gte 42
-    true
-
-  eq. ++> tests-positive-infinity-gte-float
-    pinf.gte 42.5
-    true
-
-  eq. ++> tests-negative-infinity-gte-negative-infinity
-    ninf.gte ninf
-    true
-
-  eq. ++> tests-negative-infinity-not-gte-positive-infinity
-    ninf.gte pinf
-    false
-
-  eq. ++> tests-negative-infinity-not-gte-nan
-    ninf.gte nan
-    false
-
-  eq. ++> tests-negative-infinity-not-gte-int
-    ninf.gte 42
-    false
-
-  eq. ++> tests-negative-infinity-not-gte-float
-    ninf.gte 42.5
+  eq. ++> tests-nan-not-gte-nan
+    nan.gte nan
     false
 
   eq. ++> tests-nan-not-gte-number
     nan.gte 42
     false
 
-  eq. ++> tests-nan-not-gte-nan
-    nan.gte nan
+  eq. ++> tests-negative-infinity-gte-negative-infinity
+    ninf.gte ninf
+    true
+
+  eq. ++> tests-negative-infinity-not-gte-float
+    ninf.gte 42.5
+    false
+
+  eq. ++> tests-negative-infinity-not-gte-int
+    ninf.gte 42
+    false
+
+  eq. ++> tests-negative-infinity-not-gte-nan
+    ninf.gte nan
+    false
+
+  eq. ++> tests-negative-infinity-not-gte-positive-infinity
+    ninf.gte pinf
+    false
+
+  eq. ++> tests-positive-infinity-gte-float
+    pinf.gte 42.5
+    true
+
+  eq. ++> tests-positive-infinity-gte-int
+    pinf.gte 42
+    true
+
+  eq. ++> tests-positive-infinity-gte-negative-infinity
+    pinf.gte ninf
+    true
+
+  eq. ++> tests-positive-infinity-gte-positive-infinity
+    pinf.gte pinf
+    true
+
+  eq. ++> tests-positive-infinity-not-gte-nan
+    pinf.gte nan
     false

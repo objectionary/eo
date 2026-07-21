@@ -18,9 +18,9 @@ origin: |
 
 printed: |
   [] > shapes
-    width.times height > [width height] > rectangle
     rectangle > area
       3
       4
+    width.times height > [width height] > rectangle
     (rectangle 3 4).plus > total
       rectangle 1 2

@@ -10,6 +10,6 @@
 [n] > neg
   n.times -1 > @
 
-  pinf.neg.eq ninf ++> tests-positive-infinity-neg-is-negative-infinity
-
   ninf.neg.eq pinf ++> tests-negative-infinity-neg-is-positive-infinity
+
+  pinf.neg.eq ninf ++> tests-positive-infinity-neg-is-negative-infinity

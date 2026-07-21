@@ -18,10 +18,10 @@ origin: |
 
 printed: |
   [a b c] > math
-    a.plus > weighted
-      b.times c
-    a.plus b > sum
     (a.plus b).div > mean
       c
     (a.gt b).and > sorted
       b.gt c
+    a.plus b > sum
+    a.plus > weighted
+      b.times c

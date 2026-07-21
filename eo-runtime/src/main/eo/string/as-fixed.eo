@@ -16,14 +16,6 @@
       positive
         n.times -1
     positive n
-  if. > [p] > pow10
-    p.eq 0
-    1
-    times.
-      pow10
-        as-number.
-          p.minus 1
-      10
   [a] > positive
     concat. > @
       concat.
@@ -41,6 +33,14 @@
         a.times scale
         0.5
     pow10 places > scale
+  if. > [p] > pow10
+    p.eq 0
+    1
+    times.
+      pow10
+        as-number.
+          p.minus 1
+      10
   if. > [value count acc] > rec-pad
     count.eq 0
     acc
@@ -58,37 +58,37 @@
             48
         acc
 
-  eq. ++> tests-pads-with-trailing-zeros
-    "1.250000"
-    string
-      as-fixed 1.25 6
-
-  eq. ++> tests-writes-negative-value
-    "-2.500000"
-    string
-      as-fixed -2.5 6
-
-  eq. ++> tests-rounds-to-last-place
-    "0.123457"
-    string
-      as-fixed 0.123456789 6
-
   eq. ++> tests-carries-rounding-into-integer-part
     "1.000000"
     string
       as-fixed 0.9999999 6
-
-  eq. ++> tests-writes-zero
-    "0.000000"
-    string
-      as-fixed 0 6
 
   eq. ++> tests-honours-custom-places
     "3.14"
     string
       as-fixed 3.14159 2
 
+  eq. ++> tests-pads-with-trailing-zeros
+    "1.250000"
+    string
+      as-fixed 1.25 6
+
+  eq. ++> tests-rounds-to-last-place
+    "0.123457"
+    string
+      as-fixed 0.123456789 6
+
+  eq. ++> tests-writes-negative-value
+    "-2.500000"
+    string
+      as-fixed -2.5 6
+
   eq. ++> tests-writes-single-place
     "2.5"
     string
       as-fixed 2.5 1
+
+  eq. ++> tests-writes-zero
+    "0.000000"
+    string
+      as-fixed 0 6

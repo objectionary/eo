@@ -17,6 +17,6 @@
       "Can't convert non 1 length bytes to u8, bytes are %x".printf
         * bts
 
-  01-01.as-u8 --> on-bytes-of-wrong-size-as-u8
-
   2A-.as-u8.as-bytes.eq 2A- ++> tests-bytes-converts-to-u8-and-back
+
+  01-01.as-u8 --> on-bytes-of-wrong-size-as-u8

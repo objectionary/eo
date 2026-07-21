@@ -18,12 +18,6 @@
     string result
   times > amount!
   text > bts!
-  if. > result!
-    0.eq amount
-    --
-    rec-repeated
-      bts
-      1
   if. > [accum index] > rec-repeated
     amount.eq index
     accum
@@ -31,10 +25,18 @@
       accum.concat bts
       as-number.
         index.plus 1
+  if. > result!
+    0.eq amount
+    --
+    rec-repeated
+      bts
+      1
 
-  repeated --> on-text-repeating-less-than-zero-times
-    ""
-    -1
+  eq. ++> tests-text-repeated-five-times
+    "heyheyheyheyhey"
+    repeated
+      "hey"
+      5
 
   eq. ++> tests-text-repeated-negative-times-returns-provided-fallback
     "recovered"
@@ -49,8 +51,6 @@
       "some"
       0
 
-  eq. ++> tests-text-repeated-five-times
-    "heyheyheyheyhey"
-    repeated
-      "hey"
-      5
+  repeated --> on-text-repeating-less-than-zero-times
+    ""
+    -1

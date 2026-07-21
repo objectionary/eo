@@ -19,10 +19,38 @@
 
 [format read] > scanf /Q.tuple
 
-  eq. ++> tests-scanf-with-string
-    "hello"
+  eq. ++> tests-scanf-complex-case
+    scanf
+      "Im%d %s old and this is! Let's calculate %f + %f= %f"
+      "Im18 years old and this is! Let's calculate 99999999.99 + 0.01= 100000000.0"
+    *
+      18
+      "years"
+      9.999999999E7
+      0.01
+      100000000
+
+  eq. ++> tests-scanf-with-complex-float
+    1991.01
     head.
-      scanf "%s" "hello"
+      scanf
+        "this will be=%f"
+        "this will be=1991.01"
+
+  eq. ++> tests-scanf-with-complex-int
+    734987259
+    head.
+      scanf "!%d!" "!734987259!"
+
+  eq. ++> tests-scanf-with-complex-string
+    "test"
+    head.
+      scanf "some%sstring" "someteststring"
+
+  eq. ++> tests-scanf-with-float
+    0.24
+    head.
+      scanf "%f" "0.24"
 
   eq. ++> tests-scanf-with-int
     33
@@ -39,22 +67,21 @@
     head.
       scanf "%d" "+42"
 
-  eq. ++> tests-scanf-with-float
-    0.24
-    head.
-      scanf "%f" "0.24"
+  eq. ++> tests-scanf-with-printf
+    scanf
+      "%s is about %d?"
+      printf *1
+        "%s is about %d?"
+        "This"
+        8
+    *
+      "This"
+      8
 
-  scanf --> on-scanf-with-wrong-format
-    "%l"
-    "error"
-
-  scanf --> on-scanf-with-oversized-int
-    "%d"
-    "99999999999999999999"
-
-  scanf --> on-scanf-with-dangling-percent
-    "hello%"
+  eq. ++> tests-scanf-with-string
     "hello"
+    head.
+      scanf "%s" "hello"
 
   eq. ++> tests-scanf-with-string-int-float
     scanf
@@ -70,41 +97,14 @@
     head.
       scanf "%s!" "hello!"
 
-  eq. ++> tests-scanf-with-complex-string
-    "test"
-    head.
-      scanf "some%sstring" "someteststring"
+  scanf --> on-scanf-with-dangling-percent
+    "hello%"
+    "hello"
 
-  eq. ++> tests-scanf-with-complex-int
-    734987259
-    head.
-      scanf "!%d!" "!734987259!"
+  scanf --> on-scanf-with-oversized-int
+    "%d"
+    "99999999999999999999"
 
-  eq. ++> tests-scanf-with-complex-float
-    1991.01
-    head.
-      scanf
-        "this will be=%f"
-        "this will be=1991.01"
-
-  eq. ++> tests-scanf-with-printf
-    scanf
-      "%s is about %d?"
-      printf *1
-        "%s is about %d?"
-        "This"
-        8
-    *
-      "This"
-      8
-
-  eq. ++> tests-scanf-complex-case
-    scanf
-      "Im%d %s old and this is! Let's calculate %f + %f= %f"
-      "Im18 years old and this is! Let's calculate 99999999.99 + 0.01= 100000000.0"
-    *
-      18
-      "years"
-      9.999999999E7
-      0.01
-      100000000
+  scanf --> on-scanf-with-wrong-format
+    "%l"
+    "error"

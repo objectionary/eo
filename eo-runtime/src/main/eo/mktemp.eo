@@ -49,10 +49,10 @@
           getenv "TMPDIR" > tmpdir!
           getenv "USERPROFILE" > userprofile!
 
+  mktemp.tmpfile.exists ++> creates-tmpfile
+
   mktemp.exists ++> global-temp-dir-exists
 
   mktemp.is-directory ++> global-temp-dir-is-directory
 
   mktemp.path.eq mktemp.path ++> returns-the-same-tmpdir
-
-  mktemp.tmpfile.exists ++> creates-tmpfile

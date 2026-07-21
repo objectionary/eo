@@ -10,26 +10,6 @@
 
 [seed] > random
   seed.as-number.div 00-20-00-00-00-00-00-00.as-i64.as-number > @
-  random > next
-    as-number.
-      as-i64.
-        and.
-          as-bytes.
-            plus.
-              plus.
-                as-i64.
-                  left.
-                    and.
-                      as-bytes.
-                        ((seed.as-i64.div 67108864.as-i64).as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times
-                          25214903917.as-i64
-                      00-00-00-00-03-FF-FF-FF
-                    26
-                as-i64.
-                  (seed.as-i64.as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times
-                    25214903917.as-i64
-              11.as-i64
-          00-0F-FF-FF-FF-FF-FF-FF
   [clock] > clocked
     random > @
       as-number.
@@ -51,16 +31,27 @@
     35 > shift1
     17 > shift3
     clock.as-bytes > tbytes
+  random > next
+    as-number.
+      as-i64.
+        and.
+          as-bytes.
+            plus.
+              plus.
+                as-i64.
+                  left.
+                    and.
+                      as-bytes.
+                        ((seed.as-i64.div 67108864.as-i64).as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times
+                          25214903917.as-i64
+                      00-00-00-00-03-FF-FF-FF
+                    26
+                as-i64.
+                  (seed.as-i64.as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times
+                    25214903917.as-i64
+              11.as-i64
+          00-0F-FF-FF-FF-FF-FF-FF
   clocked clock > pseudo
-
-  ++> tests-random-with-seed
-    not. > @
-      r.next.eq r.next.next
-    random 51 > r
-
-  eq. ++> tests-seeded-randoms-are-equal
-    (random 1654).next.next.next
-    (random 1654).next.next.next
 
   ++> tests-random-is-in-range
     and. > @
@@ -77,6 +68,15 @@
           rand.next.next.lt 0
     next. > rand
       random 123
+
+  ++> tests-random-with-seed
+    not. > @
+      r.next.eq r.next.next
+    random 51 > r
+
+  eq. ++> tests-seeded-randoms-are-equal
+    (random 1654).next.next.next
+    (random 1654).next.next.next
 
   ++> tests-two-random-numbers-not-equal
     not. > @

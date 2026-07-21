@@ -26,24 +26,6 @@
         next
     recidx tup.tail > next!
 
-  eq. ++> tests-returns-index-of
-    1
-    index-of
-      *
-        1
-        2
-        3
-      2
-
-  eq. ++> tests-returns-first-index-of-element
-    0
-    index-of
-      *
-        -1
-        2
-        -1
-      -1
-
   eq. ++> tests-does-not-find-index-of
     -1
     index-of
@@ -61,3 +43,21 @@
         "qwerty"
         3
       "qwerty"
+
+  eq. ++> tests-returns-first-index-of-element
+    0
+    index-of
+      *
+        -1
+        2
+        -1
+      -1
+
+  eq. ++> tests-returns-index-of
+    1
+    index-of
+      *
+        1
+        2
+        3
+      2

@@ -20,11 +20,13 @@
     at.
       scanf "%f" text
 
+  eq. ++> tests-converts-float-text-to-number
+    3.14
+    as-number "3.14"
+
   eq. ++> tests-converts-text-to-number
     5
     as-number "5"
-
-  as-number "Hello" --> on-converting-text-to-number
 
   eq. ++> tests-non-numeric-text-returns-provided-fallback
     42
@@ -32,6 +34,4 @@
       "Hello"
       42 > [msg]
 
-  eq. ++> tests-converts-float-text-to-number
-    3.14
-    as-number "3.14"
+  as-number "Hello" --> on-converting-text-to-number

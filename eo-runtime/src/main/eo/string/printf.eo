@@ -20,25 +20,62 @@
 
 [format args] > printf /Q.string
 
-  eq. ++> tests-prints-simple-string
-    "Hello, Jeffrey!"
+  eq. ++> formats-float-always-with-six-fraction-digits
+    "1.250000"
     printf *1
-      "Hello, %s!"
-      "Jeffrey"
+      "%f"
+      1.25
 
-  eq. ++> tests-prints-complex-string
-    "Привет 3.140000 Jeff X!"
+  eq. ++> formats-left-justified-with-trailing-spaces
+    "x         "
     printf *1
-      "Привет %f %s %s!"
-      3.14
+      "%-10s"
+      "x"
+
+  eq. ++> formats-numbered-substitution
+    "Hello, Jeff! Bye, Jeff!"
+    printf *1
+      "Hello, %s! Bye, %1$s!"
       "Jeff"
-      "X"
 
-  eq. ++> tests-prints-bytes-string
-    "40-45-00-00-00-00-00-00"
+  eq. ++> formats-numbered-substitution-with-multiple-args
+    "This is the first; This is the first as well; The second; and the 3"
     printf *1
-      "%x"
-      42.as-bytes
+      "This is the %s; This is the %1$s as well; The %s; and the %d"
+      "first"
+      "second"
+      3
+
+  eq. ++> formats-precision-to-two-decimals
+    "3.14"
+    printf *1
+      "%.2f"
+      3.1415
+
+  eq. ++> formats-width-with-leading-spaces
+    "   42"
+    printf *1
+      "%5d"
+      42
+
+  eq. ++> formats-with-ordered-numbered-substitutions
+    "first second second is after first"
+    printf *1
+      "%s %s %2$s is after %1$s"
+      "first"
+      "second"
+
+  eq. ++> formats-zero-float-with-six-fraction-digits
+    "0.000000"
+    printf *1
+      "%f"
+      0
+
+  eq. ++> rounds-float-carrying-into-integer-part
+    "1.000000"
+    printf *1
+      "%f"
+      0.9999999
 
   eq. ++> tests-formats-all-objects
     "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
@@ -50,25 +87,11 @@
       14
       false
 
-  printf *1 --> on-printf-with-arguments-that-does-not-match
-    "%s%s"
-    "Jeff"
-
   eq. ++> tests-printf-does-not-fail-if-arguments-more-than-formats
     "Hey"
     printf *1
       "%s"
       "Hey"
-      "Jeff"
-
-  printf --> on-printf-unsupported-format
-    "%o"
-    *
-
-  eq. ++> tests-printf-prints-percents
-    "%Jeff"
-    printf *1
-      "%%%s"
       "Jeff"
 
   ++> tests-printf-does-not-print-i64
@@ -85,47 +108,43 @@
       "%d"
       42.as-i64.as-number
 
-  eq. ++> formats-numbered-substitution
-    "Hello, Jeff! Bye, Jeff!"
+  eq. ++> tests-printf-prints-percents
+    "%Jeff"
     printf *1
-      "Hello, %s! Bye, %1$s!"
+      "%%%s"
       "Jeff"
 
-  printf *1 --> on-printf-with-oversized-positional-index
-    "%99999999999999999999$s"
-    "Jeff"
-
-  printf *1 --> on-printf-with-zero-positional-index
-    "%0$s"
-    "first"
-    "second"
-
-  eq. ++> formats-numbered-substitution-with-multiple-args
-    "This is the first; This is the first as well; The second; and the 3"
+  eq. ++> tests-prints-bytes-string
+    "40-45-00-00-00-00-00-00"
     printf *1
-      "This is the %s; This is the %1$s as well; The %s; and the %d"
-      "first"
-      "second"
-      3
+      "%x"
+      42.as-bytes
 
-  eq. ++> formats-with-ordered-numbered-substitutions
-    "first second second is after first"
+  eq. ++> tests-prints-complex-string
+    "Привет 3.140000 Jeff X!"
     printf *1
-      "%s %s %2$s is after %1$s"
-      "first"
-      "second"
+      "Привет %f %s %s!"
+      3.14
+      "Jeff"
+      "X"
 
-  eq. ++> truncates-positive-float-towards-zero-as-decimal
-    "42"
+  eq. ++> tests-prints-simple-string
+    "Hello, Jeffrey!"
     printf *1
-      "%d"
-      42.321
+      "Hello, %s!"
+      "Jeffrey"
 
   eq. ++> truncates-negative-float-towards-zero-as-decimal
     "-7"
     printf *1
       "%d"
       -7.89
+
+  eq. ++> truncates-positive-float-towards-zero-as-decimal
+    "42"
+    printf *1
+      "%d"
+      42.321
 
   eq. ++> truncates-rather-than-rounds-float-as-decimal
     "9"
@@ -137,38 +156,19 @@
     "%d"
     1.0e30
 
-  eq. ++> formats-float-always-with-six-fraction-digits
-    "1.250000"
-    printf *1
-      "%f"
-      1.25
+  printf --> on-printf-unsupported-format
+    "%o"
+    *
 
-  eq. ++> rounds-float-carrying-into-integer-part
-    "1.000000"
-    printf *1
-      "%f"
-      0.9999999
+  printf *1 --> on-printf-with-arguments-that-does-not-match
+    "%s%s"
+    "Jeff"
 
-  eq. ++> formats-zero-float-with-six-fraction-digits
-    "0.000000"
-    printf *1
-      "%f"
-      0
+  printf *1 --> on-printf-with-oversized-positional-index
+    "%99999999999999999999$s"
+    "Jeff"
 
-  eq. ++> formats-width-with-leading-spaces
-    "   42"
-    printf *1
-      "%5d"
-      42
-
-  eq. ++> formats-precision-to-two-decimals
-    "3.14"
-    printf *1
-      "%.2f"
-      3.1415
-
-  eq. ++> formats-left-justified-with-trailing-spaces
-    "x         "
-    printf *1
-      "%-10s"
-      "x"
+  printf *1 --> on-printf-with-zero-positional-index
+    "%0$s"
+    "first"
+    "second"

@@ -17,7 +17,6 @@
       0
   text > bts!
   delimiter > delim!
-  delim.size > size!
   bts.size > len!
   [accum start current] > rec-split
     if. > @
@@ -48,11 +47,30 @@
           bts
           start
           current.minus start
+  delim.size > size!
+
+  eq. ++> tests-splits-and-returns-strings
+    length.
+      at.
+        split
+          "hello world!"
+          " "
+        1
+    6
 
   eq. ++> tests-splits-text-by-dash
     split
       "a-b-c"
       "-"
+    *
+      "a"
+      "b"
+      "c"
+
+  eq. ++> tests-splits-text-by-multi-char-delimiter
+    split
+      "a::b::c"
+      "::"
     *
       "a"
       "b"
@@ -67,21 +85,3 @@
       "a"
       "b"
       ""
-
-  eq. ++> tests-splits-and-returns-strings
-    length.
-      at.
-        split
-          "hello world!"
-          " "
-        1
-    6
-
-  eq. ++> tests-splits-text-by-multi-char-delimiter
-    split
-      "a::b::c"
-      "::"
-    *
-      "a"
-      "b"
-      "c"

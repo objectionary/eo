@@ -21,7 +21,6 @@
         first-non-ws-index
           (number len).plus -1
   text > bts!
-  bts.size > len!
   [index] > first-non-ws-index
     if. > @
       -1.eq index
@@ -44,43 +43,44 @@
           c.eq 0B-
           (c.eq 0C-).or
             c.eq 0D-
-
-  eq. ++> tests-trimmed-right-empty-text
-    trimmed-right ""
-    ""
-
-  eq. ++> tests-text-trimmed-right-one-space
-    trimmed-right
-      "s "
-    "s"
+  bts.size > len!
 
   eq. ++> tests-text-trimmed-right-many-spaces
     trimmed-right
       "some     "
     "some"
 
+  eq. ++> tests-text-trimmed-right-one-space
+    trimmed-right
+      "s "
+    "s"
+
   eq. ++> tests-text-trimmed-right-only-spaces
     trimmed-right
       "     "
     ""
 
-  eq. ++> tests-trimmed-right-strips-tab
-    trimmed-right "value\t"
-    "value"
+  eq. ++> tests-trimmed-right-empty-text
+    trimmed-right ""
+    ""
 
-  eq. ++> tests-trimmed-right-strips-lf
-    trimmed-right "value\n"
+  eq. ++> tests-trimmed-right-strips-cr
+    trimmed-right "value\r"
     "value"
 
   eq. ++> tests-trimmed-right-strips-ff
     trimmed-right "value\f"
     "value"
 
-  eq. ++> tests-trimmed-right-strips-cr
-    trimmed-right "value\r"
+  eq. ++> tests-trimmed-right-strips-lf
+    trimmed-right "value\n"
     "value"
 
   eq. ++> tests-trimmed-right-strips-mixed-ws
     trimmed-right
       "value \t\n\f\r"
+    "value"
+
+  eq. ++> tests-trimmed-right-strips-tab
+    trimmed-right "value\t"
     "value"

@@ -23,6 +23,22 @@
   index > idx!
   list.length.minus idx > start!
 
+  eq. ++> tests-large-index-in-back
+    back
+      *
+        1
+        2
+        3
+        4
+        5
+      10
+    *
+      1
+      2
+      3
+      4
+      5
+
   eq. ++> tests-simple-back
     back
       *
@@ -45,19 +61,3 @@
         4
         5
       0
-
-  eq. ++> tests-large-index-in-back
-    back
-      *
-        1
-        2
-        3
-        4
-        5
-      10
-    *
-      1
-      2
-      3
-      4
-      5

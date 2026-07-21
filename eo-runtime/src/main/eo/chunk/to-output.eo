@@ -46,6 +46,14 @@
         mem
     01-02-03-04-05-06-07-08-09-A0
 
+  eq. ++> tests-makes-an-output-via-chunk-extension
+    malloc.of
+      3
+      seq * > [mem]
+        mem.to-output.write 01-02-03
+        mem
+    01-02-03
+
   eq. ++> writes-larger-data-than-provided-block
     malloc.of
       2
@@ -53,13 +61,5 @@
         write.
           to-output mem
           01-02-03
-        mem
-    01-02-03
-
-  eq. ++> tests-makes-an-output-via-chunk-extension
-    malloc.of
-      3
-      seq * > [mem]
-        mem.to-output.write 01-02-03
         mem
     01-02-03

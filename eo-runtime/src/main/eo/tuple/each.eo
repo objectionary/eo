@@ -16,20 +16,18 @@
     list
     func item > [item index] >>
 
-  ++> tests-iterates-with-each
-    eq. > @
-      malloc.for
-        0
-        [m]
-          each > @
-            * 1 2 3
-            m.put > [i] >>
-              m.as-number.plus i
-      6
-
   each ++> tests-each-empty-list
     *
     false > [x]
+
+  eq. ++> tests-each-returns-last-func-result
+    each
+      *
+        1
+        2
+        3
+      x > [x]
+    3
 
   ++> tests-each-single-element
     eq. > @
@@ -42,15 +40,6 @@
               m.as-number.plus i
       7
 
-  eq. ++> tests-each-returns-last-func-result
-    each
-      *
-        1
-        2
-        3
-      x > [x]
-    3
-
   ++> tests-each-sums-more-numbers
     eq. > @
       malloc.for
@@ -61,3 +50,14 @@
             m.put > [i] >>
               m.as-number.plus i
       60
+
+  ++> tests-iterates-with-each
+    eq. > @
+      malloc.for
+        0
+        [m]
+          each > @
+            * 1 2 3
+            m.put > [i] >>
+              m.as-number.plus i
+      6

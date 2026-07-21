@@ -20,5 +20,5 @@ printed: |
   [] > mktemp
     string > @
       [] >>!
-        getenv "TEMP" > temp!
         temp > @
+        getenv "TEMP" > temp!

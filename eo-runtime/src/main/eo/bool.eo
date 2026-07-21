@@ -18,55 +18,15 @@
   if > @
     01-
     00-
-  if > not
-    false
-    true
   if > [x] > and
     01-.eq x
     false
+  if > not
+    false
+    true
   if > [x] > or
     true
     01-.eq x
-
-  true.eq true ++> tests-compares-two-bools
-
-  true.as-bool ++> tests-true-as-bool
-
-  (true.eq 42).not ++> tests-compares-two-different-bool-types
-
-  and. ++> tests-compares-bool-to-bytes
-    true.eq 01-
-    false.eq 00-
-
-  and. ++> tests-compares-bool-to-bytes-reverse
-    01-.as-bytes.eq true
-    00-.as-bytes.eq false
-
-  eq. ++> tests-forks-on-true-condition
-    if.
-      5.eq 5
-      123
-      42
-    123
-
-  ++> tests-takes-parent-object
-    eq. > @
-      a 42
-      42
-    [x] > a
-      take > @
-      x > [] > take
-
-  ++> tests-takes-parent-through-attribute
-    [] > @
-      [] > @
-        x.eq 42 > [] > @
-    42 > x
-
-  --> when-applies-to-closed-object
-    closed true > @
-    x > [x] > a
-    a false > closed
 
   ++> tests-app-that-calls-func
     output.eq 2 > @
@@ -80,11 +40,50 @@
         1 > a
     app > output
 
+  and. ++> tests-compares-bool-to-bytes
+    true.eq 01-
+    false.eq 00-
+
+  and. ++> tests-compares-bool-to-bytes-reverse
+    01-.as-bytes.eq true
+    00-.as-bytes.eq false
+
+  and. ++> tests-compares-bool-to-string
+    true.eq "\u0001"
+    false.eq "\u0000"
+
+  true.eq true ++> tests-compares-two-bools
+
+  (true.eq 42).not ++> tests-compares-two-different-bool-types
+
+  ++> tests-compiles-correctly-with-long-duplicate-names
+    true > @
+    [] > long-object-name
+      [] > long-object-name
+        [] > long-object-name
+          [] > long-object-name
+            [] > long-object-name
+              42 > x
+
   ++> tests-extract-attribute-from-decoratee
     a.foo.eq 43 > @
-    [foo] > return
     return > [] > a
       42.plus 1
+    [foo] > return
+
+  eq. ++> tests-forks-on-false-condition
+    if.
+      5.eq 8
+      123
+      42
+    42
+
+  eq. ++> tests-forks-on-true-condition
+    if.
+      5.eq 5
+      123
+      42
+    123
 
   ++> tests-nesting-blah-test
     eq. > @
@@ -177,26 +176,27 @@
                                                                                   blah39 (x.plus 1) > @
                                                                                   x > [x] > blah39
 
-  ++> tests-compiles-correctly-with-long-duplicate-names
-    true > @
-    [] > long-object-name
-      [] > long-object-name
-        [] > long-object-name
-          [] > long-object-name
-            [] > long-object-name
-              42 > x
+  ++> tests-takes-parent-object
+    eq. > @
+      a 42
+      42
+    [x] > a
+      take > @
+      x > [] > take
 
-  true.not.eq false ++> tests-true-not-is-false
-
-  and. ++> tests-compares-bool-to-string
-    true.eq "\u0001"
-    false.eq "\u0000"
+  ++> tests-takes-parent-through-attribute
+    [] > @
+      [] > @
+        x.eq 42 > [] > @
+    42 > x
 
   (true.and false).not ++> tests-true-and-false-is-false
 
-  eq. ++> tests-forks-on-false-condition
-    if.
-      5.eq 8
-      123
-      42
-    42
+  true.as-bool ++> tests-true-as-bool
+
+  true.not.eq false ++> tests-true-not-is-false
+
+  --> when-applies-to-closed-object
+    closed true > @
+    x > [x] > a
+    a false > closed

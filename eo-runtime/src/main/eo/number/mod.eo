@@ -19,8 +19,6 @@
       dividend.gt 0
       abs-mod
       abs-mod.neg
-  number x.as-bytes > dividend
-  number y.as-bytes > divisor
   [] > abs-mod
     absx.minus > @
       absy.times
@@ -28,12 +26,43 @@
           absx.div absy
     abs dividend > absx
     abs divisor > absy
+  number x.as-bytes > dividend
+  number y.as-bytes > divisor
 
-  eq. ++> tests-mod-n1-n2
+  ++> tests-div-mod-compatibility
+    eq. > @
+      plus.
+        mod dividend divisor
+        divisor.times
+          (dividend.div divisor).as-i64.as-number
+      dividend
+    -13 > dividend
+    5 > divisor
+
+  eq. ++> tests-mod-by-zero-returns-provided-fallback
+    "recovered"
     mod
+      5
+      0
+      "recovered" > [msg]
+
+  eq. ++> tests-mod-dividend-by-one
+    mod
+      133
       1
-      2
-    1
+    0
+
+  eq. ++> tests-mod-dividend-less-than-divisor
+    mod
+      -1
+      5
+    -1
+
+  eq. ++> tests-mod-n0-n15-neg
+    mod
+      0
+      -15
+    0
 
   eq. ++> tests-mod-n0-n5
     mod
@@ -41,11 +70,11 @@
       5
     0
 
-  eq. ++> tests-mod-n0-n15-neg
+  eq. ++> tests-mod-n1-n2
     mod
-      0
-      -15
-    0
+      1
+      2
+    1
 
   eq. ++> tests-mod-n1-neg-n7
     mod
@@ -59,35 +88,6 @@
       -200
     16
 
-  ++> tests-div-mod-compatibility
-    eq. > @
-      plus.
-        mod dividend divisor
-        divisor.times
-          (dividend.div divisor).as-i64.as-number
-      dividend
-    -13 > dividend
-    5 > divisor
-
-  eq. ++> tests-mod-dividend-less-than-divisor
-    mod
-      -1
-      5
-    -1
-
-  eq. ++> tests-mod-dividend-by-one
-    mod
-      133
-      1
-    0
-
   mod --> on-mod-by-zero
     5
     0
-
-  eq. ++> tests-mod-by-zero-returns-provided-fallback
-    "recovered"
-    mod
-      5
-      0
-      "recovered" > [msg]

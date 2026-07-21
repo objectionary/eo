@@ -47,57 +47,28 @@
       current
     body index > current
 
-  ++> tests-while-dataizes-only-first-cycle
-    0.eq > @
-      malloc.for
-        42
-        [m]
-          while > @
-            i.eq 0 > [i]
-            m.put i > [i] >>
-
-  ++> tests-simple-while-with-false-first
-    not. > @
-      while
-        false > [i]
-        true > [i]
-
-  ++> tests-simple-bool-expression-via-malloc-in-while
-    eq. > @
-      malloc.for
-        true
-        [m]
-          while > @
-            m > [i] >>
-            m.put false > [i] >>
-      false
-
-  ++> tests-last-while-dataization-object
-    eq. > @
-      malloc.for
-        0
-        [m]
-          while > @
-            2.gt m > [i] >>
-            m.put > [i] >>
-              m.as-number.plus 1
-      3
-
-  ++> tests-last-while-dataization-object-with-false-condition
-    not. > @
-      while
-        1.gt 2 > [i]
-        true > [i]
-
-  ++> tests-while-simple-iteration
-    eq. > @
-      malloc.for
-        0
-        [m]
-          while > @
-            i.lt 10 > [i]
-            m.put i > [i] >>
-      9
+  ++> tests-iterating-tuple-with-while-using-external-iterator
+    data.eq arr.length > @
+    * > arr
+      1
+      1
+      1
+      1
+    malloc.for > data
+      0
+      [acc] >>
+        malloc.for > @
+          0
+          [iter] >>
+            while > @
+              max.gt iter > [i] >>
+              seq * > [i] >>
+                acc.put
+                  acc.as-number.plus
+                    arr.at iter
+                iter.put
+                  iter.as-number.plus 1
+    arr.length.plus -1 > max
 
   ++> tests-iterating-tuple-with-while-using-internal-iterator
     data.eq arr.length > @
@@ -124,29 +95,6 @@
                     acc.as-number.plus (arr.at i)
                   iter.put
                     iter.as-number.plus 1
-    arr.length.plus -1 > max
-
-  ++> tests-iterating-tuple-with-while-using-external-iterator
-    data.eq arr.length > @
-    * > arr
-      1
-      1
-      1
-      1
-    malloc.for > data
-      0
-      [acc] >>
-        malloc.for > @
-          0
-          [iter] >>
-            while > @
-              max.gt iter > [i] >>
-              seq * > [i] >>
-                acc.put
-                  acc.as-number.plus
-                    arr.at iter
-                iter.put
-                  iter.as-number.plus 1
     arr.length.plus -1 > max
 
   ++> tests-iterating-tuple-with-while-without-body-multiple
@@ -197,3 +145,55 @@
                 true > [i]
               acc
     arr.length > max
+
+  ++> tests-last-while-dataization-object
+    eq. > @
+      malloc.for
+        0
+        [m]
+          while > @
+            2.gt m > [i] >>
+            m.put > [i] >>
+              m.as-number.plus 1
+      3
+
+  ++> tests-last-while-dataization-object-with-false-condition
+    not. > @
+      while
+        1.gt 2 > [i]
+        true > [i]
+
+  ++> tests-simple-bool-expression-via-malloc-in-while
+    eq. > @
+      malloc.for
+        true
+        [m]
+          while > @
+            m > [i] >>
+            m.put false > [i] >>
+      false
+
+  ++> tests-simple-while-with-false-first
+    not. > @
+      while
+        false > [i]
+        true > [i]
+
+  ++> tests-while-dataizes-only-first-cycle
+    0.eq > @
+      malloc.for
+        42
+        [m]
+          while > @
+            i.eq 0 > [i]
+            m.put i > [i] >>
+
+  ++> tests-while-simple-iteration
+    eq. > @
+      malloc.for
+        0
+        [m]
+          while > @
+            i.lt 10 > [i]
+            m.put i > [i] >>
+      9

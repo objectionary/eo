@@ -17,8 +17,8 @@
       "Can't convert non 4 length bytes to u32, bytes are %x".printf
         * bts
 
-  01-01-01-01-01.as-u32 --> on-bytes-of-wrong-size-as-u32
-
   eq. ++> tests-bytes-converts-to-u32-and-back
     00-00-00-33.as-u32.as-bytes
     00-00-00-33
+
+  01-01-01-01-01.as-u32 --> on-bytes-of-wrong-size-as-u32
