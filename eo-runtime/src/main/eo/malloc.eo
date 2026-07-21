@@ -74,20 +74,7 @@
     object > bts!
   [size scope] > of
     [] > @ /Q.bytes
-    [id] > allocated
-      get > @
-      read 0 size > get
-      [] > size /Q.number
-      [size] > resized /Q.malloc.of.allocated
-      write > [source target length] > copy
-        target
-        read source length
-      [offset length] > read /Q.bytes
-        ? > cant-read /{Q.string}
-      [offset data] > write /Q.bool
-      seq * > [object] > put
-        write 0 object
-        get
+    chunk > allocated
 
   ++> tests-writes-into-memory-of
     mem.eq 10 > @

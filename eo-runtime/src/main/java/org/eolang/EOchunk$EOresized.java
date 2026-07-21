@@ -10,18 +10,18 @@
 package org.eolang;
 
 /**
- * Malloc.of.allocated.resized object.
+ * Chunk.resized object.
  * @since 0.41.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "malloc.of.allocated.resized")
+@XmirObject(oname = "chunk.resized")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOmalloc$EOof$EOallocated$EOresized extends PhDefault implements Atom {
+public final class EOchunk$EOresized extends PhDefault implements Atom {
 
     /**
      * Ctor.
      */
-    public EOmalloc$EOof$EOallocated$EOresized() {
+    public EOchunk$EOresized() {
         super(new Attrs(new Attr("new-size", new AtVoid("new-size"))));
     }
 

@@ -57,13 +57,13 @@ final class PhPackageTest {
 
     @Test
     void setsRhoToObject() {
-        final Phi pckg = Phi.Φ.take("io");
+        final Phi pckg = Phi.Φ;
         MatcherAssert.assertThat(
             String.format(
                 "The %s attribute must be set to package object on dispatch",
                 Phi.RHO
             ),
-            pckg.take("malloc-as-output").take(Phi.RHO),
+            pckg.take("nop").take(Phi.RHO),
             Matchers.equalTo(pckg)
         );
     }
