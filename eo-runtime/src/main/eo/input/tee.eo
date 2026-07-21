@@ -6,23 +6,24 @@
 #   5
 #   [m]
 #     read. > @
-#       tee-input
+#       tee
 #         bytes.to-input 01-02-03-04-05
-#         malloc-as-output m
+#         io.malloc-as-output m
 #       5
 # ```
 # After dataization `copied` is equal to `01-02-03-04-05` which are read
 # from memory.
 
 +alias bytes.to-input
++alias io.malloc-as-output
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package io
++package input
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[input output] > tee-input
+[input output] > tee
   [size] > read
     read. > @
       input-block
@@ -44,9 +45,9 @@
       malloc.of
         5
         read. > [mem]
-          tee-input
+          Q.input.tee
             bytes.to-input 01-02-03-04-05
-            malloc-as-output mem
+            io.malloc-as-output mem
           5
       01-02-03-04-05
 
@@ -58,9 +59,9 @@
           read.
             read.
               read.
-                tee-input
+                Q.input.tee
                   bytes.to-input 01-02-03-04-05
-                  malloc-as-output m
+                  io.malloc-as-output m
                 2
               2
             1
@@ -76,11 +77,11 @@
             5
             seq * > [m2] >>
               read.
-                tee-input
-                  tee-input
+                Q.input.tee
+                  Q.input.tee
                     bytes.to-input 01-02-03-04-05
-                    malloc-as-output m2
-                  malloc-as-output m1
+                    io.malloc-as-output m2
+                  io.malloc-as-output m1
                 5
               m1.write 5 2A-
               m1
