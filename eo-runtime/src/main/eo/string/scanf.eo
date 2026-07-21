@@ -11,13 +11,237 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[format read] > scanf /Q.tuple
+[format read] > scanf
+  extracted > @
+    pattern
+    specifiers
+  tokenize > tokens
+    0
+    ""
+    *
+    false
+  tokens.at > pattern
+    0
+    T
+  tokens.at > specifiers
+    1
+    T
+  [pos accumulated found pending] > tokenize
+    if. > @
+      pos.gte format.length
+      ended
+      continued
+    slice > ch
+      format
+      pos
+      1
+    escaped ch > piece
+    pending.if *1 > ended
+      dangling
+      accumulated
+      found
+    dangling-message > dangling
+    pending.if > continued
+      if.
+        ch.eq "%"
+        tokenize
+          pos.plus 1
+          chained *1
+            accumulated
+            "%"
+          found
+          false
+        if.
+          ch.eq "d"
+          tokenize
+            pos.plus 1
+            chained *1
+              accumulated
+              "([+-]?\\d+)"
+            found.with "d"
+            false
+          if.
+            ch.eq "f"
+            tokenize
+              pos.plus 1
+              chained *1
+                accumulated
+                "([+-]?\\d+(?:\\.\\d+)?)"
+              found.with "f"
+              false
+            if.
+              ch.eq "s"
+              tokenize
+                pos.plus 1
+                chained *1
+                  accumulated
+                  "(\\S+)"
+                found.with "s"
+                false
+              unsupported-message
+      if.
+        ch.eq "%"
+        tokenize
+          pos.plus 1
+          accumulated
+          found
+          true
+        tokenize
+          pos.plus 1
+          chained *1
+            accumulated
+            piece
+          found
+          false
+    T > dangling-message
+      "The format string ends with a dangling percent and no specifier after it"
+    T > unsupported-message
+      "Unsupported format specifier"
+  [ch] > escaped
+    metachar.if > @
+      escaped-char
+      ch
+    metachars.contains ch > metachar
+    chained *1 > escaped-char
+      "\\"
+      ch
+    * > metachars
+      "\\"
+      "^"
+      "$"
+      "."
+      "|"
+      "?"
+      "*"
+      "+"
+      "("
+      ")"
+      "["
+      "]"
+      "{"
+      "}"
+      "/"
+  [pattern specifiers] > extracted
+    convert > @
+      1
+      *
+    chained *1 > wrapped
+      "/"
+      pattern
+      "/"
+    match. > found
+      regex wrapped
+      read
+    found.next > matched
+    [group acc] > convert
+      matched.exists.not.if > @
+        *
+        next-group
+      if. > next-group
+        group.gt specifiers.length
+        acc
+        next
+      convert > next
+        group.plus 1
+        acc.with
+          converted
+            specifiers.at
+              group.minus 1
+              T
+            matched.group group
+    [spec text] > converted
+      if. > @
+        spec.eq "s"
+        text
+        as-number-value
+      if. > as-number-value
+        spec.eq "d"
+        as-integer-value
+        as-float-value
+      as-integer text > as-integer-value
+      as-float text > as-float-value
+    [text] > as-integer
+      if. > @
+        digits.length.gt 19
+        overflow
+        signed
+      overflow-message > overflow
+      negative.if negated folded > signed
+      folded.times -1 > negated
+      eq. > negative
+        slice
+          text
+          0
+          1
+        "-"
+      negative.or > signed-prefix
+        eq.
+          slice text 0 1
+          "+"
+      signed-prefix.if > digits
+        slice
+          text
+          1
+          text.length.minus 1
+        text
+      fold-digits digits > folded
+      T > overflow-message
+        "The number doesn't fit into long range for the '%d' conversion"
+    [text] > as-float
+      negative.if negated magnitude > @
+      magnitude.times -1 > negated
+      eq. > negative
+        slice
+          text
+          0
+          1
+        "-"
+      negative.or > signed-prefix
+        eq.
+          slice text 0 1
+          "+"
+      signed-prefix.if > unsigned
+        slice
+          text
+          1
+          text.length.minus 1
+        text
+      index-of unsigned "." > dot
+      has-fraction.if with-fraction whole > magnitude
+      not. > has-fraction
+        dot.eq -1
+      fold-digits unsigned > whole
+      plus. > with-fraction
+        fold-digits
+          slice unsigned 0 dot
+        fraction
+      unsigned.length.minus > places
+        dot.plus 1
+      div. > fraction
+        fold-digits
+          slice
+            unsigned
+            dot.plus 1
+            places
+        10.power places
+    [text] > fold-digits
+      rec 0 0 > @
+      [index acc] > rec
+        if. > @
+          index.eq text.length
+          acc
+          next
+        rec > next
+          index.plus 1
+          (acc.times 10).plus
+            minus.
+              as-ascii
+                slice text index 1
+              48
 
   eq. ++> tests-scanf-with-string
     "hello"
