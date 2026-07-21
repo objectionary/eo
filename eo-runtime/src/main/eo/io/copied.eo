@@ -20,7 +20,7 @@
 
 [input output] > copied
   Q.input.length > @
-    tee-input
+    Q.input.tee
       input
       output
 
