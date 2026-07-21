@@ -111,7 +111,8 @@
         [acc x i]
           check x > @
           [el] > check
-            (x.lt 100).if > @
+            if. > @
+              x.lt 100
               acc.plus x
               acc.minus x
       10.plus

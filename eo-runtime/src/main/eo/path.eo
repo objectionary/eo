@@ -180,7 +180,8 @@
         uri > ubts!
       [] > normalized
         validated > @
-          (normalized.eq "\\\\").if
+          if.
+            normalized.eq "\\\\"
             separator
             string normalized
         is-drive-relative.if > driveless!
@@ -193,12 +194,14 @@
         as-bool. > is-root-relative
           ^.is-root-relative ubts
         as-bytes. > normalized
-          (driveless.size.eq 0).if
+          if.
+            driveless.size.eq 0
             "."
             concat.
               concat.
                 is-drive-relative.if
-                  ((driveless.slice 0 1).eq separator).if
+                  if.
+                    (driveless.slice 0 1).eq separator
                     uri.slice 0 3
                     uri.slice 0 2
                   is-root-relative.if separator --
@@ -215,7 +218,8 @@
                 (accum.length.gt 0).and
                   (accum.head.eq "..").not
                 accum.tail
-                (is-root-relative.not.and is-drive-relative.not).if
+                if.
+                  is-root-relative.not.and is-drive-relative.not
                   accum.with segment
                   accum
               if.
@@ -235,10 +239,13 @@
         normalized. > @
           validated
             string
-              (is-drive-relative valid).as-bool.if
+              if.
+                (is-drive-relative valid).as-bool
                 valid
-                (is-root-relative valid).as-bool.if
-                  (is-drive-relative ubts).if
+                if.
+                  (is-root-relative valid).as-bool
+                  if.
+                    is-drive-relative ubts
                     (ubts.slice 0 2).concat valid
                     valid
                   (ubts.concat separator).concat valid

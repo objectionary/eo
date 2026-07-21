@@ -21,23 +21,35 @@
         nan
         expo.is-finite.if
           base.is-finite.if
-            (base.eq 0).if
-              (expo.gt 0).if 0 pinf
+            if.
+              base.eq 0
+              if.
+                expo.gt 0
+                0
+                pinf
               expo.is-integer.if
-                (expo.lt 0).if
+                if.
+                  expo.lt 0
                   1.div
                     ipow base (abs expo)
                   ipow base (abs expo)
-                (base.gt 0).if
+                if.
+                  base.gt 0
                   expon
                     expo.times (ln base)
                   nan
-            (base.gt 0).if
-              (expo.gt 0).if pinf 0
-              (expo.gt 0).if
+            if.
+              base.gt 0
+              if.
+                expo.gt 0
+                pinf
+                0
+              if.
+                expo.gt 0
                 odd.if ninf pinf
                 odd.if 0.neg 0
-          (expo.gt 0).if
+          if.
+            expo.gt 0
             if.
               (abs base).gt 1
               pinf
@@ -62,7 +74,9 @@
     if. > @
       n.eq 0
       1
-      (n.div 2).is-integer.if
+      if.
+        is-integer.
+          n.div 2
         half.times half
         b.times
           ipow

@@ -139,7 +139,11 @@
           n
           1
           1
-      (n.eq 2).if 1 n > [n] > small
+      [n] > small
+        if. > @
+          n.eq 2
+          1
+          n
       if. > [n minus1 minus2] > rec
         n.eq 3
         minus1.plus minus2

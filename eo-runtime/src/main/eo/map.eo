@@ -57,7 +57,8 @@
           not-found
           prev.exists.if
             prev
-            (tup.head.hash.eq hash).if
+            if.
+              tup.head.hash.eq hash
               [] >>
                 true > exists
                 tup.head.value > [cant-get] > get

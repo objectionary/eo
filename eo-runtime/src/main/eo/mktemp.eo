@@ -20,15 +20,26 @@
       string
         [] >>!
           sm.os.is-windows.if > @
-            (tmp.eq empty).if
-              (temp.eq empty).if
-                (userprofile.eq empty).if "C:\\Windows" userprofile
+            if.
+              tmp.eq empty
+              if.
+                temp.eq empty
+                if.
+                  userprofile.eq empty
+                  "C:\\Windows"
+                  userprofile
                 temp
               tmp
-            (tmpdir.eq empty).if
-              (tmp.eq empty).if
-                (temp.eq empty).if
-                  (tempdir.eq empty).if "/tmp" tempdir
+            if.
+              tmpdir.eq empty
+              if.
+                tmp.eq empty
+                if.
+                  temp.eq empty
+                  if.
+                    tempdir.eq empty
+                    "/tmp"
+                    tempdir
                   temp
                 tmp
               tmpdir

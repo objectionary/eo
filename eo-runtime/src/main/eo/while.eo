@@ -111,7 +111,8 @@
         malloc.for > @
           0
           [iter] >>
-            (max.eq 0).if > @
+            if. > @
+              max.eq 0
               acc.put
                 acc.as-number.plus
                   arr.at 0
