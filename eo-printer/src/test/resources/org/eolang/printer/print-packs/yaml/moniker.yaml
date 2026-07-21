@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A "moniker" — a named binding written at its bare-reference site — must
+# survive the round-trip instead of being expanded into a standalone binding
+# plus a bare reference (#5707). The `number num.as-bytes > value` binding
+# stays inside the `if.` block, at the first `value` reference; the
+# `value.gte` and `value.neg` dispatches keep referring to it.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  +package number
+
+  [num] > abs
+    if. > @
+      value.gte 0
+      value
+      value.neg
+    number num.as-bytes > value
+
+printed: |
+  +package number
+
+  [num] > abs
+    if. > @
+      value.gte 0
+      number num.as-bytes > value
+      value.neg
