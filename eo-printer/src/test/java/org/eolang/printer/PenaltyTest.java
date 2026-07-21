@@ -145,6 +145,17 @@ final class PenaltyTest {
     }
 
     @Test
+    void exemptsNameBindingSpacesFromBaseTerm() {
+        final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
+        weights.put(PenaltyKey.SYMBOL, 0);
+        MatcherAssert.assertThat(
+            "The spaces around a name-binding > should cost nothing in the base term",
+            new Penalty("foo > bar", weights).points(),
+            Matchers.equalTo(0)
+        );
+    }
+
+    @Test
     void chargesNothingForEmptyCode() {
         MatcherAssert.assertThat(
             "Empty code should have zero penalty",

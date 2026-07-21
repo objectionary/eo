@@ -36,12 +36,13 @@ import java.util.Map;
  *   column costs {@link PenaltyKey#EXCESS} point;</li>
  *   <li>every symbol in the block costs {@link PenaltyKey#SYMBOL}
  *   point;</li>
- *   <li>every space on a line past the leading indentation costs
- *   {@link PenaltyKey#SPACE} points, and the genuine argument-applying
- *   spaces among them (name bindings such as {@code >} do not count) pay
- *   an extra super-linear surcharge: r such spaces cost r squared, rather
- *   than r, times the weight, so longer applications grow super-linearly
- *   more expensive while name bindings are left alone.</li>
+ *   <li>every argument-applying space on a line past the leading
+ *   indentation costs {@link PenaltyKey#SPACE} points (name bindings such
+ *   as {@code >} do not count and cost nothing), and those genuine
+ *   argument-applying spaces additionally pay an extra super-linear
+ *   surcharge: r such spaces cost r squared, rather than r, times the
+ *   weight, so longer applications grow super-linearly more expensive
+ *   while name bindings are left alone.</li>
  * </ul>
  *
  * <p>All of these weights, together with the indentation
@@ -51,22 +52,24 @@ import java.util.Map;
  * default.</p>
  *
  * <p>For example, with the default weights this snippet has a penalty of
- * 99 (five indents at two points each, one explicit {@code @} at fifteen,
- * 39 symbols, plus five application spaces at seven points each — all name
- * bindings, so no surcharge):</p>
+ * 71 (five indents at two points each, one explicit {@code @} at fifteen,
+ * 39 symbols, plus one application space at seven points — the four
+ * spaces around the {@code >} markers only bind names, so they are exempt
+ * and there is no surcharge):</p>
  *
  * <pre> [] &gt; foo
  *   gt. &gt; @
  *     42
  *     bar.hello 88</pre>
  *
- * <p>This one, rendering the same object on a single line, scores 106:
- * one opening parenthesis at nineteen points, 31 symbols, and six
- * application spaces at seven points (42) of which two genuinely apply
- * arguments — {@code 42.gt} to {@code (bar.hello 88)}, and
- * {@code bar.hello} to {@code 88} — so those two pay the surcharge that
- * takes them from 2 to 2 squared, i.e. 4, times the weight (an extra
- * 14). The super-linear charge is what pushes the printer away from a
+ * <p>This one, rendering the same object on a single line, scores 78:
+ * one opening parenthesis at nineteen points, 31 symbols, and two
+ * application spaces at seven points (14) — {@code 42.gt} to
+ * {@code (bar.hello 88)}, and {@code bar.hello} to {@code 88} — which,
+ * since both genuinely apply arguments, pay the surcharge that takes them
+ * from 2 to 2 squared, i.e. 4, times the weight (an extra 14). The four
+ * spaces around the {@code >} markers only bind names, so they are exempt.
+ * The super-linear charge is what pushes the printer away from a
  * sprawling application:</p>
  *
  * <pre> 42.gt (bar.hello 88) &gt; [] &gt; foo</pre>
@@ -153,7 +156,16 @@ final class Penalty {
     }
 
     /**
-     * Count the spaces in a line beyond the leading indentation.
+     * Count the spaces in a line beyond the leading indentation, excluding
+     * the spaces that surround a name-binding marker.
+     *
+     * <p>A space sitting next to a {@code >} (so {@code >}, {@code >>},
+     * {@code ++>} or {@code -->}) binds a name rather than applying an
+     * argument, so it is skipped here — matching the exemption that
+     * {@link #applied(String)} and {@link #binding(String)} already make. This keeps
+     * the base {@link PenaltyKey#SPACE} term and the super-linear surcharge in
+     * {@link #points()} in agreement about what counts as an application.</p>
+     *
      * @param line The line
      * @return The number of spaces
      */
@@ -164,7 +176,9 @@ final class Penalty {
         }
         int total = 0;
         for (int idx = lead; idx < line.length(); ++idx) {
-            if (line.charAt(idx) == ' ') {
+            if (line.charAt(idx) == ' '
+                && !(idx > 0 && line.charAt(idx - 1) == '>')
+                && !(idx + 1 < line.length() && line.charAt(idx + 1) == '>')) {
                 ++total;
             }
         }
