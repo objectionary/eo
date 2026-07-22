@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
  *
  * @since 0.57.0
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class Node {
 
     /**
@@ -293,5 +295,116 @@ final class Node {
             body = plain;
         }
         return body;
+    }
+
+    /**
+     * The inline-phi suffix marker of this formation node — the
+     * {@code  > [params] > name} tail glued after the decoratee's head, or
+     * the {@code  ++> name} shorthand when the formation has no void params
+     * (an empty {@code base}, the no-void test attribute).
+     * @return The marker string
+     */
+    String phiMarker() {
+        final String middle;
+        if (this.base.isEmpty()) {
+            middle = " ";
+        } else {
+            middle = " > ".concat(this.base);
+        }
+        return middle.concat(this.tail);
+    }
+
+    /**
+     * Collapse this formation into the inline-phi form when it carries
+     * named attributes besides its {@code φ} decoratee (§4.5, issue #5754):
+     * the decoratee's head sits on the {@code <phi> > [params] > name} line
+     * with its (unnamed) vertical arguments and then the formation's named
+     * attributes laid out beneath — the same order the parser reads back.
+     * @return The node to lay out vertically, or empty if it doesn't apply
+     */
+    Optional<Node> collapsePhi() {
+        final Optional<Node> result;
+        final int index = this.phiIndex();
+        if (index >= 0 && this.children.get(index).liftablePhi()) {
+            result = Optional.of(this.collapsed(index));
+        } else {
+            result = Optional.empty();
+        }
+        return result;
+    }
+
+    /**
+     * The index of this formation's lone {@code > @} decoratee among its
+     * bindings, or -1 when there is not exactly one, or when the formation
+     * has a void attribute ({@code ?}) — a void must precede every other
+     * attribute, so the decoratee's arguments could not be printed ahead
+     * of it.
+     * @return The decoratee's child index, or -1
+     */
+    private int phiIndex() {
+        int index = -1;
+        int found = 0;
+        boolean voids = false;
+        for (final Node child : this.children) {
+            if ("?".equals(child.base)) {
+                voids = true;
+            } else if (" > @".equals(child.tail)) {
+                index = this.children.indexOf(child);
+                found = found + 1;
+            }
+        }
+        final int result;
+        if (found == 1 && !voids) {
+            result = index;
+        } else {
+            result = -1;
+        }
+        return result;
+    }
+
+    /**
+     * Whether this decoratee can be lifted onto the inline-phi head line so
+     * the formation collapses into {@code <phi> > [params] > name}: it must
+     * not be a formation itself (its bindings are not liftable arguments)
+     * nor a compact-tuple head ({@code seq *}, whose deeper lines are tuple
+     * elements). The remaining checks are in {@link #simplePhiArgs()}.
+     * @return True when the decoratee is safe to lift
+     */
+    private boolean liftablePhi() {
+        return !this.abstractt && !this.tuply() && this.simplePhiArgs();
+    }
+
+    /**
+     * Whether this decoratee's head and arguments are simple enough to lift
+     * onto the inline-phi head line: not a pipe application ({@code | …}),
+     * not a receiver-only reversed dispatch, and carrying no named argument
+     * of its own (which would be misread as an attribute of the collapsed
+     * formation).
+     * @return True when the head and arguments are liftable
+     */
+    private boolean simplePhiArgs() {
+        return !this.base.startsWith("|")
+            && !(this.reversed && this.children.size() <= 1)
+            && this.children.stream().allMatch(Node::nameless);
+    }
+
+    /**
+     * Build the collapsed inline-phi node: the decoratee's head carrying the
+     * formation's marker, its own arguments first, then the formation's
+     * other (named) attributes as siblings.
+     * @param index The decoratee's child index
+     * @return The synthetic node to lay out vertically
+     */
+    private Node collapsed(final int index) {
+        final Node head = this.children.get(index).hybrid(this.phiMarker());
+        final List<Node> kids = new ArrayList<>(head.children);
+        for (int idx = 0; idx < this.children.size(); idx = idx + 1) {
+            if (idx != index) {
+                kids.add(this.children.get(idx));
+            }
+        }
+        return new Node(
+            head.base, head.tail, false, false, head.reversed, head.data, kids
+        );
     }
 }
