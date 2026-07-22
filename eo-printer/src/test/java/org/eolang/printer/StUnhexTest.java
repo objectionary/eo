@@ -41,6 +41,39 @@ final class StUnhexTest {
 
     @ParameterizedTest
     @MethodSource("shifts")
+    void keepsArgumentAppliedToDataLiteral(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must keep an argument applied to a data literal, but it didn't",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<p><o base='Φ.number'>",
+                        "<o base='Φ.bytes'><o>43-70-2E-4F-30-46-73-2E</o></o>",
+                        "<o base='arg'/>",
+                        "</o></p>"
+                    )
+                )
+            ),
+            Matchers.allOf(
+                XhtmlMatchers.hasXPath("//o[@base='Φ.number']/o[@base='arg']"),
+                Matchers.anyOf(
+                    XhtmlMatchers.hasXPath(
+                        "//o[@base='Φ.number' and text()='72872276393407200']"
+                    ),
+                    XhtmlMatchers.hasXPath(
+                        "//o[@base='Φ.number' and text()='7.28722763934072e16']"
+                    )
+                )
+            )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
     void convertsMaxIntFromHexToEo(final Shift shift, final String type) {
         MatcherAssert.assertThat(
             String.format("StUnhex by %s must skip unhexing max integer number", type),

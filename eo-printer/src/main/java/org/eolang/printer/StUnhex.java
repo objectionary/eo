@@ -4,6 +4,7 @@
  */
 package org.eolang.printer;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StEnvelope;
 import com.yegor256.xsline.StSequence;
@@ -14,6 +15,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import org.eolang.parser.StXnav;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * This {@link Shift} turns hex data inside XMIR.
@@ -40,9 +43,7 @@ final class StUnhex extends StEnvelope {
         StUnhex.class.getSimpleName(),
         new StXnav(
             StUnhex.BYTES,
-            xnav -> xnav.node().setTextContent(
-                xnav.element("o").text().orElse("")
-            )
+            xnav -> StUnhex.inline(xnav, xnav.element("o").text().orElse(""))
         ),
         new StXnav(
             StUnhex.elements("number"),
@@ -51,7 +52,7 @@ final class StUnhex extends StEnvelope {
                     StUnhex.undash(xnav.element("o").text().orElse(""))
                 ).getDouble();
                 if (!Double.isNaN(number) && !Double.isInfinite(number)) {
-                    xnav.node().setTextContent(StUnhex.number(number));
+                    StUnhex.inline(xnav, StUnhex.number(number));
                 }
             }
         ),
@@ -62,8 +63,8 @@ final class StUnhex extends StEnvelope {
                     StUnhex.undash(xnav.element("o").text().orElse(""))
                 ).array()
             ).ifPresent(
-                decoded -> xnav.node().setTextContent(
-                    String.format("\"%s\"", StUnhex.escape(decoded))
+                decoded -> StUnhex.inline(
+                    xnav, String.format("\"%s\"", StUnhex.escape(decoded))
                 )
             )
         )
@@ -82,6 +83,35 @@ final class StUnhex extends StEnvelope {
      */
     StUnhex(final Shift origin) {
         super(origin);
+    }
+
+    /**
+     * Replace a data literal's byte-payload child with a text node holding its
+     * readable EO form, leaving any sibling intact. A bare data literal can be
+     * the head of an application (for example {@code 42 5}), in which case its
+     * {@code <o>} wrapper holds the applied argument alongside the byte payload.
+     * Calling {@code setTextContent} on the wrapper would drop that argument, so
+     * only the first child (the payload) is replaced (#5721).
+     * @param xnav Navigator positioned at the literal wrapper {@code <o>}
+     * @param text The readable replacement text
+     */
+    private static void inline(final Xnav xnav, final String text) {
+        final Node parent = xnav.node();
+        final NodeList children = parent.getChildNodes();
+        int elements = 0;
+        for (int idx = 0; idx < children.getLength(); ++idx) {
+            if (children.item(idx).getNodeType() == Node.ELEMENT_NODE) {
+                elements = elements + 1;
+            }
+        }
+        if (elements > 1) {
+            parent.replaceChild(
+                parent.getOwnerDocument().createTextNode(text),
+                xnav.element("o").node()
+            );
+        } else {
+            parent.setTextContent(text);
+        }
     }
 
     /**
