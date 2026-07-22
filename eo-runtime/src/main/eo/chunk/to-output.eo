@@ -40,7 +40,7 @@
       seq * > [mem]
         write.
           write.
-            (to-output mem).write 01-02-03
+            mem.to-output.write 01-02-03
             04-05-06-07
           08-09-A0
         mem
@@ -59,7 +59,7 @@
       2
       seq * > [mem]
         write.
-          to-output mem
+          mem.to-output
           01-02-03
         mem
     01-02-03
