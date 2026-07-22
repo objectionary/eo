@@ -2,10 +2,13 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# A "moniker" — a named binding written at its bare-reference site — must
-# survive the round-trip instead of being expanded into a standalone binding
-# plus a bare reference (#5707). The `number num.as-bytes > value` binding
-# stays inside the `if.` block, at the first `value` reference; the
+# A "moniker" — a named binding written at its bare-reference site — is merged
+# back only for the compiler's auto-generated, obfuscated names (the `a🌵`
+# cactus prefix, §9.2). A real, author-chosen name such as `value` is a
+# declared member of the object and reads best on its own `... > value` line,
+# so it is left standalone instead of being folded into the `if.` block
+# (#5738). The `number num.as-bytes > value` binding therefore stays a
+# separate attribute of `abs`, and the bare `value` reference plus the
 # `value.gte` and `value.neg` dispatches keep referring to it.
 penalties:
   INDENT: 3
@@ -30,5 +33,6 @@ printed: |
   [num] > abs
     if. > @
       value.gte 0
-      number num.as-bytes > value
+      value
       value.neg
+    number num.as-bytes > value

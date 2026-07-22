@@ -17,17 +17,18 @@
   [cant-convert] > as-i32
     if. > @
       ^.eq left.as-i64
-      i32 > left
-        as-bytes.slice 4 4
+      left
       cant-convert
         "Can't convert i64 number %d to i32 because it's out of i32 bounds".printf
           * as-number
+    i32 > left
+      as-bytes.slice 4 4
   [] > as-number /Q.number
   [x] > div /Q.i64
     ? > cant-divide /{Q.string}
   [x] > gt
     differ.if > @
-      sign.eq zero > positive
+      positive
       greater.and
         not.
           difference.as-bytes.eq zero
@@ -39,6 +40,7 @@
       difference.as-bytes.and mask
       zero
     80-00-00-00-00-00-00-00 > mask
+    sign.eq zero > positive
     as-bytes.and mask > sign
     00-00-00-00-00-00-00-00 > zero
   [x] > gte
@@ -57,8 +59,8 @@
   [x] > minus
     plus > @
       neg.
-        i64
-          x > value!
+        i64 value
+    x > value!
   times -1.as-i64 > neg
   [x] > plus /Q.i64
   [x] > times
@@ -88,7 +90,8 @@
   ++> tests-i64-div-by-i64-one
     eq. > @
       dividend.div 1.as-i64
-      -235.as-i64 > dividend
+      dividend
+    -235.as-i64 > dividend
 
   eq. ++> tests-i64-div-by-zero-returns-provided-fallback
     "recovered"

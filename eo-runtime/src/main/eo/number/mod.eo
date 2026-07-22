@@ -23,9 +23,9 @@
     absx.minus > @
       absy.times
         floor.
-          absx.div
-            abs divisor > absy
+          absx.div absy
     abs dividend > absx
+    abs divisor > absy
   number x.as-bytes > dividend
   number y.as-bytes > divisor
 

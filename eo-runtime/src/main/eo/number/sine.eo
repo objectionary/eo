@@ -24,12 +24,14 @@
             (depth.times 2).plus 1
         factor
           depth.plus 1
-  reduced.times > squared
-    arg.minus > reduced
-      times.
-        floor.
-          (arg.div tau).plus 0.5
-        tau
+  arg.minus > reduced
+    times.
+      floor.
+        plus.
+          arg.div tau
+          0.5
+      tau
+  reduced.times reduced > squared
   pi.times 2 > tau
   15 > terms
 

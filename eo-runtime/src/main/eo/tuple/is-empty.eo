@@ -22,14 +22,14 @@
 
   ++> tests-list-should-not-be-empty-with-one-anon-object
     not. > @
-      is-empty
-        * > xs
-          [f]
+      is-empty xs
+    * > xs
+      [f]
 
   ++> tests-list-should-not-be-empty-with-three-objects
     not. > @
-      is-empty
-        * > xs
-          [x]
-          [y]
-          [z]
+      is-empty xs
+    * > xs
+      [x]
+      [y]
+      [z]

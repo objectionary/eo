@@ -24,36 +24,36 @@
   as-i16.as-number > as-number
   [x cant-divide] > div
     if. > @
-      xval.eq
-        00- > zero
+      xval.eq zero
       cant-divide
         "Can't divide %d by i8 zero".printf
           * as-number
-      i8
-        (as-i16.div xval.as-i16).as-bytes.slice > quotient
-          1
-          1
+      i8 quotient
+    (as-i16.div xval.as-i16).as-bytes.slice > quotient
+      1
+      1
     x.as-i8 > xval
+    00- > zero
   as-i16.gt x.as-i8.as-i16 > [x] > gt
   as-i16.gte x.as-i8.as-i16 > [x] > gte
   as-i16.lt x.as-i8.as-i16 > [x] > lt
   as-i16.lte x.as-i8.as-i16 > [x] > lte
   [x] > minus
-    i8 > @
-      (as-i16.minus x.as-i8.as-i16).as-bytes.slice > right
-        1
-        1
+    i8 right > @
+    (as-i16.minus x.as-i8.as-i16).as-bytes.slice > right
+      1
+      1
   times FF-.as-i8 > neg
   [x] > plus
-    i8 > @
-      (as-i16.plus x.as-i8.as-i16).as-bytes.slice > right
-        1
-        1
+    i8 right > @
+    (as-i16.plus x.as-i8.as-i16).as-bytes.slice > right
+      1
+      1
   [x] > times
-    i8 > @
-      (as-i16.times x.as-i8.as-i16).as-bytes.slice > right
-        1
-        1
+    i8 right > @
+    (as-i16.times x.as-i8.as-i16).as-bytes.slice > right
+      1
+      1
 
   eq. ++> tests-i8-as-i16-widens-negative-with-sign-extension
     C8-.as-i8.as-i16.as-bytes

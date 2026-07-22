@@ -25,10 +25,11 @@
         slice
           txt
           0
-          rec-index-of 0 > found!
+          found
   minus. > end!
     number tlen
     slen
+  rec-index-of 0 > found!
   [idx] > rec-index-of
     if. > @
       end.eq idx

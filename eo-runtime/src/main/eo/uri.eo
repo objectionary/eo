@@ -43,7 +43,7 @@
   has-fragment.if > before-fragment
     rest.slice
       0
-      string.index-of rest "#" > hash-idx
+      hash-idx
     rest
   has-fragment.if > fragment
     rest.slice
@@ -65,15 +65,18 @@
     question-idx.eq -1
   not. > has-userinfo
     userinfo-at-idx.eq -1
+  string.index-of > hash-idx
+    rest
+    "#"
   has-query.if > hier-part
     before-fragment.slice
       0
-      string.index-of before-fragment "?" > question-idx
+      question-idx
     before-fragment
   has-port.if > host
     host-port.slice
       0
-      string.index-of host-port ":" > port-colon-idx
+      port-colon-idx
     host-port
   has-userinfo.if > host-port
     authority.slice
@@ -97,6 +100,9 @@
         number
           port-colon-idx.plus 1
     ""
+  string.index-of > port-colon-idx
+    host-port
+    ":"
   has-query.if > query
     before-fragment.slice
       question-idx.plus 1
@@ -104,6 +110,9 @@
         number
           question-idx.plus 1
     ""
+  string.index-of > question-idx
+    before-fragment
+    "?"
   text.slice > rest
     scheme-colon.plus 1
     text.length.minus
@@ -111,14 +120,18 @@
         scheme-colon.plus 1
   text.slice > scheme
     0
-    string.index-of > scheme-colon
-      text
-      ":"
+    scheme-colon
+  string.index-of > scheme-colon
+    text
+    ":"
   has-userinfo.if > userinfo
     authority.slice
       0
-      string.index-of authority "@" > userinfo-at-idx
+      userinfo-at-idx
     ""
+  string.index-of > userinfo-at-idx
+    authority
+    "@"
 
   eq. ++> tests-parses-empty-host-of-triple-slash-uri
     host.

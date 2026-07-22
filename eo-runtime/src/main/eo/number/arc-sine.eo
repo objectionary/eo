@@ -15,17 +15,20 @@
   if. > @
     arg.lt 0
     base.neg
-    if. > base
-      mag.gt 0.5
-      minus.
-        pi.div 2
-        2.times
-          series
-            sqrt > root
-              (1.minus mag).div 2
-      series mag
-  abs > mag
-    number num.as-bytes > arg
+    base
+  number num.as-bytes > arg
+  if. > base
+    mag.gt 0.5
+    minus.
+      pi.div 2
+      2.times
+        series root
+    series mag
+  abs arg > mag
+  sqrt > root
+    div.
+      1.minus mag
+      2
   [point] > series
     point.times > @
       poly 1

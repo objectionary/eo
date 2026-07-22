@@ -45,12 +45,15 @@
   </xsl:function>
   <!--
   Whether `$attr` is a formation attribute eligible to become a moniker:
-  named, bound (has a base), and neither void, `φ`, a test, nor already
-  floated with a pipe (`|`).
+  auto-named with the cactus prefix (`a🌵`, §9.2), bound (has a base), and
+  neither void, `φ`, a test, nor already floated with a pipe (`|`). Only
+  the compiler's obfuscated names are merged; a real, author-chosen name
+  such as `value` reads best on its own `... > name` line and stays
+  standalone (#5738).
   -->
   <xsl:function name="eo:moniker-binding" as="xs:boolean">
     <xsl:param name="attr" as="element()"/>
-    <xsl:sequence select="exists($attr/@name) and exists($attr/@base) and not(exists($attr/@pipe)) and not(eo:void($attr)) and $attr/@name != $eo:phi and not(eo:test-attr($attr)) and eo:abstract($attr/..)"/>
+    <xsl:sequence select="exists($attr/@name) and starts-with($attr/@name, concat('a', $eo:cactoos)) and exists($attr/@base) and not(exists($attr/@pipe)) and not(eo:void($attr)) and $attr/@name != $eo:phi and not(eo:test-attr($attr)) and eo:abstract($attr/..)"/>
   </xsl:function>
   <!--
   The bare `ξ.<name>` references that can host the binding `$attr`: a bare
