@@ -171,7 +171,7 @@
       constant, and since xsl:sort is stable the original order stands.
       -->
       <xsl:variable name="sortable" select="eo:abstract(.) and empty(o[@pipe])"/>
-      <xsl:apply-templates select="o[not(eo:void(.)) or @local or @types]" mode="tree">
+      <xsl:apply-templates select="o[not(eo:void(.)) or @local or @args or @type]" mode="tree">
         <xsl:sort data-type="number" select="if (not($sortable)) then 0 else if (eo:void(.)) then 1 else if (@name = $eo:phi) then 2 else if (eo:test-attr(.)) then 4 else 3"/>
         <xsl:sort select="if (not($sortable) or eo:void(.) or @name = $eo:phi) then '' else string(@name)"/>
       </xsl:apply-templates>
@@ -184,21 +184,42 @@
   to preserve the void's anonymity (§9.2, R-9.2.3) instead of being
   collapsed into a public "[name]" bracket param (#5581).
   -->
-  <xsl:template match="o[eo:void(.) and @local and not(@types)]" mode="tree">
+  <xsl:template match="o[eo:void(.) and @local and not(@args) and not(@type)]" mode="tree">
     <line base="?" tail="{concat(' &gt;&gt; ', @local)}" abstract="no" test="no" reversed="no"/>
   </xsl:template>
-  <!-- VOID WITH TYPE ANNOTATION -->
+  <!-- VOID WITH BARE TYPE ANNOTATION -->
   <!--
-  A void carrying a forma-list tail ("? &gt; name /{forma …}", R-3.4.8) —
-  the argument formas of an atom's error branch — is printed as a
-  vertical body line so its "/{...}" annotation survives. A bracket param
-  cannot express a type, so folding it into "[...]" would silently drop
-  the signature and change the object's shape while still parsing (#5614).
-  Each forma has its implicit Φ. root stripped, mirroring the atom's own
-  "/sig" rendering.
+  A void carrying a bare type tail ("? &gt; name /type", R-3.4.8) — the
+  void's own type, a concrete forma or a generic variable A-F with an
+  optional trailing "?" — is printed as a vertical body line so its
+  "/type" annotation survives. A bracket param cannot express a type, so
+  folding it into "[...]" would silently drop the signature (#5614). The
+  forma has its implicit Φ. root stripped and any trailing "?" preserved,
+  mirroring the atom's own "/sig" rendering; a variable prints verbatim.
   -->
-  <xsl:template match="o[eo:void(.) and @types]" mode="tree">
-    <xsl:variable name="formas" select="string-join(for $t in tokenize(@types, ' ') return eo:signature($t), ' ')"/>
+  <xsl:template match="o[eo:void(.) and @type]" mode="tree">
+    <xsl:variable name="opt" select="ends-with(@type, '?')"/>
+    <xsl:variable name="raw" select="if ($opt) then substring(@type, 1, string-length(@type) - 1) else string(@type)"/>
+    <xsl:variable name="sig" select="concat(eo:signature($raw), if ($opt) then '?' else '')"/>
+    <xsl:choose>
+      <xsl:when test="@local">
+        <line base="?" tail="{concat(' &gt;&gt; ', @local, ' /', $sig)}" abstract="no" test="no" reversed="no"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <line base="?" tail="{concat(' &gt; ', @name, ' /', $sig)}" abstract="no" test="no" reversed="no"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <!-- VOID WITH CALLBACK ARGUMENT-TYPE LIST -->
+  <!--
+  A void carrying a brace tail ("? &gt; name /{type …}", R-3.4.8) — the
+  argument types of an atom's callback branch — is printed as a vertical
+  body line so its "/{...}" annotation survives (#5614). Each member has
+  its implicit Φ. root stripped, mirroring the atom's own "/sig"
+  rendering; a variable prints verbatim.
+  -->
+  <xsl:template match="o[eo:void(.) and @args]" mode="tree">
+    <xsl:variable name="formas" select="string-join(for $t in tokenize(@args, ' ') return eo:signature($t), ' ')"/>
     <xsl:choose>
       <xsl:when test="@local">
         <line base="?" tail="{concat(' &gt;&gt; ', @local, ' /{', $formas, '}')}" abstract="no" test="no" reversed="no"/>
@@ -297,7 +318,7 @@
     -->
     <xsl:if test="not(eo:test-attr(.) and empty(o[eo:void(.)]))">
       <xsl:text>[</xsl:text>
-      <xsl:for-each select="o[eo:void(.) and not(@local) and not(@types)]">
+      <xsl:for-each select="o[eo:void(.) and not(@local) and not(@args) and not(@type)]">
         <xsl:if test="position()&gt;1">
           <xsl:text> </xsl:text>
         </xsl:if>

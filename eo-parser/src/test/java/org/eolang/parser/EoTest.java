@@ -220,10 +220,10 @@ final class EoTest {
     @Test
     void parsesAtomVoidWithFormaList() {
         MatcherAssert.assertThat(
-            "a void in an atom must carry its `/{…}` forma-list as a raw @types attribute",
+            "a void in an atom must carry its `/{…}` argument list as a raw @args attribute",
             EoTest.render("[] > fopen /file", "  ? > not-found /{string io.file-error}"),
             XhtmlMatchers.hasXPath(
-                "/object/o[@name='fopen']/o[@name='not-found' and @base='∅' and @types='string io.file-error']"
+                "/object/o[@name='fopen']/o[@name='not-found' and @base='∅' and @args='string io.file-error']"
             )
         );
     }
@@ -233,6 +233,37 @@ final class EoTest {
         MatcherAssert.assertThat(
             "a `/{…}` forma-list on a void outside an atom must be rejected",
             EoTest.render("[] > foo", "  ? > x /{string}"),
+            XhtmlMatchers.hasXPath("/object/errors/error")
+        );
+    }
+
+    @Test
+    void parsesGenericAtomReturnType() {
+        MatcherAssert.assertThat(
+            "an atom with a generic return must keep the type variable verbatim on its lambda marker",
+            EoTest.render("[] > recovered /A"),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='recovered']/o[@name='λ' and @atom='A']"
+            )
+        );
+    }
+
+    @Test
+    void parsesVoidWithGenericType() {
+        MatcherAssert.assertThat(
+            "a void in an atom must carry its bare `/type` as a raw @type attribute",
+            EoTest.render("[] > recovered /A", "  ? > value /A?"),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='recovered']/o[@name='value' and @base='∅' and @type='A?']"
+            )
+        );
+    }
+
+    @Test
+    void rejectsGenericTypeOutsideRange() {
+        MatcherAssert.assertThat(
+            "a type variable outside A-F must be rejected",
+            EoTest.render("[] > foo /G"),
             XhtmlMatchers.hasXPath("/object/errors/error")
         );
     }

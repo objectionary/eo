@@ -14,8 +14,8 @@ sheets:
   - /org/eolang/parser/parse/mandatory-as.xsl
 asserts:
   - /object[not(errors)]
-  - /object/o[@name='fopen']/o[@name='not-found' and @base='∅' and @types='Φ.string io.file-error']
-  - /object/o[@name='fopen']/o[@name='cant-open' and @base='∅' and @types='Φ.a.b.c']
+  - /object/o[@name='fopen']/o[@name='not-found' and @base='∅' and @args='Φ.string io.file-error']
+  - /object/o[@name='fopen']/o[@name='cant-open' and @base='∅' and @args='Φ.a.b.c']
 input: |
   +alias foo a.b.c
 

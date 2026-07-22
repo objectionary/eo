@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='atom']/o[@name='λ' and @atom='A']
+  - /object/o[@name='atom']/o[@base='∅' and @local='h' and @type='A?']
+input: |
+  [] > atom /A
+    ? >> h /A?
