@@ -10,4 +10,7 @@
 +unlint mandatory-package
 
 bool > true
-  left > [left right]
+  []
+    ? >> left
+    ? >> right
+    left > @
