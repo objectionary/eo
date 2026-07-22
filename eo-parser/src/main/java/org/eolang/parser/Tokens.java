@@ -239,18 +239,32 @@ final class Tokens {
             );
         }
         final String inside = this.body.substring(start + 1, this.cursor - 1);
-        if (!inside.isEmpty()
-            && inside.indexOf(' ') < 0
-            && inside.indexOf('(') < 0
-            && inside.indexOf(')') < 0
-            && inside.indexOf('[') < 0
-            && inside.indexOf(']') < 0) {
+        boolean redundant = !inside.isEmpty();
+        boolean quoted = false;
+        for (int idx = 0; redundant && idx < inside.length(); idx += 1) {
+            final char glyph = inside.charAt(idx);
+            if (glyph == '"' && (idx == 0 || inside.charAt(idx - 1) != '\\')) {
+                quoted = !quoted;
+            } else if (
+                    !quoted
+                            && (
+                            glyph == ' '
+                                    || glyph == '('
+                                    || glyph == ')'
+                                    || glyph == '['
+                                    || glyph == ']'
+                    )
+            ) {
+                redundant = false;
+            }
+        }
+        if (redundant) {
             throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                String.format(
-                    "redundant parentheses around a single token — `(%s)` should be written as `%s`",
-                    inside, inside
-                )
+                    this.span.line(), this.span.indent() + start,
+                    String.format(
+                            "redundant parentheses around a single token — `(%s)` should be written as `%s`",
+                            inside, inside
+                    )
             );
         }
         return new Value(

@@ -463,6 +463,59 @@ final class TokensTest {
     }
 
     @Test
+    void rejectsRedundantParensAroundStringLiteralWithSpaces() {
+        Assertions.assertThrows(
+                ParseError.class,
+                () -> new Tokens(
+                        "(\"hello world\")", new Span("(\"hello world\")", 1)
+                ).readGroup(),
+                "a space inside a quoted string must not defeat the redundant-parens check"
+        );
+    }
+
+    @Test
+    void rejectsRedundantParensAroundStringLiteralWithParens() {
+        Assertions.assertThrows(
+                ParseError.class,
+                () -> new Tokens(
+                        "(\"a(b)c\")", new Span("(\"a(b)c\")", 1)
+                ).readGroup(),
+                "parens inside a quoted string must not defeat the redundant-parens check"
+        );
+    }
+
+    @Test
+    void rejectsRedundantParensAroundStringLiteralWithBrackets() {
+        Assertions.assertThrows(
+                ParseError.class,
+                () -> new Tokens(
+                        "(\"a[b]c\")", new Span("(\"a[b]c\")", 1)
+                ).readGroup(),
+                "brackets inside a quoted string must not defeat the redundant-parens check"
+        );
+    }
+
+    @Test
+    void rejectsRedundantParensAroundStringLiteralWithEscapedQuote() {
+        final String body = "(\"a\\\"b\")";
+        Assertions.assertThrows(
+                ParseError.class,
+                () -> new Tokens(body, new Span(body, 1)).readGroup(),
+                "an escaped quote inside the string must not toggle quote state"
+        );
+    }
+
+    @Test
+    void acceptsParenGroupWithStringFollowedByAnotherArg() {
+        final String body = "(\"hello\" b)";
+        MatcherAssert.assertThat(
+                "a real multi-token group containing a string arg must not be flagged",
+                new Tokens(body, new Span(body, 1)).readGroup().raw(),
+                Matchers.equalTo(body)
+        );
+    }
+
+    @Test
     void detectsSuffixAhead() {
         final Tokens tokens = new Tokens("foo > x", new Span("foo > x", 1));
         tokens.readName();
