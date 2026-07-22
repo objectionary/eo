@@ -73,13 +73,18 @@
   <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>
   </xsl:template>
-  <xsl:template match="o[@atom]">
+  <xsl:template match="o[@atom][not(matches(@atom, '^[A-F]$'))]">
     <xsl:apply-templates select="." mode="with-atom"/>
   </xsl:template>
-  <xsl:template match="@types">
-    <xsl:attribute name="types">
-      <xsl:value-of separator=" " select="for $t in tokenize(., ' ') return if (contains($t, '.') or $t=$eo:phi or $t=$eo:program or $t=$eo:rho or $t=$eo:empty or $t=$eo:xi or $t=$eo:bottom or $t=/object/metas/meta[head='alias']/part[1]) then $t else concat('Φ.', $t)"/>
+  <xsl:template match="@args">
+    <xsl:attribute name="args">
+      <xsl:value-of separator=" " select="for $t in tokenize(., ' ') return if (matches($t, '^[A-F]$') or contains($t, '.') or $t=$eo:phi or $t=$eo:program or $t=$eo:rho or $t=$eo:empty or $t=$eo:xi or $t=$eo:bottom or $t=/object/metas/meta[head='alias']/part[1]) then $t else concat('Φ.', $t)"/>
     </xsl:attribute>
+  </xsl:template>
+  <xsl:template match="@type">
+    <xsl:variable name="opt" select="ends-with(., '?')"/>
+    <xsl:variable name="t" select="if ($opt) then substring(., 1, string-length(.) - 1) else string(.)"/>
+    <xsl:attribute name="type" select="concat(if (matches($t, '^[A-F]$') or contains($t, '.') or $t=$eo:phi or $t=$eo:program or $t=$eo:rho or $t=$eo:empty or $t=$eo:xi or $t=$eo:bottom or $t=/object/metas/meta[head='alias']/part[1]) then $t else concat('Φ.', $t), if ($opt) then '?' else '')"/>
   </xsl:template>
   <xsl:template match="/object/metas/meta[head='also']/(tail|part)">
     <xsl:apply-templates select="." mode="meta"/>

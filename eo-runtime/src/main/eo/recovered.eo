@@ -12,7 +12,9 @@
 +spdx SPDX-License-Identifier: MIT
 +unlint mandatory-package
 
-[value alternative] > recovered /Q.bytes
+[] > recovered /A
+  ? > value /A?
+  ? > alternative /A
 
   eq. ++> tests-falls-back-to-alternative-when-terminated
     recovered

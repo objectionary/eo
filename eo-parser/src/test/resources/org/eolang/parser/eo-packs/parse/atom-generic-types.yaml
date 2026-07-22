@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+asserts:
+  - /object[not(errors)]
+  # generic return variable stays verbatim, never homed into Φ
+  - /object/o[@name='atom']/o[@name='λ' and @atom='A']
+  # maybe-⊥ generic void
+  - /object/o[@name='atom']/o[@name='x' and @base='∅' and @type='A?']
+  # a second variable introduced by a void alone
+  - /object/o[@name='atom']/o[@name='y' and @base='∅' and @type='B']
+  # unannotated void — left untyped
+  - /object/o[@name='atom']/o[@name='z' and @base='∅' and not(@type) and not(@args)]
+  # concrete forma with the maybe-⊥ marker, homed into Φ, ? preserved
+  - /object/o[@name='atom']/o[@name='s' and @base='∅' and @type='Φ.string?']
+  # callback arg-types mixing a homed forma and a verbatim variable
+  - /object/o[@name='atom']/o[@name='cant' and @base='∅' and @args='Φ.string B']
+input: |
+  [a] > atom /A
+    ? > x /A?
+    ? > y /B
+    ? > z
+    ? > s /Q.string?
+    ? > cant /{Q.string B}

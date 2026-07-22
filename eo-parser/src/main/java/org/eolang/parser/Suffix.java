@@ -30,8 +30,9 @@ package org.eolang.parser;
  *   <li>R-3.10.2 — {@code >>} cannot carry {@code /sig}.</li>
  *   <li>R-3.10.3 — {@code > name!} cannot combine with {@code /sig}.</li>
  *   <li>R-3.10.10 — {@code /sig} must be a non-empty dotted name
- *   (optionally rooted at {@code Q}); a bare {@code /} or {@code /Q}
- *   alone is rejected.</li>
+ *   (optionally rooted at {@code Q}) or a generic type variable
+ *   {@code A}–{@code F}; a bare {@code /}, {@code /Q} alone, or a
+ *   {@code ?} optional marker (void-only) is rejected.</li>
  *   <li>R-6.3.5 — a {@code +>} test name must be a {@code NAME} token,
  *   not {@code @} (PHI).</li>
  * </ul>
@@ -224,6 +225,40 @@ final class Suffix {
      */
     boolean present() {
         return this.form != Form.NONE;
+    }
+
+    /**
+     * Classify and promote a single type atom — a generic type variable
+     * or a concrete forma — shared by an atom return signature
+     * (§3.10.10) and a void type annotation (§3.4.8, {@link LnVoid}).
+     *
+     * <p>A single uppercase letter {@code A}–{@code F} is a generic type
+     * variable, returned verbatim so that no later pass homes it into
+     * {@code Φ}. A {@code Q.}-rooted forma is promoted to {@code Φ.}
+     * (R-9.3). Any other uppercase-initial token is a malformed variable
+     * and rejected. Every other token is a concrete forma, returned
+     * verbatim for {@code add-default-package} to home.</p>
+     *
+     * @param raw Raw token, without a trailing {@code ?}
+     * @param span Source span
+     * @param pos Source column of the token (for errors)
+     * @return Emitted token — variable verbatim, forma promoted
+     */
+    static String typeAtom(final String raw, final Span span, final int pos) {
+        final char first = raw.charAt(0);
+        if (first >= 'A' && first <= 'Z' && !raw.matches("[A-F]") && !raw.startsWith("Q.")) {
+            throw new ParseError(
+                span.line(), pos,
+                "type variable must be one of A-F"
+            );
+        }
+        final String promoted;
+        if (raw.startsWith("Q.")) {
+            promoted = "Φ".concat(raw.substring(1));
+        } else {
+            promoted = raw;
+        }
+        return promoted;
     }
 
     /**
@@ -485,19 +520,19 @@ final class Suffix {
             );
         }
         final String raw = tail.substring(after, idx);
+        if (raw.indexOf('?') >= 0) {
+            throw new ParseError(
+                span.line(), home + after,
+                "optional marker ? is allowed only on a void attribute"
+            );
+        }
         if (raw.equals("Q")) {
             throw new ParseError(
                 span.line(), home + after,
                 "atom signature requires a name"
             );
         }
-        final String promoted;
-        if (raw.startsWith("Q.")) {
-            promoted = "Φ".concat(raw.substring(1));
-        } else {
-            promoted = raw;
-        }
-        return promoted;
+        return Suffix.typeAtom(raw, span, home + after);
     }
 
     /**
