@@ -53,6 +53,10 @@ final class XmirTest {
     void printsToParseableEo(final String pack) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
+        Assumptions.assumeTrue(
+            !Boolean.FALSE.equals(xtory.map().get("reprints")),
+            "'reprints: false' packs need not reprint to themselves (#5739)"
+        );
         final String printed = (String) xtory.map().get("printed");
         MatcherAssert.assertThat(
             String.format(
