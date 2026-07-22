@@ -9,8 +9,8 @@
 package org.eolang;
 
 import java.lang.management.ManagementFactory;
-import org.eolang.EO_sm.Win32.WSAStartupFuncCall;
-import org.eolang.EO_sm.Win32.Winsock;
+import org.eolang.Win32.WSAStartupFuncCall;
+import org.eolang.Win32.Winsock;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Nested;
