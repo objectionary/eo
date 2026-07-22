@@ -22,11 +22,11 @@
           number index
           list.length
         list
-        r list
-  if. > [t] >> r
-    t.length.eq index
-    t
-    r t.tail
+        if. > [t] >> r
+          t.length.eq index
+          t
+          r t.tail
+        | list
 
   eq. ++> tests-complex-front
     front

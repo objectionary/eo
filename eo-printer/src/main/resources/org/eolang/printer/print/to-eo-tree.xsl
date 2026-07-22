@@ -274,6 +274,16 @@
         -->
         <xsl:value-of select="eo:translate-path($self-rest)"/>
       </xsl:when>
+      <xsl:when test="starts-with(@base, $rho-prefix) and $hop-name != '' and (every $i in 1 to $rho-count - 1 satisfies ancestor::o[not(@base)][$i]/@local != $hop-name) and ancestor::o[not(@base)][$rho-count]/@local = $hop-name">
+        <!--
+        The ρ-run lands on the file-local "&gt;&gt; name" handle of an
+        enclosing formation, i.e. a recursive self-reference inlined as a
+        moniker. The handle is in scope from inside its own body, so plain
+        resolution of the bare name re-derives the same ρ-chain; drop the
+        run and print the handle.
+        -->
+        <xsl:value-of select="eo:translate-path($hop-rest)"/>
+      </xsl:when>
       <xsl:when test="starts-with(@base, $rho-prefix) and $hop-name != '' and $hop-name != $eo:rho and $hop-name != $eo:phi and $hop-name != $eo:xi and $hop-name != $eo:program and (every $i in 1 to $rho-count satisfies empty(ancestor::o[not(@base)][$i]/o[@name=$hop-name])) and exists(ancestor::o[not(@base)][$rho-count + 1]/o[@name=$hop-name])">
         <!--
         The run of leading "^." parent hops is redundant: the name is

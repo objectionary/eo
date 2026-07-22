@@ -18,10 +18,12 @@
   For each formation, an eligible named bound attribute (see
   `eo:moniker-binding`) is merged onto the first bare `ξ.<name>` reference
   reachable through no intervening formation (so the name still binds to
-  the same formation). A method-dispatch use such as `value.gte`, a
-  reference carrying arguments, or a reference that is itself a named
-  attribute (such as `temp > @`) cannot host the binding and stays a
-  reference; when no bare reference exists, the binding is left in place.
+  the same formation). A method-dispatch use such as `value.gte` or a
+  reference that is itself a named attribute (such as `temp > @`) cannot
+  host the binding and stays a reference. A reference carrying arguments
+  (`r list`) can host it: the binding is inlined at the reference site and
+  the arguments float onto it as a `| args` pipe continuation (§3.14).
+  When no hostable reference exists, the binding is left in place.
 
   A binding with several hostable references still becomes a moniker,
   landing on the first one in document order (#5739). This deliberately
@@ -35,27 +37,35 @@
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <!--
-  The single attribute name a bare `ξ.<name>` reference resolves to, or the
-  empty string for anything that is not a hostable bare reference. A named
+  The single attribute name a `ξ.<name>` reference resolves to, or the
+  empty string for anything that is not a hostable reference. A named
   node (its `@name` would be clobbered by the binding), a trailing path,
-  arguments, or a non-`ξ` base all disqualify it.
+  or a non-`ξ` base all disqualify it. Simple arguments do not: a
+  reference carrying leaf arguments (`r list`) still resolves, and the
+  merge floats them onto the inlined binding as a one-line `| args`
+  continuation. An argument that carries its own arguments would force a
+  multi-line `|` block, which is not a valid pipe continuation, so such a
+  reference is left alone.
   -->
   <xsl:function name="eo:resolved-ref" as="xs:string">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="tail" select="substring-after($ref/@base, concat($eo:xi, '.'))"/>
-    <xsl:sequence select="if (exists($ref/@base) and not(exists($ref/@name)) and starts-with($ref/@base, concat($eo:xi, '.')) and not(contains($tail, '.')) and not($ref/o)) then $tail else ''"/>
+    <xsl:sequence select="if (exists($ref/@base) and not(exists($ref/@name)) and starts-with($ref/@base, concat($eo:xi, '.')) and not(contains($tail, '.')) and not($ref/o[o])) then $tail else ''"/>
   </xsl:function>
   <!--
   Whether `$attr` is a formation attribute eligible to become a moniker:
-  auto-named with the cactus prefix (`a🌵`, §9.2), bound (has a base), and
-  neither void, `φ`, a test, nor already floated with a pipe (`|`). Only
-  the compiler's obfuscated names are merged; a real, author-chosen name
-  such as `value` reads best on its own `... > name` line and stays
-  standalone (#5738).
+  bound (an application or a formation, so not void), neither `φ`, a test,
+  nor already floated with a pipe (`|`), and either auto-named with the
+  cactus prefix (`a🌵`, §9.2) or carrying a file-local `@local` handle. The
+  latter covers a recursive `>>`-named formation, whose obfuscated name
+  `restore-local-names` promotes back to its handle (#5677); it is still
+  compiler plumbing, not an author's declared member. Only such obfuscated
+  names are merged; a real, author-chosen name such as `value` reads best
+  on its own `... > name` line and stays standalone (#5738).
   -->
   <xsl:function name="eo:moniker-binding" as="xs:boolean">
     <xsl:param name="attr" as="element()"/>
-    <xsl:sequence select="exists($attr/@name) and starts-with($attr/@name, concat('a', $eo:cactoos)) and exists($attr/@base) and not(exists($attr/@pipe)) and not(eo:void($attr)) and $attr/@name != $eo:phi and not(eo:test-attr($attr)) and eo:abstract($attr/..)"/>
+    <xsl:sequence select="exists($attr/@name) and (starts-with($attr/@name, concat('a', $eo:cactoos)) or exists($attr/@local)) and not(exists($attr/@pipe)) and not(eo:void($attr)) and $attr/@name != $eo:phi and not(eo:test-attr($attr)) and eo:abstract($attr/..)"/>
   </xsl:function>
   <!--
   The bare `ξ.<name>` references, in document order, that can host the
@@ -81,7 +91,9 @@
   <!--
   Replace the first hosting reference with the merged binding: keep the
   reference's positional `@as`, take the binding's other attributes and its
-  children.
+  children. When the reference carried arguments (`r list`), the inlined
+  binding cannot hold them, so they float onto it as a following `| args`
+  pipe continuation (§3.14) whose base names the just-inlined binding.
   -->
   <xsl:template match="o[exists(eo:hosted-binding(.))]" priority="1">
     <xsl:variable name="binding" select="eo:hosted-binding(.)"/>
@@ -90,6 +102,13 @@
       <xsl:apply-templates select="$binding/@*[name() != 'as']"/>
       <xsl:apply-templates select="$binding/node()"/>
     </xsl:element>
+    <xsl:if test="o">
+      <xsl:element name="o">
+        <xsl:attribute name="pipe"/>
+        <xsl:attribute name="base" select="concat($eo:xi, '.', $binding/@name)"/>
+        <xsl:apply-templates select="o"/>
+      </xsl:element>
+    </xsl:if>
   </xsl:template>
   <!--
   Drop the standalone binding once it has been merged onto a reference.
