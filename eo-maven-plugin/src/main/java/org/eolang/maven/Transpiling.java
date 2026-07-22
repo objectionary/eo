@@ -161,10 +161,9 @@ final class Transpiling implements Step {
     private final Tracking tracking;
 
     /**
-     * The file to record coverage hits into, or NULL when
-     * instrumentation is off.
+     * Whether located objects are wrapped into {@code PhCoverage}.
      */
-    private final Path coverage;
+    private final boolean coverage;
 
     /**
      * Constructor.
@@ -177,7 +176,7 @@ final class Transpiling implements Step {
      * @param tests Whether to transpile tests
      * @param measures Path to the file where XSL measurements are stored
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
-     * @param cvrg The coverage file, or NULL when instrumentation is off
+     * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
      * @checkstyle ParameterNumberCheck (18 lines)
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
@@ -191,7 +190,7 @@ final class Transpiling implements Step {
         final boolean tests,
         final Path measures,
         final Tracking diagnostics,
-        final Path cvrg
+        final boolean cvrg
     ) {
         this.sources = srcs;
         this.targetDir = target;
@@ -325,7 +324,7 @@ final class Transpiling implements Step {
      */
     private Train<Shift> train() {
         final boolean track = this.tracking.locations();
-        final boolean instrument = this.coverage != null;
+        final boolean instrument = this.coverage;
         return Transpiling.TRAINS.get().computeIfAbsent(
             String.format("%b|%b", track, instrument),
             ignored -> Transpiling.compiled(track, instrument)
