@@ -22,7 +22,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[allocated] > to-output
+[chunk] > to-output
   [buffer] > write
     write. > @
       output-block 0
@@ -30,7 +30,7 @@
     [offset] > output-block
       true > @
       seq * > [buffer] > write
-        allocated.write offset buffer
+        chunk.write offset buffer
         output-block
           offset.plus buffer.size
 
