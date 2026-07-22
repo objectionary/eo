@@ -241,13 +241,20 @@ final class Tokens {
         final String inside = this.body.substring(start + 1, this.cursor - 1);
         boolean redundant = !inside.isEmpty();
         boolean quoted = false;
-        for (int i = 0; redundant && i < inside.length(); i++) {
-            final char glyph = inside.charAt(i);
-            if (glyph == '"' && (i == 0 || inside.charAt(i - 1) != '\\')) {
+        for (int idx = 0; redundant && idx < inside.length(); idx += 1) {
+            final char glyph = inside.charAt(idx);
+            if (glyph == '"' && (idx == 0 || inside.charAt(idx - 1) != '\\')) {
                 quoted = !quoted;
-            } else if (!quoted
-                    && (glyph == ' ' || glyph == '(' || glyph == ')'
-                    || glyph == '[' || glyph == ']')) {
+            } else if (
+                    !quoted
+                            && (
+                            glyph == ' '
+                                    || glyph == '('
+                                    || glyph == ')'
+                                    || glyph == '['
+                                    || glyph == ']'
+                    )
+            ) {
                 redundant = false;
             }
         }
