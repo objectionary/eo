@@ -23,7 +23,7 @@
           list.length
         list
         r list
-  if. > [t] > r
+  if. > [t] >> r
     t.length.eq index
     t
     r t.tail
