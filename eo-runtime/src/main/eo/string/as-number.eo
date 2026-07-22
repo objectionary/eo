@@ -1,6 +1,11 @@
 # Returns the original `text` as `number`.
 # If the text is not numeric, the `cant-parse` fallback is returned,
 # or the bottom object when unbound.
+# The whole `text` must be the number: `scanf` matches its `%f` pattern
+# unanchored (via `find`), so on its own it would accept any text that
+# merely contains a number-shaped substring, e.g. `"$100"` or `"12.34.56"`.
+# The text is therefore validated against the anchored equivalent of that
+# same `%f` token, so that only a text that is entirely a number is parsed.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -11,27 +16,56 @@
 
 [text cant-parse] > as-number
   if. > @
-    scanned.length.eq 0
+    not.
+      matches.
+        compiled.
+          regex "/^[+-]?\\d+(?:\\.\\d+)?$/"
+        text
     cant-parse
       "Can't convert text %s to number".printf
         * text
-    scanned.head
-  ^. > scanned
-    at.
-      scanf "%f" text
+    (scanf "%f" text).at.^.head
 
   eq. ++> tests-converts-float-text-to-number
     3.14
     as-number "3.14"
 
+  eq. ++> tests-converts-negative-text-to-number
+    -42
+    as-number "-42"
+
   eq. ++> tests-converts-text-to-number
     5
     as-number "5"
+
+  eq. ++> tests-currency-prefixed-text-returns-provided-fallback
+    42
+    as-number
+      "$100"
+      42 > [msg]
+
+  eq. ++> tests-embedded-number-text-returns-provided-fallback
+    42
+    as-number
+      "abc5"
+      42 > [msg]
+
+  eq. ++> tests-multiple-dots-text-returns-provided-fallback
+    42
+    as-number
+      "12.34.56"
+      42 > [msg]
 
   eq. ++> tests-non-numeric-text-returns-provided-fallback
     42
     as-number
       "Hello"
+      42 > [msg]
+
+  eq. ++> tests-space-separated-numbers-text-returns-provided-fallback
+    42
+    as-number
+      "1 2 3"
       42 > [msg]
 
   as-number "Hello" --> on-converting-text-to-number
