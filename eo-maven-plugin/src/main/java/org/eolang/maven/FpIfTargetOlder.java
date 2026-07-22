@@ -30,7 +30,7 @@ public final class FpIfTargetOlder extends FpEnvelope {
             new FpFork(
                 (source, target) -> {
                     final Path dest = destination.apply(target);
-                    final boolean older = FpIfTargetOlder.isAfter(dest, source);
+                    final boolean older = FpIfTargetOlder.isOlder(dest, source);
                     if (older) {
                         Logger.debug(
                             FpIfTargetOlder.class,
@@ -59,8 +59,8 @@ public final class FpIfTargetOlder extends FpEnvelope {
      * @return True if first path is older that second path
      * @throws IOException If fails to compare files
      */
-    private static boolean isAfter(final Path first, final Path second) throws IOException {
-        return Files.getLastModifiedTime(first).toInstant().isAfter(
+    private static boolean isOlder(final Path first, final Path second) throws IOException {
+        return Files.getLastModifiedTime(first).toInstant().isBefore(
             Files.getLastModifiedTime(second).toInstant()
         );
     }

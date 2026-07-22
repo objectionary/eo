@@ -15,9 +15,8 @@ package org.eolang;
  * produce equal strings; structurally different constructions must
  * produce different strings.</p>
  *
- * <p>The {@code φTerm()} output is consumed by caching decorators
- * (such as {@code PhSticky}) as a cache key, and may also be exposed
- * to EO programs for inspection of an object's φ-form.</p>
+ * <p>The {@code φTerm()} output is used for debug rendering
+ * and structural inspection of an object's φ-form.</p>
  *
  * @since 0.60
  */
