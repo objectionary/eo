@@ -14,7 +14,8 @@
 #       "this value will be skipped"
 # ```
 #
-# This object returns the value of the first true statement.
+# This object returns the value of the first true statement,
+# or `fallback` if no condition is true.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -32,7 +33,7 @@
     if.
       true.eq found.match
       found.head
-      true
+      fallback
   @. > found
     rec-case cases
   [tup] > rec-case
@@ -90,13 +91,17 @@
       "password is correct!"
     "swordfish" > password
 
-  switch * ++> tests-switch-with-all-false-cases
-    *
-      false
-      "false1"
-    *
-      false
-      "false2"
+  eq. ++> tests-switch-with-all-false-cases
+    "fallback"
+    switch
+      *
+        *
+          false
+          "false1"
+        *
+          false
+          "false2"
+      "fallback"
 
   eq. ++> tests-switch-with-several-true-cases
     switch *
@@ -105,5 +110,13 @@
       * true "TRUE2"
     "TRUE1"
 
-  switch --> on-empty-switch
+  switch * --> on-empty-switch
     *
+
+  switch * --> on-all-false-cases-without-fallback
+    *
+      false
+      "false1"
+    *
+      false
+      "false2"
