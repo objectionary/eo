@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A non-void object named with a file-local handle ("&gt;&gt; name", §3.10 /
+# R-3.10.12) declared on a reversed-dispatch line ("output. &gt;&gt; timeb")
+# and referenced from a sibling attribute ("timeb" from inside "@"). Like the
+# formation ("[t] &gt;&gt; name") and void ("? &gt;&gt; name") forms, the
+# parser records a "@local" handle and resolves the reference to it, so the
+# handle survives to the printer, which prints it back under a double-arrow.
+#
+# The handle must survive printing: "restore-local-names" promotes the
+# "@local" handle to the visible name and rewrites references to it, and since
+# the name is no longer a cactus name "inline-cactoos" leaves the object in
+# place instead of inlining it away. So "output. &gt;&gt; timeb" round-trips
+# to itself rather than collapsing to "(timeb.time.times 1000).as-i64 > []
+# > clock" with the whole binding silently dropped.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  # Wall-clock time source backed by the operating system.
+
+  +package sys
+
+  [] > clock
+    as-i64. > @
+      timeb.time.times 1000
+    output. >> timeb
+      win32
+        "_ftime32_s"
+        *
+printed: |
+  # Wall-clock time source backed by the operating system.
+
+  +package sys
+
+  [] > clock
+    (timeb.time.times 1000).as-i64 > @
+    output. >> timeb
+      win32
+        "_ftime32_s"
+        *
