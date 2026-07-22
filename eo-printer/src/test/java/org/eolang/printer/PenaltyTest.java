@@ -17,6 +17,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  * Test case for {@link Penalty}.
  * @since 0.57.0
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class PenaltyTest {
 
     @Test
@@ -149,6 +150,44 @@ final class PenaltyTest {
         MatcherAssert.assertThat(
             "Empty code should have zero penalty",
             new Penalty("").points(),
+            Matchers.equalTo(0)
+        );
+    }
+
+    @Test
+    void ignoresWordingDifferencesInsideStringLiteral() {
+        MatcherAssert.assertThat(
+            "A string literal's wording (spaces vs underscores) must not change the penalty",
+            new Penalty("\"three word string\" > x").points(),
+            Matchers.equalTo(new Penalty("\"three_word_string\" > x").points())
+        );
+    }
+
+    @Test
+    void ignoresParenthesesInsideStringLiteral() {
+        final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
+        weights.put(PenaltyKey.SYMBOL, 0);
+        weights.put(PenaltyKey.SPACE, 0);
+        weights.put(PenaltyKey.INDENT, 0);
+        MatcherAssert.assertThat(
+            "A parenthesis sitting inside a string literal is data, not code structure",
+            new Penalty(
+                "\"Unknown byte format (%x), can't recognize character\".printf",
+                weights
+            ).points(),
+            Matchers.equalTo(0)
+        );
+    }
+
+    @Test
+    void doesNotEndStringLiteralOnEscapedQuote() {
+        final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
+        weights.put(PenaltyKey.SYMBOL, 0);
+        weights.put(PenaltyKey.SPACE, 0);
+        weights.put(PenaltyKey.INDENT, 0);
+        MatcherAssert.assertThat(
+            "An escaped quote must not end the tracked string, leaving the bracket after it masked",
+            new Penalty("\"a\\\"(b)\" > x", weights).points(),
             Matchers.equalTo(0)
         );
     }

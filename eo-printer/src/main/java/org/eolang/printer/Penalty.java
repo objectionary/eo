@@ -73,6 +73,7 @@ import java.util.Map;
  *
  * @since 0.57.0
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class Penalty {
 
     /**
@@ -115,12 +116,13 @@ final class Penalty {
     int points() {
         int total = 0;
         for (final String line : this.code.split(String.valueOf('\n'), -1)) {
-            final int spaces = Penalty.spaces(line);
-            final int applied = Penalty.applied(line);
+            final String masked = Penalty.masked(line);
+            final int spaces = Penalty.spaces(masked);
+            final int applied = Penalty.applied(masked);
             total += this.indents(line) * this.weight(PenaltyKey.INDENT);
-            total += Penalty.brackets(line) * this.weight(PenaltyKey.BRACKET);
-            total += Penalty.phis(line) * this.weight(PenaltyKey.PHI);
-            total += Penalty.ifs(line) * this.weight(PenaltyKey.IF);
+            total += Penalty.brackets(masked) * this.weight(PenaltyKey.BRACKET);
+            total += Penalty.phis(masked) * this.weight(PenaltyKey.PHI);
+            total += Penalty.ifs(masked) * this.weight(PenaltyKey.IF);
             total += Math.max(0, line.length() - this.weight(PenaltyKey.WIDTH))
                 * this.weight(PenaltyKey.EXCESS);
             total += line.length() * this.weight(PenaltyKey.SYMBOL);
@@ -128,6 +130,45 @@ final class Penalty {
                 * this.weight(PenaltyKey.SPACE);
         }
         return total;
+    }
+
+    /**
+     * Replace the interior of every quoted string literal in a line with a
+     * neutral filler character, so that the structural scans below (spaces,
+     * brackets, phi attributes, suffix {@code if}, tokens) count only real
+     * EO syntax, not data sitting inside a string. The quote marks
+     * themselves are left in place; an escaped quote ({@code \"}) does not
+     * end the literal.
+     * @param line The line
+     * @return The line with string-literal interiors masked
+     */
+    private static String masked(final String line) {
+        final StringBuilder out = new StringBuilder(line.length());
+        boolean quoted = false;
+        boolean escaped = false;
+        for (int idx = 0; idx < line.length(); ++idx) {
+            final char chr = line.charAt(idx);
+            if (quoted) {
+                if (escaped) {
+                    escaped = false;
+                    out.append('x');
+                } else if (chr == '\\') {
+                    escaped = true;
+                    out.append('x');
+                } else if (chr == '"') {
+                    quoted = false;
+                    out.append(chr);
+                } else {
+                    out.append('x');
+                }
+            } else {
+                out.append(chr);
+                if (chr == '"') {
+                    quoted = true;
+                }
+            }
+        }
+        return out.toString();
     }
 
     /**
