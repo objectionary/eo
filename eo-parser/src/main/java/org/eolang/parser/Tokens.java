@@ -239,12 +239,7 @@ final class Tokens {
             );
         }
         final String inside = this.body.substring(start + 1, this.cursor - 1);
-        if (!inside.isEmpty()
-            && inside.indexOf(' ') < 0
-            && inside.indexOf('(') < 0
-            && inside.indexOf(')') < 0
-            && inside.indexOf('[') < 0
-            && inside.indexOf(']') < 0) {
+        if (!inside.isEmpty() && Tokens.singleToken(inside)) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + start,
                 String.format(
@@ -639,6 +634,40 @@ final class Tokens {
      */
     String body() {
         return this.body;
+    }
+
+    /**
+     * Whether the content of a paren group is a single token — it holds no
+     * token separator ({@code ' '}, {@code '('}, {@code ')'}, {@code '['} or
+     * {@code ']'}) outside of a quoted string literal. Characters inside
+     * double quotes are ignored, since a string literal is always one atomic
+     * token regardless of what it contains.
+     * @param inside Content between the parentheses
+     * @return True if the content is a single token
+     */
+    private static boolean singleToken(final String inside) {
+        boolean single = true;
+        int idx = 0;
+        while (idx < inside.length()) {
+            final char glyph = inside.charAt(idx);
+            if (glyph == '"') {
+                idx = idx + 1;
+                while (idx < inside.length() && inside.charAt(idx) != '"') {
+                    if (inside.charAt(idx) == '\\' && idx + 1 < inside.length()) {
+                        idx = idx + 1;
+                    }
+                    idx = idx + 1;
+                }
+                idx = idx + 1;
+            } else if (glyph == ' ' || glyph == '(' || glyph == ')'
+                || glyph == '[' || glyph == ']') {
+                single = false;
+                break;
+            } else {
+                idx = idx + 1;
+            }
+        }
+        return single;
     }
 
     /**
