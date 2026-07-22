@@ -53,16 +53,13 @@ final class XmirTest {
     void printsToParseableEo(final String pack) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
-        final Map<PenaltyKey, Integer> weights = this.weights(xtory);
-        final String printed = this.asXmir(
-            (String) xtory.map().get("origin"), weights
-        ).toEO();
+        final String printed = (String) xtory.map().get("printed");
         MatcherAssert.assertThat(
             String.format(
-                "Printed EO should be reprintable to the very same EO, but was:%n%s",
+                "Expected EO should reprint to itself, but was:%n%s",
                 printed
             ),
-            this.asXmir(printed, weights).toEO(),
+            this.asXmir(printed, this.weights(xtory)).toEO(),
             Matchers.equalTo(printed)
         );
     }
