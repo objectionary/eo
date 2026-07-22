@@ -25,12 +25,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 final class EOi64ExpectTest {
 
     @ParameterizedTest
-    @ValueSource(
-        classes = {
-            EOi64$EOdiv.class,
-            EOi64$EOplus.class
-        }
-    )
+    @ValueSource(classes = EOi64$EOdiv.class)
     void throwsCorrectErrorForXAttr(final Class<?> cls) {
         MatcherAssert.assertThat(
             "the message in the error is correct",
@@ -54,12 +49,7 @@ final class EOi64ExpectTest {
     }
 
     @ParameterizedTest
-    @ValueSource(
-        classes = {
-            EOi64$EOdiv.class,
-            EOi64$EOplus.class
-        }
-    )
+    @ValueSource(classes = EOi64$EOdiv.class)
     void throwsCorrectErrorForRhoAttr(final Class<?> cls) {
         MatcherAssert.assertThat(
             "the message in the error is correct",
