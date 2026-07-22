@@ -30,7 +30,7 @@ final class StackTest {
     @Test
     void pushesTopLevelEntryAtIndentZero() {
         final Stack stack = new Stack();
-        final Level entry = stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        final Level entry = stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN, false);
         MatcherAssert.assertThat(
             "the first push must produce an entry whose parent is TOP_LEVEL",
             entry.parent(),
@@ -42,7 +42,7 @@ final class StackTest {
     void rejectsFirstPushAtNonZeroIndent() {
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new Stack().push(2, 1, Kind.HEAD, Openness.OPEN),
+            () -> new Stack().push(2, 1, Kind.HEAD, Openness.OPEN, false),
             "first push must be at indent 0 — non-zero indent cannot start a program"
         );
     }
@@ -50,10 +50,10 @@ final class StackTest {
     @Test
     void rejectsPushWithIndentJumpGreaterThanTwo() {
         final Stack stack = new Stack();
-        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN, false);
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> stack.push(4, 2, Kind.HEAD, Openness.OPEN),
+            () -> stack.push(4, 2, Kind.HEAD, Openness.OPEN, false),
             "indent jump of more than one level cannot push"
         );
     }
@@ -61,8 +61,8 @@ final class StackTest {
     @Test
     void readsParentKindFromEntryBelow() {
         final Stack stack = new Stack();
-        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
-        final Level child = stack.push(2, 2, Kind.HEAD, Openness.OPEN);
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN, false);
+        final Level child = stack.push(2, 2, Kind.HEAD, Openness.OPEN, false);
         MatcherAssert.assertThat(
             "a pushed child must read parentKind from the entry directly below",
             child.parent(),
@@ -73,9 +73,9 @@ final class StackTest {
     @Test
     void propagatesAtomFlagToChildren() {
         final Stack stack = new Stack();
-        final Level parent = stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        final Level parent = stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN, false);
         parent.mark();
-        final Level child = stack.push(2, 2, Kind.HEAD, Openness.OPEN);
+        final Level child = stack.push(2, 2, Kind.HEAD, Openness.OPEN, false);
         MatcherAssert.assertThat(
             "a child of an atom must see parentAtom() == true",
             child.patom(),
@@ -87,9 +87,9 @@ final class StackTest {
     void popsDeeperLevelsAndRunsCloser() {
         final List<Integer> closed = new ArrayList<>(0);
         final Stack stack = new Stack(level -> closed.add(level.indent()));
-        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
-        stack.push(2, 2, Kind.HEAD, Openness.OPEN);
-        stack.push(4, 3, Kind.HEAD, Openness.OPEN);
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN, false);
+        stack.push(2, 2, Kind.HEAD, Openness.OPEN, false);
+        stack.push(4, 3, Kind.HEAD, Openness.OPEN, false);
         stack.popDeeperThan(0);
         MatcherAssert.assertThat(
             "popDeeperThan must close every entry above the target indent",
@@ -101,8 +101,8 @@ final class StackTest {
     @Test
     void downgradesTopOpennessOnPopStep() {
         final Stack stack = new Stack();
-        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
-        stack.push(2, 2, Kind.HEAD, Openness.OPEN);
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN, false);
+        stack.push(2, 2, Kind.HEAD, Openness.OPEN, false);
         stack.popDeeperThan(0);
         MatcherAssert.assertThat(
             "after popping a deeper level, the surviving top must drop to VERTICAL_COMPLETED",
@@ -114,9 +114,9 @@ final class StackTest {
     @Test
     void leavesHorizontallyCompletedTopAlone() {
         final Stack stack = new Stack();
-        final Level top = stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        final Level top = stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN, false);
         top.close(Openness.HORIZONTAL_COMPLETED);
-        stack.push(2, 2, Kind.HEAD, Openness.OPEN);
+        stack.push(2, 2, Kind.HEAD, Openness.OPEN, false);
         stack.popDeeperThan(0);
         MatcherAssert.assertThat(
             "a horizontally-completed top must not be downgraded to vertical-completed",
@@ -129,9 +129,9 @@ final class StackTest {
     void replacesTopAndClosesOld() {
         final List<Integer> closed = new ArrayList<>(0);
         final Stack stack = new Stack(level -> closed.add(level.start()));
-        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
-        stack.push(2, 2, Kind.HEAD, Openness.OPEN);
-        stack.replace(5, Kind.BARE_FORMATION, Openness.OPEN);
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN, false);
+        stack.push(2, 2, Kind.HEAD, Openness.OPEN, false);
+        stack.replace(5, Kind.BARE_FORMATION, Openness.OPEN, false);
         MatcherAssert.assertThat(
             "replace must close the old top through the supplied closer",
             closed,
@@ -142,9 +142,9 @@ final class StackTest {
     @Test
     void inheritsIndentFromOldTopOnReplacement() {
         final Stack stack = new Stack();
-        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
-        stack.push(2, 2, Kind.HEAD, Openness.OPEN);
-        final Level fresh = stack.replace(5, Kind.BARE_FORMATION, Openness.OPEN);
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN, false);
+        stack.push(2, 2, Kind.HEAD, Openness.OPEN, false);
+        final Level fresh = stack.replace(5, Kind.BARE_FORMATION, Openness.OPEN, false);
         MatcherAssert.assertThat(
             "the replacement entry must occupy the indent of the entry it replaced",
             fresh.indent(),
@@ -156,8 +156,8 @@ final class StackTest {
     void runsCloserOnEveryRemainingEntryAtClose() {
         final List<Integer> closed = new ArrayList<>(0);
         final Stack stack = new Stack(level -> closed.add(level.indent()));
-        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
-        stack.push(2, 2, Kind.HEAD, Openness.OPEN);
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN, false);
+        stack.push(2, 2, Kind.HEAD, Openness.OPEN, false);
         stack.close();
         MatcherAssert.assertThat(
             "close must pop every entry top-first and invoke the closer for each",
@@ -169,7 +169,7 @@ final class StackTest {
     @Test
     void leavesStackEmptyAfterClose() {
         final Stack stack = new Stack();
-        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN, false);
         stack.close();
         MatcherAssert.assertThat(
             "after close() the stack cannot retain any entry",

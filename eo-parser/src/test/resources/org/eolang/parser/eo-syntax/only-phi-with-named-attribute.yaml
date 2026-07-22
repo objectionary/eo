@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# An only-phi formation may carry named attributes besides its φ decoratee
+# (§4.5, issue #5754). A named body line closes the φ and becomes a sibling
+# attribute of the formation, not a further argument to the decoratee.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='foo' and o[@name='φ'] and o[@name='b']]
+  - //o[@name='foo']/o[@name='φ' and not(@as)]
+  - //o[@name='foo']/o[@name='b' and not(@as)]
+input: |
+  [] > obj
+    bar > [] > foo
+      a1 > b
+        42

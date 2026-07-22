@@ -102,11 +102,12 @@ final class MjFormatTest {
     /**
      * A program that stays multi-line whatever the layout weights are.
      *
-     * <p>A nested formation with two bindings never collapses onto a single
-     * line — an only-phi formation binds nothing but its {@code φ} decoratee —
-     * so its deepest lines sit two indentation levels in and expose the
-     * configured {@code step}, unlike a compact one-liner such as
-     * {@code (stdout "Hello!" x).print > [x] > main}.</p>
+     * <p>A nested formation with two named bindings and no {@code φ}
+     * decoratee never collapses onto a single line — there is no φ to inline
+     * as the head of a compact only-phi form — so its deepest lines sit two
+     * indentation levels in and expose the configured {@code step}, unlike a
+     * compact one-liner such as {@code (stdout "Hello!" x).print > [x] > main}.
+     * </p>
      *
      * @return The EO program source
      */

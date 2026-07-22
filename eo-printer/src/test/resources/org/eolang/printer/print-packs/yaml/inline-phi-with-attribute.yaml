@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# An only-phi formation may carry named attributes besides its φ decoratee
+# (§4.5, #5754), so the printer collapses a formation whose bindings are the
+# φ decoratee plus named attributes into the compact `<phi> > [params] > name`
+# form, laying the named attributes out beneath as body lines.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo
+    bar > @
+    x > first
+    y > second
+printed: |
+  bar > [] > foo
+    x > first
+    y > second

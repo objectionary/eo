@@ -134,11 +134,11 @@ final class LnFormation implements Line {
             this.checkChildAllowed(stack, suffix);
             level = stack.push(
                 this.span.indent(), this.span.line(),
-                Kind.BARE_FORMATION, Openness.OPEN
+                Kind.BARE_FORMATION, Openness.OPEN, suffix.present()
             );
         } else {
             level = stack.replace(
-                this.span.line(), Kind.BARE_FORMATION, Openness.OPEN
+                this.span.line(), Kind.BARE_FORMATION, Openness.OPEN, suffix.present()
             );
         }
         if (suffix.present()) {

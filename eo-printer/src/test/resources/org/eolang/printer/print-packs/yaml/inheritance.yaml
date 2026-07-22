@@ -44,6 +44,5 @@ printed: |
       x.write v > [self v] > f
       self.f self v > [self v] > g
       memory 0 > x
-    [] > derived
-      base > @
+    base > [] > derived
       self.g self v > [self v] > f

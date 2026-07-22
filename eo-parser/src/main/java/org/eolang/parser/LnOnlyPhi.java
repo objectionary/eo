@@ -40,9 +40,11 @@ import java.util.List;
  * a body block is {@code [x] > bar} whose φ is {@code foo} applied to
  * that block. With horizontal args the φ is already a full application
  * and the line is {@link Openness#HORIZONTAL_COMPLETED} — no body is
- * accepted. An only-phi argument may not carry a name suffix (the
- * formation binds only φ); the {@link Stack} flags such arguments and
- * the close-time check in {@link Eo} rejects a name on them.</p>
+ * accepted. An unnamed deeper-indent line is a vertical argument to φ; a
+ * named one closes the φ and becomes a sibling attribute of the
+ * formation (§4.5), so an only-phi formation may carry named attributes
+ * besides its φ decoratee. The {@link Stack} opener closes the φ before
+ * such a named child (see {@link Eo}).</p>
  *
  * <p>A compact-tuple LHS (R-3.9.1 + R-3.10.6) — a head with a trailing
  * {@code *N} marker, e.g. {@code seq * > [m]} — keeps the φ
@@ -143,7 +145,11 @@ final class LnOnlyPhi implements Line {
             emit.constant();
         }
         this.emitVoids(emit, params, origin);
-        this.emitPhi(emit, tokens, stack.top().openness() == Openness.OPEN);
+        final boolean open = stack.top().openness() == Openness.OPEN;
+        if (open) {
+            stack.top().openPhi();
+        }
+        this.emitPhi(emit, tokens, open);
     }
 
     /**

@@ -9,7 +9,10 @@
 # so it is left standalone instead of being folded into the `if.` block
 # (#5738). The `number num.as-bytes > value` binding therefore stays a
 # separate attribute of `abs`, and the bare `value` reference plus the
-# `value.gte` and `value.neg` dispatches keep referring to it.
+# `value.gte` and `value.neg` dispatches keep referring to it. `abs` itself,
+# now that an only-phi formation may carry named attributes besides its φ
+# (§4.5, #5754), collapses into the compact `if. > [num] > abs` form with
+# `value` remaining its own standalone attribute line.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -30,9 +33,8 @@ origin: |
 printed: |
   +package number
 
-  [num] > abs
-    if. > @
-      value.gte 0
-      value
-      value.neg
+  if. > [num] > abs
+    value.gte 0
+    value
+    value.neg
     number num.as-bytes > value

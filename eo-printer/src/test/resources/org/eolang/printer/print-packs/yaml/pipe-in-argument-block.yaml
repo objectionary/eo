@@ -16,7 +16,6 @@ origin: |
       | 5
 
 printed: |
-  [] > foo
-    bar > @
-      hello 5
+  bar > [] > foo
+    hello 5
     [] > hello

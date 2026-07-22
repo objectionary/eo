@@ -58,7 +58,7 @@ final class Stack {
      * transitions without semantic checks.
      */
     Stack() {
-        this(level -> { }, level -> { });
+        this(level -> { }, (level, named) -> { });
     }
 
     /**
@@ -66,7 +66,7 @@ final class Stack {
      * @param hook Close-time check hook
      */
     Stack(final Closer hook) {
-        this(hook, level -> { });
+        this(hook, (level, named) -> { });
     }
 
     /**
@@ -158,16 +158,16 @@ final class Stack {
      * @param line Start line
      * @param kind Initial outer kind
      * @param openness Initial openness
+     * @param named Whether the incoming line carries a name suffix
      * @return The pushed level
      * @checkstyle ParameterNumberCheck (3 lines)
      */
     Level push(
-        final int indent, final int line, final Kind kind, final Openness openness
+        final int indent, final int line, final Kind kind, final Openness openness,
+        final boolean named
     ) {
         final Kind parent;
         final boolean patom;
-        final boolean argues;
-        final String owner;
         if (this.levels.isEmpty()) {
             if (indent != 0) {
                 throw new IllegalStateException(
@@ -178,8 +178,6 @@ final class Stack {
             }
             parent = Kind.TOP_LEVEL;
             patom = false;
-            argues = false;
-            owner = "";
         } else {
             final Level under = this.top();
             if (indent != under.indent() + Stack.STEP) {
@@ -192,17 +190,12 @@ final class Stack {
             }
             parent = under.kind();
             patom = under.atom();
-            argues = under.argumentative();
-            owner = under.governingFormation();
             under.observeVoid(kind, line, indent);
         }
         if (!this.levels.isEmpty()) {
-            this.opener.beforeChild(this.top());
+            this.opener.beforeChild(this.top(), named);
         }
         final Level fresh = new Level(indent, line, kind, openness, parent, patom);
-        if (argues) {
-            fresh.argues(owner);
-        }
         this.levels.add(fresh);
         if (parent == Kind.BARE_REVERSED) {
             final Level host = this.levels.get(this.levels.size() - 2);
@@ -242,9 +235,12 @@ final class Stack {
      * @param line Start line of the new entry
      * @param kind Initial outer kind
      * @param openness Initial openness
+     * @param named Whether the incoming line carries a name suffix
      * @return The new top
      */
-    Level replace(final int line, final Kind kind, final Openness openness) {
+    Level replace(
+        final int line, final Kind kind, final Openness openness, final boolean named
+    ) {
         if (this.levels.isEmpty()) {
             throw new IllegalStateException("cannot replace top of empty stack");
         }
@@ -253,26 +249,17 @@ final class Stack {
         final int indent = old.indent();
         final Kind parent;
         final boolean patom;
-        final boolean argues;
-        final String owner;
         if (this.levels.isEmpty()) {
             parent = Kind.TOP_LEVEL;
             patom = false;
-            argues = false;
-            owner = "";
         } else {
             final Level under = this.top();
             parent = under.kind();
             patom = under.atom();
-            argues = under.argumentative();
-            owner = under.governingFormation();
             under.observeVoid(kind, line, indent);
-            this.opener.beforeChild(under);
+            this.opener.beforeChild(under, named);
         }
         final Level fresh = new Level(indent, line, kind, openness, parent, patom);
-        if (argues) {
-            fresh.argues(owner);
-        }
         this.levels.add(fresh);
         return fresh;
     }
@@ -319,7 +306,10 @@ final class Stack {
      * is the compact-tuple wrapper: once a {@link Kind#COMPACT_TUPLE}
      * parent has accumulated N direct children, the next child must
      * land inside a synthesised {@code <o base='Φ.tuple' star=''>}
-     * wrapper. The opener emits that wrapper exactly once.</p>
+     * wrapper. The opener emits that wrapper exactly once. It also
+     * closes an only-phi formation's φ decoratee when the incoming child
+     * is named, so a named body line becomes a sibling attribute of the
+     * formation rather than a further φ argument (§4.5).</p>
      *
      * @since 0.1
      */
@@ -329,7 +319,8 @@ final class Stack {
         /**
          * React to a new child being pushed under {@code parent}.
          * @param parent The parent level (current top before push)
+         * @param named Whether the incoming child carries a name suffix
          */
-        void beforeChild(Level parent);
+        void beforeChild(Level parent, boolean named);
     }
 }

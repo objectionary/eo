@@ -70,13 +70,16 @@ final class Level {
     private String label;
 
     /**
-     * The source name of the only-phi formation this entry argues
-     * (empty when anonymous), or {@code null} when it is not such an
-     * argument. Set by {@link Stack} (see {@link #argues(String)});
-     * doubles as the argument flag ({@link #argument()}) and names the
-     * formation in §4.5 errors.
+     * For a {@link Kind#ONLY_PHI_FORMATION}: whether the φ decoratee's
+     * {@code <o>} is still open on the emit cursor, so unnamed
+     * deeper-indent lines attach to it as vertical arguments (§4.5). Set
+     * by {@link LnOnlyPhi} when a bare φ is left open; cleared by
+     * {@link #closePhi()} once a named body line arrives (the φ is closed
+     * so the named line becomes a sibling attribute of the formation) or
+     * at close time. Never {@code true} for a φ that carried horizontal
+     * args (that φ is closed the moment it is emitted).
      */
-    private String formation;
+    private boolean phi;
 
     /**
      * True if this entry's expression is an atom (formation + {@code /sig}).
@@ -238,54 +241,6 @@ final class Level {
     }
 
     /**
-     * The name a child of this entry should use for its governing
-     * only-phi formation: this entry's own name when it is the
-     * {@link Kind#ONLY_PHI_FORMATION}, otherwise the name propagated
-     * onto it (see {@link #argues(String)}). Never {@code null} — an
-     * anonymous formation propagates as the empty string.
-     * @return Governing formation name (possibly empty)
-     */
-    String governingFormation() {
-        final String owner;
-        if (this.kind == Kind.ONLY_PHI_FORMATION) {
-            owner = this.label;
-        } else {
-            owner = this.formation;
-        }
-        final String result;
-        if (owner == null) {
-            result = "";
-        } else {
-            result = owner;
-        }
-        return result;
-    }
-
-    /**
-     * The §4.5 diagnostic naming the offending attribute and the
-     * formation (generic when auto-named / anonymous).
-     * @return The error message
-     */
-    String onlyPhiNamingError() {
-        final String owner;
-        if (this.formation == null || this.formation.isEmpty()) {
-            owner = "an only-phi formation";
-        } else {
-            owner = String.format("only-phi formation %s", this.formation);
-        }
-        final String attribute;
-        if (this.label == null || this.label.isEmpty()) {
-            attribute = "an auto-named attribute";
-        } else {
-            attribute = this.label;
-        }
-        return String.format(
-            "%s cannot be a named attribute of %s, which binds only its φ decoratee",
-            attribute, owner
-        );
-    }
-
-    /**
      * Whether this entry's expression is itself an atom.
      * @return Atom flag
      */
@@ -302,33 +257,33 @@ final class Level {
     }
 
     /**
-     * Whether this entry is an argument of an only-phi formation's φ.
-     * @return Argument-position flag
+     * Whether this only-phi formation's φ decoratee is still open on the
+     * emit cursor, so an unnamed deeper-indent line attaches to it as a
+     * vertical argument (§4.5). A named deeper-indent line closes it (via
+     * {@link #closePhi()}) and becomes a sibling attribute of the
+     * formation instead.
+     * @return True while the φ decoratee accepts vertical arguments
      */
-    boolean argument() {
-        return this.formation != null;
+    boolean phiOpen() {
+        return this.phi;
     }
 
     /**
-     * Whether a child pushed under this entry sits in argument position
-     * of an only-phi formation's φ (§4.5): true for a direct child of
-     * the only-phi entry, and for a deeper child that stays in argument
-     * position — the flag propagates down through nested applications
-     * but resets at a formation boundary, where naming resumes.
-     * @return True if a child of this entry is an only-phi argument
+     * Flag this only-phi formation's φ decoratee as open, so unnamed
+     * deeper-indent lines attach to it as vertical arguments (§4.5).
      */
-    boolean argumentative() {
-        return this.kind == Kind.ONLY_PHI_FORMATION
-            || this.formation != null && !this.kind.formation();
+    void openPhi() {
+        this.phi = true;
     }
 
     /**
-     * Flag this entry as an argument of an only-phi formation's φ,
-     * recording the formation's name for the §4.5 diagnostic.
-     * @param owner The formation's name (empty if anonymous, non-null)
+     * Mark this only-phi formation's φ decoratee closed — its
+     * {@code <o>} has been popped off the emit cursor, so subsequent
+     * deeper-indent lines are siblings of the φ (the formation's own
+     * attributes), not further φ arguments.
      */
-    void argues(final String owner) {
-        this.formation = owner;
+    void closePhi() {
+        this.phi = false;
     }
 
     /**

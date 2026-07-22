@@ -24,9 +24,8 @@ origin: |
 printed: |
   +package sandbox
 
-  [args] > main
-    io.stdout > @
-      args.at args.length.neg
+  io.stdout > [args] > main
+    args.at args.length.neg
     nan.plus negative-infinity > not-a-number
     text-of > txt
       input-of

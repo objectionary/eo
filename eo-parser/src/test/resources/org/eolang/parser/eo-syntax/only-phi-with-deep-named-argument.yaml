@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A deeper-indent line that sits inside a φ argument (not directly under the
+# only-phi formation) is an ordinary vertical argument of that nested
+# application and may carry a name suffix as usual (§4.5, issue #5754). Only a
+# direct body line of the only-phi formation becomes a sibling attribute.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='Φ.foo' and @name='φ']/o[@as='α0' and @base='Φ.bar']
+  - //o[@base='Φ.baz' and @name='x' and not(@as)]
+input: |
+  [] > obj
+    foo > [] >>
+      bar
+        baz > x

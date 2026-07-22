@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A bare-φ only-phi formation may mix unnamed φ arguments with named sibling
+# attributes (§4.5, issue #5754): the unnamed lines attach to the φ decoratee
+# as vertical arguments, then the first named line closes the φ and becomes a
+# sibling attribute of the formation.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='bar']/o[@base='∅' and @name='x']
+  - //o[@name='bar']/o[@name='φ' and @base='Φ.foo']/o[@as='α0' and @base='ξ.x.plus']
+  - //o[@name='bar']/o[@name='b' and not(@as)]
+input: |
+  [] > obj
+    foo > [x] > bar
+      x.plus 42
+      a1 > b

@@ -6,6 +6,7 @@ package org.eolang.printer;
 
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -286,9 +287,14 @@ final class Pretty {
      * bracket. An empty head occurs only for that no-void test attribute,
      * so it selects the shorthand separator here.</p>
      *
-     * <p>This applies only when {@code @} is the sole binding; a
-     * formation with any other attribute keeps the vertical layout. The
-     * decoratee itself is inlined through the usual {@link #flat} path.
+     * <p>When {@code @} is the sole binding the whole decoratee subtree
+     * becomes the collapsed formation's body. A formation that also
+     * carries named attributes besides its {@code φ} decoratee collapses
+     * too (§4.5, issue #5754): the decoratee's head sits on the
+     * {@code <phi> > [params] > name} line, its (unnamed) vertical
+     * arguments and then the formation's named attributes are laid out
+     * beneath as body lines — see {@link #attributed}. The decoratee
+     * itself is inlined through the usual {@link #flat} path.
      * When that fails because the decoratee's arguments must go vertical (a
      * tuple, a nested formation), a hybrid multi-line form is returned
      * instead: the decoratee's head kept in front of the marker
@@ -316,54 +322,148 @@ final class Pretty {
      * <p>The hybrid is also withheld when any line in the decoratee's whole
      * subtree carries a name suffix ({@code [left] >>}, {@code malloc.for >
      * [b]}, {@code b.put > [m] >>}). The decoratee's subtree becomes the body
-     * of the collapsed only-phi formation, and an only-phi formation may hold
-     * nothing but its {@code φ} decoratee, so a named line anywhere within it
-     * fails to parse with "an auto-named attribute cannot be a named attribute
-     * of an only-phi formation, which binds only its φ decoratee" (issues
-     * #5598, #5604). A direct child is not enough to check: the offending line
-     * may be nested deeper — inside a tuple, a dispatch, or an application —
-     * where a shallow guard would miss it (issue #5604). Keeping the verbose
-     * {@code  > @} layout gives the decoratee its own scope, where named
-     * arguments are legal.</p>
+     * of the collapsed only-phi formation, where an unnamed line is a φ
+     * argument and a named one is a sibling attribute of the formation (§4.5).
+     * A named line in the decoratee's subtree is an argument of the decoratee,
+     * not an attribute of the formation, so collapsing it would misread its
+     * meaning (issues #5598, #5604, #5754). A direct child is not enough to
+     * check: the offending line may be nested deeper — inside a tuple, a
+     * dispatch, or an application — where a shallow guard would miss it
+     * (issue #5604). Keeping the verbose {@code  > @} layout gives the
+     * decoratee its own scope, where its named arguments stay arguments.</p>
      *
      * @param node The formation node
      * @param indent The indentation level
      * @return The rendered block, or empty if the inline-phi form doesn't apply
      */
     private Optional<String> phi(final Node node, final int indent) {
-        Optional<String> result = Optional.empty();
+        final Optional<String> result;
         if (node.children.size() == 1
             && " > @".equals(node.children.get(0).tail)) {
-            final Node decoratee = node.children.get(0);
-            final String middle;
-            if (node.base.isEmpty()) {
-                middle = " ";
-            } else {
-                middle = " > ".concat(node.base);
-            }
-            final String marker = middle.concat(node.tail);
-            final Optional<String> flat = Pretty.flat(
-                new Node(
-                    decoratee.base, "", decoratee.abstractt,
-                    false, decoratee.reversed, decoratee.data, decoratee.children
-                )
-            ).map(
-                inlined -> this.tab.repeat(indent).concat(inlined).concat(marker)
+            result = this.solo(node, node.children.get(0), indent);
+        } else {
+            result = this.attributed(node, indent);
+        }
+        return result;
+    }
+
+    /**
+     * Render a formation whose sole binding is its {@code φ} decoratee in
+     * the compact inline-phi form (the {@code node.children.size() == 1}
+     * case of {@link #phi}).
+     * @param node The formation node
+     * @param decoratee The {@code > @} decoratee child
+     * @param indent The indentation level
+     * @return The rendered block, or empty if the inline-phi form doesn't apply
+     */
+    private Optional<String> solo(final Node node, final Node decoratee, final int indent) {
+        final Optional<String> result;
+        final String middle;
+        if (node.base.isEmpty()) {
+            middle = " ";
+        } else {
+            middle = " > ".concat(node.base);
+        }
+        final String marker = middle.concat(node.tail);
+        final Optional<String> flat = Pretty.flat(
+            new Node(
+                decoratee.base, "", decoratee.abstractt,
+                false, decoratee.reversed, decoratee.data, decoratee.children
+            )
+        ).map(
+            inlined -> this.tab.repeat(indent).concat(inlined).concat(marker)
+        );
+        final boolean applied = !decoratee.abstractt && !decoratee.children.isEmpty()
+            && !(decoratee.reversed && decoratee.children.size() <= 1);
+        final boolean unnamed = decoratee.children.stream()
+            .allMatch(Node::nameless);
+        if (applied && unnamed) {
+            final String hybrid = this.vertical(decoratee.hybrid(marker), indent);
+            result = Optional.of(
+                flat.filter(
+                    line -> new Penalty(line, this.weights).points()
+                        <= new Penalty(hybrid, this.weights).points()
+                ).orElse(hybrid)
             );
-            final boolean applied = !decoratee.abstractt && !decoratee.children.isEmpty()
-                && !(decoratee.reversed && decoratee.children.size() <= 1);
-            final boolean unnamed = decoratee.children.stream()
-                .allMatch(Node::nameless);
-            if (applied && unnamed) {
-                final String hybrid = this.vertical(decoratee.hybrid(marker), indent);
+        } else {
+            result = flat;
+        }
+        return result;
+    }
+
+    /**
+     * Collapse a formation that carries named attributes besides its
+     * {@code φ} decoratee into the inline-phi form (§4.5, issue #5754).
+     *
+     * <p>The formation's bindings are its single {@code > @} decoratee
+     * plus one or more named attributes. The collapse keeps the
+     * decoratee's head on the {@code <phi> > [params] > name} line and
+     * lays the body out beneath as the decoratee's own (unnamed) vertical
+     * arguments followed by the formation's named attributes — the same
+     * order the parser reads back, since it treats an unnamed body line as
+     * a further φ argument and a named one as a sibling attribute. The
+     * decoratee's arguments cannot be inlined onto the head line here: a
+     * φ that carries horizontal arguments is horizontally completed and
+     * would reject the attribute body lines (R-6.1.1), so they always go
+     * vertical through {@link Node#hybrid}.</p>
+     *
+     * <p>Withheld — leaving the verbose {@code  > @} layout — unless the
+     * collapse is provably lossless. It is withheld when the decoratee is
+     * itself a formation (its bindings are not liftable arguments), a
+     * receiver-only reversed dispatch, a compact-tuple head ({@code seq *},
+     * whose deeper lines are tuple elements, not φ arguments), or a pipe
+     * application; when the decoratee carries a named argument of its own
+     * (which would be misread as another attribute of the collapsed
+     * formation); or when the formation has a void attribute ({@code ?}),
+     * since a void must precede every other attribute and the decoratee's
+     * arguments would be printed ahead of it. The result is only a
+     * candidate: {@link #shaped} keeps it only when its penalty beats the
+     * plain vertical rendering.</p>
+     *
+     * @param node The formation node
+     * @param indent The indentation level
+     * @return The rendered block, or empty if the collapse doesn't apply
+     */
+    private Optional<String> attributed(final Node node, final int indent) {
+        Optional<String> result = Optional.empty();
+        int at = -1;
+        int found = 0;
+        for (int idx = 0; idx < node.children.size(); idx = idx + 1) {
+            if (" > @".equals(node.children.get(idx).tail)) {
+                at = idx;
+                found = found + 1;
+            }
+        }
+        if (found == 1 && node.children.stream().noneMatch(child -> "?".equals(child.base))) {
+            final Node decoratee = node.children.get(at);
+            final boolean liftable = !decoratee.abstractt
+                && !(decoratee.reversed && decoratee.children.size() <= 1)
+                && !decoratee.tuply()
+                && !decoratee.base.startsWith("|")
+                && decoratee.children.stream().allMatch(Node::nameless);
+            if (liftable) {
+                final String middle;
+                if (node.base.isEmpty()) {
+                    middle = " ";
+                } else {
+                    middle = " > ".concat(node.base);
+                }
+                final Node head = decoratee.hybrid(middle.concat(node.tail));
+                final List<Node> kids = new ArrayList<>(head.children);
+                for (int idx = 0; idx < node.children.size(); idx = idx + 1) {
+                    if (idx != at) {
+                        kids.add(node.children.get(idx));
+                    }
+                }
                 result = Optional.of(
-                    flat.filter(
-                        line -> new Penalty(line, this.weights).points()
-                            <= new Penalty(hybrid, this.weights).points()
-                    ).orElse(hybrid)
+                    this.vertical(
+                        new Node(
+                            head.base, head.tail, false, false,
+                            head.reversed, head.data, kids
+                        ),
+                        indent
+                    )
                 );
-            } else {
-                result = flat;
             }
         }
         return result;

@@ -66,9 +66,11 @@ final class Transition {
                     "unexpected deeper-indent line — previous expression is closed for children"
                 );
             }
-            level = this.stack.push(this.span.indent(), this.span.line(), kind, openness);
+            level = this.stack.push(
+                this.span.indent(), this.span.line(), kind, openness, label != null
+            );
         } else {
-            level = this.stack.replace(this.span.line(), kind, openness);
+            level = this.stack.replace(this.span.line(), kind, openness, label != null);
         }
         if (label != null) {
             level.name(label);

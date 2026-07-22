@@ -66,7 +66,7 @@ final class Eo implements Iterable<Directive> {
         final Emit emit = new Emit(this.source);
         final Stack stack = new Stack(
             level -> Eo.checkOnClose(level, emit),
-            parent -> Eo.beforeChild(parent, emit)
+            (parent, named) -> Eo.beforeChild(parent, named, emit)
         );
         final java.util.List<Span> spans = new java.util.ArrayList<>(16);
         new Source(this.source).forEach(spans::add);
@@ -804,17 +804,20 @@ final class Eo implements Iterable<Directive> {
             Eo.closeCompactTuple(level, emit);
         }
         if (level.kind() == Kind.ONLY_PHI_FORMATION
-            && level.openness() != Openness.HORIZONTAL_COMPLETED) {
+            && level.openness() != Openness.HORIZONTAL_COMPLETED
+            && level.phiOpen()) {
             emit.close();
         }
         emit.close();
     }
 
     /**
-     * Report naming violations on the popped level: a plain child of a
-     * formation or top-level object that lacks a name (R-5.3.1), and an
-     * only-phi argument that carries one — the formation binds only φ,
-     * so its φ's arguments may not be named (§4.5).
+     * Report the R-5.3.1 naming violation on the popped level: a plain
+     * child of a formation or top-level object that lacks a name. An
+     * only-phi formation may now carry named attributes besides its φ
+     * decoratee (§4.5), so no naming ban is enforced on its body here —
+     * a named body line is redirected to a sibling attribute of the
+     * formation at push time (see {@link #beforeChild(Level, boolean)}).
      * @param level The level being closed
      * @param emit The directives sink
      */
@@ -825,12 +828,6 @@ final class Eo implements Iterable<Directive> {
             emit.error(
                 level.start(), level.indent(),
                 "object inside formation must have a name"
-            );
-        }
-        if (level.argument() && level.named()) {
-            emit.error(
-                level.start(), level.indent(),
-                level.onlyPhiNamingError()
             );
         }
     }
@@ -866,14 +863,27 @@ final class Eo implements Iterable<Directive> {
     }
 
     /**
-     * Pre-child hostarts (§3.9 / R-3.9.2): emit the synthesised
-     * {@code Φ.tuple} wrapper exactly once when a compact-tuple parent —
-     * a {@link Kind#COMPACT_TUPLE} head or a {@link Level#star()} only-phi
-     * φ — has accumulated its first N direct children.
+     * Pre-child hook. Two responsibilities:
+     *
+     * <ul>
+     *   <li>Compact-tuple wrapper (§3.9 / R-3.9.2): emit the synthesised
+     *   {@code Φ.tuple} wrapper exactly once when a compact-tuple parent —
+     *   a {@link Kind#COMPACT_TUPLE} head or a {@link Level#star()}
+     *   only-phi φ — has accumulated its first N direct children.</li>
+     *   <li>Only-phi φ close (§4.5): when the incoming direct child of an
+     *   only-phi formation is {@code named}, close the still-open φ
+     *   decoratee's {@code <o>} first, so the child emits as a sibling
+     *   attribute of the formation rather than a further vertical
+     *   argument to φ. Unnamed children keep the φ open and remain its
+     *   arguments. A compact-tuple φ ({@link Level#star()}) is left
+     *   untouched — its deeper lines are tuple elements.</li>
+     * </ul>
+     *
      * @param parent The parent level
+     * @param named Whether the incoming child carries a name suffix
      * @param emit The directives sink
      */
-    private static void beforeChild(final Level parent, final Emit emit) {
+    private static void beforeChild(final Level parent, final boolean named, final Emit emit) {
         if ((parent.kind() == Kind.COMPACT_TUPLE || parent.star())
             && !parent.tupled()
             && parent.children() == parent.count()) {
@@ -882,6 +892,11 @@ final class Eo implements Iterable<Directive> {
             );
             emit.star();
             parent.openTuple();
+        }
+        if (named && parent.kind() == Kind.ONLY_PHI_FORMATION
+            && !parent.star() && parent.phiOpen()) {
+            emit.close();
+            parent.closePhi();
         }
         parent.child();
     }

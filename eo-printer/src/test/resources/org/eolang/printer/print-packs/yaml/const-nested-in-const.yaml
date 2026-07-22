@@ -19,6 +19,5 @@ origin: |
 printed: |
   [] > mktemp
     string > @
-      [] >>!
-        temp > @
+      temp > [] >>!
         getenv "TEMP" > temp!

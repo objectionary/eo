@@ -742,7 +742,7 @@ See §3.9. After its child block, the kind remains **`compact-tuple`** but its o
 
 A line whose suffix is `> [params] > name` is an **`inline-phi-formation`**: the LHS of `> [` is the formation's `φ`, and the bracket params are its voids. Whether the line accepts a deeper-indent body depends on the LHS:
 
-- **Bare φ (LHS has no horizontal args)** — the φ is `open`. Deeper-indent lines attach to it as **vertical application arguments**, exactly as they would under a plain `vapplication` head. So `foo > [x] > bar` with a body block is `[x] > bar` whose `φ` is `foo` applied to that block:
+- **Bare φ (LHS has no horizontal args)** — the φ is `open`. An **unnamed** deeper-indent line attaches to it as a **vertical application argument**, exactly as it would under a plain `vapplication` head. So `foo > [x] > bar` with an unnamed body block is `[x] > bar` whose `φ` is `foo` applied to that block:
 
   ```
   foo > [x] > bar                     ← φ = foo, param = x, name = bar
@@ -761,27 +761,42 @@ A line whose suffix is `> [params] > name` is an **`inline-phi-formation`**: the
 
 - The line may freely appear as a vertical arg of an enclosing expression — the rules above apply only to *its own* depth.
 
-The formation binds only `φ`, so its arguments may not introduce a second named attribute: **an only-phi argument may not carry a name suffix** (`> name`, `>>`, `+> name`). The ban follows the argument down through nested applications and resets inside a nested formation argument, where naming resumes as usual (§6.2). This is the one place a vertical-application argument may not be named (contrast C.3).
+An only-phi formation may carry **named attributes besides its `φ` decoratee**. A deeper-indent body line is classified by whether it is named:
 
-Legal — a nested formation argument names its own attributes:
+- **Unnamed** — a vertical application argument of `φ` (the decoratee), as above. The φ stays `open` and absorbs it.
+- **Named** (`> name`, `>>`, `+> name`) — a **sibling attribute of the formation**, alongside `φ`. The first named body line closes the φ; it and every later body line are the formation's own attributes, laid out exactly like the body of a plain formation. Unnamed vertical arguments of `φ`, when present, must therefore precede the named attributes.
+
+So `bar > [] > foo` with a named body line is the formation `[] > foo` whose `φ` is `bar` and which also binds `b`:
+
+```
+bar > [] > foo                        ← φ = bar, name = foo
+  a1 > b                              ← sibling attribute b of foo (not an argument of bar)
+    42
+```
+
+is identical in XMIR to:
+
+```
+[] > foo
+  bar > @
+  a1 > b
+    42
+```
+
+The classification applies only to a **direct** body line of the only-phi formation. A name suffix deeper inside a `φ` argument is an ordinary named vertical argument of that nested application and is accepted as usual (§6.2, contrast C.3):
+
+```
+foo > [] >>
+  bar                                 ← unnamed φ argument (foo applied to bar)
+    baz > x                           ← named vertical argument of bar, accepted
+```
+
+A nested formation argument still names its own attributes:
 
 ```
 foo > [] >>
   [y]                                 ← unnamed formation argument
     z > w                             ← attribute of [y], named as usual
-```
-
-Illegal — a name suffix on an only-phi argument:
-
-```
-foo > [] >>
-  bar > x                             ← rejected: only-phi argument cannot be named
-```
-
-```
-foo > [] >>
-  bar
-    baz > x                           ← rejected: still in argument position
 ```
 
 ### 4.6 Triple-quoted text block
@@ -885,7 +900,7 @@ R-5.3.5. **Test depth.** If the popped entry's name suffix is `+>`, the popped e
   - the popped entry's parent's own `parent_kind` must be `top-level` (otherwise the parent is itself nested, also illegal).
 
   Either failure yields error `test attribute legal only as direct child of top-level object` (R-6.3.3 / §9.9). The first failure case covers a stray `+>` at indent 0; the second covers `+>` at indent ≥ 4.
-R-5.3.6. **Inline-phi argument rules.** An `inline-phi-formation` whose φ carries horizontal args is closed for deeper children (caught at child-push time via R-6.1.1). When its φ is bare, deeper children attach as φ's vertical arguments; because the formation binds only φ, such an argument may not be named — at close time an argument entry that carries a name suffix yields error `argument of an only-phi formation cannot carry a name suffix` (§9.9). The ban propagates down through nested applications and resets at a formation boundary (§4.5).
+R-5.3.6. **Inline-phi body rules.** An `inline-phi-formation` whose φ carries horizontal args is closed for deeper children (caught at child-push time via R-6.1.1). When its φ is bare, each direct deeper-indent body line is classified by whether it is named (§4.5): an **unnamed** line attaches to φ as a vertical argument (`@as='αN'`); a **named** line closes φ and emits as a sibling attribute of the formation (`<o>` of the formation, alongside `φ`). A name suffix deeper inside a φ argument is an ordinary named vertical argument of that nested application and is unaffected. There is therefore no naming ban on an only-phi body — the former `argument of an only-phi formation cannot carry a name suffix` error is retired.
 
 ### 5.4 End-of-file (FSM action)
 
@@ -1245,7 +1260,7 @@ For each outer kind, this table fixes the order of `<o>` children inside its emi
 | `hmethod` (single line, 0 hargs) | Emits a **sequence of sibling `<o>`s** under the enclosing parent: (1) the receiver of the chain as the first sibling; (2) one `<o base='.<methodname>' method=''>` per `.method` segment, in source order. Because the whole chain lives on **one source line**, only the last `.method` segment can carry a name suffix (the line's `> name`); intermediate segments on the same line have no syntactic place for their own name. (The intermediate-names provision of R-6.2.3 applies only to `vmethod` chains, where each `.method` is on its own line.) See R-9.0.3 for the convention. |
 | `happlication`, `vapplication` | The outer `<o>` carries `@base = head reference` (or, for chained heads, the last link's `<o>` is the outer one — R-9.0.3.1). Arguments emit as direct children of that `<o>` in source order. |
 | `bare-formation` | (1) void params from the `[...]` head, in source order; (2) all body children — plain, master, and `+>` / `->` test attributes — in source order as they appear in the body. The parser does **not** reorder children by category; the category distinction in §1.3 is about role and naming requirements, not emission order. |
-| `inline-phi-formation` | (1) void params from `> [params]` in source order; (2) the LHS expression as a single child with `@name='φ'`. When the LHS has no horizontal args this `φ` `<o>` stays open, and deeper-indent lines emit inside it as its vertical arguments (`@as='αN'`, per `vapplication`); at close time the φ `<o>` and the formation `<o>` are both closed. When the LHS has horizontal args the φ is closed at emit time and the line accepts no children (R-6.1.1). The formation's other attribute slots stay empty — its only bound attribute is `φ` — so an argument may not carry a name suffix (R-5.3.6). |
+| `inline-phi-formation` | (1) void params from `> [params]` in source order; (2) the LHS expression as a single child with `@name='φ'`. When the LHS has no horizontal args this `φ` `<o>` stays open, and unnamed deeper-indent lines emit inside it as its vertical arguments (`@as='αN'`, per `vapplication`); a named deeper-indent line closes the `φ` `<o>` and emits as a sibling attribute of the formation `<o>` (§4.5 / R-5.3.6); at close time the φ `<o>` (if still open) and the formation `<o>` are closed. When the LHS has horizontal args the φ is closed at emit time and the line accepts no children (R-6.1.1). |
 | Atom (formation + `/sig`) | (1) void params in source order; (2) `<o name='λ' atom='<sig>'/>` marker; (3) test attributes (`+>` / `->`) in source order |
 | `bare-reversed` (vertical) | (1) the receiver's `<o>` first; (2) each method-arg `<o>` in source order |
 | `reversed-with-hargs` | same as `bare-reversed` — receiver first, args in source order |
@@ -1315,7 +1330,6 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Deeper-indent under horizontally-completed line | `unexpected deeper-indent line — previous expression is closed for children` |
 | `.method` continuation on horizontally-completed previous | `method continuation not allowed after horizontal application` |
 | `.method` continuation on an only-phi formation | `method continuation not allowed after only-phi formation` |
-| Name suffix on an only-phi φ's argument | `<name> cannot be a named attribute of only-phi formation <formation>, which binds only its φ decoratee` (the formation is described generically as `an only-phi formation` when anonymous) |
 | `.method` line at top level, deeper than parent, or with no same-indent sibling | `method continuation has no expression to attach to` |
 | Chained inline-phi suffix `expr > [a] > [b] > name` | `chained inline-phi suffixes are not allowed` |
 | Inline-phi without a name on the right (`expr > [params]` alone) | `inline-phi formation must carry a name on the right` |
@@ -1373,7 +1387,7 @@ R-9.9.3. New error conditions added to the spec must extend this table with a ca
 | `bare-reversed` | 1 line + body | yes (receiver+args) | yes (after) | `name.` vertical form |
 | `reversed-with-hargs` | 1 line | **no** | **no** | `name. arg1 arg2…` |
 | `compact-tuple` | 1 line + body | yes (tuple+direct args) | yes (after) | `head *N` |
-| `inline-phi-formation` | 1 line (+ body if bare φ) | yes if φ has 0 hargs (φ's vertical args); **no** if φ has hargs | **no** | `expr > [params] > name`; a bare φ opens for a vertical-argument block (§4.5), and its arguments may not be named (R-5.3.6) |
+| `inline-phi-formation` | 1 line (+ body if bare φ) | yes if φ has 0 hargs (φ's vertical args, plus named sibling attributes); **no** if φ has hargs | **no** | `expr > [params] > name`; a bare φ opens for a vertical-argument block, and named body lines are the formation's own attributes (§4.5 / R-5.3.6) |
 | `vapplication` | multi-line | yes while in progress | yes after block closes | head + vertical block |
 | `vmethod` | multi-line | yes while in progress (only if last `.method` has 0 hargs) | yes (more `.method`s extend the chain; same-indent `.method` after block closes wraps it) | chain of `.method` continuations |
 | `vmethod-with-hargs` | multi-line | **no** | **no** | a `.method` continuation line that itself carries ≥1 horizontal args — closes the chain immediately |
@@ -1508,7 +1522,7 @@ Notable points:
 - **Horizontal reversed dispatch (`eq. (mod. y 4) 0`)** appears 4× in this snippet. R-3.8.2 and R-6.6.3 govern it.
 - **Receiver as paren group**: `(mod. y 4)` is the receiver of `.eq`. Per R-3.8.2, the first horizontal arg is always the receiver.
 - **`mod. y 4`**: receiver = `y` (just an identifier — receivers don't have to be paren groups), method arg = `4`. Same as `y.mod 4` in regular notation.
-- **`year!` on a vapp arg**: a vapplication's vertical args may each carry an independent name suffix. This is orthogonal to the all-or-nothing binding rule (R-6.6.2 governs `:label` bindings, not `> name` suffixes). The sole exception is an argument of an only-phi formation's φ, which may not be named (§4.5 / R-5.3.6), since that formation binds only `φ`.
+- **`year!` on a vapp arg**: a vapplication's vertical args may each carry an independent name suffix. This is orthogonal to the all-or-nothing binding rule (R-6.6.2 governs `:label` bindings, not `> name` suffixes). A named direct body line of an only-phi formation is not such an argument at all — it is a sibling attribute of the formation (§4.5 / R-5.3.6); a name suffix deeper inside a φ argument is an ordinary named vertical argument and behaves exactly as here.
 - **`:y` binding on `leap year:y`**: inside the paren group, `leap` is applied to `year` with binding `:y`. Single-arg application, all-or-nothing trivially satisfied.
 
 This snippet exercises hmethod chains, horizontal reversed dispatch, paren groups, vapplication, name suffixes with `!`, and `:label` bindings — every major construct except text blocks and compact tuples.
