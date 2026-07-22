@@ -31,6 +31,7 @@ import java.util.Optional;
  *
  * @since 0.57.0
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class Pretty {
 
     /**
@@ -348,6 +349,24 @@ final class Pretty {
     }
 
     /**
+     * The inline-phi suffix marker of a formation node — the
+     * {@code  > [params] > name} tail glued after the decoratee's head, or
+     * the {@code  ++> name} shorthand when the formation has no void params
+     * (an empty {@code base}, the no-void test attribute).
+     * @param node The formation node
+     * @return The marker string
+     */
+    private static String marker(final Node node) {
+        final String middle;
+        if (node.base.isEmpty()) {
+            middle = " ";
+        } else {
+            middle = " > ".concat(node.base);
+        }
+        return middle.concat(node.tail);
+    }
+
+    /**
      * Render a formation whose sole binding is its {@code φ} decoratee in
      * the compact inline-phi form (the {@code node.children.size() == 1}
      * case of {@link #phi}).
@@ -358,13 +377,7 @@ final class Pretty {
      */
     private Optional<String> solo(final Node node, final Node decoratee, final int indent) {
         final Optional<String> result;
-        final String middle;
-        if (node.base.isEmpty()) {
-            middle = " ";
-        } else {
-            middle = " > ".concat(node.base);
-        }
-        final String marker = middle.concat(node.tail);
+        final String marker = Pretty.marker(node);
         final Optional<String> flat = Pretty.flat(
             new Node(
                 decoratee.base, "", decoratee.abstractt,
@@ -436,19 +449,8 @@ final class Pretty {
         }
         if (found == 1 && node.children.stream().noneMatch(child -> "?".equals(child.base))) {
             final Node decoratee = node.children.get(at);
-            final boolean liftable = !decoratee.abstractt
-                && !(decoratee.reversed && decoratee.children.size() <= 1)
-                && !decoratee.tuply()
-                && !decoratee.base.startsWith("|")
-                && decoratee.children.stream().allMatch(Node::nameless);
-            if (liftable) {
-                final String middle;
-                if (node.base.isEmpty()) {
-                    middle = " ";
-                } else {
-                    middle = " > ".concat(node.base);
-                }
-                final Node head = decoratee.hybrid(middle.concat(node.tail));
+            if (Pretty.liftable(decoratee)) {
+                final Node head = decoratee.hybrid(Pretty.marker(node));
                 final List<Node> kids = new ArrayList<>(head.children);
                 for (int idx = 0; idx < node.children.size(); idx = idx + 1) {
                     if (idx != at) {
@@ -467,6 +469,30 @@ final class Pretty {
             }
         }
         return result;
+    }
+
+    /**
+     * Whether an only-phi decoratee can be lifted onto the inline-phi head
+     * line so the formation collapses into {@code <phi> > [params] > name}
+     * with its attributes beneath (see {@link #attributed}).
+     *
+     * <p>It cannot when the decoratee is itself a formation (its bindings
+     * are not liftable arguments), a compact-tuple head ({@code seq *},
+     * whose deeper lines are tuple elements, not φ arguments), a pipe
+     * application ({@code | …}), a receiver-only reversed dispatch, or
+     * carries a named argument of its own (which would be misread as an
+     * attribute of the collapsed formation).</p>
+     *
+     * @param decoratee The {@code > @} decoratee node
+     * @return True when the decoratee is safe to lift
+     */
+    private static boolean liftable(final Node decoratee) {
+        final boolean shape = !decoratee.abstractt
+            && !decoratee.tuply()
+            && !decoratee.base.startsWith("|");
+        return shape
+            && !(decoratee.reversed && decoratee.children.size() <= 1)
+            && decoratee.children.stream().allMatch(Node::nameless);
     }
 
     /**

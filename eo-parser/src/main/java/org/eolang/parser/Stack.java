@@ -237,6 +237,7 @@ final class Stack {
      * @param openness Initial openness
      * @param named Whether the incoming line carries a name suffix
      * @return The new top
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
     Level replace(
         final int line, final Kind kind, final Openness openness, final boolean named
