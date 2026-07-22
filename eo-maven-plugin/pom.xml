@@ -445,9 +445,9 @@
         </executions>
         <dependencies>
           <dependency>
-            <groupId>org.codehaus.groovy</groupId>
+            <groupId>org.apache.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>3.0.25</version>
+            <version>5.0.7</version>
           </dependency>
         </dependencies>
       </plugin>
