@@ -239,12 +239,7 @@ final class Tokens {
             );
         }
         final String inside = this.body.substring(start + 1, this.cursor - 1);
-        if (!inside.isEmpty()
-            && inside.indexOf(' ') < 0
-            && inside.indexOf('(') < 0
-            && inside.indexOf(')') < 0
-            && inside.indexOf('[') < 0
-            && inside.indexOf(']') < 0) {
+        if (Tokens.singleToken(inside)) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + start,
                 String.format(
@@ -639,6 +634,47 @@ final class Tokens {
      */
     String body() {
         return this.body;
+    }
+
+    /**
+     * Whether a paren group's content wraps a single, atomic token, which
+     * makes the surrounding parentheses redundant.
+     *
+     * <p>The scan tracks quote state (toggled on an unescaped {@code "}) so
+     * that spaces, parentheses and brackets living <em>inside</em> a string
+     * literal don't fool it into thinking the group holds more than one token.
+     * A quoted string is always a single token regardless of its contents, so
+     * {@code ("hello")}, {@code ("hello world")} and {@code ("a(b)c")} are all
+     * treated the same way — consistently redundant.</p>
+     *
+     * @param inside The text between the parentheses, exclusive
+     * @return True if the parentheses wrap exactly one token
+     */
+    private static boolean singleToken(final String inside) {
+        boolean single = !inside.isEmpty();
+        boolean quoted = false;
+        int idx = 0;
+        while (idx < inside.length()) {
+            final char glyph = inside.charAt(idx);
+            if (quoted) {
+                if (glyph == '\\' && idx + 1 < inside.length()) {
+                    idx = idx + 1;
+                } else if (glyph == '"') {
+                    quoted = false;
+                }
+            } else if (glyph == '"') {
+                quoted = true;
+            } else if (glyph == ' '
+                || glyph == '('
+                || glyph == ')'
+                || glyph == '['
+                || glyph == ']') {
+                single = false;
+                break;
+            }
+            idx = idx + 1;
+        }
+        return single;
     }
 
     /**

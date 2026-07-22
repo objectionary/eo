@@ -454,6 +454,39 @@ final class TokensTest {
     }
 
     @Test
+    void rejectsRedundantParensAroundSingleStringLiteral() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Tokens(
+                "(\"hello world\")", new Span("(\"hello world\")", 1)
+            ).readGroup(),
+            "a single string-literal argument in parens must be flagged as redundant regardless of inner spaces"
+        );
+    }
+
+    @Test
+    void rejectsRedundantParensAroundStringLiteralWithBrackets() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Tokens(
+                "(\"a(b)[c]\")", new Span("(\"a(b)[c]\")", 1)
+            ).readGroup(),
+            "brackets and parens inside a string literal must not defeat the redundant-parens check"
+        );
+    }
+
+    @Test
+    void acceptsParensAroundMultipleStringLiterals() {
+        MatcherAssert.assertThat(
+            "readGroup must keep parens that genuinely wrap more than one token",
+            new Tokens(
+                "(\"a\" \"b\")", new Span("(\"a\" \"b\")", 1)
+            ).readGroup().raw(),
+            Matchers.equalTo("(\"a\" \"b\")")
+        );
+    }
+
+    @Test
     void rejectsUnterminatedParenGroup() {
         Assertions.assertThrows(
             ParseError.class,
