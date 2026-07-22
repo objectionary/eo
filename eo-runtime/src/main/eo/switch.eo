@@ -95,12 +95,8 @@
     "fallback"
     switch
       *
-        *
-          false
-          "false1"
-        *
-          false
-          "false2"
+        * false "false1"
+        * false "false2"
       "fallback"
 
   eq. ++> tests-switch-with-several-true-cases
@@ -110,9 +106,6 @@
       * true "TRUE2"
     "TRUE1"
 
-  switch * --> on-empty-switch
-    *
-
   switch * --> on-all-false-cases-without-fallback
     *
       false
@@ -120,3 +113,6 @@
     *
       false
       "false2"
+
+  switch * --> on-empty-switch
+    *
