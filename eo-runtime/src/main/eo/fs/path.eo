@@ -1,5 +1,14 @@
 # Path `path` that is hierarchical and composed of a sequence of
 # directory and file name elements separated by a special separator or delimiter.
+#
+# The whole algorithm (`normalized`, `resolved`, `basename`, `extname`,
+# `dirname`) is written exactly once, inside the generic `impl` object. Instead
+# of duplicating it for every operating system, `impl` is parameterized by an
+# adapter that supplies only the pieces that genuinely differ between platforms:
+# the separator and a few small hooks (`is-absolute`, `body`, `prefix`,
+# `combined` and `correct`). The `posix` and `win32` flavors are therefore thin
+# wrappers that pick the matching adapter, exactly like `nk.socket` does with
+# `os.is-windows`.
 
 +alias fs.dir
 +alias fs.file
@@ -43,30 +52,28 @@
           separator
           paths
 
-  [uri] > posix
+  [adapter uri] > impl
     uri > @
     dir (file uri) > as-dir
     file uri > as-file
-    and. > is-absolute
-      uri.length.gt 0
-      (uri.as-bytes.slice 0 1).eq separator
-    "/" > separator
+    adapter.separator > separator
+    (adapter.is-absolute uri).as-bool > is-absolute
 
     [] > normalized
-      posix > @
+      impl > @
+        adapter
         if.
-          normalized.eq "//"
-          "/"
+          normalized.eq (separator.concat separator)
+          separator
           string normalized
-      ^.is-absolute.as-bool > is-absolute
+      adapter.body uri > body
       as-bytes. > normalized
         if.
-          uri.length.eq 0
+          body.size.eq 0
           "."
           concat.
-            if.
-              is-absolute
-              separator.concat path
+            concat.
+              adapter.prefix uri
               path
             if.
               trailing
@@ -77,7 +84,7 @@
         reduced
           list
             split
-              uri
+              body
               separator
           *
           [accum segment] >>
@@ -109,17 +116,12 @@
 
     [other] > resolved
       normalized. > @
-        posix
+        impl
+          adapter
           string
-            if.
-              (obts.slice 0 1).eq separator
-              obts
-              concat.
-                concat.
-                  uri
-                  separator
-                obts
-      other.as-bytes > obts
+            adapter.combined
+              uri
+              adapter.correct other
 
     [] > basename
       string > @
@@ -168,192 +170,116 @@
       uri > pth!
       string pth > txt
 
-  [uri] > win32
-    validated > @
-      string
-        as-bytes.
-          validated.separated-correctly
-            uri
+  [] > posix-rules
+    separator > @
+    "/" > separator
+
+    [str] > correct
+      str > @
+
+    [uri] > body
+      uri > @
+
+    [uri] > is-absolute
+      and. > @
+        uri.length.gt 0
+        (uri.as-bytes.slice 0 1).eq separator
+
+    [uri] > prefix
+      if. > @
+        is-absolute uri
+        separator
+        --
+
+    [base other] > combined
+      if. > @
+        (other.as-bytes.slice 0 1).eq separator
+        other
+        concat.
+          concat.
+            base
+            separator
+          other
+
+  [uri] > posix
+    impl posix-rules (posix-rules.correct uri) > @
+    posix-rules.separator > separator
+
+  [] > win32-rules
+    separator > @
     "\\" > separator
 
-    [uri] > validated
-      uri > @
-      dir (file uri) > as-dir
-      file uri > as-file
-      ^.separator > separator
+    [uri] > correct
+      if. > @
+        (index-of pth path.posix.separator).eq -1
+        string ubts
+        string repl
+      string ubts > pth
+      replaced > repl!
+        pth
+        regex "/\\//"
+        separator
+      uri > ubts!
 
-      ((regex "/^[a-zA-Z]:/").matches uri).as-bool > [uri] > is-drive-relative
+    ((regex "/^[a-zA-Z]:/").matches uri).as-bool > [uri] > is-drive-relative
 
-      [uri] > is-root-relative
-        and. > @
-          ubts.size.gt 0
-          (ubts.slice 0 1).eq separator
-        uri > ubts!
+    [uri] > is-root-relative
+      and. > @
+        ubts.size.gt 0
+        (ubts.slice 0 1).eq separator
+      uri > ubts!
 
-      [uri] > separated-correctly
-        if. > @
-          (index-of pth path.posix.separator).eq -1
-          string ubts
-          string repl
-        string ubts > pth
-        replaced > repl!
-          pth
-          regex "/\\//"
+    [uri] > body
+      if. > @
+        is-drive-relative uri
+        uri.slice
+          2
+          uri.size.plus -2
+        uri
+
+    [uri] > is-absolute
+      if. > @
+        uri.size.eq 0
+        false
+        or.
+          is-root-relative uri
+          and.
+            uri.size.gt 1
+            is-drive-relative uri
+
+    [uri] > prefix
+      if. > @
+        is-drive-relative uri
+        if.
+          ((body uri).slice 0 1).eq separator
+          uri.slice 0 3
+          uri.slice 0 2
+        if.
+          is-root-relative uri
           separator
-        uri > ubts!
+          --
 
-      [] > is-absolute
-        if. > @
-          ubts.size.eq 0
-          false
-          or.
-            is-root-relative ubts
-            and.
-              ubts.size.gt 1
-              is-drive-relative ubts
-        uri > ubts!
-
-      [] > normalized
-        validated > @
+    [base other] > combined
+      if. > @
+        (is-drive-relative other).as-bool
+        other
+        if.
+          (is-root-relative other).as-bool
           if.
-            normalized.eq "\\\\"
-            separator
-            string normalized
-        if. > driveless!
-          is-drive-relative
-          ubts.slice
-            2
-            ubts.size.plus -2
-          ubts
-        (^.is-drive-relative ubts).as-bool > is-drive-relative
-        (^.is-root-relative ubts).as-bool > is-root-relative
-        as-bytes. > normalized
-          if.
-            driveless.size.eq 0
-            "."
+            is-drive-relative base
             concat.
-              concat.
-                if.
-                  is-drive-relative
-                  if.
-                    (driveless.slice 0 1).eq separator
-                    uri.slice 0 3
-                    uri.slice 0 2
-                  if.
-                    is-root-relative
-                    separator
-                    --
-                path
-              if.
-                trailing
-                separator
-                --
-        Q.tt.joined > path!
-          separator
-          reduced
-            list
-              split
-                driveless
-                ^.separator
-            *
-            [accum segment] >>
-              if. > @
-                segment.eq ".."
-                if.
-                  and.
-                    accum.length.gt 0
-                    (accum.head.eq "..").not
-                  accum.tail
-                  if.
-                    and.
-                      is-root-relative.not
-                      is-drive-relative.not
-                    accum.with segment
-                    accum
-                if.
-                  or.
-                    segment.eq "."
-                    segment.eq ""
-                  accum
-                  accum.with segment
-        and. > trailing
-          ubts.size.gt 0
-          eq.
-            ubts.slice
-              ubts.size.plus -1
-              1
-            separator
-        uri > ubts!
+              base.slice 0 2
+              other
+            other
+          concat.
+            concat.
+              base
+              separator
+            other
 
-      [other] > resolved
-        normalized. > @
-          validated
-            string
-              if.
-                (^.is-drive-relative valid).as-bool
-                valid
-                if.
-                  (^.is-root-relative valid).as-bool
-                  if.
-                    is-drive-relative ubts
-                    concat.
-                      ubts.slice 0 2
-                      valid
-                    valid
-                  concat.
-                    concat.
-                      ubts
-                      separator
-                    valid
-        uri > ubts!
-        separated-correctly other > valid!
-
-      [] > basename
-        string > @
-          if.
-            or.
-              pth.size.eq 0
-              idx.eq 0
-            pth
-            as-bytes.
-              txt.slice
-                idx
-                txt.length.minus
-                  number idx
-        plus. > idx!
-          last-index-of txt separator
-          1
-        uri > pth!
-        string pth > txt
-
-      [] > extname
-        if. > @
-          or.
-            base.size.eq 0
-            idx.eq -1
-          ""
-          string
-            as-bytes.
-              txt.slice
-                idx
-                txt.length.minus
-                  number idx
-        basename > base!
-        last-index-of txt "." > idx!
-        string base > txt
-
-      [] > dirname
-        string > @
-          if.
-            or.
-              pth.size.eq 0
-              len.eq -1
-            pth
-            as-bytes.
-              txt.slice 0 len
-        last-index-of txt separator > len!
-        uri > pth!
-        string pth > txt
+  [uri] > win32
+    impl win32-rules (win32-rules.correct uri) > @
+    win32-rules.separator > separator
 
   ++> tests-determines-separator-depending-on-os
     eq. > @
