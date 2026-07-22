@@ -143,6 +143,12 @@ final class Linting implements Step {
     private final boolean skipLinting;
 
     /**
+     * Shared cache guard, reused across all files so that concurrent writes to
+     * the same cache tail path are actually serialized (#5720).
+     */
+    private final ConcurrentCache guard;
+
+    /**
      * Constructor.
      * @param srcs Scoped tojos
      * @param compiled Compile tojos
@@ -192,6 +198,7 @@ final class Linting implements Step {
         this.lintAsPackage = pkg;
         this.sourcesDir = sources;
         this.skipLinting = skip;
+        this.guard = new ConcurrentCache();
     }
 
     @Override
@@ -292,7 +299,7 @@ final class Linting implements Step {
             new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get()
         ).make(base, MjAssemble.XMIR);
         if (this.cacheEnabled) {
-            new ConcurrentCache(
+            this.guard.apply(
                 new Cache(
                     new CachePath(
                         this.cacheDir.resolve(Linting.CACHE),
@@ -303,8 +310,9 @@ final class Linting implements Step {
                         xmir,
                         unlints
                     ).toString()
-                )
-            ).apply(source, target, base.relativize(target));
+                ),
+                source, target, base.relativize(target)
+            );
         } else {
             new Saved(
                 this.linted(xmir, unlints).toString(),
