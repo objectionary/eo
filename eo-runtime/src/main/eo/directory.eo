@@ -15,16 +15,16 @@
   [] > deleted
     ^.exists.if > @
       seq *
-        rec-delete
+        r
           (walk "**").at.^
         ^
       ^
-    if. > [tup] > rec-delete
+    if. > [tup] >> r
       tup.length.eq 0
       true
       seq *
         tup.head.deleted
-        rec-delete tup.tail
+        r tup.tail
   true > is-directory
   [] > made
     ^.exists.if > @
@@ -34,7 +34,7 @@
           directory
             Q.file ^.as-path.dirname
         if.
-          outcome.eq 0
+          created.code.eq 0
           ^
           T
             "Cant make the directory '%s': %s".printf
@@ -48,7 +48,6 @@
           "mkdir"
           ^.path
           posix.permissions
-    created.code > outcome
   T > [mode scope] > open
     "The file %s is a directory, can't open for I/O operations".printf
       * file
