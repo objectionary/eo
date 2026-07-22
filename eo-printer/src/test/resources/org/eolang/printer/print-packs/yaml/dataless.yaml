@@ -27,7 +27,7 @@ printed: |
   [args] > main
     io.stdout > @
       args.at args.length.neg
+    nan.plus negative-infinity > not-a-number
     text-of > txt
       input-of
-        args.at
-          nan.plus negative-infinity > not-a-number
+        args.at not-a-number

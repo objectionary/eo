@@ -5,9 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -66,28 +64,27 @@ public final class MjTranspile extends MjSafe {
     private boolean trackLocations;
 
     /**
-     * The file to record EO object coverage hits into. When it is
-     * not set (the default), no instrumentation happens; when set,
-     * every located object in the generated Java is wrapped into
-     * {@code PhCoverage}, which appends a hit to this file the first
-     * time the object is touched at runtime. Setting the same
-     * {@code eo.coverageFile} system property also reaches the JVM
-     * that later runs the instrumented code, since {@code eo-runtime}
-     * forwards it to surefire's {@code systemPropertyVariables} (see
-     * its {@code pom.xml}); one setting is enough end to end.
+     * Whether to wrap every located object in the generated Java into
+     * {@code PhCoverage}, so it records a coverage hit the first time it
+     * is touched at runtime. Off by default, so a production build stays
+     * lean. The hits are appended to the file named by the
+     * {@code eo.coverageFile} system property of the JVM that runs the
+     * compiled program; when that property is absent, every hit is a
+     * silent no-op. In {@code eo-runtime} the {@code coverage-file}
+     * profile turns this on and forwards that property to surefire in
+     * one step (see its {@code pom.xml}).
      * @todo #5466:60min Turn raw coverage hits into an LCOV report.
-     *  Right now this parameter only produces a raw, append-only
-     *  {@code loc:line:pos} file: the runtime {@code PhCoverage}
-     *  decorator writes every touched location into it, but nothing
-     *  consumes that file yet. Add a reporter step that merges those
-     *  raw hits against the full set of instrumented locations, which
-     *  the transpiler already knows because it emits every wrapper,
-     *  and produces an LCOV ({@code .info}) tracefile plus the covered
-     *  percentage. LCOV is chosen because Codecov and Coveralls
-     *  consume it directly.
+     *  Right now the runtime only produces a raw, append-only
+     *  {@code loc:line:pos} file: the {@code PhCoverage} decorator
+     *  writes every touched location into it, but nothing consumes that
+     *  file yet. Add a reporter step that merges those raw hits against
+     *  the full set of instrumented locations, which the transpiler
+     *  already knows because it emits every wrapper, and produces an
+     *  LCOV ({@code .info}) tracefile plus the covered percentage. LCOV
+     *  is chosen because Codecov and Coveralls consume it directly.
      * @todo #5466:30min Enforce a minimum EO object coverage in eo-runtime.
      *  Once the LCOV report from the puzzle above exists, set
-     *  {@code coverageFile} on the {@code transpile} execution in
+     *  {@code coverageTracking} on the {@code transpile} execution in
      *  {@code eo-runtime/pom.xml} and fail the build when the covered
      *  percentage of dataized {@code .eo} objects drops below a
      *  threshold (for example 80 percent), mirroring how the existing
@@ -95,8 +92,8 @@ public final class MjTranspile extends MjSafe {
      *  thresholds.
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.coverageFile")
-    private File coverageFile;
+    @Parameter(property = "eo.coverageTracking")
+    private boolean coverageTracking;
 
     @Override
     public void exec() throws IOException {
@@ -111,7 +108,7 @@ public final class MjTranspile extends MjSafe {
                 this.transpileTests,
                 this.xslMeasures.toPath(),
                 new Tracking(this.trackTransformationSteps, this.trackLocations),
-                MjTranspile.path(this.coverageFile)
+                this.coverageTracking
             )
         ).exec();
         if (this.addSourcesRoot) {
@@ -131,20 +128,5 @@ public final class MjTranspile extends MjSafe {
                 gtests
             );
         }
-    }
-
-    /**
-     * The path of the given file, or NULL when the file is not set.
-     * @param file The file, possibly NULL
-     * @return The path, or NULL
-     */
-    private static Path path(final File file) {
-        final Path result;
-        if (file == null) {
-            result = null;
-        } else {
-            result = file.toPath();
-        }
-        return result;
     }
 }

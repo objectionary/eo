@@ -683,10 +683,17 @@ abstract class MjSafe extends AbstractMojo {
      */
     private void exitError(final String msg, final Throwable exp)
         throws MojoFailureException {
-        if (!this.unrollExitError) {
-            return;
+        if (this.unrollExitError) {
+            this.logCauses(exp);
         }
-        final MojoFailureException out = new MojoFailureException(msg, exp);
+        throw new MojoFailureException(msg, exp);
+    }
+
+    /**
+     * Log the deduplicated cause chain of the given exception.
+     * @param exp Original problem
+     */
+    private void logCauses(final Throwable exp) {
         final List<String> causes = MjSafe.causes(exp);
         for (int pos = 0; pos < causes.size(); ++pos) {
             final String cause = causes.get(pos);
@@ -714,7 +721,6 @@ abstract class MjSafe extends AbstractMojo {
         for (final String cause : new LinkedHashSet<>(causes)) {
             Logger.error(this, cause);
         }
-        throw out;
     }
 
     /**

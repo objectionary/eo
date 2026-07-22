@@ -85,6 +85,18 @@
       42
     123
 
+  eq. ++> tests-if-result-answers-left-method-of-chosen-branch
+    left.
+      false.if 00-00-00-00-00-00-00-09 00-00-00-00-00-00-00-05
+      1
+    00-00-00-00-00-00-00-0A
+
+  eq. ++> tests-if-result-answers-right-method-of-chosen-branch
+    right.
+      true.if 00-00-00-00-00-00-00-05 00-00-00-00-00-00-00-09
+      1
+    00-00-00-00-00-00-00-02
+
   ++> tests-nesting-blah-test
     eq. > @
       blah0 0

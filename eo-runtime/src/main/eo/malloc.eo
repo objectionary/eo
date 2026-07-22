@@ -110,9 +110,9 @@
         7
         [m] >>
           m.put > @
-            num.times
-              number > num
-                inc m > n!
+            num.times num
+          inc m > n!
+          number n > num
       64
     seq * > [x] > inc
       x.put
@@ -214,11 +214,13 @@
   ++> tests-malloc-puts-over-the-previous-data
     eq. > @
       42.as-bytes.concat "orld!".as-bytes
-      malloc.of > mem
-        13
-        seq * > [m]
-          m.put "Hello, world!"
-          m.put 42
+      mem
+    malloc.of > mem
+      13
+      seq * > [m]
+        m.put
+          "Hello, world!"
+        m.put 42
 
   eq. ++> tests-malloc-read-over-a-limit-returns-fallback
     01-02

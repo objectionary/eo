@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -17,6 +18,19 @@ import org.junit.jupiter.params.provider.MethodSource;
  * @since 0.1
  */
 final class VerboseBytesAsStringTest {
+
+    @Test
+    void representsEightByteValueWithoutUnmatchedParenthesis() {
+        MatcherAssert.assertThat(
+            "Eight-byte output must not contain an unmatched parenthesis",
+            new VerboseBytesAsString(
+                ByteBuffer.allocate(Double.BYTES).putDouble(12.345_67D).array()
+            ).get(),
+            Matchers.equalTo(
+                "[0x4028B0FB-A8826AA9-] = 12.34567, or \"@(\\ufffd\\ufffd\\ufffd\\ufffdj\\ufffd\""
+            )
+        );
+    }
 
     @ParameterizedTest
     @MethodSource("getTestSources")

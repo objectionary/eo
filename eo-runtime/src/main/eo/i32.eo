@@ -14,11 +14,12 @@
   [cant-convert] > as-i16
     if. > @
       ^.eq left.as-i32
-      i16 > left
-        as-bytes.slice 2 2
+      left
       cant-convert
         "Can't convert i32 number %d to i16 because it's out of i16 bounds".printf
           * as-i64.as-number
+    i16 > left
+      as-bytes.slice 2 2
   [] > as-i64
     i64 > @
       prefix.concat as-bytes
@@ -41,11 +42,13 @@
           left.eq FF-FF-FF-FF
         i32 right
         plus.
-          i32
-            bts.slice 0 4 > left
+          i32 left
           i32 right
     as-bytes. > bts
       as-i64.div xval.as-i64
+    bts.slice > left
+      0
+      4
     bts.slice > right
       4
       4
@@ -64,19 +67,21 @@
         left.eq FF-FF-FF-FF
       i32 right
       plus.
-        i32
-          bts.slice 0 4 > left
+        i32 left
         i32 right
     as-bytes. > bts
       as-i64.plus x.as-i32.as-i64
+    bts.slice > left
+      0
+      4
     bts.slice > right
       4
       4
   [x] > times
-    i32 > @
-      (as-i64.times x.as-i32.as-i64).as-bytes.slice > right
-        4
-        4
+    i32 right > @
+    (as-i64.times x.as-i32.as-i64).as-bytes.slice > right
+      4
+      4
 
   eq. ++> tests-i32-as-i64-widens-negative-with-sign-extension
     -200.as-i64.as-i32.as-i64.as-bytes
@@ -89,7 +94,8 @@
   ++> tests-i32-div-by-i32-one
     eq. > @
       dividend.div 1.as-i64.as-i32
-      -235.as-i64.as-i32 > dividend
+      dividend
+    -235.as-i64.as-i32 > dividend
 
   eq. ++> tests-i32-div-by-zero-returns-provided-fallback
     "recovered"

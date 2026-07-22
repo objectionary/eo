@@ -56,15 +56,15 @@
       10
 
   ++> tests-range-with-wrong-items-is-an-empty-array
-    tuple.is-empty > @
-      range > rng
-        []
-          y 10 > @
-          [num] > y
-            num > @
-            [] > next
-              42 > nothing
-        1
+    tuple.is-empty rng > @
+    range > rng
+      []
+        y 10 > @
+        [num] > y
+          num > @
+          [] > next
+            42 > nothing
+      1
 
   ++> tests-simple-range-from-one-to-ten
     rng.eq > @

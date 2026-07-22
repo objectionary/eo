@@ -9,17 +9,17 @@
 
 [list index] > back
   if. > @
-    0.gt
-      list.length.minus > start!
-        index > idx!
+    0.gt start
     list
     reducedi
       list
       *
       if. > [accum item idx] >>
-        idx.gte ^.start
+        idx.gte start
         accum.with item
         accum
+  index > idx!
+  list.length.minus idx > start!
 
   eq. ++> tests-large-index-in-back
     back

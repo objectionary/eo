@@ -50,7 +50,7 @@ public final class VerboseBytesAsString implements Supplier<String> {
                 break;
             case 8:
                 result = String.format(
-                    "[0x%s] = %s, or \"%s\")",
+                    "[0x%s] = %s, or \"%s\"",
                     this.toHex(),
                     new BytesOf(this.data).asNumber(),
                     this.escaped()

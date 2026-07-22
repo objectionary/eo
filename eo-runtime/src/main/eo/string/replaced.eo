@@ -14,10 +14,12 @@
   matched.exists.not.if > @
     reinit
     rec-replaced
-      next. > matched
-        target.match reinit
+      matched
       ""
       matched.start
+  text > bts!
+  next. > matched
+    target.match reinit
   block.exists.if > [block accum start] > rec-replaced
     rec-replaced
       block.next
@@ -33,8 +35,7 @@
         reinit.slice
           start
           reinit.length.minus start
-  string > reinit
-    text > bts!
+  string bts > reinit
 
   eq. ++> tests-does-not-replaces-if-regex-not-found
     replaced

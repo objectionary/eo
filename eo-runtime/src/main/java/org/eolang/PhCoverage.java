@@ -71,6 +71,16 @@ public final class PhCoverage implements Phi {
     }
 
     @Override
+    public boolean equals(final Object obj) {
+        return this.origin.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.origin.hashCode();
+    }
+
+    @Override
     public Phi copy() {
         return new PhCoverage(this.origin.copy(), this.loc, this.line, this.pos);
     }

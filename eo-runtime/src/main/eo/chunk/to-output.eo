@@ -39,9 +39,7 @@
       10
       seq * > [mem]
         write.
-          write.
-            mem.to-output.write 01-02-03
-            04-05-06-07
+          (mem.to-output.write 01-02-03).write 04-05-06-07
           08-09-A0
         mem
     01-02-03-04-05-06-07-08-09-A0
@@ -58,8 +56,6 @@
     malloc.of
       2
       seq * > [mem]
-        write.
-          mem.to-output
-          01-02-03
+        mem.to-output.write 01-02-03
         mem
     01-02-03

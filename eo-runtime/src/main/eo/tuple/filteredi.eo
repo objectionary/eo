@@ -20,7 +20,8 @@
       if.
         func tup.head tup.tail.length
         next.with tup.head
-        r tup.tail > next
+        next
+    r tup.tail > next
   | list > @
 
   eq. ++> tests-filteredi-with-lt

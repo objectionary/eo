@@ -55,20 +55,22 @@
     eq. > @
       at-fast.
         arr.at 0
-        * > arr
-          100
-          101
-          102
+        arr
       100
+    * > arr
+      100
+      101
+      102
 
   ++> tests-at-fast-with-last-element
     eq. > @
       at-fast.
         arr.at 2
-        * > arr
-          100
-          101
-          102
+        arr
+      102
+    * > arr
+      100
+      101
       102
 
   ++> tests-creates-empty-tuple-with-number

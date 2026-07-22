@@ -2,13 +2,17 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# The parser hoists a `> value` binding to the enclosing formation no matter
+# The parser hoists a `> name` binding to the enclosing formation no matter
 # where it is written, so the moniker form (the binding at its bare-reference
 # site) and the expanded form (a standalone binding plus a bare reference)
 # parse to the same XMIR. This sheet merges the standalone binding back onto
-# the first bare `ξ.value` reference, dropping the separate line. The
-# method-dispatch uses (`value.gte`, `value.neg`) cannot host the binding and
-# stay as references.
+# the first bare reference only for the compiler's auto-generated, obfuscated
+# names (the `a🌵` cactus prefix, §9.2); a real, author-chosen name reads best
+# on its own `... > name` line and is left standalone (#5738). Here the
+# file-local handle `>> auto` carries a cactus @name, so its binding is merged
+# onto the first bare `auto` reference (the `auto.gte`/`auto.neg` dispatches
+# cannot host it and stay references), while the real name `value` keeps both
+# its standalone binding and its bare reference.
 sheets:
   - /org/eolang/parser/parse/wrap-applications.xsl
   - /org/eolang/parser/parse/resolve-self.xsl
@@ -30,21 +34,27 @@ sheets:
   - /org/eolang/parser/parse/mandatory-as.xsl
   - /org/eolang/printer/print/merge-monikers.xsl
 asserts:
-  # The standalone binding is no longer a direct attribute of the formation.
-  - /object/o[@name='abs' and not(o[@name='value'])]
+  # The obfuscated (cactus-named) binding is no longer a direct attribute of
+  # the formation: it has been merged onto its bare reference.
+  - /object/o[@name='abs' and not(o[starts-with(@name, 'a🌵')])]
   # It now lives at the first bare-reference site, inside the `if.` block,
   # keeping the reference's positional marker and gaining the binding's base
-  # and child.
-  - /object/o[@name='abs']/o[@name='φ' and @base='.if']/o[@name='value' and @base='Φ.number' and @as='α0']/o[@base='ξ.num.as-bytes']
-  # The method-dispatch uses stay as references.
-  - /object/o[@name='abs']/o[@name='φ']/o[@base='ξ.value.gte']
-  - /object/o[@name='abs']/o[@name='φ']/o[@base='ξ.value.neg']
+  # and child (the `@local` handle is preserved so the readable name prints).
+  - /object/o[@name='abs']/o[@name='φ' and @base='.if']/o[starts-with(@name, 'a🌵') and @local='auto' and @base='Φ.number' and @as='α0']/o[@base='ξ.num.as-bytes']
+  # The method-dispatch use of the cactus name stays a reference.
+  - /object/o[@name='abs']/o[@name='φ']/o[starts-with(@base, 'ξ.a🌵') and ends-with(@base, '.gte')]
+  # The real name `value` is NOT merged: its standalone binding stays a direct
+  # attribute of the formation (#5738).
+  - /object/o[@name='abs']/o[@name='value' and @base='Φ.number']/o[@base='ξ.num.as-bytes']
+  # ...and its bare reference stays a plain reference inside the `if.` block.
+  - /object/o[@name='abs']/o[@name='φ']/o[@base='ξ.value' and not(@name)]
 input: |
   +package number
 
   [num] > abs
     if. > @
-      value.gte 0
+      auto.gte 0
+      auto
       value
-      value.neg
+    number num.as-bytes >> auto
     number num.as-bytes > value

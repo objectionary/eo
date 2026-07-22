@@ -20,7 +20,8 @@
           t.head.eq wanted
           t.tail.length
           -1
-        r t.tail > next!
+        next
+    r t.tail > next!
 
   eq. ++> tests-does-not-find-index-of
     -1

@@ -27,11 +27,13 @@
       len.eq index
       index
       if.
-        is-ws
-          bts.slice index 1 > char!
+        is-ws char
         first-non-ws-index
           (index.plus 1).as-number
         index
+    bts.slice > char!
+      index
+      1
   first-non-ws-index 0 > idx!
   or. > [c] > is-ws
     c.eq 20-

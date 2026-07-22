@@ -15,20 +15,22 @@
   binding line) parse to one and the same object graph. This pass turns
   the expanded spelling back into the moniker.
 
-  For each formation, a named bound attribute that is neither void, `φ`,
-  a test, nor pipe-floated is merged onto its bare `ξ.<name>` reference
+  For each formation, an eligible named bound attribute (see
+  `eo:moniker-binding`) is merged onto the first bare `ξ.<name>` reference
   reachable through no intervening formation (so the name still binds to
   the same formation). A method-dispatch use such as `value.gte`, a
   reference carrying arguments, or a reference that is itself a named
   attribute (such as `temp > @`) cannot host the binding and stays a
-  reference.
+  reference; when no bare reference exists, the binding is left in place.
 
-  Only a binding with exactly one hostable reference is merged. With two
-  or more, the choice of a host would not survive the print/parse round
-  trip: canonical attribute ordering (#5706) reorders the sibling bindings
-  a reference sits inside, so "the first reference" flips between passes
-  and the printer stops converging. Such a binding, and one with no bare
-  reference at all, is left in place.
+  A binding with several hostable references still becomes a moniker,
+  landing on the first one in document order (#5739). This deliberately
+  gives up the print/parse fixpoint that a single-reference-only merge
+  (#5707) guaranteed: canonical attribute ordering (#5706) can reorder the
+  sibling bindings a reference sits inside, so "the first reference" may
+  shift between passes and the printed moniker may move with it. Since only
+  the compiler's obfuscated names are merged (#5738), this shift stays
+  hidden inside auto-generated plumbing and never moves an author's name.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -45,17 +47,20 @@
   </xsl:function>
   <!--
   Whether `$attr` is a formation attribute eligible to become a moniker:
-  named, bound (has a base), and neither void, `φ`, a test, nor already
-  floated with a pipe (`|`).
+  auto-named with the cactus prefix (`a🌵`, §9.2), bound (has a base), and
+  neither void, `φ`, a test, nor already floated with a pipe (`|`). Only
+  the compiler's obfuscated names are merged; a real, author-chosen name
+  such as `value` reads best on its own `... > name` line and stays
+  standalone (#5738).
   -->
   <xsl:function name="eo:moniker-binding" as="xs:boolean">
     <xsl:param name="attr" as="element()"/>
-    <xsl:sequence select="exists($attr/@name) and exists($attr/@base) and not(exists($attr/@pipe)) and not(eo:void($attr)) and $attr/@name != $eo:phi and not(eo:test-attr($attr)) and eo:abstract($attr/..)"/>
+    <xsl:sequence select="exists($attr/@name) and starts-with($attr/@name, concat('a', $eo:cactoos)) and exists($attr/@base) and not(exists($attr/@pipe)) and not(eo:void($attr)) and $attr/@name != $eo:phi and not(eo:test-attr($attr)) and eo:abstract($attr/..)"/>
   </xsl:function>
   <!--
-  The bare `ξ.<name>` references that can host the binding `$attr`: a bare
-  reference whose nearest formation ancestor is the binding's own owner and
-  that does not sit inside the binding itself.
+  The bare `ξ.<name>` references, in document order, that can host the
+  binding `$attr`: a bare reference whose nearest formation ancestor is the
+  binding's own owner and that does not sit inside the binding itself.
   -->
   <xsl:function name="eo:moniker-refs" as="element()*">
     <xsl:param name="attr" as="element()"/>
@@ -65,13 +70,13 @@
   <!--
   The binding that a reference `$ref` should be replaced with, or the empty
   sequence when `$ref` hosts no binding (not a bare reference, no eligible
-  binding, or a binding with anything other than this single reference).
+  binding, or not the first hosting reference).
   -->
   <xsl:function name="eo:hosted-binding" as="element()*">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
     <xsl:variable name="binding" select="$owner/o[@name = eo:resolved-ref($ref) and eo:moniker-binding(.)][1]"/>
-    <xsl:sequence select="if (exists($binding) and (count(eo:moniker-refs($binding)) = 1) and (eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
+    <xsl:sequence select="if (exists($binding) and (eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
   </xsl:function>
   <!--
   Replace the first hosting reference with the merged binding: keep the
@@ -89,7 +94,7 @@
   <!--
   Drop the standalone binding once it has been merged onto a reference.
   -->
-  <xsl:template match="o[eo:moniker-binding(.) and count(eo:moniker-refs(.)) = 1]" priority="1"/>
+  <xsl:template match="o[eo:moniker-binding(.) and exists(eo:moniker-refs(.))]" priority="1"/>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>

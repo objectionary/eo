@@ -47,11 +47,11 @@
         false
         if.
           (ent.head.hash.eq hash).and
-            ent.head.kbts.eq ^.kbts
+            ent.head.kbts.eq kbts
           true
           has-key ent.tail
-      bytes.hash > hash!
-        tup.head.key.as-bytes > kbts!
+      bytes.hash kbts > hash!
+      tup.head.key.as-bytes > kbts!
       @. > prev
         rec-rebuild tup.tail
   [key value] > entry
@@ -61,8 +61,8 @@
         size.eq 0
         not-found
         rec-key-search entries
-      bytes.hash > hash!
-        key.as-bytes > kbts!
+      bytes.hash kbts > hash!
+      key.as-bytes > kbts!
       [] > not-found
         false > exists
         cant-get > [cant-get] > get
@@ -73,14 +73,16 @@
           tup.length.eq 0
           not-found
           prev.exists.if
-            (rec-key-search tup.tail).@ > prev
+            prev
             if.
               (tup.head.hash.eq hash).and
-                tup.head.kbts.eq ^.kbts
+                tup.head.kbts.eq kbts
               [] >>
                 true > exists
                 tup.head.value > [cant-get] > get
               not-found
+        @. > prev
+          rec-key-search tup.tail
     (found key).exists > [key] > has
     tuple.mapped > keys
       entries
@@ -97,14 +99,14 @@
             [entry] >>
               not. > @
                 (hash.eq entry.hash).and
-                  ^.kbts.eq entry.kbts
+                  kbts.eq entry.kbts
           [] >>
             ^.hash > hash
             ^.kbts > kbts
             ^.key > key
             ^.value > value
-      bytes.hash > hash!
-        key.as-bytes > kbts!
+      bytes.hash kbts > hash!
+      key.as-bytes > kbts!
     [key] > without
       map.initialized > @
         tuple.filtered
@@ -112,9 +114,9 @@
           [entry] >>
             not. > @
               (hash.eq entry.hash).and
-                ^.kbts.eq entry.kbts
-      bytes.hash > hash!
-        key.as-bytes > kbts!
+                kbts.eq entry.kbts
+      bytes.hash kbts > hash!
+      key.as-bytes > kbts!
 
   ++> tests-adds-key-colliding-with-existing-one
     and. > @
