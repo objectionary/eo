@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A recursive helper written inline with `|` (the #5732 tuple/front.eo case):
+# the `[t] > rechead` formation floats up to become an attribute of `front`
+# while its `| list` pipe use stays nested inside the `if.` expression. The
+# printer must re-nest the formation above the pipe so the compact `|`
+# spelling survives instead of degrading into a bare `rechead list`.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > front
+    if. > @
+      idx.eq 0
+      empty
+      [t] > rechead
+        rechead t.tail > @
+      | list
+printed: |
+  [] > front
+    if. > @
+      idx.eq 0
+      empty
+      ^.rechead t.tail > [t] > rechead
+      | list
