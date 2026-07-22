@@ -62,7 +62,18 @@
         i64 value
     x > value!
   times -1.as-i64 > neg
-  [x] > plus /Q.i64
+  [x] > plus
+    carried > @
+      as-bytes
+      x.as-bytes
+    if. > [a b] > carried
+      b.eq 00-00-00-00-00-00-00-00
+      i64 a
+      carried
+        a.xor b
+        left.
+          a.and b
+          1
   [x] > times
     if. > [acc a b] > looped
       b.eq 00-00-00-00-00-00-00-00
@@ -165,6 +176,10 @@
 
   -200.as-i64.lte -100.as-i64 ++> tests-i64-lte-true
 
+  eq. ++> tests-i64-minus-one-plus-one-is-zero
+    -1.as-i64.plus 1.as-i64
+    0.as-i64
+
   eq. ++> tests-i64-multiply-by-zero
     1000.as-i64.times 0.as-i64
     0.as-i64
@@ -176,6 +191,22 @@
   eq. ++> tests-i64-one-plus-i64-one
     1.as-i64.plus 1.as-i64
     2.as-i64
+
+  eq. ++> tests-i64-plus-carries-through-all-bytes
+    plus.
+      i64 00-FF-FF-FF-FF-FF-FF-FF
+      1.as-i64
+    i64 01-00-00-00-00-00-00-00
+
+  eq. ++> tests-i64-plus-of-mixed-signs
+    -100.as-i64.plus 42.as-i64
+    -58.as-i64
+
+  eq. ++> tests-i64-plus-wraps-around-at-max
+    plus.
+      i64 7F-FF-FF-FF-FF-FF-FF-FF
+      1.as-i64
+    i64 80-00-00-00-00-00-00-00
 
   eq. ++> tests-i64-times-keeps-low-bits-of-large-product
     2147483647.as-i64.times 2147483647.as-i64

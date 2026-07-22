@@ -103,13 +103,13 @@ final class MjTranspileTest {
     }
 
     @Test
-    void wrapsObjectsIntoPhCoverageWhenFileIsSet(@Mktmp final Path temp) throws Exception {
+    void wrapsObjectsIntoPhCoverageWhenTrackingEnabled(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            "the generated Java must wrap located objects into PhCoverage when coverageFile is set",
+            "the generated Java must wrap located objects into PhCoverage when coverageTracking is on",
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(this.program)
-                    .with("coverageFile", temp.resolve("hits.txt").toFile())
+                    .with("coverageTracking", true)
                     .execute(new FakeMaven.Transpile())
                     .result()
                     .get(this.compiled)
@@ -121,7 +121,7 @@ final class MjTranspileTest {
     @Test
     void keepsGeneratedJavaFreeOfPhCoverageByDefault(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            "the generated Java must not mention PhCoverage when coverageFile is not set",
+            "the generated Java must not mention PhCoverage when coverageTracking is off",
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(this.program)
