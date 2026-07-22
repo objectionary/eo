@@ -235,8 +235,7 @@
       accumulated
       found
     escaped ch > piece
-    T > unsupported-message
-      "Unsupported format specifier"
+    T "Unsupported format specifier" > unsupported-message
   tokenize > tokens
     0
     ""
@@ -257,9 +256,7 @@
   eq. ++> tests-scanf-with-complex-float
     1991.01
     head.
-      scanf
-        "this will be=%f"
-        "this will be=1991.01"
+      scanf "this will be=%f" "this will be=1991.01"
 
   eq. ++> tests-scanf-with-complex-int
     734987259

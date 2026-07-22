@@ -12,8 +12,7 @@
 [sequence cant-max] > maximum
   if. > @
     is-empty lst
-    cant-max
-      "cannot get the maximum number from an empty sequence"
+    cant-max "cannot get the maximum number from an empty sequence"
     reduced
       lst
       ninf

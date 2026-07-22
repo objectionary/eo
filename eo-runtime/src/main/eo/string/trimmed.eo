@@ -24,28 +24,23 @@
     ""
 
   eq. ++> tests-text-trimmed-many-spaces
-    trimmed
-      "    some     "
+    trimmed "    some     "
     "some"
 
   eq. ++> tests-text-trimmed-one-space-both
-    trimmed
-      " some "
+    trimmed " some "
     "some"
 
   eq. ++> tests-text-trimmed-one-space-left
-    trimmed
-      " some"
+    trimmed " some"
     "some"
 
   eq. ++> tests-text-trimmed-one-space-right
-    trimmed
-      "some "
+    trimmed "some "
     "some"
 
   eq. ++> tests-text-trimmed-only-spaces
-    trimmed
-      "        "
+    trimmed "        "
     ""
 
   eq. ++> tests-trimmed-preserves-inner-content
@@ -53,11 +48,9 @@
     "no-whitespace"
 
   eq. ++> tests-trimmed-preserves-inner-whitespace
-    trimmed
-      "\t hello world \n"
+    trimmed "\t hello world \n"
     "hello world"
 
   eq. ++> tests-trimmed-strips-mixed-ws-both-sides
-    trimmed
-      " \t\n\f\rvalue \t\n\f\r"
+    trimmed " \t\n\f\rvalue \t\n\f\r"
     "value"

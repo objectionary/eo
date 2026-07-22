@@ -83,8 +83,7 @@
           target
   [mode scope cant-open] > open
     known.not.if > @
-      T
-        "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
+      T "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
         existing.and exists.not
         cant-open
@@ -310,8 +309,7 @@
     seq * > @
       temp.open
         "w"
-        f.write > [f]
-          "Shrek is love"
+        f.write "Shrek is love" > [f]
       "Shrek is love".eq
         malloc.of
           13
@@ -420,16 +418,14 @@
     size.
       mktemp.tmpfile.open
         "w"
-        f.write > [f]
-          "Hello, world"
+        f.write "Hello, world" > [f]
     12
 
   ++> tests-writes-to-file-from-different-instances
     seq * > @
       temp.open
         "w"
-        f.write > [f]
-          "Shrek is love"
+        f.write "Shrek is love" > [f]
       open.
         file src
         "a"

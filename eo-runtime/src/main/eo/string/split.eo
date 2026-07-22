@@ -52,9 +52,7 @@
   eq. ++> tests-splits-and-returns-strings
     length.
       at.
-        split
-          "hello world!"
-          " "
+        split "hello world!" " "
         1
     6
 

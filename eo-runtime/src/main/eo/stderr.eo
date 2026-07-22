@@ -54,5 +54,4 @@
               buffer.size
           output-block
 
-  stderr ++> tests-prints-to-stderr
-    "Hello, stderr-test!\n"
+  stderr "Hello, stderr-test!\n" ++> tests-prints-to-stderr

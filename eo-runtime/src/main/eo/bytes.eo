@@ -91,8 +91,7 @@
 
   eq. ++> tests-concat-strings
     string
-      "hello ".as-bytes.concat
-        "world".as-bytes
+      "hello ".as-bytes.concat "world".as-bytes
     "hello world"
 
   eq. ++> tests-concat-with-empty
@@ -223,9 +222,7 @@
       3
     1F-EE-B5
 
-  eq. ++> tests-turns-bytes-into-a-string
-    "你好, друг!"
-    "你好, друг!"
+  "你好, друг!".eq "你好, друг!" ++> tests-turns-bytes-into-a-string
 
   CA-FE-BE-BE.size.eq 4 ++> tests-written-in-several-lines
 

@@ -62,8 +62,7 @@
                 "WSACleanup"
                 *
             win32.failure
-          T
-            "Couldn't clean up the sockets subsystem"
+          T "Couldn't clean up the sockets subsystem"
           true
         "closesocket" > close
         "WSA error code %d".printf > message

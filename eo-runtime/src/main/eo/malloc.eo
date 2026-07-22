@@ -218,8 +218,7 @@
     malloc.of > mem
       13
       seq * > [m]
-        m.put
-          "Hello, world!"
+        m.put "Hello, world!"
         m.put 42
 
   eq. ++> tests-malloc-read-over-a-limit-returns-fallback
@@ -271,9 +270,7 @@
         malloc.of > @
           12
           seq * > [m] >>
-            m.write
-              0
-              "Hello, "
+            m.write 0 "Hello, "
             m.write 7 "Jeff!"
             b.put
               (m.read 0 12).eq
@@ -365,8 +362,7 @@
 
   malloc.for --> on-overflow-string-malloc
     "Hello"
-    m.put > [m]
-      "Much longer string!"
+    m.put "Much longer string!" > [m]
 
   malloc.for --> on-reading-over-a-limit-without-fallback
     10

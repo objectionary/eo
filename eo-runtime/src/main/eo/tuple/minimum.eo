@@ -12,8 +12,7 @@
 [sequence cant-min] > minimum
   if. > @
     is-empty lst
-    cant-min
-      "cannot get the minimum number from an empty sequence"
+    cant-min "cannot get the minimum number from an empty sequence"
     reduced
       lst
       pinf

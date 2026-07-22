@@ -41,12 +41,10 @@
             matched-from-index
               position.plus 1
               to
-          T
-            "Matched block does not exist, can't get next"
+          T "Matched block does not exist, can't get next"
         exists.if > text
           group 0
-          T
-            "Matched block does not exist, can't get text"
+          T "Matched block does not exist, can't get text"
       [position start] > matched-from-index /Q.string.regex.pattern.match.matched
       matched. > next
         matched-from-index 1 0
@@ -102,16 +100,13 @@
           second.group 2
           "2"
     next. > first
-      match.
-        compiled.
-          regex "/([a-z]+)([1-9]{1})/"
+      (regex "/([a-z]+)([1-9]{1})/").compiled.match
         "!hello1!world2"
     first.next > second
 
   matches. ++> tests-regex-ignores-comments-in-string
     compiled.
-      regex
-        "/(\\d) #ignore this comment/x"
+      regex "/(\\d) #ignore this comment/x"
     "4"
 
   matches. ++> tests-regex-matches-dotall-option

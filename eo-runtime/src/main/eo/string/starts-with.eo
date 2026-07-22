@@ -23,11 +23,7 @@
   txt.size > tlen!
   text > txt!
 
-  ++> tests-does-not-start-with-substring
-    not. > @
-      starts-with
-        "Hello, world"
-        "world"
+  (starts-with "Hello, world" "world").not ++> tests-does-not-start-with-substring
 
   starts-with ++> tests-starts-with-substring
     "Hello, world"

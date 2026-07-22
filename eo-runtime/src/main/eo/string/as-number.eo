@@ -17,9 +17,7 @@
 [text cant-parse] > as-number
   if. > @
     not.
-      matches.
-        compiled.
-          regex "/^[+-]?\\d+(?:\\.\\d+)?$/"
+      (regex "/^[+-]?\\d+(?:\\.\\d+)?$/").compiled.matches
         text
     cant-parse
       "Can't convert text %s to number".printf

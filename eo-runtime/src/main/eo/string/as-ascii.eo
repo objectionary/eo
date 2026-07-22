@@ -40,8 +40,7 @@
 
   eq. ++> tests-reads-code-of-space
     32
-    as-ascii
-      " "
+    as-ascii " "
 
   eq. ++> tests-reads-code-of-uppercase-letter
     65

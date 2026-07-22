@@ -48,18 +48,15 @@
   bts.size > len!
 
   eq. ++> tests-text-trimmed-left-many-spaces
-    trimmed-left
-      "     some"
+    trimmed-left "     some"
     "some"
 
   eq. ++> tests-text-trimmed-left-one-space
-    trimmed-left
-      " s"
+    trimmed-left " s"
     "s"
 
   eq. ++> tests-text-trimmed-left-only-spaces
-    trimmed-left
-      "     "
+    trimmed-left "     "
     ""
 
   eq. ++> tests-trimmed-left-empty-text
@@ -79,8 +76,7 @@
     "value"
 
   eq. ++> tests-trimmed-left-strips-mixed-ws
-    trimmed-left
-      " \t\n\f\rvalue"
+    trimmed-left " \t\n\f\rvalue"
     "value"
 
   eq. ++> tests-trimmed-left-strips-tab

@@ -13,8 +13,7 @@
 [x y cant-mod] > mod
   if. > @
     divisor.eq 0
-    cant-mod
-      "cannot calculate mod by zero"
+    cant-mod "cannot calculate mod by zero"
     if.
       dividend.gt 0
       abs-mod

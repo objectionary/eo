@@ -162,9 +162,7 @@
 
   D0-B4-D1-80-D1-83-D0-B3.eq "друг" ++> tests-bytes-equal-to-string
 
-  eq. ++> tests-calculates-length-of-spaces-only
-    " ".length
-    1
+  " ".length.eq 1 ++> tests-calculates-length-of-spaces-only
 
   (nan.eq "друг").not ++> tests-compares-string-with-nan
 
@@ -202,9 +200,7 @@
 
   "2026".is-digit ++> tests-package-detects-digits
 
-  ends-with. ++> tests-package-ends-with-suffix
-    "hello, world"
-    "world"
+  "hello, world".ends-with "world" ++> tests-package-ends-with-suffix
 
   eq. ++> tests-package-finds-index-of-character
     "hello".index-of "l"
@@ -216,23 +212,17 @@
     "ha".repeated 3
     "hahaha"
 
-  starts-with. ++> tests-package-starts-with-prefix
-    "hello, world"
-    "hello"
+  "hello, world".starts-with "hello" ++> tests-package-starts-with-prefix
 
   eq. ++> tests-package-takes-character-at-index
     "some".at 1
     "o"
 
-  eq. ++> tests-package-trims-surrounding-spaces
-    "  spaced  ".trimmed
-    "spaced"
+  "  spaced  ".trimmed.eq "spaced" ++> tests-package-trims-surrounding-spaces
 
   "hello".up-cased.eq "HELLO" ++> tests-package-up-cases-text
 
-  eq. ++> tests-preserves-indentation-in-text
-    "a\n b\n  c"
-    "a\n b\n  c"
+  "a\n b\n  c".eq "a\n b\n  c" ++> tests-preserves-indentation-in-text
 
   ++> tests-reads-the-length-with-n2-byte-characters
     and. > @
@@ -320,13 +310,9 @@
 
   "друг".eq D0-B4-D1-80-D1-83-D0-B3 ++> tests-string-equals-to-bytes
 
-  eq. ++> tests-supports-escape-sequences
-    "Hello, друг!\n"
-    "Hello, друг!\n"
+  "Hello, друг!\n".eq "Hello, друг!\n" ++> tests-supports-escape-sequences
 
-  eq. ++> tests-supports-escape-sequences-in-text
-    "Hello, друг!\n"
-    "Hello, друг!\n"
+  "Hello, друг!\n".eq "Hello, друг!\n" ++> tests-supports-escape-sequences-in-text
 
   "\n".eq "\n" ++> tests-supports-escape-sequences-line-break
 
@@ -336,9 +322,7 @@
 
   "e\ne\ne".eq 65-0A-65-0A-65 ++> tests-text-block-tree-lines
 
-  eq. ++> tests-text-block-with-margin
-    "z\n  y\n x"
-    7A-0A-20-20-79-0A-20-78
+  "z\n  y\n x".eq 7A-0A-20-20-79-0A-20-78 ++> tests-text-block-with-margin
 
   eq. ++> tests-turns-string-into-bytes
     "€ друг".as-bytes

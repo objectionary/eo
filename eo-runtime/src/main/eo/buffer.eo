@@ -28,7 +28,6 @@
   eq. ++> tests-buffer-decorates-string-after-building
     length.
       with.
-        buffer
-          "Hi, "
+        buffer "Hi, "
         "Mark"
     8

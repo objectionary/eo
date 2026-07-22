@@ -42,8 +42,4 @@
     "Hello, world!"
     "o, wo"
 
-  ++> tests-text-does-not-contain-substring
-    not. > @
-      contains
-        "Hello, world!"
-        "Hey"
+  (contains "Hello, world!" "Hey").not ++> tests-text-does-not-contain-substring
