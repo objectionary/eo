@@ -368,9 +368,9 @@ div#legend div.hint {
     <script type="text/javascript">
 <!--
 /* IDs of XML Instance Representation boxes */
-var xiBoxes = new Array('type_whole_xibox', 'type_non-empty_xibox', 'type_empty_xibox', 'type_attribute-name_xibox', 'type_fqn_xibox', 'type_locator_xibox', 'type_o_xibox', 'type_error_xibox', 'type_comment_xibox', 'type_listing_xibox', 'type_sheet_xibox', 'type_meta_xibox', 'type_object_xibox', 'element_object_xibox');
+var xiBoxes = new Array('type_whole_xibox', 'type_non-empty_xibox', 'type_empty_xibox', 'type_attribute-name_xibox', 'type_fqn_xibox', 'type_signature_xibox', 'type_type-anno_xibox', 'type_locator_xibox', 'type_o_xibox', 'type_error_xibox', 'type_comment_xibox', 'type_listing_xibox', 'type_sheet_xibox', 'type_meta_xibox', 'type_object_xibox', 'element_object_xibox');
 /* IDs of Schema Component Representation boxes */
-var scBoxes = new Array('schema_scbox', 'type_whole_scbox', 'type_non-empty_scbox', 'type_empty_scbox', 'type_attribute-name_scbox', 'type_fqn_scbox', 'type_locator_scbox', 'type_o_scbox', 'type_error_scbox', 'type_comment_scbox', 'type_listing_scbox', 'type_sheet_scbox', 'type_meta_scbox', 'type_object_scbox', 'element_object_scbox');
+var scBoxes = new Array('schema_scbox', 'type_whole_scbox', 'type_non-empty_scbox', 'type_empty_scbox', 'type_attribute-name_scbox', 'type_fqn_scbox', 'type_signature_scbox', 'type_type-anno_scbox', 'type_locator_scbox', 'type_o_scbox', 'type_error_scbox', 'type_comment_scbox', 'type_listing_scbox', 'type_sheet_scbox', 'type_meta_scbox', 'type_object_scbox', 'element_object_scbox');
 
 /**
  * Can get the ID of the button controlling
@@ -759,6 +759,12 @@ if (gc != null) {
           </li>
           <li>
             <a href="#type_sheet">Simple Type: <strong>sheet</strong></a>
+          </li>
+          <li>
+            <a href="#type_signature">Simple Type: <strong>signature</strong></a>
+          </li>
+          <li>
+            <a href="#type_type-anno">Simple Type: <strong>type-anno</strong></a>
           </li>
           <li>
             <a href="#type_whole">Simple Type: <strong>whole</strong></a>
@@ -1209,7 +1215,7 @@ setState('type_meta_scbox', false);
     <div class="sample box">
       <div><input type="button" id="type_o_xibox_button" class="control" onclick="switchState('type_o_xibox'); return false;" style="display: none" /> <span class="caption">XML Instance Representation</span></div>
       <div id="type_o_xibox" class="contents">
-        <div style="margin-left: 0em">&lt;...<br /><span style="margin-left: 0.5em"> line="<span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the number of code line (starting from 1), where the object has been met during the scanning of the source code.'); viewDocumentation('Attribute', 'line', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> pos="<span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the position in the code line (starting from 1), where the object has been met during the scanning of the source code.'); viewDocumentation('Attribute', 'pos', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> name="<span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the name of the EO object inside its scope of visibility. The name is used to reference the object from other objects or from the global scope.'); viewDocumentation('Attribute', 'name', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> base="<span class="type"><a title="Jump to &quot;fqn&quot; type definition." href="#type_fqn">fqn</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the name of the object of which this one is a copy. The base object is used to define the structure of the current object.'); viewDocumentation('Attribute', 'base', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> as="<span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span> <span class="occurs">[0..1]</span>"</span><br /><span style="margin-left: 0.5em"> local="<span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The readable file-local handle declared with the \&quot;&gt;&gt; name\&quot; suffix (R-3.10.12). The object\'s externally visible \&quot;name\&quot; is a synthetic cactus identifier, unreachable from outside the file; this attribute preserves the human-written handle so that references to it can be resolved within the file and the object can be printed back to EO under its original name.'); viewDocumentation('Attribute', 'local', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> pipe="<span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('A cosmetic marker kept on the application node that a \&quot;|\&quot; pipe line (R-3.14.7) parses into. The \&quot;wrap-applications\&quot; pass sets the node\'s \&quot;base\&quot; to the preceding sibling\'s name so the semantics match a hand-written application, but retains this marker so the printer can round-trip the compact \&quot;| args &gt; name\&quot; continuation line instead of expanding it into a two-line vertical application (#5684). Downstream passes and the compiler read \&quot;base\&quot; and ignore this marker.'); viewDocumentation('Attribute', 'pipe', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> loc="<span class="type"><a title="Jump to &quot;locator&quot; type definition." href="#type_locator">locator</a></span> <span class="occurs">[0..1]</span>"</span><br /><span style="margin-left: 0.5em"> atom="<span class="type"><a title="Jump to &quot;fqn&quot; type definition." href="#type_fqn">fqn</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('Used only on the lambda marker (name=\&quot;&#955;\&quot;) of an atom. Holds the fully qualified name of the object that the atom returns.'); viewDocumentation('Attribute', 'atom', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> types="<span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('Used on a void error-branch attribute of an atom (the \&quot;/{&#8230;}\&quot; forma-list). Holds the space-separated fully qualified names of the formas the atom supplies as the arguments of that branch.'); viewDocumentation('Attribute', 'types', docArray);">?</a>"</span>&gt; <br /><span class="other" style="margin-left: 1.5em">&lt;!-- Mixed content --&gt;</span><br /><div style="margin-left: 1.5em">&lt;o&gt; <span class="type"><a title="Jump to &quot;o&quot; type definition." href="#type_o">o</a></span> &lt;/o&gt; <span class="occurs">[0..*]</span></div>&lt;/...&gt;</div>
+        <div style="margin-left: 0em">&lt;...<br /><span style="margin-left: 0.5em"> line="<span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the number of code line (starting from 1), where the object has been met during the scanning of the source code.'); viewDocumentation('Attribute', 'line', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> pos="<span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the position in the code line (starting from 1), where the object has been met during the scanning of the source code.'); viewDocumentation('Attribute', 'pos', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> name="<span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the name of the EO object inside its scope of visibility. The name is used to reference the object from other objects or from the global scope.'); viewDocumentation('Attribute', 'name', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> base="<span class="type"><a title="Jump to &quot;fqn&quot; type definition." href="#type_fqn">fqn</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the name of the object of which this one is a copy. The base object is used to define the structure of the current object.'); viewDocumentation('Attribute', 'base', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> as="<span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span> <span class="occurs">[0..1]</span>"</span><br /><span style="margin-left: 0.5em"> local="<span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The readable file-local handle declared with the \&quot;&gt;&gt; name\&quot; suffix (R-3.10.12). The object\'s externally visible \&quot;name\&quot; is a synthetic cactus identifier, unreachable from outside the file; this attribute preserves the human-written handle so that references to it can be resolved within the file and the object can be printed back to EO under its original name.'); viewDocumentation('Attribute', 'local', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> pipe="<span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('A cosmetic marker kept on the application node that a \&quot;|\&quot; pipe line (R-3.14.7) parses into. The \&quot;wrap-applications\&quot; pass sets the node\'s \&quot;base\&quot; to the preceding sibling\'s name so the semantics match a hand-written application, but retains this marker so the printer can round-trip the compact \&quot;| args &gt; name\&quot; continuation line instead of expanding it into a two-line vertical application (#5684). Downstream passes and the compiler read \&quot;base\&quot; and ignore this marker.'); viewDocumentation('Attribute', 'pipe', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> loc="<span class="type"><a title="Jump to &quot;locator&quot; type definition." href="#type_locator">locator</a></span> <span class="occurs">[0..1]</span>"</span><br /><span style="margin-left: 0.5em"> atom="<span class="type"><a title="Jump to &quot;signature&quot; type definition." href="#type_signature">signature</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('Used only on the lambda marker (name=\&quot;&#955;\&quot;) of an atom. Holds the fully qualified name of the object that the atom returns, or a single-letter generic type variable A-F (§3.10.10).'); viewDocumentation('Attribute', 'atom', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> type="<span class="type"><a title="Jump to &quot;type-anno&quot; type definition." href="#type_type-anno">type-anno</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('Used on a void attribute of an atom (the bare \&quot;/type\&quot; annotation, R-3.4.8). Holds the FQN of a concrete forma or a generic type variable A-F, with an optional trailing \&quot;?\&quot; marking a maybe-&#8869; value.'); viewDocumentation('Attribute', 'type', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> args="<span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('Used on a void callback attribute of an atom (the \&quot;/{&#8230;}\&quot; argument list, R-3.4.8). Holds the space-separated types (concrete FQNs or generic variables A-F) of the arguments the atom supplies to that branch.'); viewDocumentation('Attribute', 'args', docArray);">?</a>"</span>&gt; <br /><span class="other" style="margin-left: 1.5em">&lt;!-- Mixed content --&gt;</span><br /><div style="margin-left: 1.5em">&lt;o&gt; <span class="type"><a title="Jump to &quot;o&quot; type definition." href="#type_o">o</a></span> &lt;/o&gt; <span class="occurs">[0..*]</span></div>&lt;/...&gt;</div>
       </div>
       <script type="text/javascript">
 <!--
@@ -1220,7 +1226,7 @@ setState('type_o_xibox', true);
     <div class="schemaComponent box">
       <div><input type="button" id="type_o_scbox_button" class="control" onclick="switchState('type_o_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
       <div id="type_o_scbox" class="contents">
-        <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> <span class="scTag">name</span>="<span class="scContent">o</span>" <span class="scTag">mixed</span>="<span class="scContent">true</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:sequence</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> <span class="scTag">name</span>="<span class="scContent">o</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;o&quot; type definition." href="#type_o">o</a></span></span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>"/&gt;</div>&lt;/<span class="scTag">xs:sequence</span>&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">line</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">pos</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">name</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">base</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;fqn&quot; type definition." href="#type_fqn">fqn</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">as</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">local</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">pipe</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">loc</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;locator&quot; type definition." href="#type_locator">locator</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">atom</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;fqn&quot; type definition." href="#type_fqn">fqn</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">types</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span></span>"/&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> <span class="scTag">name</span>="<span class="scContent">o</span>" <span class="scTag">mixed</span>="<span class="scContent">true</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:sequence</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> <span class="scTag">name</span>="<span class="scContent">o</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;o&quot; type definition." href="#type_o">o</a></span></span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>"/&gt;</div>&lt;/<span class="scTag">xs:sequence</span>&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">line</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">pos</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">name</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">base</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;fqn&quot; type definition." href="#type_fqn">fqn</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">as</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">local</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">pipe</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">loc</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;locator&quot; type definition." href="#type_locator">locator</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">atom</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;signature&quot; type definition." href="#type_signature">signature</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">type</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;type-anno&quot; type definition." href="#type_type-anno">type-anno</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">args</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span></span>"/&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
       </div>
       <script type="text/javascript">
 <!--
@@ -1608,6 +1614,115 @@ setState('type_non-empty_scbox', false);
       <script type="text/javascript">
 <!--
 setState('type_sheet_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h3>Simple Type: <a name="type_signature" class="name" id="type_signature">signature</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> &lt; <strong>signature</strong> (by restriction)</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>None</td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>signature</td>
+      </tr>
+      <tr>
+        <th>Content</th>
+        <td>
+          <ul>
+            <li>Base XSD Type: string</li>
+          </ul>
+          <ul>
+            <li><em>pattern</em> = [A-F]|&#8869;|&#8709;|\.(&#961;|&#966;|[a-z][^\s.]*|&#945;[0-9]*)|([&#934;&#958;])(\.(&#961;|&#966;|[a-z][^\s.]*|&#945;[0-9]*))*</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+        The declared return type of an atom: a fully qualified name (fqn) of a concrete
+        forma, or a single-letter generic type variable A-F (universally quantified over
+        the atom). Used on the lambda marker (name="&#955;").
+      </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>An atom return-type signature</td>
+      </tr>
+    </table>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_signature_scbox_button" class="control" onclick="switchState('type_signature_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_signature_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">signature</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">[A-F]|&#8869;|&#8709;|\.(&#961;|&#966;|[a-z][^\s.]*|&#945;[0-9]*)|([&#934;&#958;])(\.(&#961;|&#966;|[a-z][^\s.]*|&#945;[0-9]*))*</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_signature_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h3>Simple Type: <a name="type_type-anno" class="name" id="type_type-anno">type-anno</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> &lt; <strong>type-anno</strong> (by restriction)</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>None</td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>type-anno</td>
+      </tr>
+      <tr>
+        <th>Content</th>
+        <td>
+          <ul>
+            <li>Base XSD Type: string</li>
+          </ul>
+          <ul>
+            <li><em>pattern</em> = ([A-F]|&#8869;|&#8709;|([&#934;&#958;])(\.(&#961;|&#966;|[a-z][^\s.]*|&#945;[0-9]*))*)[?]?</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+        The declared type of a void attribute of an atom: a concrete forma or a generic
+        type variable A-F, with an optional trailing "?" marking a maybe-&#8869; value.
+      </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>A void attribute type annotation</td>
+      </tr>
+    </table>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_type-anno_scbox_button" class="control" onclick="switchState('type_type-anno_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_type-anno_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">type-anno</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">([A-F]|&#8869;|&#8709;|([&#934;&#958;])(\.(&#961;|&#966;|[a-z][^\s.]*|&#945;[0-9]*))*)[?]?</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_type-anno_scbox', false);
 // -->
 </script>
     </div>
