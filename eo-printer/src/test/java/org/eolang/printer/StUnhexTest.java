@@ -198,6 +198,105 @@ final class StUnhexTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("shifts")
+    void convertsNumberFromIndentedXmir(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must convert a pretty-printed (indented) literal cleanly",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    String.join(
+                        System.lineSeparator(),
+                        "<o base='Φ.number'>",
+                        "  <o base='Φ.bytes'>",
+                        "    <o>40-45-00-00-00-00-00-00</o>",
+                        "  </o>",
+                        "</o>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath("//o[@base='Φ.number' and normalize-space(text())='42']")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
+    void keepsArgumentAppliedToNumberLiteral(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must keep the argument applied to a number literal head",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<p><o base='Φ.number'>",
+                        "<o base='Φ.bytes'><o>40-45-00-00-00-00-00-00</o></o>",
+                        "<o base='Φ.sigma'/>",
+                        "</o></p>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                "//o[@base='Φ.number' and text()='42' and o[@base='Φ.sigma']]"
+            )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
+    void keepsArgumentAppliedToStringLiteral(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must keep the argument applied to a string literal head",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<p><o base='Φ.string'>",
+                        "<o base='Φ.bytes'><o>41-42</o></o>",
+                        "<o base='Φ.sigma'/>",
+                        "</o></p>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                "//o[@base='Φ.string' and text()='\"AB\"' and o[@base='Φ.sigma']]"
+            )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
+    void keepsArgumentAppliedToBytesLiteral(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must keep the argument applied to a bytes literal head",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<p><o base='Φ.bytes'>",
+                        "<o>01-02</o>",
+                        "<o base='Φ.sigma'/>",
+                        "</o></p>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                "//o[@base='Φ.bytes' and text()='01-02' and o[@base='Φ.sigma']]"
+            )
+        );
+    }
+
     private static Stream<Arguments> shifts() {
         return Stream.of(
             Arguments.of(StUnhex.XNAV, "xnav")
