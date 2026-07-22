@@ -17,17 +17,14 @@
 
 [format read] > scanf
   extracted > @
-    tokens.at > pattern
-      0
-      T
-    tokens.at > specifiers
-      1
-      T
+    pattern
+    specifiers
   [ch] > escaped
     metachar.if > @
-      chained *1 > escaped-char
-        "\\"
-        ch
+      escaped-char
+      ch
+    chained *1 > escaped-char
+      "\\"
       ch
     metachars.contains ch > metachar
     * > metachars
@@ -51,25 +48,19 @@
       1
       *
     [text] > as-float
-      negative.if > @
-        magnitude.times -1 > negated
-        has-fraction.if > magnitude
-          plus. > with-fraction
-            fold-digits
-              slice
-                unsigned
-                0
-                index-of unsigned "." > dot
-            div. > fraction
-              fold-digits
-                slice
-                  unsigned
-                  dot.plus 1
-                  places
-              10.power places
-          fold-digits unsigned > whole
+      negative.if negated magnitude > @
+      index-of unsigned "." > dot
+      div. > fraction
+        fold-digits
+          slice
+            unsigned
+            dot.plus 1
+            places
+        10.power places
       not. > has-fraction
         dot.eq -1
+      has-fraction.if with-fraction whole > magnitude
+      magnitude.times -1 > negated
       eq. > negative
         slice
           text
@@ -88,27 +79,34 @@
           1
           text.length.minus 1
         text
+      fold-digits unsigned > whole
+      plus. > with-fraction
+        fold-digits
+          slice unsigned 0 dot
+        fraction
     [text] > as-integer
       if. > @
         digits.length.gt 19
-        overflow-message > overflow
-        negative.if > signed
-          folded.times -1 > negated
-          fold-digits > folded
-            signed-prefix.if > digits
-              slice
-                text
-                1
-                text.length.minus 1
-              text
+        overflow
+        signed
+      signed-prefix.if > digits
+        slice
+          text
+          1
+          text.length.minus 1
+        text
+      fold-digits digits > folded
+      folded.times -1 > negated
       eq. > negative
         slice
           text
           0
           1
         "-"
+      overflow-message > overflow
       T > overflow-message
         "The number doesn't fit into long range for the '%d' conversion"
+      negative.if negated folded > signed
       negative.or > signed-prefix
         eq.
           slice text 0 1
@@ -116,108 +114,129 @@
     [group acc] > convert
       matched.exists.not.if > @
         *
-        if. > next-group
-          group.gt specifiers.length
-          acc
-          convert > next
-            group.plus 1
-            acc.with
-              converted
-                specifiers.at
-                  group.minus 1
-                  T
-                matched.group group
+        next-group
+      convert > next
+        group.plus 1
+        acc.with
+          converted
+            specifiers.at
+              group.minus 1
+              T
+            matched.group group
+      if. > next-group
+        group.gt specifiers.length
+        acc
+        next
     [spec text] > converted
       if. > @
         spec.eq "s"
         text
-        if. > as-number-value
-          spec.eq "d"
-          as-integer text > as-integer-value
-          as-float text > as-float-value
+        as-number-value
+      as-float text > as-float-value
+      as-integer text > as-integer-value
+      if. > as-number-value
+        spec.eq "d"
+        as-integer-value
+        as-float-value
     [text] > fold-digits
       rec 0 0 > @
       [index acc] > rec
         if. > @
           index.eq text.length
           acc
-          rec > next
-            index.plus 1
-            (acc.times 10).plus
-              minus.
-                as-ascii
-                  slice text index 1
-                48
+          next
+        rec > next
+          index.plus 1
+          (acc.times 10).plus
+            minus.
+              as-ascii
+                slice text index 1
+              48
     match. > found
-      regex
-        chained *1 > wrapped
-          "/"
-          pattern
-          "/"
+      regex wrapped
       read
     found.next > matched
+    chained *1 > wrapped
+      "/"
+      pattern
+      "/"
+  tokens.at > pattern
+    0
+    T
+  tokens.at > specifiers
+    1
+    T
   [pos accumulated found pending] > tokenize
     if. > @
       pos.gte format.length
-      pending.if *1 > ended
-        dangling-message > dangling
-        accumulated
-        found
-      pending.if > continued
+      ended
+      continued
+    slice > ch
+      format
+      pos
+      1
+    pending.if > continued
+      if.
+        ch.eq "%"
+        tokenize
+          pos.plus 1
+          chained *1
+            accumulated
+            "%"
+          found
+          false
         if.
-          ch.eq "%"
+          ch.eq "d"
           tokenize
             pos.plus 1
             chained *1
               accumulated
-              "%"
-            found
+              "([+-]?\\d+)"
+            found.with "d"
             false
           if.
-            ch.eq "d"
+            ch.eq "f"
             tokenize
               pos.plus 1
               chained *1
                 accumulated
-                "([+-]?\\d+)"
-              found.with "d"
+                "([+-]?\\d+(?:\\.\\d+)?)"
+              found.with "f"
               false
             if.
-              ch.eq "f"
+              ch.eq "s"
               tokenize
                 pos.plus 1
                 chained *1
                   accumulated
-                  "([+-]?\\d+(?:\\.\\d+)?)"
-                found.with "f"
+                  "(\\S+)"
+                found.with "s"
                 false
-              if.
-                ch.eq "s"
-                tokenize
-                  pos.plus 1
-                  chained *1
-                    accumulated
-                    "(\\S+)"
-                  found.with "s"
-                  false
-                T "Unsupported format specifier" > unsupported-message
-        if.
-          ch.eq "%"
-          tokenize
-            pos.plus 1
+              unsupported-message
+      if.
+        ch.eq "%"
+        tokenize
+          pos.plus 1
+          accumulated
+          found
+          true
+        tokenize
+          pos.plus 1
+          chained *1
             accumulated
-            found
-            true
-          tokenize
-            pos.plus 1
-            chained *1
-              accumulated
-              escaped > piece
-                slice format pos 1 > ch
-            found
-            false
+            piece
+          found
+          false
+    dangling-message > dangling
     T > dangling-message
       "The format string ends with a dangling percent and no specifier after it"
+    pending.if *1 > ended
+      dangling
+      accumulated
+      found
+    escaped ch > piece
+    T > unsupported-message
+      "Unsupported format specifier"
   tokenize > tokens
     0
     ""

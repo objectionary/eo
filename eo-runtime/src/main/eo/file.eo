@@ -26,11 +26,17 @@
     called. > removed
       os.is-windows.if
         win32 *1
-          is-directory.if "_rmdir" "_unlink" > win
+          win
           path
         posix *1
-          is-directory.if "rmdir" "unlink" > unix
+          unix
           path
+    is-directory.if > unix
+      "rmdir"
+      "unlink"
+    is-directory.if > win
+      "_rmdir"
+      "_unlink"
   eq. > [] > exists
     code.
       os.is-windows.if
@@ -83,21 +89,20 @@
         existing.and exists.not
         cant-open
           "File must exist for given access mod: '%s'".printf
-            *
-              mode > access!
+            * access
         seq *
           open-file
           ^
+    mode > access!
+    (access.eq "a").as-bool.or > appending
+      as-bool.
+        access.eq "a+"
     (access.eq "r").as-bool.or > existing
       as-bool.
         access.eq "r+"
     or. > known
-      existing.or
-        (access.eq "w").as-bool.or > truncate
-          (access.eq "w+").as-bool
-      (access.eq "a").as-bool.or > appending
-        as-bool.
-          access.eq "a+"
+      existing.or truncate
+      appending
     [] > open-file
       os.is-windows.if > @
         open-through
@@ -127,22 +132,19 @@
               syscall.close
                 * descriptor
             true
+        appending.if syscall.append 0 > append
+        existing.not.if syscall.creat 0 > creat
         opened.code > descriptor
         if. > direction
           readable.and writable
           syscall.rdwr
           writable.if syscall.wronly syscall.rdonly
+        plus. > flags
+          (direction.plus creat).plus trunc
+          append
         called. > opened
           syscall.open
-            *
-              path
-              plus. > flags
-                plus.
-                  direction.plus
-                    existing.not.if syscall.creat 0 > creat
-                  ^.^.truncate.if syscall.trunc 0 > trunc
-                ^.^.appending.if syscall.append 0 > append
-              syscall.mode
+            * path flags syscall.mode
         [descriptor] > stream
           [size] > read
             (input-block --).read size > @
@@ -152,7 +154,7 @@
                 readable.not.if > @
                   T
                     "Can't read from file with provided access mode '%s'".printf
-                      * ^.^.^.^.^.^.access
+                      * access
                   seq *
                     chunk
                     input-block chunk
@@ -166,14 +168,18 @@
               writable.not.if > [buffer] > write
                 T
                   "Can't write to file with provided access mode '%s'".printf
-                    * ^.^.^.^.^.^.access
+                    * access
                 seq *
                   code.
                     syscall.write
                       * descriptor buffer buffer.size
                   output-block
+        truncate.if syscall.trunc 0 > trunc
     (access.eq "w").as-bool.not.and > readable
       (access.eq "a").as-bool.not
+    (access.eq "w").as-bool.or > truncate
+      as-bool.
+        access.eq "w+"
     (access.eq "r").as-bool.not > writable
   [cant-measure] > size
     if. > @
@@ -197,15 +203,16 @@
           "Cant touch the file '%s': %s".printf
             * path created.output
         seq *
-          code. > closed
-            os.is-windows.if
-              win32 *1
-                "_close"
-                descriptor
-              posix *1
-                "close"
-                descriptor
+          closed
           ^
+    code. > closed
+      os.is-windows.if
+        win32 *1
+          "_close"
+          descriptor
+        posix *1
+          "close"
+          descriptor
     called. > created
       os.is-windows.if
         win32 *1
@@ -344,11 +351,12 @@
   ++> tests-resolves-and-touches
     resolved.as-dir.made.tmpfile.exists.and > @
       string.contains
-        mktemp.as-path.resolved "foo/bar" > resolved
+        resolved
         string.joined *1
           Q.path.separator
           "foo"
           "bar"
+    mktemp.as-path.resolved "foo/bar" > resolved
 
   ++> tests-returns-self-after-deleting
     temp.deleted.path.eq temp.path > @
@@ -423,8 +431,7 @@
         f.write > [f]
           "Shrek is love"
       open.
-        file
-          temp.path > src
+        file src
         "a"
         f.write "!" > [f]
       eq.
@@ -432,12 +439,13 @@
           14
           [m] >>
             seq * > @
-              (file ^.src).open
+              (file src).open
                 "r"
                 m.put > [f] >>
                   f.read 14
               m
         "Shrek is love!"
+    temp.path > src
     mktemp.tmpfile > temp
 
   eq. ++> tests-writes-to-file-sequentially

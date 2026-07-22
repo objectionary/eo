@@ -15,8 +15,7 @@
     or.
       and.
         tlen.eq slen
-        txt.eq
-          substring > sub!
+        txt.eq sub
       rec-contains 0
   minus. > end!
     number tlen
@@ -24,16 +23,18 @@
   [idx] > rec-contains
     if. > @
       end.eq idx
-      eq. > includes
-        slice
-          txt
-          idx
-          slen
-        ^.sub
+      includes
       includes.or
         rec-contains
           (idx.plus 1).as-number
+    eq. > includes
+      slice
+        txt
+        idx
+        slen
+      sub
   sub.size > slen!
+  substring > sub!
   txt.size > tlen!
   text > txt!
 

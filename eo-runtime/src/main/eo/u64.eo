@@ -37,12 +37,15 @@
           gte d
           u64 00-00-00-00-00-00-00-01
           u64 00-00-00-00-00-00-00-00
-        if. > final
-          rem.gte d
-          (u64 q0).plus > q0plus1
-            u64 00-00-00-00-00-00-00-01
-          u64 q0
+        final
     x.as-u64 > d
+    if. > final
+      rem.gte d
+      q0plus1
+      u64 q0
+    times. > prod
+      u64 q0
+      d
     left. > q0
       as-bytes.
         div.
@@ -50,10 +53,10 @@
             as-bytes.right 1
           i64 d.as-bytes
       1
-    minus > rem
-      times. > prod
-        u64 q0
-        d
+    plus. > q0plus1
+      u64 q0
+      u64 00-00-00-00-00-00-00-01
+    minus prod > rem
   as-bytes.xor 80-00-00-00-00-00-00-00 > flip
   gt. > [x] > gt
     i64 flip

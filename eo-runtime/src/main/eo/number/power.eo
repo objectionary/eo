@@ -97,14 +97,14 @@
       if.
         is-integer.
           n.div 2
-        half.times
-          ipow > half
-            b
-            n.div 2
+        half.times half
         b.times
           ipow
             b
             n.minus 1
+    ipow > half
+      b
+      n.div 2
   expo.is-integer.and > odd
     (expo.div 2).is-integer.not
 

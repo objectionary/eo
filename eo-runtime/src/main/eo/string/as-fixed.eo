@@ -19,14 +19,15 @@
   [a] > positive
     concat. > @
       concat.
-        as-decimal
-          (m.div scale).floor > ip
+        as-decimal ip
         ".".as-bytes
       rec-pad
         m.minus
           ip.times scale
         places
         --
+    floor. > ip
+      m.div scale
     floor. > m
       plus.
         a.times scale

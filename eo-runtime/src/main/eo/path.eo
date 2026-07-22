@@ -45,24 +45,20 @@
               txt.length.minus
                 number idx
       plus. > idx!
-        string.last-index-of
-          string pth > txt
-          ^.separator
+        string.last-index-of txt separator
         1
       uri > pth!
+      string pth > txt
     [] > dirname
       string > @
         if.
           (pth.size.eq 0).or
             len.eq -1
           pth
-          as-bytes.
-            txt.slice
-              0
-              string.last-index-of > len!
-                string pth > txt
-                ^.separator
+          (txt.slice 0 len).as-bytes
+      string.last-index-of txt separator > len!
       uri > pth!
+      string pth > txt
     [] > extname
       if. > @
         or.
@@ -75,33 +71,34 @@
               idx
               txt.length.minus
                 number idx
-      string.last-index-of > idx!
-        string > txt
-          basename > base!
-        "."
+      basename > base!
+      string.last-index-of txt "." > idx!
+      string base > txt
     and. > is-absolute
       uri.length.gt 0
       eq.
         uri.as-bytes.slice 0 1
-        "/" > separator
+        separator
     [] > normalized
       posix > @
         if.
           normalized.eq "//"
           "/"
-          string
-            as-bytes. > normalized
-              if.
-                uri.length.eq 0
-                "."
-                concat.
-                  is-absolute.if (^.separator.concat path) path
-                  trailing.if ^.separator --
+          string normalized
       ^.is-absolute.as-bool > is-absolute
+      as-bytes. > normalized
+        if.
+          uri.length.eq 0
+          "."
+          concat.
+            is-absolute.if
+              separator.concat path
+              path
+            trailing.if separator --
       string.joined > path
-        ^.separator
+        separator
         tuple.reduced
-          string.split uri ^.separator
+          string.split uri separator
           *
           if. > [accum segment] >>
             segment.eq ".."
@@ -123,7 +120,7 @@
           ubts.slice
             ubts.size.plus -1
             1
-          ^.separator
+          separator
       uri > ubts!
     [other] > resolved
       normalized. > @
@@ -131,10 +128,11 @@
           string
             if.
               (obts.slice 0 1).eq
-                ^.separator
+                separator
               obts
-              (uri.concat ^.separator).concat obts
+              (uri.concat separator).concat obts
       other.as-bytes > obts
+    "/" > separator
   os.is-windows.if > separator
     win32.separator
     posix.separator
@@ -161,24 +159,20 @@
                 txt.length.minus
                   number idx
         plus. > idx!
-          string.last-index-of
-            string pth > txt
-            separator
+          string.last-index-of txt separator
           1
         uri > pth!
+        string pth > txt
       [] > dirname
         string > @
           if.
             (pth.size.eq 0).or
               len.eq -1
             pth
-            as-bytes.
-              txt.slice
-                0
-                string.last-index-of > len!
-                  string pth > txt
-                  separator
+            (txt.slice 0 len).as-bytes
+        string.last-index-of txt separator > len!
         uri > pth!
+        string pth > txt
       [] > extname
         if. > @
           (base.size.eq 0).or
@@ -190,10 +184,9 @@
                 idx
                 txt.length.minus
                   number idx
-        string.last-index-of > idx!
-          string > txt
-            basename > base!
-          "."
+        basename > base!
+        string.last-index-of txt "." > idx!
+        string base > txt
       [] > is-absolute
         if. > @
           ubts.size.eq 0
@@ -216,47 +209,50 @@
           if.
             normalized.eq "\\\\"
             separator
-            string
-              as-bytes. > normalized
-                if.
-                  driveless.size.eq 0
-                  "."
-                  concat.
-                    concat.
-                      is-drive-relative.if
-                        if.
-                          (driveless.slice 0 1).eq separator
-                          uri.slice 0 3
-                          uri.slice 0 2
-                        is-root-relative.if separator --
-                      string.joined > path!
-                        separator
-                        tuple.reduced
-                          string.split
-                            is-drive-relative.if > driveless!
-                              ubts.slice 2 (ubts.size.plus -2)
-                              ubts
-                            separator
-                          *
-                          if. > [accum segment] >>
-                            segment.eq ".."
-                            if.
-                              (accum.length.gt 0).and (accum.head.eq "..").not
-                              accum.tail
-                              if.
-                                is-root-relative.not.and is-drive-relative.not
-                                accum.with segment
-                                accum
-                            if.
-                              (segment.eq ".").or
-                                segment.eq ""
-                              accum
-                              accum.with segment
-                    trailing.if separator --
+            string normalized
+        is-drive-relative.if > driveless!
+          ubts.slice
+            2
+            ubts.size.plus -2
+          ubts
         as-bool. > is-drive-relative
           ^.is-drive-relative ubts
         as-bool. > is-root-relative
           ^.is-root-relative ubts
+        as-bytes. > normalized
+          if.
+            driveless.size.eq 0
+            "."
+            concat.
+              concat.
+                is-drive-relative.if
+                  if.
+                    (driveless.slice 0 1).eq separator
+                    uri.slice 0 3
+                    uri.slice 0 2
+                  is-root-relative.if separator --
+                path
+              trailing.if separator --
+        string.joined > path!
+          separator
+          tuple.reduced
+            string.split driveless separator
+            *
+            if. > [accum segment] >>
+              segment.eq ".."
+              if.
+                (accum.length.gt 0).and
+                  (accum.head.eq "..").not
+                accum.tail
+                if.
+                  is-root-relative.not.and is-drive-relative.not
+                  accum.with segment
+                  accum
+              if.
+                (segment.eq ".").or
+                  segment.eq ""
+                accum
+                accum.with segment
         and. > trailing
           ubts.size.gt 0
           eq.
@@ -275,23 +271,23 @@
                 if.
                   (is-root-relative valid).as-bool
                   if.
-                    is-drive-relative
-                      uri > ubts!
+                    is-drive-relative ubts
                     (ubts.slice 0 2).concat valid
                     valid
                   (ubts.concat separator).concat valid
+        uri > ubts!
         separated-correctly other > valid!
       [uri] > separated-correctly
         if. > @
           (string.index-of pth path.posix.separator).eq
             -1
           string ubts
-          string
-            string.replaced > repl!
-              pth
-              string.regex "/\\//"
-              separator
+          string repl
         string ubts > pth
+        string.replaced > repl!
+          pth
+          string.regex "/\\//"
+          separator
         uri > ubts!
       ^.separator > separator
 
