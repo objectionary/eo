@@ -1,0 +1,191 @@
+# A `uri` object parses an RFC 3986 generic URI `text` and exposes its
+# components as read-only attributes: `scheme`, `authority` (together with
+# `userinfo`, `host` and `port` parsed out of it), `path`, `query` and
+# `fragment`. The object is immutable: it only reads parts of `text` and
+# has no mutators.
+#
+# Usage, without an authority:
+# ```
+# uri "pgsql:localhost:899" > x
+# x.scheme > s   # pgsql
+# x.path > p     # localhost:899
+# ```
+# With a "//" authority:
+# ```
+# uri "pgsql://localhost:899" > x
+# x.host > h    # localhost
+# x.port > p    # 899
+# ```
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object
+
+[text] > uri
+  text > @
+  has-authority.if > after-slashes
+    hier-part.slice
+      2
+      hier-part.length.minus
+        number 2
+    ""
+  has-authority.if > authority
+    has-authority-path.if
+      after-slashes.slice 0 authority-path-idx
+      after-slashes
+    ""
+  string.index-of > authority-path-idx
+    after-slashes
+    "/"
+  has-fragment.if > before-fragment
+    rest.slice
+      0
+      string.index-of rest "#" > hash-idx
+    rest
+  has-fragment.if > fragment
+    rest.slice
+      hash-idx.plus 1
+      rest.length.minus
+        number
+          hash-idx.plus 1
+    ""
+  string.starts-with > has-authority
+    hier-part
+    "//"
+  not. > has-authority-path
+    authority-path-idx.eq -1
+  not. > has-fragment
+    hash-idx.eq -1
+  not. > has-port
+    port-colon-idx.eq -1
+  not. > has-query
+    question-idx.eq -1
+  not. > has-userinfo
+    userinfo-at-idx.eq -1
+  has-query.if > hier-part
+    before-fragment.slice
+      0
+      string.index-of before-fragment "?" > question-idx
+    before-fragment
+  has-port.if > host
+    host-port.slice
+      0
+      string.index-of host-port ":" > port-colon-idx
+    host-port
+  has-userinfo.if > host-port
+    authority.slice
+      userinfo-at-idx.plus 1
+      authority.length.minus
+        number
+          userinfo-at-idx.plus 1
+    authority
+  has-authority.if > path
+    has-authority-path.if
+      after-slashes.slice
+        authority-path-idx
+        after-slashes.length.minus
+          number authority-path-idx
+      ""
+    hier-part
+  has-port.if > port
+    host-port.slice
+      port-colon-idx.plus 1
+      host-port.length.minus
+        number
+          port-colon-idx.plus 1
+    ""
+  has-query.if > query
+    before-fragment.slice
+      question-idx.plus 1
+      before-fragment.length.minus
+        number
+          question-idx.plus 1
+    ""
+  text.slice > rest
+    scheme-colon.plus 1
+    text.length.minus
+      number
+        scheme-colon.plus 1
+  text.slice > scheme
+    0
+    string.index-of > scheme-colon
+      text
+      ":"
+  has-userinfo.if > userinfo
+    authority.slice
+      0
+      string.index-of authority "@" > userinfo-at-idx
+    ""
+
+  eq. ++> tests-parses-empty-host-of-triple-slash-uri
+    host.
+      uri "file:///etc/passwd"
+    ""
+
+  eq. ++> tests-parses-empty-path-of-authority-only-uri
+    path.
+      uri "pgsql://localhost:899"
+    ""
+
+  eq. ++> tests-parses-fragment-without-leading-hash
+    fragment.
+      uri "http://host/some/path?x=1#top"
+    "top"
+
+  eq. ++> tests-parses-host-alongside-userinfo
+    host.
+      uri "http://user:pass@host:80/some/path"
+    "host"
+
+  eq. ++> tests-parses-host-of-authority-with-port
+    host.
+      uri "pgsql://localhost:899"
+    "localhost"
+
+  eq. ++> tests-parses-path-alongside-userinfo-authority
+    path.
+      uri "http://user:pass@host:80/some/path"
+    "/some/path"
+
+  eq. ++> tests-parses-path-of-bare-scheme-uri
+    path.
+      uri "pgsql:localhost:899"
+    "localhost:899"
+
+  eq. ++> tests-parses-path-of-triple-slash-uri
+    path.
+      uri "file:///etc/passwd"
+    "/etc/passwd"
+
+  eq. ++> tests-parses-port-alongside-userinfo
+    port.
+      uri "http://user:pass@host:80/some/path"
+    "80"
+
+  eq. ++> tests-parses-port-of-authority-with-port
+    port.
+      uri "pgsql://localhost:899"
+    "899"
+
+  eq. ++> tests-parses-query-without-leading-question-mark
+    query.
+      uri "http://host/some/path?x=1#top"
+    "x=1"
+
+  eq. ++> tests-parses-scheme-of-bare-scheme-uri
+    scheme.
+      uri "pgsql:localhost:899"
+    "pgsql"
+
+  eq. ++> tests-parses-scheme-of-triple-slash-uri
+    scheme.
+      uri "file:///etc/passwd"
+    "file"
+
+  eq. ++> tests-parses-userinfo-of-authority
+    userinfo.
+      uri "http://user:pass@host:80/some/path"
+    "user:pass"
