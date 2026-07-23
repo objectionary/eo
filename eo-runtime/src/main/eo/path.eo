@@ -127,10 +127,12 @@
         posix
           string
             if.
-              (obts.slice 0 1).eq
-                separator
-              obts
-              (uri.concat separator).concat obts
+              obts.size.eq 0
+              uri
+              if.
+                (obts.slice 0 1).eq separator
+                obts
+                (uri.concat separator).concat obts
       other.as-bytes > obts
     "/" > separator
   os.is-windows.if > separator
@@ -404,6 +406,12 @@
       path.posix "/var/temp"
       "./www/html"
     "/var/temp/www/html"
+
+  eq. ++> tests-resolves-posix-path-against-empty-other
+    resolved.
+      path.posix "/a/b"
+      ""
+    "/a/b"
 
   eq. ++> tests-resolves-posix-relative-path-against-other-absolute-path
     resolved.
