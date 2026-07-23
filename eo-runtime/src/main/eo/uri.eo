@@ -45,6 +45,14 @@
       0
       hash-idx
     rest
+  string.index-of > bracket-end-idx
+    host-port
+    "]"
+  bracket-end-idx.plus 1 > bracket-start
+  host-port.slice > bracket-tail
+    bracket-start
+    host-port.length.minus
+      number bracket-start
   has-fragment.if > fragment
     rest.slice
       hash-idx.plus 1
@@ -57,6 +65,9 @@
     "//"
   not. > has-authority-path
     authority-path-idx.eq -1
+  string.starts-with > has-bracket-host
+    host-port
+    "["
   not. > has-fragment
     hash-idx.eq -1
   not. > has-port
@@ -100,9 +111,14 @@
         number
           port-colon-idx.plus 1
     ""
-  string.index-of > port-colon-idx
-    host-port
-    ":"
+  has-bracket-host.if > port-colon-idx
+    if.
+      rel-colon.eq -1
+      -1
+      rel-colon.plus bracket-start
+    string.index-of
+      host-port
+      ":"
   has-query.if > query
     before-fragment.slice
       question-idx.plus 1
@@ -113,6 +129,9 @@
   string.index-of > question-idx
     before-fragment
     "?"
+  string.index-of > rel-colon
+    bracket-tail
+    ":"
   text.slice > rest
     scheme-colon.plus 1
     text.length.minus
@@ -132,6 +151,21 @@
   string.index-of > userinfo-at-idx
     authority
     "@"
+
+  eq. ++> tests-parses-bracketed-ipv6-host-with-port
+    host.
+      uri "http://[::1]:8080/p"
+    "[::1]"
+
+  eq. ++> tests-parses-bracketed-ipv6-host-without-port
+    host.
+      uri "http://[2001:db8::1]/p"
+    "[2001:db8::1]"
+
+  eq. ++> tests-parses-bracketed-ipv6-port
+    port.
+      uri "http://[::1]:8080/p"
+    "8080"
 
   eq. ++> tests-parses-empty-host-of-triple-slash-uri
     host.
