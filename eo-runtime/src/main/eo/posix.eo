@@ -14,7 +14,7 @@
 +unlint redundant-object
 
 [name args] > posix
-  [] > @ /Q.return
+  [] > @ /Q.posix.return
   os.is-macos.if > append
     8
     1024
@@ -27,29 +27,28 @@
   511 > permissions
   0 > rdonly
   2 > rdwr
+  2 > stderr
+  0 > stdin
+  1 > stdout
+  1 > stream
+  6 > tcp
+  1 > wronly
+  os.is-macos.if > trunc
+    1024
+    512
   [code output] > return
     output > @
     return > called
       code
       output
   [family port address] > sockaddr-in
-    00-00-00-00-00-00-00-00 > padding
     plus. > size
       plus.
         family.size.plus port.size
         address.size
-      padding.size
+      8
   [mode size] > stat
-  2 > stderr
-  0 > stdin
-  1 > stdout
-  1 > stream
-  6 > tcp
   [seconds micros] > timeval
-  os.is-macos.if > trunc
-    1024
-    512
-  1 > wronly
 
   ++> tests-closes-posix-tcp-socket
     os.is-windows.or > @

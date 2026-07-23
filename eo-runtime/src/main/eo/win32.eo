@@ -19,7 +19,7 @@
 +unlint redundant-object
 
 [name args] > win32
-  [] > @ /Q.return
+  [] > @ /Q.win32.return
   8 > append
   256 > creat
   -1 > failure
@@ -29,6 +29,14 @@
   -1 > none
   32768 > rdonly
   32770 > rdwr
+  2 > stderr
+  0 > stdin
+  1 > stdout
+  1 > stream
+  6 > tcp
+  512 > trunc
+  02-02 > version
+  32769 > wronly
   [code output] > return
     output > @
     return > called
@@ -42,15 +50,7 @@
         address.size
       padding.size
   [mode size] > stat64
-  2 > stderr
-  0 > stdin
-  1 > stdout
-  1 > stream
-  6 > tcp
   [time millitm] > timeb
-  512 > trunc
-  02-02 > version
-  32769 > wronly
 
   os.is-windows.not.or ++> tests-returns-valid-win32-inet-addr-for-localhost
     eq.
