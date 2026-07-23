@@ -43,21 +43,23 @@
 
   The inlined value keeps the target's obfuscated cactus `@name` only when
   the name is still meaningful downstream: an abstract formation, whose name
-  `to-eo-tree` renders as the anonymous `[...] >>` marker (exactly what an
-  inlined anonymous formation should read as), and a dataized-const wrapper
-  (`.as-bytes` over `Φ.dataized`), whose name `dataized-to-const` later
-  promotes onto the abstract const node it rebuilds. A based `>> name` handle
-  whose value is a plain reference or application (`a >> b`, R-3.10.12) is
-  neither, so carrying its `@name` (or the `@local` handle it leaves behind)
-  over would turn the inline into a spurious named node that `to-eo-tree`
-  prints as its own `a >>` line, swallowing the surrounding argument; for
-  such a target the `@name` and `@local` are dropped and the value lands as
-  an anonymous argument (#5810).
+  `to-eo-tree` renders as the anonymous `[...] >>` marker, and a dataized-const
+  wrapper (`.as-bytes` over `Φ.dataized`) over an abstract value, whose name
+  `dataized-to-const` later promotes onto the abstract const node it rebuilds.
+  A based `>> name` handle whose value is a plain reference or application
+  (`a >> b`, R-3.10.12) is neither, so carrying its `@name` (or the `@local`
+  handle) over would turn the inline into a spurious named node that
+  `to-eo-tree` prints as its own `a >>` line, swallowing the surrounding
+  argument; for such a target `@name` and `@local` are dropped and the value
+  lands as an anonymous argument (#5810). A dataized-const wrapper over a
+  non-abstract value is the anonymous inline const argument (`42.plus a!`,
+  #5821): its cactus name is likewise dropped so the folded value reads inline
+  as `a!`, not as a vertical `a >>!` line.
   -->
   <xsl:template match="o[contains(@base, concat('.', $auto))]" priority="0">
     <xsl:variable name="name" select="eo:resolved-name(@base)"/>
     <xsl:variable name="target" select="ancestor::o/o[@name=$name][1]"/>
-    <xsl:variable name="keep-name" as="xs:boolean" select="exists($target) and (eo:abstract($target) or ($target/@base = '.as-bytes' and $target/o[1]/@base = 'Φ.dataized'))"/>
+    <xsl:variable name="keep-name" as="xs:boolean" select="exists($target) and (eo:abstract($target) or ($target/@base = '.as-bytes' and $target/o[1]/@base = 'Φ.dataized' and eo:abstract($target/o[1]/o[1])))"/>
     <xsl:choose>
       <xsl:when test="exists($target) and not(eo:void($target)) and not(eo:recursive($target, $name))">
         <xsl:element name="o">

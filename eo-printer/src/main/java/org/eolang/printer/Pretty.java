@@ -157,9 +157,12 @@ final class Pretty {
         } else {
             String best = this.vertical(node, indent);
             final Optional<String> flat = this.horizontal(node, indent);
+            final boolean inline =
+                node.children.stream().anyMatch(child -> "!".equals(child.tail));
             if (flat.isPresent()
-                && new Penalty(flat.get(), this.weights).points()
-                <= new Penalty(best, this.weights).points()) {
+                && (inline
+                || new Penalty(flat.get(), this.weights).points()
+                <= new Penalty(best, this.weights).points())) {
                 best = flat.get();
             }
             if (star.isPresent()
@@ -459,21 +462,36 @@ final class Pretty {
      * its own name suffix), or empty if it can't be inlined safely. A
      * data-receiver dispatch is inlined in its suffix shape ({@code
      * 5.plus 3}), never the reversed one.
+     *
+     * <p>A name suffix in the tail ({@code > name}, {@code >>}) has no inline
+     * spelling and blocks inlining. The lone {@code !} const marker of an
+     * anonymous inline const argument (#5821) is the exception: it does have
+     * one — the value with a trailing {@code !} ({@code a!}) — so it inlines
+     * and the {@code !} is appended.</p>
+     *
      * @param given The node
      * @return The inlined content, or empty
      */
     private static Optional<String> flat(final Node given) {
         final Optional<String> result;
         final Node node = Pretty.suffixed(given).orElse(given);
+        final boolean cnst = "!".equals(node.tail);
+        final String mark;
+        if (cnst) {
+            mark = "!";
+        } else {
+            mark = "";
+        }
         if (node.reversed && node.children.size() <= 1) {
             result = Optional.empty();
-        } else if (node.abstractt || !node.tail.isEmpty() || "*".equals(node.base)) {
+        } else if (node.abstractt || !node.tail.isEmpty() && !cnst
+            || "*".equals(node.base)) {
             result = Optional.empty();
         } else if (node.children.isEmpty()) {
-            result = Optional.of(node.base);
+            result = Optional.of(node.base.concat(mark));
         } else {
             result = Pretty.inlined(node.children)
-                .map(args -> String.join(" ", node.base, args));
+                .map(args -> String.join(" ", node.base, args).concat(mark));
         }
         return result;
     }

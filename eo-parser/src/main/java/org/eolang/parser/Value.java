@@ -67,6 +67,14 @@ final class Value {
     private final List<MethodChain> chain;
 
     /**
+     * True when the value carries a trailing {@code !} const marker
+     * (R-9.4) as an inline argument — e.g. {@code 42.plus a!}. Only
+     * set for horizontal arguments; a line head's const marker is a
+     * name-suffix concern handled by {@link Suffix}.
+     */
+    private final boolean constant;
+
+    /**
      * Ctor — no binding, no chain.
      * @param tag Kind
      * @param text Raw text
@@ -75,7 +83,7 @@ final class Value {
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     Value(final Kind tag, final String text, final int column, final int after) {
-        this(tag, text, column, after, null, Value.NO_CHAIN);
+        this(tag, text, column, after, null, Value.NO_CHAIN, false);
     }
 
     /**
@@ -90,7 +98,7 @@ final class Value {
     Value(
         final Kind tag, final String text, final int column, final int after, final String tie
     ) {
-        this(tag, text, column, after, tie, Value.NO_CHAIN);
+        this(tag, text, column, after, tie, Value.NO_CHAIN, false);
     }
 
     /**
@@ -101,11 +109,12 @@ final class Value {
      * @param after Index past the value
      * @param tie Optional inline-binding label or N
      * @param links Method-dispatch chain on this value (empty for a bare value)
+     * @param cnst Whether a trailing {@code !} const marker is present
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     Value(
         final Kind tag, final String text, final int column, final int after,
-        final String tie, final List<MethodChain> links
+        final String tie, final List<MethodChain> links, final boolean cnst
     ) {
         this.kind = tag;
         this.raw = text;
@@ -113,6 +122,7 @@ final class Value {
         this.end = after;
         this.binding = tie;
         this.chain = links;
+        this.constant = cnst;
     }
 
     /**
@@ -164,6 +174,15 @@ final class Value {
      */
     List<MethodChain> chain() {
         return this.chain;
+    }
+
+    /**
+     * Whether this value carries a trailing {@code !} const marker as
+     * an inline argument (R-9.4).
+     * @return Const flag
+     */
+    boolean constant() {
+        return this.constant;
     }
 
     /**
