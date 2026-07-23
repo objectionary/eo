@@ -12,7 +12,10 @@
 # file-local handle `>> auto` carries a cactus @name, so its binding is merged
 # onto the first bare `auto` reference (the `auto.gte`/`auto.neg` dispatches
 # cannot host it and stay references), while the real name `value` keeps both
-# its standalone binding and its bare reference.
+# its standalone binding and its bare reference. The merged binding is a based
+# value (not an abstract formation), so its obfuscated `@name` and `@local`
+# handle are dropped — the bare reference is unnamed and keeping them would
+# leave a spurious named `auto >>` node that `to-eo-tree` mis-prints (#5810).
 sheets:
   - /org/eolang/parser/parse/wrap-applications.xsl
   - /org/eolang/parser/parse/resolve-self.xsl
@@ -39,8 +42,9 @@ asserts:
   - /object/o[@name='abs' and not(o[starts-with(@name, 'a🌵')])]
   # It now lives at the first bare-reference site, inside the `if.` block,
   # keeping the reference's positional marker and gaining the binding's base
-  # and child (the `@local` handle is preserved so the readable name prints).
-  - /object/o[@name='abs']/o[@name='φ' and @base='.if']/o[starts-with(@name, 'a🌵') and @local='auto' and @base='Φ.number' and @as='α0']/o[@base='ξ.num.as-bytes']
+  # and child, but as an anonymous value: the based binding's obfuscated
+  # `@name` and its `@local` handle are dropped (#5810).
+  - /object/o[@name='abs']/o[@name='φ' and @base='.if']/o[not(@name) and not(@local) and @base='Φ.number' and @as='α0']/o[@base='ξ.num.as-bytes']
   # The method-dispatch use of the cactus name stays a reference.
   - /object/o[@name='abs']/o[@name='φ']/o[starts-with(@base, 'ξ.a🌵') and ends-with(@base, '.gte')]
   # The real name `value` is NOT merged: its standalone binding stays a direct
