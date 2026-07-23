@@ -14,11 +14,6 @@
     signed
       n.times -1
     digits n
-  if. > [magnitude] > signed
-    magnitude.lt 1
-    digits magnitude
-    "-".as-bytes.concat
-      digits magnitude
   [n] > digits
     if. > @
       n.lt 10
@@ -30,6 +25,11 @@
         as-char
           (n.minus (q.times 10)).floor.plus
             48
+  if. > [magnitude] > signed
+    magnitude.lt 1
+    digits magnitude
+    "-".as-bytes.concat
+      digits magnitude
 
   eq. ++> tests-keeps-sign-on-negative-value-after-truncation
     "-1"
