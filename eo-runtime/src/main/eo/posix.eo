@@ -33,11 +33,12 @@
       code
       output
   [family port address] > sockaddr-in
+    00-00-00-00-00-00-00-00 > padding
     plus. > size
       plus.
         family.size.plus port.size
         address.size
-      8
+      padding.size
   [mode size] > stat
   2 > stderr
   0 > stdin
