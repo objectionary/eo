@@ -1,4 +1,5 @@
-# Makes a Unix syscall by `name` with POSIX interface.
+# Makes a Unix syscall by 
+ame` with POSIX interface.
 # Here `args` is a `org.eolang.tuple` of arguments required for
 # the particular syscall.
 # See the linux syscall [table](https://filippo.io/linux-syscall-table) for more info.
@@ -21,7 +22,10 @@
   os.is-macos.if > creat
     512
     64
-  os.is-macos.if > exclusive`n    2048`n    128`n  2 > inet
+  os.is-macos.if > exclusive
+    2048
+    128
+  2 > inet
   420 > mode
   -1 > none
   511 > permissions

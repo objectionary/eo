@@ -1,4 +1,5 @@
-# Makes a windows syscall by `name`.
+# Makes a windows syscall by 
+ame`.
 #
 # The non-socket operations (file, console, process, environment and clock) go
 # through the Microsoft C runtime (msvcrt), which exposes POSIX-compatible
@@ -22,7 +23,8 @@
   [] > @ /Q.return
   8 > append
   256 > creat
-  1024 > exclusive`n  -1 > failure
+  1024 > exclusive
+  -1 > failure
   2 > inet
   -1 > invalid
   384 > mode

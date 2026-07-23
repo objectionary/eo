@@ -64,29 +64,30 @@
           "Can't create a temp file in the directory '%s': %s".printf
             * ^.^.path opened.output
         seq *
-          code. > closed
-            os.is-windows.if
-              win32 *1
-                "_close"
-                opened.code
-              posix *1
-                "close"
-                opened.code
+          closed
           candidate
+      code. > closed
+        os.is-windows.if
+          win32 *1
+            "_close"
+            opened.code
+          posix *1
+            "close"
+            opened.code
       "%d-%d-%d".printf > name!
         *
           clock.as-number
           code.
             os.is-windows.if
-              win32 *1
+              win32
                 "_getpid"
                 *
-              posix *1
+              posix
                 "getpid"
                 *
           number.random clock
       string.joined *1 > candidate
-        Q.path.separator
+        path.separator
         ^.^.path
         name
       called. > opened
@@ -140,10 +141,11 @@
 
   ++> tests-tmpfile-touch-creates-empty-file
     seq * > @
-      temp.size > size
+      size
       temp.deleted
       size.eq 0
     mktemp.tmpfile > temp
+    temp.size > size
 
   ++> tests-tmpfile-touch-creates-unique-paths
     seq * > @
@@ -159,13 +161,15 @@
 
   ++> tests-tmpfile-touch-deletes-created-file
     seq * > @
-      temp.exists > existed
-      temp.deleted > deleted
+      existed
+      deleted
       and.
         existed.and
           deleted.path.eq temp.path
         deleted.exists.not
     mktemp.tmpfile > temp
+    temp.deleted > deleted
+    temp.exists > existed
 
   ++> tests-walks-recursively
     seq * > @
