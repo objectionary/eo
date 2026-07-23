@@ -103,13 +103,13 @@ final class MjTranspileTest {
     }
 
     @Test
-    void wrapsObjectsIntoPhCoverageWhenTrackingEnabled(@Mktmp final Path temp) throws Exception {
+    void wrapsObjectsIntoPhCoverageWhenFileIsSet(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            "the generated Java must wrap located objects into PhCoverage when coverageTracking is on",
+            "the generated Java must wrap located objects into PhCoverage when coverageFile is set",
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(this.program)
-                    .with("coverageTracking", true)
+                    .with("coverageFile", temp.resolve("hits.txt").toFile())
                     .execute(new FakeMaven.Transpile())
                     .result()
                     .get(this.compiled)
@@ -119,9 +119,37 @@ final class MjTranspileTest {
     }
 
     @Test
+    void writesACoverageManifestWhenFileIsSet(@Mktmp final Path temp) throws Exception {
+        final String manifest = new TextOf(
+            new FakeMaven(temp)
+                .withProgram(this.program)
+                .with("coverageFile", temp.resolve("hits.txt").toFile())
+                .execute(new FakeMaven.Transpile())
+                .result()
+                .get("hits.txt.manifest")
+        ).asString();
+        MatcherAssert.assertThat(
+            String.join(
+                " ",
+                "the manifest must list every location wrapped into PhCoverage,",
+                "one tab-separated locator/line entry per line"
+            ),
+            manifest.trim().split(System.lineSeparator()).length,
+            Matchers.greaterThan(0)
+        );
+        for (final String line : manifest.trim().split(System.lineSeparator())) {
+            MatcherAssert.assertThat(
+                "each manifest line must have exactly two tab-separated columns",
+                line.split("\t", -1).length,
+                Matchers.equalTo(2)
+            );
+        }
+    }
+
+    @Test
     void keepsGeneratedJavaFreeOfPhCoverageByDefault(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            "the generated Java must not mention PhCoverage when coverageTracking is off",
+            "the generated Java must not mention PhCoverage when coverageFile is not set",
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(this.program)
