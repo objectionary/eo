@@ -63,7 +63,8 @@
       if. > @
         or.
           base.size.eq 0
-          idx.eq -1
+          (idx.eq -1).or
+            idx.eq 0
         ""
         string
           as-bytes.
@@ -176,7 +177,8 @@
       [] > extname
         if. > @
           (base.size.eq 0).or
-            idx.eq -1
+            (idx.eq -1).or
+              idx.eq 0
           ""
           string
             as-bytes.
@@ -516,6 +518,16 @@
           "www"
           "hello.txt"
     ".txt"
+
+  eq. ++> tests-takes-no-extname-from-posix-dotfile
+    extname.
+      path.posix ".bashrc"
+    ""
+
+  eq. ++> tests-takes-no-extname-from-win32-dotfile
+    extname.
+      path.win32 ".gitignore"
+    ""
 
   eq. ++> tests-takes-valid-basename
     basename.
