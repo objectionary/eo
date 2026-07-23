@@ -19,7 +19,7 @@
 +unlint redundant-object
 
 [name args] > win32
-  [] > @ /Q.return
+  [] > @ /Q.win32.return
   8 > append
   256 > creat
   -1 > failure
