@@ -101,7 +101,9 @@ public final class MjFormat extends MjSafe {
     private Integer step;
 
     @Override
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void exec() throws IOException {
+        final long start = System.currentTimeMillis();
         final Collection<TjForeign> sources = this.scopedTojos().withSources();
         final Collection<Path> divergent = new LinkedList<>();
         for (final TjForeign tojo : sources) {
@@ -109,7 +111,7 @@ public final class MjFormat extends MjSafe {
                 divergent.add(tojo.source());
             }
         }
-        this.report(sources.size(), divergent);
+        this.report(sources.size(), divergent, System.currentTimeMillis() - start);
     }
 
     /**
@@ -201,13 +203,18 @@ public final class MjFormat extends MjSafe {
      * Report the outcome, failing the build if needed.
      * @param total The number of registered sources
      * @param divergent The sources that diverged from the canonical form
+     * @param millis The elapsed time, in milliseconds
      */
-    private void report(final int total, final Collection<Path> divergent) {
+    private void report(final int total, final Collection<Path> divergent, final long millis) {
         if (divergent.isEmpty()) {
-            Logger.info(this, "All %d EO source(s) are formatted canonically", total);
+            Logger.info(
+                this, "All %d EO source(s) are formatted canonically in %[ms]s", total, millis
+            );
         } else if (this.autoFix) {
             Logger.info(
-                this, "Reformatted %d of %d EO source(s)", divergent.size(), total
+                this,
+                "Reformatted %d of %d EO source(s) in %[ms]s",
+                divergent.size(), total, millis
             );
         } else {
             throw new IllegalStateException(
