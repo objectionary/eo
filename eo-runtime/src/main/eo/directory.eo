@@ -144,8 +144,8 @@
       size
       temp.deleted
       size.eq 0
+      temp.size > size
     mktemp.tmpfile > temp
-    temp.size > size
 
   ++> tests-tmpfile-touch-creates-unique-paths
     seq * > @
@@ -167,9 +167,9 @@
         existed.and
           deleted.path.eq temp.path
         deleted.exists.not
+      temp.deleted > deleted
+      temp.exists > existed
     mktemp.tmpfile > temp
-    temp.deleted > deleted
-    temp.exists > existed
 
   ++> tests-walks-recursively
     seq * > @
