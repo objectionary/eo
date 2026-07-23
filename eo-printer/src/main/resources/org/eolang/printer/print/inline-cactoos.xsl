@@ -62,11 +62,17 @@
     </xsl:choose>
   </xsl:template>
   <!--
-  Drop an inlined auto-named abstract; keep cactus-named voids and
-  keep self-referential (recursive) abstracts, which are never inlined.
+  Drop an inlined auto-named abstract; keep cactus-named voids, keep
+  self-referential (recursive) abstracts, which are never inlined, and keep
+  a binding that a surviving method dispatch still reaches through its name.
+  Such a dispatch reference (`ξ.<name>.<seg>`) is not inlined above — its
+  receiver is buried in a dotted base — so dropping the binding would strand
+  the reference on a synthetic "vL_P" placeholder. Keeping it lets
+  "merge-monikers" host the binding as the receiver of a reversed dispatch
+  instead (#5782).
   -->
   <xsl:template match="o[starts-with(@name, $auto) and not(eo:void(.))]" priority="1">
-    <xsl:if test="eo:recursive(., @name)">
+    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name)">
       <xsl:copy>
         <xsl:apply-templates select="node()|@*"/>
       </xsl:copy>
@@ -81,6 +87,19 @@
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
     <xsl:sequence select="exists($target//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name])"/>
+  </xsl:function>
+  <!--
+  Whether a reference in the auto-named binding's owner reaches it through a
+  method dispatch `ξ.<name>.<seg>` — its base carries the binding's name
+  followed by a further segment. Such a reference is not inlined (its receiver
+  is not a bare cactus name), so the binding is kept for "merge-monikers"
+  rather than dropped (#5782). The binding's own subtree is excluded so a
+  helper that merely dispatches on itself is not mistaken for an external use.
+  -->
+  <xsl:function name="eo:dispatched" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="exists($target/..//o[contains(@base, concat($name, '.')) and not(ancestor-or-self::o[. is $target])])"/>
   </xsl:function>
   <xsl:template match="node()|@*">
     <xsl:copy>
