@@ -1,0 +1,44 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A "moniker" — a named binding written at its use site — is merged back only
+# for the compiler's auto-generated, obfuscated names (the `a🌵` cactus prefix,
+# §9.2). Here the obfuscated file-local handle `number num.as-bytes >> auto` is
+# used only through a single method dispatch, `auto.gte 0`, and never through a
+# bare `auto`. A reversed dispatch is prefix method dispatch, so `auto.gte 0`
+# and `gte. auto 0` denote the same graph; the block can therefore be inlined
+# as the receiver of a reversed dispatch exactly as a bare reference is inlined
+# as a plain receiver (#5782). The printer drops the standalone `>> auto`
+# binding and rewrites `auto.gte 0` into `gte.` over the inlined block, keeping
+# the dispatch's `0` argument. Without the fix the handle had no bare
+# reference to land on, so `inline-cactoos` stranded the dispatch on a synthetic
+# `v_` placeholder instead. Only one trailing segment is hostable this way; a
+# multi-segment chain would need nested reversed dispatches and stays expanded.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  +package number
+
+  [num] > abs
+    if. > @
+      auto.gte 0
+      num
+      num
+    number num.as-bytes >> auto
+
+printed: |
+  +package number
+
+  [num] > abs
+    if. > @
+      gte.
+        number num.as-bytes >>
+        0
+      num
+      num
