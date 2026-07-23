@@ -15,7 +15,7 @@
 # its standalone binding and its bare reference. The merged binding is a based
 # value (not an abstract formation), so its obfuscated `@name` and `@local`
 # handle are dropped — the bare reference is unnamed and keeping them would
-# leave a spurious named `auto >>` node that `to-eo-tree` mis-prints (#5810).
+# leave a spurious named `auto >>` node that `to-eo-tree` misprints (#5810).
 sheets:
   - /org/eolang/parser/parse/wrap-applications.xsl
   - /org/eolang/parser/parse/resolve-self.xsl
