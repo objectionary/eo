@@ -32,6 +32,16 @@
     string
       as-decimal -7.89
 
+  eq. ++> tests-truncates-negative-fraction-below-one-to-zero-without-sign
+    "0"
+    string
+      as-decimal -0.5
+
+  eq. ++> tests-keeps-sign-on-negative-value-after-truncation
+    "-1"
+    string
+      as-decimal -1.5
+
   eq. ++> tests-truncates-positive-fraction
     "42"
     string

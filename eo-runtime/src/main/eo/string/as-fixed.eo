@@ -77,6 +77,16 @@
     string
       as-fixed 0.123456789 6
 
+  eq. ++> tests-rounds-negative-fraction-to-zero-without-sign
+    "0.00"
+    string
+      as-fixed -0.0001 2
+
+  eq. ++> tests-keeps-sign-on-negative-rounded-value
+    "-0.40"
+    string
+      as-fixed -0.4 2
+
   eq. ++> tests-writes-negative-value
     "-2.500000"
     string
