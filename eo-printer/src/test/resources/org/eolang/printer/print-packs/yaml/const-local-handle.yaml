@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A const file-local handle whose value is a plain reference (`a >> b!`,
+# R-3.10.12). The parser lowers the const to a `.as-bytes` over `Φ.dataized`
+# wrapper carrying the obfuscated cactus name, and resolves the `b` use to the
+# cactus name. `inline-cactoos` folds the single-use wrapper onto its bare
+# reference and `dataized-to-const` rebuilds the `@const`. Because the value is
+# a based reference (not an abstract formation), its obfuscated `@name` is
+# dropped rather than promoted onto the rebuilt node: the value lands as the
+# anonymous argument `a`, not a spurious named `a >>!` line that swallows the
+# `.plus` argument (#5810). An inline anonymous const reference (`a!`) is not
+# valid EO, so the const marker does not survive the fold, exactly as the
+# non-const handle folds to a bare `a` — the printed form re-parses to itself.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [a] > foo
+    42.plus b > x
+    a >> b!
+
+printed: |
+  [a] > foo
+    42.plus a > x

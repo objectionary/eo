@@ -239,6 +239,16 @@ final class SuffixTest {
     }
 
     @Test
+    void combinesHandleWithTrailingConst() {
+        final Suffix suffix = new Suffix(" >> fibo!", new Span("[] >> fibo!", 1), 2);
+        MatcherAssert.assertThat(
+            "`>> fibo!` must report both the handle and a trailing const marker, like `> name!`",
+            suffix.constant() && "fibo".equals(suffix.handle()),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
     void rejectsTrailingGarbageAfterPlusGreaterSuffix() {
         final Span span = new Span("[] +> foo garbage", 1);
         Assertions.assertThrows(

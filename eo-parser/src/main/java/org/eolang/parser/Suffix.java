@@ -367,6 +367,11 @@ final class Suffix {
     /**
      * Parse a {@code >>} (auto) suffix, optionally carrying a trailing
      * file-local handle ({@code >> name}, §3.10) kept as the label.
+     *
+     * <p>The optional {@code !} const marker (§3.10) may sit either right
+     * after {@code >>} on an anonymous handle ({@code >>!}) or right after a
+     * named handle ({@code >> name!}), mirroring the {@code > name!} spelling
+     * of a plain named binding. Only one marker is accepted.</p>
      * @param tail Tail substring
      * @param after Index immediately after {@code >>}
      * @param span Source span
@@ -399,6 +404,10 @@ final class Suffix {
                 );
             }
             rest = end;
+        }
+        if (!cnst && rest < tail.length() && tail.charAt(rest) == '!') {
+            cnst = true;
+            rest = rest + 1;
         }
         final int trailing = Suffix.skipSpace(tail, rest);
         if (trailing < tail.length() && tail.charAt(trailing) == '/') {

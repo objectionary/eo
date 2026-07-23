@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A named file-local handle may carry the `!` const marker (`>> name!`), just
+# as a plain named binding does (`> name!`) and an anonymous handle does
+# (`>>!`). The parser lowers the const to a `.as-bytes` over `Φ.dataized`
+# wrapper and keeps the handle on the dataized value (#5817).
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='.as-bytes' and @name='a🌵3-2']/o[@base='Φ.dataized']/o[@base='ξ.a' and @local='b']
+  - //o[@base='ξ.a🌵3-2']
+input: |
+  [a] > foo
+    42.plus b > x
+    a >> b!
