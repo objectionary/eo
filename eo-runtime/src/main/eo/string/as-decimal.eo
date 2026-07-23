@@ -14,12 +14,11 @@
     signed
       n.times -1
     digits n
-  [magnitude] > signed
-    if. > @
-      magnitude.lt 1
+  if. > [magnitude] > signed
+    magnitude.lt 1
+    digits magnitude
+    "-".as-bytes.concat
       digits magnitude
-      "-".as-bytes.concat
-        digits magnitude
   [n] > digits
     if. > @
       n.lt 10
@@ -32,6 +31,11 @@
           (n.minus (q.times 10)).floor.plus
             48
 
+  eq. ++> tests-keeps-sign-on-negative-value-after-truncation
+    "-1"
+    string
+      as-decimal -1.5
+
   eq. ++> tests-truncates-negative-fraction
     "-7"
     string
@@ -41,11 +45,6 @@
     "0"
     string
       as-decimal -0.5
-
-  eq. ++> tests-keeps-sign-on-negative-value-after-truncation
-    "-1"
-    string
-      as-decimal -1.5
 
   eq. ++> tests-truncates-positive-fraction
     "42"
