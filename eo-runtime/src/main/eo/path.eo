@@ -55,7 +55,10 @@
           (pth.size.eq 0).or
             len.eq -1
           pth
-          (txt.slice 0 len).as-bytes
+          if.
+            len.eq 0
+            separator
+            (txt.slice 0 len).as-bytes
       string.last-index-of txt separator > len!
       uri > pth!
       string pth > txt
@@ -174,7 +177,10 @@
             (pth.size.eq 0).or
               len.eq -1
             pth
-            (txt.slice 0 len).as-bytes
+            if.
+              len.eq 0
+              separator
+              (txt.slice 0 len).as-bytes
         string.last-index-of txt separator > len!
         uri > pth!
         string pth > txt
@@ -501,6 +507,16 @@
           "html"
           path.separator
     ""
+
+  eq. ++> tests-returns-root-dirname-of-posix-single-component
+    dirname.
+      path.posix "/foo"
+    "/"
+
+  eq. ++> tests-returns-root-dirname-of-win32-root-relative
+    dirname.
+      path.win32 "\\foo"
+    "\\"
 
   eq. ++> tests-returns-the-same-string-if-no-separator-is-found
     basename.
