@@ -66,6 +66,10 @@
         seq *
           closed
           candidate
+      string.joined *1 > candidate
+        path.separator
+        ^.^.path
+        name
       code. > closed
         os.is-windows.if
           win32 *1
@@ -86,10 +90,6 @@
                 "getpid"
                 *
           number.random clock
-      string.joined *1 > candidate
-        path.separator
-        ^.^.path
-        name
       called. > opened
         os.is-windows.if
           win32 *1

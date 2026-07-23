@@ -1,5 +1,4 @@
-# Makes a windows syscall by 
-ame`.
+# Makes a windows syscall by `name`.
 #
 # The non-socket operations (file, console, process, environment and clock) go
 # through the Microsoft C runtime (msvcrt), which exposes POSIX-compatible

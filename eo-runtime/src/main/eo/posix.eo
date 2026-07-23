@@ -1,5 +1,4 @@
-# Makes a Unix syscall by 
-ame` with POSIX interface.
+# Makes a Unix syscall by `name` with POSIX interface.
 # Here `args` is a `org.eolang.tuple` of arguments required for
 # the particular syscall.
 # See the linux syscall [table](https://filippo.io/linux-syscall-table) for more info.
