@@ -84,7 +84,10 @@
         if.
           normalized.eq "//"
           "/"
-          string normalized
+          if.
+            normalized.size.eq 0
+            "."
+            string normalized
       ^.is-absolute.as-bool > is-absolute
       as-bytes. > normalized
         if.
@@ -359,6 +362,11 @@
     normalized.
       path.posix "/foo/bar/.//./baz//../x/"
     "/foo/bar/x/"
+
+  eq. ++> tests-normalizes-posix-path-collapsing-to-current-dir
+    normalized.
+      path.posix "foo/.."
+    "."
 
   eq. ++> tests-normalizes-posix-relative-path
     normalized.
