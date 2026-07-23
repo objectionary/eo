@@ -24,8 +24,75 @@
     i32 > left
       as-bytes.slice 4 4
   [] > as-number /Q.number
-  [x] > div /Q.i64
-    ? > cant-divide /{Q.string}
+  [x cant-divide] > div
+    if. > @
+      x.as-bytes.eq 00-00-00-00-00-00-00-00
+      cant-divide
+        "i64 cannot be divided by zero"
+      result
+    00-00-00-00-00-00-00-01.left i > [i] > bit
+    magnitude x.as-bytes > bottom
+    as-bytes. > bottom-negated
+      plus.
+        i64 bottom.not
+        i64 00-00-00-00-00-00-00-01
+    [idx rem quot] > looped
+      if. > @
+        idx.lt 0
+        quot
+        unsigned-gte.if
+          looped
+            idx.minus 1
+            next-rem
+            next-quot
+          looped
+            idx.minus 1
+            shifted
+            quot
+      shifted-sign.and divisor-sign > both-negative!
+      both-negative.or mixed-signs-with-nonneg-trial > carry-out!
+      bottom-negated.and 80-00-00-00-00-00-00-00 > divisor-sign!
+      signs-differ.and trial-nonnegative > mixed-signs-with-nonneg-trial!
+      quot.or > next-quot!
+        bit idx
+      as-bytes. > next-rem!
+        plus.
+          i64 shifted
+          i64 bottom-negated
+      or. > shifted!
+        rem.left 1
+        and.
+          top.right idx
+          00-00-00-00-00-00-00-01
+      shifted.and 80-00-00-00-00-00-00-00 > shifted-sign!
+      shifted-sign.xor divisor-sign > signs-differ!
+      next-rem.xor 80-00-00-00-00-00-00-00 > trial-nonnegative!
+      carry-out.eq 80-00-00-00-00-00-00-00 > unsigned-gte
+    if. > [b] > magnitude
+      eq.
+        b.and 80-00-00-00-00-00-00-00
+        80-00-00-00-00-00-00-00
+      as-bytes.
+        plus.
+          i64 b.not
+          i64 00-00-00-00-00-00-00-01
+      b
+    eq. > negative
+      and.
+        as-bytes.xor x.as-bytes
+        80-00-00-00-00-00-00-00
+      80-00-00-00-00-00-00-00
+    looped > quotient
+      63
+      00-00-00-00-00-00-00-00
+      00-00-00-00-00-00-00-00
+    negative.if > result
+      as-bytes.
+        plus.
+          i64 quotient.not
+          i64 00-00-00-00-00-00-00-01
+      i64 quotient
+    magnitude as-bytes > top
   [x] > gt
     differ.if > @
       positive
@@ -113,6 +180,30 @@
   lt. ++> tests-i64-div-less-than-i64-one
     1.as-i64.div 5.as-i64
     1.as-i64
+
+  eq. ++> tests-i64-div-min-by-minus-one-wraps
+    div.
+      i64 80-00-00-00-00-00-00-00
+      -1.as-i64
+    i64 80-00-00-00-00-00-00-00
+
+  eq. ++> tests-i64-div-min-by-one-is-min
+    div.
+      i64 80-00-00-00-00-00-00-00
+      1.as-i64
+    i64 80-00-00-00-00-00-00-00
+
+  eq. ++> tests-i64-div-of-large-dividend
+    4611686018427387904.as-i64.div 2.as-i64
+    2305843009213693952.as-i64
+
+  eq. ++> tests-i64-div-of-two-negatives
+    -13.as-i64.div -5.as-i64
+    2.as-i64
+
+  eq. ++> tests-i64-div-truncates-toward-zero
+    -13.as-i64.div 5.as-i64
+    -2.as-i64
 
   eq. ++> tests-i64-div-with-remainder
     13.as-i64.div -5.as-i64

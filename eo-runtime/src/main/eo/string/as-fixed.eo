@@ -12,9 +12,8 @@
 [n places] > as-fixed
   if. > @
     n.lt 0
-    "-".as-bytes.concat
-      positive
-        n.times -1
+    signed
+      n.times -1
     positive n
   [a] > positive
     concat. > @
@@ -57,6 +56,17 @@
                 (value.div 10).floor.times 10
             48
         acc
+  if. > [a] > signed
+    eq.
+      floor.
+        plus.
+          a.times
+            pow10 places
+          0.5
+      0
+    positive a
+    "-".as-bytes.concat
+      positive a
 
   eq. ++> tests-carries-rounding-into-integer-part
     "1.000000"
@@ -67,6 +77,16 @@
     "3.14"
     string
       as-fixed 3.14159 2
+
+  eq. ++> tests-negative-rounding-to-zero-drops-sign
+    "0.00"
+    string
+      as-fixed -1.0E-4 2
+
+  eq. ++> tests-negative-tiny-rounding-to-zero-drops-sign
+    "0.00"
+    string
+      as-fixed -0.001 2
 
   eq. ++> tests-pads-with-trailing-zeros
     "1.250000"
