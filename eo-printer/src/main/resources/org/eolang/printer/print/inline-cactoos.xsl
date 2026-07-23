@@ -40,17 +40,31 @@
   copy that self-reference back in and fire this template forever, so
   such a target is also left untouched (both the reference and the
   abstraction stay in place).
+
+  The inlined value keeps the target's obfuscated cactus `@name` only when
+  the name is still meaningful downstream: an abstract formation, whose name
+  `to-eo-tree` renders as the anonymous `[...] >>` marker (exactly what an
+  inlined anonymous formation should read as), and a dataized-const wrapper
+  (`.as-bytes` over `Φ.dataized`), whose name `dataized-to-const` later
+  promotes onto the abstract const node it rebuilds. A based `>> name` handle
+  whose value is a plain reference or application (`a >> b`, R-3.10.12) is
+  neither, so carrying its `@name` (or the `@local` handle it leaves behind)
+  over would turn the inline into a spurious named node that `to-eo-tree`
+  prints as its own `a >>` line, swallowing the surrounding argument; for
+  such a target the `@name` and `@local` are dropped and the value lands as
+  an anonymous argument (#5810).
   -->
   <xsl:template match="o[contains(@base, concat('.', $auto))]" priority="0">
     <xsl:variable name="name" select="eo:resolved-name(@base)"/>
     <xsl:variable name="target" select="ancestor::o/o[@name=$name][1]"/>
+    <xsl:variable name="keep-name" as="xs:boolean" select="exists($target) and (eo:abstract($target) or ($target/@base = '.as-bytes' and $target/o[1]/@base = 'Φ.dataized'))"/>
     <xsl:choose>
       <xsl:when test="exists($target) and not(eo:void($target)) and not(eo:recursive($target, $name))">
         <xsl:element name="o">
           <xsl:if test="@as">
             <xsl:apply-templates select="@as"/>
           </xsl:if>
-          <xsl:apply-templates select="$target/@*"/>
+          <xsl:apply-templates select="$target/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
           <xsl:apply-templates select="$target/node()"/>
         </xsl:element>
       </xsl:when>

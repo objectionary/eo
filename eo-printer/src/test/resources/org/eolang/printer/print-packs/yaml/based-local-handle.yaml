@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A file-local `>> name` handle (R-3.10.12) whose value is a plain reference,
+# not a formation, such as `a >> b`. The parser stores it as an obfuscated
+# cactus binding (`a🌵…`) carrying the handle in `@local` and a `ξ.a` base,
+# and resolves every `b` use to the cactus name. Unlike the recursive-handle
+# and auto-named cases, a based binding is neither void nor an abstract
+# formation, so `restore-local-names` drops its `@local`, and `inline-cactoos`
+# folds the single-use cactus binding back onto its bare `b` reference. The
+# inlined value must land as the anonymous reference `a`, not a spurious
+# named `a >>` node that keeps the obfuscated `@name`: `to-eo-tree` prints
+# such a node as its own `a >>` line, swallowing both the handle and the
+# surrounding `.plus` argument (#5810).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [a] > foo
+    42.plus b > @
+    a >> b
+
+printed: |
+  42.plus a > [a] > foo

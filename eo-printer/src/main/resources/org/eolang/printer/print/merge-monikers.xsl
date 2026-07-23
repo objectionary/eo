@@ -107,8 +107,15 @@
   <!--
   Replace the first hosting reference with the merged binding, always keeping
   the reference's positional `@as`. A bare reference becomes the binding
-  inlined in place: the binding's other attributes and its children. A
-  single-segment dispatch `ξ.<name>.<seg>` becomes a reversed dispatch `<seg>.`
+  inlined in place: the binding's other attributes and its children. An
+  abstract formation keeps its obfuscated `@name`, which `to-eo-tree` renders
+  as the anonymous `[...] >>` marker; a based binding — a `>> name` handle
+  whose value is a plain reference such as `a >> b` (R-3.10.12) — drops its
+  `@name` (and the `@local` handle it leaves behind), since the bare reference
+  is unnamed and carrying the obfuscated name over would turn the inline into
+  a spurious named node that `to-eo-tree` prints as its own `a >>` line
+  instead of an anonymous argument (#5810). A single-segment dispatch
+  `ξ.<name>.<seg>` becomes a reversed dispatch `<seg>.`
   whose receiver is that inlined binding and whose arguments are the
   reference's own children — the equivalent inline for a dispatch use (#5782).
   The dispatch also keeps the reference's own `@name`, so a named use such as
@@ -121,7 +128,7 @@
       <xsl:when test="$seg = ''">
         <xsl:element name="o">
           <xsl:apply-templates select="@as"/>
-          <xsl:apply-templates select="$binding/@*[name() != 'as']"/>
+          <xsl:apply-templates select="$binding/@*[name() != 'as' and (eo:abstract($binding) or (name() != 'name' and name() != 'local'))]"/>
           <xsl:apply-templates select="$binding/node()"/>
         </xsl:element>
       </xsl:when>
