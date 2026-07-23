@@ -21,7 +21,10 @@
   shadows a handle in a more distant scope, and a file-local handle no longer
   hijacks a same-named public attribute in an unrelated sibling formation.
   This mirrors how "build-fqns" later resolves a name to the nearest
-  enclosing formation that owns an attribute of that name.
+  enclosing formation that owns an attribute of that name. A handle written
+  nested inside an application (a moniker with arguments, §3.14) still binds
+  its own body's self-reference (#5788), before "vars-float-up" hoists it into
+  a proper attribute position.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <!--
@@ -30,13 +33,19 @@
   or a global). The nearest enclosing formation (an "o" without "@base") that
   declares the referenced name - as a public attribute "@name" or as a handle
   "@local" - is the reference's scope; the reference binds to a handle only
-  when that scope's declaration is itself a handle.
+  when that scope's declaration is itself a handle. When no enclosing formation
+  declares the name at all, a self-referential handle still captures its own
+  body (#5788): a "&gt;&gt; foo" formation written nested inside an application
+  (a moniker with arguments) is not a direct attribute of any enclosing
+  formation yet, so the ordinary scope search misses it, but its body's
+  reference to "foo" is the handle's own recursion and binds to the nearest
+  enclosing handle of that name.
   -->
   <xsl:function name="eo:captor" as="element()?">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="name" as="xs:string" select="$ref/@base"/>
     <xsl:variable name="scope" as="element()?" select="($ref/ancestor::o[not(@base)][o[@name=$name or @local=$name]])[last()]"/>
-    <xsl:sequence select="$scope/o[@local=$name][1]"/>
+    <xsl:sequence select="if (exists($scope)) then $scope/o[@local=$name][1] else ($ref/ancestor::o[@local=$name])[last()]"/>
   </xsl:function>
   <xsl:template match="o[@base and exists(eo:captor(.))]">
     <xsl:copy>
