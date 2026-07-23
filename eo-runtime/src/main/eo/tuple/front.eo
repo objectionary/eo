@@ -7,29 +7,26 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > front
-  ? >> list
-  ? >> index
+[list index] > front
   if. > @
-    idx.eq 0
+    index.eq 0
     *
     if.
-      0.gt idx
+      0.gt index
       back
         list
         neg.
-          number idx
+          number index
       if.
         gte.
-          number idx
+          number index
           list.length
         list
-        rechead list
-  index > idx!
-  if. > [tup] > rechead
-    tup.length.eq idx
-    tup
-    rechead tup.tail
+        if. > [t] >> r
+          t.length.eq index
+          t
+          r t.tail
+        | list
 
   eq. ++> tests-complex-front
     front

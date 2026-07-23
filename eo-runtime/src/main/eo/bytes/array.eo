@@ -9,15 +9,12 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > array
-  ? >> bts
-  bts > data!
-  data.size > len!
+[b] > array
   if. > [tup index] > slice-byte
-    index.lt len
+    index.lt b.size
     slice-byte
       tup.with
-        bts.slice index 1
+        b.slice index 1
       as-number.
         index.plus 1
     tup

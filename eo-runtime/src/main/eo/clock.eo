@@ -18,11 +18,11 @@
         timeval.seconds.times 1000
         as-number.
           timeval.micros.as-i64.div 1000.as-i64
-  output. > timeb
+  output. >> timeb
     win32
       "_ftime32_s"
       *
-  output. > timeval
+  output. >> timeval
     posix
       "gettimeofday"
       *

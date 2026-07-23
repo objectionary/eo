@@ -11,8 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > hash
-  ? >> input
+[input] > hash
   input.as-bytes > bts!
   bts.size > size!
   if. > [acc index] > rec-hash-code

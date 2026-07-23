@@ -103,6 +103,9 @@ final class LnReversed implements Line {
         if (fragile) {
             emit.fragile();
         }
+        if (!suffix.handle().isEmpty()) {
+            emit.local(suffix.handle());
+        }
         if (suffix.constant()) {
             emit.constant();
         }

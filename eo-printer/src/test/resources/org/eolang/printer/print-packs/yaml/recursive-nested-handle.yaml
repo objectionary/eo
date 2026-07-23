@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A file-local ">>" handle whose self-reference is buried inside one of its own
+# nested formations stays standalone even when an external bare reference could
+# host it. Here "helper" is reached from the outside through the unnamed
+# arg-carrying receiver "(helper x).run", which would ordinarily host it (#5678),
+# but "helper" also calls itself from within its nested "[z] > inner" formation
+# ("helper z"), a deep self-reference resolved by "xi.rho.rho.helper" navigation.
+# Merging the handle onto "(helper x)" would relocate its body and strand that
+# self-reference, so "merge-monikers" refuses the merge and leaves the "[y] >>
+# helper" declaration in place (#5677). Without the guard the handle was inlined
+# onto the receiver and its self-reference dangled, re-printing as an anonymous
+# "[y] >>" with a broken "^.^.helper" — lossy and non-idempotent. A shallow
+# self-reference sitting directly in the handle's phi (moniker-with-arguments)
+# is relocation-safe and still merges.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  +package foo
+
+  [x] > obj
+    (helper x).run > @
+    [y] >> helper
+      helper z > [z] > inner
+printed: |
+  +package foo
+
+  [x] > obj
+    (helper x).run > @
+    [y] >> helper
+      helper z > [z] > inner

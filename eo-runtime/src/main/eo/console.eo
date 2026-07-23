@@ -64,68 +64,62 @@
 
 [] > console
   os.is-windows.if > @
-    windows-console
-    posix-console
-  [] > posix-console
-    [size] > read
-      @. > @
-        read.
-          input-block --
-          size
-      [buffer] > input-block
-        buffer > @
-        [size] > read
-          seq * > @
-            chunk
-            input-block chunk
-          output. > chunk!
-            posix *1
-              "read"
-              posix.stdin
-              size
-    [buffer] > write
-      @. > @
-        output-block.write buffer
-      [] > output-block
-        true > @
-        seq * > [buffer] > write
-          code.
-            posix *1
-              "write"
-              posix.stdout
-              buffer
-              buffer.size
-          output-block
-  [] > windows-console
-    [size] > read
-      @. > @
-        read.
-          input-block --
-          size
-      [buffer] > input-block
-        buffer > @
-        [size] > read
-          seq * > @
-            chunk
-            input-block chunk
-          output. > chunk!
-            win32 *1
-              "_read"
-              win32.stdin
-              size
-    [buffer] > write
-      @. > @
-        output-block.write buffer
-      [] > output-block
-        true > @
-        seq * > [buffer] > write
-          code.
-            win32 *1
-              "_write"
-              win32.stdout
-              buffer
-              buffer.size
-          output-block
+    []
+      [size] > read
+        @. > @
+          (input-block --).read size
+        [buffer] > input-block
+          buffer > @
+          [size] > read
+            seq * > @
+              chunk
+              input-block chunk
+            output. > chunk!
+              win32 *1
+                "_read"
+                win32.stdin
+                size
+      [buffer] > write
+        @. > @
+          output-block.write buffer
+        [] > output-block
+          true > @
+          seq * > [buffer] > write
+            code.
+              win32 *1
+                "_write"
+                win32.stdout
+                buffer
+                buffer.size
+            output-block
+    []
+      [size] > read
+        @. > @
+          (input-block --).read size
+        [buffer] > input-block
+          buffer > @
+          [size] > read
+            seq * > @
+              chunk
+              input-block chunk
+            output. > chunk!
+              posix *1
+                "read"
+                posix.stdin
+                size
+      [buffer] > write
+        @. > @
+          output-block.write buffer
+        [] > output-block
+          true > @
+          seq * > [buffer] > write
+            code.
+              posix *1
+                "write"
+                posix.stdout
+                buffer
+                buffer.size
+            output-block
 
   console.write ++> tests-writes-to-console
     "Hello, console-test!\n"
