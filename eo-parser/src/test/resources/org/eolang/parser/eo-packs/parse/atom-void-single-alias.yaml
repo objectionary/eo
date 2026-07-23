@@ -14,7 +14,7 @@ sheets:
   - /org/eolang/parser/parse/mandatory-as.xsl
 asserts:
   - /object[not(errors)]
-  - /object/o[@name='fopen']/o[@name='e' and @base='∅' and @types='Φ.foo']
+  - /object/o[@name='fopen']/o[@name='e' and @base='∅' and @args='Φ.foo']
 input: |
   +alias foo
 
