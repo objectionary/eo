@@ -11,10 +11,15 @@
 [n] > as-decimal
   if. > @
     n.lt 0
-    "-".as-bytes.concat
-      digits
-        n.times -1
+    signed
+      n.times -1
     digits n
+  [magnitude] > signed
+    if. > @
+      magnitude.lt 1
+      digits magnitude
+      "-".as-bytes.concat
+        digits magnitude
   [n] > digits
     if. > @
       n.lt 10
