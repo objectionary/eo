@@ -21,7 +21,7 @@
   os.is-macos.if > creat
     512
     64
-  2 > inet
+  os.is-macos.if > exclusive`n    2048`n    128`n  2 > inet
   420 > mode
   -1 > none
   511 > permissions
