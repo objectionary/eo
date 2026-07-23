@@ -12,9 +12,8 @@
 [n places] > as-fixed
   if. > @
     n.lt 0
-    "-".as-bytes.concat
-      positive
-        n.times -1
+    signed
+      n.times -1
     positive n
   [a] > positive
     concat. > @
@@ -27,11 +26,7 @@
           ip.times scale
         places
         --
-    floor. > m
-      plus.
-        a.times scale
-        0.5
-    pow10 places > scale
+    rounded a > m
   if. > [p] > pow10
     p.eq 0
     1
@@ -56,6 +51,19 @@
                 (value.div 10).floor.times 10
             48
         acc
+  [a] > rounded
+    floor.
+      plus.
+        a.times scale
+        0.5
+  pow10 places > scale
+  [magnitude] > signed
+    if. > @
+      scaled.eq 0
+      positive magnitude
+      "-".as-bytes.concat
+        positive magnitude
+    rounded magnitude > scaled
 
   eq. ++> tests-carries-rounding-into-integer-part
     "1.000000"
