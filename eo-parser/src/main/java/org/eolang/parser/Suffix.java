@@ -372,6 +372,7 @@ final class Suffix {
      * after {@code >>} on an anonymous handle ({@code >>!}) or right after a
      * named handle ({@code >> name!}), mirroring the {@code > name!} spelling
      * of a plain named binding. Only one marker is accepted.</p>
+     *
      * @param tail Tail substring
      * @param after Index immediately after {@code >>}
      * @param span Source span
@@ -389,22 +390,8 @@ final class Suffix {
             idx = idx + 1;
         }
         final int begin = Suffix.skipSpace(tail, idx);
-        String handle = "";
-        int rest = begin;
-        if (begin < tail.length() && !Suffix.endsName(tail.charAt(begin))) {
-            int end = begin;
-            while (end < tail.length() && !Suffix.endsName(tail.charAt(end))) {
-                end = end + 1;
-            }
-            handle = tail.substring(begin, end);
-            if (handle.codePoints().anyMatch(cp -> cp == 0x1F335)) {
-                throw new ParseError(
-                    span.line(), home + begin,
-                    "cactus emoji is reserved for auto-names; not allowed in identifiers"
-                );
-            }
-            rest = end;
-        }
+        final String handle = Suffix.handle(tail, begin, span, home);
+        int rest = begin + handle.length();
         if (!cnst && rest < tail.length() && tail.charAt(rest) == '!') {
             cnst = true;
             rest = rest + 1;
@@ -418,6 +405,33 @@ final class Suffix {
         }
         Suffix.endsClean(tail, trailing, span, home);
         return new Suffix.Parsed(Form.AUTO, handle, "", cnst);
+    }
+
+    /**
+     * Read a file-local handle name starting at {@code begin}, running up to
+     * the next name terminator; the empty string when no handle is present.
+     * @param tail Tail substring
+     * @param begin Index where the handle name may start
+     * @param span Source span
+     * @param home Source column where tail begins
+     * @return The handle, or the empty string when absent
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static String handle(
+        final String tail, final int begin, final Span span, final int home
+    ) {
+        int end = begin;
+        while (end < tail.length() && !Suffix.endsName(tail.charAt(end))) {
+            end = end + 1;
+        }
+        final String handle = tail.substring(begin, end);
+        if (handle.codePoints().anyMatch(cp -> cp == 0x1F335)) {
+            throw new ParseError(
+                span.line(), home + begin,
+                "cactus emoji is reserved for auto-names; not allowed in identifiers"
+            );
+        }
+        return handle;
     }
 
     /**
