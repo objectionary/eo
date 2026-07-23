@@ -14,25 +14,23 @@
     malloc.of
       8
       [sum] >>
-        malloc.for > @
-          a
-          [left] >>
-            seq * > @
-              while
-                if. > [i] >>
-                  (left.as-number.plus step).lt right
-                  seq *
-                    sum.put
-                      sum.as-number.plus
-                        subsection left.as-number (left.as-number.plus step)
-                    left.put (left.as-number.plus step)
-                    true
-                  false
-                true > [i]
-              sum
-            b > right
-            as-number. > step
-              (right.minus left).div n
+        seq * > @
+          while
+            if. > [i] >>
+              i.lt n
+              seq *
+                sum.put
+                  sum.as-number.plus
+                    subsection
+                      a.plus (i.times step)
+                      a.plus
+                        (i.plus 1).times step
+                true
+              false
+            true > [i]
+          sum
+        as-number. > step
+          (b.minus a).div n
   times. > [a b] > subsection
     div.
       b.minus a
@@ -99,6 +97,50 @@
           10
           100
       333
+      1.0E-7
+    [value operand err] > close-to
+      lte. > @
+        minus.
+          abs
+            value.minus operand
+          err
+        0
+      if. > [value] > abs
+        value.gte 0
+        value
+        value.neg
+
+  ++> tests-integral-with-evenly-dividing-step
+    close-to > @
+      as-number.
+        integral
+          x > [x]
+          0
+          10
+          10
+      50
+      1.0E-7
+    [value operand err] > close-to
+      lte. > @
+        minus.
+          abs
+            value.minus operand
+          err
+        0
+      if. > [value] > abs
+        value.gte 0
+        value
+        value.neg
+
+  ++> tests-integral-with-single-partition
+    close-to > @
+      as-number.
+        integral
+          x > [x]
+          0
+          1
+          1
+      0.5
       1.0E-7
     [value operand err] > close-to
       lte. > @
