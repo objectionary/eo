@@ -78,13 +78,14 @@
   file-local `@local` handle (a recursive `>>`-named formation whose obfuscated
   name `restore-local-names` promotes back to its handle, #5677), either bound
   (has a base) or an abstract formation (#5794), and neither void, `φ`, a test,
-  nor already floated with a pipe (`|`). Only the compiler's obfuscated names
+  a name-recursive formation (see `eo:recursive`), nor already floated with a
+  pipe (`|`). Only the compiler's obfuscated names
   are merged; a real, author-chosen name such as `value` reads best on its own
   `... > name` line and stays standalone (#5738).
   -->
   <xsl:function name="eo:moniker-binding" as="xs:boolean">
     <xsl:param name="attr" as="element()"/>
-    <xsl:sequence select="exists($attr/@name) and (starts-with($attr/@name, concat('a', $eo:cactoos)) or exists($attr/@local)) and (exists($attr/@base) or eo:abstract($attr)) and not(exists($attr/@pipe)) and not(eo:void($attr)) and $attr/@name != $eo:phi and not(eo:test-attr($attr)) and eo:abstract($attr/..)"/>
+    <xsl:sequence select="exists($attr/@name) and (starts-with($attr/@name, concat('a', $eo:cactoos)) or exists($attr/@local)) and (exists($attr/@base) or eo:abstract($attr)) and not(exists($attr/@pipe)) and not(eo:void($attr)) and $attr/@name != $eo:phi and not(eo:test-attr($attr)) and not(eo:recursive($attr)) and eo:abstract($attr/..)"/>
   </xsl:function>
   <!--
   The references, in document order, that can host the binding `$attr`: a bare
@@ -109,6 +110,23 @@
   <xsl:function name="eo:sole-ref" as="xs:boolean">
     <xsl:param name="attr" as="element()"/>
     <xsl:sequence select="count($attr/..//o[$attr/@name = tokenize(@base, '\.') and not(ancestor::o[. is $attr])]) = 1"/>
+  </xsl:function>
+  <!--
+  Whether the binding `$attr` names itself from a reference buried inside one of
+  its own nested formations — a file-local `&gt;&gt;` handle whose deep
+  self-reference resolves by `ξ.ρ…ρ.<name>` navigation across a formation
+  boundary, such as console's `input-block`, whose nested `[size] &gt; read`
+  calls `input-block chunk`. Merging such a handle onto an external reference
+  relocates its body, and the buried self-reference's `ρ`-navigation then
+  resolves nowhere, so it is refused as a moniker and left standalone (#5677).
+  A self-reference sitting directly in the handle's own phi (no intervening
+  formation, such as `moniker-with-arguments`' `r t.tail`) stays in scope after
+  the relocation and still merges, and a formation that recurses only through
+  `$` (self) is never flagged.
+  -->
+  <xsl:function name="eo:recursive" as="xs:boolean">
+    <xsl:param name="attr" as="element()"/>
+    <xsl:sequence select="exists($attr//o[$attr/@name = tokenize(@base, '\.') and ancestor::o[eo:abstract(.) and ancestor::o[. is $attr]]])"/>
   </xsl:function>
   <!--
   Whether the binding `$attr` becomes a moniker, hosted on its first hostable
