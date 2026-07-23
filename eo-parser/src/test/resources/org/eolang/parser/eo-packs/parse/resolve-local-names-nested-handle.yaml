@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+asserts:
+  - /object[not(errors)]
+  # the recursive handle keeps its "@local" marker and gets a cactus name
+  - //o[@local='r' and @name]
+  # the handle's own body reference binds to the handle, not to a global,
+  # even though the handle is written nested inside an application (#5788)
+  - /object[count(//o[@base=//o[@local='r']/@name])=1]
+input: |
+  [list index] > front
+    if. > @
+      index.eq 0
+      list
+      if. > [t] >> r
+        t.length.eq index
+        t
+        r t.tail
+      | list
