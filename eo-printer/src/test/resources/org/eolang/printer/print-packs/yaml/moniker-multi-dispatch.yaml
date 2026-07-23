@@ -1,0 +1,44 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A file-local handle reached only through method dispatches becomes a moniker
+# only when it is referenced exactly once, because a dispatch host inlines the
+# binding as a reversed dispatch whose receiver prints anonymously. The handle
+# `output. >> timeb` here is dispatched twice — through the two-segment
+# `timeb.time.times` (not hostable) and the single-segment `timeb.millitm`
+# (hostable, #5782). Hosting it on `timeb.millitm` would drop the standalone
+# binding and strand `timeb.time.times` with no `timeb` to resolve to, so the
+# printer leaves the `>> timeb` declaration in place and both dispatches keep
+# referring to it. Without the fix the binding was inlined onto the single
+# hostable dispatch and dropped, silently losing the other reference.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  +package foo
+
+  [] > clock
+    fn > @
+      timeb.time.times
+      timeb.millitm
+    output. >> timeb
+      win32
+        "_ftime32_s"
+        *
+
+printed: |
+  +package foo
+
+  [] > clock
+    fn > @
+      timeb.time.times
+      timeb.millitm
+    output. >> timeb
+      win32
+        "_ftime32_s"
+        *

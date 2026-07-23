@@ -27,14 +27,14 @@
   method args. When no hostable reference exists, the binding is left in
   place.
 
-  A binding with several hostable references still becomes a moniker,
-  landing on the first one in document order (#5739). This deliberately
-  gives up the print/parse fixpoint that a single-reference-only merge
-  (#5707) guaranteed: canonical attribute ordering (#5706) can reorder the
-  sibling bindings a reference sits inside, so "the first reference" may
-  shift between passes and the printed moniker may move with it. Since only
-  the compiler's obfuscated names are merged (#5738), this shift stays
-  hidden inside auto-generated plumbing and never moves an author's name.
+  A binding with several references still becomes a moniker when its host is
+  a bare reference: the inline keeps the binding's name in place, so the
+  other references resolve to it (#5739). A binding reachable only through
+  dispatches (#5782) hosts on one of them, whose receiver prints
+  anonymously, so it is merged only when referenced exactly once (see
+  `eo:merges`); a `&gt;&gt;` handle dispatched through several members, such
+  as clock's `timeb` used by both `timeb.time.times` and `timeb.millitm`, is
+  left standalone rather than stranding the un-hosted dispatches.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -101,15 +101,41 @@
     <xsl:sequence select="($refs[eo:dispatch-seg(.) = ''], $refs[eo:dispatch-seg(.) != ''])"/>
   </xsl:function>
   <!--
+  Whether the binding `$attr` is referenced exactly once, counting every
+  reference to its name outside its own subtree. Used to guard the dispatch
+  host below, which prints its receiver anonymously and so cannot serve more
+  than one reference. Mirrors `restore-local-names`' `eo:reducible`.
+  -->
+  <xsl:function name="eo:sole-ref" as="xs:boolean">
+    <xsl:param name="attr" as="element()"/>
+    <xsl:sequence select="count($attr/..//o[$attr/@name = tokenize(@base, '\.') and not(ancestor::o[. is $attr])]) = 1"/>
+  </xsl:function>
+  <!--
+  Whether the binding `$attr` becomes a moniker, hosted on its first hostable
+  reference. A bare host inlines the binding in place keeping its name, so
+  every other reference still resolves to it and the binding may be referenced
+  more than once (#5739). A dispatch host (no bare reference exists, #5782)
+  inlines the binding as a reversed dispatch's receiver, which prints
+  anonymously; it therefore hosts only a binding referenced exactly once, or
+  the other references — such as clock's `timeb.time.times` alongside the
+  hosted `timeb.millitm` — would be stranded with no binding.
+  -->
+  <xsl:function name="eo:merges" as="xs:boolean">
+    <xsl:param name="attr" as="element()"/>
+    <xsl:variable name="refs" select="eo:moniker-refs($attr)"/>
+    <xsl:sequence select="exists($refs) and (exists($refs[eo:dispatch-seg(.) = '']) or eo:sole-ref($attr))"/>
+  </xsl:function>
+  <!--
   The binding that a reference `$ref` should be replaced with, or the empty
-  sequence when `$ref` hosts no binding (not a bare reference, no eligible
-  binding, or not the first hosting reference).
+  sequence when `$ref` hosts no binding (not a hostable reference, no eligible
+  binding, a binding a dispatch host cannot absorb, or not the first hosting
+  reference).
   -->
   <xsl:function name="eo:hosted-binding" as="element()*">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
     <xsl:variable name="binding" select="$owner/o[@name = eo:resolved-ref($ref) and eo:moniker-binding(.)][1]"/>
-    <xsl:sequence select="if (exists($binding) and (eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
+    <xsl:sequence select="if (exists($binding) and eo:merges($binding) and (eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
   </xsl:function>
   <!--
   Replace the first hosting reference with the merged binding, always keeping
@@ -155,7 +181,7 @@
   <!--
   Drop the standalone binding once it has been merged onto a reference.
   -->
-  <xsl:template match="o[eo:moniker-binding(.) and exists(eo:moniker-refs(.))]" priority="1"/>
+  <xsl:template match="o[eo:moniker-binding(.) and eo:merges(.)]" priority="1"/>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
