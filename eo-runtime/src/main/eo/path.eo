@@ -215,6 +215,8 @@
             2
             ubts.size.plus -2
           ubts
+        as-bool. > driveless-rooted
+          ^.is-root-relative driveless
         as-bool. > is-drive-relative
           ^.is-drive-relative ubts
         as-bool. > is-root-relative
@@ -222,7 +224,9 @@
         as-bytes. > normalized
           if.
             driveless.size.eq 0
-            "."
+            is-drive-relative.if
+              uri.slice 0 2
+              "."
             concat.
               concat.
                 is-drive-relative.if
@@ -244,8 +248,7 @@
                 (accum.length.gt 0).and
                   (accum.head.eq "..").not
                 accum.tail
-                if.
-                  is-root-relative.not.and is-drive-relative.not
+                driveless-rooted.not.if
                   accum.with segment
                   accum
               if.
@@ -364,6 +367,16 @@
     normalized.
       path.win32 "..\\..\\foo\\bar\\..\\x\\y\\\\"
     "..\\..\\foo\\x\\y\\"
+
+  eq. ++> tests-normalizes-win32-drive-only-path-keeps-drive
+    normalized.
+      path.win32 "C:"
+    "C:"
+
+  eq. ++> tests-normalizes-win32-drive-relative-path-keeps-leading-dotdot
+    normalized.
+      path.win32 "C:..\\foo"
+    "C:..\\foo"
 
   eq. ++> tests-normalizes-win32-path-down-to-drive-with-separator
     normalized.
