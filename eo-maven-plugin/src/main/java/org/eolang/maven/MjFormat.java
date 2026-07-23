@@ -208,12 +208,14 @@ public final class MjFormat extends MjSafe {
     private void report(final int total, final Collection<Path> divergent, final long millis) {
         if (divergent.isEmpty()) {
             Logger.info(
-                this, "All %d EO source(s) are formatted canonically in %[ms]s", total, millis
+                this,
+                "All %d EO source(s) are formatted canonically, took %[ms]s to check",
+                total, millis
             );
         } else if (this.autoFix) {
             Logger.info(
                 this,
-                "Reformatted %d of %d EO source(s) in %[ms]s",
+                "Reformatted %d of %d EO source(s), took %[ms]s",
                 divergent.size(), total, millis
             );
         } else {
