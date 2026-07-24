@@ -158,6 +158,43 @@
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
   </xsl:template>
+  <!--
+  The mirror case (#5848): the applied sibling reference sits just ABOVE the
+  recursive handle, not below it. A "| args &gt; name" pipe binds its
+  immediately-preceding sibling, so a reference standing before the handle
+  cannot pipe against it where it is; the #5837 tag-in-place path above only
+  matches a reference whose preceding sibling is the handle, so it never fires
+  and the reference stays expanded ("bar &gt; @"). Relocate it instead: drop
+  the reference from its own position (below) and re-emit it just under the
+  handle, tagged "@pipe", the same relocation "inline-cactoos" performs for a
+  separated non-recursive handle (#5840) — done here because the recursive
+  handle is never inlined and its cactus name is stripped before
+  "inline-cactoos" runs. The reference is suppressed at its origin:
+  -->
+  <xsl:template match="o[contains(@base, concat('.', $auto)) and (o or @name) and following-sibling::o[1][@local and eo:recursive(., @name)] and eo:resolved-name(@base) = following-sibling::o[1]/@name]"/>
+  <!--
+  and re-emitted below the handle. Match the recursive handle whose
+  immediately-preceding sibling is such an applied reference, copy the handle,
+  then emit that reference tagged "@pipe"; "to-eo-tree" renders the "|" because
+  the reference's restored base now equals the preceding sibling's name. A
+  reference already carrying "@pipe" is left as is.
+  -->
+  <xsl:template match="o[@local and eo:recursive(., @name) and preceding-sibling::o[1][contains(@base, concat('.', $auto)) and (o or @name)]]">
+    <xsl:variable name="ref" select="preceding-sibling::o[1]"/>
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
+    <xsl:if test="eo:resolved-name($ref/@base) = @name">
+      <xsl:for-each select="$ref">
+        <xsl:copy>
+          <xsl:if test="not(@pipe)">
+            <xsl:attribute name="pipe"/>
+          </xsl:if>
+          <xsl:apply-templates select="node()|@*"/>
+        </xsl:copy>
+      </xsl:for-each>
+    </xsl:if>
+  </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
