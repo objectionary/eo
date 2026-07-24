@@ -37,7 +37,9 @@
     0
     size
   if. > [object] > put
-    object.size.gt size
+    and.
+      size.gt 0
+      object.size.gt size
     T
       "Can't put %d bytes into a chunk sized %d bytes; call .resized first to grow it".printf
         * object.size size
