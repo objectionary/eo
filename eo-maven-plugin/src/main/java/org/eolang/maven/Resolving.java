@@ -150,7 +150,7 @@ final class Resolving implements Step {
             dependency.getVersion()
         );
         final int total;
-        if (Files.exists(place)) {
+        if (Files.exists(place) && !new Walk(place).isEmpty()) {
             Logger.debug(
                 this,
                 "Dependency %s already resolved and exists in %[file]s",
