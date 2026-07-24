@@ -18,7 +18,7 @@
   up out of the argument slot ("vars-float-up.xsl") leaves a layer with
   only its nested tuple and length marker and no element in between. The
   positional range then selects nothing, so the layer contributes no star
-  element — where a fixed o[2] would have mis-read the length marker as a
+  element — where a fixed o[2] would have taken the length marker for a
   spurious numeric element (#5858).
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
