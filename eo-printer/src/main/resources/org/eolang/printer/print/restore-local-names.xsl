@@ -107,6 +107,28 @@
   formations, whose handle is inlined away by "inline-cactoos".
   -->
   <xsl:template match="o[not(@base=$eo:empty) and not(eo:recursive(., @name)) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
+  <!--
+  When a recursive "&gt;&gt; name" handle is restored, its cactus name is
+  promoted to the visible "@name" and every reference is rewritten from the
+  cactus name to the handle. That strips the cactus name before
+  "inline-cactoos" runs, so its #5834 pipe-continuation logic
+  (`eo:piped`) — which only matches cactus-named references — never fires
+  and the applied sibling reference stays expanded (`bar &gt; x`) instead of
+  folding to the compact `| &gt; x`. Mirror `eo:piped` here: tag the handle's
+  immediately-following applied sibling reference — one carrying arguments or
+  a name — with `pipe=""`. "to-eo-tree" renders "@pipe" when the base equals
+  the preceding sibling's name, so tagging alone emits the "|". A reference
+  that already carries "@pipe" (an already-piped handle round-tripping) is
+  left as is.
+  -->
+  <xsl:template match="o[contains(@base, concat('.', $auto)) and (o or @name) and preceding-sibling::o[1][@local and eo:recursive(., @name)] and eo:resolved-name(@base) = preceding-sibling::o[1]/@name]">
+    <xsl:copy>
+      <xsl:if test="not(@pipe)">
+        <xsl:attribute name="pipe"/>
+      </xsl:if>
+      <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
+  </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
