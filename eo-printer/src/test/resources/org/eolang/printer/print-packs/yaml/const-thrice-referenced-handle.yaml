@@ -6,10 +6,6 @@
 # kept whole just like the two-reference case (#5828): the single cached const
 # object stays behind one handle, hosted onto the first reference as a moniker,
 # and the remaining references read back as the bare `b`.
-#
-# 'reprints: false' (#5739): the moniker spelling parses the nested handle in a
-# narrower scope than the standalone spelling, so it does not reprint to itself.
-reprints: false
 penalties:
   INDENT: 3
   BRACKET: 7

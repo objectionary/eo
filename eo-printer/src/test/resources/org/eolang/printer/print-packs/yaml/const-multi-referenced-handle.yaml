@@ -11,10 +11,6 @@
 # as a moniker (`a >> b!` under the first `.plus`), the remaining references
 # reading back as the bare `b`. Contrast the non-const `a >> b`, which is
 # referentially transparent and safely inlines to `42.plus a` at every use.
-#
-# 'reprints: false' (#5739): the moniker spelling parses the nested handle in a
-# narrower scope than the standalone spelling, so it does not reprint to itself.
-reprints: false
 penalties:
   INDENT: 3
   BRACKET: 7
