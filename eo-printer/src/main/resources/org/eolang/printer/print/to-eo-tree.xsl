@@ -237,9 +237,11 @@
   restore the compact "|" head only when that predecessor is still the
   immediately preceding sibling, so the emitted pipe has a valid target
   directly above it — the base then reads "ξ.&lt;name&gt;" (or the bare
-  "&lt;name&gt;" if reference resolution has not rooted it). When the
-  predecessor has floated away (#5526) the guard fails and the node
-  prints as an ordinary application, which round-trips just as safely.
+  "&lt;name&gt;" if reference resolution has not rooted it). A predecessor
+  that floated away (#5526) is re-nested back above its single pipe use by
+  "renest-pipe-monikers" (#5732), so the guard fires here too; only a
+  formation used by more than one pipe stays floated and prints as an
+  ordinary application, which round-trips just as safely.
   -->
   <xsl:template match="o[@pipe and (@base = concat($eo:xi, '.', preceding-sibling::o[1]/@name) or @base = preceding-sibling::o[1]/@name)]" mode="head" priority="2">
     <xsl:text>|</xsl:text>
