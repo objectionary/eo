@@ -82,6 +82,21 @@ final class Transpiling implements Step {
         ThreadLocal.withInitial(HashMap::new);
 
     /**
+     * The pre-{@code to-java.xsl} train, one per thread for the same
+     * thread-safety reason as {@link #TRAINS}: every shift up to (not
+     * including) the final one, in the exact XMIR shape {@code to-java.xsl}
+     * itself dispatches on. Used to derive the coverage manifest structurally
+     * (see {@link CoverageManifest}), instead of pattern-matching the Java
+     * text {@code to-java.xsl} emits.
+     */
+    private static final ThreadLocal<Train<Shift>> LOCATED =
+        ThreadLocal.withInitial(
+            () -> new TrClasspath<>(
+                Arrays.copyOf(Transpiling.XSLS, Transpiling.XSLS.length - 1)
+            ).back()
+        );
+
+    /**
      * Cache directory for transpiled sources.
      */
     private static final String CACHE = "transpiled";
@@ -268,8 +283,10 @@ final class Transpiling implements Step {
             rewrite.compareAndSet(false, true);
             new Saved(transform.apply(xmir).toString(), target).value();
         }
-        if (this.coverage != null && Files.exists(target)) {
-            new CoverageManifest(this.coverage).scan(Files.readString(target));
+        if (this.coverage != null) {
+            new CoverageManifest(this.coverage).scan(
+                new Xsline(Transpiling.LOCATED.get()).pass(xmir)
+            );
         }
         return this.javaGenerated(
             rewrite.get(), target, hsh.get(), this.transpileTests && !tojo.discovered()

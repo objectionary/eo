@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
@@ -33,22 +34,29 @@ final class CoverageManifestTest {
     }
 
     @Test
-    void extractsOneLinePerPhCoverageWrapper(@Mktmp final Path temp) throws Exception {
+    void extractsOneLinePerLocatedElement(@Mktmp final Path temp) throws Exception {
         final CoverageManifest manifest = new CoverageManifest(temp.resolve("hits.txt"));
         manifest.scan(
-            String.join(
-                System.lineSeparator(),
-                "rb1 = new PhCoverage(rb1, \"Φ.foo.x.main\", 5, 1);",
-                "rb2 = new PhCoverage(rb2, \"Φ.foo.x.main.α0\", 6, 3);",
-                "rb3 = something.else(rb3);"
+            new XMLDocument(
+                String.join(
+                    System.lineSeparator(),
+                    "<program>",
+                    "  <o line='5' pos='1' loc='Φ.foo.x.main'/>",
+                    "  <o line='6' pos='3' loc='Φ.foo.x.main.α0'/>",
+                    "  <o line='7' pos='2' loc='Φ.foo.x.main.α0+1'/>",
+                    "  <o loc='Φ.foo.x.main.α1'/>",
+                    "</program>"
+                )
             )
         );
         MatcherAssert.assertThat(
-            "one manifest line must be written per PhCoverage wrapper found",
+            "one manifest line must be written per located element found, skipping ones without both a line and a position and ones whose locator carries a nested-attribute suffix",
             new TextOf(manifest.path()).asString(),
             Matchers.allOf(
                 Matchers.containsString("Φ.foo.x.main\t5"),
-                Matchers.containsString("Φ.foo.x.main.α0\t6")
+                Matchers.containsString("Φ.foo.x.main.α0\t6"),
+                Matchers.not(Matchers.containsString("Φ.foo.x.main.α0+1")),
+                Matchers.not(Matchers.containsString("Φ.foo.x.main.α1"))
             )
         );
     }
@@ -56,7 +64,9 @@ final class CoverageManifestTest {
     @Test
     void discardsAPreviousManifestOnReset(@Mktmp final Path temp) throws IOException {
         final CoverageManifest manifest = new CoverageManifest(temp.resolve("hits.txt"));
-        manifest.scan("x = new PhCoverage(x, \"Φ.main\", 1, 1);");
+        manifest.scan(
+            new XMLDocument("<program><o line='1' pos='1' loc='Φ.main'/></program>")
+        );
         manifest.reset();
         MatcherAssert.assertThat(
             "reset must discard whatever a previous run wrote",

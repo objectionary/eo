@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.xml.XML;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -12,8 +13,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * The full set of locations the transpiler wrapped into {@code PhCoverage},
@@ -30,12 +29,15 @@ import java.util.regex.Pattern;
 final class CoverageManifest {
 
     /**
-     * Matches one {@code new PhCoverage(name, "loc", line, pos);} call, as
-     * emitted by {@code to-java.xsl}, in the transpiled Java text.
+     * Selects exactly the elements that end up wrapped into {@code
+     * PhCoverage}. This is the same {@code @line}/{@code @pos}/{@code @loc}
+     * condition the final {@code to-java.xsl} shift itself tests, applied
+     * instead to the XMIR right before that shift runs, so the manifest is
+     * derived from that structure directly, not by pattern-matching the
+     * Java text {@code to-java.xsl} emits.
      */
-    private static final Pattern WRAPPED = Pattern.compile(
-        "new PhCoverage\\([^,]+,\\s*\"([^\"]*)\",\\s*(\\d+),\\s*\\d+\\)"
-    );
+    private static final String LOCATED =
+        "//*[@line and @pos and not(contains(@loc, '+'))]";
 
     /**
      * The raw coverage hits file this manifest is paired with.
@@ -67,21 +69,24 @@ final class CoverageManifest {
     }
 
     /**
-     * Scan a transpiled source for {@code PhCoverage} wrappers and append
-     * one manifest line per location found, in a single write. Just like
+     * Scan the located (post-locators, pre-{@code to-java.xsl}) XMIR for the
+     * elements that will be wrapped into {@code PhCoverage}, and append one
+     * manifest line per location found, in a single write. Just like
      * {@code PhCoverage} itself, this relies on the OS append guarantee for
      * a single {@code write()} syscall to stay safe across the transpiler's
      * worker threads, with no explicit locking.
-     * @param java The transpiled Java (or XMIR-with-Java) text to scan
+     * @param located The XMIR, after every transpile shift except the final
+     *  {@code to-java.xsl} one
      * @throws IOException If fails to append
      */
-    void scan(final String java) throws IOException {
-        final Matcher matcher = CoverageManifest.WRAPPED.matcher(java);
+    void scan(final XML located) throws IOException {
         final List<String> lines = new ArrayList<>(0);
-        while (matcher.find()) {
+        for (final XML element : located.nodes(CoverageManifest.LOCATED)) {
             lines.add(
                 String.format(
-                    "%s\t%s%n", matcher.group(1), matcher.group(2)
+                    "%s\t%s%n",
+                    element.xpath("@loc").get(0),
+                    element.xpath("@line").get(0)
                 )
             );
         }
