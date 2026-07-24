@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A const file-local handle (`a >> b!`, #5817) shared by three references is
+# kept whole just like the two-reference case (#5828): the single cached const
+# object stays behind one handle and every `b` use points at it.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [a] > foo
+    a >> b!
+    42.plus b > x
+    43.plus b > y
+    44.plus b > z
+
+printed: |
+  [a] > foo
+    a >> b!
+    42.plus b > x
+    43.plus b > y
+    44.plus b > z
