@@ -31,12 +31,21 @@
   declares the referenced name - as a public attribute "@name" or as a handle
   "@local" - is the reference's scope; the reference binds to a handle only
   when that scope's declaration is itself a handle.
+
+  A handle is an attribute of the formation that declares it wherever it is
+  written in that formation's body, not only as a direct child: a handle
+  written nested inside an application (`42.plus > x` with `a &gt;&gt; b!`
+  beneath it, the moniker spelling the printer emits, #5828) still belongs to
+  the enclosing formation. So a formation owns a handle when some "@local"
+  descendant has that formation as its nearest enclosing formation - the "is"
+  test stops the search at a nested formation boundary, so a handle never
+  leaks up out of, or sideways between, nested formations (#5780).
   -->
   <xsl:function name="eo:captor" as="element()?">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="name" as="xs:string" select="$ref/@base"/>
-    <xsl:variable name="scope" as="element()?" select="($ref/ancestor::o[not(@base)][o[@name=$name or @local=$name]])[last()]"/>
-    <xsl:sequence select="$scope/o[@local=$name][1]"/>
+    <xsl:variable name="scope" as="element()?" select="($ref/ancestor::o[not(@base)][o[@name=$name] or (some $d in descendant::o[@local=$name] satisfies $d/ancestor::o[not(@base)][1] is .)])[last()]"/>
+    <xsl:sequence select="$scope/descendant::o[@local=$name][ancestor::o[not(@base)][1] is $scope][1]"/>
   </xsl:function>
   <xsl:template match="o[@base and exists(eo:captor(.))]">
     <xsl:copy>

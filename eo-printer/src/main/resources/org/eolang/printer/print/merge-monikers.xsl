@@ -105,6 +105,33 @@
     <xsl:sequence select="if (exists($binding) and (eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
   </xsl:function>
   <!--
+  Whether `$attr` is a const file-local handle (`a &gt;&gt; b!`, R-3.10.12):
+  a based binding (not an abstract formation) carrying both the `!` const
+  marker and its readable "@local" handle. Such a handle is dataized once and
+  cached, so a multi-referenced one is kept whole by "inline-cactoos" (#5828)
+  and reaches here as an ordinary moniker binding. Unlike the non-const based
+  handle (#5810), it keeps its obfuscated "@name" and "@local" when hosted, so
+  "to-eo-tree" prints the merged binding as `a &gt;&gt; b!` rather than the
+  anonymous `a!`.
+  -->
+  <xsl:function name="eo:const-handle" as="xs:boolean">
+    <xsl:param name="attr" as="element()"/>
+    <xsl:sequence select="exists($attr/@const) and exists($attr/@local) and not(eo:abstract($attr))"/>
+  </xsl:function>
+  <!--
+  The const file-local handle binding a reference `$ref` resolves to but does
+  NOT host (the binding folds onto its first reference only). Every other
+  reference keeps the readable "@local" handle in place of the obfuscated
+  cactus name, so it reads back as a bare `b` rather than a synthetic "vL_P"
+  name (#5828).
+  -->
+  <xsl:function name="eo:kept-const-ref" as="element()*">
+    <xsl:param name="ref" as="element()"/>
+    <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
+    <xsl:variable name="binding" select="$owner/o[@name = eo:resolved-ref($ref) and eo:moniker-binding(.) and eo:const-handle(.)][1]"/>
+    <xsl:sequence select="if (exists($binding) and not(eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
+  </xsl:function>
+  <!--
   Replace the first hosting reference with the merged binding, always keeping
   the reference's positional `@as`. A bare reference becomes the binding
   inlined in place: the binding's other attributes and its children. An
@@ -114,7 +141,10 @@
   `@name` (and the `@local` handle it leaves behind), since the bare reference
   is unnamed and carrying the obfuscated name over would turn the inline into
   a spurious named node that `to-eo-tree` prints as its own `a >>` line
-  instead of an anonymous argument (#5810). A single-segment dispatch
+  instead of an anonymous argument (#5810). A const based handle
+  (`a >> b!`, see `eo:const-handle`) is the exception: it keeps its `@name` and
+  `@local`, so `to-eo-tree` prints the readable `a >> b!` and its other
+  references read back as the bare handle `b` (#5828). A single-segment dispatch
   `ξ.<name>.<seg>` becomes a reversed dispatch `<seg>.`
   whose receiver is that inlined binding and whose arguments are the
   reference's own children — the equivalent inline for a dispatch use (#5782).
@@ -128,7 +158,7 @@
       <xsl:when test="$seg = ''">
         <xsl:element name="o">
           <xsl:apply-templates select="@as"/>
-          <xsl:apply-templates select="$binding/@*[name() != 'as' and (eo:abstract($binding) or (name() != 'name' and name() != 'local'))]"/>
+          <xsl:apply-templates select="$binding/@*[name() != 'as' and (eo:abstract($binding) or eo:const-handle($binding) or (name() != 'name' and name() != 'local'))]"/>
           <xsl:apply-templates select="$binding/node()"/>
         </xsl:element>
       </xsl:when>
@@ -145,6 +175,16 @@
         </xsl:element>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+  <!--
+  Rewrite a non-hosting reference to a const file-local handle from the
+  obfuscated cactus name back to the readable "@local" handle, so it reads as
+  `b` instead of a synthetic "vL_P" placeholder (#5828). The hosting reference
+  is rebuilt from the binding above and never reaches this template.
+  -->
+  <xsl:template match="o[exists(eo:kept-const-ref(.))]/@base" priority="2">
+    <xsl:variable name="binding" select="eo:kept-const-ref(..)"/>
+    <xsl:attribute name="base" select="string-join(for $seg in tokenize(., '\.') return (if ($seg = $binding/@name) then string($binding/@local) else $seg), '.')"/>
   </xsl:template>
   <!--
   Drop the standalone binding once it has been merged onto a reference.

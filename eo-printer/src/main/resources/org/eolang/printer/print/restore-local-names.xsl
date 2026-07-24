@@ -34,12 +34,14 @@
   value is dataized once and cached in a single binding, so a handle referenced
   more than once must stay one shared object rather than be inlined per use
   (which would mint an independent const at each site and drop the shared name,
-  #5828). Such a handle is likewise treated as a handled void — its handle,
-  which the parser leaves on the wrapped value inside the "const-to-dataized"
-  `.as-bytes`/`Φ.dataized` shell, is promoted to the wrapper's visible name, its
-  references are rewritten back to the handle, and the marker is kept — so it
-  survives the later passes as a single standalone `a &gt;&gt; b!` binding. A
-  single-use const still inlines to `a!` (#5821).
+  #5828). Such a handle keeps its "@local" marker here — the parser leaves it on
+  the wrapped value inside the "const-to-dataized" `.as-bytes`/`Φ.dataized`
+  shell — so the handle survives to "to-eo-tree" and prints as `a &gt;&gt; b!`.
+  Unlike a void, its cactus "@name" is NOT promoted and its references are NOT
+  rewritten: the binding stays obfuscated so "inline-cactoos" leaves it whole
+  and "merge-monikers" folds it onto its first reference as a moniker, the other
+  references reading back as the bare handle. A single-use const still inlines
+  to `a!` (#5821).
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -73,10 +75,10 @@
   reference shares one const object; inlining it per use (as "inline-cactoos"
   does for a single-use const, #5821, or a referentially-transparent non-const
   handle, #5810) would mint an independent const object at each site and drop
-  the shared name. A multi-referenced one is therefore restored here like a
-  handled void: its handle is promoted to the visible name and its references
-  are rewritten back to the handle, so it stays a single standalone
-  `a &gt;&gt; b!` binding that the later passes leave untouched (#5828).
+  the shared name. Its "@local" marker is therefore kept here so the surviving
+  binding still prints its readable `&gt;&gt; b` handle; the binding itself
+  stays cactus-named for "merge-monikers" to fold onto its first reference
+  (#5828).
   -->
   <xsl:function name="eo:const-handle" as="xs:boolean">
     <xsl:param name="wrapper" as="element()*"/>
@@ -84,15 +86,12 @@
     <xsl:sequence select="exists($wrapper) and $wrapper/@base='.as-bytes' and exists($wrapper/@name) and exists($value/@local) and count($wrapper/..//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $wrapper/@name and not(ancestor-or-self::o[. is $wrapper])]) &gt; 1"/>
   </xsl:function>
   <xsl:key name="void-handle" match="o[@local and (@base=$eo:empty or eo:recursive(., @name))]" use="@name"/>
-  <xsl:key name="const-handle" match="o[eo:const-handle(.)]" use="@name"/>
   <!--
-  References: rewrite each cactus segment that names a handled void, a
-  recursive formation, or a multi-referenced dataized-const handle back into
-  the readable handle. A void or recursive formation carries "@local" itself; a
-  const wrapper keeps the handle on its wrapped value.
+  References: rewrite each cactus segment that names a handled void or a
+  recursive formation back into the readable handle.
   -->
   <xsl:template match="@base">
-    <xsl:attribute name="base" select="string-join(for $seg in tokenize(., '\.') return (if (key('void-handle', $seg)) then string(key('void-handle', $seg)[1]/@local) else if (key('const-handle', $seg)) then string(key('const-handle', $seg)[1]/o[@base='Φ.dataized']/o[1]/@local) else $seg), '.')"/>
+    <xsl:attribute name="base" select="string-join(for $seg in tokenize(., '\.') return (if (key('void-handle', $seg)) then key('void-handle', $seg)[1]/@local else $seg), '.')"/>
   </xsl:template>
   <!--
   Handled declaration (void or recursive formation): promote the handle
@@ -102,19 +101,10 @@
     <xsl:attribute name="name" select="../@local"/>
   </xsl:template>
   <!--
-  Multi-referenced dataized-const handle: promote its handle (kept on the
-  wrapped value) to the wrapper's visible name, so "dataized-to-const" rebuilds
-  a readable `a &gt;&gt; b!` binding rather than a cactus-named one that
-  "merge-monikers" would try to fold onto a use site.
-  -->
-  <xsl:template match="o[eo:const-handle(.)]/@name">
-    <xsl:attribute name="name" select="../o[@base='Φ.dataized']/o[1]/@local"/>
-  </xsl:template>
-  <!--
   Keep the marker on voids, on recursive formations, and on the value of a
-  multi-referenced dataized-const handle so "to-eo-tree" restores the readable
-  "&gt;&gt; name" handle; drop it on the other non-void formations, whose
-  handle is inlined away by "inline-cactoos".
+  multi-referenced dataized-const handle (see "eo:const-handle") so "to-eo-tree"
+  restores the readable "&gt;&gt; name" handle; drop it on the other non-void
+  formations, whose handle is inlined away by "inline-cactoos".
   -->
   <xsl:template match="o[not(@base=$eo:empty) and not(eo:recursive(., @name)) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
   <xsl:template match="node()|@*">

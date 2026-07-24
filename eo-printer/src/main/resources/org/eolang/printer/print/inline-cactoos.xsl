@@ -39,7 +39,12 @@
   auto-named abstract that references its own name; inlining it would
   copy that self-reference back in and fire this template forever, so
   such a target is also left untouched (both the reference and the
-  abstraction stay in place).
+  abstraction stay in place). A dataized-const handle (`a &gt;&gt; b!`,
+  R-3.10.12) reached from more than one site is likewise left untouched:
+  the const is dataized once and cached in that single binding, so folding
+  it into each use would mint an independent const object per reference and
+  drop the shared name (#5828); "merge-monikers" later hosts the kept
+  binding onto its first reference.
 
   The inlined value keeps the target's obfuscated cactus `@name` only when
   the name is still meaningful downstream: an abstract formation, whose name
@@ -61,7 +66,7 @@
     <xsl:variable name="target" select="ancestor::o/o[@name=$name][1]"/>
     <xsl:variable name="keep-name" as="xs:boolean" select="exists($target) and (eo:abstract($target) or ($target/@base = '.as-bytes' and $target/o[1]/@base = 'Φ.dataized' and eo:abstract($target/o[1]/o[1])))"/>
     <xsl:choose>
-      <xsl:when test="exists($target) and not(eo:void($target)) and not(eo:recursive($target, $name))">
+      <xsl:when test="exists($target) and not(eo:void($target)) and not(eo:recursive($target, $name)) and not(eo:dataized-const($target) and eo:multi-referenced($target, $name))">
         <xsl:element name="o">
           <xsl:if test="@as">
             <xsl:apply-templates select="@as"/>
@@ -79,8 +84,10 @@
   </xsl:template>
   <!--
   Drop an inlined auto-named abstract; keep cactus-named voids, keep
-  self-referential (recursive) abstracts, which are never inlined, and keep
-  a binding that a surviving method dispatch still reaches through its name.
+  self-referential (recursive) abstracts, which are never inlined, keep a
+  multi-referenced dataized-const handle, which is never inlined (#5828), and
+  keep a binding that a surviving method dispatch still reaches through its
+  name.
   Such a dispatch reference (`ξ.<name>.<seg>`) is not inlined above — its
   receiver is buried in a dotted base — so dropping the binding would strand
   the reference on a synthetic "vL_P" placeholder. Keeping it lets
@@ -88,7 +95,7 @@
   instead (#5782).
   -->
   <xsl:template match="o[starts-with(@name, $auto) and not(eo:void(.))]" priority="1">
-    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name)">
+    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or (eo:dataized-const(.) and eo:multi-referenced(., @name))">
       <xsl:copy>
         <xsl:apply-templates select="node()|@*"/>
       </xsl:copy>
@@ -116,6 +123,31 @@
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
     <xsl:sequence select="exists($target/..//o[contains(@base, concat($name, '.')) and not(ancestor-or-self::o[. is $target])])"/>
+  </xsl:function>
+  <!--
+  Whether the auto-named binding `$target` is a dataized-const wrapper: a
+  `.as-bytes` node over a `Φ.dataized` node, the shape "const-to-dataized"
+  leaves behind for a const file-local `&gt;&gt; name!` handle (R-3.10.12).
+  Such a const is dataized once and its result cached in that single binding,
+  so every reference shares one const object.
+  -->
+  <xsl:function name="eo:dataized-const" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:sequence select="$target/@base = '.as-bytes' and $target/o[1]/@base = 'Φ.dataized'"/>
+  </xsl:function>
+  <!--
+  Whether more than one reference in the binding's owner resolves to the
+  auto-name `$name` (references inside the binding's own subtree excluded).
+  A const binding reached from several sites must stay a single shared handle
+  rather than be folded into each use: inlining it would mint an independent
+  const object per reference, changing the object graph and dropping the
+  shared name (#5828). "merge-monikers" then hosts the kept binding onto its
+  first reference.
+  -->
+  <xsl:function name="eo:multi-referenced" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="count($target/..//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name and not(ancestor-or-self::o[. is $target])]) &gt; 1"/>
   </xsl:function>
   <xsl:template match="node()|@*">
     <xsl:copy>
