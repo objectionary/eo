@@ -68,16 +68,38 @@
     <xsl:sequence select="if (exists($ref/@base) and starts-with($ref/@base, concat($eo:xi, '.')) and contains($tail, '.') and substring-before($tail, '.') != '' and not(contains(substring-after($tail, '.'), '.'))) then substring-after($tail, '.') else ''"/>
   </xsl:function>
   <!--
+  Whether `$attr` is a restored recursive `&gt;&gt; name` handle: an abstract
+  formation carrying its readable "@local" handle whose visible "@name" has
+  already been promoted to that same handle by "restore-local-names" (which
+  sets "@name = @local" and rewrites the self-references only for a recursive
+  formation, R-3.10.12 / #5681). Its cactus name is gone, yet when it is used
+  as a method-dispatch receiver it must still host onto that dispatch as a
+  reversed-dispatch moniker (#5848) — the recursive mirror of the non-recursive
+  dispatch fold, where the anonymous formation is inlined (#5782). A void
+  ("@base=∅"), a const handle (cactus "@name" ≠ readable "@local") and a plain
+  cactus binding all fail "@name = @local", so only the restored recursive
+  handle is admitted here.
+  -->
+  <xsl:function name="eo:recursive-handle" as="xs:boolean">
+    <xsl:param name="attr" as="element()"/>
+    <xsl:sequence select="eo:abstract($attr) and exists($attr/@local) and exists($attr/@name) and $attr/@name = $attr/@local"/>
+  </xsl:function>
+  <!--
   Whether `$attr` is a formation attribute eligible to become a moniker:
   auto-named with the cactus prefix (`a🌵`, §9.2), either bound (has a base)
   or an abstract formation (#5794), and neither void, `φ`, a test, nor already
   floated with a pipe (`|`). Only the compiler's obfuscated names are merged;
   a real, author-chosen name such as `value` reads best on its own
-  `... > name` line and stays standalone (#5738).
+  `... > name` line and stays standalone (#5738). A restored recursive handle
+  (see `eo:recursive-handle`) is the exception: its readable name is compiler
+  plumbing that the non-recursive path discards entirely, so it too may host
+  onto a dispatch use (#5848). Its bare uses always carry a `@name` (the
+  `| ... > name` pipe #5837/#5848 leaves them with) and so never resolve as a
+  hostable bare reference, so only a genuine dispatch use folds.
   -->
   <xsl:function name="eo:moniker-binding" as="xs:boolean">
     <xsl:param name="attr" as="element()"/>
-    <xsl:sequence select="exists($attr/@name) and starts-with($attr/@name, concat('a', $eo:cactoos)) and (exists($attr/@base) or eo:abstract($attr)) and not(exists($attr/@pipe)) and not(eo:void($attr)) and $attr/@name != $eo:phi and not(eo:test-attr($attr)) and eo:abstract($attr/..)"/>
+    <xsl:sequence select="exists($attr/@name) and (starts-with($attr/@name, concat('a', $eo:cactoos)) or eo:recursive-handle($attr)) and (exists($attr/@base) or eo:abstract($attr)) and not(exists($attr/@pipe)) and not(eo:void($attr)) and $attr/@name != $eo:phi and not(eo:test-attr($attr)) and eo:abstract($attr/..)"/>
   </xsl:function>
   <!--
   The references, in document order, that can host the binding `$attr`: a bare
