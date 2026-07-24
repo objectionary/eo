@@ -21,6 +21,17 @@ import java.util.concurrent.locks.ReentrantLock;
  * defeat the serialization entirely (#5720). The per-file {@link Cache} itself
  * is passed in to {@link #apply}, since it differs from file to file.</p>
  *
+ * <p>The serialization is in-instance only: every owner ({@link Parsing},
+ * {@link Transpiling}, {@link Linting}) keeps its own guard, and {@link Parsing}
+ * alone is instantiated both by {@link MjParse} and by
+ * {@link MjSafe#assembling()}. Within one module that is enough, because those
+ * mojos run in different lifecycle phases and never overlap. Two modules built
+ * at the same time (a parallel reactor, or two separate Maven processes) still
+ * write to the same cache location whenever they touch the same dependency,
+ * because the default cache directory is machine-wide rather than module-scoped
+ * (#2857); no in-process lock can serialize that, so it stays out of scope
+ * here.</p>
+ *
  * @since 0.60
  */
 final class ConcurrentCache {
@@ -48,13 +59,13 @@ final class ConcurrentCache {
     /**
      * Check cache and apply compilation if needed, holding the lock for the
      * given tail path so concurrent writes to it are serialized.
-     * @param cache The per-file cache to run under the lock
      * @param source From file
      * @param target To file
      * @param tail Tail path in cache
+     * @param cache The per-file cache to run under the lock
      * @checkstyle ParameterNumberCheck (3 lines)
      */
-    void apply(final Cache cache, final Path source, final Path target, final Path tail) {
+    void apply(final Path source, final Path target, final Path tail, final Cache cache) {
         final ReentrantLock lock = this.locks.computeIfAbsent(
             tail.normalize(), k -> new ReentrantLock()
         );

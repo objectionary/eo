@@ -94,8 +94,7 @@ final class Parsing implements Step {
     private final Path sourcesDir;
 
     /**
-     * Shared cache guard, reused across all files so that concurrent writes to
-     * the same cache tail path are actually serialized (#5720).
+     * Cache guard, see {@link ConcurrentCache} for why it is one per instance.
      */
     private final ConcurrentCache guard;
 
@@ -164,32 +163,18 @@ final class Parsing implements Step {
     }
 
     /**
-     * Parse all the given sources to XMIRs, concurrently.
-     * @param sources The sources to parse
-     * @param pipeline The canonical parsing transform to apply
-     * @param digest Digest of the set of known objects (part of the cache key)
-     * @return Amount of parsed tojos
-     */
-    private int parsed(
-        final Collection<TjForeign> sources,
-        final UnaryOperator<XML> pipeline,
-        final String digest
-    ) {
-        return new Threaded<>(
-            new Filtered<>(TjForeign::notParsed, sources),
-            tojo -> this.parsed(tojo, pipeline, digest)
-        ).total();
-    }
-
-    /**
      * Parse EO file to XML.
+     *
+     * <p>Package-private, so that a test can race a few threads on one instance
+     * the way {@link #parsed(Collection, UnaryOperator, String)} does.</p>
+     *
      * @param tojo The tojo
      * @param pipeline The canonical parsing transform to apply
      * @param digest Digest of the set of known objects (part of the cache key)
      * @return Amount of parsed tojos
      * @throws Exception If fails
      */
-    private int parsed(
+    int parsed(
         final TjForeign tojo, final UnaryOperator<XML> pipeline, final String digest
     ) throws Exception {
         final Path source = tojo.source();
@@ -199,6 +184,7 @@ final class Parsing implements Step {
         final List<Node> refs = new ArrayList<>(1);
         if (this.cacheEnabled) {
             this.guard.apply(
+                source, target, base.relativize(target),
                 new Cache(
                     new CachePath(
                         this.cacheDir.resolve(Parsing.CACHE),
@@ -210,8 +196,7 @@ final class Parsing implements Step {
                         refs.add(node);
                         return new XMLDocument(node).toString();
                     }
-                ),
-                source, target, base.relativize(target)
+                )
             );
         } else {
             final Node node = this.parsed(source, name, pipeline);
@@ -238,6 +223,24 @@ final class Parsing implements Step {
             }
         }
         return 1;
+    }
+
+    /**
+     * Parse all the given sources to XMIRs, concurrently.
+     * @param sources The sources to parse
+     * @param pipeline The canonical parsing transform to apply
+     * @param digest Digest of the set of known objects (part of the cache key)
+     * @return Amount of parsed tojos
+     */
+    private int parsed(
+        final Collection<TjForeign> sources,
+        final UnaryOperator<XML> pipeline,
+        final String digest
+    ) {
+        return new Threaded<>(
+            new Filtered<>(TjForeign::notParsed, sources),
+            tojo -> this.parsed(tojo, pipeline, digest)
+        ).total();
     }
 
     /**

@@ -40,7 +40,7 @@ final class ConcurrentCacheTest {
         final Path target = temp.resolve("program.xmir");
         new Threaded<>(
             IntStream.range(0, 100).boxed().collect(Collectors.toList()), ignored -> {
-            cache.apply(original, source, target, source.getFileName());
+            cache.apply(source, target, source.getFileName(), original);
             return ignored;
         }
         ).total();

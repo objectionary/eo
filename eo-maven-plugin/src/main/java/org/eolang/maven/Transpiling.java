@@ -166,8 +166,7 @@ final class Transpiling implements Step {
     private final boolean coverage;
 
     /**
-     * Shared cache guard, reused across all files so that concurrent writes to
-     * the same cache tail path are actually serialized (#5720).
+     * Cache guard, see {@link ConcurrentCache} for why it is one per instance.
      */
     private final ConcurrentCache guard;
 
@@ -245,6 +244,7 @@ final class Transpiling implements Step {
         final Path tail = base.relativize(target);
         if (this.cacheEnabled) {
             this.guard.apply(
+                source, target, tail,
                 new Cache(
                     new CachePath(cdir, this.version(), hsh.get()),
                     src -> {
@@ -265,8 +265,7 @@ final class Transpiling implements Step {
                         );
                         return res;
                     }
-                ),
-                source, target, tail
+                )
             );
         } else {
             rewrite.compareAndSet(false, true);
