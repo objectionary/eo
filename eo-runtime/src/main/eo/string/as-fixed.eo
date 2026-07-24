@@ -1,7 +1,7 @@
 # Writes the number `n` as fixed-point decimal with exactly `places` fraction
 # digits, rounding to the nearest unit in the last place, so that `2.5` with
 # four places becomes `2.5000` and `0.9999999` with six places becomes `1.000000`.
-# If `places` is negative or not a whole number, the `cant-fix` fallback is
+# If `places` is negative or not a whole number, the `cant-print` fallback is
 # returned, or the bottom object when unbound.
 
 +architect yegor256@gmail.com
@@ -11,13 +11,13 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[n places cant-fix] > as-fixed
+[n places cant-print] > as-fixed
   if. > @
     or.
       0.gt places
       not.
         places.floor.eq places
-    cant-fix
+    cant-print
       "Can't write a fixed-point decimal with %s fraction places".printf
         * places
     if.
