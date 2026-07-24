@@ -25,6 +25,9 @@
           list.length
         list
         rechead list
+  [a] > foo
+    42.plus a! > x
+    43.plus a! > y
   index > idx!
   if. > [tup] > rechead
     tup.length.eq idx

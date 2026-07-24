@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+asserts:
+  - /object[not(errors)]
+  # the file-local handle keeps its "@local" marker and gets a cactus name
+  - //o[@local='blk' and @name]
+  # only the handle's own body reference is rewritten to the cactus name
+  - /object[count(//o[@base=//o[@local='blk']/@name])=1]
+  # the sibling formation's own "> blk" reference is NOT hijacked by the handle
+  - //o[@base='blk']
+input: |
+  [] > top
+    os.pick > @
+      []
+        [] >> blk
+          blk > @
+      []
+        [] > blk
+          blk.foo > @

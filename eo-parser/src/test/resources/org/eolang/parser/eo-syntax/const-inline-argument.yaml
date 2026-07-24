@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='.as-bytes' and @name='a🌵2-10']/o[@base='Φ.dataized']/o[@base='ξ.a']
+  - //o[@base='.plus']/o[@base='ξ.a🌵2-10']
+input: |
+  [a] > foo
+    42.plus a! > x

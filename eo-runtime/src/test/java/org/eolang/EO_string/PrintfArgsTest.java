@@ -26,6 +26,15 @@ import org.junit.jupiter.api.Test;
 final class PrintfArgsTest {
 
     @Test
+    void adaptsSpecifiersForJavaFormatter() {
+        MatcherAssert.assertThat(
+            "The adapted format must preserve escaped percents and modifiers",
+            PrintfArgs.javaFormat("%%x %-25x %5x %.3x %1$5d"),
+            Matchers.equalTo("%%x %-25s %5s %.3s %5d")
+        );
+    }
+
+    @Test
     void returnsArgumentsForNumberedSubstitution() {
         final Phi tuple = Phi.Φ.take("tuple").copy();
         tuple.put("length", new Data.ToPhi(1));

@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 1
+message: |-
+  [1:6] error: 'redundant parentheses around a single token — `("hello world")` should be written as `"hello world"`'
+  1.add ("hello world") > x
+        ^
+input: |
+  1.add ("hello world") > x

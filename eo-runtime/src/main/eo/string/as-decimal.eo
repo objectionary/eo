@@ -11,9 +11,8 @@
 [n] > as-decimal
   if. > @
     n.lt 0
-    "-".as-bytes.concat
-      digits
-        n.times -1
+    negative
+      n.times -1
     digits n
   [n] > digits
     if. > @
@@ -27,6 +26,21 @@
             48
     floor. > q
       n.div 10
+  if. > [m] > negative
+    m.floor.eq 0
+    digits m
+    "-".as-bytes.concat
+      digits m
+
+  eq. ++> tests-negative-below-one-drops-sign
+    "0"
+    string
+      as-decimal -0.9
+
+  eq. ++> tests-negative-truncating-to-zero-drops-sign
+    "0"
+    string
+      as-decimal -0.5
 
   eq. ++> tests-truncates-negative-fraction
     "-7"

@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A single-referenced file-local `>> bar` handle (R-3.10.12) whose value is an
+# abstract formation and which is used as the base of an application, exactly
+# as "inline-cactoos-applied-handle", except that the applied reference
+# (`bar 55`) sits as a method-dispatch receiver — the `ρ` of `(bar 55).a 88`
+# — rather than as a sibling of the handle. That defeats both #5834 pipe
+# guards: they need the reference to stand as a following sibling of the
+# formation, and a dispatch receiver shares no sibling slot with it, so the
+# reference fell into the bare-reference inline, which rebuilt only the
+# formation and silently dropped the argument (`55`) while keeping the
+# surrounding `.a 88` (#5844). The fix relocates the single-use formation into
+# the receiver slot — a fresh copy directly above the reference, which becomes
+# the `| 55` pipe continuation — so the `|` pipe (binding its immediately
+# preceding sibling) applies it with the `55` intact. "to-eo-tree" then renders
+# the whole thing as the reversed dispatch `a. > k` with the formation and its
+# pipe as the receiver and `88` as the argument. Unlike the sibling pipe cases
+# (#5834 / #5840, which drop the handle name), the relocated predecessor sits
+# inside the dispatch block, so "restore-local-names" keeps its readable
+# `>> bar` handle. The original binding is dropped, so the formation moves
+# rather than duplicating.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo
+    (bar 55).a 88 > k
+    [t] >> bar
+
+printed: |
+  [] > foo
+    a. > k
+      [t] >> bar
+      | 55
+      88

@@ -93,7 +93,7 @@ final class Transpiling implements Step {
      * {@link #version()} are derived from the same source.
      */
     private static final String[] XSLS = {
-        "/org/eolang/maven/transpile/set-locators.xsl",
+        "/org/eolang/parser/parse/set-locators.xsl",
         "/org/eolang/maven/transpile/set-original-names.xsl",
         "/org/eolang/maven/transpile/classes.xsl",
         "/org/eolang/maven/transpile/tests.xsl",

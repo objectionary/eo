@@ -55,7 +55,10 @@
           (pth.size.eq 0).or
             len.eq -1
           pth
-          (txt.slice 0 len).as-bytes
+          if.
+            len.eq 0
+            separator
+            (txt.slice 0 len).as-bytes
       string.last-index-of txt separator > len!
       uri > pth!
       string pth > txt
@@ -84,7 +87,10 @@
         if.
           normalized.eq "//"
           "/"
-          string normalized
+          if.
+            normalized.size.eq 0
+            "."
+            string normalized
       ^.is-absolute.as-bool > is-absolute
       as-bytes. > normalized
         if.
@@ -127,10 +133,12 @@
         posix
           string
             if.
-              (obts.slice 0 1).eq
-                separator
-              obts
-              (uri.concat separator).concat obts
+              obts.size.eq 0
+              uri
+              if.
+                (obts.slice 0 1).eq separator
+                obts
+                (uri.concat separator).concat obts
       other.as-bytes > obts
     "/" > separator
   os.is-windows.if > separator
@@ -169,7 +177,10 @@
             (pth.size.eq 0).or
               len.eq -1
             pth
-            (txt.slice 0 len).as-bytes
+            if.
+              len.eq 0
+              separator
+              (txt.slice 0 len).as-bytes
         string.last-index-of txt separator > len!
         uri > pth!
         string pth > txt
@@ -215,6 +226,8 @@
             2
             ubts.size.plus -2
           ubts
+        as-bool. > driveless-rooted
+          ^.is-root-relative driveless
         as-bool. > is-drive-relative
           ^.is-drive-relative ubts
         as-bool. > is-root-relative
@@ -222,7 +235,9 @@
         as-bytes. > normalized
           if.
             driveless.size.eq 0
-            "."
+            is-drive-relative.if
+              uri.slice 0 2
+              "."
             concat.
               concat.
                 is-drive-relative.if
@@ -244,8 +259,7 @@
                 (accum.length.gt 0).and
                   (accum.head.eq "..").not
                 accum.tail
-                if.
-                  is-root-relative.not.and is-drive-relative.not
+                driveless-rooted.not.if
                   accum.with segment
                   accum
               if.
@@ -355,6 +369,11 @@
       path.posix "/foo/bar/.//./baz//../x/"
     "/foo/bar/x/"
 
+  eq. ++> tests-normalizes-posix-path-collapsing-to-current-dir
+    normalized.
+      path.posix "foo/.."
+    "."
+
   eq. ++> tests-normalizes-posix-relative-path
     normalized.
       path.posix "../../foo/./bar/../x/../y"
@@ -364,6 +383,16 @@
     normalized.
       path.win32 "..\\..\\foo\\bar\\..\\x\\y\\\\"
     "..\\..\\foo\\x\\y\\"
+
+  eq. ++> tests-normalizes-win32-drive-only-path-keeps-drive
+    normalized.
+      path.win32 "C:"
+    "C:"
+
+  eq. ++> tests-normalizes-win32-drive-relative-path-keeps-leading-dotdot
+    normalized.
+      path.win32 "C:..\\foo"
+    "C:..\\foo"
 
   eq. ++> tests-normalizes-win32-path-down-to-drive-with-separator
     normalized.
@@ -391,6 +420,12 @@
       path.posix "/var/temp"
       "./www/html"
     "/var/temp/www/html"
+
+  eq. ++> tests-resolves-posix-path-against-empty-other
+    resolved.
+      path.posix "/a/b"
+      ""
+    "/a/b"
 
   eq. ++> tests-resolves-posix-relative-path-against-other-absolute-path
     resolved.
@@ -472,6 +507,16 @@
           "html"
           path.separator
     ""
+
+  eq. ++> tests-returns-root-dirname-of-posix-single-component
+    dirname.
+      path.posix "/foo"
+    "/"
+
+  eq. ++> tests-returns-root-dirname-of-win32-root-relative
+    dirname.
+      path.win32 "\\foo"
+    "\\"
 
   eq. ++> tests-returns-the-same-string-if-no-separator-is-found
     basename.

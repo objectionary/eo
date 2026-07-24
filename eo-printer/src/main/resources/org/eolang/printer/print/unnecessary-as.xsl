@@ -51,13 +51,25 @@
       <xsl:apply-templates select="text()"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@base and starts-with(@base, '.') and count(o[@as])=count(o)-1]">
+  <!--
+  A reversed dispatch (`.method`, base starting with a dot) whose leading
+  children are the receiver and whose trailing children are the positional
+  arguments carrying `@as`. Normally the receiver is a single child, but a
+  `>>` handle applied as this receiver relocates into two leading children —
+  the formation predecessor and its `| args` pipe continuation (#5844) — so
+  the count of leading receiver children is whatever is left once the `@as`
+  arguments are removed. Emit those leading children untouched, then, if the
+  arguments form the canonical `α0, α1, …` run, strip their now-redundant
+  `@as`.
+  -->
+  <xsl:template match="o[@base and starts-with(@base, '.') and exists(o[@as]) and (count(o[@as])=count(o)-1 or (count(o[@as])=count(o)-2 and exists(o[@pipe])))]">
+    <xsl:variable name="lead" select="count(o) - count(o[@as])"/>
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
-      <xsl:apply-templates select="o[1]"/>
+      <xsl:apply-templates select="o[position()&lt;=$lead]"/>
       <xsl:choose>
-        <xsl:when test="eo:all-alphas(0, o[position()=2])">
-          <xsl:for-each select="o[position()&gt;1]">
+        <xsl:when test="eo:all-alphas(0, o[position()=$lead+1])">
+          <xsl:for-each select="o[position()&gt;$lead]">
             <xsl:variable name="elem">
               <xsl:element name="o">
                 <xsl:for-each select="@*[name()!='as']">
@@ -70,7 +82,7 @@
           </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:apply-templates select="o[position()&gt;1]"/>
+          <xsl:apply-templates select="o[position()&gt;$lead]"/>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:apply-templates select="text()"/>
