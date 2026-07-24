@@ -207,8 +207,7 @@
               is-drive-relative ubts
         uri > ubts!
       [uri] > is-drive-relative
-        as-bool. > @
-          (string.regex "/^[a-zA-Z]:/").matches uri
+        ((string.regex "/^[a-zA-Z]:/").match uri).next.exists.as-bool > @
       [uri] > is-root-relative
         and. > @
           ubts.size.gt 0
