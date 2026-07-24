@@ -82,9 +82,39 @@
           tagged `@pipe`, its `@base` still pointing at the kept formation
           directly above it. The guard keeps this to a reference standing
           immediately after its own target, the one shape `to-eo-tree` can
-          render as a compact pipe.
+          render as a compact pipe (the formation stays put, kept by the drop
+          template below).
           -->
           <xsl:when test="eo:abstract($target) and (o or @name) and preceding-sibling::o[1] is $target">
+            <xsl:copy>
+              <xsl:if test="not(@pipe)">
+                <xsl:attribute name="pipe"/>
+              </xsl:if>
+              <xsl:apply-templates select="node()|@*"/>
+            </xsl:copy>
+          </xsl:when>
+          <!--
+          The same applied reference, but with another binding sitting between
+          the formation and this use (`67 &gt; t` in #5840): the formation is
+          still a preceding sibling, only no longer the immediate one, so the
+          adjacent guard above misses it and the bare-reference `otherwise`
+          would drop the argument and name exactly as #5834 did. A `|` pipe
+          binds the immediately-preceding sibling, so we relocate the
+          single-use formation to sit directly above this reference — emit a
+          fresh copy of it here (its children inlined as usual) and then the
+          pipe continuation. The formation's original binding is dropped by the
+          drop template below (it is not `eo:piped`, having a non-reference
+          following sibling), so the relocation moves it rather than
+          duplicating it, the same relocation #5732 proposes for its sibling
+          case. Restricted to a single-use formation: a multi-referenced one
+          cannot be folded into just one of its uses.
+          -->
+          <xsl:when test="eo:abstract($target) and (o or @name) and exists(preceding-sibling::o[. is $target]) and not(eo:multi-referenced($target, $name))">
+            <xsl:for-each select="$target">
+              <xsl:copy>
+                <xsl:apply-templates select="node()|@*"/>
+              </xsl:copy>
+            </xsl:for-each>
             <xsl:copy>
               <xsl:if test="not(@pipe)">
                 <xsl:attribute name="pipe"/>
@@ -173,6 +203,10 @@
   pointing back at the formation, so the formation must stay in place as the
   pipe's named predecessor rather than be dropped (#5834). The bare-reference
   case (no children, no name) folds the formation in and drops it as before.
+  An applied reference separated from the formation by another binding (#5840)
+  is deliberately not matched here: the inlining template relocates a fresh
+  copy of the formation down to the reference's site, so the original binding
+  is dropped by the drop template above rather than kept in place.
   -->
   <xsl:function name="eo:piped" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
