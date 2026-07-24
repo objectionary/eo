@@ -6,6 +6,8 @@ package org.eolang;
 
 import com.yegor256.Together;
 import java.security.SecureRandom;
+import java.util.HashMap;
+import java.util.Map;
 import org.cactoos.set.SetOf;
 import org.eolang.EO_org.EO_eolang.EOdummy;
 import org.eolang.EO_string.EOprintf;
@@ -360,6 +362,25 @@ final class PhDefaultTest {
                 )
             ),
             Matchers.iterableWithSize(threads)
+        );
+    }
+
+    @Test
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
+    void activatesLazilyOnceUnderConcurrentAccess() {
+        final int threads = 100;
+        final Map<String, Attribute> attributes = new HashMap<>(1);
+        attributes.put("foo", new AtComposite(null, rho -> new Data.ToPhi(42L)));
+        final Phi shared = new PhDefault(attributes);
+        MatcherAssert.assertThat(
+            "concurrent first access must activate the object exactly once, with no half-built or lost attributes",
+            new SetOf<>(
+                new Together<>(
+                    threads,
+                    t -> new Dataized(shared.take("foo")).asNumber()
+                )
+            ),
+            Matchers.contains(42.0)
         );
     }
 
