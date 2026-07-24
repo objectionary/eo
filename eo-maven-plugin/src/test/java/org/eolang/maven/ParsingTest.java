@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -33,6 +34,12 @@ final class ParsingTest {
      * guard of its own, each thread locked its own private map, all of them
      * missed the cache and the source was parsed as many times as there were
      * threads.</p>
+     *
+     * <p>The guard covers the write to the cache, not the read of the target
+     * XMIR that follows it, and {@link Saved} truncates that file before
+     * streaming into it. A thread can therefore read it half-written and get
+     * "Premature end of file" (#5873), which is a different race from the one
+     * under test, so it is counted and ignored here.</p>
      *
      * @param temp Temporary directory
      * @throws Exception If fails
@@ -72,6 +79,7 @@ final class ParsingTest {
                     );
                 } catch (final IllegalArgumentException half) {
                     torn.incrementAndGet();
+                    Logger.debug(this, "Caught a half-written XMIR (#5873): %s", half);
                 }
                 return 1;
             }
