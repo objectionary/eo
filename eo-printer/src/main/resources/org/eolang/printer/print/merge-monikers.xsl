@@ -137,22 +137,20 @@
   (#5848), the recursive mirror of the applied-handle relocation "inline-cactoos"
   performs for the non-recursive case (#5844). Hosts onto the first such
   reference only; the binding's own subtree is excluded so a recursive
-  self-reference is never mistaken for an external applied use. Only a
-  dispatch RECEIVER folds — the reference is the first child (the "ρ") of a
-  method node ("@base" starting with "."), as in an applied handle dispatched
-  on with ".read". A
-  reference carrying its own "@name" is excluded: that is a "| args &gt; name"
-  sibling pipe continuation already folded by "restore-local-names"
-  (#5837/#5848), not a receiver — the receiver has no result name, so this fold
-  round-trips (the re-parsed "| args" reference is nameless and folds again). A
-  plain applied reference that is not a dispatch receiver (a bare "r args" as an
-  argument or list element, such as "seq *"'s "r (walk ...)" in directory.eo)
-  stays expanded, exactly as it prints today.
+  self-reference is never mistaken for an external applied use. This covers both
+  a dispatch receiver ("(handle args).read") and a plain "handle args" used as
+  an argument or list element (such as "seq *"'s "r walked", or "directory.eo"'s
+  "r (walk ...)"). A reference carrying its own "@name" is excluded: that is a
+  "| args &gt; name" sibling pipe continuation already folded by
+  "restore-local-names" (#5837/#5848), whose result name the pipe keeps — folding
+  it here would strip that name. A nameless applied reference has no result name,
+  so this fold round-trips: the re-parsed "| args" reference is nameless and
+  folds again.
   -->
   <xsl:function name="eo:applied-refs" as="element()*">
     <xsl:param name="attr" as="element()*"/>
     <xsl:variable name="owner" select="$attr/.."/>
-    <xsl:sequence select="$owner//o[exists(@base) and starts-with(@base, concat($eo:xi, '.')) and substring-after(@base, concat($eo:xi, '.')) = $attr/@name and exists(o) and not(exists(@name)) and parent::o[starts-with(@base, '.')] and empty(preceding-sibling::o) and (ancestor::o[eo:abstract(.)][1] is $owner) and not(ancestor::o[. is $attr])]"/>
+    <xsl:sequence select="$owner//o[exists(@base) and starts-with(@base, concat($eo:xi, '.')) and substring-after(@base, concat($eo:xi, '.')) = $attr/@name and exists(o) and not(exists(@name)) and (ancestor::o[eo:abstract(.)][1] is $owner) and not(ancestor::o[. is $attr])]"/>
   </xsl:function>
   <xsl:function name="eo:applied-handle" as="element()*">
     <xsl:param name="ref" as="element()"/>
