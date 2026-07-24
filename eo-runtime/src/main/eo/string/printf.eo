@@ -87,6 +87,18 @@
       14
       false
 
+  eq. ++> tests-printf-applies-precision-to-bytes
+    "40-"
+    printf *1
+      "%.3x"
+      42.as-bytes
+
+  eq. ++> tests-printf-applies-width-to-bytes
+    "  40-45-00-00-00-00-00-00"
+    printf *1
+      "%25x"
+      42.as-bytes
+
   eq. ++> tests-printf-does-not-fail-if-arguments-more-than-formats
     "Hey"
     printf *1
@@ -101,6 +113,18 @@
           "%d"
           42.as-i64
         "42"
+
+  eq. ++> tests-printf-left-aligns-bytes
+    "40-45-00-00-00-00-00-00  "
+    printf *1
+      "%-25x"
+      42.as-bytes
+
+  eq. ++> tests-printf-preserves-escaped-bytes-format
+    "%x"
+    printf
+      "%%x"
+      *
 
   eq. ++> tests-printf-prints-i64-as-number
     "42"
