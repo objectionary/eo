@@ -11,6 +11,13 @@
 # handle under a double-arrow. Without the fix (#5681) the name is dropped:
 # the formation prints as an anonymous "[tup] &gt;&gt;" and its
 # self-references as the synthetic "v6_2" placeholder.
+#
+# The applied reference "reclast list &gt; @" sits just ABOVE the recursive
+# handle; like any applied reference of a "&gt;&gt; name" handle it folds to
+# the compact pipe continuation "| list &gt; @" relocated below the handle
+# (#5848), the mirror of the reference-below fold (#5837). Without that fix the
+# reference stayed expanded above the handle, so the printer emitted two
+# different texts for one object graph.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -40,7 +47,6 @@ printed: |
   [] > last-index-of
     ? >> list
     ? >> wanted
-    reclast list > @
     if. > [tup] >> reclast
       tup.length.eq 0
       -1
@@ -48,3 +54,4 @@ printed: |
         tup.head.eq wanted
         tup.tail.length
         reclast tup.tail
+    | list > @

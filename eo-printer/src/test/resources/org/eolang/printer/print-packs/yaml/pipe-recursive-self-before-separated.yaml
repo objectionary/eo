@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A self-referential (recursive) file-local handle ("[t] &gt;&gt; bar",
+# R-3.10.12) whose body references itself ("bar 55") stays in place, and an
+# applied reference to it ("bar &gt; @") sitting ABOVE the handle must fold to
+# the compact pipe continuation "| &gt; @" below the handle (#5848) even when
+# other bindings ("a.b.c &gt; f", "k.t &gt; p") separate the reference from the
+# handle. This is the recursive mirror of the separated non-recursive case
+# "inline-cactoos" already relocates (#5840): the reference need not be the
+# handle's immediate sibling. "restore-local-names" promotes the recursive
+# handle's "@local" to its visible "@name" and rewrites references from the
+# cactus name to the handle, stripping the cactus name before "inline-cactoos"
+# whose #5834/#5840 machinery only matches cactus-named references; so the
+# restored-recursive path itself suppresses the reference at its origin and
+# re-emits it just below the handle tagged "@pipe", and "to-eo-tree" emits the
+# "|". The unrelated siblings keep their own layout.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo
+    pre.tt > rr
+    bar > @
+    a.b.c > f
+    k.t > p
+    [t] >> bar
+      test 78 > kk
+      bar 55 > ii
+printed: |
+  [] > foo
+    pre.tt > rr
+    a.b.c > f
+    k.t > p
+    [t] >> bar
+      bar 55 > ii
+      test 78 > kk
+    | > @
