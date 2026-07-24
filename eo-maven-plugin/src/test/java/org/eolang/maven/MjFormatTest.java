@@ -7,6 +7,8 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.Path;
 import org.cactoos.text.TextOf;
 import org.eolang.parser.EoSyntax;
@@ -81,6 +83,24 @@ final class MjFormatTest {
     }
 
     @Test
+    void failsWhenSourceDoesNotParse(@Mktmp final Path temp) {
+        final IllegalStateException exception = Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(MjFormatTest.unparseable())
+                .execute(MjFormat.class),
+            "a source that fails to parse must not be silently formatted"
+        );
+        final StringWriter writer = new StringWriter();
+        exception.printStackTrace(new PrintWriter(writer));
+        MatcherAssert.assertThat(
+            "the failure must explain that the source does not fully parse",
+            writer.toString(),
+            Matchers.containsString("does not fully parse")
+        );
+    }
+
+    @Test
     void appliesCustomIndentationStep(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "the printer must indent with the configured number of spaces",
@@ -130,6 +150,21 @@ final class MjFormatTest {
      */
     private static String canonical(final String program) throws IOException {
         return new Xmir(new EoSyntax(program).parsed()).toEO();
+    }
+
+    /**
+     * A source that fails to parse.
+     * @return The EO text
+     */
+    private static String unparseable() {
+        return String.join(
+            System.lineSeparator(),
+            "+package foo.x",
+            "",
+            "[x] > main",
+            "  (stdout \"Hello!\" x.print > @",
+            ""
+        );
     }
 
     /**
