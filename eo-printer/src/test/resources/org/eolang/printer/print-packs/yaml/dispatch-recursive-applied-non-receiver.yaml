@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The boundary of the applied recursive-handle fold (#5848): a recursive
+# "[tup] >> r" handle applied to an argument ("r walked") that is NOT a method
+# dispatch receiver — here a plain element of "seq *" — must stay EXPANDED, with
+# the handle kept as its own binding, exactly as it prints today. Only an
+# applied handle used as a dispatch receiver ("(handle args).method") folds to a
+# moniker plus a "| args" pipe; a bare "handle args" as a list element or
+# argument does not. This mirrors "directory.eo"'s "deleted" helper, whose
+# "r (walk ...)" inside "seq *" must not be disturbed by the fold. Without the
+# receiver restriction the printer would wrongly host the handle here and
+# reformat such files.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo
+    seq * > @
+      r walked
+      ^
+    [tup] >> r
+      seq * > @
+        tup.head
+        r tup.tail
+printed: |
+  [] > foo
+    seq * > @
+      r walked
+      ^
+    seq * > [tup] >> r
+      tup.head
+      r tup.tail
