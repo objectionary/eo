@@ -47,7 +47,7 @@ final class MjResolveTest {
     }
 
     @Test
-    void reResolvesWhenPlaceDirectoryExistsButIsEmpty(@Mktmp final Path temp) throws IOException {
+    void resolvesWhenPlaceDirectoryExistsButIsEmpty(@Mktmp final Path temp) throws IOException {
         final Path place = temp
             .resolve("target")
             .resolve(MjResolve.DIR)
