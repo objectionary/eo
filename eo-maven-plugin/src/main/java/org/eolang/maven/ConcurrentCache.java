@@ -12,25 +12,17 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Concurrent guard for {@link Cache}.
  *
- * <p>Serializes writes to the same cache location so that {@link Cache}, which
- * isn't thread-safe on its own, can be used from a {@link Threaded} pool. The
- * lock is picked from a shared map keyed by the cache "tail" path, so two
- * threads compiling the same file contend on the same lock. For that to work a
- * <em>single</em> instance must be shared across all files of one Mojo run:
- * a fresh instance per file would hand each thread its own empty lock map and
- * defeat the serialization entirely (#5720). The per-file {@link Cache} itself
- * is passed in to {@link #apply}, since it differs from file to file.</p>
+ * <p>Serializes writes to one cache location, so that {@link Cache}, which
+ * isn't thread-safe, can be used from a {@link Threaded} pool. Locks come from
+ * a map keyed by the cache "tail" path, so a <em>single</em> instance must be
+ * shared by all files of a run: one per file hands each thread an empty map
+ * and serializes nothing (#5720). The {@link Cache} goes to {@link #apply},
+ * as it differs from file to file.</p>
  *
- * <p>The serialization is in-instance only: every owner ({@link Parsing},
- * {@link Transpiling}, {@link Linting}) keeps its own guard, and {@link Parsing}
- * alone is instantiated both by {@link MjParse} and by
- * {@link MjSafe#assembling()}. Within one module that is enough, because those
- * mojos run in different lifecycle phases and never overlap. Two modules built
- * at the same time (a parallel reactor, or two separate Maven processes) still
- * write to the same cache location whenever they touch the same dependency,
- * because the default cache directory is machine-wide rather than module-scoped
- * (#2857); no in-process lock can serialize that, so it stays out of scope
- * here.</p>
+ * <p>Guards are per-instance and {@link Parsing} is built by both
+ * {@link MjParse} and {@link MjSafe#assembling()}, which is enough within one
+ * module, as those mojos never overlap. Modules built in parallel still share
+ * the machine-wide cache directory (#2857), which no in-process lock covers.</p>
  *
  * @since 0.60
  */
@@ -57,8 +49,7 @@ final class ConcurrentCache {
     }
 
     /**
-     * Check cache and apply compilation if needed, holding the lock for the
-     * given tail path so concurrent writes to it are serialized.
+     * Check cache and apply compilation if needed, under the tail path lock.
      * @param source From file
      * @param target To file
      * @param tail Tail path in cache

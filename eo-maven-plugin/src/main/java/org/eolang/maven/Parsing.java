@@ -163,11 +163,26 @@ final class Parsing implements Step {
     }
 
     /**
+     * Parse all the given sources to XMIRs, concurrently.
+     * @param sources The sources to parse
+     * @param pipeline The canonical parsing transform to apply
+     * @param digest Digest of the set of known objects (part of the cache key)
+     * @return Amount of parsed tojos
+     */
+    int parsed(
+        final Collection<TjForeign> sources,
+        final UnaryOperator<XML> pipeline,
+        final String digest
+    ) {
+        return new Threaded<>(
+            new Filtered<>(TjForeign::notParsed, sources),
+            tojo -> this.parsed(tojo, pipeline, digest)
+        ).total();
+    }
+
+    /**
      * Parse EO file to XML.
-     *
-     * <p>Package-private, so that a test can race a few threads on one instance
-     * the way {@link #parsed(Collection, UnaryOperator, String)} does.</p>
-     *
+     * Package-private, so that a test can race threads on one instance.
      * @param tojo The tojo
      * @param pipeline The canonical parsing transform to apply
      * @param digest Digest of the set of known objects (part of the cache key)
@@ -223,24 +238,6 @@ final class Parsing implements Step {
             }
         }
         return 1;
-    }
-
-    /**
-     * Parse all the given sources to XMIRs, concurrently.
-     * @param sources The sources to parse
-     * @param pipeline The canonical parsing transform to apply
-     * @param digest Digest of the set of known objects (part of the cache key)
-     * @return Amount of parsed tojos
-     */
-    private int parsed(
-        final Collection<TjForeign> sources,
-        final UnaryOperator<XML> pipeline,
-        final String digest
-    ) {
-        return new Threaded<>(
-            new Filtered<>(TjForeign::notParsed, sources),
-            tojo -> this.parsed(tojo, pipeline, digest)
-        ).total();
     }
 
     /**
