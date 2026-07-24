@@ -40,16 +40,16 @@ final class PrintfArgs {
 
     /**
      * A single {@code printf} specifier. Group 1 is the optional {@code N$}
-     * positional index; an optional run of flags, an optional width and an
-     * optional {@code .precision} are then skipped; group 2 is the conversion
-     * character. Skipping the flags, width and precision keeps exactly one
+     * positional index; group 2 is an optional run of flags, an optional width
+     * and an optional {@code .precision}; group 3 is the conversion character.
+     * Skipping the flags, width and precision keeps exactly one
      * argument counted per specifier such as {@code %5d}, {@code %.2f} or
      * {@code %-10s}, matching what {@code String.format} consumes on the
      * formatting side. Possessive quantifiers keep the scan linear in the
      * length of the format string, with no backtracking.
      */
     private static final Pattern SPECIFIER = Pattern.compile(
-        "%(\\d++\\$)?+[-#+ 0,(]*+\\d*+(?:\\.\\d++)?+([a-zA-Z%])"
+        "%(\\d++\\$)?+([-#+ 0,(]*+\\d*+(?:\\.\\d++)?+)([a-zA-Z%])"
     );
 
     /**
@@ -97,13 +97,43 @@ final class PrintfArgs {
         this.retriever = phi;
     }
 
+    /**
+     * Adapt an EO printf format for {@link String#format(String, Object...)}.
+     * @param format Format
+     * @return Java format
+     */
+    static String javaFormat(final String format) {
+        final Matcher matcher = PrintfArgs.SPECIFIER.matcher(format);
+        final StringBuilder converted = new StringBuilder(format.length());
+        while (matcher.find()) {
+            final char symbol = matcher.group(3).charAt(0);
+            final char conversion;
+            if (symbol == 'x') {
+                conversion = 's';
+            } else {
+                conversion = symbol;
+            }
+            final String replacement = new StringBuilder(2 + matcher.group(2).length())
+                .append(PrintfArgs.PERCENT)
+                .append(matcher.group(2))
+                .append(conversion)
+                .toString();
+            matcher.appendReplacement(
+                converted,
+                Matcher.quoteReplacement(replacement)
+            );
+        }
+        matcher.appendTail(converted);
+        return converted.toString();
+    }
+
     List<Object> formatted() {
         final List<Object> arguments = new ArrayList<>(0);
         final Matcher matcher = PrintfArgs.SPECIFIER.matcher(this.format);
         long auto = 0L;
         while (matcher.find()) {
             final String positional = matcher.group(1);
-            final char symbol = matcher.group(2).charAt(0);
+            final char symbol = matcher.group(3).charAt(0);
             if (symbol == PrintfArgs.PERCENT) {
                 continue;
             }

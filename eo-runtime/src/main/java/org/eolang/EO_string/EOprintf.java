@@ -45,7 +45,7 @@ public final class EOprintf extends PhDefault implements Atom {
         return new Data.ToPhi(
             String.format(
                 Locale.US,
-                format.replaceAll("%\\d+\\$([a-zA-Z])", "%s").replaceAll("%x", "%s"),
+                PrintfArgs.javaFormat(format),
                 new PrintfArgs(
                     format,
                     Expect.at(this, "args")
