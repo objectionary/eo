@@ -94,6 +94,12 @@ final class Parsing implements Step {
     private final Path sourcesDir;
 
     /**
+     * Shared cache guard, reused across all files so that concurrent writes to
+     * the same cache tail path are actually serialized (#5720).
+     */
+    private final ConcurrentCache guard;
+
+    /**
      * Constructor.
      * @param srcs Foreign tojos catalog
      * @param target Target directory
@@ -117,6 +123,7 @@ final class Parsing implements Step {
         this.cacheEnabled = enabled;
         this.version = ver;
         this.sourcesDir = sources;
+        this.guard = new ConcurrentCache();
     }
 
     @Override
@@ -191,7 +198,7 @@ final class Parsing implements Step {
         final Path target = new Place(name).make(base, MjAssemble.XMIR);
         final List<Node> refs = new ArrayList<>(1);
         if (this.cacheEnabled) {
-            new ConcurrentCache(
+            this.guard.apply(
                 new Cache(
                     new CachePath(
                         this.cacheDir.resolve(Parsing.CACHE),
@@ -203,8 +210,9 @@ final class Parsing implements Step {
                         refs.add(node);
                         return new XMLDocument(node).toString();
                     }
-                )
-            ).apply(source, target, base.relativize(target));
+                ),
+                source, target, base.relativize(target)
+            );
         } else {
             final Node node = this.parsed(source, name, pipeline);
             new Saved(new XMLDocument(node).toString(), target).value();

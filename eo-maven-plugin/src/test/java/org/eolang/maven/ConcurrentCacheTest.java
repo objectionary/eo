@@ -27,11 +27,10 @@ final class ConcurrentCacheTest {
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void triesToCompileProgramConcurrently(@Mktmp final Path temp) throws IOException {
         final AtomicInteger counter = new AtomicInteger(0);
-        final ConcurrentCache cache = new ConcurrentCache(
-            new Cache(
-                temp.resolve("cache"),
-                p -> String.format("only once %d", counter.incrementAndGet())
-            )
+        final ConcurrentCache cache = new ConcurrentCache();
+        final Cache original = new Cache(
+            temp.resolve("cache"),
+            p -> String.format("only once %d", counter.incrementAndGet())
         );
         final Path source = temp.resolve("program.eo");
         new Saved(
@@ -41,7 +40,7 @@ final class ConcurrentCacheTest {
         final Path target = temp.resolve("program.xmir");
         new Threaded<>(
             IntStream.range(0, 100).boxed().collect(Collectors.toList()), ignored -> {
-            cache.apply(source, target, source.getFileName());
+            cache.apply(original, source, target, source.getFileName());
             return ignored;
         }
         ).total();

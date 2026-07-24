@@ -166,6 +166,12 @@ final class Transpiling implements Step {
     private final boolean coverage;
 
     /**
+     * Shared cache guard, reused across all files so that concurrent writes to
+     * the same cache tail path are actually serialized (#5720).
+     */
+    private final ConcurrentCache guard;
+
+    /**
      * Constructor.
      * @param srcs XMIR sources to transpile
      * @param target Target directory
@@ -202,6 +208,7 @@ final class Transpiling implements Step {
         this.xslMeasures = measures;
         this.tracking = diagnostics;
         this.coverage = cvrg;
+        this.guard = new ConcurrentCache();
     }
 
     @Override
@@ -237,7 +244,7 @@ final class Transpiling implements Step {
         final Path cdir = this.cacheDir.resolve(Transpiling.CACHE);
         final Path tail = base.relativize(target);
         if (this.cacheEnabled) {
-            new ConcurrentCache(
+            this.guard.apply(
                 new Cache(
                     new CachePath(cdir, this.version(), hsh.get()),
                     src -> {
@@ -258,8 +265,9 @@ final class Transpiling implements Step {
                         );
                         return res;
                     }
-                )
-            ).apply(source, target, tail);
+                ),
+                source, target, tail
+            );
         } else {
             rewrite.compareAndSet(false, true);
             new Saved(transform.apply(xmir).toString(), target).value();
