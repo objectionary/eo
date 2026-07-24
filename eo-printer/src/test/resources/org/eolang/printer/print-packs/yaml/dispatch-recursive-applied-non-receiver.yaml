@@ -2,15 +2,16 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# The applied recursive-handle fold (#5848) also applies when the applied
-# reference is NOT a method-dispatch receiver but a plain "handle args" used as
-# a list element — here "r walked" as the first element of "seq *". It folds
-# just like the dispatch-receiver case: the recursive "[tup] >> r" handle is
-# hosted as a moniker in place of the reference and its argument becomes a
-# "| walked" pipe continuation binding it. Mirrors the "deleted" helper in
-# "directory.eo", whose "r (walk ...)" inside "seq *" folds the same way. The
-# folded form round-trips (a "*" star tuple faithfully carries the moniker plus
-# pipe since #5858).
+# The boundary of the applied recursive-handle fold (#5848): a recursive
+# "[tup] >> r" handle applied to an argument ("r walked") that is NOT a method
+# dispatch receiver — here a plain element of "seq *" — must stay EXPANDED, with
+# the handle kept as its own binding, exactly as it prints today. Only an
+# applied handle used as a dispatch receiver ("(handle args).method") folds to a
+# moniker plus a "| args" pipe; a bare "handle args" as a list element or
+# argument does not. This mirrors "directory.eo"'s "deleted" helper, whose
+# "r (walk ...)" inside "seq *" must not be disturbed by the fold. Without the
+# receiver restriction the printer would wrongly host the handle here and
+# reformat such files.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -30,8 +31,8 @@ origin: |
 printed: |
   [] > foo
     seq * > @
-      seq * > [tup] >> r
-        tup.head
-        r tup.tail
-      | walked
+      r walked
       ^
+    seq * > [tup] >> r
+      tup.head
+      r tup.tail
