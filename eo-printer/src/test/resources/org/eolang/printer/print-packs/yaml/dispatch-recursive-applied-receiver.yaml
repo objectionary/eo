@@ -2,18 +2,13 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# The recursive dispatch fold (#5848) when the recursive "[buffer] >> input-block"
-# handle is not merely dispatched but first APPLIED and then dispatched, buried
-# under a further method call: "(input-block --).read" reached through the "@"
-# phi. The handle must still fold into a moniker at its use site, with its
-# argument becoming a "| args" pipe continuation binding the inlined formation —
-# the recursive mirror of the applied-handle relocation "inline-cactoos" performs
-# for the non-recursive case (#5844). "restore-local-names" promotes the handle's
-# "@local" to its visible "@name" and keeps the marker, so "merge-monikers" hosts
-# the restored recursive handle onto its applied use, emitting the formation plus
-# a "| --" pipe. The handle keeps its readable ">> input-block" name so the
-# recursive "input-block chunk" reads by name. Without the fix the handle stays a
-# separate binding and the use prints as the parenthesised "(input-block --).read".
+# The recursive dispatch fold (#5848) when the "[buffer] >> input-block" handle
+# is first APPLIED and then dispatched, buried under a further method call:
+# "(input-block --).read" reached through "@". The applied handle folds into a
+# moniker at its use site, its argument becoming a "| --" pipe continuation that
+# binds the inlined formation (the recursive mirror of "inline-cactoos", #5844).
+# The handle keeps its ">> input-block" name so "input-block chunk" reads by name.
+# Without the fold the use prints as the parenthesised "(input-block --).read".
 penalties:
   INDENT: 3
   BRACKET: 7

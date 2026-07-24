@@ -129,23 +129,17 @@
   <!--
   The recursive-handle binding that an applied reference `$ref` hosts as a
   moniker, or the empty sequence. An applied reference is a bare "ξ.&lt;name&gt;"
-  whose "&lt;name&gt;" is a restored recursive handle (see `eo:recursive-handle`)
-  but which carries argument children — an application "handle args". Such a use
-  hosts neither as a plain bare inline (that would silently drop the arguments,
-  #5834) nor as a reversed dispatch, so instead the handle is inlined in place
-  and the reference's arguments become a "| args" pipe continuation binding it
-  (#5848), the recursive mirror of the applied-handle relocation "inline-cactoos"
-  performs for the non-recursive case (#5844). Hosts onto the first such
-  reference only; the binding's own subtree is excluded so a recursive
-  self-reference is never mistaken for an external applied use. This covers both
-  a dispatch receiver ("(handle args).read") and a plain "handle args" used as
-  an argument or list element (such as "seq *"'s "r walked", or "directory.eo"'s
-  "r (walk ...)"). A reference carrying its own "@name" is excluded: that is a
-  "| args &gt; name" sibling pipe continuation already folded by
-  "restore-local-names" (#5837/#5848), whose result name the pipe keeps — folding
-  it here would strip that name. A nameless applied reference has no result name,
-  so this fold round-trips: the re-parsed "| args" reference is nameless and
-  folds again.
+  restored recursive handle (see `eo:recursive-handle`) carrying argument children
+  — an application "handle args", either a dispatch receiver ("(handle args).read")
+  or a plain list element ("directory.eo"'s "r (walk ...)" in "seq *"). Neither a
+  bare inline (drops the arguments, #5834) nor a reversed dispatch can host it, so
+  the handle is inlined in place and its arguments become a "| args" pipe
+  continuation (#5848), the recursive mirror of "inline-cactoos" (#5844). Hosts
+  onto the first such reference only, excluding the binding's own subtree so a
+  self-reference is never mistaken for an external use. A reference carrying its
+  own "@name" is excluded — that is a "| args &gt; name" pipe already folded by
+  "restore-local-names" (#5837/#5848) whose name folding here would strip; a
+  nameless one round-trips (the re-parsed "| args" is nameless and folds again).
   -->
   <xsl:function name="eo:applied-refs" as="element()*">
     <xsl:param name="attr" as="element()*"/>

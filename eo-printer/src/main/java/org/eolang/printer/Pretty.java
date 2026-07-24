@@ -145,6 +145,20 @@ final class Pretty {
      * stays on one line, the same tie rule {@link #layout} already uses for the
      * suffix comparison (issue #5686).</p>
      *
+     * <p>A <em>nameless</em> pipe continuation ({@code | args}, base {@code |}
+     * with an empty tail, §3.14) is forced to its horizontal rendering whenever
+     * one exists, regardless of penalty. Its vertical shape would put a bare
+     * {@code |} on its own line with the arguments below, but a vertical pipe head
+     * must carry content after the {@code "| "} marker — a bare {@code |} fails to
+     * parse ("a pipe {@code |} must be followed by a space") and the printer
+     * cannot emit the lone trailing space that would legalise it. So inlining the
+     * arguments onto the {@code |} line is the only parseable form, even for a
+     * wide or parenthesised argument ({@code | (walk "**").at.^}, #5848) that
+     * scores lower broken across lines. A <em>named</em> pipe ({@code | > @} with
+     * its arguments below) keeps content after the marker, so its vertical form
+     * parses and stays subject to the ordinary penalty vote. Shares the
+     * force-inline flag with the {@code !} const-marker child below.</p>
+     *
      * @param node The node
      * @param indent The indentation level
      * @return The rendered block
@@ -158,7 +172,8 @@ final class Pretty {
             String best = this.vertical(node, indent);
             final Optional<String> flat = this.horizontal(node, indent);
             final boolean inline =
-                node.children.stream().anyMatch(child -> "!".equals(child.tail));
+                "|".equals(node.base) && node.tail.isEmpty()
+                || node.children.stream().anyMatch(child -> "!".equals(child.tail));
             if (flat.isPresent()
                 && (inline
                 || new Penalty(flat.get(), this.weights).points()

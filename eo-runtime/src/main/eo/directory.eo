@@ -15,16 +15,15 @@
   [] > deleted
     ^.exists.if > @
       seq *
-        r
-          (walk "**").at.^
+        if. > [tup] >> r
+          tup.length.eq 0
+          true
+          seq *
+            tup.head.deleted
+            r tup.tail
+        | (walk "**").at.^
         ^
       ^
-    if. > [tup] >> r
-      tup.length.eq 0
-      true
-      seq *
-        tup.head.deleted
-        r tup.tail
   true > is-directory
   [] > made
     ^.exists.if > @
