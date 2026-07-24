@@ -127,6 +127,31 @@
     <xsl:sequence select="if (exists($binding) and (eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
   </xsl:function>
   <!--
+  The recursive-handle binding that an applied reference `$ref` hosts as a
+  moniker, or the empty sequence. An applied reference is a bare "ξ.&lt;name&gt;"
+  restored recursive handle (see `eo:recursive-handle`) carrying argument children
+  — "handle args", a dispatch receiver ("(handle args).read") or a list element
+  ("directory.eo"'s "r (walk ...)" in "seq *"). Since neither a bare inline (drops
+  the arguments, #5834) nor a reversed dispatch can host it, the handle is inlined
+  in place and its arguments become a "| args" pipe continuation (#5848), the
+  recursive mirror of "inline-cactoos" (#5844). Hosts onto the first such reference
+  only, excluding the binding's own subtree. A reference with its own "@name" is
+  excluded — a "| args &gt; name" pipe already folded by "restore-local-names"
+  (#5837/#5848); a nameless one round-trips.
+  -->
+  <xsl:function name="eo:applied-refs" as="element()*">
+    <xsl:param name="attr" as="element()*"/>
+    <xsl:variable name="owner" select="$attr/.."/>
+    <xsl:sequence select="$owner//o[exists(@base) and starts-with(@base, concat($eo:xi, '.')) and substring-after(@base, concat($eo:xi, '.')) = $attr/@name and exists(o) and not(exists(@name)) and (ancestor::o[eo:abstract(.)][1] is $owner) and not(ancestor::o[. is $attr])]"/>
+  </xsl:function>
+  <xsl:function name="eo:applied-handle" as="element()*">
+    <xsl:param name="ref" as="element()"/>
+    <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
+    <xsl:variable name="name" select="substring-after($ref/@base, concat($eo:xi, '.'))"/>
+    <xsl:variable name="binding" select="$owner/o[@name = $name and eo:moniker-binding(.) and eo:recursive-handle(.)][1]"/>
+    <xsl:sequence select="if (exists($ref/@base) and starts-with($ref/@base, concat($eo:xi, '.')) and $name != '' and not(contains($name, '.')) and exists($ref/o) and exists($binding) and (eo:applied-refs($binding)[1] is $ref)) then $binding else ()"/>
+  </xsl:function>
+  <!--
   Whether `$attr` is a const file-local handle (`a &gt;&gt; b!`, R-3.10.12):
   a based binding (not an abstract formation) carrying both the `!` const
   marker and its readable "@local" handle. Such a handle is dataized once and
@@ -199,6 +224,31 @@
     </xsl:choose>
   </xsl:template>
   <!--
+  Host an applied recursive handle (see `eo:applied-handle`): emit the inlined
+  handle formation in place of the reference, then a "@pipe" node carrying the
+  reference's arguments and pointing its base back at the formation's name.
+  "to-eo-tree" renders the formation as the "&gt;&gt; name" receiver and the
+  pipe node as "| args" because its base equals the preceding sibling's name —
+  so an applied recursive handle folds to the handle moniker plus a pipe
+  continuation carrying the arguments (#5848), the recursive mirror of #5844.
+  The reference's own positional "@as" is kept on the pipe so an argument slot
+  survives; the standalone binding is dropped below.
+  -->
+  <xsl:template match="o[exists(eo:applied-handle(.))]" priority="2">
+    <xsl:variable name="binding" select="eo:applied-handle(.)"/>
+    <xsl:for-each select="$binding">
+      <xsl:copy>
+        <xsl:apply-templates select="node()|@*"/>
+      </xsl:copy>
+    </xsl:for-each>
+    <xsl:element name="o">
+      <xsl:apply-templates select="@as"/>
+      <xsl:attribute name="pipe"/>
+      <xsl:attribute name="base" select="@base"/>
+      <xsl:apply-templates select="o"/>
+    </xsl:element>
+  </xsl:template>
+  <!--
   Rewrite a non-hosting reference to a const file-local handle from the
   obfuscated cactus name back to the readable "@local" handle, so it reads as
   `b` instead of a synthetic "vL_P" placeholder (#5828). The hosting reference
@@ -209,9 +259,11 @@
     <xsl:attribute name="base" select="string-join(for $seg in tokenize(., '\.') return (if ($seg = $binding/@name) then string($binding/@local) else $seg), '.')"/>
   </xsl:template>
   <!--
-  Drop the standalone binding once it has been merged onto a reference.
+  Drop the standalone binding once it has been merged onto a reference, whether
+  the host is a bare/dispatch moniker reference (`eo:moniker-refs`) or an
+  applied recursive handle folded to a "| args" pipe (`eo:applied-refs`, #5848).
   -->
-  <xsl:template match="o[eo:moniker-binding(.) and exists(eo:moniker-refs(.))]" priority="1"/>
+  <xsl:template match="o[eo:moniker-binding(.) and (exists(eo:moniker-refs(.)) or (eo:recursive-handle(.) and exists(eo:applied-refs(.))))]" priority="1"/>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>

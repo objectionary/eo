@@ -28,12 +28,13 @@
   they ignore the @local handle preserved for the same reason (#5681).
 
   When the pipe sits inside an argument block (its parent has a @base,
-  so its siblings are collected as positional arguments), leaving the
-  predecessor formation in place would give the enclosing application
-  two arguments instead of one (#5526). We mark such a predecessor with
-  @float-up; `vars-float-up` then hoists its definition to the nearest
-  abstract object and drops the in-place argument slot, so only the pipe
-  application reaches the enclosing application.
+  so its siblings are collected as positional arguments) or inside a
+  "*" star tuple (its parent has @star, its siblings are tuple elements),
+  leaving the predecessor formation in place would give the enclosing
+  application or tuple an extra element (#5526 / #5848). We mark such a
+  predecessor with @float-up; `vars-float-up` then hoists its definition
+  to the nearest abstract object and drops the in-place slot, so only the
+  pipe application reaches the enclosing application or tuple.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@pipe]">
@@ -45,8 +46,8 @@
       <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
-  <!-- Predecessor formation of a pipe in an argument block: float it up. -->
-  <xsl:template match="o[@name and not(@base) and ../@base and following-sibling::o[1][@pipe]]">
+  <!-- Predecessor formation of a pipe in an argument block or star tuple: float it up. -->
+  <xsl:template match="o[@name and not(@base) and (../@base or ../@star) and following-sibling::o[1][@pipe]]">
     <xsl:copy>
       <xsl:attribute name="float-up"/>
       <xsl:apply-templates select="@*|node()"/>
