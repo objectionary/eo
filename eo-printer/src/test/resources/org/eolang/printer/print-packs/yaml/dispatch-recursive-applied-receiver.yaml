@@ -1,0 +1,57 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The recursive dispatch fold (#5848) when the recursive "[buffer] >> input-block"
+# handle is not merely dispatched but first APPLIED and then dispatched, buried
+# under a further method call: "(input-block --).read" reached through the "@"
+# phi. The handle must still fold into a moniker at its use site, with its
+# argument becoming a "| args" pipe continuation binding the inlined formation —
+# the recursive mirror of the applied-handle relocation "inline-cactoos" performs
+# for the non-recursive case (#5844). "restore-local-names" promotes the handle's
+# "@local" to its visible "@name" and keeps the marker, so "merge-monikers" hosts
+# the restored recursive handle onto its applied use, emitting the formation plus
+# a "| --" pipe. The handle keeps its readable ">> input-block" name so the
+# recursive "input-block chunk" reads by name. Without the fix the handle stays a
+# separate binding and the use prints as the parenthesised "(input-block --).read".
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [size] > read
+    @. > @
+      read.
+        input-block --
+        size
+    [buffer] >> input-block
+      buffer > @
+      [size] > read
+        seq * > @
+          chunk
+          input-block chunk
+        output. > chunk!
+          posix *1
+            "read"
+            posix.stdin
+            size
+printed: |
+  [size] > read
+    @. > @
+      read.
+        [buffer] >> input-block
+          buffer > @
+          [size] > read
+            seq * > @
+              chunk
+              input-block chunk
+            output. > chunk!
+              posix *1
+                "read"
+                posix.stdin
+                size
+        | --
+        size
