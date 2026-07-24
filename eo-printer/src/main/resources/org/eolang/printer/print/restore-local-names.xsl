@@ -67,6 +67,29 @@
     <xsl:sequence select="exists($target//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name])"/>
   </xsl:function>
   <!--
+  Whether the auto-named abstract formation "$target" is applied by a reference
+  that stands as a dispatch receiver rather than a following sibling. Such a
+  reference resolves to "$name", carries its own argument children or a
+  result-binding "@name" (so a fresh bare-reference inline would drop them,
+  #5834), yet does not sit as a following sibling of the formation, the one
+  shape a "| args &gt; name" pipe (#5834) or its adjacent relocation (#5840)
+  already covers. A dispatch receiver "(bar 55).a" is exactly this: its
+  "bar 55" receiver is buried as the "ρ" of the ".a" node. "inline-cactoos"
+  relocates a copy of the formation into the receiver slot and turns the "ρ"
+  into a "| 55" pipe (#5844); unlike the sibling pipe, that relocated
+  predecessor sits inside the dispatch block, so its readable "&gt;&gt; name"
+  handle is kept here — its "@local" marker survives, though (unlike a void)
+  its cactus "@name" is left obfuscated so "inline-cactoos" still recognises
+  the reference and pipes it. References inside the formation itself are
+  excluded, so a self-referential (recursive) helper is not mistaken for an
+  external use.
+  -->
+  <xsl:function name="eo:applied-receiver" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="eo:abstract($target) and exists($target/..//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name and (o or @name) and not(ancestor-or-self::o[. is $target]) and not(preceding-sibling::o[. is $target])])"/>
+  </xsl:function>
+  <!--
   Whether "$wrapper" is a dataized-const file-local handle (`a &gt;&gt; b!`,
   R-3.10.12) that is referenced more than once. "const-to-dataized" wraps such
   a const in a `.as-bytes` over `Φ.dataized` node carrying the obfuscated
@@ -88,25 +111,31 @@
   <xsl:key name="void-handle" match="o[@local and (@base=$eo:empty or eo:recursive(., @name))]" use="@name"/>
   <!--
   References: rewrite each cactus segment that names a handled void or a
-  recursive formation back into the readable handle.
+  recursive formation back into the readable handle. A formation applied as a
+  dispatch receiver (#5844) is deliberately excluded: its cactus name must
+  survive so "inline-cactoos" still recognises the reference and pipes it.
   -->
   <xsl:template match="@base">
     <xsl:attribute name="base" select="string-join(for $seg in tokenize(., '\.') return (if (key('void-handle', $seg)) then key('void-handle', $seg)[1]/@local else $seg), '.')"/>
   </xsl:template>
   <!--
   Handled declaration (void or recursive formation): promote the handle
-  to the visible name.
+  to the visible name. A formation applied as a dispatch receiver (#5844) is
+  not promoted — only its "@local" marker is kept (below) — so its cactus name
+  survives for "inline-cactoos" to pipe against.
   -->
   <xsl:template match="o[@local and (@base=$eo:empty or eo:recursive(., @name))]/@name">
     <xsl:attribute name="name" select="../@local"/>
   </xsl:template>
   <!--
-  Keep the marker on voids, on recursive formations, and on the value of a
-  multi-referenced dataized-const handle (see "eo:const-handle") so "to-eo-tree"
-  restores the readable "&gt;&gt; name" handle; drop it on the other non-void
-  formations, whose handle is inlined away by "inline-cactoos".
+  Keep the marker on voids, on recursive formations, on a formation applied as
+  a dispatch receiver (#5844) — so its relocated pipe predecessor prints its
+  readable "&gt;&gt; name" handle — and on the value of a multi-referenced
+  dataized-const handle (see "eo:const-handle") so "to-eo-tree" restores the
+  readable "&gt;&gt; name" handle; drop it on the other non-void formations,
+  whose handle is inlined away by "inline-cactoos".
   -->
-  <xsl:template match="o[not(@base=$eo:empty) and not(eo:recursive(., @name)) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
+  <xsl:template match="o[not(@base=$eo:empty) and not(eo:recursive(., @name)) and not(eo:applied-receiver(., @name)) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
   <!--
   When a recursive "&gt;&gt; name" handle is restored, its cactus name is
   promoted to the visible "@name" and every reference is rewritten from the
