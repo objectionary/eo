@@ -67,13 +67,41 @@
     <xsl:variable name="keep-name" as="xs:boolean" select="exists($target) and (eo:abstract($target) or ($target/@base = '.as-bytes' and $target/o[1]/@base = 'Φ.dataized' and eo:abstract($target/o[1]/o[1])))"/>
     <xsl:choose>
       <xsl:when test="exists($target) and not(eo:void($target)) and not(eo:recursive($target, $name)) and not(eo:dataized-const($target) and eo:multi-referenced($target, $name))">
-        <xsl:element name="o">
-          <xsl:if test="@as">
-            <xsl:apply-templates select="@as"/>
-          </xsl:if>
-          <xsl:apply-templates select="$target/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
-          <xsl:apply-templates select="$target/node()"/>
-        </xsl:element>
+        <xsl:choose>
+          <!--
+          The reference is the base of an application — it carries its own
+          argument children or a result-binding `@name`. Folding a fresh copy
+          of the target formation over it (the bare-reference path below) would
+          rebuild only the formation and silently drop those arguments and the
+          name (#5834), the same class of loss as #5721. An abstract formation
+          cannot be spelled inline as the head of an application, so instead of
+          inlining it away we keep it in place as the auto-named `[] &gt;&gt;`
+          predecessor (its binding is preserved by the drop template below) and
+          turn this reference into the pipe continuation `| args &gt; name`
+          that #5518 taught the printer to emit — an ordinary application node
+          tagged `@pipe`, its `@base` still pointing at the kept formation
+          directly above it. The guard keeps this to a reference standing
+          immediately after its own target, the one shape `to-eo-tree` can
+          render as a compact pipe.
+          -->
+          <xsl:when test="eo:abstract($target) and (o or @name) and preceding-sibling::o[1] is $target">
+            <xsl:copy>
+              <xsl:if test="not(@pipe)">
+                <xsl:attribute name="pipe"/>
+              </xsl:if>
+              <xsl:apply-templates select="node()|@*"/>
+            </xsl:copy>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:element name="o">
+              <xsl:if test="@as">
+                <xsl:apply-templates select="@as"/>
+              </xsl:if>
+              <xsl:apply-templates select="$target/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
+              <xsl:apply-templates select="$target/node()"/>
+            </xsl:element>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
         <xsl:copy>
@@ -85,9 +113,10 @@
   <!--
   Drop an inlined auto-named abstract; keep cactus-named voids, keep
   self-referential (recursive) abstracts, which are never inlined, keep a
-  multi-referenced dataized-const handle, which is never inlined (#5828), and
-  keep a binding that a surviving method dispatch still reaches through its
-  name.
+  multi-referenced dataized-const handle, which is never inlined (#5828), keep
+  a formation applied through a `@pipe` continuation, which is kept in place
+  above its pipe rather than inlined (#5834), and keep a binding that a
+  surviving method dispatch still reaches through its name.
   Such a dispatch reference (`ξ.<name>.<seg>`) is not inlined above — its
   receiver is buried in a dotted base — so dropping the binding would strand
   the reference on a synthetic "vL_P" placeholder. Keeping it lets
@@ -95,7 +124,7 @@
   instead (#5782).
   -->
   <xsl:template match="o[starts-with(@name, $auto) and not(eo:void(.))]" priority="1">
-    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or (eo:dataized-const(.) and eo:multi-referenced(., @name))">
+    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or (eo:dataized-const(.) and eo:multi-referenced(., @name)) or eo:piped(., @name)">
       <xsl:copy>
         <xsl:apply-templates select="node()|@*"/>
       </xsl:copy>
@@ -134,6 +163,22 @@
   <xsl:function name="eo:dataized-const" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:sequence select="$target/@base = '.as-bytes' and $target/o[1]/@base = 'Φ.dataized'"/>
+  </xsl:function>
+  <!--
+  Whether the auto-named abstract formation `$target` is immediately followed
+  by a reference that uses it as the base of an application — a sibling
+  resolving to `$name` that carries its own argument children or a
+  result-binding `@name`. Such a reference is not inlined away (see the
+  inlining template) but rewritten into a `| args &gt; name` pipe continuation
+  pointing back at the formation, so the formation must stay in place as the
+  pipe's named predecessor rather than be dropped (#5834). The bare-reference
+  case (no children, no name) folds the formation in and drops it as before.
+  -->
+  <xsl:function name="eo:piped" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:variable name="next" select="$target/following-sibling::o[1]"/>
+    <xsl:sequence select="eo:abstract($target) and exists($next) and contains($next/@base, concat('.', $auto)) and eo:resolved-name($next/@base) = $name and ($next/o or $next/@name)"/>
   </xsl:function>
   <!--
   Whether more than one reference in the binding's owner resolves to the
