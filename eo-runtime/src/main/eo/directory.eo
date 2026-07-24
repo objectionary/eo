@@ -59,38 +59,57 @@
           * file
     [] > touch
       if. > @
-        opened.code.eq -1
-        T
-          "Can't create a temp file in the directory '%s': %s".printf
-            * ^.^.path opened.output
+        descriptor.eq -1
+        if.
+          descriptor2.eq -1
+          T
+            "Can't create a temp file '%s'".printf
+              * candidate2
+          seq
+            * closed2 candidate2
         seq *
           closed
           candidate
       string.joined *1 > candidate
         path.separator
-        ^.^.path
+        dir
         name
+      string.joined *1 > candidate2
+        path.separator
+        dir
+        name2
       code. > closed
         os.is-windows.if
           win32 *1
             "_close"
-            opened.code
+            descriptor
           posix *1
             "close"
-            opened.code
-      "%d-%d-%d".printf > name!
+            descriptor
+      code. > closed2
+        os.is-windows.if
+          win32 *1
+            "_close"
+            descriptor2
+          posix *1
+            "close"
+            descriptor2
+      opened.as-number > descriptor!
+      opened2.as-number > descriptor2!
+      ^.^.path > dir
+      "%d-%d-%d-%f".printf > name!
         *
           clock.as-number
-          code.
-            os.is-windows.if
-              win32
-                "_getpid"
-                *
-              posix
-                "getpid"
-                *
-          number.random clock
-      called. > opened
+          pid
+          0
+          random
+      "%d-%d-%d-%f".printf > name2!
+        *
+          clock.as-number
+          pid
+          1
+          random2
+      code. > opened
         os.is-windows.if
           win32 *1
             "_open"
@@ -102,6 +121,29 @@
             candidate
             (posix.rdonly.plus posix.creat).plus posix.exclusive
             posix.mode
+      code. > opened2
+        os.is-windows.if
+          win32 *1
+            "_open"
+            candidate2
+            (win32.rdonly.plus win32.creat).plus win32.exclusive
+            win32.mode
+          posix *1
+            "open"
+            candidate2
+            (posix.rdonly.plus posix.creat).plus posix.exclusive
+            posix.mode
+      code. > pid!
+        os.is-windows.if
+          win32
+            "_getpid"
+            *
+          posix
+            "getpid"
+            *
+      number.random clock > random
+      number.random > random2
+        clock.plus 1
   [glob] > walk /Q.tuple
 
   ++> tests-deletes-directory-with-file-and-dir
@@ -148,23 +190,15 @@
     mktemp.tmpfile > temp
 
   ++> tests-tmpfile-touch-creates-unique-paths
-    if. > @
-      and.
-        first.exists.and second.exists
-        not.
-          first.path.eq second.path
-      success
-      failure
-    seq * > [] > failure
+    seq * > @
+      first.exists.and second.exists
       first.deleted
       second.deleted
-      false
+      valid
     mktemp.tmpfile > first
     mktemp.tmpfile > second
-    seq * > [] > success
-      first.deleted
-      second.deleted
-      true
+    not. > valid!
+      first.path.eq second.path
 
   ++> tests-tmpfile-touch-deletes-created-file
     seq * > @
