@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A const file-local handle (`a >> b!`, #5817) referenced more than once must
+# stay a single shared handle: a const is dataized once and its result cached
+# in that one binding, so every `b` shares the same object. Inlining it per use
+# (as the single-use const, #5821, folds to `42.plus a!`) would mint an
+# independent const object at each site and drop the shared `b` name, changing
+# the object graph (#5828). The multi-referenced handle is therefore kept whole,
+# printing back exactly as written. Contrast the non-const `a >> b`, which is
+# referentially transparent and safely inlines to `42.plus a` at every use.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [a] > foo
+    a >> b!
+    42.plus b > x
+    43.plus b > y
+
+printed: |
+  [a] > foo
+    a >> b!
+    42.plus b > x
+    43.plus b > y

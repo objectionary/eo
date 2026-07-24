@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The non-const counterpart of `const-multi-referenced-handle` (#5828): a plain
+# `a >> b` handle (R-3.10.12) is referentially transparent, so each `b` use is
+# safely inlined to the bare `a` and the handle is dropped, even when referenced
+# more than once. Only the `!` const marker forces the handle to be kept whole.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [a] > foo
+    a >> b
+    42.plus b > x
+    43.plus b > y
+
+printed: |
+  [a] > foo
+    42.plus a > x
+    43.plus a > y
