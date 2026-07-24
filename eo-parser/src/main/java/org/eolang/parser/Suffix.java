@@ -360,6 +360,12 @@ final class Suffix {
                 "cactus emoji is reserved for auto-names; not allowed in identifiers"
             );
         }
+        if (name.charAt(0) < 'a' || name.charAt(0) > 'z') {
+            throw new ParseError(
+                span.line(), home + start,
+                "name must start with a lowercase letter"
+            );
+        }
         Suffix.endsClean(tail, idx, span, home);
         return new Suffix.Parsed(form, name, "", false);
     }
@@ -447,6 +453,12 @@ final class Suffix {
             throw new ParseError(
                 span.line(), home + begin,
                 "cactus emoji is reserved for auto-names; not allowed in identifiers"
+            );
+        }
+        if (!name.isEmpty() && (name.charAt(0) < 'a' || name.charAt(0) > 'z')) {
+            throw new ParseError(
+                span.line(), home + begin,
+                "name must start with a lowercase letter"
             );
         }
         boolean cnst = false;
