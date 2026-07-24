@@ -159,41 +159,51 @@
     </xsl:copy>
   </xsl:template>
   <!--
-  The mirror case (#5848): the applied sibling reference sits just ABOVE the
-  recursive handle, not below it. A "| args &gt; name" pipe binds its
-  immediately-preceding sibling, so a reference standing before the handle
-  cannot pipe against it where it is; the #5837 tag-in-place path above only
-  matches a reference whose preceding sibling is the handle, so it never fires
-  and the reference stays expanded ("bar &gt; @"). Relocate it instead: drop
-  the reference from its own position (below) and re-emit it just under the
-  handle, tagged "@pipe", the same relocation "inline-cactoos" performs for a
-  separated non-recursive handle (#5840) — done here because the recursive
-  handle is never inlined and its cactus name is stripped before
-  "inline-cactoos" runs. The reference is suppressed at its origin:
+  The mirror case (#5848): the applied reference sits ABOVE the recursive
+  handle, not below it. A "| args &gt; name" pipe binds its immediately-preceding
+  sibling, so a reference standing before the handle cannot pipe against it
+  where it is; the #5837 tag-in-place path above only matches a reference whose
+  preceding sibling is the handle, so it never fires and the reference stays
+  expanded ("bar &gt; @"). Relocate it instead: suppress the reference at its
+  origin and re-emit it just under the handle tagged "@pipe", the same
+  relocate-and-pipe "inline-cactoos" performs for a separated non-recursive
+  handle (#5840) — done here because the recursive handle is never inlined and
+  its cactus name is stripped before "inline-cactoos" runs. The reference need
+  not be the handle's immediate sibling; any applied reference resolving to the
+  handle among its preceding siblings folds, mirroring #5840's separated case.
+
+  Suppress the reference at its origin. Match any applied reference (one
+  carrying arguments or a name) with a recursive handle among its following
+  siblings, then keep only those that resolve to it — a reference resolving to a
+  different binding still prints in place.
   -->
-  <xsl:template match="o[contains(@base, concat('.', $auto)) and (o or @name) and following-sibling::o[1][@local and eo:recursive(., @name)] and eo:resolved-name(@base) = following-sibling::o[1]/@name]"/>
+  <xsl:template match="o[contains(@base, concat('.', $auto)) and (o or @name) and following-sibling::o[@local and eo:recursive(., @name)]]">
+    <xsl:if test="not(following-sibling::o[@local and eo:recursive(., @name) and @name = eo:resolved-name(current()/@base)])">
+      <xsl:copy>
+        <xsl:apply-templates select="node()|@*"/>
+      </xsl:copy>
+    </xsl:if>
+  </xsl:template>
   <!--
-  and re-emitted below the handle. Match the recursive handle whose
-  immediately-preceding sibling is such an applied reference, copy the handle,
-  then emit that reference tagged "@pipe"; "to-eo-tree" renders the "|" because
-  the reference's restored base now equals the preceding sibling's name. A
-  reference already carrying "@pipe" is left as is.
+  Re-emit the suppressed reference below the handle. Match the recursive handle,
+  copy it, then for each applied reference among its preceding siblings that
+  resolves to it emit a "@pipe"-tagged copy; "to-eo-tree" renders the "|"
+  because the reference's restored base now equals the preceding sibling's name.
+  A reference already carrying "@pipe" is left as is. A handle with no such
+  preceding reference (the #5837 reference-below shape) just copies through.
   -->
-  <xsl:template match="o[@local and eo:recursive(., @name) and preceding-sibling::o[1][contains(@base, concat('.', $auto)) and (o or @name)]]">
-    <xsl:variable name="ref" select="preceding-sibling::o[1]"/>
+  <xsl:template match="o[@local and eo:recursive(., @name)]">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
-    <xsl:if test="eo:resolved-name($ref/@base) = @name">
-      <xsl:for-each select="$ref">
-        <xsl:copy>
-          <xsl:if test="not(@pipe)">
-            <xsl:attribute name="pipe"/>
-          </xsl:if>
-          <xsl:apply-templates select="node()|@*"/>
-        </xsl:copy>
-      </xsl:for-each>
-    </xsl:if>
+    <xsl:for-each select="preceding-sibling::o[contains(@base, concat('.', $auto)) and (o or @name) and eo:resolved-name(@base) = current()/@name]">
+      <xsl:copy>
+        <xsl:if test="not(@pipe)">
+          <xsl:attribute name="pipe"/>
+        </xsl:if>
+        <xsl:apply-templates select="node()|@*"/>
+      </xsl:copy>
+    </xsl:for-each>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
