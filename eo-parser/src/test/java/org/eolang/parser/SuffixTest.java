@@ -8,6 +8,8 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link Suffix}.
@@ -225,6 +227,19 @@ final class SuffixTest {
             "`>> fibo` must yield Form.AUTO carrying the file-local handle",
             new Suffix(" >> fibo", new Span("[] >> fibo", 1), 2).handle(),
             Matchers.equalTo("fibo")
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"@", "^", "$"})
+    void rejectsScopeSymbolsAsAutoNameHandles(final String symbol) {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix(
+                " >> ".concat(symbol),
+                new Span("[] >> ".concat(symbol), 1), 2
+            ),
+            "a scope symbol must not be accepted as a file-local handle"
         );
     }
 

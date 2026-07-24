@@ -4,6 +4,8 @@
  */
 package org.eolang.parser;
 
+import java.util.Set;
+
 /**
  * A parsed name suffix — §3.10 of the spec.
  *
@@ -48,6 +50,11 @@ final class Suffix {
      * {@link #terminates} so dotted FQNs are still consumed whole.
      */
     private static final String NAME_BOUNDARIES = ",.|':;?[]{}()";
+
+    /**
+     * Scope symbols that cannot be used as file-local handles.
+     */
+    private static final Set<String> SCOPES = Set.of("@", "^", "$");
 
     /**
      * Suffix form.
@@ -396,6 +403,7 @@ final class Suffix {
                 end = end + 1;
             }
             handle = tail.substring(begin, end);
+            Suffix.rejectScope(handle, span, home + begin);
             if (handle.codePoints().anyMatch(cp -> cp == 0x1F335)) {
                 throw new ParseError(
                     span.line(), home + begin,
@@ -417,6 +425,23 @@ final class Suffix {
         }
         Suffix.endsClean(tail, trailing, span, home);
         return new Suffix.Parsed(Form.AUTO, handle, "", cnst);
+    }
+
+    /**
+     * Reject a scope symbol used as a file-local handle.
+     * @param handle File-local handle
+     * @param span Source span
+     * @param column Source column of the handle
+     */
+    private static void rejectScope(
+        final String handle, final Span span, final int column
+    ) {
+        if (Suffix.SCOPES.contains(handle)) {
+            throw new ParseError(
+                span.line(), column,
+                "file-local handle must be an identifier, not a scope symbol"
+            );
+        }
     }
 
     /**
