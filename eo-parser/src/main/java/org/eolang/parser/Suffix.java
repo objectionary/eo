@@ -39,7 +39,7 @@ package org.eolang.parser;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 final class Suffix {
 
     /**
@@ -373,15 +373,16 @@ final class Suffix {
      * @param name Extracted name; may be empty
      * @param span Source span
      * @param home Source column where the enclosing tail begins
-     * @param at Source column of the name's first character
+     * @param pos Source column of the name's first character
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static void checkLowercaseStart(
-        final String name, final Span span, final int home, final int at
+        final String name, final Span span, final int home, final int pos
     ) {
         if (!name.isEmpty() && !"@".equals(name)
             && (name.charAt(0) < 'a' || name.charAt(0) > 'z')) {
             throw new ParseError(
-                span.line(), home + at,
+                span.line(), home + pos,
                 "name must start with a lowercase letter"
             );
         }
