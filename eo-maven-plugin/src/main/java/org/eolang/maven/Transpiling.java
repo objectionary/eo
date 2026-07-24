@@ -82,6 +82,21 @@ final class Transpiling implements Step {
         ThreadLocal.withInitial(HashMap::new);
 
     /**
+     * The pre-{@code to-java.xsl} train, one per thread for the same
+     * thread-safety reason as {@link #TRAINS}: every shift up to (not
+     * including) the final one, in the exact XMIR shape {@code to-java.xsl}
+     * itself dispatches on. Used to derive the coverage manifest structurally
+     * (see {@link CoverageManifest}), instead of pattern-matching the Java
+     * text {@code to-java.xsl} emits.
+     */
+    private static final ThreadLocal<Train<Shift>> LOCATED =
+        ThreadLocal.withInitial(
+            () -> new TrClasspath<>(
+                Arrays.copyOf(Transpiling.XSLS, Transpiling.XSLS.length - 1)
+            ).back()
+        );
+
+    /**
      * Cache directory for transpiled sources.
      */
     private static final String CACHE = "transpiled";
@@ -161,9 +176,10 @@ final class Transpiling implements Step {
     private final Tracking tracking;
 
     /**
-     * Whether located objects are wrapped into {@code PhCoverage}.
+     * The file to record coverage hits into, or NULL when
+     * instrumentation is off.
      */
-    private final boolean coverage;
+    private final Path coverage;
 
     /**
      * Constructor.
@@ -176,7 +192,7 @@ final class Transpiling implements Step {
      * @param tests Whether to transpile tests
      * @param measures Path to the file where XSL measurements are stored
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
-     * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
+     * @param cvrg The coverage file, or NULL when instrumentation is off
      * @checkstyle ParameterNumberCheck (18 lines)
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
@@ -190,7 +206,7 @@ final class Transpiling implements Step {
         final boolean tests,
         final Path measures,
         final Tracking diagnostics,
-        final boolean cvrg
+        final Path cvrg
     ) {
         this.sources = srcs;
         this.targetDir = target;
@@ -207,6 +223,9 @@ final class Transpiling implements Step {
     @Override
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() throws IOException {
+        if (this.coverage != null) {
+            new CoverageManifest(this.coverage).reset();
+        }
         final int saved = new Threaded<>(
             this.sources,
             this::transpiled
@@ -263,6 +282,11 @@ final class Transpiling implements Step {
         } else {
             rewrite.compareAndSet(false, true);
             new Saved(transform.apply(xmir).toString(), target).value();
+        }
+        if (this.coverage != null) {
+            new CoverageManifest(this.coverage).scan(
+                new Xsline(Transpiling.LOCATED.get()).pass(xmir)
+            );
         }
         return this.javaGenerated(
             rewrite.get(), target, hsh.get(), this.transpileTests && !tojo.discovered()
@@ -324,7 +348,7 @@ final class Transpiling implements Step {
      */
     private Train<Shift> train() {
         final boolean track = this.tracking.locations();
-        final boolean instrument = this.coverage;
+        final boolean instrument = this.coverage != null;
         return Transpiling.TRAINS.get().computeIfAbsent(
             String.format("%b|%b", track, instrument),
             ignored -> Transpiling.compiled(track, instrument)
