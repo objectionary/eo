@@ -130,16 +130,14 @@
   The recursive-handle binding that an applied reference `$ref` hosts as a
   moniker, or the empty sequence. An applied reference is a bare "ξ.&lt;name&gt;"
   restored recursive handle (see `eo:recursive-handle`) carrying argument children
-  — an application "handle args", either a dispatch receiver ("(handle args).read")
-  or a plain list element ("directory.eo"'s "r (walk ...)" in "seq *"). Neither a
-  bare inline (drops the arguments, #5834) nor a reversed dispatch can host it, so
-  the handle is inlined in place and its arguments become a "| args" pipe
-  continuation (#5848), the recursive mirror of "inline-cactoos" (#5844). Hosts
-  onto the first such reference only, excluding the binding's own subtree so a
-  self-reference is never mistaken for an external use. A reference carrying its
-  own "@name" is excluded — that is a "| args &gt; name" pipe already folded by
-  "restore-local-names" (#5837/#5848) whose name folding here would strip; a
-  nameless one round-trips (the re-parsed "| args" is nameless and folds again).
+  — "handle args", a dispatch receiver ("(handle args).read") or a list element
+  ("directory.eo"'s "r (walk ...)" in "seq *"). Since neither a bare inline (drops
+  the arguments, #5834) nor a reversed dispatch can host it, the handle is inlined
+  in place and its arguments become a "| args" pipe continuation (#5848), the
+  recursive mirror of "inline-cactoos" (#5844). Hosts onto the first such reference
+  only, excluding the binding's own subtree. A reference with its own "@name" is
+  excluded — a "| args &gt; name" pipe already folded by "restore-local-names"
+  (#5837/#5848); a nameless one round-trips.
   -->
   <xsl:function name="eo:applied-refs" as="element()*">
     <xsl:param name="attr" as="element()*"/>

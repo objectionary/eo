@@ -147,17 +147,14 @@ final class Pretty {
      *
      * <p>A <em>nameless</em> pipe continuation ({@code | args}, base {@code |}
      * with an empty tail, §3.14) is forced to its horizontal rendering whenever
-     * one exists, regardless of penalty. Its vertical shape would put a bare
-     * {@code |} on its own line with the arguments below, but a vertical pipe head
-     * must carry content after the {@code "| "} marker — a bare {@code |} fails to
-     * parse ("a pipe {@code |} must be followed by a space") and the printer
-     * cannot emit the lone trailing space that would legalise it. So inlining the
-     * arguments onto the {@code |} line is the only parseable form, even for a
-     * wide or parenthesised argument ({@code | (walk "**").at.^}, #5848) that
-     * scores lower broken across lines. A <em>named</em> pipe ({@code | > @} with
-     * its arguments below) keeps content after the marker, so its vertical form
-     * parses and stays subject to the ordinary penalty vote. Shares the
-     * force-inline flag with the {@code !} const-marker child below.</p>
+     * one exists, regardless of penalty: a vertical pipe would leave a bare
+     * {@code |} on its own line, which fails to parse ("a pipe {@code |} must be
+     * followed by a space") since the printer cannot emit the legalising trailing
+     * space. So a wide or parenthesised argument ({@code | (walk "**").at.^},
+     * #5848) is inlined onto the {@code |} line even when it scores lower broken.
+     * A <em>named</em> pipe ({@code | > @} with its arguments below) keeps content
+     * after the marker, so its vertical form parses and stays subject to the
+     * penalty vote. Shares the force-inline flag with the {@code !} child below.</p>
      *
      * @param node The node
      * @param indent The indentation level
