@@ -18,6 +18,8 @@ asserts:
   - //java[contains(text(), 'Phi rb1 = new PhDispatch(Phi.Φ, "number");')]
   - //java[contains(text(), 'Phi rb11 = new PhDispatch(Phi.Φ, "bytes")')]
   - //java[contains(text(), 'Phi r = new PhDispatch(rb, "and");')]
+  - //java[contains(text(), 'rb1 = new PhSticky(rb1, "')]
+  - //java[contains(text(), 'r = new PhSticky(r, "')]
 input: |
   [] > foo
     and. > q

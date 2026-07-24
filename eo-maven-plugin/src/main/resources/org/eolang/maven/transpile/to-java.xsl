@@ -582,6 +582,10 @@
       <xsl:with-param name="indent" select="$indent"/>
       <xsl:with-param name="rho" select="$rho"/>
     </xsl:apply-templates>
+    <xsl:call-template name="sticky">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:call-template>
     <xsl:apply-templates select="." mode="located">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
@@ -618,10 +622,26 @@
       <xsl:with-param name="skip" select="1"/>
       <xsl:with-param name="rho" select="$rho"/>
     </xsl:apply-templates>
+    <xsl:call-template name="sticky">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:call-template>
     <xsl:apply-templates select="." mode="located">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>
+  </xsl:template>
+  <!-- Wrap a formed object into a memoizing PhSticky -->
+  <xsl:template name="sticky">
+    <xsl:param name="indent"/>
+    <xsl:param name="name"/>
+    <xsl:value-of select="eo:eol($indent)"/>
+    <xsl:value-of select="$name"/>
+    <xsl:text> = new PhSticky(</xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text>, "</xsl:text>
+    <xsl:value-of select="@loc"/>
+    <xsl:text>");</xsl:text>
   </xsl:template>
   <!-- Location of object -->
   <xsl:template match="*" mode="located">
