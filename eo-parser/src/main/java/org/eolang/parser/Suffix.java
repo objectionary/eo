@@ -455,7 +455,8 @@ final class Suffix {
                 "cactus emoji is reserved for auto-names; not allowed in identifiers"
             );
         }
-        if (!name.isEmpty() && (name.charAt(0) < 'a' || name.charAt(0) > 'z')) {
+        if (!name.isEmpty() && !"@".equals(name)
+            && (name.charAt(0) < 'a' || name.charAt(0) > 'z')) {
             throw new ParseError(
                 span.line(), home + begin,
                 "name must start with a lowercase letter"
