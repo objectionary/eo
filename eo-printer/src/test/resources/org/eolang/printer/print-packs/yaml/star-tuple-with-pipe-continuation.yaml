@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A "*" star tuple whose element carries a "| pipe" continuation (§3.14).
+# The pipe's predecessor formation ("[q] >> h") is floated out of the
+# tuple's argument slot after "stars-to-tuples" has already built the
+# nested tuple with its per-layer length markers, leaving one layer with
+# only its nested tuple and a trailing "Φ.number" length marker and no
+# element in between. The reverse "tuples-to-stars" sheet must skip that
+# length marker rather than materialise it as a spurious numeric element
+# (#5858).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo
+    seq * > @
+      [q] >> h
+        q > @
+      | walked
+      ^
+
+printed: |
+  [] > foo
+    seq * > @
+      q > [q] >> h
+      | walked
+      ^
