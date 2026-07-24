@@ -4,6 +4,7 @@
  */
 package org.eolang.printer;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StEnvelope;
 import com.yegor256.xsline.StSequence;
@@ -14,6 +15,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import org.eolang.parser.StXnav;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * This {@link Shift} turns hex data inside XMIR.
@@ -40,9 +43,7 @@ final class StUnhex extends StEnvelope {
         StUnhex.class.getSimpleName(),
         new StXnav(
             StUnhex.BYTES,
-            xnav -> xnav.node().setTextContent(
-                xnav.element("o").text().orElse("")
-            )
+            xnav -> StUnhex.detach(xnav, xnav.element("o").text().orElse(""))
         ),
         new StXnav(
             StUnhex.elements("number"),
@@ -51,7 +52,7 @@ final class StUnhex extends StEnvelope {
                     StUnhex.undash(xnav.element("o").text().orElse(""))
                 ).getDouble();
                 if (!Double.isNaN(number) && !Double.isInfinite(number)) {
-                    xnav.node().setTextContent(StUnhex.number(number));
+                    StUnhex.detach(xnav, StUnhex.number(number));
                 }
             }
         ),
@@ -62,8 +63,8 @@ final class StUnhex extends StEnvelope {
                     StUnhex.undash(xnav.element("o").text().orElse(""))
                 ).array()
             ).ifPresent(
-                decoded -> xnav.node().setTextContent(
-                    String.format("\"%s\"", StUnhex.escape(decoded))
+                decoded -> StUnhex.detach(
+                    xnav, String.format("\"%s\"", StUnhex.escape(decoded))
                 )
             )
         )
@@ -82,6 +83,52 @@ final class StUnhex extends StEnvelope {
      */
     StUnhex(final Shift origin) {
         super(origin);
+    }
+
+    /**
+     * Put the readable text of a data literal in place of its byte payload.
+     *
+     * <p>When the literal's only child element is its own byte payload (the
+     * usual case), the whole content is replaced with the plain text — this is
+     * the original {@code setTextContent} behaviour, which also clears any
+     * surrounding whitespace text nodes so the result re-reads cleanly.</p>
+     *
+     * <p>When a second child element is present — an argument applied directly
+     * to the literal, as in {@code 42 5} — only the byte-payload child (the
+     * first {@code <o>}) is swapped for a text node, leaving the sibling
+     * argument intact. Overwriting the whole element there would delete the
+     * argument and silently drop the application.</p>
+     *
+     * @param xnav The data literal's wrapper element
+     * @param text The readable text to put in place of the byte payload
+     */
+    private static void detach(final Xnav xnav, final String text) {
+        final Node node = xnav.node();
+        if (StUnhex.only(node)) {
+            node.setTextContent(text);
+        } else {
+            node.replaceChild(
+                node.getOwnerDocument().createTextNode(text),
+                xnav.element("o").node()
+            );
+        }
+    }
+
+    /**
+     * Whether the byte payload is the element's only child element (i.e. no
+     * argument is applied to the literal).
+     * @param node The wrapper element
+     * @return True if there is at most one child element
+     */
+    private static boolean only(final Node node) {
+        final NodeList children = node.getChildNodes();
+        int elements = 0;
+        for (int idx = 0; idx < children.getLength(); ++idx) {
+            if (children.item(idx).getNodeType() == Node.ELEMENT_NODE) {
+                elements += 1;
+            }
+        }
+        return elements <= 1;
     }
 
     /**
