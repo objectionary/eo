@@ -36,11 +36,14 @@
   read > get
     0
     size
-  seq * > [object] > put
-    write
-      0
-      object
-    get
+  if. > [object] > put
+    object.size.gt size
+    T
+      "Can't put %d bytes into a chunk sized %d bytes; call .resized first to grow it".printf
+        * object.size size
+    seq *
+      write 0 object
+      get
   [offset length] > read /Q.bytes
     ? > cant-read /{Q.string}
   [size] > resized /Q.chunk
