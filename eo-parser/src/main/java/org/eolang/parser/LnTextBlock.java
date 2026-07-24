@@ -56,7 +56,7 @@ final class LnTextBlock implements Line {
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
         final String joined = Emissions.unescapeBody(
-            String.join(String.valueOf('\n'), globals.tbody()).trim()
+            String.join(String.valueOf('\n'), globals.tbody())
         );
         this.transition(stack, suffix);
         emit.object(
