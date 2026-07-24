@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A single-use file-local handle ("[t] >> bar", R-3.10.12) whose abstract
+# formation is applied by a reference sitting as a method-dispatch receiver
+# (the "bar 55" head of "(bar 55).a 88"). "inline-cactoos" will relocate the
+# formation into the receiver slot and turn the reference into a "| 55" pipe
+# (#5844); for the relocated predecessor to print its readable ">> bar" handle,
+# "restore-local-names" must keep the "@local" marker instead of dropping it as
+# it does for a plain inlined-away handle. Unlike a void or recursive handle,
+# though, the cactus "@name" is NOT promoted and the reference is NOT rewritten
+# — the binding stays obfuscated so "inline-cactoos" still recognises the
+# reference and pipes it.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-self.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/validate-before-stars.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/printer/print/restore-local-names.xsl
+asserts:
+  # The applied formation keeps its "@local" marker, and its cactus "@name" is
+  # left obfuscated (not promoted to the handle).
+  - /object/o[@name='foo']/o[@local='bar' and contains(@name, '🌵') and not(@base)]
+  # Its applied reference (the dispatch receiver) is NOT rewritten to the
+  # handle — it stays cactus-based and still carries its own argument.
+  - /object/o[@name='foo']/o[@base='.a']/o[contains(@base, '🌵') and o]
+  # No reference was rewritten to a readable "bar" base.
+  - /object[not(.//o[contains(@base, 'ξ.bar') or ends-with(@base, '.bar')])]
+input: |
+  [] > foo
+    (bar 55).a 88 > k
+    [t] >> bar
