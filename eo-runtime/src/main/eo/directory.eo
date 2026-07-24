@@ -57,7 +57,93 @@
       T
         "Directory %s does not exist, can't create temporary file".printf
           * file
-    [] > touch /Q.string
+    [] > touch
+      if. > @
+        descriptor.eq -1
+        if.
+          descriptor2.eq -1
+          T
+            "Can't create a temp file '%s'".printf
+              * candidate2
+          seq
+            * closed2 candidate2
+        seq *
+          closed
+          candidate
+      string.joined *1 > candidate
+        path.separator
+        dir
+        name
+      string.joined *1 > candidate2
+        path.separator
+        dir
+        name2
+      code. > closed
+        os.is-windows.if
+          win32 *1
+            "_close"
+            descriptor
+          posix *1
+            "close"
+            descriptor
+      code. > closed2
+        os.is-windows.if
+          win32 *1
+            "_close"
+            descriptor2
+          posix *1
+            "close"
+            descriptor2
+      opened.as-number > descriptor!
+      opened2.as-number > descriptor2!
+      ^.^.path > dir
+      "%d-%d-%d-%f".printf > name!
+        *
+          clock.as-number
+          pid
+          0
+          random
+      "%d-%d-%d-%f".printf > name2!
+        *
+          clock.as-number
+          pid
+          1
+          random2
+      code. > opened
+        os.is-windows.if
+          win32 *1
+            "_open"
+            candidate
+            (win32.rdonly.plus win32.creat).plus win32.exclusive
+            win32.mode
+          posix *1
+            "open"
+            candidate
+            (posix.rdonly.plus posix.creat).plus posix.exclusive
+            posix.mode
+      code. > opened2
+        os.is-windows.if
+          win32 *1
+            "_open"
+            candidate2
+            (win32.rdonly.plus win32.creat).plus win32.exclusive
+            win32.mode
+          posix *1
+            "open"
+            candidate2
+            (posix.rdonly.plus posix.creat).plus posix.exclusive
+            posix.mode
+      code. > pid!
+        os.is-windows.if
+          win32
+            "_getpid"
+            *
+          posix
+            "getpid"
+            *
+      number.random clock > random
+      number.random > random2
+        clock.plus 1
   [glob] > walk /Q.tuple
 
   ++> tests-deletes-directory-with-file-and-dir
@@ -95,6 +181,37 @@
     d.exists.and d.is-directory > @
     (mktemp.tmpfile.deleted.as-path.resolved "foo-new").as-dir.made > d
 
+  ++> tests-tmpfile-touch-creates-empty-file
+    seq * > @
+      size
+      temp.deleted
+      size.eq 0
+    temp.size > size
+    mktemp.tmpfile > temp
+
+  ++> tests-tmpfile-touch-creates-unique-paths
+    seq * > @
+      first.exists.and second.exists
+      first.deleted
+      second.deleted
+      valid
+    mktemp.tmpfile > first
+    mktemp.tmpfile > second
+    not. > valid!
+      first.path.eq second.path
+
+  ++> tests-tmpfile-touch-deletes-created-file
+    seq * > @
+      existed
+      deleted
+      and.
+        existed.and
+          deleted.path.eq temp.path
+        deleted.exists.not
+    temp.deleted > deleted
+    temp.exists > existed
+    mktemp.tmpfile > temp
+
   ++> tests-walks-recursively
     seq * > @
       (d.resolved "foo/bar").as-dir.made
@@ -108,6 +225,9 @@
   mktemp.open --> on-opening-directory
     "w"
     true > [d]
+
+  --> on-tmpfile-touching-absent-directory
+    (mktemp.tmpfile.deleted.as-path.resolved "child").@.tmpfile > @
 
   walk. --> on-walking-absent-directory
     directory mktemp.tmpfile.deleted
