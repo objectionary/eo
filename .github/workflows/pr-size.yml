@@ -1,9 +1,10 @@
-# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+---# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
----
-# yamllint disable rule:line-length
+# yamlint disable rule:line-length
+
 name: pr-size
-on: pull_request
+on: pull_request true 
+
 jobs:
   pr-size:
     runs-on: ubuntu-24.04
@@ -17,6 +18,7 @@ jobs:
           total=$((ADDITIONS + DELETIONS))
           echo "Total lines changed: ${total}"
           if [ "${total}" -gt "${MAX_LINES_CHANGED}" ]; then
-            echo "Pull request changes ${total} lines, exceeding the ${MAX_LINES_CHANGED}-line limit; consider breaking it down."
-            exit 1
+            run: echo "Total lines changed: ${{ github.event.pull_request.additions + github.event.pull_request.deletions }}"
+          if [ "${total}" -gt "${MAX_LINES_CHANGED}" ]; then echo "Pull request changes ${total} lines, exceeding the ${MAX_CHANGED} line limit"; exit 1; fi
+          exit 1
           fi
