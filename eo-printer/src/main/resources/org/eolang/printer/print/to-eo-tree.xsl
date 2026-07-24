@@ -405,9 +405,6 @@
           </xsl:choose>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:if test="@const">
-        <xsl:text>!</xsl:text>
-      </xsl:if>
       <xsl:if test="eo:atom(.)">
         <!--
         A multi-segment signature (e.g. "Φ.malloc.of.allocated") stays
@@ -418,6 +415,14 @@
         -->
         <xsl:value-of select="concat(' /', eo:signature(string(./o[@name=$eo:lambda]/@atom)))"/>
       </xsl:if>
+    </xsl:if>
+    <!--
+    The `!` const marker, for a named binding (`... > name!`, `[] >>!`)
+    and for an anonymous inline const argument (`42.plus a!`, #5821) that
+    carries `@const` with no `@name`.
+    -->
+    <xsl:if test="@const">
+      <xsl:text>!</xsl:text>
     </xsl:if>
   </xsl:template>
   <!-- DATA -->

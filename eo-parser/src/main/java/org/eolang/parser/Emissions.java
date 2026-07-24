@@ -187,6 +187,9 @@ final class Emissions {
             if (value.binding() != null) {
                 emit.slot(Emissions.bindingTag(value.binding()));
             }
+            if (value.constant()) {
+                emit.constant();
+            }
             emit.close();
         } else {
             Emissions.openValue(emit, null, value, line);
@@ -202,6 +205,9 @@ final class Emissions {
             emit.method(last.fragile());
             if (value.binding() != null) {
                 emit.slot(Emissions.bindingTag(value.binding()));
+            }
+            if (value.constant()) {
+                emit.constant();
             }
             emit.close();
         }
