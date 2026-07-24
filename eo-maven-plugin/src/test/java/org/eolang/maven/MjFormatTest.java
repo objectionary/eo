@@ -87,7 +87,7 @@ final class MjFormatTest {
         final IllegalStateException exception = Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
-                .withProgram(MjFormatTest.unparseable())
+                .withProgram(MjFormatTest.unparsable())
                 .execute(MjFormat.class),
             "a source that fails to parse must not be silently formatted"
         );
@@ -156,7 +156,7 @@ final class MjFormatTest {
      * A source that fails to parse.
      * @return The EO text
      */
-    private static String unparseable() {
+    private static String unparsable() {
         return String.join(
             System.lineSeparator(),
             "+package foo.x",
