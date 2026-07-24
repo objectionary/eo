@@ -7,9 +7,14 @@
 # in that one binding, so every `b` shares the same object. Inlining it per use
 # (as the single-use const, #5821, folds to `42.plus a!`) would mint an
 # independent const object at each site and drop the shared `b` name, changing
-# the object graph (#5828). The multi-referenced handle is therefore kept whole,
-# printing back exactly as written. Contrast the non-const `a >> b`, which is
+# the object graph (#5828). The kept handle is hosted onto its first reference
+# as a moniker (`a >> b!` under the first `.plus`), the remaining references
+# reading back as the bare `b`. Contrast the non-const `a >> b`, which is
 # referentially transparent and safely inlines to `42.plus a` at every use.
+#
+# 'reprints: false' (#5739): the moniker spelling parses the nested handle in a
+# narrower scope than the standalone spelling, so it does not reprint to itself.
+reprints: false
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -25,6 +30,6 @@ origin: |
 
 printed: |
   [a] > foo
-    a >> b!
-    42.plus b > x
+    42.plus > x
+      a >> b!
     43.plus b > y
