@@ -3,8 +3,6 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
@@ -23,7 +21,86 @@
           * as-number
     i32 > left
       as-bytes.slice 4 4
-  [] > as-number /Q.number
+  [] > as-number
+    if. > @
+      as-bytes.eq 00-00-00-00-00-00-00-00
+      0
+      number
+        sign.or
+          exponent-bits.or mantissa
+    rounded.eq 00-20-00-00-00-00-00-00 > carried
+    carried.if > exponent-bits
+      as-bytes.
+        plus.
+          i64 40-00-00-00-00-00-00-00
+          i64 highest-bits
+      as-bytes.
+        plus.
+          i64 3F-F0-00-00-00-00-00-00
+          i64 highest-bits
+    eq. > guard
+      and.
+        magnitude.right
+          highest.minus 53
+        00-00-00-00-00-00-00-01
+      00-00-00-00-00-00-00-01
+    top-bit 63 > highest
+    top-bit-bytes > highest-bits!
+      63
+      03-F0-00-00-00-00-00-00
+    magnitude.right > kept!
+      highest.minus 52
+    if. > magnitude!
+      sign.eq 80-00-00-00-00-00-00-00
+      as-bytes.
+        plus.
+          i64 as-bytes.not
+          i64 00-00-00-00-00-00-00-01
+      as-bytes
+    if. > mantissa
+      highest.lte 52
+      and.
+        magnitude.left
+          52.minus highest
+        00-0F-FF-FF-FF-FF-FF-FF
+      rounded.and 00-0F-FF-FF-FF-FF-FF-FF
+    eq. > odd
+      kept.and 00-00-00-00-00-00-00-01
+      00-00-00-00-00-00-00-01
+    guard.and > round-up
+      sticky.or odd
+    round-up.if > rounded!
+      as-bytes.
+        plus.
+          i64 kept
+          i64 00-00-00-00-00-00-00-01
+      kept
+    as-bytes.and 80-00-00-00-00-00-00-00 > sign!
+    not. > sticky
+      eq.
+        magnitude.left
+          117.minus highest
+        00-00-00-00-00-00-00-00
+    if. > [k] > top-bit
+      eq.
+        magnitude.right k
+        00-00-00-00-00-00-00-00
+      top-bit
+        k.minus 1
+      k
+    [k kb] > top-bit-bytes
+      if. > @
+        eq.
+          magnitude.right k
+          00-00-00-00-00-00-00-00
+        top-bit-bytes
+          k.minus 1
+          next-kb
+        kb
+      as-bytes. > next-kb!
+        plus.
+          i64 kb
+          i64 FF-F0-00-00-00-00-00-00
   [x cant-divide] > div
     if. > @
       x.as-bytes.eq 00-00-00-00-00-00-00-00
@@ -164,6 +241,34 @@
       eq.
         i64 234.as-bytes
         234.as-i64.as-bytes
+
+  eq. ++> tests-i64-as-number-of-exact-power-of-two
+    4611686018427387904.as-i64.as-number
+    4611686018427387904
+
+  eq. ++> tests-i64-as-number-of-i64-max-rounds-up
+    as-number.
+      i64 7F-FF-FF-FF-FF-FF-FF-FF
+    9.223372036854776e18
+
+  eq. ++> tests-i64-as-number-of-i64-min
+    as-number.
+      i64 80-00-00-00-00-00-00-00
+    -9.223372036854776e18
+
+  -3.as-i64.as-number.eq -3 ++> tests-i64-as-number-of-small-negative
+
+  3.as-i64.as-number.eq 3 ++> tests-i64-as-number-of-small-positive
+
+  eq. ++> tests-i64-as-number-rounds-tie-to-even
+    as-number.
+      i64 00-20-00-00-00-00-00-01
+    9007199254740992
+
+  eq. ++> tests-i64-as-number-rounds-up-above-tie
+    as-number.
+      i64 00-20-00-00-00-00-00-03
+    9007199254740996
 
   ++> tests-i64-div-by-i64-one
     eq. > @
