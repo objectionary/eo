@@ -170,6 +170,11 @@
               (m.resized 3).size.eq 3
               m.get.eq 01-02-03
 
+  eq. ++> tests-malloc-empty-grows-on-first-put
+    malloc.empty
+      m.put 42 > [m]
+    42
+
   malloc.empty ++> tests-malloc-empty-is-empty
     m.size.eq 0 > [m]
 
