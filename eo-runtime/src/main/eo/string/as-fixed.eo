@@ -1,6 +1,8 @@
 # Writes the number `n` as fixed-point decimal with exactly `places` fraction
 # digits, rounding to the nearest unit in the last place, so that `2.5` with
 # four places becomes `2.5000` and `0.9999999` with six places becomes `1.000000`.
+# If `places` is negative or not a whole number, the `cant-print` fallback is
+# returned, or the bottom object when unbound.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -9,12 +11,20 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[n places] > as-fixed
+[n places cant-print] > as-fixed
   if. > @
-    n.lt 0
-    signed
-      n.times -1
-    positive n
+    or.
+      0.gt places
+      not.
+        places.floor.eq places
+    cant-print
+      "Can't write a fixed-point decimal with %s fraction places".printf
+        * places
+    if.
+      n.lt 0
+      signed
+        n.times -1
+      positive n
   [a] > positive
     concat. > @
       concat.
@@ -78,6 +88,13 @@
     string
       as-fixed 3.14159 2
 
+  eq. ++> tests-negative-places-returns-provided-fallback
+    "recovered"
+    as-fixed
+      3.14159
+      -2
+      "recovered" > [msg]
+
   eq. ++> tests-negative-rounding-to-zero-drops-sign
     "0.00"
     string
@@ -87,6 +104,13 @@
     "0.00"
     string
       as-fixed -0.001 2
+
+  eq. ++> tests-non-integer-places-returns-provided-fallback
+    "recovered"
+    as-fixed
+      3.14159
+      2.5
+      "recovered" > [msg]
 
   eq. ++> tests-pads-with-trailing-zeros
     "1.250000"
@@ -112,3 +136,7 @@
     "0.000000"
     string
       as-fixed 0 6
+
+  as-fixed --> on-negative-places-without-fallback
+    3.14159
+    -2
