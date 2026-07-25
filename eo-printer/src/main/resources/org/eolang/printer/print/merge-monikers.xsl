@@ -242,11 +242,14 @@
   `ξ.<name>.<seg>` becomes a reversed dispatch `<seg>.`
   whose receiver is that inlined binding and whose arguments are the
   reference's own children — the equivalent inline for a dispatch use (#5782).
-  The dispatch also keeps the reference's own `@name` and `@const`, so a named
-  use such as `q. > @` over an anonymous formation round-trips (#5794) and a
-  const one such as `c.gte 2 > a!` keeps its `!` (#5900) — that marker is what
+  The dispatch also keeps the reference's own `@name`, `@local` and `@const`, so
+  a named use such as `q. > @` over an anonymous formation round-trips (#5794),
+  a const one such as `c.gte 2 > a!` keeps its `!` (#5900) — that marker is what
   makes the object dataized once and cached, so losing it would silently turn a
-  cached object into one recomputed at every use.
+  cached object into one recomputed at every use — and a handle hosting another
+  handle in its own receiver (`data.size >> len!` over `b >> data!`) keeps its
+  readable name instead of printing as an anonymous `size. >>!` that its own
+  references no longer resolve to (#5914).
   -->
   <xsl:template match="o[exists(eo:hosted-binding(.))]" priority="1">
     <xsl:variable name="binding" select="eo:hosted-binding(.)"/>
@@ -262,7 +265,7 @@
       <xsl:otherwise>
         <xsl:element name="o">
           <xsl:apply-templates select="@as"/>
-          <xsl:apply-templates select="@name|@const"/>
+          <xsl:apply-templates select="@name|@local|@const"/>
           <xsl:attribute name="base" select="concat('.', $seg)"/>
           <xsl:element name="o">
             <xsl:apply-templates select="$binding/@*[name() != 'as']"/>
