@@ -169,14 +169,21 @@
   The const file-local handle binding a reference `$ref` resolves to but does
   NOT host (the binding folds onto its first reference only). Every other
   reference keeps the readable "@local" handle in place of the obfuscated
-  cactus name, so it reads back as a bare `b` rather than a synthetic "vL_P"
-  name (#5828).
+  cactus name, so it reads back as a bare `b` (or a dispatch `b.seg`) rather
+  than a synthetic "vL_P" name (#5828). The reference is matched by carrying the
+  binding's cactus "@name" as one of its base segments — a bare `ξ.<name>`, a
+  single-segment dispatch `ξ.<name>.<seg>`, or a multi-segment chain
+  `ξ.<name>.<seg>.<seg>` whose receiver position the moniker fold cannot host
+  (#5890) — so a stranded receiver reference reads back by name instead of a
+  synthetic id, the const mirror of `eo:kept-local-ref`. The binding's own
+  subtree and the single hosting reference are excluded.
   -->
   <xsl:function name="eo:kept-const-ref" as="element()*">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
-    <xsl:variable name="binding" select="$owner/o[@name = eo:resolved-ref($ref) and eo:moniker-binding(.) and eo:const-handle(.)][1]"/>
-    <xsl:sequence select="if (exists($binding) and not(eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
+    <xsl:variable name="candidates" select="$owner/o[eo:moniker-binding(.) and eo:const-handle(.)]"/>
+    <xsl:variable name="binding" select="$candidates[some $seg in tokenize($ref/@base, '\.') satisfies $seg = @name][1]"/>
+    <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and not(eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
   </xsl:function>
   <!--
   The kept multi-referenced abstract handle binding (`[] &gt;&gt; name`, #5876)
