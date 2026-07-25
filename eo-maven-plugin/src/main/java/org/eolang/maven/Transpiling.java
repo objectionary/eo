@@ -225,12 +225,13 @@ final class Transpiling implements Step {
 
     /**
      * Transpile a single tojo.
+     * Package-private, so that a test can race threads on one instance.
      * @param tojo Tojo that should be transpiled
      * @return Number of generated Java files
      * @throws IOException If any issues with I/O
      */
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
-    private int transpiled(final TjForeign tojo) throws IOException {
+    int transpiled(final TjForeign tojo) throws IOException {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.resolve(Transpiling.DIR);

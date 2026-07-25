@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import org.cactoos.list.ListOf;
 import org.eolang.lints.Defect;
@@ -52,6 +53,7 @@ import org.xembly.Xembler;
  *     Naming the class {@code Linting} avoids this collision.
  * </p>
  * @since 0.31.0
+ * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 final class Linting implements Step {
@@ -209,8 +211,14 @@ final class Linting implements Step {
         }
     }
 
+    /**
+     * Lint every XMIR, individually and then as a package.
+     * Package-private only to keep {@link Linting#lintOne} ahead of the
+     * private methods, as MethodsOrderCheck requires.
+     * @throws IOException If failed to lint
+     */
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
-    private void linting() throws IOException {
+    void linting() throws IOException {
         final Collection<TjForeign> programs = this.tojos.withXmir();
         final Map<Severity, Integer> counts = new ConcurrentHashMap<>();
         counts.putIfAbsent(Severity.CRITICAL, 0);
@@ -220,9 +228,10 @@ final class Linting implements Step {
         if (!this.skipSourceLints.isEmpty()) {
             Logger.info(this, "Unlinting source lints: %[list]s", this.skipSourceLints);
         }
+        final String[] unlints = this.skipSourceLints.toArray(new String[0]);
         final int passed = new Threaded<>(
             programs,
-            tojo -> this.lintOne(tojo, counts, seen, this.skipSourceLints.toArray(new String[0]))
+            tojo -> this.lintOne(tojo, counts, seen, xmir -> this.linted(xmir, unlints))
         ).total();
         if (programs.isEmpty()) {
             Logger.info(this, "There are no XMIR programs, nothing to lint individually");
@@ -277,19 +286,20 @@ final class Linting implements Step {
 
     /**
      * XMIR verified to another XMIR.
+     * Package-private, so that a test can race threads on one instance.
      * @param tojo Foreign tojo
      * @param counts Counts of errors, warnings, and critical
      * @param seen Defects seen so far across all files
-     * @param unlints Lints to skip
+     * @param pipeline The linting transform to apply on a cache miss
      * @return Amount of passed tojos (1 if passed, 0 if errors)
      * @throws Exception If failed to lint
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    private int lintOne(
+    int lintOne(
         final TjForeign tojo,
         final Map<Severity, Integer> counts,
         final Collection<String> seen,
-        final String... unlints
+        final UnaryOperator<XML> pipeline
     ) throws Exception {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
@@ -306,17 +316,11 @@ final class Linting implements Step {
                         this.version,
                         new TojoHash(tojo).get()
                     ),
-                    src -> this.linted(
-                        xmir,
-                        unlints
-                    ).toString()
+                    src -> pipeline.apply(xmir).toString()
                 )
             );
         } else {
-            new Saved(
-                this.linted(xmir, unlints).toString(),
-                target
-            ).value();
+            new Saved(pipeline.apply(xmir).toString(), target).value();
         }
         final Xnav checked = new Xnav(target);
         final Collection<Defect> defects = Linting.existing(checked);
