@@ -175,15 +175,33 @@
   single-segment dispatch `ξ.<name>.<seg>`, or a multi-segment chain
   `ξ.<name>.<seg>.<seg>` whose receiver position the moniker fold cannot host
   (#5890) — so a stranded receiver reference reads back by name instead of a
-  synthetic id, the const mirror of `eo:kept-local-ref`. The binding's own
-  subtree and the single hosting reference are excluded.
+  synthetic id, the const mirror of `eo:kept-local-ref`. The reference need not
+  live in the binding's own scope: one written inside a nested formation climbs
+  to the handle through `ρ` and is stranded just the same (#5893), so the binding
+  is looked up in the nearest enclosing formation that declares it. The binding's
+  own subtree and the single hosting reference are excluded.
   -->
   <xsl:function name="eo:kept-const-ref" as="element()*">
     <xsl:param name="ref" as="element()"/>
-    <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
-    <xsl:variable name="candidates" select="$owner/o[eo:moniker-binding(.) and eo:const-handle(.)]"/>
-    <xsl:variable name="binding" select="$candidates[some $seg in tokenize($ref/@base, '\.') satisfies $seg = @name][1]"/>
+    <xsl:variable name="candidates" select="$ref/ancestor::o[eo:abstract(.)]/o[eo:moniker-binding(.) and eo:const-handle(.) and (some $seg in tokenize($ref/@base, '\.') satisfies $seg = @name)]"/>
+    <xsl:variable name="binding" select="$candidates[last()]"/>
     <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and not(eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
+  </xsl:function>
+  <!--
+  The base under which a non-hosting reference reads back: the readable "@local"
+  handle of the binding it resolves to, plus whatever the reference dispatches on
+  top of it. The obfuscated cactus segment and the `ξ.ρ...` climb in front of it
+  give way to a plain `ξ.&lt;local&gt;`, since a handle is reached by its bare
+  name alone and the parser re-derives the climb in "resolve-local-names". A
+  reference standing in the binding's own scope has no climb to shed; one inside
+  a nested formation does, and spelling it out would print a `^.&lt;local&gt;`
+  that binds to nothing on reparse (#5893).
+  -->
+  <xsl:function name="eo:handle-base" as="xs:string">
+    <xsl:param name="ref" as="element()"/>
+    <xsl:param name="binding" as="element()"/>
+    <xsl:variable name="segs" select="tokenize($ref/@base, '\.')"/>
+    <xsl:sequence select="string-join(($eo:xi, string($binding/@local), subsequence($segs, index-of($segs, string($binding/@name))[1] + 1)), '.')"/>
   </xsl:function>
   <!--
   The kept multi-referenced abstract handle binding (`[] &gt;&gt; name`, #5876)
@@ -280,8 +298,7 @@
   is rebuilt from the binding above and never reaches this template.
   -->
   <xsl:template match="o[exists(eo:kept-const-ref(.))]/@base" priority="2">
-    <xsl:variable name="binding" select="eo:kept-const-ref(..)"/>
-    <xsl:attribute name="base" select="string-join(for $seg in tokenize(., '\.') return (if ($seg = $binding/@name) then string($binding/@local) else $seg), '.')"/>
+    <xsl:attribute name="base" select="eo:handle-base(.., eo:kept-const-ref(..))"/>
   </xsl:template>
   <!--
   Rewrite a non-hosting reference to a kept multi-referenced abstract handle
@@ -292,8 +309,7 @@
   this template (`eo:kept-local-ref` excludes it).
   -->
   <xsl:template match="o[exists(eo:kept-local-ref(.))]/@base" priority="2">
-    <xsl:variable name="binding" select="eo:kept-local-ref(..)"/>
-    <xsl:attribute name="base" select="string-join(for $seg in tokenize(., '\.') return (if ($seg = $binding/@name) then string($binding/@local) else $seg), '.')"/>
+    <xsl:attribute name="base" select="eo:handle-base(.., eo:kept-local-ref(..))"/>
   </xsl:template>
   <!--
   Drop the standalone binding once it has been merged onto a reference, whether
