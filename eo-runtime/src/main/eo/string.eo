@@ -145,9 +145,8 @@
         accum.plus 1
         result
         cause
-    len > lbts!
-    number lbts > nlen
-    number sbts > nstart
+    number len! > nlen
+    number start! > nstart
     80- > p1
     E0- > p2
     F0- > p3
@@ -156,7 +155,6 @@
     C0- > r2
     p2 > r3
     p3 > r4
-    start > sbts!
     as-bytes.size > size
 
   D0-B4-D1-80-D1-83-D0-B3.eq "друг" ++> tests-bytes-equal-to-string
