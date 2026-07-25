@@ -7,7 +7,9 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import org.cactoos.Input;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
@@ -20,6 +22,14 @@ import org.cactoos.scalar.LengthOf;
 /**
  * Content saved to the file.
  * Returns path to the file
+ *
+ * <p>The content is streamed into a sibling temporary file first, then moved
+ * onto {@link #target} with {@link StandardCopyOption#ATOMIC_MOVE}. Streaming
+ * straight into {@link #target} would let a concurrent reader (or another
+ * writer racing on the same path) observe it truncated, mid-write (#5873):
+ * an atomic rename means a reader always sees either the previous complete
+ * file or the new one, never a partial one.</p>
+ *
  * @since 0.41.0
  */
 final class Saved implements Scalar<Path> {
@@ -82,14 +92,27 @@ final class Saved implements Scalar<Path> {
                     this.target.getParent()
                 );
             }
-            bytes = new IoChecked<>(
-                new LengthOf(
-                    new TeeInput(
-                        this.content,
-                        new OutputTo(this.target)
+            final Path tmp = Files.createTempFile(
+                this.target.getParent(),
+                this.target.getFileName().toString(),
+                ".tmp"
+            );
+            try {
+                bytes = new IoChecked<>(
+                    new LengthOf(
+                        new TeeInput(
+                            this.content,
+                            new OutputTo(tmp)
+                        )
                     )
-                )
-            ).value();
+                ).value();
+                Files.move(
+                    tmp, this.target,
+                    StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING
+                );
+            } finally {
+                Files.deleteIfExists(tmp);
+            }
             Logger.debug(
                 this, "File %s saved (%d bytes)",
                 this.target, bytes
