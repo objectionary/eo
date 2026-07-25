@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A private `>>` formation handle (#5876) shared by two mutually recursive
+# helpers: `reclen` calls `inclen`, `inclen` calls `reclen`. Neither is directly
+# self-referential, so the handle is not restored as a recursive one, and its
+# second reference lives in the sibling `inclen` scope rather than in the owner.
+# That reference is not hostable, so it must read back through the readable
+# "@local" handle instead of the synthetic "vL_P" cactus id (#5907), the
+# formation mirror of `const-nested-referenced-handle` (#5893).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo
+    reclen 0 > @
+    [n] > inclen
+      reclen n > @
+    [i] >> reclen
+      inclen i > @
+
+printed: |
+  [] > foo
+    reclen 0 > @
+    inclen i > [i] >> reclen
+    reclen n > [n] > inclen

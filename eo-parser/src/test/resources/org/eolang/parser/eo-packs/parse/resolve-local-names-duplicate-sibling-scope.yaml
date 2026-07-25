@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The duplicate-local-name check is lexically scoped, matching the resolver
+# (#5875). Two sibling formations may each declare a file-local handle of the
+# same name because a handle never leaks sideways between nested formations, so
+# the two "&gt;&gt; dup" handles below are unambiguous and must not be rejected.
+sheets:
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+asserts:
+  - /object[not(errors)]
+  # both same-named handles survive, each keeping its "@local" marker
+  - /object[count(//o[@local='dup'])=2]
+  # each handle got its own cactus name
+  - /object[count(//o[@local='dup' and @name])=2]
+input: |
+  [] > app
+    [] > first
+      [n] >> dup
+        n > @
+    [] > second
+      [m] >> dup
+        m > @

@@ -121,6 +121,23 @@ final class Node {
     }
 
     /**
+     * The same node with its suffix dropped.
+     *
+     * <p>An inline const argument that applies arguments of its own is
+     * parenthesised, and its {@code !} marker has to sit outside the
+     * brackets ({@code (inc m)!}), so {@link Pretty} inlines the node
+     * without the suffix and appends the marker itself (#5902).</p>
+     *
+     * @return The node without its suffix
+     */
+    Node bare() {
+        return new Node(
+            this.base, "", this.abstractt, this.test,
+            this.reversed, this.data, this.children
+        );
+    }
+
+    /**
      * Whether this node carries no name suffix anywhere in its subtree.
      *
      * <p>A line is "named" when its {@code tail} holds a {@code > name},

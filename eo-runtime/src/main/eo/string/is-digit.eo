@@ -25,5 +25,7 @@
 
   (is-digit "1🌵2").not ++> tests-checks-if-text-with-special-character-is-not-digit
 
+  (is-digit "123\n").not ++> tests-checks-if-text-with-trailing-newline-is-not-digit
+
   is-digit ++> tests-checks-if-very-long-number-is-digit
     "123456789012345678901234567890123456789012345678901234567890"
