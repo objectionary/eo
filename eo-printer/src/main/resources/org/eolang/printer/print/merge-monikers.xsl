@@ -212,13 +212,17 @@
   cactus name, so it reads back as `name` (or `name.seg`) rather than a
   synthetic "vL_P" placeholder, the abstract mirror of `eo:kept-const-ref`. The
   reference is matched by carrying the binding's cactus "@name" as one of its
-  base segments; the binding's own subtree is excluded.
+  base segments; the binding's own subtree is excluded. As with the const
+  handle, the reference need not live in the binding's own scope: two mutually
+  recursive helpers call each other from sibling formations, so a reference
+  climbs out of its own scope to reach the handle and is stranded just the same
+  (#5907), and the binding is looked up in the nearest enclosing formation that
+  declares it.
   -->
   <xsl:function name="eo:kept-local-ref" as="element()*">
     <xsl:param name="ref" as="element()"/>
-    <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
-    <xsl:variable name="candidates" select="$owner/o[eo:moniker-binding(.) and eo:abstract(.) and exists(@local)]"/>
-    <xsl:variable name="binding" select="$candidates[some $seg in tokenize($ref/@base, '\.') satisfies $seg = @name][1]"/>
+    <xsl:variable name="candidates" select="$ref/ancestor::o[eo:abstract(.)]/o[eo:moniker-binding(.) and eo:abstract(.) and exists(@local) and (some $seg in tokenize($ref/@base, '\.') satisfies $seg = @name)]"/>
+    <xsl:variable name="binding" select="$candidates[last()]"/>
     <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and not(eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
   </xsl:function>
   <!--
