@@ -55,8 +55,10 @@
           if.
             len.eq 0
             separator
-            (text.slice 0 len).as-bytes
-      string.last-index-of text separator > len!
+            as-bytes.
+              text.slice
+                0
+                string.last-index-of text separator >> len!
       string pth > text
     [] > extname
       if. > @
@@ -171,8 +173,10 @@
             if.
               len.eq 0
               separator
-              (text.slice 0 len).as-bytes
-        string.last-index-of text separator > len!
+              as-bytes.
+                text.slice
+                  0
+                  string.last-index-of text separator >> len!
         string pth > text
       [] > extname
         if. > @
@@ -239,27 +243,23 @@
                     uri.slice 0 3
                     uri.slice 0 2
                   is-root-relative.if separator --
-                path
+                string.joined >> path!
+                  separator
+                  tuple.reduced
+                    string.split driveless separator
+                    *
+                    if. > [accum segment] >>
+                      segment.eq ".."
+                      if.
+                        (accum.length.gt 0).and (accum.head.eq "..").not
+                        accum.tail
+                        driveless-rooted.not.if (accum.with segment) accum
+                      if.
+                        (segment.eq ".").or
+                          segment.eq ""
+                        accum
+                        accum.with segment
               trailing.if separator --
-        string.joined > path!
-          separator
-          tuple.reduced
-            string.split driveless separator
-            *
-            if. > [accum segment] >>
-              segment.eq ".."
-              if.
-                (accum.length.gt 0).and
-                  (accum.head.eq "..").not
-                accum.tail
-                driveless-rooted.not.if
-                  accum.with segment
-                  accum
-              if.
-                (segment.eq ".").or
-                  segment.eq ""
-                accum
-                accum.with segment
         and. > trailing
           ubts.size.gt 0
           eq.
@@ -290,12 +290,8 @@
             -1
           string
             uri >> ubts!
-          string replacement
+          string (string.replaced pth (string.regex "/\\//") separator)!
         string ubts > pth
-        string.replaced > replacement!
-          pth
-          string.regex "/\\//"
-          separator
       ^.separator > separator
 
   and. ++> tests-detects-absolute-posix-path

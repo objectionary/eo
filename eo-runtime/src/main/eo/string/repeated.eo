@@ -19,20 +19,20 @@
     cant-repeat
       "Can't repeat text %s times".printf
         * times
-    string result
-  text > b!
-  if. > result!
-    0.eq
-      times >> amount!
-    --
-    if. > [accum index] >> rec-repeated
-      amount.eq index
-      accum
-      rec-repeated
-        accum.concat b
-        as-number.
-          index.plus 1
-    | b 1
+    string
+      if. >> result!
+        0.eq
+          times >> amount!
+        --
+        if. > [accum index] >> rec-repeated
+          amount.eq index
+          accum
+          rec-repeated
+            accum.concat b
+            (index.plus 1).as-number
+        |
+          text >> b!
+          1
 
   eq. ++> tests-text-repeated-five-times
     "heyheyheyheyhey"
