@@ -355,7 +355,7 @@ final class SuffixTest {
     }
 
     @Test
-    void stillAcceptsAtAsNamedSuffix() {
+    void acceptsAtAsNamedSuffix() {
         MatcherAssert.assertThat(
             "`> @` must keep parsing as Form.NAME — the lowercase-start guard must not"
                 .concat(" reject the phi marker, which desugars through named(), not test()"),
