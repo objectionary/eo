@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Three const file-local handles chained through their receivers: `third`
+# dispatches on `second`, which dispatches on `first`. Each handle in the chain
+# is a host site for the next one, so none of them may be relocated onto a use
+# site (#5918); only `first`, which hosts nothing, folds into `second`'s
+# receiver as a reversed `size.` dispatch. Before the guard the whole chain
+# collapsed into `φ` and both inner bindings vanished from the printed source.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [text] > chain
+    plus. >> third!
+      size. >> second!
+        text >> first!
+      1
+    third.eq 0 > @
+
+printed: |
+  [text] > chain
+    third.eq 0 > @
+    second.plus 1 >> third!
+    size. >> second!
+      text >> first!

@@ -109,11 +109,41 @@
   binding with both spellings still folds into the shorter bare inline and a
   dispatch hosts only when no bare reference is available.
   -->
-  <xsl:function name="eo:moniker-refs" as="element()*">
+  <xsl:function name="eo:hostable-refs" as="element()*">
     <xsl:param name="attr" as="element()"/>
     <xsl:variable name="owner" select="$attr/.."/>
     <xsl:variable name="refs" select="$owner//o[eo:resolved-ref(.) = $attr/@name and (ancestor::o[eo:abstract(.)][1] is $owner) and not(ancestor::o[. is $attr])]"/>
     <xsl:sequence select="($refs[eo:dispatch-seg(.) = ''], $refs[eo:dispatch-seg(.) != ''])"/>
+  </xsl:function>
+  <!--
+  Whether the binding `$attr` is a host site itself: a sibling handle folds onto
+  `$attr`'s own `@base`, the shape `bts.size &gt;&gt; len!` has over
+  `text &gt;&gt; bts!`, where the parser hoisted the inner handle out and left a
+  reference to it in the outer handle's receiver, which the merge below turns
+  into the reversed dispatch that carries it. A sibling that folds onto an
+  earlier reference of its own — the site the author wrote it at, as in
+  "starts-with.eo" — leaves `$attr`'s receiver reading it by name
+  (`eo:kept-const-ref`) and so does not make `$attr` a host site. The sibling's
+  hostable references are read raw here: down a chain of handles every link is
+  a host site for the next, and each one keeps its own line.
+  -->
+  <xsl:function name="eo:hosting" as="xs:boolean">
+    <xsl:param name="attr" as="element()"/>
+    <xsl:sequence select="exists($attr/../o[not(. is $attr) and @name = eo:resolved-ref($attr) and eo:moniker-binding(.) and (eo:hostable-refs(.)[1] is $attr)])"/>
+  </xsl:function>
+  <!--
+  The references that actually host the binding `$attr`: the hostable ones,
+  unless `$attr` is a host site itself (see `eo:hosting`), in which case it
+  hosts nowhere. The merge below rebuilds a relocated binding from its
+  attributes and children alone, so the reversed dispatch that carries the
+  inner handle would never be built at the new site, while the inner binding is
+  dropped as merged — leaving the rebuilt copy on a synthetic "vL_P"
+  placeholder (#5918). Such a binding keeps its own line and hosts the inner
+  handle where it stands.
+  -->
+  <xsl:function name="eo:moniker-refs" as="element()*">
+    <xsl:param name="attr" as="element()"/>
+    <xsl:sequence select="if (eo:hosting($attr)) then () else eo:hostable-refs($attr)"/>
   </xsl:function>
   <!--
   The binding that a reference `$ref` should be replaced with, or the empty

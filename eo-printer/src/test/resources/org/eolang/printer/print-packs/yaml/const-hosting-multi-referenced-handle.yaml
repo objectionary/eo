@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The same guard for a host site read from more than one place: `len` hosts
+# `data` in its receiver, so it stays standalone (#5918) instead of landing on
+# the first of its two uses, and both uses read it by name. A moniker does fold
+# onto the first of several references (#5739), which is why the guard has to
+# live in `eo:moniker-refs` rather than in the single-reference test.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [b] > array
+    b >> data!
+    data.size >> len!
+    len.plus 1 > x
+    len.plus 2 > y
+
+printed: |
+  [b] > array
+    size. >> len!
+      b >> data!
+    len.plus 1 > x
+    len.plus 2 > y
