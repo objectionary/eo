@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+asserts:
+  - /object[not(errors)]
+  - //o[@base='.if' and @local='pick' and @name='a🌵2-2']
+  - //o[@base='a🌵2-2' and @name='φ']
+  - /object[count(//o[@base='pick'])=0]
+input: |
+  [] > main
+    if. >> pick
+      flag
+      x
+      y
+    pick > @
