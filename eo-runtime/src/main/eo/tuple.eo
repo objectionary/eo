@@ -281,8 +281,12 @@
     and. > @
       and.
         and.
-          (arr.at 0).eq 1
-          (arr.at 1).eq 2
+          eq.
+            arr.at 0
+            1
+          eq.
+            arr.at 1
+            2
         eq.
           arr.at 2
           3

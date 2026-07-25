@@ -15,6 +15,8 @@
 
   is-alphanumeric "eEo" ++> tests-checks-if-simple-text-is-alphanumeric
 
-  (is-alphanumeric "-w-").not ++> tests-checks-if-text-with-dashes-is-not-alphanumeric
+  ++> tests-checks-if-text-with-dashes-is-not-alphanumeric
+    not. > @
+      is-alphanumeric "-w-"
 
   is-alphanumeric "ab3d" ++> tests-checks-if-text-with-number-is-alphanumeric

@@ -66,7 +66,9 @@ final class PenaltyTest {
     @ParameterizedTest
     @CsvSource({
         "'f (a) (b)', 38",
-        "'(a (b (c 1)))', 114"
+        "'(a (b (c 1)))', 171",
+        "'f (a).eq b', 19",
+        "'(a).eq b', 76"
     })
     void chargesForParentheses(final String code, final int points) {
         final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
@@ -74,7 +76,7 @@ final class PenaltyTest {
         weights.put(PenaltyKey.SPACE, 0);
         MatcherAssert.assertThat(
             String.format(
-                "The parentheses in %s should cost %d points, deeper nesting charged more",
+                "The parentheses in %s should cost %d points, deeper nesting and a leading one charged more",
                 code, points
             ),
             new Penalty(code, weights).points(),

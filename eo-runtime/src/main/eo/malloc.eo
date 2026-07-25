@@ -156,7 +156,8 @@
             m.write 0 "XXX"
             m.write 1 "Y"
             b.put
-              (m.read 0 3).eq
+              eq.
+                m.read 0 3
                 "XYX"
 
   ++> tests-malloc-decreases-block-size
@@ -167,7 +168,7 @@
           01-02-03-04-05
           b.put > [m] >>
             and.
-              (m.resized 3).size.eq 3
+              eq. (m.resized 3).size 3
               m.get.eq 01-02-03
 
   eq. ++> tests-malloc-empty-grows-on-first-put
@@ -197,7 +198,7 @@
           01-02-03-04
           b.put > [m] >>
             and.
-              (m.resized 6).size.eq 6
+              eq. (m.resized 6).size 6
               m.get.eq 01-02-03-04-00-00
 
   eq. ++> tests-malloc-is-strictly-sized-int
@@ -245,7 +246,8 @@
           seq * > [m] >>
             m.write 2 "Hello"
             b.put
-              (m.read 2 5).eq
+              eq.
+                m.read 2 5
                 "Hello"
 
   ++> tests-malloc-rewrites-and-increments-itself
@@ -281,7 +283,8 @@
               "Hello, "
             m.write 7 "Jeff!"
             b.put
-              (m.read 0 12).eq
+              eq.
+                m.read 0 12
                 "Hello, Jeff!"
 
   eq. ++> tests-memory-is-strictly-sized-string
