@@ -138,6 +138,23 @@
               <xsl:if test="@as">
                 <xsl:apply-templates select="@as"/>
               </xsl:if>
+              <!--
+              The reference stands as the `φ` decoratee of an auto-named
+              formation, written ahead of the brackets (`false &gt; [] &gt;&gt;`,
+              #5882). Folding a non-abstract handle in (`false &gt;&gt; flag`)
+              copies only the target's attributes, so the reference's own `@name`
+              would be lost and `to-eo-tree` would print the datum as a nameless
+              body line of the formation (`[] &gt;&gt;` with `false` below it),
+              which the parser rejects with "object inside formation must have a
+              name". Carrying the `φ` name over keeps the folded datum the
+              decoratee, so `to-eo-tree` prints it ahead of the head. Only for a
+              non-abstract target: an abstract one keeps its own `@name` (the
+              `[...] &gt;&gt;` marker) and never reaches this branch as a φ
+              decoratee.
+              -->
+              <xsl:if test="@name = $eo:phi and not($keep-name)">
+                <xsl:apply-templates select="@name"/>
+              </xsl:if>
               <xsl:apply-templates select="$target/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
               <xsl:apply-templates select="$target/node()"/>
             </xsl:element>
