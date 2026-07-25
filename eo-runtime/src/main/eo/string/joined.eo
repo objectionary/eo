@@ -9,13 +9,7 @@
 +spdx SPDX-License-Identifier: MIT
 
 [text items] > joined
-  string b > @
-  if. > b!
-    items.length.eq 0
-    --
-    with-delimiter
-      items.head
-      items.tail
+  string ((items.length.eq 0).if -- (with-delimiter items.head items.tail))! > @
   [acc tup] > with-delimiter
     if. > @
       tup.length.eq 0

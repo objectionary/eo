@@ -60,7 +60,7 @@
           0
           0
           0
-  delimiter.size > size!
+  delimiter.size >> size!
 
   eq. ++> tests-nsplit-invalid-limit-returns-provided-fallback
     "fallback"

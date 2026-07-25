@@ -22,7 +22,16 @@
             list.length.neg.lte start
             start.plus list.length
             0
-      e
+      if. >> e!
+        end.gte 0
+        if.
+          end.gte list.length
+          list.length
+          end
+        if.
+          list.length.neg.lte end
+          end.plus list.length
+          0
     *
     reducedi
       list
@@ -33,16 +42,6 @@
           index.lt e
         accum.with item
         accum
-  if. > e!
-    end.gte 0
-    if.
-      end.gte list.length
-      list.length
-      end
-    if.
-      list.length.neg.lte end
-      end.plus list.length
-      0
 
   eq. ++> tests-simple-slice
     slice

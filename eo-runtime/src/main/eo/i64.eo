@@ -106,22 +106,18 @@
     00-00-00-00-00-00-00-00 > zero
   [x] > gte
     or. > @
-      gt value
+      gt
+        x >> value!
       ^.eq value
-    x > value!
   gt. > [x] > lt
     i64 x.as-bytes
     ^
   [x] > lte
     or. > @
-      lt value
+      lt
+        x >> value!
       ^.eq value
-    x > value!
-  [x] > minus
-    plus > @
-      neg.
-        i64 value
-    x > value!
+  plus (i64 x!).neg > [x] > minus
   times -1.as-i64 > neg
   [x] > plus
     if. > [a b] >> carried

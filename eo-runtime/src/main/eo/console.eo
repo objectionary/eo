@@ -74,13 +74,12 @@
             buffer > @
             [size] > read
               seq * > @
-                chunk
+                output. >> chunk!
+                  posix *1
+                    "read"
+                    posix.stdin
+                    size
                 input-block chunk
-              output. > chunk!
-                posix *1
-                  "read"
-                  posix.stdin
-                  size
           | --
           size
     [buffer] > write
@@ -105,13 +104,12 @@
             buffer > @
             [size] > read
               seq * > @
-                chunk
+                output. >> chunk!
+                  win32 *1
+                    "_read"
+                    win32.stdin
+                    size
                 input-block chunk
-              output. > chunk!
-                win32 *1
-                  "_read"
-                  win32.stdin
-                  size
           | --
           size
     [buffer] > write

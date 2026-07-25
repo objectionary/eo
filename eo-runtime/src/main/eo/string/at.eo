@@ -21,7 +21,7 @@
           idx
       gte.
         number index
-        len
+        text.length >> len!
     fallback
       "Given index %d is out of text bounds".printf
         * index
@@ -29,7 +29,6 @@
       text
       index
       1
-  text.length > len!
 
   eq. ++> tests-returns-char-at-negative-index
     "m"

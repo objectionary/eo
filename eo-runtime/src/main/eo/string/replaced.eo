@@ -29,10 +29,9 @@
             start
             reinit.length.minus start
     | matched "" matched.start
-  text > b!
   next. > matched
     target.match reinit
-  string b > reinit
+  string text! > reinit
 
   eq. ++> tests-does-not-replaces-if-regex-not-found
     replaced

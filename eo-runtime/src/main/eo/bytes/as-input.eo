@@ -43,17 +43,16 @@
           input-block
             as-bytes.
               data.slice
-                next
+                if. >> next!
+                  (number available).gt
+                    size >> requested!
+                  requested
+                  available
                 minus.
                   number
                     data.size >> available!
                   number next
             (data.slice 0 next).as-bytes
-        if. > next!
-          (number available).gt
-            size >> requested!
-          requested
-          available
 
   ++> tests-makes-an-input-from-bytes-and-reads
     and. > @

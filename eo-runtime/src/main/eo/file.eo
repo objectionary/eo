@@ -89,11 +89,11 @@
         existing.and exists.not
         cant-open
           "File must exist for given access mod: '%s'".printf
-            * access
+            *
+              mode >> access!
         seq *
           open-file
           ^
-    mode > access!
     (access.eq "a").as-bool.or > appending
       as-bool.
         access.eq "a+"
@@ -156,11 +156,10 @@
                     "Can't read from file with provided access mode '%s'".printf
                       * access
                   seq *
-                    chunk
+                    output. >> chunk!
+                      syscall.read
+                        * descriptor size
                     input-block chunk
-                output. > chunk!
-                  syscall.read
-                    * descriptor size
           [buffer] > write
             output-block.write buffer > @
             [] > output-block
