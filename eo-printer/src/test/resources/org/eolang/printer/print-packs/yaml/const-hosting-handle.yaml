@@ -4,13 +4,11 @@
 # yamllint disable rule:line-length
 # A const file-local handle whose own receiver reaches a second one: `len` is
 # `bts.size`, and the parser hoists `bts` out to its own binding, leaving its
-# reference in `len`'s receiver. "merge-monikers" hosts `bts` back there as the
-# receiver of the reversed `size.` dispatch (#5782), so `len` is itself a host
-# site and cannot be relocated onto `φ`: the merge rebuilds a relocated binding
-# from its attributes and children alone, so the reversed dispatch carrying
-# `bts` would never be built at the new site while `bts`'s own binding is
-# dropped as merged, stranding the copy on a "vL_P" placeholder (#5918).
-# `len` therefore keeps its own line and `φ` reads it by name.
+# reference in `len`'s receiver, which "merge-monikers" turns back into the
+# receiver of a reversed `size.` dispatch (#5782). `len` then folds onto `φ` as
+# usual and takes `bts` along, nested inside it. Rebuilding the relocated `len`
+# attribute by attribute left that inner fold undone at the new site while
+# `bts` was dropped as merged, printing `v3_4.size >> len!` (#5918).
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -26,6 +24,7 @@ origin: |
 
 printed: |
   [text] > split
-    len.eq 0 > @
-    size. >> len!
-      text >> bts!
+    eq. > @
+      size. >> len!
+        text >> bts!
+      0

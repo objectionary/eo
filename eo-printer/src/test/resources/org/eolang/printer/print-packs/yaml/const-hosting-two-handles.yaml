@@ -3,10 +3,10 @@
 ---
 # yamllint disable rule:line-length
 # The carry cluster of "i64.eo": a const handle whose value reaches two more of
-# them, one in its receiver and one in its argument, both also read from a
-# sibling binding. `both-negative` is a host site for `shifted-sign`, so it
-# keeps its own line (#5918) and hosts both inner handles where they stand;
-# `signs-differ` reads them by name.
+# them, one in its receiver and one in its argument. Both travel with
+# `both-negative` when it folds onto `φ` (#5918) — the receiver one as the
+# reversed `and.` dispatch's receiver, keeping its name, the argument one as the
+# anonymous inline const a single-use argument folds to (#5821).
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -19,13 +19,12 @@ origin: |
     and. >> both-negative!
       shifted.and 80-00-00-00-00-00-00-00 >> shifted-sign!
       bottom.and 80-00-00-00-00-00-00-00 >> divisor-sign!
-    shifted-sign.xor divisor-sign > signs-differ!
-    both-negative.or signs-differ > @
+    both-negative.eq 00-00-00-00-00-00-00-00 > @
 
 printed: |
   [shifted bottom] > carry
-    both-negative.or signs-differ > @
-    and. >> both-negative!
-      shifted.and 80-00-00-00-00-00-00-00 >> shifted-sign!
-      bottom.and 80-00-00-00-00-00-00-00 >> divisor-sign!
-    shifted-sign.xor divisor-sign > signs-differ!
+    eq. > @
+      and. >> both-negative!
+        shifted.and 80-00-00-00-00-00-00-00 >> shifted-sign!
+        bottom.and 80-00-00-00-00-00-00-00!
+      00-00-00-00-00-00-00-00

@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# The same guard for a host site read from more than one place: `len` hosts
-# `data` in its receiver, so it stays standalone (#5918) instead of landing on
-# the first of its two uses, and both uses read it by name. A moniker does fold
-# onto the first of several references (#5739), which is why the guard has to
-# live in `eo:moniker-refs` rather than in the single-reference test.
+# The same travel for a host site read from more than one place: `len` hosts
+# `data` in its receiver and folds onto the first of its two uses (#5739),
+# carrying `data` with it (#5918), while the second use keeps reading `len` by
+# name. Before the fix `data` was dropped as merged and the relocated `len` read
+# `v2_2.size`.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -23,7 +23,8 @@ origin: |
 
 printed: |
   [b] > array
-    size. >> len!
-      b >> data!
-    len.plus 1 > x
+    plus. > x
+      size. >> len!
+        b >> data!
+      1
     len.plus 2 > y

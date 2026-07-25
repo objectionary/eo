@@ -109,41 +109,11 @@
   binding with both spellings still folds into the shorter bare inline and a
   dispatch hosts only when no bare reference is available.
   -->
-  <xsl:function name="eo:hostable-refs" as="element()*">
+  <xsl:function name="eo:moniker-refs" as="element()*">
     <xsl:param name="attr" as="element()"/>
     <xsl:variable name="owner" select="$attr/.."/>
     <xsl:variable name="refs" select="$owner//o[eo:resolved-ref(.) = $attr/@name and (ancestor::o[eo:abstract(.)][1] is $owner) and not(ancestor::o[. is $attr])]"/>
     <xsl:sequence select="($refs[eo:dispatch-seg(.) = ''], $refs[eo:dispatch-seg(.) != ''])"/>
-  </xsl:function>
-  <!--
-  Whether the binding `$attr` is a host site itself: a sibling handle folds onto
-  `$attr`'s own `@base`, the shape `bts.size &gt;&gt; len!` has over
-  `text &gt;&gt; bts!`, where the parser hoisted the inner handle out and left a
-  reference to it in the outer handle's receiver, which the merge below turns
-  into the reversed dispatch that carries it. A sibling that folds onto an
-  earlier reference of its own — the site the author wrote it at, as in
-  "starts-with.eo" — leaves `$attr`'s receiver reading it by name
-  (`eo:kept-const-ref`) and so does not make `$attr` a host site. The sibling's
-  hostable references are read raw here: down a chain of handles every link is
-  a host site for the next, and each one keeps its own line.
-  -->
-  <xsl:function name="eo:hosting" as="xs:boolean">
-    <xsl:param name="attr" as="element()"/>
-    <xsl:sequence select="exists($attr/../o[not(. is $attr) and @name = eo:resolved-ref($attr) and eo:moniker-binding(.) and (eo:hostable-refs(.)[1] is $attr)])"/>
-  </xsl:function>
-  <!--
-  The references that actually host the binding `$attr`: the hostable ones,
-  unless `$attr` is a host site itself (see `eo:hosting`), in which case it
-  hosts nowhere. The merge below rebuilds a relocated binding from its
-  attributes and children alone, so the reversed dispatch that carries the
-  inner handle would never be built at the new site, while the inner binding is
-  dropped as merged — leaving the rebuilt copy on a synthetic "vL_P"
-  placeholder (#5918). Such a binding keeps its own line and hosts the inner
-  handle where it stands.
-  -->
-  <xsl:function name="eo:moniker-refs" as="element()*">
-    <xsl:param name="attr" as="element()"/>
-    <xsl:sequence select="if (eo:hosting($attr)) then () else eo:hostable-refs($attr)"/>
   </xsl:function>
   <!--
   The binding that a reference `$ref` should be replaced with, or the empty
@@ -280,16 +250,22 @@
   handle in its own receiver (`data.size >> len!` over `b >> data!`) keeps its
   readable name instead of printing as an anonymous `size. >>!` that its own
   references no longer resolve to (#5914).
+
+  The binding lands at the reference through the "merged" mode below, which
+  carries whatever the binding hosts down with it (#5918).
   -->
   <xsl:template match="o[exists(eo:hosted-binding(.))]" priority="1">
     <xsl:variable name="binding" select="eo:hosted-binding(.)"/>
     <xsl:variable name="seg" select="eo:dispatch-seg(.)"/>
     <xsl:choose>
       <xsl:when test="$seg = ''">
+        <xsl:variable name="merged" as="element()">
+          <xsl:apply-templates select="$binding" mode="merged"/>
+        </xsl:variable>
         <xsl:element name="o">
           <xsl:apply-templates select="@as"/>
-          <xsl:apply-templates select="$binding/@*[name() != 'as' and (eo:abstract($binding) or eo:const-handle($binding) or (name() != 'name' and name() != 'local'))]"/>
-          <xsl:apply-templates select="$binding/node()"/>
+          <xsl:copy-of select="$merged/@*[eo:abstract($merged) or eo:const-handle($merged) or (name() != 'name' and name() != 'local')]"/>
+          <xsl:copy-of select="$merged/node()"/>
         </xsl:element>
       </xsl:when>
       <xsl:otherwise>
@@ -297,11 +273,45 @@
           <xsl:apply-templates select="@as"/>
           <xsl:apply-templates select="@name|@local|@const"/>
           <xsl:attribute name="base" select="concat('.', $seg)"/>
-          <xsl:element name="o">
-            <xsl:apply-templates select="$binding/@*[name() != 'as']"/>
-            <xsl:apply-templates select="$binding/node()"/>
-          </xsl:element>
+          <xsl:apply-templates select="$binding" mode="merged"/>
           <xsl:apply-templates select="o"/>
+        </xsl:element>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <!--
+  The binding as it lands at the reference it was merged onto: itself, with its
+  own references merged in turn and its positional `@as` left behind (the
+  reference above supplies the slot). A binding is often a host site itself: the
+  parser hoists a handle written inside another handle's receiver out to its own
+  binding (`text &gt;&gt; bts!` under `size. &gt;&gt; len!`) and leaves only a
+  reference behind, so `len`'s own `@base` is what `bts` folds onto. Rebuilding
+  such a binding attribute by attribute would leave that fold undone at the new
+  site while `bts` is dropped as merged, printing a receiver that binds to
+  nothing (#5918); instead the reversed dispatch is built here exactly as above,
+  and recursively, so a whole chain of handles travels to the use site nested
+  inside one another. The chain travelled so far comes along in `$seen`, since
+  two handles can dispatch on each other (`p.plus 1 >> a!` beside
+  `a.plus 2 >> p!`) — source that never dataizes, but that the parser accepts —
+  and a repeat has to end the descent rather than recur forever.
+  -->
+  <xsl:template match="o" mode="merged">
+    <xsl:param name="seen" as="element()*" select="()"/>
+    <xsl:variable name="binding" select="eo:hosted-binding(.)[every $node in $seen satisfies not(. is $node)]"/>
+    <xsl:choose>
+      <xsl:when test="exists($binding)">
+        <xsl:element name="o">
+          <xsl:apply-templates select="@*[name() != 'as' and name() != 'base']"/>
+          <xsl:attribute name="base" select="concat('.', eo:dispatch-seg(.))"/>
+          <xsl:apply-templates select="$binding" mode="merged">
+            <xsl:with-param name="seen" select="($seen, .)"/>
+          </xsl:apply-templates>
+          <xsl:apply-templates select="node()"/>
+        </xsl:element>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:element name="o">
+          <xsl:apply-templates select="@*[name() != 'as']|node()"/>
         </xsl:element>
       </xsl:otherwise>
     </xsl:choose>
@@ -355,8 +365,11 @@
   Drop the standalone binding once it has been merged onto a reference, whether
   the host is a bare/dispatch moniker reference (`eo:moniker-refs`) or an
   applied recursive handle folded to a "| args" pipe (`eo:applied-refs`, #5848).
+  Outranks the merge template above, which matches the same binding whenever the
+  binding is a host site itself: what it hosts travels with it to the reference
+  in the "merged" mode, so here it only has to go (#5918).
   -->
-  <xsl:template match="o[eo:moniker-binding(.) and (exists(eo:moniker-refs(.)) or (eo:recursive-handle(.) and exists(eo:applied-refs(.))))]" priority="1"/>
+  <xsl:template match="o[eo:moniker-binding(.) and (exists(eo:moniker-refs(.)) or (eo:recursive-handle(.) and exists(eo:applied-refs(.))))]" priority="3"/>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
