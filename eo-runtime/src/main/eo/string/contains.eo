@@ -10,32 +10,32 @@
 [text substring] > contains
   and. > @
     gte.
-      number tlen
-      slen
+      number length
+      size
     or.
       and.
-        tlen.eq slen
-        txt.eq sub
+        length.eq size
+        txt.eq part
       rec-contains 0
   minus. > end!
-    number tlen
-    slen
-  [idx] > rec-contains
+    number length
+    size
+  txt.size > length!
+  substring > part!
+  [index] > rec-contains
     if. > @
-      end.eq idx
+      end.eq index
       includes
       includes.or
         rec-contains
-          (idx.plus 1).as-number
+          (index.plus 1).as-number
     eq. > includes
       slice
         txt
-        idx
-        slen
-      sub
-  sub.size > slen!
-  substring > sub!
-  txt.size > tlen!
+        index
+        size
+      part
+  part.size > size!
   text > txt!
 
   contains ++> tests-text-contains-substring

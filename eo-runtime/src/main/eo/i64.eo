@@ -36,17 +36,17 @@
       plus.
         i64 bottom.not
         i64 00-00-00-00-00-00-00-01
-    [idx rem quot] > looped
+    [index remainder quot] > looped
       if. > @
-        idx.lt 0
+        index.lt 0
         quot
         unsigned-gte.if
           looped
-            idx.minus 1
+            index.minus 1
             next-rem
             next-quot
           looped
-            idx.minus 1
+            index.minus 1
             shifted
             quot
       shifted-sign.and divisor-sign > both-negative!
@@ -54,15 +54,15 @@
       bottom-negated.and 80-00-00-00-00-00-00-00 > divisor-sign!
       signs-differ.and trial-nonnegative > mixed-signs-with-nonneg-trial!
       quot.or > next-quot!
-        bit idx
+        bit index
       as-bytes. > next-rem!
         plus.
           i64 shifted
           i64 bottom-negated
       or. > shifted!
-        rem.left 1
+        remainder.left 1
         and.
-          top.right idx
+          top.right index
           00-00-00-00-00-00-00-01
       shifted.and 80-00-00-00-00-00-00-00 > shifted-sign!
       shifted-sign.xor divisor-sign > signs-differ!
@@ -130,10 +130,7 @@
     x > value!
   times -1.as-i64 > neg
   [x] > plus
-    carried > @
-      as-bytes
-      x.as-bytes
-    if. > [a b] > carried
+    if. > [a b] >> carried
       b.eq 00-00-00-00-00-00-00-00
       i64 a
       carried
@@ -141,6 +138,9 @@
         left.
           a.and b
           1
+    | > @
+      as-bytes
+      x.as-bytes
   [x] > times
     if. > [acc a b] > looped
       b.eq 00-00-00-00-00-00-00-00
@@ -175,7 +175,7 @@
     "recovered"
     2.as-i64.div
       0.as-i64
-      "recovered" > [msg]
+      "recovered" > [message]
 
   lt. ++> tests-i64-div-less-than-i64-one
     1.as-i64.div 5.as-i64
@@ -326,7 +326,7 @@
   eq. ++> tests-out-of-bounds-i64-as-i32-returns-provided-fallback
     "recovered"
     3147483647.as-i64.as-i32
-      "recovered" > [msg]
+      "recovered" > [message]
 
   2147483648.as-i64.as-i32 --> on-converting-i32-max-plus-one-to-i32
 

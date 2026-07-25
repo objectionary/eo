@@ -70,7 +70,7 @@
     "recovered"
     compile.
       regex "/[a-z/"
-      "recovered" > [msg]
+      "recovered" > [message]
 
   ++> tests-matched-sequence-has-right-border-indexes
     and. > @
@@ -92,7 +92,7 @@
     "no-slash"
     compile.
       regex "(.)+"
-      "no-slash" > [msg]
+      "no-slash" > [message]
 
   ++> tests-regex-contains-valid-groups-on-each-matched-block
     and. > @

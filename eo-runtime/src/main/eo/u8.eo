@@ -17,15 +17,15 @@
   as-i16.as-number > as-number
   [x cant-divide] > div
     if. > @
-      xval.eq zero
+      other.eq zero
       cant-divide
         "Can't divide %d by u8 zero".printf
           * as-number
       u8 quotient
-    (as-i16.div xval.as-i16).as-bytes.slice > quotient
+    x.as-u8 > other
+    (as-i16.div other.as-i16).as-bytes.slice > quotient
       1
       1
-    x.as-u8 > xval
     00- > zero
   as-i16.gt x.as-u8.as-i16 > [x] > gt
   as-i16.gte x.as-u8.as-i16 > [x] > gte
@@ -59,7 +59,7 @@
     "recovered"
     02-.as-u8.div
       00-.as-u8
-      "recovered" > [msg]
+      "recovered" > [message]
 
   eq. ++> tests-u8-div-is-unsigned
     C8-.as-u8.div 03-.as-u8

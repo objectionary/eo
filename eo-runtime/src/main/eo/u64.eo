@@ -40,10 +40,10 @@
         final
     x.as-u64 > d
     if. > final
-      rem.gte d
+      remainder.gte d
       q0plus1
       u64 q0
-    times. > prod
+    times. > product
       u64 q0
       d
     left. > q0
@@ -56,7 +56,7 @@
     plus. > q0plus1
       u64 q0
       u64 00-00-00-00-00-00-00-01
-    minus prod > rem
+    minus product > remainder
   as-bytes.xor 80-00-00-00-00-00-00-00 > flip
   gt. > [x] > gt
     i64 flip
@@ -71,8 +71,8 @@
     i64 flip
     i64 x.as-u64.flip
   [x] > minus
-    u64 diff.as-bytes > @
-    minus. > diff
+    u64 difference.as-bytes > @
+    minus. > difference
       i64 as-bytes
       i64 x.as-u64.as-bytes
   [x] > plus
@@ -104,7 +104,7 @@
     "recovered"
     00-00-00-00-00-00-00-02.as-u64.div
       00-00-00-00-00-00-00-00.as-u64
-      "recovered" > [msg]
+      "recovered" > [message]
 
   eq. ++> tests-u64-div-is-unsigned
     FF-FF-FF-FF-FF-FF-FF-FF.as-u64.div 00-00-00-00-00-00-00-02.as-u64

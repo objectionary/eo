@@ -42,30 +42,30 @@
     42
     as-number
       "$100"
-      42 > [msg]
+      42 > [message]
 
   eq. ++> tests-embedded-number-text-returns-provided-fallback
     42
     as-number
       "abc5"
-      42 > [msg]
+      42 > [message]
 
   eq. ++> tests-multiple-dots-text-returns-provided-fallback
     42
     as-number
       "12.34.56"
-      42 > [msg]
+      42 > [message]
 
   eq. ++> tests-non-numeric-text-returns-provided-fallback
     42
     as-number
       "Hello"
-      42 > [msg]
+      42 > [message]
 
   eq. ++> tests-space-separated-numbers-text-returns-provided-fallback
     42
     as-number
       "1 2 3"
-      42 > [msg]
+      42 > [message]
 
   as-number "Hello" --> on-converting-text-to-number

@@ -51,7 +51,7 @@
     "recovered"
     switch
       *
-      "recovered" > [msg]
+      "recovered" > [message]
 
   ++> tests-switch-complex-case
     eq. > @

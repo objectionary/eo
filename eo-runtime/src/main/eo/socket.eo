@@ -113,33 +113,23 @@
         seq * > [buffer] > write
           send buffer
           output-block
-  [port] > htons
-    as-i16. > @
-      or.
-        left.
-          bts.and 00-FF
-          8
-        and.
-          bts.right 8
-          00-FF
-    port.as-i16.as-bytes > bts
-  [sys] > impl
+  [sys] >> impl
     code. > addr
       sys.raw *1
         "inet_addr"
         address
     addr.as-i32 > addrint
-    [sockfd] > closed-socket
+    [descriptor] > closed-socket
       if. > @
         closed.eq -1
         T
           "Couldn't close the socket #%d because %s".printf
-            * sockfd sys.message
+            * descriptor sys.message
         true
       code. > closed
         sys.raw *1
           sys.close
-          sockfd
+          descriptor
     [scope cant-connect] > connect
       safe-socket > @
         [] >>
@@ -230,7 +220,7 @@
           "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s".printf
             * address sys.message
         scope
-    [sockfd] > scoped-socket
+    [descriptor] > scoped-socket
       ^.^.as-input recv > as-input
       ^.^.as-output send > as-output
       [size cant-receive] > recv
@@ -238,12 +228,12 @@
           received.code.eq -1
           cant-receive
             "Failed to receive data from the socket #%d because %s".printf
-              * sockfd sys.message
+              * descriptor sys.message
           received.output
         called. > received
           sys.raw *1
             "recv"
-            sockfd
+            descriptor
             size
             0
       [buffer cant-send] > send
@@ -251,13 +241,13 @@
           sent.eq -1
           cant-send
             "Failed to send a message through the socket #%d because %s".printf
-              * sockfd sys.message
+              * descriptor sys.message
           sent
         buffer > buff!
         code. > sent
           sys.raw *1
             "send"
-            sockfd
+            descriptor
             buff
             buff.size
             0
@@ -271,3 +261,13 @@
       sys.inet.as-i16
       htons port
       addrint
+  [port] > htons
+    as-i16. > @
+      or.
+        left.
+          b.and 00-FF
+          8
+        and.
+          b.right 8
+          00-FF
+    port.as-i16.as-bytes > b

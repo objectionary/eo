@@ -10,17 +10,17 @@
 [text substring] > starts-with
   and. > @
     lte.
-      number slen
-      tlen
+      number size
+      length
     eq.
       slice
         txt
         0
-        slen
-      sub
-  sub.size > slen!
-  substring > sub!
-  txt.size > tlen!
+        size
+      part
+  txt.size > length!
+  substring > part!
+  part.size > size!
   text > txt!
 
   ++> tests-does-not-start-with-substring

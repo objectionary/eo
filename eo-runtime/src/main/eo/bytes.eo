@@ -167,7 +167,7 @@
     20-1F-EE-B5-90.slice
       3
       10
-      "recovered" > [msg]
+      "recovered" > [message]
 
   ++> tests-right-with-even-neg
     not. > @
@@ -215,7 +215,7 @@
     20-1F-EE-B5-90.slice
       2000000000
       2000000000
-      "recovered" > [msg]
+      "recovered" > [message]
 
   eq. ++> tests-takes-part-of-bytes
     20-1F-EE-B5-90.slice

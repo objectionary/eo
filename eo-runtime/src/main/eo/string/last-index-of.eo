@@ -13,11 +13,11 @@
     or.
       or.
         gt.
-          number slen
+          number size
           tlen
         and.
-          slen.eq tlen
-          (sub.eq txt).not
+          size.eq tlen
+          (part.eq txt).not
       found.eq -1
     -1
     length.
@@ -29,8 +29,9 @@
   rec-index-of > found!
     minus.
       number tlen
-      slen
-  [idx] > rec-index-of
+      size
+  substring > part!
+  [idx] >> rec-index-of
     if. > @
       0.eq idx
       includes.if idx -1
@@ -42,10 +43,9 @@
       slice
         txt
         idx
-        slen
-      sub
-  sub.size > slen!
-  substring > sub!
+        size
+      part
+  part.size > size!
   txt.size > tlen!
   text > txt!
 

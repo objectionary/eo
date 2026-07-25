@@ -21,19 +21,19 @@
         * times
     string result
   times > amount!
-  text > bts!
+  text > b!
   if. > [accum index] > rec-repeated
     amount.eq index
     accum
     rec-repeated
-      accum.concat bts
+      accum.concat b
       as-number.
         index.plus 1
   if. > result!
     0.eq amount
     --
     rec-repeated
-      bts
+      b
       1
 
   eq. ++> tests-text-repeated-five-times
@@ -47,14 +47,14 @@
     repeated
       "x"
       -1
-      "recovered" > [msg]
+      "recovered" > [message]
 
   eq. ++> tests-text-repeated-non-integer-times-returns-provided-fallback
     "recovered"
     repeated
       "x"
       2.5
-      "recovered" > [msg]
+      "recovered" > [message]
 
   eq. ++> tests-text-repeated-zero-times-is-empty
     ""

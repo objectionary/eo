@@ -37,18 +37,18 @@
       string > @
         if.
           (pth.size.eq 0).or
-            idx.eq 0
+            index.eq 0
           pth
           as-bytes.
-            txt.slice
-              idx
-              txt.length.minus
-                number idx
-      plus. > idx!
-        string.last-index-of txt separator
+            text.slice
+              index
+              text.length.minus
+                number index
+      plus. > index!
+        string.last-index-of text separator
         1
       uri > pth!
-      string pth > txt
+      string pth > text
     [] > dirname
       string > @
         if.
@@ -58,25 +58,25 @@
           if.
             len.eq 0
             separator
-            (txt.slice 0 len).as-bytes
-      string.last-index-of txt separator > len!
+            (text.slice 0 len).as-bytes
+      string.last-index-of text separator > len!
       uri > pth!
-      string pth > txt
+      string pth > text
     [] > extname
       if. > @
         or.
           base.size.eq 0
-          idx.eq -1
+          index.eq -1
         ""
         string
           as-bytes.
-            txt.slice
-              idx
-              txt.length.minus
-                number idx
+            text.slice
+              index
+              text.length.minus
+                number index
       basename > base!
-      string.last-index-of txt "." > idx!
-      string base > txt
+      string.last-index-of text "." > index!
+      string base > text
     and. > is-absolute
       uri.length.gt 0
       eq.
@@ -159,18 +159,18 @@
         string > @
           if.
             (pth.size.eq 0).or
-              idx.eq 0
+              index.eq 0
             pth
             as-bytes.
-              txt.slice
-                idx
-                txt.length.minus
-                  number idx
-        plus. > idx!
-          string.last-index-of txt separator
+              text.slice
+                index
+                text.length.minus
+                  number index
+        plus. > index!
+          string.last-index-of text separator
           1
         uri > pth!
-        string pth > txt
+        string pth > text
       [] > dirname
         string > @
           if.
@@ -180,24 +180,24 @@
             if.
               len.eq 0
               separator
-              (txt.slice 0 len).as-bytes
-        string.last-index-of txt separator > len!
+              (text.slice 0 len).as-bytes
+        string.last-index-of text separator > len!
         uri > pth!
-        string pth > txt
+        string pth > text
       [] > extname
         if. > @
           (base.size.eq 0).or
-            idx.eq -1
+            index.eq -1
           ""
           string
             as-bytes.
-              txt.slice
-                idx
-                txt.length.minus
-                  number idx
+              text.slice
+                index
+                text.length.minus
+                  number index
         basename > base!
-        string.last-index-of txt "." > idx!
-        string base > txt
+        string.last-index-of text "." > index!
+        string base > text
       [] > is-absolute
         if. > @
           ubts.size.eq 0
@@ -295,9 +295,9 @@
           (string.index-of pth path.posix.separator).eq
             -1
           string ubts
-          string repl
+          string replacement
         string ubts > pth
-        string.replaced > repl!
+        string.replaced > replacement!
           pth
           string.regex "/\\//"
           separator
@@ -538,7 +538,7 @@
         *
           "var"
           "www"
-          "hello.txt"
+          "hello.text"
     path.joined
       * "var" "www"
 
@@ -558,8 +558,8 @@
         *
           "var"
           "www"
-          "hello.txt"
-    ".txt"
+          "hello.text"
+    ".text"
 
   eq. ++> tests-takes-valid-basename
     basename.

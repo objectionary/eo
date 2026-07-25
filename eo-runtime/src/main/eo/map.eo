@@ -179,7 +179,7 @@
         map *
           map.entry "Aa" 1
         "BB"
-      "recovered" > [msg]
+      "recovered" > [message]
 
   ++> tests-finds-element-by-key-in-map
     2.eq found.get > @
@@ -215,7 +215,7 @@
     "recovered".eq > @
       get.
         mp.found "absent"
-        "recovered" > [msg]
+        "recovered" > [message]
     map * > mp
       map.entry "one" 1
 

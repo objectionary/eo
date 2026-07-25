@@ -7,8 +7,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > as-bool
-  ? >> bts
-  bts.eq 01- > @
+[b] > as-bool
+  b.eq 01- > @
 
   (01-.as-bool.eq 00-.as-bool).not ++> tests-convertible-to-bool

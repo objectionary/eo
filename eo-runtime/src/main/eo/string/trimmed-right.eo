@@ -16,11 +16,11 @@
     0.eq len
     text
     string
-      bts.slice
+      b.slice
         0
         first-non-ws-index
           (number len).plus -1
-  text > bts!
+  text > b!
   [index] > first-non-ws-index
     if. > @
       -1.eq index
@@ -30,7 +30,7 @@
         first-non-ws-index
           (index.plus -1).as-number
         index.plus 1
-    bts.slice > char!
+    b.slice > char!
       index
       1
   or. > [c] > is-ws
@@ -43,7 +43,7 @@
           c.eq 0B-
           (c.eq 0C-).or
             c.eq 0D-
-  bts.size > len!
+  b.size > len!
 
   eq. ++> tests-text-trimmed-right-many-spaces
     trimmed-right

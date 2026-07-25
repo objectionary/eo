@@ -302,7 +302,7 @@
         4
         func m > [m] >>
       0
-    if. > [n] > func
+    if. > [n] >> func
       n.as-number.gt 0
       seq *
         n.put

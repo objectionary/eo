@@ -17,19 +17,7 @@
     base.neg
     base
   number num.as-bytes > arg
-  if. > base
-    mag.gt 0.5
-    minus.
-      pi.div 2
-      2.times
-        series root
-    series mag
-  abs arg > mag
-  sqrt > root
-    div.
-      1.minus mag
-      2
-  [point] > series
+  [point] >> series
     point.times > @
       poly 1
     if. > [depth] > poly
@@ -49,6 +37,18 @@
             depth.plus 1
     point.times point > squared
     30 > terms
+  if. > base
+    magnitude.gt 0.5
+    minus.
+      pi.div 2
+      2.times
+        series root
+    series magnitude
+  abs arg > magnitude
+  sqrt > root
+    div.
+      1.minus magnitude
+      2
 
   (arc-sine 2).is-nan ++> tests-arc-sine-above-one-is-nan
 

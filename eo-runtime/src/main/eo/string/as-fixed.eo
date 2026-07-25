@@ -42,7 +42,7 @@
         a.times scale
         0.5
     pow10 places > scale
-  if. > [p] > pow10
+  if. > [p] >> pow10
     p.eq 0
     1
     times.
@@ -50,7 +50,7 @@
         as-number.
           p.minus 1
       10
-  if. > [value count acc] > rec-pad
+  if. > [value count acc] >> rec-pad
     count.eq 0
     acc
     rec-pad
@@ -93,7 +93,7 @@
     as-fixed
       3.14159
       -2
-      "recovered" > [msg]
+      "recovered" > [message]
 
   eq. ++> tests-negative-rounding-to-zero-drops-sign
     "0.00"
@@ -110,7 +110,7 @@
     as-fixed
       3.14159
       2.5
-      "recovered" > [msg]
+      "recovered" > [message]
 
   eq. ++> tests-pads-with-trailing-zeros
     "1.250000"
