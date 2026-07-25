@@ -49,7 +49,10 @@
   reason (#5876): folding the whole formation into every reference drops its
   shared handle name and strands any sibling helper it reaches on a synthetic
   "vL_P" id, so the formation and its "@local" handle are kept in place and
-  "merge-monikers" hosts the kept binding onto its first reference.
+  "merge-monikers" hosts the kept binding onto its first reference. A const
+  whose value reaches another auto-name is kept for a third reason (#5910):
+  the folded value can only be laid out vertically, which the anonymous inline
+  const argument cannot spell (see "eo:vertical-const" below).
 
   The inlined value keeps the target's obfuscated cactus `@name` only when
   the name is still meaningful downstream: an abstract formation, whose name
@@ -71,7 +74,7 @@
     <xsl:variable name="target" select="ancestor::o/o[@name=$name][1]"/>
     <xsl:variable name="keep-name" as="xs:boolean" select="exists($target) and (eo:abstract($target) or ($target/@base = '.as-bytes' and $target/o[1]/@base = 'Φ.dataized' and eo:abstract($target/o[1]/o[1])))"/>
     <xsl:choose>
-      <xsl:when test="exists($target) and not(eo:void($target)) and not(eo:recursive($target, $name)) and not(eo:multi-referenced($target, $name) and (eo:dataized-const($target) or eo:abstract($target)))">
+      <xsl:when test="exists($target) and not(eo:void($target)) and not(eo:recursive($target, $name)) and not(eo:vertical-const($target)) and not(eo:multi-referenced($target, $name) and (eo:dataized-const($target) or eo:abstract($target)))">
         <xsl:choose>
           <!--
           The reference is the base of an application — it carries its own
@@ -173,9 +176,10 @@
   self-referential (recursive) abstracts, which are never inlined, keep a
   multi-referenced dataized-const handle, which is never inlined (#5828), keep
   a multi-referenced abstract formation, which is never inlined either (#5876),
-  keep a formation applied through a `@pipe` continuation, which is kept in
-  place above its pipe rather than inlined (#5834), and keep a binding that a
-  surviving method dispatch still reaches through its name.
+  keep a const that only a vertical layout can spell, which is never inlined
+  either (#5910), keep a formation applied through a `@pipe` continuation,
+  which is kept in place above its pipe rather than inlined (#5834), and keep a
+  binding that a surviving method dispatch still reaches through its name.
   Such a dispatch reference (`ξ.<name>.<seg>`) is not inlined above — its
   receiver is buried in a dotted base — so dropping the binding would strand
   the reference on a synthetic "vL_P" placeholder. Keeping it lets
@@ -183,7 +187,7 @@
   instead (#5782).
   -->
   <xsl:template match="o[starts-with(@name, $auto) and not(eo:void(.))]" priority="1">
-    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or (eo:multi-referenced(., @name) and (eo:dataized-const(.) or eo:abstract(.))) or eo:piped(., @name)">
+    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or eo:vertical-const(.) or (eo:multi-referenced(., @name) and (eo:dataized-const(.) or eo:abstract(.))) or eo:piped(., @name)">
       <xsl:copy>
         <xsl:apply-templates select="node()|@*"/>
       </xsl:copy>
@@ -222,6 +226,24 @@
   <xsl:function name="eo:dataized-const" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:sequence select="$target/@base = '.as-bytes' and $target/o[1]/@base = 'Φ.dataized'"/>
+  </xsl:function>
+  <!--
+  Whether folding the dataized-const `$target` would demand a vertical
+  spelling that the anonymous inline const argument cannot carry. A const
+  over a non-abstract value folds as the nameless `42.plus a!` argument
+  (#5821), whose `!` rides the head of one line; a const over an abstract
+  value keeps its cactus name and prints as the multi-line `[] &gt;&gt;!`
+  instead, so only the nameless flavour is at stake. When such a value
+  reaches another auto-name, "merge-monikers" later hosts that binding
+  inside the folded value as its own `&gt;&gt; name` line, and the value can
+  then only be laid out vertically — leaving the `!` right behind the head,
+  as in `if.!`, which R-3.8.1 rejects, so the next parse silently drops the
+  whole body (#5910). Such a const is kept as its own named binding instead,
+  the same carve-out the multi-referenced const gets (#5828).
+  -->
+  <xsl:function name="eo:vertical-const" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:sequence select="eo:dataized-const($target) and not(eo:abstract($target/o[1]/o[1])) and exists($target//o[contains(@base, concat('.', $auto))])"/>
   </xsl:function>
   <!--
   Whether the auto-named abstract formation `$target` is immediately followed
