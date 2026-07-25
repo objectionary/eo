@@ -179,6 +179,24 @@
     <xsl:sequence select="if (exists($binding) and not(eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
   </xsl:function>
   <!--
+  The kept multi-referenced abstract handle binding (`[] &gt;&gt; name`, #5876)
+  a reference `$ref` resolves to but does NOT host (the binding folds onto its
+  first reference only, `eo:moniker-refs`). Any other reference — a named alias
+  `name &gt; a` or a further `name.seg` dispatch that the moniker fold leaves
+  in place — keeps the readable "@local" handle in place of the obfuscated
+  cactus name, so it reads back as `name` (or `name.seg`) rather than a
+  synthetic "vL_P" placeholder, the abstract mirror of `eo:kept-const-ref`. The
+  reference is matched by carrying the binding's cactus "@name" as one of its
+  base segments; the binding's own subtree is excluded.
+  -->
+  <xsl:function name="eo:kept-local-ref" as="element()*">
+    <xsl:param name="ref" as="element()"/>
+    <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
+    <xsl:variable name="candidates" select="$owner/o[eo:moniker-binding(.) and eo:abstract(.) and exists(@local)]"/>
+    <xsl:variable name="binding" select="$candidates[some $seg in tokenize($ref/@base, '\.') satisfies $seg = @name][1]"/>
+    <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and not(eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
+  </xsl:function>
+  <!--
   Replace the first hosting reference with the merged binding, always keeping
   the reference's positional `@as`. A bare reference becomes the binding
   inlined in place: the binding's other attributes and its children. An
@@ -256,6 +274,18 @@
   -->
   <xsl:template match="o[exists(eo:kept-const-ref(.))]/@base" priority="2">
     <xsl:variable name="binding" select="eo:kept-const-ref(..)"/>
+    <xsl:attribute name="base" select="string-join(for $seg in tokenize(., '\.') return (if ($seg = $binding/@name) then string($binding/@local) else $seg), '.')"/>
+  </xsl:template>
+  <!--
+  Rewrite a non-hosting reference to a kept multi-referenced abstract handle
+  (`[] &gt;&gt; name`, #5876) from the obfuscated cactus name back to the
+  readable "@local" handle, so it reads as `name` (or `name.seg`) instead of a
+  synthetic "vL_P" placeholder, the abstract mirror of the const rewrite above.
+  The single hosting reference is rebuilt from the binding and never reaches
+  this template (`eo:kept-local-ref` excludes it).
+  -->
+  <xsl:template match="o[exists(eo:kept-local-ref(.))]/@base" priority="2">
+    <xsl:variable name="binding" select="eo:kept-local-ref(..)"/>
     <xsl:attribute name="base" select="string-join(for $seg in tokenize(., '\.') return (if ($seg = $binding/@name) then string($binding/@local) else $seg), '.')"/>
   </xsl:template>
   <!--
