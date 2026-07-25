@@ -100,6 +100,9 @@ final class LnReversed implements Line {
             ".".concat(head.raw()),
             this.span.line(), this.span.indent()
         );
+        if (!suffix.handle().isEmpty()) {
+            emit.local(suffix.handle());
+        }
         if (fragile) {
             emit.fragile();
         }
