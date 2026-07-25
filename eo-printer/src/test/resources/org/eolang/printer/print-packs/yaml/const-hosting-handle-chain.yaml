@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Three const file-local handles chained through their receivers: `third`
+# dispatches on `second`, which dispatches on `first`. Every link is a host site
+# for the next, so folding `third` onto `φ` has to carry the whole chain along,
+# each handle nested in the receiver of the one above it (#5918). Before the fix
+# the chain was rebuilt attribute by attribute at the new site, so both inner
+# bindings were dropped as merged and vanished from the printed source.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [text] > chain
+    plus. >> third!
+      size. >> second!
+        text >> first!
+      1
+    third.eq 0 > @
+
+printed: |
+  [text] > chain
+    eq. > @
+      plus. >> third!
+        size. >> second!
+          text >> first!
+        1
+      0
