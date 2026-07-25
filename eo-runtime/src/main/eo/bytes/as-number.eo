@@ -11,20 +11,23 @@
 
 [bts cant-convert] > as-number
   if. > @
-    bts.eq nan.as-bytes
-    nan
+    bts.size.eq 8
     if.
-      bts.eq pinf.as-bytes
-      pinf
+      is-nan.
+        number bts
+      nan
       if.
-        bts.eq ninf.as-bytes
-        ninf
+        bts.eq pinf.as-bytes
+        pinf
         if.
-          bts.size.eq 8
+          bts.eq ninf.as-bytes
+          ninf
           number bts
-          cant-convert
-            "Can't convert non 8 length bytes to a number, bytes are %x".printf
-              * bts
+    cant-convert
+      "Can't convert non 8 length bytes to a number, bytes are %x".printf
+        * bts
+
+  FF-F8-00-00-00-00-00-00.as-number.is-nan ++> tests-non-canonical-nan-bytes-route-to-nan
 
   eq. ++> tests-wrong-size-as-number-returns-provided-fallback
     "recovered"

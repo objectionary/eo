@@ -20,10 +20,8 @@
       1.as-bytes.xor 1.as-bytes
     0
 
-  eq. ++> tests-xor-neg-bytes-as-number-without-leading-zeroes
-    as-number.
-      00-00-00-00-FF-FF-FF-FF.xor FF-FF-FF-FF-00-00-00-00
-    FF-FF-FF-FF-FF-FF-FF-FF
+  ++> tests-xor-neg-bytes-as-number-without-leading-zeroes
+    (00-00-00-00-FF-FF-FF-FF.xor FF-FF-FF-FF-00-00-00-00).as-number.is-nan > @
 
   eq. ++> tests-xor-neg-bytes-with-leading-zeroes
     00-00-00-00-8E-EA-4C-B1.xor FF-FF-FF-FF-00-00-00-00

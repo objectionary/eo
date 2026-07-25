@@ -72,10 +72,10 @@
       1.as-bytes.and 1.as-bytes
     1
 
-  eq. ++> tests-bitwise-works-negative
-    as-number.
-      FF-FF-FF-FF-FF-FF-FF-81.as-bytes.or 00-00-00-00-00-00-00-7F.as-bytes
-    FF-FF-FF-FF-FF-FF-FF-FF
+  ++> tests-bitwise-works-negative
+    is-nan. > @
+      as-number.
+        FF-FF-FF-FF-FF-FF-FF-81.as-bytes.or 00-00-00-00-00-00-00-7F.as-bytes
 
   eq. ++> tests-concat-bools-as-bytes
     true.as-bytes.concat false.as-bytes
