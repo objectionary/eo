@@ -115,12 +115,17 @@
   the shared name. Its "@local" marker is therefore kept here so the surviving
   binding still prints its readable `&gt;&gt; b` handle; the binding itself
   stays cactus-named for "merge-monikers" to fold onto its first reference
-  (#5828).
+  (#5828). A reference reaches the handle either bare (`ξ.b`) or through a
+  method dispatch (`ξ.b.seg`, e.g. `b.gte 1`, #5883), so both spellings are
+  counted — exactly as "eo:multi-referenced" does; counting only the bare shape
+  would leave a handle whose sibling reference is a dispatch looking
+  single-use, dropping "@local" and stranding that dispatch on a synthetic
+  "vL_P" placeholder.
   -->
   <xsl:function name="eo:const-handle" as="xs:boolean">
     <xsl:param name="wrapper" as="element()*"/>
     <xsl:variable name="value" select="$wrapper/o[@base='Φ.dataized']/o[1]"/>
-    <xsl:sequence select="exists($wrapper) and $wrapper/@base='.as-bytes' and exists($wrapper/@name) and exists($value/@local) and count($wrapper/..//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $wrapper/@name and not(ancestor-or-self::o[. is $wrapper])]) &gt; 1"/>
+    <xsl:sequence select="exists($wrapper) and $wrapper/@base='.as-bytes' and exists($wrapper/@name) and exists($value/@local) and count($wrapper/..//o[contains(@base, concat('.', $auto)) and (eo:resolved-name(@base) = $wrapper/@name or starts-with(eo:resolved-name(@base), concat($wrapper/@name, '.'))) and not(ancestor-or-self::o[. is $wrapper])]) &gt; 1"/>
   </xsl:function>
   <xsl:key name="void-handle" match="o[@local and (@base=$eo:empty or eo:recursive(., @name))]" use="@name"/>
   <!--
