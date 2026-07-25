@@ -17,7 +17,8 @@
           tlen
         and.
           slen.eq tlen
-          (sub.eq txt).not
+          not.
+            sub.eq txt
       found.eq -1
     -1
     length.
@@ -36,8 +37,7 @@
       includes.if idx -1
       includes.if
         idx
-        rec-index-of
-          (idx.plus -1).as-number
+        rec-index-of (idx.plus -1).as-number
     eq. > includes
       slice
         txt

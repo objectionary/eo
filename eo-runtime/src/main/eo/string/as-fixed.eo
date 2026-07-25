@@ -63,7 +63,7 @@
           plus.
             floor.
               value.minus
-                (value.div 10).floor.times 10
+                times. (value.div 10).floor 10
             48
         acc
   if. > [a] > signed

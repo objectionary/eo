@@ -36,7 +36,8 @@
     [] > basename
       string > @
         if.
-          (pth.size.eq 0).or
+          or.
+            pth.size.eq 0
             idx.eq 0
           pth
           as-bytes.
@@ -52,13 +53,15 @@
     [] > dirname
       string > @
         if.
-          (pth.size.eq 0).or
+          or.
+            pth.size.eq 0
             len.eq -1
           pth
           if.
             len.eq 0
             separator
-            (txt.slice 0 len).as-bytes
+            as-bytes.
+              txt.slice 0 len
       string.last-index-of txt separator > len!
       uri > pth!
       string pth > txt
@@ -109,14 +112,17 @@
           if. > [accum segment] >>
             segment.eq ".."
             if.
-              (accum.length.gt 0).and
-                (accum.head.eq "..").not
+              and.
+                accum.length.gt 0
+                not.
+                  accum.head.eq ".."
               accum.tail
               is-absolute.not.if
                 accum.with segment
                 accum
             if.
-              (segment.eq ".").or
+              or.
+                segment.eq "."
                 segment.eq ""
               accum
               accum.with segment
@@ -136,9 +142,13 @@
               obts.size.eq 0
               uri
               if.
-                (obts.slice 0 1).eq separator
+                eq.
+                  obts.slice 0 1
+                  separator
                 obts
-                (uri.concat separator).concat obts
+                concat.
+                  uri.concat separator
+                  obts
       other.as-bytes > obts
     "/" > separator
   os.is-windows.if > separator
@@ -158,7 +168,8 @@
       [] > basename
         string > @
           if.
-            (pth.size.eq 0).or
+            or.
+              pth.size.eq 0
               idx.eq 0
             pth
             as-bytes.
@@ -174,19 +185,22 @@
       [] > dirname
         string > @
           if.
-            (pth.size.eq 0).or
+            or.
+              pth.size.eq 0
               len.eq -1
             pth
             if.
               len.eq 0
               separator
-              (txt.slice 0 len).as-bytes
+              as-bytes.
+                txt.slice 0 len
         string.last-index-of txt separator > len!
         uri > pth!
         string pth > txt
       [] > extname
         if. > @
-          (base.size.eq 0).or
+          or.
+            base.size.eq 0
             idx.eq -1
           ""
           string
@@ -202,16 +216,19 @@
         if. > @
           ubts.size.eq 0
           false
-          (is-root-relative ubts).or
-            (ubts.size.gt 1).and
+          or.
+            is-root-relative ubts
+            and.
+              ubts.size.gt 1
               is-drive-relative ubts
         uri > ubts!
       [uri] > is-drive-relative
-        ((string.regex "/^[a-zA-Z]:/").match uri).next.exists.as-bool > @
+        as-bool. ((string.regex "/^[a-zA-Z]:/").match uri).next.exists > @
       [uri] > is-root-relative
         and. > @
           ubts.size.gt 0
-          (ubts.slice 0 1).eq
+          eq.
+            ubts.slice 0 1
             separator
         uri > ubts!
       [] > normalized
@@ -241,7 +258,9 @@
               concat.
                 is-drive-relative.if
                   if.
-                    (driveless.slice 0 1).eq separator
+                    eq.
+                      driveless.slice 0 1
+                      separator
                     uri.slice 0 3
                     uri.slice 0 2
                   is-root-relative.if separator --
@@ -255,14 +274,17 @@
             if. > [accum segment] >>
               segment.eq ".."
               if.
-                (accum.length.gt 0).and
-                  (accum.head.eq "..").not
+                and.
+                  accum.length.gt 0
+                  not.
+                    accum.head.eq ".."
                 accum.tail
                 driveless-rooted.not.if
                   accum.with segment
                   accum
               if.
-                (segment.eq ".").or
+                or.
+                  segment.eq "."
                   segment.eq ""
                 accum
                 accum.with segment
@@ -279,20 +301,25 @@
           validated
             string
               if.
-                (is-drive-relative valid).as-bool
+                as-bool.
+                  is-drive-relative valid
                 valid
                 if.
-                  (is-root-relative valid).as-bool
+                  as-bool.
+                    is-root-relative valid
                   if.
                     is-drive-relative ubts
-                    (ubts.slice 0 2).concat valid
+                    concat.
+                      ubts.slice 0 2
+                      valid
                     valid
-                  (ubts.concat separator).concat valid
+                  concat. (ubts.concat separator) valid
         uri > ubts!
         separated-correctly other > valid!
       [uri] > separated-correctly
         if. > @
-          (string.index-of pth path.posix.separator).eq
+          eq.
+            string.index-of pth path.posix.separator
             -1
           string ubts
           string repl
@@ -307,13 +334,19 @@
   and. ++> tests-detects-absolute-posix-path
     is-absolute.
       path.posix "/var/www/html"
-    (path.posix "foo/bar/baz").is-absolute.not
+    not.
+      is-absolute.
+        path.posix "foo/bar/baz"
 
   and. ++> tests-detects-absolute-win32-path
-    (path.win32 "C:\\Windows\\Users").is-absolute.and
+    and.
+      is-absolute.
+        path.win32 "C:\\Windows\\Users"
       is-absolute.
         path.win32 "\\Windows\\Users"
-    (path.win32 "temp\\var").is-absolute.not
+    not.
+      is-absolute.
+        path.win32 "temp\\var"
 
   path.separator.eq ++> tests-determines-separator-depending-on-os
     os.is-windows.if

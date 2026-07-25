@@ -28,7 +28,9 @@
         pi
     1.0E-4
 
-  (radians nan).is-nan ++> tests-radians-of-nan-is-nan
+  ++> tests-radians-of-nan-is-nan
+    is-nan. > @
+      radians nan
 
   lt. ++> tests-radians-of-negative-half-turn-is-minus-pi
     abs

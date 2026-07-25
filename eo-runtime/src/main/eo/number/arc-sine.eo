@@ -40,19 +40,30 @@
           div.
             times.
               times.
-                (depth.times 2).minus 1
-                (depth.times 2).minus 1
+                minus.
+                  depth.times 2
+                  1
+                minus.
+                  depth.times 2
+                  1
               squared
-            (depth.times 2).times
-              (depth.times 2).plus 1
+            times.
+              depth.times 2
+              plus.
+                depth.times 2
+                1
           poly
             depth.plus 1
     point.times point > squared
     30 > terms
 
-  (arc-sine 2).is-nan ++> tests-arc-sine-above-one-is-nan
+  ++> tests-arc-sine-above-one-is-nan
+    is-nan. > @
+      arc-sine 2
 
-  (arc-sine -2).is-nan ++> tests-arc-sine-below-minus-one-is-nan
+  ++> tests-arc-sine-below-minus-one-is-nan
+    is-nan. > @
+      arc-sine -2
 
   lt. ++> tests-arc-sine-is-odd-function
     abs
@@ -74,7 +85,9 @@
           1000
     1
 
-  (arc-sine nan).is-nan ++> tests-arc-sine-of-nan-is-nan
+  ++> tests-arc-sine-of-nan-is-nan
+    is-nan. > @
+      arc-sine nan
 
   lt. ++> tests-arc-sine-of-negative-half-is-minus-pi-sixths
     abs
@@ -82,11 +95,15 @@
         times.
           arc-sine -0.5
           1000
-        (pi.div 6).neg.times
+        times.
+          neg.
+            pi.div 6
           1000
     1
 
-  (arc-sine ninf).is-nan ++> tests-arc-sine-of-negative-infinity-is-nan
+  ++> tests-arc-sine-of-negative-infinity-is-nan
+    is-nan. > @
+      arc-sine ninf
 
   lt. ++> tests-arc-sine-of-negative-one-is-minus-pi-halves
     abs
@@ -94,7 +111,9 @@
         times.
           arc-sine -1
           1000
-        (pi.div 2).neg.times
+        times.
+          neg.
+            pi.div 2
           1000
     1
 
@@ -118,7 +137,9 @@
         643.5
     1
 
-  (arc-sine pinf).is-nan ++> tests-arc-sine-of-positive-infinity-is-nan
+  ++> tests-arc-sine-of-positive-infinity-is-nan
+    is-nan. > @
+      arc-sine pinf
 
   eq. ++> tests-arc-sine-of-zero-is-zero
     arc-sine 0

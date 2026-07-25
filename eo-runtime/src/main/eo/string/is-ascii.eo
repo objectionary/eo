@@ -12,7 +12,9 @@
     regex "/^[\\x00-\\x7F]*$/"
     text
 
-  (is-ascii "🌵").not ++> tests-checks-if-emoji-is-not-ascii
+  ++> tests-checks-if-emoji-is-not-ascii
+    not. > @
+      is-ascii "🌵"
 
   is-ascii "123" ++> tests-checks-if-string-of-numbers-is-ascii
 

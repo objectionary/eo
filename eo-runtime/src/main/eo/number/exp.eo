@@ -47,4 +47,6 @@
         exp -10
     1.0E-12
 
-  (exp nan).is-nan ++> tests-exp-check-nan
+  ++> tests-exp-check-nan
+    is-nan. > @
+      exp nan

@@ -33,27 +33,37 @@
       if.
         or.
           size.eq 0
-          (current.plus size).gt text.size
+          gt.
+            current.plus size
+            text.size
         rec-nsplit
           accum
           start
-          (current.plus 1).as-number
+          as-number.
+            current.plus 1
           count
         if.
           and.
             delimiter.eq
               slice text current size
-            (number count).lt
-              (number limit).minus 1
+            lt.
+              number count
+              minus.
+                number limit
+                1
           rec-nsplit
             appended
-            (current.plus size).as-number
-            (current.plus size).as-number
-            (count.plus 1).as-number
+            as-number.
+              current.plus size
+            as-number.
+              current.plus size
+            as-number.
+              count.plus 1
           rec-nsplit
             accum
             start
-            (current.plus 1).as-number
+            as-number.
+              current.plus 1
             count
     accum.with > appended
       string
