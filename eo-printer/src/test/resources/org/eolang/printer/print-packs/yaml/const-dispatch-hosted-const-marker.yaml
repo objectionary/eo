@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A const file-local handle (`a >> b!`, #5817) that hosts onto a dispatch
+# reference (`c.gte 2`, base `ξ.c.gte`) folds to a reversed dispatch whose
+# receiver is the handle (#5782). The reference here is itself a const binding
+# (`> a!`), and the rebuilt node must keep that `!` alongside its name (#5900):
+# `@const` is what makes the object dataized once and cached, so dropping it
+# would silently turn a cached object into one recomputed at every use.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [x] > foo
+    x.plus 1 >> c!
+    c.gte 2 > a!
+    c.lte 3 > b
+
+printed: |
+  [x] > foo
+    gte. > a!
+      x.plus 1 >> c!
+      2
+    c.lte 3 > b

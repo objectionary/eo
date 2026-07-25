@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A const file-local handle (`a >> b!`, #5817) is kept whole when referenced
+# more than once (#5828), just like the two- and three-reference cases. Here one
+# of the two references is a method dispatch (`c.gte 2`, base `ξ.c.gte`) rather
+# than a bare `c` (#5883). "restore-local-names" must count that dispatch use so
+# the handle still reads as multi-referenced and keeps its "@local" marker;
+# counting only the bare shape left it looking single-use, dropped the marker,
+# and folded the const into the one bare use — stranding the dispatch reference
+# on a synthetic "vL_P" name that resolves to nothing on reparse. The kept
+# handle is hosted onto its first bare reference as a moniker (`x.plus 1 >> c!`
+# under the first `42.plus`), and the dispatch reference reads back as `c.gte`.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [x] > foo
+    x.plus 1 >> c!
+    c.gte 2 > a
+    42.plus c > b
+
+printed: |
+  [x] > foo
+    c.gte 2 > a
+    42.plus > b
+      x.plus 1 >> c!

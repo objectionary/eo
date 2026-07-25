@@ -109,6 +109,21 @@ final class LnReversedTest {
         );
     }
 
+    @Test
+    void emitsLocalHandleForAutoSuffix() {
+        final Emit emit = new Emit();
+        new LnReversed(new Span("if. >> index", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `>> name` auto suffix on a reversed dispatch must emit the file-local handle as @local so resolve-local-names.xsl can see it (#5874)",
+            LnReversedTest.render(emit),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@local='index' and @base='.if' and not(@method)]"
+            )
+        );
+    }
+
     /**
      * Render the emit's directives under a fresh {@code <object/>}.
      * @param emit The emit
