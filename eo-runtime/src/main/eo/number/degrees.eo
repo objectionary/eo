@@ -14,9 +14,7 @@
     pi
   number num.as-bytes > value
 
-  ++> tests-degrees-of-nan-is-nan
-    is-nan. > @
-      degrees nan
+  (degrees nan).is-nan ++> tests-degrees-of-nan-is-nan
 
   lt. ++> tests-degrees-of-negative-pi-is-minus-half-turn
     abs

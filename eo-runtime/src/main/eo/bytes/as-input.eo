@@ -44,16 +44,12 @@
             as-bytes.
               data.slice
                 next
-                minus.
-                  number available
+                (number available).minus
                   number next
-            as-bytes.
-              data.slice 0 next
+            (data.slice 0 next).as-bytes
         data.size > available!
         if. > next!
-          gt.
-            number available
-            requested
+          (number available).gt requested
           requested
           available
         size > requested!

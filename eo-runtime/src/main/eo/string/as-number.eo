@@ -24,10 +24,7 @@
     cant-parse
       "Can't convert text %s to number".printf
         * text
-    head.
-      ^.
-        at.
-          scanf "%f" text
+    (scanf "%f" text).at.^.head
 
   eq. ++> tests-converts-float-text-to-number
     3.14
