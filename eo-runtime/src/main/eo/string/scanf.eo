@@ -139,8 +139,7 @@
         as-integer-value
         as-float-value
     [text] > fold-digits
-      rec 0 0 > @
-      [index acc] > rec
+      [index acc] >> rec
         if. > @
           index.eq text.length
           acc
@@ -152,6 +151,7 @@
               as-ascii
                 slice text index 1
               48
+      | 0 0 > @
     match. > found
       regex wrapped
       read

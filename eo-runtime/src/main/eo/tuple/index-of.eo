@@ -10,19 +10,19 @@
 
 [list wanted] > index-of
   number > @
-    recidx list
-  [tup] > recidx
-    if. > @
-      tup.length.eq 0
-      -1
-      if.
-        next.eq -1
+    [tup] >> recidx
+      if. > @
+        tup.length.eq 0
+        -1
         if.
-          tup.head.eq wanted
-          tup.tail.length
-          -1
-        next
-    recidx tup.tail > next!
+          next.eq -1
+          if.
+            tup.head.eq wanted
+            tup.tail.length
+            -1
+          next
+      recidx tup.tail > next!
+    | list
 
   eq. ++> tests-does-not-find-index-of
     -1

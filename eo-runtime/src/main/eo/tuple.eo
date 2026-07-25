@@ -38,13 +38,13 @@
   [other] > eq
     and. > @
       length.eq other.length
-      receq ^ other
-    if. > [first second] > receq
-      first.length.eq 0
-      true
-      and.
-        first.head.eq second.head
-        receq first.tail second.tail
+      if. > [first second] >> receq
+        first.length.eq 0
+        true
+        and.
+          first.head.eq second.head
+          receq first.tail second.tail
+      | ^ other
   tuple > [x] > with
     ^
     x

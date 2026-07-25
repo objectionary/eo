@@ -11,41 +11,40 @@
   if. > @
     len.eq 0
     *
-    rec-split
+    [accum start current] >> rec-split
+      if. > @
+        len.eq current
+        appended
+        if.
+          (size.eq 0).or
+            (current.plus size).gt len
+          rec-split
+            accum
+            start
+            (current.plus 1).as-number
+          if.
+            delim.eq
+              slice bts current size
+            rec-split
+              appended
+              (current.plus size).as-number
+              (current.plus size).as-number
+            rec-split
+              accum
+              start
+              (current.plus 1).as-number
+      accum.with > appended
+        string
+          slice
+            bts
+            start
+            current.minus start
+    |
       *
       0
       0
   size. > len!
     text >> bts!
-  [accum start current] > rec-split
-    if. > @
-      len.eq current
-      appended
-      if.
-        or.
-          size.eq 0
-          (current.plus size).gt len
-        rec-split
-          accum
-          start
-          (current.plus 1).as-number
-        if.
-          delim.eq
-            slice bts current size
-          rec-split
-            appended
-            (current.plus size).as-number
-            (current.plus size).as-number
-          rec-split
-            accum
-            start
-            (current.plus 1).as-number
-    accum.with > appended
-      string
-        slice
-          bts
-          start
-          current.minus start
   size. > size!
     delimiter >> delim!
 

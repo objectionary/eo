@@ -17,24 +17,20 @@
         length.eq size
         txt.eq
           substring >> part!
-      rec-contains 0
+      [index] >> rec-contains
+        if. > @
+          end.eq index
+          includes
+          includes.or
+            rec-contains (index.plus 1).as-number
+        eq. > includes
+          slice txt index size
+          part
+      | 0
   minus. > end!
     number length
     size
   txt.size > length!
-  [index] > rec-contains
-    if. > @
-      end.eq index
-      includes
-      includes.or
-        rec-contains
-          (index.plus 1).as-number
-    eq. > includes
-      slice
-        txt
-        index
-        size
-      part
   part.size > size!
   text > txt!
 

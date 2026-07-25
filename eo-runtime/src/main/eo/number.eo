@@ -126,17 +126,14 @@
       if. > @
         n.lt 3
         small n
-        rec
-          n
-          1
-          1
-      if. > [n minus1 minus2] > rec
-        n.eq 3
-        minus1.plus minus2
-        rec
-          n.minus 1
+        if. > [n minus1 minus2] >> rec
+          n.eq 3
           minus1.plus minus2
-          minus1
+          rec
+            n.minus 1
+            minus1.plus minus2
+            minus1
+        | n 1 1
       if. > [n] > small
         n.eq 2
         1

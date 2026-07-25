@@ -24,7 +24,7 @@
   all-lines > @
   [] > all-lines
     eol > separator!
-    if. > [line buffer first] > rec-read
+    if. > [line buffer first] >> rec-read
       line.length.eq 0
       string buffer
       rec-read
@@ -41,21 +41,20 @@
     if. > @
       first.as-bytes.size.eq 0
       ""
-      rec-read first --
+      [input buffer] >> rec-read
+        if. > @
+          (char.eq --).or
+            or.
+              (char.eq "\r").and
+                next.as-bytes.eq "\n"
+              char.eq "\n"
+          string buffer
+          rec-read
+            next
+            buffer.concat char
+        input.as-bytes > char
+        @. > next
+          input.read 1
+      | first --
     @. > first
       console.read 1
-    [input buffer] > rec-read
-      if. > @
-        or.
-          char.eq --
-          or.
-            (char.eq "\r").and
-              next.as-bytes.eq "\n"
-            char.eq "\n"
-        string buffer
-        rec-read
-          next
-          buffer.concat char
-      input.as-bytes > char
-      @. > next
-        input.read 1
