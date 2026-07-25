@@ -9,7 +9,9 @@
   anonymous object with its cactus @name plus a "@local='foo'" marker. A
   handle is an attribute of the formation that declares it, so we rewrite a
   @base equal to a handle name into that (reserved) cactus name; a handle
-  declared more than once is an error. The "@local" marker is deliberately
+  declared more than once within the same enclosing formation is an error,
+  but two sibling formations may each declare a same-named handle because
+  resolution is lexically scoped (#5875). The "@local" marker is deliberately
   kept on the declaring object so that later passes (in particular the
   printer, see #5563) can recover the readable handle from the otherwise-
   synthetic cactus name instead of printing a placeholder like "vL_P".
@@ -58,14 +60,14 @@
     <xsl:copy>
       <xsl:apply-templates select="(node() except errors)|@*"/>
       <xsl:variable name="errors" as="element()*">
-        <xsl:for-each-group select="//o[@local]" group-by="@local">
+        <xsl:for-each-group select="//o[@local]" group-by="concat(@local, '#', generate-id(ancestor::o[not(@base)][1]))">
           <xsl:if test="count(current-group()) &gt; 1">
             <xsl:element name="error">
               <xsl:attribute name="check" select="'resolve-local-names'"/>
               <xsl:attribute name="line" select="if (current-group()[2]/@line) then current-group()[2]/@line else 0"/>
               <xsl:attribute name="severity" select="'error'"/>
               <xsl:text>duplicate local name '</xsl:text>
-              <xsl:value-of select="current-grouping-key()"/>
+              <xsl:value-of select="current-group()[1]/@local"/>
               <xsl:text>'</xsl:text>
             </xsl:element>
           </xsl:if>
