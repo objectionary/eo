@@ -118,22 +118,7 @@ final class Emissions {
         if (value.kind() == Value.Kind.INTEGER || value.kind() == Value.Kind.FLOAT) {
             Emissions.number(emit, name, value, line);
         } else if (value.kind() == Value.Kind.HEX) {
-            final long hex;
-            try {
-                hex = Long.parseLong(value.raw().substring(2), 16);
-            } catch (final NumberFormatException ex) {
-                final ParseError error = new ParseError(
-                    line, value.pos(),
-                    "hexadecimal literal is out of range"
-                );
-                error.initCause(ex);
-                throw error;
-            }
-            emit.object(name, "Φ.number", line, value.pos());
-            Emissions.bytesCarrier(
-                emit, line, value.pos(),
-                new Hex((double) hex).asString()
-            );
+            Emissions.hex(emit, name, value, line);
         } else if (value.kind() == Value.Kind.BYTES) {
             emit.object(name, "Φ.bytes", line, value.pos());
             emit.object(null, null, line, value.pos());
@@ -296,6 +281,48 @@ final class Emissions {
             }
         }
         return out.toString();
+    }
+
+    /**
+     * Emit a {@code HEX} literal as {@code Φ.number}, rejecting values that
+     * fit a signed 64-bit {@code long} but no longer round-trip exactly
+     * through an IEEE-754 double (the sibling {@code number()} check, for
+     * the base where a plain range check on {@code long} does not catch it).
+     * @param emit Emitter
+     * @param name Name attribute (or {@code null})
+     * @param value Hex value
+     * @param line Source line
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static void hex(
+        final Emit emit, final String name, final Value value, final int line
+    ) {
+        final long raw;
+        try {
+            raw = Long.parseLong(value.raw().substring(2), 16);
+        } catch (final NumberFormatException ex) {
+            final ParseError error = new ParseError(
+                line, value.pos(),
+                "hexadecimal literal is out of range"
+            );
+            error.initCause(ex);
+            throw error;
+        }
+        final double parsed = raw;
+        if ((long) parsed != raw) {
+            throw new ParseError(
+                line, value.pos(),
+                String.format(
+                    "%s is over-precise, write %s instead",
+                    value.raw(), Emissions.canonicalInteger(parsed)
+                )
+            );
+        }
+        emit.object(name, "Φ.number", line, value.pos());
+        Emissions.bytesCarrier(
+            emit, line, value.pos(),
+            new Hex(parsed).asString()
+        );
     }
 
     /**

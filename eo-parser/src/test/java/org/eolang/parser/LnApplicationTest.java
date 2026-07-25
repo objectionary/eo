@@ -602,6 +602,21 @@ final class LnApplicationTest {
     }
 
     @Test
+    void rejectsOverPreciseHexHead() {
+        MatcherAssert.assertThat(
+            "a HEX literal past the exact double integer range must suggest the rounded"
+                .concat(" decimal spelling, matching the INTEGER literal of the same value"),
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> LnApplicationTest.parseLine("0x20000000000001 > x")
+            ).getMessage(),
+            Matchers.equalTo(
+                "0x20000000000001 is over-precise, write 9007199254740992 instead"
+            )
+        );
+    }
+
+    @Test
     void rejectsOverPreciseFloatHead() {
         MatcherAssert.assertThat(
             "a FLOAT literal with dead trailing digits must name the offender and its Double.toString form",
