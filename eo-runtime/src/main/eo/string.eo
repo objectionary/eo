@@ -27,25 +27,7 @@
       size.eq 0
       0
       reclen 0 0
-    if. > [index csize len] > inclen
-      gt.
-        index.plus csize
-        size
-      T
-        "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
-          * csize index as-bytes
-      reclen
-        index.plus csize
-        len.plus 1
-    80- > p1
-    E0- > p2
-    F0- > p3
-    F8- > p4
-    00- > r1
-    C0- > r2
-    p2 > r3
-    p3 > r4
-    [index accum] > reclen
+    [index accum] >> reclen
       if. > @
         index.eq size
         accum
@@ -65,6 +47,24 @@
                   "Unknown byte format (%x), can't recognize character".printf
                     * byte
       as-bytes.slice index 1 > byte
+    if. > [index csize len] > inclen
+      gt.
+        index.plus csize
+        size
+      T
+        "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
+          * csize index as-bytes
+      reclen
+        index.plus csize
+        len.plus 1
+    80- > p1
+    E0- > p2
+    F0- > p3
+    F8- > p4
+    00- > r1
+    C0- > r2
+    p2 > r3
+    p3 > r4
     as-bytes.size > size
   [start len] > slice
     if. > @
@@ -90,6 +90,39 @@
             ""
             string
               as-bytes.slice bstart blen
+    [index accum result cause] >> recidx
+      if. > @
+        accum.eq result
+        index
+        if.
+          index.eq size
+          T cause
+          if.
+            (byte.and p1).eq r1
+            increase
+              index
+              1
+              accum
+              result
+              cause
+            if.
+              (byte.and p2).eq r2
+              increase
+                index
+                2
+                accum
+                result
+                cause
+              if.
+                (byte.and p3).eq r3
+                increase index 3 accum result cause
+                if.
+                  (byte.and p4).eq r4
+                  increase index 4 accum result cause
+                  T
+                    "Unknown byte format (%x), can't recognize character".printf
+                      * byte
+      as-bytes.slice index 1 > byte
     minus. > blen
       recidx
         number bstart
@@ -123,39 +156,6 @@
     C0- > r2
     p2 > r3
     p3 > r4
-    [index accum result cause] > recidx
-      if. > @
-        accum.eq result
-        index
-        if.
-          index.eq size
-          T cause
-          if.
-            (byte.and p1).eq r1
-            increase
-              index
-              1
-              accum
-              result
-              cause
-            if.
-              (byte.and p2).eq r2
-              increase
-                index
-                2
-                accum
-                result
-                cause
-              if.
-                (byte.and p3).eq r3
-                increase index 3 accum result cause
-                if.
-                  (byte.and p4).eq r4
-                  increase index 4 accum result cause
-                  T
-                    "Unknown byte format (%x), can't recognize character".printf
-                      * byte
-      as-bytes.slice index 1 > byte
     start > sbts!
     as-bytes.size > size
 
