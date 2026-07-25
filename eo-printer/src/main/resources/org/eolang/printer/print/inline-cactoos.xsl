@@ -174,20 +174,24 @@
   <!--
   Drop an inlined auto-named abstract; keep cactus-named voids, keep
   self-referential (recursive) abstracts, which are never inlined, keep a
-  multi-referenced dataized-const handle, which is never inlined (#5828), keep
-  a multi-referenced abstract formation, which is never inlined either (#5876),
-  keep a const that only a vertical layout can spell, which is never inlined
-  either (#5910), keep a formation applied through a `@pipe` continuation,
-  which is kept in place above its pipe rather than inlined (#5834), and keep a
-  binding that a surviving method dispatch still reaches through its name.
-  Such a dispatch reference (`ξ.<name>.<seg>`) is not inlined above — its
-  receiver is buried in a dotted base — so dropping the binding would strand
-  the reference on a synthetic "vL_P" placeholder. Keeping it lets
-  "merge-monikers" host the binding as the receiver of a reversed dispatch
-  instead (#5782).
+  binding no reference reaches at all (#5914), keep a multi-referenced
+  dataized-const handle, which is never inlined (#5828), keep a
+  multi-referenced abstract formation, which is never
+  inlined either (#5876), keep a const that only a vertical layout can spell,
+  which is never inlined either (#5910), keep a formation applied through a
+  `@pipe` continuation, which is kept in place above its pipe rather than
+  inlined (#5834), and keep a binding that a surviving method dispatch still
+  reaches through its name. Such a dispatch reference (`ξ.<name>.<seg>`) is not
+  inlined above — its receiver is buried in a dotted base — so dropping the
+  binding would strand the reference on a synthetic "vL_P" placeholder. Keeping
+  it lets "merge-monikers" host the binding as the receiver of a reversed
+  dispatch instead (#5782). An unreferenced binding is kept because inlining
+  never moved its value anywhere: dropping it deletes the declaration from the
+  printed source, so a private helper formation or const cache that nothing
+  reads yet would silently vanish (#5914).
   -->
   <xsl:template match="o[starts-with(@name, $auto) and not(eo:void(.))]" priority="1">
-    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or eo:vertical-const(.) or (eo:multi-referenced(., @name) and (eo:dataized-const(.) or eo:abstract(.))) or eo:piped(., @name)">
+    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or eo:vertical-const(.) or eo:unreferenced(., @name) or (eo:multi-referenced(., @name) and (eo:dataized-const(.) or eo:abstract(.))) or eo:piped(., @name)">
       <xsl:copy>
         <xsl:apply-templates select="node()|@*"/>
       </xsl:copy>
@@ -266,19 +270,40 @@
     <xsl:sequence select="eo:abstract($target) and exists($next) and contains($next/@base, concat('.', $auto)) and eo:resolved-name($next/@base) = $name and ($next/o or $next/@name)"/>
   </xsl:function>
   <!--
-  Whether more than one reference in the binding's owner reaches the auto-name
-  `$name` (references inside the binding's own subtree excluded). A reference
-  reaches `$name` either bare (`ξ.<name>`) or through a method dispatch
+  The references in the binding's owner that reach the auto-name `$name`
+  (references inside the binding's own subtree excluded). A reference reaches
+  `$name` either bare (`ξ.<name>`) or through a method dispatch
   (`ξ.<name>.<seg>`, whose resolved name carries the bare name as its leading
-  segment); both are counted. Such a shared binding — a const handle (#5828) or
-  an abstract formation (#5876) — is kept whole rather than folded into each use,
-  which would change the object graph or drop the shared handle name, and
+  segment); both are collected. A reference from inside a nested formation body
+  reaches it as `ξ.ρ.<name>`, which `eo:resolved-name` strips down to the same
+  auto-name, so it is counted like any other.
+  -->
+  <xsl:function name="eo:references" as="element()*">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="$target/..//o[contains(@base, concat('.', $auto)) and (eo:resolved-name(@base) = $name or starts-with(eo:resolved-name(@base), concat($name, '.'))) and not(ancestor-or-self::o[. is $target])]"/>
+  </xsl:function>
+  <!--
+  Whether more than one reference in the binding's owner reaches the auto-name
+  `$name`. Such a shared binding — a const handle (#5828) or an abstract
+  formation (#5876) — is kept whole rather than folded into each use, which
+  would change the object graph or drop the shared handle name, and
   "merge-monikers" then hosts the kept binding onto its first reference.
   -->
   <xsl:function name="eo:multi-referenced" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="count($target/..//o[contains(@base, concat('.', $auto)) and (eo:resolved-name(@base) = $name or starts-with(eo:resolved-name(@base), concat($name, '.'))) and not(ancestor-or-self::o[. is $target])]) &gt; 1"/>
+    <xsl:sequence select="count(eo:references($target, $name)) &gt; 1"/>
+  </xsl:function>
+  <!--
+  Whether no reference in the binding's owner reaches the auto-name `$name`.
+  Such a binding has no use site to fold into, so it is kept where it stands
+  rather than dropped (#5914).
+  -->
+  <xsl:function name="eo:unreferenced" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="empty(eo:references($target, $name))"/>
   </xsl:function>
   <xsl:template match="node()|@*">
     <xsl:copy>
