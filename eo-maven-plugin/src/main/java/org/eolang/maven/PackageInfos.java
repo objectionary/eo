@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Package info classes.
@@ -60,12 +61,15 @@ final class PackageInfos {
     int create() throws IOException {
         final int size;
         if (Files.exists(this.root)) {
-            final List<Path> dirs = Files.walk(this.root).filter(
-                file -> Files.isDirectory(file)
-                    && !file.equals(this.root)
-                    && !file.equals(this.root.resolve("org"))
-                )
-                .collect(Collectors.toList());
+            final List<Path> dirs;
+            try (Stream<Path> walk = Files.walk(this.root)) {
+                dirs = walk.filter(
+                    file -> Files.isDirectory(file)
+                        && !file.equals(this.root)
+                        && !file.equals(this.root.resolve("org"))
+                    )
+                    .collect(Collectors.toList());
+            }
             for (final Path dir : dirs) {
                 Logger.debug(
                     this,

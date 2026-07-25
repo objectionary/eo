@@ -1,6 +1,7 @@
 # Retrieve symbol by given index as `text`.
-# If 0 > index >= ^.length, the `fallback` value is returned,
-# or the bottom object when unbound.
+# A negative `index` counts from the end of `text` (`length + index`).
+# If the resolved index is still negative or is >= `text.length`,
+# the `fallback` value is returned, or the bottom object when unbound.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

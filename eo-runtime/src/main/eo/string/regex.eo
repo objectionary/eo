@@ -50,7 +50,16 @@
       [position start] > matched-from-index /Q.string.regex.pattern.match.matched
       matched. > next
         matched-from-index 1 0
-    (match txt).next.exists > [txt] > matches
+    [txt] > matches
+      found.exists.and > @
+        found.to.eq txt.length
+      next. > found
+        match txt
+
+  ++> tests-does-not-match-anchored-pattern-with-trailing-newline
+    not. > @
+      (regex "/^[0-9]+$/").compiled.matches
+        "123\n"
 
   ++> tests-does-not-matches-regex-against-the-pattern
     not. > @

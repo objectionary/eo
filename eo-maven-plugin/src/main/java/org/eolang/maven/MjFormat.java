@@ -4,7 +4,10 @@
  */
 package org.eolang.maven;
 
+import com.github.lombrozo.xnav.Filter;
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -122,7 +125,7 @@ public final class MjFormat extends MjSafe {
      */
     private boolean reformat(final Path source) throws IOException {
         final String actual = new UncheckedText(new TextOf(source)).asString();
-        final String canonical = this.canonical(actual);
+        final String canonical = this.canonical(source, actual);
         final Diff diff = new Diff(actual, canonical);
         final boolean diverged = !diff.same();
         if (diverged && this.autoFix) {
@@ -154,20 +157,97 @@ public final class MjFormat extends MjSafe {
      * source that has not settled by then is laid out as-is and reported
      * divergent, so it fails loudly instead of looping.</p>
      *
+     * @param path The path of the {@code .eo} file, for the error message
      * @param source The current text of the {@code .eo} file
      * @return The canonical text
      * @throws IOException If fails to parse the source
      */
-    private String canonical(final String source) throws IOException {
+    private String canonical(final Path path, final String source) throws IOException {
         String structure = source;
         for (int pass = 0; pass < MjFormat.SETTLE; ++pass) {
-            final String next = new Xmir(new EoSyntax(structure).parsed()).toEO();
+            final String next = new Xmir(MjFormat.parsed(path, structure)).toEO();
             if (next.equals(structure)) {
                 break;
             }
             structure = next;
         }
-        return new Xmir(new EoSyntax(structure).parsed(), this.weights()).toEO();
+        return new Xmir(MjFormat.parsed(path, structure), this.weights()).toEO();
+    }
+
+    /**
+     * Parse a source and verify none of the source was lost in the process.
+     * A source with a genuine syntax error still yields an XMIR carrying
+     * {@code <errors>} (see {@link Parsing}), but the parser also recovers
+     * from many purely cosmetic layout violations (e.g. extra blank lines,
+     * exactly what this goal exists to fix) the same way, tagged with the
+     * same {@code severity="error"} and no other distinguishing marker.
+     * Rejecting every {@code <errors>} entry, as suggested by the issue this
+     * fixes, would therefore also reject this goal's own core use case.
+     *
+     * <p>What actually matters is whether the recovered tree still covers
+     * the whole source: a genuine syntax error (e.g. an unterminated paren
+     * group) makes the parser stop incorporating source lines into the tree
+     * from that point on, while a cosmetic layout error does not lose any
+     * line. So instead of trusting {@code severity} alone, this also checks
+     * that some {@code <o>} element references a line at or past the
+     * source's last non-blank line; if none does, part of the source was
+     * never parsed at all, and this goal would otherwise print back (or, in
+     * {@code -Deo.autoFix} mode, save) a truncated version of it.</p>
+     *
+     * @param source The path of the {@code .eo} file, for the error message
+     * @param structure The current text of the {@code .eo} file
+     * @return The parsed XMIR
+     * @throws IOException If fails to parse the source
+     */
+    private static XML parsed(final Path source, final String structure) throws IOException {
+        final XML xmir = new EoSyntax(structure).parsed();
+        final long errors = new Xnav(xmir.inner())
+            .element("object")
+            .element("errors")
+            .elements(Filter.withName("error"))
+            .filter(MjFormat::severe)
+            .count();
+        if (errors > 0L && MjFormat.truncated(xmir, structure)) {
+            throw new IllegalStateException(
+                String.format(
+                    "%s does not fully parse (%d error(s) found) and part of it was lost, won't format it",
+                    source, errors
+                )
+            );
+        }
+        return xmir;
+    }
+
+    /**
+     * Whether the parsed tree stops short of the source's last non-blank
+     * line, meaning some of the source was never incorporated into it.
+     * @param xmir The parsed XMIR
+     * @param structure The source text that was parsed
+     * @return TRUE if part of the source was not recovered
+     */
+    private static boolean truncated(final XML xmir, final String structure) {
+        final String[] lines = structure.split(String.valueOf('\n'), -1);
+        int last = 0;
+        for (int idx = 0; idx < lines.length; ++idx) {
+            if (!lines[idx].isBlank()) {
+                last = idx + 1;
+            }
+        }
+        return new Xnav(xmir.inner())
+            .path("//o[@line]")
+            .mapToInt(node -> Integer.parseInt(node.attribute("line").text().orElse("0")))
+            .max()
+            .orElse(0) < last;
+    }
+
+    /**
+     * Whether an {@code <error>} element carries error or critical severity.
+     * @param error The error element
+     * @return TRUE if the error is severe
+     */
+    private static boolean severe(final Xnav error) {
+        final String severity = error.attribute("severity").text().orElse("");
+        return "error".equals(severity) || "critical".equals(severity);
     }
 
     /**

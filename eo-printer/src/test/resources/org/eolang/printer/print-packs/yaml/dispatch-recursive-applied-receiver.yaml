@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The recursive-handle fold (#5848) when the handle is APPLIED and then
+# dispatched as the receiver of a method: "(bar 7).neg". The applied handle
+# folds into a moniker at its use site, its argument becoming a "| 7" pipe that
+# binds the inlined formation (the recursive mirror of "inline-cactoos", #5844).
+# The handle keeps its ">> bar" name so the recursive "bar k" reads by name.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo
+    (bar 7).neg > @
+    [k] >> bar
+      bar k > @
+printed: |
+  [] > foo
+    neg. > @
+      bar k > [k] >> bar
+      | 7

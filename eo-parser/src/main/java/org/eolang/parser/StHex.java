@@ -6,7 +6,6 @@ package org.eolang.parser;
 
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StEnvelope;
-import java.nio.ByteBuffer;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -28,12 +27,9 @@ final class StHex extends StEnvelope {
                 xnav -> {
                     final Node node = xnav.node();
                     node.setTextContent(
-                        new BytesToHex(
-                            ByteBuffer
-                                .allocate(Double.BYTES)
-                                .putDouble(Double.parseDouble(xnav.text().orElseThrow()))
-                                .array()
-                        ).get()
+                        new Hex(
+                            Double.parseDouble(xnav.text().orElseThrow())
+                        ).asString()
                     );
                     ((Element) node).removeAttribute("hex");
                 }
