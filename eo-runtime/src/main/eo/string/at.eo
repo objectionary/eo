@@ -13,7 +13,12 @@
 [text i fallback] > at
   if. > @
     or.
-      0.gt index
+      0.gt
+        if. >> index!
+          0.gt
+            i >> idx!
+          (number len).plus idx
+          idx
       gte.
         number index
         len
@@ -24,13 +29,6 @@
       text
       index
       1
-  i > idx!
-  if. > index!
-    0.gt idx
-    plus.
-      number len
-      idx
-    idx
   text.length > len!
 
   eq. ++> tests-returns-char-at-negative-index

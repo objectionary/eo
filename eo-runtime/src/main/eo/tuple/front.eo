@@ -12,7 +12,8 @@
     idx.eq 0
     *
     if.
-      0.gt idx
+      0.gt
+        index >> idx!
       back
         list
         neg.
@@ -27,7 +28,6 @@
           tup
           rechead tup.tail
         | list
-  index > idx!
 
   eq. ++> tests-complex-front
     front

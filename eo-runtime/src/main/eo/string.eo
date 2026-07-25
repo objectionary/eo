@@ -78,7 +78,12 @@
           "Length to slice must be >= 0, but was %d".printf
             * nlen
         seq *
-          bstart
+          recidx >> bstart!
+            0
+            0
+            nstart
+            "Start index (%d) is out of string bounds".printf
+              * nstart
           blen
           if.
             nlen.eq 0
@@ -94,12 +99,6 @@
           *
             nstart.plus nlen
       bstart
-    recidx > bstart!
-      0
-      0
-      nstart
-      "Start index (%d) is out of string bounds".printf
-        * nstart
     nstart.plus nlen > end
     if. > [index csize accum result cause] > increase
       gt.

@@ -17,7 +17,7 @@
     text
     string
       b.slice
-        idx
+        first-non-ws-index 0 >> idx!
         minus.
           number len
           idx
@@ -34,7 +34,6 @@
     b.slice > char!
       index
       1
-  first-non-ws-index 0 > idx!
   or. > [c] > is-ws
     c.eq 20-
     or.

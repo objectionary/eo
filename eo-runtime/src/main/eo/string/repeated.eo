@@ -20,7 +20,6 @@
       "Can't repeat text %s times".printf
         * times
     string result
-  times > amount!
   text > b!
   if. > [accum index] > rec-repeated
     amount.eq index
@@ -30,7 +29,8 @@
       as-number.
         index.plus 1
   if. > result!
-    0.eq amount
+    0.eq
+      times >> amount!
     --
     rec-repeated
       b

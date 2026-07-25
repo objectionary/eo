@@ -18,8 +18,7 @@
         idx.gte start
         accum.with item
         accum
-  index > idx!
-  list.length.minus idx > start!
+  list.length.minus index! > start!
 
   eq. ++> tests-large-index-in-back
     back

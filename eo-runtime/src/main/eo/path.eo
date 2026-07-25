@@ -38,29 +38,25 @@
         if.
           (pth.size.eq 0).or
             index.eq 0
-          pth
+          uri >> pth!
           as-bytes.
             text.slice
-              index
+              (string.last-index-of text separator).plus >> index!
+                1
               text.length.minus
                 number index
-      plus. > index!
-        string.last-index-of text separator
-        1
-      uri > pth!
       string pth > text
     [] > dirname
       string > @
         if.
           (pth.size.eq 0).or
             len.eq -1
-          pth
+          uri >> pth!
           if.
             len.eq 0
             separator
             (text.slice 0 len).as-bytes
       string.last-index-of text separator > len!
-      uri > pth!
       string pth > text
     [] > extname
       if. > @
@@ -71,12 +67,11 @@
         string
           as-bytes.
             text.slice
-              index
+              string.last-index-of text "." >> index!
               text.length.minus
                 number index
-      basename > base!
-      string.last-index-of text "." > index!
-      string base > text
+      string > text
+        basename >> base!
     and. > is-absolute
       uri.length.gt 0
       eq.
@@ -123,11 +118,11 @@
       and. > trailing
         ubts.size.gt 0
         eq.
-          ubts.slice
+          slice.
+            uri >> ubts!
             ubts.size.plus -1
             1
           separator
-      uri > ubts!
     [other] > resolved
       normalized. > @
         posix
@@ -160,29 +155,24 @@
           if.
             (pth.size.eq 0).or
               index.eq 0
-            pth
+            uri >> pth!
             as-bytes.
               text.slice
-                index
+                (string.last-index-of text separator).plus 1 >> index!
                 text.length.minus
                   number index
-        plus. > index!
-          string.last-index-of text separator
-          1
-        uri > pth!
         string pth > text
       [] > dirname
         string > @
           if.
             (pth.size.eq 0).or
               len.eq -1
-            pth
+            uri >> pth!
             if.
               len.eq 0
               separator
               (text.slice 0 len).as-bytes
         string.last-index-of text separator > len!
-        uri > pth!
         string pth > text
       [] > extname
         if. > @
@@ -192,43 +182,47 @@
           string
             as-bytes.
               text.slice
-                index
+                string.last-index-of text "." >> index!
                 text.length.minus
                   number index
-        basename > base!
-        string.last-index-of text "." > index!
-        string base > text
+        string > text
+          basename >> base!
       [] > is-absolute
         if. > @
           ubts.size.eq 0
           false
-          (is-root-relative ubts).or
+          or.
+            is-root-relative
+              uri >> ubts!
             (ubts.size.gt 1).and
               is-drive-relative ubts
-        uri > ubts!
       [uri] > is-drive-relative
         ((string.regex "/^[a-zA-Z]:/").match uri).next.exists.as-bool > @
       [uri] > is-root-relative
         and. > @
           ubts.size.gt 0
-          (ubts.slice 0 1).eq
+          eq.
+            slice.
+              uri >> ubts!
+              0
+              1
             separator
-        uri > ubts!
       [] > normalized
         validated > @
           if.
             normalized.eq "\\\\"
             separator
             string normalized
-        is-drive-relative.if > driveless!
-          ubts.slice
-            2
-            ubts.size.plus -2
-          ubts
         as-bool. > driveless-rooted
-          ^.is-root-relative driveless
+          ^.is-root-relative
+            is-drive-relative.if >> driveless!
+              ubts.slice
+                2
+                ubts.size.plus -2
+              ubts
         as-bool. > is-drive-relative
-          ^.is-drive-relative ubts
+          ^.is-drive-relative
+            uri >> ubts!
         as-bool. > is-root-relative
           ^.is-root-relative ubts
         as-bytes. > normalized
@@ -273,35 +267,35 @@
               ubts.size.plus -1
               1
             separator
-        uri > ubts!
       [other] > resolved
         normalized. > @
           validated
             string
               if.
-                (is-drive-relative valid).as-bool
+                as-bool.
+                  is-drive-relative
+                    separated-correctly other >> valid!
                 valid
                 if.
                   (is-root-relative valid).as-bool
                   if.
-                    is-drive-relative ubts
+                    is-drive-relative
+                      uri >> ubts!
                     (ubts.slice 0 2).concat valid
                     valid
                   (ubts.concat separator).concat valid
-        uri > ubts!
-        separated-correctly other > valid!
       [uri] > separated-correctly
         if. > @
           (string.index-of pth path.posix.separator).eq
             -1
-          string ubts
+          string
+            uri >> ubts!
           string replacement
         string ubts > pth
         string.replaced > replacement!
           pth
           string.regex "/\\//"
           separator
-        uri > ubts!
       ^.separator > separator
 
   and. ++> tests-detects-absolute-posix-path

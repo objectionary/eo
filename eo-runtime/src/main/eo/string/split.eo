@@ -15,9 +15,8 @@
       *
       0
       0
-  text > bts!
-  delimiter > delim!
-  bts.size > len!
+  size. > len!
+    text >> bts!
   [accum start current] > rec-split
     if. > @
       len.eq current
@@ -47,7 +46,8 @@
           bts
           start
           current.minus start
-  delim.size > size!
+  size. > size!
+    delimiter >> delim!
 
   eq. ++> tests-splits-and-returns-strings
     length.

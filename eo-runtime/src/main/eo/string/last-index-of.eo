@@ -14,10 +14,13 @@
       or.
         gt.
           number size
-          tlen
+          txt.size >> tlen!
         and.
           size.eq tlen
-          (part.eq txt).not
+          not.
+            eq.
+              substring >> part!
+              txt
       found.eq -1
     -1
     length.
@@ -30,7 +33,6 @@
     minus.
       number tlen
       size
-  substring > part!
   [idx] >> rec-index-of
     if. > @
       0.eq idx
@@ -46,7 +48,6 @@
         size
       part
   part.size > size!
-  txt.size > tlen!
   text > txt!
 
   eq. ++> tests-finds-last-index-of-substring

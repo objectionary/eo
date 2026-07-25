@@ -15,13 +15,13 @@
     or.
       and.
         length.eq size
-        txt.eq part
+        txt.eq
+          substring >> part!
       rec-contains 0
   minus. > end!
     number length
     size
   txt.size > length!
-  substring > part!
   [index] > rec-contains
     if. > @
       end.eq index

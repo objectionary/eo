@@ -16,17 +16,15 @@
     with-delimiter
       items.head
       items.tail
-  text > delimiter!
-  if. > [acc tup] > with-delimiter
-    tup.length.eq 0
-    acc
-    with-delimiter
-      concat.
+  [acc tup] > with-delimiter
+    if. > @
+      tup.length.eq 0
+      acc
+      with-delimiter
         concat.
-          dataized tup.head
-          delimiter
-        acc
-      tup.tail
+          (dataized tup.head).concat text!
+          acc
+        tup.tail
 
   eq. ++> tests-joined-many-strings
     "hello-world-dear-friend"

@@ -13,7 +13,12 @@
   [i fallback] > at
     if. > @
       or.
-        0.gt index
+        0.gt
+          if. >> index!
+            0.gt
+              i >> idx!
+            length.plus idx
+            idx
         length.lte index
       fallback
         "Given index is out of tuple bounds"
@@ -24,11 +29,6 @@
         index
       tup.head
       at-fast tup.tail
-    i > idx!
-    if. > index!
-      0.gt idx
-      length.plus idx
-      idx
   tuple > empty
     T
       "Can't get tail from the empty tuple"

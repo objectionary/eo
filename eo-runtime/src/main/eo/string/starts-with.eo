@@ -17,9 +17,8 @@
         txt
         0
         size
-      part
+      substring >> part!
   txt.size > length!
-  substring > part!
   part.size > size!
   text > txt!
 
