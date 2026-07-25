@@ -46,8 +46,7 @@
         ent.length.eq 0
         false
         if.
-          and.
-            ent.head.hash.eq hash
+          (ent.head.hash.eq hash).and
             ent.head.kbts.eq kbts
           true
           has-key ent.tail
@@ -76,8 +75,7 @@
           prev.exists.if
             prev
             if.
-              and.
-                tup.head.hash.eq hash
+              (tup.head.hash.eq hash).and
                 tup.head.kbts.eq kbts
               [] >>
                 true > exists
@@ -85,9 +83,7 @@
               not-found
         @. > prev
           rec-key-search tup.tail
-    [key] > has
-      exists. > @
-        found key
+    (found key).exists > [key] > has
     tuple.mapped > keys
       entries
       entry.key > [entry]
@@ -102,8 +98,7 @@
             entries
             [entry] >>
               not. > @
-                and.
-                  hash.eq entry.hash
+                (hash.eq entry.hash).and
                   kbts.eq entry.kbts
           [] >>
             ^.hash > hash
@@ -118,8 +113,7 @@
           entries
           [entry] >>
             not. > @
-              and.
-                hash.eq entry.hash
+              (hash.eq entry.hash).and
                 kbts.eq entry.kbts
       bytes.hash kbts > hash!
       key.as-bytes > kbts!
@@ -239,10 +233,8 @@
         0
         [m]
           seq * > @
-            exists.
-              mp.found 1
-            exists.
-              mp.found 1
+            (mp.found 1).exists
+            (mp.found 1).exists
             m
           map * > mp
             map.entry
@@ -262,9 +254,7 @@
       "one"
 
   ++> tests-removes-only-the-given-key-of-colliding-ones
-    and. > @
-      not.
-        mp.has "Aa"
+    (mp.has "Aa").not.and > @
       mp.has "BB"
     without. > mp
       map *

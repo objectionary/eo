@@ -31,15 +31,9 @@
     0
 
   and. ++> tests-hash-code-bools-is-number
-    eq.
-      size.
-        as-bytes.
-          hash true
+    (hash true).as-bytes.size.eq
       8
-    eq.
-      size.
-        as-bytes.
-          hash false
+    (hash false).as-bytes.size.eq
       8
 
   ++> tests-hash-code-int-is-int

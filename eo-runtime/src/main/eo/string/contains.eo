@@ -25,7 +25,8 @@
       end.eq idx
       includes
       includes.or
-        rec-contains (idx.plus 1).as-number
+        rec-contains
+          (idx.plus 1).as-number
     eq. > includes
       slice
         txt

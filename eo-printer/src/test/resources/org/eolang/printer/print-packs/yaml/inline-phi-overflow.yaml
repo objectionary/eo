@@ -35,9 +35,7 @@ printed: |
     lt. ++> tests-cosine-of-pi-thirds-is-half
       abs
         minus.
-          times.
-            cosine
-              pi.div 3
+          (cosine (pi.div 3)).times
             1000
           500
       1

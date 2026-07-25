@@ -47,9 +47,7 @@
         0
         plus.
           1.div
-            plus.
-              k.times 2
-              1
+            (k.times 2).plus 1
           squared.times
             horner
               k.plus 1
@@ -71,25 +69,17 @@
     ln 2
     ln 3
 
-  ++> tests-ln-nan
-    is-nan. > @
-      ln nan
+  (ln nan).is-nan ++> tests-ln-nan
 
-  ++> tests-ln-negative-infinity
-    is-nan. > @
-      ln ninf
+  (ln ninf).is-nan ++> tests-ln-negative-infinity
 
   eq. ++> tests-ln-of-e-one-is-one
     ln e
     1
 
-  ++> tests-ln-of-negative-float-is-nan
-    is-nan. > @
-      ln -2.2
+  (ln -2.2).is-nan ++> tests-ln-of-negative-float-is-nan
 
-  ++> tests-ln-of-negative-int-is-nan
-    is-nan. > @
-      ln -42
+  (ln -42).is-nan ++> tests-ln-of-negative-int-is-nan
 
   eq. ++> tests-ln-of-one-is-zero
     ln 1

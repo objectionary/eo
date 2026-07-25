@@ -103,8 +103,7 @@
           seq * > @
             chunk
             input-block chunk
-          as-bytes. > chunk
-            recv size
+          (recv size).as-bytes > chunk
   [send] > as-output
     [buffer] > write
       @. > @

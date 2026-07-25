@@ -26,10 +26,7 @@ import java.util.Map;
  *   points, multiplied by its nesting depth plus one, so a top-level
  *   bracket costs the flat weight, a bracket nested one level deep costs
  *   twice as much, two levels deep three times, and so on, since deeper
- *   nesting hurts readability more; a parenthesis that is the first
- *   non-space character of its line pays an extra {@link PenaltyKey#LEADING}
- *   factor on top, since a group opening a line, before the reader knows
- *   what it applies to, is the worst place for a bracket;</li>
+ *   nesting hurts readability more;</li>
  *   <li>every explicit phi attribute {@code @} costs
  *   {@link PenaltyKey#PHI} points;</li>
  *   <li>every {@code if} dispatched in suffix position ({@code foo.if})
@@ -121,7 +118,7 @@ final class Penalty {
             final int spaces = Penalty.spaces(line);
             final int applied = Penalty.applied(line);
             total += this.indents(line) * this.weight(PenaltyKey.INDENT);
-            total += this.brackets(line) * this.weight(PenaltyKey.BRACKET);
+            total += Penalty.brackets(line) * this.weight(PenaltyKey.BRACKET);
             total += Penalty.phis(line) * this.weight(PenaltyKey.PHI);
             total += Penalty.ifs(line) * this.weight(PenaltyKey.IF);
             total += Math.max(0, line.length() - this.weight(PenaltyKey.WIDTH))
@@ -256,31 +253,16 @@ final class Penalty {
      * counts as {@code depth + 1} units of the flat {@link PenaltyKey#BRACKET}
      * weight, so the printer leans away from deeply nested one-liners.</p>
      *
-     * <p>A parenthesis that is the first non-space character of its line is
-     * charged {@link PenaltyKey#LEADING} times as much, so it counts as
-     * {@code (depth + 1) * LEADING} units. The start of a line is the worst
-     * place for a group: the reader meets it before knowing what it applies
-     * to, and the line has to be read backwards to make sense of it, so the
-     * printer is pushed away from that layout.</p>
-     *
      * @param line The line
      * @return The weighted number of parentheses
      */
-    private int brackets(final String line) {
-        int lead = 0;
-        while (lead < line.length() && line.charAt(lead) == ' ') {
-            ++lead;
-        }
+    private static int brackets(final String line) {
         int count = 0;
         int depth = 0;
         for (int idx = 0; idx < line.length(); ++idx) {
             final char chr = line.charAt(idx);
             if (chr == '(') {
-                int units = depth + 1;
-                if (idx == lead) {
-                    units *= this.weight(PenaltyKey.LEADING);
-                }
-                count += units;
+                count += depth + 1;
                 ++depth;
             } else if (chr == ')' && depth > 0) {
                 --depth;

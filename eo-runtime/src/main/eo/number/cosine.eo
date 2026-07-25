@@ -23,13 +23,9 @@
         1000
     1
 
-  ++> tests-cosine-of-nan-is-nan
-    is-nan. > @
-      cosine nan
+  (cosine nan).is-nan ++> tests-cosine-of-nan-is-nan
 
-  ++> tests-cosine-of-negative-infinity-is-nan
-    is-nan. > @
-      cosine ninf
+  (cosine ninf).is-nan ++> tests-cosine-of-negative-infinity-is-nan
 
   lt. ++> tests-cosine-of-pi-halves-is-zero
     abs
@@ -58,9 +54,7 @@
         500
     1
 
-  ++> tests-cosine-of-positive-infinity-is-nan
-    is-nan. > @
-      cosine pinf
+  (cosine pinf).is-nan ++> tests-cosine-of-positive-infinity-is-nan
 
   lt. ++> tests-cosine-of-seventeen-radians
     abs
@@ -85,8 +79,7 @@
       minus.
         times.
           cosine
-            plus.
-              pi.times 10
+            (pi.times 10).plus
               pi.div 3
           1000
         500

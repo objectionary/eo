@@ -28,7 +28,8 @@
       index
       if.
         is-ws char
-        first-non-ws-index (index.plus 1).as-number
+        first-non-ws-index
+          (index.plus 1).as-number
         index
     bts.slice > char!
       index
@@ -42,8 +43,7 @@
         c.eq 0A-
         or.
           c.eq 0B-
-          or.
-            c.eq 0C-
+          (c.eq 0C-).or
             c.eq 0D-
   bts.size > len!
 
