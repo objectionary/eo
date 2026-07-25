@@ -131,7 +131,7 @@ final class LnPipe implements Line {
      */
     private Tokens piped() {
         final String body = this.span.body();
-        if (body.length() > 1 && body.charAt(1) != ' ') {
+        if (!"|".equals(body) && !body.startsWith("| ")) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "a pipe `|` must be followed by a space before its arguments"
