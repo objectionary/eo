@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A harder case of the recursive dispatch fold (#5848): the recursive
+# "[buffer] &gt;&gt; bar" handle's dispatch use ("bar.read") is itself buried
+# under a second dispatch ("... .test 66") that reaches it through its "@"
+# result name. The parser hoists the "&gt; @" binding up to "foo", so the
+# printer canonicalises the nested spelling into two lines — the folded
+# reversed dispatch "read. &gt; @" hosting the handle, and "@.test 66 &gt; z"
+# reading the hoisted result — rather than keeping the writer's nesting. The
+# recursive handle still folds onto its "read" dispatch as a reversed-dispatch
+# moniker and keeps its readable "&gt;&gt; bar" name so "bar chunk" reads by
+# name. This confirms the fold survives when the dispatch use sits inside a
+# larger expression, not just as a direct sibling of the handle.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo
+    test. > z
+      read. > @
+        [buffer] >> bar
+          bar chunk > x
+      66
+printed: |
+  [] > foo
+    read. > @
+      [buffer] >> bar
+        bar chunk > x
+    @.test 66 > z

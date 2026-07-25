@@ -15,7 +15,20 @@
       <xsl:when test="exists($argument)">
         <xsl:element name="o">
           <xsl:apply-templates select="$argument/@*[name()!='as']"/>
-          <xsl:attribute name="name" select="@name"/>
+          <!--
+          Named const (a > b!) keeps its name; an anonymous inline const
+          argument (42.plus a!) folds in without one and reads as `a!`.
+          -->
+          <xsl:if test="@name and @name != ''">
+            <xsl:attribute name="name" select="@name"/>
+          </xsl:if>
+          <!--
+          Carry the wrapper's positional slot (@as) so a const argument
+          beside others (42.plus a! b) keeps its place in the sequence.
+          -->
+          <xsl:if test="@as">
+            <xsl:attribute name="as" select="@as"/>
+          </xsl:if>
           <xsl:attribute name="const"/>
           <xsl:for-each select="$argument/o">
             <xsl:apply-templates select="."/>

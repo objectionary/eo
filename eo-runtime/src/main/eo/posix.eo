@@ -14,7 +14,7 @@
 +unlint redundant-object
 
 [name args] > posix
-  [] > @ /Q.return
+  [] > @ /Q.posix.return
   os.is-macos.if > append
     8
     1024

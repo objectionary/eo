@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A self-referential (recursive) file-local handle ("[] &gt;&gt; bar",
+# R-3.10.12) whose body references itself ("bbb bar") stays in place, but the
+# applied sibling reference just below it must still fold to the compact pipe
+# continuation "| &gt; x" (#5837). "restore-local-names" promotes the recursive
+# handle's "@local" to its visible "@name" and rewrites references from the
+# cactus name to the handle; that strips the cactus name before
+# "inline-cactoos", whose #5834 pipe logic ("eo:piped") only matches
+# cactus-named references, so without the fix the reference stays expanded as
+# "bar &gt; x". The restored-recursive path now tags that reference with
+# "@pipe" itself, mirroring "eo:piped", so "to-eo-tree" emits the "|".
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo
+    [] >> bar
+      bbb bar > z
+    bar > x
+printed: |
+  [] > foo
+    [] >> bar
+      bbb bar > z
+    | > x

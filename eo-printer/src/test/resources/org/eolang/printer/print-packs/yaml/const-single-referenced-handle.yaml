@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The single-reference counterpart of `const-multi-referenced-handle` (#5828):
+# a const file-local handle (`a >> b!`, #5817) used exactly once has no shared
+# object to preserve, so it folds onto its only use site as an anonymous inline
+# const argument, eliminating the `b` name and printing `42.plus a! > x`
+# (#5821). Only a handle referenced more than once is kept whole.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [a] > foo
+    a >> b!
+    42.plus b > x
+
+printed: |
+  [a] > foo
+    42.plus a! > x

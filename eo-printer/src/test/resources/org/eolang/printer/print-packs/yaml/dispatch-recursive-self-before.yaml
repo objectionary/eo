@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A self-referential (recursive) file-local handle ("[buffer] &gt;&gt; bar",
+# R-3.10.12) whose body references itself ("bar chunk") stays in place, and a
+# reference to it that sits ABOVE the handle and is used as a method-dispatch
+# receiver ("bar.read &gt; @") must fold to the compact reversed dispatch
+# "read. &gt; @" hosting the handle (#5848) — the dispatch analogue of the
+# reference-above pipe fold (#5837/#5848) and the recursive mirror of the
+# non-recursive dispatch fold (#5782), where the anonymous formation is inlined
+# as the reversed dispatch's receiver. "restore-local-names" promotes the
+# recursive handle's "@local" to its visible "@name" (and keeps "@local"),
+# stripping the cactus name before "merge-monikers"; "merge-monikers" now
+# recognises the restored recursive handle as a hostable moniker and folds it
+# onto its dispatch use as a reversed dispatch. The handle keeps its readable
+# "&gt;&gt; bar" name so its self-reference still reads as "bar", not the
+# synthetic placeholder. Without the fix the "bar.read &gt; @" line is a no-op
+# and stays expanded above the handle.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo
+    bar.read > @
+    [buffer] >> bar
+      bar chunk > x
+printed: |
+  [] > foo
+    read. > @
+      [buffer] >> bar
+        bar chunk > x

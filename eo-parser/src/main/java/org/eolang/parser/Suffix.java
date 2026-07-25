@@ -366,13 +366,17 @@ final class Suffix {
 
     /**
      * Parse a {@code >>} (auto) suffix, optionally carrying a trailing
-     * file-local handle ({@code >> name}, §3.10) kept as the label.
+     * file-local handle ({@code >> name}, §3.10) kept as the label, and a
+     * {@code !} const marker (R-9.4) either right after {@code >>}
+     * ({@code >>!}) or after the handle ({@code >> name!}, #5817).
      * @param tail Tail substring
      * @param after Index immediately after {@code >>}
      * @param span Source span
      * @param home Source column where tail begins
      * @return Parsed result
-     * @checkstyle ParameterNumberCheck (3 lines)
+     * @checkstyle ParameterNumberCheck (5 lines)
+     * @checkstyle CyclomaticComplexityCheck (45 lines)
+     * @checkstyle NPathComplexityCheck (45 lines)
      */
     private static Parsed auto(
         final String tail, final int after, final Span span, final int home
@@ -399,6 +403,10 @@ final class Suffix {
                 );
             }
             rest = end;
+        }
+        if (!cnst && rest < tail.length() && tail.charAt(rest) == '!') {
+            cnst = true;
+            rest = rest + 1;
         }
         final int trailing = Suffix.skipSpace(tail, rest);
         if (trailing < tail.length() && tail.charAt(trailing) == '/') {

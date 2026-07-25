@@ -239,6 +239,16 @@ final class SuffixTest {
     }
 
     @Test
+    void detectsConstMarkerAfterHandle() {
+        final Suffix suffix = new Suffix(" >> fibo!", new Span("[] >> fibo!", 1), 2);
+        MatcherAssert.assertThat(
+            "`>> name!` must report the const marker and the handle (#5817)",
+            suffix.constant() && "fibo".equals(suffix.handle()),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
     void rejectsTrailingGarbageAfterPlusGreaterSuffix() {
         final Span span = new Span("[] +> foo garbage", 1);
         Assertions.assertThrows(

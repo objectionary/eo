@@ -117,7 +117,10 @@ public final class Canonical implements UnaryOperator<XML> {
                             "/org/eolang/parser/parse/cti-adds-errors.xsl",
                             "/org/eolang/parser/parse/mandatory-as.xsl"
                         ).back(),
-                        new TrDefault<>(new StHex())
+                        new TrDefault<>(new StHex()),
+                        new TrClasspath<>(
+                            "/org/eolang/parser/parse/set-locators.xsl"
+                        ).back()
                     )
                 )
             )::pass;

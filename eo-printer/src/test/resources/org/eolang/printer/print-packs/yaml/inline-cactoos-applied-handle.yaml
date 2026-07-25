@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A single-referenced file-local `>> bar` handle (R-3.10.12) whose value is an
+# abstract formation and which is used as the base of an application. Inlining
+# folds a bare `bar` reference into the formation, but here the reference
+# carries an applied argument (`42`) and a result-binding name (`x`). An
+# abstract formation cannot be spelled inline as the head of an application, so
+# rather than rebuild a fresh formation over the reference — which drops both
+# the argument and the name (#5834) — "inline-cactoos" keeps the auto-named
+# `[] >>` formation in place and turns the reference into the `| 42 > x` pipe
+# continuation that applies it (#5518). The readable `bar` handle is dropped
+# ("restore-local-names") since the anonymous formation needs no name for the
+# pipe to refer to it.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo
+    [] >> bar
+    bar 42 > x
+
+printed: |
+  [] > foo
+    [] >>
+    | 42 > x

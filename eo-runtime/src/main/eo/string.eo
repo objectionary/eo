@@ -77,11 +77,14 @@
         T
           "Length to slice must be >= 0, but was %d".printf
             * nlen
-        if.
-          nlen.eq 0
-          ""
-          string
-            as-bytes.slice bstart blen
+        seq *
+          bstart
+          blen
+          if.
+            nlen.eq 0
+            ""
+            string
+              as-bytes.slice bstart blen
     minus. > blen
       recidx
         number bstart
@@ -248,6 +251,12 @@
       str.length.eq 11
       str.as-bytes.size.eq 14
     "The 😀 smile" > str
+
+  eq. ++> tests-slice-at-end-with-zero-length
+    "hello".slice
+      5
+      0
+    ""
 
   eq. ++> tests-slice-empty-string
     "".slice

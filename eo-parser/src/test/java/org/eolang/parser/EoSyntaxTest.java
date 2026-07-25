@@ -292,6 +292,22 @@ final class EoSyntaxTest {
         );
     }
 
+    @Test
+    void emitsGraphLocatorsForObjects() throws IOException {
+        MatcherAssert.assertThat(
+            "parsed objects must carry a graph locator anchored at Φ",
+            new EoSyntax(
+                new InputOf(
+                    String.join(System.lineSeparator(), "[] > foo", "  42 > @")
+                )
+            ).parsed(),
+            XhtmlMatchers.hasXPaths(
+                "/object/o[@name='foo' and @loc='Φ.foo']",
+                "/object/o[@name='foo']/o[@loc='Φ.foo.φ']"
+            )
+        );
+    }
+
     @ParameterizedTest
     @ValueSource(
         strings = {

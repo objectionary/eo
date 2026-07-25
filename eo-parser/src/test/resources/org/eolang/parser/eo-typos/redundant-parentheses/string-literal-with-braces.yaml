@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 1
+message: |-
+  [1:6] error: 'redundant parentheses around a single token — `("a(b)c")` should be written as `"a(b)c"`'
+  1.add ("a(b)c") > x
+        ^
+input: |
+  1.add ("a(b)c") > x

@@ -1,5 +1,6 @@
 # Returns `text` repeated `times` times.
-# If `times` < 0, the `cant-repeat` fallback is returned, or the bottom object when unbound.
+# If `times` < 0 or not a whole number, the `cant-repeat` fallback is returned,
+# or the bottom object when unbound.
 # If `times` == 0, empty text is returned.
 
 +architect yegor256@gmail.com
@@ -11,10 +12,13 @@
 
 [text times cant-repeat] > repeated
   if. > @
-    0.gt amount
+    or.
+      0.gt times
+      not.
+        times.floor.eq times
     cant-repeat
-      "Can't repeat text %d times".printf
-        * amount
+      "Can't repeat text %s times".printf
+        * times
     string result
   times > amount!
   text > bts!
@@ -43,6 +47,13 @@
     repeated
       "x"
       -1
+      "recovered" > [msg]
+
+  eq. ++> tests-text-repeated-non-integer-times-returns-provided-fallback
+    "recovered"
+    repeated
+      "x"
+      2.5
       "recovered" > [msg]
 
   eq. ++> tests-text-repeated-zero-times-is-empty

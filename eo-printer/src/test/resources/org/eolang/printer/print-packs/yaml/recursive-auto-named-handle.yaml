@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# An anonymous, file-local recursive formation the parser auto-names "a🌵…"
+# with no "&gt;&gt; name" handle, reached from the outside through a method
+# dispatch bound to a named attribute ("q. &gt; @"). "inline-cactoos" keeps
+# such a self-referential formation in place (#5677). Before #5794
+# "merge-monikers" ignored it — it hosts only based bindings, and never onto a
+# named reference — so it reached the printer standalone and "to-eo-tree"
+# printed the declaration anonymously ("[n] &gt;&gt;") while rewriting the
+# surviving cactus name to a synthetic "vL_P" on the reference, leaving it
+# dangling. Now "merge-monikers" also hosts an abstract formation, and hosts a
+# single-segment dispatch onto a named reference (keeping the "&gt; @"), so the
+# formation is inlined back as the anonymous receiver of the reversed dispatch
+# "q. &gt; @" — no dangling reference — with its "$"-application decoratee in
+# the canonical compact form ("$ &gt; [n] &gt;&gt;"), re-parsing to the same graph.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  +package foo
+
+  [] > bar
+    q. > @
+      [n] >>
+        $ (n.minus 1) > @
+      5
+
+printed: |
+  +package foo
+
+  [] > bar
+    q. > @
+      $ > [n] >>
+        n.minus 1
+      5
