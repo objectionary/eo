@@ -224,6 +224,35 @@ final class StUnhexTest {
 
     @ParameterizedTest
     @MethodSource("shifts")
+    void keepsArgumentAppliedToIndentedLiteral(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must unhex an indented literal with an argument as cleanly as a compact one",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    String.join(
+                        System.lineSeparator(),
+                        "<p>",
+                        "  <o base='Φ.number'>",
+                        "    <o base='Φ.bytes'>",
+                        "      <o>40-45-00-00-00-00-00-00</o>",
+                        "    </o>",
+                        "    <o base='Φ.sigma'/>",
+                        "  </o>",
+                        "</p>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                "//o[@base='Φ.number' and text()='42' and o[@base='Φ.sigma']]"
+            )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
     void keepsArgumentAppliedToNumberLiteral(final Shift shift, final String type) {
         MatcherAssert.assertThat(
             String.format(

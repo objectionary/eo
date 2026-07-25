@@ -88,47 +88,36 @@ final class StUnhex extends StEnvelope {
     /**
      * Put the readable text of a data literal in place of its byte payload.
      *
-     * <p>When the literal's only child element is its own byte payload (the
-     * usual case), the whole content is replaced with the plain text — this is
-     * the original {@code setTextContent} behaviour, which also clears any
-     * surrounding whitespace text nodes so the result re-reads cleanly.</p>
+     * <p>Only the byte-payload child (the first {@code <o>}) is swapped for a
+     * text node, so that a sibling argument applied directly to the literal,
+     * as in {@code 42 5}, survives. Overwriting the whole element with
+     * {@code setTextContent} would delete that argument and silently drop the
+     * application.</p>
      *
-     * <p>When a second child element is present — an argument applied directly
-     * to the literal, as in {@code 42 5} — only the byte-payload child (the
-     * first {@code <o>}) is swapped for a text node, leaving the sibling
-     * argument intact. Overwriting the whole element there would delete the
-     * argument and silently drop the application.</p>
+     * <p>Every text child is dropped first. In pretty-printed XMIR — which is
+     * what {@code MjPrint} reads back from a {@code .xmir} file — the payload
+     * and the argument are separated by whitespace-only text nodes, and
+     * leaving those in place would strand the readable text between blobs of
+     * the original indentation. Clearing them leaves exactly one text node
+     * whatever the input layout was, so an indented literal unhexes to the
+     * same tree as a compact one.</p>
      *
      * @param xnav The data literal's wrapper element
      * @param text The readable text to put in place of the byte payload
      */
     private static void detach(final Xnav xnav, final String text) {
         final Node node = xnav.node();
-        if (StUnhex.only(node)) {
-            node.setTextContent(text);
-        } else {
-            node.replaceChild(
-                node.getOwnerDocument().createTextNode(text),
-                xnav.element("o").node()
-            );
-        }
-    }
-
-    /**
-     * Whether the byte payload is the element's only child element (i.e. no
-     * argument is applied to the literal).
-     * @param node The wrapper element
-     * @return True if there is at most one child element
-     */
-    private static boolean only(final Node node) {
         final NodeList children = node.getChildNodes();
-        int elements = 0;
-        for (int idx = 0; idx < children.getLength(); ++idx) {
-            if (children.item(idx).getNodeType() == Node.ELEMENT_NODE) {
-                elements += 1;
+        for (int idx = children.getLength() - 1; idx >= 0; --idx) {
+            final Node child = children.item(idx);
+            if (child.getNodeType() == Node.TEXT_NODE) {
+                node.removeChild(child);
             }
         }
-        return elements <= 1;
+        node.replaceChild(
+            node.getOwnerDocument().createTextNode(text),
+            xnav.element("o").node()
+        );
     }
 
     /**
