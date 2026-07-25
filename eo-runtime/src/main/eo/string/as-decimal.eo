@@ -22,10 +22,7 @@
       concat.
         digits q
         as-char
-          plus.
-            floor.
-              n.minus
-                q.times 10
+          (n.minus (q.times 10)).floor.plus
             48
     floor. > q
       n.div 10

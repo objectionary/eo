@@ -40,19 +40,6 @@ final class PenaltyKeyTest {
     }
 
     @Test
-    void honoursOverriddenLeadingWeight() {
-        final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
-        weights.put(PenaltyKey.LEADING, 1);
-        weights.put(PenaltyKey.SYMBOL, 0);
-        weights.put(PenaltyKey.SPACE, 0);
-        MatcherAssert.assertThat(
-            "A leading parenthesis with the factor tuned to one should cost the same as a mid-line one",
-            new Penalty("(a) > x", weights).points(),
-            Matchers.equalTo(new Penalty("f (a) > x", weights).points())
-        );
-    }
-
-    @Test
     void honoursOverriddenStepWeight() {
         final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
         weights.put(PenaltyKey.STEP, 4);

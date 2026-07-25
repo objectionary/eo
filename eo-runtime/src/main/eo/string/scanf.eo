@@ -147,8 +147,7 @@
           next
         rec > next
           index.plus 1
-          plus.
-            acc.times 10
+          (acc.times 10).plus
             minus.
               as-ascii
                 slice text index 1

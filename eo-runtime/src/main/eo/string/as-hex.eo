@@ -25,9 +25,7 @@
         if.
           index.eq 0
           pair
-          concat.
-            acc.concat "-".as-bytes
-            pair
+          (acc.concat "-".as-bytes).concat pair
     as-ascii > bval
       bts.slice index 1
     concat. > pair
@@ -36,10 +34,7 @@
           bval.div 16
       hex-digit
         bval.minus
-          times.
-            floor.
-              bval.div 16
-            16
+          (bval.div 16).floor.times 16
   | > @
     0
     --

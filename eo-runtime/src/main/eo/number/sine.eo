@@ -20,11 +20,8 @@
     1.minus
       times.
         squared.div
-          times.
-            depth.times 2
-            plus.
-              depth.times 2
-              1
+          (depth.times 2).times
+            (depth.times 2).plus 1
         factor
           depth.plus 1
   arg.minus > reduced
@@ -48,13 +45,9 @@
         1000
     1
 
-  ++> tests-sine-of-nan-is-nan
-    is-nan. > @
-      sine nan
+  (sine nan).is-nan ++> tests-sine-of-nan-is-nan
 
-  ++> tests-sine-of-negative-infinity-is-nan
-    is-nan. > @
-      sine ninf
+  (sine ninf).is-nan ++> tests-sine-of-negative-infinity-is-nan
 
   lt. ++> tests-sine-of-negative-pi-halves-is-minus-one
     abs
@@ -92,9 +85,7 @@
         500
     1
 
-  ++> tests-sine-of-positive-infinity-is-nan
-    is-nan. > @
-      sine pinf
+  (sine pinf).is-nan ++> tests-sine-of-positive-infinity-is-nan
 
   lt. ++> tests-sine-of-seventeen-radians
     abs
@@ -110,9 +101,7 @@
       minus.
         times.
           sine
-            div.
-              pi.times 3
-              2
+            (pi.times 3).div 2
           1000
         -1000
     1
@@ -134,8 +123,7 @@
       minus.
         times.
           sine
-            plus.
-              pi.times 10
+            (pi.times 10).plus
               pi.div 6
           1000
         500

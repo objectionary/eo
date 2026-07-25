@@ -22,6 +22,5 @@ printed: |
       3
       4
     width.times height > [width height] > rectangle
-    plus. > total
-      rectangle 3 4
+    (rectangle 3 4).plus > total
       rectangle 1 2
