@@ -31,7 +31,9 @@
         next-line
         first.if
           buffer.concat line
-          (buffer.concat separator).concat line
+          concat.
+            buffer.concat separator
+            line
         false
     | > @
       next-line
@@ -49,7 +51,8 @@
         or.
           char.eq --
           or.
-            (char.eq "\r").and
+            and.
+              char.eq "\r"
               next.as-bytes.eq "\n"
             char.eq "\n"
         string buffer

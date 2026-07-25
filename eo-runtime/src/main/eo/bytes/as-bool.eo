@@ -11,4 +11,6 @@
   ? >> bts
   bts.eq 01- > @
 
-  (01-.as-bool.eq 00-.as-bool).not ++> tests-convertible-to-bool
+  ++> tests-convertible-to-bool
+    not. > @
+      01-.as-bool.eq 00-.as-bool

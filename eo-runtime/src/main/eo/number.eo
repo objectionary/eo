@@ -64,9 +64,11 @@
       false
       or.
         and.
-          (xbts.eq pzero).or
+          or.
+            xbts.eq pzero
             xbts.eq nzero
-          (bts.eq pzero).or
+          or.
+            bts.eq pzero
             bts.eq nzero
         bts.eq xbts
     as-bytes > bts!
@@ -176,16 +178,25 @@
                   and.
                     and.
                       and.
-                        ((0.eq nan).eq false).and
-                          (0.eq pinf).eq false
-                        (0.eq ninf).eq false
-                      (42.5.eq nan).eq false
-                    (42.5.eq pinf).eq false
-                  (42.5.eq ninf).eq false
-                (0.eq nan).eq false
-              (0.eq pinf).eq false
-            (0.eq ninf).eq false
-          (42.5.eq nan).eq false
+                        and.
+                          eq. (0.eq nan) false
+                          eq. (0.eq pinf) false
+                        eq. (0.eq ninf) false
+                      eq. (42.5.eq nan) false
+                    eq. (42.5.eq pinf) false
+                  eq. (42.5.eq ninf) false
+                eq.
+                  0.eq nan
+                  false
+              eq.
+                0.eq pinf
+                false
+            eq.
+              0.eq ninf
+              false
+          eq.
+            42.5.eq nan
+            false
         eq.
           42.5.eq pinf
           false
@@ -209,10 +220,18 @@
         and.
           and.
             and.
-              (0.eq nan).eq false
-              (0.eq pinf).eq false
-            (0.eq ninf).eq false
-          (42.eq nan).eq false
+              eq.
+                0.eq nan
+                false
+              eq.
+                0.eq pinf
+                false
+            eq.
+              0.eq ninf
+              false
+          eq.
+            42.eq nan
+            false
         eq.
           42.eq pinf
           false
@@ -251,9 +270,13 @@
     as-bytes.
       0.div 0
 
-  (nan.eq nan).not ++> tests-nan-not-eq-nan
+  ++> tests-nan-not-eq-nan
+    not. > @
+      nan.eq nan
 
-  (nan.eq 42).not ++> tests-nan-not-eq-number
+  ++> tests-nan-not-eq-number
+    not. > @
+      nan.eq 42
 
   eq. ++> tests-nan-not-gt-nan
     nan.gt nan
@@ -316,18 +339,28 @@
 
   ninf.eq ninf ++> tests-negative-infinity-eq-negative-infinity
 
-  (ninf.gt ninf).not ++> tests-negative-infinity-gt-negative-infinity
+  ++> tests-negative-infinity-gt-negative-infinity
+    not. > @
+      ninf.gt ninf
 
   ninf.eq ++> tests-negative-infinity-is-equal-to-one-div-zero
     -1.div 0
 
-  (ninf.eq 42.5).not ++> tests-negative-infinity-not-eq-float
+  ++> tests-negative-infinity-not-eq-float
+    not. > @
+      ninf.eq 42.5
 
-  (ninf.eq 42).not ++> tests-negative-infinity-not-eq-int
+  ++> tests-negative-infinity-not-eq-int
+    not. > @
+      ninf.eq 42
 
-  (ninf.eq nan).not ++> tests-negative-infinity-not-eq-nan
+  ++> tests-negative-infinity-not-eq-nan
+    not. > @
+      ninf.eq nan
 
-  (ninf.eq pinf).not ++> tests-negative-infinity-not-eq-positive-infinity
+  ++> tests-negative-infinity-not-eq-positive-infinity
+    not. > @
+      ninf.eq pinf
 
   eq. ++> tests-negative-infinity-not-gt-float
     ninf.gt 42.5
@@ -507,20 +540,32 @@
 
   pinf.gt ninf ++> tests-positive-infinity-gt-negative-infinity
 
-  (pinf.gt pinf).not ++> tests-positive-infinity-gt-positive-infinity
+  ++> tests-positive-infinity-gt-positive-infinity
+    not. > @
+      pinf.gt pinf
 
   pinf.eq ++> tests-positive-infinity-is-equal-to-one-div-zero
     1.div 0
 
-  (pinf.eq 42.5).not ++> tests-positive-infinity-not-eq-float
+  ++> tests-positive-infinity-not-eq-float
+    not. > @
+      pinf.eq 42.5
 
-  (pinf.eq 42).not ++> tests-positive-infinity-not-eq-int
+  ++> tests-positive-infinity-not-eq-int
+    not. > @
+      pinf.eq 42
 
-  (pinf.eq nan).not ++> tests-positive-infinity-not-eq-nan
+  ++> tests-positive-infinity-not-eq-nan
+    not. > @
+      pinf.eq nan
 
-  (pinf.eq ninf).not ++> tests-positive-infinity-not-eq-negative-infinity
+  ++> tests-positive-infinity-not-eq-negative-infinity
+    not. > @
+      pinf.eq ninf
 
-  (pinf.gt nan).not ++> tests-positive-infinity-not-gt-nan
+  ++> tests-positive-infinity-not-gt-nan
+    not. > @
+      pinf.gt nan
 
   eq. ++> tests-positive-infinity-plus-nan
     as-bytes.
