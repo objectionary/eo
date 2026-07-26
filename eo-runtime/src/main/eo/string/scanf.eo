@@ -83,7 +83,9 @@
         fraction
     [text] > as-integer
       if. > @
-        digits.length.gt 19
+        or.
+          digits.length.gt 19
+          folded.gt 9223372036854775807
         overflow
         signed
       signed-prefix.if > digits
@@ -102,7 +104,7 @@
         "-"
       overflow-message > overflow
       T > overflow-message
-        "The number doesn't fit into long range for the '%d' conversion"
+        "The number doesn't fit into long range for the '%%d' conversion"
       negative.if negated folded > signed
       negative.or > signed-prefix
         eq.
