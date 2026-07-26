@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The companion to `based-multi-referenced-handle` (#5944) where no reference can
+# host the kept handle as a moniker: both uses reach it through a multi-segment
+# chain, which the moniker fold leaves expanded. The shared `a.b >> name` handle
+# then stays standing where it is and every reference reads back through its
+# readable handle, never as a synthetic "vL_P" placeholder.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [a] > foo
+    b.as-i32.neg > x
+    b.as-i32.plus 1 > y
+    a.as-u16 >> b
+
+printed: |
+  [a] > foo
+    a.as-u16 >> b
+    b.as-i32.neg > x
+    b.as-i32.plus 1 > y
