@@ -17,69 +17,12 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
 +unlint mandatory-package
 
 [as-bytes] > string
   as-bytes > @
-  [] > length
-    if. > @
-      size.eq 0
-      0
-      reclen 0 0
-    [index accum] >> reclen
-      if. > @
-        index.eq size
-        accum
-        if.
-          eq.
-            byte.and p1
-            r1
-          inclen index 1 accum
-          if.
-            eq.
-              byte.and p2
-              r2
-            inclen index 2 accum
-            if.
-              eq.
-                byte.and p3
-                r3
-              inclen index 3 accum
-              if.
-                eq.
-                  byte.and p4
-                  r4
-                inclen index 4 accum
-                T
-                  "Unknown byte format (%x), can't recognize character".printf
-                    * byte
-      as-bytes.slice index 1 > byte
-    if. > [index csize len] > inclen
-      gt.
-        index.plus csize
-        size
-      T
-        "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
-          * csize index as-bytes
-      reclen
-        index.plus csize
-        len.plus 1
-    80- > p1
-    E0- > p2
-    F0- > p3
-    F8- > p4
-    00- > r1
-    C0- > r2
-    p2 > r3
-    p3 > r4
-    as-bytes.size > size
 
   D0-B4-D1-80-D1-83-D0-B3.eq "друг" ++> tests-bytes-equal-to-string
-
-  eq. ++> tests-calculates-length-of-spaces-only
-    " ".length
-    1
 
   ++> tests-compares-string-with-nan
     not. > @
@@ -152,24 +95,6 @@
     "a\n b\n  c"
     "a\n b\n  c"
 
-  ++> tests-reads-the-length-with-n2-byte-characters
-    and. > @
-      str.length.eq 12
-      str.as-bytes.size.eq 16
-    "Hello, друг!" > str
-
-  ++> tests-reads-the-length-with-n3-byte-characters
-    and. > @
-      str.length.eq 16
-      str.as-bytes.size.eq 18
-    "The अ devanagari" > str
-
-  ++> tests-reads-the-length-with-n4-byte-characters
-    and. > @
-      str.length.eq 11
-      str.as-bytes.size.eq 14
-    "The 😀 smile" > str
-
   "друг".eq D0-B4-D1-80-D1-83-D0-B3 ++> tests-string-equals-to-bytes
 
   eq. ++> tests-supports-escape-sequences
@@ -201,7 +126,3 @@
     78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27
 
   "\b\f\n\r\t⟦".eq 08-0C-0A-0D-09-E2-9F-A6 ++> tests-unescapes-symbols
-
-  --> on-taking-length-of-incomplete-n4-byte-character
-    length. > @
-      string F0-9F-98
