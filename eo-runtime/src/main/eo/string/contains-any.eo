@@ -13,10 +13,9 @@
   tuple.reduced > @
     tuple.mapped
       substrings
-      contains txt x > [x] >>
+      contains text! x > [x] >>
     false
     x.or a > [a x]
-  text > txt!
 
   ++> test-contains-any-without-substrings
     not. > @

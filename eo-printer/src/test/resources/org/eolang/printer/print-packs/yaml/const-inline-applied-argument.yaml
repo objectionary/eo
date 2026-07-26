@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# An inline const argument that applies arguments of its own is parenthesised,
+# and the `!` marker belongs outside the brackets. Inside them it binds to the
+# last argument instead — `(inc m!)` reads as `inc (m!)` — shrinking the const
+# from the whole `inc m` application down to `m` and silently changing the
+# program (#5902).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [m] > foo
+    42.plus (inc m)! > x
+
+printed: |
+  [m] > foo
+    42.plus (inc m)! > x

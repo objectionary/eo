@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A single-referenced const file-local handle whose value is an application
+# (`inc m >> n!`, #5817) folds onto its only use site as an anonymous inline
+# const argument (#5821), where it must be spelled `(inc m)!`. Printed as
+# `(inc m!)` the `!` binds to `m` alone, so the side-effecting `inc m` stops
+# being a const and runs once per read of the twice-read `num` (#5902).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [m] > foo
+    m.put > @
+      num.times num
+    inc m >> n!
+    number n > num
+
+printed: |
+  [m] > foo
+    m.put > @
+      num.times num
+    number (inc m)! > num

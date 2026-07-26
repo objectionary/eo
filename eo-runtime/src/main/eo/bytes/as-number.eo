@@ -9,29 +9,29 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[bts cant-convert] > as-number
+[b cant-convert] > as-number
   if. > @
-    bts.size.eq 8
+    b.size.eq 8
     if.
       is-nan.
-        number bts
+        number b
       nan
       if.
-        bts.eq pinf.as-bytes
+        b.eq pinf.as-bytes
         pinf
         if.
-          bts.eq ninf.as-bytes
+          b.eq ninf.as-bytes
           ninf
-          number bts
+          number b
     cant-convert
       "Can't convert non 8 length bytes to a number, bytes are %x".printf
-        * bts
+        * b
 
   FF-F8-00-00-00-00-00-00.as-number.is-nan ++> tests-non-canonical-nan-bytes-route-to-nan
 
   eq. ++> tests-wrong-size-as-number-returns-provided-fallback
     "recovered"
     01-01-01-01.as-number
-      "recovered" > [msg]
+      "recovered" > [message]
 
   01-01-01-01.as-number --> on-bytes-of-wrong-size-as-number

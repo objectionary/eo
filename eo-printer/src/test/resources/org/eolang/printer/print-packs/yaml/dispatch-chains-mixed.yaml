@@ -18,9 +18,11 @@ origin: |
 
 printed: |
   [a b c] > math
-    (a.plus b).div > mean
+    div. > mean
+      a.plus b
       c
-    (a.gt b).and > sorted
+    and. > sorted
+      a.gt b
       b.gt c
     a.plus b > sum
     a.plus > weighted

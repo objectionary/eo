@@ -9,10 +9,7 @@
 
 [n] > is-nan
   if. > @
-    and.
-      bts.size.gt 7
-      not.
-        bts.size.gt 8
+    bts.size.eq 8
     and.
       exp.eq 7F-F0-00-00-00-00-00-00
       not.
@@ -70,9 +67,13 @@
 
   ninf.is-nan.not ++> tests-negative-infinity-is-not-nan
 
-  (number FF-F8-00-00-00-00-00-00).is-nan ++> tests-non-canonical-nan-bytes-is-nan
+  ++> tests-non-canonical-nan-bytes-is-nan
+    is-nan. > @
+      number FF-F8-00-00-00-00-00-00
 
-  (number nan.as-bytes).is-nan ++> tests-number-with-nan-bytes-is-nan
+  ++> tests-number-with-nan-bytes-is-nan
+    is-nan. > @
+      number nan.as-bytes
 
   pinf.is-nan.not ++> tests-positive-infinity-is-not-nan
 

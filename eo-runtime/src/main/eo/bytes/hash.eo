@@ -11,37 +11,42 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > hash
-  ? >> input
-  input.as-bytes > bts!
-  bts.size > size!
-  if. > [acc index] > rec-hash-code
-    index.eq size
-    acc.as-number
-    rec-hash-code
-      plus.
-        31.as-i64.times acc
-        as-i64.
-          00-00-00-00-00-00-00.concat
-            bts.slice index 1
-      as-number.
-        index.plus 1
+[input] > hash
+  input.as-bytes >> b!
+  [acc index] >> rec-hash-code
+    if. > @
+      index.eq b.size!
+      acc.as-number
+      rec-hash-code
+        plus.
+          31.as-i64.times acc
+          as-i64.
+            00-00-00-00-00-00-00.concat
+              b.slice index 1
+        as-number.
+          index.plus 1
   | > @
     0
     0
 
   and. ++> tests-hash-code-bools-is-number
-    (hash true).as-bytes.size.eq
+    eq.
+      size.
+        as-bytes.
+          hash true
       8
-    (hash false).as-bytes.size.eq
+    eq.
+      size.
+        as-bytes.
+          hash false
       8
 
   ++> tests-hash-code-int-is-int
     1.eq > @
       div.
+        number
+          hash 42 >> inthash!
         number inthash
-        number inthash
-    hash 42 > inthash!
 
   ++> tests-hash-codes-of-the-same-nums-are-equal
     eq. > @
@@ -68,9 +73,9 @@
   ++> tests-hash-code-string-is-int
     1.eq > @
       div.
+        number
+          hash "hello" >> strhash!
         number strhash
-        number strhash
-    hash "hello" > strhash!
 
   eq. ++> tests-hash-codes-of-the-same-strings-are-equal
     hash "Hello"
@@ -91,18 +96,18 @@
   ++> tests-hash-code-abstract-object-is-int
     1.eq > @
       div.
-        number objhash
+        number
+          hash >> objhash!
+            obj 42
         number objhash
     x > [x] > obj
-    hash > objhash!
-      obj 42
 
   ++> tests-hash-codes-of-the-same-abstract-objects-are-equal
     eq. > @
-      hash val
-      hash val
+      hash value
+      hash value
     x > [x] > obj
-    obj 42 > val
+    obj 42 > value
 
   ++> tests-hash-codes-of-different-abstract-objects-are-not-equal
     not. > @
@@ -116,9 +121,9 @@
   ++> tests-hash-code-float-is-int
     1.eq > @
       div.
+        number
+          hash 42.42 >> flthash!
         number flthash
-        number flthash
-    hash 42.42 > flthash!
 
   ++> tests-hash-codes-of-the-same-floats-are-equal
     eq. > @
@@ -128,9 +133,9 @@
 
   ++> tests-hash-codes-of-the-same-bigvals-are-equal
     eq. > @
+      hash
+        4.242e43 >> bigval!
       hash bigval
-      hash bigval
-    4.242e43 > bigval!
 
   ++> tests-hash-codes-of-different-floats-are-not-equal
     not. > @
