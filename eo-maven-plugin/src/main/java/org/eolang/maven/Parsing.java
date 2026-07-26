@@ -169,7 +169,7 @@ final class Parsing implements Step {
      * @param digest Digest of the set of known objects (part of the cache key)
      * @return Amount of parsed tojos
      */
-    int parsed(
+    private int parsed(
         final Collection<TjForeign> sources,
         final UnaryOperator<XML> pipeline,
         final String digest
@@ -182,14 +182,13 @@ final class Parsing implements Step {
 
     /**
      * Parse EO file to XML.
-     * Package-private, so that a test can race threads on one instance.
      * @param tojo The tojo
      * @param pipeline The canonical parsing transform to apply
      * @param digest Digest of the set of known objects (part of the cache key)
      * @return Amount of parsed tojos
      * @throws Exception If fails
      */
-    int parsed(
+    private int parsed(
         final TjForeign tojo, final UnaryOperator<XML> pipeline, final String digest
     ) throws Exception {
         final Path source = tojo.source();
