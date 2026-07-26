@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# The only-phi "copy" formation from malloc.eo: its phi applies regular
+# The only-phi "copy" formation from chunk.eo: its phi applies regular
 # arguments and its flat one-liner
 # "write target (read source length) > [source target length] > copy" fits
 # under 80 columns, yet the compact hybrid is strictly cheaper — it drops the
@@ -25,7 +25,7 @@ origin: |
   +package org.eolang
 
   [] > examples
-    [id] > allocated
+    [id] > chunk
       [source target length] > copy
         write > @
           target
@@ -35,7 +35,7 @@ printed: |
   +package org.eolang
 
   [] > examples
-    [id] > allocated
+    [id] > chunk
       write > [source target length] > copy
         target
         read source length

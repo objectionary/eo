@@ -12,9 +12,9 @@ penalties:
 origin: |
   +package org.eolang
 
-  [size] > resized /Q.malloc.of.allocated
+  [size] > resized /Q.string.regex.pattern
 
 printed: |
   +package org.eolang
 
-  [size] > resized /Q.malloc.of.allocated
+  [size] > resized /Q.string.regex.pattern
