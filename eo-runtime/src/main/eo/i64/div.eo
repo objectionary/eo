@@ -32,22 +32,22 @@
           as-bytes. >> next-rem!
             (i64 shifted).plus
               i64 bottom-negated
-          next-quot
+          quot.or >>!
+            bit index
         looped
           index.minus 1
           (remainder.left 1).or >> shifted!
             (top.right index).and 00-00-00-00-00-00-00-01
           quot
-    and. > both-negative!
-      shifted.and 80-00-00-00-00-00-00-00 >> shifted-sign!
-      bottom-negated.and 80-00-00-00-00-00-00-00 >> divisor-sign!
-    both-negative.or mixed-signs-with-nonneg-trial > carry-out!
-    signs-differ.and trial-nonnegative > mixed-signs-with-nonneg-trial!
-    quot.or > next-quot!
-      bit index
-    shifted-sign.xor divisor-sign > signs-differ!
-    next-rem.xor 80-00-00-00-00-00-00-00 > trial-nonnegative!
-    carry-out.eq 80-00-00-00-00-00-00-00 > unsigned-gte
+    eq. > unsigned-gte
+      or. >> carry-out!
+        and. >> both-negative!
+          shifted.and 80-00-00-00-00-00-00-00 >> shifted-sign!
+          bottom-negated.and 80-00-00-00-00-00-00-00 >> divisor-sign!
+        and. >> mixed-signs-with-nonneg-trial!
+          shifted-sign.xor divisor-sign >> signs-differ!
+          next-rem.xor 80-00-00-00-00-00-00-00 >> trial-nonnegative!
+      80-00-00-00-00-00-00-00
   if. > [b] > magnitude
     eq.
       b.and 80-00-00-00-00-00-00-00
