@@ -26,8 +26,7 @@
     -1
     length.
       string
-        slice
-          txt
+        txt.slice
           0
           rec-index-of 0 >> found!
   minus. >> end!
@@ -41,10 +40,7 @@
         idx
         rec-index-of (idx.plus 1).as-number
     eq. > includes
-      slice
-        txt
-        idx
-        size
+      txt.slice idx size
       part
 
   eq. ++> tests-index-of-existed-substring-with-utf

@@ -14,7 +14,7 @@
         part.size >> size!
       txt.size >> length!
     eq.
-      slice
+      slice.
         text >> txt!
         minus.
           number length
