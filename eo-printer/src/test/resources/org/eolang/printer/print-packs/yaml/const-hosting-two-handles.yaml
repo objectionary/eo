@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The carry cluster of "i64.eo": a const handle whose value reaches two more of
+# them, one in its receiver and one in its argument. Both travel with
+# `both-negative` when it folds onto `φ` (#5918) — the receiver one as the
+# reversed `and.` dispatch's receiver, keeping its name, the argument one as the
+# anonymous inline const a single-use argument folds to (#5821). The receiver
+# carries a name of its own, so the two cannot share a line and the argument
+# lands on one of its own, where the bare `!` marker has no spelling: written
+# behind the arguments it marks the last one instead of the application. So it
+# takes the auto-name `>>!` instead, a name suffix the marker may ride
+# (R-3.10.4), which the parser floats back up to the same const (#5927).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [shifted bottom] > carry
+    and. >> both-negative!
+      shifted.and 80-00-00-00-00-00-00-00 >> shifted-sign!
+      bottom.and 80-00-00-00-00-00-00-00 >> divisor-sign!
+    both-negative.eq 00-00-00-00-00-00-00-00 > @
+
+printed: |
+  [shifted bottom] > carry
+    eq. > @
+      and. >> both-negative!
+        shifted.and 80-00-00-00-00-00-00-00 >> shifted-sign!
+        bottom.and >>!
+          80-00-00-00-00-00-00-00
+      00-00-00-00-00-00-00-00

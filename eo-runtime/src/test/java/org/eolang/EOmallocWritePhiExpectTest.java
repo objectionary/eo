@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test case verifying {@link Expect}-based error messages
  * raised by {@link EOchunk$EOwrite} and
- * the {@code malloc.of.@} atom when their integer attributes
+ * the {@code malloc.of} atom when their integer attributes
  * are invalid.
  * @since 0.51
  */
@@ -77,16 +77,12 @@ final class EOmallocWritePhiExpectTest {
                 ExAbstract.class,
                 () -> new Dataized(
                     new PhApplication(
-                        new EOmalloc$EOof$EOφ(),
-                        Phi.RHO,
-                        new PhApplication(
-                            new EOmallocWritePhiExpectTest.Dummy(),
-                            "size",
-                            new Data.ToPhi(true)
-                        )
+                        new EOmalloc$EOof(),
+                        "size",
+                        new Data.ToPhi(true)
                     )
                 ).take(),
-                "malloc.of.@ with non-numeric size must fail with a proper message"
+                "malloc.of with non-numeric size must fail with a proper message"
             ).getMessage(),
             Matchers.equalTo("the 'size' attribute must be a number")
         );
@@ -100,34 +96,26 @@ final class EOmallocWritePhiExpectTest {
                 ExAbstract.class,
                 () -> new Dataized(
                     new PhApplication(
-                        new EOmalloc$EOof$EOφ(),
-                        Phi.RHO,
-                        new PhApplication(
-                            new EOmallocWritePhiExpectTest.Dummy(),
-                            "size",
-                            new Data.ToPhi(-1)
-                        )
+                        new EOmalloc$EOof(),
+                        "size",
+                        new Data.ToPhi(-1)
                     )
                 ).take(),
-                "malloc.of.@ with negative size must fail with a proper message"
+                "malloc.of with negative size must fail with a proper message"
             ).getMessage(),
             Matchers.equalTo("the 'size' attribute (-1) must be greater or equal to zero")
         );
     }
 
     /**
-     * Minimal Phi with {@code id} and {@code size} attributes,
-     * used as a stand-in for the {@code allocated} parent in write
-     * tests and the {@code malloc.of} parent in {@code malloc.of.@} tests.
+     * Minimal Phi with an {@code id} attribute, used as a stand-in
+     * for the {@code chunk} parent in write tests.
      * @since 0.51
      */
     private static final class Dummy extends PhDefault {
 
         Dummy() {
-            super(new Attrs(
-                new Attr("id", new AtVoid("id")),
-                new Attr("size", new AtVoid("size"))
-            ));
+            super(new Attrs(new Attr("id", new AtVoid("id"))));
         }
     }
 }

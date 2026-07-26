@@ -54,7 +54,9 @@
 
   true.eq true ++> tests-compares-two-bools
 
-  (true.eq 42).not ++> tests-compares-two-different-bool-types
+  ++> tests-compares-two-different-bool-types
+    not. > @
+      true.eq 42
 
   ++> tests-compiles-correctly-with-long-duplicate-names
     true > @
@@ -202,7 +204,9 @@
         x.eq 42 > [] > @
     42 > x
 
-  (true.and false).not ++> tests-true-and-false-is-false
+  ++> tests-true-and-false-is-false
+    not. > @
+      true.and false
 
   true.as-bool ++> tests-true-as-bool
 

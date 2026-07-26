@@ -2,6 +2,11 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
+# The origin dispatches off a compound receiver in suffix form, which would
+# open the line with a group. With the default LEADING factor of 4 (issue
+# #5880) that line-leading `(` is charged four times as much, so the receiver
+# is broken out onto its own indented lines instead of standing at the head of
+# the line.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -14,4 +19,6 @@ origin: |
 
 printed: |
   [input] > input-length
-    (input.read 4096).read.^ > chunk
+    ^. > chunk
+      read.
+        input.read 4096

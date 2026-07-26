@@ -26,9 +26,9 @@
                 if.
                   userprofile.eq empty
                   "C:\\Windows"
-                  userprofile
-                temp
-              tmp
+                  getenv "USERPROFILE" >> userprofile!
+                getenv "TEMP" >> temp!
+              getenv "TMP" >> tmp!
             if.
               tmpdir.eq empty
               if.
@@ -38,16 +38,11 @@
                   if.
                     tempdir.eq empty
                     "/tmp"
-                    tempdir
+                    getenv "TEMPDIR" >> tempdir!
                   temp
                 tmp
-              tmpdir
+              getenv "TMPDIR" >> tmpdir!
           -- > empty
-          getenv "TEMP" > temp!
-          getenv "TEMPDIR" > tempdir!
-          getenv "TMP" > tmp!
-          getenv "TMPDIR" > tmpdir!
-          getenv "USERPROFILE" > userprofile!
 
   mktemp.tmpfile.exists ++> creates-tmpfile
 

@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The dispatch-referenced const handle (#5883, see
+# "const-dispatch-referenced-handle") over a plain datum rather than an
+# application: `5 >> c!`. "const-to-dataized" wraps every const in the same
+# `.as-bytes` over `Φ.dataized` shell regardless of what it wraps, so the datum
+# handle is kept whole and hosted onto its first bare reference exactly as the
+# application handle is, while the `c.gte 2` dispatch reference reads back as
+# `c.gte` instead of a synthetic "vL_P" placeholder.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [x] > foo
+    5 >> c!
+    c.gte 2 > a
+    42.plus c > b
+
+printed: |
+  [x] > foo
+    c.gte 2 > a
+    42.plus > b
+      5 >> c!

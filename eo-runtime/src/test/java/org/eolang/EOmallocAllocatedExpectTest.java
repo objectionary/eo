@@ -107,7 +107,7 @@ final class EOmallocAllocatedExpectTest {
 
     /**
      * Minimal Phi with a single {@code id} attribute used as a stand-in
-     * for the {@code allocated} parent in tests.
+     * for the {@code chunk} parent in tests.
      * @since 0.51
      */
     private static final class Dummy extends PhDefault {
