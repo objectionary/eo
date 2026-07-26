@@ -150,27 +150,50 @@ final class Resolving implements Step {
             dependency.getVersion()
         );
         final int total;
-        if (Files.exists(place) && !new Walk(place).isEmpty()) {
-            Logger.debug(
-                this,
-                "Dependency %s already resolved and exists in %[file]s",
-                dep, place
-            );
-            total = 0;
-        } else {
-            this.central.accept(dependency, place);
-            final int files = new Walk(place).size();
-            if (files == 0) {
-                Logger.warn(this, "No new files after unpacking of %s!", dep);
-            } else {
-                Logger.info(
-                    this, "Found %d new file(s) (%d MB) after unpacking of %s",
-                    files, Resolving.folderSizeInMb(place), dep
+        if (Files.exists(place)) {
+            if (new Walk(place).isEmpty()) {
+                Logger.debug(
+                    this,
+                    "Destination %[file]s exists but is empty, unpacking %s again",
+                    place, dep
                 );
+                total = this.unpacked(dep, dependency, place);
+            } else {
+                Logger.debug(
+                    this,
+                    "Dependency %s already resolved and exists in %[file]s",
+                    dep, place
+                );
+                total = 0;
             }
-            total = 1;
+        } else {
+            total = this.unpacked(dep, dependency, place);
         }
         return total;
+    }
+
+    /**
+     * Unpack a dependency into its destination and log the result.
+     * @param dep Dependency (for logging)
+     * @param dependency Resolved dependency coordinates
+     * @param place Destination directory
+     * @return Count resolved, always {@code 1}
+     * @throws IOException If fails
+     */
+    private int unpacked(
+        final Dep dep, final Dependency dependency, final Path place
+    ) throws IOException {
+        this.central.accept(dependency, place);
+        final int files = new Walk(place).size();
+        if (files == 0) {
+            Logger.warn(this, "No new files after unpacking of %s!", dep);
+        } else {
+            Logger.info(
+                this, "Found %d new file(s) (%d MB) after unpacking of %s",
+                files, Resolving.folderSizeInMb(place), dep
+            );
+        }
+        return 1;
     }
 
     /**
