@@ -374,8 +374,7 @@ final class Pretty {
             ).map(
                 inlined -> this.tab.repeat(indent).concat(inlined).concat(marker)
             );
-            final boolean applied = !decoratee.abstractt && !decoratee.children.isEmpty()
-                && !(decoratee.reversed && decoratee.children.size() <= 1);
+            final boolean applied = !decoratee.abstractt && !decoratee.children.isEmpty();
             final boolean unnamed = decoratee.children.stream()
                 .allMatch(Node::nameless);
             if (applied && unnamed) {
