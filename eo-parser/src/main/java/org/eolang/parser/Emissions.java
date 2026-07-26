@@ -295,7 +295,39 @@ final class Emissions {
                 idx = idx + 2;
             }
         }
+        Emissions.rejectLoneSurrogates(out);
         return out.toString();
+    }
+
+    /**
+     * Reject a decoded body containing a UTF-16 surrogate with no matching
+     * partner — a lone {@code \uD800}-{@code \uDFFF} escape has no UTF-8
+     * encoding and would otherwise be silently mangled later. A high
+     * surrogate immediately followed by a low surrogate is a valid pair
+     * (for example a supplementary character spelled as two {@code \\u}
+     * escapes) and is left untouched.
+     * @param text Decoded body to check
+     */
+    private static void rejectLoneSurrogates(final CharSequence text) {
+        int cursor = 0;
+        while (cursor < text.length()) {
+            final char glyph = text.charAt(cursor);
+            if (Character.isHighSurrogate(glyph)
+                && cursor + 1 < text.length()
+                && Character.isLowSurrogate(text.charAt(cursor + 1))) {
+                cursor = cursor + 2;
+                continue;
+            }
+            if (Character.isSurrogate(glyph)) {
+                throw new NumberFormatException(
+                    String.format(
+                        "unicode escape \\u%04X is a lone surrogate, not a valid standalone codepoint",
+                        (int) glyph
+                    )
+                );
+            }
+            cursor = cursor + 1;
+        }
     }
 
     /**

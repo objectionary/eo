@@ -39,7 +39,7 @@ package org.eolang.parser;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 final class Suffix {
 
     /**
@@ -360,8 +360,32 @@ final class Suffix {
                 "cactus emoji is reserved for auto-names; not allowed in identifiers"
             );
         }
+        Suffix.checkLowercaseStart(name, span, home, start);
         Suffix.endsClean(tail, idx, span, home);
         return new Suffix.Parsed(form, name, "", false);
+    }
+
+    /**
+     * Reject a name that doesn't start with a lowercase letter — unless
+     * it's the {@code @} void/phi marker, which callers that allow it
+     * (only {@link #named}; {@link #test} rejects {@code @} earlier and
+     * never reaches here with it) pass through untouched.
+     * @param name Extracted name; may be empty
+     * @param span Source span
+     * @param home Source column where the enclosing tail begins
+     * @param pos Source column of the name's first character
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static void checkLowercaseStart(
+        final String name, final Span span, final int home, final int pos
+    ) {
+        if (!name.isEmpty() && !"@".equals(name)
+            && (name.charAt(0) < 'a' || name.charAt(0) > 'z')) {
+            throw new ParseError(
+                span.line(), home + pos,
+                "name must start with a lowercase letter"
+            );
+        }
     }
 
     /**
@@ -449,6 +473,7 @@ final class Suffix {
                 "cactus emoji is reserved for auto-names; not allowed in identifiers"
             );
         }
+        Suffix.checkLowercaseStart(name, span, home, begin);
         boolean cnst = false;
         if (idx < tail.length() && tail.charAt(idx) == '!') {
             cnst = true;

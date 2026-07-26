@@ -67,9 +67,18 @@
     <xsl:sequence select="exists($target//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name])"/>
   </xsl:function>
   <!--
+  The references in the binding's owner that resolve to the auto-name "$name"
+  (references inside the binding's own subtree excluded). Mirrors
+  "inline-cactoos".
+  -->
+  <xsl:function name="eo:references" as="element()*">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="$target/..//o[contains(@base, concat('.', $auto)) and (eo:resolved-name(@base) = $name or starts-with(eo:resolved-name(@base), concat($name, '.'))) and not(ancestor-or-self::o[. is $target])]"/>
+  </xsl:function>
+  <!--
   Whether more than one reference in the binding's owner resolves to the
-  auto-name "$name" (references inside the binding's own subtree excluded).
-  Mirrors "inline-cactoos". A multi-referenced non-const abstract formation
+  auto-name "$name". A multi-referenced non-const abstract formation
   ("[] &gt;&gt; name", #5876) is never inlined by "inline-cactoos" (folding
   the whole formation into every use drops its shared handle name), so like a
   multi-referenced const handle its "@local" marker is kept here (below) and
@@ -78,7 +87,18 @@
   <xsl:function name="eo:multi-referenced" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="count($target/..//o[contains(@base, concat('.', $auto)) and (eo:resolved-name(@base) = $name or starts-with(eo:resolved-name(@base), concat($name, '.'))) and not(ancestor-or-self::o[. is $target])]) &gt; 1"/>
+    <xsl:sequence select="count(eo:references($target, $name)) &gt; 1"/>
+  </xsl:function>
+  <!--
+  Whether no reference in the binding's owner resolves to the auto-name
+  "$name". "inline-cactoos" keeps such a binding where it stands, having no use
+  site to fold it into (#5914), so it reaches "to-eo-tree" and must carry a
+  readable handle rather than print as an anonymous "&gt;&gt;".
+  -->
+  <xsl:function name="eo:unreferenced" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="empty(eo:references($target, $name))"/>
   </xsl:function>
   <!--
   Whether the auto-named abstract formation "$target" is applied by a reference
@@ -150,13 +170,15 @@
   Keep the marker on voids, on recursive formations, on a formation applied as
   a dispatch receiver (#5844) — so its relocated pipe predecessor prints its
   readable "&gt;&gt; name" handle — on a multi-referenced abstract formation
-  (#5876) — kept whole by "inline-cactoos" and hosted by "merge-monikers" — and
-  on the value of a multi-referenced dataized-const handle (see
+  (#5876) — kept whole by "inline-cactoos" and hosted by "merge-monikers" — on
+  an unreferenced binding of any shape (#5914) — kept where it stands by
+  "inline-cactoos", having no use site to fold into — and on the value of a
+  multi-referenced dataized-const handle (see
   "eo:const-handle") so "to-eo-tree" restores the readable "&gt;&gt; name"
   handle; drop it on the other non-void formations, whose handle is inlined
   away by "inline-cactoos".
   -->
-  <xsl:template match="o[not(@base=$eo:empty) and not(eo:recursive(., @name)) and not(eo:applied-receiver(., @name)) and not(eo:abstract(.) and eo:multi-referenced(., @name)) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
+  <xsl:template match="o[not(@base=$eo:empty) and not(eo:recursive(., @name)) and not(eo:applied-receiver(., @name)) and not(eo:abstract(.) and eo:multi-referenced(., @name)) and not(eo:unreferenced(., @name)) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
   <!--
   When a recursive "&gt;&gt; name" handle is restored, its cactus name is
   promoted to the visible "@name" and every reference is rewritten from the
