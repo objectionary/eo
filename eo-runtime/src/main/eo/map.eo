@@ -41,6 +41,8 @@
                     ^.kbts > kbts
                     tup.head.key > key
                     tup.head.value > value
+            bytes.hash >> hash!
+              tup.head.key.as-bytes >> kbts!
             if. > [ent] > has-key
               ent.length.eq 0
               false
@@ -49,8 +51,6 @@
                   ent.head.kbts.eq kbts
                 true
                 has-key ent.tail
-            bytes.hash kbts > hash!
-            tup.head.key.as-bytes > kbts!
             (rec-rebuild tup.tail).@ > prev
           | pairs
   [key value] > entry
@@ -74,8 +74,8 @@
                 not-found
           (rec-key-search tup.tail).@ > prev
         | entries
-      bytes.hash kbts > hash!
-      key.as-bytes > kbts!
+      bytes.hash >> hash!
+        key.as-bytes >> kbts!
       [] > not-found
         false > exists
         cant-get > [cant-get] > get
@@ -103,8 +103,8 @@
             ^.kbts > kbts
             ^.key > key
             ^.value > value
-      bytes.hash kbts > hash!
-      key.as-bytes > kbts!
+      bytes.hash >> hash!
+        key.as-bytes >> kbts!
     [key] > without
       map.initialized > @
         tuple.filtered
@@ -113,8 +113,8 @@
             not. > @
               (hash.eq entry.hash).and
                 kbts.eq entry.kbts
-      bytes.hash kbts > hash!
-      key.as-bytes > kbts!
+      bytes.hash >> hash!
+        key.as-bytes >> kbts!
 
   ++> tests-adds-key-colliding-with-existing-one
     and. > @

@@ -9,7 +9,10 @@
 
 [text delimiter] > split
   if. > @
-    len.eq 0
+    eq.
+      size. >> len!
+        text >> bts!
+      0
     *
     [accum start current] >> rec-split
       if. > @
@@ -43,9 +46,7 @@
       *
       0
       0
-  size. > len!
-    text >> bts!
-  size. > size!
+  size. >> size!
     delimiter >> delim!
 
   eq. ++> tests-splits-and-returns-strings
