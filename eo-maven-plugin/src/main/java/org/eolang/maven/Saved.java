@@ -7,7 +7,10 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import org.cactoos.Input;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
@@ -20,6 +23,14 @@ import org.cactoos.scalar.LengthOf;
 /**
  * Content saved to the file.
  * Returns path to the file
+ *
+ * <p>The content is streamed into a sibling temporary file first, then moved
+ * onto {@link #target} with {@link StandardCopyOption#ATOMIC_MOVE}. Streaming
+ * straight into {@link #target} would let a concurrent reader (or another
+ * writer racing on the same path) observe it truncated, mid-write (#5873):
+ * an atomic rename means a reader always sees either the previous complete
+ * file or the new one, never a partial one.</p>
+ *
  * @since 0.41.0
  */
 final class Saved implements Scalar<Path> {
@@ -82,14 +93,24 @@ final class Saved implements Scalar<Path> {
                     this.target.getParent()
                 );
             }
-            bytes = new IoChecked<>(
-                new LengthOf(
-                    new TeeInput(
-                        this.content,
-                        new OutputTo(this.target)
+            final Path tmp = Files.createTempFile(
+                this.target.getParent(),
+                this.target.getFileName().toString(),
+                ".tmp"
+            );
+            try {
+                bytes = new IoChecked<>(
+                    new LengthOf(
+                        new TeeInput(
+                            this.content,
+                            new OutputTo(tmp)
+                        )
                     )
-                )
-            ).value();
+                ).value();
+                Saved.moved(tmp, this.target);
+            } finally {
+                Files.deleteIfExists(tmp);
+            }
             Logger.debug(
                 this, "File %s saved (%d bytes)",
                 this.target, bytes
@@ -104,5 +125,24 @@ final class Saved implements Scalar<Path> {
             );
         }
         return this.target;
+    }
+
+    /**
+     * Move a temp file onto its target, atomically where the filesystem
+     * supports it, falling back to a plain (still complete-file, just not
+     * guaranteed atomic) move on filesystems that don't.
+     * @param tmp Temp file to move
+     * @param target Destination path
+     * @throws IOException If the move fails
+     */
+    private static void moved(final Path tmp, final Path target) throws IOException {
+        try {
+            Files.move(
+                tmp, target,
+                StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING
+            );
+        } catch (final AtomicMoveNotSupportedException ignored) {
+            Files.move(tmp, target, StandardCopyOption.REPLACE_EXISTING);
+        }
     }
 }
