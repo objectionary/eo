@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A const file-local handle read from a nested formation that binds an
+# attribute of the very same name (`^.kbts > kbts`, the shape "map.eo" copies
+# a key's bytes into an entry with). The nested reference cannot read the
+# handle by its bare name - inside that formation the name is the copy - so it
+# keeps the `^` climb it was written with and reads the handle through the
+# formation that owns it (#5917). Before the fix the climb was shed here as it
+# is for an unshadowed reference, printing a `kbts > kbts` that binds to
+# itself.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [tup] > foo
+    tup.as-bytes >> kbts!
+    bytes.hash kbts >> hash!
+    [] > pair
+      ^.kbts > kbts
+
+printed: |
+  [tup] > foo
+    bytes.hash >> hash!
+      tup.as-bytes >> kbts!
+    [] > pair
+      ^.kbts > kbts

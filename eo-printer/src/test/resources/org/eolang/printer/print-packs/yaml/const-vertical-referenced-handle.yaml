@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A single-referenced const file-local handle whose value reaches another
+# handle (`amount` below) is kept as its own named binding instead of folding
+# onto its use site as the anonymous `42.plus a!` argument (#5821). Hosting
+# `amount` back inside the folded value gives it a `>> amount!` line of its
+# own, so the value can only be laid out vertically, and the const marker then
+# lands right behind the head — `if.!`, which R-3.8.1 rejects. Reparsing that
+# used to drop the whole body and leave a bare `string` (#5910).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [a] > foo
+    string result > @
+    if. >> result!
+      0.eq
+        a >> amount!
+      --
+      amount.plus 1
+
+printed: |
+  [a] > foo
+    string > @
+      if. >> result!
+        0.eq
+          a >> amount!
+        --
+        amount.plus 1

@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A const file-local handle whose own receiver reaches a second one: `len` is
+# `bts.size`, and the parser hoists `bts` out to its own binding, leaving its
+# reference in `len`'s receiver, which "merge-monikers" turns back into the
+# receiver of a reversed `size.` dispatch (#5782). `len` then folds onto `φ` as
+# usual and takes `bts` along, nested inside it. Rebuilding the relocated `len`
+# attribute by attribute left that inner fold undone at the new site while
+# `bts` was dropped as merged, printing `v3_4.size >> len!` (#5918).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [text] > split
+    size. >> len!
+      text >> bts!
+    len.eq 0 > @
+
+printed: |
+  [text] > split
+    eq. > @
+      size. >> len!
+        text >> bts!
+      0

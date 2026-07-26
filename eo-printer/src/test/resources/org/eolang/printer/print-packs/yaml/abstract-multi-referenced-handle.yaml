@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A plain (non-const) `[] >> name` abstract formation (R-3.10.12) referenced
+# more than once must stay a single shared formation rather than be copied into
+# every use. Folding the whole formation into each reference drops its shared
+# handle name — `to-eo-tree` prints the anonymous copies as `[] >>` blocks — and
+# strands any sibling helper the formation reaches on a synthetic "vL_P" id, so
+# the printed source no longer parses back to the same object (#5876). Like the
+# multi-referenced const handle (`const-multi-referenced-handle`, #5828), the
+# formation and its `@local` handle are kept whole and hosted onto the first
+# reference as a moniker (`[q] >> helper` under the first `.plus`); the remaining
+# `helper.neg` dispatch reads back through the readable handle rather than a
+# `vL_P` placeholder.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [a] > foo
+    42.plus helper > x
+    helper.neg > y
+    [q] >> helper
+      q.plus 1 > @
+
+printed: |
+  [a] > foo
+    42.plus > x
+      q.plus 1 > [q] >> helper
+    helper.neg > y

@@ -9,9 +9,9 @@
 
 [] > dead
   [buffer] > write
-    output-block > @
-    [] > output-block
+    [] >> output-block
       true > @
       output-block > [buffer] > write
+    | > @
 
   dead.write 01-02-03 ++> writes-bytes-to-nowhere

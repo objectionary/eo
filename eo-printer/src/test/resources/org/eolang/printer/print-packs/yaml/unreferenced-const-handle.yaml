@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The const counterpart of `unreferenced-based-handle`: a const cache
+# (`a >> b!`, R-3.10.12) that nothing reads. A single-referenced const folds
+# onto its only use as the anonymous `a!` argument (#5821) and a multi-referenced
+# one is kept and hosted as a moniker (#5828); with no reference at all there is
+# no use site either way, so the binding was dropped outright (#5914).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [b] > array
+    b > @
+    42 >> unused!
+
+printed: |
+  [b] > array
+    b > @
+    42 >> unused!

@@ -17,176 +17,37 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
 +unlint mandatory-package
 
 [as-bytes] > string
   as-bytes > @
-  [] > length
-    if. > @
-      size.eq 0
-      0
-      reclen 0 0
-    if. > [index csize len] > inclen
-      gt.
-        index.plus csize
-        size
-      T
-        "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
-          * csize index as-bytes
-      reclen
-        index.plus csize
-        len.plus 1
-    80- > p1
-    E0- > p2
-    F0- > p3
-    F8- > p4
-    00- > r1
-    C0- > r2
-    p2 > r3
-    p3 > r4
-    [index accum] > reclen
-      if. > @
-        index.eq size
-        accum
-        if.
-          (byte.and p1).eq r1
-          inclen index 1 accum
-          if.
-            (byte.and p2).eq r2
-            inclen index 2 accum
-            if.
-              (byte.and p3).eq r3
-              inclen index 3 accum
-              if.
-                (byte.and p4).eq r4
-                inclen index 4 accum
-                T
-                  "Unknown byte format (%x), can't recognize character".printf
-                    * byte
-      as-bytes.slice index 1 > byte
-    as-bytes.size > size
-  [start len] > slice
-    if. > @
-      nstart.lt 0
-      T
-        "Start index must be >= 0, but was %d".printf
-          * nstart
-      if.
-        nlen.lt 0
-        T
-          "Length to slice must be >= 0, but was %d".printf
-            * nlen
-        seq *
-          bstart
-          blen
-          if.
-            nlen.eq 0
-            ""
-            string
-              as-bytes.slice bstart blen
-    minus. > blen
-      recidx
-        number bstart
-        0
-        nlen
-        "Start index + length to slice (%d) is out of string bounds".printf
-          *
-            nstart.plus nlen
-      bstart
-    recidx > bstart!
-      0
-      0
-      nstart
-      "Start index (%d) is out of string bounds".printf
-        * nstart
-    nstart.plus nlen > end
-    if. > [index csize accum result cause] > increase
-      gt.
-        index.plus csize
-        size
-      T
-        "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
-          * csize index as-bytes
-      recidx
-        index.plus csize
-        accum.plus 1
-        result
-        cause
-    len > lbts!
-    number lbts > nlen
-    number sbts > nstart
-    80- > p1
-    E0- > p2
-    F0- > p3
-    F8- > p4
-    00- > r1
-    C0- > r2
-    p2 > r3
-    p3 > r4
-    [index accum result cause] > recidx
-      if. > @
-        accum.eq result
-        index
-        if.
-          index.eq size
-          T cause
-          if.
-            (byte.and p1).eq r1
-            increase
-              index
-              1
-              accum
-              result
-              cause
-            if.
-              (byte.and p2).eq r2
-              increase
-                index
-                2
-                accum
-                result
-                cause
-              if.
-                (byte.and p3).eq r3
-                increase index 3 accum result cause
-                if.
-                  (byte.and p4).eq r4
-                  increase index 4 accum result cause
-                  T
-                    "Unknown byte format (%x), can't recognize character".printf
-                      * byte
-      as-bytes.slice index 1 > byte
-    start > sbts!
-    as-bytes.size > size
 
   D0-B4-D1-80-D1-83-D0-B3.eq "друг" ++> tests-bytes-equal-to-string
 
-  eq. ++> tests-calculates-length-of-spaces-only
-    " ".length
-    1
+  ++> tests-compares-string-with-nan
+    not. > @
+      nan.eq "друг"
 
-  (nan.eq "друг").not ++> tests-compares-string-with-nan
-
-  (ninf.eq "друг").not ++> tests-compares-string-with-negative-infinity
+  ++> tests-compares-string-with-negative-infinity
+    not. > @
+      ninf.eq "друг"
 
   eq. ++> tests-compares-string-with-positive-infinity
     pinf.eq "друг"
     false
 
-  ("Hello".eq 42).not ++> tests-compares-two-different-string-types
+  ++> tests-compares-two-different-string-types
+    not. > @
+      "Hello".eq 42
 
-  ("Hello".eq "Good bye").not ++> tests-compares-two-different-strings
+  ++> tests-compares-two-different-strings
+    not. > @
+      "Hello".eq
+        "Good bye"
 
   eq. ++> tests-compares-two-strings
     "x".eq "x"
     true
-
-  eq. ++> tests-no-slice-string
-    "no slice".slice
-      0
-      0
-    ""
 
   "Ф".eq "Ф" ++> tests-one-symbol-string-compares
 
@@ -234,90 +95,6 @@
     "a\n b\n  c"
     "a\n b\n  c"
 
-  ++> tests-reads-the-length-with-n2-byte-characters
-    and. > @
-      str.length.eq 12
-      str.as-bytes.size.eq 16
-    "Hello, друг!" > str
-
-  ++> tests-reads-the-length-with-n3-byte-characters
-    and. > @
-      str.length.eq 16
-      str.as-bytes.size.eq 18
-    "The अ devanagari" > str
-
-  ++> tests-reads-the-length-with-n4-byte-characters
-    and. > @
-      str.length.eq 11
-      str.as-bytes.size.eq 14
-    "The 😀 smile" > str
-
-  eq. ++> tests-slice-at-end-with-zero-length
-    "hello".slice
-      5
-      0
-    ""
-
-  eq. ++> tests-slice-empty-string
-    "".slice
-      0
-      0
-    ""
-
-  eq. ++> tests-slice-escape-sequences-line-break
-    "\n".slice
-      0
-      "\n".length
-    "\n"
-
-  eq. ++> tests-slice-escape-sequences-unicode
-    "Ф".slice
-      0
-      "Ф".length
-    "Ф"
-
-  eq. ++> tests-slice-foreign-literals
-    "hello, 大家!".slice
-      7
-      1
-    "大"
-
-  eq. ++> tests-slice-from-start
-    "hello".slice
-      0
-      1
-    "h"
-
-  eq. ++> tests-slice-from-the-end
-    "hello".slice
-      4
-      1
-    "o"
-
-  eq. ++> tests-slice-in-the-middle
-    "hello".slice
-      2
-      3
-    "llo"
-
-  eq. ++> tests-slice-with-n2-byte-characters
-    "привет".slice
-      1
-      2
-    "ри"
-
-  eq. ++> tests-slice-with-n3-byte-characters
-    "The अ is अ".slice
-      1
-      6
-    "he अ i"
-
-  eq. ++> tests-slice-with-n4-byte-characters
-    "One 😀 and 😀 another".slice
-      3
-      8
-    " 😀 and 😀"
-
   "друг".eq D0-B4-D1-80-D1-83-D0-B3 ++> tests-string-equals-to-bytes
 
   eq. ++> tests-supports-escape-sequences
@@ -349,20 +126,3 @@
     78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27
 
   "\b\f\n\r\t⟦".eq 08-0C-0A-0D-09-E2-9F-A6 ++> tests-unescapes-symbols
-
-  slice. --> on-slicing-end-below-start
-    "some string"
-    2
-    -1
-
-  slice. --> on-slicing-end-greater-actual
-    "some string"
-    7
-    5
-
-  slice. --> on-slicing-start-below-zero
-    "some string"
-    -1
-    1
-
-  (string F0-9F-98).length --> on-taking-length-of-incomplete-n4-byte-character

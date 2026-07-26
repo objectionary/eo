@@ -115,11 +115,17 @@
 
   F1-20-5F-EC-B5-90-32.size.eq 7 ++> tests-counts-size-of-bytes
 
-  (-1.as-bytes.eq -1.as-bytes.not).not ++> tests-not-with-neg
+  ++> tests-not-with-neg
+    not. > @
+      -1.as-bytes.eq -1.as-bytes.not
 
-  (53.as-bytes.eq 53.as-bytes.not).not ++> tests-not-with-plus
+  ++> tests-not-with-plus
+    not. > @
+      53.as-bytes.eq 53.as-bytes.not
 
-  (0.as-bytes.eq 0.as-bytes.not).not ++> tests-not-with-zero
+  ++> tests-not-with-zero
+    not. > @
+      0.as-bytes.eq 0.as-bytes.not
 
   eq. ++> tests-or-neg-bytes-as-number-with-zero
     as-number.
@@ -167,7 +173,7 @@
     20-1F-EE-B5-90.slice
       3
       10
-      "recovered" > [msg]
+      "recovered" > [message]
 
   ++> tests-right-with-even-neg
     not. > @
@@ -215,7 +221,7 @@
     20-1F-EE-B5-90.slice
       2000000000
       2000000000
-      "recovered" > [msg]
+      "recovered" > [message]
 
   eq. ++> tests-takes-part-of-bytes
     20-1F-EE-B5-90.slice
