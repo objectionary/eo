@@ -91,29 +91,6 @@
                 *
         posix > raw
         0 > startup
-  [recv] > as-input
-    [size] > read
-      @. > @
-        read.
-          input-block --
-          size
-      [buffer] > input-block
-        buffer > @
-        [size] > read
-          seq * > @
-            chunk
-            input-block chunk
-          as-bytes. > chunk
-            recv size
-  [send] > as-output
-    [buffer] > write
-      @. > @
-        output-block.write buffer
-      [] > output-block
-        true > @
-        seq * > [buffer] > write
-          send buffer
-          output-block
   [sys] >> impl
     code. > addr
       sys.raw *1
@@ -219,8 +196,8 @@
           sys.cleanup
           result
     [descriptor] > scoped-socket
-      ^.^.as-input recv > as-input
-      ^.^.as-output send > as-output
+      socket.as-input recv > as-input
+      socket.as-output send > as-output
       [size cant-receive] > recv
         if. > @
           received.code.eq -1
