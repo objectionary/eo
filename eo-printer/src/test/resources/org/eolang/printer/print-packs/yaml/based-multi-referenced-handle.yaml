@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A based `>> name` handle (R-3.10.12) — its value a plain application, neither
+# an abstract formation nor a const — reached from more than one method dispatch.
+# Such a dispatch is never inlined by "inline-cactoos", so the binding outlives
+# it and "merge-monikers" hosts it onto the first dispatch as a reversed one.
+# The handle must keep its readable name there and every other reference must
+# read back through it: hosting the binding while dropping the name strands the
+# remaining references on a synthetic "vL_P" id that binds to nothing (#5944),
+# the based flavour of what #5876 fixed for formations and #5883 for consts.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [a] > foo
+    b.plus 1 > x
+    b.neg > y
+    a.as-i32 >> b
+
+printed: |
+  [a] > foo
+    plus. > x
+      a.as-i32 >> b
+      1
+    b.neg > y

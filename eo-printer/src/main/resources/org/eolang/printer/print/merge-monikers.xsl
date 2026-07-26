@@ -223,13 +223,31 @@
     <xsl:sequence select="string-join((if (eo:shadowed($ref, $binding)) then subsequence($segs, 1, $at - 1) else $eo:xi, string($binding/@local), subsequence($segs, $at + 1)), '.')"/>
   </xsl:function>
   <!--
-  The kept multi-referenced abstract handle binding (`[] &gt;&gt; name`, #5876)
-  a reference `$ref` resolves to but does NOT host (the binding folds onto its
-  first reference only, `eo:moniker-refs`). Any other reference — a named alias
+  Whether the readable "@local" handle of `$attr` still stands after the merge,
+  so a reference that does not host it may read back through it. An abstract
+  formation carries its "@name" and "@local" to wherever it lands, and a binding
+  no reference hosts stays where it is; a based handle (`a.b &gt;&gt; name`)
+  keeps them only when its host is a method dispatch, which rebuilds the binding
+  whole as the receiver of a reversed dispatch. A bare host inlines it
+  anonymously instead (#5810), leaving no name for anyone else to read.
+  -->
+  <xsl:function name="eo:handle-survives" as="xs:boolean">
+    <xsl:param name="attr" as="element()"/>
+    <xsl:variable name="host" select="eo:moniker-refs($attr)[1]"/>
+    <xsl:sequence select="eo:abstract($attr) or empty($host) or eo:dispatch-seg($host) != ''"/>
+  </xsl:function>
+  <!--
+  The kept multi-referenced handle binding a reference `$ref` resolves to but does
+  NOT host (the binding folds onto its first reference only,
+  `eo:moniker-refs`). Any other reference — a named alias
   `name &gt; a` or a further `name.seg` dispatch that the moniker fold leaves
   in place — keeps the readable "@local" handle in place of the obfuscated
   cactus name, so it reads back as `name` (or `name.seg`) rather than a
-  synthetic "vL_P" placeholder, the abstract mirror of `eo:kept-const-ref`. The
+  synthetic "vL_P" placeholder, the non-const mirror of `eo:kept-const-ref`
+  (which covers the const handles this one leaves out). Both shapes of handle
+  reach here: an abstract formation kept whole because it is shared (#5876),
+  and a based handle (`a.b &gt;&gt; name`) kept because a method dispatch
+  reference reaches it, which "inline-cactoos" never inlines (#5944). The
   reference is matched by carrying the binding's cactus "@name" as one of its
   base segments; the binding's own subtree is excluded. As with the const
   handle, the reference need not live in the binding's own scope: two mutually
@@ -240,7 +258,7 @@
   -->
   <xsl:function name="eo:kept-local-ref" as="element()*">
     <xsl:param name="ref" as="element()"/>
-    <xsl:variable name="candidates" select="$ref/ancestor::o[eo:abstract(.)]/o[eo:moniker-binding(.) and eo:abstract(.) and exists(@local) and (some $seg in tokenize($ref/@base, '\.') satisfies $seg = @name)]"/>
+    <xsl:variable name="candidates" select="$ref/ancestor::o[eo:abstract(.)]/o[eo:moniker-binding(.) and not(eo:const-handle(.)) and exists(@local) and eo:handle-survives(.) and (some $seg in tokenize($ref/@base, '\.') satisfies $seg = @name)]"/>
     <xsl:variable name="binding" select="$candidates[last()]"/>
     <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and not(eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
   </xsl:function>
@@ -370,10 +388,11 @@
     <xsl:attribute name="base" select="eo:handle-base(.., eo:kept-const-ref(..))"/>
   </xsl:template>
   <!--
-  Rewrite a non-hosting reference to a kept multi-referenced abstract handle
-  (`[] &gt;&gt; name`, #5876) from the obfuscated cactus name back to the
+  Rewrite a non-hosting reference to a kept handle — an abstract formation
+  (`[] &gt;&gt; name`, #5876) or a based one (`a.b &gt;&gt; name`, #5944) — from
+  the obfuscated cactus name back to the
   readable "@local" handle, so it reads as `name` (or `name.seg`) instead of a
-  synthetic "vL_P" placeholder, the abstract mirror of the const rewrite above.
+  synthetic "vL_P" placeholder, the non-const mirror of the const rewrite above.
   The single hosting reference is rebuilt from the binding and never reaches
   this template (`eo:kept-local-ref` excludes it).
   -->
