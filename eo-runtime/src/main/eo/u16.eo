@@ -17,39 +17,36 @@
   as-i32.as-number > as-number
   [x cant-divide] > div
     if. > @
-      other.eq zero
+      eq.
+        x.as-u16 >> other
+        00-00
       cant-divide
         "Can't divide %d by u16 zero".printf
           * as-number
-      u16 quotient
-    x.as-u16 > other
-    slice. > quotient
-      as-bytes.
-        as-i32.div other.as-i32
-      2
-      2
-    00-00 > zero
+      u16
+        slice.
+          as-bytes.
+            as-i32.div other.as-i32
+          2
+          2
   as-i32.gt x.as-u16.as-i32 > [x] > gt
   as-i32.gte x.as-u16.as-i32 > [x] > gte
   as-i32.lt x.as-u16.as-i32 > [x] > lt
   as-i32.lte x.as-u16.as-i32 > [x] > lte
-  [x] > minus
-    u16 difference > @
-    slice. > difference
+  u16 > [x] > minus
+    slice.
       as-bytes.
         as-i32.minus x.as-u16.as-i32
       2
       2
-  [x] > plus
-    u16 sum > @
-    slice. > sum
+  u16 > [x] > plus
+    slice.
       as-bytes.
         as-i32.plus x.as-u16.as-i32
       2
       2
-  [x] > times
-    u16 product > @
-    slice. > product
+  u16 > [x] > times
+    slice.
       as-bytes.
         as-i32.times x.as-u16.as-i32
       2
