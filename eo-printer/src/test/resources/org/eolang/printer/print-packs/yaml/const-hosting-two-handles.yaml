@@ -6,7 +6,12 @@
 # them, one in its receiver and one in its argument. Both travel with
 # `both-negative` when it folds onto `φ` (#5918) — the receiver one as the
 # reversed `and.` dispatch's receiver, keeping its name, the argument one as the
-# anonymous inline const a single-use argument folds to (#5821).
+# anonymous inline const a single-use argument folds to (#5821). The receiver
+# carries a name of its own, so the two cannot share a line and the argument
+# lands on one of its own, where the bare `!` marker has no spelling: written
+# behind the arguments it marks the last one instead of the application. So it
+# takes the auto-name `>>!` instead, a name suffix the marker may ride
+# (R-3.10.4), which the parser floats back up to the same const (#5927).
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -26,5 +31,6 @@ printed: |
     eq. > @
       and. >> both-negative!
         shifted.and 80-00-00-00-00-00-00-00 >> shifted-sign!
-        bottom.and 80-00-00-00-00-00-00-00!
+        bottom.and >>!
+          80-00-00-00-00-00-00-00
       00-00-00-00-00-00-00-00

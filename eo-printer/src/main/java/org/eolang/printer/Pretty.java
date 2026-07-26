@@ -245,6 +245,15 @@ final class Pretty {
     /**
      * Render a node vertically: the head on this line, each argument
      * laid out on the lines below, indented one level deeper.
+     *
+     * <p>An argument that carries the bare {@code !} of an anonymous inline
+     * const (#5821) takes an auto-name here, through {@link Node#lined()}: the
+     * marker has no spelling on a line of its own, and this is the one place
+     * that puts an argument there. {@link #shaped} prefers the horizontal
+     * rendering whenever such an argument is present, so the auto-name appears
+     * only where no horizontal rendering exists at all — a sibling argument
+     * carrying a name of its own, say (#5927).</p>
+     *
      * @param node The node
      * @param indent The indentation level
      * @return The rendered block
@@ -257,7 +266,7 @@ final class Pretty {
             if (child.test) {
                 block.append('\n');
             }
-            block.append('\n').append(this.layout(child, indent + 1));
+            block.append('\n').append(this.layout(child.lined(), indent + 1));
         }
         return block.toString();
     }
