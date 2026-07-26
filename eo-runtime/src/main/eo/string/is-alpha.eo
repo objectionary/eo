@@ -13,6 +13,8 @@
     regex "/^[a-zA-Z]+$/"
     text
 
+  (is-alpha "").not ++> tests-checks-if-empty-text-is-not-alpha
+
   is-alpha "eEo" ++> tests-checks-if-simple-text-is-alpha
 
   (is-alpha "-w-").not ++> tests-checks-if-text-with-dashes-is-not-alpha
