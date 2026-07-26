@@ -239,6 +239,16 @@ final class SuffixTest {
     }
 
     @Test
+    void detectsConstMarkerAfterHandle() {
+        final Suffix suffix = new Suffix(" >> fibo!", new Span("[] >> fibo!", 1), 2);
+        MatcherAssert.assertThat(
+            "`>> name!` must report the const marker and the handle (#5817)",
+            suffix.constant() && "fibo".equals(suffix.handle()),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
     void rejectsTrailingGarbageAfterPlusGreaterSuffix() {
         final Span span = new Span("[] +> foo garbage", 1);
         Assertions.assertThrows(
@@ -305,6 +315,52 @@ final class SuffixTest {
                 new Span("[] +> a.b", 1), 2
             ),
             "`+> a.b` must be rejected — `.` is not a legal NAME character"
+        );
+    }
+
+    @Test
+    void rejectsUppercaseNamedSuffix() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix(
+                " > Bar",
+                new Span("[] > Bar", 1), 2
+            ),
+            "`> Bar` must be rejected — a NAME suffix must start with a lowercase letter"
+        );
+    }
+
+    @Test
+    void rejectsDigitLeadingNamedSuffix() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix(
+                " > 9bad",
+                new Span("[] > 9bad", 1), 2
+            ),
+            "`> 9bad` must be rejected — a NAME suffix cannot start with a digit"
+        );
+    }
+
+    @Test
+    void rejectsUppercasePlusGreaterName() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix(
+                " +> Bad",
+                new Span("[] +> Bad", 1), 2
+            ),
+            "`+> Bad` must be rejected — a test attribute name must start with a lowercase letter"
+        );
+    }
+
+    @Test
+    void acceptsAtAsNamedSuffix() {
+        MatcherAssert.assertThat(
+            "`> @` must keep parsing as Form.NAME — the lowercase-start guard must not"
+                .concat(" reject the phi marker, which desugars through named(), not test()"),
+            new Suffix(" > @", new Span("[] > @", 1), 2).form(),
+            Matchers.equalTo(Suffix.Form.NAME)
         );
     }
 

@@ -292,6 +292,22 @@ final class EoSyntaxTest {
         );
     }
 
+    @Test
+    void emitsGraphLocatorsForObjects() throws IOException {
+        MatcherAssert.assertThat(
+            "parsed objects must carry a graph locator anchored at Φ",
+            new EoSyntax(
+                new InputOf(
+                    String.join(System.lineSeparator(), "[] > foo", "  42 > @")
+                )
+            ).parsed(),
+            XhtmlMatchers.hasXPaths(
+                "/object/o[@name='foo' and @loc='Φ.foo']",
+                "/object/o[@name='foo']/o[@loc='Φ.foo.φ']"
+            )
+        );
+    }
+
     @ParameterizedTest
     @ValueSource(
         strings = {
@@ -642,6 +658,30 @@ final class EoSyntaxTest {
             XhtmlMatchers.hasXPath(
                 "/object/errors/error[contains(text(),'octal')]"
             )
+        );
+    }
+
+    @Test
+    void rejectsLoneSurrogateUnicodeEscape() throws Exception {
+        MatcherAssert.assertThat(
+            "a \\u escape decoding to a lone UTF-16 surrogate (D800-DFFF) must show up as an /object/errors/error entry, not silently emit '?'",
+            EoSyntaxTest.raw(
+                String.join(String.valueOf((char) 10), "[] > foo", "  \"\\uD800\" > @")
+            ).toString(),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'unicode')]"
+            )
+        );
+    }
+
+    @Test
+    void acceptsValidSurrogatePairEscape() throws Exception {
+        MatcherAssert.assertThat(
+            "a high surrogate immediately followed by a low surrogate is a valid pair and must not be rejected",
+            EoSyntaxTest.raw(
+                String.join(String.valueOf((char) 10), "[] > foo", "  \"\\uD83C\\uDF08\" > @")
+            ).toString(),
+            Matchers.not(XhtmlMatchers.hasXPath("/object/errors/error"))
         );
     }
 

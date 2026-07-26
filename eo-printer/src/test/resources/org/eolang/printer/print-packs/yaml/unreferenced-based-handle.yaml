@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The based counterpart of `unreferenced-formation-handle`: a plain `>> name`
+# handle (`a >> b`, R-3.10.12) that nothing references. A referenced one is
+# referentially transparent and inlines at every use, its name disappearing by
+# design (#5810); an unreferenced one has no use to inline into, so dropping it
+# deleted the binding from the printed source (#5914).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [b] > array
+    b > @
+    42 >> unused
+
+printed: |
+  [b] > array
+    b > @
+    42 >> unused

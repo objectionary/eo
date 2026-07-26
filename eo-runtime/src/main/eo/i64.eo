@@ -24,75 +24,6 @@
     i32 > left
       as-bytes.slice 4 4
   [] > as-number /Q.number
-  [x cant-divide] > div
-    if. > @
-      x.as-bytes.eq 00-00-00-00-00-00-00-00
-      cant-divide
-        "i64 cannot be divided by zero"
-      result
-    00-00-00-00-00-00-00-01.left i > [i] > bit
-    magnitude x.as-bytes > bottom
-    as-bytes. > bottom-negated
-      plus.
-        i64 bottom.not
-        i64 00-00-00-00-00-00-00-01
-    [idx rem quot] > looped
-      if. > @
-        idx.lt 0
-        quot
-        unsigned-gte.if
-          looped
-            idx.minus 1
-            next-rem
-            next-quot
-          looped
-            idx.minus 1
-            shifted
-            quot
-      shifted-sign.and divisor-sign > both-negative!
-      both-negative.or mixed-signs-with-nonneg-trial > carry-out!
-      bottom-negated.and 80-00-00-00-00-00-00-00 > divisor-sign!
-      signs-differ.and trial-nonnegative > mixed-signs-with-nonneg-trial!
-      quot.or > next-quot!
-        bit idx
-      as-bytes. > next-rem!
-        plus.
-          i64 shifted
-          i64 bottom-negated
-      or. > shifted!
-        rem.left 1
-        and.
-          top.right idx
-          00-00-00-00-00-00-00-01
-      shifted.and 80-00-00-00-00-00-00-00 > shifted-sign!
-      shifted-sign.xor divisor-sign > signs-differ!
-      next-rem.xor 80-00-00-00-00-00-00-00 > trial-nonnegative!
-      carry-out.eq 80-00-00-00-00-00-00-00 > unsigned-gte
-    if. > [b] > magnitude
-      eq.
-        b.and 80-00-00-00-00-00-00-00
-        80-00-00-00-00-00-00-00
-      as-bytes.
-        plus.
-          i64 b.not
-          i64 00-00-00-00-00-00-00-01
-      b
-    eq. > negative
-      and.
-        as-bytes.xor x.as-bytes
-        80-00-00-00-00-00-00-00
-      80-00-00-00-00-00-00-00
-    looped > quotient
-      63
-      00-00-00-00-00-00-00-00
-      00-00-00-00-00-00-00-00
-    negative.if > result
-      as-bytes.
-        plus.
-          i64 quotient.not
-          i64 00-00-00-00-00-00-00-01
-      i64 quotient
-    magnitude as-bytes > top
   [x] > gt
     differ.if > @
       positive
@@ -112,28 +43,21 @@
     00-00-00-00-00-00-00-00 > zero
   [x] > gte
     or. > @
-      gt value
+      gt
+        x >> value!
       ^.eq value
-    x > value!
   gt. > [x] > lt
     i64 x.as-bytes
     ^
   [x] > lte
     or. > @
-      lt value
+      lt
+        x >> value!
       ^.eq value
-    x > value!
-  [x] > minus
-    plus > @
-      neg.
-        i64 value
-    x > value!
+  plus (i64 x!).neg > [x] > minus
   times -1.as-i64 > neg
   [x] > plus
-    carried > @
-      as-bytes
-      x.as-bytes
-    if. > [a b] > carried
+    if. > [a b] >> carried
       b.eq 00-00-00-00-00-00-00-00
       i64 a
       carried
@@ -141,15 +65,21 @@
         left.
           a.and b
           1
+    | > @
+      as-bytes
+      x.as-bytes
   [x] > times
     if. > [acc a b] > looped
       b.eq 00-00-00-00-00-00-00-00
       i64 acc
       looped
         if.
-          (b.and 00-00-00-00-00-00-00-01).eq 00-00-00-00-00-00-00-01
+          eq.
+            b.and 00-00-00-00-00-00-00-01
+            00-00-00-00-00-00-00-01
           as-bytes.
-            (i64 acc).plus
+            plus.
+              i64 acc
               i64 a
           acc
         a.left 1
@@ -165,57 +95,19 @@
         i64 234.as-bytes
         234.as-i64.as-bytes
 
-  ++> tests-i64-div-by-i64-one
-    eq. > @
-      dividend.div 1.as-i64
-      dividend
-    -235.as-i64 > dividend
-
-  eq. ++> tests-i64-div-by-zero-returns-provided-fallback
-    "recovered"
-    2.as-i64.div
-      0.as-i64
-      "recovered" > [msg]
-
-  lt. ++> tests-i64-div-less-than-i64-one
-    1.as-i64.div 5.as-i64
-    1.as-i64
-
-  eq. ++> tests-i64-div-min-by-minus-one-wraps
-    div.
-      i64 80-00-00-00-00-00-00-00
-      -1.as-i64
-    i64 80-00-00-00-00-00-00-00
-
-  eq. ++> tests-i64-div-min-by-one-is-min
-    div.
-      i64 80-00-00-00-00-00-00-00
-      1.as-i64
-    i64 80-00-00-00-00-00-00-00
-
-  eq. ++> tests-i64-div-of-large-dividend
-    4611686018427387904.as-i64.div 2.as-i64
-    2305843009213693952.as-i64
-
-  eq. ++> tests-i64-div-of-two-negatives
-    -13.as-i64.div -5.as-i64
-    2.as-i64
-
-  eq. ++> tests-i64-div-truncates-toward-zero
-    -13.as-i64.div 5.as-i64
-    -2.as-i64
-
-  eq. ++> tests-i64-div-with-remainder
-    13.as-i64.div -5.as-i64
-    -2.as-i64
-
-  (123.@.eq 42.@).not ++> tests-i64-eq-false
+  ++> tests-i64-eq-false
+    not. > @
+      123.@.eq 42.@
 
   123.@.eq 123.@ ++> tests-i64-eq-true
 
-  (0.as-i64.gt 0.as-i64).not ++> tests-i64-greater-equal
+  ++> tests-i64-greater-equal
+    not. > @
+      0.as-i64.gt 0.as-i64
 
-  (0.as-i64.gt 100.as-i64).not ++> tests-i64-greater-false
+  ++> tests-i64-greater-false
+    not. > @
+      0.as-i64.gt 100.as-i64
 
   gt. ++> tests-i64-greater-max-over-min
     i64 7F-FF-FF-FF-FF-FF-FF-FF
@@ -235,7 +127,9 @@
 
   113.as-i64.gte 113.as-i64 ++> tests-i64-gte-equal
 
-  (0.as-i64.gte 10.as-i64).not ++> tests-i64-gte-false
+  ++> tests-i64-gte-false
+    not. > @
+      0.as-i64.gte 10.as-i64
 
   -1000.as-i64.gte -1100.as-i64 ++> tests-i64-gte-true
 
@@ -251,9 +145,13 @@
 
   -9.223372036854776e18.as-i64.lt 1.as-i64 ++> tests-i64-less-across-full-range
 
-  (10.as-i64.lt 10.as-i64).not ++> tests-i64-less-equal
+  ++> tests-i64-less-equal
+    not. > @
+      10.as-i64.lt 10.as-i64
 
-  (10.as-i64.lt -5.as-i64).not ++> tests-i64-less-false
+  ++> tests-i64-less-false
+    not. > @
+      10.as-i64.lt -5.as-i64
 
   10.as-i64.lt 50.as-i64 ++> tests-i64-less-true
 
@@ -263,7 +161,9 @@
 
   50.as-i64.lte 50.as-i64 ++> tests-i64-lte-equal
 
-  (0.as-i64.lte -10.as-i64).not ++> tests-i64-lte-false
+  ++> tests-i64-lte-false
+    not. > @
+      0.as-i64.lte -10.as-i64
 
   -200.as-i64.lte -100.as-i64 ++> tests-i64-lte-true
 
@@ -326,12 +226,10 @@
   eq. ++> tests-out-of-bounds-i64-as-i32-returns-provided-fallback
     "recovered"
     3147483647.as-i64.as-i32
-      "recovered" > [msg]
+      "recovered" > [message]
 
   2147483648.as-i64.as-i32 --> on-converting-i32-max-plus-one-to-i32
 
   -2147483649.as-i64.as-i32 --> on-converting-i32-min-minus-one-to-i32
 
   3147483647.as-i64.as-i32 --> on-converting-to-i32-if-out-of-bounds
-
-  2.as-i64.div 0.as-i64 --> on-division-i64-by-i64-zero

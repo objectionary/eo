@@ -1,0 +1,54 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A reversed dispatch is a prefix method dispatch: `auto.gte 0` and
+# `gte. auto 0` parse to the same graph, so a file-local `>>` handle that is
+# used only through a single-segment method dispatch (`auto.gte`, never a bare
+# `auto`) can still become a moniker (#5782). The binding is inlined as the
+# receiver of a reversed dispatch `gte.` rather than as a plain bare
+# reference, keeping the dispatch's own argument. Only one trailing segment is
+# hostable this way; a multi-segment chain stays expanded. Here the obfuscated
+# `number num.as-bytes >> auto` handle is merged onto its lone `auto.gte 0`
+# use, which becomes `gte.` over the inlined block.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-self.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/validate-before-stars.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+  - /org/eolang/printer/print/merge-monikers.xsl
+asserts:
+  # The obfuscated (cactus-named) binding is no longer a direct attribute of
+  # the formation: it has been merged onto its only, method-dispatch use.
+  - /object/o[@name='abs' and not(o[starts-with(@name, 'a🌵')])]
+  # No forward `ξ.a🌵….gte` reference survives: the dispatch was un-rolled.
+  - /object[count(//o[starts-with(@base, 'ξ.a🌵')])=0]
+  # The dispatch is now a reversed `gte.` (base '.gte') whose receiver is the
+  # inlined block, carrying the binding's base and child and its `@local`
+  # handle so the readable name still prints.
+  - /object/o[@name='abs']/o[@name='φ' and @base='.if']/o[@base='.gte']/o[starts-with(@name, 'a🌵') and @local='auto' and @base='Φ.number']/o[@base='ξ.num.as-bytes']
+  # The reversed dispatch keeps its own positional argument after the receiver.
+  - /object/o[@name='abs']/o[@name='φ']/o[@base='.gte']/o[starts-with(@name, 'a🌵')]/following-sibling::o[@as='α0']
+input: |
+  +package number
+
+  [num] > abs
+    if. > @
+      auto.gte 0
+      num
+      num
+    number num.as-bytes >> auto

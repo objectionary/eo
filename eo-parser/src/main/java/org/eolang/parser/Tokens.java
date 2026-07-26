@@ -574,8 +574,15 @@ final class Tokens {
             } else {
                 tie = null;
             }
+            final boolean cnst;
+            if (!this.atEnd() && this.current() == '!') {
+                this.cursor = this.cursor + 1;
+                cnst = true;
+            } else {
+                cnst = false;
+            }
             args.add(
-                new Value(bare.kind(), bare.raw(), bare.pos(), this.cursor, tie, tail)
+                new Value(bare.kind(), bare.raw(), bare.pos(), this.cursor, tie, tail, cnst)
             );
         }
         return args;

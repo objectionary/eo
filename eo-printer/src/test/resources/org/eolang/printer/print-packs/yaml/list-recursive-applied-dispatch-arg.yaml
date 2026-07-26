@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The applied recursive-handle fold (#5848) when the argument is a parenthesised
+# dispatch chain ("(walk ...).at.^"), as in "directory.eo"'s "deleted" helper
+# ("r (walk ...)" as a "seq *" element). The "[tup] >> r" handle folds onto its
+# use — the formation hosted in place, the argument a "| args" pipe. The whole
+# chain must survive on the pipe, dropping it would lose data. A nameless pipe
+# has no valid vertical form (a bare "|" does not parse), so the argument inlines
+# as "| (walk ...).at.^" even though the same argument applied normally would be
+# broken onto its own line by the penalty layout (as the origin writes it).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo
+    seq * > @
+      r
+        (walk "**").at.^
+      ^
+    if. > [tup] >> r
+      tup.length.eq 0
+      true
+      seq *
+        tup.head.deleted
+        r tup.tail
+printed: |
+  [] > foo
+    seq * > @
+      if. > [tup] >> r
+        tup.length.eq 0
+        true
+        seq *
+          tup.head.deleted
+          r tup.tail
+      | (walk "**").at.^
+      ^

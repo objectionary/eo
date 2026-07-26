@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A file-local handle (`a >> b!`, R-3.10.12) written nested inside an
+# application - the moniker spelling the printer emits for a multi-referenced
+# const handle (#5828) - still belongs to the enclosing formation, so every
+# sibling `b` reference binds to it. Previously the handle was only found as a
+# direct child of a formation, so a nested handle left its siblings resolving
+# to a free `b` instead of the handle's cactus name.
+sheets:
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+asserts:
+  - /object[not(errors)]
+  # the nested handle keeps its "@local" marker and gets a cactus name
+  - /object/o[@name='foo']/o[@base='.plus']/o[@local='b' and @name]
+  # both sibling references bind to the handle's cactus name
+  - /object[count(//o[@base=//o[@local='b']/@name])=2]
+  # no reference is left resolving to the bare, un-scoped `b`
+  - /object[count(//o[@base='b'])=0]
+input: |
+  [a] > foo
+    42.plus > x
+      a >> b!
+    43.plus b > y
+    44.plus b > z

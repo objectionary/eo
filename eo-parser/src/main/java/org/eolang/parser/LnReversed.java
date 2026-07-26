@@ -95,11 +95,34 @@ final class LnReversed implements Line {
         Bindings.observeChild(stack, outer, this.span);
         globals.clearBlanks();
         globals.markEmitted();
+        this.emit(emit, suffix, ".".concat(head.raw()), fragile, args, outer);
+    }
+
+    /**
+     * Emit the reversed dispatch's {@code <o base='.<name>'>}, its
+     * file-local handle (for a {@code >> name} auto suffix, #5874), the
+     * fragile/const markers, the horizontal args, and the outer binding
+     * slot. Mirrors the auto-suffix handling of {@link LnFormation},
+     * {@link LnOnlyPhi} and {@link LnVoid}.
+     * @param emit The directives sink
+     * @param suffix The parsed suffix
+     * @param base The dispatch base ({@code .<name>})
+     * @param fragile Whether the dispatch carries the fragile marker
+     * @param args Horizontal args in source order
+     * @param outer Outer inline-binding label, or {@code null}
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private void emit(
+        final Emit emit, final Suffix suffix, final String base,
+        final boolean fragile, final List<Value> args, final String outer
+    ) {
         emit.object(
             suffix.attribute(this.span.line(), this.span.indent()),
-            ".".concat(head.raw()),
-            this.span.line(), this.span.indent()
+            base, this.span.line(), this.span.indent()
         );
+        if (!suffix.handle().isEmpty()) {
+            emit.local(suffix.handle());
+        }
         if (fragile) {
             emit.fragile();
         }

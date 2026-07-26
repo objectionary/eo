@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -36,6 +37,11 @@ import org.eolang.printer.Xmir;
     threadSafe = true
 )
 public final class MjPrint extends MjSafe {
+
+    /**
+     * Pattern to catch the trailing .xmir extension.
+     */
+    private static final Pattern XMIR = Pattern.compile("\\.xmir$");
 
     /**
      * Directory with XMIR sources to print.
@@ -116,8 +122,9 @@ public final class MjPrint extends MjSafe {
     private int print(final Path source) throws Exception {
         final Path home = this.printOutputDir.toPath();
         final Path relative = Paths.get(
-            this.printSourcesDir.toPath().relativize(source).toString()
-                .replace(".xmir", ".eo")
+            MjPrint.XMIR.matcher(
+                this.printSourcesDir.toPath().relativize(source).toString()
+            ).replaceFirst(".eo")
         );
         new Saved(
             new Xmir(

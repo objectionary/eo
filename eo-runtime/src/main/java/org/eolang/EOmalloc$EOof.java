@@ -10,26 +10,35 @@
 package org.eolang;
 
 /**
- * Malloc.of.φ object.
+ * Malloc.of object.
  * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "malloc.of.@")
+@XmirObject(oname = "malloc.of")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOmalloc$EOof$EOφ extends PhDefault implements Atom {
+public final class EOmalloc$EOof extends PhDefault implements Atom {
+
+    /**
+     * Ctor.
+     */
+    public EOmalloc$EOof() {
+        super(new Attrs(
+            new Attr("size", new AtVoid("size")),
+            new Attr("scope", new AtVoid("scope"))
+        ));
+    }
 
     @Override
     public Phi lambda() {
-        final Phi rho = this.take(Phi.RHO);
         final int identifier = Heaps.INSTANCE.malloc(
-            this, new Expect.Natural(Expect.at(rho, "size")).it()
+            this, new Expect.Natural(Expect.at(this, "size")).it()
         );
         final Phi res;
         try {
-            final Phi allocated = rho.take("allocated").copy();
-            allocated.put("id", new Data.ToPhi((long) identifier));
-            final Phi scope = rho.take("scope").copy();
-            scope.put(0, allocated);
+            final Phi chunk = Phi.Φ.take("chunk").copy();
+            chunk.put("id", new Data.ToPhi((long) identifier));
+            final Phi scope = this.take("scope").copy();
+            scope.put(0, chunk);
             res = new Data.ToPhi(new Dataized(scope).take());
         } finally {
             Heaps.INSTANCE.free(identifier);

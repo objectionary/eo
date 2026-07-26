@@ -32,7 +32,7 @@
   as-i64.as-number > as-number
   [x cant-divide] > div
     if. > @
-      xval.eq zero
+      other.eq zero
       cant-divide
         "Can't divide %d by i32 zero".printf
           * as-i64.as-number
@@ -44,15 +44,15 @@
         plus.
           i32 left
           i32 right
-    as-bytes. > bts
-      as-i64.div xval.as-i64
-    bts.slice > left
+    as-bytes. > b
+      as-i64.div other.as-i64
+    b.slice > left
       0
       4
-    bts.slice > right
+    x.as-i32 > other
+    b.slice > right
       4
       4
-    x.as-i32 > xval
     00-00-00-00 > zero
   as-i64.gt x.as-i32.as-i64 > [x] > gt
   as-i64.gte x.as-i32.as-i64 > [x] > gte
@@ -69,17 +69,19 @@
       plus.
         i32 left
         i32 right
-    as-bytes. > bts
+    as-bytes. > b
       as-i64.plus x.as-i32.as-i64
-    bts.slice > left
+    b.slice > left
       0
       4
-    bts.slice > right
+    b.slice > right
       4
       4
   [x] > times
     i32 right > @
-    (as-i64.times x.as-i32.as-i64).as-bytes.slice > right
+    slice. > right
+      as-bytes.
+        as-i64.times x.as-i32.as-i64
       4
       4
 
@@ -101,7 +103,7 @@
     "recovered"
     2.as-i64.as-i32.div
       0.as-i64.as-i32
-      "recovered" > [msg]
+      "recovered" > [message]
 
   lt. ++> tests-i32-div-less-than-i32-one
     1.as-i64.as-i32.div 5.as-i64.as-i32
@@ -111,33 +113,47 @@
     13.as-i64.as-i32.div -5.as-i64.as-i32
     -2.as-i64.as-i32
 
-  (123.as-i64.as-i32.eq 42.as-i64.as-i32).not ++> tests-i32-eq-false
+  ++> tests-i32-eq-false
+    not. > @
+      123.as-i64.as-i32.eq 42.as-i64.as-i32
 
   123.as-i64.as-i32.eq 123.as-i64.as-i32 ++> tests-i32-eq-true
 
-  (0.as-i64.as-i32.gt 0.as-i64.as-i32).not ++> tests-i32-greater-equal
+  ++> tests-i32-greater-equal
+    not. > @
+      0.as-i64.as-i32.gt 0.as-i64.as-i32
 
-  (0.as-i64.as-i32.gt 100.as-i64.as-i32).not ++> tests-i32-greater-false
+  ++> tests-i32-greater-false
+    not. > @
+      0.as-i64.as-i32.gt 100.as-i64.as-i32
 
   -200.as-i64.as-i32.gt -1000.as-i64.as-i32 ++> tests-i32-greater-true
 
   113.as-i64.as-i32.gte 113.as-i64.as-i32 ++> tests-i32-gte-equal
 
-  (0.as-i64.as-i32.gte 10.as-i64.as-i32).not ++> tests-i32-gte-false
+  ++> tests-i32-gte-false
+    not. > @
+      0.as-i64.as-i32.gte 10.as-i64.as-i32
 
   -1000.as-i64.as-i32.gte -1100.as-i64.as-i32 ++> tests-i32-gte-true
 
   42.as-i64.as-i32.as-bytes.eq 00-00-00-2A ++> tests-i32-has-valid-bytes
 
-  (10.as-i64.as-i32.lt 10.as-i64.as-i32).not ++> tests-i32-less-equal
+  ++> tests-i32-less-equal
+    not. > @
+      10.as-i64.as-i32.lt 10.as-i64.as-i32
 
-  (10.as-i64.as-i32.lt -5.as-i64.as-i32).not ++> tests-i32-less-false
+  ++> tests-i32-less-false
+    not. > @
+      10.as-i64.as-i32.lt -5.as-i64.as-i32
 
   10.as-i64.as-i32.lt 50.as-i64.as-i32 ++> tests-i32-less-true
 
   50.as-i64.as-i32.lte 50.as-i64.as-i32 ++> tests-i32-lte-equal
 
-  (0.as-i64.as-i32.lte -10.as-i64.as-i32).not ++> tests-i32-lte-false
+  ++> tests-i32-lte-false
+    not. > @
+      0.as-i64.as-i32.lte -10.as-i64.as-i32
 
   -200.as-i64.as-i32.lte -100.as-i64.as-i32 ++> tests-i32-lte-true
 
@@ -190,7 +206,7 @@
   eq. ++> tests-out-of-bounds-i32-as-i16-returns-provided-fallback
     "recovered"
     247483647.as-i64.as-i32.as-i16
-      "recovered" > [msg]
+      "recovered" > [message]
 
   32768.as-i64.as-i32.as-i16 --> on-converting-i16-max-plus-one-to-i16
 

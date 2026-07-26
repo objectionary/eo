@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A single-referenced file-local `>> bar` handle (R-3.10.12) whose value is an
+# abstract formation and which is used as the base of an application, exactly
+# as "inline-cactoos-applied-handle", except that another binding (`67 > t`)
+# sits between the handle and its applied reference (`bar 8 > x`). That
+# separation used to defeat the #5834 pipe path — both its guards require
+# adjacency — so the reference fell into the bare-reference inline, which
+# rebuilt only the formation and silently dropped the argument (`8`) and the
+# result name (`x`), while the drop template removed the original binding
+# (#5840). The fix relocates the single-use handle to sit directly above its
+# reference so the `|` pipe (which binds the immediately-preceding sibling) can
+# apply it: the formation moves below `67 > t`, keeps its argument and name in
+# the `| 8 > x` continuation, and every attribute of `foo` survives. The
+# readable `bar` handle is dropped since the anonymous formation needs no name
+# for the pipe to refer to it.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo
+    44 > [k] >> bar
+    67 > t
+    bar 8 > x
+
+printed: |
+  [] > foo
+    67 > t
+    44 > [k] >>
+    | 8 > x

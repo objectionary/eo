@@ -1,0 +1,55 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# An anonymous auto-named ("a🌵…") abstract formation, reached only through a
+# single-segment method dispatch whose result is bound to a named attribute
+# ("q. > @"). Two extensions let "merge-monikers" host it as a moniker (#5794):
+# an abstract formation (not just a based binding) is now an eligible
+# "eo:moniker-binding", and a single-segment dispatch may host onto a named
+# reference — the reversed dispatch keeps the reference's own "@name". So the
+# formation is inlined as the receiver of the reversed dispatch "q." (base
+# ".q", still named "φ"), keeping its "5" argument, and the standalone binding
+# with its forward "ξ.a🌵….q" reference disappears. Without the fix the binding
+# reached the printer standalone and its reference dangled on a synthetic
+# "vL_P" placeholder.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-self.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/validate-before-stars.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+  - /org/eolang/printer/print/merge-monikers.xsl
+asserts:
+  # The obfuscated formation is no longer a standalone attribute of "bar".
+  - /object/o[@name='bar' and not(o[starts-with(@name, 'a🌵')])]
+  # No forward "ξ.a🌵….q" reference survives: the dispatch was un-rolled.
+  - /object[count(//o[starts-with(@base, 'ξ.a🌵')])=0]
+  # The dispatch is now a reversed "q." (base '.q') that keeps its own "@name"
+  # ("φ", i.e. "> @"); its receiver is the inlined anonymous formation.
+  - /object/o[@name='bar']/o[@name='φ' and @base='.q']/o[starts-with(@name, 'a🌵') and not(@base)]
+  # The reversed dispatch keeps its own "5" argument after the receiver.
+  - /object/o[@name='bar']/o[@base='.q']/o[starts-with(@name, 'a🌵')]/following-sibling::o[@as='α0' and @base='Φ.number']
+  # The formation's "$"-recursion stays a bare "ξ".
+  - /object/o[@name='bar']/o[@base='.q']/o[starts-with(@name, 'a🌵')]/o[@name='φ' and @base='ξ']
+input: |
+  +package foo
+
+  [] > bar
+    q. > @
+      [n] >>
+        $ (n.minus 1) > @
+      5

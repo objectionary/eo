@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A single-referenced private const folded into an argument slot whose
+# application cannot be laid out on one line, because a sibling argument hosts
+# a `>> name!` moniker. The const then lands on a line of its own, where the
+# anonymous `!` marker has nowhere to sit - after the head it closes the
+# expression and the arguments below become trailing garbage (`or.!`), after
+# the arguments it marks the last argument instead of the application. So the
+# const takes the auto-name the same slot spells for a formation, `>>!`, which
+# is a name suffix and may carry the marker (R-3.10.4). The parser floats such
+# a binding up to the enclosing formation and leaves a reference behind, so the
+# object graph is the one the inline argument would have built (#5927).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [x] > foo
+    bar > @
+      p
+      q
+      p.eq 2
+    x.plus 1 >> p!
+    or. >> q!
+      x.times 3
+      inc x
+
+printed: |
+  [x] > foo
+    bar > @
+      x.plus 1 >> p!
+      or. >>!
+        x.times 3
+        inc x
+      p.eq 2

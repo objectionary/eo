@@ -19,7 +19,12 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
-          java-version: 21
+          java-version: 26
+      - uses: actions/cache@v6
+        with:
+          path: ~/.m2/repository
+          key: ubuntu-qulice-jdk-26-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ubuntu-qulice-jdk-26-maven-
       - run: mvn install -DskipTests -Dinvoker.skip --errors --batch-mode
       - run: .github/objectionary.sh ${{ github.ref_name }}
       - uses: JamesIves/github-pages-deploy-action@v4.8.0

@@ -1,0 +1,55 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A single-referenced file-local `>> rec-split` handle (R-3.10.12) whose value
+# is an abstract formation and which is applied (`rec-split * 0 0`) from the
+# argument slot of another application (the third argument of `if.`), the shape
+# `eo-runtime/src/main/eo/string/split.eo` takes once its recursive helper is
+# written as a `>>` handle (#5678). As with the sibling (#5840) and receiver
+# (#5844) cases, "inline-cactoos" relocates the single-use formation directly
+# above the reference and turns the reference into a `| args` pipe continuation
+# that applies it, so the three arguments (`* 0 0`) are preserved. Here the
+# relocated formation is large, so the layout engine cannot keep the compact
+# one-line `| * 0 0` and prints the pipe in its vertical form: a bare `|`
+# followed by a deeper-indent argument block (R-3.14.3). That output used to be
+# rejected by the parser ("a pipe `|` must be followed by a space"), so the
+# result was not a fixed point and did not reparse; a bare `|` with no
+# horizontal args is now accepted, so the pipe application round-trips with its
+# arguments intact (#5887).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [text] > split
+    if. > @
+      empty
+      *
+      rec-split
+        *
+        0
+        0
+    [accum current] >> rec-split
+      if. > @
+        stop
+        accum
+        rec-split
+          accum
+          current.plus 1
+printed: |
+  [text] > split
+    empty.if > @
+      *
+      stop.if > [accum current] >> rec-split
+        accum
+        rec-split
+          accum
+          current.plus 1
+      |
+        *
+        0
+        0
