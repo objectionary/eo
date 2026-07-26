@@ -1,4 +1,5 @@
-# Elements of `list` from `index` to the end (supports oversized index).
+# The last `index` elements of `list` (an `index` larger than `list.length`
+# returns the whole `list`).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
