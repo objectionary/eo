@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A bare `|` (nothing after the pipe) opens the vertical-argument form of a
+# pipe application (R-3.14.3): the deeper-indent body supplies the arguments,
+# exactly as `| 2 3` does horizontally. A pipe need not be followed by a space
+# when it carries no horizontal args, so the printer's own vertical `|` output
+# reparses cleanly (#5887).
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@pipe]
+  - //o[@pipe and count(o)=2]
+  - //o[@pipe and count(o[@base='Φ.number'])=2]
+input: |
+  [] > app
+    foo > @
+      [a b] >>
+        a.plus b > @
+      |
+        2
+        3

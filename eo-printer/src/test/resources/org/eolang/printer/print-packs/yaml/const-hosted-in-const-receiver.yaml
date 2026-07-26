@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Two chained const file-local handles: `len` dispatches on `data`, and `data` is
+# reached through that dispatch alone. "merge-monikers" hosts `data` into `len`'s
+# value as the receiver of a reversed `size.` dispatch (#5782), and the node it
+# rebuilds there must carry `len`'s own readable "@local" handle beside its
+# "@name" and "@const" — the same reason the marker itself is carried (#5900).
+# Without it `len` printed as an anonymous `size. >>!` while the reference in
+# `slice-byte` still read `len`, a name the next parse resolves to nothing
+# (#5914).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [b] > array
+    b >> data!
+    data.size >> len!
+    [index] > slice-byte
+      index.lt len > @
+
+printed: |
+  [b] > array
+    size. >> len!
+      b >> data!
+    index.lt len > [index] > slice-byte

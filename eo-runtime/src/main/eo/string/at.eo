@@ -1,6 +1,7 @@
 # Retrieve symbol by given index as `text`.
-# If 0 > index >= ^.length, the `fallback` value is returned,
-# or the bottom object when unbound.
+# A negative `index` counts from the end of `text` (`length + index`).
+# If the resolved index is still negative or is >= `text.length`,
+# the `fallback` value is returned, or the bottom object when unbound.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -12,10 +13,15 @@
 [text i fallback] > at
   if. > @
     or.
-      0.gt index
+      0.gt
+        if. >> index!
+          0.gt
+            i >> idx!
+          (number len).plus idx
+          idx
       gte.
         number index
-        len
+        text.length >> len!
     fallback
       "Given index %d is out of text bounds".printf
         * index
@@ -23,14 +29,6 @@
       text
       index
       1
-  i > idx!
-  if. > index!
-    0.gt idx
-    plus.
-      number len
-      idx
-    idx
-  text.length > len!
 
   eq. ++> tests-returns-char-at-negative-index
     "m"
@@ -55,7 +53,7 @@
     at
       "some"
       10
-      "recovered" > [msg]
+      "recovered" > [message]
 
   at --> on-text-at-index-more-than-length
     "some"

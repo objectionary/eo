@@ -27,6 +27,26 @@
       size.eq 0
       0
       reclen 0 0
+    [index accum] >> reclen
+      if. > @
+        index.eq size
+        accum
+        if.
+          (byte.and p1).eq r1
+          inclen index 1 accum
+          if.
+            (byte.and p2).eq r2
+            inclen index 2 accum
+            if.
+              (byte.and p3).eq r3
+              inclen index 3 accum
+              if.
+                (byte.and p4).eq r4
+                inclen index 4 accum
+                T
+                  "Unknown byte format (%x), can't recognize character".printf
+                    * byte
+      as-bytes.slice index 1 > byte
     if. > [index csize len] > inclen
       gt.
         index.plus csize
@@ -45,34 +65,6 @@
     C0- > r2
     p2 > r3
     p3 > r4
-    [index accum] > reclen
-      if. > @
-        index.eq size
-        accum
-        if.
-          eq.
-            byte.and p1
-            r1
-          inclen index 1 accum
-          if.
-            eq.
-              byte.and p2
-              r2
-            inclen index 2 accum
-            if.
-              eq.
-                byte.and p3
-                r3
-              inclen index 3 accum
-              if.
-                eq.
-                  byte.and p4
-                  r4
-                inclen index 4 accum
-                T
-                  "Unknown byte format (%x), can't recognize character".printf
-                    * byte
-      as-bytes.slice index 1 > byte
     as-bytes.size > size
   [start len] > slice
     if. > @
@@ -86,13 +78,51 @@
           "Length to slice must be >= 0, but was %d".printf
             * nlen
         seq *
-          bstart
+          recidx >> bstart!
+            0
+            0
+            nstart
+            "Start index (%d) is out of string bounds".printf
+              * nstart
           blen
           if.
             nlen.eq 0
             ""
             string
               as-bytes.slice bstart blen
+    [index accum result cause] >> recidx
+      if. > @
+        accum.eq result
+        index
+        if.
+          index.eq size
+          T cause
+          if.
+            (byte.and p1).eq r1
+            increase
+              index
+              1
+              accum
+              result
+              cause
+            if.
+              (byte.and p2).eq r2
+              increase
+                index
+                2
+                accum
+                result
+                cause
+              if.
+                (byte.and p3).eq r3
+                increase index 3 accum result cause
+                if.
+                  (byte.and p4).eq r4
+                  increase index 4 accum result cause
+                  T
+                    "Unknown byte format (%x), can't recognize character".printf
+                      * byte
+      as-bytes.slice index 1 > byte
     minus. > blen
       recidx
         number bstart
@@ -102,12 +132,6 @@
           *
             nstart.plus nlen
       bstart
-    recidx > bstart!
-      0
-      0
-      nstart
-      "Start index (%d) is out of string bounds".printf
-        * nstart
     nstart.plus nlen > end
     if. > [index csize accum result cause] > increase
       gt.
@@ -121,9 +145,8 @@
         accum.plus 1
         result
         cause
-    len > lbts!
-    number lbts > nlen
-    number sbts > nstart
+    number len! > nlen
+    number start! > nstart
     80- > p1
     E0- > p2
     F0- > p3
@@ -132,46 +155,6 @@
     C0- > r2
     p2 > r3
     p3 > r4
-    [index accum result cause] > recidx
-      if. > @
-        accum.eq result
-        index
-        if.
-          index.eq size
-          T cause
-          if.
-            eq.
-              byte.and p1
-              r1
-            increase
-              index
-              1
-              accum
-              result
-              cause
-            if.
-              eq.
-                byte.and p2
-                r2
-              increase
-                index
-                2
-                accum
-                result
-                cause
-              if.
-                eq.
-                  byte.and p3
-                  r3
-                increase index 3 accum result cause
-                if.
-                  eq. (byte.and p4) r4
-                  increase index 4 accum result cause
-                  T
-                    "Unknown byte format (%x), can't recognize character".printf
-                      * byte
-      as-bytes.slice index 1 > byte
-    start > sbts!
     as-bytes.size > size
 
   D0-B4-D1-80-D1-83-D0-B3.eq "друг" ++> tests-bytes-equal-to-string
@@ -180,26 +163,17 @@
     " ".length
     1
 
-  ++> tests-compares-string-with-nan
-    not. > @
-      nan.eq "друг"
+  (nan.eq "друг").not ++> tests-compares-string-with-nan
 
-  ++> tests-compares-string-with-negative-infinity
-    not. > @
-      ninf.eq "друг"
+  (ninf.eq "друг").not ++> tests-compares-string-with-negative-infinity
 
   eq. ++> tests-compares-string-with-positive-infinity
     pinf.eq "друг"
     false
 
-  ++> tests-compares-two-different-string-types
-    not. > @
-      "Hello".eq 42
+  ("Hello".eq 42).not ++> tests-compares-two-different-string-types
 
-  ++> tests-compares-two-different-strings
-    not. > @
-      "Hello".eq
-        "Good bye"
+  ("Hello".eq "Good bye").not ++> tests-compares-two-different-strings
 
   eq. ++> tests-compares-two-strings
     "x".eq "x"
@@ -388,6 +362,4 @@
     -1
     1
 
-  --> on-taking-length-of-incomplete-n4-byte-character
-    length. > @
-      string F0-9F-98
+  (string F0-9F-98).length --> on-taking-length-of-incomplete-n4-byte-character

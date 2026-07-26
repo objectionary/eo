@@ -13,10 +13,10 @@
     regex "/^[A-Za-z0-9]+$/"
     text
 
+  (is-alphanumeric "").not ++> tests-checks-if-empty-text-is-not-alphanumeric
+
   is-alphanumeric "eEo" ++> tests-checks-if-simple-text-is-alphanumeric
 
-  ++> tests-checks-if-text-with-dashes-is-not-alphanumeric
-    not. > @
-      is-alphanumeric "-w-"
+  (is-alphanumeric "-w-").not ++> tests-checks-if-text-with-dashes-is-not-alphanumeric
 
   is-alphanumeric "ab3d" ++> tests-checks-if-text-with-number-is-alphanumeric

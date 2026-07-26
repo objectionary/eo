@@ -18,19 +18,17 @@
         accum.concat > @
           if.
             and.
-              code.lte maxcode
+              code.lte (as-ascii "z")!
               code.gte mincode
-            slice.
-              as-bytes. (code.minus distance).as-i64
+            (code.minus distance).as-i64.as-bytes.slice
               7
               1
             byte
         as-ascii byte > code
   minus. > distance
-    number mincode
+    number
+      as-ascii "a" >> mincode!
     as-ascii "A"
-  as-ascii "z" > maxcode!
-  as-ascii "a" > mincode!
 
   eq. ++> tests-converts-text-to-upper-case
     "HELLO"

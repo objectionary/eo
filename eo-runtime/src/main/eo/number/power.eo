@@ -51,25 +51,17 @@
           if.
             expo.gt 0
             if.
-              gt.
-                abs base
-                1
+              (abs base).gt 1
               pinf
               if.
-                eq.
-                  abs base
-                  1
+                (abs base).eq 1
                 nan
                 0
             if.
-              gt.
-                abs base
-                1
+              (abs base).gt 1
               0
               if.
-                eq.
-                  abs base
-                  1
+                (abs base).eq 1
                 nan
                 pinf
   number num.as-bytes > base
@@ -114,13 +106,9 @@
       b
       n.div 2
   expo.is-integer.and > odd
-    not.
-      is-integer.
-        expo.div 2
+    (expo.div 2).is-integer.not
 
-  ++> tests-power-any-to-nan-is-nan
-    is-nan. > @
-      power 52 nan
+  (power 52 nan).is-nan ++> tests-power-any-to-nan-is-nan
 
   eq. ++> tests-power-as-method-on-number
     2.power 4
@@ -157,9 +145,7 @@
       -3
     0.015625
 
-  ++> tests-power-fractional-of-negative-is-nan
-    is-nan. > @
-      power -4 0.5
+  (power -4 0.5).is-nan ++> tests-power-fractional-of-negative-is-nan
 
   eq. ++> tests-power-int-to-zero-is-one
     power
@@ -173,13 +159,9 @@
       -12341
     0
 
-  ++> tests-power-nan-to-any-is-nan
-    is-nan. > @
-      power nan 42
+  (power nan 42).is-nan ++> tests-power-nan-to-any-is-nan
 
-  ++> tests-power-nan-to-nan-is-nan
-    is-nan. > @
-      power nan nan
+  (power nan nan).is-nan ++> tests-power-nan-to-nan-is-nan
 
   eq. ++> tests-power-negative-float-to-negative-infinity-is-zero
     power

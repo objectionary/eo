@@ -13,7 +13,12 @@
   [i fallback] > at
     if. > @
       or.
-        0.gt index
+        0.gt
+          if. >> index!
+            0.gt
+              i >> idx!
+            length.plus idx
+            idx
         length.lte index
       fallback
         "Given index is out of tuple bounds"
@@ -24,11 +29,6 @@
         index
       tup.head
       at-fast tup.tail
-    i > idx!
-    if. > index!
-      0.gt idx
-      length.plus idx
-      idx
   tuple > empty
     T
       "Can't get tail from the empty tuple"
@@ -38,13 +38,13 @@
   [other] > eq
     and. > @
       length.eq other.length
-      receq ^ other
-    if. > [first second] > receq
-      first.length.eq 0
-      true
-      and.
-        first.head.eq second.head
-        receq first.tail second.tail
+      if. > [first second] >> receq
+        first.length.eq 0
+        true
+        and.
+          first.head.eq second.head
+          receq first.tail second.tail
+      | ^ other
   tuple > [x] > with
     ^
     x
@@ -54,10 +54,10 @@
   ++> tests-at-fast-with-first-element
     eq. > @
       at-fast.
-        arr.at 0
-        arr
+        array.at 0
+        array
       100
-    * > arr
+    * > array
       100
       101
       102
@@ -65,10 +65,10 @@
   ++> tests-at-fast-with-last-element
     eq. > @
       at-fast.
-        arr.at 2
-        arr
+        array.at 2
+        array
       102
-    * > arr
+    * > array
       100
       101
       102
@@ -83,10 +83,10 @@
     eq. > @
       length.
         elements.
-          arr
+          array
             *
       0
-    [elements] > arr
+    [elements] > array
 
   ++> tests-gets-lengths-of-empty-tuple
     a.length.eq 0 > @
@@ -107,14 +107,14 @@
     eq. > @
       length.
         elements.
-          arr *
+          array *
             "a"
             "b"
             "c"
             "d"
             "e"
       5
-    [elements] > arr
+    [elements] > array
 
   eq. ++> tests-out-of-bounds-at-returns-provided-fallback
     "recovered"
@@ -125,7 +125,7 @@
         3
         4
       20
-      "recovered" > [msg]
+      "recovered" > [message]
 
   eq. ++> tests-package-tuple-concatenates-with-another
     concat.
@@ -182,12 +182,12 @@
   ++> tests-tuple-as-a-bound-attribute-size-2
     and. > @
       eq.
-        arr.at 0
+        array.at 0
         1
       eq.
-        arr.at 1
+        array.at 1
         2
-    * > arr
+    * > array
       1
       2
 
@@ -195,15 +195,15 @@
     and. > @
       and.
         eq.
-          arr.at 0
+          array.at 0
           1
         eq.
-          arr.at 1
+          array.at 1
           2
       eq.
-        arr.at 2
+        array.at 2
         3
-    with. > arr
+    with. > array
       with.
         tuple.empty.with 1
         2
@@ -223,15 +223,15 @@
     and. > @
       and.
         eq.
-          arr.at 0
+          array.at 0
           1
         eq.
-          arr.at 1
+          array.at 1
           2
       eq.
-        arr.at 2
+        array.at 2
         3
-    with. > arr
+    with. > array
       with.
         tuple.empty.with 1
         2
@@ -241,15 +241,15 @@
     and. > @
       and.
         eq.
-          arr.at 0
+          array.at 0
           1
         eq.
-          arr.at 1
+          array.at 1
           2
       eq.
-        arr.at 2
+        array.at 2
         3
-    with. > arr
+    with. > array
       with.
         tuple.empty.with 1
         2
@@ -281,19 +281,15 @@
     and. > @
       and.
         and.
-          eq.
-            arr.at 0
-            1
-          eq.
-            arr.at 1
-            2
+          (array.at 0).eq 1
+          (array.at 1).eq 2
         eq.
-          arr.at 2
+          array.at 2
           3
       eq.
-        arr.at 3
+        array.at 3
         "with"
-    with. > arr
+    with. > array
       *
         1
         2
@@ -302,9 +298,9 @@
 
   ++> tests-tuple-with-negative-index-gets-first
     eq. > @
-      arr.at -5
+      array.at -5
       0
-    * > arr
+    * > array
       0
       1
       2
@@ -313,9 +309,9 @@
 
   ++> tests-tuple-with-negative-index-gets-last
     eq. > @
-      arr.at -1
+      array.at -1
       4
-    * > arr
+    * > array
       0
       1
       2
@@ -327,8 +323,8 @@
   tuple.empty.tail --> on-getting-tail-from-empty-tuple
 
   --> on-out-of-tuple-bounds-with-negative-index
-    arr.at -6 > @
-    * > arr
+    array.at -6 > @
+    * > array
       0
       1
       2

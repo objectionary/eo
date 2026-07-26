@@ -13,29 +13,25 @@
 [text target replacement] > replaced
   matched.exists.not.if > @
     reinit
-    rec-replaced
-      matched
-      ""
-      matched.start
-  text > bts!
-  next. > matched
-    target.match reinit
-  block.exists.if > [block accum start] > rec-replaced
-    rec-replaced
-      block.next
-      concat.
+    block.exists.if > [block accum start] >> rec-replaced
+      rec-replaced
+        block.next
+        concat.
+          accum.concat
+            reinit.slice
+              start
+              block.from.minus start
+          replacement
+        block.to
+      string
         accum.concat
           reinit.slice
             start
-            block.from.minus start
-        replacement
-      block.to
-    string
-      accum.concat
-        reinit.slice
-          start
-          reinit.length.minus start
-  string bts > reinit
+            reinit.length.minus start
+    | matched "" matched.start
+  next. > matched
+    target.match reinit
+  string text! > reinit
 
   eq. ++> tests-does-not-replaces-if-regex-not-found
     replaced

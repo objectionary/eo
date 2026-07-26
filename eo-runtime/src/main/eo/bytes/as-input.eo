@@ -1,5 +1,5 @@
 # Makes an `input` from bytes.
-# Here `bts` is sequence of bytes or an object that can be dataized
+# Here `b` is sequence of bytes or an object that can be dataized
 # via `as-bytes`.
 # Here's how you can read portions of bytes from the input:
 # ```
@@ -28,11 +28,11 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[bts] > as-input
+[b] > as-input
   [size] > read
     @. > @
       read.
-        input-block bts --
+        input-block b --
         size
     [data buffer] > input-block
       buffer > @
@@ -43,20 +43,16 @@
           input-block
             as-bytes.
               data.slice
-                next
+                if. >> next!
+                  (number available).gt
+                    size >> requested!
+                  requested
+                  available
                 minus.
-                  number available
+                  number
+                    data.size >> available!
                   number next
-            as-bytes.
-              data.slice 0 next
-        data.size > available!
-        if. > next!
-          gt.
-            number available
-            requested
-          requested
-          available
-        size > requested!
+            (data.slice 0 next).as-bytes
 
   ++> tests-makes-an-input-from-bytes-and-reads
     and. > @
