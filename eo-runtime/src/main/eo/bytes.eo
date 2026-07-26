@@ -65,8 +65,7 @@
     1
 
   eq. ++> tests-bitwise-works-negative
-    as-number.
-      FF-FF-FF-FF-FF-FF-FF-81.as-bytes.or 00-00-00-00-00-00-00-7F.as-bytes
+    FF-FF-FF-FF-FF-FF-FF-81.as-bytes.or 00-00-00-00-00-00-00-7F.as-bytes
     FF-FF-FF-FF-FF-FF-FF-FF
 
   eq. ++> tests-concat-bools-as-bytes
