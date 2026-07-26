@@ -17,6 +17,7 @@ import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eolang.BytesOf;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
@@ -63,7 +64,17 @@ final class PrintfArgs {
     private static final double LONG_UPPER_LIMIT = 0x1.0p63;
 
     static {
-        PrintfArgs.CONVERSION.put('s', Dataized::asString);
+        PrintfArgs.CONVERSION.put('s', element -> {
+            final byte[] data = element.take();
+            if (data.length == Double.BYTES) {
+                final double num = new BytesOf(data).asNumber();
+                if (num == Math.floor(num) && !Double.isInfinite(num)) {
+                    return String.valueOf((long) num);
+                }
+                return String.valueOf(num);
+            }
+            return new String(data, java.nio.charset.StandardCharsets.UTF_8);
+        });
         PrintfArgs.CONVERSION.put('d', element -> PrintfArgs.toLong(element.asNumber()));
         PrintfArgs.CONVERSION.put('f', Dataized::asNumber);
         PrintfArgs.CONVERSION.put('x', element -> PrintfArgs.bytesToHex(element.take()));
