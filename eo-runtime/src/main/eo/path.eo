@@ -36,47 +36,47 @@
     [] > basename
       string > @
         if.
-          (pth.size.eq 0).or
-            idx.eq 0
-          pth
+          or.
+            pth.size.eq 0
+            index.eq 0
+          uri >> pth!
           as-bytes.
-            txt.slice
-              idx
-              txt.length.minus
-                number idx
-      plus. > idx!
-        string.last-index-of txt separator
-        1
-      uri > pth!
-      string pth > txt
+            text.slice
+              plus. >> index!
+                string.last-index-of text separator
+                1
+              text.length.minus
+                number index
+      string pth > text
     [] > dirname
       string > @
         if.
-          (pth.size.eq 0).or
+          or.
+            pth.size.eq 0
             len.eq -1
-          pth
+          uri >> pth!
           if.
             len.eq 0
             separator
-            (txt.slice 0 len).as-bytes
-      string.last-index-of txt separator > len!
-      uri > pth!
-      string pth > txt
+            as-bytes.
+              text.slice
+                0
+                string.last-index-of text separator >> len!
+      string pth > text
     [] > extname
       if. > @
         or.
           base.size.eq 0
-          idx.eq -1
+          index.eq -1
         ""
         string
           as-bytes.
-            txt.slice
-              idx
-              txt.length.minus
-                number idx
-      basename > base!
-      string.last-index-of txt "." > idx!
-      string base > txt
+            text.slice
+              string.last-index-of text "." >> index!
+              text.length.minus
+                number index
+      string > text
+        basename >> base!
     and. > is-absolute
       uri.length.gt 0
       eq.
@@ -109,25 +109,28 @@
           if. > [accum segment] >>
             segment.eq ".."
             if.
-              (accum.length.gt 0).and
-                (accum.head.eq "..").not
+              and.
+                accum.length.gt 0
+                not.
+                  accum.head.eq ".."
               accum.tail
               is-absolute.not.if
                 accum.with segment
                 accum
             if.
-              (segment.eq ".").or
+              or.
+                segment.eq "."
                 segment.eq ""
               accum
               accum.with segment
       and. > trailing
         ubts.size.gt 0
         eq.
-          ubts.slice
+          slice.
+            uri >> ubts!
             ubts.size.plus -1
             1
           separator
-      uri > ubts!
     [other] > resolved
       normalized. > @
         posix
@@ -136,9 +139,13 @@
               obts.size.eq 0
               uri
               if.
-                (obts.slice 0 1).eq separator
+                eq.
+                  obts.slice 0 1
+                  separator
                 obts
-                (uri.concat separator).concat obts
+                concat.
+                  uri.concat separator
+                  obts
       other.as-bytes > obts
     "/" > separator
   os.is-windows.if > separator
@@ -158,78 +165,84 @@
       [] > basename
         string > @
           if.
-            (pth.size.eq 0).or
-              idx.eq 0
-            pth
+            or.
+              pth.size.eq 0
+              index.eq 0
+            uri >> pth!
             as-bytes.
-              txt.slice
-                idx
-                txt.length.minus
-                  number idx
-        plus. > idx!
-          string.last-index-of txt separator
-          1
-        uri > pth!
-        string pth > txt
+              text.slice
+                plus. >> index!
+                  string.last-index-of text separator
+                  1
+                text.length.minus
+                  number index
+        string pth > text
       [] > dirname
         string > @
           if.
-            (pth.size.eq 0).or
+            or.
+              pth.size.eq 0
               len.eq -1
-            pth
+            uri >> pth!
             if.
               len.eq 0
               separator
-              (txt.slice 0 len).as-bytes
-        string.last-index-of txt separator > len!
-        uri > pth!
-        string pth > txt
+              as-bytes.
+                text.slice
+                  0
+                  string.last-index-of text separator >> len!
+        string pth > text
       [] > extname
         if. > @
-          (base.size.eq 0).or
-            idx.eq -1
+          or.
+            base.size.eq 0
+            index.eq -1
           ""
           string
             as-bytes.
-              txt.slice
-                idx
-                txt.length.minus
-                  number idx
-        basename > base!
-        string.last-index-of txt "." > idx!
-        string base > txt
+              text.slice
+                string.last-index-of text "." >> index!
+                text.length.minus
+                  number index
+        string > text
+          basename >> base!
       [] > is-absolute
         if. > @
           ubts.size.eq 0
           false
-          (is-root-relative ubts).or
-            (ubts.size.gt 1).and
+          or.
+            is-root-relative
+              uri >> ubts!
+            and.
+              ubts.size.gt 1
               is-drive-relative ubts
-        uri > ubts!
       [uri] > is-drive-relative
-        as-bool. > @
-          (string.regex "/^[a-zA-Z]:/").matches uri
+        as-bool. ((string.regex "/^[a-zA-Z]:/").match uri).next.exists > @
       [uri] > is-root-relative
         and. > @
           ubts.size.gt 0
-          (ubts.slice 0 1).eq
+          eq.
+            slice.
+              uri >> ubts!
+              0
+              1
             separator
-        uri > ubts!
       [] > normalized
         validated > @
           if.
             normalized.eq "\\\\"
             separator
             string normalized
-        is-drive-relative.if > driveless!
-          ubts.slice
-            2
-            ubts.size.plus -2
-          ubts
         as-bool. > driveless-rooted
-          ^.is-root-relative driveless
+          ^.is-root-relative
+            is-drive-relative.if >> driveless!
+              ubts.slice
+                2
+                ubts.size.plus -2
+              ubts
         as-bool. > is-drive-relative
-          ^.is-drive-relative ubts
+          ^.is-drive-relative
+            uri >> ubts!
         as-bool. > is-root-relative
           ^.is-root-relative ubts
         as-bytes. > normalized
@@ -242,31 +255,30 @@
               concat.
                 is-drive-relative.if
                   if.
-                    (driveless.slice 0 1).eq separator
+                    eq.
+                      driveless.slice 0 1
+                      separator
                     uri.slice 0 3
                     uri.slice 0 2
                   is-root-relative.if separator --
-                path
+                string.joined >> path!
+                  separator
+                  tuple.reduced
+                    string.split driveless separator
+                    *
+                    if. > [accum segment] >>
+                      segment.eq ".."
+                      if.
+                        and. (accum.length.gt 0) (accum.head.eq "..").not
+                        accum.tail
+                        driveless-rooted.not.if (accum.with segment) accum
+                      if.
+                        or.
+                          segment.eq "."
+                          segment.eq ""
+                        accum
+                        accum.with segment
               trailing.if separator --
-        string.joined > path!
-          separator
-          tuple.reduced
-            string.split driveless separator
-            *
-            if. > [accum segment] >>
-              segment.eq ".."
-              if.
-                (accum.length.gt 0).and
-                  (accum.head.eq "..").not
-                accum.tail
-                driveless-rooted.not.if
-                  accum.with segment
-                  accum
-              if.
-                (segment.eq ".").or
-                  segment.eq ""
-                accum
-                accum.with segment
         and. > trailing
           ubts.size.gt 0
           eq.
@@ -274,47 +286,53 @@
               ubts.size.plus -1
               1
             separator
-        uri > ubts!
       [other] > resolved
         normalized. > @
           validated
             string
               if.
-                (is-drive-relative valid).as-bool
+                as-bool.
+                  is-drive-relative
+                    separated-correctly other >> valid!
                 valid
                 if.
-                  (is-root-relative valid).as-bool
+                  as-bool.
+                    is-root-relative valid
                   if.
-                    is-drive-relative ubts
-                    (ubts.slice 0 2).concat valid
+                    is-drive-relative
+                      uri >> ubts!
+                    concat.
+                      ubts.slice 0 2
+                      valid
                     valid
-                  (ubts.concat separator).concat valid
-        uri > ubts!
-        separated-correctly other > valid!
+                  concat. (ubts.concat separator) valid
       [uri] > separated-correctly
         if. > @
-          (string.index-of pth path.posix.separator).eq
+          eq.
+            string.index-of pth path.posix.separator
             -1
-          string ubts
-          string repl
+          string
+            uri >> ubts!
+          string (string.replaced pth (string.regex "/\\//") separator)!
         string ubts > pth
-        string.replaced > repl!
-          pth
-          string.regex "/\\//"
-          separator
-        uri > ubts!
       ^.separator > separator
 
   and. ++> tests-detects-absolute-posix-path
     is-absolute.
       path.posix "/var/www/html"
-    (path.posix "foo/bar/baz").is-absolute.not
+    not.
+      is-absolute.
+        path.posix "foo/bar/baz"
 
   and. ++> tests-detects-absolute-win32-path
-    (path.win32 "C:\\Windows\\Users").is-absolute.and
+    and.
+      is-absolute.
+        path.win32 "C:\\Windows\\Users"
       is-absolute.
         path.win32 "\\Windows\\Users"
-    (path.win32 "temp\\var").is-absolute.not
+    not.
+      is-absolute.
+        path.win32 "temp\\var"
 
   path.separator.eq ++> tests-determines-separator-depending-on-os
     os.is-windows.if
@@ -539,7 +557,7 @@
         *
           "var"
           "www"
-          "hello.txt"
+          "hello.text"
     path.joined
       * "var" "www"
 
@@ -559,8 +577,8 @@
         *
           "var"
           "www"
-          "hello.txt"
-    ".txt"
+          "hello.text"
+    ".text"
 
   eq. ++> tests-takes-valid-basename
     basename.

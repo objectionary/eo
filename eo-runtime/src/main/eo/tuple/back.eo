@@ -1,4 +1,5 @@
-# Elements of `list` from `index` to the end (supports oversized index).
+# The last `index` elements of `list` (an `index` larger than `list.length`
+# returns the whole `list`).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -7,11 +8,10 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > back
-  ? >> list
-  ? >> index
+[list index] > back
   if. > @
-    0.gt start
+    0.gt
+      list.length.minus index! >> start!
     list
     reducedi
       list
@@ -20,8 +20,6 @@
         idx.gte start
         accum.with item
         accum
-  index > idx!
-  list.length.minus idx > start!
 
   eq. ++> tests-large-index-in-back
     back

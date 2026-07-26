@@ -64,6 +64,37 @@ final class MjPrintTest {
         }
     }
 
+    @Test
+    void doesNotMangleADirectoryNameContainingTheXmirSubstring(@Mktmp final Path temp)
+        throws Exception {
+        final Path source = temp.resolve("xmir/v1.xmir-legacy/main.xmir");
+        Files.createDirectories(source.getParent());
+        new Saved(
+            new EoSyntax(
+                new InputOf(
+                    String.join(
+                        System.lineSeparator(),
+                        "+package foo",
+                        "",
+                        "[] > main"
+                    )
+                )
+            ).parsed().toString(),
+            source
+        ).value();
+        final Path output = temp.resolve("eo");
+        new FakeMaven(temp)
+            .with("printSourcesDir", temp.resolve("xmir").toFile())
+            .with("printOutputDir", output.toFile())
+            .execute(new FakeMaven.Print())
+            .result();
+        MatcherAssert.assertThat(
+            "only the trailing .xmir extension should be replaced, the .xmir substring in the directory name must survive untouched",
+            Files.exists(output.resolve("v1.xmir-legacy/main.eo")),
+            Matchers.is(true)
+        );
+    }
+
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/print-packs", glob = "**.yaml")
     void printsXmirToEo(final String pack, @Mktmp final Path temp) throws Exception {

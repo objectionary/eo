@@ -26,15 +26,18 @@
         n.times -1
       positive n
   [a] > positive
-    concat. > @
+    if. > @
+      places.eq 0
+      as-decimal ip
       concat.
-        as-decimal ip
-        ".".as-bytes
-      rec-pad
-        m.minus
-          ip.times scale
-        places
-        --
+        concat.
+          as-decimal ip
+          ".".as-bytes
+        rec-pad
+          m.minus
+            ip.times scale
+          places
+          --
     floor. > ip
       m.div scale
     floor. > m
@@ -42,7 +45,7 @@
         a.times scale
         0.5
     pow10 places > scale
-  if. > [p] > pow10
+  if. > [p] >> pow10
     p.eq 0
     1
     times.
@@ -50,7 +53,7 @@
         as-number.
           p.minus 1
       10
-  if. > [value count acc] > rec-pad
+  if. > [value count acc] >> rec-pad
     count.eq 0
     acc
     rec-pad
@@ -63,7 +66,7 @@
           plus.
             floor.
               value.minus
-                (value.div 10).floor.times 10
+                times. (value.div 10).floor 10
             48
         acc
   if. > [a] > signed
@@ -93,7 +96,7 @@
     as-fixed
       3.14159
       -2
-      "recovered" > [msg]
+      "recovered" > [message]
 
   eq. ++> tests-negative-rounding-to-zero-drops-sign
     "0.00"
@@ -110,7 +113,7 @@
     as-fixed
       3.14159
       2.5
-      "recovered" > [msg]
+      "recovered" > [message]
 
   eq. ++> tests-pads-with-trailing-zeros
     "1.250000"
@@ -136,6 +139,16 @@
     "0.000000"
     string
       as-fixed 0 6
+
+  eq. ++> tests-zero-places-omits-decimal-point
+    "3"
+    string
+      as-fixed 2.5 0
+
+  eq. ++> tests-zero-places-omits-decimal-point-when-negative
+    "-3"
+    string
+      as-fixed -2.5 0
 
   as-fixed --> on-negative-places-without-fallback
     3.14159

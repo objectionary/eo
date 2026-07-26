@@ -28,62 +28,66 @@
         pairs.length.eq 0
         *
         @.
-          rec-rebuild pairs
-    [tup] > rec-rebuild
-      if. > @
-        tup.length.eq 0
-        *
-        if.
-          has-key prev
-          prev
-          prev.with
-            [] >>
-              ^.hash > hash
-              ^.kbts > kbts
-              tup.head.key > key
-              tup.head.value > value
-      if. > [ent] > has-key
-        ent.length.eq 0
-        false
-        if.
-          (ent.head.hash.eq hash).and
-            ent.head.kbts.eq kbts
-          true
-          has-key ent.tail
-      bytes.hash kbts > hash!
-      tup.head.key.as-bytes > kbts!
-      @. > prev
-        rec-rebuild tup.tail
+          [tup] >> rec-rebuild
+            if. > @
+              tup.length.eq 0
+              *
+              if.
+                has-key prev
+                prev
+                prev.with
+                  [] >>
+                    ^.hash > hash
+                    ^.kbts > kbts
+                    tup.head.key > key
+                    tup.head.value > value
+            bytes.hash >> hash!
+              tup.head.key.as-bytes >> kbts!
+            if. > [ent] > has-key
+              ent.length.eq 0
+              false
+              if.
+                and.
+                  ent.head.hash.eq hash
+                  ent.head.kbts.eq kbts
+                true
+                has-key ent.tail
+            @. > prev
+              rec-rebuild tup.tail
+          | pairs
   [key value] > entry
   [entries] > initialized
     [key] > found
       if. > @
         size.eq 0
         not-found
-        rec-key-search entries
-      bytes.hash kbts > hash!
-      key.as-bytes > kbts!
+        [tup] >> rec-key-search
+          if. > @
+            tup.length.eq 0
+            not-found
+            prev.exists.if
+              prev
+              if.
+                and.
+                  tup.head.hash.eq hash
+                  tup.head.kbts.eq kbts
+                [] >>
+                  true > exists
+                  tup.head.value > [cant-get] > get
+                not-found
+          @. > prev
+            rec-key-search tup.tail
+        | entries
+      bytes.hash >> hash!
+        key.as-bytes >> kbts!
       [] > not-found
         false > exists
         cant-get > [cant-get] > get
           "Object by hash code %d from given key does not exists".printf
             * hash
-      [tup] > rec-key-search
-        if. > @
-          tup.length.eq 0
-          not-found
-          prev.exists.if
-            prev
-            if.
-              (tup.head.hash.eq hash).and
-                tup.head.kbts.eq kbts
-              [] >>
-                true > exists
-                tup.head.value > [cant-get] > get
-              not-found
-        @. > prev
-          rec-key-search tup.tail
-    (found key).exists > [key] > has
+    [key] > has
+      exists. > @
+        found key
     tuple.mapped > keys
       entries
       entry.key > [entry]
@@ -98,25 +102,27 @@
             entries
             [entry] >>
               not. > @
-                (hash.eq entry.hash).and
+                and.
+                  hash.eq entry.hash
                   kbts.eq entry.kbts
           [] >>
             ^.hash > hash
             ^.kbts > kbts
             ^.key > key
             ^.value > value
-      bytes.hash kbts > hash!
-      key.as-bytes > kbts!
+      bytes.hash >> hash!
+        key.as-bytes >> kbts!
     [key] > without
       map.initialized > @
         tuple.filtered
           entries
           [entry] >>
             not. > @
-              (hash.eq entry.hash).and
+              and.
+                hash.eq entry.hash
                 kbts.eq entry.kbts
-      bytes.hash kbts > hash!
-      key.as-bytes > kbts!
+      bytes.hash >> hash!
+        key.as-bytes >> kbts!
 
   ++> tests-adds-key-colliding-with-existing-one
     and. > @
@@ -179,7 +185,7 @@
         map *
           map.entry "Aa" 1
         "BB"
-      "recovered" > [msg]
+      "recovered" > [message]
 
   ++> tests-finds-element-by-key-in-map
     2.eq found.get > @
@@ -215,7 +221,7 @@
     "recovered".eq > @
       get.
         mp.found "absent"
-        "recovered" > [msg]
+        "recovered" > [message]
     map * > mp
       map.entry "one" 1
 
@@ -233,8 +239,10 @@
         0
         [m]
           seq * > @
-            (mp.found 1).exists
-            (mp.found 1).exists
+            exists.
+              mp.found 1
+            exists.
+              mp.found 1
             m
           map * > mp
             map.entry
@@ -254,7 +262,9 @@
       "one"
 
   ++> tests-removes-only-the-given-key-of-colliding-ones
-    (mp.has "Aa").not.and > @
+    and. > @
+      not.
+        mp.has "Aa"
       mp.has "BB"
     without. > mp
       map *

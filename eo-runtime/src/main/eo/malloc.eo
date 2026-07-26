@@ -67,14 +67,12 @@
     scope
   [object scope] > for
     malloc.of > @
-      bts.size
+      size.
+        object >> bts!
       seq * > [m] >>
         m.write 0 bts
         scope m
-    object > bts!
-  [size scope] > of
-    [] > @ /Q.bytes
-    chunk > allocated
+  [size scope] > of /Q.bytes
 
   malloc.for ++> copies-and-resizes-to-target
     0
@@ -111,8 +109,7 @@
         [m] >>
           m.put > @
             num.times num
-          inc m > n!
-          number n > num
+          number (inc m)! > num
       64
     seq * > [x] > inc
       x.put
@@ -156,7 +153,8 @@
             m.write 0 "XXX"
             m.write 1 "Y"
             b.put
-              (m.read 0 3).eq
+              eq.
+                m.read 0 3
                 "XYX"
 
   ++> tests-malloc-decreases-block-size
@@ -167,8 +165,13 @@
           01-02-03-04-05
           b.put > [m] >>
             and.
-              (m.resized 3).size.eq 3
+              eq. (m.resized 3).size 3
               m.get.eq 01-02-03
+
+  eq. ++> tests-malloc-empty-grows-on-first-put
+    malloc.empty
+      m.put 42 > [m]
+    42
 
   malloc.empty ++> tests-malloc-empty-is-empty
     m.size.eq 0 > [m]
@@ -192,7 +195,7 @@
           01-02-03-04
           b.put > [m] >>
             and.
-              (m.resized 6).size.eq 6
+              eq. (m.resized 6).size 6
               m.get.eq 01-02-03-04-00-00
 
   eq. ++> tests-malloc-is-strictly-sized-int
@@ -240,7 +243,8 @@
           seq * > [m] >>
             m.write 2 "Hello"
             b.put
-              (m.read 2 5).eq
+              eq.
+                m.read 2 5
                 "Hello"
 
   ++> tests-malloc-rewrites-and-increments-itself
@@ -276,7 +280,8 @@
               "Hello, "
             m.write 7 "Jeff!"
             b.put
-              (m.read 0 12).eq
+              eq.
+                m.read 0 12
                 "Hello, Jeff!"
 
   eq. ++> tests-memory-is-strictly-sized-string
@@ -297,7 +302,7 @@
         4
         func m > [m] >>
       0
-    if. > [n] > func
+    if. > [n] >> func
       n.as-number.gt 0
       seq *
         n.put

@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A private `>>` formation handle (#5876) that nothing in the file references.
+# "inline-cactoos" folds such a handle into its use site and drops the standalone
+# binding, but with no use site there is nowhere to fold it to, so dropping the
+# binding deleted the whole helper from the printed source — a bare
+# `b > [b] > array` came back (#5914). An unreferenced handle is kept where it
+# stands and keeps the readable "@local" name "restore-local-names" preserves
+# for it, exactly as a recursive one does (#5681).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [b] > array
+    b > @
+    [index] >> slice-byte
+      index > @
+
+printed: |
+  [b] > array
+    b > @
+    index > [index] >> slice-byte

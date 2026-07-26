@@ -9,13 +9,13 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[bts cant-convert] > as-u64
+[b cant-convert] > as-u64
   if. > @
-    bts.size.eq 8
-    u64 bts
+    b.size.eq 8
+    u64 b
     cant-convert
       "Can't convert non 8 length bytes to u64, bytes are %x".printf
-        * bts
+        * b
 
   eq. ++> tests-bytes-converts-to-u64-and-back
     00-00-00-00-00-00-00-33.as-u64.as-bytes
@@ -24,6 +24,6 @@
   eq. ++> tests-wrong-size-as-u64-returns-provided-fallback
     "recovered"
     01-01-01-01.as-u64
-      "recovered" > [msg]
+      "recovered" > [message]
 
   01-01-01-01.as-u64 --> on-bytes-of-wrong-size-as-u64

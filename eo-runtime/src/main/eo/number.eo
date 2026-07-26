@@ -14,65 +14,29 @@
 [as-bytes] > number
   as-bytes > @
   as-i32.as-i16 > as-i16
-  as-i64.as-i32 > as-i32
-  [cant-convert] > as-i64
-    overflow.if > @
-      cant-convert
-        "Can't convert number %f to i64 because it's out of i64 bounds".printf
-          * ^
-      if.
-        exp.lt 1023
-        00-00-00-00-00-00-00-00.as-i64
-        if.
-          exp.eq 1086
-          80-00-00-00-00-00-00-00.as-i64
-          negative.if
-            magnitude.not.as-i64.plus 00-00-00-00-00-00-00-01.as-i64
-            magnitude.as-i64
-    as-number. > exp
-      as-i64.
-        right.
-          as-bytes.and 7F-F0-00-00-00-00-00-00
-          52
-    if. > magnitude
-      exp.gte 1075
-      mantissa.left
-        exp.minus 1075
-      mantissa.right
-        1075.minus exp
-    or. > mantissa
-      as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
-      00-10-00-00-00-00-00-00
-    eq. > negative
-      as-bytes.and 80-00-00-00-00-00-00-00
-      80-00-00-00-00-00-00-00
-    or. > overflow
-      exp.eq 2047
-      or.
-        exp.gt 1086
-        and.
-          exp.eq 1086
-          not.
-            negative.and
-              mantissa.eq 00-10-00-00-00-00-00-00
+  as-i32. > as-i32
+    number.as-i64 $
   [x] > div /Q.number
   [x] > eq
     if. > @
       ^.is-nan.or
         is-nan.
-          number xbts
+          number
+            x >> xbts!
       false
       or.
         and.
-          (xbts.eq pzero).or
+          or.
+            xbts.eq pzero
             xbts.eq nzero
-          (bts.eq pzero).or
-            bts.eq nzero
-        bts.eq xbts
-    as-bytes > bts!
+          or.
+            eq.
+              as-bytes >> b!
+              pzero
+            b.eq nzero
+        b.eq xbts
     -0.as-bytes > nzero
     0.as-bytes > pzero
-    x > xbts!
   [x] > gt /Q.bool
   [x] > plus /Q.number
   [x] > times /Q.number
@@ -80,30 +44,6 @@
   42.eq 42.as-bytes ++> tests-as-bytes-equals-to-int
 
   42.as-bytes.eq 42 ++> tests-as-bytes-equals-to-int-backwards
-
-  eq. ++> tests-as-i64-converts-fraction-below-one-to-zero
-    0.5.as-i64.as-bytes
-    00-00-00-00-00-00-00-00
-
-  eq. ++> tests-as-i64-converts-large-number-with-left-shift
-    1000000000000000000.as-i64.as-bytes
-    0D-E0-B6-B3-A7-64-00-00
-
-  eq. ++> tests-as-i64-converts-long-min-boundary
-    -9.223372036854776e18.as-i64.as-bytes
-    80-00-00-00-00-00-00-00
-
-  eq. ++> tests-as-i64-converts-negative-zero-to-zero
-    -0.as-i64.as-bytes
-    00-00-00-00-00-00-00-00
-
-  eq. ++> tests-as-i64-truncates-negative-toward-zero
-    -3.7.as-i64.as-bytes
-    FF-FF-FF-FF-FF-FF-FF-FD
-
-  eq. ++> tests-as-i64-truncates-positive-toward-zero
-    3.7.as-i64.as-bytes
-    00-00-00-00-00-00-00-03
 
   ++> tests-calculates-fibonacci-number-with-recursion
     eq. > @
@@ -126,17 +66,14 @@
       if. > @
         n.lt 3
         small n
-        rec
-          n
-          1
-          1
-      if. > [n minus1 minus2] > rec
-        n.eq 3
-        minus1.plus minus2
-        rec
-          n.minus 1
+        if. > [n minus1 minus2] >> rec
+          n.eq 3
           minus1.plus minus2
-          minus1
+          rec
+            n.minus 1
+            minus1.plus minus2
+            minus1
+        | n 1 1
       if. > [n] > small
         n.eq 2
         1
@@ -176,16 +113,25 @@
                   and.
                     and.
                       and.
-                        ((0.eq nan).eq false).and
-                          (0.eq pinf).eq false
-                        (0.eq ninf).eq false
-                      (42.5.eq nan).eq false
-                    (42.5.eq pinf).eq false
-                  (42.5.eq ninf).eq false
-                (0.eq nan).eq false
-              (0.eq pinf).eq false
-            (0.eq ninf).eq false
-          (42.5.eq nan).eq false
+                        and.
+                          eq. (0.eq nan) false
+                          eq. (0.eq pinf) false
+                        eq. (0.eq ninf) false
+                      eq. (42.5.eq nan) false
+                    eq. (42.5.eq pinf) false
+                  eq. (42.5.eq ninf) false
+                eq.
+                  0.eq nan
+                  false
+              eq.
+                0.eq pinf
+                false
+            eq.
+              0.eq ninf
+              false
+          eq.
+            42.5.eq nan
+            false
         eq.
           42.5.eq pinf
           false
@@ -209,10 +155,18 @@
         and.
           and.
             and.
-              (0.eq nan).eq false
-              (0.eq pinf).eq false
-            (0.eq ninf).eq false
-          (42.eq nan).eq false
+              eq.
+                0.eq nan
+                false
+              eq.
+                0.eq pinf
+                false
+            eq.
+              0.eq ninf
+              false
+          eq.
+            42.eq nan
+            false
         eq.
           42.eq pinf
           false
@@ -251,9 +205,13 @@
     as-bytes.
       0.div 0
 
-  (nan.eq nan).not ++> tests-nan-not-eq-nan
+  ++> tests-nan-not-eq-nan
+    not. > @
+      nan.eq nan
 
-  (nan.eq 42).not ++> tests-nan-not-eq-number
+  ++> tests-nan-not-eq-number
+    not. > @
+      nan.eq 42
 
   eq. ++> tests-nan-not-gt-nan
     nan.gt nan
@@ -316,18 +274,28 @@
 
   ninf.eq ninf ++> tests-negative-infinity-eq-negative-infinity
 
-  (ninf.gt ninf).not ++> tests-negative-infinity-gt-negative-infinity
+  ++> tests-negative-infinity-gt-negative-infinity
+    not. > @
+      ninf.gt ninf
 
   ninf.eq ++> tests-negative-infinity-is-equal-to-one-div-zero
     -1.div 0
 
-  (ninf.eq 42.5).not ++> tests-negative-infinity-not-eq-float
+  ++> tests-negative-infinity-not-eq-float
+    not. > @
+      ninf.eq 42.5
 
-  (ninf.eq 42).not ++> tests-negative-infinity-not-eq-int
+  ++> tests-negative-infinity-not-eq-int
+    not. > @
+      ninf.eq 42
 
-  (ninf.eq nan).not ++> tests-negative-infinity-not-eq-nan
+  ++> tests-negative-infinity-not-eq-nan
+    not. > @
+      ninf.eq nan
 
-  (ninf.eq pinf).not ++> tests-negative-infinity-not-eq-positive-infinity
+  ++> tests-negative-infinity-not-eq-positive-infinity
+    not. > @
+      ninf.eq pinf
 
   eq. ++> tests-negative-infinity-not-gt-float
     ninf.gt 42.5
@@ -422,11 +390,6 @@
     1.plus 1
     2
 
-  eq. ++> tests-out-of-range-as-i64-returns-provided-fallback
-    "recovered"
-    1.0e30.as-i64
-      "recovered" > [msg]
-
   -17.9.abs.eq 17.9 ++> tests-package-absolute-of-negative
 
   eq. ++> tests-package-modulo-of-two-numbers
@@ -507,20 +470,32 @@
 
   pinf.gt ninf ++> tests-positive-infinity-gt-negative-infinity
 
-  (pinf.gt pinf).not ++> tests-positive-infinity-gt-positive-infinity
+  ++> tests-positive-infinity-gt-positive-infinity
+    not. > @
+      pinf.gt pinf
 
   pinf.eq ++> tests-positive-infinity-is-equal-to-one-div-zero
     1.div 0
 
-  (pinf.eq 42.5).not ++> tests-positive-infinity-not-eq-float
+  ++> tests-positive-infinity-not-eq-float
+    not. > @
+      pinf.eq 42.5
 
-  (pinf.eq 42).not ++> tests-positive-infinity-not-eq-int
+  ++> tests-positive-infinity-not-eq-int
+    not. > @
+      pinf.eq 42
 
-  (pinf.eq nan).not ++> tests-positive-infinity-not-eq-nan
+  ++> tests-positive-infinity-not-eq-nan
+    not. > @
+      pinf.eq nan
 
-  (pinf.eq ninf).not ++> tests-positive-infinity-not-eq-negative-infinity
+  ++> tests-positive-infinity-not-eq-negative-infinity
+    not. > @
+      pinf.eq ninf
 
-  (pinf.gt nan).not ++> tests-positive-infinity-not-gt-nan
+  ++> tests-positive-infinity-not-gt-nan
+    not. > @
+      pinf.gt nan
 
   eq. ++> tests-positive-infinity-plus-nan
     as-bytes.
@@ -589,11 +564,3 @@
   seq * ++> tests-zero-division
     2.div 0
     true
-
-  1.0e30.as-i64 --> on-converting-huge-number-to-i64
-
-  9.223372036854776e18.as-i64 --> on-converting-long-max-boundary-to-i64
-
-  nan.as-i64 --> on-converting-nan-to-i64
-
-  pinf.as-i64 --> on-converting-positive-infinity-to-i64

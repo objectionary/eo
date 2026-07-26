@@ -121,6 +121,52 @@ final class Node {
     }
 
     /**
+     * The same node with its suffix dropped.
+     *
+     * <p>An inline const argument that applies arguments of its own is
+     * parenthesised, and its {@code !} marker has to sit outside the
+     * brackets ({@code (inc m)!}), so {@link Pretty} inlines the node
+     * without the suffix and appends the marker itself (#5902).</p>
+     *
+     * @return The node without its suffix
+     */
+    Node bare() {
+        return new Node(
+            this.base, "", this.abstractt, this.test,
+            this.reversed, this.data, this.children
+        );
+    }
+
+    /**
+     * The same node as it must be spelled on a line of its own.
+     *
+     * <p>An anonymous inline const argument (#5821) carries a bare {@code !}
+     * marker, and only a horizontal argument slot can hold it: on a line of
+     * its own the marker closes the expression, so the arguments below it
+     * become trailing garbage ({@code or.!}), and behind those arguments it
+     * marks the last one instead of the whole application (#5902). A name
+     * suffix, however, may carry the marker (R-3.10.4), so such a const takes
+     * the auto-name {@code >>} that the same slot already spells for a
+     * formation. The parser floats an auto-named binding up to the enclosing
+     * formation and leaves a reference in its place, which is the very graph
+     * the inline argument builds, so the two spellings agree (#5927).</p>
+     *
+     * @return The node with a suffix its own line can carry
+     */
+    Node lined() {
+        final Node result;
+        if ("!".equals(this.tail)) {
+            result = new Node(
+                this.base, " >>!", this.abstractt, this.test,
+                this.reversed, this.data, this.children
+            );
+        } else {
+            result = this;
+        }
+        return result;
+    }
+
+    /**
      * Whether this node carries no name suffix anywhere in its subtree.
      *
      * <p>A line is "named" when its {@code tail} holds a {@code > name},

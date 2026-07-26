@@ -414,7 +414,7 @@
       </xsl:choose>
       <xsl:if test="eo:atom(.)">
         <!--
-        A multi-segment signature (e.g. "Φ.malloc.of.allocated") stays
+        A multi-segment signature (e.g. "Φ.string.regex.pattern") stays
         rooted: on reparse a dotted @atom is not re-homed, so dropping the
         root would yield an XSD-invalid fqn. A single-name signature (e.g.
         "Φ.bytes") re-resolves to its root on reparse, so the implicit

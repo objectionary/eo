@@ -26,6 +26,12 @@ final class OnClasspath {
      */
     private static final Map<String, Boolean> CACHE = new ConcurrentHashMap<>(0);
 
+    /**
+     * EO name to presence, so that a name asked in EO notation pays the
+     * translation to Java notation at most once.
+     */
+    private static final Map<String, Boolean> OBJECTS = new ConcurrentHashMap<>(0);
+
     private OnClasspath() {
     }
 
@@ -36,6 +42,17 @@ final class OnClasspath {
      */
     static boolean has(final String cls) {
         return OnClasspath.CACHE.computeIfAbsent(cls, OnClasspath::probe);
+    }
+
+    /**
+     * Is there an EO object with this name on the classpath?
+     * @param fqn The fully-qualified EO name, like {@code Φ.string.as-number}
+     * @return TRUE if it exists
+     */
+    static boolean object(final String fqn) {
+        return OnClasspath.OBJECTS.computeIfAbsent(
+            fqn, name -> OnClasspath.has(new JavaPath(name).toString())
+        );
     }
 
     /**
