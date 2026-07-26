@@ -198,9 +198,9 @@ final class PrintfArgs {
      * @return The number as {@code long}
      */
     private static long toLong(final double number) {
-        if (number < Long.MIN_VALUE || number >= PrintfArgs.LONG_UPPER_LIMIT) {
+        if (Double.isNaN(number) || number < Long.MIN_VALUE || number >= PrintfArgs.LONG_UPPER_LIMIT) {
             throw new ExFailure(
-                "The number %s doesn't fit into long range for the '%%d' conversion",
+                "The number %s can't be converted to long for the '%%d' conversion",
                 number
             );
         }
