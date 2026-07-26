@@ -662,6 +662,30 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void rejectsLoneSurrogateUnicodeEscape() throws Exception {
+        MatcherAssert.assertThat(
+            "a \\u escape decoding to a lone UTF-16 surrogate (D800-DFFF) must show up as an /object/errors/error entry, not silently emit '?'",
+            EoSyntaxTest.raw(
+                String.join(String.valueOf((char) 10), "[] > foo", "  \"\\uD800\" > @")
+            ).toString(),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'unicode')]"
+            )
+        );
+    }
+
+    @Test
+    void acceptsValidSurrogatePairEscape() throws Exception {
+        MatcherAssert.assertThat(
+            "a high surrogate immediately followed by a low surrogate is a valid pair and must not be rejected",
+            EoSyntaxTest.raw(
+                String.join(String.valueOf((char) 10), "[] > foo", "  \"\\uD83C\\uDF08\" > @")
+            ).toString(),
+            Matchers.not(XhtmlMatchers.hasXPath("/object/errors/error"))
+        );
+    }
+
+    @Test
     void emitsProgramMetadataAttributes() throws Exception {
         MatcherAssert.assertThat(
             "the <object> root must carry the standard program metadata attributes",

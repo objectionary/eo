@@ -188,20 +188,39 @@
     <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and not(eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
   </xsl:function>
   <!--
+  Whether the bare name of `$binding` would read as something else at `$ref`:
+  some formation between the reference and the one that owns the handle declares
+  that same readable name, so the parser's search — which stops at the nearest
+  scope declaring the name at all — never reaches the handle. The binding a
+  reference stands in counts as such a declaration, and is the reason this
+  happens at all: `^.foo &gt; foo` copies the parent's handle into an attribute
+  of the same name, and inside that formation a bare `foo` is the copy (#5917).
+  -->
+  <xsl:function name="eo:shadowed" as="xs:boolean">
+    <xsl:param name="ref" as="element()"/>
+    <xsl:param name="binding" as="element()"/>
+    <xsl:variable name="owner" select="$binding/.."/>
+    <xsl:sequence select="some $scope in $ref/ancestor::o[eo:abstract(.)][ancestor::o[. is $owner]] satisfies exists($scope/o[@name = $binding/@local or @local = $binding/@local])"/>
+  </xsl:function>
+  <!--
   The base under which a non-hosting reference reads back: the readable "@local"
   handle of the binding it resolves to, plus whatever the reference dispatches on
-  top of it. The obfuscated cactus segment and the `ξ.ρ...` climb in front of it
-  give way to a plain `ξ.&lt;local&gt;`, since a handle is reached by its bare
-  name alone and the parser re-derives the climb in "resolve-local-names". A
-  reference standing in the binding's own scope has no climb to shed; one inside
-  a nested formation does, and spelling it out would print a `^.&lt;local&gt;`
-  that binds to nothing on reparse (#5893).
+  top of it. The obfuscated cactus segment gives way to that handle, and the
+  `ξ.ρ...` climb in front of it to a plain `ξ`, since a handle is reached by its
+  bare name alone and the parser re-derives the climb in "resolve-local-names".
+  A reference standing in the binding's own scope has no climb to shed; one
+  inside a nested formation does, and #5893 spelled it out as a `^.&lt;local&gt;`
+  that bound to nothing on reparse. It binds now (#5917), and a shadowed
+  reference (see `eo:shadowed`) keeps its climb for that reason: the bare name
+  is taken there, so the explicit scope is the only spelling that still reads
+  back as the handle.
   -->
   <xsl:function name="eo:handle-base" as="xs:string">
     <xsl:param name="ref" as="element()"/>
     <xsl:param name="binding" as="element()"/>
     <xsl:variable name="segs" select="tokenize($ref/@base, '\.')"/>
-    <xsl:sequence select="string-join(($eo:xi, string($binding/@local), subsequence($segs, index-of($segs, string($binding/@name))[1] + 1)), '.')"/>
+    <xsl:variable name="at" select="index-of($segs, string($binding/@name))[1]"/>
+    <xsl:sequence select="string-join((if (eo:shadowed($ref, $binding)) then subsequence($segs, 1, $at - 1) else $eo:xi, string($binding/@local), subsequence($segs, $at + 1)), '.')"/>
   </xsl:function>
   <!--
   The kept multi-referenced abstract handle binding (`[] &gt;&gt; name`, #5876)

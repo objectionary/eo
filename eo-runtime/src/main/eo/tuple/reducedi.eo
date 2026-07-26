@@ -10,24 +10,21 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > reducedi
-  ? >> list
-  ? >> start
-  ? >> func
+[list start func] > reducedi
   if. > @
     is-empty list
     start
-    rec-reducedi list
-  if. > [tup] > rec-reducedi
-    tup.length.eq 1
-    func
-      start
-      tup.head
-      0
-    func
-      rec-reducedi tup.tail
-      tup.head
-      tup.tail.length
+    if. > [tup] >> rec-reducedi
+      tup.length.eq 1
+      func
+        start
+        tup.head
+        0
+      func
+        rec-reducedi tup.tail
+        tup.head
+        tup.tail.length
+    | list
 
   ++> tests-list-reducedi-bools-array
     not. > @

@@ -13,10 +13,17 @@
 [text i fallback] > at
   if. > @
     or.
-      0.gt index
+      0.gt
+        if. >> index!
+          0.gt
+            i >> idx!
+          plus.
+            number len
+            idx
+          idx
       gte.
         number index
-        len
+        text.length >> len!
     fallback
       "Given index %d is out of text bounds".printf
         * index
@@ -24,14 +31,6 @@
       text
       index
       1
-  i > idx!
-  if. > index!
-    0.gt idx
-    plus.
-      number len
-      idx
-    idx
-  text.length > len!
 
   eq. ++> tests-returns-char-at-negative-index
     "m"
@@ -56,7 +55,7 @@
     at
       "some"
       10
-      "recovered" > [msg]
+      "recovered" > [message]
 
   at --> on-text-at-index-more-than-length
     "some"

@@ -52,7 +52,9 @@
   [cant-check] > is-directory
     if. > @
       info.code.eq 0
-      (info.output.mode.div 4096).floor.eq
+      eq.
+        floor.
+          info.output.mode.div 4096
         4
       cant-check
     called. > info
@@ -89,15 +91,19 @@
         existing.and exists.not
         cant-open
           "File must exist for given access mod: '%s'".printf
-            * access
+            *
+              mode >> access!
         seq *
           open-file
           ^
-    mode > access!
-    (access.eq "a").as-bool.or > appending
+    or. > appending
+      as-bool.
+        access.eq "a"
       as-bool.
         access.eq "a+"
-    (access.eq "r").as-bool.or > existing
+    or. > existing
+      as-bool.
+        access.eq "r"
       as-bool.
         access.eq "r+"
     or. > known
@@ -140,14 +146,18 @@
           syscall.rdwr
           writable.if syscall.wronly syscall.rdonly
         plus. > flags
-          (direction.plus creat).plus trunc
+          plus.
+            direction.plus creat
+            trunc
           append
         called. > opened
           syscall.open
             * path flags syscall.mode
         [descriptor] > stream
           [size] > read
-            (input-block --).read size > @
+            read. > @
+              input-block --
+              size
             [buffer] > input-block
               buffer > @
               [size] > read
@@ -156,11 +166,10 @@
                     "Can't read from file with provided access mode '%s'".printf
                       * access
                   seq *
-                    chunk
+                    output. >> chunk!
+                      syscall.read
+                        * descriptor size
                     input-block chunk
-                output. > chunk!
-                  syscall.read
-                    * descriptor size
           [buffer] > write
             output-block.write buffer > @
             [] > output-block
@@ -175,12 +184,21 @@
                       * descriptor buffer buffer.size
                   output-block
         truncate.if syscall.trunc 0 > trunc
-    (access.eq "w").as-bool.not.and > readable
-      (access.eq "a").as-bool.not
-    (access.eq "w").as-bool.or > truncate
+    and. > readable
+      not.
+        as-bool.
+          access.eq "w"
+      not.
+        as-bool.
+          access.eq "a"
+    or. > truncate
+      as-bool.
+        access.eq "w"
       as-bool.
         access.eq "w+"
-    (access.eq "r").as-bool.not > writable
+    not. > writable
+      as-bool.
+        access.eq "r"
   [cant-measure] > size
     if. > @
       info.code.eq 0
@@ -235,9 +253,14 @@
         f.write "!" > [f]
     13
 
-  (file "absent.txt").exists.not ++> tests-check-if-absent-file-does-not-exist
+  ++> tests-check-if-absent-file-does-not-exist
+    not. > @
+      exists.
+        file "absent.txt"
 
-  (file ".").is-directory ++> tests-check-if-current-directory-is-directory
+  ++> tests-check-if-current-directory-is-directory
+    is-directory. > @
+      file "."
 
   mktemp.tmpfile.deleted.is-directory ++> tests-checking-absent-file-returns-fallback
     true
@@ -317,12 +340,13 @@
           13
           [m] >>
             seq * > @
-              (file src).open
+              open.
+                file source
                 "r"
                 m.put > [f] >>
                   f.read 13
               m
-    temp.path > src
+    temp.path > source
     mktemp.tmpfile > temp
 
   ++> tests-reads-from-file-sequentially
@@ -337,7 +361,9 @@
                 f.write "Hello, world" > [f]
               "r"
               m.put > [f] >>
-                (f.read 7).read 5
+                read.
+                  f.read 7
+                  5
             m
       "world"
 
@@ -431,7 +457,7 @@
         f.write > [f]
           "Shrek is love"
       open.
-        file src
+        file source
         "a"
         f.write "!" > [f]
       eq.
@@ -439,13 +465,14 @@
           14
           [m] >>
             seq * > @
-              (file src).open
+              open.
+                file source
                 "r"
                 m.put > [f] >>
                   f.read 14
               m
         "Shrek is love!"
-    temp.path > src
+    temp.path > source
     mktemp.tmpfile > temp
 
   eq. ++> tests-writes-to-file-sequentially
@@ -458,7 +485,9 @@
     13
 
   --> an-error-on-touching-temp-file-in-absent-dir
-    (mktemp.as-path.resolved "foo").@.tmpfile > @
+    tmpfile. > @
+      @.
+        mktemp.as-path.resolved "foo"
 
   mktemp.tmpfile.deleted.is-directory --> on-checking-directory-of-absent-file
 
