@@ -38,6 +38,8 @@
     5
     as-number "5"
 
+  42.5.eq "42.5".as-number ++> tests-converts-text-to-number-via-implicit-dispatch
+
   eq. ++> tests-currency-prefixed-text-returns-provided-fallback
     42
     as-number
