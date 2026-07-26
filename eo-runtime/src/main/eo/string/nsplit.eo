@@ -21,47 +21,46 @@
       if.
         1.eq limit
         * text
-        rec-nsplit
+        [accum start current count] >> rec-nsplit
+          if. > @
+            text.size.eq current
+            appended
+            if.
+              (size.eq 0).or
+                (current.plus size).gt text.size
+              rec-nsplit
+                accum
+                start
+                (current.plus 1).as-number
+                count
+              if.
+                and.
+                  delimiter.eq
+                    slice text current size
+                  (number count).lt
+                    (number limit).minus 1
+                rec-nsplit
+                  appended
+                  (current.plus size).as-number
+                  (current.plus size).as-number
+                  (count.plus 1).as-number
+                rec-nsplit
+                  accum
+                  start
+                  (current.plus 1).as-number
+                  count
+          accum.with > appended
+            string
+              slice
+                text
+                start
+                current.minus start
+        |
           *
           0
           0
           0
-  [accum start current count] > rec-nsplit
-    if. > @
-      text.size.eq current
-      appended
-      if.
-        or.
-          size.eq 0
-          (current.plus size).gt text.size
-        rec-nsplit
-          accum
-          start
-          (current.plus 1).as-number
-          count
-        if.
-          and.
-            delimiter.eq
-              slice text current size
-            (number count).lt
-              (number limit).minus 1
-          rec-nsplit
-            appended
-            (current.plus size).as-number
-            (current.plus size).as-number
-            (count.plus 1).as-number
-          rec-nsplit
-            accum
-            start
-            (current.plus 1).as-number
-            count
-    accum.with > appended
-      string
-        slice
-          text
-          start
-          current.minus start
-  delimiter.size > size!
+  delimiter.size >> size!
 
   eq. ++> tests-nsplit-invalid-limit-returns-provided-fallback
     "fallback"
@@ -69,7 +68,7 @@
       "text"
       "-"
       0
-      "fallback" > [msg]
+      "fallback" > [message]
 
   eq. ++> tests-nsplit-with-dashes-limit-two
     nsplit

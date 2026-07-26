@@ -44,9 +44,6 @@
       "}"
       "/"
   [pattern specifiers] > extracted
-    convert > @
-      1
-      *
     [text] > as-float
       negative.if negated magnitude > @
       index-of unsigned "." > dot
@@ -111,7 +108,7 @@
         eq.
           slice text 0 1
           "+"
-    [group acc] > convert
+    [group acc] >> convert
       matched.exists.not.if > @
         *
         next-group
@@ -127,6 +124,9 @@
         group.gt specifiers.length
         acc
         next
+    | > @
+      1
+      *
     [spec text] > converted
       if. > @
         spec.eq "s"
@@ -139,8 +139,7 @@
         as-integer-value
         as-float-value
     [text] > fold-digits
-      rec 0 0 > @
-      [index acc] > rec
+      [index acc] >> rec
         if. > @
           index.eq text.length
           acc
@@ -152,6 +151,7 @@
               as-ascii
                 slice text index 1
               48
+      | 0 0 > @
     match. > found
       regex wrapped
       read
@@ -166,20 +166,20 @@
   tokens.at > specifiers
     1
     T
-  [pos accumulated found pending] > tokenize
+  [position accumulated found pending] >> tokenize
     if. > @
-      pos.gte format.length
+      position.gte format.length
       ended
       continued
     slice > ch
       format
-      pos
+      position
       1
     pending.if > continued
       if.
         ch.eq "%"
         tokenize
-          pos.plus 1
+          position.plus 1
           chained *1
             accumulated
             "%"
@@ -188,7 +188,7 @@
         if.
           ch.eq "d"
           tokenize
-            pos.plus 1
+            position.plus 1
             chained *1
               accumulated
               "([+-]?\\d+)"
@@ -197,7 +197,7 @@
           if.
             ch.eq "f"
             tokenize
-              pos.plus 1
+              position.plus 1
               chained *1
                 accumulated
                 "([+-]?\\d+(?:\\.\\d+)?)"
@@ -206,7 +206,7 @@
             if.
               ch.eq "s"
               tokenize
-                pos.plus 1
+                position.plus 1
                 chained *1
                   accumulated
                   "(\\S+)"
@@ -216,12 +216,12 @@
       if.
         ch.eq "%"
         tokenize
-          pos.plus 1
+          position.plus 1
           accumulated
           found
           true
         tokenize
-          pos.plus 1
+          position.plus 1
           chained *1
             accumulated
             piece
@@ -237,7 +237,7 @@
     escaped ch > piece
     T > unsupported-message
       "Unsupported format specifier"
-  tokenize > tokens
+  | > tokens
     0
     ""
     *

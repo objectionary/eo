@@ -67,11 +67,11 @@
     scope
   [object scope] > for
     malloc.of > @
-      bts.size
+      size.
+        object >> bts!
       seq * > [m] >>
         m.write 0 bts
         scope m
-    object > bts!
   [size scope] > of
     [] > @ /Q.bytes
     chunk > allocated
@@ -111,8 +111,7 @@
         [m] >>
           m.put > @
             num.times num
-          inc m > n!
-          number n > num
+          number (inc m)! > num
       64
     seq * > [x] > inc
       x.put
@@ -302,7 +301,7 @@
         4
         func m > [m] >>
       0
-    if. > [n] > func
+    if. > [n] >> func
       n.as-number.gt 0
       seq *
         n.put

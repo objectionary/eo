@@ -27,25 +27,7 @@
       size.eq 0
       0
       reclen 0 0
-    if. > [index csize len] > inclen
-      gt.
-        index.plus csize
-        size
-      T
-        "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
-          * csize index as-bytes
-      reclen
-        index.plus csize
-        len.plus 1
-    80- > p1
-    E0- > p2
-    F0- > p3
-    F8- > p4
-    00- > r1
-    C0- > r2
-    p2 > r3
-    p3 > r4
-    [index accum] > reclen
+    [index accum] >> reclen
       if. > @
         index.eq size
         accum
@@ -65,6 +47,24 @@
                   "Unknown byte format (%x), can't recognize character".printf
                     * byte
       as-bytes.slice index 1 > byte
+    if. > [index csize len] > inclen
+      gt.
+        index.plus csize
+        size
+      T
+        "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
+          * csize index as-bytes
+      reclen
+        index.plus csize
+        len.plus 1
+    80- > p1
+    E0- > p2
+    F0- > p3
+    F8- > p4
+    00- > r1
+    C0- > r2
+    p2 > r3
+    p3 > r4
     as-bytes.size > size
   [start len] > slice
     if. > @
@@ -78,53 +78,19 @@
           "Length to slice must be >= 0, but was %d".printf
             * nlen
         seq *
-          bstart
+          recidx >> bstart!
+            0
+            0
+            nstart
+            "Start index (%d) is out of string bounds".printf
+              * nstart
           blen
           if.
             nlen.eq 0
             ""
             string
               as-bytes.slice bstart blen
-    minus. > blen
-      recidx
-        number bstart
-        0
-        nlen
-        "Start index + length to slice (%d) is out of string bounds".printf
-          *
-            nstart.plus nlen
-      bstart
-    recidx > bstart!
-      0
-      0
-      nstart
-      "Start index (%d) is out of string bounds".printf
-        * nstart
-    nstart.plus nlen > end
-    if. > [index csize accum result cause] > increase
-      gt.
-        index.plus csize
-        size
-      T
-        "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
-          * csize index as-bytes
-      recidx
-        index.plus csize
-        accum.plus 1
-        result
-        cause
-    len > lbts!
-    number lbts > nlen
-    number sbts > nstart
-    80- > p1
-    E0- > p2
-    F0- > p3
-    F8- > p4
-    00- > r1
-    C0- > r2
-    p2 > r3
-    p3 > r4
-    [index accum result cause] > recidx
+    [index accum result cause] >> recidx
       if. > @
         accum.eq result
         index
@@ -157,7 +123,38 @@
                     "Unknown byte format (%x), can't recognize character".printf
                       * byte
       as-bytes.slice index 1 > byte
-    start > sbts!
+    minus. > blen
+      recidx
+        number bstart
+        0
+        nlen
+        "Start index + length to slice (%d) is out of string bounds".printf
+          *
+            nstart.plus nlen
+      bstart
+    nstart.plus nlen > end
+    if. > [index csize accum result cause] > increase
+      gt.
+        index.plus csize
+        size
+      T
+        "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
+          * csize index as-bytes
+      recidx
+        index.plus csize
+        accum.plus 1
+        result
+        cause
+    number len! > nlen
+    number start! > nstart
+    80- > p1
+    E0- > p2
+    F0- > p3
+    F8- > p4
+    00- > r1
+    C0- > r2
+    p2 > r3
+    p3 > r4
     as-bytes.size > size
 
   D0-B4-D1-80-D1-83-D0-B3.eq "друг" ++> tests-bytes-equal-to-string

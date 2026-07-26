@@ -17,33 +17,33 @@
   as-i32.as-number > as-number
   [x cant-divide] > div
     if. > @
-      xval.eq zero
+      other.eq zero
       cant-divide
         "Can't divide %d by u16 zero".printf
           * as-number
       u16 quotient
-    (as-i32.div xval.as-i32).as-bytes.slice > quotient
+    x.as-u16 > other
+    (as-i32.div other.as-i32).as-bytes.slice > quotient
       2
       2
-    x.as-u16 > xval
     00-00 > zero
   as-i32.gt x.as-u16.as-i32 > [x] > gt
   as-i32.gte x.as-u16.as-i32 > [x] > gte
   as-i32.lt x.as-u16.as-i32 > [x] > lt
   as-i32.lte x.as-u16.as-i32 > [x] > lte
   [x] > minus
-    u16 right > @
-    (as-i32.minus x.as-u16.as-i32).as-bytes.slice > right
+    u16 difference > @
+    (as-i32.minus x.as-u16.as-i32).as-bytes.slice > difference
       2
       2
   [x] > plus
-    u16 right > @
-    (as-i32.plus x.as-u16.as-i32).as-bytes.slice > right
+    u16 sum > @
+    (as-i32.plus x.as-u16.as-i32).as-bytes.slice > sum
       2
       2
   [x] > times
-    u16 right > @
-    (as-i32.times x.as-u16.as-i32).as-bytes.slice > right
+    u16 product > @
+    (as-i32.times x.as-u16.as-i32).as-bytes.slice > product
       2
       2
 
@@ -61,7 +61,7 @@
     "recovered"
     00-02.as-u16.div
       00-00.as-u16
-      "recovered" > [msg]
+      "recovered" > [message]
 
   eq. ++> tests-u16-div-is-unsigned
     FF-FF.as-u16.div 00-02.as-u16

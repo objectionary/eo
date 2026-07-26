@@ -32,7 +32,7 @@
   as-i64.as-number > as-number
   [x cant-divide] > div
     if. > @
-      xval.eq zero
+      other.eq zero
       cant-divide
         "Can't divide %d by i32 zero".printf
           * as-i64.as-number
@@ -44,15 +44,15 @@
         plus.
           i32 left
           i32 right
-    as-bytes. > bts
-      as-i64.div xval.as-i64
-    bts.slice > left
+    as-bytes. > b
+      as-i64.div other.as-i64
+    b.slice > left
       0
       4
-    bts.slice > right
+    x.as-i32 > other
+    b.slice > right
       4
       4
-    x.as-i32 > xval
     00-00-00-00 > zero
   as-i64.gt x.as-i32.as-i64 > [x] > gt
   as-i64.gte x.as-i32.as-i64 > [x] > gte
@@ -69,12 +69,12 @@
       plus.
         i32 left
         i32 right
-    as-bytes. > bts
+    as-bytes. > b
       as-i64.plus x.as-i32.as-i64
-    bts.slice > left
+    b.slice > left
       0
       4
-    bts.slice > right
+    b.slice > right
       4
       4
   [x] > times
@@ -101,7 +101,7 @@
     "recovered"
     2.as-i64.as-i32.div
       0.as-i64.as-i32
-      "recovered" > [msg]
+      "recovered" > [message]
 
   lt. ++> tests-i32-div-less-than-i32-one
     1.as-i64.as-i32.div 5.as-i64.as-i32
@@ -190,7 +190,7 @@
   eq. ++> tests-out-of-bounds-i32-as-i16-returns-provided-fallback
     "recovered"
     247483647.as-i64.as-i32.as-i16
-      "recovered" > [msg]
+      "recovered" > [message]
 
   32768.as-i64.as-i32.as-i16 --> on-converting-i16-max-plus-one-to-i16
 

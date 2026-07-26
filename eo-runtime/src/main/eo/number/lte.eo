@@ -9,9 +9,9 @@
 
 [n x] > lte
   or. > @
-    n.lt value
+    n.lt
+      x >> value!
     n.eq value
-  x > value!
 
   eq. ++> tests-int-leq-equal
     50.lte 50

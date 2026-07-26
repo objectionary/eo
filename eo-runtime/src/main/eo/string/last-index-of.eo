@@ -13,11 +13,15 @@
     or.
       or.
         gt.
-          number slen
-          tlen
+          number
+            part.size >> size!
+          txt.size >> tlen!
         and.
-          slen.eq tlen
-          (sub.eq txt).not
+          size.eq tlen
+          not.
+            eq.
+              substring >> part!
+              text >> txt!
       found.eq -1
     -1
     length.
@@ -25,12 +29,9 @@
         slice
           txt
           0
-          found
-  rec-index-of > found!
-    minus.
-      number tlen
-      slen
-  [idx] > rec-index-of
+          rec-index-of >> found!
+            (number tlen).minus size
+  [idx] >> rec-index-of
     if. > @
       0.eq idx
       includes.if idx -1
@@ -42,12 +43,8 @@
       slice
         txt
         idx
-        slen
-      sub
-  sub.size > slen!
-  substring > sub!
-  txt.size > tlen!
-  text > txt!
+        size
+      part
 
   eq. ++> tests-finds-last-index-of-substring
     5

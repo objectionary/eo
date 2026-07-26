@@ -24,15 +24,15 @@
   as-i16.as-number > as-number
   [x cant-divide] > div
     if. > @
-      xval.eq zero
+      other.eq zero
       cant-divide
         "Can't divide %d by i8 zero".printf
           * as-number
       i8 quotient
-    (as-i16.div xval.as-i16).as-bytes.slice > quotient
+    x.as-i8 > other
+    (as-i16.div other.as-i16).as-bytes.slice > quotient
       1
       1
-    x.as-i8 > xval
     00- > zero
   as-i16.gt x.as-i8.as-i16 > [x] > gt
   as-i16.gte x.as-i8.as-i16 > [x] > gte
@@ -71,7 +71,7 @@
     "recovered"
     02-.as-i8.div
       00-.as-i8
-      "recovered" > [msg]
+      "recovered" > [message]
 
   eq. ++> tests-i8-div-with-remainder
     0D-.as-i8.div FB-.as-i8

@@ -9,13 +9,13 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[bts cant-convert] > as-u32
+[b cant-convert] > as-u32
   if. > @
-    bts.size.eq 4
-    u32 bts
+    b.size.eq 4
+    u32 b
     cant-convert
       "Can't convert non 4 length bytes to u32, bytes are %x".printf
-        * bts
+        * b
 
   eq. ++> tests-bytes-converts-to-u32-and-back
     00-00-00-33.as-u32.as-bytes

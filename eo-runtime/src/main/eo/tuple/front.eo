@@ -14,7 +14,8 @@
     idx.eq 0
     *
     if.
-      0.gt idx
+      0.gt
+        index >> idx!
       back
         list
         neg.
@@ -24,12 +25,11 @@
           number idx
           list.length
         list
-        rechead list
-  index > idx!
-  if. > [tup] > rechead
-    tup.length.eq idx
-    tup
-    rechead tup.tail
+        if. > [tup] >> rechead
+          tup.length.eq idx
+          tup
+          rechead tup.tail
+        | list
 
   eq. ++> tests-complex-front
     front

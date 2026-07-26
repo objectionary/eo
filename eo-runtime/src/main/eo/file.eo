@@ -89,11 +89,11 @@
         existing.and exists.not
         cant-open
           "File must exist for given access mod: '%s'".printf
-            * access
+            *
+              mode >> access!
         seq *
           open-file
           ^
-    mode > access!
     (access.eq "a").as-bool.or > appending
       as-bool.
         access.eq "a+"
@@ -156,11 +156,10 @@
                     "Can't read from file with provided access mode '%s'".printf
                       * access
                   seq *
-                    chunk
+                    output. >> chunk!
+                      syscall.read
+                        * descriptor size
                     input-block chunk
-                output. > chunk!
-                  syscall.read
-                    * descriptor size
           [buffer] > write
             output-block.write buffer > @
             [] > output-block
@@ -317,12 +316,12 @@
           13
           [m] >>
             seq * > @
-              (file src).open
+              (file source).open
                 "r"
                 m.put > [f] >>
                   f.read 13
               m
-    temp.path > src
+    temp.path > source
     mktemp.tmpfile > temp
 
   ++> tests-reads-from-file-sequentially
@@ -431,7 +430,7 @@
         f.write > [f]
           "Shrek is love"
       open.
-        file src
+        file source
         "a"
         f.write "!" > [f]
       eq.
@@ -439,13 +438,13 @@
           14
           [m] >>
             seq * > @
-              (file src).open
+              (file source).open
                 "r"
                 m.put > [f] >>
                   f.read 14
               m
         "Shrek is love!"
-    temp.path > src
+    temp.path > source
     mktemp.tmpfile > temp
 
   eq. ++> tests-writes-to-file-sequentially

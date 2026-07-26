@@ -1,4 +1,4 @@
-# Writes the bytes `bts` as uppercase hexadecimal pairs joined by a hyphen,
+# Writes the bytes `b` as uppercase hexadecimal pairs joined by a hyphen,
 # so that the two bytes `0x4A 0x65` become `4A-65`.
 
 +architect yegor256@gmail.com
@@ -8,16 +8,16 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[bts] > as-hex
+[b] > as-hex
   if. > [h] > hex-digit
     h.lt 10
     as-char
       h.plus 48
     as-char
       h.plus 55
-  [index acc] > rec-hex
+  [index acc] >> rec-hex
     if. > @
-      index.eq bts.size
+      index.eq b.size
       acc
       rec-hex
         as-number.
@@ -27,7 +27,7 @@
           pair
           (acc.concat "-".as-bytes).concat pair
     as-ascii > bval
-      bts.slice index 1
+      b.slice index 1
     concat. > pair
       hex-digit
         floor.

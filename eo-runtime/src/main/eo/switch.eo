@@ -34,24 +34,24 @@
       found.head
       true
   @. > found
-    rec-case cases
-  [tup] > rec-case
-    if. > @
-      and.
-        tup.length.gt 1
-        previous.match
-      previous
-      [] >>
-        tup.head.head > head
-        tup.head.tail.head > match!
-    @. > previous
-      rec-case tup.tail
+    [tup] >> rec-case
+      if. > @
+        and.
+          tup.length.gt 1
+          previous.match
+        previous
+        [] >>
+          tup.head.head > head
+          tup.head.tail.head > match!
+      @. > previous
+        rec-case tup.tail
+    | cases
 
   eq. ++> tests-empty-switch-returns-provided-fallback
     "recovered"
     switch
       *
-      "recovered" > [msg]
+      "recovered" > [message]
 
   ++> tests-switch-complex-case
     eq. > @

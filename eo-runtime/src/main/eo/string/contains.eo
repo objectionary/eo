@@ -10,33 +10,28 @@
 [text substring] > contains
   and. > @
     gte.
-      number tlen
-      slen
+      number
+        txt.size >> length!
+      part.size >> size!
     or.
       and.
-        tlen.eq slen
-        txt.eq sub
-      rec-contains 0
-  minus. > end!
-    number tlen
-    slen
-  [idx] > rec-contains
-    if. > @
-      end.eq idx
-      includes
-      includes.or
-        rec-contains
-          (idx.plus 1).as-number
-    eq. > includes
-      slice
-        txt
-        idx
-        slen
-      sub
-  sub.size > slen!
-  substring > sub!
-  txt.size > tlen!
-  text > txt!
+        length.eq size
+        eq.
+          text >> txt!
+          substring >> part!
+      [index] >> rec-contains
+        if. > @
+          end.eq index
+          includes
+          includes.or
+            rec-contains (index.plus 1).as-number
+        eq. > includes
+          slice txt index size
+          part
+      | 0
+  minus. >> end!
+    number length
+    size
 
   contains ++> tests-text-contains-substring
     "Hello, world!"
