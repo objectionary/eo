@@ -33,19 +33,19 @@
   if. > @
     as-bool.
       condition 0
-    loop 0
-    false
-  [index] > loop
-    if. > @
-      as-bool.
-        condition
-          index.plus 1
-      seq *
+    [index] >> loop
+      if. > @
+        as-bool.
+          condition
+            index.plus 1
+        seq *
+          current
+          loop
+            index.plus 1
         current
-        loop
-          index.plus 1
-      current
-    body index > current
+      body index > current
+    | 0
+    false
 
   ++> tests-iterating-tuple-with-while-using-external-iterator
     data.eq array.length > @
