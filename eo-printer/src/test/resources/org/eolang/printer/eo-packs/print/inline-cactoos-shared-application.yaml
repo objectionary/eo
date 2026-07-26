@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A based `>> name` handle whose value is an application is left in place by
+# "inline-cactoos" once more than one site reaches it (#5956), the same way a
+# shared formation (#5876) and a shared const handle (#5828) are. An
+# application is built anew wherever it lands, so folding it into the bare
+# reference while the dispatch one keeps the binding standing would print the
+# same application twice. Both references stay cactus-named and
+# "merge-monikers" later hosts the kept binding onto the dispatch, the only
+# reference that can carry its readable handle.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-self.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/validate-before-stars.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/printer/print/inline-cactoos.xsl
+asserts:
+  # The shared application is not dropped: it keeps its cactus name and its
+  # file-local handle.
+  - /object/o[@name='foo']/o[@local='b' and contains(@name, '🌵') and @base='ξ.a.plus']
+  # Neither reference is inlined into a copy of it: the bare reference and the
+  # `.neg` dispatch both stay cactus-named references.
+  - /object/o[@name='foo']/o[contains(@base, '🌵') and @name='x' and not(o)]
+  - /object/o[@name='foo']/o[contains(@base, '🌵') and ends-with(@base, '.neg') and @name='y']
+  # No second copy of the application was minted at a reference site.
+  - /object[count(//o[@base='ξ.a.plus'])=1]
+input: |
+  [a] > foo
+    b > x
+    b.neg > y
+    a.plus 1 >> b
