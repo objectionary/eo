@@ -16,7 +16,8 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import org.eolang.parser.StXnav;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * This {@link Shift} turns hex data inside XMIR.
@@ -88,32 +89,24 @@ final class StUnhex extends StEnvelope {
     /**
      * Put the readable text of a data literal in place of its byte payload.
      *
-     * <p>Only the byte-payload child (the first {@code <o>}) is swapped for a
-     * text node, so that a sibling argument applied directly to the literal,
-     * as in {@code 42 5}, survives. Overwriting the whole element with
-     * {@code setTextContent} would delete that argument and silently drop the
-     * application.</p>
+     * <p>Only the byte-payload child (the first {@code <o>}) is swapped, so
+     * that a sibling argument applied to the literal, as in {@code 42 5},
+     * survives. {@code setTextContent} (which is also what Xembly's SET does)
+     * would delete that argument and silently drop the application.</p>
      *
-     * <p>Every text child is dropped first. In pretty-printed XMIR — which is
-     * what {@code MjPrint} reads back from a {@code .xmir} file — the payload
-     * and the argument are separated by whitespace-only text nodes, and
-     * leaving those in place would strand the readable text between blobs of
-     * the original indentation. Clearing them leaves exactly one text node
-     * whatever the input layout was, so an indented literal unhexes to the
-     * same tree as a compact one.</p>
+     * <p>Xembly first drops every text child: in pretty-printed XMIR the
+     * payload and the argument are separated by whitespace-only text nodes,
+     * and leaving them in would strand the readable text between blobs of the
+     * original indentation. The swap itself stays on the DOM because neither
+     * Xnav (which only navigates) nor Xembly can put a plain text node next
+     * to sibling elements — Xembly's only appending directive emits CDATA.</p>
      *
      * @param xnav The data literal's wrapper element
      * @param text The readable text to put in place of the byte payload
      */
     private static void detach(final Xnav xnav, final String text) {
         final Node node = xnav.node();
-        final NodeList children = node.getChildNodes();
-        for (int idx = children.getLength() - 1; idx >= 0; --idx) {
-            final Node child = children.item(idx);
-            if (child.getNodeType() == Node.TEXT_NODE) {
-                node.removeChild(child);
-            }
-        }
+        new Xembler(new Directives().xpath("text()").remove()).applyQuietly(node);
         node.replaceChild(
             node.getOwnerDocument().createTextNode(text),
             xnav.element("o").node()
