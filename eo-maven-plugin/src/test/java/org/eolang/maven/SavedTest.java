@@ -38,7 +38,7 @@ final class SavedTest {
     }
 
     @Test
-    void neverExposesAPartiallyWrittenFileToAConcurrentReader(
+    void exposesNoPartiallyWrittenFileToConcurrentReader(
         @Mktmp final Path temp
     ) throws Exception {
         final Path target = temp.resolve("shared.txt");

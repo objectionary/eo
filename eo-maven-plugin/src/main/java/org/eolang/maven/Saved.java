@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -106,10 +107,7 @@ final class Saved implements Scalar<Path> {
                         )
                     )
                 ).value();
-                Files.move(
-                    tmp, this.target,
-                    StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING
-                );
+                Saved.moved(tmp, this.target);
             } finally {
                 Files.deleteIfExists(tmp);
             }
@@ -127,5 +125,24 @@ final class Saved implements Scalar<Path> {
             );
         }
         return this.target;
+    }
+
+    /**
+     * Move a temp file onto its target, atomically where the filesystem
+     * supports it, falling back to a plain (still complete-file, just not
+     * guaranteed atomic) move on filesystems that don't.
+     * @param tmp Temp file to move
+     * @param target Destination path
+     * @throws IOException If the move fails
+     */
+    private static void moved(final Path tmp, final Path target) throws IOException {
+        try {
+            Files.move(
+                tmp, target,
+                StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING
+            );
+        } catch (final AtomicMoveNotSupportedException ignored) {
+            Files.move(tmp, target, StandardCopyOption.REPLACE_EXISTING);
+        }
     }
 }
