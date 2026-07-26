@@ -17,33 +17,41 @@
   as-i64.as-number > as-number
   [x cant-divide] > div
     if. > @
-      xval.eq zero
+      other.eq zero
       cant-divide
         "Can't divide %d by u32 zero".printf
           * as-number
       u32 quotient
-    (as-i64.div xval.as-i64).as-bytes.slice > quotient
+    x.as-u32 > other
+    slice. > quotient
+      as-bytes.
+        as-i64.div other.as-i64
       4
       4
-    x.as-u32 > xval
     00-00-00-00 > zero
   as-i64.gt x.as-u32.as-i64 > [x] > gt
   as-i64.gte x.as-u32.as-i64 > [x] > gte
   as-i64.lt x.as-u32.as-i64 > [x] > lt
   as-i64.lte x.as-u32.as-i64 > [x] > lte
   [x] > minus
-    u32 right > @
-    (as-i64.minus x.as-u32.as-i64).as-bytes.slice > right
+    u32 difference > @
+    slice. > difference
+      as-bytes.
+        as-i64.minus x.as-u32.as-i64
       4
       4
   [x] > plus
-    u32 right > @
-    (as-i64.plus x.as-u32.as-i64).as-bytes.slice > right
+    u32 sum > @
+    slice. > sum
+      as-bytes.
+        as-i64.plus x.as-u32.as-i64
       4
       4
   [x] > times
-    u32 right > @
-    (as-i64.times x.as-u32.as-i64).as-bytes.slice > right
+    u32 product > @
+    slice. > product
+      as-bytes.
+        as-i64.times x.as-u32.as-i64
       4
       4
 
@@ -61,13 +69,15 @@
     "recovered"
     00-00-00-02.as-u32.div
       00-00-00-00.as-u32
-      "recovered" > [msg]
+      "recovered" > [message]
 
   eq. ++> tests-u32-div-is-unsigned
     FF-FF-FF-FF.as-u32.div 00-00-00-02.as-u32
     7F-FF-FF-FF.as-u32
 
-  (00-00-00-2A.as-u32.eq 00-00-00-2B.as-u32).not ++> tests-u32-eq-false
+  ++> tests-u32-eq-false
+    not. > @
+      00-00-00-2A.as-u32.eq 00-00-00-2B.as-u32
 
   00-00-00-2A.as-u32.eq 00-00-00-2A.as-u32 ++> tests-u32-eq-true
 
@@ -77,7 +87,9 @@
 
   00-00-00-32.as-u32.gte 00-00-00-32.as-u32 ++> tests-u32-gte-equal
 
-  (00-00-00-00.as-u32.gte 00-00-00-0A.as-u32).not ++> tests-u32-gte-false
+  ++> tests-u32-gte-false
+    not. > @
+      00-00-00-00.as-u32.gte 00-00-00-0A.as-u32
 
   00-00-00-2A.as-u32.as-bytes.eq 00-00-00-2A ++> tests-u32-has-valid-bytes
 
@@ -85,7 +97,9 @@
     not. > @
       FF-FF-FF-FF.as-u32.lt 00-00-00-01.as-u32
 
-  (00-00-00-0A.as-u32.lt 00-00-00-0A.as-u32).not ++> tests-u32-less-equal
+  ++> tests-u32-less-equal
+    not. > @
+      00-00-00-0A.as-u32.lt 00-00-00-0A.as-u32
 
   00-00-00-0A.as-u32.lt 00-00-00-32.as-u32 ++> tests-u32-less-true
 

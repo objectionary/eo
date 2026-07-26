@@ -280,6 +280,7 @@ final class Emissions {
                 idx = idx + 2;
             }
         }
+        Emissions.rejectLoneSurrogates(out);
         return out.toString();
     }
 
@@ -294,6 +295,10 @@ final class Emissions {
      * @param line Source line
      * @checkstyle ParameterNumberCheck (3 lines)
      */
+    @SuppressWarnings({
+        "PMD.AvoidDecimalLiteralsInBigDecimalConstructor",
+        "java:S2111"
+    })
     private static void hex(
         final Emit emit, final String name, final Value value, final int line
     ) {
@@ -309,7 +314,7 @@ final class Emissions {
             throw error;
         }
         final double parsed = raw;
-        if ((long) parsed != raw) {
+        if (new BigDecimal(raw).compareTo(new BigDecimal(parsed)) != 0) {
             throw new ParseError(
                 line, value.pos(),
                 String.format(
@@ -323,6 +328,37 @@ final class Emissions {
             emit, line, value.pos(),
             new Hex(parsed).asString()
         );
+    }
+
+    /**
+     * Reject a decoded body containing a UTF-16 surrogate with no matching
+     * partner — a lone {@code \uD800}-{@code \uDFFF} escape has no UTF-8
+     * encoding and would otherwise be silently mangled later. A high
+     * surrogate immediately followed by a low surrogate is a valid pair
+     * (for example a supplementary character spelled as two {@code \\u}
+     * escapes) and is left untouched.
+     * @param text Decoded body to check
+     */
+    private static void rejectLoneSurrogates(final CharSequence text) {
+        int cursor = 0;
+        while (cursor < text.length()) {
+            final char glyph = text.charAt(cursor);
+            if (Character.isHighSurrogate(glyph)
+                && cursor + 1 < text.length()
+                && Character.isLowSurrogate(text.charAt(cursor + 1))) {
+                cursor = cursor + 2;
+                continue;
+            }
+            if (Character.isSurrogate(glyph)) {
+                throw new NumberFormatException(
+                    String.format(
+                        "unicode escape \\u%04X is a lone surrogate, not a valid standalone codepoint",
+                        (int) glyph
+                    )
+                );
+            }
+            cursor = cursor + 1;
+        }
     }
 
     /**

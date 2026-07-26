@@ -10,20 +10,17 @@
 [text substring] > ends-with
   and. > @
     lte.
-      number slen
-      tlen
+      number
+        part.size >> size!
+      txt.size >> length!
     eq.
-      slice
-        txt
+      slice.
+        text >> txt!
         minus.
-          number tlen
-          slen
-        slen
-      sub
-  sub.size > slen!
-  substring > sub!
-  txt.size > tlen!
-  text > txt!
+          number length
+          size
+        size
+      substring >> part!
 
   ++> tests-does-not-end-with-substring
     not. > @

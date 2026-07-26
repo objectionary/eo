@@ -1,0 +1,106 @@
+# Counts the characters in the `text`, and not its bytes. The UTF-8 sequence
+# is walked character by character, so a multi-byte character counts as one.
+# A sequence that does not end with a complete character terminates
+# the computation.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object
+
+[text] > length
+  if. > @
+    eq.
+      text.as-bytes.size >> size!
+      0
+    0
+    reclen
+      0
+      0
+  [index accum] >> reclen
+    if. > @
+      index.eq size
+      accum
+      if.
+        eq.
+          byte.and p1
+          r1
+        inclen
+          index
+          1
+          accum
+        if.
+          eq.
+            byte.and p2
+            r2
+          inclen index 2 accum
+          if.
+            eq.
+              byte.and p3
+              r3
+            inclen index 3 accum
+            if.
+              eq.
+                byte.and p4
+                r4
+              inclen index 4 accum
+              T
+                "Unknown byte format (%x), can't recognize character".printf
+                  * byte
+    text.as-bytes.slice > byte
+      index
+      1
+  if. > [index csize len] > inclen
+    gt.
+      index.plus csize
+      size
+    T
+      "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
+        *
+          csize
+          index
+          text.as-bytes
+    reclen
+      index.plus csize
+      len.plus 1
+  80- > p1
+  E0- > p2
+  F0- > p3
+  F8- > p4
+  00- > r1
+  C0- > r2
+  p2 > r3
+  p3 > r4
+
+  eq. ++> tests-calculates-length-of-spaces-only
+    " ".length
+    1
+
+  eq. ++> tests-counts-characters-of-the-origin-text
+    length
+      "Hello, world!"
+    13
+
+  ++> tests-reads-the-length-with-n2-byte-characters
+    and. > @
+      str.length.eq 12
+      str.as-bytes.size.eq 16
+    "Hello, друг!" > str
+
+  ++> tests-reads-the-length-with-n3-byte-characters
+    and. > @
+      str.length.eq 16
+      str.as-bytes.size.eq 18
+    "The अ devanagari" > str
+
+  ++> tests-reads-the-length-with-n4-byte-characters
+    and. > @
+      str.length.eq 11
+      str.as-bytes.size.eq 14
+    "The 😀 smile" > str
+
+  length --> on-taking-length-of-incomplete-n4-byte-character
+    string F0-9F-98

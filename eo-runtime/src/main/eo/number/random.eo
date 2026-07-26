@@ -15,18 +15,18 @@
       as-number.
         plus.
           as-i64.
-            (tbytes.left shift1).and
+            and.
+              tbytes.left shift1
               as-bytes.
-                (one.left 53).as-i64.minus one
+                minus. (one.left 53).as-i64 one
           plus.
             as-i64.
-              (tbytes.left shift3).and
+              and.
+                tbytes.left shift3
                 as-bytes.
-                  (one.left shift1).as-i64.minus one
+                  minus. (one.left shift1).as-i64 one
             as-i64.
-              tbytes.and
-                as-bytes.
-                  (one.left shift3).as-i64.minus one
+              tbytes.and ((one.left shift3).as-i64.minus one).as-bytes
     00-00-00-00-00-00-00-01 > one
     35 > shift1
     17 > shift3
@@ -58,10 +58,12 @@
       and.
         and.
           rand.lt 1
-          (rand.lt 0).not
+          not.
+            rand.lt 0
         and.
           rand.next.lt 1
-          (rand.next.lt 0).not
+          not.
+            rand.next.lt 0
       and.
         rand.next.next.lt 1
         not.
@@ -75,8 +77,8 @@
     random 51 > r
 
   eq. ++> tests-seeded-randoms-are-equal
-    (random 1654).next.next.next
-    (random 1654).next.next.next
+    next. (random 1654).next.next
+    next. (random 1654).next.next
 
   ++> tests-two-random-numbers-not-equal
     not. > @

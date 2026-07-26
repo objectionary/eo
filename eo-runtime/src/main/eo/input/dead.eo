@@ -10,10 +10,10 @@
 
 [] > dead
   [size] > read
-    input-block > @
-    [] > input-block
+    [] >> input-block
       -- > @
       input-block > [size] > read
+    | > @
 
   ++> tests-reads-empty-bytes
     and. > @

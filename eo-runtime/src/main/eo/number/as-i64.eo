@@ -1,0 +1,95 @@
+# Converts the number `n` to an `i64`, truncating the fractional part toward
+# zero. The exponent and the mantissa are pulled out of the IEEE 754 layout of
+# `n` and the magnitude is shifted into place, with the two's complement taken
+# when `n` is negative. When `n` does not fit into the bounds of an `i64`,
+# the caller-supplied `cant-convert` fallback is returned.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[n cant-convert] > as-i64
+  overflow.if > @
+    cant-convert
+      "Can't convert number %f to i64 because it's out of i64 bounds".printf
+        * n
+    if.
+      exp.lt 1023
+      00-00-00-00-00-00-00-00.as-i64
+      if.
+        exp.eq 1086
+        80-00-00-00-00-00-00-00.as-i64
+        negative.if
+          magnitude.not.as-i64.plus 00-00-00-00-00-00-00-01.as-i64
+          magnitude.as-i64
+  as-number. > exp
+    as-i64.
+      right.
+        n.as-bytes.and 7F-F0-00-00-00-00-00-00
+        52
+  if. > magnitude
+    exp.gte 1075
+    mantissa.left
+      exp.minus 1075
+    mantissa.right
+      1075.minus exp
+  or. > mantissa
+    n.as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
+    00-10-00-00-00-00-00-00
+  eq. > negative
+    n.as-bytes.and 80-00-00-00-00-00-00-00
+    80-00-00-00-00-00-00-00
+  or. > overflow
+    exp.eq 2047
+    or.
+      exp.gt 1086
+      and.
+        exp.eq 1086
+        not.
+          negative.and
+            mantissa.eq 00-10-00-00-00-00-00-00
+
+  eq. ++> tests-as-i64-converts-fraction-below-one-to-zero
+    0.5.as-i64.as-bytes
+    00-00-00-00-00-00-00-00
+
+  eq. ++> tests-as-i64-converts-large-number-with-left-shift
+    1000000000000000000.as-i64.as-bytes
+    0D-E0-B6-B3-A7-64-00-00
+
+  eq. ++> tests-as-i64-converts-long-min-boundary
+    -9.223372036854776e18.as-i64.as-bytes
+    80-00-00-00-00-00-00-00
+
+  eq. ++> tests-as-i64-converts-negative-zero-to-zero
+    -0.as-i64.as-bytes
+    00-00-00-00-00-00-00-00
+
+  eq. ++> tests-as-i64-truncates-negative-toward-zero
+    -3.7.as-i64.as-bytes
+    FF-FF-FF-FF-FF-FF-FF-FD
+
+  eq. ++> tests-as-i64-truncates-positive-toward-zero
+    3.7.as-i64.as-bytes
+    00-00-00-00-00-00-00-03
+
+  eq. ++> tests-converts-the-origin-number-to-i64
+    as-bytes.
+      as-i64 42
+    00-00-00-00-00-00-00-2A
+
+  eq. ++> tests-out-of-range-as-i64-returns-provided-fallback
+    "recovered"
+    1.0e30.as-i64
+      "recovered" > [message]
+
+  1.0e30.as-i64 --> on-converting-huge-number-to-i64
+
+  9.223372036854776e18.as-i64 --> on-converting-long-max-boundary-to-i64
+
+  nan.as-i64 --> on-converting-nan-to-i64
+
+  pinf.as-i64 --> on-converting-positive-infinity-to-i64

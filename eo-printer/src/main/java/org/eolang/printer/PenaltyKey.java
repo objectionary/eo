@@ -15,7 +15,7 @@ package org.eolang.printer;
  * one aesthetic is no longer baked into the tool.</p>
  *
  * @since 0.57.0
- * @checkstyle MagicNumberCheck (55 lines)
+ * @checkstyle MagicNumberCheck (65 lines)
  */
 public enum PenaltyKey {
 
@@ -29,6 +29,14 @@ public enum PenaltyKey {
      * parenthesis on a line costs k times this weight.
      */
     BRACKET(19),
+
+    /**
+     * The factor by which an opening parenthesis that is the first non-space
+     * character of its line is charged more heavily, since a group standing at
+     * the start of a line, before the reader knows what it applies to, is the
+     * worst place for a bracket.
+     */
+    LEADING(4),
 
     /**
      * Points charged for each explicit phi attribute {@code @} on a line.
