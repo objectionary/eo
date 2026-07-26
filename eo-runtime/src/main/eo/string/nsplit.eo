@@ -40,7 +40,7 @@
               if.
                 and.
                   delimiter.eq
-                    slice text current size
+                    bts.slice current size
                   lt.
                     number count
                     minus. (number limit) 1
@@ -60,8 +60,7 @@
                   count
           accum.with > appended
             string
-              slice
-                text
+              bts.slice
                 start
                 current.minus start
         |
@@ -70,6 +69,7 @@
           0
           0
   delimiter.size >> size!
+  text.as-bytes >> bts!
 
   eq. ++> tests-nsplit-invalid-limit-returns-provided-fallback
     "fallback"
@@ -123,6 +123,16 @@
     *
       "Cookie:"
       "a=1; b=2"
+
+  eq. ++> tests-nsplit-with-multi-byte-characters
+    nsplit
+      "аХбХв"
+      "Х"
+      3
+    *
+      "а"
+      "б"
+      "в"
 
   eq. ++> tests-nsplit-with-multi-char-delimiter
     nsplit
