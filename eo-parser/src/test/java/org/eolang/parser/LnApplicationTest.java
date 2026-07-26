@@ -604,8 +604,7 @@ final class LnApplicationTest {
     @Test
     void rejectsOverPreciseHexHead() {
         MatcherAssert.assertThat(
-            "a HEX literal past the exact double integer range must suggest the rounded"
-                .concat(" decimal spelling, matching the INTEGER literal of the same value"),
+            "a HEX literal past the exact double integer range must suggest the rounded decimal spelling, matching the INTEGER literal of the same value",
             Assertions.assertThrows(
                 ParseError.class,
                 () -> LnApplicationTest.parseLine("0x20000000000001 > x")
@@ -613,6 +612,18 @@ final class LnApplicationTest {
             Matchers.equalTo(
                 "0x20000000000001 is over-precise, write 9007199254740992 instead"
             )
+        );
+    }
+
+    @Test
+    void rejectsMaxLongHexHead() {
+        MatcherAssert.assertThat(
+            "0x7FFFFFFFFFFFFFFF must be rejected like the INTEGER literal of the same value, not silently rounded up to 2^63",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> LnApplicationTest.parseLine("0x7FFFFFFFFFFFFFFF > x")
+            ).getMessage(),
+            Matchers.startsWith("0x7FFFFFFFFFFFFFFF is over-precise")
         );
     }
 

@@ -293,7 +293,7 @@ final class Emissions {
      * @param name Name attribute (or {@code null})
      * @param value Hex value
      * @param line Source line
-     * @checkstyle ParameterNumberCheck (3 lines)
+     * @checkstyle ParameterNumberCheck (6 lines)
      */
     @SuppressWarnings({
         "PMD.AvoidDecimalLiteralsInBigDecimalConstructor",
