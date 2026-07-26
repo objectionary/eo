@@ -17,31 +17,9 @@
   as-i32. > as-i32
     number.as-i64 $
   [x] > div /Q.number
-  [x] > eq
-    if. > @
-      ^.is-nan.or
-        is-nan.
-          number
-            x >> xbts!
-      false
-      or.
-        and.
-          or.
-            xbts.eq pzero
-            xbts.eq nzero
-          or.
-            eq.
-              as-bytes >> b!
-              pzero
-            b.eq nzero
-        b.eq xbts
-    -0.as-bytes > nzero
-    0.as-bytes > pzero
   [x] > gt /Q.bool
   [x] > plus /Q.number
   [x] > times /Q.number
-
-  42.eq 42.as-bytes ++> tests-as-bytes-equals-to-int
 
   42.as-bytes.eq 42 ++> tests-as-bytes-equals-to-int-backwards
 
@@ -79,10 +57,6 @@
         1
         n
 
-  eq. ++> tests-compares-two-different-number-types
-    68.eq "12345678"
-    false
-
   eq. ++> tests-div-for-dividend-greater-than-zero
     256.div 16
     16
@@ -102,79 +76,6 @@
       dividend
     -235 > dividend
 
-  eq. ++> tests-float-equal-to-nan-and-infinites-is-false-highload
-    and.
-      and.
-        and.
-          and.
-            and.
-              and.
-                and.
-                  and.
-                    and.
-                      and.
-                        and.
-                          eq. (0.eq nan) false
-                          eq. (0.eq pinf) false
-                        eq. (0.eq ninf) false
-                      eq. (42.5.eq nan) false
-                    eq. (42.5.eq pinf) false
-                  eq. (42.5.eq ninf) false
-                eq.
-                  0.eq nan
-                  false
-              eq.
-                0.eq pinf
-                false
-            eq.
-              0.eq ninf
-              false
-          eq.
-            42.5.eq nan
-            false
-        eq.
-          42.5.eq pinf
-          false
-      eq.
-        42.5.eq ninf
-        false
-    true
-
-  eq. ++> tests-int-eq-false
-    not.
-      123.eq 42
-    true
-
-  eq. ++> tests-int-eq-true
-    123.eq 123
-    true
-
-  eq. ++> tests-int-equal-to-nan-and-infinites-is-false
-    and.
-      and.
-        and.
-          and.
-            and.
-              eq.
-                0.eq nan
-                false
-              eq.
-                0.eq pinf
-                false
-            eq.
-              0.eq ninf
-              false
-          eq.
-            42.eq nan
-            false
-        eq.
-          42.eq pinf
-          false
-      eq.
-        42.eq ninf
-        false
-    true
-
   eq. ++> tests-int-greater-equal
     not.
       0.gt 0
@@ -189,14 +90,6 @@
     -200.gt -1000
     true
 
-  eq. ++> tests-int-zero-eq-to-float-zero
-    0.eq 0
-    true
-
-  eq. ++> tests-int-zero-eq-to-zero
-    0.eq 0
-    true
-
   eq. ++> tests-multiply-by-zero
     1000.times 0
     0
@@ -204,14 +97,6 @@
   nan.as-bytes.eq ++> tests-nan-as-bytes-is-bytes-of-zero-div-zero
     as-bytes.
       0.div 0
-
-  ++> tests-nan-not-eq-nan
-    not. > @
-      nan.eq nan
-
-  ++> tests-nan-not-eq-number
-    not. > @
-      nan.eq 42
 
   eq. ++> tests-nan-not-gt-nan
     nan.gt nan
@@ -272,30 +157,12 @@
     ninf.div 42
     ninf
 
-  ninf.eq ninf ++> tests-negative-infinity-eq-negative-infinity
-
   ++> tests-negative-infinity-gt-negative-infinity
     not. > @
       ninf.gt ninf
 
   ninf.eq ++> tests-negative-infinity-is-equal-to-one-div-zero
     -1.div 0
-
-  ++> tests-negative-infinity-not-eq-float
-    not. > @
-      ninf.eq 42.5
-
-  ++> tests-negative-infinity-not-eq-int
-    not. > @
-      ninf.eq 42
-
-  ++> tests-negative-infinity-not-eq-nan
-    not. > @
-      ninf.eq nan
-
-  ++> tests-negative-infinity-not-eq-positive-infinity
-    not. > @
-      ninf.eq pinf
 
   eq. ++> tests-negative-infinity-not-gt-float
     ninf.gt 42.5
@@ -462,8 +329,6 @@
     pinf.div 42
     pinf
 
-  pinf.eq pinf ++> tests-positive-infinity-eq-positive-infinity
-
   pinf.gt 42.5 ++> tests-positive-infinity-gt-float
 
   pinf.gt 42 ++> tests-positive-infinity-gt-int
@@ -476,22 +341,6 @@
 
   pinf.eq ++> tests-positive-infinity-is-equal-to-one-div-zero
     1.div 0
-
-  ++> tests-positive-infinity-not-eq-float
-    not. > @
-      pinf.eq 42.5
-
-  ++> tests-positive-infinity-not-eq-int
-    not. > @
-      pinf.eq 42
-
-  ++> tests-positive-infinity-not-eq-nan
-    not. > @
-      pinf.eq nan
-
-  ++> tests-positive-infinity-not-eq-negative-infinity
-    not. > @
-      pinf.eq ninf
 
   ++> tests-positive-infinity-not-gt-nan
     not. > @
