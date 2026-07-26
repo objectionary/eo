@@ -142,20 +142,21 @@
                 <xsl:apply-templates select="@as"/>
               </xsl:if>
               <!--
-              The reference stands as the `φ` decoratee of an auto-named
-              formation, written ahead of the brackets (`false &gt; [] &gt;&gt;`,
-              #5882). Folding a non-abstract handle in (`false &gt;&gt; flag`)
-              copies only the target's attributes, so the reference's own `@name`
-              would be lost and `to-eo-tree` would print the datum as a nameless
-              body line of the formation (`[] &gt;&gt;` with `false` below it),
-              which the parser rejects with "object inside formation must have a
-              name". Carrying the `φ` name over keeps the folded datum the
-              decoratee, so `to-eo-tree` prints it ahead of the head. Only for a
-              non-abstract target: an abstract one keeps its own `@name` (the
-              `[...] &gt;&gt;` marker) and never reaches this branch as a φ
-              decoratee.
+              The reference carries a binding name of its own and the target
+              contributes none — a based `a &gt;&gt; b` handle is neither an
+              abstract formation nor a dataized const, so `$keep-name` is false
+              and its own name is dropped (#5810). Folding then copies only the
+              target's attributes, and the reference's `@name` would go with the
+              fold: `to-eo-tree` prints the value as a nameless body line, which
+              the parser rejects with "object inside formation must have a name".
+              A `φ` decoratee written ahead of the brackets
+              (`false &gt; [] &gt;&gt;`, #5882) loses its head that way and an
+              ordinary binding (`b &gt; x`, #5947) loses its whole name, so the
+              reference's name is carried over in both cases. Never for a target
+              that keeps a name of its own: an abstract formation prints its
+              `[...] &gt;&gt;` marker instead, and the two would collide.
               -->
-              <xsl:if test="@name = $eo:phi and not($keep-name)">
+              <xsl:if test="@name and not($keep-name)">
                 <xsl:apply-templates select="@name"/>
               </xsl:if>
               <xsl:apply-templates select="$target/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
