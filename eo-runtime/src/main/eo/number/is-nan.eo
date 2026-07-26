@@ -9,7 +9,10 @@
 
 [n] > is-nan
   if. > @
-    bts.size.eq 8
+    and.
+      bts.size.gt 7
+      not.
+        bts.size.gt 8
     and.
       exp.eq 7F-F0-00-00-00-00-00-00
       not.
