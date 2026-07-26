@@ -47,11 +47,13 @@
               ent.length.eq 0
               false
               if.
-                (ent.head.hash.eq hash).and
+                and.
+                  ent.head.hash.eq hash
                   ent.head.kbts.eq kbts
                 true
                 has-key ent.tail
-            (rec-rebuild tup.tail).@ > prev
+            @. > prev
+              rec-rebuild tup.tail
           | pairs
   [key value] > entry
   [entries] > initialized
@@ -66,13 +68,15 @@
             prev.exists.if
               prev
               if.
-                (tup.head.hash.eq hash).and
+                and.
+                  tup.head.hash.eq hash
                   tup.head.kbts.eq kbts
                 [] >>
                   true > exists
                   tup.head.value > [cant-get] > get
                 not-found
-          (rec-key-search tup.tail).@ > prev
+          @. > prev
+            rec-key-search tup.tail
         | entries
       bytes.hash >> hash!
         key.as-bytes >> kbts!
@@ -81,7 +85,9 @@
         cant-get > [cant-get] > get
           "Object by hash code %d from given key does not exists".printf
             * hash
-    (found key).exists > [key] > has
+    [key] > has
+      exists. > @
+        found key
     tuple.mapped > keys
       entries
       entry.key > [entry]
@@ -96,7 +102,8 @@
             entries
             [entry] >>
               not. > @
-                (hash.eq entry.hash).and
+                and.
+                  hash.eq entry.hash
                   kbts.eq entry.kbts
           [] >>
             ^.hash > hash
@@ -111,7 +118,8 @@
           entries
           [entry] >>
             not. > @
-              (hash.eq entry.hash).and
+              and.
+                hash.eq entry.hash
                 kbts.eq entry.kbts
       bytes.hash >> hash!
         key.as-bytes >> kbts!
@@ -231,8 +239,10 @@
         0
         [m]
           seq * > @
-            (mp.found 1).exists
-            (mp.found 1).exists
+            exists.
+              mp.found 1
+            exists.
+              mp.found 1
             m
           map * > mp
             map.entry
@@ -252,7 +262,9 @@
       "one"
 
   ++> tests-removes-only-the-given-key-of-colliding-ones
-    (mp.has "Aa").not.and > @
+    and. > @
+      not.
+        mp.has "Aa"
       mp.has "BB"
     without. > mp
       map *

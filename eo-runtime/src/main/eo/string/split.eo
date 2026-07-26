@@ -19,23 +19,30 @@
         len.eq current
         appended
         if.
-          (size.eq 0).or
-            (current.plus size).gt len
+          or.
+            size.eq 0
+            gt.
+              current.plus size
+              len
           rec-split
             accum
             start
-            (current.plus 1).as-number
+            as-number.
+              current.plus 1
           if.
             delim.eq
               slice bts current size
             rec-split
               appended
-              (current.plus size).as-number
-              (current.plus size).as-number
+              as-number.
+                current.plus size
+              as-number.
+                current.plus size
             rec-split
               accum
               start
-              (current.plus 1).as-number
+              as-number.
+                current.plus 1
       accum.with > appended
         string
           slice

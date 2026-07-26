@@ -20,7 +20,8 @@
             and.
               code.lte (as-ascii "z")!
               code.gte mincode
-            (code.minus distance).as-i64.as-bytes.slice
+            slice.
+              as-bytes. (code.minus distance).as-i64
               7
               1
             byte

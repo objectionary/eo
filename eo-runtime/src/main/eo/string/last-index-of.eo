@@ -30,15 +30,16 @@
           txt
           0
           rec-index-of >> found!
-            (number tlen).minus size
+            minus.
+              number tlen
+              size
   [idx] >> rec-index-of
     if. > @
       0.eq idx
       includes.if idx -1
       includes.if
         idx
-        rec-index-of
-          (idx.plus -1).as-number
+        rec-index-of (idx.plus -1).as-number
     eq. > includes
       slice
         txt

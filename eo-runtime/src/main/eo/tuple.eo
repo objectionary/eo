@@ -281,8 +281,12 @@
     and. > @
       and.
         and.
-          (array.at 0).eq 1
-          (array.at 1).eq 2
+          eq.
+            array.at 0
+            1
+          eq.
+            array.at 1
+            2
         eq.
           array.at 2
           3

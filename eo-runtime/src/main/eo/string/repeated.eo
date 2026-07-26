@@ -29,7 +29,8 @@
           accum
           rec-repeated
             accum.concat b
-            (index.plus 1).as-number
+            as-number.
+              index.plus 1
         |
           text >> b!
           1

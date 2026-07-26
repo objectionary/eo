@@ -15,13 +15,21 @@
     pi.div 2
     arc-sine num
 
-  (arc-cosine 2).is-nan ++> tests-arc-cosine-above-one-is-nan
+  ++> tests-arc-cosine-above-one-is-nan
+    is-nan. > @
+      arc-cosine 2
 
-  (arc-cosine -2).is-nan ++> tests-arc-cosine-below-minus-one-is-nan
+  ++> tests-arc-cosine-below-minus-one-is-nan
+    is-nan. > @
+      arc-cosine -2
 
-  (arc-cosine nan).is-nan ++> tests-arc-cosine-of-nan-is-nan
+  ++> tests-arc-cosine-of-nan-is-nan
+    is-nan. > @
+      arc-cosine nan
 
-  (arc-cosine ninf).is-nan ++> tests-arc-cosine-of-negative-infinity-is-nan
+  ++> tests-arc-cosine-of-negative-infinity-is-nan
+    is-nan. > @
+      arc-cosine ninf
 
   eq. ++> tests-arc-cosine-of-negative-one-is-pi
     arc-cosine -1
@@ -49,7 +57,9 @@
         927.295
     1
 
-  (arc-cosine pinf).is-nan ++> tests-arc-cosine-of-positive-infinity-is-nan
+  ++> tests-arc-cosine-of-positive-infinity-is-nan
+    is-nan. > @
+      arc-cosine pinf
 
   eq. ++> tests-arc-cosine-of-zero-is-pi-halves
     arc-cosine 0
