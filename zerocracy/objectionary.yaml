@@ -2,11 +2,12 @@
 - added: 8
   cycles: 1
   deleted: 8
+  error: deadlock; recursive locking
   inserted: 8
-  seconds: 2160.577174962
+  seconds: 2221.549281876
   version: 0.61.1
   what: judges-summary
-  when: 2026-07-26 05:37:05.305718223 Z
+  when: 2026-07-26 08:33:09.508911882 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -41179,6 +41180,7 @@
   issue: 185
   repository: 970961472
   review_comments: 0
+  tombstone: 2026-07-26 05:39:44.968705700 Z
   what: pull-was-reviewed
   when: &206 2025-11-12 03:14:31.000000000 Z
   where: github
@@ -41194,6 +41196,7 @@
   is_human: 0
   issue: 185
   repository: 970961472
+  tombstone: 2026-07-26 05:39:44.970666422 Z
   what: pull-was-opened
   when: 2025-11-12 01:44:20.000000000 Z
   where: github
@@ -41263,6 +41266,7 @@
   review: 2025-11-12 03:14:30.000000000 Z
   review_comments: 0
   succeeded_builds: 8
+  tombstone: 2026-07-26 05:39:44.972595349 Z
   what: pull-was-merged
   when: &211 2025-11-12 03:20:44.000000000 Z
   where: github
@@ -41296,6 +41300,7 @@
   comments: 3
   details: The pull request objectionary/eo-lsp-server#185 with 6 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 1h30m and 3 comments.
+  done: 2026-07-26 05:39:44.943611842 Z
   hoc: 6
   is_human: 1
   issue: 185
@@ -41858,6 +41863,7 @@
   repository: 970961472
   review_comments: 0
   seconds: 5411
+  tombstone: 2026-07-26 05:39:44.974406090 Z
   what: code-review-was-rewarded
   when: 2025-11-12 16:20:00.624153069 Z
   where: github
@@ -41981,6 +41987,7 @@
   repository: 970961472
   review_comments: 0
   seconds: 5784
+  tombstone: 2026-07-26 05:39:44.976286889 Z
   what: code-was-contributed
   when: *211
   where: github
@@ -62984,6 +62991,7 @@
   is_human: 0
   issue: 125
   repository: 551486781
+  tombstone: 2026-07-26 05:39:45.003117941 Z
   what: pull-was-opened
   when: 2025-11-12 02:04:07.000000000 Z
   where: github
@@ -63310,6 +63318,7 @@
   review_comments: 0
   succeeded_builds: 10
   suggestions: 0
+  tombstone: 2026-07-26 05:39:45.005113664 Z
   what: pull-was-merged
   when: &543 2025-11-12 03:32:53.000000000 Z
   where: github
@@ -64758,6 +64767,7 @@
   repository: 551486781
   review_comments: 0
   seconds: 5326
+  tombstone: 2026-07-26 05:39:45.007026831 Z
   what: code-was-contributed
   when: *543
   where: github
@@ -78184,6 +78194,7 @@
   comments: 3
   details: The pull request objectionary/eo-vscode#125 with 12 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 1h13m and 0 comments.
+  done: 2026-07-26 05:39:44.978207137 Z
   hoc: 12
   is_human: 1
   issue: 125
@@ -82845,6 +82856,7 @@
   repository: 551486781
   review_comments: 0
   seconds: 4430
+  tombstone: 2026-07-26 05:39:45.008900299 Z
   what: code-review-was-rewarded
   when: 2025-12-26 13:31:23.222667064 Z
   where: github
@@ -184783,7 +184795,7 @@
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 6
-  min_issue_was_found: 0
+  min_issue_was_found: 6
   min_pull_was_found: 0
   repository: 568705267
   types_were_scanned: 0
@@ -308970,7 +308982,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 94
   merges_were_scanned: 0
-  min_issue_was_found: 13
+  min_issue_was_found: 28
   min_pull_was_found: 0
   repository: 447446664
   types_were_scanned: 0
@@ -310739,7 +310751,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 12292106903
+  events_were_scanned: 12304858888
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 347
@@ -310747,7 +310759,7 @@
   min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 556
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1107889
@@ -317597,17 +317609,17 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 801
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 15767025739
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 365
   merges_were_scanned: 0
-  min_issue_was_found: 444
+  min_issue_was_found: 446
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 842
+  types_were_scanned: 980
   what: iterate
   where: github
 - _id: 1108618
@@ -318040,7 +318052,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 13
   merges_were_scanned: 0
-  min_issue_was_found: 40
+  min_issue_was_found: 41
   min_pull_was_found: 0
   repository: 784310467
   types_were_scanned: 0
@@ -321351,7 +321363,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 480
   merges_were_scanned: 0
-  min_issue_was_found: 406
+  min_issue_was_found: 407
   min_pull_was_found: 0
   repository: 721146770
   types_were_scanned: 0
@@ -321361,7 +321373,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 999
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12303919722
   issues_were_scanned: 982
@@ -321371,7 +321383,7 @@
   min_issue_was_found: 565
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 0
+  types_were_scanned: 816
   what: iterate
   where: github
 - _id: 1108989
@@ -323817,7 +323829,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 63
   merges_were_scanned: 0
-  min_issue_was_found: 5
+  min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 731516758
   types_were_scanned: 0
@@ -324002,7 +324014,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 51
   merges_were_scanned: 0
-  min_issue_was_found: 0
+  min_issue_was_found: 21
   min_pull_was_found: 0
   repository: 499536612
   types_were_scanned: 0
@@ -324322,7 +324334,7 @@
   min_issue_was_found: 435
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 0
+  types_were_scanned: 1085
   what: iterate
   where: github
 - _id: 1109065
@@ -324346,17 +324358,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 4907
+  assignees_were_scanned: 5296
   earliest_issue_was_found: 1
-  events_were_scanned: 15825877259
+  events_were_scanned: 12306865964
   issues_were_scanned: 0
-  labels_were_scanned: 5927
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
-  merges_were_scanned: 5924
+  merges_were_scanned: 0
   min_issue_was_found: 4318
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 5305
+  types_were_scanned: 5445
   what: iterate
   where: github
 - _id: 1109067
@@ -403225,11 +403237,6 @@
   comments: 3
   details: It's time to reward @yegor256 for the code contributed in objectionary/eo#5921,
     the reward amount is 4.
-  greeting: 'Thanks for the contribution! You''ve earned +4 points for this: +16 as
-    a basis; -4 for too many hits-of-code (180 >= 100); -8 for the lack of code review.
-    Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them
-    coming. Your running score is [+2811](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 180
   href: https://github.com/objectionary/eo/issues/5921/#issuecomment-5081451783
   is_human: 1
@@ -403255,6 +403262,7 @@
     them coming. Your running score is [+2819](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 69
+  href: https://github.com/objectionary/hone-maven-plugin/issues/765/#issuecomment-5082224960
   is_human: 1
   issue: 765
   repository: 840332960
@@ -403475,7 +403483,7 @@
   issue: 5917
   repository: 73056727
   what: issue-was-closed
-  when: 2026-07-26 03:35:57.000000000 Z
+  when: &3570 2026-07-26 03:35:57.000000000 Z
   where: github
   who: 526301
 - _id: 1113369
@@ -403522,7 +403530,7 @@
   repository: 519299365
   review_comments: 0
   what: pull-was-reviewed
-  when: 2026-07-26 03:35:14.000000000 Z
+  when: &3571 2026-07-26 03:35:14.000000000 Z
   where: github
   who: 526301
 - _id: 1113371
@@ -403531,6 +403539,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: 5869-empty-string-predicates
   details: The missing pull objectionary/eo#5926 has been opened by @solaris-star.
+  is_human: 1
   issue: 5926
   repository: 73056727
   what: pull-was-opened
@@ -403552,8 +403561,10 @@
   failed_builds: 0
   files: 3
   hoc: 66
+  is_human: 1
   issue: 5846
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
@@ -403575,8 +403586,10 @@
   failed_builds: 0
   files: 2
   hoc: 42
+  is_human: 1
   issue: 5899
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
@@ -403598,8 +403611,10 @@
   failed_builds: 0
   files: 1
   hoc: 3
+  is_human: 1
   issue: 5908
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
@@ -403621,9 +403636,11 @@
   failed_builds: 0
   files: 4
   hoc: 127
+  is_human: 1
   issue: 5922
   repository: 73056727
   review: 2026-07-25 18:27:03.000000000 Z
+  review_comments: 0
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
@@ -403635,6 +403652,7 @@
   _time: 2026-07-26 05:13:36.236633030 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: 'We found out that the user #67425364 is known in GitHub as @solaris-star.'
+  is_human: 1
   name: solaris-star
   what: who-has-name
   when: 2026-07-26 05:13:36.241848201 Z
@@ -403645,6 +403663,7 @@
   _time: 2026-07-26 05:16:12.161993904 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "enhancement" label was attached by @yegor256 to the issue objectionary/lints#1101.
+  is_human: 1
   issue: 1101
   label: enhancement
   repository: 889819508
@@ -403657,6 +403676,7 @@
   _time: 2026-07-26 05:16:24.004597289 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#5927.
+  is_human: 1
   issue: 5927
   label: bug
   repository: 73056727
@@ -403664,3 +403684,144 @@
   when: 2026-07-26 03:50:30.000000000 Z
   where: github
   who: 526301
+- _id: 1113379
+  _job: 84061
+  _time: 2026-07-26 05:38:20.432293088 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  closer: 526301
+  details: The bug/feature in the issue objectionary/eo#5917 opened @yegor256 by was
+    resolved, after 11h19m of waiting, because it was closed by @yegor256 and earlier
+    it was assigned to @yegor256 and the label '#bug' was attached.
+  is_human: 1
+  issue: 5917
+  label: bug
+  opener: 526301
+  repository: 73056727
+  seconds: 40750
+  what: bug-was-resolved
+  when: *3570
+  where: github
+  who: 526301
+- _id: 1113380
+  _job: 84061
+  _time: 2026-07-26 05:38:22.507965038 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 29139614
+  comments: 3
+  details: The pull request objectionary/reo#225 with 54 HoC created by @renovate[bot]
+    was reviewed by @yegor256 after 6h3m and 3 comments.
+  hoc: 54
+  is_human: 1
+  issue: 225
+  repository: 519299365
+  review_comments: 0
+  seconds: 21819
+  what: code-was-reviewed
+  when: *3571
+  where: github
+  who: 526301
+- _id: 1113381
+  _job: 30193647220
+  _time: 2026-07-26 08:01:04.168227129 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 5869-empty-string-predicates
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#5926 has been "pull-was-merged".
+  failed_builds: 0
+  files: 3
+  hoc: 8
+  issue: 5926
+  repository: 73056727
+  succeeded_builds: 21
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-07-26 04:08:55.000000000 Z
+  where: github
+  who: 526301
+- _id: 1113382
+  _job: 30193647220
+  _time: 2026-07-26 08:01:32.787060567 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '5927'
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#5929 has been "pull-was-merged".
+  failed_builds: 0
+  files: 4
+  hoc: 90
+  issue: 5929
+  repository: 73056727
+  review: 2026-07-26 04:36:54.000000000 Z
+  succeeded_builds: 22
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-07-26 04:50:29.000000000 Z
+  where: github
+  who: 526301
+- _id: 1113383
+  _job: 30193647220
+  _time: 2026-07-26 08:06:11.698057664 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#5928.
+  issue: 5928
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-07-26 04:29:32.000000000 Z
+  where: github
+  who: 526301
+- _id: 1113384
+  _job: 30193647220
+  _time: 2026-07-26 08:06:22.968423759 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#5930.
+  issue: 5930
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-07-26 04:47:43.000000000 Z
+  where: github
+  who: 526301
+- _id: 1113385
+  _job: 30193647220
+  _time: 2026-07-26 08:28:14.204616192 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 526301
+  comments: 2
+  details: The pull request objectionary/eo#5922 with 127 HoC created by @yegor256
+    was reviewed by @copilot after 0h0m and 0 comments.
+  hoc: 127
+  issue: 5922
+  repository: 73056727
+  review_comments: 0
+  seconds: 6
+  what: code-was-reviewed
+  when: 2026-07-25 18:27:03.000000000 Z
+  where: github
+  who: 175728472
+- _id: 1113386
+  _job: 30193647220
+  _time: 2026-07-26 08:28:15.034462868 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 526301
+  comments: 2
+  details: The pull request objectionary/eo#5929 with 90 HoC created by @yegor256
+    was reviewed by @copilot after 0h0m and 0 comments.
+  hoc: 90
+  issue: 5929
+  repository: 73056727
+  review_comments: 0
+  seconds: 5
+  what: code-was-reviewed
+  when: 2026-07-26 04:36:54.000000000 Z
+  where: github
+  who: 175728472
