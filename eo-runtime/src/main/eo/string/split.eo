@@ -31,7 +31,7 @@
               current.plus 1
           if.
             delim.eq
-              slice bts current size
+              bts.slice current size
             rec-split
               appended
               as-number.
@@ -45,8 +45,7 @@
                 current.plus 1
       accum.with > appended
         string
-          slice
-            bts
+          bts.slice
             start
             current.minus start
     |

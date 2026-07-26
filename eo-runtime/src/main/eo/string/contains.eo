@@ -26,7 +26,7 @@
           includes.or
             rec-contains (index.plus 1).as-number
         eq. > includes
-          slice txt index size
+          txt.slice index size
           part
       | 0
   minus. >> end!
