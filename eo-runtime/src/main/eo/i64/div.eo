@@ -1,0 +1,121 @@
+# Integer division of the `i64` number `n` by the `i64` number `x`, truncated
+# toward zero. The quotient is built by restoring long division over the
+# magnitudes of both operands, with the sign applied afterwards. When `x` is
+# zero, the caller-supplied `cant-divide` fallback is returned.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package i64
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[n x cant-divide] > div
+  if. > @
+    x.as-bytes.eq 00-00-00-00-00-00-00-00
+    cant-divide
+      "i64 cannot be divided by zero"
+    result
+  00-00-00-00-00-00-00-01.left i > [i] > bit
+  magnitude x.as-bytes > bottom
+  as-bytes. > bottom-negated
+    plus.
+      i64 bottom.not
+      i64 00-00-00-00-00-00-00-01
+  [index remainder quot] > looped
+    if. > @
+      index.lt 0
+      quot
+      unsigned-gte.if
+        looped
+          index.minus 1
+          as-bytes. >> next-rem!
+            (i64 shifted).plus
+              i64 bottom-negated
+          next-quot
+        looped
+          index.minus 1
+          (remainder.left 1).or >> shifted!
+            (top.right index).and 00-00-00-00-00-00-00-01
+          quot
+    and. > both-negative!
+      shifted.and 80-00-00-00-00-00-00-00 >> shifted-sign!
+      bottom-negated.and 80-00-00-00-00-00-00-00 >> divisor-sign!
+    both-negative.or mixed-signs-with-nonneg-trial > carry-out!
+    signs-differ.and trial-nonnegative > mixed-signs-with-nonneg-trial!
+    quot.or > next-quot!
+      bit index
+    shifted-sign.xor divisor-sign > signs-differ!
+    next-rem.xor 80-00-00-00-00-00-00-00 > trial-nonnegative!
+    carry-out.eq 80-00-00-00-00-00-00-00 > unsigned-gte
+  if. > [b] > magnitude
+    eq.
+      b.and 80-00-00-00-00-00-00-00
+      80-00-00-00-00-00-00-00
+    as-bytes.
+      plus.
+        i64 b.not
+        i64 00-00-00-00-00-00-00-01
+    b
+  eq. > negative
+    and.
+      n.as-bytes.xor x.as-bytes
+      80-00-00-00-00-00-00-00
+    80-00-00-00-00-00-00-00
+  looped > quotient
+    63
+    00-00-00-00-00-00-00-00
+    00-00-00-00-00-00-00-00
+  negative.if > result
+    as-bytes.
+      plus.
+        i64 quotient.not
+        i64 00-00-00-00-00-00-00-01
+    i64 quotient
+  magnitude n.as-bytes > top
+
+  ++> tests-i64-div-by-i64-one
+    eq. > @
+      dividend.div 1.as-i64
+      dividend
+    -235.as-i64 > dividend
+
+  eq. ++> tests-i64-div-by-zero-returns-provided-fallback
+    "recovered"
+    2.as-i64.div
+      0.as-i64
+      "recovered" > [message]
+
+  lt. ++> tests-i64-div-less-than-i64-one
+    1.as-i64.div 5.as-i64
+    1.as-i64
+
+  eq. ++> tests-i64-div-min-by-minus-one-wraps
+    div.
+      i64 80-00-00-00-00-00-00-00
+      -1.as-i64
+    i64 80-00-00-00-00-00-00-00
+
+  eq. ++> tests-i64-div-min-by-one-is-min
+    div.
+      i64 80-00-00-00-00-00-00-00
+      1.as-i64
+    i64 80-00-00-00-00-00-00-00
+
+  eq. ++> tests-i64-div-of-large-dividend
+    4611686018427387904.as-i64.div 2.as-i64
+    2305843009213693952.as-i64
+
+  eq. ++> tests-i64-div-of-two-negatives
+    -13.as-i64.div -5.as-i64
+    2.as-i64
+
+  eq. ++> tests-i64-div-truncates-toward-zero
+    -13.as-i64.div 5.as-i64
+    -2.as-i64
+
+  eq. ++> tests-i64-div-with-remainder
+    13.as-i64.div -5.as-i64
+    -2.as-i64
+
+  2.as-i64.div 0.as-i64 --> on-division-i64-by-i64-zero
