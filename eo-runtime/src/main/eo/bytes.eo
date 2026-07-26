@@ -43,29 +43,21 @@
       00-00-00-00-FF-FF-FF-FF.and FF-FF-FF-FF-00-00-00-00
     0
 
-  ++> tests-and-with-one-neg-one-plus
-    not. > @
-      eq.
-        -7.as-bytes.and 7.as-bytes
-        -2.as-bytes
+  eq. ++> tests-and-with-one-neg-one-plus
+    -7.as-bytes.and 7.as-bytes
+    40-1C-00-00-00-00-00-00
 
-  ++> tests-and-with-two-neg
-    not. > @
-      eq.
-        -6.as-bytes.and -4.as-bytes
-        7.as-bytes
+  eq. ++> tests-and-with-two-neg
+    -6.as-bytes.and -4.as-bytes
+    C0-10-00-00-00-00-00-00
 
-  ++> tests-and-with-two-plus
-    not. > @
-      eq.
-        5.as-bytes.and 10.as-bytes
-        -1.as-bytes
+  eq. ++> tests-and-with-two-plus
+    5.as-bytes.and 10.as-bytes
+    40-04-00-00-00-00-00-00
 
-  ++> tests-and-with-zero
-    not. > @
-      eq.
-        0.as-bytes.and 32.as-bytes
-        -1.as-bytes
+  eq. ++> tests-and-with-zero
+    0.as-bytes.and 32.as-bytes
+    00-00-00-00-00-00-00-00
 
   eq. ++> tests-bitwise-works
     as-number.
@@ -144,29 +136,21 @@
     00-00-00-00-FF-FF-FF-FF.or FF-FF-FF-FF-00-00-00-00
     FF-FF-FF-FF-FF-FF-FF-FF
 
-  ++> tests-or-with-one-neg-one-plus
-    not. > @
-      eq.
-        -7.as-bytes.or 23.as-bytes
-        0.as-bytes
+  eq. ++> tests-or-with-one-neg-one-plus
+    -7.as-bytes.or 23.as-bytes
+    C0-3F-00-00-00-00-00-00
 
-  ++> tests-or-with-two-neg
-    not. > @
-      eq.
-        -27.as-bytes.or -13.as-bytes
-        8.as-bytes
+  eq. ++> tests-or-with-two-neg
+    -27.as-bytes.or -13.as-bytes
+    C0-3B-00-00-00-00-00-00
 
-  ++> tests-or-with-two-plus
-    not. > @
-      eq.
-        5.as-bytes.or 14.as-bytes
-        -16.as-bytes
+  eq. ++> tests-or-with-two-plus
+    5.as-bytes.or 14.as-bytes
+    40-3C-00-00-00-00-00-00
 
-  ++> tests-or-with-zero
-    not. > @
-      eq.
-        -11.as-bytes.or 0.as-bytes
-        10.as-bytes
+  eq. ++> tests-or-with-zero
+    -11.as-bytes.or 0.as-bytes
+    C0-26-00-00-00-00-00-00
 
   eq. ++> tests-out-of-bounds-slice-returns-provided-fallback
     "recovered"
@@ -175,11 +159,9 @@
       10
       "recovered" > [message]
 
-  ++> tests-right-with-even-neg
-    not. > @
-      eq.
-        -38.as-bytes.right 1
-        18.as-bytes
+  eq. ++> tests-right-with-even-neg
+    -38.as-bytes.right 1
+    60-21-80-00-00-00-00-00
 
   eq. ++> tests-right-with-even-plus
     eq.
@@ -187,29 +169,21 @@
       -10.as-bytes
     false
 
-  ++> tests-right-with-minus-one
-    not. > @
-      eq.
-        -1.as-bytes.right 4
-        0.as-bytes
+  eq. ++> tests-right-with-minus-one
+    -1.as-bytes.right 4
+    0B-FF-00-00-00-00-00-00
 
-  ++> tests-right-with-odd-neg
-    not. > @
-      eq.
-        -37.as-bytes.right 3
-        4.as-bytes
+  eq. ++> tests-right-with-odd-neg
+    -37.as-bytes.right 3
+    18-08-50-00-00-00-00-00
 
-  ++> tests-right-with-odd-plus
-    not. > @
-      eq.
-        37.as-bytes.right 3
-        -5.as-bytes
+  eq. ++> tests-right-with-odd-plus
+    37.as-bytes.right 3
+    08-08-50-00-00-00-00-00
 
-  ++> tests-right-with-zero
-    not. > @
-      eq.
-        0.as-bytes.right 2
-        -1.as-bytes
+  eq. ++> tests-right-with-zero
+    0.as-bytes.right 2
+    00-00-00-00-00-00-00-00
 
   eq. ++> tests-size-of-part-is-correct
     size.
