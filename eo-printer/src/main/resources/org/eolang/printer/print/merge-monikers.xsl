@@ -107,13 +107,31 @@
   whose nearest formation ancestor is the binding's own owner and that does
   not sit inside the binding itself. Bare references are listed first, so a
   binding with both spellings still folds into the shorter bare inline and a
-  dispatch hosts only when no bare reference is available.
+  dispatch hosts only when no bare reference is available. A named handle
+  (see `eo:named-handle`) inverts that: a bare host inlines it anonymously
+  (#5810), which drops the very name its other references read back through,
+  so only a dispatch may host it and a handle reached by bare references alone
+  stays standing (#5956).
   -->
   <xsl:function name="eo:moniker-refs" as="element()*">
     <xsl:param name="attr" as="element()"/>
     <xsl:variable name="owner" select="$attr/.."/>
     <xsl:variable name="refs" select="$owner//o[eo:resolved-ref(.) = $attr/@name and (ancestor::o[eo:abstract(.)][1] is $owner) and not(ancestor::o[. is $attr])]"/>
-    <xsl:sequence select="($refs[eo:dispatch-seg(.) = ''], $refs[eo:dispatch-seg(.) != ''])"/>
+    <xsl:sequence select="if (eo:named-handle($attr)) then $refs[eo:dispatch-seg(.) != ''] else ($refs[eo:dispatch-seg(.) = ''], $refs[eo:dispatch-seg(.) != ''])"/>
+  </xsl:function>
+  <!--
+  Whether `$attr` is a based `>> name` handle whose readable name must outlive
+  the merge: a plain reference or application (not an abstract formation)
+  carrying its "@local" handle, which "restore-local-names" leaves there only
+  when the binding survives "inline-cactoos" with references still reading it
+  by name — shared (#5944, #5956) or unreached (#5914). A const handle is
+  excluded: it keeps its "@name" and "@local" through a bare inline too (#5828),
+  so it needs no such restriction. An abstract formation carries its name
+  wherever it lands and is excluded for the same reason.
+  -->
+  <xsl:function name="eo:named-handle" as="xs:boolean">
+    <xsl:param name="attr" as="element()"/>
+    <xsl:sequence select="exists($attr/@local) and not(eo:abstract($attr)) and not(eo:const-handle($attr))"/>
   </xsl:function>
   <!--
   The binding that a reference `$ref` should be replaced with, or the empty
@@ -223,20 +241,6 @@
     <xsl:sequence select="string-join((if (eo:shadowed($ref, $binding)) then subsequence($segs, 1, $at - 1) else $eo:xi, string($binding/@local), subsequence($segs, $at + 1)), '.')"/>
   </xsl:function>
   <!--
-  Whether the readable "@local" handle of `$attr` still stands after the merge,
-  so a reference that does not host it may read back through it. An abstract
-  formation carries its "@name" and "@local" to wherever it lands, and a binding
-  no reference hosts stays where it is; a based handle (`a.b &gt;&gt; name`)
-  keeps them only when its host is a method dispatch, which rebuilds the binding
-  whole as the receiver of a reversed dispatch. A bare host inlines it
-  anonymously instead (#5810), leaving no name for anyone else to read.
-  -->
-  <xsl:function name="eo:handle-survives" as="xs:boolean">
-    <xsl:param name="attr" as="element()"/>
-    <xsl:variable name="host" select="eo:moniker-refs($attr)[1]"/>
-    <xsl:sequence select="eo:abstract($attr) or empty($host) or eo:dispatch-seg($host) != ''"/>
-  </xsl:function>
-  <!--
   The kept multi-referenced handle binding a reference `$ref` resolves to but does
   NOT host (the binding folds onto its first reference only,
   `eo:moniker-refs`). Any other reference — a named alias
@@ -246,8 +250,9 @@
   synthetic "vL_P" placeholder, the non-const mirror of `eo:kept-const-ref`
   (which covers the const handles this one leaves out). Both shapes of handle
   reach here: an abstract formation kept whole because it is shared (#5876),
-  and a based handle (`a.b &gt;&gt; name`) kept because a method dispatch
-  reference reaches it, which "inline-cactoos" never inlines (#5944). The
+  and a based handle (`a.b &gt;&gt; name`) kept because it is shared too — by a
+  method dispatch, which "inline-cactoos" never inlines (#5944), or by a bare
+  reference, which it no longer folds a second copy into (#5956). The
   reference is matched by carrying the binding's cactus "@name" as one of its
   base segments; the binding's own subtree is excluded. As with the const
   handle, the reference need not live in the binding's own scope: two mutually
@@ -258,7 +263,7 @@
   -->
   <xsl:function name="eo:kept-local-ref" as="element()*">
     <xsl:param name="ref" as="element()"/>
-    <xsl:variable name="candidates" select="$ref/ancestor::o[eo:abstract(.)]/o[eo:moniker-binding(.) and not(eo:const-handle(.)) and exists(@local) and eo:handle-survives(.) and (some $seg in tokenize($ref/@base, '\.') satisfies $seg = @name)]"/>
+    <xsl:variable name="candidates" select="$ref/ancestor::o[eo:abstract(.)]/o[eo:moniker-binding(.) and not(eo:const-handle(.)) and exists(@local) and (some $seg in tokenize($ref/@base, '\.') satisfies $seg = @name)]"/>
     <xsl:variable name="binding" select="$candidates[last()]"/>
     <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and not(eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
   </xsl:function>

@@ -84,12 +84,12 @@
   multi-referenced const handle its "@local" marker is kept here (below) and
   "merge-monikers" folds the surviving binding onto its first reference. A
   based handle ("a.b &gt;&gt; name", R-3.10.12) reached from more than one
-  site is kept for the same reason (#5944): a reference spelled as a method
-  dispatch ("name.seg") is not inlined at all, so the binding outlives
-  "inline-cactoos" and only the hosting reference is folded into it — the
-  others read the handle by name and would otherwise print a synthetic "vL_P".
-  A handle every reference of which is bare is inlined away regardless, its
-  "@local" going with it, so keeping the marker here costs nothing.
+  site is kept for the same reason (#5944): "inline-cactoos" never folds a
+  reference spelled as a method dispatch ("name.seg"), nor any reference to a
+  shared application, since each fold would build the application anew and
+  print one object twice (#5956). The binding therefore outlives that sheet and
+  only the hosting reference is merged into it — the others read the handle by
+  name and would otherwise print a synthetic "vL_P".
   -->
   <xsl:function name="eo:multi-referenced" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
