@@ -34,7 +34,8 @@ origin: |
 printed: |
   [] > os
     [] > is-windows
-      (oname.size.gt 6).and > @
+      and. > @
+        oname.size.gt 6
         eq.
           slice.
             name >> oname!

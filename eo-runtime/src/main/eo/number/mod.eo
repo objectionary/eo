@@ -33,8 +33,7 @@
     eq. > @
       plus.
         mod dividend divisor
-        divisor.times
-          (dividend.div divisor).as-i64.as-number
+        divisor.times (dividend.div divisor).as-i64.as-number
       dividend
     -13 > dividend
     5 > divisor
@@ -44,7 +43,7 @@
     mod
       5
       0
-      "recovered" > [msg]
+      "recovered" > [message]
 
   eq. ++> tests-mod-dividend-by-one
     mod

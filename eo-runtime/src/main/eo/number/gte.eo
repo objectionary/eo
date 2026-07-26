@@ -9,9 +9,9 @@
 
 [n x] > gte
   or. > @
-    n.gt value
+    n.gt
+      x >> value!
     n.eq value
-  x > value!
 
   eq. ++> tests-int-gte-equal
     113.gte 113

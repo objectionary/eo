@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A reference that spells its scope out instead of leaving it to the search -
+# `$.b` for the innermost formation, `^.b` for its parent, one more `^` per
+# level above that (§3.14) - binds to the handle of exactly the formation it
+# names (#5917). It is the only spelling left to a formation that rebinds the
+# name it reads (`^.b > b`), where a bare `b` is the new attribute; before,
+# such a reference kept the readable name, which nothing owns once the handle
+# takes a cactus one, so it dataized to ⊥.
+sheets:
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+asserts:
+  - /object[not(errors)]
+  # the handle keeps its "@local" marker and gets a cactus name
+  - //o[@local='b' and @name]
+  # all three explicitly scoped references bind to the handle's cactus name
+  - /object[count(//o[@method and @base=concat('.', //o[@local='b']/@name)])=3]
+  # none is left dispatching on the readable handle name
+  - /object[count(//o[@base='.b'])=0]
+input: |
+  [a] > foo
+    a >> b!
+    $.b > x
+    [] > mid
+      ^.b > b
+      [] > deep
+        ^.^.b > y

@@ -245,6 +245,15 @@ final class Pretty {
     /**
      * Render a node vertically: the head on this line, each argument
      * laid out on the lines below, indented one level deeper.
+     *
+     * <p>An argument that carries the bare {@code !} of an anonymous inline
+     * const (#5821) takes an auto-name here, through {@link Node#lined()}: the
+     * marker has no spelling on a line of its own, and this is the one place
+     * that puts an argument there. {@link #shaped} prefers the horizontal
+     * rendering whenever such an argument is present, so the auto-name appears
+     * only where no horizontal rendering exists at all — a sibling argument
+     * carrying a name of its own, say (#5927).</p>
+     *
      * @param node The node
      * @param indent The indentation level
      * @return The rendered block
@@ -257,7 +266,7 @@ final class Pretty {
             if (child.test) {
                 block.append('\n');
             }
-            block.append('\n').append(this.layout(child, indent + 1));
+            block.append('\n').append(this.layout(child.lined(), indent + 1));
         }
         return block.toString();
     }
@@ -445,6 +454,13 @@ final class Pretty {
      * as {@code (01-.as-bool)} would produce EO that fails to parse with
      * "redundant parentheses around a single token" (#5591).</p>
      *
+     * <p>An anonymous inline const argument (#5821) is inlined bare, through
+     * {@link Node#bare}, and its {@code !} marker appended afterwards — after
+     * the closing bracket when the argument is one. Inside the brackets the
+     * marker binds to the last argument instead: {@code (inc m!)} reads as
+     * {@code inc (m!)}, shrinking the const from the whole application down to
+     * one of its arguments and silently changing the program (#5902).</p>
+     *
      * @param args The arguments
      * @return The inlined string, or empty if any argument can't be inlined
      */
@@ -452,7 +468,13 @@ final class Pretty {
         final StringBuilder joined = new StringBuilder();
         Optional<String> result = Optional.of("");
         for (final Node arg : args) {
-            final Optional<String> flat = Pretty.flat(arg);
+            final boolean cnst = "!".equals(arg.tail);
+            final Optional<String> flat;
+            if (cnst) {
+                flat = Pretty.flat(arg.bare());
+            } else {
+                flat = Pretty.flat(arg);
+            }
             if (flat.isEmpty()) {
                 result = Optional.empty();
                 break;
@@ -465,6 +487,9 @@ final class Pretty {
             } else {
                 joined.append('(').append(flat.get()).append(')');
             }
+            if (cnst) {
+                joined.append('!');
+            }
         }
         return result.map(ignored -> joined.toString());
     }
@@ -475,11 +500,10 @@ final class Pretty {
      * data-receiver dispatch is inlined in its suffix shape ({@code
      * 5.plus 3}), never the reversed one.
      *
-     * <p>A name suffix in the tail ({@code > name}, {@code >>}) has no inline
-     * spelling and blocks inlining. The lone {@code !} const marker of an
-     * anonymous inline const argument (#5821) is the exception: it does have
-     * one — the value with a trailing {@code !} ({@code a!}) — so it inlines
-     * and the {@code !} is appended.</p>
+     * <p>Any suffix in the tail ({@code > name}, {@code >>}, {@code !}) has no
+     * inline spelling and blocks inlining. An anonymous inline const argument
+     * (#5821) is spelled by {@link #inlined}, which strips the {@code !} here
+     * and appends it where it belongs (#5902).</p>
      *
      * @param given The node
      * @return The inlined content, or empty
@@ -487,23 +511,15 @@ final class Pretty {
     private static Optional<String> flat(final Node given) {
         final Optional<String> result;
         final Node node = Pretty.suffixed(given).orElse(given);
-        final boolean cnst = "!".equals(node.tail);
-        final String mark;
-        if (cnst) {
-            mark = "!";
-        } else {
-            mark = "";
-        }
         if (node.reversed && node.children.size() <= 1) {
             result = Optional.empty();
-        } else if (node.abstractt || !node.tail.isEmpty() && !cnst
-            || "*".equals(node.base)) {
+        } else if (node.abstractt || !node.tail.isEmpty() || "*".equals(node.base)) {
             result = Optional.empty();
         } else if (node.children.isEmpty()) {
-            result = Optional.of(node.base.concat(mark));
+            result = Optional.of(node.base);
         } else {
             result = Pretty.inlined(node.children)
-                .map(args -> String.join(" ", node.base, args).concat(mark));
+                .map(args -> String.join(" ", node.base, args));
         }
         return result;
     }

@@ -130,7 +130,7 @@ final class PhNest implements Phi {
      * @return TRUE if it does
      */
     private boolean owns(final String name) {
-        return OnClasspath.has(new JavaPath(String.join(".", this.pkg, name)).toString());
+        return OnClasspath.object(String.join(".", this.pkg, name));
     }
 
     /**

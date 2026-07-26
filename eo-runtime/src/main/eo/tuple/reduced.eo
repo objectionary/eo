@@ -10,14 +10,11 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > reduced
-  ? >> list
-  ? >> start
-  ? >> func
+[list start func] > reduced
   reducedi > @
     list
     start
-    func > [accum item idx] >>
+    func > [accum item index] >>
       accum
       item
 
