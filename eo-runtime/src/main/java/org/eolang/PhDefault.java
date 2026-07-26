@@ -117,8 +117,13 @@ public class PhDefault implements Phi, Cloneable {
      * Guards the one-time {@link #activate()} of this instance, so concurrent
      * first access from several threads can't build and publish two rival
      * attribute maps.
+     *
+     * <p>Not {@code final}: {@link #copy()} clones through
+     * {@link Object#clone()}, whose shallow copy would otherwise hand the copy
+     * the very same lock as the original, and two unrelated objects would
+     * contend on it. The copy gets a fresh one instead.</p>
      */
-    private final ReentrantLock lock;
+    private ReentrantLock lock;
 
     /**
      * Default ctor.
@@ -195,6 +200,7 @@ public class PhDefault implements Phi, Cloneable {
             for (final Map.Entry<String, Attribute> ent : this.attrs.entrySet()) {
                 map.put(ent.getKey(), ent.getValue().copy(copy));
             }
+            copy.lock = new ReentrantLock();
             copy.attrs = map;
             return copy;
         } catch (final CloneNotSupportedException ex) {
