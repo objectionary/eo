@@ -9,6 +9,7 @@
  */
 package org.eolang.EO_string; // NOPMD
 
+import java.util.IllegalFormatException;
 import java.util.Locale;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
@@ -16,6 +17,7 @@ import org.eolang.Attr;
 import org.eolang.Attrs;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExFailure;
 import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -42,22 +44,27 @@ public final class EOprintf extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         final String format = new Dataized(this.take("format")).asString();
-        return new Data.ToPhi(
-            String.format(
-                Locale.US,
-                PrintfArgs.javaFormat(format),
-                new PrintfArgs(
-                    format,
-                    Expect.at(this, "args")
-                        .that(phi -> new Dataized(phi.take("length")).asNumber().intValue())
-                        .otherwise("be a tuple with the 'length' attribute")
-                        .it(),
-                    Expect.at(this, "args")
-                        .that(phi -> phi.take("at"))
-                        .otherwise("be a tuple with the 'at' attribute")
-                        .it()
-                ).formatted().toArray()
-            )
-        );
+        final String javaFmt = PrintfArgs.javaFormat(format);
+        final Object[] args = new PrintfArgs(
+            format,
+            Expect.at(this, "args")
+                .that(phi -> new Dataized(phi.take("length")).asNumber().intValue())
+                .otherwise("be a tuple with the 'length' attribute")
+                .it(),
+            Expect.at(this, "args")
+                .that(phi -> phi.take("at"))
+                .otherwise("be a tuple with the 'at' attribute")
+                .it()
+        ).formatted().toArray();
+        try {
+            return new Data.ToPhi(
+                String.format(Locale.US, javaFmt, args)
+            );
+        } catch (final IllegalFormatException ex) {
+            throw new ExFailure(
+                "The format '%s' is not a valid printf format string",
+                format
+            );
+        }
     }
 }
