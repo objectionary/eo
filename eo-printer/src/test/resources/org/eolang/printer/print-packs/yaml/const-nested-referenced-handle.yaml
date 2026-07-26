@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A const file-local handle (`a >> b!`, #5817) referenced both from its own
+# scope and from inside a nested `>>` formation. The moniker fold hosts the
+# handle onto the outer reference, so the nested one cannot navigate up to the
+# relocated binding and must read back through the readable "@local" handle
+# instead of the synthetic "vL_P" cactus id (#5893).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [list] > foo
+    idx.eq 0 > a
+    [tup] > bar
+      idx.eq tup > @
+    list >> idx!
+
+printed: |
+  [list] > foo
+    eq. > a
+      list >> idx!
+      0
+    idx.eq tup > [tup] > bar

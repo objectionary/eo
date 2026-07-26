@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A const file-local handle (`a >> b!`, #5817) kept whole across several
+# references (#5828) whose earliest reference sits in a receiver position the
+# moniker fold cannot host: `oname.size.gt 6` is the receiver of a reversed
+# `.and` dispatch, so its `oname` reference is a multi-segment chain
+# (`ξ.<name>.size.gt`) that neither inlines bare nor folds as a single-segment
+# reversed dispatch. The handle therefore hosts onto the only hostable
+# reference, the single-segment `oname.slice 0 7` (`slice.` reversed dispatch),
+# and the stranded receiver reference must read back through the readable
+# "@local" handle (`oname.size.gt`) rather than the synthetic "vL_P" cactus id
+# it carried before the fix (#5890) — the const mirror of `eo:kept-local-ref`
+# picking up a `name.seg` dispatch it cannot host.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > os
+    [] > is-windows
+      and. > @
+        oname.size.gt 6
+        eq.
+          oname.slice 0 7
+          "Windows"
+      name >> oname!
+    [] > name /Q.string
+
+printed: |
+  [] > os
+    [] > is-windows
+      and. > @
+        oname.size.gt 6
+        eq.
+          slice.
+            name >> oname!
+            0
+            7
+          "Windows"
+    [] > name /Q.string

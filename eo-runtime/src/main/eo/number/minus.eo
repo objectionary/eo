@@ -10,8 +10,7 @@
 [n x] > minus
   n.plus > @
     neg.
-      number value
-  x > value!
+      number x!
 
   eq. ++> tests-negative-infinity-minus-nan
     as-bytes.

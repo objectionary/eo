@@ -9,13 +9,13 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[bts cant-convert] > as-u8
+[b cant-convert] > as-u8
   if. > @
-    bts.size.eq 1
-    u8 bts
+    b.size.eq 1
+    u8 b
     cant-convert
       "Can't convert non 1 length bytes to u8, bytes are %x".printf
-        * bts
+        * b
 
   2A-.as-u8.as-bytes.eq 2A- ++> tests-bytes-converts-to-u8-and-back
 

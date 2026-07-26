@@ -36,21 +36,31 @@
   </o>
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
+  <!--
+  A pipe predecessor floated up out of a star tuple (@float-up, set by
+  "wrap-applications" for #5848) is not one of the tuple's own elements — the
+  "| args" pipe that follows it is. It is excluded from the "Φ.tuple" layers
+  and the length count, but still emitted as a passenger child so the next
+  sheet "vars-float-up" can hoist its definition and drop the in-place node.
+  Counting it would leave a spurious extra layer with a stray "Φ.number" once
+  it is dropped (the parse-side mirror of #5858).
+  -->
   <xsl:template match="o[@star]">
+    <xsl:variable name="elems" select="o[not(@float-up)]"/>
     <xsl:choose>
-      <xsl:when test="count(o)&gt;0">
+      <xsl:when test="count($elems)&gt;0">
         <xsl:variable name="nested">
           <xsl:element name="o">
             <xsl:attribute name="star"/>
             <xsl:apply-templates select="@line"/>
-            <xsl:apply-templates select="o[position()!=last()]"/>
+            <xsl:apply-templates select="$elems[position()!=last()]"/>
           </xsl:element>
         </xsl:variable>
         <xsl:element name="o">
           <xsl:attribute name="base" select="'Φ.tuple'"/>
           <xsl:apply-templates select="@* except (@star | @base)"/>
           <xsl:apply-templates select="$nested"/>
-          <xsl:apply-templates select="o[last()]"/>
+          <xsl:apply-templates select="$elems[last()]"/>
           <xsl:element name="o">
             <xsl:attribute name="base" select="'Φ.number'"/>
             <xsl:apply-templates select="@line"/>
@@ -60,16 +70,18 @@
               <xsl:element name="o">
                 <xsl:attribute name="hex"/>
                 <xsl:apply-templates select="@line"/>
-                <xsl:value-of select="count(o)"/>
+                <xsl:value-of select="count($elems)"/>
               </xsl:element>
             </xsl:element>
           </xsl:element>
+          <xsl:apply-templates select="o[@float-up]"/>
         </xsl:element>
       </xsl:when>
       <xsl:otherwise>
         <xsl:element name="o">
           <xsl:attribute name="base" select="'Φ.tuple.empty'"/>
           <xsl:apply-templates select="@* except (@star | @base)"/>
+          <xsl:apply-templates select="o[@float-up]"/>
         </xsl:element>
       </xsl:otherwise>
     </xsl:choose>

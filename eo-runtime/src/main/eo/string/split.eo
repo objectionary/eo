@@ -9,45 +9,51 @@
 
 [text delimiter] > split
   if. > @
-    len.eq 0
+    eq.
+      size. >> len!
+        text >> bts!
+      0
     *
-    rec-split
-      *
-      0
-      0
-  text > bts!
-  delimiter > delim!
-  bts.size > len!
-  [accum start current] > rec-split
-    if. > @
-      len.eq current
-      appended
-      if.
-        or.
-          size.eq 0
-          (current.plus size).gt len
-        rec-split
-          accum
-          start
-          (current.plus 1).as-number
+    [accum start current] >> rec-split
+      if. > @
+        len.eq current
+        appended
         if.
-          delim.eq
-            slice bts current size
-          rec-split
-            appended
-            (current.plus size).as-number
-            (current.plus size).as-number
+          or.
+            size.eq 0
+            gt.
+              current.plus size
+              len
           rec-split
             accum
             start
-            (current.plus 1).as-number
-    accum.with > appended
-      string
-        slice
-          bts
-          start
-          current.minus start
-  delim.size > size!
+            as-number.
+              current.plus 1
+          if.
+            delim.eq
+              bts.slice current size
+            rec-split
+              appended
+              as-number.
+                current.plus size
+              as-number.
+                current.plus size
+            rec-split
+              accum
+              start
+              as-number.
+                current.plus 1
+      accum.with > appended
+        string
+          bts.slice
+            start
+            current.minus start
+    |
+      *
+      0
+      0
+  size. >> size!
+    delimiter >> delim!
 
   eq. ++> tests-splits-and-returns-strings
     length.
