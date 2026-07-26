@@ -30,14 +30,18 @@
         looped
           index.minus 1
           as-bytes. >> next-rem!
-            (i64 shifted).plus
+            plus.
+              i64 shifted
               i64 bottom-negated
           quot.or >>!
             bit index
         looped
           index.minus 1
-          (remainder.left 1).or >> shifted!
-            (top.right index).and 00-00-00-00-00-00-00-01
+          or. >> shifted!
+            remainder.left 1
+            and.
+              top.right index
+              00-00-00-00-00-00-00-01
           quot
     eq. > unsigned-gte
       or. >> carry-out!

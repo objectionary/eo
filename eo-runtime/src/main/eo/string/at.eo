@@ -17,7 +17,9 @@
         if. >> index!
           0.gt
             i >> idx!
-          (number len).plus idx
+          plus.
+            number len
+            idx
           idx
       gte.
         number index

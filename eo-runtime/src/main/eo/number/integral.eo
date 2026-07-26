@@ -23,14 +23,15 @@
                   sum.as-number.plus
                     subsection
                       a.plus (i.times step)
-                      a.plus
-                        (i.plus 1).times step
+                      a.plus ((i.plus 1).times step)
                 true
               false
             true > [i]
           sum
         as-number. > step
-          (b.minus a).div n
+          div.
+            b.minus a
+            n
   times. > [a b] > subsection
     div.
       b.minus a
@@ -48,7 +49,9 @@
     close-to > @
       as-number.
         integral
-          (x.times x).times x > [x]
+          times. > [x]
+            x.times x
+            x
           1
           10
           100

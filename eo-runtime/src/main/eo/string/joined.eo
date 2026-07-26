@@ -16,7 +16,7 @@
       acc
       with-delimiter
         concat.
-          (dataized tup.head).concat text!
+          concat. (dataized tup.head) text!
           acc
         tup.tail
 

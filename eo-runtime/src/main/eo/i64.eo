@@ -74,9 +74,12 @@
       i64 acc
       looped
         if.
-          (b.and 00-00-00-00-00-00-00-01).eq 00-00-00-00-00-00-00-01
+          eq.
+            b.and 00-00-00-00-00-00-00-01
+            00-00-00-00-00-00-00-01
           as-bytes.
-            (i64 acc).plus
+            plus.
+              i64 acc
               i64 a
           acc
         a.left 1
@@ -92,13 +95,19 @@
         i64 234.as-bytes
         234.as-i64.as-bytes
 
-  (123.@.eq 42.@).not ++> tests-i64-eq-false
+  ++> tests-i64-eq-false
+    not. > @
+      123.@.eq 42.@
 
   123.@.eq 123.@ ++> tests-i64-eq-true
 
-  (0.as-i64.gt 0.as-i64).not ++> tests-i64-greater-equal
+  ++> tests-i64-greater-equal
+    not. > @
+      0.as-i64.gt 0.as-i64
 
-  (0.as-i64.gt 100.as-i64).not ++> tests-i64-greater-false
+  ++> tests-i64-greater-false
+    not. > @
+      0.as-i64.gt 100.as-i64
 
   gt. ++> tests-i64-greater-max-over-min
     i64 7F-FF-FF-FF-FF-FF-FF-FF
@@ -118,7 +127,9 @@
 
   113.as-i64.gte 113.as-i64 ++> tests-i64-gte-equal
 
-  (0.as-i64.gte 10.as-i64).not ++> tests-i64-gte-false
+  ++> tests-i64-gte-false
+    not. > @
+      0.as-i64.gte 10.as-i64
 
   -1000.as-i64.gte -1100.as-i64 ++> tests-i64-gte-true
 
@@ -134,9 +145,13 @@
 
   -9.223372036854776e18.as-i64.lt 1.as-i64 ++> tests-i64-less-across-full-range
 
-  (10.as-i64.lt 10.as-i64).not ++> tests-i64-less-equal
+  ++> tests-i64-less-equal
+    not. > @
+      10.as-i64.lt 10.as-i64
 
-  (10.as-i64.lt -5.as-i64).not ++> tests-i64-less-false
+  ++> tests-i64-less-false
+    not. > @
+      10.as-i64.lt -5.as-i64
 
   10.as-i64.lt 50.as-i64 ++> tests-i64-less-true
 
@@ -146,7 +161,9 @@
 
   50.as-i64.lte 50.as-i64 ++> tests-i64-lte-equal
 
-  (0.as-i64.lte -10.as-i64).not ++> tests-i64-lte-false
+  ++> tests-i64-lte-false
+    not. > @
+      0.as-i64.lte -10.as-i64
 
   -200.as-i64.lte -100.as-i64 ++> tests-i64-lte-true
 

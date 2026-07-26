@@ -30,7 +30,9 @@
           * as-number
       i8 quotient
     x.as-i8 > other
-    (as-i16.div other.as-i16).as-bytes.slice > quotient
+    slice. > quotient
+      as-bytes.
+        as-i16.div other.as-i16
       1
       1
     00- > zero
@@ -40,18 +42,24 @@
   as-i16.lte x.as-i8.as-i16 > [x] > lte
   [x] > minus
     i8 right > @
-    (as-i16.minus x.as-i8.as-i16).as-bytes.slice > right
+    slice. > right
+      as-bytes.
+        as-i16.minus x.as-i8.as-i16
       1
       1
   times FF-.as-i8 > neg
   [x] > plus
     i8 right > @
-    (as-i16.plus x.as-i8.as-i16).as-bytes.slice > right
+    slice. > right
+      as-bytes.
+        as-i16.plus x.as-i8.as-i16
       1
       1
   [x] > times
     i8 right > @
-    (as-i16.times x.as-i8.as-i16).as-bytes.slice > right
+    slice. > right
+      as-bytes.
+        as-i16.times x.as-i8.as-i16
       1
       1
 
@@ -77,7 +85,9 @@
     0D-.as-i8.div FB-.as-i8
     FE-.as-i8
 
-  (2A-.as-i8.eq 2B-.as-i8).not ++> tests-i8-eq-false
+  ++> tests-i8-eq-false
+    not. > @
+      2A-.as-i8.eq 2B-.as-i8
 
   2A-.as-i8.eq 2A-.as-i8 ++> tests-i8-eq-true
 
@@ -87,7 +97,9 @@
 
   C8-.as-i8.as-number.eq -56 ++> tests-i8-high-bit-is-negative
 
-  (0A-.as-i8.lt 0A-.as-i8).not ++> tests-i8-less-equal
+  ++> tests-i8-less-equal
+    not. > @
+      0A-.as-i8.lt 0A-.as-i8
 
   0A-.as-i8.lt 32-.as-i8 ++> tests-i8-less-true
 

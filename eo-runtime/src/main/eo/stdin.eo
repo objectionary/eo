@@ -31,7 +31,9 @@
           next-line
           first.if
             buffer.concat line
-            (buffer.concat eol!).concat line
+            concat.
+              buffer.concat eol!
+              line
           false
     | > @
       next-line
@@ -43,9 +45,11 @@
       ""
       [input buffer] >> rec-read
         if. > @
-          (char.eq --).or
+          or.
+            char.eq --
             or.
-              (char.eq "\r").and
+              and.
+                char.eq "\r"
                 next.as-bytes.eq "\n"
               char.eq "\n"
           string buffer

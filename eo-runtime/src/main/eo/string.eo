@@ -32,16 +32,24 @@
         index.eq size
         accum
         if.
-          (byte.and p1).eq r1
+          eq.
+            byte.and p1
+            r1
           inclen index 1 accum
           if.
-            (byte.and p2).eq r2
+            eq.
+              byte.and p2
+              r2
             inclen index 2 accum
             if.
-              (byte.and p3).eq r3
+              eq.
+                byte.and p3
+                r3
               inclen index 3 accum
               if.
-                (byte.and p4).eq r4
+                eq.
+                  byte.and p4
+                  r4
                 inclen index 4 accum
                 T
                   "Unknown byte format (%x), can't recognize character".printf
@@ -98,7 +106,9 @@
           index.eq size
           T cause
           if.
-            (byte.and p1).eq r1
+            eq.
+              byte.and p1
+              r1
             increase
               index
               1
@@ -106,7 +116,9 @@
               result
               cause
             if.
-              (byte.and p2).eq r2
+              eq.
+                byte.and p2
+                r2
               increase
                 index
                 2
@@ -114,10 +126,12 @@
                 result
                 cause
               if.
-                (byte.and p3).eq r3
+                eq.
+                  byte.and p3
+                  r3
                 increase index 3 accum result cause
                 if.
-                  (byte.and p4).eq r4
+                  eq. (byte.and p4) r4
                   increase index 4 accum result cause
                   T
                     "Unknown byte format (%x), can't recognize character".printf
@@ -163,17 +177,26 @@
     " ".length
     1
 
-  (nan.eq "друг").not ++> tests-compares-string-with-nan
+  ++> tests-compares-string-with-nan
+    not. > @
+      nan.eq "друг"
 
-  (ninf.eq "друг").not ++> tests-compares-string-with-negative-infinity
+  ++> tests-compares-string-with-negative-infinity
+    not. > @
+      ninf.eq "друг"
 
   eq. ++> tests-compares-string-with-positive-infinity
     pinf.eq "друг"
     false
 
-  ("Hello".eq 42).not ++> tests-compares-two-different-string-types
+  ++> tests-compares-two-different-string-types
+    not. > @
+      "Hello".eq 42
 
-  ("Hello".eq "Good bye").not ++> tests-compares-two-different-strings
+  ++> tests-compares-two-different-strings
+    not. > @
+      "Hello".eq
+        "Good bye"
 
   eq. ++> tests-compares-two-strings
     "x".eq "x"
@@ -362,4 +385,6 @@
     -1
     1
 
-  (string F0-9F-98).length --> on-taking-length-of-incomplete-n4-byte-character
+  --> on-taking-length-of-incomplete-n4-byte-character
+    length. > @
+      string F0-9F-98
