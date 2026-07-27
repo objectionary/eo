@@ -234,15 +234,18 @@ public class PhDefault implements Phi, Cloneable {
             } else {
                 resolved = this.absent(name);
             }
-            PhDefault.debug(
-                String.format(
-                    "%s\uD835\uDD38('%s' for %s) ➜ %s",
-                    PhDefault.padding(),
-                    name,
-                    this,
-                    resolved
-                )
-            );
+            if (PhDefault.LOGGER.isLoggable(Level.FINE)) {
+                PhDefault.LOGGER.log(
+                    Level.FINE,
+                    String.format(
+                        "%s\uD835\uDD38('%s' for %s) ➜ %s",
+                        PhDefault.padding(),
+                        name,
+                        this,
+                        resolved
+                    )
+                );
+            }
             return resolved;
         } finally {
             final int current = PhDefault.NESTING.get();
@@ -671,19 +674,6 @@ public class PhDefault implements Phi, Cloneable {
             }
         }
         return new AtomTypes(table);
-    }
-
-    /**
-     * Log debug message for PhDefault.
-     * @param msg Message to log
-     */
-    private static void debug(final String msg) {
-        if (PhDefault.LOGGER.isLoggable(Level.FINE)) {
-            PhDefault.LOGGER.log(
-                Level.FINE,
-                msg
-            );
-        }
     }
 
     /**
