@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A reference may name the scope of a handle by the name of the formation that
+# declares it - `foo.b` inside `foo` reaches the same object as `$.b` (#5960).
+# Before, only `$` and `^` receivers pinned the scope, so such a reference kept
+# dispatching on the readable handle name, which nothing owns once the handle
+# takes a cactus one; the decorated formation silently answered the lookup from
+# its decoratee and the reference dataized to ⊥.
+sheets:
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+asserts:
+  - /object[not(errors)]
+  # the handle keeps its "@local" marker and gets a cactus name
+  - //o[@local='b' and @name]
+  # both references that name the declaring formation bind to the cactus name
+  - /object[count(//o[@method and @base=concat('.', //o[@local='b']/@name)])=2]
+  # none is left dispatching on the readable handle name
+  - /object[count(//o[@base='.b'])=0]
+input: |
+  [a] > foo
+    [n] >> b
+      n > @
+      foo.b > deeper
+        n
+    foo.b > x
+      42

@@ -120,6 +120,25 @@
       made.
         directory mktemp.tmpfile.deleted
 
+  ++> tests-walks-with-plain-glob-matches-direct-child-only
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      made.
+        as-dir.
+          d.resolved "sub"
+      touched.
+        as-file.
+          d.resolved "sub/b.txt"
+      eq.
+        length.
+          d.as-dir.walk "*.txt"
+        1
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
   mktemp.open --> on-opening-directory
     "w"
     true > [d]
