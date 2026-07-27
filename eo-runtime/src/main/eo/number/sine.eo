@@ -12,7 +12,8 @@
 
 [num] > sine
   times. > @
-    arg.minus >> reduced
+    minus. >> reduced
+      number num.as-bytes >> arg
       times.
         floor.
           plus.
@@ -34,8 +35,7 @@
           factor
             depth.plus 1
     | 1
-  number num.as-bytes > arg
-  reduced.times reduced > squared
+  reduced.times reduced >> squared
 
   lt. ++> tests-sine-is-odd-function
     abs
