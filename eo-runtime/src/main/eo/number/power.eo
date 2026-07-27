@@ -24,9 +24,16 @@
             if.
               base.eq 0
               if.
-                expo.gt 0
-                0
-                pinf
+                odd.and
+                  num.as-bytes.eq 80-00-00-00-00-00-00-00
+                if.
+                  expo.gt 0
+                  0.neg
+                  ninf
+                if.
+                  expo.gt 0
+                  0
+                  pinf
               expo.is-integer.if
                 if.
                   expo.lt 0
@@ -228,6 +235,18 @@
       -10
       pinf
     pinf
+
+  eq. ++> tests-power-negative-zero-to-odd-negative
+    power
+      -0
+      -3
+    ninf
+
+  eq. ++> tests-power-negative-zero-to-odd-positive
+    power
+      -0
+      3
+    -0
 
   eq. ++> tests-power-of-three-squared
     power
