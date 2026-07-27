@@ -32,6 +32,31 @@
     <xsl:sequence select="substring-after($base, substring-before($base, $auto))"/>
   </xsl:function>
   <!--
+  The based `&gt;&gt; name` handle that `$target` ultimately denotes, chasing a
+  chain of bare-reference aliases to its end. A handle whose value is a plain
+  reference to another auto-named handle (`p &gt;&gt; r` over `E0- &gt;&gt; p`)
+  carries no value of its own — it is a transparent alias — so folding it into a
+  use site must land the real value (`E0-`), not the reference to the next
+  handle in the chain. Each hop follows a `@base` that resolves to another
+  auto-named handle, the current handle carrying no arguments of its own, and
+  stops at the first handle whose `@base` is not such a reference (the one that
+  holds the real value), or at one carrying its own children, an abstract
+  formation or a void — none of which is a transparent alias. A target that is
+  not an alias resolves to itself. Without this the alias's own `@base` is copied
+  to the use site verbatim while the drop template removes the handle it names,
+  stranding a dangling `Φ.v..` (#6004). The chain travelled so far comes along in
+  `$seen`, since two bare aliases can reference each other (`p &gt;&gt; r` beside
+  `r &gt;&gt; p`) — source the parser accepts though it never dataizes — and a
+  repeat has to end the descent rather than recur forever, exactly as the
+  "merged" mode of "merge-monikers" guards its own handle chain (#5918).
+  -->
+  <xsl:function name="eo:alias-target" as="element()">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="seen" as="element()*"/>
+    <xsl:variable name="inner" select="$target/ancestor::o/o[@name=eo:resolved-name($target/@base)][1]"/>
+    <xsl:sequence select="if (contains($target/@base, concat('.', $auto)) and not($target/o) and exists($inner) and not(eo:void($inner)) and not(eo:abstract($inner)) and (every $node in $seen satisfies not($inner is $node))) then eo:alias-target($inner, ($seen, $target)) else $target"/>
+  </xsl:function>
+  <!--
   Inline a reference to an auto-named abstract. A `? >> name` void
   (R-3.4.7 / R-3.10.12) also has a cactus name, so a reference that
   resolves to a void (or to nothing) is left untouched. A recursive
@@ -163,6 +188,21 @@
             </xsl:copy>
           </xsl:when>
           <xsl:otherwise>
+            <!--
+            A based `&gt;&gt; name` handle whose value is a bare reference to
+            another based handle (`p &gt;&gt; r` over `E0- &gt;&gt; p`) is a
+            transparent alias: copying `$target`'s `@base` verbatim would carry
+            the reference to `p` down to the use site, while the drop template
+            below removes `p`'s binding — `p` counts as referenced by `r`, yet
+            that reference now lives only in the copy — stranding a dangling
+            `Φ.v..` that nothing declares (#6004). Resolving the alias chain to
+            its end (see `eo:alias-target`) instead lands the real value (`E0-`)
+            at the site in one step, exactly as `merge-monikers` carries a whole
+            chain of handles to the site it hosts them on (#5918). A target that
+            is not such an alias resolves to itself, so this is the unchanged
+            fold for the ordinary based handle.
+            -->
+            <xsl:variable name="value" select="eo:alias-target($target, ())"/>
             <xsl:element name="o">
               <xsl:if test="@as">
                 <xsl:apply-templates select="@as"/>
@@ -185,8 +225,8 @@
               <xsl:if test="@name and not($keep-name)">
                 <xsl:apply-templates select="@name"/>
               </xsl:if>
-              <xsl:apply-templates select="$target/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
-              <xsl:apply-templates select="$target/node()"/>
+              <xsl:apply-templates select="$value/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
+              <xsl:apply-templates select="$value/node()"/>
               <!--
               The reference is the base of an application (`b 42 &gt; x` over a
               based `a.plus &gt;&gt; b` handle), so it carries its own argument
@@ -202,7 +242,7 @@
               inline spelling here and is left standing above instead (see
               `eo:reapplied`).
               -->
-              <xsl:if test="not($target/o)">
+              <xsl:if test="not($value/o)">
                 <xsl:apply-templates select="o"/>
               </xsl:if>
             </xsl:element>

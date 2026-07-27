@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The `string/length.eo` shape of #6004: a based `>> name` handle (`p >> r`)
+# aliases another based handle (`E0- >> p`) that is itself referenced elsewhere
+# (`b.and p`), so it is multi-referenced and kept standing. Folding the single
+# use of the alias `r` must still resolve the chain to the real value (`E0-`),
+# not copy the reference to the kept handle `p` — which would strand a dangling
+# `Φ.v..` at the use site while `p` reads back by name for its other reference.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [b] > foo
+    and. > @
+      b.and p
+      p >> r
+    E0- >> p
+
+printed: |
+  and. > [b] > foo
+    b.and E0-
+    E0-
