@@ -13,6 +13,9 @@
 [text i fallback] > at
   if. > @
     or.
+      floor.
+        i
+        i
       0.gt
         if. >> index!
           0.gt
@@ -21,8 +24,9 @@
             number len
             idx
           idx
+        index!
       gte.
-        number index
+        number index!
         text.length >> len!
     fallback
       "Given index %d is out of text bounds".printf
