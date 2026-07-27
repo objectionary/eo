@@ -12,7 +12,7 @@
 
 [text target replacement] > replaced
   matched.exists.not.if > @
-    reinit
+    string text! >> reinit
     block.exists.if > [block accum start] >> rec-replaced
       rec-replaced
         block.next
@@ -34,7 +34,6 @@
       start.
         next. >> matched
           target.match reinit
-  string text! >> reinit
 
   eq. ++> tests-does-not-replaces-if-regex-not-found
     replaced
