@@ -14,15 +14,26 @@
   matched.exists.not.if > @
     string text! >> reinit
     block.exists.if > [block accum start] >> rec-replaced
-      rec-replaced
-        block.next
-        concat.
-          accum.concat
+      block.from.eq block.to.if > @
+        rec-replaced
+          block.next
+          concat.
+            accum.concat
+              replacement
             reinit.slice
-              start
-              block.from.minus start
-          replacement
-        block.to
+              block.from
+              1
+          block.from.plus 1
+        rec-replaced
+          block.next
+          concat.
+            accum.concat
+              reinit.slice
+                start
+                block.from.minus start
+            replacement
+          block.to
+      |
       string
         accum.concat
           reinit.slice
@@ -66,6 +77,27 @@
   eq. ++> tests-sanitizes-windows-path-with-regex
     replaced
       "foo\\bar<:>?*\"|baz\\asdf"
-      regex "/[<>:\\\"\\/\\|\\?\\*\\x00-\\x1F]/"
+      regex "/[<>:\"\\/|\\?\\*\\x00-\\x1F]/"
       ""
     "foo\\barbaz\\asdf"
+
+  eq. ++> tests-replaces-zero-width-pattern
+    replaced
+      "abc"
+      regex "/x*/"
+      "-"
+    "-a-b-c-"
+
+  eq. ++> tests-replaces-zero-width-pattern-all
+    replaced
+      "aaa"
+      regex "/a*/"
+      "X"
+    "XX"
+
+  eq. ++> tests-replaces-zero-width-empty-string
+    replaced
+      ""
+      regex "/a*/"
+      "X"
+    "X"
