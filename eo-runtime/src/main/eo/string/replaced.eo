@@ -22,7 +22,10 @@
               start
               block.from.minus start
           replacement
-        block.to
+        if.
+          block.from.eq block.to
+          block.to.plus 1
+          block.to
       string
         accum.concat
           reinit.slice
@@ -67,6 +70,27 @@
   eq. ++> tests-sanitizes-windows-path-with-regex
     replaced
       "foo\\bar<:>?*\"|baz\\asdf"
-      regex "/[<>:\\\"\\/\\|\\?\\*\\x00-\\x1F]/"
+      regex "/[<>:\"\\/\\|\\?\\*\\x00-\\x1F]/"
       ""
     "foo\\barbaz\\asdf"
+
+  eq. ++> tests-replaces-empty-match-with-character
+    replaced
+      "abc"
+      regex "/x*/"
+      "-"
+    "-a-b-c-"
+
+  eq. ++> tests-replaces-empty-match-all
+    replaced
+      "aaa"
+      regex "/a*/"
+      "X"
+    "XX"
+
+  eq. ++> tests-replaces-empty-string
+    replaced
+      ""
+      regex "/a*/"
+      "X"
+    "X"
