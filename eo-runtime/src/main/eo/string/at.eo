@@ -21,16 +21,36 @@
             number len
             idx
           idx
-      gte.
-        number index
-        text.length >> len!
+      or.
+        gte.
+          number index
+          text.length >> len!
+        not.
+          eq.
+            floor.
+              number index
+            number index
     fallback
       "Given index %d is out of text bounds".printf
-        * index
+        * i
     slice
       text
       index
       1
+
+  eq. ++> tests-fractional-in-bounds-index-returns-fallback
+    "recovered"
+    at
+      "some"
+      1.5
+      "recovered" > [message]
+
+  eq. ++> tests-negative-fractional-in-bounds-index-returns-fallback
+    "recovered"
+    at
+      "some"
+      -1.5
+      "recovered" > [message]
 
   eq. ++> tests-returns-char-at-negative-index
     "m"
