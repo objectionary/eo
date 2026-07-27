@@ -11,32 +11,31 @@
 +spdx SPDX-License-Identifier: MIT
 
 [num] > sine
-  reduced.times > @
-    factor 1
-  number num.as-bytes > arg
-  if. > [depth] > factor
-    depth.gt terms
-    1
-    1.minus
+  times. > @
+    arg.minus >> reduced
       times.
-        squared.div
-          times.
-            depth.times 2
-            plus.
+        floor.
+          plus.
+            arg.div tau
+            0.5
+        tau
+    if. > [depth] >> factor
+      depth.gt 15
+      1
+      1.minus
+        times.
+          squared.div
+            times.
               depth.times 2
-              1
-        factor
-          depth.plus 1
-  arg.minus > reduced
-    times.
-      floor.
-        plus.
-          arg.div tau
-          0.5
-      tau
+              plus.
+                depth.times 2
+                1
+          factor
+            depth.plus 1
+    | 1
+  number num.as-bytes > arg
+  pi.times 2 >> tau
   reduced.times reduced > squared
-  pi.times 2 > tau
-  15 > terms
 
   lt. ++> tests-sine-is-odd-function
     abs

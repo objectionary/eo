@@ -12,22 +12,23 @@
 
 [x y cant-mod] > mod
   if. > @
-    divisor.eq 0
+    eq.
+      number y.as-bytes >> divisor
+      0
     cant-mod
       "cannot calculate mod by zero"
     if.
-      dividend.gt 0
-      abs-mod
+      gt.
+        number x.as-bytes >> dividend
+        0
+      [] >> abs-mod
+        minus. > @
+          abs dividend >> absx
+          times.
+            abs divisor >> absy
+            floor.
+              absx.div absy
       abs-mod.neg
-  [] > abs-mod
-    absx.minus > @
-      absy.times
-        floor.
-          absx.div absy
-    abs dividend > absx
-    abs divisor > absy
-  number x.as-bytes > dividend
-  number y.as-bytes > divisor
 
   ++> tests-div-mod-compatibility
     eq. > @
