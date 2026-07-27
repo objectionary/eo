@@ -10,7 +10,7 @@
 [num] > abs
   if. > @
     value.gte 0
-    value
+    0.plus value
     value.neg
   number num.as-bytes > value
 
@@ -33,3 +33,7 @@
   eq. ++> tests-abs-zero
     abs 0
     0
+
+  eq. ++> tests-abs-negative-zero-returns-positive-zero
+    abs -0.0
+    0.0
