@@ -2,11 +2,14 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# The companion to `based-multi-referenced-handle` (#5944) where no reference can
-# host the kept handle as a moniker: both uses reach it through a multi-segment
-# chain, which the moniker fold leaves expanded. The shared `a.b >> name` handle
-# then stays standing where it is and every reference reads back through its
-# readable handle, never as a synthetic "vL_P" placeholder.
+# The companion to `based-multi-referenced-handle` (#5944), where both uses of
+# the shared `a.as-u16 >> b` handle reach it through a two-segment dispatch
+# chain (`b.as-i32.neg`, `b.as-i32.plus`). A chain is nested reversed dispatches
+# (`b.as-i32.neg` and `neg. (as-i32. b)` denote the same graph), so it can host
+# the handle a level per segment (#5970): the fold lands on the first chain,
+# nesting `neg.` over `as-i32.` over the inlined handle, and the other reference
+# reads back through the readable "@local" handle rather than a synthetic "vL_P"
+# placeholder. This is the tail #5782 left expanded and #5944 kept standing.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -22,6 +25,7 @@ origin: |
 
 printed: |
   [a] > foo
-    a.as-u16 >> b
-    b.as-i32.neg > x
+    neg. > x
+      as-i32.
+        a.as-u16 >> b
     b.as-i32.plus 1 > y

@@ -19,12 +19,14 @@
               "_ftime32_s"
               *
       plus.
-        timeval.seconds.times 1000
+        times.
+          seconds.
+            output. >> timeval
+              posix
+                "gettimeofday"
+                *
+          1000
         as-number.
           timeval.micros.as-i64.div 1000.as-i64
-  output. >> timeval
-    posix
-      "gettimeofday"
-      *
 
   clock.gt 0 ++> tests-reads-positive-millis
