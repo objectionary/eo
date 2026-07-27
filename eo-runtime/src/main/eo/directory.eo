@@ -12,18 +12,6 @@
 
 [file] > directory
   file > @
-  [] > deleted
-    ^.exists.if > @
-      seq *
-        if. > [tup] >> r
-          tup.length.eq 0
-          true
-          seq *
-            tup.head.deleted
-            r tup.tail
-        | (walk "**").at.^
-        ^
-      ^
   true > is-directory
   [] > tmpfile
     ^.exists.if > @
@@ -33,36 +21,6 @@
           * file
     [] > touch /Q.string
   [glob] > walk /Q.tuple
-
-  ++> tests-deletes-directory-with-file-and-dir
-    and. > @
-      and.
-        and.
-          and.
-            inner.is-directory.and inner.exists
-            f.exists
-          d.deleted.exists.not
-        inner.exists.not
-      f.exists.not
-    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > d
-    d.tmpfile > f
-    as-dir. (directory d.tmpfile.deleted).made.as-path > inner
-
-  ++> tests-deletes-directory-with-files-recursively
-    and. > @
-      and.
-        and.
-          first.exists.and second.exists
-          d.deleted.exists.not
-        first.exists.not
-      second.exists.not
-    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > d
-    d.tmpfile > first
-    d.tmpfile > second
-
-  ++> tests-deletes-empty-directory
-    not. > @
-      exists. (mktemp.tmpfile.deleted.as-path.resolved "bar-empty").as-dir.made.deleted
 
   ++> tests-walks-recursively
     seq * > @
