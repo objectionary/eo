@@ -25,7 +25,7 @@
       signed
         n.times -1
       positive n
-  [a] > positive
+  [a] >> positive
     if. > @
       places.eq 0
       as-decimal ip
@@ -45,6 +45,17 @@
         a.times scale
         0.5
     pow10 places > scale
+  if. > [a] >> signed
+    eq.
+      floor.
+        plus.
+          a.times
+            pow10 places
+          0.5
+      0
+    positive a
+    "-".as-bytes.concat
+      positive a
   if. > [p] >> pow10
     p.eq 0
     1
@@ -69,17 +80,6 @@
                 times. (value.div 10).floor 10
             48
         acc
-  if. > [a] > signed
-    eq.
-      floor.
-        plus.
-          a.times
-            pow10 places
-          0.5
-      0
-    positive a
-    "-".as-bytes.concat
-      positive a
 
   eq. ++> tests-carries-rounding-into-integer-part
     "1.000000"

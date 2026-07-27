@@ -12,7 +12,7 @@
 # reference and turned the reference into a `| args` pipe. But an argument list
 # has no spare slot for that predecessor — the copy became a stray second
 # argument of `x.plus` and the pipe kept the reference's positional `@as`, which
-# "to-eo-tree" spelled as the unparseable `|:0`; the settling pass then deleted
+# "to-eo-tree" spelled as the unparsable `|:0`; the settling pass then deleted
 # the whole handle from the file (#5983). The fix guards the relocation to
 # references that own a real sibling slot and leaves an argument-slot reference
 # standing under its `@local` name (the kept-handle path of #5876 and #5944):

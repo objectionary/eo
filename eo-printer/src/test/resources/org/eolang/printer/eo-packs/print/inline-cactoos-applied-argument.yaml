@@ -8,7 +8,7 @@
 # relocation must NOT fire here: an argument list has no spare slot for the
 # formation copy a "| args" pipe binds, so relocating there would turn the copy
 # into a stray second argument of "x.plus" and leave the pipe carrying the
-# reference's "@as", printed as the unparseable "|:0" (#5983). "inline-cactoos"
+# reference's "@as", printed as the unparsable "|:0" (#5983). "inline-cactoos"
 # leaves the reference standing verbatim — keeping its "1 2" arguments and its
 # positional "@as", never a "@pipe" — and keeps the "[a b] >> bar" binding in
 # place under its "@local" name, so "merge-monikers" can later rewrite the
@@ -44,7 +44,7 @@ asserts:
   # "x.plus" and still carrying its own "1 2" arguments.
   - /object/o[@name='foo']/o[@base='ξ.x.plus' and count(o)=1]/o[@as='α0' and contains(@base, '🌵') and count(o)=2]
   # The reference was never turned into a "| args" pipe, so nothing prints as
-  # the unparseable "|:0".
+  # the unparsable "|:0".
   - /object[count(//o[@pipe])=0]
   # No second copy of the formation was minted inside the argument list.
   - /object[count(//o[@local='bar' and contains(@name, '🌵')])=1]

@@ -28,10 +28,13 @@
           reinit.slice
             start
             reinit.length.minus start
-    | matched "" matched.start
-  next. > matched
-    target.match reinit
-  string text! > reinit
+    |
+      matched
+      ""
+      start.
+        next. >> matched
+          target.match reinit
+  string text! >> reinit
 
   eq. ++> tests-does-not-replaces-if-regex-not-found
     replaced
