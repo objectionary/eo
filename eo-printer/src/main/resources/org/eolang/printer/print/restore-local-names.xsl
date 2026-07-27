@@ -82,7 +82,14 @@
   ("[] &gt;&gt; name", #5876) is never inlined by "inline-cactoos" (folding
   the whole formation into every use drops its shared handle name), so like a
   multi-referenced const handle its "@local" marker is kept here (below) and
-  "merge-monikers" folds the surviving binding onto its first reference.
+  "merge-monikers" folds the surviving binding onto its first reference. A
+  based handle ("a.b &gt;&gt; name", R-3.10.12) reached from more than one
+  site is kept for the same reason (#5944): "inline-cactoos" never folds a
+  reference spelled as a method dispatch ("name.seg"), nor any reference to a
+  shared application, since each fold would build the application anew and
+  print one object twice (#5956). The binding therefore outlives that sheet and
+  only the hosting reference is merged into it — the others read the handle by
+  name and would otherwise print a synthetic "vL_P".
   -->
   <xsl:function name="eo:multi-referenced" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
@@ -169,16 +176,17 @@
   <!--
   Keep the marker on voids, on recursive formations, on a formation applied as
   a dispatch receiver (#5844) — so its relocated pipe predecessor prints its
-  readable "&gt;&gt; name" handle — on a multi-referenced abstract formation
-  (#5876) — kept whole by "inline-cactoos" and hosted by "merge-monikers" — on
-  an unreferenced binding of any shape (#5914) — kept where it stands by
+  readable "&gt;&gt; name" handle — on a multi-referenced binding of any shape
+  (an abstract formation, #5876, or a based handle, #5944) — kept whole by
+  "inline-cactoos" and hosted by "merge-monikers" — on an
+  unreferenced binding of any shape (#5914) — kept where it stands by
   "inline-cactoos", having no use site to fold into — and on the value of a
   multi-referenced dataized-const handle (see
   "eo:const-handle") so "to-eo-tree" restores the readable "&gt;&gt; name"
   handle; drop it on the other non-void formations, whose handle is inlined
   away by "inline-cactoos".
   -->
-  <xsl:template match="o[not(@base=$eo:empty) and not(eo:recursive(., @name)) and not(eo:applied-receiver(., @name)) and not(eo:abstract(.) and eo:multi-referenced(., @name)) and not(eo:unreferenced(., @name)) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
+  <xsl:template match="o[not(@base=$eo:empty) and not(eo:recursive(., @name)) and not(eo:applied-receiver(., @name)) and not(eo:multi-referenced(., @name)) and not(eo:unreferenced(., @name)) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
   <!--
   When a recursive "&gt;&gt; name" handle is restored, its cactus name is
   promoted to the visible "@name" and every reference is rewritten from the

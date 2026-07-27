@@ -103,21 +103,21 @@
           i64 FF-F0-00-00-00-00-00-00
   [x] > gt
     differ.if > @
-      positive
-      greater.and
+      eq.
+        as-bytes.and 80-00-00-00-00-00-00-00 >> sign
+        00-00-00-00-00-00-00-00
+      and.
+        eq. >>
+          difference.as-bytes.and 80-00-00-00-00-00-00-00
+          00-00-00-00-00-00-00-00
         not.
-          difference.as-bytes.eq zero
+          eq.
+            as-bytes.
+              minus x >> difference
+            00-00-00-00-00-00-00-00
     not. > differ
       sign.eq
-        x.as-bytes.and mask
-    minus x > difference
-    eq. > greater
-      difference.as-bytes.and mask
-      zero
-    80-00-00-00-00-00-00-00 > mask
-    sign.eq zero > positive
-    as-bytes.and mask > sign
-    00-00-00-00-00-00-00-00 > zero
+        x.as-bytes.and 80-00-00-00-00-00-00-00
   [x] > gte
     or. > @
       gt

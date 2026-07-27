@@ -23,7 +23,7 @@
 
 [pairs] > map
   [] > @
-    initialized > @
+    ctor > @
       if.
         pairs.length.eq 0
         *
@@ -32,31 +32,25 @@
             if. > @
               tup.length.eq 0
               *
-              if.
-                has-key prev
-                prev
-                prev.with
-                  [] >>
-                    ^.hash > hash
-                    ^.kbts > kbts
-                    tup.head.key > key
-                    tup.head.value > value
+              without-key.with
+                [] >>
+                  ^.hash > hash
+                  ^.kbts > kbts
+                  tup.head.key > key
+                  tup.head.value > value
             bytes.hash >> hash!
               tup.head.key.as-bytes >> kbts!
-            if. > [ent] > has-key
-              ent.length.eq 0
-              false
-              if.
-                and.
-                  ent.head.hash.eq hash
-                  ent.head.kbts.eq kbts
-                true
-                has-key ent.tail
             @. > prev
               rec-rebuild tup.tail
+            tuple.filtered > without-key
+              prev
+              [ent] >>
+                not. > @
+                  and.
+                    ent.hash.eq hash
+                    ent.kbts.eq kbts
           | pairs
-  [key value] > entry
-  [entries] > initialized
+  [entries] > ctor
     [key] > found
       if. > @
         size.eq 0
@@ -96,7 +90,7 @@
       entries
       entry.value > [entry]
     [key value] > with
-      map.initialized > @
+      map.ctor > @
         with.
           tuple.filtered
             entries
@@ -113,7 +107,7 @@
       bytes.hash >> hash!
         key.as-bytes >> kbts!
     [key] > without
-      map.initialized > @
+      map.ctor > @
         tuple.filtered
           entries
           [entry] >>
@@ -123,6 +117,7 @@
                 kbts.eq entry.kbts
       bytes.hash >> hash!
         key.as-bytes >> kbts!
+  [key value] > entry
 
   ++> tests-adds-key-colliding-with-existing-one
     and. > @
@@ -216,6 +211,15 @@
     map * > mp
       map.entry "Aa" 1
       map.entry "BB" 2
+
+  ++> tests-map-construction-keeps-last-value-for-duplicate-key
+    2.eq > @
+      get.
+        mp.found 1
+        "unreachable" > [message]
+    map * > mp
+      map.entry 1 1
+      map.entry 1 2
 
   ++> tests-map-get-missing-returns-provided-fallback
     "recovered".eq > @

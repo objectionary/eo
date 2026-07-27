@@ -39,17 +39,19 @@
   auto-named abstract that references its own name; inlining it would
   copy that self-reference back in and fire this template forever, so
   such a target is also left untouched (both the reference and the
-  abstraction stay in place). A dataized-const handle (`a &gt;&gt; b!`,
-  R-3.10.12) reached from more than one site is likewise left untouched:
-  the const is dataized once and cached in that single binding, so folding
-  it into each use would mint an independent const object per reference and
-  drop the shared name (#5828); "merge-monikers" later hosts the kept
-  binding onto its first reference. A plain (non-const) auto-named abstract
-  formation reached from more than one site is left untouched for the same
-  reason (#5876): folding the whole formation into every reference drops its
-  shared handle name and strands any sibling helper it reaches on a synthetic
-  "vL_P" id, so the formation and its "@local" handle are kept in place and
-  "merge-monikers" hosts the kept binding onto its first reference. A const
+  abstraction stay in place). A target that is rebuilt at every site it lands
+  in (see `eo:rebuilt`) and reached from more than one site is likewise left
+  untouched: folding it into every use copies one shared object into several
+  and drops the handle name they all read. A dataized-const handle
+  (`a &gt;&gt; b!`, R-3.10.12) is dataized once and cached in that single
+  binding, so a per-use fold would mint an independent const object per
+  reference (#5828); an abstract formation would strand any sibling helper it
+  reaches on a synthetic "vL_P" id (#5876); and a based handle over an
+  application such as `a.plus 1 &gt;&gt; b` would print the same application
+  twice, folded into the bare reference and left standing for the dispatch
+  ones, which are never inlined (#5956). The binding and its "@local" handle
+  stay in place and "merge-monikers" later hosts them
+  onto the first reference. A const
   whose value reaches another auto-name is kept for a third reason (#5910):
   the folded value can only be laid out vertically, which the anonymous inline
   const argument cannot spell (see "eo:vertical-const" below).
@@ -74,7 +76,7 @@
     <xsl:variable name="target" select="ancestor::o/o[@name=$name][1]"/>
     <xsl:variable name="keep-name" as="xs:boolean" select="exists($target) and (eo:abstract($target) or ($target/@base = '.as-bytes' and $target/o[1]/@base = 'Φ.dataized' and eo:abstract($target/o[1]/o[1])))"/>
     <xsl:choose>
-      <xsl:when test="exists($target) and not(eo:void($target)) and not(eo:recursive($target, $name)) and not(eo:vertical-const($target)) and not(eo:multi-referenced($target, $name) and (eo:dataized-const($target) or eo:abstract($target)))">
+      <xsl:when test="exists($target) and not(eo:void($target)) and not(eo:recursive($target, $name)) and not(eo:vertical-const($target)) and not(eo:multi-referenced($target, $name) and eo:rebuilt($target))">
         <xsl:choose>
           <!--
           The reference is the base of an application — it carries its own
@@ -142,20 +144,21 @@
                 <xsl:apply-templates select="@as"/>
               </xsl:if>
               <!--
-              The reference stands as the `φ` decoratee of an auto-named
-              formation, written ahead of the brackets (`false &gt; [] &gt;&gt;`,
-              #5882). Folding a non-abstract handle in (`false &gt;&gt; flag`)
-              copies only the target's attributes, so the reference's own `@name`
-              would be lost and `to-eo-tree` would print the datum as a nameless
-              body line of the formation (`[] &gt;&gt;` with `false` below it),
-              which the parser rejects with "object inside formation must have a
-              name". Carrying the `φ` name over keeps the folded datum the
-              decoratee, so `to-eo-tree` prints it ahead of the head. Only for a
-              non-abstract target: an abstract one keeps its own `@name` (the
-              `[...] &gt;&gt;` marker) and never reaches this branch as a φ
-              decoratee.
+              The reference carries a binding name of its own and the target
+              contributes none — a based `a &gt;&gt; b` handle is neither an
+              abstract formation nor a dataized const, so `$keep-name` is false
+              and its own name is dropped (#5810). Folding then copies only the
+              target's attributes, and the reference's `@name` would go with the
+              fold: `to-eo-tree` prints the value as a nameless body line, which
+              the parser rejects with "object inside formation must have a name".
+              A `φ` decoratee written ahead of the brackets
+              (`false &gt; [] &gt;&gt;`, #5882) loses its head that way and an
+              ordinary binding (`b &gt; x`, #5947) loses its whole name, so the
+              reference's name is carried over in both cases. Never for a target
+              that keeps a name of its own: an abstract formation prints its
+              `[...] &gt;&gt;` marker instead, and the two would collide.
               -->
-              <xsl:if test="@name = $eo:phi and not($keep-name)">
+              <xsl:if test="@name and not($keep-name)">
                 <xsl:apply-templates select="@name"/>
               </xsl:if>
               <xsl:apply-templates select="$target/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
@@ -174,10 +177,10 @@
   <!--
   Drop an inlined auto-named abstract; keep cactus-named voids, keep
   self-referential (recursive) abstracts, which are never inlined, keep a
-  binding no reference reaches at all (#5914), keep a multi-referenced
-  dataized-const handle, which is never inlined (#5828), keep a
-  multi-referenced abstract formation, which is never
-  inlined either (#5876), keep a const that only a vertical layout can spell,
+  binding no reference reaches at all (#5914), keep a multi-referenced binding
+  that is rebuilt at every site — a dataized-const handle (#5828), an abstract
+  formation (#5876) or an application (#5956) — which is never
+  inlined, keep a const that only a vertical layout can spell,
   which is never inlined either (#5910), keep a formation applied through a
   `@pipe` continuation, which is kept in place above its pipe rather than
   inlined (#5834), and keep a binding that a surviving method dispatch still
@@ -191,7 +194,7 @@
   reads yet would silently vanish (#5914).
   -->
   <xsl:template match="o[starts-with(@name, $auto) and not(eo:void(.))]" priority="1">
-    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or eo:vertical-const(.) or eo:unreferenced(., @name) or (eo:multi-referenced(., @name) and (eo:dataized-const(.) or eo:abstract(.))) or eo:piped(., @name)">
+    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or eo:vertical-const(.) or eo:unreferenced(., @name) or (eo:multi-referenced(., @name) and eo:rebuilt(.)) or eo:piped(., @name)">
       <xsl:copy>
         <xsl:apply-templates select="node()|@*"/>
       </xsl:copy>
@@ -285,15 +288,29 @@
   </xsl:function>
   <!--
   Whether more than one reference in the binding's owner reaches the auto-name
-  `$name`. Such a shared binding — a const handle (#5828) or an abstract
-  formation (#5876) — is kept whole rather than folded into each use, which
-  would change the object graph or drop the shared handle name, and
-  "merge-monikers" then hosts the kept binding onto its first reference.
+  `$name`. A shared binding that is rebuilt at every site (see `eo:rebuilt`) is
+  kept whole rather than folded into each use, which would change the object
+  graph and drop the shared handle name, and "merge-monikers" then hosts the
+  kept binding onto its first reference.
   -->
   <xsl:function name="eo:multi-referenced" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
     <xsl:sequence select="count(eo:references($target, $name)) &gt; 1"/>
+  </xsl:function>
+  <!--
+  Whether `$target` is built anew at every site it is folded into, so that
+  folding a shared one into each of its uses turns one object into several. An
+  abstract formation (#5876), a dataized const (#5828) and an application such
+  as `a.plus 1` (#5956) all are: each copy is its own object. A based handle
+  whose value is a bare reference (`a &gt;&gt; b`) or an argument-less dispatch
+  (`a.as-i32 &gt;&gt; b`) is not — it is a lookup, and every copy reads back the
+  very same object — so a shared one still folds per use and its name goes with
+  it (#5810).
+  -->
+  <xsl:function name="eo:rebuilt" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:sequence select="eo:abstract($target) or exists($target/o)"/>
   </xsl:function>
   <!--
   Whether no reference in the binding's owner reaches the auto-name `$name`.

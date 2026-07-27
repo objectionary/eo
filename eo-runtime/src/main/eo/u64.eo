@@ -37,20 +37,23 @@
     i64 flip
     i64 x.as-u64.flip
   [x] > minus
-    u64 difference.as-bytes > @
-    minus. > difference
-      i64 as-bytes
-      i64 x.as-u64.as-bytes
+    u64 > @
+      as-bytes.
+        minus. >>
+          i64 as-bytes
+          i64 x.as-u64.as-bytes
   [x] > plus
-    u64 sum.as-bytes > @
-    plus. > sum
-      i64 as-bytes
-      i64 x.as-u64.as-bytes
+    u64 > @
+      as-bytes.
+        plus. >>
+          i64 as-bytes
+          i64 x.as-u64.as-bytes
   [x] > times
-    u64 product.as-bytes > @
-    times. > product
-      i64 as-bytes
-      i64 x.as-u64.as-bytes
+    u64 > @
+      as-bytes.
+        times. >>
+          i64 as-bytes
+          i64 x.as-u64.as-bytes
 
   gt. ++> tests-u64-as-number-is-unsigned
     FF-FF-FF-FF-FF-FF-FF-FF.as-u64.as-number

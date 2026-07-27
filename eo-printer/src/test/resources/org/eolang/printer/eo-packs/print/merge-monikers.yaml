@@ -9,13 +9,14 @@
 # the first bare reference only for the compiler's auto-generated, obfuscated
 # names (the `a🌵` cactus prefix, §9.2); a real, author-chosen name reads best
 # on its own `... > name` line and is left standalone (#5738). Here the
-# file-local handle `>> auto` carries a cactus @name, so its binding is merged
-# onto the first bare `auto` reference (the `auto.gte`/`auto.neg` dispatches
-# cannot host it and stay references), while the real name `value` keeps both
-# its standalone binding and its bare reference. The merged binding is a based
-# value (not an abstract formation), so its obfuscated `@name` and `@local`
-# handle are dropped — the bare reference is unnamed and keeping them would
-# leave a spurious named `auto >>` node that `to-eo-tree` misprints (#5810).
+# file-local handle `>> auto` carries a cactus @name, so its binding is merged,
+# while the real name `value` keeps both its standalone binding and its bare
+# reference. The handle still carries its readable `@local`, which the bare
+# `auto` reference reads back through, so the bare site cannot host it: a bare
+# inline is unnamed, and keeping the name there would leave a spurious
+# `auto >>` node that `to-eo-tree` misprints (#5810). The `auto.gte` dispatch
+# hosts it instead, as a reversed dispatch that rebuilds the binding whole and
+# keeps the name (#5956).
 sheets:
   - /org/eolang/parser/parse/wrap-applications.xsl
   - /org/eolang/parser/parse/resolve-self.xsl
@@ -38,15 +39,17 @@ sheets:
   - /org/eolang/printer/print/merge-monikers.xsl
 asserts:
   # The obfuscated (cactus-named) binding is no longer a direct attribute of
-  # the formation: it has been merged onto its bare reference.
+  # the formation: it has been merged onto its dispatch reference.
   - /object/o[@name='abs' and not(o[starts-with(@name, 'a🌵')])]
-  # It now lives at the first bare-reference site, inside the `if.` block,
-  # keeping the reference's positional marker and gaining the binding's base
-  # and child, but as an anonymous value: the based binding's obfuscated
-  # `@name` and its `@local` handle are dropped (#5810).
-  - /object/o[@name='abs']/o[@name='φ' and @base='.if']/o[not(@name) and not(@local) and @base='Φ.number' and @as='α0']/o[@base='ξ.num.as-bytes']
-  # The method-dispatch use of the cactus name stays a reference.
-  - /object/o[@name='abs']/o[@name='φ']/o[starts-with(@base, 'ξ.a🌵') and ends-with(@base, '.gte')]
+  # It now lives at the `auto.gte` site, inside the `if.` block, as the
+  # receiver of a reversed `gte.` dispatch that keeps the binding's obfuscated
+  # `@name` and its readable `@local` handle.
+  - /object/o[@name='abs']/o[@name='φ' and @base='.if']/o[@base='.gte']/o[starts-with(@name, 'a🌵') and @local='auto' and @base='Φ.number']/o[@base='ξ.num.as-bytes']
+  # The bare use reads back through that handle rather than a copy of the
+  # binding (#5956) or a synthetic cactus id.
+  - /object/o[@name='abs']/o[@name='φ']/o[@base='ξ.auto' and not(@name)]
+  # No cactus reference is left dangling.
+  - /object[count(//o[starts-with(@base, 'ξ.a🌵')])=0]
   # The real name `value` is NOT merged: its standalone binding stays a direct
   # attribute of the formation (#5738).
   - /object/o[@name='abs']/o[@name='value' and @base='Φ.number']/o[@base='ξ.num.as-bytes']

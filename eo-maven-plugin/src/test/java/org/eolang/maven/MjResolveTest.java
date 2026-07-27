@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import org.apache.maven.model.Dependency;
@@ -23,7 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.1
  */
 @ExtendWith(MktmpResolver.class)
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class MjResolveTest {
 
     @Test
@@ -41,6 +42,26 @@ final class MjResolveTest {
                 .resolve(MjResolve.DIR)
                 .resolve("org.eolang/eo-runtime/-/0.7.0").resolve("eo-runtime-0.7.0.class")
                 .toFile(),
+            FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    void resolvesWhenPlaceDirectoryExistsButIsEmpty(@Mktmp final Path temp) throws IOException {
+        final Path place = temp
+            .resolve("target")
+            .resolve(MjResolve.DIR)
+            .resolve("org.eolang/eo-runtime/-/0.7.0");
+        Files.createDirectories(place);
+        new FakeMaven(temp).withProgram(
+            "+package foo.x",
+            "+rt jvm org.eolang:eo-runtime:0.7.0",
+            String.format("+version 0.25.0%n"),
+            "[] > main /bytes"
+            ).execute(new FakeMaven.Resolve());
+        MatcherAssert.assertThat(
+            "An empty leftover directory from an interrupted unpack must not block re-resolving",
+            place.resolve("eo-runtime-0.7.0.class").toFile(),
             FileMatchers.anExistingFile()
         );
     }

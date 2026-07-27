@@ -34,6 +34,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 @ExtendWith(MktmpResolver.class)
 final class MjPrintTest {
 
+    /**
+     * Temp directory, injected into every test instance.
+     */
+    @Mktmp
+    private Path dir;
+
     @Test
     void printsSuccessfully(@Mktmp final Path temp) throws Exception {
         final Path resources = new File(
@@ -97,12 +103,12 @@ final class MjPrintTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/print-packs", glob = "**.yaml")
-    void printsXmirToEo(final String pack, @Mktmp final Path temp) throws Exception {
+    void printsXmirToEo(final String pack) throws Exception {
         final Xtory xtory = new XtSticky(new XtYaml(pack));
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
         MatcherAssert.assertThat(
             "PrintMojo should print EO in straight notation, but it didn't",
-            MjPrintTest.printed(xtory, temp, false).asString(),
+            MjPrintTest.printed(xtory, this.dir, false).asString(),
             Matchers.equalTo((String) xtory.map().get("printed"))
         );
     }

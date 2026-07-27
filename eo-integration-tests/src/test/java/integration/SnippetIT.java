@@ -34,16 +34,22 @@ import org.junit.jupiter.params.ParameterizedTest;
 @ExtendWith(MktmpResolver.class)
 final class SnippetIT {
 
+    /**
+     * Temp directory, injected into every test instance.
+     */
+    @Mktmp
+    private Path dir;
+
     @ParameterizedTest
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     @ClasspathSource(value = "snippets", glob = "**.yaml")
     @SuppressWarnings("unchecked")
-    void runsAllSnippets(final String yml, final @Mktmp Path temp) throws IOException {
+    void runsAllSnippets(final String yml) throws IOException {
         final Xtory xtory = new XtSticky(new XtYaml(yml));
         Assumptions.assumeFalse(xtory.map().containsKey("skip"));
         final String[] log = {""};
-        new Farea(temp).together(
+        new Farea(this.dir).together(
             f -> {
                 f.properties()
                     .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
