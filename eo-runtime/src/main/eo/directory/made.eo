@@ -1,0 +1,37 @@
+# Creates the directory `dir`, making missing parent directories as needed.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package directory
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[dir] > made
+  dir.exists.if > @
+    dir
+    seq *
+      made.
+        directory
+          file dir.as-path.dirname
+      if.
+        created.code.eq 0
+        dir
+        T
+          "Cant make the directory '%s': %s".printf
+            * dir.path created.output
+  called. > created
+    os.is-windows.if
+      win32 *1
+        "_mkdir"
+        dir.path
+      posix *1
+        "mkdir"
+        dir.path
+        posix.permissions
+
+  ++> tests-makes-new-directory
+    d.exists.and d.is-directory > @
+    made. > d
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-new"

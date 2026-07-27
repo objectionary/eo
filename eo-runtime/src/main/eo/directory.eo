@@ -25,28 +25,6 @@
         ^
       ^
   true > is-directory
-  [] > made
-    ^.exists.if > @
-      ^
-      seq *
-        made.
-          directory
-            Q.file ^.as-path.dirname
-        if.
-          created.code.eq 0
-          ^
-          T
-            "Cant make the directory '%s': %s".printf
-              * ^.path created.output
-    called. > created
-      os.is-windows.if
-        win32 *1
-          "_mkdir"
-          ^.path
-        posix *1
-          "mkdir"
-          ^.path
-          posix.permissions
   [] > tmpfile
     ^.exists.if > @
       Q.file touch.as-bytes
@@ -66,11 +44,9 @@
           d.deleted.exists.not
         inner.exists.not
       f.exists.not
-    made. > d
-      directory mktemp.tmpfile.deleted
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > d
     d.tmpfile > f
-    made. > inner
-      directory d.tmpfile.deleted
+    as-dir. (directory d.tmpfile.deleted).made.as-path > inner
 
   ++> tests-deletes-directory-with-files-recursively
     and. > @
@@ -80,20 +56,13 @@
           d.deleted.exists.not
         first.exists.not
       second.exists.not
-    made. > d
-      directory mktemp.tmpfile.deleted
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > d
     d.tmpfile > first
     d.tmpfile > second
 
   ++> tests-deletes-empty-directory
     not. > @
       exists. (mktemp.tmpfile.deleted.as-path.resolved "bar-empty").as-dir.made.deleted
-
-  ++> tests-makes-new-directory
-    d.exists.and d.is-directory > @
-    made. > d
-      as-dir.
-        mktemp.tmpfile.deleted.as-path.resolved "foo-new"
 
   ++> tests-walks-recursively
     seq * > @
