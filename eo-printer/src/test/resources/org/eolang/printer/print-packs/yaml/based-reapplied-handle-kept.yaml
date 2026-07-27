@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A based `>> name` handle (R-3.10.12) whose value is already an application
+# carrying its own argument (`a.plus 1 >> b`), reached by a reference that
+# applies it further (`b 42 > x`). Folding would copy the target's `a.plus 1`
+# and then append the reference's `42`, handing the inner `.plus` a second
+# argument rather than applying its result. Such a target has no inline spelling
+# as the head of another application, so both the reference and the binding are
+# left standing rather than folded (#5952, see `eo:reapplied`).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [a] > foo
+    b 42 > x
+    a.plus 1 >> b
+
+printed: |
+  [a] > foo
+    a.plus 1 >> b
+    b 42 > x
