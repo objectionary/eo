@@ -23,7 +23,7 @@
 
 [pairs] > map
   [] > @
-    initialized > @
+    ctor > @
       if.
         pairs.length.eq 0
         *
@@ -55,8 +55,7 @@
             @. > prev
               rec-rebuild tup.tail
           | pairs
-  [key value] > entry
-  [entries] > initialized
+  [entries] > ctor
     [key] > found
       if. > @
         size.eq 0
@@ -96,7 +95,7 @@
       entries
       entry.value > [entry]
     [key value] > with
-      map.initialized > @
+      map.ctor > @
         with.
           tuple.filtered
             entries
@@ -113,7 +112,7 @@
       bytes.hash >> hash!
         key.as-bytes >> kbts!
     [key] > without
-      map.initialized > @
+      map.ctor > @
         tuple.filtered
           entries
           [entry] >>
@@ -123,6 +122,7 @@
                 kbts.eq entry.kbts
       bytes.hash >> hash!
         key.as-bytes >> kbts!
+  [key value] > entry
 
   ++> tests-adds-key-colliding-with-existing-one
     and. > @

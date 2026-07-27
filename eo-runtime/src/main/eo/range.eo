@@ -32,16 +32,16 @@
 [start end] > range
   if. > @
     start.lt end
-    appended
+    if. > [acc current] >> appended
+      current.lt end
+      appended
+        acc.with current
+        current.next
+      acc
+    |
       * start
       start.next
     *
-  if. > [acc current] > appended
-    current.lt end
-    appended
-      acc.with current
-      current.next
-    acc
 
   ++> tests-range-with-out-of-bounds
     rng.eq > @
