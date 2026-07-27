@@ -11,7 +11,7 @@
 [num] > radians
   div. > @
     times.
-      number num.as-bytes >>
+      number num.as-bytes
       pi
     180
 
