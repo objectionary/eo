@@ -29,8 +29,22 @@
                 0
               if.
                 expo.gt 0
-                0
-                pinf
+                if.
+                  and.
+                    eq.
+                      base.as-bytes
+                      80-00-00-00-00-00-00-00
+                    expo.is-integer.and (expo.div 2).is-integer.not
+                  0.neg
+                  0
+                if.
+                  and.
+                    eq.
+                      base.as-bytes
+                      80-00-00-00-00-00-00-00
+                    expo.is-integer.and (expo.div 2).is-integer.not
+                  ninf
+                  pinf
               expo.is-integer.if
                 if.
                   expo.lt 0
