@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# xslint configuration — https://github.com/xslint/xslint
+# The vendored xs3p stylesheet and the test fixtures are not ours to lint.
+exclude:
+  - "**/xs3p/**"
+  - "**/src/test/**"
+# Checks the pipeline does not yet satisfy, deferred to #6006 and switched on
+# one at a time as the findings are cleared. Every other check is enforced.
+rules:
+  not-creating-element-correctly: "off"
+  not-using-schema-types: "off"
+  short-names: "off"
+  unused-variable: "off"
+  not-using-output: "off"
+  redundant-namespace-declarations: "off"
+  null-output-from-stylesheet: "off"
+  stylesheet-has-no-templates: "off"
+  too-many-small-templates: "off"
+  monolithic-design: "off"
+  empty-content-in-instructions: "off"
+  use-choose-without-otherwise: "off"
+  unused-function: "off"
