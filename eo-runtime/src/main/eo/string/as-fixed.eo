@@ -18,7 +18,7 @@
       not.
         places.floor.eq places
     cant-print
-      "Can't write a fixed-point decimal with %s fraction places".printf
+      "Can't write a fixed-point decimal with %f fraction places".printf
         * places
     if.
       n.lt 0

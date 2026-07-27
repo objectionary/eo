@@ -17,7 +17,7 @@
       not.
         times.floor.eq times
     cant-repeat
-      "Can't repeat text %s times".printf
+      "Can't repeat text %f times".printf
         * times
     string
       if. >> result!
