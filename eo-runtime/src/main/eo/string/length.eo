@@ -17,42 +17,35 @@
       text.as-bytes.size >> size!
       0
     0
-    reclen
-      0
-      0
-  [index accum] >> reclen
-    if. > @
-      index.eq size
-      accum
-      if.
-        eq.
-          byte.and p1
-          r1
-        inclen
-          index
-          1
-          accum
+    [index accum] >> reclen
+      if. > @
+        index.eq size
+        accum
         if.
           eq.
-            byte.and p2
-            r2
-          inclen index 2 accum
+            byte.and p1
+            r1
+          inclen index 1 accum
           if.
             eq.
-              byte.and p3
-              r3
-            inclen index 3 accum
+              byte.and p2
+              r2
+            inclen index 2 accum
             if.
               eq.
-                byte.and p4
-                r4
-              inclen index 4 accum
-              T
-                "Unknown byte format (%x), can't recognize character".printf
-                  * byte
-    text.as-bytes.slice > byte
-      index
-      1
+                byte.and p3
+                r3
+              inclen index 3 accum
+              if.
+                eq.
+                  byte.and p4
+                  r4
+                inclen index 4 accum
+                T
+                  "Unknown byte format (%x), can't recognize character".printf
+                    * byte
+      text.as-bytes.slice index 1 > byte
+    | 0 0
   if. > [index csize len] > inclen
     gt.
       index.plus csize

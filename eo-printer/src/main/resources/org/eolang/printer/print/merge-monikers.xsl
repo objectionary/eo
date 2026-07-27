@@ -158,19 +158,16 @@
     <xsl:sequence select="if (exists($binding) and (eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
   </xsl:function>
   <!--
-  Whether the formation `$attr` prints as a multi-line block rather than as a
-  compact one-line spelling. Only a block hosts an applied reference as a "| args"
-  pipe continuation: a block forces its enclosing argument list to lay out
-  vertically, so the nameless pipe gets its own line and never has to be spelled
-  inline as the unparsable "|:0" (the lesson of #5983). An abstract formation
-  prints on one line only through the compact "&lt;value&gt; &gt; [params] &gt;&gt; name"
-  suffix form (Pretty's inline-phi), which needs a single "@" decoratee whose
-  own value is flat; anything else spans several lines. So a formation is a block
-  when it carries more than one body binding (like "digits", with both "@" and
-  "q"), or its sole binding is not that "@" decoratee, or that decoratee is
-  itself compound — an application whose arguments carry children of their own
-  (like "negative", whose "@" is an "if." over three nested branches). A
-  single-"@" formation whose decoratee is a flat application ("a.plus b") stays
+  Whether the formation `$attr` prints as a multi-line block rather than the
+  compact one-line "&lt;value&gt; &gt; [params] &gt;&gt; name" suffix form (Pretty's
+  inline-phi), which needs a single "@" decoratee whose value is flat. So a
+  formation is a block when it carries more than one body binding (like "digits",
+  with both "@" and "q"), its sole binding is not that "@" decoratee, or that
+  decoratee is compound — an application whose arguments carry children of their
+  own (like "negative", whose "@" is an "if." over three nested branches). Only a
+  block folds an applied reference in an argument slot: it forces the enclosing
+  list vertical, so the "| args" pipe gets its own line rather than the
+  unparsable "|:0" (#5983). A flat single-"@" formation ("a.plus b > @") stays
   inline and keeps its applied reference standing (#5983), the "bar 1 2" case.
   -->
   <xsl:function name="eo:block-handle" as="xs:boolean">
@@ -203,31 +200,26 @@
   <!--
   Whether the applied reference `$ref` sits in a dispatch-receiver slot: the
   first child (the "ρ" receiver) of a reversed dispatch ("@base" starting with a
-  dot), as in "(handle args).read" (#5844/#5848). A receiver fold is spelled as a
-  reversed dispatch over the inlined formation with a "| args" pipe, and
-  "unnecessary-as" strips the pipe's "@as" cleanly there, so it never risks the
-  "|:0" that an argument-slot fold does (#5983); a receiver therefore folds
-  whatever shape the hosted formation prints as. Any other position (a positional
-  argument, a list element) folds only when the formation is a block
-  (`eo:block-handle`).
+  dot), as in "(handle args).read" (#5844/#5848). "unnecessary-as" strips the
+  pipe's "@as" cleanly for a reversed dispatch, so a receiver never risks the
+  "|:0" an argument-slot fold does (#5983) and folds whatever shape the formation
+  prints as; any other position folds only when the formation is a block.
   -->
   <xsl:function name="eo:receiver-ref" as="xs:boolean">
     <xsl:param name="ref" as="element()"/>
     <xsl:sequence select="exists($ref/parent::o[starts-with(@base, '.')]) and empty($ref/preceding-sibling::o)"/>
   </xsl:function>
   <!--
-  Whether the abstract formation handle `$attr` folds onto an applied reference
-  at all. It does when it is an abstract formation (only a formation inlines as a
-  "&gt;&gt; name" moniker over its "| args" pipe; a based handle reapplied further
-  has no such spelling and stays standing, #5952) reached by such a reference
-  (`eo:applied-refs`), and either that first reference is a dispatch receiver
-  (`eo:receiver-ref`, always safe) or the formation prints as a block
-  (`eo:block-handle`), so a positional-argument fold keeps its "| args" pipe on
-  its own line rather than the unparsable "|:0" (#5983). Recursion plays no part:
-  #5848 folded recursive handles only because those were the sole ones
-  "inline-cactoos" left standing to reach here; a plain formation handle now
-  reaches here too (kept standing by #5983's `eo:arg-applied`) and folds by the
-  very same rule (#6008).
+  Whether the formation handle `$attr` folds onto an applied reference at all: an
+  abstract formation (only a formation inlines as a "&gt;&gt; name" moniker over its
+  "| args" pipe; a based handle reapplied further has no such spelling and stays
+  standing, #5952) reached by such a reference (`eo:applied-refs`), whose first
+  reference is a dispatch receiver (`eo:receiver-ref`, always safe) or which
+  prints as a block (`eo:block-handle`, so an argument-slot pipe avoids "|:0",
+  #5983). Recursion plays no part: #5848 folded recursive handles only because
+  those were the sole ones "inline-cactoos" left standing to reach here; a plain
+  formation handle now reaches here too (kept standing by #5983's
+  `eo:arg-applied`) and folds by the very same rule (#6008).
   -->
   <xsl:function name="eo:applied-hosted" as="xs:boolean">
     <xsl:param name="attr" as="element()"/>

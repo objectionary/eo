@@ -37,56 +37,47 @@
           string
             text.as-bytes.slice bstart blen
   text.as-bytes.size >> size!
-  [index accum result cause] >> recidx
-    if. > @
-      accum.eq result
-      index
-      if.
-        index.eq size
-        T cause
+  minus. > blen
+    [index accum result cause] >> recidx
+      if. > @
+        accum.eq result
+        index
         if.
-          eq.
-            byte.and p1
-            r1
-          increase
-            index
-            1
-            accum
-            result
-            cause
+          index.eq size
+          T cause
           if.
             eq.
-              byte.and p2
-              r2
+              byte.and p1
+              r1
             increase
               index
-              2
+              1
               accum
               result
               cause
             if.
               eq.
-                byte.and p3
-                r3
+                byte.and p2
+                r2
               increase
                 index
-                3
+                2
                 accum
                 result
                 cause
               if.
                 eq.
-                  byte.and p4
-                  r4
-                increase index 4 accum result cause
-                T
-                  "Unknown byte format (%x), can't recognize character".printf
-                    * byte
-    text.as-bytes.slice > byte
-      index
-      1
-  minus. > blen
-    recidx
+                  byte.and p3
+                  r3
+                increase index 3 accum result cause
+                if.
+                  eq. (byte.and p4) r4
+                  increase index 4 accum result cause
+                  T
+                    "Unknown byte format (%x), can't recognize character".printf
+                      * byte
+      text.as-bytes.slice index 1 > byte
+    |
       number bstart
       0
       nlen
