@@ -11,8 +11,12 @@
 [n] > as-decimal
   if. > @
     n.lt 0
-    negative
-      n.times -1
+    if. > [m] >> negative
+      m.floor.eq 0
+      digits m
+      "-".as-bytes.concat
+        digits m
+    | (n.times -1)
     [n] >> digits
       if. > @
         n.lt 10
@@ -29,11 +33,6 @@
       floor. > q
         n.div 10
     | n
-  if. > [m] >> negative
-    m.floor.eq 0
-    digits m
-    "-".as-bytes.concat
-      digits m
 
   eq. ++> tests-negative-below-one-drops-sign
     "0"

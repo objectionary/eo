@@ -57,8 +57,24 @@
                   ipow base (abs expo)
                 if.
                   base.gt 0
-                  expon
-                    expo.times (ln base)
+                  [y] >> expon
+                    whole.times (fraction 1) > @
+                    20 > eterms
+                    if. > [j] > fraction
+                      j.gt eterms
+                      1
+                      1.plus
+                        times.
+                          r.div j
+                          fraction (j.plus 1)
+                    floor. (y.plus 0.5) > k
+                    y.minus k > r
+                    if. > whole
+                      k.lt 0
+                      1.div
+                        ipow e (abs k)
+                      ipow e (abs k)
+                  | (expo.times (ln base))
                   nan
             if.
               base.gt 0
@@ -97,30 +113,6 @@
                   1
                 nan
                 pinf
-  [y] >> expon
-    whole.times > @
-      fraction 1
-    20 > eterms
-    if. > [j] > fraction
-      j.gt eterms
-      1
-      1.plus
-        times.
-          r.div j
-          fraction
-            j.plus 1
-    floor. > k
-      y.plus 0.5
-    y.minus k > r
-    if. > whole
-      k.lt 0
-      1.div
-        ipow
-          e
-          abs k
-      ipow
-        e
-        abs k
 
   ++> tests-power-any-to-nan-is-nan
     is-nan. > @
