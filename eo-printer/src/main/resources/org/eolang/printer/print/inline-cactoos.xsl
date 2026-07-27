@@ -163,6 +163,25 @@
               </xsl:if>
               <xsl:apply-templates select="$target/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
               <xsl:apply-templates select="$target/node()"/>
+              <!--
+              A based `>> name` handle whose value is a plain reference or an
+              argument-less dispatch (R-3.10.12) reaches this `otherwise`
+              because neither of the two branches above — which preserve an
+              applied reference's arguments by keeping the target in place and
+              turning the reference into a `| args` pipe (#5834/#5844) — test
+              for a based, non-abstract target first. Folding the target alone
+              (#5952) would build the node from `$target` only and silently
+              drop the reference's own `o` children. Append them after the
+              target's, guarded to a target that carries no children of its own:
+              handing an already-applied target (e.g. `a.plus 1 >> b` used as
+              `b 42`) a second child would apply the inner application a second
+              time rather than feed the outer reference its argument. A target
+              that does carry children has no inline spelling here and is left
+              standing; the drop template below will keep it.
+              -->
+              <xsl:if test="o and not($target/o)">
+                <xsl:apply-templates select="o"/>
+              </xsl:if>
             </xsl:element>
           </xsl:otherwise>
         </xsl:choose>
