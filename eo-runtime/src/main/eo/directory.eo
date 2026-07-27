@@ -47,9 +47,6 @@
           "mkdir"
           ^.path
           posix.permissions
-  T > [mode scope] > open
-    "The file %s is a directory, can't open for I/O operations".printf
-      * file
   [] > tmpfile
     ^.exists.if > @
       Q.file touch.as-bytes
@@ -138,10 +135,6 @@
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
-
-  mktemp.open --> on-opening-directory
-    "w"
-    true > [d]
 
   walk. --> on-walking-absent-directory
     directory mktemp.tmpfile.deleted
