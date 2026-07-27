@@ -143,6 +143,11 @@ final class Linting implements Step {
     private final boolean skipLinting;
 
     /**
+     * Cache guard, see {@link ConcurrentCache} for why it is one per instance.
+     */
+    private final ConcurrentCache guard;
+
+    /**
      * Constructor.
      * @param srcs Scoped tojos
      * @param compiled Compile tojos
@@ -192,6 +197,7 @@ final class Linting implements Step {
         this.lintAsPackage = pkg;
         this.sourcesDir = sources;
         this.skipLinting = skip;
+        this.guard = new ConcurrentCache();
     }
 
     @Override
@@ -292,7 +298,8 @@ final class Linting implements Step {
             new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get()
         ).make(base, MjAssemble.XMIR);
         if (this.cacheEnabled) {
-            new ConcurrentCache(
+            this.guard.apply(
+                source, target, base.relativize(target),
                 new Cache(
                     new CachePath(
                         this.cacheDir.resolve(Linting.CACHE),
@@ -304,7 +311,7 @@ final class Linting implements Step {
                         unlints
                     ).toString()
                 )
-            ).apply(source, target, base.relativize(target));
+            );
         } else {
             new Saved(
                 this.linted(xmir, unlints).toString(),
@@ -358,20 +365,23 @@ final class Linting implements Step {
         if (this.cacheEnabled) {
             final Path wpa = Paths.get("wpa.xmir");
             final Path target = this.targetDir.resolve(Linting.DIR).resolve(wpa);
-            new Cache(
-                this.cacheDir.resolve(Linting.CACHE),
-                root -> {
-                    Logger.info(this, "Linting a package");
-                    final Directives all = new Directives().add("defects");
-                    for (final org.eolang.wpa.Defect defect : this.wpa(pkg)) {
-                        Linting.embedded(all, defect);
-                    }
-                    all.up();
-                    return new Xembler(all).xmlQuietly();
-                },
-                p -> p.getFileName().toString().endsWith(".xmir")
-                    && !p.getFileName().equals(wpa)
-            ).apply(this.sourcesDir, target, wpa);
+            this.guard.apply(
+                this.sourcesDir, target, wpa,
+                new Cache(
+                    this.cacheDir.resolve(Linting.CACHE),
+                    root -> {
+                        Logger.info(this, "Linting a package");
+                        final Directives all = new Directives().add("defects");
+                        for (final org.eolang.wpa.Defect defect : this.wpa(pkg)) {
+                            Linting.embedded(all, defect);
+                        }
+                        all.up();
+                        return new Xembler(all).xmlQuietly();
+                    },
+                    p -> p.getFileName().toString().endsWith(".xmir")
+                        && !p.getFileName().equals(wpa)
+                )
+            );
             defects = Linting.read(target);
         } else {
             Logger.info(

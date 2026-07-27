@@ -131,6 +131,25 @@
     <xsl:sequence select="eo:abstract($target) and exists($target/..//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name and (o or @name) and not(ancestor-or-self::o[. is $target]) and not(preceding-sibling::o[. is $target])])"/>
   </xsl:function>
   <!--
+  Whether the based "&gt;&gt; name" handle "$target" is itself an application
+  carrying its own argument children (`a.plus 1 &gt;&gt; b`) and is reached by a
+  reference that applies it further (`b 42`). Such a target has no inline
+  spelling as the head of another application — folding it would hand the inner
+  application a second argument rather than apply its result — so "inline-cactoos"
+  leaves the binding standing (see its "eo:reapplied") rather than folding it.
+  The binding therefore reaches "to-eo-tree" and must keep its readable "@local"
+  handle: "merge-monikers" rewrites the surviving reference back to it
+  ("eo:kept-local-ref"), so it reads as `b 42` rather than a synthetic "vL_P"
+  placeholder (#5952). A const handle (`@const`) and the dataized-const shell
+  (`.as-bytes`) are excluded — they carry their name through a bare inline
+  already (#5828) — and an abstract formation, handled by "eo:applied-receiver".
+  -->
+  <xsl:function name="eo:reapplied" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="not(eo:abstract($target)) and not(exists($target/@const)) and not($target/@base = '.as-bytes') and exists($target/o) and exists($target/..//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name and o and not(ancestor-or-self::o[. is $target])])"/>
+  </xsl:function>
+  <!--
   Whether "$wrapper" is a dataized-const file-local handle (`a &gt;&gt; b!`,
   R-3.10.12) that is referenced more than once. "const-to-dataized" wraps such
   a const in a `.as-bytes` over `Φ.dataized` node carrying the obfuscated
@@ -180,13 +199,16 @@
   (an abstract formation, #5876, or a based handle, #5944) — kept whole by
   "inline-cactoos" and hosted by "merge-monikers" — on an
   unreferenced binding of any shape (#5914) — kept where it stands by
-  "inline-cactoos", having no use site to fold into — and on the value of a
+  "inline-cactoos", having no use site to fold into — on a based application
+  handle reached by a further application (see "eo:reapplied") — left standing
+  by "inline-cactoos", having no inline spelling as the head of another
+  application (#5952) — and on the value of a
   multi-referenced dataized-const handle (see
   "eo:const-handle") so "to-eo-tree" restores the readable "&gt;&gt; name"
   handle; drop it on the other non-void formations, whose handle is inlined
   away by "inline-cactoos".
   -->
-  <xsl:template match="o[not(@base=$eo:empty) and not(eo:recursive(., @name)) and not(eo:applied-receiver(., @name)) and not(eo:multi-referenced(., @name)) and not(eo:unreferenced(., @name)) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
+  <xsl:template match="o[not(@base=$eo:empty) and not(eo:recursive(., @name)) and not(eo:applied-receiver(., @name)) and not(eo:multi-referenced(., @name)) and not(eo:unreferenced(., @name)) and not(eo:reapplied(., @name)) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
   <!--
   When a recursive "&gt;&gt; name" handle is restored, its cactus name is
   promoted to the visible "@name" and every reference is rewritten from the

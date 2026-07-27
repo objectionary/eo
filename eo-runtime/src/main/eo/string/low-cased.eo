@@ -18,19 +18,21 @@
         accum.concat > @
           if.
             and.
-              code.lte maxcode
-              code.gte mincode
+              code.lte
+                as-ascii "Z"
+              code.gte
+                as-ascii "A"
             slice.
-              as-bytes. (code.plus distance).as-i64
+              as-bytes.
+                as-i64.
+                  code.plus
+                    minus.
+                      as-ascii "a"
+                      as-ascii "A"
               7
               1
             byte
         as-ascii byte > code
-  minus. > distance
-    as-ascii "a"
-    as-ascii "A"
-  as-ascii "Z" > maxcode
-  as-ascii "A" > mincode
 
   eq. ++> tests-converts-text-to-lower-case
     "hello"

@@ -13,23 +13,23 @@
     n.lt 0
     negative
       n.times -1
-    digits n
-  [n] > digits
-    if. > @
-      n.lt 10
-      as-char
-        n.floor.plus 48
-      concat.
-        digits q
+    [n] >> digits
+      if. > @
+        n.lt 10
         as-char
-          plus.
-            floor.
-              n.minus
-                q.times 10
-            48
-    floor. > q
-      n.div 10
-  if. > [m] > negative
+          n.floor.plus 48
+        concat.
+          digits q
+          as-char
+            plus.
+              floor.
+                n.minus
+                  q.times 10
+              48
+      floor. > q
+        n.div 10
+    | n
+  if. > [m] >> negative
     m.floor.eq 0
     digits m
     "-".as-bytes.concat
