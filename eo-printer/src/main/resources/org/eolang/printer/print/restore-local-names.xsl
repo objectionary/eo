@@ -108,6 +108,27 @@
     <xsl:sequence select="empty(eo:references($target, $name))"/>
   </xsl:function>
   <!--
+  Whether the auto-name "$name" is reached only from nested formation scopes: it
+  is referenced (so not the "eo:unreferenced" case) yet no reference sits in the
+  binding's own owner scope, every one climbing out of a formation nested inside
+  it. A reference written in the owner's own body has that owner as its nearest
+  formation ancestor; one inside a nested "&gt;&gt;" body has the nested formation
+  instead, so it is excluded. Neither later pass folds such a reference:
+  "inline-cactoos" computes an inline target straight off the base, so a nested
+  method dispatch ("ξ.ρ.&lt;name&gt;.&lt;seg&gt;") resolves to
+  "&lt;name&gt;.&lt;seg&gt;" and finds no target, and "merge-monikers" only hosts
+  a reference whose nearest formation ancestor is the binding's own owner. The
+  binding therefore reaches "to-eo-tree" and its "@local" is kept here (below), so
+  "merge-monikers" rewrites the surviving reference back to the readable handle
+  ("eo:kept-local-ref") — exactly as the multi-referenced spelling of the same
+  shape is — rather than strand it on a synthetic "vL_P" placeholder (#5995).
+  -->
+  <xsl:function name="eo:nested-referenced" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="exists(eo:references($target, $name)) and empty(eo:references($target, $name)[ancestor::o[eo:abstract(.)][1] is $target/..])"/>
+  </xsl:function>
+  <!--
   Whether the auto-named abstract formation "$target" is applied by a reference
   that stands as a dispatch receiver rather than a following sibling. Such a
   reference resolves to "$name", carries its own argument children or a
@@ -199,7 +220,11 @@
   (an abstract formation, #5876, or a based handle, #5944) — kept whole by
   "inline-cactoos" and hosted by "merge-monikers" — on an
   unreferenced binding of any shape (#5914) — kept where it stands by
-  "inline-cactoos", having no use site to fold into — on a based application
+  "inline-cactoos", having no use site to fold into — on a binding reached only
+  from nested formation scopes (see "eo:nested-referenced") — kept whole by
+  "inline-cactoos" (a nested method dispatch is never folded) and hosted by
+  "merge-monikers" onto no reference in its own scope, so every reference reads
+  the handle by name (#5995) — on a based application
   handle reached by a further application (see "eo:reapplied") — left standing
   by "inline-cactoos", having no inline spelling as the head of another
   application (#5952) — and on the value of a
@@ -208,7 +233,7 @@
   handle; drop it on the other non-void formations, whose handle is inlined
   away by "inline-cactoos".
   -->
-  <xsl:template match="o[not(@base=$eo:empty) and not(eo:recursive(., @name)) and not(eo:applied-receiver(., @name)) and not(eo:multi-referenced(., @name)) and not(eo:unreferenced(., @name)) and not(eo:reapplied(., @name)) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
+  <xsl:template match="o[not(@base=$eo:empty) and not(eo:recursive(., @name)) and not(eo:applied-receiver(., @name)) and not(eo:multi-referenced(., @name)) and not(eo:unreferenced(., @name)) and not(eo:nested-referenced(., @name)) and not(eo:reapplied(., @name)) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
   <!--
   When a recursive "&gt;&gt; name" handle is restored, its cactus name is
   promoted to the visible "@name" and every reference is rewritten from the

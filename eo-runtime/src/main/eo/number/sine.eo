@@ -16,7 +16,8 @@
       times.
         floor.
           plus.
-            arg.div tau
+            arg.div
+              pi.times 2 >> tau
             0.5
         tau
     if. > [depth] >> factor
@@ -34,7 +35,6 @@
             depth.plus 1
     | 1
   number num.as-bytes > arg
-  pi.times 2 >> tau
   reduced.times reduced > squared
 
   lt. ++> tests-sine-is-odd-function
