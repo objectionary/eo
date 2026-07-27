@@ -10,13 +10,13 @@
 +unlint mandatory-package
 
 [lst] > set
-  [mp] >> initialized
+  [mp] >> ctor
     mp.keys > @
     mp.has item > [item] > has
     mp.size > size
-    set.initialized > [item] > with
+    set.ctor > [item] > with
       mp.with item true
-    set.initialized > [item] > without
+    set.ctor > [item] > without
       mp.without item
   | > @
     map
