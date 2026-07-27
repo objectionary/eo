@@ -6,8 +6,11 @@
 exclude:
   - "**/xs3p/**"
   - "**/src/test/**"
-# Checks the pipeline does not yet satisfy, deferred to #6006 and switched on
-# one at a time as the findings are cleared. Every other check is enforced.
+# @todo #6006:60min Enable the deferred xslint checks below one by one. Each
+#  is switched off only because the pipeline has findings for it today, not
+#  because the rule is unwanted; fix those findings in the stylesheets and
+#  delete the matching line here so the check begins to enforce. Every other
+#  xslint check is already enforced across the whole codebase.
 rules:
   not-creating-element-correctly: "off"
   not-using-schema-types: "off"
