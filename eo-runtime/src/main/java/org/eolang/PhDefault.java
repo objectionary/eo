@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -104,8 +105,25 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Attributes.
+     *
+     * <p>Written last during {@link #activate()} and read as the lazy-init
+     * guard, so it's {@code volatile}: a thread that sees it non-null is
+     * guaranteed to also see the fully-populated {@link #order} map published
+     * before it.</p>
      */
-    private Map<String, Attribute> attrs;
+    private volatile Map<String, Attribute> attrs;
+
+    /**
+     * Guards the one-time {@link #activate()} of this instance, so concurrent
+     * first access from several threads can't build and publish two rival
+     * attribute maps.
+     *
+     * <p>Not {@code final}: {@link #copy()} clones through
+     * {@link Object#clone()}, whose shallow copy would otherwise hand the copy
+     * the very same lock as the original, and two unrelated objects would
+     * contend on it. The copy gets a fresh one instead.</p>
+     */
+    private ReentrantLock lock;
 
     /**
      * Default ctor.
@@ -160,6 +178,7 @@ public class PhDefault implements Phi, Cloneable {
         this.fqn = forma;
         this.data = dta;
         this.initial = attributes;
+        this.lock = new ReentrantLock();
     }
 
     @Override
@@ -181,6 +200,7 @@ public class PhDefault implements Phi, Cloneable {
             for (final Map.Entry<String, Attribute> ent : this.attrs.entrySet()) {
                 map.put(ent.getKey(), ent.getValue().copy(copy));
             }
+            copy.lock = new ReentrantLock();
             copy.attrs = map;
             return copy;
         } catch (final CloneNotSupportedException ex) {
@@ -562,15 +582,44 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Activate the lazy state: initialize attrs/order from the constructor-supplied
-     * map, wrapping each entry with {@link AtWithRho}. Idempotent.
+     * map, wrapping each entry with {@link AtWithRho}. Idempotent and thread-safe.
+     *
+     * <p>The maps are built into locals under {@link #lock} and only then
+     * published, with the {@code volatile} {@link #attrs} written last. This is
+     * a proper double-checked lock: the lock-free fast path reads {@code attrs}
+     * once, and a concurrent first access can neither observe a half-built map
+     * nor race a second thread into building a rival one.</p>
      */
     private void activate() {
         if (this.attrs == null) {
-            this.attrs = PhDefault.defaults();
-            this.order = new HashMap<>(0);
-            for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
-                this.add(ent.getKey(), ent.getValue());
+            this.lock.lock();
+            try {
+                this.publish();
+            } finally {
+                this.lock.unlock();
             }
+        }
+    }
+
+    /**
+     * Build the attribute maps from the constructor-supplied {@link #initial}
+     * map and publish them, with the {@code volatile} {@link #attrs} written
+     * last. Must be called while holding {@link #lock}; the inner null-check
+     * keeps it idempotent when a queued thread enters after the winner.
+     */
+    private void publish() {
+        if (this.attrs == null) {
+            final Map<Integer, String> ordered = new HashMap<>(0);
+            final Map<String, Attribute> built = PhDefault.defaults();
+            for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
+                final String name = ent.getKey();
+                if (PhDefault.SORTABLE.matcher(name).matches()) {
+                    ordered.put(ordered.size(), name);
+                }
+                built.put(name, new AtWithRho(ent.getValue(), this));
+            }
+            this.order = ordered;
+            this.attrs = built;
         }
     }
 
