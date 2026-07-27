@@ -47,8 +47,8 @@ public final class EOdirectory$EOwalk extends PhDefault implements Atom {
         try (Stream<Path> paths = Files.walk(path)) {
             return new Data.ToPhi(
                 paths
-                    .map(p -> p.toAbsolutePath().toString())
-                    .map(p -> p.substring(p.indexOf(path.toString())))
+                    .map(p -> p.toAbsolutePath().normalize())
+                    .map(p -> path.relativize(p).toString())
                     .filter(p -> matcher.matches(Paths.get(p))).map(
                         p -> {
                             final Phi file = Phi.Φ.take("file").copy();
