@@ -13,27 +13,29 @@
     n.lt 0
     negative
       n.times -1
-    [n] >> digits
-      if. > @
-        n.lt 10
-        as-char
-          n.floor.plus 48
-        concat.
-          digits q
+    is-finite. n.if > digits
+        if. > @
+          n.lt 10
           as-char
-            plus.
-              floor.
-                n.minus
-                  q.times 10
-              48
-      floor. > q
-        n.div 10
+            n.floor.plus 48
+          concat.
+            digits q
+            as-char
+              plus.
+                floor.
+                  n.minus
+                    q.times 10
+                48
+        floor. > q
+          n.div 10
+        "Can't write a non-finite number as decimal".fail
     | n
-  if. > [m] >> negative
+  is-finite. m.if > negative
     m.floor.eq 0
     digits m
     "-".as-bytes.concat
       digits m
+    "Can't write a non-finite number as decimal".fail
 
   eq. ++> tests-negative-below-one-drops-sign
     "0"
