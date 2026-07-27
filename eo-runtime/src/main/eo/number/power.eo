@@ -13,7 +13,9 @@
 
 [num x] > power
   if. > @
-    expo.eq 0
+    eq.
+      number x.as-bytes >> expo
+      0
     1
     base.is-nan.if
       nan
@@ -22,7 +24,9 @@
         expo.is-finite.if
           base.is-finite.if
             if.
-              base.eq 0
+              eq.
+                number num.as-bytes >> base
+                0
               if.
                 odd.and
                   num.as-bytes.eq 80-00-00-00-00-00-00-00
@@ -38,7 +42,17 @@
                 if.
                   expo.lt 0
                   1.div
-                    ipow base (abs expo)
+                    [b n] >> ipow
+                      if. > @
+                        n.eq 0
+                        1
+                        if.
+                          is-integer. (n.div 2)
+                          half.times half
+                          b.times
+                            ipow b (n.minus 1)
+                      ipow b (n.div 2) > half
+                    | base (abs expo)
                   ipow base (abs expo)
                 if.
                   base.gt 0
@@ -53,7 +67,10 @@
                 0
               if.
                 expo.gt 0
-                odd.if ninf pinf
+                if.
+                  expo.is-integer.and (expo.div 2).is-integer.not >> odd
+                  ninf
+                  pinf
                 odd.if 0.neg 0
           if.
             expo.gt 0
@@ -79,9 +96,7 @@
                   1
                 nan
                 pinf
-  number num.as-bytes > base
-  number x.as-bytes > expo
-  [y] > expon
+  [y] >> expon
     whole.times > @
       fraction 1
     20 > eterms
@@ -105,25 +120,6 @@
       ipow
         e
         abs k
-  [b n] > ipow
-    if. > @
-      n.eq 0
-      1
-      if.
-        is-integer.
-          n.div 2
-        half.times half
-        b.times
-          ipow
-            b
-            n.minus 1
-    ipow > half
-      b
-      n.div 2
-  expo.is-integer.and > odd
-    not.
-      is-integer.
-        expo.div 2
 
   ++> tests-power-any-to-nan-is-nan
     is-nan. > @

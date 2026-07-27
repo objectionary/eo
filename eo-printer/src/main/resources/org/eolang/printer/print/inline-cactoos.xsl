@@ -104,6 +104,29 @@
             </xsl:copy>
           </xsl:when>
           <!--
+          The same applied reference standing in a positional argument slot
+          (`@as` is `αN`) of an application, rather than in a body-binding
+          sibling slot (#5840) or a dispatch receiver (#5844). The relocation
+          branch below would emit the formation copy and the `| args` pipe as
+          two children in place of this reference, but an argument list has no
+          room for the relocated predecessor a pipe binds: the copy would become
+          a stray extra argument of the application and the pipe would keep this
+          reference's positional `@as`, which `to-eo-tree` spells as the
+          unparsable `|:N` (#5983). Leave the handle standing under its
+          `@local` name instead — copy the reference verbatim, keeping its
+          arguments, so it reads back as `bar 1 2` once the drop template below
+          keeps the binding and "merge-monikers" rewrites its cactus base to the
+          handle (`eo:kept-local-ref`), the kept-handle path of #5876 and #5944.
+          Restricted to a single-use formation reached through a positional
+          argument: the sibling and receiver relocations still fire for #5840
+          and #5844, whose references carry no positional `@as`.
+          -->
+          <xsl:when test="eo:arg-applied($target, $name) and (o or @name) and starts-with(@as, $eo:alpha)">
+            <xsl:copy>
+              <xsl:apply-templates select="node()|@*"/>
+            </xsl:copy>
+          </xsl:when>
+          <!--
           The same applied reference, but not standing as the formation's
           immediate following sibling, so the adjacent guard above misses it
           and the bare-reference `otherwise` would drop the argument and name
@@ -123,7 +146,8 @@
           following sibling at all), so the relocation moves it rather than
           duplicating it, the same relocation #5732 proposes for its sibling
           case. Restricted to a single-use formation: a multi-referenced one
-          cannot be folded into just one of its uses.
+          cannot be folded into just one of its uses. A positional-argument
+          reference is handled by the branch above (#5983), not here.
           -->
           <xsl:when test="eo:abstract($target) and (o or @name) and not(eo:multi-referenced($target, $name))">
             <xsl:for-each select="$target">
@@ -201,7 +225,10 @@
   inlined, keep a const that only a vertical layout can spell,
   which is never inlined either (#5910), keep a formation applied through a
   `@pipe` continuation, which is kept in place above its pipe rather than
-  inlined (#5834), keep a based application handle reached by a further
+  inlined (#5834), keep a single-use formation reached through a positional
+  argument (see `eo:arg-applied`), which is left standing rather than relocated
+  into an argument list where its pipe would print as `|:N` (#5983), keep a
+  based application handle reached by a further
   application (see `eo:reapplied`), which has no inline spelling as the head of
   another application and is left standing rather than folded (#5952), and keep
   a binding that a surviving method dispatch still reaches through its name.
@@ -215,7 +242,7 @@
   reads yet would silently vanish (#5914).
   -->
   <xsl:template match="o[starts-with(@name, $auto) and not(eo:void(.))]" priority="1">
-    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or eo:vertical-const(.) or eo:unreferenced(., @name) or (eo:multi-referenced(., @name) and eo:rebuilt(.)) or eo:piped(., @name) or eo:reapplied(., @name)">
+    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or eo:vertical-const(.) or eo:unreferenced(., @name) or (eo:multi-referenced(., @name) and eo:rebuilt(.)) or eo:piped(., @name) or eo:arg-applied(., @name) or eo:reapplied(., @name)">
       <xsl:copy>
         <xsl:apply-templates select="node()|@*"/>
       </xsl:copy>
@@ -292,6 +319,27 @@
     <xsl:param name="name" as="xs:string"/>
     <xsl:variable name="next" select="$target/following-sibling::o[1]"/>
     <xsl:sequence select="eo:abstract($target) and exists($next) and contains($next/@base, concat('.', $auto)) and eo:resolved-name($next/@base) = $name and ($next/o or $next/@name)"/>
+  </xsl:function>
+  <!--
+  Whether the single-use auto-named abstract formation `$target` is applied by a
+  reference that stands in a positional argument slot of an application — a
+  reference resolving to `$name`, carrying its own argument children or a
+  result-binding `@name`, whose own positional `@as` is `αN`. Unlike the sibling
+  (#5840) and receiver (#5844) relocations, an argument list has no spare slot
+  for the formation copy a `| args` pipe binds: relocating there would turn the
+  copy into a stray extra argument and leave the pipe carrying the reference's
+  `@as`, which `to-eo-tree` spells as the unparsable `|:N` (#5983). The
+  reference is therefore left standing (see the inlining template) and this
+  binding must be kept in place under its `@local` name rather than dropped, so
+  "merge-monikers" can rewrite the reference back to the handle
+  (`eo:kept-local-ref`, the kept-handle path of #5876 and #5944). A
+  multi-referenced formation is excluded — it is already kept whole by the outer
+  guard above — and references inside the formation itself are not counted.
+  -->
+  <xsl:function name="eo:arg-applied" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="eo:abstract($target) and not(eo:multi-referenced($target, $name)) and exists(eo:references($target, $name)[eo:resolved-name(@base) = $name and (o or @name) and starts-with(@as, $eo:alpha)])"/>
   </xsl:function>
   <!--
   Whether the based `&gt;&gt; name` handle `$target` is itself an application
