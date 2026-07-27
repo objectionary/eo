@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A pipe-application line carrying a `>> name` file-local handle (§3.14,
+# R-3.10.12), referenced from more than one site (#6015). The parser now keeps
+# the handle's `@local` marker on the pipe object, so "resolve-local-names"
+# binds both `tokens.at` references to the pipe's cactus name. A pipe object
+# carries the "@pipe" marker, so neither "inline-cactoos" nor "merge-monikers"
+# ever folds it or rewrites its references (both skip "@pipe" bindings). Its
+# readable handle is therefore restored entirely by "restore-local-names": the
+# marker survives its drop template and its references read back as `tokens`
+# rather than a synthetic "vL_P" placeholder.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    tokens.at 0 > a
+    tokens.at 1 > b
+    [x] > base
+    | >> tokens
+      42
+printed: |
+  [] > app
+    tokens.at 0 > a
+    tokens.at 1 > b
+    [x] > base
+    | 42 >> tokens
