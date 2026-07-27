@@ -53,19 +53,19 @@
     <xsl:sequence select="if (exists($ref/@base) and not(exists($ref/@name)) and starts-with($ref/@base, concat($eo:xi, '.')) and not(contains($tail, '.')) and not($ref/o)) then $tail else if (eo:dispatch-seg($ref) != '') then substring-before($tail, '.') else ''"/>
   </xsl:function>
   <!--
-  The trailing dispatch segment of a hostable single-segment dispatch
-  reference `ξ.<name>.<seg>` — the receiver name `<name>` carries no further
-  dot, so exactly one dispatch segment `<seg>` trails it — or the empty string
-  for a bare reference, a non-`ξ` base, or a multi-segment chain such as
-  `ξ.a.b.c` (which would need deeply nested reversed dispatches and is
-  deliberately left expanded, #5782). Unlike a bare reference, a dispatch may
-  carry arguments and may be a named node: it inlines to a reversed dispatch
-  that keeps both (#5794).
+  The trailing dispatch path of a hostable reference `ξ.<name>.<seg>...` — a bare
+  reference (`ξ.<name>`) or a single-segment dispatch (`ξ.<name>.<seg>`, #5782)
+  used to return only its one trailing segment; now a multi-segment chain such as
+  `ξ.a.b.c` is also admitted, returning the full segment path `b.c` (#5970). A
+  non-`ξ` base or the receiver name `<name>` itself is still disallowed.
+  Unlike a bare reference, a dispatch may carry arguments and may be a named node:
+  it inlines to one or more nested reversed dispatches that keep both (#5794,
+  #5970).
   -->
   <xsl:function name="eo:dispatch-seg" as="xs:string">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="tail" select="substring-after($ref/@base, concat($eo:xi, '.'))"/>
-    <xsl:sequence select="if (exists($ref/@base) and starts-with($ref/@base, concat($eo:xi, '.')) and contains($tail, '.') and substring-before($tail, '.') != '' and not(contains(substring-after($tail, '.'), '.'))) then substring-after($tail, '.') else ''"/>
+    <xsl:sequence select="if (exists($ref/@base) and starts-with($ref/@base, concat($eo:xi, '.')) and contains($tail, '.') and substring-before($tail, '.') != '' then substring-after($tail, '.') else ''"/>
   </xsl:function>
   <!--
   Whether `$attr` is a restored recursive `&gt;&gt; name` handle: an abstract
@@ -311,15 +311,55 @@
         </xsl:element>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:element name="o">
-          <xsl:apply-templates select="@as"/>
-          <xsl:apply-templates select="@name|@local|@const"/>
-          <xsl:attribute name="base" select="concat('.', $seg)"/>
-          <xsl:apply-templates select="$binding" mode="merged"/>
-          <xsl:apply-templates select="o"/>
-        </xsl:element>
+        <xsl:call-template name="eo:merge-chain">
+          <xsl:with-param name="ref" select="."/>
+          <xsl:with-param name="binding" select="$binding"/>
+          <xsl:with-param name="seg" select="$seg"/>
+          <xsl:with-param name="seen" select="()"/>
+        </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+  <!--
+  Recursively build one reversed-dispatch level per segment of a multi-segment
+  dispatch chain `ξ.<name>.a.b.c` (#5970). The outermost segment (`a`) is built
+  first as the receiver's `@base`, then the next segment, and so on down to the
+  innermost segment, where the inlined hosted binding is merged. The reference's
+  own `<o>` argument children always attach to the outermost (first-built) level.
+  A tail-recursive helper (`eo:merge-chain`) iterates the tokenized `$seg` path,
+  carrying `$seen` for cycle protection against mutually recursive handles (#5918).
+  -->
+  <xsl:template name="eo:merge-chain">
+    <xsl:param name="ref" as="element()"/>
+    <xsl:param name="binding" as="element()"/>
+    <xsl:param name="seg" as="xs:string"/>
+    <xsl:param name="seen" as="element()*"/>
+    <xsl:variable name="segments" select="tokenize($seg, '.')" as="xs:string*"/>
+    <xsl:variable name="n" select="count($segments)" as="xs:integer"/>
+    <xsl:variable name="merged" as="element()">
+      <xsl:apply-templates select="$binding" mode="merged">
+        <xsl:with-param name="seen" select="$seen"/>
+      </xsl:apply-templates>
+    </xsl:variable>
+    <xsl:element name="o">
+      <xsl:apply-templates select="$ref/@as"/>
+      <xsl:apply-templates select="$ref/@name|$ref/@local|$ref/@const"/>
+      <xsl:attribute name="base" select="concat('.', $segments[1])"/>
+      <xsl:for-each select="2 to $n">
+        <xsl:variable name="i" select="."/>
+        <xsl:element name="o">
+          <xsl:attribute name="base" select="concat('.', $segments[$i])"/>
+          <xsl:if test="$i = 2">
+            <xsl:copy-of select="$merged"/>
+            <xsl:apply-templates select="$ref/o"/>
+          </xsl:if>
+        </xsl:element>
+      </xsl:for-each>
+      <xsl:if test="$n = 1">
+        <xsl:copy-of select="$merged"/>
+        <xsl:apply-templates select="$ref/o"/>
+      </xsl:if>
+    </xsl:element>
   </xsl:template>
   <!--
   The binding as it lands at the reference it was merged onto: itself, with its
