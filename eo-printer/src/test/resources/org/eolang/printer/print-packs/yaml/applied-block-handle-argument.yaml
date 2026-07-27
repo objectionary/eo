@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A non-recursive file-local `>> negative` handle (R-3.10.12) whose value is an
+# abstract formation printing as a multi-line block, applied in a positional
+# argument slot (`negative (n.times -1)` as the `α1` branch of `if.`). Same shape
+# as "inline-cactoos-applied-handle-argument" (`bar 1 2`), except the hosted
+# formation is a block rather than the one-line `a.plus b > @`. The applied-handle
+# fold — introduced for recursive handles by #5848 — now folds any formation
+# handle reached only by applications, recursion being irrelevant (#6008), gated
+# on the formation printing as a block: the block forces the `if.` argument list
+# vertical, so the pipe lands on its own line as `| (n.times -1)`, never the
+# unparsable `|:1`. The one-line twin (`bar 1 2`) is a non-block, so it stays
+# standing — the distinction once drawn on recursion is now drawn on block-ness.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [n] > foo
+    if. > @
+      n.lt 0
+      negative (n.times -1)
+      n
+    [m] >> negative
+      if. > @
+        m.floor.eq 0
+        m.plus 1
+        m.minus 1
+printed: |
+  [n] > foo
+    if. > @
+      n.lt 0
+      if. > [m] >> negative
+        m.floor.eq 0
+        m.plus 1
+        m.minus 1
+      | (n.times -1)
+      n
