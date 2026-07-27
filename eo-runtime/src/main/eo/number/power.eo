@@ -28,8 +28,9 @@
                 number num.as-bytes >> base
                 0
               if.
-                odd.and
+                and.
                   num.as-bytes.eq 80-00-00-00-00-00-00-00
+                  odd
                 if.
                   expo.gt 0
                   0.neg
