@@ -22,6 +22,7 @@
         1.eq limit
         * text
         [accum start current count] >> rec-nsplit
+          text.as-bytes >> bts!
           if. > @
             text.size.eq current
             appended
@@ -40,7 +41,7 @@
               if.
                 and.
                   delimiter.eq
-                    slice text current size
+                    slice bts current size
                   lt.
                     number count
                     minus. (number limit) 1
@@ -61,7 +62,7 @@
           accum.with > appended
             string
               slice
-                text
+                bts
                 start
                 current.minus start
         |
