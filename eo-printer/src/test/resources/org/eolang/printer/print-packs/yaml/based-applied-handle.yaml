@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A based `>> name` handle (R-3.10.12) whose value is a plain application
+# (`a.plus >> b`), neither an abstract formation nor a const, folded into a
+# reference that applies it (`b 42 > x`). The handle contributes no name of its
+# own (#5810), so the fold copies the target's application and must also carry
+# over the reference's own argument children: dropping them prints `a.plus > x`
+# and silently loses the `42` (#5952), the based flavour of the loss #5834 and
+# #5887 fixed for the abstract and named shapes. The target itself carries no
+# argument of its own, so appending the reference's `42` applies it cleanly.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [a] > foo
+    b 42 > x
+    a.plus >> b
+
+printed: |
+  [a] > foo
+    a.plus 42 > x
