@@ -33,9 +33,9 @@
           factor
             depth.plus 1
     | 1
-  number num.as-bytes >> arg
+  number num.as-bytes > arg
   pi.times 2 >> tau
-  reduced.times reduced >> squared
+  reduced.times reduced > squared
 
   lt. ++> tests-sine-is-odd-function
     abs

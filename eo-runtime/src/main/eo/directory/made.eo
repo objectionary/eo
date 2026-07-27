@@ -19,16 +19,18 @@
         d
         T
           "Cant make the directory '%s': %s".printf
-            * d.path created.output
-  called. > created
-    os.is-windows.if
-      win32 *1
-        "_mkdir"
-        d.path
-      posix *1
-        "mkdir"
-        d.path
-        posix.permissions
+            *
+              d.path
+              output.
+                called. >> created
+                  os.is-windows.if
+                    win32 *1
+                      "_mkdir"
+                      d.path
+                    posix *1
+                      "mkdir"
+                      d.path
+                      posix.permissions
 
   ++> tests-makes-new-directory
     dir.exists.and dir.is-directory > @
