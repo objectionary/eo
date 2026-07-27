@@ -112,7 +112,7 @@
           room for the relocated predecessor a pipe binds: the copy would become
           a stray extra argument of the application and the pipe would keep this
           reference's positional `@as`, which `to-eo-tree` spells as the
-          unparseable `|:N` (#5983). Leave the handle standing under its
+          unparsable `|:N` (#5983). Leave the handle standing under its
           `@local` name instead — copy the reference verbatim, keeping its
           arguments, so it reads back as `bar 1 2` once the drop template below
           keeps the binding and "merge-monikers" rewrites its cactus base to the
@@ -328,7 +328,7 @@
   (#5840) and receiver (#5844) relocations, an argument list has no spare slot
   for the formation copy a `| args` pipe binds: relocating there would turn the
   copy into a stray extra argument and leave the pipe carrying the reference's
-  `@as`, which `to-eo-tree` spells as the unparseable `|:N` (#5983). The
+  `@as`, which `to-eo-tree` spells as the unparsable `|:N` (#5983). The
   reference is therefore left standing (see the inlining template) and this
   binding must be kept in place under its `@local` name rather than dropped, so
   "merge-monikers" can rewrite the reference back to the handle
