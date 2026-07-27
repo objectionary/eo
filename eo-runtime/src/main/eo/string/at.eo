@@ -24,9 +24,11 @@
       gte.
         number index
         text.length >> len!
+      not.
+        index.floor.eq index
     fallback
-      "Given index %d is out of text bounds".printf
-        * index
+      "Given index %f is out of text bounds".printf
+        * i
     slice
       text
       index
@@ -56,6 +58,13 @@
       "some"
       10
       "recovered" > [message]
+
+  eq. ++> tests-fractional-index-returns-fallback
+    "fallback"
+    at
+      "some"
+      1.5
+      "fallback" > [message]
 
   at --> on-text-at-index-more-than-length
     "some"
