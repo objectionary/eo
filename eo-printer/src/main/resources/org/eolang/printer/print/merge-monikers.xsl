@@ -113,9 +113,13 @@
   an equal count, so the shortest, least-nested moniker wins and a multi-segment
   chain hosts only when no shorter reference can (#5970) — the previously
   stranded tail #5782 left expanded. A named handle (see `eo:named-handle`)
-  inverts the bare rule: a bare host inlines it anonymously (#5810), which drops
-  the very name its other references read back through, so only a dispatch may
-  host it and a handle reached by bare references alone stays standing (#5956).
+  reorders the two spellings: a dispatch host is listed first and a bare host
+  last, the reverse of the default. A bare host once dropped the readable name
+  its other references read back through (#5810), so it was skipped entirely and
+  a handle reached by bare references alone stayed standing (#5956); the
+  merge template now keeps that name at a bare site too (see `eo:named-handle`
+  in the keep-list), so the bare reference hosts when no dispatch does (#5996),
+  and the readable `&gt;&gt; name` still travels to whichever use site wins.
   -->
   <xsl:function name="eo:moniker-refs" as="element()*">
     <xsl:param name="attr" as="element()"/>
@@ -126,7 +130,7 @@
         <xsl:sort select="count(tokenize(eo:dispatch-seg(.), '\.'))" data-type="number" order="ascending"/>
       </xsl:perform-sort>
     </xsl:variable>
-    <xsl:sequence select="if (eo:named-handle($attr)) then $dispatch else ($refs[eo:dispatch-seg(.) = ''], $dispatch)"/>
+    <xsl:sequence select="if (eo:named-handle($attr)) then ($dispatch, $refs[eo:dispatch-seg(.) = '']) else ($refs[eo:dispatch-seg(.) = ''], $dispatch)"/>
   </xsl:function>
   <!--
   Whether `$attr` is a based `>> name` handle whose readable name must outlive
@@ -283,13 +287,16 @@
   abstract formation keeps its obfuscated `@name`, which `to-eo-tree` renders
   as the anonymous `[...] >>` marker; a based binding — a `>> name` handle
   whose value is a plain reference such as `a >> b` (R-3.10.12) — drops its
-  `@name` (and the `@local` handle it leaves behind), since the bare reference
-  is unnamed and carrying the obfuscated name over would turn the inline into
-  a spurious named node that `to-eo-tree` prints as its own `a >>` line
-  instead of an anonymous argument (#5810). A const based handle
-  (`a >> b!`, see `eo:const-handle`) is the exception: it keeps its `@name` and
+  `@name` (and the `@local` handle it leaves behind) at a single-reference site,
+  since the bare reference is unnamed and carrying the obfuscated name over would
+  turn the inline into a spurious named node that `to-eo-tree` prints as its own
+  `a >>` line instead of an anonymous argument (#5810). A const based handle
+  (`a >> b!`, see `eo:const-handle`) keeps its `@name` and
   `@local`, so `to-eo-tree` prints the readable `a >> b!` and its other
-  references read back as the bare handle `b` (#5828). A dispatch chain
+  references read back as the bare handle `b` (#5828); a named handle
+  (see `eo:named-handle`) reached by bare references alone does the same, keeping
+  its `@name` and `@local` so the readable `a >> b` travels to the bare use it
+  hosts onto while the remaining bare references still read it back (#5996). A dispatch chain
   `ξ.<name>.<seg1>.<seg2>…` becomes a reversed dispatch, one level per segment
   (see `eo:wrap-dispatch`): the innermost hosts the inlined binding, the
   outermost carries the reference's own children as arguments (#5782, #5970).
@@ -315,7 +322,7 @@
         </xsl:variable>
         <xsl:element name="o">
           <xsl:apply-templates select="@as"/>
-          <xsl:copy-of select="$merged/@*[eo:abstract($merged) or eo:const-handle($merged) or (name() != 'name' and name() != 'local')]"/>
+          <xsl:copy-of select="$merged/@*[eo:abstract($merged) or eo:const-handle($merged) or eo:named-handle($merged) or (name() != 'name' and name() != 'local')]"/>
           <xsl:copy-of select="$merged/node()"/>
         </xsl:element>
       </xsl:when>
