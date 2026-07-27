@@ -34,8 +34,10 @@
           difference.as-bytes.and 80-00-00-00-00-00-00-00
           00-00-00-00-00-00-00-00
         not.
-          difference.as-bytes.eq 00-00-00-00-00-00-00-00
-    minus x >> difference
+          eq.
+            as-bytes.
+              minus x >> difference
+            00-00-00-00-00-00-00-00
     not. > differ
       sign.eq
         x.as-bytes.and 80-00-00-00-00-00-00-00
