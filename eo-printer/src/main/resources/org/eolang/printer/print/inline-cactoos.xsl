@@ -76,7 +76,7 @@
     <xsl:variable name="target" select="ancestor::o/o[@name=$name][1]"/>
     <xsl:variable name="keep-name" as="xs:boolean" select="exists($target) and (eo:abstract($target) or ($target/@base = '.as-bytes' and $target/o[1]/@base = 'Φ.dataized' and eo:abstract($target/o[1]/o[1])))"/>
     <xsl:choose>
-      <xsl:when test="exists($target) and not(eo:void($target)) and not(eo:recursive($target, $name)) and not(eo:vertical-const($target)) and not(eo:multi-referenced($target, $name) and eo:rebuilt($target))">
+      <xsl:when test="exists($target) and not(eo:void($target)) and not(eo:recursive($target, $name)) and not(eo:vertical-const($target)) and not(eo:multi-referenced($target, $name) and eo:rebuilt($target)) and not(eo:reapplied($target, $name))">
         <xsl:choose>
           <!--
           The reference is the base of an application — it carries its own
@@ -163,6 +163,24 @@
               </xsl:if>
               <xsl:apply-templates select="$target/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
               <xsl:apply-templates select="$target/node()"/>
+              <!--
+              The reference is the base of an application (`b 42 &gt; x` over a
+              based `a.plus &gt;&gt; b` handle), so it carries its own argument
+              children. Folding only the target's attributes and children —
+              emitting `a.plus` alone — silently drops those arguments and prints
+              `a.plus &gt; x` (#5952), the based flavour of the loss #5834 and
+              #5887 fixed for the abstract and named shapes. The reference's own
+              `o` children are appended after the target's so the `42` survives as
+              `a.plus 42 &gt; x`. Guarded to a target that carries no children of
+              its own: appending to an already-applied target (`a.plus 1 &gt;&gt;
+              b` used as `b 42`) would hand the inner application a second
+              argument rather than apply its result, so such a target has no
+              inline spelling here and is left standing above instead (see
+              `eo:reapplied`).
+              -->
+              <xsl:if test="not($target/o)">
+                <xsl:apply-templates select="o"/>
+              </xsl:if>
             </xsl:element>
           </xsl:otherwise>
         </xsl:choose>
@@ -183,8 +201,11 @@
   inlined, keep a const that only a vertical layout can spell,
   which is never inlined either (#5910), keep a formation applied through a
   `@pipe` continuation, which is kept in place above its pipe rather than
-  inlined (#5834), and keep a binding that a surviving method dispatch still
-  reaches through its name. Such a dispatch reference (`ξ.<name>.<seg>`) is not
+  inlined (#5834), keep a based application handle reached by a further
+  application (see `eo:reapplied`), which has no inline spelling as the head of
+  another application and is left standing rather than folded (#5952), and keep
+  a binding that a surviving method dispatch still reaches through its name.
+  Such a dispatch reference (`ξ.<name>.<seg>`) is not
   inlined above — its receiver is buried in a dotted base — so dropping the
   binding would strand the reference on a synthetic "vL_P" placeholder. Keeping
   it lets "merge-monikers" host the binding as the receiver of a reversed
@@ -194,7 +215,7 @@
   reads yet would silently vanish (#5914).
   -->
   <xsl:template match="o[starts-with(@name, $auto) and not(eo:void(.))]" priority="1">
-    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or eo:vertical-const(.) or eo:unreferenced(., @name) or (eo:multi-referenced(., @name) and eo:rebuilt(.)) or eo:piped(., @name)">
+    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or eo:vertical-const(.) or eo:unreferenced(., @name) or (eo:multi-referenced(., @name) and eo:rebuilt(.)) or eo:piped(., @name) or eo:reapplied(., @name)">
       <xsl:copy>
         <xsl:apply-templates select="node()|@*"/>
       </xsl:copy>
@@ -271,6 +292,25 @@
     <xsl:param name="name" as="xs:string"/>
     <xsl:variable name="next" select="$target/following-sibling::o[1]"/>
     <xsl:sequence select="eo:abstract($target) and exists($next) and contains($next/@base, concat('.', $auto)) and eo:resolved-name($next/@base) = $name and ($next/o or $next/@name)"/>
+  </xsl:function>
+  <!--
+  Whether the based `&gt;&gt; name` handle `$target` is itself an application
+  carrying its own argument children (`a.plus 1 &gt;&gt; b`) and is reached by a
+  reference that applies it further (`b 42`). The otherwise branch of the
+  inlining template folds a based handle by copying the target's own children
+  and then appending the reference's — which for a target that already carries
+  arguments would hand the inner application a second one rather than apply its
+  result. Such a target has no inline spelling as the head of another
+  application, so both the reference and the binding are left standing rather
+  than folded (#5952). Restricted to based handles: an abstract formation
+  becomes a `| args` pipe (see the two abstract branches above), and a bare or
+  argument-less based handle (`a.plus &gt;&gt; b`) carries no children of its
+  own, so appending the reference's arguments applies it cleanly.
+  -->
+  <xsl:function name="eo:reapplied" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="not(eo:abstract($target)) and not(eo:dataized-const($target)) and exists($target/o) and exists(eo:references($target, $name)[eo:resolved-name(@base) = $name and o])"/>
   </xsl:function>
   <!--
   The references in the binding's owner that reach the auto-name `$name`
