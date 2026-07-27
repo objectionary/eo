@@ -12,7 +12,7 @@
     gte.
       number num.as-bytes >> value
       0
-    value
+    0.plus value
     value.neg
 
   eq. ++> tests-abs-float-negative
@@ -30,6 +30,11 @@
   eq. ++> tests-abs-int-positive
     abs 3
     3
+
+  eq. ++> tests-abs-negative-zero-normalizes-sign
+    as-bytes.
+      abs -0
+    00-00-00-00-00-00-00-00
 
   eq. ++> tests-abs-zero
     abs 0
