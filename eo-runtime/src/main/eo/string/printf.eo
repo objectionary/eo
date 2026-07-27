@@ -188,11 +188,38 @@
     "%s%s"
     "Jeff"
 
+  printf *1 --> on-printf-with-comma-flag-on-s
+    "%,s"
+    "Jeff"
+
+  printf *1 --> on-printf-with-comma-flag-on-x
+    "%,x"
+    5
+
+  printf *1 --> on-printf-with-hash-flag-on-s
+    "%#s"
+    "Jeff"
+
+  printf *1 --> on-printf-with-hash-flag-on-x
+    "%#x"
+    5
+
   printf *1 --> on-printf-with-oversized-positional-index
     "%99999999999999999999$s"
     "Jeff"
 
+  printf *1 --> on-printf-with-paren-flag-on-s
+    "%(s"
+    "Jeff"
+
+  printf *1 --> on-printf-with-precision-on-d
+    "%.2d"
+    5
+
+  printf *1 --> on-printf-with-zero-flag-on-x
+    "%0x"
+    5
+
   printf *1 --> on-printf-with-zero-positional-index
     "%0$s"
     "first"
-    "second"
