@@ -32,28 +32,23 @@
             if. > @
               tup.length.eq 0
               *
-              if.
-                has-key prev
-                prev
-                prev.with
-                  [] >>
-                    ^.hash > hash
-                    ^.kbts > kbts
-                    tup.head.key > key
-                    tup.head.value > value
+              without-key.with
+                [] >>
+                  ^.hash > hash
+                  ^.kbts > kbts
+                  tup.head.key > key
+                  tup.head.value > value
             bytes.hash >> hash!
               tup.head.key.as-bytes >> kbts!
-            if. > [ent] > has-key
-              ent.length.eq 0
-              false
-              if.
-                and.
-                  ent.head.hash.eq hash
-                  ent.head.kbts.eq kbts
-                true
-                has-key ent.tail
             @. > prev
               rec-rebuild tup.tail
+            tuple.filtered > without-key
+              prev
+              [ent] >>
+                not. > @
+                  and.
+                    ent.hash.eq hash
+                    ent.kbts.eq kbts
           | pairs
   [entries] > ctor
     [key] > found
@@ -216,6 +211,15 @@
     map * > mp
       map.entry "Aa" 1
       map.entry "BB" 2
+
+  ++> tests-map-construction-keeps-last-value-for-duplicate-key
+    2.eq > @
+      get.
+        mp.found 1
+        "unreachable" > [message]
+    map * > mp
+      map.entry 1 1
+      map.entry 1 2
 
   ++> tests-map-get-missing-returns-provided-fallback
     "recovered".eq > @
