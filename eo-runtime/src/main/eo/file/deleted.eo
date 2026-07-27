@@ -1,0 +1,33 @@
+# Delete the `f` file from the filesystem.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package file
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[f] > deleted
+  f.exists.if > @
+    if. > @
+      outcome.eq 0
+      ^
+      T
+        "Cant delete the file '%s': %s".printf
+          * f.path removed.output
+    ^
+  removed.code > outcome
+  called. > removed
+    os.is-windows.if
+      win32 *1
+        win
+        f.path
+      posix *1
+        unix
+        f.path
+  f.is-directory.if > unix
+    "rmdir"
+    "unlink"
+  f.is-directory.if > win
+    "_rmdir"
+    "_unlink"

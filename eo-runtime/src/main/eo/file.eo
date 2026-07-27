@@ -13,30 +13,6 @@
   path > @
   @. > as-path
     Q.path path
-  [] > deleted
-    exists.if > @
-      if.
-        outcome.eq 0
-        ^
-        T
-          "Cant delete the file '%s': %s".printf
-            * path removed.output
-      ^
-    removed.code > outcome
-    called. > removed
-      os.is-windows.if
-        win32 *1
-          win
-          path
-        posix *1
-          unix
-          path
-    is-directory.if > unix
-      "rmdir"
-      "unlink"
-    is-directory.if > win
-      "_rmdir"
-      "_unlink"
   eq. > [] > exists
     code.
       os.is-windows.if
@@ -65,24 +41,6 @@
         posix *1
           "stat"
           path
-  [target] > moved
-    if. > @
-      outcome.eq 0
-      file target
-      T
-        "Cant move the file '%s' to '%s': %s".printf
-          * path target renamed.output
-    renamed.code > outcome
-    called. > renamed
-      os.is-windows.if
-        win32 *1
-          "rename"
-          path
-          target
-        posix *1
-          "rename"
-          path
-          target
   [mode scope cant-open] > open
     known.not.if > @
       T
@@ -199,49 +157,6 @@
     not. > writable
       as-bool.
         access.eq "r"
-  [cant-measure] > size
-    if. > @
-      info.code.eq 0
-      info.output.size
-      cant-measure
-    called. > info
-      os.is-windows.if
-        win32 *1
-          "_stat64"
-          path
-        posix *1
-          "stat"
-          path
-  [] > touched
-    exists.if > @
-      ^
-      if.
-        descriptor.eq -1
-        T
-          "Cant touch the file '%s': %s".printf
-            * path created.output
-        seq *
-          closed
-          ^
-    code. > closed
-      os.is-windows.if
-        win32 *1
-          "_close"
-          descriptor
-        posix *1
-          "close"
-          descriptor
-    called. > created
-      os.is-windows.if
-        win32 *1
-          "_creat"
-          path
-          win32.mode
-        posix *1
-          "creat"
-          path
-          posix.mode
-    created.code > descriptor
 
   eq. ++> tests-appending-data-to-file
     size.
