@@ -27,5 +27,5 @@ origin: |
 printed: |
   [] > foo
     reclen 0 > @
-    inclen i > [i] >> reclen
     reclen n > [n] > inclen
+    inclen i > [i] >> reclen
