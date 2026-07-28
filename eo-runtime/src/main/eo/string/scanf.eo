@@ -238,7 +238,7 @@
     escaped ch > piece
     T > unsupported-message
       "Unsupported format specifier"
-  | > tokens
+  | >> tokens
     0
     ""
     *
