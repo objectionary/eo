@@ -6,11 +6,10 @@
 exclude:
   - "**/xs3p/**"
   - "**/src/test/**"
-# @todo #6006:60min Enable the deferred xslint checks below one by one. Each
-#  is switched off only because the pipeline has findings for it today, not
-#  because the rule is unwanted; fix those findings in the stylesheets and
-#  delete the matching line here so the check begins to enforce. Every other
-#  xslint check is already enforced across the whole codebase.
+# @todo #6006:60min Enable too-many-templates, the last deferred check. It fires
+#  on four stylesheets that declare ten or more templates (to-java.xsl has 26),
+#  so enabling it means splitting those into imported modules — an architectural
+#  change, not a mechanical fix. Decide the module boundaries, split, and delete
+#  the line below. Every other xslint check is already enforced codebase-wide.
 rules:
   too-many-templates: "off"
-  unused-variable: "off"

@@ -4,6 +4,12 @@
 * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="_specials" version="2.0">
+  <!--
+  This is EO's notation symbol table. Every symbol is part of the language
+  vocabulary and is kept here for any stylesheet to use; some are not
+  referenced within eo itself today, so unused-variable is off for it.
+  -->
+  <!-- xslint-disable-file unused-variable -->
   <xsl:variable name="eo:cactoos" select="'🌵'"/>
   <xsl:variable name="eo:alpha" select="'α'"/>
   <xsl:variable name="eo:xi" select="'ξ'"/>
