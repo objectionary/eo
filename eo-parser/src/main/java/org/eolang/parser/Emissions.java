@@ -18,7 +18,7 @@ import java.util.List;
  * §9.4.2).</p>
  *
  * @since 0.1
- * @checkstyle CyclomaticComplexityCheck (600 lines)
+ * @checkstyle CyclomaticComplexityCheck (610 lines)
  * @checkstyle BooleanExpressionComplexityCheck (600 lines)
  */
 @SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.TooManyMethods", "PMD.CognitiveComplexity"})
@@ -544,13 +544,21 @@ final class Emissions {
         while (cursor < body.length() && body.charAt(cursor) == 'u') {
             cursor = cursor + 1;
         }
-        if (cursor + 4 > body.length()) {
-            out.append('\\').append(body, start, body.length());
-        } else {
-            out.append(
-                (char) Integer.parseInt(body.substring(cursor, cursor + 4), 16)
+        boolean valid = cursor + 4 <= body.length();
+        for (int idx = cursor; valid && idx < cursor + 4; idx = idx + 1) {
+            valid = Character.digit(body.charAt(idx), 16) >= 0;
+        }
+        if (!valid) {
+            throw new NumberFormatException(
+                String.format(
+                    "unicode escape \\%s is not exactly four hexadecimal digits",
+                    body.substring(start, Math.min(body.length(), cursor + 4))
+                )
             );
         }
+        out.append(
+            (char) Integer.parseInt(body.substring(cursor, cursor + 4), 16)
+        );
         return cursor + 4;
     }
 
