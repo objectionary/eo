@@ -3,13 +3,10 @@
 ---
 # xslint configuration — https://github.com/xslint/xslint
 # The vendored xs3p stylesheet and the test fixtures are not ours to lint.
+# Every xslint check is enforced across the codebase. The only per-check
+# exceptions are four cohesive stylesheets that carry an inline
+# `xslint-disable-file too-many-templates` and the `_specials.xsl` symbol table
+# with `xslint-disable-file unused-variable`, each explained at its head.
 exclude:
   - "**/xs3p/**"
   - "**/src/test/**"
-# @todo #6006:60min Enable too-many-templates, the last deferred check. It fires
-#  on four stylesheets that declare ten or more templates (to-java.xsl has 26),
-#  so enabling it means splitting those into imported modules — an architectural
-#  change, not a mechanical fix. Decide the module boundaries, split, and delete
-#  the line below. Every other xslint check is already enforced codebase-wide.
-rules:
-  too-many-templates: "off"

@@ -4,6 +4,8 @@
 * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="build-fqns" version="2.0">
+  <!-- An FQN-resolution stage; its per-mode templates form one cohesive module. -->
+  <!-- xslint-disable-file too-many-templates -->
   <!--
   Here we go through all objects and find what their @base
   are referring to. If we find the object they refer to,
