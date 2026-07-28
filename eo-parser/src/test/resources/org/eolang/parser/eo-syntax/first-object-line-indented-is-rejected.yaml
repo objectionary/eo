@@ -4,6 +4,8 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
+  - /object/errors/error[@severity='error']
+  - /object/errors/error[@line='3']
   - /object/errors/error[contains(text(),'indent')]
 input: |
   # Sample.

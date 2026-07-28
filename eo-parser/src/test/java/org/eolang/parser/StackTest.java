@@ -15,7 +15,9 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link Stack}.
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.UnnecessaryLocalRule"})
+@SuppressWarnings({
+    "PMD.TooManyMethods", "PMD.UnnecessaryLocalRule", "PMD.UnitTestContainsTooManyAsserts"
+})
 final class StackTest {
 
     @Test
@@ -40,10 +42,27 @@ final class StackTest {
 
     @Test
     void rejectsFirstPushAtNonZeroIndent() {
-        Assertions.assertThrows(
+        final ParseError error = Assertions.assertThrows(
             ParseError.class,
             () -> new Stack().push(2, 1, Kind.HEAD, Openness.OPEN),
             "first push must be at indent 0 — non-zero indent cannot start a program"
+        );
+        MatcherAssert.assertThat(
+            "the error must carry the offending line",
+            error.line(),
+            Matchers.equalTo(1)
+        );
+        MatcherAssert.assertThat(
+            "the error must carry the offending column",
+            error.pos(),
+            Matchers.equalTo(2)
+        );
+        MatcherAssert.assertThat(
+            "the error message must name the indent-0 requirement",
+            error.getMessage(),
+            Matchers.equalTo(
+                "unexpected indentation, the first object must start at indent 0"
+            )
         );
     }
 
