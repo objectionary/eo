@@ -43,21 +43,20 @@
         t.times
           horner 0
       if. > [k] > horner
-        k.gt terms
+        k.gt 40
         0
         plus.
           1.div
             plus.
               k.times 2
               1
-          squared.times
+          times.
+            t.times t
             horner
               k.plus 1
-      t.times t > squared
       div. > t
         m.minus 1
         m.plus 1
-      40 > terms
   number num.as-bytes > n
 
   lt. ++> tests-ln-fraction

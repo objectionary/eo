@@ -28,7 +28,7 @@
               point.times > @
                 poly 1
               if. > [depth] > poly
-                depth.gt terms
+                depth.gt 30
                 1
                 1.plus
                   times.
@@ -43,7 +43,6 @@
                         plus. (depth.times 2) 1
                     poly (depth.plus 1)
               point.times point > squared
-              30 > terms
             | (sqrt ((1.minus magnitude).div 2))
         series magnitude
     base
