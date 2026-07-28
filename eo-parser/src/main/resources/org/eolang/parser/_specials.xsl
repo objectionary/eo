@@ -4,34 +4,13 @@
 * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="_specials" version="2.0">
-  <!--
-  This is EO's notation symbol table. Every symbol is part of the language
-  vocabulary and is kept here for any stylesheet to use; some are not
-  referenced within eo itself today, so unused-variable is off for it.
-  -->
-  <!-- xslint-disable-file unused-variable -->
   <xsl:variable name="eo:cactoos" select="'🌵'"/>
   <xsl:variable name="eo:alpha" select="'α'"/>
   <xsl:variable name="eo:xi" select="'ξ'"/>
-  <xsl:variable name="eo:delta" select="'Δ'"/>
   <xsl:variable name="eo:phi" select="'φ'"/>
   <xsl:variable name="eo:rho" select="'ρ'"/>
   <xsl:variable name="eo:program" select="'Φ'"/>
   <xsl:variable name="eo:lambda" select="'λ'"/>
-  <xsl:variable name="eo:arrow">
-    <xsl:value-of select="$eo:space"/>
-    <xsl:text>↦</xsl:text>
-    <xsl:value-of select="$eo:space"/>
-  </xsl:variable>
-  <xsl:variable name="eo:dashed-arrow">
-    <xsl:value-of select="$eo:space"/>
-    <xsl:text>⤍</xsl:text>
-    <xsl:value-of select="$eo:space"/>
-  </xsl:variable>
-  <xsl:variable name="eo:lb" select="'⟦'"/>
-  <xsl:variable name="eo:rb" select="'⟧'"/>
-  <xsl:variable name="eo:clb" select="'('"/>
-  <xsl:variable name="eo:crb" select="')'"/>
   <xsl:variable name="eo:empty" select="'∅'"/>
   <xsl:variable name="eo:bottom" select="'⊥'"/>
   <xsl:variable name="eo:space" select="' '"/>
