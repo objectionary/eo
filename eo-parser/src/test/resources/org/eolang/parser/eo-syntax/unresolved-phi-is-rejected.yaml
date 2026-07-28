@@ -4,6 +4,9 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
+  - /object/errors/error[@check='build-fqns']
+  - /object/errors/error[@severity='error']
+  - /object/errors/error[@line='2']
   - /object/errors/error[contains(text(),'φ')]
 input: |
   [] > sample
