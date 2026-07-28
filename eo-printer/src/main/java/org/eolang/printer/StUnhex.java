@@ -4,6 +4,7 @@
  */
 package org.eolang.printer;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StEnvelope;
 import com.yegor256.xsline.StSequence;
@@ -14,6 +15,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import org.eolang.parser.StXnav;
+import org.w3c.dom.Node;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * This {@link Shift} turns hex data inside XMIR.
@@ -40,9 +44,7 @@ final class StUnhex extends StEnvelope {
         StUnhex.class.getSimpleName(),
         new StXnav(
             StUnhex.BYTES,
-            xnav -> xnav.node().setTextContent(
-                xnav.element("o").text().orElse("")
-            )
+            xnav -> StUnhex.detach(xnav, xnav.element("o").text().orElse(""))
         ),
         new StXnav(
             StUnhex.elements("number"),
@@ -51,7 +53,7 @@ final class StUnhex extends StEnvelope {
                     StUnhex.undash(xnav.element("o").text().orElse(""))
                 ).getDouble();
                 if (!Double.isNaN(number) && !Double.isInfinite(number)) {
-                    xnav.node().setTextContent(StUnhex.number(number));
+                    StUnhex.detach(xnav, StUnhex.number(number));
                 }
             }
         ),
@@ -62,8 +64,8 @@ final class StUnhex extends StEnvelope {
                     StUnhex.undash(xnav.element("o").text().orElse(""))
                 ).array()
             ).ifPresent(
-                decoded -> xnav.node().setTextContent(
-                    String.format("\"%s\"", StUnhex.escape(decoded))
+                decoded -> StUnhex.detach(
+                    xnav, String.format("\"%s\"", StUnhex.escape(decoded))
                 )
             )
         )
@@ -82,6 +84,33 @@ final class StUnhex extends StEnvelope {
      */
     StUnhex(final Shift origin) {
         super(origin);
+    }
+
+    /**
+     * Put the readable text of a data literal in place of its byte payload.
+     *
+     * <p>Only the byte-payload child (the first {@code <o>}) is swapped, so
+     * that a sibling argument applied to the literal, as in {@code 42 5},
+     * survives. {@code setTextContent} (which is also what Xembly's SET does)
+     * would delete that argument and silently drop the application.</p>
+     *
+     * <p>Xembly first drops every text child: in pretty-printed XMIR the
+     * payload and the argument are separated by whitespace-only text nodes,
+     * and leaving them in would strand the readable text between blobs of the
+     * original indentation. The swap itself stays on the DOM because neither
+     * Xnav (which only navigates) nor Xembly can put a plain text node next
+     * to sibling elements — Xembly's only appending directive emits CDATA.</p>
+     *
+     * @param xnav The data literal's wrapper element
+     * @param text The readable text to put in place of the byte payload
+     */
+    private static void detach(final Xnav xnav, final String text) {
+        final Node node = xnav.node();
+        new Xembler(new Directives().xpath("text()").remove()).applyQuietly(node);
+        node.replaceChild(
+            node.getOwnerDocument().createTextNode(text),
+            xnav.element("o").node()
+        );
     }
 
     /**
