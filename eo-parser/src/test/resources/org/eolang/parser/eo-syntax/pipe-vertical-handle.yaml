@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A pipe-application line may carry a `>> name` file-local handle (§3.14,
+# R-3.10.12): the parser emits the pipe object with its cactus `@name` plus a
+# `@local='name'` marker, exactly as every other handle-bearing line does, so
+# `resolve-local-names` binds the sibling references to the cactus name rather
+# than letting them escape to a global `Φ.tokens` (#6015). The three earlier
+# pipe packs (`pipe-vertical`, `pipe-vertical-named`, `pipe-vertical-bound`)
+# only exercise a bare `| >>`, so none pins the handle-carrying form.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='app']/o[@base='ξ.base' and @name='a🌵5-2' and @local='tokens' and @pipe='']
+  - /object/o[@name='app']/o[@name='a' and @base='ξ.a🌵5-2.at']
+  - /object/o[@name='app']/o[@name='b' and @base='ξ.a🌵5-2.at']
+  - /object/o[@name='app'][count(o[@base='ξ.a🌵5-2.at'])=2]
+  - /object[count(//o[@base='Φ.tokens'])=0]
+input: |
+  [] > app
+    tokens.at 0 > a
+    tokens.at 1 > b
+    [x] > base
+    | >> tokens
+      42
