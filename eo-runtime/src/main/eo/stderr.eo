@@ -23,36 +23,34 @@
     output.write text
     true
   os.is-windows.if > output
-    windows-output
-    posix-output
-  [] > posix-output
-    [buffer] > write
-      @. > @
-        output-block.write buffer
-      [] > output-block
-        true > @
-        seq * > [buffer] > write
-          code.
-            posix *1
-              "write"
-              posix.stderr
-              buffer
-              buffer.size
-          output-block
-  [] > windows-output
-    [buffer] > write
-      @. > @
-        output-block.write buffer
-      [] > output-block
-        true > @
-        seq * > [buffer] > write
-          code.
-            win32 *1
-              "_write"
-              win32.stderr
-              buffer
-              buffer.size
-          output-block
+    [] >>
+      [buffer] > write
+        @. > @
+          output-block.write buffer
+        [] > output-block
+          true > @
+          seq * > [buffer] > write
+            code.
+              win32 *1
+                "_write"
+                win32.stderr
+                buffer
+                buffer.size
+            output-block
+    [] >>
+      [buffer] > write
+        @. > @
+          output-block.write buffer
+        [] > output-block
+          true > @
+          seq * > [buffer] > write
+            code.
+              posix *1
+                "write"
+                posix.stderr
+                buffer
+                buffer.size
+            output-block
 
   stderr ++> tests-prints-to-stderr
     "Hello, stderr-test!\n"
