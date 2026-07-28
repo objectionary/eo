@@ -130,6 +130,7 @@
         <xsl:text> </xsl:text>
         <xsl:value-of select="replace(string(tail), $eo:program, 'Q')"/>
       </xsl:when>
+      <xsl:otherwise/>
     </xsl:choose>
     <xsl:value-of select="$eol"/>
   </xsl:template>
