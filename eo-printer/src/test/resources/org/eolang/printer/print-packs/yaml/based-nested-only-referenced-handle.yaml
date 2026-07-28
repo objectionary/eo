@@ -30,5 +30,5 @@ origin: |
 
 printed: |
   [num] > foo
-    num.times num >> squared
     squared.div depth > [depth] > factor
+    num.times num >> squared
