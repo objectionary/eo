@@ -32,7 +32,7 @@
             if. > @
               tup.length.eq 0
               *
-              without-key.with
+              others.with
                 [] >>
                   ^.hash > hash
                   ^.kbts > kbts
@@ -40,14 +40,14 @@
                   tup.head.value > value
             bytes.hash >> hash!
               tup.head.key.as-bytes >> kbts!
-            @. > prev
-              rec-rebuild tup.tail
-            tuple.filtered > without-key
+            tuple.filtered > others
               prev
               not. > [ent] >>
                 and.
                   ent.hash.eq hash
                   ent.kbts.eq kbts
+            @. > prev
+              rec-rebuild tup.tail
           | pairs
   [entries] > ctor
     [key] > found

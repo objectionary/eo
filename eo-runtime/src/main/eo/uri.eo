@@ -27,7 +27,10 @@
 
 [text] > uri
   text > @
-  has-authority.if > authority
+  if. > authority
+    string.starts-with >> has-authority
+      hier-part
+      "//"
     if.
       not. >> has-authority-path
         eq.
@@ -47,7 +50,9 @@
         authority-path-idx
       after-slashes
     ""
-  has-fragment.if > fragment
+  if. > fragment
+    not. >> has-fragment
+      hash-idx.eq -1
     slice.
       text.slice >> rest
         plus.
@@ -63,44 +68,15 @@
         number
           hash-idx.plus 1
     ""
-  string.starts-with > has-authority
-    hier-part
-    "//"
-  not. > has-fragment
-    hash-idx.eq -1
-  not. > has-port
-    eq.
-      if. >> port-colon-idx
-        string.starts-with host-port "[" >>
-        if.
-          eq.
-            string.index-of >> rel-colon
-              host-port.slice
-                bracket-start
-                host-port.length.minus
-                  number bracket-start
-              ":"
-            -1
-          -1
-          rel-colon.plus
-            plus. >> bracket-start
-              string.index-of host-port "]" >>
-              1
-        string.index-of host-port ":"
-      -1
-  not. > has-query
-    eq.
-      string.index-of before-fragment "?" >> question-idx
-      -1
-  not. > has-userinfo
-    eq.
-      string.index-of authority "@" >> userinfo-at-idx
-      -1
-  has-port.if > host
+  if. > host
+    not. >> has-port
+      port-colon-idx.eq -1
     slice.
       has-userinfo.if >> host-port
         authority.slice
-          userinfo-at-idx.plus 1
+          plus.
+            string.index-of authority "@" >> userinfo-at-idx
+            1
           authority.length.minus
             number
               userinfo-at-idx.plus 1
@@ -118,17 +94,39 @@
     hier-part
   has-port.if > port
     host-port.slice
-      port-colon-idx.plus 1
+      plus.
+        if. >> port-colon-idx
+          string.starts-with host-port "[" >>
+          if.
+            eq.
+              string.index-of >> rel-colon
+                host-port.slice
+                  bracket-start
+                  host-port.length.minus
+                    number bracket-start
+                ":"
+              -1
+            -1
+            rel-colon.plus
+              plus. >> bracket-start
+                string.index-of host-port "]" >>
+                1
+          string.index-of host-port ":"
+        1
       host-port.length.minus
         number
           port-colon-idx.plus 1
     ""
-  has-query.if > query
+  if. > query
+    not. >> has-query
+      question-idx.eq -1
     slice.
       has-fragment.if >> before-fragment
         rest.slice 0 hash-idx
         rest
-      question-idx.plus 1
+      plus.
+        string.index-of before-fragment "?" >> question-idx
+        1
       before-fragment.length.minus
         number
           question-idx.plus 1
@@ -136,7 +134,9 @@
   text.slice > scheme
     0
     scheme-colon
-  has-userinfo.if > userinfo
+  if. > userinfo
+    not. >> has-userinfo
+      userinfo-at-idx.eq -1
     authority.slice
       0
       userinfo-at-idx

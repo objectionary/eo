@@ -50,22 +50,21 @@
                 if.
                   base.gt 0
                   [y] >> expon
-                    whole.times (fraction 1) > @
-                    20 > eterms
+                    times. > @
+                      if.
+                        k.lt 0
+                        1.div
+                          ipow e (abs k)
+                        ipow e (abs k)
+                      fraction 1
                     if. > [j] > fraction
-                      j.gt eterms
+                      j.gt 20
                       1
                       1.plus
                         times.
-                          r.div j
+                          div. (y.minus k) j
                           fraction (j.plus 1)
                     floor. (y.plus 0.5) > k
-                    y.minus k > r
-                    if. > whole
-                      k.lt 0
-                      1.div
-                        ipow e (abs k)
-                      ipow e (abs k)
                   | (expo.times (ln base))
                   nan
             if.

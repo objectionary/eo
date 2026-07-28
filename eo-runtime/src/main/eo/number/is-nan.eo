@@ -14,13 +14,15 @@
       not.
         bts.size.gt 8
     and.
-      exp.eq 7F-F0-00-00-00-00-00-00
+      eq.
+        bts.and 7F-F0-00-00-00-00-00-00
+        7F-F0-00-00-00-00-00-00
       not.
-        mantissa.eq 00-00-00-00-00-00-00-00
+        eq.
+          bts.and 00-0F-FF-FF-FF-FF-FF-FF
+          00-00-00-00-00-00-00-00
     false
   n.as-bytes > bts
-  bts.and 7F-F0-00-00-00-00-00-00 > exp
-  bts.and 00-0F-FF-FF-FF-FF-FF-FF > mantissa
 
   nan.is-nan ++> nan-is-nan
 
