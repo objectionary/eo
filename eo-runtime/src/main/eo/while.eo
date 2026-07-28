@@ -157,11 +157,10 @@
               m.as-number.plus 1
       3
 
-  ++> tests-last-while-dataization-object-with-false-condition
-    not. > @
-      while
-        1.gt 2 > [i]
-        true > [i]
+  not. ++> tests-last-while-dataization-object-with-false-condition
+    while
+      1.gt 2 > [i]
+      true > [i]
 
   ++> tests-simple-bool-expression-via-malloc-in-while
     eq. > @
@@ -173,11 +172,10 @@
             m.put false > [i] >>
       false
 
-  ++> tests-simple-while-with-false-first
-    not. > @
-      while
-        false > [i]
-        true > [i]
+  not. ++> tests-simple-while-with-false-first
+    while
+      false > [i]
+      true > [i]
 
   ++> tests-while-dataizes-only-first-cycle
     0.eq > @

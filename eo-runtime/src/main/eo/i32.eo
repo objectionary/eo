@@ -115,47 +115,40 @@
     13.as-i64.as-i32.div -5.as-i64.as-i32
     -2.as-i64.as-i32
 
-  ++> tests-i32-eq-false
-    not. > @
-      123.as-i64.as-i32.eq 42.as-i64.as-i32
+  not. ++> tests-i32-eq-false
+    123.as-i64.as-i32.eq 42.as-i64.as-i32
 
   123.as-i64.as-i32.eq 123.as-i64.as-i32 ++> tests-i32-eq-true
 
-  ++> tests-i32-greater-equal
-    not. > @
-      0.as-i64.as-i32.gt 0.as-i64.as-i32
+  not. ++> tests-i32-greater-equal
+    0.as-i64.as-i32.gt 0.as-i64.as-i32
 
-  ++> tests-i32-greater-false
-    not. > @
-      0.as-i64.as-i32.gt 100.as-i64.as-i32
+  not. ++> tests-i32-greater-false
+    0.as-i64.as-i32.gt 100.as-i64.as-i32
 
   -200.as-i64.as-i32.gt -1000.as-i64.as-i32 ++> tests-i32-greater-true
 
   113.as-i64.as-i32.gte 113.as-i64.as-i32 ++> tests-i32-gte-equal
 
-  ++> tests-i32-gte-false
-    not. > @
-      0.as-i64.as-i32.gte 10.as-i64.as-i32
+  not. ++> tests-i32-gte-false
+    0.as-i64.as-i32.gte 10.as-i64.as-i32
 
   -1000.as-i64.as-i32.gte -1100.as-i64.as-i32 ++> tests-i32-gte-true
 
   42.as-i64.as-i32.as-bytes.eq 00-00-00-2A ++> tests-i32-has-valid-bytes
 
-  ++> tests-i32-less-equal
-    not. > @
-      10.as-i64.as-i32.lt 10.as-i64.as-i32
+  not. ++> tests-i32-less-equal
+    10.as-i64.as-i32.lt 10.as-i64.as-i32
 
-  ++> tests-i32-less-false
-    not. > @
-      10.as-i64.as-i32.lt -5.as-i64.as-i32
+  not. ++> tests-i32-less-false
+    10.as-i64.as-i32.lt -5.as-i64.as-i32
 
   10.as-i64.as-i32.lt 50.as-i64.as-i32 ++> tests-i32-less-true
 
   50.as-i64.as-i32.lte 50.as-i64.as-i32 ++> tests-i32-lte-equal
 
-  ++> tests-i32-lte-false
-    not. > @
-      0.as-i64.as-i32.lte -10.as-i64.as-i32
+  not. ++> tests-i32-lte-false
+    0.as-i64.as-i32.lte -10.as-i64.as-i32
 
   -200.as-i64.as-i32.lte -100.as-i64.as-i32 ++> tests-i32-lte-true
 

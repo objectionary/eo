@@ -157,9 +157,8 @@
     ninf.div 42
     ninf
 
-  ++> tests-negative-infinity-gt-negative-infinity
-    not. > @
-      ninf.gt ninf
+  not. ++> tests-negative-infinity-gt-negative-infinity
+    ninf.gt ninf
 
   ninf.eq ++> tests-negative-infinity-is-equal-to-one-div-zero
     -1.div 0
@@ -335,16 +334,14 @@
 
   pinf.gt ninf ++> tests-positive-infinity-gt-negative-infinity
 
-  ++> tests-positive-infinity-gt-positive-infinity
-    not. > @
-      pinf.gt pinf
+  not. ++> tests-positive-infinity-gt-positive-infinity
+    pinf.gt pinf
 
   pinf.eq ++> tests-positive-infinity-is-equal-to-one-div-zero
     1.div 0
 
-  ++> tests-positive-infinity-not-gt-nan
-    not. > @
-      pinf.gt nan
+  not. ++> tests-positive-infinity-not-gt-nan
+    pinf.gt nan
 
   eq. ++> tests-positive-infinity-plus-nan
     as-bytes.

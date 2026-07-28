@@ -28,12 +28,11 @@
       "qwerty"
     "qwerty"
 
-  ++> tests-list-does-not-contain
-    not. > @
-      contains
-        *
-          "Привет"
-          "asdfgh"
-          3
-          "qwerty"
-        "Hi"
+  not. ++> tests-list-does-not-contain
+    contains
+      *
+        "Привет"
+        "asdfgh"
+        3
+        "qwerty"
+      "Hi"

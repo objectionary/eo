@@ -83,9 +83,8 @@
     0D-.as-i8.div FB-.as-i8
     FE-.as-i8
 
-  ++> tests-i8-eq-false
-    not. > @
-      2A-.as-i8.eq 2B-.as-i8
+  not. ++> tests-i8-eq-false
+    2A-.as-i8.eq 2B-.as-i8
 
   2A-.as-i8.eq 2A-.as-i8 ++> tests-i8-eq-true
 
@@ -95,9 +94,8 @@
 
   C8-.as-i8.as-number.eq -56 ++> tests-i8-high-bit-is-negative
 
-  ++> tests-i8-less-equal
-    not. > @
-      0A-.as-i8.lt 0A-.as-i8
+  not. ++> tests-i8-less-equal
+    0A-.as-i8.lt 0A-.as-i8
 
   0A-.as-i8.lt 32-.as-i8 ++> tests-i8-less-true
 
