@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A based file-local handle (`a.plus >> b`, R-3.10.12) whose value is a plain
+# reference (not an abstract formation) and which is used as a base of an
+# application with an argument (`b 42`). Before #5952, the argument was silently
+# dropped when the handle was folded into the use site, because the `otherwise`
+# branch of the inlining template only copied the target's children and ignored
+# the reference's own `o` children. The fix appends the reference's `o` children
+# after the target's, guarded to a target that carries no children of its own
+# (a target that already carries children has no inline spelling and is left
+# standing by the drop template).
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-self.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/validate-before-stars.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/printer/print/inline-cactoos.xsl
+asserts:
+  # The based handle is inlined and the argument `42` is preserved.
+  - /object/o[@name='foo']/o[contains(@base, 'a.plus') and o = '42' and @name='x']
+  # No bare handle `b` survives inlining.
+  - count(/object//o[@base='ξ.b'])=0
+  # The inlined result has the right number of children.
+  - count(/object/o) >= 1
+input: |
+  [a] > foo
+    b 42 > x
+    a.plus >> b
