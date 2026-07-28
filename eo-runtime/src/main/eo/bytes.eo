@@ -168,6 +168,10 @@
       -10.as-bytes
     false
 
+  eq. ++> tests-right-with-integer-min-value
+    -1.as-bytes.right -2147483648
+    00-00-00-00-00-00-00-00
+
   eq. ++> tests-right-with-minus-one
     -1.as-bytes.right 4
     0B-FF-00-00-00-00-00-00
