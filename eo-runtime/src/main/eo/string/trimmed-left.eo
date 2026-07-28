@@ -23,6 +23,14 @@
         minus.
           number len
           idx
+  [index] >> first-non-ws-index
+    if. > @
+      len.eq index
+      index
+      if.
+        is-ws (b.slice index 1)!
+        first-non-ws-index (index.plus 1).as-number
+        index
   or. > [c] >> is-ws
     c.eq 20-
     or.
@@ -34,14 +42,6 @@
           or.
             c.eq 0C-
             c.eq 0D-
-  [index] >> first-non-ws-index
-    if. > @
-      len.eq index
-      index
-      if.
-        is-ws (b.slice index 1)!
-        first-non-ws-index (index.plus 1).as-number
-        index
 
   eq. ++> tests-text-trimmed-left-many-spaces
     trimmed-left
