@@ -24,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.57.0
  */
 @ExtendWith(MktmpResolver.class)
+@SuppressWarnings("PMD.TooManyMethods")
 final class MjFormatTest {
 
     @Test
@@ -101,6 +102,36 @@ final class MjFormatTest {
     }
 
     @Test
+    void failsWhenErrorRecoveredWithPlaceholder(@Mktmp final Path temp) {
+        final IllegalStateException exception = Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(MjFormatTest.placeholder())
+                .execute(MjFormat.class),
+            "a source recovered with a placeholder node must not be silently formatted"
+        );
+        final StringWriter writer = new StringWriter();
+        exception.printStackTrace(new PrintWriter(writer));
+        MatcherAssert.assertThat(
+            "the failure must explain that the source does not fully parse",
+            writer.toString(),
+            Matchers.containsString("does not fully parse")
+        );
+    }
+
+    @Test
+    void doesNotOverwritePlaceholderRecoveryWhenAutoFixIsOn(@Mktmp final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .with("autoFix", true)
+                .withProgram(MjFormatTest.placeholder())
+                .execute(MjFormat.class),
+            "a source the parser only recovered with a placeholder must not be rewritten"
+        );
+    }
+
+    @Test
     void appliesCustomIndentationStep(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "the printer must indent with the configured number of spaces",
@@ -163,6 +194,33 @@ final class MjFormatTest {
             "",
             "[x] > main",
             "  (stdout \"Hello!\" x.print > @",
+            ""
+        );
+    }
+
+    /**
+     * A source the parser only recovers by substituting a placeholder.
+     *
+     * <p>A reversed dispatch left without a receiver ({@code if. > @} with
+     * nothing before the {@code if.}) is reported as an error, but the
+     * parser recovers by standing an empty formation in for the missing
+     * receiver and then covers every remaining line — so the loss is
+     * invisible to a line-coverage check yet the tree no longer describes
+     * the source (see #6071).</p>
+     *
+     * @return The EO text
+     */
+    private static String placeholder() {
+        return String.join(
+            System.lineSeparator(),
+            "+package foo.x",
+            "",
+            "[] > foo",
+            "  if. > @",
+            "    if.",
+            "    true",
+            "    1",
+            "    2",
             ""
         );
     }
