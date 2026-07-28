@@ -156,6 +156,15 @@ final class BytesOfTest {
     }
 
     @Test
+    void shiftsEmptyBytes() {
+        MatcherAssert.assertThat(
+            "arithmetic shift of empty bytes should preserve them",
+            new BytesOf(new byte[0]).sshift(1).take(),
+            Matchers.equalTo(new byte[0])
+        );
+    }
+
+    @Test
     void shiftsIntegerMinValueWithoutOverflow() {
         MatcherAssert.assertThat(
             "shift(Integer.MIN_VALUE) should produce an all-zero result, but it didn't",
