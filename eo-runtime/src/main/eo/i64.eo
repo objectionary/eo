@@ -89,35 +89,30 @@
       as-bytes
       x.as-bytes
 
-  ++> tests-i64-as-bytes-is-not-equal-to-number-bytes
-    not. > @
-      eq.
-        i64 234.as-bytes
-        234.as-i64.as-bytes
+  not. ++> tests-i64-as-bytes-is-not-equal-to-number-bytes
+    eq.
+      i64 234.as-bytes
+      234.as-i64.as-bytes
 
-  ++> tests-i64-eq-false
-    not. > @
-      123.@.eq 42.@
+  not. ++> tests-i64-eq-false
+    123.@.eq 42.@
 
   123.@.eq 123.@ ++> tests-i64-eq-true
 
-  ++> tests-i64-greater-equal
-    not. > @
-      0.as-i64.gt 0.as-i64
+  not. ++> tests-i64-greater-equal
+    0.as-i64.gt 0.as-i64
 
-  ++> tests-i64-greater-false
-    not. > @
-      0.as-i64.gt 100.as-i64
+  not. ++> tests-i64-greater-false
+    0.as-i64.gt 100.as-i64
 
   gt. ++> tests-i64-greater-max-over-min
     i64 7F-FF-FF-FF-FF-FF-FF-FF
     i64 80-00-00-00-00-00-00-00
 
-  ++> tests-i64-greater-min-not-over-max
-    not. > @
-      gt.
-        i64 80-00-00-00-00-00-00-00
-        i64 7F-FF-FF-FF-FF-FF-FF-FF
+  not. ++> tests-i64-greater-min-not-over-max
+    gt.
+      i64 80-00-00-00-00-00-00-00
+      i64 7F-FF-FF-FF-FF-FF-FF-FF
 
   gt. ++> tests-i64-greater-same-sign-large-negatives
     -5000000000000000000.as-i64
@@ -127,9 +122,8 @@
 
   113.as-i64.gte 113.as-i64 ++> tests-i64-gte-equal
 
-  ++> tests-i64-gte-false
-    not. > @
-      0.as-i64.gte 10.as-i64
+  not. ++> tests-i64-gte-false
+    0.as-i64.gte 10.as-i64
 
   -1000.as-i64.gte -1100.as-i64 ++> tests-i64-gte-true
 
@@ -145,25 +139,21 @@
 
   -9.223372036854776e18.as-i64.lt 1.as-i64 ++> tests-i64-less-across-full-range
 
-  ++> tests-i64-less-equal
-    not. > @
-      10.as-i64.lt 10.as-i64
+  not. ++> tests-i64-less-equal
+    10.as-i64.lt 10.as-i64
 
-  ++> tests-i64-less-false
-    not. > @
-      10.as-i64.lt -5.as-i64
+  not. ++> tests-i64-less-false
+    10.as-i64.lt -5.as-i64
 
   10.as-i64.lt 50.as-i64 ++> tests-i64-less-true
 
-  ++> tests-i64-less-with-large-difference
-    not. > @
-      5000000000000000000.as-i64.lt -5000000000000000000.as-i64
+  not. ++> tests-i64-less-with-large-difference
+    5000000000000000000.as-i64.lt -5000000000000000000.as-i64
 
   50.as-i64.lte 50.as-i64 ++> tests-i64-lte-equal
 
-  ++> tests-i64-lte-false
-    not. > @
-      0.as-i64.lte -10.as-i64
+  not. ++> tests-i64-lte-false
+    0.as-i64.lte -10.as-i64
 
   -200.as-i64.lte -100.as-i64 ++> tests-i64-lte-true
 

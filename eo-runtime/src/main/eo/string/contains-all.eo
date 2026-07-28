@@ -32,13 +32,12 @@
     ","
     "d!"
 
-  ++> tests-not-contains-all
-    not. > @
-      contains-all *1
-        "qwerty"
-        "qer"
-        "ty"
-        "abc"
+  not. ++> tests-not-contains-all
+    contains-all *1
+      "qwerty"
+      "qer"
+      "ty"
+      "abc"
 
   contains-all *1 ++> tests-successful-contains-all
     "abcdefghijk"

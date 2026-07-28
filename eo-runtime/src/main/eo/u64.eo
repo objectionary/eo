@@ -73,21 +73,18 @@
     00-00-00-00-00-00-00-32.as-u64
     00-00-00-00-00-00-00-32.as-u64
 
-  ++> tests-u64-gte-false
-    not. > @
-      00-00-00-00-00-00-00-00.as-u64.gte 00-00-00-00-00-00-00-0A.as-u64
+  not. ++> tests-u64-gte-false
+    00-00-00-00-00-00-00-00.as-u64.gte 00-00-00-00-00-00-00-0A.as-u64
 
   eq. ++> tests-u64-has-valid-bytes
     00-00-00-00-00-00-00-2A.as-u64.as-bytes
     00-00-00-00-00-00-00-2A
 
-  ++> tests-u64-high-bit-not-less-than-one
-    not. > @
-      FF-FF-FF-FF-FF-FF-FF-FF.as-u64.lt 00-00-00-00-00-00-00-01.as-u64
+  not. ++> tests-u64-high-bit-not-less-than-one
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.lt 00-00-00-00-00-00-00-01.as-u64
 
-  ++> tests-u64-less-equal
-    not. > @
-      00-00-00-00-00-00-00-0A.as-u64.lt 00-00-00-00-00-00-00-0A.as-u64
+  not. ++> tests-u64-less-equal
+    00-00-00-00-00-00-00-0A.as-u64.lt 00-00-00-00-00-00-00-0A.as-u64
 
   lt. ++> tests-u64-less-true
     00-00-00-00-00-00-00-0A.as-u64

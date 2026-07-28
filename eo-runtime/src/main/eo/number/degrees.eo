@@ -15,9 +15,8 @@
       180
     pi
 
-  ++> tests-degrees-of-nan-is-nan
-    is-nan. > @
-      degrees nan
+  is-nan. ++> tests-degrees-of-nan-is-nan
+    degrees nan
 
   lt. ++> tests-degrees-of-negative-pi-is-minus-half-turn
     abs

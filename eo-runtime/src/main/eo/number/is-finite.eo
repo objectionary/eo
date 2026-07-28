@@ -20,9 +20,8 @@
 
   ninf.is-finite.not ++> tests-negative-infinity-is-not-finite
 
-  ++> tests-number-with-infinite-bytes-is-not-finite
-    not. > @
-      is-finite.
-        number pinf.as-bytes
+  not. ++> tests-number-with-infinite-bytes-is-not-finite
+    is-finite.
+      number pinf.as-bytes
 
   pinf.is-finite.not ++> tests-positive-infinity-is-not-finite
