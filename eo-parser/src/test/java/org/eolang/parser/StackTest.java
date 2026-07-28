@@ -15,9 +15,7 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link Stack}.
  * @since 0.1
  */
-@SuppressWarnings({
-    "PMD.TooManyMethods", "PMD.UnnecessaryLocalRule", "PMD.UnitTestContainsTooManyAsserts"
-})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.UnnecessaryLocalRule"})
 final class StackTest {
 
     @Test
@@ -42,24 +40,36 @@ final class StackTest {
 
     @Test
     void rejectsFirstPushAtNonZeroIndent() {
-        final ParseError error = Assertions.assertThrows(
+        Assertions.assertThrows(
             ParseError.class,
             () -> new Stack().push(2, 1, Kind.HEAD, Openness.OPEN),
             "first push must be at indent 0 — non-zero indent cannot start a program"
         );
+    }
+
+    @Test
+    void capturesLineOfFirstPushIndentViolation() {
         MatcherAssert.assertThat(
             "the error must carry the offending line",
-            error.line(),
+            StackTest.firstPushIndentViolation().line(),
             Matchers.equalTo(1)
         );
+    }
+
+    @Test
+    void capturesColumnOfFirstPushIndentViolation() {
         MatcherAssert.assertThat(
             "the error must carry the offending column",
-            error.pos(),
+            StackTest.firstPushIndentViolation().pos(),
             Matchers.equalTo(2)
         );
+    }
+
+    @Test
+    void capturesMessageOfFirstPushIndentViolation() {
         MatcherAssert.assertThat(
             "the error message must name the indent-0 requirement",
-            error.getMessage(),
+            StackTest.firstPushIndentViolation().getMessage(),
             Matchers.equalTo(
                 "unexpected indentation, the first object must start at indent 0"
             )
@@ -194,6 +204,17 @@ final class StackTest {
             "after close() the stack cannot retain any entry",
             stack.empty(),
             Matchers.is(true)
+        );
+    }
+
+    /**
+     * Trigger the first-push-at-non-zero-indent violation and capture it.
+     * @return The thrown error
+     */
+    private static ParseError firstPushIndentViolation() {
+        return Assertions.assertThrows(
+            ParseError.class,
+            () -> new Stack().push(2, 1, Kind.HEAD, Openness.OPEN)
         );
     }
 }
