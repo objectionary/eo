@@ -243,24 +243,28 @@ final class Transpiling implements Step {
     /**
      * Cache-key version segment: the plugin version combined with a
      * fingerprint of the bundled transpile XSLs and the libraries they
-     * {@code xsl:import}. Folding the XSL content in means that a change
-     * in the transformation logic invalidates the global transpile cache
-     * even when the plugin version is unchanged (a constant
-     * {@code -SNAPSHOT} during development), see #5578; folding the
-     * imported libraries in too closes the gap where editing one of
+     * {@code xsl:import}, plus the {@code trackLocations}/
+     * {@code coverageTracking} flags. Folding the XSL content in means
+     * that a change in the transformation logic invalidates the global
+     * transpile cache even when the plugin version is unchanged (a
+     * constant {@code -SNAPSHOT} during development), see #5578; folding
+     * the imported libraries in too closes the gap where editing one of
      * them changed the actual output without changing anything in
-     * {@link #XSLS} itself, see #6032.
+     * {@link #XSLS} itself, see #6032. Folding the two flags in means
+     * toggling either one also invalidates the cache, since both change
+     * what {@code to-java.xsl} emits (see #6031).
      * @return The version segment for {@link CachePath}
      */
     String version() {
         return String.format(
-            "%s-%s",
+            "%s-%s-%b-%b",
             this.version,
             new Fingerprint(
                 Stream.concat(
                     Arrays.stream(Transpiling.XSLS), Arrays.stream(Transpiling.IMPORTS)
                 ).toArray(String[]::new)
-            ).get()
+            ).get(),
+            this.tracking.locations(), this.coverage
         );
     }
 
