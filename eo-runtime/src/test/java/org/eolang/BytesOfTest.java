@@ -156,6 +156,15 @@ final class BytesOfTest {
     }
 
     @Test
+    void shiftsIntegerMinValueWithoutOverflow() {
+        MatcherAssert.assertThat(
+            "shift(Integer.MIN_VALUE) should produce an all-zero result, but it didn't",
+            new BytesOf(0xFFFFFFFF).shift(Integer.MIN_VALUE).asNumber(Integer.class),
+            Matchers.equalTo(0)
+        );
+    }
+
+    @Test
     void doesNotSupportNegativeBits() {
         Assertions.assertThrows(
             ExFailure.class,
