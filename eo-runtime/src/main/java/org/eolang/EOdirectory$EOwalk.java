@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Stream;
 
 /**
@@ -37,13 +38,18 @@ public final class EOdirectory$EOwalk extends PhDefault implements Atom {
                 this.take(Phi.RHO).take("file").take("path")
             ).asString()
         ).toAbsolutePath();
-        final PathMatcher matcher = FileSystems.getDefault().getPathMatcher(
-            String.format(
-                "glob:%s", new Dataized(
-                    this.take("glob")
-                ).asString()
-            )
-        );
+        final String glob = new Dataized(this.take("glob")).asString();
+        final PathMatcher matcher;
+        try {
+            matcher = FileSystems.getDefault().getPathMatcher(
+                String.format("glob:%s", glob)
+            );
+        } catch (final PatternSyntaxException ex) {
+            throw new ExFailure(
+                String.format("Can't parse '%s' as a glob pattern", glob),
+                ex
+            );
+        }
         try (Stream<Path> paths = Files.walk(path)) {
             return new Data.ToPhi(
                 paths
