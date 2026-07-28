@@ -29,7 +29,7 @@
               first-non-ws-index (index.plus -1).as-number
               index.plus 1
         | ((number len).plus -1)
-  or. > [c] > is-ws
+  or. > [c] >> is-ws
     c.eq 20-
     or.
       c.eq 09-
