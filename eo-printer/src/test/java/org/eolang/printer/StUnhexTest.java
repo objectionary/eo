@@ -181,6 +181,44 @@ final class StUnhexTest {
 
     @ParameterizedTest
     @MethodSource("shifts")
+    void keepsTooFewNumberBytesUnconverted(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must not crash on a number payload shorter than 8 bytes, but it did",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    "<p><o base='Φ.number'><o base='Φ.bytes'><o>40-49-0F</o></o></o></p>"
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                "//o[@base='Φ.number' and o[@base='Φ.bytes' and not(o) and text()='40-49-0F']]"
+            )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
+    void keepsTooManyNumberBytesUnconverted(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must not silently drop trailing bytes from a number payload longer than 8 bytes, but it did",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    "<p><o base='Φ.number'><o base='Φ.bytes'><o>40-49-0F-DB-00-00-00-00-11-22</o></o></o></p>"
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                "//o[@base='Φ.number' and o[@base='Φ.bytes' and not(o) and text()='40-49-0F-DB-00-00-00-00-11-22']]"
+            )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
     void keepsMalformedBytesUnconverted(final Shift shift, final String type) {
         MatcherAssert.assertThat(
             String.format(
