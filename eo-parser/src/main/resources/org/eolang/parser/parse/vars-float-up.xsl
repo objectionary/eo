@@ -38,7 +38,7 @@
     <xsl:apply-templates select="." mode="full"/>
   </xsl:template>
   <xsl:template match="o[eo:abstract(.)]" mode="full" priority="1">
-    <xsl:variable name="o" select="."/>
+    <xsl:variable name="object" select="."/>
     <xsl:copy>
       <xsl:if test="not(@name) and @as">
         <xsl:attribute name="as" select="@as"/>
@@ -46,7 +46,7 @@
       <xsl:apply-templates select="@* except (@as, @float-up)"/>
       <xsl:apply-templates select="node()[not(self::o and eo:test-attr(.))]"/>
       <xsl:for-each select="o/descendant::o[@name]">
-        <xsl:if test="ancestor::o[eo:abstract(.)][1]/generate-id() = generate-id($o)">
+        <xsl:if test="ancestor::o[eo:abstract(.)][1]/generate-id() = generate-id($object)">
           <xsl:apply-templates select="." mode="full"/>
         </xsl:if>
       </xsl:for-each>
@@ -54,13 +54,13 @@
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[@name and ancestor::o[1][not(eo:abstract(.))]]">
-    <xsl:element name="o">
+    <o>
       <xsl:attribute name="base">
         <xsl:value-of select="@name"/>
       </xsl:attribute>
       <xsl:apply-templates select="@line"/>
       <xsl:apply-templates select="@as"/>
-    </xsl:element>
+    </o>
   </xsl:template>
   <!--
   A pipe predecessor in an argument block (@float-up, set by

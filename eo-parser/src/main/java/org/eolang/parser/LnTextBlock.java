@@ -23,7 +23,6 @@ package org.eolang.parser;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class LnTextBlock implements Line {
 
     /**
@@ -55,9 +54,19 @@ final class LnTextBlock implements Line {
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
-        final String joined = Emissions.unescapeBody(
-            String.join(String.valueOf('\n'), globals.tbody())
-        );
+        final String joined;
+        try {
+            joined = Emissions.unescapeBody(
+                String.join(String.valueOf('\n'), globals.tbody())
+            );
+        } catch (final NumberFormatException ex) {
+            final ParseError error = new ParseError(
+                this.span.line(), this.span.indent(),
+                "invalid unicode or octal escape in text block"
+            );
+            error.initCause(ex);
+            throw error;
+        }
         this.transition(stack, suffix);
         emit.object(
             suffix.attribute(this.span.line(), this.span.indent()),

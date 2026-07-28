@@ -16,7 +16,7 @@
     <xsl:apply-templates select="." mode="with-attributes"/>
   </xsl:template>
   <xsl:template match="*" mode="with-attributes">
-    <xsl:element name="attr">
+    <attr>
       <xsl:apply-templates select="@name"/>
       <xsl:variable name="type">
         <xsl:choose>
@@ -48,7 +48,7 @@
         </xsl:element>
       </xsl:variable>
       <xsl:copy-of select="$inner"/>
-    </xsl:element>
+    </attr>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

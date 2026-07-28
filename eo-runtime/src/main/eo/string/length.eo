@@ -23,30 +23,30 @@
         accum
         if.
           eq.
-            byte.and p1
-            r1
+            byte.and 80-
+            00-
           inclen index 1 accum
           if.
             eq.
-              byte.and p2
-              r2
+              byte.and E0-
+              C0-
             inclen index 2 accum
             if.
               eq.
-                byte.and p3
-                r3
+                byte.and F0-
+                E0-
               inclen index 3 accum
               if.
                 eq.
-                  byte.and p4
-                  r4
+                  byte.and F8-
+                  F0-
                 inclen index 4 accum
                 T
                   "Unknown byte format (%x), can't recognize character".printf
                     * byte
       text.as-bytes.slice index 1 > byte
     | 0 0
-  if. > [index csize len] > inclen
+  if. > [index csize len] >> inclen
     gt.
       index.plus csize
       size
@@ -59,14 +59,6 @@
     reclen
       index.plus csize
       len.plus 1
-  80- > p1
-  E0- > p2
-  F0- > p3
-  F8- > p4
-  00- > r1
-  C0- > r2
-  p2 > r3
-  p3 > r4
 
   eq. ++> tests-calculates-length-of-spaces-only
     " ".length

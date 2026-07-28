@@ -28,21 +28,21 @@
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@before-star]">
     <xsl:variable name="before" select="@before-star" as="xs:int"/>
-    <xsl:element name="o">
+    <o>
       <xsl:for-each select="@* except @before-star">
         <xsl:attribute name="{name()}" select="."/>
       </xsl:for-each>
       <xsl:for-each select="o[position() &lt;= $before]">
         <xsl:apply-templates select="."/>
       </xsl:for-each>
-      <xsl:element name="o">
+      <o>
         <xsl:attribute name="base" select="'Φ.tuple'"/>
         <xsl:attribute name="star"/>
         <xsl:for-each select="o[position() &gt; $before]">
           <xsl:apply-templates select="."/>
         </xsl:for-each>
-      </xsl:element>
-    </xsl:element>
+      </o>
+    </o>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

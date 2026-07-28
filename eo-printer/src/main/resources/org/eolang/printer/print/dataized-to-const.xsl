@@ -13,7 +13,7 @@
     <xsl:variable name="argument" select="o[position()=1]/o[1]"/>
     <xsl:choose>
       <xsl:when test="exists($argument)">
-        <xsl:element name="o">
+        <o>
           <xsl:apply-templates select="$argument/@*[name()!='as']"/>
           <!--
           Named const (a > b!) keeps its name; an anonymous inline const
@@ -36,7 +36,7 @@
           <xsl:if test="eo:has-data($argument)">
             <xsl:value-of select="$argument"/>
           </xsl:if>
-        </xsl:element>
+        </o>
       </xsl:when>
       <xsl:otherwise>
         <xsl:copy-of select="."/>

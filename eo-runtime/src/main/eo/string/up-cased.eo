@@ -21,15 +21,17 @@
               code.lte (as-ascii "z")!
               code.gte mincode
             slice.
-              as-bytes. (code.minus distance).as-i64
+              as-bytes.
+                as-i64.
+                  code.minus
+                    minus.
+                      number mincode
+                      as-ascii "A"
               7
               1
             byte
         as-ascii byte > code
-  minus. > distance
-    number
-      as-ascii "a" >> mincode!
-    as-ascii "A"
+  as-ascii "a" >> mincode!
 
   eq. ++> tests-converts-text-to-upper-case
     "HELLO"

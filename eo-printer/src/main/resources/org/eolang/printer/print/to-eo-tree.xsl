@@ -4,6 +4,8 @@
 * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="to-eo-tree" version="2.0">
+  <!-- An EO-source printer; its tree templates form one cohesive module. -->
+  <!-- xslint-disable-file too-many-templates -->
   <!--
   This one maps XMIR to an intermediate "line tree" that is later
   laid out into pretty EO source by the Pretty class (penalty-based
@@ -174,7 +176,7 @@
       <xsl:variable name="sortable" select="eo:abstract(.) and empty(o[@pipe])"/>
       <xsl:apply-templates select="o[not(eo:void(.)) or @local or @args or @type]" mode="tree">
         <xsl:sort data-type="number" select="if (not($sortable)) then 0 else if (eo:void(.)) then 1 else if (@name = $eo:phi) then 2 else if (eo:test-attr(.)) then 4 else 3"/>
-        <xsl:sort select="if (not($sortable) or eo:void(.) or @name = $eo:phi) then '' else string(@name)"/>
+        <xsl:sort select="if (not($sortable) or eo:void(.) or @name = $eo:phi) then '' else string((@local, @name)[1])"/>
       </xsl:apply-templates>
     </line>
   </xsl:template>

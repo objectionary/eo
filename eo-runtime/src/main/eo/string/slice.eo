@@ -36,7 +36,6 @@
           ""
           string
             text.as-bytes.slice bstart blen
-  text.as-bytes.size >> size!
   minus. > blen
     [index accum result cause] >> recidx
       if. > @
@@ -110,6 +109,7 @@
   C0- > r2
   p2 > r3
   p3 > r4
+  text.as-bytes.size >> size!
 
   eq. ++> tests-no-slice-string
     "no slice".slice

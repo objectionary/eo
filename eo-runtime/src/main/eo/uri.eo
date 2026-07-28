@@ -26,36 +26,38 @@
 
 [text] > uri
   text > @
-  has-authority.if > after-slashes
-    hier-part.slice
-      2
-      hier-part.length.minus
-        number 2
-    ""
   has-authority.if > authority
-    has-authority-path.if
-      after-slashes.slice 0 authority-path-idx
+    if.
+      not. >> has-authority-path
+        eq.
+          string.index-of after-slashes "/" >> authority-path-idx
+          -1
+      slice.
+        has-authority.if >> after-slashes
+          slice.
+            has-query.if >> hier-part
+              before-fragment.slice 0 question-idx
+              before-fragment
+            2
+            hier-part.length.minus
+              number 2
+          ""
+        0
+        authority-path-idx
       after-slashes
     ""
-  string.index-of > authority-path-idx
-    after-slashes
-    "/"
-  has-fragment.if > before-fragment
-    rest.slice
-      0
-      hash-idx
-    rest
-  string.index-of > bracket-end-idx
-    host-port
-    "]"
-  bracket-end-idx.plus 1 > bracket-start
-  host-port.slice > bracket-tail
-    bracket-start
-    host-port.length.minus
-      number bracket-start
   has-fragment.if > fragment
-    rest.slice
-      hash-idx.plus 1
+    slice.
+      text.slice >> rest
+        plus.
+          string.index-of text ":" >> scheme-colon
+          1
+        text.length.minus
+          number
+            scheme-colon.plus 1
+      plus.
+        string.index-of rest "#" >> hash-idx
+        1
       rest.length.minus
         number
           hash-idx.plus 1
@@ -63,39 +65,48 @@
   string.starts-with > has-authority
     hier-part
     "//"
-  not. > has-authority-path
-    authority-path-idx.eq -1
-  string.starts-with > has-bracket-host
-    host-port
-    "["
   not. > has-fragment
     hash-idx.eq -1
   not. > has-port
-    port-colon-idx.eq -1
+    eq.
+      if. >> port-colon-idx
+        string.starts-with host-port "[" >>
+        if.
+          eq.
+            string.index-of >> rel-colon
+              host-port.slice
+                bracket-start
+                host-port.length.minus
+                  number bracket-start
+              ":"
+            -1
+          -1
+          rel-colon.plus
+            plus. >> bracket-start
+              string.index-of host-port "]" >>
+              1
+        string.index-of host-port ":"
+      -1
   not. > has-query
-    question-idx.eq -1
+    eq.
+      string.index-of before-fragment "?" >> question-idx
+      -1
   not. > has-userinfo
-    userinfo-at-idx.eq -1
-  string.index-of > hash-idx
-    rest
-    "#"
-  has-query.if > hier-part
-    before-fragment.slice
-      0
-      question-idx
-    before-fragment
+    eq.
+      string.index-of authority "@" >> userinfo-at-idx
+      -1
   has-port.if > host
-    host-port.slice
+    slice.
+      has-userinfo.if >> host-port
+        authority.slice
+          userinfo-at-idx.plus 1
+          authority.length.minus
+            number
+              userinfo-at-idx.plus 1
+        authority
       0
       port-colon-idx
     host-port
-  has-userinfo.if > host-port
-    authority.slice
-      userinfo-at-idx.plus 1
-      authority.length.minus
-        number
-          userinfo-at-idx.plus 1
-    authority
   has-authority.if > path
     has-authority-path.if
       after-slashes.slice
@@ -111,46 +122,24 @@
         number
           port-colon-idx.plus 1
     ""
-  has-bracket-host.if > port-colon-idx
-    if.
-      rel-colon.eq -1
-      -1
-      rel-colon.plus bracket-start
-    string.index-of
-      host-port
-      ":"
   has-query.if > query
-    before-fragment.slice
+    slice.
+      has-fragment.if >> before-fragment
+        rest.slice 0 hash-idx
+        rest
       question-idx.plus 1
       before-fragment.length.minus
         number
           question-idx.plus 1
     ""
-  string.index-of > question-idx
-    before-fragment
-    "?"
-  string.index-of > rel-colon
-    bracket-tail
-    ":"
-  text.slice > rest
-    scheme-colon.plus 1
-    text.length.minus
-      number
-        scheme-colon.plus 1
   text.slice > scheme
     0
     scheme-colon
-  string.index-of > scheme-colon
-    text
-    ":"
   has-userinfo.if > userinfo
     authority.slice
       0
       userinfo-at-idx
     ""
-  string.index-of > userinfo-at-idx
-    authority
-    "@"
 
   eq. ++> tests-parses-bracketed-ipv6-host-with-port
     host.

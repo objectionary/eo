@@ -47,11 +47,11 @@
           Copy as is
           -->
           <xsl:when test="starts-with($argument/@base, '.')">
-            <xsl:element name="o">
+            <o>
               <xsl:apply-templates select="@*"/>
               <xsl:copy-of select="$argument"/>
               <xsl:apply-templates select="node()[position()&gt;1]"/>
-            </xsl:element>
+            </o>
           </xsl:when>
           <!--
           Either rolled, but with data:
@@ -63,14 +63,14 @@
           []
           -->
           <xsl:when test="not(exists($argument/@base)) or eo:has-data($argument)">
-            <xsl:element name="o">
+            <o>
               <xsl:apply-templates select="@*"/>
-              <xsl:element name="o">
+              <o>
                 <xsl:apply-templates select="$argument/@*"/>
                 <xsl:apply-templates select="$argument/node()"/>
-              </xsl:element>
+              </o>
               <xsl:apply-templates select="node()[position()&gt;1]"/>
-            </xsl:element>
+            </o>
           </xsl:when>
           <!--
           Changed to
@@ -101,14 +101,14 @@
       Leave as is
       -->
       <xsl:when test="not(exists($first/@base)) or eo:has-data($first) or eo:void($first)">
-        <xsl:element name="o">
+        <o>
           <xsl:apply-templates select="@*"/>
-          <xsl:element name="o">
+          <o>
             <xsl:apply-templates select="$first/@*"/>
             <xsl:apply-templates select="$first/node()"/>
-          </xsl:element>
+          </o>
           <xsl:apply-templates select="node()[position()&gt;1]"/>
-        </xsl:element>
+        </o>
       </xsl:when>
       <!--
       x.
@@ -132,14 +132,14 @@
       No rolling because of argument
       -->
       <xsl:when test="$arg/o">
-        <xsl:element name="o">
+        <o>
           <xsl:apply-templates select="@*"/>
-          <xsl:element name="o">
+          <o>
             <xsl:apply-templates select="$arg/@*"/>
             <xsl:apply-templates select="$arg/node()"/>
-          </xsl:element>
+          </o>
           <xsl:apply-templates select="node()[position()&gt;1]"/>
-        </xsl:element>
+        </o>
       </xsl:when>
       <!--
       x.
@@ -147,13 +147,13 @@
       Roll into y.x
       -->
       <xsl:otherwise>
-        <xsl:element name="o">
+        <o>
           <xsl:apply-templates select="@* except @base"/>
           <xsl:attribute name="base">
             <xsl:value-of select="concat($arg/@base, @base)"/>
           </xsl:attribute>
           <xsl:apply-templates select="node()[position()&gt;1]"/>
-        </xsl:element>
+        </o>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

@@ -675,6 +675,32 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void rejectsSignedUnicodeEscape() throws Exception {
+        MatcherAssert.assertThat(
+            "a \\u escape with a leading sign character must show up as an /object/errors/error entry, not silently consume the sign as a hex digit",
+            EoSyntaxTest.raw(
+                String.join(String.valueOf((char) 10), "[] > foo", "  \"\\u+041\" > @")
+            ).toString(),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'unicode')]"
+            )
+        );
+    }
+
+    @Test
+    void rejectsTruncatedUnicodeEscape() throws Exception {
+        MatcherAssert.assertThat(
+            "a \\u escape with fewer than four hex digits must show up as an /object/errors/error entry, not pass through as literal text",
+            EoSyntaxTest.raw(
+                String.join(String.valueOf((char) 10), "[] > foo", "  \"\\u41\" > @")
+            ).toString(),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'unicode')]"
+            )
+        );
+    }
+
+    @Test
     void acceptsValidSurrogatePairEscape() throws Exception {
         MatcherAssert.assertThat(
             "a high surrogate immediately followed by a low surrogate is a valid pair and must not be rejected",

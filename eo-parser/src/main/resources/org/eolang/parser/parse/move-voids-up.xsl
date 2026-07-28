@@ -16,7 +16,7 @@
     <xsl:apply-templates select="." mode="with-diff-attrs"/>
   </xsl:template>
   <xsl:template match="o[o[not(eo:void(.))]/following-sibling::o[eo:void(.)]]" mode="with-diff-attrs">
-    <xsl:element name="o">
+    <o>
       <xsl:apply-templates select="@*"/>
       <xsl:for-each select="o[eo:void(.)]">
         <xsl:copy-of select="."/>
@@ -24,7 +24,7 @@
       <xsl:for-each select="o[not(eo:void(.))]">
         <xsl:apply-templates select="."/>
       </xsl:for-each>
-    </xsl:element>
+    </o>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#all">
     <xsl:copy>
