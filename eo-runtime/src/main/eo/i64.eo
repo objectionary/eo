@@ -44,10 +44,10 @@
           highest.minus 53
         00-00-00-00-00-00-00-01
       00-00-00-00-00-00-00-01
-    top-bit 63 > highest
-    top-bit-bytes > highest-bits!
-      63
-      03-F0-00-00-00-00-00-00
+    scanned.as-number.minus 4503599627370496 > highest
+    left. > highest-bits!
+      scanned.and 00-00-00-00-00-00-00-3F
+      52
     magnitude.right > kept!
       highest.minus 52
     if. > magnitude!
@@ -75,32 +75,30 @@
           i64 kept
           i64 00-00-00-00-00-00-00-01
       kept
+    [m acc step bit] > scan
+      if. > @
+        step.lt 1
+        acc
+        scan
+          empty.if m shifted
+          empty.if
+            acc
+            acc.or bit
+          step.div 2
+          bit.right 1
+      shifted.eq 00-00-00-00-00-00-00-00 > empty
+      m.right step > shifted!
+    scan > scanned!
+      magnitude
+      43-30-00-00-00-00-00-00
+      32
+      00-00-00-00-00-00-00-20
     as-bytes.and 80-00-00-00-00-00-00-00 > sign!
     not. > sticky
       eq.
         magnitude.left
           117.minus highest
         00-00-00-00-00-00-00-00
-    if. > [k] > top-bit
-      eq.
-        magnitude.right k
-        00-00-00-00-00-00-00-00
-      top-bit
-        k.minus 1
-      k
-    [k kb] > top-bit-bytes
-      if. > @
-        eq.
-          magnitude.right k
-          00-00-00-00-00-00-00-00
-        top-bit-bytes
-          k.minus 1
-          next-kb
-        kb
-      as-bytes. > next-kb!
-        plus.
-          i64 kb
-          i64 FF-F0-00-00-00-00-00-00
   [x] > gt
     differ.if > @
       eq.
