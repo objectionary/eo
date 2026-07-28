@@ -1,4 +1,4 @@
-# A `chunk` is a handle to a block of data allocated in heap memory.
+# Handle to a block of data allocated in heap memory.
 # It is created by `malloc.of` (and, indirectly, by `malloc.empty` and
 # `malloc.for`) and passed into the user scope, where it provides the API
 # to read and write the data of the block:
@@ -16,6 +16,8 @@
 #       c.id                # get identifier of the block
 #       c.@                 # the same as c.get
 # ```
+#
+# The `id` is the identifier the allocator gave to the block.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

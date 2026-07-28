@@ -1,8 +1,6 @@
-# A `uri` object parses an RFC 3986 generic URI `text` and exposes its
-# components as read-only attributes: `scheme`, `authority` (together with
-# `userinfo`, `host` and `port` parsed out of it), `path`, `query` and
-# `fragment`. The object is immutable: it only reads parts of `text` and
-# has no mutators.
+# Parses an RFC 3986 generic URI `text` and exposes its components as
+# read-only attributes: `scheme`, `authority` (together with `userinfo`,
+# `host` and `port` parsed out of it), `path`, `query` and `fragment`.
 #
 # Usage, without an authority:
 # ```
@@ -16,6 +14,8 @@
 # x.host > h    # localhost
 # x.port > p    # 899
 # ```
+#
+# The object is immutable: it only reads parts of `text` and has no mutators.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -23,6 +23,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
++unlint mandatory-package
 
 [text] > uri
   text > @
