@@ -47,11 +47,14 @@ final class StUnhex extends StEnvelope {
         new StXnav(
             StUnhex.elements("number"),
             xnav -> {
-                final double number = StUnhex.buffer(
+                final ByteBuffer buffer = StUnhex.buffer(
                     StUnhex.undash(xnav.element("o").text().orElse(""))
-                ).getDouble();
-                if (!Double.isNaN(number) && !Double.isInfinite(number)) {
-                    xnav.node().setTextContent(StUnhex.number(number));
+                );
+                if (buffer.remaining() == Double.BYTES) {
+                    final double number = buffer.getDouble();
+                    if (!Double.isNaN(number) && !Double.isInfinite(number)) {
+                        xnav.node().setTextContent(StUnhex.number(number));
+                    }
                 }
             }
         ),
