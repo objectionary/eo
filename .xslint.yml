@@ -13,9 +13,5 @@ exclude:
 #  xslint check is already enforced across the whole codebase.
 rules:
   not-creating-element-correctly: "off"
-  not-using-schema-types: "off"
-  short-names: "off"
+  too-many-templates: "off"
   unused-variable: "off"
-  not-using-output: "off"
-  too-many-small-templates: "off"
-  monolithic-design: "off"

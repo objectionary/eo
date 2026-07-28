@@ -4,6 +4,7 @@
 * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="mandatory-as" version="2.0">
+  <xsl:output encoding="UTF-8" method="xml"/>
   <!--
   Here we are going through all the applications (objects with `@base`), and add `@as`
   attributes for each inner object. The content of `@as` attribute is based on `αN`, where `N` is

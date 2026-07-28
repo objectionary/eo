@@ -12,7 +12,7 @@
   <xsl:function name="eo:test-name" as="xs:string">
     <xsl:param name="name" as="xs:string"/>
     <xsl:variable name="parts" select="tokenize($name, '\$')"/>
-    <xsl:variable name="p">
+    <xsl:variable name="result">
       <xsl:for-each select="$parts">
         <xsl:if test="position()&gt;1">
           <xsl:text>$</xsl:text>
@@ -23,7 +23,7 @@
         </xsl:if>
       </xsl:for-each>
     </xsl:variable>
-    <xsl:value-of select="$p"/>
+    <xsl:value-of select="$result"/>
   </xsl:function>
   <xsl:template match="class/@name">
     <xsl:attribute name="name">

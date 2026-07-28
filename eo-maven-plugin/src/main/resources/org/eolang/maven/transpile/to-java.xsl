@@ -44,7 +44,7 @@
     <xsl:param name="n" as="xs:string"/>
     <xsl:param name="alt" as="xs:string"/>
     <xsl:variable name="parts" select="tokenize($n, '\.')"/>
-    <xsl:variable name="p">
+    <xsl:variable name="package">
       <xsl:for-each select="$parts">
         <xsl:if test="position()!=last()">
           <xsl:value-of select="eo:clean(.)"/>
@@ -52,7 +52,7 @@
         </xsl:if>
       </xsl:for-each>
     </xsl:variable>
-    <xsl:variable name="c">
+    <xsl:variable name="class">
       <xsl:choose>
         <xsl:when test="$parts[last()]">
           <xsl:value-of select="$parts[last()]"/>
@@ -62,7 +62,7 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:variable name="pre" select="concat($p, eo:clean($c))"/>
+    <xsl:variable name="pre" select="concat($package, eo:clean($class))"/>
     <xsl:choose>
       <xsl:when test="string-length($pre)&gt;250">
         <xsl:value-of select="concat(substring($pre, 1, 25), $alt)"/>
