@@ -91,6 +91,13 @@
     string
       as-fixed 3.14159 2
 
+  eq. ++> tests-negative-places-formats-message-as-number
+    "Can't write a fixed-point decimal with -2.000000 fraction places"
+    as-fixed
+      3.14159
+      -2
+      message > [message]
+
   eq. ++> tests-negative-places-returns-provided-fallback
     "recovered"
     as-fixed

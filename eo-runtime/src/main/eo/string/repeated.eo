@@ -41,6 +41,13 @@
       "hey"
       5
 
+  eq. ++> tests-text-repeated-negative-times-formats-message-as-number
+    "Can't repeat text -1.000000 times"
+    repeated
+      "x"
+      -1
+      message > [message]
+
   eq. ++> tests-text-repeated-negative-times-returns-provided-fallback
     "recovered"
     repeated
