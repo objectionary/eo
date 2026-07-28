@@ -27,7 +27,6 @@ final class Timed implements Step {
     }
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() throws IOException {
         final long start = System.currentTimeMillis();
         this.origin.exec();

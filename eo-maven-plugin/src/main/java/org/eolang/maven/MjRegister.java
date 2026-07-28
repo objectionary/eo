@@ -74,7 +74,6 @@ public final class MjRegister extends MjSafe {
     private boolean strictFileNames = true;
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() {
         if (this.sourcesDir == null) {
             throw new IllegalArgumentException(

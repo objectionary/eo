@@ -65,7 +65,6 @@ final class OyCachedTest {
     }
 
     @RepeatedTest(10)
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void cachesInConcurrentEnvironment() {
         final AtomicInteger calls = new AtomicInteger(0);
         final Input content = new InputOf("[] > foo");

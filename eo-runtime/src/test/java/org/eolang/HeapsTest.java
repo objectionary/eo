@@ -33,7 +33,6 @@ final class HeapsTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void failsOnDoubleAllocation() {
         final Phi phi = new HeapsTest.PhFake();
         final int idx = Heaps.INSTANCE.malloc(phi, 10);

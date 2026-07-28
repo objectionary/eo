@@ -185,7 +185,6 @@ final class MjResolveTest {
      * @throws IOException In case of I/O issues.
      */
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void resolvesWithConflictingDependencies(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             "+package foo.x",

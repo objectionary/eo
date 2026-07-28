@@ -175,7 +175,6 @@ final class PhApplicationTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"hello", "bye", "", "привет"})
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void runsInThreads(final String data) {
         final String attr = "foo";
         final Phi ref = new PhApplication(
