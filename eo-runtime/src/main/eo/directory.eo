@@ -66,3 +66,9 @@
   walk. --> on-walking-absent-directory
     directory mktemp.tmpfile.deleted
     "**"
+
+  --> on-walking-with-malformed-glob
+    d.as-dir.walk "[" > @
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
