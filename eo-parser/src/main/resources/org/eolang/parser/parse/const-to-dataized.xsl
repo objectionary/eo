@@ -56,14 +56,14 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:element name="o">
+    <o>
       <xsl:attribute name="base" select="'.as-bytes'"/>
       <xsl:attribute name="name" select="$cname"/>
       <xsl:attribute name="line" select="@line"/>
       <xsl:attribute name="pos" select="@pos + 8"/>
-      <xsl:element name="o">
+      <o>
         <xsl:attribute name="base" select="'Φ.dataized'"/>
-        <xsl:element name="o">
+        <o>
           <xsl:for-each select="@*[name()!='const' and name()!='name']">
             <xsl:attribute name="{name()}">
               <xsl:value-of select="."/>
@@ -80,9 +80,9 @@
           <xsl:if test="eo:has-data(.)">
             <xsl:value-of select="."/>
           </xsl:if>
-        </xsl:element>
-      </xsl:element>
-    </xsl:element>
+        </o>
+      </o>
+    </o>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

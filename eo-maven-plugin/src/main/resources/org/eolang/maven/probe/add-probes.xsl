@@ -45,17 +45,17 @@
   </xsl:function>
   <xsl:function name="eo:meta">
     <xsl:param name="arg"/>
-    <xsl:element name="meta">
-      <xsl:element name="head">
+    <meta>
+      <head>
         <xsl:text>probe</xsl:text>
-      </xsl:element>
-      <xsl:element name="tail">
+      </head>
+      <tail>
         <xsl:value-of select="$arg"/>
-      </xsl:element>
-      <xsl:element name="part">
+      </tail>
+      <part>
         <xsl:value-of select="$arg"/>
-      </xsl:element>
-    </xsl:element>
+      </part>
+    </meta>
   </xsl:function>
   <!-- ENTRY POINT 1 - no metas -->
   <xsl:template match="/object[not(metas)]">

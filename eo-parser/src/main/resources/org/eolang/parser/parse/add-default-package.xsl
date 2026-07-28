@@ -4,6 +4,8 @@
 * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eo="https://www.eolang.org" id="add-default-package" version="2.0">
+  <!-- A package-resolution stage; its templates form one cohesive module. -->
+  <!-- xslint-disable-file too-many-templates -->
   <!--
   Here we go through all objects that are not:
   1. methods (starts with .)

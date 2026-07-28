@@ -53,7 +53,7 @@
     </xsl:variable>
     <xsl:copy>
       <xsl:apply-templates select="node() except tail except part|@*"/>
-      <xsl:element name="tail">
+      <tail>
         <xsl:value-of select="$first"/>
         <xsl:if test="$composite">
           <xsl:for-each select="$split[position()&gt;1 and position()!=last()]">
@@ -63,20 +63,20 @@
         </xsl:if>
         <xsl:text> </xsl:text>
         <xsl:value-of select="$tail"/>
-      </xsl:element>
-      <xsl:element name="part">
+      </tail>
+      <part>
         <xsl:value-of select="$first"/>
-      </xsl:element>
+      </part>
       <xsl:if test="$composite">
         <xsl:for-each select="$split[position()&gt;1 and position()!=last()]">
-          <xsl:element name="part">
+          <part>
             <xsl:value-of select="."/>
-          </xsl:element>
+          </part>
         </xsl:for-each>
       </xsl:if>
-      <xsl:element name="part">
+      <part>
         <xsl:value-of select="$tail"/>
-      </xsl:element>
+      </part>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">

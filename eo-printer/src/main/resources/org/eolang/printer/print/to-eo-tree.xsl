@@ -4,6 +4,8 @@
 * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="to-eo-tree" version="2.0">
+  <!-- An EO-source printer; its tree templates form one cohesive module. -->
+  <!-- xslint-disable-file too-many-templates -->
   <!--
   This one maps XMIR to an intermediate "line tree" that is later
   laid out into pretty EO source by the Pretty class (penalty-based

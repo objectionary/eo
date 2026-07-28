@@ -30,7 +30,7 @@
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o" mode="warn">
-    <xsl:element name="error">
+    <error>
       <xsl:attribute name="check">
         <xsl:text>fragile-dispatch</xsl:text>
       </xsl:attribute>
@@ -44,7 +44,7 @@
         <xsl:value-of select="@pos"/>
       </xsl:attribute>
       <xsl:text>regular dispatch on a fragile object requires `?.`</xsl:text>
-    </xsl:element>
+    </error>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

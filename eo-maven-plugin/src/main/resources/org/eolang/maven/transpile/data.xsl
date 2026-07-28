@@ -9,7 +9,7 @@
   <xsl:template match="o[o[1][eo:has-data(.)]]">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
-      <xsl:element name="value">
+      <value>
         <xsl:text>new byte[] {</xsl:text>
         <xsl:for-each select="tokenize(o[1]/text(), '-')">
           <xsl:if test=".!=''">
@@ -21,7 +21,7 @@
           </xsl:if>
         </xsl:for-each>
         <xsl:text>}</xsl:text>
-      </xsl:element>
+      </value>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">

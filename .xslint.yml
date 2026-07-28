@@ -3,15 +3,9 @@
 ---
 # xslint configuration — https://github.com/xslint/xslint
 # The vendored xs3p stylesheet and the test fixtures are not ours to lint.
+# Every xslint check is enforced across the codebase. The only per-check
+# exceptions are four cohesive stylesheets that each carry an inline
+# `xslint-disable-file too-many-templates` with a reason at their head.
 exclude:
   - "**/xs3p/**"
   - "**/src/test/**"
-# @todo #6006:60min Enable the deferred xslint checks below one by one. Each
-#  is switched off only because the pipeline has findings for it today, not
-#  because the rule is unwanted; fix those findings in the stylesheets and
-#  delete the matching line here so the check begins to enforce. Every other
-#  xslint check is already enforced across the whole codebase.
-rules:
-  not-creating-element-correctly: "off"
-  too-many-templates: "off"
-  unused-variable: "off"

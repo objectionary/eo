@@ -26,7 +26,7 @@
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[@base='Φ.cti']" mode="create">
-    <xsl:element name="error">
+    <error>
       <xsl:attribute name="check">
         <xsl:text>cti</xsl:text>
       </xsl:attribute>
@@ -37,7 +37,7 @@
         <xsl:value-of select="eo:bytes-to-string(o[last() - 1]/o[1]/o[1]/text())"/>
       </xsl:attribute>
       <xsl:value-of select="eo:bytes-to-string(o[last()]/o[1]/o[1]/text())"/>
-    </xsl:element>
+    </error>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
