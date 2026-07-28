@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" id="resolve-self" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="resolve-self" version="2.0">
   <!--
   The "%" self-reference (§3.15) is syntactic sugar for the auto-name of
   the anonymous formation that surrounds it. The parser emits it as a
@@ -29,12 +29,12 @@
       <xsl:apply-templates select="(node() except errors)|@*"/>
       <xsl:variable name="errors" as="element()*">
         <xsl:for-each select="//o[@self and empty(ancestor::o[starts-with(@name, 'a🌵')])]">
-          <xsl:element name="error">
+          <error>
             <xsl:attribute name="check" select="'resolve-self'"/>
             <xsl:attribute name="line" select="if (@line) then @line else 0"/>
             <xsl:attribute name="severity" select="'error'"/>
             <xsl:text>The % self-reference is only allowed inside an anonymous formation</xsl:text>
-          </xsl:element>
+          </error>
         </xsl:for-each>
       </xsl:variable>
       <xsl:if test="not(empty($errors)) or exists(/object/errors)">

@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# xslint configuration — https://github.com/xslint/xslint
+# The vendored xs3p stylesheet and the test fixtures are not ours to lint.
+# Every xslint check is enforced across the codebase. The only per-check
+# exceptions are four cohesive stylesheets that each carry an inline
+# `xslint-disable-file too-many-templates` with a reason at their head.
+exclude:
+  - "**/xs3p/**"
+  - "**/src/test/**"

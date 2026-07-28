@@ -70,13 +70,11 @@
 
   ninf.is-nan.not ++> tests-negative-infinity-is-not-nan
 
-  ++> tests-non-canonical-nan-bytes-is-nan
-    is-nan. > @
-      number FF-F8-00-00-00-00-00-00
+  is-nan. ++> tests-non-canonical-nan-bytes-is-nan
+    number FF-F8-00-00-00-00-00-00
 
-  ++> tests-number-with-nan-bytes-is-nan
-    is-nan. > @
-      number nan.as-bytes
+  is-nan. ++> tests-number-with-nan-bytes-is-nan
+    number nan.as-bytes
 
   pinf.is-nan.not ++> tests-positive-infinity-is-not-nan
 

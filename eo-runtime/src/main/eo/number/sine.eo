@@ -12,11 +12,13 @@
 
 [num] > sine
   times. > @
-    arg.minus >> reduced
+    minus. >> reduced
+      number num.as-bytes >> arg
       times.
         floor.
           plus.
-            arg.div tau
+            arg.div
+              pi.times 2 >> tau
             0.5
         tau
     if. > [depth] >> factor
@@ -33,9 +35,7 @@
           factor
             depth.plus 1
     | 1
-  number num.as-bytes > arg
-  pi.times 2 >> tau
-  reduced.times reduced > squared
+  reduced.times reduced >> squared
 
   lt. ++> tests-sine-is-odd-function
     abs
@@ -47,13 +47,11 @@
         1000
     1
 
-  ++> tests-sine-of-nan-is-nan
-    is-nan. > @
-      sine nan
+  is-nan. ++> tests-sine-of-nan-is-nan
+    sine nan
 
-  ++> tests-sine-of-negative-infinity-is-nan
-    is-nan. > @
-      sine ninf
+  is-nan. ++> tests-sine-of-negative-infinity-is-nan
+    sine ninf
 
   lt. ++> tests-sine-of-negative-pi-halves-is-minus-one
     abs
@@ -91,9 +89,8 @@
         500
     1
 
-  ++> tests-sine-of-positive-infinity-is-nan
-    is-nan. > @
-      sine pinf
+  is-nan. ++> tests-sine-of-positive-infinity-is-nan
+    sine pinf
 
   lt. ++> tests-sine-of-seventeen-radians
     abs

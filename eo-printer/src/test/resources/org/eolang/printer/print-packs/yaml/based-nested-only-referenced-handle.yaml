@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A based file-local handle ("num.times num >> squared", R-3.10.12) whose only
+# reference is a method dispatch written inside a nested "[depth] >> factor"
+# formation ("squared.div depth"). The reference climbs to the handle as
+# "ξ.ρ.<name>.div", which resolves to the same auto-name, so it counts as a
+# single use — yet no reference sits in the handle's own owner scope. Neither
+# later pass folds it: "inline-cactoos" computes the inline target straight off
+# the base, so "<name>.div" finds no target, and "merge-monikers" only hosts a
+# reference whose nearest formation ancestor is the binding's own owner. What
+# broke was the printer dropping the "@local" handle here, leaving an anonymous
+# "num.times num >>" and a dangling "v4_2.div" that reparses to a nonexistent
+# global object (#5995). The handle is now kept and the dispatch reads back
+# through its readable name, exactly as the multi-referenced spelling of the same
+# shape does (#5944).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [num] > foo
+    [depth] > factor
+      squared.div depth > @
+    num.times num >> squared
+
+printed: |
+  [num] > foo
+    squared.div depth > [depth] > factor
+    num.times num >> squared

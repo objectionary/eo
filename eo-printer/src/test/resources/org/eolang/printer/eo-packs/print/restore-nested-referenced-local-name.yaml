@@ -1,0 +1,52 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A based file-local handle ("num.times num >> squared", R-3.10.12) whose only
+# reference is a method dispatch from a nested formation scope
+# ("squared.div depth" inside "[depth] >> factor"). The reference climbs to the
+# handle as "ξ.ρ.<name>.div", which "eo:references" strips to the same auto-name,
+# so it is counted as a single use — but no reference sits in the handle's own
+# owner scope. Neither later pass can fold such a reference: "inline-cactoos"
+# computes its inline target straight off the base, so the dispatch resolves to
+# "<name>.div" and finds no target, and "merge-monikers" only hosts a reference
+# whose nearest formation ancestor is the binding's own owner. The "@local"
+# marker is therefore kept here (#5995) so the surviving binding still prints its
+# readable ">> squared" handle and "merge-monikers" rewrites the dispatch back to
+# it, rather than leaving an anonymous ">>" and a dangling "vL_P" reference. As
+# with the multi-referenced based handle (#5944), the cactus "@name" is NOT
+# promoted and the reference is NOT rewritten here — that is "merge-monikers"'
+# job, once it knows which reference (if any) hosts the binding.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-self.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/validate-before-stars.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/printer/print/restore-local-names.xsl
+asserts:
+  # The nested-only-referenced based handle keeps its "@local" marker, and its
+  # cactus "@name" is left obfuscated (not promoted to the handle).
+  - /object/o[@name='foo']/o[@local='squared' and contains(@name, '🌵') and @base='ξ.num.times']
+  # The nested dispatch reference stays cactus-based: rewriting it is left to
+  # "merge-monikers".
+  - /object/o[@name='foo']/o[@name='factor']//o[contains(@base, '🌵') and ends-with(@base, '.div')]
+  # No reference was rewritten to a readable "squared" base.
+  - /object[not(.//o[contains(@base, 'squared')])]
+input: |
+  [num] > foo
+    [depth] > factor
+      squared.div depth > @
+    num.times num >> squared

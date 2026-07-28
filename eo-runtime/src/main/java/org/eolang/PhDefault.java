@@ -100,7 +100,7 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Order of their names.
      */
-    private Map<Integer, String> order;
+    private final Map<Integer, String> order;
 
     /**
      * Attributes.
@@ -160,6 +160,7 @@ public class PhDefault implements Phi, Cloneable {
         this.fqn = forma;
         this.data = dta;
         this.initial = attributes;
+        this.order = new HashMap<>(0);
     }
 
     @Override
@@ -175,10 +176,9 @@ public class PhDefault implements Phi, Cloneable {
     @Override
     public final Phi copy() {
         try {
-            this.activate();
             final PhDefault copy = (PhDefault) this.clone();
-            final Map<String, Attribute> map = new HashMap<>(this.attrs.size());
-            for (final Map.Entry<String, Attribute> ent : this.attrs.entrySet()) {
+            final Map<String, Attribute> map = new HashMap<>(this.loaded().size());
+            for (final Map.Entry<String, Attribute> ent : this.loaded().entrySet()) {
                 map.put(ent.getKey(), ent.getValue().copy(copy));
             }
             copy.attrs = map;
@@ -190,10 +190,9 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public boolean hasRho() {
-        this.activate();
         boolean has = true;
         try {
-            this.attrs.get(Phi.RHO).get();
+            this.loaded().get(Phi.RHO).get();
         } catch (final ExUnset exception) {
             has = false;
         }
@@ -207,8 +206,7 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public void put(final String name, final Phi object) {
-        this.activate();
-        if (!this.attrs.containsKey(name)) {
+        if (!this.loaded().containsKey(name)) {
             throw new ExUnset(
                 String.format(
                     "Can't #put(\"%s\", %s) to %s, because the attribute is absent",
@@ -216,17 +214,16 @@ public class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        this.attrs.get(name).put(object);
+        this.loaded().get(name).put(object);
     }
 
     @Override
     public Phi take(final String name) {
-        this.activate();
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         try {
             final Phi resolved;
-            if (this.attrs.containsKey(name)) {
-                resolved = this.attrs.get(name).get();
+            if (this.loaded().containsKey(name)) {
+                resolved = this.loaded().get(name).get();
             } else if (name.equals(Phi.LAMBDA)) {
                 resolved = new AtomTyped(
                     this, PhDefault.ATOMS.declared(this.forma())
@@ -234,15 +231,18 @@ public class PhDefault implements Phi, Cloneable {
             } else {
                 resolved = this.absent(name);
             }
-            PhDefault.debug(
-                String.format(
-                    "%s\uD835\uDD38('%s' for %s) ➜ %s",
-                    PhDefault.padding(),
-                    name,
-                    this,
-                    resolved
-                )
-            );
+            if (PhDefault.LOGGER.isLoggable(Level.FINE)) {
+                PhDefault.LOGGER.log(
+                    Level.FINE,
+                    String.format(
+                        "%s\uD835\uDD38('%s' for %s) ➜ %s",
+                        PhDefault.padding(),
+                        name,
+                        this,
+                        resolved
+                    )
+                );
+            }
             return resolved;
         } finally {
             final int current = PhDefault.NESTING.get();
@@ -256,13 +256,12 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public byte[] delta() {
-        this.activate();
         final byte[] bytes;
         if (this.data != null) {
             bytes = this.data;
         } else if (this instanceof Atom) {
             bytes = this.take(Phi.LAMBDA).delta();
-        } else if (this.attrs.containsKey(Phi.PHI)) {
+        } else if (this.loaded().containsKey(Phi.PHI)) {
             bytes = this.take(Phi.PHI).delta();
         } else {
             throw new ExFailure(
@@ -277,11 +276,10 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public Phi normalized() {
-        this.activate();
         final Phi result;
         if (this instanceof Atom) {
             result = this.take(Phi.LAMBDA).normalized();
-        } else if (this.data == null && this.attrs.containsKey(Phi.PHI)) {
+        } else if (this.data == null && this.loaded().containsKey(Phi.PHI)) {
             final Phi phi = this.take(Phi.PHI).normalized();
             if (phi instanceof PhTerminator) {
                 result = phi;
@@ -321,20 +319,18 @@ public class PhDefault implements Phi, Cloneable {
      * @param attr The attr
      */
     public final void add(final String name, final Attribute attr) {
-        this.activate();
         if (PhDefault.SORTABLE.matcher(name).matches()) {
             this.order.put(this.order.size(), name);
         }
-        this.attrs.put(name, new AtWithRho(attr, this));
+        this.loaded().put(name, new AtWithRho(attr, this));
     }
 
     @Override
     public String φTerm() {
-        this.activate();
         final String name = this.oname();
         final String result;
         if (this.literal(name)) {
-            final byte[] raw = this.attrs.get("as-bytes").get().delta();
+            final byte[] raw = this.loaded().get("as-bytes").get().delta();
             if ("string".equals(name)) {
                 result = String.format("\"%s\"", new String(raw, StandardCharsets.UTF_8));
             } else {
@@ -396,7 +392,7 @@ public class PhDefault implements Phi, Cloneable {
             object = this.extension(name);
         } else if (this instanceof Atom) {
             object = this.take(Phi.LAMBDA).take(name);
-        } else if (this.attrs.containsKey(Phi.PHI)) {
+        } else if (this.loaded().containsKey(Phi.PHI)) {
             object = this.take(Phi.PHI).take(name);
         } else {
             object = new PhTerminator();
@@ -496,10 +492,10 @@ public class PhDefault implements Phi, Cloneable {
      */
     private String vacancy(final int pos) {
         String name = this.attr(pos);
-        if (!this.attrs.get(name).vacant()) {
+        if (!this.loaded().get(name).vacant()) {
             for (int idx = pos + 1; idx < this.order.size(); ++idx) {
                 final String next = this.order.get(idx);
-                if (this.attrs.get(next).vacant()) {
+                if (this.loaded().get(next).vacant()) {
                     name = next;
                     break;
                 }
@@ -514,7 +510,6 @@ public class PhDefault implements Phi, Cloneable {
      * @return Attribute name
      */
     private String attr(final int pos) {
-        this.activate();
         if (0 > pos) {
             throw new ExFailure(
                 String.format(
@@ -563,15 +558,16 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Activate the lazy state: initialize attrs/order from the constructor-supplied
      * map, wrapping each entry with {@link AtWithRho}. Idempotent.
+     * @return Map of attrs
      */
-    private void activate() {
+    private Map<String, Attribute> loaded() {
         if (this.attrs == null) {
             this.attrs = PhDefault.defaults();
-            this.order = new HashMap<>(0);
             for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
                 this.add(ent.getKey(), ent.getValue());
             }
         }
+        return this.attrs;
     }
 
     /**
@@ -581,8 +577,8 @@ public class PhDefault implements Phi, Cloneable {
      */
     private boolean literal(final String name) {
         return ("number".equals(name) || "string".equals(name))
-            && this.attrs.containsKey("as-bytes")
-            && !"?".equals(this.attrs.get("as-bytes").φTerm());
+            && this.loaded().containsKey("as-bytes")
+            && !"?".equals(this.loaded().get("as-bytes").φTerm());
     }
 
     /**
@@ -590,11 +586,11 @@ public class PhDefault implements Phi, Cloneable {
      * @return The φ-term
      */
     private String structural() {
-        final List<String> list = new ArrayList<>(this.attrs.size());
+        final List<String> list = new ArrayList<>(this.loaded().size());
         if (this.data != null) {
             list.add(String.format("D> %s", PhDefault.termBytes(this.data)));
         }
-        for (final Map.Entry<String, Attribute> ent : this.attrs.entrySet().stream().filter(
+        for (final Map.Entry<String, Attribute> ent : this.loaded().entrySet().stream().filter(
             e -> !e.getKey().equals(Phi.RHO)
         ).collect(Collectors.toList())) {
             list.add(String.format("%s->%s", ent.getKey(), ent.getValue().φTerm()));
@@ -671,19 +667,6 @@ public class PhDefault implements Phi, Cloneable {
             }
         }
         return new AtomTypes(table);
-    }
-
-    /**
-     * Log debug message for PhDefault.
-     * @param msg Message to log
-     */
-    private static void debug(final String msg) {
-        if (PhDefault.LOGGER.isLoggable(Level.FINE)) {
-            PhDefault.LOGGER.log(
-                Level.FINE,
-                msg
-            );
-        }
     }
 
     /**

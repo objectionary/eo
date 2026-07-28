@@ -26,15 +26,14 @@
         tup.tail.length
     | list
 
-  ++> tests-list-reducedi-bools-array
-    not. > @
-      reducedi
-        *
-          true
-          true
-          false
+  not. ++> tests-list-reducedi-bools-array
+    reducedi
+      *
         true
-        x.and a > [a x i]
+        true
+        false
+      true
+      x.and a > [a x i]
 
   eq. ++> tests-list-reducedi-long-int-array
     reducedi

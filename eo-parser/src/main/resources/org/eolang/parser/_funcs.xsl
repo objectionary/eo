@@ -76,43 +76,6 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <!-- BYTES TO NUMBER, e.g. 40-14-00-00-00-00-00-00 => 5 -->
-  <xsl:function name="eo:bytes-to-number" as="xs:anyAtomicType">
-    <xsl:param name="bytes"/>
-    <!-- Undash -->
-    <xsl:variable name="hex" select="translate($bytes, '-', '')"/>
-    <xsl:variable name="map" as="element()*">
-      <entry h="0" b="0000"/>
-      <entry h="1" b="0001"/>
-      <entry h="2" b="0010"/>
-      <entry h="3" b="0011"/>
-      <entry h="4" b="0100"/>
-      <entry h="5" b="0101"/>
-      <entry h="6" b="0110"/>
-      <entry h="7" b="0111"/>
-      <entry h="8" b="1000"/>
-      <entry h="9" b="1001"/>
-      <entry h="A" b="1010"/>
-      <entry h="B" b="1011"/>
-      <entry h="C" b="1100"/>
-      <entry h="D" b="1101"/>
-      <entry h="E" b="1110"/>
-      <entry h="F" b="1111"/>
-    </xsl:variable>
-    <xsl:variable name="bin" as="xs:string" select="string-join(for $c in string-to-codepoints(upper-case($hex)) return $map[@h = codepoints-to-string($c)]/@b, '')"/>
-    <!-- Sign bit (1 for negative, 0 for positive) -->
-    <xsl:variable name="sign" select="if (substring($bin, 1, 1) = '1') then -1 else 1"/>
-    <!-- Extract exponent (11 bits) and convert to integer -->
-    <xsl:variable name="exponentBits" select="substring($bin, 2, 11)"/>
-    <xsl:variable name="exponent" select="sum(for $i in 1 to string-length($exponentBits) return xs:double(substring($exponentBits, $i, 1)) * math:pow(2, string-length($exponentBits) - $i)) - 1023"/>
-    <!-- Extract mantissa (52 bits) -->
-    <xsl:variable name="mantissaBits" select="substring($bin, 13, 52)"/>
-    <xsl:variable name="mantissaValue">
-      <xsl:sequence select="sum(for $i in 1 to string-length($mantissaBits) return xs:double(substring($mantissaBits, $i, 1)) div math:pow(2, $i))"/>
-    </xsl:variable>
-    <!-- Compute final double value -->
-    <xsl:sequence select="$sign * (1 + $mantissaValue) * math:pow(2, $exponent)"/>
-  </xsl:function>
   <!-- HELPER FUNCTIONS -->
   <!-- Function to decode UTF-8 bytes into Unicode code points -->
   <xsl:function name="eo:decode-bytes" as="xs:integer*">

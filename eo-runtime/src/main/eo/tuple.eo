@@ -22,13 +22,13 @@
         length.lte index
       fallback
         "Given index is out of tuple bounds"
-      at-fast ^
-    if. > [tup] > at-fast
-      eq.
-        tup.length.plus -1
-        index
-      tup.head
-      at-fast tup.tail
+      if. > [tup] >> at-fast
+        eq.
+          tup.length.plus -1
+          index
+        tup.head
+        at-fast tup.tail
+      | ^
   tuple > empty
     T
       "Can't get tail from the empty tuple"
@@ -50,28 +50,6 @@
     x
     as-number.
       length.plus 1
-
-  ++> tests-at-fast-with-first-element
-    eq. > @
-      at-fast.
-        array.at 0
-        array
-      100
-    * > array
-      100
-      101
-      102
-
-  ++> tests-at-fast-with-last-element
-    eq. > @
-      at-fast.
-        array.at 2
-        array
-      102
-    * > array
-      100
-      101
-      102
 
   ++> tests-creates-empty-tuple-with-number
     eq. > @
@@ -151,14 +129,13 @@
       3
     2
 
-  ++> tests-package-tuple-does-not-contain-element
-    not. > @
-      contains.
-        *
-          1
-          2
-          3
-        5
+  not. ++> tests-package-tuple-does-not-contain-element
+    contains.
+      *
+        1
+        2
+        3
+      5
 
   eq. ++> tests-package-tuple-index-of-element
     index-of.
@@ -265,17 +242,16 @@
       * 4 0
       * 7 3
 
-  ++> tests-tuple-not-equality
-    not. > @
-      eq.
-        *
-          1
-          2
-          3
-        *
-          3
-          2
-          1
+  not. ++> tests-tuple-not-equality
+    eq.
+      *
+        1
+        2
+        3
+      *
+        3
+        2
+        1
 
   ++> tests-tuple-with
     and. > @

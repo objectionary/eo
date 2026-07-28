@@ -10,18 +10,18 @@
   <xsl:template match="/object/sheets">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:element name="sheet">
+      <sheet>
         <xsl:value-of select="$sheet"/>
-      </xsl:element>
+      </sheet>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="/object[not(sheets)]">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <sheets>
-        <xsl:element name="sheet">
+        <sheet>
           <xsl:value-of select="$sheet"/>
-        </xsl:element>
+        </sheet>
       </sheets>
     </xsl:copy>
   </xsl:template>

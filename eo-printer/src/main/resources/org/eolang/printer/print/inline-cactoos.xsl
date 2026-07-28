@@ -32,6 +32,31 @@
     <xsl:sequence select="substring-after($base, substring-before($base, $auto))"/>
   </xsl:function>
   <!--
+  The based `&gt;&gt; name` handle that `$target` ultimately denotes, chasing a
+  chain of bare-reference aliases to its end. A handle whose value is a plain
+  reference to another auto-named handle (`p &gt;&gt; r` over `E0- &gt;&gt; p`)
+  carries no value of its own — it is a transparent alias — so folding it into a
+  use site must land the real value (`E0-`), not the reference to the next
+  handle in the chain. Each hop follows a `@base` that resolves to another
+  auto-named handle, the current handle carrying no arguments of its own, and
+  stops at the first handle whose `@base` is not such a reference (the one that
+  holds the real value), or at one carrying its own children, an abstract
+  formation or a void — none of which is a transparent alias. A target that is
+  not an alias resolves to itself. Without this the alias's own `@base` is copied
+  to the use site verbatim while the drop template removes the handle it names,
+  stranding a dangling `Φ.v..` (#6004). The chain travelled so far comes along in
+  `$seen`, since two bare aliases can reference each other (`p &gt;&gt; r` beside
+  `r &gt;&gt; p`) — source the parser accepts though it never dataizes — and a
+  repeat has to end the descent rather than recur forever, exactly as the
+  "merged" mode of "merge-monikers" guards its own handle chain (#5918).
+  -->
+  <xsl:function name="eo:alias-target" as="element()">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="seen" as="element()*"/>
+    <xsl:variable name="inner" select="$target/ancestor::o/o[@name=eo:resolved-name($target/@base)][1]"/>
+    <xsl:sequence select="if (contains($target/@base, concat('.', $auto)) and not($target/o) and exists($inner) and not(eo:void($inner)) and not(eo:abstract($inner)) and (every $node in $seen satisfies not($inner is $node))) then eo:alias-target($inner, ($seen, $target)) else $target"/>
+  </xsl:function>
+  <!--
   Inline a reference to an auto-named abstract. A `? >> name` void
   (R-3.4.7 / R-3.10.12) also has a cactus name, so a reference that
   resolves to a void (or to nothing) is left untouched. A recursive
@@ -127,6 +152,32 @@
             </xsl:copy>
           </xsl:when>
           <!--
+          The same applied reference, but written inside a nested formation
+          body rather than in the handle's own owner scope. Such a reference
+          reaches the handle as `ξ.ρ.` (a `ρ` climb into the enclosing scope
+          where the handle lives), so the relocation branch below would land
+          the fresh formation copy in the nested scope while the pipe node
+          keeps the `ρ` climb: `to-eo-tree`'s adjacency test then sees the
+          pipe's `ξ.ρ.name` base no longer equal `ξ.name` of the copy directly
+          above it and prints the node as an ordinary application on the cactus
+          name, leaving the copy a stray extra argument and orphaning the
+          reference (#6021). An argument list buried in a nested scope has no
+          more room for a relocated predecessor than the positional-argument
+          case above (#5983), so leave the handle standing under its `@local`
+          name instead — copy the reference verbatim, keeping its arguments, so
+          the drop template below keeps the binding in its own scope and
+          "merge-monikers" rewrites the reference back to the handle
+          (`eo:kept-local-ref`), shedding the `ρ` climb (#5893/#5917). Gated on
+          the reference's nearest formation ancestor not being the handle's
+          owner, so the sibling (#5840) and receiver (#5844) relocations below,
+          whose references share the handle's own scope, still fire.
+          -->
+          <xsl:when test="eo:abstract($target) and (o or @name) and not(eo:multi-referenced($target, $name)) and not(ancestor::o[eo:abstract(.)][1] is $target/..)">
+            <xsl:copy>
+              <xsl:apply-templates select="node()|@*"/>
+            </xsl:copy>
+          </xsl:when>
+          <!--
           The same applied reference, but not standing as the formation's
           immediate following sibling, so the adjacent guard above misses it
           and the bare-reference `otherwise` would drop the argument and name
@@ -147,7 +198,8 @@
           duplicating it, the same relocation #5732 proposes for its sibling
           case. Restricted to a single-use formation: a multi-referenced one
           cannot be folded into just one of its uses. A positional-argument
-          reference is handled by the branch above (#5983), not here.
+          reference is handled by the branch above (#5983), and a
+          nested-scope reference by the branch just above (#6021), not here.
           -->
           <xsl:when test="eo:abstract($target) and (o or @name) and not(eo:multi-referenced($target, $name))">
             <xsl:for-each select="$target">
@@ -163,7 +215,22 @@
             </xsl:copy>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:element name="o">
+            <!--
+            A based `&gt;&gt; name` handle whose value is a bare reference to
+            another based handle (`p &gt;&gt; r` over `E0- &gt;&gt; p`) is a
+            transparent alias: copying `$target`'s `@base` verbatim would carry
+            the reference to `p` down to the use site, while the drop template
+            below removes `p`'s binding — `p` counts as referenced by `r`, yet
+            that reference now lives only in the copy — stranding a dangling
+            `Φ.v..` that nothing declares (#6004). Resolving the alias chain to
+            its end (see `eo:alias-target`) instead lands the real value (`E0-`)
+            at the site in one step, exactly as `merge-monikers` carries a whole
+            chain of handles to the site it hosts them on (#5918). A target that
+            is not such an alias resolves to itself, so this is the unchanged
+            fold for the ordinary based handle.
+            -->
+            <xsl:variable name="value" select="eo:alias-target($target, ())"/>
+            <o>
               <xsl:if test="@as">
                 <xsl:apply-templates select="@as"/>
               </xsl:if>
@@ -185,8 +252,8 @@
               <xsl:if test="@name and not($keep-name)">
                 <xsl:apply-templates select="@name"/>
               </xsl:if>
-              <xsl:apply-templates select="$target/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
-              <xsl:apply-templates select="$target/node()"/>
+              <xsl:apply-templates select="$value/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
+              <xsl:apply-templates select="$value/node()"/>
               <!--
               The reference is the base of an application (`b 42 &gt; x` over a
               based `a.plus &gt;&gt; b` handle), so it carries its own argument
@@ -202,10 +269,10 @@
               inline spelling here and is left standing above instead (see
               `eo:reapplied`).
               -->
-              <xsl:if test="not($target/o)">
+              <xsl:if test="not($value/o)">
                 <xsl:apply-templates select="o"/>
               </xsl:if>
-            </xsl:element>
+            </o>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
@@ -228,7 +295,10 @@
   inlined (#5834), keep a single-use formation reached through a positional
   argument (see `eo:arg-applied`), which is left standing rather than relocated
   into an argument list where its pipe would print as `|:N` (#5983), keep a
-  based application handle reached by a further
+  single-use formation reached only through a reference in a nested formation
+  scope (see `eo:nested-applied`), which is left standing rather than relocated
+  into that scope where its pipe's `ρ` climb would orphan the reference
+  (#6021), keep a based application handle reached by a further
   application (see `eo:reapplied`), which has no inline spelling as the head of
   another application and is left standing rather than folded (#5952), and keep
   a binding that a surviving method dispatch still reaches through its name.
@@ -242,7 +312,7 @@
   reads yet would silently vanish (#5914).
   -->
   <xsl:template match="o[starts-with(@name, $auto) and not(eo:void(.))]" priority="1">
-    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or eo:vertical-const(.) or eo:unreferenced(., @name) or (eo:multi-referenced(., @name) and eo:rebuilt(.)) or eo:piped(., @name) or eo:arg-applied(., @name) or eo:reapplied(., @name)">
+    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or eo:vertical-const(.) or eo:unreferenced(., @name) or (eo:multi-referenced(., @name) and eo:rebuilt(.)) or eo:piped(., @name) or eo:arg-applied(., @name) or eo:nested-applied(., @name) or eo:reapplied(., @name)">
       <xsl:copy>
         <xsl:apply-templates select="node()|@*"/>
       </xsl:copy>
@@ -340,6 +410,31 @@
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
     <xsl:sequence select="eo:abstract($target) and not(eo:multi-referenced($target, $name)) and exists(eo:references($target, $name)[eo:resolved-name(@base) = $name and (o or @name) and starts-with(@as, $eo:alpha)])"/>
+  </xsl:function>
+  <!--
+  Whether the single-use auto-named abstract formation `$target` is applied by a
+  reference written inside a nested formation body rather than in the handle's
+  own owner scope. Such a reference reaches the handle through a `ρ` climb
+  (`ξ.ρ.<name>`) into the enclosing scope where the handle lives. Relocating the
+  formation copy down to the reference (the #5840/#5844 branch) would drop it
+  into the nested scope while the pipe node keeps the `ρ` climb, so
+  `to-eo-tree`'s adjacency test no longer matches the copy directly above the
+  pipe and the node prints as an ordinary application, leaving a stray copy and
+  an orphaned reference (#6021). The reference is therefore left standing (see
+  the inlining template) and this binding must be kept in place under its
+  `@local` name rather than relocated, so "merge-monikers" can rewrite the
+  reference back to the handle (`eo:kept-local-ref`), shedding the `ρ` climb
+  (#5893/#5917). A multi-referenced formation is excluded — it is already kept
+  whole by the outer guard above — and references inside the formation itself
+  are not counted. The nearest formation ancestor of the reference is compared
+  against the handle's owner (`$target/..`): the sibling (#5840) and receiver
+  (#5844) relocations, whose references share the handle's own scope, are
+  deliberately not matched here.
+  -->
+  <xsl:function name="eo:nested-applied" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="eo:abstract($target) and not(eo:multi-referenced($target, $name)) and exists(eo:references($target, $name)[eo:resolved-name(@base) = $name and (o or @name) and not(ancestor::o[eo:abstract(.)][1] is $target/..)])"/>
   </xsl:function>
   <!--
   Whether the based `&gt;&gt; name` handle `$target` is itself an application

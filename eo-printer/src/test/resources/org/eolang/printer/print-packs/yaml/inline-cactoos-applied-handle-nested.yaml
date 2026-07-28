@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A single-referenced file-local `>> is-ws` handle (R-3.10.12) whose value is an
+# abstract formation and which is used as the base of an application
+# (`is-ws index`), exactly as "inline-cactoos-applied-handle", except that its
+# only reference sits inside a nested formation body (`[index] >> helper`)
+# rather than in the handle's own owner scope. From that nested scope the
+# reference climbs to the handle as `ξ.ρ.<name>`. The #5840/#5844 relocation
+# used to fire here: it dropped a fresh copy of the formation into the nested
+# scope and rewrote the reference into a `| args` pipe, but the pipe kept the
+# `ρ` climb, so `to-eo-tree`'s adjacency test no longer matched the copy
+# directly above it — the pipe printed as an ordinary application on the cactus
+# name (`^.v7_2 index`), the copy became a stray extra argument, and a second
+# format pass then erased the handle's name altogether (#6021). The fix leaves
+# the handle standing under its `@local` name and copies the reference verbatim
+# (its `index` argument intact), exactly as the positional-argument case
+# (#5983); "merge-monikers" then rewrites the nested reference back to the
+# readable `is-ws` handle and sheds the `ρ` climb (#5893/#5917), so
+# `is-ws index` survives and the `[c] >> is-ws` handle is kept.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [text] > bar
+    [index] >> helper
+      if. > @
+        is-ws index
+        index
+        index
+    [c] >> is-ws
+      c.eq 1 > @
+
+printed: |
+  [text] > bar
+    if. > [index] >> helper
+      is-ws index
+      index
+      index
+    c.eq 1 > [c] >> is-ws

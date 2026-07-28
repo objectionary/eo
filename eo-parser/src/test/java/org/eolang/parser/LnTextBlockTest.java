@@ -7,6 +7,7 @@ package org.eolang.parser;
 import com.jcabi.matchers.XhtmlMatchers;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -126,6 +127,19 @@ final class LnTextBlockTest {
             "a closer carrying `> name` must mark the level as named",
             stack.top().named(),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void rejectsInvalidEscapeInTextBlockBody() {
+        final Globals globals = new Globals();
+        globals.openTextBlock(1, 0);
+        globals.appendTextLine("\\uD800");
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnTextBlock(new Span("\"\"\" > x", 3))
+                .into(new Stack(), globals, new Emit()),
+            "an invalid unicode escape in a text block body must surface as a ParseError, not a raw NumberFormatException"
         );
     }
 

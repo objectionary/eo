@@ -34,12 +34,12 @@
         <xsl:when test="eo:all-alphas(0, o[1])">
           <xsl:for-each select="o">
             <xsl:variable name="elem">
-              <xsl:element name="o">
+              <o>
                 <xsl:for-each select="@*[name()!='as']">
                   <xsl:attribute name="{name()}" select="."/>
                 </xsl:for-each>
                 <xsl:apply-templates select="node()"/>
-              </xsl:element>
+              </o>
             </xsl:variable>
             <xsl:apply-templates select="$elem"/>
           </xsl:for-each>
@@ -71,12 +71,12 @@
         <xsl:when test="eo:all-alphas(0, o[position()=$lead+1])">
           <xsl:for-each select="o[position()&gt;$lead]">
             <xsl:variable name="elem">
-              <xsl:element name="o">
+              <o>
                 <xsl:for-each select="@*[name()!='as']">
                   <xsl:attribute name="{name()}" select="."/>
                 </xsl:for-each>
                 <xsl:apply-templates select="node()"/>
-              </xsl:element>
+              </o>
             </xsl:variable>
             <xsl:apply-templates select="$elem"/>
           </xsl:for-each>

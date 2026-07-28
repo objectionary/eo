@@ -4,6 +4,8 @@
 * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eo="https://www.eolang.org" id="add-default-package" version="2.0">
+  <!-- A package-resolution stage; its templates form one cohesive module. -->
+  <!-- xslint-disable-file too-many-templates -->
   <!--
   Here we go through all objects that are not:
   1. methods (starts with .)
@@ -83,8 +85,8 @@
   </xsl:template>
   <xsl:template match="@type">
     <xsl:variable name="opt" select="ends-with(., '?')"/>
-    <xsl:variable name="t" select="if ($opt) then substring(., 1, string-length(.) - 1) else string(.)"/>
-    <xsl:variable name="homed" select="if (matches($t, '^[A-F]$') or contains($t, '.') or $t=$eo:phi or $t=$eo:program or $t=$eo:rho or $t=$eo:empty or $t=$eo:xi or $t=$eo:bottom or $t=/object/metas/meta[head='alias']/part[1]) then $t else concat('Φ.', $t)"/>
+    <xsl:variable name="type" select="if ($opt) then substring(., 1, string-length(.) - 1) else string(.)"/>
+    <xsl:variable name="homed" select="if (matches($type, '^[A-F]$') or contains($type, '.') or $type=$eo:phi or $type=$eo:program or $type=$eo:rho or $type=$eo:empty or $type=$eo:xi or $type=$eo:bottom or $type=/object/metas/meta[head='alias']/part[1]) then $type else concat('Φ.', $type)"/>
     <xsl:attribute name="type" select="if ($opt) then concat($homed, '?') else $homed"/>
   </xsl:template>
   <xsl:template match="/object/metas/meta[head='also']/(tail|part)">

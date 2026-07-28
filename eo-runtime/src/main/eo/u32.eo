@@ -72,9 +72,8 @@
     FF-FF-FF-FF.as-u32.div 00-00-00-02.as-u32
     7F-FF-FF-FF.as-u32
 
-  ++> tests-u32-eq-false
-    not. > @
-      00-00-00-2A.as-u32.eq 00-00-00-2B.as-u32
+  not. ++> tests-u32-eq-false
+    00-00-00-2A.as-u32.eq 00-00-00-2B.as-u32
 
   00-00-00-2A.as-u32.eq 00-00-00-2A.as-u32 ++> tests-u32-eq-true
 
@@ -84,19 +83,16 @@
 
   00-00-00-32.as-u32.gte 00-00-00-32.as-u32 ++> tests-u32-gte-equal
 
-  ++> tests-u32-gte-false
-    not. > @
-      00-00-00-00.as-u32.gte 00-00-00-0A.as-u32
+  not. ++> tests-u32-gte-false
+    00-00-00-00.as-u32.gte 00-00-00-0A.as-u32
 
   00-00-00-2A.as-u32.as-bytes.eq 00-00-00-2A ++> tests-u32-has-valid-bytes
 
-  ++> tests-u32-high-bit-not-less-than-one
-    not. > @
-      FF-FF-FF-FF.as-u32.lt 00-00-00-01.as-u32
+  not. ++> tests-u32-high-bit-not-less-than-one
+    FF-FF-FF-FF.as-u32.lt 00-00-00-01.as-u32
 
-  ++> tests-u32-less-equal
-    not. > @
-      00-00-00-0A.as-u32.lt 00-00-00-0A.as-u32
+  not. ++> tests-u32-less-equal
+    00-00-00-0A.as-u32.lt 00-00-00-0A.as-u32
 
   00-00-00-0A.as-u32.lt 00-00-00-32.as-u32 ++> tests-u32-less-true
 

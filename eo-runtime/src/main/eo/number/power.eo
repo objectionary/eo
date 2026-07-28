@@ -49,8 +49,24 @@
                   ipow base (abs expo)
                 if.
                   base.gt 0
-                  expon
-                    expo.times (ln base)
+                  [y] >> expon
+                    whole.times (fraction 1) > @
+                    20 > eterms
+                    if. > [j] > fraction
+                      j.gt eterms
+                      1
+                      1.plus
+                        times.
+                          r.div j
+                          fraction (j.plus 1)
+                    floor. (y.plus 0.5) > k
+                    y.minus k > r
+                    if. > whole
+                      k.lt 0
+                      1.div
+                        ipow e (abs k)
+                      ipow e (abs k)
+                  | (expo.times (ln base))
                   nan
             if.
               base.gt 0
@@ -89,34 +105,11 @@
                   1
                 nan
                 pinf
-  [y] >> expon
-    whole.times > @
-      fraction 1
-    20 > eterms
-    if. > [j] > fraction
-      j.gt eterms
-      1
-      1.plus
-        times.
-          r.div j
-          fraction
-            j.plus 1
-    floor. > k
-      y.plus 0.5
-    y.minus k > r
-    if. > whole
-      k.lt 0
-      1.div
-        ipow
-          e
-          abs k
-      ipow
-        e
-        abs k
 
-  ++> tests-power-any-to-nan-is-nan
-    is-nan. > @
-      power 52 nan
+  is-nan. ++> tests-power-any-to-nan-is-nan
+    power
+      52
+      nan
 
   eq. ++> tests-power-as-method-on-number
     2.power 4
@@ -153,9 +146,10 @@
       -3
     0.015625
 
-  ++> tests-power-fractional-of-negative-is-nan
-    is-nan. > @
-      power -4 0.5
+  is-nan. ++> tests-power-fractional-of-negative-is-nan
+    power
+      -4
+      0.5
 
   eq. ++> tests-power-int-to-zero-is-one
     power
@@ -169,13 +163,15 @@
       -12341
     0
 
-  ++> tests-power-nan-to-any-is-nan
-    is-nan. > @
-      power nan 42
+  is-nan. ++> tests-power-nan-to-any-is-nan
+    power
+      nan
+      42
 
-  ++> tests-power-nan-to-nan-is-nan
-    is-nan. > @
-      power nan nan
+  is-nan. ++> tests-power-nan-to-nan-is-nan
+    power
+      nan
+      nan
 
   eq. ++> tests-power-negative-float-to-negative-infinity-is-zero
     power
