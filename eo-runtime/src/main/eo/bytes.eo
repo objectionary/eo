@@ -106,17 +106,14 @@
 
   F1-20-5F-EC-B5-90-32.size.eq 7 ++> tests-counts-size-of-bytes
 
-  ++> tests-not-with-neg
-    not. > @
-      -1.as-bytes.eq -1.as-bytes.not
+  not. ++> tests-not-with-neg
+    -1.as-bytes.eq -1.as-bytes.not
 
-  ++> tests-not-with-plus
-    not. > @
-      53.as-bytes.eq 53.as-bytes.not
+  not. ++> tests-not-with-plus
+    53.as-bytes.eq 53.as-bytes.not
 
-  ++> tests-not-with-zero
-    not. > @
-      0.as-bytes.eq 0.as-bytes.not
+  not. ++> tests-not-with-zero
+    0.as-bytes.eq 0.as-bytes.not
 
   eq. ++> tests-or-neg-bytes-as-number-with-zero
     as-number.

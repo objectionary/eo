@@ -70,9 +70,8 @@
     C8-.as-u8.div 03-.as-u8
     42-.as-u8
 
-  ++> tests-u8-eq-false
-    not. > @
-      2A-.as-u8.eq 2B-.as-u8
+  not. ++> tests-u8-eq-false
+    2A-.as-u8.eq 2B-.as-u8
 
   2A-.as-u8.eq 2A-.as-u8 ++> tests-u8-eq-true
 
@@ -80,19 +79,16 @@
 
   32-.as-u8.gte 32-.as-u8 ++> tests-u8-gte-equal
 
-  ++> tests-u8-gte-false
-    not. > @
-      00-.as-u8.gte 0A-.as-u8
+  not. ++> tests-u8-gte-false
+    00-.as-u8.gte 0A-.as-u8
 
   2A-.as-u8.as-bytes.eq 2A- ++> tests-u8-has-valid-bytes
 
-  ++> tests-u8-high-bit-not-less-than-one
-    not. > @
-      FF-.as-u8.lt 01-.as-u8
+  not. ++> tests-u8-high-bit-not-less-than-one
+    FF-.as-u8.lt 01-.as-u8
 
-  ++> tests-u8-less-equal
-    not. > @
-      0A-.as-u8.lt 0A-.as-u8
+  not. ++> tests-u8-less-equal
+    0A-.as-u8.lt 0A-.as-u8
 
   0A-.as-u8.lt 32-.as-u8 ++> tests-u8-less-true
 

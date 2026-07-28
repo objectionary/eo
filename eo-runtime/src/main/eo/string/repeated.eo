@@ -17,7 +17,7 @@
       not.
         times.floor.eq times
     cant-repeat
-      "Can't repeat text %s times".printf
+      "Can't repeat text %f times".printf
         * times
     string
       if. >> result!
@@ -40,6 +40,13 @@
     repeated
       "hey"
       5
+
+  eq. ++> tests-text-repeated-negative-times-formats-message-as-number
+    "Can't repeat text -1.000000 times"
+    repeated
+      "x"
+      -1
+      message > [message]
 
   eq. ++> tests-text-repeated-negative-times-returns-provided-fallback
     "recovered"

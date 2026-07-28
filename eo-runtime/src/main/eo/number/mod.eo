@@ -17,18 +17,20 @@
       0
     cant-mod
       "cannot calculate mod by zero"
-    if.
-      gt.
-        number x.as-bytes >> dividend
-        0
-      [] >> abs-mod
-        minus. > @
-          abs dividend >> absx
-          times.
-            abs divisor >> absy
-            floor.
-              absx.div absy
-      abs-mod.neg
+    divisor.is-finite.not.if
+      x
+      if.
+        gt.
+          number x.as-bytes >> dividend
+          0
+        [] >> abs-mod
+          minus. > @
+            abs dividend >> absx
+            times.
+              abs divisor >> absy
+              floor.
+                absx.div absy
+        abs-mod.neg
 
   ++> tests-div-mod-compatibility
     eq. > @
@@ -87,6 +89,24 @@
       16
       -200
     16
+
+  eq. ++> tests-mod-negative-dividend-by-positive-infinity
+    mod
+      -5
+      pinf
+    -5
+
+  eq. ++> tests-mod-positive-dividend-by-negative-infinity
+    mod
+      5
+      ninf
+    5
+
+  eq. ++> tests-mod-positive-dividend-by-positive-infinity
+    mod
+      5
+      pinf
+    5
 
   mod --> on-mod-by-zero
     5
