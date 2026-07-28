@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -26,8 +27,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.60
  */
 @ExtendWith(MktmpResolver.class)
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.UnitTestContainsTooManyAsserts"})
 final class CacheTest {
+
+    /**
+     * Marker file name pattern, relative to a cached tail.
+     */
+    private static final String MARKER = "%s.sha256";
 
     @Test
     void compilesSource(@Mktmp final Path temp) throws Exception {
@@ -56,7 +62,7 @@ final class CacheTest {
         MatcherAssert.assertThat(
             "Cache file must be created and hash file must be created",
             Files.exists(base.resolve(tail))
-                && Files.exists(base.resolve(String.format("%s.sha256", tail))),
+                && Files.exists(base.resolve(String.format(CacheTest.MARKER, tail))),
             Matchers.is(true)
         );
     }
@@ -144,7 +150,7 @@ final class CacheTest {
         cache.apply(source, temp.resolve("out.txt"), tail);
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content",
-            Files.readString(base.resolve(String.format("%s.sha256", tail)), encoding),
+            Files.readString(base.resolve(String.format(CacheTest.MARKER, tail)), encoding),
             Matchers.equalTo(
                 Base64.getEncoder().encodeToString(
                     MessageDigest.getInstance("SHA-256").digest(msg.getBytes(encoding))
@@ -172,7 +178,7 @@ final class CacheTest {
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for large file",
             Files.readString(
-                cache.resolve(String.format("%s.sha256", tail)),
+                cache.resolve(String.format(CacheTest.MARKER, tail)),
                 StandardCharsets.UTF_8
             ),
             Matchers.equalTo(
@@ -198,7 +204,7 @@ final class CacheTest {
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for tiny file",
             Files.readString(
-                cache.resolve(String.format("%s.sha256", tail)),
+                cache.resolve(String.format(CacheTest.MARKER, tail)),
                 StandardCharsets.UTF_8
             ),
             Matchers.equalTo(CacheTest.hash(content))
@@ -270,6 +276,47 @@ final class CacheTest {
                     Files.readString(cache.resolve("dirB.sha256"), StandardCharsets.UTF_8)
                 )
             )
+        );
+    }
+
+    @Test
+    void leavesMarkerUntouchedWhenPayloadWriteFails(
+        @Mktmp final Path temp
+    ) throws IOException, NoSuchAlgorithmException {
+        final Path base = temp.resolve("cache-order");
+        Files.createDirectories(base);
+        final Path source = temp.resolve("order.eo");
+        final String initial = "v1";
+        Files.writeString(source, initial, StandardCharsets.UTF_8);
+        final Path target = temp.resolve("order.xmir");
+        final Path tail = source.getFileName();
+        new Cache(base, p -> initial).apply(source, target, tail);
+        final String updated = "v2";
+        Files.writeString(source, updated, StandardCharsets.UTF_8);
+        final Path cached = base.resolve(tail);
+        Files.delete(cached);
+        Files.createDirectories(cached);
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new Cache(base, p -> updated).apply(source, target, tail),
+            "a failure while writing the payload must be reported, not swallowed"
+        );
+        MatcherAssert.assertThat(
+            "the marker must not point at a payload that was never written",
+            Files.readString(
+                base.resolve(String.format(CacheTest.MARKER, tail)), StandardCharsets.UTF_8
+            ),
+            Matchers.equalTo(CacheTest.hash(initial))
+        );
+        Files.delete(cached);
+        final AtomicInteger counter = new AtomicInteger(0);
+        new Cache(
+            base, p -> String.format("%s-%d", updated, counter.incrementAndGet())
+        ).apply(source, target, tail);
+        MatcherAssert.assertThat(
+            "recovery after the failed write must recompile rather than serve a stale entry",
+            counter.get(),
+            Matchers.equalTo(1)
         );
     }
 
