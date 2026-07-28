@@ -41,7 +41,7 @@ final class StackTest {
     @Test
     void rejectsFirstPushAtNonZeroIndent() {
         Assertions.assertThrows(
-            IllegalStateException.class,
+            ParseError.class,
             () -> new Stack().push(2, 1, Kind.HEAD, Openness.OPEN),
             "first push must be at indent 0 — non-zero indent cannot start a program"
         );
