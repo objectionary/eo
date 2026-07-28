@@ -50,7 +50,7 @@
                   (seed.as-i64.as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times
                     25214903917.as-i64
               11.as-i64
-          00-0F-FF-FF-FF-FF-FF-FF
+          00-1F-FF-FF-FF-FF-FF-FF
   clocked clock > pseudo
 
   ++> tests-random-is-in-range
@@ -70,6 +70,12 @@
           rand.next.next.lt 0
     next. > rand
       random 123
+
+  ++> tests-random-next-can-reach-upper-half
+    not. > @
+      rand.lt 0.5
+    next. > rand
+      random 178609
 
   ++> tests-random-with-seed
     not. > @
