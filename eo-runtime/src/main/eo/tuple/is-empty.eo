@@ -13,11 +13,10 @@
   is-empty ++> list-should-be-empty
     *
 
-  ++> tests-list-should-not-be-empty
-    not. > @
-      is-empty *
-        1
-        2
+  not. ++> tests-list-should-not-be-empty
+    is-empty *
+      1
+      2
 
   ++> tests-list-should-not-be-empty-with-one-anon-object
     not. > @

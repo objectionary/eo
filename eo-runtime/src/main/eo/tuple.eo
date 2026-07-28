@@ -151,14 +151,13 @@
       3
     2
 
-  ++> tests-package-tuple-does-not-contain-element
-    not. > @
-      contains.
-        *
-          1
-          2
-          3
-        5
+  not. ++> tests-package-tuple-does-not-contain-element
+    contains.
+      *
+        1
+        2
+        3
+      5
 
   eq. ++> tests-package-tuple-index-of-element
     index-of.
@@ -265,17 +264,16 @@
       * 4 0
       * 7 3
 
-  ++> tests-tuple-not-equality
-    not. > @
-      eq.
-        *
-          1
-          2
-          3
-        *
-          3
-          2
-          1
+  not. ++> tests-tuple-not-equality
+    eq.
+      *
+        1
+        2
+        3
+      *
+        3
+        2
+        1
 
   ++> tests-tuple-with
     and. > @

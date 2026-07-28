@@ -18,7 +18,7 @@
       not.
         places.floor.eq places
     cant-print
-      "Can't write a fixed-point decimal with %s fraction places".printf
+      "Can't write a fixed-point decimal with %f fraction places".printf
         * places
     if.
       n.lt 0
@@ -89,6 +89,13 @@
     "3.14"
     string
       as-fixed 3.14159 2
+
+  eq. ++> tests-negative-places-formats-message-as-number
+    "Can't write a fixed-point decimal with -2.000000 fraction places"
+    as-fixed
+      3.14159
+      -2
+      message > [message]
 
   eq. ++> tests-negative-places-returns-provided-fallback
     "recovered"

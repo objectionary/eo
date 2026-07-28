@@ -20,11 +20,10 @@
         size
       substring >> part!
 
-  ++> tests-does-not-start-with-substring
-    not. > @
-      starts-with
-        "Hello, world"
-        "world"
+  not. ++> tests-does-not-start-with-substring
+    starts-with
+      "Hello, world"
+      "world"
 
   starts-with ++> tests-starts-with-substring
     "Hello, world"

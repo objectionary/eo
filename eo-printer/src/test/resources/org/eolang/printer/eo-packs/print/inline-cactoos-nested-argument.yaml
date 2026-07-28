@@ -1,0 +1,61 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A single-use file-local handle ("[c] >> is-ws", R-3.10.12) whose abstract
+# formation is applied by a reference ("is-ws index") written inside a nested
+# formation body ("[index] >> helper") rather than in the handle's own owner
+# scope. From that nested scope the reference climbs to the handle as
+# "ξ.ρ.<name>". The #5840/#5844 relocation must NOT fire here: it would drop a
+# fresh copy of the formation into the nested scope and rewrite the reference
+# into a "| args" pipe, but the pipe keeps the "ρ" climb, so "to-eo-tree"'s
+# adjacency test no longer matches the copy directly above it — the pipe prints
+# as an ordinary application on the cactus name ("^.v7_2 index"), the copy
+# becomes a stray extra argument and a second format pass erases the handle's
+# name (#6021). "inline-cactoos" leaves the reference standing verbatim —
+# keeping its "index" argument, never a "@pipe" — and keeps the "[c] >> is-ws"
+# binding in place under its "@local" name, so "merge-monikers" can later
+# rewrite the reference back to the handle and shed the "ρ" climb (#5893/#5917),
+# exactly as the positional-argument case (#5983). "mandatory-as" runs first and
+# "restore-local-names" keeps the handle's "@local" marker.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-self.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/validate-before-stars.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+  - /org/eolang/printer/print/restore-local-names.xsl
+  - /org/eolang/printer/print/inline-cactoos.xsl
+asserts:
+  # The single-use formation is kept in place under its "@local" handle, not
+  # relocated into the nested scope or dropped.
+  - /object/o[@name='bar']/o[@local='is-ws' and contains(@name, '🌵') and not(@base)]
+  # The applied reference stays where it is, still inside the nested "helper"
+  # formation and still carrying its own "index" argument.
+  - /object/o[@name='bar']/o[@local='helper']//o[contains(@base, '🌵') and count(o)=1]
+  # The reference was never turned into a "| args" pipe.
+  - /object[count(//o[@pipe])=0]
+  # No second copy of the formation was minted inside the nested scope.
+  - /object[count(//o[@local='is-ws' and contains(@name, '🌵')])=1]
+input: |
+  [text] > bar
+    [index] >> helper
+      if. > @
+        is-ws index
+        index
+        index
+    [c] >> is-ws
+      c.eq 1 > @

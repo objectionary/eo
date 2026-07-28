@@ -106,13 +106,12 @@
       "Hey"
       "Jeff"
 
-  ++> tests-printf-does-not-print-i64
-    not. > @
-      eq.
-        printf *1
-          "%d"
-          42.as-i64
-        "42"
+  not. ++> tests-printf-does-not-print-i64
+    eq.
+      printf *1
+        "%d"
+        42.as-i64
+      "42"
 
   eq. ++> tests-printf-left-aligns-bytes
     "40-45-00-00-00-00-00-00  "

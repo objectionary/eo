@@ -331,11 +331,16 @@ final class Pretty {
      * built at all, the hybrid is used unconditionally. Either way the result
      * is only a candidate — the penalty check in {@link #shaped} keeps it only
      * when it beats the plain vertical rendering. A formation decoratee
-     * (its bindings are vertical, not arguments) and a receiver-only
-     * reversed dispatch ({@code not.} with just its receiver, mirroring the
-     * rejection in {@link #flat}) have no hybrid form, so they yield empty
-     * and keep the verbose layout; a reversed dispatch that also carries
-     * arguments ({@code if.} with its branches) does get the hybrid.</p>
+     * (its bindings are vertical, not arguments) has no hybrid form, so it
+     * yields empty and keeps the verbose layout. A reversed dispatch does get
+     * the hybrid whether it carries just its receiver ({@code not.}) or also
+     * arguments ({@code if.} with its branches): unlike {@link #flat}, which
+     * rejects a receiver-only reversed dispatch because it has no horizontal
+     * one-line spelling, the hybrid keeps the dispatch on the head line and
+     * lays the receiver out beneath — a shape {@code LnOnlyPhi} accepts, its
+     * {@code bare()} leaving the φ {@code Openness.OPEN} so the deeper line
+     * attaches as the receiver, with no minimum argument count on close (issue
+     * #5954).</p>
      *
      * <p>The hybrid is also withheld when any line in the decoratee's whole
      * subtree carries a name suffix ({@code [left] >>}, {@code malloc.for >
@@ -374,8 +379,7 @@ final class Pretty {
             ).map(
                 inlined -> this.tab.repeat(indent).concat(inlined).concat(marker)
             );
-            final boolean applied = !decoratee.abstractt && !decoratee.children.isEmpty()
-                && !(decoratee.reversed && decoratee.children.size() <= 1);
+            final boolean applied = !decoratee.abstractt && !decoratee.children.isEmpty();
             final boolean unnamed = decoratee.children.stream()
                 .allMatch(Node::nameless);
             if (applied && unnamed) {

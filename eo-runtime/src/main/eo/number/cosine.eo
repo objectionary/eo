@@ -23,13 +23,11 @@
         1000
     1
 
-  ++> tests-cosine-of-nan-is-nan
-    is-nan. > @
-      cosine nan
+  is-nan. ++> tests-cosine-of-nan-is-nan
+    cosine nan
 
-  ++> tests-cosine-of-negative-infinity-is-nan
-    is-nan. > @
-      cosine ninf
+  is-nan. ++> tests-cosine-of-negative-infinity-is-nan
+    cosine ninf
 
   lt. ++> tests-cosine-of-pi-halves-is-zero
     abs
@@ -58,9 +56,8 @@
         500
     1
 
-  ++> tests-cosine-of-positive-infinity-is-nan
-    is-nan. > @
-      cosine pinf
+  is-nan. ++> tests-cosine-of-positive-infinity-is-nan
+    cosine pinf
 
   lt. ++> tests-cosine-of-seventeen-radians
     abs

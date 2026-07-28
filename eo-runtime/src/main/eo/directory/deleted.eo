@@ -46,6 +46,6 @@
     dir.tmpfile > first
     dir.tmpfile > second
 
-  ++> tests-deletes-empty-directory
-    not. > @
-      exists. (mktemp.tmpfile.deleted.as-path.resolved "bar-empty").as-dir.made.deleted
+  not. ++> tests-deletes-empty-directory
+    exists.
+      deleted. (mktemp.tmpfile.deleted.as-path.resolved "bar-empty").as-dir.made

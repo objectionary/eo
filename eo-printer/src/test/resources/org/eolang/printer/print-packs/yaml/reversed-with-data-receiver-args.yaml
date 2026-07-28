@@ -17,4 +17,5 @@ origin: |
         00-.as-bool
 
 printed: |
-  (01-.as-bool.eq 00-.as-bool).not > [] > app
+  not. > [] > app
+    01-.as-bool.eq 00-.as-bool

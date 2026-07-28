@@ -72,9 +72,8 @@
     FF-FF.as-u16.div 00-02.as-u16
     7F-FF.as-u16
 
-  ++> tests-u16-eq-false
-    not. > @
-      00-2A.as-u16.eq 00-2B.as-u16
+  not. ++> tests-u16-eq-false
+    00-2A.as-u16.eq 00-2B.as-u16
 
   00-2A.as-u16.eq 00-2A.as-u16 ++> tests-u16-eq-true
 
@@ -82,19 +81,16 @@
 
   00-32.as-u16.gte 00-32.as-u16 ++> tests-u16-gte-equal
 
-  ++> tests-u16-gte-false
-    not. > @
-      00-00.as-u16.gte 00-0A.as-u16
+  not. ++> tests-u16-gte-false
+    00-00.as-u16.gte 00-0A.as-u16
 
   00-2A.as-u16.as-bytes.eq 00-2A ++> tests-u16-has-valid-bytes
 
-  ++> tests-u16-high-bit-not-less-than-one
-    not. > @
-      FF-FF.as-u16.lt 00-01.as-u16
+  not. ++> tests-u16-high-bit-not-less-than-one
+    FF-FF.as-u16.lt 00-01.as-u16
 
-  ++> tests-u16-less-equal
-    not. > @
-      00-0A.as-u16.lt 00-0A.as-u16
+  not. ++> tests-u16-less-equal
+    00-0A.as-u16.lt 00-0A.as-u16
 
   00-0A.as-u16.lt 00-32.as-u16 ++> tests-u16-less-true
 
