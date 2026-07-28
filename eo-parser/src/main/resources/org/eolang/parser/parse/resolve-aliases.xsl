@@ -11,16 +11,16 @@
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@base and not(contains(@base, '.'))]">
-    <xsl:variable name="o" select="."/>
+    <xsl:variable name="object" select="."/>
     <xsl:copy>
       <xsl:attribute name="base">
-        <xsl:variable name="meta" select="/object/metas/meta[head='alias' and part[1] = $o/@base]"/>
+        <xsl:variable name="meta" select="/object/metas/meta[head='alias' and part[1] = $object/@base]"/>
         <xsl:choose>
           <xsl:when test="$meta">
             <xsl:value-of select="$meta/part[last()]"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:value-of select="$o/@base"/>
+            <xsl:value-of select="$object/@base"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
@@ -28,16 +28,16 @@
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[@atom and not(contains(@atom, '.'))]">
-    <xsl:variable name="o" select="."/>
+    <xsl:variable name="object" select="."/>
     <xsl:copy>
       <xsl:attribute name="atom">
-        <xsl:variable name="meta" select="/object/metas/meta[head='alias' and part[1] = $o/@atom]"/>
+        <xsl:variable name="meta" select="/object/metas/meta[head='alias' and part[1] = $object/@atom]"/>
         <xsl:choose>
           <xsl:when test="$meta">
             <xsl:value-of select="$meta/part[last()]"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:value-of select="$o/@atom"/>
+            <xsl:value-of select="$object/@atom"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
@@ -51,8 +51,8 @@
   </xsl:template>
   <xsl:template match="@type">
     <xsl:variable name="opt" select="ends-with(., '?')"/>
-    <xsl:variable name="t" select="if ($opt) then substring(., 1, string-length(.) - 1) else string(.)"/>
-    <xsl:attribute name="type" select="concat((/object/metas/meta[head='alias' and part[1]=$t]/part[last()], $t)[1], if ($opt) then '?' else '')"/>
+    <xsl:variable name="type" select="if ($opt) then substring(., 1, string-length(.) - 1) else string(.)"/>
+    <xsl:attribute name="type" select="concat((/object/metas/meta[head='alias' and part[1]=$type]/part[last()], $type)[1], if ($opt) then '?' else '')"/>
   </xsl:template>
   <xsl:template match="/object/metas/meta[head='also']/(tail|part)">
     <xsl:variable name="meta" select="/object/metas/meta[head='alias' and part[1] = current()/text()]"/>
