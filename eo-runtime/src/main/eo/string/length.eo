@@ -46,7 +46,7 @@
                     * byte
       text.as-bytes.slice index 1 > byte
     | 0 0
-  if. > [index csize len] > inclen
+  if. > [index csize len] >> inclen
     gt.
       index.plus csize
       size
