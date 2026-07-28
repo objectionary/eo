@@ -371,11 +371,11 @@
         <xsl:variable name="merged" as="element()">
           <xsl:apply-templates select="$binding" mode="merged"/>
         </xsl:variable>
-        <xsl:element name="o">
+        <o>
           <xsl:apply-templates select="@as"/>
           <xsl:copy-of select="$merged/@*[eo:abstract($merged) or eo:const-handle($merged) or eo:named-handle($merged) or (name() != 'name' and name() != 'local')]"/>
           <xsl:copy-of select="$merged/node()"/>
-        </xsl:element>
+        </o>
       </xsl:when>
       <xsl:otherwise>
         <xsl:variable name="receiver" as="node()*">
@@ -406,7 +406,7 @@
     <xsl:param name="receiver" as="node()*"/>
     <xsl:param name="args" as="node()*" select="()"/>
     <xsl:param name="attrs" as="attribute()*" select="()"/>
-    <xsl:element name="o">
+    <o>
       <xsl:copy-of select="$attrs"/>
       <xsl:attribute name="base" select="concat('.', $segs[last()])"/>
       <xsl:choose>
@@ -421,7 +421,7 @@
         </xsl:otherwise>
       </xsl:choose>
       <xsl:copy-of select="$args"/>
-    </xsl:element>
+    </o>
   </xsl:template>
   <!--
   The binding as it lands at the reference it was merged onto: itself, with its
@@ -460,9 +460,9 @@
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:element name="o">
+        <o>
           <xsl:apply-templates select="@*[name() != 'as']|node()"/>
-        </xsl:element>
+        </o>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -485,12 +485,12 @@
         <xsl:apply-templates select="node()|@*"/>
       </xsl:copy>
     </xsl:for-each>
-    <xsl:element name="o">
+    <o>
       <xsl:apply-templates select="@as"/>
       <xsl:attribute name="pipe"/>
       <xsl:attribute name="base" select="@base"/>
       <xsl:apply-templates select="o"/>
-    </xsl:element>
+    </o>
   </xsl:template>
   <!--
   Rewrite a non-hosting reference to a const file-local handle from the

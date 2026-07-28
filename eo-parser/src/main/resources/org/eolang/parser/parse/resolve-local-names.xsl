@@ -99,14 +99,14 @@
       <xsl:variable name="errors" as="element()*">
         <xsl:for-each-group select="//o[@local]" group-by="concat(@local, '#', generate-id(ancestor::o[not(@base)][1]))">
           <xsl:if test="count(current-group()) &gt; 1">
-            <xsl:element name="error">
+            <error>
               <xsl:attribute name="check" select="'resolve-local-names'"/>
               <xsl:attribute name="line" select="if (current-group()[2]/@line) then current-group()[2]/@line else 0"/>
               <xsl:attribute name="severity" select="'error'"/>
               <xsl:text>duplicate local name '</xsl:text>
               <xsl:value-of select="current-group()[1]/@local"/>
               <xsl:text>'</xsl:text>
-            </xsl:element>
+            </error>
           </xsl:if>
         </xsl:for-each-group>
       </xsl:variable>

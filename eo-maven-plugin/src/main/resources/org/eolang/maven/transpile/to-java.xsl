@@ -220,15 +220,15 @@
   <xsl:template match="class">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
-      <xsl:element name="tests">
+      <tests>
         <xsl:call-template name="commonclass"/>
         <xsl:apply-templates select="." mode="testing"/>
-      </xsl:element>
+      </tests>
       <xsl:if test="not(@skip-java)">
-        <xsl:element name="java">
+        <java>
           <xsl:call-template name="commonclass"/>
           <xsl:apply-templates select="." mode="body"/>
-        </xsl:element>
+        </java>
       </xsl:if>
     </xsl:copy>
   </xsl:template>

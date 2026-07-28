@@ -54,13 +54,13 @@
     </xsl:copy>
   </xsl:template>
   <xsl:template match="o[@name and ancestor::o[1][not(eo:abstract(.))]]">
-    <xsl:element name="o">
+    <o>
       <xsl:attribute name="base">
         <xsl:value-of select="@name"/>
       </xsl:attribute>
       <xsl:apply-templates select="@line"/>
       <xsl:apply-templates select="@as"/>
-    </xsl:element>
+    </o>
   </xsl:template>
   <!--
   A pipe predecessor in an argument block (@float-up, set by

@@ -12,6 +12,5 @@ exclude:
 #  delete the matching line here so the check begins to enforce. Every other
 #  xslint check is already enforced across the whole codebase.
 rules:
-  not-creating-element-correctly: "off"
   too-many-templates: "off"
   unused-variable: "off"

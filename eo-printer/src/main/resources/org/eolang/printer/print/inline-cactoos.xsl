@@ -230,7 +230,7 @@
             fold for the ordinary based handle.
             -->
             <xsl:variable name="value" select="eo:alias-target($target, ())"/>
-            <xsl:element name="o">
+            <o>
               <xsl:if test="@as">
                 <xsl:apply-templates select="@as"/>
               </xsl:if>
@@ -272,7 +272,7 @@
               <xsl:if test="not($value/o)">
                 <xsl:apply-templates select="o"/>
               </xsl:if>
-            </xsl:element>
+            </o>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>

@@ -29,12 +29,12 @@
       <xsl:apply-templates select="(node() except errors)|@*"/>
       <xsl:variable name="errors" as="element()*">
         <xsl:for-each select="//o[@self and empty(ancestor::o[starts-with(@name, 'a🌵')])]">
-          <xsl:element name="error">
+          <error>
             <xsl:attribute name="check" select="'resolve-self'"/>
             <xsl:attribute name="line" select="if (@line) then @line else 0"/>
             <xsl:attribute name="severity" select="'error'"/>
             <xsl:text>The % self-reference is only allowed inside an anonymous formation</xsl:text>
-          </xsl:element>
+          </error>
         </xsl:for-each>
       </xsl:variable>
       <xsl:if test="not(empty($errors)) or exists(/object/errors)">

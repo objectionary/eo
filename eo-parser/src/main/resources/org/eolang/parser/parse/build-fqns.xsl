@@ -23,9 +23,9 @@
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="this">
-    <xsl:element name="o">
+    <o>
       <xsl:attribute name="base" select="'ξ'"/>
-    </xsl:element>
+    </o>
   </xsl:variable>
   <!-- Build recursive objects chain from package if exists -->
   <xsl:template match="o" mode="recursive-package">
@@ -46,13 +46,13 @@
           </xsl:choose>
         </xsl:variable>
         <xsl:variable name="elem">
-          <xsl:element name="o">
+          <o>
             <xsl:attribute name="base">
               <xsl:text>.</xsl:text>
               <xsl:value-of select="$last"/>
             </xsl:attribute>
             <xsl:copy-of select="."/>
-          </xsl:element>
+          </o>
         </xsl:variable>
         <xsl:apply-templates select="$elem" mode="recursive-package">
           <xsl:with-param name="pkg" select="substring-after($pkg, '.')"/>
@@ -67,9 +67,9 @@
     <xsl:choose>
       <xsl:when test="$parent/o[@name=$find]">
         <xsl:variable name="start">
-          <xsl:element name="o">
+          <o>
             <xsl:attribute name="base" select="'Φ'"/>
-          </xsl:element>
+          </o>
         </xsl:variable>
         <xsl:apply-templates select="." mode="to-method">
           <xsl:with-param name="of">
@@ -96,7 +96,7 @@
   <!-- Convert given object to method -->
   <xsl:template match="o" mode="to-method">
     <xsl:param name="of"/>
-    <xsl:element name="o">
+    <o>
       <xsl:attribute name="base">
         <xsl:text>.</xsl:text>
         <xsl:value-of select="@base"/>
@@ -104,7 +104,7 @@
       <xsl:apply-templates select="@* except @base"/>
       <xsl:copy-of select="$of"/>
       <xsl:apply-templates select="o"/>
-    </xsl:element>
+    </o>
   </xsl:template>
   <!-- ADD ^. TO GIVEN OBJECT (OR NOT) -->
   <xsl:template match="o" mode="with-rho">
@@ -128,10 +128,10 @@
         <xsl:apply-templates mode="with-rho" select=".">
           <xsl:with-param name="rhos" select="$rhos - 1"/>
           <xsl:with-param name="current">
-            <xsl:element name="o">
+            <o>
               <xsl:attribute name="base" select="'.ρ'"/>
               <xsl:copy-of select="$current"/>
-            </xsl:element>
+            </o>
           </xsl:with-param>
         </xsl:apply-templates>
       </xsl:otherwise>
@@ -158,10 +158,10 @@
             <xsl:apply-templates select="$self" mode="with-rho">
               <xsl:with-param name="rhos" select="$rhos"/>
               <xsl:with-param name="current">
-                <xsl:element name="o">
+                <o>
                   <xsl:attribute name="base" select="'.ρ'"/>
                   <xsl:copy-of select="$this"/>
-                </xsl:element>
+                </o>
               </xsl:with-param>
             </xsl:apply-templates>
           </xsl:when>
@@ -193,15 +193,15 @@
     <xsl:apply-templates select="." mode="no-dots"/>
   </xsl:template>
   <xsl:template match="o[@base='ρ']" mode="no-dots">
-    <xsl:element name="o">
+    <o>
       <xsl:apply-templates select="@* except @base"/>
       <xsl:attribute name="base" select="'.ρ'"/>
-      <xsl:element name="o">
+      <o>
         <xsl:attribute name="line" select="@line"/>
         <xsl:attribute name="pos" select="@pos - 1"/>
         <xsl:attribute name="base" select="'ξ'"/>
-      </xsl:element>
-    </xsl:element>
+      </o>
+    </o>
   </xsl:template>
   <xsl:template match="o[@base!='ξ' and @base!='ρ' and @base!=$eo:empty and @base!=$eo:bottom]" mode="no-dots">
     <xsl:variable name="base" select="./@base"/>

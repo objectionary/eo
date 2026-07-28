@@ -9,9 +9,9 @@
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
       <xsl:for-each select=".//o[not(@base) and not(@name) and o]">
-        <xsl:element name="nested">
+        <nested>
           <xsl:apply-templates select="node()|@*"/>
-        </xsl:element>
+        </nested>
       </xsl:for-each>
     </xsl:copy>
   </xsl:template>

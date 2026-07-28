@@ -27,7 +27,7 @@
       <xsl:apply-templates select="(node() except errors)|@*"/>
       <xsl:variable name="errors" as="element()*">
         <xsl:for-each select="//o[@before-star &gt; count(o)]">
-          <xsl:element name="error">
+          <error>
             <xsl:attribute name="check" select="'validate-before-stars'"/>
             <xsl:attribute name="line" select="if (@line) then @line else 0"/>
             <xsl:attribute name="severity" select="'error'"/>
@@ -36,7 +36,7 @@
             <xsl:text>) must be less than amount arguments (</xsl:text>
             <xsl:value-of select="count(o)"/>
             <xsl:text>)</xsl:text>
-          </xsl:element>
+          </error>
         </xsl:for-each>
       </xsl:variable>
       <xsl:if test="not(empty($errors)) or exists(/object/errors)">

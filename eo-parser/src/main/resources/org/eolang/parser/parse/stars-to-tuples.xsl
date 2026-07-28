@@ -50,39 +50,39 @@
     <xsl:choose>
       <xsl:when test="count($elems)&gt;0">
         <xsl:variable name="nested">
-          <xsl:element name="o">
+          <o>
             <xsl:attribute name="star"/>
             <xsl:apply-templates select="@line"/>
             <xsl:apply-templates select="$elems[position()!=last()]"/>
-          </xsl:element>
+          </o>
         </xsl:variable>
-        <xsl:element name="o">
+        <o>
           <xsl:attribute name="base" select="'Φ.tuple'"/>
           <xsl:apply-templates select="@* except (@star | @base)"/>
           <xsl:apply-templates select="$nested"/>
           <xsl:apply-templates select="$elems[last()]"/>
-          <xsl:element name="o">
+          <o>
             <xsl:attribute name="base" select="'Φ.number'"/>
             <xsl:apply-templates select="@line"/>
-            <xsl:element name="o">
+            <o>
               <xsl:attribute name="base" select="'Φ.bytes'"/>
               <xsl:apply-templates select="@line"/>
-              <xsl:element name="o">
+              <o>
                 <xsl:attribute name="hex"/>
                 <xsl:apply-templates select="@line"/>
                 <xsl:value-of select="count($elems)"/>
-              </xsl:element>
-            </xsl:element>
-          </xsl:element>
+              </o>
+            </o>
+          </o>
           <xsl:apply-templates select="o[@float-up]"/>
-        </xsl:element>
+        </o>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:element name="o">
+        <o>
           <xsl:attribute name="base" select="'Φ.tuple.empty'"/>
           <xsl:apply-templates select="@* except (@star | @base)"/>
           <xsl:apply-templates select="o[@float-up]"/>
-        </xsl:element>
+        </o>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
