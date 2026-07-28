@@ -30,11 +30,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.UnitTestContainsTooManyAsserts"})
 final class CacheTest {
 
-    /**
-     * Marker file name pattern, relative to a cached tail.
-     */
-    private static final String MARKER = "%s.sha256";
-
     @Test
     void compilesSource(@Mktmp final Path temp) throws Exception {
         final Path base = temp.resolve("cache-folder");
@@ -62,7 +57,7 @@ final class CacheTest {
         MatcherAssert.assertThat(
             "Cache file must be created and hash file must be created",
             Files.exists(base.resolve(tail))
-                && Files.exists(base.resolve(String.format(CacheTest.MARKER, tail))),
+                && Files.exists(base.resolve(CacheTest.marker(tail))),
             Matchers.is(true)
         );
     }
@@ -150,7 +145,7 @@ final class CacheTest {
         cache.apply(source, temp.resolve("out.txt"), tail);
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content",
-            Files.readString(base.resolve(String.format(CacheTest.MARKER, tail)), encoding),
+            Files.readString(base.resolve(CacheTest.marker(tail)), encoding),
             Matchers.equalTo(
                 Base64.getEncoder().encodeToString(
                     MessageDigest.getInstance("SHA-256").digest(msg.getBytes(encoding))
@@ -178,7 +173,7 @@ final class CacheTest {
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for large file",
             Files.readString(
-                cache.resolve(String.format(CacheTest.MARKER, tail)),
+                cache.resolve(CacheTest.marker(tail)),
                 StandardCharsets.UTF_8
             ),
             Matchers.equalTo(
@@ -204,7 +199,7 @@ final class CacheTest {
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for tiny file",
             Files.readString(
-                cache.resolve(String.format(CacheTest.MARKER, tail)),
+                cache.resolve(CacheTest.marker(tail)),
                 StandardCharsets.UTF_8
             ),
             Matchers.equalTo(CacheTest.hash(content))
@@ -304,7 +299,7 @@ final class CacheTest {
         MatcherAssert.assertThat(
             "the marker must not point at a payload that was never written",
             Files.readString(
-                base.resolve(String.format(CacheTest.MARKER, tail)), StandardCharsets.UTF_8
+                base.resolve(CacheTest.marker(tail)), StandardCharsets.UTF_8
             ),
             Matchers.equalTo(CacheTest.hash(initial))
         );
@@ -325,5 +320,14 @@ final class CacheTest {
             MessageDigest.getInstance("SHA-256")
                 .digest(content.getBytes(StandardCharsets.UTF_8))
         );
+    }
+
+    /**
+     * Marker file name for the given cached tail.
+     * @param tail Tail path in cache
+     * @return Marker file name, relative to the same directory as the tail
+     */
+    private static String marker(final Path tail) {
+        return String.format("%s.sha256", tail);
     }
 }
