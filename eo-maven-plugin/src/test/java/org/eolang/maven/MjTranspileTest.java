@@ -255,6 +255,29 @@ final class MjTranspileTest {
     }
 
     @Test
+    void invalidatesCacheWhenTrackLocationsChanges(@Mktmp final Path temp) throws Exception {
+        final Path cache = temp.resolve("cache");
+        final String src = String.format("+package foo.x%n%n[] > main%n  42.plus 1 > @");
+        new FakeMaven(temp.resolve("first"))
+            .withProgram(src)
+            .with("cache", cache.toFile())
+            .execute(new FakeMaven.Transpile());
+        MatcherAssert.assertThat(
+            "the second run's generated Java must reflect its own trackLocations=true setting instead of reusing the first run's cached trackLocations=false output",
+            new TextOf(
+                new FakeMaven(temp.resolve("second"))
+                    .withProgram(src)
+                    .with("cache", cache.toFile())
+                    .with("trackLocations", true)
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(this.compiled)
+            ).asString(),
+            Matchers.containsString("new PhSafe(")
+        );
+    }
+
+    @Test
     void recompilesIfModified(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
