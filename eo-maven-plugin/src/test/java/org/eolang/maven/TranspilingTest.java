@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 final class TranspilingTest {
 
     @Test
-    void versionFoldsInImportedXslLibraries() {
+    void foldsInImportedXslLibrariesIntoVersion() {
         MatcherAssert.assertThat(
             "the cache-key version must differ from a fingerprint of the top-level XSLS alone, proving the xsl:import-ed libraries are actually folded in",
             TranspilingTest.transpiling().version(),
