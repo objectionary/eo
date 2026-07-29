@@ -11,9 +11,9 @@
   The function takes the object only; the `program` argument it used
   to take was never read in its body (see #6091 and the same fix in
   set-locators.xsl) - a redundant argument is exactly the shape that
-  triggers Saxon 13.0 mis-binding parameters of a multi-argument
-  function when one compiled stylesheet transforms many documents in
-  parallel threads (which is what the "parse" goal does).
+  triggers Saxon 13.0 into binding parameters of a multi-argument
+  function to the wrong values when one compiled stylesheet transforms
+  many documents in parallel threads (which is what the "parse" goal does).
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_specials.xsl"/>
