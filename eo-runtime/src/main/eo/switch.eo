@@ -48,13 +48,15 @@
       found.head
       true
 
-  eq. ++> tests-empty-switch-returns-provided-fallback
-    "recovered"
-    switch
-      *
-      "recovered" > [message]
+  switch * ++> can-return-true-when-all-cases-are-false
+    *
+      false
+      "false1"
+    *
+      false
+      "false2"
 
-  ++> tests-switch-complex-case
+  ++> can-switch-on-a-complex-case
     eq. > @
       switch *
         *
@@ -71,13 +73,13 @@
     "1".eq "2" > c2
     true > c3
 
-  eq. ++> tests-switch-simple-case
+  eq. ++> can-switch-on-a-simple-case
     switch *
       * false "1"
       * true "2"
     "2"
 
-  ++> tests-switch-strings-case
+  ++> can-switch-on-strings
     eq. > @
       switch *
         *
@@ -92,20 +94,18 @@
       "password is correct!"
     "swordfish" > password
 
-  switch * ++> tests-switch-with-all-false-cases
-    *
-      false
-      "false1"
-    *
-      false
-      "false2"
-
-  eq. ++> tests-switch-with-several-true-cases
+  eq. ++> can-switch-on-the-first-of-several-true-cases
     switch *
       * true "TRUE1"
       * false "FALSE"
       * true "TRUE2"
     "TRUE1"
 
-  switch --> on-empty-switch
+  eq. ++> rejects-an-empty-switch
+    "recovered"
+    switch
+      *
+      "recovered" > [message]
+
+  switch --> stops-on-an-empty-switch
     *

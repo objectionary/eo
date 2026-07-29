@@ -24,7 +24,7 @@
       input
       output
 
-  eq. ++> tests-copies-all-bytes-and-returns-length
+  eq. ++> can-copy-all-bytes-and-return-the-length
     malloc.of
       5
       seq * > [m]
@@ -34,13 +34,13 @@
         m
     01-02-03-04-05
 
-  eq. ++> tests-handles-dead-input
+  eq. ++> can-handle-a-dead-input
     Q.input.copied
       Q.input.dead
       Q.output.dead
     0
 
-  eq. ++> tests-handles-empty-input
+  eq. ++> can-handle-an-empty-input
     malloc.of
       0
       seq * > [m]
@@ -50,7 +50,7 @@
         m
     --
 
-  eq. ++> tests-handles-large-data
+  eq. ++> can-handle-large-data
     20
     malloc.of
       20
@@ -58,7 +58,7 @@
         bytes.as-input 01-02-03-04-05-06-07-08-09-0A-0B-0C-0D-0E-0F-10-11-12-13-14
         m.to-output
 
-  eq. ++> tests-returns-correct-byte-count
+  eq. ++> can-return-the-byte-count
     malloc.of
       10
       Q.input.copied > [m]
@@ -66,7 +66,7 @@
         m.to-output
     10
 
-  eq. ++> tests-returns-zero-for-empty-input
+  eq. ++> can-return-zero-for-an-empty-input
     malloc.of
       0
       Q.input.copied > [m]

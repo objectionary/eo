@@ -24,60 +24,60 @@
     false
   n.as-bytes > bts
 
-  nan.is-nan ++> nan-is-nan
+  is-nan. ++> can-be-nan-when-built-of-nan-bytes
+    number nan.as-bytes
 
-  eq. ++> tests-nan-div-nan-is-nan
-    as-bytes.
-      nan.div nan
-    nan.as-bytes
+  is-nan. ++> can-be-nan-when-built-of-non-canonical-nan-bytes
+    number FF-F8-00-00-00-00-00-00
 
-  eq. ++> tests-nan-div-number-is-nan
+  nan.is-nan ++> can-be-nan-when-nan
+
+  eq. ++> can-be-nan-when-nan-divided-by-a-number
     as-bytes.
       nan.div 42
     nan.as-bytes
 
-  nan.floor.as-bytes.eq nan.as-bytes ++> tests-nan-floor-is-nan
-
-  eq. ++> tests-nan-minus-nan-is-nan
+  eq. ++> can-be-nan-when-nan-divided-by-nan
     as-bytes.
-      nan.minus nan
+      nan.div nan
     nan.as-bytes
 
-  eq. ++> tests-nan-minus-number-is-nan
+  eq. ++> can-be-nan-when-nan-minus-a-number
     as-bytes.
       nan.minus 42
     nan.as-bytes
 
-  nan.@.as-bytes.eq nan.as-bytes ++> tests-nan-neg-is-nan
-
-  eq. ++> tests-nan-plus-nan-is-nan
+  eq. ++> can-be-nan-when-nan-minus-nan
     as-bytes.
-      nan.plus nan
+      nan.minus nan
     nan.as-bytes
 
-  eq. ++> tests-nan-plus-number-is-nan
+  nan.@.as-bytes.eq nan.as-bytes ++> can-be-nan-when-nan-negated
+
+  eq. ++> can-be-nan-when-nan-plus-a-number
     as-bytes.
       nan.plus 42
     nan.as-bytes
 
-  eq. ++> tests-nan-times-nan-is-nan
+  eq. ++> can-be-nan-when-nan-plus-nan
     as-bytes.
-      nan.times nan
+      nan.plus nan
     nan.as-bytes
 
-  eq. ++> tests-nan-times-number-is-nan
+  eq. ++> can-be-nan-when-nan-times-a-number
     as-bytes.
       nan.times 42
     nan.as-bytes
 
-  ninf.is-nan.not ++> tests-negative-infinity-is-not-nan
+  eq. ++> can-be-nan-when-nan-times-nan
+    as-bytes.
+      nan.times nan
+    nan.as-bytes
 
-  is-nan. ++> tests-non-canonical-nan-bytes-is-nan
-    number FF-F8-00-00-00-00-00-00
+  nan.floor.as-bytes.eq nan.as-bytes ++> can-be-nan-when-the-floor-of-nan
 
-  is-nan. ++> tests-number-with-nan-bytes-is-nan
-    number nan.as-bytes
+  42.5.is-nan.not ++> cannot-be-nan-when-a-simple-number
 
-  pinf.is-nan.not ++> tests-positive-infinity-is-not-nan
+  ninf.is-nan.not ++> cannot-be-nan-when-negative-infinity
 
-  42.5.is-nan.not ++> tests-simple-number-is-not-nan
+  pinf.is-nan.not ++> cannot-be-nan-when-positive-infinity

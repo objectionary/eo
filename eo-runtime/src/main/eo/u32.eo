@@ -52,76 +52,82 @@
       4
       4
 
-  eq. ++> tests-u32-as-i64-widens-with-zero-prefix
-    FF-FF-FF-FF.as-u32.as-i64.as-bytes
-    00-00-00-00-FF-FF-FF-FF
+  eq. ++> can-add-one-to-one
+    00-00-00-01.as-u32.plus 00-00-00-01.as-u32
+    00-00-00-02.as-u32
 
-  FF-FF-FF-FF.as-u32.as-number.eq 4294967295 ++> tests-u32-as-number-is-unsigned
+  eq. ++> can-add-with-overflow
+    FF-FF-FF-FF.as-u32.plus 00-00-00-01.as-u32
+    00-00-00-00.as-u32
 
-  eq. ++> tests-u32-div-by-u32-one
+  gte. ++> can-be-greater-than-or-equal-to-an-equal-u32
+    00-00-00-32.as-u32
+    00-00-00-32.as-u32
+
+  00-00-00-0A.as-u32.lt 00-00-00-32.as-u32 ++> can-be-less-than-a-larger-u32
+
+  lte. ++> can-be-less-than-or-equal-to-an-equal-u32
+    00-00-00-32.as-u32
+    00-00-00-32.as-u32
+
+  lt. ++> can-be-less-than-the-maximum-when-zero
+    00-00-00-00.as-u32
+    FF-FF-FF-FF.as-u32
+
+  FF-FF-FF-FF.as-u32.as-number.eq 4294967295 ++> can-convert-to-an-unsigned-number
+
+  eq. ++> can-divide-by-one
     FF-FF-FF-FF.as-u32.div 00-00-00-01.as-u32
     FF-FF-FF-FF.as-u32
 
-  eq. ++> tests-u32-div-by-zero-returns-provided-fallback
+  eq. ++> can-divide-without-a-sign
+    FF-FF-FF-FF.as-u32.div 00-00-00-02.as-u32
+    7F-FF-FF-FF.as-u32
+
+  00-00-00-2A.as-u32.eq 00-00-00-2A.as-u32 ++> can-equal-the-same-u32
+
+  00-00-00-2A.as-u32.as-bytes.eq 00-00-00-2A ++> can-expose-valid-bytes
+
+  eq. ++> can-multiply
+    00-00-00-06.as-u32.times 00-00-00-07.as-u32
+    00-00-00-2A.as-u32
+
+  eq. ++> can-subtract
+    00-00-00-05.as-u32.minus 00-00-00-03.as-u32
+    00-00-00-02.as-u32
+
+  eq. ++> can-subtract-with-underflow
+    00-00-00-00.as-u32.minus 00-00-00-01.as-u32
+    FF-FF-FF-FF.as-u32
+
+  gt. ++> can-treat-a-high-bit-as-magnitude-when-greater
+    FF-FF-FF-FF.as-u32
+    00-00-00-01.as-u32
+
+  eq. ++> can-widen-to-i64-with-a-zero-prefix
+    FF-FF-FF-FF.as-u32.as-i64.as-bytes
+    00-00-00-00-FF-FF-FF-FF
+
+  eq. ++> can-wrap-a-product-modulo-two-to-the-thirty-second
+    00-01-00-00.as-u32.times 00-01-00-00.as-u32
+    00-00-00-00.as-u32
+
+  not. ++> cannot-be-greater-than-or-equal-to-a-larger-u32
+    00-00-00-00.as-u32.gte 00-00-00-0A.as-u32
+
+  not. ++> cannot-be-less-than-an-equal-u32
+    00-00-00-0A.as-u32.lt 00-00-00-0A.as-u32
+
+  not. ++> cannot-be-less-than-one-with-a-high-bit
+    FF-FF-FF-FF.as-u32.lt 00-00-00-01.as-u32
+
+  not. ++> cannot-equal-a-different-u32
+    00-00-00-2A.as-u32.eq 00-00-00-2B.as-u32
+
+  eq. ++> rejects-division-by-zero
     "recovered"
     00-00-00-02.as-u32.div
       00-00-00-00.as-u32
       "recovered" > [message]
 
-  eq. ++> tests-u32-div-is-unsigned
-    FF-FF-FF-FF.as-u32.div 00-00-00-02.as-u32
-    7F-FF-FF-FF.as-u32
-
-  not. ++> tests-u32-eq-false
-    00-00-00-2A.as-u32.eq 00-00-00-2B.as-u32
-
-  00-00-00-2A.as-u32.eq 00-00-00-2A.as-u32 ++> tests-u32-eq-true
-
-  gt. ++> tests-u32-greater-treats-high-bit-as-magnitude
-    FF-FF-FF-FF.as-u32
-    00-00-00-01.as-u32
-
-  00-00-00-32.as-u32.gte 00-00-00-32.as-u32 ++> tests-u32-gte-equal
-
-  not. ++> tests-u32-gte-false
-    00-00-00-00.as-u32.gte 00-00-00-0A.as-u32
-
-  00-00-00-2A.as-u32.as-bytes.eq 00-00-00-2A ++> tests-u32-has-valid-bytes
-
-  not. ++> tests-u32-high-bit-not-less-than-one
-    FF-FF-FF-FF.as-u32.lt 00-00-00-01.as-u32
-
-  not. ++> tests-u32-less-equal
-    00-00-00-0A.as-u32.lt 00-00-00-0A.as-u32
-
-  00-00-00-0A.as-u32.lt 00-00-00-32.as-u32 ++> tests-u32-less-true
-
-  00-00-00-32.as-u32.lte 00-00-00-32.as-u32 ++> tests-u32-lte-equal
-
-  eq. ++> tests-u32-minus
-    00-00-00-05.as-u32.minus 00-00-00-03.as-u32
-    00-00-00-02.as-u32
-
-  eq. ++> tests-u32-minus-with-underflow
-    00-00-00-00.as-u32.minus 00-00-00-01.as-u32
-    FF-FF-FF-FF.as-u32
-
-  eq. ++> tests-u32-one-plus-u32-one
-    00-00-00-01.as-u32.plus 00-00-00-01.as-u32
-    00-00-00-02.as-u32
-
-  eq. ++> tests-u32-plus-with-overflow
-    FF-FF-FF-FF.as-u32.plus 00-00-00-01.as-u32
-    00-00-00-00.as-u32
-
-  eq. ++> tests-u32-times
-    00-00-00-06.as-u32.times 00-00-00-07.as-u32
-    00-00-00-2A.as-u32
-
-  eq. ++> tests-u32-times-wraps-modulo-2-pow-32
-    00-01-00-00.as-u32.times 00-01-00-00.as-u32
-    00-00-00-00.as-u32
-
-  00-00-00-00.as-u32.lt FF-FF-FF-FF.as-u32 ++> tests-u32-zero-less-than-max
-
-  00-00-00-02.as-u32.div 00-00-00-00.as-u32 --> on-division-u32-by-u32-zero
+  00-00-00-02.as-u32.div 00-00-00-00.as-u32 --> stops-on-division-by-zero

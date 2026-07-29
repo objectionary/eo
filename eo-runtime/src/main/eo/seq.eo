@@ -32,19 +32,19 @@
         steps.head
         steps.head
 
-  eq. ++> tests-seq-calculates-and-returns
+  eq. ++> can-calculate-and-return
     1
     seq *
       0
       1
 
-  eq. ++> tests-seq-calculates-and-returns-object
+  eq. ++> can-calculate-and-return-an-object
     "Hello!"
     seq *
       0
       "Hello!"
 
-  ++> tests-seq-single-dataization-float-greater
+  ++> can-dataize-a-float-once-when-greater
     malloc.of > @
       1
       [b]
@@ -58,7 +58,7 @@
                 m.as-number
               0.9
 
-  ++> tests-seq-single-dataization-float-less
+  ++> can-dataize-a-float-once-when-less
     malloc.of > @
       1
       [b]
@@ -72,7 +72,22 @@
                 m.as-number
               1.1
 
-  ++> tests-seq-single-dataization-int-equal-to-cache-problem-test
+  ++> can-dataize-an-integer-once-when-equal
+    malloc.of > @
+      1
+      [b]
+        malloc.for > @
+          0
+          b.put > [m] >>
+            eq.
+              seq *
+                m.put 0
+                m.put
+                  m.as-number.plus 1
+                m.as-number
+              1
+
+  ++> can-dataize-an-integer-once-when-equal-and-cached
     malloc.of > @
       1
       [b]
@@ -89,22 +104,7 @@
                 m
               1
 
-  ++> tests-seq-single-dataization-int-equal-to-test
-    malloc.of > @
-      1
-      [b]
-        malloc.for > @
-          0
-          b.put > [m] >>
-            eq.
-              seq *
-                m.put 0
-                m.put
-                  m.as-number.plus 1
-                m.as-number
-              1
-
-  ++> tests-seq-single-dataization-int-less
+  ++> can-dataize-an-integer-once-when-less
     malloc.of > @
       1
       [b]
@@ -118,7 +118,7 @@
                 m.as-number
               2
 
-  ++> tests-seq-single-dataization-int-less-or-equal
+  ++> can-dataize-an-integer-once-when-less-or-equal
     malloc.of > @
       1
       [b]
@@ -132,7 +132,7 @@
                 m.as-number
               1
 
-  true.eq ++> tests-very-long-seq
+  true.eq ++> can-run-a-very-long-sequence
     seq *
       true
       true

@@ -52,74 +52,74 @@
       2
       2
 
-  eq. ++> tests-u16-as-i32-widens-with-zero-prefix
-    FF-FF.as-u16.as-i32.as-bytes
-    00-00-FF-FF
+  eq. ++> can-add-one-to-one
+    00-01.as-u16.plus 00-01.as-u16
+    00-02.as-u16
 
-  FF-FF.as-u16.as-number.eq 65535 ++> tests-u16-as-number-is-unsigned
+  eq. ++> can-add-with-overflow
+    FF-FF.as-u16.plus 00-01.as-u16
+    00-00.as-u16
 
-  eq. ++> tests-u16-div-by-u16-one
+  00-32.as-u16.gte 00-32.as-u16 ++> can-be-greater-than-or-equal-to-an-equal-u16
+
+  00-0A.as-u16.lt 00-32.as-u16 ++> can-be-less-than-a-larger-u16
+
+  00-32.as-u16.lte 00-32.as-u16 ++> can-be-less-than-or-equal-to-an-equal-u16
+
+  00-00.as-u16.lt FF-FF.as-u16 ++> can-be-less-than-the-maximum-when-zero
+
+  FF-FF.as-u16.as-number.eq 65535 ++> can-convert-to-an-unsigned-number
+
+  eq. ++> can-divide-by-one
     FF-FF.as-u16.div 00-01.as-u16
     FF-FF.as-u16
 
-  eq. ++> tests-u16-div-by-zero-returns-provided-fallback
+  eq. ++> can-divide-without-a-sign
+    FF-FF.as-u16.div 00-02.as-u16
+    7F-FF.as-u16
+
+  00-2A.as-u16.eq 00-2A.as-u16 ++> can-equal-the-same-u16
+
+  00-2A.as-u16.as-bytes.eq 00-2A ++> can-expose-valid-bytes
+
+  eq. ++> can-multiply
+    00-06.as-u16.times 00-07.as-u16
+    00-2A.as-u16
+
+  eq. ++> can-subtract
+    00-05.as-u16.minus 00-03.as-u16
+    00-02.as-u16
+
+  eq. ++> can-subtract-with-underflow
+    00-00.as-u16.minus 00-01.as-u16
+    FF-FF.as-u16
+
+  FF-FF.as-u16.gt 00-01.as-u16 ++> can-treat-a-high-bit-as-magnitude-when-greater
+
+  eq. ++> can-widen-to-i32-with-a-zero-prefix
+    FF-FF.as-u16.as-i32.as-bytes
+    00-00-FF-FF
+
+  eq. ++> can-wrap-a-product-modulo-two-to-the-sixteenth
+    01-00.as-u16.times 01-00.as-u16
+    00-00.as-u16
+
+  not. ++> cannot-be-greater-than-or-equal-to-a-larger-u16
+    00-00.as-u16.gte 00-0A.as-u16
+
+  not. ++> cannot-be-less-than-an-equal-u16
+    00-0A.as-u16.lt 00-0A.as-u16
+
+  not. ++> cannot-be-less-than-one-with-a-high-bit
+    FF-FF.as-u16.lt 00-01.as-u16
+
+  not. ++> cannot-equal-a-different-u16
+    00-2A.as-u16.eq 00-2B.as-u16
+
+  eq. ++> rejects-division-by-zero
     "recovered"
     00-02.as-u16.div
       00-00.as-u16
       "recovered" > [message]
 
-  eq. ++> tests-u16-div-is-unsigned
-    FF-FF.as-u16.div 00-02.as-u16
-    7F-FF.as-u16
-
-  not. ++> tests-u16-eq-false
-    00-2A.as-u16.eq 00-2B.as-u16
-
-  00-2A.as-u16.eq 00-2A.as-u16 ++> tests-u16-eq-true
-
-  FF-FF.as-u16.gt 00-01.as-u16 ++> tests-u16-greater-treats-high-bit-as-magnitude
-
-  00-32.as-u16.gte 00-32.as-u16 ++> tests-u16-gte-equal
-
-  not. ++> tests-u16-gte-false
-    00-00.as-u16.gte 00-0A.as-u16
-
-  00-2A.as-u16.as-bytes.eq 00-2A ++> tests-u16-has-valid-bytes
-
-  not. ++> tests-u16-high-bit-not-less-than-one
-    FF-FF.as-u16.lt 00-01.as-u16
-
-  not. ++> tests-u16-less-equal
-    00-0A.as-u16.lt 00-0A.as-u16
-
-  00-0A.as-u16.lt 00-32.as-u16 ++> tests-u16-less-true
-
-  00-32.as-u16.lte 00-32.as-u16 ++> tests-u16-lte-equal
-
-  eq. ++> tests-u16-minus
-    00-05.as-u16.minus 00-03.as-u16
-    00-02.as-u16
-
-  eq. ++> tests-u16-minus-with-underflow
-    00-00.as-u16.minus 00-01.as-u16
-    FF-FF.as-u16
-
-  eq. ++> tests-u16-one-plus-u16-one
-    00-01.as-u16.plus 00-01.as-u16
-    00-02.as-u16
-
-  eq. ++> tests-u16-plus-with-overflow
-    FF-FF.as-u16.plus 00-01.as-u16
-    00-00.as-u16
-
-  eq. ++> tests-u16-times
-    00-06.as-u16.times 00-07.as-u16
-    00-2A.as-u16
-
-  eq. ++> tests-u16-times-wraps-modulo-2-pow-16
-    01-00.as-u16.times 01-00.as-u16
-    00-00.as-u16
-
-  00-00.as-u16.lt FF-FF.as-u16 ++> tests-u16-zero-less-than-max
-
-  00-02.as-u16.div 00-00.as-u16 --> on-division-u16-by-u16-zero
+  00-02.as-u16.div 00-00.as-u16 --> stops-on-division-by-zero

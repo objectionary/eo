@@ -14,11 +14,18 @@
     list
     func item > [item index] >>
 
-  each ++> tests-each-empty-list
-    *
-    false > [x]
+  ++> can-iterate-over-a-list
+    eq. > @
+      malloc.for
+        0
+        [m]
+          each > @
+            * 1 2 3
+            m.put > [i] >>
+              m.as-number.plus i
+      6
 
-  eq. ++> tests-each-returns-last-func-result
+  eq. ++> can-return-the-result-of-the-last-call
     each
       *
         1
@@ -27,18 +34,7 @@
       x > [x]
     3
 
-  ++> tests-each-single-element
-    eq. > @
-      malloc.for
-        0
-        [m]
-          each > @
-            * 7
-            m.put > [i] >>
-              m.as-number.plus i
-      7
-
-  ++> tests-each-sums-more-numbers
+  ++> can-sum-many-numbers
     eq. > @
       malloc.for
         0
@@ -49,13 +45,17 @@
               m.as-number.plus i
       60
 
-  ++> tests-iterates-with-each
+  ++> can-walk-a-single-element-list
     eq. > @
       malloc.for
         0
         [m]
           each > @
-            * 1 2 3
+            * 7
             m.put > [i] >>
               m.as-number.plus i
-      6
+      7
+
+  each ++> can-walk-an-empty-list
+    *
+    false > [x]

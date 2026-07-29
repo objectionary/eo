@@ -15,7 +15,7 @@
       input-block > [size] > read
     | > @
 
-  ++> tests-reads-empty-bytes
+  ++> can-read-empty-bytes
     and. > @
       i1.eq --
       eq.

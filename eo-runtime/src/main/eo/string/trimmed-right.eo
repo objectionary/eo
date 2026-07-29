@@ -41,42 +41,42 @@
             c.eq 0C-
             c.eq 0D-
 
-  eq. ++> tests-text-trimmed-right-many-spaces
-    trimmed-right
-      "some     "
-    "some"
-
-  eq. ++> tests-text-trimmed-right-one-space
-    trimmed-right
-      "s "
-    "s"
-
-  eq. ++> tests-text-trimmed-right-only-spaces
+  eq. ++> can-trim-a-text-of-trailing-spaces-only
     trimmed-right
       "     "
     ""
 
-  eq. ++> tests-trimmed-right-empty-text
-    trimmed-right ""
-    ""
-
-  eq. ++> tests-trimmed-right-strips-cr
+  eq. ++> can-trim-a-trailing-carriage-return
     trimmed-right "value\r"
     "value"
 
-  eq. ++> tests-trimmed-right-strips-ff
+  eq. ++> can-trim-a-trailing-form-feed
     trimmed-right "value\f"
     "value"
 
-  eq. ++> tests-trimmed-right-strips-lf
+  eq. ++> can-trim-a-trailing-line-feed
     trimmed-right "value\n"
     "value"
 
-  eq. ++> tests-trimmed-right-strips-mixed-ws
+  eq. ++> can-trim-a-trailing-tab
+    trimmed-right "value\t"
+    "value"
+
+  eq. ++> can-trim-an-empty-text
+    trimmed-right ""
+    ""
+
+  eq. ++> can-trim-many-trailing-spaces
+    trimmed-right
+      "some     "
+    "some"
+
+  eq. ++> can-trim-mixed-trailing-whitespace
     trimmed-right
       "value \t\n\f\r"
     "value"
 
-  eq. ++> tests-trimmed-right-strips-tab
-    trimmed-right "value\t"
-    "value"
+  eq. ++> can-trim-one-trailing-space
+    trimmed-right
+      "s "
+    "s"

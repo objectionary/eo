@@ -13,38 +13,38 @@
     7
     1
 
-  eq. ++> tests-round-trips-through-as-ascii
+  eq. ++> can-round-trip-through-as-ascii
     "!"
     string
       as-char
         as-ascii "!"
 
-  eq. ++> tests-writes-byte-of-last-printable
-    "~"
-    string
-      as-char 126
-
-  eq. ++> tests-writes-byte-of-last-uppercase-letter
-    "Z"
-    string
-      as-char 90
-
-  eq. ++> tests-writes-byte-of-lowercase-letter
+  eq. ++> can-write-the-byte-of-a-lowercase-letter
     "z"
     string
       as-char 122
 
-  eq. ++> tests-writes-byte-of-space
+  eq. ++> can-write-the-byte-of-a-space
     " "
     string
       as-char 32
 
-  eq. ++> tests-writes-byte-of-uppercase-letter
+  eq. ++> can-write-the-byte-of-an-uppercase-letter
     "A"
     string
       as-char 65
 
-  eq. ++> tests-writes-byte-of-zero-digit
+  eq. ++> can-write-the-byte-of-the-last-printable-character
+    "~"
+    string
+      as-char 126
+
+  eq. ++> can-write-the-byte-of-the-last-uppercase-letter
+    "Z"
+    string
+      as-char 90
+
+  eq. ++> can-write-the-byte-of-the-zero-digit
     "0"
     string
       as-char 48

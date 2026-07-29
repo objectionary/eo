@@ -15,27 +15,27 @@
     0.plus value
     value.neg
 
-  eq. ++> tests-abs-float-negative
-    abs -17.9
-    17.9
-
-  eq. ++> tests-abs-float-positive
-    abs 13.5
-    13.5
-
-  eq. ++> tests-abs-int-negative
-    abs -3
-    3
-
-  eq. ++> tests-abs-int-positive
-    abs 3
-    3
-
-  eq. ++> tests-abs-negative-zero-normalizes-sign
+  eq. ++> can-normalize-the-sign-of-negative-zero
     as-bytes.
       abs -0
     00-00-00-00-00-00-00-00
 
-  eq. ++> tests-abs-zero
+  eq. ++> can-take-the-absolute-value-of-a-negative-float
+    abs -17.9
+    17.9
+
+  eq. ++> can-take-the-absolute-value-of-a-negative-integer
+    abs -3
+    3
+
+  eq. ++> can-take-the-absolute-value-of-a-positive-float
+    abs 13.5
+    13.5
+
+  eq. ++> can-take-the-absolute-value-of-a-positive-integer
+    abs 3
+    3
+
+  eq. ++> can-take-the-absolute-value-of-zero
     abs 0
     0

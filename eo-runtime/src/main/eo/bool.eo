@@ -28,8 +28,20 @@
     true
     01-.eq x
 
-  ++> tests-app-that-calls-func
-    output.eq 2 > @
+  eq. ++> can-answer-the-left-method-of-a-chosen-branch
+    left.
+      false.if 00-00-00-00-00-00-00-09 00-00-00-00-00-00-00-05
+      1
+    00-00-00-00-00-00-00-0A
+
+  eq. ++> can-answer-the-right-method-of-a-chosen-branch
+    right.
+      true.if 00-00-00-00-00-00-00-05 00-00-00-00-00-00-00-09
+      1
+    00-00-00-00-00-00-00-02
+
+  ++> can-call-a-function-from-an-app
+    app.eq 2 > @
     [] > app
       f * > @
         1
@@ -38,26 +50,25 @@
       [args] > f
         2 > @
         1 > a
-    app > output
 
-  and. ++> tests-compares-bool-to-bytes
-    true.eq 01-
-    false.eq 00-
-
-  and. ++> tests-compares-bool-to-bytes-reverse
-    01-.as-bytes.eq true
-    00-.as-bytes.eq false
-
-  and. ++> tests-compares-bool-to-string
+  and. ++> can-compare-a-bool-to-a-string
     true.eq "\u0001"
     false.eq "\u0000"
 
-  true.eq true ++> tests-compares-two-bools
+  and. ++> can-compare-a-bool-to-bytes
+    true.eq 01-
+    false.eq 00-
 
-  not. ++> tests-compares-two-different-bool-types
+  and. ++> can-compare-bytes-to-a-bool
+    01-.as-bytes.eq true
+    00-.as-bytes.eq false
+
+  true.eq true ++> can-compare-two-bools
+
+  not. ++> can-compare-two-different-bool-types
     true.eq 42
 
-  ++> tests-compiles-correctly-with-long-duplicate-names
+  ++> can-compile-deeply-duplicated-names
     true > @
     [] > long-object-name
       [] > long-object-name
@@ -66,39 +77,34 @@
             [] > long-object-name
               42 > x
 
-  ++> tests-extract-attribute-from-decoratee
+  not. ++> can-conjoin-true-with-false
+    true.and false
+
+  true.as-bool ++> can-convert-true-to-a-bool
+
+  ++> can-extract-an-attribute-from-a-decoratee
     a.foo.eq 43 > @
     return > [] > a
       42.plus 1
     [foo] > return
 
-  eq. ++> tests-forks-on-false-condition
+  eq. ++> can-fork-on-a-false-condition
     if.
       5.eq 8
       123
       42
     42
 
-  eq. ++> tests-forks-on-true-condition
+  eq. ++> can-fork-on-a-true-condition
     if.
       5.eq 5
       123
       42
     123
 
-  eq. ++> tests-if-result-answers-left-method-of-chosen-branch
-    left.
-      false.if 00-00-00-00-00-00-00-09 00-00-00-00-00-00-00-05
-      1
-    00-00-00-00-00-00-00-0A
+  true.not.eq false ++> can-negate-true
 
-  eq. ++> tests-if-result-answers-right-method-of-chosen-branch
-    right.
-      true.if 00-00-00-00-00-00-00-05 00-00-00-00-00-00-00-09
-      1
-    00-00-00-00-00-00-00-02
-
-  ++> tests-nesting-blah-test
+  ++> can-nest-formations-that-call-each-other
     eq. > @
       blah0 0
       39
@@ -189,7 +195,7 @@
                                                                                   blah39 (x.plus 1) > @
                                                                                   x > [x] > blah39
 
-  ++> tests-takes-parent-object
+  ++> can-take-a-parent-object
     eq. > @
       a 42
       42
@@ -197,20 +203,13 @@
       take > @
       x > [] > take
 
-  ++> tests-takes-parent-through-attribute
+  ++> can-take-a-parent-through-an-attribute
     [] > @
       [] > @
         x.eq 42 > [] > @
     42 > x
 
-  not. ++> tests-true-and-false-is-false
-    true.and false
-
-  true.as-bool ++> tests-true-as-bool
-
-  true.not.eq false ++> tests-true-not-is-false
-
-  --> when-applies-to-closed-object
+  --> stops-on-applying-to-a-closed-object
     closed true > @
     x > [x] > a
     a false > closed
