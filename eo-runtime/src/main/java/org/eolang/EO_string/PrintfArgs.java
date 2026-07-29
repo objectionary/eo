@@ -192,12 +192,15 @@ final class PrintfArgs {
     /**
      * Convert a number to {@code long} for the {@code %d} conversion, rejecting
      * a value outside {@code long} range instead of silently saturating to
-     * {@link Long#MAX_VALUE}/{@link Long#MIN_VALUE} as {@link Double#longValue()} does.
+     * {@link Long#MAX_VALUE}/{@link Long#MIN_VALUE} as {@link Double#longValue()} does,
+     * and rejecting {@link Double#NaN} instead of letting it slip past both bounds
+     * (every relational comparison against {@code NaN} is {@code false}) and narrow
+     * to {@code 0} per JLS 5.1.3.
      * @param number Number to convert
      * @return The number as {@code long}
      */
     private static long toLong(final double number) {
-        if (number < Long.MIN_VALUE || number >= PrintfArgs.LONG_UPPER_LIMIT) {
+        if (Double.isNaN(number) || number < Long.MIN_VALUE || number >= PrintfArgs.LONG_UPPER_LIMIT) {
             throw new ExFailure(
                 "The number %s doesn't fit into long range for the '%%d' conversion",
                 number
