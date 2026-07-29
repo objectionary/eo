@@ -121,6 +121,7 @@
       regex
         chained *1
           "/"
+          "^"
           pattern
           "/"
       read
@@ -235,6 +236,20 @@
       9.999999999E7
       0.01
       100000000
+
+  eq. ++> tests-scanf-does-not-parse-unmatched-leading-text
+    length.
+      scanf
+        "id=%d"
+        "prefix id=42"
+    0
+
+  eq. ++> tests-scanf-ignores-trailing-text-after-match
+    42
+    head.
+      scanf
+        "id=%d"
+        "id=42 suffix"
 
   eq. ++> tests-scanf-with-complex-float
     1991.01
