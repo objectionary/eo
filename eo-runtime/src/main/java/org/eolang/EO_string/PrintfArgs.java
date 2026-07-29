@@ -202,6 +202,14 @@ final class PrintfArgs {
      * Dataized#asString()} does.
      * @param element Element ready for formatting
      * @return The element as a string
+     * @todo #5943:60min Detect wrong-type bytes that happen to be valid UTF-8.
+     *  This check only rejects structurally invalid UTF-8. A number whose raw
+     *  bytes coincidentally decode as valid UTF-8 text still passes through as
+     *  if it were a genuine string, because by the time this method runs only
+     *  raw bytes are available via Dataized#take() - the originating Phi's
+     *  type (string vs number etc.) is already lost. Closing this needs type
+     *  information threaded from the source Phi through Dataized/PrintfArgs
+     *  before dataization happens, not another byte-level check.
      */
     private static String validString(final Dataized element) {
         final byte[] bytes = element.take();
