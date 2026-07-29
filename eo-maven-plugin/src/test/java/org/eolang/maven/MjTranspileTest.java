@@ -38,10 +38,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  * Test case for {@link MjTranspile}.
  * @since 0.1
  */
-@SuppressWarnings({
-    "PMD.TooManyMethods",
-    "PMD.UnitTestContainsTooManyAsserts"
-})
+@SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)
 final class MjTranspileTest {

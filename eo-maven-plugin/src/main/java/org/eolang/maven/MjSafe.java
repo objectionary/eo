@@ -41,7 +41,7 @@ import org.slf4j.impl.StaticLoggerBinder;
  * @since 0.1
  * @checkstyle ClassFanOutComplexityCheck (1000 lines)
  */
-@SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods"})
+@SuppressWarnings("PMD.TooManyFields")
 abstract class MjSafe extends AbstractMojo {
 
     /**

@@ -53,7 +53,7 @@ import org.xembly.Xembler;
  * </p>
  * @since 0.31.0
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
+@SuppressWarnings("PMD.GodClass")
 final class Linting implements Step {
 
     /**

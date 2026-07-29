@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link PhTerminator}.
  * @since 0.73.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class PhTerminatorTest {
 
     @Test

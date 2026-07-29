@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link Span}.
  * @since 0.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class SpanTest {
 
     @Test

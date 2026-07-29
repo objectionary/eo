@@ -15,7 +15,6 @@ import org.junit.jupiter.params.provider.ValueSource;
  * Test case for {@link PhApplication}.
  * @since 0.16
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class PhApplicationTest {
 
     @Test

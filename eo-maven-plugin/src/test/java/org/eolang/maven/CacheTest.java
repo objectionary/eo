@@ -26,7 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.60
  */
 @ExtendWith(MktmpResolver.class)
-@SuppressWarnings("PMD.TooManyMethods")
 final class CacheTest {
 
     @Test

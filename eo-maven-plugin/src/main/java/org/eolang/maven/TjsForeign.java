@@ -27,7 +27,6 @@ import org.cactoos.scalar.Unchecked;
  * Foreign tojos.
  * @since 0.30
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class TjsForeign implements Closeable {
 
     /**

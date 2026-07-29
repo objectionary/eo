@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link Heaps}.
  * @since 0.19
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class HeapsTest {
 
     @Test

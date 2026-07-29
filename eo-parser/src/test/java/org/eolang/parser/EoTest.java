@@ -21,7 +21,7 @@ import org.xembly.Xembler;
  *
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.UnnecessaryLocalRule"})
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class EoTest {
 
     @Test

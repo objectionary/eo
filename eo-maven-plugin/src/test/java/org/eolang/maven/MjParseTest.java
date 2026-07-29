@@ -33,7 +33,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test case for {@link MjParse}.
  * @since 0.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
 @ExtendWith(MktmpResolver.class)
 final class MjParseTest {
 

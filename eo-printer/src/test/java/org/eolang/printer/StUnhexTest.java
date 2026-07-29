@@ -19,7 +19,6 @@ import org.junit.jupiter.params.provider.MethodSource;
  * Test case for {@link StUnhex}.
  * @since 0.29.0
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class StUnhexTest {
 
     @ParameterizedTest
