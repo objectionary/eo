@@ -30,7 +30,7 @@ import org.xembly.Directive;
  * @checkstyle CyclomaticComplexityCheck (820 lines)
  * @checkstyle BooleanExpressionComplexityCheck (820 lines)
  */
-@SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.CognitiveComplexity"})
+@SuppressWarnings("PMD.CognitiveComplexity")
 final class Eo implements Iterable<Directive> {
 
     /**
@@ -224,10 +224,12 @@ final class Eo implements Iterable<Directive> {
                 break;
             }
         }
-        final Span merged = new Span(
-            " ".repeat(head.indent()).concat(body.toString()), head.line()
+        Eo.process(
+            new Span(
+                " ".repeat(head.indent()).concat(body.toString()), head.line()
+            ),
+            stack, globals, emit
         );
-        Eo.process(merged, stack, globals, emit);
         return idx;
     }
 
@@ -327,6 +329,7 @@ final class Eo implements Iterable<Directive> {
      * @param emit The directives sink
      * @checkstyle ParameterNumberCheck (3 lines)
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static void continueTextBlock(
         final Span span, final Stack stack, final Globals globals, final Emit emit
     ) {
@@ -389,6 +392,7 @@ final class Eo implements Iterable<Directive> {
      * @param emit The directives sink
      * @checkstyle ParameterNumberCheck (3 lines)
      */
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static void dispatch(
         final Span span, final Stack stack, final Globals globals, final Emit emit
     ) {

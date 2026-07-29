@@ -228,15 +228,15 @@ final class Transpiling implements Step {
     }
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() throws IOException {
-        final int saved = new Threaded<>(
-            this.sources,
-            this::transpiled
-        ).total() + new PackageInfos(this.generatedDir).create();
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
-            this.sources.size(), saved, this.generatedDir
+            this.sources.size(),
+            new Threaded<>(
+                this.sources,
+                this::transpiled
+            ).total() + new PackageInfos(this.generatedDir).create(),
+            this.generatedDir
         );
     }
 

@@ -183,11 +183,9 @@ final class EOsocketTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        @SuppressWarnings("PMD.UnnecessaryLocalRule")
         void refusesConnectionViaSyscall() throws UnknownHostException {
-            final int started = this.startup();
             try {
-                this.ensure(started == 0);
+                this.ensure(this.startup() == 0);
                 final int socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
@@ -210,11 +208,9 @@ final class EOsocketTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        @SuppressWarnings("PMD.UnnecessaryLocalRule")
         void bindsSocketSuccessfullyViaSyscall() throws UnknownHostException {
-            final int started = this.startup();
             try {
-                this.ensure(started == 0);
+                this.ensure(this.startup() == 0);
                 final int socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
@@ -235,11 +231,9 @@ final class EOsocketTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        @SuppressWarnings("PMD.UnnecessaryLocalRule")
         void startsListenOnPosixSocket() throws UnknownHostException {
-            final int started = this.startup();
             try {
-                this.ensure(started == 0);
+                this.ensure(this.startup() == 0);
                 final int socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
@@ -261,11 +255,9 @@ final class EOsocketTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        @SuppressWarnings("PMD.UnnecessaryLocalRule")
         void acceptsConnectionOnSocket() throws InterruptedException, UnknownHostException {
-            final int started = this.startup();
             try {
-                this.ensure(started == 0);
+                this.ensure(this.startup() == 0);
                 final AtomicInteger accept = new AtomicInteger(0);
                 final AtomicInteger error = new AtomicInteger();
                 final AtomicInteger port = new AtomicInteger(EOsocketTest.randomPort());
@@ -304,12 +296,10 @@ final class EOsocketTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        @SuppressWarnings("PMD.UnnecessaryLocalRule")
         void sendsAndReceivesMessagesViaSyscalls()
             throws InterruptedException, UnknownHostException {
-            final int started = this.startup();
             try {
-                this.ensure(started == 0);
+                this.ensure(this.startup() == 0);
                 final AtomicInteger received = new AtomicInteger(-1);
                 final AtomicReference<byte[]> bytes = new AtomicReference<>();
                 final AtomicInteger port = new AtomicInteger(EOsocketTest.randomPort());
@@ -327,8 +317,8 @@ final class EOsocketTest {
                     final int sent = Winsock.INSTANCE.send(client, buf, buf.length, 0);
                     MatcherAssert.assertThat(
                         String.format(
-                            "Client had to sent message to the server, but it didn't, reason: %s",
-                            this.getError()
+                            "Client had to send %d bytes to the server, but sent %d, reason: %s",
+                            buf.length, sent, this.getError()
                         ),
                         sent,
                         Matchers.equalTo(buf.length)

@@ -29,7 +29,6 @@ import java.util.List;
  * @checkstyle NPathComplexityCheck (820 lines)
  */
 @SuppressWarnings({
-    "PMD.UnnecessaryLocalRule",
     "PMD.CognitiveComplexity",
     "PMD.NPathComplexity"
 })
@@ -409,10 +408,9 @@ final class Tokens {
             );
         }
         final int start = this.cursor;
-        final char glyph = this.current();
         this.cursor = this.cursor + 1;
         return new Value(
-            Value.Kind.ROOT, String.valueOf(glyph),
+            Value.Kind.ROOT, String.valueOf(this.body.charAt(start)),
             this.span.indent() + start, this.cursor
         );
     }
@@ -519,18 +517,17 @@ final class Tokens {
     Value readMethodName() {
         final Value value;
         if (!this.atEnd() && (this.current() == '@' || this.current() == '^')) {
-            final int start = this.cursor;
             final String mapped;
             if (this.current() == '@') {
                 mapped = "φ";
             } else {
                 mapped = "ρ";
             }
-            this.cursor = this.cursor + 1;
             value = new Value(
                 Value.Kind.IDENTIFIER, mapped,
-                this.span.indent() + start, this.cursor
+                this.span.indent() + this.cursor, this.cursor + 1
             );
+            this.cursor = this.cursor + 1;
         } else {
             value = this.readName();
         }

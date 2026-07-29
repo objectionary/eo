@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link Source}.
  * @since 0.1
  */
-@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class SourceTest {
 
     @Test
@@ -28,24 +27,22 @@ final class SourceTest {
 
     @Test
     void splitsOnUnixLineEndings() {
-        final String joined = SourceTest.join(
-            SourceTest.newline(), "alpha", "beta", "gamma"
-        );
         MatcherAssert.assertThat(
             "three Unix-terminated lines must yield three spans in order",
-            SourceTest.texts(new Source(joined)),
+            SourceTest.texts(
+                new Source(SourceTest.join(SourceTest.newline(), "alpha", "beta", "gamma"))
+            ),
             Matchers.contains("alpha", "beta", "gamma")
         );
     }
 
     @Test
     void splitsOnWindowsLineEndings() {
-        final String joined = SourceTest.join(
-            SourceTest.crnl(), "alpha", "beta", "gamma"
-        );
         MatcherAssert.assertThat(
             "Windows CRLF must split lines the same way Unix LF does",
-            SourceTest.texts(new Source(joined)),
+            SourceTest.texts(
+                new Source(SourceTest.join(SourceTest.crnl(), "alpha", "beta", "gamma"))
+            ),
             Matchers.contains("alpha", "beta", "gamma")
         );
     }
@@ -74,12 +71,11 @@ final class SourceTest {
 
     @Test
     void preservesBlankLineInTheMiddle() {
-        final String joined = SourceTest.join(
-            SourceTest.newline(), "alpha", "", "gamma"
-        );
         MatcherAssert.assertThat(
             "a blank line between two non-blank lines must produce a blank span",
-            SourceTest.texts(new Source(joined)),
+            SourceTest.texts(
+                new Source(SourceTest.join(SourceTest.newline(), "alpha", "", "gamma"))
+            ),
             Matchers.contains("alpha", "", "gamma")
         );
     }
@@ -119,12 +115,15 @@ final class SourceTest {
 
     @Test
     void handlesMixedLineEndingsInOneInput() {
-        final String mixed = "alpha".concat(SourceTest.newline())
-            .concat("beta").concat(SourceTest.crnl())
-            .concat("gamma").concat(SourceTest.crnl());
         MatcherAssert.assertThat(
             "a source mixing LF and CRLF must split correctly at each terminator",
-            SourceTest.texts(new Source(mixed)),
+            SourceTest.texts(
+                new Source(
+                    "alpha".concat(SourceTest.newline())
+                        .concat("beta").concat(SourceTest.crnl())
+                        .concat("gamma").concat(SourceTest.crnl())
+                )
+            ),
             Matchers.contains("alpha", "beta", "gamma")
         );
     }

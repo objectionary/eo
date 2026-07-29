@@ -26,12 +26,12 @@ public final class EOchunk$EOresized extends PhDefault implements Atom {
     }
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public Phi lambda() {
         final Phi rho = this.take(Phi.RHO);
-        final int id = new Expect.Natural(Expect.at(rho, "id")).it();
-        final int size = new Expect.Natural(Expect.at(this, "new-size")).it();
-        Heaps.INSTANCE.resize(id, size);
+        Heaps.INSTANCE.resize(
+            new Expect.Natural(Expect.at(rho, "id")).it(),
+            new Expect.Natural(Expect.at(this, "new-size")).it()
+        );
         return rho;
     }
 }
