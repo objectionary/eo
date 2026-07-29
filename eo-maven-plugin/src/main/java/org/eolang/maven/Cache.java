@@ -91,9 +91,9 @@ final class Cache {
                     || !Files.readString(hash).equals(sha)
             ) {
                 final String content = new UncheckedFunc<>(this.compilation).apply(source);
-                new Saved(sha, this.hash(tail)).value();
                 new Saved(content, cache).value();
                 new Saved(content, target).value();
+                new Saved(sha, this.hash(tail)).value();
             } else {
                 new Saved(Files.readString(cache), target).value();
             }
