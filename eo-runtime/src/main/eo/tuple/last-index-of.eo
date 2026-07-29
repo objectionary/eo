@@ -18,7 +18,7 @@
       rec t.tail
   | list > @
 
-  eq. ++> tests-finds-last-index-of
+  eq. ++> can-find-the-last-index-of-an-item
     1
     last-index-of
       *
@@ -27,7 +27,7 @@
         3
       2
 
-  eq. ++> tests-finds-last-index-of-repeated
+  eq. ++> can-find-the-last-index-of-a-repeated-item
     2
     last-index-of
       *
@@ -36,7 +36,7 @@
         24
       24
 
-  eq. ++> tests-last-index-of-not-found
+  eq. ++> cannot-find-the-last-index-of-an-absent-item
     -1
     last-index-of
       *
@@ -45,13 +45,13 @@
         3
       0
 
-  eq. ++> tests-last-index-of-empty
+  eq. ++> cannot-find-the-last-index-in-an-empty-list
     -1
     last-index-of
       *
       "abc"
 
-  eq. ++> tests-last-index-of-unicode
+  eq. ++> can-find-the-last-index-of-a-unicode-item
     3
     last-index-of
       *

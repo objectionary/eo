@@ -43,42 +43,42 @@
             c.eq 0C-
             c.eq 0D-
 
-  eq. ++> tests-text-trimmed-left-many-spaces
-    trimmed-left
-      "     some"
-    "some"
+  eq. ++> can-trim-a-leading-carriage-return
+    trimmed-left "\rvalue"
+    "value"
 
-  eq. ++> tests-text-trimmed-left-one-space
-    trimmed-left
-      " s"
-    "s"
+  eq. ++> can-trim-a-leading-form-feed
+    trimmed-left "\fvalue"
+    "value"
 
-  eq. ++> tests-text-trimmed-left-only-spaces
+  eq. ++> can-trim-a-leading-line-feed
+    trimmed-left "\nvalue"
+    "value"
+
+  eq. ++> can-trim-a-leading-tab
+    trimmed-left "\tvalue"
+    "value"
+
+  eq. ++> can-trim-a-text-of-leading-spaces-only
     trimmed-left
       "     "
     ""
 
-  eq. ++> tests-trimmed-left-empty-text
+  eq. ++> can-trim-an-empty-text
     trimmed-left ""
     ""
 
-  eq. ++> tests-trimmed-left-strips-cr
-    trimmed-left "\rvalue"
-    "value"
+  eq. ++> can-trim-many-leading-spaces
+    trimmed-left
+      "     some"
+    "some"
 
-  eq. ++> tests-trimmed-left-strips-ff
-    trimmed-left "\fvalue"
-    "value"
-
-  eq. ++> tests-trimmed-left-strips-lf
-    trimmed-left "\nvalue"
-    "value"
-
-  eq. ++> tests-trimmed-left-strips-mixed-ws
+  eq. ++> can-trim-mixed-leading-whitespace
     trimmed-left
       " \t\n\f\rvalue"
     "value"
 
-  eq. ++> tests-trimmed-left-strips-tab
-    trimmed-left "\tvalue"
-    "value"
+  eq. ++> can-trim-one-leading-space
+    trimmed-left
+      " s"
+    "s"

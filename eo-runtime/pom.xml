@@ -223,7 +223,8 @@
         <configuration>
           <foreign>${project.build.directory}/eo-foreign.csv</foreign>
           <foreignFormat>csv</foreignFormat>
-          <failOnWarning>false</failOnWarning>
+          <!-- Every lint warning is an error here; nothing may be tolerated. -->
+          <failOnWarning>true</failOnWarning>
           <offline>true</offline>
           <ignoreRuntime>true</ignoreRuntime>
           <!--
@@ -250,11 +251,15 @@
               <goal>unspile</goal>
             </goals>
             <configuration>
+              <!--
+              Objects with an optional fallback argument, like 'string.as-fixed'
+              or 'win32', are applied with and without it on purpose, and the
+              lint reads every such pair as an inconsistency.
+              -->
               <skipProgramLints>
                 <lint>inconsistent-args</lint>
               </skipProgramLints>
               <keepBinaries>
-                <glob>org/eolang/EO_fs/package-info.class</glob>
                 <glob>org/eolang/EO_number/package-info.class</glob>
                 <glob>org/eolang/EO_string/package-info.class</glob>
                 <glob>org/eolang/package-info.class</glob>

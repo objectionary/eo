@@ -126,5 +126,5 @@
                 output-block
             buffer
 
-  console.write ++> tests-writes-to-console
+  console.write ++> can-write-to-the-console
     "Hello, console-test!\n"

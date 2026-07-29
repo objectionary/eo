@@ -56,7 +56,7 @@
             as-bytes.
               data.slice 0 next
 
-  ++> tests-makes-an-input-from-bytes-and-reads
+  ++> can-make-an-input-from-bytes-and-read-it
     and. > @
       and.
         and.

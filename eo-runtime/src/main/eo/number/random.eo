@@ -53,7 +53,22 @@
           00-1F-FF-FF-FF-FF-FF-FF
   clocked clock > pseudo
 
-  ++> tests-random-is-in-range
+  not. ++> can-differ-between-two-draws
+    eq.
+      random.clocked 123.as-i64
+      random.clocked 456.as-i64
+
+  ++> can-reach-the-upper-half
+    not. > @
+      rand.lt 0.5
+    next. > rand
+      random 178609
+
+  eq. ++> can-repeat-itself-with-the-same-seed
+    next. (random 1654).next.next
+    next. (random 1654).next.next
+
+  ++> can-stay-in-range
     and. > @
       and.
         and.
@@ -71,22 +86,7 @@
     next. > rand
       random 123
 
-  ++> tests-random-next-can-reach-upper-half
-    not. > @
-      rand.lt 0.5
-    next. > rand
-      random 178609
-
-  ++> tests-random-with-seed
+  ++> can-use-a-seed
     not. > @
       r.next.eq r.next.next
     random 51 > r
-
-  eq. ++> tests-seeded-randoms-are-equal
-    next. (random 1654).next.next
-    next. (random 1654).next.next
-
-  not. ++> tests-two-random-numbers-not-equal
-    eq.
-      random.clocked 123.as-i64
-      random.clocked 456.as-i64

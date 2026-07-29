@@ -14,39 +14,39 @@
     as-i16.
       00-.concat char.as-bytes
 
-  eq. ++> tests-reads-code-of-last-lowercase-letter
-    122
-    as-ascii "z"
-
-  eq. ++> tests-reads-code-of-last-printable
-    126
-    as-ascii "~"
-
-  eq. ++> tests-reads-code-of-last-uppercase-letter
-    90
-    as-ascii "Z"
-
-  eq. ++> tests-reads-code-of-lowercase-letter
+  eq. ++> can-read-the-code-of-a-lowercase-letter
     97
     as-ascii "a"
 
-  eq. ++> tests-reads-code-of-nine-digit
-    57
-    as-ascii "9"
-
-  eq. ++> tests-reads-code-of-punctuation
+  eq. ++> can-read-the-code-of-a-punctuation-mark
     33
     as-ascii "!"
 
-  eq. ++> tests-reads-code-of-space
+  eq. ++> can-read-the-code-of-a-space
     32
     as-ascii
       " "
 
-  eq. ++> tests-reads-code-of-uppercase-letter
+  eq. ++> can-read-the-code-of-an-uppercase-letter
     65
     as-ascii "A"
 
-  eq. ++> tests-reads-code-of-zero-digit
+  eq. ++> can-read-the-code-of-the-last-lowercase-letter
+    122
+    as-ascii "z"
+
+  eq. ++> can-read-the-code-of-the-last-printable-character
+    126
+    as-ascii "~"
+
+  eq. ++> can-read-the-code-of-the-last-uppercase-letter
+    90
+    as-ascii "Z"
+
+  eq. ++> can-read-the-code-of-the-nine-digit
+    57
+    as-ascii "9"
+
+  eq. ++> can-read-the-code-of-the-zero-digit
     48
     as-ascii "0"

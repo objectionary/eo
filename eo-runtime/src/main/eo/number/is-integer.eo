@@ -11,12 +11,12 @@
   n.is-finite.and > @
     n.eq n.floor
 
-  32.5.is-integer.not ++> float-number-is-not-integer
+  32.is-integer ++> can-be-an-integer-when-a-whole-number
 
-  32.is-integer ++> int-number-is-integer
+  32.5.is-integer.not ++> cannot-be-an-integer-when-a-float
 
-  nan.is-integer.not ++> nan-is-not-integer
+  nan.is-integer.not ++> cannot-be-an-integer-when-nan
 
-  ninf.is-integer.not ++> tests-negative-infinity-is-not-integer
+  ninf.is-integer.not ++> cannot-be-an-integer-when-negative-infinity
 
-  pinf.is-integer.not ++> tests-positive-infinity-is-not-integer
+  pinf.is-integer.not ++> cannot-be-an-integer-when-positive-infinity

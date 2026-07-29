@@ -40,7 +40,7 @@
 
 [target] > dataized /Q.bytes
 
-  ++> tests-dataized-does-not-do-recalculation
+  ++> can-avoid-recalculation
     eq. > @
       malloc.for
         0
@@ -55,7 +55,7 @@
             m.as-number.plus 1
       1
 
-  ++> tests-dataizes-as-bytes-behaves-as-exclamationed
+  ++> can-behave-as-a-const-when-dataized-as-bytes
     seq * > @
       func >> cached1!
       func >> cached2!

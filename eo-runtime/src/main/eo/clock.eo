@@ -30,4 +30,4 @@
         as-number.
           timeval.micros.as-i64.div 1000.as-i64
 
-  clock.gt 0 ++> tests-reads-positive-millis
+  clock.gt 0 ++> can-read-positive-millis

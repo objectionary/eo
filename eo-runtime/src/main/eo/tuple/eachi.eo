@@ -19,7 +19,7 @@
       acc
       func item index
 
-  ++> tests-iterates-with-eachi
+  ++> can-iterate-over-a-list-with-indexes
     eq. > @
       malloc.for
         0

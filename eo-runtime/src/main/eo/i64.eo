@@ -166,165 +166,171 @@
       as-bytes
       x.as-bytes
 
-  not. ++> tests-i64-as-bytes-is-not-equal-to-number-bytes
-    eq.
-      i64 234.as-bytes
-      234.as-i64.as-bytes
+  eq. ++> can-add-mixed-signs
+    -100.as-i64.plus 42.as-i64
+    -58.as-i64
 
-  eq. ++> tests-i64-as-number-of-exact-power-of-two
+  eq. ++> can-convert-an-exact-power-of-two-to-a-number
     4611686018427387904.as-i64.as-number
     4611686018427387904
 
-  eq. ++> tests-i64-as-number-of-i64-max-rounds-up
+  eq. ++> can-convert-a-small-negative-i64-to-a-number
+    -3.as-i64.as-number
+    -3
+
+  eq. ++> can-convert-a-small-positive-i64-to-a-number
+    3.as-i64.as-number
+    3
+
+  eq. ++> can-round-i64-max-up-when-converted-to-a-number
     as-number.
       i64 7F-FF-FF-FF-FF-FF-FF-FF
     9.223372036854776e18
 
-  eq. ++> tests-i64-as-number-of-i64-min
+  eq. ++> can-convert-i64-min-to-a-number
     as-number.
       i64 80-00-00-00-00-00-00-00
     -9.223372036854776e18
 
-  -3.as-i64.as-number.eq -3 ++> tests-i64-as-number-of-small-negative
-
-  3.as-i64.as-number.eq 3 ++> tests-i64-as-number-of-small-positive
-
-  eq. ++> tests-i64-as-number-rounds-tie-to-even
+  eq. ++> rounds-a-tie-to-even-when-converting-to-a-number
     as-number.
       i64 00-20-00-00-00-00-00-01
     9007199254740992
 
-  eq. ++> tests-i64-as-number-rounds-up-above-tie
+  eq. ++> rounds-up-above-a-tie-when-converting-to-a-number
     as-number.
       i64 00-20-00-00-00-00-00-03
     9007199254740996
 
-  not. ++> tests-i64-eq-false
-    123.@.eq 42.@
-
-  123.@.eq 123.@ ++> tests-i64-eq-true
-
-  not. ++> tests-i64-greater-equal
-    0.as-i64.gt 0.as-i64
-
-  not. ++> tests-i64-greater-false
-    0.as-i64.gt 100.as-i64
-
-  gt. ++> tests-i64-greater-max-over-min
-    i64 7F-FF-FF-FF-FF-FF-FF-FF
-    i64 80-00-00-00-00-00-00-00
-
-  not. ++> tests-i64-greater-min-not-over-max
-    gt.
-      i64 80-00-00-00-00-00-00-00
-      i64 7F-FF-FF-FF-FF-FF-FF-FF
-
-  gt. ++> tests-i64-greater-same-sign-large-negatives
-    -5000000000000000000.as-i64
-    -9000000000000000000.as-i64
-
-  -200.as-i64.gt -1000.as-i64 ++> tests-i64-greater-true
-
-  113.as-i64.gte 113.as-i64 ++> tests-i64-gte-equal
-
-  not. ++> tests-i64-gte-false
-    0.as-i64.gte 10.as-i64
-
-  -1000.as-i64.gte -1100.as-i64 ++> tests-i64-gte-true
-
-  42.as-i64.as-bytes.eq 00-00-00-00-00-00-00-2A ++> tests-i64-has-valid-bytes
-
-  eq. ++> tests-i64-i32-max-converts-without-error
-    2147483647.as-i64
-    2147483647.as-i64.as-i32.as-i64
-
-  eq. ++> tests-i64-i32-min-converts-without-error
-    -2147483648.as-i64
-    -2147483648.as-i64.as-i32.as-i64
-
-  -9.223372036854776e18.as-i64.lt 1.as-i64 ++> tests-i64-less-across-full-range
-
-  not. ++> tests-i64-less-equal
-    10.as-i64.lt 10.as-i64
-
-  not. ++> tests-i64-less-false
-    10.as-i64.lt -5.as-i64
-
-  10.as-i64.lt 50.as-i64 ++> tests-i64-less-true
-
-  not. ++> tests-i64-less-with-large-difference
-    5000000000000000000.as-i64.lt -5000000000000000000.as-i64
-
-  50.as-i64.lte 50.as-i64 ++> tests-i64-lte-equal
-
-  not. ++> tests-i64-lte-false
-    0.as-i64.lte -10.as-i64
-
-  -200.as-i64.lte -100.as-i64 ++> tests-i64-lte-true
-
-  eq. ++> tests-i64-minus-one-plus-one-is-zero
+  eq. ++> can-add-one-to-minus-one
     -1.as-i64.plus 1.as-i64
     0.as-i64
 
-  eq. ++> tests-i64-multiply-by-zero
-    1000.as-i64.times 0.as-i64
-    0.as-i64
-
-  eq. ++> tests-i64-one-minus-i64-one
-    1.as-i64.minus 1.as-i64
-    0.as-i64
-
-  eq. ++> tests-i64-one-plus-i64-one
+  eq. ++> can-add-one-to-one
     1.as-i64.plus 1.as-i64
     2.as-i64
 
-  eq. ++> tests-i64-plus-carries-through-all-bytes
+  gt. ++> can-be-greater-among-large-negatives
+    -5000000000000000000.as-i64
+    -9000000000000000000.as-i64
+
+  -200.as-i64.gt -1000.as-i64 ++> can-be-greater-than-a-smaller-i64
+
+  -1000.as-i64.gte -1100.as-i64 ++> can-be-greater-than-or-equal-to-a-smaller-i64
+
+  113.as-i64.gte 113.as-i64 ++> can-be-greater-than-or-equal-to-an-equal-i64
+
+  gt. ++> can-be-greater-when-max-is-over-min
+    i64 7F-FF-FF-FF-FF-FF-FF-FF
+    i64 80-00-00-00-00-00-00-00
+
+  -9.223372036854776e18.as-i64.lt 1.as-i64 ++> can-be-less-across-the-full-range
+
+  10.as-i64.lt 50.as-i64 ++> can-be-less-than-a-larger-i64
+
+  -200.as-i64.lte -100.as-i64 ++> can-be-less-than-or-equal-to-a-larger-i64
+
+  50.as-i64.lte 50.as-i64 ++> can-be-less-than-or-equal-to-an-equal-i64
+
+  not. ++> can-be-less-with-a-large-difference
+    5000000000000000000.as-i64.lt -5000000000000000000.as-i64
+
+  eq. ++> can-carry-an-addition-through-all-bytes
     plus.
       i64 00-FF-FF-FF-FF-FF-FF-FF
       1.as-i64
     i64 01-00-00-00-00-00-00-00
 
-  eq. ++> tests-i64-plus-of-mixed-signs
-    -100.as-i64.plus 42.as-i64
-    -58.as-i64
+  eq. ++> can-convert-a-negative-to-i32-and-back
+    -234.as-i64
+    -234.as-i64.as-i32.as-i64
 
-  eq. ++> tests-i64-plus-wraps-around-at-max
-    plus.
-      i64 7F-FF-FF-FF-FF-FF-FF-FF
-      1.as-i64
-    i64 80-00-00-00-00-00-00-00
+  eq. ++> can-convert-i32-max-without-an-error
+    2147483647.as-i64
+    2147483647.as-i64.as-i32.as-i64
 
-  eq. ++> tests-i64-times-keeps-low-bits-of-large-product
+  eq. ++> can-convert-i32-min-without-an-error
+    -2147483648.as-i64
+    -2147483648.as-i64.as-i32.as-i64
+
+  234.as-i64.eq 234.as-i64.as-i32.as-i64 ++> can-convert-to-i32-and-back
+
+  123.@.eq 123.@ ++> can-equal-the-same-i64
+
+  0.@.eq 0.@ ++> can-equal-zero-to-zero
+
+  42.as-i64.as-bytes.eq 00-00-00-00-00-00-00-2A ++> can-expose-valid-bytes
+
+  eq. ++> can-keep-the-low-bits-of-a-large-product
     2147483647.as-i64.times 2147483647.as-i64
     i64 3F-FF-FF-FF-00-00-00-01
 
-  eq. ++> tests-i64-times-of-mixed-signs
+  eq. ++> can-multiply-by-zero
+    1000.as-i64.times 0.as-i64
+    0.as-i64
+
+  eq. ++> can-multiply-mixed-signs
     -7.as-i64.times 6.as-i64
     -42.as-i64
 
-  eq. ++> tests-i64-times-of-two-negatives
+  eq. ++> can-multiply-two-negatives
     -7.as-i64.times -6.as-i64
     42.as-i64
 
-  eq. ++> tests-i64-times-wraps-modulo-2-pow-64
+  eq. ++> can-subtract-one-from-one
+    1.as-i64.minus 1.as-i64
+    0.as-i64
+
+  eq. ++> can-wrap-a-product-modulo-two-to-the-sixty-fourth
     times.
       i64 40-00-00-00-00-00-00-00
       4.as-i64
     0.as-i64
 
-  234.as-i64.eq 234.as-i64.as-i32.as-i64 ++> tests-i64-to-i32-and-back
+  eq. ++> can-wrap-an-addition-at-max
+    plus.
+      i64 7F-FF-FF-FF-FF-FF-FF-FF
+      1.as-i64
+    i64 80-00-00-00-00-00-00-00
 
-  0.@.eq 0.@ ++> tests-i64-zero-eq-to-i64-zero
+  not. ++> cannot-be-greater-than-a-larger-i64
+    0.as-i64.gt 100.as-i64
 
-  -234.as-i64.eq -234.as-i64.as-i32.as-i64 ++> tests-negative-i64-to-i32-and-back
+  not. ++> cannot-be-greater-than-an-equal-i64
+    0.as-i64.gt 0.as-i64
 
-  eq. ++> tests-out-of-bounds-i64-as-i32-returns-provided-fallback
+  not. ++> cannot-be-greater-than-or-equal-to-a-larger-i64
+    0.as-i64.gte 10.as-i64
+
+  not. ++> cannot-be-greater-when-min-is-under-max
+    gt.
+      i64 80-00-00-00-00-00-00-00
+      i64 7F-FF-FF-FF-FF-FF-FF-FF
+
+  not. ++> cannot-be-less-than-a-smaller-i64
+    10.as-i64.lt -5.as-i64
+
+  not. ++> cannot-be-less-than-an-equal-i64
+    10.as-i64.lt 10.as-i64
+
+  not. ++> cannot-be-less-than-or-equal-to-a-smaller-i64
+    0.as-i64.lte -10.as-i64
+
+  not. ++> cannot-equal-a-different-i64
+    123.@.eq 42.@
+
+  not. ++> cannot-match-the-bytes-of-the-same-number
+    eq.
+      i64 234.as-bytes
+      234.as-i64.as-bytes
+
+  eq. ++> rejects-an-out-of-bounds-conversion-to-i32
     "recovered"
     3147483647.as-i64.as-i32
       "recovered" > [message]
 
-  2147483648.as-i64.as-i32 --> on-converting-i32-max-plus-one-to-i32
+  2147483648.as-i64.as-i32 --> stops-on-converting-i32-max-plus-one-to-i32
 
-  -2147483649.as-i64.as-i32 --> on-converting-i32-min-minus-one-to-i32
+  -2147483649.as-i64.as-i32 --> stops-on-converting-i32-min-minus-one-to-i32
 
-  3147483647.as-i64.as-i32 --> on-converting-to-i32-if-out-of-bounds
+  3147483647.as-i64.as-i32 --> stops-on-converting-out-of-bounds-to-i32
