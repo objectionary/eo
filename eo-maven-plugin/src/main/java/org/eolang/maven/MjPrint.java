@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.EnumMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -144,39 +143,12 @@ public final class MjPrint extends MjSafe {
     }
 
     /**
-     * Assemble the overridden penalty weights from the Maven properties.
-     *
-     * <p>Only the properties that the user actually set are put into the
-     * map; every absent key falls back to its {@link PenaltyKey#fallback()}
-     * default inside the printer.</p>
-     *
+     * The penalty weights this goal was configured with.
      * @return The weights, keyed by {@link PenaltyKey}
      */
     private Map<PenaltyKey, Integer> weights() {
-        final Map<PenaltyKey, Integer> map = new EnumMap<>(PenaltyKey.class);
-        if (this.penaltyIndent != null) {
-            map.put(PenaltyKey.INDENT, this.penaltyIndent);
-        }
-        if (this.penaltyBracket != null) {
-            map.put(PenaltyKey.BRACKET, this.penaltyBracket);
-        }
-        if (this.penaltyExcess != null) {
-            map.put(PenaltyKey.EXCESS, this.penaltyExcess);
-        }
-        if (this.width != null) {
-            map.put(PenaltyKey.WIDTH, this.width);
-        }
-        if (this.step != null) {
-            if (this.step != 2) {
-                throw new IllegalArgumentException(
-                    String.format(
-                        "The 'eo.step' parameter must be 2, since that is the only indentation width the EO parser can read back; got %d",
-                        this.step
-                    )
-                );
-            }
-            map.put(PenaltyKey.STEP, this.step);
-        }
-        return map;
+        return new Weights(
+            this.penaltyIndent, this.penaltyBracket, this.penaltyExcess, this.width, this.step
+        ).value();
     }
 }
