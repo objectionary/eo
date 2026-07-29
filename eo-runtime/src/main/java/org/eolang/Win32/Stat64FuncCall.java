@@ -61,7 +61,6 @@ public final class Stat64FuncCall implements Syscall {
      * The {@code struct _stat64} of the Microsoft C runtime.
      * @since 0.74.0
      * @checkstyle VisibilityModifierCheck (60 lines)
-     * @checkstyle MagicNumberCheck (60 lines)
      */
     public static final class WinStat extends Structure {
 

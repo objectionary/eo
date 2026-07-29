@@ -297,7 +297,6 @@ final class MjTranspileTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void recompilesIfExpired(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
@@ -489,7 +488,6 @@ final class MjTranspileTest {
      * @return Set of classes
      * @throws IOException If fails.
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static Set<String> classes(final Path root) throws IOException {
         try (Stream<Path> walk = Files.walk(root)) {
             return walk.filter(MjTranspileTest::isJava)

@@ -108,7 +108,6 @@ final class Walk extends ListEnvelope<Path> {
      * @return Collection of files
      * @throws IOException If fails.
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static Collection<Path> regular(final Path dir) throws IOException {
         try (Stream<Path> walk = Files.walk(dir)) {
             return walk.filter(file -> !file.toFile().isDirectory())

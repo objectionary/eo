@@ -21,7 +21,7 @@ import java.util.List;
  * @checkstyle CyclomaticComplexityCheck (610 lines)
  * @checkstyle BooleanExpressionComplexityCheck (600 lines)
  */
-@SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.CognitiveComplexity"})
+@SuppressWarnings("PMD.CognitiveComplexity")
 final class Emissions {
 
     /**

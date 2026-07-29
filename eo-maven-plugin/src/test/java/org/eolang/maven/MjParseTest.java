@@ -306,7 +306,6 @@ final class MjParseTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void parsesWithTargetCache(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final File parsed = maven

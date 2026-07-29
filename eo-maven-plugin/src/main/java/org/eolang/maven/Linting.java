@@ -244,7 +244,6 @@ final class Linting implements Step {
         return sum;
     }
 
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private void linting() throws IOException {
         final Collection<TjForeign> programs = this.tojos.withXmir();
         final Map<Severity, Integer> counts = new ConcurrentHashMap<>();

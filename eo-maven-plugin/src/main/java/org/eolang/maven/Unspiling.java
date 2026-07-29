@@ -83,7 +83,6 @@ final class Unspiling implements Step {
      * Unspile classes.
      * @param walk Collection of compiled classes
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private void unspile(final Walk walk) {
         final Set<String> included = new Walk(this.generated)
             .stream().map(

@@ -31,7 +31,6 @@ public final class EOdirectory$EOwalk extends PhDefault implements Atom {
     }
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public Phi lambda() {
         final Path path = Paths.get(
             new Dataized(

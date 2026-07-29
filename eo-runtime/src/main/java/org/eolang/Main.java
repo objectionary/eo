@@ -228,7 +228,6 @@ public final class Main {
      * @return Version string
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static String ver() throws IOException {
         try (
             BufferedReader input =

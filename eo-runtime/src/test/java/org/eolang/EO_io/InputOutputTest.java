@@ -151,7 +151,6 @@ final class InputOutputTest {
      * @return Read content
      * @throws IOException If fails to create temporary file
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static byte[] posixStdin(
         final Path temp,
         final String content,
@@ -205,7 +204,6 @@ final class InputOutputTest {
      * @param action Action to run
      * @throws IOException If fails to create temporary file
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static byte[] windowsStdin(
         final Path temp,
         final String content,

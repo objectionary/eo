@@ -121,7 +121,6 @@ final class MjPullTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void doesNotPullInOfflineMode(@Mktmp final Path tmp) throws IOException {
         final Map<String, Path> result = new FakeMaven(tmp)
             .withHelloWorld()
@@ -146,7 +145,6 @@ final class MjPullTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void skipsAlreadyPulled(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()

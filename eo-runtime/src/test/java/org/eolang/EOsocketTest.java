@@ -83,7 +83,7 @@ final class EOsocketTest {
     }
 
     @Test
-    @SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.UnitTestContainsTooManyAsserts"})
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void sendsAndReceivesMessageViaSocketObject() throws InterruptedException, IOException {
         final String msg = "Hello, Socket!";
         final AtomicReference<byte[]> bytes = new AtomicReference<>();

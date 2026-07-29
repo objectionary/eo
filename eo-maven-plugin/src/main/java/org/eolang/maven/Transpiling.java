@@ -274,7 +274,6 @@ final class Transpiling implements Step {
      * @return Number of generated Java files
      * @throws IOException If any issues with I/O
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private int transpiled(final TjForeign tojo) throws IOException {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
