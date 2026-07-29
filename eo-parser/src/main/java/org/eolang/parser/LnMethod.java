@@ -128,7 +128,7 @@ final class LnMethod implements Line {
         if (stack.top().openness() == Openness.HORIZONTAL_COMPLETED) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
-                "method continuation not allowed after horizontal application"
+                "method continuation not allowed after horizontal application, try vertical application instead"
             );
         }
         if (stack.top().kind() == Kind.ONLY_PHI_FORMATION) {
