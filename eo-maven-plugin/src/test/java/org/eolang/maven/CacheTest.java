@@ -27,7 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.60
  */
 @ExtendWith(MktmpResolver.class)
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.UnitTestContainsTooManyAsserts"})
+@SuppressWarnings("PMD.TooManyMethods")
 final class CacheTest {
 
     @Test
@@ -275,43 +275,80 @@ final class CacheTest {
     }
 
     @Test
-    void leavesMarkerUntouchedWhenPayloadWriteFails(
-        @Mktmp final Path temp
-    ) throws IOException, NoSuchAlgorithmException {
-        final Path base = temp.resolve("cache-order");
-        Files.createDirectories(base);
-        final Path source = temp.resolve("order.eo");
-        final String initial = "v1";
-        Files.writeString(source, initial, StandardCharsets.UTF_8);
-        final Path target = temp.resolve("order.xmir");
-        final Path tail = source.getFileName();
-        new Cache(base, p -> initial).apply(source, target, tail);
-        final String updated = "v2";
-        Files.writeString(source, updated, StandardCharsets.UTF_8);
-        final Path cached = base.resolve(tail);
-        Files.delete(cached);
-        Files.createDirectories(cached);
+    void rejectsPayloadWriteFailure(@Mktmp final Path temp) throws IOException {
+        final CacheTest.Corrupted state = CacheTest.corrupted(temp);
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new Cache(base, p -> updated).apply(source, target, tail),
+            () -> new Cache(state.base, p -> "v2").apply(state.source, state.target, state.tail),
             "a failure while writing the payload must be reported, not swallowed"
         );
+    }
+
+    @Test
+    void leavesMarkerUntouchedAfterPayloadWriteFailure(
+        @Mktmp final Path temp
+    ) throws IOException, NoSuchAlgorithmException {
+        final CacheTest.Corrupted state = CacheTest.corrupted(temp);
+        CacheTest.attemptDoomedWrite(state);
         MatcherAssert.assertThat(
             "the marker must not point at a payload that was never written",
             Files.readString(
-                base.resolve(CacheTest.marker(tail)), StandardCharsets.UTF_8
+                state.base.resolve(CacheTest.marker(state.tail)), StandardCharsets.UTF_8
             ),
-            Matchers.equalTo(CacheTest.hash(initial))
+            Matchers.equalTo(CacheTest.hash("v1"))
         );
-        Files.delete(cached);
+    }
+
+    @Test
+    void recompilesAfterPayloadWriteFailureInsteadOfServingStaleEntry(
+        @Mktmp final Path temp
+    ) throws IOException {
+        final CacheTest.Corrupted state = CacheTest.corrupted(temp);
+        CacheTest.attemptDoomedWrite(state);
+        Files.delete(state.base.resolve(state.tail));
         final AtomicInteger counter = new AtomicInteger(0);
         new Cache(
-            base, p -> String.format("%s-%d", updated, counter.incrementAndGet())
-        ).apply(source, target, tail);
+            state.base, p -> String.format("v2-%d", counter.incrementAndGet())
+        ).apply(state.source, state.target, state.tail);
         MatcherAssert.assertThat(
             "recovery after the failed write must recompile rather than serve a stale entry",
             counter.get(),
             Matchers.equalTo(1)
+        );
+    }
+
+    /**
+     * Build a cache with a valid "v1" entry, then move the source to "v2"
+     * and replace the cache payload path with a directory, so that a
+     * following write to it fails.
+     * @param temp Temporary directory
+     * @return The corrupted cache state
+     * @throws IOException If the fixture cannot be built
+     */
+    private static CacheTest.Corrupted corrupted(final Path temp) throws IOException {
+        final Path base = temp.resolve("cache-order");
+        Files.createDirectories(base);
+        final Path source = temp.resolve("order.eo");
+        Files.writeString(source, "v1", StandardCharsets.UTF_8);
+        final Path target = temp.resolve("order.xmir");
+        final Path tail = source.getFileName();
+        new Cache(base, p -> "v1").apply(source, target, tail);
+        Files.writeString(source, "v2", StandardCharsets.UTF_8);
+        final Path cached = base.resolve(tail);
+        Files.delete(cached);
+        Files.createDirectories(cached);
+        return new CacheTest.Corrupted(base, source, target, tail);
+    }
+
+    /**
+     * Attempt to write "v2" into the corrupted cache and swallow the
+     * expected failure, leaving the cache exactly as it was.
+     * @param state The corrupted cache state
+     */
+    private static void attemptDoomedWrite(final CacheTest.Corrupted state) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new Cache(state.base, p -> "v2").apply(state.source, state.target, state.tail)
         );
     }
 
@@ -329,5 +366,48 @@ final class CacheTest {
      */
     private static String marker(final Path tail) {
         return String.format("%s.sha256", tail);
+    }
+
+    /**
+     * A cache whose payload path has been replaced with a directory, so
+     * that a following write to it fails.
+     * @since 0.60
+     */
+    private static final class Corrupted {
+
+        /**
+         * Base cache directory.
+         */
+        private final Path base;
+
+        /**
+         * Source file, already changed since the last valid cache entry.
+         */
+        private final Path source;
+
+        /**
+         * Target file to write into.
+         */
+        private final Path target;
+
+        /**
+         * Tail path in cache.
+         */
+        private final Path tail;
+
+        /**
+         * Ctor.
+         * @param base Base cache directory
+         * @param source Source file
+         * @param target Target file
+         * @param tail Tail path in cache
+         * @checkstyle ParameterNumberCheck (5 lines)
+         */
+        Corrupted(final Path base, final Path source, final Path target, final Path tail) {
+            this.base = base;
+            this.source = source;
+            this.target = target;
+            this.tail = tail;
+        }
     }
 }
