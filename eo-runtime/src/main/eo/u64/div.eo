@@ -21,28 +21,28 @@
         d.as-bytes.and 80-00-00-00-00-00-00-00
         80-00-00-00-00-00-00-00
       if.
-        n.gte d
+        n.gte x.as-u64
         u64 00-00-00-00-00-00-00-01
         u64 00-00-00-00-00-00-00-00
       if.
         gte.
           n.minus
             times.
-              u64 q0
-              d
-          d
+              u64
+                left. >> q0
+                  as-bytes.
+                    div.
+                      i64 (n.as-bytes.right 1)
+                      i64
+                        as-bytes.
+                          x.as-u64 >> d
+                  1
+              x.as-u64
+          x.as-u64
         plus.
           u64 q0
           u64 00-00-00-00-00-00-00-01
         u64 q0
-  x.as-u64 > d
-  left. > q0
-    as-bytes.
-      div.
-        i64
-          n.as-bytes.right 1
-        i64 d.as-bytes
-    1
 
   eq. ++> can-divide-a-small-value-by-a-larger-divisor
     00-00-00-00-00-00-00-0A.as-u64.div 80-00-00-00-00-00-00-00.as-u64
