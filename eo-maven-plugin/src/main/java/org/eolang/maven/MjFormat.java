@@ -315,6 +315,14 @@ public final class MjFormat extends MjSafe {
             map.put(PenaltyKey.WIDTH, this.width);
         }
         if (this.step != null) {
+            if (this.step != 2) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "The 'eo.step' parameter must be 2, since that is the only indentation width the EO parser can read back; got %d",
+                        this.step
+                    )
+                );
+            }
             map.put(PenaltyKey.STEP, this.step);
         }
         return map;

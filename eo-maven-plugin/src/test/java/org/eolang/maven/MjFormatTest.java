@@ -131,22 +131,52 @@ final class MjFormatTest {
     }
 
     @Test
-    void appliesCustomIndentationStep(@Mktmp final Path temp) throws Exception {
+    void rejectsCustomIndentationStep(@Mktmp final Path temp) {
         MatcherAssert.assertThat(
-            "the printer must indent with the configured number of spaces",
-            new TextOf(
-                new FakeMaven(temp)
-                    .with("autoFix", true)
-                    .with("step", 4)
-                    .withProgram(MjFormatTest.canonical(MjFormatTest.nested()))
-                    .execute(MjFormat.class)
-                    .result()
-                    .get("foo/x/main.eo")
-            ).asString(),
-            Matchers.containsString(
-                String.valueOf('\n').concat("        x > first")
-            )
+            "a step other than 2 must be rejected, since the parser can never read it back, not silently corrupt the source",
+            MjFormatTest.rejectedStep(temp, 4),
+            Matchers.containsString("eo.step")
         );
+    }
+
+    @Test
+    void rejectsZeroIndentationStep(@Mktmp final Path temp) {
+        MatcherAssert.assertThat(
+            "a zero step must be rejected with a clear message, not an arithmetic exception",
+            MjFormatTest.rejectedStep(temp, 0),
+            Matchers.containsString("eo.step")
+        );
+    }
+
+    @Test
+    void rejectsNegativeIndentationStep(@Mktmp final Path temp) {
+        MatcherAssert.assertThat(
+            "a negative step must be rejected with a clear message naming the parameter",
+            MjFormatTest.rejectedStep(temp, -2),
+            Matchers.containsString("eo.step")
+        );
+    }
+
+    /**
+     * Run {@link MjFormat} with the given {@code eo.step} and return the
+     * full stack trace text of the failure it must throw.
+     * @param temp The temporary directory
+     * @param step The (invalid) indentation step to configure
+     * @return The failure's full stack trace text
+     */
+    private static String rejectedStep(final Path temp, final int step) {
+        final IllegalStateException exception = Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .with("autoFix", true)
+                .with("step", step)
+                .withProgram(MjFormatTest.canonical(MjFormatTest.nested()))
+                .execute(MjFormat.class),
+            "must throw, not silently produce output the parser cannot read back"
+        );
+        final StringWriter writer = new StringWriter();
+        exception.printStackTrace(new PrintWriter(writer));
+        return writer.toString();
     }
 
     /**
