@@ -72,7 +72,9 @@
       seq * > [m] >>
         m.write 0 bts
         scope m
-  [size scope] > of /Q.bytes
+  [] > of /Q.bytes
+    ? > size /Q.number
+    ? > scope /{Q.chunk}
 
   malloc.for ++> copies-and-resizes-to-target
     0

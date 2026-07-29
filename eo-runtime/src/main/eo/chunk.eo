@@ -48,9 +48,12 @@
     seq *
       write 0 object
       get
-  [offset length] > read /Q.bytes
+  [] > read /Q.bytes
+    ? > offset /Q.number
+    ? > length /Q.number
     ? > cant-read /{Q.string}
-  [size] > resized /Q.chunk
+  [] > resized /Q.chunk
+    ? > new-size /Q.number
   [] > size /Q.number
   [offset data] > write /Q.bool
 

@@ -16,10 +16,14 @@
   as-i32.as-i16 > as-i16
   as-i32. > as-i32
     number.as-i64 $
-  [x] > div /Q.number
-  [x] > gt /Q.bool
-  [x] > plus /Q.number
-  [x] > times /Q.number
+  [] > div /Q.number
+    ? > x /Q.number
+  [] > gt /Q.bool
+    ? > x /Q.number
+  [] > plus /Q.number
+    ? > x /Q.number
+  [] > times /Q.number
+    ? > x /Q.number
 
   42.as-bytes.eq 42 ++> tests-as-bytes-equals-to-int-backwards
 
