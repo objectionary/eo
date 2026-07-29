@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.util.Collections;
+import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -68,6 +69,26 @@ final class OyIndexedTest {
                     }
                 )
             ).contains(this.stdout()),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void checksIsDirectoryInDelegateIfExceptionHappensInIndex() throws IOException {
+        MatcherAssert.assertThat(
+            "OyIndexed with a broken index must ask the delegate about a directory, but it doesnt",
+            new OyIndexed(
+                new Objectionary.Fake(
+                    name -> new InputOf("[] > qwerty"),
+                    name -> true,
+                    name -> true
+                ),
+                new ObjectsIndex(
+                    () -> {
+                        throw new IllegalStateException("Fake exception");
+                    }
+                )
+            ).isDirectory("org.eolang.qwerty"),
             Matchers.is(true)
         );
     }
