@@ -10,7 +10,7 @@
 [list x] > with
   list.with x > @
 
-  eq. ++> tests-list-simple-with
+  eq. ++> can-add-an-item
     with
       * 1 2
       3

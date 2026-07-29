@@ -44,27 +44,27 @@
     0
     --
 
-  eq. ++> tests-writes-single-byte
+  eq. ++> can-write-a-single-byte
     "41"
     string
       as-hex "A".as-bytes
 
-  eq. ++> tests-joins-bytes-with-hyphens
+  eq. ++> can-join-bytes-with-hyphens
     "4A-65-66-66"
     string
       as-hex "Jeff".as-bytes
 
-  eq. ++> tests-writes-letter-nibbles
+  eq. ++> can-write-letter-nibbles
     "00-00-00-00-00-00-00-FF"
     string
       as-hex 255.as-i64.as-bytes
 
-  eq. ++> tests-writes-number-bytes
+  eq. ++> can-write-the-bytes-of-a-number
     "40-45-00-00-00-00-00-00"
     string
       as-hex 42.as-bytes
 
-  eq. ++> tests-writes-empty-bytes
+  eq. ++> can-write-empty-bytes
     ""
     string
       as-hex --

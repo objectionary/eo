@@ -22,37 +22,37 @@
         item
         max
 
-  eq. ++> tests-maximum-of-array-is-first
+  eq. ++> can-take-a-maximum-of-one-item
+    maximum
+      * 42
+    42
+
+  eq. ++> can-take-a-maximum-that-is-first
     maximum *
       25
       12
       -2
     25
 
-  eq. ++> tests-maximum-of-array-is-in-the-center
+  eq. ++> can-take-a-maximum-that-is-in-the-middle
     maximum *
       12
       25
       -2
     25
 
-  eq. ++> tests-maximum-of-array-is-last
+  eq. ++> can-take-a-maximum-that-is-last
     maximum *
       12
       -2
       25
     25
 
-  eq. ++> tests-maximum-of-empty-returns-provided-fallback
+  eq. ++> rejects-an-empty-list
     "recovered"
     maximum
       *
       "recovered" > [msg]
 
-  eq. ++> tests-maximum-of-one-item-array
-    maximum
-      * 42
-    42
-
-  maximum --> on-taking-maximum-from-empty-sequence
+  maximum --> stops-on-an-empty-list
     *

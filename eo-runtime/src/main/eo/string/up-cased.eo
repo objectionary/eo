@@ -32,10 +32,10 @@
         as-ascii byte > code
   as-ascii "a" >> mincode!
 
-  eq. ++> tests-converts-text-to-upper-case
-    "HELLO"
-    up-cased "hello"
-
-  eq. ++> tests-converts-text-with-upper-letters-to-upper-case
+  eq. ++> can-convert-already-upper-cased-text
     "HELLO"
     up-cased "HeLlO"
+
+  eq. ++> can-convert-text-to-upper-case
+    "HELLO"
+    up-cased "hello"

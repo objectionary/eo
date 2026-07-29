@@ -87,126 +87,134 @@
       4
       4
 
-  eq. ++> tests-i32-as-i64-widens-negative-with-sign-extension
-    -200.as-i64.as-i32.as-i64.as-bytes
-    FF-FF-FF-FF-FF-FF-FF-38
+  eq. ++> can-add-one-to-one
+    1.as-i64.as-i32.plus 1.as-i64.as-i32
+    2.as-i64.as-i32
 
-  eq. ++> tests-i32-as-i64-widens-positive-with-zero-prefix
-    42.as-i64.as-i32.as-i64.as-bytes
-    00-00-00-00-00-00-00-2A
+  eq. ++> can-add-with-overflow
+    2147483647.as-i64.as-i32.plus 1.as-i64.as-i32
+    -2147483648.as-i64.as-i32
 
-  ++> tests-i32-div-by-i32-one
+  -200.as-i64.as-i32.gt -1000.as-i64.as-i32 ++> can-be-greater-than-a-smaller-i32
+
+  gte. ++> can-be-greater-than-or-equal-to-a-smaller-i32
+    -1000.as-i64.as-i32
+    -1100.as-i64.as-i32
+
+  gte. ++> can-be-greater-than-or-equal-to-an-equal-i32
+    113.as-i64.as-i32
+    113.as-i64.as-i32
+
+  10.as-i64.as-i32.lt 50.as-i64.as-i32 ++> can-be-less-than-a-larger-i32
+
+  lte. ++> can-be-less-than-or-equal-to-a-larger-i32
+    -200.as-i64.as-i32
+    -100.as-i64.as-i32
+
+  lte. ++> can-be-less-than-or-equal-to-an-equal-i32
+    50.as-i64.as-i32
+    50.as-i64.as-i32
+
+  eq. ++> can-convert-a-negative-to-i16-and-back
+    -123.as-i64.as-i32
+    -123.as-i64.as-i32.as-i16.as-i32
+
+  eq. ++> can-convert-to-i16-and-back
+    123.as-i64.as-i32
+    123.as-i64.as-i32.as-i16.as-i32
+
+  ++> can-divide-by-one
     eq. > @
       dividend.div 1.as-i64.as-i32
       dividend
     -235.as-i64.as-i32 > dividend
 
-  eq. ++> tests-i32-div-by-zero-returns-provided-fallback
+  lt. ++> can-divide-into-less-than-one
+    1.as-i64.as-i32.div 5.as-i64.as-i32
+    1.as-i64.as-i32
+
+  eq. ++> can-divide-with-a-remainder
+    13.as-i64.as-i32.div -5.as-i64.as-i32
+    -2.as-i64.as-i32
+
+  123.as-i64.as-i32.eq 123.as-i64.as-i32 ++> can-equal-the-same-i32
+
+  0.as-i64.as-i32.eq 0.as-i64.as-i32 ++> can-equal-zero-to-zero
+
+  42.as-i64.as-i32.as-bytes.eq 00-00-00-2A ++> can-expose-valid-bytes
+
+  eq. ++> can-expose-valid-bytes-of-a-negative
+    -200.as-i64.as-i32.as-bytes
+    FF-FF-FF-38
+
+  eq. ++> can-multiply-by-zero
+    1000.as-i64.as-i32.times 0.as-i64.as-i32
+    0.as-i64.as-i32
+
+  eq. ++> can-multiply-with-overflow
+    2147483647.as-i64.as-i32.times 2.as-i64.as-i32
+    -2.as-i64.as-i32
+
+  eq. ++> can-subtract-one-from-one
+    1.as-i64.as-i32.minus 1.as-i64.as-i32
+    0.as-i64.as-i32
+
+  eq. ++> can-subtract-with-overflow
+    -2147483648.as-i64.as-i32.minus 1.as-i64.as-i32
+    2147483647.as-i64.as-i32
+
+  eq. ++> can-widen-a-negative-to-i64-with-sign-extension
+    -200.as-i64.as-i32.as-i64.as-bytes
+    FF-FF-FF-FF-FF-FF-FF-38
+
+  eq. ++> can-widen-a-positive-to-i64-with-a-zero-prefix
+    42.as-i64.as-i32.as-i64.as-bytes
+    00-00-00-00-00-00-00-2A
+
+  eq. ++> can-wrap-a-large-positive-product
+    100000.as-i64.as-i32.times 100000.as-i64.as-i32
+    1410065408.as-i64.as-i32
+
+  eq. ++> can-wrap-a-product-modulo-two-to-the-thirty-second
+    65536.as-i64.as-i32.times 65536.as-i64.as-i32
+    0.as-i64.as-i32
+
+  not. ++> cannot-be-greater-than-a-larger-i32
+    0.as-i64.as-i32.gt 100.as-i64.as-i32
+
+  not. ++> cannot-be-greater-than-an-equal-i32
+    0.as-i64.as-i32.gt 0.as-i64.as-i32
+
+  not. ++> cannot-be-greater-than-or-equal-to-a-larger-i32
+    0.as-i64.as-i32.gte 10.as-i64.as-i32
+
+  not. ++> cannot-be-less-than-a-smaller-i32
+    10.as-i64.as-i32.lt -5.as-i64.as-i32
+
+  not. ++> cannot-be-less-than-an-equal-i32
+    10.as-i64.as-i32.lt 10.as-i64.as-i32
+
+  not. ++> cannot-be-less-than-or-equal-to-a-smaller-i32
+    0.as-i64.as-i32.lte -10.as-i64.as-i32
+
+  not. ++> cannot-equal-a-different-i32
+    123.as-i64.as-i32.eq 42.as-i64.as-i32
+
+  eq. ++> rejects-an-out-of-bounds-conversion-to-i16
+    "recovered"
+    247483647.as-i64.as-i32.as-i16
+      "recovered" > [message]
+
+  eq. ++> rejects-division-by-zero
     "recovered"
     2.as-i64.as-i32.div
       0.as-i64.as-i32
       "recovered" > [message]
 
-  lt. ++> tests-i32-div-less-than-i32-one
-    1.as-i64.as-i32.div 5.as-i64.as-i32
-    1.as-i64.as-i32
+  32768.as-i64.as-i32.as-i16 --> stops-on-converting-i16-max-plus-one-to-i16
 
-  eq. ++> tests-i32-div-with-remainder
-    13.as-i64.as-i32.div -5.as-i64.as-i32
-    -2.as-i64.as-i32
+  -32769.as-i64.as-i32.as-i16 --> stops-on-converting-i16-min-minus-one-to-i16
 
-  not. ++> tests-i32-eq-false
-    123.as-i64.as-i32.eq 42.as-i64.as-i32
+  247483647.as-i64.as-i32.as-i16 --> stops-on-converting-out-of-bounds-to-i16
 
-  123.as-i64.as-i32.eq 123.as-i64.as-i32 ++> tests-i32-eq-true
-
-  not. ++> tests-i32-greater-equal
-    0.as-i64.as-i32.gt 0.as-i64.as-i32
-
-  not. ++> tests-i32-greater-false
-    0.as-i64.as-i32.gt 100.as-i64.as-i32
-
-  -200.as-i64.as-i32.gt -1000.as-i64.as-i32 ++> tests-i32-greater-true
-
-  113.as-i64.as-i32.gte 113.as-i64.as-i32 ++> tests-i32-gte-equal
-
-  not. ++> tests-i32-gte-false
-    0.as-i64.as-i32.gte 10.as-i64.as-i32
-
-  -1000.as-i64.as-i32.gte -1100.as-i64.as-i32 ++> tests-i32-gte-true
-
-  42.as-i64.as-i32.as-bytes.eq 00-00-00-2A ++> tests-i32-has-valid-bytes
-
-  not. ++> tests-i32-less-equal
-    10.as-i64.as-i32.lt 10.as-i64.as-i32
-
-  not. ++> tests-i32-less-false
-    10.as-i64.as-i32.lt -5.as-i64.as-i32
-
-  10.as-i64.as-i32.lt 50.as-i64.as-i32 ++> tests-i32-less-true
-
-  50.as-i64.as-i32.lte 50.as-i64.as-i32 ++> tests-i32-lte-equal
-
-  not. ++> tests-i32-lte-false
-    0.as-i64.as-i32.lte -10.as-i64.as-i32
-
-  -200.as-i64.as-i32.lte -100.as-i64.as-i32 ++> tests-i32-lte-true
-
-  eq. ++> tests-i32-minus-with-overflow
-    -2147483648.as-i64.as-i32.minus 1.as-i64.as-i32
-    2147483647.as-i64.as-i32
-
-  eq. ++> tests-i32-multiply-by-zero
-    1000.as-i64.as-i32.times 0.as-i64.as-i32
-    0.as-i64.as-i32
-
-  eq. ++> tests-i32-one-minus-i32-one
-    1.as-i64.as-i32.minus 1.as-i64.as-i32
-    0.as-i64.as-i32
-
-  eq. ++> tests-i32-one-plus-i32-one
-    1.as-i64.as-i32.plus 1.as-i64.as-i32
-    2.as-i64.as-i32
-
-  eq. ++> tests-i32-plus-with-overflow
-    2147483647.as-i64.as-i32.plus 1.as-i64.as-i32
-    -2147483648.as-i64.as-i32
-
-  eq. ++> tests-i32-times-with-overflow
-    2147483647.as-i64.as-i32.times 2.as-i64.as-i32
-    -2.as-i64.as-i32
-
-  eq. ++> tests-i32-times-wraps-large-positive-product
-    100000.as-i64.as-i32.times 100000.as-i64.as-i32
-    1410065408.as-i64.as-i32
-
-  eq. ++> tests-i32-times-wraps-modulo-2-pow-32
-    65536.as-i64.as-i32.times 65536.as-i64.as-i32
-    0.as-i64.as-i32
-
-  eq. ++> tests-i32-to-i16-and-back
-    123.as-i64.as-i32
-    123.as-i64.as-i32.as-i16.as-i32
-
-  0.as-i64.as-i32.eq 0.as-i64.as-i32 ++> tests-i32-zero-eq-to-i32-zero
-
-  eq. ++> tests-negative-i32-has-valid-bytes
-    -200.as-i64.as-i32.as-bytes
-    FF-FF-FF-38
-
-  eq. ++> tests-negative-i32-to-i16-and-back
-    -123.as-i64.as-i32
-    -123.as-i64.as-i32.as-i16.as-i32
-
-  eq. ++> tests-out-of-bounds-i32-as-i16-returns-provided-fallback
-    "recovered"
-    247483647.as-i64.as-i32.as-i16
-      "recovered" > [message]
-
-  32768.as-i64.as-i32.as-i16 --> on-converting-i16-max-plus-one-to-i16
-
-  -32769.as-i64.as-i32.as-i16 --> on-converting-i16-min-minus-one-to-i16
-
-  247483647.as-i64.as-i32.as-i16 --> on-converting-to-i16-if-out-of-bounds
-
-  2.as-i64.as-i32.div 0.as-i64.as-i32 --> on-division-i32-by-i32-zero
+  2.as-i64.as-i32.div 0.as-i64.as-i32 --> stops-on-division-by-zero

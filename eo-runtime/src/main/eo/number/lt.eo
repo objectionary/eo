@@ -12,58 +12,58 @@
     n.minus
       number x!
 
-  eq. ++> tests-int-less-equal
-    not.
-      10.lt 10
+  ninf.lt 42.5 ++> can-be-less-than-a-float-when-negative-infinity
+
+  10.lt 50 ++> can-be-less-than-a-larger-integer
+
+  ninf.lt 42 ++> can-be-less-than-an-integer-when-negative-infinity
+
+  eq. ++> can-be-less-than-positive-infinity-when-negative-infinity
+    ninf.lt pinf
     true
 
-  eq. ++> tests-int-less-false
+  eq. ++> cannot-be-less-than-a-float-when-positive-infinity
+    pinf.lt 42.5
+    false
+
+  eq. ++> cannot-be-less-than-a-number-when-nan
+    nan.lt 42
+    false
+
+  eq. ++> cannot-be-less-than-a-smaller-integer
     not.
       10.lt -5
     true
 
-  10.lt 50 ++> tests-int-less-true
-
-  eq. ++> tests-nan-not-lt-nan
-    nan.lt nan
-    false
-
-  eq. ++> tests-nan-not-lt-number
-    nan.lt 42
-    false
-
-  ninf.lt 42.5 ++> tests-negative-infinity-lt-float
-
-  ninf.lt 42 ++> tests-negative-infinity-lt-int
-
-  eq. ++> tests-negative-infinity-lt-negative-infinity
-    ninf.lt ninf
-    false
-
-  eq. ++> tests-negative-infinity-lt-positive-infinity
-    ninf.lt pinf
+  eq. ++> cannot-be-less-than-an-equal-integer
+    not.
+      10.lt 10
     true
 
-  eq. ++> tests-negative-infinity-not-lt-nan
-    ninf.lt nan
-    false
-
-  eq. ++> tests-positive-infinity-lt-positive-infinity
-    pinf.lt pinf
-    false
-
-  eq. ++> tests-positive-infinity-not-lt-float
-    pinf.lt 42.5
-    false
-
-  eq. ++> tests-positive-infinity-not-lt-int
+  eq. ++> cannot-be-less-than-an-integer-when-positive-infinity
     pinf.lt 42
     false
 
-  eq. ++> tests-positive-infinity-not-lt-nan
+  eq. ++> cannot-be-less-than-itself-when-negative-infinity
+    ninf.lt ninf
+    false
+
+  eq. ++> cannot-be-less-than-itself-when-positive-infinity
+    pinf.lt pinf
+    false
+
+  eq. ++> cannot-be-less-than-nan-when-nan
+    nan.lt nan
+    false
+
+  eq. ++> cannot-be-less-than-nan-when-negative-infinity
+    ninf.lt nan
+    false
+
+  eq. ++> cannot-be-less-than-nan-when-positive-infinity
     pinf.lt nan
     false
 
-  eq. ++> tests-positive-infinity-not-lt-negative-infinity
+  eq. ++> cannot-be-less-than-negative-infinity-when-positive-infinity
     pinf.lt ninf
     false

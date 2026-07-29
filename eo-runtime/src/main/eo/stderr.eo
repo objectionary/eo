@@ -54,5 +54,5 @@
       text
     true
 
-  stderr ++> tests-prints-to-stderr
+  stderr ++> can-print-to-stderr
     "Hello, stderr-test!\n"

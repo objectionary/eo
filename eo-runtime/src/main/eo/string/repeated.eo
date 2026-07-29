@@ -35,46 +35,46 @@
           text >> b!
           1
 
-  eq. ++> tests-text-repeated-five-times
-    "heyheyheyheyhey"
-    repeated
-      "hey"
-      5
-
-  eq. ++> tests-text-repeated-infinite-times-returns-provided-fallback
-    "recovered"
-    repeated
-      "x"
-      pinf
-      "recovered" > [message]
-
-  eq. ++> tests-text-repeated-negative-times-formats-message-as-number
+  eq. ++> can-format-the-error-message-of-a-negative-count
     "Can't repeat text -1.000000 times"
     repeated
       "x"
       -1
       message > [message]
 
-  eq. ++> tests-text-repeated-negative-times-returns-provided-fallback
+  eq. ++> can-repeat-a-text-five-times
+    "heyheyheyheyhey"
+    repeated
+      "hey"
+      5
+
+  eq. ++> can-repeat-a-text-zero-times
+    ""
+    repeated
+      "some"
+      0
+
+  eq. ++> rejects-a-negative-count
     "recovered"
     repeated
       "x"
       -1
       "recovered" > [message]
 
-  eq. ++> tests-text-repeated-non-integer-times-returns-provided-fallback
+  eq. ++> rejects-a-non-integer-count
     "recovered"
     repeated
       "x"
       2.5
       "recovered" > [message]
 
-  eq. ++> tests-text-repeated-zero-times-is-empty
-    ""
+  eq. ++> rejects-an-infinite-count
+    "recovered"
     repeated
-      "some"
-      0
+      "x"
+      pinf
+      "recovered" > [message]
 
-  repeated --> on-text-repeating-less-than-zero-times
+  repeated --> stops-on-a-negative-count
     ""
     -1

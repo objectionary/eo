@@ -24,7 +24,7 @@
     recfilter tup.tail > next
   | list > @
 
-  eq. ++> tests-filteredi-with-lt
+  eq. ++> can-filter-by-a-less-than-condition
     filteredi
       *
         3
@@ -37,7 +37,7 @@
       1
       2
 
-  eq. ++> tests-filteredi-with-string-length
+  eq. ++> can-filter-by-string-length
     filteredi
       *
         "Hello"
@@ -47,12 +47,12 @@
       v.length.gt 4 > [v i]
     * "Hello"
 
-  is-empty ++> tests-filteredi-with-empty-list
+  is-empty ++> can-filter-an-empty-list
     filteredi
       *
       v.lt 3 > [v i]
 
-  eq. ++> tests-filteredi-by-index
+  eq. ++> can-filter-by-index
     filteredi
       *
         3
@@ -63,7 +63,7 @@
       1
       4
 
-  eq. ++> tests-filteredi-with-bools
+  eq. ++> can-filter-bools-with-indexes
     filteredi
       *
         true

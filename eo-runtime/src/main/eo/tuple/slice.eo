@@ -43,7 +43,7 @@
         accum.with item
         accum
 
-  eq. ++> tests-simple-slice
+  eq. ++> can-slice-a-list
     slice
       *
         1
@@ -59,31 +59,7 @@
       4
       5
 
-  eq. ++> tests-slice-with-end-gt-length
-    slice
-      *
-        "foo"
-        "bar"
-        "buzz"
-      1
-      10
-    *
-      "bar"
-      "buzz"
-
-  eq. ++> tests-slice-with-end-lt-negative-length
-    slice
-      *
-        "A"
-        "b"
-        "C"
-        "d"
-        "E"
-      2
-      -9
-    *
-
-  eq. ++> tests-slice-with-negative-end
+  eq. ++> can-slice-with-a-negative-end
     slice
       *
         "a"
@@ -101,7 +77,7 @@
       "xyz"
       82.42
 
-  eq. ++> tests-slice-with-negative-start
+  eq. ++> can-slice-with-a-negative-start
     slice
       *
         8
@@ -118,7 +94,7 @@
       3
       8
 
-  eq. ++> tests-slice-with-negative-start-and-end
+  eq. ++> can-slice-with-a-negative-start-and-end
     slice
       *
         8
@@ -133,7 +109,7 @@
       0
       0
 
-  eq. ++> tests-slice-with-negative-start-gte-end
+  eq. ++> can-slice-with-a-negative-start-not-below-the-end
     slice
       *
         "f"
@@ -146,7 +122,34 @@
       3
     *
 
-  eq. ++> tests-slice-with-start-gte-end-both-negative
+  eq. ++> can-slice-with-a-start-below-the-negative-length
+    slice
+      *
+        9
+        99
+        999
+        9999
+      -10
+      3
+    *
+      9
+      99
+      999
+
+  eq. ++> can-slice-with-a-start-not-below-a-negative-end
+    slice
+      *
+        8
+        -2
+        33-53
+        -1
+        33
+        "Y"
+      4
+      -5
+    *
+
+  eq. ++> can-slice-with-a-start-not-below-the-end-when-both-negative
     slice
       *
         3
@@ -160,7 +163,7 @@
       -5
     *
 
-  eq. ++> tests-slice-with-start-gte-end-both-positive
+  eq. ++> can-slice-with-a-start-not-below-the-end-when-both-positive
     slice
       *
         3
@@ -171,29 +174,26 @@
       0
     *
 
-  eq. ++> tests-slice-with-start-gte-negative-end
+  eq. ++> can-slice-with-an-end-below-the-negative-length
     slice
       *
-        8
-        -2
-        33-53
-        -1
-        33
-        "Y"
-      4
-      -5
+        "A"
+        "b"
+        "C"
+        "d"
+        "E"
+      2
+      -9
     *
 
-  eq. ++> tests-slice-with-start-lt-negative-length
+  eq. ++> can-slice-with-an-end-beyond-the-length
     slice
       *
-        9
-        99
-        999
-        9999
-      -10
-      3
+        "foo"
+        "bar"
+        "buzz"
+      1
+      10
     *
-      9
-      99
-      999
+      "bar"
+      "buzz"

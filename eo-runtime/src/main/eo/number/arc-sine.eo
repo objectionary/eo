@@ -47,13 +47,7 @@
         series magnitude
     base
 
-  is-nan. ++> tests-arc-sine-above-one-is-nan
-    arc-sine 2
-
-  is-nan. ++> tests-arc-sine-below-minus-one-is-nan
-    arc-sine -2
-
-  lt. ++> tests-arc-sine-is-odd-function
+  lt. ++> can-behave-as-an-odd-function
     abs
       times.
         plus.
@@ -62,7 +56,7 @@
         1000
     1
 
-  lt. ++> tests-arc-sine-of-half-is-pi-sixths
+  lt. ++> can-take-an-arc-sine-of-a-half
     abs
       minus.
         times.
@@ -73,10 +67,7 @@
           1000
     1
 
-  is-nan. ++> tests-arc-sine-of-nan-is-nan
-    arc-sine nan
-
-  lt. ++> tests-arc-sine-of-negative-half-is-minus-pi-sixths
+  lt. ++> can-take-an-arc-sine-of-minus-a-half
     abs
       minus.
         times.
@@ -88,10 +79,7 @@
           1000
     1
 
-  is-nan. ++> tests-arc-sine-of-negative-infinity-is-nan
-    arc-sine ninf
-
-  lt. ++> tests-arc-sine-of-negative-one-is-minus-pi-halves
+  lt. ++> can-take-an-arc-sine-of-minus-one
     abs
       minus.
         times.
@@ -103,7 +91,7 @@
           1000
     1
 
-  lt. ++> tests-arc-sine-of-one-is-pi-halves
+  lt. ++> can-take-an-arc-sine-of-one
     abs
       minus.
         times.
@@ -114,7 +102,11 @@
           1000
     1
 
-  lt. ++> tests-arc-sine-of-point-six
+  eq. ++> can-take-an-arc-sine-of-zero
+    arc-sine 0
+    0
+
+  lt. ++> can-take-an-arc-sine-of-zero-point-six
     abs
       minus.
         times.
@@ -123,9 +115,17 @@
         643.5
     1
 
-  is-nan. ++> tests-arc-sine-of-positive-infinity-is-nan
-    arc-sine pinf
+  is-nan. ++> cannot-take-an-arc-sine-above-one
+    arc-sine 2
 
-  eq. ++> tests-arc-sine-of-zero-is-zero
-    arc-sine 0
-    0
+  is-nan. ++> cannot-take-an-arc-sine-below-minus-one
+    arc-sine -2
+
+  is-nan. ++> cannot-take-an-arc-sine-of-nan
+    arc-sine nan
+
+  is-nan. ++> cannot-take-an-arc-sine-of-negative-infinity
+    arc-sine ninf
+
+  is-nan. ++> cannot-take-an-arc-sine-of-positive-infinity
+    arc-sine pinf
