@@ -24,7 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.1
  */
 @ExtendWith(MktmpResolver.class)
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
+@SuppressWarnings("PMD.TooManyMethods")
 final class MjResolveTest {
 
     @Test

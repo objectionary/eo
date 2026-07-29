@@ -50,7 +50,7 @@ import org.xml.sax.SAXParseException;
  * Test case for {@link EoSyntax}.
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
+@SuppressWarnings("PMD.TooManyMethods")
 @Execution(ExecutionMode.SAME_THREAD)
 @ExtendWith(LogProgress.class)
 final class EoSyntaxTest {

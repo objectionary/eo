@@ -16,7 +16,7 @@ import org.xembly.Xembler;
  * Test case for {@link LnMethod}.
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
+@SuppressWarnings("PMD.TooManyMethods")
 final class LnMethodTest {
 
     @Test
