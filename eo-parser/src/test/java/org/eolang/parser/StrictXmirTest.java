@@ -156,7 +156,6 @@ final class StrictXmirTest {
 
     @RepeatedTest(20)
     @ExtendWith(MktmpResolver.class)
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void validatesXmirWithLocalSchemaInMultipleThreadsWithTheSameXml(@Mktmp final Path tmp) {
         final XML xml = new StrictXmir(
             StrictXmirTest.xmir(

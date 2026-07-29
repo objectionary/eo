@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
  * Tests for the regex atom.
  * @since 0.57.4
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "PMD.TooManyMethods"})
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class RegexAtomTest {
 
     @Test

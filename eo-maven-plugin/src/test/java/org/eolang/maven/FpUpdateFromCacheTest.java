@@ -24,7 +24,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class FpUpdateFromCacheTest {
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void appliesFromCache(@Mktmp final Path tmp) throws IOException {
         final Text expected = new TextOf("Cached!");
         final Path cached = new Saved(expected, tmp.resolve("cache.txt")).value();
@@ -38,7 +37,6 @@ final class FpUpdateFromCacheTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void returnsSaved(@Mktmp final Path tmp) throws IOException {
         final Path cached = new Saved(new TextOf("Cached!"), tmp.resolve("cache.txt")).value();
         final Path target = tmp.resolve("target.txt");

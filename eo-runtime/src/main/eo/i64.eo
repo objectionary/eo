@@ -14,7 +14,10 @@
   as-i32.as-i16 > as-i16
   [cant-convert] > as-i32
     if. > @
-      ^.eq left.as-i64
+      ^.eq
+        as-i64.
+          i32 >> left
+            as-bytes.slice 4 4
       left
       cant-convert
         "Can't convert i64 number %d to i32 because it's out of i32 bounds".printf
@@ -100,22 +103,21 @@
           117.minus highest
         00-00-00-00-00-00-00-00
   [x] > gt
-    differ.if > @
-      eq.
-        as-bytes.and 80-00-00-00-00-00-00-00 >> sign
-        00-00-00-00-00-00-00-00
+    if. > @
+      not.
+        eq.
+          as-bytes.and 80-00-00-00-00-00-00-00 >> sign
+          x.as-bytes.and 80-00-00-00-00-00-00-00
+      sign.eq 00-00-00-00-00-00-00-00
       and.
-        eq. >>
-          difference.as-bytes.and 80-00-00-00-00-00-00-00
-          00-00-00-00-00-00-00-00
-        not.
-          eq.
+        eq.
+          and.
             as-bytes.
               minus x >> difference
-            00-00-00-00-00-00-00-00
-    not. > differ
-      sign.eq
-        x.as-bytes.and 80-00-00-00-00-00-00-00
+            80-00-00-00-00-00-00-00
+          00-00-00-00-00-00-00-00
+        not.
+          difference.as-bytes.eq 00-00-00-00-00-00-00-00
   [x] > gte
     or. > @
       gt

@@ -10,28 +10,31 @@
 +spdx SPDX-License-Identifier: MIT
 
 [fun a b n] > integral
-  as-number. > @
-    malloc.of
-      8
-      [sum] >>
-        seq * > @
-          while
-            if. > [i] >>
-              i.lt n
-              seq *
-                sum.put
-                  sum.as-number.plus
-                    subsection
-                      a.plus (i.times step)
-                      a.plus ((i.plus 1).times step)
-                true
-              false
-            true > [i]
-          sum
-        as-number. > step
-          div.
-            b.minus a
-            n
+  valid.if > @
+    as-number.
+      malloc.of
+        8
+        [sum] >>
+          seq * > @
+            while
+              if. > [i] >>
+                i.lt n
+                seq *
+                  sum.put
+                    sum.as-number.plus
+                      subsection
+                        a.plus (i.times step)
+                        a.plus ((i.plus 1).times step)
+                  true
+                false
+              true > [i]
+            sum
+          as-number. > step
+            div.
+              b.minus a
+              n
+    trouble
+      "the number of partitions must be a finite positive integer"
   times. > [a b] >> subsection
     div.
       b.minus a
@@ -44,6 +47,9 @@
             0.5.times
               a.plus b
         fun b
+  n.is-finite.and > valid
+    n.is-integer.and
+      n.gt 0
 
   ++> tests-calculates-cube-integral
     close-to > @
@@ -156,3 +162,39 @@
         value.gte 0
         value
         value.neg
+
+  integral --> on-integral-with-fractional-partitions
+    x > [x]
+    0
+    1
+    1.5
+
+  integral --> on-integral-with-nan-partitions
+    x > [x]
+    0
+    1
+    nan
+
+  integral --> on-integral-with-negative-infinite-partitions
+    x > [x]
+    0
+    1
+    ninf
+
+  integral --> on-integral-with-negative-partitions
+    x > [x]
+    0
+    1
+    -1
+
+  integral --> on-integral-with-positive-infinite-partitions
+    x > [x]
+    0
+    1
+    pinf
+
+  integral --> on-integral-with-zero-partitions
+    x > [x]
+    0
+    1
+    0

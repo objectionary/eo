@@ -43,7 +43,6 @@ import org.cactoos.text.UncheckedText;
  * @since 0.28.12
  */
 @SuppressWarnings({
-    "PMD.TooManyMethods",
     "JTCOP.RuleAllTestsHaveProductionClass",
     "JTCOP.RuleCorrectTestName"
 })

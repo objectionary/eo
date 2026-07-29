@@ -6,7 +6,10 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
+import org.cactoos.Fallback;
 import org.cactoos.Input;
+import org.cactoos.scalar.IoChecked;
+import org.cactoos.scalar.ScalarWithFallback;
 
 /**
  * Objectionary with index.
@@ -47,41 +50,45 @@ final class OyIndexed implements Objectionary {
         return this.delegate.get(name);
     }
 
-    // @checkstyle IllegalCatchCheck (7 line)
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     @Override
     public boolean contains(final String name) throws IOException {
-        boolean result;
-        try {
-            result = this.index.contains(name);
-        } catch (final Exception ex) {
-            Logger.warn(
-                this,
-                "Failed to check object %s in objectionary index: %[exception]s",
-                name,
-                ex
-            );
-            result = this.delegate.contains(name);
-        }
-        return result;
+        return new IoChecked<>(
+            new ScalarWithFallback<Boolean>(
+                () -> this.index.contains(name),
+                new Fallback.From<>(
+                    Exception.class,
+                    ex -> {
+                        Logger.warn(
+                            this,
+                            "Failed to check object %s in objectionary index: %[exception]s",
+                            name,
+                            ex
+                        );
+                        return this.delegate.contains(name);
+                    }
+                )
+            )
+        ).value();
     }
 
-    // @checkstyle IllegalCatchCheck (7 line)
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     @Override
     public boolean isDirectory(final String name) throws IOException {
-        boolean result;
-        try {
-            result = !this.index.contains(name) && this.delegate.isDirectory(name);
-        } catch (final Exception ex) {
-            Logger.warn(
-                this,
-                "Failed to check object %s in objectionary index: %[exception]s. Try to check via delegate",
-                name,
-                ex
-            );
-            result = this.delegate.isDirectory(name);
-        }
-        return result;
+        return new IoChecked<>(
+            new ScalarWithFallback<Boolean>(
+                () -> !this.index.contains(name) && this.delegate.isDirectory(name),
+                new Fallback.From<>(
+                    Exception.class,
+                    ex -> {
+                        Logger.warn(
+                            this,
+                            "Failed to check object %s in objectionary index: %[exception]s. Try to check via delegate",
+                            name,
+                            ex
+                        );
+                        return this.delegate.isDirectory(name);
+                    }
+                )
+            )
+        ).value();
     }
 }

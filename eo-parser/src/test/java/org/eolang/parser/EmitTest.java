@@ -17,7 +17,6 @@ import org.xembly.Xembler;
  * Test case for {@link Emit}.
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.UnnecessaryLocalRule", "PMD.AvoidDuplicateLiterals"})
 final class EmitTest {
 
     @Test

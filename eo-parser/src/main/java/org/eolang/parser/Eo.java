@@ -30,7 +30,7 @@ import org.xembly.Directive;
  * @checkstyle CyclomaticComplexityCheck (820 lines)
  * @checkstyle BooleanExpressionComplexityCheck (820 lines)
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.UnnecessaryLocalRule", "PMD.CognitiveComplexity"})
+@SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.CognitiveComplexity"})
 final class Eo implements Iterable<Directive> {
 
     /**

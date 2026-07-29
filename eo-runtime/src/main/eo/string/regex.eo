@@ -52,7 +52,9 @@
         matched-from-index 1 0
     [txt] > matches
       found.exists.and > @
-        found.to.eq txt.length
+        and.
+          found.to.eq txt.length
+          found.from.eq 0
       next. > found
         match txt
 
@@ -61,6 +63,12 @@
       compiled.
         regex "/^[0-9]+$/"
       "123\n"
+
+  not. ++> tests-does-not-match-with-unmatched-leading-characters
+    matches.
+      compiled.
+        regex "/[a-z]+/"
+      "1abc"
 
   not. ++> tests-does-not-matches-regex-against-the-pattern
     matches.

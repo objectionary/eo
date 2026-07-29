@@ -24,7 +24,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class ConcurrentCacheTest {
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void triesToCompileProgramConcurrently(@Mktmp final Path temp) throws IOException {
         final AtomicInteger counter = new AtomicInteger(0);
         final ConcurrentCache cache = new ConcurrentCache();

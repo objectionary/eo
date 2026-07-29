@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link Source}.
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals", "PMD.UnnecessaryLocalRule"})
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class SourceTest {
 
     @Test

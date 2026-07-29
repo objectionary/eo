@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
  * Test for {@link Expect}.
  * @since 0.1.0
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class ExpectTest {
 
     @Test

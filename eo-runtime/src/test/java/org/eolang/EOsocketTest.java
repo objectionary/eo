@@ -37,7 +37,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @SuppressWarnings({
-    "PMD.TooManyMethods",
     "PMD.AvoidUsingHardCodedIP",
     "JTCOP.RuleAllTestsHaveProductionClass"
 })

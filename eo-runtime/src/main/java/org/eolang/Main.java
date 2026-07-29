@@ -195,7 +195,6 @@ public final class Main {
      * Run this opts.
      * @param opts The opts left
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static void run(final List<String> opts) {
         final String obj = opts.get(0);
         if (obj.isEmpty()) {

@@ -15,7 +15,6 @@ import org.junit.jupiter.params.provider.ValueSource;
  * Test case for {@link PhApplication}.
  * @since 0.16
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class PhApplicationTest {
 
     @Test
@@ -175,7 +174,6 @@ final class PhApplicationTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"hello", "bye", "", "привет"})
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void runsInThreads(final String data) {
         final String attr = "foo";
         final Phi ref = new PhApplication(

@@ -24,7 +24,6 @@ import org.junit.jupiter.params.provider.MethodSource;
  * Tests from {@link TjsForeign}.
  * @since 0.29.5
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class TjsForeignTest {
 
     /**
@@ -103,7 +102,6 @@ final class TjsForeignTest {
 
     @ParameterizedTest
     @MethodSource("tojoFunctionsWithoutDefaultValues")
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void throwsExceptionIfKeyWasNotFoundInTojo(
         final String key,
         final Func<TjForeign, Object> method

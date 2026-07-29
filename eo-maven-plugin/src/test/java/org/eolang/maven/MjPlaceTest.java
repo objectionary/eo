@@ -21,7 +21,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test case for {@link MjPlace}.
  * @since 0.11
  */
-@SuppressWarnings("PMD.TooManyMethods")
 @ExtendWith(MktmpResolver.class)
 final class MjPlaceTest {
 

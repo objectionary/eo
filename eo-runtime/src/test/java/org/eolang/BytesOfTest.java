@@ -15,7 +15,6 @@ import org.junit.jupiter.params.provider.CsvSource;
  * Test for {@link BytesOf}.
  * @since 0.1.0
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class BytesOfTest {
 
     @Test
@@ -152,6 +151,15 @@ final class BytesOfTest {
             ),
             new BytesOf((int) num).sshift(bits).asNumber(Integer.class),
             Matchers.equalTo((int) expected)
+        );
+    }
+
+    @Test
+    void shiftsEmptyBytes() {
+        MatcherAssert.assertThat(
+            "arithmetic shift of empty bytes should preserve them",
+            new BytesOf(new byte[0]).sshift(1).take(),
+            Matchers.equalTo(new byte[0])
         );
     }
 
