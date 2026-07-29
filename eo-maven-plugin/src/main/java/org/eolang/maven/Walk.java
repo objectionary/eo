@@ -30,7 +30,6 @@ final class Walk extends ListEnvelope<Path> {
     /**
      * Ctor.
      * @param dir The directory
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     Walk(final Path dir) {
         this(dir, Walk.list(dir));

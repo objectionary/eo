@@ -60,7 +60,6 @@ final class Emit {
 
     /**
      * Ctor.
-     * @checkstyle ConstructorsCodeFreeCheck (3 lines)
      */
     Emit() {
         this(List.of());
@@ -70,7 +69,6 @@ final class Emit {
      * Ctor.
      * @param source Raw EO source text (for caret-underlined error
      *  messages — pass empty string to disable)
-     * @checkstyle ConstructorsCodeFreeCheck (3 lines)
      */
     Emit(final String source) {
         this(List.of(Emit.EOL.split(source, -1)));

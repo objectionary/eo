@@ -116,7 +116,6 @@ public final class Stat64FuncCall implements Syscall {
 
         /**
          * Ctor.
-         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public WinStat() {
             super();

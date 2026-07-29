@@ -157,7 +157,6 @@ public class Expect<T> {
          * Ctor.
          * @param cause Exception cause
          * @param args Arguments for {@link String#format(String, Object...)}
-         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         ExMust(final String cause, final Object... args) {
             super(String.format(cause, args));
@@ -175,7 +174,6 @@ public class Expect<T> {
          * Ctor.
          * @param cause Exception cause
          * @param args Arguments for {@link String#format(String, Object...)}
-         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         ExThat(final String cause, final Object... args) {
             super(String.format(cause, args));
@@ -193,7 +191,6 @@ public class Expect<T> {
          * Ctor.
          * @param cause Exception cause
          * @param args Arguments for {@link String#format(String, Object...)}
-         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         ExOtherwise(final String cause, final Object... args) {
             super(String.format(cause, args));

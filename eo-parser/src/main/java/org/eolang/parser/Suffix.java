@@ -81,7 +81,6 @@ final class Suffix {
      * @param tail Tail substring (may have leading whitespace)
      * @param span Source span (for error reporting)
      * @param home Source column where {@code tail} begins
-     * @checkstyle ConstructorsCodeFreeCheck (3 lines)
      */
     Suffix(final String tail, final Span span, final int home) {
         this(Suffix.parse(tail, span, home));

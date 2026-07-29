@@ -85,7 +85,6 @@ final class ChPattern implements CommitHash {
         /**
          * The main constructor.
          * @param raw Raw pattern like *.*.*:abcdefg
-         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         private Pattern(final String raw) {
             this(raw.split(":"));

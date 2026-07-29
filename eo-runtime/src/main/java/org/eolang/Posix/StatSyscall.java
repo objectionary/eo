@@ -148,7 +148,6 @@ public final class StatSyscall implements Syscall {
 
         /**
          * Ctor.
-         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public Linux() {
             super();
@@ -239,7 +238,6 @@ public final class StatSyscall implements Syscall {
 
         /**
          * Ctor.
-         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public LinuxArm() {
             super();
@@ -329,7 +327,6 @@ public final class StatSyscall implements Syscall {
 
         /**
          * Ctor.
-         * @checkstyle ConstructorsCodeFreeCheck (6 lines)
          */
         public Mac() {
             super();
