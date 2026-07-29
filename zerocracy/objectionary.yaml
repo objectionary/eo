@@ -2,11 +2,12 @@
 - added: 8
   cycles: 1
   deleted: 8
+  error: deadlock; recursive locking
   inserted: 8
-  seconds: 2160.35480482
+  seconds: 2160.888575761
   version: 0.61.1
   what: judges-summary
-  when: 2026-07-29 11:46:29.847518567 Z
+  when: 2026-07-29 13:51:39.984591884 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -111436,23 +111437,6 @@
   where: github
   who: 161327834
   why: Reported bug in objectionary/phino#624
-- _id: 1077973
-  _job: 23108810907
-  _time: 2026-03-15 10:51:57.819678808 Z
-  _version: 0.19.9/0.60.1/0.17.15
-  tombstone: 2026-07-21 11:17:20.604132743 Z
-  total_active_contributors: 9
-  total_commits: 48746
-  total_contributors: 488
-  total_files: 14329
-  total_forks: 370
-  total_issues: 4423
-  total_pulls: 8037
-  total_releases: 835
-  total_repositories: 37
-  total_stars: 1741
-  what: dimensions-of-terrain
-  when: 2026-03-15 10:51:57.839172597 Z
 - _id: 1077993
   _job: 64973
   _time: 2026-03-15 15:50:02.234074931 Z
@@ -283910,7 +283894,7 @@
   issue: 873
   repository: 977982682
   what: issue-was-closed
-  when: 2026-06-27 07:42:34.000000000 Z
+  when: &3689 2026-06-27 07:42:34.000000000 Z
   where: github
   who: 526301
 - _id: 1105053
@@ -313644,9 +313628,9 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 831
   earliest_issue_was_found: 1
-  events_were_scanned: 12469717351
+  events_were_scanned: 12475820813
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 365
@@ -317408,9 +317392,9 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 999
   earliest_issue_was_found: 1
-  events_were_scanned: 12469625003
+  events_were_scanned: 12475724613
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
@@ -319893,7 +319877,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 16030895753
+  events_were_scanned: 12474675399
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 1356
@@ -319993,7 +319977,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 16069213896
+  events_were_scanned: 16117004763
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 77
@@ -320359,9 +320343,9 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1120
   earliest_issue_was_found: 1
-  events_were_scanned: 12452268642
+  events_were_scanned: 12471369209
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 686
@@ -320393,13 +320377,13 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5484
+  assignees_were_scanned: 5804
   earliest_issue_was_found: 1
-  events_were_scanned: 12469478543
+  events_were_scanned: 12475416831
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6064
   latest_issue_was_found: 4591
-  merges_were_scanned: 0
+  merges_were_scanned: 6090
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
@@ -415616,6 +415600,7 @@
   href: https://github.com/objectionary/eo/issues/6045/#issuecomment-5110265388
   is_human: 1
   issue: 6045
+  receipt: receipt-#83492
   repository: 73056727
   review_comments: 0
   seconds: 8475
@@ -415636,6 +415621,7 @@
   href: https://github.com/objectionary/eo/issues/6046/#issuecomment-5110265591
   is_human: 1
   issue: 6046
+  receipt: receipt-#83493
   repository: 73056727
   review_comments: 0
   seconds: 7976
@@ -415656,6 +415642,7 @@
   href: https://github.com/objectionary/eo/issues/6047/#issuecomment-5110265847
   is_human: 1
   issue: 6047
+  receipt: receipt-#83494
   repository: 73056727
   review_comments: 0
   seconds: 6685
@@ -415676,6 +415663,7 @@
   href: https://github.com/objectionary/eo/issues/6048/#issuecomment-5110266112
   is_human: 1
   issue: 6048
+  receipt: receipt-#83495
   repository: 73056727
   review_comments: 0
   seconds: 2884
@@ -417328,7 +417316,7 @@
   succeeded_builds: 17
   suggestions: 0
   what: pull-was-merged
-  when: 2026-07-29 06:56:13.000000000 Z
+  when: &3690 2026-07-29 06:56:13.000000000 Z
   where: github
   who: 526301
 - _id: 1114396
@@ -417354,7 +417342,7 @@
   succeeded_builds: 17
   suggestions: 0
   what: pull-was-merged
-  when: 2026-07-29 06:59:02.000000000 Z
+  when: &3691 2026-07-29 06:59:02.000000000 Z
   where: github
   who: 526301
 - _id: 1114397
@@ -417380,7 +417368,7 @@
   succeeded_builds: 17
   suggestions: 3
   what: pull-was-merged
-  when: 2026-07-29 06:56:41.000000000 Z
+  when: &3692 2026-07-29 06:56:41.000000000 Z
   where: github
   who: 526301
 - _id: 1114398
@@ -417405,7 +417393,7 @@
   succeeded_builds: 17
   suggestions: 0
   what: pull-was-merged
-  when: 2026-07-29 05:35:56.000000000 Z
+  when: &3693 2026-07-29 05:35:56.000000000 Z
   where: github
   who: 8086956
 - _id: 1114399
@@ -417430,7 +417418,7 @@
   succeeded_builds: 0
   suggestions: 0
   what: pull-was-merged
-  when: 2026-07-29 06:51:57.000000000 Z
+  when: &3694 2026-07-29 06:51:57.000000000 Z
   where: github
   who: 8086956
 - _id: 1114400
@@ -417455,7 +417443,7 @@
   succeeded_builds: 18
   suggestions: 0
   what: pull-was-merged
-  when: 2026-07-29 06:24:33.000000000 Z
+  when: &3695 2026-07-29 06:24:33.000000000 Z
   where: github
   who: 8086956
 - _id: 1114401
@@ -417480,7 +417468,7 @@
   succeeded_builds: 0
   suggestions: 0
   what: pull-was-merged
-  when: 2026-07-29 07:02:02.000000000 Z
+  when: &3696 2026-07-29 07:02:02.000000000 Z
   where: github
   who: 8086956
 - _id: 1114402
@@ -417505,7 +417493,7 @@
   succeeded_builds: 18
   suggestions: 0
   what: pull-was-merged
-  when: 2026-07-29 07:44:43.000000000 Z
+  when: &3697 2026-07-29 07:44:43.000000000 Z
   where: github
   who: 8086956
 - _id: 1114403
@@ -417530,7 +417518,7 @@
   succeeded_builds: 0
   suggestions: 0
   what: pull-was-merged
-  when: 2026-07-29 08:03:06.000000000 Z
+  when: &3698 2026-07-29 08:03:06.000000000 Z
   where: github
   who: 8086956
 - _id: 1114404
@@ -417556,7 +417544,7 @@
   succeeded_builds: 22
   suggestions: 3
   what: pull-was-merged
-  when: 2026-07-29 07:15:38.000000000 Z
+  when: &3699 2026-07-29 07:15:38.000000000 Z
   where: github
   who: 526301
 - _id: 1114405
@@ -417582,7 +417570,7 @@
   succeeded_builds: 22
   suggestions: 3
   what: pull-was-merged
-  when: 2026-07-29 07:05:08.000000000 Z
+  when: &3700 2026-07-29 07:05:08.000000000 Z
   where: github
   who: 526301
 - _id: 1114406
@@ -417608,7 +417596,7 @@
   succeeded_builds: 19
   suggestions: 0
   what: pull-was-merged
-  when: 2026-07-29 07:41:44.000000000 Z
+  when: &3701 2026-07-29 07:41:44.000000000 Z
   where: github
   who: 526301
 - _id: 1114407
@@ -417633,7 +417621,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: 2026-07-29 07:08:30.000000000 Z
+  when: &3702 2026-07-29 07:08:30.000000000 Z
   where: github
   who: 526301
 - _id: 1114408
@@ -417658,7 +417646,7 @@
   succeeded_builds: 17
   suggestions: 0
   what: pull-was-merged
-  when: 2026-07-29 07:59:01.000000000 Z
+  when: &3703 2026-07-29 07:59:01.000000000 Z
   where: github
   who: 526301
 - _id: 1114409
@@ -417991,6 +417979,7 @@
     give you at least something.  Your running score is [+2705](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 14
+  href: https://github.com/objectionary/eoc/issues/1126/#issuecomment-5117309221
   is_human: 1
   issue: 1126
   repository: 489321585
@@ -418014,6 +418003,7 @@
     give you at least something.  Your running score is [+2709](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 22
+  href: https://github.com/objectionary/eoc/issues/1119/#issuecomment-5117309527
   is_human: 1
   issue: 1119
   repository: 489321585
@@ -418303,9 +418293,11 @@
   failed_builds: 0
   files: 10
   hoc: 135
+  is_human: 1
   issue: 1146
   repository: 889819508
   review: 2026-07-29 09:29:02.000000000 Z
+  review_comments: 0
   succeeded_builds: 17
   suggestions: 0
   what: pull-was-merged
@@ -418327,8 +418319,10 @@
   failed_builds: 0
   files: 2
   hoc: 800
+  is_human: 0
   issue: 1147
   repository: 889819508
+  review_comments: 0
   succeeded_builds: 0
   suggestions: 0
   what: pull-was-merged
@@ -418350,9 +418344,11 @@
   failed_builds: 0
   files: 8
   hoc: 153
+  is_human: 1
   issue: 1149
   repository: 889819508
   review: 2026-07-29 09:49:01.000000000 Z
+  review_comments: 3
   succeeded_builds: 17
   suggestions: 3
   what: pull-was-merged
@@ -418374,8 +418370,10 @@
   failed_builds: 0
   files: 1
   hoc: 2
+  is_human: 0
   issue: 1150
   repository: 889819508
+  review_comments: 0
   succeeded_builds: 0
   suggestions: 0
   what: pull-was-merged
@@ -418397,8 +418395,10 @@
   failed_builds: 0
   files: 3
   hoc: 4
+  is_human: 0
   issue: 1152
   repository: 889819508
+  review_comments: 0
   succeeded_builds: 17
   suggestions: 0
   what: pull-was-merged
@@ -418411,6 +418411,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   assigner: 526301
   details: objectionary/phino#873 was assigned to @yegor256 by @yegor256.
+  is_human: 1
   issue: 873
   repository: 977982682
   what: issue-was-assigned
@@ -418422,11 +418423,12 @@
   _time: 2026-07-29 11:25:38.382647578 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#6079.
+  is_human: 1
   issue: 6079
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-07-29 09:13:05.000000000 Z
+  when: &3704 2026-07-29 09:13:05.000000000 Z
   where: github
   who: 526301
 - _id: 1114451
@@ -418434,6 +418436,7 @@
   _time: 2026-07-29 11:25:49.939188169 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "enhancement" label was attached by @maxonfjvipon to the issue objectionary/eo#6082.
+  is_human: 1
   issue: 6082
   label: enhancement
   repository: 73056727
@@ -418446,10 +418449,1159 @@
   _time: 2026-07-29 11:28:10.141909246 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/phino#873.
+  is_human: 1
   issue: 873
   label: bug
   repository: 977982682
   what: label-was-attached
   when: 2026-07-29 09:06:12.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114453
+  _job: 84375
+  _time: 2026-07-29 11:47:18.905303443 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  closer: 526301
+  details: The bug/feature in the issue objectionary/phino#873 opened @yegor256 by
+    was resolved, after 1mo of waiting, because it was closed by @yegor256 and earlier
+    it was assigned to @yegor256 and the label '#bug' was attached.
+  is_human: 1
+  issue: 873
+  label: bug
+  opener: 526301
+  repository: 977982682
+  seconds: -2769815
+  what: bug-was-resolved
+  when: *3689
+  where: github
+  who: 526301
+- _id: 1114454
+  _job: 84375
+  _time: 2026-07-29 11:47:48.225377900 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  details: It's time to reward @yegor256 for the bug resolved in objectionary/lints#1129
+    in 11 hours, the reward amount is 12.
+  greeting: 'Thanks for closing this issue! You''ve earned +12 points for this: +8
+    as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2721](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/lints/issues/1129/#issuecomment-5117309914
+  is_human: 1
+  issue: 1129
+  repository: 889819508
+  what: resolved-bug-was-rewarded
+  when: 2026-07-29 11:47:48.229796557 Z
+  where: github
+  who: 526301
+  why: Resolved bug in objectionary/lints#1129
+- _id: 1114455
+  _job: 84375
+  _time: 2026-07-29 11:47:49.244621999 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  details: It's time to reward @yegor256 for the bug resolved in objectionary/lints#1130
+    in 11 hours, the reward amount is 12.
+  greeting: 'Thanks for closing this issue! You''ve earned +12 points for this: +8
+    as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2733](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/lints/issues/1130/#issuecomment-5117310242
+  is_human: 1
+  issue: 1130
+  repository: 889819508
+  what: resolved-bug-was-rewarded
+  when: 2026-07-29 11:47:49.248769456 Z
+  where: github
+  who: 526301
+  why: Resolved bug in objectionary/lints#1130
+- _id: 1114456
+  _job: 84375
+  _time: 2026-07-29 11:47:49.661351426 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  details: It's time to reward @yegor256 for the bug resolved in objectionary/lints#1131
+    in 11 hours, the reward amount is 12.
+  greeting: 'Thanks for closing this issue! You''ve earned +12 points for this: +8
+    as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2745](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/lints/issues/1131/#issuecomment-5117310569
+  is_human: 1
+  issue: 1131
+  repository: 889819508
+  what: resolved-bug-was-rewarded
+  when: 2026-07-29 11:47:49.665102375 Z
+  where: github
+  who: 526301
+  why: Resolved bug in objectionary/lints#1131
+- _id: 1114457
+  _job: 84375
+  _time: 2026-07-29 11:47:50.272044943 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  details: It's time to reward @yegor256 for the bug resolved in objectionary/lints#1132
+    in 11 hours, the reward amount is 12.
+  greeting: 'Thanks for closing this issue! You''ve earned +12 points for this: +8
+    as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2757](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/lints/issues/1132/#issuecomment-5117310877
+  is_human: 1
+  issue: 1132
+  repository: 889819508
+  what: resolved-bug-was-rewarded
+  when: 2026-07-29 11:47:50.276257133 Z
+  where: github
+  who: 526301
+  why: Resolved bug in objectionary/lints#1132
+- _id: 1114458
+  _job: 84375
+  _time: 2026-07-29 11:47:50.693891543 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 8
+  details: It's time to reward @yegor256 for the bug resolved in objectionary/eo#6071
+    in 12 hours, the reward amount is 8.
+  greeting: 'Thanks for closing this issue! You''ve earned +8 points. Your running
+    score is [+2765](https://www.eolang.org/zerocracy/objectionary-vitals.html); don''t
+    forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/eo/issues/6071/#issuecomment-5117311253
+  is_human: 1
+  issue: 6071
+  repository: 73056727
+  what: resolved-bug-was-rewarded
+  when: 2026-07-29 11:47:50.697591423 Z
+  where: github
+  who: 526301
+  why: Resolved bug in objectionary/eo#6071
+- _id: 1114459
+  _job: 84375
+  _time: 2026-07-29 11:48:12.241720545 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 0
+  details: The pull request objectionary/lints#1133 with 12 HoC created by @yegor256
+    was merged by @yegor256 after 11h22m of being in review and 0 comments.
+  hoc: 12
+  is_human: 1
+  issue: 1133
+  merger: 526301
+  repository: 889819508
+  review_comments: 0
+  seconds: 40928
+  what: code-was-contributed
+  when: *3690
+  where: github
+  who: 526301
+- _id: 1114460
+  _job: 84375
+  _time: 2026-07-29 11:48:12.516302493 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 0
+  details: The pull request objectionary/lints#1134 with 17 HoC created by @yegor256
+    was merged by @yegor256 after 11h22m of being in review and 0 comments.
+  hoc: 17
+  is_human: 1
+  issue: 1134
+  merger: 526301
+  repository: 889819508
+  review_comments: 0
+  seconds: 40958
+  what: code-was-contributed
+  when: *3691
+  where: github
+  who: 526301
+- _id: 1114461
+  _job: 84375
+  _time: 2026-07-29 11:48:12.785151698 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  details: The pull request objectionary/lints#1135 with 57 HoC created by @yegor256
+    was merged by @yegor256 after 11h17m of being in review and 3 comments.
+  hoc: 57
+  is_human: 1
+  issue: 1135
+  merger: 526301
+  repository: 889819508
+  review_comments: 3
+  seconds: 40663
+  what: code-was-contributed
+  when: *3692
+  where: github
+  who: 526301
+- _id: 1114462
+  _job: 84375
+  _time: 2026-07-29 11:48:13.053069100 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  details: The pull request objectionary/lints#1137 with 16 HoC created by @volodya-lombrozo
+    was merged by @rultor after 16m of being in review and 3 comments.
+  hoc: 16
+  is_human: 1
+  issue: 1137
+  merger: 8086956
+  repository: 889819508
+  review_comments: 0
+  seconds: 960
+  what: code-was-contributed
+  when: *3693
+  where: github
+  who: 51804353
+- _id: 1114463
+  _job: 84375
+  _time: 2026-07-29 11:48:13.435107437 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  details: The pull request objectionary/lints#1138 with 810 HoC created by @github-actions[bot]
+    was merged by @rultor after 1h14m of being in review and 3 comments.
+  hoc: 810
+  is_human: 0
+  issue: 1138
+  merger: 8086956
+  repository: 889819508
+  review_comments: 0
+  seconds: 4445
+  what: code-was-contributed
+  when: *3694
+  where: github
+  who: 41898282
+- _id: 1114464
+  _job: 84375
+  _time: 2026-07-29 11:48:13.856769324 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  details: The pull request objectionary/lints#1139 with 23 HoC created by @volodya-lombrozo
+    was merged by @rultor after 12m1s of being in review and 3 comments.
+  hoc: 23
+  is_human: 1
+  issue: 1139
+  merger: 8086956
+  repository: 889819508
+  review_comments: 0
+  seconds: 721
+  what: code-was-contributed
+  when: *3695
+  where: github
+  who: 51804353
+- _id: 1114465
+  _job: 84375
+  _time: 2026-07-29 11:48:14.126883370 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  details: The pull request objectionary/lints#1140 with 794 HoC created by @github-actions[bot]
+    was merged by @rultor after 7m27s of being in review and 3 comments.
+  hoc: 794
+  is_human: 0
+  issue: 1140
+  merger: 8086956
+  repository: 889819508
+  review_comments: 0
+  seconds: 447
+  what: code-was-contributed
+  when: *3696
+  where: github
+  who: 41898282
+- _id: 1114466
+  _job: 84375
+  _time: 2026-07-29 11:48:14.395994410 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  details: The pull request objectionary/lints#1142 with 9 HoC created by @volodya-lombrozo
+    was merged by @rultor after 31m29s of being in review and 3 comments.
+  hoc: 9
+  is_human: 1
+  issue: 1142
+  merger: 8086956
+  repository: 889819508
+  review_comments: 0
+  seconds: 1889
+  what: code-was-contributed
+  when: *3697
+  where: github
+  who: 51804353
+- _id: 1114467
+  _job: 84375
+  _time: 2026-07-29 11:48:14.662867477 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  details: The pull request objectionary/lints#1143 with 776 HoC created by @github-actions[bot]
+    was merged by @rultor after 48m58s of being in review and 3 comments.
+  hoc: 776
+  is_human: 0
+  issue: 1143
+  merger: 8086956
+  repository: 889819508
+  review_comments: 0
+  seconds: 2938
+  what: code-was-contributed
+  when: *3698
+  where: github
+  who: 41898282
+- _id: 1114468
+  _job: 84375
+  _time: 2026-07-29 11:48:14.930048147 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 6
+  details: The pull request objectionary/eo#6054 with 10 HoC created by @morphqdd
+    was merged by @yegor256 after 14h13m of being in review and 6 comments.
+  hoc: 10
+  is_human: 1
+  issue: 6054
+  merger: 526301
+  repository: 73056727
+  review_comments: 3
+  seconds: 51205
+  what: code-was-contributed
+  when: *3699
+  where: github
+  who: 125282851
+- _id: 1114469
+  _job: 84375
+  _time: 2026-07-29 11:48:15.306403413 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 6
+  details: The pull request objectionary/eo#6056 with 52 HoC created by @morphqdd
+    was merged by @yegor256 after 13h47m of being in review and 6 comments.
+  hoc: 52
+  is_human: 1
+  issue: 6056
+  merger: 526301
+  repository: 73056727
+  review_comments: 3
+  seconds: 49655
+  what: code-was-contributed
+  when: *3700
+  where: github
+  who: 125282851
+- _id: 1114470
+  _job: 84375
+  _time: 2026-07-29 11:48:15.576030491 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  details: The pull request objectionary/eo#6073 with 102 HoC created by @yegor256
+    was merged by @yegor256 after 12h5m of being in review and 3 comments.
+  hoc: 102
+  is_human: 1
+  issue: 6073
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 43536
+  what: code-was-contributed
+  when: *3701
+  where: github
+  who: 526301
+- _id: 1114471
+  _job: 84375
+  _time: 2026-07-29 11:48:15.847081334 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 2
+  details: The pull request objectionary/eo#6077 with 86 HoC created by @gemshrine
+    was merged by @yegor256 after 9h48m of being in review and 2 comments.
+  hoc: 86
+  is_human: 1
+  issue: 6077
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 35336
+  what: code-was-contributed
+  when: *3702
+  where: github
+  who: 113778529
+- _id: 1114472
+  _job: 84375
+  _time: 2026-07-29 11:48:16.233346237 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 1
+  details: The pull request objectionary/eo#6081 with 29 HoC created by @oozan was
+    merged by @yegor256 after 42m2s of being in review and 1 comments.
+  hoc: 29
+  is_human: 1
+  issue: 6081
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 2522
+  what: code-was-contributed
+  when: *3703
+  where: github
+  who: 38402864
+- _id: 1114473
+  _job: 84375
+  _time: 2026-07-29 11:48:18.085302420 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#6079 reported by
+    @titanism0v0; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 6079
+  reporter: 263808434
+  repository: 73056727
+  what: bug-was-accepted
+  when: *3704
+  where: github
+  who: 526301
+- _id: 1114474
+  _job: 84375
+  _time: 2026-07-29 11:48:24.669608905 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 4
+  comments: 4
+  details: It's time to reward @volodya-lombrozo for the code review in objectionary/lints#1119,
+    the reward amount is 4.
+  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
+    -8 for absolutely no comments posted.  Your running score is [+398](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 60
+  is_human: 1
+  issue: 1119
+  repository: 889819508
+  review_comments: 0
+  seconds: 36310
+  what: code-review-was-rewarded
+  when: 2026-07-29 11:48:24.675102703 Z
+  where: github
+  who: 51804353
+  why: Reviewed code in objectionary/lints#1119
+- _id: 1114475
+  _job: 84375
+  _time: 2026-07-29 11:48:25.255014712 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 4
+  comments: 3
+  details: It's time to reward @yegor256 for the code review in objectionary/jucs#98,
+    the reward amount is 4.
+  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
+    -8 for absolutely no comments posted; -4 for too few (2) hits-of-code; +4 to give
+    you at least something.  Your running score is [+2769](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 2
+  is_human: 1
+  issue: 98
+  repository: 574459304
+  review_comments: 0
+  seconds: 122494
+  what: code-review-was-rewarded
+  when: 2026-07-29 11:48:25.261226721 Z
+  where: github
+  who: 526301
+  why: Reviewed code in objectionary/jucs#98
+- _id: 1114476
+  _job: 84375
+  _time: 2026-07-29 11:48:26.029181639 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 4
+  comments: 5
+  details: It's time to reward @yegor256 for the code review in objectionary/eo#6043,
+    the reward amount is 4.
+  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
+    -8 for absolutely no comments posted; -4 for too few (4) hits-of-code; +4 to give
+    you at least something.  Your running score is [+2773](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 4
+  is_human: 1
+  issue: 6043
+  repository: 73056727
+  review_comments: 0
+  seconds: 59112
+  what: code-review-was-rewarded
+  when: 2026-07-29 11:48:26.034792290 Z
+  where: github
+  who: 526301
+  why: Reviewed code in objectionary/eo#6043
+- _id: 1114477
+  _job: 30455095598
+  _time: 2026-07-29 13:16:15.053985333 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#1145 has been closed by @volodya-lombrozo.
+  event_id: 12475723537
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 1145
+  repository: 889819508
+  what: issue-was-closed
+  when: 2026-07-29 13:12:37.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1114478
+  _job: 30455095598
+  _time: 2026-07-29 13:16:18.471102673 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 1145-fix-pit-test-discovery
+  details: The pull request objectionary/lints#1157 has been opened by @volodya-lombrozo.
+  event_id: 12474319593
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 1157
+  repository: 889819508
+  what: pull-was-opened
+  when: 2026-07-29 12:46:48.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1114479
+  _job: 30455095598
+  _time: 2026-07-29 13:16:19.409209409 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  commits: 7
+  contributors:
+  - 41898282
+  - 8086956
+  - 51804353
+  - 526301
+  details: A new release "Lints incorrectly treating `-`-prefixed throwing tests as
+    ordinary objects" has been published in objectionary/lints by @rultor.
+  event_id: 12474166074
+  event_type: ReleaseEvent
+  hoc: 1008
+  is_human: 0
+  last_commit: bb865f1a0c2fb372de2aef07593091b91392fd14
+  release: 361748013
+  repository: 889819508
+  tag: 0.4.1
+  what: release-published
+  when: 2026-07-29 12:43:58.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1114480
+  _job: 30455095598
+  _time: 2026-07-29 13:16:20.867261923 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: version-up
+  details: The pull request objectionary/lints#1156 has been opened by @github-actions[bot].
+  event_id: 12474089348
+  event_type: PullRequestEvent
+  is_human: 0
+  issue: 1156
+  repository: 889819508
+  what: pull-was-opened
+  when: 2026-07-29 12:42:31.000000000 Z
+  where: github
+  who: 41898282
+- _id: 1114481
+  _job: 30455095598
+  _time: 2026-07-29 13:16:23.216717568 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#1155 has been opened by @imilb.
+  event_id: 12472624141
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 1155
+  repository: 889819508
+  what: issue-was-opened
+  when: 2026-07-29 12:13:36.000000000 Z
+  where: github
+  who: 220759878
+- _id: 1114482
+  _job: 30455095598
+  _time: 2026-07-29 13:16:23.923012442 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#1154 has been opened by @imilb.
+  event_id: 12472524364
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 1154
+  repository: 889819508
+  what: issue-was-opened
+  when: 2026-07-29 12:11:37.000000000 Z
+  where: github
+  who: 220759878
+- _id: 1114483
+  _job: 30455095598
+  _time: 2026-07-29 13:16:24.664379065 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#1151 has been closed by @volodya-lombrozo.
+  event_id: 12472414196
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 1151
+  repository: 889819508
+  what: issue-was-closed
+  when: 2026-07-29 12:09:22.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1114484
+  _job: 30455095598
+  _time: 2026-07-29 13:16:26.892226053 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#1141 has been closed by @volodya-lombrozo.
+  event_id: 12470951063
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 1141
+  repository: 889819508
+  what: issue-was-closed
+  when: 2026-07-29 11:38:59.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1114485
+  _job: 30455095598
+  _time: 2026-07-29 13:16:28.249776222 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: benchmark
+  details: The pull request objectionary/lints#1153 has been opened by @github-actions[bot].
+  event_id: 12470010641
+  event_type: PullRequestEvent
+  is_human: 0
+  issue: 1153
+  repository: 889819508
+  what: pull-was-opened
+  when: 2026-07-29 11:18:42.000000000 Z
+  where: github
+  who: 41898282
+- _id: 1114486
+  _job: 30455095598
+  _time: 2026-07-29 13:16:40.069048776 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: claude/phino-issue-1007-4t5m5c
+  details: The pull request objectionary/phino#1008 has been opened by @yegor256.
+  event_id: 12475820813
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 1008
+  repository: 977982682
+  what: pull-was-opened
+  when: 2026-07-29 13:14:23.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114487
+  _job: 30455095598
+  _time: 2026-07-29 13:16:41.454349636 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/phino#1007 has been opened by @yegor256.
+  event_id: 12475474361
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 1007
+  repository: 977982682
+  what: issue-was-opened
+  when: 2026-07-29 13:08:00.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114488
+  _job: 30455095598
+  _time: 2026-07-29 13:16:42.118911826 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  commits: 9
+  contributors:
+  - 41898282
+  - 29139614
+  - 526301
+  - 81847
+  - 8086956
+  details: A new release "Lack of Step Annotations When Using `--headers` with `--sequence`
+    in `phino rewrite --normalize`" has been published in objectionary/phino by @rultor.
+  event_id: 12474933273
+  event_type: ReleaseEvent
+  hoc: 494
+  is_human: 0
+  last_commit: fab3bda9321d669e48102f67773880a7f291a6bb
+  release: 361756606
+  repository: 977982682
+  tag: 0.0.107
+  what: release-published
+  when: 2026-07-29 12:58:10.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1114489
+  _job: 30455095598
+  _time: 2026-07-29 13:16:43.317234783 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: version-up
+  details: The pull request objectionary/phino#1006 has been opened by @github-actions[bot].
+  event_id: 12474831801
+  event_type: PullRequestEvent
+  is_human: 0
+  issue: 1006
+  repository: 977982682
+  what: pull-was-opened
+  when: 2026-07-29 12:56:18.000000000 Z
+  where: github
+  who: 41898282
+- _id: 1114490
+  _job: 30455095598
+  _time: 2026-07-29 13:16:45.368421626 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/phino#1001 has been closed by @yegor256.
+  event_id: 12473709487
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 1001
+  repository: 977982682
+  what: issue-was-closed
+  when: 2026-07-29 12:35:06.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114491
+  _job: 30455095598
+  _time: 2026-07-29 13:17:04.196573454 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  commit: 69e9d77d4fd48ba7c216a516f50ce4e67fed46d5
+  default_branch: master
+  details: 'A new Git push #38429789724 has arrived to objectionary/eo, made by @yegor256
+    (default branch is "master"), not associated with any pull request.'
+  event_id: 16124888006
+  event_type: PushEvent
+  is_human: 1
+  push_id: 38429789724
+  ref: refs/heads/master
+  repository: 73056727
+  to_master: 1
+  what: git-was-pushed
+  when: 2026-07-29 12:48:52.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114492
+  _job: 30455095598
+  _time: 2026-07-29 13:17:04.934619586 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6066-scanf-leading
+  details: The pull request objectionary/eo#6090 has been opened by @gemshrine.
+  event_id: 12472598984
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6090
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-07-29 12:13:06.000000000 Z
+  where: github
+  who: 113778529
+- _id: 1114493
+  _job: 30455095598
+  _time: 2026-07-29 13:17:06.266155842 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6060-nsplit-limit
+  details: The pull request objectionary/eo#6089 has been opened by @gemshrine.
+  event_id: 12471807662
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6089
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-07-29 11:57:09.000000000 Z
+  where: github
+  who: 113778529
+- _id: 1114494
+  _job: 30455095598
+  _time: 2026-07-29 13:17:07.114249522 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6059-as-fixed-inf
+  details: The pull request objectionary/eo#6088 has been opened by @gemshrine.
+  event_id: 12471465492
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6088
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-07-29 11:49:58.000000000 Z
+  where: github
+  who: 113778529
+- _id: 1114495
+  _job: 30455095598
+  _time: 2026-07-29 13:17:08.389812327 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6058-repeated-inf
+  details: The pull request objectionary/eo#6087 has been opened by @gemshrine.
+  event_id: 12471131121
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6087
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-07-29 11:42:58.000000000 Z
+  where: github
+  who: 113778529
+- _id: 1114496
+  _job: 30455095598
+  _time: 2026-07-29 13:17:09.596201739 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6057-tuple-at-fractional
+  details: The pull request objectionary/eo#6086 has been opened by @gemshrine.
+  event_id: 12470796526
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6086
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-07-29 11:35:32.000000000 Z
+  where: github
+  who: 113778529
+- _id: 1114497
+  _job: 30455095598
+  _time: 2026-07-29 13:17:11.511194313 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '6083'
+  details: The pull request objectionary/eo#6085 has been opened by @yegor256.
+  event_id: 12470707063
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6085
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-07-29 11:33:36.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114498
+  _job: 30455095598
+  _time: 2026-07-29 13:17:12.600389757 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6084 has been opened by @maxonfjvipon.
+  event_id: 12470597863
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6084
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-29 11:31:10.000000000 Z
+  where: github
+  who: 37025995
+- _id: 1114499
+  _job: 30455095598
+  _time: 2026-07-29 13:17:13.408129751 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6083 has been opened by @yegor256.
+  event_id: 12470420622
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6083
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-29 11:27:18.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114500
+  _job: 30455095598
+  _time: 2026-07-29 13:20:16.794160119 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: version-up
+  details: The missing pull objectionary/phino#997 has been opened by @github-actions[bot].
+  issue: 997
+  repository: 977982682
+  what: pull-was-opened
+  when: 2026-07-23 15:55:54.000000000 Z
+  where: github
+  who: 41898282
+- _id: 1114501
+  _job: 30455095598
+  _time: 2026-07-29 13:20:18.076061830 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: benchmark
+  details: The missing pull objectionary/phino#998 has been opened by @github-actions[bot].
+  issue: 998
+  repository: 977982682
+  what: pull-was-opened
+  when: 2026-07-24 23:39:15.000000000 Z
+  where: github
+  who: 41898282
+- _id: 1114502
+  _job: 30455095598
+  _time: 2026-07-29 13:20:19.091247550 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The missing issue objectionary/phino#999 has been opened by @yegor256.
+  issue: 999
+  repository: 977982682
+  what: issue-was-opened
+  when: 2026-07-29 09:11:44.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114503
+  _job: 30455095598
+  _time: 2026-07-29 13:20:19.676227770 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '873'
+  details: The missing pull objectionary/phino#1000 has been opened by @yegor256.
+  issue: 1000
+  repository: 977982682
+  what: pull-was-opened
+  when: 2026-07-29 09:18:30.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114504
+  _job: 30455095598
+  _time: 2026-07-29 13:20:20.650799182 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: benchmark
+  details: The missing pull objectionary/phino#1002 has been opened by @github-actions[bot].
+  issue: 1002
+  repository: 977982682
+  what: pull-was-opened
+  when: 2026-07-29 10:07:39.000000000 Z
+  where: github
+  who: 41898282
+- _id: 1114505
+  _job: 30455095598
+  _time: 2026-07-29 13:20:21.905989928 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: claude/phino-issue-999-cniduw
+  details: The missing pull objectionary/phino#1003 has been opened by @yegor256.
+  issue: 1003
+  repository: 977982682
+  what: pull-was-opened
+  when: 2026-07-29 10:16:59.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114506
+  _job: 30455095598
+  _time: 2026-07-29 13:20:22.911897144 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: claude/phino-issue-1001-0os1od
+  details: The missing pull objectionary/phino#1004 has been opened by @yegor256.
+  issue: 1004
+  repository: 977982682
+  what: pull-was-opened
+  when: 2026-07-29 10:32:55.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114507
+  _job: 30455095598
+  _time: 2026-07-29 13:20:23.451371581 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The missing issue objectionary/phino#1005 has been opened by @maxonfjvipon.
+  issue: 1005
+  repository: 977982682
+  what: issue-was-opened
+  when: 2026-07-29 10:39:26.000000000 Z
+  where: github
+  who: 37025995
+- _id: 1114508
+  _job: 30455095598
+  _time: 2026-07-29 13:20:30.069970161 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/phino#1001 has been opened earlier by @yegor256.
+  issue: 1001
+  repository: 977982682
+  what: issue-was-opened
+  when: 2026-07-29 09:19:05.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114509
+  _job: 30455095598
+  _time: 2026-07-29 13:21:05.154005715 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: version-up
+  comments: 3
+  comments_appreciated: 1
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/phino#997 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 2
+  issue: 997
+  repository: 977982682
+  succeeded_builds: 23
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-07-23 21:30:52.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1114510
+  _job: 30455095598
+  _time: 2026-07-29 13:21:57.071998858 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: benchmark
+  comments: 3
+  comments_appreciated: 1
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/phino#998 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 64
+  issue: 998
+  repository: 977982682
+  succeeded_builds: 23
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-07-25 06:40:18.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1114511
+  _job: 30455095598
+  _time: 2026-07-29 13:23:15.488966220 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '873'
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/phino#1000 has been "pull-was-merged".
+  failed_builds: 1
+  files: 2
+  hoc: 102
+  issue: 1000
+  repository: 977982682
+  review: 2026-07-29 09:18:36.000000000 Z
+  succeeded_builds: 23
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-07-29 09:59:28.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114512
+  _job: 30455095598
+  _time: 2026-07-29 13:23:39.497017401 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: claude/phino-issue-999-cniduw
+  comments: 5
+  comments_appreciated: 1
+  comments_by_author: 1
+  comments_by_reviewers: 4
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/phino#1003 has been "pull-was-merged".
+  failed_builds: 0
+  files: 7
+  hoc: 158
+  issue: 1003
+  repository: 977982682
+  review: 2026-07-29 10:21:09.000000000 Z
+  succeeded_builds: 24
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-07-29 10:53:52.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1114513
+  _job: 30455095598
+  _time: 2026-07-29 13:23:56.474667541 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: claude/phino-issue-1001-0os1od
+  comments: 9
+  comments_appreciated: 2
+  comments_by_author: 2
+  comments_by_reviewers: 7
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/phino#1004 has been "pull-was-merged".
+  failed_builds: 0
+  files: 8
+  hoc: 164
+  issue: 1004
+  repository: 977982682
+  review: 2026-07-29 10:44:55.000000000 Z
+  succeeded_builds: 24
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-07-29 12:35:05.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114514
+  _job: 30455095598
+  _time: 2026-07-29 13:24:25.379150922 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: claude/lints-issue-1129-wsf644
+  comments: 0
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 0
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/lints#1136 has been "pull-was-merged".
+  failed_builds: 0
+  files: 17
+  hoc: 200
+  issue: 1136
+  repository: 889819508
+  review: 2026-07-29 06:58:07.000000000 Z
+  succeeded_builds: 17
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-07-29 12:32:51.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114515
+  _job: 30455095598
+  _time: 2026-07-29 13:24:45.349878977 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 1145-fix-pit-test-discovery
+  comments: 3
+  comments_appreciated: 1
+  comments_by_author: 1
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/lints#1157 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 2
+  issue: 1157
+  repository: 889819508
+  succeeded_builds: 17
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-07-29 13:03:01.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1114516
+  _job: 30455095598
+  _time: 2026-07-29 13:31:00.069073317 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "enhancement" label was attached by @yegor256 to the issue objectionary/phino#999.
+  issue: 999
+  label: enhancement
+  repository: 977982682
+  what: label-was-attached
+  when: 2026-07-29 09:12:05.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114517
+  _job: 30455095598
+  _time: 2026-07-29 13:31:02.346727994 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "enhancement" label was attached by @yegor256 to the issue objectionary/phino#1001.
+  issue: 1001
+  label: enhancement
+  repository: 977982682
+  what: label-was-attached
+  when: 2026-07-29 09:21:50.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114518
+  _job: 30455095598
+  _time: 2026-07-29 13:31:04.431034606 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @maxonfjvipon to the issue objectionary/phino#1005.
+  issue: 1005
+  label: bug
+  repository: 977982682
+  what: label-was-attached
+  when: 2026-07-29 10:39:44.000000000 Z
+  where: github
+  who: 37025995
+- _id: 1114519
+  _job: 30455095598
+  _time: 2026-07-29 13:31:07.360213209 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/phino#1007.
+  issue: 1007
+  label: bug
+  repository: 977982682
+  what: label-was-attached
+  when: 2026-07-29 13:08:21.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114520
+  _job: 30455095598
+  _time: 2026-07-29 13:31:21.546665633 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/lints#1154.
+  issue: 1154
+  label: bug
+  repository: 889819508
+  what: label-was-attached
+  when: 2026-07-29 12:48:03.000000000 Z
+  where: github
+  who: 526301
+- _id: 1114521
+  _job: 30455095598
+  _time: 2026-07-29 13:31:22.556019841 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/lints#1155.
+  issue: 1155
+  label: bug
+  repository: 889819508
+  what: label-was-attached
+  when: 2026-07-29 12:47:50.000000000 Z
   where: github
   who: 526301
