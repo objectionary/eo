@@ -71,8 +71,8 @@
           0
           0
           0
-  delimiter.size >> size!
   text.as-bytes >> bts!
+  delimiter.size >> size!
 
   eq. ++> tests-nsplit-fractional-limit-returns-provided-fallback
     "recovered"
