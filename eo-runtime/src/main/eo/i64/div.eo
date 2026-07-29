@@ -23,11 +23,13 @@
         80-00-00-00-00-00-00-00
       as-bytes.
         plus.
-          i64 quotient.not
+          i64
+            not.
+              looped 63 00-00-00-00-00-00-00-00 00-00-00-00-00-00-00-00 >> quotient
           i64 00-00-00-00-00-00-00-01
       i64 quotient
-  00-00-00-00-00-00-00-01.left i > [i] > bit
-  [index remainder quot] > looped
+  00-00-00-00-00-00-00-01.left i > [i] >> bit
+  [index remainder quot] >> looped
     if. > @
       index.lt 0
       quot
@@ -59,24 +61,20 @@
                 index
               00-00-00-00-00-00-00-01
           quot
-  if. > [b] > magnitude
-    eq.
-      b.and 80-00-00-00-00-00-00-00
-      80-00-00-00-00-00-00-00
-    as-bytes.
-      plus.
-        i64 b.not
-        i64 00-00-00-00-00-00-00-01
-    b
-  looped > quotient
-    63
-    00-00-00-00-00-00-00-00
-    00-00-00-00-00-00-00-00
-  as-bytes. > subtrahend
+  as-bytes. >> subtrahend
     plus.
       i64
         not.
-          magnitude x.as-bytes
+          if. > [b] >> magnitude
+            eq.
+              b.and 80-00-00-00-00-00-00-00
+              80-00-00-00-00-00-00-00
+            as-bytes.
+              plus.
+                i64 b.not
+                i64 00-00-00-00-00-00-00-01
+            b
+          | x.as-bytes
       i64 00-00-00-00-00-00-00-01
 
   eq. ++> can-divide-a-large-dividend
