@@ -261,6 +261,13 @@
               </keepBinaries>
             </configuration>
           </execution>
+          <execution>
+            <id>coverage-report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>coverage</goal>
+            </goals>
+          </execution>
         </executions>
       </plugin>
       <plugin>
