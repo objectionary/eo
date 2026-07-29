@@ -52,23 +52,29 @@
         matched-from-index 1 0
     [txt] > matches
       found.exists.and > @
-        found.to.eq txt.length
+        and.
+          found.to.eq txt.length
+          found.from.eq 0
       next. > found
         match txt
 
-  ++> tests-does-not-match-anchored-pattern-with-trailing-newline
-    not. > @
-      matches.
-        compiled.
-          regex "/^[0-9]+$/"
-        "123\n"
+  not. ++> tests-does-not-match-anchored-pattern-with-trailing-newline
+    matches.
+      compiled.
+        regex "/^[0-9]+$/"
+      "123\n"
 
-  ++> tests-does-not-matches-regex-against-the-pattern
-    not. > @
-      matches.
-        compiled.
-          regex "/[a-z]+/"
-        "123"
+  not. ++> tests-does-not-match-with-unmatched-leading-characters
+    matches.
+      compiled.
+        regex "/[a-z]+/"
+      "1abc"
+
+  not. ++> tests-does-not-matches-regex-against-the-pattern
+    matches.
+      compiled.
+        regex "/[a-z]+/"
+      "123"
 
   eq. ++> tests-invalid-regex-syntax-returns-provided-fallback
     "recovered"
@@ -190,37 +196,32 @@
           regex "/[a-z]+/"
           "!hello!world!"
 
-  --> on-compiling-invalid-regex-without-fallback
-    compile. > @
-      regex "/[a-z/"
+  compile. --> on-compiling-invalid-regex-without-fallback
+    regex "/[a-z/"
 
-  --> on-getting-from-position-on-not-matched-block
-    from. > @
-      next.
-        match.
-          regex "/[a-z]+/"
-          "123"
+  from. --> on-getting-from-position-on-not-matched-block
+    next.
+      match.
+        regex "/[a-z]+/"
+        "123"
 
-  --> on-getting-groups-count-on-not-matched-block
-    count. > @
-      next.
-        match.
-          regex "/[a-z]+/"
-          "123"
+  count. --> on-getting-groups-count-on-not-matched-block
+    next.
+      match.
+        regex "/[a-z]+/"
+        "123"
 
-  --> on-getting-groups-on-not-matched-block
-    groups. > @
-      next.
-        match.
-          regex "/[a-z]+/"
-          "123"
+  groups. --> on-getting-groups-on-not-matched-block
+    next.
+      match.
+        regex "/[a-z]+/"
+        "123"
 
-  --> on-getting-next-on-not-matched-block
-    next. > @
-      next.
-        match.
-          regex "/[a-z]+/"
-          "123"
+  next. --> on-getting-next-on-not-matched-block
+    next.
+      match.
+        regex "/[a-z]+/"
+        "123"
 
   group. --> on-getting-specified-group-on-not-matched-block
     next.
@@ -229,24 +230,20 @@
         "123"
     1
 
-  --> on-getting-text-on-not-matched-block
-    text. > @
-      next.
-        match.
-          regex "/[a-z]+/"
-          "123"
+  text. --> on-getting-text-on-not-matched-block
+    next.
+      match.
+        regex "/[a-z]+/"
+        "123"
 
-  --> on-getting-to-position-on-not-matched-block
-    to. > @
-      next.
-        match.
-          regex "/[a-z]+/"
-          "123"
+  to. --> on-getting-to-position-on-not-matched-block
+    next.
+      match.
+        regex "/[a-z]+/"
+        "123"
 
-  --> on-missing-closing-slash-in-regex
-    compiled. > @
-      regex "/pattern"
+  compiled. --> on-missing-closing-slash-in-regex
+    regex "/pattern"
 
-  --> on-missing-first-slash-in-regex
-    compiled. > @
-      regex "(.)+"
+  compiled. --> on-missing-first-slash-in-regex
+    regex "(.)+"

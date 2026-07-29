@@ -53,7 +53,7 @@
   </xsl:template>
   <xsl:template match="o" mode="class">
     <xsl:param name="bound"/>
-    <xsl:element name="class">
+    <class>
       <xsl:if test="eo:atom(.)">
         <xsl:attribute name="skip-java">true</xsl:attribute>
       </xsl:if>
@@ -66,13 +66,13 @@
           <xsl:apply-templates select="node()"/>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:element name="xmir">
+      <xmir>
         <xsl:call-template name="serialize">
           <xsl:with-param name="node" select="."/>
           <xsl:with-param name="indent" select="''"/>
         </xsl:call-template>
-      </xsl:element>
-    </xsl:element>
+      </xmir>
+    </class>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

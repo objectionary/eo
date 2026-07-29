@@ -52,7 +52,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.6.0</version>
+      <version>1.6.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -235,7 +235,7 @@
           <!-- Tests assert on precise .eo locations in panics (off by default). -->
           <trackLocations>true</trackLocations>
           <!-- Wrap located objects into PhCoverage so tests record EO coverage. -->
-          <coverageTracking>true</coverageTracking>
+          <coverageTracking>false</coverageTracking>
         </configuration>
         <executions>
           <execution>

@@ -15,11 +15,9 @@
     FF-FF-FF-FF-FF-FF-FF-EE.left 2
     00-00-00-00-00-00-00-47.not
 
-  ++> tests-left-with-even-plus
-    not. > @
-      eq.
-        4.as-bytes.left 3
-        -33.as-bytes
+  eq. ++> tests-left-with-even-plus
+    4.as-bytes.left 3
+    00-80-00-00-00-00-00-00
 
   eq. ++> tests-left-with-minus-one
     eq.
@@ -27,26 +25,18 @@
       7.as-bytes
     false
 
-  ++> tests-left-with-odd-neg
-    not. > @
-      eq.
-        -17.as-bytes.left 1
-        33.as-bytes
+  eq. ++> tests-left-with-odd-neg
+    -17.as-bytes.left 1
+    80-62-00-00-00-00-00-00
 
-  ++> tests-left-with-odd-plus
-    not. > @
-      eq.
-        5.as-bytes.left 3
-        -41.as-bytes
+  eq. ++> tests-left-with-odd-plus
+    5.as-bytes.left 3
+    00-A0-00-00-00-00-00-00
 
-  ++> tests-left-with-zero
-    not. > @
-      eq.
-        2.as-bytes.left 0
-        -3.as-bytes
+  eq. ++> tests-left-with-zero
+    2.as-bytes.left 0
+    40-00-00-00-00-00-00-00
 
-  ++> tests-left-zero
-    not. > @
-      eq.
-        0.as-bytes.left 1
-        -1.as-bytes
+  eq. ++> tests-left-zero
+    0.as-bytes.left 1
+    00-00-00-00-00-00-00-00

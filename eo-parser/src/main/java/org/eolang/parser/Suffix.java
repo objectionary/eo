@@ -39,7 +39,7 @@ package org.eolang.parser;
  *
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
+@SuppressWarnings("PMD.GodClass")
 final class Suffix {
 
     /**

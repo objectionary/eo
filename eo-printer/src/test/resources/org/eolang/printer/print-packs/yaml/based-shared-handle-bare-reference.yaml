@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A based `>> name` handle (R-3.10.12) — its value a plain application, neither
+# an abstract formation nor a const — reached by a bare reference and by a
+# method dispatch at once. The dispatch is never inlined, so the binding
+# outlives "inline-cactoos" and "merge-monikers" hosts it there as a reversed
+# one; folding the bare reference away too would copy the same application in a
+# second time, printing one shared object twice (#5956), the based flavour of
+# what #5828 fixed for consts and #5876 for formations. The shared binding is
+# left whole for every reference, and the bare one reads back through its
+# readable handle rather than a synthetic "vL_P" id.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [a] > foo
+    b > x
+    b.neg > y
+    a.plus 1 >> b
+
+printed: |
+  [a] > foo
+    b > x
+    neg. > y
+      a.plus 1 >> b

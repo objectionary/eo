@@ -18,12 +18,12 @@
   For each formation, an eligible bound attribute (see `eo:moniker-binding`)
   is merged onto the first hostable reference reachable through no intervening
   formation (so the name still binds to the same formation). A bare `ξ.<name>`
-  reference must be unnamed, but a single-segment dispatch `ξ.<name>.<seg>`
-  (#5782) may also host onto a named reference (such as `q. > @`), since the
-  reversed dispatch keeps the reference's own `@name` (#5794); a bare
-  reference carrying arguments or a multi-segment path cannot host the binding
-  and stays a reference. When no hostable reference exists, the binding is
-  left in place.
+  reference must be unnamed, but a dispatch chain `ξ.<name>.<seg1>.<seg2>…`
+  (#5782, #5970) may also host onto a named reference (such as `q. > @`), since
+  the reversed dispatch keeps the reference's own `@name` (#5794); a bare
+  reference carrying arguments cannot host the binding and stays a reference.
+  When no
+  hostable reference exists, the binding is left in place.
 
   A binding with several hostable references still becomes a moniker,
   landing on the first one in document order (#5739). This deliberately
@@ -40,11 +40,11 @@
   The single attribute name a hostable `ξ.<name>` reference resolves to, or
   the empty string for anything that is not hostable. Two shapes host a
   binding: a bare reference `ξ.<name>` (no trailing path, no arguments) and a
-  single trailing dispatch segment `ξ.<name>.<seg>`, a reversed dispatch
+  trailing dispatch chain `ξ.<name>.<seg1>.<seg2>…`, a reversed dispatch
   spelled forward whose receiver `<name>` can be inlined exactly as the bare
-  case is, only as a reversed dispatch's receiver rather than a plain one
-  (#5782). Both resolve to `<name>`. A multi-segment path or a non-`ξ` base
-  disqualify it, as does a named node for the bare case only — a bare inline
+  case is, only as the innermost reversed dispatch's receiver rather than a
+  plain one (#5782, #5970). Both resolve to `<name>`. A non-`ξ` base
+  disqualifies it, as does a named node for the bare case only — a bare inline
   would clobber the reference's `@name`, but a dispatch keeps it (#5794).
   -->
   <xsl:function name="eo:resolved-ref" as="xs:string">
@@ -53,19 +53,19 @@
     <xsl:sequence select="if (exists($ref/@base) and not(exists($ref/@name)) and starts-with($ref/@base, concat($eo:xi, '.')) and not(contains($tail, '.')) and not($ref/o)) then $tail else if (eo:dispatch-seg($ref) != '') then substring-before($tail, '.') else ''"/>
   </xsl:function>
   <!--
-  The trailing dispatch segment of a hostable single-segment dispatch
-  reference `ξ.<name>.<seg>` — the receiver name `<name>` carries no further
-  dot, so exactly one dispatch segment `<seg>` trails it — or the empty string
-  for a bare reference, a non-`ξ` base, or a multi-segment chain such as
-  `ξ.a.b.c` (which would need deeply nested reversed dispatches and is
-  deliberately left expanded, #5782). Unlike a bare reference, a dispatch may
-  carry arguments and may be a named node: it inlines to a reversed dispatch
-  that keeps both (#5794).
+  The trailing dispatch chain of a hostable dispatch reference
+  `ξ.<name>.<seg1>.<seg2>…` — every segment after the receiver name `<name>`,
+  joined by dots — or the empty string for a bare reference or a non-`ξ` base.
+  A single trailing segment (#5782) folds to one reversed dispatch over the
+  inlined receiver; a multi-segment chain (#5970) folds to one reversed dispatch
+  per segment nested inside each other, since `<name>.seg1.seg2` and
+  `seg2. (seg1. <name>)` denote the same graph. Unlike a bare reference, a
+  dispatch may carry arguments and may be a named node (#5794).
   -->
   <xsl:function name="eo:dispatch-seg" as="xs:string">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="tail" select="substring-after($ref/@base, concat($eo:xi, '.'))"/>
-    <xsl:sequence select="if (exists($ref/@base) and starts-with($ref/@base, concat($eo:xi, '.')) and contains($tail, '.') and substring-before($tail, '.') != '' and not(contains(substring-after($tail, '.'), '.'))) then substring-after($tail, '.') else ''"/>
+    <xsl:sequence select="if (exists($ref/@base) and starts-with($ref/@base, concat($eo:xi, '.')) and contains($tail, '.') and substring-before($tail, '.') != '') then substring-after($tail, '.') else ''"/>
   </xsl:function>
   <!--
   Whether `$attr` is a restored recursive `&gt;&gt; name` handle: an abstract
@@ -102,18 +102,49 @@
     <xsl:sequence select="exists($attr/@name) and (starts-with($attr/@name, concat('a', $eo:cactoos)) or eo:recursive-handle($attr)) and (exists($attr/@base) or eo:abstract($attr)) and not(exists($attr/@pipe)) and not(eo:void($attr)) and $attr/@name != $eo:phi and not(eo:test-attr($attr)) and eo:abstract($attr/..)"/>
   </xsl:function>
   <!--
-  The references, in document order, that can host the binding `$attr`: a bare
-  `ξ.<name>` reference or a single-segment dispatch `ξ.<name>.<seg>` (#5782)
-  whose nearest formation ancestor is the binding's own owner and that does
-  not sit inside the binding itself. Bare references are listed first, so a
-  binding with both spellings still folds into the shorter bare inline and a
-  dispatch hosts only when no bare reference is available.
+  The references that can host the binding `$attr`, shortest spelling first: a
+  bare `ξ.<name>` reference or a dispatch chain `ξ.<name>.<seg1>.<seg2>…`
+  (#5782, #5970) whose nearest formation ancestor is the binding's own owner and
+  that does not sit inside the binding itself. Bare references are listed first,
+  so a binding with both spellings still folds into the shorter bare inline and
+  a dispatch hosts only when no bare reference is available. The dispatches
+  themselves are ordered by how many segments they carry, fewest first (a
+  single `<seg>` before a `<seg1>.<seg2>` chain), and by document order within
+  an equal count, so the shortest, least-nested moniker wins and a multi-segment
+  chain hosts only when no shorter reference can (#5970) — the previously
+  stranded tail #5782 left expanded. A named handle (see `eo:named-handle`)
+  reorders the two spellings: a dispatch host is listed first and a bare host
+  last, the reverse of the default. A bare host once dropped the readable name
+  its other references read back through (#5810), so it was skipped entirely and
+  a handle reached by bare references alone stayed standing (#5956); the
+  merge template now keeps that name at a bare site too (see `eo:named-handle`
+  in the keep-list), so the bare reference hosts when no dispatch does (#5996),
+  and the readable `&gt;&gt; name` still travels to whichever use site wins.
   -->
   <xsl:function name="eo:moniker-refs" as="element()*">
     <xsl:param name="attr" as="element()"/>
     <xsl:variable name="owner" select="$attr/.."/>
     <xsl:variable name="refs" select="$owner//o[eo:resolved-ref(.) = $attr/@name and (ancestor::o[eo:abstract(.)][1] is $owner) and not(ancestor::o[. is $attr])]"/>
-    <xsl:sequence select="($refs[eo:dispatch-seg(.) = ''], $refs[eo:dispatch-seg(.) != ''])"/>
+    <xsl:variable name="dispatch" as="element()*">
+      <xsl:perform-sort select="$refs[eo:dispatch-seg(.) != '']">
+        <xsl:sort select="count(tokenize(eo:dispatch-seg(.), '\.'))" data-type="number" order="ascending"/>
+      </xsl:perform-sort>
+    </xsl:variable>
+    <xsl:sequence select="if (eo:named-handle($attr)) then ($dispatch, $refs[eo:dispatch-seg(.) = '']) else ($refs[eo:dispatch-seg(.) = ''], $dispatch)"/>
+  </xsl:function>
+  <!--
+  Whether `$attr` is a based `>> name` handle whose readable name must outlive
+  the merge: a plain reference or application (not an abstract formation)
+  carrying its "@local" handle, which "restore-local-names" leaves there only
+  when the binding survives "inline-cactoos" with references still reading it
+  by name — shared (#5944, #5956) or unreached (#5914). A const handle is
+  excluded: it keeps its "@name" and "@local" through a bare inline too (#5828),
+  so it needs no such restriction. An abstract formation carries its name
+  wherever it lands and is excluded for the same reason.
+  -->
+  <xsl:function name="eo:named-handle" as="xs:boolean">
+    <xsl:param name="attr" as="element()"/>
+    <xsl:sequence select="exists($attr/@local) and not(eo:abstract($attr)) and not(eo:const-handle($attr))"/>
   </xsl:function>
   <!--
   The binding that a reference `$ref` should be replaced with, or the empty
@@ -127,9 +158,27 @@
     <xsl:sequence select="if (exists($binding) and (eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
   </xsl:function>
   <!--
-  The recursive-handle binding that an applied reference `$ref` hosts as a
-  moniker, or the empty sequence. An applied reference is a bare "ξ.&lt;name&gt;"
-  restored recursive handle (see `eo:recursive-handle`) carrying argument children
+  Whether the formation `$attr` prints as a multi-line block rather than the
+  compact one-line "&lt;value&gt; &gt; [params] &gt;&gt; name" suffix form (Pretty's
+  inline-phi), which needs a single "@" decoratee whose value is flat. So a
+  formation is a block when it carries more than one body binding (like "digits",
+  with both "@" and "q"), its sole binding is not that "@" decoratee, or that
+  decoratee is compound — an application whose arguments carry children of their
+  own (like "negative", whose "@" is an "if." over three nested branches). Only a
+  block folds an applied reference in an argument slot: it forces the enclosing
+  list vertical, so the "| args" pipe gets its own line rather than the
+  unparsable "|:0" (#5983). A flat single-"@" formation ("a.plus b > @") stays
+  inline and keeps its applied reference standing (#5983), the "bar 1 2" case.
+  -->
+  <xsl:function name="eo:block-handle" as="xs:boolean">
+    <xsl:param name="attr" as="element()"/>
+    <xsl:variable name="body" select="$attr/o[not(eo:void(.))]"/>
+    <xsl:variable name="phi" select="$body[@name = $eo:phi]"/>
+    <xsl:sequence select="eo:abstract($attr) and (count($body) &gt; 1 or empty($phi) or exists($phi/o/o))"/>
+  </xsl:function>
+  <!--
+  The references that host the binding `$attr` as an applied moniker. An applied
+  reference is a bare "ξ.&lt;name&gt;" formation handle carrying argument children
   — "handle args", a dispatch receiver ("(handle args).read") or a list element
   ("directory.eo"'s "r (walk ...)" in "seq *"). Since neither a bare inline (drops
   the arguments, #5834) nor a reversed dispatch can host it, the handle is inlined
@@ -137,18 +186,51 @@
   recursive mirror of "inline-cactoos" (#5844). Hosts onto the first such reference
   only, excluding the binding's own subtree. A reference with its own "@name" is
   excluded — a "| args &gt; name" pipe already folded by "restore-local-names"
-  (#5837/#5848); a nameless one round-trips.
+  (#5837/#5848); a nameless one round-trips. Recursion is not what admits the
+  fold — a restored recursive handle (`eo:recursive-handle`) is just one kind of
+  formation handle reached this way; a plain "&gt;&gt; name" formation reached only
+  by applications folds identically (#6008). What gates the fold instead is
+  `eo:applied-hosted`.
   -->
   <xsl:function name="eo:applied-refs" as="element()*">
     <xsl:param name="attr" as="element()*"/>
     <xsl:variable name="owner" select="$attr/.."/>
     <xsl:sequence select="$owner//o[exists(@base) and starts-with(@base, concat($eo:xi, '.')) and substring-after(@base, concat($eo:xi, '.')) = $attr/@name and exists(o) and not(exists(@name)) and (ancestor::o[eo:abstract(.)][1] is $owner) and not(ancestor::o[. is $attr])]"/>
   </xsl:function>
+  <!--
+  Whether the applied reference `$ref` sits in a dispatch-receiver slot: the
+  first child (the "ρ" receiver) of a reversed dispatch ("@base" starting with a
+  dot), as in "(handle args).read" (#5844/#5848). "unnecessary-as" strips the
+  pipe's "@as" cleanly for a reversed dispatch, so a receiver never risks the
+  "|:0" an argument-slot fold does (#5983) and folds whatever shape the formation
+  prints as; any other position folds only when the formation is a block.
+  -->
+  <xsl:function name="eo:receiver-ref" as="xs:boolean">
+    <xsl:param name="ref" as="element()"/>
+    <xsl:sequence select="exists($ref/parent::o[starts-with(@base, '.')]) and empty($ref/preceding-sibling::o)"/>
+  </xsl:function>
+  <!--
+  Whether the formation handle `$attr` folds onto an applied reference at all: an
+  abstract formation (only a formation inlines as a "&gt;&gt; name" moniker over its
+  "| args" pipe; a based handle reapplied further has no such spelling and stays
+  standing, #5952) reached by such a reference (`eo:applied-refs`), whose first
+  reference is a dispatch receiver (`eo:receiver-ref`, always safe) or which
+  prints as a block (`eo:block-handle`, so an argument-slot pipe avoids "|:0",
+  #5983). Recursion plays no part: #5848 folded recursive handles only because
+  those were the sole ones "inline-cactoos" left standing to reach here; a plain
+  formation handle now reaches here too (kept standing by #5983's
+  `eo:arg-applied`) and folds by the very same rule (#6008).
+  -->
+  <xsl:function name="eo:applied-hosted" as="xs:boolean">
+    <xsl:param name="attr" as="element()"/>
+    <xsl:variable name="refs" select="eo:applied-refs($attr)"/>
+    <xsl:sequence select="exists($refs) and eo:abstract($attr) and (eo:receiver-ref($refs[1]) or eo:block-handle($attr))"/>
+  </xsl:function>
   <xsl:function name="eo:applied-handle" as="element()*">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
     <xsl:variable name="name" select="substring-after($ref/@base, concat($eo:xi, '.'))"/>
-    <xsl:variable name="binding" select="$owner/o[@name = $name and eo:moniker-binding(.) and eo:recursive-handle(.)][1]"/>
+    <xsl:variable name="binding" select="$owner/o[@name = $name and eo:moniker-binding(.) and eo:applied-hosted(.)][1]"/>
     <xsl:sequence select="if (exists($ref/@base) and starts-with($ref/@base, concat($eo:xi, '.')) and $name != '' and not(contains($name, '.')) and exists($ref/o) and exists($binding) and (eo:applied-refs($binding)[1] is $ref)) then $binding else ()"/>
   </xsl:function>
   <!--
@@ -223,13 +305,18 @@
     <xsl:sequence select="string-join((if (eo:shadowed($ref, $binding)) then subsequence($segs, 1, $at - 1) else $eo:xi, string($binding/@local), subsequence($segs, $at + 1)), '.')"/>
   </xsl:function>
   <!--
-  The kept multi-referenced abstract handle binding (`[] &gt;&gt; name`, #5876)
-  a reference `$ref` resolves to but does NOT host (the binding folds onto its
-  first reference only, `eo:moniker-refs`). Any other reference — a named alias
+  The kept multi-referenced handle binding a reference `$ref` resolves to but does
+  NOT host (the binding folds onto its first reference only,
+  `eo:moniker-refs`). Any other reference — a named alias
   `name &gt; a` or a further `name.seg` dispatch that the moniker fold leaves
   in place — keeps the readable "@local" handle in place of the obfuscated
   cactus name, so it reads back as `name` (or `name.seg`) rather than a
-  synthetic "vL_P" placeholder, the abstract mirror of `eo:kept-const-ref`. The
+  synthetic "vL_P" placeholder, the non-const mirror of `eo:kept-const-ref`
+  (which covers the const handles this one leaves out). Both shapes of handle
+  reach here: an abstract formation kept whole because it is shared (#5876),
+  and a based handle (`a.b &gt;&gt; name`) kept because it is shared too — by a
+  method dispatch, which "inline-cactoos" never inlines (#5944), or by a bare
+  reference, which it no longer folds a second copy into (#5956). The
   reference is matched by carrying the binding's cactus "@name" as one of its
   base segments; the binding's own subtree is excluded. As with the const
   handle, the reference need not live in the binding's own scope: two mutually
@@ -240,7 +327,7 @@
   -->
   <xsl:function name="eo:kept-local-ref" as="element()*">
     <xsl:param name="ref" as="element()"/>
-    <xsl:variable name="candidates" select="$ref/ancestor::o[eo:abstract(.)]/o[eo:moniker-binding(.) and eo:abstract(.) and exists(@local) and (some $seg in tokenize($ref/@base, '\.') satisfies $seg = @name)]"/>
+    <xsl:variable name="candidates" select="$ref/ancestor::o[eo:abstract(.)]/o[eo:moniker-binding(.) and not(eo:const-handle(.)) and exists(@local) and (some $seg in tokenize($ref/@base, '\.') satisfies $seg = @name)]"/>
     <xsl:variable name="binding" select="$candidates[last()]"/>
     <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and not(eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
   </xsl:function>
@@ -251,16 +338,19 @@
   abstract formation keeps its obfuscated `@name`, which `to-eo-tree` renders
   as the anonymous `[...] >>` marker; a based binding — a `>> name` handle
   whose value is a plain reference such as `a >> b` (R-3.10.12) — drops its
-  `@name` (and the `@local` handle it leaves behind), since the bare reference
-  is unnamed and carrying the obfuscated name over would turn the inline into
-  a spurious named node that `to-eo-tree` prints as its own `a >>` line
-  instead of an anonymous argument (#5810). A const based handle
-  (`a >> b!`, see `eo:const-handle`) is the exception: it keeps its `@name` and
+  `@name` (and the `@local` handle it leaves behind) at a single-reference site,
+  since the bare reference is unnamed and carrying the obfuscated name over would
+  turn the inline into a spurious named node that `to-eo-tree` prints as its own
+  `a >>` line instead of an anonymous argument (#5810). A const based handle
+  (`a >> b!`, see `eo:const-handle`) keeps its `@name` and
   `@local`, so `to-eo-tree` prints the readable `a >> b!` and its other
-  references read back as the bare handle `b` (#5828). A single-segment dispatch
-  `ξ.<name>.<seg>` becomes a reversed dispatch `<seg>.`
-  whose receiver is that inlined binding and whose arguments are the
-  reference's own children — the equivalent inline for a dispatch use (#5782).
+  references read back as the bare handle `b` (#5828); a named handle
+  (see `eo:named-handle`) reached by bare references alone does the same, keeping
+  its `@name` and `@local` so the readable `a >> b` travels to the bare use it
+  hosts onto while the remaining bare references still read it back (#5996). A dispatch chain
+  `ξ.<name>.<seg1>.<seg2>…` becomes a reversed dispatch, one level per segment
+  (see `eo:wrap-dispatch`): the innermost hosts the inlined binding, the
+  outermost carries the reference's own children as arguments (#5782, #5970).
   The dispatch also keeps the reference's own `@name`, `@local` and `@const`, so
   a named use such as `q. > @` over an anonymous formation round-trips (#5794),
   a const one such as `c.gte 2 > a!` keeps its `!` (#5900) — that marker is what
@@ -281,22 +371,57 @@
         <xsl:variable name="merged" as="element()">
           <xsl:apply-templates select="$binding" mode="merged"/>
         </xsl:variable>
-        <xsl:element name="o">
+        <o>
           <xsl:apply-templates select="@as"/>
-          <xsl:copy-of select="$merged/@*[eo:abstract($merged) or eo:const-handle($merged) or (name() != 'name' and name() != 'local')]"/>
+          <xsl:copy-of select="$merged/@*[eo:abstract($merged) or eo:const-handle($merged) or eo:named-handle($merged) or (name() != 'name' and name() != 'local')]"/>
           <xsl:copy-of select="$merged/node()"/>
-        </xsl:element>
+        </o>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:element name="o">
-          <xsl:apply-templates select="@as"/>
-          <xsl:apply-templates select="@name|@local|@const"/>
-          <xsl:attribute name="base" select="concat('.', $seg)"/>
+        <xsl:variable name="receiver" as="node()*">
           <xsl:apply-templates select="$binding" mode="merged"/>
+        </xsl:variable>
+        <xsl:variable name="args" as="node()*">
           <xsl:apply-templates select="o"/>
-        </xsl:element>
+        </xsl:variable>
+        <xsl:call-template name="eo:wrap-dispatch">
+          <xsl:with-param name="segs" select="tokenize($seg, '\.')"/>
+          <xsl:with-param name="receiver" select="$receiver"/>
+          <xsl:with-param name="args" select="$args"/>
+          <xsl:with-param name="attrs" select="@as|@name|@local|@const"/>
+        </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+  <!--
+  Build the reversed-dispatch spelling of a hosted dispatch reference
+  `ξ.<name>.<seg1>.<seg2>…` as nested `o` levels: the outermost `<segN>.` carries
+  the reference's own `$args` and `$attrs` (`@as`, `@name`, `@local`, `@const`),
+  each further level wraps the one below, and the innermost `<seg1>.` holds the
+  inlined `$receiver`. A single segment (#5782) degenerates to one level; a
+  multi-segment chain (#5970) nests one reversed dispatch per segment.
+  -->
+  <xsl:template name="eo:wrap-dispatch">
+    <xsl:param name="segs" as="xs:string*"/>
+    <xsl:param name="receiver" as="node()*"/>
+    <xsl:param name="args" as="node()*" select="()"/>
+    <xsl:param name="attrs" as="attribute()*" select="()"/>
+    <o>
+      <xsl:copy-of select="$attrs"/>
+      <xsl:attribute name="base" select="concat('.', $segs[last()])"/>
+      <xsl:choose>
+        <xsl:when test="count($segs) gt 1">
+          <xsl:call-template name="eo:wrap-dispatch">
+            <xsl:with-param name="segs" select="$segs[position() lt last()]"/>
+            <xsl:with-param name="receiver" select="$receiver"/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:copy-of select="$receiver"/>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:copy-of select="$args"/>
+    </o>
   </xsl:template>
   <!--
   The binding as it lands at the reference it was merged onto: itself, with its
@@ -319,32 +444,39 @@
     <xsl:variable name="binding" select="eo:hosted-binding(.)[every $node in $seen satisfies not(. is $node)]"/>
     <xsl:choose>
       <xsl:when test="exists($binding)">
-        <xsl:element name="o">
-          <xsl:apply-templates select="@*[name() != 'as' and name() != 'base']"/>
-          <xsl:attribute name="base" select="concat('.', eo:dispatch-seg(.))"/>
+        <xsl:variable name="receiver" as="node()*">
           <xsl:apply-templates select="$binding" mode="merged">
             <xsl:with-param name="seen" select="($seen, .)"/>
           </xsl:apply-templates>
+        </xsl:variable>
+        <xsl:variable name="args" as="node()*">
           <xsl:apply-templates select="node()"/>
-        </xsl:element>
+        </xsl:variable>
+        <xsl:call-template name="eo:wrap-dispatch">
+          <xsl:with-param name="segs" select="tokenize(eo:dispatch-seg(.), '\.')"/>
+          <xsl:with-param name="receiver" select="$receiver"/>
+          <xsl:with-param name="args" select="$args"/>
+          <xsl:with-param name="attrs" select="@*[name() != 'as' and name() != 'base']"/>
+        </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:element name="o">
+        <o>
           <xsl:apply-templates select="@*[name() != 'as']|node()"/>
-        </xsl:element>
+        </o>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   <!--
-  Host an applied recursive handle (see `eo:applied-handle`): emit the inlined
+  Host an applied formation handle (see `eo:applied-handle`): emit the inlined
   handle formation in place of the reference, then a "@pipe" node carrying the
   reference's arguments and pointing its base back at the formation's name.
   "to-eo-tree" renders the formation as the "&gt;&gt; name" receiver and the
   pipe node as "| args" because its base equals the preceding sibling's name —
-  so an applied recursive handle folds to the handle moniker plus a pipe
-  continuation carrying the arguments (#5848), the recursive mirror of #5844.
-  The reference's own positional "@as" is kept on the pipe so an argument slot
-  survives; the standalone binding is dropped below.
+  so an applied formation handle folds to the handle moniker plus a pipe
+  continuation carrying the arguments (#5848 for the recursive twin, #6008 for
+  the plain one), the mirror of #5844. The reference's own positional "@as" is
+  kept on the pipe so an argument slot survives; the standalone binding is
+  dropped below.
   -->
   <xsl:template match="o[exists(eo:applied-handle(.))]" priority="2">
     <xsl:variable name="binding" select="eo:applied-handle(.)"/>
@@ -353,12 +485,12 @@
         <xsl:apply-templates select="node()|@*"/>
       </xsl:copy>
     </xsl:for-each>
-    <xsl:element name="o">
+    <o>
       <xsl:apply-templates select="@as"/>
       <xsl:attribute name="pipe"/>
       <xsl:attribute name="base" select="@base"/>
       <xsl:apply-templates select="o"/>
-    </xsl:element>
+    </o>
   </xsl:template>
   <!--
   Rewrite a non-hosting reference to a const file-local handle from the
@@ -370,10 +502,11 @@
     <xsl:attribute name="base" select="eo:handle-base(.., eo:kept-const-ref(..))"/>
   </xsl:template>
   <!--
-  Rewrite a non-hosting reference to a kept multi-referenced abstract handle
-  (`[] &gt;&gt; name`, #5876) from the obfuscated cactus name back to the
+  Rewrite a non-hosting reference to a kept handle — an abstract formation
+  (`[] &gt;&gt; name`, #5876) or a based one (`a.b &gt;&gt; name`, #5944) — from
+  the obfuscated cactus name back to the
   readable "@local" handle, so it reads as `name` (or `name.seg`) instead of a
-  synthetic "vL_P" placeholder, the abstract mirror of the const rewrite above.
+  synthetic "vL_P" placeholder, the non-const mirror of the const rewrite above.
   The single hosting reference is rebuilt from the binding and never reaches
   this template (`eo:kept-local-ref` excludes it).
   -->
@@ -383,12 +516,12 @@
   <!--
   Drop the standalone binding once it has been merged onto a reference, whether
   the host is a bare/dispatch moniker reference (`eo:moniker-refs`) or an
-  applied recursive handle folded to a "| args" pipe (`eo:applied-refs`, #5848).
-  Outranks the merge template above, which matches the same binding whenever the
-  binding is a host site itself: what it hosts travels with it to the reference
-  in the "merged" mode, so here it only has to go (#5918).
+  applied formation handle folded to a "| args" pipe (`eo:applied-hosted`,
+  #5848/#6008). Outranks the merge template above, which matches the same binding
+  whenever the binding is a host site itself: what it hosts travels with it to the
+  reference in the "merged" mode, so here it only has to go (#5918).
   -->
-  <xsl:template match="o[eo:moniker-binding(.) and (exists(eo:moniker-refs(.)) or (eo:recursive-handle(.) and exists(eo:applied-refs(.))))]" priority="3"/>
+  <xsl:template match="o[eo:moniker-binding(.) and (exists(eo:moniker-refs(.)) or eo:applied-hosted(.))]" priority="3"/>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>

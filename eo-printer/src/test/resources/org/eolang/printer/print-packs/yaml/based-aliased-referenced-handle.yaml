@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A based `>> name` handle (R-3.10.12) whose value is a bare reference to
+# another based handle (`p >> r`, itself over `E0- >> p`). Folding the single
+# use of `r` used to copy `r`'s own `@base` verbatim, so the reference to `p`
+# travelled to the use site while the drop template removed `p`'s binding —
+# `p` was counted as referenced by `r`, yet that reference now lived only in the
+# copy — leaving a dangling `Φ.v..` that nothing declares (#6004). The fold now
+# resolves the target's own `@base` through the same handle lookup, so the alias
+# chain collapses in one step and `E0-` itself lands at the use site.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [x] > foo
+    x.eq r > @
+    E0- >> p
+    p >> r
+
+printed: |
+  x.eq > [x] > foo
+    E0-

@@ -38,10 +38,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  * Test case for {@link MjTranspile}.
  * @since 0.1
  */
-@SuppressWarnings({
-    "PMD.TooManyMethods",
-    "PMD.UnitTestContainsTooManyAsserts"
-})
+@SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)
 final class MjTranspileTest {
@@ -245,6 +242,29 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(String.format("+package foo.x%n%n[] > main%n  42.plus 1 > @"))
+                    .with("trackLocations", true)
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(this.compiled)
+            ).asString(),
+            Matchers.containsString("new PhSafe(")
+        );
+    }
+
+    @Test
+    void invalidatesCacheWhenTrackLocationsChanges(@Mktmp final Path temp) throws Exception {
+        final Path cache = temp.resolve("cache");
+        final String src = String.format("+package foo.x%n%n[] > main%n  42.plus 1 > @");
+        new FakeMaven(temp.resolve("first"))
+            .withProgram(src)
+            .with("cache", cache.toFile())
+            .execute(new FakeMaven.Transpile());
+        MatcherAssert.assertThat(
+            "the second run's generated Java must reflect its own trackLocations=true setting instead of reusing the first run's cached trackLocations=false output",
+            new TextOf(
+                new FakeMaven(temp.resolve("second"))
+                    .withProgram(src)
+                    .with("cache", cache.toFile())
                     .with("trackLocations", true)
                     .execute(new FakeMaven.Transpile())
                     .result()

@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link Suffix}.
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.UnnecessaryLocalRule"})
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class SuffixTest {
 
     @Test

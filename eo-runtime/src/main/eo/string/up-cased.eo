@@ -7,7 +7,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
 
 [text] > up-cased
   string > @
@@ -21,15 +20,17 @@
               code.lte (as-ascii "z")!
               code.gte mincode
             slice.
-              as-bytes. (code.minus distance).as-i64
+              as-bytes.
+                as-i64.
+                  code.minus
+                    minus.
+                      number mincode
+                      as-ascii "A"
               7
               1
             byte
         as-ascii byte > code
-  minus. > distance
-    number
-      as-ascii "a" >> mincode!
-    as-ascii "A"
+  as-ascii "a" >> mincode!
 
   eq. ++> tests-converts-text-to-upper-case
     "HELLO"

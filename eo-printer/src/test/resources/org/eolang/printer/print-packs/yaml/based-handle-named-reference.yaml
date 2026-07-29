@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A based `>> name` handle (R-3.10.12) folded into a reference that carries its
+# own binding name. The handle contributes no name of its own — it is neither an
+# abstract formation nor a const (#5810) — so the reference's `> x` must survive
+# the fold. Dropping it leaves a nameless body line that the parser rejects with
+# "object inside formation must have a name" (#5947), turning a valid file into
+# an invalid one.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [a] > foo
+    b > x
+    a.as-i32 >> b
+
+printed: |
+  [a] > foo
+    a.as-i32 > x

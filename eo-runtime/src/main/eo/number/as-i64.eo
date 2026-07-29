@@ -12,7 +12,29 @@
 +spdx SPDX-License-Identifier: MIT
 
 [n cant-convert] > as-i64
-  overflow.if > @
+  if. > @
+    or.
+      eq.
+        as-number. >> exp
+          as-i64.
+            right.
+              n.as-bytes.and 7F-F0-00-00-00-00-00-00
+              52
+        2047
+      or.
+        exp.gt 1086
+        and.
+          exp.eq 1086
+          not.
+            and.
+              eq. >> negative
+                n.as-bytes.and 80-00-00-00-00-00-00-00
+                80-00-00-00-00-00-00-00
+              eq.
+                or. >> mantissa
+                  n.as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
+                  00-10-00-00-00-00-00-00
+                00-10-00-00-00-00-00-00
     cant-convert
       "Can't convert number %f to i64 because it's out of i64 bounds".printf
         * n
@@ -24,33 +46,13 @@
         80-00-00-00-00-00-00-00.as-i64
         negative.if
           magnitude.not.as-i64.plus 00-00-00-00-00-00-00-01.as-i64
-          magnitude.as-i64
-  as-number. > exp
-    as-i64.
-      right.
-        n.as-bytes.and 7F-F0-00-00-00-00-00-00
-        52
-  if. > magnitude
-    exp.gte 1075
-    mantissa.left
-      exp.minus 1075
-    mantissa.right
-      1075.minus exp
-  or. > mantissa
-    n.as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
-    00-10-00-00-00-00-00-00
-  eq. > negative
-    n.as-bytes.and 80-00-00-00-00-00-00-00
-    80-00-00-00-00-00-00-00
-  or. > overflow
-    exp.eq 2047
-    or.
-      exp.gt 1086
-      and.
-        exp.eq 1086
-        not.
-          negative.and
-            mantissa.eq 00-10-00-00-00-00-00-00
+          as-i64.
+            if. >> magnitude
+              exp.gte 1075
+              mantissa.left
+                exp.minus 1075
+              mantissa.right
+                1075.minus exp
 
   eq. ++> tests-as-i64-converts-fraction-below-one-to-zero
     0.5.as-i64.as-bytes

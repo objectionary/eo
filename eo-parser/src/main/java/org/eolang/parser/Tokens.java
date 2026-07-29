@@ -29,7 +29,6 @@ import java.util.List;
  * @checkstyle NPathComplexityCheck (820 lines)
  */
 @SuppressWarnings({
-    "PMD.TooManyMethods",
     "PMD.UnnecessaryLocalRule",
     "PMD.CognitiveComplexity",
     "PMD.NPathComplexity"

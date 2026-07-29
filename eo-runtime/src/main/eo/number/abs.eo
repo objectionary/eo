@@ -9,10 +9,11 @@
 
 [num] > abs
   if. > @
-    value.gte 0
-    value
+    gte.
+      number num.as-bytes >> value
+      0
+    0.plus value
     value.neg
-  number num.as-bytes > value
 
   eq. ++> tests-abs-float-negative
     abs -17.9
@@ -29,6 +30,11 @@
   eq. ++> tests-abs-int-positive
     abs 3
     3
+
+  eq. ++> tests-abs-negative-zero-normalizes-sign
+    as-bytes.
+      abs -0
+    00-00-00-00-00-00-00-00
 
   eq. ++> tests-abs-zero
     abs 0

@@ -25,15 +25,12 @@
         match.
           string.regex "/mac/i"
           name
-  [] > is-windows
-    and. > @
-      oname.size.gt 6
-      eq.
-        slice.
-          name >> oname!
-          0
-          7
-        "Windows"
+  as-bool. > is-windows
+    exists.
+      next.
+        match.
+          string.regex "/windows/i"
+          name
   [] > name /Q.string
 
   or. ++> tests-checks-os-family

@@ -1,0 +1,56 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A based file-local handle (`x.as-bytes >> zero`, R-3.10.12) whose value is a
+# plain application and whose references are all bare, with no dispatch among
+# them. Such a handle used to stay standing as its own binding line because the
+# only host allowed for a named handle was a dispatch reference (#5956), so a
+# handle reached by bare references alone had nothing to fold onto and the
+# printer emitted the longer of two spellings of one graph (#5996). It now folds
+# onto the first bare reference, exactly as a const handle already did (#5828):
+# the bare host keeps the handle's `@name` and readable `@local`, so `to-eo-tree`
+# prints the merged binding as `x.as-bytes >> zero` and the remaining bare `zero`
+# reads back through that handle. A dispatch reference, when one exists, still
+# wins over a bare one (see `merge-monikers.yaml`); here none does.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-self.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/validate-before-stars.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+  - /org/eolang/printer/print/merge-monikers.xsl
+asserts:
+  # The obfuscated (cactus-named) binding is no longer a direct attribute of
+  # the formation: it has been merged onto its first bare reference.
+  - /object/o[@name='foo' and not(o[starts-with(@name, 'a🌵')])]
+  # It now lives at the first `x.eq zero` site, as the `eq` argument, keeping the
+  # binding's obfuscated `@name` and its readable `@local` handle so it prints as
+  # `x.as-bytes >> zero`.
+  - /object/o[@name='foo']//o[@base='ξ.x.eq']/o[starts-with(@name, 'a🌵') and @local='zero' and @base='ξ.x.as-bytes']
+  # The other bare use reads back through that handle rather than a copy of the
+  # binding or a synthetic cactus id.
+  - /object/o[@name='foo']//o[@base='ξ.zero' and not(@name)]
+  # No cactus reference is left dangling.
+  - /object[count(//o[starts-with(@base, 'ξ.a🌵')])=0]
+input: |
+  +package number
+
+  [x] > foo
+    and. > @
+      x.eq zero
+      x.eq zero
+    x.as-bytes >> zero

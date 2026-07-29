@@ -10,19 +10,19 @@
 +unlint mandatory-package
 
 [lst] > set
-  initialized > @
+  [mp] >> ctor
+    mp.keys > @
+    mp.has item > [item] > has
+    mp.size > size
+    set.ctor > [item] > with
+      mp.with item true
+    set.ctor > [item] > without
+      mp.without item
+  | > @
     map
       tuple.mapped
         lst
         map.entry item true > [item]
-  [mp] > initialized
-    mp.keys > @
-    mp.has item > [item] > has
-    mp.size > size
-    set.initialized > [item] > with
-      mp.with item true
-    set.initialized > [item] > without
-      mp.without item
 
   has. ++> tests-appends-new-item-to-set
     with.

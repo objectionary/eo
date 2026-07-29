@@ -43,21 +43,20 @@
         t.times
           horner 0
       if. > [k] > horner
-        k.gt terms
+        k.gt 40
         0
         plus.
           1.div
             plus.
               k.times 2
               1
-          squared.times
+          times.
+            t.times t
             horner
               k.plus 1
-      t.times t > squared
       div. > t
         m.minus 1
         m.plus 1
-      40 > terms
   number num.as-bytes > n
 
   lt. ++> tests-ln-fraction
@@ -71,25 +70,21 @@
     ln 2
     ln 3
 
-  ++> tests-ln-nan
-    is-nan. > @
-      ln nan
+  is-nan. ++> tests-ln-nan
+    ln nan
 
-  ++> tests-ln-negative-infinity
-    is-nan. > @
-      ln ninf
+  is-nan. ++> tests-ln-negative-infinity
+    ln ninf
 
   eq. ++> tests-ln-of-e-one-is-one
     ln e
     1
 
-  ++> tests-ln-of-negative-float-is-nan
-    is-nan. > @
-      ln -2.2
+  is-nan. ++> tests-ln-of-negative-float-is-nan
+    ln -2.2
 
-  ++> tests-ln-of-negative-int-is-nan
-    is-nan. > @
-      ln -42
+  is-nan. ++> tests-ln-of-negative-int-is-nan
+    ln -42
 
   eq. ++> tests-ln-of-one-is-zero
     ln 1

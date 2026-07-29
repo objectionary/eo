@@ -26,9 +26,10 @@
   enclosing formation that owns an attribute of that name.
 
   A reference may also spell its scope out instead of leaving it to the
-  search: "$.foo" reaches the innermost formation and "^.foo" its parent
-  (§3.14), and each binds to the handle of exactly the formation it names
-  (see `eo:scope`, #5917). Such a reference is the only spelling left when
+  search: "$.foo" reaches the innermost formation, "^.foo" its parent
+  (§3.14), and "bar.foo" the enclosing formation named "bar", and each binds
+  to the handle of exactly the formation it names (see `eo:scope`, #5917 and
+  #5960). Such a reference is the only spelling left when
   the nested formation rebinds the name it reads - `^.foo &gt; foo` copies
   the parent's handle into an attribute of the same name, where a bare "foo"
   would bind to the copy - so leaving it unresolved stranded the handle
@@ -64,17 +65,26 @@
   ".ρ" segment climbs one level more. Such a receiver pins the scope instead
   of leaving it to the search above, so "^.foo" reaches exactly one formation
   out and stops there, however many scopes further out also declare the name.
+  A formation may equally be named by its own name: "bar.foo" written inside
+  "bar" reaches the same object "$.foo" does, since a name resolves to the
+  nearest enclosing formation that owns it and a formation owns itself
+  (#5960). The name is taken as the scope only when the nearest formation
+  that declares it at all is the one carrying it, so a nearer attribute of
+  the same name shadows the formation and pins nothing, as it does for a bare
+  reference above.
+
   A dispatch is still flat at this point in the train - "wrap-method-calls"
   nests it later - so the receiver of a "@method" node is its preceding
   sibling; a reversed dispatch ("plus. &gt; y") carries no "@method" and holds
   its receiver as a child, so it never reaches here. The empty sequence for
-  every other receiver (an application, a global, a name), which names no
-  scope known at parse time.
+  every other receiver (an application, a global, a name of no enclosing
+  formation), which names no scope known at parse time.
   -->
   <xsl:function name="eo:scope" as="element()?">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="receiver" as="element()?" select="$ref/preceding-sibling::o[1]"/>
-    <xsl:sequence select="if (empty($receiver/@base)) then () else if ($receiver/@base='ξ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][1] else if ($receiver/@base='ρ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][2] else if ($receiver/@base='.ρ' and exists($receiver/@method)) then eo:scope($receiver)/ancestor::o[not(@base)][1] else ()"/>
+    <xsl:variable name="owner" as="element()?" select="$ref/ancestor::o[not(@base)][@name=$receiver/@base or o[@name=$receiver/@base]][1]"/>
+    <xsl:sequence select="if (empty($receiver/@base)) then () else if ($receiver/@base='ξ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][1] else if ($receiver/@base='ρ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][2] else if ($receiver/@base='.ρ' and exists($receiver/@method)) then eo:scope($receiver)/ancestor::o[not(@base)][1] else if (empty($receiver/@method) and $owner/@name=$receiver/@base) then $owner else ()"/>
   </xsl:function>
   <xsl:template match="o[@base and exists(eo:captor(.))]">
     <xsl:copy>
@@ -89,14 +99,14 @@
       <xsl:variable name="errors" as="element()*">
         <xsl:for-each-group select="//o[@local]" group-by="concat(@local, '#', generate-id(ancestor::o[not(@base)][1]))">
           <xsl:if test="count(current-group()) &gt; 1">
-            <xsl:element name="error">
+            <error>
               <xsl:attribute name="check" select="'resolve-local-names'"/>
               <xsl:attribute name="line" select="if (current-group()[2]/@line) then current-group()[2]/@line else 0"/>
               <xsl:attribute name="severity" select="'error'"/>
               <xsl:text>duplicate local name '</xsl:text>
               <xsl:value-of select="current-group()[1]/@local"/>
               <xsl:text>'</xsl:text>
-            </xsl:element>
+            </error>
           </xsl:if>
         </xsl:for-each-group>
       </xsl:variable>

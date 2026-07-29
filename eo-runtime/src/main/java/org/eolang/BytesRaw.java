@@ -70,8 +70,9 @@ final class BytesRaw implements Bytes {
     @Override
     public Bytes shift(final int bits) {
         final byte[] bytes = this.take();
-        final int mod = Math.abs(bits) % Byte.SIZE;
-        final int offset = Math.abs(bits) / Byte.SIZE;
+        final long absolute = Math.abs((long) bits);
+        final int mod = (int) (absolute % Byte.SIZE);
+        final int offset = (int) (absolute / Byte.SIZE);
         final Bytes shifted;
         if (bits < 0) {
             shifted = BytesRaw.shiftLeft(bytes, mod, offset);
@@ -89,7 +90,7 @@ final class BytesRaw implements Bytes {
             );
         }
         final byte[] bytes = this.shift(bits).take();
-        if (this.take()[0] < 0) {
+        if (bytes.length > 0 && this.take()[0] < 0) {
             for (int index = 0; index < bytes.length; index += 1) {
                 final int zeros = BytesRaw.numberOfLeadingZeros(
                     bytes[index]

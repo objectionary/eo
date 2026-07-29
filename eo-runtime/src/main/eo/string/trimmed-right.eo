@@ -20,19 +20,16 @@
       slice.
         text >> b!
         0
-        first-non-ws-index
-          plus.
-            number len
-            -1
-  [index] > first-non-ws-index
-    if. > @
-      -1.eq index
-      0
-      if.
-        is-ws (b.slice index 1)!
-        first-non-ws-index (index.plus -1).as-number
-        index.plus 1
-  or. > [c] > is-ws
+        [index] >> first-non-ws-index
+          if. > @
+            -1.eq index
+            0
+            if.
+              is-ws (b.slice index 1)!
+              first-non-ws-index (index.plus -1).as-number
+              index.plus 1
+        | ((number len).plus -1)
+  or. > [c] >> is-ws
     c.eq 20-
     or.
       c.eq 09-

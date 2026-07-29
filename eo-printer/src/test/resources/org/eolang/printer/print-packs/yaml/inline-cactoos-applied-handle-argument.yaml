@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A single-referenced file-local `>> bar` handle (R-3.10.12) whose value is an
+# abstract formation and which is used as the base of an application, exactly as
+# "inline-cactoos-applied-handle", except that the applied reference
+# (`bar 1 2`) sits in a positional argument slot (`@as` is `α0`) of another
+# application (`x.plus (bar 1 2)`) rather than in a body-binding sibling slot
+# (#5840) or a dispatch receiver (#5844). The #5840/#5844 relocation used to
+# fire here too: it moved a copy of the formation to sit directly above the
+# reference and turned the reference into a `| args` pipe. But an argument list
+# has no spare slot for that predecessor — the copy became a stray second
+# argument of `x.plus` and the pipe kept the reference's positional `@as`, which
+# "to-eo-tree" spelled as the unparsable `|:0`; the settling pass then deleted
+# the whole handle from the file (#5983). The fix guards the relocation to
+# references that own a real sibling slot and leaves an argument-slot reference
+# standing under its `@local` name (the kept-handle path of #5876 and #5944):
+# "inline-cactoos" copies the reference verbatim and keeps the binding, and
+# "merge-monikers" rewrites the cactus base back to the handle, so it reads as
+# `bar 1 2` with the `[a b] >> bar` formation left in place.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [x] > foo
+    x.plus (bar 1 2) > @
+    [a b] >> bar
+      a.plus b > @
+
+printed: |
+  [x] > foo
+    x.plus > @
+      bar 1 2
+    a.plus b > [a b] >> bar

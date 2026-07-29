@@ -10,9 +10,10 @@
 
 [num] > radians
   div. > @
-    value.times pi
+    times.
+      number num.as-bytes
+      pi
     180
-  number num.as-bytes > value
 
   lt. ++> tests-radians-of-full-turn-is-two-pi
     abs
@@ -28,9 +29,8 @@
         pi
     1.0E-4
 
-  ++> tests-radians-of-nan-is-nan
-    is-nan. > @
-      radians nan
+  is-nan. ++> tests-radians-of-nan-is-nan
+    radians nan
 
   lt. ++> tests-radians-of-negative-half-turn-is-minus-pi
     abs

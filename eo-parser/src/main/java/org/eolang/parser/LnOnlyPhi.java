@@ -59,7 +59,7 @@ import java.util.List;
  *
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.UnnecessaryLocalRule"})
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class LnOnlyPhi implements Line {
 
     /**

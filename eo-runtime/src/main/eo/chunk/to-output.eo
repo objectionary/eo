@@ -25,14 +25,14 @@
 [allocated] > to-output
   [buffer] > write
     write. > @
-      output-block 0
+      [offset] >> output-block
+        true > @
+        seq * > [buffer] > write
+          allocated.write offset buffer
+          output-block
+            offset.plus buffer.size
+      | 0
       buffer
-    [offset] > output-block
-      true > @
-      seq * > [buffer] > write
-        allocated.write offset buffer
-        output-block
-          offset.plus buffer.size
 
   eq. ++> tests-makes-an-output-from-malloc-and-writes
     malloc.of

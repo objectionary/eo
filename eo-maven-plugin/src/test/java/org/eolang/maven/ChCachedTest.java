@@ -72,7 +72,6 @@ final class ChCachedTest {
     }
 
     @RepeatedTest(10)
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void cachesHashInConcurrentEnvironment() {
         final AtomicInteger invocations = new AtomicInteger(0);
         final String tag = "parallel";

@@ -45,7 +45,6 @@ import java.util.List;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class LnMethod implements Line {
 
     /**

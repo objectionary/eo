@@ -1,0 +1,55 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A single-use file-local handle ("[a b] >> bar", R-3.10.12) whose abstract
+# formation is applied by a reference sitting in a positional argument slot
+# ("@as" is "α0") of another application ("x.plus (bar 1 2)"). The #5840/#5844
+# relocation must NOT fire here: an argument list has no spare slot for the
+# formation copy a "| args" pipe binds, so relocating there would turn the copy
+# into a stray second argument of "x.plus" and leave the pipe carrying the
+# reference's "@as", printed as the unparsable "|:0" (#5983). "inline-cactoos"
+# leaves the reference standing verbatim — keeping its "1 2" arguments and its
+# positional "@as", never a "@pipe" — and keeps the "[a b] >> bar" binding in
+# place under its "@local" name, so "merge-monikers" can later rewrite the
+# reference back to the handle (the kept-handle path of #5876 and #5944).
+# "mandatory-as" runs first so the argument carries the positional "@as" the
+# guard keys on, and "restore-local-names" keeps the handle's "@local" marker.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-self.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/validate-before-stars.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+  - /org/eolang/printer/print/restore-local-names.xsl
+  - /org/eolang/printer/print/inline-cactoos.xsl
+asserts:
+  # The single-use formation is kept in place under its "@local" handle, not
+  # relocated or dropped.
+  - /object/o[@name='foo']/o[@local='bar' and contains(@name, '🌵') and not(@base)]
+  # The applied reference stays where it is, still an argument (@as='α0') of
+  # "x.plus" and still carrying its own "1 2" arguments.
+  - /object/o[@name='foo']/o[@base='ξ.x.plus' and count(o)=1]/o[@as='α0' and contains(@base, '🌵') and count(o)=2]
+  # The reference was never turned into a "| args" pipe, so nothing prints as
+  # the unparsable "|:0".
+  - /object[count(//o[@pipe])=0]
+  # No second copy of the formation was minted inside the argument list.
+  - /object[count(//o[@local='bar' and contains(@name, '🌵')])=1]
+input: |
+  [x] > foo
+    x.plus (bar 1 2) > @
+    [a b] >> bar
+      a.plus b > @

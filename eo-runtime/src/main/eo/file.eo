@@ -8,6 +8,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
++unlint mandatory-package
 
 [path] > file
   path > @
@@ -253,14 +254,12 @@
         f.write "!" > [f]
     13
 
-  ++> tests-check-if-absent-file-does-not-exist
-    not. > @
-      exists.
-        file "absent.txt"
+  not. ++> tests-check-if-absent-file-does-not-exist
+    exists.
+      file "absent.txt"
 
-  ++> tests-check-if-current-directory-is-directory
-    is-directory. > @
-      file "."
+  is-directory. ++> tests-check-if-current-directory-is-directory
+    file "."
 
   mktemp.tmpfile.deleted.is-directory ++> tests-checking-absent-file-returns-fallback
     true
@@ -398,29 +397,25 @@
 
   mktemp.tmpfile.deleted.touched.exists ++> tests-touches-a-file
 
-  ++> tests-touches-absent-file-on-opening-for-appending
-    exists. > @
-      mktemp.tmpfile.deleted.open
-        "a"
-        true > [f]
+  exists. ++> tests-touches-absent-file-on-opening-for-appending
+    mktemp.tmpfile.deleted.open
+      "a"
+      true > [f]
 
-  ++> tests-touches-absent-file-on-opening-for-reading-or-appending
-    exists. > @
-      mktemp.tmpfile.deleted.open
-        "a+"
-        true > [f]
+  exists. ++> tests-touches-absent-file-on-opening-for-reading-or-appending
+    mktemp.tmpfile.deleted.open
+      "a+"
+      true > [f]
 
-  ++> tests-touches-absent-file-on-opening-for-writing
-    exists. > @
-      mktemp.tmpfile.deleted.open
-        "w"
-        true > [f]
+  exists. ++> tests-touches-absent-file-on-opening-for-writing
+    mktemp.tmpfile.deleted.open
+      "w"
+      true > [f]
 
-  ++> tests-touches-absent-file-on-opening-for-writing-or-reading
-    exists. > @
-      mktemp.tmpfile.deleted.open
-        "w+"
-        true > [f]
+  exists. ++> tests-touches-absent-file-on-opening-for-writing-or-reading
+    mktemp.tmpfile.deleted.open
+      "w+"
+      true > [f]
 
   eq. ++> tests-truncates-file-opened-for-writing
     size.
@@ -484,10 +479,9 @@
           "!"
     13
 
-  --> an-error-on-touching-temp-file-in-absent-dir
-    tmpfile. > @
-      @.
-        mktemp.as-path.resolved "foo"
+  tmpfile. --> an-error-on-touching-temp-file-in-absent-dir
+    @.
+      mktemp.as-path.resolved "foo"
 
   mktemp.tmpfile.deleted.is-directory --> on-checking-directory-of-absent-file
 

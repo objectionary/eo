@@ -9,31 +9,33 @@
 +spdx SPDX-License-Identifier: MIT
 
 [n] > as-decimal
-  if. > @
-    n.lt 0
-    negative
-      n.times -1
-    digits n
-  [n] > digits
-    if. > @
-      n.lt 10
-      as-char
-        n.floor.plus 48
-      concat.
-        digits q
-        as-char
-          plus.
-            floor.
-              n.minus
-                q.times 10
-            48
-    floor. > q
-      n.div 10
-  if. > [m] > negative
-    m.floor.eq 0
-    digits m
-    "-".as-bytes.concat
-      digits m
+  n.is-finite.not.if > @
+    trouble
+      "Can't write a non-finite number as decimal"
+    if.
+      n.lt 0
+      if. > [m] >> negative
+        m.floor.eq 0
+        digits m
+        "-".as-bytes.concat
+          digits m
+      | (n.times -1)
+      [n] >> digits
+        if. > @
+          n.lt 10
+          as-char
+            n.floor.plus 48
+          concat.
+            digits q
+            as-char
+              plus.
+                floor.
+                  n.minus
+                    q.times 10
+                48
+        floor. > q
+          n.div 10
+      | n
 
   eq. ++> tests-negative-below-one-drops-sign
     "0"
@@ -79,3 +81,9 @@
     "0"
     string
       as-decimal 0
+
+  as-decimal nan --> on-nan
+
+  as-decimal ninf --> on-negative-infinity
+
+  as-decimal pinf --> on-positive-infinity

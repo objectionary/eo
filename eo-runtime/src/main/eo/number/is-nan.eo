@@ -8,7 +8,21 @@
 +spdx SPDX-License-Identifier: MIT
 
 [n] > is-nan
-  n.as-bytes.eq 7F-F8-00-00-00-00-00-00 > @
+  if. > @
+    and.
+      bts.size.gt 7
+      not.
+        bts.size.gt 8
+    and.
+      eq.
+        bts.and 7F-F0-00-00-00-00-00-00
+        7F-F0-00-00-00-00-00-00
+      not.
+        eq.
+          bts.and 00-0F-FF-FF-FF-FF-FF-FF
+          00-00-00-00-00-00-00-00
+    false
+  n.as-bytes > bts
 
   nan.is-nan ++> nan-is-nan
 
@@ -58,9 +72,11 @@
 
   ninf.is-nan.not ++> tests-negative-infinity-is-not-nan
 
-  ++> tests-number-with-nan-bytes-is-nan
-    is-nan. > @
-      number nan.as-bytes
+  is-nan. ++> tests-non-canonical-nan-bytes-is-nan
+    number FF-F8-00-00-00-00-00-00
+
+  is-nan. ++> tests-number-with-nan-bytes-is-nan
+    number nan.as-bytes
 
   pinf.is-nan.not ++> tests-positive-infinity-is-not-nan
 

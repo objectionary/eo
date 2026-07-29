@@ -58,17 +58,15 @@
     hash 42
     hash 42
 
-  ++> tests-hash-codes-of-different-ints-are-not-equal
-    not. > @
-      eq.
-        hash 42
-        hash 24
+  not. ++> tests-hash-codes-of-different-ints-are-not-equal
+    eq.
+      hash 42
+      hash 24
 
-  ++> tests-hash-codes-of-different-sign-ints-are-not-equal
-    not. > @
-      eq.
-        hash 42
-        hash -42
+  not. ++> tests-hash-codes-of-different-sign-ints-are-not-equal
+    eq.
+      hash 42
+      hash -42
 
   ++> tests-hash-code-string-is-int
     1.eq > @
@@ -81,17 +79,15 @@
     hash "Hello"
     hash "Hello"
 
-  ++> tests-hash-codes-of-same-length-strings-are-not-equal
-    not. > @
-      eq.
-        hash "one"
-        hash "two"
+  not. ++> tests-hash-codes-of-same-length-strings-are-not-equal
+    eq.
+      hash "one"
+      hash "two"
 
-  ++> tests-hash-codes-of-different-strings-are-not-equal
-    not. > @
-      eq.
-        hash "hello"
-        hash "bye!!!"
+  not. ++> tests-hash-codes-of-different-strings-are-not-equal
+    eq.
+      hash "hello"
+      hash "bye!!!"
 
   ++> tests-hash-code-abstract-object-is-int
     1.eq > @
@@ -137,14 +133,12 @@
         4.242e43 >> bigval!
       hash bigval
 
-  ++> tests-hash-codes-of-different-floats-are-not-equal
-    not. > @
-      eq.
-        hash 3.14
-        hash 2.72
+  not. ++> tests-hash-codes-of-different-floats-are-not-equal
+    eq.
+      hash 3.14
+      hash 2.72
 
-  ++> tests-hash-codes-of-different-sign-floats-are-not-equal
-    not. > @
-      eq.
-        hash 3.22
-        hash -3.22
+  not. ++> tests-hash-codes-of-different-sign-floats-are-not-equal
+    eq.
+      hash 3.22
+      hash -3.22

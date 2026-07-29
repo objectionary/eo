@@ -37,20 +37,23 @@
     i64 flip
     i64 x.as-u64.flip
   [x] > minus
-    u64 difference.as-bytes > @
-    minus. > difference
-      i64 as-bytes
-      i64 x.as-u64.as-bytes
+    u64 > @
+      as-bytes.
+        minus. >>
+          i64 as-bytes
+          i64 x.as-u64.as-bytes
   [x] > plus
-    u64 sum.as-bytes > @
-    plus. > sum
-      i64 as-bytes
-      i64 x.as-u64.as-bytes
+    u64 > @
+      as-bytes.
+        plus. >>
+          i64 as-bytes
+          i64 x.as-u64.as-bytes
   [x] > times
-    u64 product.as-bytes > @
-    times. > product
-      i64 as-bytes
-      i64 x.as-u64.as-bytes
+    u64 > @
+      as-bytes.
+        times. >>
+          i64 as-bytes
+          i64 x.as-u64.as-bytes
 
   gt. ++> tests-u64-as-number-is-unsigned
     FF-FF-FF-FF-FF-FF-FF-FF.as-u64.as-number
@@ -70,21 +73,18 @@
     00-00-00-00-00-00-00-32.as-u64
     00-00-00-00-00-00-00-32.as-u64
 
-  ++> tests-u64-gte-false
-    not. > @
-      00-00-00-00-00-00-00-00.as-u64.gte 00-00-00-00-00-00-00-0A.as-u64
+  not. ++> tests-u64-gte-false
+    00-00-00-00-00-00-00-00.as-u64.gte 00-00-00-00-00-00-00-0A.as-u64
 
   eq. ++> tests-u64-has-valid-bytes
     00-00-00-00-00-00-00-2A.as-u64.as-bytes
     00-00-00-00-00-00-00-2A
 
-  ++> tests-u64-high-bit-not-less-than-one
-    not. > @
-      FF-FF-FF-FF-FF-FF-FF-FF.as-u64.lt 00-00-00-00-00-00-00-01.as-u64
+  not. ++> tests-u64-high-bit-not-less-than-one
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.lt 00-00-00-00-00-00-00-01.as-u64
 
-  ++> tests-u64-less-equal
-    not. > @
-      00-00-00-00-00-00-00-0A.as-u64.lt 00-00-00-00-00-00-00-0A.as-u64
+  not. ++> tests-u64-less-equal
+    00-00-00-00-00-00-00-0A.as-u64.lt 00-00-00-00-00-00-00-0A.as-u64
 
   lt. ++> tests-u64-less-true
     00-00-00-00-00-00-00-0A.as-u64

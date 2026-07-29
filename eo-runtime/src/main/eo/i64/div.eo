@@ -15,24 +15,38 @@
     x.as-bytes.eq 00-00-00-00-00-00-00-00
     cant-divide
       "i64 cannot be divided by zero"
-    result
+    if.
+      eq.
+        and.
+          n.as-bytes.xor x.as-bytes
+          80-00-00-00-00-00-00-00
+        80-00-00-00-00-00-00-00
+      as-bytes.
+        plus.
+          i64 quotient.not
+          i64 00-00-00-00-00-00-00-01
+      i64 quotient
   00-00-00-00-00-00-00-01.left i > [i] > bit
-  magnitude x.as-bytes > bottom
-  as-bytes. > bottom-negated
-    plus.
-      i64 bottom.not
-      i64 00-00-00-00-00-00-00-01
   [index remainder quot] > looped
     if. > @
       index.lt 0
       quot
-      unsigned-gte.if
+      if.
+        eq.
+          or. >> carry-out!
+            and. >> both-negative!
+              shifted.and 80-00-00-00-00-00-00-00 >> shifted-sign!
+              subtrahend.and 80-00-00-00-00-00-00-00 >> divisor-sign!
+            and. >> mixed-signs-with-nonneg-trial!
+              shifted-sign.xor divisor-sign >> signs-differ!
+              next-rem.xor 80-00-00-00-00-00-00-00 >> trial-nonnegative!
+          80-00-00-00-00-00-00-00
         looped
           index.minus 1
           as-bytes. >> next-rem!
             plus.
               i64 shifted
-              i64 bottom-negated
+              i64 subtrahend
           quot.or >>!
             bit index
         looped
@@ -40,18 +54,11 @@
           or. >> shifted!
             remainder.left 1
             and.
-              top.right index
+              right.
+                magnitude n.as-bytes
+                index
               00-00-00-00-00-00-00-01
           quot
-    eq. > unsigned-gte
-      or. >> carry-out!
-        and. >> both-negative!
-          shifted.and 80-00-00-00-00-00-00-00 >> shifted-sign!
-          bottom-negated.and 80-00-00-00-00-00-00-00 >> divisor-sign!
-        and. >> mixed-signs-with-nonneg-trial!
-          shifted-sign.xor divisor-sign >> signs-differ!
-          next-rem.xor 80-00-00-00-00-00-00-00 >> trial-nonnegative!
-      80-00-00-00-00-00-00-00
   if. > [b] > magnitude
     eq.
       b.and 80-00-00-00-00-00-00-00
@@ -61,22 +68,16 @@
         i64 b.not
         i64 00-00-00-00-00-00-00-01
     b
-  eq. > negative
-    and.
-      n.as-bytes.xor x.as-bytes
-      80-00-00-00-00-00-00-00
-    80-00-00-00-00-00-00-00
   looped > quotient
     63
     00-00-00-00-00-00-00-00
     00-00-00-00-00-00-00-00
-  negative.if > result
-    as-bytes.
-      plus.
-        i64 quotient.not
-        i64 00-00-00-00-00-00-00-01
-    i64 quotient
-  magnitude n.as-bytes > top
+  as-bytes. > subtrahend
+    plus.
+      i64
+        not.
+          magnitude x.as-bytes
+      i64 00-00-00-00-00-00-00-01
 
   ++> tests-i64-div-by-i64-one
     eq. > @

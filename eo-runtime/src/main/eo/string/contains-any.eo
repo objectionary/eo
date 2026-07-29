@@ -1,7 +1,7 @@
 # Checks if `text` contains any element from `substrings`.
 
-+alias tuple.reduced
 +alias tuple.mapped
++alias tuple.reduced
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
@@ -17,17 +17,15 @@
     false
     x.or a > [a x]
 
-  ++> test-contains-any-without-substrings
-    not. > @
-      contains-any
-        "text"
-        *
+  not. ++> test-contains-any-without-substrings
+    contains-any
+      "text"
+      *
 
-  ++> tests-contains-any-for-empty-text-and-without-substrings
-    not. > @
-      contains-any
-        ""
-        *
+  not. ++> tests-contains-any-for-empty-text-and-without-substrings
+    contains-any
+      ""
+      *
 
   contains-any *1 ++> tests-contains-any-vert
     "foo bar buzz"
@@ -35,14 +33,13 @@
     " "
     "o"
 
-  ++> tests-not-contains-any
-    not. > @
-      contains-any *1
-        "xyzw"
-        "yx"
-        "zyx"
-        "wx"
-        "abc"
+  not. ++> tests-not-contains-any
+    contains-any *1
+      "xyzw"
+      "yx"
+      "zyx"
+      "wx"
+      "abc"
 
   contains-any *1 ++> tests-successful-contains-any
     "Good morning"

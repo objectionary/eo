@@ -22,38 +22,40 @@
       as-bytes.slice 2 2
   [] > as-i64
     i64 > @
-      prefix.concat as-bytes
-    if. > prefix
-      eq.
-        as-bytes.and 80-00-00-00
-        00-00-00-00
-      00-00-00-00
-      FF-FF-FF-FF
+      concat.
+        if. >>
+          eq.
+            as-bytes.and 80-00-00-00
+            00-00-00-00
+          00-00-00-00
+          FF-FF-FF-FF
+        as-bytes
   as-i64.as-number > as-number
   [x cant-divide] > div
     if. > @
-      other.eq zero
+      eq.
+        x.as-i32 >> other
+        00-00-00-00
       cant-divide
         "Can't divide %d by i32 zero".printf
           * as-i64.as-number
       if.
         or.
-          left.eq zero
+          eq.
+            b.slice 0 4 >> left
+            00-00-00-00
           left.eq FF-FF-FF-FF
-        i32 right
+        i32
+          slice.
+            as-bytes. >> b
+              as-i64.div other.as-i64
+            4
+            4
         plus.
-          i32 left
-          i32 right
-    as-bytes. > b
-      as-i64.div other.as-i64
-    b.slice > left
-      0
-      4
-    x.as-i32 > other
-    b.slice > right
-      4
-      4
-    00-00-00-00 > zero
+          i32
+            b.slice 0 4
+          i32
+            b.slice 4 4
   as-i64.gt x.as-i32.as-i64 > [x] > gt
   as-i64.gte x.as-i32.as-i64 > [x] > gte
   as-i64.lt x.as-i32.as-i64 > [x] > lt
@@ -63,23 +65,23 @@
   [x] > plus
     if. > @
       or.
-        left.eq 00-00-00-00
+        eq.
+          b.slice 0 4 >> left
+          00-00-00-00
         left.eq FF-FF-FF-FF
-      i32 right
+      i32
+        slice.
+          as-bytes. >> b
+            as-i64.plus x.as-i32.as-i64
+          4
+          4
       plus.
-        i32 left
-        i32 right
-    as-bytes. > b
-      as-i64.plus x.as-i32.as-i64
-    b.slice > left
-      0
-      4
-    b.slice > right
-      4
-      4
-  [x] > times
-    i32 right > @
-    slice. > right
+        i32
+          b.slice 0 4
+        i32
+          b.slice 4 4
+  i32 > [x] > times
+    slice.
       as-bytes.
         as-i64.times x.as-i32.as-i64
       4
@@ -113,47 +115,40 @@
     13.as-i64.as-i32.div -5.as-i64.as-i32
     -2.as-i64.as-i32
 
-  ++> tests-i32-eq-false
-    not. > @
-      123.as-i64.as-i32.eq 42.as-i64.as-i32
+  not. ++> tests-i32-eq-false
+    123.as-i64.as-i32.eq 42.as-i64.as-i32
 
   123.as-i64.as-i32.eq 123.as-i64.as-i32 ++> tests-i32-eq-true
 
-  ++> tests-i32-greater-equal
-    not. > @
-      0.as-i64.as-i32.gt 0.as-i64.as-i32
+  not. ++> tests-i32-greater-equal
+    0.as-i64.as-i32.gt 0.as-i64.as-i32
 
-  ++> tests-i32-greater-false
-    not. > @
-      0.as-i64.as-i32.gt 100.as-i64.as-i32
+  not. ++> tests-i32-greater-false
+    0.as-i64.as-i32.gt 100.as-i64.as-i32
 
   -200.as-i64.as-i32.gt -1000.as-i64.as-i32 ++> tests-i32-greater-true
 
   113.as-i64.as-i32.gte 113.as-i64.as-i32 ++> tests-i32-gte-equal
 
-  ++> tests-i32-gte-false
-    not. > @
-      0.as-i64.as-i32.gte 10.as-i64.as-i32
+  not. ++> tests-i32-gte-false
+    0.as-i64.as-i32.gte 10.as-i64.as-i32
 
   -1000.as-i64.as-i32.gte -1100.as-i64.as-i32 ++> tests-i32-gte-true
 
   42.as-i64.as-i32.as-bytes.eq 00-00-00-2A ++> tests-i32-has-valid-bytes
 
-  ++> tests-i32-less-equal
-    not. > @
-      10.as-i64.as-i32.lt 10.as-i64.as-i32
+  not. ++> tests-i32-less-equal
+    10.as-i64.as-i32.lt 10.as-i64.as-i32
 
-  ++> tests-i32-less-false
-    not. > @
-      10.as-i64.as-i32.lt -5.as-i64.as-i32
+  not. ++> tests-i32-less-false
+    10.as-i64.as-i32.lt -5.as-i64.as-i32
 
   10.as-i64.as-i32.lt 50.as-i64.as-i32 ++> tests-i32-less-true
 
   50.as-i64.as-i32.lte 50.as-i64.as-i32 ++> tests-i32-lte-equal
 
-  ++> tests-i32-lte-false
-    not. > @
-      0.as-i64.as-i32.lte -10.as-i64.as-i32
+  not. ++> tests-i32-lte-false
+    0.as-i64.as-i32.lte -10.as-i64.as-i32
 
   -200.as-i64.as-i32.lte -100.as-i64.as-i32 ++> tests-i32-lte-true
 

@@ -53,7 +53,7 @@ import org.xembly.Xembler;
  * </p>
  * @since 0.31.0
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
+@SuppressWarnings("PMD.GodClass")
 final class Linting implements Step {
 
     /**
@@ -143,6 +143,11 @@ final class Linting implements Step {
     private final boolean skipLinting;
 
     /**
+     * Cache guard, see {@link ConcurrentCache} for why it is one per instance.
+     */
+    private final ConcurrentCache guard;
+
+    /**
      * Constructor.
      * @param srcs Scoped tojos
      * @param compiled Compile tojos
@@ -192,6 +197,7 @@ final class Linting implements Step {
         this.lintAsPackage = pkg;
         this.sourcesDir = sources;
         this.skipLinting = skip;
+        this.guard = new ConcurrentCache();
     }
 
     @Override
@@ -201,6 +207,41 @@ final class Linting implements Step {
         } else {
             this.linting();
         }
+    }
+
+    /**
+     * Summarize the counts.
+     * @param counts Counts of errors, warnings, and critical
+     * @return Summary text
+     */
+    static String summary(final Map<Severity, Integer> counts) {
+        final List<String> parts = new ArrayList<>(0);
+        final int critical = counts.get(Severity.CRITICAL);
+        if (critical > 0) {
+            parts.add(Linting.plural(critical, "critical error"));
+        }
+        final int errors = counts.get(Severity.ERROR);
+        if (errors > 0) {
+            parts.add(Linting.plural(errors, "error"));
+        }
+        final int warnings = counts.get(Severity.WARNING);
+        if (warnings > 0) {
+            parts.add(Linting.plural(warnings, "warning"));
+        }
+        if (parts.isEmpty()) {
+            parts.add("no complaints");
+        }
+        final String sum;
+        if (parts.size() < 3) {
+            sum = String.join(" and ", parts);
+        } else {
+            sum = String.format(
+                "%s, and %s",
+                String.join(", ", parts.subList(0, parts.size() - 1)),
+                parts.get(parts.size() - 1)
+            );
+        }
+        return sum;
     }
 
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
@@ -292,7 +333,8 @@ final class Linting implements Step {
             new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get()
         ).make(base, MjAssemble.XMIR);
         if (this.cacheEnabled) {
-            new ConcurrentCache(
+            this.guard.apply(
+                source, target, base.relativize(target),
                 new Cache(
                     new CachePath(
                         this.cacheDir.resolve(Linting.CACHE),
@@ -304,7 +346,7 @@ final class Linting implements Step {
                         unlints
                     ).toString()
                 )
-            ).apply(source, target, base.relativize(target));
+            );
         } else {
             new Saved(
                 this.linted(xmir, unlints).toString(),
@@ -358,20 +400,23 @@ final class Linting implements Step {
         if (this.cacheEnabled) {
             final Path wpa = Paths.get("wpa.xmir");
             final Path target = this.targetDir.resolve(Linting.DIR).resolve(wpa);
-            new Cache(
-                this.cacheDir.resolve(Linting.CACHE),
-                root -> {
-                    Logger.info(this, "Linting a package");
-                    final Directives all = new Directives().add("defects");
-                    for (final org.eolang.wpa.Defect defect : this.wpa(pkg)) {
-                        Linting.embedded(all, defect);
-                    }
-                    all.up();
-                    return new Xembler(all).xmlQuietly();
-                },
-                p -> p.getFileName().toString().endsWith(".xmir")
-                    && !p.getFileName().equals(wpa)
-            ).apply(this.sourcesDir, target, wpa);
+            this.guard.apply(
+                this.sourcesDir, target, wpa,
+                new Cache(
+                    this.cacheDir.resolve(Linting.CACHE),
+                    root -> {
+                        Logger.info(this, "Linting a package");
+                        final Directives all = new Directives().add("defects");
+                        for (final org.eolang.wpa.Defect defect : this.wpa(pkg)) {
+                            Linting.embedded(all, defect);
+                        }
+                        all.up();
+                        return new Xembler(all).xmlQuietly();
+                    },
+                    p -> p.getFileName().toString().endsWith(".xmir")
+                        && !p.getFileName().equals(wpa)
+                )
+            );
             defects = Linting.read(target);
         } else {
             Logger.info(
@@ -481,41 +526,6 @@ final class Linting implements Step {
             txt.append('s');
         }
         return txt.toString();
-    }
-
-    /**
-     * Summarize the counts.
-     * @param counts Counts of errors, warnings, and critical
-     * @return Summary text
-     */
-    private static String summary(final Map<Severity, Integer> counts) {
-        final List<String> parts = new ArrayList<>(0);
-        final int critical = counts.get(Severity.CRITICAL);
-        if (critical > 0) {
-            parts.add(Linting.plural(critical, "critical error"));
-        }
-        final int errors = counts.get(Severity.ERROR);
-        if (errors > 0) {
-            parts.add(Linting.plural(errors, "error"));
-        }
-        final int warnings = counts.get(Severity.WARNING);
-        if (warnings > 0) {
-            parts.add(Linting.plural(warnings, "warning"));
-        }
-        if (parts.isEmpty()) {
-            parts.add("no complaints");
-        }
-        final String sum;
-        if (parts.size() < 3) {
-            sum = String.join(" and ", parts);
-        } else {
-            sum = String.format(
-                "%s, and %s",
-                String.join(", ", parts.subList(0, parts.size() - 2)),
-                parts.get(parts.size() - 1)
-            );
-        }
-        return sum;
     }
 
     /**

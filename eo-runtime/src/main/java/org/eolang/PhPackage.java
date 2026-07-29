@@ -13,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * A package object, coming from {@link Phi}.
  * @since 0.22
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class PhPackage implements Phi {
 
     /**

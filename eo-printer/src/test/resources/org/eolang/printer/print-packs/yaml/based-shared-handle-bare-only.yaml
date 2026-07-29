@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The companion to `based-shared-handle-bare-reference` (#5956) where every
+# reference to the shared based handle is bare. No dispatch is left to host the
+# binding as a reversed one, and a bare host would inline it anonymously
+# (#5810), dropping the very name the other reference reads back through, so
+# the handle stays standing where it is and both references read it by name.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [a] > foo
+    b > x
+    b > y
+    a.plus 1 >> b
+
+printed: |
+  [a] > foo
+    a.plus 1 >> b
+    b > x
+    b > y

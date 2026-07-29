@@ -10,13 +10,13 @@
 
 [num] > degrees
   div. > @
-    value.times 180
+    times.
+      number num.as-bytes
+      180
     pi
-  number num.as-bytes > value
 
-  ++> tests-degrees-of-nan-is-nan
-    is-nan. > @
-      degrees nan
+  is-nan. ++> tests-degrees-of-nan-is-nan
+    degrees nan
 
   lt. ++> tests-degrees-of-negative-pi-is-minus-half-turn
     abs

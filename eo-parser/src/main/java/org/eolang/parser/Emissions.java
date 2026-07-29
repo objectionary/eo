@@ -18,10 +18,10 @@ import java.util.List;
  * §9.4.2).</p>
  *
  * @since 0.1
- * @checkstyle CyclomaticComplexityCheck (600 lines)
+ * @checkstyle CyclomaticComplexityCheck (610 lines)
  * @checkstyle BooleanExpressionComplexityCheck (600 lines)
  */
-@SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.TooManyMethods", "PMD.CognitiveComplexity"})
+@SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.CognitiveComplexity"})
 final class Emissions {
 
     /**
@@ -118,22 +118,7 @@ final class Emissions {
         if (value.kind() == Value.Kind.INTEGER || value.kind() == Value.Kind.FLOAT) {
             Emissions.number(emit, name, value, line);
         } else if (value.kind() == Value.Kind.HEX) {
-            final long hex;
-            try {
-                hex = Long.parseLong(value.raw().substring(2), 16);
-            } catch (final NumberFormatException ex) {
-                final ParseError error = new ParseError(
-                    line, value.pos(),
-                    "hexadecimal literal is out of range"
-                );
-                error.initCause(ex);
-                throw error;
-            }
-            emit.object(name, "Φ.number", line, value.pos());
-            Emissions.bytesCarrier(
-                emit, line, value.pos(),
-                new Hex((double) hex).asString()
-            );
+            Emissions.hex(emit, name, value, line);
         } else if (value.kind() == Value.Kind.BYTES) {
             emit.object(name, "Φ.bytes", line, value.pos());
             emit.object(null, null, line, value.pos());
@@ -297,6 +282,52 @@ final class Emissions {
         }
         Emissions.rejectLoneSurrogates(out);
         return out.toString();
+    }
+
+    /**
+     * Emit a {@code HEX} literal as {@code Φ.number}, rejecting values that
+     * fit a signed 64-bit {@code long} but no longer round-trip exactly
+     * through an IEEE-754 double (the sibling {@code number()} check, for
+     * the base where a plain range check on {@code long} does not catch it).
+     * @param emit Emitter
+     * @param name Name attribute (or {@code null})
+     * @param value Hex value
+     * @param line Source line
+     * @checkstyle ParameterNumberCheck (6 lines)
+     */
+    @SuppressWarnings({
+        "PMD.AvoidDecimalLiteralsInBigDecimalConstructor",
+        "java:S2111"
+    })
+    private static void hex(
+        final Emit emit, final String name, final Value value, final int line
+    ) {
+        final long raw;
+        try {
+            raw = Long.parseLong(value.raw().substring(2), 16);
+        } catch (final NumberFormatException ex) {
+            final ParseError error = new ParseError(
+                line, value.pos(),
+                "hexadecimal literal is out of range"
+            );
+            error.initCause(ex);
+            throw error;
+        }
+        final double parsed = raw;
+        if (new BigDecimal(raw).compareTo(new BigDecimal(parsed)) != 0) {
+            throw new ParseError(
+                line, value.pos(),
+                String.format(
+                    "%s is over-precise, write %s instead",
+                    value.raw(), Emissions.canonicalInteger(parsed)
+                )
+            );
+        }
+        emit.object(name, "Φ.number", line, value.pos());
+        Emissions.bytesCarrier(
+            emit, line, value.pos(),
+            new Hex(parsed).asString()
+        );
     }
 
     /**
@@ -513,13 +544,21 @@ final class Emissions {
         while (cursor < body.length() && body.charAt(cursor) == 'u') {
             cursor = cursor + 1;
         }
-        if (cursor + 4 > body.length()) {
-            out.append('\\').append(body, start, body.length());
-        } else {
-            out.append(
-                (char) Integer.parseInt(body.substring(cursor, cursor + 4), 16)
+        boolean valid = cursor + 4 <= body.length();
+        for (int idx = cursor; valid && idx < cursor + 4; idx = idx + 1) {
+            valid = Character.digit(body.charAt(idx), 16) >= 0;
+        }
+        if (!valid) {
+            throw new NumberFormatException(
+                String.format(
+                    "unicode escape \\%s is not exactly four hexadecimal digits",
+                    body.substring(start, Math.min(body.length(), cursor + 4))
+                )
             );
         }
+        out.append(
+            (char) Integer.parseInt(body.substring(cursor, cursor + 4), 16)
+        );
         return cursor + 4;
     }
 

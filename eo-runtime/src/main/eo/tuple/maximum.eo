@@ -11,17 +11,16 @@
 
 [sequence cant-max] > maximum
   if. > @
-    is-empty list
+    is-empty sequence
     cant-max
       "cannot get the maximum number from an empty sequence"
     reduced
-      list
+      sequence
       ninf
       if. > [max item]
         item.as-number.gt max
         item
         max
-  sequence > list
 
   eq. ++> tests-maximum-of-array-is-first
     maximum *

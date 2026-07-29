@@ -32,8 +32,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @SuppressWarnings(
     {
         "JTCOP.RuleAllTestsHaveProductionClass",
-        "JTCOP.RuleNotContainsTestWord",
-        "PMD.AvoidDuplicateLiterals"
+        "JTCOP.RuleNotContainsTestWord"
     }
 )
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})

@@ -13,7 +13,9 @@
 
 [num x] > power
   if. > @
-    expo.eq 0
+    eq.
+      number x.as-bytes >> expo
+      0
     1
     base.is-nan.if
       nan
@@ -22,7 +24,9 @@
         expo.is-finite.if
           base.is-finite.if
             if.
-              base.eq 0
+              eq.
+                number num.as-bytes >> base
+                0
               if.
                 expo.gt 0
                 0
@@ -31,12 +35,37 @@
                 if.
                   expo.lt 0
                   1.div
-                    ipow base (abs expo)
+                    [b n] >> ipow
+                      if. > @
+                        n.eq 0
+                        1
+                        if.
+                          is-integer. (n.div 2)
+                          half.times half
+                          b.times
+                            ipow b (n.minus 1)
+                      ipow b (n.div 2) > half
+                    | base (abs expo)
                   ipow base (abs expo)
                 if.
                   base.gt 0
-                  expon
-                    expo.times (ln base)
+                  [y] >> expon
+                    times. > @
+                      if.
+                        k.lt 0
+                        1.div
+                          ipow e (abs k)
+                        ipow e (abs k)
+                      fraction 1
+                    if. > [j] > fraction
+                      j.gt 20
+                      1
+                      1.plus
+                        times.
+                          div. (y.minus k) j
+                          fraction (j.plus 1)
+                    floor. (y.plus 0.5) > k
+                  | (expo.times (ln base))
                   nan
             if.
               base.gt 0
@@ -46,7 +75,10 @@
                 0
               if.
                 expo.gt 0
-                odd.if ninf pinf
+                if.
+                  expo.is-integer.and (expo.div 2).is-integer.not >> odd
+                  ninf
+                  pinf
                 odd.if 0.neg 0
           if.
             expo.gt 0
@@ -72,55 +104,11 @@
                   1
                 nan
                 pinf
-  number num.as-bytes > base
-  number x.as-bytes > expo
-  [y] > expon
-    whole.times > @
-      fraction 1
-    20 > eterms
-    if. > [j] > fraction
-      j.gt eterms
-      1
-      1.plus
-        times.
-          r.div j
-          fraction
-            j.plus 1
-    floor. > k
-      y.plus 0.5
-    y.minus k > r
-    if. > whole
-      k.lt 0
-      1.div
-        ipow
-          e
-          abs k
-      ipow
-        e
-        abs k
-  [b n] > ipow
-    if. > @
-      n.eq 0
-      1
-      if.
-        is-integer.
-          n.div 2
-        half.times half
-        b.times
-          ipow
-            b
-            n.minus 1
-    ipow > half
-      b
-      n.div 2
-  expo.is-integer.and > odd
-    not.
-      is-integer.
-        expo.div 2
 
-  ++> tests-power-any-to-nan-is-nan
-    is-nan. > @
-      power 52 nan
+  is-nan. ++> tests-power-any-to-nan-is-nan
+    power
+      52
+      nan
 
   eq. ++> tests-power-as-method-on-number
     2.power 4
@@ -157,9 +145,10 @@
       -3
     0.015625
 
-  ++> tests-power-fractional-of-negative-is-nan
-    is-nan. > @
-      power -4 0.5
+  is-nan. ++> tests-power-fractional-of-negative-is-nan
+    power
+      -4
+      0.5
 
   eq. ++> tests-power-int-to-zero-is-one
     power
@@ -173,13 +162,15 @@
       -12341
     0
 
-  ++> tests-power-nan-to-any-is-nan
-    is-nan. > @
-      power nan 42
+  is-nan. ++> tests-power-nan-to-any-is-nan
+    power
+      nan
+      42
 
-  ++> tests-power-nan-to-nan-is-nan
-    is-nan. > @
-      power nan nan
+  is-nan. ++> tests-power-nan-to-nan-is-nan
+    power
+      nan
+      nan
 
   eq. ++> tests-power-negative-float-to-negative-infinity-is-zero
     power

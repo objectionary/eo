@@ -13,57 +13,45 @@
 
 [num] > arc-sine
   if. > @
-    arg.lt 0
-    base.neg
-    base
-  number num.as-bytes > arg
-  [point] >> series
-    point.times > @
-      poly 1
-    if. > [depth] > poly
-      depth.gt terms
-      1
-      1.plus
-        times.
-          div.
-            times.
-              times.
-                minus.
-                  depth.times 2
-                  1
-                minus.
-                  depth.times 2
-                  1
-              squared
-            times.
-              depth.times 2
-              plus.
-                depth.times 2
+    lt.
+      number num.as-bytes >> arg
+      0
+    neg.
+      if. >> base
+        gt.
+          abs arg >> magnitude
+          0.5
+        minus.
+          pi.div 2
+          2.times
+            [point] >> series
+              point.times > @
+                poly 1
+              if. > [depth] > poly
+                depth.gt 30
                 1
-          poly
-            depth.plus 1
-    point.times point > squared
-    30 > terms
-  if. > base
-    magnitude.gt 0.5
-    minus.
-      pi.div 2
-      2.times
-        series root
-    series magnitude
-  abs arg > magnitude
-  sqrt > root
-    div.
-      1.minus magnitude
-      2
+                1.plus
+                  times.
+                    div.
+                      times.
+                        times.
+                          minus. (depth.times 2) 1
+                          minus. (depth.times 2) 1
+                        squared
+                      times.
+                        depth.times 2
+                        plus. (depth.times 2) 1
+                    poly (depth.plus 1)
+              point.times point > squared
+            | (sqrt ((1.minus magnitude).div 2))
+        series magnitude
+    base
 
-  ++> tests-arc-sine-above-one-is-nan
-    is-nan. > @
-      arc-sine 2
+  is-nan. ++> tests-arc-sine-above-one-is-nan
+    arc-sine 2
 
-  ++> tests-arc-sine-below-minus-one-is-nan
-    is-nan. > @
-      arc-sine -2
+  is-nan. ++> tests-arc-sine-below-minus-one-is-nan
+    arc-sine -2
 
   lt. ++> tests-arc-sine-is-odd-function
     abs
@@ -85,9 +73,8 @@
           1000
     1
 
-  ++> tests-arc-sine-of-nan-is-nan
-    is-nan. > @
-      arc-sine nan
+  is-nan. ++> tests-arc-sine-of-nan-is-nan
+    arc-sine nan
 
   lt. ++> tests-arc-sine-of-negative-half-is-minus-pi-sixths
     abs
@@ -101,9 +88,8 @@
           1000
     1
 
-  ++> tests-arc-sine-of-negative-infinity-is-nan
-    is-nan. > @
-      arc-sine ninf
+  is-nan. ++> tests-arc-sine-of-negative-infinity-is-nan
+    arc-sine ninf
 
   lt. ++> tests-arc-sine-of-negative-one-is-minus-pi-halves
     abs
@@ -137,9 +123,8 @@
         643.5
     1
 
-  ++> tests-arc-sine-of-positive-infinity-is-nan
-    is-nan. > @
-      arc-sine pinf
+  is-nan. ++> tests-arc-sine-of-positive-infinity-is-nan
+    arc-sine pinf
 
   eq. ++> tests-arc-sine-of-zero-is-zero
     arc-sine 0

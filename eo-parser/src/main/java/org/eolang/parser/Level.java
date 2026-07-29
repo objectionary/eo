@@ -24,7 +24,6 @@ package org.eolang.parser;
  * @since 0.1
  * @checkstyle MultipleStringLiteralsCheck (200 lines)
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class Level {
 
     /**

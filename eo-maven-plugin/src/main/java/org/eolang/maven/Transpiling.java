@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.cactoos.func.StickyFunc;
 import org.eolang.parser.OnDefault;
 import org.eolang.parser.OnDetailed;
@@ -65,6 +66,40 @@ final class Transpiling implements Step {
     static final String PRE = "5-pre-transpile";
 
     /**
+     * The XSL steps of the transpile train, in order, ending with
+     * {@code to-java.xsl}. Kept as a single list so both the train in
+     * {@link #compiled(boolean)} and the cache-key fingerprint in
+     * {@link #version()} are derived from the same source.
+     */
+    static final String[] XSLS = {
+        "/org/eolang/parser/parse/set-locators.xsl",
+        "/org/eolang/maven/transpile/set-original-names.xsl",
+        "/org/eolang/maven/transpile/classes.xsl",
+        "/org/eolang/maven/transpile/tests.xsl",
+        "/org/eolang/maven/transpile/anonymous-to-nested.xsl",
+        "/org/eolang/maven/transpile/package.xsl",
+        "/org/eolang/maven/transpile/attrs.xsl",
+        "/org/eolang/maven/transpile/data.xsl",
+        "/org/eolang/maven/transpile/to-java.xsl",
+    };
+
+    /**
+     * Classpath resources {@code xsl:import}-ed by one or more of
+     * {@link #XSLS}, so their content must also be folded into the
+     * cache-key fingerprint in {@link #version()} — editing one of these
+     * shared libraries changes the actual transpile output just as much
+     * as editing a top-level stylesheet does, but leaves {@link #XSLS}
+     * itself unchanged (see #6032). Not part of {@link #XSLS} itself
+     * because that array is also used verbatim to build the actual XSL
+     * train in {@link #compiled(boolean, boolean)}, where its last
+     * element is special-cased as {@code to-java.xsl}.
+     */
+    static final String[] IMPORTS = {
+        "/org/eolang/parser/_funcs.xsl",
+        "/org/eolang/parser/_specials.xsl",
+    };
+
+    /**
      * Parsing trains with XSLs, one per thread, keyed by whether source
      * locations are tracked.
      * <p>
@@ -85,24 +120,6 @@ final class Transpiling implements Step {
      * Cache directory for transpiled sources.
      */
     private static final String CACHE = "transpiled";
-
-    /**
-     * The XSL steps of the transpile train, in order, ending with
-     * {@code to-java.xsl}. Kept as a single list so both the train in
-     * {@link #compiled(boolean)} and the cache-key fingerprint in
-     * {@link #version()} are derived from the same source.
-     */
-    private static final String[] XSLS = {
-        "/org/eolang/parser/parse/set-locators.xsl",
-        "/org/eolang/maven/transpile/set-original-names.xsl",
-        "/org/eolang/maven/transpile/classes.xsl",
-        "/org/eolang/maven/transpile/tests.xsl",
-        "/org/eolang/maven/transpile/anonymous-to-nested.xsl",
-        "/org/eolang/maven/transpile/package.xsl",
-        "/org/eolang/maven/transpile/attrs.xsl",
-        "/org/eolang/maven/transpile/data.xsl",
-        "/org/eolang/maven/transpile/to-java.xsl",
-    };
 
     /**
      * Java extension.
@@ -166,6 +183,11 @@ final class Transpiling implements Step {
     private final boolean coverage;
 
     /**
+     * Cache guard, see {@link ConcurrentCache} for why it is one per instance.
+     */
+    private final ConcurrentCache guard;
+
+    /**
      * Constructor.
      * @param srcs XMIR sources to transpile
      * @param target Target directory
@@ -202,6 +224,7 @@ final class Transpiling implements Step {
         this.xslMeasures = measures;
         this.tracking = diagnostics;
         this.coverage = cvrg;
+        this.guard = new ConcurrentCache();
     }
 
     @Override
@@ -214,6 +237,34 @@ final class Transpiling implements Step {
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
             this.sources.size(), saved, this.generatedDir
+        );
+    }
+
+    /**
+     * Cache-key version segment: the plugin version combined with a
+     * fingerprint of the bundled transpile XSLs and the libraries they
+     * {@code xsl:import}, plus the {@code trackLocations}/
+     * {@code coverageTracking} flags. Folding the XSL content in means
+     * that a change in the transformation logic invalidates the global
+     * transpile cache even when the plugin version is unchanged (a
+     * constant {@code -SNAPSHOT} during development), see #5578; folding
+     * the imported libraries in too closes the gap where editing one of
+     * them changed the actual output without changing anything in
+     * {@link #XSLS} itself, see #6032. Folding the two flags in means
+     * toggling either one also invalidates the cache, since both change
+     * what {@code to-java.xsl} emits (see #6031).
+     * @return The version segment for {@link CachePath}
+     */
+    String version() {
+        return String.format(
+            "%s-%s-%b-%b",
+            this.version,
+            new Fingerprint(
+                Stream.concat(
+                    Arrays.stream(Transpiling.XSLS), Arrays.stream(Transpiling.IMPORTS)
+                ).toArray(String[]::new)
+            ).get(),
+            this.tracking.locations(), this.coverage
         );
     }
 
@@ -237,7 +288,8 @@ final class Transpiling implements Step {
         final Path cdir = this.cacheDir.resolve(Transpiling.CACHE);
         final Path tail = base.relativize(target);
         if (this.cacheEnabled) {
-            new ConcurrentCache(
+            this.guard.apply(
+                source, target, tail,
                 new Cache(
                     new CachePath(cdir, this.version(), hsh.get()),
                     src -> {
@@ -259,7 +311,7 @@ final class Transpiling implements Step {
                         return res;
                     }
                 )
-            ).apply(source, target, tail);
+            );
         } else {
             rewrite.compareAndSet(false, true);
             new Saved(transform.apply(xmir).toString(), target).value();
@@ -353,19 +405,6 @@ final class Transpiling implements Step {
                 )
             )
         );
-    }
-
-    /**
-     * Cache-key version segment: the plugin version combined with a
-     * fingerprint of the bundled transpile XSLs. Folding the XSL
-     * content in means that a change in the transformation logic
-     * invalidates the global transpile cache even when the plugin
-     * version is unchanged (a constant {@code -SNAPSHOT} during
-     * development), see #5578.
-     * @return The version segment for {@link CachePath}
-     */
-    private String version() {
-        return String.format("%s-%s", this.version, new Fingerprint(Transpiling.XSLS).get());
     }
 
     /**

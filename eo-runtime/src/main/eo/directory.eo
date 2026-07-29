@@ -9,47 +9,11 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
++unlint mandatory-package
 
 [file] > directory
   file > @
-  [] > deleted
-    ^.exists.if > @
-      seq *
-        if. > [tup] >> r
-          tup.length.eq 0
-          true
-          seq *
-            tup.head.deleted
-            r tup.tail
-        | (walk "**").at.^
-        ^
-      ^
   true > is-directory
-  [] > made
-    ^.exists.if > @
-      ^
-      seq *
-        made.
-          directory
-            Q.file ^.as-path.dirname
-        if.
-          created.code.eq 0
-          ^
-          T
-            "Cant make the directory '%s': %s".printf
-              * ^.path created.output
-    called. > created
-      os.is-windows.if
-        win32 *1
-          "_mkdir"
-          ^.path
-        posix *1
-          "mkdir"
-          ^.path
-          posix.permissions
-  T > [mode scope] > open
-    "The file %s is a directory, can't open for I/O operations".printf
-      * file
   [] > tmpfile
     ^.exists.if > @
       Q.file touch.as-bytes
@@ -58,45 +22,6 @@
           * file
     [] > touch /Q.string
   [glob] > walk /Q.tuple
-
-  ++> tests-deletes-directory-with-file-and-dir
-    and. > @
-      and.
-        and.
-          and.
-            inner.is-directory.and inner.exists
-            f.exists
-          d.deleted.exists.not
-        inner.exists.not
-      f.exists.not
-    made. > d
-      directory mktemp.tmpfile.deleted
-    d.tmpfile > f
-    made. > inner
-      directory d.tmpfile.deleted
-
-  ++> tests-deletes-directory-with-files-recursively
-    and. > @
-      and.
-        and.
-          first.exists.and second.exists
-          d.deleted.exists.not
-        first.exists.not
-      second.exists.not
-    made. > d
-      directory mktemp.tmpfile.deleted
-    d.tmpfile > first
-    d.tmpfile > second
-
-  ++> tests-deletes-empty-directory
-    not. > @
-      exists. (mktemp.tmpfile.deleted.as-path.resolved "bar-empty").as-dir.made.deleted
-
-  ++> tests-makes-new-directory
-    d.exists.and d.is-directory > @
-    made. > d
-      as-dir.
-        mktemp.tmpfile.deleted.as-path.resolved "foo-new"
 
   ++> tests-walks-recursively
     seq * > @
@@ -120,10 +45,31 @@
       made.
         directory mktemp.tmpfile.deleted
 
-  mktemp.open --> on-opening-directory
-    "w"
-    true > [d]
+  ++> tests-walks-with-plain-glob-matches-direct-child-only
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      made.
+        as-dir.
+          d.resolved "sub"
+      touched.
+        as-file.
+          d.resolved "sub/b.txt"
+      eq.
+        length.
+          d.as-dir.walk "*.txt"
+        1
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
 
   walk. --> on-walking-absent-directory
     directory mktemp.tmpfile.deleted
     "**"
+
+  --> on-walking-with-malformed-glob
+    d.as-dir.walk "[" > @
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
