@@ -30,17 +30,17 @@
       0
       number
         sign.or
-          exponent-bits.or mantissa
+          exponentbits.or mantissa
     rounded.eq 00-20-00-00-00-00-00-00 > carried
-    carried.if > exponent-bits
+    carried.if > exponentbits
       as-bytes.
         plus.
           i64 40-00-00-00-00-00-00-00
-          i64 highest-bits
+          i64 highestbits
       as-bytes.
         plus.
           i64 3F-F0-00-00-00-00-00-00
-          i64 highest-bits
+          i64 highestbits
     eq. > guard
       and.
         magnitude.right
@@ -48,7 +48,7 @@
         00-00-00-00-00-00-00-01
       00-00-00-00-00-00-00-01
     scanned.as-number.minus 4503599627370496 > highest
-    left. > highest-bits!
+    left. > highestbits!
       scanned.and 00-00-00-00-00-00-00-3F
       52
     magnitude.right > kept!
@@ -70,14 +70,14 @@
     eq. > odd
       kept.and 00-00-00-00-00-00-00-01
       00-00-00-00-00-00-00-01
-    guard.and > round-up
-      sticky.or odd
-    round-up.if > rounded!
+    roundup.if > rounded!
       as-bytes.
         plus.
           i64 kept
           i64 00-00-00-00-00-00-00-01
       kept
+    guard.and > roundup
+      sticky.or odd
     [m acc step bit] > scan
       if. > @
         step.lt 1
@@ -170,38 +170,6 @@
     -100.as-i64.plus 42.as-i64
     -58.as-i64
 
-  eq. ++> can-convert-an-exact-power-of-two-to-a-number
-    4611686018427387904.as-i64.as-number
-    4611686018427387904
-
-  eq. ++> can-convert-a-small-negative-i64-to-a-number
-    -3.as-i64.as-number
-    -3
-
-  eq. ++> can-convert-a-small-positive-i64-to-a-number
-    3.as-i64.as-number
-    3
-
-  eq. ++> can-round-i64-max-up-when-converted-to-a-number
-    as-number.
-      i64 7F-FF-FF-FF-FF-FF-FF-FF
-    9.223372036854776e18
-
-  eq. ++> can-convert-i64-min-to-a-number
-    as-number.
-      i64 80-00-00-00-00-00-00-00
-    -9.223372036854776e18
-
-  eq. ++> rounds-a-tie-to-even-when-converting-to-a-number
-    as-number.
-      i64 00-20-00-00-00-00-00-01
-    9007199254740992
-
-  eq. ++> rounds-up-above-a-tie-when-converting-to-a-number
-    as-number.
-      i64 00-20-00-00-00-00-00-03
-    9007199254740996
-
   eq. ++> can-add-one-to-minus-one
     -1.as-i64.plus 1.as-i64
     0.as-i64
@@ -245,6 +213,14 @@
     -234.as-i64
     -234.as-i64.as-i32.as-i64
 
+  -3.as-i64.as-number.eq -3 ++> can-convert-a-small-negative-i64-to-a-number
+
+  3.as-i64.as-number.eq 3 ++> can-convert-a-small-positive-i64-to-a-number
+
+  eq. ++> can-convert-an-exact-power-of-two-to-a-number
+    4611686018427387904.as-i64.as-number
+    4611686018427387904
+
   eq. ++> can-convert-i32-max-without-an-error
     2147483647.as-i64
     2147483647.as-i64.as-i32.as-i64
@@ -252,6 +228,11 @@
   eq. ++> can-convert-i32-min-without-an-error
     -2147483648.as-i64
     -2147483648.as-i64.as-i32.as-i64
+
+  eq. ++> can-convert-i64-min-to-a-number
+    as-number.
+      i64 80-00-00-00-00-00-00-00
+    -9.223372036854776e18
 
   234.as-i64.eq 234.as-i64.as-i32.as-i64 ++> can-convert-to-i32-and-back
 
@@ -276,6 +257,21 @@
   eq. ++> can-multiply-two-negatives
     -7.as-i64.times -6.as-i64
     42.as-i64
+
+  eq. ++> can-round-a-tie-to-even-when-converting-to-a-number
+    as-number.
+      i64 00-20-00-00-00-00-00-01
+    9007199254740992
+
+  eq. ++> can-round-i64-max-up-when-converted-to-a-number
+    as-number.
+      i64 7F-FF-FF-FF-FF-FF-FF-FF
+    9.223372036854776e18
+
+  eq. ++> can-round-up-above-a-tie-when-converting-to-a-number
+    as-number.
+      i64 00-20-00-00-00-00-00-03
+    9007199254740996
 
   eq. ++> can-subtract-one-from-one
     1.as-i64.minus 1.as-i64
