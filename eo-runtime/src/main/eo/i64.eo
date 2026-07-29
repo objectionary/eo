@@ -27,21 +27,20 @@
   [] > as-number /Q.number
   [x] > gt
     if. > @
-      not. >>
-        sign.eq
+      not.
+        eq.
+          as-bytes.and 80-00-00-00-00-00-00-00 >> sign
           x.as-bytes.and 80-00-00-00-00-00-00-00
-      eq.
-        as-bytes.and 80-00-00-00-00-00-00-00 >> sign
-        00-00-00-00-00-00-00-00
+      sign.eq 00-00-00-00-00-00-00-00
       and.
-        eq. >>
-          difference.as-bytes.and 80-00-00-00-00-00-00-00
-          00-00-00-00-00-00-00-00
-        not.
-          eq.
+        eq.
+          and.
             as-bytes.
               minus x >> difference
-            00-00-00-00-00-00-00-00
+            80-00-00-00-00-00-00-00
+          00-00-00-00-00-00-00-00
+        not.
+          difference.as-bytes.eq 00-00-00-00-00-00-00-00
   [x] > gte
     or. > @
       gt
