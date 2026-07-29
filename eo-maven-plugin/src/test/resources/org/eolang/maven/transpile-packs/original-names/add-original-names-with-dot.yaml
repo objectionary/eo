@@ -15,7 +15,7 @@ document:
     </objects>
   </program>
 asserts:
-  - /object/o[@original-name='a' and @base='.a']
-  - /object/o/o[1][@original-name='a.ρ' and @base='b']
-  - /object/o/o[2][@original-name='a.α0' and @base='c']
-  - /object/o/o[3][@original-name='a.α1' and @base='d']
+  - //o[@original-name='a' and @base='.a']
+  - //o[@original-name='a' and @base='.a']/o[1][@original-name='a.ρ' and @base='b']
+  - //o[@original-name='a' and @base='.a']/o[2][@original-name='a.α0' and @base='c']
+  - //o[@original-name='a' and @base='.a']/o[3][@original-name='a.α1' and @base='d']

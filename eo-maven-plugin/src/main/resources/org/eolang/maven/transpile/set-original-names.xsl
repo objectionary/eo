@@ -8,11 +8,16 @@
   Here we go through all objects and add @original-name attributes
   to all of them. The value of the attribute is a FQN
   of the object.
+  The function takes the object only; the `program` argument it used
+  to take was never read in its body (see #6091 and the same fix in
+  set-locators.xsl) - a redundant argument is exactly the shape that
+  triggers Saxon 13.0 mis-binding parameters of a multi-argument
+  function when one compiled stylesheet transforms many documents in
+  parallel threads (which is what the "parse" goal does).
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_specials.xsl"/>
   <xsl:function name="eo:original-name" as="xs:string">
-    <xsl:param name="program" as="node()"/>
     <xsl:param name="o" as="node()"/>
     <xsl:if test="name($o) != 'o'">
       <xsl:message terminate="yes">
@@ -22,7 +27,7 @@
     <xsl:variable name="parent" select="$o/parent::o"/>
     <xsl:variable name="ret">
       <xsl:if test="$parent">
-        <xsl:value-of select="eo:original-name($program, $parent)"/>
+        <xsl:value-of select="eo:original-name($parent)"/>
         <xsl:text>.</xsl:text>
       </xsl:if>
       <xsl:choose>
@@ -54,7 +59,7 @@
   <xsl:template match="o[not(@original-name)]">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
-      <xsl:attribute name="original-name" select="eo:original-name(/object, .)"/>
+      <xsl:attribute name="original-name" select="eo:original-name(.)"/>
       <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
