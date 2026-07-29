@@ -44,7 +44,6 @@ public final class MjLint extends MjSafe {
             this.skipExperimentalLints,
             this.failOnWarning,
             this.lintAsPackage,
-            this.sourcesDir.toPath(),
             this.skipLinting
         ).exec();
     }

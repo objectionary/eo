@@ -46,7 +46,6 @@ public final class MjCompile extends MjSafe {
                         this.skipExperimentalLints,
                         this.failOnWarning,
                         this.lintAsPackage,
-                        this.sourcesDir.toPath(),
                         this.skipLinting
                     )
                 ),
