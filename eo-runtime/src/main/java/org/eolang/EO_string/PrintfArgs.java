@@ -9,6 +9,10 @@
  */
 package org.eolang.EO_string; // NOPMD
 
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +67,7 @@ final class PrintfArgs {
     private static final double LONG_UPPER_LIMIT = 0x1.0p63;
 
     static {
-        PrintfArgs.CONVERSION.put('s', Dataized::asString);
+        PrintfArgs.CONVERSION.put('s', PrintfArgs::validString);
         PrintfArgs.CONVERSION.put('d', element -> PrintfArgs.toLong(element.asNumber()));
         PrintfArgs.CONVERSION.put('f', Dataized::asNumber);
         PrintfArgs.CONVERSION.put('x', element -> PrintfArgs.bytesToHex(element.take()));
@@ -188,6 +192,34 @@ final class PrintfArgs {
             );
         }
         return PrintfArgs.CONVERSION.get(symbol).apply(element);
+    }
+
+    /**
+     * Convert the {@code element} to a string for the {@code %s} conversion,
+     * rejecting bytes that are not valid UTF-8 instead of silently decoding
+     * an arbitrary byte sequence (e.g. the raw IEEE-754 bytes of a {@code
+     * number} argument) into mojibake with no error, as {@link
+     * Dataized#asString()} does.
+     * @param element Element ready for formatting
+     * @return The element as a string
+     */
+    private static String validString(final Dataized element) {
+        final byte[] bytes = element.take();
+        try {
+            return StandardCharsets.UTF_8.newDecoder()
+                .onMalformedInput(CodingErrorAction.REPORT)
+                .onUnmappableCharacter(CodingErrorAction.REPORT)
+                .decode(ByteBuffer.wrap(bytes))
+                .toString();
+        } catch (final CharacterCodingException ex) {
+            throw new ExFailure(
+                String.format(
+                    "Can't convert %d bytes to a string for the '%%s' conversion, not valid UTF-8",
+                    bytes.length
+                ),
+                ex
+            );
+        }
     }
 
     /**

@@ -114,6 +114,22 @@ final class PrintfArgsTest {
     }
 
     @Test
+    void rejectsNonStringBytesInsteadOfMojibake() {
+        final Phi tuple = Phi.Φ.take("tuple").copy();
+        tuple.put("length", new Data.ToPhi(1));
+        tuple.put("head", new Data.ToPhi(3.14));
+        MatcherAssert.assertThat(
+            "a number's raw bytes are not valid UTF-8 text and must be rejected, not silently decoded into mojibake",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new PrintfArgs("%s", 1L, tuple.take("at")).formatted(),
+                "must throw ExFailure, not silently return garbage text"
+            ).getMessage(),
+            Matchers.containsString("not valid UTF-8")
+        );
+    }
+
+    @Test
     void reportsUnsupportedFormatMessageInsteadOfDoubleFormatting() {
         final Phi tuple = Phi.Φ.take("tuple").copy();
         tuple.put("length", new Data.ToPhi(1));
