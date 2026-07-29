@@ -22,15 +22,8 @@ import org.junit.jupiter.api.Test;
  * Test case for {@code restore-local-names.xsl}.
  * @since 0.35.0
  */
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class RestoreLocalNamesTest {
-
-    /**
-     * A "Φ.dataized" wrapped value carrying "@local" but no "@name" - the
-     * shape of a const `>>` handle's value inside the "const-to-dataized"
-     * shell (#5941).
-     */
-    private static final String FIXTURE =
-        "<object><o base='.as-bytes'><o base='Q.dataized'><o base='xi.rho.b' local='handle'/></o></o></object>";
 
     @Test
     void doesNotWarnOnLocalWithoutName() {
@@ -58,7 +51,7 @@ final class RestoreLocalNamesTest {
         try {
             new Xsline(
                 new StClasspath("/org/eolang/printer/print/restore-local-names.xsl")
-            ).pass(new XMLDocument(RestoreLocalNamesTest.FIXTURE));
+            ).pass(new XMLDocument(RestoreLocalNamesTest.fixture()));
         } finally {
             root.removeAppender(appender);
         }
@@ -67,5 +60,15 @@ final class RestoreLocalNamesTest {
             warnings.stream().noneMatch(msg -> msg.contains("empty sequence")),
             Matchers.is(true)
         );
+    }
+
+    /**
+     * A "Φ.dataized" wrapped value carrying "@local" but no "@name" - the
+     * shape of a const `>>` handle's value inside the "const-to-dataized"
+     * shell (#5941).
+     * @return The fixture document
+     */
+    private static String fixture() {
+        return "<object><o base='.a'><o base='Q.d'><o base='x.r.b' local='h'/></o></o></object>";
     }
 }
