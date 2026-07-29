@@ -3,8 +3,6 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
@@ -24,7 +22,86 @@
       cant-convert
         "Can't convert i64 number %d to i32 because it's out of i32 bounds".printf
           * as-number
-  [] > as-number /Q.number
+    i32 > left
+      as-bytes.slice 4 4
+  [] > as-number
+    if. > @
+      as-bytes.eq 00-00-00-00-00-00-00-00
+      0
+      number
+        sign.or
+          exponentbits.or mantissa
+    rounded.eq 00-20-00-00-00-00-00-00 > carried
+    carried.if > exponentbits
+      as-bytes.
+        plus.
+          i64 40-00-00-00-00-00-00-00
+          i64 highestbits
+      as-bytes.
+        plus.
+          i64 3F-F0-00-00-00-00-00-00
+          i64 highestbits
+    eq. > guard
+      and.
+        magnitude.right
+          highest.minus 53
+        00-00-00-00-00-00-00-01
+      00-00-00-00-00-00-00-01
+    scanned.as-number.minus 4503599627370496 > highest
+    left. > highestbits!
+      scanned.and 00-00-00-00-00-00-00-3F
+      52
+    magnitude.right > kept!
+      highest.minus 52
+    if. > magnitude!
+      sign.eq 80-00-00-00-00-00-00-00
+      as-bytes.
+        plus.
+          i64 as-bytes.not
+          i64 00-00-00-00-00-00-00-01
+      as-bytes
+    if. > mantissa
+      highest.lte 52
+      and.
+        magnitude.left
+          52.minus highest
+        00-0F-FF-FF-FF-FF-FF-FF
+      rounded.and 00-0F-FF-FF-FF-FF-FF-FF
+    eq. > odd
+      kept.and 00-00-00-00-00-00-00-01
+      00-00-00-00-00-00-00-01
+    roundup.if > rounded!
+      as-bytes.
+        plus.
+          i64 kept
+          i64 00-00-00-00-00-00-00-01
+      kept
+    guard.and > roundup
+      sticky.or odd
+    [m acc step bit] > scan
+      if. > @
+        step.lt 1
+        acc
+        scan
+          empty.if m shifted
+          empty.if
+            acc
+            acc.or bit
+          step.div 2
+          bit.right 1
+      shifted.eq 00-00-00-00-00-00-00-00 > empty
+      m.right step > shifted!
+    scan > scanned!
+      magnitude
+      43-30-00-00-00-00-00-00
+      32
+      00-00-00-00-00-00-00-20
+    as-bytes.and 80-00-00-00-00-00-00-00 > sign!
+    not. > sticky
+      eq.
+        magnitude.left
+          117.minus highest
+        00-00-00-00-00-00-00-00
   [x] > gt
     if. > @
       not.
@@ -136,6 +213,14 @@
     -234.as-i64
     -234.as-i64.as-i32.as-i64
 
+  -3.as-i64.as-number.eq -3 ++> can-convert-a-small-negative-i64-to-a-number
+
+  3.as-i64.as-number.eq 3 ++> can-convert-a-small-positive-i64-to-a-number
+
+  eq. ++> can-convert-an-exact-power-of-two-to-a-number
+    4611686018427387904.as-i64.as-number
+    4611686018427387904
+
   eq. ++> can-convert-i32-max-without-an-error
     2147483647.as-i64
     2147483647.as-i64.as-i32.as-i64
@@ -143,6 +228,11 @@
   eq. ++> can-convert-i32-min-without-an-error
     -2147483648.as-i64
     -2147483648.as-i64.as-i32.as-i64
+
+  eq. ++> can-convert-i64-min-to-a-number
+    as-number.
+      i64 80-00-00-00-00-00-00-00
+    -9.223372036854776e18
 
   234.as-i64.eq 234.as-i64.as-i32.as-i64 ++> can-convert-to-i32-and-back
 
@@ -167,6 +257,21 @@
   eq. ++> can-multiply-two-negatives
     -7.as-i64.times -6.as-i64
     42.as-i64
+
+  eq. ++> can-round-a-tie-to-even-when-converting-to-a-number
+    as-number.
+      i64 00-20-00-00-00-00-00-01
+    9007199254740992
+
+  eq. ++> can-round-i64-max-up-when-converted-to-a-number
+    as-number.
+      i64 7F-FF-FF-FF-FF-FF-FF-FF
+    9.223372036854776e18
+
+  eq. ++> can-round-up-above-a-tie-when-converting-to-a-number
+    as-number.
+      i64 00-20-00-00-00-00-00-03
+    9007199254740996
 
   eq. ++> can-subtract-one-from-one
     1.as-i64.minus 1.as-i64
