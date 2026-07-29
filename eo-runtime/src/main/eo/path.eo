@@ -44,17 +44,18 @@
     [] > dirname
       string > @
         if.
-          or.
-            pth.size.eq 0
-            len.eq -1
+          pth.size.eq 0
           uri >> pth!
           if.
-            len.eq 0
-            separator
-            as-bytes.
-              text.slice
-                0
-                string.last-index-of text separator >> len!
+            len.eq -1
+            "."
+            if.
+              len.eq 0
+              separator
+              as-bytes.
+                text.slice
+                  0
+                  string.last-index-of text separator >> len!
       string pth > text
     sys.drive uri > drive
     if. > driveless
@@ -405,6 +406,16 @@
     basename.
       path.posix "/var/www/html/foo\\bar"
     "foo\\bar"
+
+  eq. ++> tests-returns-current-dirname-of-posix-relative-file
+    dirname.
+      path.posix "plain"
+    "."
+
+  eq. ++> tests-returns-current-dirname-of-posix-relative-hidden-file
+    dirname.
+      path.posix ".gitignore"
+    "."
 
   eq. ++> tests-returns-empty-basename-from-path-ended-with-separator
     basename.
