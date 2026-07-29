@@ -6,6 +6,11 @@ package org.eolang.maven;
 
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
+import org.eolang.lints.Severity;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -15,6 +20,19 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.31.0
  */
 final class LintingTest {
+
+    @Test
+    void summarizesAllThreeSeveritiesTogether() {
+        final Map<Severity, Integer> counts = new EnumMap<>(Severity.class);
+        counts.put(Severity.CRITICAL, 2);
+        counts.put(Severity.ERROR, 4);
+        counts.put(Severity.WARNING, 7);
+        MatcherAssert.assertThat(
+            "the summary must mention the error count, not just critical and warnings",
+            Linting.summary(counts),
+            Matchers.equalTo("2 critical errors, 4 errors, and 7 warnings")
+        );
+    }
 
     @Test
     void skipsLintingWhenFlagIsSet(@TempDir final Path temp) {

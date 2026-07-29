@@ -1,10 +1,10 @@
 # Path `path` that is hierarchical and composed of a sequence of
 # directory and file name elements separated by a special separator or delimiter.
 
-+alias tuple.reduced
-+alias string.regex
 +alias string.index-of
 +alias string.last-index-of
++alias tuple.reduced
++alias string.regex
 +alias string.replaced
 +alias string.split
 +architect yegor256@gmail.com
@@ -13,6 +13,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
++unlint mandatory-package
 
 [uri] > path
   os.is-windows.if > @

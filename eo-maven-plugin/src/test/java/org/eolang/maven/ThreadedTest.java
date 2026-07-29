@@ -22,11 +22,7 @@ final class ThreadedTest {
      * @checkstyle IllegalCatchCheck (25 lines)
      * @checkstyle MethodBodyCommentsCheck (25 lines)
      */
-    @SuppressWarnings({
-        "PMD.AvoidCatchingGenericException",
-        "PMD.AvoidThrowingRawExceptionTypes",
-        "PMD.ExceptionAsFlowControl"
-    })
+    @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.AvoidThrowingRawExceptionTypes"})
     @Test
     void logsAllExceptionsInTheLogsOnFailure() {
         final List<String> logs = Collections.synchronizedList(new ListOf<>());

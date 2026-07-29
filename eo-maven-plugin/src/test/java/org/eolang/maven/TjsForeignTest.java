@@ -103,7 +103,6 @@ final class TjsForeignTest {
 
     @ParameterizedTest
     @MethodSource("tojoFunctionsWithoutDefaultValues")
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void throwsExceptionIfKeyWasNotFoundInTojo(
         final String key,
         final Func<TjForeign, Object> method

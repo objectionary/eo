@@ -101,7 +101,37 @@ final class EObytesEOsliceTest {
                     )
                 )
             ).asString(),
-            Matchers.containsString("the 'len' attribute (-5) must be a positive integer")
+            Matchers.containsString("the 'len' attribute (-5) must be greater or equal to zero")
+        );
+    }
+
+    @Test
+    void reportsRealOffsetWhenItExceedsIntRange() {
+        MatcherAssert.assertThat(
+            "an offset above Integer.MAX_VALUE must be rejected with the real value, not silently saturated",
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        RuntimeException.class,
+                        () -> new Dataized(
+                            new PhApplication(
+                                new PhApplication(
+                                    new Data.ToPhi("hello, world!")
+                                        .take("as-bytes")
+                                        .take("slice")
+                                        .copy(),
+                                    "start",
+                                    new Data.ToPhi(3.0E9)
+                                ),
+                                "len",
+                                new Data.ToPhi(1)
+                            )
+                        ).asString(),
+                        "doesnt reject an offset above int range"
+                    )
+                )
+            ).asString(),
+            Matchers.containsString("must fit into int range")
         );
     }
 }

@@ -1,7 +1,7 @@
-# Recover from a terminated computation (⊥).
-# Resolves `value` to its normal form; if that is a ⊥, behaves as
-# `alternative`, otherwise as `value`. This is the only way to intercept a
-# ⊥ and keep going: a ⊥ that is never recovered terminates the program.
+# Recovers from a terminated computation.
+# Resolves `value` to its normal form; if that resolution terminates, behaves
+# as `alternative`, otherwise as `value`. This is the only way to intercept a
+# termination and keep going: one that is never recovered ends the program.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

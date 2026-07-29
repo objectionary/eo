@@ -28,7 +28,6 @@ final class CommitHashesTextTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void isThreadSafe() {
         final CommitHashesText text = new CommitHashesText();
         MatcherAssert.assertThat(

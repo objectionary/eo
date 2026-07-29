@@ -170,10 +170,8 @@ final class Stack {
         final String owner;
         if (this.levels.isEmpty()) {
             if (indent != 0) {
-                throw new IllegalStateException(
-                    String.format(
-                        "first push must be at indent 0, was %d", indent
-                    )
+                throw new ParseError(
+                    line, indent, "unexpected indentation, the first object must start at indent 0"
                 );
             }
             parent = Kind.TOP_LEVEL;

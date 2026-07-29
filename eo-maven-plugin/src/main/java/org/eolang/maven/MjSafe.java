@@ -475,7 +475,6 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle CyclomaticComplexityCheck (70 lines)
      */
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public final void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         if (this.skip) {

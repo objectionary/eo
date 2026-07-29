@@ -104,7 +104,6 @@ public final class MjFormat extends MjSafe {
     private Integer step;
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void exec() throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> sources = this.scopedTojos().withSources();
