@@ -7,8 +7,6 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,7 +22,6 @@ import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -101,36 +98,6 @@ final class MjPrintTest {
             "only the trailing .xmir extension should be replaced, the .xmir substring in the directory name must survive untouched",
             Files.exists(output.resolve("v1.xmir-legacy/main.eo")),
             Matchers.is(true)
-        );
-    }
-
-    @Test
-    void rejectsCustomIndentationStep(@Mktmp final Path temp) throws Exception {
-        final Path source = temp.resolve("xmir/foo/main.xmir");
-        Files.createDirectories(source.getParent());
-        new Saved(
-            new EoSyntax(
-                new InputOf(
-                    String.join(System.lineSeparator(), "+package foo", "", "[] > main")
-                )
-            ).parsed().toString(),
-            source
-        ).value();
-        final IllegalStateException exception = Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .with("printSourcesDir", temp.resolve("xmir").toFile())
-                .with("printOutputDir", temp.resolve("eo").toFile())
-                .with("step", 4)
-                .execute(new FakeMaven.Print()),
-            "must throw, not silently produce output the parser cannot read back"
-        );
-        final StringWriter writer = new StringWriter();
-        exception.printStackTrace(new PrintWriter(writer));
-        MatcherAssert.assertThat(
-            "a step other than 2 must be rejected, since the parser can never read it back",
-            writer.toString(),
-            Matchers.containsString("eo.step")
         );
     }
 

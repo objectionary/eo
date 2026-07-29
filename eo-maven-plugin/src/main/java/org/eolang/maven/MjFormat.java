@@ -11,6 +11,7 @@ import com.jcabi.xml.XML;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -291,13 +292,32 @@ public final class MjFormat extends MjSafe {
     }
 
     /**
-     * The penalty weights this goal was configured with.
+     * Assemble the overridden penalty weights from the Maven properties.
+     *
+     * <p>Only the properties that the user actually set are put into the
+     * map; every absent key falls back to its {@link PenaltyKey#fallback()}
+     * default inside the printer.</p>
+     *
      * @return The weights, keyed by {@link PenaltyKey}
      */
     private Map<PenaltyKey, Integer> weights() {
-        return new Weights(
-            this.penaltyIndent, this.penaltyBracket, this.penaltyExcess, this.width, this.step
-        ).value();
+        final Map<PenaltyKey, Integer> map = new EnumMap<>(PenaltyKey.class);
+        if (this.penaltyIndent != null) {
+            map.put(PenaltyKey.INDENT, this.penaltyIndent);
+        }
+        if (this.penaltyBracket != null) {
+            map.put(PenaltyKey.BRACKET, this.penaltyBracket);
+        }
+        if (this.penaltyExcess != null) {
+            map.put(PenaltyKey.EXCESS, this.penaltyExcess);
+        }
+        if (this.width != null) {
+            map.put(PenaltyKey.WIDTH, this.width);
+        }
+        if (this.step != null) {
+            map.put(PenaltyKey.STEP, new ReadableStep(this.step).value());
+        }
+        return map;
     }
 
     /**
