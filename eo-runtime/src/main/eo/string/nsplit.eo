@@ -1,6 +1,7 @@
 # Returns a `tuple` of `strings`: `text` is split by `delimiter` with a maximum of `limit` parts.
 # The last element contains the remainder of the string after splitting.
-# If `limit` < 1, the `cant-split` fallback is returned, or the bottom object when unbound.
+# If `limit` is not a finite integer of at least 1 (fractional, nan, infinite,
+# zero or negative), the `cant-split` fallback is returned, or the bottom object when unbound.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -11,7 +12,9 @@
 
 [text delimiter limit cant-split] > nsplit
   if. > @
-    1.gt limit
+    or.
+      1.gt limit
+      limit.is-integer.not
     cant-split
       "Invalid limit %d for nsplit, must be at least 1".printf
         * limit
@@ -124,6 +127,22 @@
     *
       "Cookie:"
       "a=1; b=2"
+
+  eq. ++> rejects-a-fractional-limit
+    "recovered"
+    nsplit
+      "a-b-c"
+      "-"
+      1.5
+      "recovered" > [message]
+
+  eq. ++> rejects-an-infinite-limit
+    "recovered"
+    nsplit
+      "a-b-c"
+      "-"
+      pinf
+      "recovered" > [message]
 
   eq. ++> rejects-an-invalid-limit
     "fallback"

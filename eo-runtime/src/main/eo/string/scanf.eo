@@ -121,6 +121,7 @@
       regex
         chained *1
           "/"
+          "^"
           pattern
           "/"
       read
@@ -302,6 +303,20 @@
     "hello"
     head.
       scanf "%s!" "hello!"
+
+  eq. ++> can-scan-while-ignoring-trailing-text
+    42
+    head.
+      scanf
+        "id=%d"
+        "id=42 suffix"
+
+  eq. ++> cannot-scan-past-unmatched-leading-text
+    length.
+      scanf
+        "id=%d"
+        "prefix id=42"
+    0
 
   scanf --> stops-on-a-dangling-percent
     "hello%"

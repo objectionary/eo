@@ -1,5 +1,6 @@
 # Returns `text` repeated `times` times.
-# If `times` < 0 or not a whole number, the `cant-repeat` fallback is returned,
+# If `times` is not a finite non-negative integer (negative, fractional, nan
+# or infinite), the `cant-repeat` fallback is returned,
 # or the bottom object when unbound.
 # If `times` == 0, empty text is returned.
 
@@ -14,8 +15,7 @@
   if. > @
     or.
       0.gt times
-      not.
-        times.floor.eq times
+      times.is-integer.not
     cant-repeat
       "Can't repeat text %f times".printf
         * times
@@ -66,6 +66,13 @@
     repeated
       "x"
       2.5
+      "recovered" > [message]
+
+  eq. ++> rejects-an-infinite-count
+    "recovered"
+    repeated
+      "x"
+      pinf
       "recovered" > [message]
 
   repeated --> stops-on-a-negative-count

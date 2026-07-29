@@ -90,7 +90,7 @@ final class BytesRaw implements Bytes {
             );
         }
         final byte[] bytes = this.shift(bits).take();
-        if (this.take()[0] < 0) {
+        if (bytes.length > 0 && this.take()[0] < 0) {
             for (int index = 0; index < bytes.length; index += 1) {
                 final int zeros = BytesRaw.numberOfLeadingZeros(
                     bytes[index]
