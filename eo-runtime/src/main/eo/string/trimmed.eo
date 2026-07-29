@@ -19,45 +19,45 @@
     trimmed-left
       trimmed-right text
 
-  eq. ++> tests-text-trimmed-empty
-    trimmed ""
-    ""
-
-  eq. ++> tests-text-trimmed-many-spaces
-    trimmed
-      "    some     "
-    "some"
-
-  eq. ++> tests-text-trimmed-one-space-both
-    trimmed
-      " some "
-    "some"
-
-  eq. ++> tests-text-trimmed-one-space-left
-    trimmed
-      " some"
-    "some"
-
-  eq. ++> tests-text-trimmed-one-space-right
-    trimmed
-      "some "
-    "some"
-
-  eq. ++> tests-text-trimmed-only-spaces
-    trimmed
-      "        "
-    ""
-
-  eq. ++> tests-trimmed-preserves-inner-content
+  eq. ++> can-preserve-inner-content
     trimmed "no-whitespace"
     "no-whitespace"
 
-  eq. ++> tests-trimmed-preserves-inner-whitespace
+  eq. ++> can-preserve-inner-whitespace
     trimmed
       "\t hello world \n"
     "hello world"
 
-  eq. ++> tests-trimmed-strips-mixed-ws-both-sides
+  eq. ++> can-trim-a-text-of-spaces-only
+    trimmed
+      "        "
+    ""
+
+  eq. ++> can-trim-an-empty-text
+    trimmed ""
+    ""
+
+  eq. ++> can-trim-many-surrounding-spaces
+    trimmed
+      "    some     "
+    "some"
+
+  eq. ++> can-trim-mixed-whitespace-on-both-sides
     trimmed
       " \t\n\f\rvalue \t\n\f\r"
     "value"
+
+  eq. ++> can-trim-one-leading-space
+    trimmed
+      " some"
+    "some"
+
+  eq. ++> can-trim-one-space-on-both-sides
+    trimmed
+      " some "
+    "some"
+
+  eq. ++> can-trim-one-trailing-space
+    trimmed
+      "some "
+    "some"

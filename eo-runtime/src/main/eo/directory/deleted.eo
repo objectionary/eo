@@ -20,7 +20,7 @@
       d
     d
 
-  ++> tests-deletes-directory-with-file-and-dir
+  ++> can-delete-a-directory-with-a-file-and-a-directory
     and. > @
       and.
         and.
@@ -34,7 +34,7 @@
     dir.tmpfile > f
     as-dir. (directory dir.tmpfile.deleted).made.as-path > inner
 
-  ++> tests-deletes-directory-with-files-recursively
+  ++> can-delete-a-directory-with-files-recursively
     and. > @
       and.
         and.
@@ -46,6 +46,6 @@
     dir.tmpfile > first
     dir.tmpfile > second
 
-  not. ++> tests-deletes-empty-directory
+  not. ++> can-delete-an-empty-directory
     exists.
       deleted. (mktemp.tmpfile.deleted.as-path.resolved "bar-empty").as-dir.made

@@ -61,80 +61,80 @@
       1
       1
 
-  eq. ++> tests-i8-as-i16-widens-negative-with-sign-extension
-    C8-.as-i8.as-i16.as-bytes
-    FF-C8
-
-  eq. ++> tests-i8-as-i16-widens-positive-with-zero-prefix
-    2A-.as-i8.as-i16.as-bytes
-    00-2A
-
-  eq. ++> tests-i8-div-by-i8-one
-    C8-.as-i8.div 01-.as-i8
-    C8-.as-i8
-
-  eq. ++> tests-i8-div-by-zero-returns-provided-fallback
-    "recovered"
-    02-.as-i8.div
-      00-.as-i8
-      "recovered" > [message]
-
-  eq. ++> tests-i8-div-with-remainder
-    0D-.as-i8.div FB-.as-i8
-    FE-.as-i8
-
-  not. ++> tests-i8-eq-false
-    2A-.as-i8.eq 2B-.as-i8
-
-  2A-.as-i8.eq 2A-.as-i8 ++> tests-i8-eq-true
-
-  32-.as-i8.gte 32-.as-i8 ++> tests-i8-gte-equal
-
-  2A-.as-i8.as-bytes.eq 2A- ++> tests-i8-has-valid-bytes
-
-  C8-.as-i8.as-number.eq -56 ++> tests-i8-high-bit-is-negative
-
-  not. ++> tests-i8-less-equal
-    0A-.as-i8.lt 0A-.as-i8
-
-  0A-.as-i8.lt 32-.as-i8 ++> tests-i8-less-true
-
-  32-.as-i8.lte 32-.as-i8 ++> tests-i8-lte-equal
-
-  eq. ++> tests-i8-minus-with-overflow
-    80-.as-i8.minus 01-.as-i8
-    7F-.as-i8
-
-  2A-.as-i8.neg.eq D6-.as-i8 ++> tests-i8-negation
-
-  C8-.as-i8.lt 0A-.as-i8 ++> tests-i8-negative-less-than-positive
-
-  eq. ++> tests-i8-one-minus-i8-one
-    01-.as-i8.minus 01-.as-i8
-    00-.as-i8
-
-  eq. ++> tests-i8-one-plus-i8-one
+  eq. ++> can-add-one-to-one
     01-.as-i8.plus 01-.as-i8
     02-.as-i8
 
-  eq. ++> tests-i8-plus-with-overflow
+  eq. ++> can-add-with-overflow
     7F-.as-i8.plus 01-.as-i8
     80-.as-i8
 
-  32-.as-i8.gt C8-.as-i8 ++> tests-i8-positive-greater-than-negative
+  32-.as-i8.gte 32-.as-i8 ++> can-be-greater-than-or-equal-to-an-equal-i8
 
-  eq. ++> tests-i8-times
-    06-.as-i8.times 07-.as-i8
-    2A-.as-i8
+  32-.as-i8.gt C8-.as-i8 ++> can-be-greater-when-positive-than-negative
 
-  eq. ++> tests-i8-times-of-two-negatives
-    FF-.as-i8.times FF-.as-i8
-    01-.as-i8
+  0A-.as-i8.lt 32-.as-i8 ++> can-be-less-than-a-larger-i8
 
-  eq. ++> tests-negative-i8-has-valid-bytes
+  32-.as-i8.lte 32-.as-i8 ++> can-be-less-than-or-equal-to-an-equal-i8
+
+  C8-.as-i8.lt 0A-.as-i8 ++> can-be-less-when-negative-than-positive
+
+  eq. ++> can-divide-by-one
+    C8-.as-i8.div 01-.as-i8
+    C8-.as-i8
+
+  eq. ++> can-divide-with-a-remainder
+    0D-.as-i8.div FB-.as-i8
+    FE-.as-i8
+
+  2A-.as-i8.eq 2A-.as-i8 ++> can-equal-the-same-i8
+
+  2A-.as-i8.as-bytes.eq 2A- ++> can-expose-valid-bytes
+
+  eq. ++> can-expose-valid-bytes-of-a-negative
     -56.as-i64.as-i32.as-i16.as-bytes.slice
       1
       1
     C8-
 
-  02-.as-i8.div 00-.as-i8 --> on-division-i8-by-i8-zero
+  eq. ++> can-multiply-two-negatives
+    FF-.as-i8.times FF-.as-i8
+    01-.as-i8
+
+  eq. ++> can-multiply-two-positives
+    06-.as-i8.times 07-.as-i8
+    2A-.as-i8
+
+  2A-.as-i8.neg.eq D6-.as-i8 ++> can-negate-itself
+
+  C8-.as-i8.as-number.eq -56 ++> can-read-a-high-bit-as-negative
+
+  eq. ++> can-subtract-one-from-one
+    01-.as-i8.minus 01-.as-i8
+    00-.as-i8
+
+  eq. ++> can-subtract-with-overflow
+    80-.as-i8.minus 01-.as-i8
+    7F-.as-i8
+
+  eq. ++> can-widen-a-negative-to-i16-with-sign-extension
+    C8-.as-i8.as-i16.as-bytes
+    FF-C8
+
+  eq. ++> can-widen-a-positive-to-i16-with-a-zero-prefix
+    2A-.as-i8.as-i16.as-bytes
+    00-2A
+
+  not. ++> cannot-be-less-than-an-equal-i8
+    0A-.as-i8.lt 0A-.as-i8
+
+  not. ++> cannot-equal-a-different-i8
+    2A-.as-i8.eq 2B-.as-i8
+
+  eq. ++> rejects-division-by-zero
+    "recovered"
+    02-.as-i8.div
+      00-.as-i8
+      "recovered" > [message]
+
+  02-.as-i8.div 00-.as-i8 --> stops-on-division-by-zero

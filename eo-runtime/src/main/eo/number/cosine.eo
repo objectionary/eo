@@ -13,7 +13,7 @@
     num.plus
       pi.div 2
 
-  lt. ++> tests-cosine-is-even-function
+  lt. ++> can-behave-as-an-even-function
     abs
       times.
         minus.
@@ -23,61 +23,7 @@
         1000
     1
 
-  is-nan. ++> tests-cosine-of-nan-is-nan
-    cosine nan
-
-  is-nan. ++> tests-cosine-of-negative-infinity-is-nan
-    cosine ninf
-
-  lt. ++> tests-cosine-of-pi-halves-is-zero
-    abs
-      times.
-        cosine
-          pi.div 2
-        1000
-    1
-
-  lt. ++> tests-cosine-of-pi-is-minus-one
-    abs
-      minus.
-        times.
-          cosine pi
-          1000
-        -1000
-    1
-
-  lt. ++> tests-cosine-of-pi-thirds-is-half
-    abs
-      minus.
-        times.
-          cosine
-            pi.div 3
-          1000
-        500
-    1
-
-  is-nan. ++> tests-cosine-of-positive-infinity-is-nan
-    cosine pinf
-
-  lt. ++> tests-cosine-of-seventeen-radians
-    abs
-      minus.
-        times.
-          cosine 17
-          1000
-        -275
-    1
-
-  lt. ++> tests-cosine-of-zero-is-one
-    abs
-      minus.
-        times.
-          cosine 0
-          1000
-        1000
-    1
-
-  lt. ++> tests-cosine-reduces-large-angle
+  lt. ++> can-reduce-a-large-angle
     abs
       minus.
         times.
@@ -88,3 +34,57 @@
           1000
         500
     1
+
+  lt. ++> can-take-a-cosine-of-pi
+    abs
+      minus.
+        times.
+          cosine pi
+          1000
+        -1000
+    1
+
+  lt. ++> can-take-a-cosine-of-pi-halves
+    abs
+      times.
+        cosine
+          pi.div 2
+        1000
+    1
+
+  lt. ++> can-take-a-cosine-of-pi-thirds
+    abs
+      minus.
+        times.
+          cosine
+            pi.div 3
+          1000
+        500
+    1
+
+  lt. ++> can-take-a-cosine-of-seventeen-radians
+    abs
+      minus.
+        times.
+          cosine 17
+          1000
+        -275
+    1
+
+  lt. ++> can-take-a-cosine-of-zero
+    abs
+      minus.
+        times.
+          cosine 0
+          1000
+        1000
+    1
+
+  is-nan. ++> cannot-take-a-cosine-of-nan
+    cosine nan
+
+  is-nan. ++> cannot-take-a-cosine-of-negative-infinity
+    cosine ninf
+
+  is-nan. ++> cannot-take-a-cosine-of-positive-infinity
+    cosine pinf

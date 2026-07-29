@@ -26,16 +26,18 @@
         tup.tail.length
     | list
 
-  not. ++> tests-list-reducedi-bools-array
-    reducedi
-      *
-        true
-        true
-        false
-      true
-      x.and a > [a x i]
+  ++> can-reduce-a-list-with-indexes
+    6.eq > @
+      reducedi
+        * 1 1
+        0
+        x.plus > [a x i] >>
+          a.plus
+            at.
+              * 2 2
+              i
 
-  eq. ++> tests-list-reducedi-long-int-array
+  eq. ++> can-reduce-a-long-integer-list-with-indexes
     reducedi
       *
         0
@@ -87,7 +89,16 @@
       x.plus a > [a x i]
     1
 
-  ++> tests-list-reducedi-nested-functions
+  not. ++> can-reduce-bools-with-indexes
+    reducedi
+      *
+        true
+        true
+        false
+      true
+      x.and a > [a x i]
+
+  ++> can-reduce-with-nested-functions
     eq. > @
       reducedi
         * 10 500
@@ -100,14 +111,3 @@
             acc.minus x
       10.plus
         0.minus 500
-
-  ++> tests-reduce-list-with-index
-    6.eq > @
-      reducedi
-        * 1 1
-        0
-        x.plus > [a x i] >>
-          a.plus
-            at.
-              * 2 2
-              i

@@ -38,45 +38,45 @@
       index
       1
 
-  eq. ++> tests-fractional-in-bounds-index-returns-fallback
+  eq. ++> can-return-a-character-at-a-negative-index
+    "m"
+    at
+      "some"
+      -2
+
+  eq. ++> can-return-the-first-character
+    "s"
+    at
+      "some"
+      0
+
+  eq. ++> can-return-the-third-character
+    "m"
+    at
+      "some"
+      2
+
+  eq. ++> rejects-a-fractional-index-in-bounds
     "recovered"
     at
       "some"
       1.5
       "recovered" > [message]
 
-  eq. ++> tests-negative-fractional-in-bounds-index-returns-fallback
+  eq. ++> rejects-a-negative-fractional-index-in-bounds
     "recovered"
     at
       "some"
       -1.5
       "recovered" > [message]
 
-  eq. ++> tests-returns-char-at-negative-index
-    "m"
-    at
-      "some"
-      -2
-
-  eq. ++> tests-returns-first-char
-    "s"
-    at
-      "some"
-      0
-
-  eq. ++> tests-returns-third-char
-    "m"
-    at
-      "some"
-      2
-
-  eq. ++> tests-text-at-out-of-bounds-returns-provided-fallback
+  eq. ++> rejects-an-out-of-bounds-index
     "recovered"
     at
       "some"
       10
       "recovered" > [message]
 
-  at --> on-text-at-index-more-than-length
+  at --> stops-on-an-index-beyond-the-length
     "some"
     10

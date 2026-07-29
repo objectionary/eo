@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -243,25 +245,25 @@ final class MjParseTest {
     void parsesConcurrentlyWithLotsOfPrograms(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final int total = 50;
+        final Collection<String> xmirs = new ArrayList<>(total);
         for (int program = 0; program < total; ++program) {
             maven.withProgram(
                 String.format("+package foo.x%n%n[] > main%s", FakeMaven.suffix(program))
             );
-        }
-        for (int program = 0; program < total; ++program) {
-            MatcherAssert.assertThat(
-                "We have to parse concurrently, but we didn't",
-                maven.execute(new FakeMaven.Parse()).result(),
-                Matchers.hasKey(
-                    String.format(
-                        "target/%s/foo/x/main%s.%s",
-                        Parsing.DIR,
-                        FakeMaven.suffix(program),
-                        MjAssemble.XMIR
-                    )
+            xmirs.add(
+                String.format(
+                    "target/%s/foo/x/main%s.%s",
+                    Parsing.DIR,
+                    FakeMaven.suffix(program),
+                    MjAssemble.XMIR
                 )
             );
         }
+        MatcherAssert.assertThat(
+            "All programs must be parsed in a single concurrent run, but some XMIRs are absent",
+            maven.execute(new FakeMaven.Parse()).result().keySet(),
+            Matchers.hasItems(xmirs.toArray(new String[0]))
+        );
     }
 
     @Test

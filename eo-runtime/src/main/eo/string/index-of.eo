@@ -43,38 +43,38 @@
       txt.slice idx size
       part
 
-  eq. ++> tests-index-of-existed-substring-with-utf
+  eq. ++> can-find-a-present-substring-in-utf-text
     3
     index-of
       "привет, друг!"
       "в"
 
-  eq. ++> tests-index-of-non-existed-substring-with-more-length
-    -1
-    index-of
-      "Hello"
-      "Somebody"
-
-  eq. ++> tests-index-of-non-existed-substring-with-same-length
-    -1
-    index-of
-      "Hello"
-      "world"
-
-  eq. ++> tests-index-of-non-existed-substring-with-utf
-    -1
-    index-of
-      "привет, друг!"
-      "x"
-
-  eq. ++> tests-returns-valid-index-of-substring
+  eq. ++> can-return-the-index-of-a-substring
     6
     index-of
       "Hello \n world"
       "\n"
 
-  eq. ++> tests-returns-valid-index-of-substring-in-the-end
+  eq. ++> can-return-the-index-of-a-substring-at-the-end
     6
     index-of
       "Hello world"
+      "world"
+
+  eq. ++> cannot-find-a-longer-substring
+    -1
+    index-of
+      "Hello"
+      "Somebody"
+
+  eq. ++> cannot-find-an-absent-substring-in-utf-text
+    -1
+    index-of
+      "привет, друг!"
+      "x"
+
+  eq. ++> cannot-find-an-absent-substring-of-the-same-length
+    -1
+    index-of
+      "Hello"
       "world"

@@ -43,31 +43,31 @@
       txt.slice idx size
       part
 
-  eq. ++> tests-finds-last-index-of-substring
+  eq. ++> can-find-the-last-index-of-a-substring
     5
     last-index-of
       "Hey, Hey, Hey"
       "Hey,"
 
-  eq. ++> tests-finds-last-index-of-the-same-string
-    0
-    last-index-of
-      "Hello"
-      "Hello"
-
-  eq. ++> tests-last-index-of-existed-substring-with-utf
+  eq. ++> can-find-the-last-index-of-a-substring-in-utf-text
     3
     last-index-of
       "привет, друг!"
       "в"
 
-  eq. ++> tests-last-index-of-non-existed-substring
+  eq. ++> can-find-the-last-index-of-the-whole-string
+    0
+    last-index-of
+      "Hello"
+      "Hello"
+
+  eq. ++> cannot-find-the-last-index-of-an-absent-substring
     -1
     last-index-of
       "Hello, world"
       "somebody"
 
-  eq. ++> tests-last-index-of-non-existed-substring-with-utf
+  eq. ++> cannot-find-the-last-index-of-an-absent-substring-in-utf-text
     -1
     last-index-of
       "привет, друг!"

@@ -24,7 +24,7 @@
             tup.tail
       | items.head items.tail
 
-  eq. ++> tests-joined-many-strings
+  eq. ++> can-join-many-strings
     "hello-world-dear-friend"
     joined *1
       "-"
@@ -33,13 +33,13 @@
       "dear"
       "friend"
 
-  eq. ++> tests-joined-no-strings
+  eq. ++> can-join-no-strings
     ""
     joined
       "-"
       *
 
-  eq. ++> tests-joined-one-string
+  eq. ++> can-join-one-string
     "some"
     joined *1
       "-"

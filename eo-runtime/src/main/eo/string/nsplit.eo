@@ -74,40 +74,7 @@
   text.as-bytes >> bts!
   delimiter.size >> size!
 
-  eq. ++> tests-nsplit-fractional-limit-returns-provided-fallback
-    "recovered"
-    nsplit
-      "a-b-c"
-      "-"
-      1.5
-      "recovered" > [message]
-
-  eq. ++> tests-nsplit-infinite-limit-returns-provided-fallback
-    "recovered"
-    nsplit
-      "a-b-c"
-      "-"
-      pinf
-      "recovered" > [message]
-
-  eq. ++> tests-nsplit-invalid-limit-returns-provided-fallback
-    "fallback"
-    nsplit
-      "text"
-      "-"
-      0
-      "fallback" > [message]
-
-  eq. ++> tests-nsplit-with-dashes-limit-two
-    nsplit
-      "a-b-c-d"
-      "-"
-      2
-    *
-      "a"
-      "b-c-d"
-
-  eq. ++> tests-nsplit-with-empty-strings
+  eq. ++> can-split-into-empty-strings
     nsplit
       "-a-b-c"
       "-"
@@ -117,33 +84,7 @@
       "a"
       "b-c"
 
-  eq. ++> tests-nsplit-with-high-limit
-    nsplit
-      "a-b-c"
-      "-"
-      10
-    *
-      "a"
-      "b"
-      "c"
-
-  eq. ++> tests-nsplit-with-limit-one
-    nsplit
-      "a-b-c"
-      "-"
-      1
-    * "a-b-c"
-
-  eq. ++> tests-nsplit-with-limit-two
-    nsplit
-      "Cookie: a=1; b=2"
-      " "
-      2
-    *
-      "Cookie:"
-      "a=1; b=2"
-
-  eq. ++> tests-nsplit-with-multi-byte-characters
+  eq. ++> can-split-multi-byte-characters
     nsplit
       "аХбХв"
       "Х"
@@ -153,7 +94,7 @@
       "б"
       "в"
 
-  eq. ++> tests-nsplit-with-multi-char-delimiter
+  eq. ++> can-split-on-a-multi-character-delimiter
     nsplit
       "a::b::c::d"
       "::"
@@ -162,12 +103,71 @@
       "a"
       "b::c::d"
 
-  nsplit --> on-nsplit-with-limit-zero
+  eq. ++> can-split-on-dashes-with-a-limit-of-two
+    nsplit
+      "a-b-c-d"
+      "-"
+      2
+    *
+      "a"
+      "b-c-d"
+
+  eq. ++> can-split-with-a-high-limit
+    nsplit
+      "a-b-c"
+      "-"
+      10
+    *
+      "a"
+      "b"
+      "c"
+
+  eq. ++> can-split-with-a-limit-of-one
+    nsplit
+      "a-b-c"
+      "-"
+      1
+    * "a-b-c"
+
+  eq. ++> can-split-with-a-limit-of-two
+    nsplit
+      "Cookie: a=1; b=2"
+      " "
+      2
+    *
+      "Cookie:"
+      "a=1; b=2"
+
+  eq. ++> rejects-a-fractional-limit
+    "recovered"
+    nsplit
+      "a-b-c"
+      "-"
+      1.5
+      "recovered" > [message]
+
+  eq. ++> rejects-an-infinite-limit
+    "recovered"
+    nsplit
+      "a-b-c"
+      "-"
+      pinf
+      "recovered" > [message]
+
+  eq. ++> rejects-an-invalid-limit
+    "fallback"
+    nsplit
+      "text"
+      "-"
+      0
+      "fallback" > [message]
+
+  nsplit --> stops-on-a-limit-of-zero
     "text"
     "-"
     0
 
-  nsplit --> on-nsplit-with-negative-limit
+  nsplit --> stops-on-a-negative-limit
     "text"
     "-"
     -1

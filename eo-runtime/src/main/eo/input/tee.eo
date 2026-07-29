@@ -39,7 +39,7 @@
         ^. (input.read size).read > chunk
         ^. (output.write chunk).write > written
 
-  eq. ++> tests-reads-from-bytes-and-writes-to-memory
+  eq. ++> can-read-from-bytes-and-write-to-memory
     malloc.of
       5
       read. > [mem]
@@ -49,7 +49,7 @@
         5
     01-02-03-04-05
 
-  eq. ++> tests-reads-from-bytes-and-writes-to-memory-by-portions
+  eq. ++> can-read-from-bytes-and-write-to-memory-by-portions
     malloc.of
       5
       seq * > [m]
@@ -65,7 +65,7 @@
         m
     01-02-03-04-05
 
-  ++> tests-reads-from-bytes-and-writes-to-two-memory-blocks
+  ++> can-read-from-bytes-and-write-to-two-memory-blocks
     eq. > @
       malloc.of
         6

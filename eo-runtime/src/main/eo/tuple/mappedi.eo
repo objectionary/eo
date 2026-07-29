@@ -17,7 +17,7 @@
     accum.with > [accum item idx] >>
       func item idx
 
-  eq. ++> tests-list-mappedi-should-work
+  eq. ++> can-map-a-list-with-indexes
     mappedi
       *
         1

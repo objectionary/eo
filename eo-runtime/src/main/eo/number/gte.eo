@@ -13,63 +13,63 @@
       x >> value!
     n.eq value
 
-  eq. ++> tests-int-gte-equal
+  eq. ++> can-be-greater-than-or-equal-to-a-float-when-positive-infinity
+    pinf.gte 42.5
+    true
+
+  eq. ++> can-be-greater-than-or-equal-to-a-smaller-integer
+    -1000.gte -1100
+    true
+
+  eq. ++> can-be-greater-than-or-equal-to-an-equal-integer
     113.gte 113
     true
 
-  eq. ++> tests-int-gte-false
+  eq. ++> can-be-greater-than-or-equal-to-an-integer-when-positive-infinity
+    pinf.gte 42
+    true
+
+  eq. ++> can-be-greater-than-or-equal-to-negative-infinity-when-negative-infinity
+    ninf.gte ninf
+    true
+
+  eq. ++> can-be-greater-than-or-equal-to-negative-infinity-when-positive-infinity
+    pinf.gte ninf
+    true
+
+  eq. ++> can-be-greater-than-or-equal-to-positive-infinity-when-positive-infinity
+    pinf.gte pinf
+    true
+
+  eq. ++> cannot-be-greater-than-or-equal-to-a-float-when-negative-infinity
+    ninf.gte 42.5
+    false
+
+  eq. ++> cannot-be-greater-than-or-equal-to-a-larger-integer
     not.
       0.gte 10
     true
 
-  eq. ++> tests-int-gte-true
-    -1000.gte -1100
-    true
-
-  eq. ++> tests-nan-not-gte-nan
-    nan.gte nan
-    false
-
-  eq. ++> tests-nan-not-gte-number
+  eq. ++> cannot-be-greater-than-or-equal-to-a-number-when-nan
     nan.gte 42
     false
 
-  eq. ++> tests-negative-infinity-gte-negative-infinity
-    ninf.gte ninf
-    true
-
-  eq. ++> tests-negative-infinity-not-gte-float
-    ninf.gte 42.5
-    false
-
-  eq. ++> tests-negative-infinity-not-gte-int
+  eq. ++> cannot-be-greater-than-or-equal-to-an-integer-when-negative-infinity
     ninf.gte 42
     false
 
-  eq. ++> tests-negative-infinity-not-gte-nan
+  eq. ++> cannot-be-greater-than-or-equal-to-nan-when-nan
+    nan.gte nan
+    false
+
+  eq. ++> cannot-be-greater-than-or-equal-to-nan-when-negative-infinity
     ninf.gte nan
     false
 
-  eq. ++> tests-negative-infinity-not-gte-positive-infinity
-    ninf.gte pinf
+  eq. ++> cannot-be-greater-than-or-equal-to-nan-when-positive-infinity
+    pinf.gte nan
     false
 
-  eq. ++> tests-positive-infinity-gte-float
-    pinf.gte 42.5
-    true
-
-  eq. ++> tests-positive-infinity-gte-int
-    pinf.gte 42
-    true
-
-  eq. ++> tests-positive-infinity-gte-negative-infinity
-    pinf.gte ninf
-    true
-
-  eq. ++> tests-positive-infinity-gte-positive-infinity
-    pinf.gte pinf
-    true
-
-  eq. ++> tests-positive-infinity-not-gte-nan
-    pinf.gte nan
+  eq. ++> cannot-be-greater-than-or-equal-to-positive-infinity-when-negative-infinity
+    ninf.gte pinf
     false

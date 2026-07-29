@@ -10,21 +10,21 @@
 [list] > is-empty
   0.eq list.length > @
 
-  is-empty ++> list-should-be-empty
+  is-empty ++> can-be-empty-when-built-empty
     *
 
-  not. ++> tests-list-should-not-be-empty
-    is-empty *
-      1
-      2
-
-  ++> tests-list-should-not-be-empty-with-one-anon-object
+  ++> cannot-be-empty-with-one-anonymous-object
     not. > @
       is-empty xs
     * > xs
       [f]
 
-  ++> tests-list-should-not-be-empty-with-three-objects
+  not. ++> cannot-be-empty-with-one-item
+    is-empty *
+      1
+      2
+
+  ++> cannot-be-empty-with-three-objects
     not. > @
       is-empty xs
     * > xs
