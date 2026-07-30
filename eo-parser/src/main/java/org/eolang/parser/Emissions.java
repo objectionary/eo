@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Shared {@link Value}-to-XMIR rendering helpers.
@@ -18,7 +19,6 @@ import java.util.List;
  * §9.4.2).</p>
  *
  * @since 0.1
- * @checkstyle BooleanExpressionComplexityCheck (600 lines)
  */
 final class Emissions {
 
@@ -26,6 +26,20 @@ final class Emissions {
      * Maximum value of a {@code \NNN} octal byte escape (0o377, one byte).
      */
     private static final int MAX_OCTAL_BYTE = 0xFF;
+
+    /**
+     * Kinds of head value that a {@code .method} chain may follow.
+     */
+    private static final Set<Value.Kind> CHAINABLE = Set.of(
+        Value.Kind.IDENTIFIER,
+        Value.Kind.ROOT,
+        Value.Kind.SELF,
+        Value.Kind.GROUP,
+        Value.Kind.INTEGER,
+        Value.Kind.FLOAT,
+        Value.Kind.STRING,
+        Value.Kind.BYTES
+    );
 
     /**
      * No instances.
@@ -193,14 +207,7 @@ final class Emissions {
      * @return True if chain may follow
      */
     static boolean chainable(final Value head) {
-        return head.kind() == Value.Kind.IDENTIFIER
-            || head.kind() == Value.Kind.ROOT
-            || head.kind() == Value.Kind.SELF
-            || head.kind() == Value.Kind.GROUP
-            || head.kind() == Value.Kind.INTEGER
-            || head.kind() == Value.Kind.FLOAT
-            || head.kind() == Value.Kind.STRING
-            || head.kind() == Value.Kind.BYTES;
+        return Emissions.CHAINABLE.contains(head.kind());
     }
 
     /**

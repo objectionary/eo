@@ -24,7 +24,6 @@ import java.util.List;
  * texts from §9.9.</p>
  *
  * @since 0.1
- * @checkstyle BooleanExpressionComplexityCheck (820 lines)
  */
 final class Tokens {
 
@@ -33,6 +32,12 @@ final class Tokens {
      * among them.
      */
     private static final String TERMINATORS = " \t,.|':;!?[]{}()";
+
+    /**
+     * Characters that break a parenthesised group into more than one
+     * token, so their absence makes the group a single token.
+     */
+    private static final String BREAKERS = " ()[]";
 
     /**
      * The line body being scanned.
@@ -233,11 +238,7 @@ final class Tokens {
             value = this.readHex();
         } else {
             final Value integer = this.readInt();
-            if (this.cursor < this.body.length()
-                && this.body.charAt(this.cursor) == '.'
-                && this.cursor + 1 < this.body.length()
-                && this.body.charAt(this.cursor + 1) >= '0'
-                && this.body.charAt(this.cursor + 1) <= '9') {
+            if (this.dottedDigit()) {
                 this.readFloatTail(start);
                 value = new Value(
                     Value.Kind.FLOAT, this.body.substring(start, this.cursor),
@@ -514,11 +515,7 @@ final class Tokens {
      * @return True if a suffix starts here
      */
     boolean suffixAhead() {
-        return !this.atEnd()
-            && (this.current() == '>'
-                || this.current() == '+'
-                    && this.cursor + 1 < this.body.length()
-                    && this.body.charAt(this.cursor + 1) == '>');
+        return !this.atEnd() && (this.current() == '>' || this.plusArrow());
     }
 
     /**
@@ -575,8 +572,7 @@ final class Tokens {
             final char glyph = inside.charAt(idx);
             if (glyph == '"') {
                 idx = Tokens.closingQuote(inside, idx);
-            } else if (glyph == ' ' || glyph == '(' || glyph == ')'
-                || glyph == '[' || glyph == ']') {
+            } else if (Tokens.BREAKERS.indexOf(glyph) >= 0) {
                 single = false;
                 break;
             }
@@ -631,9 +627,7 @@ final class Tokens {
      * @return True if 0-9, A-F, or a-f
      */
     private static boolean hexDigit(final char glyph) {
-        return glyph >= '0' && glyph <= '9'
-            || glyph >= 'A' && glyph <= 'F'
-            || glyph >= 'a' && glyph <= 'f';
+        return Tokens.byteDigit(glyph) || glyph >= 'a' && glyph <= 'f';
     }
 
     /**
@@ -644,7 +638,7 @@ final class Tokens {
      * @return True if 0-9 or A-F
      */
     private static boolean byteDigit(final char glyph) {
-        return glyph >= '0' && glyph <= '9' || glyph >= 'A' && glyph <= 'F';
+        return Tokens.digit(glyph) || glyph >= 'A' && glyph <= 'F';
     }
 
     /**
@@ -665,22 +659,49 @@ final class Tokens {
      * @return True if INT starts here
      */
     private static boolean digitStart(final String body, final int idx) {
-        final boolean result;
-        if (idx >= body.length()) {
-            result = false;
-        } else {
-            final char glyph = body.charAt(idx);
-            if (glyph >= '0' && glyph <= '9') {
-                result = true;
-            } else if ((glyph == '+' || glyph == '-')
-                && idx + 1 < body.length()
-                && body.charAt(idx + 1) >= '0' && body.charAt(idx + 1) <= '9') {
-                result = true;
-            } else {
-                result = false;
-            }
-        }
-        return result;
+        return Tokens.digitAt(body, idx) || Tokens.signedStart(body, idx);
+    }
+
+    /**
+     * Whether a sign the first digit of an INT literal follows sits at
+     * the given index.
+     * @param body Body
+     * @param idx Index
+     * @return True if a signed INT starts here
+     */
+    private static boolean signedStart(final String body, final int idx) {
+        return idx < body.length()
+            && Tokens.sign(body.charAt(idx))
+            && Tokens.digitAt(body, idx + 1);
+    }
+
+    /**
+     * Whether a digit sits at the given index of the body, the index
+     * being inside it at all.
+     * @param body Body
+     * @param idx Index
+     * @return True if a digit is there
+     */
+    private static boolean digitAt(final String body, final int idx) {
+        return idx < body.length() && Tokens.digit(body.charAt(idx));
+    }
+
+    /**
+     * Whether a character is a decimal digit.
+     * @param glyph Character
+     * @return True if 0-9
+     */
+    private static boolean digit(final char glyph) {
+        return glyph >= '0' && glyph <= '9';
+    }
+
+    /**
+     * Whether a character is the sign of a number per R-3.2.5.
+     * @param glyph Character
+     * @return True if plus or minus
+     */
+    private static boolean sign(final char glyph) {
+        return glyph == '+' || glyph == '-';
     }
 
     /**
@@ -906,5 +927,26 @@ final class Tokens {
         return idx + 1 < this.body.length()
             && Tokens.byteDigit(this.body.charAt(idx))
             && Tokens.byteDigit(this.body.charAt(idx + 1));
+    }
+
+    /**
+     * Whether the cursor sits on the dot of a FLOAT fraction, that is,
+     * on a dot a digit follows.
+     * @return True if a fractional tail starts here
+     */
+    private boolean dottedDigit() {
+        return this.cursor < this.body.length()
+            && this.body.charAt(this.cursor) == '.'
+            && Tokens.digitAt(this.body, this.cursor + 1);
+    }
+
+    /**
+     * Whether a {@code +>} suffix marker starts at the cursor.
+     * @return True if the marker is there
+     */
+    private boolean plusArrow() {
+        return this.current() == '+'
+            && this.cursor + 1 < this.body.length()
+            && this.body.charAt(this.cursor + 1) == '>';
     }
 }
