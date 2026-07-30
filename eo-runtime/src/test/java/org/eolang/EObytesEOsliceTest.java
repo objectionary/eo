@@ -117,7 +117,7 @@ final class EObytesEOsliceTest {
                                         .take("slice")
                                         .copy(),
                                     "start",
-                                    new Data.ToPhi(3.0E9)
+                                    new Data.ToPhi(3.0e9)
                                 ),
                                 "len",
                                 new Data.ToPhi(1)

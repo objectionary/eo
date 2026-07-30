@@ -29,7 +29,7 @@ final class TrStepped extends TrEnvelope {
      * Apply changes to each XML after processing.
      */
     private static final Scalar<XSL> STEPPED = new Sticky<>(
-        new TrStepped.Once<XSL>(
+        new TrStepped.Once<>(
             () -> new XSLDocument(
                 new TextOf(
                     new ResourceOf("org/eolang/parser/_stepped.xsl")

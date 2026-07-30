@@ -35,6 +35,7 @@ import org.eolang.Posix.WriteSyscall;
 /**
  * Posix syscall.
  * @since 0.40
+ * @checkstyle IllegalIdentifierNameCheck (101 lines)
  * @checkstyle TypeNameCheck (100 lines)
  * @checkstyle ClassFanOutComplexityCheck (100 lines)
  */

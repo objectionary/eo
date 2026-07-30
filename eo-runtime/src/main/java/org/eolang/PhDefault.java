@@ -235,7 +235,7 @@ public class PhDefault implements Phi, Cloneable {
                 PhDefault.LOGGER.log(
                     Level.FINE,
                     String.format(
-                        "%s\uD835\uDD38('%s' for %s) ➜ %s",
+                        "%s𝔸('%s' for %s) ➜ %s",
                         PhDefault.padding(),
                         name,
                         this,

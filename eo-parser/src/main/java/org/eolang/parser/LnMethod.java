@@ -19,7 +19,7 @@ import java.util.List;
  *   args — the chain stays open for further {@code .method} continuations
  *   or deeper-indent vapplication children.</li>
  *   <li>{@link Kind#VMETHOD_WITH_HARGS} when this {@code .method}
- *   carries ≥1 horizontal args — the chain becomes
+ *   carries one or more horizontal args — the chain becomes
  *   {@link Openness#HORIZONTAL_COMPLETED}.</li>
  * </ul>
  *

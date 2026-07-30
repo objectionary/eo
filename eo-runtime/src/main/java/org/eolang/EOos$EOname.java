@@ -8,6 +8,7 @@ package org.eolang;
 /**
  * Os.name.
  * @since 0.40
+ * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "os.name")

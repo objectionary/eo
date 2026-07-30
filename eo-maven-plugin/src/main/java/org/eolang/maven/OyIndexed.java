@@ -53,7 +53,7 @@ final class OyIndexed implements Objectionary {
     @Override
     public boolean contains(final String name) throws IOException {
         return new IoChecked<>(
-            new ScalarWithFallback<Boolean>(
+            new ScalarWithFallback<>(
                 () -> this.index.contains(name),
                 new Fallback.From<>(
                     Exception.class,
@@ -74,7 +74,7 @@ final class OyIndexed implements Objectionary {
     @Override
     public boolean isDirectory(final String name) throws IOException {
         return new IoChecked<>(
-            new ScalarWithFallback<Boolean>(
+            new ScalarWithFallback<>(
                 () -> !this.index.contains(name) && this.delegate.isDirectory(name),
                 new Fallback.From<>(
                     Exception.class,

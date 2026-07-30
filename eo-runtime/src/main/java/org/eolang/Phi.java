@@ -91,7 +91,7 @@ public interface Phi extends Data, Term {
      * without extracting its data.
      *
      * <p>The point is to reveal whether the object is a terminated
-     * computation (⊥) without forcing it: a ⊥ — whether written as {@code T},
+     * computation (bottom) without forcing it: a bottom — whether written as {@code T},
      * produced by an unset void, or returned by a failing atom — surfaces here
      * as a {@link PhTerminator} instance, detectable by identity. A genuine,
      * unrecoverable failure encountered while resolving (a type violation, a

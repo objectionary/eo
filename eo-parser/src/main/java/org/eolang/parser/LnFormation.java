@@ -291,14 +291,14 @@ final class LnFormation implements Line {
      * @return Emitted name
      */
     private static String mapParam(final String raw, final Span span, final int pos) {
-        if (raw.equals("^")) {
+        if ("^".equals(raw)) {
             throw new ParseError(
                 span.line(), pos,
                 "parameter names in voids must be NAME or @"
             );
         }
         final String mapped;
-        if (raw.equals("@")) {
+        if ("@".equals(raw)) {
             mapped = "φ";
         } else {
             mapped = raw;

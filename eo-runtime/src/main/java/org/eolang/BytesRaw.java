@@ -236,7 +236,7 @@ final class BytesRaw implements Bytes {
             if (source < 0) {
                 bytes[index] = 0;
             } else {
-                byte dst = (byte) ((0xff & bytes[source]) >>> mod);
+                byte dst = (byte) ((0xFF & bytes[source]) >>> mod);
                 if (source - 1 >= 0) {
                     dst |= (byte) (bytes[source - 1] << (Byte.SIZE - mod) & carry & 0xFF);
                 }
