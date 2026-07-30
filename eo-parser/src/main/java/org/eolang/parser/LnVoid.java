@@ -10,7 +10,7 @@ package org.eolang.parser;
  * <p>Form: {@code ? > name} with an optional atom-only type annotation.
  * The {@code ?} declares a void attribute on the enclosing formation,
  * equivalent to listing {@code name} among the bracket parameters; it
- * emits the same {@code <o name='name' base='∅'/>} void child (§9.4),
+ * emits the same empty-set-based void child named {@code name} (§9.4),
  * which {@code move-voids-up} hoists among the head voids.</p>
  *
  * <p>The {@code >>} auto-name form is also accepted: {@code ? >> name}
@@ -27,7 +27,8 @@ package org.eolang.parser;
  * <ul>
  *   <li>{@code /type} — the void's own type: a concrete forma or a
  *   generic type variable ({@code A}–{@code F}), with an optional
- *   trailing {@code ?} marking a maybe-⊥ value. Emits {@code @type}.</li>
+ *   trailing {@code ?} marking a maybe-bottom value. Emits
+ *   {@code @type}.</li>
  *   <li>{@code /&#123;type …&#125;} — the void is a callback formation;
  *   the brace list gives the types of its void parameters (the arguments
  *   the atom supplies to that branch). No {@code ?} inside. Emits
@@ -137,7 +138,7 @@ final class LnVoid implements Line {
     /**
      * Parse the bare {@code /type} annotation (R-3.4.8): one type atom
      * (a generic variable or a concrete forma) with an optional trailing
-     * {@code ?}. The forma is {@code Q.}→{@code Φ.} promoted; the
+     * {@code ?}. The forma is promoted from {@code Q.} to {@code Φ.}; the
      * variable stays verbatim.
      * @param tail The line body after the {@code ?}
      * @param slash Index of the {@code /} marker in {@code tail}
@@ -196,8 +197,9 @@ final class LnVoid implements Line {
 
     /**
      * Split a brace argument list on single spaces, promoting each type
-     * atom (variable verbatim, forma {@code Q.}→{@code Φ.}) and rejecting
-     * empty entries, double spaces, and the {@code ?} optional marker.
+     * atom (variable verbatim, forma {@code Q.} promoted to {@code Φ.})
+     * and rejecting empty entries, double spaces, and the {@code ?}
+     * optional marker.
      * @param inside The text inside the braces
      * @param span The source span (for errors)
      * @return The space-separated promoted arguments

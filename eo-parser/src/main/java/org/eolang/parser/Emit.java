@@ -348,7 +348,7 @@ final class Emit {
      * Add the {@code @type="type"} attribute to the most recently opened
      * {@code <o>} — the declared type of an atom's vertical void
      * attribute (R-3.4.8): a concrete forma or a generic type variable,
-     * with an optional trailing {@code ?} marking a maybe-⊥ value.
+     * with an optional trailing {@code ?} marking a maybe-bottom value.
      * @param type The declared type
      */
     void type(final String type) {
@@ -384,9 +384,9 @@ final class Emit {
     }
 
     /**
-     * Emit a void parameter child — {@code <o name='<param>' base='∅'/>}
-     * per §9.4. The cursor is expected to be inside the parent
-     * formation's {@code <o>}.
+     * Emit a void parameter child — an {@code <o>} named after the
+     * parameter and based on the empty set, per §9.4. The cursor is
+     * expected to be inside the parent formation's {@code <o>}.
      * @param name Parameter name
      * @param line Source line of the formation
      * @param pos Source column of the parameter
@@ -407,7 +407,7 @@ final class Emit {
      * Emit the atom marker child for a formation declared with
      * {@code /sig} — {@code <o name='λ' atom='<sig>'/>} per §9.4. The
      * cursor is expected to be inside the parent atom's {@code <o>}.
-     * @param sig Atom signature value (already Q→Φ promoted)
+     * @param sig Atom signature value (already promoted from Q to Φ)
      * @param line Source line of the atom declaration
      * @param pos Source column of the {@code /sig} marker
      */

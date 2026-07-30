@@ -224,11 +224,11 @@ final class CacheTest {
         );
         final MessageDigest instance = MessageDigest.getInstance("SHA-256");
         instance.update(
-            String.format("file1.txt\u0000%s", CacheTest.hash(first))
+            String.format("file1.txt\0%s", CacheTest.hash(first))
                 .getBytes(StandardCharsets.UTF_8)
         );
         instance.update(
-            String.format("file2.txt\u0000%s", CacheTest.hash(second))
+            String.format("file2.txt\0%s", CacheTest.hash(second))
                 .getBytes(StandardCharsets.UTF_8)
         );
         MatcherAssert.assertThat(

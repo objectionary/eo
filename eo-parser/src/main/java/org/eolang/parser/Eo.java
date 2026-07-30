@@ -234,7 +234,7 @@ final class Eo implements Iterable<Directive> {
      * Whether a span body is the start of a multi-line BYTES literal —
      * purely bytes-only content, length &gt;= 6, ending with {@code -}.
      * Per R-3.13.1, single-byte form ({@code BB-}) never continues, so
-     * we require &gt;=2 bytes (≥ 6 chars).
+     * we require &gt;=2 bytes (6 chars or more).
      * @param body The line body
      * @return True if a BYTES continuation starts here
      */

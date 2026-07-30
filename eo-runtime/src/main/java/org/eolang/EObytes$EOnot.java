@@ -8,6 +8,7 @@ package org.eolang;
 /**
  * BYTES.NOT.
  * @since 0.1.0
+ * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bytes.not")

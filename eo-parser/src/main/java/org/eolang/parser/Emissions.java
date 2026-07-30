@@ -709,7 +709,7 @@ final class Emissions {
         int pcol = column + bracket + 1;
         for (final String param : Emissions.splitParams(params)) {
             final String mapped;
-            if (param.equals("@")) {
+            if ("@".equals(param)) {
                 mapped = "φ";
             } else {
                 mapped = param;
