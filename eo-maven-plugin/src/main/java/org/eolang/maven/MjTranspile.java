@@ -41,7 +41,7 @@ public final class MjTranspile extends MjSafe {
      * Java class name, simple or fully qualified.
      */
     private static final Pattern CLASS = Pattern.compile(
-        "^[A-Za-z_$][A-Za-z0-9_$]*(\\.[A-Za-z_$][A-Za-z0-9_$]*)*$"
+        "^[A-Za-z_$][A-Za-z0-9_$]*+(?:\\.[A-Za-z_$][A-Za-z0-9_$]*+)*+$"
     );
 
     /**

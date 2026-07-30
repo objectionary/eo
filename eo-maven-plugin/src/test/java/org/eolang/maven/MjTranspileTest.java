@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link MjTranspile}.
@@ -165,39 +166,21 @@ final class MjTranspileTest {
         );
     }
 
-    @Test
-    void rejectsEmptyPhiDefaultClass(@Mktmp final Path temp) {
+    @ParameterizedTest
+    @ValueSource(strings = {"", "org.example.Ph Inspected", "42Nope"})
+    void rejectsPhiDefaultClassThatIsNotAJavaName(final String name, @Mktmp final Path temp) {
         final IllegalStateException exception = Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
                 .withProgram(MjTranspileTest.program())
-                .with("superclass", "")
-                .execute(new FakeMaven.Transpile()),
-            "an empty phiDefaultClass must not reach the generated Java"
-        );
-        final StringWriter writer = new StringWriter();
-        exception.printStackTrace(new PrintWriter(writer));
-        MatcherAssert.assertThat(
-            "an empty phiDefaultClass must be refused by naming the option, instead of emitting an extends clause with nothing after it",
-            writer.toString(),
-            Matchers.containsString("eo.phiDefaultClass")
-        );
-    }
-
-    @Test
-    void rejectsPhiDefaultClassThatIsNotAJavaName(@Mktmp final Path temp) {
-        final IllegalStateException exception = Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(MjTranspileTest.program())
-                .with("superclass", "org.example.Ph Inspected")
+                .with("superclass", name)
                 .execute(new FakeMaven.Transpile()),
             "a phiDefaultClass that is not a Java class name must not reach the generated Java"
         );
         final StringWriter writer = new StringWriter();
         exception.printStackTrace(new PrintWriter(writer));
         MatcherAssert.assertThat(
-            "a phiDefaultClass that is not a Java class name must be refused by naming the option",
+            "a phiDefaultClass that is not a Java class name must be refused by naming the option, instead of emitting an extends clause that cannot compile",
             writer.toString(),
             Matchers.containsString("eo.phiDefaultClass")
         );
