@@ -175,18 +175,6 @@
       pinf
     pinf
 
-  eq. ++> tests-power-negative-zero-to-odd-negative
-    power
-      -0
-      -3
-    ninf
-
-  eq. ++> tests-power-negative-zero-to-odd-positive
-    power
-      -0
-      3
-    -0
-
   eq. ++> can-raise-a-positive-integer-to-a-positive-integer
     power
       2
@@ -252,6 +240,18 @@
       ninf
       ninf
     0
+
+  eq. ++> can-raise-negative-zero-to-odd-negative
+    power
+      -0
+      -3
+    ninf
+
+  eq. ++> can-raise-negative-zero-to-odd-positive
+    power
+      -0
+      3
+    -0
 
   eq. ++> can-raise-positive-infinity-to-a-negative-float
     power
