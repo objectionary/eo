@@ -159,8 +159,35 @@ final class MjLintTest {
         MatcherAssert.assertThat(
             "WPA results must be saved to cache",
             cache.resolve(Linting.CACHE)
+                .resolve(FakeMaven.pluginVersion())
                 .resolve("wpa.xmir").toFile(),
             FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    void doesNotReuseWholeProgramAnalysisCacheOfAnotherProject(@Mktmp final Path temp)
+        throws IOException {
+        final Path cache = temp.resolve("shared-cache");
+        MjLintTest.linting(temp.resolve("clean"), cache, MjLintTest.flawless())
+            .execute(new FakeMaven.Lint());
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> MjLintTest.linting(
+                temp.resolve("broken"), cache, MjLintTest.probmlematic()
+            ).execute(new FakeMaven.Lint()),
+            "WPA error of the second project must be reported, not hidden by the cache of the first"
+        );
+    }
+
+    @Test
+    void lintsPackageWithoutASingleProgram(@Mktmp final Path temp) {
+        Assertions.assertDoesNotThrow(
+            () -> new FakeMaven(temp)
+                .with("lintAsPackage", true)
+                .with("cache", temp.resolve("cache").toFile())
+                .execute(new FakeMaven.Lint()),
+            "Linting a package that has no programs at all must not fail"
         );
     }
 
@@ -426,6 +453,45 @@ final class MjLintTest {
             "",
             "[] > main",
             "  cti true \"critical\" \"msg\" > @",
+        };
+    }
+
+    /**
+     * Maven that lints a package, keeping its EO sources apart from its target directory,
+     * the way a real Maven build does with {@code src/main/eo}.
+     * @param workspace Workspace of the project
+     * @param cache Cache directory, possibly shared with other projects
+     * @param program Program to lint
+     * @return Maven ready to be executed
+     * @throws IOException If fails to save the program
+     */
+    private static FakeMaven linting(
+        final Path workspace, final Path cache, final String... program
+    ) throws IOException {
+        return new FakeMaven(workspace)
+            .with("lintAsPackage", true)
+            .with("cache", cache.toFile())
+            .with("sourcesDir", workspace.resolve("foo").toFile())
+            .withProgram(program);
+    }
+
+    /**
+     * Program without a single defect.
+     * @return Program without defects
+     */
+    private static String[] flawless() {
+        return new String[]{
+            "+home https://www.eolang.org",
+            "+package foo.x",
+            "+version 0.0.0",
+            "+unlint empty-object",
+            "+unlint unit-test-missing",
+            "+unlint mandatory-spdx",
+            "+unlint comment-too-short",
+            "+unlint object-has-data",
+            "",
+            "[x] > main",
+            "  (stdout \"Hello!\" x).print > @",
         };
     }
 
