@@ -6,6 +6,7 @@ package org.eolang;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -57,6 +58,42 @@ final class PhiTest {
                 Phi.Φ.take("nan").take("is-finite")
             ).asBool(),
             Matchers.equalTo(false)
+        );
+    }
+
+    @Test
+    void tellsWhyANonFiniteNumberHasNoDecimalForm() {
+        MatcherAssert.assertThat(
+            "asking nan for its decimal form must not lose the reason written for that moment",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhApplication(
+                        Phi.Φ.take("string.as-decimal").copy(),
+                        "n",
+                        new Data.ToPhi(Double.NaN)
+                    )
+                ).take()
+            ).getMessage(),
+            Matchers.containsString("Can't write a non-finite number as decimal")
+        );
+    }
+
+    @Test
+    void tellsWhyAFractionalPartitionCountIsRefused() {
+        MatcherAssert.assertThat(
+            "integrating over 1.5 partitions must not lose the reason written for that moment",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhApplication(
+                        Phi.Φ.take("number.integral").copy(),
+                        "n",
+                        new Data.ToPhi(1.5)
+                    )
+                ).take()
+            ).getMessage(),
+            Matchers.containsString("the number of partitions must be a finite positive integer")
         );
     }
 
