@@ -110,7 +110,7 @@ public final class PhTerminator implements Phi {
         } else {
             reason = new Dataized(this.cause).asString();
         }
-        throw new ExFailure(reason);
+        throw new ExFailure("%s", reason);
     }
 
     @Override
