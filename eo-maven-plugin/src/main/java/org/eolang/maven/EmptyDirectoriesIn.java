@@ -50,7 +50,6 @@ final class EmptyDirectoriesIn {
     /**
      * Recursively delete empty directories.
      * @param dir Directory to delete
-     * @checkstyle NestedIfDepthCheck (20 lines)
      */
     private void delete(final File dir) {
         if (!dir.isDirectory()) {
