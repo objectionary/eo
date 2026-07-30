@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link MjTranspile}.
@@ -108,6 +109,80 @@ final class MjTranspileTest {
                     .get(MjTranspileTest.compiled())
             ).asString(),
             Matchers.not(Matchers.containsString("PhCoverage"))
+        );
+    }
+
+    @Test
+    void extendsPhDefaultInGeneratedJavaByDefault(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "the generated class must extend PhDefault when phiDefaultClass is not set",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(String.format("+package foo.x%n%n[] > main%n  42 > @"))
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.containsString("extends PhDefault {")
+        );
+    }
+
+    @Test
+    void extendsGivenPhiClassInGeneratedJava(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "the generated class must extend the class named by phiDefaultClass instead of PhDefault",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(String.format("+package foo.x%n%n[] > main%n  42 > @"))
+                    .with("superclass", "org.example.PhInspected")
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.containsString("extends org.example.PhInspected {")
+        );
+    }
+
+    @Test
+    void invalidatesCacheWhenPhiDefaultClassChanges(@Mktmp final Path temp) throws Exception {
+        final Path cache = temp.resolve("cache");
+        final String src = String.format("+package foo.x%n%n[] > main%n  42 > @");
+        new FakeMaven(temp.resolve("first"))
+            .withProgram(src)
+            .with("cache", cache.toFile())
+            .execute(new FakeMaven.Transpile());
+        MatcherAssert.assertThat(
+            "the second run's generated Java must reflect its own phiDefaultClass instead of reusing the first run's cached PhDefault output",
+            new TextOf(
+                new FakeMaven(temp.resolve("second"))
+                    .withProgram(src)
+                    .with("cache", cache.toFile())
+                    .with("superclass", "org.example.PhInspected")
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.containsString("extends org.example.PhInspected {")
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "org.example.Ph Inspected", "42Nope"})
+    void rejectsPhiDefaultClassThatIsNotAJavaName(final String name, @Mktmp final Path temp) {
+        final IllegalStateException exception = Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(MjTranspileTest.program())
+                .with("superclass", name)
+                .execute(new FakeMaven.Transpile()),
+            "a phiDefaultClass that is not a Java class name must not reach the generated Java"
+        );
+        final StringWriter writer = new StringWriter();
+        exception.printStackTrace(new PrintWriter(writer));
+        MatcherAssert.assertThat(
+            "a phiDefaultClass that is not a Java class name must be refused by naming the option, instead of emitting an extends clause that cannot compile",
+            writer.toString(),
+            Matchers.containsString("eo.phiDefaultClass")
         );
     }
 
