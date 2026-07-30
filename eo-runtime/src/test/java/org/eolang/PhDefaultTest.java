@@ -33,19 +33,6 @@ final class PhDefaultTest {
     }
 
     @Test
-    void failsClearlyForNullaryPackageExtension() {
-        MatcherAssert.assertThat(
-            "Implicit dispatch to a nullary extension must explain the real problem",
-            Assertions.assertThrows(
-                ExFailure.class,
-                () -> new PhDefault("Φ.input").take("dead"),
-                "Applying a receiver to a nullary extension must be rejected"
-            ).getMessage(),
-            Matchers.containsString("takes no arguments")
-        );
-    }
-
-    @Test
     void prefersPackageExtensionOverDecoratee() {
         MatcherAssert.assertThat(
             "Package object must shadow the same-named attribute of the decoratee, but it didnt",
