@@ -14,7 +14,6 @@ import java.util.function.Supplier;
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (200 lines)
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public class PhOnce implements Phi {
 
     /**

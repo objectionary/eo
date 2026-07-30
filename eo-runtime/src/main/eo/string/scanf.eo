@@ -55,9 +55,16 @@
         text
     [text] > as-integer
       if. > @
-        digits.length.gt 19
+        or.
+          digits.length.gt 19
+          and.
+            digits.length.eq 19
+            not.
+              negative.if
+                digits-lte digits "9223372036854775808"
+                digits-lte digits "9223372036854775807"
         T
-          "The number doesn't fit into long range for the '%d' conversion"
+          "The number doesn't fit into long range for the '%%d' conversion"
         negative.if negated folded
       signed.if > digits
         slice
@@ -65,6 +72,27 @@
           1
           text.length.minus 1
         text
+      [a b] > digits-lte
+        if. > [index] >> rec
+          index.eq a.length
+          true
+          if.
+            lt.
+              as-ascii
+                slice a index 1
+              as-ascii
+                slice b index 1
+            true
+            if.
+              gt.
+                as-ascii
+                  slice a index 1
+                as-ascii
+                  slice b index 1
+              false
+              rec
+                index.plus 1
+        | 0 > @
       fold-digits digits > folded
       folded.times -1 > negated
       eq. > negative
@@ -325,6 +353,24 @@
   scanf --> stops-on-an-oversized-integer
     "%d"
     "99999999999999999999"
+
+  gt. ++> can-scan-a-nineteen-digit-value-at-long-max
+    head.
+      scanf "%d" "9223372036854775807"
+    9000000000000000000
+
+  lt. ++> can-scan-a-nineteen-digit-value-at-long-min
+    head.
+      scanf "%d" "-9223372036854775808"
+    -9000000000000000000
+
+  scanf --> stops-on-a-nineteen-digit-value-above-long-max
+    "%d"
+    "9223372036854775808"
+
+  scanf --> stops-on-a-nineteen-digit-value-below-long-min
+    "%d"
+    "-9223372036854775809"
 
   scanf --> stops-on-a-wrong-format
     "%l"

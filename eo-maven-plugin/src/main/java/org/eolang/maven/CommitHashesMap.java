@@ -69,7 +69,6 @@ final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
     /**
      * Ctor.
      * @param table Commit hashes table
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     private CommitHashesMap(final Scalar<String> table) {
         super(CommitHashesMap.fromTable(table));

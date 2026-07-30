@@ -32,25 +32,22 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
- * Test case for {@link EOsocket}.
+ * Test case for the {@link Syscall} implementations behind the
+ * {@code socket} object, both the POSIX and the Windows ones.
  * @since 0.40
- * @checkstyle TypeNameCheck (100 lines)
  */
-@SuppressWarnings({
-    "PMD.AvoidUsingHardCodedIP",
-    "JTCOP.RuleAllTestsHaveProductionClass"
-})
-final class EOsocketTest {
+@SuppressWarnings("PMD.AvoidUsingHardCodedIP")
+final class SyscallTest {
 
     @Test
     void connectsToLocalServerViaSocketObject() throws IOException {
-        final EOsocketTest.RandomServer server = new EOsocketTest.RandomServer().started();
+        final SyscallTest.RandomServer server = new SyscallTest.RandomServer().started();
         try {
             final Phi socket = Phi.Φ.take("socket").copy();
             socket.put(0, new Data.ToPhi(this.localhost()));
             socket.put(1, new Data.ToPhi(server.port));
             final Phi connected = socket.take("connect").copy();
-            connected.put(0, new EOsocketTest.Simple());
+            connected.put(0, new SyscallTest.Simple());
             final byte[] actual = new Dataized(connected).take();
             MatcherAssert.assertThat(
                 String.format(
@@ -67,14 +64,14 @@ final class EOsocketTest {
 
     @Test
     void returnsFallbackWhenConnectionIsRefused() throws IOException {
-        final EOsocketTest.RandomServer refused = new EOsocketTest.RandomServer().started();
+        final SyscallTest.RandomServer refused = new SyscallTest.RandomServer().started();
         refused.stop();
         final Phi socket = Phi.Φ.take("socket").copy();
         socket.put(0, new Data.ToPhi(this.localhost()));
         socket.put(1, new Data.ToPhi(refused.port));
         final Phi connect = socket.take("connect").copy();
-        connect.put(0, new EOsocketTest.Simple());
-        connect.put(1, new EOsocketTest.Simple());
+        connect.put(0, new SyscallTest.Simple());
+        connect.put(1, new SyscallTest.Simple());
         MatcherAssert.assertThat(
             "connecting to a refused port should have yielded the cant-connect fallback instead of terminating, but it didnt",
             new Dataized(connect).take(),
@@ -83,11 +80,10 @@ final class EOsocketTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void sendsAndReceivesMessageViaSocketObject() throws InterruptedException, IOException {
         final String msg = "Hello, Socket!";
         final AtomicReference<byte[]> bytes = new AtomicReference<>();
-        final EOsocketTest.RandomServer random = new EOsocketTest.RandomServer().started();
+        final SyscallTest.RandomServer random = new SyscallTest.RandomServer().started();
         random.stop();
         final int port = random.port;
         final Thread server = new Thread(
@@ -96,7 +92,7 @@ final class EOsocketTest {
                 socket.put(0, new Data.ToPhi(this.localhost()));
                 socket.put(1, new Data.ToPhi(port));
                 final Phi listened = socket.take("listen").copy();
-                listened.put(0, new EOsocketTest.Server(msg.length()));
+                listened.put(0, new SyscallTest.Server(msg.length()));
                 bytes.set(new Dataized(listened).take());
             }
         );
@@ -106,16 +102,14 @@ final class EOsocketTest {
         socket.put(0, new Data.ToPhi(this.localhost()));
         socket.put(1, new Data.ToPhi(port));
         final Phi connected = socket.take("connect").copy();
-        connected.put(0, new EOsocketTest.Client(msg));
+        connected.put(0, new SyscallTest.Client(msg));
         final int sent = new Dataized(connected).asNumber().intValue();
         server.join();
         MatcherAssert.assertThat(
-            "Client had to send message to the server, but it didn't",
-            sent,
-            Matchers.equalTo(msg.length())
-        );
-        MatcherAssert.assertThat(
-            "Server had to receive message from the client, but it didn't",
+            String.format(
+                "The message had to travel from the client to the server intact, but it didnt, while %d byte(s) were sent",
+                sent
+            ),
             new String(bytes.get(), StandardCharsets.UTF_8),
             Matchers.equalTo(msg)
         );
@@ -158,7 +152,7 @@ final class EOsocketTest {
 
         @RepeatedIfExceptionsTest(repeats = 3)
         void connectsToLocalServerViaSyscall() throws IOException {
-            final EOsocketTest.RandomServer server = new EOsocketTest.RandomServer().started();
+            final SyscallTest.RandomServer server = new SyscallTest.RandomServer().started();
             try {
                 this.ensure(this.startup() == 0);
                 final int socket = this.openSocket();
@@ -191,7 +185,7 @@ final class EOsocketTest {
                     this.ensure(socket > 0);
                     final SockaddrIn addr = new SockaddrIn(
                         (short) Winsock.AF_INET,
-                        EOsocketTest.htons(8080),
+                        SyscallTest.htons(8080),
                         this.inetAddr("192.0.2.1")
                     );
                     MatcherAssert.assertThat(
@@ -219,7 +213,7 @@ final class EOsocketTest {
                             "Win socket should have been bound to localhost via syscall, but it didn't, error code is: %d",
                             this.getError()
                         ),
-                        this.bindSocket(socket, EOsocketTest.randomPort()),
+                        this.bindSocket(socket, SyscallTest.randomPort()),
                         Matchers.equalTo(0)
                     );
                 } finally {
@@ -237,7 +231,7 @@ final class EOsocketTest {
                 final int socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
-                    this.ensure(this.bindSocket(socket, EOsocketTest.randomPort()) == 0);
+                    this.ensure(this.bindSocket(socket, SyscallTest.randomPort()) == 0);
                     MatcherAssert.assertThat(
                         String.format(
                             "Posix socket should have been bound to localhost via syscall, but it didn't, reason: %s",
@@ -260,7 +254,7 @@ final class EOsocketTest {
                 this.ensure(this.startup() == 0);
                 final AtomicInteger accept = new AtomicInteger(0);
                 final AtomicInteger error = new AtomicInteger();
-                final AtomicInteger port = new AtomicInteger(EOsocketTest.randomPort());
+                final AtomicInteger port = new AtomicInteger(SyscallTest.randomPort());
                 final Thread server = new Thread(
                     () -> this.acceptViaWinsock(port, accept, error)
                 );
@@ -302,7 +296,7 @@ final class EOsocketTest {
                 this.ensure(this.startup() == 0);
                 final AtomicInteger received = new AtomicInteger(-1);
                 final AtomicReference<byte[]> bytes = new AtomicReference<>();
-                final AtomicInteger port = new AtomicInteger(EOsocketTest.randomPort());
+                final AtomicInteger port = new AtomicInteger(SyscallTest.randomPort());
                 final Thread server = new Thread(
                     () -> this.recvViaWinsock(port, received, bytes)
                 );
@@ -444,12 +438,11 @@ final class EOsocketTest {
         private SockaddrIn sockaddr(final int port) throws UnknownHostException {
             return new SockaddrIn(
                 (short) Winsock.AF_INET,
-                EOsocketTest.htons(port),
+                SyscallTest.htons(port),
                 this.inetAddr("127.0.0.1")
             );
         }
 
-        @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
         private void acceptViaWinsock(
             final AtomicInteger port, final AtomicInteger accept, final AtomicInteger error
         ) {
@@ -457,7 +450,7 @@ final class EOsocketTest {
             try {
                 this.ensure(socket > 0);
                 while (this.bindSocket(socket, port.get()) != 0) {
-                    port.set(EOsocketTest.randomPort());
+                    port.set(SyscallTest.randomPort());
                 }
                 this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
@@ -470,7 +463,7 @@ final class EOsocketTest {
                     error.set(this.getError());
                 }
             } catch (final UnknownHostException exception) {
-                throw new RuntimeException(exception);
+                throw new IllegalStateException(exception);
             } finally {
                 if (accept.get() > 0) {
                     this.closeSocket(accept.get());
@@ -479,7 +472,6 @@ final class EOsocketTest {
             }
         }
 
-        @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
         private void recvViaWinsock(
             final AtomicInteger port, final AtomicInteger received,
             final AtomicReference<byte[]> bytes
@@ -489,7 +481,7 @@ final class EOsocketTest {
             try {
                 this.ensure(socket > 0);
                 while (this.bindSocket(socket, port.get()) != 0) {
-                    port.set(EOsocketTest.randomPort());
+                    port.set(SyscallTest.randomPort());
                 }
                 this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
@@ -502,7 +494,7 @@ final class EOsocketTest {
                 received.set(Winsock.INSTANCE.recv(accepted, buf, buf.length, 0));
                 bytes.set(Arrays.copyOf(buf, received.get()));
             } catch (final UnknownHostException exception) {
-                throw new RuntimeException(exception);
+                throw new IllegalStateException(exception);
             } finally {
                 this.closeSocket(accepted);
                 this.closeSocket(socket);
@@ -522,7 +514,7 @@ final class EOsocketTest {
 
         @RepeatedIfExceptionsTest(repeats = 3)
         void connectsToLocalServerViaSyscall() throws IOException {
-            final EOsocketTest.RandomServer server = new EOsocketTest.RandomServer().started();
+            final SyscallTest.RandomServer server = new SyscallTest.RandomServer().started();
             final int socket = this.openSocket();
             try {
                 this.ensure(socket > 0);
@@ -567,7 +559,7 @@ final class EOsocketTest {
                         "Posix socket should have been bound to localhost via syscall, but it didn't, reason: %s",
                         this.getError()
                     ),
-                    this.bindSocket(socket, EOsocketTest.randomPort()),
+                    this.bindSocket(socket, SyscallTest.randomPort()),
                     Matchers.equalTo(0)
                 );
             } finally {
@@ -580,7 +572,7 @@ final class EOsocketTest {
             final int socket = this.openSocket();
             try {
                 this.ensure(socket > 0);
-                this.ensure(this.bindSocket(socket, EOsocketTest.randomPort()) == 0);
+                this.ensure(this.bindSocket(socket, SyscallTest.randomPort()) == 0);
                 MatcherAssert.assertThat(
                     String.format(
                         "Posix socket should have been bound to localhost via syscall, but it didn't, reason: %s",
@@ -598,7 +590,7 @@ final class EOsocketTest {
         void acceptsConnectionOnSocket() throws InterruptedException {
             final AtomicInteger accept = new AtomicInteger(0);
             final AtomicReference<String> error = new AtomicReference<>();
-            final AtomicInteger port = new AtomicInteger(EOsocketTest.randomPort());
+            final AtomicInteger port = new AtomicInteger(SyscallTest.randomPort());
             final Thread server = new Thread(
                 () -> this.acceptViaCStdLib(port, accept, error)
             );
@@ -634,7 +626,7 @@ final class EOsocketTest {
         void sendsAndReceivesMessagesViaSyscalls() throws InterruptedException {
             final AtomicInteger received = new AtomicInteger(-1);
             final AtomicReference<byte[]> bytes = new AtomicReference<>();
-            final AtomicInteger port = new AtomicInteger(EOsocketTest.randomPort());
+            final AtomicInteger port = new AtomicInteger(SyscallTest.randomPort());
             final Thread server = new Thread(
                 () -> this.recvViaCStdLib(port, received, bytes)
             );
@@ -752,7 +744,7 @@ final class EOsocketTest {
         private SockaddrIn sockaddr(final int port) {
             return new SockaddrIn(
                 (short) CStdLib.AF_INET,
-                EOsocketTest.htons(port),
+                SyscallTest.htons(port),
                 this.inetAddr("127.0.0.1")
             );
         }
@@ -765,7 +757,7 @@ final class EOsocketTest {
             try {
                 this.ensure(socket > 0);
                 while (this.bindSocket(socket, port.get()) != 0) {
-                    port.set(EOsocketTest.randomPort());
+                    port.set(SyscallTest.randomPort());
                 }
                 this.ensure(CStdLib.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
@@ -794,7 +786,7 @@ final class EOsocketTest {
             try {
                 this.ensure(socket > 0);
                 while (this.bindSocket(socket, port.get()) != 0) {
-                    port.set(EOsocketTest.randomPort());
+                    port.set(SyscallTest.randomPort());
                 }
                 this.ensure(CStdLib.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
@@ -836,7 +828,7 @@ final class EOsocketTest {
         RandomServer started() {
             boolean bound = false;
             while (!bound) {
-                this.port = EOsocketTest.randomPort();
+                this.port = SyscallTest.randomPort();
                 try {
                     this.socket = new ServerSocket();
                     this.socket.setReuseAddress(true);
@@ -907,7 +899,7 @@ final class EOsocketTest {
         @Override
         public Phi lambda() {
             final Phi accept = this.take("s").take("accept").copy();
-            accept.put(0, new EOsocketTest.Receiver(this.received));
+            accept.put(0, new SyscallTest.Receiver(this.received));
             return accept;
         }
     }

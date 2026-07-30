@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: MIT
  */
 /*
- * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
 package org.eolang.Posix; // NOPMD
@@ -148,7 +147,6 @@ public final class StatSyscall implements Syscall {
 
         /**
          * Ctor.
-         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public Linux() {
             super();
@@ -239,7 +237,6 @@ public final class StatSyscall implements Syscall {
 
         /**
          * Ctor.
-         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public LinuxArm() {
             super();
@@ -329,7 +326,6 @@ public final class StatSyscall implements Syscall {
 
         /**
          * Ctor.
-         * @checkstyle ConstructorsCodeFreeCheck (6 lines)
          */
         public Mac() {
             super();

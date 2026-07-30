@@ -32,7 +32,6 @@ final class ChSource implements CommitHash {
     /**
      * Constructor.
      * @param src Source path
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     ChSource(final Path src) {
         this(src.toFile());
@@ -49,7 +48,6 @@ final class ChSource implements CommitHash {
     /**
      * Constructor.
      * @param src Source file
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     private ChSource(final File src) {
         this(new TextOf(src));

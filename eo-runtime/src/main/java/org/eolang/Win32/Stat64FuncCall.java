@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: MIT
  */
 /*
- * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
 package org.eolang.Win32; // NOPMD
@@ -116,7 +115,6 @@ public final class Stat64FuncCall implements Syscall {
 
         /**
          * Ctor.
-         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public WinStat() {
             super();

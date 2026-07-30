@@ -37,7 +37,6 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @since 0.58
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public final class PhCoverage implements Phi {
 
     /** Locations already written in this JVM. */

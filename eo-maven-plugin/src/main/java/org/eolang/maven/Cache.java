@@ -43,7 +43,6 @@ final class Cache {
      * Constructor.
      * @param path Cache path
      * @param compilation Compilation function
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     Cache(final CachePath path, final Func<Path, String> compilation) {
         this(path.get(), compilation);

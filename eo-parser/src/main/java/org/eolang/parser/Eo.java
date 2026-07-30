@@ -27,10 +27,7 @@ import org.xembly.Directive;
  * fall through to a placeholder error pending later additions.</p>
  *
  * @since 0.1
- * @checkstyle CyclomaticComplexityCheck (820 lines)
- * @checkstyle BooleanExpressionComplexityCheck (820 lines)
  */
-@SuppressWarnings("PMD.CognitiveComplexity")
 final class Eo implements Iterable<Directive> {
 
     /**
@@ -38,6 +35,12 @@ final class Eo implements Iterable<Directive> {
      * which callers check explicitly).
      */
     private static final String NAME_TERMINATORS = " \t,|':;!?[]{}()";
+
+    /**
+     * Head characters of §3.1 that open a root-headed line without
+     * opening a literal — the group, star, root, and self tokens.
+     */
+    private static final String ROOT_TOKENS = "*(QT@^$%";
 
     /**
      * Raw EO source text.
@@ -118,13 +121,7 @@ final class Eo implements Iterable<Directive> {
      * @return Index of the top-level marker, or -1
      */
     static int topLevelPlusPlusArrowIndex(final String body) {
-        return Eo.topLevelMarker(
-            body,
-            idx -> idx > 0 && body.charAt(idx) == '+'
-                && body.charAt(idx - 1) == ' '
-                && body.charAt(idx + 1) == '+'
-                && body.charAt(idx + 2) == '>'
-        );
+        return Eo.topLevelMarker(body, idx -> Eo.spacedMarker(body, idx, "++>"));
     }
 
     /**
@@ -141,13 +138,22 @@ final class Eo implements Iterable<Directive> {
      * @return Index of the top-level marker, or -1
      */
     static int topLevelMinusMinusArrowIndex(final String body) {
-        return Eo.topLevelMarker(
-            body,
-            idx -> idx > 0 && body.charAt(idx) == '-'
-                && body.charAt(idx - 1) == ' '
-                && body.charAt(idx + 1) == '-'
-                && body.charAt(idx + 2) == '>'
-        );
+        return Eo.topLevelMarker(body, idx -> Eo.spacedMarker(body, idx, "-->"));
+    }
+
+    /**
+     * Whether a marker sits at {@code idx} in its suffix position, that
+     * is, with a space in front of it (R-3.10.8).
+     * @param body Line body to scan
+     * @param idx Index the marker would start at
+     * @param marker The marker text
+     * @return True if such a marker starts here
+     */
+    private static boolean spacedMarker(
+        final String body, final int idx, final String marker
+    ) {
+        return idx > 0 && body.charAt(idx - 1) == ' '
+            && body.startsWith(marker, idx);
     }
 
     /**
@@ -166,21 +172,12 @@ final class Eo implements Iterable<Directive> {
         final String body, final java.util.function.IntPredicate marker
     ) {
         int depth = 0;
-        boolean instr = false;
         int found = -1;
         int idx = 0;
         while (idx < body.length() - 2 && found < 0) {
             final char glyph = body.charAt(idx);
-            if (instr) {
-                if (glyph == '\\' && idx + 1 < body.length()) {
-                    idx = idx + 2;
-                    continue;
-                }
-                if (glyph == '"') {
-                    instr = false;
-                }
-            } else if (glyph == '"') {
-                instr = true;
+            if (glyph == '"') {
+                idx = Tokens.closingQuote(body, idx);
             } else if (glyph == '(') {
                 depth = depth + 1;
             } else if (glyph == ')') {
@@ -448,7 +445,6 @@ final class Eo implements Iterable<Directive> {
      * Classify a span into a {@link Line} per Appendix B.
      * @param span The span
      * @return The classified line
-     * @checkstyle NPathComplexityCheck (60 lines)
      */
     private static Line classify(final Span span) {
         final Line line;
@@ -456,9 +452,9 @@ final class Eo implements Iterable<Directive> {
             line = new LnBlank(span);
         } else if (span.head() == '#') {
             line = new LnComment(span);
-        } else if (span.head() == '+' && !Eo.signedDigit(span)) {
+        } else if (Eo.metaHead(span)) {
             line = Eo.plussed(span);
-        } else if (span.head() == '-' && span.body().startsWith("-->")) {
+        } else if (Eo.throwHead(span)) {
             line = new LnFormation(span);
         } else if (span.head() == '[') {
             line = new LnFormation(span);
@@ -468,26 +464,80 @@ final class Eo implements Iterable<Directive> {
             line = new LnPipe(span);
         } else if (span.head() == '?') {
             line = Eo.questioned(span);
-        } else if (span.head() >= 'a' && span.head() <= 'z') {
+        } else {
+            line = Eo.applied(span);
+        }
+        return line;
+    }
+
+    /**
+     * Classify a line that opens an application (§3.1) — headed either
+     * by a name or by a root token, in each case with or without a
+     * reversed dispatch.
+     * @param span The span
+     * @return The classified line
+     */
+    private static Line applied(final Span span) {
+        final Line line;
+        if (Eo.nameHead(span)) {
             line = Eo.applicative(span, Eo.reversedDispatch(span));
         } else if (Eo.rootHead(span)) {
             line = Eo.applicative(span, Eo.rootReversedDispatch(span));
-        } else if (span.body().codePoints().findFirst().orElse(0) == 0x1F335) {
-            line = (stack, globals, emit) -> {
-                throw new ParseError(
-                    span.line(), span.indent(),
-                    "cactus emoji is reserved for auto-names; not allowed as a line head"
-                );
-            };
         } else {
-            line = (stack, globals, emit) -> {
-                throw new ParseError(
-                    span.line(), span.indent(),
-                    "line shape not yet implemented in spec parser"
-                );
-            };
+            line = Eo.rejected(span);
         }
         return line;
+    }
+
+    /**
+     * A line whose head no rule of §3.1 accepts — dispatching it throws
+     * with the reason, so {@link #classify} itself stays free of failure
+     * paths.
+     * @param span The line span
+     * @return The line shape
+     */
+    private static Line rejected(final Span span) {
+        final String reason;
+        if (span.body().codePoints().findFirst().orElse(0) == 0x1F335) {
+            reason = "cactus emoji is reserved for auto-names; not allowed as a line head";
+        } else {
+            reason = "line shape not yet implemented in spec parser";
+        }
+        return (stack, globals, emit) -> {
+            throw new ParseError(span.line(), span.indent(), reason);
+        };
+    }
+
+    /**
+     * Whether a line head starts a meta directive (§3.2) — a {@code +}
+     * that does not open a signed number. Factored out of
+     * {@link #classify} beside {@link #rootHead}, so that method's
+     * complexity stays within bounds.
+     * @param span The span
+     * @return True if the head opens a meta
+     */
+    private static boolean metaHead(final Span span) {
+        return span.head() == '+' && !Eo.signedDigit(span);
+    }
+
+    /**
+     * Whether a line head starts a throwing formation (R-6.3.6) — the
+     * {@code -->} marker.
+     * @param span The span
+     * @return True if the head opens a throwing formation
+     */
+    private static boolean throwHead(final Span span) {
+        return span.head() == '-' && span.body().startsWith("-->");
+    }
+
+    /**
+     * Whether a line head starts a NAME-headed application group (§3.1) —
+     * a lowercase letter per §2.3.
+     * @param span The span
+     * @return True if the head belongs to the NAME-headed group
+     */
+    private static boolean nameHead(final Span span) {
+        return span.head() >= 'a' && span.head() <= 'z';
     }
 
     /**
@@ -581,20 +631,50 @@ final class Eo implements Iterable<Directive> {
      * @return True if the head belongs to the root-headed group
      */
     private static boolean rootHead(final Span span) {
+        return Eo.tokenHead(span.head()) || Eo.literalHead(span);
+    }
+
+    /**
+     * Whether a line head is one of the group, star, root, or self
+     * tokens of §3.1 — the non-literal members of the root-headed
+     * group.
+     * @param head The head character
+     * @return True if the head is such a token
+     */
+    private static boolean tokenHead(final char head) {
+        return Eo.ROOT_TOKENS.indexOf(head) >= 0;
+    }
+
+    /**
+     * Whether a line head opens a literal of §3.1 — a string, a bytes
+     * literal, or a number with or without a sign.
+     * @param span The span
+     * @return True if the head opens a literal
+     */
+    private static boolean literalHead(final Span span) {
         final char head = span.head();
-        return head == '*'
-            || head == '"'
-            || head == '('
-            || head == 'Q'
-            || head == 'T'
-            || head == '@'
-            || head == '^'
-            || head == '$'
-            || head == '%'
-            || head >= '0' && head <= '9'
-            || head >= 'A' && head <= 'F'
-            || head == '-'
-            || Eo.signedDigit(span);
+        return head == '"' || Eo.bytesHead(head) || Eo.numberHead(span);
+    }
+
+    /**
+     * Whether a line head opens a BYTES literal — an uppercase hex
+     * digit, or the dash that leads the empty {@code --} form.
+     * @param head The head character
+     * @return True if the head opens a bytes literal
+     */
+    private static boolean bytesHead(final char head) {
+        return head >= 'A' && head <= 'F' || head == '-';
+    }
+
+    /**
+     * Whether a line head opens a number — a digit, or a sign the
+     * digits of §3.2.5 follow.
+     * @param span The span
+     * @return True if the head opens a number
+     */
+    private static boolean numberHead(final Span span) {
+        final char head = span.head();
+        return head >= '0' && head <= '9' || Eo.signedDigit(span);
     }
 
     /**
@@ -672,15 +752,28 @@ final class Eo implements Iterable<Directive> {
         boolean compact = false;
         if (idx + 1 < body.length() && body.charAt(idx + 1) == '*') {
             final int after = idx + 2;
-            if (after >= body.length()) {
-                compact = true;
-            } else {
-                final char next = body.charAt(after);
-                compact = next >= '0' && next <= '9' || next == '>'
-                    || next == ' ' && Eo.suffixAt(body, after + 1);
-            }
+            compact = after >= body.length() || Eo.starTail(body, after);
         }
         return compact;
+    }
+
+    /**
+     * Whether what follows a compact-tuple {@code *} confirms the shape
+     * — a tuple size, a suffix marker straight away, or a space with a
+     * suffix marker behind it.
+     * @param body Line body
+     * @param after Index right after the star
+     * @return True if the shape is confirmed
+     */
+    private static boolean starTail(final String body, final int after) {
+        final char next = body.charAt(after);
+        final boolean confirmed;
+        if (next == ' ') {
+            confirmed = Eo.suffixAt(body, after + 1);
+        } else {
+            confirmed = next == '>' || next >= '0' && next <= '9';
+        }
+        return confirmed;
     }
 
     /**

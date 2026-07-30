@@ -472,7 +472,6 @@ abstract class MjSafe extends AbstractMojo {
      * Execute it.
      * @throws MojoFailureException If fails during build
      * @checkstyle NoJavadocForOverriddenMethodsCheck (10 lines)
-     * @checkstyle CyclomaticComplexityCheck (70 lines)
      */
     @Override
     public final void execute() throws MojoFailureException {

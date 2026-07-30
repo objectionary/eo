@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 line: 4
 message: |-
-  [4:2] error: 'method continuation not allowed after horizontal application'
+  [4:2] error: 'method continuation not allowed after horizontal application, try vertical application instead'
     .with 2 > arr
     ^
 input: |

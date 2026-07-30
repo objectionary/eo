@@ -11,7 +11,7 @@ import java.util.Arrays;
  * Bytes to be created from byte array only.
  * @since 0.1.0
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
+@SuppressWarnings("PMD.GodClass")
 final class BytesRaw implements Bytes {
 
     /**
@@ -22,7 +22,6 @@ final class BytesRaw implements Bytes {
     /**
      * Ctor.
      * @param data Data
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     BytesRaw(final byte[] data) {
         this.data = Arrays.copyOf(data, data.length);

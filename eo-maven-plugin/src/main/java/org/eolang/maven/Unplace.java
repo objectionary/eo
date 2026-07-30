@@ -27,7 +27,6 @@ final class Unplace {
     /**
      * Ctor.
      * @param dir The name of the parent dir
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     Unplace(final File dir) {
         this(dir.toPath());

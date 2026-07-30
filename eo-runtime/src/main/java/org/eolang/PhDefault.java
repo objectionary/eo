@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
+@SuppressWarnings("PMD.GodClass")
 public class PhDefault implements Phi, Cloneable {
 
     /**

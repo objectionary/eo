@@ -13,7 +13,7 @@ package org.eolang;
  *
  * @since 0.24
  */
-@SuppressWarnings({"PMD.SystemPrintln", "PMD.TooManyMethods"})
+@SuppressWarnings("PMD.SystemPrintln")
 public final class PhLogged implements Phi {
 
     /**

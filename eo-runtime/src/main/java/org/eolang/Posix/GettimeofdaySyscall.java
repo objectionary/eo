@@ -4,7 +4,6 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
 package org.eolang.Posix; // NOPMD

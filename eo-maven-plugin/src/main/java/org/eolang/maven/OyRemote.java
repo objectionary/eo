@@ -48,7 +48,6 @@ final class OyRemote implements Objectionary {
      * Constructor.
      * @param hash Commit hash
      * @param proxies Proxies to use
-     * @checkstyle ConstructorsCodeFreeCheck (15 lines)
      */
     OyRemote(final CommitHash hash, final Proxy... proxies) {
         this(

@@ -28,7 +28,6 @@ public final class VerboseBytesAsString implements Supplier<String> {
     /**
      * Ctor.
      * @param data Data
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     public VerboseBytesAsString(final byte[] data) {
         this.data = Arrays.copyOf(data, data.length);
