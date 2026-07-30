@@ -446,7 +446,6 @@ final class EOsocketTest {
             );
         }
 
-        @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
         private void acceptViaWinsock(
             final AtomicInteger port, final AtomicInteger accept, final AtomicInteger error
         ) {
@@ -467,7 +466,7 @@ final class EOsocketTest {
                     error.set(this.getError());
                 }
             } catch (final UnknownHostException exception) {
-                throw new RuntimeException(exception);
+                throw new IllegalStateException(exception);
             } finally {
                 if (accept.get() > 0) {
                     this.closeSocket(accept.get());
@@ -476,7 +475,6 @@ final class EOsocketTest {
             }
         }
 
-        @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
         private void recvViaWinsock(
             final AtomicInteger port, final AtomicInteger received,
             final AtomicReference<byte[]> bytes
@@ -499,7 +497,7 @@ final class EOsocketTest {
                 received.set(Winsock.INSTANCE.recv(accepted, buf, buf.length, 0));
                 bytes.set(Arrays.copyOf(buf, received.get()));
             } catch (final UnknownHostException exception) {
-                throw new RuntimeException(exception);
+                throw new IllegalStateException(exception);
             } finally {
                 this.closeSocket(accepted);
                 this.closeSocket(socket);
