@@ -82,6 +82,14 @@
       * true "2"
     "2"
 
+  eq. ++> can-switch-on-all-false-cases-with-fallback
+    "fallback"
+    switch
+      *
+        * false "false1"
+        * false "false2"
+      "fallback" > [message]
+
   ++> can-switch-on-strings
     eq. > @
       switch *
@@ -96,14 +104,6 @@
           "password is wrong"
       "password is correct!"
     "swordfish" > password
-
-  eq. ++> can-switch-on-all-false-cases-with-fallback
-    "fallback"
-    switch
-      *
-        * false "false1"
-        * false "false2"
-      "fallback" > [message]
 
   eq. ++> can-switch-on-the-first-of-several-true-cases
     switch *
