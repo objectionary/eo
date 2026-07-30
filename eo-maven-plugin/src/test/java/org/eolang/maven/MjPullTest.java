@@ -27,7 +27,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * Test case for {@link MjPull}.
  * @since 0.1
- * @checkstyle ClassFanOutComplexityCheck (1000 lines)
  */
 @ExtendWith(WeAreOnline.class)
 @ExtendWith(MktmpResolver.class)

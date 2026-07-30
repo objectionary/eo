@@ -10,7 +10,7 @@ name: suppressions
     branches:
       - master
 env:
-  THRESHOLD: 483
+  THRESHOLD: 482
 jobs:
   suppressions:
     timeout-minutes: 15
