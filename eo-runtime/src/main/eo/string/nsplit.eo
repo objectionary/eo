@@ -43,7 +43,7 @@
               if.
                 and.
                   delimiter.eq
-                    slice text current size
+                    bts.slice current size
                   lt.
                     number count
                     minus. (number limit) 1
@@ -63,8 +63,7 @@
                   count
           accum.with > appended
             string
-              slice
-                text
+              bts.slice
                 start
                 current.minus start
         |
@@ -72,6 +71,7 @@
           0
           0
           0
+  text.as-bytes >> bts!
   delimiter.size >> size!
 
   eq. ++> can-split-into-empty-strings
@@ -83,6 +83,16 @@
       ""
       "a"
       "b-c"
+
+  eq. ++> can-split-multi-byte-characters
+    nsplit
+      "аХбХв"
+      "Х"
+      3
+    *
+      "а"
+      "б"
+      "в"
 
   eq. ++> can-split-on-a-multi-character-delimiter
     nsplit
