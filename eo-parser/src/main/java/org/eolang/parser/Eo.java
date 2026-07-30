@@ -27,7 +27,6 @@ import org.xembly.Directive;
  * fall through to a placeholder error pending later additions.</p>
  *
  * @since 0.1
- * @checkstyle CyclomaticComplexityCheck (820 lines)
  * @checkstyle BooleanExpressionComplexityCheck (820 lines)
  */
 final class Eo implements Iterable<Directive> {
@@ -457,7 +456,22 @@ final class Eo implements Iterable<Directive> {
             line = new LnPipe(span);
         } else if (span.head() == '?') {
             line = Eo.questioned(span);
-        } else if (Eo.nameHead(span)) {
+        } else {
+            line = Eo.applied(span);
+        }
+        return line;
+    }
+
+    /**
+     * Classify a line that opens an application (§3.1) — headed either
+     * by a name or by a root token, in each case with or without a
+     * reversed dispatch.
+     * @param span The span
+     * @return The classified line
+     */
+    private static Line applied(final Span span) {
+        final Line line;
+        if (Eo.nameHead(span)) {
             line = Eo.applicative(span, Eo.reversedDispatch(span));
         } else if (Eo.rootHead(span)) {
             line = Eo.applicative(span, Eo.rootReversedDispatch(span));
@@ -609,16 +623,36 @@ final class Eo implements Iterable<Directive> {
      * @return True if the head belongs to the root-headed group
      */
     private static boolean rootHead(final Span span) {
-        final char head = span.head();
+        return Eo.tokenHead(span.head()) || Eo.literalHead(span);
+    }
+
+    /**
+     * Whether a line head is one of the group, star, root, or self
+     * tokens of §3.1 — the non-literal members of the root-headed
+     * group.
+     * @param head The head character
+     * @return True if the head is such a token
+     */
+    private static boolean tokenHead(final char head) {
         return head == '*'
-            || head == '"'
             || head == '('
             || head == 'Q'
             || head == 'T'
             || head == '@'
             || head == '^'
             || head == '$'
-            || head == '%'
+            || head == '%';
+    }
+
+    /**
+     * Whether a line head opens a literal of §3.1 — a string, a bytes
+     * literal, or a number with or without a sign.
+     * @param span The span
+     * @return True if the head opens a literal
+     */
+    private static boolean literalHead(final Span span) {
+        final char head = span.head();
+        return head == '"'
             || head >= '0' && head <= '9'
             || head >= 'A' && head <= 'F'
             || head == '-'

@@ -24,10 +24,15 @@ import java.util.List;
  * texts from §9.9.</p>
  *
  * @since 0.1
- * @checkstyle CyclomaticComplexityCheck (820 lines)
  * @checkstyle BooleanExpressionComplexityCheck (820 lines)
  */
 final class Tokens {
+
+    /**
+     * Characters that terminate a {@code NAME} token per §2.3, the dot
+     * among them.
+     */
+    private static final String TERMINATORS = " \t,.|':;!?[]{}()";
 
     /**
      * The line body being scanned.
@@ -103,11 +108,6 @@ final class Tokens {
         final char first = this.current();
         if (Tokens.bytesStart(this.body, this.cursor)) {
             value = this.readBytes();
-        } else if (first == '*') {
-            value = new Value(
-                Value.Kind.STAR, "*", this.span.indent() + this.cursor, this.cursor + 1
-            );
-            this.cursor = this.cursor + 1;
         } else if (first == '"') {
             value = this.readString();
         } else if (first == '(') {
@@ -116,23 +116,8 @@ final class Tokens {
             value = this.readNumber();
         } else if (Tokens.rootStart(first)) {
             value = this.readRoot();
-        } else if (first == 'T') {
-            value = new Value(
-                Value.Kind.TERM, "T", this.span.indent() + this.cursor, this.cursor + 1
-            );
-            this.cursor = this.cursor + 1;
-        } else if (first == '%') {
-            value = new Value(
-                Value.Kind.SELF, "%", this.span.indent() + this.cursor, this.cursor + 1
-            );
-            this.cursor = this.cursor + 1;
-        } else if (first >= 'a' && first <= 'z') {
-            value = this.readName();
         } else {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + this.cursor,
-                "expected value"
-            );
+            value = this.readGlyph(first);
         }
         return value;
     }
@@ -152,26 +137,7 @@ final class Tokens {
             this.cursor = this.cursor + 2;
             raw = "--";
         } else {
-            if (this.cursor + 1 >= this.body.length()
-                || !Tokens.byteDigit(this.body.charAt(this.cursor))
-                || !Tokens.byteDigit(this.body.charAt(this.cursor + 1))) {
-                throw new ParseError(
-                    this.span.line(), this.span.indent() + start,
-                    "invalid bytes literal"
-                );
-            }
-            this.cursor = this.cursor + 2;
-            while (this.cursor + 2 < this.body.length()
-                && this.body.charAt(this.cursor) == '-'
-                && Tokens.byteDigit(this.body.charAt(this.cursor + 1))
-                && Tokens.byteDigit(this.body.charAt(this.cursor + 2))) {
-                this.cursor = this.cursor + 3;
-            }
-            if (this.cursor < this.body.length()
-                && this.body.charAt(this.cursor) == '-') {
-                this.cursor = this.cursor + 1;
-            }
-            raw = this.body.substring(start, this.cursor);
+            raw = this.readPairs(start);
         }
         return new Value(
             Value.Kind.BYTES, raw,
@@ -723,22 +689,7 @@ final class Tokens {
      * @return True if it ends the token
      */
     private static boolean terminates(final char glyph) {
-        return glyph == ' '
-            || glyph == '\t'
-            || glyph == ','
-            || glyph == '.'
-            || glyph == '|'
-            || glyph == '\''
-            || glyph == ':'
-            || glyph == ';'
-            || glyph == '!'
-            || glyph == '?'
-            || glyph == ']'
-            || glyph == '['
-            || glyph == '}'
-            || glyph == '{'
-            || glyph == ')'
-            || glyph == '(';
+        return Tokens.TERMINATORS.indexOf(glyph) >= 0;
     }
 
     /**
@@ -877,5 +828,83 @@ final class Tokens {
             count = count + 1;
         }
         return count;
+    }
+
+    /**
+     * Read a value that no delimiter, digit, or root token introduces —
+     * one of the reserved glyphs {@code *}, {@code T}, {@code %}, or a
+     * NAME — rejecting a head that starts no value at all.
+     * @param first The character at the cursor
+     * @return Parsed value
+     */
+    private Value readGlyph(final char first) {
+        final Value value;
+        if (first == '*') {
+            value = this.reserved(Value.Kind.STAR, "*");
+        } else if (first == 'T') {
+            value = this.reserved(Value.Kind.TERM, "T");
+        } else if (first == '%') {
+            value = this.reserved(Value.Kind.SELF, "%");
+        } else if (first >= 'a' && first <= 'z') {
+            value = this.readName();
+        } else {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + this.cursor,
+                "expected value"
+            );
+        }
+        return value;
+    }
+
+    /**
+     * Make a value out of the one reserved glyph at the cursor and step
+     * over it.
+     * @param kind The kind that glyph denotes
+     * @param raw The glyph itself
+     * @return Parsed value
+     */
+    private Value reserved(final Value.Kind kind, final String raw) {
+        this.cursor = this.cursor + 1;
+        return new Value(
+            kind, raw, this.span.indent() + this.cursor - 1, this.cursor
+        );
+    }
+
+    /**
+     * Scan the non-empty form of a BYTES literal at the cursor — one
+     * {@code BB} pair, any number of {@code -BB} pairs after it, and an
+     * optional trailing {@code -} per §3.13.1.
+     * @param start Index the literal starts at, for error reporting
+     * @return The literal text
+     */
+    private String readPairs(final int start) {
+        if (!this.bytePair(this.cursor)) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + start,
+                "invalid bytes literal"
+            );
+        }
+        this.cursor = this.cursor + 2;
+        while (this.cursor < this.body.length()
+            && this.body.charAt(this.cursor) == '-'
+            && this.bytePair(this.cursor + 1)) {
+            this.cursor = this.cursor + 3;
+        }
+        if (this.cursor < this.body.length()
+            && this.body.charAt(this.cursor) == '-') {
+            this.cursor = this.cursor + 1;
+        }
+        return this.body.substring(start, this.cursor);
+    }
+
+    /**
+     * Whether a {@code BB} pair of byte digits sits at the given index.
+     * @param idx Index of the first digit
+     * @return True if both characters are there and both are byte digits
+     */
+    private boolean bytePair(final int idx) {
+        return idx + 1 < this.body.length()
+            && Tokens.byteDigit(this.body.charAt(idx))
+            && Tokens.byteDigit(this.body.charAt(idx + 1));
     }
 }

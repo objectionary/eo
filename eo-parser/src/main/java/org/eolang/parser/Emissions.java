@@ -18,7 +18,6 @@ import java.util.List;
  * §9.4.2).</p>
  *
  * @since 0.1
- * @checkstyle CyclomaticComplexityCheck (610 lines)
  * @checkstyle BooleanExpressionComplexityCheck (600 lines)
  */
 final class Emissions {
@@ -125,20 +124,8 @@ final class Emissions {
             emit.close();
         } else if (value.kind() == Value.Kind.STRING) {
             Emissions.string(emit, name, value, line);
-        } else if (value.kind() == Value.Kind.STAR) {
-            emit.object(name, "Φ.tuple", line, value.pos());
-            emit.star();
-        } else if (value.kind() == Value.Kind.ROOT) {
-            emit.object(name, Emissions.rootBase(value.raw()), line, value.pos());
-        } else if (value.kind() == Value.Kind.SELF) {
-            emit.object(name, null, line, value.pos());
-            emit.self();
-        } else if (value.kind() == Value.Kind.TERM) {
-            emit.object(name, "⊥", line, value.pos());
-        } else if (value.kind() == Value.Kind.GROUP) {
-            Emissions.group(emit, name, value, line);
         } else {
-            emit.object(name, value.raw(), line, value.pos());
+            Emissions.openBase(emit, name, value, line);
         }
     }
 
@@ -267,6 +254,36 @@ final class Emissions {
         }
         Emissions.rejectLoneSurrogates(out);
         return out.toString();
+    }
+
+    /**
+     * Open the {@code <o>} for a value that carries no data of its own —
+     * a star, a root or self token, a term, a group, or a plain base
+     * reference — where the kind alone picks the {@code base}.
+     * @param emit Emitter
+     * @param name Name attribute (or {@code null})
+     * @param value The value
+     * @param line Source line
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static void openBase(
+        final Emit emit, final String name, final Value value, final int line
+    ) {
+        if (value.kind() == Value.Kind.STAR) {
+            emit.object(name, "Φ.tuple", line, value.pos());
+            emit.star();
+        } else if (value.kind() == Value.Kind.ROOT) {
+            emit.object(name, Emissions.rootBase(value.raw()), line, value.pos());
+        } else if (value.kind() == Value.Kind.SELF) {
+            emit.object(name, null, line, value.pos());
+            emit.self();
+        } else if (value.kind() == Value.Kind.TERM) {
+            emit.object(name, "⊥", line, value.pos());
+        } else if (value.kind() == Value.Kind.GROUP) {
+            Emissions.group(emit, name, value, line);
+        } else {
+            emit.object(name, value.raw(), line, value.pos());
+        }
     }
 
     /**
