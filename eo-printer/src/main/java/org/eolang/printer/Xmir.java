@@ -46,7 +46,7 @@ public final class Xmir implements XML {
                 new StClasspath("/org/eolang/printer/print/restore-local-names.xsl"),
                 new StClasspath("/org/eolang/printer/print/tuples-to-stars.xsl"),
                 new StClasspath("/org/eolang/printer/print/inline-cactoos.xsl"),
-                new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl"),
+                new DataizedToConst(),
                 new StClasspath("/org/eolang/printer/print/unnecessary-as.xsl"),
                 new StClasspath("/org/eolang/printer/print/merge-monikers.xsl"),
                 new StClasspath("/org/eolang/printer/print/to-eo-tree.xsl")

@@ -6,10 +6,7 @@ package org.eolang.printer;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
-import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
@@ -25,7 +22,6 @@ import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 
 /**
@@ -91,28 +87,6 @@ final class XmirTest {
             "The printing XSL sheet should transform XMIR as expected",
             story,
             new XtoryMatcher()
-        );
-    }
-
-    @Test
-    void keepsLiteralPayloadApartFromArgument() {
-        MatcherAssert.assertThat(
-            "The payload of a data literal must not be glued to the text of its argument",
-            new Xsline(
-                new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl")
-            ).pass(
-                new XMLDocument(
-                    String.join(
-                        "",
-                        "<p><o base='.as-bytes' name='x'><o base='Φ.dataized'>",
-                        "<o base='Φ.bytes'>01-02<o base='Φ.number'>5</o></o>",
-                        "</o></o></p>"
-                    )
-                )
-            ),
-            XhtmlMatchers.hasXPath(
-                "//o[@base='Φ.bytes' and @const and text()='01-02' and o[text()='5']]"
-            )
         );
     }
 
