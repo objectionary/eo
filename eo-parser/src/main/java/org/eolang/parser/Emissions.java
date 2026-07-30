@@ -21,7 +21,6 @@ import java.util.List;
  * @checkstyle CyclomaticComplexityCheck (610 lines)
  * @checkstyle BooleanExpressionComplexityCheck (600 lines)
  */
-@SuppressWarnings("PMD.CognitiveComplexity")
 final class Emissions {
 
     /**
@@ -125,21 +124,7 @@ final class Emissions {
             emit.set(value.raw());
             emit.close();
         } else if (value.kind() == Value.Kind.STRING) {
-            emit.object(name, "Φ.string", line, value.pos());
-            final String unescaped;
-            try {
-                unescaped = Emissions.unescape(value.raw());
-            } catch (final NumberFormatException ex) {
-                final ParseError error = new ParseError(
-                    line, value.pos(), "invalid unicode or octal escape in string literal"
-                );
-                error.initCause(ex);
-                throw error;
-            }
-            Emissions.bytesCarrier(
-                emit, line, value.pos(),
-                new Hex(unescaped).asString()
-            );
+            Emissions.string(emit, name, value, line);
         } else if (value.kind() == Value.Kind.STAR) {
             emit.object(name, "Φ.tuple", line, value.pos());
             emit.star();
@@ -327,6 +312,36 @@ final class Emissions {
         Emissions.bytesCarrier(
             emit, line, value.pos(),
             new Hex(parsed).asString()
+        );
+    }
+
+    /**
+     * Emit a STRING literal — the object plus a bytes carrier holding the
+     * UTF-8 bytes of the unescaped text. A malformed escape inside the
+     * literal is reported at the literal's own position.
+     * @param emit Emitter
+     * @param name Name attribute (or {@code null})
+     * @param value String value
+     * @param line Source line
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static void string(
+        final Emit emit, final String name, final Value value, final int line
+    ) {
+        emit.object(name, "Φ.string", line, value.pos());
+        final String unescaped;
+        try {
+            unescaped = Emissions.unescape(value.raw());
+        } catch (final NumberFormatException ex) {
+            final ParseError error = new ParseError(
+                line, value.pos(), "invalid unicode or octal escape in string literal"
+            );
+            error.initCause(ex);
+            throw error;
+        }
+        Emissions.bytesCarrier(
+            emit, line, value.pos(),
+            new Hex(unescaped).asString()
         );
     }
 
@@ -621,19 +636,12 @@ final class Emissions {
      */
     private static int topLevelInlinePhi(final String body) {
         int depth = 0;
-        boolean instr = false;
         int found = -1;
         int idx = 0;
         while (idx < body.length() - 2 && found < 0) {
             final char glyph = body.charAt(idx);
-            if (instr) {
-                if (glyph == '\\' && idx + 1 < body.length()) {
-                    idx = idx + 1;
-                } else if (glyph == '"') {
-                    instr = false;
-                }
-            } else if (glyph == '"') {
-                instr = true;
+            if (glyph == '"') {
+                idx = Tokens.closingQuote(body, idx);
             } else if (glyph == '(') {
                 depth = depth + 1;
             } else if (glyph == ')') {

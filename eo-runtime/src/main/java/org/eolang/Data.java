@@ -117,9 +117,7 @@ public interface Data {
          * Convert to Phi object.
          * @param obj Object to convert
          * @return Constructed Phi
-         * @checkstyle CyclomaticComplexityCheck (100 lines)
          */
-        @SuppressWarnings("PMD.CognitiveComplexity")
         private static Phi toPhi(final Object obj) {
             final Phi phi;
             if (obj instanceof Boolean) {
@@ -144,19 +142,7 @@ public interface Data {
                 phi = Phi.Φ.take("bytes").copy();
                 phi.put(0, new PhDefault((byte[]) obj));
             } else if (obj instanceof Number) {
-                final double value = ((Number) obj).doubleValue();
-                if (Double.isNaN(value)) {
-                    phi = Phi.Φ.take("nan");
-                } else if (value == Double.POSITIVE_INFINITY) {
-                    phi = Phi.Φ.take("pinf");
-                } else if (value == Double.NEGATIVE_INFINITY) {
-                    phi = Phi.Φ.take("ninf");
-                } else {
-                    phi = Phi.Φ.take("number").copy();
-                    final Phi bts = Phi.Φ.take("bytes").copy();
-                    bts.put(0, new PhDefault(new BytesOf(value).take()));
-                    phi.put(0, bts);
-                }
+                phi = Data.ToPhi.number(((Number) obj).doubleValue());
             } else if (obj instanceof String) {
                 phi = Phi.Φ.take("string").copy();
                 final Phi bts = Phi.Φ.take("bytes").copy();
@@ -167,6 +153,30 @@ public interface Data {
                     "Unknown type of data: %s",
                     obj.getClass().getCanonicalName()
                 );
+            }
+            return phi;
+        }
+
+        /**
+         * Convert a number to a Phi object, mapping the three IEEE-754
+         * exceptional values onto their own objects and everything else
+         * onto number-over-bytes.
+         * @param value The value
+         * @return Constructed Phi
+         */
+        private static Phi number(final double value) {
+            final Phi phi;
+            if (Double.isNaN(value)) {
+                phi = Phi.Φ.take("nan");
+            } else if (value == Double.POSITIVE_INFINITY) {
+                phi = Phi.Φ.take("pinf");
+            } else if (value == Double.NEGATIVE_INFINITY) {
+                phi = Phi.Φ.take("ninf");
+            } else {
+                phi = Phi.Φ.take("number").copy();
+                final Phi bts = Phi.Φ.take("bytes").copy();
+                bts.put(0, new PhDefault(new BytesOf(value).take()));
+                phi.put(0, bts);
             }
             return phi;
         }

@@ -28,10 +28,7 @@ import java.util.List;
  * @checkstyle BooleanExpressionComplexityCheck (820 lines)
  * @checkstyle NPathComplexityCheck (820 lines)
  */
-@SuppressWarnings({
-    "PMD.CognitiveComplexity",
-    "PMD.NPathComplexity"
-})
+@SuppressWarnings("PMD.NPathComplexity")
 final class Tokens {
 
     /**
@@ -199,43 +196,7 @@ final class Tokens {
             );
         }
         final int start = this.cursor;
-        int depth = 1;
-        this.cursor = this.cursor + 1;
-        while (this.cursor < this.body.length() && depth > 0) {
-            final char glyph = this.body.charAt(this.cursor);
-            if (glyph == '"') {
-                this.cursor = this.cursor + 1;
-                while (this.cursor < this.body.length()
-                    && this.body.charAt(this.cursor) != '"') {
-                    if (this.body.charAt(this.cursor) == '\\'
-                        && this.cursor + 1 < this.body.length()) {
-                        this.cursor = this.cursor + 1;
-                    }
-                    this.cursor = this.cursor + 1;
-                }
-                if (this.cursor >= this.body.length()) {
-                    throw new ParseError(
-                        this.span.line(), this.span.indent() + start,
-                        "unterminated string inside paren group"
-                    );
-                }
-                this.cursor = this.cursor + 1;
-            } else if (glyph == '(') {
-                depth = depth + 1;
-                this.cursor = this.cursor + 1;
-            } else if (glyph == ')') {
-                depth = depth - 1;
-                this.cursor = this.cursor + 1;
-            } else {
-                this.cursor = this.cursor + 1;
-            }
-        }
-        if (depth != 0) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "unterminated paren group"
-            );
-        }
+        this.skipGroup(start);
         final String inside = this.body.substring(start + 1, this.cursor - 1);
         if (!inside.isEmpty() && Tokens.singleToken(inside)) {
             throw new ParseError(
@@ -548,38 +509,11 @@ final class Tokens {
             }
             final int save = this.cursor;
             this.cursor = this.cursor + 1;
-            if (this.atEnd()) {
+            if (this.atEnd() || this.suffixAhead()) {
                 this.cursor = save;
                 break;
             }
-            if (this.suffixAhead()) {
-                this.cursor = save;
-                break;
-            }
-            final Value bare = this.readValue();
-            final List<MethodChain> tail;
-            if (Emissions.chainable(bare)) {
-                tail = this.readChain();
-            } else {
-                tail = Collections.emptyList();
-            }
-            final String tie;
-            if (!this.atEnd() && this.current() == ':') {
-                this.cursor = this.cursor + 1;
-                tie = this.readBinding();
-            } else {
-                tie = null;
-            }
-            final boolean cnst;
-            if (!this.atEnd() && this.current() == '!') {
-                this.cursor = this.cursor + 1;
-                cnst = true;
-            } else {
-                cnst = false;
-            }
-            args.add(
-                new Value(bare.kind(), bare.raw(), bare.pos(), this.cursor, tie, tail, cnst)
-            );
+            args.add(this.readArg());
         }
         return args;
     }
@@ -640,6 +574,28 @@ final class Tokens {
     }
 
     /**
+     * The index of the quote closing the string literal that opens at
+     * {@code start}, or the length of the text when the literal is never
+     * closed. A backslash escapes the glyph behind it, so an escaped quote
+     * leaves the literal open. Every scanner in this package walks a
+     * literal through here, so quoted text stays opaque the same way
+     * whether it is met by the lexer or by a top-level marker search.
+     * @param text Text being scanned
+     * @param start Index of the opening quote
+     * @return Index of the closing quote
+     */
+    static int closingQuote(final String text, final int start) {
+        int idx = start + 1;
+        while (idx < text.length() && text.charAt(idx) != '"') {
+            if (text.charAt(idx) == '\\' && idx + 1 < text.length()) {
+                idx = idx + 1;
+            }
+            idx = idx + 1;
+        }
+        return idx;
+    }
+
+    /**
      * Whether the content of a paren group is a single token — it holds no
      * token separator ({@code ' '}, {@code '('}, {@code ')'}, {@code '['} or
      * {@code ']'}) outside of a quoted string literal. Characters inside
@@ -654,21 +610,13 @@ final class Tokens {
         while (idx < inside.length()) {
             final char glyph = inside.charAt(idx);
             if (glyph == '"') {
-                idx = idx + 1;
-                while (idx < inside.length() && inside.charAt(idx) != '"') {
-                    if (inside.charAt(idx) == '\\' && idx + 1 < inside.length()) {
-                        idx = idx + 1;
-                    }
-                    idx = idx + 1;
-                }
-                idx = idx + 1;
+                idx = Tokens.closingQuote(inside, idx);
             } else if (glyph == ' ' || glyph == '(' || glyph == ')'
                 || glyph == '[' || glyph == ']') {
                 single = false;
                 break;
-            } else {
-                idx = idx + 1;
             }
+            idx = idx + 1;
         }
         return single;
     }
@@ -815,6 +763,71 @@ final class Tokens {
             valid = false;
         }
         return valid;
+    }
+
+    /**
+     * Advance the cursor just past the paren group that opens at
+     * {@code start}, counting nested parens and treating a quoted string
+     * as opaque, so a paren inside a literal never closes the group.
+     * @param start Index of the opening paren
+     */
+    private void skipGroup(final int start) {
+        int depth = 1;
+        this.cursor = this.cursor + 1;
+        while (this.cursor < this.body.length() && depth > 0) {
+            final char glyph = this.body.charAt(this.cursor);
+            if (glyph == '"') {
+                this.cursor = Tokens.closingQuote(this.body, this.cursor);
+                if (this.cursor >= this.body.length()) {
+                    throw new ParseError(
+                        this.span.line(), this.span.indent() + start,
+                        "unterminated string inside paren group"
+                    );
+                }
+            } else if (glyph == '(') {
+                depth = depth + 1;
+            } else if (glyph == ')') {
+                depth = depth - 1;
+            }
+            this.cursor = this.cursor + 1;
+        }
+        if (depth != 0) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + start,
+                "unterminated paren group"
+            );
+        }
+    }
+
+    /**
+     * Read one horizontal argument at the cursor — the value itself, the
+     * method chain behind it when the value may carry one, and the
+     * optional {@code :binding} and {@code !} suffixes (§3.12).
+     * @return The argument
+     */
+    private Value readArg() {
+        final Value bare = this.readValue();
+        final List<MethodChain> tail;
+        if (Emissions.chainable(bare)) {
+            tail = this.readChain();
+        } else {
+            tail = Collections.emptyList();
+        }
+        final String tie;
+        if (!this.atEnd() && this.current() == ':') {
+            this.cursor = this.cursor + 1;
+            tie = this.readBinding();
+        } else {
+            tie = null;
+        }
+        final boolean cnst;
+        if (!this.atEnd() && this.current() == '!') {
+            this.cursor = this.cursor + 1;
+            cnst = true;
+        } else {
+            cnst = false;
+        }
+        return new Value(bare.kind(), bare.raw(), bare.pos(), this.cursor, tie, tail, cnst);
     }
 
     /**

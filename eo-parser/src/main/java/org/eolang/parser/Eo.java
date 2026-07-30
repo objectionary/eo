@@ -30,7 +30,6 @@ import org.xembly.Directive;
  * @checkstyle CyclomaticComplexityCheck (820 lines)
  * @checkstyle BooleanExpressionComplexityCheck (820 lines)
  */
-@SuppressWarnings("PMD.CognitiveComplexity")
 final class Eo implements Iterable<Directive> {
 
     /**
@@ -166,21 +165,12 @@ final class Eo implements Iterable<Directive> {
         final String body, final java.util.function.IntPredicate marker
     ) {
         int depth = 0;
-        boolean instr = false;
         int found = -1;
         int idx = 0;
         while (idx < body.length() - 2 && found < 0) {
             final char glyph = body.charAt(idx);
-            if (instr) {
-                if (glyph == '\\' && idx + 1 < body.length()) {
-                    idx = idx + 2;
-                    continue;
-                }
-                if (glyph == '"') {
-                    instr = false;
-                }
-            } else if (glyph == '"') {
-                instr = true;
+            if (glyph == '"') {
+                idx = Tokens.closingQuote(body, idx);
             } else if (glyph == '(') {
                 depth = depth + 1;
             } else if (glyph == ')') {
@@ -448,7 +438,6 @@ final class Eo implements Iterable<Directive> {
      * Classify a span into a {@link Line} per Appendix B.
      * @param span The span
      * @return The classified line
-     * @checkstyle NPathComplexityCheck (60 lines)
      */
     private static Line classify(final Span span) {
         final Line line;
@@ -456,9 +445,9 @@ final class Eo implements Iterable<Directive> {
             line = new LnBlank(span);
         } else if (span.head() == '#') {
             line = new LnComment(span);
-        } else if (span.head() == '+' && !Eo.signedDigit(span)) {
+        } else if (Eo.metaHead(span)) {
             line = Eo.plussed(span);
-        } else if (span.head() == '-' && span.body().startsWith("-->")) {
+        } else if (Eo.throwHead(span)) {
             line = new LnFormation(span);
         } else if (span.head() == '[') {
             line = new LnFormation(span);
@@ -468,26 +457,65 @@ final class Eo implements Iterable<Directive> {
             line = new LnPipe(span);
         } else if (span.head() == '?') {
             line = Eo.questioned(span);
-        } else if (span.head() >= 'a' && span.head() <= 'z') {
+        } else if (Eo.nameHead(span)) {
             line = Eo.applicative(span, Eo.reversedDispatch(span));
         } else if (Eo.rootHead(span)) {
             line = Eo.applicative(span, Eo.rootReversedDispatch(span));
-        } else if (span.body().codePoints().findFirst().orElse(0) == 0x1F335) {
-            line = (stack, globals, emit) -> {
-                throw new ParseError(
-                    span.line(), span.indent(),
-                    "cactus emoji is reserved for auto-names; not allowed as a line head"
-                );
-            };
         } else {
-            line = (stack, globals, emit) -> {
-                throw new ParseError(
-                    span.line(), span.indent(),
-                    "line shape not yet implemented in spec parser"
-                );
-            };
+            line = Eo.rejected(span);
         }
         return line;
+    }
+
+    /**
+     * A line whose head no rule of §3.1 accepts — dispatching it throws
+     * with the reason, so {@link #classify} itself stays free of failure
+     * paths.
+     * @param span The line span
+     * @return The line shape
+     */
+    private static Line rejected(final Span span) {
+        final String reason;
+        if (span.body().codePoints().findFirst().orElse(0) == 0x1F335) {
+            reason = "cactus emoji is reserved for auto-names; not allowed as a line head";
+        } else {
+            reason = "line shape not yet implemented in spec parser";
+        }
+        return (stack, globals, emit) -> {
+            throw new ParseError(span.line(), span.indent(), reason);
+        };
+    }
+
+    /**
+     * Whether a line head starts a meta directive (§3.2) — a {@code +}
+     * that does not open a signed number. Factored out of
+     * {@link #classify} beside {@link #rootHead}, so that method's
+     * complexity stays within bounds.
+     * @param span The span
+     * @return True if the head opens a meta
+     */
+    private static boolean metaHead(final Span span) {
+        return span.head() == '+' && !Eo.signedDigit(span);
+    }
+
+    /**
+     * Whether a line head starts a throwing formation (R-6.3.6) — the
+     * {@code -->} marker.
+     * @param span The span
+     * @return True if the head opens a throwing formation
+     */
+    private static boolean throwHead(final Span span) {
+        return span.head() == '-' && span.body().startsWith("-->");
+    }
+
+    /**
+     * Whether a line head starts a NAME-headed application group (§3.1) —
+     * a lowercase letter per §2.3.
+     * @param span The span
+     * @return True if the head belongs to the NAME-headed group
+     */
+    private static boolean nameHead(final Span span) {
+        return span.head() >= 'a' && span.head() <= 'z';
     }
 
     /**
