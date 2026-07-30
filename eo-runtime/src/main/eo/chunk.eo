@@ -55,7 +55,9 @@
   [] > resized /Q.chunk
     ? > new-size /Q.number
   [] > size /Q.number
-  [offset data] > write /Q.bool
+  [] > write /Q.bool
+    ? > offset /Q.number
+    ? > data
 
   eq. ++> can-get-what-was-put
     malloc.of

@@ -10,4 +10,5 @@ asserts:
   - //o[o[@name='λ'] and o[@base='∅']]
 input: |
   [] > main
-    [x] > foo /bytes
+    [] > foo /bytes
+      ? > x

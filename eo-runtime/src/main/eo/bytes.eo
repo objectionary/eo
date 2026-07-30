@@ -24,8 +24,10 @@
 [@] > bytes
   [] > and /Q.bytes
     ? > b /Q.bytes
-  [b] > concat /Q.bytes
-  [b] > eq /Q.bool
+  [] > concat /Q.bytes
+    ? > b
+  [] > eq /Q.bool
+    ? > b
   [] > not /Q.bytes
   [] > or /Q.bytes
     ? > b /Q.bytes

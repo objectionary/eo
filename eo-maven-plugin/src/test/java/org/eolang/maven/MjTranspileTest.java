@@ -141,7 +141,10 @@ final class MjTranspileTest {
                 "+rt jvm org.eolang:eo-runtime:0.0.0",
                 "+unlint not-empty-atom",
                 String.format("+version 0.0.0%n"),
-                "[x y z] > main /bytes"
+                "[] > main /bytes",
+                "  ? > x",
+                "  ? > y",
+                "  ? > z"
                 )
                 .execute(new FakeMaven.Transpile())
                 .result(),

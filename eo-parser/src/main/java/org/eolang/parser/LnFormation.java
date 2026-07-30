@@ -74,6 +74,7 @@ final class LnFormation implements Line {
                 this.span.indent() + close + 1 + LnFormation.bindingWidth(binding)
             );
         }
+        this.checkAtomVoids(suffix, params);
         if (suffix.test()) {
             Blanks.checkTest(this.span, globals, emit);
         }
@@ -121,6 +122,24 @@ final class LnFormation implements Line {
             width = binding.length() + 1;
         }
         return width;
+    }
+
+    /**
+     * Reject bracket parameters on an atom head (R-3.4.10). An atom
+     * declares its voids vertically, because only a vertical void can
+     * carry the type annotation the native contract needs (R-3.4.8), and
+     * a head that may hold untyped voids too would put them ahead of the
+     * typed ones no matter where the source wrote them.
+     * @param suffix The parsed suffix
+     * @param params Parameter names in source order
+     */
+    private void checkAtomVoids(final Suffix suffix, final List<String> params) {
+        if (suffix.atom() && !params.isEmpty()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + 1,
+                "an atom must declare its void attributes vertically, as `? > name` lines"
+            );
+        }
     }
 
     /**
