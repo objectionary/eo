@@ -23,11 +23,15 @@
       fallback
         "Given index is out of tuple bounds"
       if. > [tup] >> at-fast
-        eq.
-          tup.length.plus -1
-          index
-        tup.head
-        at-fast tup.tail
+        0.eq tup.length
+        fallback
+          "Given index is out of tuple bounds"
+        if.
+          eq.
+            tup.length.plus -1
+            index
+          tup.head
+          at-fast tup.tail
       | ^
   tuple > empty
     T
@@ -286,6 +290,16 @@
         3
         2
         1
+
+  eq. ++> rejects-a-fractional-index
+    "recovered"
+    at.
+      *
+        "zero"
+        "one"
+        "two"
+      1.5
+      "recovered" > [message]
 
   eq. ++> rejects-an-out-of-bounds-index
     "recovered"
