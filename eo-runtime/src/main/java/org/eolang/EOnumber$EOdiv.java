@@ -8,6 +8,7 @@ package org.eolang;
 /**
  * Number.div object.
  * @since 0.39.0
+ * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "number.div")

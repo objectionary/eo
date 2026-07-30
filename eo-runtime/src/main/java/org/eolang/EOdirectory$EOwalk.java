@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 /**
  * Directory.walk.
  * @since 0.40
+ * @checkstyle IllegalIdentifierNameCheck (101 lines)
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "directory.walk")

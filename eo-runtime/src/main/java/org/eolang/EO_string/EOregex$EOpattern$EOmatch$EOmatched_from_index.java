@@ -30,6 +30,7 @@ import org.eolang.XmirObject;
 /**
  * Regex.pattern.match.matched-from-index.
  * @since 0.39.0
+ * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "regex.pattern.match.matched-from-index")
@@ -132,7 +133,7 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
 
     /**
      * Fill the matched block as a non-existent one: start is -1 and the from,
-     * to and groups fields hold ⊥, so any attempt to read them terminates
+     * to and groups fields hold bottom, so any attempt to read them terminates
      * the program with an explanatory cause.
      * @param result The matched block to fill
      */
