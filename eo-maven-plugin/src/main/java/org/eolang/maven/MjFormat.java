@@ -96,6 +96,13 @@ public final class MjFormat extends MjSafe {
     @Parameter(property = "eo.width")
     private Integer width;
 
+    /**
+     * Ctor.
+     */
+    public MjFormat() {
+        // nothing
+    }
+
     @Override
     void exec() throws IOException {
         final long start = System.currentTimeMillis();

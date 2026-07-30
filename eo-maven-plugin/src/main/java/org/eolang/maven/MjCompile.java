@@ -28,6 +28,13 @@ import org.apache.maven.plugins.annotations.Mojo;
 )
 public final class MjCompile extends MjSafe {
 
+    /**
+     * Ctor.
+     */
+    public MjCompile() {
+        // nothing
+    }
+
     @Override
     public void exec() throws IOException {
         new Timed(

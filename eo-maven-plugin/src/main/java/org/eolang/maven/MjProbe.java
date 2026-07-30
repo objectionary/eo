@@ -31,6 +31,13 @@ import org.apache.maven.plugins.annotations.Mojo;
 )
 public final class MjProbe extends MjSafe {
 
+    /**
+     * Ctor.
+     */
+    public MjProbe() {
+        // nothing
+    }
+
     @Override
     public void exec() throws IOException {
         new Probing(this.scopedTojos(), this.objectionary(), !this.offline).exec();

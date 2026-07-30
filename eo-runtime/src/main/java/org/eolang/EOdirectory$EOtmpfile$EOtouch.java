@@ -20,6 +20,13 @@ import java.nio.file.Paths;
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOdirectory$EOtmpfile$EOtouch extends PhDefault implements Atom {
 
+    /**
+     * Ctor.
+     */
+    public EOdirectory$EOtmpfile$EOtouch() {
+        // nothing
+    }
+
     @Override
 
     public Phi lambda() {

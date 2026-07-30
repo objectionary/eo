@@ -20,6 +20,13 @@ import org.apache.maven.plugins.annotations.Mojo;
 )
 public final class MjUnplace extends MjSafe {
 
+    /**
+     * Ctor.
+     */
+    public MjUnplace() {
+        // nothing
+    }
+
     @Override
     public void exec() throws IOException {
         new Timed(

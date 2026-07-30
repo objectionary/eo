@@ -50,7 +50,7 @@ public final class MjTranspile extends MjSafe {
      */
     @Parameter(property = "eo.addSourcesRoot")
     @SuppressWarnings("PMD.ImmutableField")
-    private boolean addSourcesRoot = true;
+    private boolean addSourcesRoot;
 
     /**
      * Whether to transpile tests.
@@ -58,7 +58,7 @@ public final class MjTranspile extends MjSafe {
      */
     @Parameter(property = "eo.transpileTests")
     @SuppressWarnings("PMD.ImmutableField")
-    private boolean transpileTests = true;
+    private boolean transpileTests;
 
     /**
      * Whether to wrap every dispatched object with a location-carrying
@@ -133,6 +133,14 @@ public final class MjTranspile extends MjSafe {
      */
     @Parameter(property = "eo.phiDefaultClass", defaultValue = "PhDefault")
     private String superclass;
+
+    /**
+     * Ctor.
+     */
+    public MjTranspile() {
+        this.addSourcesRoot = true;
+        this.transpileTests = true;
+    }
 
     @Override
     public void exec() throws IOException {

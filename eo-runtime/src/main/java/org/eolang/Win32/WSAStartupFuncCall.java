@@ -76,12 +76,12 @@ public final class WSAStartupFuncCall implements Syscall {
         /**
          * Socket function implementation description.
          */
-        public byte[] description = new byte[257];
+        public byte[] description;
 
         /**
          * Status and configuration description.
          */
-        public byte[] systemStatus = new byte[129];
+        public byte[] systemStatus;
 
         /**
          * Max amount of sockets that can be opened.
@@ -97,6 +97,14 @@ public final class WSAStartupFuncCall implements Syscall {
          * Vendor info. Ignored for sockets Windows 2 and more.
          */
         public Pointer vendorInfo;
+
+        /**
+         * Ctor.
+         */
+        public WSAData() {
+            this.description = new byte[257];
+            this.systemStatus = new byte[129];
+        }
 
         @Override
         public List<String> getFieldOrder() {
