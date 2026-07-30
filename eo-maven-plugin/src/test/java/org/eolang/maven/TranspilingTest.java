@@ -24,7 +24,7 @@ final class TranspilingTest {
             Matchers.not(
                 Matchers.equalTo(
                     String.format(
-                        "1.0-SNAPSHOT-%s", new Fingerprint(Transpiling.XSLS).get()
+                        "1.0-SNAPSHOT-%s", new Fingerprint(Transpilation.XSLS).get()
                     )
                 )
             )
