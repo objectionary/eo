@@ -21,12 +21,11 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
- * Test case for {@link EOwin32}.
+ * Test case for {@code EOwin32$EOφ}.
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOwin32Test {
+final class EOwin32EOφTest {
 
     @Test
     @DisabledOnOs({OS.LINUX, OS.MAC})

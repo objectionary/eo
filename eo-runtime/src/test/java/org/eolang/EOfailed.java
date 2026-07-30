@@ -19,7 +19,6 @@ import com.jcabi.log.Logger;
  * @since 0.29
  */
 @SuppressWarnings({
-    "JTCOP.RuleAllTestsHaveProductionClass",
     "JTCOP.RuleCorrectTestName",
     "JTCOP.RuleInheritanceInTests"
 })

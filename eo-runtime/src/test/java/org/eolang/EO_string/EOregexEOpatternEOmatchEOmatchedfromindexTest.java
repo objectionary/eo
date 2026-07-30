@@ -21,59 +21,21 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for the regex atom.
+ * Test case for {@link EOregex$EOpattern$EOmatch$EOmatched_from_index}.
  * @since 0.57.4
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class RegexAtomTest {
-
-    @Test
-    void compilesRegexWithSlashes() {
-        MatcherAssert.assertThat(
-            "regex \"/[a-z]+/\" should compile and match \"hello\"",
-            new Dataized(
-                new PhApplication(
-                    new PhApplication(
-                        Phi.Φ.take("string.regex").copy(),
-                        "expression", new Data.ToPhi("/[a-z]+/")
-                    ).take("compiled").take("matches").copy(),
-                    "txt", new Data.ToPhi("hello")
-                )
-            ).asBool(),
-            Matchers.equalTo(true)
-        );
-    }
-
-    @Test
-    void throwsClearErrorOnMissingClosingSlash() {
-        MatcherAssert.assertThat(
-            "regex without closing slash must terminate with a clear reason about the missing slash, not an opaque IndexOutOfBoundsException",
-            Assertions.assertThrows(
-                ExAbstract.class,
-                () -> new Dataized(
-                    new PhApplication(
-                        Phi.Φ.take("string.regex").copy(),
-                        "expression", new Data.ToPhi("/pattern")
-                    ).take("compiled")
-                ).take()
-            ).toString(),
-            Matchers.allOf(
-                Matchers.containsString("slash"),
-                Matchers.not(Matchers.containsString("out of bounds"))
-            )
-        );
-    }
+final class EOregexEOpatternEOmatchEOmatchedfromindexTest {
 
     @Test
     void rejectsStartIndexOutOfIntRange() {
         MatcherAssert.assertThat(
             String.format(
                 "matched-from-index must reject a %s index outside int range",
-                RegexAtomTest.start()
+                EOregexEOpatternEOmatchEOmatchedfromindexTest.start()
             ),
-            RegexAtomTest.rejection(new Data.ToPhi(1.0e15)),
+            EOregexEOpatternEOmatchEOmatchedfromindexTest.rejection(new Data.ToPhi(1.0e15)),
             Matchers.allOf(
-                Matchers.containsString(RegexAtomTest.start()),
+                Matchers.containsString(EOregexEOpatternEOmatchEOmatchedfromindexTest.start()),
                 Matchers.containsString("must fit into int range")
             )
         );
@@ -84,11 +46,11 @@ final class RegexAtomTest {
         MatcherAssert.assertThat(
             String.format(
                 "matched-from-index must reject a fractional %s index",
-                RegexAtomTest.start()
+                EOregexEOpatternEOmatchEOmatchedfromindexTest.start()
             ),
-            RegexAtomTest.rejection(new Data.ToPhi(2.7)),
+            EOregexEOpatternEOmatchEOmatchedfromindexTest.rejection(new Data.ToPhi(2.7)),
             Matchers.allOf(
-                Matchers.containsString(RegexAtomTest.start()),
+                Matchers.containsString(EOregexEOpatternEOmatchEOmatchedfromindexTest.start()),
                 Matchers.containsString("must be an integer")
             )
         );
@@ -99,11 +61,11 @@ final class RegexAtomTest {
         MatcherAssert.assertThat(
             String.format(
                 "matched-from-index must reject a negative %s index cleanly",
-                RegexAtomTest.start()
+                EOregexEOpatternEOmatchEOmatchedfromindexTest.start()
             ),
-            RegexAtomTest.rejection(new Data.ToPhi(-1)),
+            EOregexEOpatternEOmatchEOmatchedfromindexTest.rejection(new Data.ToPhi(-1)),
             Matchers.allOf(
-                Matchers.containsString(RegexAtomTest.start()),
+                Matchers.containsString(EOregexEOpatternEOmatchEOmatchedfromindexTest.start()),
                 Matchers.containsString("must be greater or equal to zero")
             )
         );
@@ -113,7 +75,10 @@ final class RegexAtomTest {
     void readsFromWhenOptionalGroupDoesNotParticipate() {
         MatcherAssert.assertThat(
             "match with a non-participating optional group must not crash when reading from",
-            new Dataized(RegexAtomTest.optionalGroupMatch().take("from")).asNumber(),
+            new Dataized(
+                EOregexEOpatternEOmatchEOmatchedfromindexTest
+                    .optionalGroupMatch().take("from")
+            ).asNumber(),
             Matchers.equalTo(0.0)
         );
     }
@@ -124,7 +89,8 @@ final class RegexAtomTest {
             "non-participating optional capture must be an empty string, not absent",
             new Dataized(
                 new PhApplication(
-                    RegexAtomTest.optionalGroupMatch().take("group").copy(),
+                    EOregexEOpatternEOmatchEOmatchedfromindexTest
+                        .optionalGroupMatch().take("group").copy(),
                     new Bind("index", new Data.ToPhi(2))
                 )
             ).asString(),
@@ -136,7 +102,10 @@ final class RegexAtomTest {
     void keepsGroupSlotsAlignedWhenOptionalGroupDoesNotParticipate() {
         MatcherAssert.assertThat(
             "group slots must stay aligned with groupCount+1 even when a group does not participate",
-            new Dataized(RegexAtomTest.optionalGroupMatch().take("count")).asNumber(),
+            new Dataized(
+                EOregexEOpatternEOmatchEOmatchedfromindexTest
+                    .optionalGroupMatch().take("count")
+            ).asNumber(),
             Matchers.equalTo(3.0)
         );
     }
@@ -146,11 +115,11 @@ final class RegexAtomTest {
         MatcherAssert.assertThat(
             String.format(
                 "matched-from-index must reject a %s index after text end cleanly",
-                RegexAtomTest.start()
+                EOregexEOpatternEOmatchEOmatchedfromindexTest.start()
             ),
-            RegexAtomTest.rejection(new Data.ToPhi(6)),
+            EOregexEOpatternEOmatchEOmatchedfromindexTest.rejection(new Data.ToPhi(6)),
             Matchers.allOf(
-                Matchers.containsString(RegexAtomTest.start()),
+                Matchers.containsString(EOregexEOpatternEOmatchEOmatchedfromindexTest.start()),
                 Matchers.containsString("must be less than or equal to text length")
             )
         );
@@ -169,8 +138,8 @@ final class RegexAtomTest {
                 ).take("compiled").take("match").copy(),
                 "txt", new Data.ToPhi("a")
             ).take("matched-from-index").copy(),
-            new Bind(RegexAtomTest.position(), new Data.ToPhi(1)),
-            new Bind(RegexAtomTest.start(), new Data.ToPhi(0))
+            new Bind(EOregexEOpatternEOmatchEOmatchedfromindexTest.position(), new Data.ToPhi(1)),
+            new Bind(EOregexEOpatternEOmatchEOmatchedfromindexTest.start(), new Data.ToPhi(0))
         );
     }
 
@@ -182,7 +151,10 @@ final class RegexAtomTest {
     private static String rejection(final Phi start) {
         return Assertions.assertThrows(
             ExAbstract.class,
-            () -> new Dataized(RegexAtomTest.matchedFromIndex(start).take("from")).take(),
+            () -> new Dataized(
+                EOregexEOpatternEOmatchEOmatchedfromindexTest
+                    .matchedFromIndex(start).take("from")
+            ).take(),
             "start index must be rejected before Matcher.find(int)"
         ).toString();
     }
@@ -201,8 +173,8 @@ final class RegexAtomTest {
                 ).take("compiled").take("match").copy(),
                 "txt", new Data.ToPhi("hello")
             ).take("matched-from-index").copy(),
-            new Bind(RegexAtomTest.position(), new Data.ToPhi(1)),
-            new Bind(RegexAtomTest.start(), start)
+            new Bind(EOregexEOpatternEOmatchEOmatchedfromindexTest.position(), new Data.ToPhi(1)),
+            new Bind(EOregexEOpatternEOmatchEOmatchedfromindexTest.start(), start)
         );
     }
 

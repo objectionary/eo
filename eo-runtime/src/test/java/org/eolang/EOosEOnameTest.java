@@ -13,12 +13,11 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOos}.
+ * Test case for {@link EOos$EOname}.
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOosTest {
+final class EOosEOnameTest {
 
     @Test
     void readsSystemFamily() {

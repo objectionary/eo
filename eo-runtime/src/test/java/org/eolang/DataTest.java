@@ -86,6 +86,15 @@ final class DataTest {
         );
     }
 
+    @Test
+    void comparesVertexWithFormation() {
+        MatcherAssert.assertThat(
+            "Hash code of a formation should differ from the one of a data object, but it didn't",
+            new EOnumber().hashCode(),
+            Matchers.not(new Data.ToPhi(0L).hashCode())
+        );
+    }
+
     @ParameterizedTest
     @MethodSource("toPhiData")
     void comparesTwoDatas(final Object value, final String message) {

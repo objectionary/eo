@@ -2,11 +2,6 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-
-/*
- * @checkstyle PackageNameCheck (10 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 import org.hamcrest.MatcherAssert;
@@ -16,39 +11,37 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case verifying {@link Expect}-based error messages
- * raised by {@link EObytes$EOright} when the {@code x} attribute
- * is not an integer.
+ * raised by {@link EOchunk$EOwrite} when its integer attributes
+ * are invalid.
  * @since 0.51
- * @checkstyle TypeNameCheck (5 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EObytesEOrightExpectTest {
+final class EOchunkEOwriteTest {
 
     @Test
-    void throwsCorrectErrorForNonNumericX() {
+    void throwsCorrectErrorForNonNumericId() {
         MatcherAssert.assertThat(
             "the message in the error is correct",
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
                     new PhApplication(
+                        new EOchunk$EOwrite(),
+                        Phi.RHO,
                         new PhApplication(
-                            new EObytes$EOright(),
-                            Phi.RHO,
-                            new Data.ToPhi(new byte[]{0x01, 0x02})
-                        ),
-                        "x",
-                        new Data.ToPhi(true)
+                            new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),
+                            "id",
+                            new Data.ToPhi(true)
+                        )
                     )
                 ).take(),
-                "right with non-numeric x must fail with a proper message"
+                "write with non-numeric id must fail with a proper message"
             ).getMessage(),
-            Matchers.equalTo("the 'x' attribute must be a number")
+            Matchers.equalTo("the 'id' attribute must be a number")
         );
     }
 
     @Test
-    void throwsCorrectErrorForFractionalX() {
+    void throwsCorrectErrorForFractionalOffset() {
         MatcherAssert.assertThat(
             "the message in the error is correct",
             Assertions.assertThrows(
@@ -56,17 +49,21 @@ final class EObytesEOrightExpectTest {
                 () -> new Dataized(
                     new PhApplication(
                         new PhApplication(
-                            new EObytes$EOright(),
+                            new EOchunk$EOwrite(),
                             Phi.RHO,
-                            new Data.ToPhi(new byte[]{0x01, 0x02})
+                            new PhApplication(
+                                new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),
+                                "id",
+                                new Data.ToPhi(0)
+                            )
                         ),
-                        "x",
+                        "offset",
                         new Data.ToPhi(1.5)
                     )
                 ).take(),
-                "right with fractional x must fail with a proper message"
+                "write with fractional offset must fail with a proper message"
             ).getMessage(),
-            Matchers.equalTo("the 'x' attribute (1.5) must be an integer")
+            Matchers.equalTo("the 'offset' attribute (1.5) must be an integer")
         );
     }
 }
