@@ -421,11 +421,11 @@ public class PhDefault implements Phi, Cloneable {
      * {@code number.power 42 3}. The receiver of a package extension always
      * lives in {@code α0}: implicit dispatch binds it here, while explicit
      * dispatch through the namespace ({@code number.power 42 3}) leaves the
-     * slot for the caller to fill (see {@code PhNest.extension}). When the
-     * object has no free positional attribute to receive the bound object (for
-     * example a nullary object like {@code input.dead}), a clear error is
-     * raised instead of the low-level "attribute is already set / no
-     * attributes here" message.</p>
+     * slot for the caller to fill (see {@code PhNest.extension}). Every package
+     * member declares at least one void, so that the implicit form always has a
+     * slot to bind the receiver to; when it doesn't, a clear error is raised
+     * instead of the low-level "attribute is already set / no attributes here"
+     * message.</p>
      *
      * @param name The name of the absent attribute
      * @return The package object with this one bound to it
