@@ -14,7 +14,6 @@ import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -23,8 +22,8 @@ import org.junit.jupiter.api.Test;
  */
 final class MainTest {
 
-    @BeforeAll
-    static void checkHeapSize() {
+    @Test
+    void runsWithBigEnoughHeap() {
         final int gbs = 2;
         MatcherAssert.assertThat(
             String.format(
