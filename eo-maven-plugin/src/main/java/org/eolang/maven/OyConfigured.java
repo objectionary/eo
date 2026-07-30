@@ -4,10 +4,6 @@
  */
 package org.eolang.maven;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.apache.maven.settings.Settings;
@@ -68,7 +64,7 @@ final class OyConfigured implements Scalar<Objectionary> {
                     new OyCached(
                         new OyRemote(
                             new Unchecked<>(this.hash).value(),
-                            OyConfigured.proxies(new Unchecked<>(this.settings).value())
+                            new Proxies(new Unchecked<>(this.settings).value()).value()
                         )
                     )
                 );
@@ -77,29 +73,5 @@ final class OyConfigured implements Scalar<Objectionary> {
             this.guard.unlock();
         }
         return this.origin;
-    }
-
-    /**
-     * The active proxies of the given settings.
-     * @param settings The settings of the build
-     * @return Proxies, empty array if there are none
-     */
-    private static Proxy[] proxies(final Settings settings) {
-        return Optional.ofNullable(settings)
-            .map(Settings::getProxies)
-            .orElse(List.of())
-            .stream()
-            .filter(org.apache.maven.settings.Proxy::isActive)
-            .map(proxy -> new Proxy(Proxy.Type.HTTP, OyConfigured.address(proxy)))
-            .toArray(Proxy[]::new);
-    }
-
-    /**
-     * The socket address of the given proxy.
-     * @param proxy The proxy from the settings
-     * @return Its address
-     */
-    private static InetSocketAddress address(final org.apache.maven.settings.Proxy proxy) {
-        return new InetSocketAddress(proxy.getHost(), proxy.getPort());
     }
 }
