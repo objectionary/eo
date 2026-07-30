@@ -149,7 +149,7 @@ final class Suffix {
 
     /**
      * Resolve the {@code @name} attribute value for the line carrying
-     * this suffix, applying R-9.3 source-token mapping: {@code @} →
+     * this suffix, applying R-9.3 source-token mapping: {@code @} becomes
      * {@code φ} for an explicit name.
      *
      * <p>This is the single source of truth for naming any line shape
@@ -261,7 +261,7 @@ final class Suffix {
     }
 
     /**
-     * Apply the R-9.3.1 source-token mapping {@code @} → {@code φ}
+     * Apply the R-9.3.1 source-token mapping of {@code @} to {@code φ}
      * for a name carried by an explicit {@code > name} suffix. Other
      * names pass through unchanged.
      * @param raw Source name
@@ -543,7 +543,7 @@ final class Suffix {
                 "optional marker ? is allowed only on a void attribute"
             );
         }
-        if (raw.equals("Q")) {
+        if ("Q".equals(raw)) {
             throw new ParseError(
                 span.line(), home + after,
                 "atom signature requires a name"

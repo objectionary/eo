@@ -24,7 +24,7 @@ final class VerboseBytesAsStringTest {
         MatcherAssert.assertThat(
             "Eight-byte output must not contain an unmatched parenthesis",
             new VerboseBytesAsString(
-                ByteBuffer.allocate(Double.BYTES).putDouble(12.345_67D).array()
+                ByteBuffer.allocate(Double.BYTES).putDouble(12.345_67d).array()
             ).get(),
             Matchers.equalTo(
                 "[0x4028B0FB-A8826AA9-] = 12.34567, or \"@(\\ufffd\\ufffd\\ufffd\\ufffdj\\ufffd\""
@@ -49,7 +49,7 @@ final class VerboseBytesAsStringTest {
     private static Stream<Arguments> getTestSources() {
         return Stream.of(
             Arguments.of(
-                ByteBuffer.allocate(Double.BYTES).putDouble(12.345_67D).array(),
+                ByteBuffer.allocate(Double.BYTES).putDouble(12.345_67d).array(),
                 "12.34567"
             ),
             Arguments.of(new byte[]{1}, "[0x01] = true"),

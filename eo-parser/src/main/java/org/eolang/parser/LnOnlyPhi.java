@@ -185,7 +185,7 @@ final class LnOnlyPhi implements Line {
     }
 
     /**
-     * Emit the only-phi void parameters as {@code ∅}-based children,
+     * Emit the only-phi void parameters as empty-set-based children,
      * mapping {@code @} to {@code φ} (R-3.4.2 / R-9.3) and advancing the
      * source column across each name and its separating space.
      * @param emit Emitter
@@ -196,7 +196,7 @@ final class LnOnlyPhi implements Line {
         int column = this.span.indent() + origin;
         for (final String param : params) {
             final String mapped;
-            if (param.equals("@")) {
+            if ("@".equals(param)) {
                 mapped = "φ";
             } else {
                 mapped = param;
