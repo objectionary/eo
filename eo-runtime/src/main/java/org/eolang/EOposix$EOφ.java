@@ -4,7 +4,7 @@
  */
 package org.eolang;
 
-import org.eolang.Posix.NamedSyscall;
+import org.eolang.posix.NamedSyscall;
 
 /**
  * Posix syscall.
