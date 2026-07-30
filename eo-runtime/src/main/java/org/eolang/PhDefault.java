@@ -510,6 +510,7 @@ public class PhDefault implements Phi, Cloneable {
      * @return Attribute name
      */
     private String attr(final int pos) {
+        this.loaded();
         if (0 > pos) {
             throw new ExFailure(
                 String.format(
