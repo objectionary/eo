@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.73.1</version>
+    <version>0.73.3</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>eo-parent</artifactId>
@@ -88,6 +88,8 @@
     <sonar.cpd.exclusions>**/org/eolang/Posix/**,**/org/eolang/Win32/**</sonar.cpd.exclusions>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
     <!-- This is the flag that allows to skip unit tests run by maven-surefire-plugin -->
     <skipUTs/>
     <!-- This is the flag that allows to skip integration tests run by maven-failsafe-plugin -->
@@ -408,7 +410,7 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.1</version>
           <configuration combine.self="override">
-            <release>17</release>
+            <release>${maven.compiler.source}</release>
             <compilerArgs>
               <arg>-Xpkginfo:always</arg>
             </compilerArgs>

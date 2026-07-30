@@ -37,6 +37,13 @@ public final class MjAssemble extends MjSafe {
      */
     static final String EO = "eo";
 
+    /**
+     * Ctor.
+     */
+    public MjAssemble() {
+        // nothing
+    }
+
     @Override
     public void exec() throws IOException {
         this.assembling().exec();

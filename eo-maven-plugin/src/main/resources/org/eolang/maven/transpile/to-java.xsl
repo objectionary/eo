@@ -478,7 +478,7 @@
     <xsl:value-of select="eo:eol($indent + 2)"/>
     <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$ctx"/>
-    <xsl:text> = new PhDefault(</xsl:text>
+    <xsl:value-of select="concat(' = new ', $phiDefaultClass, '(')"/>
     <xsl:if test="@loc and not(contains(@loc, '🌵'))">
       <xsl:text>"</xsl:text>
       <xsl:value-of select="@loc"/>
@@ -550,7 +550,7 @@
         <xsl:value-of select="eo:loc-to-class(eo:escape-plus(@loc))"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text>new PhDefault</xsl:text>
+        <xsl:value-of select="concat('new ', $phiDefaultClass)"/>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text>();</xsl:text>
@@ -717,7 +717,7 @@
     <xsl:value-of select="$name"/>
     <xsl:text> = new PhApplication(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, 0, new PhDefault(</xsl:text>
+    <xsl:value-of select="concat(', 0, new ', $phiDefaultClass, '(')"/>
     <xsl:value-of select="text()"/>
     <xsl:text>));</xsl:text>
   </xsl:template>

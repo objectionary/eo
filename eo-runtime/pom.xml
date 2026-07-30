@@ -269,6 +269,17 @@
         </executions>
       </plugin>
       <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <!--
+          Transpiled atoms carry their XMIR in the docblock, where Javadoc
+          reads the <o> elements as unknown HTML; only the handwritten
+          sources are documented
+          -->
+          <sourcepath>${project.basedir}/src/main/java</sourcepath>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <executions>

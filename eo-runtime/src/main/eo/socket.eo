@@ -86,7 +86,7 @@
                 sock.sd
                 sock.sockaddr
                 sock.sockaddr.size
-            ^.^ > sock
+            ^.^.^ > sock
           cant-connect
       [scope cant-listen] > listen
         safe-socket > @
@@ -131,7 +131,7 @@
                 "listen"
                 sock.sd
                 2048
-            ^.^ > sock
+            ^.^.^ > sock
           cant-listen
       [scope cant] > safe-socket
         if. > @

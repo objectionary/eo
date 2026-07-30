@@ -10,7 +10,7 @@
 
 [n] > as-decimal
   n.is-finite.not.if > @
-    trouble
+    T
       "Can't write a non-finite number as decimal"
     if.
       n.lt 0
