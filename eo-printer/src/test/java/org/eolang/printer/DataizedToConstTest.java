@@ -6,12 +6,13 @@ package org.eolang.printer;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.Xsline;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link DataizedToConst}.
+ * Test case for {@code dataized-to-const.xsl}.
  * @since 0.62.0
  */
 final class DataizedToConstTest {
@@ -20,7 +21,7 @@ final class DataizedToConstTest {
     void foldsAPayloadOnlyLiteralIntoAConst() {
         MatcherAssert.assertThat(
             "an argument whose own text is its whole payload, with no nested value, must fold into a const carrying that same text",
-            new Xsline(new DataizedToConst()).pass(
+            new Xsline(new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl")).pass(
                 new XMLDocument(
                     "<p><o base='.as-bytes'><o base='Φ.dataized'><o base='Φ.bytes'>2A-</o></o></o></p>"
                 )
@@ -33,7 +34,7 @@ final class DataizedToConstTest {
     void foldsALiteralWhoseOwnPayloadIsNested() {
         MatcherAssert.assertThat(
             "an argument with no direct text of its own, only a nested value child (the everyday shape for a number literal), must fold into a const with that child untouched and no direct text of its own",
-            new Xsline(new DataizedToConst()).pass(
+            new Xsline(new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl")).pass(
                 new XMLDocument(
                     String.join(
                         "",
@@ -53,7 +54,7 @@ final class DataizedToConstTest {
     void copiesTheOriginalUnchangedWhenNoArgumentExists() {
         MatcherAssert.assertThat(
             "a Φ.dataized wrapper with nothing to fold must be copied through untouched",
-            new Xsline(new DataizedToConst()).pass(
+            new Xsline(new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl")).pass(
                 new XMLDocument(
                     "<p><o base='.as-bytes'><o base='Φ.dataized'/></o></p>"
                 )
@@ -66,7 +67,7 @@ final class DataizedToConstTest {
     void keepsLiteralPayloadApartFromArgument() {
         MatcherAssert.assertThat(
             "the payload of a data literal must not be glued to the text of its argument - this fragment is the shape #5721 would produce, not one the current pipeline can build yet (#6102)",
-            new Xsline(new DataizedToConst()).pass(
+            new Xsline(new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl")).pass(
                 new XMLDocument(
                     String.join(
                         "",
