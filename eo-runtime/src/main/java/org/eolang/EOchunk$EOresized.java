@@ -16,10 +16,22 @@ package org.eolang;
 public final class EOchunk$EOresized extends PhDefault implements Atom {
 
     /**
+     * Name of the void that holds the size the block is resized to.
+     */
+    private static final String CAPACITY = "capacity";
+
+    /**
      * Ctor.
      */
     public EOchunk$EOresized() {
-        super(new Attrs(new Attr("new-size", new AtVoid("new-size"))));
+        super(
+            new Attrs(
+                new Attr(
+                    EOchunk$EOresized.CAPACITY,
+                    new AtVoid(EOchunk$EOresized.CAPACITY)
+                )
+            )
+        );
     }
 
     @Override
@@ -27,7 +39,7 @@ public final class EOchunk$EOresized extends PhDefault implements Atom {
         final Phi rho = this.take(Phi.RHO);
         Heaps.INSTANCE.resize(
             new Expect.Natural(Expect.at(rho, "id")).it(),
-            new Expect.Natural(Expect.at(this, "new-size")).it()
+            new Expect.Natural(Expect.at(this, EOchunk$EOresized.CAPACITY)).it()
         );
         return rho;
     }

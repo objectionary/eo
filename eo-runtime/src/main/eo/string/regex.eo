@@ -47,7 +47,9 @@
           group 0
           T
             "Matched block does not exist, can't get text"
-      [position start] > matched-from-index /Q.string.regex.pattern.match.matched
+      [] > matched-from-index /Q.string.regex.pattern.match.matched
+        ? > position /Q.number
+        ? > start /Q.number
       matched. > next
         matched-from-index 1 0
     [txt] > matches

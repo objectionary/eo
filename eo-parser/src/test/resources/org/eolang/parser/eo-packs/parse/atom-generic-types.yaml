@@ -27,7 +27,7 @@ asserts:
   # callback arg-types mixing a homed forma and a verbatim variable
   - /object/o[@name='atom']/o[@name='cant' and @base='∅' and @args='Φ.string B']
 input: |
-  [a] > atom /A
+  [] > atom /A
     ? > x /A?
     ? > y /B
     ? > z

@@ -284,8 +284,8 @@ R-3.4.3. `^` (`RHO` token) is rejected as a parameter name; only `NAME` and `PHI
 R-3.4.4. No leading/trailing space inside `[ ]`.
 R-3.4.5. No double space between parameter names.
 R-3.4.6. The formation line may end with one of the optional name suffixes (§3.10).
-R-3.4.7. A void attribute may also be declared **vertically** as a `? > name` body line of the formation (the `?` is the `VOID` token of §2.3). It is equivalent to listing `name` among the bracket parameters: it emits the same void child (§9.4), and `move-voids-up` hoists it among the head voids in source order, so `[name] > foo` with body lines `? > bar` and `? > test` is identical in XMIR to `[name bar test] > foo`. The `>>` auto-name suffix (§3.10) is also accepted: `? >> name` declares a void whose external `@name` is an auto-generated cactus name (§9.2, unreachable from outside), while `name` is a *file-local handle* (R-3.10.12) usable within the same `.eo` file; a bare `? >>` is a void with an auto-generated name and no handle. Filling stays positional, so the auto-generated external name does not affect how callers bind the void. `? > name` and `? >> name`, each optionally followed by one type annotation (§3.4.8), are the **only** shapes the `?` marker may take: the marker is not a value, so it may not appear as an argument (`foo ? bar`), a method receiver (`?.read`), or a reversed-dispatch argument (`foo. ? q`), and a bare `?` or any other trailing tokens are an error. The form requires a name (or auto-name) suffix and is legal only as a direct child of a formation, which has no children of its own (a deeper-indent line under a void is rejected). A `!` const marker on a void is rejected (`a void attribute must be written as ? > name or ? >> name`); a type annotation, however, is permitted inside an atom (§3.4.8). Reverse printing canonicalises every void to the bracket form, since the two are indistinguishable in XMIR.
-R-3.4.8. **Type annotations on voids (atom-only).** Inside an **atom** (a formation whose head carries `/sig`), a vertical void may carry **exactly one** type annotation. Both forms below are optional; an unannotated void is left untyped (its type is inferred). Outside an atom either form is an error (`a void type annotation is allowed only inside an atom`), and the two forms are mutually exclusive on one void (`a void attribute may carry at most one type annotation`).
+R-3.4.7. A void attribute may also be declared **vertically** as a `? > name` body line of the formation (the `?` is the `VOID` token of §2.3). It is equivalent to listing `name` among the bracket parameters: it emits the same void child (§9.4), and `move-voids-up` hoists it among the head voids in source order, so `[name] > foo` with body lines `? > bar` and `? > test` is identical in XMIR to `[name bar test] > foo`. The `>>` auto-name suffix (§3.10) is also accepted: `? >> name` declares a void whose external `@name` is an auto-generated cactus name (§9.2, unreachable from outside), while `name` is a *file-local handle* (R-3.10.12) usable within the same `.eo` file; a bare `? >>` is a void with an auto-generated name and no handle. Filling stays positional, so the auto-generated external name does not affect how callers bind the void. `? > name` and `? >> name`, each optionally followed by one type annotation (§3.4.8), are the **only** shapes the `?` marker may take: the marker is not a value, so it may not appear as an argument (`foo ? bar`), a method receiver (`?.read`), or a reversed-dispatch argument (`foo. ? q`), and a bare `?` or any other trailing tokens are an error. The form requires a name (or auto-name) suffix and is legal only as a direct child of a formation, which has no children of its own (a deeper-indent line under a void is rejected). A `!` const marker on a void is rejected (`a void attribute must be written as ? > name or ? >> name`); a type annotation, however, is permitted inside an atom (§3.4.8). Reverse printing canonicalises a void to the bracket form, since the two are indistinguishable in XMIR — except where the bracket form cannot carry what the void holds: an auto-name handle (R-3.10.12), a type annotation (R-3.4.8), or membership in an atom (R-3.4.10), each of which prints vertically.
+R-3.4.8. **Type annotations on voids (atom-only).** Inside an **atom** (a formation whose head carries `/sig`), a void — always a vertical one, per R-3.4.10 — may carry **exactly one** type annotation. Both forms below are optional; an unannotated void is left untyped (its type is inferred), and an annotated void may be followed by an unannotated one. Outside an atom either form is an error (`a void type annotation is allowed only inside an atom`), and the two forms are mutually exclusive on one void (`a void attribute may carry at most one type annotation`).
 
 ```
 void-anno ::=  '/' type '?'?                    (own type; trailing ? = maybe-⊥)
@@ -306,13 +306,22 @@ R-3.4.9. Vertical voids must stay **on top**: every `? > name` line must precede
 ```
 
 is rejected, whereas `? > x` above `6 > six` is accepted. (Bracket-head voids are always above the body, so the rule constrains only the relative order of body lines.)
+R-3.4.10. **Atom voids are vertical-only.** An **atom** must declare every void as a `? > name` body line; a non-empty bracket head on a `/sig` line is an error (`an atom must declare its void attributes vertically, as ? > name lines`). Only a vertical void can carry the type annotation a native contract needs (R-3.4.8), and a head that also held untyped voids would put them ahead of the typed ones wherever the source wrote them, since `move-voids-up` hoists body voids behind the head ones. With the head empty, source order *is* void order, so an annotated void may be followed by an unannotated one without the two swapping places. A non-atom formation is untouched: it keeps both forms and may mix them freely.
+
+```
+[] > slice /Q.bytes                   ← atom: head empty, voids below
+  ? > start /Q.number
+  ? > len                             ← an untyped void may follow a typed one
+
+[start len] > slice /Q.bytes          ← rejected: an atom's voids must be vertical
+```
 
 Outer kind: **`bare-formation`** (master; openness `open` for body).
 
 ```
 [a b] > foo                           ← formation with two voids, named foo
 [] > bar                              ← formation with no voids, named bar
-[a b] > foo /number                   ← atom declaration (§6.3)
+[] > foo /number                      ← atom declaration (§6.3), voids go below
 ```
 
 ### 3.5 Method dispatch line — `.name [args] [> name]`
@@ -993,11 +1002,11 @@ Illegal:
 
 ### 6.3 Atoms and test attributes
 
-R-6.3.1. A formation declared with `/sig` suffix on its name is an **atom**. An atom may contain only test attributes (truthy `+>` or throwing `->`); regular bound or master children are rejected.
+R-6.3.1. A formation declared with `/sig` suffix on its name is an **atom**. Besides the `? > name` void declarations every atom carries in its body (R-3.4.10), an atom may contain only test attributes (truthy `+>` or throwing `->`); regular bound or master children are rejected.
 R-6.3.2. A non-atom formation may contain any mix of plain children, master children, and test attributes.
 R-6.3.3. A test attribute (`+>` truthy or `->` throwing) is legal **only** at indent level 1 (indent 2 spaces) — i.e., as a direct child of the top-level object. Test attributes at any other depth are rejected.
 R-6.3.4. Atoms may appear at any nesting depth, with two restrictions:
-  - **(a)** A nested atom (one not at indent 0) cannot hold tests (R-6.3.3 — `+>` legal only at indent 2 of top-level) and cannot hold regular children (R-6.3.1 — atoms accept only test children). Therefore a nested atom's body must be **empty**.
+  - **(a)** A nested atom (one not at indent 0) cannot hold tests (R-6.3.3 — `+>` legal only at indent 2 of top-level) and cannot hold regular children (R-6.3.1 — atoms accept only test children). Therefore a nested atom's body holds nothing but its `? > name` void declarations (R-3.4.10), which every atom declares vertically.
   - **(b)** A nested atom is legal only when the containing formation is **not itself an atom**. Atoms inside atoms are rejected: an atom's body may contain only `+>` test attributes (R-6.3.1), and a master child (formation/atom) of an atom is therefore inadmissible regardless of body shape.
 R-6.3.5. A test attribute name (truthy `+>` or throwing `->`) must be a `NAME` token. `+> @` / `-> @` (PHI as test name) is rejected even though the underlying grammar's `tname : tarrow (PHI | NAME)` accepts it. Tests are named identifiers; `@` has no meaning as a test name.
 R-6.3.6. **Test-attribute shorthand.** A line whose first non-space characters are `++>` (truthy) or `-->` (throwing) is sugar for a bare parameterless formation with a test suffix: `++> name` ≡ `[] +> name`, `--> name` ≡ `[] -> name`. The two forms are equivalent in every respect after classification — same XMIR emission (§9.4), same depth constraint (R-6.3.3), same name rules (R-6.3.5). There is no ambiguity with meta directives: metas are legal only before the first object (R-3.2.2), start with `+`, and their names never begin with `+>`; a `-`-headed line is never a meta. The same `++>` / `-->` markers are also accepted in the **inline-phi suffix position** (`lhs ++> name` ≡ `lhs > [] +> name`, `lhs --> name` ≡ `lhs > [] -> name`, R-3.10.8), where a space precedes them; there they bind the LHS to the test attribute's sole `φ` decoratee. The throwing shorthand and its expanded `[] -> name` form select `Assertions.assertThrows` at transpile time purely from the `-` marker (§9.4); the truthy forms select `Assertions.assertTrue`.
@@ -1011,6 +1020,8 @@ Examples:
   [] +> test-foo                      ← test attribute, legal at indent 2
 
 [] > foo /number                      ← top-level atom
+  ? > x                               ← its voids, vertical-only (R-3.4.10)
+
   [] +> test-foo                      ← only test attributes allowed inside
 
 [] > foo
@@ -1247,7 +1258,7 @@ R-9.2.3. **File-local handles (R-3.10.12).** A `>> name` suffix emits the object
 | Const-marker `> name!` | `@const` attribute (empty value: `@const=""`) |
 | Truthy test attribute `[] +> name` | `@name='+<name>'` (the `+` prefix marks it as a truthy test; transpiles to `Assertions.assertTrue`) |
 | Throwing test attribute `[] -> name` | `@name='-<name>'` (the `-` prefix marks it as a throwing test; transpiles to `Assertions.assertThrows`) |
-| Atom signature `> name /sig` | A wrapper `<o>` carries the user-given `@name='<name>'`. Children, in order: (1) void params from the `[…]` head, in source order; (2) the marker `<o name='λ' atom='<sig>'/>` immediately after the voids; (3) any test attributes (`+>`) that follow. `<sig>` is a `Φ`-promoted concrete forma **or** a bare generic type variable A–F (verbatim). Example: `[a b] > foo /bar` emits `<o name='foo'><o name='a' base='∅'/><o name='b' base='∅'/><o name='λ' atom='bar'/>...</o>` |
+| Atom signature `> name /sig` | A wrapper `<o>` carries the user-given `@name='<name>'`. Children, in order: (1) the atom's voids, in source order — always vertical ones, per R-3.4.10, hoisted here by `move-voids-up`; (2) the marker `<o name='λ' atom='<sig>'/>` immediately after the voids; (3) any test attributes (`+>`) that follow. `<sig>` is a `Φ`-promoted concrete forma **or** a bare generic type variable A–F (verbatim). Example: `[] > foo /bar` with body lines `? > a` and `? > b` emits `<o name='foo'><o name='a' base='∅'/><o name='b' base='∅'/><o name='λ' atom='bar'/>...</o>` |
 | Void own-type `? > name /type` | `@type='<type>'` on the void's `<o>`: a `Φ`-promoted concrete forma or a verbatim variable A–F, with any trailing `?` preserved (R-3.4.8) |
 | Void callback types `? > name /{type …}` | `@args='<type> …'` on the void's `<o>`: space-separated members, each promoted forma or verbatim variable; no `?` (R-3.4.8) |
 | Compact tuple `*N` | A synthetic wrapper `<o base='Φ.tuple' star=''>` is emitted as the *last* child of the head, containing the tupled portion of the children. The first `N` children stay as direct positional args; the remaining children go inside this wrapper. The `@star` attribute lives on the wrapper, never on the head. See R-3.9.2 for the partition. |
@@ -1347,6 +1358,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Blank line(s) before the meta header (file must start with metas, no leading blanks) | `meta header must appear at the top of the file` |
 | Leading or trailing space inside `[ ]` (R-3.4.4) | `formation brackets must not contain leading or trailing space` |
 | Double space between parameter names in voids (R-3.4.5) | `parameter names in voids must be separated by exactly one space` |
+| Bracket parameters on an atom head (R-3.4.10) | `an atom must declare its void attributes vertically, as ? > name lines` |
 | More than one space between meta parts (R-3.2.4) | `meta parts must be separated by exactly one space` |
 | Test attribute name is `@` (PHI) instead of NAME (R-6.3.5) | `test attribute name must be an identifier, not @` |
 | Leading-zero in integer literal (R-9.8.1, e.g., `007`) | `integer literal must not have leading zeros` |

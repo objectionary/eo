@@ -22,14 +22,21 @@
 +unlint mandatory-package
 
 [@] > bytes
-  [b] > and /Q.bytes
-  [b] > concat /Q.bytes
-  [b] > eq /Q.bool
+  [] > and /Q.bytes
+    ? > b /Q.bytes
+  [] > concat /Q.bytes
+    ? > b
+  [] > eq /Q.bool
+    ? > b
   [] > not /Q.bytes
-  [b] > or /Q.bytes
-  [x] > right /Q.bytes
+  [] > or /Q.bytes
+    ? > b /Q.bytes
+  [] > right /Q.bytes
+    ? > x /Q.number
   [] > size /Q.number
-  [start len] > slice /Q.bytes
+  [] > slice /Q.bytes
+    ? > start /Q.number
+    ? > len /Q.number
     ? > cant-slice /{Q.string}
 
   eq. ++> can-and-negative-bytes-with-leading-zeroes
