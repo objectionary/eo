@@ -6,10 +6,20 @@ package org.eolang.printer;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.Xsline;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
+import org.apache.log4j.Appender;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggingEvent;
 import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
@@ -22,6 +32,7 @@ import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 
 /**
@@ -45,6 +56,47 @@ final class XmirTest {
             ),
             xmir.toEO(),
             Matchers.equalTo(xtory.map().get("printed"))
+        );
+    }
+
+    @Test
+    void doesNotWarnOnLocalWithoutName() {
+        final List<String> warnings = new ArrayList<>(0);
+        final Appender appender = new AppenderSkeleton() {
+            @Override
+            protected void append(final LoggingEvent event) {
+                if (event.getLevel().isGreaterOrEqual(Level.WARN)) {
+                    warnings.add(String.valueOf(event.getRenderedMessage()));
+                }
+            }
+
+            @Override
+            public void close() {
+                // Nothing to release: this appender holds no resources.
+            }
+
+            @Override
+            public boolean requiresLayout() {
+                return false;
+            }
+        };
+        final Logger root = Logger.getRootLogger();
+        root.addAppender(appender);
+        try {
+            new Xsline(
+                new StClasspath("/org/eolang/printer/print/restore-local-names.xsl")
+            ).pass(
+                new XMLDocument(
+                    "<object><o base='.a'><o base='Q.d'><o base='x.r.b' local='h'/></o></o></object>"
+                )
+            );
+        } finally {
+            root.removeAppender(appender);
+        }
+        MatcherAssert.assertThat(
+            "restore-local-names.xsl must not warn about an empty sequence when a @local node has no @name",
+            warnings.stream().noneMatch(msg -> msg.contains("empty sequence")),
+            Matchers.is(true)
         );
     }
 
