@@ -170,9 +170,6 @@ final class MjPrintTest {
             case "WIDTH":
                 param = "width";
                 break;
-            case "STEP":
-                param = "step";
-                break;
             default:
                 param = "";
                 break;
