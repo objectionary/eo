@@ -67,8 +67,12 @@
     [] > extname
       if. > @
         or.
-          base.size.eq 0
-          index.eq -1
+          or.
+            base.size.eq 0
+            index.eq -1
+          or.
+            index.eq 0
+            base.eq ".."
         ""
         string
           as-bytes.
@@ -472,6 +476,21 @@
           "www"
           "hello.text"
     ".text"
+
+  eq. ++> can-take-an-extname-from-a-hidden-file-with-an-extension
+    extname.
+      path.posix ".config.json"
+    ".json"
+
+  eq. ++> cannot-take-an-extname-from-a-dotdot
+    extname.
+      path.posix ".."
+    ""
+
+  eq. ++> cannot-take-an-extname-from-a-dotfile
+    extname.
+      path.posix ".gitignore"
+    ""
 
   eq. ++> cannot-take-an-extname-from-a-file-without-an-extension
     extname.
