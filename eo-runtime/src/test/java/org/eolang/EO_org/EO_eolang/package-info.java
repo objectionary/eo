@@ -6,7 +6,6 @@
 /**
  * Deep package fixtures, tests.
  * @since 0.73.1
- * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
 package org.eolang.EO_org.EO_eolang; // NOPMD

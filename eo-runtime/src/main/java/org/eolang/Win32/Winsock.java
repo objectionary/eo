@@ -4,7 +4,6 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (20 lines)
  * @checkstyle TrailingCommentCheck (20 lines)
  */
 package org.eolang.Win32; // NOPMD

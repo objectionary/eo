@@ -2,10 +2,6 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-/*
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 import java.util.HashMap;
@@ -41,6 +37,7 @@ import org.eolang.Win32.WriteFuncCall;
 /**
  * Win32 function call.
  * @since 0.40
+ * @checkstyle IllegalIdentifierNameCheck (101 lines)
  * @checkstyle TypeNameCheck (100 lines)
  * @checkstyle ClassFanOutComplexityCheck (100 lines)
  */

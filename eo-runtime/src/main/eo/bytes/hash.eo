@@ -29,7 +29,7 @@
     0
     0
 
-  and. ++> tests-hash-code-bools-is-number
+  and. ++> can-hash-a-bool-into-a-number
     eq.
       size.
         as-bytes.
@@ -41,55 +41,55 @@
           hash false
       8
 
-  ++> tests-hash-code-int-is-int
+  ++> can-hash-an-integer-into-an-integer
     1.eq > @
       div.
         number
           hash 42 >> inthash!
         number inthash
 
-  ++> tests-hash-codes-of-the-same-nums-are-equal
+  ++> can-hash-equal-numbers-alike
     eq. > @
       hash num
       hash num
     123456789012345680 > num
 
-  eq. ++> tests-hash-codes-of-the-same-ints-are-equal
+  eq. ++> can-hash-equal-integers-alike
     hash 42
     hash 42
 
-  not. ++> tests-hash-codes-of-different-ints-are-not-equal
+  not. ++> can-hash-different-integers-apart
     eq.
       hash 42
       hash 24
 
-  not. ++> tests-hash-codes-of-different-sign-ints-are-not-equal
+  not. ++> can-hash-integers-of-different-signs-apart
     eq.
       hash 42
       hash -42
 
-  ++> tests-hash-code-string-is-int
+  ++> can-hash-a-string-into-an-integer
     1.eq > @
       div.
         number
           hash "hello" >> strhash!
         number strhash
 
-  eq. ++> tests-hash-codes-of-the-same-strings-are-equal
+  eq. ++> can-hash-equal-strings-alike
     hash "Hello"
     hash "Hello"
 
-  not. ++> tests-hash-codes-of-same-length-strings-are-not-equal
+  not. ++> can-hash-strings-of-the-same-length-apart
     eq.
       hash "one"
       hash "two"
 
-  not. ++> tests-hash-codes-of-different-strings-are-not-equal
+  not. ++> can-hash-different-strings-apart
     eq.
       hash "hello"
       hash "bye!!!"
 
-  ++> tests-hash-code-abstract-object-is-int
+  ++> can-hash-an-abstract-object-into-an-integer
     1.eq > @
       div.
         number
@@ -98,14 +98,14 @@
         number objhash
     x > [x] > obj
 
-  ++> tests-hash-codes-of-the-same-abstract-objects-are-equal
+  ++> can-hash-equal-abstract-objects-alike
     eq. > @
       hash value
       hash value
     x > [x] > obj
     obj 42 > value
 
-  ++> tests-hash-codes-of-different-abstract-objects-are-not-equal
+  ++> can-hash-different-abstract-objects-apart
     not. > @
       eq.
         hash
@@ -114,31 +114,31 @@
           obj "42"
     x > [x] > obj
 
-  ++> tests-hash-code-float-is-int
+  ++> can-hash-a-float-into-an-integer
     1.eq > @
       div.
         number
           hash 42.42 >> flthash!
         number flthash
 
-  ++> tests-hash-codes-of-the-same-floats-are-equal
+  ++> can-hash-equal-floats-alike
     eq. > @
       hash emergency
       hash emergency
     0.911 > emergency
 
-  ++> tests-hash-codes-of-the-same-bigvals-are-equal
+  ++> can-hash-equal-big-values-alike
     eq. > @
       hash
         4.242e43 >> bigval!
       hash bigval
 
-  not. ++> tests-hash-codes-of-different-floats-are-not-equal
+  not. ++> can-hash-different-floats-apart
     eq.
       hash 3.14
       hash 2.72
 
-  not. ++> tests-hash-codes-of-different-sign-floats-are-not-equal
+  not. ++> can-hash-floats-of-different-signs-apart
     eq.
       hash 3.22
       hash -3.22

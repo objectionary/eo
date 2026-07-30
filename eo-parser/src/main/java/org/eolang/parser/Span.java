@@ -51,7 +51,6 @@ final class Span {
      * Ctor.
      * @param body Line text
      * @param line Line number (1-indexed)
-     * @checkstyle ConstructorsCodeFreeCheck (3 lines)
      */
     Span(final String body, final int line) {
         this(body, line, Span.leading(body), Span.tabbed(body));

@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link PhDefault}.
  * @since 0.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class PhDefaultTest {
 
     @Test
@@ -145,16 +144,13 @@ final class PhDefaultTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void copiesKid() {
         final Phi phi = new PhDefaultTest.Int();
-        final Phi first = phi.take(this.plus());
-        final Phi second = phi.copy().take(this.plus());
         MatcherAssert.assertThat(
             "Child attributes should be copied after copying main object",
-            first,
+            phi.take(this.plus()),
             Matchers.not(
-                Matchers.equalTo(second)
+                Matchers.equalTo(phi.copy().take(this.plus()))
             )
         );
     }
@@ -198,16 +194,14 @@ final class PhDefaultTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void hasDifferentKidsAfterDoubleCopying() {
         final Phi phi = new PhDefaultTest.Int();
         final Phi first = phi.copy();
-        final Phi second = first.copy();
         MatcherAssert.assertThat(
             "Child objects after double copying should be different",
-            first.take(this.plus()),
+            first.copy().take(this.plus()),
             Matchers.not(
-                Matchers.equalTo(second.take(this.plus()))
+                Matchers.equalTo(first.take(this.plus()))
             )
         );
     }
@@ -240,19 +234,17 @@ final class PhDefaultTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void doesNotChangeRhoAfterDirectKidCopying() {
         final Phi phi = new PhDefaultTest.Int();
         final Phi first = phi.take(this.plus());
-        final Phi second = first.copy();
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of kid attribute should not be changed after direct copying",
                 Phi.RHO
             ),
-            first.take(Phi.RHO),
+            first.copy().take(Phi.RHO),
             Matchers.equalTo(
-                second.take(Phi.RHO)
+                first.take(Phi.RHO)
             )
         );
     }

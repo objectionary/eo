@@ -35,7 +35,6 @@ final class Hex {
     /**
      * Ctor from a {@code double}. Produces 8-byte IEEE-754 big-endian.
      * @param value Numeric value
-     * @checkstyle ConstructorsCodeFreeCheck (3 lines)
      */
     Hex(final double value) {
         this(ByteBuffer.allocate(Double.BYTES).putDouble(value).array());
@@ -45,7 +44,6 @@ final class Hex {
      * Ctor from a UTF-8 string. Produces the variable-length UTF-8 byte
      * sequence.
      * @param text The text
-     * @checkstyle ConstructorsCodeFreeCheck (3 lines)
      */
     Hex(final String text) {
         this(text.getBytes(StandardCharsets.UTF_8));

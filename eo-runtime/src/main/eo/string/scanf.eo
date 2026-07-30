@@ -20,16 +20,20 @@
     [text] > as-float
       negative.if negated magnitude > @
       index-of unsigned "." > dot
-      div. > fraction
-        fold-digits
-          slice
-            unsigned
-            dot.plus 1
-            places
-        10.power places
-      not. > has-fraction
-        dot.eq -1
-      has-fraction.if with-fraction whole > magnitude
+      if. > magnitude
+        not.
+          dot.eq -1
+        plus.
+          fold-digits
+            slice unsigned 0 dot
+          div.
+            fold-digits
+              slice
+                unsigned
+                dot.plus 1
+                places
+            10.power places
+        fold-digits unsigned
       magnitude.times -1 > negated
       eq. > negative
         slice
@@ -39,32 +43,56 @@
         "-"
       unsigned.length.minus > places
         dot.plus 1
-      negative.or > signed-prefix
+      negative.or > signed
         eq.
           slice text 0 1
           "+"
-      signed-prefix.if > unsigned
+      signed.if > unsigned
         slice
           text
           1
           text.length.minus 1
         text
-      fold-digits unsigned > whole
-      plus. > with-fraction
-        fold-digits
-          slice unsigned 0 dot
-        fraction
     [text] > as-integer
       if. > @
-        digits.length.gt 19
-        overflow
-        signed
-      signed-prefix.if > digits
+        or.
+          digits.length.gt 19
+          and.
+            digits.length.eq 19
+            not.
+              negative.if
+                digits-lte digits "9223372036854775808"
+                digits-lte digits "9223372036854775807"
+        T
+          "The number doesn't fit into long range for the '%%d' conversion"
+        negative.if negated folded
+      signed.if > digits
         slice
           text
           1
           text.length.minus 1
         text
+      [a b] > digits-lte
+        if. > [index] >> rec
+          index.eq a.length
+          true
+          if.
+            lt.
+              as-ascii
+                slice a index 1
+              as-ascii
+                slice b index 1
+            true
+            if.
+              gt.
+                as-ascii
+                  slice a index 1
+                as-ascii
+                  slice b index 1
+              false
+              rec
+                index.plus 1
+        | 0 > @
       fold-digits digits > folded
       folded.times -1 > negated
       eq. > negative
@@ -73,18 +101,17 @@
           0
           1
         "-"
-      overflow-message > overflow
-      T > overflow-message
-        "The number doesn't fit into long range for the '%d' conversion"
-      negative.if negated folded > signed
-      negative.or > signed-prefix
+      negative.or > signed
         eq.
           slice text 0 1
           "+"
     [group acc] >> convert
       matched.exists.not.if > @
         *
-        next-group
+        if.
+          group.gt specifiers.length
+          acc
+          next
       convert > next
         group.plus 1
         acc.with
@@ -93,24 +120,16 @@
               group.minus 1
               T
             matched.group group
-      if. > next-group
-        group.gt specifiers.length
-        acc
-        next
     | > @
       1
       *
-    [spec text] > converted
-      if. > @
-        spec.eq "s"
-        text
-        as-number-value
-      as-float text > as-float-value
-      as-integer text > as-integer-value
-      if. > as-number-value
+    if. > [spec text] > converted
+      spec.eq "s"
+      text
+      if.
         spec.eq "d"
-        as-integer-value
-        as-float-value
+        as-integer text
+        as-float text
     [text] > fold-digits
       [index acc] >> rec
         if. > @
@@ -127,13 +146,14 @@
               48
       | 0 0 > @
     match. > found
-      regex wrapped
+      regex
+        chained *1
+          "/"
+          "^"
+          pattern
+          "/"
       read
     found.next > matched
-    chained *1 > wrapped
-      "/"
-      pattern
-      "/"
   | > @
     tokens.at
       0
@@ -141,108 +161,100 @@
     tokens.at
       1
       T
-  [ch] >> escaped
-    metachar.if > @
-      escaped-char
+  if. > [ch] >> escaped
+    contains.
+      *
+        "\\"
+        "^"
+        "$"
+        "."
+        "|"
+        "?"
+        "*"
+        "+"
+        "("
+        ")"
+        "["
+        "]"
+        "{"
+        "}"
+        "/"
       ch
-    chained *1 > escaped-char
+    chained *1
       "\\"
       ch
-    metachars.contains ch > metachar
-    * > metachars
-      "\\"
-      "^"
-      "$"
-      "."
-      "|"
-      "?"
-      "*"
-      "+"
-      "("
-      ")"
-      "["
-      "]"
-      "{"
-      "}"
-      "/"
+    ch
   [position accumulated found pending] >> tokenize
     if. > @
       position.gte format.length
-      ended
-      continued
-    slice > ch
-      format
-      position
-      1
-    pending.if > continued
-      if.
-        ch.eq "%"
-        tokenize
-          position.plus 1
-          chained *1
-            accumulated
-            "%"
-          found
-          false
+      pending.if *1
+        T
+          "The format string ends with a dangling percent and no specifier after it"
+        accumulated
+        found
+      pending.if
         if.
-          ch.eq "d"
+          ch.eq "%"
           tokenize
             position.plus 1
             chained *1
               accumulated
-              "([+-]?\\d+)"
-            found.with "d"
+              "%"
+            found
             false
           if.
-            ch.eq "f"
+            ch.eq "d"
             tokenize
               position.plus 1
               chained *1
                 accumulated
-                "([+-]?\\d+(?:\\.\\d+)?)"
-              found.with "f"
+                "([+-]?\\d+)"
+              found.with "d"
               false
             if.
-              ch.eq "s"
+              ch.eq "f"
               tokenize
                 position.plus 1
                 chained *1
                   accumulated
-                  "(\\S+)"
-                found.with "s"
+                  "([+-]?\\d+(?:\\.\\d+)?)"
+                found.with "f"
                 false
-              unsupported-message
-      if.
-        ch.eq "%"
-        tokenize
-          position.plus 1
-          accumulated
-          found
-          true
-        tokenize
-          position.plus 1
-          chained *1
+              if.
+                ch.eq "s"
+                tokenize
+                  position.plus 1
+                  chained *1
+                    accumulated
+                    "(\\S+)"
+                  found.with "s"
+                  false
+                T "Unsupported format specifier"
+        if.
+          ch.eq "%"
+          tokenize
+            position.plus 1
             accumulated
-            piece
-          found
-          false
-    dangling-message > dangling
-    T > dangling-message
-      "The format string ends with a dangling percent and no specifier after it"
-    pending.if *1 > ended
-      dangling
-      accumulated
-      found
-    escaped ch > piece
-    T > unsupported-message
-      "Unsupported format specifier"
+            found
+            true
+          tokenize
+            position.plus 1
+            chained *1
+              accumulated
+              escaped ch
+            found
+            false
+    slice > ch
+      format
+      position
+      1
   | >> tokens
     0
     ""
     *
     false
 
-  eq. ++> tests-scanf-complex-case
+  eq. ++> can-scan-a-complex-format
     scanf
       "Im%d %s old and this is! Let's calculate %f + %f= %f"
       "Im18 years old and this is! Let's calculate 99999999.99 + 0.01= 100000000.0"
@@ -253,44 +265,44 @@
       0.01
       100000000
 
-  eq. ++> tests-scanf-with-complex-float
+  eq. ++> can-scan-a-complex-float
     1991.01
     head.
       scanf
         "this will be=%f"
         "this will be=1991.01"
 
-  eq. ++> tests-scanf-with-complex-int
+  eq. ++> can-scan-a-complex-integer
     734987259
     head.
       scanf "!%d!" "!734987259!"
 
-  eq. ++> tests-scanf-with-complex-string
+  eq. ++> can-scan-a-complex-string
     "test"
     head.
       scanf "some%sstring" "someteststring"
 
-  eq. ++> tests-scanf-with-float
+  eq. ++> can-scan-a-float
     0.24
     head.
       scanf "%f" "0.24"
 
-  eq. ++> tests-scanf-with-int
+  eq. ++> can-scan-an-integer
     33
     head.
       scanf "%d" "33"
 
-  eq. ++> tests-scanf-with-negative-int
+  eq. ++> can-scan-a-negative-integer
     -42
     head.
       scanf "%d" "-42"
 
-  eq. ++> tests-scanf-with-positive-signed-int
+  eq. ++> can-scan-a-positive-signed-integer
     42
     head.
       scanf "%d" "+42"
 
-  eq. ++> tests-scanf-with-printf
+  eq. ++> can-scan-what-printf-wrote
     scanf
       "%s is about %d?"
       printf *1
@@ -301,12 +313,12 @@
       "This"
       8
 
-  eq. ++> tests-scanf-with-string
+  eq. ++> can-scan-a-string
     "hello"
     head.
       scanf "%s" "hello"
 
-  eq. ++> tests-scanf-with-string-int-float
+  eq. ++> can-scan-a-string-an-integer-and-a-float
     scanf
       "%s %d %f"
       "hello 33 0.24"
@@ -315,19 +327,51 @@
       33
       0.24
 
-  eq. ++> tests-scanf-with-string-with-ending
+  eq. ++> can-scan-a-string-followed-by-a-literal
     "hello"
     head.
       scanf "%s!" "hello!"
 
-  scanf --> on-scanf-with-dangling-percent
+  eq. ++> can-scan-while-ignoring-trailing-text
+    42
+    head.
+      scanf
+        "id=%d"
+        "id=42 suffix"
+
+  eq. ++> cannot-scan-past-unmatched-leading-text
+    length.
+      scanf
+        "id=%d"
+        "prefix id=42"
+    0
+
+  scanf --> stops-on-a-dangling-percent
     "hello%"
     "hello"
 
-  scanf --> on-scanf-with-oversized-int
+  scanf --> stops-on-an-oversized-integer
     "%d"
     "99999999999999999999"
 
-  scanf --> on-scanf-with-wrong-format
+  gt. ++> can-scan-a-nineteen-digit-value-at-long-max
+    head.
+      scanf "%d" "9223372036854775807"
+    9000000000000000000
+
+  lt. ++> can-scan-a-nineteen-digit-value-at-long-min
+    head.
+      scanf "%d" "-9223372036854775808"
+    -9000000000000000000
+
+  scanf --> stops-on-a-nineteen-digit-value-above-long-max
+    "%d"
+    "9223372036854775808"
+
+  scanf --> stops-on-a-nineteen-digit-value-below-long-min
+    "%d"
+    "-9223372036854775809"
+
+  scanf --> stops-on-a-wrong-format
     "%l"
     "error"

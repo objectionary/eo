@@ -17,7 +17,7 @@ package org.eolang;
  * <p>The check is <em>opt-in</em>, controlled by the {@code eo.typing} system
  * property (default {@code false}). It is off by default because an atom with
  * an error-branch returns a union — the declared forma <em>or</em> a caller
- * fallback / ⊥ — that a single declared forma cannot express, so the strict
+ * fallback or bottom — that a single declared forma cannot express, so the
  * check would reject valid fallbacks. Enable it (e.g. {@code -Deo.typing=true})
  * to verify atom return types where no error-branches are used.</p>
  *

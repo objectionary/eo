@@ -20,9 +20,12 @@ import java.util.function.Supplier;
  * EO code. Nothing intercepts an {@link ExFailure}, so the failure
  * keeps propagating until it terminates the program.</p>
  *
+ * <p>Elsewhere we let Cactoos catch for us, with {@code ScalarWithFallback}.
+ * Here we catch by hand, because {@code eo-runtime} ships with no
+ * compile-scope dependencies at all.</p>
+ *
  * @since 0.21
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public final class PhSafe implements Phi, Atom {
 
     /**

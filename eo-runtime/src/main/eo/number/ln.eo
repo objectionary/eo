@@ -43,65 +43,64 @@
         t.times
           horner 0
       if. > [k] > horner
-        k.gt terms
+        k.gt 40
         0
         plus.
           1.div
             plus.
               k.times 2
               1
-          squared.times
+          times.
+            t.times t
             horner
               k.plus 1
-      t.times t > squared
       div. > t
         m.minus 1
         m.plus 1
-      40 > terms
   number num.as-bytes > n
 
-  lt. ++> tests-ln-fraction
+  lt. ++> can-stay-monotonic
+    ln 2
+    ln 3
+
+  lt. ++> can-take-a-logarithm-of-a-fraction
     abs
       minus.
         ln 0.5
         -0.6931471805599453
     1.0E-11
 
-  lt. ++> tests-ln-monotonic
-    ln 2
-    ln 3
-
-  is-nan. ++> tests-ln-nan
-    ln nan
-
-  is-nan. ++> tests-ln-negative-infinity
-    ln ninf
-
-  eq. ++> tests-ln-of-e-one-is-one
+  eq. ++> can-take-a-logarithm-of-e
     ln e
     1
 
-  is-nan. ++> tests-ln-of-negative-float-is-nan
-    ln -2.2
-
-  is-nan. ++> tests-ln-of-negative-int-is-nan
-    ln -42
-
-  eq. ++> tests-ln-of-one-is-zero
+  eq. ++> can-take-a-logarithm-of-one
     ln 1
     0
 
-  lt. ++> tests-ln-of-twenty
+  eq. ++> can-take-a-logarithm-of-positive-infinity
+    ln pinf
+    pinf
+
+  lt. ++> can-take-a-logarithm-of-twenty
     abs
       minus.
         ln 20
         2.995732273553991
     1.0E-11
 
-  eq. ++> tests-ln-of-zero-is-negative-infinity
+  eq. ++> can-take-a-logarithm-of-zero
     ln 0
     ninf
 
-  eq. ++> tests-ln-positive-infinity
-    ln pinf
-    pinf
+  is-nan. ++> cannot-take-a-logarithm-of-a-negative-float
+    ln -2.2
+
+  is-nan. ++> cannot-take-a-logarithm-of-a-negative-integer
+    ln -42
+
+  is-nan. ++> cannot-take-a-logarithm-of-nan
+    ln nan
+
+  is-nan. ++> cannot-take-a-logarithm-of-negative-infinity
+    ln ninf

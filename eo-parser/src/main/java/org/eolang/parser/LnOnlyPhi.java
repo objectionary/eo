@@ -59,7 +59,6 @@ import java.util.List;
  *
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.UnnecessaryLocalRule"})
 final class LnOnlyPhi implements Line {
 
     /**
@@ -125,11 +124,11 @@ final class LnOnlyPhi implements Line {
         if (suffix.test()) {
             Blanks.checkTest(this.span, globals, emit);
         }
-        final Span inner = new Span(
-            " ".repeat(this.span.indent()).concat(lhs), this.span.line()
-        );
         Comments.seal(globals, emit, this.span);
-        final Tokens tokens = this.slot(stack, suffix, inner);
+        final Tokens tokens = this.slot(
+            stack, suffix,
+            new Span(" ".repeat(this.span.indent()).concat(lhs), this.span.line())
+        );
         globals.clearBlanks();
         globals.markEmitted();
         emit.object(
@@ -159,9 +158,10 @@ final class LnOnlyPhi implements Line {
     private Tokens slot(final Stack stack, final Suffix suffix, final Span inner) {
         final int stars = LnOnlyPhi.compactStar(inner.body());
         final Tokens tokens = LnOnlyPhi.reader(inner, stars);
-        final boolean open = stars >= 0 || LnOnlyPhi.bare(tokens);
+        final Level level = this.transition(
+            stack, suffix, stars >= 0 || LnOnlyPhi.bare(tokens)
+        );
         tokens.seek(0);
-        final Level level = this.transition(stack, suffix, open);
         if (stars >= 0) {
             level.compact(stars);
             level.markStar();
@@ -185,7 +185,7 @@ final class LnOnlyPhi implements Line {
     }
 
     /**
-     * Emit the only-phi void parameters as {@code ∅}-based children,
+     * Emit the only-phi void parameters as empty-set-based children,
      * mapping {@code @} to {@code φ} (R-3.4.2 / R-9.3) and advancing the
      * source column across each name and its separating space.
      * @param emit Emitter
@@ -196,7 +196,7 @@ final class LnOnlyPhi implements Line {
         int column = this.span.indent() + origin;
         for (final String param : params) {
             final String mapped;
-            if (param.equals("@")) {
+            if ("@".equals(param)) {
                 mapped = "φ";
             } else {
                 mapped = param;

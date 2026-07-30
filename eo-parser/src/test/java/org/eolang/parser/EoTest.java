@@ -21,7 +21,6 @@ import org.xembly.Xembler;
  *
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals", "PMD.UnnecessaryLocalRule"})
 final class EoTest {
 
     @Test
@@ -116,10 +115,9 @@ final class EoTest {
 
     @Test
     void recoversFromBadLineAndContinues() {
-        final String rendered = EoTest.render("+ok-one", "  +bad-indent", "+ok-two");
         MatcherAssert.assertThat(
             "after an error the walker must continue and parse subsequent valid lines",
-            rendered,
+            EoTest.render("+ok-one", "  +bad-indent", "+ok-two"),
             XhtmlMatchers.hasXPaths(
                 "/object/metas/meta[head='ok-one']",
                 "/object/metas/meta[head='ok-two']"

@@ -47,7 +47,7 @@ public final class MjRegister extends MjSafe {
      * in the {@code <includeSources>} directory, which can be
      * pretty global (or even a root one).
      * @implNote {@code property} attribute is omitted for collection
-     * properties since there is no way of passing it via command line.
+     *  properties since there is no way of passing it via command line.
      * @checkstyle MemberNameCheck (15 lines)
      */
     @Parameter
@@ -74,7 +74,6 @@ public final class MjRegister extends MjSafe {
     private boolean strictFileNames = true;
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() {
         if (this.sourcesDir == null) {
             throw new IllegalArgumentException(

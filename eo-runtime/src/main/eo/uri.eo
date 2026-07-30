@@ -1,8 +1,6 @@
-# A `uri` object parses an RFC 3986 generic URI `text` and exposes its
-# components as read-only attributes: `scheme`, `authority` (together with
-# `userinfo`, `host` and `port` parsed out of it), `path`, `query` and
-# `fragment`. The object is immutable: it only reads parts of `text` and
-# has no mutators.
+# Parses an RFC 3986 generic URI `text` and exposes its components as
+# read-only attributes: `scheme`, `authority` (together with `userinfo`,
+# `host` and `port` parsed out of it), `path`, `query` and `fragment`.
 #
 # Usage, without an authority:
 # ```
@@ -16,6 +14,8 @@
 # x.host > h    # localhost
 # x.port > p    # 899
 # ```
+#
+# The object is immutable: it only reads parts of `text` and has no mutators.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -23,10 +23,14 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
++unlint mandatory-package
 
 [text] > uri
   text > @
-  has-authority.if > authority
+  if. > authority
+    string.starts-with >> has-authority
+      hier-part
+      "//"
     if.
       not. >> has-authority-path
         eq.
@@ -46,7 +50,9 @@
         authority-path-idx
       after-slashes
     ""
-  has-fragment.if > fragment
+  if. > fragment
+    not. >> has-fragment
+      hash-idx.eq -1
     slice.
       text.slice >> rest
         plus.
@@ -62,44 +68,15 @@
         number
           hash-idx.plus 1
     ""
-  string.starts-with > has-authority
-    hier-part
-    "//"
-  not. > has-fragment
-    hash-idx.eq -1
-  not. > has-port
-    eq.
-      if. >> port-colon-idx
-        string.starts-with host-port "[" >>
-        if.
-          eq.
-            string.index-of >> rel-colon
-              host-port.slice
-                bracket-start
-                host-port.length.minus
-                  number bracket-start
-              ":"
-            -1
-          -1
-          rel-colon.plus
-            plus. >> bracket-start
-              string.index-of host-port "]" >>
-              1
-        string.index-of host-port ":"
-      -1
-  not. > has-query
-    eq.
-      string.index-of before-fragment "?" >> question-idx
-      -1
-  not. > has-userinfo
-    eq.
-      string.index-of authority "@" >> userinfo-at-idx
-      -1
-  has-port.if > host
+  if. > host
+    not. >> has-port
+      port-colon-idx.eq -1
     slice.
       has-userinfo.if >> host-port
         authority.slice
-          userinfo-at-idx.plus 1
+          plus.
+            string.index-of authority "@" >> userinfo-at-idx
+            1
           authority.length.minus
             number
               userinfo-at-idx.plus 1
@@ -117,17 +94,39 @@
     hier-part
   has-port.if > port
     host-port.slice
-      port-colon-idx.plus 1
+      plus.
+        if. >> port-colon-idx
+          string.starts-with host-port "[" >>
+          if.
+            eq.
+              string.index-of >> rel-colon
+                host-port.slice
+                  bracket-start
+                  host-port.length.minus
+                    number bracket-start
+                ":"
+              -1
+            -1
+            rel-colon.plus
+              plus. >> bracket-start
+                string.index-of host-port "]" >>
+                1
+          string.index-of host-port ":"
+        1
       host-port.length.minus
         number
           port-colon-idx.plus 1
     ""
-  has-query.if > query
+  if. > query
+    not. >> has-query
+      question-idx.eq -1
     slice.
       has-fragment.if >> before-fragment
         rest.slice 0 hash-idx
         rest
-      question-idx.plus 1
+      plus.
+        string.index-of before-fragment "?" >> question-idx
+        1
       before-fragment.length.minus
         number
           question-idx.plus 1
@@ -135,93 +134,95 @@
   text.slice > scheme
     0
     scheme-colon
-  has-userinfo.if > userinfo
+  if. > userinfo
+    not. >> has-userinfo
+      userinfo-at-idx.eq -1
     authority.slice
       0
       userinfo-at-idx
     ""
 
-  eq. ++> tests-parses-bracketed-ipv6-host-with-port
+  eq. ++> can-parse-a-bracketed-ipv6-host-with-a-port
     host.
       uri "http://[::1]:8080/p"
     "[::1]"
 
-  eq. ++> tests-parses-bracketed-ipv6-host-without-port
+  eq. ++> can-parse-a-bracketed-ipv6-host-without-a-port
     host.
       uri "http://[2001:db8::1]/p"
     "[2001:db8::1]"
 
-  eq. ++> tests-parses-bracketed-ipv6-port
-    port.
-      uri "http://[::1]:8080/p"
-    "8080"
-
-  eq. ++> tests-parses-empty-host-of-triple-slash-uri
-    host.
-      uri "file:///etc/passwd"
-    ""
-
-  eq. ++> tests-parses-empty-path-of-authority-only-uri
-    path.
-      uri "pgsql://localhost:899"
-    ""
-
-  eq. ++> tests-parses-fragment-without-leading-hash
+  eq. ++> can-parse-a-fragment-without-a-leading-hash
     fragment.
       uri "http://host/some/path?x=1#top"
     "top"
 
-  eq. ++> tests-parses-host-alongside-userinfo
+  eq. ++> can-parse-a-host-alongside-userinfo
     host.
       uri "http://user:pass@host:80/some/path"
     "host"
 
-  eq. ++> tests-parses-host-of-authority-with-port
-    host.
-      uri "pgsql://localhost:899"
-    "localhost"
-
-  eq. ++> tests-parses-path-alongside-userinfo-authority
+  eq. ++> can-parse-a-path-alongside-a-userinfo-authority
     path.
       uri "http://user:pass@host:80/some/path"
     "/some/path"
 
-  eq. ++> tests-parses-path-of-bare-scheme-uri
-    path.
-      uri "pgsql:localhost:899"
-    "localhost:899"
-
-  eq. ++> tests-parses-path-of-triple-slash-uri
-    path.
-      uri "file:///etc/passwd"
-    "/etc/passwd"
-
-  eq. ++> tests-parses-port-alongside-userinfo
+  eq. ++> can-parse-a-port-alongside-userinfo
     port.
       uri "http://user:pass@host:80/some/path"
     "80"
 
-  eq. ++> tests-parses-port-of-authority-with-port
-    port.
-      uri "pgsql://localhost:899"
-    "899"
-
-  eq. ++> tests-parses-query-without-leading-question-mark
+  eq. ++> can-parse-a-query-without-a-leading-question-mark
     query.
       uri "http://host/some/path?x=1#top"
     "x=1"
 
-  eq. ++> tests-parses-scheme-of-bare-scheme-uri
+  eq. ++> can-parse-the-empty-host-of-a-triple-slash-uri
+    host.
+      uri "file:///etc/passwd"
+    ""
+
+  eq. ++> can-parse-the-empty-path-of-an-authority-only-uri
+    path.
+      uri "pgsql://localhost:899"
+    ""
+
+  eq. ++> can-parse-the-host-of-an-authority-with-a-port
+    host.
+      uri "pgsql://localhost:899"
+    "localhost"
+
+  eq. ++> can-parse-the-path-of-a-bare-scheme-uri
+    path.
+      uri "pgsql:localhost:899"
+    "localhost:899"
+
+  eq. ++> can-parse-the-path-of-a-triple-slash-uri
+    path.
+      uri "file:///etc/passwd"
+    "/etc/passwd"
+
+  eq. ++> can-parse-the-port-of-a-bracketed-ipv6-host
+    port.
+      uri "http://[::1]:8080/p"
+    "8080"
+
+  eq. ++> can-parse-the-port-of-an-authority
+    port.
+      uri "pgsql://localhost:899"
+    "899"
+
+  eq. ++> can-parse-the-scheme-of-a-bare-scheme-uri
     scheme.
       uri "pgsql:localhost:899"
     "pgsql"
 
-  eq. ++> tests-parses-scheme-of-triple-slash-uri
+  eq. ++> can-parse-the-scheme-of-a-triple-slash-uri
     scheme.
       uri "file:///etc/passwd"
     "file"
 
-  eq. ++> tests-parses-userinfo-of-authority
+  eq. ++> can-parse-the-userinfo-of-an-authority
     userinfo.
       uri "http://user:pass@host:80/some/path"
     "user:pass"

@@ -32,7 +32,6 @@ final class ChSource implements CommitHash {
     /**
      * Constructor.
      * @param src Source path
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     ChSource(final Path src) {
         this(src.toFile());
@@ -49,7 +48,6 @@ final class ChSource implements CommitHash {
     /**
      * Constructor.
      * @param src Source file
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     private ChSource(final File src) {
         this(new TextOf(src));
@@ -80,7 +78,6 @@ final class ChSource implements CommitHash {
      * @return SHA-1 hash
      * @throws NoSuchAlgorithmException If SHA-1 is not supported
      */
-    @SuppressWarnings("PMD.UseStringIsEmptyRule")
     private String hash() throws NoSuchAlgorithmException {
         final MessageDigest digest = MessageDigest.getInstance("SHA-1");
         final StringBuilder res = new StringBuilder(40);
@@ -89,7 +86,7 @@ final class ChSource implements CommitHash {
                 new Unchecked<>(this.text).value().getBytes(StandardCharsets.UTF_8)
             )
         ) {
-            final String hex = Integer.toHexString(0xff & raw);
+            final String hex = Integer.toHexString(0xFF & raw);
             if (hex.length() == 1) {
                 res.append('0');
             }

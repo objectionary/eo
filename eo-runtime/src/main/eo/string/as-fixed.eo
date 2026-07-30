@@ -1,8 +1,9 @@
 # Writes the number `n` as fixed-point decimal with exactly `places` fraction
 # digits, rounding to the nearest unit in the last place, so that `2.5` with
 # four places becomes `2.5000` and `0.9999999` with six places becomes `1.000000`.
-# If `places` is negative or not a whole number, the `cant-print` fallback is
-# returned, or the bottom object when unbound.
+# If `places` is not a finite non-negative integer (negative, fractional, nan
+# or infinite), the `cant-print` fallback is returned, or the bottom object
+# when unbound.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -15,8 +16,7 @@
   if. > @
     or.
       0.gt places
-      not.
-        places.floor.eq places
+      places.is-integer.not
     cant-print
       "Can't write a fixed-point decimal with %f fraction places".printf
         * places
@@ -80,82 +80,89 @@
             48
         acc
 
-  eq. ++> tests-carries-rounding-into-integer-part
+  eq. ++> can-carry-rounding-into-the-integer-part
     "1.000000"
     string
       as-fixed 0.9999999 6
 
-  eq. ++> tests-honours-custom-places
-    "3.14"
+  eq. ++> can-drop-the-sign-of-a-negative-rounding-to-zero
+    "0.00"
     string
-      as-fixed 3.14159 2
+      as-fixed -1.0E-4 2
 
-  eq. ++> tests-negative-places-formats-message-as-number
+  eq. ++> can-drop-the-sign-of-a-tiny-negative-rounding-to-zero
+    "0.00"
+    string
+      as-fixed -0.001 2
+
+  eq. ++> can-format-the-error-message-of-negative-places
     "Can't write a fixed-point decimal with -2.000000 fraction places"
     as-fixed
       3.14159
       -2
       message > [message]
 
-  eq. ++> tests-negative-places-returns-provided-fallback
+  eq. ++> can-honour-custom-places
+    "3.14"
+    string
+      as-fixed 3.14159 2
+
+  eq. ++> can-omit-the-decimal-point-with-zero-places
+    "3"
+    string
+      as-fixed 2.5 0
+
+  eq. ++> can-omit-the-decimal-point-with-zero-places-when-negative
+    "-3"
+    string
+      as-fixed -2.5 0
+
+  eq. ++> can-pad-with-trailing-zeros
+    "1.250000"
+    string
+      as-fixed 1.25 6
+
+  eq. ++> can-round-to-the-last-place
+    "0.123457"
+    string
+      as-fixed 0.123456789 6
+
+  eq. ++> can-write-a-negative-value
+    "-2.500000"
+    string
+      as-fixed -2.5 6
+
+  eq. ++> can-write-a-single-place
+    "2.5"
+    string
+      as-fixed 2.5 1
+
+  eq. ++> can-write-zero-with-places
+    "0.000000"
+    string
+      as-fixed 0 6
+
+  eq. ++> rejects-infinite-places
+    "recovered"
+    as-fixed
+      1.25
+      pinf
+      "recovered" > [message]
+
+  eq. ++> rejects-negative-places
     "recovered"
     as-fixed
       3.14159
       -2
       "recovered" > [message]
 
-  eq. ++> tests-negative-rounding-to-zero-drops-sign
-    "0.00"
-    string
-      as-fixed -1.0E-4 2
-
-  eq. ++> tests-negative-tiny-rounding-to-zero-drops-sign
-    "0.00"
-    string
-      as-fixed -0.001 2
-
-  eq. ++> tests-non-integer-places-returns-provided-fallback
+  eq. ++> rejects-non-integer-places
     "recovered"
     as-fixed
       3.14159
       2.5
       "recovered" > [message]
 
-  eq. ++> tests-pads-with-trailing-zeros
-    "1.250000"
-    string
-      as-fixed 1.25 6
-
-  eq. ++> tests-rounds-to-last-place
-    "0.123457"
-    string
-      as-fixed 0.123456789 6
-
-  eq. ++> tests-writes-negative-value
-    "-2.500000"
-    string
-      as-fixed -2.5 6
-
-  eq. ++> tests-writes-single-place
-    "2.5"
-    string
-      as-fixed 2.5 1
-
-  eq. ++> tests-writes-zero
-    "0.000000"
-    string
-      as-fixed 0 6
-
-  eq. ++> tests-zero-places-omits-decimal-point
-    "3"
-    string
-      as-fixed 2.5 0
-
-  eq. ++> tests-zero-places-omits-decimal-point-when-negative
-    "-3"
-    string
-      as-fixed -2.5 0
-
-  as-fixed --> on-negative-places-without-fallback
+  as-fixed --> stops-on-negative-places
     3.14159
     -2

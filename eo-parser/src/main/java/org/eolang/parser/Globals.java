@@ -30,7 +30,6 @@ import java.util.List;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class Globals {
 
     /**

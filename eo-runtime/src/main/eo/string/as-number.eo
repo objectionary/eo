@@ -29,48 +29,48 @@
         at.
           scanf "%f" text
 
-  eq. ++> tests-converts-float-text-to-number
+  eq. ++> can-convert-float-text
     3.14
     as-number "3.14"
 
-  eq. ++> tests-converts-negative-text-to-number
+  eq. ++> can-convert-negative-text
     -42
     as-number "-42"
 
-  eq. ++> tests-converts-text-to-number
+  eq. ++> can-convert-text
     5
     as-number "5"
 
-  42.5.eq "42.5".as-number ++> tests-converts-text-to-number-via-implicit-dispatch
+  42.5.eq "42.5".as-number ++> can-convert-text-through-an-implicit-dispatch
 
-  eq. ++> tests-currency-prefixed-text-returns-provided-fallback
+  eq. ++> rejects-currency-prefixed-text
     42
     as-number
       "$100"
       42 > [message]
 
-  eq. ++> tests-embedded-number-text-returns-provided-fallback
-    42
-    as-number
-      "abc5"
-      42 > [message]
-
-  eq. ++> tests-multiple-dots-text-returns-provided-fallback
-    42
-    as-number
-      "12.34.56"
-      42 > [message]
-
-  eq. ++> tests-non-numeric-text-returns-provided-fallback
+  eq. ++> rejects-non-numeric-text
     42
     as-number
       "Hello"
       42 > [message]
 
-  eq. ++> tests-space-separated-numbers-text-returns-provided-fallback
+  eq. ++> rejects-space-separated-numbers
     42
     as-number
       "1 2 3"
       42 > [message]
 
-  as-number "Hello" --> on-converting-text-to-number
+  eq. ++> rejects-text-with-an-embedded-number
+    42
+    as-number
+      "abc5"
+      42 > [message]
+
+  eq. ++> rejects-text-with-multiple-dots
+    42
+    as-number
+      "12.34.56"
+      42 > [message]
+
+  as-number "Hello" --> stops-on-converting-non-numeric-text

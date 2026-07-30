@@ -19,7 +19,7 @@ import java.util.List;
  *   args — the chain stays open for further {@code .method} continuations
  *   or deeper-indent vapplication children.</li>
  *   <li>{@link Kind#VMETHOD_WITH_HARGS} when this {@code .method}
- *   carries ≥1 horizontal args — the chain becomes
+ *   carries one or more horizontal args — the chain becomes
  *   {@link Openness#HORIZONTAL_COMPLETED}.</li>
  * </ul>
  *
@@ -45,7 +45,6 @@ import java.util.List;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class LnMethod implements Line {
 
     /**
@@ -129,7 +128,7 @@ final class LnMethod implements Line {
         if (stack.top().openness() == Openness.HORIZONTAL_COMPLETED) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
-                "method continuation not allowed after horizontal application"
+                "method continuation not allowed after horizontal application, try vertical application instead"
             );
         }
         if (stack.top().kind() == Kind.ONLY_PHI_FORMATION) {

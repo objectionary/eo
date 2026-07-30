@@ -1,7 +1,7 @@
-# Recover from a terminated computation (⊥).
-# Resolves `value` to its normal form; if that is a ⊥, behaves as
-# `alternative`, otherwise as `value`. This is the only way to intercept a
-# ⊥ and keep going: a ⊥ that is never recovered terminates the program.
+# Recovers from a terminated computation.
+# Resolves `value` to its normal form; if that resolution terminates, behaves
+# as `alternative`, otherwise as `value`. This is the only way to intercept a
+# termination and keep going: one that is never recovered ends the program.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -16,19 +16,19 @@
   ? > value /A?
   ? > alternative /A
 
-  eq. ++> tests-falls-back-to-alternative-when-terminated
+  eq. ++> can-fall-back-to-the-alternative-when-terminated
     recovered
       2.as-i64.div 0.as-i64
       7
     7
 
-  eq. ++> tests-keeps-the-value-when-not-terminated
+  eq. ++> can-keep-the-value-when-not-terminated
     recovered
       42
       7
     42
 
-  eq. ++> tests-recovers-the-inner-recovery
+  eq. ++> can-recover-an-inner-recovery
     recovered
       recovered
         2.as-i64.div 0.as-i64
@@ -36,7 +36,7 @@
       42
     42
 
-  eq. ++> tests-recovers-when-a-provided-fallback-terminates
+  eq. ++> can-recover-when-a-provided-fallback-terminates
     recovered
       2.as-i64.div
         0.as-i64
@@ -45,6 +45,6 @@
       42
     42
 
-  recovered --> when-both-are-terminated
+  recovered --> stops-on-both-being-terminated
     2.as-i64.div 0.as-i64
     5.as-i64.div 0.as-i64

@@ -96,15 +96,7 @@ public final class MjFormat extends MjSafe {
     @Parameter(property = "eo.width")
     private Integer width;
 
-    /**
-     * The width of a single indentation level, in spaces.
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @Parameter(property = "eo.step")
-    private Integer step;
-
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void exec() throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> sources = this.scopedTojos().withSources();
@@ -150,10 +142,9 @@ public final class MjFormat extends MjSafe {
      * choice can move on the next pass, so a single parse-and-print is not
      * always a fixpoint. The moniker's home is decided by the structure
      * alone (attribute order and the XSL merge), not by the layout weights,
-     * so this settles it at the default, always-reparseable layout — a
-     * custom {@link #step} would emit indentation the parser cannot read
-     * back — and then lays the settled structure out once with the
-     * configured weights. The settling is bounded by {@link #SETTLE}; a
+     * so this settles it at the default layout and then lays the settled
+     * structure out once with the configured weights. The settling is
+     * bounded by {@link #SETTLE}; a
      * source that has not settled by then is laid out as-is and reported
      * divergent, so it fails loudly instead of looping.</p>
      *
@@ -194,6 +185,13 @@ public final class MjFormat extends MjSafe {
      * never parsed at all, and this goal would otherwise print back (or, in
      * {@code -Deo.autoFix} mode, save) a truncated version of it.</p>
      *
+     * <p>Line coverage is necessary but not sufficient: the parser recovers
+     * from some <em>structural</em> errors not by dropping the remaining
+     * lines but by substituting an empty placeholder {@code <o>} for the
+     * piece it could not build and then carrying on. Coverage stays intact,
+     * yet the tree no longer describes the source, so this also rejects a
+     * tree carrying such a {@link #placeholder(XML) placeholder}.</p>
+     *
      * @param source The path of the {@code .eo} file, for the error message
      * @param structure The current text of the {@code .eo} file
      * @return The parsed XMIR
@@ -207,7 +205,8 @@ public final class MjFormat extends MjSafe {
             .elements(Filter.withName("error"))
             .filter(MjFormat::severe)
             .count();
-        if (errors > 0L && MjFormat.truncated(xmir, structure)) {
+        if (errors > 0L
+            && (MjFormat.truncated(xmir, structure) || MjFormat.placeholder(xmir))) {
             throw new IllegalStateException(
                 String.format(
                     "%s does not fully parse (%d error(s) found) and part of it was lost, won't format it",
@@ -238,6 +237,40 @@ public final class MjFormat extends MjSafe {
             .mapToInt(node -> Integer.parseInt(node.attribute("line").text().orElse("0")))
             .max()
             .orElse(0) < last;
+    }
+
+    /**
+     * Whether the parsed tree carries a recovered placeholder node.
+     *
+     * <p>Recovering from a structural error, the parser can substitute an
+     * empty {@code <o>} — one with no {@code base}, no {@code name}, no
+     * child elements and no text — for a node it could not build. A
+     * reversed dispatch left without a receiver, for instance, becomes such
+     * a node, which the printer can only render as {@code []}. Formatting a
+     * tree that carries one would silently rewrite the source into a
+     * different one the parser happens to accept.</p>
+     *
+     * @param xmir The parsed XMIR
+     * @return TRUE if a recovered placeholder stands in for lost source
+     */
+    private static boolean placeholder(final XML xmir) {
+        return new Xnav(xmir.inner())
+            .path("//o")
+            .anyMatch(MjFormat::empty);
+    }
+
+    /**
+     * Whether an {@code <o>} is an empty recovery placeholder, i.e. it
+     * carries neither a {@code base} nor a {@code name} attribute, has no
+     * child elements and holds no text.
+     * @param obj The {@code <o>} element
+     * @return TRUE if the element is such a placeholder
+     */
+    private static boolean empty(final Xnav obj) {
+        return !obj.attribute("base").text().isPresent()
+            && !obj.attribute("name").text().isPresent()
+            && obj.elements(Filter.all()).count() == 0L
+            && obj.text().orElse("").isBlank();
     }
 
     /**
@@ -272,9 +305,6 @@ public final class MjFormat extends MjSafe {
         }
         if (this.width != null) {
             map.put(PenaltyKey.WIDTH, this.width);
-        }
-        if (this.step != null) {
-            map.put(PenaltyKey.STEP, this.step);
         }
         return map;
     }

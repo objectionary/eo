@@ -26,7 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test cases for {@link MjLint}.
  * @since 0.31.0
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)
 final class MjLintTest {
@@ -47,7 +46,6 @@ final class MjLintTest {
     }
 
     @Test
-    @SuppressWarnings({"PMD.UnitTestContainsTooManyAsserts", "PMD.UnnecessaryLocalRule"})
     void includesDefectDetailsInExceptionMessage(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.join(
@@ -68,14 +66,12 @@ final class MjLintTest {
             root = root.getCause();
         }
         MatcherAssert.assertThat(
-            "Root exception message must include the program name so defects are visible in stacktrace",
+            "Root exception message must name the program and the failing rule, so defects are visible in stacktrace",
             root.getMessage(),
-            Matchers.containsString("foo.x.main")
-        );
-        MatcherAssert.assertThat(
-            "Root exception message must include the failing rule in parentheses",
-            root.getMessage(),
-            Matchers.containsString("(cti)")
+            Matchers.allOf(
+                Matchers.containsString("foo.x.main"),
+                Matchers.containsString("(cti)")
+            )
         );
     }
 
@@ -205,26 +201,12 @@ final class MjLintTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void detectsCriticalErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp).withProgram(
-            String.join(
-                System.lineSeparator(),
-                "+package foo.x",
-                "",
-                "[] > main",
-                "  cti true \"critical\" \"msg\" > @"
-            )
-        );
+        final FakeMaven maven = new FakeMaven(temp).withProgram(MjLintTest.critical());
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> maven.execute(new FakeMaven.Lint()),
             "Wrong program should have failed or error, but it didn't"
-        );
-        MatcherAssert.assertThat(
-            "Linted file should not exist",
-            maven.programTojo().linted().toFile(),
-            FileMatchers.anExistingFile()
         );
         MatcherAssert.assertThat(
             "Error must exist in parsed XMIR",
@@ -232,6 +214,21 @@ final class MjLintTest {
                 new XMLDocument(maven.programTojo().xmir()).inner()
             ).path("//errors/error[@severity='critical']").count(),
             Matchers.equalTo(1L)
+        );
+    }
+
+    @Test
+    void keepsLintedFileWhenCriticalErrorFound(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(MjLintTest.critical());
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven.execute(new FakeMaven.Lint()),
+            "Wrong program should have failed or error, but it didn't"
+        );
+        MatcherAssert.assertThat(
+            "Linted file must stay on disk even when a critical error is found, but it didn't",
+            maven.programTojo().linted().toFile(),
+            FileMatchers.anExistingFile()
         );
     }
 
@@ -417,6 +414,19 @@ final class MjLintTest {
                 .orElseThrow(),
             Matchers.stringContainsInOrder("a.b.foo", "is not used")
         );
+    }
+
+    /**
+     * Program with a critical defect.
+     * @return Program with a critical defect
+     */
+    private static String[] critical() {
+        return new String[]{
+            "+package foo.x",
+            "",
+            "[] > main",
+            "  cti true \"critical\" \"msg\" > @",
+        };
     }
 
     /**

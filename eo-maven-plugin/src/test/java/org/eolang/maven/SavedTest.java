@@ -11,7 +11,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.hamcrest.MatcherAssert;
@@ -62,6 +66,26 @@ final class SavedTest {
             "a reader racing with concurrent writers must always see a complete variant, never a mix of two",
             broken,
             Matchers.empty()
+        );
+    }
+
+    @Test
+    void retriesMoveWhenTargetTemporarilyBlocked(@Mktmp final Path temp) throws Exception {
+        final Path target = temp.resolve("blocked.txt");
+        Files.createDirectories(target);
+        try (ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor()) {
+            scheduler.schedule(
+                (Callable<Void>) () -> {
+                    Files.delete(target);
+                    return null;
+                }, 300, TimeUnit.MILLISECONDS
+            );
+            new Saved("content", target).value();
+        }
+        MatcherAssert.assertThat(
+            "the write must succeed once a retry lands after the obstruction clears",
+            Files.readString(target, StandardCharsets.UTF_8),
+            Matchers.equalTo("content")
         );
     }
 }

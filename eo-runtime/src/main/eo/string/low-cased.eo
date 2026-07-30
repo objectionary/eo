@@ -7,7 +7,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
 
 [text] > low-cased
   string > @
@@ -34,10 +33,10 @@
             byte
         as-ascii byte > code
 
-  eq. ++> tests-converts-text-to-lower-case
-    "hello"
-    low-cased "HELLO"
-
-  eq. ++> tests-converts-text-with-low-letters-to-lower-case
+  eq. ++> can-convert-already-lower-cased-text
     "hello"
     low-cased "HeLlO"
+
+  eq. ++> can-convert-text-to-lower-case
+    "hello"
+    low-cased "HELLO"

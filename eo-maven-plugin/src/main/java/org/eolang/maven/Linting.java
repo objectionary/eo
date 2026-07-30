@@ -53,7 +53,7 @@ import org.xembly.Xembler;
  * </p>
  * @since 0.31.0
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
+@SuppressWarnings("PMD.GodClass")
 final class Linting implements Step {
 
     /**
@@ -209,7 +209,41 @@ final class Linting implements Step {
         }
     }
 
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
+    /**
+     * Summarize the counts.
+     * @param counts Counts of errors, warnings, and critical
+     * @return Summary text
+     */
+    static String summary(final Map<Severity, Integer> counts) {
+        final List<String> parts = new ArrayList<>(0);
+        final int critical = counts.get(Severity.CRITICAL);
+        if (critical > 0) {
+            parts.add(Linting.plural(critical, "critical error"));
+        }
+        final int errors = counts.get(Severity.ERROR);
+        if (errors > 0) {
+            parts.add(Linting.plural(errors, "error"));
+        }
+        final int warnings = counts.get(Severity.WARNING);
+        if (warnings > 0) {
+            parts.add(Linting.plural(warnings, "warning"));
+        }
+        if (parts.isEmpty()) {
+            parts.add("no complaints");
+        }
+        final String sum;
+        if (parts.size() < 3) {
+            sum = String.join(" and ", parts);
+        } else {
+            sum = String.format(
+                "%s, and %s",
+                String.join(", ", parts.subList(0, parts.size() - 1)),
+                parts.get(parts.size() - 1)
+            );
+        }
+        return sum;
+    }
+
     private void linting() throws IOException {
         final Collection<TjForeign> programs = this.tojos.withXmir();
         final Map<Severity, Integer> counts = new ConcurrentHashMap<>();
@@ -491,41 +525,6 @@ final class Linting implements Step {
             txt.append('s');
         }
         return txt.toString();
-    }
-
-    /**
-     * Summarize the counts.
-     * @param counts Counts of errors, warnings, and critical
-     * @return Summary text
-     */
-    private static String summary(final Map<Severity, Integer> counts) {
-        final List<String> parts = new ArrayList<>(0);
-        final int critical = counts.get(Severity.CRITICAL);
-        if (critical > 0) {
-            parts.add(Linting.plural(critical, "critical error"));
-        }
-        final int errors = counts.get(Severity.ERROR);
-        if (errors > 0) {
-            parts.add(Linting.plural(errors, "error"));
-        }
-        final int warnings = counts.get(Severity.WARNING);
-        if (warnings > 0) {
-            parts.add(Linting.plural(warnings, "warning"));
-        }
-        if (parts.isEmpty()) {
-            parts.add("no complaints");
-        }
-        final String sum;
-        if (parts.size() < 3) {
-            sum = String.join(" and ", parts);
-        } else {
-            sum = String.format(
-                "%s, and %s",
-                String.join(", ", parts.subList(0, parts.size() - 2)),
-                parts.get(parts.size() - 1)
-            );
-        }
-        return sum;
     }
 
     /**

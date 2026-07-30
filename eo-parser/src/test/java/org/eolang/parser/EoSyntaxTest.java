@@ -50,7 +50,6 @@ import org.xml.sax.SAXParseException;
  * Test case for {@link EoSyntax}.
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 @Execution(ExecutionMode.SAME_THREAD)
 @ExtendWith(LogProgress.class)
 final class EoSyntaxTest {
@@ -208,7 +207,7 @@ final class EoSyntaxTest {
             ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/object[count(o)=1]",
-                "/object/o[@name='base' and count(o[not(@name='xi\uD83C\uDF35')])=2]",
+                "/object/o[@name='base' and count(o[not(@name='xi🌵')])=2]",
                 "/object/o[@name='base']/o[@name='x']",
                 "/object/o[@name='base']/o[@name='f']"
             )
@@ -328,39 +327,33 @@ final class EoSyntaxTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/eo-typos/", glob = "**.yaml")
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void checksTypoPacks(final String yaml) {
-        final Xtory story = new XtSticky(
-            new XtYaml(
-                yaml,
-                eo -> new EoSyntax(new InputOf(String.format("%s%n", eo))).parsed()
-            )
-        );
-        Assumptions.assumeTrue(story.map().get("skip") == null);
+        final Xtory story = EoSyntaxTest.typo(yaml);
         final Xnav after = new Xnav(story.after().inner());
-        MatcherAssert.assertThat(
-            "We expect the error with correct line number was found",
-            after.path("/object/errors/error/@line").findAny().isPresent(),
-            Matchers.equalTo(true)
-        );
         MatcherAssert.assertThat(
             after.toString(),
             after.path("/object/errors/error/@line").map(line -> line.text().get())
                 .collect(Collectors.toList()),
             Matchers.hasItem(story.map().get("line").toString())
         );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/eo-typos/", glob = "**.yaml")
+    void checksTypoMessages(final String yaml) {
+        final Xtory story = EoSyntaxTest.typo(yaml);
         final String msg = "message";
-        if (story.map().containsKey(msg)) {
-            MatcherAssert.assertThat(
-                XhtmlMatchers.xhtml(story.after()).toString(),
-                String.join(
-                    System.lineSeparator(),
-                    after.path("/object/errors/error").map(error -> error.text().get())
-                        .collect(Collectors.toList())
-                ).replaceAll("\\r", ""),
-                Matchers.containsString(story.map().get(msg).toString())
-            );
-        }
+        Assumptions.assumeTrue(story.map().containsKey(msg));
+        MatcherAssert.assertThat(
+            XhtmlMatchers.xhtml(story.after()).toString(),
+            String.join(
+                System.lineSeparator(),
+                new Xnav(story.after().inner()).path("/object/errors/error")
+                    .map(error -> error.text().get())
+                    .collect(Collectors.toList())
+            ).replaceAll("\\r", ""),
+            Matchers.containsString(story.map().get(msg).toString())
+        );
     }
 
     @ParameterizedTest
@@ -539,7 +532,7 @@ final class EoSyntaxTest {
                         new InputOf(
                             String.join(
                                 System.lineSeparator(),
-                                "[] > foo\uD83C\uDF35bar".concat(System.lineSeparator())
+                                "[] > foo🌵bar".concat(System.lineSeparator())
                             )
                         )
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
@@ -563,7 +556,7 @@ final class EoSyntaxTest {
                             String.join(
                                 System.lineSeparator(),
                                 "[] > app",
-                                "  x > a\uD83C\uDF3565".concat(System.lineSeparator())
+                                "  x > a🌵65".concat(System.lineSeparator())
                             )
                         )
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
@@ -587,7 +580,7 @@ final class EoSyntaxTest {
                             String.join(
                                 System.lineSeparator(),
                                 "[] > x",
-                                "  \uD83C\uDF35 > y".concat(System.lineSeparator())
+                                "  🌵 > y".concat(System.lineSeparator())
                             )
                         )
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
@@ -729,6 +722,22 @@ final class EoSyntaxTest {
         return Files.readAllLines(Paths.get("target/blns.txt")).stream().filter(s -> !s.isEmpty())
             .map(StringEscapeUtils::escapeJava)
             .map(Arguments::of);
+    }
+
+    /**
+     * Parse a typo pack, skipping the packs that ask to be skipped.
+     * @param yaml The pack
+     * @return Parsed story
+     */
+    private static Xtory typo(final String yaml) {
+        final Xtory story = new XtSticky(
+            new XtYaml(
+                yaml,
+                eo -> new EoSyntax(new InputOf(String.format("%s%n", eo))).parsed()
+            )
+        );
+        Assumptions.assumeTrue(story.map().get("skip") == null);
+        return story;
     }
 
     /**

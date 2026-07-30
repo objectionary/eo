@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: MIT
  */
 /*
- * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
 package org.eolang.Posix; // NOPMD
@@ -93,7 +92,6 @@ public final class StatSyscall implements Syscall {
      * The {@code struct stat} of Linux on x86-64.
      * @since 0.74.0
      * @checkstyle VisibilityModifierCheck (60 lines)
-     * @checkstyle MagicNumberCheck (60 lines)
      */
     public static final class Linux extends Structure implements FileStat {
 
@@ -149,7 +147,6 @@ public final class StatSyscall implements Syscall {
 
         /**
          * Ctor.
-         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public Linux() {
             super();
@@ -185,7 +182,6 @@ public final class StatSyscall implements Syscall {
      *
      * @since 0.74.0
      * @checkstyle VisibilityModifierCheck (60 lines)
-     * @checkstyle MagicNumberCheck (60 lines)
      */
     public static final class LinuxArm extends Structure implements FileStat {
 
@@ -241,7 +237,6 @@ public final class StatSyscall implements Syscall {
 
         /**
          * Ctor.
-         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public LinuxArm() {
             super();
@@ -271,7 +266,6 @@ public final class StatSyscall implements Syscall {
      * The 64-bit-inode {@code struct stat} of macOS on arm64.
      * @since 0.74.0
      * @checkstyle VisibilityModifierCheck (60 lines)
-     * @checkstyle MagicNumberCheck (60 lines)
      */
     public static final class Mac extends Structure implements FileStat {
 
@@ -332,7 +326,6 @@ public final class StatSyscall implements Syscall {
 
         /**
          * Ctor.
-         * @checkstyle ConstructorsCodeFreeCheck (6 lines)
          */
         public Mac() {
             super();

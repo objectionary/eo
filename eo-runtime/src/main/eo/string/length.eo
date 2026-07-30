@@ -9,7 +9,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
 
 [text] > length
   if. > @
@@ -60,32 +59,32 @@
       index.plus csize
       len.plus 1
 
-  eq. ++> tests-calculates-length-of-spaces-only
+  eq. ++> can-count-a-text-of-spaces-only
     " ".length
     1
 
-  eq. ++> tests-counts-characters-of-the-origin-text
-    length
-      "Hello, world!"
-    13
-
-  ++> tests-reads-the-length-with-n2-byte-characters
-    and. > @
-      str.length.eq 12
-      str.as-bytes.size.eq 16
-    "Hello, друг!" > str
-
-  ++> tests-reads-the-length-with-n3-byte-characters
-    and. > @
-      str.length.eq 16
-      str.as-bytes.size.eq 18
-    "The अ devanagari" > str
-
-  ++> tests-reads-the-length-with-n4-byte-characters
+  ++> can-count-four-byte-characters
     and. > @
       str.length.eq 11
       str.as-bytes.size.eq 14
     "The 😀 smile" > str
 
-  length --> on-taking-length-of-incomplete-n4-byte-character
+  eq. ++> can-count-the-characters-of-the-origin-text
+    length
+      "Hello, world!"
+    13
+
+  ++> can-count-three-byte-characters
+    and. > @
+      str.length.eq 16
+      str.as-bytes.size.eq 18
+    "The अ devanagari" > str
+
+  ++> can-count-two-byte-characters
+    and. > @
+      str.length.eq 12
+      str.as-bytes.size.eq 16
+    "Hello, друг!" > str
+
+  length --> stops-on-an-incomplete-four-byte-character
     string F0-9F-98

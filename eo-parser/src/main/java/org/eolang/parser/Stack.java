@@ -170,10 +170,8 @@ final class Stack {
         final String owner;
         if (this.levels.isEmpty()) {
             if (indent != 0) {
-                throw new IllegalStateException(
-                    String.format(
-                        "first push must be at indent 0, was %d", indent
-                    )
+                throw new ParseError(
+                    line, indent, "unexpected indentation, the first object must start at indent 0"
                 );
             }
             parent = Kind.TOP_LEVEL;
@@ -217,7 +215,7 @@ final class Stack {
      * Pop every entry whose indent is strictly greater than
      * {@code target} (R-5.2.1), invoking the constructor-supplied closer
      * on each as it is removed. After the pop sweep, if the new top has
-     * indent {@code target} − 2 (a step occurred), its openness is
+     * indent {@code target} - 2 (a step occurred), its openness is
      * downgraded from {@link Openness#OPEN OPEN} to
      * {@link Openness#VERTICAL_COMPLETED VERTICAL_COMPLETED} per
      * R-5.2.2.

@@ -33,7 +33,6 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Ctor.
-         * @checkstyle ConstructorsCodeFreeCheck (10 lines)
          */
         Fake() {
             this(
@@ -46,7 +45,6 @@ interface Dependencies extends Iterable<Dep> {
         /**
          * Ctor.
          * @param size Number of fake dependencies
-         * @checkstyle ConstructorsCodeFreeCheck (10 lines)
          */
         Fake(final int size) {
             this(
@@ -59,7 +57,6 @@ interface Dependencies extends Iterable<Dep> {
         /**
          * Ctor.
          * @param deps Dependencies
-         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         Fake(final Dep... deps) {
             this(Arrays.asList(deps));

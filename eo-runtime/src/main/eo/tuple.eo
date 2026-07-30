@@ -23,11 +23,15 @@
       fallback
         "Given index is out of tuple bounds"
       if. > [tup] >> at-fast
-        eq.
-          tup.length.plus -1
-          index
-        tup.head
-        at-fast tup.tail
+        0.eq tup.length
+        fallback
+          "Given index is out of tuple bounds"
+        if.
+          eq.
+            tup.length.plus -1
+            index
+          tup.head
+          at-fast tup.tail
       | ^
   tuple > empty
     T
@@ -51,209 +55,7 @@
     as-number.
       length.plus 1
 
-  ++> tests-creates-empty-tuple-with-number
-    eq. > @
-      a.at 0
-      3
-    tuple.empty.with 3 > a
-
-  ++> tests-empty-tuple-length
-    eq. > @
-      length.
-        elements.
-          array
-            *
-      0
-    [elements] > array
-
-  ++> tests-gets-lengths-of-empty-tuple
-    a.length.eq 0 > @
-    * > a
-
-  tuple.empty.length.eq ++> tests-gets-lengths-of-empty-tuple-through-special-syntax
-    0
-
-  tuple.empty.length.eq ++> tests-gets-lengths-of-empty-tuple-without-additional-obj
-    0
-
-  eq. ++> tests-makes-tuple-through-special-syntax
-    length.
-      * 1 2
-    2
-
-  ++> tests-non-empty-tuple-length-test
-    eq. > @
-      length.
-        elements.
-          array *
-            "a"
-            "b"
-            "c"
-            "d"
-            "e"
-      5
-    [elements] > array
-
-  eq. ++> tests-out-of-bounds-at-returns-provided-fallback
-    "recovered"
-    at.
-      *
-        1
-        2
-        3
-        4
-      20
-      "recovered" > [message]
-
-  eq. ++> tests-package-tuple-concatenates-with-another
-    concat.
-      * 0 1
-      * 2 3
-    *
-      0
-      1
-      2
-      3
-
-  contains. ++> tests-package-tuple-contains-element
-    *
-      1
-      2
-      3
-    2
-
-  tuple.contains ++> tests-package-tuple-contains-via-tuple-namespace
-    *
-      1
-      2
-      3
-    2
-
-  not. ++> tests-package-tuple-does-not-contain-element
-    contains.
-      *
-        1
-        2
-        3
-      5
-
-  eq. ++> tests-package-tuple-index-of-element
-    index-of.
-      *
-        10
-        20
-        30
-      20
-    1
-
-  ++> tests-tuple-as-a-bound-attribute-size-0
-    tup.length.eq 0 > @
-    * > tup
-
-  ++> tests-tuple-as-a-bound-attribute-size-1
-    eq. > @
-      tup.at 0
-      100
-    * 100 > tup
-
-  ++> tests-tuple-as-a-bound-attribute-size-2
-    and. > @
-      eq.
-        array.at 0
-        1
-      eq.
-        array.at 1
-        2
-    * > array
-      1
-      2
-
-  ++> tests-tuple-empty-fluent-with-indented-keyword
-    and. > @
-      and.
-        eq.
-          array.at 0
-          1
-        eq.
-          array.at 1
-          2
-      eq.
-        array.at 2
-        3
-    with. > array
-      with.
-        tuple.empty.with 1
-        2
-      3
-
-  eq. ++> tests-tuple-equality
-    *
-      1
-      2
-      3
-    *
-      1
-      2
-      3
-
-  ++> tests-tuple-fluent-with
-    and. > @
-      and.
-        eq.
-          array.at 0
-          1
-        eq.
-          array.at 1
-          2
-      eq.
-        array.at 2
-        3
-    with. > array
-      with.
-        tuple.empty.with 1
-        2
-      3
-
-  ++> tests-tuple-fluent-with-indented
-    and. > @
-      and.
-        eq.
-          array.at 0
-          1
-        eq.
-          array.at 1
-          2
-      eq.
-        array.at 2
-        3
-    with. > array
-      with.
-        tuple.empty.with 1
-        2
-      3
-
-  eq. ++> tests-tuple-nested-equality
-    *
-      * 0 1
-      * 4 0
-      * 7 3
-    *
-      * 0 1
-      * 4 0
-      * 7 3
-
-  not. ++> tests-tuple-not-equality
-    eq.
-      *
-        1
-        2
-        3
-      *
-        3
-        2
-        1
-
-  ++> tests-tuple-with
+  ++> can-add-an-item
     and. > @
       and.
         and.
@@ -276,7 +78,179 @@
         3
       "with"
 
-  ++> tests-tuple-with-negative-index-gets-first
+  ++> can-be-a-bound-attribute-of-one-item
+    eq. > @
+      tup.at 0
+      100
+    * 100 > tup
+
+  ++> can-be-a-bound-attribute-of-two-items
+    and. > @
+      eq.
+        array.at 0
+        1
+      eq.
+        array.at 1
+        2
+    * > array
+      1
+      2
+
+  ++> can-be-a-bound-attribute-when-empty
+    tup.length.eq 0 > @
+    * > tup
+
+  ++> can-build-a-tuple-fluently
+    and. > @
+      and.
+        eq.
+          array.at 0
+          1
+        eq.
+          array.at 1
+          2
+      eq.
+        array.at 2
+        3
+    with. > array
+      with.
+        tuple.empty.with 1
+        2
+      3
+
+  ++> can-build-a-tuple-fluently-when-indented
+    and. > @
+      and.
+        eq.
+          array.at 0
+          1
+        eq.
+          array.at 1
+          2
+      eq.
+        array.at 2
+        3
+    with. > array
+      with.
+        tuple.empty.with 1
+        2
+      3
+
+  ++> can-build-an-empty-tuple-with-an-indented-keyword
+    and. > @
+      and.
+        eq.
+          array.at 0
+          1
+        eq.
+          array.at 1
+          2
+      eq.
+        array.at 2
+        3
+    with. > array
+      with.
+        tuple.empty.with 1
+        2
+      3
+
+  tuple.contains ++> can-check-containment-through-the-package
+    *
+      1
+      2
+      3
+    2
+
+  eq. ++> can-concat-with-another-tuple
+    concat.
+      * 0 1
+      * 2 3
+    *
+      0
+      1
+      2
+      3
+
+  contains. ++> can-contain-an-element
+    *
+      1
+      2
+      3
+    2
+
+  ++> can-create-an-empty-tuple-with-a-number
+    eq. > @
+      a.at 0
+      3
+    tuple.empty.with 3 > a
+
+  eq. ++> can-equal-a-nested-tuple
+    *
+      * 0 1
+      * 4 0
+      * 7 3
+    *
+      * 0 1
+      * 4 0
+      * 7 3
+
+  eq. ++> can-equal-another-tuple
+    *
+      1
+      2
+      3
+    *
+      1
+      2
+      3
+
+  eq. ++> can-find-the-index-of-an-element
+    index-of.
+      *
+        10
+        20
+        30
+      20
+    1
+
+  ++> can-get-the-length-of-an-empty-tuple
+    a.length.eq 0 > @
+    * > a
+
+  tuple.empty.length.eq ++> can-get-the-length-of-an-empty-tuple-through-special-syntax
+    0
+
+  tuple.empty.length.eq ++> can-get-the-length-of-an-empty-tuple-without-an-extra-object
+    0
+
+  eq. ++> can-make-a-tuple-through-special-syntax
+    length.
+      * 1 2
+    2
+
+  ++> can-report-the-length-of-a-non-empty-tuple
+    eq. > @
+      length.
+        elements.
+          array *
+            "a"
+            "b"
+            "c"
+            "d"
+            "e"
+      5
+    [elements] > array
+
+  ++> can-report-the-length-of-an-empty-tuple
+    eq. > @
+      length.
+        elements.
+          array
+            *
+      0
+    [elements] > array
+
+  ++> can-take-the-first-item-by-a-negative-index
     eq. > @
       array.at -5
       0
@@ -287,7 +261,7 @@
       3
       4
 
-  ++> tests-tuple-with-negative-index-gets-last
+  ++> can-take-the-last-item-by-a-negative-index
     eq. > @
       array.at -1
       4
@@ -298,11 +272,55 @@
       3
       4
 
-  tuple.empty.head --> on-getting-head-from-empty-tuple
+  not. ++> cannot-contain-an-absent-element
+    contains.
+      *
+        1
+        2
+        3
+      5
 
-  tuple.empty.tail --> on-getting-tail-from-empty-tuple
+  not. ++> cannot-equal-a-different-tuple
+    eq.
+      *
+        1
+        2
+        3
+      *
+        3
+        2
+        1
 
-  --> on-out-of-tuple-bounds-with-negative-index
+  eq. ++> rejects-a-fractional-index
+    "recovered"
+    at.
+      *
+        "zero"
+        "one"
+        "two"
+      1.5
+      "recovered" > [message]
+
+  eq. ++> rejects-an-out-of-bounds-index
+    "recovered"
+    at.
+      *
+        1
+        2
+        3
+        4
+      20
+      "recovered" > [message]
+
+  at. --> stops-on-a-wrong-index
+    *
+      1
+      2
+      3
+      4
+    20
+
+  --> stops-on-an-out-of-bounds-negative-index
     array.at -6 > @
     * > array
       0
@@ -311,10 +329,6 @@
       3
       4
 
-  at. --> on-wrong-tuple-at
-    *
-      1
-      2
-      3
-      4
-    20
+  tuple.empty.head --> stops-on-taking-the-head-of-an-empty-tuple
+
+  tuple.empty.tail --> stops-on-taking-the-tail-of-an-empty-tuple

@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 /**
  * Directory.walk.
  * @since 0.40
+ * @checkstyle IllegalIdentifierNameCheck (101 lines)
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "directory.walk")
@@ -31,7 +32,6 @@ public final class EOdirectory$EOwalk extends PhDefault implements Atom {
     }
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public Phi lambda() {
         final Path path = Paths.get(
             new Dataized(

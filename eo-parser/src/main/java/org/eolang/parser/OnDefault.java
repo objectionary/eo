@@ -27,7 +27,6 @@ public final class OnDefault implements ObjectName {
     /**
      * Ctor.
      * @param xml XML document
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     public OnDefault(final XML xml) {
         this(new Xnav(xml.inner()));

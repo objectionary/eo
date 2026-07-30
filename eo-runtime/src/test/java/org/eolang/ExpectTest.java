@@ -8,12 +8,13 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test for {@link Expect}.
  * @since 0.1.0
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class ExpectTest {
 
     @Test
@@ -315,6 +316,64 @@ final class ExpectTest {
                 "fails with correct error message while transform Phi to NonNegativeInteger"
             ).getMessage(),
             Matchers.equalTo("the 'ρ' attribute (1.0E15) must fit into int range")
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+        classes = {
+            EOnumber$EOdiv.class,
+            EOnumber$EOgt.class,
+            EOnumber$EOplus.class,
+            EOnumber$EOtimes.class
+        }
+    )
+    void failsInNumberAtomForNonNumericX(final Class<?> cls) {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhApplication(
+                        new PhApplication(
+                            (Phi) cls.getDeclaredConstructor().newInstance(),
+                            Phi.RHO,
+                            new Data.ToPhi(42)
+                        ),
+                        "x",
+                        new Data.ToPhi(true)
+                    )
+                ).take(),
+                "operation with TRUE fails with a proper message that explains what happened"
+            ).getMessage(),
+            Matchers.equalTo("the 'x' attribute must be a number")
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+        classes = {
+            EOnumber$EOdiv.class,
+            EOnumber$EOgt.class,
+            EOnumber$EOplus.class,
+            EOnumber$EOtimes.class
+        }
+    )
+    void failsInNumberAtomForNonNumericRho(final Class<?> cls) {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhApplication(
+                        (Phi) cls.getDeclaredConstructor().newInstance(),
+                        Phi.RHO,
+                        new Data.ToPhi(true)
+                    )
+                ).take(),
+                "number atom with TRUE as ρ fails with a proper message"
+            ).getMessage(),
+            Matchers.equalTo("the 'ρ' attribute must be a number")
         );
     }
 }

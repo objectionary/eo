@@ -47,7 +47,6 @@ import org.xml.sax.SAXParseException;
  *
  * @since 0.49.0
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public final class StrictXmir implements XML {
 
     /**
@@ -249,7 +248,6 @@ public final class StrictXmir implements XML {
      * @param path The file
      * @return Where it was saved
      */
-    @SuppressWarnings("PMD.CognitiveComplexity")
     private static File downloaded(final String uri, final Path path) {
         final File abs = path.toFile().getAbsoluteFile();
         StrictXmir.LOCK.lock();
@@ -258,49 +256,60 @@ public final class StrictXmir implements XML {
                 if (abs.getParentFile().mkdirs()) {
                     Logger.debug(StrictXmir.class, "Directory for %[file]s created", path);
                 }
-                int attempt = 0;
-                while (true) {
-                    ++attempt;
-                    try {
-                        Files.write(
-                            path,
-                            new IoCheckedBytes(
-                                new BytesOf(new InputOf(new URI(uri)))
-                            ).asBytes()
-                        );
-                        Logger.debug(
-                            StrictXmir.class,
-                            "XSD downloaded from %s and copied to %[file]s",
-                            uri, path
-                        );
-                        break;
-                    } catch (final IOException ex) {
-                        if (attempt < 3) {
-                            Logger.warn(
-                                StrictXmir.class,
-                                "Attempt #%d failed to download %s to %s: %[exception]s",
-                                attempt,
-                                uri,
-                                path,
-                                ex
-                            );
-                            continue;
-                        }
-                        throw new IllegalArgumentException(
-                            String.format("Failed to download %s to %s", uri, path),
-                            ex
-                        );
-                    } catch (final URISyntaxException ex) {
-                        throw new IllegalArgumentException(
-                            String.format("Wrong URI: %s", uri),
-                            ex
-                        );
-                    }
-                }
+                StrictXmir.saved(uri, path);
             }
         } finally {
             StrictXmir.LOCK.unlock();
         }
         return abs;
+    }
+
+    /**
+     * Read the URI and write what it yields into the file, retrying a few
+     * times before giving up, since a network hiccup must not fail the
+     * whole build.
+     * @param uri The URI
+     * @param path The file
+     */
+    private static void saved(final String uri, final Path path) {
+        int attempt = 0;
+        while (true) {
+            ++attempt;
+            try {
+                Files.write(
+                    path,
+                    new IoCheckedBytes(
+                        new BytesOf(new InputOf(new URI(uri)))
+                    ).asBytes()
+                );
+                Logger.debug(
+                    StrictXmir.class,
+                    "XSD downloaded from %s and copied to %[file]s",
+                    uri, path
+                );
+                break;
+            } catch (final IOException ex) {
+                if (attempt < 3) {
+                    Logger.warn(
+                        StrictXmir.class,
+                        "Attempt #%d failed to download %s to %s: %[exception]s",
+                        attempt,
+                        uri,
+                        path,
+                        ex
+                    );
+                    continue;
+                }
+                throw new IllegalArgumentException(
+                    String.format("Failed to download %s to %s", uri, path),
+                    ex
+                );
+            } catch (final URISyntaxException ex) {
+                throw new IllegalArgumentException(
+                    String.format("Wrong URI: %s", uri),
+                    ex
+                );
+            }
+        }
     }
 }

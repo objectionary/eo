@@ -10,7 +10,7 @@ package org.eolang.parser;
  * <p>Mutable record. Most fields flip after construction as later lines
  * extend the level's expression (e.g., a {@link Kind#HEAD} entry promotes
  * to {@link Kind#VAPPLICATION} once its first deeper child arrives; its
- * {@code openness} progresses {@link Openness#OPEN OPEN} →
+ * {@code openness} progresses from {@link Openness#OPEN OPEN} to
  * {@link Openness#VERTICAL_COMPLETED VERTICAL_COMPLETED} when the child
  * block ends).</p>
  *
@@ -22,9 +22,7 @@ package org.eolang.parser;
  * keeps a reference. *
  *
  * @since 0.1
- * @checkstyle MultipleStringLiteralsCheck (200 lines)
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class Level {
 
     /**
@@ -348,7 +346,7 @@ final class Level {
     }
 
     /**
-     * Mutate the outer kind (e.g., promote {@link Kind#HEAD} →
+     * Mutate the outer kind (e.g., promote {@link Kind#HEAD} to
      * {@link Kind#VAPPLICATION}).
      * @param next New kind
      */

@@ -61,6 +61,7 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
 
 [] > console
   os.is-windows.if > @
@@ -125,5 +126,5 @@
                 output-block
             buffer
 
-  console.write ++> tests-writes-to-console
+  console.write ++> can-write-to-the-console
     "Hello, console-test!\n"

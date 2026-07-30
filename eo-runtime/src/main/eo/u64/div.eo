@@ -21,56 +21,55 @@
         d.as-bytes.and 80-00-00-00-00-00-00-00
         80-00-00-00-00-00-00-00
       if.
-        n.gte d
+        n.gte x.as-u64
         u64 00-00-00-00-00-00-00-01
         u64 00-00-00-00-00-00-00-00
-      final
-  x.as-u64 > d
-  if. > final
-    remainder.gte d
-    q0plus1
-    u64 q0
-  times. > product
-    u64 q0
-    d
-  left. > q0
-    as-bytes.
-      div.
-        i64
-          n.as-bytes.right 1
-        i64 d.as-bytes
-    1
-  plus. > q0plus1
-    u64 q0
-    u64 00-00-00-00-00-00-00-01
-  n.minus product > remainder
+      if.
+        gte.
+          n.minus
+            times.
+              u64
+                left. >> q0
+                  as-bytes.
+                    div.
+                      i64 (n.as-bytes.right 1)
+                      i64
+                        as-bytes.
+                          x.as-u64 >> d
+                  1
+              x.as-u64
+          x.as-u64
+        plus.
+          u64 q0
+          u64 00-00-00-00-00-00-00-01
+        u64 q0
 
-  eq. ++> tests-u64-div-by-large-divisor
+  eq. ++> can-divide-a-small-value-by-a-larger-divisor
+    00-00-00-00-00-00-00-0A.as-u64.div 80-00-00-00-00-00-00-00.as-u64
+    00-00-00-00-00-00-00-00.as-u64
+
+  eq. ++> can-divide-by-a-large-divisor
     FF-FF-FF-FF-FF-FF-FF-FF.as-u64.div 80-00-00-00-00-00-00-00.as-u64
     00-00-00-00-00-00-00-01.as-u64
 
-  eq. ++> tests-u64-div-by-u64-one
+  eq. ++> can-divide-by-one
     FF-FF-FF-FF-FF-FF-FF-FF.as-u64.div 00-00-00-00-00-00-00-01.as-u64
     FF-FF-FF-FF-FF-FF-FF-FF.as-u64
 
-  eq. ++> tests-u64-div-by-zero-returns-provided-fallback
+  eq. ++> can-divide-with-a-remainder
+    00-00-00-00-00-00-00-2A.as-u64.div 00-00-00-00-00-00-00-05.as-u64
+    00-00-00-00-00-00-00-08.as-u64
+
+  eq. ++> can-divide-without-a-sign
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.div 00-00-00-00-00-00-00-02.as-u64
+    7F-FF-FF-FF-FF-FF-FF-FF.as-u64
+
+  eq. ++> rejects-division-by-zero
     "recovered"
     00-00-00-00-00-00-00-02.as-u64.div
       00-00-00-00-00-00-00-00.as-u64
       "recovered" > [message]
 
-  eq. ++> tests-u64-div-is-unsigned
-    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.div 00-00-00-00-00-00-00-02.as-u64
-    7F-FF-FF-FF-FF-FF-FF-FF.as-u64
-
-  eq. ++> tests-u64-div-small-not-reaching-large-divisor
-    00-00-00-00-00-00-00-0A.as-u64.div 80-00-00-00-00-00-00-00.as-u64
-    00-00-00-00-00-00-00-00.as-u64
-
-  eq. ++> tests-u64-div-with-remainder
-    00-00-00-00-00-00-00-2A.as-u64.div 00-00-00-00-00-00-00-05.as-u64
-    00-00-00-00-00-00-00-08.as-u64
-
-  div. --> on-division-u64-by-u64-zero
+  div. --> stops-on-division-by-zero
     00-00-00-00-00-00-00-02.as-u64
     00-00-00-00-00-00-00-00.as-u64

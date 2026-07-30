@@ -39,7 +39,7 @@ package org.eolang.parser;
  *
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
+@SuppressWarnings("PMD.GodClass")
 final class Suffix {
 
     /**
@@ -81,7 +81,6 @@ final class Suffix {
      * @param tail Tail substring (may have leading whitespace)
      * @param span Source span (for error reporting)
      * @param home Source column where {@code tail} begins
-     * @checkstyle ConstructorsCodeFreeCheck (3 lines)
      */
     Suffix(final String tail, final Span span, final int home) {
         this(Suffix.parse(tail, span, home));
@@ -150,7 +149,7 @@ final class Suffix {
 
     /**
      * Resolve the {@code @name} attribute value for the line carrying
-     * this suffix, applying R-9.3 source-token mapping: {@code @} →
+     * this suffix, applying R-9.3 source-token mapping: {@code @} becomes
      * {@code φ} for an explicit name.
      *
      * <p>This is the single source of truth for naming any line shape
@@ -262,7 +261,7 @@ final class Suffix {
     }
 
     /**
-     * Apply the R-9.3.1 source-token mapping {@code @} → {@code φ}
+     * Apply the R-9.3.1 source-token mapping of {@code @} to {@code φ}
      * for a name carried by an explicit {@code > name} suffix. Other
      * names pass through unchanged.
      * @param raw Source name
@@ -344,9 +343,7 @@ final class Suffix {
             );
         }
         final int start = idx;
-        while (idx < tail.length() && !Suffix.endsName(tail.charAt(idx))) {
-            idx = idx + 1;
-        }
+        idx = Suffix.skipName(tail, idx);
         if (start == idx) {
             throw new ParseError(
                 span.line(), home + start,
@@ -398,9 +395,7 @@ final class Suffix {
      * @param span Source span
      * @param home Source column where tail begins
      * @return Parsed result
-     * @checkstyle ParameterNumberCheck (5 lines)
-     * @checkstyle CyclomaticComplexityCheck (45 lines)
-     * @checkstyle NPathComplexityCheck (45 lines)
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static Parsed auto(
         final String tail, final int after, final Span span, final int home
@@ -412,21 +407,13 @@ final class Suffix {
             idx = idx + 1;
         }
         final int begin = Suffix.skipSpace(tail, idx);
-        String handle = "";
-        int rest = begin;
-        if (begin < tail.length() && !Suffix.endsName(tail.charAt(begin))) {
-            int end = begin;
-            while (end < tail.length() && !Suffix.endsName(tail.charAt(end))) {
-                end = end + 1;
-            }
-            handle = tail.substring(begin, end);
-            if (handle.codePoints().anyMatch(cp -> cp == 0x1F335)) {
-                throw new ParseError(
-                    span.line(), home + begin,
-                    "cactus emoji is reserved for auto-names; not allowed in identifiers"
-                );
-            }
-            rest = end;
+        int rest = Suffix.skipName(tail, begin);
+        final String handle = tail.substring(begin, rest);
+        if (handle.codePoints().anyMatch(cp -> cp == 0x1F335)) {
+            throw new ParseError(
+                span.line(), home + begin,
+                "cactus emoji is reserved for auto-names; not allowed in identifiers"
+            );
         }
         if (!cnst && rest < tail.length() && tail.charAt(rest) == '!') {
             cnst = true;
@@ -462,10 +449,7 @@ final class Suffix {
                 "name suffix requires a name"
             );
         }
-        int idx = begin;
-        while (idx < tail.length() && !Suffix.endsName(tail.charAt(idx))) {
-            idx = idx + 1;
-        }
+        int idx = Suffix.skipName(tail, begin);
         final String name = tail.substring(begin, idx);
         if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
             throw new ParseError(
@@ -559,7 +543,7 @@ final class Suffix {
                 "optional marker ? is allowed only on a void attribute"
             );
         }
-        if (raw.equals("Q")) {
+        if ("Q".equals(raw)) {
             throw new ParseError(
                 span.line(), home + after,
                 "atom signature requires a name"
@@ -577,6 +561,23 @@ final class Suffix {
     private static int skipSpace(final String tail, final int from) {
         int idx = from;
         if (idx < tail.length() && tail.charAt(idx) == ' ') {
+            idx = idx + 1;
+        }
+        return idx;
+    }
+
+    /**
+     * Skip the NAME token that starts at {@code from}, stopping at the
+     * first character that ends it. The text between {@code from} and the
+     * returned index is the name itself, empty when a terminator already
+     * sits at {@code from}.
+     * @param tail Tail substring
+     * @param from Current index
+     * @return Index just past the name
+     */
+    private static int skipName(final String tail, final int from) {
+        int idx = from;
+        while (idx < tail.length() && !Suffix.endsName(tail.charAt(idx))) {
             idx = idx + 1;
         }
         return idx;

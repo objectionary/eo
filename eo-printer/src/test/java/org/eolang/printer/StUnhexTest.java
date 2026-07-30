@@ -19,7 +19,6 @@ import org.junit.jupiter.params.provider.MethodSource;
  * Test case for {@link StUnhex}.
  * @since 0.29.0
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class StUnhexTest {
 
     @ParameterizedTest
@@ -174,7 +173,45 @@ final class StUnhexTest {
                 )
             ),
             XhtmlMatchers.hasXPath(
-                "//o[text()='\"A\\u0001\\u0007\u0434\u0440\u0443\u0433\"']"
+                "//o[text()='\"A\\u0001\\u0007друг\"']"
+            )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
+    void keepsTooFewNumberBytesUnconverted(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must not crash on a number payload shorter than 8 bytes, but it did",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    "<p><o base='Φ.number'><o base='Φ.bytes'><o>40-49-0F</o></o></o></p>"
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                "//o[@base='Φ.number' and o[@base='Φ.bytes' and not(o) and text()='40-49-0F']]"
+            )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
+    void keepsTooManyNumberBytesUnconverted(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must not silently drop trailing bytes from a number payload longer than 8 bytes, but it did",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    "<p><o base='Φ.number'><o base='Φ.bytes'><o>40-49-0F-DB-00-00-00-00-11-22</o></o></o></p>"
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                "//o[@base='Φ.number' and o[@base='Φ.bytes' and not(o) and text()='40-49-0F-DB-00-00-00-00-11-22']]"
             )
         );
     }

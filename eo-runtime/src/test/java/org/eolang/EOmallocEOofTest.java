@@ -3,27 +3,24 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle PackageNameCheck (10 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOmalloc}.
+ * Test case for {@link EOmalloc$EOof}.
  * @since 0.1
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOmallocTest {
+final class EOmallocEOofTest {
 
     @Test
     void freesMemory() {
-        final EOmallocTest.Dummy dummy = new EOmallocTest.Dummy();
+        final EOmallocEOofTest.Dummy dummy = new EOmallocEOofTest.Dummy();
         new Dataized(
-            EOmallocTest.allocated(
+            EOmallocEOofTest.allocated(
                 new Data.ToPhi(1L),
                 dummy
             )
@@ -37,11 +34,11 @@ final class EOmallocTest {
 
     @Test
     void freesMemoryIfErrorIsOccurred() {
-        final EOmallocTest.ErrorDummy dummy = new EOmallocTest.ErrorDummy();
+        final EOmallocEOofTest.ErrorDummy dummy = new EOmallocEOofTest.ErrorDummy();
         Assertions.assertThrows(
             ExAbstract.class,
             () -> new Dataized(
-                EOmallocTest.allocated(
+                EOmallocEOofTest.allocated(
                     new Data.ToPhi(1L),
                     dummy
                 )
@@ -52,6 +49,44 @@ final class EOmallocTest {
             ExAbstract.class,
             () -> Heaps.INSTANCE.free((int) dummy.id),
             "Heaps should throw an exception on attempting to free already freed memory after failure, but it didn't"
+        );
+    }
+
+    @Test
+    void throwsCorrectErrorForNonNumericSize() {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhApplication(
+                        new EOmalloc$EOof(),
+                        "size",
+                        new Data.ToPhi(true)
+                    )
+                ).take(),
+                "malloc.of with non-numeric size must fail with a proper message"
+            ).getMessage(),
+            Matchers.equalTo("the 'size' attribute must be a number")
+        );
+    }
+
+    @Test
+    void throwsCorrectErrorForNegativeSize() {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhApplication(
+                        new EOmalloc$EOof(),
+                        "size",
+                        new Data.ToPhi(-1)
+                    )
+                ).take(),
+                "malloc.of with negative size must fail with a proper message"
+            ).getMessage(),
+            Matchers.equalTo("the 'size' attribute (-1) must be greater or equal to zero")
         );
     }
 

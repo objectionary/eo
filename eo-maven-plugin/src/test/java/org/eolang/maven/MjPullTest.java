@@ -27,9 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * Test case for {@link MjPull}.
  * @since 0.1
- * @checkstyle ClassFanOutComplexityCheck (1000 lines)
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(WeAreOnline.class)
 @ExtendWith(MktmpResolver.class)
 final class MjPullTest {
@@ -122,7 +120,6 @@ final class MjPullTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void doesNotPullInOfflineMode(@Mktmp final Path tmp) throws IOException {
         final Map<String, Path> result = new FakeMaven(tmp)
             .withHelloWorld()
@@ -147,7 +144,6 @@ final class MjPullTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void skipsAlreadyPulled(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()

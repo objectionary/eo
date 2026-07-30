@@ -40,7 +40,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * This tests checks how eo-maven-plugin works when a proxy is set.
  * @since 0.60
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "PMD.TooManyMethods"})
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class ProxyIT {
 
@@ -208,7 +208,6 @@ final class ProxyIT {
         );
     }
 
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static int free() {
         try (ServerSocket socket = new ServerSocket(0)) {
             return socket.getLocalPort();

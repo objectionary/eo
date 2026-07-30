@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
+@SuppressWarnings("PMD.GodClass")
 public class PhDefault implements Phi, Cloneable {
 
     /**
@@ -235,7 +235,7 @@ public class PhDefault implements Phi, Cloneable {
                 PhDefault.LOGGER.log(
                     Level.FINE,
                     String.format(
-                        "%s\uD835\uDD38('%s' for %s) ➜ %s",
+                        "%s𝔸('%s' for %s) ➜ %s",
                         PhDefault.padding(),
                         name,
                         this,

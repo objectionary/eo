@@ -52,51 +52,13 @@
         matched-from-index 1 0
     [txt] > matches
       found.exists.and > @
-        found.to.eq txt.length
+        and.
+          found.to.eq txt.length
+          found.from.eq 0
       next. > found
         match txt
 
-  not. ++> tests-does-not-match-anchored-pattern-with-trailing-newline
-    matches.
-      compiled.
-        regex "/^[0-9]+$/"
-      "123\n"
-
-  not. ++> tests-does-not-matches-regex-against-the-pattern
-    matches.
-      compiled.
-        regex "/[a-z]+/"
-      "123"
-
-  eq. ++> tests-invalid-regex-syntax-returns-provided-fallback
-    "recovered"
-    compile.
-      regex "/[a-z/"
-      "recovered" > [message]
-
-  ++> tests-matched-sequence-has-right-border-indexes
-    and. > @
-      0.eq n.start
-      and.
-        1.eq n.from
-        6.eq n.to
-    next. > n
-      match.
-        regex "/[a-z]+/"
-        "!hello!"
-
-  matches. ++> tests-matches-regex-against-the-pattern
-    compiled.
-      regex "/[a-z]+/"
-    "hello"
-
-  eq. ++> tests-missing-slash-returns-provided-fallback
-    "no-slash"
-    compile.
-      regex "(.)+"
-      "no-slash" > [message]
-
-  ++> tests-regex-contains-valid-groups-on-each-matched-block
+  ++> can-expose-groups-on-each-matched-block
     and. > @
       and.
         and.
@@ -123,48 +85,64 @@
         "!hello1!world2"
     first.next > second
 
-  matches. ++> tests-regex-ignores-comments-in-string
+  matches. ++> can-ignore-comments-in-a-pattern
     compiled.
       regex
         "/(\\d) #ignore this comment/x"
     "4"
 
-  matches. ++> tests-regex-matches-dotall-option
+  matches. ++> can-match-a-text-against-a-pattern
     compiled.
-      regex "/(.*)/s"
-    "too \\n many \\n line \\n Feed\\n"
+      regex "/[a-z]+/"
+    "hello"
 
-  matches. ++> tests-regex-matches-entire-pattern
+  matches. ++> can-match-an-entire-pattern
     compiled.
       regex "/[0-9]/\\d+/"
     "2/75"
 
-  matches. ++> tests-regex-matches-with-case-insensitive-option
+  matches. ++> can-match-with-the-case-insensitive-option
     compiled.
       regex "/(string)/i"
     "StRiNg"
 
-  matches. ++> tests-regex-matches-with-multiline-option
-    compiled.
-      regex "/(^([0-9]+).*)/m"
-    "1 bottle of water on the wall. \\n1 bottle of water."
-
-  matches. ++> tests-regex-matches-with-regex-case-insensitive-and-caps
+  matches. ++> can-match-with-the-case-insensitive-option-and-capitals
     compiled.
       regex "/(word)/i"
     "WORD"
 
-  matches. ++> tests-regex-matches-with-regex-unix-lines
+  matches. ++> can-match-with-the-dotall-option
     compiled.
-      regex "/(.+)/d"
-    "A\\r\\nB\\rC\\nD"
+      regex "/(.*)/s"
+    "too \\n many \\n line \\n Feed\\n"
 
-  matches. ++> tests-regex-matches-with-unicode-case-and-insensitive
+  matches. ++> can-match-with-the-multiline-option
+    compiled.
+      regex "/(^([0-9]+).*)/m"
+    "1 bottle of water on the wall. \\n1 bottle of water."
+
+  matches. ++> can-match-with-the-unicode-case-option
     compiled.
       regex "/(yildirim)/ui"
     "Yıldırım"
 
-  eq. ++> tests-regex-returns-valid-matched-string-sequence
+  matches. ++> can-match-with-the-unix-lines-option
+    compiled.
+      regex "/(.+)/d"
+    "A\\r\\nB\\rC\\nD"
+
+  ++> can-report-the-border-indexes-of-a-match
+    and. > @
+      0.eq n.start
+      and.
+        1.eq n.from
+        6.eq n.to
+    next. > n
+      match.
+        regex "/[a-z]+/"
+        "!hello!"
+
+  eq. ++> can-return-the-matched-string-sequence
     text.
       next.
         match.
@@ -172,7 +150,7 @@
           "!hello!"
     "hello"
 
-  ++> tests-regex-returns-valid-second-matched-block
+  ++> can-return-the-second-matched-block
     and. > @
       and.
         and.
@@ -188,54 +166,84 @@
           regex "/[a-z]+/"
           "!hello!world!"
 
-  compile. --> on-compiling-invalid-regex-without-fallback
+  not. ++> cannot-match-a-text-against-a-wrong-pattern
+    matches.
+      compiled.
+        regex "/[a-z]+/"
+      "123"
+
+  not. ++> cannot-match-an-anchored-pattern-with-a-trailing-newline
+    matches.
+      compiled.
+        regex "/^[0-9]+$/"
+      "123\n"
+
+  not. ++> cannot-match-with-unmatched-leading-characters
+    matches.
+      compiled.
+        regex "/[a-z]+/"
+      "1abc"
+
+  eq. ++> rejects-a-pattern-with-a-missing-slash
+    "no-slash"
+    compile.
+      regex "(.)+"
+      "no-slash" > [message]
+
+  eq. ++> rejects-invalid-regex-syntax
+    "recovered"
+    compile.
+      regex "/[a-z/"
+      "recovered" > [message]
+
+  compiled. --> stops-on-a-missing-closing-slash
+    regex "/pattern"
+
+  compiled. --> stops-on-a-missing-first-slash
+    regex "(.)+"
+
+  compile. --> stops-on-compiling-an-invalid-pattern
     regex "/[a-z/"
 
-  from. --> on-getting-from-position-on-not-matched-block
-    next.
-      match.
-        regex "/[a-z]+/"
-        "123"
-
-  count. --> on-getting-groups-count-on-not-matched-block
-    next.
-      match.
-        regex "/[a-z]+/"
-        "123"
-
-  groups. --> on-getting-groups-on-not-matched-block
-    next.
-      match.
-        regex "/[a-z]+/"
-        "123"
-
-  next. --> on-getting-next-on-not-matched-block
-    next.
-      match.
-        regex "/[a-z]+/"
-        "123"
-
-  group. --> on-getting-specified-group-on-not-matched-block
+  group. --> stops-on-taking-a-group-of-an-unmatched-block
     next.
       match.
         regex "/[a-z]+/"
         "123"
     1
 
-  text. --> on-getting-text-on-not-matched-block
+  to. --> stops-on-taking-the-end-position-of-an-unmatched-block
     next.
       match.
         regex "/[a-z]+/"
         "123"
 
-  to. --> on-getting-to-position-on-not-matched-block
+  count. --> stops-on-taking-the-group-count-of-an-unmatched-block
     next.
       match.
         regex "/[a-z]+/"
         "123"
 
-  compiled. --> on-missing-closing-slash-in-regex
-    regex "/pattern"
+  groups. --> stops-on-taking-the-groups-of-an-unmatched-block
+    next.
+      match.
+        regex "/[a-z]+/"
+        "123"
 
-  compiled. --> on-missing-first-slash-in-regex
-    regex "(.)+"
+  next. --> stops-on-taking-the-next-of-an-unmatched-block
+    next.
+      match.
+        regex "/[a-z]+/"
+        "123"
+
+  from. --> stops-on-taking-the-start-position-of-an-unmatched-block
+    next.
+      match.
+        regex "/[a-z]+/"
+        "123"
+
+  text. --> stops-on-taking-the-text-of-an-unmatched-block
+    next.
+      match.
+        regex "/[a-z]+/"
+        "123"

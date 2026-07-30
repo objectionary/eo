@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle PackageNameCheck (10 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 import java.util.function.Supplier;
@@ -19,7 +15,6 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link Heaps}.
  * @since 0.19
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class HeapsTest {
 
     @Test
@@ -33,7 +28,6 @@ final class HeapsTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void failsOnDoubleAllocation() {
         final Phi phi = new HeapsTest.PhFake();
         final int idx = Heaps.INSTANCE.malloc(phi, 10);

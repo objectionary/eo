@@ -6,10 +6,12 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.util.function.Consumer;
+import org.cactoos.Fallback;
 import org.cactoos.Func;
 import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
+import org.cactoos.scalar.ScalarWithFallback;
 
 /**
  * Processes elements in multiple threads.
@@ -65,25 +67,25 @@ final class Threaded<T> {
      * Exec them all and count.
      * @return How many succeeded
      */
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     int total() {
         return new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors() * 2,
                 new Mapped<>(
-                    tojo -> () -> {
-                        try {
-                            return this.scalar.apply(tojo);
-                            // @checkstyle IllegalCatchCheck (1 line)
-                        } catch (final Exception ex) {
-                            final String message = String.format(
-                                "Failed to process \"%s\" (%s)",
-                                tojo, tojo.getClass().getCanonicalName()
-                            );
-                            this.logger.accept(message);
-                            throw new IllegalStateException(message, ex);
-                        }
-                    },
+                    tojo -> new ScalarWithFallback<>(
+                        () -> this.scalar.apply(tojo),
+                        new Fallback.From<>(
+                            Exception.class,
+                            ex -> {
+                                final String message = String.format(
+                                    "Failed to process \"%s\" (%s)",
+                                    tojo, tojo.getClass().getCanonicalName()
+                                );
+                                this.logger.accept(message);
+                                throw new IllegalStateException(message, ex);
+                            }
+                        )
+                    ),
                     this.sources
                 )
             )

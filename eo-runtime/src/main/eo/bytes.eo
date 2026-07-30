@@ -19,7 +19,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
 +unlint mandatory-package
 
 [@] > bytes
@@ -33,187 +32,192 @@
   [start len] > slice /Q.bytes
     ? > cant-slice /{Q.string}
 
-  eq. ++> tests-and-neg-bytes-as-number-with-leading-zeroes
+  eq. ++> can-and-negative-bytes-with-leading-zeroes
     as-number.
       00-00-00-00-8E-EA-4C-B1.and FF-FF-FF-FF-00-00-00-00
     0
 
-  eq. ++> tests-and-neg-bytes-as-number-without-leading-zeroes
+  eq. ++> can-and-negative-bytes-without-leading-zeroes
     as-number.
       00-00-00-00-FF-FF-FF-FF.and FF-FF-FF-FF-00-00-00-00
     0
 
-  eq. ++> tests-and-with-one-neg-one-plus
+  eq. ++> can-and-one-negative-with-one-positive
     -7.as-bytes.and 7.as-bytes
     40-1C-00-00-00-00-00-00
 
-  eq. ++> tests-and-with-two-neg
+  eq. ++> can-and-two-negatives
     -6.as-bytes.and -4.as-bytes
     C0-10-00-00-00-00-00-00
 
-  eq. ++> tests-and-with-two-plus
+  eq. ++> can-and-two-positives
     5.as-bytes.and 10.as-bytes
     40-04-00-00-00-00-00-00
 
-  eq. ++> tests-and-with-zero
-    0.as-bytes.and 32.as-bytes
-    00-00-00-00-00-00-00-00
-
-  eq. ++> tests-bitwise-works
+  eq. ++> can-and-two-single-byte-numbers
     as-number.
       1.as-bytes.and 1.as-bytes
     1
 
-  eq. ++> tests-bitwise-works-negative
-    FF-FF-FF-FF-FF-FF-FF-81.as-bytes.or 00-00-00-00-00-00-00-7F.as-bytes
-    FF-FF-FF-FF-FF-FF-FF-FF
+  eq. ++> can-and-with-zero
+    0.as-bytes.and 32.as-bytes
+    00-00-00-00-00-00-00-00
 
-  eq. ++> tests-concat-bools-as-bytes
+  CA-FE-BE-BE.size.eq 4 ++> can-be-written-in-several-lines
+
+  eq. ++> can-concat-bools-as-bytes
     true.as-bytes.concat false.as-bytes
     01-00
 
-  eq. ++> tests-concat-empty
-    --.concat --
-    --
+  eq. ++> can-concat-bytes-with-empty-ones
+    05-5E-78.concat --
+    05-5E-78
 
-  eq. ++> tests-concat-empty-with
+  eq. ++> can-concat-empty-bytes-with-others
     --.concat 05-5E-78
     05-5E-78
 
-  eq. ++> tests-concat-strings
+  eq. ++> can-concat-strings-as-bytes
     string
       "hello ".as-bytes.concat
         "world".as-bytes
     "hello world"
 
-  eq. ++> tests-concat-with-empty
-    05-5E-78.concat --
-    05-5E-78
+  eq. ++> can-concat-two-empty-bytes
+    --.concat --
+    --
 
-  ++> tests-concatenation-of-bytes
+  ++> can-concat-two-long-bytes
     eq. > @
       a.concat b
       02-EF-D4-05-5E-78-3A-12-33-C1-B5-5E-71-55
     02-EF-D4-05-5E-78-3A > a
     12-33-C1-B5-5E-71-55 > b
 
-  ++> tests-conjunction-of-bytes
+  ++> can-conjoin-two-long-bytes
     eq. > @
       a.and b
       02-23-C0-05-5E-70-10
     02-EF-D4-05-5E-78-3A > a
     12-33-C1-B5-5E-71-55 > b
 
-  F1-20-5F-EC-B5-90-32.size.eq 7 ++> tests-counts-size-of-bytes
+  eq. ++> can-count-the-size-of-a-slice
+    size.
+      20-1F-EE-B5-90-EE-BB.slice 2 3
+    3
 
-  not. ++> tests-not-with-neg
+  F1-20-5F-EC-B5-90-32.size.eq 7 ++> can-count-the-size-of-bytes
+
+  not. ++> can-invert-negative-bytes
     -1.as-bytes.eq -1.as-bytes.not
 
-  not. ++> tests-not-with-plus
+  not. ++> can-invert-positive-bytes
     53.as-bytes.eq 53.as-bytes.not
 
-  not. ++> tests-not-with-zero
+  not. ++> can-invert-zero-bytes
     0.as-bytes.eq 0.as-bytes.not
 
-  eq. ++> tests-or-neg-bytes-as-number-with-zero
+  eq. ++> can-or-negative-bytes-with-leading-zeroes
+    00-00-00-00-8E-EA-4C-B1.or FF-FF-FF-FF-00-00-00-00
+    FF-FF-FF-FF-8E-EA-4C-B1
+
+  eq. ++> can-or-negative-bytes-with-one
+    FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
+    FF-FF-FF-FF-00-00-00-01
+
+  eq. ++> can-or-negative-bytes-with-positive-ones
+    FF-FF-FF-FF-FF-FF-FF-81.as-bytes.or 00-00-00-00-00-00-00-7F.as-bytes
+    FF-FF-FF-FF-FF-FF-FF-FF
+
+  eq. ++> can-or-negative-bytes-with-zero
     as-number.
       -4294967296.as-bytes.or 0.as-bytes
     -4294967296
 
-  eq. ++> tests-or-neg-bytes-with-leading-zeroes
-    00-00-00-00-8E-EA-4C-B1.or FF-FF-FF-FF-00-00-00-00
-    FF-FF-FF-FF-8E-EA-4C-B1
-
-  eq. ++> tests-or-neg-bytes-with-one
-    FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
-    FF-FF-FF-FF-00-00-00-01
-
-  eq. ++> tests-or-neg-bytes-without-leading-zeroes
+  eq. ++> can-or-negative-bytes-without-leading-zeroes
     00-00-00-00-FF-FF-FF-FF.or FF-FF-FF-FF-00-00-00-00
     FF-FF-FF-FF-FF-FF-FF-FF
 
-  eq. ++> tests-or-with-one-neg-one-plus
+  eq. ++> can-or-one-negative-with-one-positive
     -7.as-bytes.or 23.as-bytes
     C0-3F-00-00-00-00-00-00
 
-  eq. ++> tests-or-with-two-neg
+  eq. ++> can-or-two-negatives
     -27.as-bytes.or -13.as-bytes
     C0-3B-00-00-00-00-00-00
 
-  eq. ++> tests-or-with-two-plus
+  eq. ++> can-or-two-positives
     5.as-bytes.or 14.as-bytes
     40-3C-00-00-00-00-00-00
 
-  eq. ++> tests-or-with-zero
+  eq. ++> can-or-with-zero
     -11.as-bytes.or 0.as-bytes
     C0-26-00-00-00-00-00-00
 
-  eq. ++> tests-out-of-bounds-slice-returns-provided-fallback
+  eq. ++> can-shift-right-an-even-negative
+    -38.as-bytes.right 1
+    60-21-80-00-00-00-00-00
+
+  eq. ++> can-shift-right-an-even-positive
+    eq.
+      36.as-bytes.right 2
+      -10.as-bytes
+    false
+
+  eq. ++> can-shift-right-an-odd-negative
+    -37.as-bytes.right 3
+    18-08-50-00-00-00-00-00
+
+  eq. ++> can-shift-right-an-odd-positive
+    37.as-bytes.right 3
+    08-08-50-00-00-00-00-00
+
+  eq. ++> can-shift-right-by-zero
+    0.as-bytes.right 2
+    00-00-00-00-00-00-00-00
+
+  eq. ++> can-shift-right-minus-one
+    -1.as-bytes.right 4
+    0B-FF-00-00-00-00-00-00
+
+  eq. ++> can-shift-right-the-integer-minimum
+    -1.as-bytes.right -2147483648
+    00-00-00-00-00-00-00-00
+
+  eq. ++> can-take-a-part-of-bytes
+    20-1F-EE-B5-90.slice
+      1
+      3
+    1F-EE-B5
+
+  eq. ++> can-turn-bytes-into-a-string
+    "你好, друг!"
+    "你好, друг!"
+
+  eq. ++> rejects-a-slice-whose-start-plus-length-overflows
+    "recovered"
+    20-1F-EE-B5-90.slice
+      2000000000
+      2000000000
+      "recovered" > [message]
+
+  eq. ++> rejects-an-out-of-bounds-slice
     "recovered"
     20-1F-EE-B5-90.slice
       3
       10
       "recovered" > [message]
 
-  eq. ++> tests-right-with-even-neg
-    -38.as-bytes.right 1
-    60-21-80-00-00-00-00-00
+  slice. --> stops-on-a-slice-offset-exceeding-the-int-range
+    20-1F-EE-B5-90
+    3000000000
+    1
 
-  eq. ++> tests-right-with-even-plus
-    eq.
-      36.as-bytes.right 2
-      -10.as-bytes
-    false
-
-  eq. ++> tests-right-with-integer-min-value
-    -1.as-bytes.right -2147483648
-    00-00-00-00-00-00-00-00
-
-  eq. ++> tests-right-with-minus-one
-    -1.as-bytes.right 4
-    0B-FF-00-00-00-00-00-00
-
-  eq. ++> tests-right-with-odd-neg
-    -37.as-bytes.right 3
-    18-08-50-00-00-00-00-00
-
-  eq. ++> tests-right-with-odd-plus
-    37.as-bytes.right 3
-    08-08-50-00-00-00-00-00
-
-  eq. ++> tests-right-with-zero
-    0.as-bytes.right 2
-    00-00-00-00-00-00-00-00
-
-  eq. ++> tests-size-of-part-is-correct
-    size.
-      20-1F-EE-B5-90-EE-BB.slice 2 3
-    3
-
-  eq. ++> tests-slice-with-overflowing-start-plus-len-returns-fallback
-    "recovered"
-    20-1F-EE-B5-90.slice
-      2000000000
-      2000000000
-      "recovered" > [message]
-
-  eq. ++> tests-takes-part-of-bytes
-    20-1F-EE-B5-90.slice
-      1
-      3
-    1F-EE-B5
-
-  eq. ++> tests-turns-bytes-into-a-string
-    "你好, друг!"
-    "你好, друг!"
-
-  CA-FE-BE-BE.size.eq 4 ++> tests-written-in-several-lines
-
-  20-1F.and CA-FE-BE --> on-and-with-different-lengths
-
-  20-1F.or CA-FE-BE --> on-or-with-different-lengths
-
-  slice. --> on-out-of-bounds-slice
+  slice. --> stops-on-an-out-of-bounds-slice
     20-1F-EE-B5-90
     3
     10
+
+  20-1F.and CA-FE-BE --> stops-on-and-with-different-lengths
+
+  20-1F.or CA-FE-BE --> stops-on-or-with-different-lengths

@@ -14,7 +14,6 @@ import java.util.Objects;
  * Foreign tojo.
  * @since 0.30
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class TjForeign {
 
     /**

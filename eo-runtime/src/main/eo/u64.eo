@@ -55,69 +55,71 @@
           i64 as-bytes
           i64 x.as-u64.as-bytes
 
-  gt. ++> tests-u64-as-number-is-unsigned
-    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.as-number
-    0
-
-  00-00-00-00-00-00-00-2A.as-u64.as-number.eq 42 ++> tests-u64-as-number-small
-
-  eq. ++> tests-u64-eq-true
-    00-00-00-00-00-00-00-2A.as-u64
-    00-00-00-00-00-00-00-2A.as-u64
-
-  gt. ++> tests-u64-greater-treats-high-bit-as-magnitude
-    FF-FF-FF-FF-FF-FF-FF-FF.as-u64
-    00-00-00-00-00-00-00-01.as-u64
-
-  gte. ++> tests-u64-gte-equal
-    00-00-00-00-00-00-00-32.as-u64
-    00-00-00-00-00-00-00-32.as-u64
-
-  not. ++> tests-u64-gte-false
-    00-00-00-00-00-00-00-00.as-u64.gte 00-00-00-00-00-00-00-0A.as-u64
-
-  eq. ++> tests-u64-has-valid-bytes
-    00-00-00-00-00-00-00-2A.as-u64.as-bytes
-    00-00-00-00-00-00-00-2A
-
-  not. ++> tests-u64-high-bit-not-less-than-one
-    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.lt 00-00-00-00-00-00-00-01.as-u64
-
-  not. ++> tests-u64-less-equal
-    00-00-00-00-00-00-00-0A.as-u64.lt 00-00-00-00-00-00-00-0A.as-u64
-
-  lt. ++> tests-u64-less-true
-    00-00-00-00-00-00-00-0A.as-u64
-    00-00-00-00-00-00-00-32.as-u64
-
-  lte. ++> tests-u64-lte-equal
-    00-00-00-00-00-00-00-32.as-u64
-    00-00-00-00-00-00-00-32.as-u64
-
-  eq. ++> tests-u64-minus
-    00-00-00-00-00-00-00-05.as-u64.minus 00-00-00-00-00-00-00-03.as-u64
-    00-00-00-00-00-00-00-02.as-u64
-
-  eq. ++> tests-u64-minus-with-underflow
-    00-00-00-00-00-00-00-00.as-u64.minus 00-00-00-00-00-00-00-01.as-u64
-    FF-FF-FF-FF-FF-FF-FF-FF.as-u64
-
-  eq. ++> tests-u64-one-plus-u64-one
+  eq. ++> can-add-one-to-one
     00-00-00-00-00-00-00-01.as-u64.plus 00-00-00-00-00-00-00-01.as-u64
     00-00-00-00-00-00-00-02.as-u64
 
-  eq. ++> tests-u64-plus-with-overflow
+  eq. ++> can-add-with-overflow
     FF-FF-FF-FF-FF-FF-FF-FF.as-u64.plus 00-00-00-00-00-00-00-01.as-u64
     00-00-00-00-00-00-00-00.as-u64
 
-  eq. ++> tests-u64-times
+  gte. ++> can-be-greater-than-or-equal-to-an-equal-u64
+    00-00-00-00-00-00-00-32.as-u64
+    00-00-00-00-00-00-00-32.as-u64
+
+  lt. ++> can-be-less-than-a-larger-u64
+    00-00-00-00-00-00-00-0A.as-u64
+    00-00-00-00-00-00-00-32.as-u64
+
+  lte. ++> can-be-less-than-or-equal-to-an-equal-u64
+    00-00-00-00-00-00-00-32.as-u64
+    00-00-00-00-00-00-00-32.as-u64
+
+  lt. ++> can-be-less-than-the-maximum-when-zero
+    00-00-00-00-00-00-00-00.as-u64
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64
+
+  eq. ++> can-convert-a-small-value-to-a-number
+    00-00-00-00-00-00-00-2A.as-u64.as-number
+    42
+
+  gt. ++> can-convert-to-an-unsigned-number
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.as-number
+    0
+
+  eq. ++> can-equal-the-same-u64
+    00-00-00-00-00-00-00-2A.as-u64
+    00-00-00-00-00-00-00-2A.as-u64
+
+  eq. ++> can-expose-valid-bytes
+    00-00-00-00-00-00-00-2A.as-u64.as-bytes
+    00-00-00-00-00-00-00-2A
+
+  eq. ++> can-multiply
     00-00-00-00-00-00-00-06.as-u64.times 00-00-00-00-00-00-00-07.as-u64
     00-00-00-00-00-00-00-2A.as-u64
 
-  eq. ++> tests-u64-times-wraps-modulo-2-pow-64
+  eq. ++> can-subtract
+    00-00-00-00-00-00-00-05.as-u64.minus 00-00-00-00-00-00-00-03.as-u64
+    00-00-00-00-00-00-00-02.as-u64
+
+  eq. ++> can-subtract-with-underflow
+    00-00-00-00-00-00-00-00.as-u64.minus 00-00-00-00-00-00-00-01.as-u64
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64
+
+  gt. ++> can-treat-a-high-bit-as-magnitude-when-greater
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64
+    00-00-00-00-00-00-00-01.as-u64
+
+  eq. ++> can-wrap-a-product-modulo-two-to-the-sixty-fourth
     00-00-00-01-00-00-00-00.as-u64.times 00-00-00-01-00-00-00-00.as-u64
     00-00-00-00-00-00-00-00.as-u64
 
-  lt. ++> tests-u64-zero-less-than-max
-    00-00-00-00-00-00-00-00.as-u64
-    FF-FF-FF-FF-FF-FF-FF-FF.as-u64
+  not. ++> cannot-be-greater-than-or-equal-to-a-larger-u64
+    00-00-00-00-00-00-00-00.as-u64.gte 00-00-00-00-00-00-00-0A.as-u64
+
+  not. ++> cannot-be-less-than-an-equal-u64
+    00-00-00-00-00-00-00-0A.as-u64.lt 00-00-00-00-00-00-00-0A.as-u64
+
+  not. ++> cannot-be-less-than-one-with-a-high-bit
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.lt 00-00-00-00-00-00-00-01.as-u64

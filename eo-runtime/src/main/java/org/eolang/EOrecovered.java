@@ -3,19 +3,15 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 /**
  * RECOVERED.
  *
  * <p>Resolves {@code value} to its normal form; if that is a terminated
- * computation (⊥), behaves as {@code alternative}, otherwise as {@code value}.
- * A ⊥ on both sides stays a ⊥, so an outer recovery can still intercept it.
- * This is the only way to intercept a ⊥ and keep going.</p>
+ * computation (bottom), behaves as {@code alternative}, otherwise as {@code value}.
+ * A bottom on both sides stays a bottom, so an outer recovery can still intercept it.
+ * This is the only way to intercept a bottom and keep going.</p>
  *
  * @since 0.74.0
  * @checkstyle TypeNameCheck (5 lines)

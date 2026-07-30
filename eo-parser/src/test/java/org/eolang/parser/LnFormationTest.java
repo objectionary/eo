@@ -16,7 +16,6 @@ import org.xembly.Xembler;
  * Test case for {@link LnFormation}.
  * @since 0.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class LnFormationTest {
 
     @Test

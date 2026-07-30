@@ -4,7 +4,7 @@
 # code, by wrapping the original body inside `nop`:
 #
 # ```
-# ++> works-just-fine
+# ++> can-work-just-fine
 #   nop > @
 #     "doesn't work for now"
 # ```
@@ -22,6 +22,6 @@
 [x] > nop
   true > @
 
-  nop "anything" ++> tests-nop-is-true
+  nop 42 ++> accepts-a-number-argument
 
-  nop 42 ++> tests-nop-with-number-is-true
+  nop "anything" ++> can-ignore-a-text-argument

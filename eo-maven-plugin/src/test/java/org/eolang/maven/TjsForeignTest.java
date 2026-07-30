@@ -4,16 +4,13 @@
  */
 package org.eolang.maven;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.Func;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -24,22 +21,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  * Tests from {@link TjsForeign}.
  * @since 0.29.5
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class TjsForeignTest {
-
-    /**
-     * Testable foreign tojos.
-     * @checkstyle ProhibitFieldsInTestClassesCheck (5 lines)
-     */
-    private TjsForeign tojos;
-
-    /**
-     * Set up environment before each test.
-     */
-    @BeforeEach
-    void setUp() {
-        this.tojos = new TjsForeign();
-    }
 
     @ParameterizedTest
     @CsvSource({
@@ -48,10 +30,11 @@ final class TjsForeignTest {
         "Q.io.stdout"
     })
     void contains(final String name) {
-        this.tojos.add(name);
+        final TjsForeign tojos = new TjsForeign();
+        tojos.add(name);
         MatcherAssert.assertThat(
             "Tojo must contain the name, but it doesn't",
-            this.tojos.contains(name),
+            tojos.contains(name),
             Matchers.is(true)
         );
     }
@@ -63,10 +46,11 @@ final class TjsForeignTest {
         "Q.io.stdout, Q.string.sprintf"
     })
     void doesNotContain(final String existing, final String considered) {
-        this.tojos.add(existing);
+        final TjsForeign tojos = new TjsForeign();
+        tojos.add(existing);
         MatcherAssert.assertThat(
             "Tojo must not contain the name, but it doesn't",
-            this.tojos.contains(considered),
+            tojos.contains(considered),
             Matchers.is(false)
         );
     }
@@ -74,19 +58,21 @@ final class TjsForeignTest {
     @Test
     void findsLookingTojoCorrectly() {
         final String looking = "looking";
+        final TjsForeign tojos = new TjsForeign();
         MatcherAssert.assertThat(
             "Found tojo should be the same as added",
-            this.tojos.add(looking),
-            Matchers.equalTo(this.tojos.find(looking))
+            tojos.add(looking),
+            Matchers.equalTo(tojos.find(looking))
         );
     }
 
     @Test
     void throwsExceptionIfTojoWasNotFound() {
         final String id = "absent";
+        final TjsForeign tojos = new TjsForeign();
         Assertions.assertThrows(
             IllegalArgumentException.class,
-            () -> this.tojos.find(id),
+            () -> tojos.find(id),
             String.format("Should throw an exception if tojo with id='%s' was not found", id)
         );
     }
@@ -94,21 +80,21 @@ final class TjsForeignTest {
     @Test
     void findsAnyTojoIfSeveralTojosWithTheSameIdWereAdded() {
         final String same = "same";
+        final TjsForeign tojos = new TjsForeign();
         MatcherAssert.assertThat(
             "We don't care which tojo will be returned, but it should be one of the added tojos",
-            Arrays.asList(this.tojos.add(same), this.tojos.add(same)),
-            Matchers.hasItem(this.tojos.find(same))
+            Arrays.asList(tojos.add(same), tojos.add(same)),
+            Matchers.hasItem(tojos.find(same))
         );
     }
 
     @ParameterizedTest
     @MethodSource("tojoFunctionsWithoutDefaultValues")
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void throwsExceptionIfKeyWasNotFoundInTojo(
         final String key,
         final Func<TjForeign, Object> method
     ) {
-        final TjForeign tojo = this.tojos.add("string");
+        final TjForeign tojo = new TjsForeign().add("string");
         Assertions.assertThrows(
             AttributeNotFoundException.class,
             () -> method.apply(tojo),
@@ -122,7 +108,7 @@ final class TjsForeignTest {
             "There is no 'XMIR' attribute in the tojo",
             Assertions.assertThrows(
                 AttributeNotFoundException.class,
-                this.tojos.add("string")::xmir
+                new TjsForeign().add("string")::xmir
             ).getMessage(),
             "Should throw an exception if key 'XMIR' was not found in Tojo"
         );
@@ -135,7 +121,7 @@ final class TjsForeignTest {
         final Func<TjForeign, ?> method
     ) throws Exception {
         Assertions.assertEquals(
-            method.apply(this.tojos.add("string")),
+            method.apply(new TjsForeign().add("string")),
             key,
             String.format("Shouldn't throw an exception if key='%s' was found in Tojo", key)
         );
@@ -143,20 +129,16 @@ final class TjsForeignTest {
 
     @Test
     void selectsSortedTojos() {
-        this.tojos.add("foo");
-        this.tojos.add("bar");
-        this.tojos.add("xyz");
-        this.tojos.add("abc");
+        final TjsForeign tojos = new TjsForeign();
+        tojos.add("foo");
+        tojos.add("bar");
+        tojos.add("xyz");
+        tojos.add("abc");
         MatcherAssert.assertThat(
             "Tojos are not sorted as expected",
-            this.tojos.all().stream().map(TjForeign::identifier).collect(Collectors.toList()),
+            tojos.all().stream().map(TjForeign::identifier).collect(Collectors.toList()),
             Matchers.contains("abc", "bar", "foo", "xyz")
         );
-    }
-
-    @AfterEach
-    void tearDown() throws IOException {
-        this.tojos.close();
     }
 
     private static Stream<Arguments> tojoFunctionsWithoutDefaultValues() {
