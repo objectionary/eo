@@ -26,9 +26,7 @@ import java.util.List;
  * @since 0.1
  * @checkstyle CyclomaticComplexityCheck (820 lines)
  * @checkstyle BooleanExpressionComplexityCheck (820 lines)
- * @checkstyle NPathComplexityCheck (820 lines)
  */
-@SuppressWarnings("PMD.NPathComplexity")
 final class Tokens {
 
     /**
@@ -834,36 +832,50 @@ final class Tokens {
      * Continue reading a FLOAT literal after the integer part — the
      * fractional digits and optional exponent.
      * @param start The starting cursor position (for error reporting)
-     * @checkstyle CyclomaticComplexityCheck (30 lines)
      */
     private void readFloatTail(final int start) {
         this.cursor = this.cursor + 1;
+        this.skipDigits();
+        if (this.cursor < this.body.length()
+            && (this.body.charAt(this.cursor) == 'e'
+                || this.body.charAt(this.cursor) == 'E')) {
+            this.readExponent(start);
+        }
+    }
+
+    /**
+     * Read the exponent of a FLOAT literal — the {@code e} or {@code E}
+     * marker at the cursor, an optional sign, and at least one digit,
+     * without which the literal is malformed (R-9.8.2).
+     * @param start The starting cursor position (for error reporting)
+     */
+    private void readExponent(final int start) {
+        this.cursor = this.cursor + 1;
+        if (this.cursor < this.body.length()
+            && (this.body.charAt(this.cursor) == '+'
+                || this.body.charAt(this.cursor) == '-')) {
+            this.cursor = this.cursor + 1;
+        }
+        if (this.skipDigits() == 0) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + start,
+                "invalid signed-number literal"
+            );
+        }
+    }
+
+    /**
+     * Advance the cursor past every decimal digit sitting at it.
+     * @return How many digits were passed
+     */
+    private int skipDigits() {
+        int count = 0;
         while (this.cursor < this.body.length()
             && this.body.charAt(this.cursor) >= '0'
             && this.body.charAt(this.cursor) <= '9') {
             this.cursor = this.cursor + 1;
+            count = count + 1;
         }
-        if (this.cursor < this.body.length()
-            && (this.body.charAt(this.cursor) == 'e'
-                || this.body.charAt(this.cursor) == 'E')) {
-            this.cursor = this.cursor + 1;
-            if (this.cursor < this.body.length()
-                && (this.body.charAt(this.cursor) == '+'
-                    || this.body.charAt(this.cursor) == '-')) {
-                this.cursor = this.cursor + 1;
-            }
-            final int exp = this.cursor;
-            while (this.cursor < this.body.length()
-                && this.body.charAt(this.cursor) >= '0'
-                && this.body.charAt(this.cursor) <= '9') {
-                this.cursor = this.cursor + 1;
-            }
-            if (this.cursor == exp) {
-                throw new ParseError(
-                    this.span.line(), this.span.indent() + start,
-                    "invalid signed-number literal"
-                );
-            }
-        }
+        return count;
     }
 }

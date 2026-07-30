@@ -343,9 +343,7 @@ final class Suffix {
             );
         }
         final int start = idx;
-        while (idx < tail.length() && !Suffix.endsName(tail.charAt(idx))) {
-            idx = idx + 1;
-        }
+        idx = Suffix.skipName(tail, idx);
         if (start == idx) {
             throw new ParseError(
                 span.line(), home + start,
@@ -397,9 +395,7 @@ final class Suffix {
      * @param span Source span
      * @param home Source column where tail begins
      * @return Parsed result
-     * @checkstyle ParameterNumberCheck (5 lines)
-     * @checkstyle CyclomaticComplexityCheck (45 lines)
-     * @checkstyle NPathComplexityCheck (45 lines)
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static Parsed auto(
         final String tail, final int after, final Span span, final int home
@@ -411,21 +407,13 @@ final class Suffix {
             idx = idx + 1;
         }
         final int begin = Suffix.skipSpace(tail, idx);
-        String handle = "";
-        int rest = begin;
-        if (begin < tail.length() && !Suffix.endsName(tail.charAt(begin))) {
-            int end = begin;
-            while (end < tail.length() && !Suffix.endsName(tail.charAt(end))) {
-                end = end + 1;
-            }
-            handle = tail.substring(begin, end);
-            if (handle.codePoints().anyMatch(cp -> cp == 0x1F335)) {
-                throw new ParseError(
-                    span.line(), home + begin,
-                    "cactus emoji is reserved for auto-names; not allowed in identifiers"
-                );
-            }
-            rest = end;
+        int rest = Suffix.skipName(tail, begin);
+        final String handle = tail.substring(begin, rest);
+        if (handle.codePoints().anyMatch(cp -> cp == 0x1F335)) {
+            throw new ParseError(
+                span.line(), home + begin,
+                "cactus emoji is reserved for auto-names; not allowed in identifiers"
+            );
         }
         if (!cnst && rest < tail.length() && tail.charAt(rest) == '!') {
             cnst = true;
@@ -461,10 +449,7 @@ final class Suffix {
                 "name suffix requires a name"
             );
         }
-        int idx = begin;
-        while (idx < tail.length() && !Suffix.endsName(tail.charAt(idx))) {
-            idx = idx + 1;
-        }
+        int idx = Suffix.skipName(tail, begin);
         final String name = tail.substring(begin, idx);
         if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
             throw new ParseError(
@@ -576,6 +561,23 @@ final class Suffix {
     private static int skipSpace(final String tail, final int from) {
         int idx = from;
         if (idx < tail.length() && tail.charAt(idx) == ' ') {
+            idx = idx + 1;
+        }
+        return idx;
+    }
+
+    /**
+     * Skip the NAME token that starts at {@code from}, stopping at the
+     * first character that ends it. The text between {@code from} and the
+     * returned index is the name itself, empty when a terminator already
+     * sits at {@code from}.
+     * @param tail Tail substring
+     * @param from Current index
+     * @return Index just past the name
+     */
+    private static int skipName(final String tail, final int from) {
+        int idx = from;
+        while (idx < tail.length() && !Suffix.endsName(tail.charAt(idx))) {
             idx = idx + 1;
         }
         return idx;
