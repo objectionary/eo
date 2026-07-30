@@ -8,13 +8,10 @@ import com.jcabi.log.Logger;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -39,6 +36,14 @@ import org.slf4j.impl.StaticLoggerBinder;
 /**
  * Abstract Mojo for all others.
  * @since 0.1
+ * @todo #6117:60min Take the fan-out of this class under the allowed 30.
+ *  Checkstyle counts 39 dependencies here, which is why the marker below is
+ *  still needed. The parameters are not to blame, they cost eight of them.
+ *  The compositions are: let the objectionary chain ({@link OyIndexed},
+ *  {@link OyCached}, {@link OyRemote}) build itself in a class of its own,
+ *  the hash chain ({@link ChCached}, {@link ChNarrow}, {@link ChRemote}) in
+ *  another one, and turn execWithTimeout() into a {@link Step} decorator.
+ *  Together they take it down to 30 and the marker goes away.
  * @checkstyle ClassFanOutComplexityCheck (1000 lines)
  */
 @SuppressWarnings("PMD.TooManyFields")
@@ -394,7 +399,7 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @Parameter(defaultValue = "${settings}", readonly = true)
-    protected Settings settings;
+    protected Settings settings = new Settings();
 
     /**
      * Placed tojos.
@@ -437,7 +442,9 @@ abstract class MjSafe extends AbstractMojo {
     private Scalar<Objectionary> objectionary = new Synced<>(
         new Sticky<>(
             () -> new OyIndexed(
-                new OyCached(new OyRemote(this.hash, this.proxies()))
+                new OyCached(
+                    new OyRemote(this.hash, new Proxies(this.settings).value())
+                )
             )
         )
     );
@@ -600,23 +607,6 @@ abstract class MjSafe extends AbstractMojo {
                 )
             )
         );
-    }
-
-    /**
-     * Get active proxy from Maven settings.
-     * @return Proxy if any
-     */
-    Proxy[] proxies() {
-        return Optional.ofNullable(this.settings)
-            .map(Settings::getProxies)
-            .orElse(List.of())
-            .stream()
-            .filter(org.apache.maven.settings.Proxy::isActive).map(
-                p -> new Proxy(
-                    Proxy.Type.HTTP,
-                    new InetSocketAddress(p.getHost(), p.getPort())
-                )
-            ).toArray(Proxy[]::new);
     }
 
     /**
