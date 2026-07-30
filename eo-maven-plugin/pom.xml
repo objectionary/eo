@@ -338,6 +338,16 @@
         </executions>
       </plugin>
       <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <!--
+          The generated HelpMojo has no docblock for its constructor, so
+          only the handwritten sources are documented
+          -->
+          <sourcepath>${project.basedir}/src/main/java</sourcepath>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <executions>
           <execution>
