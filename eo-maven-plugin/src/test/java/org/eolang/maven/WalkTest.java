@@ -49,4 +49,13 @@ final class WalkTest {
             "Exception must be thrown for invalid glob pattern"
         );
     }
+
+    @Test
+    void compilesOnceEagerlyInEmptyDir(@Mktmp final Path empty) {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new Walk(empty).includes(new ListOf<>("{eager")),
+            "Exception must be thrown for invalid glob pattern"
+        );
+    }
 }
