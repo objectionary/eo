@@ -183,7 +183,8 @@ final class Transpiling implements Step {
     private final boolean coverage;
 
     /**
-     * The name of the class that every generated class extends.
+     * The class that a generated class extends instead of {@code PhDefault},
+     * where {@code to-java.xsl} writes an {@code extends} clause of its own.
      */
     private final String superclass;
 
@@ -204,7 +205,7 @@ final class Transpiling implements Step {
      * @param measures Path to the file where XSL measurements are stored
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
      * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
-     * @param base The name of the class that every generated class extends
+     * @param base The class that a generated class extends instead of {@code PhDefault}
      * @checkstyle ParameterNumberCheck (20 lines)
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
@@ -396,7 +397,7 @@ final class Transpiling implements Step {
      * Build the train of XSL shifts.
      * @param track Whether generated objects carry their source location
      * @param instrument Whether located objects are wrapped into {@code PhCoverage}
-     * @param base The name of the class that every generated class extends
+     * @param base The class that a generated class extends instead of {@code PhDefault}
      * @return The train of XSL shifts
      */
     private static Train<Shift> compiled(
