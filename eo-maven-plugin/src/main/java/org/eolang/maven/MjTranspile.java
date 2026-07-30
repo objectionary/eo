@@ -113,21 +113,23 @@ public final class MjTranspile extends MjSafe {
      * full, since the generated files import nothing but
      * {@code org.eolang.*}.
      * <p>
-     *     The substitution reaches the classes that {@code to-java.xsl}
-     *     declares with an {@code extends} clause of their own. An object
-     *     with a {@code @base} extends {@code PhOnce} instead, and keeps
-     *     doing so: {@code PhOnce} is a decorator, and the object it wraps
-     *     is itself substituted, so nothing is lost.
+     *     The substitution reaches every class the generated Java declares
+     *     with an {@code extends} clause of its own, and every object it
+     *     builds with {@code new}: the context of a generated
+     *     {@code apply()}, an anonymous abstract object, and the argument
+     *     of a {@code PhApplication}. An object with a {@code @base}
+     *     extends {@code PhOnce} instead, and keeps doing so:
+     *     {@code PhOnce} is a decorator, and the object it wraps is itself
+     *     substituted, so nothing is lost.
      * </p>
-     * @todo #5955:30min Honour this option at the instantiation sites too.
-     *  Right now {@code to-java.xsl} reads it only where it emits an
-     *  {@code extends} clause, which is what the issue asked for. Three
-     *  more places still hardcode {@code new PhDefault(...)}: the context
-     *  of a generated {@code apply()}, an anonymous abstract object with no
-     *  children, and the argument of a {@code PhApplication}. Objects built
-     *  there stay outside the substituted class, so a tool that relies on
-     *  this option sees only a part of the tree. Convert them the same way
-     *  and assert on them in {@code MjTranspileTest}.
+     * <p>
+     *     Since the generated Java builds objects with {@code new}, the
+     *     named class has to offer the same constructors {@code PhDefault}
+     *     does where the transpiler calls them: the one taking nothing,
+     *     the one taking a location {@code String}, and the one taking a
+     *     {@code byte[]}. A class that leaves one out fails to compile in
+     *     generated sources.
+     * </p>
      */
     @Parameter(property = "eo.phiDefaultClass", defaultValue = "PhDefault")
     private String superclass;

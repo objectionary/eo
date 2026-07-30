@@ -144,6 +144,22 @@ final class MjTranspileTest {
     }
 
     @Test
+    void buildsGivenPhiClassAtInstantiationSites(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "the generated Java must instantiate the class named by phiDefaultClass, never PhDefault, so that the whole tree is made of the substituted class",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(MjTranspileTest.instantiating())
+                    .with("superclass", "org.example.PhInspected")
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.not(Matchers.containsString("new PhDefault"))
+        );
+    }
+
+    @Test
     void invalidatesCacheWhenPhiDefaultClassChanges(@Mktmp final Path temp) throws Exception {
         final Path cache = temp.resolve("cache");
         final String src = String.format("+package foo.x%n%n[] > main%n  42 > @");
@@ -481,6 +497,20 @@ final class MjTranspileTest {
                 Matchers.iterableWithSize(1),
                 Matchers.hasItem("package-info.java")
             )
+        );
+    }
+
+    /**
+     * An EO program that makes the transpiler build objects at each of the
+     * three places it emits a {@code new} of the base class: the context of
+     * a generated {@code apply()} for the nested formation, the argument of
+     * a {@code PhApplication} for the number, and an anonymous abstract
+     * object with no children for the empty argument.
+     * @return Source code of the program
+     */
+    private static String instantiating() {
+        return String.format(
+            "+package foo.x%n%n[] > main%n  [] > inner%n    42 > @%n  42.plus > @%n    []"
         );
     }
 
