@@ -97,12 +97,13 @@ public final class MjTranspile extends MjSafe {
 
     /**
      * The name of the class that every generated class extends, instead of
-     * {@code PhDefault}. A tool that needs control over the objects of a
-     * program can put its own subclass of {@code PhDefault} here and see
-     * every {@code add()} and {@code take()} the program makes. The value is
-     * written into the generated Java verbatim, so a class outside
-     * {@code org.eolang} has to be named in full, since the generated files
-     * import nothing but {@code org.eolang.*}.
+     * {@code PhDefault}, set through {@code eo.phiDefaultClass}. A tool that
+     * needs control over the objects of a program can put its own subclass of
+     * {@code PhDefault} here and see every {@code add()} and {@code take()}
+     * the program makes. The value is written into the generated Java
+     * verbatim, so a class outside {@code org.eolang} has to be named in
+     * full, since the generated files import nothing but
+     * {@code org.eolang.*}.
      * @todo #5955:60min Let eoc supply its own Phi base class here.
      *  This option exists so that objectionary/eoc can transpile a program
      *  with its own {@code PhInspected extends PhDefault}, which is what
@@ -119,11 +120,9 @@ public final class MjTranspile extends MjSafe {
      *  there stay outside the substituted class, so a debugger that relies
      *  on this option sees only a part of the tree. Convert them the same
      *  way and assert on them in {@code MjTranspileTest}.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.phiDefaultClass")
-    @SuppressWarnings("PMD.ImmutableField")
-    private String phiDefaultClass = "PhDefault";
+    @Parameter(property = "eo.phiDefaultClass", defaultValue = "PhDefault")
+    private String superclass;
 
     @Override
     public void exec() throws IOException {
@@ -139,7 +138,7 @@ public final class MjTranspile extends MjSafe {
                 this.xslMeasures.toPath(),
                 new Tracking(this.trackTransformationSteps, this.trackLocations),
                 this.coverageTracking,
-                this.phiDefaultClass
+                this.superclass
             )
         ).exec();
         if (this.addSourcesRoot) {

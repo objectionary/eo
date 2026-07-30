@@ -197,6 +197,7 @@ final class FakeMaven {
             this.params.putIfAbsent("rewriteBinaries", true);
             this.params.putIfAbsent("offline", false);
             this.params.putIfAbsent("classesDir", this.classesPath().toFile());
+            this.params.putIfAbsent("superclass", "PhDefault");
         }
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {

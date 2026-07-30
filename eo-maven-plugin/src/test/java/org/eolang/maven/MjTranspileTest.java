@@ -133,7 +133,7 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(String.format("+package foo.x%n%n[] > main%n  42 > @"))
-                    .with("phiDefaultClass", "org.example.PhInspected")
+                    .with("superclass", "org.example.PhInspected")
                     .execute(new FakeMaven.Transpile())
                     .result()
                     .get(this.compiled)
@@ -156,7 +156,7 @@ final class MjTranspileTest {
                 new FakeMaven(temp.resolve("second"))
                     .withProgram(src)
                     .with("cache", cache.toFile())
-                    .with("phiDefaultClass", "org.example.PhInspected")
+                    .with("superclass", "org.example.PhInspected")
                     .execute(new FakeMaven.Transpile())
                     .result()
                     .get(this.compiled)
