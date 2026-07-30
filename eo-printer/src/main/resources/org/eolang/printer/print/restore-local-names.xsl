@@ -74,7 +74,7 @@
   -->
   <xsl:function name="eo:recursive" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
-    <xsl:param name="name" as="xs:string"/>
+    <xsl:param name="name" as="xs:string?"/>
     <xsl:sequence select="exists($target//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name])"/>
   </xsl:function>
   <!--
@@ -84,7 +84,7 @@
   -->
   <xsl:function name="eo:references" as="element()*">
     <xsl:param name="target" as="element()"/>
-    <xsl:param name="name" as="xs:string"/>
+    <xsl:param name="name" as="xs:string?"/>
     <xsl:sequence select="$target/..//o[contains(@base, concat('.', $auto)) and (eo:resolved-name(@base) = $name or starts-with(eo:resolved-name(@base), concat($name, '.'))) and not(ancestor-or-self::o[. is $target])]"/>
   </xsl:function>
   <!--
@@ -104,7 +104,7 @@
   -->
   <xsl:function name="eo:multi-referenced" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
-    <xsl:param name="name" as="xs:string"/>
+    <xsl:param name="name" as="xs:string?"/>
     <xsl:sequence select="count(eo:references($target, $name)) &gt; 1"/>
   </xsl:function>
   <!--
@@ -115,7 +115,7 @@
   -->
   <xsl:function name="eo:unreferenced" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
-    <xsl:param name="name" as="xs:string"/>
+    <xsl:param name="name" as="xs:string?"/>
     <xsl:sequence select="empty(eo:references($target, $name))"/>
   </xsl:function>
   <!--
@@ -136,7 +136,7 @@
   -->
   <xsl:function name="eo:nested-referenced" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
-    <xsl:param name="name" as="xs:string"/>
+    <xsl:param name="name" as="xs:string?"/>
     <xsl:sequence select="exists(eo:references($target, $name)) and empty(eo:references($target, $name)[ancestor::o[eo:abstract(.)][1] is $target/..])"/>
   </xsl:function>
   <!--
@@ -159,7 +159,7 @@
   -->
   <xsl:function name="eo:applied-receiver" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
-    <xsl:param name="name" as="xs:string"/>
+    <xsl:param name="name" as="xs:string?"/>
     <xsl:sequence select="eo:abstract($target) and exists($target/..//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name and (o or @name) and not(ancestor-or-self::o[. is $target]) and not(preceding-sibling::o[. is $target])])"/>
   </xsl:function>
   <!--
@@ -178,7 +178,7 @@
   -->
   <xsl:function name="eo:reapplied" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
-    <xsl:param name="name" as="xs:string"/>
+    <xsl:param name="name" as="xs:string?"/>
     <xsl:sequence select="not(eo:abstract($target)) and not(exists($target/@const)) and not($target/@base = '.as-bytes') and exists($target/o) and exists($target/..//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name and o and not(ancestor-or-self::o[. is $target])])"/>
   </xsl:function>
   <!--
