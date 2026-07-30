@@ -11,14 +11,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import org.cactoos.scalar.Unchecked;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -95,8 +92,7 @@ final class SavedTest {
 
     @Test
     void leavesNoTemporaryFilesBehind(@Mktmp final Path temp) throws Exception {
-        final Path target = temp.resolve("clean.txt");
-        new Saved("zzz-99", target).value();
+        new Saved("zzz-99", temp.resolve("clean.txt")).value();
         try (Stream<Path> files = Files.list(temp)) {
             MatcherAssert.assertThat(
                 "the temporary file must not survive a successful save",
@@ -110,18 +106,13 @@ final class SavedTest {
     void retriesMoveWhenTargetTemporarilyBlocked(@Mktmp final Path temp) throws Exception {
         final Path target = temp.resolve("blocked.txt");
         Files.createDirectories(target);
-        final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-        try {
-            scheduler.schedule(
-                (Callable<Void>) () -> {
-                    Files.delete(target);
-                    return null;
-                }, 300, TimeUnit.MILLISECONDS
-            );
-            new Saved("content", target).value();
-        } finally {
-            scheduler.shutdownNow();
-        }
+        final Thread writer = new Thread(
+            () -> new Unchecked<>(new Saved("content", target)).value()
+        );
+        writer.start();
+        Thread.sleep(300L);
+        Files.delete(target);
+        writer.join();
         MatcherAssert.assertThat(
             "the write must succeed once a retry lands after the obstruction clears",
             Files.readString(target, StandardCharsets.UTF_8),
