@@ -9,15 +9,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -27,7 +19,6 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
-import org.cactoos.scalar.Synced;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.eclipse.aether.RepositorySystem;
@@ -36,15 +27,6 @@ import org.slf4j.impl.StaticLoggerBinder;
 /**
  * Abstract Mojo for all others.
  * @since 0.1
- * @todo #6117:60min Take the fan-out of this class under the allowed 30.
- *  Checkstyle counts 39 dependencies here, which is why the marker below is
- *  still needed. The parameters are not to blame, they cost eight of them.
- *  The compositions are: let the objectionary chain ({@link OyIndexed},
- *  {@link OyCached}, {@link OyRemote}) build itself in a class of its own,
- *  the hash chain ({@link ChCached}, {@link ChNarrow}, {@link ChRemote}) in
- *  another one, and turn execWithTimeout() into a {@link Step} decorator.
- *  Together they take it down to 30 and the marker goes away.
- * @checkstyle ClassFanOutComplexityCheck (1000 lines)
  */
 @SuppressWarnings("PMD.TooManyFields")
 abstract class MjSafe extends AbstractMojo {
@@ -439,14 +421,9 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (5 lines)
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private Scalar<Objectionary> objectionary = new Synced<>(
-        new Sticky<>(
-            () -> new OyIndexed(
-                new OyCached(
-                    new OyRemote(this.hash, new Proxies(this.settings).value())
-                )
-            )
-        )
+    private Scalar<Objectionary> objectionary = new OyConfigured(
+        () -> this.hash,
+        () -> this.settings
     );
 
     /**
@@ -492,7 +469,12 @@ abstract class MjSafe extends AbstractMojo {
         } else {
             try {
                 final long start = System.nanoTime();
-                this.execWithTimeout();
+                new Deadline(this, this.timeout, this.unrollExitError).spent(
+                    () -> {
+                        this.exec();
+                        return new Object();
+                    }
+                );
                 if (Logger.isDebugEnabled(this)) {
                     Logger.debug(
                         this,
@@ -501,19 +483,6 @@ abstract class MjSafe extends AbstractMojo {
                         System.nanoTime() - start
                     );
                 }
-            } catch (final TimeoutException ex) {
-                this.exitError(
-                    Logger.format(
-                        "Timeout %[ms]s for Mojo execution is reached",
-                        TimeUnit.SECONDS.toMillis(this.timeout)
-                    ),
-                    ex
-                );
-            } catch (final ExecutionException ex) {
-                this.exitError(
-                    String.format("'%s' execution failed", this),
-                    ex
-                );
             } finally {
                 if (this.foreign != null) {
                     MjSafe.closeTojos(this.tojos);
@@ -561,16 +530,7 @@ abstract class MjSafe extends AbstractMojo {
      * @return Scalar supplying the runtime dependency
      */
     Scalar<Dep> runtime() {
-        final Scalar<Dep> result;
-        final RtPom pom = new RtPom(this.project);
-        if (pom.isPresent()) {
-            result = pom;
-        } else if (this.resolveInCentral) {
-            result = new RtCentral();
-        } else {
-            result = new RtOffline();
-        }
-        return result;
+        return new RtChosen(this.project, this.resolveInCentral);
     }
 
     /**
@@ -610,47 +570,6 @@ abstract class MjSafe extends AbstractMojo {
     }
 
     /**
-     * Runs exec command with timeout if needed.
-     * @throws ExecutionException If unexpected exception happened during execution
-     * @throws TimeoutException If timeout limit reached
-     */
-    @SuppressWarnings("PMD.CloseResource")
-    private void execWithTimeout() throws ExecutionException, TimeoutException {
-        final ExecutorService service = Executors.newSingleThreadExecutor();
-        try {
-            service.submit(
-                () -> {
-                    this.exec();
-                    return new Object();
-                }
-            ).get(this.timeout, TimeUnit.SECONDS);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(
-                Logger.format(
-                    "Timeout %[ms]s thread was interrupted",
-                    TimeUnit.SECONDS.toMillis(this.timeout)
-                ),
-                ex
-            );
-        } finally {
-            boolean terminated = false;
-            service.shutdown();
-            while (!terminated) {
-                try {
-                    terminated = service.awaitTermination(60, TimeUnit.SECONDS);
-                    if (terminated) {
-                        service.shutdownNow();
-                    }
-                } catch (final InterruptedException ex) {
-                    service.shutdownNow();
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-    }
-
-    /**
      * Close it safely.
      * @param res The resource
      * @throws MojoFailureException If fails
@@ -661,68 +580,5 @@ abstract class MjSafe extends AbstractMojo {
         } catch (final IOException ex) {
             throw new MojoFailureException(ex);
         }
-    }
-
-    /**
-     * Make an error for the exit and throw it.
-     * @param msg The message
-     * @param exp Original problem
-     * @throws MojoFailureException For sure
-     */
-    private void exitError(final String msg, final Throwable exp)
-        throws MojoFailureException {
-        if (this.unrollExitError) {
-            this.logCauses(exp);
-        }
-        throw new MojoFailureException(msg, exp);
-    }
-
-    /**
-     * Log the deduplicated cause chain of the given exception.
-     * @param exp Original problem
-     */
-    private void logCauses(final Throwable exp) {
-        final List<String> causes = MjSafe.causes(exp);
-        for (int pos = 0; pos < causes.size(); ++pos) {
-            final String cause = causes.get(pos);
-            if (cause == null) {
-                causes.remove(pos);
-                break;
-            }
-        }
-        int idx = 0;
-        while (true) {
-            if (idx >= causes.size()) {
-                break;
-            }
-            final String cause = causes.get(idx);
-            for (int later = idx + 1; later < causes.size(); ++later) {
-                final String another = causes.get(later);
-                if (another != null && cause.contains(another)) {
-                    causes.remove(idx);
-                    idx -= 1;
-                    break;
-                }
-            }
-            idx += 1;
-        }
-        for (final String cause : new LinkedHashSet<>(causes)) {
-            Logger.error(this, cause);
-        }
-    }
-
-    /**
-     * Turn the exception into an array of causes.
-     * @param exp Original problem
-     * @return List of causes
-     */
-    private static List<String> causes(final Throwable exp) {
-        final List<String> causes = new LinkedList<>();
-        causes.add(exp.getMessage());
-        final Throwable cause = exp.getCause();
-        if (cause != null) {
-            causes.addAll(MjSafe.causes(cause));
-        }
-        return causes;
     }
 }

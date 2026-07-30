@@ -20,6 +20,13 @@ public final class EOos$EOname extends PhDefault implements Atom {
      */
     private static final Phi OS_NAME = new Data.ToPhi(System.getProperty("os.name"));
 
+    /**
+     * Ctor.
+     */
+    public EOos$EOname() {
+        // nothing
+    }
+
     @Override
     public Phi lambda() {
         return EOos$EOname.OS_NAME;

@@ -46,6 +46,11 @@ public interface Data {
 
         /**
          * Ctor.
+         *
+         * <p>The data becomes an object right here, so that a type nobody
+         * can convert is rejected at once, and not later, when the object
+         * is dataized far away from the place that made it.</p>
+         *
          * @param obj Data
          * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */

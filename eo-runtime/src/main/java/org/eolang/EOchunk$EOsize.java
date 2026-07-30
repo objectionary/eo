@@ -15,6 +15,13 @@ package org.eolang;
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOchunk$EOsize extends PhDefault implements Atom {
 
+    /**
+     * Ctor.
+     */
+    public EOchunk$EOsize() {
+        // nothing
+    }
+
     @Override
     public Phi lambda() {
         return new Data.ToPhi(

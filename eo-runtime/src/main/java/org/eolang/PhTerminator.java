@@ -41,6 +41,13 @@ public final class PhTerminator implements Phi {
     private Phi cause;
 
     /**
+     * Ctor.
+     */
+    public PhTerminator() {
+        // nothing
+    }
+
+    /**
      * Make a bottom that already carries the given reason as its cause.
      *
      * <p>The reason is remembered and used as the panic message when this bottom

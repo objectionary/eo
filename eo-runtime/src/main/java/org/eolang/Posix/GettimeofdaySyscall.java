@@ -63,6 +63,13 @@ public final class GettimeofdaySyscall implements Syscall {
          */
         public long usec;
 
+        /**
+         * Ctor.
+         */
+        public Timeval() {
+            // nothing
+        }
+
         @Override
         public List<String> getFieldOrder() {
             return Arrays.asList("sec", "usec");

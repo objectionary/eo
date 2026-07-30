@@ -51,7 +51,7 @@ public final class MjRegister extends MjSafe {
      * @checkstyle MemberNameCheck (15 lines)
      */
     @Parameter
-    private Set<String> includeSources = new SetOf<>("**.eo");
+    private Set<String> includeSources;
 
     /**
      * List of exclusion GLOB filters for finding EO files
@@ -60,7 +60,7 @@ public final class MjRegister extends MjSafe {
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
-    private Set<String> excludeSources = new SetOf<>();
+    private Set<String> excludeSources;
 
     /**
      * Whether it should fail on file names not matching required pattern.
@@ -71,7 +71,16 @@ public final class MjRegister extends MjSafe {
         required = true,
         defaultValue = "true"
     )
-    private boolean strictFileNames = true;
+    private boolean strictFileNames;
+
+    /**
+     * Ctor.
+     */
+    public MjRegister() {
+        this.includeSources = new SetOf<>("**.eo");
+        this.excludeSources = new SetOf<>();
+        this.strictFileNames = true;
+    }
 
     @Override
     public void exec() {

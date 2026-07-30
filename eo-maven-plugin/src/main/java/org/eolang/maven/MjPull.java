@@ -24,6 +24,13 @@ import org.apache.maven.plugins.annotations.Mojo;
 )
 public final class MjPull extends MjSafe {
 
+    /**
+     * Ctor.
+     */
+    public MjPull() {
+        // nothing
+    }
+
     @Override
     public void exec() throws IOException {
         new Pulling(

@@ -72,6 +72,13 @@ public final class FtimeFuncCall implements Syscall {
          */
         public short dstflag;
 
+        /**
+         * Ctor.
+         */
+        public Timeb() {
+            // nothing
+        }
+
         @Override
         public List<String> getFieldOrder() {
             return Arrays.asList("time", "millitm", "timezone", "dstflag");
