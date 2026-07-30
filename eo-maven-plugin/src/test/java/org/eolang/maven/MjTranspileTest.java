@@ -120,7 +120,7 @@ final class MjTranspileTest {
                     .withProgram(String.format("+package foo.x%n%n[] > main%n  42 > @"))
                     .execute(new FakeMaven.Transpile())
                     .result()
-                    .get(this.compiled)
+                    .get(MjTranspileTest.compiled())
             ).asString(),
             Matchers.containsString("extends PhDefault {")
         );
@@ -136,7 +136,7 @@ final class MjTranspileTest {
                     .with("superclass", "org.example.PhInspected")
                     .execute(new FakeMaven.Transpile())
                     .result()
-                    .get(this.compiled)
+                    .get(MjTranspileTest.compiled())
             ).asString(),
             Matchers.containsString("extends org.example.PhInspected {")
         );
@@ -159,9 +159,47 @@ final class MjTranspileTest {
                     .with("superclass", "org.example.PhInspected")
                     .execute(new FakeMaven.Transpile())
                     .result()
-                    .get(this.compiled)
+                    .get(MjTranspileTest.compiled())
             ).asString(),
             Matchers.containsString("extends org.example.PhInspected {")
+        );
+    }
+
+    @Test
+    void rejectsEmptyPhiDefaultClass(@Mktmp final Path temp) {
+        final IllegalStateException exception = Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(MjTranspileTest.program())
+                .with("superclass", "")
+                .execute(new FakeMaven.Transpile()),
+            "an empty phiDefaultClass must not reach the generated Java"
+        );
+        final StringWriter writer = new StringWriter();
+        exception.printStackTrace(new PrintWriter(writer));
+        MatcherAssert.assertThat(
+            "an empty phiDefaultClass must be refused by naming the option, instead of emitting an extends clause with nothing after it",
+            writer.toString(),
+            Matchers.containsString("eo.phiDefaultClass")
+        );
+    }
+
+    @Test
+    void rejectsPhiDefaultClassThatIsNotAJavaName(@Mktmp final Path temp) {
+        final IllegalStateException exception = Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(MjTranspileTest.program())
+                .with("superclass", "org.example.Ph Inspected")
+                .execute(new FakeMaven.Transpile()),
+            "a phiDefaultClass that is not a Java class name must not reach the generated Java"
+        );
+        final StringWriter writer = new StringWriter();
+        exception.printStackTrace(new PrintWriter(writer));
+        MatcherAssert.assertThat(
+            "a phiDefaultClass that is not a Java class name must be refused by naming the option",
+            writer.toString(),
+            Matchers.containsString("eo.phiDefaultClass")
         );
     }
 
