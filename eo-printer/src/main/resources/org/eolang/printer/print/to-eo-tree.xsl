@@ -83,7 +83,17 @@
   -->
   <xsl:function name="eo:void-type" as="xs:string">
     <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="if (exists($o/@type)) then concat(' /', eo:signature(replace($o/@type, '\?$', '')), if (ends-with($o/@type, '?')) then '?' else '') else if (exists($o/@args)) then concat(' /{', string-join(for $t in tokenize($o/@args, ' ') return eo:signature($t), ' '), '}') else ''"/>
+    <xsl:choose>
+      <xsl:when test="exists($o/@type)">
+        <xsl:sequence select="concat(' /', eo:signature(replace($o/@type, '\?$', '')), if (ends-with($o/@type, '?')) then '?' else '')"/>
+      </xsl:when>
+      <xsl:when test="exists($o/@args)">
+        <xsl:sequence select="concat(' /{', string-join(for $t in tokenize($o/@args, ' ') return eo:signature($t), ' '), '}')"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="''"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <!-- PROGRAM -->
   <xsl:template match="object">
@@ -213,8 +223,9 @@
   "eo:void-type"; and a φ void reverts to its "@" surface spelling.
   -->
   <xsl:template match="o[eo:vertical-void(.)]" mode="tree">
-    <xsl:variable name="named" select="if (exists(@local)) then concat(' &gt;&gt; ', @local) else concat(' &gt; ', if (@name = $eo:phi) then '@' else @name)"/>
-    <line base="?" tail="{concat($named, eo:void-type(.))}" abstract="no" test="no" reversed="no"/>
+    <xsl:variable name="arrow" select="if (exists(@local)) then ' &gt;&gt; ' else ' &gt; '"/>
+    <xsl:variable name="label" select="if (exists(@local)) then string(@local) else if (@name = $eo:phi) then '@' else string(@name)"/>
+    <line base="?" tail="{concat($arrow, $label, eo:void-type(.))}" abstract="no" test="no" reversed="no"/>
   </xsl:template>
   <!-- PIPE APPLICATION (§3.14) -->
   <!--
