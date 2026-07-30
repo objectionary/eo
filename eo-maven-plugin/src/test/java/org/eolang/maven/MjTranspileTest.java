@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -81,13 +82,13 @@ final class MjTranspileTest {
     }
 
     @Test
-    void wrapsObjectsIntoPhCoverageWhenTrackingEnabled(@Mktmp final Path temp) throws Exception {
+    void wrapsObjectsIntoPhCoverageWhenFileIsSet(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            "the generated Java must wrap located objects into PhCoverage when coverageTracking is on",
+            "the generated Java must wrap located objects into PhCoverage when coverageFile is set",
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.program())
-                    .with("coverageTracking", true)
+                    .with("coverageFile", temp.resolve("hits.txt").toFile())
                     .execute(new FakeMaven.Transpile())
                     .result()
                     .get(MjTranspileTest.compiled())
@@ -97,9 +98,31 @@ final class MjTranspileTest {
     }
 
     @Test
+    void writesACoverageManifestWhenFileIsSet(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            String.join(
+                " ",
+                "the manifest must list every location wrapped into PhCoverage,",
+                "one tab-separated locator/line entry per line"
+            ),
+            Arrays.asList(
+                new TextOf(
+                    new FakeMaven(temp)
+                        .withProgram(MjTranspileTest.program())
+                        .with("coverageFile", temp.resolve("hits.txt").toFile())
+                        .execute(new FakeMaven.Transpile())
+                        .result()
+                        .get("hits.txt.manifest")
+                ).asString().trim().split(System.lineSeparator())
+            ),
+            Matchers.everyItem(Matchers.matchesRegex("\\S+\t\\d+"))
+        );
+    }
+
+    @Test
     void keepsGeneratedJavaFreeOfPhCoverageByDefault(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            "the generated Java must not mention PhCoverage when coverageTracking is off",
+            "the generated Java must not mention PhCoverage when coverageFile is not set",
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.program())

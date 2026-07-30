@@ -26,7 +26,7 @@ jobs:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             maven-
-      - run: mvn install -Pjacoco -Deo.coverageTracking=true
+      - run: mvn install -Pjacoco -Deo.coverageFile=${{ runner.temp }}/eo-coverage.txt
       - uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

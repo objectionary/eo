@@ -188,13 +188,6 @@
           <systemPropertyVariables>
             <eo.version>${project.version}</eo.version>
             <eo.typing>${eo.typing}</eo.typing>
-            <!--
-            Where PhCoverage.hit() appends coverage records at runtime. It
-            pairs with coverageTracking on eo-maven-plugin below, which wraps
-            located objects into PhCoverage at transpile time, so both ends
-            agree on one file (see #5673).
-            -->
-            <eo.coverageFile>${project.build.directory}/coverage.txt</eo.coverageFile>
             <java.util.logging.config.file>
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>
@@ -235,8 +228,6 @@
           <cacheEnabled>false</cacheEnabled>
           <!-- Tests assert on precise .eo locations in panics (off by default). -->
           <trackLocations>true</trackLocations>
-          <!-- Wrap located objects into PhCoverage so tests record EO coverage. -->
-          <coverageTracking>false</coverageTracking>
         </configuration>
         <executions>
           <execution>
@@ -294,6 +285,38 @@
     </plugins>
   </build>
   <profiles>
+    <profile>
+      <!--
+      EO object coverage, driven end to end by one setting:
+      mvn -Deo.coverageFile=<path> ... . The property is read by the
+      transpile goal of eo-maven-plugin, which then wraps every located
+      object into PhCoverage and writes the manifest of all of them into
+      <path>.manifest, and it is forwarded from here to the JVM that runs
+      the tests, where PhCoverage.hit() appends the touched locations to
+      <path> itself, so that the manifest and the hits can later be merged
+      into a coverage report (see #5673, #5671). Nothing is instrumented
+      when the property is absent, so an ordinary build stays as fast as it
+      was.
+      -->
+      <id>coverage-file</id>
+      <activation>
+        <property>
+          <name>eo.coverageFile</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <systemPropertyVariables>
+                <eo.coverageFile>${eo.coverageFile}</eo.coverageFile>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>jacoco</id>
       <build>

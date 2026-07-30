@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -117,6 +118,25 @@ final class Transpiling implements Step {
         ThreadLocal.withInitial(HashMap::new);
 
     /**
+     * The name of the train that holds every shift except the final
+     * {@code to-java.xsl} one, in the exact XMIR shape that shift dispatches
+     * on. {@link CoverageManifest} derives the manifest from the result of
+     * this train, so it reads the very structure that produces the Java.
+     */
+    private static final String BEFORE = "before";
+
+    /**
+     * The name of the train that holds the final {@code to-java.xsl} shift
+     * and nothing else.
+     */
+    private static final String LAST = "last";
+
+    /**
+     * The name of the train that holds every shift, in order.
+     */
+    private static final String WHOLE = "whole";
+
+    /**
      * Cache directory for transpiled sources.
      */
     private static final String CACHE = "transpiled";
@@ -178,9 +198,16 @@ final class Transpiling implements Step {
     private final Tracking tracking;
 
     /**
-     * Whether located objects are wrapped into {@code PhCoverage}.
+     * The coverage instrumentation of this run.
      */
-    private final boolean coverage;
+    private final Coverage coverage;
+
+    /**
+     * Every manifest line found while transpiling, from all worker threads,
+     * saved in one write by {@link Coverage#save(Collection)} once the pool
+     * has drained.
+     */
+    private final Collection<String> locations;
 
     /**
      * Cache guard, see {@link ConcurrentCache} for why it is one per instance.
@@ -198,7 +225,7 @@ final class Transpiling implements Step {
      * @param tests Whether to transpile tests
      * @param measures Path to the file where XSL measurements are stored
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
-     * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
+     * @param cvrg The coverage instrumentation of this run
      * @checkstyle ParameterNumberCheck (18 lines)
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
@@ -212,7 +239,7 @@ final class Transpiling implements Step {
         final boolean tests,
         final Path measures,
         final Tracking diagnostics,
-        final boolean cvrg
+        final Coverage cvrg
     ) {
         this.sources = srcs;
         this.targetDir = target;
@@ -224,6 +251,7 @@ final class Transpiling implements Step {
         this.xslMeasures = measures;
         this.tracking = diagnostics;
         this.coverage = cvrg;
+        this.locations = new ConcurrentLinkedQueue<>();
         this.guard = new ConcurrentCache();
     }
 
@@ -238,6 +266,7 @@ final class Transpiling implements Step {
             ).total() + new PackageInfos(this.generatedDir).create(),
             this.generatedDir
         );
+        this.coverage.save(this.locations);
     }
 
     /**
@@ -264,7 +293,7 @@ final class Transpiling implements Step {
                     Arrays.stream(Transpiling.XSLS), Arrays.stream(Transpiling.IMPORTS)
                 ).toArray(String[]::new)
             ).get(),
-            this.tracking.locations(), this.coverage
+            this.tracking.locations(), this.coverage.tracked()
         );
     }
 
@@ -283,7 +312,17 @@ final class Transpiling implements Step {
         ).make(base, MjAssemble.XMIR);
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
-        final Function<XML, XML> transform = this.transpilation(source);
+        final XML input = this.coverage.located(
+            xmir,
+            this.transpilation(source, this.train(Transpiling.BEFORE)),
+            this.locations
+        );
+        final Function<XML, XML> transform = this.transpilation(
+            source,
+            this.coverage.pending(
+                this.train(Transpiling.WHOLE), this.train(Transpiling.LAST)
+            )
+        );
         final Path cdir = this.cacheDir.resolve(Transpiling.CACHE);
         final Path tail = base.relativize(target);
         if (this.cacheEnabled) {
@@ -293,7 +332,7 @@ final class Transpiling implements Step {
                     new CachePath(cdir, this.version(), hsh.get()),
                     src -> {
                         rewrite.compareAndSet(false, true);
-                        final String res = transform.apply(xmir).toString();
+                        final String res = transform.apply(input).toString();
                         Logger.debug(
                             this,
                             "Transpiled %[file]s (%s) to %[file]s (%s) (cache miss), version: %s, hash: %s, tail: %s, cache enabled: %b, cache dir: %[file]s",
@@ -313,7 +352,7 @@ final class Transpiling implements Step {
             );
         } else {
             rewrite.compareAndSet(false, true);
-            new Saved(transform.apply(xmir).toString(), target).value();
+            new Saved(transform.apply(input).toString(), target).value();
         }
         return this.javaGenerated(
             rewrite.get(), target, hsh.get(), this.transpileTests && !tojo.discovered()
@@ -370,40 +409,50 @@ final class Transpiling implements Step {
     }
 
     /**
-     * The train for this thread, built once per location-tracking value.
+     * One of the trains for this thread, built once per name and per
+     * location-tracking and instrumentation values.
+     * @param name Which train: {@link #BEFORE}, {@link #LAST} or {@link #WHOLE}
      * @return The train of XSL shifts
      */
-    private Train<Shift> train() {
+    private Train<Shift> train(final String name) {
         final boolean track = this.tracking.locations();
-        final boolean instrument = this.coverage;
+        final boolean instrument = this.coverage.tracked();
         return Transpiling.TRAINS.get().computeIfAbsent(
-            String.format("%b|%b", track, instrument),
-            ignored -> Transpiling.compiled(track, instrument)
+            String.format("%s|%b|%b", name, track, instrument),
+            ignored -> Transpiling.compiled(name, track, instrument)
         );
     }
 
     /**
-     * Build the train of XSL shifts.
+     * Build one of the trains of XSL shifts.
+     * @param name Which train: {@link #BEFORE}, {@link #LAST} or {@link #WHOLE}
      * @param track Whether generated objects carry their source location
      * @param instrument Whether located objects are wrapped into {@code PhCoverage}
      * @return The train of XSL shifts
      */
-    private static Train<Shift> compiled(final boolean track, final boolean instrument) {
-        return new TrFull(
-            new TrJoined<>(
-                new TrClasspath<>(
-                    Arrays.copyOf(Transpiling.XSLS, Transpiling.XSLS.length - 1)
-                ).back(),
-                new TrDefault<>(
-                    new StClasspath(
-                        Transpiling.XSLS[Transpiling.XSLS.length - 1],
-                        String.format("disclaimer %s", new Disclaimer()),
-                        String.format("trackLocations %b", track),
-                        String.format("coverage %b", instrument)
-                    )
-                )
+    private static Train<Shift> compiled(
+        final String name, final boolean track, final boolean instrument
+    ) {
+        final Train<Shift> before = new TrClasspath<Shift>(
+            Arrays.copyOf(Transpiling.XSLS, Transpiling.XSLS.length - 1)
+        ).back();
+        final Train<Shift> last = new TrDefault<>(
+            new StClasspath(
+                Transpiling.XSLS[Transpiling.XSLS.length - 1],
+                String.format("disclaimer %s", new Disclaimer()),
+                String.format("trackLocations %b", track),
+                String.format("coverage %b", instrument)
             )
         );
+        final Train<Shift> shifts;
+        if (Transpiling.BEFORE.equals(name)) {
+            shifts = before;
+        } else if (Transpiling.LAST.equals(name)) {
+            shifts = last;
+        } else {
+            shifts = new TrJoined<>(before, last);
+        }
+        return new TrFull(shifts);
     }
 
     /**
@@ -411,10 +460,11 @@ final class Transpiling implements Step {
      * If transformation steps are tracked - creates a new {@link Xsline}
      * for every XMIR in purpose of thread safety.
      * @param source Path to source XMIR
+     * @param train The train of XSL shifts to apply
      * @return XSL transformation function
      */
-    private Function<XML, XML> transpilation(final Path source) {
-        final Train<Shift> measured = this.measured(this.train());
+    private Function<XML, XML> transpilation(final Path source, final Train<Shift> train) {
+        final Train<Shift> measured = this.measured(train);
         final Function<XML, XML> func;
         if (this.tracking.steps()) {
             func = xml -> new Xsline(
