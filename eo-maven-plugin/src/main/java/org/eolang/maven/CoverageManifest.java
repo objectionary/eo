@@ -19,15 +19,13 @@ import java.util.function.Function;
 /**
  * The full set of locations the transpiler wrapped into {@code PhCoverage},
  * one line per location: symbolic locator and source line, tab-separated.
- * Built once per {@code transpile} run (see {@link Transpiling}), to be read
- * back later and merged against the raw hits that {@code PhCoverage} itself
- * records at runtime, which is what tells the instrumented lines that were
- * actually touched from the ones that were not. The manifest deliberately
- * does not record a source file for each location: a locator starts with the
- * id of the object it belongs to, and the {@code eo-foreign} catalog already
- * maps every registered id to the source it was compiled from, so repeating
- * that mapping here, once per instrumented location, would only be a second
- * copy of it to keep in step.
+ * Built once per {@code transpile} run (see {@link Transpiling}), then read
+ * back by {@link MjCoverageReport}, which merges it against the raw hits
+ * recorded at runtime by {@code PhCoverage} itself, to tell which
+ * instrumented lines were actually touched. The manifest does not record a
+ * source file for each location: {@link MjCoverageReport} resolves that by
+ * matching a locator's leading object id against the already-existing
+ * {@code eo-foreign} catalog, instead of duplicating that mapping here.
  * @since 0.62.0
  */
 final class CoverageManifest implements Coverage {

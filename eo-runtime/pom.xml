@@ -293,10 +293,10 @@
       object into PhCoverage and writes the manifest of all of them into
       <path>.manifest, and it is forwarded from here to the JVM that runs
       the tests, where PhCoverage.hit() appends the touched locations to
-      <path> itself, so that the manifest and the hits can later be merged
-      into a coverage report (see #5673, #5671). Nothing is instrumented
-      when the property is absent, so an ordinary build stays as fast as it
-      was.
+      <path> itself. The coverage-report goal reads the same property once
+      more and merges the two into an LCOV tracefile (see #5673, #5671).
+      Nothing is instrumented when the property is absent, so an ordinary
+      build stays as fast as it was.
       -->
       <id>coverage-file</id>
       <activation>

@@ -76,27 +76,18 @@ public final class MjTranspile extends MjSafe {
      * {@code systemPropertyVariables} (see its {@code pom.xml}), so
      * one setting is enough end to end. This same transpile run also
      * writes the full set of instrumented locations into a sibling
-     * manifest (see {@link CoverageManifest}), so that the two files
-     * together say which of the instrumented lines were reached and
-     * which were not.
-     * @todo #5671:60min Merge the manifest and the hits into an LCOV report.
-     *  The transpiler now writes both halves of the answer, the manifest
-     *  of every instrumented location next to this file and, at runtime,
-     *  the raw {@code loc:line:pos} hits inside it, but nothing reads
-     *  them back yet. Add a goal, late in the lifecycle so that it runs
-     *  after the tests, that reads the two, resolves each locator to the
-     *  {@code .eo} source it came from through the {@code eo-foreign}
-     *  catalog {@code register} already builds, and writes an LCOV
-     *  ({@code .info}) tracefile plus the covered percentage. LCOV is
-     *  the format Codecov and Coveralls consume directly.
+     * manifest (see {@link CoverageManifest});
+     * {@link MjCoverageReport} later merges it against the raw hits,
+     * and resolves each location's source file from the existing
+     * {@code eo-foreign} catalog, to produce an LCOV tracefile.
      * @todo #5466:30min Enforce a minimum EO object coverage in eo-runtime.
-     *  Once the LCOV report from the puzzle above exists, bind it and set
-     *  {@code coverageFile} on the {@code transpile} execution in
-     *  {@code eo-runtime/pom.xml}, and fail the build when the covered
-     *  percentage of dataized {@code .eo} objects drops below a
-     *  threshold (for example 80 percent), mirroring how the existing
-     *  {@code jacoco} profile binds a {@code check} goal with per-metric
-     *  thresholds.
+     *  Now that {@link MjCoverageReport} produces the LCOV report, bind
+     *  it and set {@code coverageFile} on the {@code transpile}
+     *  execution in {@code eo-runtime/pom.xml}, and fail the build when
+     *  the covered percentage of dataized {@code .eo} objects drops
+     *  below a threshold (for example 80 percent), mirroring how the
+     *  existing {@code jacoco} profile binds a {@code check} goal with
+     *  per-metric thresholds.
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.coverageFile")
