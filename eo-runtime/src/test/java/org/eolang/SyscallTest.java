@@ -80,6 +80,43 @@ final class SyscallTest {
     }
 
     @Test
+    void reportsTheReasonOfTheRefusedConnection() throws IOException {
+        final SyscallTest.RandomServer refused = new SyscallTest.RandomServer().started();
+        refused.stop();
+        final Phi socket = Phi.Φ.take("socket").copy();
+        socket.put(0, new Data.ToPhi(this.localhost()));
+        socket.put(1, new Data.ToPhi(refused.port));
+        final Phi connect = socket.take("connect").copy();
+        connect.put(0, new SyscallTest.Simple());
+        connect.put(1, new SyscallTest.Reason());
+        MatcherAssert.assertThat(
+            "the refused connection should have told the fallback which address it failed to reach, but it didnt",
+            new Dataized(connect).asString(),
+            Matchers.containsString(String.format("127.0.0.1:%d", refused.port))
+        );
+    }
+
+    @Test
+    void reportsTheReasonOfTheFailedBinding() throws IOException {
+        final SyscallTest.RandomServer occupied = new SyscallTest.RandomServer().started();
+        try {
+            final Phi socket = Phi.Φ.take("socket").copy();
+            socket.put(0, new Data.ToPhi(this.localhost()));
+            socket.put(1, new Data.ToPhi(occupied.port));
+            final Phi listen = socket.take("listen").copy();
+            listen.put(0, new SyscallTest.Simple());
+            listen.put(1, new SyscallTest.Reason());
+            MatcherAssert.assertThat(
+                "the occupied port should have told the fallback which address it failed to bind to, but it didnt",
+                new Dataized(listen).asString(),
+                Matchers.containsString(String.format("127.0.0.1:%d", occupied.port))
+            );
+        } finally {
+            occupied.stop();
+        }
+    }
+
+    @Test
     void sendsAndReceivesMessageViaSocketObject() throws InterruptedException, IOException {
         final String msg = "Hello, Socket!";
         final AtomicReference<byte[]> bytes = new AtomicReference<>();
@@ -866,6 +903,26 @@ final class SyscallTest {
         @Override
         public Phi lambda() {
             return new Data.ToPhi(true);
+        }
+    }
+
+    /**
+     * Fallback that dataizes the message it is given.
+     * reason > [reason]
+     * @since 0.60.0
+     */
+    private static final class Reason extends PhDefault implements Atom {
+
+        /**
+         * Ctor.
+         */
+        Reason() {
+            super(new Attrs(new Attr("reason", new AtVoid("reason"))));
+        }
+
+        @Override
+        public Phi lambda() {
+            return this.take("reason");
         }
     }
 
