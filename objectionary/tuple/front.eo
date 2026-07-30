@@ -1,0 +1,95 @@
+# Elements of `list` before `index` (supports negative indices).
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package tuple
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[list index] > front
+  if. > @
+    idx.eq 0
+    *
+    if.
+      0.gt
+        index >> idx!
+      back
+        list
+        neg.
+          number idx
+      if.
+        gte.
+          number idx
+          list.length
+        list
+        if. > [tup] >> rechead
+          tup.length.eq idx
+          tup
+          rechead tup.tail
+        | list
+
+  eq. ++> can-take-a-front-slice
+    front
+      *
+        1
+        2
+        3
+        4
+        5
+      1
+    * 1
+
+  eq. ++> can-take-a-front-slice-of-a-complex-list
+    front
+      *
+        "foo"
+        2.2
+        00-01
+        "bar"
+      2
+    *
+      "foo"
+      2.2
+
+  eq. ++> can-take-a-front-slice-of-a-complex-list-with-a-negative-index
+    front
+      *
+        "foo"
+        2.2
+        00-01
+        "bar"
+      -3
+    *
+      2.2
+      00-01
+      "bar"
+
+  eq. ++> can-take-a-front-slice-with-a-negative-index
+    front
+      *
+        1
+        2
+        3
+      -1
+    * 3
+
+  is-empty ++> can-take-a-front-slice-with-a-zero-index
+    front
+      *
+        1
+        2
+        3
+      0
+
+  eq. ++> can-take-a-front-slice-with-the-length-as-index
+    front
+      *
+        1
+        2
+        3
+      3
+    *
+      1
+      2
+      3

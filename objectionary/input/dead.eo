@@ -1,0 +1,35 @@
+# Dead input is an input that reads from nowhere and always
+# returns empty sequence of bytes (`--`). Here `origin` is the input
+# this one is taken off, as in `i.dead`. It is ignored, because a dead
+# input reads from nowhere anyway.
+
++alias bytes.as-input
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package input
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[origin] > dead
+  [size] > read
+    [] >> input-block
+      -- > @
+      input-block > [size] > read
+    | > @
+
+  eq. ++> can-be-taken-off-any-input
+    read.
+      dead.
+        input
+          bytes.as-input 01-02-03
+      10
+    --
+
+  ++> can-read-empty-bytes
+    and. > @
+      i1.eq --
+      eq.
+        i1.read 10
+        --
+    dead.read 10 > i1

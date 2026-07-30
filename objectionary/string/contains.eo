@@ -1,0 +1,43 @@
+# Checks if `text` contains `substring`.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text substring] > contains
+  and. > @
+    gte.
+      number
+        txt.size >> length!
+      part.size >> size!
+    or.
+      and.
+        length.eq size
+        eq.
+          text >> txt!
+          substring >> part!
+      [index] >> rec-contains
+        if. > @
+          end.eq index
+          includes
+          includes.or
+            rec-contains (index.plus 1).as-number
+        eq. > includes
+          txt.slice index size
+          part
+      | 0
+  minus. >> end!
+    number length
+    size
+
+  contains ++> can-contain-a-substring
+    "Hello, world!"
+    "o, wo"
+
+  not. ++> cannot-contain-an-absent-substring
+    contains
+      "Hello, world!"
+      "Hey"

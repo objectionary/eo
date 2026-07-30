@@ -1,0 +1,200 @@
+# Calculates the integral from `a` to `b`.
+# Here `func` is the integration function, `a` is the lower limit,
+# `b` is the upper limit, `n` is the number of partitions of the integration interval.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[fun a b n] > integral
+  if. > @
+    n.is-finite.and
+      n.is-integer.and
+        n.gt 0
+    as-number.
+      malloc.of
+        8
+        [sum] >>
+          seq * > @
+            while
+              if. > [i] >>
+                i.lt n
+                seq *
+                  sum.put
+                    sum.as-number.plus
+                      subsection
+                        a.plus (i.times step)
+                        a.plus ((i.plus 1).times step)
+                  true
+                false
+              true > [i]
+            sum
+          as-number. > step
+            div.
+              b.minus a
+              n
+    T
+      "the number of partitions must be a finite positive integer"
+  times. > [a b] >> subsection
+    div.
+      b.minus a
+      6
+    plus.
+      fun a
+      plus.
+        4.times
+          fun
+            0.5.times
+              a.plus b
+        fun b
+
+  ++> can-integrate-a-cubic-function
+    close-to > @
+      as-number.
+        integral
+          times. > [x]
+            x.times x
+            x
+          1
+          10
+          100
+      2499.75
+      1.0E-7
+    [value operand err] > close-to
+      lte. > @
+        minus.
+          abs
+            value.minus operand
+          err
+        0
+      if. > [value] > abs
+        value.gte 0
+        value
+        value.neg
+
+  ++> can-integrate-a-linear-function
+    close-to > @
+      as-number.
+        integral
+          x > [x]
+          1
+          10
+          15
+      49.5
+      1.0E-7
+    [value operand err] > close-to
+      lte. > @
+        minus.
+          abs
+            value.minus operand
+          err
+        0
+      if. > [value] > abs
+        value.gte 0
+        value
+        value.neg
+
+  ++> can-integrate-a-quadratic-function
+    close-to > @
+      as-number.
+        integral
+          x.times x > [x]
+          1
+          10
+          100
+      333
+      1.0E-7
+    [value operand err] > close-to
+      lte. > @
+        minus.
+          abs
+            value.minus operand
+          err
+        0
+      if. > [value] > abs
+        value.gte 0
+        value
+        value.neg
+
+  ++> can-integrate-with-a-single-partition
+    close-to > @
+      as-number.
+        integral
+          x > [x]
+          0
+          1
+          1
+      0.5
+      1.0E-7
+    [value operand err] > close-to
+      lte. > @
+        minus.
+          abs
+            value.minus operand
+          err
+        0
+      if. > [value] > abs
+        value.gte 0
+        value
+        value.neg
+
+  ++> can-integrate-with-an-evenly-dividing-step
+    close-to > @
+      as-number.
+        integral
+          x > [x]
+          0
+          10
+          10
+      50
+      1.0E-7
+    [value operand err] > close-to
+      lte. > @
+        minus.
+          abs
+            value.minus operand
+          err
+        0
+      if. > [value] > abs
+        value.gte 0
+        value
+        value.neg
+
+  integral --> stops-on-fractional-partitions
+    x > [x]
+    0
+    1
+    1.5
+
+  integral --> stops-on-nan-partitions
+    x > [x]
+    0
+    1
+    nan
+
+  integral --> stops-on-negative-partitions
+    x > [x]
+    0
+    1
+    -1
+
+  integral --> stops-on-negatively-infinite-partitions
+    x > [x]
+    0
+    1
+    ninf
+
+  integral --> stops-on-positively-infinite-partitions
+    x > [x]
+    0
+    1
+    pinf
+
+  integral --> stops-on-zero-partitions
+    x > [x]
+    0
+    1
+    0

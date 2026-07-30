@@ -1,0 +1,38 @@
+# Returns `true` if `list` contains `element`, `false` otherwise.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package tuple
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[list element] > contains
+  not. > @
+    -1.eq
+      index-of list element
+
+  contains ++> can-contain-a-number
+    *
+      "qwerty"
+      "asdfgh"
+      3
+      "qwerty"
+    3
+
+  contains ++> can-contain-a-string
+    *
+      "qwerty"
+      "asdfgh"
+      3
+      "qwerty"
+    "qwerty"
+
+  not. ++> cannot-contain-an-absent-item
+    contains
+      *
+        "Привет"
+        "asdfgh"
+        3
+        "qwerty"
+      "Hi"

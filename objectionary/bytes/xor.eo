@@ -1,0 +1,49 @@
+# Bitwise exclusive OR of the byte chain `bts` with another chain `b`,
+# derived from the `and`, `or`, and `not` atoms.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package bytes
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[b x] > xor
+  or. > @
+    b.and x.not
+    b.not.and x
+
+  eq. ++> can-xor-negative-bytes-with-leading-zeroes
+    00-00-00-00-8E-EA-4C-B1.xor FF-FF-FF-FF-00-00-00-00
+    FF-FF-FF-FF-8E-EA-4C-B1
+
+  eq. ++> can-xor-negative-bytes-without-leading-zeroes
+    00-00-00-00-FF-FF-FF-FF.xor FF-FF-FF-FF-00-00-00-00
+    FF-FF-FF-FF-FF-FF-FF-FF
+
+  eq. ++> can-xor-one-negative-with-one-positive
+    -36.as-bytes.xor 43.as-bytes
+    80-07-80-00-00-00-00-00
+
+  eq. ++> can-xor-one-with-one
+    as-number.
+      1.as-bytes.xor 1.as-bytes
+    0
+
+  eq. ++> can-xor-two-long-bytes
+    00-00-00-00-8E-EA-4C-B1.xor 00-00-00-00-FF-FF-FF-FF
+    00-00-00-00-71-15-B3-4E
+
+  eq. ++> can-xor-two-negatives
+    -1.as-bytes.xor -123.as-bytes
+    7F-AE-C0-00-00-00-00-00
+
+  eq. ++> can-xor-two-positives
+    53.as-bytes.xor 24.as-bytes
+    00-72-80-00-00-00-00-00
+
+  eq. ++> can-xor-with-zero
+    0.as-bytes.xor 29.as-bytes
+    40-3D-00-00-00-00-00-00
+
+  20-1F.xor CA-FE-BE --> stops-on-xor-with-different-lengths

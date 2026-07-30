@@ -1,0 +1,33 @@
+# Wall-clock time source backed by the operating system.
+# Reads the underlying syscall: `gettimeofday` on POSIX, `_ftime32_s` on Windows.
+# Decorates an `i64` holding the current time in milliseconds since the Unix epoch.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
+
+[] > clock
+  as-i64. > @
+    os.is-windows.if
+      plus.
+        timeb.time.times 1000
+        millitm.
+          output. >> timeb
+            win32
+              "_ftime32_s"
+              *
+      plus.
+        times.
+          seconds.
+            output. >> timeval
+              posix
+                "gettimeofday"
+                *
+          1000
+        as-number.
+          timeval.micros.as-i64.div 1000.as-i64
+
+  clock.gt 0 ++> can-read-positive-millis

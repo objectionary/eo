@@ -1,0 +1,144 @@
+# Hash code - the pseudo-unique float numeric
+# representation of an object.
+#
+# Here `input` must be an object that can be converted to bytes
+# via `as-bytes` object.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package bytes
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[input] > hash
+  input.as-bytes >> b!
+  [acc index] >> rec-hash-code
+    if. > @
+      index.eq b.size!
+      acc.as-number
+      rec-hash-code
+        plus.
+          31.as-i64.times acc
+          as-i64.
+            00-00-00-00-00-00-00.concat
+              b.slice index 1
+        as-number.
+          index.plus 1
+  | > @
+    0
+    0
+
+  and. ++> can-hash-a-bool-into-a-number
+    eq.
+      size.
+        as-bytes.
+          hash true
+      8
+    eq.
+      size.
+        as-bytes.
+          hash false
+      8
+
+  ++> can-hash-an-integer-into-an-integer
+    1.eq > @
+      div.
+        number
+          hash 42 >> inthash!
+        number inthash
+
+  ++> can-hash-equal-numbers-alike
+    eq. > @
+      hash num
+      hash num
+    123456789012345680 > num
+
+  eq. ++> can-hash-equal-integers-alike
+    hash 42
+    hash 42
+
+  not. ++> can-hash-different-integers-apart
+    eq.
+      hash 42
+      hash 24
+
+  not. ++> can-hash-integers-of-different-signs-apart
+    eq.
+      hash 42
+      hash -42
+
+  ++> can-hash-a-string-into-an-integer
+    1.eq > @
+      div.
+        number
+          hash "hello" >> strhash!
+        number strhash
+
+  eq. ++> can-hash-equal-strings-alike
+    hash "Hello"
+    hash "Hello"
+
+  not. ++> can-hash-strings-of-the-same-length-apart
+    eq.
+      hash "one"
+      hash "two"
+
+  not. ++> can-hash-different-strings-apart
+    eq.
+      hash "hello"
+      hash "bye!!!"
+
+  ++> can-hash-an-abstract-object-into-an-integer
+    1.eq > @
+      div.
+        number
+          hash >> objhash!
+            obj 42
+        number objhash
+    x > [x] > obj
+
+  ++> can-hash-equal-abstract-objects-alike
+    eq. > @
+      hash value
+      hash value
+    x > [x] > obj
+    obj 42 > value
+
+  ++> can-hash-different-abstract-objects-apart
+    not. > @
+      eq.
+        hash
+          obj 42
+        hash
+          obj "42"
+    x > [x] > obj
+
+  ++> can-hash-a-float-into-an-integer
+    1.eq > @
+      div.
+        number
+          hash 42.42 >> flthash!
+        number flthash
+
+  ++> can-hash-equal-floats-alike
+    eq. > @
+      hash emergency
+      hash emergency
+    0.911 > emergency
+
+  ++> can-hash-equal-big-values-alike
+    eq. > @
+      hash
+        4.242e43 >> bigval!
+      hash bigval
+
+  not. ++> can-hash-different-floats-apart
+    eq.
+      hash 3.14
+      hash 2.72
+
+  not. ++> can-hash-floats-of-different-signs-apart
+    eq.
+      hash 3.22
+      hash -3.22

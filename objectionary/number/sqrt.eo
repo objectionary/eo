@@ -1,0 +1,73 @@
+# Positive square root of `num` as `org.eolang.number`, taken as `num` raised to
+# the one-half power. A negative argument, negative infinity included, is nan.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[num] > sqrt
+  if. > @
+    lt.
+      number num.as-bytes
+      0
+    nan
+    power
+      num
+      0.5
+
+  lt. ++> can-approximate-a-square-root-of-four
+    abs
+      2.minus
+        sqrt 4
+    1.0E-11
+
+  lt. ++> can-approximate-a-square-root-of-zero
+    abs
+      0.minus
+        sqrt 0
+    1.0E-11
+
+  lt. ++> can-take-a-square-root-of-a-half
+    abs
+      minus.
+        sqrt 0.25
+        0.5
+    1.0E-9
+
+  lt. ++> can-take-a-square-root-of-four
+    abs
+      minus.
+        sqrt 4
+        2
+    1.0E-9
+
+  eq. ++> can-take-a-square-root-of-one
+    sqrt 1
+    1
+
+  eq. ++> can-take-a-square-root-of-positive-infinity
+    sqrt pinf
+    pinf
+
+  lt. ++> can-take-a-square-root-of-two
+    abs
+      minus.
+        sqrt 2
+        1.4142135623730951
+    1.0E-9
+
+  eq. ++> can-take-a-square-root-of-zero
+    sqrt 0
+    0
+
+  is-nan. ++> cannot-take-a-square-root-of-a-negative
+    sqrt -0.1
+
+  is-nan. ++> cannot-take-a-square-root-of-nan
+    sqrt nan
+
+  is-nan. ++> cannot-take-a-square-root-of-negative-infinity
+    sqrt ninf

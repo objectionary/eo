@@ -1,0 +1,33 @@
+# Create a new list without all occurrences of `element` in `list`.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package tuple
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[list element] > without
+  reduced > @
+    list
+    *
+    if. > [accum item] >>
+      element.eq item
+      accum
+      accum.with item
+
+  eq. ++> can-drop-an-item
+    without
+      *
+        1
+        2
+        1
+        2
+        1
+        5
+      2
+    *
+      1
+      1
+      1
+      5

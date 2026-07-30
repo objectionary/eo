@@ -1,0 +1,71 @@
+# Returns `text` where all regex target changed to replacement.
+# Here `target` must be a `org.eolang.string.regex` object.
+# The `replacement` here is a `string` that would be pasted instead of
+# matched text in original one.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text target replacement] > replaced
+  matched.exists.not.if > @
+    string text! >> reinit
+    block.exists.if > [block accum start] >> rec-replaced
+      rec-replaced
+        block.next
+        concat.
+          accum.concat
+            reinit.slice
+              start
+              block.from.minus start
+          replacement
+        block.to
+      string
+        accum.concat
+          reinit.slice
+            start
+            reinit.length.minus start
+    |
+      matched
+      ""
+      start.
+        next. >> matched
+          target.match reinit
+
+  eq. ++> can-replace-a-windows-separator-with-a-slash
+    replaced
+      "C:\\Windows\\Users\\AppLocal\\shrek"
+      regex "/[\\\\:]+/"
+      "/"
+    "C/Windows/Users/AppLocal/shrek"
+
+  eq. ++> can-replace-digits-with-a-string
+    replaced
+      "Hell0, w0rld"
+      regex "/[0-9]+/"
+      "o"
+    "Hello, world"
+
+  eq. ++> can-replace-slashes-with-a-windows-separator
+    replaced
+      "C:\\Windows/foo\\bar/hello.txt"
+      regex "/\\//"
+      "\\"
+    "C:\\Windows\\foo\\bar\\hello.txt"
+
+  eq. ++> can-sanitize-a-windows-path
+    replaced
+      "foo\\bar<:>?*\"|baz\\asdf"
+      regex "/[<>:\\\"\\/\\|\\?\\*\\x00-\\x1F]/"
+      ""
+    "foo\\barbaz\\asdf"
+
+  eq. ++> cannot-replace-when-the-pattern-is-absent
+    replaced
+      "Hello, world"
+      regex "/[0-9]+/"
+      "12345"
+    "Hello, world"

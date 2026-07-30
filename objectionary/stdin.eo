@@ -1,0 +1,65 @@
+# Convenient wrapper `stdin` on `console` object
+# which is used as input only and allows to read the data from console.
+#
+# To read just one line you can do:
+# ```
+# stdin.next-line
+# ```
+#
+# To read all lines you can do:
+# ```
+# stdin.all-lines
+# ```
+#
+# or just dataize `stdin` object.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.62.0
++unlint unit-test-missing
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
+
+[] > stdin
+  all-lines > @
+  [] > all-lines
+    [line buffer first] >> rec-read
+      if. > @
+        line.length.eq 0
+        string buffer
+        rec-read
+          next-line
+          first.if
+            buffer.concat line
+            concat.
+              buffer.concat eol!
+              line
+          false
+    | > @
+      next-line
+      --
+      true
+  [] > next-line
+    if. > @
+      first.as-bytes.size.eq 0
+      ""
+      [input buffer] >> rec-read
+        if. > @
+          or.
+            char.eq --
+            or.
+              and.
+                char.eq "\r"
+                next.as-bytes.eq "\n"
+              char.eq "\n"
+          string buffer
+          rec-read
+            next
+            buffer.concat char
+        input.as-bytes > char
+        @. > next
+          input.read 1
+      | first --
+    @. > first
+      console.read 1

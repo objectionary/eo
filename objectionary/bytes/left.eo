@@ -1,0 +1,42 @@
+# Left bit shift of the byte chain `b` by `x` bits, expressed as a
+# right shift by the negated amount.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package bytes
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[b x] > left
+  b.right x.neg > @
+
+  eq. ++> can-shift-left-an-even-negative
+    FF-FF-FF-FF-FF-FF-FF-EE.left 2
+    00-00-00-00-00-00-00-47.not
+
+  eq. ++> can-shift-left-an-even-positive
+    4.as-bytes.left 3
+    00-80-00-00-00-00-00-00
+
+  eq. ++> can-shift-left-an-odd-negative
+    -17.as-bytes.left 1
+    80-62-00-00-00-00-00-00
+
+  eq. ++> can-shift-left-an-odd-positive
+    5.as-bytes.left 3
+    00-A0-00-00-00-00-00-00
+
+  eq. ++> can-shift-left-by-zero
+    2.as-bytes.left 0
+    40-00-00-00-00-00-00-00
+
+  eq. ++> can-shift-left-minus-one
+    eq.
+      -1.as-bytes.left 3
+      7.as-bytes
+    false
+
+  eq. ++> can-shift-left-zero-bytes
+    0.as-bytes.left 1
+    00-00-00-00-00-00-00-00

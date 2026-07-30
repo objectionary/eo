@@ -1,0 +1,271 @@
+# Socket.
+#
+# To connect to the local server as client you should do:
+#
+# ```
+# socket
+#   "127.0.0.1"                           # localhost IPv4 address
+#   8080                                  # port
+# .connect
+#   [s]
+#     s.send "Hello, world" > sent        # send message to the socket, `sent` - amount of sent bytes
+#     s.recv 12 > buff                    # receive 12 bytes from the socket, `buff` - received bytes
+#     s.as-input.read 5                   # make input from socket, `read` attribute is available
+#     s.as-output.write "Hi"              # make output from socket, `write` attribute is available
+# ```
+#
+# When you dataize `socket.connect`, it creates new socket, connects to the given
+# IP on given port, dataizes provided scope, closes the socket and returns bytes
+# retrieved from scope dataization. On failure at any of the described steps, the fallback of the
+# corresponding operation is returned (or the bottom object when it is left unbound).
+#
+# To listen to the incoming connections as server you should do:
+#
+# ```
+# socket
+#   "127.0.0.1"
+#   8080
+# .listen
+#   [s]
+#     s.accept                             # accept incoming connection on socket,
+#       [client]                           # client is connected client socket
+#         client.send "Hi, Jeff"           # returns client socket, that has all the attributes
+#         client.recv 42                   # of the scoped-socket (except "accept" attribute)
+#         client.as-input.read 5           # same as in `socket.connect`
+#         client.as-output.write "Hi"      # same as in `socket.connect`
+# ```
+#
+# When you dataize `socket.listen`, it creates new socket, binds it to the given address and port,
+# starts listening for incoming connections, dataizes provided scope, closes the socket
+# and returns `bytes` retrieved from scope dataization. When `s.accept` is dataized - it dataizes
+# given scope, closes client socket and returns `bytes` retrieved from scope dataization.
+# On failure at any of the described steps, the fallback of the corresponding operation is
+# returned (or the bottom object when it is left unbound).
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint unit-test-missing
++unlint redundant-object
++unlint mandatory-package
+
+[address port] > socket
+  os.is-windows.if > @
+    [sys] >> impl
+      code. > addr
+        sys.raw *1
+          "inet_addr"
+          address
+      addr.as-i32 > addrint
+      [descriptor] > closed-socket
+        if. > @
+          closed.eq -1
+          T
+            "Couldn't close the socket #%d because %s".printf
+              * descriptor sys.message
+          true
+        code. > closed
+          sys.raw *1
+            sys.close
+            descriptor
+      [scope cant-connect] > connect
+        safe-socket > @
+          [] >>
+            if. > @
+              connected.eq -1
+              cant-connect
+                "Couldn't connect to %s:%d on socket #%d because %s".printf
+                  * sock.address sock.port sock.sd sock.sys.message
+              scope
+                sock.scoped-socket sock.sd
+            code. > connected
+              sock.sys.raw *1
+                "connect"
+                sock.sd
+                sock.sockaddr
+                sock.sockaddr.size
+            ^.^.^ > sock
+          cant-connect
+      [scope cant-listen] > listen
+        safe-socket > @
+          [] >>
+            if. > @
+              bound.eq -1
+              cant-listen
+                "Couldn't bind the socket #%d to %s:%d because %s".printf
+                  * sock.sd sock.address sock.port sock.sys.message
+              if.
+                listened.eq -1
+                cant-listen
+                  "Failed to listen to %s:%d on the socket #%d because %s".printf
+                    * sock.address sock.port sock.sd sock.sys.message
+                scope
+                  [] >>
+                    sock.scoped-socket sock.sd > @
+                    [scope cant-accept] > accept
+                      if. > @
+                        client.eq -1
+                        cant-accept
+                          "Failed to accept a connection on the socket #%d because %s".printf
+                            * sock.sd sock.sys.message
+                        seq *
+                          scope (sock.scoped-socket client) >> handled!
+                          sock.closed-socket client
+                          handled
+                      code. > client
+                        sock.sys.raw *1
+                          "accept"
+                          sock.sd
+                          sock.sockaddr
+                          sock.sockaddr.size
+            code. > bound
+              sock.sys.raw *1
+                "bind"
+                sock.sd
+                sock.sockaddr
+                sock.sockaddr.size
+            code. > listened
+              sock.sys.raw *1
+                "listen"
+                sock.sd
+                2048
+            ^.^.^ > sock
+          cant-listen
+      [scope cant] > safe-socket
+        if. > @
+          not.
+            sys.startup.eq 0
+          cant
+            "Couldn't start up the sockets subsystem because %s".printf
+              * sys.message
+          seq *
+            if. >> result!
+              sd.eq -1
+              cant
+                "Couldn't create a socket because %s".printf
+                  * sys.message
+              seq *
+                if. >> used!
+                  addr.eq sys.none
+                  cant
+                    "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s".printf
+                      * address sys.message
+                  scope
+                closed-socket sd
+                used
+            sys.cleanup
+            result
+      [descriptor] > scoped-socket
+        ^.^.as-input recv > as-input
+        ^.^.as-output send > as-output
+        [size cant-receive] > recv
+          if. > @
+            received.code.eq -1
+            cant-receive
+              "Failed to receive data from the socket #%d because %s".printf
+                * descriptor sys.message
+            received.output
+          called. > received
+            sys.raw *1
+              "recv"
+              descriptor
+              size
+              0
+        [buffer cant-send] > send
+          if. > @
+            sent.eq -1
+            cant-send
+              "Failed to send a message through the socket #%d because %s".printf
+                * descriptor sys.message
+            sent
+          code. > sent
+            sys.raw *1
+              "send"
+              descriptor
+              buffer >> buff!
+              buff.size
+              0
+      code. > sd
+        sys.raw *1
+          "socket"
+          sys.inet
+          sys.stream
+          sys.tcp
+      sys.sockaddr-in > sockaddr
+        sys.inet.as-i16
+        htons port
+        addrint
+    |
+      []
+        raw > @
+        if. > cleanup
+          eq.
+            code.
+              win32
+                "WSACleanup"
+                *
+            win32.failure
+          T
+            "Couldn't clean up the sockets subsystem"
+          true
+        "closesocket" > close
+        "WSA error code %d".printf > message
+          *
+            code.
+              win32
+                "WSAGetLastError"
+                *
+        win32 > raw
+        code. > startup
+          win32 *1
+            "WSAStartup"
+            win32.version
+    impl
+      []
+        raw > @
+        true > cleanup
+        "close" > close
+        code. > message
+          posix *1
+            "strerror"
+            code.
+              posix
+                "errno"
+                *
+        posix > raw
+        0 > startup
+  [recv] > as-input
+    [size] > read
+      @. > @
+        read.
+          input-block --
+          size
+      [buffer] > input-block
+        buffer > @
+        [size] > read
+          seq * > @
+            chunk
+            input-block chunk
+          as-bytes. > chunk
+            recv size
+  [send] > as-output
+    [buffer] > write
+      @. > @
+        output-block.write buffer
+      [] > output-block
+        true > @
+        seq * > [buffer] > write
+          send buffer
+          output-block
+  [port] > htons
+    as-i16. > @
+      or.
+        left.
+          b.and 00-FF
+          8
+        and.
+          b.right 8
+          00-FF
+    port.as-i16.as-bytes > b

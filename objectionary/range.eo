@@ -1,0 +1,108 @@
+# Range - create a `list` containing a range of elements
+# Here `start` must be an abstract object that must have an object `next` to get
+# next element and object `lt` to compare with the `end` object.
+# Every next element also must have objects `next` and `lt`.
+# The first object in the chain must have a default value
+# e.g.:
+#
+# ```
+# range
+#   []
+#     [num] > build
+#       num > @!
+#       build (@.plus 1) > next
+#     build 1 > @
+#   10
+# ```
+#
+# Here the first argument is an abstract object that has a default value - 1 and
+# it also has object `next`. The next object after first is decorator of
+# `1.plus 1` and also has object `next`. Since these objects are ints - they have
+# object `lt` by default.
+
++alias tuple.is-empty
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object
++unlint mandatory-package
+
+[start end] > range
+  if. > @
+    start.lt end
+    if. > [acc current] >> appended
+      current.lt end
+      appended
+        acc.with current
+        current.next
+      acc
+    |
+      * start
+      start.next
+    *
+
+  ++> can-build-a-range-from-one-to-ten
+    rng.eq > @
+      *
+        1
+        2
+        3
+        4
+        5
+        6
+        7
+        8
+        9
+    range > rng
+      []
+        build 1 > @
+        [i] > build
+          i > @
+          build > next
+            1.plus @
+      10
+
+  ++> can-build-a-range-of-floats-from-one-to-five
+    rng.eq > @
+      *
+        1
+        1.5
+        2
+        2.5
+        3
+        3.5
+        4
+        4.5
+    range > rng
+      []
+        x 1 > @
+        [i] > x
+          i > @
+          x > next
+            0.5.plus @
+      5
+
+  ++> can-build-a-range-with-out-of-bounds-items
+    rng.eq > @
+      * 1 6
+    range > rng
+      []
+        b 1 > @
+        [num] > b
+          num > @
+          b > next
+            5.plus @
+      10
+
+  ++> can-build-an-empty-range-from-wrong-items
+    tuple.is-empty rng > @
+    range > rng
+      []
+        y 10 > @
+        [num] > y
+          num > @
+          [] > next
+            42 > nothing
+      1

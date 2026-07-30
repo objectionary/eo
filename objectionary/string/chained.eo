@@ -1,0 +1,34 @@
+# Returns concatenation of `text` with all `other` strings.
+# Here `others` must be a `tuple` of `strings`.
+
++alias tuple.reduced
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text others] > chained
+  if. > @
+    0.eq others.length
+    text
+    string
+      tuple.reduced
+        others
+        text.as-bytes
+        accum.concat str.as-bytes > [accum str]
+
+  eq. ++> can-chain-with-other-strings
+    "Hello, world!"
+    chained *1
+      "Hello"
+      ", "
+      "world"
+      "!"
+
+  eq. ++> can-return-the-same-text-without-other-strings
+    "Some"
+    chained
+      "Some"
+      *

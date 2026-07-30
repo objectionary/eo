@@ -1,0 +1,113 @@
+# Calculate MOD.
+# An operation that finds the remainder after dividing `x` by `y`. When `y`
+# is zero, the result is the caller-supplied `cant-mod` fallback, or the
+# bottom object when none was provided, which terminates on use.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[x y cant-mod] > mod
+  if. > @
+    eq.
+      number y.as-bytes >> divisor
+      0
+    cant-mod
+      "cannot calculate mod by zero"
+    divisor.is-finite.not.if
+      x
+      if.
+        gt.
+          number x.as-bytes >> dividend
+          0
+        [] >> abs-mod
+          minus. > @
+            abs dividend >> absx
+            times.
+              abs divisor >> absy
+              floor.
+                absx.div absy
+        abs-mod.neg
+
+  ++> can-stay-compatible-with-division
+    eq. > @
+      plus.
+        mod dividend divisor
+        divisor.times (dividend.div divisor).as-i64.as-number
+      dividend
+    -13 > dividend
+    5 > divisor
+
+  eq. ++> can-take-a-modulo-by-one
+    mod
+      133
+      1
+    0
+
+  eq. ++> can-take-a-modulo-of-a-dividend-below-the-divisor
+    mod
+      -1
+      5
+    -1
+
+  eq. ++> can-take-a-modulo-of-a-negative-by-positive-infinity
+    mod
+      -5
+      pinf
+    -5
+
+  eq. ++> can-take-a-modulo-of-a-positive-by-negative-infinity
+    mod
+      5
+      ninf
+    5
+
+  eq. ++> can-take-a-modulo-of-a-positive-by-positive-infinity
+    mod
+      5
+      pinf
+    5
+
+  eq. ++> can-take-a-modulo-of-minus-one-by-seven
+    mod
+      -1
+      7
+    -1
+
+  eq. ++> can-take-a-modulo-of-one-by-two
+    mod
+      1
+      2
+    1
+
+  eq. ++> can-take-a-modulo-of-sixteen-by-a-large-negative
+    mod
+      16
+      -200
+    16
+
+  eq. ++> can-take-a-modulo-of-zero-by-a-negative
+    mod
+      0
+      -15
+    0
+
+  eq. ++> can-take-a-modulo-of-zero-by-five
+    mod
+      0
+      5
+    0
+
+  eq. ++> rejects-a-modulo-by-zero
+    "recovered"
+    mod
+      5
+      0
+      "recovered" > [message]
+
+  mod --> stops-on-a-modulo-by-zero
+    5
+    0

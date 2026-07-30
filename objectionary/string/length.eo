@@ -1,0 +1,90 @@
+# Counts the characters in the `text`, and not its bytes. The UTF-8 sequence
+# is walked character by character, so a multi-byte character counts as one.
+# A sequence that does not end with a complete character terminates
+# the computation.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text] > length
+  if. > @
+    eq.
+      text.as-bytes.size >> size!
+      0
+    0
+    [index accum] >> reclen
+      if. > @
+        index.eq size
+        accum
+        if.
+          eq.
+            byte.and 80-
+            00-
+          inclen index 1 accum
+          if.
+            eq.
+              byte.and E0-
+              C0-
+            inclen index 2 accum
+            if.
+              eq.
+                byte.and F0-
+                E0-
+              inclen index 3 accum
+              if.
+                eq.
+                  byte.and F8-
+                  F0-
+                inclen index 4 accum
+                T
+                  "Unknown byte format (%x), can't recognize character".printf
+                    * byte
+      text.as-bytes.slice index 1 > byte
+    | 0 0
+  if. > [index csize len] >> inclen
+    gt.
+      index.plus csize
+      size
+    T
+      "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
+        *
+          csize
+          index
+          text.as-bytes
+    reclen
+      index.plus csize
+      len.plus 1
+
+  eq. ++> can-count-a-text-of-spaces-only
+    " ".length
+    1
+
+  ++> can-count-four-byte-characters
+    and. > @
+      str.length.eq 11
+      str.as-bytes.size.eq 14
+    "The 😀 smile" > str
+
+  eq. ++> can-count-the-characters-of-the-origin-text
+    length
+      "Hello, world!"
+    13
+
+  ++> can-count-three-byte-characters
+    and. > @
+      str.length.eq 16
+      str.as-bytes.size.eq 18
+    "The अ devanagari" > str
+
+  ++> can-count-two-byte-characters
+    and. > @
+      str.length.eq 12
+      str.as-bytes.size.eq 16
+    "Hello, друг!" > str
+
+  length --> stops-on-an-incomplete-four-byte-character
+    string F0-9F-98

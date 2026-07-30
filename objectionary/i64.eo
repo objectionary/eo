@@ -1,247 +1,332 @@
-+alias tt.sprintf
+# Signed 64-bit integer.
+# Here `as-bytes` must be a `bytes` object.
+
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.61.3
-+rt node eo2js-runtime:0.0.0
-+version 0.61.3
++version 0.62.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
 +unlint mandatory-package
 
-# The 64 bits signed integer.
-# Here `as-bytes` must be a `bytes` object.
 [as-bytes] > i64
   as-bytes > @
-  times -1.as-i64 > neg
   as-i32.as-i16 > as-i16
-
-  # Convert this `org.eolang.i64` to `org.eolang.i32`.
-  # The `org.eolang.error` is returned if the `org.eolang.i64` number is more than
-  # max `org.eolang.i32` value `2147483647`.
-  [] > as-i32
+  [cant-convert] > as-i32
     if. > @
-      or.
-        left.eq 00-00-00-00
-        left.eq FF-FF-FF-FF
-      i32 (as-bytes.slice 4 4)
-      error
-        sprintf
-          "Can't convert i64 number %d to i32 because it's out of i32 bounds"
+      ^.eq
+        as-i64.
+          i32 >> left
+            as-bytes.slice 4 4
+      left
+      cant-convert
+        "Can't convert i64 number %d to i32 because it's out of i32 bounds".printf
           * as-number
-    (as-bytes.slice 0 4).as-bytes > left
-
-  # Convert this `org.eolang.i64` to `org.eolang.number` object and return it.
-  [] > as-number /number
-
-  # Returns `org.eolang.true` if `$` < `x`.
-  # Here `x` must be an `org.eolang.i64` object.
-  [x] > lt
-    0.as-i64.gt > @
-      minus
-        i64 value
-    x > value!
-
-  # Returns `org.eolang.true` if `$` <= `x`.
-  # Here `x` must be an `org.eolang.i64` object.
-  [x] > lte
-    or. > @
-      lt value
-      ^.eq value
-    x > value!
-
-  # Returns `org.eolang.true` if `$` > `x`.
-  # Here `x` must be an `org.eolang.i64` object.
-  [x] > gt /bool
-
-  # Returns `org.eolang.true` if `$` >= `x`.
-  # Here `x` must be an `org.eolang.i64` object.
+    i32 > left
+      as-bytes.slice 4 4
+  [] > as-number
+    if. > @
+      as-bytes.eq 00-00-00-00-00-00-00-00
+      0
+      number
+        sign.or
+          exponentbits.or mantissa
+    rounded.eq 00-20-00-00-00-00-00-00 > carried
+    carried.if > exponentbits
+      as-bytes.
+        plus.
+          i64 40-00-00-00-00-00-00-00
+          i64 highestbits
+      as-bytes.
+        plus.
+          i64 3F-F0-00-00-00-00-00-00
+          i64 highestbits
+    eq. > guard
+      and.
+        magnitude.right
+          highest.minus 53
+        00-00-00-00-00-00-00-01
+      00-00-00-00-00-00-00-01
+    scanned.as-number.minus 4503599627370496 > highest
+    left. > highestbits!
+      scanned.and 00-00-00-00-00-00-00-3F
+      52
+    magnitude.right > kept!
+      highest.minus 52
+    if. > magnitude!
+      sign.eq 80-00-00-00-00-00-00-00
+      as-bytes.
+        plus.
+          i64 as-bytes.not
+          i64 00-00-00-00-00-00-00-01
+      as-bytes
+    if. > mantissa
+      highest.lte 52
+      and.
+        magnitude.left
+          52.minus highest
+        00-0F-FF-FF-FF-FF-FF-FF
+      rounded.and 00-0F-FF-FF-FF-FF-FF-FF
+    eq. > odd
+      kept.and 00-00-00-00-00-00-00-01
+      00-00-00-00-00-00-00-01
+    roundup.if > rounded!
+      as-bytes.
+        plus.
+          i64 kept
+          i64 00-00-00-00-00-00-00-01
+      kept
+    guard.and > roundup
+      sticky.or odd
+    [m acc step bit] > scan
+      if. > @
+        step.lt 1
+        acc
+        scan
+          empty.if m shifted
+          empty.if
+            acc
+            acc.or bit
+          step.div 2
+          bit.right 1
+      shifted.eq 00-00-00-00-00-00-00-00 > empty
+      m.right step > shifted!
+    scan > scanned!
+      magnitude
+      43-30-00-00-00-00-00-00
+      32
+      00-00-00-00-00-00-00-20
+    as-bytes.and 80-00-00-00-00-00-00-00 > sign!
+    not. > sticky
+      eq.
+        magnitude.left
+          117.minus highest
+        00-00-00-00-00-00-00-00
+  [x] > gt
+    if. > @
+      not.
+        eq.
+          as-bytes.and 80-00-00-00-00-00-00-00 >> sign
+          x.as-bytes.and 80-00-00-00-00-00-00-00
+      sign.eq 00-00-00-00-00-00-00-00
+      and.
+        eq.
+          and.
+            as-bytes.
+              minus x >> difference
+            80-00-00-00-00-00-00-00
+          00-00-00-00-00-00-00-00
+        not.
+          difference.as-bytes.eq 00-00-00-00-00-00-00-00
   [x] > gte
     or. > @
-      gt value
+      gt
+        x >> value!
       ^.eq value
-    x > value!
+  gt. > [x] > lt
+    i64 x.as-bytes
+    ^
+  [x] > lte
+    or. > @
+      lt
+        x >> value!
+      ^.eq value
+  plus (i64 x!).neg > [x] > minus
+  times -1.as-i64 > neg
+  [x] > plus
+    if. > [a b] >> carried
+      b.eq 00-00-00-00-00-00-00-00
+      i64 a
+      carried
+        a.xor b
+        left.
+          a.and b
+          1
+    | > @
+      as-bytes
+      x.as-bytes
+  [x] > times
+    if. > [acc a b] > looped
+      b.eq 00-00-00-00-00-00-00-00
+      i64 acc
+      looped
+        if.
+          eq.
+            b.and 00-00-00-00-00-00-00-01
+            00-00-00-00-00-00-00-01
+          as-bytes.
+            plus.
+              i64 acc
+              i64 a
+          acc
+        a.left 1
+        b.right 1
+    | > @
+      00-00-00-00-00-00-00-00
+      as-bytes
+      x.as-bytes
 
-  # Multiplication of `$` and `x` as `org.eolang.i64`.
-  # Here `x` must be an `org.eolang.i64` object.
-  [x] > times /i64
+  eq. ++> can-add-mixed-signs
+    -100.as-i64.plus 42.as-i64
+    -58.as-i64
 
-  # Sum of `$` and `x` as `org.eolang.i64`.
-  # Here `x` must be an `org.eolang.i64` object.
-  [x] > plus /i64
+  eq. ++> can-add-one-to-minus-one
+    -1.as-i64.plus 1.as-i64
+    0.as-i64
 
-  # Subtraction between `$` and `x`.
-  # Here `x` must be an `i64` object.
-  [x] > minus
-    plus (i64 value).neg > @
-    x > value!
+  eq. ++> can-add-one-to-one
+    1.as-i64.plus 1.as-i64
+    2.as-i64
 
-  # Quotient of the division of `$` by `x` as `org.eolang.i64`.
-  # Here `x` must be an `org.eolang.i64` object.
-  # An `org.eolang.error` is returned if `x` is equal to 0.
-  [x] > div /i64
+  gt. ++> can-be-greater-among-large-negatives
+    -5000000000000000000.as-i64
+    -9000000000000000000.as-i64
 
-  # Tests that i64 number has correct byte representation.
-  [] +> tests-i64-has-valid-bytes
-    eq. > @
-      42.as-i64.as-bytes
-      00-00-00-00-00-00-00-2A
+  -200.as-i64.gt -1000.as-i64 ++> can-be-greater-than-a-smaller-i64
 
-  # Tests that i64 bytes differ from regular number bytes representation.
-  [] +> tests-i64-as-bytes-is-not-equal-to-number-bytes
-    not. > @
-      eq.
-        i64 234.as-bytes
-        234.as-i64.as-bytes
+  -1000.as-i64.gte -1100.as-i64 ++> can-be-greater-than-or-equal-to-a-smaller-i64
 
-  # Tests that converting i64 to i32 and back preserves the value.
-  [] +> tests-i64-to-i32-and-back
-    eq. > @
-      234.as-i64
-      234.as-i64.as-i32.as-i64
+  113.as-i64.gte 113.as-i64 ++> can-be-greater-than-or-equal-to-an-equal-i64
 
-  # Tests that converting negative i64 to i32 and back preserves the value.
-  [] +> tests-negative-i64-to-i32-and-back
-    eq. > @
-      -234.as-i64
-      -234.as-i64.as-i32.as-i64
+  gt. ++> can-be-greater-when-max-is-over-min
+    i64 7F-FF-FF-FF-FF-FF-FF-FF
+    i64 80-00-00-00-00-00-00-00
 
-  # Tests that converting i64 to i32 throws error when out of bounds.
-  3147483647.as-i64.as-i32 > [] +> throws-on-converting-to-i32-if-out-of-bounds
+  -9.223372036854776e18.as-i64.lt 1.as-i64 ++> can-be-less-across-the-full-range
 
-  # Tests that i64 less-than comparison returns true for smaller values.
-  [] +> tests-i64-less-true
-    lt. > @
-      10.as-i64
-      50.as-i64
+  10.as-i64.lt 50.as-i64 ++> can-be-less-than-a-larger-i64
 
-  # Tests that i64 less-than comparison returns false for equal values.
-  [] +> tests-i64-less-equal
-    not. > @
-      lt.
-        10.as-i64
-        10.as-i64
+  -200.as-i64.lte -100.as-i64 ++> can-be-less-than-or-equal-to-a-larger-i64
 
-  # Tests that i64 less-than comparison returns false for larger values.
-  [] +> tests-i64-less-false
-    not. > @
-      lt.
-        10.as-i64
-        -5.as-i64
+  50.as-i64.lte 50.as-i64 ++> can-be-less-than-or-equal-to-an-equal-i64
 
-  # Tests that i64 greater-than comparison returns true for larger values.
-  [] +> tests-i64-greater-true
-    gt. > @
-      -200.as-i64
-      -1000.as-i64
+  not. ++> can-be-less-with-a-large-difference
+    5000000000000000000.as-i64.lt -5000000000000000000.as-i64
 
-  # Tests that i64 greater-than comparison returns false for smaller values.
-  [] +> tests-i64-greater-false
-    not. > @
-      gt.
-        0.as-i64
-        100.as-i64
-
-  # Tests that i64 greater-than comparison returns false for equal values.
-  [] +> tests-i64-greater-equal
-    not. > @
-      gt.
-        0.as-i64
-        0.as-i64
-
-  # Tests that i64 less-than-or-equal comparison returns true for smaller values.
-  [] +> tests-i64-lte-true
-    lte. > @
-      -200.as-i64
-      -100.as-i64
-
-  # Tests that i64 less-than-or-equal comparison returns true for equal values.
-  [] +> tests-i64-lte-equal
-    lte. > @
-      50.as-i64
-      50.as-i64
-
-  # Tests that i64 less-than-or-equal comparison returns false for larger values.
-  [] +> tests-i64-lte-false
-    not. > @
-      lte.
-        0.as-i64
-        -10.as-i64
-
-  # Tests that i64 greater-than-or-equal comparison returns true for larger values.
-  [] +> tests-i64-gte-true
-    gte. > @
-      -1000.as-i64
-      -1100.as-i64
-
-  # Tests that i64 greater-than-or-equal comparison returns true for equal values.
-  [] +> tests-i64-gte-equal
-    gte. > @
-      113.as-i64
-      113.as-i64
-
-  # Tests that i64 greater-than-or-equal comparison returns false for smaller values.
-  [] +> tests-i64-gte-false
-    not. > @
-      gte.
-        0.as-i64
-        10.as-i64
-
-  # Tests that i64 zero equals another i64 zero.
-  [] +> tests-i64-zero-eq-to-i64-zero
-    eq. > @
-      0.@
-      0.@
-
-  # Tests that i64 equality comparison returns true for identical values.
-  [] +> tests-i64-eq-true
-    eq. > @
-      123.@
-      123.@
-
-  # Tests that i64 equality comparison returns false for different values.
-  [] +> tests-i64-eq-false
-    not. > @
-      eq.
-        123.@
-        42.@
-
-  # Tests that i64 addition works correctly.
-  [] +> tests-i64-one-plus-i64-one
-    eq. > @
-      1.as-i64.plus 1.as-i64
-      2.as-i64
-
-  # Tests that i64 subtraction works correctly.
-  [] +> tests-i64-one-minus-i64-one
-    eq. > @
-      1.as-i64.minus 1.as-i64
-      0.as-i64
-
-  # Tests that i64 division by zero throws an error.
-  2.as-i64.div 0.as-i64 > [] +> throws-on-division-i64-by-i64-zero
-
-  # Tests that i64 division by one returns the original value.
-  [] +> tests-i64-div-by-i64-one
-    eq. > @
-      dividend.div 1.as-i64
-      dividend
-    -235.as-i64 > dividend
-
-  # Tests that i64 division with remainder works correctly.
-  [] +> tests-i64-div-with-remainder
-    eq. > @
-      13.as-i64.div -5.as-i64
-      -2.as-i64
-
-  # Tests that i64 division result can be less than one.
-  [] +> tests-i64-div-less-than-i64-one
-    lt. > @
-      1.as-i64.div 5.as-i64
+  eq. ++> can-carry-an-addition-through-all-bytes
+    plus.
+      i64 00-FF-FF-FF-FF-FF-FF-FF
       1.as-i64
+    i64 01-00-00-00-00-00-00-00
 
-  # Tests that i64 multiplication by zero equals zero.
-  [] +> tests-i64-multiply-by-zero
-    eq. > @
-      1000.as-i64.times 0.as-i64
-      0.as-i64
+  eq. ++> can-convert-a-negative-to-i32-and-back
+    -234.as-i64
+    -234.as-i64.as-i32.as-i64
+
+  -3.as-i64.as-number.eq -3 ++> can-convert-a-small-negative-i64-to-a-number
+
+  3.as-i64.as-number.eq 3 ++> can-convert-a-small-positive-i64-to-a-number
+
+  eq. ++> can-convert-an-exact-power-of-two-to-a-number
+    4611686018427387904.as-i64.as-number
+    4611686018427387904
+
+  eq. ++> can-convert-i32-max-without-an-error
+    2147483647.as-i64
+    2147483647.as-i64.as-i32.as-i64
+
+  eq. ++> can-convert-i32-min-without-an-error
+    -2147483648.as-i64
+    -2147483648.as-i64.as-i32.as-i64
+
+  eq. ++> can-convert-i64-min-to-a-number
+    as-number.
+      i64 80-00-00-00-00-00-00-00
+    -9.223372036854776e18
+
+  234.as-i64.eq 234.as-i64.as-i32.as-i64 ++> can-convert-to-i32-and-back
+
+  123.@.eq 123.@ ++> can-equal-the-same-i64
+
+  0.@.eq 0.@ ++> can-equal-zero-to-zero
+
+  42.as-i64.as-bytes.eq 00-00-00-00-00-00-00-2A ++> can-expose-valid-bytes
+
+  eq. ++> can-keep-the-low-bits-of-a-large-product
+    2147483647.as-i64.times 2147483647.as-i64
+    i64 3F-FF-FF-FF-00-00-00-01
+
+  eq. ++> can-multiply-by-zero
+    1000.as-i64.times 0.as-i64
+    0.as-i64
+
+  eq. ++> can-multiply-mixed-signs
+    -7.as-i64.times 6.as-i64
+    -42.as-i64
+
+  eq. ++> can-multiply-two-negatives
+    -7.as-i64.times -6.as-i64
+    42.as-i64
+
+  eq. ++> can-round-a-tie-to-even-when-converting-to-a-number
+    as-number.
+      i64 00-20-00-00-00-00-00-01
+    9007199254740992
+
+  eq. ++> can-round-i64-max-up-when-converted-to-a-number
+    as-number.
+      i64 7F-FF-FF-FF-FF-FF-FF-FF
+    9.223372036854776e18
+
+  eq. ++> can-round-up-above-a-tie-when-converting-to-a-number
+    as-number.
+      i64 00-20-00-00-00-00-00-03
+    9007199254740996
+
+  eq. ++> can-subtract-one-from-one
+    1.as-i64.minus 1.as-i64
+    0.as-i64
+
+  eq. ++> can-wrap-a-product-modulo-two-to-the-sixty-fourth
+    times.
+      i64 40-00-00-00-00-00-00-00
+      4.as-i64
+    0.as-i64
+
+  eq. ++> can-wrap-an-addition-at-max
+    plus.
+      i64 7F-FF-FF-FF-FF-FF-FF-FF
+      1.as-i64
+    i64 80-00-00-00-00-00-00-00
+
+  not. ++> cannot-be-greater-than-a-larger-i64
+    0.as-i64.gt 100.as-i64
+
+  not. ++> cannot-be-greater-than-an-equal-i64
+    0.as-i64.gt 0.as-i64
+
+  not. ++> cannot-be-greater-than-or-equal-to-a-larger-i64
+    0.as-i64.gte 10.as-i64
+
+  not. ++> cannot-be-greater-when-min-is-under-max
+    gt.
+      i64 80-00-00-00-00-00-00-00
+      i64 7F-FF-FF-FF-FF-FF-FF-FF
+
+  not. ++> cannot-be-less-than-a-smaller-i64
+    10.as-i64.lt -5.as-i64
+
+  not. ++> cannot-be-less-than-an-equal-i64
+    10.as-i64.lt 10.as-i64
+
+  not. ++> cannot-be-less-than-or-equal-to-a-smaller-i64
+    0.as-i64.lte -10.as-i64
+
+  not. ++> cannot-equal-a-different-i64
+    123.@.eq 42.@
+
+  not. ++> cannot-match-the-bytes-of-the-same-number
+    eq.
+      i64 234.as-bytes
+      234.as-i64.as-bytes
+
+  eq. ++> rejects-an-out-of-bounds-conversion-to-i32
+    "recovered"
+    3147483647.as-i64.as-i32
+      "recovered" > [message]
+
+  2147483648.as-i64.as-i32 --> stops-on-converting-i32-max-plus-one-to-i32
+
+  -2147483649.as-i64.as-i32 --> stops-on-converting-i32-min-minus-one-to-i32
+
+  3147483647.as-i64.as-i32 --> stops-on-converting-out-of-bounds-to-i32

@@ -1,0 +1,61 @@
+# Last `index` elements of `list` (an `index` larger than `list.length`
+# returns the whole `list`).
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package tuple
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[list index] > back
+  if. > @
+    0.gt
+      list.length.minus index! >> start!
+    list
+    reducedi
+      list
+      *
+      if. > [accum item idx] >>
+        idx.gte start
+        accum.with item
+        accum
+
+  eq. ++> can-take-a-back-slice
+    back
+      *
+        1
+        2
+        3
+        4
+        5
+      2
+    *
+      4
+      5
+
+  eq. ++> can-take-a-back-slice-with-a-large-index
+    back
+      *
+        1
+        2
+        3
+        4
+        5
+      10
+    *
+      1
+      2
+      3
+      4
+      5
+
+  is-empty ++> can-take-a-back-slice-with-a-zero-index
+    back
+      *
+        1
+        2
+        3
+        4
+        5
+      0

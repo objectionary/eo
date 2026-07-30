@@ -1,0 +1,57 @@
+# Set - is an unordered `list` of unique objects.
+
++alias tuple.mapped
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object
++unlint mandatory-package
+
+[lst] > set
+  [mp] >> ctor
+    mp.keys > @
+    mp.has item > [item] > has
+    mp.size > size
+    set.ctor > [item] > with
+      mp.with item true
+    set.ctor > [item] > without
+      mp.without item
+  | > @
+    map
+      tuple.mapped
+        lst
+        map.entry item true > [item]
+
+  has. ++> can-append-a-new-item
+    with.
+      set *
+        1
+        2
+      3
+    3
+
+  eq. ++> cannot-append-an-existing-item
+    size.
+      with.
+        set *
+          1
+          2
+        1
+    2
+
+  eq. ++> can-have-a-size-of-zero-when-empty
+    size.
+      set
+        *
+    0
+
+  eq. ++> can-rebuild-itself
+    set *
+      1
+      2
+      2
+    *
+      1
+      2

@@ -1,0 +1,51 @@
+# Recursively deletes the directory `d` and all of its contents.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package directory
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[d] > deleted
+  d.exists.if > @
+    seq *
+      if. > [tup] >> r
+        tup.length.eq 0
+        true
+        seq *
+          tup.head.deleted
+          r tup.tail
+      | (d.walk "**").at.^
+      d
+    d
+
+  ++> can-delete-a-directory-with-a-file-and-a-directory
+    and. > @
+      and.
+        and.
+          and.
+            inner.is-directory.and inner.exists
+            f.exists
+          dir.deleted.exists.not
+        inner.exists.not
+      f.exists.not
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir
+    dir.tmpfile > f
+    as-dir. (directory dir.tmpfile.deleted).made.as-path > inner
+
+  ++> can-delete-a-directory-with-files-recursively
+    and. > @
+      and.
+        and.
+          first.exists.and second.exists
+          dir.deleted.exists.not
+        first.exists.not
+      second.exists.not
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir
+    dir.tmpfile > first
+    dir.tmpfile > second
+
+  not. ++> can-delete-an-empty-directory
+    exists.
+      deleted. (mktemp.tmpfile.deleted.as-path.resolved "bar-empty").as-dir.made

@@ -1,0 +1,83 @@
+# TRUE when `n` is the not-a-number value, FALSE otherwise.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[n] > is-nan
+  if. > @
+    and.
+      bts.size.gt 7
+      not.
+        bts.size.gt 8
+    and.
+      eq.
+        bts.and 7F-F0-00-00-00-00-00-00
+        7F-F0-00-00-00-00-00-00
+      not.
+        eq.
+          bts.and 00-0F-FF-FF-FF-FF-FF-FF
+          00-00-00-00-00-00-00-00
+    false
+  n.as-bytes > bts
+
+  is-nan. ++> can-be-nan-when-built-of-nan-bytes
+    number nan.as-bytes
+
+  is-nan. ++> can-be-nan-when-built-of-non-canonical-nan-bytes
+    number FF-F8-00-00-00-00-00-00
+
+  nan.is-nan ++> can-be-nan-when-nan
+
+  eq. ++> can-be-nan-when-nan-divided-by-a-number
+    as-bytes.
+      nan.div 42
+    nan.as-bytes
+
+  eq. ++> can-be-nan-when-nan-divided-by-nan
+    as-bytes.
+      nan.div nan
+    nan.as-bytes
+
+  eq. ++> can-be-nan-when-nan-minus-a-number
+    as-bytes.
+      nan.minus 42
+    nan.as-bytes
+
+  eq. ++> can-be-nan-when-nan-minus-nan
+    as-bytes.
+      nan.minus nan
+    nan.as-bytes
+
+  nan.@.as-bytes.eq nan.as-bytes ++> can-be-nan-when-nan-negated
+
+  eq. ++> can-be-nan-when-nan-plus-a-number
+    as-bytes.
+      nan.plus 42
+    nan.as-bytes
+
+  eq. ++> can-be-nan-when-nan-plus-nan
+    as-bytes.
+      nan.plus nan
+    nan.as-bytes
+
+  eq. ++> can-be-nan-when-nan-times-a-number
+    as-bytes.
+      nan.times 42
+    nan.as-bytes
+
+  eq. ++> can-be-nan-when-nan-times-nan
+    as-bytes.
+      nan.times nan
+    nan.as-bytes
+
+  nan.floor.as-bytes.eq nan.as-bytes ++> can-be-nan-when-the-floor-of-nan
+
+  42.5.is-nan.not ++> cannot-be-nan-when-a-simple-number
+
+  ninf.is-nan.not ++> cannot-be-nan-when-negative-infinity
+
+  pinf.is-nan.not ++> cannot-be-nan-when-positive-infinity

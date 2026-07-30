@@ -1,294 +1,220 @@
-+alias tt.sprintf
+# Signed 32-bit integer.
+# Here `as-bytes` must be a `bytes` object.
+
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.61.3
-+rt node eo2js-runtime:0.0.0
-+version 0.61.3
++version 0.62.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
 +unlint mandatory-package
 
-# The 32 bits signed integer.
-# Here `as-bytes` must be a `bytes` object.
 [as-bytes] > i32
   as-bytes > @
-  times -1.as-i64.as-i32 > neg
-  as-i64.as-number > as-number
-
-  # Convert this `org.eolang.i32` to `org.eolang.i64` and return it.
-  # The object is an atom because it's not possible to check what
-  # bytes should be added from left so the number is valid.
-  # The different bytes should be added if number is positive and negative.
-  [] > as-i64 /i64
-
-  # Convert this `org.eolang.i32` to `org.eolang.i16`.
-  # The `org.eolang.error` is returned if the `org.eolang.i32` number is more than
-  # max `org.eolang.i16` value `32767`.
-  [] > as-i16
+  [cant-convert] > as-i16
     if. > @
-      or.
-        left.eq 00-00
-        left.eq FF-FF
-      i16 (as-bytes.slice 2 2)
-      error
-        sprintf
-          "Can't convert i32 number %d to i16 because it's out of i16 bounds"
+      ^.eq left.as-i32
+      left
+      cant-convert
+        "Can't convert i32 number %d to i16 because it's out of i16 bounds".printf
           * as-i64.as-number
-    (as-bytes.slice 0 2).as-bytes > left
-
-  # Returns `org.eolang.true` if `$` < `x`.
-  # Here `x` must be an `org.eolang.i32` object.
-  as-i64.lt x.as-i32.as-i64 > [x] > lt
-
-  # Returns `org.eolang.true` if `$` <= `x`.
-  # Here `x` must be an `org.eolang.i32` object.
-  as-i64.lte x.as-i32.as-i64 > [x] > lte
-
-  # Returns `org.eolang.true` if `$` > `x`.
-  # Here `x` must be an `org.eolang.i32` object.
-  as-i64.gt x.as-i32.as-i64 > [x] > gt
-
-  # Returns `org.eolang.true` if `$` >= `x`.
-  # Here `x` must be an `org.eolang.i32` object.
-  as-i64.gte x.as-i32.as-i64 > [x] > gte
-
-  # Multiplication of `$` and `x`.
-  # Here `x` must be an `org.eolang.i32` object.
-  [x] > times
+    i16 > left
+      as-bytes.slice 2 2
+  [] > as-i64
+    i64 > @
+      concat.
+        if. >>
+          eq.
+            as-bytes.and 80-00-00-00
+            00-00-00-00
+          00-00-00-00
+          FF-FF-FF-FF
+        as-bytes
+  as-i64.as-number > as-number
+  [x cant-divide] > div
     if. > @
-      or.
-        left.eq 00-00-00-00
-        left.eq FF-FF-FF-FF
-      i32 right
-      plus.
-        i32 left
-        i32 right
-    (as-i64.times x.as-i32.as-i64).as-bytes > bts
-    bts.slice 0 4 > left
-    bts.slice 4 4 > right
-
-  # Sum of `$` and `x`.
-  # Here `x` must be an `org.eolang.i32` object.
-  [x] > plus
-    if. > @
-      or.
-        left.eq 00-00-00-00
-        left.eq FF-FF-FF-FF
-      i32 right
-      plus.
-        i32 left
-        i32 right
-    (as-i64.plus x.as-i32.as-i64).as-bytes > bts
-    bts.slice 0 4 > left
-    bts.slice 4 4 > right
-
-  # Subtraction between `$` and `x`.
-  # Here `x` must be an `org.eolang.i32` object.
-  plus x.as-i32.neg > [x] > minus
-
-  # Quotient of the division of `$` by `x`.
-  # Here `x` must be an `org.eolang.i32` object.
-  # An `error` is returned if `x` is equal to 0.
-  [x] > div
-    if. > @
-      xval.eq zero
-      error
-        sprintf
-          "Can't divide %d by i32 zero"
+      eq.
+        x.as-i32 >> other
+        00-00-00-00
+      cant-divide
+        "Can't divide %d by i32 zero".printf
           * as-i64.as-number
       if.
         or.
-          left.eq zero
+          eq.
+            b.slice 0 4 >> left
+            00-00-00-00
           left.eq FF-FF-FF-FF
-        i32 right
+        i32
+          slice.
+            as-bytes. >> b
+              as-i64.div other.as-i64
+            4
+            4
         plus.
-          i32 left
-          i32 right
-    x.as-i32 > xval
-    (as-i64.div xval.as-i64).as-bytes > bts
-    bts.slice 0 4 > left
-    bts.slice 4 4 > right
-    00-00-00-00 > zero
+          i32
+            b.slice 0 4
+          i32
+            b.slice 4 4
+  as-i64.gt x.as-i32.as-i64 > [x] > gt
+  as-i64.gte x.as-i32.as-i64 > [x] > gte
+  as-i64.lt x.as-i32.as-i64 > [x] > lt
+  as-i64.lte x.as-i32.as-i64 > [x] > lte
+  plus x.as-i32.neg > [x] > minus
+  times -1.as-i64.as-i32 > neg
+  [x] > plus
+    if. > @
+      or.
+        eq.
+          b.slice 0 4 >> left
+          00-00-00-00
+        left.eq FF-FF-FF-FF
+      i32
+        slice.
+          as-bytes. >> b
+            as-i64.plus x.as-i32.as-i64
+          4
+          4
+      plus.
+        i32
+          b.slice 0 4
+        i32
+          b.slice 4 4
+  i32 > [x] > times
+    slice.
+      as-bytes.
+        as-i64.times x.as-i32.as-i64
+      4
+      4
 
-  # Tests that i32 number has correct byte representation.
-  [] +> tests-i32-has-valid-bytes
-    eq. > @
-      42.as-i64.as-i32.as-bytes
-      00-00-00-2A
+  eq. ++> can-add-one-to-one
+    1.as-i64.as-i32.plus 1.as-i64.as-i32
+    2.as-i64.as-i32
 
-  # Tests that negative i32 number has correct byte representation.
-  [] +> tests-negative-i32-has-valid-bytes
-    eq. > @
-      -200.as-i64.as-i32.as-bytes
-      FF-FF-FF-38
+  eq. ++> can-add-with-overflow
+    2147483647.as-i64.as-i32.plus 1.as-i64.as-i32
+    -2147483648.as-i64.as-i32
 
-  # Tests that converting i32 to i16 and back preserves the value.
-  [] +> tests-i32-to-i16-and-back
-    eq. > @
-      123.as-i64.as-i32
-      123.as-i64.as-i32.as-i16.as-i32
+  -200.as-i64.as-i32.gt -1000.as-i64.as-i32 ++> can-be-greater-than-a-smaller-i32
 
-  # Tests that converting negative i32 to i16 and back preserves the value.
-  [] +> tests-negative-i32-to-i16-and-back
-    eq. > @
-      -123.as-i64.as-i32
-      -123.as-i64.as-i32.as-i16.as-i32
+  gte. ++> can-be-greater-than-or-equal-to-a-smaller-i32
+    -1000.as-i64.as-i32
+    -1100.as-i64.as-i32
 
-  # Tests that i32 less-than comparison returns true for smaller values.
-  [] +> tests-i32-less-true
-    lt. > @
-      10.as-i64.as-i32
-      50.as-i64.as-i32
+  gte. ++> can-be-greater-than-or-equal-to-an-equal-i32
+    113.as-i64.as-i32
+    113.as-i64.as-i32
 
-  # Tests that i32 less-than comparison returns false for equal values.
-  [] +> tests-i32-less-equal
-    not. > @
-      lt.
-        10.as-i64.as-i32
-        10.as-i64.as-i32
+  10.as-i64.as-i32.lt 50.as-i64.as-i32 ++> can-be-less-than-a-larger-i32
 
-  # Tests that i32 less-than comparison returns false for larger values.
-  [] +> tests-i32-less-false
-    not. > @
-      lt.
-        10.as-i64.as-i32
-        -5.as-i64.as-i32
+  lte. ++> can-be-less-than-or-equal-to-a-larger-i32
+    -200.as-i64.as-i32
+    -100.as-i64.as-i32
 
-  # Tests that i32 greater-than comparison returns true for larger values.
-  [] +> tests-i32-greater-true
-    gt. > @
-      -200.as-i64.as-i32
-      -1000.as-i64.as-i32
+  lte. ++> can-be-less-than-or-equal-to-an-equal-i32
+    50.as-i64.as-i32
+    50.as-i64.as-i32
 
-  # Tests that i32 greater-than comparison returns false for smaller values.
-  [] +> tests-i32-greater-false
-    not. > @
-      gt.
-        0.as-i64.as-i32
-        100.as-i64.as-i32
+  eq. ++> can-convert-a-negative-to-i16-and-back
+    -123.as-i64.as-i32
+    -123.as-i64.as-i32.as-i16.as-i32
 
-  # Tests that i32 greater-than comparison returns false for equal values.
-  [] +> tests-i32-greater-equal
-    not. > @
-      gt.
-        0.as-i64.as-i32
-        0.as-i64.as-i32
+  eq. ++> can-convert-to-i16-and-back
+    123.as-i64.as-i32
+    123.as-i64.as-i32.as-i16.as-i32
 
-  # Tests that i32 less-than-or-equal comparison returns true for smaller values.
-  [] +> tests-i32-lte-true
-    lte. > @
-      -200.as-i64.as-i32
-      -100.as-i64.as-i32
-
-  # Tests that i32 less-than-or-equal comparison returns true for equal values.
-  [] +> tests-i32-lte-equal
-    lte. > @
-      50.as-i64.as-i32
-      50.as-i64.as-i32
-
-  # Tests that i32 less-than-or-equal comparison returns false for larger values.
-  [] +> tests-i32-lte-false
-    not. > @
-      lte.
-        0.as-i64.as-i32
-        -10.as-i64.as-i32
-
-  # Tests that i32 greater-than-or-equal comparison returns true for larger values.
-  [] +> tests-i32-gte-true
-    gte. > @
-      -1000.as-i64.as-i32
-      -1100.as-i64.as-i32
-
-  # Tests that i32 greater-than-or-equal comparison returns true for equal values.
-  [] +> tests-i32-gte-equal
-    gte. > @
-      113.as-i64.as-i32
-      113.as-i64.as-i32
-
-  # Tests that i32 greater-than-or-equal comparison returns false for smaller values.
-  [] +> tests-i32-gte-false
-    not. > @
-      gte.
-        0.as-i64.as-i32
-        10.as-i64.as-i32
-
-  # Tests that i32 zero equals another i32 zero.
-  [] +> tests-i32-zero-eq-to-i32-zero
-    eq. > @
-      0.as-i64.as-i32
-      0.as-i64.as-i32
-
-  # Tests that i32 equality comparison returns true for identical values.
-  [] +> tests-i32-eq-true
-    eq. > @
-      123.as-i64.as-i32
-      123.as-i64.as-i32
-
-  # Tests that i32 equality comparison returns false for different values.
-  [] +> tests-i32-eq-false
-    not. > @
-      eq.
-        123.as-i64.as-i32
-        42.as-i64.as-i32
-
-  # Tests that i32 addition works correctly.
-  [] +> tests-i32-one-plus-i32-one
-    eq. > @
-      1.as-i64.as-i32.plus 1.as-i64.as-i32
-      2.as-i64.as-i32
-
-  # Tests that i32 addition handles overflow correctly.
-  [] +> tests-i32-plus-with-overflow
-    eq. > @
-      2147483647.as-i64.as-i32.plus 1.as-i64.as-i32
-      -2147483648.as-i64.as-i32
-
-  # Tests that i32 subtraction works correctly.
-  [] +> tests-i32-one-minus-i32-one
-    eq. > @
-      1.as-i64.as-i32.minus 1.as-i64.as-i32
-      0.as-i64.as-i32
-
-  # Tests that i32 subtraction handles overflow correctly.
-  [] +> tests-i32-minus-with-overflow
-    eq. > @
-      -2147483648.as-i64.as-i32.minus 1.as-i64.as-i32
-      2147483647.as-i64.as-i32
-
-  # Tests that i32 division by zero throws an error.
-  2.as-i64.as-i32.div 0.as-i64.as-i32 > [] +> throws-on-division-i32-by-i32-zero
-
-  # Tests that converting i32 to i16 throws error when out of bounds.
-  247483647.as-i64.as-i32.as-i16 > [] +> throws-on-converting-to-i16-if-out-of-bounds
-
-  # Tests that i32 division by one returns the original value.
-  [] +> tests-i32-div-by-i32-one
+  ++> can-divide-by-one
     eq. > @
       dividend.div 1.as-i64.as-i32
       dividend
     -235.as-i64.as-i32 > dividend
 
-  # Tests that i32 division with remainder works correctly.
-  [] +> tests-i32-div-with-remainder
-    eq. > @
-      13.as-i64.as-i32.div -5.as-i64.as-i32
-      -2.as-i64.as-i32
+  lt. ++> can-divide-into-less-than-one
+    1.as-i64.as-i32.div 5.as-i64.as-i32
+    1.as-i64.as-i32
 
-  # Tests that i32 division result can be less than one.
-  [] +> tests-i32-div-less-than-i32-one
-    lt. > @
-      1.as-i64.as-i32.div 5.as-i64.as-i32
-      1.as-i64.as-i32
+  eq. ++> can-divide-with-a-remainder
+    13.as-i64.as-i32.div -5.as-i64.as-i32
+    -2.as-i64.as-i32
 
-  # Tests that i32 multiplication by zero equals zero.
-  [] +> tests-i32-multiply-by-zero
-    eq. > @
-      1000.as-i64.as-i32.times 0.as-i64.as-i32
+  123.as-i64.as-i32.eq 123.as-i64.as-i32 ++> can-equal-the-same-i32
+
+  0.as-i64.as-i32.eq 0.as-i64.as-i32 ++> can-equal-zero-to-zero
+
+  42.as-i64.as-i32.as-bytes.eq 00-00-00-2A ++> can-expose-valid-bytes
+
+  eq. ++> can-expose-valid-bytes-of-a-negative
+    -200.as-i64.as-i32.as-bytes
+    FF-FF-FF-38
+
+  eq. ++> can-multiply-by-zero
+    1000.as-i64.as-i32.times 0.as-i64.as-i32
+    0.as-i64.as-i32
+
+  eq. ++> can-multiply-with-overflow
+    2147483647.as-i64.as-i32.times 2.as-i64.as-i32
+    -2.as-i64.as-i32
+
+  eq. ++> can-subtract-one-from-one
+    1.as-i64.as-i32.minus 1.as-i64.as-i32
+    0.as-i64.as-i32
+
+  eq. ++> can-subtract-with-overflow
+    -2147483648.as-i64.as-i32.minus 1.as-i64.as-i32
+    2147483647.as-i64.as-i32
+
+  eq. ++> can-widen-a-negative-to-i64-with-sign-extension
+    -200.as-i64.as-i32.as-i64.as-bytes
+    FF-FF-FF-FF-FF-FF-FF-38
+
+  eq. ++> can-widen-a-positive-to-i64-with-a-zero-prefix
+    42.as-i64.as-i32.as-i64.as-bytes
+    00-00-00-00-00-00-00-2A
+
+  eq. ++> can-wrap-a-large-positive-product
+    100000.as-i64.as-i32.times 100000.as-i64.as-i32
+    1410065408.as-i64.as-i32
+
+  eq. ++> can-wrap-a-product-modulo-two-to-the-thirty-second
+    65536.as-i64.as-i32.times 65536.as-i64.as-i32
+    0.as-i64.as-i32
+
+  not. ++> cannot-be-greater-than-a-larger-i32
+    0.as-i64.as-i32.gt 100.as-i64.as-i32
+
+  not. ++> cannot-be-greater-than-an-equal-i32
+    0.as-i64.as-i32.gt 0.as-i64.as-i32
+
+  not. ++> cannot-be-greater-than-or-equal-to-a-larger-i32
+    0.as-i64.as-i32.gte 10.as-i64.as-i32
+
+  not. ++> cannot-be-less-than-a-smaller-i32
+    10.as-i64.as-i32.lt -5.as-i64.as-i32
+
+  not. ++> cannot-be-less-than-an-equal-i32
+    10.as-i64.as-i32.lt 10.as-i64.as-i32
+
+  not. ++> cannot-be-less-than-or-equal-to-a-smaller-i32
+    0.as-i64.as-i32.lte -10.as-i64.as-i32
+
+  not. ++> cannot-equal-a-different-i32
+    123.as-i64.as-i32.eq 42.as-i64.as-i32
+
+  eq. ++> rejects-an-out-of-bounds-conversion-to-i16
+    "recovered"
+    247483647.as-i64.as-i32.as-i16
+      "recovered" > [message]
+
+  eq. ++> rejects-division-by-zero
+    "recovered"
+    2.as-i64.as-i32.div
       0.as-i64.as-i32
+      "recovered" > [message]
 
-  # Tests that i32 multiplication handles overflow correctly.
-  [] +> tests-i32-times-with-overflow
-    eq. > @
-      2147483647.as-i64.as-i32.times 2.as-i64.as-i32
-      -2.as-i64.as-i32
+  32768.as-i64.as-i32.as-i16 --> stops-on-converting-i16-max-plus-one-to-i16
+
+  -32769.as-i64.as-i32.as-i16 --> stops-on-converting-i16-min-minus-one-to-i16
+
+  247483647.as-i64.as-i32.as-i16 --> stops-on-converting-out-of-bounds-to-i16
+
+  2.as-i64.as-i32.div 0.as-i64.as-i32 --> stops-on-division-by-zero

@@ -1,0 +1,93 @@
+# Returns a `tuple` of `strings`: `text` separated by `delimiter`.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text delimiter] > split
+  if. > @
+    eq.
+      size. >> len!
+        text >> bts!
+      0
+    *
+    [accum start current] >> rec-split
+      if. > @
+        len.eq current
+        appended
+        if.
+          or.
+            size.eq 0
+            gt.
+              current.plus size
+              len
+          rec-split
+            accum
+            start
+            as-number.
+              current.plus 1
+          if.
+            delim.eq
+              bts.slice current size
+            rec-split
+              appended
+              as-number.
+                current.plus size
+              as-number.
+                current.plus size
+            rec-split
+              accum
+              start
+              as-number.
+                current.plus 1
+      accum.with > appended
+        string
+          bts.slice
+            start
+            current.minus start
+    |
+      *
+      0
+      0
+  size. >> size!
+    delimiter >> delim!
+
+  eq. ++> can-split-a-text-into-empty-strings
+    split
+      "-a-b-"
+      "-"
+    *
+      ""
+      "a"
+      "b"
+      ""
+
+  eq. ++> can-split-a-text-on-a-dash
+    split
+      "a-b-c"
+      "-"
+    *
+      "a"
+      "b"
+      "c"
+
+  eq. ++> can-split-a-text-on-a-multi-character-delimiter
+    split
+      "a::b::c"
+      "::"
+    *
+      "a"
+      "b"
+      "c"
+
+  eq. ++> can-split-into-strings
+    length.
+      at.
+        split
+          "hello world!"
+          " "
+        1
+    6

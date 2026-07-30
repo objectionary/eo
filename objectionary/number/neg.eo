@@ -1,0 +1,15 @@
+# Negation of `n`: the same magnitude with the opposite sign.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[n] > neg
+  n.times -1 > @
+
+  ninf.neg.eq pinf ++> can-negate-negative-infinity
+
+  pinf.neg.eq ninf ++> can-negate-positive-infinity

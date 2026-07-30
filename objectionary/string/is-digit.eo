@@ -1,0 +1,37 @@
+# Check that all signs in `text` are decimal digits.
+# Works only for english digits.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text] > is-digit
+  matches. > @
+    regex "/^[0-9]+$/"
+    text
+
+  is-digit "2026" ++> can-be-digits-when-a-number
+
+  is-digit "7" ++> can-be-digits-when-a-single-digit
+
+  is-digit ++> can-be-digits-when-a-very-long-number
+    "123456789012345678901234567890123456789012345678901234567890"
+
+  not. ++> cannot-be-digits-when-empty
+    is-digit ""
+
+  not. ++> cannot-be-digits-with-a-letter
+    is-digit "1a2"
+
+  not. ++> cannot-be-digits-with-a-space
+    is-digit
+      "12 34"
+
+  not. ++> cannot-be-digits-with-a-special-character
+    is-digit "1🌵2"
+
+  not. ++> cannot-be-digits-with-a-trailing-newline
+    is-digit "123\n"

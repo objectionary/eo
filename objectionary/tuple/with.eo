@@ -1,0 +1,20 @@
+# Append element `x` to the end of collection `list`.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package tuple
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[list x] > with
+  list.with x > @
+
+  eq. ++> can-add-an-item
+    with
+      * 1 2
+      3
+    *
+      1
+      2
+      3

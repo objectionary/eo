@@ -1,0 +1,23 @@
+# Check that all signs in `text` are ASCII characters.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text] > is-ascii
+  matches. > @
+    regex "/^[\\x00-\\x7F]+$/"
+    text
+
+  is-ascii "123" ++> can-be-ascii-when-digits
+
+  is-ascii "H311oW" ++> can-be-ascii-when-plain-text
+
+  not. ++> cannot-be-ascii-when-empty
+    is-ascii ""
+
+  not. ++> cannot-be-ascii-with-an-emoji
+    is-ascii "🌵"

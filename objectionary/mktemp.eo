@@ -1,0 +1,54 @@
+# Temporary directory.
+# For Unix/MacOS uses the path supplied by the first environment variable
+# found in the list TMPDIR, TMP, TEMP, TEMPDIR.
+# If none of these are found, "/tmp" is used.
+#
+# For Windows uses the path reported by the Windows "GetTempPath" API function which
+# takes the first environment variable in the list TMP, TEMP, USERPROFILE.
+# If none of these are found, it returns the Windows directory (C:\Windows).
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
+
+[] > mktemp
+  directory > @
+    file
+      string
+        [] >>!
+          os.is-windows.if > @
+            if.
+              tmp.eq empty
+              if.
+                temp.eq empty
+                if.
+                  userprofile.eq empty
+                  "C:\\Windows"
+                  getenv "USERPROFILE" >> userprofile!
+                getenv "TEMP" >> temp!
+              getenv "TMP" >> tmp!
+            if.
+              tmpdir.eq empty
+              if.
+                tmp.eq empty
+                if.
+                  temp.eq empty
+                  if.
+                    tempdir.eq empty
+                    "/tmp"
+                    getenv "TEMPDIR" >> tempdir!
+                  temp
+                tmp
+              getenv "TMPDIR" >> tmpdir!
+          -- > empty
+
+  mktemp.tmpfile.exists ++> can-create-a-temp-file
+
+  mktemp.is-directory ++> can-point-at-a-global-temp-directory
+
+  mktemp.exists ++> can-point-at-an-existing-global-temp-directory
+
+  mktemp.path.eq mktemp.path ++> can-return-the-same-temp-directory

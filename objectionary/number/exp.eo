@@ -1,0 +1,51 @@
+# Returns Euler's number raised to the power of a `num`.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[num] > exp
+  power > @
+    e
+    num
+
+  lt. ++> can-exponentiate-five
+    abs
+      minus.
+        power e 5
+        exp 5
+    1.0E-7
+
+  lt. ++> can-exponentiate-minus-one
+    abs
+      minus.
+        1.div e
+        exp -1
+    1.0E-8
+
+  lt. ++> can-exponentiate-minus-ten
+    abs
+      minus.
+        power e -10
+        exp -10
+    1.0E-12
+
+  eq. ++> can-exponentiate-negative-infinity
+    exp ninf
+    0
+
+  lt. ++> can-exponentiate-one
+    abs
+      e.minus
+        exp 1
+    1.0E-8
+
+  eq. ++> can-exponentiate-positive-infinity
+    exp pinf
+    pinf
+
+  is-nan. ++> cannot-exponentiate-nan
+    exp nan

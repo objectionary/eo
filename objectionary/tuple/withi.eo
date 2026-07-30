@@ -1,0 +1,53 @@
+# Insert `item` into collection `list` at the given `index`.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package tuple
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[list index item] > withi
+  concat > @
+    with
+      front list index
+      item
+    back
+      list
+      list.length.minus index
+
+  eq. ++> can-insert-at-a-zero-index
+    withi
+      *
+        1
+        2
+        3
+        4
+        5
+      0
+      "hello"
+    *
+      "hello"
+      1
+      2
+      3
+      4
+      5
+
+  eq. ++> can-insert-at-an-index
+    withi
+      *
+        1
+        2
+        3
+        4
+        5
+      3
+      "hello"
+    *
+      1
+      2
+      3
+      "hello"
+      4
+      5

@@ -1,0 +1,52 @@
+# Reads the single character `char` as its ASCII numeric value (0-255).
+# The byte of `char` is left-padded with a zero byte into a 16-bit word,
+# read as an integer and then expressed as a number.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[char] > as-ascii
+  as-number. > @
+    as-i16.
+      00-.concat char.as-bytes
+
+  eq. ++> can-read-the-code-of-a-lowercase-letter
+    97
+    as-ascii "a"
+
+  eq. ++> can-read-the-code-of-a-punctuation-mark
+    33
+    as-ascii "!"
+
+  eq. ++> can-read-the-code-of-a-space
+    32
+    as-ascii
+      " "
+
+  eq. ++> can-read-the-code-of-an-uppercase-letter
+    65
+    as-ascii "A"
+
+  eq. ++> can-read-the-code-of-the-last-lowercase-letter
+    122
+    as-ascii "z"
+
+  eq. ++> can-read-the-code-of-the-last-printable-character
+    126
+    as-ascii "~"
+
+  eq. ++> can-read-the-code-of-the-last-uppercase-letter
+    90
+    as-ascii "Z"
+
+  eq. ++> can-read-the-code-of-the-nine-digit
+    57
+    as-ascii "9"
+
+  eq. ++> can-read-the-code-of-the-zero-digit
+    48
+    as-ascii "0"

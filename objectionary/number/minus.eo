@@ -1,0 +1,77 @@
+# Difference of `n` and `x`, defined as `n` plus the negation of `x`.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[n x] > minus
+  n.plus > @
+    neg.
+      number x!
+
+  eq. ++> can-subtract-a-negative-float-from-negative-infinity
+    ninf.minus -42.5
+    ninf
+
+  eq. ++> can-subtract-a-negative-float-from-positive-infinity
+    pinf.minus -42.5
+    pinf
+
+  eq. ++> can-subtract-a-negative-integer-from-negative-infinity
+    ninf.minus -42
+    ninf
+
+  eq. ++> can-subtract-a-negative-integer-from-positive-infinity
+    pinf.minus -42
+    pinf
+
+  eq. ++> can-subtract-a-positive-float-from-negative-infinity
+    ninf.minus 42.5
+    ninf
+
+  eq. ++> can-subtract-a-positive-float-from-positive-infinity
+    pinf.minus 42.5
+    pinf
+
+  eq. ++> can-subtract-a-positive-integer-from-negative-infinity
+    ninf.minus 42
+    ninf
+
+  eq. ++> can-subtract-a-positive-integer-from-positive-infinity
+    pinf.minus 42
+    pinf
+
+  eq. ++> can-subtract-nan-from-negative-infinity
+    as-bytes.
+      ninf.minus nan
+    nan.as-bytes
+
+  eq. ++> can-subtract-nan-from-positive-infinity
+    as-bytes.
+      pinf.minus nan
+    nan.as-bytes
+
+  eq. ++> can-subtract-negative-infinity-from-negative-infinity
+    as-bytes.
+      ninf.minus ninf
+    nan.as-bytes
+
+  eq. ++> can-subtract-negative-infinity-from-positive-infinity
+    pinf.minus ninf
+    pinf
+
+  eq. ++> can-subtract-one-from-one
+    1.minus 1
+    0
+
+  eq. ++> can-subtract-positive-infinity-from-negative-infinity
+    ninf.minus pinf
+    ninf
+
+  eq. ++> can-subtract-positive-infinity-from-positive-infinity
+    as-bytes.
+      pinf.minus pinf
+    nan.as-bytes

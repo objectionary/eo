@@ -1,0 +1,80 @@
+# Returns index of `substring` in `text`.
+# If no `substring` was found, it returns -1.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text substring] > index-of
+  if. > @
+    or.
+      or.
+        gt.
+          number
+            part.size >> size!
+          txt.size >> tlen!
+        and.
+          size.eq tlen
+          not.
+            eq.
+              substring >> part!
+              text >> txt!
+      found.eq -1
+    -1
+    length.
+      string
+        txt.slice
+          0
+          rec-index-of 0 >> found!
+  minus. >> end!
+    number tlen
+    size
+  [idx] >> rec-index-of
+    if. > @
+      end.eq idx
+      includes.if idx -1
+      includes.if
+        idx
+        rec-index-of (idx.plus 1).as-number
+    eq. > includes
+      txt.slice idx size
+      part
+
+  eq. ++> can-find-a-present-substring-in-utf-text
+    3
+    index-of
+      "привет, друг!"
+      "в"
+
+  eq. ++> can-return-the-index-of-a-substring
+    6
+    index-of
+      "Hello \n world"
+      "\n"
+
+  eq. ++> can-return-the-index-of-a-substring-at-the-end
+    6
+    index-of
+      "Hello world"
+      "world"
+
+  eq. ++> cannot-find-a-longer-substring
+    -1
+    index-of
+      "Hello"
+      "Somebody"
+
+  eq. ++> cannot-find-an-absent-substring-in-utf-text
+    -1
+    index-of
+      "привет, друг!"
+      "x"
+
+  eq. ++> cannot-find-an-absent-substring-of-the-same-length
+    -1
+    index-of
+      "Hello"
+      "world"

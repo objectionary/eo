@@ -1,0 +1,34 @@
+# Bytes as a signed 64-bit integer `i64`: an 8-byte chain reinterpreted
+# as two's complement. For any other length the `cant-convert` fallback
+# is returned.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package bytes
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[b cant-convert] > as-i64
+  if. > @
+    b.size.eq 8
+    i64 b
+    cant-convert
+      "Can't convert non 8 length bytes to i64, bytes are %x".printf
+        * b
+
+  00-00-00-00-00-00-00-2A.as-i64.eq 42.as-i64 ++> can-convert-bytes-to-i64
+
+  eq. ++> can-convert-bytes-to-i64-and-back
+    00-00-00-00-00-00-00-33.as-i64.as-bytes
+    00-00-00-00-00-00-00-33
+
+  not. ++> cannot-match-the-bytes-of-the-same-number
+    00-00-00-00-00-00-00-2A.as-i64.as-bytes.eq 42.as-bytes
+
+  eq. ++> rejects-bytes-of-wrong-size
+    "recovered"
+    01-01-01-01.as-i64
+      "recovered" > [message]
+
+  01-01-01-01.as-i64 --> stops-on-bytes-of-wrong-size

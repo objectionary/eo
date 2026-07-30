@@ -1,0 +1,53 @@
+# Create a new list without the i-th element of `list`.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package tuple
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[list i] > withouti
+  reducedi > @
+    list
+    *
+    if. > [accum item index] >>
+      i.eq index
+      accum
+      accum.with item
+
+  eq. ++> can-drop-an-item-by-index
+    withouti
+      *
+        1
+        2
+        3
+      1
+    *
+      1
+      3
+
+  ++> can-drop-an-item-by-index-in-a-complex-list
+    eq. > @
+      foo *
+        1
+        "text"
+        "f"
+      * "text" "f"
+    withouti > [a] > foo
+      a
+      0
+
+  eq. ++> can-drop-an-item-by-index-in-a-nested-list
+    withouti
+      *
+        "smthg"
+        27
+        *
+          3
+          2
+          1
+      2
+    *
+      "smthg"
+      27

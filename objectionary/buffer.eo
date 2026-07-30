@@ -1,0 +1,34 @@
+# Buffer allows to sequentially build strings using `.with` object.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
+
+[buf] > buffer
+  buf > @
+  buffer > [str] > with
+    string
+      buf.as-bytes.concat str.as-bytes
+
+  eq. ++> can-build-a-simple-string
+    with.
+      with.
+        buffer "Hello"
+        ", "
+      "Jeff"
+    "Hello, Jeff"
+
+  eq. ++> can-decorate-a-string
+    buffer "Hello"
+    "Hello"
+
+  eq. ++> can-decorate-a-string-after-building
+    length.
+      with.
+        buffer
+          "Hi, "
+        "Mark"
+    8

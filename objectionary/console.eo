@@ -1,0 +1,130 @@
+# Basic I/O object `console` that allows to
+# interact with operation system console.
+#
+# Imagine, operation system console input is "Hello, world!"
+# Here's how you can use `console` object as input
+# ```
+# seq > @
+#   *
+#     console                # error
+#     console.read 4 > c1    # "Hell".as-bytes
+#     c1.read 4 > c2         # "o, w".as-bytes
+#     console.read 4 > c3    # "orld".as-bytes
+#     c2.read 4 > c4         # "!".as-bytes
+# ```
+#
+# Here 16 bytes are read from operation system console.
+# Every `console.read` object returns an input block.
+# Every input block is requested portion of bytes read
+# from console, so it's dataizable.
+# Also every input block has object `read` which allows to get
+# next input block with next portion of bytes read from console
+#
+# Here's how you can write to `console`.
+# ```
+# seq > @
+#   *
+#     console.write "Hello" > o1
+#     o1.write ", " > o2
+#     console.write "world!" > o3
+# ```
+#
+# Here `"Hello, world!".as-bytes` bytes are printed to console.
+# The object `write` is an output block.
+# It dataizes the given argument, converts it to string,
+# prints it to the operating system console and returns the next output block
+# ready to `write` again.
+#
+# Console operations are platform-specific, with different implementations
+# for POSIX and Windows systems. Each access to the `console` object creates
+# a new console instance, so reusing returned input/output blocks improves
+# performance by maintaining the same console session:
+#
+# Efficient (recommended):
+# ```
+# console.read 2 > i1
+# i1.read 2 > i2
+# i2.read 2 > i3
+# ```
+#
+# Less efficient (creates new console each time):
+# ```
+# console.read 2 > i1
+# console.read 2 > i2
+# console.read 2 > i3
+# ```
+#
+# Sequential reuse maintains the console state across operations.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
+
+[] > console
+  os.is-windows.if > @
+    [] >>
+      [size] > read
+        @. > @
+          read.
+            [buffer] >> input-block
+              buffer > @
+              [size] > read
+                seq * > @
+                  output. >> chunk!
+                    win32 *1
+                      "_read"
+                      win32.stdin
+                      size
+                  input-block chunk
+            | --
+            size
+      [buffer] > write
+        @. > @
+          write.
+            [] >> output-block
+              true > @
+              seq * > [buffer] > write
+                code.
+                  win32 *1
+                    "_write"
+                    win32.stdout
+                    buffer
+                    buffer.size
+                output-block
+            buffer
+    [] >>
+      [size] > read
+        @. > @
+          read.
+            [buffer] >> input-block
+              buffer > @
+              [size] > read
+                seq * > @
+                  output. >> chunk!
+                    posix *1
+                      "read"
+                      posix.stdin
+                      size
+                  input-block chunk
+            | --
+            size
+      [buffer] > write
+        @. > @
+          write.
+            [] >> output-block
+              true > @
+              seq * > [buffer] > write
+                code.
+                  posix *1
+                    "write"
+                    posix.stdout
+                    buffer
+                    buffer.size
+                output-block
+            buffer
+
+  console.write ++> can-write-to-the-console
+    "Hello, console-test!\n"

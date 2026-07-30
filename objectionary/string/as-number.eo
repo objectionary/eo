@@ -1,0 +1,76 @@
+# Returns the original `text` as `number`.
+# If the text is not numeric, the `cant-parse` fallback is returned,
+# or the bottom object when unbound.
+# The whole `text` must be the number: `scanf` matches its `%f` pattern
+# unanchored (via `find`), so on its own it would accept any text that
+# merely contains a number-shaped substring, e.g. `"$100"` or `"12.34.56"`.
+# The text is therefore validated against the anchored equivalent of that
+# same `%f` token, so that only a text that is entirely a number is parsed.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text cant-parse] > as-number
+  if. > @
+    not.
+      matches.
+        compiled.
+          regex "/^[+-]?\\d+(?:\\.\\d+)?$/"
+        text
+    cant-parse
+      "Can't convert text %s to number".printf
+        * text
+    head.
+      ^.
+        at.
+          scanf "%f" text
+
+  eq. ++> can-convert-float-text
+    3.14
+    as-number "3.14"
+
+  eq. ++> can-convert-negative-text
+    -42
+    as-number "-42"
+
+  eq. ++> can-convert-text
+    5
+    as-number "5"
+
+  42.5.eq "42.5".as-number ++> can-convert-text-through-an-implicit-dispatch
+
+  eq. ++> rejects-currency-prefixed-text
+    42
+    as-number
+      "$100"
+      42 > [message]
+
+  eq. ++> rejects-non-numeric-text
+    42
+    as-number
+      "Hello"
+      42 > [message]
+
+  eq. ++> rejects-space-separated-numbers
+    42
+    as-number
+      "1 2 3"
+      42 > [message]
+
+  eq. ++> rejects-text-with-an-embedded-number
+    42
+    as-number
+      "abc5"
+      42 > [message]
+
+  eq. ++> rejects-text-with-multiple-dots
+    42
+    as-number
+      "12.34.56"
+      42 > [message]
+
+  as-number "Hello" --> stops-on-converting-non-numeric-text

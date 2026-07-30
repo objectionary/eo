@@ -1,0 +1,60 @@
+# Returns index of the first occurrence of `wanted` in `list`.
+# If `list` has no such element, returns -1.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package tuple
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[list wanted] > index-of
+  number > @
+    [tup] >> recidx
+      if. > @
+        tup.length.eq 0
+        -1
+        if.
+          next.eq -1
+          if.
+            tup.head.eq wanted
+            tup.tail.length
+            -1
+          recidx tup.tail >> next!
+    | list
+
+  eq. ++> can-find-the-index-of-a-string
+    1
+    index-of
+      *
+        "asdfgh"
+        "qwerty"
+        3
+      "qwerty"
+
+  eq. ++> can-return-the-first-index-of-an-element
+    0
+    index-of
+      *
+        -1
+        2
+        -1
+      -1
+
+  eq. ++> can-return-the-index-of-an-element
+    1
+    index-of
+      *
+        1
+        2
+        3
+      2
+
+  eq. ++> cannot-find-the-index-of-an-absent-item
+    -1
+    index-of
+      *
+        "qwerty"
+        2
+        3
+      7

@@ -1,0 +1,97 @@
+# Converts the number `n` to an `i64`, truncating the fractional part toward
+# zero. The exponent and the mantissa are pulled out of the IEEE 754 layout of
+# `n` and the magnitude is shifted into place, with the two's complement taken
+# when `n` is negative. When `n` does not fit into the bounds of an `i64`,
+# the caller-supplied `cant-convert` fallback is returned.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[n cant-convert] > as-i64
+  if. > @
+    or.
+      eq.
+        as-number. >> exp
+          as-i64.
+            right.
+              n.as-bytes.and 7F-F0-00-00-00-00-00-00
+              52
+        2047
+      or.
+        exp.gt 1086
+        and.
+          exp.eq 1086
+          not.
+            and.
+              eq. >> negative
+                n.as-bytes.and 80-00-00-00-00-00-00-00
+                80-00-00-00-00-00-00-00
+              eq.
+                or. >> mantissa
+                  n.as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
+                  00-10-00-00-00-00-00-00
+                00-10-00-00-00-00-00-00
+    cant-convert
+      "Can't convert number %f to i64 because it's out of i64 bounds".printf
+        * n
+    if.
+      exp.lt 1023
+      00-00-00-00-00-00-00-00.as-i64
+      if.
+        exp.eq 1086
+        80-00-00-00-00-00-00-00.as-i64
+        negative.if
+          magnitude.not.as-i64.plus 00-00-00-00-00-00-00-01.as-i64
+          as-i64.
+            if. >> magnitude
+              exp.gte 1075
+              mantissa.left
+                exp.minus 1075
+              mantissa.right
+                1075.minus exp
+
+  eq. ++> can-convert-a-fraction-below-one-to-zero
+    0.5.as-i64.as-bytes
+    00-00-00-00-00-00-00-00
+
+  eq. ++> can-convert-a-large-number-with-a-left-shift
+    1000000000000000000.as-i64.as-bytes
+    0D-E0-B6-B3-A7-64-00-00
+
+  eq. ++> can-convert-negative-zero-to-zero
+    -0.as-i64.as-bytes
+    00-00-00-00-00-00-00-00
+
+  eq. ++> can-convert-the-long-minimum-boundary
+    -9.223372036854776e18.as-i64.as-bytes
+    80-00-00-00-00-00-00-00
+
+  eq. ++> can-convert-the-origin-number
+    as-bytes.
+      as-i64 42
+    00-00-00-00-00-00-00-2A
+
+  eq. ++> can-truncate-a-negative-toward-zero
+    -3.7.as-i64.as-bytes
+    FF-FF-FF-FF-FF-FF-FF-FD
+
+  eq. ++> can-truncate-a-positive-toward-zero
+    3.7.as-i64.as-bytes
+    00-00-00-00-00-00-00-03
+
+  eq. ++> rejects-an-out-of-range-number
+    "recovered"
+    1.0e30.as-i64
+      "recovered" > [message]
+
+  1.0e30.as-i64 --> stops-on-converting-a-huge-number
+
+  nan.as-i64 --> stops-on-converting-nan
+
+  pinf.as-i64 --> stops-on-converting-positive-infinity
+
+  9.223372036854776e18.as-i64 --> stops-on-converting-the-long-maximum-boundary

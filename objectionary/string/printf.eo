@@ -1,0 +1,234 @@
+# Object `printf` allows you to format and output text depending
+# on the arguments passed to it and return it as `org.eolang.string`.
+#
+# When arguments are processed - they're dataized and converted to objects
+# depending on next flags:
+# - %s - converts object to `string`
+# - %d - converts object to `int`
+# - %f - converts object to `float`
+# - %x - converts object to `bytes`
+# - %b - converts object to boolean, `true` or `false`.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++rt jvm org.eolang:eo-runtime:0.62.0
++rt node eo2js-runtime:0.0.0
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[] > printf /Q.string
+  ? > format /Q.string
+  ? > args /Q.tuple
+
+  eq. ++> can-apply-a-precision-to-bytes
+    "40-"
+    printf *1
+      "%.3x"
+      42.as-bytes
+
+  eq. ++> can-apply-a-width-to-bytes
+    "  40-45-00-00-00-00-00-00"
+    printf *1
+      "%25x"
+      42.as-bytes
+
+  eq. ++> can-format-a-float-with-six-fraction-digits
+    "1.250000"
+    printf *1
+      "%f"
+      1.25
+
+  eq. ++> can-format-a-numbered-substitution
+    "Hello, Jeff! Bye, Jeff!"
+    printf *1
+      "Hello, %s! Bye, %1$s!"
+      "Jeff"
+
+  eq. ++> can-format-a-numbered-substitution-with-many-arguments
+    "This is the first; This is the first as well; The second; and the 3"
+    printf *1
+      "This is the %s; This is the %1$s as well; The %s; and the %d"
+      "first"
+      "second"
+      3
+
+  eq. ++> can-format-a-precision-of-two-decimals
+    "3.14"
+    printf *1
+      "%.2f"
+      3.1415
+
+  eq. ++> can-format-a-width-with-leading-spaces
+    "   42"
+    printf *1
+      "%5d"
+      42
+
+  eq. ++> can-format-a-zero-float-with-six-fraction-digits
+    "0.000000"
+    printf *1
+      "%f"
+      0
+
+  eq. ++> can-format-left-justified-with-trailing-spaces
+    "x         "
+    printf *1
+      "%-10s"
+      "x"
+
+  eq. ++> can-format-objects-of-every-type
+    "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
+    printf *1
+      "string %s, bytes %x, float %f, int %d, bool %b"
+      "Jeff"
+      "Jeff".as-bytes
+      42.3
+      14
+      false
+
+  eq. ++> can-format-ordered-numbered-substitutions
+    "first second second is after first"
+    printf *1
+      "%s %s %2$s is after %1$s"
+      "first"
+      "second"
+
+  eq. ++> can-ignore-extra-arguments
+    "Hey"
+    printf *1
+      "%s"
+      "Hey"
+      "Jeff"
+
+  eq. ++> can-left-align-bytes
+    "40-45-00-00-00-00-00-00  "
+    printf *1
+      "%-25x"
+      42.as-bytes
+
+  eq. ++> can-preserve-an-escaped-bytes-format
+    "%x"
+    printf
+      "%%x"
+      *
+
+  eq. ++> can-print-a-complex-string
+    "Привет 3.140000 Jeff X!"
+    printf *1
+      "Привет %f %s %s!"
+      3.14
+      "Jeff"
+      "X"
+
+  eq. ++> can-print-a-percent-sign
+    "%Jeff"
+    printf *1
+      "%%%s"
+      "Jeff"
+
+  eq. ++> can-print-a-simple-string
+    "Hello, Jeffrey!"
+    printf *1
+      "Hello, %s!"
+      "Jeffrey"
+
+  eq. ++> can-print-an-i64-as-a-number
+    "42"
+    printf *1
+      "%d"
+      42.as-i64.as-number
+
+  eq. ++> can-print-bytes
+    "40-45-00-00-00-00-00-00"
+    printf *1
+      "%x"
+      42.as-bytes
+
+  eq. ++> can-round-a-float-carrying-into-the-integer-part
+    "1.000000"
+    printf *1
+      "%f"
+      0.9999999
+
+  eq. ++> can-truncate-a-negative-float-toward-zero
+    "-7"
+    printf *1
+      "%d"
+      -7.89
+
+  eq. ++> can-truncate-a-positive-float-toward-zero
+    "42"
+    printf *1
+      "%d"
+      42.321
+
+  eq. ++> can-truncate-rather-than-round-a-float
+    "9"
+    printf *1
+      "%d"
+      9.99
+
+  not. ++> cannot-print-an-i64
+    eq.
+      printf *1
+        "%d"
+        42.as-i64
+      "42"
+
+  printf *1 --> stops-on-a-comma-flag-with-s
+    "%,s"
+    "Jeff"
+
+  printf *1 --> stops-on-a-comma-flag-with-x
+    "%,x"
+    5
+
+  printf *1 --> stops-on-a-hash-flag-with-s
+    "%#s"
+    "Jeff"
+
+  printf *1 --> stops-on-a-hash-flag-with-x
+    "%#x"
+    5
+
+  printf *1 --> stops-on-a-non-utf8-byte-argument-as-a-string
+    "%s"
+    3.14
+
+  printf *1 --> stops-on-a-paren-flag-with-s
+    "%(s"
+    "Jeff"
+
+  printf *1 --> stops-on-a-precision-with-d
+    "%.2d"
+    5
+
+  printf *1 --> stops-on-a-zero-flag-with-x
+    "%0x"
+    5
+
+  printf *1 --> stops-on-a-zero-positional-index
+    "%0$s"
+    "first"
+
+  printf *1 --> stops-on-an-oversized-positional-index
+    "%99999999999999999999$s"
+    "Jeff"
+
+  printf --> stops-on-an-unsupported-format
+    "%o"
+    *
+
+  printf *1 --> stops-on-arguments-that-do-not-match
+    "%s%s"
+    "Jeff"
+
+  printf *1 --> stops-on-formatting-a-huge-number-as-a-decimal
+    "%d"
+    1.0e30
+
+  printf *1 --> stops-on-formatting-nan-as-a-decimal
+    "%d"
+    nan

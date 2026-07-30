@@ -1,0 +1,17 @@
+# Always fails: a directory cannot be opened for I/O.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package directory
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[d mode scope] > open
+  T > @
+    "The file %s is a directory, can't open for I/O operations".printf
+      * d
+
+  mktemp.open --> stops-on-opening-a-directory
+    "w"
+    true > [x]

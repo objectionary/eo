@@ -1,0 +1,159 @@
+# TRUE when the number `n` equals `x`, FALSE otherwise. The comparison follows
+# IEEE 754: a not-a-number value is equal to nothing, not even to itself, while
+# positive and negative zero are equal to each other. Everything else is
+# compared byte by byte, so a value of any other type is simply not equal.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[n x] > eq
+  if. > @
+    n.is-nan.or
+      is-nan.
+        number
+          x >> xbts!
+    false
+    or.
+      and.
+        or.
+          xbts.eq
+            0.as-bytes >> pzero
+          xbts.eq
+            -0.as-bytes >> nzero
+        or.
+          eq.
+            n.as-bytes >> b!
+            pzero
+          b.eq nzero
+      b.eq xbts
+
+  eq. ++> can-compare-two-different-number-types
+    68.eq "12345678"
+    false
+
+  eq. ++> can-compare-two-numbers-through-the-package
+    eq
+      42
+      42
+    true
+
+  42.eq 42.as-bytes ++> can-equal-an-integer-through-bytes
+
+  eq. ++> can-equal-float-zero-to-integer-zero
+    0.eq 0
+    true
+
+  ninf.eq ninf ++> can-equal-negative-infinity-when-negative-infinity
+
+  pinf.eq pinf ++> can-equal-positive-infinity-when-positive-infinity
+
+  eq. ++> can-equal-the-same-integer
+    123.eq 123
+    true
+
+  eq. ++> can-equal-zero-to-zero
+    0.eq 0
+    true
+
+  eq. ++> cannot-equal-a-different-integer
+    not.
+      123.eq 42
+    true
+
+  not. ++> cannot-equal-a-float-when-negative-infinity
+    ninf.eq 42.5
+
+  not. ++> cannot-equal-a-float-when-positive-infinity
+    pinf.eq 42.5
+
+  not. ++> cannot-equal-a-number-when-nan
+    nan.eq 42
+
+  not. ++> cannot-equal-an-integer-when-negative-infinity
+    ninf.eq 42
+
+  not. ++> cannot-equal-an-integer-when-positive-infinity
+    pinf.eq 42
+
+  eq. ++> cannot-equal-nan-or-infinities-when-a-float-under-load
+    and.
+      and.
+        and.
+          and.
+            and.
+              and.
+                and.
+                  and.
+                    and.
+                      and.
+                        and.
+                          eq. (0.eq nan) false
+                          eq. (0.eq pinf) false
+                        eq. (0.eq ninf) false
+                      eq. (42.5.eq nan) false
+                    eq. (42.5.eq pinf) false
+                  eq. (42.5.eq ninf) false
+                eq.
+                  0.eq nan
+                  false
+              eq.
+                0.eq pinf
+                false
+            eq.
+              0.eq ninf
+              false
+          eq.
+            42.5.eq nan
+            false
+        eq.
+          42.5.eq pinf
+          false
+      eq.
+        42.5.eq ninf
+        false
+    true
+
+  eq. ++> cannot-equal-nan-or-infinities-when-an-integer
+    and.
+      and.
+        and.
+          and.
+            and.
+              eq.
+                0.eq nan
+                false
+              eq.
+                0.eq pinf
+                false
+            eq.
+              0.eq ninf
+              false
+          eq.
+            42.eq nan
+            false
+        eq.
+          42.eq pinf
+          false
+      eq.
+        42.eq ninf
+        false
+    true
+
+  not. ++> cannot-equal-nan-when-nan
+    nan.eq nan
+
+  not. ++> cannot-equal-nan-when-negative-infinity
+    ninf.eq nan
+
+  not. ++> cannot-equal-nan-when-positive-infinity
+    pinf.eq nan
+
+  not. ++> cannot-equal-negative-infinity-when-positive-infinity
+    pinf.eq ninf
+
+  not. ++> cannot-equal-positive-infinity-when-negative-infinity
+    ninf.eq pinf

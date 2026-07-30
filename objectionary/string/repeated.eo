@@ -1,0 +1,80 @@
+# Returns `text` repeated `times` times.
+# If `times` is not a finite non-negative integer (negative, fractional, nan
+# or infinite), the `cant-repeat` fallback is returned,
+# or the bottom object when unbound.
+# If `times` == 0, empty text is returned.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text times cant-repeat] > repeated
+  if. > @
+    or.
+      0.gt times
+      times.is-integer.not
+    cant-repeat
+      "Can't repeat text %f times".printf
+        * times
+    string
+      if. >> result!
+        0.eq
+          times >> amount!
+        --
+        if. > [accum index] >> rec-repeated
+          amount.eq index
+          accum
+          rec-repeated
+            accum.concat b
+            as-number.
+              index.plus 1
+        |
+          text >> b!
+          1
+
+  eq. ++> can-format-the-error-message-of-a-negative-count
+    "Can't repeat text -1.000000 times"
+    repeated
+      "x"
+      -1
+      message > [message]
+
+  eq. ++> can-repeat-a-text-five-times
+    "heyheyheyheyhey"
+    repeated
+      "hey"
+      5
+
+  eq. ++> can-repeat-a-text-zero-times
+    ""
+    repeated
+      "some"
+      0
+
+  eq. ++> rejects-a-negative-count
+    "recovered"
+    repeated
+      "x"
+      -1
+      "recovered" > [message]
+
+  eq. ++> rejects-a-non-integer-count
+    "recovered"
+    repeated
+      "x"
+      2.5
+      "recovered" > [message]
+
+  eq. ++> rejects-an-infinite-count
+    "recovered"
+    repeated
+      "x"
+      pinf
+      "recovered" > [message]
+
+  repeated --> stops-on-a-negative-count
+    ""
+    -1

@@ -1,0 +1,199 @@
+# Sublist of `list` from `start` (inclusive) to `end` (exclusive).
+# Supports negative indices and clamps to list bounds.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package tuple
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[list start end] > slice
+  if. > @
+    gte.
+      number
+        if. >> s!
+          start.gte 0
+          if.
+            start.gte list.length
+            list.length
+            start
+          if.
+            list.length.neg.lte start
+            start.plus list.length
+            0
+      if. >> e!
+        end.gte 0
+        if.
+          end.gte list.length
+          list.length
+          end
+        if.
+          list.length.neg.lte end
+          end.plus list.length
+          0
+    *
+    reducedi
+      list
+      *
+      if. > [accum item index] >>
+        and.
+          index.gte s
+          index.lt e
+        accum.with item
+        accum
+
+  eq. ++> can-slice-a-list
+    slice
+      *
+        1
+        2
+        3
+        4
+        5
+      1
+      5
+    *
+      2
+      3
+      4
+      5
+
+  eq. ++> can-slice-with-a-negative-end
+    slice
+      *
+        "a"
+        2
+        3
+        "xyz"
+        82.42
+        7
+      0
+      -1
+    *
+      "a"
+      2
+      3
+      "xyz"
+      82.42
+
+  eq. ++> can-slice-with-a-negative-start
+    slice
+      *
+        8
+        76
+        -3
+        0
+        3
+        8
+        -12
+      -4
+      6
+    *
+      0
+      3
+      8
+
+  eq. ++> can-slice-with-a-negative-start-and-end
+    slice
+      *
+        8
+        23
+        0
+        0
+        "foo"
+      -4
+      -1
+    *
+      23
+      0
+      0
+
+  eq. ++> can-slice-with-a-negative-start-not-below-the-end
+    slice
+      *
+        "f"
+        1
+        "b"
+        2
+        "b"
+        3
+      -1
+      3
+    *
+
+  eq. ++> can-slice-with-a-start-below-the-negative-length
+    slice
+      *
+        9
+        99
+        999
+        9999
+      -10
+      3
+    *
+      9
+      99
+      999
+
+  eq. ++> can-slice-with-a-start-not-below-a-negative-end
+    slice
+      *
+        8
+        -2
+        33-53
+        -1
+        33
+        "Y"
+      4
+      -5
+    *
+
+  eq. ++> can-slice-with-a-start-not-below-the-end-when-both-negative
+    slice
+      *
+        3
+        92
+        -423
+        0
+        22
+        943
+        -22
+      -3
+      -5
+    *
+
+  eq. ++> can-slice-with-a-start-not-below-the-end-when-both-positive
+    slice
+      *
+        3
+        "-5"
+        0
+        "foo"
+      2
+      0
+    *
+
+  eq. ++> can-slice-with-an-end-below-the-negative-length
+    slice
+      *
+        "A"
+        "b"
+        "C"
+        "d"
+        "E"
+      2
+      -9
+    *
+
+  eq. ++> can-slice-with-an-end-beyond-the-length
+    slice
+      *
+        "foo"
+        "bar"
+        "buzz"
+      1
+      10
+    *
+      "bar"
+      "buzz"

@@ -1,0 +1,46 @@
+# Joins `items`, which is a `tuple` of strings, using current `text`
+# as a delimiter.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text items] > joined
+  string > @
+    if. >>!
+      items.length.eq 0
+      --
+      [acc tup] >> with-delimiter
+        if. > @
+          tup.length.eq 0
+          acc
+          with-delimiter
+            concat.
+              concat. (dataized tup.head) text!
+              acc
+            tup.tail
+      | items.head items.tail
+
+  eq. ++> can-join-many-strings
+    "hello-world-dear-friend"
+    joined *1
+      "-"
+      "hello"
+      "world"
+      "dear"
+      "friend"
+
+  eq. ++> can-join-no-strings
+    ""
+    joined
+      "-"
+      *
+
+  eq. ++> can-join-one-string
+    "some"
+    joined *1
+      "-"
+      "some"

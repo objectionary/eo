@@ -1,0 +1,41 @@
+# Absolute value of `num` (i.e., with no sign).
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[num] > abs
+  if. > @
+    gte.
+      number num.as-bytes >> value
+      0
+    0.plus value
+    value.neg
+
+  eq. ++> can-normalize-the-sign-of-negative-zero
+    as-bytes.
+      abs -0
+    00-00-00-00-00-00-00-00
+
+  eq. ++> can-take-the-absolute-value-of-a-negative-float
+    abs -17.9
+    17.9
+
+  eq. ++> can-take-the-absolute-value-of-a-negative-integer
+    abs -3
+    3
+
+  eq. ++> can-take-the-absolute-value-of-a-positive-float
+    abs 13.5
+    13.5
+
+  eq. ++> can-take-the-absolute-value-of-a-positive-integer
+    abs 3
+    3
+
+  eq. ++> can-take-the-absolute-value-of-zero
+    abs 0
+    0

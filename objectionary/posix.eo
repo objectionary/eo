@@ -1,0 +1,116 @@
+# Makes a Unix syscall by `name` with POSIX interface.
+# Here `args` is a `org.eolang.tuple` of arguments required for
+# the particular syscall.
+# See the linux syscall [table](https://filippo.io/linux-syscall-table) for more info.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++rt jvm org.eolang:eo-runtime:0.62.0
++rt node eo2js-runtime:0.0.0
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
++unlint redundant-object
+
+[name args] > posix
+  [] > @ /Q.posix.return
+  os.is-macos.if > append
+    8
+    1024
+  os.is-macos.if > creat
+    512
+    64
+  2 > inet
+  420 > mode
+  -1 > none
+  511 > permissions
+  0 > rdonly
+  2 > rdwr
+  [code output] > return
+    output > @
+    return > called
+      code
+      output
+  [family port address] > sockaddr-in
+    00-00-00-00-00-00-00-00 > padding
+    plus. > size
+      plus.
+        family.size.plus port.size
+        address.size
+      padding.size
+  [mode size] > stat
+  2 > stderr
+  0 > stdin
+  1 > stdout
+  1 > stream
+  6 > tcp
+  [seconds micros] > timeval
+  os.is-macos.if > trunc
+    1024
+    512
+  1 > wronly
+
+  ++> can-close-a-tcp-socket
+    os.is-windows.or > @
+      seq *
+        sd
+        not.
+          eq.
+            code.
+              posix *1
+                "close"
+                sd
+            -1
+    code. > sd
+      posix *1
+        "socket"
+        posix.inet
+        posix.stream
+        posix.tcp
+
+  os.is-windows.or ++> can-invoke-getpid
+    gt.
+      code.
+        posix
+          "getpid"
+          *
+      0
+
+  ++> can-open-a-tcp-socket
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "close"
+            sd
+        sd.gt 0
+    code. > sd
+      posix *1
+        "socket"
+        posix.inet
+        posix.stream
+        posix.tcp
+
+  ++> can-open-and-close-a-file-through-a-syscall
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "close"
+            fd
+        fd.gt -1
+    code. > fd
+      posix *1
+        "open"
+        "/dev/null"
+        0
+        0
+
+  os.is-windows.or ++> can-return-an-inet-address-for-localhost
+    eq.
+      code.
+        posix *1
+          "inet_addr"
+          "127.0.0.1"
+      16777343

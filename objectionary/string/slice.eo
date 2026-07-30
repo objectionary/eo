@@ -1,0 +1,206 @@
+# Takes a piece of the `text` as another `text`, counting characters and not
+# bytes. Here `start` must be a non-negative index to start slicing from, while
+# `len` must be a non-negative amount of characters to take. Both of them walk
+# the UTF-8 sequence character by character, so a multi-byte character counts
+# as one. An index outside the bounds of the `text` terminates the computation.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object
+
+[text start len] > slice
+  if. > @
+    nstart.lt 0
+    T
+      "Start index must be >= 0, but was %d".printf
+        * nstart
+    if.
+      nlen.lt 0
+      T
+        "Length to slice must be >= 0, but was %d".printf
+          * nlen
+      seq *
+        recidx >> bstart!
+          0
+          0
+          nstart
+          "Start index (%d) is out of string bounds".printf
+            * nstart
+        blen
+        if.
+          nlen.eq 0
+          ""
+          string
+            text.as-bytes.slice bstart blen
+  minus. > blen
+    [index accum result cause] >> recidx
+      if. > @
+        accum.eq result
+        index
+        if.
+          index.eq size
+          T cause
+          if.
+            eq.
+              byte.and p1
+              r1
+            increase
+              index
+              1
+              accum
+              result
+              cause
+            if.
+              eq.
+                byte.and p2
+                r2
+              increase
+                index
+                2
+                accum
+                result
+                cause
+              if.
+                eq.
+                  byte.and p3
+                  r3
+                increase index 3 accum result cause
+                if.
+                  eq. (byte.and p4) r4
+                  increase index 4 accum result cause
+                  T
+                    "Unknown byte format (%x), can't recognize character".printf
+                      * byte
+      text.as-bytes.slice index 1 > byte
+    |
+      number bstart
+      0
+      nlen
+      "Start index + length to slice (%d) is out of string bounds".printf
+        *
+          nstart.plus nlen
+    bstart
+  if. > [index csize accum result cause] > increase
+    gt.
+      index.plus csize
+      size
+    T
+      "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
+        *
+          csize
+          index
+          text.as-bytes
+    recidx
+      index.plus csize
+      accum.plus 1
+      result
+      cause
+  number len! > nlen
+  number start! > nstart
+  80- > p1
+  E0- > p2
+  F0- > p3
+  F8- > p4
+  00- > r1
+  C0- > r2
+  E0- > r3
+  F0- > r4
+  text.as-bytes.size >> size!
+
+  eq. ++> can-slice-a-line-break-escape-sequence
+    "\n".slice
+      0
+      "\n".length
+    "\n"
+
+  eq. ++> can-slice-a-unicode-escape-sequence
+    "Ф".slice
+      0
+      "Ф".length
+    "Ф"
+
+  eq. ++> can-slice-an-empty-string
+    "".slice
+      0
+      0
+    ""
+
+  eq. ++> can-slice-at-the-end-with-a-zero-length
+    "hello".slice
+      5
+      0
+    ""
+
+  eq. ++> can-slice-foreign-literals
+    "hello, 大家!".slice
+      7
+      1
+    "大"
+
+  eq. ++> can-slice-four-byte-characters
+    "One 😀 and 😀 another".slice
+      3
+      8
+    " 😀 and 😀"
+
+  eq. ++> can-slice-from-the-end
+    "hello".slice
+      4
+      1
+    "o"
+
+  eq. ++> can-slice-from-the-start
+    "hello".slice
+      0
+      1
+    "h"
+
+  eq. ++> can-slice-in-the-middle
+    "hello".slice
+      2
+      3
+    "llo"
+
+  eq. ++> can-slice-nothing
+    "no slice".slice
+      0
+      0
+    ""
+
+  eq. ++> can-slice-the-origin-string
+    slice
+      "Hello, world!"
+      7
+      5
+    "world"
+
+  eq. ++> can-slice-three-byte-characters
+    "The अ is अ".slice
+      1
+      6
+    "he अ i"
+
+  eq. ++> can-slice-two-byte-characters
+    "привет".slice
+      1
+      2
+    "ри"
+
+  slice --> stops-on-a-start-below-zero
+    "some string"
+    -1
+    1
+
+  slice --> stops-on-an-end-below-the-start
+    "some string"
+    2
+    -1
+
+  slice --> stops-on-an-end-beyond-the-length
+    "some string"
+    7
+    5

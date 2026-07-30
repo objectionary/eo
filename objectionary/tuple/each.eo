@@ -1,0 +1,61 @@
+# For each collection element dataize the object.
+# Here "func" must be an abstract object with one free attribute:
+# the element of the collection. The result of `func` must be dataizable.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package tuple
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[list func] > each
+  eachi > @
+    list
+    func item > [item index] >>
+
+  ++> can-iterate-over-a-list
+    eq. > @
+      malloc.for
+        0
+        [m]
+          each > @
+            * 1 2 3
+            m.put > [i] >>
+              m.as-number.plus i
+      6
+
+  eq. ++> can-return-the-result-of-the-last-call
+    each
+      *
+        1
+        2
+        3
+      x > [x]
+    3
+
+  ++> can-sum-many-numbers
+    eq. > @
+      malloc.for
+        0
+        [m]
+          each > @
+            * 10 20 30
+            m.put > [i] >>
+              m.as-number.plus i
+      60
+
+  ++> can-walk-a-single-element-list
+    eq. > @
+      malloc.for
+        0
+        [m]
+          each > @
+            * 7
+            m.put > [i] >>
+              m.as-number.plus i
+      7
+
+  each ++> can-walk-an-empty-list
+    *
+    false > [x]

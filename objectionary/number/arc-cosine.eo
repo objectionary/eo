@@ -1,0 +1,61 @@
+# Arc cosine of `num` as `org.eolang.number`, the angle in radians whose cosine
+# is `num`, taken as pi/2 minus the arc sine of the argument, since acos(x)
+# equals pi/2 minus asin(x). Arguments outside [-1, 1] and non-finite ones
+# collapse to nan.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[num] > arc-cosine
+  minus. > @
+    pi.div 2
+    arc-sine num
+
+  eq. ++> can-take-an-arc-cosine-of-minus-one
+    arc-cosine -1
+    pi
+
+  lt. ++> can-take-an-arc-cosine-of-minus-zero-point-six
+    abs
+      minus.
+        times.
+          arc-cosine -0.6
+          1000
+        2214.297
+    1
+
+  eq. ++> can-take-an-arc-cosine-of-one
+    arc-cosine 1
+    0
+
+  eq. ++> can-take-an-arc-cosine-of-zero
+    arc-cosine 0
+    pi.div 2
+
+  lt. ++> can-take-an-arc-cosine-of-zero-point-six
+    abs
+      minus.
+        times.
+          arc-cosine 0.6
+          1000
+        927.295
+    1
+
+  is-nan. ++> cannot-take-an-arc-cosine-above-one
+    arc-cosine 2
+
+  is-nan. ++> cannot-take-an-arc-cosine-below-minus-one
+    arc-cosine -2
+
+  is-nan. ++> cannot-take-an-arc-cosine-of-nan
+    arc-cosine nan
+
+  is-nan. ++> cannot-take-an-arc-cosine-of-negative-infinity
+    arc-cosine ninf
+
+  is-nan. ++> cannot-take-an-arc-cosine-of-positive-infinity
+    arc-cosine pinf

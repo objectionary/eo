@@ -1,0 +1,63 @@
+# Returns `text` trimmed from both sides.
+# Removes all leading and trailing ASCII whitespace bytes: `20-`
+# (space), `09-` (horizontal tab), `0A-` (line feed), `0B-` (vertical
+# tab), `0C-` (form feed), and `0D-` (carriage return). Delegates to
+# `string.trimmed-left` and `string.trimmed-right`, so the strip-set matches
+# `String.strip()` in Java for the ASCII range.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text] > trimmed
+  if. > @
+    0.eq text.as-bytes.size
+    text
+    trimmed-left
+      trimmed-right text
+
+  eq. ++> can-preserve-inner-content
+    trimmed "no-whitespace"
+    "no-whitespace"
+
+  eq. ++> can-preserve-inner-whitespace
+    trimmed
+      "\t hello world \n"
+    "hello world"
+
+  eq. ++> can-trim-a-text-of-spaces-only
+    trimmed
+      "        "
+    ""
+
+  eq. ++> can-trim-an-empty-text
+    trimmed ""
+    ""
+
+  eq. ++> can-trim-many-surrounding-spaces
+    trimmed
+      "    some     "
+    "some"
+
+  eq. ++> can-trim-mixed-whitespace-on-both-sides
+    trimmed
+      " \t\n\f\rvalue \t\n\f\r"
+    "value"
+
+  eq. ++> can-trim-one-leading-space
+    trimmed
+      " some"
+    "some"
+
+  eq. ++> can-trim-one-space-on-both-sides
+    trimmed
+      " some "
+    "some"
+
+  eq. ++> can-trim-one-trailing-space
+    trimmed
+      "some "
+    "some"

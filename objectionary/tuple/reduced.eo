@@ -1,0 +1,39 @@
+# Reduce `list` from "start" using the function "func".
+# Here "func" must be an abstract object with two free attributes.
+# The first one for the accumulator, the second one for the element
+# of the collection.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package tuple
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[list start func] > reduced
+  reducedi > @
+    list
+    start
+    func > [accum item index] >>
+      accum
+      item
+
+  eq. ++> can-reduce-a-list
+    reduced
+      *
+        1
+        2
+        3
+        4
+      -1
+      a.times x > [a x]
+    -24
+
+  eq. ++> can-reduce-a-list-into-a-string
+    reduced
+      * 0 1
+      ""
+      acc.concat > [acc item]
+        "%d".printf
+          * item
+    "01"

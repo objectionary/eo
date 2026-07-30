@@ -1,0 +1,22 @@
+# TRUE when `n` is finite and equal to its own floor.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[n] > is-integer
+  n.is-finite.and > @
+    n.eq n.floor
+
+  32.is-integer ++> can-be-an-integer-when-a-whole-number
+
+  32.5.is-integer.not ++> cannot-be-an-integer-when-a-float
+
+  nan.is-integer.not ++> cannot-be-an-integer-when-nan
+
+  ninf.is-integer.not ++> cannot-be-an-integer-when-negative-infinity
+
+  pinf.is-integer.not ++> cannot-be-an-integer-when-positive-infinity

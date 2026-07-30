@@ -1,18 +1,10 @@
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+version 0.61.3
-+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
-
-# The `while` object is very similar to a loop with a pre-condition.
+# Loop `while` with a pre-condition.
 # Here's how you can use it:
 # ```
 # while > last
 #   i.lt 5 > [i]
 #   [i]
-#     Q.tt.sprintf > @
-#       "Iteration %d\n"
+#     "Iteration %d\n".printf > @
 #       * i
 # ```
 #
@@ -29,29 +21,34 @@
 # Only the first three strings are dataized for side effects while the last one
 # is returned as the result value assigned to the `last` object.
 # The `while` loop example produces identical behavior.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
+
 [condition body] > while
   if. > @
-    (condition 0).as-bool
-    loop 0
+    as-bool.
+      condition 0
+    [index] >> loop
+      if. > @
+        as-bool.
+          condition
+            index.plus 1
+        seq *
+          current
+          loop
+            index.plus 1
+        current
+      body index > current
+    | 0
     false
 
-  # Recursive loop.
-  #
-  # Note: This object is intended for internal use only. Please do not use
-  # this object programmatically outside of the `while` object.
-  [index] > loop
-    if. > @
-      (condition (index.plus 1)).as-bool
-      seq *
-        current
-        loop (index.plus 1)
-      current
-    body index > current
-
-  # Tests that while loop dataizes only the first cycle when condition becomes false.
-  [] +> tests-while-dataizes-only-first-cycle
-    eq. > @
-      0
+  ++> can-dataize-only-the-first-cycle
+    0.eq > @
       malloc.for
         42
         [m]
@@ -59,58 +56,36 @@
             i.eq 0 > [i]
             m.put i > [i] >>
 
-  # Tests that while loop returns false when condition is initially false.
-  [] +> tests-simple-while-with-false-first
-    not. > @
-      while
-        false > [i]
-        true > [i]
+  ++> can-iterate-a-tuple-with-an-external-iterator
+    data.eq array.length > @
+    * > array
+      1
+      1
+      1
+      1
+    malloc.for > data
+      0
+      [acc] >>
+        malloc.for > @
+          0
+          [iter] >>
+            while > @
+              max.gt iter > [i] >>
+              seq * > [i] >>
+                acc.put
+                  acc.as-number.plus
+                    array.at iter
+                iter.put
+                  iter.as-number.plus 1
+    array.length.plus -1 > max
 
-  # Tests that while loop works with boolean expressions using malloc memory.
-  [] +> tests-simple-bool-expression-via-malloc-in-while
-    eq. > @
-      malloc.for
-        true
-        [m]
-          while > @
-            m > [i] >>
-            m.put false > [i] >>
-      false
-
-  # Tests that while loop returns the last dataized object when loop completes.
-  [] +> tests-last-while-dataization-object
-    eq. > @
-      malloc.for
-        0
-        [m]
-          while > @
-            2.gt m > [i] >>
-            m.put (m.as-number.plus 1) > [i] >>
-      3
-
-  # Tests that while loop returns false when condition evaluates to false initially.
-  [] +> tests-last-while-dataization-object-with-false-condition
-    not. > @
-      while
-        1.gt 2 > [i]
-        true > [i]
-
-  # Tests that while loop performs simple iteration and updates counter correctly.
-  [] +> tests-while-simple-iteration
-    eq. > @
-      malloc.for
-        0
-        [m]
-          while > @
-            i.lt 10 > [i]
-            m.put i > [i] >>
-      9
-
-  # Tests that while loop can iterate over tuple elements using internal iterator.
-  [] +> tests-iterating-tuple-with-while-using-internal-iterator
-    data.eq arr.length > @
-    * 1 1 1 1 > arr
-    arr.length.plus -1 > max
+  ++> can-iterate-a-tuple-with-an-internal-iterator
+    data.eq array.length > @
+    * > array
+      1
+      1
+      1
+      1
     malloc.for > data
       0
       [acc] >>
@@ -121,96 +96,102 @@
               max.eq 0
               acc.put
                 acc.as-number.plus
-                  arr.at 0
+                  array.at 0
               while
                 max.gt iter > [i] >>
-                [i] >>
-                  seq > @
-                    *
-                      acc.put
-                        acc.as-number.plus
-                          arr.at i
-                      iter.put
-                        iter.as-number.plus 1
+                seq * > [i] >>
+                  acc.put
+                    acc.as-number.plus (array.at i)
+                  iter.put
+                    iter.as-number.plus 1
+    array.length.plus -1 > max
 
-  # Tests that while loop can iterate over tuple elements using external iterator.
-  [] +> tests-iterating-tuple-with-while-using-external-iterator
-    data.eq arr.length > @
-    * 1 1 1 1 > arr
-    arr.length.plus -1 > max
+  ++> can-iterate-a-tuple-without-a-body-many-times
+    data.eq array.length > @
+    * > array
+      1
+      1
+      1
     malloc.for > data
       0
       [acc] >>
         malloc.for > @
           0
           [iter] >>
-            while > @
-              max.gt iter > [i] >>
-              [i] >>
-                seq > @
-                  *
+            seq * > @
+              while
+                if. > [i] >>
+                  max.gt iter
+                  seq *
                     acc.put
-                      acc.as-number.plus
-                        arr.at iter
-                    iter.put
-                      iter.as-number.plus 1
+                      acc.as-number.plus (array.at iter.as-number)
+                    iter.put (iter.as-number.plus 1)
+                    true
+                  false
+                true > [i]
+              acc
+    array.length > max
 
-  # Tests that while loop can iterate over multiple tuple elements without explicit body.
-  [] +> tests-iterating-tuple-with-while-without-body-multiple
-    data.eq arr.length > @
-    * 1 1 1 > arr
-    arr.length > max
+  ++> can-iterate-a-tuple-without-a-body-once
+    data.eq array.length > @
+    * 1 > array
     malloc.for > data
       0
       [acc] >>
         malloc.for > @
           0
           [iter] >>
-            seq > @
-              *
-                while
-                  [i] >>
-                    if. > @
-                      max.gt iter
-                      seq
-                        *
-                          acc.put
-                            acc.as-number.plus
-                              arr.at
-                                iter.as-number
-                          iter.put
-                            iter.as-number.plus 1
-                          true
-                      false
-                  true > [i]
-                acc
+            seq * > @
+              while
+                if. > [i] >>
+                  max.gt iter
+                  seq *
+                    acc.put
+                      acc.as-number.plus (array.at iter.as-number)
+                    iter.put (iter.as-number.plus 1)
+                    true
+                  false
+                true > [i]
+              acc
+    array.length > max
 
-  # Tests that while loop can iterate over single tuple element without explicit body.
-  [] +> tests-iterating-tuple-with-while-without-body-single
-    data.eq arr.length > @
-    * 1 > arr
-    arr.length > max
-    malloc.for > data
-      0
-      [acc] >>
-        malloc.for > @
-          0
-          [iter] >>
-            seq > @
-              *
-                while
-                  [i] >>
-                    if. > @
-                      max.gt iter
-                      seq
-                        *
-                          acc.put
-                            acc.as-number.plus
-                              arr.at
-                                iter.as-number
-                          iter.put
-                            iter.as-number.plus 1
-                          true
-                      false
-                  true > [i]
-                acc
+  ++> can-loop-on-a-bool-expression-kept-in-malloc
+    eq. > @
+      malloc.for
+        true
+        [m]
+          while > @
+            m > [i] >>
+            m.put false > [i] >>
+      false
+
+  ++> can-loop-over-a-simple-iteration
+    eq. > @
+      malloc.for
+        0
+        [m]
+          while > @
+            i.lt 10 > [i]
+            m.put i > [i] >>
+      9
+
+  not. ++> can-loop-when-the-condition-is-false-first
+    while
+      false > [i]
+      true > [i]
+
+  ++> can-return-the-last-dataized-object
+    eq. > @
+      malloc.for
+        0
+        [m]
+          while > @
+            2.gt m > [i] >>
+            m.put > [i] >>
+              m.as-number.plus 1
+      3
+
+  not. ++> can-return-the-last-dataized-object-with-a-false-condition
+    while
+      1.gt 2 > [i]
+      true > [i]

@@ -1,0 +1,131 @@
+# Unsigned 8-bit integer.
+# Here `as-bytes` must be a `bytes` object of exactly one byte,
+# interpreted without a sign.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object
++unlint mandatory-package
+
+[as-bytes] > u8
+  as-bytes > @
+  i16 > [] > as-i16
+    00-.concat as-bytes
+  as-i16.as-number > as-number
+  [x cant-divide] > div
+    if. > @
+      eq.
+        x.as-u8 >> other
+        00-
+      cant-divide
+        "Can't divide %d by u8 zero".printf
+          * as-number
+      u8
+        slice.
+          as-bytes.
+            as-i16.div other.as-i16
+          1
+          1
+  as-i16.gt x.as-u8.as-i16 > [x] > gt
+  as-i16.gte x.as-u8.as-i16 > [x] > gte
+  as-i16.lt x.as-u8.as-i16 > [x] > lt
+  as-i16.lte x.as-u8.as-i16 > [x] > lte
+  u8 > [x] > minus
+    slice.
+      as-bytes.
+        as-i16.minus x.as-u8.as-i16
+      1
+      1
+  u8 > [x] > plus
+    slice.
+      as-bytes.
+        as-i16.plus x.as-u8.as-i16
+      1
+      1
+  u8 > [x] > times
+    slice.
+      as-bytes.
+        as-i16.times x.as-u8.as-i16
+      1
+      1
+
+  eq. ++> can-add-one-to-one
+    01-.as-u8.plus 01-.as-u8
+    02-.as-u8
+
+  eq. ++> can-add-with-overflow
+    FF-.as-u8.plus 01-.as-u8
+    00-.as-u8
+
+  32-.as-u8.gte 32-.as-u8 ++> can-be-greater-than-or-equal-to-an-equal-u8
+
+  0A-.as-u8.lt 32-.as-u8 ++> can-be-less-than-a-larger-u8
+
+  32-.as-u8.lte 32-.as-u8 ++> can-be-less-than-or-equal-to-an-equal-u8
+
+  00-.as-u8.lt FF-.as-u8 ++> can-be-less-than-the-maximum-when-zero
+
+  FF-.as-u8.as-number.eq 255 ++> can-convert-to-an-unsigned-number
+
+  eq. ++> can-divide-by-one
+    FF-.as-u8.div 01-.as-u8
+    FF-.as-u8
+
+  eq. ++> can-divide-without-a-sign
+    C8-.as-u8.div 03-.as-u8
+    42-.as-u8
+
+  2A-.as-u8.eq 2A-.as-u8 ++> can-equal-the-same-u8
+
+  2A-.as-u8.as-bytes.eq 2A- ++> can-expose-valid-bytes
+
+  eq. ++> can-multiply
+    06-.as-u8.times 07-.as-u8
+    2A-.as-u8
+
+  eq. ++> can-read-the-maximum-byte-as-unsigned
+    255.as-i64.as-i32.as-i16
+    FF-.as-u8.as-i16
+
+  eq. ++> can-subtract
+    05-.as-u8.minus 03-.as-u8
+    02-.as-u8
+
+  eq. ++> can-subtract-with-underflow
+    00-.as-u8.minus 01-.as-u8
+    FF-.as-u8
+
+  FF-.as-u8.gt 01-.as-u8 ++> can-treat-a-high-bit-as-magnitude-when-greater
+
+  FF-.as-u8.as-i16.as-bytes.eq 00-FF ++> can-widen-to-i16-with-a-zero-prefix
+
+  eq. ++> can-wrap-a-large-product
+    FF-.as-u8.times FF-.as-u8
+    01-.as-u8
+
+  eq. ++> can-wrap-a-product-modulo-two-to-the-eighth
+    10-.as-u8.times 10-.as-u8
+    00-.as-u8
+
+  not. ++> cannot-be-greater-than-or-equal-to-a-larger-u8
+    00-.as-u8.gte 0A-.as-u8
+
+  not. ++> cannot-be-less-than-an-equal-u8
+    0A-.as-u8.lt 0A-.as-u8
+
+  not. ++> cannot-be-less-than-one-with-a-high-bit
+    FF-.as-u8.lt 01-.as-u8
+
+  not. ++> cannot-equal-a-different-u8
+    2A-.as-u8.eq 2B-.as-u8
+
+  eq. ++> rejects-division-by-zero
+    "recovered"
+    02-.as-u8.div
+      00-.as-u8
+      "recovered" > [message]
+
+  02-.as-u8.div 00-.as-u8 --> stops-on-division-by-zero

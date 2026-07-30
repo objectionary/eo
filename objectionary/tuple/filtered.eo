@@ -1,0 +1,40 @@
+# Filter `list` without index with the function `func`.
+# Here `func` must be an abstract object
+# with one attribute for the element.
+# The result of dataization the `func`
+# should be boolean, that is `true` or `false`.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package tuple
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[list func] > filtered
+  filteredi > @
+    list
+    func item > [item index] >>
+
+  eq. ++> can-filter-a-list
+    filtered
+      *
+        3
+        1
+        4
+        2
+        5
+      v.gt 2 > [v]
+    *
+      3
+      4
+      5
+
+  eq. ++> can-filter-bools
+    filtered
+      *
+        true
+        false
+        true
+      v.not > [v]
+    * false

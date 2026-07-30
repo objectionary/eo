@@ -1,0 +1,173 @@
+# Returns a `tuple` of `strings`: `text` is split by `delimiter` with a maximum of `limit` parts.
+# The last element contains the remainder of the string after splitting.
+# If `limit` is not a finite integer of at least 1 (fractional, nan, infinite,
+# zero or negative), the `cant-split` fallback is returned, or the bottom object when unbound.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text delimiter limit cant-split] > nsplit
+  if. > @
+    or.
+      1.gt limit
+      limit.is-integer.not
+    cant-split
+      "Invalid limit %d for nsplit, must be at least 1".printf
+        * limit
+    if.
+      text.size.eq 0
+      *
+      if.
+        1.eq limit
+        * text
+        [accum start current count] >> rec-nsplit
+          if. > @
+            text.size.eq current
+            appended
+            if.
+              or.
+                size.eq 0
+                gt.
+                  current.plus size
+                  text.size
+              rec-nsplit
+                accum
+                start
+                as-number.
+                  current.plus 1
+                count
+              if.
+                and.
+                  delimiter.eq
+                    bts.slice current size
+                  lt.
+                    number count
+                    minus. (number limit) 1
+                rec-nsplit
+                  appended
+                  as-number.
+                    current.plus size
+                  as-number.
+                    current.plus size
+                  as-number.
+                    count.plus 1
+                rec-nsplit
+                  accum
+                  start
+                  as-number.
+                    current.plus 1
+                  count
+          accum.with > appended
+            string
+              bts.slice
+                start
+                current.minus start
+        |
+          *
+          0
+          0
+          0
+  text.as-bytes >> bts!
+  delimiter.size >> size!
+
+  eq. ++> can-split-into-empty-strings
+    nsplit
+      "-a-b-c"
+      "-"
+      3
+    *
+      ""
+      "a"
+      "b-c"
+
+  eq. ++> can-split-multi-byte-characters
+    nsplit
+      "аХбХв"
+      "Х"
+      3
+    *
+      "а"
+      "б"
+      "в"
+
+  eq. ++> can-split-on-a-multi-character-delimiter
+    nsplit
+      "a::b::c::d"
+      "::"
+      2
+    *
+      "a"
+      "b::c::d"
+
+  eq. ++> can-split-on-dashes-with-a-limit-of-two
+    nsplit
+      "a-b-c-d"
+      "-"
+      2
+    *
+      "a"
+      "b-c-d"
+
+  eq. ++> can-split-with-a-high-limit
+    nsplit
+      "a-b-c"
+      "-"
+      10
+    *
+      "a"
+      "b"
+      "c"
+
+  eq. ++> can-split-with-a-limit-of-one
+    nsplit
+      "a-b-c"
+      "-"
+      1
+    * "a-b-c"
+
+  eq. ++> can-split-with-a-limit-of-two
+    nsplit
+      "Cookie: a=1; b=2"
+      " "
+      2
+    *
+      "Cookie:"
+      "a=1; b=2"
+
+  eq. ++> rejects-a-fractional-limit
+    "recovered"
+    nsplit
+      "a-b-c"
+      "-"
+      1.5
+      "recovered" > [message]
+
+  eq. ++> rejects-an-infinite-limit
+    "recovered"
+    nsplit
+      "a-b-c"
+      "-"
+      pinf
+      "recovered" > [message]
+
+  eq. ++> rejects-an-invalid-limit
+    "fallback"
+    nsplit
+      "text"
+      "-"
+      0
+      "fallback" > [message]
+
+  nsplit --> stops-on-a-limit-of-zero
+    "text"
+    "-"
+    0
+
+  nsplit --> stops-on-a-negative-limit
+    "text"
+    "-"
+    -1

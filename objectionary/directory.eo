@@ -1,0 +1,76 @@
+# Directory in the file system.
+# Apparently every directory is a file.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++rt jvm org.eolang:eo-runtime:0.62.0
++rt node eo2js-runtime:0.0.0
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint redundant-object
++unlint mandatory-package
+
+[file] > directory
+  file > @
+  true > is-directory
+  [] > tmpfile
+    ^.exists.if > @
+      Q.file touch.as-bytes
+      T
+        "Directory %s does not exist, can't create temporary file".printf
+          * file
+    [] > touch /Q.string
+  [] > walk /Q.tuple
+    ? > glob /Q.string
+
+  ++> can-walk-recursively
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "foo/bar"
+      touched.
+        as-file.
+          d.resolved "foo/bar/test.txt"
+      made.
+        as-dir.
+          d.resolved "x/y/z"
+      touched.
+        as-file.
+          d.resolved "x/y/z/a.txt"
+      eq.
+        length.
+          d.as-dir.walk "**/*.txt"
+        2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-a-plain-glob-matching-direct-children-only
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      made.
+        as-dir.
+          d.resolved "sub"
+      touched.
+        as-file.
+          d.resolved "sub/b.txt"
+      eq.
+        length.
+          d.as-dir.walk "*.txt"
+        1
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  walk. --> stops-on-walking-an-absent-directory
+    directory mktemp.tmpfile.deleted
+    "**"
+
+  --> stops-on-walking-with-a-malformed-glob
+    d.as-dir.walk "[" > @
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted

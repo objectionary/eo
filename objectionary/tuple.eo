@@ -1,229 +1,334 @@
+# Tuple.
+# An ordered, immutable collection of elements.
+
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.61.3
++version 0.62.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
 +unlint mandatory-package
 
-# Tuple.
-# An ordered, immutable collection of elements.
 [tail head length] > tuple
-  # Empty tuple.
-  # A tuple with no elements. When dataized, it represents an immutable, empty collection.
-  tuple > empty
-    error "Can't get tail from the empty tuple"
-    error "Can't get head from the empty tuple"
-    0
-
-  # Take one element from the tuple, at the given position.
-  [i] > at
+  [i fallback] > at
     if. > @
       or.
-        0.gt index
+        0.gt
+          if. >> index!
+            0.gt
+              i >> idx!
+            length.plus idx
+            idx
         length.lte index
-      error "Given index is out of tuple bounds"
-      at-fast ^
-    i > idx!
-    if. > index!
-      0.gt idx
-      length.plus idx
-      idx
-
-    # Recursively traverses tuple tail until reaching the target index.
-    [tup] > at-fast
-      if. > @
-        (tup.length.plus -1).eq index
-        tup.head
-        at-fast tup.tail
-
-  # Create a new tuple with this element added to the end of it.
-  [x] > with
-    tuple > @
-      ^
-      x
-      (length.plus 1).as-number
-
-  # Tests that tuple creation through special syntax (* 1 2) works correctly.
-  [] +> tests-makes-tuple-through-special-syntax
-    eq. > @
-      (* 1 2).length
-      2
-
-  # Tests that empty tuple length can be obtained through special syntax (*.length).
-  [] +> tests-gets-lengths-of-empty-tuple-through-special-syntax
-    eq. > @
-      *.length
-      0
-
-  # Check that an empty tuple's .length equals zero.
-  [] +> tests-empty-tuple-length
-    eq. > @
-      (arr *).elements.length
-      0
-    # Wrapper object that holds elements tuple for testing purposes.
-    [elements] > arr
-
-  # Check that tuple.length works properly for non-empty tuples.
-  [] +> tests-non-empty-tuple-length-test
-    eq. > @
-      arr
-        * "a" "b" "c" "d" "e"
-      .elements
-      .length
-      5
-    # Wrapper object that holds elements tuple for testing purposes.
-    [elements] > arr
-
-  # Tests that a tuple bound as an attribute with size 0 has correct length.
-  [] +> tests-tuple-as-a-bound-attribute-size-0
-    eq. > @
-      tup.length
-      0
-    * > tup
-
-  # Tests that a tuple bound as an attribute with size 1 allows element access.
-  [] +> tests-tuple-as-a-bound-attribute-size-1
-    eq. > @
-      tup.at 0
-      100
-    * > tup
-      100
-
-  # Tests that a tuple bound as an attribute with size 2 allows access to both elements.
-  [] +> tests-tuple-as-a-bound-attribute-size-2
+      fallback
+        "Given index is out of tuple bounds"
+      if. > [tup] >> at-fast
+        0.eq tup.length
+        fallback
+          "Given index is out of tuple bounds"
+        if.
+          eq.
+            tup.length.plus -1
+            index
+          tup.head
+          at-fast tup.tail
+      | ^
+  tuple > empty
+    T
+      "Can't get tail from the empty tuple"
+    T
+      "Can't get head from the empty tuple"
+    0
+  [other] > eq
     and. > @
-      eq.
-        arr.at 0
-        1
-      eq.
-        arr.at 1
-        2
-    * > arr
-      1
-      2
+      length.eq other.length
+      if. > [first second] >> receq
+        first.length.eq 0
+        true
+        and.
+          first.head.eq second.head
+          receq first.tail second.tail
+      | ^ other
+  tuple > [x] > with
+    ^
+    x
+    as-number.
+      length.plus 1
 
-  # Tests that the with method correctly adds an element to an existing tuple.
-  [] +> tests-tuple-with
+  ++> can-add-an-item
     and. > @
       and.
         and.
           eq.
-            arr.at 0
+            array.at 0
             1
           eq.
-            arr.at 1
+            array.at 1
             2
         eq.
-          arr.at 2
+          array.at 2
           3
       eq.
-        arr.at 3
+        array.at 3
         "with"
-    with. > arr
-      * 1 2 3
+    with. > array
+      *
+        1
+        2
+        3
       "with"
 
-  # Tests that accessing a tuple with an out-of-bounds index throws an error.
-  [] +> throws-on-wrong-tuple-at
-    at. > @
-      * 1 2 3 4
-      20
+  ++> can-be-a-bound-attribute-of-one-item
+    eq. > @
+      tup.at 0
+      100
+    * 100 > tup
 
-  # Tests that fluent chaining of with method works correctly for tuple construction.
-  [] +> tests-tuple-fluent-with
+  ++> can-be-a-bound-attribute-of-two-items
+    and. > @
+      eq.
+        array.at 0
+        1
+      eq.
+        array.at 1
+        2
+    * > array
+      1
+      2
+
+  ++> can-be-a-bound-attribute-when-empty
+    tup.length.eq 0 > @
+    * > tup
+
+  ++> can-build-a-tuple-fluently
     and. > @
       and.
         eq.
-          arr.at 0
+          array.at 0
           1
         eq.
-          arr.at 1
+          array.at 1
           2
       eq.
-        arr.at 2
+        array.at 2
         3
-    ((*.with 1).with 2).with 3 > arr
+    with. > array
+      with.
+        tuple.empty.with 1
+        2
+      3
 
-  # Tests that fluent chaining of with method works correctly with indented syntax.
-  [] +> tests-tuple-fluent-with-indented
+  ++> can-build-a-tuple-fluently-when-indented
     and. > @
       and.
         eq.
-          arr.at 0
+          array.at 0
           1
         eq.
-          arr.at 1
+          array.at 1
           2
       eq.
-        arr.at 2
+        array.at 2
         3
-    ((*.with 1).with 2).with 3 > arr
+    with. > array
+      with.
+        tuple.empty.with 1
+        2
+      3
 
-  # Tests that the length of an explicitly created empty tuple is zero.
-  [] +> tests-gets-lengths-of-empty-tuple
-    eq. > @
-      a.length
+  ++> can-build-an-empty-tuple-with-an-indented-keyword
+    and. > @
+      and.
+        eq.
+          array.at 0
+          1
+        eq.
+          array.at 1
+          2
+      eq.
+        array.at 2
+        3
+    with. > array
+      with.
+        tuple.empty.with 1
+        2
+      3
+
+  tuple.contains ++> can-check-containment-through-the-package
+    *
+      1
+      2
+      3
+    2
+
+  eq. ++> can-concat-with-another-tuple
+    concat.
+      * 0 1
+      * 2 3
+    *
       0
-    tuple.empty > a
+      1
+      2
+      3
 
-  # Tests that the length of an empty tuple can be accessed directly without intermediate objects.
-  [] +> tests-gets-lengths-of-empty-tuple-without-additional-obj
-    eq. > @
-      tuple.empty.length
-      0
+  contains. ++> can-contain-an-element
+    *
+      1
+      2
+      3
+    2
 
-  # Tests that adding a number to an empty tuple creates a tuple with that element.
-  [] +> tests-creates-empty-tuple-with-number
+  ++> can-create-an-empty-tuple-with-a-number
     eq. > @
       a.at 0
       3
     tuple.empty.with 3 > a
 
-  # Tests that the at-fast method correctly retrieves the first element of a tuple.
-  [] +> tests-at-fast-with-first-element
-    eq. > @
-      (arr.at 0).at-fast arr
-      100
-    * 100 101 102 > arr
+  eq. ++> can-equal-a-nested-tuple
+    *
+      * 0 1
+      * 4 0
+      * 7 3
+    *
+      * 0 1
+      * 4 0
+      * 7 3
 
-  # Tests that the at-fast method correctly retrieves the last element of a tuple.
-  [] +> tests-at-fast-with-last-element
-    eq. > @
-      (arr.at 2).at-fast arr
-      102
-    * 100 101 102 > arr
+  eq. ++> can-equal-another-tuple
+    *
+      1
+      2
+      3
+    *
+      1
+      2
+      3
 
-  # Tests that fluent chaining starting from empty tuple works with indented keyword syntax.
-  [] +> tests-tuple-empty-fluent-with-indented-keyword
-    and. > @
-      and.
-        eq.
-          arr.at 0
-          1
-        eq.
-          arr.at 1
-          2
-      eq.
-        arr.at 2
-        3
-    ((tuple.empty.with 1).with 2).with 3 > arr
+  eq. ++> can-find-the-index-of-an-element
+    index-of.
+      *
+        10
+        20
+        30
+      20
+    1
 
-  # Tests that using negative index -1 correctly retrieves the last element of the tuple.
-  [] +> tests-tuple-with-negative-index-gets-last
-    eq. > @
-      arr.at -1
-      4
-    * 0 1 2 3 4 > arr
+  ++> can-get-the-length-of-an-empty-tuple
+    a.length.eq 0 > @
+    * > a
 
-  # Tests that using negative index -5 correctly retrieves the first element of a 5-element tuple.
-  [] +> tests-tuple-with-negative-index-gets-first
+  tuple.empty.length.eq ++> can-get-the-length-of-an-empty-tuple-through-special-syntax
+    0
+
+  tuple.empty.length.eq ++> can-get-the-length-of-an-empty-tuple-without-an-extra-object
+    0
+
+  eq. ++> can-make-a-tuple-through-special-syntax
+    length.
+      * 1 2
+    2
+
+  ++> can-report-the-length-of-a-non-empty-tuple
     eq. > @
-      arr.at -5
+      length.
+        elements.
+          array *
+            "a"
+            "b"
+            "c"
+            "d"
+            "e"
+      5
+    [elements] > array
+
+  ++> can-report-the-length-of-an-empty-tuple
+    eq. > @
+      length.
+        elements.
+          array
+            *
       0
-    * 0 1 2 3 4 > arr
+    [elements] > array
 
-  # Tests that accessing a tuple with an out-of-bounds negative index throws an error.
-  [] +> throws-on-out-of-tuple-bounds-with-negative-index
-    arr.at -6 > @
-    * 0 1 2 3 4 > arr
+  ++> can-take-the-first-item-by-a-negative-index
+    eq. > @
+      array.at -5
+      0
+    * > array
+      0
+      1
+      2
+      3
+      4
+
+  ++> can-take-the-last-item-by-a-negative-index
+    eq. > @
+      array.at -1
+      4
+    * > array
+      0
+      1
+      2
+      3
+      4
+
+  not. ++> cannot-contain-an-absent-element
+    contains.
+      *
+        1
+        2
+        3
+      5
+
+  not. ++> cannot-equal-a-different-tuple
+    eq.
+      *
+        1
+        2
+        3
+      *
+        3
+        2
+        1
+
+  eq. ++> rejects-a-fractional-index
+    "recovered"
+    at.
+      *
+        "zero"
+        "one"
+        "two"
+      1.5
+      "recovered" > [message]
+
+  eq. ++> rejects-an-out-of-bounds-index
+    "recovered"
+    at.
+      *
+        1
+        2
+        3
+        4
+      20
+      "recovered" > [message]
+
+  at. --> stops-on-a-wrong-index
+    *
+      1
+      2
+      3
+      4
+    20
+
+  --> stops-on-an-out-of-bounds-negative-index
+    array.at -6 > @
+    * > array
+      0
+      1
+      2
+      3
+      4
+
+  tuple.empty.head --> stops-on-taking-the-head-of-an-empty-tuple
+
+  tuple.empty.tail --> stops-on-taking-the-tail-of-an-empty-tuple

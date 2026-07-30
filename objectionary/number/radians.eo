@@ -1,0 +1,51 @@
+# Radians of `num` degrees as `org.eolang.number`, the same angle expressed in
+# radians rather than degrees, found by scaling the argument by pi over 180.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[num] > radians
+  div. > @
+    times.
+      number num.as-bytes
+      pi
+    180
+
+  lt. ++> can-convert-a-full-turn-to-radians
+    abs
+      minus.
+        radians 360
+        pi.times 2
+    1.0E-4
+
+  lt. ++> can-convert-a-half-turn-to-radians
+    abs
+      minus.
+        radians 180
+        pi
+    1.0E-4
+
+  lt. ++> can-convert-a-negative-half-turn-to-radians
+    abs
+      minus.
+        radians -180
+        pi.neg
+    1.0E-4
+
+  lt. ++> can-convert-a-quarter-turn-to-radians
+    abs
+      minus.
+        radians 90
+        pi.div 2
+    1.0E-4
+
+  eq. ++> can-convert-zero-to-radians
+    radians 0
+    0
+
+  is-nan. ++> cannot-convert-nan-to-radians
+    radians nan

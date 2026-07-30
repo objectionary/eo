@@ -1,0 +1,131 @@
+# Arc sine of `num` as `org.eolang.number`, the angle in radians whose sine is
+# `num`. An argument above one half is folded toward zero through the identity
+# asin(x) equals pi/2 minus twice asin(sqrt((1 minus x) div 2)), so the Taylor
+# series always runs in its fast region, while arguments outside [-1, 1] and
+# non-finite ones collapse to nan.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[num] > arc-sine
+  if. > @
+    lt.
+      number num.as-bytes >> arg
+      0
+    neg.
+      if. >> base
+        gt.
+          abs arg >> magnitude
+          0.5
+        minus.
+          pi.div 2
+          2.times
+            [point] >> series
+              point.times > @
+                poly 1
+              if. > [depth] > poly
+                depth.gt 30
+                1
+                1.plus
+                  times.
+                    div.
+                      times.
+                        times.
+                          minus. (depth.times 2) 1
+                          minus. (depth.times 2) 1
+                        squared
+                      times.
+                        depth.times 2
+                        plus. (depth.times 2) 1
+                    poly (depth.plus 1)
+              point.times point > squared
+            | (sqrt ((1.minus magnitude).div 2))
+        series magnitude
+    base
+
+  lt. ++> can-behave-as-an-odd-function
+    abs
+      times.
+        plus.
+          arc-sine 0.6
+          arc-sine -0.6
+        1000
+    1
+
+  lt. ++> can-take-an-arc-sine-of-a-half
+    abs
+      minus.
+        times.
+          arc-sine 0.5
+          1000
+        times.
+          pi.div 6
+          1000
+    1
+
+  lt. ++> can-take-an-arc-sine-of-minus-a-half
+    abs
+      minus.
+        times.
+          arc-sine -0.5
+          1000
+        times.
+          neg.
+            pi.div 6
+          1000
+    1
+
+  lt. ++> can-take-an-arc-sine-of-minus-one
+    abs
+      minus.
+        times.
+          arc-sine -1
+          1000
+        times.
+          neg.
+            pi.div 2
+          1000
+    1
+
+  lt. ++> can-take-an-arc-sine-of-one
+    abs
+      minus.
+        times.
+          arc-sine 1
+          1000
+        times.
+          pi.div 2
+          1000
+    1
+
+  eq. ++> can-take-an-arc-sine-of-zero
+    arc-sine 0
+    0
+
+  lt. ++> can-take-an-arc-sine-of-zero-point-six
+    abs
+      minus.
+        times.
+          arc-sine 0.6
+          1000
+        643.5
+    1
+
+  is-nan. ++> cannot-take-an-arc-sine-above-one
+    arc-sine 2
+
+  is-nan. ++> cannot-take-an-arc-sine-below-minus-one
+    arc-sine -2
+
+  is-nan. ++> cannot-take-an-arc-sine-of-nan
+    arc-sine nan
+
+  is-nan. ++> cannot-take-an-arc-sine-of-negative-infinity
+    arc-sine ninf
+
+  is-nan. ++> cannot-take-an-arc-sine-of-positive-infinity
+    arc-sine pinf

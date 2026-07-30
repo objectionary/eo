@@ -1,0 +1,82 @@
+# Retrieve symbol by given index as `text`.
+# A negative `index` counts from the end of `text` (`length + index`).
+# If the resolved index is still negative or is >= `text.length`,
+# the `fallback` value is returned, or the bottom object when unbound.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.62.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text i fallback] > at
+  if. > @
+    or.
+      0.gt
+        if. >> index!
+          0.gt
+            i >> idx!
+          plus.
+            number len
+            idx
+          idx
+      or.
+        gte.
+          number index
+          text.length >> len!
+        not.
+          eq.
+            floor.
+              number index
+            number index
+    fallback
+      "Given index %d is out of text bounds".printf
+        * i
+    slice
+      text
+      index
+      1
+
+  eq. ++> can-return-a-character-at-a-negative-index
+    "m"
+    at
+      "some"
+      -2
+
+  eq. ++> can-return-the-first-character
+    "s"
+    at
+      "some"
+      0
+
+  eq. ++> can-return-the-third-character
+    "m"
+    at
+      "some"
+      2
+
+  eq. ++> rejects-a-fractional-index-in-bounds
+    "recovered"
+    at
+      "some"
+      1.5
+      "recovered" > [message]
+
+  eq. ++> rejects-a-negative-fractional-index-in-bounds
+    "recovered"
+    at
+      "some"
+      -1.5
+      "recovered" > [message]
+
+  eq. ++> rejects-an-out-of-bounds-index
+    "recovered"
+    at
+      "some"
+      10
+      "recovered" > [message]
+
+  at --> stops-on-an-index-beyond-the-length
+    "some"
+    10
