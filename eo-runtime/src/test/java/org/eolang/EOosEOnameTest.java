@@ -2,10 +2,6 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-/*
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 import org.hamcrest.MatcherAssert;
@@ -13,12 +9,11 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOos}.
+ * Test case for {@link EOos$EOname}.
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOosTest {
+final class EOosEOnameTest {
 
     @Test
     void readsSystemFamily() {

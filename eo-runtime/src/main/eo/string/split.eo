@@ -55,34 +55,7 @@
   size. >> size!
     delimiter >> delim!
 
-  eq. ++> tests-splits-and-returns-strings
-    length.
-      at.
-        split
-          "hello world!"
-          " "
-        1
-    6
-
-  eq. ++> tests-splits-text-by-dash
-    split
-      "a-b-c"
-      "-"
-    *
-      "a"
-      "b"
-      "c"
-
-  eq. ++> tests-splits-text-by-multi-char-delimiter
-    split
-      "a::b::c"
-      "::"
-    *
-      "a"
-      "b"
-      "c"
-
-  eq. ++> tests-splits-text-with-empty-strings
+  eq. ++> can-split-a-text-into-empty-strings
     split
       "-a-b-"
       "-"
@@ -91,3 +64,30 @@
       "a"
       "b"
       ""
+
+  eq. ++> can-split-a-text-on-a-dash
+    split
+      "a-b-c"
+      "-"
+    *
+      "a"
+      "b"
+      "c"
+
+  eq. ++> can-split-a-text-on-a-multi-character-delimiter
+    split
+      "a::b::c"
+      "::"
+    *
+      "a"
+      "b"
+      "c"
+
+  eq. ++> can-split-into-strings
+    length.
+      at.
+        split
+          "hello world!"
+          " "
+        1
+    6

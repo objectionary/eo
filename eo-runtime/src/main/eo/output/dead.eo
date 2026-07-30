@@ -14,4 +14,4 @@
       output-block > [buffer] > write
     | > @
 
-  dead.write 01-02-03 ++> writes-bytes-to-nowhere
+  dead.write 01-02-03 ++> can-write-bytes-to-nowhere

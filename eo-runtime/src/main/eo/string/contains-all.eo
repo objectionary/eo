@@ -17,29 +17,29 @@
     true
     x.and a > [a x]
 
-  contains-all ++> test-contains-all-without-substrings
+  contains-all ++> can-contain-all-of-no-substrings
     "xyz"
     *
 
-  contains-all ++> tests-contains-all-for-empty-text-and-without-substrings
+  contains-all ++> can-contain-all-of-no-substrings-when-empty
     ""
     *
 
-  contains-all *1 ++> tests-contains-all-vert
+  contains-all *1 ++> can-contain-all-substrings
+    "abcdefghijk"
+    "abc"
+    "ghi"
+
+  contains-all *1 ++> can-contain-all-substrings-written-vertically
     "Hello, world!"
     "ell"
     " "
     ","
     "d!"
 
-  not. ++> tests-not-contains-all
+  not. ++> cannot-contain-all-substrings
     contains-all *1
       "qwerty"
       "qer"
       "ty"
       "abc"
-
-  contains-all *1 ++> tests-successful-contains-all
-    "abcdefghijk"
-    "abc"
-    "ghi"

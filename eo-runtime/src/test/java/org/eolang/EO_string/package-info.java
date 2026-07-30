@@ -6,7 +6,6 @@
 /**
  * Txt, tests.
  * @since 0.57.4
- * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
 package org.eolang.EO_string; // NOPMD

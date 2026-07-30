@@ -33,10 +33,10 @@
             byte
         as-ascii byte > code
 
-  eq. ++> tests-converts-text-to-lower-case
-    "hello"
-    low-cased "HELLO"
-
-  eq. ++> tests-converts-text-with-low-letters-to-lower-case
+  eq. ++> can-convert-already-lower-cased-text
     "hello"
     low-cased "HeLlO"
+
+  eq. ++> can-convert-text-to-lower-case
+    "hello"
+    low-cased "HELLO"

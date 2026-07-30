@@ -31,7 +31,6 @@ final class ContainsFiles extends TypeSafeMatcher<Path> {
     /**
      * Ctor.
      * @param glbs Patterns
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     ContainsFiles(final String... glbs) {
         this.globs = Arrays.copyOf(glbs, glbs.length);

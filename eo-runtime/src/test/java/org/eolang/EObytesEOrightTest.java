@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle PackageNameCheck (10 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 import org.hamcrest.MatcherAssert;
@@ -19,10 +15,8 @@ import org.junit.jupiter.api.Test;
  * raised by {@link EObytes$EOright} when the {@code x} attribute
  * is not an integer.
  * @since 0.51
- * @checkstyle TypeNameCheck (5 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EObytesEOrightExpectTest {
+final class EObytesEOrightTest {
 
     @Test
     void throwsCorrectErrorForNonNumericX() {

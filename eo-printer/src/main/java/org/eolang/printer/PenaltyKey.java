@@ -15,7 +15,6 @@ package org.eolang.printer;
  * one aesthetic is no longer baked into the tool.</p>
  *
  * @since 0.57.0
- * @checkstyle MagicNumberCheck (65 lines)
  */
 public enum PenaltyKey {
 

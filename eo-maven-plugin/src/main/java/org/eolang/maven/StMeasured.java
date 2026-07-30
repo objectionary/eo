@@ -44,7 +44,6 @@ final class StMeasured implements Shift {
     }
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public XML apply(final int position, final XML xml) {
         final long start = System.currentTimeMillis();
         final XML out = this.origin.apply(position, xml);

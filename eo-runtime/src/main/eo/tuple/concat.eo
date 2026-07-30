@@ -15,7 +15,7 @@
       accum
       item
 
-  ++> tests-concatenates-lists
+  ++> can-concat-two-lists
     and. > @
       1.eq
         list3.at 0
@@ -31,7 +31,7 @@
         3
       0
 
-  eq. ++> tests-concatenates-with-tuple
+  eq. ++> can-concat-with-a-tuple
     concat *1
       * 0 1
       2

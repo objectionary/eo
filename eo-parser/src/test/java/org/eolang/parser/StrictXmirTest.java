@@ -29,12 +29,6 @@ import org.xembly.Xembler;
  */
 final class StrictXmirTest {
 
-    /**
-     * EO version manifest key.
-     */
-    @SuppressWarnings("JTCOP.RuleProhibitStaticFields")
-    private static final String EO_VERSION = "EO-Version";
-
     @Test
     @ExtendWith(MktmpResolver.class)
     @ExtendWith(WeAreOnline.class)
@@ -105,7 +99,7 @@ final class StrictXmirTest {
                 StrictXmirTest.xmir(
                     String.format(
                         "https://www.eolang.org/xsd/XMIR-%s.xsd",
-                        Manifests.read(StrictXmirTest.EO_VERSION)
+                        StrictXmirTest.version()
                     )
                 ),
                 tmp
@@ -121,7 +115,7 @@ final class StrictXmirTest {
             StrictXmirTest.xmir(
                 String.format(
                     "https://www.eolang.org/xsd/XMIR-%s.xsd",
-                    Manifests.read(StrictXmirTest.EO_VERSION)
+                    StrictXmirTest.version()
                 )
             ),
             tmp
@@ -129,7 +123,7 @@ final class StrictXmirTest {
         MatcherAssert.assertThat(
             "temporary XSD file created",
             tmp.resolve(
-                String.format("XMIR-%s.xsd", Manifests.read(StrictXmirTest.EO_VERSION))
+                String.format("XMIR-%s.xsd", StrictXmirTest.version())
             ).toFile().exists(),
             Matchers.is(true)
         );
@@ -144,7 +138,7 @@ final class StrictXmirTest {
                     StrictXmirTest.xmir(
                         String.format(
                             "https://www.eolang.org/xsd/XMIR-%s.xsd",
-                            Manifests.read(StrictXmirTest.EO_VERSION)
+                            StrictXmirTest.version()
                         )
                     ),
                     tmp
@@ -161,7 +155,7 @@ final class StrictXmirTest {
             StrictXmirTest.xmir(
                 String.format(
                     "https://www.eolang.org/xsd/XMIR-%s.xsd",
-                    Manifests.read(StrictXmirTest.EO_VERSION)
+                    StrictXmirTest.version()
                 )
             ),
             tmp
@@ -185,6 +179,14 @@ final class StrictXmirTest {
             )::inner,
             "validation should fail because of broken URI"
         );
+    }
+
+    /**
+     * The EO version, as the manifest records it.
+     * @return Version
+     */
+    private static String version() {
+        return Manifests.read("EO-Version");
     }
 
     /**

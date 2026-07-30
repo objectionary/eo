@@ -33,6 +33,6 @@
           name
   [] > name /Q.string
 
-  or. ++> tests-checks-os-family
+  or. ++> can-check-the-os-family
     os.is-windows.or os.is-macos
     os.is-linux

@@ -228,15 +228,15 @@ final class Transpiling implements Step {
     }
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() throws IOException {
-        final int saved = new Threaded<>(
-            this.sources,
-            this::transpiled
-        ).total() + new PackageInfos(this.generatedDir).create();
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
-            this.sources.size(), saved, this.generatedDir
+            this.sources.size(),
+            new Threaded<>(
+                this.sources,
+                this::transpiled
+            ).total() + new PackageInfos(this.generatedDir).create(),
+            this.generatedDir
         );
     }
 
@@ -274,7 +274,6 @@ final class Transpiling implements Step {
      * @return Number of generated Java files
      * @throws IOException If any issues with I/O
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private int transpiled(final TjForeign tojo) throws IOException {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);

@@ -24,7 +24,7 @@
   [] > walk /Q.tuple
     ? > glob /Q.string
 
-  ++> tests-walks-recursively
+  ++> can-walk-recursively
     seq * > @
       made.
         as-dir.
@@ -46,7 +46,7 @@
       made.
         directory mktemp.tmpfile.deleted
 
-  ++> tests-walks-with-plain-glob-matches-direct-child-only
+  ++> can-walk-with-a-plain-glob-matching-direct-children-only
     seq * > @
       touched.
         as-file.
@@ -65,11 +65,11 @@
       made.
         directory mktemp.tmpfile.deleted
 
-  walk. --> on-walking-absent-directory
+  walk. --> stops-on-walking-an-absent-directory
     directory mktemp.tmpfile.deleted
     "**"
 
-  --> on-walking-with-malformed-glob
+  --> stops-on-walking-with-a-malformed-glob
     d.as-dir.walk "[" > @
     as-path. > d
       made.

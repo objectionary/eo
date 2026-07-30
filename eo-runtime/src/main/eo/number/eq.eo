@@ -31,19 +31,55 @@
           b.eq nzero
       b.eq xbts
 
-  42.eq 42.as-bytes ++> tests-as-bytes-equals-to-int
-
-  eq. ++> tests-compares-two-different-number-types
+  eq. ++> can-compare-two-different-number-types
     68.eq "12345678"
     false
 
-  eq. ++> tests-compares-two-numbers-via-package
+  eq. ++> can-compare-two-numbers-through-the-package
     eq
       42
       42
     true
 
-  eq. ++> tests-float-equal-to-nan-and-infinites-is-false-highload
+  42.eq 42.as-bytes ++> can-equal-an-integer-through-bytes
+
+  eq. ++> can-equal-float-zero-to-integer-zero
+    0.eq 0
+    true
+
+  ninf.eq ninf ++> can-equal-negative-infinity-when-negative-infinity
+
+  pinf.eq pinf ++> can-equal-positive-infinity-when-positive-infinity
+
+  eq. ++> can-equal-the-same-integer
+    123.eq 123
+    true
+
+  eq. ++> can-equal-zero-to-zero
+    0.eq 0
+    true
+
+  eq. ++> cannot-equal-a-different-integer
+    not.
+      123.eq 42
+    true
+
+  not. ++> cannot-equal-a-float-when-negative-infinity
+    ninf.eq 42.5
+
+  not. ++> cannot-equal-a-float-when-positive-infinity
+    pinf.eq 42.5
+
+  not. ++> cannot-equal-a-number-when-nan
+    nan.eq 42
+
+  not. ++> cannot-equal-an-integer-when-negative-infinity
+    ninf.eq 42
+
+  not. ++> cannot-equal-an-integer-when-positive-infinity
+    pinf.eq 42
+
+  eq. ++> cannot-equal-nan-or-infinities-when-a-float-under-load
     and.
       and.
         and.
@@ -81,16 +117,7 @@
         false
     true
 
-  eq. ++> tests-int-eq-false
-    not.
-      123.eq 42
-    true
-
-  eq. ++> tests-int-eq-true
-    123.eq 123
-    true
-
-  eq. ++> tests-int-equal-to-nan-and-infinites-is-false
+  eq. ++> cannot-equal-nan-or-infinities-when-an-integer
     and.
       and.
         and.
@@ -116,44 +143,17 @@
         false
     true
 
-  eq. ++> tests-int-zero-eq-to-float-zero
-    0.eq 0
-    true
-
-  eq. ++> tests-int-zero-eq-to-zero
-    0.eq 0
-    true
-
-  not. ++> tests-nan-not-eq-nan
+  not. ++> cannot-equal-nan-when-nan
     nan.eq nan
 
-  not. ++> tests-nan-not-eq-number
-    nan.eq 42
-
-  ninf.eq ninf ++> tests-negative-infinity-eq-negative-infinity
-
-  not. ++> tests-negative-infinity-not-eq-float
-    ninf.eq 42.5
-
-  not. ++> tests-negative-infinity-not-eq-int
-    ninf.eq 42
-
-  not. ++> tests-negative-infinity-not-eq-nan
+  not. ++> cannot-equal-nan-when-negative-infinity
     ninf.eq nan
 
-  not. ++> tests-negative-infinity-not-eq-positive-infinity
-    ninf.eq pinf
-
-  pinf.eq pinf ++> tests-positive-infinity-eq-positive-infinity
-
-  not. ++> tests-positive-infinity-not-eq-float
-    pinf.eq 42.5
-
-  not. ++> tests-positive-infinity-not-eq-int
-    pinf.eq 42
-
-  not. ++> tests-positive-infinity-not-eq-nan
+  not. ++> cannot-equal-nan-when-positive-infinity
     pinf.eq nan
 
-  not. ++> tests-positive-infinity-not-eq-negative-infinity
+  not. ++> cannot-equal-negative-infinity-when-positive-infinity
     pinf.eq ninf
+
+  not. ++> cannot-equal-positive-infinity-when-negative-infinity
+    ninf.eq pinf

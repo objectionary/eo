@@ -38,7 +38,6 @@ import org.xembly.Directives;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class Emit {
 
     /**
@@ -61,7 +60,6 @@ final class Emit {
 
     /**
      * Ctor.
-     * @checkstyle ConstructorsCodeFreeCheck (3 lines)
      */
     Emit() {
         this(List.of());
@@ -71,7 +69,6 @@ final class Emit {
      * Ctor.
      * @param source Raw EO source text (for caret-underlined error
      *  messages — pass empty string to disable)
-     * @checkstyle ConstructorsCodeFreeCheck (3 lines)
      */
     Emit(final String source) {
         this(List.of(Emit.EOL.split(source, -1)));
@@ -176,18 +173,19 @@ final class Emit {
             }
             body.append(stripped);
         }
-        final Directives dirs = new Directives()
-            .push()
-            .xpath("/object")
-            .strict(1)
-            .addIf("comments")
-            .strict(1)
-            .add("comment")
-            .attr("line", target)
-            .set(body.toString())
-            .up().up()
-            .pop();
-        this.append(dirs);
+        this.append(
+            new Directives()
+                .push()
+                .xpath("/object")
+                .strict(1)
+                .addIf("comments")
+                .strict(1)
+                .add("comment")
+                .attr("line", target)
+                .set(body.toString())
+                .up().up()
+                .pop()
+        );
     }
 
     /**
@@ -203,20 +201,21 @@ final class Emit {
      * @param message Canonical message text (no position prefix)
      */
     void error(final int line, final int pos, final String message) {
-        final Directives dirs = new Directives()
-            .push()
-            .xpath("/object")
-            .strict(1)
-            .addIf("errors")
-            .strict(1)
-            .add("error")
-            .attr("line", line)
-            .attr("pos", pos)
-            .attr("severity", "error")
-            .set(this.formatted(line, pos, message))
-            .up().up()
-            .pop();
-        this.append(dirs);
+        this.append(
+            new Directives()
+                .push()
+                .xpath("/object")
+                .strict(1)
+                .addIf("errors")
+                .strict(1)
+                .add("error")
+                .attr("line", line)
+                .attr("pos", pos)
+                .attr("severity", "error")
+                .set(this.formatted(line, pos, message))
+                .up().up()
+                .pop()
+        );
     }
 
     /**
@@ -460,11 +459,10 @@ final class Emit {
         final String located = new MsgLocated(line, pos, message).formatted();
         final String result;
         if (line >= 1 && line <= this.lines.size()) {
-            final String source = this.lines.get(line - 1);
             result = String.format(
                 "%s%n%s",
                 located,
-                new MsgUnderlined(source, pos, 1).formatted()
+                new MsgUnderlined(this.lines.get(line - 1), pos, 1).formatted()
             );
         } else {
             result = located;

@@ -258,7 +258,6 @@ final class Resolving implements Step {
      * @return Size in MB
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static long folderSizeInMb(final Path path) throws IOException {
         try (Stream<Path> paths = Files.walk(path)) {
             return paths.filter(Files::isRegularFile).mapToLong(

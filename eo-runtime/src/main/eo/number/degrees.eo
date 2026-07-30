@@ -15,17 +15,14 @@
       180
     pi
 
-  is-nan. ++> tests-degrees-of-nan-is-nan
-    degrees nan
-
-  lt. ++> tests-degrees-of-negative-pi-is-minus-half-turn
+  lt. ++> can-convert-minus-pi-to-degrees
     abs
       minus.
         degrees pi.neg
         -180
     1.0E-4
 
-  lt. ++> tests-degrees-of-pi-halves-is-quarter-turn
+  lt. ++> can-convert-pi-halves-to-degrees
     abs
       minus.
         degrees
@@ -33,14 +30,14 @@
         90
     1.0E-4
 
-  lt. ++> tests-degrees-of-pi-is-half-turn
+  lt. ++> can-convert-pi-to-degrees
     abs
       minus.
         degrees pi
         180
     1.0E-4
 
-  lt. ++> tests-degrees-of-two-pi-is-full-turn
+  lt. ++> can-convert-two-pi-to-degrees
     abs
       minus.
         degrees
@@ -48,6 +45,9 @@
         360
     1.0E-4
 
-  eq. ++> tests-degrees-of-zero-is-zero
+  eq. ++> can-convert-zero-to-degrees
     degrees 0
     0
+
+  is-nan. ++> cannot-convert-nan-to-degrees
+    degrees nan

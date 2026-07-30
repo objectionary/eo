@@ -62,18 +62,15 @@ final class AtCompositeTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void changesArgumentOnCopying() {
         final Phi first = new PhDefault();
         final Attribute attr = new AtComposite(first, phi -> phi);
-        final Phi res = attr.get();
-        final Phi copy = attr.copy(new PhDefault()).get();
         MatcherAssert.assertThat(
             "AtComposite must change expression argument on copying",
-            res,
+            attr.get(),
             Matchers.allOf(
                 Matchers.equalTo(first),
-                Matchers.not(Matchers.equalTo(copy))
+                Matchers.not(Matchers.equalTo(attr.copy(new PhDefault()).get()))
             )
         );
     }

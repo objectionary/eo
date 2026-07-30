@@ -2,10 +2,6 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-/*
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 import java.lang.management.ManagementFactory;
@@ -21,12 +17,11 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
- * Test case for {@link EOwin32}.
+ * Test case for {@code EOwin32$EOφ}.
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOwin32Test {
+final class EOwin32EOφTest {
 
     @Test
     @DisabledOnOs({OS.LINUX, OS.MAC})

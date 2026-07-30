@@ -861,7 +861,7 @@ R-5.2.2. When popping an entry at indent `K + 2` (so the new top is at indent `K
 
 R-5.2.3. **MethodDispatch line dispatch.** If the line's kind is `MethodDispatch` (`.method` continuation):
   - **(a) Extend:** If the top's openness ∈ {`open`, `vertical-completed`} AND the top's kind is **not** in the horizontally-completed set (Appendix A) AND the top's kind is **not** `inline-phi-formation`: extend the top's kind to `vmethod` (or to `vmethod-with-hargs` if the new line carries ≥1 hargs), update `named?` if the line carries a name suffix, leave openness `open` (or transition to `horizontal-completed` if the new kind is `vmethod-with-hargs`).
-  - **(b) Reject — horizontally-completed predecessor:** If the top's openness is `horizontal-completed` (equivalently, kind ∈ horizontally-completed set): error `method continuation not allowed after horizontal application` (§9.9).
+  - **(b) Reject — horizontally-completed predecessor:** If the top's openness is `horizontal-completed` (equivalently, kind ∈ horizontally-completed set): error `method continuation not allowed after horizontal application, try vertical application instead` (§9.9).
   - **(b′) Reject — only-phi predecessor:** If the top's kind is `inline-phi-formation` (whose bare-φ form is `open` but is not a method-chain host): error `method continuation not allowed after only-phi formation` (§9.9).
 
 R-5.2.4. **Non-MethodDispatch same-indent line.** If the line's kind is **not** MethodDispatch: the top entry is a *completed previous sibling*. Run close-time checks (§5.3) on it, then **replace** it with a new entry built from the new line. The new entry's `parent_kind` is read from the stack entry below.
@@ -1337,7 +1337,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Indent jump > 1 level | `indent increased by more than one level` |
 | Tab in leading whitespace | `tab character in leading whitespace` |
 | Deeper-indent under horizontally-completed line | `unexpected deeper-indent line — previous expression is closed for children` |
-| `.method` continuation on horizontally-completed previous | `method continuation not allowed after horizontal application` |
+| `.method` continuation on horizontally-completed previous | `method continuation not allowed after horizontal application, try vertical application instead` |
 | `.method` continuation on an only-phi formation | `method continuation not allowed after only-phi formation` |
 | Name suffix on an only-phi φ's argument | `<name> cannot be a named attribute of only-phi formation <formation>, which binds only its φ decoratee` (the formation is described generically as `an only-phi formation` when anonymous) |
 | `.method` line at top level, deeper than parent, or with no same-indent sibling | `method continuation has no expression to attach to` |

@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.aspects.RetryOnFailure;
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -11,6 +12,7 @@ import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
@@ -49,7 +51,6 @@ final class Saved implements Scalar<Path> {
      * Ctor.
      * @param content Content as string
      * @param target Path to save content to
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     Saved(final String content, final Path target) {
         this(content.getBytes(StandardCharsets.UTF_8), target);
@@ -131,10 +132,18 @@ final class Saved implements Scalar<Path> {
      * Move a temp file onto its target, atomically where the filesystem
      * supports it, falling back to a plain (still complete-file, just not
      * guaranteed atomic) move on filesystems that don't.
+     *
+     * <p>Retried on failure: on Windows, {@code REPLACE_EXISTING} throws
+     * {@link java.nio.file.AccessDeniedException} instead of replacing the
+     * target when a concurrent reader has it open at that instant, unlike
+     * POSIX which allows it. The window is brief, so a short retry clears
+     * it instead of failing the whole write.</p>
+     *
      * @param tmp Temp file to move
      * @param target Destination path
      * @throws IOException If the move fails
      */
+    @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
     private static void moved(final Path tmp, final Path target) throws IOException {
         try {
             Files.move(

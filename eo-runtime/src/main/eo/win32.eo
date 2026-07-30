@@ -52,7 +52,7 @@
   02-02 > version
   32769 > wronly
 
-  os.is-windows.not.or ++> tests-returns-valid-win32-inet-addr-for-localhost
+  os.is-windows.not.or ++> can-return-an-inet-address-for-localhost
     eq.
       code.
         win32 *1

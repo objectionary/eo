@@ -12,7 +12,6 @@ import java.util.Arrays;
  * Bytes.
  * @since 0.1.0
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public final class BytesOf implements Bytes {
 
     /**
@@ -23,7 +22,6 @@ public final class BytesOf implements Bytes {
     /**
      * Ctor.
      * @param str UTF-8 Text
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     public BytesOf(final String str) {
         this(str.getBytes(StandardCharsets.UTF_8));
@@ -32,7 +30,6 @@ public final class BytesOf implements Bytes {
     /**
      * Ctor.
      * @param number Integer number
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     public BytesOf(final int number) {
         this(ByteBuffer.allocate(Integer.BYTES).putInt(number).array());
@@ -41,7 +38,6 @@ public final class BytesOf implements Bytes {
     /**
      * Ctor.
      * @param chr Character
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     public BytesOf(final char chr) {
         this(ByteBuffer.allocate(Character.BYTES).putChar(chr).array());
@@ -50,7 +46,6 @@ public final class BytesOf implements Bytes {
     /**
      * Ctor.
      * @param number Long number
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     public BytesOf(final long number) {
         this(ByteBuffer.allocate(Long.BYTES).putLong(number).array());
@@ -59,7 +54,6 @@ public final class BytesOf implements Bytes {
     /**
      * Ctor.
      * @param number Double number
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     public BytesOf(final double number) {
         this(ByteBuffer.allocate(Double.BYTES).putDouble(number).array());
@@ -68,7 +62,6 @@ public final class BytesOf implements Bytes {
     /**
      * Ctor.
      * @param data Data
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     public BytesOf(final byte[] data) {
         this(new BytesRaw(Arrays.copyOf(data, data.length)));

@@ -13,7 +13,7 @@
     string
       buf.as-bytes.concat str.as-bytes
 
-  eq. ++> tests-buffer-builds-simple-string
+  eq. ++> can-build-a-simple-string
     with.
       with.
         buffer "Hello"
@@ -21,11 +21,11 @@
       "Jeff"
     "Hello, Jeff"
 
-  eq. ++> tests-buffer-decorates-string
+  eq. ++> can-decorate-a-string
     buffer "Hello"
     "Hello"
 
-  eq. ++> tests-buffer-decorates-string-after-building
+  eq. ++> can-decorate-a-string-after-building
     length.
       with.
         buffer

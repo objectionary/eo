@@ -14,14 +14,14 @@
         n.as-bytes.eq 7F-F0-00-00-00-00-00-00
         n.as-bytes.eq FF-F0-00-00-00-00-00-00
 
-  nan.is-finite.not ++> nan-is-not-finite
+  32.is-finite ++> can-be-finite-when-a-simple-number
 
-  32.is-finite ++> simple-number-is-finite
-
-  ninf.is-finite.not ++> tests-negative-infinity-is-not-finite
-
-  not. ++> tests-number-with-infinite-bytes-is-not-finite
+  not. ++> cannot-be-finite-when-built-of-infinite-bytes
     is-finite.
       number pinf.as-bytes
 
-  pinf.is-finite.not ++> tests-positive-infinity-is-not-finite
+  nan.is-finite.not ++> cannot-be-finite-when-nan
+
+  ninf.is-finite.not ++> cannot-be-finite-when-negative-infinity
+
+  pinf.is-finite.not ++> cannot-be-finite-when-positive-infinity

@@ -14,7 +14,7 @@
     list
     func item > [item idx] >>
 
-  eq. ++> tests-simple-list-mapping
+  eq. ++> can-map-a-list
     mapped
       *
         1
