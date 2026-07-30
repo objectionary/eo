@@ -442,13 +442,13 @@ final class Suffix {
     private static Parsed named(
         final String tail, final int from, final Span span, final int home
     ) {
-        final int begin = Suffix.skipSpace(tail, from);
-        if (begin >= tail.length()) {
+        if (Suffix.blank(tail, from)) {
             throw new ParseError(
                 span.line(), home + from,
                 "name suffix requires a name"
             );
         }
+        final int begin = Suffix.skipSpace(tail, from);
         int idx = Suffix.skipName(tail, begin);
         final String name = tail.substring(begin, idx);
         if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
@@ -550,6 +550,25 @@ final class Suffix {
             );
         }
         return Suffix.typeAtom(raw, span, home + after);
+    }
+
+    /**
+     * Whether nothing but spaces is left, so no name can follow. Unlike
+     * {@link #skipSpace(String, int)}, which steps over the single space
+     * a suffix is allowed to have, this looks past every space: two of
+     * them followed by a name is a separate mistake, reported later as
+     * trailing garbage, while two of them followed by nothing leaves the
+     * name empty and has to be refused right here.
+     * @param tail Tail substring
+     * @param from Index to look from
+     * @return True if only spaces remain
+     */
+    private static boolean blank(final String tail, final int from) {
+        int idx = from;
+        while (idx < tail.length() && tail.charAt(idx) == ' ') {
+            idx = idx + 1;
+        }
+        return idx >= tail.length();
     }
 
     /**
