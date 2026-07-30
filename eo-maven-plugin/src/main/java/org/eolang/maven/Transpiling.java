@@ -68,7 +68,7 @@ final class Transpiling implements Step {
     /**
      * The XSL steps of the transpile train, in order, ending with
      * {@code to-java.xsl}. Kept as a single list so both the train in
-     * {@link #compiled(boolean)} and the cache-key fingerprint in
+     * {@link #compiled(boolean, boolean, String)} and the cache-key fingerprint in
      * {@link #version()} are derived from the same source.
      */
     static final String[] XSLS = {
@@ -91,7 +91,7 @@ final class Transpiling implements Step {
      * as editing a top-level stylesheet does, but leaves {@link #XSLS}
      * itself unchanged (see #6032). Not part of {@link #XSLS} itself
      * because that array is also used verbatim to build the actual XSL
-     * train in {@link #compiled(boolean, boolean)}, where its last
+     * train in {@link #compiled(boolean, boolean, String)}, where its last
      * element is special-cased as {@code to-java.xsl}.
      */
     static final String[] IMPORTS = {
@@ -183,6 +183,11 @@ final class Transpiling implements Step {
     private final boolean coverage;
 
     /**
+     * The name of the class that every generated class extends.
+     */
+    private final String superclass;
+
+    /**
      * Cache guard, see {@link ConcurrentCache} for why it is one per instance.
      */
     private final ConcurrentCache guard;
@@ -199,7 +204,8 @@ final class Transpiling implements Step {
      * @param measures Path to the file where XSL measurements are stored
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
      * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
-     * @checkstyle ParameterNumberCheck (18 lines)
+     * @param base The name of the class that every generated class extends
+     * @checkstyle ParameterNumberCheck (20 lines)
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
     Transpiling(
@@ -212,7 +218,8 @@ final class Transpiling implements Step {
         final boolean tests,
         final Path measures,
         final Tracking diagnostics,
-        final boolean cvrg
+        final boolean cvrg,
+        final String base
     ) {
         this.sources = srcs;
         this.targetDir = target;
@@ -224,6 +231,7 @@ final class Transpiling implements Step {
         this.xslMeasures = measures;
         this.tracking = diagnostics;
         this.coverage = cvrg;
+        this.superclass = base;
         this.guard = new ConcurrentCache();
     }
 
@@ -250,21 +258,22 @@ final class Transpiling implements Step {
      * constant {@code -SNAPSHOT} during development), see #5578; folding
      * the imported libraries in too closes the gap where editing one of
      * them changed the actual output without changing anything in
-     * {@link #XSLS} itself, see #6032. Folding the two flags in means
-     * toggling either one also invalidates the cache, since both change
-     * what {@code to-java.xsl} emits (see #6031).
+     * {@link #XSLS} itself, see #6032. Folding the two flags and the name
+     * of the base class in means changing any of them also invalidates the
+     * cache, since all of them change what {@code to-java.xsl} emits (see
+     * #6031 and #5955).
      * @return The version segment for {@link CachePath}
      */
     String version() {
         return String.format(
-            "%s-%s-%b-%b",
+            "%s-%s-%b-%b-%s",
             this.version,
             new Fingerprint(
                 Stream.concat(
                     Arrays.stream(Transpiling.XSLS), Arrays.stream(Transpiling.IMPORTS)
                 ).toArray(String[]::new)
             ).get(),
-            this.tracking.locations(), this.coverage
+            this.tracking.locations(), this.coverage, this.superclass
         );
     }
 
@@ -376,9 +385,10 @@ final class Transpiling implements Step {
     private Train<Shift> train() {
         final boolean track = this.tracking.locations();
         final boolean instrument = this.coverage;
+        final String base = this.superclass;
         return Transpiling.TRAINS.get().computeIfAbsent(
-            String.format("%b|%b", track, instrument),
-            ignored -> Transpiling.compiled(track, instrument)
+            String.format("%b|%b|%s", track, instrument, base),
+            ignored -> Transpiling.compiled(track, instrument, base)
         );
     }
 
@@ -386,9 +396,12 @@ final class Transpiling implements Step {
      * Build the train of XSL shifts.
      * @param track Whether generated objects carry their source location
      * @param instrument Whether located objects are wrapped into {@code PhCoverage}
+     * @param base The name of the class that every generated class extends
      * @return The train of XSL shifts
      */
-    private static Train<Shift> compiled(final boolean track, final boolean instrument) {
+    private static Train<Shift> compiled(
+        final boolean track, final boolean instrument, final String base
+    ) {
         return new TrFull(
             new TrJoined<>(
                 new TrClasspath<>(
@@ -399,7 +412,8 @@ final class Transpiling implements Step {
                         Transpiling.XSLS[Transpiling.XSLS.length - 1],
                         String.format("disclaimer %s", new Disclaimer()),
                         String.format("trackLocations %b", track),
-                        String.format("coverage %b", instrument)
+                        String.format("coverage %b", instrument),
+                        String.format("phiDefaultClass %s", base)
                     )
                 )
             )

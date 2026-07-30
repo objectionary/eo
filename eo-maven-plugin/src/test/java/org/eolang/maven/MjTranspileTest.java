@@ -112,6 +112,60 @@ final class MjTranspileTest {
     }
 
     @Test
+    void extendsPhDefaultInGeneratedJavaByDefault(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "the generated class must extend PhDefault when phiDefaultClass is not set",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(String.format("+package foo.x%n%n[] > main%n  42 > @"))
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(this.compiled)
+            ).asString(),
+            Matchers.containsString("extends PhDefault {")
+        );
+    }
+
+    @Test
+    void extendsGivenPhiClassInGeneratedJava(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "the generated class must extend the class named by phiDefaultClass instead of PhDefault",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(String.format("+package foo.x%n%n[] > main%n  42 > @"))
+                    .with("phiDefaultClass", "org.example.PhInspected")
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(this.compiled)
+            ).asString(),
+            Matchers.containsString("extends org.example.PhInspected {")
+        );
+    }
+
+    @Test
+    void invalidatesCacheWhenPhiDefaultClassChanges(@Mktmp final Path temp) throws Exception {
+        final Path cache = temp.resolve("cache");
+        final String src = String.format("+package foo.x%n%n[] > main%n  42 > @");
+        new FakeMaven(temp.resolve("first"))
+            .withProgram(src)
+            .with("cache", cache.toFile())
+            .execute(new FakeMaven.Transpile());
+        MatcherAssert.assertThat(
+            "the second run's generated Java must reflect its own phiDefaultClass instead of reusing the first run's cached PhDefault output",
+            new TextOf(
+                new FakeMaven(temp.resolve("second"))
+                    .withProgram(src)
+                    .with("cache", cache.toFile())
+                    .with("phiDefaultClass", "org.example.PhInspected")
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(this.compiled)
+            ).asString(),
+            Matchers.containsString("extends org.example.PhInspected {")
+        );
+    }
+
+    @Test
     void throwsDetailedError(@Mktmp final Path temp) {
         final IllegalStateException exception = Assertions.assertThrows(
             IllegalStateException.class,

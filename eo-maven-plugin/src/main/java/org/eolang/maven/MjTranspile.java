@@ -95,6 +95,36 @@ public final class MjTranspile extends MjSafe {
     @Parameter(property = "eo.coverageTracking")
     private boolean coverageTracking;
 
+    /**
+     * The name of the class that every generated class extends, instead of
+     * {@code PhDefault}. A tool that needs control over the objects of a
+     * program can put its own subclass of {@code PhDefault} here and see
+     * every {@code add()} and {@code take()} the program makes. The value is
+     * written into the generated Java verbatim, so a class outside
+     * {@code org.eolang} has to be named in full, since the generated files
+     * import nothing but {@code org.eolang.*}.
+     * @todo #5955:60min Let eoc supply its own Phi base class here.
+     *  This option exists so that objectionary/eoc can transpile a program
+     *  with its own {@code PhInspected extends PhDefault}, which is what
+     *  gives the {@code eoc inspect} debugger control over every object of
+     *  the tree. Nothing sets it yet: the eoc side has to ship that class
+     *  in a jar of its own and set this option on its transpile execution.
+     *  See objectionary/eoc#500 for the whole feature.
+     * @todo #5955:30min Honour this option at the instantiation sites too.
+     *  Right now {@code to-java.xsl} reads it only where it emits an
+     *  {@code extends} clause, which is what the issue asked for. Three
+     *  more places still hardcode {@code new PhDefault(...)}: the context
+     *  of a generated {@code apply()}, an anonymous abstract object with no
+     *  children, and the argument of a {@code PhApplication}. Objects built
+     *  there stay outside the substituted class, so a debugger that relies
+     *  on this option sees only a part of the tree. Convert them the same
+     *  way and assert on them in {@code MjTranspileTest}.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.phiDefaultClass")
+    @SuppressWarnings("PMD.ImmutableField")
+    private String phiDefaultClass = "PhDefault";
+
     @Override
     public void exec() throws IOException {
         new Timed(
@@ -108,7 +138,8 @@ public final class MjTranspile extends MjSafe {
                 this.transpileTests,
                 this.xslMeasures.toPath(),
                 new Tracking(this.trackTransformationSteps, this.trackLocations),
-                this.coverageTracking
+                this.coverageTracking,
+                this.phiDefaultClass
             )
         ).exec();
         if (this.addSourcesRoot) {
