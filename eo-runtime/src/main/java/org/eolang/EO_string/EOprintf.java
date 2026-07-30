@@ -55,8 +55,8 @@ public final class EOprintf extends PhDefault implements Atom {
                             .otherwise("be a tuple with the 'length' attribute")
                             .it(),
                         Expect.at(this, "args")
-                            .that(phi -> phi.take("at"))
-                            .otherwise("be a tuple with the 'at' attribute")
+                            .that(phi -> phi)
+                            .otherwise("be a tuple")
                             .it()
                     ).formatted().toArray()
                 )

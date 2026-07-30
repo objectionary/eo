@@ -13,14 +13,16 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.Phi;
@@ -65,6 +67,23 @@ final class PrintfArgs {
      */
     private static final double LONG_UPPER_LIMIT = 0x1.0p63;
 
+    /**
+     * Formas whose bytes are a value, never text, and so can never be the
+     * argument of a {@code %s} conversion.
+     *
+     * <p>Naming what text is <em>not</em>, rather than what it is, is
+     * deliberate. Only a literal has the forma {@code Φ.string}: every
+     * operation that builds a string returns something else
+     * ({@code "a".concat "b"} normalizes to {@code Φ.bytes}, {@code slice}
+     * to {@code Φ.string.slice}), and so does any user object that
+     * decorates a string. Demanding {@code Φ.string} would refuse all of
+     * those, which is a far bigger problem than the one this guard is
+     * here for.</p>
+     */
+    private static final Set<String> NOT_TEXT = new HashSet<>(
+        Arrays.asList("Φ.number", "Φ.bool")
+    );
+
     static {
         PrintfArgs.CONVERSION.put('s', PrintfArgs::validString);
         PrintfArgs.CONVERSION.put('d', element -> PrintfArgs.toLong(element.asNumber()));
@@ -84,20 +103,20 @@ final class PrintfArgs {
     private final long length;
 
     /**
-     * Phi attribute.
+     * The tuple of arguments.
      */
-    private final Phi retriever;
+    private final Phi args;
 
     /**
      * Ctor.
      * @param fmt The format
      * @param len The length
-     * @param phi Phi attribute
+     * @param tuple The tuple of arguments
      */
-    PrintfArgs(final String fmt, final long len, final Phi phi) {
+    PrintfArgs(final String fmt, final long len, final Phi tuple) {
         this.format = fmt;
         this.length = len;
-        this.retriever = phi;
+        this.args = tuple;
     }
 
     /**
@@ -170,11 +189,34 @@ final class PrintfArgs {
                     arg, this.length
                 );
             }
-            final Phi taken = this.retriever.copy();
-            taken.put(0, new Data.ToPhi(arg));
-            arguments.add(PrintfArgs.fmt(symbol, new Dataized(taken)));
+            arguments.add(PrintfArgs.fmt(symbol, this.element(arg)));
         }
         return arguments;
+    }
+
+    /**
+     * The argument at the given index, as the object the caller passed in
+     * rather than the one {@code tuple.at} hands back.
+     *
+     * <p>The difference is the whole point: {@code at} decorates what it
+     * returns, so the result reports {@code Φ.tuple.at} as its forma and
+     * the argument's own type is no longer visible. Walking the cons list
+     * reaches the object itself, forma intact. The list is built with the
+     * last argument at the head (see {@code tuple.eo}), so the walk takes
+     * as many tails as there are arguments after this one, counted off the
+     * tuple's own length so that a wrong count can only pick the wrong
+     * argument, never walk off the end into a terminated computation.</p>
+     *
+     * @param index Zero-based index of the argument
+     * @return The argument
+     */
+    private Phi element(final long index) {
+        Phi current = this.args;
+        final long size = new Dataized(this.args.take("length")).asNumber().longValue();
+        for (long step = size - 1L - index; step > 0L; --step) {
+            current = current.take("tail");
+        }
+        return current.take("head");
     }
 
     /**
@@ -183,14 +225,38 @@ final class PrintfArgs {
      * @param element Element ready for formatting
      * @return Formatted object
      */
-    private static Object fmt(final char symbol, final Dataized element) {
+    private static Object fmt(final char symbol, final Phi element) {
         if (!PrintfArgs.CONVERSION.containsKey(symbol)) {
             throw new ExFailure(
                 "The format %c is unsupported, only %s formats can be used",
                 symbol, "%s, %d, %f, %x, %b"
             );
         }
-        return PrintfArgs.CONVERSION.get(symbol).apply(element);
+        if (symbol == 's') {
+            PrintfArgs.textual(element);
+        }
+        return PrintfArgs.CONVERSION.get(symbol).apply(new Dataized(element));
+    }
+
+    /**
+     * Refuse an argument whose type says its bytes are a value and not text.
+     *
+     * <p>Without this, a {@code number} handed to {@code %s} is decoded as
+     * if its eight raw IEEE-754 bytes were UTF-8, and {@code true} prints
+     * as a control character, both with no complaint. Only bytes that are
+     * not valid UTF-8 at all were caught before, which is a matter of luck
+     * rather than of type.</p>
+     *
+     * @param element The argument
+     */
+    private static void textual(final Phi element) {
+        final String forma = element.normalized().forma();
+        if (PrintfArgs.NOT_TEXT.contains(forma)) {
+            throw new ExFailure(
+                "The argument of the '%%s' conversion is %s, whose bytes are a value and not text; use %s instead",
+                forma, "'%d', '%f', '%b' or '%x'"
+            );
+        }
     }
 
     /**
@@ -201,14 +267,6 @@ final class PrintfArgs {
      * Dataized#asString()} does.
      * @param element Element ready for formatting
      * @return The element as a string
-     * @todo #5943:60min Detect wrong-type bytes that happen to be valid UTF-8.
-     *  This check only rejects structurally invalid UTF-8. A number whose raw
-     *  bytes coincidentally decode as valid UTF-8 text still passes through as
-     *  if it were a genuine string, because by the time this method runs only
-     *  raw bytes are available via Dataized#take() - the originating Phi's
-     *  type (string vs number etc.) is already lost. Closing this needs type
-     *  information threaded from the source Phi through Dataized/PrintfArgs
-     *  before dataization happens, not another byte-level check.
      */
     private static String validString(final Dataized element) {
         final byte[] bytes = element.take();
