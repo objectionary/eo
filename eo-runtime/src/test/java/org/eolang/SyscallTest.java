@@ -141,6 +141,27 @@ final class SyscallTest {
     }
 
     /**
+     * Assert that a server thread received exactly the bytes a client sent.
+     * @param sent Bytes the client sent
+     * @param count Number of bytes the server reported as received
+     * @param received Bytes the server received
+     */
+    private static void assertReceived(
+        final byte[] sent, final AtomicInteger count, final AtomicReference<byte[]> received
+    ) {
+        MatcherAssert.assertThat(
+            "Server had to receive the message from the client, but it didn't",
+            count.get(),
+            Matchers.equalTo(sent.length)
+        );
+        MatcherAssert.assertThat(
+            "Received bytes must be equal to sent, but they didn't",
+            new String(received.get(), StandardCharsets.UTF_8),
+            Matchers.equalTo(new String(sent, StandardCharsets.UTF_8))
+        );
+    }
+
+    /**
      * Winsock tests.
      * @since 0.40.0
      */
@@ -318,19 +339,7 @@ final class SyscallTest {
                         Matchers.equalTo(buf.length)
                     );
                     server.join();
-                    MatcherAssert.assertThat(
-                        String.format(
-                            "Server hat to receive message from the client, but it didn't, reason: %s",
-                            this.getError()
-                        ),
-                        received.get(),
-                        Matchers.equalTo(buf.length)
-                    );
-                    MatcherAssert.assertThat(
-                        "Received bytes must be equal to sent, but they didn't",
-                        new String(bytes.get(), StandardCharsets.UTF_8),
-                        Matchers.equalTo(new String(buf, StandardCharsets.UTF_8))
-                    );
+                    SyscallTest.assertReceived(buf, received, bytes);
                 } finally {
                     this.closeSocket(client);
                 }
@@ -647,19 +656,7 @@ final class SyscallTest {
                     Matchers.equalTo(buf.length)
                 );
                 server.join();
-                MatcherAssert.assertThat(
-                    String.format(
-                        "Server hat to receive message from the client, but it didn't, reason: %s",
-                        this.getError()
-                    ),
-                    received.get(),
-                    Matchers.equalTo(buf.length)
-                );
-                MatcherAssert.assertThat(
-                    "Received bytes must be equal to sent, but they didn't",
-                    new String(bytes.get(), StandardCharsets.UTF_8),
-                    Matchers.equalTo(new String(buf, StandardCharsets.UTF_8))
-                );
+                SyscallTest.assertReceived(buf, received, bytes);
             } finally {
                 this.closeSocket(client);
             }

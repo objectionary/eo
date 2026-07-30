@@ -21,7 +21,8 @@
         "Directory %s does not exist, can't create temporary file".printf
           * file
     [] > touch /Q.string
-  [glob] > walk /Q.tuple
+  [] > walk /Q.tuple
+    ? > glob /Q.string
 
   ++> can-walk-recursively
     seq * > @

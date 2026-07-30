@@ -12,18 +12,13 @@ penalties:
 origin: |
   +package org.eolang
 
-  [] > dataized /Q.bytes
-    ? > x
-
-    ++> tests-something
-      eq. > @
-        x
-        x
+  [] > write /Q.bool
+    ? > offset /Q.number
+    ? > data
 
 printed: |
   +package org.eolang
 
-  [] > dataized /Q.bytes
-    ? > x
-
-    x.eq x ++> tests-something
+  [] > write /Q.bool
+    ? > offset /Q.number
+    ? > data

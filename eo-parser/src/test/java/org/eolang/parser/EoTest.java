@@ -281,7 +281,7 @@ final class EoTest {
     void parsesAtomDeclaration() {
         MatcherAssert.assertThat(
             "a `/sig` suffix must emit the λ marker inside the formation",
-            EoTest.render("[a] > foo /number"),
+            EoTest.render("[] > foo /number"),
             XhtmlMatchers.hasXPath("/object/o[@name='foo']/o[@name='λ' and @atom='number']")
         );
     }

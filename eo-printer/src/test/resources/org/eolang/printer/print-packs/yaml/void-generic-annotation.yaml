@@ -12,7 +12,8 @@ penalties:
 origin: |
   +package org.eolang
 
-  [a] > atom /A
+  [] > atom /A
+    ? > a
     ? > x /A?
     ? > y /B
     ? > s /Q.string?
@@ -20,7 +21,8 @@ origin: |
 printed: |
   +package org.eolang
 
-  [a] > atom /A
+  [] > atom /A
+    ? > a
     ? > x /A?
     ? > y /B
     ? > s /Q.string?

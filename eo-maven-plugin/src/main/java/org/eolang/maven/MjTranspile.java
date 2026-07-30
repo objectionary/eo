@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
+import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -35,6 +36,13 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 public final class MjTranspile extends MjSafe {
+
+    /**
+     * Java class name, simple or fully qualified.
+     */
+    private static final Pattern CLASS = Pattern.compile(
+        "^[A-Za-z_$][A-Za-z0-9_$]*+(?:\\.[A-Za-z_$][A-Za-z0-9_$]*+)*+$"
+    );
 
     /**
      * Add to source root.
@@ -95,6 +103,35 @@ public final class MjTranspile extends MjSafe {
     @Parameter(property = "eo.coverageTracking")
     private boolean coverageTracking;
 
+    /**
+     * The class that a generated class extends instead of {@code PhDefault},
+     * set through {@code eo.phiDefaultClass}. A tool that needs control over
+     * the objects of a program can name its own subclass of
+     * {@code PhDefault} here and see every {@code add()} and {@code take()}
+     * the program makes. The name is written into the generated Java
+     * verbatim, so a class outside {@code org.eolang} has to be named in
+     * full, since the generated files import nothing but
+     * {@code org.eolang.*}.
+     * <p>
+     *     The substitution reaches the classes that {@code to-java.xsl}
+     *     declares with an {@code extends} clause of their own. An object
+     *     with a {@code @base} extends {@code PhOnce} instead, and keeps
+     *     doing so: {@code PhOnce} is a decorator, and the object it wraps
+     *     is itself substituted, so nothing is lost.
+     * </p>
+     * @todo #5955:30min Honour this option at the instantiation sites too.
+     *  Right now {@code to-java.xsl} reads it only where it emits an
+     *  {@code extends} clause, which is what the issue asked for. Three
+     *  more places still hardcode {@code new PhDefault(...)}: the context
+     *  of a generated {@code apply()}, an anonymous abstract object with no
+     *  children, and the argument of a {@code PhApplication}. Objects built
+     *  there stay outside the substituted class, so a tool that relies on
+     *  this option sees only a part of the tree. Convert them the same way
+     *  and assert on them in {@code MjTranspileTest}.
+     */
+    @Parameter(property = "eo.phiDefaultClass", defaultValue = "PhDefault")
+    private String superclass;
+
     @Override
     public void exec() throws IOException {
         new Timed(
@@ -108,7 +145,8 @@ public final class MjTranspile extends MjSafe {
                 this.transpileTests,
                 this.xslMeasures.toPath(),
                 new Tracking(this.trackTransformationSteps, this.trackLocations),
-                this.coverageTracking
+                this.coverageTracking,
+                this.base()
             )
         ).exec();
         if (this.addSourcesRoot) {
@@ -128,5 +166,28 @@ public final class MjTranspile extends MjSafe {
                 gtests
             );
         }
+    }
+
+    /**
+     * The name of the class that the generated classes extend, refused right
+     * here when it is not a Java class name. Returning the name instead of
+     * checking it apart means a caller cannot end up with a name that was
+     * never looked at, since {@code to-java.xsl} copies whatever it is given
+     * into the {@code extends} clause and an unusable name would surface as
+     * a compilation error in generated sources, far from the option that
+     * caused it.
+     * @return The name of the class to extend
+     */
+    private String base() {
+        if (!MjTranspile.CLASS.matcher(this.superclass).matches()) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "The value of eo.phiDefaultClass is '%s', while a Java class name matching '%s' is expected",
+                    this.superclass,
+                    MjTranspile.CLASS
+                )
+            );
+        }
+        return this.superclass;
     }
 }

@@ -61,6 +61,40 @@
     <xsl:param name="segments" as="xs:string*"/>
     <xsl:sequence select="if (empty($segments) or $segments[1] != $eo:rho) then 0 else 1 + eo:rho-run(subsequence($segments, 2))"/>
   </xsl:function>
+  <!--
+  Whether a void has to be printed as a "? &gt; name" body line instead of
+  being folded into the "[…]" bracket head. Three shapes cannot live in
+  the head: a "&gt;&gt; name" handle, whose anonymity a public bracket param
+  would blow (§9.2, R-9.2.3, #5581); a "/type" or "/{type …}" annotation,
+  which a bracket param cannot express (#5614); and every void of an
+  atom, whose head must stay empty (R-3.4.10) so a typed void may be
+  followed by an untyped one without the two swapping places (#6082).
+  -->
+  <xsl:function name="eo:vertical-void" as="xs:boolean">
+    <xsl:param name="o" as="element()"/>
+    <xsl:sequence select="eo:void($o) and (exists($o/@local) or exists($o/@type) or exists($o/@args) or eo:atom($o/..))"/>
+  </xsl:function>
+  <!--
+  A void's type tail (R-3.4.8): " /type" for its own forma, " /{type …}"
+  for the argument types of a callback branch, or the empty string when
+  the void is untyped. Every forma is rendered like the atom's own "/sig"
+  — the implicit Φ. root stripped, a type variable verbatim — and a
+  trailing "?" marking a maybe-⊥ value survives the stripping.
+  -->
+  <xsl:function name="eo:void-type" as="xs:string">
+    <xsl:param name="o" as="element()"/>
+    <xsl:choose>
+      <xsl:when test="exists($o/@type)">
+        <xsl:sequence select="concat(' /', eo:signature(replace($o/@type, '\?$', '')), if (ends-with($o/@type, '?')) then '?' else '')"/>
+      </xsl:when>
+      <xsl:when test="exists($o/@args)">
+        <xsl:sequence select="concat(' /{', string-join(for $t in tokenize($o/@args, ' ') return eo:signature($t), ' '), '}')"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="''"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
   <!-- PROGRAM -->
   <xsl:template match="object">
     <object>
@@ -174,63 +208,24 @@
       constant, and since xsl:sort is stable the original order stands.
       -->
       <xsl:variable name="sortable" select="eo:abstract(.) and empty(o[@pipe])"/>
-      <xsl:apply-templates select="o[not(eo:void(.)) or @local or @args or @type]" mode="tree">
+      <xsl:apply-templates select="o[not(eo:void(.)) or eo:vertical-void(.)]" mode="tree">
         <xsl:sort data-type="number" select="if (not($sortable)) then 0 else if (eo:void(.)) then 1 else if (@name = $eo:phi) then 2 else if (eo:test-attr(.)) then 4 else 3"/>
         <xsl:sort select="if (not($sortable) or eo:void(.) or @name = $eo:phi) then '' else string((@local, @name)[1])"/>
       </xsl:apply-templates>
     </line>
   </xsl:template>
-  <!-- VOID WITH FILE-LOCAL HANDLE -->
+  <!-- VOID AS A VERTICAL BODY LINE -->
   <!--
-  A void declared "? &gt;&gt; name" (R-3.10.12) keeps its @local handle
-  through "restore-local-names"; it is printed as a vertical body line
-  to preserve the void's anonymity (§9.2, R-9.2.3) instead of being
-  collapsed into a public "[name]" bracket param (#5581).
+  A void the bracket head cannot hold, printed as a "? &gt; name" body line
+  (R-3.4.7); "eo:vertical-void" names the three shapes. A "&gt;&gt; name"
+  handle survives "restore-local-names" in @local and keeps the void
+  anonymous; a "/type" or "/{type …}" tail is rendered by
+  "eo:void-type"; and a φ void reverts to its "@" surface spelling.
   -->
-  <xsl:template match="o[eo:void(.) and @local and not(@args) and not(@type)]" mode="tree">
-    <line base="?" tail="{concat(' &gt;&gt; ', @local)}" abstract="no" test="no" reversed="no"/>
-  </xsl:template>
-  <!-- VOID WITH BARE TYPE ANNOTATION -->
-  <!--
-  A void carrying a bare type tail ("? &gt; name /type", R-3.4.8) — the
-  void's own type, a concrete forma or a generic variable A-F with an
-  optional trailing "?" — is printed as a vertical body line so its
-  "/type" annotation survives. A bracket param cannot express a type, so
-  folding it into "[...]" would silently drop the signature (#5614). The
-  forma has its implicit Φ. root stripped and any trailing "?" preserved,
-  mirroring the atom's own "/sig" rendering; a variable prints verbatim.
-  -->
-  <xsl:template match="o[eo:void(.) and @type]" mode="tree">
-    <xsl:variable name="opt" select="ends-with(@type, '?')"/>
-    <xsl:variable name="raw" select="if ($opt) then substring(@type, 1, string-length(@type) - 1) else string(@type)"/>
-    <xsl:variable name="sig" select="concat(eo:signature($raw), if ($opt) then '?' else '')"/>
-    <xsl:choose>
-      <xsl:when test="@local">
-        <line base="?" tail="{concat(' &gt;&gt; ', @local, ' /', $sig)}" abstract="no" test="no" reversed="no"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <line base="?" tail="{concat(' &gt; ', @name, ' /', $sig)}" abstract="no" test="no" reversed="no"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-  <!-- VOID WITH CALLBACK ARGUMENT-TYPE LIST -->
-  <!--
-  A void carrying a brace tail ("? &gt; name /{type …}", R-3.4.8) — the
-  argument types of an atom's callback branch — is printed as a vertical
-  body line so its "/{...}" annotation survives (#5614). Each member has
-  its implicit Φ. root stripped, mirroring the atom's own "/sig"
-  rendering; a variable prints verbatim.
-  -->
-  <xsl:template match="o[eo:void(.) and @args]" mode="tree">
-    <xsl:variable name="formas" select="string-join(for $t in tokenize(@args, ' ') return eo:signature($t), ' ')"/>
-    <xsl:choose>
-      <xsl:when test="@local">
-        <line base="?" tail="{concat(' &gt;&gt; ', @local, ' /{', $formas, '}')}" abstract="no" test="no" reversed="no"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <line base="?" tail="{concat(' &gt; ', @name, ' /{', $formas, '}')}" abstract="no" test="no" reversed="no"/>
-      </xsl:otherwise>
-    </xsl:choose>
+  <xsl:template match="o[eo:vertical-void(.)]" mode="tree">
+    <xsl:variable name="arrow" select="if (exists(@local)) then ' &gt;&gt; ' else ' &gt; '"/>
+    <xsl:variable name="label" select="if (exists(@local)) then string(@local) else if (@name = $eo:phi) then '@' else string(@name)"/>
+    <line base="?" tail="{concat($arrow, $label, eo:void-type(.))}" abstract="no" test="no" reversed="no"/>
   </xsl:template>
   <!-- PIPE APPLICATION (§3.14) -->
   <!--
@@ -328,7 +323,7 @@
     -->
     <xsl:if test="not(eo:test-attr(.) and empty(o[eo:void(.)]))">
       <xsl:text>[</xsl:text>
-      <xsl:for-each select="o[eo:void(.) and not(@local) and not(@args) and not(@type)]">
+      <xsl:for-each select="o[eo:void(.) and not(eo:vertical-void(.))]">
         <xsl:if test="position()&gt;1">
           <xsl:text> </xsl:text>
         </xsl:if>
