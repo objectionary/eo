@@ -6,10 +6,12 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -34,6 +36,17 @@ final class WalkTest {
             ),
             new Walk(temp).includes(new ListOf<>(pattern)),
             Matchers.iterableWithSize(count)
+        );
+    }
+
+    @Test
+    void throwsExceptionOnBadGlobs(@Mktmp final Path temp) throws IOException {
+        new Saved("", temp.resolve("foo/app/0.1/EOfoo/foo.bin")).value();
+        new Saved("", temp.resolve("EOxxx/foo")).value();
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new Walk(temp).includes(new ListOf<>("{foo")),
+            "Exception must be thrown for invalid glob pattern"
         );
     }
 }

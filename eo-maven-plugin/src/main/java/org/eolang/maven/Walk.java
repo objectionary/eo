@@ -8,10 +8,12 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.list.ListEnvelope;
@@ -52,11 +54,14 @@ final class Walk extends ListEnvelope<Path> {
      */
     @SuppressWarnings("PMD.LooseCoupling")
     Walk includes(final Collection<String> globs) {
+        final List<PathMatcher> matchers = globs.stream()
+            .map(Walk::compile)
+            .collect(Collectors.toList());
         return new Walk(
             this.home,
             this.stream().filter(
-                file -> globs.stream().anyMatch(
-                    glob -> this.matches(glob, file)
+                file -> matchers.stream().anyMatch(
+                    matcher -> this.matches(matcher, file)
                 )
                 )
                 .collect(Collectors.toList())
@@ -70,11 +75,14 @@ final class Walk extends ListEnvelope<Path> {
      */
     @SuppressWarnings("PMD.LooseCoupling")
     Walk excludes(final Collection<String> globs) {
+        final List<PathMatcher> matchers = globs.stream()
+            .map(Walk::compile)
+            .collect(Collectors.toList());
         return new Walk(
             this.home,
             this.stream().filter(
-                file -> globs.stream().noneMatch(
-                    glob -> this.matches(glob, file)
+                file -> matchers.stream().noneMatch(
+                    matcher -> this.matches(matcher, file)
                 )
                 )
                 .collect(Collectors.toList())
@@ -115,13 +123,28 @@ final class Walk extends ListEnvelope<Path> {
     }
 
     /**
+     * Compile glob to pattern.
+     * @param glob Glob
+     * @return Matcher for compiled pattern
+     */
+    private static PathMatcher compile(final String glob) {
+        try {
+            return FileSystems.getDefault().getPathMatcher(String.format("glob:%s", glob));
+        } catch (final PatternSyntaxException ex) {
+            throw new IllegalArgumentException(
+                String.format("Invalid glob: %s", glob), ex
+            );
+        }
+    }
+
+    /**
      * Create glob matcher from text.
-     * @param text The pattern, e.g. "**&#47;*.java"
+     * @param matcher The pattern, e.g. "**&#47;*.java"
      * @param file The file to match
      * @return Matcher
      */
-    private boolean matches(final String text, final Path file) {
-        return FileSystems.getDefault().getPathMatcher(String.format("glob:%s", text)).matches(
+    private boolean matches(final PathMatcher matcher, final Path file) {
+        return matcher.matches(
             Paths.get(
                 file.toAbsolutePath().toString().substring(
                     this.home.toAbsolutePath().toString().length() + 1
