@@ -12,7 +12,6 @@ import java.util.Arrays;
  * Bytes.
  * @since 0.1.0
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public final class BytesOf implements Bytes {
 
     /**

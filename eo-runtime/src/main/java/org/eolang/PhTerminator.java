@@ -32,7 +32,6 @@ package org.eolang;
  *
  * @since 0.73.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public final class PhTerminator implements Phi {
 
     /**

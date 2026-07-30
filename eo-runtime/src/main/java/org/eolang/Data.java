@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets;
  * A data container.
  * @since 0.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
 @FunctionalInterface
 public interface Data {
 

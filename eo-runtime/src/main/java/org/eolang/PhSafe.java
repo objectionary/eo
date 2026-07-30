@@ -26,7 +26,6 @@ import java.util.function.Supplier;
  *
  * @since 0.21
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public final class PhSafe implements Phi, Atom {
 
     /**

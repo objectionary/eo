@@ -34,7 +34,6 @@ import org.xml.sax.SAXParseException;
  * @link <a href="https://xml.jcabi.com">xml.jcabi.com</a>
  * @since 0.35.0
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public final class Xmir implements XML {
 
     /**
