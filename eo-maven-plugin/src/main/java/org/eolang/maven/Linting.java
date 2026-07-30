@@ -11,6 +11,7 @@ import com.jcabi.manifests.Manifests;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -131,12 +132,6 @@ final class Linting implements Step {
     private final boolean lintAsPackage;
 
     /**
-     * EO sources directory (for WPA cache key).
-     * @checkstyle MemberNameCheck (5 lines)
-     */
-    private final Path sourcesDir;
-
-    /**
      * Whether to skip linting entirely.
      * @checkstyle MemberNameCheck (5 lines)
      */
@@ -160,10 +155,9 @@ final class Linting implements Step {
      * @param experimental Whether to skip experimental lints
      * @param warning Whether to fail on warnings
      * @param pkg Whether to lint all sources as a package
-     * @param sources EO sources directory
      * @param skip Whether to skip linting entirely
      * @todo #5102:90min Reduce long parameter lists in Linting, Parse, Pull, and similar classes.
-     *  Linting currently takes 13 constructor parameters. Parse, Pull, and Probe have similar
+     *  Linting currently takes 12 constructor parameters. Parse, Pull, and Probe have similar
      *  issues. The long parameter lists make call sites hard to read and fragile — adding a new
      *  option requires updating every call site across the codebase.
      * @checkstyle ParameterNumberCheck (20 lines)
@@ -181,7 +175,6 @@ final class Linting implements Step {
         final boolean experimental,
         final boolean warning,
         final boolean pkg,
-        final Path sources,
         final boolean skip
     ) {
         this.tojos = srcs;
@@ -195,7 +188,6 @@ final class Linting implements Step {
         this.skipExperimentalLints = experimental;
         this.failOnWarning = warning;
         this.lintAsPackage = pkg;
-        this.sourcesDir = sources;
         this.skipLinting = skip;
         this.guard = new ConcurrentCache();
     }
@@ -398,11 +390,13 @@ final class Linting implements Step {
         final List<org.eolang.wpa.Defect> defects;
         if (this.cacheEnabled) {
             final Path wpa = Paths.get("wpa.xmir");
-            final Path target = this.targetDir.resolve(Linting.DIR).resolve(wpa);
+            final Path base = this.targetDir.resolve(Linting.DIR);
+            final Path target = base.resolve(wpa);
+            Files.createDirectories(base);
             this.guard.apply(
-                this.sourcesDir, target, wpa,
+                base, target, wpa,
                 new Cache(
-                    this.cacheDir.resolve(Linting.CACHE),
+                    this.cacheDir.resolve(Linting.CACHE).resolve(this.version),
                     root -> {
                         Logger.info(this, "Linting a package");
                         final Directives all = new Directives().add("defects");
