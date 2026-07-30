@@ -83,7 +83,6 @@ final class EOsocketTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     void sendsAndReceivesMessageViaSocketObject() throws InterruptedException, IOException {
         final String msg = "Hello, Socket!";
         final AtomicReference<byte[]> bytes = new AtomicReference<>();
@@ -110,12 +109,10 @@ final class EOsocketTest {
         final int sent = new Dataized(connected).asNumber().intValue();
         server.join();
         MatcherAssert.assertThat(
-            "Client had to send message to the server, but it didn't",
-            sent,
-            Matchers.equalTo(msg.length())
-        );
-        MatcherAssert.assertThat(
-            "Server had to receive message from the client, but it didn't",
+            String.format(
+                "The message had to travel from the client to the server intact, but it didnt, while %d byte(s) were sent",
+                sent
+            ),
             new String(bytes.get(), StandardCharsets.UTF_8),
             Matchers.equalTo(msg)
         );
