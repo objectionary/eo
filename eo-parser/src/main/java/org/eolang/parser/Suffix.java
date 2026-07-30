@@ -442,13 +442,13 @@ final class Suffix {
     private static Parsed named(
         final String tail, final int from, final Span span, final int home
     ) {
-        final int begin = Suffix.skipSpace(tail, from);
-        if (begin >= tail.length()) {
+        if (Suffix.blank(tail, from)) {
             throw new ParseError(
                 span.line(), home + from,
                 "name suffix requires a name"
             );
         }
+        final int begin = Suffix.skipSpace(tail, from);
         int idx = Suffix.skipName(tail, begin);
         final String name = tail.substring(begin, idx);
         if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
@@ -550,6 +550,28 @@ final class Suffix {
             );
         }
         return Suffix.typeAtom(raw, span, home + after);
+    }
+
+    /**
+     * Whether nothing but blanks is left, so no name can follow. Unlike
+     * {@link #skipSpace(String, int)}, which steps over the single space
+     * a suffix is allowed to have, this looks past every space and tab:
+     * blanks followed by a name are a separate mistake, reported later
+     * as trailing garbage, while blanks followed by nothing leave the
+     * name empty and have to be refused right here. A tab counts because
+     * {@link #terminates(char)} ends a name on it just as a space does,
+     * and nothing upstream keeps tabs out of the tail.
+     * @param tail Tail substring
+     * @param from Index to look from
+     * @return True if only blanks remain
+     */
+    private static boolean blank(final String tail, final int from) {
+        int idx = from;
+        while (idx < tail.length()
+            && (tail.charAt(idx) == ' ' || tail.charAt(idx) == '\t')) {
+            idx = idx + 1;
+        }
+        return idx >= tail.length();
     }
 
     /**
