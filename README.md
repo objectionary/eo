@@ -336,7 +336,9 @@ To avoid frustration, before sending us your pull request
 mvn clean install -Pqulice
 ```
 
-You will need [Maven] 3.3+ and [Java] 11+ installed.
+You will need [Maven] 3.3+ and [Java] 21+ installed,
+  because the `qulice` profile requires it; a build without
+  that profile needs [Java] 17+.
 Also, if you have [xcop] installed, make sure it is version `0.8.0`+.
 
 A few rules we ask you to follow:
