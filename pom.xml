@@ -415,6 +415,12 @@
           </configuration>
         </plugin>
         <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <source>11</source>
+          </configuration>
+        </plugin>
+        <plugin>
           <groupId>com.github.github</groupId>
           <artifactId>site-maven-plugin</artifactId>
           <configuration>
