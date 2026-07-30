@@ -18,7 +18,7 @@ public final class EOchunk$EOresized extends PhDefault implements Atom {
      * Ctor.
      */
     public EOchunk$EOresized() {
-        super(new Attrs(new Attr("new-size", new AtVoid("new-size"))));
+        super(new Attrs(new Attr("capacity", new AtVoid("capacity"))));
     }
 
     @Override
@@ -26,7 +26,7 @@ public final class EOchunk$EOresized extends PhDefault implements Atom {
         final Phi rho = this.take(Phi.RHO);
         Heaps.INSTANCE.resize(
             new Expect.Natural(Expect.at(rho, "id")).it(),
-            new Expect.Natural(Expect.at(this, "new-size")).it()
+            new Expect.Natural(Expect.at(this, "capacity")).it()
         );
         return rho;
     }

@@ -53,7 +53,7 @@
     ? > length /Q.number
     ? > cant-read /{Q.string}
   [] > resized /Q.chunk
-    ? > new-size /Q.number
+    ? > capacity /Q.number
   [] > size /Q.number
   [] > write /Q.bool
     ? > offset /Q.number
