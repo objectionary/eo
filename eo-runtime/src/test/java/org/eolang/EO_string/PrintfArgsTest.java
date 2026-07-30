@@ -100,6 +100,22 @@ final class PrintfArgsTest {
     }
 
     @Test
+    void rejectsNanInsteadOfNarrowingToZero() {
+        final Phi tuple = Phi.Φ.take("tuple").copy();
+        tuple.put("length", new Data.ToPhi(1));
+        tuple.put("head", new Data.ToPhi(Double.NaN));
+        MatcherAssert.assertThat(
+            "NaN must be rejected like an infinity, not silently narrowed to 0 per JLS 5.1.3",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new PrintfArgs("%d", 1L, tuple.take("at")).formatted(),
+                "must throw ExFailure, not silently return 0"
+            ).getMessage(),
+            Matchers.containsString("doesn't fit into long range")
+        );
+    }
+
+    @Test
     void acceptsLargestDoubleThatTrulyFitsInLongRange() {
         final double closest = 9_223_372_036_854_773_760.0;
         final Phi tuple = Phi.Φ.take("tuple").copy();

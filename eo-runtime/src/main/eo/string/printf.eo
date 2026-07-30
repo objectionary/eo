@@ -224,3 +224,7 @@
   printf *1 --> stops-on-formatting-a-huge-number-as-a-decimal
     "%d"
     1.0e30
+
+  printf *1 --> stops-on-formatting-nan-as-a-decimal
+    "%d"
+    nan
