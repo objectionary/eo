@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+asserts:
+  - /object[not(errors)]
+  # a plain formation, filled by a native atom, annotates its voids too
+  - /object/o[@name='matched']/o[1][@name='position' and @base='∅' and @type='Φ.number']
+  - /object/o[@name='matched']/o[2][@name='start' and @base='∅' and @type='Φ.number']
+  - /object/o[@name='matched']/o[3][@name='groups' and @base='∅' and not(@type)]
+  - /object/o[@name='matched']/o[4][@name='count']
+  # a callback void is annotated outside an atom as well
+  - /object/o[@name='pattern']/o[1][@name='serialized' and @base='∅' and @type='Φ.bytes']
+  - /object/o[@name='pattern']/o[2][@name='cant-match' and @base='∅' and @args='Φ.string']
+input: |
+  [] > matched
+    ? > position /Q.number
+    ? > start /Q.number
+    ? > groups
+    groups.length > count
+  [] > pattern
+    ? > serialized /Q.bytes
+    ? > cant-match /{Q.string}

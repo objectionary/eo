@@ -29,7 +29,9 @@
   -1 > none
   32768 > rdonly
   32770 > rdwr
-  [code output] > return
+  [] > return
+    ? > code /Q.number
+    ? > output
     output > @
     return > called
       code
@@ -41,13 +43,17 @@
         family.size.plus port.size
         address.size
       padding.size
-  [mode size] > stat64
+  [] > stat64
+    ? > mode /Q.number
+    ? > size /Q.number
   2 > stderr
   0 > stdin
   1 > stdout
   1 > stream
   6 > tcp
-  [time millitm] > timeb
+  [] > timeb
+    ? > time /Q.number
+    ? > millitm /Q.number
   512 > trunc
   02-02 > version
   32769 > wronly

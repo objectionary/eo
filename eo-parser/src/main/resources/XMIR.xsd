@@ -97,7 +97,7 @@
     <xs:annotation>
       <xs:appinfo>A void attribute type annotation</xs:appinfo>
       <xs:documentation>
-        The declared type of a void attribute of an atom: a concrete forma or a generic
+        The declared type of a void attribute: a concrete forma or a generic
         type variable A-F, with an optional trailing "?" marking a maybe-⊥ value.
       </xs:documentation>
     </xs:annotation>
@@ -209,9 +209,9 @@
     </xs:attribute>
     <xs:attribute name="type" type="type-anno">
       <xs:annotation>
-        <xs:appinfo>The declared type of an atom's void attribute</xs:appinfo>
+        <xs:appinfo>The declared type of a void attribute</xs:appinfo>
         <xs:documentation>
-          Used on a void attribute of an atom (the bare "/type" annotation, R-3.4.8).
+          Used on a void attribute (the bare "/type" annotation, R-3.4.8).
           Holds the FQN of a concrete forma or a generic type variable A-F, with an
           optional trailing "?" marking a maybe-⊥ value.
         </xs:documentation>
@@ -219,11 +219,11 @@
     </xs:attribute>
     <xs:attribute name="args" type="non-empty">
       <xs:annotation>
-        <xs:appinfo>Space-separated argument types of an atom void callback branch</xs:appinfo>
+        <xs:appinfo>Space-separated argument types of a void callback branch</xs:appinfo>
         <xs:documentation>
-          Used on a void callback attribute of an atom (the "/{…}" argument list, R-3.4.8).
+          Used on a void callback attribute (the "/{…}" argument list, R-3.4.8).
           Holds the space-separated types (concrete FQNs or generic variables A-F) of the
-          arguments the atom supplies to that branch.
+          arguments the filler supplies to that branch.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>

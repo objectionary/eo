@@ -42,12 +42,6 @@ final class Level {
     private final Kind parent;
 
     /**
-     * True if the parent entry is itself an atom (a formation with a
-     * {@code /sig} suffix). Read by R-5.3.4.
-     */
-    private final boolean patom;
-
-    /**
      * Current outer kind of this entry's expression. Updates as the
      * expression is extended.
      */
@@ -158,18 +152,16 @@ final class Level {
      * @param outer Initial outer kind
      * @param state Initial openness
      * @param parent Parent kind (or {@link Kind#TOP_LEVEL})
-     * @param patom Whether the parent entry is itself an atom
      */
     Level(
         final int ind, final int line, final Kind outer, final Openness state,
-        final Kind parent, final boolean patom
+        final Kind parent
     ) {
         this.indent = ind;
         this.start = line;
         this.kind = outer;
         this.openness = state;
         this.parent = parent;
-        this.patom = patom;
         this.atom = false;
         this.taken = false;
         this.count = 0;
@@ -216,14 +208,6 @@ final class Level {
      */
     Kind parent() {
         return this.parent;
-    }
-
-    /**
-     * Whether the parent entry is an atom.
-     * @return Parent-atom flag
-     */
-    boolean patom() {
-        return this.patom;
     }
 
     /**

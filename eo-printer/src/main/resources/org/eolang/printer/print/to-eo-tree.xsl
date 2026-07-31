@@ -63,16 +63,18 @@
   </xsl:function>
   <!--
   Whether a void has to be printed as a "? &gt; name" body line instead of
-  being folded into the "[…]" bracket head. Three shapes cannot live in
-  the head: a "&gt;&gt; name" handle, whose anonymity a public bracket param
-  would blow (§9.2, R-9.2.3, #5581); a "/type" or "/{type …}" annotation,
-  which a bracket param cannot express (#5614); and every void of an
-  atom, whose head must stay empty (R-3.4.10) so a typed void may be
-  followed by an untyped one without the two swapping places (#6082).
+  being folded into the "[…]" bracket head. Two shapes cannot live in the
+  head: a "&gt;&gt; name" handle, whose anonymity a public bracket param would
+  blow (§9.2, R-9.2.3, #5581); and a "/type" or "/{type …}" annotation,
+  which a bracket param cannot express (#5614). One such void takes all
+  its siblings down with it, since "move-voids-up" hoists body voids
+  behind the head ones and a split would swap the two groups (#6189) —
+  which is also why every void of an atom goes vertical, its head having
+  to stay empty (R-3.4.10, #6082).
   -->
   <xsl:function name="eo:vertical-void" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="eo:void($o) and (exists($o/@local) or exists($o/@type) or exists($o/@args) or eo:atom($o/..))"/>
+    <xsl:sequence select="eo:void($o) and (eo:atom($o/..) or exists($o/../o[eo:void(.) and (@local or @type or @args)]))"/>
   </xsl:function>
   <!--
   A void's type tail (R-3.4.8): " /type" for its own forma, " /{type …}"

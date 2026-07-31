@@ -96,17 +96,6 @@ final class StackTest {
     }
 
     @Test
-    void propagatesAtomFlagToChildren() {
-        final Stack stack = new Stack();
-        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN).mark();
-        MatcherAssert.assertThat(
-            "a child of an atom must see parentAtom() == true",
-            stack.push(2, 2, Kind.HEAD, Openness.OPEN).patom(),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
     void popsDeeperLevelsAndRunsCloser() {
         final List<Integer> closed = new ArrayList<>(0);
         final Stack stack = new Stack(level -> closed.add(level.indent()));

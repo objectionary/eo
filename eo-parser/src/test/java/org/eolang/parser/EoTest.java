@@ -227,11 +227,13 @@ final class EoTest {
     }
 
     @Test
-    void rejectsFormaListOutsideAtom() {
+    void parsesFormaListOutsideAtom() {
         MatcherAssert.assertThat(
-            "a `/{…}` forma-list on a void outside an atom must be rejected",
+            "a `/{…}` forma-list on a void of a plain formation must reach @args",
             EoTest.render("[] > foo", "  ? > x /{string}"),
-            XhtmlMatchers.hasXPath("/object/errors/error")
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='foo']/o[@name='x' and @base='∅' and @args='string']"
+            )
         );
     }
 
