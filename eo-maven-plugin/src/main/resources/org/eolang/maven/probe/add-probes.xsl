@@ -61,6 +61,7 @@
   <xsl:template match="/object[not(metas)]">
     <xsl:variable name="candidates" as="element()*">
       <xsl:apply-templates select="//o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
+      <xsl:apply-templates select="//o[eo:void(.) and @args]" mode="args"/>
     </xsl:variable>
     <xsl:variable name="probes" select="distinct-values($candidates/text())[not(eo:contains-any-of(., ('ξ', 'ρ', 'φ'))) and not(.='Φ') and not(.='Φ̇')]"/>
     <xsl:copy>
@@ -78,6 +79,7 @@
   <xsl:template match="/object/metas">
     <xsl:variable name="candidates" as="element()*">
       <xsl:apply-templates select="//o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
+      <xsl:apply-templates select="//o[eo:void(.) and @args]" mode="args"/>
     </xsl:variable>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
@@ -85,6 +87,21 @@
         <xsl:copy-of select="eo:meta(.)"/>
       </xsl:for-each>
     </xsl:copy>
+  </xsl:template>
+  <!-- Callback arg-types annotation on a void attribute -->
+  <!-- The `@args` value is a single-space separated list of type atoms; -->
+  <!-- homed formas start with `Φ`, generic type variables (A-F) do not -->
+  <!-- and must be skipped, since they are not real objects to probe. -->
+  <xsl:template match="o" mode="args" as="element()*">
+    <xsl:for-each select="tokenize(@args, ' ')[starts-with(., 'Φ')]">
+      <xsl:variable name="parts" select="tokenize(., '\.')"/>
+      <xsl:for-each select="$parts">
+        <xsl:variable name="pos" select="position()"/>
+        <a>
+          <xsl:value-of select="string-join($parts[position()&lt;=$pos], '.')"/>
+        </a>
+      </xsl:for-each>
+    </xsl:for-each>
   </xsl:template>
   <!-- Composite base -->
   <xsl:template match="o[not(starts-with(@base, '.'))]" mode="create" as="element()*">
