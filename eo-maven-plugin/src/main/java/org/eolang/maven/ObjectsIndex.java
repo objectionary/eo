@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
+import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
@@ -77,6 +78,22 @@ final class ObjectsIndex {
             stripped = name;
         }
         return this.objects.value().contains(stripped);
+    }
+
+    /**
+     * Names of all objects located directly inside the given package, e.g.
+     * {@code "tuple.each"} and {@code "tuple.eachi"} for {@code "tuple"}, but
+     * not {@code "tuple"} itself nor objects from its sub-packages.
+     * @param pkg Package name, e.g. {@code "tuple"} or {@code "math.vector"}
+     * @return Object names that live directly in that package
+     * @throws Exception If the index can't be read
+     */
+    Iterable<String> children(final String pkg) throws Exception {
+        final String prefix = String.format("%s.", pkg);
+        return new Filtered<>(
+            name -> name.startsWith(prefix) && name.indexOf('.', prefix.length()) < 0,
+            this.objects.value()
+        );
     }
 
     /**

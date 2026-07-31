@@ -8,6 +8,7 @@ import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.util.Collections;
 import org.cactoos.io.InputOf;
+import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -90,6 +91,18 @@ final class OyIndexedTest {
                 )
             ).isDirectory("org.eolang.qwerty"),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void listsChildrenFromFakeIndex() throws IOException {
+        MatcherAssert.assertThat(
+            "OyIndexed with fake index must list the children of the package, but it doesn't",
+            new OyIndexed(
+                new Objectionary.Fake(),
+                new ObjectsIndex(() -> new SetOf<>("tuple.each", "tuple.eachi"))
+            ).children("tuple"),
+            Matchers.containsInAnyOrder("tuple.each", "tuple.eachi")
         );
     }
 

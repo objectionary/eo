@@ -8,6 +8,7 @@ import com.yegor256.WeAreOnline;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.scalar.ScalarOf;
+import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -69,6 +70,25 @@ final class ObjectsIndexTest {
                 )
             ).contains("unknown"),
             Matchers.is(false)
+        );
+    }
+
+    @Test
+    void listsDirectChildrenOfPackage() throws Exception {
+        MatcherAssert.assertThat(
+            "The index must list every object that lives directly in the package",
+            new ObjectsIndex(
+                new ScalarOf<>(
+                    () -> new SetOf<>(
+                        "tuple",
+                        "tuple.each",
+                        "tuple.eachi",
+                        "tuple.inner.deep",
+                        "math.abs"
+                    )
+                )
+            ).children("tuple"),
+            Matchers.containsInAnyOrder("tuple.each", "tuple.eachi")
         );
     }
 
