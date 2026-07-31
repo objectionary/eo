@@ -93,7 +93,7 @@ final class MjPullTest {
             .withVersion("*.*.*");
         maven.with("skip", false).with(
             "hash",
-            new ChCached(new ChPattern("*.*.*:abcdefg", "1.0.0"))
+            new ChCached(new CommitHash.ChConstant("abcdefg"))
             )
             .execute(MjPull.class);
         MatcherAssert.assertThat(
