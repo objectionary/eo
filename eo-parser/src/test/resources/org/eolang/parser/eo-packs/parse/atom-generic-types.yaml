@@ -25,7 +25,7 @@ asserts:
   # concrete forma with the maybe-⊥ marker, homed into Φ, ? preserved
   - /object/o[@name='atom']/o[@name='s' and @base='∅' and @type='Φ.string?']
   # callback arg-types mixing a homed forma and a verbatim variable
-  - /object/o[@name='atom']/o[@name='cant' and @base='∅' and @args='Φ.string B']
+  - /object/o[@name='atom']/o[@name='cant' and @base='∅' and @type='{Φ.string B}']
 input: |
   [] > atom /A
     ? > x /A?

@@ -44,15 +44,24 @@
       <xsl:apply-templates select="node()|@* except @atom"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="@args">
-    <xsl:attribute name="args">
-      <xsl:value-of separator=" " select="for $t in tokenize(., ' ') return (/object/metas/meta[head='alias' and part[1]=$t]/part[last()], $t)[1]"/>
-    </xsl:attribute>
-  </xsl:template>
+  <!--
+  Resolve every type atom a void's union names (R-3.4.8), leaving the
+  braces, pipes and the trailing "?" that hold the union together where
+  they are.
+  -->
   <xsl:template match="@type">
-    <xsl:variable name="opt" select="ends-with(., '?')"/>
-    <xsl:variable name="type" select="if ($opt) then substring(., 1, string-length(.) - 1) else string(.)"/>
-    <xsl:attribute name="type" select="concat((/object/metas/meta[head='alias' and part[1]=$type]/part[last()], $type)[1], if ($opt) then '?' else '')"/>
+    <xsl:variable name="aliases" select="/object/metas/meta[head='alias']"/>
+    <xsl:attribute name="type">
+      <xsl:analyze-string select="." regex="[{{}} ?]">
+        <xsl:matching-substring>
+          <xsl:value-of select="."/>
+        </xsl:matching-substring>
+        <xsl:non-matching-substring>
+          <xsl:variable name="atom" select="."/>
+          <xsl:value-of select="($aliases[part[1]=$atom]/part[last()], $atom)[1]"/>
+        </xsl:non-matching-substring>
+      </xsl:analyze-string>
+    </xsl:attribute>
   </xsl:template>
   <xsl:template match="/object/metas/meta[head='also']/(tail|part)">
     <xsl:variable name="meta" select="/object/metas/meta[head='alias' and part[1] = current()/text()]"/>

@@ -35,8 +35,7 @@
   <xsl:variable name="refs" as="xs:string*">
     <xsl:sequence select="//o/@base/string()"/>
     <xsl:sequence select="//o/@atom/string()"/>
-    <xsl:sequence select="for $a in //o/@args, $t in tokenize($a, ' ')[. != ''] return $t"/>
-    <xsl:sequence select="for $t in //o/@type return replace($t, '\?$', '')"/>
+    <xsl:sequence select="for $t in //o/@type return eo:type-atoms($t)"/>
   </xsl:variable>
   <!-- Whether an alias's short name reads back unambiguously: no bound name and no bare global claims it. -->
   <xsl:function name="eo:free" as="xs:boolean">
@@ -56,12 +55,18 @@
   <xsl:template match="o/@atom">
     <xsl:attribute name="atom" select="eo:shorten(.)"/>
   </xsl:template>
-  <xsl:template match="o/@args">
-    <xsl:attribute name="args" select="string-join(for $t in tokenize(., ' ')[. != ''] return eo:shorten($t), ' ')"/>
-  </xsl:template>
+  <!-- Shorten every forma a void's union names, member by member. -->
   <xsl:template match="o/@type">
-    <xsl:variable name="opt" select="ends-with(., '?')"/>
-    <xsl:attribute name="type" select="concat(eo:shorten(replace(., '\?$', '')), if ($opt) then '?' else '')"/>
+    <xsl:attribute name="type">
+      <xsl:analyze-string select="." regex="[{{}} ?]">
+        <xsl:matching-substring>
+          <xsl:value-of select="."/>
+        </xsl:matching-substring>
+        <xsl:non-matching-substring>
+          <xsl:value-of select="eo:shorten(.)"/>
+        </xsl:non-matching-substring>
+      </xsl:analyze-string>
+    </xsl:attribute>
   </xsl:template>
   <!-- Drop a dead or single-use alias whose short name was free to restore; a clashing alias is left in place. -->
   <xsl:template match="metas/meta[head = 'alias' and eo:free(part[1]) and not(part[last()] = $kept)]"/>

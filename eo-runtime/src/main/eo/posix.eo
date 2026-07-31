@@ -28,8 +28,8 @@
   0 > rdonly
   2 > rdwr
   [] > return
-    ? > code /Q.number
-    ? > output
+    ? > code /Q.bool|Q.number|Q.string
+    ? > output /{}|Q.bytes|Q.posix.stat|Q.posix.timeval|Q.string
     output > @
     return > called
       code

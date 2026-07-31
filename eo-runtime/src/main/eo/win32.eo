@@ -30,8 +30,8 @@
   32768 > rdonly
   32770 > rdwr
   [] > return
-    ? > code /Q.number
-    ? > output
+    ? > code /Q.bool|Q.number
+    ? > output /{}|Q.bytes|Q.string|Q.win32.stat64|Q.win32.timeb
     output > @
     return > called
       code

@@ -21,7 +21,7 @@ asserts:
   - /object/o[@name='matched']/o[4][@name='count']
   # a callback void is annotated outside an atom as well
   - /object/o[@name='pattern']/o[1][@name='serialized' and @base='∅' and @type='Φ.bytes']
-  - /object/o[@name='pattern']/o[2][@name='cant-match' and @base='∅' and @args='Φ.string']
+  - /object/o[@name='pattern']/o[2][@name='cant-match' and @base='∅' and @type='{Φ.string}']
 input: |
   [] > matched
     ? > position /Q.number

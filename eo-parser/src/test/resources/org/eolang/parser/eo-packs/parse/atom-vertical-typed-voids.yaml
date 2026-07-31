@@ -17,7 +17,7 @@ asserts:
   # an emptied head keeps the vertical voids in source order, before λ
   - /object/o[@name='slice']/o[1][@name='start' and @base='∅' and @type='Φ.number']
   - /object/o[@name='slice']/o[2][@name='len' and @base='∅' and @type='Φ.number']
-  - /object/o[@name='slice']/o[3][@name='cant-slice' and @base='∅' and @args='Φ.string']
+  - /object/o[@name='slice']/o[3][@name='cant-slice' and @base='∅' and @type='{Φ.string}']
   - /object/o[@name='slice']/o[4][@name='λ' and @atom='Φ.bytes']
   # an untyped void may follow a typed one, keeping its position
   - /object/o[@name='mixed']/o[1][@name='len' and @base='∅' and @type='Φ.number']

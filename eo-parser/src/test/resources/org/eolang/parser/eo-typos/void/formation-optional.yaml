@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 line: 2
-message: "? is not allowed inside a /{…} argument list"
+message: "? is not allowed inside a /{…} formation type"
 input: |
   [] > atom /A
     ? > cant /{Q.string? B}

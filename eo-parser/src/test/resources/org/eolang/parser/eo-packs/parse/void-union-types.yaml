@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+asserts:
+  - /object[not(errors)]
+  # every member is homed on its own, the braces and the spaces between them survive
+  - /object/o[@name='return']/o[1][@name='code' and @base='∅' and @type='Φ.bool Φ.number Φ.string']
+  - /object/o[@name='return']/o[2][@name='output' and @base='∅' and @type='{} Φ.bytes Φ.posix.stat']
+  # an alias resolves inside a union, and a bare name is homed there too
+  - /object/o[@name='opened']/o[1][@name='handle' and @base='∅' and @type='{} Φ.org.foo.error Φ.number']
+  # a union may be maybe-⊥ as a whole, and a formation type may name several voids
+  - /object/o[@name='opened']/o[2][@name='fallback' and @base='∅' and @type='{Φ.string A} Φ.bool?']
+input: |
+  +alias org.foo.error
+
+  [] > return
+    ? > code /Q.bool|Q.number|Q.string
+    ? > output /{}|Q.bytes|Q.posix.stat
+  [] > opened
+    ? > handle /{}|error|number
+    ? > fallback /{Q.string A}|Q.bool?

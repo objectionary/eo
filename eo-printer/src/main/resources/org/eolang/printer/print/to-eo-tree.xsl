@@ -74,28 +74,42 @@
   -->
   <xsl:function name="eo:vertical-void" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="eo:void($o) and (eo:atom($o/..) or exists($o/../o[eo:void(.) and (@local or @type or @args)]))"/>
+    <xsl:sequence select="eo:void($o) and (eo:atom($o/..) or exists($o/../o[eo:void(.) and (@local or @type)]))"/>
   </xsl:function>
   <!--
-  A void's type tail (R-3.4.8): " /type" for its own forma, " /{type …}"
-  for the argument types of a callback branch, or the empty string when
-  the void is untyped. Every forma is rendered like the atom's own "/sig"
-  — the implicit Φ. root stripped, a type variable verbatim — and a
-  trailing "?" marking a maybe-⊥ value survives the stripping.
+  A void's type tail (R-3.4.8): " /one|two" for the union of types it may
+  hold, or the empty string when the void is untyped. The pipes the
+  source wrote are the single spaces XMIR stores between members, so the
+  members are split brace-aware and rejoined on "|", the inner spaces of
+  a braced formation type staying spaces. Every forma is rendered like
+  the atom's own "/sig" — the implicit Φ. root stripped, a type variable
+  verbatim — and a trailing "?" marking a maybe-⊥ union survives it.
   -->
   <xsl:function name="eo:void-type" as="xs:string">
     <xsl:param name="o" as="element()"/>
     <xsl:choose>
       <xsl:when test="exists($o/@type)">
-        <xsl:sequence select="concat(' /', eo:signature(replace($o/@type, '\?$', '')), if (ends-with($o/@type, '?')) then '?' else '')"/>
-      </xsl:when>
-      <xsl:when test="exists($o/@args)">
-        <xsl:sequence select="concat(' /{', string-join(for $t in tokenize($o/@args, ' ') return eo:signature($t), ' '), '}')"/>
+        <xsl:sequence select="concat(' /', string-join(for $m in eo:type-members(replace($o/@type, '\?$', '')) return eo:surface-member($m), '|'), if (ends-with($o/@type, '?')) then '?' else '')"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:sequence select="''"/>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:function>
+  <!-- One union member of a void's type, every forma in it surfaced. -->
+  <xsl:function name="eo:surface-member" as="xs:string">
+    <xsl:param name="member" as="xs:string"/>
+    <xsl:variable name="surfaced">
+      <xsl:analyze-string select="$member" regex="[{{}} ]">
+        <xsl:matching-substring>
+          <xsl:value-of select="."/>
+        </xsl:matching-substring>
+        <xsl:non-matching-substring>
+          <xsl:value-of select="eo:signature(.)"/>
+        </xsl:non-matching-substring>
+      </xsl:analyze-string>
+    </xsl:variable>
+    <xsl:sequence select="string($surfaced)"/>
   </xsl:function>
   <!-- PROGRAM -->
   <xsl:template match="object">
