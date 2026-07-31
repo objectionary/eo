@@ -13,9 +13,7 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -81,8 +79,8 @@ final class PrintfArgs {
      * {@code 42.as-i64.as-number} is {@code Φ.i64.as-number}), and
      * listing whole names would miss the next pair added.</p>
      */
-    private static final Set<String> VALUES = new HashSet<>(
-        Arrays.asList("number", "bool", "i8", "i16", "i32", "i64")
+    private static final Set<String> VALUES = Set.of(
+        "number", "bool", "i8", "i16", "i32", "i64"
     );
 
     static {
