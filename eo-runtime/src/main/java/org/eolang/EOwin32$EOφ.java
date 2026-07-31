@@ -4,7 +4,7 @@
  */
 package org.eolang;
 
-import org.eolang.Win32.NamedFuncCall;
+import org.eolang.win32.NamedFuncCall;
 
 /**
  * Win32 function call.

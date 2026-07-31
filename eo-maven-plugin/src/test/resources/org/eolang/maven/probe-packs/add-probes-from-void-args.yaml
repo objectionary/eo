@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A callback arg-types annotation on a void attribute (`/{Q.chunk}`) must be
+# probed too, otherwise objects referenced only there (like `chunk` in
+# `malloc.eo`) are never pulled and transpiled. See #6174.
+probes:
+  - 'chunk'
+eo: |
+  +package custom
+  +version 0.0.0
+
+  [] > foo /Q.bytes
+    ? > size /Q.number
+    ? > scope /{Q.chunk}

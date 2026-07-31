@@ -85,7 +85,7 @@
     dispatchers, near-identical stat structs); exclude it from duplication
     detection
     -->
-    <sonar.cpd.exclusions>**/org/eolang/Posix/**,**/org/eolang/Win32/**</sonar.cpd.exclusions>
+    <sonar.cpd.exclusions>**/org/eolang/posix/**,**/org/eolang/win32/**</sonar.cpd.exclusions>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     <maven.compiler.source>17</maven.compiler.source>
