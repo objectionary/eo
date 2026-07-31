@@ -4,7 +4,7 @@
 +alias string.joined
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.0
++version 0.62.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-object
@@ -14,30 +14,6 @@
   path > @
   @. > as-path
     Q.path path
-  [] > deleted
-    exists.if > @
-      if.
-        outcome.eq 0
-        ^
-        T
-          "Cant delete the file '%s': %s".printf
-            * path removed.output
-      ^
-    removed.code > outcome
-    called. > removed
-      os.is-windows.if
-        win32 *1
-          win
-          path
-        posix *1
-          unix
-          path
-    is-directory.if > unix
-      "rmdir"
-      "unlink"
-    is-directory.if > win
-      "_rmdir"
-      "_unlink"
   eq. > [] > exists
     code.
       os.is-windows.if
@@ -66,24 +42,6 @@
         posix *1
           "stat"
           path
-  [target] > moved
-    if. > @
-      outcome.eq 0
-      file target
-      T
-        "Cant move the file '%s' to '%s': %s".printf
-          * path target renamed.output
-    renamed.code > outcome
-    called. > renamed
-      os.is-windows.if
-        win32 *1
-          "rename"
-          path
-          target
-        posix *1
-          "rename"
-          path
-          target
   [mode scope cant-open] > open
     known.not.if > @
       T
@@ -200,49 +158,6 @@
     not. > writable
       as-bool.
         access.eq "r"
-  [cant-measure] > size
-    if. > @
-      info.code.eq 0
-      info.output.size
-      cant-measure
-    called. > info
-      os.is-windows.if
-        win32 *1
-          "_stat64"
-          path
-        posix *1
-          "stat"
-          path
-  [] > touched
-    exists.if > @
-      ^
-      if.
-        descriptor.eq -1
-        T
-          "Cant touch the file '%s': %s".printf
-            * path created.output
-        seq *
-          closed
-          ^
-    code. > closed
-      os.is-windows.if
-        win32 *1
-          "_close"
-          descriptor
-        posix *1
-          "close"
-          descriptor
-    called. > created
-      os.is-windows.if
-        win32 *1
-          "_creat"
-          path
-          win32.mode
-        posix *1
-          "creat"
-          path
-          posix.mode
-    created.code > descriptor
 
   eq. ++> can-append-data-to-a-file
     size.
@@ -253,20 +168,6 @@
         "a"
         f.write "!" > [f]
     13
-
-  mktemp.tmpfile.deleted.deleted.exists.not ++> can-delete-a-file-twice
-
-  mktemp.tmpfile.deleted.touched.size.eq ++> can-measure-an-empty-file-after-touching
-    0
-
-  ++> can-move-a-file
-    and. > @
-      exists.
-        temp.moved
-          "%s.dest".printf
-            * temp.path
-      temp.exists.not
-    mktemp.tmpfile > temp
 
   ++> can-read-from-a-file
     eq. > @
@@ -332,26 +233,12 @@
           "bar"
     mktemp.as-path.resolved "foo/bar" > resolved
 
-  ++> can-return-itself-after-deleting
-    temp.deleted.path.eq temp.path > @
-    mktemp.tmpfile > temp
-
-  ++> can-return-itself-after-touching
-    temp.deleted.touched.path.eq temp.path > @
-    mktemp.tmpfile > temp
-
-  mktemp.tmpfile.deleted.exists.not ++> can-tell-that-a-file-is-gone-after-deleting
-
   not. ++> can-tell-that-an-absent-file-does-not-exist
     exists.
       file "absent.txt"
 
   is-directory. ++> can-tell-that-the-current-directory-is-a-directory
     file "."
-
-  mktemp.tmpfile.deleted.touched.exists ++> can-touch-a-file
-
-  mktemp.tmpfile.deleted.touched.touched.exists ++> can-touch-a-file-twice
 
   exists. ++> can-touch-an-absent-file-on-opening-for-appending
     mktemp.tmpfile.deleted.open
@@ -474,10 +361,6 @@
       f > [f]
       "recovered" > [reason]
 
-  eq. ++> rejects-sizing-an-absent-file
-    -1
-    mktemp.tmpfile.deleted.size -1
-
   mktemp.tmpfile.deleted.is-directory --> stops-on-checking-the-directory-of-an-absent-file
 
   seq * --> stops-on-opening-with-a-wrong-mode
@@ -501,8 +384,6 @@
   mktemp.tmpfile.deleted.open --> stops-on-reading-or-writing-a-missing-file
     "r+"
     f > [f]
-
-  mktemp.tmpfile.deleted.size --> stops-on-sizing-an-absent-file
 
   tmpfile. --> stops-on-touching-a-temp-file-in-an-absent-directory
     @.

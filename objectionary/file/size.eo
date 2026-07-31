@@ -1,0 +1,32 @@
+# Size of the file `f` in bytes, or `cant-measure` if the file
+# does not exist.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package file
++version 0.62.1
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[f cant-measure] > size
+  if. > @
+    info.code.eq 0
+    info.output.size
+    cant-measure
+  called. > info
+    os.is-windows.if
+      win32 *1
+        "_stat64"
+        f.path
+      posix *1
+        "stat"
+        f.path
+
+  mktemp.tmpfile.deleted.touched.size.eq ++> can-measure-an-empty-file-after-touching
+    0
+
+  eq. ++> rejects-sizing-an-absent-file
+    -1
+    mktemp.tmpfile.deleted.size -1
+
+  mktemp.tmpfile.deleted.size --> stops-on-sizing-an-absent-file
