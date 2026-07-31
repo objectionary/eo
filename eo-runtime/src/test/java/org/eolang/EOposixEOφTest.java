@@ -67,4 +67,33 @@ final class EOposixEOφTest {
             Matchers.containsString("No such file")
         );
     }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void returnsEmptyOutputWhenReadFails() {
+        final Phi read = new PhApplication(
+            new PhApplication(
+                Phi.Φ.take("posix").copy(),
+                "name",
+                new Data.ToPhi("read")
+            ),
+            "args",
+            new Data.ToPhi(
+                new Phi[]{
+                    new Data.ToPhi(-1),
+                    new Data.ToPhi(1),
+                }
+            )
+        );
+        MatcherAssert.assertThat(
+            "Failed \"read\" should preserve the POSIX error code",
+            new Dataized(read.take("code")).asNumber().intValue(),
+            Matchers.equalTo(-1)
+        );
+        MatcherAssert.assertThat(
+            "Failed \"read\" should return empty output",
+            new Dataized(read.take("output")).take(),
+            Matchers.equalTo(new byte[0])
+        );
+    }
 }
