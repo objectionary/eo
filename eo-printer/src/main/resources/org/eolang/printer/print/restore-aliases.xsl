@@ -16,14 +16,21 @@
   reference is shortened back to the alias name; referenced once or not at all,
   the "+alias" is dropped and the (single) reference is left fully qualified,
   which reads back the same on its own.
-  Only names a "+alias" actually declares are touched. The parser flattens a
-  method-dispatch chain onto a global (`os.is-windows.if`) into the very same
-  "Φ.os.is-windows.if" shape a package import carries, so an undeclared
-  qualified name is left alone rather than mistaken for an import and aliased
-  to a nonsensical "if".
+  Only names a "+alias" declares are touched, and only when the short name
+  cannot be misread on reparse. The parser flattens a method-dispatch chain
+  onto a global (`os.is-windows.if`) into the very same "Φ.os.is-windows.if"
+  shape a package import carries, so an undeclared qualified name is left alone
+  rather than mistaken for an import. An alias whose short name is also an
+  object, void or handle name in the file (`+alias bytes.hash` beside a local
+  `hash`), or a bare global, is left untouched too: shortening would rebind the
+  reference to that local or global instead.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
+  <!-- The alias metas the program declares, captured so the functions can reach them without a context. -->
+  <xsl:variable name="aliases" select="/object/metas/meta[head = 'alias']"/>
+  <!-- Every name already bound in the file, so an alias short name that clashes with one is left alone. -->
+  <xsl:variable name="bound" select="distinct-values((//o/@name, //o/@local))"/>
   <!-- Every reference string, counted with multiplicity, across the four spots resolve-aliases rewrote. -->
   <xsl:variable name="refs" as="xs:string*">
     <xsl:sequence select="//o/@base/string()"/>
@@ -31,11 +38,14 @@
     <xsl:sequence select="for $a in //o/@args, $t in tokenize($a, ' ')[. != ''] return $t"/>
     <xsl:sequence select="for $t in //o/@type return replace($t, '\?$', '')"/>
   </xsl:variable>
-  <!-- The alias metas the program declares, captured so the shorten function can reach them without a context. -->
-  <xsl:variable name="aliases" select="/object/metas/meta[head = 'alias']"/>
-  <!-- The fully-qualified names of the aliases worth keeping: declared and referenced more than once. -->
-  <xsl:variable name="kept" as="xs:string*" select="for $m in $aliases return if (count($refs[. = $m/part[last()]]) gt 1) then string($m/part[last()]) else ()"/>
-  <!-- The alias name a kept fully-qualified name shortens back to, or the value itself when it is not kept. -->
+  <!-- Whether an alias's short name reads back unambiguously: no bound name and no bare global claims it. -->
+  <xsl:function name="eo:free" as="xs:boolean">
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="not($name = $bound) and not($refs = concat($eo:program, '.', $name))"/>
+  </xsl:function>
+  <!-- The fully-qualified names worth restoring: a free-named alias referenced more than once. -->
+  <xsl:variable name="kept" as="xs:string*" select="for $m in $aliases return if (eo:free($m/part[1]) and count($refs[. = $m/part[last()]]) gt 1) then string($m/part[last()]) else ()"/>
+  <!-- The short name a kept fully-qualified name restores to, or the value itself when it is not kept. -->
   <xsl:function name="eo:shorten" as="xs:string">
     <xsl:param name="value" as="xs:string"/>
     <xsl:sequence select="(for $m in $aliases[part[last()] = $value and part[last()] = $kept] return string($m/part[1]), $value)[1]"/>
@@ -53,10 +63,10 @@
     <xsl:variable name="opt" select="ends-with(., '?')"/>
     <xsl:attribute name="type" select="concat(eo:shorten(replace(., '\?$', '')), if ($opt) then '?' else '')"/>
   </xsl:template>
-  <!-- Drop every alias meta that is not kept: a dead one, or a single-use one now printed fully qualified. -->
-  <xsl:template match="metas/meta[head = 'alias' and not(part[last()] = $kept)]"/>
+  <!-- Drop a dead or single-use alias whose short name was free to restore; a clashing alias is left in place. -->
+  <xsl:template match="metas/meta[head = 'alias' and eo:free(part[1]) and not(part[last()] = $kept)]"/>
   <!-- Drop the whole "metas" block when nothing survives, so a file of only dead aliases reads like one with no metas. -->
-  <xsl:template match="metas[every $m in meta satisfies ($m/head = 'alias' and not($m/part[last()] = $kept))]"/>
+  <xsl:template match="metas[every $m in meta satisfies ($m/head = 'alias' and eo:free($m/part[1]) and not($m/part[last()] = $kept))]"/>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>

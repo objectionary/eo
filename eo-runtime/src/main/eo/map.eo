@@ -10,6 +10,7 @@
 # so that keys with side effects are never evaluated more than once.
 
 +alias tuple.filtered
++alias bytes.hash
 +alias tuple.mapped
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -37,7 +38,7 @@
                   ^.kbts > kbts
                   tup.head.key > key
                   tup.head.value > value
-            v41_12 >> hash!
+            bytes.hash >> hash!
               tup.head.key.as-bytes >> kbts!
             filtered > others
               prev
@@ -70,7 +71,7 @@
           @. > prev
             rec-key-search tup.tail
         | entries
-      v74_6 >> hash!
+      bytes.hash >> hash!
         key.as-bytes >> kbts!
       [] > not-found
         false > exists
@@ -100,7 +101,7 @@
             ^.kbts > kbts
             ^.key > key
             ^.value > value
-      v104_6 >> hash!
+      bytes.hash >> hash!
         key.as-bytes >> kbts!
     [key] > without
       map.ctor > @
@@ -110,7 +111,7 @@
             and.
               hash.eq entry.hash
               kbts.eq entry.kbts
-      v114_6 >> hash!
+      bytes.hash >> hash!
         key.as-bytes >> kbts!
   [key value] > entry
 
