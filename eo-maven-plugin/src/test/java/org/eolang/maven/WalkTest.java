@@ -8,6 +8,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.regex.PatternSyntaxException;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -51,9 +52,9 @@ final class WalkTest {
     }
 
     @Test
-    void compilesOnceEagerlyInEmptyDir(@Mktmp final Path empty) {
+    void throwsOnInvalidGlobsBeforeWalkingFiles(@Mktmp final Path empty) {
         Assertions.assertThrows(
-            IllegalArgumentException.class,
+            PatternSyntaxException.class,
             () -> new Walk(empty).includes(new ListOf<>("{eager")),
             "Exception must be thrown for invalid glob pattern"
         );

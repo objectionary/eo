@@ -128,19 +128,13 @@ final class Walk extends ListEnvelope<Path> {
      * @return Matcher for compiled pattern
      */
     private static PathMatcher compile(final String glob) {
-        try {
-            return FileSystems.getDefault().getPathMatcher(String.format("glob:%s", glob));
-        } catch (final PatternSyntaxException ex) {
-            throw new IllegalArgumentException(
-                String.format("Invalid glob: %s", glob), ex
-            );
-        }
+        return FileSystems.getDefault().getPathMatcher(String.format("glob:%s", glob));
     }
 
     /**
-     * Create glob matcher from text.
-     * @param matcher The pattern, e.g. "**&#47;*.java"
-     * @param file The file to match
+     * Does matcher match the path?
+     * @param matcher Matcher
+     * @param file The path to match
      * @return Matcher
      */
     private boolean matches(final PathMatcher matcher, final Path file) {

@@ -8,7 +8,9 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.regex.PatternSyntaxException;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -66,6 +68,31 @@ final class MjRegisterTest {
                 "sourcesDir should not be set and the %s should fail, but didn't",
                 MjRegister.class
             )
+        );
+    }
+
+    @Test
+    void failsWithPatternSyntaxExceptionInCaseInvalidGlobs(@Mktmp final Path temp) throws IOException {
+        new Saved(
+            new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
+            temp.resolve("src/eo/org/eolang/maven/abc-def.eo")
+        ).value();
+        MatcherAssert.assertThat(
+            String.format(
+                "Execution must fail because of %s",
+                PatternSyntaxException.class
+            ),
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new FakeMaven(temp)
+                    .with("includeSources", new SetOf<>("{foo"))
+                    .execute(new FakeMaven.Register()),
+                String.format(
+                    "%s should fail since supplied globs are invalid",
+                    MjRegister.class
+                )
+            ).getCause().getCause().getCause().getClass(),
+            Matchers.equalTo(PatternSyntaxException.class)
         );
     }
 }
