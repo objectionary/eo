@@ -66,37 +66,25 @@ final class PrintfArgs {
     private static final double LONG_UPPER_LIMIT = 0x1.0p63;
 
     /**
-     * Objects a forma can be rooted at whose bytes are a value, never
-     * text, and so can never be the argument of a {@code %s} conversion.
+     * Roots of formas that carry a value and cannot plausibly carry text,
+     * so no {@code %s} argument may have one.
      *
-     * <p>Naming what text is <em>not</em> is deliberate: only a literal
-     * has the forma {@code Φ.string}, while {@code "a".concat "b"}
-     * normalizes to {@code Φ.bytes} and {@code slice} to
-     * {@code Φ.string.slice}, so demanding {@code Φ.string} would refuse
-     * every computed string. The root is matched rather than the whole
-     * name because a conversion keeps its origin at the front
-     * ({@code 42.as-i64} is {@code Φ.number.as-i64},
-     * {@code 42.as-i64.as-number} is {@code Φ.i64.as-number}), and
-     * listing whole names would miss the next pair added.</p>
-     *
-     * <p>{@code Φ.bytes} is a value forma by the same argument and is
-     * deliberately absent: bytes carry text as readily as they carry a
-     * number, and every computed string normalizes to them, so refusing
-     * them would refuse {@code "a".concat "b"}. The rule is therefore
-     * narrower than "carries a value": these are the formas that carry a
-     * value <em>and</em> cannot plausibly carry text. The cost is that
-     * {@code printf "%s" 42.as-bytes} still prints mojibake, which is the
-     * price of keeping computed strings working.</p>
+     * <p>Naming what text is not is deliberate: only a literal is
+     * {@code Φ.string}, while {@code "a".concat "b"} normalizes to
+     * {@code Φ.bytes}, so demanding {@code Φ.string} would refuse every
+     * computed string. {@code Φ.bytes} is absent for the same reason,
+     * at the price of {@code 42.as-bytes} still printing mojibake. Roots
+     * are matched, not whole names, since a conversion keeps its origin
+     * at the front ({@code 42.as-i64} is {@code Φ.number.as-i64}).</p>
      */
     private static final Set<String> VALUES = Set.of(
         "number", "bool", "i8", "i16", "i32", "i64"
     );
 
     static {
-        // The map says what each conversion does with the bytes it is
-        // given. Only 's' also has a precondition on the argument's type,
-        // which the signature cannot express because these take a
-        // Dataized and the check needs the Phi; see fmt and textual.
+        // Only 's' also has a precondition on the argument's type, which
+        // these signatures cannot carry: they take a Dataized and the
+        // check needs the Phi. See fmt and textual.
         PrintfArgs.CONVERSION.put('s', PrintfArgs::validString);
         PrintfArgs.CONVERSION.put('d', element -> PrintfArgs.toLong(element.asNumber()));
         PrintfArgs.CONVERSION.put('f', Dataized::asNumber);
@@ -204,14 +192,11 @@ final class PrintfArgs {
      * The argument at the given index, as the object the caller passed in
      * rather than the one {@code tuple.at} hands back.
      *
-     * <p>The difference is the whole point: {@code at} decorates what it
-     * returns, so the result reports {@code Φ.tuple.at} as its forma and
-     * the argument's own type is no longer visible. Walking the cons list
-     * reaches the object itself, forma intact. The last argument sits at
-     * the head (see {@code tuple.eo}), so the walk takes as many tails as
-     * there are arguments after this one. The count comes from the caller,
-     * which read it off this same tuple and has already refused an index
-     * outside it, so the walk cannot run off the end.</p>
+     * <p>{@code at} decorates what it returns, reporting
+     * {@code Φ.tuple.at} as the forma and hiding the argument's own type.
+     * Walking the cons list reaches the object itself, forma intact. The
+     * last argument sits at the head (see {@code tuple.eo}), so the walk
+     * takes as many tails as there are arguments after this one.</p>
      *
      * @param count How many arguments the tuple holds
      * @param index Zero-based index of the argument
@@ -250,15 +235,13 @@ final class PrintfArgs {
     /**
      * Refuse an argument whose type says its bytes are a value and not text.
      *
-     * <p>Without this, a {@code number} handed to {@code %s} is decoded
-     * as if its eight raw IEEE-754 bytes were UTF-8, with no complaint.
-     * Only bytes that are not valid UTF-8 at all were caught before,
-     * which is a matter of luck rather than of type: {@code 42} decodes
-     * cleanly and {@code 3.14} does not, though neither is text.</p>
+     * <p>Without this, a {@code number} given to {@code %s} is decoded as
+     * if its raw IEEE-754 bytes were UTF-8: {@code 42} decodes cleanly
+     * and {@code 3.14} does not, though neither is text.</p>
      *
      * @param element The argument
      * @return The argument, resolved, so the caller dataizes what was
-     *  inspected rather than resolving it a second time
+     *  inspected instead of resolving it twice
      */
     private static Phi textual(final Phi element) {
         final Phi normalized = element.normalized();
@@ -285,11 +268,9 @@ final class PrintfArgs {
      * an arbitrary byte sequence into mojibake with no error, as {@link
      * Dataized#asString()} does.
      *
-     * <p>This is the second line of defence, behind {@link #textual(Phi)}.
-     * A byte-level check cannot be the only one, because whether a value's
-     * bytes happen to decode is luck rather than type; what reaches here
-     * is malformed bytes, and value-carrying formas the denylist lets
-     * through.</p>
+     * <p>Second line of defence, behind {@link #textual(Phi)}: whether a
+     * value's bytes decode is luck rather than type, so what reaches here
+     * is malformed bytes and value formas the denylist lets through.</p>
      *
      * @param element Element ready for formatting
      * @return The element as a string

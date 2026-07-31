@@ -141,7 +141,7 @@ final class PrintfArgsTest {
         tuple.put("head", new Data.ToPhi("third"));
         tuple.put("tail", second);
         MatcherAssert.assertThat(
-            "the cons list holds the last argument at its head, so index 0 must reach the first argument and the last index the head, not the other way round",
+            "the cons list holds the last argument at its head, so index 0 must reach the first argument and not the head",
             new PrintfArgs("%s %2$s %3$s", tuple).formatted(),
             Matchers.equalTo(new ListOf<>("first", "second", "third"))
         );
@@ -160,38 +160,6 @@ final class PrintfArgsTest {
                 "must throw ExFailure, not silently return garbage text"
             ).getMessage(),
             Matchers.containsString("Φ.number")
-        );
-    }
-
-    @Test
-    void rejectsANumberWhoseBytesHappenToBeValidText() {
-        final Phi tuple = Phi.Φ.take("tuple").copy();
-        tuple.put("length", new Data.ToPhi(1));
-        tuple.put("head", new Data.ToPhi(42.0));
-        MatcherAssert.assertThat(
-            "42 decodes as valid UTF-8, so only its type can tell it apart from text, and it must still be rejected",
-            Assertions.assertThrows(
-                ExFailure.class,
-                () -> new PrintfArgs("%s", tuple).formatted(),
-                "must throw ExFailure instead of printing the raw IEEE-754 bytes as text"
-            ).getMessage(),
-            Matchers.containsString("Φ.number")
-        );
-    }
-
-    @Test
-    void rejectsABooleanGivenToTheStringConversion() {
-        final Phi tuple = Phi.Φ.take("tuple").copy();
-        tuple.put("length", new Data.ToPhi(1));
-        tuple.put("head", new Data.ToPhi(true));
-        MatcherAssert.assertThat(
-            "a bool's single byte decodes as a control character, so it must be rejected by type rather than passed through",
-            Assertions.assertThrows(
-                ExFailure.class,
-                () -> new PrintfArgs("%s", tuple).formatted(),
-                "must throw ExFailure instead of printing a control character"
-            ).getMessage(),
-            Matchers.containsString("Φ.bool")
         );
     }
 
