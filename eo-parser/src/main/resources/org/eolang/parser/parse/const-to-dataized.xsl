@@ -77,17 +77,6 @@
           <xsl:for-each select="o">
             <xsl:apply-templates select="."/>
           </xsl:for-each>
-          <!--
-          The guard and the read must stay on the same pair of functions.
-          "eo:has-data" asks whether this element has direct text of its
-          own, so the read has to take that same direct text: "value-of
-          select='.'" would take the full string value instead, gluing the
-          payload onto the printed text of the "o" children the for-each
-          above has just emitted.
-          -->
-          <xsl:if test="eo:has-data(.)">
-            <xsl:value-of select="eo:read-data(.)"/>
-          </xsl:if>
         </o>
       </o>
     </o>
