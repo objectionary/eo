@@ -36,3 +36,10 @@
   or. ++> can-check-the-os-family
     os.is-windows.or os.is-macos
     os.is-linux
+
+  not. ++> cannot-belong-to-two-os-families-at-once
+    or.
+      or.
+        os.is-linux.and os.is-macos
+        os.is-linux.and os.is-windows
+      os.is-macos.and os.is-windows
