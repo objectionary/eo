@@ -24,6 +24,7 @@ import org.eolang.win32.WSAStartupFuncCall;
 import org.eolang.win32.Winsock;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -147,6 +148,25 @@ final class SyscallTest {
             ),
             new String(bytes.get(), StandardCharsets.UTF_8),
             Matchers.equalTo(msg)
+        );
+    }
+
+    @Test
+    void handlesFullUnsignedPortRangeInHtons() {
+        final Phi socket = Phi.Φ.take("socket").copy();
+        final Phi valid = socket.take("htons").copy();
+        valid.put(0, new Data.ToPhi(40_000));
+        MatcherAssert.assertThat(
+            "htons should convert a port above 32767 to network byte order, but it didn't",
+            new Dataized(valid).take(),
+            Matchers.equalTo(new byte[]{(byte) 0x40, (byte) 0x9C})
+        );
+        final Phi invalid = socket.take("htons").copy();
+        invalid.put(0, new Data.ToPhi(70_000));
+        Assertions.assertThrows(
+            ExFailure.class,
+            new Dataized(invalid)::take,
+            "htons should fail for a port above 65535, but it didn't"
         );
     }
 

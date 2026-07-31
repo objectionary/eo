@@ -260,12 +260,19 @@
           send buffer
           output-block
   [port] > htons
-    if. > @
+    as-i16. > @
+      or.
+        left.
+          b.and 00-FF
+          8
+        and.
+          b.right 8
+          00-FF
+    if. > b
       or.
         port.lt 0
         port.gt 65535
       T
         "Port %d is out of range for htons; it must be 0 to 65535".printf
           * port
-      b.slice 2 2
-    port.as-i32.as-bytes > b
+      port.as-i32.as-bytes.slice 2 2
