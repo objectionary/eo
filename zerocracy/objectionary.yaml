@@ -2,11 +2,18 @@
 - added: 8
   cycles: 1
   deleted: 8
+  error:
+  - Failed to open TCP connection to api.github.com:443 (user specified timeout for
+    140.82.114.6:443)
+  - Failed to open TCP connection to api.github.com:443 (user specified timeout for
+    140.82.114.6:443)
+  - 'Failure in repository #671896902 at #1538: Failed to open TCP connection to api.github.com:443
+    (user specified timeout for 140.82.114.6:443)'
   inserted: 8
-  seconds: 2169.251462599
+  seconds: 2132.647026902
   version: 0.61.1
   what: judges-summary
-  when: 2026-07-31 20:40:24.555772909 Z
+  when: 2026-07-31 22:16:01.803382870 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -41356,45 +41363,6 @@
   when: 2025-11-17 01:14:53.000000000 Z
   where: github
   who: 29139614
-- _id: 1044297
-  _job: 49513
-  _time: 2025-11-17 21:17:50.242400449 Z
-  _version: 0.16.8/0.57.1/0.16.1
-  award: 4
-  comments: 3
-  details: It's time to reward @yegor256 for the code review in objectionary/phino#454,
-    the reward amount is 4.
-  hoc: 2
-  href: https://github.com/objectionary/phino/issues/454/#issuecomment-3543678562
-  is_human: 1
-  issue: 454
-  repository: 977982682
-  review_comments: 0
-  seconds: 1152
-  tombstone: 2026-07-27 06:09:04.107444882 Z
-  what: code-review-was-rewarded
-  when: 2025-11-17 19:24:30.042419921 Z
-  where: github
-  who: 526301
-  why: Reviewed code in objectionary/phino#454
-- _id: 1044298
-  _job: 49513
-  _time: 2025-11-17 21:17:51.161652275 Z
-  _version: 0.16.8/0.57.1/0.16.1
-  award: 4
-  details: It's time to reward @skulidropek for the bug resolved in objectionary/eo2js#123
-    in 260 hours, the reward amount is 4.
-  href: https://github.com/objectionary/eo2js/issues/123/#issuecomment-3543678690
-  is_human: 1
-  issue: 123
-  receipt: receipt-#49431
-  repository: 798766850
-  tombstone: 2025-11-26 10:19:12.704819534 Z
-  what: resolved-bug-was-rewarded
-  when: 2025-11-17 19:24:37.705285506 Z
-  where: github
-  who: 66840575
-  why: Resolved bug in objectionary/eo2js#123
 - _id: 1044399
   _job: 19464781893
   _time: 2025-11-18 11:40:34.440160253 Z
@@ -284151,7 +284119,7 @@
   _job: 28315670840
   _time: 2026-06-28 07:59:24.618881980 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 33
   earliest_issue_was_found: 28
   events_were_scanned: 11808472403
   issues_were_scanned: 0
@@ -305861,7 +305829,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 455
   earliest_issue_was_found: 1
   events_were_scanned: 16346165546
   issues_were_scanned: 0
@@ -305871,7 +305839,7 @@
   min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 556
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1107889
@@ -311781,7 +311749,7 @@
   _job: 28889392097
   _time: 2026-07-07 18:35:55.956183508 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 199
   earliest_issue_was_found: 1
   events_were_scanned: 12607649592
   issues_were_scanned: 0
@@ -312739,7 +312707,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 831
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 16162131517
   issues_were_scanned: 0
@@ -312749,7 +312717,7 @@
   min_issue_was_found: 457
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 854
+  types_were_scanned: 994
   what: iterate
   where: github
 - _id: 1108618
@@ -316486,7 +316454,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.281244174 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 249
   earliest_issue_was_found: 14
   events_were_scanned: 16340081395
   issues_were_scanned: 0
@@ -316503,7 +316471,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 999
+  assignees_were_scanned: 1076
   earliest_issue_was_found: 1
   events_were_scanned: 12608204889
   issues_were_scanned: 982
@@ -316513,7 +316481,7 @@
   min_issue_was_found: 601
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 0
+  types_were_scanned: 816
   what: iterate
   where: github
 - _id: 1108989
@@ -318986,7 +318954,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:12:52.022407415 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1535
   earliest_issue_was_found: 1
   events_were_scanned: 16148258697
   issues_were_scanned: 0
@@ -319454,7 +319422,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1120
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12605665687
   issues_were_scanned: 0
@@ -319464,14 +319432,14 @@
   min_issue_was_found: 500
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 0
+  types_were_scanned: 1088
   what: iterate
   where: github
 - _id: 1109065
   _job: 29023948844
   _time: 2026-07-09 14:18:00.843773666 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 341
   earliest_issue_was_found: 1
   events_were_scanned: 12569869037
   issues_were_scanned: 0
@@ -319488,17 +319456,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5804
+  assignees_were_scanned: 5869
   earliest_issue_was_found: 1
   events_were_scanned: 12608713914
   issues_were_scanned: 0
-  labels_were_scanned: 6095
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 5129
+  types_were_scanned: 5305
   what: iterate
   where: github
 - _id: 1109067
@@ -426605,6 +426573,668 @@
   - 1
   - 1
   - 0
+  some_review_size:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 12
+  - 0
+  - 0
+  - 0
+  - 2
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 3
+  - 7
+  - 3
+  - 5
+  - 3
+  - 4
+  - 4
+  - 12
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 3
+  - 2
+  - 0
+  - 0
+  - 0
+  - 3
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 2
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 3
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 2
+  - 0
+  - 4
+  - 16
+  - 12
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 22
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 2
+  - 3
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  some_review_time:
+  - 124
+  - 15100
+  - 5439
+  - 18680
+  - 15102
+  - 3455
+  - 581
+  - 1483
+  - 84399
+  - 44155
+  - 5944
+  - 44909
+  - 3893
+  - 4166
+  - -613
+  - 1266
+  - 851
+  - 0
+  - 7058
+  - 0
+  - 0
+  - 512
+  - 25
+  - 75
+  - 773
+  - 5
+  - 2
+  - 856
+  - 29538
+  - 1488
+  - 1250
+  - 1772
+  - 1545
+  - 626
+  - 1485
+  - 495
+  - 6236
+  - 1680
+  - 815
+  - 46334
+  - 38215
+  - 32933
+  - 3357
+  - 1060
+  - 43048
+  - 12841
+  - 657
+  - 36406
+  - 37748
+  - 538
+  - 2022
+  - 1674
+  - 1
+  - 0
+  - 88516
+  - 11
+  - -2
+  - 588
+  - 4
+  - 0
+  - 33
+  - -1
+  - 63
+  - 1
+  - 18569
+  - -1
+  - 1
+  - 2
+  - 192948
+  - -1
+  - 14
+  - -1
+  - 0
+  - -1
+  - 4209
+  - 0
+  - 14734
+  - 0
+  - 577484
+  - 393549
+  - 84838
+  - 155419
+  - 857
+  - 1749
+  - 65396
+  - 203042
+  - 113847
+  - 116342
+  - 135508
+  - 254542
+  - 1107
+  - 2018
+  - 2497
+  - 473
+  - 6610
+  - 1963
+  - 2452
+  - 514
+  - 815
+  - 1641
+  some_reviewers_per_pull:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 3
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 3
+  - 1
+  - 3
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 0
+  - 0
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 2
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 1
+  - 0
+  - 1
+  - 0
+  - 1
+  - 2
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 0
+  - 2
+  - 1
+  - 2
+  - 2
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 0
+  - 0
+  - 2
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 1
+  - 2
+  - 0
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 2
+  - 2
+  - 0
+  - 2
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  some_reviews_per_pull:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 11
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 2
+  - 4
+  - 2
+  - 4
+  - 2
+  - 2
+  - 2
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 0
+  - 0
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 2
+  - 1
+  - 1
+  - 1
+  - 1
+  - 2
+  - 1
+  - 1
+  - 0
+  - 0
+  - 1
+  - 2
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 1
+  - 0
+  - 1
+  - 0
+  - 1
+  - 3
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 0
+  - 2
+  - 1
+  - 4
+  - 9
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 0
+  - 0
+  - 14
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 3
+  - 3
+  - 0
+  - 2
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 2
+  - 2
+  - 0
+  - 2
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
   what: quality-of-service
   when: 2026-07-30 19:32:49.181720797 Z
 - _id: 1114952
@@ -432238,6 +432868,7 @@
   href: https://github.com/objectionary/eo/issues/6152/#issuecomment-5143625726
   is_human: 1
   issue: 6152
+  receipt: receipt-#83841
   repository: 73056727
   review_comments: 14
   seconds: 7997
@@ -432258,6 +432889,7 @@
   href: https://github.com/objectionary/eo/issues/6149/#issuecomment-5143626001
   is_human: 1
   issue: 6149
+  receipt: receipt-#83842
   repository: 73056727
   review_comments: 13
   seconds: 12173
@@ -434882,16 +435514,10 @@
   award: 12
   details: It's time to reward @codeninja-ru for the bug reported in objectionary/eo#6183,
     the reward amount is 12.
-  greeting: 'Thanks for reporting a new bug! You''ve earned +12 points. By reporting
-    bugs, you help our project improve its quality. If you find anything else in the
-    repository that [doesn''t look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
-    as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
-    to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
-    it. Your running score is [+12](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   href: https://github.com/objectionary/eo/issues/6183/#issuecomment-5146341370
   is_human: 1
   issue: 6183
+  receipt: receipt-#83843
   repository: 73056727
   what: bug-report-was-rewarded
   when: 2026-07-31 16:16:36.783235842 Z
@@ -434906,11 +435532,6 @@
   comments: 2
   details: It's time to reward @yegor256 for the code contributed in objectionary/eo#6176,
     the reward amount is 4.
-  greeting: 'Thanks for the contribution! You''ve earned +4 points for this: +16 as
-    a basis; -8 for the lack of code review; -4 for too few (33) hits-of-code. Please,
-    [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming.
-    Your running score is [+2876](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 33
   href: https://github.com/objectionary/eo/issues/6176/#issuecomment-5146341628
   is_human: 1
@@ -434931,11 +435552,6 @@
   comments: 2
   details: It's time to reward @yegor256 for the code contributed in objectionary/eo#6177,
     the reward amount is 4.
-  greeting: 'Thanks for the contribution! You''ve earned +4 points for this: +16 as
-    a basis; -8 for the lack of code review; -4 for too few (7) hits-of-code. Please,
-    [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming.
-    Your running score is [+2880](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 7
   href: https://github.com/objectionary/eo/issues/6177/#issuecomment-5146341860
   is_human: 1
@@ -434956,11 +435572,6 @@
   comments: 2
   details: It's time to reward @yegor256 for the code contributed in objectionary/eo#6180,
     the reward amount is 4.
-  greeting: 'Thanks for the contribution! You''ve earned +4 points for this: +16 as
-    a basis; -4 for too many hits-of-code (155 >= 100); -8 for the lack of code review.
-    Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them
-    coming. Your running score is [+2884](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 155
   href: https://github.com/objectionary/eo/issues/6180/#issuecomment-5146342135
   is_human: 1
@@ -434981,14 +435592,11 @@
   comments: 3
   details: It's time to reward @thayorns for the code contributed in objectionary/eo#6181,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too few (6) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+425](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 6
   href: https://github.com/objectionary/eo/issues/6181/#issuecomment-5146342337
   is_human: 1
   issue: 6181
+  receipt: receipt-#83844
   repository: 73056727
   review_comments: 0
   seconds: 3557
@@ -435005,13 +435613,11 @@
   comments: 0
   details: It's time to reward @thayorns for the code review in objectionary/eoc#1142,
     the reward amount is 7.
-  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
-    -5 for very few (2) comments.  Your running score is [+432](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 52
   href: https://github.com/objectionary/eoc/issues/1142/#issuecomment-5146342631
   is_human: 1
   issue: 1142
+  receipt: receipt-#83845
   repository: 489321585
   review_comments: 2
   seconds: 470
@@ -435028,14 +435634,11 @@
   comments: 2
   details: It's time to reward @thayorns for the code review in objectionary/eo#6187,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted; -4 for too few (2) hits-of-code; +4 to give
-    you at least something.  Your running score is [+436](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 2
   href: https://github.com/objectionary/eo/issues/6187/#issuecomment-5146342905
   is_human: 1
   issue: 6187
+  receipt: receipt-#83846
   repository: 73056727
   review_comments: 0
   seconds: 1708
@@ -435214,8 +435817,10 @@
     them coming. Your running score is [+780](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 2
+  href: https://github.com/objectionary/home/issues/424/#issuecomment-5147273778
   is_human: 1
   issue: 424
+  receipt: receipt-#83847
   repository: 13623548
   review_comments: 0
   seconds: 5415
@@ -435237,6 +435842,7 @@
     them coming. Your running score is [+2892](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 52
+  href: https://github.com/objectionary/eoc/issues/1142/#issuecomment-5147274074
   is_human: 1
   issue: 1142
   repository: 489321585
@@ -435261,6 +435867,7 @@
     coming. Your running score is [+2896](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 198
+  href: https://github.com/objectionary/eo/issues/6186/#issuecomment-5147274345
   is_human: 1
   issue: 6186
   repository: 73056727
@@ -435283,8 +435890,10 @@
     -8 for absolutely no comments posted.  Your running score is [+4](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 82
+  href: https://github.com/objectionary/eo/issues/6195/#issuecomment-5147274534
   is_human: 1
   issue: 6195
+  receipt: receipt-#83848
   repository: 73056727
   review_comments: 0
   seconds: 899
@@ -435305,6 +435914,7 @@
     -8 for absolutely no comments posted.  Your running score is [+440](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 66
+  href: https://github.com/objectionary/eo/issues/6193/#issuecomment-5147274746
   is_human: 1
   issue: 6193
   repository: 73056727
@@ -435447,3 +436057,48 @@
   when: 2026-07-31 17:37:40.000000000 Z
   where: github
   who: 96509556
+- _id: 1115435
+  _job: 84642
+  _time: 2026-07-31 20:42:14.641162609 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  comments: 3
+  details: It's time to reward @webhop123 for the code contributed in objectionary/eo#6153,
+    the reward amount is 12.
+  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
+    as a basis; -4 for too few (16) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
+    them coming. Your running score is [+24](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 16
+  is_human: 1
+  issue: 6153
+  repository: 73056727
+  review_comments: 0
+  seconds: 68572
+  what: code-contribution-was-rewarded
+  when: 2026-07-31 20:42:14.646383518 Z
+  where: github
+  who: 250899629
+  why: Contributed code in objectionary/eo#6153
+- _id: 1115436
+  _job: 84642
+  _time: 2026-07-31 20:42:15.995159028 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 4
+  comments: 2
+  details: It's time to reward @thayorns for the code review in objectionary/eo#6202,
+    the reward amount is 4.
+  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
+    -8 for absolutely no comments posted.  Your running score is [+444](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 127
+  is_human: 1
+  issue: 6202
+  repository: 73056727
+  review_comments: 0
+  seconds: 2652
+  what: code-review-was-rewarded
+  when: 2026-07-31 20:42:16.000095460 Z
+  where: github
+  who: 96509556
+  why: Reviewed code in objectionary/eo#6202
