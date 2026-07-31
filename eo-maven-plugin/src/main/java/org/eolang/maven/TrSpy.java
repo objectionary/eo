@@ -5,7 +5,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StAfter;
 import com.yegor256.xsline.StLambda;
