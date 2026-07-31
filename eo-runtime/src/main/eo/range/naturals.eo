@@ -30,11 +30,11 @@
       -2
       -1
 
-  tuple.is-empty ++> can-build-an-empty-range-from-ten-to-ten
+  is-empty ++> can-build-an-empty-range-from-ten-to-ten
     naturals
       range 10 10
 
-  tuple.is-empty ++> can-build-an-empty-range-when-descending
+  is-empty ++> can-build-an-empty-range-when-descending
     naturals
       range 10 1
 
