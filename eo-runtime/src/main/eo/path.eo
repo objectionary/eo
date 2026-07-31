@@ -8,6 +8,7 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint anemic-getter
 +unlint redundant-object
 +unlint mandatory-package
 
@@ -213,13 +214,20 @@
       is-absolute.
         path.win32 "temp\\var"
 
-  and. ++> tests-detects-drive-relative-win32-path-as-not-absolute
+  and. ++> can-detect-drive-relative-win32-paths-as-not-absolute
     and.
-      (path.win32 "C:foo").is-absolute.not
-      (path.win32 "C:.\\foo").is-absolute.not
+      not.
+        is-absolute.
+          path.win32 "C:foo"
+      not.
+        is-absolute.
+          path.win32 "C:.\\foo"
     and.
-      (path.win32 "C:..\\foo").is-absolute.not
-      (path.win32 "C:\\foo").is-absolute
+      not.
+        is-absolute.
+          path.win32 "C:..\\foo"
+      is-absolute.
+        path.win32 "C:\\foo"
 
   path.separator.eq ++> can-determine-the-separator-from-the-os
     os.is-windows.if
