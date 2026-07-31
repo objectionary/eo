@@ -15,6 +15,13 @@ package org.eolang;
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EObytes$EOnot extends PhDefault implements Atom {
 
+    /**
+     * Ctor.
+     */
+    public EObytes$EOnot() {
+        // nothing
+    }
+
     @Override
 
     public Phi lambda() {

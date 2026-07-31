@@ -69,6 +69,12 @@ final class LnMeta implements Line {
                 body.substring(space + 1), this.span, space + 1
             );
         }
+        if (head.isEmpty()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "meta directive requires a name"
+            );
+        }
         Comments.seal(globals, emit, this.span);
         globals.markMeta();
         globals.clearBlanks();

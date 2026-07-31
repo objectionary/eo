@@ -193,6 +193,10 @@
     "%#x"
     5
 
+  printf *1 --> stops-on-a-non-utf8-byte-argument-as-a-string
+    "%s"
+    3.14
+
   printf *1 --> stops-on-a-paren-flag-with-s
     "%(s"
     "Jeff"

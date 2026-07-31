@@ -93,6 +93,13 @@ public final class MjPrint extends MjSafe {
     @Parameter(property = "eo.width")
     private Integer width;
 
+    /**
+     * Ctor.
+     */
+    public MjPrint() {
+        // nothing
+    }
+
     @Override
     void exec() throws IOException {
         final int total = new Threaded<>(

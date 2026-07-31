@@ -49,6 +49,13 @@ public final class MjResolve extends MjSafe {
      */
     private BiConsumer<Dependency, Path> central;
 
+    /**
+     * Ctor.
+     */
+    public MjResolve() {
+        // nothing
+    }
+
     @Override
     public void exec() {
         if (this.central == null) {

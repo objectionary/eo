@@ -50,7 +50,6 @@ final class LintingTest {
                 false,
                 false,
                 false,
-                temp,
                 true
             ).exec(),
             "Linting must be fully skipped when skipLinting is TRUE"

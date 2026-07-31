@@ -2,6 +2,11 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
+# The parser resolves an aliased name to its fully-qualified form and drops the
+# alias's role; "restore-aliases" (#6184) rebuilds the alias metas from usage.
+# Here `os` is referenced once, so it prints fully qualified (`sm.os`) and its
+# `+alias` is dropped rather than left dead, and the two aliases the source
+# never used at all (`stdout`, `custom`) are dropped as well.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -20,9 +25,6 @@ origin: |
 
 printed: |
   +package sandbox
-  +alias sm.os
-  +alias org.eolang.io.stdout
-  +alias custom Q.org.eolang.string.regex
 
   [] > app
     sm.os > x

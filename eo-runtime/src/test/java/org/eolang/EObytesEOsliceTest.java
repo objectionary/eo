@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 /**
  * Test case for {@link EObytes}.
  * @since 0.23
- * @checkstyle TypeNameCheck (4 lines)
  */
 final class EObytesEOsliceTest {
 

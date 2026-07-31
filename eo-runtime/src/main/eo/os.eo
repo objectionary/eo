@@ -17,22 +17,29 @@
     exists.
       next.
         match.
-          string.regex "/linux/i"
+          regex "/linux/i"
           name
   as-bool. > is-macos
     exists.
       next.
         match.
-          string.regex "/mac/i"
+          regex "/mac/i"
           name
   as-bool. > is-windows
     exists.
       next.
         match.
-          string.regex "/windows/i"
+          regex "/windows/i"
           name
   [] > name /Q.string
 
   or. ++> can-check-the-os-family
     os.is-windows.or os.is-macos
     os.is-linux
+
+  not. ++> cannot-belong-to-two-os-families-at-once
+    or.
+      or.
+        os.is-linux.and os.is-macos
+        os.is-linux.and os.is-windows
+      os.is-macos.and os.is-windows

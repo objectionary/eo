@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.set.SetOf;
 import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -35,7 +36,41 @@ final class ProbingTest {
         MatcherAssert.assertThat(
             "Probe should have found and registered objects from the objectionary",
             tojos.size(),
-            Matchers.equalTo(8)
+            Matchers.equalTo(7)
+        );
+    }
+
+    @Test
+    void completesPartiallyProbedPackage(@TempDir final Path temp) throws IOException {
+        final Path xmir = temp.resolve("test.xmir");
+        Files.write(
+            xmir,
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "+package foo",
+                    "",
+                    "[] > test",
+                    "  Q.tuple.each > @"
+                )
+            ).parsed().toString().getBytes(StandardCharsets.UTF_8)
+        );
+        final TjsForeign tojos = new TjsForeign();
+        tojos.add("test").withXmir(xmir);
+        new Probing(
+            tojos,
+            new OyIndexed(
+                new Objectionary.Fake(),
+                new ObjectsIndex(
+                    () -> new SetOf<>("tuple.each", "tuple.eachi", "tuple.withouti")
+                )
+            ),
+            true
+        ).exec();
+        MatcherAssert.assertThat(
+            "Probe should have registered the siblings that were never probed directly",
+            tojos.contains("tuple.eachi") && tojos.contains("tuple.withouti"),
+            Matchers.is(true)
         );
     }
 

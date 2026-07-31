@@ -68,6 +68,13 @@ public final class MjAtomsTable extends MjSafe {
     )
     private File atomsOutput;
 
+    /**
+     * Ctor.
+     */
+    public MjAtomsTable() {
+        // nothing
+    }
+
     @Override
     void exec() throws IOException {
         final Path home = this.atomsInputDir.toPath();

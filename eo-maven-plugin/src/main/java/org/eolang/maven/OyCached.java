@@ -101,4 +101,9 @@ final class OyCached implements Objectionary {
             }
         );
     }
+
+    @Override
+    public Iterable<String> children(final String pkg) throws IOException {
+        return this.origin.children(pkg);
+    }
 }
