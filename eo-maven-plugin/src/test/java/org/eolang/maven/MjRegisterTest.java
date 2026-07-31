@@ -72,28 +72,43 @@ final class MjRegisterTest {
     }
 
     @Test
-    void failsWithPatternSyntaxExceptionInCaseInvalidGlobs(@Mktmp final Path temp)
-        throws IOException {
-        new Saved(
-            new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
-            temp.resolve("src/eo/org/eolang/maven/abc-def.eo")
-        ).value();
+    void failsWithPatternSyntaxExceptionInCaseInvalidGlobs(@Mktmp final Path temp) {
         MatcherAssert.assertThat(
             String.format(
                 "Execution must fail because of %s",
                 PatternSyntaxException.class
             ),
-            Assertions.assertThrows(
-                IllegalStateException.class,
-                () -> new FakeMaven(temp)
-                    .with("includeSources", new SetOf<>("{foo"))
-                    .execute(new FakeMaven.Register()),
-                String.format(
-                    "%s should fail since supplied globs are invalid",
-                    MjRegister.class
-                )
-            ).getCause().getCause().getCause().getClass(),
+            MjRegisterTest.cause(
+                Assertions.assertThrows(
+                    IllegalStateException.class,
+                    () -> new FakeMaven(temp)
+                        .with("includeSources", new SetOf<>("{foo"))
+                        .execute(new FakeMaven.Register()),
+                    String.format(
+                        "%s should fail since supplied globs are invalid",
+                        MjRegister.class
+                    )
+                ),
+                PatternSyntaxException.class
+            ).getClass(),
             Matchers.equalTo(PatternSyntaxException.class)
         );
+    }
+
+    /**
+     * Cause.
+     * @param err Error
+     * @param type Type we are looking for
+     * @return Throwable
+     */
+    private static Throwable cause(
+        final Throwable err,
+        final Class<? extends Throwable> type
+    ) {
+        Throwable current = err;
+        while (current != null && !type.isInstance(current)) {
+            current = current.getCause();
+        }
+        return current;
     }
 }
