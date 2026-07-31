@@ -168,7 +168,9 @@ final class FakeMaven {
             );
             this.params.putIfAbsent("foreign", this.foreignPath().toFile());
             this.params.putIfAbsent("foreignFormat", "csv");
-            this.params.putIfAbsent("project", new MavenProjectStub());
+            final MavenProjectStub stub = new MavenProjectStub();
+            stub.setCompileSourceRoots(new ArrayList<>(0));
+            this.params.putIfAbsent("project", stub);
             this.params.putIfAbsent("transpiledFormat", "csv");
             this.params.putIfAbsent("skipZeroVersions", true);
             this.params.putIfAbsent("cacheEnabled", true);

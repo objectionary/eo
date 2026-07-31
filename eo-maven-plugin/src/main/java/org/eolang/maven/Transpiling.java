@@ -101,6 +101,11 @@ final class Transpiling implements Step {
     private final String version;
 
     /**
+     * Directories with the Java sources a human wrote.
+     */
+    private final Collection<Path> roots;
+
+    /**
      * The XSL train that does the transpiling.
      */
     private final Transpilation train;
@@ -123,7 +128,8 @@ final class Transpiling implements Step {
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
      * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
      * @param base The class that a generated class extends instead of {@code PhDefault}
-     * @checkstyle ParameterNumberCheck (20 lines)
+     * @param java Directories with the Java sources a human wrote
+     * @checkstyle ParameterNumberCheck (22 lines)
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
     Transpiling(
@@ -137,7 +143,8 @@ final class Transpiling implements Step {
         final Path measures,
         final Tracking diagnostics,
         final boolean cvrg,
-        final String base
+        final String base,
+        final Collection<Path> java
     ) {
         this.sources = srcs;
         this.targetDir = target;
@@ -146,6 +153,7 @@ final class Transpiling implements Step {
         this.cacheEnabled = enabled;
         this.transpileTests = tests;
         this.version = ver;
+        this.roots = java;
         this.train = new Transpilation(ver, diagnostics, cvrg, base, measures, target);
         this.guard = new ConcurrentCache();
     }
@@ -158,7 +166,7 @@ final class Transpiling implements Step {
             new Threaded<>(
                 this.sources,
                 this::transpiled
-            ).total() + new PackageInfos(this.generatedDir).create(),
+            ).total() + new PackageInfos(this.generatedDir, this.roots).create(),
             this.generatedDir
         );
     }

@@ -289,7 +289,7 @@ final class MjTranspileTest {
                     .get("target/generated/org/eolang/EO_foo/EO_x/package-info.java")
             ).asString(),
             Matchers.allOf(
-                Matchers.containsString("// @org.eolang.XmirPackage(\"foo.x\")"),
+                Matchers.containsString("@org.eolang.XmirPackage(\"foo.x\")"),
                 Matchers.containsString("package org.eolang.EO_foo.EO_x;")
             )
         );
