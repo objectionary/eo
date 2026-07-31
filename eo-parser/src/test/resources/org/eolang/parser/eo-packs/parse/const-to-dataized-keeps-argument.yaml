@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/validate-before-stars.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+asserts:
+  # A const literal carrying an argument keeps the payload and the argument
+  # in separate nodes on the way into the dataized wrapper, with no node
+  # holding the two texts joined together.
+  - /object/o/o[@base='.as-bytes' and @name='first']/o[@base='Φ.dataized']/o[@base='Φ.bytes']
+  - /object/o/o[@name='first']//o[@base='Φ.bytes' and not(text()[normalize-space()])]/o[text()='2A-']
+  - /object/o/o[@name='first']//o[@base='Φ.bytes']/o[@base='Φ.number']
+  # A const literal with a payload and no argument is wrapped the same way.
+  - /object/o/o[@base='.as-bytes' and @name='second']/o[@base='Φ.dataized']/o[@base='Φ.bytes']/o[text()='2A-']
+input: |
+  [] > foo
+    2A- 5 > first!
+    2A- > second!
