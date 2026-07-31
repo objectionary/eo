@@ -86,6 +86,10 @@ objectionary/switch.eo
 objectionary/getenv.eo
 objectionary/false.eo
 objectionary/path.eo
+objectionary/file/deleted.eo
+objectionary/file/moved.eo
+objectionary/file/size.eo
+objectionary/file/touched.eo
 objectionary/u64.eo
 objectionary/stdout.eo
 objectionary/nan.eo
@@ -145,7 +149,6 @@ objectionary/tuple/maximum.eo
 objectionary/tuple/reducedi.eo
 objectionary/tuple/eachi.eo
 objectionary/tuple/contains.eo
-objectionary/tuple/with.eo
 objectionary/tuple/concat.eo
 objectionary/tuple/mappedi.eo
 objectionary/tuple/index-of.eo
