@@ -4,7 +4,6 @@
  */
 package org.eolang.maven;
 
-import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.yegor256.xsline.Shift;
@@ -22,9 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import org.cactoos.func.StickyFunc;
-import org.eolang.parser.OnDefault;
-import org.eolang.parser.OnDetailed;
 import org.eolang.parser.TrFull;
 
 /**
@@ -180,23 +176,15 @@ final class Transpilation {
      * Build XSL transformation function for a source file.
      * If transformation steps are tracked - creates a new {@link Xsline}
      * for every XMIR in purpose of thread safety.
-     * @param source Path to source XMIR
+     * @param name Name of the object the source XMIR holds
      * @return XSL transformation function
      */
-    Function<XML, XML> forSource(final Path source) {
+    Function<XML, XML> forSource(final String name) {
         final Train<Shift> measured = this.measured(this.train());
         final Function<XML, XML> func;
         if (this.tracking.steps()) {
-            func = xml -> new Xsline(
-                new TrSpy(
-                    measured,
-                    new StickyFunc<>(
-                        doc -> new Place(
-                            new OnDetailed(new OnDefault(new Xnav(doc.inner())), source).get()
-                        ).make(this.target.resolve(Transpiling.PRE), "")
-                    )
-                )
-            ).pass(xml);
+            final Path dir = new Place(name).make(this.target.resolve(Transpiling.PRE), "");
+            func = xml -> new Xsline(new TrSpy(measured, dir)).pass(xml);
         } else {
             func = new Xsline(measured)::pass;
         }

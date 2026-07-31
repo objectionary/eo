@@ -82,6 +82,31 @@ final class MjTranspileTest {
     }
 
     @Test
+    void tracksStepsOfProgramWithTwoObjects(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "the first tracked step of a program holding two objects did not leave its XMIR in the pre-transpile directory",
+            new FakeMaven(temp).withProgram(
+                String.join(
+                    System.lineSeparator(),
+                    "+package examples",
+                    "",
+                    "# First.",
+                    "[] > x",
+                    "",
+                    "# Second.",
+                    "[] > y"
+                )
+                ).with("trackTransformationSteps", true)
+                .execute(MjParse.class)
+                .execute(MjTranspile.class)
+                .result(),
+            Matchers.hasKey(
+                String.format("target/%s/examples/x/00-set-locators.xml", Transpiling.PRE)
+            )
+        );
+    }
+
+    @Test
     void wrapsObjectsIntoPhCoverageWhenTrackingEnabled(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "the generated Java must wrap located objects into PhCoverage when coverageTracking is on",

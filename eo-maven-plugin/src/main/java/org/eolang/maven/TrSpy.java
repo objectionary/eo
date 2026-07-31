@@ -13,10 +13,14 @@ import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
 import java.nio.file.Path;
-import org.cactoos.Func;
 
 /**
  * Train that spies.
+ * <p>The directory is fixed for the whole train, because a document halfway
+ * through it no longer carries the name of the object it came from: after
+ * {@code classes.xsl} an XMIR holding two objects has two {@code class}
+ * elements and no {@code /object/o/@name} at all, and deriving the directory
+ * from such a document breaks the build, see #4370.</p>
  * @since 0.23
  */
 final class TrSpy extends TrEnvelope {
@@ -26,7 +30,7 @@ final class TrSpy extends TrEnvelope {
      * @param train Original one
      * @param dir The dir to save
      */
-    TrSpy(final Train<Shift> train, final Func<XML, Path> dir) {
+    TrSpy(final Train<Shift> train, final Path dir) {
         super(
             new TrLambda(
                 train,
@@ -38,7 +42,7 @@ final class TrSpy extends TrEnvelope {
                             final String log = shift.uid().replaceAll("[^A-Za-z0-9]", "-");
                             new Saved(
                                 xml.toString(),
-                                dir.apply(xml).resolve(String.format("%02d-%s.xml", pos, log))
+                                dir.resolve(String.format("%02d-%s.xml", pos, log))
                             ).value();
                             if (Logger.isDebugEnabled(TrSpy.class)) {
                                 Logger.debug(
