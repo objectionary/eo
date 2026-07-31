@@ -51,7 +51,7 @@ final class MjPullTest {
         new FakeMaven(temp).withProgram(
             String.format("+package foo.x%n"),
             "[] > main",
-            "  Q.io.stdout > @",
+            "  Q.stdout > @",
             "    \"I am 18 years old\""
             )
             .with("objectionary", new ScalarOf<>(() -> new OyRemote(new ChRemote("master"))))
@@ -126,7 +126,7 @@ final class MjPullTest {
             .with("offline", true)
             .execute(new FakeMaven.Pull())
             .result();
-        final String stdout = "org/eolang/io/stdout.eo";
+        final String stdout = "org/eolang/stdout.eo";
         final String string = "org/eolang/string.eo";
         MatcherAssert.assertThat(
             String.format(
@@ -240,7 +240,7 @@ final class MjPullTest {
      * Returns the stdout path.
      */
     private String stdout() {
-        return "io.stdout";
+        return "stdout";
     }
 
     /**

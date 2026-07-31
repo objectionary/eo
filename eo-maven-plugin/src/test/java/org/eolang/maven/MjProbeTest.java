@@ -30,7 +30,7 @@ final class MjProbeTest {
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
             temp.resolve("tags.txt")
         ).value();
-        final String expected = "7";
+        final String expected = "6";
         MatcherAssert.assertThat(
             String.format(
                 "Number of objects that we should find during the probing phase should be equal %s",
@@ -53,7 +53,7 @@ final class MjProbeTest {
      */
     @Test
     void findsProbesInOyRemote(@Mktmp final Path temp) throws IOException {
-        final String tag = "0.23.15";
+        final String tag = "0.62.0";
         final String expected = "3";
         final String found = new FakeMaven(temp)
             .with("tag", tag).with(

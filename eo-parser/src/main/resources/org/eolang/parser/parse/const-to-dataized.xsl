@@ -77,6 +77,19 @@
           <xsl:for-each select="o">
             <xsl:apply-templates select="."/>
           </xsl:for-each>
+          <!--
+          @todo #6102:30min Use eo:read-data(.) instead of value-of select=".".
+          This has the same bug fixed on the reverse pass in
+          "/org/eolang/printer/print/dataized-to-const.xsl" (#6102): eo:has-data(.)
+          only checks for direct text on the original "@const" element, but
+          value-of takes its full string value, concatenating that direct
+          text with the printed text of any "o" children (the for-each just
+          above already emitted). Once #5721 stops dropping an argument
+          applied directly to a data literal, a literal here carrying both
+          its own payload text and an argument child will glue the two
+          together on the way INTO the "Φ.dataized" wrapper, the mirror
+          image of the reverse-pass bug #6102 already fixes.
+          -->
           <xsl:if test="eo:has-data(.)">
             <xsl:value-of select="."/>
           </xsl:if>

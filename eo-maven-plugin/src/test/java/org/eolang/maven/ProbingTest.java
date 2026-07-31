@@ -35,7 +35,7 @@ final class ProbingTest {
         MatcherAssert.assertThat(
             "Probe should have found and registered objects from the objectionary",
             tojos.size(),
-            Matchers.equalTo(8)
+            Matchers.equalTo(7)
         );
     }
 
