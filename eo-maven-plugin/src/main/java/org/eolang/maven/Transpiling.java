@@ -211,7 +211,7 @@ final class Transpiling implements Step {
             new Saved(transform.apply(xmir).toString(), target).value();
         }
         return new JavaFiles(
-            this.generatedDir, cdir, this.version(), this.cacheEnabled
+            this.generatedDir, cdir.resolve(this.version()), this.cacheEnabled
         ).total(
             rewrite.get(), target, hsh.get(), this.transpileTests && !tojo.discovered()
         );

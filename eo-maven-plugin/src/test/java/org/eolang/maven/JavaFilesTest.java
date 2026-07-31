@@ -40,7 +40,7 @@ final class JavaFilesTest {
                 seed
             ),
             new JavaFiles(
-                temp.resolve("generated"), temp.resolve("cache"), "1.0-SNAPSHOT", false
+                temp.resolve("generated"), temp.resolve("cache").resolve("1.0-SNAPSHOT"), false
             ).total(true, xmir, "", false),
             Matchers.equalTo(1)
         );

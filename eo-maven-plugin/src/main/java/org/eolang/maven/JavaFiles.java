@@ -38,14 +38,10 @@ final class JavaFiles {
     private final Path generated;
 
     /**
-     * Cache directory for transpiled sources.
+     * Cache directory for transpiled sources, with the cache-key version
+     * segment already resolved into it.
      */
     private final Path cache;
-
-    /**
-     * Cache-key version segment.
-     */
-    private final String version;
 
     /**
      * Whether caching is enabled.
@@ -55,15 +51,12 @@ final class JavaFiles {
     /**
      * Ctor.
      * @param dir Generated sources directory
-     * @param cached Cache directory for transpiled sources
-     * @param ver Cache-key version segment
+     * @param cached Cache directory for this transpile version
      * @param caching Whether caching is enabled
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    JavaFiles(final Path dir, final Path cached, final String ver, final boolean caching) {
+    JavaFiles(final Path dir, final Path cached, final boolean caching) {
         this.generated = dir;
         this.cache = cached;
-        this.version = ver;
         this.enabled = caching;
     }
 
@@ -130,15 +123,11 @@ final class JavaFiles {
      * @return Supplier of cached path
      */
     private Supplier<Path> cached(final String hsh, final String jname) {
-        return new CachePath(
-            this.cache,
-            this.version,
-            hsh,
-            this.generated.relativize(
-                new Place(jname).make(
-                    this.generated, JavaFiles.JAVA
-                )
+        final Path tail = this.generated.relativize(
+            new Place(jname).make(
+                this.generated, JavaFiles.JAVA
             )
         );
+        return () -> this.cache.resolve(hsh).resolve(tail);
     }
 }
