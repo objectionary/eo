@@ -21,6 +21,20 @@ import org.cactoos.iterable.Mapped;
  * -DofflineHash=0.2.7:abc2sd3,0.2.8:s4se2fe
  *
  * @since 0.28.11
+ * @todo #6154:30min Delete this class. Nothing in the plugin constructs
+ *  it: its only consumer, {@code ChCompound}, went in 40b2d9ecf1 back in
+ *  2023, and its tests were removed here because they were the last thing
+ *  reaching it. The {@code -DofflineHash} option the comment above
+ *  advertises does not exist anywhere else in the repository either, so
+ *  the comment misleads whoever reads it. It also does not work: the
+ *  constructor splits on {@code :} and takes the second element without
+ *  checking it is there, so the documented {@code master} form throws
+ *  {@code ArrayIndexOutOfBoundsException}, and two patterns of equal
+ *  weight collide on one key in the {@code SortedMap}, making the answer
+ *  depend on the order they were written in. Deleting the class and this
+ *  comment is a separate commit only because doing it together with the
+ *  tests is 207 lines against the 200 cap, and a deletion cannot be made
+ *  smaller.
  */
 final class ChPattern implements CommitHash {
 
