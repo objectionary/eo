@@ -126,6 +126,57 @@ final class EoTest {
     }
 
     @Test
+    void skipsBlockOfFailedLine() {
+        MatcherAssert.assertThat(
+            "the block nested under a failed line must not raise errors of its own",
+            EoTest.render(
+                "[] > example",
+                "  [x] +++ bad",
+                "    one",
+                "      two",
+                "  [] > good",
+                "    one > first"
+            ),
+            XhtmlMatchers.hasXPath("/object/errors[count(error)=1]")
+        );
+    }
+
+    @Test
+    void parsesSiblingAfterFailedLine() {
+        MatcherAssert.assertThat(
+            "the sibling standing at the indent of a failed line must still be parsed",
+            EoTest.render(
+                "[] > example",
+                "  [x] +++ bad",
+                "    one",
+                "      two",
+                "  [] > good",
+                "    one > first"
+            ),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='example']/o[@name='good']/o[@name='first']"
+            )
+        );
+    }
+
+    @Test
+    void skipsBlockOfFailedLineAcrossBlanks() {
+        MatcherAssert.assertThat(
+            "a blank line inside the block of a failed line must not resume parsing",
+            EoTest.render(
+                "[] > example",
+                "  [x] +++ bad",
+                "    one",
+                "",
+                "    two",
+                "  [] > good",
+                "    one > first"
+            ),
+            XhtmlMatchers.hasXPath("/object/errors[count(error)=1]")
+        );
+    }
+
+    @Test
     void parsesWithUnixAndWindowsLineEndings() {
         final String carriage = String.valueOf((char) 13);
         MatcherAssert.assertThat(
