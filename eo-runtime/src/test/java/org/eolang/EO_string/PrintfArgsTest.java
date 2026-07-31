@@ -128,6 +128,26 @@ final class PrintfArgsTest {
     }
 
     @Test
+    void walksTheSpineInTheRightDirection() {
+        final Phi third = Phi.Φ.take("tuple").copy();
+        third.put("length", new Data.ToPhi(1));
+        third.put("head", new Data.ToPhi("first"));
+        final Phi second = Phi.Φ.take("tuple").copy();
+        second.put("length", new Data.ToPhi(2));
+        second.put("head", new Data.ToPhi("second"));
+        second.put("tail", third);
+        final Phi tuple = Phi.Φ.take("tuple").copy();
+        tuple.put("length", new Data.ToPhi(3));
+        tuple.put("head", new Data.ToPhi("third"));
+        tuple.put("tail", second);
+        MatcherAssert.assertThat(
+            "the cons list holds the last argument at its head, so index 0 must reach the first argument and the last index the head, not the other way round",
+            new PrintfArgs("%s %2$s %3$s", tuple).formatted(),
+            Matchers.equalTo(new ListOf<>("first", "second", "third"))
+        );
+    }
+
+    @Test
     void rejectsNonStringBytesInsteadOfMojibake() {
         final Phi tuple = Phi.Φ.take("tuple").copy();
         tuple.put("length", new Data.ToPhi(1));

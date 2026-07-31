@@ -78,12 +78,25 @@ final class PrintfArgs {
      * ({@code 42.as-i64} is {@code Φ.number.as-i64},
      * {@code 42.as-i64.as-number} is {@code Φ.i64.as-number}), and
      * listing whole names would miss the next pair added.</p>
+     *
+     * <p>{@code Φ.bytes} is a value forma by the same argument and is
+     * deliberately absent: bytes carry text as readily as they carry a
+     * number, and every computed string normalizes to them, so refusing
+     * them would refuse {@code "a".concat "b"}. The rule is therefore
+     * narrower than "carries a value": these are the formas that carry a
+     * value <em>and</em> cannot plausibly carry text. The cost is that
+     * {@code printf "%s" 42.as-bytes} still prints mojibake, which is the
+     * price of keeping computed strings working.</p>
      */
     private static final Set<String> VALUES = Set.of(
         "number", "bool", "i8", "i16", "i32", "i64"
     );
 
     static {
+        // The map says what each conversion does with the bytes it is
+        // given. Only 's' also has a precondition on the argument's type,
+        // which the signature cannot express because these take a
+        // Dataized and the check needs the Phi; see fmt and textual.
         PrintfArgs.CONVERSION.put('s', PrintfArgs::validString);
         PrintfArgs.CONVERSION.put('d', element -> PrintfArgs.toLong(element.asNumber()));
         PrintfArgs.CONVERSION.put('f', Dataized::asNumber);
@@ -225,10 +238,13 @@ final class PrintfArgs {
                 symbol, "%s, %d, %f, %x, %b"
             );
         }
+        final Phi ready;
         if (symbol == 's') {
-            PrintfArgs.textual(element);
+            ready = PrintfArgs.textual(element);
+        } else {
+            ready = element;
         }
-        return PrintfArgs.CONVERSION.get(symbol).apply(new Dataized(element));
+        return PrintfArgs.CONVERSION.get(symbol).apply(new Dataized(ready));
     }
 
     /**
@@ -237,27 +253,44 @@ final class PrintfArgs {
      * <p>Without this, a {@code number} handed to {@code %s} is decoded
      * as if its eight raw IEEE-754 bytes were UTF-8, with no complaint.
      * Only bytes that are not valid UTF-8 at all were caught before,
-     * which is a matter of luck rather than of type.</p>
+     * which is a matter of luck rather than of type: {@code 42} decodes
+     * cleanly and {@code 3.14} does not, though neither is text.</p>
      *
      * @param element The argument
+     * @return The argument, resolved, so the caller dataizes what was
+     *  inspected rather than resolving it a second time
      */
-    private static void textual(final Phi element) {
-        final String forma = element.normalized().forma();
+    private static Phi textual(final Phi element) {
+        final Phi normalized = element.normalized();
+        final String forma = normalized.forma();
         final String[] parts = forma.split("\\.");
         if (parts.length > 1 && PrintfArgs.VALUES.contains(parts[1])) {
+            final String instead;
+            if ("bool".equals(parts[1])) {
+                instead = "'%b'";
+            } else {
+                instead = "'%d', '%f' or '%x'";
+            }
             throw new ExFailure(
                 "The argument of the '%%s' conversion is %s, whose bytes are a value and not text; use %s instead",
-                forma, "'%d', '%f', '%b' or '%x'"
+                forma, instead
             );
         }
+        return normalized;
     }
 
     /**
      * Convert the {@code element} to a string for the {@code %s} conversion,
      * rejecting bytes that are not valid UTF-8 instead of silently decoding
-     * an arbitrary byte sequence (e.g. the raw IEEE-754 bytes of a {@code
-     * number} argument) into mojibake with no error, as {@link
+     * an arbitrary byte sequence into mojibake with no error, as {@link
      * Dataized#asString()} does.
+     *
+     * <p>This is the second line of defence, behind {@link #textual(Phi)}.
+     * A byte-level check cannot be the only one, because whether a value's
+     * bytes happen to decode is luck rather than type; what reaches here
+     * is malformed bytes, and value-carrying formas the denylist lets
+     * through.</p>
+     *
      * @param element Element ready for formatting
      * @return The element as a string
      */
