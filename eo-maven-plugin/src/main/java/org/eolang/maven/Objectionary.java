@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
+import org.cactoos.iterable.IterableOf;
 import org.cactoos.scalar.Unchecked;
 
 /**
@@ -39,6 +40,15 @@ interface Objectionary {
      * @throws IOException If fails to fetch.
      */
     boolean isDirectory(String name) throws IOException;
+
+    /**
+     * List the objects that live directly inside a package (see
+     * <a href="https://github.com/objectionary/eo/issues/6175">#6175</a>).
+     * @param pkg Package name, e.g. {@code "tuple"} or {@code "math.vector"}
+     * @return Names of the objects located directly in that package
+     * @throws IOException If fails to fetch.
+     */
+    Iterable<String> children(String pkg) throws IOException;
 
     /**
      * Objectionary with lambda-function Ctor-s for testing.
@@ -117,6 +127,11 @@ interface Objectionary {
         @Override
         public boolean isDirectory(final String name) {
             return new Unchecked<>(() -> this.directories.apply(name)).value();
+        }
+
+        @Override
+        public Iterable<String> children(final String pkg) {
+            return new IterableOf<>();
         }
 
         @Override

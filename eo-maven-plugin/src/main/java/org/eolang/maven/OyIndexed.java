@@ -91,4 +91,14 @@ final class OyIndexed implements Objectionary {
             )
         ).value();
     }
+
+    @Override
+    public Iterable<String> children(final String pkg) throws IOException {
+        return new IoChecked<>(
+            new ScalarWithFallback<>(
+                () -> this.index.children(pkg),
+                new Fallback.From<>(Exception.class, ex -> this.delegate.children(pkg))
+            )
+        ).value();
+    }
 }
