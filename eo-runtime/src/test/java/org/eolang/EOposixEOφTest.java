@@ -5,6 +5,7 @@
 package org.eolang;
 
 import java.lang.management.ManagementFactory;
+import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -86,14 +87,12 @@ final class EOposixEOφTest {
             )
         );
         MatcherAssert.assertThat(
-            "Failed \"read\" should preserve the POSIX error code",
-            new Dataized(read.take("code")).asNumber().intValue(),
-            Matchers.equalTo(-1)
-        );
-        MatcherAssert.assertThat(
-            "Failed \"read\" should return empty output",
-            new Dataized(read.take("output")).take(),
-            Matchers.equalTo(new byte[0])
+            "Failed \"read\" should preserve its code and return empty output",
+            List.of(
+                new Dataized(read.take("code")).asNumber().intValue(),
+                new Dataized(read.take("output")).take().length
+            ),
+            Matchers.equalTo(List.of(-1, 0))
         );
     }
 }
