@@ -345,9 +345,9 @@ A few rules we ask you to follow:
 
 * name your branch after the issue you are working on, e.g. `42`
 * prefix your commit messages with `fix(#42):` followed by a short description
-* keep your pull request small — no more than 200 lines added and deleted
-  combined, so it stays easy to review; split bigger changes into
-  puzzles using [PDD]
+* keep your pull request between 40 and 100 hits of code, counted as
+  lines added plus lines deleted, so it stays easy to review; split
+  bigger changes into puzzles using [PDD]
 * mention the issue your pull request resolves, e.g. `Closes #42`,
   so it links automatically
 * ping @yegor256 in the pull request description so he notices it
