@@ -39,7 +39,7 @@ final class PackageInfosTest {
     }
 
     @Test
-    void dontCreatePackageInfoWhenHandWrittenOneExists(@Mktmp final Path tmp) throws IOException {
+    void skipsPackageInfoWhenHandWrittenOneExists(@Mktmp final Path tmp) throws IOException {
         final Path generated = tmp.resolve("generated");
         final Path handwritten = tmp.resolve("java");
         Files.createDirectories(generated.resolve("EO_привет"));
