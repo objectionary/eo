@@ -4,8 +4,6 @@
  */
 package org.eolang.parser;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -61,9 +59,7 @@ final class Suffix {
      * {@link #test(String, int, Span, int, Form)} already refuses
      * {@code @} for a test attribute.
      */
-    private static final Set<String> SCOPES = new HashSet<>(
-        Arrays.asList("@", "^", "$")
-    );
+    private static final Set<String> SCOPES = Set.of("@", "^", "$");
 
     /**
      * Suffix form.
