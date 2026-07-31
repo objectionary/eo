@@ -195,7 +195,7 @@
           sys.tcp
       sys.sockaddr-in > sockaddr
         sys.inet.as-i16
-        htons port
+        htons checked-port
         addrint
     |
       []
@@ -259,6 +259,14 @@
         seq * > [buffer] > write
           send buffer
           output-block
+  if. > [] > checked-port
+    or.
+      port.lt 0
+      port.gt 65535
+    T
+      "Port %d is out of range; it must be 0 to 65535".printf
+        * port
+    port
   [port] > htons
     as-i16. > @
       or.
@@ -268,11 +276,6 @@
         and.
           b.right 8
           00-FF
-    if. > b
-      or.
-        port.lt 0
-        port.gt 65535
-      T
-        "Port %d is out of range for htons; it must be 0 to 65535".printf
-          * port
-      port.as-i32.as-bytes.slice 2 2
+    port.as-i32.as-bytes.slice > b
+      2
+      2

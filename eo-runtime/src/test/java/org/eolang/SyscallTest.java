@@ -152,21 +152,25 @@ final class SyscallTest {
     }
 
     @Test
-    void handlesFullUnsignedPortRangeInHtons() {
-        final Phi socket = Phi.Φ.take("socket").copy();
-        final Phi valid = socket.take("htons").copy();
-        valid.put(0, new Data.ToPhi(40_000));
+    void convertsPortAboveSignedShortLimitInHtons() {
+        final Phi htons = Phi.Φ.take("socket").take("htons").copy();
+        htons.put(0, new Data.ToPhi(40_000));
         MatcherAssert.assertThat(
             "htons should convert a port above 32767 to network byte order, but it didn't",
-            new Dataized(valid).take(),
+            new Dataized(htons).take(),
             Matchers.equalTo(new byte[]{(byte) 0x40, (byte) 0x9C})
         );
-        final Phi invalid = socket.take("htons").copy();
-        invalid.put(0, new Data.ToPhi(70_000));
+    }
+
+    @Test
+    void rejectsOutOfRangePortAtCheckedPort() {
+        final Phi socket = Phi.Φ.take("socket").copy();
+        socket.put(0, new Data.ToPhi(this.localhost()));
+        socket.put(1, new Data.ToPhi(70_000));
         Assertions.assertThrows(
             ExFailure.class,
-            new Dataized(invalid)::take,
-            "htons should fail for a port above 65535, but it didn't"
+            new Dataized(socket.take("checked-port"))::take,
+            "socket should reject a port above 65535, but it didn't"
         );
     }
 
