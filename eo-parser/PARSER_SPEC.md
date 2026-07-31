@@ -296,7 +296,8 @@ type      ::=  type-var | NAME ('.' NAME)* | 'Q' ('.' NAME)+
 ```
 [] > matched                          ← plain formation, filled from Java only
   ? > position /Q.number
-  ? > groups                          ← an untyped void may stay untyped
+  ? > to /Q.number?                   ← the filler may leave it ⊥
+  ? > groups /Q.tuple?
   groups.length > count
 ```
 

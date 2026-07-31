@@ -35,9 +35,9 @@
       [] > matched
         ? > position /Q.number
         ? > start /Q.number
-        ? > from /Q.number
-        ? > to /Q.number
-        ? > groups
+        ? > from /Q.number?
+        ? > to /Q.number?
+        ? > groups /Q.tuple?
         groups.length > count
         start.gte 0 > exists
         groups.at index > [index] > group
