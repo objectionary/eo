@@ -17,8 +17,8 @@ import org.xembly.Directive;
  * {@link Globals}, and {@link Emit} state. Recovery (§7) is line-local
  * — a {@link ParseError} is caught, the line's directives are rolled
  * back to a {@link Emit#savepoint()}, the error is emitted, and the
- * block nested under the failed line is skipped up to the first line
- * back at its indent.</p>
+ * block nested under the failed line is skipped up to the point
+ * {@link Recovery} names.</p>
  *
  * <p>This is the analogue of {@code EoSyntax} on the ANTLR side, but
  * with no parser-grammar dependency: classification, validation, and
@@ -75,6 +75,7 @@ final class Eo implements Iterable<Directive> {
         );
         final java.util.List<Span> spans = new java.util.ArrayList<>(16);
         new Source(this.source).forEach(spans::add);
+        final Recovery recovery = new Recovery(spans);
         int idx = 0;
         while (idx < spans.size()) {
             final Span span = spans.get(idx);
@@ -82,7 +83,7 @@ final class Eo implements Iterable<Directive> {
                 final int next = Eo.mergeBytesContinuation(spans, idx, stack, globals, emit);
                 idx = next;
             } else if (Eo.process(span, stack, globals, emit)) {
-                idx = Eo.resume(spans, idx + 1, span.indent());
+                idx = recovery.after(idx);
             } else {
                 idx = idx + 1;
             }
@@ -321,28 +322,6 @@ final class Eo implements Iterable<Directive> {
             failed = Eo.dispatch(span, stack, globals, emit);
         }
         return failed;
-    }
-
-    /**
-     * The index the walk resumes at after a line failed — the first
-     * line standing at or above the failed line's indent (§7). The
-     * lines in between belong to the failed line, so parsing them on
-     * their own would only pile up errors the source never made. A
-     * blank line carries no indent of its own and never resumes.
-     * @param spans Materialised list of source spans
-     * @param from Index right after the failed line
-     * @param indent Indent of the failed line
-     * @return Index of the resumption point
-     */
-    private static int resume(
-        final java.util.List<Span> spans, final int from, final int indent
-    ) {
-        int idx = from;
-        while (idx < spans.size()
-            && (spans.get(idx).blank() || spans.get(idx).indent() > indent)) {
-            idx = idx + 1;
-        }
-        return idx;
     }
 
     /**
