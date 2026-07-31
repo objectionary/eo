@@ -78,8 +78,7 @@
                 number index
       string > text
         basename >> base!
-    is-root-relative.or > is-absolute
-      drive.size.gt 0
+    is-root-relative > is-absolute
     and. > is-root-relative
       driveless.size.gt 0
       eq.
