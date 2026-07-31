@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Pattern;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -65,6 +66,20 @@ final class MainTest {
                 String.format("%n---%n"),
                 "true",
                 String.format("%n")
+            )
+        );
+    }
+
+    @Test
+    void printsExecutionProfile() {
+        MatcherAssert.assertThat(
+            "The report of dataizing \"true\" carries no object and dispatch counters",
+            MainTest.stderr("true"),
+            Matchers.matchesPattern(
+                Pattern.compile(
+                    ".+Finished in .+, [1-9][0-9]* objects, [1-9][0-9]* dispatches.*",
+                    Pattern.DOTALL
+                )
             )
         );
     }

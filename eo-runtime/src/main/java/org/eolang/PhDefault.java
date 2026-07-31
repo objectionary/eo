@@ -161,6 +161,7 @@ public class PhDefault implements Phi, Cloneable {
         this.data = dta;
         this.initial = attributes;
         this.order = new HashMap<>(0);
+        Profile.RUNNING.allocate();
     }
 
     @Override
@@ -182,6 +183,7 @@ public class PhDefault implements Phi, Cloneable {
                 map.put(ent.getKey(), ent.getValue().copy(copy));
             }
             copy.attrs = map;
+            Profile.RUNNING.allocate();
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new ExFailure("cannot copy the object", ex);
@@ -219,6 +221,7 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public Phi take(final String name) {
+        Profile.RUNNING.dispatch();
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         try {
             final Phi resolved;
