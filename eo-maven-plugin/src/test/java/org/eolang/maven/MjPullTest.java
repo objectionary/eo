@@ -86,7 +86,7 @@ final class MjPullTest {
     }
 
     @Test
-    void pullsUsingOfflineHash(@Mktmp final Path temp) throws IOException {
+    void pullsUsingTheHashItIsGiven(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
             .add(this.stdout())
