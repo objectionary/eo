@@ -298,6 +298,17 @@ final class EoTest {
     }
 
     @Test
+    void rejectsLegacyDoubledRoot() {
+        MatcherAssert.assertThat(
+            "the legacy `QQ` head must name itself in the error, not read as trailing garbage",
+            EoTest.render("[] > main", "  QQ.io.stdout", "    \"Hello world\""),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'QQ is not a valid object name')]"
+            )
+        );
+    }
+
+    @Test
     void allowsSameIndentSiblingFormations() {
         MatcherAssert.assertThat(
             "two top-level formations must emit as two sibling <o>s under the program root",

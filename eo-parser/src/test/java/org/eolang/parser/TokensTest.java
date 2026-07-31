@@ -297,6 +297,33 @@ final class TokensTest {
     }
 
     @Test
+    void rejectsRootGluedToLetter() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Tokens("QQ", new Span("QQ", 1)).readRoot(),
+            "readRoot must reject a root glued to a letter, as in the legacy `QQ`"
+        );
+    }
+
+    @Test
+    void rejectsRootGluedToDigit() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Tokens("$1", new Span("$1", 1)).readRoot(),
+            "readRoot must reject a root glued to a digit"
+        );
+    }
+
+    @Test
+    void readsRootFollowedByDot() {
+        MatcherAssert.assertThat(
+            "`^.foo` must read its root and stop right before the dot",
+            new Tokens("^.foo", new Span("^.foo", 1)).readRoot().raw(),
+            Matchers.equalTo("^")
+        );
+    }
+
+    @Test
     void readsEmptyBytes() {
         MatcherAssert.assertThat(
             "`--` must read as BYTES with raw `--`",
