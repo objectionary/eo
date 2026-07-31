@@ -85,7 +85,7 @@ final class EOposixEOφTest {
                     new Data.ToPhi(1),
                 }
             )
-        );
+        ).take("called");
         MatcherAssert.assertThat(
             "Failed \"read\" should preserve its code and return empty output",
             List.of(
