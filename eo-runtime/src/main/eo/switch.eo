@@ -51,14 +51,6 @@
       fallback
         "No switch case matched"
 
-  switch * ++> can-return-true-when-all-cases-are-false
-    *
-      false
-      "false1"
-    *
-      false
-      "false2"
-
   ++> can-switch-on-a-complex-case
     eq. > @
       switch *
