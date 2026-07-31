@@ -40,7 +40,7 @@ final class WalkTest {
     }
 
     @Test
-    void throwsOnInvalidGlobsBeforeWalkingFiles(@Mktmp final Path empty) {
+    void throwsOnInvalidGlobBeforeWalkingFiles(@Mktmp final Path empty) {
         Assertions.assertThrows(
             PatternSyntaxException.class,
             () -> new Walk(empty).includes(new ListOf<>("{eager")),

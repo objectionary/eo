@@ -72,7 +72,8 @@ final class MjRegisterTest {
     }
 
     @Test
-    void failsWithPatternSyntaxExceptionInCaseInvalidGlobs(@Mktmp final Path temp) throws IOException {
+    void failsWithPatternSyntaxExceptionInCaseInvalidGlobs(@Mktmp final Path temp)
+        throws IOException {
         new Saved(
             new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
             temp.resolve("src/eo/org/eolang/maven/abc-def.eo")
