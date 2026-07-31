@@ -8,10 +8,12 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.list.ListEnvelope;
@@ -52,11 +54,12 @@ final class Walk extends ListEnvelope<Path> {
      */
     @SuppressWarnings("PMD.LooseCoupling")
     Walk includes(final Collection<String> globs) {
+        final Collection<PathMatcher> matchers = Walk.compiled(globs);
         return new Walk(
             this.home,
             this.stream().filter(
-                file -> globs.stream().anyMatch(
-                    glob -> this.matches(glob, file)
+                file -> matchers.stream().anyMatch(
+                    matcher -> matcher.matches(this.relative(file))
                 )
                 )
                 .collect(Collectors.toList())
@@ -70,11 +73,12 @@ final class Walk extends ListEnvelope<Path> {
      */
     @SuppressWarnings("PMD.LooseCoupling")
     Walk excludes(final Collection<String> globs) {
+        final Collection<PathMatcher> matchers = Walk.compiled(globs);
         return new Walk(
             this.home,
             this.stream().filter(
-                file -> globs.stream().noneMatch(
-                    glob -> this.matches(glob, file)
+                file -> matchers.stream().noneMatch(
+                    matcher -> matcher.matches(this.relative(file))
                 )
                 )
                 .collect(Collectors.toList())
@@ -115,17 +119,50 @@ final class Walk extends ListEnvelope<Path> {
     }
 
     /**
-     * Create glob matcher from text.
-     * @param text The pattern, e.g. "**&#47;*.java"
-     * @param file The file to match
+     * Compile every glob once, up front.
+     *
+     * <p>Compiling here rather than inside the filter matters twice over.
+     * It turns one compilation per glob per file into one per glob, and it
+     * moves the failure of a glob that cannot be compiled out of the walk
+     * and onto the configuration that named it, so the report can say
+     * which pattern is at fault and where it came from instead of
+     * arriving as a regex error from inside a file scan.</p>
+     *
+     * @param globs The patterns, e.g. "**&#47;*.java"
+     * @return Matchers, in the order given
+     */
+    private static Collection<PathMatcher> compiled(final Collection<String> globs) {
+        return globs.stream().map(Walk::matcher).collect(Collectors.toList());
+    }
+
+    /**
+     * Compile one glob.
+     * @param glob The pattern
      * @return Matcher
      */
-    private boolean matches(final String text, final Path file) {
-        return FileSystems.getDefault().getPathMatcher(String.format("glob:%s", text)).matches(
-            Paths.get(
-                file.toAbsolutePath().toString().substring(
-                    this.home.toAbsolutePath().toString().length() + 1
-                )
+    private static PathMatcher matcher(final String glob) {
+        try {
+            return FileSystems.getDefault().getPathMatcher(String.format("glob:%s", glob));
+        } catch (final PatternSyntaxException ex) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "The glob '%s', configured to select sources, is not a valid glob pattern",
+                    glob
+                ),
+                ex
+            );
+        }
+    }
+
+    /**
+     * The file's path relative to the directory being walked.
+     * @param file The file
+     * @return Relative path
+     */
+    private Path relative(final Path file) {
+        return Paths.get(
+            file.toAbsolutePath().toString().substring(
+                this.home.toAbsolutePath().toString().length() + 1
             )
         );
     }

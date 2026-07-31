@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -34,6 +35,24 @@ final class WalkTest {
             ),
             new Walk(temp).includes(new ListOf<>(pattern)),
             Matchers.iterableWithSize(count)
+        );
+    }
+
+    @Test
+    void namesTheMalformedGlobInsteadOfLeakingARegexError(@Mktmp final Path temp) throws Exception {
+        new Saved("", temp.resolve("EOxxx/bar")).value();
+        final String glob = "**/[a-.eo";
+        MatcherAssert.assertThat(
+            "the message must say the glob comes from source selection, which the JDK's own regex error does not, even though it does quote the pattern",
+            Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> new Walk(temp).includes(new ListOf<>(glob)),
+                "a malformed glob must be reported, not thrown as a raw regex error"
+            ).getMessage(),
+            Matchers.allOf(
+                Matchers.containsString(glob),
+                Matchers.containsString("configured to select sources")
+            )
         );
     }
 }
