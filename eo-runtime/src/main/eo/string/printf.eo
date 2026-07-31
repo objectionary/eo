@@ -227,6 +227,10 @@
     "%0$s"
     "first"
 
+  printf *1 --> stops-on-an-i64-as-a-string
+    "%s"
+    42.as-i64
+
   printf *1 --> stops-on-an-oversized-positional-index
     "%99999999999999999999$s"
     "Jeff"

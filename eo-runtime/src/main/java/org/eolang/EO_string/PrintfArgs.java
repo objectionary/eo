@@ -68,20 +68,21 @@ final class PrintfArgs {
     private static final double LONG_UPPER_LIMIT = 0x1.0p63;
 
     /**
-     * Formas whose bytes are a value, never text, and so can never be the
-     * argument of a {@code %s} conversion.
+     * Objects a forma can be rooted at whose bytes are a value, never
+     * text, and so can never be the argument of a {@code %s} conversion.
      *
-     * <p>Naming what text is <em>not</em>, rather than what it is, is
-     * deliberate. Only a literal has the forma {@code Φ.string}: every
-     * operation that builds a string returns something else
-     * ({@code "a".concat "b"} normalizes to {@code Φ.bytes}, {@code slice}
-     * to {@code Φ.string.slice}), and so does any user object that
-     * decorates a string. Demanding {@code Φ.string} would refuse all of
-     * those, which is a far bigger problem than the one this guard is
-     * here for.</p>
+     * <p>Naming what text is <em>not</em> is deliberate: only a literal
+     * has the forma {@code Φ.string}, while {@code "a".concat "b"}
+     * normalizes to {@code Φ.bytes} and {@code slice} to
+     * {@code Φ.string.slice}, so demanding {@code Φ.string} would refuse
+     * every computed string. The root is matched rather than the whole
+     * name because a conversion keeps its origin at the front
+     * ({@code 42.as-i64} is {@code Φ.number.as-i64},
+     * {@code 42.as-i64.as-number} is {@code Φ.i64.as-number}), and
+     * listing whole names would miss the next pair added.</p>
      */
-    private static final Set<String> NOT_TEXT = new HashSet<>(
-        Arrays.asList("Φ.number", "Φ.bool")
+    private static final Set<String> VALUES = new HashSet<>(
+        Arrays.asList("number", "bool", "i8", "i16", "i32", "i64")
     );
 
     static {
@@ -98,11 +99,6 @@ final class PrintfArgs {
     private final String format;
 
     /**
-     * The length.
-     */
-    private final long length;
-
-    /**
      * The tuple of arguments.
      */
     private final Phi args;
@@ -110,12 +106,10 @@ final class PrintfArgs {
     /**
      * Ctor.
      * @param fmt The format
-     * @param len The length
      * @param tuple The tuple of arguments
      */
-    PrintfArgs(final String fmt, final long len, final Phi tuple) {
+    PrintfArgs(final String fmt, final Phi tuple) {
         this.format = fmt;
-        this.length = len;
         this.args = tuple;
     }
 
@@ -152,6 +146,7 @@ final class PrintfArgs {
     List<Object> formatted() {
         final List<Object> arguments = new ArrayList<>(0);
         final Matcher matcher = PrintfArgs.SPECIFIER.matcher(this.format);
+        final long count = new Dataized(this.args.take("length")).asNumber().longValue();
         long auto = 0L;
         while (matcher.find()) {
             final String positional = matcher.group(1);
@@ -168,7 +163,7 @@ final class PrintfArgs {
                     throw new ExFailure(
                         String.format(
                             "The argument index %s is out of bounds (total arguments: %d)",
-                            digits, this.length
+                            digits, count
                         ),
                         ex
                     );
@@ -183,13 +178,13 @@ final class PrintfArgs {
                 arg = auto;
                 auto += 1L;
             }
-            if (arg >= this.length) {
+            if (arg >= count) {
                 throw new ExFailure(
                     "The argument index %d is out of bounds (total arguments: %d)",
-                    arg, this.length
+                    arg, count
                 );
             }
-            arguments.add(PrintfArgs.fmt(symbol, this.element(arg)));
+            arguments.add(PrintfArgs.fmt(symbol, this.element(count, arg)));
         }
         return arguments;
     }
@@ -201,19 +196,19 @@ final class PrintfArgs {
      * <p>The difference is the whole point: {@code at} decorates what it
      * returns, so the result reports {@code Φ.tuple.at} as its forma and
      * the argument's own type is no longer visible. Walking the cons list
-     * reaches the object itself, forma intact. The list is built with the
-     * last argument at the head (see {@code tuple.eo}), so the walk takes
-     * as many tails as there are arguments after this one, counted off the
-     * tuple's own length so that a wrong count can only pick the wrong
-     * argument, never walk off the end into a terminated computation.</p>
+     * reaches the object itself, forma intact. The last argument sits at
+     * the head (see {@code tuple.eo}), so the walk takes as many tails as
+     * there are arguments after this one. The count comes from the caller,
+     * which read it off this same tuple and has already refused an index
+     * outside it, so the walk cannot run off the end.</p>
      *
+     * @param count How many arguments the tuple holds
      * @param index Zero-based index of the argument
      * @return The argument
      */
-    private Phi element(final long index) {
+    private Phi element(final long count, final long index) {
         Phi current = this.args;
-        final long size = new Dataized(this.args.take("length")).asNumber().longValue();
-        for (long step = size - 1L - index; step > 0L; --step) {
+        for (long step = count - 1L - index; step > 0L; --step) {
             current = current.take("tail");
         }
         return current.take("head");
@@ -241,17 +236,17 @@ final class PrintfArgs {
     /**
      * Refuse an argument whose type says its bytes are a value and not text.
      *
-     * <p>Without this, a {@code number} handed to {@code %s} is decoded as
-     * if its eight raw IEEE-754 bytes were UTF-8, and {@code true} prints
-     * as a control character, both with no complaint. Only bytes that are
-     * not valid UTF-8 at all were caught before, which is a matter of luck
-     * rather than of type.</p>
+     * <p>Without this, a {@code number} handed to {@code %s} is decoded
+     * as if its eight raw IEEE-754 bytes were UTF-8, with no complaint.
+     * Only bytes that are not valid UTF-8 at all were caught before,
+     * which is a matter of luck rather than of type.</p>
      *
      * @param element The argument
      */
     private static void textual(final Phi element) {
         final String forma = element.normalized().forma();
-        if (PrintfArgs.NOT_TEXT.contains(forma)) {
+        final String[] parts = forma.split("\\.");
+        if (parts.length > 1 && PrintfArgs.VALUES.contains(parts[1])) {
             throw new ExFailure(
                 "The argument of the '%%s' conversion is %s, whose bytes are a value and not text; use %s instead",
                 forma, "'%d', '%f', '%b' or '%x'"
