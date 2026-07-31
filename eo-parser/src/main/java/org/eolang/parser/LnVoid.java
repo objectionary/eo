@@ -121,7 +121,7 @@ final class LnVoid implements Line {
      */
     private void annotate(final Emit emit, final String tail, final int slash) {
         if (slash >= 0) {
-            emit.type(LnVoid.union(tail, slash, this.span));
+            emit.type(this.union(tail, slash));
         }
     }
 
@@ -132,10 +132,9 @@ final class LnVoid implements Line {
      * out single-space separated, in source order.
      * @param tail The line body after the {@code ?}
      * @param slash Index of the {@code /} marker in {@code tail}
-     * @param span The source span (for errors)
      * @return The promoted {@code @type} value, with {@code ?} preserved
      */
-    private static String union(final String tail, final int slash, final Span span) {
+    private String union(final String tail, final int slash) {
         final StringBuilder out = new StringBuilder(tail.length());
         int idx = slash + 1;
         boolean more = true;
@@ -143,7 +142,7 @@ final class LnVoid implements Line {
             if (out.length() > 0) {
                 out.append(' ');
             }
-            idx = LnVoid.member(tail, idx, span, out);
+            idx = this.member(tail, idx, out);
             more = idx < tail.length() && tail.charAt(idx) == '|';
             if (more) {
                 idx = idx + 1;
@@ -151,10 +150,10 @@ final class LnVoid implements Line {
         }
         final String result;
         if (idx < tail.length() && tail.charAt(idx) == '?') {
-            LnVoid.endsClean(tail, idx + 1, span);
+            LnVoid.endsClean(tail, idx + 1, this.span);
             result = out.toString().concat("?");
         } else {
-            LnVoid.endsClean(tail, idx, span);
+            LnVoid.endsClean(tail, idx, this.span);
             result = out.toString();
         }
         return result;
@@ -166,18 +165,15 @@ final class LnVoid implements Line {
      * {@code out}.
      * @param tail The line body after the {@code ?}
      * @param from Index the member starts at
-     * @param span The source span (for errors)
      * @param out Sink for the promoted member
      * @return Index just past the member
      */
-    private static int member(
-        final String tail, final int from, final Span span, final StringBuilder out
-    ) {
+    private int member(final String tail, final int from, final StringBuilder out) {
         final int next;
         if (from < tail.length() && tail.charAt(from) == '{') {
-            next = LnVoid.formation(tail, from, span, out);
+            next = this.formation(tail, from, out);
         } else {
-            next = LnVoid.forma(tail, from, span, out);
+            next = this.forma(tail, from, out);
         }
         return next;
     }
@@ -188,21 +184,20 @@ final class LnVoid implements Line {
      * {@code &#123;&#125;}, no {@code ?} inside.
      * @param tail The line body after the {@code ?}
      * @param from Index of the opening brace
-     * @param span The source span (for errors)
      * @param out Sink for the promoted member
      * @return Index just past the closing brace
      */
-    private static int formation(
-        final String tail, final int from, final Span span, final StringBuilder out
-    ) {
+    private int formation(final String tail, final int from, final StringBuilder out) {
         final int close = tail.indexOf('}', from + 1);
         if (close < 0) {
             throw new ParseError(
-                span.line(), span.indent(),
+                this.span.line(), this.span.indent(),
                 "a `/{…}` formation type must end with `}`"
             );
         }
-        out.append('{').append(LnVoid.voids(tail.substring(from + 1, close), span)).append('}');
+        out.append('{')
+            .append(LnVoid.voids(tail.substring(from + 1, close), this.span))
+            .append('}');
         return close + 1;
     }
 
@@ -211,25 +206,24 @@ final class LnVoid implements Line {
      * a concrete forma promoted from {@code Q.} to {@code Φ.}.
      * @param tail The line body after the {@code ?}
      * @param from Index the atom starts at
-     * @param span The source span (for errors)
      * @param out Sink for the promoted atom
      * @return Index just past the atom
      */
-    private static int forma(
-        final String tail, final int from, final Span span, final StringBuilder out
-    ) {
+    private int forma(final String tail, final int from, final StringBuilder out) {
         int idx = from;
         while (idx < tail.length() && !LnVoid.breaks(tail.charAt(idx))) {
             idx = idx + 1;
         }
         if (idx == from) {
             throw new ParseError(
-                span.line(), span.indent(),
+                this.span.line(), this.span.indent(),
                 "a void type annotation requires a type"
             );
         }
         out.append(
-            Suffix.typeAtom(tail.substring(from, idx), span, span.indent() + 1 + from)
+            Suffix.typeAtom(
+                tail.substring(from, idx), this.span, this.span.indent() + 1 + from
+            )
         );
         return idx;
     }
