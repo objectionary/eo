@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 /**
  * Test case for {@link EOdirectory$EOwalk}.
  * @since 0.63
- * @checkstyle TypeNameCheck (4 lines)
  */
 final class EOdirectoryEOwalkTest {
 
