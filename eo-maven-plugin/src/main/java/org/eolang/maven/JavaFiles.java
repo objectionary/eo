@@ -58,6 +58,7 @@ final class JavaFiles {
      * @param cached Cache directory for transpiled sources
      * @param ver Cache-key version segment
      * @param caching Whether caching is enabled
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
     JavaFiles(final Path dir, final Path cached, final String ver, final boolean caching) {
         this.generated = dir;
