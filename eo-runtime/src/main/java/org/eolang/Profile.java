@@ -7,7 +7,6 @@ package org.eolang;
 /**
  * The runtime statistics of a program: how many objects it created and
  * how many times it dispatched an attribute by name.
- *
  * @since 0.62
  */
 public interface Profile {

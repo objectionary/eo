@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
-@SuppressWarnings("PMD.GodClass")
+@SuppressWarnings({"PMD.GodClass", "PMD.ConstructorOnlyInitializesOrCallOtherConstructors"})
 public class PhDefault implements Phi, Cloneable {
 
     /**
@@ -153,6 +153,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param dta        Object data
      * @param attributes Initial attributes to register
      * @checkstyle ParameterNumberCheck (5 lines)
+     * @checkstyle ConstructorsCodeFreeCheck (14 lines)
      */
     private PhDefault(
         final String forma, final byte[] dta, final Map<String, Attribute> attributes
