@@ -77,7 +77,7 @@ final class ObjectsIndexTest {
     void downloadsAndChecksFromRealSource() throws Exception {
         MatcherAssert.assertThat(
             "The index must contain the default value",
-            new ObjectsIndex().contains("io.stdout"),
+            new ObjectsIndex().contains("stdout"),
             Matchers.is(true)
         );
     }
