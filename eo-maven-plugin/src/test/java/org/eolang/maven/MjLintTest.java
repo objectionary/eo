@@ -104,8 +104,7 @@ final class MjLintTest {
     @Test
     void ignoresLintNamedInSkipSourceLints(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
-            .with("skipSourceLints", new SetOf<>("mandatory-spdx"))
-            .withProgram(
+            .with("skipSourceLints", new SetOf<>("mandatory-spdx")).withProgram(
                 "+home https://www.eolang.org",
                 "+package foo.x",
                 "+version 0.0.0",
