@@ -35,7 +35,7 @@ final class WinsockTest {
 
     @RepeatedIfExceptionsTest(repeats = 3)
     void connectsToLocalServerViaSyscall() throws IOException {
-        final RandomServer server = new RandomServer().started();
+        final RandomServer server = new RandomServer();
         try {
             this.ensure(this.startup() == 0);
             final int socket = this.openSocket();
@@ -91,12 +91,13 @@ final class WinsockTest {
             final int socket = this.openSocket();
             try {
                 this.ensure(socket > 0);
+                final int port = new RandomPort().pick();
                 MatcherAssert.assertThat(
                     String.format(
-                        "Win socket should have been bound to localhost via syscall, but it didn't, error code is: %d",
-                        this.getError()
+                        "Win socket should have been bound to localhost:%d via syscall, but it didn't, error code is: %d",
+                        port, this.getError()
                     ),
-                    this.bindSocket(socket, new RandomPort().pick()),
+                    this.bindSocket(socket, port),
                     Matchers.equalTo(0)
                 );
             } finally {
@@ -397,7 +398,9 @@ final class WinsockTest {
         } catch (final UnknownHostException exception) {
             throw new IllegalStateException(exception);
         } finally {
-            this.closeSocket(accepted);
+            if (accepted > 0) {
+                this.closeSocket(accepted);
+            }
             this.closeSocket(socket);
         }
     }

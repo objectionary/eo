@@ -33,7 +33,7 @@ final class CStdLibTest {
 
     @RepeatedIfExceptionsTest(repeats = 3)
     void connectsToLocalServerViaSyscall() throws IOException {
-        final RandomServer server = new RandomServer().started();
+        final RandomServer server = new RandomServer();
         final int socket = this.openSocket();
         try {
             this.ensure(socket > 0);
@@ -73,12 +73,13 @@ final class CStdLibTest {
         final int socket = this.openSocket();
         try {
             this.ensure(socket > 0);
+            final int port = new RandomPort().pick();
             MatcherAssert.assertThat(
                 String.format(
-                    "Posix socket should have been bound to localhost via syscall, but it didn't, reason: %s",
-                    this.getError()
+                    "Posix socket should have been bound to localhost:%d via syscall, but it didn't, reason: %s",
+                    port, this.getError()
                 ),
-                this.bindSocket(socket, new RandomPort().pick()),
+                this.bindSocket(socket, port),
                 Matchers.equalTo(0)
             );
         } finally {
@@ -336,7 +337,9 @@ final class CStdLibTest {
             received.set(CStdLib.INSTANCE.recv(accepted, buf, buf.length, 0));
             bytes.set(Arrays.copyOf(buf, received.get()));
         } finally {
-            this.closeSocket(accepted);
+            if (accepted > 0) {
+                this.closeSocket(accepted);
+            }
             this.closeSocket(socket);
         }
     }
