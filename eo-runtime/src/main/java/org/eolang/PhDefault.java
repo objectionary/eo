@@ -151,7 +151,6 @@ public class PhDefault implements Phi, Cloneable {
      * @param forma      The forma of the object, taken from XMIR
      * @param dta        Object data
      * @param attributes Initial attributes to register
-     * @checkstyle ConstructorsCodeFreeCheck (14 lines)
      */
     private PhDefault(
         final String forma, final byte[] dta, final Map<String, Attribute> attributes
