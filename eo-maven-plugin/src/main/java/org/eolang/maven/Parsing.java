@@ -106,7 +106,6 @@ final class Parsing implements Step {
      * @param enabled Whether caching is enabled
      * @param ver Plugin version string
      * @param sources EO sources directory
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     Parsing(
         final TjsForeign srcs,

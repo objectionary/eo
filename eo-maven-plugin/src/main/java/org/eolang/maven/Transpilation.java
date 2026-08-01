@@ -125,7 +125,6 @@ final class Transpilation {
      * @param base The class that a generated class extends instead of {@code PhDefault}
      * @param measures Path to the file where XSL measurements are stored
      * @param dir The target directory of the build
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     Transpilation(
         final String ver,

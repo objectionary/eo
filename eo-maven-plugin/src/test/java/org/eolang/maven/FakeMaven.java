@@ -99,7 +99,6 @@ final class FakeMaven {
      * @param params Mojos params
      * @param current Current program number
      * @param defaults Use default attributes if they are not set
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     private FakeMaven(
         final Path workspace,
@@ -157,8 +156,6 @@ final class FakeMaven {
      * @param <T> Template for descendants of Mojo
      * @return Workspace after executing Mojo
      * @throws java.io.IOException If some problem with filesystem has happened.
-     * @checkstyle ExecutableStatementCountCheck (100 lines)
-     * @checkstyle JavaNCSSCheck (100 lines)
      */
     <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {

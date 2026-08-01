@@ -53,7 +53,6 @@ interface Objectionary {
     /**
      * Objectionary with lambda-function Ctor-s for testing.
      * @since 0.28.11
-     * @checkstyle IllegalCatchCheck (150 lines)
      */
     final class Fake implements Objectionary {
 
