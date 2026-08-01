@@ -17,7 +17,6 @@ import org.eolang.Syscall;
  * The 'inet_addr' WS2_32 function call.
  * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-inet_addr">here for details</a>
  * @since 0.40.0
- * @checkstyle AbbreviationAsWordInNameCheck (100 lines)
  */
 public final class InetAddrFuncCall implements Syscall {
 

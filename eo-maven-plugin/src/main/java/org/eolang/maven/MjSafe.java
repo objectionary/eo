@@ -114,7 +114,6 @@ abstract class MjSafe extends AbstractMojo {
      * The path to a text file where paths of all added
      * .class (and maybe others) files are placed.
      * @since 0.11.0
-     * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (10 lines)
      */
     @Parameter(
@@ -188,7 +187,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * EO cache directory.
-     * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (10 lines)
      */
     @Parameter(property = "eo.cache")
@@ -216,7 +214,6 @@ abstract class MjSafe extends AbstractMojo {
      * If we are offline and not able to download anything from the internet.
      * @since 0.32.0
      * @checkstyle VisibilityModifierCheck (10 lines)
-     * @checkstyle MemberNameCheck (8 lines)
      */
     @Parameter(property = "eo.offline", required = true, defaultValue = "false")
     protected boolean offline;
@@ -224,7 +221,6 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * The Git tag to pull objects from, in objectionary.
      * @since 0.21.0
-     * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
     @Parameter(property = "eo.tag", required = true, defaultValue = "master")
@@ -370,7 +366,6 @@ abstract class MjSafe extends AbstractMojo {
      * Maven 3 only.
      * You can read more about that property
      * <a href="https://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html#Supported_Annotations">here</a>.
-     * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
     @Parameter(defaultValue = "${plugin}", readonly = true)
@@ -418,7 +413,6 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * Objectionary.
      * @since 0.50
-     * @checkstyle MemberNameCheck (5 lines)
      */
     @SuppressWarnings("PMD.ImmutableField")
     private Scalar<Objectionary> objectionary = new OyConfigured(
@@ -434,7 +428,6 @@ abstract class MjSafe extends AbstractMojo {
      *  construction and closing into each Mojo (or a dedicated owner)
      *  so MjSafe is not responsible for their lifecycle. Ensure that
      *  close() is still guaranteed even when exec() throws.
-     * @checkstyle VisibilityModifierCheck (5 lines)
      */
     private final TjsForeign tojos = new TjsForeign(
         () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat),
@@ -497,7 +490,6 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * Tojos to use, in my scope only.
      * @return Tojos to use
-     * @checkstyle AnonInnerLengthCheck (100 lines)
      */
     protected final TjsForeign scopedTojos() {
         return this.tojos;
@@ -506,7 +498,6 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * Tojos to use, in "compile" scope only.
      * @return Tojos to use
-     * @checkstyle AnonInnerLengthCheck (100 lines)
      */
     protected final TjsForeign compileTojos() {
         return new TjsForeign(

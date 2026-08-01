@@ -156,7 +156,6 @@ final class Linting implements Step {
      * @param warning Whether to fail on warnings
      * @param pkg Whether to lint all sources as a package
      * @param skip Whether to skip linting entirely
-     * @checkstyle ParameterNumberCheck (20 lines)
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
     Linting(
