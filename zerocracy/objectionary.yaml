@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2160.620428669
+  seconds: 467.689404616
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-01 18:09:09.502900304 Z
+  when: 2026-08-01 18:40:32.165911274 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -2519,6 +2519,7 @@
   issue: 148
   repository: 977982682
   stale: 'user #526301'
+  tombstone: 2026-08-01 18:12:02.835811728 Z
   what: issue-was-opened
   when: 2025-06-26 14:22:13.000000000 Z
   where: github
@@ -2533,6 +2534,7 @@
   label: bug
   repository: 977982682
   stale: 'user #526301'
+  tombstone: 2026-08-01 18:12:02.837646903 Z
   what: label-was-attached
   when: 2025-06-26 14:22:06.000000000 Z
   where: github
@@ -2547,6 +2549,7 @@
   label: enhancement
   repository: 977982682
   stale: 'user #526301'
+  tombstone: 2026-08-01 18:12:02.839438301 Z
   what: label-was-attached
   when: 2025-06-26 14:22:07.000000000 Z
   where: github
@@ -33717,6 +33720,7 @@
   is_human: 0
   issue: 1055
   repository: 671896902
+  tombstone: 2026-08-01 18:12:02.747430013 Z
   what: pull-was-opened
   when: 2025-03-30 10:03:14.000000000 Z
   where: github
@@ -40880,6 +40884,7 @@
   is_human: 1
   issue: 1429
   repository: 671896902
+  tombstone: 2026-08-01 18:12:02.454325675 Z
   what: pull-was-opened
   when: 2025-11-18 12:40:47.000000000 Z
   where: github
@@ -40896,6 +40901,7 @@
   is_human: 1
   issue: 1428
   repository: 671896902
+  tombstone: 2026-08-01 18:12:02.417726413 Z
   what: pull-was-opened
   when: 2025-11-18 12:01:11.000000000 Z
   where: github
@@ -40905,6 +40911,7 @@
   _time: 2025-11-18 13:46:45.462735216 Z
   _version: 0.16.8/0.55.0/0.16.1
   details: The issue objectionary/phino#148 has been closed by @maxonfjvipon.
+  done: 2026-08-01 18:12:02.808218651 Z
   event_id: 4752922652
   event_type: IssuesEvent
   is_human: 1
@@ -40935,6 +40942,7 @@
   review: 2025-11-18 12:25:04.000000000 Z
   review_comments: 0
   succeeded_builds: 19
+  tombstone: 2026-08-01 18:12:02.420052017 Z
   what: pull-was-merged
   when: &206 2025-11-18 12:36:39.000000000 Z
   where: github
@@ -40960,6 +40968,7 @@
   review: 2025-11-18 12:58:19.000000000 Z
   review_comments: 1
   succeeded_builds: 19
+  tombstone: 2026-08-01 18:12:02.456554063 Z
   what: pull-was-merged
   when: &207 2025-11-18 14:30:05.000000000 Z
   where: github
@@ -41036,6 +41045,7 @@
   repository: 671896902
   review_comments: 0
   seconds: 2128
+  tombstone: 2026-08-01 18:12:02.422245544 Z
   what: code-was-contributed
   when: *206
   where: github
@@ -41055,6 +41065,7 @@
   repository: 671896902
   review_comments: 1
   seconds: 6558
+  tombstone: 2026-08-01 18:12:02.458662600 Z
   what: code-was-contributed
   when: *207
   where: github
@@ -41379,6 +41390,7 @@
   repository: 671896902
   review_comments: 0
   seconds: 2128
+  tombstone: 2026-08-01 18:12:02.424226994 Z
   what: code-contribution-was-rewarded
   when: 2025-11-19 08:19:15.293589461 Z
   where: github
@@ -41471,6 +41483,7 @@
   is_human: 1
   issue: 4674
   repository: 73056727
+  tombstone: 2026-08-01 18:12:02.490789972 Z
   what: pull-was-opened
   when: 2025-11-18 16:37:52.000000000 Z
   where: github
@@ -41503,6 +41516,7 @@
   repository: 671896902
   review_comments: 1
   seconds: 6558
+  tombstone: 2026-08-01 18:12:02.460711263 Z
   what: code-contribution-was-rewarded
   when: 2025-11-19 11:22:42.816602667 Z
   where: github
@@ -41702,6 +41716,7 @@
   repository: 73056727
   review: 2025-11-18 16:46:15.000000000 Z
   succeeded_builds: 15
+  tombstone: 2026-08-01 18:12:02.492901861 Z
   what: pull-was-closed
   when: 2025-11-18 21:17:54.000000000 Z
   where: github
@@ -42643,6 +42658,7 @@
   comments_to_code: 0
   details: The pull request objectionary/jeo-maven-plugin#1055 has been closed by
     @rultor, with 0 HoC and 0 comments.
+  done: 2026-08-01 18:12:02.721290564 Z
   event_id: 4807046112
   event_type: PullRequestEvent
   failed_builds: 0
@@ -57160,36 +57176,6 @@
   when: 2025-11-17 01:52:54.000000000 Z
   where: github
   who: 29139614
-- _id: 1056828
-  _job: 20190889594
-  _time: 2025-12-13 11:16:43.821920479 Z
-  _version: 0.19.2/0.58.1/0.17.6
-  branch: renovate/davidanson-markdownlint-cli2-action-21.x
-  details: The missing pull objectionary/on-the-origin-of-objects#54 has been opened
-    by @renovate[bot].
-  is_human: 0
-  issue: 54
-  repository: 499536612
-  tombstone: 2026-07-31 22:18:41.082774521 Z
-  what: pull-was-opened
-  when: 2025-11-17 02:48:05.000000000 Z
-  where: github
-  who: 29139614
-- _id: 1056829
-  _job: 20190889594
-  _time: 2025-12-13 11:16:46.101634881 Z
-  _version: 0.19.2/0.58.1/0.17.6
-  branch: renovate/davidanson-markdownlint-cli2-action-21.x
-  details: The missing pull objectionary/reducing-programs-to-objects#58 has been
-    opened by @renovate[bot].
-  is_human: 0
-  issue: 58
-  repository: 493235807
-  tombstone: 2026-07-31 22:18:41.356604862 Z
-  what: pull-was-opened
-  when: 2025-11-17 02:12:55.000000000 Z
-  where: github
-  who: 29139614
 - _id: 1056839
   _job: 20191511410
   _time: 2025-12-13 11:57:31.419687995 Z
@@ -70408,6 +70394,7 @@
   comments: 6
   details: The pull request objectionary/jeo-maven-plugin#1428 with 58 HoC created
     by @volodya-lombrozo was reviewed by @coderabbitai[bot] after 0h23m and 0 comments.
+  done: 2026-08-01 18:12:02.388733350 Z
   hoc: 58
   is_human: 0
   issue: 1428
@@ -70426,6 +70413,7 @@
   comments: 6
   details: The pull request objectionary/jeo-maven-plugin#1429 with 86 HoC created
     by @volodya-lombrozo was reviewed by @coderabbitai[bot] after 0h17m and 1 comments.
+  done: 2026-08-01 18:12:02.426195929 Z
   hoc: 86
   is_human: 0
   issue: 1429
@@ -73954,6 +73942,7 @@
   comments: 4
   details: The pull request objectionary/eo#4674 with 940 HoC created by @r0bari was
     reviewed by @coderabbitai[bot] after 0h8m and 6 comments.
+  done: 2026-08-01 18:12:02.462772024 Z
   hoc: 940
   is_human: 0
   issue: 4674
@@ -73972,6 +73961,7 @@
   comments: 4
   details: The pull request objectionary/eo#4674 with 940 HoC created by @r0bari was
     reviewed by @maxonfjvipon after 0h17m and 7 comments.
+  done: 2026-08-01 18:12:02.497427330 Z
   hoc: 940
   is_human: 1
   issue: 4674
@@ -73982,46 +73972,6 @@
   when: 2025-11-18 16:55:12.000000000 Z
   where: github
   who: 37025995
-- _id: 1065945
-  _job: 20516158008
-  _time: 2025-12-26 05:14:43.234965174 Z
-  _version: 0.19.2/0.58.1/0.17.8
-  author: 29139614
-  comments: 3
-  details: The pull request objectionary/on-the-origin-of-objects#54 with 2 HoC created
-    by @renovate[bot] was reviewed by @yegor256 after 0h10m and 0 comments.
-  done: 2026-07-31 22:18:41.056535137 Z
-  hoc: 2
-  is_human: 1
-  issue: 54
-  repository: 499536612
-  review_comments: 0
-  seconds: 641
-  tombstone: 2026-08-01 00:09:47.167014867 Z
-  what: code-was-reviewed
-  when: 2025-11-17 02:58:46.000000000 Z
-  where: github
-  who: 526301
-- _id: 1065946
-  _job: 20516158008
-  _time: 2025-12-26 05:14:45.624405628 Z
-  _version: 0.19.2/0.58.1/0.17.8
-  author: 29139614
-  comments: 3
-  details: The pull request objectionary/reducing-programs-to-objects#58 with 2 HoC
-    created by @renovate[bot] was reviewed by @yegor256 after 1h13m and 0 comments.
-  done: 2026-07-31 22:18:41.328467214 Z
-  hoc: 2
-  is_human: 1
-  issue: 58
-  repository: 493235807
-  review_comments: 0
-  seconds: 4399
-  tombstone: 2026-08-01 00:09:47.173516989 Z
-  what: code-was-reviewed
-  when: 2025-11-17 03:26:14.000000000 Z
-  where: github
-  who: 526301
 - _id: 1065947
   _job: 20516158008
   _time: 2025-12-26 05:14:49.084409140 Z
@@ -77445,6 +77395,7 @@
   repository: 73056727
   review_comments: 7
   seconds: 1040
+  tombstone: 2026-08-01 18:12:02.495141806 Z
   what: code-review-was-rewarded
   when: 2025-12-28 14:22:00.166381950 Z
   where: github
@@ -261149,7 +261100,7 @@
   _version: 0.19.13/0.60.4/0.17.17
   issues:
   - 1-20
-  - 22-53
+  - 22-54
   repository: 499536612
   what: tombstone
   where: github
@@ -261220,7 +261171,7 @@
   - 1-13
   - 15-20
   - 22-52
-  - 54-57
+  - 54-58
   repository: 493235807
   what: tombstone
   where: github
@@ -302734,7 +302685,7 @@
   min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 556
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1107889
@@ -309608,7 +309559,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 831
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 16162131517
   issues_were_scanned: 0
@@ -309618,7 +309569,7 @@
   min_issue_was_found: 457
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 994
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108618
@@ -313372,7 +313323,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 999
   earliest_issue_was_found: 1
   events_were_scanned: 12630243400
   issues_were_scanned: 982
@@ -313382,7 +313333,7 @@
   min_issue_was_found: 601
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 1081
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108989
@@ -316323,7 +316274,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1120
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12634218178
   issues_were_scanned: 0
@@ -316333,7 +316284,7 @@
   min_issue_was_found: 500
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 1088
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109065
@@ -316357,17 +316308,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 4945
   earliest_issue_was_found: 1
   events_were_scanned: 12634891163
   issues_were_scanned: 0
-  labels_were_scanned: 6095
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 5837
+  types_were_scanned: 5980
   what: iterate
   where: github
 - _id: 1109067
@@ -423452,6 +423403,29 @@
   - 1
   - 1
   - 0
+  some_issue_lifetime:
+  - 1987.0
+  - 75556.0
+  - 4096.0
+  - 137826.0
+  - 294.0
+  - 169267.0
+  - 316793.0
+  - 32926.0
+  - 338591.0
+  - 52928.0
+  - 136868.0
+  - 433879.0
+  - 348592.0
+  - 139862.0
+  - 120125.0
+  - 202032.0
+  - 201990.0
+  - 213930.0
+  - 213896.0
+  - 2628875.0
+  - 92494918.0
+  - 22051675.0
   some_merged_pulls:
   - 4
   - 3
@@ -423463,6 +423437,16 @@
   - 23
   - 0
   - 0
+  some_release_commits_size:
+  - 2
+  - 2
+  - 33
+  - 7
+  some_release_hoc_size:
+  - 59
+  - 30
+  - 1076
+  - 1008
   some_review_size:
   - 0
   - 0
@@ -434870,6 +434854,7 @@
   failed_builds: 8
   files: 1
   hoc: 2
+  is_human: 1
   issue: 1125
   repository: 489321585
   succeeded_builds: 9
