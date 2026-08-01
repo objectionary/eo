@@ -150,10 +150,12 @@ final class LnVoid implements Line {
         }
         final String result;
         if (idx < tail.length() && tail.charAt(idx) == '?') {
-            LnVoid.endsClean(tail, idx + 1, this.span);
+            this.endsClean(
+                tail, idx + 1, "the optional marker ? must close a void type annotation"
+            );
             result = out.toString().concat("?");
         } else {
-            LnVoid.endsClean(tail, idx, this.span);
+            this.endsClean(tail, idx, "a union must have no spaces around its pipes");
             result = out.toString();
         }
         return result;
@@ -182,6 +184,9 @@ final class LnVoid implements Line {
      * Parse a formation member {@code &#123;type …&#125;} (R-3.4.8): the
      * types of that formation's voids, single-space separated, none for
      * {@code &#123;&#125;}, no {@code ?} inside.
+     * A formation type does not nest: its entries are plain types, so a
+     * second {@code &#123;} before the closing brace is refused here
+     * rather than left to look like trailing garbage.
      * @param tail The line body after the {@code ?}
      * @param from Index of the opening brace
      * @param out Sink for the promoted member
@@ -193,6 +198,12 @@ final class LnVoid implements Line {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "a `/{…}` formation type must end with `}`"
+            );
+        }
+        if (tail.lastIndexOf('{', close) > from) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "a `/{…}` formation type cannot nest another one"
             );
         }
         out.append('{')
@@ -277,13 +288,15 @@ final class LnVoid implements Line {
 
     /**
      * Verify the rest of {@code tail} from {@code from} onward is only
-     * whitespace; a further {@code /} is a second annotation, anything
-     * else is trailing garbage.
+     * whitespace; a further {@code /} is a second annotation, a
+     * {@code |} is a union that did not end where it looked like it did
+     * — which the caller diagnoses, since only it knows whether an
+     * optional marker was read — and anything else is trailing garbage.
      * @param tail The line body after the {@code ?}
      * @param from Index after the consumed annotation
-     * @param span The source span (for errors)
+     * @param piped What a {@code |} here means
      */
-    private static void endsClean(final String tail, final int from, final Span span) {
+    private void endsClean(final String tail, final int from, final String piped) {
         int idx = from;
         while (idx < tail.length() && tail.charAt(idx) == ' ') {
             idx = idx + 1;
@@ -293,11 +306,11 @@ final class LnVoid implements Line {
             if (tail.charAt(idx) == '/') {
                 message = "a void attribute may carry at most one type annotation";
             } else if (tail.charAt(idx) == '|') {
-                message = "the optional marker ? must close a void type annotation";
+                message = piped;
             } else {
                 message = "trailing garbage after a void type annotation";
             }
-            throw new ParseError(span.line(), span.indent(), message);
+            throw new ParseError(this.span.line(), this.span.indent(), message);
         }
     }
 }

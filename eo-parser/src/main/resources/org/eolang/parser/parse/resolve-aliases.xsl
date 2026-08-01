@@ -3,12 +3,13 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="resolve-aliases" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="resolve-aliases" version="2.0">
   <!--
   Here we go through all objects that are not methods or have
   composite FQN and try to find their references in aliases.
   If we find them, we change their @base attributes.
   -->
+  <xsl:import href="/org/eolang/parser/_specials.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@base and not(contains(@base, '.'))]">
     <xsl:variable name="object" select="."/>
@@ -46,13 +47,12 @@
   </xsl:template>
   <!--
   Resolve every type atom a void's union names (R-3.4.8), leaving the
-  braces, pipes and the trailing "?" that hold the union together where
-  they are.
+  separators that hold the union together where they are.
   -->
   <xsl:template match="@type">
     <xsl:variable name="aliases" select="/object/metas/meta[head='alias']"/>
     <xsl:attribute name="type">
-      <xsl:analyze-string select="." regex="[{{}} ?]">
+      <xsl:analyze-string select="." regex="{$eo:type-seps}">
         <xsl:matching-substring>
           <xsl:value-of select="."/>
         </xsl:matching-substring>

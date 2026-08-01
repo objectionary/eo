@@ -80,13 +80,12 @@
   </xsl:template>
   <!--
   Home every type atom a void's union names (R-3.4.8), one by one, so
-  the braces, pipes and the trailing "?" that hold the union together
-  pass through untouched.
+  the separators that hold the union together pass through untouched.
   -->
   <xsl:template match="@type">
     <xsl:variable name="short" select="/object/metas/meta[head='alias']/part[1]"/>
     <xsl:attribute name="type">
-      <xsl:analyze-string select="." regex="[{{}} ?]">
+      <xsl:analyze-string select="." regex="{$eo:type-seps}">
         <xsl:matching-substring>
           <xsl:value-of select="."/>
         </xsl:matching-substring>

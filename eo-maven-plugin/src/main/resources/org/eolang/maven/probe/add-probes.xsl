@@ -92,6 +92,9 @@
   <!-- The `@type` value is the union of types the void may hold; every -->
   <!-- atom in it, braced formation types included, names an object the -->
   <!-- program refers to nowhere else and so would never be pulled. -->
+  <!-- Before #6189 only the braced ones were probed, because they were -->
+  <!-- the separate `@args` attribute; a plain `/Q.number` is the same -->
+  <!-- kind of reference and is probed now that both live in `@type`. -->
   <!-- Homed formas start with `Φ`, generic type variables (A-F) do not -->
   <!-- and must be skipped, since they are not real objects to probe. -->
   <xsl:template match="o" mode="type" as="element()*">

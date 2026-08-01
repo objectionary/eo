@@ -58,7 +58,7 @@
   <!-- Shorten every forma a void's union names, member by member. -->
   <xsl:template match="o/@type">
     <xsl:attribute name="type">
-      <xsl:analyze-string select="." regex="[{{}} ?]">
+      <xsl:analyze-string select="." regex="{$eo:type-seps}">
         <xsl:matching-substring>
           <xsl:value-of select="."/>
         </xsl:matching-substring>

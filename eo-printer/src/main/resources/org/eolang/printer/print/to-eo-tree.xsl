@@ -232,11 +232,12 @@
   </xsl:template>
   <!-- VOID AS A VERTICAL BODY LINE -->
   <!--
-  A void the bracket head cannot hold, printed as a "? &gt; name" body line
-  (R-3.4.7); "eo:vertical-void" names the three shapes. A "&gt;&gt; name"
-  handle survives "restore-local-names" in @local and keeps the void
-  anonymous; a "/type" or "/{type …}" tail is rendered by
-  "eo:void-type"; and a φ void reverts to its "@" surface spelling.
+  A void the bracket head cannot hold, or one dragged out of it by such a
+  sibling, printed as a "? &gt; name" body line (R-3.4.7);
+  "eo:vertical-void" decides which. A "&gt;&gt; name" handle survives
+  "restore-local-names" in @local and keeps the void anonymous; a "/type"
+  tail is rendered by "eo:void-type"; and a φ void reverts to its "@"
+  surface spelling.
   -->
   <xsl:template match="o[eo:vertical-void(.)]" mode="tree">
     <xsl:variable name="arrow" select="if (exists(@local)) then ' &gt;&gt; ' else ' &gt; '"/>

@@ -34,6 +34,9 @@
   formation type comes out whole, inner spaces and all, every other
   member is one space-separated token. A trailing "?" is not stripped —
   strip it before calling, since it belongs to the union, not a member.
+  The single-level "\{[^}]*\}" is R-3.4.8's rule that a formation type
+  does not nest, the same rule "LnVoid.formation" enforces at parse; if
+  the grammar ever grows nesting, both have to grow with it.
   -->
   <xsl:function name="eo:type-members" as="xs:string*">
     <xsl:param name="anno" as="xs:string"/>
@@ -44,13 +47,16 @@
     </xsl:analyze-string>
   </xsl:function>
   <!--
-  Every type atom a void's "@type" annotation names, braces, pipes,
-  spaces and the trailing "?" dropped: what a pass rewriting individual
-  formas (aliases, default package, alias restoring) has to look at.
+  Every type atom a void's "@type" annotation names, its separators
+  ("eo:type-seps") dropped: what a pass rewriting individual formas
+  (aliases, default package, alias restoring) has to look at. The "+"
+  collapses a run of separators, since only the atoms are wanted here;
+  a pass that re-emits the annotation matches them one at a time instead,
+  to put every brace and space back where it was.
   -->
   <xsl:function name="eo:type-atoms" as="xs:string*">
     <xsl:param name="anno" as="xs:string"/>
-    <xsl:analyze-string select="$anno" regex="[{{}} ?]+">
+    <xsl:analyze-string select="$anno" regex="{concat($eo:type-seps, '+')}">
       <xsl:non-matching-substring>
         <xsl:sequence select="."/>
       </xsl:non-matching-substring>

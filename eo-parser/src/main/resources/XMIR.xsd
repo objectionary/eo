@@ -101,6 +101,10 @@
         members separated by a single space, each a concrete forma, a generic type
         variable A-F or a braced formation type naming the types of that
         formation's voids, with an optional trailing "?" marking the union maybe-⊥.
+        The forma sub-pattern repeats because XSD 1.0 cannot name one, and an
+        xs:list is no help either: a formation type holds spaces of its own. This
+        is one of the encodings of R-3.4.8 — the parser's "LnVoid", the printer's
+        "eo:void-type" and "_funcs.xsl" hold the others, and they move together.
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
