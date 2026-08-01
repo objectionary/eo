@@ -118,7 +118,7 @@ final class MjLintTest {
             );
         maven.execute(new FakeMaven.Lint());
         MatcherAssert.assertThat(
-            "the lint named in eo.skipSourceLints is reported, while it must not run at all",
+            "the lint named in eo.skipSourceLints is still reported",
             new Xnav(
                 maven.programTojo().linted()
             ).path("/object/errors/error[@check='mandatory-spdx/S']").count(),

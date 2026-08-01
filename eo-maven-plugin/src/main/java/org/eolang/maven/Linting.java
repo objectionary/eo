@@ -156,9 +156,6 @@ final class Linting implements Step {
      * @param warning Whether to fail on warnings
      * @param pkg Whether to lint all sources as a package
      * @param skip Whether to skip linting entirely
-     * @todo #6163:90min Group these twelve parameters into objects, one per concern: the lints to
-     *  skip, the cache, the directories. Parsing, Pulling and Probing carry the same clumps, so
-     *  the objects belong to the package rather than to this class alone.
      * @checkstyle ParameterNumberCheck (20 lines)
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
