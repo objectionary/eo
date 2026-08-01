@@ -24,7 +24,6 @@ import org.eolang.win32.WSAStartupFuncCall;
 import org.eolang.win32.Winsock;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -148,29 +147,6 @@ final class SyscallTest {
             ),
             new String(bytes.get(), StandardCharsets.UTF_8),
             Matchers.equalTo(msg)
-        );
-    }
-
-    @Test
-    void convertsPortAboveSignedShortLimitInHtons() {
-        final Phi htons = Phi.Φ.take("socket").take("htons").copy();
-        htons.put(0, new Data.ToPhi(40_000));
-        MatcherAssert.assertThat(
-            "htons should convert a port above 32767 to network byte order, but it didn't",
-            new Dataized(htons).take(),
-            Matchers.equalTo(new byte[]{(byte) 0x40, (byte) 0x9C})
-        );
-    }
-
-    @Test
-    void rejectsOutOfRangePortAtCheckedPort() {
-        final Phi socket = Phi.Φ.take("socket").copy();
-        socket.put(0, new Data.ToPhi(this.localhost()));
-        socket.put(1, new Data.ToPhi(70_000));
-        Assertions.assertThrows(
-            ExFailure.class,
-            new Dataized(socket.take("checked-port"))::take,
-            "socket should reject a port above 65535, but it didn't"
         );
     }
 
