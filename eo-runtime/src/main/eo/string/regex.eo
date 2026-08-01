@@ -37,10 +37,18 @@
         groups.at index > [index] > group
         $ > matched
         exists.if > next
-          matched.
-            matched-from-index
-              position.plus 1
-              to
+          if.
+            and.
+              from.eq to
+              to.eq txt.length
+            missing
+            matched.
+              matched-from-index
+                position.plus 1
+                if.
+                  from.eq to
+                  to.plus 1
+                  to
           T
             "Matched block does not exist, can't get next"
         exists.if > text
@@ -50,6 +58,16 @@
       [] > matched-from-index /Q.string.regex.pattern.match.matched
         ? > position /Q.number
         ? > start /Q.number
+      [] > missing
+        start.gte 0 > exists
+        T > from
+          "Matched block does not exist, can't get 'from' position"
+        T > groups
+          "Matched block does not exist, can't get groups"
+        0 > position
+        -1 > start
+        T > to
+          "Matched block does not exist, can't get 'to' position"
       matched. > next
         matched-from-index 1 0
     [txt] > matches
@@ -59,6 +77,15 @@
           found.from.eq 0
       next. > found
         match txt
+
+  eq. ++> can-advance-after-a-zero-width-match
+    1
+    from.
+      next.
+        next.
+          match.
+            regex "/a*/"
+            "ba"
 
   ++> can-expose-groups-on-each-matched-block
     and. > @
@@ -197,6 +224,14 @@
     compile.
       regex "/[a-z/"
       "recovered" > [message]
+
+  not. ++> stops-on-a-terminal-zero-width-match
+    exists.
+      next.
+        next.
+          match.
+            regex "/$/"
+            "x"
 
   compiled. --> stops-on-a-missing-closing-slash
     regex "/pattern"
