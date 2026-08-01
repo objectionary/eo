@@ -85,18 +85,8 @@ final class MjTranspileTest {
     void tracksStepsOfProgramWithTwoObjects(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "the first tracked step of a program holding two objects did not leave its XMIR in the pre-transpile directory",
-            new FakeMaven(temp).withProgram(
-                String.join(
-                    System.lineSeparator(),
-                    "+package examples",
-                    "",
-                    "# First.",
-                    "[] > x",
-                    "",
-                    "# Second.",
-                    "[] > y"
-                )
-                ).with("trackTransformationSteps", true)
+            new FakeMaven(temp).withProgram(MjTranspileTest.pair())
+                .with("trackTransformationSteps", true)
                 .execute(MjParse.class)
                 .execute(MjTranspile.class)
                 .result(),
@@ -111,18 +101,8 @@ final class MjTranspileTest {
         throws IOException {
         MatcherAssert.assertThat(
             "the second object of a tracked program did not reach the generated Java",
-            new FakeMaven(temp).withProgram(
-                String.join(
-                    System.lineSeparator(),
-                    "+package examples",
-                    "",
-                    "# First.",
-                    "[] > x",
-                    "",
-                    "# Second.",
-                    "[] > y"
-                )
-                ).with("trackTransformationSteps", true)
+            new FakeMaven(temp).withProgram(MjTranspileTest.pair())
+                .with("trackTransformationSteps", true)
                 .execute(MjParse.class)
                 .execute(MjTranspile.class)
                 .result(),
@@ -560,6 +540,23 @@ final class MjTranspileTest {
     private static String instantiating() {
         return String.format(
             "+package foo.x%n%n[] > main%n  [] > inner%n    42 > @%n  42.plus > @%n    []"
+        );
+    }
+
+    /**
+     * The EO program holding two top-level objects.
+     * @return Source code of the program
+     */
+    private static String pair() {
+        return String.join(
+            System.lineSeparator(),
+            "+package examples",
+            "",
+            "# First.",
+            "[] > x",
+            "",
+            "# Second.",
+            "[] > y"
         );
     }
 
