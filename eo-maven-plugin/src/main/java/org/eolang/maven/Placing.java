@@ -67,7 +67,6 @@ final class Placing implements Step {
      * @param includebinaries Inclusion GLOB filters
      * @param excludebinaries Exclusion GLOB filters
      * @param rewritebinaries Whether to overwrite
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     Placing(
         final TjsPlaced placedtojos,

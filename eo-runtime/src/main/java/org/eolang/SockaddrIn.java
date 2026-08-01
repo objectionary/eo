@@ -13,7 +13,6 @@ import java.util.List;
  * The sockaddr_in structure.
  * @since 0.40.0
  * @checkstyle VisibilityModifierCheck (50 lines)
- * @checkstyle ParameterNumberCheck (50 lines)
  */
 public final class SockaddrIn extends Structure {
 
