@@ -43,7 +43,6 @@ final class MethodChain {
      * @param dot Column of the dot
      * @param after Index past this link
      * @param weak Whether the link is a fragile {@code ?.} dispatch
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     MethodChain(final String ident, final int dot, final int after, final boolean weak) {
         this.name = ident;

@@ -55,7 +55,6 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
      * @param offset Offset to read from
      * @param length Number of bytes to read
      * @return The bytes read, or the {@code cant-read} fallback
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private Phi bytes(final int id, final int offset, final int length) {
         final Phi result;

@@ -45,7 +45,6 @@ public final class MjResolve extends MjSafe {
 
     /**
      * The central.
-     * @checkstyle MemberNameCheck (5 lines)
      */
     private BiConsumer<Dependency, Path> central;
 
