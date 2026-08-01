@@ -107,6 +107,30 @@ final class MjTranspileTest {
     }
 
     @Test
+    void transpilesSecondObjectOfProgramWhileTrackingSteps(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "the second object of a tracked program did not reach the generated Java",
+            new FakeMaven(temp).withProgram(
+                String.join(
+                    System.lineSeparator(),
+                    "+package examples",
+                    "",
+                    "# First.",
+                    "[] > x",
+                    "",
+                    "# Second.",
+                    "[] > y"
+                )
+                ).with("trackTransformationSteps", true)
+                .execute(MjParse.class)
+                .execute(MjTranspile.class)
+                .result(),
+            Matchers.hasKey("target/generated/org/eolang/EO_examples/EOy.java")
+        );
+    }
+
+    @Test
     void wrapsObjectsIntoPhCoverageWhenTrackingEnabled(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "the generated Java must wrap located objects into PhCoverage when coverageTracking is on",
