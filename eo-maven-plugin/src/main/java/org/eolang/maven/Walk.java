@@ -53,9 +53,7 @@ final class Walk extends ListEnvelope<Path> {
      */
     @SuppressWarnings("PMD.LooseCoupling")
     Walk includes(final Collection<String> globs) {
-        final List<PathMatcher> matchers = globs.stream()
-            .map(Walk::compile)
-            .collect(Collectors.toList());
+        final List<PathMatcher> matchers = Walk.compiledMatchers(globs);
         return new Walk(
             this.home,
             this.stream().filter(
@@ -74,9 +72,7 @@ final class Walk extends ListEnvelope<Path> {
      */
     @SuppressWarnings("PMD.LooseCoupling")
     Walk excludes(final Collection<String> globs) {
-        final List<PathMatcher> matchers = globs.stream()
-            .map(Walk::compile)
-            .collect(Collectors.toList());
+        final List<PathMatcher> matchers = Walk.compiledMatchers(globs);
         return new Walk(
             this.home,
             this.stream().filter(
@@ -86,6 +82,17 @@ final class Walk extends ListEnvelope<Path> {
                 )
                 .collect(Collectors.toList())
         );
+    }
+
+    /**
+     * Compiled matchers.
+     * @param globs Globs
+     * @return List of PathMatchers
+     */
+    private static List<PathMatcher> compiledMatchers(final Collection<String> globs) {
+        return globs.stream()
+            .map(Walk::compile)
+            .collect(Collectors.toList());
     }
 
     /**
