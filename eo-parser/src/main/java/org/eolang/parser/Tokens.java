@@ -664,15 +664,17 @@ final class Tokens {
     }
 
     /**
-     * Whether the root identifier at the index is glued to a letter or
-     * a digit, as the legacy {@code QQ.io.stdout} head is.
+     * Whether the root identifier at the index is glued to a NAME
+     * character, as the legacy {@code QQ.io.stdout} head is. A root
+     * ends at a NAME terminator, so anything else standing next to it
+     * belongs to the same token.
      * @param body Body
      * @param idx Index of the root character
-     * @return True if a letter or a digit follows the root
+     * @return True if a NAME character follows the root
      */
     private static boolean glued(final String body, final int idx) {
         return idx + 1 < body.length()
-            && Character.isLetterOrDigit(body.charAt(idx + 1));
+            && !Tokens.terminates(body.charAt(idx + 1));
     }
 
     /**

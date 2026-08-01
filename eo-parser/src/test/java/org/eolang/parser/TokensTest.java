@@ -315,6 +315,15 @@ final class TokensTest {
     }
 
     @Test
+    void rejectsRootGluedToHyphen() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Tokens("Q-foo", new Span("Q-foo", 1)).readRoot(),
+            "readRoot must reject a root glued to a hyphen, which is a NAME character"
+        );
+    }
+
+    @Test
     void readsRootFollowedByDot() {
         MatcherAssert.assertThat(
             "`^.foo` must read its root and stop right before the dot",
