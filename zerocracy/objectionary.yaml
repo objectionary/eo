@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2161.94501432
+  seconds: 1839.271038889
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-01 20:21:11.386861524 Z
+  when: 2026-08-01 21:57:31.761972299 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -41228,20 +41228,6 @@
   when: 2025-11-19 13:07:56.000000000 Z
   where: github
   who: 41898282
-- _id: 1046132
-  _job: 19503429032
-  _time: 2025-11-19 13:53:41.641672396 Z
-  _version: 0.16.8/0.55.0/0.16.1
-  branch: 4673-fixing-eo-runtime
-  details: The missing pull objectionary/eo#4674 has been opened by @r0bari.
-  is_human: 1
-  issue: 4674
-  repository: 73056727
-  tombstone: 2026-08-01 18:12:02.490789972 Z
-  what: pull-was-opened
-  when: 2025-11-18 16:37:52.000000000 Z
-  where: github
-  who: 56538398
 - _id: 1046138
   _job: 19503429032
   _time: 2025-11-19 13:53:51.559605042 Z
@@ -73624,46 +73610,6 @@
   where: github
   who: 526301
   why: Reviewed code in objectionary/eo#4649
-- _id: 1065939
-  _job: 20516158008
-  _time: 2025-12-26 05:14:18.622374468 Z
-  _version: 0.19.2/0.58.1/0.17.8
-  author: 56538398
-  comments: 4
-  details: The pull request objectionary/eo#4674 with 940 HoC created by @r0bari was
-    reviewed by @coderabbitai[bot] after 0h8m and 6 comments.
-  done: 2026-08-01 18:12:02.462772024 Z
-  hoc: 940
-  is_human: 0
-  issue: 4674
-  repository: 73056727
-  review_comments: 6
-  seconds: 503
-  tombstone: 2026-08-01 18:41:54.546899610 Z
-  what: code-was-reviewed
-  when: 2025-11-18 16:46:15.000000000 Z
-  where: github
-  who: 136622811
-- _id: 1065940
-  _job: 20516158008
-  _time: 2025-12-26 05:14:19.822509413 Z
-  _version: 0.19.2/0.58.1/0.17.8
-  author: 56538398
-  comments: 4
-  details: The pull request objectionary/eo#4674 with 940 HoC created by @r0bari was
-    reviewed by @maxonfjvipon after 0h17m and 7 comments.
-  done: 2026-08-01 18:12:02.497427330 Z
-  hoc: 940
-  is_human: 1
-  issue: 4674
-  repository: 73056727
-  review_comments: 7
-  seconds: 1040
-  tombstone: 2026-08-01 18:41:54.551667460 Z
-  what: code-was-reviewed
-  when: 2025-11-18 16:55:12.000000000 Z
-  where: github
-  who: 37025995
 - _id: 1065947
   _job: 20516158008
   _time: 2025-12-26 05:14:49.084409140 Z
@@ -302377,7 +302323,7 @@
   min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 556
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1107889
@@ -304191,7 +304137,7 @@
   - 4656-4658
   - 4661-4663
   - 4665-4671
-  - '4673'
+  - 4673-4674
   repository: 73056727
   what: tombstone
   where: github
@@ -309249,7 +309195,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 831
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 16162131517
   issues_were_scanned: 0
@@ -309259,7 +309205,7 @@
   min_issue_was_found: 457
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 597
+  types_were_scanned: 854
   what: iterate
   where: github
 - _id: 1108618
@@ -313013,7 +312959,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 999
   earliest_issue_was_found: 1
   events_were_scanned: 12630243400
   issues_were_scanned: 982
@@ -313023,7 +312969,7 @@
   min_issue_was_found: 601
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 816
+  types_were_scanned: 1081
   what: iterate
   where: github
 - _id: 1108989
@@ -315964,7 +315910,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1120
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12636052317
   issues_were_scanned: 0
@@ -315974,7 +315920,7 @@
   min_issue_was_found: 500
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 1088
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109065
@@ -315998,17 +315944,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5299
+  assignees_were_scanned: 5485
   earliest_issue_was_found: 1
-  events_were_scanned: 12638182270
+  events_were_scanned: 12639821725
   issues_were_scanned: 0
-  labels_were_scanned: 6095
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 6133
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109067
@@ -422792,6 +422738,28 @@
   _time: 2026-07-30 19:32:49.211064711 Z
   _version: 0.19.16/0.61.1/0.17.21
   since: *3733
+  some_backlog_size:
+  - 6
+  - 6
+  - 6
+  - 6
+  - 6
+  - 11
+  - 7
+  - 2
+  - 2
+  - 2
+  - 2
+  - 2
+  - 2
+  - 2
+  - 56
+  - 56
+  - 56
+  - 56
+  - 56
+  - 56
+  - 56
   some_build_duration:
   - 23
   - 35
@@ -423137,6 +423105,13 @@
   - 30
   - 1076
   - 1008
+  some_release_interval:
+  - 21402.0
+  - 417226.0
+  - 9299.0
+  - 852.0
+  - 3558.0
+  - 5107.0
   some_review_size:
   - 0
   - 0
@@ -434640,6 +434615,72 @@
   repository: 73056727
   review_comments: 10
   what: pull-was-reviewed
-  when: 2026-08-01 18:24:04.000000000 Z
+  when: &3830 2026-08-01 18:24:04.000000000 Z
+  where: github
+  who: 96509556
+- _id: 1115545
+  _job: 84760
+  _time: 2026-08-01 20:23:19.300569500 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 83453843
+  comments: 17
+  details: The pull request objectionary/eo#6151 with 95 HoC created by @h1alexbel
+    was reviewed by @thayorns after 2d and 17 comments.
+  hoc: 95
+  is_human: 1
+  issue: 6151
+  repository: 73056727
+  review_comments: 10
+  seconds: 173057
+  what: code-was-reviewed
+  when: *3830
+  where: github
+  who: 96509556
+- _id: 1115546
+  _job: 30719115038
+  _time: 2026-08-01 21:27:17.692136394 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 23
+  commits: 3
+  details: The pull request objectionary/eo#6193 has been reviewed by @gemshrine with
+    54 HoC and 23 comments.
+  event_id: 12639392166
+  event_type: PullRequestReviewEvent
+  files: 2
+  hoc: 54
+  is_human: 1
+  issue: 6193
+  repository: 73056727
+  review_comments: 18
+  what: pull-was-reviewed
+  when: 2026-08-01 20:44:07.000000000 Z
+  where: github
+  who: 113778529
+- _id: 1115547
+  _job: 30719115038
+  _time: 2026-08-01 21:27:23.343664283 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6246 has been closed by @thayorns.
+  event_id: 12638705836
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6246
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-01 20:06:49.000000000 Z
+  where: github
+  who: 96509556
+- _id: 1115548
+  _job: 30719115038
+  _time: 2026-08-01 21:27:24.506881065 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6244 has been closed by @thayorns.
+  event_id: 12638705166
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6244
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-01 20:06:47.000000000 Z
   where: github
   who: 96509556
