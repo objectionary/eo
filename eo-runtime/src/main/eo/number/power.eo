@@ -241,6 +241,18 @@
       ninf
     0
 
+  eq. ++> can-raise-negative-zero-to-even-negative
+    power
+      -0
+      -4
+    pinf
+
+  eq. ++> can-raise-negative-zero-to-even-positive
+    power
+      -0
+      4
+    0
+
   eq. ++> can-raise-negative-zero-to-odd-negative
     power
       -0
