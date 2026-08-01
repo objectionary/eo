@@ -8,6 +8,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.regex.PatternSyntaxException;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.set.SetOf;
@@ -99,16 +100,22 @@ final class MjRegisterTest {
      * Cause.
      * @param err Error
      * @param type Type we are looking for
+     * @param <T> Type of expected error
      * @return Throwable
      */
-    private static Throwable cause(
+    private static <T extends Throwable> T cause(
         final Throwable err,
-        final Class<? extends Throwable> type
+        final Class<T> type
     ) {
+        Optional<T> found = Optional.empty();
         Throwable current = err;
-        while (current != null && !type.isInstance(current)) {
-            current = current.getCause();
+        while (current != null && found.isEmpty()) {
+            if (type.isInstance(current)) {
+                found = Optional.of(type.cast(current));
+            } else {
+                current = current.getCause();
+            }
         }
-        return current;
+        return found.get();
     }
 }
