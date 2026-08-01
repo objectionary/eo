@@ -2,18 +2,11 @@
 - added: 8
   cycles: 1
   deleted: 8
-  error:
-  - Failed to open TCP connection to api.github.com:443 (user specified timeout for
-    140.82.114.6:443)
-  - Failed to open TCP connection to api.github.com:443 (user specified timeout for
-    140.82.114.6:443)
-  - 'Failure in repository #671896902 at #1538: Failed to open TCP connection to api.github.com:443
-    (user specified timeout for 140.82.114.6:443)'
   inserted: 8
-  seconds: 2132.647026902
+  seconds: 2160.489523838
   version: 0.61.1
   what: judges-summary
-  when: 2026-07-31 22:16:01.803382870 Z
+  when: 2026-08-01 00:08:26.272631972 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -38532,6 +38525,7 @@
   is_human: 1
   issue: 4595
   repository: 73056727
+  tombstone: 2026-07-31 22:18:40.887079372 Z
   what: issue-was-opened
   when: 2025-09-29 15:23:00.000000000 Z
   where: github
@@ -39089,6 +39083,7 @@
   issue: 4595
   label: bug
   repository: 73056727
+  tombstone: 2026-07-31 22:18:40.889204026 Z
   what: label-was-attached
   when: 2025-09-29 15:23:02.000000000 Z
   where: github
@@ -40770,6 +40765,7 @@
   is_human: 1
   issue: 157
   repository: 798766850
+  tombstone: 2026-07-31 22:18:40.775985641 Z
   what: issue-was-opened
   when: 2025-11-11 14:21:35.000000000 Z
   where: github
@@ -40783,6 +40779,7 @@
   is_human: 1
   issue: 157
   repository: 798766850
+  tombstone: 2026-07-31 22:18:40.778560128 Z
   what: issue-was-assigned
   when: 2025-11-11 15:49:23.000000000 Z
   where: github
@@ -40825,6 +40822,7 @@
   is_human: 0
   issue: 1417
   repository: 671896902
+  tombstone: 2026-07-31 22:18:41.554200972 Z
   what: pull-was-opened
   when: 2025-11-17 02:04:24.000000000 Z
   where: github
@@ -40845,6 +40843,7 @@
   issue: 788
   repository: 489321585
   review_comments: 0
+  tombstone: 2026-07-31 22:18:41.164300651 Z
   what: pull-was-reviewed
   when: &206 2025-11-17 03:11:40.000000000 Z
   where: github
@@ -40860,6 +40859,7 @@
   is_human: 0
   issue: 788
   repository: 489321585
+  tombstone: 2026-07-31 22:18:41.166025314 Z
   what: pull-was-opened
   when: 2025-11-17 02:51:52.000000000 Z
   where: github
@@ -40880,6 +40880,7 @@
   issue: 193
   repository: 970961472
   review_comments: 0
+  tombstone: 2026-07-31 22:18:40.647970014 Z
   what: pull-was-reviewed
   when: &207 2025-11-17 02:55:33.000000000 Z
   where: github
@@ -40895,6 +40896,7 @@
   is_human: 0
   issue: 193
   repository: 970961472
+  tombstone: 2026-07-31 22:18:40.649701641 Z
   what: pull-was-opened
   when: 2025-11-17 02:40:42.000000000 Z
   where: github
@@ -40956,6 +40958,7 @@
   comments_to_code: 0
   details: The pull request objectionary/phie#109 has been closed by @raprogramm,
     with 0 HoC and 0 comments.
+  done: 2026-07-31 22:18:42.084611745 Z
   event_id: 4712141403
   event_type: PullRequestEvent
   failed_builds: 0
@@ -40979,6 +40982,7 @@
   is_human: 1
   issue: 109
   repository: 447446664
+  tombstone: 2026-07-31 22:18:42.112021312 Z
   what: pull-was-opened
   when: 2025-11-17 00:33:26.000000000 Z
   where: github
@@ -41018,6 +41022,7 @@
   review: 2025-11-17 02:55:32.000000000 Z
   review_comments: 0
   succeeded_builds: 8
+  tombstone: 2026-07-31 22:18:40.651359333 Z
   what: pull-was-merged
   when: &210 2025-11-17 03:05:40.000000000 Z
   where: github
@@ -41042,6 +41047,7 @@
   repository: 671896902
   review_comments: 0
   succeeded_builds: 19
+  tombstone: 2026-07-31 22:18:41.556111117 Z
   what: pull-was-merged
   when: &211 2025-11-17 03:00:24.000000000 Z
   where: github
@@ -41054,6 +41060,7 @@
   is_human: 1
   issue: 162
   repository: 798766850
+  tombstone: 2026-07-31 22:18:40.819248459 Z
   what: issue-was-opened
   when: 2025-11-16 16:56:26.000000000 Z
   where: github
@@ -41066,6 +41073,7 @@
   comments: 1
   details: The pull request objectionary/eoc#788 with 2 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 19m47s and 1 comments.
+  done: 2026-07-31 22:18:41.138969905 Z
   hoc: 2
   is_human: 1
   issue: 788
@@ -41090,6 +41098,7 @@
   repository: 970961472
   review_comments: 0
   seconds: 891
+  tombstone: 2026-07-31 22:18:40.653040327 Z
   what: code-was-reviewed
   when: *207
   where: github
@@ -41103,6 +41112,7 @@
   issue: 157
   label: bug
   repository: 798766850
+  tombstone: 2026-07-31 22:18:40.780948607 Z
   what: label-was-attached
   when: &208 2025-11-17 10:07:02.000000000 Z
   where: github
@@ -41116,6 +41126,7 @@
   issue: 162
   label: bug
   repository: 798766850
+  tombstone: 2026-07-31 22:18:40.821326098 Z
   what: label-was-attached
   when: &209 2025-11-16 22:13:49.000000000 Z
   where: github
@@ -41143,6 +41154,7 @@
   is_human: 1
   issue: 456
   repository: 977982682
+  tombstone: 2026-07-31 22:18:41.389599967 Z
   what: pull-was-opened
   when: 2025-11-17 11:28:38.000000000 Z
   where: github
@@ -41155,6 +41167,7 @@
   comments: 3
   details: It's time to reward @yegor256 for the code review in objectionary/eo-lsp-server#193,
     the reward amount is 4.
+  done: 2026-07-31 22:18:40.622796503 Z
   hoc: 2
   href: https://github.com/objectionary/eo-lsp-server/issues/193/#issuecomment-3542119974
   is_human: 1
@@ -41173,6 +41186,7 @@
   _version: 0.16.8/0.57.1/0.16.1
   details: "@maxonfjvipon attached the '#bug' label to objectionary/eo2js#157 reported
     by @skulidropek; this means that a bug was accepted as valid, by the project team."
+  done: 2026-07-31 22:18:40.735326271 Z
   is_human: 1
   issue: 157
   reporter: 66840575
@@ -41187,6 +41201,7 @@
   _version: 0.16.8/0.57.1/0.16.1
   details: "@maxonfjvipon attached the '#bug' label to objectionary/eo2js#162 reported
     by @svmukhin; this means that a bug was accepted as valid, by the project team."
+  done: 2026-07-31 22:18:40.791967627 Z
   is_human: 1
   issue: 162
   reporter: 33164517
@@ -41209,6 +41224,7 @@
   repository: 970961472
   review_comments: 0
   seconds: 1498
+  tombstone: 2026-07-31 22:18:40.654621544 Z
   what: code-was-contributed
   when: *210
   where: github
@@ -41262,6 +41278,7 @@
   review: 2025-11-17 11:44:00.000000000 Z
   review_comments: 1
   succeeded_builds: 13
+  tombstone: 2026-07-31 22:18:41.391673620 Z
   what: pull-was-merged
   when: &217 2025-11-17 11:50:44.000000000 Z
   where: github
@@ -41274,6 +41291,7 @@
   details: The pull request objectionary/jeo-maven-plugin#1417 with 2 HoC created
     by @renovate[bot] was merged by @rultor after 55m59s of being in review and 5
     comments.
+  done: 2026-07-31 22:18:41.527682486 Z
   hoc: 2
   is_human: 0
   issue: 1417
@@ -41308,6 +41326,7 @@
   is_human: 0
   issue: 4669
   repository: 73056727
+  tombstone: 2026-07-31 22:18:40.979614467 Z
   what: pull-was-opened
   when: 2025-11-16 14:19:36.000000000 Z
   where: github
@@ -41321,6 +41340,7 @@
   is_human: 0
   issue: 4670
   repository: 73056727
+  tombstone: 2026-07-31 22:18:41.584500716 Z
   what: pull-was-opened
   when: 2025-11-17 00:19:17.000000000 Z
   where: github
@@ -41334,6 +41354,7 @@
   is_human: 1
   issue: 4671
   repository: 73056727
+  tombstone: 2026-07-31 22:18:41.459687099 Z
   what: pull-was-opened
   when: 2025-11-17 15:46:58.000000000 Z
   where: github
@@ -41359,6 +41380,7 @@
   is_human: 0
   issue: 163
   repository: 798766850
+  tombstone: 2026-07-31 22:18:41.319573969 Z
   what: pull-was-opened
   when: 2025-11-17 01:14:53.000000000 Z
   where: github
@@ -41483,6 +41505,7 @@
   is_human: 0
   issue: 1424
   repository: 671896902
+  tombstone: 2026-07-31 22:18:41.710668912 Z
   what: issue-was-closed
   when: 2025-11-18 11:33:11.000000000 Z
   where: github
@@ -41556,6 +41579,7 @@
   review: 2025-11-17 03:24:50.000000000 Z
   review_comments: 0
   succeeded_builds: 11
+  tombstone: 2026-07-31 22:18:41.321945998 Z
   what: pull-was-merged
   when: &218 2025-11-17 04:00:07.000000000 Z
   where: github
@@ -41704,6 +41728,7 @@
   review: 2025-11-16 16:45:14.000000000 Z
   review_comments: 0
   succeeded_builds: 22
+  tombstone: 2026-07-31 22:18:40.981717258 Z
   what: pull-was-merged
   when: &224 2025-11-16 16:58:33.000000000 Z
   where: github
@@ -41728,6 +41753,7 @@
   repository: 73056727
   review_comments: 0
   succeeded_builds: 22
+  tombstone: 2026-07-31 22:18:41.586533678 Z
   what: pull-was-merged
   when: &225 2025-11-17 04:31:27.000000000 Z
   where: github
@@ -41753,6 +41779,7 @@
   review: 2025-11-17 17:19:21.000000000 Z
   review_comments: 0
   succeeded_builds: 22
+  tombstone: 2026-07-31 22:18:41.461763870 Z
   what: pull-was-merged
   when: &226 2025-11-17 18:17:50.000000000 Z
   where: github
@@ -41819,6 +41846,7 @@
   is_human: 0
   issue: 1423
   repository: 671896902
+  tombstone: 2026-07-31 22:18:41.749929029 Z
   what: issue-was-closed
   when: 2025-11-18 12:36:41.000000000 Z
   where: github
@@ -41945,6 +41973,7 @@
   issue: 157
   receipt: receipt-#49592
   repository: 798766850
+  tombstone: 2026-07-31 22:18:40.783140660 Z
   what: bug-report-was-rewarded
   when: 2025-11-18 12:24:38.677598258 Z
   where: github
@@ -41962,6 +41991,7 @@
   issue: 162
   receipt: receipt-#49593
   repository: 798766850
+  tombstone: 2026-07-31 22:18:40.823321137 Z
   what: bug-report-was-rewarded
   when: 2025-11-18 12:24:44.824917270 Z
   where: github
@@ -41977,6 +42007,7 @@
   is_human: 0
   issue: 1422
   repository: 671896902
+  tombstone: 2026-07-31 22:18:41.785145601 Z
   what: issue-was-closed
   when: 2025-11-18 14:30:07.000000000 Z
   where: github
@@ -41991,6 +42022,7 @@
   is_human: 0
   issue: 1418
   repository: 671896902
+  tombstone: 2026-07-31 22:18:41.639349605 Z
   what: pull-was-opened
   when: 2025-11-17 09:52:41.000000000 Z
   where: github
@@ -42005,6 +42037,7 @@
   is_human: 1
   issue: 1419
   repository: 671896902
+  tombstone: 2026-07-31 22:18:41.425591699 Z
   what: pull-was-opened
   when: 2025-11-17 12:19:41.000000000 Z
   where: github
@@ -42018,6 +42051,7 @@
   is_human: 0
   issue: 1420
   repository: 671896902
+  tombstone: 2026-07-31 22:18:41.820153975 Z
   what: issue-was-opened
   when: &231 2025-11-17 12:43:57.000000000 Z
   where: github
@@ -42031,6 +42065,7 @@
   is_human: 0
   issue: 1421
   repository: 671896902
+  tombstone: 2026-07-31 22:18:41.855921422 Z
   what: issue-was-opened
   when: &232 2025-11-17 12:43:58.000000000 Z
   where: github
@@ -42055,6 +42090,7 @@
   repository: 671896902
   review_comments: 0
   succeeded_builds: 19
+  tombstone: 2026-07-31 22:18:41.642696251 Z
   what: pull-was-merged
   when: &227 2025-11-17 10:33:39.000000000 Z
   where: github
@@ -42080,6 +42116,7 @@
   review: 2025-11-17 12:25:06.000000000 Z
   review_comments: 6
   succeeded_builds: 19
+  tombstone: 2026-07-31 22:18:41.427612243 Z
   what: pull-was-merged
   when: &228 2025-11-17 12:43:52.000000000 Z
   where: github
@@ -42160,6 +42197,7 @@
   is_human: 0
   issue: 1424
   repository: 671896902
+  tombstone: 2026-07-31 22:18:41.714222454 Z
   what: issue-was-opened
   when: &214 2025-11-17 12:44:01.000000000 Z
   where: github
@@ -42173,6 +42211,7 @@
   is_human: 0
   issue: 1423
   repository: 671896902
+  tombstone: 2026-07-31 22:18:41.752603842 Z
   what: issue-was-opened
   when: &215 2025-11-17 12:44:00.000000000 Z
   where: github
@@ -42186,6 +42225,7 @@
   is_human: 0
   issue: 1422
   repository: 671896902
+  tombstone: 2026-07-31 22:18:41.787682465 Z
   what: issue-was-opened
   when: &216 2025-11-17 12:43:59.000000000 Z
   where: github
@@ -42198,6 +42238,7 @@
   details: 'In the repository #671896902, the user #24456188 submitted the issue #1424
     which was later closed by the user #8086956 not becoming a bug or enhancement;
     this means that the issue was not valid, maybe a duplicate or simply a mistake.'
+  done: 2026-07-31 22:18:41.675454418 Z
   is_human: 0
   issue: 1424
   repository: 671896902
@@ -42213,6 +42254,7 @@
   details: 'In the repository #671896902, the user #24456188 submitted the issue #1423
     which was later closed by the user #8086956 not becoming a bug or enhancement;
     this means that the issue was not valid, maybe a duplicate or simply a mistake.'
+  done: 2026-07-31 22:18:41.717580176 Z
   is_human: 0
   issue: 1423
   repository: 671896902
@@ -42228,6 +42270,7 @@
   details: 'In the repository #671896902, the user #24456188 submitted the issue #1422
     which was later closed by the user #8086956 not becoming a bug or enhancement;
     this means that the issue was not valid, maybe a duplicate or simply a mistake.'
+  done: 2026-07-31 22:18:41.755172922 Z
   is_human: 0
   issue: 1422
   repository: 671896902
@@ -42258,6 +42301,7 @@
   is_human: 1
   issue: 4595
   repository: 73056727
+  tombstone: 2026-07-31 22:18:40.891138349 Z
   what: issue-was-closed
   when: &242 2025-11-17 18:17:51.000000000 Z
   where: github
@@ -42276,6 +42320,7 @@
   repository: 977982682
   review_comments: 1
   seconds: 1326
+  tombstone: 2026-07-31 22:18:41.393700602 Z
   what: code-was-contributed
   when: *217
   where: github
@@ -42294,6 +42339,7 @@
   repository: 798766850
   review_comments: 0
   seconds: 9914
+  tombstone: 2026-07-31 22:18:41.324165127 Z
   what: code-was-contributed
   when: *218
   where: github
@@ -42445,6 +42491,7 @@
   repository: 73056727
   review_comments: 0
   seconds: 9537
+  tombstone: 2026-07-31 22:18:40.983621309 Z
   what: code-was-contributed
   when: *224
   where: github
@@ -42456,6 +42503,7 @@
   comments: 2
   details: The pull request objectionary/eo#4670 with 2 HoC created by @renovate[bot]
     was merged by @yegor256 after 4h12m of being in review and 2 comments.
+  done: 2026-07-31 22:18:41.557990132 Z
   hoc: 2
   is_human: 0
   issue: 4670
@@ -42481,6 +42529,7 @@
   repository: 73056727
   review_comments: 0
   seconds: 9052
+  tombstone: 2026-07-31 22:18:41.464040544 Z
   what: code-was-contributed
   when: *226
   where: github
@@ -42493,6 +42542,7 @@
   details: The pull request objectionary/jeo-maven-plugin#1418 with 2 HoC created
     by @renovate[bot] was merged by @rultor after 40m57s of being in review and 5
     comments.
+  done: 2026-07-31 22:18:41.588396702 Z
   hoc: 2
   is_human: 0
   issue: 1418
@@ -42519,6 +42569,7 @@
   repository: 671896902
   review_comments: 6
   seconds: 1451
+  tombstone: 2026-07-31 22:18:41.429523833 Z
   what: code-was-contributed
   when: *228
   where: github
@@ -42576,6 +42627,7 @@
   repository: 977982682
   review_comments: 1
   seconds: 1326
+  tombstone: 2026-07-31 22:18:41.395815309 Z
   what: code-contribution-was-rewarded
   when: 2025-11-19 01:34:48.739707665 Z
   where: github
@@ -42680,6 +42732,7 @@
   repository: 73056727
   review_comments: 0
   seconds: 9052
+  tombstone: 2026-07-31 22:18:41.465978279 Z
   what: code-contribution-was-rewarded
   when: 2025-11-19 06:19:15.366108197 Z
   where: github
@@ -42836,6 +42889,7 @@
   is_human: 0
   issue: 1421
   repository: 671896902
+  tombstone: 2026-07-31 22:18:41.858402075 Z
   what: issue-was-closed
   when: 2025-11-19 10:56:22.000000000 Z
   where: github
@@ -42855,6 +42909,7 @@
   repository: 671896902
   review_comments: 6
   seconds: 1451
+  tombstone: 2026-07-31 22:18:41.431414529 Z
   what: code-contribution-was-rewarded
   when: 2025-11-19 08:19:08.582026738 Z
   where: github
@@ -42906,6 +42961,7 @@
   is_human: 0
   issue: 1420
   repository: 671896902
+  tombstone: 2026-07-31 22:18:41.822812566 Z
   what: issue-was-closed
   when: 2025-11-19 12:10:52.000000000 Z
   where: github
@@ -42934,6 +42990,7 @@
   details: 'In the repository #671896902, the user #24456188 submitted the issue #1420
     which was later closed by the user #8086956 not becoming a bug or enhancement;
     this means that the issue was not valid, maybe a duplicate or simply a mistake.'
+  done: 2026-07-31 22:18:41.790227930 Z
   is_human: 0
   issue: 1420
   repository: 671896902
@@ -42949,6 +43006,7 @@
   details: 'In the repository #671896902, the user #24456188 submitted the issue #1421
     which was later closed by the user #8086956 not becoming a bug or enhancement;
     this means that the issue was not valid, maybe a duplicate or simply a mistake.'
+  done: 2026-07-31 22:18:41.825692394 Z
   is_human: 0
   issue: 1421
   repository: 671896902
@@ -43190,6 +43248,7 @@
   review: 2025-11-17 03:11:39.000000000 Z
   review_comments: 0
   succeeded_builds: 16
+  tombstone: 2026-07-31 22:18:41.167753416 Z
   what: pull-was-merged
   when: &238 2025-11-19 10:14:43.000000000 Z
   where: github
@@ -43502,6 +43561,7 @@
   repository: 489321585
   review_comments: 0
   seconds: 199371
+  tombstone: 2026-07-31 22:18:41.169383096 Z
   what: code-was-contributed
   when: *238
   where: github
@@ -43677,6 +43737,7 @@
   repository: 489321585
   review_comments: 0
   seconds: 1188
+  tombstone: 2026-07-31 22:18:41.171038736 Z
   what: code-review-was-rewarded
   when: 2025-11-20 02:53:28.320121310 Z
   where: github
@@ -43691,6 +43752,7 @@
   is_human: 1
   issue: 4595
   repository: 73056727
+  tombstone: 2026-07-31 22:18:40.893015192 Z
   what: issue-was-assigned
   when: 2025-11-17 11:47:45.000000000 Z
   where: github
@@ -43730,6 +43792,7 @@
   details: The bug/feature in the issue objectionary/eo#4595 opened @yegor256 by was
     resolved, after 6h30m of waiting, because it was closed by @yegor256 and earlier
     it was assigned to @r0bari and the label '#bug' was attached.
+  done: 2026-07-31 22:18:40.860314109 Z
   is_human: 1
   issue: 4595
   label: bug
@@ -44633,6 +44696,7 @@
   is_human: 0
   issue: 162
   repository: 798766850
+  tombstone: 2026-07-31 22:18:40.825246063 Z
   what: issue-was-closed
   when: 2025-11-21 12:07:37.000000000 Z
   where: github
@@ -45425,6 +45489,7 @@
   issue: 4595
   receipt: receipt-#50581
   repository: 73056727
+  tombstone: 2026-07-31 22:18:40.894846500 Z
   what: resolved-bug-was-rewarded
   when: 2025-11-24 10:21:01.335665074 Z
   where: github
@@ -45743,6 +45808,7 @@
   is_human: 0
   issue: 157
   repository: 798766850
+  tombstone: 2026-07-31 22:18:40.785324056 Z
   what: issue-was-closed
   when: &267 2025-11-24 12:28:04.000000000 Z
   where: github
@@ -45881,6 +45947,7 @@
   opener: 66840575
   repository: 798766850
   seconds: 1111121
+  tombstone: 2026-07-31 22:18:40.787592237 Z
   what: bug-was-resolved
   when: *267
   where: github
@@ -52891,6 +52958,7 @@
   review: 2025-11-17 03:17:26.000000000 Z
   succeeded_builds: 13
   suggestions: 0
+  tombstone: 2026-07-31 22:18:41.227394087 Z
   what: pull-was-closed
   when: 2025-11-17 04:07:10.000000000 Z
   where: github
@@ -52934,6 +53002,7 @@
   is_human: 0
   issue: 374
   repository: 13623548
+  tombstone: 2026-07-31 22:18:41.229182081 Z
   what: pull-was-opened
   when: 2025-11-17 01:32:18.000000000 Z
   where: github
@@ -53009,6 +53078,7 @@
   review: 2025-11-17 03:12:01.000000000 Z
   succeeded_builds: 10
   suggestions: 0
+  tombstone: 2026-07-31 22:18:41.197466966 Z
   what: pull-was-closed
   when: 2025-11-17 03:12:02.000000000 Z
   where: github
@@ -53037,6 +53107,7 @@
   is_human: 0
   issue: 244
   repository: 543969974
+  tombstone: 2026-07-31 22:18:41.199229841 Z
   what: pull-was-opened
   when: 2025-11-17 01:08:24.000000000 Z
   where: github
@@ -55000,6 +55071,7 @@
   issue: 62
   repository: 574459304
   review_comments: 0
+  tombstone: 2026-07-31 22:18:41.046987880 Z
   what: pull-was-reviewed
   when: &426 2025-11-17 02:56:39.000000000 Z
   where: github
@@ -55015,6 +55087,7 @@
   is_human: 0
   issue: 62
   repository: 574459304
+  tombstone: 2026-07-31 22:18:41.048857197 Z
   what: pull-was-opened
   when: 2025-11-17 02:26:17.000000000 Z
   where: github
@@ -55041,6 +55114,7 @@
   review_comments: 0
   succeeded_builds: 14
   suggestions: 0
+  tombstone: 2026-07-31 22:18:41.050891903 Z
   what: pull-was-merged
   when: &427 2025-11-17 03:09:52.000000000 Z
   where: github
@@ -55053,6 +55127,7 @@
   comments: 3
   details: The pull request objectionary/jucs#62 with 2 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 30m21s and 3 comments.
+  done: 2026-07-31 22:18:41.020825835 Z
   hoc: 2
   is_human: 1
   issue: 62
@@ -55077,6 +55152,7 @@
   repository: 574459304
   review_comments: 0
   seconds: 2615
+  tombstone: 2026-07-31 22:18:41.052802480 Z
   what: code-was-contributed
   when: *427
   where: github
@@ -57501,6 +57577,7 @@
   is_human: 0
   issue: 90
   repository: 501259435
+  tombstone: 2026-07-31 22:18:41.013449560 Z
   what: pull-was-opened
   when: 2025-11-17 01:54:00.000000000 Z
   where: github
@@ -57923,6 +58000,7 @@
   review_comments: 0
   succeeded_builds: 9
   suggestions: 0
+  tombstone: 2026-07-31 22:18:41.015405947 Z
   what: pull-was-merged
   when: &482 2025-11-17 02:56:45.000000000 Z
   where: github
@@ -58090,6 +58168,7 @@
   repository: 501259435
   review_comments: 0
   seconds: 3765
+  tombstone: 2026-07-31 22:18:41.017228335 Z
   what: code-was-contributed
   when: *482
   where: github
@@ -58806,6 +58885,7 @@
   is_human: 0
   issue: 383
   repository: 840332960
+  tombstone: 2026-07-31 22:18:41.132029313 Z
   what: pull-was-opened
   when: 2025-11-17 01:41:42.000000000 Z
   where: github
@@ -58887,6 +58967,7 @@
   is_human: 0
   issue: 130
   repository: 551486781
+  tombstone: 2026-07-31 22:18:41.274821340 Z
   what: pull-was-opened
   when: 2025-11-17 02:44:34.000000000 Z
   where: github
@@ -59083,6 +59164,7 @@
   is_human: 0
   issue: 54
   repository: 499536612
+  tombstone: 2026-07-31 22:18:41.082774521 Z
   what: pull-was-opened
   when: 2025-11-17 02:48:05.000000000 Z
   where: github
@@ -59097,6 +59179,7 @@
   is_human: 0
   issue: 58
   repository: 493235807
+  tombstone: 2026-07-31 22:18:41.356604862 Z
   what: pull-was-opened
   when: 2025-11-17 02:12:55.000000000 Z
   where: github
@@ -59352,6 +59435,7 @@
   review: 2025-11-17 02:58:46.000000000 Z
   succeeded_builds: 10
   suggestions: 0
+  tombstone: 2026-07-31 22:18:41.084727980 Z
   what: pull-was-closed
   when: 2025-12-09 08:52:40.000000000 Z
   where: github
@@ -59404,6 +59488,7 @@
   review_comments: 0
   succeeded_builds: 15
   suggestions: 0
+  tombstone: 2026-07-31 22:18:41.133798195 Z
   what: pull-was-merged
   when: &501 2025-11-17 03:28:08.000000000 Z
   where: github
@@ -59530,6 +59615,7 @@
   review: 2025-11-17 03:26:14.000000000 Z
   succeeded_builds: 10
   suggestions: 0
+  tombstone: 2026-07-31 22:18:41.358686771 Z
   what: pull-was-closed
   when: 2025-12-09 10:33:51.000000000 Z
   where: github
@@ -59582,6 +59668,7 @@
   review_comments: 0
   succeeded_builds: 10
   suggestions: 0
+  tombstone: 2026-07-31 22:18:41.278577898 Z
   what: pull-was-merged
   when: &506 2025-11-17 03:46:00.000000000 Z
   where: github
@@ -60628,6 +60715,7 @@
   repository: 840332960
   review_comments: 0
   seconds: 6386
+  tombstone: 2026-07-31 22:18:41.135526562 Z
   what: code-was-contributed
   when: *501
   where: github
@@ -60719,6 +60807,7 @@
   repository: 551486781
   review_comments: 0
   seconds: 3686
+  tombstone: 2026-07-31 22:18:41.282699387 Z
   what: code-was-contributed
   when: *506
   where: github
@@ -62846,6 +62935,7 @@
   issue: 157
   receipt: receipt-#53259
   repository: 798766850
+  tombstone: 2026-07-31 22:18:40.789734271 Z
   what: resolved-bug-was-rewarded
   when: 2025-12-14 02:37:17.326784993 Z
   where: github
@@ -66948,6 +67038,7 @@
   repository: 574459304
   review_comments: 0
   seconds: 1822
+  tombstone: 2026-07-31 22:18:41.054579333 Z
   what: code-review-was-rewarded
   when: 2025-12-15 11:24:46.671964289 Z
   where: github
@@ -72489,6 +72580,7 @@
   comments: 5
   details: The pull request objectionary/phino#456 with 213 HoC created by @maxonfjvipon
     was reviewed by @coderabbitai[bot] after 0h15m and 1 comments.
+  done: 2026-07-31 22:18:41.362710778 Z
   hoc: 213
   is_human: 0
   issue: 456
@@ -72507,6 +72599,7 @@
   comments: 3
   details: The pull request objectionary/eo2js#163 with 2 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 2h9m and 0 comments.
+  done: 2026-07-31 22:18:41.287804676 Z
   hoc: 2
   is_human: 1
   issue: 163
@@ -72543,6 +72636,7 @@
   comments: 5
   details: The pull request objectionary/eo#4669 with 2 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 2h25m and 0 comments.
+  done: 2026-07-31 22:18:40.953525528 Z
   hoc: 2
   is_human: 1
   issue: 4669
@@ -72561,6 +72655,7 @@
   comments: 8
   details: The pull request objectionary/eo#4671 with 97 HoC created by @r0bari was
     reviewed by @maxonfjvipon after 1h32m and 0 comments.
+  done: 2026-07-31 22:18:41.433325709 Z
   hoc: 97
   is_human: 1
   issue: 4671
@@ -72579,6 +72674,7 @@
   comments: 6
   details: The pull request objectionary/jeo-maven-plugin#1419 with 270 HoC created
     by @volodya-lombrozo was reviewed by @coderabbitai[bot] after 0h5m and 5 comments.
+  done: 2026-07-31 22:18:41.398085858 Z
   hoc: 270
   is_human: 0
   issue: 1419
@@ -73515,6 +73611,7 @@
   comments: 3
   details: The pull request objectionary/news.eolang.org#90 with 2 HoC created by
     @renovate[bot] was reviewed by @yegor256 after 0h56m and 0 comments.
+  done: 2026-07-31 22:18:40.987333851 Z
   hoc: 2
   is_human: 1
   issue: 90
@@ -73677,6 +73774,7 @@
   comments: 3
   details: The pull request objectionary/hone-maven-plugin#383 with 2 HoC created
     by @renovate[bot] was reviewed by @yegor256 after 1h20m and 0 comments.
+  done: 2026-07-31 22:18:41.106065053 Z
   hoc: 2
   is_human: 1
   issue: 383
@@ -73767,6 +73865,7 @@
   comments: 3
   details: The pull request objectionary/eo-vscode#130 with 2 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 0h33m and 0 comments.
+  done: 2026-07-31 22:18:41.232549792 Z
   hoc: 2
   is_human: 1
   issue: 130
@@ -76269,6 +76368,7 @@
   comments: 3
   details: The pull request objectionary/home#374 with 2 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 1h45m and 0 comments.
+  done: 2026-07-31 22:18:41.202662394 Z
   hoc: 2
   is_human: 1
   issue: 374
@@ -76287,6 +76387,7 @@
   comments: 3
   details: The pull request objectionary/sodg.rs#244 with 2 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 2h3m and 0 comments.
+  done: 2026-07-31 22:18:41.172728358 Z
   hoc: 2
   is_human: 1
   issue: 244
@@ -76305,6 +76406,7 @@
   comments: 3
   details: The pull request objectionary/on-the-origin-of-objects#54 with 2 HoC created
     by @renovate[bot] was reviewed by @yegor256 after 0h10m and 0 comments.
+  done: 2026-07-31 22:18:41.056535137 Z
   hoc: 2
   is_human: 1
   issue: 54
@@ -76323,6 +76425,7 @@
   comments: 3
   details: The pull request objectionary/reducing-programs-to-objects#58 with 2 HoC
     created by @renovate[bot] was reviewed by @yegor256 after 1h13m and 0 comments.
+  done: 2026-07-31 22:18:41.328467214 Z
   hoc: 2
   is_human: 1
   issue: 58
@@ -77406,6 +77509,7 @@
   repository: 798766850
   review_comments: 0
   seconds: 7797
+  tombstone: 2026-07-31 22:18:41.326461185 Z
   what: code-review-was-rewarded
   when: 2025-12-26 08:19:18.144075361 Z
   where: github
@@ -77555,6 +77659,7 @@
   repository: 73056727
   review_comments: 0
   seconds: 8738
+  tombstone: 2026-07-31 22:18:40.985513787 Z
   what: code-review-was-rewarded
   when: 2025-12-26 09:23:15.246325469 Z
   where: github
@@ -77575,6 +77680,7 @@
   repository: 73056727
   review_comments: 0
   seconds: 5543
+  tombstone: 2026-07-31 22:18:41.468020199 Z
   what: code-review-was-rewarded
   when: 2025-12-26 09:23:21.388126049 Z
   where: github
@@ -77999,6 +78105,7 @@
   repository: 501259435
   review_comments: 0
   seconds: 3410
+  tombstone: 2026-07-31 22:18:41.019013566 Z
   what: code-review-was-rewarded
   when: 2025-12-26 12:17:59.289694398 Z
   where: github
@@ -78382,6 +78489,7 @@
   repository: 840332960
   review_comments: 0
   seconds: 4846
+  tombstone: 2026-07-31 22:18:41.137215814 Z
   what: code-review-was-rewarded
   when: 2025-12-26 15:20:53.490551206 Z
   where: github
@@ -78481,6 +78589,7 @@
   repository: 551486781
   review_comments: 0
   seconds: 1997
+  tombstone: 2026-07-31 22:18:41.285118273 Z
   what: code-review-was-rewarded
   when: 2025-12-26 16:19:29.769137890 Z
   where: github
@@ -79768,6 +79877,7 @@
   repository: 13623548
   review_comments: 0
   seconds: 6308
+  tombstone: 2026-07-31 22:18:41.230822122 Z
   what: code-review-was-rewarded
   when: 2025-12-28 15:19:22.514255507 Z
   where: github
@@ -79788,6 +79898,7 @@
   repository: 543969974
   review_comments: 0
   seconds: 7417
+  tombstone: 2026-07-31 22:18:41.200929288 Z
   what: code-review-was-rewarded
   when: 2025-12-28 15:19:30.040568073 Z
   where: github
@@ -79808,6 +79919,7 @@
   repository: 499536612
   review_comments: 0
   seconds: 641
+  tombstone: 2026-07-31 22:18:41.104031665 Z
   what: code-review-was-rewarded
   when: 2025-12-28 15:19:36.857809909 Z
   where: github
@@ -79918,6 +80030,7 @@
   repository: 493235807
   review_comments: 0
   seconds: 4399
+  tombstone: 2026-07-31 22:18:41.360711633 Z
   what: code-review-was-rewarded
   when: 2025-12-28 16:18:30.246757055 Z
   where: github
@@ -284119,7 +284232,7 @@
   _job: 28315670840
   _time: 2026-06-28 07:59:24.618881980 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 33
+  assignees_were_scanned: 0
   earliest_issue_was_found: 28
   events_were_scanned: 11808472403
   issues_were_scanned: 0
@@ -305829,7 +305942,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 455
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 16346165546
   issues_were_scanned: 0
@@ -311749,7 +311862,7 @@
   _job: 28889392097
   _time: 2026-07-07 18:35:55.956183508 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 199
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12607649592
   issues_were_scanned: 0
@@ -312707,7 +312820,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 831
   earliest_issue_was_found: 1
   events_were_scanned: 16162131517
   issues_were_scanned: 0
@@ -316454,7 +316567,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.281244174 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 249
+  assignees_were_scanned: 0
   earliest_issue_was_found: 14
   events_were_scanned: 16340081395
   issues_were_scanned: 0
@@ -316471,7 +316584,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1076
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12608204889
   issues_were_scanned: 982
@@ -318954,7 +319067,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:12:52.022407415 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1535
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 16148258697
   issues_were_scanned: 0
@@ -319005,7 +319118,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 12599428311
+  events_were_scanned: 12610175893
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 361
@@ -319422,9 +319535,9 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1120
   earliest_issue_was_found: 1
-  events_were_scanned: 12605665687
+  events_were_scanned: 12610177648
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 686
@@ -319439,9 +319552,9 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.843773666 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 341
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 12569869037
+  events_were_scanned: 12614764647
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 122
@@ -319456,11 +319569,11 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5869
+  assignees_were_scanned: 6117
   earliest_issue_was_found: 1
-  events_were_scanned: 12608713914
+  events_were_scanned: 12614189417
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6095
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
@@ -435812,10 +435925,6 @@
   comments: 3
   details: It's time to reward @maxonfjvipon for the code contributed in objectionary/home#424,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too few (2) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+780](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 2
   href: https://github.com/objectionary/home/issues/424/#issuecomment-5147273778
   is_human: 1
@@ -435837,10 +435946,6 @@
   comments: 2
   details: It's time to reward @yegor256 for the code contributed in objectionary/eoc#1142,
     the reward amount is 8.
-  greeting: 'Thanks for the contribution! You''ve earned +8 points for this: +16 as
-    a basis; -8 for the lack of code review. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+2892](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 52
   href: https://github.com/objectionary/eoc/issues/1142/#issuecomment-5147274074
   is_human: 1
@@ -435861,11 +435966,6 @@
   comments: 2
   details: It's time to reward @yegor256 for the code contributed in objectionary/eo#6186,
     the reward amount is 4.
-  greeting: 'Thanks for the contribution! You''ve earned +4 points for this: +16 as
-    a basis; -4 for too many hits-of-code (198 >= 100); -8 for the lack of code review.
-    Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them
-    coming. Your running score is [+2896](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 198
   href: https://github.com/objectionary/eo/issues/6186/#issuecomment-5147274345
   is_human: 1
@@ -435886,9 +435986,6 @@
   comments: 3
   details: It's time to reward @renechoi for the code review in objectionary/eo#6195,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted.  Your running score is [+4](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 82
   href: https://github.com/objectionary/eo/issues/6195/#issuecomment-5147274534
   is_human: 1
@@ -435910,13 +436007,11 @@
   comments: 4
   details: It's time to reward @thayorns for the code review in objectionary/eo#6193,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted.  Your running score is [+440](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 66
   href: https://github.com/objectionary/eo/issues/6193/#issuecomment-5147274746
   is_human: 1
   issue: 6193
+  receipt: receipt-#83857
   repository: 73056727
   review_comments: 0
   seconds: 2859
@@ -436070,8 +436165,10 @@
     them coming. Your running score is [+24](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 16
+  href: https://github.com/objectionary/eo/issues/6153/#issuecomment-5147928851
   is_human: 1
   issue: 6153
+  receipt: receipt-#83858
   repository: 73056727
   review_comments: 0
   seconds: 68572
@@ -436092,8 +436189,10 @@
     -8 for absolutely no comments posted.  Your running score is [+444](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 127
+  href: https://github.com/objectionary/eo/issues/6202/#issuecomment-5147928996
   is_human: 1
   issue: 6202
+  receipt: receipt-#83859
   repository: 73056727
   review_comments: 0
   seconds: 2652
@@ -436102,3 +436201,446 @@
   where: github
   who: 96509556
   why: Reviewed code in objectionary/eo#6202
+- _id: 1115437
+  _job: 30673108492
+  _time: 2026-07-31 23:32:57.393073242 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6239 has been opened by @gemshrine.
+  event_id: 12614189417
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6239
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 22:49:07.000000000 Z
+  where: github
+  who: 113778529
+- _id: 1115438
+  _job: 30673108492
+  _time: 2026-07-31 23:33:04.579441387 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6238 has been opened by @gemshrine.
+  event_id: 12613969109
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6238
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 22:40:29.000000000 Z
+  where: github
+  who: 113778529
+- _id: 1115439
+  _job: 30673108492
+  _time: 2026-07-31 23:33:05.270596540 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6237 has been opened by @morphqdd.
+  event_id: 12613789274
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6237
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 22:33:40.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115440
+  _job: 30673108492
+  _time: 2026-07-31 23:33:06.051111628 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6236 has been opened by @morphqdd.
+  event_id: 12613788733
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6236
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 22:33:39.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115441
+  _job: 30673108492
+  _time: 2026-07-31 23:33:06.717449941 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6235 has been opened by @morphqdd.
+  event_id: 12613788109
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6235
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 22:33:37.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115442
+  _job: 30673108492
+  _time: 2026-07-31 23:33:07.328128416 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6234 has been opened by @morphqdd.
+  event_id: 12613787866
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6234
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 22:33:37.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115443
+  _job: 30673108492
+  _time: 2026-07-31 23:33:07.963375684 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6233 has been opened by @morphqdd.
+  event_id: 12613787146
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6233
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 22:33:35.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115444
+  _job: 30673108492
+  _time: 2026-07-31 23:33:08.583122400 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6232 has been opened by @morphqdd.
+  event_id: 12613786492
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6232
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 22:33:34.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115445
+  _job: 30673108492
+  _time: 2026-07-31 23:33:09.215981785 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6231 has been opened by @morphqdd.
+  event_id: 12613785767
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6231
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 22:33:32.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115446
+  _job: 30673108492
+  _time: 2026-07-31 23:33:09.838088018 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6230 has been opened by @morphqdd.
+  event_id: 12613785449
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6230
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 22:33:31.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115447
+  _job: 30673108492
+  _time: 2026-07-31 23:33:10.642207722 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6229 has been opened by @morphqdd.
+  event_id: 12613785034
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6229
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 22:33:31.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115448
+  _job: 30673108492
+  _time: 2026-07-31 23:33:11.272989718 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6228 has been opened by @morphqdd.
+  event_id: 12613784281
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6228
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 22:33:29.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115449
+  _job: 30673108492
+  _time: 2026-07-31 23:33:11.897276313 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6227 has been opened by @morphqdd.
+  event_id: 12613784224
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6227
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 22:33:29.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115450
+  _job: 30673108492
+  _time: 2026-07-31 23:33:13.096517240 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6226 has been opened by @gemshrine.
+  event_id: 12613202557
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6226
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 22:12:34.000000000 Z
+  where: github
+  who: 113778529
+- _id: 1115451
+  _job: 30673108492
+  _time: 2026-07-31 23:33:20.181808679 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6225 has been opened by @gemshrine.
+  event_id: 12612297028
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6225
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 21:42:59.000000000 Z
+  where: github
+  who: 113778529
+- _id: 1115452
+  _job: 30673108492
+  _time: 2026-07-31 23:33:20.795858069 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6224 has been opened by @gemshrine.
+  event_id: 12611958327
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6224
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 21:32:14.000000000 Z
+  where: github
+  who: 113778529
+- _id: 1115453
+  _job: 30673108492
+  _time: 2026-07-31 23:33:21.341568392 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6223 has been opened by @gemshrine.
+  event_id: 12611593451
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6223
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 21:21:26.000000000 Z
+  where: github
+  who: 113778529
+- _id: 1115454
+  _job: 30673108492
+  _time: 2026-07-31 23:33:21.840357159 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 27
+  commits: 2
+  details: The pull request objectionary/eo#6208 has been reviewed by @thayorns with
+    1647 HoC and 27 comments.
+  event_id: 12611079785
+  event_type: PullRequestReviewEvent
+  files: 6
+  hoc: 1647
+  is_human: 1
+  issue: 6208
+  repository: 73056727
+  review_comments: 24
+  what: pull-was-reviewed
+  when: 2026-07-31 21:06:41.000000000 Z
+  where: github
+  who: 96509556
+- _id: 1115455
+  _job: 30673108492
+  _time: 2026-07-31 23:33:24.655461039 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '4370'
+  details: The pull request objectionary/eo#6222 has been opened by @thayorns.
+  event_id: 12610595952
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6222
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-07-31 20:53:12.000000000 Z
+  where: github
+  who: 96509556
+- _id: 1115456
+  _job: 30673108492
+  _time: 2026-07-31 23:33:25.957608961 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6221 has been opened by @gemshrine.
+  event_id: 12610019882
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6221
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 20:37:14.000000000 Z
+  where: github
+  who: 113778529
+- _id: 1115457
+  _job: 30673108492
+  _time: 2026-07-31 23:33:28.950200013 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '4140'
+  details: The pull request objectionary/eo#6220 has been opened by @thayorns.
+  event_id: 12609155620
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6220
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-07-31 20:13:51.000000000 Z
+  where: github
+  who: 96509556
+- _id: 1115458
+  _job: 30673108492
+  _time: 2026-07-31 23:33:29.637190087 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6219 has been opened by @morphqdd.
+  event_id: 12609021119
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6219
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 20:10:15.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115459
+  _job: 30673108492
+  _time: 2026-07-31 23:33:30.208901501 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6218 has been opened by @morphqdd.
+  event_id: 12609019655
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6218
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 20:10:13.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115460
+  _job: 30673108492
+  _time: 2026-07-31 23:33:30.942223394 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6217 has been opened by @morphqdd.
+  event_id: 12609019376
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6217
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 20:10:12.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115461
+  _job: 30673108492
+  _time: 2026-07-31 23:33:31.504430362 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6216 has been opened by @morphqdd.
+  event_id: 12609018269
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6216
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 20:10:11.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115462
+  _job: 30673108492
+  _time: 2026-07-31 23:33:32.222987262 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6215 has been opened by @morphqdd.
+  event_id: 12609017379
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6215
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 20:10:09.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115463
+  _job: 30673108492
+  _time: 2026-07-31 23:33:32.803261824 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6214 has been opened by @morphqdd.
+  event_id: 12609016700
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6214
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 20:10:08.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115464
+  _job: 30673108492
+  _time: 2026-07-31 23:33:33.489910197 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6213 has been opened by @morphqdd.
+  event_id: 12609015826
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6213
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 20:10:07.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115465
+  _job: 30673108492
+  _time: 2026-07-31 23:33:34.072223450 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6212 has been opened by @morphqdd.
+  event_id: 12609015140
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6212
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 20:10:06.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115466
+  _job: 30673108492
+  _time: 2026-07-31 23:33:34.613646200 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6211 has been opened by @morphqdd.
+  event_id: 12609014497
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6211
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-07-31 20:10:05.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115467
+  _job: 30673108492
+  _time: 2026-07-31 23:34:04.118564160 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/js-yaml-4.x-lockfile
+  details: The pull request objectionary/eo-lsp-server#421 has been opened by @renovate[bot].
+  event_id: 12614764647
+  event_type: PullRequestEvent
+  is_human: 0
+  issue: 421
+  repository: 970961472
+  what: pull-was-opened
+  when: 2026-07-31 23:11:42.000000000 Z
+  where: github
+  who: 29139614

@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fb version="0.19.6" size="8306329">
+<fb version="0.19.6" size="8319014">
   <f>
     <added t="I">8</added>
     <cycles t="I">1</cycles>
     <deleted t="I">8</deleted>
-    <error>
-      <v t="S">Failed to open TCP connection to api.github.com:443 (user specified timeout for 140.82.114.6:443)</v>
-      <v t="S">Failed to open TCP connection to api.github.com:443 (user specified timeout for 140.82.114.6:443)</v>
-      <v t="S">Failure in repository #671896902 at #1538: Failed to open TCP connection to api.github.com:443 (user specified timeout for 140.82.114.6:443)</v>
-    </error>
     <inserted t="I">8</inserted>
-    <seconds t="F">2132.647026902</seconds>
+    <seconds t="F">2160.489523838</seconds>
     <version t="S">0.61.1</version>
     <what t="S">judges-summary</what>
-    <when t="T">2026-07-31T22:16:01Z</when>
+    <when t="T">2026-08-01T00:08:26Z</when>
   </f>
   <f>
     <_id t="I">671</_id>
@@ -43243,6 +43238,7 @@
     <is_human t="I">1</is_human>
     <issue t="I">4595</issue>
     <repository t="I">73056727</repository>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">issue-was-opened</what>
     <when t="T">2025-09-29T15:23:00Z</when>
     <where t="S">github</where>
@@ -43873,6 +43869,7 @@
     <issue t="I">4595</issue>
     <label t="S">bug</label>
     <repository t="I">73056727</repository>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">label-was-attached</what>
     <when t="T">2025-09-29T15:23:02Z</when>
     <where t="S">github</where>
@@ -45690,6 +45687,7 @@
     <is_human t="I">1</is_human>
     <issue t="I">157</issue>
     <repository t="I">798766850</repository>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">issue-was-opened</what>
     <when t="T">2025-11-11T14:21:35Z</when>
     <where t="S">github</where>
@@ -45705,6 +45703,7 @@
     <is_human t="I">1</is_human>
     <issue t="I">157</issue>
     <repository t="I">798766850</repository>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">issue-was-assigned</what>
     <when t="T">2025-11-11T15:49:23Z</when>
     <where t="S">github</where>
@@ -45752,6 +45751,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">1417</issue>
     <repository t="I">671896902</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T02:04:24Z</when>
     <where t="S">github</where>
@@ -45773,6 +45773,7 @@
     <issue t="I">788</issue>
     <repository t="I">489321585</repository>
     <review_comments t="I">0</review_comments>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-reviewed</what>
     <when t="T">2025-11-17T03:11:40Z</when>
     <where t="S">github</where>
@@ -45790,6 +45791,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">788</issue>
     <repository t="I">489321585</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T02:51:52Z</when>
     <where t="S">github</where>
@@ -45811,6 +45813,7 @@
     <issue t="I">193</issue>
     <repository t="I">970961472</repository>
     <review_comments t="I">0</review_comments>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">pull-was-reviewed</what>
     <when t="T">2025-11-17T02:55:33Z</when>
     <where t="S">github</where>
@@ -45828,6 +45831,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">193</issue>
     <repository t="I">970961472</repository>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T02:40:42Z</when>
     <where t="S">github</where>
@@ -45896,6 +45900,7 @@
     <comments_resolved t="I">0</comments_resolved>
     <comments_to_code t="I">0</comments_to_code>
     <details t="S">The pull request objectionary/phie#109 has been closed by @raprogramm, with 0 HoC and 0 comments.</details>
+    <done t="T">2026-07-31T22:18:42Z</done>
     <event_id t="I">4712141403</event_id>
     <event_type t="S">PullRequestEvent</event_type>
     <failed_builds t="I">0</failed_builds>
@@ -45921,6 +45926,7 @@
     <is_human t="I">1</is_human>
     <issue t="I">109</issue>
     <repository t="I">447446664</repository>
+    <tombstone t="T">2026-07-31T22:18:42Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T00:33:26Z</when>
     <where t="S">github</where>
@@ -45964,6 +45970,7 @@
     <review t="T">2025-11-17T02:55:32Z</review>
     <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">8</succeeded_builds>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">pull-was-merged</what>
     <when t="T">2025-11-17T03:05:40Z</when>
     <where t="S">github</where>
@@ -45990,6 +45997,7 @@
     <repository t="I">671896902</repository>
     <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">19</succeeded_builds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-merged</what>
     <when t="T">2025-11-17T03:00:24Z</when>
     <where t="S">github</where>
@@ -46004,6 +46012,7 @@
     <is_human t="I">1</is_human>
     <issue t="I">162</issue>
     <repository t="I">798766850</repository>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">issue-was-opened</what>
     <when t="T">2025-11-16T16:56:26Z</when>
     <where t="S">github</where>
@@ -46017,6 +46026,7 @@
     <author t="I">29139614</author>
     <comments t="I">1</comments>
     <details t="S">The pull request objectionary/eoc#788 with 2 HoC created by @renovate[bot] was reviewed by @yegor256 after 19m47s and 1 comments.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <hoc t="I">2</hoc>
     <is_human t="I">1</is_human>
     <issue t="I">788</issue>
@@ -46042,6 +46052,7 @@
     <repository t="I">970961472</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">891</seconds>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">code-was-reviewed</what>
     <when t="T">2025-11-17T02:55:33Z</when>
     <where t="S">github</where>
@@ -46057,6 +46068,7 @@
     <issue t="I">157</issue>
     <label t="S">bug</label>
     <repository t="I">798766850</repository>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">label-was-attached</what>
     <when t="T">2025-11-17T10:07:02Z</when>
     <where t="S">github</where>
@@ -46072,6 +46084,7 @@
     <issue t="I">162</issue>
     <label t="S">bug</label>
     <repository t="I">798766850</repository>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">label-was-attached</what>
     <when t="T">2025-11-16T22:13:49Z</when>
     <where t="S">github</where>
@@ -46103,6 +46116,7 @@
     <is_human t="I">1</is_human>
     <issue t="I">456</issue>
     <repository t="I">977982682</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T11:28:38Z</when>
     <where t="S">github</where>
@@ -46116,6 +46130,7 @@
     <award t="I">4</award>
     <comments t="I">3</comments>
     <details t="S">It's time to reward @yegor256 for the code review in objectionary/eo-lsp-server#193, the reward amount is 4.</details>
+    <done t="T">2026-07-31T22:18:40Z</done>
     <hoc t="I">2</hoc>
     <href t="S">https://github.com/objectionary/eo-lsp-server/issues/193/#issuecomment-3542119974</href>
     <is_human t="I">1</is_human>
@@ -46135,6 +46150,7 @@
     <_time t="T">2025-11-17T16:22:28Z</_time>
     <_version t="S">0.16.8/0.57.1/0.16.1</_version>
     <details t="S">@maxonfjvipon attached the '#bug' label to objectionary/eo2js#157 reported by @skulidropek; this means that a bug was accepted as valid, by the project team.</details>
+    <done t="T">2026-07-31T22:18:40Z</done>
     <is_human t="I">1</is_human>
     <issue t="I">157</issue>
     <reporter t="I">66840575</reporter>
@@ -46150,6 +46166,7 @@
     <_time t="T">2025-11-17T16:22:29Z</_time>
     <_version t="S">0.16.8/0.57.1/0.16.1</_version>
     <details t="S">@maxonfjvipon attached the '#bug' label to objectionary/eo2js#162 reported by @svmukhin; this means that a bug was accepted as valid, by the project team.</details>
+    <done t="T">2026-07-31T22:18:40Z</done>
     <is_human t="I">1</is_human>
     <issue t="I">162</issue>
     <reporter t="I">33164517</reporter>
@@ -46173,6 +46190,7 @@
     <repository t="I">970961472</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">1498</seconds>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">code-was-contributed</what>
     <when t="T">2025-11-17T03:05:40Z</when>
     <where t="S">github</where>
@@ -46232,6 +46250,7 @@
     <review t="T">2025-11-17T11:44:00Z</review>
     <review_comments t="I">1</review_comments>
     <succeeded_builds t="I">13</succeeded_builds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-merged</what>
     <when t="T">2025-11-17T11:50:44Z</when>
     <where t="S">github</where>
@@ -46244,6 +46263,7 @@
     <_version t="S">0.16.8/0.57.1/0.16.1</_version>
     <comments t="I">5</comments>
     <details t="S">The pull request objectionary/jeo-maven-plugin#1417 with 2 HoC created by @renovate[bot] was merged by @rultor after 55m59s of being in review and 5 comments.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <hoc t="I">2</hoc>
     <is_human t="I">0</is_human>
     <issue t="I">1417</issue>
@@ -46282,6 +46302,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">4669</issue>
     <repository t="I">73056727</repository>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-16T14:19:36Z</when>
     <where t="S">github</where>
@@ -46297,6 +46318,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">4670</issue>
     <repository t="I">73056727</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T00:19:17Z</when>
     <where t="S">github</where>
@@ -46312,6 +46334,7 @@
     <is_human t="I">1</is_human>
     <issue t="I">4671</issue>
     <repository t="I">73056727</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T15:46:58Z</when>
     <where t="S">github</where>
@@ -46341,6 +46364,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">163</issue>
     <repository t="I">798766850</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T01:14:53Z</when>
     <where t="S">github</where>
@@ -46476,6 +46500,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">1424</issue>
     <repository t="I">671896902</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">issue-was-closed</what>
     <when t="T">2025-11-18T11:33:11Z</when>
     <where t="S">github</where>
@@ -46554,6 +46579,7 @@
     <review t="T">2025-11-17T03:24:50Z</review>
     <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">11</succeeded_builds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-merged</what>
     <when t="T">2025-11-17T04:00:07Z</when>
     <where t="S">github</where>
@@ -46714,6 +46740,7 @@
     <review t="T">2025-11-16T16:45:14Z</review>
     <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">22</succeeded_builds>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">pull-was-merged</what>
     <when t="T">2025-11-16T16:58:33Z</when>
     <where t="S">github</where>
@@ -46740,6 +46767,7 @@
     <repository t="I">73056727</repository>
     <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">22</succeeded_builds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-merged</what>
     <when t="T">2025-11-17T04:31:27Z</when>
     <where t="S">github</where>
@@ -46767,6 +46795,7 @@
     <review t="T">2025-11-17T17:19:21Z</review>
     <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">22</succeeded_builds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-merged</what>
     <when t="T">2025-11-17T18:17:50Z</when>
     <where t="S">github</where>
@@ -46838,6 +46867,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">1423</issue>
     <repository t="I">671896902</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">issue-was-closed</what>
     <when t="T">2025-11-18T12:36:41Z</when>
     <where t="S">github</where>
@@ -46973,6 +47003,7 @@
     <issue t="I">157</issue>
     <receipt t="S">receipt-#49592</receipt>
     <repository t="I">798766850</repository>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">bug-report-was-rewarded</what>
     <when t="T">2025-11-18T12:24:38Z</when>
     <where t="S">github</where>
@@ -46991,6 +47022,7 @@
     <issue t="I">162</issue>
     <receipt t="S">receipt-#49593</receipt>
     <repository t="I">798766850</repository>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">bug-report-was-rewarded</what>
     <when t="T">2025-11-18T12:24:44Z</when>
     <where t="S">github</where>
@@ -47008,6 +47040,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">1422</issue>
     <repository t="I">671896902</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">issue-was-closed</what>
     <when t="T">2025-11-18T14:30:07Z</when>
     <where t="S">github</where>
@@ -47023,6 +47056,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">1418</issue>
     <repository t="I">671896902</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T09:52:41Z</when>
     <where t="S">github</where>
@@ -47038,6 +47072,7 @@
     <is_human t="I">1</is_human>
     <issue t="I">1419</issue>
     <repository t="I">671896902</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T12:19:41Z</when>
     <where t="S">github</where>
@@ -47052,6 +47087,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">1420</issue>
     <repository t="I">671896902</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">issue-was-opened</what>
     <when t="T">2025-11-17T12:43:57Z</when>
     <where t="S">github</where>
@@ -47066,6 +47102,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">1421</issue>
     <repository t="I">671896902</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">issue-was-opened</what>
     <when t="T">2025-11-17T12:43:58Z</when>
     <where t="S">github</where>
@@ -47092,6 +47129,7 @@
     <repository t="I">671896902</repository>
     <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">19</succeeded_builds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-merged</what>
     <when t="T">2025-11-17T10:33:39Z</when>
     <where t="S">github</where>
@@ -47119,6 +47157,7 @@
     <review t="T">2025-11-17T12:25:06Z</review>
     <review_comments t="I">6</review_comments>
     <succeeded_builds t="I">19</succeeded_builds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-merged</what>
     <when t="T">2025-11-17T12:43:52Z</when>
     <where t="S">github</where>
@@ -47205,6 +47244,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">1424</issue>
     <repository t="I">671896902</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">issue-was-opened</what>
     <when t="T">2025-11-17T12:44:01Z</when>
     <where t="S">github</where>
@@ -47219,6 +47259,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">1423</issue>
     <repository t="I">671896902</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">issue-was-opened</what>
     <when t="T">2025-11-17T12:44:00Z</when>
     <where t="S">github</where>
@@ -47233,6 +47274,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">1422</issue>
     <repository t="I">671896902</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">issue-was-opened</what>
     <when t="T">2025-11-17T12:43:59Z</when>
     <where t="S">github</where>
@@ -47245,6 +47287,7 @@
     <_version t="S">0.16.8/0.57.1/0.16.1</_version>
     <closer t="I">8086956</closer>
     <details t="S">In the repository #671896902, the user #24456188 submitted the issue #1424 which was later closed by the user #8086956 not becoming a bug or enhancement; this means that the issue was not valid, maybe a duplicate or simply a mistake.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <is_human t="I">0</is_human>
     <issue t="I">1424</issue>
     <repository t="I">671896902</repository>
@@ -47260,6 +47303,7 @@
     <_version t="S">0.16.8/0.57.1/0.16.1</_version>
     <closer t="I">8086956</closer>
     <details t="S">In the repository #671896902, the user #24456188 submitted the issue #1423 which was later closed by the user #8086956 not becoming a bug or enhancement; this means that the issue was not valid, maybe a duplicate or simply a mistake.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <is_human t="I">0</is_human>
     <issue t="I">1423</issue>
     <repository t="I">671896902</repository>
@@ -47275,6 +47319,7 @@
     <_version t="S">0.16.8/0.57.1/0.16.1</_version>
     <closer t="I">8086956</closer>
     <details t="S">In the repository #671896902, the user #24456188 submitted the issue #1422 which was later closed by the user #8086956 not becoming a bug or enhancement; this means that the issue was not valid, maybe a duplicate or simply a mistake.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <is_human t="I">0</is_human>
     <issue t="I">1422</issue>
     <repository t="I">671896902</repository>
@@ -47309,6 +47354,7 @@
     <is_human t="I">1</is_human>
     <issue t="I">4595</issue>
     <repository t="I">73056727</repository>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">issue-was-closed</what>
     <when t="T">2025-11-17T18:17:51Z</when>
     <where t="S">github</where>
@@ -47328,6 +47374,7 @@
     <repository t="I">977982682</repository>
     <review_comments t="I">1</review_comments>
     <seconds t="I">1326</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-was-contributed</what>
     <when t="T">2025-11-17T11:50:44Z</when>
     <where t="S">github</where>
@@ -47347,6 +47394,7 @@
     <repository t="I">798766850</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">9914</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-was-contributed</what>
     <when t="T">2025-11-17T04:00:07Z</when>
     <where t="S">github</where>
@@ -47503,6 +47551,7 @@
     <repository t="I">73056727</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">9537</seconds>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">code-was-contributed</what>
     <when t="T">2025-11-16T16:58:33Z</when>
     <where t="S">github</where>
@@ -47515,6 +47564,7 @@
     <_version t="S">0.16.8/0.57.1/0.16.1</_version>
     <comments t="I">2</comments>
     <details t="S">The pull request objectionary/eo#4670 with 2 HoC created by @renovate[bot] was merged by @yegor256 after 4h12m of being in review and 2 comments.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <hoc t="I">2</hoc>
     <is_human t="I">0</is_human>
     <issue t="I">4670</issue>
@@ -47541,6 +47591,7 @@
     <repository t="I">73056727</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">9052</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-was-contributed</what>
     <when t="T">2025-11-17T18:17:50Z</when>
     <where t="S">github</where>
@@ -47553,6 +47604,7 @@
     <_version t="S">0.16.8/0.57.1/0.16.1</_version>
     <comments t="I">5</comments>
     <details t="S">The pull request objectionary/jeo-maven-plugin#1418 with 2 HoC created by @renovate[bot] was merged by @rultor after 40m57s of being in review and 5 comments.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <hoc t="I">2</hoc>
     <is_human t="I">0</is_human>
     <issue t="I">1418</issue>
@@ -47579,6 +47631,7 @@
     <repository t="I">671896902</repository>
     <review_comments t="I">6</review_comments>
     <seconds t="I">1451</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-was-contributed</what>
     <when t="T">2025-11-17T12:43:52Z</when>
     <where t="S">github</where>
@@ -47637,6 +47690,7 @@
     <repository t="I">977982682</repository>
     <review_comments t="I">1</review_comments>
     <seconds t="I">1326</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-contribution-was-rewarded</what>
     <when t="T">2025-11-19T01:34:48Z</when>
     <where t="S">github</where>
@@ -47746,6 +47800,7 @@
     <repository t="I">73056727</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">9052</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-contribution-was-rewarded</what>
     <when t="T">2025-11-19T06:19:15Z</when>
     <where t="S">github</where>
@@ -47917,6 +47972,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">1421</issue>
     <repository t="I">671896902</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">issue-was-closed</what>
     <when t="T">2025-11-19T10:56:22Z</when>
     <where t="S">github</where>
@@ -47937,6 +47993,7 @@
     <repository t="I">671896902</repository>
     <review_comments t="I">6</review_comments>
     <seconds t="I">1451</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-contribution-was-rewarded</what>
     <when t="T">2025-11-19T08:19:08Z</when>
     <where t="S">github</where>
@@ -47992,6 +48049,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">1420</issue>
     <repository t="I">671896902</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">issue-was-closed</what>
     <when t="T">2025-11-19T12:10:52Z</when>
     <where t="S">github</where>
@@ -48021,6 +48079,7 @@
     <_version t="S">0.16.8/0.57.1/0.16.1</_version>
     <closer t="I">8086956</closer>
     <details t="S">In the repository #671896902, the user #24456188 submitted the issue #1420 which was later closed by the user #8086956 not becoming a bug or enhancement; this means that the issue was not valid, maybe a duplicate or simply a mistake.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <is_human t="I">0</is_human>
     <issue t="I">1420</issue>
     <repository t="I">671896902</repository>
@@ -48036,6 +48095,7 @@
     <_version t="S">0.16.8/0.57.1/0.16.1</_version>
     <closer t="I">8086956</closer>
     <details t="S">In the repository #671896902, the user #24456188 submitted the issue #1421 which was later closed by the user #8086956 not becoming a bug or enhancement; this means that the issue was not valid, maybe a duplicate or simply a mistake.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <is_human t="I">0</is_human>
     <issue t="I">1421</issue>
     <repository t="I">671896902</repository>
@@ -48299,6 +48359,7 @@
     <review t="T">2025-11-17T03:11:39Z</review>
     <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">16</succeeded_builds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-merged</what>
     <when t="T">2025-11-19T10:14:43Z</when>
     <where t="S">github</where>
@@ -48627,6 +48688,7 @@
     <repository t="I">489321585</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">199371</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-was-contributed</what>
     <when t="T">2025-11-19T10:14:43Z</when>
     <where t="S">github</where>
@@ -48811,6 +48873,7 @@
     <repository t="I">489321585</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">1188</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-review-was-rewarded</what>
     <when t="T">2025-11-20T02:53:28Z</when>
     <where t="S">github</where>
@@ -48827,6 +48890,7 @@
     <is_human t="I">1</is_human>
     <issue t="I">4595</issue>
     <repository t="I">73056727</repository>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">issue-was-assigned</what>
     <when t="T">2025-11-17T11:47:45Z</when>
     <where t="S">github</where>
@@ -48870,6 +48934,7 @@
     <_version t="S">0.16.8/0.57.1/0.16.1</_version>
     <closer t="I">526301</closer>
     <details t="S">The bug/feature in the issue objectionary/eo#4595 opened @yegor256 by was resolved, after 6h30m of waiting, because it was closed by @yegor256 and earlier it was assigned to @r0bari and the label '#bug' was attached.</details>
+    <done t="T">2026-07-31T22:18:40Z</done>
     <is_human t="I">1</is_human>
     <issue t="I">4595</issue>
     <label t="S">bug</label>
@@ -49858,6 +49923,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">162</issue>
     <repository t="I">798766850</repository>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">issue-was-closed</what>
     <when t="T">2025-11-21T12:07:37Z</when>
     <where t="S">github</where>
@@ -50716,6 +50782,7 @@
     <issue t="I">4595</issue>
     <receipt t="S">receipt-#50581</receipt>
     <repository t="I">73056727</repository>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">resolved-bug-was-rewarded</what>
     <when t="T">2025-11-24T10:21:01Z</when>
     <where t="S">github</where>
@@ -51067,6 +51134,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">157</issue>
     <repository t="I">798766850</repository>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">issue-was-closed</what>
     <when t="T">2025-11-24T12:28:04Z</when>
     <where t="S">github</where>
@@ -51214,6 +51282,7 @@
     <opener t="I">66840575</opener>
     <repository t="I">798766850</repository>
     <seconds t="I">1111121</seconds>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">bug-was-resolved</what>
     <when t="T">2025-11-24T12:28:04Z</when>
     <where t="S">github</where>
@@ -58825,6 +58894,7 @@
     <review t="T">2025-11-17T03:17:26Z</review>
     <succeeded_builds t="I">13</succeeded_builds>
     <suggestions t="I">0</suggestions>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-closed</what>
     <when t="T">2025-11-17T04:07:10Z</when>
     <where t="S">github</where>
@@ -58874,6 +58944,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">374</issue>
     <repository t="I">13623548</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T01:32:18Z</when>
     <where t="S">github</where>
@@ -58955,6 +59026,7 @@
     <review t="T">2025-11-17T03:12:01Z</review>
     <succeeded_builds t="I">10</succeeded_builds>
     <suggestions t="I">0</suggestions>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-closed</what>
     <when t="T">2025-11-17T03:12:02Z</when>
     <where t="S">github</where>
@@ -58987,6 +59059,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">244</issue>
     <repository t="I">543969974</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T01:08:24Z</when>
     <where t="S">github</where>
@@ -61087,6 +61160,7 @@
     <issue t="I">62</issue>
     <repository t="I">574459304</repository>
     <review_comments t="I">0</review_comments>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-reviewed</what>
     <when t="T">2025-11-17T02:56:39Z</when>
     <where t="S">github</where>
@@ -61104,6 +61178,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">62</issue>
     <repository t="I">574459304</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T02:26:17Z</when>
     <where t="S">github</where>
@@ -61132,6 +61207,7 @@
     <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">14</succeeded_builds>
     <suggestions t="I">0</suggestions>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-merged</what>
     <when t="T">2025-11-17T03:09:52Z</when>
     <where t="S">github</where>
@@ -61145,6 +61221,7 @@
     <author t="I">29139614</author>
     <comments t="I">3</comments>
     <details t="S">The pull request objectionary/jucs#62 with 2 HoC created by @renovate[bot] was reviewed by @yegor256 after 30m21s and 3 comments.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <hoc t="I">2</hoc>
     <is_human t="I">1</is_human>
     <issue t="I">62</issue>
@@ -61170,6 +61247,7 @@
     <repository t="I">574459304</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">2615</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-was-contributed</what>
     <when t="T">2025-11-17T03:09:52Z</when>
     <where t="S">github</where>
@@ -63827,6 +63905,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">90</issue>
     <repository t="I">501259435</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T01:54:00Z</when>
     <where t="S">github</where>
@@ -64262,6 +64341,7 @@
     <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">9</succeeded_builds>
     <suggestions t="I">0</suggestions>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-merged</what>
     <when t="T">2025-11-17T02:56:45Z</when>
     <where t="S">github</where>
@@ -64444,6 +64524,7 @@
     <repository t="I">501259435</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">3765</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-was-contributed</what>
     <when t="T">2025-11-17T02:56:45Z</when>
     <where t="S">github</where>
@@ -65242,6 +65323,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">383</issue>
     <repository t="I">840332960</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T01:41:42Z</when>
     <where t="S">github</where>
@@ -65332,6 +65414,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">130</issue>
     <repository t="I">551486781</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T02:44:34Z</when>
     <where t="S">github</where>
@@ -65557,6 +65640,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">54</issue>
     <repository t="I">499536612</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T02:48:05Z</when>
     <where t="S">github</where>
@@ -65572,6 +65656,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">58</issue>
     <repository t="I">493235807</repository>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-17T02:12:55Z</when>
     <where t="S">github</where>
@@ -65847,6 +65932,7 @@
     <review t="T">2025-11-17T02:58:46Z</review>
     <succeeded_builds t="I">10</succeeded_builds>
     <suggestions t="I">0</suggestions>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-closed</what>
     <when t="T">2025-12-09T08:52:40Z</when>
     <where t="S">github</where>
@@ -65903,6 +65989,7 @@
     <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">15</succeeded_builds>
     <suggestions t="I">0</suggestions>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-merged</what>
     <when t="T">2025-11-17T03:28:08Z</when>
     <where t="S">github</where>
@@ -66039,6 +66126,7 @@
     <review t="T">2025-11-17T03:26:14Z</review>
     <succeeded_builds t="I">10</succeeded_builds>
     <suggestions t="I">0</suggestions>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-closed</what>
     <when t="T">2025-12-09T10:33:51Z</when>
     <where t="S">github</where>
@@ -66095,6 +66183,7 @@
     <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">10</succeeded_builds>
     <suggestions t="I">0</suggestions>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">pull-was-merged</what>
     <when t="T">2025-11-17T03:46:00Z</when>
     <where t="S">github</where>
@@ -67218,6 +67307,7 @@
     <repository t="I">840332960</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">6386</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-was-contributed</what>
     <when t="T">2025-11-17T03:28:08Z</when>
     <where t="S">github</where>
@@ -67313,6 +67403,7 @@
     <repository t="I">551486781</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">3686</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-was-contributed</what>
     <when t="T">2025-11-17T03:46:00Z</when>
     <where t="S">github</where>
@@ -69610,6 +69701,7 @@
     <issue t="I">157</issue>
     <receipt t="S">receipt-#53259</receipt>
     <repository t="I">798766850</repository>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">resolved-bug-was-rewarded</what>
     <when t="T">2025-12-14T02:37:17Z</when>
     <where t="S">github</where>
@@ -73955,6 +74047,7 @@
     <repository t="I">574459304</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">1822</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-review-was-rewarded</what>
     <when t="T">2025-12-15T11:24:46Z</when>
     <where t="S">github</where>
@@ -79968,6 +80061,7 @@
     <author t="I">37025995</author>
     <comments t="I">5</comments>
     <details t="S">The pull request objectionary/phino#456 with 213 HoC created by @maxonfjvipon was reviewed by @coderabbitai[bot] after 0h15m and 1 comments.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <hoc t="I">213</hoc>
     <is_human t="I">0</is_human>
     <issue t="I">456</issue>
@@ -79987,6 +80081,7 @@
     <author t="I">29139614</author>
     <comments t="I">3</comments>
     <details t="S">The pull request objectionary/eo2js#163 with 2 HoC created by @renovate[bot] was reviewed by @yegor256 after 2h9m and 0 comments.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <hoc t="I">2</hoc>
     <is_human t="I">1</is_human>
     <issue t="I">163</issue>
@@ -80025,6 +80120,7 @@
     <author t="I">29139614</author>
     <comments t="I">5</comments>
     <details t="S">The pull request objectionary/eo#4669 with 2 HoC created by @renovate[bot] was reviewed by @yegor256 after 2h25m and 0 comments.</details>
+    <done t="T">2026-07-31T22:18:40Z</done>
     <hoc t="I">2</hoc>
     <is_human t="I">1</is_human>
     <issue t="I">4669</issue>
@@ -80044,6 +80140,7 @@
     <author t="I">56538398</author>
     <comments t="I">8</comments>
     <details t="S">The pull request objectionary/eo#4671 with 97 HoC created by @r0bari was reviewed by @maxonfjvipon after 1h32m and 0 comments.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <hoc t="I">97</hoc>
     <is_human t="I">1</is_human>
     <issue t="I">4671</issue>
@@ -80063,6 +80160,7 @@
     <author t="I">51804353</author>
     <comments t="I">6</comments>
     <details t="S">The pull request objectionary/jeo-maven-plugin#1419 with 270 HoC created by @volodya-lombrozo was reviewed by @coderabbitai[bot] after 0h5m and 5 comments.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <hoc t="I">270</hoc>
     <is_human t="I">0</is_human>
     <issue t="I">1419</issue>
@@ -81051,6 +81149,7 @@
     <author t="I">29139614</author>
     <comments t="I">3</comments>
     <details t="S">The pull request objectionary/news.eolang.org#90 with 2 HoC created by @renovate[bot] was reviewed by @yegor256 after 0h56m and 0 comments.</details>
+    <done t="T">2026-07-31T22:18:40Z</done>
     <hoc t="I">2</hoc>
     <is_human t="I">1</is_human>
     <issue t="I">90</issue>
@@ -81222,6 +81321,7 @@
     <author t="I">29139614</author>
     <comments t="I">3</comments>
     <details t="S">The pull request objectionary/hone-maven-plugin#383 with 2 HoC created by @renovate[bot] was reviewed by @yegor256 after 1h20m and 0 comments.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <hoc t="I">2</hoc>
     <is_human t="I">1</is_human>
     <issue t="I">383</issue>
@@ -81317,6 +81417,7 @@
     <author t="I">29139614</author>
     <comments t="I">3</comments>
     <details t="S">The pull request objectionary/eo-vscode#130 with 2 HoC created by @renovate[bot] was reviewed by @yegor256 after 0h33m and 0 comments.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <hoc t="I">2</hoc>
     <is_human t="I">1</is_human>
     <issue t="I">130</issue>
@@ -83958,6 +84059,7 @@
     <author t="I">29139614</author>
     <comments t="I">3</comments>
     <details t="S">The pull request objectionary/home#374 with 2 HoC created by @renovate[bot] was reviewed by @yegor256 after 1h45m and 0 comments.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <hoc t="I">2</hoc>
     <is_human t="I">1</is_human>
     <issue t="I">374</issue>
@@ -83977,6 +84079,7 @@
     <author t="I">29139614</author>
     <comments t="I">3</comments>
     <details t="S">The pull request objectionary/sodg.rs#244 with 2 HoC created by @renovate[bot] was reviewed by @yegor256 after 2h3m and 0 comments.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <hoc t="I">2</hoc>
     <is_human t="I">1</is_human>
     <issue t="I">244</issue>
@@ -83996,6 +84099,7 @@
     <author t="I">29139614</author>
     <comments t="I">3</comments>
     <details t="S">The pull request objectionary/on-the-origin-of-objects#54 with 2 HoC created by @renovate[bot] was reviewed by @yegor256 after 0h10m and 0 comments.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <hoc t="I">2</hoc>
     <is_human t="I">1</is_human>
     <issue t="I">54</issue>
@@ -84015,6 +84119,7 @@
     <author t="I">29139614</author>
     <comments t="I">3</comments>
     <details t="S">The pull request objectionary/reducing-programs-to-objects#58 with 2 HoC created by @renovate[bot] was reviewed by @yegor256 after 1h13m and 0 comments.</details>
+    <done t="T">2026-07-31T22:18:41Z</done>
     <hoc t="I">2</hoc>
     <is_human t="I">1</is_human>
     <issue t="I">58</issue>
@@ -85175,6 +85280,7 @@
     <repository t="I">798766850</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">7797</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-review-was-rewarded</what>
     <when t="T">2025-12-26T08:19:18Z</when>
     <where t="S">github</where>
@@ -85332,6 +85438,7 @@
     <repository t="I">73056727</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">8738</seconds>
+    <tombstone t="T">2026-07-31T22:18:40Z</tombstone>
     <what t="S">code-review-was-rewarded</what>
     <when t="T">2025-12-26T09:23:15Z</when>
     <where t="S">github</where>
@@ -85353,6 +85460,7 @@
     <repository t="I">73056727</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">5543</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-review-was-rewarded</what>
     <when t="T">2025-12-26T09:23:21Z</when>
     <where t="S">github</where>
@@ -85804,6 +85912,7 @@
     <repository t="I">501259435</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">3410</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-review-was-rewarded</what>
     <when t="T">2025-12-26T12:17:59Z</when>
     <where t="S">github</where>
@@ -86217,6 +86326,7 @@
     <repository t="I">840332960</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">4846</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-review-was-rewarded</what>
     <when t="T">2025-12-26T15:20:53Z</when>
     <where t="S">github</where>
@@ -86321,6 +86431,7 @@
     <repository t="I">551486781</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">1997</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-review-was-rewarded</what>
     <when t="T">2025-12-26T16:19:29Z</when>
     <where t="S">github</where>
@@ -87691,6 +87802,7 @@
     <repository t="I">13623548</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">6308</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-review-was-rewarded</what>
     <when t="T">2025-12-28T15:19:22Z</when>
     <where t="S">github</where>
@@ -87712,6 +87824,7 @@
     <repository t="I">543969974</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">7417</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-review-was-rewarded</what>
     <when t="T">2025-12-28T15:19:30Z</when>
     <where t="S">github</where>
@@ -87733,6 +87846,7 @@
     <repository t="I">499536612</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">641</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-review-was-rewarded</what>
     <when t="T">2025-12-28T15:19:36Z</when>
     <where t="S">github</where>
@@ -87849,6 +87963,7 @@
     <repository t="I">493235807</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">4399</seconds>
+    <tombstone t="T">2026-07-31T22:18:41Z</tombstone>
     <what t="S">code-review-was-rewarded</what>
     <when t="T">2025-12-28T16:18:30Z</when>
     <where t="S">github</where>
@@ -305720,7 +305835,7 @@
     <_job t="I">28315670840</_job>
     <_time t="T">2026-06-28T07:59:24Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">33</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">28</earliest_issue_was_found>
     <events_were_scanned t="I">11808472403</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
@@ -328994,7 +329109,7 @@
     <_job t="I">28730971104</_job>
     <_time t="T">2026-07-05T05:47:35Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">455</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">16346165546</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
@@ -335247,7 +335362,7 @@
     <_job t="I">28889392097</_job>
     <_time t="T">2026-07-07T18:35:55Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">199</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">12607649592</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
@@ -336269,7 +336384,7 @@
     <_job t="I">28918253257</_job>
     <_time t="T">2026-07-08T04:55:42Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">0</assignees_were_scanned>
+    <assignees_were_scanned t="I">831</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">16162131517</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
@@ -340301,7 +340416,7 @@
     <_job t="I">29014863301</_job>
     <_time t="T">2026-07-09T11:37:47Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">249</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">14</earliest_issue_was_found>
     <events_were_scanned t="I">16340081395</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
@@ -340320,7 +340435,7 @@
     <_job t="I">29014863301</_job>
     <_time t="T">2026-07-09T11:37:47Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">1076</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">12608204889</events_were_scanned>
     <issues_were_scanned t="I">982</issues_were_scanned>
@@ -342894,7 +343009,7 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:12:52Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">1535</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">16148258697</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
@@ -342951,7 +343066,7 @@
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
     <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">12599428311</events_were_scanned>
+    <events_were_scanned t="I">12610175893</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">361</latest_issue_was_found>
@@ -343406,9 +343521,9 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:00Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">0</assignees_were_scanned>
+    <assignees_were_scanned t="I">1120</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">12605665687</events_were_scanned>
+    <events_were_scanned t="I">12610177648</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">686</latest_issue_was_found>
@@ -343425,9 +343540,9 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:00Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">341</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">12569869037</events_were_scanned>
+    <events_were_scanned t="I">12614764647</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">122</latest_issue_was_found>
@@ -343444,11 +343559,11 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:01Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">5869</assignees_were_scanned>
+    <assignees_were_scanned t="I">6117</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">12608713914</events_were_scanned>
+    <events_were_scanned t="I">12614189417</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
-    <labels_were_scanned t="I">0</labels_were_scanned>
+    <labels_were_scanned t="I">6095</labels_were_scanned>
     <latest_issue_was_found t="I">4591</latest_issue_was_found>
     <merges_were_scanned t="I">0</merges_were_scanned>
     <min_issue_was_found t="I">4341</min_issue_was_found>
@@ -469091,7 +469206,6 @@ The average monthly zents/points ratio (0.34) is decreasing (R=0.71).</text>
     <award t="I">12</award>
     <comments t="I">3</comments>
     <details t="S">It's time to reward @maxonfjvipon for the code contributed in objectionary/home#424, the reward amount is 12.</details>
-    <greeting t="S">Thanks for the contribution! You've earned +12 points for this: +16 as a basis; -4 for too few (2) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+780](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">2</hoc>
     <href t="S">https://github.com/objectionary/home/issues/424/#issuecomment-5147273778</href>
     <is_human t="I">1</is_human>
@@ -469114,7 +469228,6 @@ The average monthly zents/points ratio (0.34) is decreasing (R=0.71).</text>
     <award t="I">8</award>
     <comments t="I">2</comments>
     <details t="S">It's time to reward @yegor256 for the code contributed in objectionary/eoc#1142, the reward amount is 8.</details>
-    <greeting t="S">Thanks for the contribution! You've earned +8 points for this: +16 as a basis; -8 for the lack of code review. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+2892](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">52</hoc>
     <href t="S">https://github.com/objectionary/eoc/issues/1142/#issuecomment-5147274074</href>
     <is_human t="I">1</is_human>
@@ -469136,7 +469249,6 @@ The average monthly zents/points ratio (0.34) is decreasing (R=0.71).</text>
     <award t="I">4</award>
     <comments t="I">2</comments>
     <details t="S">It's time to reward @yegor256 for the code contributed in objectionary/eo#6186, the reward amount is 4.</details>
-    <greeting t="S">Thanks for the contribution! You've earned +4 points for this: +16 as a basis; -4 for too many hits-of-code (198 &gt;= 100); -8 for the lack of code review. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+2896](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">198</hoc>
     <href t="S">https://github.com/objectionary/eo/issues/6186/#issuecomment-5147274345</href>
     <is_human t="I">1</is_human>
@@ -469158,7 +469270,6 @@ The average monthly zents/points ratio (0.34) is decreasing (R=0.71).</text>
     <award t="I">4</award>
     <comments t="I">3</comments>
     <details t="S">It's time to reward @renechoi for the code review in objectionary/eo#6195, the reward amount is 4.</details>
-    <greeting t="S">Thanks for the review! You've earned +4 points for this: +12 as a basis; -8 for absolutely no comments posted.  Your running score is [+4](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">82</hoc>
     <href t="S">https://github.com/objectionary/eo/issues/6195/#issuecomment-5147274534</href>
     <is_human t="I">1</is_human>
@@ -469181,11 +469292,11 @@ The average monthly zents/points ratio (0.34) is decreasing (R=0.71).</text>
     <award t="I">4</award>
     <comments t="I">4</comments>
     <details t="S">It's time to reward @thayorns for the code review in objectionary/eo#6193, the reward amount is 4.</details>
-    <greeting t="S">Thanks for the review! You've earned +4 points for this: +12 as a basis; -8 for absolutely no comments posted.  Your running score is [+440](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">66</hoc>
     <href t="S">https://github.com/objectionary/eo/issues/6193/#issuecomment-5147274746</href>
     <is_human t="I">1</is_human>
     <issue t="I">6193</issue>
+    <receipt t="S">receipt-#83857</receipt>
     <repository t="I">73056727</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">2859</seconds>
@@ -469351,8 +469462,10 @@ The average monthly zents/points ratio (0.34) is decreasing (R=0.71).</text>
     <details t="S">It's time to reward @webhop123 for the code contributed in objectionary/eo#6153, the reward amount is 12.</details>
     <greeting t="S">Thanks for the contribution! You've earned +12 points for this: +16 as a basis; -4 for too few (16) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+24](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">16</hoc>
+    <href t="S">https://github.com/objectionary/eo/issues/6153/#issuecomment-5147928851</href>
     <is_human t="I">1</is_human>
     <issue t="I">6153</issue>
+    <receipt t="S">receipt-#83858</receipt>
     <repository t="I">73056727</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">68572</seconds>
@@ -469372,8 +469485,10 @@ The average monthly zents/points ratio (0.34) is decreasing (R=0.71).</text>
     <details t="S">It's time to reward @thayorns for the code review in objectionary/eo#6202, the reward amount is 4.</details>
     <greeting t="S">Thanks for the review! You've earned +4 points for this: +12 as a basis; -8 for absolutely no comments posted.  Your running score is [+444](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">127</hoc>
+    <href t="S">https://github.com/objectionary/eo/issues/6202/#issuecomment-5147928996</href>
     <is_human t="I">1</is_human>
     <issue t="I">6202</issue>
+    <receipt t="S">receipt-#83859</receipt>
     <repository t="I">73056727</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">2652</seconds>
@@ -469382,5 +469497,509 @@ The average monthly zents/points ratio (0.34) is decreasing (R=0.71).</text>
     <where t="S">github</where>
     <who t="I">96509556</who>
     <why t="S">Reviewed code in objectionary/eo#6202</why>
+  </f>
+  <f>
+    <_id t="I">1115437</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:32:57Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6239 has been opened by @gemshrine.</details>
+    <event_id t="I">12614189417</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6239</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T22:49:07Z</when>
+    <where t="S">github</where>
+    <who t="I">113778529</who>
+  </f>
+  <f>
+    <_id t="I">1115438</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:04Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6238 has been opened by @gemshrine.</details>
+    <event_id t="I">12613969109</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6238</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T22:40:29Z</when>
+    <where t="S">github</where>
+    <who t="I">113778529</who>
+  </f>
+  <f>
+    <_id t="I">1115439</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:05Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6237 has been opened by @morphqdd.</details>
+    <event_id t="I">12613789274</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6237</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T22:33:40Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115440</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:06Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6236 has been opened by @morphqdd.</details>
+    <event_id t="I">12613788733</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6236</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T22:33:39Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115441</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:06Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6235 has been opened by @morphqdd.</details>
+    <event_id t="I">12613788109</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6235</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T22:33:37Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115442</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:07Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6234 has been opened by @morphqdd.</details>
+    <event_id t="I">12613787866</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6234</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T22:33:37Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115443</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:07Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6233 has been opened by @morphqdd.</details>
+    <event_id t="I">12613787146</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6233</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T22:33:35Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115444</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:08Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6232 has been opened by @morphqdd.</details>
+    <event_id t="I">12613786492</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6232</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T22:33:34Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115445</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:09Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6231 has been opened by @morphqdd.</details>
+    <event_id t="I">12613785767</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6231</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T22:33:32Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115446</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:09Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6230 has been opened by @morphqdd.</details>
+    <event_id t="I">12613785449</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6230</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T22:33:31Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115447</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:10Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6229 has been opened by @morphqdd.</details>
+    <event_id t="I">12613785034</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6229</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T22:33:31Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115448</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:11Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6228 has been opened by @morphqdd.</details>
+    <event_id t="I">12613784281</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6228</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T22:33:29Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115449</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:11Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6227 has been opened by @morphqdd.</details>
+    <event_id t="I">12613784224</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6227</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T22:33:29Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115450</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:13Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6226 has been opened by @gemshrine.</details>
+    <event_id t="I">12613202557</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6226</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T22:12:34Z</when>
+    <where t="S">github</where>
+    <who t="I">113778529</who>
+  </f>
+  <f>
+    <_id t="I">1115451</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:20Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6225 has been opened by @gemshrine.</details>
+    <event_id t="I">12612297028</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6225</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T21:42:59Z</when>
+    <where t="S">github</where>
+    <who t="I">113778529</who>
+  </f>
+  <f>
+    <_id t="I">1115452</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:20Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6224 has been opened by @gemshrine.</details>
+    <event_id t="I">12611958327</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6224</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T21:32:14Z</when>
+    <where t="S">github</where>
+    <who t="I">113778529</who>
+  </f>
+  <f>
+    <_id t="I">1115453</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:21Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6223 has been opened by @gemshrine.</details>
+    <event_id t="I">12611593451</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6223</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T21:21:26Z</when>
+    <where t="S">github</where>
+    <who t="I">113778529</who>
+  </f>
+  <f>
+    <_id t="I">1115454</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:21Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <comments t="I">27</comments>
+    <commits t="I">2</commits>
+    <details t="S">The pull request objectionary/eo#6208 has been reviewed by @thayorns with 1647 HoC and 27 comments.</details>
+    <event_id t="I">12611079785</event_id>
+    <event_type t="S">PullRequestReviewEvent</event_type>
+    <files t="I">6</files>
+    <hoc t="I">1647</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">6208</issue>
+    <repository t="I">73056727</repository>
+    <review_comments t="I">24</review_comments>
+    <what t="S">pull-was-reviewed</what>
+    <when t="T">2026-07-31T21:06:41Z</when>
+    <where t="S">github</where>
+    <who t="I">96509556</who>
+  </f>
+  <f>
+    <_id t="I">1115455</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:24Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">4370</branch>
+    <details t="S">The pull request objectionary/eo#6222 has been opened by @thayorns.</details>
+    <event_id t="I">12610595952</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6222</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-07-31T20:53:12Z</when>
+    <where t="S">github</where>
+    <who t="I">96509556</who>
+  </f>
+  <f>
+    <_id t="I">1115456</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:25Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6221 has been opened by @gemshrine.</details>
+    <event_id t="I">12610019882</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6221</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T20:37:14Z</when>
+    <where t="S">github</where>
+    <who t="I">113778529</who>
+  </f>
+  <f>
+    <_id t="I">1115457</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:28Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">4140</branch>
+    <details t="S">The pull request objectionary/eo#6220 has been opened by @thayorns.</details>
+    <event_id t="I">12609155620</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6220</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-07-31T20:13:51Z</when>
+    <where t="S">github</where>
+    <who t="I">96509556</who>
+  </f>
+  <f>
+    <_id t="I">1115458</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:29Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6219 has been opened by @morphqdd.</details>
+    <event_id t="I">12609021119</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6219</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T20:10:15Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115459</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:30Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6218 has been opened by @morphqdd.</details>
+    <event_id t="I">12609019655</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6218</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T20:10:13Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115460</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:30Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6217 has been opened by @morphqdd.</details>
+    <event_id t="I">12609019376</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6217</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T20:10:12Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115461</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:31Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6216 has been opened by @morphqdd.</details>
+    <event_id t="I">12609018269</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6216</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T20:10:11Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115462</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:32Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6215 has been opened by @morphqdd.</details>
+    <event_id t="I">12609017379</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6215</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T20:10:09Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115463</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:32Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6214 has been opened by @morphqdd.</details>
+    <event_id t="I">12609016700</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6214</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T20:10:08Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115464</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:33Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6213 has been opened by @morphqdd.</details>
+    <event_id t="I">12609015826</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6213</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T20:10:07Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115465</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:34Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6212 has been opened by @morphqdd.</details>
+    <event_id t="I">12609015140</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6212</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T20:10:06Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115466</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:33:34Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6211 has been opened by @morphqdd.</details>
+    <event_id t="I">12609014497</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6211</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-07-31T20:10:05Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1115467</_id>
+    <_job t="I">30673108492</_job>
+    <_time t="T">2026-07-31T23:34:04Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">renovate/js-yaml-4.x-lockfile</branch>
+    <details t="S">The pull request objectionary/eo-lsp-server#421 has been opened by @renovate[bot].</details>
+    <event_id t="I">12614764647</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">0</is_human>
+    <issue t="I">421</issue>
+    <repository t="I">970961472</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-07-31T23:11:42Z</when>
+    <where t="S">github</where>
+    <who t="I">29139614</who>
   </f>
 </fb>
