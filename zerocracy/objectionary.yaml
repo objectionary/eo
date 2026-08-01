@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 1839.271038889
+  seconds: 2161.251098417
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-01 21:57:31.761972299 Z
+  when: 2026-08-01 23:05:38.919030137 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -41436,31 +41436,6 @@
   when: &212 2025-11-19 10:14:26.000000000 Z
   where: github
   who: 526301
-- _id: 1046607
-  _job: 19518731800
-  _time: 2025-11-19 22:48:19.196193624 Z
-  _version: 0.16.8/0.55.0/0.16.1
-  branch: 4673-fixing-eo-runtime
-  comments: 17
-  comments_appreciated: 0
-  comments_by_author: 1
-  comments_by_reviewers: 16
-  comments_resolved: 0
-  comments_to_code: 13
-  details: Apparently, objectionary/eo#4674 has been "pull-was-closed".
-  failed_builds: 7
-  files: 19
-  hoc: 940
-  is_human: 1
-  issue: 4674
-  repository: 73056727
-  review: 2025-11-18 16:46:15.000000000 Z
-  succeeded_builds: 15
-  tombstone: 2026-08-01 18:12:02.492901861 Z
-  what: pull-was-closed
-  when: 2025-11-18 21:17:54.000000000 Z
-  where: github
-  who: 56538398
 - _id: 1046608
   _job: 19518731800
   _time: 2025-11-19 22:48:36.726750045 Z
@@ -309195,7 +309170,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 831
   earliest_issue_was_found: 1
   events_were_scanned: 16162131517
   issues_were_scanned: 0
@@ -312959,7 +312934,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 999
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12630243400
   issues_were_scanned: 982
@@ -315910,7 +315885,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1120
   earliest_issue_was_found: 1
   events_were_scanned: 12636052317
   issues_were_scanned: 0
@@ -315944,11 +315919,11 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5485
+  assignees_were_scanned: 5806
   earliest_issue_was_found: 1
-  events_were_scanned: 12639821725
+  events_were_scanned: 12641087302
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6095
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
@@ -434653,7 +434628,7 @@
   repository: 73056727
   review_comments: 18
   what: pull-was-reviewed
-  when: 2026-08-01 20:44:07.000000000 Z
+  when: &3831 2026-08-01 20:44:07.000000000 Z
   where: github
   who: 113778529
 - _id: 1115547
@@ -434684,3 +434659,68 @@
   when: 2026-08-01 20:06:47.000000000 Z
   where: github
   who: 96509556
+- _id: 1115549
+  _job: 84769
+  _time: 2026-08-01 21:58:02.963990672 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 125282851
+  comments: 23
+  details: The pull request objectionary/eo#6193 with 54 HoC created by @morphqdd
+    was reviewed by @gemshrine after 1d6h and 23 comments.
+  hoc: 54
+  is_human: 1
+  issue: 6193
+  repository: 73056727
+  review_comments: 18
+  seconds: 109962
+  what: code-was-reviewed
+  when: *3831
+  where: github
+  who: 113778529
+- _id: 1115550
+  _job: 84769
+  _time: 2026-08-01 21:58:43.309694297 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 7
+  comments: 17
+  details: It's time to reward @thayorns for the code review in objectionary/eo#6151,
+    the reward amount is 7.
+  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
+    -5 for very few (10) comments.  Your running score is [+475](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 95
+  is_human: 1
+  issue: 6151
+  repository: 73056727
+  review_comments: 10
+  seconds: 173057
+  what: code-review-was-rewarded
+  when: 2026-08-01 21:58:43.315091991 Z
+  where: github
+  who: 96509556
+  why: Reviewed code in objectionary/eo#6151
+- _id: 1115551
+  _job: 30721309801
+  _time: 2026-08-01 22:31:03.715398278 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '6142'
+  details: The pull request objectionary/eo#6249 has been opened by @guflly.
+  event_id: 12641047184
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6249
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-08-01 22:15:55.000000000 Z
+  where: github
+  who: 145608489
+- _id: 1115552
+  _job: 30721309801
+  _time: 2026-08-01 22:47:12.443358222 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: 'We found out that the user #145608489 is known in GitHub as @guflly.'
+  name: guflly
+  what: who-has-name
+  when: 2026-08-01 22:47:12.458253614 Z
+  where: github
+  who: 145608489
