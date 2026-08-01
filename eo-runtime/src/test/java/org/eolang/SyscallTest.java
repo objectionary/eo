@@ -34,10 +34,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * Test case for the {@link Syscall} implementations behind the
  * {@code socket} object, both the POSIX and the Windows ones.
  * @since 0.40
- * @todo #6137:30min Move WindowsSocketTest to org.eolang.win32.WinsockTest and
- *  PosixSocketTest to org.eolang.posix.CStdLibTest, with htons, RandomServer,
- *  assertReceived and the simian exclusion, because the same six cases written
- *  twice hold this file against the 1000-line FileLengthCheck.
  */
 @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
 final class SyscallTest {
