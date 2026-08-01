@@ -58,7 +58,6 @@ final class DpsDefault implements Dependencies {
      * @param self Self
      * @param skip Skip
      * @param jna Add JNA dependency
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     DpsDefault(final TjsForeign tjs, final boolean self, final boolean skip, final boolean jna) {
         this.tojos = tjs;

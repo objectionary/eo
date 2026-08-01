@@ -82,7 +82,6 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Data.
-     * @checkstyle VisibilityModifierCheck (2 lines)
      */
     private final byte[] data;
 
@@ -152,7 +151,6 @@ public class PhDefault implements Phi, Cloneable {
      * @param forma      The forma of the object, taken from XMIR
      * @param dta        Object data
      * @param attributes Initial attributes to register
-     * @checkstyle ParameterNumberCheck (5 lines)
      * @checkstyle ConstructorsCodeFreeCheck (14 lines)
      */
     private PhDefault(

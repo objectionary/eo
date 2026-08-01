@@ -41,7 +41,6 @@ final class FpAppliedWithCache implements Footprint {
      * @param che Cache
      * @param rwrte Rewrite
      * @param enabled Cache enabled?
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     FpAppliedWithCache(
         final Footprint ipt,

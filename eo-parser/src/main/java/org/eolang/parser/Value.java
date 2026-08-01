@@ -80,7 +80,6 @@ final class Value {
      * @param text Raw text
      * @param column Start column
      * @param after Index past the value
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     Value(final Kind tag, final String text, final int column, final int after) {
         this(tag, text, column, after, null, Value.NO_CHAIN, false);
@@ -93,7 +92,6 @@ final class Value {
      * @param column Start column
      * @param after Index past the value
      * @param tie Optional inline-binding label or N
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     Value(
         final Kind tag, final String text, final int column, final int after, final String tie
@@ -110,7 +108,6 @@ final class Value {
      * @param tie Optional inline-binding label or N
      * @param links Method-dispatch chain on this value (empty for a bare value)
      * @param cnst Whether a trailing {@code !} const marker is present
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     Value(
         final Kind tag, final String text, final int column, final int after,
