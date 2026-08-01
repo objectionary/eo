@@ -61,7 +61,7 @@
   <xsl:template match="/object[not(metas)]">
     <xsl:variable name="candidates" as="element()*">
       <xsl:apply-templates select="//o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
-      <xsl:apply-templates select="//o[eo:void(.) and @args]" mode="args"/>
+      <xsl:apply-templates select="//o[eo:void(.) and @type]" mode="type"/>
     </xsl:variable>
     <xsl:variable name="probes" select="distinct-values($candidates/text())[not(eo:contains-any-of(., ('ξ', 'ρ', 'φ'))) and not(.='Φ') and not(.='Φ̇')]"/>
     <xsl:copy>
@@ -79,7 +79,7 @@
   <xsl:template match="/object/metas">
     <xsl:variable name="candidates" as="element()*">
       <xsl:apply-templates select="//o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
-      <xsl:apply-templates select="//o[eo:void(.) and @args]" mode="args"/>
+      <xsl:apply-templates select="//o[eo:void(.) and @type]" mode="type"/>
     </xsl:variable>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
@@ -88,12 +88,17 @@
       </xsl:for-each>
     </xsl:copy>
   </xsl:template>
-  <!-- Callback arg-types annotation on a void attribute -->
-  <!-- The `@args` value is a single-space separated list of type atoms; -->
-  <!-- homed formas start with `Φ`, generic type variables (A-F) do not -->
+  <!-- Type annotation on a void attribute -->
+  <!-- The `@type` value is the union of types the void may hold; every -->
+  <!-- atom in it, braced formation types included, names an object the -->
+  <!-- program refers to nowhere else and so would never be pulled. -->
+  <!-- Before #6189 only the braced ones were probed, because they were -->
+  <!-- the separate `@args` attribute; a plain `/Q.number` is the same -->
+  <!-- kind of reference and is probed now that both live in `@type`. -->
+  <!-- Homed formas start with `Φ`, generic type variables (A-F) do not -->
   <!-- and must be skipped, since they are not real objects to probe. -->
-  <xsl:template match="o" mode="args" as="element()*">
-    <xsl:for-each select="tokenize(@args, ' ')[starts-with(., 'Φ')]">
+  <xsl:template match="o" mode="type" as="element()*">
+    <xsl:for-each select="eo:type-atoms(@type)[starts-with(., 'Φ')]">
       <xsl:variable name="parts" select="tokenize(., '\.')"/>
       <xsl:for-each select="$parts">
         <xsl:variable name="pos" select="position()"/>

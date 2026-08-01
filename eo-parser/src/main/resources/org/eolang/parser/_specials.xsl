@@ -14,5 +14,12 @@
   <xsl:variable name="eo:empty" select="'∅'"/>
   <xsl:variable name="eo:bottom" select="'⊥'"/>
   <xsl:variable name="eo:space" select="' '"/>
+  <!--
+  What separates the type atoms of a void's "@type" annotation (R-3.4.8):
+  the braces of a formation type, the single spaces between members and
+  the trailing "?" of a maybe-⊥ union. The surface "|" is not among them —
+  it never reaches XMIR, where members are space-separated.
+  -->
+  <xsl:variable name="eo:type-seps" select="'[{} ?]'"/>
   <xsl:variable name="eo:new-line" select="'&#10;'"/>
 </xsl:stylesheet>

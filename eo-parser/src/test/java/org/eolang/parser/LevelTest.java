@@ -18,7 +18,7 @@ final class LevelTest {
     void retainsIndentFromCtor() {
         MatcherAssert.assertThat(
             "indent must round-trip the ctor argument",
-            new Level(4, 7, Kind.HEAD, Openness.OPEN, Kind.BARE_FORMATION, false).indent(),
+            new Level(4, 7, Kind.HEAD, Openness.OPEN, Kind.BARE_FORMATION).indent(),
             Matchers.equalTo(4)
         );
     }
@@ -27,7 +27,7 @@ final class LevelTest {
     void retainsStartLineFromCtor() {
         MatcherAssert.assertThat(
             "start line must be the line where the level was first pushed",
-            new Level(0, 42, Kind.HEAD, Openness.OPEN, Kind.TOP_LEVEL, false).start(),
+            new Level(0, 42, Kind.HEAD, Openness.OPEN, Kind.TOP_LEVEL).start(),
             Matchers.equalTo(42)
         );
     }
@@ -35,7 +35,7 @@ final class LevelTest {
     @Test
     void promotesKindOnBecome() {
         final Level level = new Level(
-            2, 3, Kind.HEAD, Openness.OPEN, Kind.BARE_FORMATION, false
+            2, 3, Kind.HEAD, Openness.OPEN, Kind.BARE_FORMATION
         );
         level.become(Kind.VAPPLICATION);
         MatcherAssert.assertThat(
@@ -48,7 +48,7 @@ final class LevelTest {
     @Test
     void downgradesOpennessOnClose() {
         final Level level = new Level(
-            0, 1, Kind.HEAD, Openness.OPEN, Kind.TOP_LEVEL, false
+            0, 1, Kind.HEAD, Openness.OPEN, Kind.TOP_LEVEL
         );
         level.close(Openness.VERTICAL_COMPLETED);
         MatcherAssert.assertThat(
@@ -61,7 +61,7 @@ final class LevelTest {
     @Test
     void flipsNamedFlag() {
         final Level level = new Level(
-            0, 1, Kind.BARE_FORMATION, Openness.OPEN, Kind.TOP_LEVEL, false
+            0, 1, Kind.BARE_FORMATION, Openness.OPEN, Kind.TOP_LEVEL
         );
         level.name("foo");
         MatcherAssert.assertThat(
@@ -75,7 +75,7 @@ final class LevelTest {
     void leavesNamedFlagFalseByDefault() {
         MatcherAssert.assertThat(
             "a fresh level cannot be named before name() is invoked",
-            new Level(0, 1, Kind.HEAD, Openness.OPEN, Kind.TOP_LEVEL, false).named(),
+            new Level(0, 1, Kind.HEAD, Openness.OPEN, Kind.TOP_LEVEL).named(),
             Matchers.is(false)
         );
     }
@@ -83,7 +83,7 @@ final class LevelTest {
     @Test
     void flipsAtomFlag() {
         final Level level = new Level(
-            0, 1, Kind.BARE_FORMATION, Openness.OPEN, Kind.TOP_LEVEL, false
+            0, 1, Kind.BARE_FORMATION, Openness.OPEN, Kind.TOP_LEVEL
         );
         level.mark();
         MatcherAssert.assertThat(
@@ -94,19 +94,9 @@ final class LevelTest {
     }
 
     @Test
-    void recordsParentAtomFromCtor() {
-        MatcherAssert.assertThat(
-            "parentAtom must round-trip the ctor argument so R-5.3.4 can read it",
-            new Level(2, 3, Kind.BARE_FORMATION, Openness.OPEN, Kind.BARE_FORMATION, true)
-                .patom(),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
     void consumesReceiverOnce() {
         final Level level = new Level(
-            0, 1, Kind.BARE_REVERSED, Openness.OPEN, Kind.TOP_LEVEL, false
+            0, 1, Kind.BARE_REVERSED, Openness.OPEN, Kind.TOP_LEVEL
         );
         level.consumeReceiver();
         MatcherAssert.assertThat(
@@ -119,7 +109,7 @@ final class LevelTest {
     @Test
     void storesCompactNonNegative() {
         final Level level = new Level(
-            0, 1, Kind.COMPACT_TUPLE, Openness.OPEN, Kind.TOP_LEVEL, false
+            0, 1, Kind.COMPACT_TUPLE, Openness.OPEN, Kind.TOP_LEVEL
         );
         level.compact(3);
         MatcherAssert.assertThat(
@@ -132,7 +122,7 @@ final class LevelTest {
     @Test
     void incrementsChildCount() {
         final Level level = new Level(
-            0, 1, Kind.COMPACT_TUPLE, Openness.OPEN, Kind.TOP_LEVEL, false
+            0, 1, Kind.COMPACT_TUPLE, Openness.OPEN, Kind.TOP_LEVEL
         );
         level.child();
         level.child();

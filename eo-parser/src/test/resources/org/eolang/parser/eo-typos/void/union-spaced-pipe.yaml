@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 line: 2
-message: "allowed only inside an atom"
+message: "a union must have no spaces around its pipes"
 input: |
   [] > foo
-    ? > x /A
+    ? > x /Q.number |Q.string

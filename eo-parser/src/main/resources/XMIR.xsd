@@ -97,12 +97,18 @@
     <xs:annotation>
       <xs:appinfo>A void attribute type annotation</xs:appinfo>
       <xs:documentation>
-        The declared type of a void attribute of an atom: a concrete forma or a generic
-        type variable A-F, with an optional trailing "?" marking a maybe-⊥ value.
+        The declared type of a void attribute: the union of types it may hold,
+        members separated by a single space, each a concrete forma, a generic type
+        variable A-F or a braced formation type naming the types of that
+        formation's voids, with an optional trailing "?" marking the union maybe-⊥.
+        The forma sub-pattern repeats because XSD 1.0 cannot name one, and an
+        xs:list is no help either: a formation type holds spaces of its own. This
+        is one of the encodings of R-3.4.8 — the parser's "LnVoid", the printer's
+        "eo:void-type" and "_funcs.xsl" hold the others, and they move together.
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="([A-F]|⊥|∅|([Φξ])(\.(ρ|φ|[a-z][^\s.]*|α[0-9]*))*)[?]?"/>
+      <xs:pattern value="(([A-F]|⊥|∅|([Φξ])(\.(ρ|φ|[a-z][^\s.|{}]*|α[0-9]*))*)|\{(([A-F]|⊥|∅|([Φξ])(\.(ρ|φ|[a-z][^\s.|{}]*|α[0-9]*))*)( ([A-F]|⊥|∅|([Φξ])(\.(ρ|φ|[a-z][^\s.|{}]*|α[0-9]*))*))*)?\})( (([A-F]|⊥|∅|([Φξ])(\.(ρ|φ|[a-z][^\s.|{}]*|α[0-9]*))*)|\{(([A-F]|⊥|∅|([Φξ])(\.(ρ|φ|[a-z][^\s.|{}]*|α[0-9]*))*)( ([A-F]|⊥|∅|([Φξ])(\.(ρ|φ|[a-z][^\s.|{}]*|α[0-9]*))*))*)?\}))*[?]?"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="locator">
@@ -209,21 +215,12 @@
     </xs:attribute>
     <xs:attribute name="type" type="type-anno">
       <xs:annotation>
-        <xs:appinfo>The declared type of an atom's void attribute</xs:appinfo>
+        <xs:appinfo>The declared type of a void attribute</xs:appinfo>
         <xs:documentation>
-          Used on a void attribute of an atom (the bare "/type" annotation, R-3.4.8).
-          Holds the FQN of a concrete forma or a generic type variable A-F, with an
-          optional trailing "?" marking a maybe-⊥ value.
-        </xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="args" type="non-empty">
-      <xs:annotation>
-        <xs:appinfo>Space-separated argument types of an atom void callback branch</xs:appinfo>
-        <xs:documentation>
-          Used on a void callback attribute of an atom (the "/{…}" argument list, R-3.4.8).
-          Holds the space-separated types (concrete FQNs or generic variables A-F) of the
-          arguments the atom supplies to that branch.
+          Used on a void attribute (the "/type" annotation, R-3.4.8). Holds the
+          union of types the void may hold, members separated by a single space:
+          the FQN of a concrete forma, a generic type variable A-F, or a braced
+          formation type, with an optional trailing "?" marking the union maybe-⊥.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>

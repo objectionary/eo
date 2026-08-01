@@ -27,7 +27,9 @@
   511 > permissions
   0 > rdonly
   2 > rdwr
-  [code output] > return
+  [] > return
+    ? > code /Q.bool|Q.number|Q.string
+    ? > output /{}|Q.bytes|Q.posix.stat|Q.posix.timeval|Q.string
     output > @
     return > called
       code
@@ -39,13 +41,17 @@
         family.size.plus port.size
         address.size
       padding.size
-  [mode size] > stat
+  [] > stat
+    ? > mode /Q.number
+    ? > size /Q.number
   2 > stderr
   0 > stdin
   1 > stdout
   1 > stream
   6 > tcp
-  [seconds micros] > timeval
+  [] > timeval
+    ? > seconds /Q.number
+    ? > micros /Q.number
   os.is-macos.if > trunc
     1024
     512

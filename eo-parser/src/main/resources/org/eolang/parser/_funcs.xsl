@@ -29,6 +29,39 @@
     <xsl:param name="o" as="element()"/>
     <xsl:sequence select="starts-with($o/@name, '+') or starts-with($o/@name, '-')"/>
   </xsl:function>
+  <!--
+  The union members of a void's "@type" annotation (R-3.4.8): a braced
+  formation type comes out whole, inner spaces and all, every other
+  member is one space-separated token. A trailing "?" is not stripped —
+  strip it before calling, since it belongs to the union, not a member.
+  The single-level "\{[^}]*\}" is R-3.4.8's rule that a formation type
+  does not nest, the same rule "LnVoid.formation" enforces at parse; if
+  the grammar ever grows nesting, both have to grow with it.
+  -->
+  <xsl:function name="eo:type-members" as="xs:string*">
+    <xsl:param name="anno" as="xs:string"/>
+    <xsl:analyze-string select="$anno" regex="\{{[^}}]*\}}|[^ ]+">
+      <xsl:matching-substring>
+        <xsl:sequence select="."/>
+      </xsl:matching-substring>
+    </xsl:analyze-string>
+  </xsl:function>
+  <!--
+  Every type atom a void's "@type" annotation names, its separators
+  ("eo:type-seps") dropped: what a pass rewriting individual formas
+  (aliases, default package, alias restoring) has to look at. The "+"
+  collapses a run of separators, since only the atoms are wanted here;
+  a pass that re-emits the annotation matches them one at a time instead,
+  to put every brace and space back where it was.
+  -->
+  <xsl:function name="eo:type-atoms" as="xs:string*">
+    <xsl:param name="anno" as="xs:string"/>
+    <xsl:analyze-string select="$anno" regex="{concat($eo:type-seps, '+')}">
+      <xsl:non-matching-substring>
+        <xsl:sequence select="."/>
+      </xsl:non-matching-substring>
+    </xsl:analyze-string>
+  </xsl:function>
   <!-- BYTES TO STRING -->
   <xsl:function name="eo:bytes-to-string" as="xs:string">
     <xsl:param name="bytes" as="xs:string"/>

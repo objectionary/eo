@@ -7,7 +7,7 @@ package org.eolang.parser;
 /**
  * A vertical void-attribute line — R-3.4.7 / R-3.4.8 of the spec.
  *
- * <p>Form: {@code ? > name} with an optional atom-only type annotation.
+ * <p>Form: {@code ? > name} with an optional type annotation.
  * The {@code ?} declares a void attribute on the enclosing formation,
  * equivalent to listing {@code name} among the bracket parameters; it
  * emits the same empty-set-based void child named {@code name} (§9.4),
@@ -21,23 +21,24 @@ package org.eolang.parser;
  * name and no handle. Filling stays positional, so the auto-generated
  * external name does not affect how callers bind the void.</p>
  *
- * <p>Inside an atom (a formation whose head carries {@code /sig}) the
- * void may carry exactly one type annotation (R-3.4.8):</p>
+ * <p>A void may carry exactly one type annotation (R-3.4.8) — a union
+ * of the types it may hold, written {@code /one|two|three} with no
+ * spaces around the pipes, and closed by an optional {@code ?} marking
+ * the whole union maybe-bottom. A member is either:</p>
  *
  * <ul>
- *   <li>{@code /type} — the void's own type: a concrete forma or a
- *   generic type variable ({@code A}–{@code F}), with an optional
- *   trailing {@code ?} marking a maybe-bottom value. Emits
- *   {@code @type}.</li>
- *   <li>{@code /&#123;type …&#125;} — the void is a callback formation;
- *   the brace list gives the types of its void parameters (the arguments
- *   the atom supplies to that branch). No {@code ?} inside. Emits
- *   {@code @args}.</li>
+ *   <li>a concrete forma or a generic type variable
+ *   ({@code A}–{@code F});</li>
+ *   <li>a formation type {@code &#123;type …&#125;} naming the types of
+ *   that formation's voids — {@code &#123;&#125;} for one with none,
+ *   the shape a callback branch or an anonymous empty object takes. No
+ *   {@code ?} inside.</li>
  * </ul>
  *
  * <p>A concrete forma has a leading {@code Q.} promoted to {@code Φ.};
- * a generic type variable stays verbatim. Both annotation forms are
- * rejected outside an atom.</p>
+ * a generic type variable stays verbatim. The whole union lands in one
+ * {@code @type} attribute, members separated by a single space, a
+ * formation member keeping its braces.</p>
  *
  * <p>{@code ? > name} and {@code ? >> name} — each optionally followed
  * by one type annotation — are the only shapes the {@code ?} marker may
@@ -80,15 +81,9 @@ final class LnVoid implements Line {
             );
         }
         Comments.seal(globals, emit, this.span);
-        final Level level = new Transition(stack, this.span).apply(
+        new Transition(stack, this.span).apply(
             Kind.VOID, Openness.VERTICAL_COMPLETED, suffix.named()
         );
-        if (slash >= 0 && !level.patom()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "a void type annotation is allowed only inside an atom"
-            );
-        }
         globals.clearBlanks();
         globals.markEmitted();
         emit.object(
@@ -118,99 +113,150 @@ final class LnVoid implements Line {
     }
 
     /**
-     * Emit the void's type annotation (R-3.4.8), if any. Atom-only-ness
-     * is validated by the caller; a bare {@code /type} emits
-     * {@code @type}, a brace {@code /{…}} emits {@code @args}.
+     * Emit the void's type annotation (R-3.4.8), if any, as the one
+     * {@code @type} attribute holding the whole union.
      * @param emit The directives sink
      * @param tail The line body after the {@code ?}
      * @param slash Index of the first {@code /} in {@code tail}, or -1
      */
     private void annotate(final Emit emit, final String tail, final int slash) {
         if (slash >= 0) {
-            if (slash + 1 < tail.length() && tail.charAt(slash + 1) == '{') {
-                emit.args(LnVoid.args(tail, slash, this.span));
-            } else {
-                emit.type(LnVoid.type(tail, slash, this.span));
-            }
+            emit.type(this.union(tail, slash));
         }
     }
 
     /**
-     * Parse the bare {@code /type} annotation (R-3.4.8): one type atom
-     * (a generic variable or a concrete forma) with an optional trailing
-     * {@code ?}. The forma is promoted from {@code Q.} to {@code Φ.}; the
-     * variable stays verbatim.
+     * Parse the union that follows the {@code /} marker (R-3.4.8): one
+     * or more members separated by {@code |}, closed by an optional
+     * {@code ?} that marks the whole union maybe-bottom. Members come
+     * out single-space separated, in source order.
      * @param tail The line body after the {@code ?}
      * @param slash Index of the {@code /} marker in {@code tail}
-     * @param span The source span (for errors)
      * @return The promoted {@code @type} value, with {@code ?} preserved
      */
-    private static String type(final String tail, final int slash, final Span span) {
+    private String union(final String tail, final int slash) {
+        final StringBuilder out = new StringBuilder(tail.length());
         int idx = slash + 1;
-        final int begin = idx;
-        while (idx < tail.length()
-            && tail.charAt(idx) != ' '
-            && tail.charAt(idx) != '?'
-            && tail.charAt(idx) != '/') {
-            idx = idx + 1;
+        boolean more = true;
+        while (more) {
+            if (out.length() > 0) {
+                out.append(' ');
+            }
+            idx = this.member(tail, idx, out);
+            more = idx < tail.length() && tail.charAt(idx) == '|';
+            if (more) {
+                idx = idx + 1;
+            }
         }
-        if (idx == begin) {
-            throw new ParseError(
-                span.line(), span.indent(),
-                "a void type annotation requires a type"
-            );
-        }
-        final String base = Suffix.typeAtom(
-            tail.substring(begin, idx), span, span.indent() + 1 + begin
-        );
         final String result;
         if (idx < tail.length() && tail.charAt(idx) == '?') {
-            LnVoid.endsClean(tail, idx + 1, span);
-            result = base.concat("?");
+            this.endsClean(
+                tail, idx + 1, "the optional marker ? must close a void type annotation"
+            );
+            result = out.toString().concat("?");
         } else {
-            LnVoid.endsClean(tail, idx, span);
-            result = base;
+            this.endsClean(tail, idx, "a union must have no spaces around its pipes");
+            result = out.toString();
         }
         return result;
     }
 
     /**
-     * Parse the brace {@code /&#123;type …&#125;} argument list (R-3.4.8):
-     * one or more type atoms, single-space separated, no {@code ?}.
+     * Parse one union member — a formation type when it opens with
+     * {@code &#123;}, a single type atom otherwise — appending it to
+     * {@code out}.
      * @param tail The line body after the {@code ?}
-     * @param slash Index of the {@code /} marker in {@code tail}
-     * @param span The source span (for errors)
-     * @return The space-separated promoted {@code @args} value
+     * @param from Index the member starts at
+     * @param out Sink for the promoted member
+     * @return Index just past the member
      */
-    private static String args(final String tail, final int slash, final Span span) {
-        final int open = slash + 1;
-        final int close = tail.indexOf('}', open + 1);
-        if (close < 0) {
-            throw new ParseError(
-                span.line(), span.indent(),
-                "a `/{…}` argument list must end with `}`"
-            );
+    private int member(final String tail, final int from, final StringBuilder out) {
+        final int next;
+        if (from < tail.length() && tail.charAt(from) == '{') {
+            next = this.formation(tail, from, out);
+        } else {
+            next = this.forma(tail, from, out);
         }
-        LnVoid.endsClean(tail, close + 1, span);
-        return LnVoid.members(tail.substring(open + 1, close), span);
+        return next;
     }
 
     /**
-     * Split a brace argument list on single spaces, promoting each type
-     * atom (variable verbatim, forma {@code Q.} promoted to {@code Φ.})
-     * and rejecting empty entries, double spaces, and the {@code ?}
-     * optional marker.
-     * @param inside The text inside the braces
-     * @param span The source span (for errors)
-     * @return The space-separated promoted arguments
+     * Parse a formation member {@code &#123;type …&#125;} (R-3.4.8): the
+     * types of that formation's voids, single-space separated, none for
+     * {@code &#123;&#125;}, no {@code ?} inside.
+     * A formation type does not nest: its entries are plain types, so a
+     * second {@code &#123;} before the closing brace is refused here
+     * rather than left to look like trailing garbage.
+     * @param tail The line body after the {@code ?}
+     * @param from Index of the opening brace
+     * @param out Sink for the promoted member
+     * @return Index just past the closing brace
      */
-    private static String members(final String inside, final Span span) {
-        if (inside.isEmpty()) {
+    private int formation(final String tail, final int from, final StringBuilder out) {
+        final int close = tail.indexOf('}', from + 1);
+        if (close < 0) {
             throw new ParseError(
-                span.line(), span.indent(),
-                "a `/{…}` argument list must name at least one type"
+                this.span.line(), this.span.indent(),
+                "a `/{…}` formation type must end with `}`"
             );
         }
+        if (tail.lastIndexOf('{', close) > from) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "a `/{…}` formation type cannot nest another one"
+            );
+        }
+        out.append('{')
+            .append(LnVoid.voids(tail.substring(from + 1, close), this.span))
+            .append('}');
+        return close + 1;
+    }
+
+    /**
+     * Parse a bare member: one type atom, a generic variable verbatim or
+     * a concrete forma promoted from {@code Q.} to {@code Φ.}.
+     * @param tail The line body after the {@code ?}
+     * @param from Index the atom starts at
+     * @param out Sink for the promoted atom
+     * @return Index just past the atom
+     */
+    private int forma(final String tail, final int from, final StringBuilder out) {
+        int idx = from;
+        while (idx < tail.length() && !LnVoid.breaks(tail.charAt(idx))) {
+            idx = idx + 1;
+        }
+        if (idx == from) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "a void type annotation requires a type"
+            );
+        }
+        out.append(
+            Suffix.typeAtom(
+                tail.substring(from, idx), this.span, this.span.indent() + 1 + from
+            )
+        );
+        return idx;
+    }
+
+    /**
+     * Whether the character ends a bare union member.
+     * @param symbol The character
+     * @return True if the member stops here
+     */
+    private static boolean breaks(final char symbol) {
+        return symbol == ' ' || symbol == '?' || symbol == '/' || symbol == '|';
+    }
+
+    /**
+     * Split the void types of a formation member on single spaces,
+     * promoting each atom and rejecting double spaces and the {@code ?}
+     * optional marker. An empty list is a formation with no voids.
+     * @param inside The text inside the braces
+     * @param span The source span (for errors)
+     * @return The space-separated promoted types, empty for no voids
+     */
+    private static String voids(final String inside, final Span span) {
         final StringBuilder out = new StringBuilder(inside.length());
         int idx = 0;
         while (idx < inside.length()) {
@@ -228,7 +274,7 @@ final class LnVoid implements Line {
             if (member.indexOf('?') >= 0) {
                 throw new ParseError(
                     span.line(), span.indent(),
-                    "? is not allowed inside a /{…} argument list"
+                    "? is not allowed inside a /{…} formation type"
                 );
             }
             if (out.length() > 0) {
@@ -242,13 +288,15 @@ final class LnVoid implements Line {
 
     /**
      * Verify the rest of {@code tail} from {@code from} onward is only
-     * whitespace; a further {@code /} is a second annotation, anything
-     * else is trailing garbage.
+     * whitespace; a further {@code /} is a second annotation, a
+     * {@code |} is a union that did not end where it looked like it did
+     * — which the caller diagnoses, since only it knows whether an
+     * optional marker was read — and anything else is trailing garbage.
      * @param tail The line body after the {@code ?}
      * @param from Index after the consumed annotation
-     * @param span The source span (for errors)
+     * @param piped What a {@code |} here means
      */
-    private static void endsClean(final String tail, final int from, final Span span) {
+    private void endsClean(final String tail, final int from, final String piped) {
         int idx = from;
         while (idx < tail.length() && tail.charAt(idx) == ' ') {
             idx = idx + 1;
@@ -257,10 +305,12 @@ final class LnVoid implements Line {
             final String message;
             if (tail.charAt(idx) == '/') {
                 message = "a void attribute may carry at most one type annotation";
+            } else if (tail.charAt(idx) == '|') {
+                message = piped;
             } else {
                 message = "trailing garbage after a void type annotation";
             }
-            throw new ParseError(span.line(), span.indent(), message);
+            throw new ParseError(this.span.line(), this.span.indent(), message);
         }
     }
 }

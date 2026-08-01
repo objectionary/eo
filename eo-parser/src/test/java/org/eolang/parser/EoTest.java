@@ -218,20 +218,22 @@ final class EoTest {
     @Test
     void parsesAtomVoidWithFormaList() {
         MatcherAssert.assertThat(
-            "a void in an atom must carry its `/{…}` argument list as a raw @args attribute",
+            "a void in an atom must carry its `/{…}` formation type raw, braces and all",
             EoTest.render("[] > fopen /file", "  ? > not-found /{string io.file-error}"),
             XhtmlMatchers.hasXPath(
-                "/object/o[@name='fopen']/o[@name='not-found' and @base='∅' and @args='string io.file-error']"
+                "/object/o[@name='fopen']/o[@name='not-found' and @base='∅' and @type='{string io.file-error}']"
             )
         );
     }
 
     @Test
-    void rejectsFormaListOutsideAtom() {
+    void parsesFormaListOutsideAtom() {
         MatcherAssert.assertThat(
-            "a `/{…}` forma-list on a void outside an atom must be rejected",
+            "a `/{…}` formation type on a void of a plain formation must reach @type",
             EoTest.render("[] > foo", "  ? > x /{string}"),
-            XhtmlMatchers.hasXPath("/object/errors/error")
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='foo']/o[@name='x' and @base='∅' and @type='{string}']"
+            )
         );
     }
 

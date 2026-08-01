@@ -165,7 +165,6 @@ final class Stack {
         final int indent, final int line, final Kind kind, final Openness openness
     ) {
         final Kind parent;
-        final boolean patom;
         final boolean argues;
         final String owner;
         if (this.levels.isEmpty()) {
@@ -175,7 +174,6 @@ final class Stack {
                 );
             }
             parent = Kind.TOP_LEVEL;
-            patom = false;
             argues = false;
             owner = "";
         } else {
@@ -189,7 +187,6 @@ final class Stack {
                 );
             }
             parent = under.kind();
-            patom = under.atom();
             argues = under.argumentative();
             owner = under.governingFormation();
             under.observeVoid(kind, line, indent);
@@ -197,7 +194,7 @@ final class Stack {
         if (!this.levels.isEmpty()) {
             this.opener.beforeChild(this.top());
         }
-        final Level fresh = new Level(indent, line, kind, openness, parent, patom);
+        final Level fresh = new Level(indent, line, kind, openness, parent);
         if (argues) {
             fresh.argues(owner);
         }
@@ -250,24 +247,21 @@ final class Stack {
         this.closer.onClose(old);
         final int indent = old.indent();
         final Kind parent;
-        final boolean patom;
         final boolean argues;
         final String owner;
         if (this.levels.isEmpty()) {
             parent = Kind.TOP_LEVEL;
-            patom = false;
             argues = false;
             owner = "";
         } else {
             final Level under = this.top();
             parent = under.kind();
-            patom = under.atom();
             argues = under.argumentative();
             owner = under.governingFormation();
             under.observeVoid(kind, line, indent);
             this.opener.beforeChild(under);
         }
-        final Level fresh = new Level(indent, line, kind, openness, parent, patom);
+        final Level fresh = new Level(indent, line, kind, openness, parent);
         if (argues) {
             fresh.argues(owner);
         }

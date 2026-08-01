@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 line: 2
-message: "? is not allowed inside a /{…} argument list"
+message: "a `/{…}` formation type cannot nest another one"
 input: |
-  [] > atom /A
-    ? > cant /{Q.string? B}
+  [] > foo
+    ? > x /{{A} B}

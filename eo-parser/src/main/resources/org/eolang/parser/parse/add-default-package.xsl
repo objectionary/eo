@@ -78,16 +78,23 @@
   <xsl:template match="o[@atom][not(matches(@atom, '^[A-F]$'))]">
     <xsl:apply-templates select="." mode="with-atom"/>
   </xsl:template>
-  <xsl:template match="@args">
-    <xsl:attribute name="args">
-      <xsl:value-of separator=" " select="for $t in tokenize(., ' ') return if (matches($t, '^[A-F]$') or contains($t, '.') or $t=$eo:phi or $t=$eo:program or $t=$eo:rho or $t=$eo:empty or $t=$eo:xi or $t=$eo:bottom or $t=/object/metas/meta[head='alias']/part[1]) then $t else concat('Φ.', $t)"/>
-    </xsl:attribute>
-  </xsl:template>
+  <!--
+  Home every type atom a void's union names (R-3.4.8), one by one, so
+  the separators that hold the union together pass through untouched.
+  -->
   <xsl:template match="@type">
-    <xsl:variable name="opt" select="ends-with(., '?')"/>
-    <xsl:variable name="type" select="if ($opt) then substring(., 1, string-length(.) - 1) else string(.)"/>
-    <xsl:variable name="homed" select="if (matches($type, '^[A-F]$') or contains($type, '.') or $type=$eo:phi or $type=$eo:program or $type=$eo:rho or $type=$eo:empty or $type=$eo:xi or $type=$eo:bottom or $type=/object/metas/meta[head='alias']/part[1]) then $type else concat('Φ.', $type)"/>
-    <xsl:attribute name="type" select="if ($opt) then concat($homed, '?') else $homed"/>
+    <xsl:variable name="short" select="/object/metas/meta[head='alias']/part[1]"/>
+    <xsl:attribute name="type">
+      <xsl:analyze-string select="." regex="{$eo:type-seps}">
+        <xsl:matching-substring>
+          <xsl:value-of select="."/>
+        </xsl:matching-substring>
+        <xsl:non-matching-substring>
+          <xsl:variable name="atom" select="."/>
+          <xsl:value-of select="if (matches($atom, '^[A-F]$') or contains($atom, '.') or $atom=$eo:phi or $atom=$eo:program or $atom=$eo:rho or $atom=$eo:empty or $atom=$eo:xi or $atom=$eo:bottom or $atom=$short) then $atom else concat('Φ.', $atom)"/>
+        </xsl:non-matching-substring>
+      </xsl:analyze-string>
+    </xsl:attribute>
   </xsl:template>
   <xsl:template match="/object/metas/meta[head='also']/(tail|part)">
     <xsl:apply-templates select="." mode="meta"/>

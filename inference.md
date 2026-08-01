@@ -1,6 +1,8 @@
+# Type inference
+
 Consider this code:
 
-```
+```eo
 [] > app
   inc t > @
   [] > t
@@ -18,7 +20,7 @@ This is how we can implement this.
 
 First, we get XMIR out of this code:
 
-```
+```xml
 <o name="app">
   <o base="ξ.inc" name="φ">
      <o as="α0" base="ξ.t"/>
@@ -35,7 +37,7 @@ First, we get XMIR out of this code:
 
 Then, we unroll all composite `@base` attributes (that have more than one dot):
 
-```
+```xml
 <o name="app">
   <o base="ξ.inc" name="φ">
     <o as="α0" base="ξ.t"/>
@@ -56,7 +58,7 @@ Then, we unroll all composite `@base` attributes (that have more than one dot):
 
 Then, we attach synthetic types to every `<o>` object:
 
-```
+```xml
 <o name="app" type="t0">
   <o base="ξ.inc" name="φ" type="t1">
     <o as="α0" base="ξ.t" type="t2"/>
@@ -87,7 +89,7 @@ We fill them in one pass through the XMIR, using four simple rules.
 
 First, a **formation** tells us what its object provides, for example:
 
-```
+```xml
 <o name="t" type="t8">
   <o name="next" type="t9"/>
 </o>
@@ -95,7 +97,7 @@ First, a **formation** tells us what its object provides, for example:
 
 This XMIR fragment adds two rows to the Provides table:
 
-```
+```text
 t8: has next (of type t9); complete
 t9: has nothing; complete
 ```
@@ -104,7 +106,7 @@ The word "complete" means we have seen the whole formation,
   so there is nothing in it besides the listed attributes.
 The other two formations add their own rows:
 
-```
+```text
 t0: has φ (t1), inc (t3), t (t8); complete
 t3: has x (t4, void), φ (t5); complete
 ```
@@ -114,7 +116,7 @@ Second, a **reference** (a `@base` pointing to `ξ.something`) adds a link;
   the type of the `t` formation it points to.
 After the pass, the Links list is:
 
-```
+```text
 t1 is a copy of t3
 t2 is a copy of t8
 t7 is a copy of t4
@@ -130,7 +132,7 @@ We keep links as separate records,
 
 Third, a **dispatch** tells us what an object must have, for example:
 
-```
+```xml
 <o base=".next" type="t6">
   <o base="ξ.x" type="t7"/>
 </o>
@@ -141,14 +143,14 @@ Here somebody takes `next` from the object of type t7,
 This adds a row to the Requires table;
   the `.foo` dispatch wrapped around this fragment adds one more:
 
-```
+```text
 t7: needs next (of type t6)
 t6: needs foo (of type t5)
 ```
 
 Fourth, an **application** creates a pending check, for example:
 
-```
+```xml
 <o base="ξ.inc" name="φ" type="t1">
   <o as="α0" base="ξ.t" type="t2"/>
 </o>

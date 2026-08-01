@@ -333,22 +333,13 @@ final class Emit {
     }
 
     /**
-     * Add the {@code @args="type …"} attribute to the most recently
-     * opened {@code <o>} — the space-separated argument-type list of an
-     * atom's vertical void callback branch (R-3.4.8). Each token is a
-     * concrete forma (homed by later passes) or a verbatim generic type
-     * variable.
-     * @param types Space-separated argument-type list
-     */
-    void args(final String types) {
-        this.append(new Directives().attr("args", types));
-    }
-
-    /**
-     * Add the {@code @type="type"} attribute to the most recently opened
-     * {@code <o>} — the declared type of an atom's vertical void
-     * attribute (R-3.4.8): a concrete forma or a generic type variable,
-     * with an optional trailing {@code ?} marking a maybe-bottom value.
+     * Add the {@code @type="type …"} attribute to the most recently
+     * opened {@code <o>} — the declared type of a vertical void
+     * attribute (R-3.4.8): the union of types it may hold, members
+     * separated by a single space, each a concrete forma (homed by later
+     * passes), a verbatim generic type variable or a braced formation
+     * type, with an optional trailing {@code ?} marking the union
+     * maybe-bottom.
      * @param type The declared type
      */
     void type(final String type) {

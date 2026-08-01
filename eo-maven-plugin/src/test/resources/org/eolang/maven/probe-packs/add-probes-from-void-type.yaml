@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A type annotation on a void attribute must be probed too, braced formation
+# types (`/{Q.chunk}`) and union members alike, otherwise objects referenced
+# only there (like `chunk` in `malloc.eo`) are never pulled and transpiled.
+# See #6174.
+probes:
+  - 'chunk'
+  - 'number'
+  - 'posix'
+  - 'posix.stat'
+eo: |
+  +package custom
+  +version 0.0.0
+
+  [] > foo /Q.bytes
+    ? > size /Q.number
+    ? > scope /{Q.chunk}
+    ? > out /{}|Q.posix.stat|Q.number

@@ -63,37 +63,53 @@
   </xsl:function>
   <!--
   Whether a void has to be printed as a "? &gt; name" body line instead of
-  being folded into the "[…]" bracket head. Three shapes cannot live in
-  the head: a "&gt;&gt; name" handle, whose anonymity a public bracket param
-  would blow (§9.2, R-9.2.3, #5581); a "/type" or "/{type …}" annotation,
-  which a bracket param cannot express (#5614); and every void of an
-  atom, whose head must stay empty (R-3.4.10) so a typed void may be
-  followed by an untyped one without the two swapping places (#6082).
+  being folded into the "[…]" bracket head. Two shapes cannot live in the
+  head: a "&gt;&gt; name" handle, whose anonymity a public bracket param would
+  blow (§9.2, R-9.2.3, #5581); and a "/type" or "/{type …}" annotation,
+  which a bracket param cannot express (#5614). One such void takes all
+  its siblings down with it, since "move-voids-up" hoists body voids
+  behind the head ones and a split would swap the two groups (#6189) —
+  which is also why every void of an atom goes vertical, its head having
+  to stay empty (R-3.4.10, #6082).
   -->
   <xsl:function name="eo:vertical-void" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="eo:void($o) and (exists($o/@local) or exists($o/@type) or exists($o/@args) or eo:atom($o/..))"/>
+    <xsl:sequence select="eo:void($o) and (eo:atom($o/..) or exists($o/../o[eo:void(.) and (@local or @type)]))"/>
   </xsl:function>
   <!--
-  A void's type tail (R-3.4.8): " /type" for its own forma, " /{type …}"
-  for the argument types of a callback branch, or the empty string when
-  the void is untyped. Every forma is rendered like the atom's own "/sig"
-  — the implicit Φ. root stripped, a type variable verbatim — and a
-  trailing "?" marking a maybe-⊥ value survives the stripping.
+  A void's type tail (R-3.4.8): " /one|two" for the union of types it may
+  hold, or the empty string when the void is untyped. The pipes the
+  source wrote are the single spaces XMIR stores between members, so the
+  members are split brace-aware and rejoined on "|", the inner spaces of
+  a braced formation type staying spaces. Every forma is rendered like
+  the atom's own "/sig" — the implicit Φ. root stripped, a type variable
+  verbatim — and a trailing "?" marking a maybe-⊥ union survives it.
   -->
   <xsl:function name="eo:void-type" as="xs:string">
     <xsl:param name="o" as="element()"/>
     <xsl:choose>
       <xsl:when test="exists($o/@type)">
-        <xsl:sequence select="concat(' /', eo:signature(replace($o/@type, '\?$', '')), if (ends-with($o/@type, '?')) then '?' else '')"/>
-      </xsl:when>
-      <xsl:when test="exists($o/@args)">
-        <xsl:sequence select="concat(' /{', string-join(for $t in tokenize($o/@args, ' ') return eo:signature($t), ' '), '}')"/>
+        <xsl:sequence select="concat(' /', string-join(for $m in eo:type-members(replace($o/@type, '\?$', '')) return eo:surface-member($m), '|'), if (ends-with($o/@type, '?')) then '?' else '')"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:sequence select="''"/>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:function>
+  <!-- One union member of a void's type, every forma in it surfaced. -->
+  <xsl:function name="eo:surface-member" as="xs:string">
+    <xsl:param name="member" as="xs:string"/>
+    <xsl:variable name="surfaced">
+      <xsl:analyze-string select="$member" regex="[{{}} ]">
+        <xsl:matching-substring>
+          <xsl:value-of select="."/>
+        </xsl:matching-substring>
+        <xsl:non-matching-substring>
+          <xsl:value-of select="eo:signature(.)"/>
+        </xsl:non-matching-substring>
+      </xsl:analyze-string>
+    </xsl:variable>
+    <xsl:sequence select="string($surfaced)"/>
   </xsl:function>
   <!-- PROGRAM -->
   <xsl:template match="object">
@@ -216,11 +232,12 @@
   </xsl:template>
   <!-- VOID AS A VERTICAL BODY LINE -->
   <!--
-  A void the bracket head cannot hold, printed as a "? &gt; name" body line
-  (R-3.4.7); "eo:vertical-void" names the three shapes. A "&gt;&gt; name"
-  handle survives "restore-local-names" in @local and keeps the void
-  anonymous; a "/type" or "/{type …}" tail is rendered by
-  "eo:void-type"; and a φ void reverts to its "@" surface spelling.
+  A void the bracket head cannot hold, or one dragged out of it by such a
+  sibling, printed as a "? &gt; name" body line (R-3.4.7);
+  "eo:vertical-void" decides which. A "&gt;&gt; name" handle survives
+  "restore-local-names" in @local and keeps the void anonymous; a "/type"
+  tail is rendered by "eo:void-type"; and a φ void reverts to its "@"
+  surface spelling.
   -->
   <xsl:template match="o[eo:vertical-void(.)]" mode="tree">
     <xsl:variable name="arrow" select="if (exists(@local)) then ' &gt;&gt; ' else ' &gt; '"/>

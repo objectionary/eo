@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 line: 2
-message: "allowed only inside an atom"
+message: "? is not allowed inside a /{…} formation type"
 input: |
-  [] > foo
-    ? > x /{string}
+  [] > atom /A
+    ? > cant /{Q.string? B}
