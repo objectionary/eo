@@ -91,7 +91,6 @@ final class Pulling implements Step {
      * @param rewrite Whether to overwrite existing sources
      * @param enabled Whether caching is enabled
      * @param off Whether offline mode is active
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     Pulling(
         final TjsForeign tjs,

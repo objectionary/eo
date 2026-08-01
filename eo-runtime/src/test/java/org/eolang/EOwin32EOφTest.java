@@ -19,7 +19,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 /**
  * Test case for {@code EOwin32$EOφ}.
  * @since 0.40
- * @checkstyle TypeNameCheck (100 lines)
  */
 final class EOwin32EOφTest {
 
