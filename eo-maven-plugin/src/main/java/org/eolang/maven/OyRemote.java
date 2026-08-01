@@ -21,6 +21,7 @@ import java.net.http.HttpResponse;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
 import org.cactoos.io.InputWithFallback;
+import org.cactoos.iterable.IterableOf;
 
 /**
  * The simple HTTP Objectionary server.
@@ -115,6 +116,16 @@ final class OyRemote implements Objectionary {
     @Override
     public boolean isDirectory(final String name) throws IOException {
         return this.exists(this.directory.value(name));
+    }
+
+    @Override
+    public Iterable<String> children(final String pkg) {
+        Logger.debug(
+            this,
+            "The remote objectionary can't list the package '%s' cheaply, so no objects are returned; enumeration is done through the objects index instead",
+            pkg
+        );
+        return new IterableOf<>();
     }
 
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)

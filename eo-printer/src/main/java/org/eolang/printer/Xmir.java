@@ -49,6 +49,7 @@ public final class Xmir implements XML {
                 new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl"),
                 new StClasspath("/org/eolang/printer/print/unnecessary-as.xsl"),
                 new StClasspath("/org/eolang/printer/print/merge-monikers.xsl"),
+                new StClasspath("/org/eolang/printer/print/restore-aliases.xsl"),
                 new StClasspath("/org/eolang/printer/print/to-eo-tree.xsl")
             )
         )

@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The core of #6184: the parser expands every aliased name to its
+# fully-qualified form (`appellation` -> `Φ.eo3.pardon.appellation`) and leaves
+# the `+alias` dead. "restore-aliases" restores the short spelling keyed on
+# usage. `appellation` is referenced more than once, so its `+alias` survives
+# and every reference reads short again; `assert` is referenced exactly once, so
+# it stays fully qualified and its now-dead `+alias` is dropped. The undeclared
+# `eo3.other.thing`, referenced twice, is left fully qualified with no alias
+# invented for it — the parser flattens a dispatch chain the same way, so only
+# names a `+alias` declares are ever shortened.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  +alias eo3.pardon.appellation
+  +alias eo3.pardon.assert
+  +package eo3.skeptic
+
+  [] > human
+    appellation > a
+    assert a > b
+    appellation b > c
+    eo3.other.thing > d
+    eo3.other.thing > e
+
+printed: |
+  +alias eo3.pardon.appellation
+  +package eo3.skeptic
+
+  [] > human
+    appellation > a
+    eo3.pardon.assert a > b
+    appellation b > c
+    eo3.other.thing > d
+    eo3.other.thing > e

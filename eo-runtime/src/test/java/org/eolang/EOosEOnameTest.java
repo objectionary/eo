@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 /**
  * Test case for {@link EOos$EOname}.
  * @since 0.40
- * @checkstyle TypeNameCheck (100 lines)
  */
 final class EOosEOnameTest {
 

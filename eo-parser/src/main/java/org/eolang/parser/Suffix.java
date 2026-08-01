@@ -696,7 +696,6 @@ final class Suffix {
          * @param slabel Label
          * @param ssig Signature
          * @param sconstant Const marker
-         * @checkstyle ParameterNumberCheck (10 lines)
          */
         private Parsed(
             final Form sform, final String slabel, final String ssig, final boolean sconstant

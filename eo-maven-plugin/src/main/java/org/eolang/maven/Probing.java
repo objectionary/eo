@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.cactoos.list.ListOf;
 
@@ -102,6 +103,7 @@ final class Probing implements Step {
     private int probed(
         final Collection<TjForeign> unprobed,
         final Map<String, Boolean> probed) {
+        final Set<String> completed = ConcurrentHashMap.newKeySet();
         return new Threaded<>(
             unprobed,
             tojo -> {
@@ -118,10 +120,37 @@ final class Probing implements Step {
                     ++count;
                     this.tojos.add(object).withDiscoveredAt(src);
                     probed.put(object, true);
+                    this.complete(object, src, completed);
                 }
                 tojo.withProbed(count);
                 return count;
             }
         ).total();
+    }
+
+    /**
+     * Register the remaining objects of the probed object's package, so the
+     * whole directory is pulled before it is parsed and bare sibling
+     * references resolve correctly (see
+     * <a href="https://github.com/objectionary/eo/issues/6175">#6175</a>).
+     * @param object The fully qualified name of the probed object
+     * @param src The XMIR file where the object was discovered
+     * @param completed Packages already completed, guards against re-listing
+     * @throws IOException If the package can't be listed
+     */
+    private void complete(
+        final String object,
+        final Path src,
+        final Set<String> completed
+    ) throws IOException {
+        final int split = object.lastIndexOf('.');
+        if (split > 0) {
+            final String pkg = object.substring(0, split);
+            if (completed.add(pkg)) {
+                for (final String sibling : this.objectionary.children(pkg)) {
+                    this.tojos.add(sibling).withDiscoveredAt(src);
+                }
+            }
+        }
     }
 }
