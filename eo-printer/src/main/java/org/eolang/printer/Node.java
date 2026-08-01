@@ -87,7 +87,6 @@ final class Node {
      * @param rev Whether it is a reversed dispatch
      * @param literal Whether it is a data literal
      * @param kids The children
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     Node(final String head, final String suffix, final boolean formation,
         final boolean attr, final boolean rev, final boolean literal,

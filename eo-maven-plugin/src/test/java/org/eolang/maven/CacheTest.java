@@ -400,7 +400,6 @@ final class CacheTest {
          * @param source Source file
          * @param target Target file
          * @param tail Tail path in cache
-         * @checkstyle ParameterNumberCheck (5 lines)
          */
         Corrupted(final Path base, final Path source, final Path target, final Path tail) {
             this.base = base;

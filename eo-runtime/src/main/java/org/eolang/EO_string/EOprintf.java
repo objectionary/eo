@@ -25,7 +25,6 @@ import org.eolang.XmirObject;
 /**
  * Printf.
  * @since 0.39.0
- * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "printf")
 public final class EOprintf extends PhDefault implements Atom {
