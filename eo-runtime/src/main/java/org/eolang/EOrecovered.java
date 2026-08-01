@@ -14,7 +14,6 @@ package org.eolang;
  * This is the only way to intercept a bottom and keep going.</p>
  *
  * @since 0.74.0
- * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "recovered")
 public final class EOrecovered extends PhDefault implements Atom {

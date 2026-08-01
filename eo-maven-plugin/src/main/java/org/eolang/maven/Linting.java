@@ -160,7 +160,6 @@ final class Linting implements Step {
      *  Linting currently takes 12 constructor parameters. Parse, Pull, and Probe have similar
      *  issues. The long parameter lists make call sites hard to read and fragile — adding a new
      *  option requires updating every call site across the codebase.
-     * @checkstyle ParameterNumberCheck (20 lines)
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
     Linting(
@@ -468,7 +467,6 @@ final class Linting implements Step {
      * @param xmir The XML before linting
      * @param unlints Lints to skip
      * @return XML after linting
-     * @checkstyle ParameterNumberCheck (40 lines)
      */
     private XML linted(final XML xmir, final String... unlints) {
         final Node node = xmir.inner();

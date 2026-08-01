@@ -40,7 +40,6 @@ final class Assembling implements Step {
      * @param prs Parse step
      * @param prb Probe step
      * @param pll Pull step
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     Assembling(
         final TjsForeign tjs,

@@ -159,7 +159,6 @@ final class Level {
      * @param state Initial openness
      * @param parent Parent kind (or {@link Kind#TOP_LEVEL})
      * @param patom Whether the parent entry is itself an atom
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     Level(
         final int ind, final int line, final Kind outer, final Openness state,
