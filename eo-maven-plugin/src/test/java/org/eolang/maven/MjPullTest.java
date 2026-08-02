@@ -86,18 +86,18 @@ final class MjPullTest {
     }
 
     @Test
-    void pullsUsingOfflineHash(@Mktmp final Path temp) throws IOException {
+    void pullsUsingProvidedHash(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
             .add(this.stdout())
             .withVersion("*.*.*");
         maven.with("skip", false).with(
             "hash",
-            new ChCached(new ChPattern("*.*.*:abcdefg", "1.0.0"))
+            new ChCached(new CommitHash.ChConstant("abcdefg"))
             )
             .execute(MjPull.class);
         MatcherAssert.assertThat(
-            "PullMojo should have pulled using offline hash, but it didn't",
+            "PullMojo should have pulled using provided hash, but it didn't",
             new LinkedList<>(new MnCsv(maven.foreignPath()).read()).getFirst().get("hash"),
             Matchers.equalTo("abcdefg")
         );
