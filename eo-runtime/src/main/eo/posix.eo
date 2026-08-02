@@ -21,6 +21,9 @@
   os.is-macos.if > creat
     512
     64
+  os.is-macos.if > exclusive
+    2048
+    128
   2 > inet
   420 > mode
   -1 > none
