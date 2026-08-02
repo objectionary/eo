@@ -17,6 +17,8 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test cases for {@link MjRegister}.
@@ -72,8 +74,11 @@ final class MjRegisterTest {
         );
     }
 
-    @Test
-    void failsWithPatternSyntaxExceptionInCaseInvalidGlobs(@Mktmp final Path temp) {
+    @ParameterizedTest
+    @ValueSource(strings = {"includeSources", "excludeSources"})
+    void failsWithPatternSyntaxExceptionInCaseInvalidGlobs(
+        final String prop, @Mktmp final Path temp
+    ) {
         MatcherAssert.assertThat(
             String.format(
                 "Execution must fail because of %s",
@@ -83,7 +88,7 @@ final class MjRegisterTest {
                 Assertions.assertThrows(
                     IllegalStateException.class,
                     () -> new FakeMaven(temp)
-                        .with("includeSources", new SetOf<>("{foo"))
+                        .with(prop, new SetOf<>("{foo"))
                         .execute(new FakeMaven.Register()),
                     String.format(
                         "%s should fail since supplied globs are invalid",
