@@ -213,6 +213,40 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
     }
 
     /**
+     * Unpacks a JAR (ZIP) file into the given directory.
+     * Rejects entries whose resolved path would leave {@code dest} (Zip Slip).
+     * @param jar Path to the JAR file
+     * @param dest Destination directory
+     * @throws IOException If unpacking fails or an entry escapes {@code dest}
+     */
+    static void unpack(final Path jar, final Path dest) throws IOException {
+        final Path root = dest.toAbsolutePath().normalize();
+        Files.createDirectories(root);
+        try (ZipInputStream zis = new ZipInputStream(Files.newInputStream(jar))) {
+            ZipEntry entry = zis.getNextEntry();
+            while (entry != null) {
+                final Path target = root.resolve(entry.getName()).normalize();
+                if (!target.startsWith(root)) {
+                    throw new IOException(
+                        String.format(
+                            "Zip entry '%s' would write outside '%s'",
+                            entry.getName(), root
+                        )
+                    );
+                }
+                if (entry.isDirectory()) {
+                    Files.createDirectories(target);
+                } else {
+                    Files.createDirectories(target.getParent());
+                    Files.copy(zis, target, StandardCopyOption.REPLACE_EXISTING);
+                }
+                zis.closeEntry();
+                entry = zis.getNextEntry();
+            }
+        }
+    }
+
+    /**
      * Returns the given system if non-null, otherwise creates a fresh one.
      * @param sys Repository system, or {@code null}
      * @return Non-null repository system
@@ -241,29 +275,5 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
             sys.newLocalRepositoryManager(sess, new LocalRepository(local.toFile()))
         );
         return sess;
-    }
-
-    /**
-     * Unpacks a JAR (ZIP) file into the given directory.
-     * @param jar Path to the JAR file
-     * @param dest Destination directory
-     * @throws IOException If unpacking fails
-     */
-    private static void unpack(final Path jar, final Path dest) throws IOException {
-        Files.createDirectories(dest);
-        try (ZipInputStream zis = new ZipInputStream(Files.newInputStream(jar))) {
-            ZipEntry entry = zis.getNextEntry();
-            while (entry != null) {
-                final Path target = dest.resolve(entry.getName());
-                if (entry.isDirectory()) {
-                    Files.createDirectories(target);
-                } else {
-                    Files.createDirectories(target.getParent());
-                    Files.copy(zis, target, StandardCopyOption.REPLACE_EXISTING);
-                }
-                zis.closeEntry();
-                entry = zis.getNextEntry();
-            }
-        }
     }
 }
