@@ -348,8 +348,9 @@ final class MjParseTest {
      */
     private static String cacheVersion(final String identifier) {
         return String.format(
-            "%s-%s",
+            "%s-%s-%s",
             FakeMaven.pluginVersion(),
+            new Fingerprint(Parsing.PARSE_XSLS).get(),
             new UncheckedText(
                 new HexOf(new Sha256DigestOf(new InputOf(identifier)))
             ).asString()

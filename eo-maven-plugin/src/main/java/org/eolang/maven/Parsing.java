@@ -50,6 +50,41 @@ final class Parsing implements Step {
     static final String ZERO = "0.0.0";
 
     /**
+     * Classpath resources of the canonical parse-stage XSLs applied by
+     * {@link org.eolang.parser.Canonical}, plus the shared libraries they
+     * {@code xsl:import}, folded into the parse cache key's fingerprint (see
+     * {@link #parsed(TjForeign, UnaryOperator, String)}) so that editing any
+     * of them invalidates previously cached XMIR for the same source, the
+     * same way {@link Transpilation#XSLS}/{@link Transpilation#IMPORTS} are
+     * folded into the transpile cache key. This list must be kept in sync
+     * with {@code Canonical.Pipeline.value()}.
+     */
+    static final String[] PARSE_XSLS = {
+        "/org/eolang/parser/parse/wrap-applications.xsl",
+        "/org/eolang/parser/parse/resolve-self.xsl",
+        "/org/eolang/parser/parse/resolve-local-names.xsl",
+        "/org/eolang/parser/parse/validate-before-stars.xsl",
+        "/org/eolang/parser/parse/resolve-before-stars.xsl",
+        "/org/eolang/parser/parse/fragile-dispatch.xsl",
+        "/org/eolang/parser/parse/wrap-method-calls.xsl",
+        "/org/eolang/parser/parse/const-to-dataized.xsl",
+        "/org/eolang/parser/parse/stars-to-tuples.xsl",
+        "/org/eolang/parser/parse/vars-float-up.xsl",
+        "/org/eolang/parser/parse/move-voids-up.xsl",
+        "/org/eolang/parser/parse/validate-objects-count.xsl",
+        "/org/eolang/parser/parse/build-fqns.xsl",
+        "/org/eolang/parser/parse/expand-aliases.xsl",
+        "/org/eolang/parser/parse/resolve-aliases.xsl",
+        "/org/eolang/parser/parse/add-default-package.xsl",
+        "/org/eolang/parser/parse/roll-bases.xsl",
+        "/org/eolang/parser/parse/cti-adds-errors.xsl",
+        "/org/eolang/parser/parse/mandatory-as.xsl",
+        "/org/eolang/parser/parse/set-locators.xsl",
+        "/org/eolang/parser/_funcs.xsl",
+        "/org/eolang/parser/_specials.xsl",
+    };
+
+    /**
      * The directory where to parse to.
      */
     static final String DIR = "1-parse";
@@ -162,6 +197,23 @@ final class Parsing implements Step {
     }
 
     /**
+     * Cache-key version segment: the plugin version combined with a
+     * fingerprint of the canonical parse-stage XSLs and the libraries they
+     * {@code xsl:import}, plus the digest of the set of known objects.
+     * Folding the XSL content in means that editing a parse stylesheet
+     * invalidates any previously cached XMIR for the same source, the same
+     * way {@link Transpilation#version()} does for the transpile cache
+     * (see #6236).
+     * @param digest Digest of the set of known objects (part of the cache key)
+     * @return The version segment for {@link CachePath}
+     */
+    String version(final String digest) {
+        return String.format(
+            "%s-%s-%s", this.version, new Fingerprint(Parsing.PARSE_XSLS).get(), digest
+        );
+    }
+
+    /**
      * Parse all the given sources to XMIRs, concurrently.
      * @param sources The sources to parse
      * @param pipeline The canonical parsing transform to apply
@@ -201,7 +253,7 @@ final class Parsing implements Step {
                 new Cache(
                     new CachePath(
                         this.cacheDir.resolve(Parsing.CACHE),
-                        String.format("%s-%s", this.version, digest),
+                        this.version(digest),
                         new TojoHash(tojo).get()
                     ),
                     src -> {
