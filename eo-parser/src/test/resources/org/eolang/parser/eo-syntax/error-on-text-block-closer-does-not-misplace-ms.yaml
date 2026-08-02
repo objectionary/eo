@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[@ms]
+  - /object[not(.//o[@ms])]
+  - /object/errors/error[contains(text(),'garbage')]
+input: |
+  [] > app
+    seq > s
+      42
+    """
+    body
+    """ oops
