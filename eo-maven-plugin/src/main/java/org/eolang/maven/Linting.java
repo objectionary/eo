@@ -370,6 +370,24 @@ final class Linting implements Step {
     }
 
     /**
+     * Cache-key version segment for the whole-program-analysis cache: the
+     * plugin version combined with a fingerprint of the compile-scope
+     * XMIRs the pass reads, so a change confined to a compile-scope
+     * dependency's XMIR invalidates the cached verdict the same way a
+     * change in the project's own sources already does (#6214). The
+     * {@code 3-lint} directory the cache otherwise hashes is written only
+     * by {@link #lintOne}, which never touches compile-scope tojos, so
+     * their content would otherwise be invisible to the cache key.
+     * @return The version segment for {@link Linting#CACHE}
+     */
+    private String wpaCacheVersion() {
+        return String.format(
+            "%s-%s",
+            this.version, new CompileScopeFingerprint(this.compile.withXmir()).get()
+        );
+    }
+
+    /**
      * Lint all XMIR files together.
      * @param counts Counts of errors, warnings, and critical
      * @param seen Defects seen so far across all files
@@ -403,7 +421,7 @@ final class Linting implements Step {
             this.guard.apply(
                 base, target, wpa,
                 new Cache(
-                    this.cacheDir.resolve(Linting.CACHE).resolve(this.version),
+                    this.cacheDir.resolve(Linting.CACHE).resolve(this.wpaCacheVersion()),
                     root -> {
                         Logger.info(this, "Linting a package");
                         final Directives all = new Directives().add("defects");

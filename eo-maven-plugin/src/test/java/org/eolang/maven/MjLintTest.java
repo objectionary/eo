@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -246,11 +247,12 @@ final class MjLintTest {
             );
         maven.execute(new FakeMaven.Lint());
         MatcherAssert.assertThat(
-            "WPA results must be saved to cache",
-            cache.resolve(Linting.CACHE)
-                .resolve(FakeMaven.pluginVersion())
-                .resolve("wpa.xmir").toFile(),
-            FileMatchers.anExistingFile()
+            "WPA results must be saved to a version-keyed cache entry containing wpa.xmir",
+            cache.resolve(Linting.CACHE).toFile().listFiles(
+                (dir, name) -> name.startsWith(FakeMaven.pluginVersion())
+                    && new File(dir, name).toPath().resolve("wpa.xmir").toFile().exists()
+            ),
+            Matchers.arrayWithSize(1)
         );
     }
 
