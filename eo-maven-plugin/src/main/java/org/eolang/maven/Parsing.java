@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.cactoos.bytes.Sha256DigestOf;
 import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
@@ -203,7 +204,13 @@ final class Parsing implements Step {
                         this.cacheDir.resolve(Parsing.CACHE),
                         String.format(
                             "%s-%s-%s",
-                            this.version, new Fingerprint(Canonical.XSLS).get(), digest
+                            this.version,
+                            new Fingerprint(
+                                Stream.concat(
+                                    Canonical.XSLS.stream(), Canonical.IMPORTS.stream()
+                                ).toArray(String[]::new)
+                            ).get(),
+                            digest
                         ),
                         new TojoHash(tojo).get()
                     ),

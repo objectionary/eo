@@ -11,6 +11,7 @@ import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Xsline;
+import java.util.List;
 import java.util.function.UnaryOperator;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
@@ -43,10 +44,12 @@ public final class Canonical implements UnaryOperator<XML> {
      * {@code TrClasspath}/{@code TrDefault} calls in
      * {@link Canonical.Pipeline#value()} that actually build the pipeline,
      * so must be kept in sync with them by hand — the same trade-off
-     * already accepted for {@code Transpilation.IMPORTS} in
-     * {@code eo-maven-plugin}.
+     * already accepted for {@code Transpilation.XSLS}/{@code IMPORTS} in
+     * {@code eo-maven-plugin}. An immutable {@link List}, not an array,
+     * since this is exported as public API of eo-parser and an array
+     * field would let any caller silently corrupt it for everyone.
      */
-    public static final String[] XSLS = {
+    public static final List<String> XSLS = List.of(
         "/org/eolang/parser/parse/wrap-applications.xsl",
         "/org/eolang/parser/parse/resolve-self.xsl",
         "/org/eolang/parser/parse/resolve-local-names.xsl",
@@ -66,8 +69,26 @@ public final class Canonical implements UnaryOperator<XML> {
         "/org/eolang/parser/parse/roll-bases.xsl",
         "/org/eolang/parser/parse/cti-adds-errors.xsl",
         "/org/eolang/parser/parse/mandatory-as.xsl",
-        "/org/eolang/parser/parse/set-locators.xsl",
-    };
+        "/org/eolang/parser/parse/set-locators.xsl"
+    );
+
+    /**
+     * Classpath resources {@code xsl:import}-ed by one or more of
+     * {@link #XSLS} (const-to-dataized, vars-float-up, move-voids-up,
+     * build-fqns, add-default-package, roll-bases, cti-adds-errors and
+     * set-locators, confirmed by grepping their {@code xsl:import}s), so
+     * their content must also be folded into a fingerprint that means to
+     * catch every change to the pipeline's actual output — editing one of
+     * these shared libraries changes what {@link #XSLS} produces just as
+     * much as editing a top-level stylesheet does, but leaves {@link #XSLS}
+     * itself byte-for-byte unchanged. Mirrors {@code Transpilation.IMPORTS}
+     * in {@code eo-maven-plugin} (#6032), which closed the same gap for the
+     * transpile cache key.
+     */
+    public static final List<String> IMPORTS = List.of(
+        "/org/eolang/parser/_funcs.xsl",
+        "/org/eolang/parser/_specials.xsl"
+    );
 
     /**
      * The pipeline, built lazily and only once.

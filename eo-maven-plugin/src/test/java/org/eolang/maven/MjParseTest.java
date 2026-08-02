@@ -17,6 +17,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.bytes.Sha256DigestOf;
@@ -352,7 +353,11 @@ final class MjParseTest {
         return String.format(
             "%s-%s-%s",
             FakeMaven.pluginVersion(),
-            new Fingerprint(Canonical.XSLS).get(),
+            new Fingerprint(
+                Stream.concat(
+                    Canonical.XSLS.stream(), Canonical.IMPORTS.stream()
+                ).toArray(String[]::new)
+            ).get(),
             new UncheckedText(
                 new HexOf(new Sha256DigestOf(new InputOf(identifier)))
             ).asString()
