@@ -18,7 +18,7 @@
     cant-mod
       "cannot calculate mod by zero"
     divisor.is-finite.not.if
-      x
+      divisor.is-nan.if nan x
       if.
         gt.
           number x.as-bytes >> dividend
@@ -31,6 +31,11 @@
               floor.
                 absx.div absy
         abs-mod.neg
+
+  is-nan. ++> can-return-nan-when-the-divisor-is-nan
+    mod
+      5
+      nan
 
   ++> can-stay-compatible-with-division
     eq. > @
