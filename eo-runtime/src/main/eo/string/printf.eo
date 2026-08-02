@@ -20,10 +20,10 @@
 # copied through untouched and the walk stays linear in allocation.
 #
 # The `%s` conversion refuses an argument whose bytes are not text: a byte
-# sequence that does not decode as UTF-8, and the single bytes `00-` and
-# `01-`, which are how `false` and `true` dataize. The two control characters
-# that share that encoding are refused with them, because an object knows its
-# own bytes here and not its type.
+# sequence that does not decode as UTF-8, and the single bytes `00-` and `01-`,
+# which are how `false` and `true` dataize, together with the two control
+# characters that share that encoding, because an object knows its own bytes
+# here and not its type.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -108,6 +108,7 @@
         as-number.
           i.plus 1
       i
+  2.power 63 >> limit!
   size. >> span!
     bytes
       format.as-bytes >> raw!
@@ -148,20 +149,13 @@
       number pstop
     if. > converted!
       73-.eq conv
-      precise.as-bool.if > [b] >> truncated
-        as-bytes.
-          slice
-            string b
-            0
-            if.
-              lt.
-                number precision
-                length.
-                  string b
-              number precision
-              length.
-                string b
-        b
+      as-bytes. > [text] >> capped
+        precise.as-bool.if
+          truncated
+            string text
+            number precision
+            failure
+          text
       |
         if.
           or.
@@ -172,7 +166,8 @@
           seq *
             length.
               string datum
-            bytes datum
+            capped
+              string datum
       if.
         64-.eq conv
         as-decimal
@@ -199,53 +194,21 @@
             failure
           if.
             78-.eq conv
-            truncated
+            capped
               as-hex
                 bytes datum
             if.
               62-.eq conv
-              truncated
-                arg.as-bool.if "true".as-bytes "false".as-bytes
+              capped
+                arg.as-bool.if "true" "false"
               T
                 "The conversion in the format is unsupported, only %s, %d, %f, %x and %b are"
     arg.as-bytes > datum!
-    if. > filled!
-      and.
-        gt.
-          size.
-            bytes value
-          0
-        2D-.eq
-          slice.
-            bytes value
-            0
-            1
-      2D-.concat
-        as-bytes.
-          padded-left
-            string
-              slice.
-                bytes value
-                1
-                as-number.
-                  minus. (bytes value).size 1
-            if.
-              gt.
-                number width
-                0
-              as-number.
-                minus.
-                  number width
-                  1
-              0
-            "0"
-            failure
-      as-bytes.
-        padded-left
-          string value
-          number width
-          "0"
-          failure
+    as-bytes. > filled!
+      padded-zeros
+        string value
+        number width
+        failure
     flags-end > fstop!
       number body
     positional.as-bool.if > idx!
@@ -258,7 +221,6 @@
             0
           1
       auto
-    2.power 63 > limit!
     number arg > numeric!
     if. > padded!
       if. > [i c] >> flagged
@@ -376,6 +338,12 @@
         "Hello, %s"
         "Jeff"
     11
+
+  eq. ++> can-apply-a-precision-to-a-string
+    "Jef"
+    printf *1
+      "%.3s"
+      "Jeffrey"
 
   eq. ++> can-apply-a-precision-to-bytes
     "40-"
