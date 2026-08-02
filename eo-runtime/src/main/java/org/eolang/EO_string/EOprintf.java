@@ -50,12 +50,8 @@ public final class EOprintf extends PhDefault implements Atom {
                     new PrintfArgs(
                         format,
                         Expect.at(this, "args")
-                            .that(phi -> new Dataized(phi.take("length")).asNumber().intValue())
+                            .must(phi -> new Dataized(phi.take("length")).asNumber() >= 0.0)
                             .otherwise("be a tuple with the 'length' attribute")
-                            .it(),
-                        Expect.at(this, "args")
-                            .that(phi -> phi.take("at"))
-                            .otherwise("be a tuple with the 'at' attribute")
                             .it()
                     ).formatted().toArray()
                 )
