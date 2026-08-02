@@ -160,27 +160,10 @@ final class OyRemoteTest {
                 "http://127.0.0.1:%d/%%s/%%s.eo", port
             );
             final String name = "org.eolang.txt.sprintf";
-            MatcherAssert.assertThat(
-                "Missing-object message should put the object name first and the URL after 'by url:'",
-                Assertions.assertThrows(
-                    IOException.class,
-                    () -> new OyRemote(
-                        new OyRemote.UrlOy(tpl, "deadbeef"),
-                        new OyRemote.UrlOy(tpl, "deadbeef")
-                    ).get(name).stream(),
-                    "Expected an IOException when the remote object is missing"
-                ).getMessage(),
-                Matchers.allOf(
-                    Matchers.startsWith(
-                        String.format("EO object '%s' is not found", name)
-                    ),
-                    Matchers.containsString(
-                        String.format(
-                            "by url: http://127.0.0.1:%d/deadbeef/txt/sprintf.eo.",
-                            port
-                        )
-                    )
-                )
+            Assertions.assertThrows(
+                IOException.class,
+                () -> OyRemoteTest.missing(tpl, name, port),
+                "Expected an IOException when the remote object is missing"
             );
         } finally {
             server.stop(0);
@@ -203,5 +186,40 @@ final class OyRemoteTest {
             ).isDirectory(directory),
             Matchers.is(true)
         );
+    }
+
+    /**
+     * Pull a missing object and verify 404 message order.
+     * @param template URL template with hash and path placeholders
+     * @param name Object name
+     * @param port Local HTTP port used in the expected URL fragment
+     * @throws Exception Always, when remote returns 404 with a correct message
+     */
+    private static void missing(final String template, final String name, final int port)
+        throws Exception {
+        try {
+            new OyRemote(
+                new OyRemote.UrlOy(template, "deadbeef"),
+                new OyRemote.UrlOy(template, "deadbeef")
+            ).get(name).stream();
+        } catch (final IOException exception) {
+            final String message = exception.getMessage();
+            if (!message.startsWith(String.format("EO object '%s' is not found", name))
+                || !message.contains(
+                    String.format(
+                        "by url: http://127.0.0.1:%d/deadbeef/txt/sprintf.eo.",
+                        port
+                    )
+                )) {
+                throw new AssertionError(
+                    String.format(
+                        "Missing-object message should put the object name first and the URL after 'by url:', but was: %s",
+                        message
+                    ),
+                    exception
+                );
+            }
+            throw exception;
+        }
     }
 }
