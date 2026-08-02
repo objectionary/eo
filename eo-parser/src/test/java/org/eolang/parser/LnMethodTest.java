@@ -167,7 +167,7 @@ final class LnMethodTest {
     }
 
     @Test
-    void rejectsTestAttributeWithoutPrecedingBlankLine() {
+    void rejectsAttributeWithoutPrecedingBlankLine() {
         final Emit emit = new Emit();
         final Stack stack = new Stack();
         final Globals globals = new Globals();
@@ -182,7 +182,7 @@ final class LnMethodTest {
     }
 
     @Test
-    void acceptsTestAttributeAfterBlankLine() {
+    void acceptsAttributeAfterBlankLine() {
         final Emit emit = new Emit();
         final Stack stack = new Stack();
         final Globals globals = new Globals();

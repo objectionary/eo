@@ -125,7 +125,7 @@ final class LnReversedTest {
     }
 
     @Test
-    void rejectsTestAttributeWithoutPrecedingBlankLine() {
+    void rejectsAttributeWithoutPrecedingBlankLine() {
         final Emit emit = new Emit();
         new LnReversed(new Span("if. cond then +> t", 2))
             .into(new Stack(), new Globals(), emit);
@@ -138,7 +138,7 @@ final class LnReversedTest {
     }
 
     @Test
-    void acceptsTestAttributeAfterBlankLine() {
+    void acceptsAttributeAfterBlankLine() {
         final Emit emit = new Emit();
         final Globals globals = new Globals();
         globals.blank();

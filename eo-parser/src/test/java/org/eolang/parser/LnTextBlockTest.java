@@ -144,7 +144,7 @@ final class LnTextBlockTest {
     }
 
     @Test
-    void rejectsTestAttributeWithoutPrecedingBlankLine() {
+    void rejectsAttributeWithoutPrecedingBlankLine() {
         final Globals globals = new Globals();
         globals.openTextBlock(1, 0);
         globals.appendTextLine("hello");
@@ -160,7 +160,7 @@ final class LnTextBlockTest {
     }
 
     @Test
-    void acceptsTestAttributeAfterBlankLine() {
+    void acceptsAttributeAfterBlankLine() {
         final Globals globals = new Globals();
         globals.openTextBlock(1, 0);
         globals.appendTextLine("hello");

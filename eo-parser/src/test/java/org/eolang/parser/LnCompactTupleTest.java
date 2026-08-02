@@ -79,7 +79,7 @@ final class LnCompactTupleTest {
     }
 
     @Test
-    void rejectsTestAttributeWithoutPrecedingBlankLine() {
+    void rejectsAttributeWithoutPrecedingBlankLine() {
         final Emit emit = new Emit();
         new LnCompactTuple(new Span("sprintf *1 +> t", 2))
             .into(new Stack(), new Globals(), emit);
@@ -92,7 +92,7 @@ final class LnCompactTupleTest {
     }
 
     @Test
-    void acceptsTestAttributeAfterBlankLine() {
+    void acceptsAttributeAfterBlankLine() {
         final Emit emit = new Emit();
         final Globals globals = new Globals();
         globals.blank();

@@ -776,7 +776,7 @@ final class LnApplicationTest {
     }
 
     @Test
-    void rejectsTestAttributeWithoutPrecedingBlankLine() {
+    void rejectsAttributeWithoutPrecedingBlankLine() {
         final Emit emit = new Emit();
         new LnApplication(new Span("foo +> t", 2))
             .into(new Stack(), new Globals(), emit);
@@ -789,7 +789,7 @@ final class LnApplicationTest {
     }
 
     @Test
-    void acceptsTestAttributeAfterBlankLine() {
+    void acceptsAttributeAfterBlankLine() {
         final Emit emit = new Emit();
         final Globals globals = new Globals();
         globals.blank();
