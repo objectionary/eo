@@ -9,10 +9,12 @@
 # string "Hello, \u4e16\u754c!"  # Unicode string creation
 # "text".length                  # Character count (not bytes)
 # "text".slice 0 2               # Character-based slicing
+# "TEXT".lower                   # Lower case, default English rules
+# "text".upper                   # Upper case, default English rules
+# "text".turkish.upper           # Upper case, Turkish dotted/dotless I
 # ```
-# Case conversion no longer lives here: use `locale.low-cased` and
-# `locale.up-cased` (or a specialized locale such as `locale.turkish`)
-# instead of the former `string.low-cased` and `string.up-cased`.
+# Case conversion is exposed as string methods `lower` and `upper`, backed
+# by the locale wrappers `string.english` (the default) and `string.turkish`.
 # .
 
 +architect yegor256@gmail.com
