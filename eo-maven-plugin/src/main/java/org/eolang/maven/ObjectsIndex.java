@@ -76,13 +76,23 @@ final class ObjectsIndex {
     /**
      * Names of all objects located directly inside the given package, e.g.
      * {@code "tuple.each"} and {@code "tuple.eachi"} for {@code "tuple"}, but
-     * not {@code "tuple"} itself nor objects from its sub-packages.
-     * @param pkg Package name, e.g. {@code "tuple"} or {@code "math.vector"}
+     * not {@code "tuple"} itself nor objects from its sub-packages. The
+     * bare root package (stripped to an empty string) works the same way:
+     * its direct children are the top-level names with no dot at all, e.g.
+     * {@code "tuple"} and {@code "math"} themselves.
+     * @param pkg Package name, e.g. {@code "tuple"}, {@code "math.vector"}
+     *  or {@code "org.eolang"} itself
      * @return Object names that live directly in that package
      * @throws Exception If the index can't be read
      */
     Iterable<String> children(final String pkg) throws Exception {
-        final String prefix = String.format("%s.", ObjectsIndex.stripped(pkg));
+        final String stripped = ObjectsIndex.stripped(pkg);
+        final String prefix;
+        if (stripped.isEmpty()) {
+            prefix = stripped;
+        } else {
+            prefix = String.format("%s.", stripped);
+        }
         return new Filtered<>(
             name -> name.startsWith(prefix) && name.indexOf('.', prefix.length()) < 0,
             this.objects.value()
@@ -98,9 +108,12 @@ final class ObjectsIndex {
      *  name itself if it doesn't start with that prefix
      */
     private static String stripped(final String name) {
-        final String prefix = "org.eolang.";
+        final String root = "org.eolang";
+        final String prefix = String.format("%s.", root);
         final String result;
-        if (name.startsWith(prefix)) {
+        if (name.equals(root)) {
+            result = "";
+        } else if (name.startsWith(prefix)) {
             result = name.substring(prefix.length());
         } else {
             result = name;

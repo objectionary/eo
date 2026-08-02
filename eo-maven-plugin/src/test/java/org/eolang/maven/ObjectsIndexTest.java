@@ -112,6 +112,24 @@ final class ObjectsIndexTest {
     }
 
     @Test
+    void listsDirectChildrenOfTheBareRootPackage() throws Exception {
+        MatcherAssert.assertThat(
+            "children() must strip a bare org.eolang with no trailing dot the same way it strips org.eolang.",
+            new ObjectsIndex(
+                new ScalarOf<>(
+                    () -> new SetOf<>(
+                        "tuple",
+                        "tuple.each",
+                        "math",
+                        "math.abs"
+                    )
+                )
+            ).children("org.eolang"),
+            Matchers.containsInAnyOrder("tuple", "math")
+        );
+    }
+
+    @Test
     @ExtendWith(WeAreOnline.class)
     void downloadsAndChecksFromRealSource() throws Exception {
         MatcherAssert.assertThat(
