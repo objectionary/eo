@@ -4,7 +4,6 @@
  */
 package org.eolang.maven;
 
-import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
@@ -14,10 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import org.eolang.parser.OnDefault;
 import org.eolang.parser.OnDetailed;
 
@@ -54,11 +51,6 @@ final class Transpiling implements Step {
      * Cache directory for transpiled sources.
      */
     private static final String CACHE = "transpiled";
-
-    /**
-     * Java extension.
-     */
-    private static final String JAVA = "java";
 
     /**
      * XMIR sources to transpile.
@@ -217,7 +209,9 @@ final class Transpiling implements Step {
             rewrite.compareAndSet(false, true);
             new Saved(transform.apply(xmir).toString(), target).value();
         }
-        return this.javaGenerated(
+        return new JavaFiles(
+            this.generatedDir, cdir.resolve(this.version()), this.cacheEnabled
+        ).total(
             rewrite.get(), target, hsh.get(), this.transpileTests && !tojo.discovered()
         );
     }
@@ -236,80 +230,5 @@ final class Transpiling implements Step {
             res = "Not exists yet";
         }
         return res;
-    }
-
-    /**
-     * Generate java files and count them.
-     * @param rewrite Rewrite .java files even if they exist
-     * @param target Full target path to XMIR after transpilation optimizations
-     * @param hsh Tojo hash
-     * @param tests Whether to generate test sources for this tojo
-     * @return Amount of generated .java files
-     * @throws IOException If fails to save files
-     * @checkstyle ParameterNumberCheck (5 lines)
-     */
-    private int javaGenerated(
-        final boolean rewrite,
-        final Path target,
-        final String hsh,
-        final boolean tests
-    ) throws IOException {
-        final AtomicInteger saved = new AtomicInteger(0);
-        if (Files.exists(target)) {
-            final Xnav object = new Xnav(target).element("object");
-            final Collection<Xnav> classes = object.elements(Filter.withName("class"))
-                .collect(Collectors.toList());
-            final boolean atom = object.path("/object/o/o[@name='λ']").findAny().isPresent();
-            for (final Xnav clazz : classes) {
-                final String jname = clazz.attribute("java-name").text().get();
-                if (!atom || jname.endsWith("Test")) {
-                    final Path tgt = new Place(jname).make(
-                        this.generatedDir, Transpiling.JAVA
-                    );
-                    final Footprint java = new FpJavaGenerated(
-                        clazz, new FileGenerationReport(saved, tgt, target)
-                    );
-                    new JavaPlaced(
-                        new FpIfReleased(
-                            hsh,
-                            new FpAppliedWithCache(
-                                java,
-                                this.cached(hsh, jname),
-                                new RewritePolicy(rewrite, tgt),
-                                this.cacheEnabled
-                            ),
-                            java
-                        ),
-                        tgt,
-                        this.generatedDir
-                    ).exec(clazz, tests);
-                }
-            }
-            Logger.debug(
-                this,
-                "Generated %d Java files from %[file]s",
-                saved.get(), target
-            );
-        }
-        return saved.get();
-    }
-
-    /**
-     * Cached path supplier for a generated Java file.
-     * @param hsh Hash
-     * @param jname Java class name
-     * @return Supplier of cached path
-     */
-    private Supplier<Path> cached(final String hsh, final String jname) {
-        return new CachePath(
-            this.cacheDir.resolve(Transpiling.CACHE),
-            this.version(),
-            hsh,
-            this.generatedDir.relativize(
-                new Place(jname).make(
-                    this.generatedDir, Transpiling.JAVA
-                )
-            )
-        );
     }
 }
