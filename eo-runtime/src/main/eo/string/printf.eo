@@ -1,6 +1,12 @@
 # Object `printf` allows you to format and output text depending
 # on the arguments passed to it and return it as `org.eolang.string`.
 #
+# A specifier reads as `%[N$][flags][width][.precision]conversion`, where
+# `N$` picks the `N`-th argument (1-based) instead of the next sequential
+# one, `-` justifies to the left, `0` pads a number with leading zeros,
+# `width` is the minimum count of characters and `.precision` truncates
+# the text (or, for `%f`, counts the fraction digits).
+#
 # When arguments are processed - they're dataized and converted to objects
 # depending on next flags:
 # - %s - converts object to `string`
@@ -8,19 +14,361 @@
 # - %f - converts object to `float`
 # - %x - converts object to `bytes`
 # - %b - converts object to boolean, `true` or `false`.
+#
+# The format is walked over its bytes, and not over its characters, because
+# `%` never occurs inside a UTF-8 multi-byte sequence, so a literal byte is
+# copied through untouched and the walk stays linear in allocation.
+#
+# The `%s` conversion refuses an argument whose bytes are not text: a byte
+# sequence that does not decode as UTF-8, and the single bytes `00-` and
+# `01-`, which are how `false` and `true` dataize. The two control characters
+# that share that encoding are refused with them, because an object knows its
+# own bytes here and not its type.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > printf /Q.string
-  ? > format /Q.string
-  ? > args /Q.tuple
+[format args] > printf
+  string > @
+    [index auto acc] >> walk
+      if. > @
+        gte.
+          number cursor
+          number size
+        acc
+        if.
+          25-.eq char
+          spec
+            number cursor
+            auto
+            acc
+          walk
+            as-number.
+              plus.
+                number cursor
+                1
+            auto
+            acc.concat char
+      slice. > char!
+        bytes raw
+        number cursor
+        1
+      index > cursor!
+    | 0 0 --
+  slice. > [i] >> byte
+    bytes raw
+    i
+    1
+  as-ascii > [i] >> code
+    string
+      byte i
+  if. > [i] >> digits-end
+    i.gte
+      number size
+    i
+    if.
+      and.
+        48.lte
+          code i
+        57.gte
+          code i
+      digits-end
+        as-number.
+          i.plus 1
+      i
+  if. > [from to acc] >> digits-value
+    from.gte to
+    acc
+    digits-value
+      as-number.
+        from.plus 1
+      to
+      as-number.
+        plus.
+          acc.times 10
+          minus.
+            code from
+            48
+  T message > [message] >> failure
+  if. > [i] >> flags-end
+    i.gte
+      number size
+    i
+    if.
+      or.
+        2D-.eq
+          byte i
+        30-.eq
+          byte i
+      flags-end
+        as-number.
+          i.plus 1
+      i
+  format.as-bytes > raw!
+  size. > size!
+    bytes raw
+  [index auto acc] >> spec
+    if. > @
+      gte.
+        number pstop
+        number size
+      T
+        "The format ends with an incomplete specifier, a conversion character is missing"
+      if.
+        25-.eq conv
+        walk
+          as-number.
+            index.plus 2
+          auto
+          acc.concat 25-
+        walk
+          as-number.
+            plus.
+              number pstop
+              1
+          positional.as-bool.if
+            auto
+            as-number.
+              auto.plus 1
+          acc.concat padded
+    args.at > arg
+      number idx
+    positional.as-bool.if > body!
+      as-number.
+        plus.
+          number pdigits
+          1
+      as-number.
+        index.plus 1
+    byte > conv!
+      number pstop
+    if. > converted!
+      73-.eq conv
+      precise.as-bool.if > [b] >> truncated
+        as-bytes.
+          slice
+            string b
+            0
+            if.
+              lt.
+                number precision
+                length.
+                  string b
+              number precision
+              length.
+                string b
+        b
+      |
+        if.
+          or.
+            01-.eq datum
+            00-.eq datum
+          T
+            "The argument of the %s conversion is a bool, use the %b conversion instead"
+          seq *
+            length.
+              string datum
+            bytes datum
+      if.
+        64-.eq conv
+        as-decimal
+          if.
+            or.
+              gte.
+                number numeric
+                number limit
+              lt.
+                number numeric
+                times.
+                  number limit
+                  -1
+            T
+              "The number doesn't fit into the long range of the %d conversion"
+            number numeric
+        if.
+          66-.eq conv
+          as-fixed
+            number numeric
+            precise.as-bool.if
+              number precision
+              6
+            failure
+          if.
+            78-.eq conv
+            truncated
+              as-hex
+                bytes datum
+            if.
+              62-.eq conv
+              truncated
+                arg.as-bool.if "true".as-bytes "false".as-bytes
+              T
+                "The conversion in the format is unsupported, only %s, %d, %f, %x and %b are"
+    arg.as-bytes > datum!
+    if. > filled!
+      and.
+        gt.
+          size.
+            bytes value
+          0
+        2D-.eq
+          slice.
+            bytes value
+            0
+            1
+      2D-.concat
+        as-bytes.
+          padded-left
+            string
+              slice.
+                bytes value
+                1
+                as-number.
+                  minus. (bytes value).size 1
+            if.
+              gt.
+                number width
+                0
+              as-number.
+                minus.
+                  number width
+                  1
+              0
+            "0"
+            failure
+      as-bytes.
+        padded-left
+          string value
+          number width
+          "0"
+          failure
+    flags-end > fstop!
+      number body
+    positional.as-bool.if > idx!
+      as-number.
+        minus.
+          digits-value
+            as-number.
+              index.plus 1
+            number pdigits
+            0
+          1
+      auto
+    2.power 63 > limit!
+    number arg > numeric!
+    if. > padded!
+      if. > [i c] >> flagged
+        i.gte
+          number fstop
+        false
+        if.
+          c.eq
+            byte i
+          true
+          flagged
+            as-number.
+              i.plus 1
+            c
+      | (number body) 2D-
+      as-bytes.
+        padded-right
+          string value
+          number width
+          " "
+          failure
+      zero.as-bool.if
+        filled
+        as-bytes.
+          padded-left
+            string value
+            number width
+            " "
+            failure
+    digits-end > pdigits!
+      as-number.
+        index.plus 1
+    and. > positional!
+      gt.
+        number pdigits
+        index.plus 1
+      and.
+        lt.
+          number pdigits
+          number size
+        24-.eq
+          byte
+            number pdigits
+    and. > precise!
+      lt.
+        number wstop
+        number size
+      2E-.eq
+        byte
+          number wstop
+    precise.as-bool.if > precision!
+      digits-value
+        as-number.
+          plus.
+            number wstop
+            1
+        number pstop
+        0
+      0
+    precise.as-bool.if > pstop!
+      digits-end
+        as-number.
+          plus.
+            number wstop
+            1
+      number wstop
+    if. > value!
+      positional.as-bool.and
+        18.lt
+          minus.
+            number pdigits
+            index.plus 1
+      T
+        "The positional argument index in the format is too large"
+      if.
+        positional.as-bool.and
+          lt.
+            number idx
+            0
+        T
+          "The positional argument index in the format must be 1 or greater"
+        if.
+          gte.
+            number idx
+            args.length
+          T
+            "The argument index in the format is out of bounds"
+          if.
+            precise.as-bool.and
+              64-.eq conv
+            T
+              "A precision can't be applied to the %d conversion"
+            if.
+              zero.as-bool.and
+                not.
+                  or.
+                    64-.eq conv
+                    66-.eq conv
+              T
+                "The zero flag can only be applied to the %d and %f conversions"
+              converted
+    digits-value > width!
+      number fstop
+      number wstop
+      0
+    digits-end > wstop!
+      number fstop
+    flagged > zero!
+      number body
+      30-
 
   eq. ++> can-apply-a-precision-to-bytes
     "40-"
