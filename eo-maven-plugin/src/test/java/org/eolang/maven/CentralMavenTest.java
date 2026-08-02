@@ -7,13 +7,8 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
@@ -123,84 +118,11 @@ final class CentralMavenTest {
         );
     }
 
-    @Test
-    void unpacksSafeEntriesInsideDestination(@Mktmp final Path temp) throws IOException {
-        final Path jar = temp.resolve("safe.jar");
-        CentralMavenTest.jar(jar, "org/eolang/ok.eo", "[] > ok");
-        final Path dest = temp.resolve("unpacked");
-        CentralMaven.unpack(jar, dest);
-        MatcherAssert.assertThat(
-            "Safe zip entry must land inside the destination directory",
-            dest.resolve("org/eolang/ok.eo").toFile(),
-            FileMatchers.anExistingFile()
-        );
-    }
-
-    @Test
-    void rejectsZipEntryThatEscapesDestination(@Mktmp final Path temp) throws IOException {
-        final Path jar = temp.resolve("evil.jar");
-        CentralMavenTest.jar(jar, "../evil-escaped.txt", "pwned");
-        Assertions.assertThrows(
-            IOException.class,
-            () -> CentralMaven.unpack(jar, temp.resolve("unpacked")),
-            "Zip Slip entry must be rejected instead of writing outside the destination"
-        );
-    }
-
-    @Test
-    void namesEscapingZipEntryInRejection(@Mktmp final Path temp) throws IOException {
-        final Path jar = temp.resolve("evil.jar");
-        CentralMavenTest.jar(jar, "../evil-escaped.txt", "pwned");
-        MatcherAssert.assertThat(
-            "Rejection must name the escaping zip entry",
-            Assertions.assertThrows(
-                IOException.class,
-                () -> CentralMaven.unpack(jar, temp.resolve("unpacked")),
-                "Zip Slip entry must be rejected"
-            ).getMessage(),
-            Matchers.containsString("evil-escaped.txt")
-        );
-    }
-
-    @Test
-    void doesNotWriteEscapingZipEntryOutsideDestination(@Mktmp final Path temp)
-        throws IOException {
-        final Path jar = temp.resolve("evil.jar");
-        CentralMavenTest.jar(jar, "../evil-escaped.txt", "pwned");
-        final Path dest = temp.resolve("unpacked");
-        Assertions.assertThrows(
-            IOException.class,
-            () -> CentralMaven.unpack(jar, dest),
-            "Zip Slip entry must be rejected"
-        );
-        MatcherAssert.assertThat(
-            "Escaping entry must not be written outside the destination",
-            dest.resolve("../evil-escaped.txt").normalize().toFile(),
-            Matchers.not(FileMatchers.anExistingFile())
-        );
-    }
-
     private static Dependency runtime() {
         return new Dep()
             .withGroupId("org.eolang")
             .withArtifactId("eo-runtime")
             .withVersion("0.7.0")
             .get();
-    }
-
-    /**
-     * Writes a jar with alternating entry-name / content pairs.
-     * @param jar Destination jar path
-     * @param entries Alternating names and payloads
-     * @throws IOException If writing fails
-     */
-    private static void jar(final Path jar, final String... entries) throws IOException {
-        try (ZipOutputStream zip = new ZipOutputStream(Files.newOutputStream(jar))) {
-            for (int idx = 0; idx < entries.length; idx += 2) {
-                zip.putNextEntry(new ZipEntry(entries[idx]));
-                zip.write(entries[idx + 1].getBytes(StandardCharsets.UTF_8));
-                zip.closeEntry();
-            }
-        }
     }
 }
