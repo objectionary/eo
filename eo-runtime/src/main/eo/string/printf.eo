@@ -34,6 +34,12 @@
       "%25x"
       42.as-bytes
 
+  eq. ++> can-format-a-computed-string
+    "abcd"
+    printf *1
+      "%s"
+      "ab".concat "cd"
+
   eq. ++> can-format-a-float-with-six-fraction-digits
     "1.250000"
     printf *1
@@ -177,6 +183,10 @@
         42.as-i64
       "42"
 
+  printf *1 --> stops-on-a-bool-as-a-string
+    "%s"
+    true
+
   printf *1 --> stops-on-a-comma-flag-with-s
     "%,s"
     "Jeff"
@@ -197,6 +207,10 @@
     "%s"
     3.14
 
+  printf *1 --> stops-on-a-number-as-a-string
+    "%s"
+    42
+
   printf *1 --> stops-on-a-paren-flag-with-s
     "%(s"
     "Jeff"
@@ -212,6 +226,10 @@
   printf *1 --> stops-on-a-zero-positional-index
     "%0$s"
     "first"
+
+  printf *1 --> stops-on-an-i64-as-a-string
+    "%s"
+    42.as-i64
 
   printf *1 --> stops-on-an-oversized-positional-index
     "%99999999999999999999$s"

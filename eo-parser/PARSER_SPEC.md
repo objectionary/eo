@@ -1369,6 +1369,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Malformed BYTES literal (R-3.13.1 — invalid byte form, e.g., `Z9-`, single trailing dash without prefix, odd hex run) | `invalid bytes literal` |
 | Meta after first non-meta object | `meta directive must precede all other objects` |
 | Plain child without name in formation | `object inside formation must have a name` |
+| Root identifier glued to a letter or a digit (e.g. the legacy `QQ.io.stdout`) | `<token> is not a valid object name, root <root> must be followed by a dot` (token and root substituted) |
 | Atom containing non-test child | `atom may contain only test attributes` |
 | `+>` outside indent 2 of top level | `test attribute legal only as direct child of top-level object` |
 | Bare reversed dispatch missing receiver | `reversed dispatch missing receiver` |

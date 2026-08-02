@@ -156,10 +156,6 @@ final class Linting implements Step {
      * @param warning Whether to fail on warnings
      * @param pkg Whether to lint all sources as a package
      * @param skip Whether to skip linting entirely
-     * @todo #5102:90min Reduce long parameter lists in Linting, Parse, Pull, and similar classes.
-     *  Linting currently takes 12 constructor parameters. Parse, Pull, and Probe have similar
-     *  issues. The long parameter lists make call sites hard to read and fragile — adding a new
-     *  option requires updating every call site across the codebase.
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
     Linting(
@@ -247,7 +243,7 @@ final class Linting implements Step {
         }
         final int passed = new Threaded<>(
             programs,
-            tojo -> this.lintOne(tojo, counts, seen, this.skipSourceLints.toArray(new String[0]))
+            tojo -> this.lintOne(tojo, counts, seen)
         ).total();
         if (programs.isEmpty()) {
             Logger.info(this, "There are no XMIR programs, nothing to lint individually");
@@ -305,16 +301,13 @@ final class Linting implements Step {
      * @param tojo Foreign tojo
      * @param counts Counts of errors, warnings, and critical
      * @param seen Defects seen so far across all files
-     * @param unlints Lints to skip
      * @return Amount of passed tojos (1 if passed, 0 if errors)
      * @throws Exception If failed to lint
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     private int lintOne(
         final TjForeign tojo,
         final Map<Severity, Integer> counts,
-        final Collection<String> seen,
-        final String... unlints
+        final Collection<String> seen
     ) throws Exception {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
@@ -331,15 +324,12 @@ final class Linting implements Step {
                         this.version,
                         new TojoHash(tojo).get()
                     ),
-                    src -> this.linted(
-                        xmir,
-                        unlints
-                    ).toString()
+                    src -> this.linted(xmir).toString()
                 )
             );
         } else {
             new Saved(
-                this.linted(xmir, unlints).toString(),
+                this.linted(xmir).toString(),
                 target
             ).value();
         }
@@ -465,14 +455,13 @@ final class Linting implements Step {
     /**
      * Find all possible linting defects and add them to the XMIR.
      * @param xmir The XML before linting
-     * @param unlints Lints to skip
      * @return XML after linting
      */
-    private XML linted(final XML xmir, final String... unlints) {
+    private XML linted(final XML xmir) {
         final Node node = xmir.inner();
         final Collection<Defect> defects = Linting.existing(new Xnav(node));
         final Collection<Defect> found = new Source(xmir)
-            .without(unlints)
+            .without(this.skipSourceLints.toArray(new String[0]))
             .defects()
             .stream().filter(
                 defect -> this.skipExperimentalLints || !defect.experimental()

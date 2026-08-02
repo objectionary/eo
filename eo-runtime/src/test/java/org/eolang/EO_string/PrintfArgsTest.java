@@ -40,7 +40,7 @@ final class PrintfArgsTest {
         tuple.put("head", new Data.ToPhi(expected));
         MatcherAssert.assertThat(
             "The printf args do not match with expected",
-            new PrintfArgs("Hello, %s! Bye, %1$s!", 1L, tuple.take("at")).formatted(),
+            new PrintfArgs("Hello, %s! Bye, %1$s!", tuple).formatted(),
             Matchers.equalTo(new ListOf<>(expected, expected))
         );
     }
@@ -60,8 +60,7 @@ final class PrintfArgsTest {
             "The printf args do not match with expected",
             new PrintfArgs(
                 "This is the %s! This is %1$s as well! This is the %s",
-                3L,
-                tuple.take("at")
+                tuple
             ).formatted(),
             Matchers.equalTo(new ListOf<>(first, first, second))
         );
@@ -76,7 +75,7 @@ final class PrintfArgsTest {
             "the ExFailure message must name the out-of-range number, not be swallowed by a second, accidental format pass",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new PrintfArgs("%d", 1L, tuple.take("at")).formatted(),
+                () -> new PrintfArgs("%d", tuple).formatted(),
                 "must throw ExFailure, not an internal java.util.Formatter exception"
             ).getMessage(),
             Matchers.containsString("doesn't fit into long range")
@@ -92,7 +91,7 @@ final class PrintfArgsTest {
             "the ExFailure message must name the out-of-range number",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new PrintfArgs("%d", 1L, tuple.take("at")).formatted(),
+                () -> new PrintfArgs("%d", tuple).formatted(),
                 "2^63 must be rejected, not silently saturated to Long.MAX_VALUE (since (double) Long.MAX_VALUE rounds up to exactly 2^63)"
             ).getMessage(),
             Matchers.containsString("doesn't fit into long range")
@@ -108,7 +107,7 @@ final class PrintfArgsTest {
             "NaN must be rejected like an infinity, not silently narrowed to 0 per JLS 5.1.3",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new PrintfArgs("%d", 1L, tuple.take("at")).formatted(),
+                () -> new PrintfArgs("%d", tuple).formatted(),
                 "must throw ExFailure, not silently return 0"
             ).getMessage(),
             Matchers.containsString("doesn't fit into long range")
@@ -123,8 +122,28 @@ final class PrintfArgsTest {
         tuple.put("head", new Data.ToPhi(closest));
         MatcherAssert.assertThat(
             "a double strictly below 2^63 (the representable double one ulp below it, since Long.MAX_VALUE itself isn't exactly representable and rounds up to 2^63) must still be accepted as a valid long",
-            new PrintfArgs("%d", 1L, tuple.take("at")).formatted(),
+            new PrintfArgs("%d", tuple).formatted(),
             Matchers.equalTo(new ListOf<>((long) closest))
+        );
+    }
+
+    @Test
+    void walksTheSpineInTheRightDirection() {
+        final Phi third = Phi.Φ.take("tuple").copy();
+        third.put("length", new Data.ToPhi(1));
+        third.put("head", new Data.ToPhi("first"));
+        final Phi second = Phi.Φ.take("tuple").copy();
+        second.put("length", new Data.ToPhi(2));
+        second.put("head", new Data.ToPhi("second"));
+        second.put("tail", third);
+        final Phi tuple = Phi.Φ.take("tuple").copy();
+        tuple.put("length", new Data.ToPhi(3));
+        tuple.put("head", new Data.ToPhi("third"));
+        tuple.put("tail", second);
+        MatcherAssert.assertThat(
+            "the cons list holds the last argument at its head, so index 0 must reach the first argument and not the head",
+            new PrintfArgs("%s %2$s %3$s", tuple).formatted(),
+            Matchers.equalTo(new ListOf<>("first", "second", "third"))
         );
     }
 
@@ -134,13 +153,13 @@ final class PrintfArgsTest {
         tuple.put("length", new Data.ToPhi(1));
         tuple.put("head", new Data.ToPhi(3.14));
         MatcherAssert.assertThat(
-            "a number's raw bytes are not valid UTF-8 text and must be rejected, not silently decoded into mojibake",
+            "a number is not text and must be rejected, not silently decoded into mojibake",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new PrintfArgs("%s", 1L, tuple.take("at")).formatted(),
+                () -> new PrintfArgs("%s", tuple).formatted(),
                 "must throw ExFailure, not silently return garbage text"
             ).getMessage(),
-            Matchers.containsString("not valid UTF-8")
+            Matchers.containsString("Φ.number")
         );
     }
 
@@ -153,7 +172,7 @@ final class PrintfArgsTest {
             "the ExFailure message must name the unsupported format char, not be swallowed by a second, accidental format pass",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new PrintfArgs("%z", 1L, tuple.take("at")).formatted(),
+                () -> new PrintfArgs("%z", tuple).formatted(),
                 "must throw ExFailure, not an internal java.util.Formatter exception"
             ).getMessage(),
             Matchers.containsString("is unsupported")
@@ -167,7 +186,7 @@ final class PrintfArgsTest {
         tuple.put("head", new Data.ToPhi(42.0));
         MatcherAssert.assertThat(
             "a specifier with an explicit width, like %5d, must still collect its argument",
-            new PrintfArgs("%5d", 1L, tuple.take("at")).formatted(),
+            new PrintfArgs("%5d", tuple).formatted(),
             Matchers.equalTo(new ListOf<>(42L))
         );
     }
@@ -179,7 +198,7 @@ final class PrintfArgsTest {
         tuple.put("head", new Data.ToPhi(3.141_59));
         MatcherAssert.assertThat(
             "a specifier with a precision, like %.2f, must still collect its argument",
-            new PrintfArgs("%.2f", 1L, tuple.take("at")).formatted(),
+            new PrintfArgs("%.2f", tuple).formatted(),
             Matchers.equalTo(new ListOf<>(3.141_59))
         );
     }
@@ -191,7 +210,7 @@ final class PrintfArgsTest {
         tuple.put("head", new Data.ToPhi("x"));
         MatcherAssert.assertThat(
             "a specifier with a flag and width, like %-10s, must still collect its argument",
-            new PrintfArgs("%-10s", 1L, tuple.take("at")).formatted(),
+            new PrintfArgs("%-10s", tuple).formatted(),
             Matchers.equalTo(new ListOf<>("x"))
         );
     }
