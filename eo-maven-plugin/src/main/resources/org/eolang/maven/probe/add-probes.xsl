@@ -62,6 +62,8 @@
     <xsl:variable name="candidates" as="element()*">
       <xsl:apply-templates select="//o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
       <xsl:apply-templates select="//o[eo:void(.) and @args]" mode="args"/>
+      <xsl:apply-templates select="//o[@type]" mode="type"/>
+      <xsl:apply-templates select="//o[@atom]" mode="atom"/>
     </xsl:variable>
     <xsl:variable name="probes" select="distinct-values($candidates/text())[not(eo:contains-any-of(., ('ξ', 'ρ', 'φ'))) and not(.='Φ') and not(.='Φ̇')]"/>
     <xsl:copy>
@@ -80,6 +82,8 @@
     <xsl:variable name="candidates" as="element()*">
       <xsl:apply-templates select="//o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
       <xsl:apply-templates select="//o[eo:void(.) and @args]" mode="args"/>
+      <xsl:apply-templates select="//o[@type]" mode="type"/>
+      <xsl:apply-templates select="//o[@atom]" mode="atom"/>
     </xsl:variable>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
@@ -102,6 +106,35 @@
         </a>
       </xsl:for-each>
     </xsl:for-each>
+  </xsl:template>
+  <!-- A void's own type annotation (`? > name /Q.foo`, optionally `/Q.foo?`). -->
+  <!-- Homed formas start with `Φ`; generic type variables (A-F) do not and -->
+  <!-- must be skipped, since they are not real objects to probe. -->
+  <xsl:template match="o" mode="type" as="element()*">
+    <xsl:variable name="forma" select="replace(@type, '\?$', '')"/>
+    <xsl:if test="starts-with($forma, 'Φ')">
+      <xsl:variable name="parts" select="tokenize($forma, '\.')"/>
+      <xsl:for-each select="$parts">
+        <xsl:variable name="pos" select="position()"/>
+        <a>
+          <xsl:value-of select="string-join($parts[position()&lt;=$pos], '.')"/>
+        </a>
+      </xsl:for-each>
+    </xsl:if>
+  </xsl:template>
+  <!-- An atom's own return signature (`[] > name /Q.foo`). -->
+  <!-- Homed formas start with `Φ`; generic type variables (A-F) do not and -->
+  <!-- must be skipped, since they are not real objects to probe. -->
+  <xsl:template match="o" mode="atom" as="element()*">
+    <xsl:if test="starts-with(@atom, 'Φ')">
+      <xsl:variable name="parts" select="tokenize(@atom, '\.')"/>
+      <xsl:for-each select="$parts">
+        <xsl:variable name="pos" select="position()"/>
+        <a>
+          <xsl:value-of select="string-join($parts[position()&lt;=$pos], '.')"/>
+        </a>
+      </xsl:for-each>
+    </xsl:if>
   </xsl:template>
   <!-- Composite base -->
   <xsl:template match="o[not(starts-with(@base, '.'))]" mode="create" as="element()*">
