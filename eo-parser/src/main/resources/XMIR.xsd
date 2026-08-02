@@ -258,6 +258,16 @@
             </xs:documentation>
           </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="pos" type="whole">
+          <xs:annotation>
+            <xs:appinfo>The position in the code line where the error was found</xs:appinfo>
+            <xs:documentation>
+              The attribute contains the position in the code line (starting from 1),
+              where the error was found. If the element is omitted, the problem
+              is not related to any particular column in the line.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="severity" use="required">
           <xs:annotation>
             <xs:appinfo>The severity of the error</xs:appinfo>
