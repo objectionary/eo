@@ -91,8 +91,8 @@ final class MjRegisterTest {
                     )
                 ),
                 PatternSyntaxException.class
-            ).getClass(),
-            Matchers.equalTo(PatternSyntaxException.class)
+            ).isPresent(),
+            Matchers.is(true)
         );
     }
 
@@ -103,7 +103,7 @@ final class MjRegisterTest {
      * @param <T> Type of expected error
      * @return Throwable
      */
-    private static <T extends Throwable> T cause(
+    private static <T extends Throwable> Optional<T> cause(
         final Throwable err,
         final Class<T> type
     ) {
@@ -116,6 +116,6 @@ final class MjRegisterTest {
                 current = current.getCause();
             }
         }
-        return found.get();
+        return found;
     }
 }
