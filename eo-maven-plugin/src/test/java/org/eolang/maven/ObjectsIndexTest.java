@@ -93,6 +93,25 @@ final class ObjectsIndexTest {
     }
 
     @Test
+    void listsDirectChildrenOfPackageWithOrgEolangPrefix() throws Exception {
+        MatcherAssert.assertThat(
+            "The index must strip org.eolang. prefix when listing children of package",
+            new ObjectsIndex(
+                new ScalarOf<>(
+                    () -> new SetOf<>(
+                        "tuple",
+                        "tuple.each",
+                        "tuple.eachi",
+                        "tuple.inner.deep",
+                        "math.abs"
+                    )
+                )
+            ).children("org.eolang.tuple"),
+            Matchers.containsInAnyOrder("tuple.each", "tuple.eachi")
+        );
+    }
+
+    @Test
     @ExtendWith(WeAreOnline.class)
     void downloadsAndChecksFromRealSource() throws Exception {
         MatcherAssert.assertThat(

@@ -89,7 +89,14 @@ final class ObjectsIndex {
      * @throws Exception If the index can't be read
      */
     Iterable<String> children(final String pkg) throws Exception {
-        final String prefix = String.format("%s.", pkg);
+        final String pfx = "org.eolang.";
+        final String target;
+        if (pkg.startsWith(pfx)) {
+            target = pkg.substring(pfx.length());
+        } else {
+            target = pkg;
+        }
+        final String prefix = String.format("%s.", target);
         return new Filtered<>(
             name -> name.startsWith(prefix) && name.indexOf('.', prefix.length()) < 0,
             this.objects.value()
