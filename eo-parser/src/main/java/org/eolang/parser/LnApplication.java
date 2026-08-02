@@ -57,7 +57,6 @@ final class LnApplication implements Line {
 
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
-        Blanks.checkPlain(this.span, globals, emit);
         final Tokens tokens = new Tokens(this.span.body(), this.span);
         final Value head = tokens.readValue();
         final List<MethodChain> chain = tokens.readChain();
@@ -67,6 +66,11 @@ final class LnApplication implements Line {
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
+        if (suffix.test()) {
+            Blanks.checkTest(this.span, globals, emit);
+        } else {
+            Blanks.checkPlain(this.span, globals, emit);
+        }
         if (head.kind() == Value.Kind.GROUP
             && chain.isEmpty() && args.isEmpty() && outer == null) {
             throw new ParseError(

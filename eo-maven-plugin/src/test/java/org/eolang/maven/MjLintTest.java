@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -97,6 +98,31 @@ final class MjLintTest {
                 maven.programTojo().linted()
             ).path("/object/errors/error[@severity='error']").count(),
             Matchers.greaterThan(0L)
+        );
+    }
+
+    @Test
+    void ignoresLintNamedInSkipSourceLints(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("skipSourceLints", new SetOf<>("mandatory-spdx")).withProgram(
+                "+home https://www.eolang.org",
+                "+package foo.x",
+                "+version 0.0.0",
+                "+unlint empty-object",
+                "+unlint unit-test-missing",
+                "+unlint comment-too-short",
+                "+unlint object-has-data",
+                "",
+                "[x] > main",
+                "  (stdout \"Hello!\" x).print > @"
+            );
+        maven.execute(new FakeMaven.Lint());
+        MatcherAssert.assertThat(
+            "the lint named in eo.skipSourceLints is still reported",
+            new Xnav(
+                maven.programTojo().linted()
+            ).path("/object/errors/error[@check='mandatory-spdx/S']").count(),
+            Matchers.equalTo(0L)
         );
     }
 
