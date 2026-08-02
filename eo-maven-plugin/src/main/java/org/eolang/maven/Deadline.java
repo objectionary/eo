@@ -103,19 +103,33 @@ final class Deadline {
     }
 
     /**
-     * Wait for the service to stop, whatever it takes.
+     * Interrupt the service and wait a bounded time for it to stop.
+     *
+     * <p>{@code shutdownNow()} only interrupts the running task; a task
+     * blocked on something that ignores interruption (a tight CPU loop, a
+     * blocking socket read) may never terminate. Waiting for it
+     * unconditionally would hang this method, and with it the {@code
+     * finally} block of {@link #spent}, forever - silently swallowing
+     * whatever {@link MojoFailureException} the deadline itself just
+     * raised. So this gives up after one bounded wait instead of retrying
+     * without limit.</p>
+     *
      * @param service The service that ran the body
      */
     private static void stopped(final ExecutorService service) {
-        boolean terminated = false;
         service.shutdownNow();
-        while (!terminated) {
-            try {
-                terminated = service.awaitTermination(60, TimeUnit.SECONDS);
-            } catch (final InterruptedException ex) {
-                service.shutdownNow();
-                Thread.currentThread().interrupt();
-            }
+        boolean terminated;
+        try {
+            terminated = service.awaitTermination(60, TimeUnit.SECONDS);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            terminated = false;
+        }
+        if (!terminated) {
+            Logger.warn(
+                Deadline.class,
+                "Body thread did not terminate within 60 seconds of being interrupted, abandoning it"
+            );
         }
     }
 }

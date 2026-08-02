@@ -10,6 +10,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 /**
  * Test case for {@link Deadline}.
@@ -26,6 +27,7 @@ final class DeadlineTest {
     }
 
     @Test
+    @Timeout(30)
     void interruptsAHungBodyPromptlyOnTimeout() {
         final long start = System.nanoTime();
         Assertions.assertThrows(
