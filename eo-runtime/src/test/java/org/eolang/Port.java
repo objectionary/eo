@@ -4,32 +4,34 @@
  */
 package org.eolang;
 
-import java.util.Random;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
 
 /**
- * TCP port from the unprivileged range.
+ * TCP port the operating system reports as free.
  * @since 0.74.0
  */
 public final class Port {
 
     /**
-     * Port number.
+     * Address the port must be free at.
      */
-    private final int number;
+    private final InetAddress address;
 
     /**
-     * Ctor, takes a port from the unprivileged range.
+     * Ctor, takes the loopback interface.
      */
     public Port() {
-        this(new Random().nextInt(10_001) + 10_000);
+        this(InetAddress.getLoopbackAddress());
     }
 
     /**
      * Ctor.
-     * @param number Port number
+     * @param address Address the port must be free at
      */
-    private Port(final int number) {
-        this.number = number;
+    public Port(final InetAddress address) {
+        this.address = address;
     }
 
     /**
@@ -37,6 +39,13 @@ public final class Port {
      * @return Port number
      */
     public int number() {
-        return this.number;
+        try (ServerSocket socket = new ServerSocket(0, 1, this.address)) {
+            return socket.getLocalPort();
+        } catch (final IOException exception) {
+            throw new IllegalStateException(
+                String.format("The system has no free port at %s", this.address),
+                exception
+            );
+        }
     }
 }
