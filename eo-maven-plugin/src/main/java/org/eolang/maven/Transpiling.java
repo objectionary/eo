@@ -181,12 +181,11 @@ final class Transpiling implements Step {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.resolve(Transpiling.DIR);
-        final Path target = new Place(
-            new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get()
-        ).make(base, MjAssemble.XMIR);
+        final String name = new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get();
+        final Path target = new Place(name).make(base, MjAssemble.XMIR);
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
-        final Function<XML, XML> transform = this.train.forSource(source);
+        final Function<XML, XML> transform = this.train.forSource(name);
         final Path cdir = this.cacheDir.resolve(Transpiling.CACHE);
         final Path tail = base.relativize(target);
         if (this.cacheEnabled) {
