@@ -7,8 +7,13 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
@@ -55,6 +60,30 @@ final class CentralMavenTest {
             "Unpacked destination must contain files fetched from Maven Central",
             dest.toFile().list(),
             Matchers.not(Matchers.emptyArray())
+        );
+    }
+
+    @Test
+    void rejectsZipEntryEscapingDestination(@Mktmp final Path temp) throws IOException {
+        final Path jar = temp.resolve("evil.jar");
+        try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(jar))) {
+            zos.putNextEntry(new ZipEntry("org/eolang/ok.eo"));
+            zos.write("ok".getBytes(StandardCharsets.UTF_8));
+            zos.closeEntry();
+            zos.putNextEntry(new ZipEntry("../../../../evil-escaped.txt"));
+            zos.write("evil".getBytes(StandardCharsets.UTF_8));
+            zos.closeEntry();
+        }
+        final Path dest = temp.resolve("dest");
+        Assertions.assertThrows(
+            IOException.class,
+            () -> CentralMaven.unpack(jar, dest),
+            "A zip entry whose target lands outside the destination directory must be rejected"
+        );
+        MatcherAssert.assertThat(
+            "The escaping entry must not be written outside the destination directory",
+            temp.resolve("evil-escaped.txt").toFile(),
+            Matchers.not(FileMatchers.anExistingFile())
         );
     }
 
