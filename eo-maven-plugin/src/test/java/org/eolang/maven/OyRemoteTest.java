@@ -23,11 +23,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 final class OyRemoteTest {
 
-    /**
-     * The object name used by the "not found" message tests.
-     */
-    private static final String MISSING_OBJECT = "org.eolang.txt.sprintf";
-
     @Test
     void buildsCorrectUrlForProgram() throws Exception {
         MatcherAssert.assertThat(
@@ -153,9 +148,7 @@ final class OyRemoteTest {
         MatcherAssert.assertThat(
             "The object name must show up in the 'EO object' slot of the message",
             OyRemoteTest.notFoundMessage(),
-            Matchers.containsString(
-                String.format("EO object '%s'", OyRemoteTest.MISSING_OBJECT)
-            )
+            Matchers.containsString("EO object 'org.eolang.txt.sprintf'")
         );
     }
 
@@ -213,7 +206,7 @@ final class OyRemoteTest {
                 () -> new OyRemote(
                     new OyRemote.UrlOy(tpl, "stub"),
                     new OyRemote.UrlOy(tpl, "stub")
-                ).get(OyRemoteTest.MISSING_OBJECT).stream(),
+                ).get("org.eolang.txt.sprintf").stream(),
                 "Expected an IOException reporting the object as not found"
             ).getMessage();
         } finally {
