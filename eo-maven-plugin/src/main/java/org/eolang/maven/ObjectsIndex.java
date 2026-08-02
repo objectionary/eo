@@ -70,14 +70,7 @@ final class ObjectsIndex {
      * @throws Exception If something unexpected happened.
      */
     boolean contains(final String name) throws Exception {
-        final String prefix = "org.eolang.";
-        final String stripped;
-        if (name.startsWith(prefix)) {
-            stripped = name.substring(prefix.length());
-        } else {
-            stripped = name;
-        }
-        return this.objects.value().contains(stripped);
+        return this.objects.value().contains(ObjectsIndex.stripped(name));
     }
 
     /**
@@ -89,11 +82,30 @@ final class ObjectsIndex {
      * @throws Exception If the index can't be read
      */
     Iterable<String> children(final String pkg) throws Exception {
-        final String prefix = String.format("%s.", pkg);
+        final String prefix = String.format("%s.", ObjectsIndex.stripped(pkg));
         return new Filtered<>(
             name -> name.startsWith(prefix) && name.indexOf('.', prefix.length()) < 0,
             this.objects.value()
         );
+    }
+
+    /**
+     * Strip the leading {@code org.eolang.} package from a name, the same
+     * way the index itself omits it (see {@link #convert(String)}), so a
+     * name in either shape matches the same index entry.
+     * @param name Object or package name
+     * @return The name with the leading {@code org.eolang.} removed, or the
+     *  name itself if it doesn't start with that prefix
+     */
+    private static String stripped(final String name) {
+        final String prefix = "org.eolang.";
+        final String result;
+        if (name.startsWith(prefix)) {
+            result = name.substring(prefix.length());
+        } else {
+            result = name;
+        }
+        return result;
     }
 
     /**

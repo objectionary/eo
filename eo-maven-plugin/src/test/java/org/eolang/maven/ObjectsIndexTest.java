@@ -93,6 +93,25 @@ final class ObjectsIndexTest {
     }
 
     @Test
+    void listsDirectChildrenOfPackageWithOrgEolangPrefix() throws Exception {
+        MatcherAssert.assertThat(
+            "children() must strip a leading org.eolang. package the same way contains() does",
+            new ObjectsIndex(
+                new ScalarOf<>(
+                    () -> new SetOf<>(
+                        "tuple",
+                        "tuple.each",
+                        "tuple.eachi",
+                        "tuple.inner.deep",
+                        "math.abs"
+                    )
+                )
+            ).children("org.eolang.tuple"),
+            Matchers.containsInAnyOrder("tuple.each", "tuple.eachi")
+        );
+    }
+
+    @Test
     @ExtendWith(WeAreOnline.class)
     void downloadsAndChecksFromRealSource() throws Exception {
         MatcherAssert.assertThat(
