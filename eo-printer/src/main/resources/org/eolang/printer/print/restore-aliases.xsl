@@ -31,12 +31,13 @@
   <xsl:variable name="aliases" select="/object/metas/meta[head = 'alias']"/>
   <!-- Every name already bound in the file, so an alias short name that clashes with one is left alone. -->
   <xsl:variable name="bound" select="distinct-values((//o/@name, //o/@local))"/>
-  <!-- Every reference string, counted with multiplicity, across the four spots resolve-aliases rewrote. -->
+  <!-- Every reference string, counted with multiplicity, across the five spots resolve-aliases rewrote. -->
   <xsl:variable name="refs" as="xs:string*">
     <xsl:sequence select="//o/@base/string()"/>
     <xsl:sequence select="//o/@atom/string()"/>
     <xsl:sequence select="for $a in //o/@args, $t in tokenize($a, ' ')[. != ''] return $t"/>
     <xsl:sequence select="for $t in //o/@type return replace($t, '\?$', '')"/>
+    <xsl:sequence select="/object/metas/meta[head = 'also']/part/string()"/>
   </xsl:variable>
   <!-- Whether an alias's short name reads back unambiguously: no bound name and no bare global claims it. -->
   <xsl:function name="eo:free" as="xs:boolean">
@@ -62,6 +63,12 @@
   <xsl:template match="o/@type">
     <xsl:variable name="opt" select="ends-with(., '?')"/>
     <xsl:attribute name="type" select="concat(eo:shorten(replace(., '\?$', '')), if ($opt) then '?' else '')"/>
+  </xsl:template>
+  <xsl:template match="metas/meta[head = 'also']/part/text()">
+    <xsl:value-of select="eo:shorten(.)"/>
+  </xsl:template>
+  <xsl:template match="metas/meta[head = 'also']/tail/text()">
+    <xsl:value-of select="string-join(for $p in ../../part return eo:shorten($p), ' ')"/>
   </xsl:template>
   <!-- Drop a dead or single-use alias whose short name was free to restore; a clashing alias is left in place. -->
   <xsl:template match="metas/meta[head = 'alias' and eo:free(part[1]) and not(part[last()] = $kept)]"/>
