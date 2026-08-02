@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2161.128328422
+  seconds: 2023.174165317
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-02 01:44:20.059579555 Z
+  when: 2026-08-02 05:37:13.157774688 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -40824,49 +40824,6 @@
   when: 2025-11-18 18:56:17.000000000 Z
   where: github
   who: 33164517
-- _id: 1045870
-  _job: 49789
-  _time: 2025-11-19 08:17:20.501050849 Z
-  _version: 0.16.8/0.57.1/0.16.1
-  award: 12
-  comments: 5
-  details: It's time to reward @maxonfjvipon for the code contributed in objectionary/phino#456,
-    the reward amount is 12.
-  hoc: 213
-  href: https://github.com/objectionary/phino/issues/456/#issuecomment-3551207446
-  is_human: 1
-  issue: 456
-  repository: 977982682
-  review_comments: 1
-  seconds: 1326
-  tombstone: 2026-07-31 22:18:41.395815309 Z
-  what: code-contribution-was-rewarded
-  when: 2025-11-19 01:34:48.739707665 Z
-  where: github
-  who: 37025995
-  why: Contributed code in objectionary/phino#456
-- _id: 1045871
-  _job: 49789
-  _time: 2025-11-19 08:17:21.589945909 Z
-  _version: 0.16.8/0.57.1/0.16.1
-  award: 12
-  comments: 3
-  details: It's time to reward @r0bari for the code contributed in objectionary/eo2js#161,
-    the reward amount is 12.
-  hoc: 26
-  href: https://github.com/objectionary/eo2js/issues/161/#issuecomment-3551207559
-  is_human: 1
-  issue: 161
-  receipt: receipt-#49719
-  repository: 798766850
-  review_comments: 0
-  seconds: 1071
-  tombstone: 2026-07-30 01:35:10.648029586 Z
-  what: code-contribution-was-rewarded
-  when: 2025-11-19 01:34:54.869238479 Z
-  where: github
-  who: 56538398
-  why: Contributed code in objectionary/eo2js#161
 - _id: 1045872
   _job: 49789
   _time: 2025-11-19 08:17:22.623741190 Z
@@ -302298,7 +302255,7 @@
   min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 556
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1107889
@@ -309172,7 +309129,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 831
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 16162131517
   issues_were_scanned: 0
@@ -309182,7 +309139,7 @@
   min_issue_was_found: 457
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 994
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108618
@@ -312936,7 +312893,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 999
   earliest_issue_was_found: 1
   events_were_scanned: 12630243400
   issues_were_scanned: 982
@@ -312946,7 +312903,7 @@
   min_issue_was_found: 601
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 0
+  types_were_scanned: 816
   what: iterate
   where: github
 - _id: 1108989
@@ -315887,7 +315844,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1120
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12636052317
   issues_were_scanned: 0
@@ -315897,7 +315854,7 @@
   min_issue_was_found: 500
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 1088
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109065
@@ -315921,17 +315878,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6232
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 16431303601
+  events_were_scanned: 12648021480
   issues_were_scanned: 0
-  labels_were_scanned: 6095
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 4685
+  types_were_scanned: 4935
   what: iterate
   where: github
 - _id: 1109067
@@ -434768,9 +434725,6 @@
   comments: 23
   details: It's time to reward @gemshrine for the code review in objectionary/eo#6193,
     the reward amount is 12.
-  greeting: 'Thanks for the review! You''ve earned +12 points.  Your running score
-    is [+1225](https://www.eolang.org/zerocracy/objectionary-vitals.html); don''t
-    forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 54
   href: https://github.com/objectionary/eo/issues/6193/#issuecomment-5154078994
   is_human: 1
@@ -434784,3 +434738,598 @@
   where: github
   who: 113778529
   why: Reviewed code in objectionary/eo#6193
+- _id: 1115554
+  _job: 30733219421
+  _time: 2026-08-02 05:08:31.597336884 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 5678-socket-io
+  comments: 15
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 15
+  comments_resolved: 0
+  comments_to_code: 13
+  details: Apparently, objectionary/eo#5938 has been "pull-was-closed".
+  failed_builds: 5
+  files: 3
+  hoc: 92
+  issue: 5938
+  repository: 73056727
+  review: 2026-07-26 09:20:51.000000000 Z
+  succeeded_builds: 17
+  suggestions: 13
+  what: pull-was-closed
+  when: 2026-08-02 05:06:02.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115555
+  _job: 30733219421
+  _time: 2026-08-02 05:08:48.731155362 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: master
+  comments: 10
+  comments_appreciated: 0
+  comments_by_author: 4
+  comments_by_reviewers: 6
+  comments_resolved: 1
+  comments_to_code: 2
+  details: Apparently, objectionary/eo#5994 has been "pull-was-merged".
+  failed_builds: 1
+  files: 1
+  hoc: 38
+  issue: 5994
+  repository: 73056727
+  review: 2026-07-27 14:06:33.000000000 Z
+  succeeded_builds: 22
+  suggestions: 1
+  what: pull-was-merged
+  when: 2026-08-02 05:07:27.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115556
+  _job: 30733219421
+  _time: 2026-08-02 05:09:07.787550512 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: eoc-version-up
+  comments: 1
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 1
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#6178 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 2
+  issue: 6178
+  repository: 73056727
+  succeeded_builds: 0
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-02 05:04:24.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115557
+  _job: 30733219421
+  _time: 2026-08-02 05:09:09.932649952 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: version-up
+  comments: 1
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 1
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#6185 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 2
+  issue: 6185
+  repository: 73056727
+  succeeded_builds: 0
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-02 05:04:14.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115558
+  _job: 30733219421
+  _time: 2026-08-02 05:09:12.838729603 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '6163'
+  comments: 17
+  comments_appreciated: 0
+  comments_by_author: 3
+  comments_by_reviewers: 14
+  comments_resolved: 0
+  comments_to_code: 14
+  details: Apparently, objectionary/eo#6188 has been "pull-was-merged".
+  failed_builds: 1
+  files: 2
+  hoc: 49
+  issue: 6188
+  repository: 73056727
+  review: 2026-07-31 13:47:06.000000000 Z
+  succeeded_builds: 22
+  suggestions: 11
+  what: pull-was-merged
+  when: 2026-08-02 05:04:02.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115559
+  _job: 30733219421
+  _time: 2026-08-02 05:09:25.220070243 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '6170'
+  comments: 7
+  comments_appreciated: 0
+  comments_by_author: 3
+  comments_by_reviewers: 4
+  comments_resolved: 0
+  comments_to_code: 4
+  details: Apparently, objectionary/eo#6191 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 16
+  issue: 6191
+  repository: 73056727
+  review: 2026-07-31 14:51:18.000000000 Z
+  succeeded_builds: 23
+  suggestions: 2
+  what: pull-was-merged
+  when: 2026-08-02 05:01:25.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115560
+  _job: 30733219421
+  _time: 2026-08-02 05:09:37.054164002 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: agent/issue-6154-remove-chpattern
+  comments: 8
+  comments_appreciated: 0
+  comments_by_author: 2
+  comments_by_reviewers: 6
+  comments_resolved: 0
+  comments_to_code: 3
+  details: Apparently, objectionary/eo#6192 has been "pull-was-merged".
+  failed_builds: 1
+  files: 3
+  hoc: 211
+  issue: 6192
+  repository: 73056727
+  review: 2026-07-31 14:57:06.000000000 Z
+  succeeded_builds: 22
+  suggestions: 3
+  what: pull-was-merged
+  when: 2026-08-02 05:00:56.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115561
+  _job: 30733219421
+  _time: 2026-08-02 05:09:50.253540522 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '5796'
+  comments: 7
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 6
+  comments_resolved: 0
+  comments_to_code: 5
+  details: Apparently, objectionary/eo#6197 has been "pull-was-merged".
+  failed_builds: 0
+  files: 4
+  hoc: 47
+  issue: 6197
+  repository: 73056727
+  review: 2026-07-31 15:06:30.000000000 Z
+  succeeded_builds: 23
+  suggestions: 4
+  what: pull-was-merged
+  when: 2026-08-02 04:58:48.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115562
+  _job: 30733219421
+  _time: 2026-08-02 05:10:02.869504316 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '6133'
+  comments: 10
+  comments_appreciated: 0
+  comments_by_author: 2
+  comments_by_reviewers: 8
+  comments_resolved: 0
+  comments_to_code: 8
+  details: Apparently, objectionary/eo#6201 has been "pull-was-merged".
+  failed_builds: 1
+  files: 1
+  hoc: 24
+  issue: 6201
+  repository: 73056727
+  review: 2026-07-31 19:34:23.000000000 Z
+  succeeded_builds: 22
+  suggestions: 6
+  what: pull-was-merged
+  when: 2026-08-02 05:00:07.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115563
+  _job: 30733219421
+  _time: 2026-08-02 05:10:14.756169182 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 4752-pure-eo-printf
+  comments: 9
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 9
+  comments_resolved: 0
+  comments_to_code: 5
+  details: Apparently, objectionary/eo#6202 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 127
+  issue: 6202
+  repository: 73056727
+  review: 2026-07-31 17:59:00.000000000 Z
+  succeeded_builds: 23
+  suggestions: 5
+  what: pull-was-merged
+  when: 2026-08-02 04:55:28.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115564
+  _job: 30733219421
+  _time: 2026-08-02 05:10:29.875932944 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '4106'
+  comments: 9
+  comments_appreciated: 0
+  comments_by_author: 2
+  comments_by_reviewers: 7
+  comments_resolved: 0
+  comments_to_code: 5
+  details: Apparently, objectionary/eo#6210 has been "pull-was-merged".
+  failed_builds: 1
+  files: 5
+  hoc: 95
+  issue: 6210
+  repository: 73056727
+  review: 2026-08-01 08:44:58.000000000 Z
+  succeeded_builds: 22
+  suggestions: 4
+  what: pull-was-merged
+  when: 2026-08-02 04:28:14.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115565
+  _job: 30733219421
+  _time: 2026-08-02 05:10:41.815781927 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '4140'
+  comments: 18
+  comments_appreciated: 0
+  comments_by_author: 2
+  comments_by_reviewers: 16
+  comments_resolved: 0
+  comments_to_code: 15
+  details: Apparently, objectionary/eo#6220 has been "pull-was-merged".
+  failed_builds: 1
+  files: 5
+  hoc: 200
+  issue: 6220
+  repository: 73056727
+  review: 2026-07-31 22:45:00.000000000 Z
+  succeeded_builds: 22
+  suggestions: 14
+  what: pull-was-merged
+  when: 2026-08-02 04:27:24.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115566
+  _job: 30733219421
+  _time: 2026-08-02 05:10:54.461702328 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '4370'
+  comments: 6
+  comments_appreciated: 0
+  comments_by_author: 2
+  comments_by_reviewers: 4
+  comments_resolved: 0
+  comments_to_code: 2
+  details: Apparently, objectionary/eo#6222 has been "pull-was-merged".
+  failed_builds: 1
+  files: 4
+  hoc: 84
+  issue: 6222
+  repository: 73056727
+  review: 2026-08-01 08:45:06.000000000 Z
+  succeeded_builds: 22
+  suggestions: 1
+  what: pull-was-merged
+  when: 2026-08-02 04:25:25.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115567
+  _job: 30733219421
+  _time: 2026-08-02 05:11:05.850564494 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: agent/issue-6143-regex-next
+  comments: 4
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 4
+  comments_resolved: 0
+  comments_to_code: 2
+  details: Apparently, objectionary/eo#6240 has been "pull-was-merged".
+  failed_builds: 1
+  files: 1
+  hoc: 80
+  issue: 6240
+  repository: 73056727
+  review: 2026-08-01 08:44:20.000000000 Z
+  succeeded_builds: 22
+  suggestions: 2
+  what: pull-was-merged
+  when: 2026-08-02 04:24:31.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115568
+  _job: 30733219421
+  _time: 2026-08-02 05:11:16.713507646 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/groovy-monorepo
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#6242 has been "pull-was-merged".
+  failed_builds: 1
+  files: 3
+  hoc: 10
+  issue: 6242
+  repository: 73056727
+  succeeded_builds: 22
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-02 04:24:01.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115569
+  _job: 30733219421
+  _time: 2026-08-02 05:11:28.146678731 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '6142'
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#6249 has been "pull-was-merged".
+  failed_builds: 1
+  files: 2
+  hoc: 47
+  issue: 6249
+  repository: 73056727
+  succeeded_builds: 22
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-02 04:23:10.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115570
+  _job: 30733219421
+  _time: 2026-08-02 05:15:51.944243770 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#6245.
+  issue: 6245
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-02 04:50:23.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115571
+  _job: 30733219421
+  _time: 2026-08-02 05:34:27.651206986 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 526301
+  comments: 2
+  details: The pull request objectionary/eo#5938 with 92 HoC created by @yegor256
+    was reviewed by @copilot after 0h0m and 0 comments.
+  hoc: 92
+  issue: 5938
+  repository: 73056727
+  review_comments: 0
+  seconds: 6
+  what: code-was-reviewed
+  when: 2026-07-26 09:20:51.000000000 Z
+  where: github
+  who: 175728472
+- _id: 1115572
+  _job: 30733219421
+  _time: 2026-08-02 05:34:28.112057458 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 526301
+  comments: 2
+  details: The pull request objectionary/eo#5938 with 92 HoC created by @yegor256
+    was reviewed by @favixx after 124h48m and 13 comments.
+  hoc: 92
+  issue: 5938
+  repository: 73056727
+  review_comments: 13
+  seconds: 449281
+  what: code-was-reviewed
+  when: 2026-07-31 14:08:46.000000000 Z
+  where: github
+  who: 125205449
+- _id: 1115573
+  _job: 30733219421
+  _time: 2026-08-02 05:34:28.695321448 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 125282851
+  comments: 3
+  details: The pull request objectionary/eo#6191 with 16 HoC created by @morphqdd
+    was reviewed by @thayorns after 0h46m and 2 comments.
+  hoc: 16
+  issue: 6191
+  repository: 73056727
+  review_comments: 2
+  seconds: 2790
+  what: code-was-reviewed
+  when: 2026-07-31 14:51:18.000000000 Z
+  where: github
+  who: 96509556
+- _id: 1115574
+  _job: 30733219421
+  _time: 2026-08-02 05:34:29.067382616 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 125282851
+  comments: 2
+  details: The pull request objectionary/eo#6197 with 47 HoC created by @morphqdd
+    was reviewed by @thayorns after 0h5m and 1 comments.
+  hoc: 47
+  issue: 6197
+  repository: 73056727
+  review_comments: 1
+  seconds: 332
+  what: code-was-reviewed
+  when: 2026-07-31 15:06:30.000000000 Z
+  where: github
+  who: 96509556
+- _id: 1115575
+  _job: 30733219421
+  _time: 2026-08-02 05:34:29.512747597 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 125282851
+  comments: 2
+  details: The pull request objectionary/eo#6197 with 47 HoC created by @morphqdd
+    was reviewed by @gemshrine after 29h33m and 3 comments.
+  hoc: 47
+  issue: 6197
+  repository: 73056727
+  review_comments: 3
+  seconds: 106389
+  what: code-was-reviewed
+  when: 2026-08-01 20:34:07.000000000 Z
+  where: github
+  who: 113778529
+- _id: 1115576
+  _job: 30733219421
+  _time: 2026-08-02 05:34:29.942145569 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 125282851
+  comments: 2
+  details: The pull request objectionary/eo#6201 with 24 HoC created by @morphqdd
+    was reviewed by @thayorns after 2h50m and 2 comments.
+  hoc: 24
+  issue: 6201
+  repository: 73056727
+  review_comments: 2
+  seconds: 10252
+  what: code-was-reviewed
+  when: 2026-07-31 19:34:23.000000000 Z
+  where: github
+  who: 96509556
+- _id: 1115577
+  _job: 30733219421
+  _time: 2026-08-02 05:34:30.295714226 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 125282851
+  comments: 2
+  details: The pull request objectionary/eo#6201 with 24 HoC created by @morphqdd
+    was reviewed by @gemshrine after 27h13m and 4 comments.
+  hoc: 24
+  issue: 6201
+  repository: 73056727
+  review_comments: 4
+  seconds: 98036
+  what: code-was-reviewed
+  when: 2026-08-01 19:57:27.000000000 Z
+  where: github
+  who: 113778529
+- _id: 1115578
+  _job: 30733219421
+  _time: 2026-08-02 05:34:30.732794250 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 96509556
+  comments: 3
+  details: The pull request objectionary/eo#6220 with 200 HoC created by @thayorns
+    was reviewed by @favixx after 2h31m and 13 comments.
+  hoc: 200
+  issue: 6220
+  repository: 73056727
+  review_comments: 13
+  seconds: 9069
+  what: code-was-reviewed
+  when: 2026-07-31 22:45:00.000000000 Z
+  where: github
+  who: 125205449
+- _id: 1115579
+  _job: 30733219421
+  _time: 2026-08-02 05:34:31.140837183 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 96509556
+  comments: 3
+  details: The pull request objectionary/eo#6220 with 200 HoC created by @thayorns
+    was reviewed by @morphqdd after 12h30m and 1 comments.
+  hoc: 200
+  issue: 6220
+  repository: 73056727
+  review_comments: 1
+  seconds: 45046
+  what: code-was-reviewed
+  when: 2026-08-01 08:44:37.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115580
+  _job: 30733219421
+  _time: 2026-08-02 05:34:31.634974190 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 263808434
+  comments: 2
+  details: The pull request objectionary/eo#6240 with 80 HoC created by @titanism0v0
+    was reviewed by @morphqdd after 8h38m and 1 comments.
+  hoc: 80
+  issue: 6240
+  repository: 73056727
+  review_comments: 1
+  seconds: 31106
+  what: code-was-reviewed
+  when: 2026-08-01 08:44:20.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115581
+  _job: 30733219421
+  _time: 2026-08-02 05:34:32.013417397 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 263808434
+  comments: 2
+  details: The pull request objectionary/eo#6240 with 80 HoC created by @titanism0v0
+    was reviewed by @copilot after 28h22m and 1 comments.
+  hoc: 80
+  issue: 6240
+  repository: 73056727
+  review_comments: 1
+  seconds: 102146
+  what: code-was-reviewed
+  when: 2026-08-02 04:28:20.000000000 Z
+  where: github
+  who: 175728472
+- _id: 1115582
+  _job: 30733219421
+  _time: 2026-08-02 05:36:24.358645318 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  total_active_contributors: 14
+  total_commits: 53178
+  total_contributors: 536
+  total_files: 15134
+  total_forks: 506
+  total_issues: 5419
+  total_pulls: 10392
+  total_releases: 938
+  total_repositories: 39
+  total_stars: 1815
+  what: dimensions-of-terrain
+  when: 2026-08-02 05:36:24.368638312 Z
