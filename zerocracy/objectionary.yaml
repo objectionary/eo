@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2161.251098417
+  seconds: 1586.889443367
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-01 23:05:38.919030137 Z
+  when: 2026-08-01 23:56:50.966150301 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -302298,7 +302298,7 @@
   min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 0
+  types_were_scanned: 556
   what: iterate
   where: github
 - _id: 1107889
@@ -307147,6 +307147,7 @@
   - 2.7459194273799485
   - 2.7459194273799485
   - 2.7459194273799485
+  - 2.7459194273799485
   qod_per_day:
   - 20.262571430008
   - 42.95057143129291
@@ -307842,8 +307843,9 @@
   - 210.89137121213858
   - 210.89137121213858
   - 210.89137121213858
+  - 210.89137121213858
   what: learn-eva
-  when: 2026-08-01 14:43:03.060849472 Z
+  when: 2026-08-01 23:08:51.408441024 Z
 - _id: 1108432
   _job: 28880449411
   _time: 2026-07-07 16:03:53.193694149 Z
@@ -309170,7 +309172,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 831
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 16162131517
   issues_were_scanned: 0
@@ -309180,7 +309182,7 @@
   min_issue_was_found: 457
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 854
+  types_were_scanned: 994
   what: iterate
   where: github
 - _id: 1108618
@@ -312934,7 +312936,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 999
   earliest_issue_was_found: 1
   events_were_scanned: 12630243400
   issues_were_scanned: 982
@@ -312944,7 +312946,7 @@
   min_issue_was_found: 601
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 1081
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108989
@@ -315885,7 +315887,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1120
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12636052317
   issues_were_scanned: 0
@@ -315895,7 +315897,7 @@
   min_issue_was_found: 500
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 0
+  types_were_scanned: 1088
   what: iterate
   where: github
 - _id: 1109065
@@ -315919,17 +315921,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5806
+  assignees_were_scanned: 6065
   earliest_issue_was_found: 1
-  events_were_scanned: 12641087302
+  events_were_scanned: 12642025451
   issues_were_scanned: 0
-  labels_were_scanned: 6095
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 0
+  types_were_scanned: 4685
   what: iterate
   where: github
 - _id: 1109067
@@ -423070,6 +423072,40 @@
   - 23
   - 0
   - 0
+  some_pull_files_size:
+  - 3
+  - 2
+  - 1
+  - 8
+  - 7
+  - 1
+  - 2
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  some_pull_hoc_size:
+  - 28
+  - 57
+  - 2
+  - 164
+  - 158
+  - 64
+  - 102
+  - 64
+  - 2
+  - 2
+  - 2
+  - 2
+  - 2
+  - 2
+  - 2
+  - 2
   some_release_commits_size:
   - 2
   - 2
@@ -434689,8 +434725,10 @@
     -5 for very few (10) comments.  Your running score is [+475](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 95
+  href: https://github.com/objectionary/eo/issues/6151/#issuecomment-5153907110
   is_human: 1
   issue: 6151
+  receipt: receipt-#84005
   repository: 73056727
   review_comments: 10
   seconds: 173057
@@ -434719,8 +434757,31 @@
   _time: 2026-08-01 22:47:12.443358222 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: 'We found out that the user #145608489 is known in GitHub as @guflly.'
+  is_human: 1
   name: guflly
   what: who-has-name
   when: 2026-08-01 22:47:12.458253614 Z
   where: github
   who: 145608489
+- _id: 1115553
+  _job: 84778
+  _time: 2026-08-01 23:07:07.864869027 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  comments: 23
+  details: It's time to reward @gemshrine for the code review in objectionary/eo#6193,
+    the reward amount is 12.
+  greeting: 'Thanks for the review! You''ve earned +12 points.  Your running score
+    is [+1225](https://www.eolang.org/zerocracy/objectionary-vitals.html); don''t
+    forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 54
+  is_human: 1
+  issue: 6193
+  repository: 73056727
+  review_comments: 18
+  seconds: 109962
+  what: code-review-was-rewarded
+  when: 2026-08-01 23:07:07.875036256 Z
+  where: github
+  who: 113778529
+  why: Reviewed code in objectionary/eo#6193
