@@ -166,6 +166,37 @@ final class LnMethodTest {
         );
     }
 
+    @Test
+    void rejectsTestAttributeWithoutPrecedingBlankLine() {
+        final Emit emit = new Emit();
+        final Stack stack = new Stack();
+        final Globals globals = new Globals();
+        new LnApplication(new Span("foo", 1)).into(stack, globals, emit);
+        new LnMethod(new Span(".bar +> t", 2)).into(stack, globals, emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `+>` test attribute on a method-continuation line with no blank line above must emit an R-6.5.3 error",
+            LnMethodTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/errors/error[@line='2']")
+        );
+    }
+
+    @Test
+    void acceptsTestAttributeAfterBlankLine() {
+        final Emit emit = new Emit();
+        final Stack stack = new Stack();
+        final Globals globals = new Globals();
+        new LnApplication(new Span("foo", 1)).into(stack, globals, emit);
+        globals.blank();
+        new LnMethod(new Span(".bar +> t", 2)).into(stack, globals, emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `+>` test attribute on a method-continuation line preceded by one blank line must not emit any error",
+            LnMethodTest.render(emit),
+            Matchers.not(XhtmlMatchers.hasXPath("/object/errors"))
+        );
+    }
+
     /**
      * Render the emit's directives under a fresh {@code <object/>}.
      * @param emit The emit

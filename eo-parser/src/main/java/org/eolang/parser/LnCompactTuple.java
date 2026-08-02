@@ -58,7 +58,6 @@ final class LnCompactTuple implements Line {
 
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
-        Blanks.checkPlain(this.span, globals, emit);
         final Tokens tokens = new Tokens(this.span.body(), this.span);
         final Value head = tokens.readValue();
         final List<MethodChain> chain;
@@ -85,6 +84,11 @@ final class LnCompactTuple implements Line {
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
+        if (suffix.test()) {
+            Blanks.checkTest(this.span, globals, emit);
+        } else {
+            Blanks.checkPlain(this.span, globals, emit);
+        }
         final Level level = this.transition(stack, suffix);
         level.compact(count);
         globals.clearBlanks();

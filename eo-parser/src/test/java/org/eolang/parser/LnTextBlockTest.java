@@ -143,6 +143,39 @@ final class LnTextBlockTest {
         );
     }
 
+    @Test
+    void rejectsTestAttributeWithoutPrecedingBlankLine() {
+        final Globals globals = new Globals();
+        globals.openTextBlock(1, 0);
+        globals.appendTextLine("hello");
+        final Emit emit = new Emit();
+        new LnTextBlock(new Span("\"\"\" +> t", 3))
+            .into(new Stack(), globals, emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `+>` test attribute on a text-block closer with no blank line above must emit an R-6.5.3 error",
+            LnTextBlockTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/errors/error[@line='3']")
+        );
+    }
+
+    @Test
+    void acceptsTestAttributeAfterBlankLine() {
+        final Globals globals = new Globals();
+        globals.openTextBlock(1, 0);
+        globals.appendTextLine("hello");
+        globals.blank();
+        final Emit emit = new Emit();
+        new LnTextBlock(new Span("\"\"\" +> t", 3))
+            .into(new Stack(), globals, emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `+>` test attribute on a text-block closer preceded by one blank line must not emit any error",
+            LnTextBlockTest.render(emit),
+            Matchers.not(XhtmlMatchers.hasXPath("/object/errors"))
+        );
+    }
+
     /**
      * Render the emit's directives under a fresh {@code <object/>}.
      * @param emit The emit
