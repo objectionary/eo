@@ -55,8 +55,13 @@ public final class RandomServer implements AutoCloseable {
      */
     private ServerSocket bound() throws IOException {
         final ServerSocket opened = new ServerSocket();
-        opened.setReuseAddress(true);
-        opened.bind(new InetSocketAddress("127.0.0.1", 0));
+        try {
+            opened.setReuseAddress(true);
+            opened.bind(new InetSocketAddress("127.0.0.1", 0));
+        } catch (final IOException exception) {
+            opened.close();
+            throw exception;
+        }
         Logger.debug(this, "Server bound on port %d", opened.getLocalPort());
         return opened;
     }

@@ -13,8 +13,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import org.eolang.NetworkPort;
 import org.eolang.RandomPort;
 import org.eolang.RandomServer;
+import org.eolang.ReceivedBytes;
 import org.eolang.SockaddrIn;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -30,6 +32,26 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 @DisabledOnOs(OS.WINDOWS)
 @Execution(ExecutionMode.SAME_THREAD)
 final class CStdLibTest {
+
+    /**
+     * Backlog for a socket that actually accepts connections.
+     */
+    private static final int LISTEN_BACKLOG = 5;
+
+    /**
+     * Backlog for a socket that only exercises {@code listen} itself.
+     */
+    private static final int TEST_BACKLOG = 2;
+
+    /**
+     * Maximum bind attempts before giving up.
+     */
+    private static final int MAX_BIND_ATTEMPTS = 50;
+
+    /**
+     * How long to wait for a background server thread to finish.
+     */
+    private static final long JOIN_MILLIS = 5_000L;
 
     @RepeatedIfExceptionsTest(repeats = 3)
     void connectsToLocalServerViaSyscall() throws IOException {
@@ -98,7 +120,7 @@ final class CStdLibTest {
                     "Posix socket should have been bound to localhost via syscall, but it didn't, reason: %s",
                     this.getError()
                 ),
-                CStdLib.INSTANCE.listen(socket, 2),
+                CStdLib.INSTANCE.listen(socket, CStdLibTest.TEST_BACKLOG),
                 Matchers.equalTo(0)
             );
         } finally {
@@ -118,7 +140,7 @@ final class CStdLibTest {
         Thread.sleep(2000);
         final int client = this.openSocket();
         try {
-            this.ensure(client >= 0);
+            this.ensure(client > 0);
             final SockaddrIn sockaddr = this.sockaddr(port.get());
             MatcherAssert.assertThat(
                 String.format(
@@ -128,7 +150,7 @@ final class CStdLibTest {
                 CStdLib.INSTANCE.connect(client, sockaddr, sockaddr.size()),
                 Matchers.equalTo(0)
             );
-            server.join();
+            this.joined(server);
             MatcherAssert.assertThat(
                 String.format(
                     "Accepted client socket must be positive, but it isn't, reason: %s",
@@ -154,53 +176,24 @@ final class CStdLibTest {
         Thread.sleep(2000);
         final int client = this.openSocket();
         try {
-            this.ensure(client >= 0);
+            this.ensure(client > 0);
             final SockaddrIn sockaddr = this.sockaddr(port.get());
             this.ensure(CStdLib.INSTANCE.connect(client, sockaddr, sockaddr.size()) == 0);
             final byte[] buf = "Hello, Socket!".getBytes(StandardCharsets.UTF_8);
+            final int sent = CStdLib.INSTANCE.send(client, buf, buf.length, 0);
             MatcherAssert.assertThat(
                 String.format(
-                    "Client had to sent message to the server, but it didn't, reason: %s",
-                    this.getError()
+                    "Client had to send %d bytes to the server, but sent %d, reason: %s",
+                    buf.length, sent, this.getError()
                 ),
-                CStdLib.INSTANCE.send(client, buf, buf.length, 0),
+                sent,
                 Matchers.equalTo(buf.length)
             );
-            server.join();
-            CStdLibTest.assertReceived(buf, received, bytes);
+            this.joined(server);
+            new ReceivedBytes(buf, received, bytes).verify();
         } finally {
             this.closeSocket(client);
         }
-    }
-
-    /**
-     * Convert port number from host to network byte order (htons).
-     * @param port Port number
-     * @return Port number in network byte order
-     */
-    private static short htons(final int port) {
-        return (short) (((port & 0xFF) << 8) | ((port >> 8) & 0xFF));
-    }
-
-    /**
-     * Assert that a server thread received exactly the bytes a client sent.
-     * @param sent Bytes the client sent
-     * @param count Number of bytes the server reported as received
-     * @param received Bytes the server received
-     */
-    private static void assertReceived(
-        final byte[] sent, final AtomicInteger count, final AtomicReference<byte[]> received
-    ) {
-        MatcherAssert.assertThat(
-            "Server had to receive the message from the client, but it didn't",
-            count.get(),
-            Matchers.equalTo(sent.length)
-        );
-        MatcherAssert.assertThat(
-            "Received bytes must be equal to sent, but they didn't",
-            new String(received.get(), StandardCharsets.UTF_8),
-            Matchers.equalTo(new String(sent, StandardCharsets.UTF_8))
-        );
     }
 
     /**
@@ -250,11 +243,45 @@ final class CStdLibTest {
      * @return Zero on success, -1 on error
      */
     private int bindSocket(final int socket, final int port) {
-        return CStdLib.INSTANCE.bind(
-            socket,
-            this.sockaddr(port),
-            16
+        final SockaddrIn addr = this.sockaddr(port);
+        return CStdLib.INSTANCE.bind(socket, addr, addr.size());
+    }
+
+    /**
+     * Wait for a server thread to finish, failing fast instead of hanging
+     * forever if it never does.
+     * @param server Server thread
+     * @throws InterruptedException If interrupted while waiting
+     */
+    private void joined(final Thread server) throws InterruptedException {
+        server.join(CStdLibTest.JOIN_MILLIS);
+        MatcherAssert.assertThat(
+            "Server thread had to finish within the timeout, but it didn't",
+            server.isAlive(),
+            Matchers.is(false)
         );
+    }
+
+    /**
+     * Bind a socket to a free port, retrying a bounded number of times so a
+     * persistent bind failure fails the test instead of spinning forever.
+     * @param socket Socket to bind
+     * @param port Port to try first, updated with each retry
+     */
+    private void bound(final int socket, final AtomicInteger port) {
+        int attempt = 0;
+        while (this.bindSocket(socket, port.get()) != 0) {
+            attempt += 1;
+            if (attempt >= CStdLibTest.MAX_BIND_ATTEMPTS) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Could not bind to a free port after %d attempts",
+                        CStdLibTest.MAX_BIND_ATTEMPTS
+                    )
+                );
+            }
+            port.set(new RandomPort().pick());
+        }
     }
 
     /**
@@ -282,11 +309,17 @@ final class CStdLibTest {
     private SockaddrIn sockaddr(final int port) {
         return new SockaddrIn(
             (short) CStdLib.AF_INET,
-            CStdLibTest.htons(port),
+            new NetworkPort(port).bytes(),
             this.inetAddr("127.0.0.1")
         );
     }
 
+    /**
+     * Bind, listen and accept one connection via {@link CStdLib}.
+     * @param port Port to bind to, updated if the candidate is taken
+     * @param accept Out-parameter: the accepted socket descriptor
+     * @param error Out-parameter: the error string if accept failed
+     */
     private void acceptViaCStdLib(
         final AtomicInteger port, final AtomicInteger accept,
         final AtomicReference<String> error
@@ -294,10 +327,8 @@ final class CStdLibTest {
         final int socket = this.openSocket();
         try {
             this.ensure(socket > 0);
-            while (this.bindSocket(socket, port.get()) != 0) {
-                port.set(new RandomPort().pick());
-            }
-            this.ensure(CStdLib.INSTANCE.listen(socket, 5) == 0);
+            this.bound(socket, port);
+            this.ensure(CStdLib.INSTANCE.listen(socket, CStdLibTest.LISTEN_BACKLOG) == 0);
             final SockaddrIn addr = new SockaddrIn();
             final int accepted = CStdLib.INSTANCE.accept(
                 socket, addr, new IntByReference(addr.size())
@@ -315,6 +346,13 @@ final class CStdLibTest {
         }
     }
 
+    /**
+     * Bind, listen, accept one connection and receive a message via
+     * {@link CStdLib}.
+     * @param port Port to bind to, updated if the candidate is taken
+     * @param received Out-parameter: number of bytes received
+     * @param bytes Out-parameter: the bytes received
+     */
     private void recvViaCStdLib(
         final AtomicInteger port, final AtomicInteger received,
         final AtomicReference<byte[]> bytes
@@ -323,10 +361,8 @@ final class CStdLibTest {
         int accepted = 0;
         try {
             this.ensure(socket > 0);
-            while (this.bindSocket(socket, port.get()) != 0) {
-                port.set(new RandomPort().pick());
-            }
-            this.ensure(CStdLib.INSTANCE.listen(socket, 5) == 0);
+            this.bound(socket, port);
+            this.ensure(CStdLib.INSTANCE.listen(socket, CStdLibTest.LISTEN_BACKLOG) == 0);
             final SockaddrIn addr = new SockaddrIn();
             accepted = CStdLib.INSTANCE.accept(
                 socket, addr, new IntByReference(addr.size())
