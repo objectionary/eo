@@ -68,6 +68,11 @@ final class Linting implements Step {
     static final String CACHE = "linted";
 
     /**
+     * XMIR {@code <error>}/{@code <defect>} attribute naming the check that reported it.
+     */
+    private static final String CHECK = "check";
+
+    /**
      * Scoped foreign tojos.
      */
     private final TjsForeign tojos;
@@ -539,7 +544,7 @@ final class Linting implements Step {
      */
     private static Defect toDefect(final Xnav error) {
         return new Defect.Default(
-            error.attribute("check").text().orElse("parser"),
+            error.attribute(Linting.CHECK).text().orElse("parser"),
             Severity.parsed(
                 error.attribute("severity").text().orElseThrow(
                     () -> new IllegalArgumentException(
@@ -566,7 +571,7 @@ final class Linting implements Step {
      */
     private static Directives embedded(final Directives dirs, final Defect defect) {
         dirs.add("error")
-            .attr("check", defect.rule())
+            .attr(Linting.CHECK, defect.rule())
             .attr("severity", defect.severity().mnemo())
             .set(defect.text());
         if (defect.line() > 0) {
@@ -579,7 +584,7 @@ final class Linting implements Step {
         final Directives dirs, final org.eolang.wpa.Defect defect
     ) {
         dirs.add("error")
-            .attr("check", defect.rule())
+            .attr(Linting.CHECK, defect.rule())
             .attr("severity", defect.severity().mnemo())
             .set(defect.text());
         if (defect.line() > 0) {
@@ -619,7 +624,7 @@ final class Linting implements Step {
     private static List<org.eolang.wpa.Defect> read(final Path path) {
         return new Xnav(path).path("/defects/error").map(
             node -> new org.eolang.wpa.Defect.Default(
-                node.attribute("check").text().orElseThrow(),
+                node.attribute(Linting.CHECK).text().orElseThrow(),
                 org.eolang.wpa.Severity.parsed(
                     node.attribute("severity").text().orElseThrow()
                 ),
