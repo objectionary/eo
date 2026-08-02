@@ -144,6 +144,50 @@ final class OyRemoteTest {
     }
 
     @Test
+    void putsObjectNameBeforeUrlInMissingObjectMessage() throws Exception {
+        final HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext(
+            "/",
+            exchange -> {
+                exchange.sendResponseHeaders(404, -1);
+                exchange.close();
+            }
+        );
+        server.start();
+        try {
+            final int port = server.getAddress().getPort();
+            final String tpl = String.format(
+                "http://127.0.0.1:%d/%%s/%%s.eo", port
+            );
+            final String name = "org.eolang.txt.sprintf";
+            MatcherAssert.assertThat(
+                "Missing-object message should put the object name first and the URL after 'by url:'",
+                Assertions.assertThrows(
+                    IOException.class,
+                    () -> new OyRemote(
+                        new OyRemote.UrlOy(tpl, "deadbeef"),
+                        new OyRemote.UrlOy(tpl, "deadbeef")
+                    ).get(name).stream(),
+                    "Expected an IOException when the remote object is missing"
+                ).getMessage(),
+                Matchers.allOf(
+                    Matchers.startsWith(
+                        String.format("EO object '%s' is not found", name)
+                    ),
+                    Matchers.containsString(
+                        String.format(
+                            "by url: http://127.0.0.1:%d/deadbeef/txt/sprintf.eo.",
+                            port
+                        )
+                    )
+                )
+            );
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    @Test
     @ExtendWith(WeAreOnline.class)
     void checksPresenceOfDirectoryWithNarrowHash() throws IOException {
         final String directory = "tuple";
