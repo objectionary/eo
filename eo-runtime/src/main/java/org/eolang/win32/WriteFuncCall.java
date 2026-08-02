@@ -34,7 +34,7 @@ public final class WriteFuncCall implements Syscall {
     public Phi make(final Phi... params) {
         final byte[] buf = new Dataized(params[1]).take();
         final int size = new Dataized(params[2]).asNumber().intValue();
-        if (size > buf.length) {
+        if (size < 0 || size > buf.length) {
             throw new ExFailure(
                 "Can't write %d bytes from a buffer of only %d bytes",
                 size, buf.length

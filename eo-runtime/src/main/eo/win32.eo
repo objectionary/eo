@@ -60,6 +60,24 @@
           "127.0.0.1"
       16777343
 
+  --> stops-on-write-size-being-negative
+    os.is-windows.not.if > @
+      1.div 0
+      seq *
+        code.
+          win32 *1
+            "_write"
+            fd
+            "ab"
+            -1
+        true
+    code. > fd
+      win32 *1
+        "_open"
+        "NUL"
+        win32.wronly
+        0
+
   --> stops-on-write-size-exceeding-buffer-length
     os.is-windows.not.if > @
       1.div 0
