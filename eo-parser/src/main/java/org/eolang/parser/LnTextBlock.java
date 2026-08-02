@@ -40,7 +40,6 @@ final class LnTextBlock implements Line {
 
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
-        Blanks.checkPlain(this.span, globals, emit);
         final String body = this.span.body();
         if (!body.startsWith("\"\"\"")) {
             throw new ParseError(
@@ -54,6 +53,11 @@ final class LnTextBlock implements Line {
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
+        if (suffix.test()) {
+            Blanks.checkTest(this.span, globals, emit);
+        } else {
+            Blanks.checkPlain(this.span, globals, emit);
+        }
         final String joined;
         try {
             joined = Emissions.unescapeBody(
