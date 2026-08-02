@@ -6,6 +6,7 @@ package org.eolang.posix;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Syscall;
@@ -31,14 +32,22 @@ public final class SendSyscall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
+        final byte[] buf = new Dataized(params[1]).take();
+        final int size = new Dataized(params[2]).asNumber().intValue();
+        if (size > buf.length) {
+            throw new ExFailure(
+                "Can't send %d bytes from a buffer of only %d bytes",
+                size, buf.length
+            );
+        }
         final Phi result = this.posix.take("return").copy();
         result.put(
             0,
             new Data.ToPhi(
                 CStdLib.INSTANCE.send(
                     new Dataized(params[0]).asNumber().intValue(),
-                    new Dataized(params[1]).take(),
-                    new Dataized(params[2]).asNumber().intValue(),
+                    buf,
+                    size,
                     new Dataized(params[3]).asNumber().intValue()
                 )
             )

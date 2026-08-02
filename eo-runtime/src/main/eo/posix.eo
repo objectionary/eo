@@ -114,3 +114,21 @@
           "inet_addr"
           "127.0.0.1"
       16777343
+
+  --> stops-on-write-size-exceeding-buffer-length
+    os.is-windows.if > @
+      1.div 0
+      seq *
+        code.
+          posix *1
+            "write"
+            fd
+            "ab"
+            4096
+        true
+    code. > fd
+      posix *1
+        "open"
+        "/dev/null"
+        posix.wronly
+        0
