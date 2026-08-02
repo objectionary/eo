@@ -1,0 +1,127 @@
+# Returns `text` padded on the left with `fill` until it counts `width`
+# characters, so that `42` padded to five characters with a space
+# becomes `   42`. Characters are counted, and not bytes, so a multi-byte
+# character widens the text by one. A `text` of `width` characters
+# or longer is returned unchanged.
+# If `width` is not a finite non-negative integer (negative, fractional, nan
+# or infinite), or `fill` is not a single character, the `cant-pad` fallback
+# is returned, or the bottom object when unbound.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text width fill cant-pad] > padded-left
+  if. > @
+    or.
+      or.
+        0.gt width
+        width.is-integer.not
+      not.
+        1.eq fill.length
+    cant-pad
+      "Can't pad text to %f characters with %s".printf
+        * width fill
+    if.
+      width.gt
+        text.length >> len!
+      string
+        concat.
+          as-bytes.
+            repeated
+              fill
+              as-number.
+                width.minus len
+              cant-pad
+          text.as-bytes
+      text
+
+  eq. ++> can-count-characters-and-not-bytes
+    "  Ж"
+    padded-left
+      "Ж"
+      3
+      " "
+
+  eq. ++> can-format-the-error-message-of-a-negative-width
+    "Can't pad text to -1.000000 characters with x"
+    padded-left
+      "y"
+      -1
+      "x"
+      message > [message]
+
+  eq. ++> can-pad-a-number-with-leading-spaces
+    "   42"
+    padded-left
+      "42"
+      5
+      " "
+
+  eq. ++> can-pad-with-leading-zeros
+    "0042"
+    padded-left
+      "42"
+      4
+      "0"
+
+  eq. ++> can-return-a-longer-text-unchanged
+    "hello"
+    padded-left
+      "hello"
+      3
+      " "
+
+  eq. ++> can-return-a-text-of-the-exact-width-unchanged
+    "hey"
+    padded-left
+      "hey"
+      3
+      " "
+
+  eq. ++> can-return-a-text-unchanged-at-zero-width
+    "x"
+    padded-left
+      "x"
+      0
+      " "
+
+  eq. ++> rejects-a-multi-character-fill
+    "recovered"
+    padded-left
+      "y"
+      5
+      "ab"
+      "recovered" > [message]
+
+  eq. ++> rejects-a-negative-width
+    "recovered"
+    padded-left
+      "y"
+      -1
+      "x"
+      "recovered" > [message]
+
+  eq. ++> rejects-a-non-integer-width
+    "recovered"
+    padded-left
+      "y"
+      2.5
+      "x"
+      "recovered" > [message]
+
+  eq. ++> rejects-an-infinite-width
+    "recovered"
+    padded-left
+      "y"
+      pinf
+      "x"
+      "recovered" > [message]
+
+  padded-left --> stops-on-a-negative-width
+    "y"
+    -1
+    "x"

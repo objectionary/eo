@@ -10,7 +10,6 @@ import java.nio.file.Path;
 /**
  * Wrapper for footprint.
  * @since 0.41
- * @checkstyle DesignForExtensionCheck (50 lines)
  */
 class FpEnvelope implements Footprint {
 

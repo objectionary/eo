@@ -17,8 +17,6 @@ final class PhPackage implements Phi {
 
     /**
      * Global package.
-     * @checkstyle VisibilityModifierCheck (3 lines)
-     * @checkstyle StaticVariableNameCheck (3 lines)
      */
     static final String GLOBAL = "Φ";
 
