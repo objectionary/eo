@@ -27,9 +27,11 @@ final class PackageInfos {
     private static final Pattern PACKAGE = Pattern.compile("EO_?");
 
     /**
-     * Pattern for replacing first default org.eolang package.
+     * Pattern for replacing first default org.eolang package, with the dot
+     * that follows it optional, so that the root package itself is left with
+     * an empty EO name rather than with the Java name of the base.
      */
-    private static final Pattern BASE = Pattern.compile("org.eolang.");
+    private static final Pattern BASE = Pattern.compile("^org\\.eolang\\.?");
 
     /**
      * Not allowed characters in package names.
