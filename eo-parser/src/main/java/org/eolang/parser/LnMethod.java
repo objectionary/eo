@@ -73,6 +73,7 @@ final class LnMethod implements Line {
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
+        Atoms.rejectOutsideFormation(suffix, this.span);
         if (suffix.test()) {
             Blanks.checkTest(this.span, globals, emit);
         } else {
