@@ -84,17 +84,18 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
         final int start = new Expect.Natural(
             Expect.at(this, EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
         ).it();
-        if (start > text.length()) {
+        final int length = text.codePointCount(0, text.length());
+        if (start > length) {
             throw new ExFailure(
                 "the 'start' attribute (%d) must be less than or equal to text length (%d)",
                 start,
-                text.length()
+                length
             );
         }
-        final boolean found = matcher.find(start);
+        final boolean found = matcher.find(text.offsetByCodePoints(0, start));
         final Phi result = match.take("matched");
         if (found) {
-            this.fill(result, matcher);
+            this.fill(result, matcher, text);
         } else {
             this.blank(result);
         }
@@ -105,8 +106,9 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
      * Fill the matched block with the data of a real match.
      * @param result The matched block to fill
      * @param matcher The matcher positioned on the found subsequence
+     * @param text Matched text
      */
-    private void fill(final Phi result, final Matcher matcher) {
+    private void fill(final Phi result, final Matcher matcher, final String text) {
         result.put(
             EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
             this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
@@ -115,8 +117,8 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
             EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
             this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
         );
-        result.put("from", new Data.ToPhi(matcher.start()));
-        result.put("to", new Data.ToPhi(matcher.end()));
+        result.put("from", new Data.ToPhi(text.codePointCount(0, matcher.start())));
+        result.put("to", new Data.ToPhi(text.codePointCount(0, matcher.end())));
         final Phi[] groups;
         if (matcher.groupCount() > 0) {
             groups = new Phi[matcher.groupCount() + 1];
