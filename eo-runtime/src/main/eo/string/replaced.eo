@@ -35,6 +35,13 @@
         next. >> matched
           target.match reinit
 
+  eq. ++> can-replace-a-nullable-pattern-like-java
+    replaced
+      "abc"
+      regex "/x*/"
+      "-"
+    "-a-b-c-"
+
   eq. ++> can-replace-a-windows-separator-with-a-slash
     replaced
       "C:\\Windows\\Users\\AppLocal\\shrek"
