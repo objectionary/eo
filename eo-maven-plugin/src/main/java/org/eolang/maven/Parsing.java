@@ -201,7 +201,10 @@ final class Parsing implements Step {
                 new Cache(
                     new CachePath(
                         this.cacheDir.resolve(Parsing.CACHE),
-                        String.format("%s-%s", this.version, digest),
+                        String.format(
+                            "%s-%s-%s",
+                            this.version, new Fingerprint(Canonical.XSLS).get(), digest
+                        ),
                         new TojoHash(tojo).get()
                     ),
                     src -> {

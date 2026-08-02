@@ -35,6 +35,41 @@ import org.cactoos.scalar.Unchecked;
 public final class Canonical implements UnaryOperator<XML> {
 
     /**
+     * The classpath resources of every XSL this pipeline applies, in the
+     * order they run (mirroring {@link Canonical.Pipeline#value()}), so a
+     * caller that caches this pipeline's output (see {@code Parsing} in
+     * {@code eo-maven-plugin}, #6236) can fold a fingerprint of them into
+     * its cache key. Kept as a plain data list, separate from the grouped
+     * {@code TrClasspath}/{@code TrDefault} calls in
+     * {@link Canonical.Pipeline#value()} that actually build the pipeline,
+     * so must be kept in sync with them by hand — the same trade-off
+     * already accepted for {@code Transpilation.IMPORTS} in
+     * {@code eo-maven-plugin}.
+     */
+    public static final String[] XSLS = {
+        "/org/eolang/parser/parse/wrap-applications.xsl",
+        "/org/eolang/parser/parse/resolve-self.xsl",
+        "/org/eolang/parser/parse/resolve-local-names.xsl",
+        "/org/eolang/parser/parse/validate-before-stars.xsl",
+        "/org/eolang/parser/parse/resolve-before-stars.xsl",
+        "/org/eolang/parser/parse/fragile-dispatch.xsl",
+        "/org/eolang/parser/parse/wrap-method-calls.xsl",
+        "/org/eolang/parser/parse/const-to-dataized.xsl",
+        "/org/eolang/parser/parse/stars-to-tuples.xsl",
+        "/org/eolang/parser/parse/vars-float-up.xsl",
+        "/org/eolang/parser/parse/move-voids-up.xsl",
+        "/org/eolang/parser/parse/validate-objects-count.xsl",
+        "/org/eolang/parser/parse/build-fqns.xsl",
+        "/org/eolang/parser/parse/expand-aliases.xsl",
+        "/org/eolang/parser/parse/resolve-aliases.xsl",
+        "/org/eolang/parser/parse/add-default-package.xsl",
+        "/org/eolang/parser/parse/roll-bases.xsl",
+        "/org/eolang/parser/parse/cti-adds-errors.xsl",
+        "/org/eolang/parser/parse/mandatory-as.xsl",
+        "/org/eolang/parser/parse/set-locators.xsl",
+    };
+
+    /**
      * The pipeline, built lazily and only once.
      */
     private final Unchecked<UnaryOperator<XML>> pipeline;
