@@ -297,6 +297,23 @@ final class Linting implements Step {
     }
 
     /**
+     * Cache-key version segment: the plugin version combined with the
+     * {@code skipSourceLints} and {@code skipExperimentalLints} flags,
+     * since both change what {@link #linted(XML)} produces for the same
+     * source XMIR (see #6235), the same way {@code trackLocations}/
+     * {@code coverageTracking} were folded into the transpile cache key.
+     * @return The version segment for {@link CachePath}
+     */
+    private String version() {
+        return String.format(
+            "%s-%s-%b",
+            this.version,
+            this.skipSourceLints.stream().sorted().collect(Collectors.joining(",")),
+            this.skipExperimentalLints
+        );
+    }
+
+    /**
      * XMIR verified to another XMIR.
      * @param tojo Foreign tojo
      * @param counts Counts of errors, warnings, and critical
@@ -321,7 +338,7 @@ final class Linting implements Step {
                 new Cache(
                     new CachePath(
                         this.cacheDir.resolve(Linting.CACHE),
-                        this.version,
+                        this.version(),
                         new TojoHash(tojo).get()
                     ),
                     src -> this.linted(xmir).toString()

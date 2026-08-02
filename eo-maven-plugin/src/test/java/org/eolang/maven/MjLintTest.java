@@ -127,6 +127,34 @@ final class MjLintTest {
     }
 
     @Test
+    void invalidatesPerFileCacheWhenSkipSourceLintsChanges(
+        @Mktmp final Path temp
+    ) throws IOException {
+        final Path cache = temp.resolve("cache");
+        final String[] program = {
+            "+package foo.x",
+            "",
+            "[x] > main",
+            "  (stdout \"Hello!\" x).print > @",
+        };
+        new FakeMaven(temp.resolve("first"))
+            .with("cache", cache.toFile())
+            .withProgram(program)
+            .execute(new FakeMaven.Lint());
+        final FakeMaven second = new FakeMaven(temp.resolve("second"))
+            .with("cache", cache.toFile())
+            .with("skipSourceLints", new SetOf<>("mandatory-spdx"))
+            .withProgram(program);
+        second.execute(new FakeMaven.Lint());
+        MatcherAssert.assertThat(
+            "mandatory-spdx must be suppressed once skipSourceLints names it, instead of reusing the first run's cached result computed without the flag",
+            new Xnav(second.programTojo().linted())
+                .path("/object/errors/error[@check='mandatory-spdx/S']").count(),
+            Matchers.equalTo(0L)
+        );
+    }
+
+    @Test
     void detectsWholeProgramAnalysisErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .with("lintAsPackage", true)
