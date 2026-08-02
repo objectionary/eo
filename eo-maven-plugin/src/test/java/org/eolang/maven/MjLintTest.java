@@ -127,6 +127,41 @@ final class MjLintTest {
     }
 
     @Test
+    void doesNotReuseStaleLintCacheAfterSkipSourceLintsChanges(@Mktmp final Path temp)
+        throws IOException {
+        final Path cache = temp.resolve("lint-cache");
+        final String[] source = {
+            "+home https://www.eolang.org",
+            "+package foo.x",
+            "+version 0.0.0",
+            "+unlint empty-object",
+            "+unlint unit-test-missing",
+            "+unlint comment-too-short",
+            "+unlint object-has-data",
+            "",
+            "[x] > main",
+            "  (stdout \"Hello!\" x).print > @",
+        };
+        new FakeMaven(temp)
+            .with("cache", cache.toFile())
+            .withProgram(source)
+            .allTojosWithHash(() -> "abcdefq")
+            .execute(new FakeMaven.Lint());
+        final FakeMaven second = new FakeMaven(temp)
+            .with("cache", cache.toFile())
+            .with("skipSourceLints", new SetOf<>("mandatory-spdx"))
+            .withProgram(source)
+            .allTojosWithHash(() -> "abcdefq");
+        second.execute(new FakeMaven.Lint());
+        MatcherAssert.assertThat(
+            "changing skipSourceLints must invalidate the stale per-file lint cache",
+            new Xnav(second.programTojo().linted())
+                .path("/object/errors/error[@check='mandatory-spdx/S']").count(),
+            Matchers.equalTo(0L)
+        );
+    }
+
+    @Test
     void detectsWholeProgramAnalysisErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .with("lintAsPackage", true)

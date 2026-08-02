@@ -321,7 +321,7 @@ final class Linting implements Step {
                 new Cache(
                     new CachePath(
                         this.cacheDir.resolve(Linting.CACHE),
-                        this.version,
+                        this.cacheVersion(),
                         new TojoHash(tojo).get()
                     ),
                     src -> this.linted(xmir).toString()
@@ -349,6 +349,25 @@ final class Linting implements Step {
         }
         tojo.withLinted(target);
         return 1;
+    }
+
+    /**
+     * Cache-key version segment for the per-file lint cache: the plugin
+     * version combined with {@link #skipSourceLints} and
+     * {@link #skipExperimentalLints}, since both change what
+     * {@link #linted(XML)} reports for the exact same source XMIR
+     * (see #6235). {@link #skipSourceLints} is sorted before joining so
+     * that two builds passing the same set in a different order still
+     * share a cache entry.
+     * @return The version segment for {@link CachePath}
+     */
+    private String cacheVersion() {
+        return String.format(
+            "%s-%b-%s",
+            this.version,
+            this.skipExperimentalLints,
+            this.skipSourceLints.stream().sorted().collect(Collectors.joining(","))
+        );
     }
 
     /**
