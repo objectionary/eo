@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
@@ -346,6 +348,27 @@ final class MjLintTest {
         );
     }
 
+    @Test
+    void doesNotCrashOnPlainParserSyntaxError(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "# Sample object for the probe.",
+            "",
+            "[] > main",
+            "  \"\\uD800\" > @"
+        );
+        MatcherAssert.assertThat(
+            "an <error> with no 'check' attribute must be reported as a defect, not crash with an IllegalArgumentException",
+            MjLintTest.causes(
+                Assertions.assertThrows(
+                    IllegalStateException.class,
+                    () -> maven.execute(new FakeMaven.Lint()),
+                    "A plain parser syntax error must still fail the build, but through the normal reporting path"
+                )
+            ).stream().noneMatch(IllegalArgumentException.class::isInstance),
+            Matchers.is(true)
+        );
+    }
+
     @Disabled
     @Test
     void skipsAlreadyLinted(@Mktmp final Path temp) throws IOException {
@@ -533,5 +556,20 @@ final class MjLintTest {
             "",
             "[] > main",
         };
+    }
+
+    /**
+     * The full chain of causes of a throwable, starting with itself.
+     * @param root The throwable
+     * @return Itself followed by every cause, up to the root
+     */
+    private static List<Throwable> causes(final Throwable root) {
+        final List<Throwable> chain = new ArrayList<>(4);
+        Throwable current = root;
+        while (current != null && !chain.contains(current)) {
+            chain.add(current);
+            current = current.getCause();
+        }
+        return chain;
     }
 }

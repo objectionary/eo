@@ -528,16 +528,18 @@ final class Linting implements Step {
 
     /**
      * Convert XMIR error element to a {@link Defect}.
+     *
+     * <p>A parser syntax error carries no {@code check} attribute of its
+     * own (only the parse-stage XSLs' own checks do), so a missing
+     * {@code check} is reported under the fixed {@code "parser"} rule
+     * name instead of crashing (#6215).</p>
+     *
      * @param error The error element
      * @return Defect
      */
     private static Defect toDefect(final Xnav error) {
         return new Defect.Default(
-            error.attribute("check").text().orElseThrow(
-                () -> new IllegalArgumentException(
-                    "The <error> element in XMIR must contain 'check' attribute"
-                )
-            ),
+            error.attribute("check").text().orElse("parser"),
             Severity.parsed(
                 error.attribute("severity").text().orElseThrow(
                     () -> new IllegalArgumentException(
