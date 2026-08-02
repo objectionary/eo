@@ -32,10 +32,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test case for {@link CentralMaven}.
  * @since 0.55
  */
-@ExtendWith({MktmpResolver.class, WeAreOnline.class})
+@ExtendWith(MktmpResolver.class)
 final class CentralMavenTest {
 
     @Test
+    @ExtendWith(WeAreOnline.class)
     void cachesArtifactInLocalRepositoryAfterDownload(@Mktmp final Path temp) {
         final Path local = temp.resolve("empty-local-repo");
         new CentralMaven(local).accept(
@@ -50,6 +51,7 @@ final class CentralMavenTest {
     }
 
     @Test
+    @ExtendWith(WeAreOnline.class)
     void unpacksFilesFromMavenCentral(@Mktmp final Path temp) {
         final Path dest = temp.resolve("unpacked");
         new CentralMaven(temp.resolve("empty-local-repo")).accept(
@@ -70,7 +72,7 @@ final class CentralMavenTest {
             zos.putNextEntry(new ZipEntry("org/eolang/ok.eo"));
             zos.write("ok".getBytes(StandardCharsets.UTF_8));
             zos.closeEntry();
-            zos.putNextEntry(new ZipEntry("../../../../evil-escaped.txt"));
+            zos.putNextEntry(new ZipEntry("../evil-escaped.txt"));
             zos.write("evil".getBytes(StandardCharsets.UTF_8));
             zos.closeEntry();
         }
@@ -82,12 +84,13 @@ final class CentralMavenTest {
         );
         MatcherAssert.assertThat(
             "The escaping entry must not be written outside the destination directory",
-            temp.resolve("evil-escaped.txt").toFile(),
+            dest.resolve("../evil-escaped.txt").normalize().toFile(),
             Matchers.not(FileMatchers.anExistingFile())
         );
     }
 
     @Test
+    @ExtendWith(WeAreOnline.class)
     void resolvesWithDefaultConstructor(@Mktmp final Path temp) {
         final Path dest = temp.resolve("unpacked");
         new CentralMaven().accept(
@@ -102,6 +105,7 @@ final class CentralMavenTest {
     }
 
     @Test
+    @ExtendWith(WeAreOnline.class)
     void throwsOnUnresolvableArtifact(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -118,6 +122,7 @@ final class CentralMavenTest {
     }
 
     @Test
+    @ExtendWith(WeAreOnline.class)
     void resolvesWithInjectedComponents(@Mktmp final Path temp) {
         final RepositorySystem system = new RepositorySystemSupplier().get();
         final DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
