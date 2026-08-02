@@ -108,13 +108,10 @@ final class Deadline {
      */
     private static void stopped(final ExecutorService service) {
         boolean terminated = false;
-        service.shutdown();
+        service.shutdownNow();
         while (!terminated) {
             try {
                 terminated = service.awaitTermination(60, TimeUnit.SECONDS);
-                if (terminated) {
-                    service.shutdownNow();
-                }
             } catch (final InterruptedException ex) {
                 service.shutdownNow();
                 Thread.currentThread().interrupt();
