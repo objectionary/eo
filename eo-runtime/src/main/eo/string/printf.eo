@@ -38,7 +38,7 @@
       if. > @
         gte.
           number cursor
-          number size
+          number span
         acc
         if.
           25-.eq char
@@ -68,7 +68,7 @@
       byte i
   if. > [i] >> digits-end
     i.gte
-      number size
+      number span
     i
     if.
       and.
@@ -96,7 +96,7 @@
   T message > [message] >> failure
   if. > [i] >> flags-end
     i.gte
-      number size
+      number span
     i
     if.
       or.
@@ -108,14 +108,14 @@
         as-number.
           i.plus 1
       i
-  format.as-bytes > raw!
-  size. > size!
-    bytes raw
+  size. >> span!
+    bytes
+      format.as-bytes >> raw!
   [index auto acc] >> spec
     if. > @
       gte.
         number pstop
-        number size
+        number span
       T
         "The format ends with an incomplete specifier, a conversion character is missing"
       if.
@@ -298,14 +298,14 @@
       and.
         lt.
           number pdigits
-          number size
+          number span
         24-.eq
           byte
             number pdigits
     and. > precise!
       lt.
         number wstop
-        number size
+        number span
       2E-.eq
         byte
           number wstop
@@ -369,6 +369,13 @@
     flagged > zero!
       number body
       30-
+
+  eq. ++> can-answer-the-size-of-the-formatted-text
+    size.
+      printf *1
+        "Hello, %s"
+        "Jeff"
+    11
 
   eq. ++> can-apply-a-precision-to-bytes
     "40-"
