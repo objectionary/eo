@@ -35,8 +35,7 @@ final class WinsockTest {
 
     @RepeatedIfExceptionsTest(repeats = 3)
     void connectsToLocalServerViaSyscall() throws IOException {
-        final RandomServer server = new RandomServer();
-        try {
+        try (RandomServer server = new RandomServer()) {
             this.ensure(this.startup() == 0);
             final int socket = this.openSocket();
             try {
@@ -55,7 +54,6 @@ final class WinsockTest {
             }
         } finally {
             this.cleanup();
-            server.stop();
         }
     }
 

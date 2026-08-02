@@ -20,8 +20,7 @@ final class SyscallTest {
 
     @Test
     void connectsToLocalServerViaSocketObject() throws IOException {
-        final RandomServer server = new RandomServer();
-        try {
+        try (RandomServer server = new RandomServer()) {
             final Phi socket = Phi.Φ.take("socket").copy();
             socket.put(0, new Data.ToPhi(this.localhost()));
             socket.put(1, new Data.ToPhi(server.port()));
@@ -36,15 +35,13 @@ final class SyscallTest {
                 actual,
                 Matchers.equalTo(new byte[]{1})
             );
-        } finally {
-            server.stop();
         }
     }
 
     @Test
     void returnsFallbackWhenConnectionIsRefused() throws IOException {
         final RandomServer refused = new RandomServer();
-        refused.stop();
+        refused.close();
         final Phi socket = Phi.Φ.take("socket").copy();
         socket.put(0, new Data.ToPhi(this.localhost()));
         socket.put(1, new Data.ToPhi(refused.port()));
@@ -61,7 +58,7 @@ final class SyscallTest {
     @Test
     void tellsTheFallbackWhichAddressItFailedToReach() throws IOException {
         final RandomServer refused = new RandomServer();
-        refused.stop();
+        refused.close();
         final Phi socket = Phi.Φ.take("socket").copy();
         socket.put(0, new Data.ToPhi(this.localhost()));
         socket.put(1, new Data.ToPhi(refused.port()));
@@ -76,8 +73,7 @@ final class SyscallTest {
 
     @Test
     void tellsTheFallbackWhichAddressItFailedToBind() throws IOException {
-        final RandomServer taken = new RandomServer();
-        try {
+        try (RandomServer taken = new RandomServer()) {
             final Phi socket = Phi.Φ.take("socket").copy();
             socket.put(0, new Data.ToPhi(this.localhost()));
             socket.put(1, new Data.ToPhi(taken.port()));
@@ -88,8 +84,6 @@ final class SyscallTest {
                 new Dataized(listen).asString(),
                 Matchers.containsString(String.format("%s:%d", this.localhost(), taken.port()))
             );
-        } finally {
-            taken.stop();
         }
     }
 
@@ -98,7 +92,7 @@ final class SyscallTest {
         final String msg = "Hello, Socket!";
         final AtomicReference<byte[]> bytes = new AtomicReference<>();
         final RandomServer random = new RandomServer();
-        random.stop();
+        random.close();
         final int port = random.port();
         final Thread server = new Thread(
             () -> {

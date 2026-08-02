@@ -33,22 +33,22 @@ final class CStdLibTest {
 
     @RepeatedIfExceptionsTest(repeats = 3)
     void connectsToLocalServerViaSyscall() throws IOException {
-        final RandomServer server = new RandomServer();
-        final int socket = this.openSocket();
-        try {
-            this.ensure(socket > 0);
-            final SockaddrIn addr = this.sockaddr(server.port());
-            MatcherAssert.assertThat(
-                String.format(
-                    "Posix socket should have been connected to local server via syscall, but it didn't, reason: %s",
-                    this.getError()
-                ),
-                CStdLib.INSTANCE.connect(socket, addr, addr.size()),
-                Matchers.equalTo(0)
-            );
-        } finally {
-            this.closeSocket(socket);
-            server.stop();
+        try (RandomServer server = new RandomServer()) {
+            final int socket = this.openSocket();
+            try {
+                this.ensure(socket > 0);
+                final SockaddrIn addr = this.sockaddr(server.port());
+                MatcherAssert.assertThat(
+                    String.format(
+                        "Posix socket should have been connected to local server via syscall, but it didn't, reason: %s",
+                        this.getError()
+                    ),
+                    CStdLib.INSTANCE.connect(socket, addr, addr.size()),
+                    Matchers.equalTo(0)
+                );
+            } finally {
+                this.closeSocket(socket);
+            }
         }
     }
 
