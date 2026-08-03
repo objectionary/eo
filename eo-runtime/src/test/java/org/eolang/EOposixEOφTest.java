@@ -5,7 +5,6 @@
 package org.eolang;
 
 import java.lang.management.ManagementFactory;
-import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -71,8 +70,32 @@ final class EOposixEOφTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void preservesFailureCodeWhenReadFails() {
+        MatcherAssert.assertThat(
+            "Failed \"read\" should preserve its code",
+            new Dataized(EOposixEOφTest.failedRead().take("code"))
+                .asNumber().intValue(),
+            Matchers.equalTo(-1)
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void returnsEmptyOutputWhenReadFails() {
-        final Phi read = new PhApplication(
+        MatcherAssert.assertThat(
+            "Failed \"read\" should return empty output",
+            new Dataized(EOposixEOφTest.failedRead().take("output")).take().length,
+            Matchers.equalTo(0)
+        );
+    }
+
+    /**
+     * Reads from an invalid descriptor.
+     *
+     * @return Failed read result
+     */
+    private static Phi failedRead() {
+        return new PhApplication(
             new PhApplication(
                 Phi.Φ.take("posix").copy(),
                 "name",
@@ -86,13 +109,5 @@ final class EOposixEOφTest {
                 }
             )
         ).take("called");
-        MatcherAssert.assertThat(
-            "Failed \"read\" should preserve its code and return empty output",
-            List.of(
-                new Dataized(read.take("code")).asNumber().intValue(),
-                new Dataized(read.take("output")).take().length
-            ),
-            Matchers.equalTo(List.of(-1, 0))
-        );
     }
 }
