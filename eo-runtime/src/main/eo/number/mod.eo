@@ -32,6 +32,11 @@
                 absx.div absy
         abs-mod.neg
 
+  is-nan. ++> can-return-nan-when-the-divisor-is-nan
+    mod
+      5
+      nan
+
   ++> can-stay-compatible-with-division
     eq. > @
       plus.
