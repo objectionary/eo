@@ -1,0 +1,73 @@
+# Turkish locale specializing the default `english` casing with the dotted
+# and dotless I mappings that Turkish and Azeri override the default with.
+# Being a decorator of its `s` string, a `turkish` object behaves like the
+# string itself (`.length`, `.eq` and so on pass through), while adding
+# `lower` and `upper` that honour those mappings. Lower casing maps capital
+# dotless I (U+0049) to small dotless i (U+0131) and capital dotted I
+# (U+0130) to small dotted i (U+0069); upper casing maps small dotted i
+# (U+0069) to capital dotted I (U+0130) and small dotless i (U+0131) to
+# capital dotless I (U+0049). Each direction only touches two of the four
+# characters, which is why `lower` and `upper` list different regexes. The
+# Turkish replacements run before the `english` ASCII pass on purpose: once
+# that pass folds capital dotless I into small dotted i the distinction is
+# gone, so the order must not swap.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[s] > turkish
+  s > @
+  lower. > [] > lower
+    english
+      replaced.
+        s.replaced
+          regex "/I/"
+          "ı"
+        regex "/İ/"
+        "i"
+  upper. > [] > upper
+    english
+      replaced.
+        s.replaced
+          regex "/i/"
+          "İ"
+        regex "/ı/"
+        "I"
+
+  eq. ++> can-behave-like-the-wrapped-string
+    8
+    length.
+      turkish "İSTANBUL"
+
+  eq. ++> can-lower-case-dotted-and-dotless-i
+    "ıistanbul"
+    lower.
+      turkish "IİSTANBUL"
+
+  eq. ++> can-lower-case-every-occurrence-of-a-mapped-character
+    "ıııı"
+    lower.
+      turkish "IIII"
+
+  eq. ++> can-round-trip-a-lower-cased-word
+    "ıstanbul"
+    lower.
+      turkish
+        upper.
+          turkish "ıstanbul"
+
+  eq. ++> can-round-trip-an-upper-cased-word
+    "İSTANBUL"
+    upper.
+      turkish
+        lower.
+          turkish "İSTANBUL"
+
+  eq. ++> can-upper-case-dotted-and-dotless-i
+    "İSTANBUL"
+    upper.
+      turkish "istanbul"

@@ -39,6 +39,17 @@ final class PackageInfosTest {
     }
 
     @Test
+    void namesTheRootPackageWithAnEmptyValue(@Mktmp final Path tmp) throws IOException {
+        Files.createDirectories(tmp.resolve("org").resolve("eolang"));
+        new PackageInfos(tmp, Collections.emptyList()).create();
+        MatcherAssert.assertThat(
+            "The root EO package is not the empty name the annotation must carry",
+            Files.readString(tmp.resolve("org").resolve("eolang").resolve("package-info.java")),
+            Matchers.containsString("@org.eolang.XmirPackage(\"\")")
+        );
+    }
+
+    @Test
     void skipsPackageInfoWhenHandWrittenOneExists(@Mktmp final Path tmp) throws IOException {
         final Path generated = tmp.resolve("generated");
         final Path handwritten = tmp.resolve("java");

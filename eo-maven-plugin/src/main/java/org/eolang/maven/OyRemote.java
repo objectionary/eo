@@ -99,8 +99,8 @@ final class OyRemote implements Objectionary {
                 throw new IOException(
                     String.format(
                         "EO object '%s' is not found in this GitHub repository: https://github.com/objectionary/home by url: %s. This means that you either misspelled the name of it or simply referred to your own local object somewhere in your code as if it was an object of 'org.eolang' package. Check the sources and make sure you always use +alias meta when you refer to an object outside of 'org.eolang', even if this object belongs to your package.",
-                        url,
-                        name
+                        name,
+                        url
                     ),
                     input
                 );

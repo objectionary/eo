@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  * @since 0.49
  */
 @Target(ElementType.PACKAGE)
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface XmirPackage {
 
     /**

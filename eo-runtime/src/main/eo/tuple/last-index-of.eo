@@ -14,7 +14,7 @@
     -1
     if.
       t.head.eq wanted
-      t.tail.length
+      t.length.minus 1
       rec t.tail
   | list > @
 
@@ -61,3 +61,14 @@
         "Привет"
         "こんにちわ"
       "Привет"
+
+  eq. ++> can-find-the-last-index-of-a-non-symmetric-match
+    4
+    last-index-of
+      *
+        10
+        20
+        30
+        40
+        20
+      20
