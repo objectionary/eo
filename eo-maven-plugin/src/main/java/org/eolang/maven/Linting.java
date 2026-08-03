@@ -67,11 +67,6 @@ final class Linting implements Step {
     static final String CACHE = "linted";
 
     /**
-     * XMIR {@code <error>}/{@code <defect>} attribute naming the check that reported it.
-     */
-    private static final String CHECK = "check";
-
-    /**
      * Scoped foreign tojos.
      */
     private final TjsForeign tojos;
@@ -565,7 +560,7 @@ final class Linting implements Step {
      */
     private static Defect toDefect(final Xnav error) {
         return new Defect.Default(
-            error.attribute(Linting.CHECK).text().orElseThrow(
+            error.attribute("check").text().orElseThrow(
                 () -> new IllegalArgumentException(
                     "The <error> element in XMIR must contain 'check' attribute"
                 )
@@ -596,7 +591,7 @@ final class Linting implements Step {
      */
     private static Directives embedded(final Directives dirs, final Defect defect) {
         dirs.add("error")
-            .attr(Linting.CHECK, defect.rule())
+            .attr("check", defect.rule())
             .attr("severity", defect.severity().mnemo())
             .set(defect.text());
         if (defect.line() > 0) {
@@ -609,7 +604,7 @@ final class Linting implements Step {
         final Directives dirs, final org.eolang.wpa.Defect defect
     ) {
         dirs.add("error")
-            .attr(Linting.CHECK, defect.rule())
+            .attr("check", defect.rule())
             .attr("severity", defect.severity().mnemo())
             .set(defect.text());
         if (defect.line() > 0) {
@@ -649,7 +644,7 @@ final class Linting implements Step {
     private static List<org.eolang.wpa.Defect> read(final Path path) {
         return new Xnav(path).path("/defects/error").map(
             node -> new org.eolang.wpa.Defect.Default(
-                node.attribute(Linting.CHECK).text().orElseThrow(),
+                node.attribute("check").text().orElseThrow(),
                 org.eolang.wpa.Severity.parsed(
                     node.attribute("severity").text().orElseThrow()
                 ),
