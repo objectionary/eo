@@ -603,10 +603,11 @@ final class Emissions {
 
     /**
      * Resolve a single-character escape sequence (e.g. {@code \n},
-     * {@code \t}). Unknown sequences are passed through verbatim.
+     * {@code \t}). An unrecognised sequence is a lexical error (R-9.7.3).
      * @param head Backslash character (always {@code '\\'})
      * @param next The character after the backslash
      * @return The decoded character(s)
+     * @throws NumberFormatException If the escape is not recognised
      */
     private static String singleCharEscape(final char head, final char next) {
         final String decoded;
@@ -623,7 +624,9 @@ final class Emissions {
         } else if (next == '"' || next == '\'' || next == '\\') {
             decoded = String.valueOf(next);
         } else {
-            decoded = new String(new char[]{head, next});
+            throw new NumberFormatException(
+                String.format("unrecognised escape sequence '%c%c'", head, next)
+            );
         }
         return decoded;
     }
