@@ -9,10 +9,7 @@ import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.hamcrest.MatcherAssert;
@@ -70,25 +67,27 @@ final class MjResolveTest {
 
     @Test
     void reportsMalformedRtJvmLocationClearly(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp).withProgram(
-            "+package foo.x",
-            "+rt jvm org.eolang:eo-runtime",
-            String.format("+version 0.25.0%n"),
-            "[] > main /bytes"
+        final Path xmir = temp.resolve("dep.xmir");
+        Files.writeString(
+            xmir,
+            String.join(
+                "",
+                "<object><metas><meta><head>rt</head>",
+                "<tail>jvm org.eolang:eo-runtime</tail>",
+                "<part>jvm</part><part>org.eolang:eo-runtime</part>",
+                "</meta></metas></object>"
+            )
         );
+        final TjsForeign tojos = new TjsForeign();
+        tojos.add("dep").withXmir(xmir).withVersion("1.0.0");
         MatcherAssert.assertThat(
-            "The error must name the malformed '+rt jvm' location somewhere in its cause chain, and no cause may be an unqualified ArrayIndexOutOfBoundsException",
-            MjResolveTest.causes(
-                Assertions.assertThrows(
-                    IllegalStateException.class,
-                    () -> maven.execute(new FakeMaven.Resolve()),
-                    "A '+rt jvm' location with too few colon-separated parts must fail with a clear error, not an ArrayIndexOutOfBoundsException"
-                )
-            ).stream()
-                .map(Throwable::getMessage)
-                .filter(Objects::nonNull)
-                .anyMatch(msg -> msg.contains("org.eolang:eo-runtime")),
-            Matchers.is(true)
+            "The error must name the malformed '+rt jvm' location",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new DpsDefault(tojos, false, false, false).iterator(),
+                "A '+rt jvm' location with too few colon-separated parts must fail with a clear error, not an ArrayIndexOutOfBoundsException"
+            ).getMessage(),
+            Matchers.containsString("org.eolang:eo-runtime")
         );
     }
 
@@ -261,20 +260,5 @@ final class MjResolveTest {
             maven.targetPath(),
             new ContainsFiles("**/eo-runtime-*.class")
         );
-    }
-
-    /**
-     * The full chain of causes of a throwable, starting with itself.
-     * @param root The throwable
-     * @return Itself followed by every cause, up to the root
-     */
-    private static List<Throwable> causes(final Throwable root) {
-        final List<Throwable> chain = new ArrayList<>(4);
-        Throwable current = root;
-        while (current != null && !chain.contains(current)) {
-            chain.add(current);
-            current = current.getCause();
-        }
-        return chain;
     }
 }
