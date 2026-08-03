@@ -57,10 +57,12 @@
       </part>
     </meta>
   </xsl:function>
-  <!-- Every probe candidate: every non-abstract, non-void base; every
+  <!--
+  Every probe candidate: every non-abstract, non-void base; every
   callback arg-type on a void attribute; every void's own type
   annotation; every atom's return signature. Shared by both entry
-  points below so the two can't drift on which sources are probed. -->
+  points below so the two can't drift on which sources are probed.
+  -->
   <xsl:template name="eo:candidates" as="element()*">
     <xsl:apply-templates select="//o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
     <xsl:apply-templates select="//o[eo:void(.) and @args]" mode="args"/>
@@ -96,10 +98,12 @@
       </xsl:for-each>
     </xsl:copy>
   </xsl:template>
-  <!-- Every cumulative dotted prefix of a forma, shortest first, e.g.
+  <!--
+  Every cumulative dotted prefix of a forma, shortest first, e.g.
   "Φ.org.number" yields "Φ", "Φ.org", "Φ.org.number". Shared by every
   place below that walks a dotted forma into probe candidates, so a
-  change to how a forma is split only has one place to happen. -->
+  change to how a forma is split only has one place to happen.
+  -->
   <xsl:template name="eo:dotted-prefixes" as="element()*">
     <xsl:param name="forma" as="xs:string?"/>
     <xsl:variable name="parts" select="tokenize($forma, '\.')"/>
