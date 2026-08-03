@@ -53,6 +53,7 @@ import org.xembly.Xembler;
  *     Naming the class {@code Linting} avoids this collision.
  * </p>
  * @since 0.31.0
+ * @checkstyle ClassFanOutComplexityCheck (3 lines)
  */
 @SuppressWarnings("PMD.GodClass")
 final class Linting implements Step {
@@ -308,7 +309,9 @@ final class Linting implements Step {
         return String.format(
             "%s-%s-%b",
             this.version,
-            this.skipSourceLints.stream().sorted().collect(Collectors.joining(",")),
+            new Hashed(
+                this.skipSourceLints.stream().sorted().collect(Collectors.joining(","))
+            ).get(),
             this.skipExperimentalLints
         );
     }
