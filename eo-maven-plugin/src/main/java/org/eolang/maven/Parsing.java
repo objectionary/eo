@@ -72,57 +72,33 @@ final class Parsing implements Step {
     private final Path targetDir;
 
     /**
-     * Base cache directory.
-     * @checkstyle MemberNameCheck (5 lines)
-     */
-    private final Path cacheDir;
-
-    /**
-     * Whether caching is enabled.
-     * @checkstyle MemberNameCheck (5 lines)
-     */
-    private final boolean cacheEnabled;
-
-    /**
-     * Plugin version.
-     */
-    private final String version;
-
-    /**
      * EO sources directory (used for logging).
      * @checkstyle MemberNameCheck (5 lines)
      */
     private final Path sourcesDir;
 
     /**
-     * Cache guard, see {@link ConcurrentCache} for why it is one per instance.
+     * Where the results of earlier builds are looked for and kept.
      */
-    private final ConcurrentCache guard;
+    private final GlobalCache cache;
 
     /**
      * Constructor.
      * @param srcs Foreign tojos catalog
      * @param target Target directory
-     * @param cache Base cache directory
-     * @param enabled Whether caching is enabled
-     * @param ver Plugin version string
      * @param sources EO sources directory
+     * @param cche Where the results of earlier builds are looked for and kept
      */
     Parsing(
         final TjsForeign srcs,
         final Path target,
-        final Path cache,
-        final boolean enabled,
-        final String ver,
-        final Path sources
+        final Path sources,
+        final GlobalCache cche
     ) {
         this.tojos = srcs;
         this.targetDir = target;
-        this.cacheDir = cache;
-        this.cacheEnabled = enabled;
-        this.version = ver;
         this.sourcesDir = sources;
-        this.guard = new ConcurrentCache();
+        this.cache = cche;
     }
 
     @Override
@@ -137,9 +113,17 @@ final class Parsing implements Step {
         final int total = this.parsed(
             sources,
             new Canonical(objects),
-            new UncheckedText(
-                new HexOf(new Sha256DigestOf(new InputOf(objects)))
-            ).asString()
+            this.cache.with(
+                new Fingerprint(
+                    Stream.concat(
+                        Canonical.XSLS.stream(), Canonical.IMPORTS.stream()
+                    ).toArray(String[]::new)
+                ).get()
+            ).with(
+                new UncheckedText(
+                    new HexOf(new Sha256DigestOf(new InputOf(objects)))
+                ).asString()
+            )
         );
         if (0 == total) {
             if (sources.isEmpty()) {
@@ -166,17 +150,17 @@ final class Parsing implements Step {
      * Parse all the given sources to XMIRs, concurrently.
      * @param sources The sources to parse
      * @param pipeline The canonical parsing transform to apply
-     * @param digest Digest of the set of known objects (part of the cache key)
+     * @param cche The cache, already keyed by the set of known objects
      * @return Amount of parsed tojos
      */
     private int parsed(
         final Collection<TjForeign> sources,
         final UnaryOperator<XML> pipeline,
-        final String digest
+        final GlobalCache cche
     ) {
         return new Threaded<>(
             new Filtered<>(TjForeign::notParsed, sources),
-            tojo -> this.parsed(tojo, pipeline, digest)
+            tojo -> this.parsed(tojo, pipeline, cche)
         ).total();
     }
 
@@ -184,48 +168,27 @@ final class Parsing implements Step {
      * Parse EO file to XML.
      * @param tojo The tojo
      * @param pipeline The canonical parsing transform to apply
-     * @param digest Digest of the set of known objects (part of the cache key)
+     * @param cche The cache, already keyed by the set of known objects
      * @return Amount of parsed tojos
      * @throws Exception If fails
      */
     private int parsed(
-        final TjForeign tojo, final UnaryOperator<XML> pipeline, final String digest
+        final TjForeign tojo, final UnaryOperator<XML> pipeline, final GlobalCache cche
     ) throws Exception {
         final Path source = tojo.source();
         final String name = tojo.identifier();
         final Path base = this.targetDir.resolve(Parsing.DIR);
         final Path target = new Place(name).make(base, MjAssemble.XMIR);
         final List<Node> refs = new ArrayList<>(1);
-        if (this.cacheEnabled) {
-            this.guard.apply(
-                source, target, base.relativize(target),
-                new Cache(
-                    new CachePath(
-                        this.cacheDir.resolve(Parsing.CACHE),
-                        String.format(
-                            "%s-%s-%s",
-                            this.version,
-                            new Fingerprint(
-                                Stream.concat(
-                                    Canonical.XSLS.stream(), Canonical.IMPORTS.stream()
-                                ).toArray(String[]::new)
-                            ).get(),
-                            digest
-                        ),
-                        new TojoHash(tojo).get()
-                    ),
-                    src -> {
-                        final Node node = this.parsed(src, name, pipeline);
-                        refs.add(node);
-                        return new XMLDocument(node).toString();
-                    }
-                )
-            );
-        } else {
-            final Node node = this.parsed(source, name, pipeline);
-            new Saved(new XMLDocument(node).toString(), target).value();
-            refs.add(node);
-        }
+        cche.footprint(
+            base.relativize(target),
+            new TojoHash(tojo),
+            src -> {
+                final Node node = this.parsed(src, name, pipeline);
+                refs.add(node);
+                return new XMLDocument(node).toString();
+            }
+        ).apply(source, target);
         tojo.withXmir(target).withVersion(Parsing.tojoVersion(target, refs));
         final List<Xnav> errors = new Xnav(target)
             .element("object")

@@ -27,6 +27,14 @@ import org.slf4j.impl.StaticLoggerBinder;
 /**
  * Abstract Mojo for all others.
  * @since 0.1
+ * @todo #6125:60min Take the fan-out suppression below off again.
+ *  This class sat at exactly 30 referenced types, the maximum, so naming
+ *  {@link GlobalCache} and {@link GcShared} in {@link #caching(String)}
+ *  pushed it to 32 and the suppression had to be added. Unload the class
+ *  instead, the way the puzzle about the tojos lifecycle below asks, and
+ *  the suppression can go. Until then no further step can be moved to
+ *  {@link GlobalCache} without making this worse.
+ * @checkstyle ClassFanOutComplexityCheck (5 lines)
  */
 @SuppressWarnings("PMD.TooManyFields")
 abstract class MjSafe extends AbstractMojo {
@@ -535,10 +543,8 @@ abstract class MjSafe extends AbstractMojo {
                 new Parsing(
                     this.scopedTojos(),
                     this.targetDir.toPath(),
-                    this.cache.toPath(),
-                    this.cacheEnabled,
-                    this.plugin.getVersion(),
-                    this.sourcesDir.toPath()
+                    this.sourcesDir.toPath(),
+                    this.caching(Parsing.CACHE)
                 )
             ),
             new Timed(
@@ -558,6 +564,25 @@ abstract class MjSafe extends AbstractMojo {
                 )
             )
         );
+    }
+
+    /**
+     * The cache of one step, as configured by the user. This is the only
+     * place where {@code eo.cacheEnabled} is read, so that no step below
+     * has to know that the option exists.
+     * @param sub Directory of that step inside the machine-wide cache
+     * @return The cache of that step
+     */
+    GlobalCache caching(final String sub) {
+        final GlobalCache cche;
+        if (this.cacheEnabled) {
+            cche = new GcShared(
+                this.cache.toPath().resolve(sub), this.plugin.getVersion()
+            );
+        } else {
+            cche = GlobalCache.NONE;
+        }
+        return cche;
     }
 
     /**
