@@ -57,13 +57,20 @@
       </part>
     </meta>
   </xsl:function>
+  <!-- Every probe candidate: every non-abstract, non-void base; every
+  callback arg-type on a void attribute; every void's own type
+  annotation; every atom's return signature. Shared by both entry
+  points below so the two can't drift on which sources are probed. -->
+  <xsl:template name="eo:candidates" as="element()*">
+    <xsl:apply-templates select="//o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
+    <xsl:apply-templates select="//o[eo:void(.) and @args]" mode="args"/>
+    <xsl:apply-templates select="//o[@type]" mode="type"/>
+    <xsl:apply-templates select="//o[@atom]" mode="atom"/>
+  </xsl:template>
   <!-- ENTRY POINT 1 - no metas -->
   <xsl:template match="/object[not(metas)]">
     <xsl:variable name="candidates" as="element()*">
-      <xsl:apply-templates select="//o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
-      <xsl:apply-templates select="//o[eo:void(.) and @args]" mode="args"/>
-      <xsl:apply-templates select="//o[@type]" mode="type"/>
-      <xsl:apply-templates select="//o[@atom]" mode="atom"/>
+      <xsl:call-template name="eo:candidates"/>
     </xsl:variable>
     <xsl:variable name="probes" select="distinct-values($candidates/text())[not(eo:contains-any-of(., ('ξ', 'ρ', 'φ'))) and not(.='Φ') and not(.='Φ̇')]"/>
     <xsl:copy>
@@ -80,10 +87,7 @@
   <!-- ENTRY POINT 2 - metas exists -->
   <xsl:template match="/object/metas">
     <xsl:variable name="candidates" as="element()*">
-      <xsl:apply-templates select="//o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
-      <xsl:apply-templates select="//o[eo:void(.) and @args]" mode="args"/>
-      <xsl:apply-templates select="//o[@type]" mode="type"/>
-      <xsl:apply-templates select="//o[@atom]" mode="atom"/>
+      <xsl:call-template name="eo:candidates"/>
     </xsl:variable>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
@@ -92,19 +96,29 @@
       </xsl:for-each>
     </xsl:copy>
   </xsl:template>
+  <!-- Every cumulative dotted prefix of a forma, shortest first, e.g.
+  "Φ.org.number" yields "Φ", "Φ.org", "Φ.org.number". Shared by every
+  place below that walks a dotted forma into probe candidates, so a
+  change to how a forma is split only has one place to happen. -->
+  <xsl:template name="eo:dotted-prefixes" as="element()*">
+    <xsl:param name="forma" as="xs:string?"/>
+    <xsl:variable name="parts" select="tokenize($forma, '\.')"/>
+    <xsl:for-each select="$parts">
+      <xsl:variable name="pos" select="position()"/>
+      <a>
+        <xsl:value-of select="string-join($parts[position()&lt;=$pos], '.')"/>
+      </a>
+    </xsl:for-each>
+  </xsl:template>
   <!-- Callback arg-types annotation on a void attribute -->
   <!-- The `@args` value is a single-space separated list of type atoms; -->
   <!-- homed formas start with `Φ`, generic type variables (A-F) do not -->
   <!-- and must be skipped, since they are not real objects to probe. -->
   <xsl:template match="o" mode="args" as="element()*">
     <xsl:for-each select="tokenize(@args, ' ')[starts-with(., 'Φ')]">
-      <xsl:variable name="parts" select="tokenize(., '\.')"/>
-      <xsl:for-each select="$parts">
-        <xsl:variable name="pos" select="position()"/>
-        <a>
-          <xsl:value-of select="string-join($parts[position()&lt;=$pos], '.')"/>
-        </a>
-      </xsl:for-each>
+      <xsl:call-template name="eo:dotted-prefixes">
+        <xsl:with-param name="forma" select="."/>
+      </xsl:call-template>
     </xsl:for-each>
   </xsl:template>
   <!-- A void's own type annotation (`? > name /Q.foo`, optionally `/Q.foo?`). -->
@@ -113,13 +127,9 @@
   <xsl:template match="o" mode="type" as="element()*">
     <xsl:variable name="forma" select="replace(@type, '\?$', '')"/>
     <xsl:if test="starts-with($forma, 'Φ')">
-      <xsl:variable name="parts" select="tokenize($forma, '\.')"/>
-      <xsl:for-each select="$parts">
-        <xsl:variable name="pos" select="position()"/>
-        <a>
-          <xsl:value-of select="string-join($parts[position()&lt;=$pos], '.')"/>
-        </a>
-      </xsl:for-each>
+      <xsl:call-template name="eo:dotted-prefixes">
+        <xsl:with-param name="forma" select="$forma"/>
+      </xsl:call-template>
     </xsl:if>
   </xsl:template>
   <!-- An atom's own return signature (`[] > name /Q.foo`). -->
@@ -127,24 +137,16 @@
   <!-- must be skipped, since they are not real objects to probe. -->
   <xsl:template match="o" mode="atom" as="element()*">
     <xsl:if test="starts-with(@atom, 'Φ')">
-      <xsl:variable name="parts" select="tokenize(@atom, '\.')"/>
-      <xsl:for-each select="$parts">
-        <xsl:variable name="pos" select="position()"/>
-        <a>
-          <xsl:value-of select="string-join($parts[position()&lt;=$pos], '.')"/>
-        </a>
-      </xsl:for-each>
+      <xsl:call-template name="eo:dotted-prefixes">
+        <xsl:with-param name="forma" select="@atom"/>
+      </xsl:call-template>
     </xsl:if>
   </xsl:template>
   <!-- Composite base -->
   <xsl:template match="o[not(starts-with(@base, '.'))]" mode="create" as="element()*">
-    <xsl:variable name="parts" select="tokenize(@base, '\.')"/>
-    <xsl:for-each select="$parts">
-      <xsl:variable name="pos" select="position()"/>
-      <a>
-        <xsl:value-of select="string-join($parts[position()&lt;=$pos], '.')"/>
-      </a>
-    </xsl:for-each>
+    <xsl:call-template name="eo:dotted-prefixes">
+      <xsl:with-param name="forma" select="@base"/>
+    </xsl:call-template>
     <xsl:apply-templates select="o" mode="create"/>
   </xsl:template>
   <!-- Method base -->
