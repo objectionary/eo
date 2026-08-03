@@ -4,6 +4,7 @@
  */
 package org.eolang.printer;
 
+import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StEnvelope;
@@ -16,7 +17,6 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import org.eolang.parser.StXnav;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * This {@link Shift} turns hex data inside XMIR.
@@ -100,14 +100,7 @@ final class StUnhex extends StEnvelope {
      */
     private static void inline(final Xnav xnav, final String text) {
         final Node parent = xnav.node();
-        final NodeList children = parent.getChildNodes();
-        int elements = 0;
-        for (int idx = 0; idx < children.getLength(); ++idx) {
-            if (children.item(idx).getNodeType() == Node.ELEMENT_NODE) {
-                elements = elements + 1;
-            }
-        }
-        if (elements > 1) {
+        if (xnav.elements(Filter.withName("o")).count() > 1L) {
             parent.replaceChild(
                 parent.getOwnerDocument().createTextNode(text),
                 xnav.element("o").node()
