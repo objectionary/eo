@@ -6,7 +6,11 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -156,7 +160,8 @@ public final class MjTranspile extends MjSafe {
                 this.xslMeasures.toPath(),
                 new Tracking(this.trackTransformationSteps, this.trackLocations),
                 this.coverageTracking,
-                this.base()
+                this.base(),
+                this.roots()
             )
         ).exec();
         if (this.addSourcesRoot) {
@@ -176,6 +181,21 @@ public final class MjTranspile extends MjSafe {
                 gtests
             );
         }
+    }
+
+    /**
+     * The compile source roots a human wrote, which are all of them but the
+     * ones inside the build directory, since a root a previous goal generated
+     * holds a {@code package-info.java} of its own and would fool the
+     * transpiler into skipping the file it has to write.
+     * @return The directories with hand-written Java
+     */
+    private Collection<Path> roots() {
+        final Path build = this.targetDir.toPath().getParent();
+        return this.project.getCompileSourceRoots().stream()
+            .map(Paths::get)
+            .filter(root -> !root.startsWith(build))
+            .collect(Collectors.toList());
     }
 
     /**
