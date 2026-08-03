@@ -19,6 +19,19 @@
 # `%` never occurs inside a UTF-8 multi-byte sequence, so a literal byte is
 # copied through untouched and the walk stays linear in allocation.
 #
+# The work is done by two objects calling each other, so that the format is
+# traversed exactly once: `walk` copies a literal byte and steps forward,
+# handing every `%` to `spec`, which reads one specifier and asks `walk` to
+# continue after it.
+#
+# `spec` reads that specifier from left to right and names every position it
+# stops at: `dollar` is the `$` of a positional argument, `flags` opens
+# the specifier itself, `digits` follows the `-` and `0` flags, `dot`
+# follows the width digits, and `end` holds the conversion letter. Those
+# positions, and everything derived from them, are memoized, because the
+# language caches through `!` alone, and they are listed alphabetically
+# rather than in reading order, because the linter sorts them by name.
+#
 # The `%s` conversion refuses an argument whose bytes are not text: a byte
 # sequence that does not decode as UTF-8, and the single bytes `00-` and `01-`,
 # which are how `false` and `true` dataize, together with the two control
@@ -115,7 +128,7 @@
   [index auto acc] >> spec
     if. > @
       gte.
-        number pstop
+        number end
         number span
       T
         "The format ends with an incomplete specifier, a conversion character is missing"
@@ -129,7 +142,7 @@
         walk
           as-number.
             plus.
-              number pstop
+              number end
               1
           positional.as-bool.if
             auto
@@ -138,15 +151,8 @@
           acc.concat padded
     args.at > arg
       number idx
-    positional.as-bool.if > body!
-      as-number.
-        plus.
-          number pdigits
-          1
-      as-number.
-        index.plus 1
     byte > conv!
-      number pstop
+      number end
     if. > converted!
       73-.eq conv
       as-bytes. > [text] >> capped
@@ -204,20 +210,39 @@
               T
                 "The conversion in the format is unsupported, only %s, %d, %f, %x and %b are"
     arg.as-bytes > datum!
+    flags-end > digits!
+      number flags
+    digits-end > dollar!
+      as-number.
+        index.plus 1
+    digits-end > dot!
+      number digits
+    precise.as-bool.if > end!
+      digits-end
+        as-number.
+          plus.
+            number dot
+            1
+      number dot
     as-bytes. > filled!
       padded-zeros
         string value
         number width
         failure
-    flags-end > fstop!
-      number body
+    positional.as-bool.if > flags!
+      as-number.
+        plus.
+          number dollar
+          1
+      as-number.
+        index.plus 1
     positional.as-bool.if > idx!
       as-number.
         minus.
           digits-value
             as-number.
               index.plus 1
-            number pdigits
+            number dollar
             0
           1
       auto
@@ -225,7 +250,7 @@
     if. > padded!
       if. > [i c] >> flagged
         i.gte
-          number fstop
+          number digits
         false
         if.
           c.eq
@@ -235,7 +260,7 @@
             as-number.
               i.plus 1
             c
-      | (number body) 2D-
+      | (number flags) 2D-
       as-bytes.
         padded-right
           string value
@@ -250,48 +275,38 @@
             number width
             " "
             failure
-    digits-end > pdigits!
-      as-number.
-        index.plus 1
     and. > positional!
       gt.
-        number pdigits
+        number dollar
         index.plus 1
       and.
         lt.
-          number pdigits
+          number dollar
           number span
         24-.eq
           byte
-            number pdigits
+            number dollar
     and. > precise!
       lt.
-        number wstop
+        number dot
         number span
       2E-.eq
         byte
-          number wstop
+          number dot
     precise.as-bool.if > precision!
       digits-value
         as-number.
           plus.
-            number wstop
+            number dot
             1
-        number pstop
+        number end
         0
       0
-    precise.as-bool.if > pstop!
-      digits-end
-        as-number.
-          plus.
-            number wstop
-            1
-      number wstop
     if. > value!
       positional.as-bool.and
         18.lt
           minus.
-            number pdigits
+            number dollar
             index.plus 1
       T
         "The positional argument index in the format is too large"
@@ -323,13 +338,11 @@
                 "The zero flag can only be applied to the %d and %f conversions"
               converted
     digits-value > width!
-      number fstop
-      number wstop
+      number digits
+      number dot
       0
-    digits-end > wstop!
-      number fstop
     flagged > zero!
-      number body
+      number flags
       30-
 
   eq. ++> can-answer-the-size-of-the-formatted-text
