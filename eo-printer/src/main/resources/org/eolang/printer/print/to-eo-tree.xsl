@@ -277,8 +277,7 @@
     unrelated formation elsewhere in the file (not an ancestor of this
     reference at all) must not suppress the "$." marker here.
     -->
-    <xsl:variable name="local-handle"
-      select="//o[@local=$hop-name][ancestor::o[not(@base)][1] intersect current()/ancestor::o[not(@base)]][1]"/>
+    <xsl:variable name="local-handle" select="//o[@local=$hop-name][ancestor::o[not(@base)][1] intersect current()/ancestor::o[not(@base)]][1]"/>
     <xsl:choose>
       <!-- NOT OPTIMIZED TUPLE -->
       <xsl:when test="@star">
