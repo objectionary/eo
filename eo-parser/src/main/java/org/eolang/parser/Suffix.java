@@ -619,6 +619,12 @@ final class Suffix {
                 "atom signature requires a name"
             );
         }
+        if (raw.startsWith(".") || raw.endsWith(".") || raw.contains("..")) {
+            throw new ParseError(
+                span.line(), home + after,
+                "atom signature must be a dotted name with no leading, trailing, or empty segment"
+            );
+        }
         return Suffix.typeAtom(raw, span, home + after);
     }
 
