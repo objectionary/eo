@@ -417,6 +417,34 @@ final class Suffix {
     }
 
     /**
+     * Reject a {@code > name} suffix whose name came out empty because
+     * {@link #skipName} stopped right where it started — any character
+     * {@link #endsName} treats as a boundary sat immediately after the
+     * single skipped space, not just {@code /} and {@code !} but also
+     * the separators in {@link #NAME_BOUNDARIES}, e.g. {@code > /sig},
+     * {@code > !}, or {@code > .foo}. A second space (rather than a real
+     * boundary character) is left alone here: that case falls through to
+     * {@link #endsClean}, which reports the more specific "trailing
+     * garbage" once whatever follows the extra space is reached.
+     * @param tail Tail substring
+     * @param begin Index where the name was expected to start
+     * @param idx Index {@link #skipName} stopped at
+     * @param span Source span
+     * @param home Source column where tail begins
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static void checkNamePresent(
+        final String tail, final int begin, final int idx, final Span span, final int home
+    ) {
+        if (begin == idx && tail.charAt(begin) != ' ' && tail.charAt(begin) != '\t') {
+            throw new ParseError(
+                span.line(), home + begin,
+                "name suffix requires a name"
+            );
+        }
+    }
+
+    /**
      * Parse a {@code >>} (auto) suffix, optionally carrying a trailing
      * file-local handle ({@code >> name}, §3.10) kept as the label, and a
      * {@code !} const marker (R-9.4) either right after {@code >>}
@@ -489,6 +517,7 @@ final class Suffix {
         }
         final int begin = Suffix.skipSpace(tail, from);
         int idx = Suffix.skipName(tail, begin);
+        Suffix.checkNamePresent(tail, begin, idx, span, home);
         final String name = tail.substring(begin, idx);
         if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
             throw new ParseError(
