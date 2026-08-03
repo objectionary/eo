@@ -26,6 +26,9 @@ jobs:
           - metric: atoms
             pattern: '@XmirObject'
             threshold: 27
+          - metric: nodelists
+            pattern: 'org\.w3c\.dom\.NodeList'
+            threshold: 0
     steps:
       - uses: actions/checkout@v7
       - env:
