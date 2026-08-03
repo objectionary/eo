@@ -10,14 +10,12 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import org.cactoos.Scalar;
 
 /**
- * JAR unpacked into a directory.
- * Rejects entries whose resolved path would leave the destination (Zip Slip).
+ * Unpacks a JAR into a directory, rejecting Zip Slip paths.
  * @since 0.62.0
  */
-final class Unpacked implements Scalar<Path> {
+final class Unpacked {
 
     /**
      * Path to the JAR file.
@@ -39,13 +37,15 @@ final class Unpacked implements Scalar<Path> {
         this.dest = target;
     }
 
-    @Override
-    public Path value() throws IOException {
+    /**
+     * Unpack the archive into {@link #dest}.
+     * @throws IOException If unpacking fails or an entry escapes {@link #dest}
+     */
+    void unpack() throws IOException {
         final Path root = this.dest.toAbsolutePath().normalize();
         Files.createDirectories(root);
         try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(this.jar))) {
-            ZipEntry entry = zip.getNextEntry();
-            while (entry != null) {
+            for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry()) {
                 final Path target = root.resolve(entry.getName()).normalize();
                 if (!target.startsWith(root)) {
                     throw new IOException(
@@ -62,9 +62,7 @@ final class Unpacked implements Scalar<Path> {
                     Files.copy(zip, target, StandardCopyOption.REPLACE_EXISTING);
                 }
                 zip.closeEntry();
-                entry = zip.getNextEntry();
             }
         }
-        return root;
     }
 }

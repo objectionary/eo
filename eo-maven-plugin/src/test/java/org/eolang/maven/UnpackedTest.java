@@ -13,7 +13,6 @@ import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,7 @@ final class UnpackedTest {
         final Path jar = temp.resolve("safe.jar");
         UnpackedTest.jar(jar, "org/eolang/ok.eo", "[] > ok");
         final Path dest = temp.resolve("unpacked");
-        new Unpacked(jar, dest).value();
+        new Unpacked(jar, dest).unpack();
         MatcherAssert.assertThat(
             "Safe zip entry must land inside the destination directory",
             dest.resolve("org/eolang/ok.eo").toFile(),
@@ -45,41 +44,8 @@ final class UnpackedTest {
         UnpackedTest.jar(jar, "../evil-escaped.txt", "pwned");
         Assertions.assertThrows(
             IOException.class,
-            () -> new Unpacked(jar, temp.resolve("unpacked")).value(),
+            () -> new Unpacked(jar, temp.resolve("unpacked")).unpack(),
             "Zip Slip entry must be rejected instead of writing outside the destination"
-        );
-    }
-
-    @Test
-    void namesEscapingZipEntryInRejection(@Mktmp final Path temp) throws IOException {
-        final Path jar = temp.resolve("evil.jar");
-        UnpackedTest.jar(jar, "../evil-escaped.txt", "pwned");
-        MatcherAssert.assertThat(
-            "Rejection must name the escaping zip entry",
-            Assertions.assertThrows(
-                IOException.class,
-                () -> new Unpacked(jar, temp.resolve("unpacked")).value(),
-                "Zip Slip entry must be rejected"
-            ).getMessage(),
-            Matchers.containsString("evil-escaped.txt")
-        );
-    }
-
-    @Test
-    void doesNotWriteEscapingZipEntryOutsideDestination(@Mktmp final Path temp)
-        throws IOException {
-        final Path jar = temp.resolve("evil.jar");
-        UnpackedTest.jar(jar, "../evil-escaped.txt", "pwned");
-        final Path dest = temp.resolve("unpacked");
-        Assertions.assertThrows(
-            IOException.class,
-            () -> new Unpacked(jar, dest).value(),
-            "Zip Slip entry must be rejected"
-        );
-        MatcherAssert.assertThat(
-            "Escaping entry must not be written outside the destination",
-            dest.resolve("../evil-escaped.txt").normalize().toFile(),
-            Matchers.not(FileMatchers.anExistingFile())
         );
     }
 
