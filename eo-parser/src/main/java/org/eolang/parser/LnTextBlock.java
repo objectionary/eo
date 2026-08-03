@@ -53,6 +53,7 @@ final class LnTextBlock implements Line {
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
+        suffix.rejectAtomOutsideFormation(this.span);
         if (suffix.test()) {
             Blanks.checkTest(this.span, globals, emit);
         } else {

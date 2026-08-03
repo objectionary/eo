@@ -26,8 +26,6 @@ import org.cactoos.list.ListOf;
 import org.eolang.lints.Defect;
 import org.eolang.lints.Severity;
 import org.eolang.lints.Source;
-import org.eolang.parser.OnDefault;
-import org.eolang.parser.OnDetailed;
 import org.eolang.wpa.Program;
 import org.w3c.dom.Node;
 import org.xembly.Directives;
@@ -312,16 +310,14 @@ final class Linting implements Step {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.resolve(Linting.DIR);
-        final Path target = new Place(
-            new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get()
-        ).make(base, MjAssemble.XMIR);
+        final Path target = new LintTarget(xmir, source).under(base);
         if (this.cacheEnabled) {
             this.guard.apply(
                 source, target, base.relativize(target),
                 new Cache(
                     new CachePath(
                         this.cacheDir.resolve(Linting.CACHE),
-                        this.version,
+                        this.cacheVersion(),
                         new TojoHash(tojo).get()
                     ),
                     src -> this.linted(xmir).toString()
@@ -349,6 +345,28 @@ final class Linting implements Step {
         }
         tojo.withLinted(target);
         return 1;
+    }
+
+    /**
+     * Cache-key version segment for the per-file lint cache: the plugin
+     * version combined with {@link #skipSourceLints} and
+     * {@link #skipExperimentalLints}, since both change what
+     * {@link #linted(XML)} reports for the exact same source XMIR
+     * (see #6235). {@link #skipSourceLints} is hashed rather than joined
+     * in verbatim, since a project skipping a dozen full lint names would
+     * otherwise push this single path segment past the 255-byte limit
+     * ext4 and APFS enforce.
+     * @return The version segment for {@link CachePath}
+     */
+    private String cacheVersion() {
+        return String.format(
+            "%s-%b-%s",
+            this.version,
+            this.skipExperimentalLints,
+            new Hashed(
+                this.skipSourceLints.stream().sorted().collect(Collectors.joining(","))
+            ).get()
+        );
     }
 
     /**

@@ -6,6 +6,7 @@
 /**
  * Txt, tests.
  * @since 0.57.4
- * @checkstyle TrailingCommentCheck (3 lines)
+ * @checkstyle TrailingCommentCheck (4 lines)
  */
+@org.eolang.XmirPackage("string")
 package org.eolang.EO_string; // NOPMD

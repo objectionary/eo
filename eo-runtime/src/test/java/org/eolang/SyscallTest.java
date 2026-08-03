@@ -16,7 +16,6 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.posix.CStdLib;
@@ -167,15 +166,6 @@ final class SyscallTest {
     }
 
     /**
-     * Get random port.
-     * @return Random port
-     */
-    private static int randomPort() {
-        final int min = 10_000;
-        return new Random().nextInt(20_000 - min + 1) + min;
-    }
-
-    /**
      * Assert that a server thread received exactly the bytes a client sent.
      * @param sent Bytes the client sent
      * @param count Number of bytes the server reported as received
@@ -269,7 +259,7 @@ final class SyscallTest {
                             "Win socket should have been bound to localhost via syscall, but it didn't, error code is: %d",
                             this.getError()
                         ),
-                        this.bindSocket(socket, SyscallTest.randomPort()),
+                        this.bindSocket(socket, new Port().number()),
                         Matchers.equalTo(0)
                     );
                 } finally {
@@ -287,7 +277,7 @@ final class SyscallTest {
                 final int socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
-                    this.ensure(this.bindSocket(socket, SyscallTest.randomPort()) == 0);
+                    this.ensure(this.bindSocket(socket, new Port().number()) == 0);
                     MatcherAssert.assertThat(
                         String.format(
                             "Posix socket should have been bound to localhost via syscall, but it didn't, reason: %s",
@@ -310,7 +300,7 @@ final class SyscallTest {
                 this.ensure(this.startup() == 0);
                 final AtomicInteger accept = new AtomicInteger(0);
                 final AtomicInteger error = new AtomicInteger();
-                final AtomicInteger port = new AtomicInteger(SyscallTest.randomPort());
+                final AtomicInteger port = new AtomicInteger(new Port().number());
                 final Thread server = new Thread(
                     () -> this.acceptViaWinsock(port, accept, error)
                 );
@@ -352,7 +342,7 @@ final class SyscallTest {
                 this.ensure(this.startup() == 0);
                 final AtomicInteger received = new AtomicInteger(-1);
                 final AtomicReference<byte[]> bytes = new AtomicReference<>();
-                final AtomicInteger port = new AtomicInteger(SyscallTest.randomPort());
+                final AtomicInteger port = new AtomicInteger(new Port().number());
                 final Thread server = new Thread(
                     () -> this.recvViaWinsock(port, received, bytes)
                 );
@@ -494,7 +484,7 @@ final class SyscallTest {
             try {
                 this.ensure(socket > 0);
                 while (this.bindSocket(socket, port.get()) != 0) {
-                    port.set(SyscallTest.randomPort());
+                    port.set(new Port().number());
                 }
                 this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
@@ -525,7 +515,7 @@ final class SyscallTest {
             try {
                 this.ensure(socket > 0);
                 while (this.bindSocket(socket, port.get()) != 0) {
-                    port.set(SyscallTest.randomPort());
+                    port.set(new Port().number());
                 }
                 this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
@@ -603,7 +593,7 @@ final class SyscallTest {
                         "Posix socket should have been bound to localhost via syscall, but it didn't, reason: %s",
                         this.getError()
                     ),
-                    this.bindSocket(socket, SyscallTest.randomPort()),
+                    this.bindSocket(socket, new Port().number()),
                     Matchers.equalTo(0)
                 );
             } finally {
@@ -616,7 +606,7 @@ final class SyscallTest {
             final int socket = this.openSocket();
             try {
                 this.ensure(socket > 0);
-                this.ensure(this.bindSocket(socket, SyscallTest.randomPort()) == 0);
+                this.ensure(this.bindSocket(socket, new Port().number()) == 0);
                 MatcherAssert.assertThat(
                     String.format(
                         "Posix socket should have been bound to localhost via syscall, but it didn't, reason: %s",
@@ -634,7 +624,7 @@ final class SyscallTest {
         void acceptsConnectionOnSocket() throws InterruptedException {
             final AtomicInteger accept = new AtomicInteger(0);
             final AtomicReference<String> error = new AtomicReference<>();
-            final AtomicInteger port = new AtomicInteger(SyscallTest.randomPort());
+            final AtomicInteger port = new AtomicInteger(new Port().number());
             final Thread server = new Thread(
                 () -> this.acceptViaCStdLib(port, accept, error)
             );
@@ -670,7 +660,7 @@ final class SyscallTest {
         void sendsAndReceivesMessagesViaSyscalls() throws InterruptedException {
             final AtomicInteger received = new AtomicInteger(-1);
             final AtomicReference<byte[]> bytes = new AtomicReference<>();
-            final AtomicInteger port = new AtomicInteger(SyscallTest.randomPort());
+            final AtomicInteger port = new AtomicInteger(new Port().number());
             final Thread server = new Thread(
                 () -> this.recvViaCStdLib(port, received, bytes)
             );
@@ -789,7 +779,7 @@ final class SyscallTest {
             try {
                 this.ensure(socket > 0);
                 while (this.bindSocket(socket, port.get()) != 0) {
-                    port.set(SyscallTest.randomPort());
+                    port.set(new Port().number());
                 }
                 this.ensure(CStdLib.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
@@ -818,7 +808,7 @@ final class SyscallTest {
             try {
                 this.ensure(socket > 0);
                 while (this.bindSocket(socket, port.get()) != 0) {
-                    port.set(SyscallTest.randomPort());
+                    port.set(new Port().number());
                 }
                 this.ensure(CStdLib.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
@@ -860,7 +850,7 @@ final class SyscallTest {
         RandomServer started() {
             boolean bound = false;
             while (!bound) {
-                this.port = SyscallTest.randomPort();
+                this.port = new Port().number();
                 try {
                     this.socket = new ServerSocket();
                     this.socket.setReuseAddress(true);

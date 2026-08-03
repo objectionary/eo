@@ -95,6 +95,21 @@
             regex "/a*/"
             "xa"
 
+  ++> can-count-supplementary-characters-as-one-position
+    and. > @
+      and.
+        0.eq first.from
+        1.eq first.to
+      and.
+        1.eq second.from
+        2.eq second.to
+    next. > first
+      match.
+        compiled.
+          regex "/./"
+        "😀x"
+    first.next > second
+
   ++> can-expose-groups-on-each-matched-block
     and. > @
       and.
@@ -132,6 +147,11 @@
     compiled.
       regex "/[a-z]+/"
     "hello"
+
+  matches. ++> can-match-a-text-containing-supplementary-characters
+    compiled.
+      regex "/😀x/"
+    "😀x"
 
   matches. ++> can-match-an-entire-pattern
     compiled.
