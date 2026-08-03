@@ -22,11 +22,6 @@ import org.cactoos.io.InputOf;
 interface GlobalCache {
 
     /**
-     * The cache that remembers nothing, for a build that turned caching off.
-     */
-    GlobalCache NONE = new GlobalCache.GcFresh();
-
-    /**
      * How one file is to be written.
      * @param tail Path of that file inside the cache
      * @param hash Hash segment of the cache path

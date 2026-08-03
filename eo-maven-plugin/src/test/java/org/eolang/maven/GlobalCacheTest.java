@@ -30,7 +30,7 @@ final class GlobalCacheTest {
         final Path target = temp.resolve("target.xmir");
         final AtomicInteger counter = new AtomicInteger(0);
         for (int idx = 0; idx < 2; ++idx) {
-            GlobalCache.NONE.footprint(
+            new GlobalCache.GcFresh().footprint(
                 Path.of("target.xmir"),
                 () -> "0123456789",
                 src -> String.format("compiled %d", counter.incrementAndGet())

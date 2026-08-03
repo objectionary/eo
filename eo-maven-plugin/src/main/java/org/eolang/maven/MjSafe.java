@@ -582,7 +582,7 @@ abstract class MjSafe extends AbstractMojo {
                 this.cache.toPath().resolve(sub), this.plugin.getVersion()
             );
         } else {
-            store = GlobalCache.NONE;
+            store = new GlobalCache.GcFresh();
         }
         return store;
     }
