@@ -7,13 +7,15 @@ package org.eolang;
 import java.util.concurrent.atomic.LongAdder;
 
 /**
- * A profile that keeps its two numbers in a pair of adders.
+ * Statistics kept in a pair of adders.
  *
- * <p>The class is thread-safe.</p>
+ * <p>Each of the two counters is thread-safe on its own. They are read
+ * independently, so a caller that asks for both while the program is still
+ * running gets two numbers taken at two different instants.</p>
  *
  * @since 0.62
  */
-public final class Counters implements Profile {
+public final class Counters implements Statistics {
 
     /**
      * How many objects were born.

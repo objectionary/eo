@@ -219,8 +219,8 @@ public final class Main {
                 new VerboseBytesAsString(ret).get(),
                 (System.currentTimeMillis() - start) / 1000.0,
                 ret.length,
-                Profile.RUNNING.allocations(),
-                Profile.RUNNING.dispatches()
+                Statistics.RUNNING.allocations(),
+                Statistics.RUNNING.dispatches()
             )
         );
     }

@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
-@SuppressWarnings({"PMD.GodClass", "PMD.ConstructorOnlyInitializesOrCallOtherConstructors"})
+@SuppressWarnings("PMD.GodClass")
 public class PhDefault implements Phi, Cloneable {
 
     /**
@@ -159,7 +159,6 @@ public class PhDefault implements Phi, Cloneable {
         this.data = dta;
         this.initial = attributes;
         this.order = new HashMap<>(0);
-        Profile.RUNNING.allocate();
     }
 
     @Override
@@ -181,7 +180,7 @@ public class PhDefault implements Phi, Cloneable {
                 map.put(ent.getKey(), ent.getValue().copy(copy));
             }
             copy.attrs = map;
-            Profile.RUNNING.allocate();
+            Statistics.RUNNING.allocate();
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new ExFailure("cannot copy the object", ex);
@@ -219,7 +218,7 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public Phi take(final String name) {
-        Profile.RUNNING.dispatch();
+        Statistics.RUNNING.dispatch();
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         try {
             final Phi resolved;
@@ -560,11 +559,18 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Activate the lazy state: initialize attrs/order from the constructor-supplied
      * map, wrapping each entry with {@link AtWithRho}. Idempotent.
+     *
+     * <p>This is also where an object is counted as born, since it happens
+     * exactly once per object and, unlike a constructor, may do work. An
+     * object that never reaches this point has no attributes and takes no
+     * part in dataization, so it stays out of the statistics.</p>
+     *
      * @return Map of attrs
      */
     private Map<String, Attribute> loaded() {
         if (this.attrs == null) {
             this.attrs = PhDefault.defaults();
+            Statistics.RUNNING.allocate();
             for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
                 this.add(ent.getKey(), ent.getValue());
             }

@@ -71,7 +71,7 @@ final class MainTest {
     }
 
     @Test
-    void printsExecutionProfile() {
+    void printsExecutionStatistics() {
         MatcherAssert.assertThat(
             "The report of dataizing \"true\" carries no object and dispatch counters",
             MainTest.stderr("true"),
