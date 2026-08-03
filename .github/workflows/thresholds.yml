@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+name: thresholds
+'on':
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  thresholds:
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - metric: suppressions
+            pattern: '@SuppressWarnings|@checkstyle'
+            threshold: 368
+          - metric: smells
+            pattern: 'static|null'
+            threshold: 853
+          - metric: atoms
+            pattern: '@XmirObject'
+            threshold: 27
+    steps:
+      - uses: actions/checkout@v7
+      - env:
+          METRIC: ${{ matrix.metric }}
+          PATTERN: ${{ matrix.pattern }}
+          THRESHOLD: ${{ matrix.threshold }}
+        run: |
+          found=$(( $(git ls-files -z '*.java' \
+            | xargs -0 grep -Eoh "${PATTERN}" \
+            | wc -l) ))
+          echo "Found ${found} ${METRIC}, threshold is ${THRESHOLD}"
+          if [ "${found}" -ne "${THRESHOLD}" ]; then
+            echo "Expected ${THRESHOLD} ${METRIC} in Java, found ${found}"
+            exit 1
+          fi
