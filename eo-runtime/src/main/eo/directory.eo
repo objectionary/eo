@@ -65,6 +65,11 @@
       made.
         directory mktemp.tmpfile.deleted
 
+  walk. --> stops-on-walking-a-path-with-a-nul-character
+    directory
+      Q.file "\u0000"
+    "*"
+
   walk. --> stops-on-walking-an-absent-directory
     directory mktemp.tmpfile.deleted
     "**"
