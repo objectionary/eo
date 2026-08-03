@@ -415,7 +415,15 @@ final class Emissions {
         final Emit emit, final String name, final Value value, final int line
     ) {
         final double parsed = Double.parseDouble(value.raw());
-        if (!Double.isFinite(parsed) || Emissions.overPrecise(value.raw(), parsed)) {
+        if (!Double.isFinite(parsed)) {
+            throw new ParseError(
+                line, value.pos(),
+                String.format(
+                    "%s is out of the finite range of a double", value.raw()
+                )
+            );
+        }
+        if (Emissions.overPrecise(value.raw(), parsed)) {
             final String canonical;
             if (value.kind() == Value.Kind.INTEGER) {
                 canonical = Emissions.canonicalInteger(parsed);
