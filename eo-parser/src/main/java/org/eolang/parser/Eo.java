@@ -73,7 +73,7 @@ final class Eo implements Iterable<Directive> {
             level -> Eo.checkOnClose(level, emit),
             parent -> Eo.beforeChild(parent, emit)
         );
-        // @todo #6183 spans is duplicated in Source.java and should be removed. Remove span ArrayList and use Source instead
+        // @todo #6183 spans is duplicated in Source.java and should be removed. Remove spans ArrayList and use Source instead
         final java.util.List<Span> spans = new java.util.ArrayList<>(this.source.length() / 32 + 1);
         new Source(this.source).forEach(spans::add);
         final Recovery recovery = new Recovery(spans);
