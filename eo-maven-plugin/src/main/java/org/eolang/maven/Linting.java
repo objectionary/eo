@@ -51,11 +51,6 @@ import org.xembly.Xembler;
  *     Naming the class {@code Linting} avoids this collision.
  * </p>
  * @since 0.31.0
- * @todo #6215:35min Split this class so that the {@code @SuppressWarnings}
- *  for PMD's God-class rule below can go. It does four separate things
- *  today: reading the XMIR, running the lints over it, caching the verdicts
- *  and reporting them. Whoever splits it should leave {@link #CACHE} and
- *  {@link #DIR} where they are, since other steps name them.
  */
 @SuppressWarnings("PMD.GodClass")
 final class Linting implements Step {
