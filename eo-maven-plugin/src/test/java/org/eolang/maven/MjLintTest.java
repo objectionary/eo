@@ -12,6 +12,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
@@ -159,6 +163,29 @@ final class MjLintTest {
                 .path("/object/errors/error[@check='mandatory-spdx/S']").count(),
             Matchers.equalTo(0L)
         );
+    }
+
+    @Test
+    void keepsLintCachePathSegmentShortWithManySkippedLints(@Mktmp final Path temp)
+        throws IOException {
+        final Path cache = temp.resolve("lint-cache");
+        final Collection<String> skipped = new HashSet<>(0);
+        for (int idx = 0; idx < 20; ++idx) {
+            skipped.add(String.format("unlint-non-existing-defect-number-%d", idx));
+        }
+        new FakeMaven(temp)
+            .with("cache", cache.toFile())
+            .with("skipSourceLints", skipped)
+            .withHelloWorld()
+            .execute(new FakeMaven.Lint());
+        try (Stream<Path> versions = Files.list(cache.resolve(Linting.CACHE))) {
+            MatcherAssert.assertThat(
+                "a lint cache-key path segment must stay well under the 255-byte limit ext4 and APFS enforce, no matter how many lints are skipped",
+                versions.map(p -> p.getFileName().toString().length())
+                    .collect(Collectors.toList()),
+                Matchers.everyItem(Matchers.lessThan(255))
+            );
+        }
     }
 
     @Test

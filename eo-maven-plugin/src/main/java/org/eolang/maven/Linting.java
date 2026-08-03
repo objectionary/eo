@@ -53,6 +53,7 @@ import org.xembly.Xembler;
  *     Naming the class {@code Linting} avoids this collision.
  * </p>
  * @since 0.31.0
+ * @checkstyle ClassFanOutComplexityCheck (3 lines)
  */
 @SuppressWarnings("PMD.GodClass")
 final class Linting implements Step {
@@ -356,9 +357,10 @@ final class Linting implements Step {
      * version combined with {@link #skipSourceLints} and
      * {@link #skipExperimentalLints}, since both change what
      * {@link #linted(XML)} reports for the exact same source XMIR
-     * (see #6235). {@link #skipSourceLints} is sorted before joining so
-     * that two builds passing the same set in a different order still
-     * share a cache entry.
+     * (see #6235). {@link #skipSourceLints} is hashed rather than joined
+     * in verbatim, since a project skipping a dozen full lint names would
+     * otherwise push this single path segment past the 255-byte limit
+     * ext4 and APFS enforce.
      * @return The version segment for {@link CachePath}
      */
     private String cacheVersion() {
@@ -366,7 +368,9 @@ final class Linting implements Step {
             "%s-%b-%s",
             this.version,
             this.skipExperimentalLints,
-            this.skipSourceLints.stream().sorted().collect(Collectors.joining(","))
+            new Hashed(
+                this.skipSourceLints.stream().sorted().collect(Collectors.joining(","))
+            ).get()
         );
     }
 
