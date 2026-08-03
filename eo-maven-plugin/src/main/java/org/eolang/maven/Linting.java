@@ -26,8 +26,6 @@ import org.cactoos.list.ListOf;
 import org.eolang.lints.Defect;
 import org.eolang.lints.Severity;
 import org.eolang.lints.Source;
-import org.eolang.parser.OnDefault;
-import org.eolang.parser.OnDetailed;
 import org.eolang.wpa.Program;
 import org.w3c.dom.Node;
 import org.xembly.Directives;
@@ -312,9 +310,7 @@ final class Linting implements Step {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.resolve(Linting.DIR);
-        final Path target = new Place(
-            new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get()
-        ).make(base, MjAssemble.XMIR);
+        final Path target = new LintTarget(xmir, source).under(base);
         if (this.cacheEnabled) {
             this.guard.apply(
                 source, target, base.relativize(target),
