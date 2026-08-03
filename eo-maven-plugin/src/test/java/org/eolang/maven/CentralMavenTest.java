@@ -79,7 +79,7 @@ final class CentralMavenTest {
         final Path dest = temp.resolve("dest");
         Assertions.assertThrows(
             IOException.class,
-            () -> CentralMaven.unpack(jar, dest),
+            () -> new UnpackedJar(jar, dest).unpack(),
             "A zip entry whose target lands outside the destination directory must be rejected"
         );
         MatcherAssert.assertThat(

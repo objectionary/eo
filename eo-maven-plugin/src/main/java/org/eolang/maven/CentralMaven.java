@@ -6,16 +6,12 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
@@ -182,7 +178,7 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
             artifact.getFile()
         );
         try {
-            CentralMaven.unpack(artifact.getFile().toPath(), dest);
+            new UnpackedJar(artifact.getFile().toPath(), dest).unpack();
         } catch (final IOException ex) {
             throw new IllegalStateException(
                 String.format(
@@ -202,39 +198,6 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
                 this, "%s:%s:%s:%s unpacked to %[file]s",
                 dep.getGroupId(), dep.getArtifactId(), classifier, dep.getVersion(), dest
             );
-        }
-    }
-
-    /**
-     * Unpacks a JAR (ZIP) file into the given directory.
-     * @param jar Path to the JAR file
-     * @param dest Destination directory
-     * @throws IOException If unpacking fails
-     */
-    static void unpack(final Path jar, final Path dest) throws IOException {
-        Files.createDirectories(dest);
-        final Path home = dest.normalize();
-        try (ZipInputStream zis = new ZipInputStream(Files.newInputStream(jar))) {
-            ZipEntry entry = zis.getNextEntry();
-            while (entry != null) {
-                final Path target = dest.resolve(entry.getName()).normalize();
-                if (!target.startsWith(home)) {
-                    throw new IOException(
-                        String.format(
-                            "Zip entry '%s' would unpack to '%s', outside of '%s'",
-                            entry.getName(), target, home
-                        )
-                    );
-                }
-                if (entry.isDirectory()) {
-                    Files.createDirectories(target);
-                } else {
-                    Files.createDirectories(target.getParent());
-                    Files.copy(zis, target, StandardCopyOption.REPLACE_EXISTING);
-                }
-                zis.closeEntry();
-                entry = zis.getNextEntry();
-            }
         }
     }
 
