@@ -347,7 +347,7 @@ final class MjLintTest {
     }
 
     @Test
-    void doesNotCrashOnPlainParserSyntaxError(@Mktmp final Path temp) throws IOException {
+    void reportsPlainParserSyntaxErrorUnderParserRule(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             "# Sample object for the probe.",
             "",
@@ -364,7 +364,7 @@ final class MjLintTest {
             root = root.getCause();
         }
         MatcherAssert.assertThat(
-            "an <error> with no 'check' attribute of its own must be reported as an ordinary defect under the fallback 'parser' rule, not dropped by a crashing IllegalArgumentException",
+            "a plain parser syntax error must be reported as a defect under the 'parser' rule, the same as any other lint",
             root.getMessage(),
             Matchers.containsString("(parser)")
         );
