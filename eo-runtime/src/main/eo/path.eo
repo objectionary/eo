@@ -78,9 +78,7 @@
                 number index
       string > text
         basename >> base!
-    is-root-relative.or > is-absolute
-      drive.size.gt 0
-    and. > is-root-relative
+    and. > is-absolute
       driveless.size.gt 0
       eq.
         driveless.slice 0 1
@@ -106,7 +104,7 @@
           concat.
             concat.
               drive.concat
-                is-root-relative.if separator --
+                is-absolute.if separator --
               string.joined >> body!
                 separator
                 tuple.reduced
@@ -119,7 +117,7 @@
                         accum.length.gt 0
                         not. (accum.head.eq "..")
                       accum.tail
-                      is-root-relative.not.if (accum.with segment) accum
+                      is-absolute.not.if (accum.with segment) accum
                     if.
                       or.
                         segment.eq "."
@@ -196,6 +194,10 @@
           string (string.replaced pth (regex "/\\//") separator)!
         string ubts > pth
       ^.separator > separator
+
+  not. ++> can-detect-a-drive-relative-win32-path-as-not-absolute
+    is-absolute.
+      path.win32 "C:foo"
 
   and. ++> can-detect-an-absolute-posix-path
     is-absolute.

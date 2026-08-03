@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The whole-document twin of `explicit-xi-reference-kept`: a same-named
+# `>> foo` file-local handle declared by an unrelated sibling formation must
+# not suppress the `$.` marker here. Handles are lexically scoped to the
+# formation that declares them (resolve-local-names.xsl, #5875), so
+# `sibling`'s own `foo` handle has nothing to do with `inner`'s `$.foo`
+# reference to `outer`'s public `foo` attribute. The printer used to search
+# the whole document for any `@local='foo'` and treat this `$.foo` as if it
+# were itself a local-handle reference, dropping the `$.` and changing its
+# meaning on reparse (#6237).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    [] > sibling
+      42 > x
+      x >> foo
+    [] > outer
+      1 > foo
+      [] > inner
+        $.foo > @
+
+printed: |
+  [] > app
+    [] > outer
+      1 > foo
+      $.foo > [] > inner
+    [] > sibling
+      x >> foo
+      42 > x

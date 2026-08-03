@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The application-head twin of `explicit-xi-reference-kept`: `$.f 1` names the
+# enclosing formation's own `f` explicitly (no `^` hop), which is a different
+# reference than a bare `f 1` (#6237). The printer must keep the `$.` prefix
+# here too, not just for a bare dispatch-free reference.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    [] > f
+      42 > @
+    [] > inner
+      $.f 1 > @
+
+printed: |
+  [] > app
+    42 > [] > f
+    $.f 1 > [] > inner

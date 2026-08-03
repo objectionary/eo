@@ -281,6 +281,30 @@ final class SuffixTest {
     }
 
     @Test
+    void rejectsAtomSignatureRightAfterSkippedSpace() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix(
+                " > /org.eolang.foo",
+                new Span("[] > /org.eolang.foo", 1), 2
+            ),
+            "`> /sig` with no name between `>` and `/` must be rejected"
+        );
+    }
+
+    @Test
+    void rejectsConstMarkerRightAfterSkippedSpace() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix(
+                " > !",
+                new Span("[] > !", 1), 2
+            ),
+            "`> !` with no name between `>` and `!` must be rejected"
+        );
+    }
+
+    @Test
     void rejectsPlusGreaterWithPhi() {
         Assertions.assertThrows(
             ParseError.class,

@@ -14,15 +14,178 @@
 [file] > directory
   file > @
   true > is-directory
+  [dir time process random] > retried
+    [index] >> attempted
+      if. > @
+        descriptor.eq -1
+        attempted
+          index.plus 1
+        seq *
+          closed descriptor
+          path
+      opened path > descriptor!
+      candidate index > path!
+    | 0 > @
+    [index] > candidate
+      string.joined *1 > @
+        path.separator
+        dir
+        name
+      "%d-%d-%d-%f".printf > name!
+        *
+          time
+          process
+          index
+          random
+    code. > [descriptor] > closed
+      os.is-windows.if
+        win32 *1
+          "_close"
+          descriptor
+        posix *1
+          "close"
+          descriptor
+    code. > [name] > opened
+      os.is-windows.if
+        win32 *1
+          "_open"
+          name
+          plus.
+            win32.rdonly.plus win32.creat
+            win32.exclusive
+          win32.mode
+        posix *1
+          "open"
+          name
+          plus.
+            posix.rdonly.plus posix.creat
+            posix.exclusive
+          posix.mode
   [] > tmpfile
     ^.exists.if > @
       Q.file touch.as-bytes
       T
         "Directory %s does not exist, can't create temporary file".printf
           * file
-    [] > touch /Q.string
+    retried > [] > touch
+      ^.^.path
+      clock.as-number
+      code.
+        os.is-windows.if
+          win32
+            "_getpid"
+            *
+          posix
+            "getpid"
+            *
+      number.random clock
   [] > walk /Q.tuple
     ? > glob /Q.string
+
+  ++> can-create-a-regular-tmpfile
+    seq * > @
+      regular
+      temp.deleted
+      regular
+    temp.is-directory.not > regular!
+    mktemp.tmpfile > temp
+
+  ++> can-create-an-empty-tmpfile
+    if. > @
+      eq.
+        temp.size -1
+        0
+      seq *
+        temp.deleted
+        true
+      seq *
+        temp.deleted
+        false
+    mktemp.tmpfile > temp
+
+  ++> can-create-unique-tmpfile-paths
+    seq * > @
+      first.exists.and second.exists
+      first.deleted
+      second.deleted
+      valid
+    mktemp.tmpfile > first
+    mktemp.tmpfile > second
+    not. > valid!
+      first.path.eq second.path
+
+  ++> can-delete-a-created-tmpfile
+    seq * > @
+      existed
+      deleted
+      and.
+        existed.and
+          deleted.path.eq temp.path
+        deleted.exists.not
+    temp.deleted > deleted
+    temp.exists > existed
+    mktemp.tmpfile > temp
+
+  ++> can-delete-a-tmpfile-without-orphans
+    seq * > @
+      temp.deleted
+      temp.exists.not
+      next.exists.not
+      parent.deleted
+      true
+    string.joined *1 > candidate
+      path.separator
+      parent.path
+      "%d-%d-%d-%f".printf
+        *
+          42
+          8
+          1
+          0.5
+    parent.retried > created
+      parent.path
+      42
+      8
+      0.5
+    Q.file candidate.as-bytes > next
+    mktemp.tmpfile.deleted.as-path.as-dir.made > parent
+    Q.file created.as-bytes > temp
+
+  ++> can-retry-tmpfile-creation-after-a-collision
+    seq * > @
+      collision.touched
+      valid
+      actual.deleted
+      collision.deleted
+      parent.deleted
+      valid
+    Q.file created.as-bytes > actual
+    Q.file occupied.as-bytes > collision
+    parent.retried > created
+      parent.path
+      42
+      7
+      0.5
+    string.joined *1 > expected
+      path.separator
+      parent.path
+      "%d-%d-%d-%f".printf
+        *
+          42
+          7
+          1
+          0.5
+    string.joined *1 > occupied
+      path.separator
+      parent.path
+      "%d-%d-%d-%f".printf
+        *
+          42
+          7
+          0
+          0.5
+    mktemp.tmpfile.deleted.as-path.as-dir.made > parent
+    created.as-bytes.eq expected.as-bytes > valid!
 
   ++> can-walk-recursively
     seq * > @
@@ -64,6 +227,10 @@
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
+
+  tmpfile. --> on-tmpfile-touching-absent-directory
+    @.
+      mktemp.tmpfile.deleted.as-path.resolved "child"
 
   walk. --> stops-on-walking-a-path-with-a-nul-character
     directory
