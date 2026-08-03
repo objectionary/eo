@@ -26,32 +26,6 @@ import org.junit.jupiter.api.io.TempDir;
  */
 final class LintingTest {
 
-    /**
-     * Whether caching is enabled, for {@link #lintAsPackage}.
-     */
-    private static final boolean CACHE_ENABLED = true;
-
-    /**
-     * Whether to skip experimental lints, for {@link #lintAsPackage}.
-     */
-    private static final boolean SKIP_EXPERIMENTAL = false;
-
-    /**
-     * Whether to fail on warnings, for {@link #lintAsPackage}.
-     */
-    private static final boolean FAIL_ON_WARNING = false;
-
-    /**
-     * Whether to lint all sources as a package (WPA), for
-     * {@link #lintAsPackage}.
-     */
-    private static final boolean LINT_AS_PACKAGE = true;
-
-    /**
-     * Whether to skip linting entirely, for {@link #lintAsPackage}.
-     */
-    private static final boolean SKIP_LINTING = false;
-
     @Test
     void summarizesAllThreeSeveritiesTogether() {
         final Map<Severity, Integer> counts = new EnumMap<>(Severity.class);
@@ -123,15 +97,59 @@ final class LintingTest {
             compile,
             target,
             cache,
-            LintingTest.CACHE_ENABLED,
+            LintingTest.cacheEnabled(),
             "0.0.0",
             Collections.emptyList(),
             Collections.emptyList(),
-            LintingTest.SKIP_EXPERIMENTAL,
-            LintingTest.FAIL_ON_WARNING,
-            LintingTest.LINT_AS_PACKAGE,
-            LintingTest.SKIP_LINTING
+            LintingTest.skipExperimentalLints(),
+            LintingTest.failOnWarning(),
+            LintingTest.asPackage(),
+            LintingTest.skipLinting()
         ).exec();
+    }
+
+    /**
+     * Whether caching is enabled, for {@link #lintAsPackage(TjsForeign, Path, Path)}.
+     * @return True
+     */
+    private static boolean cacheEnabled() {
+        return true;
+    }
+
+    /**
+     * Whether to skip experimental lints, for
+     * {@link #lintAsPackage(TjsForeign, Path, Path)}.
+     * @return False
+     */
+    private static boolean skipExperimentalLints() {
+        return false;
+    }
+
+    /**
+     * Whether to fail on warnings, for
+     * {@link #lintAsPackage(TjsForeign, Path, Path)}.
+     * @return False
+     */
+    private static boolean failOnWarning() {
+        return false;
+    }
+
+    /**
+     * Whether to lint all sources as a package (WPA), for
+     * {@link #lintAsPackage(TjsForeign, Path, Path)}.
+     * @return True
+     */
+    private static boolean asPackage() {
+        return true;
+    }
+
+    /**
+     * Whether to skip linting entirely, for
+     * {@link #lintAsPackage(TjsForeign, Path, Path)}.
+     * @return False
+     */
+    private static boolean skipLinting() {
+        return false;
     }
 
     /**
