@@ -178,7 +178,7 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
             artifact.getFile()
         );
         try {
-            new Unpacked(artifact.getFile().toPath(), dest).unpack();
+            new Unpacking(artifact.getFile().toPath(), dest).unpack();
         } catch (final IOException ex) {
             throw new IllegalStateException(
                 String.format(

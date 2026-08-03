@@ -19,18 +19,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link Unpacked}.
+ * Test case for {@link Unpacking}.
  * @since 0.62.0
  */
 @ExtendWith(MktmpResolver.class)
-final class UnpackedTest {
+final class UnpackingTest {
 
     @Test
     void unpacksSafeEntriesInsideDestination(@Mktmp final Path temp) throws Exception {
         final Path jar = temp.resolve("safe.jar");
-        UnpackedTest.jar(jar, "org/eolang/ok.eo", "[] > ok");
+        UnpackingTest.jar(jar, "org/eolang/ok.eo", "[] > ok");
         final Path dest = temp.resolve("unpacked");
-        new Unpacked(jar, dest).unpack();
+        new Unpacking(jar, dest).unpack();
         MatcherAssert.assertThat(
             "Safe zip entry must land inside the destination directory",
             dest.resolve("org/eolang/ok.eo").toFile(),
@@ -41,10 +41,10 @@ final class UnpackedTest {
     @Test
     void rejectsZipEntryThatEscapesDestination(@Mktmp final Path temp) throws IOException {
         final Path jar = temp.resolve("evil.jar");
-        UnpackedTest.jar(jar, "../evil-escaped.txt", "pwned");
+        UnpackingTest.jar(jar, "../evil-escaped.txt", "pwned");
         Assertions.assertThrows(
             IOException.class,
-            () -> new Unpacked(jar, temp.resolve("unpacked")).unpack(),
+            () -> new Unpacking(jar, temp.resolve("unpacked")).unpack(),
             "Zip Slip entry must be rejected instead of writing outside the destination"
         );
     }

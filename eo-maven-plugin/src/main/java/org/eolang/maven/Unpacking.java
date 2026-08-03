@@ -15,7 +15,7 @@ import java.util.zip.ZipInputStream;
  * Unpacks a JAR into a directory, rejecting Zip Slip paths.
  * @since 0.62.0
  */
-final class Unpacked {
+final class Unpacking {
 
     /**
      * Path to the JAR file.
@@ -32,7 +32,7 @@ final class Unpacked {
      * @param archive Path to the JAR file
      * @param target Destination directory
      */
-    Unpacked(final Path archive, final Path target) {
+    Unpacking(final Path archive, final Path target) {
         this.jar = archive;
         this.dest = target;
     }
