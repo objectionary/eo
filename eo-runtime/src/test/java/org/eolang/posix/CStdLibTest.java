@@ -11,6 +11,8 @@ import io.github.artsok.RepeatedIfExceptionsTest;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.NetworkPort;
@@ -52,6 +54,11 @@ final class CStdLibTest {
      * How long to wait for a background server thread to finish.
      */
     private static final long JOIN_MILLIS = 5_000L;
+
+    /**
+     * How long to wait for a background server thread to start listening.
+     */
+    private static final long LISTEN_MILLIS = 5_000L;
 
     @RepeatedIfExceptionsTest(repeats = 3)
     void connectsToLocalServerViaSyscall() throws IOException {
@@ -133,11 +140,12 @@ final class CStdLibTest {
         final AtomicInteger accept = new AtomicInteger(0);
         final AtomicReference<String> error = new AtomicReference<>();
         final AtomicInteger port = new AtomicInteger(new RandomPort().pick());
+        final CountDownLatch listening = new CountDownLatch(1);
         final Thread server = new Thread(
-            () -> this.acceptViaCStdLib(port, accept, error)
+            () -> this.acceptViaCStdLib(port, accept, error, listening)
         );
         server.start();
-        Thread.sleep(2000);
+        this.ensure(listening.await(CStdLibTest.LISTEN_MILLIS, TimeUnit.MILLISECONDS));
         final int client = this.openSocket();
         try {
             this.ensure(client > 0);
@@ -169,11 +177,12 @@ final class CStdLibTest {
         final AtomicInteger received = new AtomicInteger(-1);
         final AtomicReference<byte[]> bytes = new AtomicReference<>();
         final AtomicInteger port = new AtomicInteger(new RandomPort().pick());
+        final CountDownLatch listening = new CountDownLatch(1);
         final Thread server = new Thread(
-            () -> this.recvViaCStdLib(port, received, bytes)
+            () -> this.recvViaCStdLib(port, received, bytes, listening)
         );
         server.start();
-        Thread.sleep(2000);
+        this.ensure(listening.await(CStdLibTest.LISTEN_MILLIS, TimeUnit.MILLISECONDS));
         final int client = this.openSocket();
         try {
             this.ensure(client > 0);
@@ -319,16 +328,20 @@ final class CStdLibTest {
      * @param port Port to bind to, updated if the candidate is taken
      * @param accept Out-parameter: the accepted socket descriptor
      * @param error Out-parameter: the error string if accept failed
+     * @param listening Counted down once listen() succeeds, so the client
+     *  does not have to guess when the server is ready
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private void acceptViaCStdLib(
         final AtomicInteger port, final AtomicInteger accept,
-        final AtomicReference<String> error
+        final AtomicReference<String> error, final CountDownLatch listening
     ) {
         final int socket = this.openSocket();
         try {
             this.ensure(socket > 0);
             this.bound(socket, port);
             this.ensure(CStdLib.INSTANCE.listen(socket, CStdLibTest.LISTEN_BACKLOG) == 0);
+            listening.countDown();
             final SockaddrIn addr = new SockaddrIn();
             final int accepted = CStdLib.INSTANCE.accept(
                 socket, addr, new IntByReference(addr.size())
@@ -352,10 +365,13 @@ final class CStdLibTest {
      * @param port Port to bind to, updated if the candidate is taken
      * @param received Out-parameter: number of bytes received
      * @param bytes Out-parameter: the bytes received
+     * @param listening Counted down once listen() succeeds, so the client
+     *  does not have to guess when the server is ready
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private void recvViaCStdLib(
         final AtomicInteger port, final AtomicInteger received,
-        final AtomicReference<byte[]> bytes
+        final AtomicReference<byte[]> bytes, final CountDownLatch listening
     ) {
         final int socket = this.openSocket();
         int accepted = 0;
@@ -363,6 +379,7 @@ final class CStdLibTest {
             this.ensure(socket > 0);
             this.bound(socket, port);
             this.ensure(CStdLib.INSTANCE.listen(socket, CStdLibTest.LISTEN_BACKLOG) == 0);
+            listening.countDown();
             final SockaddrIn addr = new SockaddrIn();
             accepted = CStdLib.INSTANCE.accept(
                 socket, addr, new IntByReference(addr.size())

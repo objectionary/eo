@@ -6,6 +6,7 @@ package org.eolang;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 
@@ -18,7 +19,6 @@ import java.net.ServerSocket;
  *
  * @since 0.40.0
  */
-@SuppressWarnings("PMD.AvoidUsingHardCodedIP")
 public final class RandomServer implements AutoCloseable {
 
     /**
@@ -57,7 +57,7 @@ public final class RandomServer implements AutoCloseable {
         final ServerSocket opened = new ServerSocket();
         try {
             opened.setReuseAddress(true);
-            opened.bind(new InetSocketAddress("127.0.0.1", 0));
+            opened.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), 0));
         } catch (final IOException exception) {
             opened.close();
             throw exception;
