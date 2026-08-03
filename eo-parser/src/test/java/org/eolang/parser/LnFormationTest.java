@@ -288,6 +288,22 @@ final class LnFormationTest {
     }
 
     @Test
+    void acceptsPlusGreaterAttributeRightAfterMeta() {
+        final Emit emit = new Emit();
+        final Globals globals = new Globals();
+        globals.markMeta();
+        globals.blank();
+        new LnFormation(new Span("[] +> works", 3))
+            .into(new Stack(), globals, emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `+>` test attribute right after meta preceded by one blank line must not emit an error",
+            LnFormationTest.render(emit),
+            Matchers.not(XhtmlMatchers.hasXPath("/object/errors"))
+        );
+    }
+
+    @Test
     void marksFirstObjectEmittedAfterPush() {
         final Globals globals = new Globals();
         new LnFormation(new Span("[] > foo", 1))
