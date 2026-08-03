@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A void's own type annotation (`/Q.chunk`) must be probed too, the same way
+# the callback arg-types annotation (`/{Q.chunk}`) already is (#6174).
+# `foo`'s own atom signature (`/Q.bytes`) is the exact same kind of forma
+# reference and must be probed too. See #6212.
+probes:
+  - 'chunk'
+  - 'bytes'
+eo: |
+  +package custom
+  +version 0.0.0
+
+  [] > foo /Q.bytes
+    ? > size /Q.chunk

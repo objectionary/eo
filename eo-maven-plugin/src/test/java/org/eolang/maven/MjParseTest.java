@@ -17,6 +17,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.bytes.Sha256DigestOf;
@@ -25,6 +26,7 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.text.HexOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.parser.Canonical;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -340,7 +342,8 @@ final class MjParseTest {
 
     /**
      * The parse cache version segment for a program with a single object.
-     * It mirrors what {@link Parsing} computes: the plugin version plus a
+     * It mirrors what {@link Parsing} computes: the plugin version, a
+     * fingerprint of the {@link Canonical} parse-stage XSLs, plus a
      * SHA-256 digest of the qualified names of the local package objects
      * (here, the identifier of the only object).
      * @param identifier The tojo identifier of the only registered object
@@ -348,8 +351,13 @@ final class MjParseTest {
      */
     private static String cacheVersion(final String identifier) {
         return String.format(
-            "%s-%s",
+            "%s-%s-%s",
             FakeMaven.pluginVersion(),
+            new Fingerprint(
+                Stream.concat(
+                    Canonical.XSLS.stream(), Canonical.IMPORTS.stream()
+                ).toArray(String[]::new)
+            ).get(),
             new UncheckedText(
                 new HexOf(new Sha256DigestOf(new InputOf(identifier)))
             ).asString()

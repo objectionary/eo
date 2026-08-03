@@ -152,9 +152,44 @@ final class PhNest implements Phi {
     private Phi extension(final String name) {
         final String fqn = String.join(".", this.pkg, name);
         if (!this.objects.containsKey(fqn)) {
+            this.attest();
             this.objects.put(fqn, PhNest.load(new JavaPath(fqn).toString()));
         }
         return this.objects.get(fqn).copy();
+    }
+
+    /**
+     * Refuse the package unless its Java counterpart names the EO package it
+     * was transpiled from.
+     *
+     * <p>Every Java package that {@code eo-maven-plugin} makes out of XMIR
+     * carries {@link XmirPackage} on its {@code package-info}, holding the EO
+     * name the package came from. A Java package without it was never
+     * transpiled, so the classes inside it are not EO objects and an extension
+     * taken from one would be an arbitrary Java class. Only the package this
+     * object stands for is attested, never the package holding the object
+     * itself, which is the runtime root and comes from no EO package.</p>
+     */
+    private void attest() {
+        final String java = new JavaPath(this.pkg).pkg();
+        final String pinfo = String.format("%s.package-info", java);
+        final XmirPackage meta;
+        try {
+            meta = Class.forName(pinfo).getAnnotation(XmirPackage.class);
+        } catch (final ClassNotFoundException ex) {
+            throw new ExFailure(
+                String.format(
+                    "Can't attest EO package \"%s\" without the class \"%s\"", this.pkg, pinfo
+                ),
+                ex
+            );
+        }
+        if (meta == null) {
+            throw new ExFailure(
+                "Java package \"%s\" of EO package \"%s\" carries no @XmirPackage annotation",
+                java, this.pkg
+            );
+        }
     }
 
     /**
