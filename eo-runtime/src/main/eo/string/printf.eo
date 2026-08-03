@@ -131,7 +131,8 @@
         number end
         number span
       T
-        "The format ends with an incomplete specifier, a conversion character is missing"
+        "The format %s ends with an incomplete specifier, a conversion character is missing".printf
+          * format
       if.
         25-.eq conv
         walk
@@ -148,7 +149,9 @@
             auto
             as-number.
               auto.plus 1
-          acc.concat padded
+          seq *
+            value
+            acc.concat padded
     args.at > arg
       number idx
     byte > conv!
@@ -168,7 +171,11 @@
             01-.eq datum
             00-.eq datum
           T
-            "The argument of the %s conversion is a bool, use the %b conversion instead"
+            "The argument %d of the %%s conversion is a bool, use the %%b conversion instead".printf
+              *
+                plus.
+                  number idx
+                  1
           seq *
             length.
               string datum
@@ -188,7 +195,9 @@
                   number limit
                   -1
             T
-              "The number doesn't fit into the long range of the %d conversion"
+              "The number %f doesn't fit into the long range of the %%d conversion".printf
+                *
+                  number numeric
             number numeric
         if.
           66-.eq conv
@@ -208,7 +217,9 @@
               capped
                 arg.as-bool.if "true" "false"
               T
-                "The conversion in the format is unsupported, only %s, %d, %f, %x and %b are"
+                "The conversion %x in the format is unsupported, only %%s, %%d, %%f, %%x and %%b are".printf
+                  *
+                    bytes conv
     arg.as-bytes > datum!
     flags-end > digits!
       number flags
@@ -309,25 +320,37 @@
             number dollar
             index.plus 1
       T
-        "The positional argument index in the format is too large"
+        "The positional argument index in the format %s is too large".printf
+          * format
       if.
         positional.as-bool.and
           lt.
             number idx
             0
         T
-          "The positional argument index in the format must be 1 or greater"
+          "The positional argument index %d in the format must be 1 or greater".printf
+            *
+              plus.
+                number idx
+                1
         if.
           gte.
             number idx
             args.length
           T
-            "The argument index in the format is out of bounds"
+            "The argument index %d in the format is out of bounds, only %d given".printf
+              *
+                plus.
+                  number idx
+                  1
+                args.length
           if.
             precise.as-bool.and
               64-.eq conv
             T
-              "A precision can't be applied to the %d conversion"
+              "A precision of %d can't be applied to the %%d conversion".printf
+                *
+                  number precision
             if.
               zero.as-bool.and
                 not.
@@ -335,7 +358,9 @@
                     64-.eq conv
                     66-.eq conv
               T
-                "The zero flag can only be applied to the %d and %f conversions"
+                "The zero flag can't be applied to the %x conversion, only to %%d and %%f".printf
+                  *
+                    bytes conv
               converted
     digits-value > width!
       number digits
