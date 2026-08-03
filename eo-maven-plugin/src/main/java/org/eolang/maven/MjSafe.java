@@ -32,8 +32,10 @@ import org.slf4j.impl.StaticLoggerBinder;
  *  {@link GlobalCache} and {@link GcShared} in {@link #caching(String)}
  *  pushed it to 32 and the suppression had to be added. Unload the class
  *  instead, the way the puzzle about the tojos lifecycle below asks, and
- *  the suppression can go. Until then no further step can be moved to
- *  {@link GlobalCache} without making this worse.
+ *  the suppression can go, together with the {@code @SuppressWarnings}
+ *  for the field count right below it, which the same unloading fixes.
+ *  Until then no further step can be moved to {@link GlobalCache}
+ *  without making this worse.
  * @checkstyle ClassFanOutComplexityCheck (5 lines)
  */
 @SuppressWarnings("PMD.TooManyFields")
