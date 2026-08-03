@@ -12,39 +12,34 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
- * Unpacks a JAR into a directory, rejecting Zip Slip paths.
- * @since 0.64
+ * A JAR (ZIP) archive that can extract itself into a directory.
+ * Rejects Zip Slip paths that would escape the destination.
+ * @since 0.64.0
  */
-final class Unpacking {
+final class Archive {
 
     /**
-     * Path to the JAR file.
+     * Path to the archive file.
      */
-    private final Path jar;
-
-    /**
-     * Destination directory.
-     */
-    private final Path dest;
+    private final Path file;
 
     /**
      * Ctor.
-     * @param archive Path to the JAR file
-     * @param target Destination directory
+     * @param path Path to the archive file
      */
-    Unpacking(final Path archive, final Path target) {
-        this.jar = archive;
-        this.dest = target;
+    Archive(final Path path) {
+        this.file = path;
     }
 
     /**
-     * Unpack the archive into {@link #dest}.
-     * @throws IOException If unpacking fails or an entry escapes {@link #dest}
+     * Extract entries into {@code dest}, refusing anything outside it.
+     * @param dest Destination directory
+     * @throws IOException If extraction fails or an entry escapes {@code dest}
      */
-    void unpack() throws IOException {
-        final Path root = this.dest.toAbsolutePath().normalize();
+    void extract(final Path dest) throws IOException {
+        final Path root = dest.toAbsolutePath().normalize();
         Files.createDirectories(root);
-        try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(this.jar))) {
+        try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(this.file))) {
             for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry()) {
                 final Path target = root.resolve(entry.getName()).normalize();
                 if (!target.startsWith(root)) {

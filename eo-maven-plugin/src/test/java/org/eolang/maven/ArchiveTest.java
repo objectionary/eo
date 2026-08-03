@@ -4,6 +4,8 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -15,22 +17,20 @@ import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import com.yegor256.Mktmp;
-import com.yegor256.MktmpResolver;
 
 /**
- * Test case for {@link Unpacking}.
- * @since 0.64
+ * Test case for {@link Archive}.
+ * @since 0.64.0
  */
 @ExtendWith(MktmpResolver.class)
-final class UnpackingTest {
+final class ArchiveTest {
 
     @Test
-    void unpacksSafeEntriesInsideDestination(@Mktmp final Path temp) throws Exception {
+    void extractsSafeEntriesInsideDestination(@Mktmp final Path temp) throws Exception {
         final Path jar = temp.resolve("safe.jar");
-        UnpackingTest.jar(jar, "org/eolang/ok.eo", "[] > ok");
-        final Path dest = temp.resolve("unpacked");
-        new Unpacking(jar, dest).unpack();
+        ArchiveTest.jar(jar, "org/eolang/ok.eo", "[] > ok");
+        final Path dest = temp.resolve("extracted");
+        new Archive(jar).extract(dest);
         MatcherAssert.assertThat(
             "Safe zip entry must land inside the destination directory",
             dest.resolve("org/eolang/ok.eo").toFile(),
@@ -41,10 +41,10 @@ final class UnpackingTest {
     @Test
     void rejectsZipEntryThatEscapesDestination(@Mktmp final Path temp) throws IOException {
         final Path jar = temp.resolve("evil.jar");
-        UnpackingTest.jar(jar, "../evil-escaped.txt", "pwned");
+        ArchiveTest.jar(jar, "../evil-escaped.txt", "pwned");
         Assertions.assertThrows(
             IOException.class,
-            () -> new Unpacking(jar, temp.resolve("unpacked")).unpack(),
+            () -> new Archive(jar).extract(temp.resolve("extracted")),
             "Zip Slip entry must be rejected instead of writing outside the destination"
         );
     }
