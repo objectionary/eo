@@ -19,13 +19,13 @@ jobs:
         include:
           - metric: suppressions
             pattern: '@SuppressWarnings|@checkstyle'
-            threshold: 368
+            threshold: 364
           - metric: smells
             pattern: 'static|null'
-            threshold: 853
+            threshold: 840
           - metric: atoms
             pattern: '@XmirObject'
-            threshold: 27
+            threshold: 26
           - metric: nodelists
             pattern: 'org\.w3c\.dom\.NodeList'
             threshold: 0
