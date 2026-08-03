@@ -1,0 +1,119 @@
+# Returns `text` padded on the left with zeros until it counts `width`
+# characters, keeping a leading minus sign in front of them, so that `-42`
+# padded to five characters becomes `-0042` and not `00-42`. Characters are
+# counted, and not bytes. A `text` of `width` characters or longer is
+# returned unchanged.
+# If `width` is not a finite non-negative integer (negative, fractional, nan
+# or infinite), the `cant-pad` fallback is returned, or the bottom object
+# when unbound.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text width cant-pad] > padded-zeros
+  if. > @
+    or.
+      0.gt width
+      width.is-integer.not
+    cant-pad
+      "Can't pad text to %f characters with zeros".printf
+        * width
+    if.
+      and.
+        0.lt
+          text.length >> len!
+        "-".eq
+          slice text 0 1
+      string
+        2D-.concat
+          as-bytes.
+            padded-left
+              slice
+                text
+                1
+                as-number.
+                  minus. (number len) 1
+              if.
+                1.gt width
+                0
+                as-number.
+                  width.minus 1
+              "0"
+              cant-pad
+      padded-left
+        text
+        width
+        "0"
+        cant-pad
+
+  eq. ++> can-count-characters-and-not-bytes
+    "00Ж"
+    padded-zeros
+      "Ж"
+      3
+
+  eq. ++> can-format-the-error-message-of-a-negative-width
+    "Can't pad text to -4.000000 characters with zeros"
+    padded-zeros
+      "7"
+      -4
+      message > [message]
+
+  eq. ++> can-keep-a-minus-sign-in-front-of-the-zeros
+    "-0042"
+    padded-zeros
+      "-42"
+      5
+
+  eq. ++> can-pad-a-positive-number-with-leading-zeros
+    "00042"
+    padded-zeros
+      "42"
+      5
+
+  eq. ++> can-pad-an-empty-text
+    "000"
+    padded-zeros
+      ""
+      3
+
+  eq. ++> can-return-a-longer-text-unchanged
+    "12345"
+    padded-zeros
+      "12345"
+      3
+
+  eq. ++> can-return-a-negative-text-of-the-exact-width-unchanged
+    "-42"
+    padded-zeros
+      "-42"
+      3
+
+  eq. ++> rejects-a-negative-width
+    "recovered"
+    padded-zeros
+      "7"
+      -4
+      "recovered" > [message]
+
+  eq. ++> rejects-a-non-integer-width
+    "recovered"
+    padded-zeros
+      "7"
+      3.5
+      "recovered" > [message]
+
+  eq. ++> rejects-an-infinite-width
+    "recovered"
+    padded-zeros
+      "7"
+      pinf
+      "recovered" > [message]
+
+  padded-zeros --> stops-on-a-negative-width
+    "7"
+    -4

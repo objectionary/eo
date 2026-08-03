@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -26,9 +27,11 @@ final class PackageInfos {
     private static final Pattern PACKAGE = Pattern.compile("EO_?");
 
     /**
-     * Pattern for replacing first default org.eolang package.
+     * Pattern for replacing first default org.eolang package, with the dot
+     * that follows it optional, so that the root package itself is left with
+     * an empty EO name rather than with the Java name of the base.
      */
-    private static final Pattern BASE = Pattern.compile("org.eolang.");
+    private static final Pattern BASE = Pattern.compile("^org\\.eolang\\.?");
 
     /**
      * Not allowed characters in package names.
@@ -46,11 +49,18 @@ final class PackageInfos {
     private final Path root;
 
     /**
+     * Directories with the Java sources a human wrote.
+     */
+    private final Collection<Path> sources;
+
+    /**
      * Constructor.
      * @param root In which directory create files
+     * @param sources Where the hand-written Java sources are
      */
-    PackageInfos(final Path root) {
+    PackageInfos(final Path root, final Collection<Path> sources) {
         this.root = root;
+        this.sources = sources;
     }
 
     /**
@@ -67,6 +77,7 @@ final class PackageInfos {
                     file -> Files.isDirectory(file)
                         && !file.equals(this.root)
                         && !file.equals(this.root.resolve("org"))
+                        && !this.taken(file)
                     )
                     .collect(Collectors.toList());
             }
@@ -94,6 +105,22 @@ final class PackageInfos {
         return size;
     }
 
+    /**
+     * Does the package of this directory already have a hand-written
+     * {@code package-info.java} in one of the {@link #sources}? Javac dies with
+     * an internal error when one package has two {@code package-info.java} and
+     * one of them carries an annotation, so the generated file gives way to the
+     * one a human wrote.
+     * @param dir The directory under the {@link #root}
+     * @return TRUE if the package already has its own package-info.java
+     */
+    private boolean taken(final Path dir) {
+        final Path pkg = this.root.relativize(dir);
+        return this.sources.stream().anyMatch(
+            src -> Files.exists(src.resolve(pkg).resolve("package-info.java"))
+        );
+    }
+
     private static String content(final String pkg) {
         return String.join(
             System.lineSeparator(),
@@ -102,7 +129,7 @@ final class PackageInfos {
             " * don't modify it, all changes will be lost anyway.",
             " */",
             String.format(
-                "// @org.eolang.XmirPackage(\"%s\")",
+                "@org.eolang.XmirPackage(\"%s\")",
                 PackageInfos.BASE.matcher(
                     PackageInfos.PACKAGE.matcher(pkg).replaceAll("")
                 ).replaceFirst("")

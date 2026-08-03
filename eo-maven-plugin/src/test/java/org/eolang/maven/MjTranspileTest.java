@@ -82,6 +82,35 @@ final class MjTranspileTest {
     }
 
     @Test
+    void tracksStepsOfProgramWithTwoObjects(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "the first tracked step of a program holding two objects did not leave its XMIR in the pre-transpile directory",
+            new FakeMaven(temp).withProgram(MjTranspileTest.pair())
+                .with("trackTransformationSteps", true)
+                .execute(MjParse.class)
+                .execute(MjTranspile.class)
+                .result(),
+            Matchers.hasKey(
+                String.format("target/%s/examples/x/00-set-locators.xml", Transpiling.PRE)
+            )
+        );
+    }
+
+    @Test
+    void transpilesSecondObjectOfProgramWhileTrackingSteps(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "the second object of a tracked program did not reach the generated Java",
+            new FakeMaven(temp).withProgram(MjTranspileTest.pair())
+                .with("trackTransformationSteps", true)
+                .execute(MjParse.class)
+                .execute(MjTranspile.class)
+                .result(),
+            Matchers.hasKey("target/generated/org/eolang/EO_examples/EOy.java")
+        );
+    }
+
+    @Test
     void wrapsObjectsIntoPhCoverageWhenTrackingEnabled(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "the generated Java must wrap located objects into PhCoverage when coverageTracking is on",
@@ -289,7 +318,7 @@ final class MjTranspileTest {
                     .get("target/generated/org/eolang/EO_foo/EO_x/package-info.java")
             ).asString(),
             Matchers.allOf(
-                Matchers.containsString("// @org.eolang.XmirPackage(\"foo.x\")"),
+                Matchers.containsString("@org.eolang.XmirPackage(\"foo.x\")"),
                 Matchers.containsString("package org.eolang.EO_foo.EO_x;")
             )
         );
@@ -511,6 +540,23 @@ final class MjTranspileTest {
     private static String instantiating() {
         return String.format(
             "+package foo.x%n%n[] > main%n  [] > inner%n    42 > @%n  42.plus > @%n    []"
+        );
+    }
+
+    /**
+     * The EO program holding two top-level objects.
+     * @return Source code of the program
+     */
+    private static String pair() {
+        return String.join(
+            System.lineSeparator(),
+            "+package examples",
+            "",
+            "# First.",
+            "[] > x",
+            "",
+            "# Second.",
+            "[] > y"
         );
     }
 

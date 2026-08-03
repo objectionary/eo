@@ -62,7 +62,6 @@ final class LnMethod implements Line {
 
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
-        Blanks.checkPlain(this.span, globals, emit);
         this.precheck(stack);
         final Level top = stack.top();
         final Tokens tokens = this.dottedTokens();
@@ -74,6 +73,12 @@ final class LnMethod implements Line {
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
+        suffix.rejectAtomOutsideFormation(this.span);
+        if (suffix.test()) {
+            Blanks.checkTest(this.span, globals, emit);
+        } else {
+            Blanks.checkPlain(this.span, globals, emit);
+        }
         Comments.seal(globals, emit, this.span);
         if (outer != null && stack.below() != null) {
             stack.below().upgradeArgBinding();

@@ -68,10 +68,11 @@ final class LnPipe implements Line {
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
-        if (suffix.atom() || suffix.test()) {
+        suffix.rejectAtomOutsideFormation(this.span);
+        if (suffix.test()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
-                "a pipe application cannot declare an atom or a test attribute"
+                "a pipe application cannot declare a test attribute"
             );
         }
         Comments.seal(globals, emit, this.span);

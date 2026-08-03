@@ -59,7 +59,6 @@ final class LnReversed implements Line {
 
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
-        Blanks.checkPlain(this.span, globals, emit);
         final Tokens tokens = new Tokens(this.span.body(), this.span);
         final Value head = LnReversed.readHead(tokens);
         if (tokens.atEnd() || !tokens.dispatchAhead()) {
@@ -80,6 +79,12 @@ final class LnReversed implements Line {
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
+        suffix.rejectAtomOutsideFormation(this.span);
+        if (suffix.test()) {
+            Blanks.checkTest(this.span, globals, emit);
+        } else {
+            Blanks.checkPlain(this.span, globals, emit);
+        }
         Comments.seal(globals, emit, this.span);
         final Kind kind;
         final Openness openness;

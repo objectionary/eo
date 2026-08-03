@@ -26,8 +26,6 @@ import org.cactoos.list.ListOf;
 import org.eolang.lints.Defect;
 import org.eolang.lints.Severity;
 import org.eolang.lints.Source;
-import org.eolang.parser.OnDefault;
-import org.eolang.parser.OnDetailed;
 import org.eolang.wpa.Program;
 import org.w3c.dom.Node;
 import org.xembly.Directives;
@@ -53,6 +51,7 @@ import org.xembly.Xembler;
  *     Naming the class {@code Linting} avoids this collision.
  * </p>
  * @since 0.31.0
+ * @checkstyle ClassFanOutComplexityCheck (3 lines)
  */
 @SuppressWarnings("PMD.GodClass")
 final class Linting implements Step {
@@ -156,10 +155,6 @@ final class Linting implements Step {
      * @param warning Whether to fail on warnings
      * @param pkg Whether to lint all sources as a package
      * @param skip Whether to skip linting entirely
-     * @todo #5102:90min Reduce long parameter lists in Linting, Parse, Pull, and similar classes.
-     *  Linting currently takes 12 constructor parameters. Parse, Pull, and Probe have similar
-     *  issues. The long parameter lists make call sites hard to read and fragile — adding a new
-     *  option requires updating every call site across the codebase.
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
     Linting(
@@ -247,7 +242,7 @@ final class Linting implements Step {
         }
         final int passed = new Threaded<>(
             programs,
-            tojo -> this.lintOne(tojo, counts, seen, this.skipSourceLints.toArray(new String[0]))
+            tojo -> this.lintOne(tojo, counts, seen)
         ).total();
         if (programs.isEmpty()) {
             Logger.info(this, "There are no XMIR programs, nothing to lint individually");
@@ -305,41 +300,33 @@ final class Linting implements Step {
      * @param tojo Foreign tojo
      * @param counts Counts of errors, warnings, and critical
      * @param seen Defects seen so far across all files
-     * @param unlints Lints to skip
      * @return Amount of passed tojos (1 if passed, 0 if errors)
      * @throws Exception If failed to lint
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     private int lintOne(
         final TjForeign tojo,
         final Map<Severity, Integer> counts,
-        final Collection<String> seen,
-        final String... unlints
+        final Collection<String> seen
     ) throws Exception {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.resolve(Linting.DIR);
-        final Path target = new Place(
-            new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get()
-        ).make(base, MjAssemble.XMIR);
+        final Path target = new LintTarget(xmir, source).under(base);
         if (this.cacheEnabled) {
             this.guard.apply(
                 source, target, base.relativize(target),
                 new Cache(
                     new CachePath(
                         this.cacheDir.resolve(Linting.CACHE),
-                        this.version,
+                        this.cacheVersion(),
                         new TojoHash(tojo).get()
                     ),
-                    src -> this.linted(
-                        xmir,
-                        unlints
-                    ).toString()
+                    src -> this.linted(xmir).toString()
                 )
             );
         } else {
             new Saved(
-                this.linted(xmir, unlints).toString(),
+                this.linted(xmir).toString(),
                 target
             ).value();
         }
@@ -359,6 +346,28 @@ final class Linting implements Step {
         }
         tojo.withLinted(target);
         return 1;
+    }
+
+    /**
+     * Cache-key version segment for the per-file lint cache: the plugin
+     * version combined with {@link #skipSourceLints} and
+     * {@link #skipExperimentalLints}, since both change what
+     * {@link #linted(XML)} reports for the exact same source XMIR
+     * (see #6235). {@link #skipSourceLints} is hashed rather than joined
+     * in verbatim, since a project skipping a dozen full lint names would
+     * otherwise push this single path segment past the 255-byte limit
+     * ext4 and APFS enforce.
+     * @return The version segment for {@link CachePath}
+     */
+    private String cacheVersion() {
+        return String.format(
+            "%s-%b-%s",
+            this.version,
+            this.skipExperimentalLints,
+            new Hashed(
+                this.skipSourceLints.stream().sorted().collect(Collectors.joining(","))
+            ).get()
+        );
     }
 
     /**
@@ -465,14 +474,13 @@ final class Linting implements Step {
     /**
      * Find all possible linting defects and add them to the XMIR.
      * @param xmir The XML before linting
-     * @param unlints Lints to skip
      * @return XML after linting
      */
-    private XML linted(final XML xmir, final String... unlints) {
+    private XML linted(final XML xmir) {
         final Node node = xmir.inner();
         final Collection<Defect> defects = Linting.existing(new Xnav(node));
         final Collection<Defect> found = new Source(xmir)
-            .without(unlints)
+            .without(this.skipSourceLints.toArray(new String[0]))
             .defects()
             .stream().filter(
                 defect -> this.skipExperimentalLints || !defect.experimental()

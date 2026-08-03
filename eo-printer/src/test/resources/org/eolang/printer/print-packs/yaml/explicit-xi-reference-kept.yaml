@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# An explicit `$.foo` (self, no `^` hop) denotes a different reference than a
+# bare `foo`, which resolves to `^.foo` (the enclosing formation's own scope)
+# whenever the immediate formation has no `foo` of its own. The printer used to
+# drop the `$.` prefix exactly as it correctly does for a redundant `^.`,
+# silently turning `$.foo` into a bare reference and changing its meaning on
+# reparse (#6237). The explicit `$.` must survive printing.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    42 > foo
+    [] > inner
+      $.foo > @
+
+printed: |
+  [] > app
+    42 > foo
+    $.foo > [] > inner

@@ -265,6 +265,19 @@
     <xsl:variable name="self-prefix" select="concat($eo:program, '.', $package, '.')"/>
     <xsl:variable name="self-rest" select="substring-after(@base, $self-prefix)"/>
     <xsl:variable name="self-first" select="if (contains($self-rest, '.')) then substring-before($self-rest, '.') else $self-rest"/>
+    <!--
+    Whether some formation this reference is actually nested inside (not
+    just the innermost one - a zero-hop reference here can legitimately
+    reach a handle owned by any enclosing formation, not only the
+    nearest, since resolve-local-names.xsl already resolved it) owns
+    "hop-name" as its own file-local "&gt;&gt; hop-name" handle - mirrors
+    resolve-local-names.xsl's own "eo:captor" scoping (#5875, #5780): a
+    handle is lexically scoped to its declaring formation and the
+    formations nested inside it, so a same-named handle declared by some
+    unrelated formation elsewhere in the file (not an ancestor of this
+    reference at all) must not suppress the "$." marker here.
+    -->
+    <xsl:variable name="local-handle" select="//o[@local=$hop-name][ancestor::o[not(@base)][1] intersect current()/ancestor::o[not(@base)]][1]"/>
     <xsl:choose>
       <!-- NOT OPTIMIZED TUPLE -->
       <xsl:when test="@star">
@@ -308,6 +321,29 @@
         self-reference as `^.name` instead of the readable `name`.
         -->
         <xsl:value-of select="eo:translate-path($hop-rest)"/>
+      </xsl:when>
+      <xsl:when test="not(@local) and $segments[1] = $eo:xi and $rho-count = 0 and $hop-name != '' and $hop-name != $eo:rho and $hop-name != $eo:phi and $hop-name != $eo:xi and $hop-name != $eo:program and empty(ancestor::o[not(@base)][1]/o[@name=$hop-name]) and empty($local-handle)">
+        <!--
+        An explicit "$.name" (zero ρ hops) whose immediate enclosing
+        formation has no "name" of its own, and which is not a
+        ">> name" handle owned by a formation this reference actually
+        nests inside either ("local-handle" mirrors resolve-local-names.xsl's
+        lexically-scoped "eo:captor", #5875 — a same-named handle declared
+        by some unrelated formation elsewhere in the file, one this
+        reference is not nested inside, must not count), denotes a
+        genuinely different reference than a bare "name" would (which
+        would instead resolve via an implicit ρ hop into an outer scope,
+        per the branch above) — #6237. Render it with its "$." marker so
+        reparsing keeps the same meaning. When the immediate formation
+        DOES own "name", or "name" is such an in-scope file-local handle,
+        bare and "$.name" resolve identically, so the otherwise branch
+        below safely prints it bare, matching a plain same-scope
+        reference. A node that itself carries "@local" is a moniker's own
+        bound value, already relocated in place of its reference site by
+        merge-monikers.xsl, so its ancestor context here no longer
+        reflects its original scope — skip it too, matching bare.
+        -->
+        <xsl:value-of select="concat('$.', eo:translate-path($hop-rest))"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="eo:surface(@base)"/>
