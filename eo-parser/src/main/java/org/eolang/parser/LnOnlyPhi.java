@@ -73,8 +73,10 @@ final class LnOnlyPhi implements Line {
         this.span = source;
     }
 
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
+        final int blanks = globals.pendingBlanks();
         Blanks.enterAfterMeta(this.span, globals, emit);
         final String body = this.span.body();
         final int phi = Eo.topLevelGreaterBracketIndex(body);
@@ -121,7 +123,7 @@ final class LnOnlyPhi implements Line {
             );
         }
         if (suffix.test()) {
-            Blanks.checkTest(this.span, globals, emit);
+            Blanks.checkTest(this.span, blanks, emit);
         }
         Comments.seal(globals, emit, this.span);
         final Tokens tokens = this.slot(

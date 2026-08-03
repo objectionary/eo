@@ -85,6 +85,22 @@ final class LnOnlyPhiTest {
     }
 
     @Test
+    void acceptsPlusGreaterAttributeRightAfterMeta() {
+        final Emit emit = new Emit();
+        final Globals globals = new Globals();
+        globals.markMeta();
+        globals.blank();
+        new LnOnlyPhi(new Span("false > [] +> throws-on", 3))
+            .into(new Stack(), globals, emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "an inline-phi `+>` test attribute right after meta preceded by one blank line must not emit any error",
+            LnOnlyPhiTest.render(emit),
+            Matchers.not(XhtmlMatchers.hasXPath("/object/errors"))
+        );
+    }
+
+    @Test
     void emitsFormationWithName() {
         final Emit emit = new Emit();
         new LnOnlyPhi(new Span("right > [x] > left", 1))
