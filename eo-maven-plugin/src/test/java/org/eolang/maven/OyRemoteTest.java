@@ -144,6 +144,24 @@ final class OyRemoteTest {
     }
 
     @Test
+    void reportsNameInTheEoObjectSlotWhenObjectNotFound() throws Exception {
+        MatcherAssert.assertThat(
+            "The object name must show up in the 'EO object' slot of the message",
+            OyRemoteTest.notFoundMessage(),
+            Matchers.containsString("EO object 'org.eolang.txt.sprintf'")
+        );
+    }
+
+    @Test
+    void reportsUrlInTheByUrlSlotWhenObjectNotFound() throws Exception {
+        MatcherAssert.assertThat(
+            "The URL must show up in the 'by url' slot of the message",
+            OyRemoteTest.notFoundMessage(),
+            Matchers.containsString("by url: http://127.0.0.1")
+        );
+    }
+
+    @Test
     @ExtendWith(WeAreOnline.class)
     void checksPresenceOfDirectoryWithNarrowHash() throws IOException {
         final String directory = "tuple";
@@ -159,5 +177,40 @@ final class OyRemoteTest {
             ).isDirectory(directory),
             Matchers.is(true)
         );
+    }
+
+    /**
+     * Drive {@link OyRemote#get(String)} against a local server that always
+     * answers 404, and return the "not found" message it fails with.
+     * @return The exception message
+     * @throws Exception If the test setup itself fails
+     */
+    private static String notFoundMessage() throws Exception {
+        final HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext(
+            "/",
+            exchange -> {
+                final byte[] body = "404: Not Found".getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(404, body.length);
+                exchange.getResponseBody().write(body);
+                exchange.close();
+            }
+        );
+        server.start();
+        try {
+            final String tpl = String.format(
+                "http://127.0.0.1:%d/%%s/%%s.eo", server.getAddress().getPort()
+            );
+            return Assertions.assertThrows(
+                IOException.class,
+                () -> new OyRemote(
+                    new OyRemote.UrlOy(tpl, "stub"),
+                    new OyRemote.UrlOy(tpl, "stub")
+                ).get("org.eolang.txt.sprintf").stream(),
+                "Expected an IOException reporting the object as not found"
+            ).getMessage();
+        } finally {
+            server.stop(0);
+        }
     }
 }

@@ -1,0 +1,93 @@
+# Returns the first `limit` characters of `text`, so that `Jeffrey` truncated
+# to three characters becomes `Jef`. Characters are counted, and not bytes,
+# so a multi-byte character counts as one. A `text` of `limit` characters
+# or shorter is returned unchanged, which is how this differs from `slice`,
+# where a `limit` beyond the end of the `text` terminates the computation.
+# If `limit` is not a finite non-negative integer (negative, fractional, nan
+# or infinite), the `cant-truncate` fallback is returned, or the bottom
+# object when unbound.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[text limit cant-truncate] > truncated
+  if. > @
+    or.
+      0.gt limit
+      limit.is-integer.not
+    cant-truncate
+      "Can't truncate text to %f characters".printf
+        * limit
+    if.
+      limit.lt text.length
+      slice
+        text
+        0
+        limit
+      text
+
+  eq. ++> can-count-characters-and-not-bytes
+    "Жу"
+    truncated
+      "Жук"
+      2
+
+  eq. ++> can-format-the-error-message-of-a-negative-limit
+    "Can't truncate text to -3.000000 characters"
+    truncated
+      "Jeff"
+      -3
+      message > [message]
+
+  eq. ++> can-return-a-shorter-text-unchanged
+    "hi"
+    truncated
+      "hi"
+      9
+
+  eq. ++> can-return-a-text-of-the-exact-limit-unchanged
+    "hey"
+    truncated
+      "hey"
+      3
+
+  eq. ++> can-truncate-to-an-empty-text
+    ""
+    truncated
+      "Jeffrey"
+      0
+
+  eq. ++> can-truncate-to-fewer-characters
+    "Jef"
+    truncated
+      "Jeffrey"
+      3
+
+  eq. ++> rejects-a-negative-limit
+    "recovered"
+    truncated
+      "Jeff"
+      -3
+      "recovered" > [message]
+
+  eq. ++> rejects-a-non-integer-limit
+    "recovered"
+    truncated
+      "Jeff"
+      1.75
+      "recovered" > [message]
+
+  eq. ++> rejects-an-infinite-limit
+    "recovered"
+    truncated
+      "Jeff"
+      pinf
+      "recovered" > [message]
+
+  truncated --> stops-on-a-negative-limit
+    "Jeff"
+    -3

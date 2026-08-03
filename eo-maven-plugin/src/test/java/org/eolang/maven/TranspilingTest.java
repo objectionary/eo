@@ -47,7 +47,8 @@ final class TranspilingTest {
             Paths.get("target/xsl-measures.csv"),
             new Tracking(false, false),
             false,
-            "PhDefault"
+            "PhDefault",
+            Collections.singleton(Paths.get("src/main/java"))
         );
     }
 }

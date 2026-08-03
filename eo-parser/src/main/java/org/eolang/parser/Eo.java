@@ -338,13 +338,16 @@ final class Eo implements Iterable<Directive> {
         final Span span, final Stack stack, final Globals globals, final Emit emit
     ) {
         if (Eo.closesTextBlock(span, globals)) {
+            stack.popDeeperThan(span.indent());
             final int tstartsen = emit.savepoint();
+            final int frame = stack.size();
             try {
-                stack.popDeeperThan(span.indent());
                 new LnTextBlock(span).into(stack, globals, emit);
             } catch (final ParseError err) {
                 emit.rollback(tstartsen);
+                stack.silentTruncate(frame);
                 emit.error(err.line(), err.pos(), err.getMessage());
+                globals.closeTextBlock();
             }
         } else {
             final String raw = span.text();
