@@ -19,7 +19,7 @@ jobs:
         include:
           - metric: suppressions
             pattern: '@SuppressWarnings|@checkstyle'
-            threshold: 368
+            threshold: 367
           - metric: smells
             pattern: 'static|null'
             threshold: 853
