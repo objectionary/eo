@@ -20,12 +20,11 @@ import java.util.function.Supplier;
  * dependency's XMIR invalidates the cached verdict the same way a change in
  * the project's own sources already does (see {@link Linting}, #6214).</p>
  *
- * <p>{@link #get()} joins each entry with a fixed LF character, not the
- * platform line separator, so the fingerprint is the same on every OS
+ * <p>{@link #get()} frames each entry with a zero byte rather than any
+ * textual separator, so the fingerprint carries no platform line separator
  * and a cache built on one machine stays valid on another.</p>
  *
  * @since 0.64
- * @checkstyle ProhibitLineSeparatorInStringsCheck (60 lines)
  */
 final class CompileScopeFingerprint implements Supplier<String> {
 
@@ -48,10 +47,13 @@ final class CompileScopeFingerprint implements Supplier<String> {
             final MessageDigest digest = MessageDigest.getInstance("SHA-256");
             this.tojos.stream()
                 .sorted(Comparator.comparing(TjForeign::identifier)).forEachOrdered(
-                    tojo -> digest.update(
-                        String.format("%s:%s\n", tojo.identifier(), new Sha(tojo.xmir()))
-                            .getBytes(StandardCharsets.UTF_8)
-                    )
+                    tojo -> {
+                        digest.update(
+                            String.format("%s:%s", tojo.identifier(), new Sha(tojo.xmir()))
+                                .getBytes(StandardCharsets.UTF_8)
+                        );
+                        digest.update((byte) 0);
+                    }
                 );
             final StringBuilder hex = new StringBuilder(64);
             for (final byte octet : digest.digest()) {

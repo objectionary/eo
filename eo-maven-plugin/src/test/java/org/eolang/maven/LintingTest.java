@@ -70,13 +70,13 @@ final class LintingTest {
         Files.writeString(dep, "<object><o line=\"1\" name=\"one\"/></object>");
         final TjsForeign compile = new TjsForeign();
         compile.add("dep").withXmir(dep).withScope("compile");
-        LintingTest.lintAsPackage(compile, target, cache);
-        final Set<String> first = LintingTest.wpaCacheEntries(cache);
+        this.lintAsPackage(compile, target, cache);
+        final Set<String> first = this.wpaCacheEntries(cache);
         Files.writeString(dep, "<object><o line=\"1\" name=\"two\"/></object>");
-        LintingTest.lintAsPackage(compile, target, cache);
+        this.lintAsPackage(compile, target, cache);
         MatcherAssert.assertThat(
             "changing a compile-scope XMIR's content must produce a new WPA cache entry, not reuse the stale one",
-            LintingTest.wpaCacheEntries(cache),
+            this.wpaCacheEntries(cache),
             Matchers.not(Matchers.equalTo(first))
         );
     }
@@ -89,7 +89,7 @@ final class LintingTest {
      * @param cache Cache directory
      * @throws IOException If linting fails
      */
-    private static void lintAsPackage(
+    private void lintAsPackage(
         final TjsForeign compile, final Path target, final Path cache
     ) throws IOException {
         new Linting(
@@ -97,59 +97,15 @@ final class LintingTest {
             compile,
             target,
             cache,
-            LintingTest.cacheEnabled(),
+            true,
             "0.0.0",
             Collections.emptyList(),
             Collections.emptyList(),
-            LintingTest.skipExperimentalLints(),
-            LintingTest.failOnWarning(),
-            LintingTest.asPackage(),
-            LintingTest.skipLinting()
+            false,
+            false,
+            true,
+            false
         ).exec();
-    }
-
-    /**
-     * Whether caching is enabled, for {@link #lintAsPackage(TjsForeign, Path, Path)}.
-     * @return True
-     */
-    private static boolean cacheEnabled() {
-        return true;
-    }
-
-    /**
-     * Whether to skip experimental lints, for
-     * {@link #lintAsPackage(TjsForeign, Path, Path)}.
-     * @return False
-     */
-    private static boolean skipExperimentalLints() {
-        return false;
-    }
-
-    /**
-     * Whether to fail on warnings, for
-     * {@link #lintAsPackage(TjsForeign, Path, Path)}.
-     * @return False
-     */
-    private static boolean failOnWarning() {
-        return false;
-    }
-
-    /**
-     * Whether to lint all sources as a package (WPA), for
-     * {@link #lintAsPackage(TjsForeign, Path, Path)}.
-     * @return True
-     */
-    private static boolean asPackage() {
-        return true;
-    }
-
-    /**
-     * Whether to skip linting entirely, for
-     * {@link #lintAsPackage(TjsForeign, Path, Path)}.
-     * @return False
-     */
-    private static boolean skipLinting() {
-        return false;
     }
 
     /**
@@ -159,7 +115,7 @@ final class LintingTest {
      * @return Directory names, one per distinct cache key seen so far
      * @throws IOException If the directory can't be listed
      */
-    private static Set<String> wpaCacheEntries(final Path cache) throws IOException {
+    private Set<String> wpaCacheEntries(final Path cache) throws IOException {
         final Path wpa = cache.resolve(Linting.CACHE);
         final Set<String> entries;
         if (Files.exists(wpa)) {
