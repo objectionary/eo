@@ -199,6 +199,25 @@ final class Suffix {
     }
 
     /**
+     * Reject this suffix's atom signature if it was parsed on a line that
+     * is not a formation — §3.10.10 of the spec. Only a {@link LnFormation}
+     * ever reads the signature back out to emit the atom marker; every
+     * other line shape that can carry a name suffix is no more a
+     * formation than a pipe is, so a {@code /sig} written on one of them
+     * is the same user mistake, worth the same message regardless of
+     * which line shape it was written on (#6230).
+     * @param span The line's span (used for error position)
+     */
+    void rejectAtomOutsideFormation(final Span span) {
+        if (this.atom()) {
+            throw new ParseError(
+                span.line(), span.indent(),
+                "only a formation can declare an atom signature"
+            );
+        }
+    }
+
+    /**
      * Whether this suffix is a test attribute — either a truthy
      * {@code +> name} or a throwing {@code -> name}.
      * @return Test flag
