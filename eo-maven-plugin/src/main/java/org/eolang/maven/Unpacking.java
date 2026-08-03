@@ -13,7 +13,7 @@ import java.util.zip.ZipInputStream;
 
 /**
  * Unpacks a JAR into a directory, rejecting Zip Slip paths.
- * @since 0.62.0
+ * @since 0.64
  */
 final class Unpacking {
 

@@ -4,8 +4,6 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.Mktmp;
-import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -17,10 +15,12 @@ import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 
 /**
  * Test case for {@link Unpacking}.
- * @since 0.62.0
+ * @since 0.64
  */
 @ExtendWith(MktmpResolver.class)
 final class UnpackingTest {
