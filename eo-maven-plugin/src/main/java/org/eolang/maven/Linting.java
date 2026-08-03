@@ -51,6 +51,7 @@ import org.xembly.Xembler;
  *     Naming the class {@code Linting} avoids this collision.
  * </p>
  * @since 0.31.0
+ * @checkstyle ClassFanOutComplexityCheck (3 lines)
  */
 @SuppressWarnings("PMD.GodClass")
 final class Linting implements Step {
@@ -317,7 +318,7 @@ final class Linting implements Step {
                 new Cache(
                     new CachePath(
                         this.cacheDir.resolve(Linting.CACHE),
-                        this.version,
+                        this.cacheVersion(),
                         new TojoHash(tojo).get()
                     ),
                     src -> this.linted(xmir).toString()
@@ -345,6 +346,28 @@ final class Linting implements Step {
         }
         tojo.withLinted(target);
         return 1;
+    }
+
+    /**
+     * Cache-key version segment for the per-file lint cache: the plugin
+     * version combined with {@link #skipSourceLints} and
+     * {@link #skipExperimentalLints}, since both change what
+     * {@link #linted(XML)} reports for the exact same source XMIR
+     * (see #6235). {@link #skipSourceLints} is hashed rather than joined
+     * in verbatim, since a project skipping a dozen full lint names would
+     * otherwise push this single path segment past the 255-byte limit
+     * ext4 and APFS enforce.
+     * @return The version segment for {@link CachePath}
+     */
+    private String cacheVersion() {
+        return String.format(
+            "%s-%b-%s",
+            this.version,
+            this.skipExperimentalLints,
+            new Hashed(
+                this.skipSourceLints.stream().sorted().collect(Collectors.joining(","))
+            ).get()
+        );
     }
 
     /**
