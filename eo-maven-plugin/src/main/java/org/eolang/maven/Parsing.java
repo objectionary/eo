@@ -87,18 +87,18 @@ final class Parsing implements Step {
      * @param srcs Foreign tojos catalog
      * @param target Target directory
      * @param sources EO sources directory
-     * @param cche Where the results of earlier builds are looked for and kept
+     * @param store Where the results of earlier builds are looked for and kept
      */
     Parsing(
         final TjsForeign srcs,
         final Path target,
         final Path sources,
-        final GlobalCache cche
+        final GlobalCache store
     ) {
         this.tojos = srcs;
         this.targetDir = target;
         this.sourcesDir = sources;
-        this.cache = cche;
+        this.cache = store;
     }
 
     @Override
@@ -150,17 +150,17 @@ final class Parsing implements Step {
      * Parse all the given sources to XMIRs, concurrently.
      * @param sources The sources to parse
      * @param pipeline The canonical parsing transform to apply
-     * @param cche The cache, already keyed by the set of known objects
+     * @param store The cache, already keyed by the set of known objects
      * @return Amount of parsed tojos
      */
     private int parsed(
         final Collection<TjForeign> sources,
         final UnaryOperator<XML> pipeline,
-        final GlobalCache cche
+        final GlobalCache store
     ) {
         return new Threaded<>(
             new Filtered<>(TjForeign::notParsed, sources),
-            tojo -> this.parsed(tojo, pipeline, cche)
+            tojo -> this.parsed(tojo, pipeline, store)
         ).total();
     }
 
@@ -168,19 +168,19 @@ final class Parsing implements Step {
      * Parse EO file to XML.
      * @param tojo The tojo
      * @param pipeline The canonical parsing transform to apply
-     * @param cche The cache, already keyed by the set of known objects
+     * @param store The cache, already keyed by the set of known objects
      * @return Amount of parsed tojos
      * @throws Exception If fails
      */
     private int parsed(
-        final TjForeign tojo, final UnaryOperator<XML> pipeline, final GlobalCache cche
+        final TjForeign tojo, final UnaryOperator<XML> pipeline, final GlobalCache store
     ) throws Exception {
         final Path source = tojo.source();
         final String name = tojo.identifier();
         final Path base = this.targetDir.resolve(Parsing.DIR);
         final Path target = new Place(name).make(base, MjAssemble.XMIR);
         final List<Node> refs = new ArrayList<>(1);
-        cche.footprint(
+        store.footprint(
             base.relativize(target),
             new TojoHash(tojo),
             src -> {

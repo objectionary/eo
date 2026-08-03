@@ -574,15 +574,15 @@ abstract class MjSafe extends AbstractMojo {
      * @return The cache of that step
      */
     GlobalCache caching(final String sub) {
-        final GlobalCache cche;
+        final GlobalCache store;
         if (this.cacheEnabled) {
-            cche = new GcShared(
+            store = new GcShared(
                 this.cache.toPath().resolve(sub), this.plugin.getVersion()
             );
         } else {
-            cche = GlobalCache.NONE;
+            store = GlobalCache.NONE;
         }
-        return cche;
+        return store;
     }
 
     /**
