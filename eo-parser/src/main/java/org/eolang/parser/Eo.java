@@ -347,6 +347,7 @@ final class Eo implements Iterable<Directive> {
                 emit.rollback(tstartsen);
                 stack.silentTruncate(frame);
                 emit.error(err.line(), err.pos(), err.getMessage());
+                globals.closeTextBlock();
             }
         } else {
             final String raw = span.text();

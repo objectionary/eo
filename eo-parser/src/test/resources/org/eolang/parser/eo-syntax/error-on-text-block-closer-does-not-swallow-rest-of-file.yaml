@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object/errors/error[contains(text(),'unicode')]
+  - /object[not(errors/error[contains(text(),'unclosed')])]
+  - //o[@name='y']
+  - //o[@name='z']
+input: |
+  [] > app
+    """
+    \uZZZZ
+    """ > x
+    42 > y
+    43 > z
