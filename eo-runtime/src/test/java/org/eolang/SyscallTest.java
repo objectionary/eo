@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.posix.CStdLib;
+import org.eolang.posix.RecvSyscall;
+import org.eolang.win32.RecvFuncCall;
 import org.eolang.win32.WSAStartupFuncCall;
 import org.eolang.win32.Winsock;
 import org.hamcrest.MatcherAssert;
@@ -218,6 +220,25 @@ final class SyscallTest {
                 this.cleanup();
                 server.stop();
             }
+        }
+
+        @Test
+        void receivesNothingWithoutCrashingOnFailedRecvViaSyscall() {
+            final Phi result = new RecvFuncCall(Phi.Φ.take("win32").copy()).make(
+                new Data.ToPhi(-1),
+                new Data.ToPhi(16),
+                new Data.ToPhi(0)
+            );
+            MatcherAssert.assertThat(
+                "A failed recv must report code -1 instead of throwing NegativeArraySizeException",
+                new Dataized(result.take("code")).asNumber().intValue(),
+                Matchers.equalTo(-1)
+            );
+            MatcherAssert.assertThat(
+                "A failed recv must expose an empty byte sequence as its output",
+                ((byte[]) new Dataized(result.take("output")).take()).length,
+                Matchers.equalTo(0)
+            );
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
@@ -560,6 +581,25 @@ final class SyscallTest {
                 this.closeSocket(socket);
                 server.stop();
             }
+        }
+
+        @Test
+        void receivesNothingWithoutCrashingOnFailedRecvViaSyscall() {
+            final Phi result = new RecvSyscall(Phi.Φ.take("posix").copy()).make(
+                new Data.ToPhi(-1),
+                new Data.ToPhi(16),
+                new Data.ToPhi(0)
+            );
+            MatcherAssert.assertThat(
+                "A failed recv must report code -1 instead of throwing NegativeArraySizeException",
+                new Dataized(result.take("code")).asNumber().intValue(),
+                Matchers.equalTo(-1)
+            );
+            MatcherAssert.assertThat(
+                "A failed recv must expose an empty byte sequence as its output",
+                ((byte[]) new Dataized(result.take("output")).take()).length,
+                Matchers.equalTo(0)
+            );
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
