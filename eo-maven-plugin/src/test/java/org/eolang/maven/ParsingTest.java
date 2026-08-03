@@ -34,6 +34,17 @@ final class ParsingTest {
         );
     }
 
+    @Test
+    void includesXslFingerprintInVersion() {
+        MatcherAssert.assertThat(
+            "the cache-key version must include the fingerprint of the canonical parse-stage XSLs, not just the plugin version and the digest",
+            ParsingTest.parsing().version("some-digest"),
+            Matchers.containsString(
+                new Fingerprint(Parsing.PARSE_XSLS.toArray(new String[0])).get()
+            )
+        );
+    }
+
     /**
      * A minimal {@link Parsing} instance for testing its private helpers.
      * @return A new instance

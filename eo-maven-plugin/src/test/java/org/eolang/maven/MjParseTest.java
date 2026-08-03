@@ -350,7 +350,7 @@ final class MjParseTest {
         return String.format(
             "%s-%s-%s",
             FakeMaven.pluginVersion(),
-            new Fingerprint(Parsing.PARSE_XSLS).get(),
+            new Fingerprint(Parsing.PARSE_XSLS.toArray(new String[0])).get(),
             new UncheckedText(
                 new HexOf(new Sha256DigestOf(new InputOf(identifier)))
             ).asString()

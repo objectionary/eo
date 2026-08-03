@@ -56,33 +56,11 @@ final class Parsing implements Step {
      * {@link #parsed(TjForeign, UnaryOperator, String)}) so that editing any
      * of them invalidates previously cached XMIR for the same source, the
      * same way {@link Transpilation#XSLS}/{@link Transpilation#IMPORTS} are
-     * folded into the transpile cache key. This list must be kept in sync
-     * with {@code Canonical.Pipeline.value()}.
+     * folded into the transpile cache key. Delegates to {@link Canonical#XSLS},
+     * the same list the real pipeline is built from, so the two cannot drift
+     * apart the way two independently maintained copies could.
      */
-    static final String[] PARSE_XSLS = {
-        "/org/eolang/parser/parse/wrap-applications.xsl",
-        "/org/eolang/parser/parse/resolve-self.xsl",
-        "/org/eolang/parser/parse/resolve-local-names.xsl",
-        "/org/eolang/parser/parse/validate-before-stars.xsl",
-        "/org/eolang/parser/parse/resolve-before-stars.xsl",
-        "/org/eolang/parser/parse/fragile-dispatch.xsl",
-        "/org/eolang/parser/parse/wrap-method-calls.xsl",
-        "/org/eolang/parser/parse/const-to-dataized.xsl",
-        "/org/eolang/parser/parse/stars-to-tuples.xsl",
-        "/org/eolang/parser/parse/vars-float-up.xsl",
-        "/org/eolang/parser/parse/move-voids-up.xsl",
-        "/org/eolang/parser/parse/validate-objects-count.xsl",
-        "/org/eolang/parser/parse/build-fqns.xsl",
-        "/org/eolang/parser/parse/expand-aliases.xsl",
-        "/org/eolang/parser/parse/resolve-aliases.xsl",
-        "/org/eolang/parser/parse/add-default-package.xsl",
-        "/org/eolang/parser/parse/roll-bases.xsl",
-        "/org/eolang/parser/parse/cti-adds-errors.xsl",
-        "/org/eolang/parser/parse/mandatory-as.xsl",
-        "/org/eolang/parser/parse/set-locators.xsl",
-        "/org/eolang/parser/_funcs.xsl",
-        "/org/eolang/parser/_specials.xsl",
-    };
+    static final List<String> PARSE_XSLS = Canonical.XSLS;
 
     /**
      * The directory where to parse to.
@@ -209,7 +187,8 @@ final class Parsing implements Step {
      */
     String version(final String digest) {
         return String.format(
-            "%s-%s-%s", this.version, new Fingerprint(Parsing.PARSE_XSLS).get(), digest
+            "%s-%s-%s", this.version,
+            new Fingerprint(Parsing.PARSE_XSLS.toArray(new String[0])).get(), digest
         );
     }
 
