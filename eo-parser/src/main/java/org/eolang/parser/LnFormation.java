@@ -45,10 +45,10 @@ final class LnFormation implements Line {
         this.span = source;
     }
 
-    /**
+    /*
      * PMD complains 'blanks' is unnecessary, but we must capture it
      * before enterAfterMeta() clears the counter for checkTest().
-    **/
+     */
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
