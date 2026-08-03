@@ -13,14 +13,13 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.NetworkPort;
 import org.eolang.RandomPort;
 import org.eolang.RandomServer;
 import org.eolang.ReceivedBytes;
+import org.eolang.ServerHandoff;
 import org.eolang.SockaddrIn;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -165,19 +164,16 @@ final class WinsockTest {
             this.ensure(this.startup() == 0);
             final AtomicInteger accept = new AtomicInteger(0);
             final AtomicInteger error = new AtomicInteger();
-            final AtomicInteger port = new AtomicInteger(new RandomPort().pick());
-            final CountDownLatch listening = new CountDownLatch(1);
+            final ServerHandoff handoff = new ServerHandoff(new RandomPort().pick());
             final Thread server = new Thread(
-                () -> this.acceptViaWinsock(port, accept, error, listening)
+                () -> this.acceptViaWinsock(handoff, accept, error)
             );
             server.start();
-            this.ensure(
-                listening.await(WinsockTest.LISTEN_MILLIS, TimeUnit.MILLISECONDS)
-            );
+            this.ensure(handoff.awaited(WinsockTest.LISTEN_MILLIS));
             final int client = this.openSocket();
             try {
                 this.ensure(client > 0);
-                final SockaddrIn sockaddr = this.sockaddr(port.get());
+                final SockaddrIn sockaddr = this.sockaddr(handoff.port().get());
                 MatcherAssert.assertThat(
                     String.format(
                         "Socket should have been connected to local server on sockets, but it didn't, reason: %s",
@@ -210,19 +206,16 @@ final class WinsockTest {
             this.ensure(this.startup() == 0);
             final AtomicInteger received = new AtomicInteger(-1);
             final AtomicReference<byte[]> bytes = new AtomicReference<>();
-            final AtomicInteger port = new AtomicInteger(new RandomPort().pick());
-            final CountDownLatch listening = new CountDownLatch(1);
+            final ServerHandoff handoff = new ServerHandoff(new RandomPort().pick());
             final Thread server = new Thread(
-                () -> this.recvViaWinsock(port, received, bytes, listening)
+                () -> this.recvViaWinsock(handoff, received, bytes)
             );
             server.start();
-            this.ensure(
-                listening.await(WinsockTest.LISTEN_MILLIS, TimeUnit.MILLISECONDS)
-            );
+            this.ensure(handoff.awaited(WinsockTest.LISTEN_MILLIS));
             final int client = this.openSocket();
             try {
                 this.ensure(client > 0);
-                final SockaddrIn sockaddr = this.sockaddr(port.get());
+                final SockaddrIn sockaddr = this.sockaddr(handoff.port().get());
                 this.ensure(Winsock.INSTANCE.connect(client, sockaddr, sockaddr.size()) == 0);
                 final byte[] buf = "Hello, Socket!".getBytes(StandardCharsets.UTF_8);
                 final int sent = Winsock.INSTANCE.send(client, buf, buf.length, 0);
@@ -385,23 +378,20 @@ final class WinsockTest {
 
     /**
      * Bind, listen and accept one connection via {@link Winsock}.
-     * @param port Port to bind to, updated if the candidate is taken
+     * @param handoff Port to bind to and the latch signaling the client
+     *  when the server is ready
      * @param accept Out-parameter: the accepted socket descriptor
      * @param error Out-parameter: the Winsock error code if accept failed
-     * @param listening Counted down once listen() succeeds, so the client
-     *  does not have to guess when the server is ready
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private void acceptViaWinsock(
-        final AtomicInteger port, final AtomicInteger accept, final AtomicInteger error,
-        final CountDownLatch listening
+        final ServerHandoff handoff, final AtomicInteger accept, final AtomicInteger error
     ) {
         final int socket = this.openSocket();
         try {
             this.ensure(socket > 0);
-            this.bound(socket, port);
+            this.bound(socket, handoff.port());
             this.ensure(Winsock.INSTANCE.listen(socket, WinsockTest.LISTEN_BACKLOG) == 0);
-            listening.countDown();
+            handoff.ready();
             final SockaddrIn addr = new SockaddrIn();
             final int accepted = Winsock.INSTANCE.accept(
                 socket, addr, new IntByReference(addr.size())
@@ -424,24 +414,22 @@ final class WinsockTest {
     /**
      * Bind, listen, accept one connection and receive a message via
      * {@link Winsock}.
-     * @param port Port to bind to, updated if the candidate is taken
+     * @param handoff Port to bind to and the latch signaling the client
+     *  when the server is ready
      * @param received Out-parameter: number of bytes received
      * @param bytes Out-parameter: the bytes received
-     * @param listening Counted down once listen() succeeds, so the client
-     *  does not have to guess when the server is ready
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private void recvViaWinsock(
-        final AtomicInteger port, final AtomicInteger received,
-        final AtomicReference<byte[]> bytes, final CountDownLatch listening
+        final ServerHandoff handoff, final AtomicInteger received,
+        final AtomicReference<byte[]> bytes
     ) {
         final int socket = this.openSocket();
         int accepted = 0;
         try {
             this.ensure(socket > 0);
-            this.bound(socket, port);
+            this.bound(socket, handoff.port());
             this.ensure(Winsock.INSTANCE.listen(socket, WinsockTest.LISTEN_BACKLOG) == 0);
-            listening.countDown();
+            handoff.ready();
             final SockaddrIn addr = new SockaddrIn();
             accepted = Winsock.INSTANCE.accept(
                 socket, addr, new IntByReference(addr.size())

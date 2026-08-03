@@ -11,14 +11,13 @@ import io.github.artsok.RepeatedIfExceptionsTest;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.NetworkPort;
 import org.eolang.RandomPort;
 import org.eolang.RandomServer;
 import org.eolang.ReceivedBytes;
+import org.eolang.ServerHandoff;
 import org.eolang.SockaddrIn;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -139,17 +138,16 @@ final class CStdLibTest {
     void acceptsConnectionOnSocket() throws InterruptedException {
         final AtomicInteger accept = new AtomicInteger(0);
         final AtomicReference<String> error = new AtomicReference<>();
-        final AtomicInteger port = new AtomicInteger(new RandomPort().pick());
-        final CountDownLatch listening = new CountDownLatch(1);
+        final ServerHandoff handoff = new ServerHandoff(new RandomPort().pick());
         final Thread server = new Thread(
-            () -> this.acceptViaCStdLib(port, accept, error, listening)
+            () -> this.acceptViaCStdLib(handoff, accept, error)
         );
         server.start();
-        this.ensure(listening.await(CStdLibTest.LISTEN_MILLIS, TimeUnit.MILLISECONDS));
+        this.ensure(handoff.awaited(CStdLibTest.LISTEN_MILLIS));
         final int client = this.openSocket();
         try {
             this.ensure(client > 0);
-            final SockaddrIn sockaddr = this.sockaddr(port.get());
+            final SockaddrIn sockaddr = this.sockaddr(handoff.port().get());
             MatcherAssert.assertThat(
                 String.format(
                     "Socket should have been connected to local server on sockets, but it didn't, reason: %s",
@@ -176,17 +174,16 @@ final class CStdLibTest {
     void sendsAndReceivesMessagesViaSyscalls() throws InterruptedException {
         final AtomicInteger received = new AtomicInteger(-1);
         final AtomicReference<byte[]> bytes = new AtomicReference<>();
-        final AtomicInteger port = new AtomicInteger(new RandomPort().pick());
-        final CountDownLatch listening = new CountDownLatch(1);
+        final ServerHandoff handoff = new ServerHandoff(new RandomPort().pick());
         final Thread server = new Thread(
-            () -> this.recvViaCStdLib(port, received, bytes, listening)
+            () -> this.recvViaCStdLib(handoff, received, bytes)
         );
         server.start();
-        this.ensure(listening.await(CStdLibTest.LISTEN_MILLIS, TimeUnit.MILLISECONDS));
+        this.ensure(handoff.awaited(CStdLibTest.LISTEN_MILLIS));
         final int client = this.openSocket();
         try {
             this.ensure(client > 0);
-            final SockaddrIn sockaddr = this.sockaddr(port.get());
+            final SockaddrIn sockaddr = this.sockaddr(handoff.port().get());
             this.ensure(CStdLib.INSTANCE.connect(client, sockaddr, sockaddr.size()) == 0);
             final byte[] buf = "Hello, Socket!".getBytes(StandardCharsets.UTF_8);
             final int sent = CStdLib.INSTANCE.send(client, buf, buf.length, 0);
@@ -325,23 +322,21 @@ final class CStdLibTest {
 
     /**
      * Bind, listen and accept one connection via {@link CStdLib}.
-     * @param port Port to bind to, updated if the candidate is taken
+     * @param handoff Port to bind to and the latch signaling the client
+     *  when the server is ready
      * @param accept Out-parameter: the accepted socket descriptor
      * @param error Out-parameter: the error string if accept failed
-     * @param listening Counted down once listen() succeeds, so the client
-     *  does not have to guess when the server is ready
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private void acceptViaCStdLib(
-        final AtomicInteger port, final AtomicInteger accept,
-        final AtomicReference<String> error, final CountDownLatch listening
+        final ServerHandoff handoff, final AtomicInteger accept,
+        final AtomicReference<String> error
     ) {
         final int socket = this.openSocket();
         try {
             this.ensure(socket > 0);
-            this.bound(socket, port);
+            this.bound(socket, handoff.port());
             this.ensure(CStdLib.INSTANCE.listen(socket, CStdLibTest.LISTEN_BACKLOG) == 0);
-            listening.countDown();
+            handoff.ready();
             final SockaddrIn addr = new SockaddrIn();
             final int accepted = CStdLib.INSTANCE.accept(
                 socket, addr, new IntByReference(addr.size())
@@ -362,24 +357,22 @@ final class CStdLibTest {
     /**
      * Bind, listen, accept one connection and receive a message via
      * {@link CStdLib}.
-     * @param port Port to bind to, updated if the candidate is taken
+     * @param handoff Port to bind to and the latch signaling the client
+     *  when the server is ready
      * @param received Out-parameter: number of bytes received
      * @param bytes Out-parameter: the bytes received
-     * @param listening Counted down once listen() succeeds, so the client
-     *  does not have to guess when the server is ready
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private void recvViaCStdLib(
-        final AtomicInteger port, final AtomicInteger received,
-        final AtomicReference<byte[]> bytes, final CountDownLatch listening
+        final ServerHandoff handoff, final AtomicInteger received,
+        final AtomicReference<byte[]> bytes
     ) {
         final int socket = this.openSocket();
         int accepted = 0;
         try {
             this.ensure(socket > 0);
-            this.bound(socket, port);
+            this.bound(socket, handoff.port());
             this.ensure(CStdLib.INSTANCE.listen(socket, CStdLibTest.LISTEN_BACKLOG) == 0);
-            listening.countDown();
+            handoff.ready();
             final SockaddrIn addr = new SockaddrIn();
             accepted = CStdLib.INSTANCE.accept(
                 socket, addr, new IntByReference(addr.size())
