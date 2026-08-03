@@ -13,6 +13,11 @@ import java.util.zip.ZipInputStream;
 
 /**
  * A JAR (ZIP) file, unpacked into a destination directory.
+ *
+ * <p>Unpacking used to be a static method inside {@link CentralMaven}.
+ * It lives here so that it can be exercised on any JAR, without first
+ * resolving an artifact from a remote repository.</p>
+ *
  * @since 0.64
  */
 final class UnpackedJar {
