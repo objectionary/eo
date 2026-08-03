@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-name: suppressions
+name: smells
 'on':
   push:
     branches:
@@ -10,19 +10,19 @@ name: suppressions
     branches:
       - master
 env:
-  THRESHOLD: 369
+  THRESHOLD: 855
 jobs:
-  suppressions:
+  smells:
     timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - run: |
           found=$(( $(git ls-files -z '*.java' \
-            | xargs -0 grep -oh -e '@SuppressWarnings' -e '@checkstyle' \
+            | xargs -0 grep -oh -e 'static' -e 'null' \
             | wc -l) ))
-          echo "Found ${found} suppressions, threshold is ${THRESHOLD}"
+          echo "Found ${found} smells, threshold is ${THRESHOLD}"
           if [ "${found}" -ne "${THRESHOLD}" ]; then
-            echo "Expected ${THRESHOLD} suppressions in Java, found ${found}"
+            echo "Expected ${THRESHOLD} smells in Java, found ${found}"
             exit 1
           fi
