@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2161.37513892
+  seconds: 2160.492199548
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-03 05:42:55.744917668 Z
+  when: 2026-08-03 10:08:48.258958295 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -41524,48 +41524,6 @@
   where: github
   who: 96509556
   why: Contributed code in objectionary/eoc#790
-- _id: 1046987
-  _job: 49971
-  _time: 2025-11-20 03:39:15.072848742 Z
-  _version: 0.16.8/0.57.1/0.16.1
-  award: 4
-  comments: 1
-  details: It's time to reward @yegor256 for the code review in objectionary/eoc#783,
-    the reward amount is 4.
-  hoc: 2
-  href: https://github.com/objectionary/eoc/issues/783/#issuecomment-3555546748
-  is_human: 1
-  issue: 783
-  repository: 489321585
-  review_comments: 0
-  seconds: 3190
-  tombstone: 2026-07-28 11:37:57.982173753 Z
-  what: code-review-was-rewarded
-  when: 2025-11-20 02:53:18.682586374 Z
-  where: github
-  who: 526301
-  why: Reviewed code in objectionary/eoc#783
-- _id: 1046988
-  _job: 49971
-  _time: 2025-11-20 03:39:15.847527819 Z
-  _version: 0.16.8/0.57.1/0.16.1
-  award: 4
-  comments: 1
-  details: It's time to reward @yegor256 for the code review in objectionary/eoc#788,
-    the reward amount is 4.
-  hoc: 2
-  href: https://github.com/objectionary/eoc/issues/788/#issuecomment-3555546785
-  is_human: 1
-  issue: 788
-  repository: 489321585
-  review_comments: 0
-  seconds: 1188
-  tombstone: 2026-07-31 22:18:41.171038736 Z
-  what: code-review-was-rewarded
-  when: 2025-11-20 02:53:28.320121310 Z
-  where: github
-  who: 526301
-  why: Reviewed code in objectionary/eoc#788
 - _id: 1047048
   _job: 19525830463
   _time: 2025-11-20 05:08:08.076263882 Z
@@ -216287,44 +216245,6 @@
   when: 2026-06-04 04:44:46.000000000 Z
   where: github
   who: 29139614
-- _id: 1096587
-  _job: 26934273589
-  _time: 2026-06-04 06:14:19.585483599 Z
-  _version: 0.19.9/0.60.2/0.17.17
-  commit: 0aeaa7579c47ab274e599d16ba8b51f8c75c1893
-  default_branch: master
-  details: 'A new Git push #35093575464 has arrived to objectionary/proof, made by
-    @yegor256 (default branch is "master"), not associated with any pull request.'
-  event_id: 12803963593
-  event_type: PushEvent
-  is_human: 1
-  push_id: 35093575464
-  ref: refs/heads/master
-  repository: 731516758
-  to_master: 1
-  what: git-was-pushed
-  when: 2026-06-04 05:32:19.000000000 Z
-  where: github
-  who: 526301
-- _id: 1096588
-  _job: 26934273589
-  _time: 2026-06-04 06:14:20.333302048 Z
-  _version: 0.19.9/0.60.2/0.17.17
-  commit: 66191e0b0ed041703bbefb68d36674cd69c4a48f
-  default_branch: master
-  details: 'A new Git push #35093567600 has arrived to objectionary/proof, made by
-    @yegor256 (default branch is "master"), not associated with any pull request.'
-  event_id: 12803955805
-  event_type: PushEvent
-  is_human: 1
-  push_id: 35093567600
-  ref: refs/heads/master
-  repository: 731516758
-  to_master: 1
-  what: git-was-pushed
-  when: 2026-06-04 05:32:04.000000000 Z
-  where: github
-  who: 526301
 - _id: 1096603
   _job: 26934273589
   _time: 2026-06-04 06:17:18.999207940 Z
@@ -289432,6 +289352,7 @@
   release: 347801044
   repository: 977982682
   tag: 0.0.99
+  tombstone: 2026-08-03 05:44:32.824423726 Z
   what: release-published
   when: 2026-07-02 02:35:19.000000000 Z
   where: github
@@ -301909,7 +301830,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 12676911925
+  events_were_scanned: 16529926102
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 347
@@ -306769,6 +306690,7 @@
   - 2.7459194273799485
   - 2.7459194273799485
   - 2.7459194273799485
+  - 2.7459194273799485
   qod_per_day:
   - 20.262571430008
   - 42.95057143129291
@@ -307467,8 +307389,9 @@
   - 210.89137121213858
   - 210.89137121213858
   - 210.89137121213858
+  - 210.89137121213858
   what: learn-eva
-  when: 2026-08-02 18:18:04.144866760 Z
+  when: 2026-08-03 05:46:13.261247799 Z
 - _id: 1108432
   _job: 28880449411
   _time: 2026-07-07 16:03:53.193694149 Z
@@ -308795,7 +308718,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 831
   earliest_issue_was_found: 1
   events_were_scanned: 16162131517
   issues_were_scanned: 0
@@ -312559,9 +312482,9 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 999
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 12671212560
+  events_were_scanned: 12678092466
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
@@ -315510,9 +315433,9 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1120
   earliest_issue_was_found: 1
-  events_were_scanned: 12676289657
+  events_were_scanned: 12678330175
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 686
@@ -315544,13 +315467,13 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6065
+  assignees_were_scanned: 6232
   earliest_issue_was_found: 1
-  events_were_scanned: 12677300846
+  events_were_scanned: 16554428446
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6095
   latest_issue_was_found: 4591
-  merges_were_scanned: 6277
+  merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
@@ -440670,9 +440593,6 @@
   comments: 4
   details: It's time to reward @thayorns for the code review in objectionary/eo#6255,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted.  Your running score is [+605](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 43
   href: https://github.com/objectionary/eo/issues/6255/#issuecomment-5161465594
   is_human: 1
@@ -440694,10 +440614,6 @@
   comments: 3
   details: It's time to reward @thayorns for the code review in objectionary/eo#6262,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted; -4 for too few (30) hits-of-code; +4 to
-    give you at least something.  Your running score is [+609](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 30
   href: https://github.com/objectionary/eo/issues/6262/#issuecomment-5161465706
   is_human: 1
@@ -440719,10 +440635,6 @@
   comments: 3
   details: It's time to reward @thayorns for the code review in objectionary/eo#6268,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted; -4 for too few (18) hits-of-code; +4 to
-    give you at least something.  Your running score is [+613](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 18
   href: https://github.com/objectionary/eo/issues/6268/#issuecomment-5161465815
   is_human: 1
@@ -440744,10 +440656,6 @@
   comments: 3
   details: It's time to reward @thayorns for the code review in objectionary/eo#6270,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted; -4 for too few (20) hits-of-code; +4 to
-    give you at least something.  Your running score is [+617](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 20
   href: https://github.com/objectionary/eo/issues/6270/#issuecomment-5161465931
   is_human: 1
@@ -440769,9 +440677,6 @@
   comments: 3
   details: It's time to reward @thayorns for the code review in objectionary/eo#6276,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted.  Your running score is [+621](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 57
   href: https://github.com/objectionary/eo/issues/6276/#issuecomment-5161466049
   is_human: 1
@@ -440793,10 +440698,6 @@
   comments: 2
   details: It's time to reward @thayorns for the code review in objectionary/eo#6278,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted; -4 for too few (7) hits-of-code; +4 to give
-    you at least something.  Your running score is [+625](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 7
   href: https://github.com/objectionary/eo/issues/6278/#issuecomment-5161466163
   is_human: 1
@@ -440818,10 +440719,6 @@
   comments: 2
   details: It's time to reward @thayorns for the code review in objectionary/eo#6279,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted; -4 for too few (20) hits-of-code; +4 to
-    give you at least something.  Your running score is [+629](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 20
   href: https://github.com/objectionary/eo/issues/6279/#issuecomment-5161466248
   is_human: 1
@@ -440843,10 +440740,6 @@
   comments: 3
   details: It's time to reward @thayorns for the code review in objectionary/eo#6280,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted; -4 for too few (20) hits-of-code; +4 to
-    give you at least something.  Your running score is [+633](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 20
   href: https://github.com/objectionary/eo/issues/6280/#issuecomment-5161466347
   is_human: 1
@@ -440868,10 +440761,6 @@
   comments: 3
   details: It's time to reward @thayorns for the code review in objectionary/eo#6284,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted; -4 for too few (7) hits-of-code; +4 to give
-    you at least something.  Your running score is [+637](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 7
   href: https://github.com/objectionary/eo/issues/6284/#issuecomment-5161466454
   is_human: 1
@@ -440893,13 +440782,11 @@
   comments: 3
   details: It's time to reward @thayorns for the code review in objectionary/eo#6292,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted.  Your running score is [+641](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 57
   href: https://github.com/objectionary/eo/issues/6292/#issuecomment-5161466567
   is_human: 1
   issue: 6292
+  receipt: receipt-#84241
   repository: 73056727
   review_comments: 0
   seconds: 2859
@@ -440950,8 +440837,10 @@
     -8 for absolutely no comments posted.  Your running score is [+1351](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 36
+  href: https://github.com/objectionary/eo/issues/6297/#issuecomment-5162744911
   is_human: 1
   issue: 6297
+  receipt: receipt-#84242
   repository: 73056727
   review_comments: 0
   seconds: 222
@@ -440977,7 +440866,7 @@
   repository: 546194972
   review_comments: 0
   what: pull-was-reviewed
-  when: 2026-08-03 03:50:55.000000000 Z
+  when: &3913 2026-08-03 03:50:55.000000000 Z
   where: github
   who: 526301
 - _id: 1115938
@@ -441006,7 +440895,7 @@
   issue: 2857
   repository: 73056727
   what: issue-was-closed
-  when: 2026-08-03 05:07:07.000000000 Z
+  when: &3912 2026-08-03 05:07:07.000000000 Z
   where: github
   who: 51804353
 - _id: 1115940
@@ -441026,7 +440915,7 @@
   repository: 73056727
   review_comments: 0
   what: pull-was-reviewed
-  when: 2026-08-03 03:51:35.000000000 Z
+  when: &3914 2026-08-03 03:51:35.000000000 Z
   where: github
   who: 526301
 - _id: 1115941
@@ -441046,7 +440935,7 @@
   repository: 13623548
   review_comments: 0
   what: pull-was-reviewed
-  when: 2026-08-03 03:46:25.000000000 Z
+  when: &3915 2026-08-03 03:46:25.000000000 Z
   where: github
   who: 526301
 - _id: 1115942
@@ -441096,7 +440985,7 @@
   repository: 970961472
   review_comments: 0
   what: pull-was-reviewed
-  when: 2026-08-03 03:40:07.000000000 Z
+  when: &3916 2026-08-03 03:40:07.000000000 Z
   where: github
   who: 526301
 - _id: 1115945
@@ -441146,7 +441035,7 @@
   repository: 840332960
   review_comments: 0
   what: pull-was-reviewed
-  when: 2026-08-03 03:42:16.000000000 Z
+  when: &3917 2026-08-03 03:42:16.000000000 Z
   where: github
   who: 526301
 - _id: 1115948
@@ -441201,6 +441090,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: renovate/org.cactoos-cactoos-0.x
   details: The missing pull objectionary/wpa#76 has been opened by @renovate[bot].
+  is_human: 0
   issue: 76
   repository: 1219806055
   what: pull-was-opened
@@ -441213,6 +441103,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: renovate/com.jcabi-parent-0.x
   details: The missing pull objectionary/wpa#77 has been opened by @renovate[bot].
+  is_human: 0
   issue: 77
   repository: 1219806055
   what: pull-was-opened
@@ -441225,6 +441116,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: renovate/org.eolang-eo-parser-0.x
   details: The missing pull objectionary/wpa#78 has been opened by @renovate[bot].
+  is_human: 0
   issue: 78
   repository: 1219806055
   what: pull-was-opened
@@ -441237,6 +441129,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: renovate/com.github.volodya-lombrozo-jtcop-maven-plugin-1.x
   details: The missing pull objectionary/wpa#79 has been opened by @renovate[bot].
+  is_human: 0
   issue: 79
   repository: 1219806055
   what: pull-was-opened
@@ -441258,9 +441151,11 @@
   failed_builds: 0
   files: 1
   hoc: 2
+  is_human: 0
   issue: 150
   repository: 546194972
   review: 2026-08-03 03:50:54.000000000 Z
+  review_comments: 0
   succeeded_builds: 11
   suggestions: 0
   what: pull-was-merged
@@ -441282,9 +441177,11 @@
   failed_builds: 0
   files: 1
   hoc: 2
+  is_human: 0
   issue: 774
   repository: 840332960
   review: 2026-08-03 03:42:16.000000000 Z
+  review_comments: 0
   succeeded_builds: 19
   suggestions: 0
   what: pull-was-merged
@@ -441306,9 +441203,11 @@
   failed_builds: 0
   files: 1
   hoc: 12
+  is_human: 0
   issue: 422
   repository: 970961472
   review: 2026-08-03 03:40:06.000000000 Z
+  review_comments: 0
   succeeded_builds: 8
   suggestions: 0
   what: pull-was-merged
@@ -441321,11 +441220,12 @@
   _version: 0.19.16/0.61.1/0.17.21
   details: The "enhancement" label was attached by @volodya-lombrozo to the issue
     objectionary/eo#6125.
+  is_human: 1
   issue: 6125
   label: enhancement
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-03 05:00:37.000000000 Z
+  when: &3918 2026-08-03 05:00:37.000000000 Z
   where: github
   who: 51804353
 - _id: 1115959
@@ -441334,3 +441234,1120 @@
   _version: 0.19.16/0.61.1/0.17.21
   what: dimensions-of-terrain
   when: 2026-08-03 05:42:55.485514036 Z
+- _id: 1115960
+  _job: 84969
+  _time: 2026-08-03 05:43:38.919699203 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  closer: 51804353
+  details: The bug/feature in the issue objectionary/eo#2857 opened @yegor256 by was
+    resolved, after 3w2d of waiting, because it was closed by @volodya-lombrozo and
+    earlier it was assigned to @volodya-lombrozo and the label '#bug' was attached.
+  is_human: 1
+  issue: 2857
+  label: bug
+  opener: 526301
+  repository: 73056727
+  seconds: 2030184
+  what: bug-was-resolved
+  when: *3912
+  where: github
+  who: 51804353
+- _id: 1115961
+  _job: 84969
+  _time: 2026-08-03 05:43:46.168818077 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 29139614
+  comments: 3
+  details: The pull request objectionary/eolang.sty#150 with 2 HoC created by @renovate[bot]
+    was reviewed by @yegor256 after 43m45s and 3 comments.
+  hoc: 2
+  is_human: 1
+  issue: 150
+  repository: 546194972
+  review_comments: 0
+  seconds: 2625
+  what: code-was-reviewed
+  when: *3913
+  where: github
+  who: 526301
+- _id: 1115962
+  _job: 84969
+  _time: 2026-08-03 05:43:46.824839966 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 29139614
+  comments: 5
+  details: The pull request objectionary/eo#6313 with 2 HoC created by @renovate[bot]
+    was reviewed by @yegor256 after 3h36m and 5 comments.
+  hoc: 2
+  is_human: 1
+  issue: 6313
+  repository: 73056727
+  review_comments: 0
+  seconds: 13018
+  what: code-was-reviewed
+  when: *3914
+  where: github
+  who: 526301
+- _id: 1115963
+  _job: 84969
+  _time: 2026-08-03 05:43:47.117119727 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 29139614
+  comments: 3
+  details: The pull request objectionary/home#426 with 2 HoC created by @renovate[bot]
+    was reviewed by @yegor256 after 2h18m and 3 comments.
+  hoc: 2
+  is_human: 1
+  issue: 426
+  repository: 13623548
+  review_comments: 0
+  seconds: 8315
+  what: code-was-reviewed
+  when: *3915
+  where: github
+  who: 526301
+- _id: 1115964
+  _job: 84969
+  _time: 2026-08-03 05:43:47.630489661 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 29139614
+  comments: 3
+  details: The pull request objectionary/eo-lsp-server#422 with 12 HoC created by
+    @renovate[bot] was reviewed by @yegor256 after 6h58m and 3 comments.
+  hoc: 12
+  is_human: 1
+  issue: 422
+  repository: 970961472
+  review_comments: 0
+  seconds: 25089
+  what: code-was-reviewed
+  when: *3916
+  where: github
+  who: 526301
+- _id: 1115965
+  _job: 84969
+  _time: 2026-08-03 05:43:48.114820092 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 29139614
+  comments: 3
+  details: The pull request objectionary/hone-maven-plugin#774 with 2 HoC created
+    by @renovate[bot] was reviewed by @yegor256 after 2h3m and 3 comments.
+  hoc: 2
+  is_human: 1
+  issue: 774
+  repository: 840332960
+  review_comments: 0
+  seconds: 7402
+  what: code-was-reviewed
+  when: *3917
+  where: github
+  who: 526301
+- _id: 1115966
+  _job: 84969
+  _time: 2026-08-03 05:43:51.215229990 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: 'In the repository #73056727, the user #51804353 attached the ''#enhancement''
+    label to the issue #6125 reported by the user #125282851; this means that a feature
+    request was-accepted as valid, by the project team.'
+  is_human: 1
+  issue: 6125
+  reporter: 125282851
+  repository: 73056727
+  what: enhancement-was-accepted
+  when: *3918
+  where: github
+  who: 51804353
+- _id: 1115967
+  _job: 30798753415
+  _time: 2026-08-03 09:33:19.133787162 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#5752 has been closed by @yegor256.
+  event_id: 12687932143
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 5752
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 09:28:24.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115968
+  _job: 30798753415
+  _time: 2026-08-03 09:33:22.400759251 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6062 has been closed by @yegor256.
+  event_id: 12687803433
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6062
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 09:25:57.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115969
+  _job: 30798753415
+  _time: 2026-08-03 09:33:23.378429162 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6241 has been closed by @yegor256.
+  event_id: 12687654693
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6241
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 09:23:10.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115970
+  _job: 30798753415
+  _time: 2026-08-03 09:33:24.143690703 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6237 has been closed by @yegor256.
+  event_id: 12687620188
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6237
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 09:22:32.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115971
+  _job: 30798753415
+  _time: 2026-08-03 09:33:26.559956189 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6200 has been closed by @yegor256.
+  event_id: 12687390964
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6200
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 09:18:12.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115972
+  _job: 30798753415
+  _time: 2026-08-03 09:33:27.663201878 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6234 has been closed by @yegor256.
+  event_id: 12687186454
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6234
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 09:14:13.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115973
+  _job: 30798753415
+  _time: 2026-08-03 09:33:29.145105734 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6238 has been closed by @yegor256.
+  event_id: 12686978025
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6238
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 09:10:01.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115974
+  _job: 30798753415
+  _time: 2026-08-03 09:33:30.350698211 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6137 has been closed by @yegor256.
+  event_id: 12686523979
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6137
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 09:00:19.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115975
+  _job: 30798753415
+  _time: 2026-08-03 09:33:31.134235992 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  commit: 5702ea59e27c6b3f567be57422b957ddecf4ab20
+  default_branch: master
+  details: 'A new Git push #38861145043 has arrived to objectionary/eo, made by @yegor256
+    (default branch is "master"), not associated with any pull request.'
+  event_id: 16551239234
+  event_type: PushEvent
+  is_human: 1
+  push_id: 38861145043
+  ref: refs/heads/master
+  repository: 73056727
+  to_master: 1
+  what: git-was-pushed
+  when: 2026-08-03 08:52:22.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115976
+  _job: 30798753415
+  _time: 2026-08-03 09:33:32.885428005 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6232 has been closed by @yegor256.
+  event_id: 12686264959
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6232
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 08:54:47.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115977
+  _job: 30798753415
+  _time: 2026-08-03 09:33:34.472112999 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6230 has been closed by @yegor256.
+  event_id: 12686248514
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6230
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 08:54:25.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115978
+  _job: 30798753415
+  _time: 2026-08-03 09:33:35.476368880 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6229 has been closed by @yegor256.
+  event_id: 12686225031
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6229
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 08:53:54.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115979
+  _job: 30798753415
+  _time: 2026-08-03 09:33:37.540134745 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6227 has been closed by @yegor256.
+  event_id: 12686143163
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6227
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 08:52:08.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115980
+  _job: 30798753415
+  _time: 2026-08-03 09:33:39.539506408 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6231 has been closed by @yegor256.
+  event_id: 12686100610
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6231
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 08:51:11.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115981
+  _job: 30798753415
+  _time: 2026-08-03 09:33:40.965107494 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6235 has been closed by @yegor256.
+  event_id: 12686070956
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6235
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 08:50:32.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115982
+  _job: 30798753415
+  _time: 2026-08-03 09:33:41.814193003 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6236 has been closed by @yegor256.
+  event_id: 12685968967
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6236
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 08:48:17.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115983
+  _job: 30798753415
+  _time: 2026-08-03 09:33:45.480672572 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6216 has been closed by @yegor256.
+  event_id: 12685790753
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6216
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 08:44:27.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115984
+  _job: 30798753415
+  _time: 2026-08-03 09:33:46.344832176 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6218 has been closed by @yegor256.
+  event_id: 12685768850
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6218
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 08:43:58.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115985
+  _job: 30798753415
+  _time: 2026-08-03 09:33:47.879752922 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6221-uri-schemeless
+  comments: 4
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 4
+  comments_resolved: 0
+  comments_to_code: 0
+  details: The pull request objectionary/eo#6279 has been closed by @yegor256, with
+    20 HoC and 4 comments.
+  event_id: 12685713567
+  event_type: PullRequestEvent
+  failed_builds: 0
+  files: 1
+  hoc: 20
+  is_human: 1
+  issue: 6279
+  repository: 73056727
+  review: 2026-08-02 20:58:31.000000000 Z
+  succeeded_builds: 23
+  suggestions: 0
+  what: pull-was-closed
+  when: 2026-08-03 01:45:37.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115986
+  _job: 30798753415
+  _time: 2026-08-03 09:34:06.569554347 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6221 has been closed by @yegor256.
+  event_id: 12685677032
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6221
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 08:41:57.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115987
+  _job: 30798753415
+  _time: 2026-08-03 09:34:07.460394227 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6213 has been closed by @yegor256.
+  event_id: 12685663354
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6213
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 08:41:40.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115988
+  _job: 30798753415
+  _time: 2026-08-03 09:34:09.825140677 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6209 has been closed by @yegor256.
+  event_id: 12685566054
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6209
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 08:39:32.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115989
+  _job: 30798753415
+  _time: 2026-08-03 09:34:10.510874928 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6212 has been closed by @yegor256.
+  event_id: 12685551034
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6212
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 08:39:12.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115990
+  _job: 30798753415
+  _time: 2026-08-03 09:34:13.755661630 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6141 has been closed by @yegor256.
+  event_id: 12685076263
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6141
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 08:28:58.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115991
+  _job: 30798753415
+  _time: 2026-08-03 09:34:15.320896650 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6245 has been closed by @yegor256.
+  event_id: 12685034227
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6245
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-03 08:28:02.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115992
+  _job: 30798753415
+  _time: 2026-08-03 09:34:23.760986173 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '6125'
+  details: The pull request objectionary/eo#6315 has been opened by @morphqdd.
+  event_id: 12681312205
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6315
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-08-03 07:02:52.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1115993
+  _job: 30798753415
+  _time: 2026-08-03 09:34:31.480325014 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6314 has been opened by @yegor256.
+  event_id: 12679780154
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6314
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-03 06:22:07.000000000 Z
+  where: github
+  who: 526301
+- _id: 1115994
+  _job: 30798753415
+  _time: 2026-08-03 09:34:46.662378583 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: version-up
+  details: The pull request objectionary/eoc#1161 has been opened by @github-actions[bot].
+  event_id: 12678313573
+  event_type: PullRequestEvent
+  is_human: 0
+  issue: 1161
+  repository: 489321585
+  what: pull-was-opened
+  when: 2026-08-03 05:39:46.000000000 Z
+  where: github
+  who: 41898282
+- _id: 1115995
+  _job: 30798753415
+  _time: 2026-08-03 09:34:48.113373482 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: version-up
+  comments: 0
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 0
+  comments_resolved: 0
+  comments_to_code: 0
+  details: The pull request objectionary/eoc#1160 has been closed by @github-actions[bot],
+    with 4 HoC and 0 comments.
+  event_id: 12677969120
+  event_type: PullRequestEvent
+  failed_builds: 0
+  files: 1
+  hoc: 4
+  is_human: 0
+  issue: 1160
+  repository: 489321585
+  succeeded_builds: 0
+  suggestions: 0
+  what: pull-was-closed
+  when: 2026-08-03 05:26:29.000000000 Z
+  where: github
+  who: 41898282
+- _id: 1115996
+  _job: 30798753415
+  _time: 2026-08-03 09:34:58.841703941 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#996 has been closed by @volodya-lombrozo.
+  event_id: 12678061826
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 996
+  repository: 889819508
+  what: issue-was-closed
+  when: 2026-08-03 05:31:26.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1115997
+  _job: 30798753415
+  _time: 2026-08-03 09:35:00.335610483 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/com.github.volodya-lombrozo-jtcop-maven-plugin-1.x
+  comments: 0
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 0
+  comments_resolved: 0
+  comments_to_code: 0
+  details: The pull request objectionary/lints#1177 has been closed by @renovate[bot],
+    with 2 HoC and 0 comments.
+  event_id: 12677853886
+  event_type: PullRequestEvent
+  failed_builds: 2
+  files: 1
+  hoc: 2
+  is_human: 0
+  issue: 1177
+  repository: 889819508
+  succeeded_builds: 16
+  suggestions: 0
+  what: pull-was-closed
+  when: 2026-08-02 14:07:03.000000000 Z
+  where: github
+  who: 29139614
+- _id: 1115998
+  _job: 30798753415
+  _time: 2026-08-03 09:35:11.942982238 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#574 has been closed by @volodya-lombrozo.
+  event_id: 12677847479
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 574
+  repository: 889819508
+  what: issue-was-closed
+  when: 2026-08-03 05:24:28.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1115999
+  _job: 30798753415
+  _time: 2026-08-03 09:35:12.722838056 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#896 has been closed by @volodya-lombrozo.
+  event_id: 12677829213
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 896
+  repository: 889819508
+  what: issue-was-closed
+  when: 2026-08-03 05:23:50.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1116000
+  _job: 30798753415
+  _time: 2026-08-03 09:35:14.100774383 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#836 has been closed by @volodya-lombrozo.
+  event_id: 12677795532
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 836
+  repository: 889819508
+  what: issue-was-closed
+  when: 2026-08-03 05:22:44.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1116001
+  _job: 30798753415
+  _time: 2026-08-03 09:35:14.987022784 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#1047 has been closed by @volodya-lombrozo.
+  event_id: 12677704623
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 1047
+  repository: 889819508
+  what: issue-was-closed
+  when: 2026-08-03 05:19:44.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1116002
+  _job: 30798753415
+  _time: 2026-08-03 09:35:15.644833223 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#1063 has been closed by @volodya-lombrozo.
+  event_id: 12677668018
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 1063
+  repository: 889819508
+  what: issue-was-closed
+  when: 2026-08-03 05:18:35.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1116003
+  _job: 30798753415
+  _time: 2026-08-03 09:35:16.714377976 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#1003 has been closed by @volodya-lombrozo.
+  event_id: 12677605448
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 1003
+  repository: 889819508
+  what: issue-was-closed
+  when: 2026-08-03 05:16:41.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1116004
+  _job: 30798753415
+  _time: 2026-08-03 09:38:16.395012381 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/davidanson-markdownlint-cli2-action-24.x
+  details: The missing pull objectionary/eoc#1159 has been opened by @renovate[bot].
+  issue: 1159
+  repository: 489321585
+  what: pull-was-opened
+  when: 2026-08-03 02:09:56.000000000 Z
+  where: github
+  who: 29139614
+- _id: 1116005
+  _job: 30798753415
+  _time: 2026-08-03 09:38:27.990826588 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#574 has been opened earlier by @h1alexbel.
+  issue: 574
+  repository: 889819508
+  what: issue-was-opened
+  when: 2025-05-08 12:00:42.000000000 Z
+  where: github
+  who: 83453843
+- _id: 1116006
+  _job: 30798753415
+  _time: 2026-08-03 09:38:31.069794410 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: version-up
+  details: The pull objectionary/eoc#1160 has been opened earlier by @github-actions[bot].
+  issue: 1160
+  repository: 489321585
+  what: pull-was-opened
+  when: 2026-08-03 04:16:36.000000000 Z
+  where: github
+  who: 41898282
+- _id: 1116007
+  _job: 30798753415
+  _time: 2026-08-03 09:38:33.977869738 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6209-mod-nan-divisor
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#6278 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 7
+  issue: 6278
+  repository: 73056727
+  review: 2026-08-02 20:57:42.000000000 Z
+  succeeded_builds: 23
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-03 08:43:10.000000000 Z
+  where: github
+  who: 526301
+- _id: 1116008
+  _job: 30798753415
+  _time: 2026-08-03 09:39:02.509128863 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6221-uri-scheme-schemeless
+  comments: 4
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#6280 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 20
+  issue: 6280
+  repository: 73056727
+  review: 2026-08-02 20:58:50.000000000 Z
+  succeeded_builds: 23
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-03 08:41:56.000000000 Z
+  where: github
+  who: 526301
+- _id: 1116009
+  _job: 30798753415
+  _time: 2026-08-03 09:39:28.121608329 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6213-objectsindex-children-prefix
+  comments: 5
+  comments_appreciated: 0
+  comments_by_author: 2
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 2
+  details: Apparently, objectionary/eo#6281 has been "pull-was-merged".
+  failed_builds: 0
+  files: 2
+  hoc: 84
+  issue: 6281
+  repository: 73056727
+  review: 2026-08-02 20:59:18.000000000 Z
+  succeeded_builds: 23
+  suggestions: 1
+  what: pull-was-merged
+  when: 2026-08-03 08:41:38.000000000 Z
+  where: github
+  who: 526301
+- _id: 1116010
+  _job: 30798753415
+  _time: 2026-08-03 09:39:49.717519364 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 4752-truncated
+  comments: 4
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 4
+  comments_resolved: 0
+  comments_to_code: 2
+  details: Apparently, objectionary/eo#6282 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 93
+  issue: 6282
+  repository: 73056727
+  review: 2026-08-02 21:00:28.000000000 Z
+  succeeded_builds: 23
+  suggestions: 2
+  what: pull-was-merged
+  when: 2026-08-03 08:40:44.000000000 Z
+  where: github
+  who: 526301
+- _id: 1116011
+  _job: 30798753415
+  _time: 2026-08-03 09:40:11.861561498 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 4752-padded-zeros
+  comments: 4
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 4
+  comments_resolved: 0
+  comments_to_code: 2
+  details: Apparently, objectionary/eo#6283 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 119
+  issue: 6283
+  repository: 73056727
+  review: 2026-08-02 21:01:28.000000000 Z
+  succeeded_builds: 23
+  suggestions: 2
+  what: pull-was-merged
+  when: 2026-08-03 08:40:16.000000000 Z
+  where: github
+  who: 526301
+- _id: 1116012
+  _job: 30798753415
+  _time: 2026-08-03 09:40:32.441982417 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6209-number-mod-nan-divisor
+  comments: 4
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#6284 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 7
+  issue: 6284
+  repository: 73056727
+  review: 2026-08-02 21:01:47.000000000 Z
+  succeeded_builds: 23
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-03 08:39:30.000000000 Z
+  where: github
+  who: 526301
+- _id: 1116013
+  _job: 30798753415
+  _time: 2026-08-03 09:40:49.204997046 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6212-add-probes-type-atom
+  comments: 7
+  comments_appreciated: 0
+  comments_by_author: 3
+  comments_by_reviewers: 4
+  comments_resolved: 0
+  comments_to_code: 4
+  details: Apparently, objectionary/eo#6285 has been "pull-was-merged".
+  failed_builds: 0
+  files: 4
+  hoc: 112
+  issue: 6285
+  repository: 73056727
+  review: 2026-08-02 21:02:53.000000000 Z
+  succeeded_builds: 23
+  suggestions: 2
+  what: pull-was-merged
+  when: 2026-08-03 08:39:11.000000000 Z
+  where: github
+  who: 526301
+- _id: 1116014
+  _job: 30798753415
+  _time: 2026-08-03 09:41:14.444585210 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6214-linttarget-prep
+  comments: 4
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#6292 has been "pull-was-merged".
+  failed_builds: 0
+  files: 2
+  hoc: 57
+  issue: 6292
+  repository: 73056727
+  review: 2026-08-02 21:05:46.000000000 Z
+  succeeded_builds: 23
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-03 08:29:47.000000000 Z
+  where: github
+  who: 526301
+- _id: 1116015
+  _job: 30798753415
+  _time: 2026-08-03 09:41:31.066552955 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6141-path-win32-is-absolute
+  comments: 5
+  comments_appreciated: 0
+  comments_by_author: 2
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 2
+  details: Apparently, objectionary/eo#6296 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 12
+  issue: 6296
+  repository: 73056727
+  review: 2026-08-02 21:07:24.000000000 Z
+  succeeded_builds: 23
+  suggestions: 1
+  what: pull-was-merged
+  when: 2026-08-03 08:28:57.000000000 Z
+  where: github
+  who: 526301
+- _id: 1116016
+  _job: 30798753415
+  _time: 2026-08-03 09:41:44.635181444 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/eslint-plugin-jsdoc-63.x-lockfile
+  comments: 3
+  comments_appreciated: 1
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eoc#1157 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 6
+  issue: 1157
+  repository: 489321585
+  review: 2026-08-03 03:37:36.000000000 Z
+  succeeded_builds: 18
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-03 05:39:18.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1116017
+  _job: 30798753415
+  _time: 2026-08-03 09:41:53.726461245 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 1177-chore-jtcop-1.4.4
+  comments: 3
+  comments_appreciated: 1
+  comments_by_author: 1
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/lints#1184 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 2
+  issue: 1184
+  repository: 889819508
+  succeeded_builds: 19
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-03 05:23:47.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1116018
+  _job: 30798753415
+  _time: 2026-08-03 09:42:16.775466358 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/mocha-11.x-lockfile
+  comments: 3
+  comments_appreciated: 1
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eoc#1158 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 12
+  issue: 1158
+  repository: 489321585
+  review: 2026-08-03 03:37:34.000000000 Z
+  succeeded_builds: 18
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-03 05:25:21.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1116019
+  _job: 30798753415
+  _time: 2026-08-03 09:42:26.872243581 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/davidanson-markdownlint-cli2-action-24.x
+  comments: 3
+  comments_appreciated: 1
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eoc#1159 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 2
+  issue: 1159
+  repository: 489321585
+  review: 2026-08-03 03:37:31.000000000 Z
+  succeeded_builds: 18
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-03 04:16:24.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1116020
+  _job: 30798753415
+  _time: 2026-08-03 09:42:43.231483813 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '6245'
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#6312 has been "pull-was-merged".
+  failed_builds: 1
+  files: 12
+  hoc: 205
+  issue: 6312
+  repository: 73056727
+  succeeded_builds: 22
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-03 08:28:01.000000000 Z
+  where: github
+  who: 526301
+- _id: 1116021
+  _job: 30798753415
+  _time: 2026-08-03 09:42:55.399426143 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/davidanson-markdownlint-cli2-action-24.x
+  comments: 5
+  comments_appreciated: 1
+  comments_by_author: 0
+  comments_by_reviewers: 5
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#6313 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 2
+  issue: 6313
+  repository: 73056727
+  review: 2026-08-03 03:51:34.000000000 Z
+  succeeded_builds: 24
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-03 04:54:08.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1116022
+  _job: 30798753415
+  _time: 2026-08-03 09:44:11.995078539 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  assigner: 51804353
+  details: objectionary/lints#1046 was assigned to @theaflit by @volodya-lombrozo.
+  issue: 1046
+  repository: 889819508
+  what: issue-was-assigned
+  when: 2026-08-03 05:32:27.000000000 Z
+  where: github
+  who: 147757914
+- _id: 1116023
+  _job: 30798753415
+  _time: 2026-08-03 09:44:42.888463404 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  assigner: 51804353
+  details: objectionary/eo#6125 was assigned to @morphqdd by @volodya-lombrozo.
+  issue: 6125
+  repository: 73056727
+  what: issue-was-assigned
+  when: 2026-08-03 05:00:33.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1116024
+  _job: 30798753415
+  _time: 2026-08-03 09:47:38.697229158 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/lints#574.
+  issue: 574
+  label: bug
+  repository: 889819508
+  what: label-was-attached
+  when: 2025-05-08 12:43:07.000000000 Z
+  where: github
+  who: 526301
