@@ -51,7 +51,6 @@ import org.xembly.Xembler;
  *     Naming the class {@code Linting} avoids this collision.
  * </p>
  * @since 0.31.0
- * @checkstyle ClassFanOutComplexityCheck (3 lines)
  */
 @SuppressWarnings("PMD.GodClass")
 final class Linting implements Step {
