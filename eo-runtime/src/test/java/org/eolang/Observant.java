@@ -5,6 +5,7 @@
 package org.eolang;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -38,6 +39,6 @@ final class Observant extends PhDefault {
      * @return Names, in call order
      */
     List<String> seen() {
-        return this.names;
+        return Collections.unmodifiableList(this.names);
     }
 }
