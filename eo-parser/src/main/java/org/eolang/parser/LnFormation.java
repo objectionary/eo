@@ -45,15 +45,8 @@ final class LnFormation implements Line {
         this.span = source;
     }
 
-    /*
-     * PMD complains 'blanks' is unnecessary, but we must capture it
-     * before enterAfterMeta() clears the counter for checkTest().
-     */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
-        final int blanks = globals.pendingBlanks();
-        Blanks.enterAfterMeta(this.span, globals, emit);
         final String body = this.span.body();
         final List<String> params;
         final String binding;
@@ -82,7 +75,9 @@ final class LnFormation implements Line {
         }
         this.checkAtomVoids(suffix, params);
         if (suffix.test()) {
-            Blanks.checkTest(this.span, blanks, emit);
+            Blanks.checkTest(this.span, Blanks.enterAfterMeta(this.span, globals, emit), emit);
+        } else {
+            Blanks.enterAfterMeta(this.span, globals, emit);
         }
         Comments.seal(globals, emit, this.span);
         this.transition(stack, suffix);
