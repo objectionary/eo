@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -401,6 +402,29 @@ final class MjLintTest {
                 "/object/errors/error[@severity='error']"
             ).count(),
             Matchers.greaterThan(0L)
+        );
+    }
+
+    @Test
+    void reportsPlainParserSyntaxErrorUnderParserRule(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "# Sample object for the probe.",
+            "",
+            "[] > main",
+            "  \"\\uD800\" > @"
+        );
+        MatcherAssert.assertThat(
+            "a plain parser syntax error must be reported as a defect under the 'parser' rule, the same as any other lint",
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> maven.execute(new FakeMaven.Lint()),
+                        "A plain parser syntax error must still fail the build, but through the normal reporting path"
+                    )
+                )
+            ).asString(),
+            Matchers.containsString("(parser)")
         );
     }
 
