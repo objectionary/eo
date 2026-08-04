@@ -37,7 +37,9 @@ final class VerboseBytesAsStringTest {
         MatcherAssert.assertThat(
             "A hex field ending on an eight-character boundary must not carry a trailing hyphen",
             new VerboseBytesAsString(new byte[]{0, 0, 0, 0, 0, 0, 0, 0}).get(),
-            Matchers.equalTo("[0x00000000-00000000] = 0.0, or \"\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\"")
+            Matchers.equalTo(
+                "[0x00000000-00000000] = 0.0, or \"\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\""
+            )
         );
     }
 

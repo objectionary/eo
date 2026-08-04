@@ -468,33 +468,6 @@ final class Suffix {
         final int begin = Suffix.skipSpace(tail, idx);
         int rest = Suffix.skipName(tail, begin);
         final String handle = tail.substring(begin, rest);
-        Suffix.checkAutoHandle(handle, span, home, begin);
-        if (!cnst && rest < tail.length() && tail.charAt(rest) == '!') {
-            cnst = true;
-            rest = rest + 1;
-        }
-        final int trailing = Suffix.skipSpace(tail, rest);
-        if (trailing < tail.length() && tail.charAt(trailing) == '/') {
-            throw new ParseError(
-                span.line(), home + trailing,
-                "auto-named atom is forbidden"
-            );
-        }
-        Suffix.endsClean(tail, trailing, span, home);
-        return new Suffix.Parsed(Form.AUTO, handle, "", cnst);
-    }
-
-    /**
-     * Reject an illegal file-local handle on a {@code >>} suffix.
-     * @param handle Extracted handle; may be empty
-     * @param span Source span
-     * @param home Source column where the enclosing tail begins
-     * @param begin Source column of the handle's first character
-     * @checkstyle ParameterNumberCheck (3 lines)
-     */
-    private static void checkAutoHandle(
-        final String handle, final Span span, final int home, final int begin
-    ) {
         if (Suffix.SCOPES.contains(handle)) {
             throw new ParseError(
                 span.line(), home + begin,
@@ -509,9 +482,20 @@ final class Suffix {
                 "cactus emoji is reserved for auto-names; not allowed in identifiers"
             );
         }
-        if (!handle.isEmpty()) {
-            Suffix.checkLowercaseStart(handle, span, home, begin);
+        Suffix.checkLowercaseStart(handle, span, home, begin);
+        if (!cnst && rest < tail.length() && tail.charAt(rest) == '!') {
+            cnst = true;
+            rest = rest + 1;
         }
+        final int trailing = Suffix.skipSpace(tail, rest);
+        if (trailing < tail.length() && tail.charAt(trailing) == '/') {
+            throw new ParseError(
+                span.line(), home + trailing,
+                "auto-named atom is forbidden"
+            );
+        }
+        Suffix.endsClean(tail, trailing, span, home);
+        return new Suffix.Parsed(Form.AUTO, handle, "", cnst);
     }
 
     /**
