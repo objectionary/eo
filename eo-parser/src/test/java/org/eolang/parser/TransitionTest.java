@@ -13,17 +13,15 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link Transition}.
  * @since 0.1
  */
-@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class TransitionTest {
 
     @Test
     void pushesFreshLevelOntoEmptyStack() {
-        final Stack stack = new Stack();
-        final Level level = new Transition(stack, new Span("alpha", 1))
-            .apply(Kind.HEAD, Openness.OPEN, null);
         MatcherAssert.assertThat(
             "the first apply on an empty stack must push a level whose kind matches the request",
-            level.kind(),
+            new Transition(new Stack(), new Span("alpha", 1))
+                .apply(Kind.HEAD, Openness.OPEN, null)
+                .kind(),
             Matchers.equalTo(Kind.HEAD)
         );
     }
@@ -33,11 +31,11 @@ final class TransitionTest {
         final Stack stack = new Stack();
         new Transition(stack, new Span("beta", 1))
             .apply(Kind.BARE_FORMATION, Openness.OPEN, null);
-        final Level level = new Transition(stack, new Span("  gamma", 2))
-            .apply(Kind.HEAD, Openness.OPEN, null);
         MatcherAssert.assertThat(
             "applying at deeper indent must produce a level whose parent kind matches the stack top",
-            level.parent(),
+            new Transition(stack, new Span("  gamma", 2))
+                .apply(Kind.HEAD, Openness.OPEN, null)
+                .parent(),
             Matchers.equalTo(Kind.BARE_FORMATION)
         );
     }
@@ -73,35 +71,33 @@ final class TransitionTest {
         final Stack stack = new Stack();
         new Transition(stack, new Span("theta", 1))
             .apply(Kind.HEAD, Openness.OPEN, null);
-        final Level level = new Transition(stack, new Span("iota", 2))
-            .apply(Kind.HAPPLICATION, Openness.HORIZONTAL_COMPLETED, null);
         MatcherAssert.assertThat(
             "applying at the same indent must replace the top level's kind in place",
-            level.kind(),
+            new Transition(stack, new Span("iota", 2))
+                .apply(Kind.HAPPLICATION, Openness.HORIZONTAL_COMPLETED, null)
+                .kind(),
             Matchers.equalTo(Kind.HAPPLICATION)
         );
     }
 
     @Test
     void marksLevelAsNamedWhenLabelIsGiven() {
-        final Stack stack = new Stack();
-        final Level level = new Transition(stack, new Span("kappa", 1))
-            .apply(Kind.HEAD, Openness.OPEN, "mu");
         MatcherAssert.assertThat(
             "applying with a non-null label must record the level as carrying a name suffix",
-            level.named(),
+            new Transition(new Stack(), new Span("kappa", 1))
+                .apply(Kind.HEAD, Openness.OPEN, "mu")
+                .named(),
             Matchers.is(true)
         );
     }
 
     @Test
     void leavesLevelUnnamedWhenLabelIsNull() {
-        final Stack stack = new Stack();
-        final Level level = new Transition(stack, new Span("lambda", 1))
-            .apply(Kind.HEAD, Openness.OPEN, null);
         MatcherAssert.assertThat(
             "applying with a null label must leave the level without a name flag",
-            level.named(),
+            new Transition(new Stack(), new Span("lambda", 1))
+                .apply(Kind.HEAD, Openness.OPEN, null)
+                .named(),
             Matchers.is(false)
         );
     }

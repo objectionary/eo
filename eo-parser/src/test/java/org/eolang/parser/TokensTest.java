@@ -4,7 +4,6 @@
  */
 package org.eolang.parser;
 
-import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -14,17 +13,15 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link Tokens}.
  * @since 0.1
  */
-@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class TokensTest {
 
     @Test
     void readsIdentifierAndAdvancesCursor() {
         final Tokens tokens = new Tokens("foo", new Span("foo", 1));
-        final Value value = tokens.readName();
         MatcherAssert.assertThat(
             "readName must return the parsed identifier and leave the cursor at end()",
-            tokens.cursor(),
-            Matchers.equalTo(value.end())
+            tokens.readName().end(),
+            Matchers.equalTo(tokens.cursor())
         );
     }
 
@@ -95,10 +92,9 @@ final class TokensTest {
     void readsMethodChain() {
         final Tokens tokens = new Tokens("foo.bar.baz", new Span("foo.bar.baz", 1));
         tokens.readName();
-        final List<MethodChain> chain = tokens.readChain();
         MatcherAssert.assertThat(
             "readChain must produce one MethodChain per .NAME segment after the head",
-            chain,
+            tokens.readChain(),
             Matchers.hasSize(2)
         );
     }
@@ -107,10 +103,9 @@ final class TokensTest {
     void readsHorizontalArgs() {
         final Tokens tokens = new Tokens("foo a 42 b > x", new Span("foo a 42 b > x", 1));
         tokens.readName();
-        final List<Value> args = tokens.readArgs();
         MatcherAssert.assertThat(
             "readArgs must collect each space-separated value until a suffix marker",
-            args,
+            tokens.readArgs(),
             Matchers.hasSize(3)
         );
     }
@@ -121,10 +116,9 @@ final class TokensTest {
             "foo other.value.tail", new Span("foo other.value.tail", 1)
         );
         tokens.readName();
-        final List<Value> args = tokens.readArgs();
         MatcherAssert.assertThat(
             "an arg of the form `head.m1.m2` must carry its full chain — 2 links here",
-            args.get(0).chain(),
+            tokens.readArgs().get(0).chain(),
             Matchers.hasSize(2)
         );
     }
@@ -149,10 +143,9 @@ final class TokensTest {
             "foo 00-01.as-i64", new Span("foo 00-01.as-i64", 1)
         );
         tokens.readName();
-        final List<Value> args = tokens.readArgs();
         MatcherAssert.assertThat(
             "a BYTES arg of the form `head.m1` must carry its chain — 1 link here",
-            args.get(0).chain(),
+            tokens.readArgs().get(0).chain(),
             Matchers.hasSize(1)
         );
     }
@@ -300,6 +293,42 @@ final class TokensTest {
             "`$` must read as a ROOT value (XI)",
             new Tokens("$", new Span("$", 1)).readRoot().raw(),
             Matchers.equalTo("$")
+        );
+    }
+
+    @Test
+    void rejectsRootGluedToLetter() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Tokens("QQ", new Span("QQ", 1)).readRoot(),
+            "readRoot must reject a root glued to a letter, as in the legacy `QQ`"
+        );
+    }
+
+    @Test
+    void rejectsRootGluedToDigit() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Tokens("$1", new Span("$1", 1)).readRoot(),
+            "readRoot must reject a root glued to a digit"
+        );
+    }
+
+    @Test
+    void rejectsRootGluedToHyphen() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Tokens("Q-foo", new Span("Q-foo", 1)).readRoot(),
+            "readRoot must reject a root glued to a hyphen, which is a NAME character"
+        );
+    }
+
+    @Test
+    void readsRootFollowedByDot() {
+        MatcherAssert.assertThat(
+            "`^.foo` must read its root and stop right before the dot",
+            new Tokens("^.foo", new Span("^.foo", 1)).readRoot().raw(),
+            Matchers.equalTo("^")
         );
     }
 

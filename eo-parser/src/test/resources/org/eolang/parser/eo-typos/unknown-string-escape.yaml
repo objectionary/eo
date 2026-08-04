@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 2
+message: |-
+  [2:2] error: 'invalid unicode or octal escape in string literal'
+    "\q" > x
+    ^
+input: |
+  [] > app
+    "\q" > x

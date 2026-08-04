@@ -47,7 +47,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint unit-test-missing
 +unlint redundant-object
 +unlint mandatory-package
 
@@ -86,7 +85,7 @@
                 sock.sd
                 sock.sockaddr
                 sock.sockaddr.size
-            ^.^ > sock
+            ^.^.^ > sock
           cant-connect
       [scope cant-listen] > listen
         safe-socket > @
@@ -131,7 +130,7 @@
                 "listen"
                 sock.sd
                 2048
-            ^.^ > sock
+            ^.^.^ > sock
           cant-listen
       [scope cant] > safe-socket
         if. > @
@@ -195,7 +194,7 @@
           sys.tcp
       sys.sockaddr-in > sockaddr
         sys.inet.as-i16
-        htons port
+        htons checked-port
         addrint
     |
       []
@@ -259,6 +258,14 @@
         seq * > [buffer] > write
           send buffer
           output-block
+  if. > [] > checked-port
+    or.
+      port.lt 0
+      port.gt 65535
+    T
+      "Port %d is out of range; it must be 0 to 65535".printf
+        * port
+    port
   [port] > htons
     as-i16. > @
       or.
@@ -268,4 +275,15 @@
         and.
           b.right 8
           00-FF
-    port.as-i16.as-bytes > b
+    port.as-i32.as-bytes.slice > b
+      2
+      2
+
+  eq. ++> can-convert-a-port-above-the-signed-short-limit-in-htons
+    40-9C
+    socket.htons 40000
+
+  checked-port. --> rejects-a-port-above-the-valid-range
+    socket
+      "127.0.0.1"
+      70000

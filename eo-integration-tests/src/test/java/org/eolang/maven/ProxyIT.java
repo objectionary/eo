@@ -208,7 +208,6 @@ final class ProxyIT {
         );
     }
 
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static int free() {
         try (ServerSocket socket = new ServerSocket(0)) {
             return socket.getLocalPort();

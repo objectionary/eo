@@ -3,15 +3,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 /**
  * BYTES.OR.
  * @since 0.1.0
+ * @checkstyle IllegalIdentifierNameCheck (16 lines)
  * @checkstyle TypeNameCheck (15 lines)
  */
 @XmirObject(oname = "bytes.or")

@@ -3,15 +3,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 /**
  * Chunk.read object.
  * @since 0.36.0
+ * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "chunk.read")
@@ -51,14 +48,13 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
      * requested range lies outside it (R-3.4.8 error-branch semantics).
      * The predictable out-of-range case is asked of {@link Heaps#fits}
      * up front — not caught as a failure — so it routes cleanly to the
-     * caller-supplied {@code cant-read} fallback (the bottom object ⊥
-     * when none was provided). A non-allocated block is unpredictable
+     * caller-supplied {@code cant-read} fallback (the bottom object when
+     * none was provided). A non-allocated block is unpredictable
      * and {@code fits} aborts on it, which the atom does not handle.
      * @param id Block identifier
      * @param offset Offset to read from
      * @param length Number of bytes to read
      * @return The bytes read, or the {@code cant-read} fallback
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private Phi bytes(final int id, final int offset, final int length) {
         final Phi result;

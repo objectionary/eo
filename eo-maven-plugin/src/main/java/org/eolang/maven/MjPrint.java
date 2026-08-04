@@ -88,17 +88,16 @@ public final class MjPrint extends MjSafe {
 
     /**
      * The column after which characters start being charged.
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(property = "eo.width")
     private Integer width;
 
     /**
-     * The width of a single indentation level, in spaces.
-     * @checkstyle MemberNameCheck (10 lines)
+     * Ctor.
      */
-    @Parameter(property = "eo.step")
-    private Integer step;
+    public MjPrint() {
+        // nothing
+    }
 
     @Override
     void exec() throws IOException {
@@ -165,9 +164,6 @@ public final class MjPrint extends MjSafe {
         }
         if (this.width != null) {
             map.put(PenaltyKey.WIDTH, this.width);
-        }
-        if (this.step != null) {
-            map.put(PenaltyKey.STEP, this.step);
         }
         return map;
     }

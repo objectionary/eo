@@ -20,5 +20,5 @@
     console.write text
     true
 
-  stdout ++> tests-prints-to-console
+  stdout ++> can-print-to-the-console
     "Hello, stdout-test!\n"

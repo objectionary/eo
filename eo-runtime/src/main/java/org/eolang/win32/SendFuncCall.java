@@ -1,0 +1,59 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+package org.eolang.win32;
+
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.ExFailure;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
+import org.eolang.Syscall;
+
+/**
+ * WriteFile kernel32 function call.
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile">here for details</a>
+ * @since 0.40.0
+ */
+public final class SendFuncCall implements Syscall {
+
+    /**
+     * Win32 object.
+     */
+    private final Phi win;
+
+    /**
+     * Ctor.
+     * @param win Win32 object
+     */
+    public SendFuncCall(final Phi win) {
+        this.win = win;
+    }
+
+    @Override
+    public Phi make(final Phi... params) {
+        final byte[] buf = new Dataized(params[1]).take();
+        final int size = new Dataized(params[2]).asNumber().intValue();
+        if (size < 0 || size > buf.length) {
+            throw new ExFailure(
+                "Can't send %d bytes from a buffer of only %d bytes",
+                size, buf.length
+            );
+        }
+        final Phi result = this.win.take("return").copy();
+        result.put(
+            0,
+            new Data.ToPhi(
+                Winsock.INSTANCE.send(
+                    new Dataized(params[0]).asNumber().intValue(),
+                    buf,
+                    size,
+                    new Dataized(params[3]).asNumber().intValue()
+                )
+            )
+        );
+        result.put(1, new PhDefault());
+        return result;
+    }
+}

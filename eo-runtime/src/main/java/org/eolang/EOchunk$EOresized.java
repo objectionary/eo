@@ -3,15 +3,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 /**
  * Chunk.resized object.
  * @since 0.41.0
+ * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "chunk.resized")
@@ -19,19 +16,31 @@ package org.eolang;
 public final class EOchunk$EOresized extends PhDefault implements Atom {
 
     /**
+     * Name of the void that holds the size the block is resized to.
+     */
+    private static final String CAPACITY = "capacity";
+
+    /**
      * Ctor.
      */
     public EOchunk$EOresized() {
-        super(new Attrs(new Attr("new-size", new AtVoid("new-size"))));
+        super(
+            new Attrs(
+                new Attr(
+                    EOchunk$EOresized.CAPACITY,
+                    new AtVoid(EOchunk$EOresized.CAPACITY)
+                )
+            )
+        );
     }
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public Phi lambda() {
         final Phi rho = this.take(Phi.RHO);
-        final int id = new Expect.Natural(Expect.at(rho, "id")).it();
-        final int size = new Expect.Natural(Expect.at(this, "new-size")).it();
-        Heaps.INSTANCE.resize(id, size);
+        Heaps.INSTANCE.resize(
+            new Expect.Natural(Expect.at(rho, "id")).it(),
+            new Expect.Natural(Expect.at(this, EOchunk$EOresized.CAPACITY)).it()
+        );
         return rho;
     }
 }

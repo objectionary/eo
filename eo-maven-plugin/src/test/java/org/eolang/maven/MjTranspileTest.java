@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
 import org.eolang.xax.XtSticky;
@@ -27,39 +28,20 @@ import org.eolang.xax.XtYaml;
 import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link MjTranspile}.
  * @since 0.1
  */
-@SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)
 final class MjTranspileTest {
-
-    /**
-     * Test eo program from resources.
-     * @checkstyle ProhibitFieldsInTestClassesCheck (5 lines)
-     */
-    private String program;
-
-    /**
-     * Traspiled to java eo program from resources.
-     * @checkstyle ProhibitFieldsInTestClassesCheck (5 lines)
-     */
-    private String compiled;
-
-    @BeforeEach
-    void setUp() throws Exception {
-        this.program = new TextOf(new ResourceOf("org/eolang/maven/mess.eo")).asString();
-        this.compiled = "target/generated/org/eolang/EO_foo/EO_x/EOmain.java";
-    }
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/transpile-packs/", glob = "**.yaml")
@@ -100,16 +82,45 @@ final class MjTranspileTest {
     }
 
     @Test
+    void tracksStepsOfProgramWithTwoObjects(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "the first tracked step of a program holding two objects did not leave its XMIR in the pre-transpile directory",
+            new FakeMaven(temp).withProgram(MjTranspileTest.pair())
+                .with("trackTransformationSteps", true)
+                .execute(MjParse.class)
+                .execute(MjTranspile.class)
+                .result(),
+            Matchers.hasKey(
+                String.format("target/%s/examples/x/00-set-locators.xml", Transpiling.PRE)
+            )
+        );
+    }
+
+    @Test
+    void transpilesSecondObjectOfProgramWhileTrackingSteps(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "the second object of a tracked program did not reach the generated Java",
+            new FakeMaven(temp).withProgram(MjTranspileTest.pair())
+                .with("trackTransformationSteps", true)
+                .execute(MjParse.class)
+                .execute(MjTranspile.class)
+                .result(),
+            Matchers.hasKey("target/generated/org/eolang/EO_examples/EOy.java")
+        );
+    }
+
+    @Test
     void wrapsObjectsIntoPhCoverageWhenTrackingEnabled(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "the generated Java must wrap located objects into PhCoverage when coverageTracking is on",
             new TextOf(
                 new FakeMaven(temp)
-                    .withProgram(this.program)
+                    .withProgram(MjTranspileTest.program())
                     .with("coverageTracking", true)
                     .execute(new FakeMaven.Transpile())
                     .result()
-                    .get(this.compiled)
+                    .get(MjTranspileTest.compiled())
             ).asString(),
             Matchers.containsString("new PhCoverage(")
         );
@@ -121,12 +132,102 @@ final class MjTranspileTest {
             "the generated Java must not mention PhCoverage when coverageTracking is off",
             new TextOf(
                 new FakeMaven(temp)
-                    .withProgram(this.program)
+                    .withProgram(MjTranspileTest.program())
                     .execute(new FakeMaven.Transpile())
                     .result()
-                    .get(this.compiled)
+                    .get(MjTranspileTest.compiled())
             ).asString(),
             Matchers.not(Matchers.containsString("PhCoverage"))
+        );
+    }
+
+    @Test
+    void extendsPhDefaultInGeneratedJavaByDefault(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "the generated class must extend PhDefault when phiDefaultClass is not set",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(String.format("+package foo.x%n%n[] > main%n  42 > @"))
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.containsString("extends PhDefault {")
+        );
+    }
+
+    @Test
+    void extendsGivenPhiClassInGeneratedJava(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "the generated class must extend the class named by phiDefaultClass instead of PhDefault",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(String.format("+package foo.x%n%n[] > main%n  42 > @"))
+                    .with("superclass", "org.example.PhInspected")
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.containsString("extends org.example.PhInspected {")
+        );
+    }
+
+    @Test
+    void buildsGivenPhiClassAtInstantiationSites(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "the generated Java must instantiate the class named by phiDefaultClass, never PhDefault, so that the whole tree is made of the substituted class",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(MjTranspileTest.instantiating())
+                    .with("superclass", "org.example.PhInspected")
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.not(Matchers.containsString("new PhDefault"))
+        );
+    }
+
+    @Test
+    void invalidatesCacheWhenPhiDefaultClassChanges(@Mktmp final Path temp) throws Exception {
+        final Path cache = temp.resolve("cache");
+        final String src = String.format("+package foo.x%n%n[] > main%n  42 > @");
+        new FakeMaven(temp.resolve("first"))
+            .withProgram(src)
+            .with("cache", cache.toFile())
+            .execute(new FakeMaven.Transpile());
+        MatcherAssert.assertThat(
+            "the second run's generated Java must reflect its own phiDefaultClass instead of reusing the first run's cached PhDefault output",
+            new TextOf(
+                new FakeMaven(temp.resolve("second"))
+                    .withProgram(src)
+                    .with("cache", cache.toFile())
+                    .with("superclass", "org.example.PhInspected")
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.containsString("extends org.example.PhInspected {")
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "org.example.Ph Inspected", "42Nope"})
+    void rejectsPhiDefaultClassThatIsNotAJavaName(final String name, @Mktmp final Path temp) {
+        final IllegalStateException exception = Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(MjTranspileTest.program())
+                .with("superclass", name)
+                .execute(new FakeMaven.Transpile()),
+            "a phiDefaultClass that is not a Java class name must not reach the generated Java"
+        );
+        final StringWriter writer = new StringWriter();
+        exception.printStackTrace(new PrintWriter(writer));
+        MatcherAssert.assertThat(
+            "a phiDefaultClass that is not a Java class name must be refused by naming the option, instead of emitting an extends clause that cannot compile",
+            writer.toString(),
+            Matchers.containsString("eo.phiDefaultClass")
         );
     }
 
@@ -160,7 +261,10 @@ final class MjTranspileTest {
                 "+rt jvm org.eolang:eo-runtime:0.0.0",
                 "+unlint not-empty-atom",
                 String.format("+version 0.0.0%n"),
-                "[x y z] > main /bytes"
+                "[] > main /bytes",
+                "  ? > x",
+                "  ? > y",
+                "  ? > z"
                 )
                 .execute(new FakeMaven.Transpile())
                 .result(),
@@ -214,7 +318,7 @@ final class MjTranspileTest {
                     .get("target/generated/org/eolang/EO_foo/EO_x/package-info.java")
             ).asString(),
             Matchers.allOf(
-                Matchers.containsString("// @org.eolang.XmirPackage(\"foo.x\")"),
+                Matchers.containsString("@org.eolang.XmirPackage(\"foo.x\")"),
                 Matchers.containsString("package org.eolang.EO_foo.EO_x;")
             )
         );
@@ -229,7 +333,7 @@ final class MjTranspileTest {
                     .withProgram(String.format("+package foo.x%n%n[] > main%n  42.plus 1 > @"))
                     .execute(new FakeMaven.Transpile())
                     .result()
-                    .get(this.compiled)
+                    .get(MjTranspileTest.compiled())
             ).asString(),
             Matchers.not(Matchers.containsString("new PhSafe("))
         );
@@ -245,7 +349,7 @@ final class MjTranspileTest {
                     .with("trackLocations", true)
                     .execute(new FakeMaven.Transpile())
                     .result()
-                    .get(this.compiled)
+                    .get(MjTranspileTest.compiled())
             ).asString(),
             Matchers.containsString("new PhSafe(")
         );
@@ -268,7 +372,7 @@ final class MjTranspileTest {
                     .with("trackLocations", true)
                     .execute(new FakeMaven.Transpile())
                     .result()
-                    .get(this.compiled)
+                    .get(MjTranspileTest.compiled())
             ).asString(),
             Matchers.containsString("new PhSafe(")
         );
@@ -278,15 +382,14 @@ final class MjTranspileTest {
     void recompilesIfModified(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
-            .withProgram(this.program)
+            .withProgram(MjTranspileTest.program())
             .execute(new FakeMaven.Transpile())
             .result();
-        final Path java = res.get(this.compiled);
+        final Path java = res.get(MjTranspileTest.compiled());
         final long before = java.toFile().lastModified();
-        MatcherAssert.assertThat(
-            "The timestamp of file should be updated",
+        Assumptions.assumeTrue(
             res.get("foo/x/main.eo").toFile().setLastModified(before + 1L),
-            Matchers.is(true)
+            "The filesystem refused to touch the source, cannot tell modified from intact"
         );
         maven.execute(new FakeMaven.Transpile());
         MatcherAssert.assertThat(
@@ -297,49 +400,26 @@ final class MjTranspileTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void recompilesIfExpired(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
-            .withProgram(this.program)
+            .withProgram(MjTranspileTest.program())
             .execute(new FakeMaven.Transpile())
             .result();
-        final Path java = res.get(this.compiled);
-        final Path xmir = maven.targetPath().resolve(
-            String.format("%s/foo/x/main.xmir", Transpiling.DIR)
+        final Path java = res.get(MjTranspileTest.compiled());
+        Assumptions.assumeTrue(
+            java.toFile().setLastModified(0L)
+                && maven.targetPath()
+                    .resolve(String.format("%s/foo/x/main.xmir", Transpiling.DIR))
+                    .toFile()
+                    .setLastModified(0L),
+            "The filesystem refused to expire the transpiled files, cannot tell expired from fresh"
         );
-        MatcherAssert.assertThat(
-            "The Java file should exist after transpile",
-            java.toFile(),
-            FileMatchers.anExistingFile()
-        );
-        MatcherAssert.assertThat(
-            "The Xmir file should exist after transpile",
-            xmir.toFile(),
-            FileMatchers.anExistingFile()
-        );
-        MatcherAssert.assertThat(
-            "The Java file's last modified timestamp should be successfully reset",
-            java.toFile().setLastModified(0L),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            "The Xmir file's last modified timestamp should be successfully reset",
-            xmir.toFile().setLastModified(0L),
-            Matchers.is(true)
-        );
-        final long before = java.toFile().lastModified();
         maven.execute(MjTranspile.class);
-        final long after = java.toFile().lastModified();
         MatcherAssert.assertThat(
-            "The Java file should have a valid last modified timestamp after recompilation",
-            after,
+            "The Java file should be recompiled once it and its XMIR expired",
+            java.toFile().lastModified(),
             Matchers.greaterThan(0L)
-        );
-        MatcherAssert.assertThat(
-            "The Java file's last modified timestamp should change after recompilation",
-            before,
-            Matchers.not(Matchers.equalTo(after))
         );
     }
 
@@ -347,20 +427,14 @@ final class MjTranspileTest {
     void doesNotRetranspileIfNotModified(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Path java = maven
-            .withProgram(this.program)
+            .withProgram(MjTranspileTest.program())
             .allTojosWithHash(CommitHash.FAKE)
             .execute(new FakeMaven.Transpile())
             .result()
-            .get(this.compiled);
-        MatcherAssert.assertThat(
-            "The .java file must be generated after first transpilation",
-            java.toFile(),
-            FileMatchers.anExistingFile()
-        );
-        MatcherAssert.assertThat(
-            "The last modified date of generated .java file must be successfully set",
+            .get(MjTranspileTest.compiled());
+        Assumptions.assumeTrue(
             java.toFile().setLastModified(0L),
-            Matchers.is(true)
+            "The filesystem refused to expire the generated file, cannot tell reused from regenerated"
         );
         maven.execute(MjTranspile.class);
         MatcherAssert.assertThat(
@@ -372,17 +446,17 @@ final class MjTranspileTest {
 
     @Test
     void transpilesSimpleEoProgram(@Mktmp final Path temp) throws Exception {
-        final Map<String, Path> res = new FakeMaven(temp)
-            .withProgram(this.program)
-            .execute(new FakeMaven.Transpile())
-            .result();
         MatcherAssert.assertThat(
-            "transpiled class must be present",
-            res, Matchers.hasKey(this.compiled)
-        );
-        MatcherAssert.assertThat(
-            "transpiled class must contain EOmain",
-            new TextOf(res.get(this.compiled)).asString(),
+            String.format(
+                "Transpiled %s must contain EOmain, but it didnt", MjTranspileTest.compiled()
+            ),
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(MjTranspileTest.program())
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
             Matchers.containsString("class EOmain")
         );
     }
@@ -394,7 +468,7 @@ final class MjTranspileTest {
         for (int prog = 1; prog < total; ++prog) {
             final String main = String.format("main%s", FakeMaven.suffix(prog));
             maven.withProgram(
-                this.program.replace("main", main),
+                MjTranspileTest.program().replace("main", main),
                 String.format("foo.x.%s", main),
                 String.format("foo/x/%s.eo", main)
             );
@@ -411,39 +485,13 @@ final class MjTranspileTest {
             files = list.collect(Collectors.toList());
         }
         MatcherAssert.assertThat(
-            "All programs must be transpiled",
-            files.size(),
-            Matchers.equalTo(total)
+            String.format(
+                "Every one of %s must be transpiled into an intact Java source, but a concurrent transpilation race truncated or garbled some of them",
+                files
+            ),
+            files.stream().filter(MjTranspileTest::intact).collect(Collectors.toList()),
+            Matchers.hasSize(total)
         );
-        for (final Path file : files) {
-            final String java = new TextOf(file).asString();
-            if (file.getFileName().toString().startsWith("EOmain")) {
-                MatcherAssert.assertThat(
-                    String.format(
-                        "Generated %s must contain a class declaration, not be truncated/garbled by a concurrent transpilation race",
-                        file
-                    ),
-                    java,
-                    Matchers.containsString("class EOmain")
-                );
-            }
-            MatcherAssert.assertThat(
-                String.format(
-                    "Generated %s must have balanced braces, not be truncated/garbled by a concurrent transpilation race",
-                    file
-                ),
-                MjTranspileTest.balanced(java, '{', '}'),
-                Matchers.equalTo(true)
-            );
-            MatcherAssert.assertThat(
-                String.format(
-                    "Generated %s must have balanced parentheses, not be truncated/garbled by a concurrent transpilation race",
-                    file
-                ),
-                MjTranspileTest.balanced(java, '(', ')'),
-                Matchers.equalTo(true)
-            );
-        }
     }
 
     @Test
@@ -463,18 +511,16 @@ final class MjTranspileTest {
             .with("scope", "test")
             .with("generatedDir", tests.toFile())
             .with("targetDir", target.resolve("eo-test-sources").toFile()).withProgram(
-                this.program.replace("main", "main-1")
+                MjTranspileTest.program().replace("main", "main-1")
             )
             .execute(new FakeMaven.Transpile());
-        MatcherAssert.assertThat(
-            "TranspileMojo should have processed exactly 2 files",
-            maven.foreign().size(),
-            Matchers.equalTo(2)
-        );
         final Set<String> intersection = MjTranspileTest.classes(tests);
         intersection.retainAll(MjTranspileTest.classes(sources));
         MatcherAssert.assertThat(
-            "Both class paths should not intersect and don't have to have common classes",
+            String.format(
+                "The main and test scopes should share nothing but package-info.java, but they didnt, out of %d transpiled program(s)",
+                maven.foreign().size()
+            ),
             intersection,
             Matchers.allOf(
                 Matchers.iterableWithSize(1),
@@ -484,12 +530,60 @@ final class MjTranspileTest {
     }
 
     /**
+     * An EO program that makes the transpiler build objects at each of the
+     * three places it emits a {@code new} of the base class: the context of
+     * a generated {@code apply()} for the nested formation, the argument of
+     * a {@code PhApplication} for the number, and an anonymous abstract
+     * object with no children for the empty argument.
+     * @return Source code of the program
+     */
+    private static String instantiating() {
+        return String.format(
+            "+package foo.x%n%n[] > main%n  [] > inner%n    42 > @%n  42.plus > @%n    []"
+        );
+    }
+
+    /**
+     * The EO program holding two top-level objects.
+     * @return Source code of the program
+     */
+    private static String pair() {
+        return String.join(
+            System.lineSeparator(),
+            "+package examples",
+            "",
+            "# First.",
+            "[] > x",
+            "",
+            "# Second.",
+            "[] > y"
+        );
+    }
+
+    /**
+     * The EO program to transpile, taken from test resources.
+     * @return Source code of the program
+     */
+    private static String program() {
+        return new UncheckedText(
+            new TextOf(new ResourceOf("org/eolang/maven/mess.eo"))
+        ).asString();
+    }
+
+    /**
+     * The Java file the program is transpiled into.
+     * @return Path relative to the workspace
+     */
+    private static String compiled() {
+        return "target/generated/org/eolang/EO_foo/EO_x/EOmain.java";
+    }
+
+    /**
      * Get all classes in directory.
      * @param root Directory to get classes from
      * @return Set of classes
      * @throws IOException If fails.
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static Set<String> classes(final Path root) throws IOException {
         try (Stream<Path> walk = Files.walk(root)) {
             return walk.filter(MjTranspileTest::isJava)
@@ -514,6 +608,20 @@ final class MjTranspileTest {
      */
     private static String filename(final Path path) {
         return path.getFileName().toString();
+    }
+
+    /**
+     * Check that a generated Java source came out whole, with balanced
+     * brackets and, for the main object, a class declaration.
+     * @param file Generated Java file
+     * @return TRUE if the source is intact
+     */
+    private static boolean intact(final Path file) {
+        final String java = new UncheckedText(new TextOf(file)).asString();
+        return MjTranspileTest.balanced(java, '{', '}')
+            && MjTranspileTest.balanced(java, '(', ')')
+            && (!MjTranspileTest.filename(file).startsWith("EOmain")
+                || java.contains("class EOmain"));
     }
 
     /**

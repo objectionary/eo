@@ -9,7 +9,12 @@
 # string "Hello, \u4e16\u754c!"  # Unicode string creation
 # "text".length                  # Character count (not bytes)
 # "text".slice 0 2               # Character-based slicing
+# "TEXT".lower                   # Lower case, default English rules
+# "text".upper                   # Upper case, default English rules
+# "text".turkish.upper           # Upper case, Turkish dotted/dotless I
 # ```
+# Case conversion is exposed as string methods `lower` and `upper`, backed
+# by the locale wrappers `string.english` (the default) and `string.turkish`.
 # .
 
 +architect yegor256@gmail.com
@@ -22,103 +27,99 @@
 [as-bytes] > string
   as-bytes > @
 
-  D0-B4-D1-80-D1-83-D0-B3.eq "друг" ++> tests-bytes-equal-to-string
+  string.contains ++> can-check-containment-through-the-package
+    "hello, world"
+    "world"
 
-  not. ++> tests-compares-string-with-nan
+  not. ++> can-compare-a-string-with-nan
     nan.eq "друг"
 
-  not. ++> tests-compares-string-with-negative-infinity
+  not. ++> can-compare-a-string-with-negative-infinity
     ninf.eq "друг"
 
-  eq. ++> tests-compares-string-with-positive-infinity
+  eq. ++> can-compare-a-string-with-positive-infinity
     pinf.eq "друг"
     false
 
-  not. ++> tests-compares-two-different-string-types
+  "Ф".eq "Ф" ++> can-compare-one-symbol-strings
+
+  not. ++> can-compare-two-different-string-types
     "Hello".eq 42
 
-  not. ++> tests-compares-two-different-strings
+  not. ++> can-compare-two-different-strings
     "Hello".eq
       "Good bye"
 
-  eq. ++> tests-compares-two-strings
+  eq. ++> can-compare-two-equal-strings
     "x".eq "x"
     true
 
-  "Ф".eq "Ф" ++> tests-one-symbol-string-compares
-
-  string.contains ++> tests-package-contains-via-string-namespace
-    "hello, world"
-    "world"
-
-  contains. ++> tests-package-contains-word-in-sentence
+  contains. ++> can-contain-a-word-in-a-sentence
     "hello, world, how are you?"
     "how"
 
-  "eEo".is-alpha ++> tests-package-detects-alphabetic-text
+  "eEo".is-alpha ++> can-detect-alphabetic-text
 
-  "2026".is-digit ++> tests-package-detects-digits
+  "2026".is-digit ++> can-detect-digits
 
-  ends-with. ++> tests-package-ends-with-suffix
+  ends-with. ++> can-end-with-a-suffix
     "hello, world"
     "world"
 
-  eq. ++> tests-package-finds-index-of-character
+  D0-B4-D1-80-D1-83-D0-B3.eq "друг" ++> can-equal-a-string-through-bytes
+
+  "друг".eq D0-B4-D1-80-D1-83-D0-B3 ++> can-equal-bytes
+
+  eq. ++> can-find-the-index-of-a-character
     "hello".index-of "l"
     2
 
-  "HELLO".low-cased.eq "hello" ++> tests-package-low-cases-text
+  "Abc".eq "Abc" ++> can-hold-a-one-line-text-block
 
-  eq. ++> tests-package-repeats-text
-    "ha".repeated 3
-    "hahaha"
-
-  starts-with. ++> tests-package-starts-with-prefix
-    "hello, world"
-    "hello"
-
-  eq. ++> tests-package-takes-character-at-index
-    "some".at 1
-    "o"
-
-  eq. ++> tests-package-trims-surrounding-spaces
-    "  spaced  ".trimmed
-    "spaced"
-
-  "hello".up-cased.eq "HELLO" ++> tests-package-up-cases-text
-
-  eq. ++> tests-preserves-indentation-in-text
-    "a\n b\n  c"
-    "a\n b\n  c"
-
-  "друг".eq D0-B4-D1-80-D1-83-D0-B3 ++> tests-string-equals-to-bytes
-
-  eq. ++> tests-supports-escape-sequences
-    "Hello, друг!\n"
-    "Hello, друг!\n"
-
-  eq. ++> tests-supports-escape-sequences-in-text
-    "Hello, друг!\n"
-    "Hello, друг!\n"
-
-  "\n".eq "\n" ++> tests-supports-escape-sequences-line-break
-
-  "Ф".eq "Ф" ++> tests-supports-escape-sequences-unicode
-
-  "Abc".eq "Abc" ++> tests-text-block-one-line
-
-  "e\ne\ne".eq 65-0A-65-0A-65 ++> tests-text-block-tree-lines
-
-  eq. ++> tests-text-block-with-margin
+  eq. ++> can-hold-a-text-block-with-a-margin
     "z\n  y\n x"
     7A-0A-20-20-79-0A-20-78
 
-  eq. ++> tests-turns-string-into-bytes
+  "e\ne\ne".eq 65-0A-65-0A-65 ++> can-hold-a-three-line-text-block
+
+  eq. ++> can-preserve-indentation-in-a-text-block
+    "a\n b\n  c"
+    "a\n b\n  c"
+
+  eq. ++> can-repeat-text
+    "ha".repeated 3
+    "hahaha"
+
+  starts-with. ++> can-start-with-a-prefix
+    "hello, world"
+    "hello"
+
+  "\n".eq "\n" ++> can-support-a-line-break-escape-sequence
+
+  "Ф".eq "Ф" ++> can-support-a-unicode-escape-sequence
+
+  eq. ++> can-support-escape-sequences
+    "Hello, друг!\n"
+    "Hello, друг!\n"
+
+  eq. ++> can-support-escape-sequences-in-a-text-block
+    "Hello, друг!\n"
+    "Hello, друг!\n"
+
+  eq. ++> can-take-a-character-at-an-index
+    "some".at 1
+    "o"
+
+  eq. ++> can-trim-surrounding-spaces
+    "  spaced  ".trimmed
+    "spaced"
+
+  eq. ++> can-turn-into-bytes
     "€ друг".as-bytes
     E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3
 
-  eq. ++> tests-unescapes-slashes
+  eq. ++> can-unescape-slashes
     "x\\b\\f\\u\\r\\t\\n\\'"
     78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27
 
-  "\b\f\n\r\t⟦".eq 08-0C-0A-0D-09-E2-9F-A6 ++> tests-unescapes-symbols
+  "\b\f\n\r\t⟦".eq 08-0C-0A-0D-09-E2-9F-A6 ++> can-unescape-symbols

@@ -11,6 +11,7 @@ import com.jcabi.manifests.Manifests;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -25,8 +26,6 @@ import org.cactoos.list.ListOf;
 import org.eolang.lints.Defect;
 import org.eolang.lints.Severity;
 import org.eolang.lints.Source;
-import org.eolang.parser.OnDefault;
-import org.eolang.parser.OnDetailed;
 import org.eolang.wpa.Program;
 import org.w3c.dom.Node;
 import org.xembly.Directives;
@@ -131,12 +130,6 @@ final class Linting implements Step {
     private final boolean lintAsPackage;
 
     /**
-     * EO sources directory (for WPA cache key).
-     * @checkstyle MemberNameCheck (5 lines)
-     */
-    private final Path sourcesDir;
-
-    /**
      * Whether to skip linting entirely.
      * @checkstyle MemberNameCheck (5 lines)
      */
@@ -160,13 +153,7 @@ final class Linting implements Step {
      * @param experimental Whether to skip experimental lints
      * @param warning Whether to fail on warnings
      * @param pkg Whether to lint all sources as a package
-     * @param sources EO sources directory
      * @param skip Whether to skip linting entirely
-     * @todo #5102:90min Reduce long parameter lists in Linting, Parse, Pull, and similar classes.
-     *  Linting currently takes 13 constructor parameters. Parse, Pull, and Probe have similar
-     *  issues. The long parameter lists make call sites hard to read and fragile — adding a new
-     *  option requires updating every call site across the codebase.
-     * @checkstyle ParameterNumberCheck (20 lines)
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
     Linting(
@@ -181,7 +168,6 @@ final class Linting implements Step {
         final boolean experimental,
         final boolean warning,
         final boolean pkg,
-        final Path sources,
         final boolean skip
     ) {
         this.tojos = srcs;
@@ -195,7 +181,6 @@ final class Linting implements Step {
         this.skipExperimentalLints = experimental;
         this.failOnWarning = warning;
         this.lintAsPackage = pkg;
-        this.sourcesDir = sources;
         this.skipLinting = skip;
         this.guard = new ConcurrentCache();
     }
@@ -244,7 +229,6 @@ final class Linting implements Step {
         return sum;
     }
 
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private void linting() throws IOException {
         final Collection<TjForeign> programs = this.tojos.withXmir();
         final Map<Severity, Integer> counts = new ConcurrentHashMap<>();
@@ -257,7 +241,7 @@ final class Linting implements Step {
         }
         final int passed = new Threaded<>(
             programs,
-            tojo -> this.lintOne(tojo, counts, seen, this.skipSourceLints.toArray(new String[0]))
+            tojo -> this.lintOne(tojo, counts, seen)
         ).total();
         if (programs.isEmpty()) {
             Logger.info(this, "There are no XMIR programs, nothing to lint individually");
@@ -315,41 +299,33 @@ final class Linting implements Step {
      * @param tojo Foreign tojo
      * @param counts Counts of errors, warnings, and critical
      * @param seen Defects seen so far across all files
-     * @param unlints Lints to skip
      * @return Amount of passed tojos (1 if passed, 0 if errors)
      * @throws Exception If failed to lint
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     private int lintOne(
         final TjForeign tojo,
         final Map<Severity, Integer> counts,
-        final Collection<String> seen,
-        final String... unlints
+        final Collection<String> seen
     ) throws Exception {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.resolve(Linting.DIR);
-        final Path target = new Place(
-            new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get()
-        ).make(base, MjAssemble.XMIR);
+        final Path target = new LintTarget(xmir, source).under(base);
         if (this.cacheEnabled) {
             this.guard.apply(
                 source, target, base.relativize(target),
                 new Cache(
                     new CachePath(
                         this.cacheDir.resolve(Linting.CACHE),
-                        this.version,
+                        this.cacheVersion(),
                         new TojoHash(tojo).get()
                     ),
-                    src -> this.linted(
-                        xmir,
-                        unlints
-                    ).toString()
+                    src -> this.linted(xmir).toString()
                 )
             );
         } else {
             new Saved(
-                this.linted(xmir, unlints).toString(),
+                this.linted(xmir).toString(),
                 target
             ).value();
         }
@@ -369,6 +345,28 @@ final class Linting implements Step {
         }
         tojo.withLinted(target);
         return 1;
+    }
+
+    /**
+     * Cache-key version segment for the per-file lint cache: the plugin
+     * version combined with {@link #skipSourceLints} and
+     * {@link #skipExperimentalLints}, since both change what
+     * {@link #linted(XML)} reports for the exact same source XMIR
+     * (see #6235). {@link #skipSourceLints} is hashed rather than joined
+     * in verbatim, since a project skipping a dozen full lint names would
+     * otherwise push this single path segment past the 255-byte limit
+     * ext4 and APFS enforce.
+     * @return The version segment for {@link CachePath}
+     */
+    private String cacheVersion() {
+        return String.format(
+            "%s-%b-%s",
+            this.version,
+            this.skipExperimentalLints,
+            new Hashed(
+                this.skipSourceLints.stream().sorted().collect(Collectors.joining(","))
+            ).get()
+        );
     }
 
     /**
@@ -399,11 +397,13 @@ final class Linting implements Step {
         final List<org.eolang.wpa.Defect> defects;
         if (this.cacheEnabled) {
             final Path wpa = Paths.get("wpa.xmir");
-            final Path target = this.targetDir.resolve(Linting.DIR).resolve(wpa);
+            final Path base = this.targetDir.resolve(Linting.DIR);
+            final Path target = base.resolve(wpa);
+            Files.createDirectories(base);
             this.guard.apply(
-                this.sourcesDir, target, wpa,
+                base, target, wpa,
                 new Cache(
-                    this.cacheDir.resolve(Linting.CACHE),
+                    this.cacheDir.resolve(Linting.CACHE).resolve(this.version),
                     root -> {
                         Logger.info(this, "Linting a package");
                         final Directives all = new Directives().add("defects");
@@ -473,15 +473,13 @@ final class Linting implements Step {
     /**
      * Find all possible linting defects and add them to the XMIR.
      * @param xmir The XML before linting
-     * @param unlints Lints to skip
      * @return XML after linting
-     * @checkstyle ParameterNumberCheck (40 lines)
      */
-    private XML linted(final XML xmir, final String... unlints) {
+    private XML linted(final XML xmir) {
         final Node node = xmir.inner();
         final Collection<Defect> defects = Linting.existing(new Xnav(node));
         final Collection<Defect> found = new Source(xmir)
-            .without(unlints)
+            .without(this.skipSourceLints.toArray(new String[0]))
             .defects()
             .stream().filter(
                 defect -> this.skipExperimentalLints || !defect.experimental()
@@ -548,6 +546,14 @@ final class Linting implements Step {
 
     /**
      * Convert XMIR error element to a {@link Defect}.
+     *
+     * <p>Every {@code <error>} element must carry a {@code check}
+     * attribute naming the rule that reported it; a plain parser syntax
+     * error is emitted with {@code check="parser"} by
+     * {@code Emit.error()} for exactly this reason (#6215). A missing
+     * {@code check} is a bug upstream and must fail fast rather than
+     * silently fall back to a default.</p>
+     *
      * @param error The error element
      * @return Defect
      */

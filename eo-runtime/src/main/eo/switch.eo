@@ -14,7 +14,9 @@
 #       "this value will be skipped"
 # ```
 #
-# This object returns the value of the first true statement.
+# This object returns the value of the first true statement,
+# or invokes `fallback` with a descriptive message when `cases`
+# is empty or when every case condition is false.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -46,15 +48,10 @@
                 rec-case tup.tail
             | cases
       found.head
-      true
+      fallback
+        "No switch case matched"
 
-  eq. ++> tests-empty-switch-returns-provided-fallback
-    "recovered"
-    switch
-      *
-      "recovered" > [message]
-
-  ++> tests-switch-complex-case
+  ++> can-switch-on-a-complex-case
     eq. > @
       switch *
         *
@@ -71,13 +68,21 @@
     "1".eq "2" > c2
     true > c3
 
-  eq. ++> tests-switch-simple-case
+  eq. ++> can-switch-on-a-simple-case
     switch *
       * false "1"
       * true "2"
     "2"
 
-  ++> tests-switch-strings-case
+  eq. ++> can-switch-on-all-false-cases-with-fallback
+    "fallback"
+    switch
+      *
+        * false "false1"
+        * false "false2"
+      "fallback" > [message]
+
+  ++> can-switch-on-strings
     eq. > @
       switch *
         *
@@ -92,7 +97,20 @@
       "password is correct!"
     "swordfish" > password
 
-  switch * ++> tests-switch-with-all-false-cases
+  eq. ++> can-switch-on-the-first-of-several-true-cases
+    switch *
+      * true "TRUE1"
+      * false "FALSE"
+      * true "TRUE2"
+    "TRUE1"
+
+  eq. ++> rejects-an-empty-switch
+    "recovered"
+    switch
+      *
+      "recovered" > [message]
+
+  switch * --> stops-on-all-false-cases-without-fallback
     *
       false
       "false1"
@@ -100,12 +118,5 @@
       false
       "false2"
 
-  eq. ++> tests-switch-with-several-true-cases
-    switch *
-      * true "TRUE1"
-      * false "FALSE"
-      * true "TRUE2"
-    "TRUE1"
-
-  switch --> on-empty-switch
+  switch --> stops-on-an-empty-switch
     *

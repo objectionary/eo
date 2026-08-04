@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle PackageNameCheck (10 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 import com.jcabi.log.Logger;
@@ -19,7 +15,6 @@ import com.jcabi.log.Logger;
  * @since 0.29
  */
 @SuppressWarnings({
-    "JTCOP.RuleAllTestsHaveProductionClass",
     "JTCOP.RuleCorrectTestName",
     "JTCOP.RuleInheritanceInTests"
 })

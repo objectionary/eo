@@ -14,7 +14,6 @@ import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -23,8 +22,8 @@ import org.junit.jupiter.api.Test;
  */
 final class MainTest {
 
-    @BeforeAll
-    static void checkHeapSize() {
+    @Test
+    void runsWithBigEnoughHeap() {
         final int gbs = 2;
         MatcherAssert.assertThat(
             String.format(
@@ -128,7 +127,7 @@ final class MainTest {
                 Channels.newReader(
                     Channels.newChannel(
                         new ByteArrayInputStream(
-                            ">> ··\uD835\uDD38('text' for EOorgEOio.EOstdoutν2) ➜ ΦSFN".getBytes(
+                            ">> ··𝔸('text' for EOorgEOio.EOstdoutν2) ➜ ΦSFN".getBytes(
                                 StandardCharsets.UTF_8
                             )
                         )
@@ -165,7 +164,7 @@ final class MainTest {
         MatcherAssert.assertThat(
             "Reading stream should produce a byte of next character, but it didn't",
             new ByteArrayInputStream(
-                "··\uD835\uDD38➜Φ".getBytes(
+                "··𝔸➜Φ".getBytes(
                     StandardCharsets.UTF_8
                 )
             ).read(),

@@ -21,6 +21,9 @@
   os.is-macos.if > creat
     512
     64
+  os.is-macos.if > exclusive
+    2048
+    128
   2 > inet
   420 > mode
   -1 > none
@@ -51,7 +54,7 @@
     512
   1 > wronly
 
-  ++> tests-closes-posix-tcp-socket
+  ++> can-close-a-tcp-socket
     os.is-windows.or > @
       seq *
         sd
@@ -69,7 +72,7 @@
         posix.stream
         posix.tcp
 
-  os.is-windows.or ++> tests-invokes-getpid-correctly
+  os.is-windows.or ++> can-invoke-getpid
     gt.
       code.
         posix
@@ -77,22 +80,7 @@
           *
       0
 
-  ++> tests-opens-and-closes-file-via-syscall
-    os.is-windows.or > @
-      seq *
-        code.
-          posix *1
-            "close"
-            fd
-        fd.gt -1
-    code. > fd
-      posix *1
-        "open"
-        "/dev/null"
-        0
-        0
-
-  ++> tests-opens-posix-tcp-socket
+  ++> can-open-a-tcp-socket
     os.is-windows.or > @
       seq *
         code.
@@ -107,10 +95,61 @@
         posix.stream
         posix.tcp
 
-  os.is-windows.or ++> tests-returns-valid-posix-inet-addr-for-localhost
+  ++> can-open-and-close-a-file-through-a-syscall
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "close"
+            fd
+        fd.gt -1
+    code. > fd
+      posix *1
+        "open"
+        "/dev/null"
+        0
+        0
+
+  os.is-windows.or ++> can-return-an-inet-address-for-localhost
     eq.
       code.
         posix *1
           "inet_addr"
           "127.0.0.1"
       16777343
+
+  --> stops-on-write-size-being-negative
+    os.is-windows.if > @
+      1.div 0
+      seq *
+        code.
+          posix *1
+            "write"
+            fd
+            "ab"
+            -1
+        true
+    code. > fd
+      posix *1
+        "open"
+        "/dev/null"
+        posix.wronly
+        0
+
+  --> stops-on-write-size-exceeding-buffer-length
+    os.is-windows.if > @
+      1.div 0
+      seq *
+        code.
+          posix *1
+            "write"
+            fd
+            "ab"
+            4096
+        true
+    code. > fd
+      posix *1
+        "open"
+        "/dev/null"
+        posix.wronly
+        0

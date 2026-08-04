@@ -28,9 +28,17 @@
                 number num.as-bytes >> base
                 0
               if.
-                expo.gt 0
-                0
-                pinf
+                and.
+                  num.as-bytes.eq 80-00-00-00-00-00-00-00
+                  odd
+                if.
+                  expo.gt 0
+                  0.neg
+                  ninf
+                if.
+                  expo.gt 0
+                  0
+                  pinf
               expo.is-integer.if
                 if.
                   expo.lt 0
@@ -105,20 +113,273 @@
                 nan
                 pinf
 
-  is-nan. ++> tests-power-any-to-nan-is-nan
-    power
-      52
-      nan
-
-  eq. ++> tests-power-as-method-on-number
+  eq. ++> can-be-called-as-a-method-on-a-number
     2.power 4
     16
 
-  eq. ++> tests-power-as-method-with-receiver-bound
+  eq. ++> can-be-called-as-a-method-with-a-bound-receiver
     3.power 2
     9
 
-  lt. ++> tests-power-cube-root-of-twenty-seven
+  eq. ++> can-be-reached-through-the-package
+    power
+      2
+      4
+    16
+
+  eq. ++> can-raise-a-float-to-zero
+    power
+      42.5
+      0
+    1
+
+  eq. ++> can-raise-a-negative-float-to-negative-infinity
+    power
+      -42.5
+      ninf
+    0
+
+  eq. ++> can-raise-a-negative-float-to-positive-infinity
+    power
+      -4.2
+      pinf
+    pinf
+
+  eq. ++> can-raise-a-negative-integer-to-negative-infinity
+    power
+      -42
+      ninf
+    0
+
+  eq. ++> can-raise-a-negative-integer-to-positive-infinity
+    power
+      -10
+      pinf
+    pinf
+
+  eq. ++> can-raise-a-positive-float-to-a-positive-integer
+    power
+      3.5
+      4
+    150.0625
+
+  eq. ++> can-raise-a-positive-float-to-negative-infinity
+    power
+      42.5
+      ninf
+    0
+
+  eq. ++> can-raise-a-positive-float-to-positive-infinity
+    power
+      42.5
+      pinf
+    pinf
+
+  eq. ++> can-raise-a-positive-integer-to-a-positive-integer
+    power
+      2
+      3
+    8
+
+  eq. ++> can-raise-a-positive-integer-to-negative-infinity
+    power
+      42
+      ninf
+    0
+
+  eq. ++> can-raise-a-positive-integer-to-positive-infinity
+    power
+      42
+      pinf
+    pinf
+
+  eq. ++> can-raise-a-zero-base
+    power
+      0
+      145
+    0
+
+  eq. ++> can-raise-an-integer-to-zero
+    power
+      42
+      0
+    1
+
+  eq. ++> can-raise-four-to-five
+    power
+      4
+      5
+    1024
+
+  eq. ++> can-raise-four-to-minus-three
+    power
+      4
+      -3
+    0.015625
+
+  eq. ++> can-raise-negative-infinity-to-a-positive-float
+    power
+      ninf
+      9.9
+    pinf
+
+  eq. ++> can-raise-negative-infinity-to-an-even-integer
+    power
+      ninf
+      10
+    pinf
+
+  eq. ++> can-raise-negative-infinity-to-an-odd-integer
+    power
+      ninf
+      9
+    ninf
+
+  eq. ++> can-raise-negative-infinity-to-negative-infinity
+    power
+      ninf
+      ninf
+    0
+
+  eq. ++> can-raise-negative-zero-to-even-negative
+    power
+      -0
+      -4
+    pinf
+
+  eq. ++> can-raise-negative-zero-to-even-positive
+    power
+      -0
+      4
+    0
+
+  eq. ++> can-raise-negative-zero-to-odd-negative
+    power
+      -0
+      -3
+    ninf
+
+  eq. ++> can-raise-negative-zero-to-odd-positive
+    power
+      -0
+      3
+    -0
+
+  eq. ++> can-raise-positive-infinity-to-a-negative-float
+    power
+      pinf
+      -42.2
+    0
+
+  eq. ++> can-raise-positive-infinity-to-a-negative-integer
+    power
+      pinf
+      -42
+    0
+
+  eq. ++> can-raise-positive-infinity-to-a-positive-float
+    power
+      pinf
+      10.8
+    pinf
+
+  eq. ++> can-raise-positive-infinity-to-a-positive-integer
+    power
+      pinf
+      42
+    pinf
+
+  eq. ++> can-raise-positive-infinity-to-negative-infinity
+    power
+      pinf
+      ninf
+    0
+
+  eq. ++> can-raise-positive-infinity-to-positive-infinity
+    power
+      pinf
+      pinf
+    pinf
+
+  eq. ++> can-raise-three-to-two
+    power
+      3
+      2
+    9
+
+  eq. ++> can-raise-to-a-large-negative-exponent
+    power
+      984782
+      -12341
+    0
+
+  eq. ++> can-raise-to-a-zero-exponent
+    power
+      2
+      0
+    1
+
+  eq. ++> can-raise-two-to-four
+    power
+      2
+      4
+    16
+
+  eq. ++> can-raise-two-to-minus-one
+    power
+      2
+      -1
+    0.5
+
+  eq. ++> can-raise-two-to-minus-three
+    power
+      2
+      -3
+    0.125
+
+  eq. ++> can-raise-two-to-minus-two
+    power
+      2
+      -2
+    0.25
+
+  eq. ++> can-raise-zero-to-a-negative
+    power
+      0
+      -52
+    pinf
+
+  eq. ++> can-raise-zero-to-a-negative-odd-integer
+    power
+      0
+      -567
+    pinf
+
+  eq. ++> can-raise-zero-to-a-positive-float
+    power
+      0
+      4.2
+    0
+
+  eq. ++> can-raise-zero-to-a-positive-integer
+    power
+      0
+      4
+    0
+
+  eq. ++> can-raise-zero-to-negative-infinity
+    power
+      0
+      ninf
+    pinf
+
+  eq. ++> can-raise-zero-to-positive-infinity
+    power
+      0
+      pinf
+    0
+
+  lt. ++> can-take-a-cube-root-of-twenty-seven
     abs
       minus.
         power
@@ -127,265 +388,36 @@
         3
     1.0E-9
 
-  eq. ++> tests-power-float-to-zero-is-one
-    power
-      42.5
-      0
-    1
-
-  eq. ++> tests-power-four-to-five
-    power
-      4
-      5
-    1024
-
-  eq. ++> tests-power-four-to-minus-three
-    power
-      4
-      -3
-    0.015625
-
-  is-nan. ++> tests-power-fractional-of-negative-is-nan
-    power
-      -4
-      0.5
-
-  eq. ++> tests-power-int-to-zero-is-one
-    power
-      42
-      0
-    1
-
-  eq. ++> tests-power-large-negative-exponent
-    power
-      984782
-      -12341
-    0
-
-  is-nan. ++> tests-power-nan-to-any-is-nan
-    power
-      nan
-      42
-
-  is-nan. ++> tests-power-nan-to-nan-is-nan
-    power
-      nan
-      nan
-
-  eq. ++> tests-power-negative-float-to-negative-infinity-is-zero
-    power
-      -42.5
-      ninf
-    0
-
-  eq. ++> tests-power-negative-float-to-positive-infinity-is-positive-infinity
-    power
-      -4.2
-      pinf
-    pinf
-
-  eq. ++> tests-power-negative-infinity-to-even-int-is-positive-infinity
-    power
-      ninf
-      10
-    pinf
-
-  eq. ++> tests-power-negative-infinity-to-negative-infinity-is-zero
-    power
-      ninf
-      ninf
-    0
-
-  eq. ++> tests-power-negative-infinity-to-odd-int-is-negative-infinity
-    power
-      ninf
-      9
-    ninf
-
-  eq. ++> tests-power-negative-infinity-to-positive-float-is-positive-infinity
-    power
-      ninf
-      9.9
-    pinf
-
-  eq. ++> tests-power-negative-int-to-negative-infinity-is-zero
-    power
-      -42
-      ninf
-    0
-
-  eq. ++> tests-power-negative-int-to-positive-infinity-is-positive-infinity
-    power
-      -10
-      pinf
-    pinf
-
-  eq. ++> tests-power-of-three-squared
-    power
-      3
-      2
-    9
-
-  eq. ++> tests-power-of-two-to-four
-    power
-      2
-      4
-    16
-
-  eq. ++> tests-power-of-zero-base
-    power
-      0
-      145
-    0
-
-  eq. ++> tests-power-of-zero-exponent
-    power
-      2
-      0
-    1
-
-  eq. ++> tests-power-positive-float-to-negative-infinity-is-zero
-    power
-      42.5
-      ninf
-    0
-
-  eq. ++> tests-power-positive-float-to-positive-infinity-is-positive-infinity
-    power
-      42.5
-      pinf
-    pinf
-
-  eq. ++> tests-power-positive-float-to-positive-int
-    power
-      3.5
-      4
-    150.0625
-
-  eq. ++> tests-power-positive-infinity-to-negative-float-is-zero
-    power
-      pinf
-      -42.2
-    0
-
-  eq. ++> tests-power-positive-infinity-to-negative-infinity-is-zero
-    power
-      pinf
-      ninf
-    0
-
-  eq. ++> tests-power-positive-infinity-to-negative-int-is-zero
-    power
-      pinf
-      -42
-    0
-
-  eq. ++> tests-power-positive-infinity-to-positive-float-is-positive-infinity
-    power
-      pinf
-      10.8
-    pinf
-
-  eq. ++> tests-power-positive-infinity-to-positive-infinity-is-positive-infinity
-    power
-      pinf
-      pinf
-    pinf
-
-  eq. ++> tests-power-positive-infinity-to-positive-int-is-positive-infinity
-    power
-      pinf
-      42
-    pinf
-
-  eq. ++> tests-power-positive-int-to-negative-infinity-is-zero
-    power
-      42
-      ninf
-    0
-
-  eq. ++> tests-power-positive-int-to-positive-infinity-is-positive-infinity
-    power
-      42
-      pinf
-    pinf
-
-  eq. ++> tests-power-positive-int-to-positive-int
-    power
-      2
-      3
-    8
-
-  lt. ++> tests-power-square-root-of-nine
+  lt. ++> can-take-a-square-root-of-nine
     abs
       minus.
         power 9 0.5
         3
     1.0E-9
 
-  lt. ++> tests-power-square-root-of-two
+  lt. ++> can-take-a-square-root-of-two
     abs
       minus.
         power 2 0.5
         1.4142135623730951
     1.0E-9
 
-  eq. ++> tests-power-two-to-minus-one
+  is-nan. ++> cannot-raise-a-negative-to-a-fraction
     power
-      2
-      -1
-    0.5
+      -4
+      0.5
 
-  eq. ++> tests-power-two-to-minus-three
+  is-nan. ++> cannot-raise-anything-to-nan
     power
-      2
-      -3
-    0.125
+      52
+      nan
 
-  eq. ++> tests-power-two-to-minus-two
+  is-nan. ++> cannot-raise-nan-to-anything
     power
-      2
-      -2
-    0.25
+      nan
+      42
 
-  eq. ++> tests-power-via-number-namespace
+  is-nan. ++> cannot-raise-nan-to-nan
     power
-      2
-      4
-    16
-
-  eq. ++> tests-power-zero-to-negative-infinity-is-positive-infinity
-    power
-      0
-      ninf
-    pinf
-
-  eq. ++> tests-power-zero-to-negative-is-positive-infinity
-    power
-      0
-      -52
-    pinf
-
-  eq. ++> tests-power-zero-to-negative-odd
-    power
-      0
-      -567
-    pinf
-
-  eq. ++> tests-power-zero-to-positive-float-is-zero
-    power
-      0
-      4.2
-    0
-
-  eq. ++> tests-power-zero-to-positive-infinity-is-zero
-    power
-      0
-      pinf
-    0
-
-  eq. ++> tests-power-zero-to-positive-int-is-zero
-    power
-      0
-      4
-    0
+      nan
+      nan

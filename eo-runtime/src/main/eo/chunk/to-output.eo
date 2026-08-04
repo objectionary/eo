@@ -34,7 +34,7 @@
       | 0
       buffer
 
-  eq. ++> tests-makes-an-output-from-malloc-and-writes
+  eq. ++> can-make-an-output-from-malloc-and-write-to-it
     malloc.of
       10
       seq * > [mem]
@@ -48,7 +48,7 @@
         mem
     01-02-03-04-05-06-07-08-09-A0
 
-  eq. ++> tests-makes-an-output-via-chunk-extension
+  eq. ++> can-make-an-output-via-a-chunk-extension
     malloc.of
       3
       seq * > [mem]
@@ -56,7 +56,7 @@
         mem
     01-02-03
 
-  eq. ++> writes-larger-data-than-provided-block
+  eq. ++> can-write-data-larger-than-the-block
     malloc.of
       2
       seq * > [mem]

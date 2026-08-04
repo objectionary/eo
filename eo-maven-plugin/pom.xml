@@ -31,7 +31,7 @@
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>lints</artifactId>
-      <version>0.3.0</version>
+      <version>0.4.1</version>
       <exclusions>
         <exclusion>
           <groupId>org.codehaus.groovy</groupId>
@@ -338,6 +338,16 @@
         </executions>
       </plugin>
       <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <!--
+          The generated HelpMojo has no docblock for its constructor, so
+          only the handwritten sources are documented
+          -->
+          <sourcepath>${project.basedir}/src/main/java</sourcepath>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <executions>
           <execution>
@@ -447,7 +457,7 @@
           <dependency>
             <groupId>org.apache.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>5.0.7</version>
+            <version>5.0.8</version>
           </dependency>
         </dependencies>
       </plugin>

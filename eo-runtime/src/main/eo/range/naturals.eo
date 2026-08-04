@@ -20,15 +20,7 @@
           1.plus @
     r.end
 
-  tuple.is-empty ++> tests-naturals-descending-is-empty
-    naturals
-      range 10 1
-
-  tuple.is-empty ++> tests-naturals-from-ten-to-ten-is-empty
-    naturals
-      range 10 10
-
-  eq. ++> tests-naturals-negative-works-as-well
+  eq. ++> can-build-a-range-of-negatives
     naturals
       range -5 0
     *
@@ -38,7 +30,15 @@
       -2
       -1
 
-  eq. ++> tests-simple-naturals-from-one-to-ten
+  is-empty ++> can-build-an-empty-range-from-ten-to-ten
+    naturals
+      range 10 10
+
+  is-empty ++> can-build-an-empty-range-when-descending
+    naturals
+      range 10 1
+
+  eq. ++> can-build-naturals-from-one-to-ten
     naturals
       range 1 10
     *

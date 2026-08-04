@@ -1,6 +1,5 @@
 # Set - is an unordered `list` of unique objects.
 
-+alias tuple.mapped
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -24,7 +23,7 @@
         lst
         map.entry item true > [item]
 
-  has. ++> tests-appends-new-item-to-set
+  has. ++> can-append-a-new-item
     with.
       set *
         1
@@ -32,7 +31,7 @@
       3
     3
 
-  eq. ++> tests-does-not-append-existed-item-to-set
+  eq. ++> cannot-append-an-existing-item
     size.
       with.
         set *
@@ -41,13 +40,13 @@
         1
     2
 
-  eq. ++> tests-empty-set-has-size-of-zero
+  eq. ++> can-have-a-size-of-zero-when-empty
     size.
       set
         *
     0
 
-  eq. ++> tests-set-rebuilds-itself
+  eq. ++> can-rebuild-itself
     set *
       1
       2

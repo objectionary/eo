@@ -28,7 +28,6 @@ public final class VerboseBytesAsString implements Supplier<String> {
     /**
      * Ctor.
      * @param data Data
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     public VerboseBytesAsString(final byte[] data) {
         this.data = Arrays.copyOf(data, data.length);
@@ -37,32 +36,27 @@ public final class VerboseBytesAsString implements Supplier<String> {
     @Override
     public String get() {
         final String result;
-        switch (this.data.length) {
-            case 0:
-                result = "[<no bytes>]";
-                break;
-            case 1:
-                result = String.format(
-                    "[0x%02X] = %s",
-                    this.data[0],
-                    this.data[0] != 0
-                );
-                break;
-            case 8:
-                result = String.format(
-                    "[0x%s] = %s, or \"%s\"",
-                    this.toHex(),
-                    new BytesOf(this.data).asNumber(),
-                    this.escaped()
-                );
-                break;
-            default:
-                result = String.format(
-                    "[0x%s] = \"%s\"",
-                    this.toHex(),
-                    this.escaped()
-                );
-                break;
+        if (this.data.length == 0) {
+            result = "[<no bytes>]";
+        } else if (this.data.length == 1) {
+            result = String.format(
+                "[0x%02X] = %s",
+                this.data[0],
+                this.data[0] != 0
+            );
+        } else if (this.data.length == Double.BYTES) {
+            result = String.format(
+                "[0x%s] = %s, or \"%s\"",
+                this.toHex(),
+                new BytesOf(this.data).asNumber(),
+                this.escaped()
+            );
+        } else {
+            result = String.format(
+                "[0x%s] = \"%s\"",
+                this.toHex(),
+                this.escaped()
+            );
         }
         return result;
     }
@@ -78,7 +72,7 @@ public final class VerboseBytesAsString implements Supplier<String> {
             chars[idx * 2] = VerboseBytesAsString.HEX_ARRAY[value >>> 4];
             chars[idx * 2 + 1] = VerboseBytesAsString.HEX_ARRAY[value & 0x0F];
         }
-        return new String(chars).replaceAll("(.{8})", "$1-");
+        return new String(chars).replaceAll("(.{8})(?=.)", "$1-");
     }
 
     /**
@@ -89,7 +83,7 @@ public final class VerboseBytesAsString implements Supplier<String> {
         final char[] chars = new String(this.data, StandardCharsets.UTF_8).toCharArray();
         final StringBuilder out = new StringBuilder(chars.length);
         for (final char chr : chars) {
-            if (chr < 0x20 || chr > 0x7f) {
+            if (chr < 0x20 || chr > 0x7F) {
                 out.append(String.format("\\u%04x", (int) chr));
             } else {
                 out.append(chr);

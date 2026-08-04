@@ -43,7 +43,6 @@ final class Cache {
      * Constructor.
      * @param path Cache path
      * @param compilation Compilation function
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     Cache(final CachePath path, final Func<Path, String> compilation) {
         this(path.get(), compilation);
@@ -91,9 +90,9 @@ final class Cache {
                     || !Files.readString(hash).equals(sha)
             ) {
                 final String content = new UncheckedFunc<>(this.compilation).apply(source);
-                new Saved(sha, this.hash(tail)).value();
                 new Saved(content, cache).value();
                 new Saved(content, target).value();
+                new Saved(sha, this.hash(tail)).value();
             } else {
                 new Saved(Files.readString(cache), target).value();
             }
@@ -146,7 +145,7 @@ final class Cache {
                 stream.filter(Files::isRegularFile)
                     .filter(this.filter::test)
                     .sorted(Comparator.comparing(Path::toString))
-                    .map(p -> String.format("%s\u0000%s", dir.relativize(p), new Sha(p)))
+                    .map(p -> String.format("%s\0%s", dir.relativize(p), new Sha(p)))
                     .map(s -> s.getBytes(StandardCharsets.UTF_8))
                     .forEach(digest::update);
             }

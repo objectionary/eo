@@ -33,7 +33,6 @@ final class DepDirs extends ListEnvelope<String> {
      * Ctor.
      * @param dir The directory
      * @throws IOException If fails
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     DepDirs(final Path dir) throws IOException {
         super(DepDirs.list(dir));
@@ -45,7 +44,6 @@ final class DepDirs extends ListEnvelope<String> {
      * @return List
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static List<String> list(final Path dir) throws IOException {
         final List<String> names = new LinkedList<>();
         if (Files.exists(dir)) {

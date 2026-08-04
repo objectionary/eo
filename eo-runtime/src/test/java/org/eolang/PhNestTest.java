@@ -50,6 +50,23 @@ final class PhNestTest {
     }
 
     @Test
+    void refusesPackageThatWasNeverTranspiled() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new PhNest("Φ.org.eolang").take("dummy"),
+            "A Java package carrying no @XmirPackage must not pass for an EO package, but it did"
+        );
+    }
+
+    @Test
+    void acceptsPackageThatNamesItsXmirOrigin() {
+        Assertions.assertDoesNotThrow(
+            () -> Phi.Φ.take("string").take("printf"),
+            "A Java package naming the EO package it came from must be accepted, but it wasn't"
+        );
+    }
+
+    @Test
     void handsOutExtensionWithoutBindingPackageAsRho() {
         MatcherAssert.assertThat(
             "Explicit dispatch must leave ρ unbound so the receiver convention stays α0-only, but ρ was set",

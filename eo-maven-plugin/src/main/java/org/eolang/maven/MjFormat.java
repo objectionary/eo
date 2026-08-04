@@ -91,17 +91,16 @@ public final class MjFormat extends MjSafe {
 
     /**
      * The column after which characters start being charged.
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(property = "eo.width")
     private Integer width;
 
     /**
-     * The width of a single indentation level, in spaces.
-     * @checkstyle MemberNameCheck (10 lines)
+     * Ctor.
      */
-    @Parameter(property = "eo.step")
-    private Integer step;
+    public MjFormat() {
+        // nothing
+    }
 
     @Override
     void exec() throws IOException {
@@ -149,10 +148,9 @@ public final class MjFormat extends MjSafe {
      * choice can move on the next pass, so a single parse-and-print is not
      * always a fixpoint. The moniker's home is decided by the structure
      * alone (attribute order and the XSL merge), not by the layout weights,
-     * so this settles it at the default, always-reparseable layout — a
-     * custom {@link #step} would emit indentation the parser cannot read
-     * back — and then lays the settled structure out once with the
-     * configured weights. The settling is bounded by {@link #SETTLE}; a
+     * so this settles it at the default layout and then lays the settled
+     * structure out once with the configured weights. The settling is
+     * bounded by {@link #SETTLE}; a
      * source that has not settled by then is laid out as-is and reported
      * divergent, so it fails loudly instead of looping.</p>
      *
@@ -313,9 +311,6 @@ public final class MjFormat extends MjSafe {
         }
         if (this.width != null) {
             map.put(PenaltyKey.WIDTH, this.width);
-        }
-        if (this.step != null) {
-            map.put(PenaltyKey.STEP, this.step);
         }
         return map;
     }

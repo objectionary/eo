@@ -8,6 +8,7 @@ import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.util.Collections;
 import org.cactoos.io.InputOf;
+import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -51,7 +52,7 @@ final class OyIndexedTest {
             "OyIndexed with fake index must contain stdout object, but it doesn't",
             new OyIndexed(
                 new Objectionary.Fake(),
-                new ObjectsIndex(() -> Collections.singleton("io.stdout"))
+                new ObjectsIndex(() -> Collections.singleton("stdout"))
             ).contains(this.stdout()),
             Matchers.is(true)
         );
@@ -94,6 +95,18 @@ final class OyIndexedTest {
     }
 
     @Test
+    void listsChildrenFromFakeIndex() throws IOException {
+        MatcherAssert.assertThat(
+            "OyIndexed with fake index must list the children of the package, but it doesn't",
+            new OyIndexed(
+                new Objectionary.Fake(),
+                new ObjectsIndex(() -> new SetOf<>("tuple.each", "tuple.eachi"))
+            ).children("tuple"),
+            Matchers.containsInAnyOrder("tuple.each", "tuple.eachi")
+        );
+    }
+
+    @Test
     @ExtendWith(WeAreOnline.class)
     void checksIsDirectoryForObject() throws IOException {
         MatcherAssert.assertThat(
@@ -117,6 +130,6 @@ final class OyIndexedTest {
      * Returns the stdout path.
      */
     private String stdout() {
-        return "io.stdout";
+        return "stdout";
     }
 }

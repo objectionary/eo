@@ -52,78 +52,80 @@
       1
       1
 
-  FF-.as-u8.as-i16.as-bytes.eq 00-FF ++> tests-u8-as-i16-widens-with-zero-prefix
+  eq. ++> can-add-one-to-one
+    01-.as-u8.plus 01-.as-u8
+    02-.as-u8
 
-  FF-.as-u8.as-number.eq 255 ++> tests-u8-as-number-is-unsigned
+  eq. ++> can-add-with-overflow
+    FF-.as-u8.plus 01-.as-u8
+    00-.as-u8
 
-  eq. ++> tests-u8-div-by-u8-one
+  32-.as-u8.gte 32-.as-u8 ++> can-be-greater-than-or-equal-to-an-equal-u8
+
+  0A-.as-u8.lt 32-.as-u8 ++> can-be-less-than-a-larger-u8
+
+  32-.as-u8.lte 32-.as-u8 ++> can-be-less-than-or-equal-to-an-equal-u8
+
+  00-.as-u8.lt FF-.as-u8 ++> can-be-less-than-the-maximum-when-zero
+
+  FF-.as-u8.as-number.eq 255 ++> can-convert-to-an-unsigned-number
+
+  eq. ++> can-divide-by-one
     FF-.as-u8.div 01-.as-u8
     FF-.as-u8
 
-  eq. ++> tests-u8-div-by-zero-returns-provided-fallback
+  eq. ++> can-divide-without-a-sign
+    C8-.as-u8.div 03-.as-u8
+    42-.as-u8
+
+  2A-.as-u8.eq 2A-.as-u8 ++> can-equal-the-same-u8
+
+  2A-.as-u8.as-bytes.eq 2A- ++> can-expose-valid-bytes
+
+  eq. ++> can-multiply
+    06-.as-u8.times 07-.as-u8
+    2A-.as-u8
+
+  eq. ++> can-read-the-maximum-byte-as-unsigned
+    255.as-i64.as-i32.as-i16
+    FF-.as-u8.as-i16
+
+  eq. ++> can-subtract
+    05-.as-u8.minus 03-.as-u8
+    02-.as-u8
+
+  eq. ++> can-subtract-with-underflow
+    00-.as-u8.minus 01-.as-u8
+    FF-.as-u8
+
+  FF-.as-u8.gt 01-.as-u8 ++> can-treat-a-high-bit-as-magnitude-when-greater
+
+  FF-.as-u8.as-i16.as-bytes.eq 00-FF ++> can-widen-to-i16-with-a-zero-prefix
+
+  eq. ++> can-wrap-a-large-product
+    FF-.as-u8.times FF-.as-u8
+    01-.as-u8
+
+  eq. ++> can-wrap-a-product-modulo-two-to-the-eighth
+    10-.as-u8.times 10-.as-u8
+    00-.as-u8
+
+  not. ++> cannot-be-greater-than-or-equal-to-a-larger-u8
+    00-.as-u8.gte 0A-.as-u8
+
+  not. ++> cannot-be-less-than-an-equal-u8
+    0A-.as-u8.lt 0A-.as-u8
+
+  not. ++> cannot-be-less-than-one-with-a-high-bit
+    FF-.as-u8.lt 01-.as-u8
+
+  not. ++> cannot-equal-a-different-u8
+    2A-.as-u8.eq 2B-.as-u8
+
+  eq. ++> rejects-division-by-zero
     "recovered"
     02-.as-u8.div
       00-.as-u8
       "recovered" > [message]
 
-  eq. ++> tests-u8-div-is-unsigned
-    C8-.as-u8.div 03-.as-u8
-    42-.as-u8
-
-  not. ++> tests-u8-eq-false
-    2A-.as-u8.eq 2B-.as-u8
-
-  2A-.as-u8.eq 2A-.as-u8 ++> tests-u8-eq-true
-
-  FF-.as-u8.gt 01-.as-u8 ++> tests-u8-greater-treats-high-bit-as-magnitude
-
-  32-.as-u8.gte 32-.as-u8 ++> tests-u8-gte-equal
-
-  not. ++> tests-u8-gte-false
-    00-.as-u8.gte 0A-.as-u8
-
-  2A-.as-u8.as-bytes.eq 2A- ++> tests-u8-has-valid-bytes
-
-  not. ++> tests-u8-high-bit-not-less-than-one
-    FF-.as-u8.lt 01-.as-u8
-
-  not. ++> tests-u8-less-equal
-    0A-.as-u8.lt 0A-.as-u8
-
-  0A-.as-u8.lt 32-.as-u8 ++> tests-u8-less-true
-
-  32-.as-u8.lte 32-.as-u8 ++> tests-u8-lte-equal
-
-  255.as-i64.as-i32.as-i16.eq FF-.as-u8.as-i16 ++> tests-u8-max-byte-is-unsigned
-
-  eq. ++> tests-u8-minus
-    05-.as-u8.minus 03-.as-u8
-    02-.as-u8
-
-  eq. ++> tests-u8-minus-with-underflow
-    00-.as-u8.minus 01-.as-u8
-    FF-.as-u8
-
-  eq. ++> tests-u8-one-plus-u8-one
-    01-.as-u8.plus 01-.as-u8
-    02-.as-u8
-
-  eq. ++> tests-u8-plus-with-overflow
-    FF-.as-u8.plus 01-.as-u8
-    00-.as-u8
-
-  eq. ++> tests-u8-times
-    06-.as-u8.times 07-.as-u8
-    2A-.as-u8
-
-  eq. ++> tests-u8-times-wraps-large-product
-    FF-.as-u8.times FF-.as-u8
-    01-.as-u8
-
-  eq. ++> tests-u8-times-wraps-modulo-2-pow-8
-    10-.as-u8.times 10-.as-u8
-    00-.as-u8
-
-  00-.as-u8.lt FF-.as-u8 ++> tests-u8-zero-less-than-max
-
-  02-.as-u8.div 00-.as-u8 --> on-division-u8-by-u8-zero
+  02-.as-u8.div 00-.as-u8 --> stops-on-division-by-zero

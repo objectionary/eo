@@ -24,7 +24,7 @@
     *
     0
 
-  eq. ++> tests-converts-bytes-to-array
+  eq. ++> can-convert-bytes-to-an-array
     array 20-1F-EE-B5-FF
     *
       20-
@@ -33,10 +33,10 @@
       B5-
       FF-
 
-  eq. ++> tests-single-byte-to-array
+  eq. ++> can-convert-a-single-byte-to-an-array
     array 1F-
     * 1F-
 
-  eq. ++> tests-zero-bytes-to-array
+  eq. ++> can-convert-zero-bytes-to-an-array
     array --
     *

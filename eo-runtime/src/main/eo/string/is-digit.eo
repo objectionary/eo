@@ -13,25 +13,25 @@
     regex "/^[0-9]+$/"
     text
 
-  not. ++> tests-checks-if-empty-text-is-not-digit
+  is-digit "2026" ++> can-be-digits-when-a-number
+
+  is-digit "7" ++> can-be-digits-when-a-single-digit
+
+  is-digit ++> can-be-digits-when-a-very-long-number
+    "123456789012345678901234567890123456789012345678901234567890"
+
+  not. ++> cannot-be-digits-when-empty
     is-digit ""
 
-  is-digit "2026" ++> tests-checks-if-number-text-is-digit
-
-  is-digit "7" ++> tests-checks-if-single-digit-is-digit
-
-  not. ++> tests-checks-if-text-with-letter-is-not-digit
+  not. ++> cannot-be-digits-with-a-letter
     is-digit "1a2"
 
-  not. ++> tests-checks-if-text-with-space-is-not-digit
+  not. ++> cannot-be-digits-with-a-space
     is-digit
       "12 34"
 
-  not. ++> tests-checks-if-text-with-special-character-is-not-digit
+  not. ++> cannot-be-digits-with-a-special-character
     is-digit "1🌵2"
 
-  not. ++> tests-checks-if-text-with-trailing-newline-is-not-digit
+  not. ++> cannot-be-digits-with-a-trailing-newline
     is-digit "123\n"
-
-  is-digit ++> tests-checks-if-very-long-number-is-digit
-    "123456789012345678901234567890123456789012345678901234567890"

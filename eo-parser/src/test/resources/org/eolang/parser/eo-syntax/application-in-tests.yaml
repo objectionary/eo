@@ -11,8 +11,11 @@ asserts:
   - /object/o[@name='foo']/o[@base='.eq' and @name='+compares-something']
 input: |-
   [] > foo
+
     true +> test-works
+
     false +> always-fails
+
     eq. +> compares-something
       "foo"
       "bar"

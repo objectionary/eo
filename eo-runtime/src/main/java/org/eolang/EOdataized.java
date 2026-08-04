@@ -3,16 +3,11 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 /**
  * DATAIZED.
  * @since 0.74.0
- * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "dataized")
 public final class EOdataized extends PhDefault implements Atom {

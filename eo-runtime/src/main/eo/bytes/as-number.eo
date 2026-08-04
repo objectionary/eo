@@ -27,12 +27,12 @@
       "Can't convert non 8 length bytes to a number, bytes are %x".printf
         * b
 
-  is-nan. ++> tests-non-canonical-nan-bytes-route-to-nan
+  is-nan. ++> can-route-non-canonical-nan-bytes-to-nan
     FF-F8-00-00-00-00-00-00.as-number
 
-  eq. ++> tests-wrong-size-as-number-returns-provided-fallback
+  eq. ++> rejects-bytes-of-wrong-size
     "recovered"
     01-01-01-01.as-number
       "recovered" > [message]
 
-  01-01-01-01.as-number --> on-bytes-of-wrong-size-as-number
+  01-01-01-01.as-number --> stops-on-bytes-of-wrong-size

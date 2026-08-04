@@ -35,37 +35,44 @@
         next. >> matched
           target.match reinit
 
-  eq. ++> tests-does-not-replaces-if-regex-not-found
+  eq. ++> can-replace-a-nullable-pattern-like-java
     replaced
-      "Hello, world"
-      regex "/[0-9]+/"
-      "12345"
-    "Hello, world"
+      "abc"
+      regex "/x*/"
+      "-"
+    "-a-b-c-"
 
-  eq. ++> tests-replaces-digits-with-string
-    replaced
-      "Hell0, w0rld"
-      regex "/[0-9]+/"
-      "o"
-    "Hello, world"
-
-  eq. ++> tests-replaces-slashes-to-windows-separator
-    replaced
-      "C:\\Windows/foo\\bar/hello.txt"
-      regex "/\\//"
-      "\\"
-    "C:\\Windows\\foo\\bar\\hello.txt"
-
-  eq. ++> tests-replaces-windows-path-with-slash
+  eq. ++> can-replace-a-windows-separator-with-a-slash
     replaced
       "C:\\Windows\\Users\\AppLocal\\shrek"
       regex "/[\\\\:]+/"
       "/"
     "C/Windows/Users/AppLocal/shrek"
 
-  eq. ++> tests-sanitizes-windows-path-with-regex
+  eq. ++> can-replace-digits-with-a-string
+    replaced
+      "Hell0, w0rld"
+      regex "/[0-9]+/"
+      "o"
+    "Hello, world"
+
+  eq. ++> can-replace-slashes-with-a-windows-separator
+    replaced
+      "C:\\Windows/foo\\bar/hello.txt"
+      regex "/\\//"
+      "\\"
+    "C:\\Windows\\foo\\bar\\hello.txt"
+
+  eq. ++> can-sanitize-a-windows-path
     replaced
       "foo\\bar<:>?*\"|baz\\asdf"
       regex "/[<>:\\\"\\/\\|\\?\\*\\x00-\\x1F]/"
       ""
     "foo\\barbaz\\asdf"
+
+  eq. ++> cannot-replace-when-the-pattern-is-absent
+    replaced
+      "Hello, world"
+      regex "/[0-9]+/"
+      "12345"
+    "Hello, world"

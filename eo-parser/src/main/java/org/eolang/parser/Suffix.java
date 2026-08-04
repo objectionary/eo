@@ -4,6 +4,8 @@
  */
 package org.eolang.parser;
 
+import java.util.Set;
+
 /**
  * A parsed name suffix — §3.10 of the spec.
  *
@@ -50,6 +52,16 @@ final class Suffix {
     private static final String NAME_BOUNDARIES = ",.|':;?[]{}()";
 
     /**
+     * Scope tokens, which name a place rather than an object: the
+     * {@code φ} decoratee, the {@code ρ} parent and {@code ξ} itself.
+     * A {@code >>} handle is a name a later reference can be written
+     * with, so none of these can serve as one, the same way
+     * {@link #test(String, int, Span, int, Form)} already refuses
+     * {@code @} for a test attribute.
+     */
+    private static final Set<String> SCOPES = Set.of("@", "^", "$");
+
+    /**
      * Suffix form.
      */
     private final Form form;
@@ -81,7 +93,6 @@ final class Suffix {
      * @param tail Tail substring (may have leading whitespace)
      * @param span Source span (for error reporting)
      * @param home Source column where {@code tail} begins
-     * @checkstyle ConstructorsCodeFreeCheck (3 lines)
      */
     Suffix(final String tail, final Span span, final int home) {
         this(Suffix.parse(tail, span, home));
@@ -150,7 +161,7 @@ final class Suffix {
 
     /**
      * Resolve the {@code @name} attribute value for the line carrying
-     * this suffix, applying R-9.3 source-token mapping: {@code @} →
+     * this suffix, applying R-9.3 source-token mapping: {@code @} becomes
      * {@code φ} for an explicit name.
      *
      * <p>This is the single source of truth for naming any line shape
@@ -185,6 +196,25 @@ final class Suffix {
      */
     boolean atom() {
         return !this.sig.isEmpty();
+    }
+
+    /**
+     * Reject this suffix's atom signature if it was parsed on a line that
+     * is not a formation — §3.10.10 of the spec. Only a {@link LnFormation}
+     * ever reads the signature back out to emit the atom marker; every
+     * other line shape that can carry a name suffix is no more a
+     * formation than a pipe is, so a {@code /sig} written on one of them
+     * is the same user mistake, worth the same message regardless of
+     * which line shape it was written on (#6230).
+     * @param span The line's span (used for error position)
+     */
+    void rejectAtomOutsideFormation(final Span span) {
+        if (this.atom()) {
+            throw new ParseError(
+                span.line(), span.indent(),
+                "only a formation can declare an atom signature"
+            );
+        }
     }
 
     /**
@@ -262,7 +292,7 @@ final class Suffix {
     }
 
     /**
-     * Apply the R-9.3.1 source-token mapping {@code @} → {@code φ}
+     * Apply the R-9.3.1 source-token mapping of {@code @} to {@code φ}
      * for a name carried by an explicit {@code > name} suffix. Other
      * names pass through unchanged.
      * @param raw Source name
@@ -344,9 +374,7 @@ final class Suffix {
             );
         }
         final int start = idx;
-        while (idx < tail.length() && !Suffix.endsName(tail.charAt(idx))) {
-            idx = idx + 1;
-        }
+        idx = Suffix.skipName(tail, idx);
         if (start == idx) {
             throw new ParseError(
                 span.line(), home + start,
@@ -389,6 +417,34 @@ final class Suffix {
     }
 
     /**
+     * Reject a {@code > name} suffix whose name came out empty because
+     * {@link #skipName} stopped right where it started — any character
+     * {@link #endsName} treats as a boundary sat immediately after the
+     * single skipped space, not just {@code /} and {@code !} but also
+     * the separators in {@link #NAME_BOUNDARIES}, e.g. {@code > /sig},
+     * {@code > !}, or {@code > .foo}. A second space (rather than a real
+     * boundary character) is left alone here: that case falls through to
+     * {@link #endsClean}, which reports the more specific "trailing
+     * garbage" once whatever follows the extra space is reached.
+     * @param tail Tail substring
+     * @param begin Index where the name was expected to start
+     * @param idx Index {@link #skipName} stopped at
+     * @param span Source span
+     * @param home Source column where tail begins
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static void checkNamePresent(
+        final String tail, final int begin, final int idx, final Span span, final int home
+    ) {
+        if (begin == idx && tail.charAt(begin) != ' ' && tail.charAt(begin) != '\t') {
+            throw new ParseError(
+                span.line(), home + begin,
+                "name suffix requires a name"
+            );
+        }
+    }
+
+    /**
      * Parse a {@code >>} (auto) suffix, optionally carrying a trailing
      * file-local handle ({@code >> name}, §3.10) kept as the label, and a
      * {@code !} const marker (R-9.4) either right after {@code >>}
@@ -398,9 +454,7 @@ final class Suffix {
      * @param span Source span
      * @param home Source column where tail begins
      * @return Parsed result
-     * @checkstyle ParameterNumberCheck (5 lines)
-     * @checkstyle CyclomaticComplexityCheck (45 lines)
-     * @checkstyle NPathComplexityCheck (45 lines)
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static Parsed auto(
         final String tail, final int after, final Span span, final int home
@@ -412,21 +466,24 @@ final class Suffix {
             idx = idx + 1;
         }
         final int begin = Suffix.skipSpace(tail, idx);
-        String handle = "";
-        int rest = begin;
-        if (begin < tail.length() && !Suffix.endsName(tail.charAt(begin))) {
-            int end = begin;
-            while (end < tail.length() && !Suffix.endsName(tail.charAt(end))) {
-                end = end + 1;
-            }
-            handle = tail.substring(begin, end);
-            if (handle.codePoints().anyMatch(cp -> cp == 0x1F335)) {
-                throw new ParseError(
-                    span.line(), home + begin,
-                    "cactus emoji is reserved for auto-names; not allowed in identifiers"
-                );
-            }
-            rest = end;
+        int rest = Suffix.skipName(tail, begin);
+        final String handle = tail.substring(begin, rest);
+        if (Suffix.SCOPES.contains(handle)) {
+            throw new ParseError(
+                span.line(), home + begin,
+                String.format(
+                    "file-local handle must be an identifier, not %s", handle
+                )
+            );
+        }
+        if (handle.codePoints().anyMatch(cp -> cp == 0x1F335)) {
+            throw new ParseError(
+                span.line(), home + begin,
+                "cactus emoji is reserved for auto-names; not allowed in identifiers"
+            );
+        }
+        if (!handle.isEmpty()) {
+            Suffix.checkLowercaseStart(handle, span, home, begin);
         }
         if (!cnst && rest < tail.length() && tail.charAt(rest) == '!') {
             cnst = true;
@@ -455,17 +512,15 @@ final class Suffix {
     private static Parsed named(
         final String tail, final int from, final Span span, final int home
     ) {
-        final int begin = Suffix.skipSpace(tail, from);
-        if (begin >= tail.length()) {
+        if (Suffix.blank(tail, from)) {
             throw new ParseError(
                 span.line(), home + from,
                 "name suffix requires a name"
             );
         }
-        int idx = begin;
-        while (idx < tail.length() && !Suffix.endsName(tail.charAt(idx))) {
-            idx = idx + 1;
-        }
+        final int begin = Suffix.skipSpace(tail, from);
+        int idx = Suffix.skipName(tail, begin);
+        Suffix.checkNamePresent(tail, begin, idx, span, home);
         final String name = tail.substring(begin, idx);
         if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
             throw new ParseError(
@@ -559,13 +614,35 @@ final class Suffix {
                 "optional marker ? is allowed only on a void attribute"
             );
         }
-        if (raw.equals("Q")) {
+        if ("Q".equals(raw)) {
             throw new ParseError(
                 span.line(), home + after,
                 "atom signature requires a name"
             );
         }
         return Suffix.typeAtom(raw, span, home + after);
+    }
+
+    /**
+     * Whether nothing but blanks is left, so no name can follow. Unlike
+     * {@link #skipSpace(String, int)}, which steps over the single space
+     * a suffix is allowed to have, this looks past every space and tab:
+     * blanks followed by a name are a separate mistake, reported later
+     * as trailing garbage, while blanks followed by nothing leave the
+     * name empty and have to be refused right here. A tab counts because
+     * {@link #terminates(char)} ends a name on it just as a space does,
+     * and nothing upstream keeps tabs out of the tail.
+     * @param tail Tail substring
+     * @param from Index to look from
+     * @return True if only blanks remain
+     */
+    private static boolean blank(final String tail, final int from) {
+        int idx = from;
+        while (idx < tail.length()
+            && (tail.charAt(idx) == ' ' || tail.charAt(idx) == '\t')) {
+            idx = idx + 1;
+        }
+        return idx >= tail.length();
     }
 
     /**
@@ -577,6 +654,23 @@ final class Suffix {
     private static int skipSpace(final String tail, final int from) {
         int idx = from;
         if (idx < tail.length() && tail.charAt(idx) == ' ') {
+            idx = idx + 1;
+        }
+        return idx;
+    }
+
+    /**
+     * Skip the NAME token that starts at {@code from}, stopping at the
+     * first character that ends it. The text between {@code from} and the
+     * returned index is the name itself, empty when a terminator already
+     * sits at {@code from}.
+     * @param tail Tail substring
+     * @param from Current index
+     * @return Index just past the name
+     */
+    private static int skipName(final String tail, final int from) {
+        int idx = from;
+        while (idx < tail.length() && !Suffix.endsName(tail.charAt(idx))) {
             idx = idx + 1;
         }
         return idx;
@@ -673,7 +767,6 @@ final class Suffix {
          * @param slabel Label
          * @param ssig Signature
          * @param sconstant Const marker
-         * @checkstyle ParameterNumberCheck (10 lines)
          */
         private Parsed(
             final Form sform, final String slabel, final String ssig, final boolean sconstant

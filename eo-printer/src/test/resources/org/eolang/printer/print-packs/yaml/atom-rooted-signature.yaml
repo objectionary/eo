@@ -12,9 +12,11 @@ penalties:
 origin: |
   +package org.eolang
 
-  [size] > resized /Q.string.regex.pattern
+  [] > resized /Q.string.regex.pattern
+    ? > size
 
 printed: |
   +package org.eolang
 
-  [size] > resized /Q.string.regex.pattern
+  [] > resized /Q.string.regex.pattern
+    ? > size

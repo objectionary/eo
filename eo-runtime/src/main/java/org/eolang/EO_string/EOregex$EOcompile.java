@@ -4,7 +4,6 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
 package org.eolang.EO_string; // NOPMD
@@ -28,6 +27,7 @@ import org.eolang.XmirObject;
 /**
  * Regex.compile object.
  * @since 0.39.0
+ * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "regex.compile")
@@ -70,7 +70,7 @@ public final class EOregex$EOcompile extends PhDefault implements Atom {
 
     /**
      * The caller-supplied {@code cant-compile} recovery for an expression that
-     * cannot become a pattern, or the bottom object (⊥) when none was bound.
+     * cannot become a pattern, or the bottom object when none was bound.
      * @param message Why the expression could not be compiled
      * @return The fallback object carrying the message
      */

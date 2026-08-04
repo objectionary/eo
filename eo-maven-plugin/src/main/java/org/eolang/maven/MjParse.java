@@ -33,6 +33,13 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 )
 public final class MjParse extends MjSafe {
 
+    /**
+     * Ctor.
+     */
+    public MjParse() {
+        // nothing
+    }
+
     @Override
     public void exec() {
         new Parsing(

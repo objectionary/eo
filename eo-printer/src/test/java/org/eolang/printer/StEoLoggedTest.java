@@ -4,7 +4,6 @@
  */
 package org.eolang.printer;
 
-import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.yegor256.xsline.StFailure;
 import java.io.IOException;
@@ -13,8 +12,10 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.function.Consumer;
-import org.cactoos.Proc;
+import org.cactoos.Fallback;
 import org.cactoos.io.InputOf;
+import org.cactoos.scalar.ScalarWithFallback;
+import org.cactoos.scalar.Unchecked;
 import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -64,16 +65,16 @@ final class StEoLoggedTest {
         );
     }
 
-    /**
-     * Check EO log message on exception thrown.
-     */
     @Test
-    void printsMessageWithEoIfExceptionIsThrown() {
+    void printsMessageWithEoIfExceptionIsThrown() throws IOException {
         final StEoLoggedTest.FakeLog log = new StEoLoggedTest.FakeLog();
-        StEoLoggedTest.safe(
-            ignore -> new StEoLogged(new StFailure(), log)
-                .apply(1, StEoLoggedTest.example())
-        );
+        final XML xml = StEoLoggedTest.example();
+        new Unchecked<>(
+            new ScalarWithFallback<>(
+                () -> new StEoLogged(new StFailure(), log).apply(1, xml),
+                new Fallback.From<>(Exception.class, ex -> xml)
+            )
+        ).value();
         MatcherAssert.assertThat(
             String.format(
                 "We expect that logs will contain the eo representation of the xml, but was %s",
@@ -106,20 +107,6 @@ final class StEoLoggedTest {
      */
     private static XML example() throws IOException {
         return new EoSyntax(new InputOf(String.format("[] > bar%n"))).parsed();
-    }
-
-    /**
-     * Ignores all excesptions thrown.
-     * @param run Procedure to execute
-     * @checkstyle IllegalCatchCheck (10 lines)
-     */
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    private static void safe(final Proc<Object> run) {
-        try {
-            run.exec(new Object());
-        } catch (final Exception ignore) {
-            Logger.trace(StEoLoggedTest.class, ignore.getMessage());
-        }
     }
 
     /**

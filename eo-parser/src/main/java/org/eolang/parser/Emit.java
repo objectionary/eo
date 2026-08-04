@@ -38,7 +38,6 @@ import org.xembly.Directives;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class Emit {
 
     /**
@@ -61,7 +60,6 @@ final class Emit {
 
     /**
      * Ctor.
-     * @checkstyle ConstructorsCodeFreeCheck (3 lines)
      */
     Emit() {
         this(List.of());
@@ -71,7 +69,6 @@ final class Emit {
      * Ctor.
      * @param source Raw EO source text (for caret-underlined error
      *  messages — pass empty string to disable)
-     * @checkstyle ConstructorsCodeFreeCheck (3 lines)
      */
     Emit(final String source) {
         this(List.of(Emit.EOL.split(source, -1)));
@@ -176,18 +173,19 @@ final class Emit {
             }
             body.append(stripped);
         }
-        final Directives dirs = new Directives()
-            .push()
-            .xpath("/object")
-            .strict(1)
-            .addIf("comments")
-            .strict(1)
-            .add("comment")
-            .attr("line", target)
-            .set(body.toString())
-            .up().up()
-            .pop();
-        this.append(dirs);
+        this.append(
+            new Directives()
+                .push()
+                .xpath("/object")
+                .strict(1)
+                .addIf("comments")
+                .strict(1)
+                .add("comment")
+                .attr("line", target)
+                .set(body.toString())
+                .up().up()
+                .pop()
+        );
     }
 
     /**
@@ -196,27 +194,34 @@ final class Emit {
      * <p>Records the {@code line}, {@code pos} (0-indexed column per
      * R-9.1.2), and the canonical message text from §9.9 prefixed with
      * {@code [L:P]} per R-9.9.2. Wraps absolute navigation in
-     * {@code push}/{@code pop}.</p>
+     * {@code push}/{@code pop}. The {@code check} attribute is always set
+     * to {@code "parser"}, since this is a plain parser syntax error, not
+     * one raised by a named lint rule (#6215): downstream code (see
+     * {@code Linting.toDefect} in eo-maven-plugin) fails fast if
+     * {@code check} is ever missing, so it must be set here rather than
+     * defaulted downstream.</p>
      *
      * @param line Line where the error occurred
      * @param pos Column where the error occurred (0-indexed)
      * @param message Canonical message text (no position prefix)
      */
     void error(final int line, final int pos, final String message) {
-        final Directives dirs = new Directives()
-            .push()
-            .xpath("/object")
-            .strict(1)
-            .addIf("errors")
-            .strict(1)
-            .add("error")
-            .attr("line", line)
-            .attr("pos", pos)
-            .attr("severity", "error")
-            .set(this.formatted(line, pos, message))
-            .up().up()
-            .pop();
-        this.append(dirs);
+        this.append(
+            new Directives()
+                .push()
+                .xpath("/object")
+                .strict(1)
+                .addIf("errors")
+                .strict(1)
+                .add("error")
+                .attr("line", line)
+                .attr("pos", pos)
+                .attr("check", "parser")
+                .attr("severity", "error")
+                .set(this.formatted(line, pos, message))
+                .up().up()
+                .pop()
+        );
     }
 
     /**
@@ -349,7 +354,7 @@ final class Emit {
      * Add the {@code @type="type"} attribute to the most recently opened
      * {@code <o>} — the declared type of an atom's vertical void
      * attribute (R-3.4.8): a concrete forma or a generic type variable,
-     * with an optional trailing {@code ?} marking a maybe-⊥ value.
+     * with an optional trailing {@code ?} marking a maybe-bottom value.
      * @param type The declared type
      */
     void type(final String type) {
@@ -385,9 +390,9 @@ final class Emit {
     }
 
     /**
-     * Emit a void parameter child — {@code <o name='<param>' base='∅'/>}
-     * per §9.4. The cursor is expected to be inside the parent
-     * formation's {@code <o>}.
+     * Emit a void parameter child — an {@code <o>} named after the
+     * parameter and based on the empty set, per §9.4. The cursor is
+     * expected to be inside the parent formation's {@code <o>}.
      * @param name Parameter name
      * @param line Source line of the formation
      * @param pos Source column of the parameter
@@ -408,7 +413,7 @@ final class Emit {
      * Emit the atom marker child for a formation declared with
      * {@code /sig} — {@code <o name='λ' atom='<sig>'/>} per §9.4. The
      * cursor is expected to be inside the parent atom's {@code <o>}.
-     * @param sig Atom signature value (already Q→Φ promoted)
+     * @param sig Atom signature value (already promoted from Q to Φ)
      * @param line Source line of the atom declaration
      * @param pos Source column of the {@code /sig} marker
      */
@@ -460,11 +465,10 @@ final class Emit {
         final String located = new MsgLocated(line, pos, message).formatted();
         final String result;
         if (line >= 1 && line <= this.lines.size()) {
-            final String source = this.lines.get(line - 1);
             result = String.format(
                 "%s%n%s",
                 located,
-                new MsgUnderlined(source, pos, 1).formatted()
+                new MsgUnderlined(this.lines.get(line - 1), pos, 1).formatted()
             );
         } else {
             result = located;

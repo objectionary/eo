@@ -30,6 +30,13 @@ import org.apache.maven.plugins.annotations.Mojo;
 )
 public final class MjLint extends MjSafe {
 
+    /**
+     * Ctor.
+     */
+    public MjLint() {
+        // nothing
+    }
+
     @Override
     void exec() throws IOException {
         new Linting(
@@ -44,7 +51,6 @@ public final class MjLint extends MjSafe {
             this.skipExperimentalLints,
             this.failOnWarning,
             this.lintAsPackage,
-            this.sourcesDir.toPath(),
             this.skipLinting
         ).exec();
     }
