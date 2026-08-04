@@ -31,6 +31,17 @@ final class PhDefaultTest {
     }
 
     @Test
+    void letsSubclassObserveAttributeAdditions() {
+        final Observant kid = new Observant();
+        kid.add("extra", new AtVoid("extra"));
+        MatcherAssert.assertThat(
+            "a subclass overriding add() must observe both the constructor-supplied attribute (materialized lazily by loaded()) and a later explicit add()",
+            kid.seen(),
+            Matchers.hasItems("x", "extra")
+        );
+    }
+
+    @Test
     void prefersPackageExtensionOverDecoratee() {
         MatcherAssert.assertThat(
             "Package object must shadow the same-named attribute of the decoratee, but it didnt",
