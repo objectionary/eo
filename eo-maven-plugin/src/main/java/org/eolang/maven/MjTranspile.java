@@ -85,17 +85,17 @@ public final class MjTranspile extends MjSafe {
      * silent no-op. In {@code eo-runtime} the {@code coverage-file}
      * profile turns this on and forwards that property to surefire in
      * one step (see its {@code pom.xml}).
-     * @todo #5466:60min Turn raw coverage hits into an LCOV report.
-     *  Right now the runtime only produces a raw, append-only
-     *  {@code loc:line:pos} file: the {@code PhCoverage} decorator
-     *  writes every touched location into it, but nothing consumes that
-     *  file yet. Add a reporter step that merges those raw hits against
-     *  the full set of instrumented locations, which the transpiler
-     *  already knows because it emits every wrapper, and produces an
-     *  LCOV ({@code .info}) tracefile plus the covered percentage. LCOV
-     *  is chosen because Codecov and Coveralls consume it directly.
+     * @todo #5466:60min Feed the coverage hits to {@link Lcov}.
+     *  {@link Lcov} already merges the raw {@code program:line:pos}
+     *  records of a run against every location the transpiler
+     *  instrumented and prints the LCOV tracefile, but nobody builds
+     *  either collection yet. Collect the instrumented locations while
+     *  transpiling, since {@code to-java.xsl} knows each of them at the
+     *  moment it emits a wrapper, and add a goal that runs after the
+     *  tests, reads the file named by {@code eo.coverageFile} and saves
+     *  the tracefile next to it.
      * @todo #5466:30min Enforce a minimum EO object coverage in eo-runtime.
-     *  Once the LCOV report from the puzzle above exists, set
+     *  Once the LCOV report from the puzzle above is written, set
      *  {@code coverageTracking} on the {@code transpile} execution in
      *  {@code eo-runtime/pom.xml} and fail the build when the covered
      *  percentage of dataized {@code .eo} objects drops below a
