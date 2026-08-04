@@ -4,7 +4,7 @@
  */
 package org.eolang.inference;
 
-import com.jcabi.xml.XML;
+import com.yegor256.tojos.Tojos;
 
 /**
  * One of the tables where the checker keeps what it knows about types.
@@ -13,10 +13,20 @@ import com.jcabi.xml.XML;
  * every object keeps the type it was born with, and everything we learn
  * goes into a table instead. Three of them are planned — what an object
  * certainly has ({@link Provides}), what it must have judging by how it
- * is used, and which types are copies of which — and every one of them
- * is a document of its own. That is the whole point of the design: a
- * smarter rule adds rows to a table, or reads them differently, and no
- * other part of the pipeline has to change.</p>
+ * is used, and which types are copies of which — and each one is filled
+ * by one rule, out of one kind of object. That is the whole point of the
+ * design: a smarter rule adds rows to a table, or reads them
+ * differently, and no other part of the pipeline has to change.</p>
+ *
+ * <p>The rows are {@code Tojos}, the same tables the compiler already
+ * keeps its catalogues in. A row is a handful of named cells, which is
+ * all a fact about a type ever is, and asking for them back is a
+ * {@code select} rather than a hand-written query — the checker's
+ * to-do loop will do little else. Thread-safety and caching arrive as
+ * decorators when they are needed, and every table can be written out
+ * as CSV or JSON for free. The XML the module reports is a view over
+ * these rows, built by {@link Grouped}; the rows themselves are the
+ * truth.</p>
  *
  * @since 0.67.0
  */
@@ -24,8 +34,8 @@ import com.jcabi.xml.XML;
 interface Table {
 
     /**
-     * The rows of this table.
-     * @return The table as an XML document
+     * The rows this table holds.
+     * @return The rows
      */
-    XML asXml();
+    Tojos rows();
 }

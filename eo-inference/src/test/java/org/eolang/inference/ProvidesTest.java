@@ -4,9 +4,10 @@
  */
 package org.eolang.inference;
 
-import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.tojos.TjSmart;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -16,9 +17,9 @@ import org.junit.jupiter.api.Test;
 final class ProvidesTest {
 
     @Test
-    void listsAttributesOfFormation() {
+    void listsEveryAttributeOfFormation() {
         MatcherAssert.assertThat(
-            "the row of a formation must name every attribute it binds, but it doesnt",
+            "a formation must give a row to every attribute it binds, but it doesnt",
             new Provides(
                 new XMLDocument(
                     String.join(
@@ -29,15 +30,28 @@ final class ProvidesTest {
                         "</o></object>"
                     )
                 )
-            ).asXml(),
-            XhtmlMatchers.hasXPath(
-                String.join(
-                    "",
-                    "/provides/type[@id='Φ.kettle'",
-                    " and attr[@name='steam' and @type='Φ.kettle.steam']",
-                    " and attr[@name='whistle' and @type='Φ.kettle.whistle']]"
-                )
-            )
+            ).rows().select(row -> row.exists("owner")),
+            Matchers.hasSize(2)
+        );
+    }
+
+    @Test
+    void recordsTypeOfAttribute() {
+        MatcherAssert.assertThat(
+            "the row of an attribute must carry the type of the object bound to it",
+            new TjSmart(
+                new Provides(
+                    new XMLDocument(
+                        String.join(
+                            "",
+                            "<object><o loc='Φ.kettle' name='kettle'>",
+                            "<o loc='Φ.kettle.steam' name='steam'/>",
+                            "</o></object>"
+                        )
+                    )
+                ).rows()
+            ).getById("Φ.kettle steam").get("type"),
+            Matchers.equalTo("Φ.kettle.steam")
         );
     }
 
@@ -45,12 +59,12 @@ final class ProvidesTest {
     void marksFormationComplete() {
         MatcherAssert.assertThat(
             "a formation we have seen entirely must be complete, but it isnt",
-            new Provides(
-                new XMLDocument(
-                    "<object><o loc='Φ.lid' name='lid'/></object>"
-                )
-            ).asXml(),
-            XhtmlMatchers.hasXPath("/provides/type[@id='Φ.lid' and @complete='true']")
+            new TjSmart(
+                new Provides(
+                    new XMLDocument("<object><o loc='Φ.lid' name='lid'/></object>")
+                ).rows()
+            ).getById("Φ.lid").get("complete"),
+            Matchers.equalTo("true")
         );
     }
 
@@ -58,19 +72,19 @@ final class ProvidesTest {
     void marksVoidAttribute() {
         MatcherAssert.assertThat(
             "a void attribute must be marked as such, but it isnt",
-            new Provides(
-                new XMLDocument(
-                    String.join(
-                        "",
-                        "<object><o loc='Φ.pipe' name='pipe'>",
-                        "<o base='∅' loc='Φ.pipe.width' name='width'/>",
-                        "</o></object>"
+            new TjSmart(
+                new Provides(
+                    new XMLDocument(
+                        String.join(
+                            "",
+                            "<object><o loc='Φ.pipe' name='pipe'>",
+                            "<o base='∅' loc='Φ.pipe.width' name='width'/>",
+                            "</o></object>"
+                        )
                     )
-                )
-            ).asXml(),
-            XhtmlMatchers.hasXPath(
-                "/provides/type[@id='Φ.pipe']/attr[@name='width' and @void='true']"
-            )
+                ).rows()
+            ).getById("Φ.pipe width").get("void"),
+            Matchers.equalTo("true")
         );
     }
 
@@ -78,19 +92,19 @@ final class ProvidesTest {
     void leavesAtomIncomplete() {
         MatcherAssert.assertThat(
             "an atom hides its body in Java, so its row cannot be complete, but it is",
-            new Provides(
-                new XMLDocument(
-                    String.join(
-                        "",
-                        "<object><o loc='Φ.tick' name='tick'>",
-                        "<o atom='Φ.number' loc='Φ.tick.λ' name='λ'/>",
-                        "</o></object>"
+            new TjSmart(
+                new Provides(
+                    new XMLDocument(
+                        String.join(
+                            "",
+                            "<object><o loc='Φ.tick' name='tick'>",
+                            "<o atom='Φ.number' loc='Φ.tick.λ' name='λ'/>",
+                            "</o></object>"
+                        )
                     )
-                )
-            ).asXml(),
-            XhtmlMatchers.hasXPath(
-                "/provides/type[@id='Φ.tick' and @complete='false' and not(attr)]"
-            )
+                ).rows()
+            ).getById("Φ.tick").get("complete"),
+            Matchers.equalTo("false")
         );
     }
 
@@ -107,8 +121,8 @@ final class ProvidesTest {
                         "</o></object>"
                     )
                 )
-            ).asXml(),
-            XhtmlMatchers.hasXPath("/provides[count(type)=1 and type/@id='Φ.lamp']")
+            ).rows().select(row -> "Φ.lamp.φ".equals(row.get("id"))),
+            Matchers.empty()
         );
     }
 
@@ -126,8 +140,8 @@ final class ProvidesTest {
                         "</o></o></object>"
                     )
                 )
-            ).asXml(),
-            XhtmlMatchers.hasXPath("/provides[count(type)=1 and type/@id='Φ.two']")
+            ).rows().select(row -> "Φ.two.φ.α0".equals(row.get("id"))),
+            Matchers.empty()
         );
     }
 }

@@ -79,6 +79,6 @@ public final class Inference {
      * @return The provides table
      */
     public XML provides() {
-        return new Provides(this.xmir.value()).asXml();
+        return new Grouped(new Provides(this.xmir.value()).rows(), "provides").asXml();
     }
 }

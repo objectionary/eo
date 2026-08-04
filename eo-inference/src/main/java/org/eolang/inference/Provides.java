@@ -5,10 +5,12 @@
 package org.eolang.inference;
 
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
+import com.yegor256.tojos.MnMemory;
+import com.yegor256.tojos.TjCached;
+import com.yegor256.tojos.TjDefault;
+import com.yegor256.tojos.Tojo;
+import com.yegor256.tojos.Tojos;
 import java.util.List;
-import org.xembly.Directives;
-import org.xembly.Xembler;
 
 /**
  * What every object certainly has.
@@ -20,9 +22,26 @@ import org.xembly.Xembler;
  * <pre> [] &gt; t
  *   [] &gt; next</pre>
  *
- * <p>gives two rows: {@code Φ.t} has {@code next} (whose type is
- * {@code Φ.t.next}), and {@code Φ.t.next} has nothing. Both are
- * complete.</p>
+ * <p>fills the table with three rows. One says that {@code Φ.t} is
+ * complete, another that {@code Φ.t} has an attribute {@code next} whose
+ * type is {@code Φ.t.next}, and the third that {@code Φ.t.next} is
+ * complete as well, and has nothing.</p>
+ *
+ * <p>So a row is either about a type or about one of its attributes, and
+ * which one it is can be seen from its cells: an attribute row carries
+ * an {@code owner}. A type is identified by its locator, an attribute by
+ * the locator of its owner and its own name, because those two are what
+ * make it unique — its own locator would not do, since an attribute is
+ * also a type in its own right, and the two rows would collide.</p>
+ *
+ * <p>Every row also remembers when it was written, in {@code index}. A
+ * table is a set of rows and promises nothing about their order, while
+ * the order of attributes is not decoration here: an application binds
+ * its arguments to the void attributes of a formation in the order they
+ * were declared, so the rule that checks applications will ask for the
+ * first void and must get the same answer every time. Counting the rows
+ * as they are written keeps that, and keeps the report following the
+ * code rather than the whims of a hash table.</p>
  *
  * <p>"Complete" means that we have seen the whole formation, so there is
  * nothing in it besides the attributes listed. It is the flag that keeps
@@ -58,24 +77,29 @@ final class Provides implements Table {
     }
 
     @Override
-    public XML asXml() {
-        final Directives dirs = new Directives().add("provides");
+    public Tojos rows() {
+        final Tojos rows = new TjCached(new TjDefault(new MnMemory()));
+        int seen = 0;
         for (final XML formation : this.formations()) {
-            dirs.add("type")
-                .attr("id", formation.xpath("@loc").get(0))
-                .attr("complete", Boolean.toString(formation.nodes("o[@name='λ']").isEmpty()));
+            final String owner = formation.xpath("@loc").get(0);
+            rows.add(owner)
+                .set("index", Integer.toString(seen))
+                .set("complete", Boolean.toString(formation.nodes("o[@name='λ']").isEmpty()));
+            seen = seen + 1;
             for (final XML attr : formation.nodes("o[@name and not(@name='λ')]")) {
-                dirs.add("attr")
-                    .attr("name", attr.xpath("@name").get(0))
-                    .attr("type", attr.xpath("@loc").get(0));
+                final String name = attr.xpath("@name").get(0);
+                final Tojo row = rows.add(String.join(" ", owner, name))
+                    .set("owner", owner)
+                    .set("index", Integer.toString(seen))
+                    .set("name", name)
+                    .set("type", attr.xpath("@loc").get(0));
                 if (attr.xpath("@base").contains("∅")) {
-                    dirs.attr("void", "true");
+                    row.set("void", "true");
                 }
-                dirs.up();
+                seen = seen + 1;
             }
-            dirs.up();
         }
-        return new XMLDocument(new Xembler(dirs).domQuietly());
+        return rows;
     }
 
     /**
