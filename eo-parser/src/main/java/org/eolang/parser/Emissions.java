@@ -615,7 +615,6 @@ final class Emissions {
      * @param head Backslash character (always {@code '\\'})
      * @param next The character after the backslash
      * @return The decoded character(s)
-     * @throws NumberFormatException If the escape is not recognised
      */
     private static String singleCharEscape(final char head, final char next) {
         final String decoded;
