@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 2
+message: |-
+  [2:7] error: 'name must start with a lowercase letter'
+    ? >> H
+         ^
+input: |
+  [] > f
+    ? >> H

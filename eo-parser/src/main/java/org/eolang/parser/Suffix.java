@@ -461,7 +461,7 @@ final class Suffix {
     ) {
         int idx = after;
         boolean cnst = false;
-        if (idx < tail.length() && tail.charAt(idx) == '!') {
+        if (tail.startsWith("!", idx)) {
             cnst = true;
             idx = idx + 1;
         }
@@ -482,12 +482,15 @@ final class Suffix {
                 "cactus emoji is reserved for auto-names; not allowed in identifiers"
             );
         }
-        if (!cnst && rest < tail.length() && tail.charAt(rest) == '!') {
+        if (!handle.isEmpty()) {
+            Suffix.checkLowercaseStart(handle, span, home, begin);
+        }
+        if (!cnst && tail.startsWith("!", rest)) {
             cnst = true;
             rest = rest + 1;
         }
         final int trailing = Suffix.skipSpace(tail, rest);
-        if (trailing < tail.length() && tail.charAt(trailing) == '/') {
+        if (tail.startsWith("/", trailing)) {
             throw new ParseError(
                 span.line(), home + trailing,
                 "auto-named atom is forbidden"

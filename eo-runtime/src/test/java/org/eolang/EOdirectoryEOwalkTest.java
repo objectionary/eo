@@ -31,4 +31,22 @@ final class EOdirectoryEOwalkTest {
             "a malformed glob must fail with ExFailure, not a raw PatternSyntaxException"
         );
     }
+
+    @Test
+    void wrapsInvalidPathIntoExFailure() {
+        final Phi file = Phi.Φ.take("file").copy();
+        file.put(0, new Data.ToPhi(String.format("/tmp/%cinvalid", (char) 0)));
+        final Phi dir = Phi.Φ.take("directory").copy();
+        dir.put(0, file);
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new Dataized(
+                new PhApplication(
+                    new PhApplication(new EOdirectory$EOwalk(), Phi.RHO, dir),
+                    "glob", new Data.ToPhi("*")
+                )
+            ).take(),
+            "a path with a NUL character must fail with ExFailure, not a raw InvalidPathException"
+        );
+    }
 }

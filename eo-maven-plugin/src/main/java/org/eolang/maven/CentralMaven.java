@@ -201,13 +201,6 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
         }
     }
 
-    @Override
-    public BiConsumer<Dependency, Path> andThen(
-        final BiConsumer<? super Dependency, ? super Path> after
-    ) {
-        throw new UnsupportedOperationException("not implemented #andThen()");
-    }
-
     /**
      * Returns the given system if non-null, otherwise creates a fresh one.
      * @param sys Repository system, or {@code null}
