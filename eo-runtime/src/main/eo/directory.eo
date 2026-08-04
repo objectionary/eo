@@ -90,30 +90,53 @@
       number.random clock
   [glob] > walk
     tuple.reduced > @
-      walked * "" ^
+      [accum prefix dir] >> walked
+        dir.listed >> names
+        [index acc] >> stepped
+          if. > @
+            index.gte names.length
+            acc
+            stepped
+              index.plus 1
+              if.
+                child.as-file.is-directory false
+                walked acc sub child.as-dir
+                acc.with sub
+          dir.as-path.resolved name > child
+          names.at index > name
+          if. > sub
+            prefix.length.eq 0
+            name
+            string.joined *1
+              "/"
+              prefix
+              name
+        | > @
+          0
+          accum.with prefix
+      |
+        *
+        ""
+        ^
       *
-      picked
-    ^.as-path >> base!
-    string.joined *1 >> expression!
-      ""
-      "/^"
-      translated 0 ""
-      "$/"
+      if. > [accum rel] >>
+        matched rel
+        accum.with
+          Q.file (base.resolved rel).as-bytes
+        accum
+    ^.as-path >> base
     [text] >> matched
       as-bool. > @
         exists.
           next.
             match.
-              Q.string.regex expression
+              string.regex
+                string.joined *1 >>!
+                  ""
+                  "/^"
+                  translated 0 ""
+                  "$/"
               text
-    [accum rel] >> picked
-      if. > @
-        matched rel
-        accum.with
-          Q.file
-            as-bytes.
-              base.resolved rel
-        accum
     [index acc] >> translated
       if. > @
         index.gte glob.length
@@ -121,9 +144,12 @@
         translated
           index.plus
             double.if 2 1
-          string.joined *1 "" acc token
-      string.at glob index > char!
-      and. > double!
+          string.joined *1
+            ""
+            acc
+            token
+      string.at glob index > char
+      and. > double
         char.eq "*"
         eq.
           string.at
@@ -131,8 +157,7 @@
             index.plus 1
             "" > [message]
           "*"
-      if. > token
-        double
+      double.if > token
         ".*"
         if.
           char.eq "*"
@@ -142,23 +167,11 @@
             "[^/]"
             if.
               string.contains ".+()|^$\\" char
-              string.joined *1 "" "\\" char
+              string.joined *1
+                ""
+                "\\"
+                char
               char
-    [accum prefix dir] >> walked
-      tuple.reduced > @
-        dir.listed
-        accum.with prefix
-        stepped
-      [acc name] >> stepped
-        if. > @
-          child.as-file.is-directory false
-          walked acc sub child.as-dir
-          acc.with sub
-        dir.as-path.resolved name > child!
-        if. > sub!
-          prefix.length.eq 0
-          name
-          string.joined *1 "/" prefix name
 
   ++> can-create-a-regular-tmpfile
     seq * > @

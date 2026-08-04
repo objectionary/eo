@@ -17,7 +17,7 @@ import org.junit.jupiter.api.io.TempDir;
 final class EOdirectoryEOlistedTest {
 
     @Test
-    void cannotListPathWithNulCharacter(@TempDir final Path temp) {
+    void wrapsInvalidPathIntoExFailure(@TempDir final Path temp) {
         final Phi file = Phi.Φ.take("file").copy();
         file.put(0, new Data.ToPhi(String.format("%s%cпапка", temp, (char) 0)));
         final Phi dir = Phi.Φ.take("directory").copy();
@@ -32,7 +32,7 @@ final class EOdirectoryEOlistedTest {
     }
 
     @Test
-    void cannotListMissingDirectory(@TempDir final Path temp) {
+    void wrapsMissingDirectoryIntoExFailure(@TempDir final Path temp) {
         final Phi file = Phi.Φ.take("file").copy();
         file.put(0, new Data.ToPhi(temp.resolve("отсутствует").toString()));
         final Phi dir = Phi.Φ.take("directory").copy();
