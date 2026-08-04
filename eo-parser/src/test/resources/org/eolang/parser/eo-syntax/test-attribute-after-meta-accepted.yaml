@@ -6,5 +6,5 @@ asserts:
   - /object[not(errors)]
 input: |
   +package foo
-  
+
   [] +> works
