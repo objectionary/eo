@@ -16,26 +16,24 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * An object that records a coverage hit of its source line when
+ * An object that records a coverage hit of its source location when
  * it is touched, and delegates everything to the origin.
  *
  * <p>The transpiler emits it around every located object. Recording is
  * enabled by the {@code eo.coverageFile} system property: on the first
  * touch, one {@code program:line:pos} line is appended, at most once per
- * JVM; without the property every hit is a silent no-op. The program is
- * the name of the {@code .eo} file the object came from, since that is
- * what {@code Lcov} turns into an {@code SF:} path of its report. The
- * property is re-read on every touch (not cached at class load), since
- * this class is now instantiated around every located object in every EO
+ * JVM; without the property every hit is a silent no-op. The property
+ * is re-read on every touch (not cached at class load), since this
+ * class is now instantiated around every located object in every EO
  * program: the very first one touched anywhere in the JVM would
  * otherwise freeze a stale answer for the rest of the run. Thread-safe.</p>
  *
- * <p>The {@code coverageTracking} parameter of eo-maven-plugin's
+ * <p>The {@code coverageFile} parameter of eo-maven-plugin's
  * {@code transpile} goal ({@code MjTranspile}) controls whether the
  * transpiler wraps located objects into this decorator in the first
- * place; see its javadoc for the remaining gap, which is collecting the
- * locations the transpiler instrumented and feeding both them and this
- * file to {@code Lcov}.</p>
+ * place; see its javadoc for the remaining gaps (the LCOV report and
+ * threading this same file to the process that runs the compiled
+ * program).</p>
  *
  * @since 0.58
  */

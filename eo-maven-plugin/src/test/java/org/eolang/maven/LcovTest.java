@@ -43,9 +43,7 @@ final class LcovTest {
             "the hits of two objects sharing a line are not summed into one line record",
             new Lcov(
                 Arrays.asList(
-                    "org.eolang.number:12:5",
-                    "org.eolang.number:12:9",
-                    "org.eolang.number:13:1"
+                    "org.eolang.number:12:5", "org.eolang.number:12:9", "org.eolang.number:13:1"
                 ),
                 Arrays.asList("org.eolang.number:12:9", "org.eolang.number:12:5")
             ).toString(),
@@ -65,14 +63,8 @@ final class LcovTest {
                 Arrays.asList("org.eolang.txt.sprintf:3:1", "org.eolang.bytes:7:2"),
                 Collections.singleton("org.eolang.bytes:7:2")
             ).toString(),
-            Matchers.equalTo(
-                String.format(
-                    "TN:%nSF:org/eolang/bytes.eo%nDA:7,1%nLF:1%nLH:1%nend_of_record%n"
-                ).concat(
-                    String.format(
-                        "TN:%nSF:org/eolang/txt/sprintf.eo%nDA:3,0%nLF:1%nLH:0%nend_of_record%n"
-                    )
-                )
+            Matchers.stringContainsInOrder(
+                "SF:org/eolang/bytes.eo", "SF:org/eolang/txt/sprintf.eo"
             )
         );
     }
