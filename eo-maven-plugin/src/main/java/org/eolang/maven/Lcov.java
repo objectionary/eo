@@ -47,19 +47,17 @@ final class Lcov {
 
     @Override
     public String toString() {
-        return this.counted().entrySet().stream()
-            .map(
-                program -> String.format(
-                    "TN:%nSF:%s.eo%n%sLF:%d%nLH:%d%nend_of_record%n",
-                    program.getKey().replace('.', '/'),
-                    program.getValue().entrySet().stream()
-                        .map(line -> String.format("DA:%d,%d%n", line.getKey(), line.getValue()))
-                        .collect(Collectors.joining()),
-                    program.getValue().size(),
-                    program.getValue().values().stream().filter(hit -> hit > 0L).count()
-                )
+        return this.counted().entrySet().stream().map(
+            program -> String.format(
+                "TN:%nSF:%s.eo%n%sLF:%d%nLH:%d%nend_of_record%n",
+                program.getKey().replace('.', '/'),
+                program.getValue().entrySet().stream()
+                    .map(line -> String.format("DA:%d,%d%n", line.getKey(), line.getValue()))
+                    .collect(Collectors.joining()),
+                program.getValue().size(),
+                program.getValue().values().stream().filter(hit -> hit > 0L).count()
             )
-            .collect(Collectors.joining());
+        ).collect(Collectors.joining());
     }
 
     /**
