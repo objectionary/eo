@@ -292,23 +292,30 @@ final class MjLintTest {
     }
 
     @Test
-    void suppressesWholeProgramAnalysisDefectViaUnlint(@Mktmp final Path temp) {
+    void suppressesWholeProgramAnalysisDefectViaUnlint(@Mktmp final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("lintAsPackage", true)
+            .with("failOnWarning", false)
+            .withProgram(
+                "+package foo.x",
+                "+alias a.b.nowhere",
+                "+unlint unused-alias",
+                "+unlint incorrect-alias",
+                "+unlint incorrect-unlint",
+                "+unlint unlint-non-existing-defect",
+                "",
+                "[] > main"
+            );
         Assertions.assertDoesNotThrow(
-            () -> new FakeMaven(temp)
-                .with("lintAsPackage", true)
-                .with("failOnWarning", false)
-                .withProgram(
-                    "+package foo.x",
-                    "+alias a.b.nowhere",
-                    "+unlint unused-alias",
-                    "+unlint incorrect-alias",
-                    "+unlint incorrect-unlint",
-                    "+unlint unlint-non-existing-defect",
-                    "",
-                    "[] > main"
-                )
-                .execute(new FakeMaven.Lint()),
+            () -> maven.execute(new FakeMaven.Lint()),
             "A plain +unlint incorrect-alias must suppress the WPA defect reported as incorrect-alias/W"
+        );
+        MatcherAssert.assertThat(
+            "The WPA defect must be absent from the linted XMIR after +unlint incorrect-alias",
+            new Xnav(maven.programTojo().linted())
+                .path("/object/errors/error[@check='incorrect-alias/W']").count(),
+            Matchers.equalTo(0L)
         );
     }
 
