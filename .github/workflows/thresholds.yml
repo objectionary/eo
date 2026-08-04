@@ -18,29 +18,38 @@ jobs:
       matrix:
         include:
           - metric: suppressions
+            files: '*.java'
             pattern: '@SuppressWarnings|@checkstyle'
             threshold: 364
           - metric: smells
+            files: '*.java'
             pattern: 'static|null'
             threshold: 840
           - metric: atoms
+            files: '*.java'
             pattern: '@XmirObject'
             threshold: 26
           - metric: nodelists
+            files: '*.java'
             pattern: 'org\.w3c\.dom\.NodeList'
             threshold: 0
+          - metric: unlints
+            files: '*.eo'
+            pattern: '\+unlint'
+            threshold: 86
     steps:
       - uses: actions/checkout@v7
       - env:
           METRIC: ${{ matrix.metric }}
+          FILES: ${{ matrix.files }}
           PATTERN: ${{ matrix.pattern }}
           THRESHOLD: ${{ matrix.threshold }}
         run: |
-          found=$(( $(git ls-files -z '*.java' \
+          found=$(( $(git ls-files -z "${FILES}" \
             | xargs -0 grep -Eoh "${PATTERN}" \
             | wc -l) ))
           echo "Found ${found} ${METRIC}, threshold is ${THRESHOLD}"
           if [ "${found}" -ne "${THRESHOLD}" ]; then
-            echo "Expected ${THRESHOLD} ${METRIC} in Java, found ${found}"
+            echo "Expected ${THRESHOLD} ${METRIC}, found ${found}"
             exit 1
           fi
