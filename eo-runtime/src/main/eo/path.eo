@@ -58,8 +58,8 @@
       drive.size.eq 0
       uri
       uri.slice
-        drive.size
-        uri.size.minus drive.size
+        drive.length
+        uri.length.minus drive.length
     [] > extname
       if. > @
         or.
@@ -225,6 +225,11 @@
     normalized.
       path.win32 "C:"
     "C:"
+
+  eq. ++> can-normalize-a-drive-qualified-win32-path-with-a-multibyte-segment
+    normalized.
+      path.win32 "C:\\Ж"
+    "C:\\Ж"
 
   eq. ++> can-normalize-a-drive-relative-win32-path-keeping-a-leading-dotdot
     normalized.

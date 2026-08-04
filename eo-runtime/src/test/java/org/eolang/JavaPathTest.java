@@ -24,7 +24,10 @@ class JavaPathTest {
         "Φ.obj.sub, org.eolang.EO_obj.EOsub",
         "Φ.obj.sub$attr, org.eolang.EO_obj.EOsub$EOattr",
         "Φ.obj.sub-dashed$attr, org.eolang.EO_obj.EOsub_dashed$EOattr",
-        "Φ.obj.sub-dashed$attr-dashed, org.eolang.EO_obj.EOsub_dashed$EOattr_dashed"
+        "Φ.obj.sub-dashed$attr-dashed, org.eolang.EO_obj.EOsub_dashed$EOattr_dashed",
+        "Φ.foo_bar, org.eolang.EOfoo__bar",
+        "Φ.obj.sub_under, org.eolang.EO_obj.EOsub__under",
+        "Φ.a_b-c, org.eolang.EOa__b_c"
     })
     void convertsToString(final String name, final String expected) {
         MatcherAssert.assertThat(
