@@ -296,8 +296,7 @@ final class MjLintTest {
         throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .with("lintAsPackage", true)
-            .with("failOnWarning", false)
-            .withProgram(
+            .with("failOnWarning", false).withProgram(
                 "+package foo.x",
                 "+alias a.b.nowhere",
                 "+unlint unused-alias",
@@ -307,12 +306,9 @@ final class MjLintTest {
                 "",
                 "[] > main"
             );
-        Assertions.assertDoesNotThrow(
-            () -> maven.execute(new FakeMaven.Lint()),
-            "A plain +unlint incorrect-alias must suppress the WPA defect reported as incorrect-alias/W"
-        );
+        maven.execute(new FakeMaven.Lint());
         MatcherAssert.assertThat(
-            "The WPA defect must be absent from the linted XMIR after +unlint incorrect-alias",
+            "A plain +unlint incorrect-alias must suppress the WPA defect reported as incorrect-alias/W",
             new Xnav(maven.programTojo().linted())
                 .path("/object/errors/error[@check='incorrect-alias/W']").count(),
             Matchers.equalTo(0L)
