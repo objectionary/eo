@@ -73,7 +73,7 @@ final class EOposixEOφTest {
     void preservesFailureCodeWhenReadFails() {
         MatcherAssert.assertThat(
             "Failed \"read\" should preserve its code",
-            new Dataized(EOposixEOφTest.failedRead().take("code"))
+            new Dataized(this.failedRead().take("code"))
                 .asNumber().intValue(),
             Matchers.equalTo(-1)
         );
@@ -84,7 +84,7 @@ final class EOposixEOφTest {
     void returnsEmptyOutputWhenReadFails() {
         MatcherAssert.assertThat(
             "Failed \"read\" should return empty output",
-            new Dataized(EOposixEOφTest.failedRead().take("output")).take().length,
+            new Dataized(this.failedRead().take("output")).take().length,
             Matchers.equalTo(0)
         );
     }
@@ -94,7 +94,7 @@ final class EOposixEOφTest {
      *
      * @return Failed read result
      */
-    private static Phi failedRead() {
+    private Phi failedRead() {
         return new PhApplication(
             new PhApplication(
                 Phi.Φ.take("posix").copy(),
