@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
@@ -463,12 +464,9 @@ final class MjLintTest {
         try (Stream<Path> saved = Files.walk(cache.resolve(Linting.CACHE))) {
             MatcherAssert.assertThat(
                 "Verified results must be saved to cache, under the hash of the tojo",
-                saved.map(Path::toString).collect(Collectors.toList()),
-                Matchers.hasItem(
-                    Matchers.endsWith(
-                        Paths.get(hash, "foo", "x", "main.xmir").toString()
-                    )
-                )
+                saved.filter(p -> p.endsWith(Paths.get(hash, "foo", "x", "main.xmir")))
+                    .collect(Collectors.toList()),
+                Matchers.hasSize(1)
             );
         }
     }
@@ -481,20 +479,10 @@ final class MjLintTest {
             .with("cache", cache.toFile())
             .allTojosWithHash(() -> "abcdef1")
             .execute(new FakeMaven.Lint());
-        final String planted = new TextOf(
-            new ResourceOf("org/eolang/maven/main.xml")
-        ).asString();
+        final String planted = new TextOf(new ResourceOf("org/eolang/maven/main.xml")).asString();
         try (Stream<Path> saved = Files.walk(cache.resolve(Linting.CACHE))) {
-            new Saved(
-                planted,
-                saved.filter(p -> p.endsWith(Paths.get("foo", "x", "main.xmir")))
-                    .findFirst()
-                    .orElseThrow(
-                        () -> new IllegalStateException(
-                            String.format("nothing was cached under %s", cache)
-                        )
-                    )
-            ).value();
+            saved.filter(p -> p.endsWith(Paths.get("foo", "x", "main.xmir")))
+                .forEach(p -> new Unchecked<>(new Saved(planted, p)).value());
         }
         maven.execute(MjLint.class);
         MatcherAssert.assertThat(
