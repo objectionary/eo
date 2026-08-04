@@ -482,6 +482,9 @@ final class Suffix {
                 "cactus emoji is reserved for auto-names; not allowed in identifiers"
             );
         }
+        if (!handle.isEmpty()) {
+            Suffix.checkLowercaseStart(handle, span, home, begin);
+        }
         if (!cnst && rest < tail.length() && tail.charAt(rest) == '!') {
             cnst = true;
             rest = rest + 1;

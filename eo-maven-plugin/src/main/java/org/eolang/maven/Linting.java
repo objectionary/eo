@@ -51,7 +51,6 @@ import org.xembly.Xembler;
  *     Naming the class {@code Linting} avoids this collision.
  * </p>
  * @since 0.31.0
- * @checkstyle ClassFanOutComplexityCheck (3 lines)
  */
 @SuppressWarnings("PMD.GodClass")
 final class Linting implements Step {
@@ -547,6 +546,14 @@ final class Linting implements Step {
 
     /**
      * Convert XMIR error element to a {@link Defect}.
+     *
+     * <p>Every {@code <error>} element must carry a {@code check}
+     * attribute naming the rule that reported it; a plain parser syntax
+     * error is emitted with {@code check="parser"} by
+     * {@code Emit.error()} for exactly this reason (#6215). A missing
+     * {@code check} is a bug upstream and must fail fast rather than
+     * silently fall back to a default.</p>
+     *
      * @param error The error element
      * @return Defect
      */

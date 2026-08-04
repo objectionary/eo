@@ -72,7 +72,7 @@ public final class VerboseBytesAsString implements Supplier<String> {
             chars[idx * 2] = VerboseBytesAsString.HEX_ARRAY[value >>> 4];
             chars[idx * 2 + 1] = VerboseBytesAsString.HEX_ARRAY[value & 0x0F];
         }
-        return new String(chars).replaceAll("(.{8})", "$1-");
+        return new String(chars).replaceAll("(.{8})(?=.)", "$1-");
     }
 
     /**
