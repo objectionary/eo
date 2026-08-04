@@ -139,7 +139,7 @@ final class EoSyntaxTest {
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/errors/error",
-                String.format("/object[listing='%s']", StringEscapeUtils.escapeXml11(src))
+                String.format("/object[listing='%s']", src)
             )
         );
     }
@@ -161,7 +161,25 @@ final class EoSyntaxTest {
                     )
                 ).inner()
             ).element("object").element("listing").text().get(),
-            Matchers.containsString(StringEscapeUtils.escapeXml11(src))
+            Matchers.equalTo(src)
+        );
+    }
+
+    @Test
+    void keepsListingVerbatimWithXmlSpecialCharacters() throws Exception {
+        final String src = String.join(
+            System.lineSeparator(),
+            "# Sample.",
+            "[] > app",
+            "  \"a < b & c > d\" > x",
+            ""
+        );
+        MatcherAssert.assertThat(
+            "listing must hold the source verbatim, not XML-escaped",
+            new Xnav(
+                new EoSyntax(new InputOf(src)).parsed().inner()
+            ).element("object").element("listing").text().get(),
+            Matchers.equalTo(src)
         );
     }
 
