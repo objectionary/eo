@@ -73,10 +73,9 @@ final class JavaPath {
             } else {
                 prefix = "EO_";
             }
-            out.append('.').append(prefix)
-                .append(
-                    parts[idx].replace("_", "__").replace("-", "_").replace("$", "$EO")
-                );
+            out.append('.').append(prefix).append(
+                parts[idx].replace("_", "__").replace("-", "_").replace("$", "$EO")
+            );
         }
         return out.toString();
     }
