@@ -14,9 +14,10 @@ import com.yegor256.tojos.Tojos;
  * goes into a table instead. Three of them are planned — what an object
  * certainly has ({@link Provides}), what it must have judging by how it
  * is used, and which types are copies of which — and each one is filled
- * by one rule, out of one kind of object. That is the whole point of the
- * design: a smarter rule adds rows to a table, or reads them
- * differently, and no other part of the pipeline has to change.</p>
+ * by one rule, out of one kind of object. Keeping them apart like this is
+ * what lets the checker grow: a smarter rule adds rows to a table, or
+ * reads them differently, and no other part of the pipeline has to
+ * change.</p>
  *
  * <p>The rows are {@code Tojos}, the same tables the compiler already
  * keeps its catalogues in. A row is a handful of named cells, which is

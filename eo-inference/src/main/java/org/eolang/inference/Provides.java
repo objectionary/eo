@@ -10,7 +10,8 @@ import com.yegor256.tojos.TjCached;
 import com.yegor256.tojos.TjDefault;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * What every object certainly has.
@@ -54,26 +55,28 @@ import java.util.List;
  * Applications and references (anything with a {@code @base}) provide
  * nothing on their own — what they have is what the object they copy
  * has, which is the business of the links table. A void attribute
- * provides nothing either, until something is put into it. And objects
- * from other files, together with the results of atoms, are not here at
- * all yet; the design expects them to arrive one day as ready-made rows,
- * and until they do, the checker simply knows less.</p>
+ * provides nothing either, until something is put into it. And the
+ * results of atoms are not here at all yet: what an atom returns is
+ * written in Java, so its rows will have to be given to this table from
+ * outside one day, and until they are, the checker simply knows less.</p>
  *
  * @since 0.67.0
  */
 final class Provides implements Table {
 
     /**
-     * The prepared XMIR.
+     * The prepared XMIR files of the program.
      */
-    private final XML xmir;
+    private final Collection<XML> xmirs;
 
     /**
      * Ctor.
-     * @param prepared The XMIR, as {@link Inference#prepared()} leaves it
+     * @param prepared The prepared XMIR files of the whole program, since
+     *  one table covers all of them: a locator names one object of one
+     *  file and no other
      */
-    Provides(final XML prepared) {
-        this.xmir = prepared;
+    Provides(final Collection<XML> prepared) {
+        this.xmirs = prepared;
     }
 
     @Override
@@ -111,11 +114,18 @@ final class Provides implements Table {
      * carries its bytes as text, and the {@code λ} marker of an atom,
      * which names a body implemented in Java.</p>
      *
-     * @return The formations, in the order they appear in the code
+     * @return The formations, file by file, in the order they appear in
+     *  the code
      */
-    private List<XML> formations() {
-        return this.xmir.nodes(
-            "//o[not(@base) and not(@name='λ') and not(text()[normalize-space()])]"
-        );
+    private Collection<XML> formations() {
+        final Collection<XML> found = new ArrayList<>(0);
+        for (final XML xmir : this.xmirs) {
+            found.addAll(
+                xmir.nodes(
+                    "//o[not(@base) and not(@name='λ') and not(text()[normalize-space()])]"
+                )
+            );
+        }
+        return found;
     }
 }
