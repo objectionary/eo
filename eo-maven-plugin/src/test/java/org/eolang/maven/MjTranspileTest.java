@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link MjTranspile}.
@@ -81,6 +82,35 @@ final class MjTranspileTest {
     }
 
     @Test
+    void tracksStepsOfProgramWithTwoObjects(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "the first tracked step of a program holding two objects did not leave its XMIR in the pre-transpile directory",
+            new FakeMaven(temp).withProgram(MjTranspileTest.pair())
+                .with("trackTransformationSteps", true)
+                .execute(MjParse.class)
+                .execute(MjTranspile.class)
+                .result(),
+            Matchers.hasKey(
+                String.format("target/%s/examples/x/00-set-locators.xml", Transpiling.PRE)
+            )
+        );
+    }
+
+    @Test
+    void transpilesSecondObjectOfProgramWhileTrackingSteps(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "the second object of a tracked program did not reach the generated Java",
+            new FakeMaven(temp).withProgram(MjTranspileTest.pair())
+                .with("trackTransformationSteps", true)
+                .execute(MjParse.class)
+                .execute(MjTranspile.class)
+                .result(),
+            Matchers.hasKey("target/generated/org/eolang/EO_examples/EOy.java")
+        );
+    }
+
+    @Test
     void wrapsObjectsIntoPhCoverageWhenTrackingEnabled(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "the generated Java must wrap located objects into PhCoverage when coverageTracking is on",
@@ -108,6 +138,96 @@ final class MjTranspileTest {
                     .get(MjTranspileTest.compiled())
             ).asString(),
             Matchers.not(Matchers.containsString("PhCoverage"))
+        );
+    }
+
+    @Test
+    void extendsPhDefaultInGeneratedJavaByDefault(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "the generated class must extend PhDefault when phiDefaultClass is not set",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(String.format("+package foo.x%n%n[] > main%n  42 > @"))
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.containsString("extends PhDefault {")
+        );
+    }
+
+    @Test
+    void extendsGivenPhiClassInGeneratedJava(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "the generated class must extend the class named by phiDefaultClass instead of PhDefault",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(String.format("+package foo.x%n%n[] > main%n  42 > @"))
+                    .with("superclass", "org.example.PhInspected")
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.containsString("extends org.example.PhInspected {")
+        );
+    }
+
+    @Test
+    void buildsGivenPhiClassAtInstantiationSites(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "the generated Java must instantiate the class named by phiDefaultClass, never PhDefault, so that the whole tree is made of the substituted class",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(MjTranspileTest.instantiating())
+                    .with("superclass", "org.example.PhInspected")
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.not(Matchers.containsString("new PhDefault"))
+        );
+    }
+
+    @Test
+    void invalidatesCacheWhenPhiDefaultClassChanges(@Mktmp final Path temp) throws Exception {
+        final Path cache = temp.resolve("cache");
+        final String src = String.format("+package foo.x%n%n[] > main%n  42 > @");
+        new FakeMaven(temp.resolve("first"))
+            .withProgram(src)
+            .with("cache", cache.toFile())
+            .execute(new FakeMaven.Transpile());
+        MatcherAssert.assertThat(
+            "the second run's generated Java must reflect its own phiDefaultClass instead of reusing the first run's cached PhDefault output",
+            new TextOf(
+                new FakeMaven(temp.resolve("second"))
+                    .withProgram(src)
+                    .with("cache", cache.toFile())
+                    .with("superclass", "org.example.PhInspected")
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.containsString("extends org.example.PhInspected {")
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "org.example.Ph Inspected", "42Nope"})
+    void rejectsPhiDefaultClassThatIsNotAJavaName(final String name, @Mktmp final Path temp) {
+        final IllegalStateException exception = Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(MjTranspileTest.program())
+                .with("superclass", name)
+                .execute(new FakeMaven.Transpile()),
+            "a phiDefaultClass that is not a Java class name must not reach the generated Java"
+        );
+        final StringWriter writer = new StringWriter();
+        exception.printStackTrace(new PrintWriter(writer));
+        MatcherAssert.assertThat(
+            "a phiDefaultClass that is not a Java class name must be refused by naming the option, instead of emitting an extends clause that cannot compile",
+            writer.toString(),
+            Matchers.containsString("eo.phiDefaultClass")
         );
     }
 
@@ -141,7 +261,10 @@ final class MjTranspileTest {
                 "+rt jvm org.eolang:eo-runtime:0.0.0",
                 "+unlint not-empty-atom",
                 String.format("+version 0.0.0%n"),
-                "[x y z] > main /bytes"
+                "[] > main /bytes",
+                "  ? > x",
+                "  ? > y",
+                "  ? > z"
                 )
                 .execute(new FakeMaven.Transpile())
                 .result(),
@@ -195,7 +318,7 @@ final class MjTranspileTest {
                     .get("target/generated/org/eolang/EO_foo/EO_x/package-info.java")
             ).asString(),
             Matchers.allOf(
-                Matchers.containsString("// @org.eolang.XmirPackage(\"foo.x\")"),
+                Matchers.containsString("@org.eolang.XmirPackage(\"foo.x\")"),
                 Matchers.containsString("package org.eolang.EO_foo.EO_x;")
             )
         );
@@ -403,6 +526,37 @@ final class MjTranspileTest {
                 Matchers.iterableWithSize(1),
                 Matchers.hasItem("package-info.java")
             )
+        );
+    }
+
+    /**
+     * An EO program that makes the transpiler build objects at each of the
+     * three places it emits a {@code new} of the base class: the context of
+     * a generated {@code apply()} for the nested formation, the argument of
+     * a {@code PhApplication} for the number, and an anonymous abstract
+     * object with no children for the empty argument.
+     * @return Source code of the program
+     */
+    private static String instantiating() {
+        return String.format(
+            "+package foo.x%n%n[] > main%n  [] > inner%n    42 > @%n  42.plus > @%n    []"
+        );
+    }
+
+    /**
+     * The EO program holding two top-level objects.
+     * @return Source code of the program
+     */
+    private static String pair() {
+        return String.join(
+            System.lineSeparator(),
+            "+package examples",
+            "",
+            "# First.",
+            "[] > x",
+            "",
+            "# Second.",
+            "[] > y"
         );
     }
 

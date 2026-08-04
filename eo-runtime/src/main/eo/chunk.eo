@@ -48,11 +48,16 @@
     seq *
       write 0 object
       get
-  [offset length] > read /Q.bytes
+  [] > read /Q.bytes
+    ? > offset /Q.number
+    ? > length /Q.number
     ? > cant-read /{Q.string}
-  [size] > resized /Q.chunk
+  [] > resized /Q.chunk
+    ? > capacity /Q.number
   [] > size /Q.number
-  [offset data] > write /Q.bool
+  [] > write /Q.bool
+    ? > offset /Q.number
+    ? > data
 
   eq. ++> can-get-what-was-put
     malloc.of

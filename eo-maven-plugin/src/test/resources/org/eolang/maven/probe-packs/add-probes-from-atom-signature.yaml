@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# An atom's own return signature (`/Q.chunk`) must be probed too, the same
+# way a void's callback arg-types annotation (`/{Q.chunk}`) already is
+# (#6174). See #6212.
+probes:
+  - 'chunk'
+eo: |
+  +package custom
+  +version 0.0.0
+
+  [] > foo /Q.chunk

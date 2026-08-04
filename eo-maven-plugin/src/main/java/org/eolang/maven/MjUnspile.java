@@ -21,6 +21,13 @@ import org.apache.maven.plugins.annotations.Mojo;
 )
 public final class MjUnspile extends MjSafe {
 
+    /**
+     * Ctor.
+     */
+    public MjUnspile() {
+        // nothing
+    }
+
     @Override
     public void exec() throws IOException {
         new Timed(

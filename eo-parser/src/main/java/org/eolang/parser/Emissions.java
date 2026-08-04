@@ -415,7 +415,15 @@ final class Emissions {
         final Emit emit, final String name, final Value value, final int line
     ) {
         final double parsed = Double.parseDouble(value.raw());
-        if (!Double.isFinite(parsed) || Emissions.overPrecise(value.raw(), parsed)) {
+        if (!Double.isFinite(parsed)) {
+            throw new ParseError(
+                line, value.pos(),
+                String.format(
+                    "%s is out of the finite range of a double", value.raw()
+                )
+            );
+        }
+        if (Emissions.overPrecise(value.raw(), parsed)) {
             final String canonical;
             if (value.kind() == Value.Kind.INTEGER) {
                 canonical = Emissions.canonicalInteger(parsed);
@@ -603,10 +611,11 @@ final class Emissions {
 
     /**
      * Resolve a single-character escape sequence (e.g. {@code \n},
-     * {@code \t}). Unknown sequences are passed through verbatim.
+     * {@code \t}). An unrecognised sequence is a lexical error (R-9.7.3).
      * @param head Backslash character (always {@code '\\'})
      * @param next The character after the backslash
      * @return The decoded character(s)
+     * @throws NumberFormatException If the escape is not recognised
      */
     private static String singleCharEscape(final char head, final char next) {
         final String decoded;
@@ -623,7 +632,9 @@ final class Emissions {
         } else if (next == '"' || next == '\'' || next == '\\') {
             decoded = String.valueOf(next);
         } else {
-            decoded = new String(new char[]{head, next});
+            throw new NumberFormatException(
+                String.format("unrecognised escape sequence '%c%c'", head, next)
+            );
         }
         return decoded;
     }
@@ -709,7 +720,7 @@ final class Emissions {
         int pcol = column + bracket + 1;
         for (final String param : Emissions.splitParams(params)) {
             final String mapped;
-            if (param.equals("@")) {
+            if ("@".equals(param)) {
                 mapped = "φ";
             } else {
                 mapped = param;

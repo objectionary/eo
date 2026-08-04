@@ -37,7 +37,7 @@ create a file `pom.xml` with this content (it's just a sample):
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>0.61.3</version>
+        <version>0.62.1</version>
         <executions>
           <execution>
             <goals>
@@ -76,7 +76,7 @@ Then, you just run `mvn clean test`
 (you will need [Maven 3.3+](https://maven.apache.org/))
 and the `.eo` file will be parsed to `.xml` files, transformed to `.java`
 files, and then compiled to `.class` files. You can see them all in the
-`target` directory. You will need Java 11+.
+`target` directory. You will need Java 17+.
 
 The complete
 [maven plugin documentation](https://www.eolang.org/eo-maven-plugin/index.html)

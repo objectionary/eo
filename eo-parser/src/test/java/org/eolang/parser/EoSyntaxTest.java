@@ -225,7 +225,7 @@ final class EoSyntaxTest {
             ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/object[count(o)=1]",
-                "/object/o[@name='base' and count(o[not(@name='xi\uD83C\uDF35')])=2]",
+                "/object/o[@name='base' and count(o[not(@name='xi🌵')])=2]",
                 "/object/o[@name='base']/o[@name='x']",
                 "/object/o[@name='base']/o[@name='f']"
             )
@@ -550,7 +550,7 @@ final class EoSyntaxTest {
                         new InputOf(
                             String.join(
                                 System.lineSeparator(),
-                                "[] > foo\uD83C\uDF35bar".concat(System.lineSeparator())
+                                "[] > foo🌵bar".concat(System.lineSeparator())
                             )
                         )
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
@@ -574,7 +574,7 @@ final class EoSyntaxTest {
                             String.join(
                                 System.lineSeparator(),
                                 "[] > app",
-                                "  x > a\uD83C\uDF3565".concat(System.lineSeparator())
+                                "  x > a🌵65".concat(System.lineSeparator())
                             )
                         )
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
@@ -598,7 +598,7 @@ final class EoSyntaxTest {
                             String.join(
                                 System.lineSeparator(),
                                 "[] > x",
-                                "  \uD83C\uDF35 > y".concat(System.lineSeparator())
+                                "  🌵 > y".concat(System.lineSeparator())
                             )
                         )
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),

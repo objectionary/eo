@@ -19,7 +19,7 @@ import java.util.Set;
  * {@link AbstractMap.SimpleEntry} (a constructor invocation, not a method
  * call) being acceptable as a {@code Map.Entry} factory.</p>
  *
- * <p>The underlying {@link HashMap} is built lazily on first access so the
+ * <p>The underlying {@link LinkedHashMap} is built lazily on first access so the
  * constructor itself remains free of method calls.</p>
  *
  * @since 0.59
@@ -28,7 +28,6 @@ public final class Attrs extends AbstractMap<String, Attribute> {
 
     /**
      * Initial entries supplied via constructor.
-     * @checkstyle VisibilityModifierCheck (2 lines)
      */
     private final Map.Entry<String, Attribute>[] entries;
 

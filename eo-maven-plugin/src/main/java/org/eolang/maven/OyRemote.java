@@ -21,6 +21,7 @@ import java.net.http.HttpResponse;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
 import org.cactoos.io.InputWithFallback;
+import org.cactoos.iterable.IterableOf;
 
 /**
  * The simple HTTP Objectionary server.
@@ -98,8 +99,8 @@ final class OyRemote implements Objectionary {
                 throw new IOException(
                     String.format(
                         "EO object '%s' is not found in this GitHub repository: https://github.com/objectionary/home by url: %s. This means that you either misspelled the name of it or simply referred to your own local object somewhere in your code as if it was an object of 'org.eolang' package. Check the sources and make sure you always use +alias meta when you refer to an object outside of 'org.eolang', even if this object belongs to your package.",
-                        url,
-                        name
+                        name,
+                        url
                     ),
                     input
                 );
@@ -115,6 +116,16 @@ final class OyRemote implements Objectionary {
     @Override
     public boolean isDirectory(final String name) throws IOException {
         return this.exists(this.directory.value(name));
+    }
+
+    @Override
+    public Iterable<String> children(final String pkg) {
+        Logger.debug(
+            this,
+            "The remote objectionary can't list the package '%s' cheaply, so no objects are returned; enumeration is done through the objects index instead",
+            pkg
+        );
+        return new IterableOf<>();
     }
 
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)

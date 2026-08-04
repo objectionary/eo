@@ -91,10 +91,16 @@ public final class MjFormat extends MjSafe {
 
     /**
      * The column after which characters start being charged.
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(property = "eo.width")
     private Integer width;
+
+    /**
+     * Ctor.
+     */
+    public MjFormat() {
+        // nothing
+    }
 
     @Override
     void exec() throws IOException {

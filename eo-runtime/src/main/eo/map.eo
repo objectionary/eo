@@ -40,7 +40,7 @@
                   tup.head.value > value
             bytes.hash >> hash!
               tup.head.key.as-bytes >> kbts!
-            tuple.filtered > others
+            filtered > others
               prev
               not. > [ent] >>
                 and.
@@ -80,17 +80,17 @@
             * hash
     exists. > [key] > has
       found key
-    tuple.mapped > keys
+    mapped > keys
       entries
       entry.key > [entry]
     entries.length > size
-    tuple.mapped > values
+    mapped > values
       entries
       entry.value > [entry]
     [key value] > with
       map.ctor > @
         with.
-          tuple.filtered
+          filtered
             entries
             not. > [entry] >>
               and.
@@ -105,7 +105,7 @@
         key.as-bytes >> kbts!
     [key] > without
       map.ctor > @
-        tuple.filtered
+        filtered
           entries
           not. > [entry] >>
             and.

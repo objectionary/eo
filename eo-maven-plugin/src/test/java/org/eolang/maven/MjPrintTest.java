@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.Map;
 import org.cactoos.Text;
 import org.cactoos.io.InputOf;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
@@ -156,24 +158,11 @@ final class MjPrintTest {
      * @return The mojo parameter name, or empty
      */
     private static String param(final String key) {
-        final String param;
-        switch (key) {
-            case "INDENT":
-                param = "penaltyIndent";
-                break;
-            case "BRACKET":
-                param = "penaltyBracket";
-                break;
-            case "EXCESS":
-                param = "penaltyExcess";
-                break;
-            case "WIDTH":
-                param = "width";
-                break;
-            default:
-                param = "";
-                break;
-        }
-        return param;
+        return new MapOf<>(
+            new MapEntry<>("INDENT", "penaltyIndent"),
+            new MapEntry<>("BRACKET", "penaltyBracket"),
+            new MapEntry<>("EXCESS", "penaltyExcess"),
+            new MapEntry<>("WIDTH", "width")
+        ).getOrDefault(key, "");
     }
 }

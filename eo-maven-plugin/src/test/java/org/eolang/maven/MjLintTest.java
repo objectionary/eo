@@ -12,7 +12,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -101,6 +106,89 @@ final class MjLintTest {
     }
 
     @Test
+    void ignoresLintNamedInSkipSourceLints(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("skipSourceLints", new SetOf<>("mandatory-spdx")).withProgram(
+                "+home https://www.eolang.org",
+                "+package foo.x",
+                "+version 0.0.0",
+                "+unlint empty-object",
+                "+unlint unit-test-missing",
+                "+unlint comment-too-short",
+                "+unlint object-has-data",
+                "",
+                "[x] > main",
+                "  (stdout \"Hello!\" x).print > @"
+            );
+        maven.execute(new FakeMaven.Lint());
+        MatcherAssert.assertThat(
+            "the lint named in eo.skipSourceLints is still reported",
+            new Xnav(
+                maven.programTojo().linted()
+            ).path("/object/errors/error[@check='mandatory-spdx/S']").count(),
+            Matchers.equalTo(0L)
+        );
+    }
+
+    @Test
+    void doesNotReuseStaleLintCacheAfterSkipSourceLintsChanges(@Mktmp final Path temp)
+        throws IOException {
+        final Path cache = temp.resolve("lint-cache");
+        final String[] source = {
+            "+home https://www.eolang.org",
+            "+package foo.x",
+            "+version 0.0.0",
+            "+unlint empty-object",
+            "+unlint unit-test-missing",
+            "+unlint comment-too-short",
+            "+unlint object-has-data",
+            "",
+            "[x] > main",
+            "  (stdout \"Hello!\" x).print > @",
+        };
+        new FakeMaven(temp)
+            .with("cache", cache.toFile())
+            .withProgram(source)
+            .allTojosWithHash(() -> "abcdefq")
+            .execute(new FakeMaven.Lint());
+        final FakeMaven second = new FakeMaven(temp)
+            .with("cache", cache.toFile())
+            .with("skipSourceLints", new SetOf<>("mandatory-spdx"))
+            .withProgram(source)
+            .allTojosWithHash(() -> "abcdefq");
+        second.execute(new FakeMaven.Lint());
+        MatcherAssert.assertThat(
+            "changing skipSourceLints must invalidate the stale per-file lint cache",
+            new Xnav(second.programTojo().linted())
+                .path("/object/errors/error[@check='mandatory-spdx/S']").count(),
+            Matchers.equalTo(0L)
+        );
+    }
+
+    @Test
+    void keepsLintCachePathSegmentShortWithManySkippedLints(@Mktmp final Path temp)
+        throws IOException {
+        final Path cache = temp.resolve("lint-cache");
+        final Collection<String> skipped = new HashSet<>(0);
+        for (int idx = 0; idx < 20; ++idx) {
+            skipped.add(String.format("unlint-non-existing-defect-number-%d", idx));
+        }
+        new FakeMaven(temp)
+            .with("cache", cache.toFile())
+            .with("skipSourceLints", skipped)
+            .withHelloWorld()
+            .execute(new FakeMaven.Lint());
+        try (Stream<Path> versions = Files.list(cache.resolve(Linting.CACHE))) {
+            MatcherAssert.assertThat(
+                "a lint cache-key path segment must stay well under the 255-byte limit ext4 and APFS enforce, no matter how many lints are skipped",
+                versions.map(p -> p.getFileName().toString().length())
+                    .collect(Collectors.toList()),
+                Matchers.everyItem(Matchers.lessThan(255))
+            );
+        }
+    }
+
+    @Test
     void detectsWholeProgramAnalysisErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .with("lintAsPackage", true)
@@ -159,8 +247,35 @@ final class MjLintTest {
         MatcherAssert.assertThat(
             "WPA results must be saved to cache",
             cache.resolve(Linting.CACHE)
+                .resolve(FakeMaven.pluginVersion())
                 .resolve("wpa.xmir").toFile(),
             FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    void doesNotReuseWholeProgramAnalysisCacheOfAnotherProject(@Mktmp final Path temp)
+        throws IOException {
+        final Path cache = temp.resolve("shared-cache");
+        MjLintTest.linting(temp.resolve("clean"), cache, MjLintTest.flawless())
+            .execute(new FakeMaven.Lint());
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> MjLintTest.linting(
+                temp.resolve("broken"), cache, MjLintTest.probmlematic()
+            ).execute(new FakeMaven.Lint()),
+            "WPA error of the second project must be reported, not hidden by the cache of the first"
+        );
+    }
+
+    @Test
+    void lintsPackageWithoutASingleProgram(@Mktmp final Path temp) {
+        Assertions.assertDoesNotThrow(
+            () -> new FakeMaven(temp)
+                .with("lintAsPackage", true)
+                .with("cache", temp.resolve("cache").toFile())
+                .execute(new FakeMaven.Lint()),
+            "Linting a package that has no programs at all must not fail"
         );
     }
 
@@ -426,6 +541,45 @@ final class MjLintTest {
             "",
             "[] > main",
             "  cti true \"critical\" \"msg\" > @",
+        };
+    }
+
+    /**
+     * Maven that lints a package, keeping its EO sources apart from its target directory,
+     * the way a real Maven build does with {@code src/main/eo}.
+     * @param workspace Workspace of the project
+     * @param cache Cache directory, possibly shared with other projects
+     * @param program Program to lint
+     * @return Maven ready to be executed
+     * @throws IOException If fails to save the program
+     */
+    private static FakeMaven linting(
+        final Path workspace, final Path cache, final String... program
+    ) throws IOException {
+        return new FakeMaven(workspace)
+            .with("lintAsPackage", true)
+            .with("cache", cache.toFile())
+            .with("sourcesDir", workspace.resolve("foo").toFile())
+            .withProgram(program);
+    }
+
+    /**
+     * Program without a single defect.
+     * @return Program without defects
+     */
+    private static String[] flawless() {
+        return new String[]{
+            "+home https://www.eolang.org",
+            "+package foo.x",
+            "+version 0.0.0",
+            "+unlint empty-object",
+            "+unlint unit-test-missing",
+            "+unlint mandatory-spdx",
+            "+unlint comment-too-short",
+            "+unlint object-has-data",
+            "",
+            "[x] > main",
+            "  (stdout \"Hello!\" x).print > @",
         };
     }
 

@@ -5,8 +5,8 @@
 package org.eolang;
 
 import java.lang.management.ManagementFactory;
-import org.eolang.Win32.WSAStartupFuncCall;
-import org.eolang.Win32.Winsock;
+import org.eolang.win32.WSAStartupFuncCall;
+import org.eolang.win32.Winsock;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Nested;
@@ -19,7 +19,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 /**
  * Test case for {@code EOwin32$EOφ}.
  * @since 0.40
- * @checkstyle TypeNameCheck (100 lines)
  */
 final class EOwin32EOφTest {
 

@@ -77,9 +77,6 @@
           <xsl:for-each select="o">
             <xsl:apply-templates select="."/>
           </xsl:for-each>
-          <xsl:if test="eo:has-data(.)">
-            <xsl:value-of select="."/>
-          </xsl:if>
         </o>
       </o>
     </o>

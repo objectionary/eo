@@ -11,9 +11,7 @@
   reducedi > @
     passed
     list
-    with > [accum item index]
-      accum
-      item
+    accum.with item > [accum item index]
 
   ++> can-concat-two-lists
     and. > @

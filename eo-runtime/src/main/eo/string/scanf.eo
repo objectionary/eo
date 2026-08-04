@@ -56,22 +56,16 @@
     [text] > as-integer
       if. > @
         or.
-          digits.length.gt 19
+          normalized.length.gt 19
           and.
-            digits.length.eq 19
+            normalized.length.eq 19
             not.
               negative.if
-                digits-lte digits "9223372036854775808"
-                digits-lte digits "9223372036854775807"
+                digits-lte normalized "9223372036854775808"
+                digits-lte normalized "9223372036854775807"
         T
           "The number doesn't fit into long range for the '%%d' conversion"
         negative.if negated folded
-      signed.if > digits
-        slice
-          text
-          1
-          text.length.minus 1
-        text
       [a b] > digits-lte
         if. > [index] >> rec
           index.eq a.length
@@ -93,7 +87,7 @@
               rec
                 index.plus 1
         | 0 > @
-      fold-digits digits > folded
+      fold-digits normalized > folded
       folded.times -1 > negated
       eq. > negative
         slice
@@ -101,10 +95,23 @@
           0
           1
         "-"
+      if. > normalized
+        stripped.eq ""
+        "0"
+        stripped
       negative.or > signed
         eq.
           slice text 0 1
           "+"
+      replaced > stripped
+        signed.if
+          slice
+            text
+            1
+            text.length.minus 1
+          text
+        regex "/^0+/"
+        ""
     [group acc] >> convert
       matched.exists.not.if > @
         *
@@ -302,6 +309,21 @@
     head.
       scanf "%d" "+42"
 
+  eq. ++> can-scan-a-zero-padded-integer
+    42
+    head.
+      scanf "%d" "00000000000000000042"
+
+  eq. ++> can-scan-a-zero-padded-negative-integer
+    -42
+    head.
+      scanf "%d" "-00000000000000000042"
+
+  eq. ++> can-scan-many-zeroes-as-zero
+    0
+    head.
+      scanf "%d" "00000000000000000000"
+
   eq. ++> can-scan-what-printf-wrote
     scanf
       "%s is about %d?"
@@ -371,6 +393,10 @@
   scanf --> stops-on-a-nineteen-digit-value-below-long-min
     "%d"
     "-9223372036854775809"
+
+  scanf --> stops-on-a-zero-padded-integer-above-long-max
+    "%d"
+    "00009223372036854775808"
 
   scanf --> stops-on-a-wrong-format
     "%l"

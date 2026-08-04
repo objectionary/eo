@@ -24,7 +24,6 @@ import org.cactoos.text.Joined;
  * Resolves all required runtime dependencies: downloads from Maven Central,
  * unpacks and places them into the target directory.
  * @since 0.61.0
- * @checkstyle ParameterNumberCheck (100 lines)
  */
 final class Resolving implements Step {
 
@@ -84,7 +83,6 @@ final class Resolving implements Step {
      * @param norun Ignore runtime
      * @param runtime EO runtime dependency supplier
      * @param noconf Ignore version conflicts
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     Resolving(
         final TjsForeign tjs,

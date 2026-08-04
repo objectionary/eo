@@ -31,7 +31,7 @@ import org.xml.sax.SAXParseException;
  * <p>Here, the {@code xml} is a {@code String} or an instance
  * of {@code XML} from the jcabi-xml package.</p>
  *
- * @link <a href="https://xml.jcabi.com">xml.jcabi.com</a>
+ * @see <a href="https://xml.jcabi.com">xml.jcabi.com</a>
  * @since 0.35.0
  */
 public final class Xmir implements XML {
@@ -49,6 +49,7 @@ public final class Xmir implements XML {
                 new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl"),
                 new StClasspath("/org/eolang/printer/print/unnecessary-as.xsl"),
                 new StClasspath("/org/eolang/printer/print/merge-monikers.xsl"),
+                new StClasspath("/org/eolang/printer/print/restore-aliases.xsl"),
                 new StClasspath("/org/eolang/printer/print/to-eo-tree.xsl")
             )
         )

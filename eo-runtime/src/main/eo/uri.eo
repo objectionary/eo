@@ -55,9 +55,7 @@
       hash-idx.eq -1
     slice.
       text.slice >> rest
-        plus.
-          string.index-of text ":" >> scheme-colon
-          1
+        scheme-colon.plus 1
         text.length.minus
           number
             scheme-colon.plus 1
@@ -131,9 +129,14 @@
         number
           question-idx.plus 1
     ""
-  text.slice > scheme
-    0
-    scheme-colon
+  if. > scheme
+    eq.
+      string.index-of text ":" >> scheme-colon
+      -1
+    ""
+    text.slice
+      0
+      scheme-colon
   if. > userinfo
     not. >> has-userinfo
       userinfo-at-idx.eq -1
@@ -216,6 +219,11 @@
     scheme.
       uri "pgsql:localhost:899"
     "pgsql"
+
+  eq. ++> can-parse-the-scheme-of-a-schemeless-uri
+    scheme.
+      uri "localhost"
+    ""
 
   eq. ++> can-parse-the-scheme-of-a-triple-slash-uri
     scheme.

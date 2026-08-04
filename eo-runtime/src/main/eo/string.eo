@@ -9,7 +9,12 @@
 # string "Hello, \u4e16\u754c!"  # Unicode string creation
 # "text".length                  # Character count (not bytes)
 # "text".slice 0 2               # Character-based slicing
+# "TEXT".lower                   # Lower case, default English rules
+# "text".upper                   # Upper case, default English rules
+# "text".turkish.upper           # Upper case, Turkish dotted/dotless I
 # ```
+# Case conversion is exposed as string methods `lower` and `upper`, backed
+# by the locale wrappers `string.english` (the default) and `string.turkish`.
 # .
 
 +architect yegor256@gmail.com
@@ -77,8 +82,6 @@
 
   "e\ne\ne".eq 65-0A-65-0A-65 ++> can-hold-a-three-line-text-block
 
-  "HELLO".low-cased.eq "hello" ++> can-lower-case-text
-
   eq. ++> can-preserve-indentation-in-a-text-block
     "a\n b\n  c"
     "a\n b\n  c"
@@ -120,5 +123,3 @@
     78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27
 
   "\b\f\n\r\t⟦".eq 08-0C-0A-0D-09-E2-9F-A6 ++> can-unescape-symbols
-
-  "hello".up-cased.eq "HELLO" ++> can-upper-case-text

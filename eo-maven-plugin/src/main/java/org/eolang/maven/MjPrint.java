@@ -88,10 +88,16 @@ public final class MjPrint extends MjSafe {
 
     /**
      * The column after which characters start being charged.
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(property = "eo.width")
     private Integer width;
+
+    /**
+     * Ctor.
+     */
+    public MjPrint() {
+        // nothing
+    }
 
     @Override
     void exec() throws IOException {

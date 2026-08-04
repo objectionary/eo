@@ -62,7 +62,6 @@ final class Span {
      * @param line Line number
      * @param leading Count of leading space chars
      * @param tabbed True if any leading char is a tab
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     private Span(final String body, final int line, final int leading, final boolean tabbed) {
         this.text = body;
