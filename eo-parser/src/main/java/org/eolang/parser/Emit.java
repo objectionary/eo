@@ -194,7 +194,12 @@ final class Emit {
      * <p>Records the {@code line}, {@code pos} (0-indexed column per
      * R-9.1.2), and the canonical message text from §9.9 prefixed with
      * {@code [L:P]} per R-9.9.2. Wraps absolute navigation in
-     * {@code push}/{@code pop}.</p>
+     * {@code push}/{@code pop}. The {@code check} attribute is always set
+     * to {@code "parser"}, since this is a plain parser syntax error, not
+     * one raised by a named lint rule (#6215): downstream code (see
+     * {@code Linting.toDefect} in eo-maven-plugin) fails fast if
+     * {@code check} is ever missing, so it must be set here rather than
+     * defaulted downstream.</p>
      *
      * @param line Line where the error occurred
      * @param pos Column where the error occurred (0-indexed)
@@ -211,6 +216,7 @@ final class Emit {
                 .add("error")
                 .attr("line", line)
                 .attr("pos", pos)
+                .attr("check", "parser")
                 .attr("severity", "error")
                 .set(this.formatted(line, pos, message))
                 .up().up()
