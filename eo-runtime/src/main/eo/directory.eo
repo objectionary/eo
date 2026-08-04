@@ -1,5 +1,13 @@
 # Directory in the file system.
 # Apparently every directory is a file.
+#
+# @todo #5751:45min Translate the rest of the glob syntax below. The `translated`
+#  object handles star, double star and question mark, but a brace group like
+#  {a,b} and a negated class like [!a] reach the regex engine untranslated, so
+#  they refuse to compile or match the wrong entries.
+# @todo #5751:30min Stop descending into a symbolic link to a directory. The
+#  `walk` below asks stat, which follows the link, so a link to its own ancestor
+#  recurses forever, while the `Files.walk` it replaced only listed such a link.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -14,6 +22,7 @@
 [file] > directory
   file > @
   true > is-directory
+  [] > listed /Q.tuple
   [dir time process random] > retried
     [index] >> attempted
       if. > @
@@ -79,8 +88,77 @@
             "getpid"
             *
       number.random clock
-  [] > walk /Q.tuple
-    ? > glob /Q.string
+  [glob] > walk
+    tuple.reduced > @
+      walked * "" ^
+      *
+      picked
+    ^.as-path >> base!
+    string.joined *1 >> expression!
+      ""
+      "/^"
+      translated 0 ""
+      "$/"
+    [text] >> matched
+      as-bool. > @
+        exists.
+          next.
+            match.
+              Q.string.regex expression
+              text
+    [accum rel] >> picked
+      if. > @
+        matched rel
+        accum.with
+          Q.file
+            as-bytes.
+              base.resolved rel
+        accum
+    [index acc] >> translated
+      if. > @
+        index.gte glob.length
+        acc
+        translated
+          index.plus
+            double.if 2 1
+          string.joined *1 "" acc token
+      string.at glob index > char!
+      and. > double!
+        char.eq "*"
+        eq.
+          string.at
+            glob
+            index.plus 1
+            "" > [message]
+          "*"
+      if. > token
+        double
+        ".*"
+        if.
+          char.eq "*"
+          "[^/]*"
+          if.
+            char.eq "?"
+            "[^/]"
+            if.
+              string.contains ".+()|^$\\" char
+              string.joined *1 "" "\\" char
+              char
+    [accum prefix dir] >> walked
+      tuple.reduced > @
+        dir.listed
+        accum.with prefix
+        stepped
+      [acc name] >> stepped
+        if. > @
+          child.as-file.is-directory false
+          walked acc sub child.as-dir
+          acc.with sub
+        dir.as-path.resolved name > child!
+        if. > sub!
+          prefix.length.eq 0
+          name
+          string.joined *1 "/" prefix name
 
   ++> can-create-a-regular-tmpfile
     seq * > @
@@ -150,6 +228,22 @@
     Q.file candidate.as-bytes > next
     mktemp.tmpfile.deleted.as-path.as-dir.made > parent
     Q.file created.as-bytes > temp
+
+  ++> can-list-only-the-direct-children-of-a-directory
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "плюшка.txt"
+      made.
+        as-dir.
+          d.resolved "sub"
+      touched.
+        as-file.
+          d.resolved "sub/deep.txt"
+      d.as-dir.listed.length.eq 2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
 
   ++> can-retry-tmpfile-creation-after-a-collision
     seq * > @
