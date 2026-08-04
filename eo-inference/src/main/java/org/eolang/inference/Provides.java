@@ -6,6 +6,7 @@ package org.eolang.inference;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import java.util.List;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -44,18 +45,6 @@ import org.xembly.Xembler;
 final class Provides implements Table {
 
     /**
-     * Every formation of the program.
-     *
-     * <p>A formation is an object with no {@code @base}: it is not a copy
-     * of anything, it is written down as it is. Two other kinds of
-     * objects have no base either and are not formations: data, which
-     * carries its bytes as text, and the {@code λ} marker of an atom,
-     * which names a body implemented in Java.</p>
-     */
-    private static final String FORMATIONS =
-        "//o[not(@base) and not(@name='λ') and not(text()[normalize-space()])]";
-
-    /**
      * The prepared XMIR.
      */
     private final XML xmir;
@@ -71,16 +60,16 @@ final class Provides implements Table {
     @Override
     public XML asXml() {
         final Directives dirs = new Directives().add("provides");
-        for (final XML formation : this.xmir.nodes(Provides.FORMATIONS)) {
+        for (final XML formation : this.formations()) {
             dirs.add("type")
                 .attr("id", formation.xpath("@loc").get(0))
-                .attr("complete", Provides.mark(formation.nodes("o[@name='λ']").isEmpty()));
+                .attr("complete", Boolean.toString(formation.nodes("o[@name='λ']").isEmpty()));
             for (final XML attr : formation.nodes("o[@name and not(@name='λ')]")) {
                 dirs.add("attr")
                     .attr("name", attr.xpath("@name").get(0))
                     .attr("type", attr.xpath("@loc").get(0));
                 if (attr.xpath("@base").contains("∅")) {
-                    dirs.attr("void", "yes");
+                    dirs.attr("void", "true");
                 }
                 dirs.up();
             }
@@ -90,17 +79,19 @@ final class Provides implements Table {
     }
 
     /**
-     * The way this table spells a flag.
-     * @param flag The flag
-     * @return Either "yes" or "no"
+     * Every formation of the program.
+     *
+     * <p>A formation is an object with no {@code @base}: it is not a copy
+     * of anything, it is written down as it is. Two other kinds of
+     * objects have no base either and are not formations: data, which
+     * carries its bytes as text, and the {@code λ} marker of an atom,
+     * which names a body implemented in Java.</p>
+     *
+     * @return The formations, in the order they appear in the code
      */
-    private static String mark(final boolean flag) {
-        final String mark;
-        if (flag) {
-            mark = "yes";
-        } else {
-            mark = "no";
-        }
-        return mark;
+    private List<XML> formations() {
+        return this.xmir.nodes(
+            "//o[not(@base) and not(@name='λ') and not(text()[normalize-space()])]"
+        );
     }
 }

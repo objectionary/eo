@@ -50,7 +50,7 @@ final class ProvidesTest {
                     "<object><o loc='Φ.lid' name='lid'/></object>"
                 )
             ).asXml(),
-            XhtmlMatchers.hasXPath("/provides/type[@id='Φ.lid' and @complete='yes']")
+            XhtmlMatchers.hasXPath("/provides/type[@id='Φ.lid' and @complete='true']")
         );
     }
 
@@ -69,7 +69,7 @@ final class ProvidesTest {
                 )
             ).asXml(),
             XhtmlMatchers.hasXPath(
-                "/provides/type[@id='Φ.pipe']/attr[@name='width' and @void='yes']"
+                "/provides/type[@id='Φ.pipe']/attr[@name='width' and @void='true']"
             )
         );
     }
@@ -89,7 +89,7 @@ final class ProvidesTest {
                 )
             ).asXml(),
             XhtmlMatchers.hasXPath(
-                "/provides/type[@id='Φ.tick' and @complete='no' and not(attr)]"
+                "/provides/type[@id='Φ.tick' and @complete='false' and not(attr)]"
             )
         );
     }

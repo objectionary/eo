@@ -41,18 +41,6 @@ import org.eolang.parser.TrFull;
 public final class Inference {
 
     /**
-     * The train that turns canonical XMIR into the shape the rules expect.
-     */
-    private static final Xsline PREPARE = new Xsline(
-        new TrFull(
-            new TrDefault<>(
-                new StClasspath("/org/eolang/inference/unroll-bases.xsl"),
-                new StClasspath("/org/eolang/parser/parse/set-locators.xsl")
-            )
-        )
-    );
-
-    /**
      * The prepared XMIR, made once and remembered.
      */
     private final Unchecked<XML> xmir;
@@ -64,7 +52,16 @@ public final class Inference {
      */
     public Inference(final XML canonical) {
         this.xmir = new Unchecked<>(
-            new Sticky<>(() -> Inference.PREPARE.pass(canonical))
+            new Sticky<>(
+                () -> new Xsline(
+                    new TrFull(
+                        new TrDefault<>(
+                            new StClasspath("/org/eolang/inference/unroll-bases.xsl"),
+                            new StClasspath("/org/eolang/parser/parse/set-locators.xsl")
+                        )
+                    )
+                ).pass(canonical)
+            )
         );
     }
 

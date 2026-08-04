@@ -90,7 +90,7 @@ final class InferenceTest {
                 ).parsed()
             ).provides(),
             XhtmlMatchers.hasXPath(
-                "/provides/type[@id='Φ.app.t.next' and @complete='yes' and not(attr)]"
+                "/provides/type[@id='Φ.app.t.next' and @complete='true' and not(attr)]"
             )
         );
     }
