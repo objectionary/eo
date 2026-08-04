@@ -9,6 +9,7 @@ import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.function.BiConsumer;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
@@ -115,6 +116,17 @@ final class CentralMavenTest {
             "Unpacked destination must contain files when using injected resolver components",
             dest.toFile().list(),
             Matchers.not(Matchers.emptyArray())
+        );
+    }
+
+    @Test
+    void composesWithAndThenInsteadOfThrowing() {
+        final BiConsumer<Dependency, Path> after = (dep, dest) -> {
+        };
+        MatcherAssert.assertThat(
+            "andThen must return a composed BiConsumer, not throw at composition time",
+            new CentralMaven().andThen(after),
+            Matchers.notNullValue()
         );
     }
 
