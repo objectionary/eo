@@ -95,10 +95,12 @@ final class Blanks {
      * @param span The first post-meta line's span
      * @param globals The global parser state
      * @param emit The directives sink
+     * @return The pending blanks count before any potential clearance
      */
-    static void enterAfterMeta(final Span span, final Globals globals, final Emit emit) {
+    static int enterAfterMeta(final Span span, final Globals globals, final Emit emit) {
+        final int blanks = globals.pendingBlanks();
         if (globals.inMetaHeader()) {
-            if (globals.pendingBlanks() == 0) {
+            if (blanks == 0) {
                 emit.error(
                     span.line(), span.indent(),
                     "missing blank line between meta header and the first non-meta line (R-6.5.5); exactly one blank must separate them"
@@ -108,5 +110,6 @@ final class Blanks {
             }
             globals.closeMetaHeader();
         }
+        return blanks;
     }
 }
