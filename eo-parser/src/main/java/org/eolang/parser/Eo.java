@@ -71,7 +71,7 @@ final class Eo implements Iterable<Directive> {
             level -> Eo.checkOnClose(level, emit),
             parent -> Eo.beforeChild(parent, emit)
         );
-        final java.util.List<Span> spans = new java.util.ArrayList<>();
+        final java.util.List<Span> spans = new java.util.ArrayList<>(10);
         new Source(this.source).forEach(spans::add);
         int idx = 0;
         while (idx < spans.size()) {
