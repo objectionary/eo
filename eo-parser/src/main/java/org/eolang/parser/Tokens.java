@@ -323,7 +323,10 @@ final class Tokens {
 
     /**
      * Read a root identifier at the cursor — one of {@code Q}, {@code @},
-     * {@code ^}, {@code $}. Advances past it.
+     * {@code ^}, {@code $}. Advances past it. A root glued to a letter
+     * or a digit — the legacy {@code QQ} above all — is rejected here,
+     * so that the offending token names itself instead of surfacing as
+     * trailing garbage after a one-character expression.
      * @return Root value
      */
     Value readRoot() {
@@ -334,6 +337,15 @@ final class Tokens {
             );
         }
         final int start = this.cursor;
+        if (Tokens.glued(this.body, start)) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + start,
+                String.format(
+                    "%s is not a valid object name, root %s must be followed by a dot",
+                    Tokens.token(this.body, start), this.body.charAt(start)
+                )
+            );
+        }
         this.cursor = this.cursor + 1;
         return new Value(
             Value.Kind.ROOT, String.valueOf(this.body.charAt(start)),
@@ -649,6 +661,35 @@ final class Tokens {
      */
     private static boolean rootStart(final char glyph) {
         return glyph == 'Q' || glyph == '@' || glyph == '^' || glyph == '$';
+    }
+
+    /**
+     * Whether the root identifier at the index is glued to a NAME
+     * character, as the legacy {@code QQ.io.stdout} head is. A root
+     * ends at a NAME terminator, so anything else standing next to it
+     * belongs to the same token.
+     * @param body Body
+     * @param idx Index of the root character
+     * @return True if a NAME character follows the root
+     */
+    private static boolean glued(final String body, final int idx) {
+        return idx + 1 < body.length()
+            && !Tokens.terminates(body.charAt(idx + 1));
+    }
+
+    /**
+     * Read the whole token starting at the index, up to the first
+     * {@code NAME} terminator or the end of the body.
+     * @param body Body
+     * @param idx Index of the first character
+     * @return The token, terminator excluded
+     */
+    private static String token(final String body, final int idx) {
+        int end = idx;
+        while (end < body.length() && !Tokens.terminates(body.charAt(end))) {
+            end = end + 1;
+        }
+        return body.substring(idx, end);
     }
 
     /**

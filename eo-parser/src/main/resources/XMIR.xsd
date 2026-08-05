@@ -144,7 +144,7 @@
       <xs:annotation>
         <xs:appinfo>The position in the code line where the object has been seen</xs:appinfo>
         <xs:documentation>
-          The attribute contains the position in the code line (starting from 1),
+          The attribute contains the position in the code line (0-indexed),
           where the object has been met during the scanning of the source code.
         </xs:documentation>
       </xs:annotation>
@@ -255,6 +255,16 @@
               The element contains the number of the code line (starting from 1),
               where the error was found. If the element is omitted, the problem
               is related to the entire program, not to any particular line in it.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="pos" type="whole">
+          <xs:annotation>
+            <xs:appinfo>The position in the code line where the error was found</xs:appinfo>
+            <xs:documentation>
+              The attribute contains the position in the code line (0-indexed),
+              where the error was found. If the element is omitted, the problem
+              is not related to any particular column in the line.
             </xs:documentation>
           </xs:annotation>
         </xs:attribute>

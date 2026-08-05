@@ -59,7 +59,6 @@ final class ChainEmission {
      * @param start The head value of the chain
      * @param links The dispatch chain
      * @param sfx The parsed suffix
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     ChainEmission(
         final Emit sink, final Span src, final Value start,

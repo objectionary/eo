@@ -28,7 +28,6 @@ public final class Attrs extends AbstractMap<String, Attribute> {
 
     /**
      * Initial entries supplied via constructor.
-     * @checkstyle VisibilityModifierCheck (2 lines)
      */
     private final Map.Entry<String, Attribute>[] entries;
 

@@ -12,8 +12,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -98,6 +104,89 @@ final class MjLintTest {
             ).path("/object/errors/error[@severity='error']").count(),
             Matchers.greaterThan(0L)
         );
+    }
+
+    @Test
+    void ignoresLintNamedInSkipSourceLints(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("skipSourceLints", new SetOf<>("mandatory-spdx")).withProgram(
+                "+home https://www.eolang.org",
+                "+package foo.x",
+                "+version 0.0.0",
+                "+unlint empty-object",
+                "+unlint unit-test-missing",
+                "+unlint comment-too-short",
+                "+unlint object-has-data",
+                "",
+                "[x] > main",
+                "  (stdout \"Hello!\" x).print > @"
+            );
+        maven.execute(new FakeMaven.Lint());
+        MatcherAssert.assertThat(
+            "the lint named in eo.skipSourceLints is still reported",
+            new Xnav(
+                maven.programTojo().linted()
+            ).path("/object/errors/error[@check='mandatory-spdx/S']").count(),
+            Matchers.equalTo(0L)
+        );
+    }
+
+    @Test
+    void doesNotReuseStaleLintCacheAfterSkipSourceLintsChanges(@Mktmp final Path temp)
+        throws IOException {
+        final Path cache = temp.resolve("lint-cache");
+        final String[] source = {
+            "+home https://www.eolang.org",
+            "+package foo.x",
+            "+version 0.0.0",
+            "+unlint empty-object",
+            "+unlint unit-test-missing",
+            "+unlint comment-too-short",
+            "+unlint object-has-data",
+            "",
+            "[x] > main",
+            "  (stdout \"Hello!\" x).print > @",
+        };
+        new FakeMaven(temp)
+            .with("cache", cache.toFile())
+            .withProgram(source)
+            .allTojosWithHash(() -> "abcdefq")
+            .execute(new FakeMaven.Lint());
+        final FakeMaven second = new FakeMaven(temp)
+            .with("cache", cache.toFile())
+            .with("skipSourceLints", new SetOf<>("mandatory-spdx"))
+            .withProgram(source)
+            .allTojosWithHash(() -> "abcdefq");
+        second.execute(new FakeMaven.Lint());
+        MatcherAssert.assertThat(
+            "changing skipSourceLints must invalidate the stale per-file lint cache",
+            new Xnav(second.programTojo().linted())
+                .path("/object/errors/error[@check='mandatory-spdx/S']").count(),
+            Matchers.equalTo(0L)
+        );
+    }
+
+    @Test
+    void keepsLintCachePathSegmentShortWithManySkippedLints(@Mktmp final Path temp)
+        throws IOException {
+        final Path cache = temp.resolve("lint-cache");
+        final Collection<String> skipped = new HashSet<>(0);
+        for (int idx = 0; idx < 20; ++idx) {
+            skipped.add(String.format("unlint-non-existing-defect-number-%d", idx));
+        }
+        new FakeMaven(temp)
+            .with("cache", cache.toFile())
+            .with("skipSourceLints", skipped)
+            .withHelloWorld()
+            .execute(new FakeMaven.Lint());
+        try (Stream<Path> versions = Files.list(cache.resolve(Linting.CACHE))) {
+            MatcherAssert.assertThat(
+                "a lint cache-key path segment must stay well under the 255-byte limit ext4 and APFS enforce, no matter how many lints are skipped",
+                versions.map(p -> p.getFileName().toString().length())
+                    .collect(Collectors.toList()),
+                Matchers.everyItem(Matchers.lessThan(255))
+            );
+        }
     }
 
     @Test
@@ -317,6 +406,29 @@ final class MjLintTest {
                 "/object/errors/error[@severity='error']"
             ).count(),
             Matchers.greaterThan(0L)
+        );
+    }
+
+    @Test
+    void reportsPlainParserSyntaxErrorUnderParserRule(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "# Sample object for the probe.",
+            "",
+            "[] > main",
+            "  \"\\uD800\" > @"
+        );
+        MatcherAssert.assertThat(
+            "a plain parser syntax error must be reported as a defect under the 'parser' rule, the same as any other lint",
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> maven.execute(new FakeMaven.Lint()),
+                        "A plain parser syntax error must still fail the build, but through the normal reporting path"
+                    )
+                )
+            ).asString(),
+            Matchers.containsString("(parser)")
         );
     }
 

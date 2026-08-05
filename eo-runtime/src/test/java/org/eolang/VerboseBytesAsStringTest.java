@@ -27,8 +27,30 @@ final class VerboseBytesAsStringTest {
                 ByteBuffer.allocate(Double.BYTES).putDouble(12.345_67d).array()
             ).get(),
             Matchers.equalTo(
-                "[0x4028B0FB-A8826AA9-] = 12.34567, or \"@(\\ufffd\\ufffd\\ufffd\\ufffdj\\ufffd\""
+                "[0x4028B0FB-A8826AA9] = 12.34567, or \"@(\\ufffd\\ufffd\\ufffd\\ufffdj\\ufffd\""
             )
+        );
+    }
+
+    @Test
+    void groupsHexWithoutTrailingDelimiter() {
+        MatcherAssert.assertThat(
+            "A hex field ending on an eight-character boundary must not carry a trailing hyphen",
+            new VerboseBytesAsString(new byte[]{0, 0, 0, 0, 0, 0, 0, 0}).get(),
+            Matchers.equalTo(
+                "[0x00000000-00000000] = 0.0, or \"".concat("\\u0000".repeat(8)).concat("\"")
+            )
+        );
+    }
+
+    @Test
+    void groupsNineBytesWithSeparatorsBetweenGroupsOnly() {
+        MatcherAssert.assertThat(
+            "A nine-byte hex field must separate groups without a leading or trailing hyphen",
+            new VerboseBytesAsString(
+                new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9}
+            ).get(),
+            Matchers.containsString("[0x01020304-05060708-09]")
         );
     }
 

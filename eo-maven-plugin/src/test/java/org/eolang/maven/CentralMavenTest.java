@@ -118,6 +118,18 @@ final class CentralMavenTest {
         );
     }
 
+    @Test
+    void composesWithAndThenInsteadOfThrowing() {
+        MatcherAssert.assertThat(
+            "andThen must return a composed BiConsumer, not throw at composition time",
+            new CentralMaven().andThen(
+                (dep, dest) -> {
+                }
+            ),
+            Matchers.notNullValue()
+        );
+    }
+
     private static Dependency runtime() {
         return new Dep()
             .withGroupId("org.eolang")

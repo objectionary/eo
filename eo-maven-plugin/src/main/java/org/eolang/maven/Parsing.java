@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.cactoos.bytes.Sha256DigestOf;
 import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
@@ -106,7 +107,6 @@ final class Parsing implements Step {
      * @param enabled Whether caching is enabled
      * @param ver Plugin version string
      * @param sources EO sources directory
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     Parsing(
         final TjsForeign srcs,
@@ -202,7 +202,16 @@ final class Parsing implements Step {
                 new Cache(
                     new CachePath(
                         this.cacheDir.resolve(Parsing.CACHE),
-                        String.format("%s-%s", this.version, digest),
+                        String.format(
+                            "%s-%s-%s",
+                            this.version,
+                            new Fingerprint(
+                                Stream.concat(
+                                    Canonical.XSLS.stream(), Canonical.IMPORTS.stream()
+                                ).toArray(String[]::new)
+                            ).get(),
+                            digest
+                        ),
                         new TojoHash(tojo).get()
                     ),
                     src -> {
