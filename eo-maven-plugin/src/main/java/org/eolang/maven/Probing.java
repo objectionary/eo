@@ -143,13 +143,10 @@ final class Probing implements Step {
         final Path src,
         final Set<String> completed
     ) throws IOException {
-        final int split = object.lastIndexOf('.');
-        if (split > 0) {
-            final String pkg = object.substring(0, split);
-            if (completed.add(pkg)) {
-                for (final String sibling : this.objectionary.children(pkg)) {
-                    this.tojos.add(sibling).withDiscoveredAt(src);
-                }
+        final String pkg = object.substring(0, Math.max(object.lastIndexOf('.'), 0));
+        if (completed.add(pkg)) {
+            for (final String sibling : this.objectionary.children(pkg)) {
+                this.tojos.add(sibling).withDiscoveredAt(src);
             }
         }
     }

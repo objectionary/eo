@@ -75,6 +75,37 @@ final class ProbingTest {
     }
 
     @Test
+    void completesRootPackageForTopLevelProbe(@TempDir final Path temp) throws IOException {
+        final Path xmir = temp.resolve("test.xmir");
+        Files.write(
+            xmir,
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[] > test",
+                    "  Q.foo > @"
+                )
+            ).parsed().toString().getBytes(StandardCharsets.UTF_8)
+        );
+        final TjsForeign tojos = new TjsForeign();
+        tojos.add("test").withXmir(xmir);
+        new Probing(
+            tojos,
+            new OyIndexed(
+                new Objectionary.Fake(),
+                new ObjectsIndex(() -> new SetOf<>("foo", "bar"))
+            ),
+            true
+        ).exec();
+        MatcherAssert.assertThat(
+            "Probe should have registered the root-package sibling "
+                + "that was never probed directly",
+            tojos.contains("bar"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
     void skipsWhenOffline(@TempDir final Path temp) throws IOException {
         final Path xmir = temp.resolve("test.xmir");
         Files.write(
