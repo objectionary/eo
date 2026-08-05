@@ -6,6 +6,7 @@
 package org.eolang;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -37,11 +38,21 @@ final class OnClasspath {
 
     /**
      * Is there a Java class with this name on the classpath?
+     *
+     * <p>The lookup neither links nor initializes the class it finds, since a
+     * presence probe must not run anybody's code. It covers the classes of the
+     * module this one belongs to, which for a classpath run means the classpath
+     * itself; classes of the platform modules, like {@code java.util.List}, are
+     * out of its reach and are reported as absent.</p>
+     *
      * @param cls The fully-qualified Java name
      * @return TRUE if it exists
      */
     static boolean has(final String cls) {
-        return OnClasspath.CACHE.computeIfAbsent(cls, OnClasspath::probe);
+        return OnClasspath.CACHE.computeIfAbsent(
+            cls,
+            name -> Objects.nonNull(Class.forName(OnClasspath.class.getModule(), name))
+        );
     }
 
     /**
@@ -53,21 +64,5 @@ final class OnClasspath {
         return OnClasspath.OBJECTS.computeIfAbsent(
             fqn, name -> OnClasspath.has(new JavaPath(name).toString())
         );
-    }
-
-    /**
-     * Probe the classpath for a class, uncached.
-     * @param cls The fully-qualified Java name
-     * @return TRUE if it exists
-     */
-    private static boolean probe(final String cls) {
-        boolean found;
-        try {
-            Class.forName(cls, false, OnClasspath.class.getClassLoader());
-            found = true;
-        } catch (final ClassNotFoundException ex) {
-            found = false;
-        }
-        return found;
     }
 }

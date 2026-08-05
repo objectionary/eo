@@ -4,6 +4,7 @@
  */
 package org.eolang;
 
+import java.util.Optional;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -43,52 +44,38 @@ final class OnClasspathTest {
     }
 
     @Test
-    void doesNotRunStaticInitializerWhileProbing() {
+    void findsNestedClassOnClasspath() {
         MatcherAssert.assertThat(
-            "a presence probe must not execute the target class's static initializer",
-            OnClasspath.has(
-                "org.eolang.OnClasspathTest$ExplodingOnInit"
-            ),
+            "A nested class that exists must be reported as present, but it wasn't",
+            OnClasspath.has("org.eolang.OnClasspathTest$Marking"),
             Matchers.is(true)
         );
+    }
+
+    @Test
+    void doesNotRunClassInitializerWhileProbing() {
+        System.clearProperty("eo.onclasspath.marked");
+        OnClasspath.has("org.eolang.OnClasspathTest$Marking");
         MatcherAssert.assertThat(
-            "the static initializer must still not have run after the probe; "
-                + "reading this flag on a class OTHER than the probed one avoids "
-                + "triggering initialization as a side effect of the check itself",
-            Flag.initialized,
+            "Probing a class must not run its initializer, but it did",
+            Optional.ofNullable(System.getProperty("eo.onclasspath.marked")).isPresent(),
             Matchers.is(false)
         );
     }
 
     /**
-     * Records, from outside {@link ExplodingOnInit}, whether its initializer ran.
+     * A class whose initializer marks a system property, so that a test can tell
+     * whether merely probing for the class was enough to initialize it.
      *
-     * <p>A test that read {@code ExplodingOnInit}'s own field would itself trigger
-     * the very initialization it is trying to detect, per JLS class-initialization
-     * rules. Recording the fact on a separate, untouched class avoids that.</p>
+     * <p>The mark lands outside the class on purpose: reading a field of this very
+     * class would itself initialize it, which is the thing being detected.</p>
      *
      * @since 0.74.0
      */
-    static final class Flag {
-
-        /**
-         * Set to TRUE by {@link ExplodingOnInit}'s static initializer, if it ever runs.
-         */
-        static boolean initialized;
-
-        private Flag() {
-        }
-    }
-
-    /**
-     * A class whose static initializer flips {@link Flag#initialized}, to detect
-     * eager class initialization.
-     * @since 0.74.0
-     */
-    static final class ExplodingOnInit {
+    final class Marking {
 
         static {
-            Flag.initialized = true;
+            System.setProperty("eo.onclasspath.marked", "true");
         }
     }
 }
