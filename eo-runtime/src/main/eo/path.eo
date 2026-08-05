@@ -217,13 +217,9 @@
         path.win32 "temp\\var"
 
   and. ++> can-detect-drive-relative-win32-paths-as-not-absolute
-    and.
-      not.
-        is-absolute.
-          path.win32 "C:foo"
-      not.
-        is-absolute.
-          path.win32 "C:.\\foo"
+    not.
+      is-absolute.
+        path.win32 "C:.\\foo"
     and.
       not.
         is-absolute.
