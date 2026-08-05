@@ -91,7 +91,6 @@ final class EOposixEOφTest {
 
     /**
      * Reads from an invalid descriptor.
-     *
      * @return Failed read result
      */
     private Phi failedRead() {
