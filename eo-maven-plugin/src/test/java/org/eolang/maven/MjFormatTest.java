@@ -101,44 +101,32 @@ final class MjFormatTest {
     }
 
     @Test
-    void appliesCustomIndentationStep(@Mktmp final Path temp) throws Exception {
+    void failsWhenErrorRecoveredWithPlaceholder(@Mktmp final Path temp) {
+        final IllegalStateException exception = Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(MjFormatTest.placeholder())
+                .execute(MjFormat.class),
+            "a source recovered with a placeholder node must not be silently formatted"
+        );
+        final StringWriter writer = new StringWriter();
+        exception.printStackTrace(new PrintWriter(writer));
         MatcherAssert.assertThat(
-            "the printer must indent with the configured number of spaces",
-            new TextOf(
-                new FakeMaven(temp)
-                    .with("autoFix", true)
-                    .with("step", 4)
-                    .withProgram(MjFormatTest.canonical(MjFormatTest.nested()))
-                    .execute(MjFormat.class)
-                    .result()
-                    .get("foo/x/main.eo")
-            ).asString(),
-            Matchers.containsString(
-                String.valueOf('\n').concat("        x > first")
-            )
+            "the failure must explain that the source does not fully parse",
+            writer.toString(),
+            Matchers.containsString("does not fully parse")
         );
     }
 
-    /**
-     * A program that stays multi-line whatever the layout weights are.
-     *
-     * <p>A nested formation with two bindings never collapses onto a single
-     * line — an only-phi formation binds nothing but its {@code φ} decoratee —
-     * so its deepest lines sit two indentation levels in and expose the
-     * configured {@code step}, unlike a compact one-liner such as
-     * {@code (stdout "Hello!" x).print > [x] > main}.</p>
-     *
-     * @return The EO program source
-     */
-    private static String nested() {
-        return String.join(
-            System.lineSeparator(),
-            "+package foo.x",
-            "",
-            "[x] > main",
-            "  [] > inner",
-            "    x > first",
-            "    x > second"
+    @Test
+    void doesNotOverwritePlaceholderRecoveryWhenAutoFixIsOn(@Mktmp final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .with("autoFix", true)
+                .withProgram(MjFormatTest.placeholder())
+                .execute(MjFormat.class),
+            "a source the parser only recovered with a placeholder must not be rewritten"
         );
     }
 
@@ -163,6 +151,33 @@ final class MjFormatTest {
             "",
             "[x] > main",
             "  (stdout \"Hello!\" x.print > @",
+            ""
+        );
+    }
+
+    /**
+     * A source the parser only recovers by substituting a placeholder.
+     *
+     * <p>A reversed dispatch left without a receiver ({@code if. > @} with
+     * nothing before the {@code if.}) is reported as an error, but the
+     * parser recovers by standing an empty formation in for the missing
+     * receiver and then covers every remaining line — so the loss is
+     * invisible to a line-coverage check yet the tree no longer describes
+     * the source (see #6071).</p>
+     *
+     * @return The EO text
+     */
+    private static String placeholder() {
+        return String.join(
+            System.lineSeparator(),
+            "+package foo.x",
+            "",
+            "[] > foo",
+            "  if. > @",
+            "    if.",
+            "    true",
+            "    1",
+            "    2",
             ""
         );
     }

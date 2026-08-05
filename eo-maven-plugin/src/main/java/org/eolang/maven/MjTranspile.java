@@ -6,6 +6,11 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -37,12 +42,19 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 public final class MjTranspile extends MjSafe {
 
     /**
+     * Java class name, simple or fully qualified.
+     */
+    private static final Pattern CLASS = Pattern.compile(
+        "^[A-Za-z_$][A-Za-z0-9_$]*+(?:\\.[A-Za-z_$][A-Za-z0-9_$]*+)*+$"
+    );
+
+    /**
      * Add to source root.
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.addSourcesRoot")
     @SuppressWarnings("PMD.ImmutableField")
-    private boolean addSourcesRoot = true;
+    private boolean addSourcesRoot;
 
     /**
      * Whether to transpile tests.
@@ -50,7 +62,7 @@ public final class MjTranspile extends MjSafe {
      */
     @Parameter(property = "eo.transpileTests")
     @SuppressWarnings("PMD.ImmutableField")
-    private boolean transpileTests = true;
+    private boolean transpileTests;
 
     /**
      * Whether to wrap every dispatched object with a location-carrying
@@ -95,6 +107,45 @@ public final class MjTranspile extends MjSafe {
     @Parameter(property = "eo.coverageTracking")
     private boolean coverageTracking;
 
+    /**
+     * The class that a generated class extends instead of {@code PhDefault},
+     * set through {@code eo.phiDefaultClass}. A tool that needs control over
+     * the objects of a program can name its own subclass of
+     * {@code PhDefault} here and see every {@code add()} and {@code take()}
+     * the program makes. The name is written into the generated Java
+     * verbatim, so a class outside {@code org.eolang} has to be named in
+     * full, since the generated files import nothing but
+     * {@code org.eolang.*}.
+     * <p>
+     *     The substitution reaches every class the generated Java declares
+     *     with an {@code extends} clause of its own, and every object it
+     *     builds with {@code new}: the context of a generated
+     *     {@code apply()}, an anonymous abstract object, and the argument
+     *     of a {@code PhApplication}. An object with a {@code @base}
+     *     extends {@code PhOnce} instead, and keeps doing so:
+     *     {@code PhOnce} is a decorator, and the object it wraps is itself
+     *     substituted, so nothing is lost.
+     * </p>
+     * <p>
+     *     Since the generated Java builds objects with {@code new}, the
+     *     named class has to offer the same constructors {@code PhDefault}
+     *     does where the transpiler calls them: the one taking nothing,
+     *     the one taking a location {@code String}, and the one taking a
+     *     {@code byte[]}. A class that leaves one out fails to compile in
+     *     generated sources.
+     * </p>
+     */
+    @Parameter(property = "eo.phiDefaultClass", defaultValue = "PhDefault")
+    private String superclass;
+
+    /**
+     * Ctor.
+     */
+    public MjTranspile() {
+        this.addSourcesRoot = true;
+        this.transpileTests = true;
+    }
+
     @Override
     public void exec() throws IOException {
         new Timed(
@@ -108,7 +159,9 @@ public final class MjTranspile extends MjSafe {
                 this.transpileTests,
                 this.xslMeasures.toPath(),
                 new Tracking(this.trackTransformationSteps, this.trackLocations),
-                this.coverageTracking
+                this.coverageTracking,
+                this.base(),
+                this.roots()
             )
         ).exec();
         if (this.addSourcesRoot) {
@@ -128,5 +181,43 @@ public final class MjTranspile extends MjSafe {
                 gtests
             );
         }
+    }
+
+    /**
+     * The compile source roots a human wrote, which are all of them but the
+     * ones inside the build directory, since a root a previous goal generated
+     * holds a {@code package-info.java} of its own and would fool the
+     * transpiler into skipping the file it has to write.
+     * @return The directories with hand-written Java
+     */
+    private Collection<Path> roots() {
+        final Path build = this.targetDir.toPath().getParent();
+        return this.project.getCompileSourceRoots().stream()
+            .map(Paths::get)
+            .filter(root -> !root.startsWith(build))
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * The name of the class that the generated classes extend, refused right
+     * here when it is not a Java class name. Returning the name instead of
+     * checking it apart means a caller cannot end up with a name that was
+     * never looked at, since {@code to-java.xsl} copies whatever it is given
+     * into the {@code extends} clause and an unusable name would surface as
+     * a compilation error in generated sources, far from the option that
+     * caused it.
+     * @return The name of the class to extend
+     */
+    private String base() {
+        if (!MjTranspile.CLASS.matcher(this.superclass).matches()) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "The value of eo.phiDefaultClass is '%s', while a Java class name matching '%s' is expected",
+                    this.superclass,
+                    MjTranspile.CLASS
+                )
+            );
+        }
+        return this.superclass;
     }
 }

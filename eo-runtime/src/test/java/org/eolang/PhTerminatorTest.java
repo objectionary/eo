@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link PhTerminator}.
  * @since 0.73.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class PhTerminatorTest {
 
     @Test
@@ -62,6 +61,20 @@ final class PhTerminatorTest {
                 () -> new Dataized(bottom).take()
             ).getMessage(),
             Matchers.containsString("cannot proceed here")
+        );
+    }
+
+    @Test
+    void preservesPercentSignsInCause() {
+        final String cause = "100% complete";
+        final PhTerminator bottom = PhTerminator.withCause(cause);
+        MatcherAssert.assertThat(
+            "forcing the bottom object must treat its cause as literal text",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(bottom).take()
+            ).getMessage(),
+            Matchers.equalTo(cause)
         );
     }
 

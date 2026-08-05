@@ -3,20 +3,24 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 /**
  * Chunk.size object.
  * @since 0.41.0
+ * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "chunk.size")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOchunk$EOsize extends PhDefault implements Atom {
+
+    /**
+     * Ctor.
+     */
+    public EOchunk$EOsize() {
+        // nothing
+    }
 
     @Override
     public Phi lambda() {

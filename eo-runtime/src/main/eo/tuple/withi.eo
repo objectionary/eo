@@ -9,14 +9,49 @@
 
 [list index item] > withi
   concat > @
-    with
-      front list index
+    with.
+      front list bounded
       item
     back
       list
-      list.length.minus index
+      list.length.minus bounded
+  if. > bounded
+    0.gt index
+    0
+    if.
+      index.gt list.length
+      list.length
+      index
 
-  eq. ++> tests-insert-with-zero-index
+  eq. ++> can-clamp-a-negative-index-to-the-front-without-duplicating
+    withi
+      *
+        1
+        2
+        3
+      -1
+      9
+    *
+      9
+      1
+      2
+      3
+
+  eq. ++> can-clamp-an-index-beyond-the-end-without-duplicating
+    withi
+      *
+        1
+        2
+        3
+      5
+      9
+    *
+      1
+      2
+      3
+      9
+
+  eq. ++> can-insert-at-a-zero-index
     withi
       *
         1
@@ -34,7 +69,7 @@
       4
       5
 
-  eq. ++> tests-simple-insert
+  eq. ++> can-insert-at-an-index
     withi
       *
         1

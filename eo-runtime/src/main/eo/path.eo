@@ -1,12 +1,8 @@
 # Path `path` that is hierarchical and composed of a sequence of
 # directory and file name elements separated by a special separator or delimiter.
 
-+alias string.index-of
 +alias string.last-index-of
-+alias tuple.reduced
 +alias string.regex
-+alias string.replaced
-+alias string.split
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -36,7 +32,7 @@
           as-bytes.
             text.slice
               plus. >> index!
-                string.last-index-of text separator
+                last-index-of text separator
                 1
               text.length.minus
                 number index
@@ -44,42 +40,45 @@
     [] > dirname
       string > @
         if.
-          or.
-            pth.size.eq 0
-            len.eq -1
+          pth.size.eq 0
           uri >> pth!
           if.
-            len.eq 0
-            separator
-            as-bytes.
-              text.slice
-                0
-                string.last-index-of text separator >> len!
+            len.eq -1
+            "."
+            if.
+              len.eq 0
+              separator
+              as-bytes.
+                text.slice
+                  0
+                  last-index-of text separator >> len!
       string pth > text
     sys.drive uri > drive
     if. > driveless
       drive.size.eq 0
       uri
       uri.slice
-        drive.size
-        uri.size.minus drive.size
+        drive.length
+        uri.length.minus drive.length
     [] > extname
       if. > @
         or.
-          base.size.eq 0
-          index.eq -1
+          or.
+            base.size.eq 0
+            index.eq -1
+          or.
+            index.eq 0
+            base.eq ".."
         ""
         string
           as-bytes.
             text.slice
-              string.last-index-of text "." >> index!
+              last-index-of text "." >> index!
               text.length.minus
                 number index
       string > text
         basename >> base!
-    is-root-relative.or > is-absolute
-      drive.size.gt 0
-    and. > is-root-relative
+    and. > is-absolute
       driveless.size.gt 0
       eq.
         driveless.slice 0 1
@@ -105,7 +104,7 @@
           concat.
             concat.
               drive.concat
-                is-root-relative.if separator --
+                is-absolute.if separator --
               string.joined >> body!
                 separator
                 tuple.reduced
@@ -118,7 +117,7 @@
                         accum.length.gt 0
                         not. (accum.head.eq "..")
                       accum.tail
-                      is-root-relative.not.if (accum.with segment) accum
+                      is-absolute.not.if (accum.with segment) accum
                     if.
                       or.
                         segment.eq "."
@@ -182,7 +181,7 @@
     "\\" > separator
     [] > sys
       if. > [uri] > drive
-        as-bool. ((string.regex "/^[a-zA-Z]:/").match uri).next.exists
+        as-bool. ((regex "/^[a-zA-Z]:/").match uri).next.exists
         uri.slice 0 2
         --
       [uri] > sanitized
@@ -192,18 +191,22 @@
             -1
           string
             uri >> ubts!
-          string (string.replaced pth (string.regex "/\\//") separator)!
+          string (string.replaced pth (regex "/\\//") separator)!
         string ubts > pth
       ^.separator > separator
 
-  and. ++> tests-detects-absolute-posix-path
+  not. ++> can-detect-a-drive-relative-win32-path-as-not-absolute
+    is-absolute.
+      path.win32 "C:foo"
+
+  and. ++> can-detect-an-absolute-posix-path
     is-absolute.
       path.posix "/var/www/html"
     not.
       is-absolute.
         path.posix "foo/bar/baz"
 
-  and. ++> tests-detects-absolute-win32-path
+  and. ++> can-detect-an-absolute-win32-path
     and.
       is-absolute.
         path.win32 "C:\\Windows\\Users"
@@ -213,200 +216,187 @@
       is-absolute.
         path.win32 "temp\\var"
 
-  path.separator.eq ++> tests-determines-separator-depending-on-os
+  path.separator.eq ++> can-determine-the-separator-from-the-os
     os.is-windows.if
       path.win32.separator
       path.posix.separator
 
-  eq. ++> tests-does-not-take-extname-if-ends-with-separator
-    extname.
-      path.joined
-        *
-          "var"
-          "www"
-          path.separator
-    ""
-
-  eq. ++> tests-does-not-take-extname-on-file-without-extension
-    extname.
-      path.joined
-        *
-          "var"
-          "www"
-          "html"
-    ""
-
-  eq. ++> tests-normalizes-absolute-win32-path-with-drive
-    normalized.
-      path.win32 "C:\\Windows\\\\..\\Users\\.\\AppLocal"
-    "C:\\Users\\AppLocal"
-
-  eq. ++> tests-normalizes-absolute-win32-path-without-drive
-    normalized.
-      path.win32 "\\Windows\\Users\\..\\App\\\\.\\Local\\\\"
-    "\\Windows\\App\\Local\\"
-
-  eq. ++> tests-normalizes-empty-posix-path-to-current-dir
-    normalized.
-      path.posix ""
-    "."
-
-  eq. ++> tests-normalizes-empty-win32-driveless-path-to-current-dir
-    normalized.
-      path.win32 ""
-    "."
-
-  eq. ++> tests-normalizes-path-to-root
-    normalized.
-      path.posix "/foo/bar/baz/../../../../"
-    "/"
-
-  eq. ++> tests-normalizes-posix-path
-    normalized.
-      path.posix "/foo/bar/.//./baz//../x/"
-    "/foo/bar/x/"
-
-  eq. ++> tests-normalizes-posix-path-collapsing-to-current-dir
-    normalized.
-      path.posix "foo/.."
-    "."
-
-  eq. ++> tests-normalizes-posix-relative-path
-    normalized.
-      path.posix "../../foo/./bar/../x/../y"
-    "../../foo/y"
-
-  eq. ++> tests-normalizes-relative-win32-path
-    normalized.
-      path.win32 "..\\..\\foo\\bar\\..\\x\\y\\\\"
-    "..\\..\\foo\\x\\y\\"
-
-  eq. ++> tests-normalizes-win32-drive-only-path-keeps-drive
+  eq. ++> can-normalize-a-drive-only-win32-path
     normalized.
       path.win32 "C:"
     "C:"
 
-  eq. ++> tests-normalizes-win32-drive-relative-path-keeps-leading-dotdot
+  eq. ++> can-normalize-a-drive-qualified-win32-path-with-a-multibyte-segment
+    normalized.
+      path.win32 "C:\\Ж"
+    "C:\\Ж"
+
+  eq. ++> can-normalize-a-drive-relative-win32-path-keeping-a-leading-dotdot
     normalized.
       path.win32 "C:..\\foo"
     "C:..\\foo"
 
-  eq. ++> tests-normalizes-win32-path-collapsing-to-current-dir
+  eq. ++> can-normalize-a-path-to-the-root
+    normalized.
+      path.posix "/foo/bar/baz/../../../../"
+    "/"
+
+  eq. ++> can-normalize-a-posix-path
+    normalized.
+      path.posix "/foo/bar/.//./baz//../x/"
+    "/foo/bar/x/"
+
+  eq. ++> can-normalize-a-posix-path-collapsing-to-the-current-directory
+    normalized.
+      path.posix "foo/.."
+    "."
+
+  eq. ++> can-normalize-a-relative-posix-path
+    normalized.
+      path.posix "../../foo/./bar/../x/../y"
+    "../../foo/y"
+
+  eq. ++> can-normalize-a-relative-win32-path
+    normalized.
+      path.win32 "..\\..\\foo\\bar\\..\\x\\y\\\\"
+    "..\\..\\foo\\x\\y\\"
+
+  eq. ++> can-normalize-a-win32-path-collapsing-to-the-current-directory
     normalized.
       path.win32 "foo\\.."
     "."
 
-  eq. ++> tests-normalizes-win32-path-down-to-drive-with-separator
+  eq. ++> can-normalize-a-win32-path-down-to-a-drive-with-a-separator
     normalized.
       path.win32 "C:\\Windows\\.."
     "C:\\"
 
-  eq. ++> tests-normalizes-win32-path-down-to-drive-without-separator
+  eq. ++> can-normalize-a-win32-path-down-to-a-drive-without-a-separator
     normalized.
       path.win32 "C:hello\\.."
     "C:"
 
-  eq. ++> tests-normalizes-win32-path-with-replacing-slashes
+  eq. ++> can-normalize-a-win32-path-replacing-slashes
     normalized.
       path.win32 "/var/www/../html/"
     "\\var\\html\\"
 
-  eq. ++> tests-resolves-posix-absolute-path-against-other-absolute-path
-    resolved.
-      path.posix "/var/temp"
-      "/www/html"
-    "/www/html"
+  eq. ++> can-normalize-an-absolute-win32-path-with-a-drive
+    normalized.
+      path.win32 "C:\\Windows\\\\..\\Users\\.\\AppLocal"
+    "C:\\Users\\AppLocal"
 
-  eq. ++> tests-resolves-posix-absolute-path-against-other-relative-path
-    resolved.
-      path.posix "/var/temp"
-      "./www/html"
-    "/var/temp/www/html"
+  eq. ++> can-normalize-an-absolute-win32-path-without-a-drive
+    normalized.
+      path.win32 "\\Windows\\Users\\..\\App\\\\.\\Local\\\\"
+    "\\Windows\\App\\Local\\"
 
-  eq. ++> tests-resolves-posix-path-against-empty-other
-    resolved.
-      path.posix "/a/b"
-      ""
-    "/a/b"
+  eq. ++> can-normalize-an-empty-driveless-win32-path-to-the-current-directory
+    normalized.
+      path.win32 ""
+    "."
 
-  eq. ++> tests-resolves-posix-relative-path-against-other-absolute-path
-    resolved.
-      path.posix "./var/temp"
-      "/www/html"
-    "/www/html"
+  eq. ++> can-normalize-an-empty-posix-path-to-the-current-directory
+    normalized.
+      path.posix ""
+    "."
 
-  eq. ++> tests-resolves-posix-relative-path-against-other-relative-path
-    resolved.
-      path.posix "./var/temp"
-      "../www/html"
-    "var/www/html"
-
-  eq. ++> tests-resolves-win32-drive-relative-path-against-other-drive-relative-path
-    resolved.
-      path.win32 "C:\\users\\local"
-      "D:\\local\\var"
-    "D:\\local\\var"
-
-  eq. ++> tests-resolves-win32-drive-relative-path-against-other-relative-path
+  eq. ++> can-resolve-a-drive-relative-win32-path-against-a-relative-path
     resolved.
       path.win32 "C:\\users\\local"
       ".\\var\\temp"
     "C:\\users\\local\\var\\temp"
 
-  eq. ++> tests-resolves-win32-drive-relative-path-against-other-root-relative-path
+  eq. ++> can-resolve-a-drive-relative-win32-path-against-a-root-relative-path
     resolved.
       path.win32 "C:\\users\\local"
       "\\local\\var"
     "C:\\local\\var"
 
-  eq. ++> tests-resolves-win32-path-against-empty-other
+  eq. ++> can-resolve-a-drive-relative-win32-path-against-another-drive-relative-path
     resolved.
-      path.win32 "C:\\a\\b"
-      ""
-    "C:\\a\\b"
+      path.win32 "C:\\users\\local"
+      "D:\\local\\var"
+    "D:\\local\\var"
 
-  eq. ++> tests-resolves-win32-relative-path-against-other-drive-relative-path
+  eq. ++> can-resolve-a-posix-path-against-an-empty-one
+    resolved.
+      path.posix "/a/b"
+      ""
+    "/a/b"
+
+  eq. ++> can-resolve-a-relative-posix-path-against-an-absolute-path
+    resolved.
+      path.posix "./var/temp"
+      "/www/html"
+    "/www/html"
+
+  eq. ++> can-resolve-a-relative-posix-path-against-another-relative-path
+    resolved.
+      path.posix "./var/temp"
+      "../www/html"
+    "var/www/html"
+
+  eq. ++> can-resolve-a-relative-win32-path-against-a-drive-relative-path
     resolved.
       path.win32 ".\\temp\\var"
       "C:\\Windows\\Users"
     "C:\\Windows\\Users"
 
-  eq. ++> tests-resolves-win32-relative-path-against-other-relative-path
-    resolved.
-      path.win32 ".\\temp\\var"
-      ".\\..\\x"
-    "temp\\x"
-
-  eq. ++> tests-resolves-win32-relative-path-against-other-root-relative-path
+  eq. ++> can-resolve-a-relative-win32-path-against-a-root-relative-path
     resolved.
       path.win32 ".\\temp\\var"
       "\\Windows\\Users"
     "\\Windows\\Users"
 
-  eq. ++> tests-resolves-win32-root-relative-path-against-other-drive-relative-path
+  eq. ++> can-resolve-a-relative-win32-path-against-another-relative-path
+    resolved.
+      path.win32 ".\\temp\\var"
+      ".\\..\\x"
+    "temp\\x"
+
+  eq. ++> can-resolve-a-root-relative-win32-path-against-a-drive-relative-path
     resolved.
       path.win32 "\\users\\local"
       "D:\\hello\\var"
     "D:\\hello\\var"
 
-  eq. ++> tests-resolves-win32-root-relative-path-against-other-relative-path
+  eq. ++> can-resolve-a-root-relative-win32-path-against-a-relative-path
     resolved.
       path.win32 "\\users\\local"
       ".\\hello\\var"
     "\\users\\local\\hello\\var"
 
-  eq. ++> tests-resolves-win32-root-relative-path-against-other-root-relative-path
+  eq. ++> can-resolve-a-root-relative-win32-path-against-another-root-relative-path
     resolved.
       path.win32 "\\users\\local"
       "\\hello\\var"
     "\\hello\\var"
 
-  eq. ++> tests-returns-base-with-backslash-in-path-on-posix
+  eq. ++> can-resolve-a-win32-path-against-an-empty-one
+    resolved.
+      path.win32 "C:\\a\\b"
+      ""
+    "C:\\a\\b"
+
+  eq. ++> can-resolve-an-absolute-posix-path-against-a-relative-path
+    resolved.
+      path.posix "/var/temp"
+      "./www/html"
+    "/var/temp/www/html"
+
+  eq. ++> can-resolve-an-absolute-posix-path-against-another-absolute-path
+    resolved.
+      path.posix "/var/temp"
+      "/www/html"
+    "/www/html"
+
+  eq. ++> can-return-a-basename-with-a-backslash-on-posix
     basename.
       path.posix "/var/www/html/foo\\bar"
     "foo\\bar"
 
-  eq. ++> tests-returns-empty-basename-from-path-ended-with-separator
+  eq. ++> can-return-an-empty-basename-from-a-path-ending-with-a-separator
     basename.
       path.joined
         *
@@ -416,22 +406,17 @@
           path.separator
     ""
 
-  eq. ++> tests-returns-root-dirname-of-posix-single-component
+  eq. ++> can-return-the-current-dirname-of-a-hidden-relative-posix-file
     dirname.
-      path.posix "/foo"
-    "/"
+      path.posix ".gitignore"
+    "."
 
-  eq. ++> tests-returns-root-dirname-of-win32-root-relative
+  eq. ++> can-return-the-current-dirname-of-a-relative-posix-file
     dirname.
-      path.win32 "\\foo"
-    "\\"
+      path.posix "plain"
+    "."
 
-  eq. ++> tests-returns-the-same-string-if-no-separator-is-found
-    basename.
-      path "Somebody"
-    "Somebody"
-
-  eq. ++> tests-returns-valid-dirname-from-dir-path
+  eq. ++> can-return-the-dirname-of-a-directory-path
     dirname.
       path.joined
         *
@@ -441,7 +426,7 @@
     path.joined
       * "var" "www"
 
-  eq. ++> tests-returns-valid-dirname-from-file-path
+  eq. ++> can-return-the-dirname-of-a-file-path
     dirname.
       path.joined
         *
@@ -451,7 +436,7 @@
     path.joined
       * "var" "www"
 
-  eq. ++> tests-returns-valid-dirname-from-file-path-without-extension
+  eq. ++> can-return-the-dirname-of-a-file-path-without-an-extension
     dirname.
       path.joined
         *
@@ -461,16 +446,22 @@
     path.joined
       * "var" "www"
 
-  eq. ++> tests-takes-file-extname
-    extname.
-      path.joined
-        *
-          "var"
-          "www"
-          "hello.text"
-    ".text"
+  eq. ++> can-return-the-root-dirname-of-a-root-relative-win32-path
+    dirname.
+      path.win32 "\\foo"
+    "\\"
 
-  eq. ++> tests-takes-valid-basename
+  eq. ++> can-return-the-root-dirname-of-a-single-component-posix-path
+    dirname.
+      path.posix "/foo"
+    "/"
+
+  eq. ++> can-return-the-same-string-without-a-separator
+    basename.
+      path "Somebody"
+    "Somebody"
+
+  eq. ++> can-take-a-basename
     basename.
       path.joined
         *
@@ -479,3 +470,45 @@
           "html"
           "hello.eo"
     "hello.eo"
+
+  eq. ++> can-take-a-file-extname
+    extname.
+      path.joined
+        *
+          "var"
+          "www"
+          "hello.text"
+    ".text"
+
+  eq. ++> can-take-an-extname-from-a-hidden-file-with-an-extension
+    extname.
+      path.posix ".config.json"
+    ".json"
+
+  eq. ++> cannot-take-an-extname-from-a-dotdot
+    extname.
+      path.posix ".."
+    ""
+
+  eq. ++> cannot-take-an-extname-from-a-dotfile
+    extname.
+      path.posix ".gitignore"
+    ""
+
+  eq. ++> cannot-take-an-extname-from-a-file-without-an-extension
+    extname.
+      path.joined
+        *
+          "var"
+          "www"
+          "html"
+    ""
+
+  eq. ++> cannot-take-an-extname-from-a-path-ending-with-a-separator
+    extname.
+      path.joined
+        *
+          "var"
+          "www"
+          path.separator
+    ""

@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle PackageNameCheck (10 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 import org.cactoos.text.TextOf;
@@ -19,7 +15,6 @@ import org.junit.jupiter.api.Test;
 /**
  * Test case for {@link EObytes}.
  * @since 0.23
- * @checkstyle TypeNameCheck (4 lines)
  */
 final class EObytesEOsliceTest {
 
@@ -121,7 +116,7 @@ final class EObytesEOsliceTest {
                                         .take("slice")
                                         .copy(),
                                     "start",
-                                    new Data.ToPhi(3.0E9)
+                                    new Data.ToPhi(3.0e9)
                                 ),
                                 "len",
                                 new Data.ToPhi(1)

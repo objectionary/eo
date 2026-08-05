@@ -19,7 +19,6 @@ import org.junit.jupiter.params.provider.MethodSource;
  * Test case for {@link StUnhex}.
  * @since 0.29.0
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class StUnhexTest {
 
     @ParameterizedTest
@@ -174,7 +173,7 @@ final class StUnhexTest {
                 )
             ),
             XhtmlMatchers.hasXPath(
-                "//o[text()='\"A\\u0001\\u0007\u0434\u0440\u0443\u0433\"']"
+                "//o[text()='\"A\\u0001\\u0007друг\"']"
             )
         );
     }

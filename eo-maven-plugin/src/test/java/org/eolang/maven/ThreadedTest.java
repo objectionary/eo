@@ -6,7 +6,10 @@ package org.eolang.maven;
 
 import java.util.Collections;
 import java.util.List;
+import org.cactoos.Fallback;
 import org.cactoos.list.ListOf;
+import org.cactoos.scalar.ScalarWithFallback;
+import org.cactoos.scalar.Unchecked;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -17,29 +20,28 @@ import org.junit.jupiter.api.Test;
  */
 final class ThreadedTest {
 
-    /**
-     * Logs all exceptions.
-     * @checkstyle IllegalCatchCheck (25 lines)
-     * @checkstyle MethodBodyCommentsCheck (25 lines)
-     */
-    @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.AvoidThrowingRawExceptionTypes"})
     @Test
     void logsAllExceptionsInTheLogsOnFailure() {
         final List<String> logs = Collections.synchronizedList(new ListOf<>());
-        try {
-            new Threaded<>(
-                new ListOf<>(1, 2, 3),
-                input -> {
-                    throw new RuntimeException(String.format("Failure on: %d", input));
-                },
-                logs::add
-            ).total();
-        } catch (final Exception ignored) {
-            // Swallow the exception in order to do asserts
-        }
         MatcherAssert.assertThat(
-            "Logs don't have all failure messages, but they should",
-            logs,
+            "Logs dont have all failure messages, but they should",
+            new Unchecked<>(
+                new ScalarWithFallback<>(
+                    () -> {
+                        new Threaded<>(
+                            new ListOf<>(1, 2, 3),
+                            input -> {
+                                throw new IllegalStateException(
+                                    String.format("Failure on: %d", input)
+                                );
+                            },
+                            logs::add
+                        ).total();
+                        return logs;
+                    },
+                    new Fallback.From<>(Exception.class, ex -> logs)
+                )
+            ).value(),
             Matchers.hasItems(
                 Matchers.containsString("Failed to process \"1\""),
                 Matchers.containsString("Failed to process \"2\""),

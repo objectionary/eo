@@ -82,13 +82,6 @@
         </xsl:apply-templates>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:if test="$find='φ'">
-          <xsl:message terminate="yes">
-            <xsl:text>The </xsl:text>
-            <xsl:value-of select="$find"/>
-            <xsl:text> object is used, but absent in self or parents scope</xsl:text>
-          </xsl:message>
-        </xsl:if>
         <xsl:copy>
           <xsl:apply-templates select="node()|@*"/>
         </xsl:copy>
@@ -216,6 +209,38 @@
   <xsl:template match="node()|@*" mode="#all">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
+  </xsl:template>
+  <!--
+  A "φ" reference left unresolved by "with-package" above stays as a
+  literal "<o base='φ'>" in the transformed tree (nothing rewrites it).
+  Reporting this here, after the transform, rather than terminating the
+  whole XSL train mid-resolution (as this file used to), lets it surface
+  as a normal <errors> entry with the offending line, consistent with
+  every other diagnostic in this pipeline (see #6042).
+  -->
+  <xsl:template match="/object">
+    <xsl:variable name="transformed" as="item()*">
+      <xsl:apply-templates select="(node() except errors)|@*"/>
+    </xsl:variable>
+    <xsl:copy>
+      <xsl:sequence select="$transformed"/>
+      <xsl:variable name="errors" as="element()*">
+        <xsl:for-each select="$transformed//o[@base='φ']">
+          <error>
+            <xsl:attribute name="check" select="'build-fqns'"/>
+            <xsl:attribute name="line" select="if (@line) then @line else 0"/>
+            <xsl:attribute name="severity" select="'error'"/>
+            <xsl:text>The φ object is used, but absent in self or parents scope</xsl:text>
+          </error>
+        </xsl:for-each>
+      </xsl:variable>
+      <xsl:if test="not(empty($errors)) or exists(/object/errors)">
+        <errors>
+          <xsl:apply-templates select="/object/errors/error"/>
+          <xsl:copy-of select="$errors"/>
+        </errors>
+      </xsl:if>
     </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>

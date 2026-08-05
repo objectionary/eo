@@ -22,37 +22,37 @@
         item
         min
 
-  eq. ++> tests-minimum-of-array-is-first
+  eq. ++> can-take-a-minimum-of-one-item
+    minimum
+      * 42
+    42
+
+  eq. ++> can-take-a-minimum-that-is-first
     minimum *
       -2
       25
       12
     -2
 
-  eq. ++> tests-minimum-of-array-is-in-the-center
+  eq. ++> can-take-a-minimum-that-is-in-the-middle
     minimum *
       12
       -2
       25
     -2
 
-  eq. ++> tests-minimum-of-array-is-last
+  eq. ++> can-take-a-minimum-that-is-last
     minimum *
       12
       25
       -2
     -2
 
-  eq. ++> tests-minimum-of-empty-returns-provided-fallback
+  eq. ++> rejects-an-empty-list
     "recovered"
     minimum
       *
       "recovered" > [msg]
 
-  eq. ++> tests-minimum-of-one-item-array
-    minimum
-      * 42
-    42
-
-  minimum --> on-taking-minimum-from-empty-sequence
+  minimum --> stops-on-an-empty-list
     *

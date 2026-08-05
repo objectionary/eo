@@ -8,19 +8,8 @@ import com.jcabi.log.Logger;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.nio.file.Paths;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -30,7 +19,6 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
-import org.cactoos.scalar.Synced;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.eclipse.aether.RepositorySystem;
@@ -39,9 +27,8 @@ import org.slf4j.impl.StaticLoggerBinder;
 /**
  * Abstract Mojo for all others.
  * @since 0.1
- * @checkstyle ClassFanOutComplexityCheck (1000 lines)
  */
-@SuppressWarnings({"PMD.TooManyFields", "PMD.TooManyMethods"})
+@SuppressWarnings("PMD.TooManyFields")
 abstract class MjSafe extends AbstractMojo {
 
     /**
@@ -127,7 +114,6 @@ abstract class MjSafe extends AbstractMojo {
      * The path to a text file where paths of all added
      * .class (and maybe others) files are placed.
      * @since 0.11.0
-     * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (10 lines)
      */
     @Parameter(
@@ -201,7 +187,6 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * EO cache directory.
-     * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (10 lines)
      */
     @Parameter(property = "eo.cache")
@@ -229,7 +214,6 @@ abstract class MjSafe extends AbstractMojo {
      * If we are offline and not able to download anything from the internet.
      * @since 0.32.0
      * @checkstyle VisibilityModifierCheck (10 lines)
-     * @checkstyle MemberNameCheck (8 lines)
      */
     @Parameter(property = "eo.offline", required = true, defaultValue = "false")
     protected boolean offline;
@@ -237,7 +221,6 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * The Git tag to pull objects from, in objectionary.
      * @since 0.21.0
-     * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
     @Parameter(property = "eo.tag", required = true, defaultValue = "master")
@@ -383,7 +366,6 @@ abstract class MjSafe extends AbstractMojo {
      * Maven 3 only.
      * You can read more about that property
      * <a href="https://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html#Supported_Annotations">here</a>.
-     * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
     @Parameter(defaultValue = "${plugin}", readonly = true)
@@ -394,7 +376,7 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @Parameter(defaultValue = "${settings}", readonly = true)
-    protected Settings settings;
+    protected Settings settings = new Settings();
 
     /**
      * Placed tojos.
@@ -431,15 +413,11 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * Objectionary.
      * @since 0.50
-     * @checkstyle MemberNameCheck (5 lines)
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private Scalar<Objectionary> objectionary = new Synced<>(
-        new Sticky<>(
-            () -> new OyIndexed(
-                new OyCached(new OyRemote(this.hash, this.proxies()))
-            )
-        )
+    private Scalar<Objectionary> objectionary = new OyConfigured(
+        () -> this.hash,
+        () -> this.settings
     );
 
     /**
@@ -450,7 +428,6 @@ abstract class MjSafe extends AbstractMojo {
      *  construction and closing into each Mojo (or a dedicated owner)
      *  so MjSafe is not responsible for their lifecycle. Ensure that
      *  close() is still guaranteed even when exec() throws.
-     * @checkstyle VisibilityModifierCheck (5 lines)
      */
     private final TjsForeign tojos = new TjsForeign(
         () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat),
@@ -472,7 +449,6 @@ abstract class MjSafe extends AbstractMojo {
      * Execute it.
      * @throws MojoFailureException If fails during build
      * @checkstyle NoJavadocForOverriddenMethodsCheck (10 lines)
-     * @checkstyle CyclomaticComplexityCheck (70 lines)
      */
     @Override
     public final void execute() throws MojoFailureException {
@@ -486,7 +462,12 @@ abstract class MjSafe extends AbstractMojo {
         } else {
             try {
                 final long start = System.nanoTime();
-                this.execWithTimeout();
+                new Deadline(this, this.timeout, this.unrollExitError).spent(
+                    () -> {
+                        this.exec();
+                        return new Object();
+                    }
+                );
                 if (Logger.isDebugEnabled(this)) {
                     Logger.debug(
                         this,
@@ -495,19 +476,6 @@ abstract class MjSafe extends AbstractMojo {
                         System.nanoTime() - start
                     );
                 }
-            } catch (final TimeoutException ex) {
-                this.exitError(
-                    Logger.format(
-                        "Timeout %[ms]s for Mojo execution is reached",
-                        TimeUnit.SECONDS.toMillis(this.timeout)
-                    ),
-                    ex
-                );
-            } catch (final ExecutionException ex) {
-                this.exitError(
-                    String.format("'%s' execution failed", this),
-                    ex
-                );
             } finally {
                 if (this.foreign != null) {
                     MjSafe.closeTojos(this.tojos);
@@ -522,7 +490,6 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * Tojos to use, in my scope only.
      * @return Tojos to use
-     * @checkstyle AnonInnerLengthCheck (100 lines)
      */
     protected final TjsForeign scopedTojos() {
         return this.tojos;
@@ -531,7 +498,6 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * Tojos to use, in "compile" scope only.
      * @return Tojos to use
-     * @checkstyle AnonInnerLengthCheck (100 lines)
      */
     protected final TjsForeign compileTojos() {
         return new TjsForeign(
@@ -555,16 +521,7 @@ abstract class MjSafe extends AbstractMojo {
      * @return Scalar supplying the runtime dependency
      */
     Scalar<Dep> runtime() {
-        final Scalar<Dep> result;
-        final RtPom pom = new RtPom(this.project);
-        if (pom.isPresent()) {
-            result = pom;
-        } else if (this.resolveInCentral) {
-            result = new RtCentral();
-        } else {
-            result = new RtOffline();
-        }
-        return result;
+        return new RtChosen(this.project, this.resolveInCentral);
     }
 
     /**
@@ -604,64 +561,6 @@ abstract class MjSafe extends AbstractMojo {
     }
 
     /**
-     * Get active proxy from Maven settings.
-     * @return Proxy if any
-     */
-    Proxy[] proxies() {
-        return Optional.ofNullable(this.settings)
-            .map(Settings::getProxies)
-            .orElse(List.of())
-            .stream()
-            .filter(org.apache.maven.settings.Proxy::isActive).map(
-                p -> new Proxy(
-                    Proxy.Type.HTTP,
-                    new InetSocketAddress(p.getHost(), p.getPort())
-                )
-            ).toArray(Proxy[]::new);
-    }
-
-    /**
-     * Runs exec command with timeout if needed.
-     * @throws ExecutionException If unexpected exception happened during execution
-     * @throws TimeoutException If timeout limit reached
-     */
-    @SuppressWarnings("PMD.CloseResource")
-    private void execWithTimeout() throws ExecutionException, TimeoutException {
-        final ExecutorService service = Executors.newSingleThreadExecutor();
-        try {
-            service.submit(
-                () -> {
-                    this.exec();
-                    return new Object();
-                }
-            ).get(this.timeout, TimeUnit.SECONDS);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(
-                Logger.format(
-                    "Timeout %[ms]s thread was interrupted",
-                    TimeUnit.SECONDS.toMillis(this.timeout)
-                ),
-                ex
-            );
-        } finally {
-            boolean terminated = false;
-            service.shutdown();
-            while (!terminated) {
-                try {
-                    terminated = service.awaitTermination(60, TimeUnit.SECONDS);
-                    if (terminated) {
-                        service.shutdownNow();
-                    }
-                } catch (final InterruptedException ex) {
-                    service.shutdownNow();
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-    }
-
-    /**
      * Close it safely.
      * @param res The resource
      * @throws MojoFailureException If fails
@@ -672,68 +571,5 @@ abstract class MjSafe extends AbstractMojo {
         } catch (final IOException ex) {
             throw new MojoFailureException(ex);
         }
-    }
-
-    /**
-     * Make an error for the exit and throw it.
-     * @param msg The message
-     * @param exp Original problem
-     * @throws MojoFailureException For sure
-     */
-    private void exitError(final String msg, final Throwable exp)
-        throws MojoFailureException {
-        if (this.unrollExitError) {
-            this.logCauses(exp);
-        }
-        throw new MojoFailureException(msg, exp);
-    }
-
-    /**
-     * Log the deduplicated cause chain of the given exception.
-     * @param exp Original problem
-     */
-    private void logCauses(final Throwable exp) {
-        final List<String> causes = MjSafe.causes(exp);
-        for (int pos = 0; pos < causes.size(); ++pos) {
-            final String cause = causes.get(pos);
-            if (cause == null) {
-                causes.remove(pos);
-                break;
-            }
-        }
-        int idx = 0;
-        while (true) {
-            if (idx >= causes.size()) {
-                break;
-            }
-            final String cause = causes.get(idx);
-            for (int later = idx + 1; later < causes.size(); ++later) {
-                final String another = causes.get(later);
-                if (another != null && cause.contains(another)) {
-                    causes.remove(idx);
-                    idx -= 1;
-                    break;
-                }
-            }
-            idx += 1;
-        }
-        for (final String cause : new LinkedHashSet<>(causes)) {
-            Logger.error(this, cause);
-        }
-    }
-
-    /**
-     * Turn the exception into an array of causes.
-     * @param exp Original problem
-     * @return List of causes
-     */
-    private static List<String> causes(final Throwable exp) {
-        final List<String> causes = new LinkedList<>();
-        causes.add(exp.getMessage());
-        final Throwable cause = exp.getCause();
-        if (cause != null) {
-            causes.addAll(MjSafe.causes(cause));
-        }
-        return causes;
     }
 }

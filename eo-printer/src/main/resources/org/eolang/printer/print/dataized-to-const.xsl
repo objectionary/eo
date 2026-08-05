@@ -34,7 +34,7 @@
             <xsl:apply-templates select="."/>
           </xsl:for-each>
           <xsl:if test="eo:has-data($argument)">
-            <xsl:value-of select="$argument"/>
+            <xsl:value-of select="eo:read-data($argument)"/>
           </xsl:if>
         </o>
       </xsl:when>

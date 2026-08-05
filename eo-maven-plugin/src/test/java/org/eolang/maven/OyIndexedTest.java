@@ -7,6 +7,8 @@ package org.eolang.maven;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.util.Collections;
+import org.cactoos.io.InputOf;
+import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -50,7 +52,7 @@ final class OyIndexedTest {
             "OyIndexed with fake index must contain stdout object, but it doesn't",
             new OyIndexed(
                 new Objectionary.Fake(),
-                new ObjectsIndex(() -> Collections.singleton("io.stdout"))
+                new ObjectsIndex(() -> Collections.singleton("stdout"))
             ).contains(this.stdout()),
             Matchers.is(true)
         );
@@ -69,6 +71,38 @@ final class OyIndexedTest {
                 )
             ).contains(this.stdout()),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void checksIsDirectoryInDelegateIfExceptionHappensInIndex() throws IOException {
+        MatcherAssert.assertThat(
+            "OyIndexed with a broken index must ask the delegate about a directory, but it doesnt",
+            new OyIndexed(
+                new Objectionary.Fake(
+                    name -> new InputOf("[] > qwerty"),
+                    name -> true,
+                    name -> true
+                ),
+                new ObjectsIndex(
+                    () -> {
+                        throw new IllegalStateException("Fake exception");
+                    }
+                )
+            ).isDirectory("org.eolang.qwerty"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void listsChildrenFromFakeIndex() throws IOException {
+        MatcherAssert.assertThat(
+            "OyIndexed with fake index must list the children of the package, but it doesn't",
+            new OyIndexed(
+                new Objectionary.Fake(),
+                new ObjectsIndex(() -> new SetOf<>("tuple.each", "tuple.eachi"))
+            ).children("tuple"),
+            Matchers.containsInAnyOrder("tuple.each", "tuple.eachi")
         );
     }
 
@@ -96,6 +130,6 @@ final class OyIndexedTest {
      * Returns the stdout path.
      */
     private String stdout() {
-        return "io.stdout";
+        return "stdout";
     }
 }

@@ -39,8 +39,6 @@ final class CachePath implements Supplier<Path> {
      * @param base Base cache directory
      * @param semver Semver as part of absolute cache path
      * @param hash Git hash as part of absolute cache path
-     * @checkstyle ParameterNumberCheck (5 lines)
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     CachePath(final Path base, final String semver, final String hash) {
         this(base, semver, () -> hash, Paths.get("."));
@@ -52,7 +50,6 @@ final class CachePath implements Supplier<Path> {
      * @param semver Semver as part of absolute cache path
      * @param hash Git hash as part of absolute cache path
      * @param tail The last part of absolute cache path
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     CachePath(
         final Path base, final String semver, final String hash, final Path tail
@@ -66,7 +63,6 @@ final class CachePath implements Supplier<Path> {
      * @param semver Semver as part of absolute cache path
      * @param hash Git hash as part of absolute cache path
      * @param tail The last part of absolute cache path
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     CachePath(
         final Path base, final String semver, final Supplier<String> hash, final Path tail

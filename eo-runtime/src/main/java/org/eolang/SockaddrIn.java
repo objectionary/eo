@@ -13,7 +13,6 @@ import java.util.List;
  * The sockaddr_in structure.
  * @since 0.40.0
  * @checkstyle VisibilityModifierCheck (50 lines)
- * @checkstyle ParameterNumberCheck (50 lines)
  */
 public final class SockaddrIn extends Structure {
 
@@ -60,7 +59,6 @@ public final class SockaddrIn extends Structure {
      * @param port Port
      * @param addr Address
      * @param zero Zero 8 bytes
-     * @checkstyle ConstructorsCodeFreeCheck (15 lines)
      */
     public SockaddrIn(final short family, final short port, final int addr, final byte[] zero) {
         super();

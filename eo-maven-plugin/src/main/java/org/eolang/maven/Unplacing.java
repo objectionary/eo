@@ -21,7 +21,6 @@ import java.util.Set;
  * </p>
  *
  * @since 0.61.0
- * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
 final class Unplacing implements Step {
 

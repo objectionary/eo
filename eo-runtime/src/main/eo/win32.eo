@@ -22,6 +22,7 @@
   [] > @ /Q.win32.return
   8 > append
   256 > creat
+  1024 > exclusive
   -1 > failure
   2 > inet
   -1 > invalid
@@ -52,10 +53,46 @@
   02-02 > version
   32769 > wronly
 
-  os.is-windows.not.or ++> tests-returns-valid-win32-inet-addr-for-localhost
+  os.is-windows.not.or ++> can-return-an-inet-address-for-localhost
     eq.
       code.
         win32 *1
           "inet_addr"
           "127.0.0.1"
       16777343
+
+  --> stops-on-write-size-being-negative
+    os.is-windows.not.if > @
+      1.div 0
+      seq *
+        code.
+          win32 *1
+            "_write"
+            fd
+            "ab"
+            -1
+        true
+    code. > fd
+      win32 *1
+        "_open"
+        "NUL"
+        win32.wronly
+        0
+
+  --> stops-on-write-size-exceeding-buffer-length
+    os.is-windows.not.if > @
+      1.div 0
+      seq *
+        code.
+          win32 *1
+            "_write"
+            fd
+            "ab"
+            4096
+        true
+    code. > fd
+      win32 *1
+        "_open"
+        "NUL"
+        win32.wronly
+        0

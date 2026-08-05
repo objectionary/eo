@@ -23,18 +23,18 @@
     input
     0
 
-  eq. ++> tests-reads-all-bytes-and-returns-length
+  eq. ++> can-read-all-bytes-and-return-the-length
     Q.input.length
-      bytes.as-input 01-02-03-04-05-06-07-08-09-10
+      as-input 01-02-03-04-05-06-07-08-09-10
     10
 
-  eq. ++> tests-copies-all-bytes-to-output-and-returns-length
+  eq. ++> can-copy-all-bytes-to-an-output-and-return-the-length
     malloc.of
       10
       seq * > [m]
         Q.input.length
           Q.input.tee
-            bytes.as-input 01-02-03-04-05-06-07-08-09-10
+            as-input 01-02-03-04-05-06-07-08-09-10
             m.to-output
         m
     01-02-03-04-05-06-07-08-09-10

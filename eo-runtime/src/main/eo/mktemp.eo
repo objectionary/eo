@@ -27,9 +27,9 @@
                 if.
                   userprofile.eq empty
                   "C:\\Windows"
-                  getenv "USERPROFILE" >> userprofile!
-                getenv "TEMP" >> temp!
-              getenv "TMP" >> tmp!
+                  getenv "USERPROFILE" empty >> userprofile!
+                getenv "TEMP" empty >> temp!
+              getenv "TMP" empty >> tmp!
             if.
               tmpdir.eq empty
               if.
@@ -39,16 +39,16 @@
                   if.
                     tempdir.eq empty
                     "/tmp"
-                    getenv "TEMPDIR" >> tempdir!
+                    getenv "TEMPDIR" empty >> tempdir!
                   temp
                 tmp
-              getenv "TMPDIR" >> tmpdir!
+              getenv "TMPDIR" empty >> tmpdir!
           -- > empty
 
-  mktemp.tmpfile.exists ++> creates-tmpfile
+  mktemp.tmpfile.exists ++> can-create-a-temp-file
 
-  mktemp.exists ++> global-temp-dir-exists
+  mktemp.is-directory ++> can-point-at-a-global-temp-directory
 
-  mktemp.is-directory ++> global-temp-dir-is-directory
+  mktemp.exists ++> can-point-at-an-existing-global-temp-directory
 
-  mktemp.path.eq mktemp.path ++> returns-the-same-tmpdir
+  mktemp.path.eq mktemp.path ++> can-return-the-same-temp-directory

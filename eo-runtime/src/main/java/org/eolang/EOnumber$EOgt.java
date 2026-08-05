@@ -3,15 +3,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 /**
  * Number.gt object.
  * @since 0.39.0
+ * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "number.gt")
@@ -26,10 +23,10 @@ public final class EOnumber$EOgt extends PhDefault implements Atom {
     }
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public Phi lambda() {
-        final Double left = new Expect.Number(Expect.at(this, Phi.RHO)).it();
-        final Double right = new Expect.Number(Expect.at(this, "x")).it();
-        return new Data.ToPhi(left > right);
+        return new Data.ToPhi(
+            new Expect.Number(Expect.at(this, Phi.RHO)).it()
+                > new Expect.Number(Expect.at(this, "x")).it()
+        );
     }
 }

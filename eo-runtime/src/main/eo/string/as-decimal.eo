@@ -10,7 +10,7 @@
 
 [n] > as-decimal
   n.is-finite.not.if > @
-    trouble
+    T
       "Can't write a non-finite number as decimal"
     if.
       n.lt 0
@@ -37,53 +37,53 @@
           n.div 10
       | n
 
-  eq. ++> tests-negative-below-one-drops-sign
+  eq. ++> can-drop-the-sign-of-a-negative-below-one
     "0"
     string
       as-decimal -0.9
 
-  eq. ++> tests-negative-truncating-to-zero-drops-sign
+  eq. ++> can-drop-the-sign-of-a-negative-truncating-to-zero
     "0"
     string
       as-decimal -0.5
 
-  eq. ++> tests-truncates-negative-fraction
+  eq. ++> can-truncate-a-negative-fraction
     "-7"
     string
       as-decimal -7.89
 
-  eq. ++> tests-truncates-positive-fraction
+  eq. ++> can-truncate-a-positive-fraction
     "42"
     string
       as-decimal 42.987
 
-  eq. ++> tests-writes-multi-digit-number
+  eq. ++> can-write-a-multi-digit-number
     "31415"
     string
       as-decimal 31415
 
-  eq. ++> tests-writes-negative-number
+  eq. ++> can-write-a-negative-number
     "-42"
     string
       as-decimal -42
 
-  eq. ++> tests-writes-number-with-inner-zero
+  eq. ++> can-write-a-number-with-an-inner-zero
     "105"
     string
       as-decimal 105
 
-  eq. ++> tests-writes-single-digit
+  eq. ++> can-write-a-single-digit
     "7"
     string
       as-decimal 7
 
-  eq. ++> tests-writes-zero
+  eq. ++> can-write-zero
     "0"
     string
       as-decimal 0
 
-  as-decimal nan --> on-nan
+  as-decimal nan --> stops-on-nan
 
-  as-decimal ninf --> on-negative-infinity
+  as-decimal ninf --> stops-on-negative-infinity
 
-  as-decimal pinf --> on-positive-infinity
+  as-decimal pinf --> stops-on-positive-infinity

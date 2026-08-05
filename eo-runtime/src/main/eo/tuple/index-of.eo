@@ -18,21 +18,23 @@
           next.eq -1
           if.
             tup.head.eq wanted
-            tup.tail.length
+            tup.length.minus 1
             -1
           recidx tup.tail >> next!
     | list
 
-  eq. ++> tests-does-not-find-index-of
-    -1
+  eq. ++> can-find-the-index-of-a-non-symmetric-match
+    1
     index-of
       *
-        "qwerty"
-        2
-        3
-      7
+        10
+        20
+        30
+        40
+        50
+      20
 
-  eq. ++> tests-finds-index-of-string
+  eq. ++> can-find-the-index-of-a-string
     1
     index-of
       *
@@ -41,7 +43,7 @@
         3
       "qwerty"
 
-  eq. ++> tests-returns-first-index-of-element
+  eq. ++> can-return-the-first-index-of-an-element
     0
     index-of
       *
@@ -50,7 +52,7 @@
         -1
       -1
 
-  eq. ++> tests-returns-index-of
+  eq. ++> can-return-the-index-of-an-element
     1
     index-of
       *
@@ -58,3 +60,12 @@
         2
         3
       2
+
+  eq. ++> cannot-find-the-index-of-an-absent-item
+    -1
+    index-of
+      *
+        "qwerty"
+        2
+        3
+      7

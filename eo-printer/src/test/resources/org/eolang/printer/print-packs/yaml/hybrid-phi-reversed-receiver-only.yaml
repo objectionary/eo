@@ -12,7 +12,8 @@ penalties:
 origin: |
   +package org.eolang
 
-  [x] > dataized /Q.bytes
+  [] > dataized /Q.bytes
+    ? > x
 
     ++> tests-compares-string-with-negative-infinity
       not. > @
@@ -21,7 +22,8 @@ origin: |
 printed: |
   +package org.eolang
 
-  [x] > dataized /Q.bytes
+  [] > dataized /Q.bytes
+    ? > x
 
     not. ++> tests-compares-string-with-negative-infinity
       ninf.eq "друг"

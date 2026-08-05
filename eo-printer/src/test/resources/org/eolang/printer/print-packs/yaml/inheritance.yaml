@@ -2,6 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
+# The `stdout` and `sprintf` aliases are declared but never referenced, so
+# "restore-aliases" (#6184) drops both dead metas while the `+architect` meta,
+# which is not an alias, is kept untouched.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -35,8 +38,6 @@ origin: |
 
 printed: |
   +package sandbox
-  +alias org.eolang.io.stdout
-  +alias org.eolang.string.sprintf
   +architect yegor256@gmail.com
 
   [] > main

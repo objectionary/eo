@@ -16,7 +16,6 @@ import org.xembly.Xembler;
  * Test case for {@link LnFormation}.
  * @since 0.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class LnFormationTest {
 
     @Test
@@ -112,13 +111,23 @@ final class LnFormationTest {
     @Test
     void emitsAtomMarkerForSig() {
         final Emit emit = new Emit();
-        new LnFormation(new Span("[a b] > foo /number", 1))
+        new LnFormation(new Span("[] > foo /number", 1))
             .into(new Stack(), new Globals(), emit);
         emit.close();
         MatcherAssert.assertThat(
-            "an atom must emit <o name='λ' atom='<sig>'/> after the void params",
+            "an atom must emit <o name='λ' atom='<sig>'/> inside the formation",
             LnFormationTest.render(emit),
             XhtmlMatchers.hasXPath("/object/o[@name='foo']/o[@name='λ' and @atom='number']")
+        );
+    }
+
+    @Test
+    void rejectsHorizontalVoidsInAtom() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnFormation(new Span("[a b] > foo /number", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "an atom head carrying bracket parameters must be rejected per R-3.4.10"
         );
     }
 

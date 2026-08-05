@@ -37,7 +37,6 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @since 0.58
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public final class PhCoverage implements Phi {
 
     /** Locations already written in this JVM. */
@@ -61,7 +60,6 @@ public final class PhCoverage implements Phi {
      * @param location The fully qualified location of the object
      * @param lne Source line
      * @param position Source column
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     public PhCoverage(final Phi phi, final String location, final int lne, final int position) {
         this.origin = phi;

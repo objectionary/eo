@@ -8,11 +8,16 @@
   Here we go through all objects and add @loc attributes
   to all of them. The value of the attribute is a unique locator
   of the object.
+  The locator function takes the object only and reaches the
+  program through it, instead of taking the program as a second
+  argument. Saxon 13.0 binds the arguments of a multi-argument
+  function to the wrong values, once in a while, when one compiled
+  stylesheet transforms many documents in parallel threads (which is
+  what the "parse" goal does).
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_specials.xsl"/>
   <xsl:function name="eo:locator" as="xs:string">
-    <xsl:param name="program" as="node()"/>
     <xsl:param name="o" as="node()"/>
     <xsl:if test="name($o) != 'o'">
       <xsl:message terminate="yes">
@@ -22,13 +27,13 @@
     <xsl:variable name="ret">
       <xsl:choose>
         <xsl:when test="$o/parent::o">
-          <xsl:value-of select="eo:locator($program, $o/parent::o)"/>
+          <xsl:value-of select="eo:locator($o/parent::o)"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="$eo:program"/>
-          <xsl:if test="$program/metas/meta[head='package']">
+          <xsl:if test="root($o)/object/metas/meta[head='package']">
             <xsl:text>.</xsl:text>
-            <xsl:value-of select="$program/metas/meta[head='package']/tail"/>
+            <xsl:value-of select="root($o)/object/metas/meta[head='package']/tail"/>
           </xsl:if>
         </xsl:otherwise>
       </xsl:choose>
@@ -61,7 +66,7 @@
   </xsl:function>
   <xsl:template match="o">
     <xsl:copy>
-      <xsl:attribute name="loc" select="eo:locator(/object, .)"/>
+      <xsl:attribute name="loc" select="eo:locator(.)"/>
       <xsl:apply-templates select="node()|@* except @loc"/>
     </xsl:copy>
   </xsl:template>

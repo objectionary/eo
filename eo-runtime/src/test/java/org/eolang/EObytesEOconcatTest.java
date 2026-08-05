@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle PackageNameCheck (10 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 import org.hamcrest.MatcherAssert;
@@ -17,7 +13,6 @@ import org.junit.jupiter.api.Test;
 /**
  * Test case for {@link EObytes}.
  * @since 0.23
- * @checkstyle TypeNameCheck (4 lines)
  */
 final class EObytesEOconcatTest {
 

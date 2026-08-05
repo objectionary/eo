@@ -4,9 +4,9 @@
 # yamllint disable rule:line-length
 line: 2
 message: |-
-  [2:3] error: 'trailing garbage after expression'
+  [2:2] error: 'QQ is not a valid object name, root Q must be followed by a dot'
     QQ.io.stdout > @
-     ^
+    ^
 input: |
   [] > foo
     QQ.io.stdout > @

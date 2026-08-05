@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -26,7 +27,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.60
  */
 @ExtendWith(MktmpResolver.class)
-@SuppressWarnings("PMD.TooManyMethods")
 final class CacheTest {
 
     @Test
@@ -56,7 +56,7 @@ final class CacheTest {
         MatcherAssert.assertThat(
             "Cache file must be created and hash file must be created",
             Files.exists(base.resolve(tail))
-                && Files.exists(base.resolve(String.format("%s.sha256", tail))),
+                && Files.exists(base.resolve(CacheTest.marker(tail))),
             Matchers.is(true)
         );
     }
@@ -144,7 +144,7 @@ final class CacheTest {
         cache.apply(source, temp.resolve("out.txt"), tail);
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content",
-            Files.readString(base.resolve(String.format("%s.sha256", tail)), encoding),
+            Files.readString(base.resolve(CacheTest.marker(tail)), encoding),
             Matchers.equalTo(
                 Base64.getEncoder().encodeToString(
                     MessageDigest.getInstance("SHA-256").digest(msg.getBytes(encoding))
@@ -172,7 +172,7 @@ final class CacheTest {
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for large file",
             Files.readString(
-                cache.resolve(String.format("%s.sha256", tail)),
+                cache.resolve(CacheTest.marker(tail)),
                 StandardCharsets.UTF_8
             ),
             Matchers.equalTo(
@@ -198,7 +198,7 @@ final class CacheTest {
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for tiny file",
             Files.readString(
-                cache.resolve(String.format("%s.sha256", tail)),
+                cache.resolve(CacheTest.marker(tail)),
                 StandardCharsets.UTF_8
             ),
             Matchers.equalTo(CacheTest.hash(content))
@@ -224,11 +224,11 @@ final class CacheTest {
         );
         final MessageDigest instance = MessageDigest.getInstance("SHA-256");
         instance.update(
-            String.format("file1.txt\u0000%s", CacheTest.hash(first))
+            String.format("file1.txt\0%s", CacheTest.hash(first))
                 .getBytes(StandardCharsets.UTF_8)
         );
         instance.update(
-            String.format("file2.txt\u0000%s", CacheTest.hash(second))
+            String.format("file2.txt\0%s", CacheTest.hash(second))
                 .getBytes(StandardCharsets.UTF_8)
         );
         MatcherAssert.assertThat(
@@ -273,10 +273,139 @@ final class CacheTest {
         );
     }
 
+    @Test
+    void rejectsPayloadWriteFailure(@Mktmp final Path temp) throws IOException {
+        final CacheTest.Corrupted state = CacheTest.corrupted(temp);
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new Cache(state.base, p -> "v2").apply(state.source, state.target, state.tail),
+            "a failure while writing the payload must be reported, not swallowed"
+        );
+    }
+
+    @Test
+    void leavesMarkerUntouchedAfterPayloadWriteFailure(
+        @Mktmp final Path temp
+    ) throws IOException, NoSuchAlgorithmException {
+        final CacheTest.Corrupted state = CacheTest.corrupted(temp);
+        CacheTest.attemptDoomedWrite(state);
+        MatcherAssert.assertThat(
+            "the marker must not point at a payload that was never written",
+            Files.readString(
+                state.base.resolve(CacheTest.marker(state.tail)), StandardCharsets.UTF_8
+            ),
+            Matchers.equalTo(CacheTest.hash("v1"))
+        );
+    }
+
+    @Test
+    void recompilesAfterPayloadWriteFailureInsteadOfServingStaleEntry(
+        @Mktmp final Path temp
+    ) throws IOException {
+        final CacheTest.Corrupted state = CacheTest.corrupted(temp);
+        CacheTest.attemptDoomedWrite(state);
+        Files.delete(state.base.resolve(state.tail));
+        final AtomicInteger counter = new AtomicInteger(0);
+        new Cache(
+            state.base, p -> String.format("v2-%d", counter.incrementAndGet())
+        ).apply(state.source, state.target, state.tail);
+        MatcherAssert.assertThat(
+            "recovery after the failed write must recompile rather than serve a stale entry",
+            counter.get(),
+            Matchers.equalTo(1)
+        );
+    }
+
+    /**
+     * Build a cache with a valid "v1" entry, then move the source to "v2"
+     * and replace the cache payload path with a directory, so that a
+     * following write to it fails.
+     * @param temp Temporary directory
+     * @return The corrupted cache state
+     * @throws IOException If the fixture cannot be built
+     */
+    private static CacheTest.Corrupted corrupted(final Path temp) throws IOException {
+        final Path base = temp.resolve("cache-order");
+        Files.createDirectories(base);
+        final Path source = temp.resolve("order.eo");
+        Files.writeString(source, "v1", StandardCharsets.UTF_8);
+        final Path target = temp.resolve("order.xmir");
+        final Path tail = source.getFileName();
+        new Cache(base, p -> "v1").apply(source, target, tail);
+        Files.writeString(source, "v2", StandardCharsets.UTF_8);
+        final Path cached = base.resolve(tail);
+        Files.delete(cached);
+        Files.createDirectories(cached);
+        return new CacheTest.Corrupted(base, source, target, tail);
+    }
+
+    /**
+     * Attempt to write "v2" into the corrupted cache and swallow the
+     * expected failure, leaving the cache exactly as it was.
+     * @param state The corrupted cache state
+     */
+    private static void attemptDoomedWrite(final CacheTest.Corrupted state) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new Cache(state.base, p -> "v2").apply(state.source, state.target, state.tail)
+        );
+    }
+
     private static String hash(final String content) throws NoSuchAlgorithmException {
         return Base64.getEncoder().encodeToString(
             MessageDigest.getInstance("SHA-256")
                 .digest(content.getBytes(StandardCharsets.UTF_8))
         );
+    }
+
+    /**
+     * Marker file name for the given cached tail.
+     * @param tail Tail path in cache
+     * @return Marker file name, relative to the same directory as the tail
+     */
+    private static String marker(final Path tail) {
+        return String.format("%s.sha256", tail);
+    }
+
+    /**
+     * A cache whose payload path has been replaced with a directory, so
+     * that a following write to it fails.
+     * @since 0.60
+     */
+    private static final class Corrupted {
+
+        /**
+         * Base cache directory.
+         */
+        private final Path base;
+
+        /**
+         * Source file, already changed since the last valid cache entry.
+         */
+        private final Path source;
+
+        /**
+         * Target file to write into.
+         */
+        private final Path target;
+
+        /**
+         * Tail path in cache.
+         */
+        private final Path tail;
+
+        /**
+         * Ctor.
+         * @param base Base cache directory
+         * @param source Source file
+         * @param target Target file
+         * @param tail Tail path in cache
+         */
+        Corrupted(final Path base, final Path source, final Path target, final Path tail) {
+            this.base = base;
+            this.source = source;
+            this.target = target;
+            this.tail = tail;
+        }
     }
 }

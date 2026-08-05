@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link Stack}.
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.UnnecessaryLocalRule"})
 final class StackTest {
 
     @Test
@@ -29,11 +28,9 @@ final class StackTest {
 
     @Test
     void pushesTopLevelEntryAtIndentZero() {
-        final Stack stack = new Stack();
-        final Level entry = stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
         MatcherAssert.assertThat(
             "the first push must produce an entry whose parent is TOP_LEVEL",
-            entry.parent(),
+            new Stack().push(0, 1, Kind.BARE_FORMATION, Openness.OPEN).parent(),
             Matchers.equalTo(Kind.TOP_LEVEL)
         );
     }
@@ -91,10 +88,9 @@ final class StackTest {
     void readsParentKindFromEntryBelow() {
         final Stack stack = new Stack();
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
-        final Level child = stack.push(2, 2, Kind.HEAD, Openness.OPEN);
         MatcherAssert.assertThat(
             "a pushed child must read parentKind from the entry directly below",
-            child.parent(),
+            stack.push(2, 2, Kind.HEAD, Openness.OPEN).parent(),
             Matchers.equalTo(Kind.BARE_FORMATION)
         );
     }
@@ -102,12 +98,10 @@ final class StackTest {
     @Test
     void propagatesAtomFlagToChildren() {
         final Stack stack = new Stack();
-        final Level parent = stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
-        parent.mark();
-        final Level child = stack.push(2, 2, Kind.HEAD, Openness.OPEN);
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN).mark();
         MatcherAssert.assertThat(
             "a child of an atom must see parentAtom() == true",
-            child.patom(),
+            stack.push(2, 2, Kind.HEAD, Openness.OPEN).patom(),
             Matchers.is(true)
         );
     }
@@ -173,10 +167,9 @@ final class StackTest {
         final Stack stack = new Stack();
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
         stack.push(2, 2, Kind.HEAD, Openness.OPEN);
-        final Level fresh = stack.replace(5, Kind.BARE_FORMATION, Openness.OPEN);
         MatcherAssert.assertThat(
             "the replacement entry must occupy the indent of the entry it replaced",
-            fresh.indent(),
+            stack.replace(5, Kind.BARE_FORMATION, Openness.OPEN).indent(),
             Matchers.equalTo(2)
         );
     }

@@ -13,13 +13,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * A package object, coming from {@link Phi}.
  * @since 0.22
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class PhPackage implements Phi {
 
     /**
      * Global package.
-     * @checkstyle VisibilityModifierCheck (3 lines)
-     * @checkstyle StaticVariableNameCheck (3 lines)
      */
     static final String GLOBAL = "Φ";
 

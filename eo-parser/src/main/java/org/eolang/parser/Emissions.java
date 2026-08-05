@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Shared {@link Value}-to-XMIR rendering helpers.
@@ -18,16 +19,27 @@ import java.util.List;
  * §9.4.2).</p>
  *
  * @since 0.1
- * @checkstyle CyclomaticComplexityCheck (610 lines)
- * @checkstyle BooleanExpressionComplexityCheck (600 lines)
  */
-@SuppressWarnings({"PMD.UnnecessaryLocalRule", "PMD.TooManyMethods", "PMD.CognitiveComplexity"})
 final class Emissions {
 
     /**
      * Maximum value of a {@code \NNN} octal byte escape (0o377, one byte).
      */
     private static final int MAX_OCTAL_BYTE = 0xFF;
+
+    /**
+     * Kinds of head value that a {@code .method} chain may follow.
+     */
+    private static final Set<Value.Kind> CHAINABLE = Set.of(
+        Value.Kind.IDENTIFIER,
+        Value.Kind.ROOT,
+        Value.Kind.SELF,
+        Value.Kind.GROUP,
+        Value.Kind.INTEGER,
+        Value.Kind.FLOAT,
+        Value.Kind.STRING,
+        Value.Kind.BYTES
+    );
 
     /**
      * No instances.
@@ -125,35 +137,9 @@ final class Emissions {
             emit.set(value.raw());
             emit.close();
         } else if (value.kind() == Value.Kind.STRING) {
-            emit.object(name, "Φ.string", line, value.pos());
-            final String unescaped;
-            try {
-                unescaped = Emissions.unescape(value.raw());
-            } catch (final NumberFormatException ex) {
-                final ParseError error = new ParseError(
-                    line, value.pos(), "invalid unicode or octal escape in string literal"
-                );
-                error.initCause(ex);
-                throw error;
-            }
-            Emissions.bytesCarrier(
-                emit, line, value.pos(),
-                new Hex(unescaped).asString()
-            );
-        } else if (value.kind() == Value.Kind.STAR) {
-            emit.object(name, "Φ.tuple", line, value.pos());
-            emit.star();
-        } else if (value.kind() == Value.Kind.ROOT) {
-            emit.object(name, Emissions.rootBase(value.raw()), line, value.pos());
-        } else if (value.kind() == Value.Kind.SELF) {
-            emit.object(name, null, line, value.pos());
-            emit.self();
-        } else if (value.kind() == Value.Kind.TERM) {
-            emit.object(name, "⊥", line, value.pos());
-        } else if (value.kind() == Value.Kind.GROUP) {
-            Emissions.group(emit, name, value, line);
+            Emissions.string(emit, name, value, line);
         } else {
-            emit.object(name, value.raw(), line, value.pos());
+            Emissions.openBase(emit, name, value, line);
         }
     }
 
@@ -221,14 +207,7 @@ final class Emissions {
      * @return True if chain may follow
      */
     static boolean chainable(final Value head) {
-        return head.kind() == Value.Kind.IDENTIFIER
-            || head.kind() == Value.Kind.ROOT
-            || head.kind() == Value.Kind.SELF
-            || head.kind() == Value.Kind.GROUP
-            || head.kind() == Value.Kind.INTEGER
-            || head.kind() == Value.Kind.FLOAT
-            || head.kind() == Value.Kind.STRING
-            || head.kind() == Value.Kind.BYTES;
+        return Emissions.CHAINABLE.contains(head.kind());
     }
 
     /**
@@ -285,6 +264,36 @@ final class Emissions {
     }
 
     /**
+     * Open the {@code <o>} for a value that carries no data of its own —
+     * a star, a root or self token, a term, a group, or a plain base
+     * reference — where the kind alone picks the {@code base}.
+     * @param emit Emitter
+     * @param name Name attribute (or {@code null})
+     * @param value The value
+     * @param line Source line
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static void openBase(
+        final Emit emit, final String name, final Value value, final int line
+    ) {
+        if (value.kind() == Value.Kind.STAR) {
+            emit.object(name, "Φ.tuple", line, value.pos());
+            emit.star();
+        } else if (value.kind() == Value.Kind.ROOT) {
+            emit.object(name, Emissions.rootBase(value.raw()), line, value.pos());
+        } else if (value.kind() == Value.Kind.SELF) {
+            emit.object(name, null, line, value.pos());
+            emit.self();
+        } else if (value.kind() == Value.Kind.TERM) {
+            emit.object(name, "⊥", line, value.pos());
+        } else if (value.kind() == Value.Kind.GROUP) {
+            Emissions.group(emit, name, value, line);
+        } else {
+            emit.object(name, value.raw(), line, value.pos());
+        }
+    }
+
+    /**
      * Emit a {@code HEX} literal as {@code Φ.number}, rejecting values that
      * fit a signed 64-bit {@code long} but no longer round-trip exactly
      * through an IEEE-754 double (the sibling {@code number()} check, for
@@ -327,6 +336,36 @@ final class Emissions {
         Emissions.bytesCarrier(
             emit, line, value.pos(),
             new Hex(parsed).asString()
+        );
+    }
+
+    /**
+     * Emit a STRING literal — the object plus a bytes carrier holding the
+     * UTF-8 bytes of the unescaped text. A malformed escape inside the
+     * literal is reported at the literal's own position.
+     * @param emit Emitter
+     * @param name Name attribute (or {@code null})
+     * @param value String value
+     * @param line Source line
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static void string(
+        final Emit emit, final String name, final Value value, final int line
+    ) {
+        emit.object(name, "Φ.string", line, value.pos());
+        final String unescaped;
+        try {
+            unescaped = Emissions.unescape(value.raw());
+        } catch (final NumberFormatException ex) {
+            final ParseError error = new ParseError(
+                line, value.pos(), "invalid unicode or octal escape in string literal"
+            );
+            error.initCause(ex);
+            throw error;
+        }
+        Emissions.bytesCarrier(
+            emit, line, value.pos(),
+            new Hex(unescaped).asString()
         );
     }
 
@@ -376,7 +415,15 @@ final class Emissions {
         final Emit emit, final String name, final Value value, final int line
     ) {
         final double parsed = Double.parseDouble(value.raw());
-        if (!Double.isFinite(parsed) || Emissions.overPrecise(value.raw(), parsed)) {
+        if (!Double.isFinite(parsed)) {
+            throw new ParseError(
+                line, value.pos(),
+                String.format(
+                    "%s is out of the finite range of a double", value.raw()
+                )
+            );
+        }
+        if (Emissions.overPrecise(value.raw(), parsed)) {
             final String canonical;
             if (value.kind() == Value.Kind.INTEGER) {
                 canonical = Emissions.canonicalInteger(parsed);
@@ -564,7 +611,7 @@ final class Emissions {
 
     /**
      * Resolve a single-character escape sequence (e.g. {@code \n},
-     * {@code \t}). Unknown sequences are passed through verbatim.
+     * {@code \t}). An unrecognised sequence is a lexical error (R-9.7.3).
      * @param head Backslash character (always {@code '\\'})
      * @param next The character after the backslash
      * @return The decoded character(s)
@@ -584,7 +631,9 @@ final class Emissions {
         } else if (next == '"' || next == '\'' || next == '\\') {
             decoded = String.valueOf(next);
         } else {
-            decoded = new String(new char[]{head, next});
+            throw new NumberFormatException(
+                String.format("unrecognised escape sequence '%c%c'", head, next)
+            );
         }
         return decoded;
     }
@@ -621,19 +670,12 @@ final class Emissions {
      */
     private static int topLevelInlinePhi(final String body) {
         int depth = 0;
-        boolean instr = false;
         int found = -1;
         int idx = 0;
         while (idx < body.length() - 2 && found < 0) {
             final char glyph = body.charAt(idx);
-            if (instr) {
-                if (glyph == '\\' && idx + 1 < body.length()) {
-                    idx = idx + 1;
-                } else if (glyph == '"') {
-                    instr = false;
-                }
-            } else if (glyph == '"') {
-                instr = true;
+            if (glyph == '"') {
+                idx = Tokens.closingQuote(body, idx);
             } else if (glyph == '(') {
                 depth = depth + 1;
             } else if (glyph == ')') {
@@ -677,7 +719,7 @@ final class Emissions {
         int pcol = column + bracket + 1;
         for (final String param : Emissions.splitParams(params)) {
             final String mapped;
-            if (param.equals("@")) {
+            if ("@".equals(param)) {
                 mapped = "φ";
             } else {
                 mapped = param;

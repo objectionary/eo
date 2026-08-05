@@ -25,17 +25,17 @@ final class Diff {
     /**
      * ANSI escape that resets all coloring.
      */
-    private static final String RESET = "\u001b[0m";
+    private static final String RESET = "\033[0m";
 
     /**
      * ANSI escape that turns the text red (used for deletions).
      */
-    private static final String RED = "\u001b[31m";
+    private static final String RED = "\033[31m";
 
     /**
      * ANSI escape that turns the text green (used for additions).
      */
-    private static final String GREEN = "\u001b[32m";
+    private static final String GREEN = "\033[32m";
 
     /**
      * The text before the change.

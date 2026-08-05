@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link Suffix}.
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.UnnecessaryLocalRule"})
 final class SuffixTest {
 
     @Test
@@ -36,10 +35,9 @@ final class SuffixTest {
 
     @Test
     void parsesExplicitName() {
-        final Suffix suffix = new Suffix(" > foo", new Span("[] > foo", 1), 2);
         MatcherAssert.assertThat(
             "`> name` must yield Form.NAME with the parsed identifier",
-            suffix.form(),
+            new Suffix(" > foo", new Span("[] > foo", 1), 2).form(),
             Matchers.equalTo(Suffix.Form.NAME)
         );
     }
@@ -279,6 +277,30 @@ final class SuffixTest {
                 new Span("[] > foo /", 1), 2
             ),
             "a bare `/` with no signature must be rejected"
+        );
+    }
+
+    @Test
+    void rejectsAtomSignatureRightAfterSkippedSpace() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix(
+                " > /org.eolang.foo",
+                new Span("[] > /org.eolang.foo", 1), 2
+            ),
+            "`> /sig` with no name between `>` and `/` must be rejected"
+        );
+    }
+
+    @Test
+    void rejectsConstMarkerRightAfterSkippedSpace() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Suffix(
+                " > !",
+                new Span("[] > !", 1), 2
+            ),
+            "`> !` with no name between `>` and `!` must be rejected"
         );
     }
 

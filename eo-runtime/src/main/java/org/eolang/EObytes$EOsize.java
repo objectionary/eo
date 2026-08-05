@@ -3,20 +3,24 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 /**
  * BYTES.SIZE.
  * @since 0.1.0
+ * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bytes.size")
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EObytes$EOsize extends PhDefault implements Atom {
+
+    /**
+     * Ctor.
+     */
+    public EObytes$EOsize() {
+        // nothing
+    }
 
     @Override
 

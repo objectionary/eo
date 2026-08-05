@@ -54,44 +54,44 @@
               mantissa.right
                 1075.minus exp
 
-  eq. ++> tests-as-i64-converts-fraction-below-one-to-zero
+  eq. ++> can-convert-a-fraction-below-one-to-zero
     0.5.as-i64.as-bytes
     00-00-00-00-00-00-00-00
 
-  eq. ++> tests-as-i64-converts-large-number-with-left-shift
+  eq. ++> can-convert-a-large-number-with-a-left-shift
     1000000000000000000.as-i64.as-bytes
     0D-E0-B6-B3-A7-64-00-00
 
-  eq. ++> tests-as-i64-converts-long-min-boundary
-    -9.223372036854776e18.as-i64.as-bytes
-    80-00-00-00-00-00-00-00
-
-  eq. ++> tests-as-i64-converts-negative-zero-to-zero
+  eq. ++> can-convert-negative-zero-to-zero
     -0.as-i64.as-bytes
     00-00-00-00-00-00-00-00
 
-  eq. ++> tests-as-i64-truncates-negative-toward-zero
-    -3.7.as-i64.as-bytes
-    FF-FF-FF-FF-FF-FF-FF-FD
+  eq. ++> can-convert-the-long-minimum-boundary
+    -9.223372036854776e18.as-i64.as-bytes
+    80-00-00-00-00-00-00-00
 
-  eq. ++> tests-as-i64-truncates-positive-toward-zero
-    3.7.as-i64.as-bytes
-    00-00-00-00-00-00-00-03
-
-  eq. ++> tests-converts-the-origin-number-to-i64
+  eq. ++> can-convert-the-origin-number
     as-bytes.
       as-i64 42
     00-00-00-00-00-00-00-2A
 
-  eq. ++> tests-out-of-range-as-i64-returns-provided-fallback
+  eq. ++> can-truncate-a-negative-toward-zero
+    -3.7.as-i64.as-bytes
+    FF-FF-FF-FF-FF-FF-FF-FD
+
+  eq. ++> can-truncate-a-positive-toward-zero
+    3.7.as-i64.as-bytes
+    00-00-00-00-00-00-00-03
+
+  eq. ++> rejects-an-out-of-range-number
     "recovered"
     1.0e30.as-i64
       "recovered" > [message]
 
-  1.0e30.as-i64 --> on-converting-huge-number-to-i64
+  1.0e30.as-i64 --> stops-on-converting-a-huge-number
 
-  9.223372036854776e18.as-i64 --> on-converting-long-max-boundary-to-i64
+  nan.as-i64 --> stops-on-converting-nan
 
-  nan.as-i64 --> on-converting-nan-to-i64
+  pinf.as-i64 --> stops-on-converting-positive-infinity
 
-  pinf.as-i64 --> on-converting-positive-infinity-to-i64
+  9.223372036854776e18.as-i64 --> stops-on-converting-the-long-maximum-boundary

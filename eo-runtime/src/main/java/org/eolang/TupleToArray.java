@@ -8,7 +8,7 @@ package org.eolang;
 import java.util.function.Supplier;
 
 /**
- * Convert {@link EO_org.EO_eolang.EOtuple} of arguments to Java array.
+ * Convert {@code EOtuple} of arguments to Java array.
  * @since 0.40.0
  */
 public final class TupleToArray implements Supplier<Phi[]> {

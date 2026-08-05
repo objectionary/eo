@@ -43,7 +43,6 @@ import org.cactoos.text.UncheckedText;
  * @since 0.28.12
  */
 @SuppressWarnings({
-    "PMD.TooManyMethods",
     "JTCOP.RuleAllTestsHaveProductionClass",
     "JTCOP.RuleCorrectTestName"
 })
@@ -100,7 +99,6 @@ final class FakeMaven {
      * @param params Mojos params
      * @param current Current program number
      * @param defaults Use default attributes if they are not set
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     private FakeMaven(
         final Path workspace,
@@ -158,8 +156,6 @@ final class FakeMaven {
      * @param <T> Template for descendants of Mojo
      * @return Workspace after executing Mojo
      * @throws java.io.IOException If some problem with filesystem has happened.
-     * @checkstyle ExecutableStatementCountCheck (100 lines)
-     * @checkstyle JavaNCSSCheck (100 lines)
      */
     <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {
@@ -169,7 +165,9 @@ final class FakeMaven {
             );
             this.params.putIfAbsent("foreign", this.foreignPath().toFile());
             this.params.putIfAbsent("foreignFormat", "csv");
-            this.params.putIfAbsent("project", new MavenProjectStub());
+            final MavenProjectStub stub = new MavenProjectStub();
+            stub.setCompileSourceRoots(new ArrayList<>(0));
+            this.params.putIfAbsent("project", stub);
             this.params.putIfAbsent("transpiledFormat", "csv");
             this.params.putIfAbsent("skipZeroVersions", true);
             this.params.putIfAbsent("cacheEnabled", true);
@@ -198,6 +196,7 @@ final class FakeMaven {
             this.params.putIfAbsent("rewriteBinaries", true);
             this.params.putIfAbsent("offline", false);
             this.params.putIfAbsent("classesDir", this.classesPath().toFile());
+            this.params.putIfAbsent("superclass", "PhDefault");
         }
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {

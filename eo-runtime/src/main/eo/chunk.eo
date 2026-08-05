@@ -48,13 +48,18 @@
     seq *
       write 0 object
       get
-  [offset length] > read /Q.bytes
+  [] > read /Q.bytes
+    ? > offset /Q.number
+    ? > length /Q.number
     ? > cant-read /{Q.string}
-  [size] > resized /Q.chunk
+  [] > resized /Q.chunk
+    ? > capacity /Q.number
   [] > size /Q.number
-  [offset data] > write /Q.bool
+  [] > write /Q.bool
+    ? > offset /Q.number
+    ? > data
 
-  eq. ++> tests-chunk-gets-what-was-put
+  eq. ++> can-get-what-was-put
     malloc.of
       8
       seq * > [c]
@@ -62,13 +67,13 @@
         c.get
     42.as-bytes
 
-  eq. ++> tests-chunk-knows-its-size
+  eq. ++> can-know-its-size
     malloc.of
       3
       c.size > [c]
     3
 
-  eq. ++> tests-chunk-reads-a-slice-of-what-was-written
+  eq. ++> can-read-a-slice-of-what-was-written
     malloc.of
       5
       seq * > [c]

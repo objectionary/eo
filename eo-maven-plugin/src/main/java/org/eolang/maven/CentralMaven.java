@@ -88,7 +88,6 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
     /**
      * Standalone constructor with a custom local repository.
      * @param local Path to the local Maven repository
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     CentralMaven(final Path local) {
         this(new RepositorySystemSupplier().get(), local);
@@ -99,7 +98,6 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
      * Falls back to a fresh standalone system when {@code sys} is {@code null},
      * which happens in tests that run without Maven injection.
      * @param sys Repository system, or {@code null} to build one automatically
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     CentralMaven(final RepositorySystem sys) {
         this(CentralMaven.nonNull(sys), CentralMaven.LOCAL);
@@ -109,7 +107,6 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
      * Private standalone constructor that builds the session from an already-created system.
      * @param sys Repository system
      * @param local Local repository path
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     private CentralMaven(final RepositorySystem sys, final Path local) {
         this(sys, CentralMaven.standaloneSession(sys, local));
@@ -119,7 +116,6 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
      * Private constructor that wires the standalone remotes.
      * @param sys Repository system
      * @param sess Repository session
-     * @checkstyle ConstructorsCodeFreeCheck (10 lines)
      */
     private CentralMaven(final RepositorySystem sys, final DefaultRepositorySystemSession sess) {
         this(
@@ -207,13 +203,6 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
                 dep.getGroupId(), dep.getArtifactId(), classifier, dep.getVersion(), dest
             );
         }
-    }
-
-    @Override
-    public BiConsumer<Dependency, Path> andThen(
-        final BiConsumer<? super Dependency, ? super Path> after
-    ) {
-        throw new UnsupportedOperationException("not implemented #andThen()");
     }
 
     /**

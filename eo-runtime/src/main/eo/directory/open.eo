@@ -12,6 +12,6 @@
     "The file %s is a directory, can't open for I/O operations".printf
       * d
 
-  mktemp.open --> on-opening-directory
+  mktemp.open --> stops-on-opening-a-directory
     "w"
     true > [x]

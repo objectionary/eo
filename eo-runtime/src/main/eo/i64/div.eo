@@ -23,11 +23,13 @@
         80-00-00-00-00-00-00-00
       as-bytes.
         plus.
-          i64 quotient.not
+          i64
+            not.
+              looped 63 00-00-00-00-00-00-00-00 00-00-00-00-00-00-00-00 >> quotient
           i64 00-00-00-00-00-00-00-01
       i64 quotient
-  00-00-00-00-00-00-00-01.left i > [i] > bit
-  [index remainder quot] > looped
+  00-00-00-00-00-00-00-01.left i > [i] >> bit
+  [index remainder quot] >> looped
     if. > @
       index.lt 0
       quot
@@ -59,68 +61,64 @@
                 index
               00-00-00-00-00-00-00-01
           quot
-  if. > [b] > magnitude
-    eq.
-      b.and 80-00-00-00-00-00-00-00
-      80-00-00-00-00-00-00-00
-    as-bytes.
-      plus.
-        i64 b.not
-        i64 00-00-00-00-00-00-00-01
-    b
-  looped > quotient
-    63
-    00-00-00-00-00-00-00-00
-    00-00-00-00-00-00-00-00
-  as-bytes. > subtrahend
+  as-bytes. >> subtrahend
     plus.
       i64
         not.
-          magnitude x.as-bytes
+          if. > [b] >> magnitude
+            eq.
+              b.and 80-00-00-00-00-00-00-00
+              80-00-00-00-00-00-00-00
+            as-bytes.
+              plus.
+                i64 b.not
+                i64 00-00-00-00-00-00-00-01
+            b
+          | x.as-bytes
       i64 00-00-00-00-00-00-00-01
 
-  ++> tests-i64-div-by-i64-one
+  eq. ++> can-divide-a-large-dividend
+    4611686018427387904.as-i64.div 2.as-i64
+    2305843009213693952.as-i64
+
+  ++> can-divide-by-one
     eq. > @
       dividend.div 1.as-i64
       dividend
     -235.as-i64 > dividend
 
-  eq. ++> tests-i64-div-by-zero-returns-provided-fallback
-    "recovered"
-    2.as-i64.div
-      0.as-i64
-      "recovered" > [message]
-
-  lt. ++> tests-i64-div-less-than-i64-one
+  lt. ++> can-divide-into-less-than-one
     1.as-i64.div 5.as-i64
     1.as-i64
 
-  eq. ++> tests-i64-div-min-by-minus-one-wraps
-    div.
-      i64 80-00-00-00-00-00-00-00
-      -1.as-i64
-    i64 80-00-00-00-00-00-00-00
-
-  eq. ++> tests-i64-div-min-by-one-is-min
+  eq. ++> can-divide-min-by-one
     div.
       i64 80-00-00-00-00-00-00-00
       1.as-i64
     i64 80-00-00-00-00-00-00-00
 
-  eq. ++> tests-i64-div-of-large-dividend
-    4611686018427387904.as-i64.div 2.as-i64
-    2305843009213693952.as-i64
-
-  eq. ++> tests-i64-div-of-two-negatives
+  eq. ++> can-divide-two-negatives
     -13.as-i64.div -5.as-i64
     2.as-i64
 
-  eq. ++> tests-i64-div-truncates-toward-zero
-    -13.as-i64.div 5.as-i64
-    -2.as-i64
-
-  eq. ++> tests-i64-div-with-remainder
+  eq. ++> can-divide-with-a-remainder
     13.as-i64.div -5.as-i64
     -2.as-i64
 
-  2.as-i64.div 0.as-i64 --> on-division-i64-by-i64-zero
+  eq. ++> can-truncate-toward-zero
+    -13.as-i64.div 5.as-i64
+    -2.as-i64
+
+  eq. ++> can-wrap-min-divided-by-minus-one
+    div.
+      i64 80-00-00-00-00-00-00-00
+      -1.as-i64
+    i64 80-00-00-00-00-00-00-00
+
+  eq. ++> rejects-division-by-zero
+    "recovered"
+    2.as-i64.div
+      0.as-i64
+      "recovered" > [message]
+
+  2.as-i64.div 0.as-i64 --> stops-on-division-by-zero

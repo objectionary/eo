@@ -33,11 +33,11 @@
     number length
     size
 
-  contains ++> tests-text-contains-substring
+  contains ++> can-contain-a-substring
     "Hello, world!"
     "o, wo"
 
-  not. ++> tests-text-does-not-contain-substring
+  not. ++> cannot-contain-an-absent-substring
     contains
       "Hello, world!"
       "Hey"

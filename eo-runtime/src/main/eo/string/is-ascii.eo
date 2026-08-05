@@ -12,12 +12,12 @@
     regex "/^[\\x00-\\x7F]+$/"
     text
 
-  not. ++> tests-checks-if-emoji-is-not-ascii
-    is-ascii "🌵"
+  is-ascii "123" ++> can-be-ascii-when-digits
 
-  not. ++> tests-checks-if-empty-text-is-not-ascii
+  is-ascii "H311oW" ++> can-be-ascii-when-plain-text
+
+  not. ++> cannot-be-ascii-when-empty
     is-ascii ""
 
-  is-ascii "123" ++> tests-checks-if-string-of-numbers-is-ascii
-
-  is-ascii "H311oW" ++> tests-checks-if-text-is-ascii
+  not. ++> cannot-be-ascii-with-an-emoji
+    is-ascii "🌵"

@@ -12,4 +12,4 @@
 [b] > as-bytes
   b > @
 
-  20-1F-EE.as-bytes.eq 20-1F-EE ++> tests-bytes-as-bytes-is-itself
+  20-1F-EE.as-bytes.eq 20-1F-EE ++> can-return-itself

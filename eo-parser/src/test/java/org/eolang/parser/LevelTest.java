@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link Level}.
  * @since 0.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class LevelTest {
 
     @Test

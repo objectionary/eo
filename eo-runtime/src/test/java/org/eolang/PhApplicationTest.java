@@ -15,7 +15,6 @@ import org.junit.jupiter.params.provider.ValueSource;
  * Test case for {@link PhApplication}.
  * @since 0.16
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class PhApplicationTest {
 
     @Test
@@ -231,10 +230,13 @@ final class PhApplicationTest {
 
         /**
          * Ctor.
-         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         Dummy() {
-            this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));
+            super(
+                new Attrs(
+                    new Attr("φ", new AtComposite(new PhDefault(), self -> new Data.ToPhi(1L)))
+                )
+            );
         }
     }
 }

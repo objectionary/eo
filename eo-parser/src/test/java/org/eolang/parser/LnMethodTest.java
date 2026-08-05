@@ -16,7 +16,6 @@ import org.xembly.Xembler;
  * Test case for {@link LnMethod}.
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 final class LnMethodTest {
 
     @Test
@@ -164,6 +163,37 @@ final class LnMethodTest {
             "horizontal args on a .method line must nest inside the link's <o>",
             LnMethodTest.render(emit),
             XhtmlMatchers.hasXPath("/object/o[@base='.bar']/o[@base='Φ.number']")
+        );
+    }
+
+    @Test
+    void rejectsAttributeWithoutPrecedingBlankLine() {
+        final Emit emit = new Emit();
+        final Stack stack = new Stack();
+        final Globals globals = new Globals();
+        new LnApplication(new Span("foo", 1)).into(stack, globals, emit);
+        new LnMethod(new Span(".bar +> t", 2)).into(stack, globals, emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `+>` test attribute on a method-continuation line with no blank line above must emit an R-6.5.3 error",
+            LnMethodTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/errors/error[@line='2']")
+        );
+    }
+
+    @Test
+    void acceptsAttributeAfterBlankLine() {
+        final Emit emit = new Emit();
+        final Stack stack = new Stack();
+        final Globals globals = new Globals();
+        new LnApplication(new Span("foo", 1)).into(stack, globals, emit);
+        globals.blank();
+        new LnMethod(new Span(".bar +> t", 2)).into(stack, globals, emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `+>` test attribute on a method-continuation line preceded by one blank line must not emit any error",
+            LnMethodTest.render(emit),
+            Matchers.not(XhtmlMatchers.hasXPath("/object/errors"))
         );
     }
 

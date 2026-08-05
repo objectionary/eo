@@ -17,13 +17,13 @@
       "Can't convert non 8 length bytes to u64, bytes are %x".printf
         * b
 
-  eq. ++> tests-bytes-converts-to-u64-and-back
+  eq. ++> can-convert-bytes-to-u64-and-back
     00-00-00-00-00-00-00-33.as-u64.as-bytes
     00-00-00-00-00-00-00-33
 
-  eq. ++> tests-wrong-size-as-u64-returns-provided-fallback
+  eq. ++> rejects-bytes-of-wrong-size
     "recovered"
     01-01-01-01.as-u64
       "recovered" > [message]
 
-  01-01-01-01.as-u64 --> on-bytes-of-wrong-size-as-u64
+  01-01-01-01.as-u64 --> stops-on-bytes-of-wrong-size

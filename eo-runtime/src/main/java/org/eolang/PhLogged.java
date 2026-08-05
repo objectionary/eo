@@ -13,7 +13,7 @@ package org.eolang;
  *
  * @since 0.24
  */
-@SuppressWarnings({"PMD.SystemPrintln", "PMD.TooManyMethods"})
+@SuppressWarnings("PMD.SystemPrintln")
 public final class PhLogged implements Phi {
 
     /**
@@ -46,7 +46,6 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public Phi take(final String name) {
         System.out.printf("%d.take(\"%s\")...%n", this.hashCode(), name);
         final Phi ret = this.origin.take(name);
@@ -89,7 +88,6 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public byte[] delta() {
         System.out.printf("%d.delta()...%n", this.hashCode());
         final byte[] data = this.origin.delta();

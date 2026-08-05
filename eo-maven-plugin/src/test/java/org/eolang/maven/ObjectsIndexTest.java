@@ -8,6 +8,7 @@ import com.yegor256.WeAreOnline;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.scalar.ScalarOf;
+import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -73,11 +74,67 @@ final class ObjectsIndexTest {
     }
 
     @Test
+    void listsDirectChildrenOfPackage() throws Exception {
+        MatcherAssert.assertThat(
+            "The index must list every object that lives directly in the package",
+            new ObjectsIndex(
+                new ScalarOf<>(
+                    () -> new SetOf<>(
+                        "tuple",
+                        "tuple.each",
+                        "tuple.eachi",
+                        "tuple.inner.deep",
+                        "math.abs"
+                    )
+                )
+            ).children("tuple"),
+            Matchers.containsInAnyOrder("tuple.each", "tuple.eachi")
+        );
+    }
+
+    @Test
+    void listsDirectChildrenOfPackageWithOrgEolangPrefix() throws Exception {
+        MatcherAssert.assertThat(
+            "children() must strip a leading org.eolang. package the same way contains() does",
+            new ObjectsIndex(
+                new ScalarOf<>(
+                    () -> new SetOf<>(
+                        "tuple",
+                        "tuple.each",
+                        "tuple.eachi",
+                        "tuple.inner.deep",
+                        "math.abs"
+                    )
+                )
+            ).children("org.eolang.tuple"),
+            Matchers.containsInAnyOrder("tuple.each", "tuple.eachi")
+        );
+    }
+
+    @Test
+    void listsDirectChildrenOfTheBareRootPackage() throws Exception {
+        MatcherAssert.assertThat(
+            "children() must strip a bare org.eolang with no trailing dot the same way it strips org.eolang.",
+            new ObjectsIndex(
+                new ScalarOf<>(
+                    () -> new SetOf<>(
+                        "tuple",
+                        "tuple.each",
+                        "math",
+                        "math.abs"
+                    )
+                )
+            ).children("org.eolang"),
+            Matchers.containsInAnyOrder("tuple", "math")
+        );
+    }
+
+    @Test
     @ExtendWith(WeAreOnline.class)
     void downloadsAndChecksFromRealSource() throws Exception {
         MatcherAssert.assertThat(
             "The index must contain the default value",
-            new ObjectsIndex().contains("io.stdout"),
+            new ObjectsIndex().contains("stdout"),
             Matchers.is(true)
         );
     }

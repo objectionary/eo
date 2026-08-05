@@ -20,7 +20,6 @@
 # `1.plus 1` and also has object `next`. Since these objects are ints - they have
 # object `lt` by default.
 
-+alias tuple.is-empty
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -43,30 +42,7 @@
       start.next
     *
 
-  ++> tests-range-with-out-of-bounds
-    rng.eq > @
-      * 1 6
-    range > rng
-      []
-        b 1 > @
-        [num] > b
-          num > @
-          b > next
-            5.plus @
-      10
-
-  ++> tests-range-with-wrong-items-is-an-empty-array
-    tuple.is-empty rng > @
-    range > rng
-      []
-        y 10 > @
-        [num] > y
-          num > @
-          [] > next
-            42 > nothing
-      1
-
-  ++> tests-simple-range-from-one-to-ten
+  ++> can-build-a-range-from-one-to-ten
     rng.eq > @
       *
         1
@@ -87,7 +63,7 @@
             1.plus @
       10
 
-  ++> tests-simple-range-with-floats-from-one-to-five
+  ++> can-build-a-range-of-floats-from-one-to-five
     rng.eq > @
       *
         1
@@ -106,3 +82,26 @@
           x > next
             0.5.plus @
       5
+
+  ++> can-build-a-range-with-out-of-bounds-items
+    rng.eq > @
+      * 1 6
+    range > rng
+      []
+        b 1 > @
+        [num] > b
+          num > @
+          b > next
+            5.plus @
+      10
+
+  ++> can-build-an-empty-range-from-wrong-items
+    tuple.is-empty rng > @
+    range > rng
+      []
+        y 10 > @
+        [num] > y
+          num > @
+          [] > next
+            42 > nothing
+      1

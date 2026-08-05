@@ -21,7 +21,20 @@
         accum.with item
         accum
 
-  eq. ++> tests-large-index-in-back
+  eq. ++> can-take-a-back-slice
+    back
+      *
+        1
+        2
+        3
+        4
+        5
+      2
+    *
+      4
+      5
+
+  eq. ++> can-take-a-back-slice-with-a-large-index
     back
       *
         1
@@ -37,20 +50,7 @@
       4
       5
 
-  eq. ++> tests-simple-back
-    back
-      *
-        1
-        2
-        3
-        4
-        5
-      2
-    *
-      4
-      5
-
-  is-empty ++> tests-zero-index-in-back
+  is-empty ++> can-take-a-back-slice-with-a-zero-index
     back
       *
         1

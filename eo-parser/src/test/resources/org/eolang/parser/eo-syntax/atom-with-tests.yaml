@@ -7,7 +7,9 @@ asserts:
   - /object[not(errors)]
   - //o[@name='λ' and @pos='0']
 input: |
-  [format read] > sscanf /tuple
+  [] > sscanf /tuple
+    ? > format
+    ? > read
 
     [] +> tests-sscanf-with-string
       eq. > @

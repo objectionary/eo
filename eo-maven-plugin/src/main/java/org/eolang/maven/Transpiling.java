@@ -4,36 +4,19 @@
  */
 package org.eolang.maven;
 
-import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StClasspath;
-import com.yegor256.xsline.TrClasspath;
-import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.TrJoined;
-import com.yegor256.xsline.TrLambda;
-import com.yegor256.xsline.Train;
-import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.cactoos.func.StickyFunc;
 import org.eolang.parser.OnDefault;
 import org.eolang.parser.OnDetailed;
-import org.eolang.parser.TrFull;
 
 /**
  * Transpile.
@@ -51,7 +34,6 @@ import org.eolang.parser.TrFull;
  *     The intermediate optimized XMIRs are stored in the {@link #PRE} directory.
  * </p>
  * @since 0.1
- * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
 final class Transpiling implements Step {
 
@@ -66,65 +48,9 @@ final class Transpiling implements Step {
     static final String PRE = "5-pre-transpile";
 
     /**
-     * The XSL steps of the transpile train, in order, ending with
-     * {@code to-java.xsl}. Kept as a single list so both the train in
-     * {@link #compiled(boolean)} and the cache-key fingerprint in
-     * {@link #version()} are derived from the same source.
-     */
-    static final String[] XSLS = {
-        "/org/eolang/parser/parse/set-locators.xsl",
-        "/org/eolang/maven/transpile/set-original-names.xsl",
-        "/org/eolang/maven/transpile/classes.xsl",
-        "/org/eolang/maven/transpile/tests.xsl",
-        "/org/eolang/maven/transpile/anonymous-to-nested.xsl",
-        "/org/eolang/maven/transpile/package.xsl",
-        "/org/eolang/maven/transpile/attrs.xsl",
-        "/org/eolang/maven/transpile/data.xsl",
-        "/org/eolang/maven/transpile/to-java.xsl",
-    };
-
-    /**
-     * Classpath resources {@code xsl:import}-ed by one or more of
-     * {@link #XSLS}, so their content must also be folded into the
-     * cache-key fingerprint in {@link #version()} — editing one of these
-     * shared libraries changes the actual transpile output just as much
-     * as editing a top-level stylesheet does, but leaves {@link #XSLS}
-     * itself unchanged (see #6032). Not part of {@link #XSLS} itself
-     * because that array is also used verbatim to build the actual XSL
-     * train in {@link #compiled(boolean, boolean)}, where its last
-     * element is special-cased as {@code to-java.xsl}.
-     */
-    static final String[] IMPORTS = {
-        "/org/eolang/parser/_funcs.xsl",
-        "/org/eolang/parser/_specials.xsl",
-    };
-
-    /**
-     * Parsing trains with XSLs, one per thread, keyed by whether source
-     * locations are tracked.
-     * <p>
-     *     A single shared instance is deliberately avoided: {@link TrClasspath}
-     *     and {@link StClasspath} compile their XSL stylesheets lazily on
-     *     first use, and that lazy compilation is not thread-safe. Sharing one
-     *     instance across the {@link Threaded} worker pool races on the same
-     *     underlying compilation cache and can produce truncated or garbled
-     *     Java output. Keeping one instance per thread still lets each worker
-     *     thread reuse its own compiled stylesheets across the sources it
-     *     processes.
-     * </p>
-     */
-    private static final ThreadLocal<Map<String, Train<Shift>>> TRAINS =
-        ThreadLocal.withInitial(HashMap::new);
-
-    /**
      * Cache directory for transpiled sources.
      */
     private static final String CACHE = "transpiled";
-
-    /**
-     * Java extension.
-     */
-    private static final String JAVA = "java";
 
     /**
      * XMIR sources to transpile.
@@ -156,31 +82,25 @@ final class Transpiling implements Step {
     private final boolean cacheEnabled;
 
     /**
-     * Plugin version.
-     */
-    private final String version;
-
-    /**
      * Whether to transpile tests.
      * @checkstyle MemberNameCheck (5 lines)
      */
     private final boolean transpileTests;
 
     /**
-     * File where XSL measurements are stored.
-     * @checkstyle MemberNameCheck (5 lines)
+     * The plugin version, for the log.
      */
-    private final Path xslMeasures;
+    private final String version;
 
     /**
-     * Which optional diagnostic artifacts to emit while transpiling.
+     * Directories with the Java sources a human wrote.
      */
-    private final Tracking tracking;
+    private final Collection<Path> roots;
 
     /**
-     * Whether located objects are wrapped into {@code PhCoverage}.
+     * The XSL train that does the transpiling.
      */
-    private final boolean coverage;
+    private final Transpilation train;
 
     /**
      * Cache guard, see {@link ConcurrentCache} for why it is one per instance.
@@ -199,7 +119,9 @@ final class Transpiling implements Step {
      * @param measures Path to the file where XSL measurements are stored
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
      * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
-     * @checkstyle ParameterNumberCheck (18 lines)
+     * @param base The class that a generated class extends instead of {@code PhDefault}
+     * @param java Directories with the Java sources a human wrote
+     * @checkstyle ParameterNumberCheck (22 lines)
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
     Transpiling(
@@ -212,60 +134,41 @@ final class Transpiling implements Step {
         final boolean tests,
         final Path measures,
         final Tracking diagnostics,
-        final boolean cvrg
+        final boolean cvrg,
+        final String base,
+        final Collection<Path> java
     ) {
         this.sources = srcs;
         this.targetDir = target;
         this.generatedDir = generated;
         this.cacheDir = cache;
         this.cacheEnabled = enabled;
-        this.version = ver;
         this.transpileTests = tests;
-        this.xslMeasures = measures;
-        this.tracking = diagnostics;
-        this.coverage = cvrg;
+        this.version = ver;
+        this.roots = java;
+        this.train = new Transpilation(ver, diagnostics, cvrg, base, measures, target);
         this.guard = new ConcurrentCache();
     }
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public void exec() throws IOException {
-        final int saved = new Threaded<>(
-            this.sources,
-            this::transpiled
-        ).total() + new PackageInfos(this.generatedDir).create();
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
-            this.sources.size(), saved, this.generatedDir
+            this.sources.size(),
+            new Threaded<>(
+                this.sources,
+                this::transpiled
+            ).total() + new PackageInfos(this.generatedDir, this.roots).create(),
+            this.generatedDir
         );
     }
 
     /**
-     * Cache-key version segment: the plugin version combined with a
-     * fingerprint of the bundled transpile XSLs and the libraries they
-     * {@code xsl:import}, plus the {@code trackLocations}/
-     * {@code coverageTracking} flags. Folding the XSL content in means
-     * that a change in the transformation logic invalidates the global
-     * transpile cache even when the plugin version is unchanged (a
-     * constant {@code -SNAPSHOT} during development), see #5578; folding
-     * the imported libraries in too closes the gap where editing one of
-     * them changed the actual output without changing anything in
-     * {@link #XSLS} itself, see #6032. Folding the two flags in means
-     * toggling either one also invalidates the cache, since both change
-     * what {@code to-java.xsl} emits (see #6031).
+     * The cache-key version segment of this transpiling.
      * @return The version segment for {@link CachePath}
      */
     String version() {
-        return String.format(
-            "%s-%s-%b-%b",
-            this.version,
-            new Fingerprint(
-                Stream.concat(
-                    Arrays.stream(Transpiling.XSLS), Arrays.stream(Transpiling.IMPORTS)
-                ).toArray(String[]::new)
-            ).get(),
-            this.tracking.locations(), this.coverage
-        );
+        return this.train.version();
     }
 
     /**
@@ -274,17 +177,15 @@ final class Transpiling implements Step {
      * @return Number of generated Java files
      * @throws IOException If any issues with I/O
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private int transpiled(final TjForeign tojo) throws IOException {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.resolve(Transpiling.DIR);
-        final Path target = new Place(
-            new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get()
-        ).make(base, MjAssemble.XMIR);
+        final String name = new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get();
+        final Path target = new Place(name).make(base, MjAssemble.XMIR);
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
-        final Function<XML, XML> transform = this.transpilation(source);
+        final Function<XML, XML> transform = this.train.forSource(name);
         final Path cdir = this.cacheDir.resolve(Transpiling.CACHE);
         final Path tail = base.relativize(target);
         if (this.cacheEnabled) {
@@ -316,7 +217,9 @@ final class Transpiling implements Step {
             rewrite.compareAndSet(false, true);
             new Saved(transform.apply(xmir).toString(), target).value();
         }
-        return this.javaGenerated(
+        return new JavaFiles(
+            this.generatedDir, cdir.resolve(this.version()), this.cacheEnabled
+        ).total(
             rewrite.get(), target, hsh.get(), this.transpileTests && !tojo.discovered()
         );
     }
@@ -335,177 +238,5 @@ final class Transpiling implements Step {
             res = "Not exists yet";
         }
         return res;
-    }
-
-    /**
-     * Wrap a train with XSL execution time measurements.
-     * @param base The train to wrap
-     * @return Measured train
-     */
-    private Train<Shift> measured(final Train<Shift> base) {
-        final Path parent = this.xslMeasures.getParent();
-        if (parent.toFile().mkdirs()) {
-            Logger.debug(this, "Directory created for %[file]s", this.xslMeasures);
-        }
-        if (!Files.exists(parent)) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "For some reason, the directory %s is absent, can't write measures to %s",
-                    parent,
-                    this.xslMeasures
-                )
-            );
-        }
-        if (Files.isDirectory(this.xslMeasures)) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "This is not a file but a directory, can't write to it: %s",
-                    this.xslMeasures
-                )
-            );
-        }
-        return new TrLambda(
-            base,
-            shift -> new StMeasured(shift, this.xslMeasures)
-        );
-    }
-
-    /**
-     * The train for this thread, built once per location-tracking value.
-     * @return The train of XSL shifts
-     */
-    private Train<Shift> train() {
-        final boolean track = this.tracking.locations();
-        final boolean instrument = this.coverage;
-        return Transpiling.TRAINS.get().computeIfAbsent(
-            String.format("%b|%b", track, instrument),
-            ignored -> Transpiling.compiled(track, instrument)
-        );
-    }
-
-    /**
-     * Build the train of XSL shifts.
-     * @param track Whether generated objects carry their source location
-     * @param instrument Whether located objects are wrapped into {@code PhCoverage}
-     * @return The train of XSL shifts
-     */
-    private static Train<Shift> compiled(final boolean track, final boolean instrument) {
-        return new TrFull(
-            new TrJoined<>(
-                new TrClasspath<>(
-                    Arrays.copyOf(Transpiling.XSLS, Transpiling.XSLS.length - 1)
-                ).back(),
-                new TrDefault<>(
-                    new StClasspath(
-                        Transpiling.XSLS[Transpiling.XSLS.length - 1],
-                        String.format("disclaimer %s", new Disclaimer()),
-                        String.format("trackLocations %b", track),
-                        String.format("coverage %b", instrument)
-                    )
-                )
-            )
-        );
-    }
-
-    /**
-     * Build XSL transformation function for a source file.
-     * If transformation steps are tracked - creates a new {@link Xsline}
-     * for every XMIR in purpose of thread safety.
-     * @param source Path to source XMIR
-     * @return XSL transformation function
-     */
-    private Function<XML, XML> transpilation(final Path source) {
-        final Train<Shift> measured = this.measured(this.train());
-        final Function<XML, XML> func;
-        if (this.tracking.steps()) {
-            func = xml -> new Xsline(
-                new TrSpy(
-                    measured,
-                    new StickyFunc<>(
-                        doc -> new Place(
-                            new OnDetailed(new OnDefault(new Xnav(doc.inner())), source).get()
-                        ).make(this.targetDir.resolve(Transpiling.PRE), "")
-                    )
-                )
-            ).pass(xml);
-        } else {
-            func = new Xsline(measured)::pass;
-        }
-        return func;
-    }
-
-    /**
-     * Generate java files and count them.
-     * @param rewrite Rewrite .java files even if they exist
-     * @param target Full target path to XMIR after transpilation optimizations
-     * @param hsh Tojo hash
-     * @param tests Whether to generate test sources for this tojo
-     * @return Amount of generated .java files
-     * @throws IOException If fails to save files
-     * @checkstyle ParameterNumberCheck (5 lines)
-     */
-    private int javaGenerated(
-        final boolean rewrite,
-        final Path target,
-        final String hsh,
-        final boolean tests
-    ) throws IOException {
-        final AtomicInteger saved = new AtomicInteger(0);
-        if (Files.exists(target)) {
-            final Xnav object = new Xnav(target).element("object");
-            final Collection<Xnav> classes = object.elements(Filter.withName("class"))
-                .collect(Collectors.toList());
-            final boolean atom = object.path("/object/o/o[@name='λ']").findAny().isPresent();
-            for (final Xnav clazz : classes) {
-                final String jname = clazz.attribute("java-name").text().get();
-                if (!atom || jname.endsWith("Test")) {
-                    final Path tgt = new Place(jname).make(
-                        this.generatedDir, Transpiling.JAVA
-                    );
-                    final Footprint java = new FpJavaGenerated(
-                        clazz, new FileGenerationReport(saved, tgt, target)
-                    );
-                    new JavaPlaced(
-                        new FpIfReleased(
-                            hsh,
-                            new FpAppliedWithCache(
-                                java,
-                                this.cached(hsh, jname),
-                                new RewritePolicy(rewrite, tgt),
-                                this.cacheEnabled
-                            ),
-                            java
-                        ),
-                        tgt,
-                        this.generatedDir
-                    ).exec(clazz, tests);
-                }
-            }
-            Logger.debug(
-                this,
-                "Generated %d Java files from %[file]s",
-                saved.get(), target
-            );
-        }
-        return saved.get();
-    }
-
-    /**
-     * Cached path supplier for a generated Java file.
-     * @param hsh Hash
-     * @param jname Java class name
-     * @return Supplier of cached path
-     */
-    private Supplier<Path> cached(final String hsh, final String jname) {
-        return new CachePath(
-            this.cacheDir.resolve(Transpiling.CACHE),
-            this.version(),
-            hsh,
-            this.generatedDir.relativize(
-                new Place(jname).make(
-                    this.generatedDir, Transpiling.JAVA
-                )
-            )
-        );
     }
 }

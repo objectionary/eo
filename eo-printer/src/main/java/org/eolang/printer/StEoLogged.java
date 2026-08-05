@@ -8,6 +8,9 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.yegor256.xsline.Shift;
 import java.util.function.Consumer;
+import org.cactoos.Fallback;
+import org.cactoos.scalar.ScalarWithFallback;
+import org.cactoos.scalar.Unchecked;
 
 /**
  * Shift that logs the EO representation of the XML before throwing an exception.
@@ -49,22 +52,26 @@ final class StEoLogged implements Shift {
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public XML apply(final int position, final XML xml) {
-        try {
-            return this.origin.apply(position, xml);
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final RuntimeException ex) {
-            this.logger.accept(
-                String.format(
-                    "EO representation of the parsed XML: %n%s",
-                    new Xmir(xml).toEO()
+        return new Unchecked<>(
+            new ScalarWithFallback<>(
+                () -> this.origin.apply(position, xml),
+                new Fallback.From<>(
+                    RuntimeException.class,
+                    ex -> {
+                        this.logger.accept(
+                            String.format(
+                                "EO representation of the parsed XML: %n%s",
+                                new Xmir(xml).toEO()
+                            )
+                        );
+                        throw new IllegalStateException(
+                            String.format("Shift '%s' failed", this.origin),
+                            ex
+                        );
+                    }
                 )
-            );
-            throw new IllegalStateException(
-                String.format("Shift '%s' failed", this.origin),
-                ex
-            );
-        }
+            )
+        ).value();
     }
 }

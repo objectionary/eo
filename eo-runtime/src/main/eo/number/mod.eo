@@ -18,7 +18,7 @@
     cant-mod
       "cannot calculate mod by zero"
     divisor.is-finite.not.if
-      x
+      divisor.is-nan.if nan x
       if.
         gt.
           number x.as-bytes >> dividend
@@ -32,7 +32,12 @@
                 absx.div absy
         abs-mod.neg
 
-  ++> tests-div-mod-compatibility
+  is-nan. ++> can-return-nan-when-the-divisor-is-nan
+    mod
+      5
+      nan
+
+  ++> can-stay-compatible-with-division
     eq. > @
       plus.
         mod dividend divisor
@@ -41,73 +46,78 @@
     -13 > dividend
     5 > divisor
 
-  eq. ++> tests-mod-by-zero-returns-provided-fallback
+  is-nan. ++> can-take-a-modulo-by-nan
+    mod
+      5
+      nan
+
+  eq. ++> can-take-a-modulo-by-one
+    mod
+      133
+      1
+    0
+
+  eq. ++> can-take-a-modulo-of-a-dividend-below-the-divisor
+    mod
+      -1
+      5
+    -1
+
+  eq. ++> can-take-a-modulo-of-a-negative-by-positive-infinity
+    mod
+      -5
+      pinf
+    -5
+
+  eq. ++> can-take-a-modulo-of-a-positive-by-negative-infinity
+    mod
+      5
+      ninf
+    5
+
+  eq. ++> can-take-a-modulo-of-a-positive-by-positive-infinity
+    mod
+      5
+      pinf
+    5
+
+  eq. ++> can-take-a-modulo-of-minus-one-by-seven
+    mod
+      -1
+      7
+    -1
+
+  eq. ++> can-take-a-modulo-of-one-by-two
+    mod
+      1
+      2
+    1
+
+  eq. ++> can-take-a-modulo-of-sixteen-by-a-large-negative
+    mod
+      16
+      -200
+    16
+
+  eq. ++> can-take-a-modulo-of-zero-by-a-negative
+    mod
+      0
+      -15
+    0
+
+  eq. ++> can-take-a-modulo-of-zero-by-five
+    mod
+      0
+      5
+    0
+
+  eq. ++> rejects-a-modulo-by-zero
     "recovered"
     mod
       5
       0
       "recovered" > [message]
 
-  eq. ++> tests-mod-dividend-by-one
-    mod
-      133
-      1
-    0
-
-  eq. ++> tests-mod-dividend-less-than-divisor
-    mod
-      -1
-      5
-    -1
-
-  eq. ++> tests-mod-n0-n15-neg
-    mod
-      0
-      -15
-    0
-
-  eq. ++> tests-mod-n0-n5
-    mod
-      0
-      5
-    0
-
-  eq. ++> tests-mod-n1-n2
-    mod
-      1
-      2
-    1
-
-  eq. ++> tests-mod-n1-neg-n7
-    mod
-      -1
-      7
-    -1
-
-  eq. ++> tests-mod-n16-n200-neg
-    mod
-      16
-      -200
-    16
-
-  eq. ++> tests-mod-negative-dividend-by-positive-infinity
-    mod
-      -5
-      pinf
-    -5
-
-  eq. ++> tests-mod-positive-dividend-by-negative-infinity
-    mod
-      5
-      ninf
-    5
-
-  eq. ++> tests-mod-positive-dividend-by-positive-infinity
-    mod
-      5
-      pinf
-    5
-
-  mod --> on-mod-by-zero
+  mod --> stops-on-a-modulo-by-zero
     5
     0

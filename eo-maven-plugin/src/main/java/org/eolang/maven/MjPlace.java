@@ -27,6 +27,13 @@ import org.apache.maven.plugins.annotations.Mojo;
 )
 public final class MjPlace extends MjSafe {
 
+    /**
+     * Ctor.
+     */
+    public MjPlace() {
+        // nothing
+    }
+
     @Override
     public void exec() throws IOException {
         new Placing(

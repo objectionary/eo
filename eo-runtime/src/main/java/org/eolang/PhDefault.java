@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
+@SuppressWarnings("PMD.GodClass")
 public class PhDefault implements Phi, Cloneable {
 
     /**
@@ -82,7 +82,6 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Data.
-     * @checkstyle VisibilityModifierCheck (2 lines)
      */
     private final byte[] data;
 
@@ -152,7 +151,6 @@ public class PhDefault implements Phi, Cloneable {
      * @param forma      The forma of the object, taken from XMIR
      * @param dta        Object data
      * @param attributes Initial attributes to register
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     private PhDefault(
         final String forma, final byte[] dta, final Map<String, Attribute> attributes
@@ -235,7 +233,7 @@ public class PhDefault implements Phi, Cloneable {
                 PhDefault.LOGGER.log(
                     Level.FINE,
                     String.format(
-                        "%s\uD835\uDD38('%s' for %s) ➜ %s",
+                        "%s𝔸('%s' for %s) ➜ %s",
                         PhDefault.padding(),
                         name,
                         this,
@@ -421,11 +419,11 @@ public class PhDefault implements Phi, Cloneable {
      * {@code number.power 42 3}. The receiver of a package extension always
      * lives in {@code α0}: implicit dispatch binds it here, while explicit
      * dispatch through the namespace ({@code number.power 42 3}) leaves the
-     * slot for the caller to fill (see {@code PhNest.extension}). When the
-     * object has no free positional attribute to receive the bound object (for
-     * example a nullary object like {@code input.dead}), a clear error is
-     * raised instead of the low-level "attribute is already set / no
-     * attributes here" message.</p>
+     * slot for the caller to fill (see {@code PhNest.extension}). Every package
+     * member declares at least one void, so that the implicit form always has a
+     * slot to bind the receiver to; when it doesn't, a clear error is raised
+     * instead of the low-level "attribute is already set / no attributes here"
+     * message.</p>
      *
      * @param name The name of the absent attribute
      * @return The package object with this one bound to it
@@ -510,6 +508,7 @@ public class PhDefault implements Phi, Cloneable {
      * @return Attribute name
      */
     private String attr(final int pos) {
+        this.loaded();
         if (0 > pos) {
             throw new ExFailure(
                 String.format(

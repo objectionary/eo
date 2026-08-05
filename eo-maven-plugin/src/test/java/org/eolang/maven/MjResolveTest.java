@@ -24,7 +24,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.1
  */
 @ExtendWith(MktmpResolver.class)
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class MjResolveTest {
 
     @Test
@@ -63,6 +62,32 @@ final class MjResolveTest {
             "An empty leftover directory from an interrupted unpack must not block re-resolving",
             place.resolve("eo-runtime-0.7.0.class").toFile(),
             FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    void reportsMalformedRtJvmLocationClearly(@Mktmp final Path temp) throws IOException {
+        final Path xmir = temp.resolve("dep.xmir");
+        Files.writeString(
+            xmir,
+            String.join(
+                "",
+                "<object><metas><meta><head>rt</head>",
+                "<tail>jvm org.eolang:eo-runtime</tail>",
+                "<part>jvm</part><part>org.eolang:eo-runtime</part>",
+                "</meta></metas></object>"
+            )
+        );
+        final TjsForeign tojos = new TjsForeign();
+        tojos.add("dep").withXmir(xmir).withVersion("1.0.0");
+        MatcherAssert.assertThat(
+            "The error must name the malformed '+rt jvm' location",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new DpsDefault(tojos, false, false, false).iterator(),
+                "A '+rt jvm' location with too few colon-separated parts must fail with a clear error, not an ArrayIndexOutOfBoundsException"
+            ).getMessage(),
+            Matchers.containsString("org.eolang:eo-runtime")
         );
     }
 

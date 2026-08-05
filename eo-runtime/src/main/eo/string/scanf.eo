@@ -55,17 +55,39 @@
         text
     [text] > as-integer
       if. > @
-        digits.length.gt 19
+        or.
+          normalized.length.gt 19
+          and.
+            normalized.length.eq 19
+            not.
+              negative.if
+                digits-lte normalized "9223372036854775808"
+                digits-lte normalized "9223372036854775807"
         T
-          "The number doesn't fit into long range for the '%d' conversion"
+          "The number doesn't fit into long range for the '%%d' conversion"
         negative.if negated folded
-      signed.if > digits
-        slice
-          text
-          1
-          text.length.minus 1
-        text
-      fold-digits digits > folded
+      [a b] > digits-lte
+        if. > [index] >> rec
+          index.eq a.length
+          true
+          if.
+            lt.
+              as-ascii
+                slice a index 1
+              as-ascii
+                slice b index 1
+            true
+            if.
+              gt.
+                as-ascii
+                  slice a index 1
+                as-ascii
+                  slice b index 1
+              false
+              rec
+                index.plus 1
+        | 0 > @
+      fold-digits normalized > folded
       folded.times -1 > negated
       eq. > negative
         slice
@@ -73,10 +95,23 @@
           0
           1
         "-"
+      if. > normalized
+        stripped.eq ""
+        "0"
+        stripped
       negative.or > signed
         eq.
           slice text 0 1
           "+"
+      replaced > stripped
+        signed.if
+          slice
+            text
+            1
+            text.length.minus 1
+          text
+        regex "/^0+/"
+        ""
     [group acc] >> convert
       matched.exists.not.if > @
         *
@@ -121,6 +156,7 @@
       regex
         chained *1
           "/"
+          "^"
           pattern
           "/"
       read
@@ -225,7 +261,7 @@
     *
     false
 
-  eq. ++> tests-scanf-complex-case
+  eq. ++> can-scan-a-complex-format
     scanf
       "Im%d %s old and this is! Let's calculate %f + %f= %f"
       "Im18 years old and this is! Let's calculate 99999999.99 + 0.01= 100000000.0"
@@ -236,44 +272,59 @@
       0.01
       100000000
 
-  eq. ++> tests-scanf-with-complex-float
+  eq. ++> can-scan-a-complex-float
     1991.01
     head.
       scanf
         "this will be=%f"
         "this will be=1991.01"
 
-  eq. ++> tests-scanf-with-complex-int
+  eq. ++> can-scan-a-complex-integer
     734987259
     head.
       scanf "!%d!" "!734987259!"
 
-  eq. ++> tests-scanf-with-complex-string
+  eq. ++> can-scan-a-complex-string
     "test"
     head.
       scanf "some%sstring" "someteststring"
 
-  eq. ++> tests-scanf-with-float
+  eq. ++> can-scan-a-float
     0.24
     head.
       scanf "%f" "0.24"
 
-  eq. ++> tests-scanf-with-int
+  eq. ++> can-scan-an-integer
     33
     head.
       scanf "%d" "33"
 
-  eq. ++> tests-scanf-with-negative-int
+  eq. ++> can-scan-a-negative-integer
     -42
     head.
       scanf "%d" "-42"
 
-  eq. ++> tests-scanf-with-positive-signed-int
+  eq. ++> can-scan-a-positive-signed-integer
     42
     head.
       scanf "%d" "+42"
 
-  eq. ++> tests-scanf-with-printf
+  eq. ++> can-scan-a-zero-padded-integer
+    42
+    head.
+      scanf "%d" "00000000000000000042"
+
+  eq. ++> can-scan-a-zero-padded-negative-integer
+    -42
+    head.
+      scanf "%d" "-00000000000000000042"
+
+  eq. ++> can-scan-many-zeroes-as-zero
+    0
+    head.
+      scanf "%d" "00000000000000000000"
+
+  eq. ++> can-scan-what-printf-wrote
     scanf
       "%s is about %d?"
       printf *1
@@ -284,12 +335,12 @@
       "This"
       8
 
-  eq. ++> tests-scanf-with-string
+  eq. ++> can-scan-a-string
     "hello"
     head.
       scanf "%s" "hello"
 
-  eq. ++> tests-scanf-with-string-int-float
+  eq. ++> can-scan-a-string-an-integer-and-a-float
     scanf
       "%s %d %f"
       "hello 33 0.24"
@@ -298,19 +349,55 @@
       33
       0.24
 
-  eq. ++> tests-scanf-with-string-with-ending
+  eq. ++> can-scan-a-string-followed-by-a-literal
     "hello"
     head.
       scanf "%s!" "hello!"
 
-  scanf --> on-scanf-with-dangling-percent
+  eq. ++> can-scan-while-ignoring-trailing-text
+    42
+    head.
+      scanf
+        "id=%d"
+        "id=42 suffix"
+
+  eq. ++> cannot-scan-past-unmatched-leading-text
+    length.
+      scanf
+        "id=%d"
+        "prefix id=42"
+    0
+
+  scanf --> stops-on-a-dangling-percent
     "hello%"
     "hello"
 
-  scanf --> on-scanf-with-oversized-int
+  scanf --> stops-on-an-oversized-integer
     "%d"
     "99999999999999999999"
 
-  scanf --> on-scanf-with-wrong-format
+  gt. ++> can-scan-a-nineteen-digit-value-at-long-max
+    head.
+      scanf "%d" "9223372036854775807"
+    9000000000000000000
+
+  lt. ++> can-scan-a-nineteen-digit-value-at-long-min
+    head.
+      scanf "%d" "-9223372036854775808"
+    -9000000000000000000
+
+  scanf --> stops-on-a-nineteen-digit-value-above-long-max
+    "%d"
+    "9223372036854775808"
+
+  scanf --> stops-on-a-nineteen-digit-value-below-long-min
+    "%d"
+    "-9223372036854775809"
+
+  scanf --> stops-on-a-zero-padded-integer-above-long-max
+    "%d"
+    "00009223372036854775808"
+
+  scanf --> stops-on-a-wrong-format
     "%l"
     "error"

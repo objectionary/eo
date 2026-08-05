@@ -21,7 +21,6 @@ import org.xembly.Xembler;
  *
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals", "PMD.UnnecessaryLocalRule"})
 final class EoTest {
 
     @Test
@@ -116,14 +115,64 @@ final class EoTest {
 
     @Test
     void recoversFromBadLineAndContinues() {
-        final String rendered = EoTest.render("+ok-one", "  +bad-indent", "+ok-two");
         MatcherAssert.assertThat(
             "after an error the walker must continue and parse subsequent valid lines",
-            rendered,
+            EoTest.render("+ok-one", "  +bad-indent", "+ok-two"),
             XhtmlMatchers.hasXPaths(
                 "/object/metas/meta[head='ok-one']",
                 "/object/metas/meta[head='ok-two']"
             )
+        );
+    }
+
+    @Test
+    void skipsBlockOfFailedLine() {
+        MatcherAssert.assertThat(
+            "the block nested under a failed line must not raise errors of its own",
+            EoTest.render(
+                "[] > example",
+                "  [x] +++ bad",
+                "    one",
+                "      two",
+                "  [] > good",
+                "    one > first"
+            ),
+            XhtmlMatchers.hasXPath("/object/errors[count(error)=1]")
+        );
+    }
+
+    @Test
+    void parsesSiblingAfterFailedLine() {
+        MatcherAssert.assertThat(
+            "the sibling standing at the indent of a failed line must still be parsed",
+            EoTest.render(
+                "[] > example",
+                "  [x] +++ bad",
+                "    one",
+                "      two",
+                "  [] > good",
+                "    one > first"
+            ),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='example']/o[@name='good']/o[@name='first']"
+            )
+        );
+    }
+
+    @Test
+    void skipsBlockOfFailedLineAcrossBlanks() {
+        MatcherAssert.assertThat(
+            "a blank line inside the block of a failed line must not resume parsing",
+            EoTest.render(
+                "[] > example",
+                "  [x] +++ bad",
+                "    one",
+                "",
+                "    two",
+                "  [] > good",
+                "    one > first"
+            ),
+            XhtmlMatchers.hasXPath("/object/errors[count(error)=1]")
         );
     }
 
@@ -283,7 +332,7 @@ final class EoTest {
     void parsesAtomDeclaration() {
         MatcherAssert.assertThat(
             "a `/sig` suffix must emit the λ marker inside the formation",
-            EoTest.render("[a] > foo /number"),
+            EoTest.render("[] > foo /number"),
             XhtmlMatchers.hasXPath("/object/o[@name='foo']/o[@name='λ' and @atom='number']")
         );
     }
@@ -295,6 +344,17 @@ final class EoTest {
             EoTest.render("[]"),
             XhtmlMatchers.hasXPath(
                 "/object/errors/error[contains(text(),'object inside formation must have a name')]"
+            )
+        );
+    }
+
+    @Test
+    void rejectsLegacyDoubledRoot() {
+        MatcherAssert.assertThat(
+            "the legacy `QQ` head must name itself in the error, not read as trailing garbage",
+            EoTest.render("[] > main", "  QQ.io.stdout", "    \"Hello world\""),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'QQ is not a valid object name')]"
             )
         );
     }

@@ -27,9 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * Test case for {@link MjPull}.
  * @since 0.1
- * @checkstyle ClassFanOutComplexityCheck (1000 lines)
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(WeAreOnline.class)
 @ExtendWith(MktmpResolver.class)
 final class MjPullTest {
@@ -53,7 +51,7 @@ final class MjPullTest {
         new FakeMaven(temp).withProgram(
             String.format("+package foo.x%n"),
             "[] > main",
-            "  Q.io.stdout > @",
+            "  Q.stdout > @",
             "    \"I am 18 years old\""
             )
             .with("objectionary", new ScalarOf<>(() -> new OyRemote(new ChRemote("master"))))
@@ -88,18 +86,18 @@ final class MjPullTest {
     }
 
     @Test
-    void pullsUsingOfflineHash(@Mktmp final Path temp) throws IOException {
+    void pullsUsingProvidedHash(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
             .add(this.stdout())
             .withVersion("*.*.*");
         maven.with("skip", false).with(
             "hash",
-            new ChCached(new ChPattern("*.*.*:abcdefg", "1.0.0"))
+            new ChCached(new CommitHash.ChConstant("abcdefg"))
             )
             .execute(MjPull.class);
         MatcherAssert.assertThat(
-            "PullMojo should have pulled using offline hash, but it didn't",
+            "PullMojo should have pulled using provided hash, but it didn't",
             new LinkedList<>(new MnCsv(maven.foreignPath()).read()).getFirst().get("hash"),
             Matchers.equalTo("abcdefg")
         );
@@ -122,14 +120,13 @@ final class MjPullTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void doesNotPullInOfflineMode(@Mktmp final Path tmp) throws IOException {
         final Map<String, Path> result = new FakeMaven(tmp)
             .withHelloWorld()
             .with("offline", true)
             .execute(new FakeMaven.Pull())
             .result();
-        final String stdout = "org/eolang/io/stdout.eo";
+        final String stdout = "org/eolang/stdout.eo";
         final String string = "org/eolang/string.eo";
         MatcherAssert.assertThat(
             String.format(
@@ -147,7 +144,6 @@ final class MjPullTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void skipsAlreadyPulled(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()
@@ -244,7 +240,7 @@ final class MjPullTest {
      * Returns the stdout path.
      */
     private String stdout() {
-        return "io.stdout";
+        return "stdout";
     }
 
     /**

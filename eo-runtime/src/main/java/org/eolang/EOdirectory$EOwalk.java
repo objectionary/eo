@@ -8,6 +8,7 @@ package org.eolang;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
@@ -17,6 +18,7 @@ import java.util.stream.Stream;
 /**
  * Directory.walk.
  * @since 0.40
+ * @checkstyle IllegalIdentifierNameCheck (101 lines)
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "directory.walk")
@@ -31,13 +33,19 @@ public final class EOdirectory$EOwalk extends PhDefault implements Atom {
     }
 
     @Override
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     public Phi lambda() {
-        final Path path = Paths.get(
-            new Dataized(
-                this.take(Phi.RHO).take("file").take("path")
-            ).asString()
-        ).toAbsolutePath();
+        final String raw = new Dataized(
+            this.take(Phi.RHO).take("file").take("path")
+        ).asString();
+        final Path path;
+        try {
+            path = Paths.get(raw).toAbsolutePath();
+        } catch (final InvalidPathException ex) {
+            throw new ExFailure(
+                String.format("'%s' is not a valid path", raw),
+                ex
+            );
+        }
         final String glob = new Dataized(this.take("glob")).asString();
         final PathMatcher matcher;
         try {

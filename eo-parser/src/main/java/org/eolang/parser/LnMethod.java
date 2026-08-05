@@ -19,7 +19,7 @@ import java.util.List;
  *   args — the chain stays open for further {@code .method} continuations
  *   or deeper-indent vapplication children.</li>
  *   <li>{@link Kind#VMETHOD_WITH_HARGS} when this {@code .method}
- *   carries ≥1 horizontal args — the chain becomes
+ *   carries one or more horizontal args — the chain becomes
  *   {@link Openness#HORIZONTAL_COMPLETED}.</li>
  * </ul>
  *
@@ -62,7 +62,6 @@ final class LnMethod implements Line {
 
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
-        Blanks.checkPlain(this.span, globals, emit);
         this.precheck(stack);
         final Level top = stack.top();
         final Tokens tokens = this.dottedTokens();
@@ -74,6 +73,12 @@ final class LnMethod implements Line {
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
+        suffix.rejectAtomOutsideFormation(this.span);
+        if (suffix.test()) {
+            Blanks.checkTest(this.span, globals, emit);
+        } else {
+            Blanks.checkPlain(this.span, globals, emit);
+        }
         Comments.seal(globals, emit, this.span);
         if (outer != null && stack.below() != null) {
             stack.below().upgradeArgBinding();
@@ -128,7 +133,7 @@ final class LnMethod implements Line {
         if (stack.top().openness() == Openness.HORIZONTAL_COMPLETED) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
-                "method continuation not allowed after horizontal application"
+                "method continuation not allowed after horizontal application, try vertical application instead"
             );
         }
         if (stack.top().kind() == Kind.ONLY_PHI_FORMATION) {

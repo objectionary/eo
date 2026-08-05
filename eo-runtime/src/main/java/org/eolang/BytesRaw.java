@@ -11,7 +11,7 @@ import java.util.Arrays;
  * Bytes to be created from byte array only.
  * @since 0.1.0
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
+@SuppressWarnings("PMD.GodClass")
 final class BytesRaw implements Bytes {
 
     /**
@@ -22,7 +22,6 @@ final class BytesRaw implements Bytes {
     /**
      * Ctor.
      * @param data Data
-     * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */
     BytesRaw(final byte[] data) {
         this.data = Arrays.copyOf(data, data.length);
@@ -90,7 +89,7 @@ final class BytesRaw implements Bytes {
             );
         }
         final byte[] bytes = this.shift(bits).take();
-        if (this.take()[0] < 0) {
+        if (bytes.length > 0 && this.take()[0] < 0) {
             for (int index = 0; index < bytes.length; index += 1) {
                 final int zeros = BytesRaw.numberOfLeadingZeros(
                     bytes[index]
@@ -237,7 +236,7 @@ final class BytesRaw implements Bytes {
             if (source < 0) {
                 bytes[index] = 0;
             } else {
-                byte dst = (byte) ((0xff & bytes[source]) >>> mod);
+                byte dst = (byte) ((0xFF & bytes[source]) >>> mod);
                 if (source - 1 >= 0) {
                     dst |= (byte) (bytes[source - 1] << (Byte.SIZE - mod) & carry & 0xFF);
                 }
