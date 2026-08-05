@@ -62,18 +62,19 @@ final class OyCached implements Objectionary {
 
     @Override
     public Input get(final String name) throws IOException {
-        return this.programs.computeIfAbsent(
-            name, key -> {
-                try {
-                    return this.origin.get(name);
-                } catch (final IOException exception) {
-                    throw new IllegalStateException(
-                        "An error occurred during the access to the origin objectionary",
-                        exception
-                    );
+        try {
+            return this.programs.computeIfAbsent(
+                name, key -> {
+                    try {
+                        return this.origin.get(name);
+                    } catch (final IOException exception) {
+                        throw new OyCached.Uncached(exception);
+                    }
                 }
-            }
-        );
+            );
+        } catch (final OyCached.Uncached wrap) {
+            throw wrap.origin();
+        }
     }
 
     @Override
@@ -85,25 +86,52 @@ final class OyCached implements Objectionary {
 
     @Override
     public boolean isDirectory(final String name) throws IOException {
-        return this.directories.computeIfAbsent(
-            name, key -> {
-                try {
-                    return this.origin.isDirectory(name);
-                } catch (final IOException exception) {
-                    throw new IllegalStateException(
-                        String.format(
-                            "Failed to fetch object %s from the origin objectionary",
-                            name
-                        ),
-                        exception
-                    );
+        try {
+            return this.directories.computeIfAbsent(
+                name, key -> {
+                    try {
+                        return this.origin.isDirectory(name);
+                    } catch (final IOException exception) {
+                        throw new OyCached.Uncached(exception);
+                    }
                 }
-            }
-        );
+            );
+        } catch (final OyCached.Uncached wrap) {
+            throw wrap.origin();
+        }
     }
 
     @Override
     public Iterable<String> children(final String pkg) throws IOException {
         return this.origin.children(pkg);
+    }
+
+    /**
+     * Carries an {@link IOException} through a {@code computeIfAbsent()} lambda,
+     * which cannot declare checked exceptions.
+     * @since 0.74.0
+     */
+    private static final class Uncached extends RuntimeException {
+
+        /**
+         * Serialization identifier.
+         */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Ctor.
+         * @param cause The original I/O failure
+         */
+        Uncached(final IOException cause) {
+            super(cause);
+        }
+
+        /**
+         * The original I/O failure.
+         * @return The exception
+         */
+        IOException origin() {
+            return (IOException) this.getCause();
+        }
     }
 }
