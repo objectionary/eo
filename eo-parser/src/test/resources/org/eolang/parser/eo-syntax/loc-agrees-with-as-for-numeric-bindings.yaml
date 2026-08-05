@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - not(//o[@as and not(ends-with(@loc, concat('.', @as)))])
+  - //o[@as='α1' and @loc='Φ.app.x.α1']
+  - //o[@as='α0' and @loc='Φ.app.x.α0']
+input: |
+  [] > app
+    seq 1:1 2:0 > x
