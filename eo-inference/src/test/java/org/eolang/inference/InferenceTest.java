@@ -6,6 +6,8 @@ package org.eolang.inference;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,16 +15,17 @@ import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Inference}.
  * @since 0.67.0
  */
+@ExtendWith(MktmpResolver.class)
 final class InferenceTest {
 
     @Test
-    void splitsCompositeBase(@TempDir final Path temp) throws IOException {
+    void splitsCompositeBase(@Mktmp final Path temp) throws IOException {
         final Path input = Files.createDirectories(temp.resolve("chain"));
         Files.writeString(
             input.resolve("inc.xmir"),
@@ -44,7 +47,7 @@ final class InferenceTest {
     }
 
     @Test
-    void keepsReferenceWhole(@TempDir final Path temp) throws IOException {
+    void keepsReferenceWhole(@Mktmp final Path temp) throws IOException {
         final Path input = Files.createDirectories(temp.resolve("plumbing"));
         Files.writeString(
             input.resolve("tap.xmir"),
@@ -67,7 +70,7 @@ final class InferenceTest {
     }
 
     @Test
-    void locatesObjectsBornFromSplitting(@TempDir final Path temp) throws IOException {
+    void locatesObjectsBornFromSplitting(@Mktmp final Path temp) throws IOException {
         final Path sources = Files.createDirectories(temp.resolve("deep"));
         Files.writeString(
             sources.resolve("box.xmir"),
@@ -89,7 +92,7 @@ final class InferenceTest {
     }
 
     @Test
-    void buildsProvidesTableForWholeProgram(@TempDir final Path temp) throws IOException {
+    void buildsProvidesTableForWholeProgram(@Mktmp final Path temp) throws IOException {
         final Path folder = Files.createDirectories(temp.resolve("program"));
         Files.writeString(
             folder.resolve("app.xmir"),
@@ -117,7 +120,7 @@ final class InferenceTest {
     }
 
     @Test
-    void putsEveryFileOfProgramInOneTable(@TempDir final Path temp) throws IOException {
+    void putsEveryFileOfProgramInOneTable(@Mktmp final Path temp) throws IOException {
         final Path many = Files.createDirectories(temp.resolve("many"));
         Files.writeString(
             many.resolve("kettle.xmir"),
@@ -144,7 +147,7 @@ final class InferenceTest {
     }
 
     @Test
-    void keepsFoldersOfProgram(@TempDir final Path temp) throws IOException {
+    void keepsFoldersOfProgram(@Mktmp final Path temp) throws IOException {
         Files.writeString(
             Files.createDirectories(temp.resolve("tree").resolve("one")).resolve("leaf.xmir"),
             new EoSyntax(
