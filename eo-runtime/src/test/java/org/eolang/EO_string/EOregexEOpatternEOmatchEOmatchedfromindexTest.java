@@ -8,6 +8,8 @@
  */
 package org.eolang.EO_string; // NOPMD
 
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 import org.eolang.Bind;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -121,6 +123,35 @@ final class EOregexEOpatternEOmatchEOmatchedfromindexTest {
                 Matchers.containsString(EOregexEOpatternEOmatchEOmatchedfromindexTest.start()),
                 Matchers.containsString("must be less than or equal to text length")
             )
+        );
+    }
+
+    @Test
+    void rejectsSerializedBytesOfTheWrongType() throws Exception {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject("not a pattern");
+        }
+        final Phi pattern = Phi.Φ.take("string.regex").take("pattern").copy();
+        pattern.put(0, new Data.ToPhi(baos.toByteArray()));
+        final ExAbstract failure = Assertions.assertThrows(
+            ExAbstract.class,
+            () -> new Dataized(
+                new PhApplication(
+                    new PhApplication(
+                        pattern.take("match").copy(),
+                        "txt", new Data.ToPhi("hello")
+                    ).take("matched-from-index").copy(),
+                    new Bind(EOregexEOpatternEOmatchEOmatchedfromindexTest.position(), new Data.ToPhi(1)),
+                    new Bind(EOregexEOpatternEOmatchEOmatchedfromindexTest.start(), new Data.ToPhi(0))
+                ).take("from")
+            ).take(),
+            "bytes deserializing to the wrong type must fail with ExFailure, not a raw ClassCastException"
+        );
+        MatcherAssert.assertThat(
+            "the failure must be the clean deserialize message, not a raw ClassCastException",
+            failure.toString(),
+            Matchers.containsString("cannot deserialize the compiled regex pattern")
         );
     }
 
