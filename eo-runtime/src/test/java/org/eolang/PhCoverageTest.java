@@ -10,9 +10,9 @@ import com.yegor256.MktmpResolver;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Isolated;
@@ -70,39 +70,48 @@ final class PhCoverageTest {
     }
 
     @Test
+    void convertsInvalidCoveragePathIntoIllegalArgumentException() {
+        MatcherAssert.assertThat(
+            "a raw InvalidPathException leaked through unconverted",
+            this.failure(String.format("/tmp/%cinvalid", (char) 0)).getClass(),
+            Matchers.<Class<?>>equalTo(IllegalArgumentException.class)
+        );
+    }
+
+    @Test
     void namesThePropertyAndItsValueInAnInvalidCoveragePathFailure() {
-        final String before = System.getProperty("eo.coverageFile");
         final String bad = String.format("/tmp/%cinvalid", (char) 0);
-        System.setProperty("eo.coverageFile", bad);
+        MatcherAssert.assertThat(
+            "the failure must name the offending property and its value",
+            this.failure(bad).getMessage(),
+            Matchers.allOf(
+                Matchers.containsString("eo.coverageFile"),
+                Matchers.containsString(bad)
+            )
+        );
+    }
+
+    /**
+     * Failure raised while dataizing with the given value in the property.
+     * @param path Value to put into the {@code eo.coverageFile} property
+     * @return The exception thrown, or a placeholder if nothing was thrown
+     */
+    private RuntimeException failure(final String path) {
+        final Optional<String> before = Optional.ofNullable(System.getProperty("eo.coverageFile"));
+        System.setProperty("eo.coverageFile", path);
+        RuntimeException thrown = new IllegalStateException("nothing was thrown at all");
         try {
-            final Phi phi = new PhCoverage(
-                new PhDefault(new byte[] {(byte) 0x03}), "Φ.invalid-coverage-path", 11, 1
-            );
-            final IllegalArgumentException failure = Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> new Dataized(phi).take(),
-                "an invalid 'eo.coverageFile' value must fail with IllegalArgumentException"
-            );
-            MatcherAssert.assertThat(
-                "the failure class must be exactly IllegalArgumentException, "
-                    + "not a raw InvalidPathException leaking through unconverted",
-                failure.getClass(),
-                Matchers.<Class<?>>equalTo(IllegalArgumentException.class)
-            );
-            MatcherAssert.assertThat(
-                "the failure must name the offending property and its value",
-                failure.getMessage(),
-                Matchers.allOf(
-                    Matchers.containsString("eo.coverageFile"),
-                    Matchers.containsString(bad)
+            new Dataized(
+                new PhCoverage(
+                    new PhDefault(new byte[] {(byte) 0x03}), "Φ.invalid-coverage-path", 11, 1
                 )
-            );
+            ).take();
+        } catch (final IllegalArgumentException ex) {
+            thrown = ex;
         } finally {
-            if (before == null) {
-                System.clearProperty("eo.coverageFile");
-            } else {
-                System.setProperty("eo.coverageFile", before);
-            }
+            System.clearProperty("eo.coverageFile");
+            before.ifPresent(value -> System.setProperty("eo.coverageFile", value));
         }
+        return thrown;
     }
 }
