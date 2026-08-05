@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XMLDocument;
+import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -13,10 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.xembly.Directives;
 import org.xembly.Xembler;
-
-import java.util.stream.Stream;
 
 /**
  * Test case for {@link Listing}.
@@ -38,11 +38,18 @@ final class ListingTest {
     void dropsCharactersForbiddenInXml() {
         MatcherAssert.assertThat(
             "characters that XML text nodes can't hold must be dropped",
-            ListingTest.listing("[] > x\u0001\u0007\u001F\u007F"),
+            ListingTest.listing(
+                String.format(
+                    "[] > x%c%c%c%c",
+                    (char) 0x01,
+                    (char) 0x07,
+                    (char) 0x1F,
+                    (char) 0x7F
+                )
+            ),
             Matchers.equalTo("[] > x")
         );
     }
-
 
     @Test
     void doesNotThrowExceptionOnEmptySource() {
@@ -57,6 +64,36 @@ final class ListingTest {
         MatcherAssert.assertThat(
             "An empty source must produce an empty listing",
             ListingTest.listing(""),
+            Matchers.emptyString()
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+        ints = {
+            0x00,
+            0x01,
+            0x08,
+            0x0B,
+            0x0C,
+            0x0E,
+            0x1F,
+            0xFFFE,
+            0xFFFF,
+            0x7F,
+            0x80,
+            0x84,
+            0x86,
+            0x9F
+        }
+    )
+    void removesForbiddenCharacters(final int codepoint) {
+        final String source = new String(Character.toChars(codepoint));
+        MatcherAssert.assertThat(
+            String.format(
+                "Character '%s' (%s code) must be removed from EO listing", source, codepoint
+            ),
+            ListingTest.listing(source),
             Matchers.emptyString()
         );
     }
