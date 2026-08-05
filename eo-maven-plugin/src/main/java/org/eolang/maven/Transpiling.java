@@ -151,13 +151,20 @@ final class Transpiling implements Step {
 
     @Override
     public void exec() throws IOException {
+        final JavaFiles files = new JavaFiles(
+            this.generatedDir,
+            this.cacheDir.resolve(Transpiling.CACHE).resolve(this.version()),
+            this.cacheEnabled
+        );
+        final int transpiled = new Threaded<>(
+            this.sources,
+            tojo -> this.transpiled(tojo, files)
+        ).total();
+        files.removeStale();
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
             this.sources.size(),
-            new Threaded<>(
-                this.sources,
-                this::transpiled
-            ).total() + new PackageInfos(this.generatedDir, this.roots).create(),
+            transpiled + new PackageInfos(this.generatedDir, this.roots).create(),
             this.generatedDir
         );
     }
@@ -176,7 +183,7 @@ final class Transpiling implements Step {
      * @return Number of generated Java files
      * @throws IOException If any issues with I/O
      */
-    private int transpiled(final TjForeign tojo) throws IOException {
+    private int transpiled(final TjForeign tojo, final JavaFiles files) throws IOException {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final Path base = this.targetDir.resolve(Transpiling.DIR);
@@ -216,9 +223,7 @@ final class Transpiling implements Step {
             rewrite.compareAndSet(false, true);
             new Saved(transform.apply(xmir).toString(), target).value();
         }
-        return new JavaFiles(
-            this.generatedDir, cdir.resolve(this.version()), this.cacheEnabled
-        ).total(
+        return files.total(
             rewrite.get(), target, hsh.get(), this.transpileTests && !tojo.discovered()
         );
     }

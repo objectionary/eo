@@ -45,4 +45,36 @@ final class JavaFilesTest {
             Matchers.equalTo(1)
         );
     }
+
+    @Test
+    void removesJavaFilesNotGeneratedInCurrentRun(@Mktmp final Path temp) throws IOException {
+        final Path generated = temp.resolve("generated");
+        final Path first = temp.resolve("first.xmir");
+        final Path second = temp.resolve("second.xmir");
+        new Saved(
+            "<object><class java-name='org.eolang.EOfirst'><java>class EOfirst {}</java></class></object>",
+            first
+        ).value();
+        new Saved(
+            "<object><class java-name='org.eolang.EOsecond'><java>class EOsecond {}</java></class></object>",
+            second
+        ).value();
+        final JavaFiles initial = new JavaFiles(generated, temp.resolve("cache"), false);
+        initial.total(true, first, "", false);
+        initial.total(true, second, "", false);
+        initial.removeStale();
+        final JavaFiles current = new JavaFiles(generated, temp.resolve("cache"), false);
+        current.total(true, second, "", false);
+        current.removeStale();
+        MatcherAssert.assertThat(
+            "a Java file for an XMIR absent from the current transpilation must be deleted",
+            generated.resolve("org/eolang/EOfirst.java").toFile().exists(),
+            Matchers.is(false)
+        );
+        MatcherAssert.assertThat(
+            "a Java file still generated from a current XMIR must remain",
+            generated.resolve("org/eolang/EOsecond.java").toFile().exists(),
+            Matchers.is(true)
+        );
+    }
 }
