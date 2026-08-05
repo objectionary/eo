@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
-import org.cactoos.iterable.IterableOf;
 import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -132,15 +131,13 @@ final class OyCachedTest {
     @Test
     void propagatesOriginFailureFromGetAsIoException() {
         final IOException failure = new IOException("origin failed");
-        final IOException caught = Assertions.assertThrows(
-            IOException.class,
-            () -> new OyCached(new OyCachedTest.Failing(failure)).get("foo"),
-            "a failure from the origin objectionary must surface as IOException, "
-                + "not IllegalStateException"
-        );
         MatcherAssert.assertThat(
-            "the original IOException must reach the caller unwrapped",
-            caught,
+            "the original IOException must stay in the cause chain",
+            Assertions.assertThrows(
+                IOException.class,
+                () -> new OyCached(new FailingObjectionary(failure)).get("foo"),
+                "a failure from the origin objectionary must surface as IOException"
+            ).getCause().getCause(),
             Matchers.sameInstance(failure)
         );
     }
@@ -148,57 +145,14 @@ final class OyCachedTest {
     @Test
     void propagatesOriginFailureFromIsDirectoryAsIoException() {
         final IOException failure = new IOException("origin failed");
-        final IOException caught = Assertions.assertThrows(
-            IOException.class,
-            () -> new OyCached(new OyCachedTest.Failing(failure)).isDirectory("foo"),
-            "a failure from the origin objectionary must surface as IOException, "
-                + "not IllegalStateException"
-        );
         MatcherAssert.assertThat(
-            "the original IOException must reach the caller unwrapped",
-            caught,
+            "the original IOException must stay in the cause chain",
+            Assertions.assertThrows(
+                IOException.class,
+                () -> new OyCached(new FailingObjectionary(failure)).isDirectory("foo"),
+                "a failure from the origin objectionary must surface as IOException"
+            ).getCause().getCause(),
             Matchers.sameInstance(failure)
         );
-    }
-
-    /**
-     * An objectionary whose {@code get()} and {@code isDirectory()} always fail
-     * with a given {@link IOException}.
-     * @since 0.74.0
-     */
-    private static final class Failing implements Objectionary {
-
-        /**
-         * The failure to throw.
-         */
-        private final IOException failure;
-
-        /**
-         * Ctor.
-         * @param cause The failure to throw
-         */
-        Failing(final IOException cause) {
-            this.failure = cause;
-        }
-
-        @Override
-        public Input get(final String name) throws IOException {
-            throw this.failure;
-        }
-
-        @Override
-        public boolean contains(final String name) {
-            return false;
-        }
-
-        @Override
-        public boolean isDirectory(final String name) throws IOException {
-            throw this.failure;
-        }
-
-        @Override
-        public Iterable<String> children(final String pkg) {
-            return new IterableOf<>();
-        }
     }
 }

@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.cactoos.Input;
@@ -68,12 +69,14 @@ final class OyCached implements Objectionary {
                     try {
                         return this.origin.get(name);
                     } catch (final IOException exception) {
-                        throw new OyCached.Uncached(exception);
+                        throw new UncheckedIOException(exception);
                     }
                 }
             );
-        } catch (final OyCached.Uncached wrap) {
-            throw wrap.origin();
+        } catch (final UncheckedIOException wrap) {
+            throw new IOException(
+                String.format("Failed to fetch '%s' from the origin objectionary", name), wrap
+            );
         }
     }
 
@@ -92,46 +95,19 @@ final class OyCached implements Objectionary {
                     try {
                         return this.origin.isDirectory(name);
                     } catch (final IOException exception) {
-                        throw new OyCached.Uncached(exception);
+                        throw new UncheckedIOException(exception);
                     }
                 }
             );
-        } catch (final OyCached.Uncached wrap) {
-            throw wrap.origin();
+        } catch (final UncheckedIOException wrap) {
+            throw new IOException(
+                String.format("Failed to check whether '%s' is a directory", name), wrap
+            );
         }
     }
 
     @Override
     public Iterable<String> children(final String pkg) throws IOException {
         return this.origin.children(pkg);
-    }
-
-    /**
-     * Carries an {@link IOException} through a {@code computeIfAbsent()} lambda,
-     * which cannot declare checked exceptions.
-     * @since 0.74.0
-     */
-    private static final class Uncached extends RuntimeException {
-
-        /**
-         * Serialization identifier.
-         */
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * Ctor.
-         * @param cause The original I/O failure
-         */
-        Uncached(final IOException cause) {
-            super(cause);
-        }
-
-        /**
-         * The original I/O failure.
-         * @return The exception
-         */
-        IOException origin() {
-            return (IOException) this.getCause();
-        }
     }
 }
