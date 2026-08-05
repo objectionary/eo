@@ -2,12 +2,11 @@
 - added: 8
   cycles: 1
   deleted: 8
-  error: deadlock; recursive locking
   inserted: 8
-  seconds: 2160.200204967
+  seconds: 2161.113184069
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-05 20:46:58.938598971 Z
+  when: 2026-08-05 22:25:15.722901202 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -24540,22 +24539,6 @@
   when: 2025-08-21 06:37:41.000000000 Z
   where: github
   who: 29139614
-- _id: 925484
-  _job: 17428110926
-  _time: 2025-09-03 09:11:09.666103192 Z
-  _version: 0.15.8/0.53.6/
-  branch: renovate/actions-checkout-5.x
-  details: The pull request objectionary/eo-json#32 has been opened by @renovate[bot].
-  event_id: 53210577321
-  event_type: PullRequestEvent
-  is_human: 0
-  issue: 32
-  repository: 482612876
-  tombstone: 2026-08-05 19:36:38.047715658 Z
-  what: pull-was-opened
-  when: 2025-08-11 14:26:40.000000000 Z
-  where: github
-  who: 29139614
 - _id: 925547
   _job: 17428110926
   _time: 2025-09-03 09:14:46.074748297 Z
@@ -24909,22 +24892,6 @@
   when: 2025-08-21 12:55:06.000000000 Z
   where: github
   who: 84927447
-- _id: 926482
-  _job: 17429488163
-  _time: 2025-09-03 09:51:11.164647371 Z
-  _version: 0.15.8/0.53.6/
-  branch: renovate/actions-checkout-5.x
-  details: The pull request objectionary/eo-vim#16 has been opened by @renovate[bot].
-  event_id: 53220483519
-  event_type: PullRequestEvent
-  is_human: 0
-  issue: 16
-  repository: 519246071
-  tombstone: 2026-08-05 19:36:37.986314264 Z
-  what: pull-was-opened
-  when: 2025-08-11 17:56:40.000000000 Z
-  where: github
-  who: 29139614
 - _id: 926483
   _job: 17429488163
   _time: 2025-09-03 09:51:13.232718447 Z
@@ -24969,23 +24936,6 @@
   repository: 492899189
   what: pull-was-opened
   when: 2025-08-21 06:48:09.000000000 Z
-  where: github
-  who: 29139614
-- _id: 926537
-  _job: 17429488163
-  _time: 2025-09-03 10:01:33.641619288 Z
-  _version: 0.15.8/0.53.6/
-  branch: renovate/actions-checkout-5.x
-  details: The pull request objectionary/eo-intellij-plugin#75 has been opened by
-    @renovate[bot].
-  event_id: 53209963277
-  event_type: PullRequestEvent
-  is_human: 0
-  issue: 75
-  repository: 492899189
-  tombstone: 2026-08-05 19:36:38.017427602 Z
-  what: pull-was-opened
-  when: 2025-08-11 14:15:25.000000000 Z
   where: github
   who: 29139614
 - _id: 926538
@@ -41178,6 +41128,7 @@
   is_human: 1
   issue: 174
   repository: 798766850
+  tombstone: 2026-08-05 20:49:48.454241030 Z
   what: issue-was-closed
   when: &266 2025-11-22 21:15:56.000000000 Z
   where: github
@@ -41276,6 +41227,7 @@
   is_human: 1
   issue: 174
   repository: 798766850
+  tombstone: 2026-08-05 20:49:48.461257797 Z
   what: issue-was-opened
   when: &207 2025-11-22 20:14:24.000000000 Z
   where: github
@@ -41317,6 +41269,7 @@
   issue: 166
   repository: 798766850
   succeeded_builds: 8
+  tombstone: 2026-08-05 20:48:34.435309883 Z
   what: pull-was-closed
   when: 2025-11-20 19:13:12.000000000 Z
   where: github
@@ -41539,6 +41492,7 @@
   details: 'In the repository #798766850, the user #56538398 submitted the issue #174
     which was later closed by the user #37025995 not becoming a bug or enhancement;
     this means that the issue was not valid, maybe a duplicate or simply a mistake.'
+  done: 2026-08-05 20:49:48.426332399 Z
   is_human: 1
   issue: 174
   repository: 798766850
@@ -41778,6 +41732,7 @@
   issue: 174
   label: bug
   repository: 798766850
+  tombstone: 2026-08-05 20:49:48.465623966 Z
   what: label-was-attached
   when: &214 2025-11-22 21:04:50.000000000 Z
   where: github
@@ -41810,6 +41765,7 @@
   issue: 174
   reporter: 56538398
   repository: 798766850
+  tombstone: 2026-08-05 20:49:48.469486835 Z
   what: bug-was-accepted
   when: *214
   where: github
@@ -41826,6 +41782,7 @@
   issue: 173
   reporter: 66840575
   repository: 798766850
+  tombstone: 2026-08-05 20:48:34.442519440 Z
   what: enhancement-was-accepted
   when: *215
   where: github
@@ -42904,30 +42861,6 @@
   when: &234 2025-11-25 16:39:32.000000000 Z
   where: github
   who: 8086956
-- _id: 1048432
-  _job: 19731851394
-  _time: 2025-11-27 09:54:06.118374691 Z
-  _version: 0.16.8/0.57.2/0.16.2
-  branch: renovate/actions-checkout-5.x
-  comments: 0
-  comments_appreciated: 0
-  comments_by_author: 0
-  comments_by_reviewers: 0
-  comments_resolved: 0
-  comments_to_code: 0
-  details: Apparently, objectionary/eo-json#32 has been "pull-was-closed".
-  done: 2026-08-05 19:36:38.019753972 Z
-  failed_builds: 5
-  files: 2
-  hoc: 8
-  is_human: 0
-  issue: 32
-  repository: 482612876
-  succeeded_builds: 0
-  what: pull-was-closed
-  when: 2025-11-20 18:38:57.000000000 Z
-  where: github
-  who: 29139614
 - _id: 1048433
   _job: 19731851394
   _time: 2025-11-27 09:54:10.033923486 Z
@@ -43173,6 +43106,7 @@
   issue: 33
   repository: 570457023
   succeeded_builds: 1
+  tombstone: 2026-08-05 20:48:34.457126551 Z
   what: pull-was-closed
   when: 2025-11-20 18:42:05.000000000 Z
   where: github
@@ -43301,30 +43235,6 @@
   when: &251 2025-11-25 08:55:18.000000000 Z
   where: github
   who: 8086956
-- _id: 1048452
-  _job: 19731851394
-  _time: 2025-11-27 09:58:32.651248466 Z
-  _version: 0.16.8/0.57.2/0.16.2
-  branch: renovate/actions-checkout-5.x
-  comments: 0
-  comments_appreciated: 0
-  comments_by_author: 0
-  comments_by_reviewers: 0
-  comments_resolved: 0
-  comments_to_code: 0
-  details: Apparently, objectionary/eo-intellij-plugin#75 has been "pull-was-closed".
-  done: 2026-08-05 19:36:37.988643447 Z
-  failed_builds: 9
-  files: 9
-  hoc: 18
-  is_human: 0
-  issue: 75
-  repository: 492899189
-  succeeded_builds: 4
-  what: pull-was-closed
-  when: 2025-11-20 17:48:40.000000000 Z
-  where: github
-  who: 29139614
 - _id: 1048453
   _job: 19731851394
   _time: 2025-11-27 09:58:43.224345276 Z
@@ -45534,6 +45444,7 @@
   is_human: 1
   issue: 174
   repository: 798766850
+  tombstone: 2026-08-05 20:49:48.473828948 Z
   what: issue-was-assigned
   when: 2025-11-22 21:04:48.000000000 Z
   where: github
@@ -46061,6 +45972,7 @@
   opener: 56538398
   repository: 798766850
   seconds: 668
+  tombstone: 2026-08-05 20:49:48.477515011 Z
   what: bug-was-resolved
   when: *266
   where: github
@@ -58239,6 +58151,7 @@
   issue: 174
   receipt: receipt-#53273
   repository: 798766850
+  tombstone: 2026-08-05 20:49:48.482517857 Z
   what: resolved-bug-was-rewarded
   when: 2025-12-14 04:33:37.767204919 Z
   where: github
@@ -58486,6 +58399,7 @@
   issue: 174
   receipt: receipt-#53303
   repository: 798766850
+  tombstone: 2026-08-05 20:49:48.485776773 Z
   what: bug-report-was-rewarded
   when: 2025-12-14 06:19:58.639045827 Z
   where: github
@@ -59275,6 +59189,7 @@
   is_human: 1
   issue: 174
   repository: 798766850
+  tombstone: 2026-08-05 20:49:48.489073910 Z
   what: dud-was-punished
   when: 2025-12-14 11:20:17.405818245 Z
   where: github
@@ -74344,6 +74259,7 @@
   repository: 889819508
   review_comments: 1
   seconds: 255
+  tombstone: 2026-08-05 20:48:34.471734386 Z
   what: code-was-reviewed
   when: 2025-11-22 14:55:21.000000000 Z
   where: github
@@ -74362,6 +74278,7 @@
   repository: 889819508
   review_comments: 0
   seconds: 1047087
+  tombstone: 2026-08-05 20:49:48.277836553 Z
   what: code-was-reviewed
   when: 2025-12-04 17:42:33.000000000 Z
   where: github
@@ -104961,6 +104878,7 @@
   - 19-23
   - '25'
   - 29-30
+  - '32'
   repository: 482612876
   what: tombstone
   where: github
@@ -104999,6 +104917,7 @@
   - 60-63
   - 66-68
   - 71-72
+  - '75'
   repository: 492899189
   what: tombstone
   where: github
@@ -305825,7 +305744,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 831
   earliest_issue_was_found: 1
   events_were_scanned: 12827163891
   issues_were_scanned: 0
@@ -309589,7 +309508,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 999
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12833767117
   issues_were_scanned: 982
@@ -312540,7 +312459,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1120
   earliest_issue_was_found: 1
   events_were_scanned: 12753399301
   issues_were_scanned: 0
@@ -312574,13 +312493,13 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6374
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 16845083457
+  events_were_scanned: 12846243078
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6095
   latest_issue_was_found: 4591
-  merges_were_scanned: 0
+  merges_were_scanned: 6391
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
@@ -449878,6 +449797,7 @@
   issue: 744
   reporter: 51804353
   repository: 889819508
+  tombstone: 2026-08-05 20:48:34.479187903 Z
   what: bug-was-accepted
   when: *4018
   where: github
@@ -450718,31 +450638,6 @@
   when: 2026-08-05 12:29:50.000000000 Z
   where: github
   who: 83453843
-- _id: 1116668
-  _job: 31009047906
-  _time: 2026-08-05 13:18:51.709317287 Z
-  _version: 0.19.16/0.61.1/0.17.21
-  branch: renovate/actions-checkout-5.x
-  comments: 0
-  comments_appreciated: 0
-  comments_by_author: 0
-  comments_by_reviewers: 0
-  comments_resolved: 0
-  comments_to_code: 0
-  details: Apparently, objectionary/eo-vim#16 has been "pull-was-closed".
-  done: 2026-08-05 19:36:37.956696167 Z
-  failed_builds: 1
-  files: 1
-  hoc: 4
-  is_human: 0
-  issue: 16
-  repository: 519246071
-  succeeded_builds: 0
-  suggestions: 0
-  what: pull-was-closed
-  when: 2025-11-20 17:04:46.000000000 Z
-  where: github
-  who: 29139614
 - _id: 1116669
   _job: 31009047906
   _time: 2026-08-05 13:25:05.600132964 Z
@@ -451441,8 +451336,10 @@
     to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
     it. Your running score is [+42](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/eo/issues/6395/#issuecomment-5197160090
   is_human: 1
   issue: 6395
+  receipt: receipt-#84634
   repository: 73056727
   what: bug-report-was-rewarded
   when: 2026-08-05 19:35:20.719041896 Z
@@ -451463,11 +451360,25 @@
     to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
     it. Your running score is [+54](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/eo/issues/6401/#issuecomment-5197160316
   is_human: 1
   issue: 6401
+  receipt: receipt-#84635
   repository: 73056727
   what: bug-report-was-rewarded
   when: 2026-08-05 19:35:21.725669860 Z
   where: github
   who: 83453843
   why: Reported bug in objectionary/eo#6401
+- _id: 1116712
+  _job: 31050169995
+  _time: 2026-08-05 21:59:51.140082548 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  assigner: 51804353
+  details: objectionary/eo#6392 was assigned to @volodya-lombrozo by @volodya-lombrozo.
+  issue: 6392
+  repository: 73056727
+  what: issue-was-assigned
+  when: 2026-08-05 10:35:25.000000000 Z
+  where: github
+  who: 51804353
