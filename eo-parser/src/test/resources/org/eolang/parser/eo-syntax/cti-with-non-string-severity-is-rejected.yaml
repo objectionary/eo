@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object/errors/error[@check='cti']
+  - /object/errors/error[contains(text(),'severity')]
+input: |
+  [] > app
+    cti 1 2 > x
