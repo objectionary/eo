@@ -17,6 +17,11 @@ import java.util.List;
 public final class SockaddrIn extends Structure {
 
     /**
+     * Size of the padding in a C {@code sockaddr_in}.
+     */
+    private static final int PADDING_SIZE = 8;
+
+    /**
      * Address family (e.g., AF_INET).
      */
     public short family;
@@ -40,7 +45,7 @@ public final class SockaddrIn extends Structure {
      * Ctor.
      */
     public SockaddrIn() {
-        this((short) 0, (short) 0, 0, new byte[]{0, 0, 0, 0, 0, 0, 0, 0});
+        this((short) 0, (short) 0, 0, new byte[SockaddrIn.PADDING_SIZE]);
     }
 
     /**
@@ -50,7 +55,7 @@ public final class SockaddrIn extends Structure {
      * @param addr Address
      */
     public SockaddrIn(final short family, final short port, final int addr) {
-        this(family, port, addr, new byte[]{0, 0, 0, 0, 0, 0, 0, 0});
+        this(family, port, addr, new byte[SockaddrIn.PADDING_SIZE]);
     }
 
     /**
@@ -62,6 +67,14 @@ public final class SockaddrIn extends Structure {
      */
     public SockaddrIn(final short family, final short port, final int addr, final byte[] zero) {
         super();
+        if (zero.length != SockaddrIn.PADDING_SIZE) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "The sockaddr_in padding must contain exactly %d bytes, not %d",
+                    SockaddrIn.PADDING_SIZE, zero.length
+                )
+            );
+        }
         this.family = family;
         this.port = port;
         this.addr = addr;
