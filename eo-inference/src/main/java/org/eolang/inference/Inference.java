@@ -73,8 +73,9 @@ public final class Inference {
 
     /**
      * Work out the types and write down what is known.
-     * @param output The directory for the prepared XMIR files, which
-     *  keep the names they had
+     * @param output The empty directory for the prepared XMIR files,
+     *  which keep the names they had; nothing is deleted from it, so a
+     *  file left there by an earlier run would outlive its source
      * @param tables The directory for the tables, a document each
      * @throws IOException If a file cannot be read or written
      */

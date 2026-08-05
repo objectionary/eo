@@ -23,11 +23,12 @@ import com.yegor256.tojos.Tojos;
  * keeps its catalogues in. A row is a handful of named cells, which is
  * all a fact about a type ever is, and asking for them back is a
  * {@code select} rather than a hand-written query — the checker's
- * to-do loop will do little else. Thread-safety and caching arrive as
- * decorators when they are needed, and every table can be written out
- * as CSV or JSON for free. The XML the module reports is a view over
- * these rows, built by {@link Grouped}; the rows themselves are the
- * truth.</p>
+ * to-do loop will do little else. Thread-safety arrives as a decorator
+ * when it is needed, caching is there already because the view reads
+ * every row more than once, and a different mono would write a table
+ * out as CSV or JSON should there ever be a reason to. The XML the
+ * module reports is a view over these rows, built by {@link Grouped};
+ * the rows themselves are the truth.</p>
  *
  * @since 0.67.0
  */
