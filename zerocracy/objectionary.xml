@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fb version="0.19.6" size="8646097">
+<fb version="0.19.6" size="8647574">
   <f>
     <added t="I">8</added>
     <cycles t="I">1</cycles>
     <deleted t="I">8</deleted>
+    <error t="S">deadlock; recursive locking</error>
     <inserted t="I">8</inserted>
-    <seconds t="F">2160.860660732</seconds>
+    <seconds t="F">2160.200204967</seconds>
     <version t="S">0.61.1</version>
     <what t="S">judges-summary</what>
-    <when t="T">2026-08-05T19:33:54Z</when>
+    <when t="T">2026-08-05T20:46:58Z</when>
   </f>
   <f>
     <_id t="I">671</_id>
@@ -27193,6 +27194,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">32</issue>
     <repository t="I">482612876</repository>
+    <tombstone t="T">2026-08-05T19:36:38Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-08-11T14:26:40Z</when>
     <where t="S">github</where>
@@ -27604,6 +27606,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">16</issue>
     <repository t="I">519246071</repository>
+    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-08-11T17:56:40Z</when>
     <where t="S">github</where>
@@ -27672,6 +27675,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">75</issue>
     <repository t="I">492899189</repository>
+    <tombstone t="T">2026-08-05T19:36:38Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-08-11T14:15:25Z</when>
     <where t="S">github</where>
@@ -27956,6 +27960,7 @@
     <is_human t="I">0</is_human>
     <issue t="I">33</issue>
     <repository t="I">570457023</repository>
+    <tombstone t="T">2026-08-05T19:36:38Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-08-11T14:25:43Z</when>
     <where t="S">github</where>
@@ -45777,6 +45782,7 @@
     <is_human t="I">1</is_human>
     <issue t="I">166</issue>
     <repository t="I">798766850</repository>
+    <tombstone t="T">2026-08-05T19:36:38Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-20T10:24:01Z</when>
     <where t="S">github</where>
@@ -46079,6 +46085,7 @@
     <is_human t="I">1</is_human>
     <issue t="I">173</issue>
     <repository t="I">798766850</repository>
+    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
     <what t="S">issue-was-closed</what>
     <when t="T">2025-11-23T15:25:14Z</when>
     <where t="S">github</where>
@@ -46257,6 +46264,7 @@
     <is_human t="I">1</is_human>
     <issue t="I">173</issue>
     <repository t="I">798766850</repository>
+    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
     <what t="S">issue-was-opened</what>
     <when t="T">2025-11-21T21:30:58Z</when>
     <where t="S">github</where>
@@ -46275,6 +46283,7 @@
     <comments_resolved t="I">0</comments_resolved>
     <comments_to_code t="I">0</comments_to_code>
     <details t="S">The pull request objectionary/eo2js#166 has been closed by @skulidropek, with 0 HoC and 0 comments.</details>
+    <done t="T">2026-08-05T19:36:38Z</done>
     <event_id t="I">4842139544</event_id>
     <event_type t="S">PullRequestEvent</event_type>
     <failed_builds t="I">3</failed_builds>
@@ -46777,6 +46786,7 @@
     <issue t="I">173</issue>
     <label t="S">enhancement</label>
     <repository t="I">798766850</repository>
+    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
     <what t="S">label-was-attached</what>
     <when t="T">2025-11-22T10:13:03Z</when>
     <where t="S">github</where>
@@ -46837,6 +46847,7 @@
     <_time t="T">2025-11-24T12:17:43Z</_time>
     <_version t="S">0.16.8/0.57.1/0.16.1</_version>
     <details t="S">In the repository #798766850, the user #37025995 attached the '#enhancement' label to the issue #173 reported by the user #66840575; this means that a feature request was-accepted as valid, by the project team.</details>
+    <done t="T">2026-08-05T19:36:37Z</done>
     <is_human t="I">1</is_human>
     <issue t="I">173</issue>
     <reporter t="I">66840575</reporter>
@@ -48033,6 +48044,7 @@
     <comments_resolved t="I">0</comments_resolved>
     <comments_to_code t="I">0</comments_to_code>
     <details t="S">Apparently, objectionary/eo-json#32 has been "pull-was-closed".</details>
+    <done t="T">2026-08-05T19:36:38Z</done>
     <failed_builds t="I">5</failed_builds>
     <files t="I">2</files>
     <hoc t="I">8</hoc>
@@ -48301,6 +48313,7 @@
     <comments_resolved t="I">0</comments_resolved>
     <comments_to_code t="I">0</comments_to_code>
     <details t="S">Apparently, objectionary/eo-http#33 has been "pull-was-closed".</details>
+    <done t="T">2026-08-05T19:36:38Z</done>
     <failed_builds t="I">7</failed_builds>
     <files t="I">4</files>
     <hoc t="I">8</hoc>
@@ -48460,6 +48473,7 @@
     <comments_resolved t="I">0</comments_resolved>
     <comments_to_code t="I">0</comments_to_code>
     <details t="S">Apparently, objectionary/eo-intellij-plugin#75 has been "pull-was-closed".</details>
+    <done t="T">2026-08-05T19:36:37Z</done>
     <failed_builds t="I">9</failed_builds>
     <files t="I">9</files>
     <hoc t="I">18</hoc>
@@ -64552,6 +64566,7 @@
     <issue t="I">173</issue>
     <receipt t="S">receipt-#53257</receipt>
     <repository t="I">798766850</repository>
+    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
     <what t="S">enhancement-suggestion-was-rewarded</what>
     <when t="T">2025-12-14T02:38:43Z</when>
     <where t="S">github</where>
@@ -81182,6 +81197,7 @@
     <is_human t="I">1</is_human>
     <issue t="I">784</issue>
     <repository t="I">889819508</repository>
+    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
     <what t="S">pull-was-opened</what>
     <when t="T">2025-11-22T14:51:06Z</when>
     <where t="S">github</where>
@@ -81399,6 +81415,7 @@
     <review_comments t="I">3</review_comments>
     <succeeded_builds t="I">19</succeeded_builds>
     <suggestions t="I">3</suggestions>
+    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
     <what t="S">pull-was-merged</what>
     <when t="T">2025-12-27T11:58:36Z</when>
     <where t="S">github</where>
@@ -81713,6 +81730,7 @@
     <repository t="I">889819508</repository>
     <review_comments t="I">3</review_comments>
     <seconds t="I">3013650</seconds>
+    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
     <what t="S">code-was-contributed</what>
     <when t="T">2025-12-27T11:58:36Z</when>
     <where t="S">github</where>
@@ -81845,6 +81863,7 @@
     <author t="I">83453843</author>
     <comments t="I">3</comments>
     <details t="S">The pull request objectionary/lints#784 with 160 HoC created by @h1alexbel was reviewed by @coderabbitai[bot] after 0h4m and 1 comments.</details>
+    <done t="T">2026-08-05T19:36:37Z</done>
     <hoc t="I">160</hoc>
     <is_human t="I">0</is_human>
     <issue t="I">784</issue>
@@ -81891,6 +81910,7 @@
     <repository t="I">889819508</repository>
     <review_comments t="I">3</review_comments>
     <seconds t="I">3013650</seconds>
+    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
     <what t="S">code-contribution-was-rewarded</what>
     <when t="T">2025-12-28T20:15:24Z</when>
     <where t="S">github</where>
@@ -81912,6 +81932,7 @@
     <repository t="I">889819508</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">1047087</seconds>
+    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
     <what t="S">code-review-was-rewarded</what>
     <when t="T">2025-12-28T20:15:35Z</when>
     <where t="S">github</where>
@@ -326774,6 +326795,7 @@
       <v t="F">2.7459194273799485</v>
       <v t="F">2.7459194273799485</v>
       <v t="F">2.7459194273799485</v>
+      <v t="F">2.7459194273799485</v>
     </cost_of_qod>
     <qod_per_day>
       <v t="F">20.262571430008</v>
@@ -327479,9 +327501,10 @@
       <v t="F">210.89137121213858</v>
       <v t="F">210.89137121213858</v>
       <v t="F">210.89137121213858</v>
+      <v t="F">210.89137121213858</v>
     </qod_per_day>
     <what t="S">learn-eva</what>
-    <when t="T">2026-08-05T08:43:18Z</when>
+    <when t="T">2026-08-05T19:37:09Z</when>
   </f>
   <f>
     <_id t="I">1108432</_id>
@@ -328902,7 +328925,7 @@
     <_job t="I">28918253257</_job>
     <_time t="T">2026-07-08T04:55:42Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">831</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">12827163891</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
@@ -332953,7 +332976,7 @@
     <_job t="I">29014863301</_job>
     <_time t="T">2026-07-09T11:37:47Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">0</assignees_were_scanned>
+    <assignees_were_scanned t="I">999</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">12833767117</events_were_scanned>
     <issues_were_scanned t="I">982</issues_were_scanned>
@@ -336039,7 +336062,7 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:00Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">1120</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">12753399301</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
@@ -336077,13 +336100,13 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:01Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">6232</assignees_were_scanned>
+    <assignees_were_scanned t="I">6374</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">12840544777</events_were_scanned>
+    <events_were_scanned t="I">16845083457</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
-    <labels_were_scanned t="I">6095</labels_were_scanned>
+    <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">4591</latest_issue_was_found>
-    <merges_were_scanned t="I">6391</merges_were_scanned>
+    <merges_were_scanned t="I">0</merges_were_scanned>
     <min_issue_was_found t="I">4341</min_issue_was_found>
     <min_pull_was_found t="I">5337</min_pull_was_found>
     <repository t="I">73056727</repository>
@@ -475576,29 +475599,6 @@
     <who t="I">96509556</who>
   </f>
   <f>
-    <_id t="I">1116157</_id>
-    <_job t="I">85006</_job>
-    <_time t="T">2026-08-03T16:41:37Z</_time>
-    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
-    <analyzers t="I">18</analyzers>
-    <text t="S">The average reward per task (8.8 points) is increasing (R=0.15).
-The average punishment per task (7.0 points) is decreasing (R=-0.20).
-The average number of builds per week (9090.9) is increasing (R=0.76).
-The average number of commits per week (232.3) is increasing (R=0.75).
-The average bugs accepted per month (39.0) is increasing (R=0.66).
-The average monthly punishment (379 points) is increasing (R=0.23).
-The average monthly wage (10.3 points) is increasing (R=0.70).
-The average issue cycle time (6d22h) is staying still.
-The average pull cycle time (6d17h) is staying still.
-The average quality of service (82%) is decreasing (R=0.76).
-The average number of releases per month (23.2) is increasing (R=0.47).
-The average monthly turnover (24.0 developers) is increasing (R=0.85).
-The average weekly cost of HoC (6.01 points) is staying still.
-The average monthly zents/points ratio (0.40) is decreasing (R=0.87).</text>
-    <what t="S">assessment</what>
-    <when t="T">2026-08-03T16:41:37Z</when>
-  </f>
-  <f>
     <_id t="I">1116158</_id>
     <_job t="I">85006</_job>
     <_time t="T">2026-08-03T16:41:44Z</_time>
@@ -484255,6 +484255,7 @@ The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
     <is_human t="I">1</is_human>
     <issue t="I">744</issue>
     <repository t="I">889819508</repository>
+    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
     <what t="S">issue-was-closed</what>
     <when t="T">2026-08-05T05:14:29Z</when>
     <where t="S">github</where>
@@ -484269,6 +484270,7 @@ The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
     <is_human t="I">1</is_human>
     <issue t="I">744</issue>
     <repository t="I">889819508</repository>
+    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
     <what t="S">issue-was-opened</what>
     <when t="T">2025-09-09T07:57:58Z</when>
     <where t="S">github</where>
@@ -484327,6 +484329,7 @@ The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
     <issue t="I">744</issue>
     <label t="S">bug</label>
     <repository t="I">889819508</repository>
+    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
     <what t="S">label-was-attached</what>
     <when t="T">2025-09-10T08:03:14Z</when>
     <where t="S">github</where>
@@ -484410,6 +484413,7 @@ The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
     <_time t="T">2026-08-05T08:40:49Z</_time>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <details t="S">@h1alexbel attached the '#bug' label to objectionary/lints#744 reported by @volodya-lombrozo; this means that a bug was accepted as valid, by the project team.</details>
+    <done t="T">2026-08-05T19:36:37Z</done>
     <is_human t="I">1</is_human>
     <issue t="I">744</issue>
     <reporter t="I">51804353</reporter>
@@ -484981,6 +484985,7 @@ The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
     <is_human t="I">1</is_human>
     <issue t="I">744</issue>
     <repository t="I">889819508</repository>
+    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
     <what t="S">issue-was-assigned</what>
     <when t="T">2025-09-10T08:03:15Z</when>
     <where t="S">github</where>
@@ -485067,6 +485072,7 @@ The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
     <opener t="I">51804353</opener>
     <repository t="I">889819508</repository>
     <seconds t="I">28415474</seconds>
+    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
     <what t="S">bug-was-resolved</what>
     <when t="T">2026-08-05T05:14:29Z</when>
     <where t="S">github</where>
@@ -485332,6 +485338,7 @@ The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
     <comments_resolved t="I">0</comments_resolved>
     <comments_to_code t="I">0</comments_to_code>
     <details t="S">Apparently, objectionary/eo-vim#16 has been "pull-was-closed".</details>
+    <done t="T">2026-08-05T19:36:37Z</done>
     <failed_builds t="I">1</failed_builds>
     <files t="I">1</files>
     <hoc t="I">4</hoc>
@@ -485372,6 +485379,7 @@ The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
     <issue t="I">744</issue>
     <receipt t="S">receipt-#84613</receipt>
     <repository t="I">889819508</repository>
+    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
     <what t="S">resolved-bug-was-rewarded</what>
     <when t="T">2026-08-05T13:50:16Z</when>
     <where t="S">github</where>
@@ -485404,7 +485412,6 @@ The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <award t="I">12</award>
     <details t="S">It's time to reward @gemshrine for the bug reported in objectionary/eo#6363, the reward amount is 12.</details>
-    <greeting t="S">Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+1980](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <href t="S">https://github.com/objectionary/eo/issues/6363/#issuecomment-5194573543</href>
     <is_human t="I">1</is_human>
     <issue t="I">6363</issue>
@@ -485424,7 +485431,6 @@ The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
     <award t="I">7</award>
     <comments t="I">13</comments>
     <details t="S">It's time to reward @volodya-lombrozo for the code review in objectionary/lints#1199, the reward amount is 7.</details>
-    <greeting t="S">Thanks for the review! You've earned +7 points for this: +12 as a basis; -5 for very few (1) comments.  Your running score is [+553](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">101</hoc>
     <href t="S">https://github.com/objectionary/lints/issues/1199/#issuecomment-5194573869</href>
     <is_human t="I">1</is_human>
@@ -485446,7 +485452,6 @@ The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
     <award t="I">4</award>
     <comments t="I">5</comments>
     <details t="S">It's time to reward @yegor256 for the code review in objectionary/eo#6387, the reward amount is 4.</details>
-    <greeting t="S">Thanks for the review! You've earned +4 points for this: +12 as a basis; -8 for absolutely no comments posted; -4 for too few (6) hits-of-code; +4 to give you at least something.  Your running score is [+2565](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">6</hoc>
     <href t="S">https://github.com/objectionary/eo/issues/6387/#issuecomment-5194574134</href>
     <is_human t="I">1</is_human>
@@ -485468,7 +485473,6 @@ The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
     <award t="I">4</award>
     <comments t="I">5</comments>
     <details t="S">It's time to reward @yegor256 for the code review in objectionary/eo#6335, the reward amount is 4.</details>
-    <greeting t="S">Thanks for the review! You've earned +4 points for this: +12 as a basis; -8 for absolutely no comments posted; -4 for too few (2) hits-of-code; +4 to give you at least something.  Your running score is [+2569](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">2</hoc>
     <href t="S">https://github.com/objectionary/eo/issues/6335/#issuecomment-5194574382</href>
     <is_human t="I">1</is_human>
@@ -486077,5 +486081,62 @@ The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
     <when t="T">2026-08-05T16:04:37Z</when>
     <where t="S">github</where>
     <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1116709</_id>
+    <_job t="I">85257</_job>
+    <_time t="T">2026-08-05T19:34:42Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <analyzers t="I">18</analyzers>
+    <text t="S">The average reward per task (8.8 points) is increasing (R=0.15).
+The average punishment per task (7.0 points) is decreasing (R=-0.20).
+The average number of builds per week (9090.9) is increasing (R=0.76).
+The average number of commits per week (232.3) is increasing (R=0.75).
+The average bugs accepted per month (41.0) is increasing (R=0.71).
+The average monthly punishment (379 points) is increasing (R=0.23).
+The average monthly wage (10.4 points) is increasing (R=0.56).
+The average issue cycle time (1w) is staying still.
+The average pull cycle time (6d1h) is staying still.
+The average quality of service (82%) is decreasing (R=0.76).
+The average number of releases per month (23.2) is increasing (R=0.47).
+The average monthly turnover (24.0 developers) is increasing (R=0.83).
+The average weekly cost of HoC (5.99 points) is staying still.
+The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
+    <what t="S">assessment</what>
+    <when t="T">2026-08-05T19:34:42Z</when>
+  </f>
+  <f>
+    <_id t="I">1116710</_id>
+    <_job t="I">85257</_job>
+    <_time t="T">2026-08-05T19:35:20Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @h1alexbel for the bug reported in objectionary/eo#6395, the reward amount is 12.</details>
+    <greeting t="S">Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+42](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">6395</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">bug-report-was-rewarded</what>
+    <when t="T">2026-08-05T19:35:20Z</when>
+    <where t="S">github</where>
+    <who t="I">83453843</who>
+    <why t="S">Reported bug in objectionary/eo#6395</why>
+  </f>
+  <f>
+    <_id t="I">1116711</_id>
+    <_job t="I">85257</_job>
+    <_time t="T">2026-08-05T19:35:21Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @h1alexbel for the bug reported in objectionary/eo#6401, the reward amount is 12.</details>
+    <greeting t="S">Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+54](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">6401</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">bug-report-was-rewarded</what>
+    <when t="T">2026-08-05T19:35:21Z</when>
+    <where t="S">github</where>
+    <who t="I">83453843</who>
+    <why t="S">Reported bug in objectionary/eo#6401</why>
   </f>
 </fb>

@@ -2,11 +2,12 @@
 - added: 8
   cycles: 1
   deleted: 8
+  error: deadlock; recursive locking
   inserted: 8
-  seconds: 2160.860660732
+  seconds: 2160.200204967
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-05 19:33:54.555420933 Z
+  when: 2026-08-05 20:46:58.938598971 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -24550,6 +24551,7 @@
   is_human: 0
   issue: 32
   repository: 482612876
+  tombstone: 2026-08-05 19:36:38.047715658 Z
   what: pull-was-opened
   when: 2025-08-11 14:26:40.000000000 Z
   where: github
@@ -24918,6 +24920,7 @@
   is_human: 0
   issue: 16
   repository: 519246071
+  tombstone: 2026-08-05 19:36:37.986314264 Z
   what: pull-was-opened
   when: 2025-08-11 17:56:40.000000000 Z
   where: github
@@ -24980,6 +24983,7 @@
   is_human: 0
   issue: 75
   repository: 492899189
+  tombstone: 2026-08-05 19:36:38.017427602 Z
   what: pull-was-opened
   when: 2025-08-11 14:15:25.000000000 Z
   where: github
@@ -25227,6 +25231,7 @@
   is_human: 0
   issue: 33
   repository: 570457023
+  tombstone: 2026-08-05 19:36:38.078066020 Z
   what: pull-was-opened
   when: 2025-08-11 14:25:43.000000000 Z
   where: github
@@ -40850,6 +40855,7 @@
   is_human: 1
   issue: 166
   repository: 798766850
+  tombstone: 2026-08-05 19:36:38.107802208 Z
   what: pull-was-opened
   when: 2025-11-20 10:24:01.000000000 Z
   where: github
@@ -41122,6 +41128,7 @@
   is_human: 1
   issue: 173
   repository: 798766850
+  tombstone: 2026-08-05 19:36:37.471178115 Z
   what: issue-was-closed
   when: 2025-11-23 15:25:14.000000000 Z
   where: github
@@ -41283,6 +41290,7 @@
   is_human: 1
   issue: 173
   repository: 798766850
+  tombstone: 2026-08-05 19:36:37.474334965 Z
   what: issue-was-opened
   when: 2025-11-21 21:30:58.000000000 Z
   where: github
@@ -41300,6 +41308,7 @@
   comments_to_code: 0
   details: The pull request objectionary/eo2js#166 has been closed by @skulidropek,
     with 0 HoC and 0 comments.
+  done: 2026-08-05 19:36:38.080264368 Z
   event_id: 4842139544
   event_type: PullRequestEvent
   failed_builds: 3
@@ -41755,6 +41764,7 @@
   issue: 173
   label: enhancement
   repository: 798766850
+  tombstone: 2026-08-05 19:36:37.476960318 Z
   what: label-was-attached
   when: &215 2025-11-22 10:13:03.000000000 Z
   where: github
@@ -41811,6 +41821,7 @@
   details: 'In the repository #798766850, the user #37025995 attached the ''#enhancement''
     label to the issue #173 reported by the user #66840575; this means that a feature
     request was-accepted as valid, by the project team.'
+  done: 2026-08-05 19:36:37.437258964 Z
   is_human: 1
   issue: 173
   reporter: 66840575
@@ -42905,6 +42916,7 @@
   comments_resolved: 0
   comments_to_code: 0
   details: Apparently, objectionary/eo-json#32 has been "pull-was-closed".
+  done: 2026-08-05 19:36:38.019753972 Z
   failed_builds: 5
   files: 2
   hoc: 8
@@ -43153,6 +43165,7 @@
   comments_resolved: 0
   comments_to_code: 0
   details: Apparently, objectionary/eo-http#33 has been "pull-was-closed".
+  done: 2026-08-05 19:36:38.049869061 Z
   failed_builds: 7
   files: 4
   hoc: 8
@@ -43300,6 +43313,7 @@
   comments_resolved: 0
   comments_to_code: 0
   details: Apparently, objectionary/eo-intellij-plugin#75 has been "pull-was-closed".
+  done: 2026-08-05 19:36:37.988643447 Z
   failed_builds: 9
   files: 9
   hoc: 18
@@ -58140,6 +58154,7 @@
   issue: 173
   receipt: receipt-#53257
   repository: 798766850
+  tombstone: 2026-08-05 19:36:37.479718111 Z
   what: enhancement-suggestion-was-rewarded
   when: 2025-12-14 02:38:43.185609843 Z
   where: github
@@ -73702,6 +73717,7 @@
   is_human: 1
   issue: 784
   repository: 889819508
+  tombstone: 2026-08-05 19:36:37.709065882 Z
   what: pull-was-opened
   when: 2025-11-22 14:51:06.000000000 Z
   where: github
@@ -73899,6 +73915,7 @@
   review_comments: 3
   succeeded_builds: 19
   suggestions: 3
+  tombstone: 2026-08-05 19:36:37.713124204 Z
   what: pull-was-merged
   when: &590 2025-12-27 11:58:36.000000000 Z
   where: github
@@ -74194,6 +74211,7 @@
   repository: 889819508
   review_comments: 3
   seconds: 3013650
+  tombstone: 2026-08-05 19:36:37.715782143 Z
   what: code-was-contributed
   when: *590
   where: github
@@ -74319,6 +74337,7 @@
   comments: 3
   details: The pull request objectionary/lints#784 with 160 HoC created by @h1alexbel
     was reviewed by @coderabbitai[bot] after 0h4m and 1 comments.
+  done: 2026-08-05 19:36:37.673167373 Z
   hoc: 160
   is_human: 0
   issue: 784
@@ -74363,6 +74382,7 @@
   repository: 889819508
   review_comments: 3
   seconds: 3013650
+  tombstone: 2026-08-05 19:36:37.718245711 Z
   what: code-contribution-was-rewarded
   when: 2025-12-28 20:15:24.359254490 Z
   where: github
@@ -74383,6 +74403,7 @@
   repository: 889819508
   review_comments: 0
   seconds: 1047087
+  tombstone: 2026-08-05 19:36:37.720594655 Z
   what: code-review-was-rewarded
   when: 2025-12-28 20:15:35.402339860 Z
   where: github
@@ -303769,6 +303790,7 @@
   - 2.7459194273799485
   - 2.7459194273799485
   - 2.7459194273799485
+  - 2.7459194273799485
   qod_per_day:
   - 20.262571430008
   - 42.95057143129291
@@ -304473,8 +304495,9 @@
   - 210.89137121213858
   - 210.89137121213858
   - 210.89137121213858
+  - 210.89137121213858
   what: learn-eva
-  when: 2026-08-05 08:43:18.281879246 Z
+  when: 2026-08-05 19:37:09.197303489 Z
 - _id: 1108432
   _job: 28880449411
   _time: 2026-07-07 16:03:53.193694149 Z
@@ -305802,7 +305825,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 831
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12827163891
   issues_were_scanned: 0
@@ -309566,7 +309589,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 999
   earliest_issue_was_found: 1
   events_were_scanned: 12833767117
   issues_were_scanned: 982
@@ -312517,7 +312540,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1120
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12753399301
   issues_were_scanned: 0
@@ -312551,13 +312574,13 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6232
+  assignees_were_scanned: 6374
   earliest_issue_was_found: 1
-  events_were_scanned: 12840544777
+  events_were_scanned: 16845083457
   issues_were_scanned: 0
-  labels_were_scanned: 6095
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
-  merges_were_scanned: 6391
+  merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
@@ -441667,28 +441690,6 @@
   when: *3930
   where: github
   who: 96509556
-- _id: 1116157
-  _job: 85006
-  _time: 2026-08-03 16:41:37.679147145 Z
-  _version: 0.19.16/0.61.1/0.17.21
-  analyzers: 18
-  text: |-
-    The average reward per task (8.8 points) is increasing (R=0.15).
-    The average punishment per task (7.0 points) is decreasing (R=-0.20).
-    The average number of builds per week (9090.9) is increasing (R=0.76).
-    The average number of commits per week (232.3) is increasing (R=0.75).
-    The average bugs accepted per month (39.0) is increasing (R=0.66).
-    The average monthly punishment (379 points) is increasing (R=0.23).
-    The average monthly wage (10.3 points) is increasing (R=0.70).
-    The average issue cycle time (6d22h) is staying still.
-    The average pull cycle time (6d17h) is staying still.
-    The average quality of service (82%) is decreasing (R=0.76).
-    The average number of releases per month (23.2) is increasing (R=0.47).
-    The average monthly turnover (24.0 developers) is increasing (R=0.85).
-    The average weekly cost of HoC (6.01 points) is staying still.
-    The average monthly zents/points ratio (0.40) is decreasing (R=0.87).
-  what: assessment
-  when: 2026-08-03 16:41:37.711689607 Z
 - _id: 1116158
   _job: 85006
   _time: 2026-08-03 16:41:44.420710002 Z
@@ -449727,6 +449728,7 @@
   is_human: 1
   issue: 744
   repository: 889819508
+  tombstone: 2026-08-05 19:36:37.567479679 Z
   what: issue-was-closed
   when: &4020 2026-08-05 05:14:29.000000000 Z
   where: github
@@ -449739,6 +449741,7 @@
   is_human: 1
   issue: 744
   repository: 889819508
+  tombstone: 2026-08-05 19:36:37.571348654 Z
   what: issue-was-opened
   when: 2025-09-09 07:57:58.000000000 Z
   where: github
@@ -449791,6 +449794,7 @@
   issue: 744
   label: bug
   repository: 889819508
+  tombstone: 2026-08-05 19:36:37.574216398 Z
   what: label-was-attached
   when: &4018 2025-09-10 08:03:14.000000000 Z
   where: github
@@ -449869,6 +449873,7 @@
   details: "@h1alexbel attached the '#bug' label to objectionary/lints#744 reported
     by @volodya-lombrozo; this means that a bug was accepted as valid, by the project
     team."
+  done: 2026-08-05 19:36:37.529376680 Z
   is_human: 1
   issue: 744
   reporter: 51804353
@@ -450403,6 +450408,7 @@
   is_human: 1
   issue: 744
   repository: 889819508
+  tombstone: 2026-08-05 19:36:37.577211614 Z
   what: issue-was-assigned
   when: 2025-09-10 08:03:15.000000000 Z
   where: github
@@ -450481,6 +450487,7 @@
   opener: 51804353
   repository: 889819508
   seconds: 28415474
+  tombstone: 2026-08-05 19:36:37.579999040 Z
   what: bug-was-resolved
   when: *4020
   where: github
@@ -450723,6 +450730,7 @@
   comments_resolved: 0
   comments_to_code: 0
   details: Apparently, objectionary/eo-vim#16 has been "pull-was-closed".
+  done: 2026-08-05 19:36:37.956696167 Z
   failed_builds: 1
   files: 1
   hoc: 4
@@ -450760,6 +450768,7 @@
   issue: 744
   receipt: receipt-#84613
   repository: 889819508
+  tombstone: 2026-08-05 19:36:37.582978697 Z
   what: resolved-bug-was-rewarded
   when: 2026-08-05 13:50:16.457645010 Z
   where: github
@@ -450790,13 +450799,6 @@
   award: 12
   details: It's time to reward @gemshrine for the bug reported in objectionary/eo#6363,
     the reward amount is 12.
-  greeting: 'Thanks for reporting a new bug! You''ve earned +12 points. By reporting
-    bugs, you help our project improve its quality. If you find anything else in the
-    repository that [doesn''t look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
-    as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
-    to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
-    it. Your running score is [+1980](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   href: https://github.com/objectionary/eo/issues/6363/#issuecomment-5194573543
   is_human: 1
   issue: 6363
@@ -450815,9 +450817,6 @@
   comments: 13
   details: It's time to reward @volodya-lombrozo for the code review in objectionary/lints#1199,
     the reward amount is 7.
-  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
-    -5 for very few (1) comments.  Your running score is [+553](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 101
   href: https://github.com/objectionary/lints/issues/1199/#issuecomment-5194573869
   is_human: 1
@@ -450838,10 +450837,6 @@
   comments: 5
   details: It's time to reward @yegor256 for the code review in objectionary/eo#6387,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted; -4 for too few (6) hits-of-code; +4 to give
-    you at least something.  Your running score is [+2565](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 6
   href: https://github.com/objectionary/eo/issues/6387/#issuecomment-5194574134
   is_human: 1
@@ -450862,10 +450857,6 @@
   comments: 5
   details: It's time to reward @yegor256 for the code review in objectionary/eo#6335,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted; -4 for too few (2) hits-of-code; +4 to give
-    you at least something.  Your running score is [+2569](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 2
   href: https://github.com/objectionary/eo/issues/6335/#issuecomment-5194574382
   is_human: 1
@@ -451414,3 +451405,69 @@
   when: 2026-08-05 16:04:37.000000000 Z
   where: github
   who: 125282851
+- _id: 1116709
+  _job: 85257
+  _time: 2026-08-05 19:34:42.470813914 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  analyzers: 18
+  text: |-
+    The average reward per task (8.8 points) is increasing (R=0.15).
+    The average punishment per task (7.0 points) is decreasing (R=-0.20).
+    The average number of builds per week (9090.9) is increasing (R=0.76).
+    The average number of commits per week (232.3) is increasing (R=0.75).
+    The average bugs accepted per month (41.0) is increasing (R=0.71).
+    The average monthly punishment (379 points) is increasing (R=0.23).
+    The average monthly wage (10.4 points) is increasing (R=0.56).
+    The average issue cycle time (1w) is staying still.
+    The average pull cycle time (6d1h) is staying still.
+    The average quality of service (82%) is decreasing (R=0.76).
+    The average number of releases per month (23.2) is increasing (R=0.47).
+    The average monthly turnover (24.0 developers) is increasing (R=0.83).
+    The average weekly cost of HoC (5.99 points) is staying still.
+    The average monthly zents/points ratio (0.40) is decreasing (R=0.88).
+  what: assessment
+  when: 2026-08-05 19:34:42.487002541 Z
+- _id: 1116710
+  _job: 85257
+  _time: 2026-08-05 19:35:20.717034344 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  details: It's time to reward @h1alexbel for the bug reported in objectionary/eo#6395,
+    the reward amount is 12.
+  greeting: 'Thanks for reporting a new bug! You''ve earned +12 points. By reporting
+    bugs, you help our project improve its quality. If you find anything else in the
+    repository that [doesn''t look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
+    as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
+    to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
+    it. Your running score is [+42](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  is_human: 1
+  issue: 6395
+  repository: 73056727
+  what: bug-report-was-rewarded
+  when: 2026-08-05 19:35:20.719041896 Z
+  where: github
+  who: 83453843
+  why: Reported bug in objectionary/eo#6395
+- _id: 1116711
+  _job: 85257
+  _time: 2026-08-05 19:35:21.723585934 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  details: It's time to reward @h1alexbel for the bug reported in objectionary/eo#6401,
+    the reward amount is 12.
+  greeting: 'Thanks for reporting a new bug! You''ve earned +12 points. By reporting
+    bugs, you help our project improve its quality. If you find anything else in the
+    repository that [doesn''t look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
+    as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
+    to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
+    it. Your running score is [+54](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  is_human: 1
+  issue: 6401
+  repository: 73056727
+  what: bug-report-was-rewarded
+  when: 2026-08-05 19:35:21.725669860 Z
+  where: github
+  who: 83453843
+  why: Reported bug in objectionary/eo#6401
