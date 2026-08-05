@@ -63,7 +63,7 @@ final class OnClasspath {
     private static boolean probe(final String cls) {
         boolean found;
         try {
-            Class.forName(cls);
+            Class.forName(cls, false, OnClasspath.class.getClassLoader());
             found = true;
         } catch (final ClassNotFoundException ex) {
             found = false;
