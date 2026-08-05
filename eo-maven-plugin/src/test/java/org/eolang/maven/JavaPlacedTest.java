@@ -76,8 +76,7 @@ final class JavaPlacedTest {
     }
 
     @Test
-    @SuppressWarnings("JTCOP.RuleNotContainsTestWord")
-    void placesJavaTestsWithParameterizedTestOnly(@Mktmp final Path temp) throws Exception {
+    void placesClassMarkedOnlyWithParameterized(@Mktmp final Path temp) throws Exception {
         final String expected = String.join(
             System.lineSeparator(),
             "final class FooTest {",
@@ -98,8 +97,7 @@ final class JavaPlacedTest {
             new FpJavaGenerated(java, generated, utest), utest, generated
         ).exec(java, true);
         MatcherAssert.assertThat(
-            "A generated test class using only @ParameterizedTest must not be "
-                + "silently skipped, but it was",
+            "A generated class marked only with @ParameterizedTest was silently skipped",
             new TextOf(
                 target.resolve("generated-test-sources").resolve("FooTest.java")
             ).asString(),
