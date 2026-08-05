@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 import org.cactoos.BiProc;
 
 /**
@@ -17,6 +18,14 @@ import org.cactoos.BiProc;
  * @since 0.56.7
  */
 final class JavaPlaced implements BiProc<Xnav, Boolean> {
+
+    /**
+     * JUnit annotations that mark a method as a test entry point.
+     * @see <a href="https://junit.org/junit5/docs/current/user-guide/#writing-tests">JUnit 5 user guide</a>
+     */
+    private static final List<String> TEST_ANNOTATIONS = List.of(
+        "@Test", "@ParameterizedTest", "@RepeatedTest", "@TestFactory", "@TestTemplate"
+    );
 
     /**
      * The footprint.
@@ -101,6 +110,8 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
      * @return True or False
      */
     private static boolean testsPresent(final Xnav clazz) {
-        return clazz.element("tests").text().map(s -> s.contains("@Test")).orElse(false);
+        return clazz.element("tests").text()
+            .map(s -> JavaPlaced.TEST_ANNOTATIONS.stream().anyMatch(s::contains))
+            .orElse(false);
     }
 }
