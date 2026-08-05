@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-name: mvn
+name: eo-runtime
 'on':
   push:
     branches:
@@ -11,10 +11,10 @@ name: mvn
     branches:
       - master
 jobs:
-  mvn:
+  eo-runtime:
     strategy:
       matrix:
-        os: [ubuntu-24.04, windows-2022, macos-15-intel, macos-15]
+        os: [ubuntu-24.04, windows-2022]
         java: [26]
     runs-on: ${{ matrix.os }}
     env:
@@ -33,4 +33,4 @@ jobs:
       - uses: JesseTG/rm@v1.0.3
         with:
           path: ~/.m2/repository/org/eolang
-      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.transpileTests=false' clean install
+      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' clean install
