@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Isolated;
@@ -58,6 +59,43 @@ final class PhCoverageTest {
                 "every location, hit repeatedly and through a copy, must be recorded exactly once",
                 Files.readAllLines(hits, StandardCharsets.UTF_8),
                 Matchers.containsInAnyOrder("Φ.foo:7:3", "Φ.bar:9:5")
+            );
+        } finally {
+            if (before == null) {
+                System.clearProperty("eo.coverageFile");
+            } else {
+                System.setProperty("eo.coverageFile", before);
+            }
+        }
+    }
+
+    @Test
+    void namesThePropertyAndItsValueInAnInvalidCoveragePathFailure() {
+        final String before = System.getProperty("eo.coverageFile");
+        final String bad = String.format("/tmp/%cinvalid", (char) 0);
+        System.setProperty("eo.coverageFile", bad);
+        try {
+            final Phi phi = new PhCoverage(
+                new PhDefault(new byte[] {(byte) 0x03}), "Φ.invalid-coverage-path", 11, 1
+            );
+            final IllegalArgumentException failure = Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> new Dataized(phi).take(),
+                "an invalid 'eo.coverageFile' value must fail with IllegalArgumentException"
+            );
+            MatcherAssert.assertThat(
+                "the failure class must be exactly IllegalArgumentException, "
+                    + "not a raw InvalidPathException leaking through unconverted",
+                failure.getClass(),
+                Matchers.<Class<?>>equalTo(IllegalArgumentException.class)
+            );
+            MatcherAssert.assertThat(
+                "the failure must name the offending property and its value",
+                failure.getMessage(),
+                Matchers.allOf(
+                    Matchers.containsString("eo.coverageFile"),
+                    Matchers.containsString(bad)
+                )
             );
         } finally {
             if (before == null) {
