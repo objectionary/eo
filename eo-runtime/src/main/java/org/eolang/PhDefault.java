@@ -353,7 +353,12 @@ public class PhDefault implements Phi, Cloneable {
      */
     static String numeral(final double value) {
         final String txt;
-        if (value == Math.floor(value) && !Double.isInfinite(value)) {
+        if (
+            value == Math.floor(value)
+                && !Double.isInfinite(value)
+                && Long.MIN_VALUE <= value
+                && value < Long.MAX_VALUE
+        ) {
             txt = Long.toString((long) value);
         } else {
             txt = Double.toString(value);
