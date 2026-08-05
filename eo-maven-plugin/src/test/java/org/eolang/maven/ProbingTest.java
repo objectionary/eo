@@ -98,8 +98,7 @@ final class ProbingTest {
             true
         ).exec();
         MatcherAssert.assertThat(
-            "Probe should have registered the root-package sibling "
-                + "that was never probed directly",
+            "Probe must register the root-package sibling that was never probed directly",
             tojos.contains("bar"),
             Matchers.is(true)
         );
