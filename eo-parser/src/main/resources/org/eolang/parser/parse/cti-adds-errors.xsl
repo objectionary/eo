@@ -28,10 +28,7 @@
   <!-- A severity argument that is a string literal with one of the three legal values. -->
   <xsl:function name="eo:cti-has-valid-severity" as="xs:boolean">
     <xsl:param name="cti" as="element()"/>
-    <xsl:sequence select="
-      $cti/o[last() - 1]/@base = 'Φ.string'
-      and eo:bytes-to-string($cti/o[last() - 1]/o[1]/o[1]/text()) = ('critical', 'error', 'warning')
-      "/>
+    <xsl:sequence select="$cti/o[last() - 1]/@base = 'Φ.string' and eo:bytes-to-string($cti/o[last() - 1]/o[1]/o[1]/text()) = ('critical', 'error', 'warning')"/>
   </xsl:function>
   <xsl:template match="o[@base='Φ.cti' and count(o) &lt; 2]" mode="create">
     <error>
