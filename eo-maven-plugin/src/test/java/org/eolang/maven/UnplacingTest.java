@@ -8,14 +8,14 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.util.Set;
 import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
@@ -37,6 +37,7 @@ final class UnplacingTest {
     }
 
     @Test
+    @DisabledOnOs(OS.WINDOWS)
     void keepsCatalogEntryWhenDeletionFails(@TempDir final Path temp) throws IOException {
         final Path classes = temp.resolve("classes");
         Files.createDirectories(classes);
@@ -44,7 +45,6 @@ final class UnplacingTest {
         Files.write(binary, "class-bytes".getBytes(StandardCharsets.UTF_8));
         final TjsPlaced placed = new TjsPlaced(temp.resolve("placed.json"));
         placed.placeClass(binary, "Foo.class", "dep");
-        final Set<PosixFilePermission> writable = Files.getPosixFilePermissions(classes);
         Files.setPosixFilePermissions(classes, PosixFilePermissions.fromString("r-xr-xr-x"));
         try {
             Assertions.assertThrows(
@@ -53,11 +53,10 @@ final class UnplacingTest {
                 "a deletion failure must surface as an exception, not be swallowed"
             );
         } finally {
-            Files.setPosixFilePermissions(classes, writable);
+            Files.setPosixFilePermissions(classes, PosixFilePermissions.fromString("rwxr-xr-x"));
         }
         MatcherAssert.assertThat(
-            "the catalog entry must remain placed after a failed deletion, "
-                + "so a later run can retry",
+            "the catalog entry must remain placed after a failed deletion",
             placed.classes().iterator().next().placed(),
             Matchers.is(true)
         );
