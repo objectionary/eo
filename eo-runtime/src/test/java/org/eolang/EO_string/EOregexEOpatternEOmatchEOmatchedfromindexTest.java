@@ -134,23 +134,28 @@ final class EOregexEOpatternEOmatchEOmatchedfromindexTest {
         }
         final Phi pattern = Phi.Φ.take("string.regex").take("pattern").copy();
         pattern.put(0, new Data.ToPhi(baos.toByteArray()));
-        final ExAbstract failure = Assertions.assertThrows(
-            ExAbstract.class,
-            () -> new Dataized(
-                new PhApplication(
-                    new PhApplication(
-                        pattern.take("match").copy(),
-                        "txt", new Data.ToPhi("hello")
-                    ).take("matched-from-index").copy(),
-                    new Bind(EOregexEOpatternEOmatchEOmatchedfromindexTest.position(), new Data.ToPhi(1)),
-                    new Bind(EOregexEOpatternEOmatchEOmatchedfromindexTest.start(), new Data.ToPhi(0))
-                ).take("from")
-            ).take(),
-            "bytes deserializing to the wrong type must fail with ExFailure, not a raw ClassCastException"
-        );
         MatcherAssert.assertThat(
-            "the failure must be the clean deserialize message, not a raw ClassCastException",
-            failure.toString(),
+            "a raw ClassCastException leaked instead of the clean deserialize failure",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhApplication(
+                        new PhApplication(
+                            pattern.take("match").copy(),
+                            "txt", new Data.ToPhi("hello")
+                        ).take("matched-from-index").copy(),
+                        new Bind(
+                            EOregexEOpatternEOmatchEOmatchedfromindexTest.position(),
+                            new Data.ToPhi(1)
+                        ),
+                        new Bind(
+                            EOregexEOpatternEOmatchEOmatchedfromindexTest.start(),
+                            new Data.ToPhi(0)
+                        )
+                    ).take("from")
+                ).take(),
+                "bytes of the wrong type must fail with ExFailure"
+            ).toString(),
             Matchers.containsString("cannot deserialize the compiled regex pattern")
         );
     }
