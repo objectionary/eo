@@ -6,7 +6,6 @@ package org.eolang.parser;
 
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XMLDocument;
-import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -16,6 +15,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.xembly.Directives;
 import org.xembly.Xembler;
+
+import java.util.stream.Stream;
 
 /**
  * Test case for {@link Listing}.
@@ -42,11 +43,21 @@ final class ListingTest {
         );
     }
 
+
     @Test
-    void buildsListingForEmptySource() {
+    void doesNotThrowExceptionOnEmptySource() {
         Assertions.assertDoesNotThrow(
             () -> ListingTest.listing(""),
             "an empty source must not break the <listing> element"
+        );
+    }
+
+    @Test
+    void buildsListingForEmptySource() {
+        MatcherAssert.assertThat(
+            "An empty source must produce an empty listing",
+            ListingTest.listing(""),
+            Matchers.emptyString()
         );
     }
 
