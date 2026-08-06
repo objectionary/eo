@@ -22,9 +22,17 @@ import java.util.concurrent.locks.ReentrantLock;
  * {@link PhDefault#copy}, so that every copy of the same sync guards the same
  * decoratee.</p>
  *
+ * <p>Two Sonar rules are suppressed here. {@code java:S2160} asks for an
+ * {@code equals} of its own, because the lock is a field this class adds; the
+ * lock is not identity though, and {@link PhDefault#equals} already tells the
+ * whole truth about which object this is. {@code java:S1192} counts the three
+ * mentions of {@code object} and asks for a constant, which every other atom
+ * here spells out in the very same way instead.</p>
+ *
  * @since 0.74.0
  */
 @XmirObject(oname = "sync")
+@SuppressWarnings({"java:S1192", "java:S2160"})
 public final class EOsync extends PhDefault implements Atom {
 
     /**
