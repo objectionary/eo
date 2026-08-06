@@ -37,6 +37,10 @@ jobs:
             files: '*.eo'
             pattern: '\+unlint'
             threshold: 86
+          - metric: disabled
+            files: '*.java'
+            pattern: '@Disabled\b'
+            threshold: 5
     steps:
       - uses: actions/checkout@v7
       - env:
