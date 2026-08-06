@@ -161,10 +161,10 @@ final class Unplacing implements Step {
      * @throws IOException If fails to delete binary
      */
     private static int unplaced(final TjPlaced tojo, final Path path) throws IOException {
-        tojo.unplace();
         if (Files.deleteIfExists(path)) {
             Logger.debug(Unplacing.class, "Deleted binary %s", path);
         }
+        tojo.unplace();
         return 1;
     }
 }

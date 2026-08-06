@@ -19,7 +19,9 @@ final class UnplaceTest {
     @ParameterizedTest
     @CsvSource({
         "/tmp/foo/bar, /tmp/foo/bar/a/b/c.eo, a.b.c",
-        "/tmp/foo/bar, /tmp/foo/bar/a/b/.cd.ef.eo, a.b..cd.ef"
+        "/tmp/foo/bar, /tmp/foo/bar/a/b/.cd.ef.eo, a.b..cd.ef",
+        "/tmp/foo/bar, /tmp/foo/bar/demo/foxeo, demo.foxeo",
+        "/tmp/foo/bar, /tmp/foo/bar/demo/foo.java, demo.foo.java"
     })
     void makesName(
         final String base,
