@@ -51,6 +51,9 @@
         </xsl:when>
         <xsl:otherwise>
           <xsl:choose>
+            <xsl:when test="$o/@as">
+              <xsl:value-of select="$o/@as"/>
+            </xsl:when>
             <xsl:when test="starts-with($o/parent::o/@base, '.') and not($o/preceding-sibling::o)">
               <xsl:value-of select="$eo:rho"/>
             </xsl:when>
