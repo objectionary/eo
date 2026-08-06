@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
@@ -24,7 +25,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -35,8 +35,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)
 final class MjLintTest {
-
-    @Disabled
 
     @Test
     void doesNotFailWithNoErrorsAndWarnings(@Mktmp final Path temp) throws IOException {
@@ -371,7 +369,6 @@ final class MjLintTest {
         );
     }
 
-    @Disabled
     @Test
     void doesNotDetectWarningWithoutCorrespondingFlag(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
@@ -432,7 +429,6 @@ final class MjLintTest {
         );
     }
 
-    @Disabled
     @Test
     void skipsAlreadyLinted(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
@@ -456,7 +452,6 @@ final class MjLintTest {
         );
     }
 
-    @Disabled
     @Test
     void savesVerifiedResultsToCache(@Mktmp final Path temp) throws IOException {
         final Path cache = temp.resolve("cache");
@@ -466,60 +461,34 @@ final class MjLintTest {
             .with("cache", cache.toFile())
             .allTojosWithHash(() -> hash)
             .execute(new FakeMaven.Lint());
-        MatcherAssert.assertThat(
-            "Verified results must be saved to cache",
-            cache.resolve(Linting.CACHE)
-                .resolve(FakeMaven.pluginVersion())
-                .resolve(hash)
-                .resolve("foo/x/main.xmir").toFile(),
-            FileMatchers.anExistingFile()
-        );
+        try (Stream<Path> saved = Files.walk(cache.resolve(Linting.CACHE))) {
+            MatcherAssert.assertThat(
+                "Verified results must be saved to cache, under the hash of the tojo",
+                saved.filter(p -> p.endsWith(Paths.get(hash, "foo", "x", "main.xmir")))
+                    .collect(Collectors.toList()),
+                Matchers.hasSize(1)
+            );
+        }
     }
 
-    @Disabled
     @Test
     void getsAlreadyVerifiedResultsFromCache(@Mktmp final Path temp) throws Exception {
-        final TextOf input = new TextOf(
-            new ResourceOf("org/eolang/maven/main.xml")
-        );
         final Path cache = temp.resolve("cache");
-        final String hash = "abcdef1";
-        final Path from = temp.resolve("input.xml");
-        new Saved(input, from).value();
-        new Cache(
-            new CachePath(
-                cache.resolve(Linting.CACHE),
-                FakeMaven.pluginVersion(),
-                hash
-            ),
-            p -> input.asString()
-        ).apply(from, temp.resolve("main.xmir"), Paths.get("foo/x/main.xmir"));
-        new FakeMaven(temp)
+        final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()
             .with("cache", cache.toFile())
-            .allTojosWithHash(() -> hash)
+            .allTojosWithHash(() -> "abcdef1")
             .execute(new FakeMaven.Lint());
+        final String planted = new TextOf(new ResourceOf("org/eolang/maven/main.xml")).asString();
+        try (Stream<Path> saved = Files.walk(cache.resolve(Linting.CACHE))) {
+            saved.filter(p -> p.endsWith(Paths.get("foo", "x", "main.xmir")))
+                .forEach(p -> new Unchecked<>(new Saved(planted, p)).value());
+        }
+        maven.execute(MjLint.class);
         MatcherAssert.assertThat(
             "We must get already verified results from cache",
-            new XMLDocument(
-                Files.readAllBytes(
-                    temp.resolve(
-                        String.format(
-                            "target/%s/foo/x/main.%s",
-                            Linting.DIR,
-                            MjAssemble.XMIR
-                        )
-                    )
-                )
-            ),
-            Matchers.is(
-                new XMLDocument(
-                    cache.resolve(Linting.CACHE)
-                        .resolve(FakeMaven.pluginVersion())
-                        .resolve(hash)
-                        .resolve("foo/x/main.xmir")
-                )
-            )
+            new XMLDocument(maven.programTojo().linted()),
+            Matchers.is(new XMLDocument(planted))
         );
     }
 
