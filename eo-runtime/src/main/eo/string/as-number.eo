@@ -19,7 +19,7 @@
     not.
       matches.
         compiled.
-          regex "/^[+-]?\\d+(?:\\.\\d+)?$/"
+          regex "/^[+-]?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$/"
         text
     cant-parse
       "Can't convert text %s to number".printf
@@ -29,13 +29,25 @@
         at.
           scanf "%f" text
 
+  eq. ++> can-convert-exponent-text
+    1000
+    as-number "1e3"
+
   eq. ++> can-convert-float-text
     3.14
     as-number "3.14"
 
+  eq. ++> can-convert-fractional-exponent-text
+    150
+    as-number "1.5e+2"
+
   eq. ++> can-convert-negative-text
     -42
     as-number "-42"
+
+  eq. ++> can-convert-signed-exponent-text
+    -0.0025
+    as-number "-2.5E-3"
 
   eq. ++> can-convert-text
     5
@@ -61,10 +73,28 @@
       "1 2 3"
       42 > [message]
 
+  eq. ++> rejects-text-with-a-dangling-exponent
+    42
+    as-number
+      "1e"
+      42 > [message]
+
+  eq. ++> rejects-text-with-a-fractional-exponent
+    42
+    as-number
+      "1e2.5"
+      42 > [message]
+
   eq. ++> rejects-text-with-an-embedded-number
     42
     as-number
       "abc5"
+      42 > [message]
+
+  eq. ++> rejects-text-with-an-exponent-and-no-mantissa
+    42
+    as-number
+      "e3"
       42 > [message]
 
   eq. ++> rejects-text-with-multiple-dots
