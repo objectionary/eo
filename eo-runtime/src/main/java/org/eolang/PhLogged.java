@@ -32,7 +32,7 @@ public final class PhLogged implements Phi {
     @Override
     public Phi copy() {
         System.out.printf("%d.copy()...%n", this.hashCode());
-        final Phi ret = this.origin.copy();
+        final Phi ret = new PhLogged(this.origin.copy());
         System.out.printf("%d.copy()! -> %d%n", this.hashCode(), ret.hashCode());
         return ret;
     }
@@ -102,7 +102,7 @@ public final class PhLogged implements Phi {
 
     @Override
     public Phi normalized() {
-        return this.origin.normalized();
+        return new PhLogged(this.origin.normalized());
     }
 
     @Override

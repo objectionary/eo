@@ -123,10 +123,16 @@
                     "Can't read from file with provided access mode '%s'".printf
                       * access
                   seq *
-                    output. >> chunk!
-                      syscall.read
-                        * descriptor size
+                    if. >> chunk!
+                      received.code.eq -1
+                      T
+                        "Failed to read from file"
+                      received.output
+                    received
                     input-block chunk
+                called. > received
+                  syscall.read
+                    * descriptor size
           [buffer] > write
             output-block.write buffer > @
             [] > output-block

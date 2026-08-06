@@ -60,4 +60,22 @@ final class PhLoggedTest {
             Matchers.equalTo(phi.locator())
         );
     }
+
+    @Test
+    void keepsLoggingWrapperAfterCopy() {
+        MatcherAssert.assertThat(
+            "copy() must remain wrapped in PhLogged, so tracing continues, but it didn't",
+            new PhLogged(Phi.Φ).copy(),
+            Matchers.instanceOf(PhLogged.class)
+        );
+    }
+
+    @Test
+    void keepsLoggingWrapperAfterNormalized() {
+        MatcherAssert.assertThat(
+            "normalized() must remain wrapped in PhLogged, so tracing continues, but it didn't",
+            new PhLogged(Phi.Φ).normalized(),
+            Matchers.instanceOf(PhLogged.class)
+        );
+    }
 }

@@ -151,7 +151,7 @@ final class Emit {
      * navigation in {@code push}/{@code pop}.</p>
      *
      * @param spans Comment line spans, in source order
-     * @param target Line of the named object the comment attaches to
+     * @param target Line of the last comment span in the block
      */
     void comment(final List<Span> spans, final int target) {
         if (spans.isEmpty()) {

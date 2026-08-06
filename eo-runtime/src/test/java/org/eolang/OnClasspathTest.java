@@ -4,6 +4,7 @@
  */
 package org.eolang;
 
+import java.util.Optional;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -40,5 +41,41 @@ final class OnClasspathTest {
             OnClasspath.has(cls),
             Matchers.is(OnClasspath.has(cls))
         );
+    }
+
+    @Test
+    void findsNestedClassOnClasspath() {
+        MatcherAssert.assertThat(
+            "A nested class that exists must be reported as present, but it wasn't",
+            OnClasspath.has("org.eolang.OnClasspathTest$Marking"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void doesNotRunClassInitializerWhileProbing() {
+        System.clearProperty("eo.onclasspath.marked");
+        OnClasspath.has("org.eolang.OnClasspathTest$Marking");
+        MatcherAssert.assertThat(
+            "Probing a class must not run its initializer, but it did",
+            Optional.ofNullable(System.getProperty("eo.onclasspath.marked")).isPresent(),
+            Matchers.is(false)
+        );
+    }
+
+    /**
+     * A class whose initializer marks a system property, so that a test can tell
+     * whether merely probing for the class was enough to initialize it.
+     *
+     * <p>The mark lands outside the class on purpose: reading a field of this very
+     * class would itself initialize it, which is the thing being detected.</p>
+     *
+     * @since 0.74.0
+     */
+    final class Marking {
+
+        static {
+            System.setProperty("eo.onclasspath.marked", "true");
+        }
     }
 }

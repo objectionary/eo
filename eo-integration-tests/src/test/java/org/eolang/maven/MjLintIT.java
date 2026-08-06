@@ -15,36 +15,22 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for eo-maven-plugin:lint goal.
  * @since 0.52
- * @todo #4394:35min Enable MjLints related tests after `lints` will be adjusted with `Φ` object.
- *  For now, lints checks for `Q` instead of `Φ`. After new version of lints released, we should
- *  enable these integration tests in MjLintIT, and others:
- *  {@link MjLintTest#doesNotFailWithNoErrorsAndWarnings},
- *  {@link MjLintTest#doesNotDetectWarningWithoutCorrespondingFlag},
- *  {@link MjLintTest#skipsAlreadyLinted}, {@link MjLintTest#savesVerifiedResultsToCache},
- *  {@link MjLintTest#getsAlreadyVerifiedResultsFromCache}
- *  {@link MjTranspileTest#recompilesIfModified}, {@link MjTranspileTest#recompilesIfExpired},
- *  {@link MjTranspileTest#doesNotRetranspileIfNotModified},
- *  {@link MjTranspileTest#transpilesSimpleEoProgram},
- *  {@link MjTranspileTest#transpilesSeveralEoProgramsInParallel},
- *  {@link MjTranspileTest#transpilesSourcesForDifferentScopesWithoutIntersections}.
  */
-@Disabled
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjLintIT {
 
     @Test
     void lintsAgainAfterModification(@Mktmp final Path temp) throws Exception {
-        final String source = "src/main/eo/foo.eo";
-        final String xmir = "target/eo/3-lint/foo.xmir";
-        final byte[] prog = MjLintIT.helloWorld().getBytes(StandardCharsets.UTF_8);
+        final String source = "src/main/eo/foo/x/main.eo";
+        final String xmir = "target/eo/3-lint/foo/x/main.xmir";
+        final byte[] prog = MjLintIT.program().getBytes(StandardCharsets.UTF_8);
         new Farea(temp).together(
             f -> {
                 f.clean();
@@ -75,8 +61,8 @@ final class MjLintIT {
             f -> {
                 f.clean();
                 f.files()
-                    .file("src/main/eo/foo.eo")
-                    .write(MjLintIT.helloWorld().getBytes(StandardCharsets.UTF_8));
+                    .file("src/main/eo/foo/x/main.eo")
+                    .write(MjLintIT.program().getBytes(StandardCharsets.UTF_8));
                 MjLintIT.appendItself(f)
                     .configuration()
                     .set("failOnWarning", "false");
@@ -90,16 +76,15 @@ final class MjLintIT {
         );
     }
 
-    private static String helloWorld() {
+    private static String program() {
         return String.join(
             System.lineSeparator(),
-            "+alias stdout io.stdout",
             "+home https://www.eolang.org",
             "+package foo.x",
             "+version 0.0.0",
             "",
             "[x] > main",
-            "  (stdout \"Hello!\" x).print > @"
+            "  x > @"
         );
     }
 

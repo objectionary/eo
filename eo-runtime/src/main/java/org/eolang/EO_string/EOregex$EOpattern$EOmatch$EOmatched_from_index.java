@@ -81,7 +81,7 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
                     new Dataized(match.take(Phi.RHO).take("serialized")).take()
                 )
             ).readObject()).matcher(text);
-        } catch (final IOException | ClassNotFoundException ex) {
+        } catch (final IOException | ClassNotFoundException | ClassCastException ex) {
             throw new ExFailure("cannot deserialize the compiled regex pattern", ex);
         }
         final int start = new Expect.Natural(

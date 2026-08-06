@@ -38,6 +38,15 @@ final class DataTest {
     }
 
     @Test
+    void failsFastWhenDataIsNull() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new Data.ToPhi(null),
+            "null data was converted instead of rejected"
+        );
+    }
+
+    @Test
     void printsFractionalNumberValueAsTerm() {
         MatcherAssert.assertThat(
             "Fractional number must render with its decimals in φ-term, but it didnt",

@@ -38,7 +38,7 @@ public final class ReadSyscall implements Syscall {
             new Dataized(params[0]).asNumber().intValue(), buf, size
         );
         result.put(0, new Data.ToPhi(count));
-        result.put(1, new Data.ToPhi(Arrays.copyOf(buf, count)));
+        result.put(1, new Data.ToPhi(Arrays.copyOf(buf, Math.max(count, 0))));
         return result;
     }
 }

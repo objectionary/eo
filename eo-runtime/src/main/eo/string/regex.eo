@@ -261,6 +261,11 @@
             regex "/$/"
             "x"
 
+  next. --> rejects-serialized-bytes-of-the-wrong-type
+    match.
+      pattern AC-ED-00-05-74-00-0D-6E-6F-74-20-61-20-70-61-74-74-65-72-6E
+      "hello"
+
   compiled. --> stops-on-a-missing-closing-slash
     regex "/pattern"
 

@@ -43,7 +43,9 @@ public final class EOdirectory$EOwalk extends PhDefault implements Atom {
             path = Paths.get(raw).toAbsolutePath();
         } catch (final InvalidPathException ex) {
             throw new ExFailure(
-                String.format("'%s' is not a valid path", raw),
+                String.format(
+                    "'%s' is not a valid path: %s", raw, ex.getReason()
+                ),
                 ex
             );
         }
