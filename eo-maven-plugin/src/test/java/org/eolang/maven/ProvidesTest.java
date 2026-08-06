@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.inference;
+package org.eolang.maven;
 
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.TjSmart;

@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.inference;
+package org.eolang.maven;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
@@ -18,11 +18,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link Inference}.
+ * Test case for {@link Inferring}.
  * @since 0.67.0
  */
 @ExtendWith(MktmpResolver.class)
-final class InferenceTest {
+final class InferringTest {
 
     @Test
     void splitsCompositeBase(@Mktmp final Path temp) throws IOException {
@@ -38,7 +38,7 @@ final class InferenceTest {
                 )
             ).parsed().toString()
         );
-        new Inference(input).inferTo(temp.resolve("out"), temp.resolve("rows"));
+        new Inferring(input, temp.resolve("out"), temp.resolve("rows")).exec();
         MatcherAssert.assertThat(
             "a chain of dispatches must become one object per step, but it didnt",
             new XMLDocument(temp.resolve("out").resolve("inc.xmir")),
@@ -61,7 +61,7 @@ final class InferenceTest {
                 )
             ).parsed().toString()
         );
-        new Inference(input).inferTo(temp.resolve("ready"), temp.resolve("rows"));
+        new Inferring(input, temp.resolve("ready"), temp.resolve("rows")).exec();
         MatcherAssert.assertThat(
             "a reference takes no attribute from anything, so it must stay whole, but it didnt",
             new XMLDocument(temp.resolve("ready").resolve("tap.xmir")),
@@ -83,7 +83,7 @@ final class InferenceTest {
                 )
             ).parsed().toString()
         );
-        new Inference(sources).inferTo(temp.resolve("done"), temp.resolve("rows"));
+        new Inferring(sources, temp.resolve("done"), temp.resolve("rows")).exec();
         MatcherAssert.assertThat(
             "the receiver of a new dispatch must get a locator of its own, but it didnt",
             new XMLDocument(temp.resolve("done").resolve("box.xmir")),
@@ -109,7 +109,7 @@ final class InferenceTest {
                 )
             ).parsed().toString()
         );
-        new Inference(folder).inferTo(temp.resolve("xmir"), temp.resolve("tables"));
+        new Inferring(folder, temp.resolve("xmir"), temp.resolve("tables")).exec();
         MatcherAssert.assertThat(
             "the innermost formation must be known to have nothing, but it isnt",
             new XMLDocument(temp.resolve("tables").resolve("provides.xml")),
@@ -135,7 +135,7 @@ final class InferenceTest {
                 String.join(System.lineSeparator(), "[] > cup", "  [] > handle", "")
             ).parsed().toString()
         );
-        new Inference(many).inferTo(temp.resolve("all"), temp.resolve("tables"));
+        new Inferring(many, temp.resolve("all"), temp.resolve("tables")).exec();
         MatcherAssert.assertThat(
             "one table must cover the whole program, but a file was left out of it",
             new XMLDocument(temp.resolve("tables").resolve("provides.xml")),
@@ -154,7 +154,7 @@ final class InferenceTest {
                 String.join(System.lineSeparator(), "[] > leaf", "  [] > vein", "")
             ).parsed().toString()
         );
-        new Inference(temp.resolve("tree")).inferTo(temp.resolve("copy"), temp.resolve("rows"));
+        new Inferring(temp.resolve("tree"), temp.resolve("copy"), temp.resolve("rows")).exec();
         MatcherAssert.assertThat(
             "a file in a folder must be written to the same folder again, but it wasnt",
             Files.exists(temp.resolve("copy").resolve("one").resolve("leaf.xmir")),
