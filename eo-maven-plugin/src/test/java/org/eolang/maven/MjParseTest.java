@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
@@ -39,6 +40,24 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 @ExtendWith(MktmpResolver.class)
 final class MjParseTest {
+
+    @Test
+    void stampsSourceAttributeOnTheXmirRoot(@Mktmp final Path temp) throws Exception {
+        final TjForeign tojo = new FakeMaven(temp).withHelloWorld()
+            .execute(new FakeMaven.Parse())
+            .programTojo();
+        MatcherAssert.assertThat(
+            "The source attribute, resolved relative to the XMIR file, must point back at the original .eo source",
+            tojo.xmir().getParent().resolve(
+                new Xnav(new XMLDocument(tojo.xmir()).inner())
+                    .element("object")
+                    .attribute("source")
+                    .text()
+                    .orElse("")
+            ).normalize(),
+            Matchers.equalTo(tojo.source().toAbsolutePath().normalize())
+        );
+    }
 
     @Test
     void parsesSuccessfully(@Mktmp final Path temp) throws Exception {

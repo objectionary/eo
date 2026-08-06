@@ -26,6 +26,8 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.parser.Canonical;
 import org.w3c.dom.Node;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Parse EO to XML.
@@ -185,6 +187,7 @@ final class Parsing implements Step {
             new TojoHash(tojo),
             src -> {
                 final Node node = this.parsed(src, name, pipeline);
+                Parsing.stamped(node, target.getParent().relativize(src));
                 refs.add(node);
                 return new XMLDocument(node).toString();
             }
@@ -209,6 +212,18 @@ final class Parsing implements Step {
             }
         }
         return 1;
+    }
+
+    /**
+     * Stamp the "source" attribute on a parsed XMIR root, pointing at the
+     * ".eo" file it came from, relative to the XMIR file itself (#3675).
+     * @param node The parsed XMIR root
+     * @param relative Path to the source, relative to the XMIR file
+     */
+    private static void stamped(final Node node, final Path relative) {
+        new Xembler(
+            new Directives().xpath("/object").attr("source", relative.toString())
+        ).applyQuietly(node);
     }
 
     /**
