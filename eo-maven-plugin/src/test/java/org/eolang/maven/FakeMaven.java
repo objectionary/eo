@@ -188,10 +188,10 @@ final class FakeMaven {
             );
             this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
             this.params.putIfAbsent(
-                "preInferenceDir", this.targetPath().resolve("6-pre-inference").toFile()
+                "prepared", this.targetPath().resolve("6-pre-inference").toFile()
             );
             this.params.putIfAbsent(
-                "inferenceDir", this.targetPath().resolve("6-inference").toFile()
+                "tables", this.targetPath().resolve("6-inference").toFile()
             );
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
@@ -502,21 +502,6 @@ final class FakeMaven {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 MjParse.class,
                 MjLint.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * Work out the types of the objects.
-     * @since 0.67.0
-     */
-    static final class Inference implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                MjParse.class,
-                MjInference.class
             ).iterator();
         }
     }

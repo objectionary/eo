@@ -35,7 +35,8 @@ final class MjInferenceTest {
                         ""
                     )
                 )
-                .execute(new FakeMaven.Inference())
+                .execute(MjParse.class)
+                .execute(MjInference.class)
                 .targetPath()
                 .resolve("6-inference")
                 .resolve("provides.xml")
@@ -57,7 +58,8 @@ final class MjInferenceTest {
                         ""
                     )
                 )
-                .execute(new FakeMaven.Inference())
+                .execute(MjParse.class)
+                .execute(MjInference.class)
                 .targetPath()
                 .resolve("6-pre-inference")
                 .resolve("foo")

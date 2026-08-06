@@ -57,32 +57,30 @@ public final class MjInference extends MjSafe {
 
     /**
      * The directory where the XMIR prepared for the rules is saved.
-     * @checkstyle MemberNameCheck (8 lines)
      */
     @Parameter(
         property = "eo.preInferenceDir",
         required = true,
         defaultValue = "${project.build.directory}/eo/6-pre-inference"
     )
-    private File preInferenceDir;
+    private File prepared;
 
     /**
      * The directory where the tables are saved.
-     * @checkstyle MemberNameCheck (8 lines)
      */
     @Parameter(
         property = "eo.inferenceDir",
         required = true,
         defaultValue = "${project.build.directory}/eo/6-inference"
     )
-    private File inferenceDir;
+    private File tables;
 
     @Override
     void exec() throws IOException {
         new Inferring(
             this.targetDir.toPath().resolve(Parsing.DIR),
-            this.preInferenceDir.toPath(),
-            this.inferenceDir.toPath()
+            this.prepared.toPath(),
+            this.tables.toPath()
         ).exec();
     }
 }
