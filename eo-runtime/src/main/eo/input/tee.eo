@@ -44,7 +44,7 @@
       5
       read. > [mem]
         Q.input.tee
-          bytes.as-input 01-02-03-04-05
+          as-input 01-02-03-04-05
           mem.to-output
         5
     01-02-03-04-05
@@ -57,7 +57,7 @@
           read.
             read.
               Q.input.tee
-                bytes.as-input 01-02-03-04-05
+                as-input 01-02-03-04-05
                 m.to-output
               2
             2
@@ -75,7 +75,7 @@
             seq * > [m2] >>
               read.
                 Q.input.tee
-                  Q.input.tee (bytes.as-input 01-02-03-04-05) m2.to-output
+                  Q.input.tee (as-input 01-02-03-04-05) m2.to-output
                   m1.to-output
                 5
               m1.write 5 2A-

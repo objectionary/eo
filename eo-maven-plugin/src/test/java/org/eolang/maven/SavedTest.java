@@ -11,13 +11,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import org.cactoos.scalar.Unchecked;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -70,18 +68,51 @@ final class SavedTest {
     }
 
     @Test
+    void createsMissingParentDirectories(@Mktmp final Path temp) throws Exception {
+        final Path target = temp.resolve("deep/nested/tree/out.txt");
+        new Saved("qwerty-42", target).value();
+        MatcherAssert.assertThat(
+            "the file must be saved even when its parent directories dont exist yet",
+            Files.readString(target, StandardCharsets.UTF_8),
+            Matchers.equalTo("qwerty-42")
+        );
+    }
+
+    @Test
+    void overwritesContentOfExistingFile(@Mktmp final Path temp) throws Exception {
+        final Path target = temp.resolve("twice.txt");
+        new Saved("first-7", target).value();
+        new Saved("second-13", target).value();
+        MatcherAssert.assertThat(
+            "the second write must replace the content left by the first one",
+            Files.readString(target, StandardCharsets.UTF_8),
+            Matchers.equalTo("second-13")
+        );
+    }
+
+    @Test
+    void leavesNoTemporaryFilesBehind(@Mktmp final Path temp) throws Exception {
+        new Saved("zzz-99", temp.resolve("clean.txt")).value();
+        try (Stream<Path> files = Files.list(temp)) {
+            MatcherAssert.assertThat(
+                "the temporary file must not survive a successful save",
+                files.map(path -> path.getFileName().toString()).collect(Collectors.toList()),
+                Matchers.contains("clean.txt")
+            );
+        }
+    }
+
+    @Test
     void retriesMoveWhenTargetTemporarilyBlocked(@Mktmp final Path temp) throws Exception {
         final Path target = temp.resolve("blocked.txt");
         Files.createDirectories(target);
-        try (ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor()) {
-            scheduler.schedule(
-                (Callable<Void>) () -> {
-                    Files.delete(target);
-                    return null;
-                }, 300, TimeUnit.MILLISECONDS
-            );
-            new Saved("content", target).value();
-        }
+        final Thread writer = new Thread(
+            () -> new Unchecked<>(new Saved("content", target)).value()
+        );
+        writer.start();
+        Thread.sleep(300L);
+        Files.delete(target);
+        writer.join();
         MatcherAssert.assertThat(
             "the write must succeed once a retry lands after the obstruction clears",
             Files.readString(target, StandardCharsets.UTF_8),

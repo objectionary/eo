@@ -72,7 +72,9 @@
       seq * > [m] >>
         m.write 0 bts
         scope m
-  [size scope] > of /Q.bytes
+  [] > of /Q.bytes
+    ? > size /Q.number
+    ? > scope /{Q.chunk}
 
   ++> can-allocate-a-block-of-the-right-size
     malloc.of > @

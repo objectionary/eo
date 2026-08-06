@@ -124,6 +124,34 @@ final class LnReversedTest {
         );
     }
 
+    @Test
+    void rejectsAttributeWithoutPrecedingBlankLine() {
+        final Emit emit = new Emit();
+        new LnReversed(new Span("if. cond then +> t", 2))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `+>` test attribute on a reversed-dispatch line with no blank line above must emit an R-6.5.3 error",
+            LnReversedTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/errors/error[@line='2']")
+        );
+    }
+
+    @Test
+    void acceptsAttributeAfterBlankLine() {
+        final Emit emit = new Emit();
+        final Globals globals = new Globals();
+        globals.blank();
+        new LnReversed(new Span("if. cond then +> t", 2))
+            .into(new Stack(), globals, emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `+>` test attribute on a reversed-dispatch line preceded by one blank line must not emit any error",
+            LnReversedTest.render(emit),
+            Matchers.not(XhtmlMatchers.hasXPath("/object/errors"))
+        );
+    }
+
     /**
      * Render the emit's directives under a fresh {@code <object/>}.
      * @param emit The emit

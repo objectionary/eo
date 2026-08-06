@@ -1,12 +1,8 @@
 # Path `path` that is hierarchical and composed of a sequence of
 # directory and file name elements separated by a special separator or delimiter.
 
-+alias string.index-of
 +alias string.last-index-of
-+alias tuple.reduced
 +alias string.regex
-+alias string.replaced
-+alias string.split
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -36,7 +32,7 @@
           as-bytes.
             text.slice
               plus. >> index!
-                string.last-index-of text separator
+                last-index-of text separator
                 1
               text.length.minus
                 number index
@@ -55,32 +51,34 @@
               as-bytes.
                 text.slice
                   0
-                  string.last-index-of text separator >> len!
+                  last-index-of text separator >> len!
       string pth > text
     sys.drive uri > drive
     if. > driveless
       drive.size.eq 0
       uri
       uri.slice
-        drive.size
-        uri.size.minus drive.size
+        drive.length
+        uri.length.minus drive.length
     [] > extname
       if. > @
         or.
-          base.size.eq 0
-          index.eq -1
+          or.
+            base.size.eq 0
+            index.eq -1
+          or.
+            index.eq 0
+            base.eq ".."
         ""
         string
           as-bytes.
             text.slice
-              string.last-index-of text "." >> index!
+              last-index-of text "." >> index!
               text.length.minus
                 number index
       string > text
         basename >> base!
-    is-root-relative.or > is-absolute
-      drive.size.gt 0
-    and. > is-root-relative
+    and. > is-absolute
       driveless.size.gt 0
       eq.
         driveless.slice 0 1
@@ -106,7 +104,7 @@
           concat.
             concat.
               drive.concat
-                is-root-relative.if separator --
+                is-absolute.if separator --
               string.joined >> body!
                 separator
                 tuple.reduced
@@ -119,7 +117,7 @@
                         accum.length.gt 0
                         not. (accum.head.eq "..")
                       accum.tail
-                      is-root-relative.not.if (accum.with segment) accum
+                      is-absolute.not.if (accum.with segment) accum
                     if.
                       or.
                         segment.eq "."
@@ -183,7 +181,7 @@
     "\\" > separator
     [] > sys
       if. > [uri] > drive
-        as-bool. ((string.regex "/^[a-zA-Z]:/").match uri).next.exists
+        as-bool. ((regex "/^[a-zA-Z]:/").match uri).next.exists
         uri.slice 0 2
         --
       [uri] > sanitized
@@ -193,9 +191,13 @@
             -1
           string
             uri >> ubts!
-          string (string.replaced pth (string.regex "/\\//") separator)!
+          string (string.replaced pth (regex "/\\//") separator)!
         string ubts > pth
       ^.separator > separator
+
+  not. ++> can-detect-a-drive-relative-win32-path-as-not-absolute
+    is-absolute.
+      path.win32 "C:foo"
 
   and. ++> can-detect-an-absolute-posix-path
     is-absolute.
@@ -223,6 +225,11 @@
     normalized.
       path.win32 "C:"
     "C:"
+
+  eq. ++> can-normalize-a-drive-qualified-win32-path-with-a-multibyte-segment
+    normalized.
+      path.win32 "C:\\Ж"
+    "C:\\Ж"
 
   eq. ++> can-normalize-a-drive-relative-win32-path-keeping-a-leading-dotdot
     normalized.
@@ -472,6 +479,21 @@
           "www"
           "hello.text"
     ".text"
+
+  eq. ++> can-take-an-extname-from-a-hidden-file-with-an-extension
+    extname.
+      path.posix ".config.json"
+    ".json"
+
+  eq. ++> cannot-take-an-extname-from-a-dotdot
+    extname.
+      path.posix ".."
+    ""
+
+  eq. ++> cannot-take-an-extname-from-a-dotfile
+    extname.
+      path.posix ".gitignore"
+    ""
 
   eq. ++> cannot-take-an-extname-from-a-file-without-an-extension
     extname.

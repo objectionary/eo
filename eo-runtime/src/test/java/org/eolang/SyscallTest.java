@@ -16,12 +16,11 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import org.eolang.Posix.CStdLib;
-import org.eolang.Win32.WSAStartupFuncCall;
-import org.eolang.Win32.Winsock;
+import org.eolang.posix.CStdLib;
+import org.eolang.win32.WSAStartupFuncCall;
+import org.eolang.win32.Winsock;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Nested;
@@ -80,6 +79,41 @@ final class SyscallTest {
     }
 
     @Test
+    void tellsTheFallbackWhichAddressItFailedToReach() throws IOException {
+        final SyscallTest.RandomServer refused = new SyscallTest.RandomServer().started();
+        refused.stop();
+        final Phi socket = Phi.Φ.take("socket").copy();
+        socket.put(0, new Data.ToPhi(this.localhost()));
+        socket.put(1, new Data.ToPhi(refused.port));
+        final Phi connect = socket.take("connect").copy();
+        connect.put(1, Phi.Φ.take("dataized").copy());
+        MatcherAssert.assertThat(
+            "the refused connection should have told the fallback which address it failed to reach, but it didnt",
+            new Dataized(connect).asString(),
+            Matchers.containsString(String.format("%s:%d", this.localhost(), refused.port))
+        );
+    }
+
+    @Test
+    void tellsTheFallbackWhichAddressItFailedToBind() throws IOException {
+        final SyscallTest.RandomServer taken = new SyscallTest.RandomServer().started();
+        try {
+            final Phi socket = Phi.Φ.take("socket").copy();
+            socket.put(0, new Data.ToPhi(this.localhost()));
+            socket.put(1, new Data.ToPhi(taken.port));
+            final Phi listen = socket.take("listen").copy();
+            listen.put(1, Phi.Φ.take("dataized").copy());
+            MatcherAssert.assertThat(
+                "the taken port should have told the fallback which address it failed to bind to, but it didnt",
+                new Dataized(listen).asString(),
+                Matchers.containsString(String.format("%s:%d", this.localhost(), taken.port))
+            );
+        } finally {
+            taken.stop();
+        }
+    }
+
+    @Test
     void sendsAndReceivesMessageViaSocketObject() throws InterruptedException, IOException {
         final String msg = "Hello, Socket!";
         final AtomicReference<byte[]> bytes = new AtomicReference<>();
@@ -132,12 +166,24 @@ final class SyscallTest {
     }
 
     /**
-     * Get random port.
-     * @return Random port
+     * Assert that a server thread received exactly the bytes a client sent.
+     * @param sent Bytes the client sent
+     * @param count Number of bytes the server reported as received
+     * @param received Bytes the server received
      */
-    private static int randomPort() {
-        final int min = 10_000;
-        return new Random().nextInt(20_000 - min + 1) + min;
+    private static void assertReceived(
+        final byte[] sent, final AtomicInteger count, final AtomicReference<byte[]> received
+    ) {
+        MatcherAssert.assertThat(
+            "Server had to receive the message from the client, but it didn't",
+            count.get(),
+            Matchers.equalTo(sent.length)
+        );
+        MatcherAssert.assertThat(
+            "Received bytes must be equal to sent, but they didn't",
+            new String(received.get(), StandardCharsets.UTF_8),
+            Matchers.equalTo(new String(sent, StandardCharsets.UTF_8))
+        );
     }
 
     /**
@@ -213,7 +259,7 @@ final class SyscallTest {
                             "Win socket should have been bound to localhost via syscall, but it didn't, error code is: %d",
                             this.getError()
                         ),
-                        this.bindSocket(socket, SyscallTest.randomPort()),
+                        this.bindSocket(socket, new Port().number()),
                         Matchers.equalTo(0)
                     );
                 } finally {
@@ -231,7 +277,7 @@ final class SyscallTest {
                 final int socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
-                    this.ensure(this.bindSocket(socket, SyscallTest.randomPort()) == 0);
+                    this.ensure(this.bindSocket(socket, new Port().number()) == 0);
                     MatcherAssert.assertThat(
                         String.format(
                             "Posix socket should have been bound to localhost via syscall, but it didn't, reason: %s",
@@ -254,7 +300,7 @@ final class SyscallTest {
                 this.ensure(this.startup() == 0);
                 final AtomicInteger accept = new AtomicInteger(0);
                 final AtomicInteger error = new AtomicInteger();
-                final AtomicInteger port = new AtomicInteger(SyscallTest.randomPort());
+                final AtomicInteger port = new AtomicInteger(new Port().number());
                 final Thread server = new Thread(
                     () -> this.acceptViaWinsock(port, accept, error)
                 );
@@ -296,7 +342,7 @@ final class SyscallTest {
                 this.ensure(this.startup() == 0);
                 final AtomicInteger received = new AtomicInteger(-1);
                 final AtomicReference<byte[]> bytes = new AtomicReference<>();
-                final AtomicInteger port = new AtomicInteger(SyscallTest.randomPort());
+                final AtomicInteger port = new AtomicInteger(new Port().number());
                 final Thread server = new Thread(
                     () -> this.recvViaWinsock(port, received, bytes)
                 );
@@ -318,19 +364,7 @@ final class SyscallTest {
                         Matchers.equalTo(buf.length)
                     );
                     server.join();
-                    MatcherAssert.assertThat(
-                        String.format(
-                            "Server hat to receive message from the client, but it didn't, reason: %s",
-                            this.getError()
-                        ),
-                        received.get(),
-                        Matchers.equalTo(buf.length)
-                    );
-                    MatcherAssert.assertThat(
-                        "Received bytes must be equal to sent, but they didn't",
-                        new String(bytes.get(), StandardCharsets.UTF_8),
-                        Matchers.equalTo(new String(buf, StandardCharsets.UTF_8))
-                    );
+                    SyscallTest.assertReceived(buf, received, bytes);
                 } finally {
                     this.closeSocket(client);
                 }
@@ -450,7 +484,7 @@ final class SyscallTest {
             try {
                 this.ensure(socket > 0);
                 while (this.bindSocket(socket, port.get()) != 0) {
-                    port.set(SyscallTest.randomPort());
+                    port.set(new Port().number());
                 }
                 this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
@@ -481,7 +515,7 @@ final class SyscallTest {
             try {
                 this.ensure(socket > 0);
                 while (this.bindSocket(socket, port.get()) != 0) {
-                    port.set(SyscallTest.randomPort());
+                    port.set(new Port().number());
                 }
                 this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
@@ -559,7 +593,7 @@ final class SyscallTest {
                         "Posix socket should have been bound to localhost via syscall, but it didn't, reason: %s",
                         this.getError()
                     ),
-                    this.bindSocket(socket, SyscallTest.randomPort()),
+                    this.bindSocket(socket, new Port().number()),
                     Matchers.equalTo(0)
                 );
             } finally {
@@ -572,7 +606,7 @@ final class SyscallTest {
             final int socket = this.openSocket();
             try {
                 this.ensure(socket > 0);
-                this.ensure(this.bindSocket(socket, SyscallTest.randomPort()) == 0);
+                this.ensure(this.bindSocket(socket, new Port().number()) == 0);
                 MatcherAssert.assertThat(
                     String.format(
                         "Posix socket should have been bound to localhost via syscall, but it didn't, reason: %s",
@@ -590,7 +624,7 @@ final class SyscallTest {
         void acceptsConnectionOnSocket() throws InterruptedException {
             final AtomicInteger accept = new AtomicInteger(0);
             final AtomicReference<String> error = new AtomicReference<>();
-            final AtomicInteger port = new AtomicInteger(SyscallTest.randomPort());
+            final AtomicInteger port = new AtomicInteger(new Port().number());
             final Thread server = new Thread(
                 () -> this.acceptViaCStdLib(port, accept, error)
             );
@@ -626,7 +660,7 @@ final class SyscallTest {
         void sendsAndReceivesMessagesViaSyscalls() throws InterruptedException {
             final AtomicInteger received = new AtomicInteger(-1);
             final AtomicReference<byte[]> bytes = new AtomicReference<>();
-            final AtomicInteger port = new AtomicInteger(SyscallTest.randomPort());
+            final AtomicInteger port = new AtomicInteger(new Port().number());
             final Thread server = new Thread(
                 () -> this.recvViaCStdLib(port, received, bytes)
             );
@@ -647,19 +681,7 @@ final class SyscallTest {
                     Matchers.equalTo(buf.length)
                 );
                 server.join();
-                MatcherAssert.assertThat(
-                    String.format(
-                        "Server hat to receive message from the client, but it didn't, reason: %s",
-                        this.getError()
-                    ),
-                    received.get(),
-                    Matchers.equalTo(buf.length)
-                );
-                MatcherAssert.assertThat(
-                    "Received bytes must be equal to sent, but they didn't",
-                    new String(bytes.get(), StandardCharsets.UTF_8),
-                    Matchers.equalTo(new String(buf, StandardCharsets.UTF_8))
-                );
+                SyscallTest.assertReceived(buf, received, bytes);
             } finally {
                 this.closeSocket(client);
             }
@@ -757,7 +779,7 @@ final class SyscallTest {
             try {
                 this.ensure(socket > 0);
                 while (this.bindSocket(socket, port.get()) != 0) {
-                    port.set(SyscallTest.randomPort());
+                    port.set(new Port().number());
                 }
                 this.ensure(CStdLib.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
@@ -786,7 +808,7 @@ final class SyscallTest {
             try {
                 this.ensure(socket > 0);
                 while (this.bindSocket(socket, port.get()) != 0) {
-                    port.set(SyscallTest.randomPort());
+                    port.set(new Port().number());
                 }
                 this.ensure(CStdLib.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
@@ -828,7 +850,7 @@ final class SyscallTest {
         RandomServer started() {
             boolean bound = false;
             while (!bound) {
-                this.port = SyscallTest.randomPort();
+                this.port = new Port().number();
                 try {
                     this.socket = new ServerSocket();
                     this.socket.setReuseAddress(true);

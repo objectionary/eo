@@ -37,17 +37,45 @@
         groups.at index > [index] > group
         $ > matched
         exists.if > next
-          matched.
-            matched-from-index
-              position.plus 1
-              to
+          if.
+            and.
+              from.eq to
+              to.eq txt.length
+            missing
+            matched.
+              matched-from-index
+                position.plus 1
+                if.
+                  from.eq to
+                  to.plus 1
+                  to
           T
             "Matched block does not exist, can't get next"
         exists.if > text
           group 0
           T
             "Matched block does not exist, can't get text"
-      [position start] > matched-from-index /Q.string.regex.pattern.match.matched
+      [] > matched-from-index /Q.string.regex.pattern.match.matched
+        ? > position /Q.number
+        ? > start /Q.number
+      [] > missing
+        T > count
+          "Matched block does not exist, can't get count"
+        start.gte 0 > exists
+        T > from
+          "Matched block does not exist, can't get 'from' position"
+        T > [index] > group
+          "Matched block does not exist, can't get group"
+        T > groups
+          "Matched block does not exist, can't get groups"
+        T > next
+          "Matched block does not exist, can't get next"
+        0 > position
+        -1 > start
+        T > text
+          "Matched block does not exist, can't get text"
+        T > to
+          "Matched block does not exist, can't get 'to' position"
       matched. > next
         matched-from-index 1 0
     [txt] > matches
@@ -57,6 +85,30 @@
           found.from.eq 0
       next. > found
         match txt
+
+  eq. ++> can-advance-after-a-zero-width-match
+    1
+    from.
+      next.
+        next.
+          match.
+            regex "/a*/"
+            "xa"
+
+  ++> can-count-supplementary-characters-as-one-position
+    and. > @
+      and.
+        0.eq first.from
+        1.eq first.to
+      and.
+        1.eq second.from
+        2.eq second.to
+    next. > first
+      match.
+        compiled.
+          regex "/./"
+        "😀x"
+    first.next > second
 
   ++> can-expose-groups-on-each-matched-block
     and. > @
@@ -95,6 +147,11 @@
     compiled.
       regex "/[a-z]+/"
     "hello"
+
+  matches. ++> can-match-a-text-containing-supplementary-characters
+    compiled.
+      regex "/😀x/"
+    "😀x"
 
   matches. ++> can-match-an-entire-pattern
     compiled.
@@ -196,6 +253,19 @@
       regex "/[a-z/"
       "recovered" > [message]
 
+  not. ++> stops-on-a-terminal-zero-width-match
+    exists.
+      next.
+        next.
+          match.
+            regex "/$/"
+            "x"
+
+  next. --> rejects-serialized-bytes-of-the-wrong-type
+    match.
+      pattern AC-ED-00-05-74-00-0D-6E-6F-74-20-61-20-70-61-74-74-65-72-6E
+      "hello"
+
   compiled. --> stops-on-a-missing-closing-slash
     regex "/pattern"
 
@@ -204,6 +274,14 @@
 
   compile. --> stops-on-compiling-an-invalid-pattern
     regex "/[a-z/"
+
+  group. --> stops-on-taking-a-group-of-a-terminal-zero-width-match
+    next.
+      next.
+        match.
+          regex "/$/"
+          "x"
+    1
 
   group. --> stops-on-taking-a-group-of-an-unmatched-block
     next.
@@ -218,6 +296,13 @@
         regex "/[a-z]+/"
         "123"
 
+  count. --> stops-on-taking-the-group-count-of-a-terminal-zero-width-match
+    next.
+      next.
+        match.
+          regex "/$/"
+          "x"
+
   count. --> stops-on-taking-the-group-count-of-an-unmatched-block
     next.
       match.
@@ -230,6 +315,13 @@
         regex "/[a-z]+/"
         "123"
 
+  next. --> stops-on-taking-the-next-of-a-terminal-zero-width-match
+    next.
+      next.
+        match.
+          regex "/$/"
+          "x"
+
   next. --> stops-on-taking-the-next-of-an-unmatched-block
     next.
       match.
@@ -241,6 +333,13 @@
       match.
         regex "/[a-z]+/"
         "123"
+
+  text. --> stops-on-taking-the-text-of-a-terminal-zero-width-match
+    next.
+      next.
+        match.
+          regex "/$/"
+          "x"
 
   text. --> stops-on-taking-the-text-of-an-unmatched-block
     next.

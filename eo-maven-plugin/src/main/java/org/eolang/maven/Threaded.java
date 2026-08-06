@@ -72,7 +72,7 @@ final class Threaded<T> {
             new Threads<>(
                 Runtime.getRuntime().availableProcessors() * 2,
                 new Mapped<>(
-                    tojo -> new ScalarWithFallback<Integer>(
+                    tojo -> new ScalarWithFallback<>(
                         () -> this.scalar.apply(tojo),
                         new Fallback.From<>(
                             Exception.class,

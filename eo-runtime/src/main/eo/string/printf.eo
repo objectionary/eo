@@ -1,6 +1,12 @@
 # Object `printf` allows you to format and output text depending
 # on the arguments passed to it and return it as `org.eolang.string`.
 #
+# A specifier reads as `%[N$][flags][width][.precision]conversion`, where
+# `N$` picks the `N`-th argument (1-based) instead of the next sequential
+# one, `-` justifies to the left, `0` pads a number with leading zeros,
+# `width` is the minimum count of characters and `.precision` truncates
+# the text (or, for `%f`, counts the fraction digits).
+#
 # When arguments are processed - they're dataized and converted to objects
 # depending on next flags:
 # - %s - converts object to `string`
@@ -8,17 +14,374 @@
 # - %f - converts object to `float`
 # - %x - converts object to `bytes`
 # - %b - converts object to boolean, `true` or `false`.
+#
+# The format is walked over its bytes, and not over its characters, because
+# `%` never occurs inside a UTF-8 multi-byte sequence, so a literal byte is
+# copied through untouched and the walk stays linear in allocation.
+#
+# The work is done by two objects calling each other, so that the format is
+# traversed exactly once: `walk` copies a literal byte and steps forward,
+# handing every `%` to `spec`, which reads one specifier and asks `walk` to
+# continue after it.
+#
+# `spec` reads that specifier from left to right and names every position it
+# stops at: `dollar` is the `$` of a positional argument, `flags` opens
+# the specifier itself, `digits` follows the `-` and `0` flags, `dot`
+# follows the width digits, and `end` holds the conversion letter. Those
+# positions, and everything derived from them, are memoized, because the
+# language caches through `!` alone, and they are listed alphabetically
+# rather than in reading order, because the linter sorts them by name.
+#
+# The `%s` conversion refuses an argument whose bytes are not text: a byte
+# sequence that does not decode as UTF-8, and the single bytes `00-` and `01-`,
+# which are how `false` and `true` dataize, together with the two control
+# characters that share that encoding, because an object knows its own bytes
+# here and not its type.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[format args] > printf /Q.string
+[format args] > printf
+  string > @
+    [index auto acc] >> walk
+      if. > @
+        gte.
+          number cursor
+          number span
+        acc
+        if.
+          25-.eq char
+          spec
+            number cursor
+            auto
+            acc
+          walk
+            as-number.
+              plus.
+                number cursor
+                1
+            auto
+            acc.concat char
+      slice. > char!
+        bytes raw
+        number cursor
+        1
+      index > cursor!
+    | 0 0 --
+  slice. > [i] >> byte
+    bytes raw
+    i
+    1
+  as-ascii > [i] >> code
+    string
+      byte i
+  if. > [i] >> digits-end
+    i.gte
+      number span
+    i
+    if.
+      and.
+        48.lte
+          code i
+        57.gte
+          code i
+      digits-end
+        as-number.
+          i.plus 1
+      i
+  if. > [from to acc] >> digits-value
+    from.gte to
+    acc
+    digits-value
+      as-number.
+        from.plus 1
+      to
+      as-number.
+        plus.
+          acc.times 10
+          minus.
+            code from
+            48
+  T message > [message] >> failure
+  if. > [i] >> flags-end
+    i.gte
+      number span
+    i
+    if.
+      or.
+        2D-.eq
+          byte i
+        30-.eq
+          byte i
+      flags-end
+        as-number.
+          i.plus 1
+      i
+  2.power 63 >> limit!
+  size. >> span!
+    bytes
+      format.as-bytes >> raw!
+  [index auto acc] >> spec
+    if. > @
+      gte.
+        number end
+        number span
+      T
+        "The format %s ends with an incomplete specifier, a conversion character is missing".printf
+          * format
+      if.
+        25-.eq conv
+        walk
+          as-number.
+            index.plus 2
+          auto
+          acc.concat 25-
+        walk
+          as-number.
+            plus.
+              number end
+              1
+          positional.as-bool.if
+            auto
+            as-number.
+              auto.plus 1
+          seq *
+            value
+            acc.concat padded
+    args.at > arg
+      number idx
+    byte > conv!
+      number end
+    if. > converted!
+      73-.eq conv
+      as-bytes. > [text] >> capped
+        precise.as-bool.if
+          truncated
+            string text
+            number precision
+            failure
+          text
+      |
+        if.
+          or.
+            01-.eq datum
+            00-.eq datum
+          T
+            "The argument %d of the %%s conversion is a bool, use the %%b conversion instead".printf
+              *
+                plus.
+                  number idx
+                  1
+          seq *
+            length.
+              string datum
+            capped
+              string datum
+      if.
+        64-.eq conv
+        as-decimal
+          if.
+            or.
+              gte.
+                number numeric
+                number limit
+              lt.
+                number numeric
+                times.
+                  number limit
+                  -1
+            T
+              "The number %f doesn't fit into the long range of the %%d conversion".printf
+                *
+                  number numeric
+            number numeric
+        if.
+          66-.eq conv
+          as-fixed
+            number numeric
+            precise.as-bool.if
+              number precision
+              6
+            failure
+          if.
+            78-.eq conv
+            capped
+              as-hex
+                bytes datum
+            if.
+              62-.eq conv
+              capped
+                arg.as-bool.if "true" "false"
+              T
+                "The conversion %x in the format is unsupported, only %%s, %%d, %%f, %%x and %%b are".printf
+                  *
+                    bytes conv
+    arg.as-bytes > datum!
+    flags-end > digits!
+      number flags
+    digits-end > dollar!
+      as-number.
+        index.plus 1
+    digits-end > dot!
+      number digits
+    precise.as-bool.if > end!
+      digits-end
+        as-number.
+          plus.
+            number dot
+            1
+      number dot
+    as-bytes. > filled!
+      padded-zeros
+        string value
+        number width
+        failure
+    positional.as-bool.if > flags!
+      as-number.
+        plus.
+          number dollar
+          1
+      as-number.
+        index.plus 1
+    positional.as-bool.if > idx!
+      as-number.
+        minus.
+          digits-value
+            as-number.
+              index.plus 1
+            number dollar
+            0
+          1
+      auto
+    number arg > numeric!
+    if. > padded!
+      if. > [i c] >> flagged
+        i.gte
+          number digits
+        false
+        if.
+          c.eq
+            byte i
+          true
+          flagged
+            as-number.
+              i.plus 1
+            c
+      | (number flags) 2D-
+      as-bytes.
+        padded-right
+          string value
+          number width
+          " "
+          failure
+      zero.as-bool.if
+        filled
+        as-bytes.
+          padded-left
+            string value
+            number width
+            " "
+            failure
+    and. > positional!
+      gt.
+        number dollar
+        index.plus 1
+      and.
+        lt.
+          number dollar
+          number span
+        24-.eq
+          byte
+            number dollar
+    and. > precise!
+      lt.
+        number dot
+        number span
+      2E-.eq
+        byte
+          number dot
+    precise.as-bool.if > precision!
+      digits-value
+        as-number.
+          plus.
+            number dot
+            1
+        number end
+        0
+      0
+    if. > value!
+      positional.as-bool.and
+        18.lt
+          minus.
+            number dollar
+            index.plus 1
+      T
+        "The positional argument index in the format %s is too large".printf
+          * format
+      if.
+        positional.as-bool.and
+          lt.
+            number idx
+            0
+        T
+          "The positional argument index %d in the format must be 1 or greater".printf
+            *
+              plus.
+                number idx
+                1
+        if.
+          gte.
+            number idx
+            args.length
+          T
+            "The argument index %d in the format is out of bounds, only %d given".printf
+              *
+                plus.
+                  number idx
+                  1
+                args.length
+          if.
+            precise.as-bool.and
+              64-.eq conv
+            T
+              "A precision of %d can't be applied to the %%d conversion".printf
+                *
+                  number precision
+            if.
+              zero.as-bool.and
+                not.
+                  or.
+                    64-.eq conv
+                    66-.eq conv
+              T
+                "The zero flag can't be applied to the %x conversion, only to %%d and %%f".printf
+                  *
+                    bytes conv
+              converted
+    digits-value > width!
+      number digits
+      number dot
+      0
+    flagged > zero!
+      number flags
+      30-
+
+  eq. ++> can-answer-the-size-of-the-formatted-text
+    size.
+      printf *1
+        "Hello, %s"
+        "Jeff"
+    11
+
+  eq. ++> can-apply-a-precision-to-a-string
+    "Jef"
+    printf *1
+      "%.3s"
+      "Jeffrey"
 
   eq. ++> can-apply-a-precision-to-bytes
     "40-"
@@ -31,6 +394,12 @@
     printf *1
       "%25x"
       42.as-bytes
+
+  eq. ++> can-format-a-computed-string
+    "abcd"
+    printf *1
+      "%s"
+      "ab".concat "cd"
 
   eq. ++> can-format-a-float-with-six-fraction-digits
     "1.250000"
@@ -175,6 +544,10 @@
         42.as-i64
       "42"
 
+  printf *1 --> stops-on-a-bool-as-a-string
+    "%s"
+    true
+
   printf *1 --> stops-on-a-comma-flag-with-s
     "%,s"
     "Jeff"
@@ -190,6 +563,14 @@
   printf *1 --> stops-on-a-hash-flag-with-x
     "%#x"
     5
+
+  printf *1 --> stops-on-a-non-utf8-byte-argument-as-a-string
+    "%s"
+    3.14
+
+  printf *1 --> stops-on-a-number-as-a-string
+    "%s"
+    42
 
   printf *1 --> stops-on-a-paren-flag-with-s
     "%(s"
@@ -207,6 +588,10 @@
     "%0$s"
     "first"
 
+  printf *1 --> stops-on-an-i64-as-a-string
+    "%s"
+    42.as-i64
+
   printf *1 --> stops-on-an-oversized-positional-index
     "%99999999999999999999$s"
     "Jeff"
@@ -222,3 +607,7 @@
   printf *1 --> stops-on-formatting-a-huge-number-as-a-decimal
     "%d"
     1.0e30
+
+  printf *1 --> stops-on-formatting-nan-as-a-decimal
+    "%d"
+    nan

@@ -284,7 +284,7 @@
     <dependency>
       <groupId>com.tngtech.archunit</groupId>
       <artifactId>archunit</artifactId>
-      <version>1.4.2</version>
+      <version>1.5.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -336,6 +336,16 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <!--
+          The generated HelpMojo has no docblock for its constructor, so
+          only the handwritten sources are documented
+          -->
+          <sourcepath>${project.basedir}/src/main/java</sourcepath>
+        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -447,7 +457,7 @@
           <dependency>
             <groupId>org.apache.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>5.0.7</version>
+            <version>5.0.8</version>
           </dependency>
         </dependencies>
       </plugin>

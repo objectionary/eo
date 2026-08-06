@@ -61,7 +61,7 @@ public final class StXnav implements Shift {
 
     @Override
     public XML apply(final int position, final XML xml) {
-        final Node dom = xml.inner();
+        final Node dom = xml.inner().cloneNode(true);
         new Xnav(dom).path(this.xpath).forEach(this.fun);
         return new XMLDocument(dom);
     }

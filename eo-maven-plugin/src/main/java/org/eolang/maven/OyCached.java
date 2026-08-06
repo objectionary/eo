@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.cactoos.Input;
@@ -62,18 +63,21 @@ final class OyCached implements Objectionary {
 
     @Override
     public Input get(final String name) throws IOException {
-        return this.programs.computeIfAbsent(
-            name, key -> {
-                try {
-                    return this.origin.get(name);
-                } catch (final IOException exception) {
-                    throw new IllegalStateException(
-                        "An error occurred during the access to the origin objectionary",
-                        exception
-                    );
+        try {
+            return this.programs.computeIfAbsent(
+                name, key -> {
+                    try {
+                        return this.origin.get(name);
+                    } catch (final IOException exception) {
+                        throw new UncheckedIOException(exception);
+                    }
                 }
-            }
-        );
+            );
+        } catch (final UncheckedIOException wrap) {
+            throw new IOException(
+                String.format("Failed to fetch '%s' from the origin objectionary", name), wrap
+            );
+        }
     }
 
     @Override
@@ -85,20 +89,25 @@ final class OyCached implements Objectionary {
 
     @Override
     public boolean isDirectory(final String name) throws IOException {
-        return this.directories.computeIfAbsent(
-            name, key -> {
-                try {
-                    return this.origin.isDirectory(name);
-                } catch (final IOException exception) {
-                    throw new IllegalStateException(
-                        String.format(
-                            "Failed to fetch object %s from the origin objectionary",
-                            name
-                        ),
-                        exception
-                    );
+        try {
+            return this.directories.computeIfAbsent(
+                name, key -> {
+                    try {
+                        return this.origin.isDirectory(name);
+                    } catch (final IOException exception) {
+                        throw new UncheckedIOException(exception);
+                    }
                 }
-            }
-        );
+            );
+        } catch (final UncheckedIOException wrap) {
+            throw new IOException(
+                String.format("Failed to check whether '%s' is a directory", name), wrap
+            );
+        }
+    }
+
+    @Override
+    public Iterable<String> children(final String pkg) throws IOException {
+        return this.origin.children(pkg);
     }
 }

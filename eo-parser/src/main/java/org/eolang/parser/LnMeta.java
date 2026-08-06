@@ -69,6 +69,18 @@ final class LnMeta implements Line {
                 body.substring(space + 1), this.span, space + 1
             );
         }
+        if (head.isEmpty()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "meta directive requires a name"
+            );
+        }
+        if ("package".equals(head) && parts.isEmpty()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+package' directive requires exactly one argument"
+            );
+        }
         Comments.seal(globals, emit, this.span);
         globals.markMeta();
         globals.clearBlanks();
@@ -112,11 +124,11 @@ final class LnMeta implements Line {
     /**
      * Promote a leading {@code Q} in a part to {@code Φ}.
      * @param part The part text
-     * @return Part with {@code Q} → {@code Φ} promotion if applicable
+     * @return Part with {@code Q} promoted to {@code Φ} if applicable
      */
     private static String promoteQ(final String part) {
         final String promoted;
-        if (part.equals("Q")) {
+        if ("Q".equals(part)) {
             promoted = "Φ";
         } else if (part.startsWith("Q.")) {
             promoted = "Φ".concat(part.substring(1));

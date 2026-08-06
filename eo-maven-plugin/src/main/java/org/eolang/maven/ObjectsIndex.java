@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
+import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
@@ -69,14 +70,55 @@ final class ObjectsIndex {
      * @throws Exception If something unexpected happened.
      */
     boolean contains(final String name) throws Exception {
-        final String prefix = "org.eolang.";
-        final String stripped;
-        if (name.startsWith(prefix)) {
-            stripped = name.substring(prefix.length());
+        return this.objects.value().contains(ObjectsIndex.stripped(name));
+    }
+
+    /**
+     * Names of all objects located directly inside the given package, e.g.
+     * {@code "tuple.each"} and {@code "tuple.eachi"} for {@code "tuple"}, but
+     * not {@code "tuple"} itself nor objects from its sub-packages. The
+     * bare root package (stripped to an empty string) works the same way:
+     * its direct children are the top-level names with no dot at all, e.g.
+     * {@code "tuple"} and {@code "math"} themselves.
+     * @param pkg Package name, e.g. {@code "tuple"}, {@code "math.vector"}
+     *  or {@code "org.eolang"} itself
+     * @return Object names that live directly in that package
+     * @throws Exception If the index can't be read
+     */
+    Iterable<String> children(final String pkg) throws Exception {
+        final String stripped = ObjectsIndex.stripped(pkg);
+        final String prefix;
+        if (stripped.isEmpty()) {
+            prefix = stripped;
         } else {
-            stripped = name;
+            prefix = String.format("%s.", stripped);
         }
-        return this.objects.value().contains(stripped);
+        return new Filtered<>(
+            name -> name.startsWith(prefix) && name.indexOf('.', prefix.length()) < 0,
+            this.objects.value()
+        );
+    }
+
+    /**
+     * Strip the leading {@code org.eolang.} package from a name, the same
+     * way the index itself omits it (see {@link #convert(String)}), so a
+     * name in either shape matches the same index entry.
+     * @param name Object or package name
+     * @return The name with the leading {@code org.eolang.} removed, or the
+     *  name itself if it doesn't start with that prefix
+     */
+    private static String stripped(final String name) {
+        final String root = "org.eolang";
+        final String prefix = String.format("%s.", root);
+        final String result;
+        if (name.equals(root)) {
+            result = "";
+        } else if (name.startsWith(prefix)) {
+            result = name.substring(prefix.length());
+        } else {
+            result = name;
+        }
+        return result;
     }
 
     /**

@@ -32,7 +32,8 @@ final class MjAtomsTableTest {
                         "+package foo",
                         "",
                         "[] > thing",
-                        "  [x] > is-good /bool",
+                        "  [] > is-good /bool",
+                        "    ? > x",
                         "  [] > size /number"
                     )
                 )

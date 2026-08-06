@@ -54,7 +54,7 @@ First, install [Java SE] and [npm].
 Then, install [eoc]:
 
 ```bash
-npm install -g eolang@0.36.0
+npm install -g eolang@0.37.1
 ```
 
 Then, start with a simple EO program in the `app.eo` file:
@@ -336,8 +336,22 @@ To avoid frustration, before sending us your pull request
 mvn clean install -Pqulice
 ```
 
-You will need [Maven] 3.3+ and [Java] 11+ installed.
+You will need [Maven] 3.3+ and [Java] 21+ installed,
+  because the `qulice` profile requires it; a build without
+  that profile needs [Java] 17+.
 Also, if you have [xcop] installed, make sure it is version `0.8.0`+.
+
+A few rules we ask you to follow:
+
+* name your branch after the issue you are working on, e.g. `42`
+* prefix your commit messages with `fix(#42):` followed by a short description
+* keep your pull request between 40 and 100 hits of code, counted as
+  lines added plus lines deleted, so it stays easy to review; split
+  bigger changes into puzzles using [PDD]
+* mention the issue your pull request resolves, e.g. `Closes #42`,
+  so it links automatically
+* ping @yegor256 in the pull request description so he notices it
+  right away
 
 ## Contributors
 
@@ -370,6 +384,7 @@ to enhance the performance of EO components:
 [our blog]: https://news.eolang.org
 [papers]: https://news.eolang.org/papers.html
 [parser-spec]: https://github.com/objectionary/eo/blob/master/eo-parser/PARSER_SPEC.md
+[PDD]: https://github.com/yegor256/0pdd
 [Python]: https://en.wikipedia.org/wiki/Python_%28programming_language%29
 [Ruby]: https://en.wikipedia.org/wiki/Ruby_%28programming_language%29
 [Self]: https://en.wikipedia.org/wiki/Self_(programming_language)

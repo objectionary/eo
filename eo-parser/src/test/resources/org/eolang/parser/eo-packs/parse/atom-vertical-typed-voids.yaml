@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+asserts:
+  - /object[not(errors)]
+  # an emptied head keeps the vertical voids in source order, before λ
+  - /object/o[@name='slice']/o[1][@name='start' and @base='∅' and @type='Φ.number']
+  - /object/o[@name='slice']/o[2][@name='len' and @base='∅' and @type='Φ.number']
+  - /object/o[@name='slice']/o[3][@name='cant-slice' and @base='∅' and @args='Φ.string']
+  - /object/o[@name='slice']/o[4][@name='λ' and @atom='Φ.bytes']
+  # an untyped void may follow a typed one, keeping its position
+  - /object/o[@name='mixed']/o[1][@name='len' and @base='∅' and @type='Φ.number']
+  - /object/o[@name='mixed']/o[2][@name='b' and @base='∅' and not(@type)]
+  - /object/o[@name='mixed']/o[3][@name='λ' and @atom='Φ.bool']
+input: |
+  [] > slice /Q.bytes
+    ? > start /Q.number
+    ? > len /Q.number
+    ? > cant-slice /{Q.string}
+  [] > mixed /Q.bool
+    ? > len /Q.number
+    ? > b

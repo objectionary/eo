@@ -139,11 +139,15 @@ final class Saved implements Scalar<Path> {
      * POSIX which allows it. The window is brief, so a short retry clears
      * it instead of failing the whole write.</p>
      *
+     * <p>The delay is not randomized (#6109): jcabi multiplies it by a
+     * random factor that may come out zero, and then all the attempts fire
+     * back to back with no waiting at all, which defeats the retry.</p>
+     *
      * @param tmp Temp file to move
      * @param target Destination path
      * @throws IOException If the move fails
      */
-    @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
+    @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS, randomize = false)
     private static void moved(final Path tmp, final Path target) throws IOException {
         try {
             Files.move(

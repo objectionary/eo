@@ -9,6 +9,7 @@ asserts:
   - /object/o[@name='foo']/o[@name='λ']
 input: |-
   [] > foo /bytes
+
     eq. +> test-1
       foo
       "fox"

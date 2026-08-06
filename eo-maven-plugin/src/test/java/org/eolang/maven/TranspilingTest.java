@@ -24,7 +24,7 @@ final class TranspilingTest {
             Matchers.not(
                 Matchers.equalTo(
                     String.format(
-                        "1.0-SNAPSHOT-%s", new Fingerprint(Transpiling.XSLS).get()
+                        "1.0-SNAPSHOT-%s", new Fingerprint(Transpilation.XSLS).get()
                     )
                 )
             )
@@ -46,7 +46,9 @@ final class TranspilingTest {
             false,
             Paths.get("target/xsl-measures.csv"),
             new Tracking(false, false),
-            false
+            false,
+            "PhDefault",
+            Collections.singleton(Paths.get("src/main/java"))
         );
     }
 }

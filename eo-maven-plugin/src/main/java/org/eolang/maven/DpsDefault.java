@@ -58,7 +58,6 @@ final class DpsDefault implements Dependencies {
      * @param self Self
      * @param skip Skip
      * @param jna Add JNA dependency
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     DpsDefault(final TjsForeign tjs, final boolean self, final boolean skip, final boolean jna) {
         this.tojos = tjs;
@@ -127,7 +126,16 @@ final class DpsDefault implements Dependencies {
         if (coords.isEmpty()) {
             dep = Optional.empty();
         } else {
-            final String[] parts = coords.iterator().next().split(":");
+            final String location = coords.iterator().next();
+            final String[] parts = location.split(":");
+            if (parts.length != 3 && parts.length != 4) {
+                throw new IllegalStateException(
+                    Logger.format(
+                        "Malformed '+rt jvm' location '%s' at %[file]s: expected 3 or 4 colon-separated parts (group:artifact:version or group:artifact:classifier:version), got %d",
+                        location, file, parts.length
+                    )
+                );
+            }
             final Dep dependency = new Dep().withGroupId(parts[0]).withArtifactId(parts[1]);
             if (parts.length == 3) {
                 dependency.withClassifier("").withVersion(parts[2]);

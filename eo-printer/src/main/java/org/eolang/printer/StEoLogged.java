@@ -54,7 +54,7 @@ final class StEoLogged implements Shift {
     @Override
     public XML apply(final int position, final XML xml) {
         return new Unchecked<>(
-            new ScalarWithFallback<XML>(
+            new ScalarWithFallback<>(
                 () -> this.origin.apply(position, xml),
                 new Fallback.From<>(
                     RuntimeException.class,

@@ -12,7 +12,6 @@ import java.util.function.Supplier;
  * hash of provided cache.
  * Similar to {@link FpFork} but the condition is based on hash.
  * @since 0.41
- * @checkstyle ParameterNumberCheck (100 lines)
  */
 final class FpIfReleased extends FpEnvelope {
 

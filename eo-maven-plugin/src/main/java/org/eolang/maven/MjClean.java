@@ -25,6 +25,13 @@ import org.apache.maven.plugins.annotations.Mojo;
 )
 public class MjClean extends MjSafe {
 
+    /**
+     * Ctor.
+     */
+    public MjClean() {
+        // nothing
+    }
+
     @Override
     final void exec() {
         if (!this.targetDir.exists()) {

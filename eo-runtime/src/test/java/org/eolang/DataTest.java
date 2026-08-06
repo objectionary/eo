@@ -38,6 +38,15 @@ final class DataTest {
     }
 
     @Test
+    void failsFastWhenDataIsNull() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new Data.ToPhi(null),
+            "null data was converted instead of rejected"
+        );
+    }
+
+    @Test
     void printsFractionalNumberValueAsTerm() {
         MatcherAssert.assertThat(
             "Fractional number must render with its decimals in φ-term, but it didnt",
@@ -119,7 +128,7 @@ final class DataTest {
                 "Data.ToPhi instances with the same double value should differ, but they didn't"
             ),
             Arguments.of(
-                new byte[]{(byte) 0x00, (byte) 0x1f},
+                new byte[]{(byte) 0x00, (byte) 0x1F},
                 "Data.ToPhi instances with the same byte array value should differ, but they didn't"
             )
         );

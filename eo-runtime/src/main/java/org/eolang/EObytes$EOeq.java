@@ -10,6 +10,7 @@ import java.util.Arrays;
 /**
  * BYTES.EQ.
  * @since 0.1.0
+ * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "bytes.eq")

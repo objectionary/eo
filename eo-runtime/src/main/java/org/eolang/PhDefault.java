@@ -82,7 +82,6 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Data.
-     * @checkstyle VisibilityModifierCheck (2 lines)
      */
     private final byte[] data;
 
@@ -152,7 +151,6 @@ public class PhDefault implements Phi, Cloneable {
      * @param forma      The forma of the object, taken from XMIR
      * @param dta        Object data
      * @param attributes Initial attributes to register
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     private PhDefault(
         final String forma, final byte[] dta, final Map<String, Attribute> attributes
@@ -235,7 +233,7 @@ public class PhDefault implements Phi, Cloneable {
                 PhDefault.LOGGER.log(
                     Level.FINE,
                     String.format(
-                        "%s\uD835\uDD38('%s' for %s) ➜ %s",
+                        "%s𝔸('%s' for %s) ➜ %s",
                         PhDefault.padding(),
                         name,
                         this,
@@ -311,14 +309,17 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Add new attribute.
      *
-     * <p>This method can only be called from child classes, in their
-     * constructors, when they declare their attributes. This is why it's
-     * protected.</p>
+     * <p>Public and overridable, so a subclass substituted for this one
+     * (via the {@code eo.phiDefaultClass} compiler option) can observe
+     * every attribute addition. {@link #loaded()} calls this method for
+     * each attribute passed to the constructor, lazily on first access
+     * rather than during construction, so an override sees the initial
+     * attribute set materialize here too, not only later additions.</p>
      *
      * @param name The name
      * @param attr The attr
      */
-    public final void add(final String name, final Attribute attr) {
+    public void add(final String name, final Attribute attr) {
         if (PhDefault.SORTABLE.matcher(name).matches()) {
             this.order.put(this.order.size(), name);
         }
@@ -421,11 +422,11 @@ public class PhDefault implements Phi, Cloneable {
      * {@code number.power 42 3}. The receiver of a package extension always
      * lives in {@code α0}: implicit dispatch binds it here, while explicit
      * dispatch through the namespace ({@code number.power 42 3}) leaves the
-     * slot for the caller to fill (see {@code PhNest.extension}). When the
-     * object has no free positional attribute to receive the bound object (for
-     * example a nullary object like {@code input.dead}), a clear error is
-     * raised instead of the low-level "attribute is already set / no
-     * attributes here" message.</p>
+     * slot for the caller to fill (see {@code PhNest.extension}). Every package
+     * member declares at least one void, so that the implicit form always has a
+     * slot to bind the receiver to; when it doesn't, a clear error is raised
+     * instead of the low-level "attribute is already set / no attributes here"
+     * message.</p>
      *
      * @param name The name of the absent attribute
      * @return The package object with this one bound to it
@@ -510,6 +511,7 @@ public class PhDefault implements Phi, Cloneable {
      * @return Attribute name
      */
     private String attr(final int pos) {
+        this.loaded();
         if (0 > pos) {
             throw new ExFailure(
                 String.format(

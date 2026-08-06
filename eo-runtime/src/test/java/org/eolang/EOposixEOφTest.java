@@ -14,7 +14,6 @@ import org.junit.jupiter.api.condition.OS;
 /**
  * Test case for {@code EOposix$EOφ}.
  * @since 0.40
- * @checkstyle TypeNameCheck (100 lines)
  */
 final class EOposixEOφTest {
 
@@ -67,5 +66,47 @@ final class EOposixEOφTest {
             ).asString(),
             Matchers.containsString("No such file")
         );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void preservesFailureCodeWhenReadFails() {
+        MatcherAssert.assertThat(
+            "Failed \"read\" should preserve its code",
+            new Dataized(this.failedRead().take("code"))
+                .asNumber().intValue(),
+            Matchers.equalTo(-1)
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void returnsEmptyOutputWhenReadFails() {
+        MatcherAssert.assertThat(
+            "Failed \"read\" should return empty output",
+            new Dataized(this.failedRead().take("output")).take().length,
+            Matchers.equalTo(0)
+        );
+    }
+
+    /**
+     * Reads from an invalid descriptor.
+     * @return Failed read result
+     */
+    private Phi failedRead() {
+        return new PhApplication(
+            new PhApplication(
+                Phi.Φ.take("posix").copy(),
+                "name",
+                new Data.ToPhi("read")
+            ),
+            "args",
+            new Data.ToPhi(
+                new Phi[]{
+                    new Data.ToPhi(-1),
+                    new Data.ToPhi(1),
+                }
+            )
+        ).take("called");
     }
 }

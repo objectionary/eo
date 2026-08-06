@@ -80,7 +80,7 @@ final class OyRemoteTest {
     void checksPresenceOfProgram() throws IOException {
         MatcherAssert.assertThat(
             "OyRemote positively checks the presence of the program in Objectionary",
-            new OyRemote(new ChRemote("master")).contains("io.stdout"),
+            new OyRemote(new ChRemote("master")).contains("stdout"),
             Matchers.is(true)
         );
     }
@@ -90,7 +90,7 @@ final class OyRemoteTest {
     void checksPresenceOfDirectory() throws IOException {
         MatcherAssert.assertThat(
             "OyRemote positively checks the presence of the directory in Objectionary",
-            new OyRemote(new ChRemote("master")).contains("ms"),
+            new OyRemote(new ChRemote("master")).isDirectory("number"),
             Matchers.is(true)
         );
     }
@@ -98,7 +98,7 @@ final class OyRemoteTest {
     @Test
     @ExtendWith(WeAreOnline.class)
     void checksPresenceOfProgramWithNarrowHash() throws IOException {
-        final String stdout = "io.stdout";
+        final String stdout = "stdout";
         MatcherAssert.assertThat(
             String.format(
                 "OyRemote with narrow hash should have contained program %s, but it didn't",
@@ -144,20 +144,73 @@ final class OyRemoteTest {
     }
 
     @Test
+    void reportsNameInTheEoObjectSlotWhenObjectNotFound() throws Exception {
+        MatcherAssert.assertThat(
+            "The object name must show up in the 'EO object' slot of the message",
+            OyRemoteTest.notFoundMessage(),
+            Matchers.containsString("EO object 'org.eolang.txt.sprintf'")
+        );
+    }
+
+    @Test
+    void reportsUrlInTheByUrlSlotWhenObjectNotFound() throws Exception {
+        MatcherAssert.assertThat(
+            "The URL must show up in the 'by url' slot of the message",
+            OyRemoteTest.notFoundMessage(),
+            Matchers.containsString("by url: http://127.0.0.1")
+        );
+    }
+
+    @Test
     @ExtendWith(WeAreOnline.class)
     void checksPresenceOfDirectoryWithNarrowHash() throws IOException {
-        final String stdout = "ss";
+        final String directory = "tuple";
         MatcherAssert.assertThat(
             String.format(
                 "OyRemote with narrow hash should have contained directory %s, but it didn't",
-                stdout
+                directory
             ),
             new OyRemote(
                 new ChNarrow(
                     new ChRemote("master")
                 )
-            ).contains(stdout),
+            ).isDirectory(directory),
             Matchers.is(true)
         );
+    }
+
+    /**
+     * Drive {@link OyRemote#get(String)} against a local server that always
+     * answers 404, and return the "not found" message it fails with.
+     * @return The exception message
+     * @throws Exception If the test setup itself fails
+     */
+    private static String notFoundMessage() throws Exception {
+        final HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext(
+            "/",
+            exchange -> {
+                final byte[] body = "404: Not Found".getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(404, body.length);
+                exchange.getResponseBody().write(body);
+                exchange.close();
+            }
+        );
+        server.start();
+        try {
+            final String tpl = String.format(
+                "http://127.0.0.1:%d/%%s/%%s.eo", server.getAddress().getPort()
+            );
+            return Assertions.assertThrows(
+                IOException.class,
+                () -> new OyRemote(
+                    new OyRemote.UrlOy(tpl, "stub"),
+                    new OyRemote.UrlOy(tpl, "stub")
+                ).get("org.eolang.txt.sprintf").stream(),
+                "Expected an IOException reporting the object as not found"
+            ).getMessage();
+        } finally {
+            server.stop(0);
+        }
     }
 }
