@@ -191,7 +191,7 @@ final class MjLintTest {
     void detectsWholeProgramAnalysisErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .with("lintAsPackage", true)
-            .withProgram(MjLintTest.probmlematic());
+            .withProgram(MjLintTest.problematic());
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> maven.execute(new FakeMaven.Lint()),
@@ -210,7 +210,7 @@ final class MjLintTest {
     void detectsWholeProgramAnalysisErrorsOnSecondRun(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .with("lintAsPackage", true)
-            .withProgram(MjLintTest.probmlematic());
+            .withProgram(MjLintTest.problematic());
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> maven.execute(new FakeMaven.Lint()),
@@ -243,36 +243,68 @@ final class MjLintTest {
                 "  (stdout \"Hello!\" x).print > @"
             );
         maven.execute(new FakeMaven.Lint());
-        MatcherAssert.assertThat(
-            "WPA results must be saved to cache",
-            cache.resolve(Linting.CACHE)
-                .resolve(FakeMaven.pluginVersion())
-                .resolve("wpa.xmir").toFile(),
-            FileMatchers.anExistingFile()
-        );
+        try (
+            Stream<Path> walk = Files.walk(
+                cache.resolve(Linting.CACHE).resolve(FakeMaven.pluginVersion())
+            )
+        ) {
+            MatcherAssert.assertThat(
+                "WPA results must be saved under the versioned cache path",
+                walk.anyMatch(path -> "wpa.xmir".equals(path.getFileName().toString())),
+                Matchers.is(true)
+            );
+        }
     }
 
     @Test
     void doesNotReuseWholeProgramAnalysisCacheOfAnotherProject(@Mktmp final Path temp)
         throws IOException {
         final Path cache = temp.resolve("shared-cache");
-        MjLintTest.linting(temp.resolve("clean"), cache, MjLintTest.flawless())
+        MjLintTest.linting(temp.resolve("clean"), cache, MjLintTest.suppressed("foo.x", "main"))
             .execute(new FakeMaven.Lint());
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> MjLintTest.linting(
-                temp.resolve("broken"), cache, MjLintTest.probmlematic()
+                temp.resolve("broken"), cache, MjLintTest.problematic()
             ).execute(new FakeMaven.Lint()),
             "WPA error of the second project must be reported, not hidden by the cache of the first"
         );
     }
 
     @Test
+    void invalidatesWholeProgramAnalysisCacheWhenCompileScopeChanges(@Mktmp final Path temp)
+        throws IOException {
+        final Path cache = temp.resolve("cache");
+        final Path workspace = temp.resolve("project");
+        final FakeMaven maven = new FakeMaven(workspace)
+            .with("lintAsPackage", true)
+            .with("cache", cache.toFile())
+            .with("scope", "compile");
+        maven.withProgram(MjLintTest.suppressed("foo.x", "main")).execute(MjParse.class);
+        maven.with("scope", "test").withProgram(
+            String.join(
+                System.lineSeparator(),
+                MjLintTest.suppressed("foo.x", "tests")
+            ),
+            "foo.x.tests",
+            "foo/x/tests.eo"
+        ).execute(new FakeMaven.Lint());
+        new Saved(
+            String.join(System.lineSeparator(), MjLintTest.problematic()),
+            workspace.resolve("foo/x/main.eo")
+        ).value();
+        maven.with("scope", "compile").execute(MjParse.class);
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven.with("scope", "test").execute(MjLint.class),
+            "WPA must re-run when a compile-scope XMIR changes under a test-scope lint"
+        );
+    }
+
+    @Test
     void lintsPackageWithoutASingleProgram(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
-            () -> new FakeMaven(temp)
-                .with("lintAsPackage", true)
-                .with("cache", temp.resolve("cache").toFile())
+            () -> MjLintTest.linting(temp, temp.resolve("cache"))
                 .execute(new FakeMaven.Lint()),
             "Linting a package that has no programs at all must not fail"
         );
@@ -283,7 +315,7 @@ final class MjLintTest {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .with("lintAsPackage", false)
-                .withProgram(MjLintTest.probmlematic())
+                .withProgram(MjLintTest.problematic())
                 .execute(new FakeMaven.Lint()),
             "We shouldn't get WPA error here because we disabled it with 'lintAsPackage' flag, but we got it"
         );
@@ -538,32 +570,35 @@ final class MjLintTest {
     }
 
     /**
-     * Maven that lints a package, keeping its EO sources apart from its target directory,
-     * the way a real Maven build does with {@code src/main/eo}.
-     * @param workspace Workspace of the project
-     * @param cache Cache directory, possibly shared with other projects
-     * @param program Program to lint
-     * @return Maven ready to be executed
-     * @throws IOException If fails to save the program
+     * Package-linting FakeMaven against a shared cache.
+     * @param workspace Project workspace
+     * @param cache Cache directory
+     * @param program Program lines, or none
+     * @return Maven ready to execute
+     * @throws IOException If saving the program fails
      */
     private static FakeMaven linting(
         final Path workspace, final Path cache, final String... program
     ) throws IOException {
-        return new FakeMaven(workspace)
+        final FakeMaven maven = new FakeMaven(workspace)
             .with("lintAsPackage", true)
-            .with("cache", cache.toFile())
-            .with("sourcesDir", workspace.resolve("foo").toFile())
-            .withProgram(program);
+            .with("cache", cache.toFile());
+        if (program.length > 0) {
+            maven.withProgram(program);
+        }
+        return maven;
     }
 
     /**
-     * Program without a single defect.
-     * @return Program without defects
+     * Empty object with the usual unlints.
+     * @param pkg Package meta
+     * @param name Object name
+     * @return Quiet program
      */
-    private static String[] flawless() {
+    private static String[] suppressed(final String pkg, final String name) {
         return new String[]{
             "+home https://www.eolang.org",
-            "+package foo.x",
+            String.format("+package %s", pkg),
             "+version 0.0.0",
             "+unlint empty-object",
             "+unlint unit-test-missing",
@@ -571,8 +606,7 @@ final class MjLintTest {
             "+unlint comment-too-short",
             "+unlint object-has-data",
             "",
-            "[x] > main",
-            "  (stdout \"Hello!\" x).print > @",
+            String.format("[] > %s", name),
         };
     }
 
@@ -580,7 +614,7 @@ final class MjLintTest {
      * Program with WPA error.
      * @return Program with WPA error
      */
-    private static String[] probmlematic() {
+    private static String[] problematic() {
         return new String[]{
             "+package foo.x",
             "+alias a.b.nowhere",
