@@ -10,10 +10,11 @@
 import groovy.io.FileType
 import groovy.io.FileVisitResult
 import javax.xml.parsers.DocumentBuilderFactory
+import org.w3c.dom.Element
 
 File project = new File('.')
 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance()
-factory.setNamespaceAware(true)
+factory.namespaceAware = true
 
 project.traverse(
     type: FileType.FILES,
@@ -25,7 +26,7 @@ project.traverse(
     nameFilter: ~/.*\.xsl/,
 ) {
     file ->
-    def stylesheet = factory.newDocumentBuilder().parse(file).documentElement
+    Element stylesheet = factory.newDocumentBuilder().parse(file).documentElement
     Set<String> excluded = stylesheet
         .getAttribute('exclude-result-prefixes')
         .tokenize()
