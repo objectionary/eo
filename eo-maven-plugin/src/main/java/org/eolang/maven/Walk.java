@@ -5,7 +5,6 @@
 package org.eolang.maven;
 
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
@@ -54,7 +53,7 @@ final class Walk extends ListEnvelope<Path> {
      */
     @SuppressWarnings("PMD.LooseCoupling")
     Walk includes(final Collection<String> globs) {
-        final List<PathMatcher> matchers = Walk.compile(globs);
+        final List<PathMatcher> matchers = new GlobPatterns(globs).value();
         return this.filtered(
             path -> matchers.stream().anyMatch(
                 matcher -> this.matches(matcher, path)
@@ -69,7 +68,7 @@ final class Walk extends ListEnvelope<Path> {
      */
     @SuppressWarnings("PMD.LooseCoupling")
     Walk excludes(final Collection<String> globs) {
-        final List<PathMatcher> matchers = Walk.compile(globs);
+        final List<PathMatcher> matchers = new GlobPatterns(globs).value();
         return this.filtered(
             path -> matchers.stream().noneMatch(
                 matcher -> this.matches(matcher, path)
@@ -88,17 +87,6 @@ final class Walk extends ListEnvelope<Path> {
             this.home,
             this.stream().filter(path).collect(Collectors.toList())
         );
-    }
-
-    /**
-     * Compile globs to matchers.
-     * @param globs Globs
-     * @return List of PathMatchers
-     */
-    private static List<PathMatcher> compile(final Collection<String> globs) {
-        return globs.stream()
-            .map(Walk::compile)
-            .collect(Collectors.toList());
     }
 
     /**
@@ -132,15 +120,6 @@ final class Walk extends ListEnvelope<Path> {
             return walk.filter(file -> !file.toFile().isDirectory())
                 .collect(Collectors.toList());
         }
-    }
-
-    /**
-     * Compile glob to pattern.
-     * @param glob Glob
-     * @return Matcher for compiled pattern
-     */
-    private static PathMatcher compile(final String glob) {
-        return FileSystems.getDefault().getPathMatcher(String.format("glob:%s", glob));
     }
 
     /**
