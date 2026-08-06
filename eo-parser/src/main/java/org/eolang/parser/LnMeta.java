@@ -75,6 +75,12 @@ final class LnMeta implements Line {
                 "meta directive requires a name"
             );
         }
+        if ("package".equals(head) && parts.isEmpty()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+package' directive requires exactly one argument"
+            );
+        }
         Comments.seal(globals, emit, this.span);
         globals.markMeta();
         globals.clearBlanks();
