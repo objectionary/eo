@@ -73,12 +73,18 @@
               buffer > @
               [size] > read
                 seq * > @
-                  output. >> chunk!
-                    win32 *1
-                      "_read"
-                      win32.stdin
-                      size
+                  if. >> chunk!
+                    received.code.eq -1
+                    T
+                      "Failed to read from standard input"
+                    received.output
+                  received
                   input-block chunk
+                called. > received
+                  win32 *1
+                    "_read"
+                    win32.stdin
+                    size
             | --
             size
       [buffer] > write
@@ -103,12 +109,18 @@
               buffer > @
               [size] > read
                 seq * > @
-                  output. >> chunk!
-                    posix *1
-                      "read"
-                      posix.stdin
-                      size
+                  if. >> chunk!
+                    received.code.eq -1
+                    T
+                      "Failed to read from standard input"
+                    received.output
+                  received
                   input-block chunk
+                called. > received
+                  posix *1
+                    "read"
+                    posix.stdin
+                    size
             | --
             size
       [buffer] > write

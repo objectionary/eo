@@ -21,7 +21,6 @@
 
 [file] > directory
   file > @
-  true > is-directory
   [] > listed /Q.tuple
   [dir time process random] > retried
     [index] >> attempted
@@ -294,6 +293,23 @@
     mktemp.tmpfile.deleted.as-path.as-dir.made > parent
     created.as-bytes.eq expected.as-bytes > valid!
 
+  ++> can-tell-that-a-deleted-directory-is-no-longer-a-directory
+    not. > @
+      d.deleted.is-directory false
+    made. > d
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "gone"
+
+  is-directory. ++> can-tell-that-a-directory-is-a-directory
+    directory
+      Q.file "."
+    false
+
+  not. ++> can-tell-that-a-regular-file-is-not-a-directory
+    is-directory.
+      directory mktemp.tmpfile
+      true
+
   ++> can-walk-recursively
     seq * > @
       made.
@@ -335,9 +351,16 @@
       made.
         directory mktemp.tmpfile.deleted
 
+  is-directory. ++> rejects-checking-an-absent-directory
+    directory mktemp.tmpfile.deleted
+    true
+
   tmpfile. --> on-tmpfile-touching-absent-directory
     @.
       mktemp.tmpfile.deleted.as-path.resolved "child"
+
+  is-directory. --> stops-on-checking-an-absent-directory
+    directory mktemp.tmpfile.deleted
 
   walk. --> stops-on-walking-a-path-with-a-nul-character
     directory

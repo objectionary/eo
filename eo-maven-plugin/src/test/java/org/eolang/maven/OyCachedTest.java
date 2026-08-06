@@ -13,6 +13,7 @@ import org.cactoos.io.InputOf;
 import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
@@ -124,6 +125,34 @@ final class OyCachedTest {
                 new MapOf<>("jeff", true)
             ).isDirectory("not-in-cache"),
             Matchers.is(false)
+        );
+    }
+
+    @Test
+    void propagatesOriginFailureFromGetAsIoException() {
+        final IOException failure = new IOException("origin failed");
+        MatcherAssert.assertThat(
+            "the original IOException must stay in the cause chain",
+            Assertions.assertThrows(
+                IOException.class,
+                () -> new OyCached(new FailingObjectionary(failure)).get("foo"),
+                "a failure from the origin objectionary must surface as IOException"
+            ).getCause().getCause(),
+            Matchers.sameInstance(failure)
+        );
+    }
+
+    @Test
+    void propagatesOriginFailureFromIsDirectoryAsIoException() {
+        final IOException failure = new IOException("origin failed");
+        MatcherAssert.assertThat(
+            "the original IOException must stay in the cause chain",
+            Assertions.assertThrows(
+                IOException.class,
+                () -> new OyCached(new FailingObjectionary(failure)).isDirectory("foo"),
+                "a failure from the origin objectionary must surface as IOException"
+            ).getCause().getCause(),
+            Matchers.sameInstance(failure)
         );
     }
 }
