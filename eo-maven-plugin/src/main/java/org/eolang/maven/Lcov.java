@@ -4,75 +4,78 @@
  */
 package org.eolang.maven;
 
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.cactoos.set.SetOf;
 
 /**
- * An LCOV tracefile of EO object coverage.
+ * An LCOV tracefile of the EO objects a run touched.
  * <p>
- *     It merges the locations {@code PhCoverage} recorded while the tests
- *     ran against every location the transpiler instrumented. Both
- *     collections hold {@code program:line:pos} records, the shape
- *     {@code PhCoverage} appends, so a program turns into an {@code SF:}
- *     path and a line into a {@code DA:} counter of every hit recorded
- *     for the objects of that line. A record the run touched but the
- *     transpiler never instrumented is left out.
+ *     It turns the {@code program:line:pos} records {@code PhCoverage}
+ *     appends into LCOV, which Codecov, Coveralls and {@code genhtml}
+ *     read as is: a program becomes an {@code SF:} path under the
+ *     directory of {@code .eo} sources it is given, and a line becomes a
+ *     {@code DA:} counter of how many objects of that line were touched.
+ *     A record that arrives twice still counts once.
  * </p>
  * @since 0.58
  */
 final class Lcov {
 
-    /**
-     * Every location the transpiler instrumented, as {@code program:line:pos}.
-     */
-    private final Collection<String> located;
+    /** The directory that holds the {@code .eo} sources. */
+    private final Path sources;
 
-    /**
-     * Every location the run touched, as {@code program:line:pos}.
-     */
-    private final Collection<String> recorded;
+    /** Every location the run touched, as {@code program:line:pos}. */
+    private final Collection<String> hits;
 
     /**
      * Ctor.
-     * @param instrumented Every location the transpiler instrumented
+     * @param sources The directory that holds the {@code .eo} sources
      * @param hits Every location the run touched
      */
-    Lcov(final Collection<String> instrumented, final Collection<String> hits) {
-        this.located = instrumented;
-        this.recorded = hits;
+    Lcov(final Path sources, final Iterable<String> hits) {
+        this.sources = sources;
+        this.hits = new SetOf<>(hits);
     }
 
     @Override
     public String toString() {
         return this.counted().entrySet().stream().map(
             program -> String.format(
-                "TN:%nSF:%s.eo%n%sLF:%d%nLH:%d%nend_of_record%n",
-                program.getKey().replace('.', '/'),
+                "TN:%nSF:%s%n%sLF:%d%nLH:%d%nend_of_record%n",
+                this.sources.resolve(
+                    String.format("%s.eo", program.getKey().replace('.', '/'))
+                ),
                 program.getValue().entrySet().stream()
                     .map(line -> String.format("DA:%d,%d%n", line.getKey(), line.getValue()))
                     .collect(Collectors.joining()),
                 program.getValue().size(),
-                program.getValue().values().stream().filter(hit -> hit > 0L).count()
+                program.getValue().size()
             )
         ).collect(Collectors.joining());
     }
 
     /**
-     * How many times each instrumented line of each program was touched.
+     * How many objects of each line of each program the run touched.
      * @return Programs in alphabetical order, each with its lines in order
      */
-    private Map<String, Map<Integer, Long>> counted() {
-        final Map<String, Long> hits = this.recorded.stream()
-            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-        final Map<String, Map<Integer, Long>> counts = new TreeMap<>();
-        for (final String record : this.located) {
+    private Map<String, Map<Integer, Integer>> counted() {
+        final Map<String, Map<Integer, Integer>> counts = new TreeMap<>();
+        for (final String record : this.hits) {
             final String[] parts = record.split(":");
+            if (parts.length != 3) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "The coverage record is '%s', while 'program:line:pos' is expected", record
+                    )
+                );
+            }
             counts
                 .computeIfAbsent(parts[0], program -> new TreeMap<>())
-                .merge(Integer.valueOf(parts[1]), hits.getOrDefault(record, 0L), Long::sum);
+                .merge(Integer.valueOf(parts[1]), 1, Integer::sum);
         }
         return counts;
     }

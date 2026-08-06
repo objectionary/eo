@@ -4,11 +4,13 @@
  */
 package org.eolang.maven;
 
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -18,19 +20,19 @@ import org.junit.jupiter.api.Test;
 final class LcovTest {
 
     @Test
-    void reportsUntouchedLineAsMissed() {
+    void namesEoSourceOfTouchedProgram() {
         final long seed = System.nanoTime();
-        final Random random = new Random(seed);
-        final int line = 1 + random.nextInt(1000);
+        final int line = 1 + new Random(seed).nextInt(1000);
         MatcherAssert.assertThat(
-            String.format("a line nobody touched is not reported as missed, seed: %d", seed),
+            String.format("the touched program does not name its own .eo source, seed: %d", seed),
             new Lcov(
-                Collections.singleton(String.format("org.eolang.числò:%d:5", line)),
-                Collections.emptyList()
+                Paths.get("src/main/eo"),
+                Collections.singleton(String.format("org.eolang.числò:%d:5", line))
             ).toString(),
             Matchers.equalTo(
                 String.format(
-                    "TN:%nSF:org/eolang/числò.eo%nDA:%d,0%nLF:1%nLH:0%nend_of_record%n",
+                    "TN:%nSF:%s%nDA:%d,1%nLF:1%nLH:1%nend_of_record%n",
+                    Paths.get("src/main/eo").resolve("org/eolang/числò.eo"),
                     line
                 )
             )
@@ -40,32 +42,39 @@ final class LcovTest {
     @Test
     void countsEveryTouchedPositionOfOneLine() {
         MatcherAssert.assertThat(
-            "the hits of two objects sharing a line are not summed into one line record",
+            "the two objects touched on one line are not counted into one line record",
             new Lcov(
+                Paths.get("src/main/eo"),
                 Arrays.asList(
-                    "org.eolang.number:12:5", "org.eolang.number:12:9", "org.eolang.number:13:1"
-                ),
-                Arrays.asList("org.eolang.number:12:9", "org.eolang.number:12:5")
+                    "org.eolang.number:12:5", "org.eolang.number:12:9", "org.eolang.number:12:5"
+                )
             ).toString(),
             Matchers.equalTo(
                 String.format(
-                    "TN:%nSF:org/eolang/number.eo%nDA:12,2%nDA:13,0%nLF:2%nLH:1%nend_of_record%n"
+                    "TN:%nSF:%s%nDA:12,2%nLF:1%nLH:1%nend_of_record%n",
+                    Paths.get("src/main/eo").resolve("org/eolang/number.eo")
                 )
             )
         );
     }
 
     @Test
-    void keepsProgramsApartInAlphabeticalOrder() {
+    void printsNothingWhenNothingWasTouched() {
         MatcherAssert.assertThat(
-            "two programs are not reported as two separate tracefile records, sorted by name",
-            new Lcov(
-                Arrays.asList("org.eolang.txt.sprintf:3:1", "org.eolang.bytes:7:2"),
-                Collections.singleton("org.eolang.bytes:7:2")
+            "a run that touched nothing is not reported as an empty tracefile",
+            new Lcov(Paths.get("src/main/eo"), Collections.emptyList()).toString(),
+            Matchers.equalTo("")
+        );
+    }
+
+    @Test
+    void refusesMalformedRecord() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new Lcov(
+                Paths.get("src/main/eo"), Collections.singleton("org.eolang.числò:4")
             ).toString(),
-            Matchers.stringContainsInOrder(
-                "SF:org/eolang/bytes.eo", "SF:org/eolang/txt/sprintf.eo"
-            )
+            "a record that is not program:line:pos is not refused"
         );
     }
 }

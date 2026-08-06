@@ -82,19 +82,11 @@ public final class MjTranspile extends MjSafe {
      * lean. The hits are appended to the file named by the
      * {@code eo.coverageFile} system property of the JVM that runs the
      * compiled program; when that property is absent, every hit is a
-     * silent no-op. In {@code eo-runtime} the {@code coverage-file}
-     * profile turns this on and forwards that property to surefire in
-     * one step (see its {@code pom.xml}).
-     * @todo #5466:60min Feed the coverage hits to {@link Lcov}.
-     *  {@link Lcov} merges the raw {@code program:line:pos} records of a
-     *  run against every location the transpiler instrumented and prints
-     *  the LCOV tracefile, but nobody builds either collection yet.
-     *  Collect the instrumented locations while transpiling, since
-     *  {@code to-java.xsl} knows each of them as it emits a wrapper, and
-     *  add a goal that runs after the tests, reads the file named by
-     *  {@code eo.coverageFile} and saves the tracefile next to it.
+     * silent no-op. In {@code eo-runtime} surefire forwards that property
+     * to the tests (see its {@code pom.xml}), and {@link MjLcov} turns the
+     * hits into an LCOV tracefile.
      * @todo #5466:30min Enforce a minimum EO object coverage in eo-runtime.
-     *  Once the LCOV report from the puzzle above exists, set
+     *  Once the LCOV report names the untouched objects too, set
      *  {@code coverageTracking} on the {@code transpile} execution in
      *  {@code eo-runtime/pom.xml} and fail the build when the covered
      *  percentage of dataized {@code .eo} objects drops below a

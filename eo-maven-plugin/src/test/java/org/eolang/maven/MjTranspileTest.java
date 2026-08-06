@@ -122,7 +122,9 @@ final class MjTranspileTest {
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
-            Matchers.stringContainsInOrder("new PhCoverage(", "\"foo.x.main\", ")
+            Matchers.matchesPattern(
+                "(?s).*\\w++ = new PhCoverage\\(\\w++, \"foo\\.x\\.main\", \\d++, \\d++\\);.*"
+            )
         );
     }
 

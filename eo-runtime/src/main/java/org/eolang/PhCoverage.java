@@ -28,12 +28,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * program: the very first one touched anywhere in the JVM would
  * otherwise freeze a stale answer for the rest of the run. Thread-safe.</p>
  *
- * <p>The {@code coverageFile} parameter of eo-maven-plugin's
+ * <p>The {@code coverageTracking} parameter of eo-maven-plugin's
  * {@code transpile} goal ({@code MjTranspile}) controls whether the
  * transpiler wraps located objects into this decorator in the first
- * place; see its javadoc for the remaining gaps (the LCOV report and
- * threading this same file to the process that runs the compiled
- * program).</p>
+ * place, and its {@code lcov} goal turns the file this class appends to
+ * into an LCOV tracefile. What is still missing is the untouched objects
+ * in that tracefile and a threshold that fails the build on poor
+ * coverage; see the javadoc of {@code MjLcov}.</p>
  *
  * @since 0.58
  */
