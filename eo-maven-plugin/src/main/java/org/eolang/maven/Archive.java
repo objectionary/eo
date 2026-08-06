@@ -16,9 +16,15 @@ import java.util.zip.ZipInputStream;
 /**
  * A JAR (ZIP) archive that can extract itself into a directory.
  * Rejects Zip Slip paths that would escape the destination.
+ * Limits decompressed output to prevent zip bomb attacks.
  * @since 0.64.0
  */
 final class Archive {
+
+    /**
+     * Maximum total decompressed bytes (100 MB).
+     */
+    private static final long MAX_DECOMPRESSED_SIZE = 100L * 1024L * 1024L;
 
     /**
      * Path to the archive file.
@@ -41,18 +47,35 @@ final class Archive {
      * @throws IOException If extraction fails or an entry escapes {@code dest}
      */
     void extract(final Path dest) throws IOException {
-        final Path root = dest.toAbsolutePath().normalize();
-        Files.createDirectories(root);
+        final Path root = dest.toAbsolutePath();
+        // Resolve real path to detect and reject symlinks in the destination
+        final Path realRoot = root.toRealPath();
+        Files.createDirectories(realRoot);
         final Collection<Path> written = new ArrayList<>(0);
+        long decompressed = 0L;
         try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(this.file))) {
             for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry()) {
-                final Path target = root.resolve(entry.getName()).normalize();
-                if (!target.startsWith(root)) {
+                // Check decompressed size limit
+                if (entry.getSize() > 0L) {
+                    decompressed += entry.getSize();
+                    if (decompressed > Archive.MAX_DECOMPRESSED_SIZE) {
+                        Archive.cleanup(written);
+                        throw new IOException(
+                            String.format(
+                                "Decompressed size exceeds limit of %d bytes",
+                                Archive.MAX_DECOMPRESSED_SIZE
+                            )
+                        );
+                    }
+                }
+                // Normalize and check that the resolved target stays within the root
+                final Path target = realRoot.resolve(entry.getName()).normalize();
+                if (!target.startsWith(realRoot)) {
                     Archive.cleanup(written);
                     throw new IOException(
                         String.format(
                             "Zip entry '%s' would write outside '%s'",
-                            entry.getName(), root
+                            entry.getName(), realRoot
                         )
                     );
                 }

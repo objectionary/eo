@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -141,6 +142,36 @@ final class ArchiveTest {
             "Already-extracted safe entry must be cleaned up after rejection",
             Files.notExists(dest.resolve("safe.txt")),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void rejectsZipBombWithExcessiveDecompressedSize(@Mktmp final Path temp) throws IOException {
+        final Path jar = temp.resolve("zipbomb.jar");
+        try (ZipOutputStream zip = new ZipOutputStream(Files.newOutputStream(jar))) {
+            final ZipEntry entry = new ZipEntry("huge.txt");
+            // Set uncompressed size beyond the 100MB limit
+            entry.setSize(150_000_000L);
+            zip.putNextEntry(entry);
+            // Write dummy data (will be counted against size limit)
+            zip.write(new byte[1000]);
+            zip.closeEntry();
+        }
+        Assertions.assertThrows(
+            IOException.class,
+            () -> new Archive(jar).extract(temp.resolve("extracted")),
+            "Decompressed size exceeding limit must be rejected"
+        );
+    }
+
+    @Test
+    void rejectsWindowsDriveQualifiedPath(@Mktmp final Path temp) throws IOException {
+        final Path jar = temp.resolve("winpath.jar");
+        ArchiveTest.jar(jar, "C:\\windows\\system32\\evil.txt", "pwned");
+        Assertions.assertThrows(
+            IOException.class,
+            () -> new Archive(jar).extract(temp.resolve("extracted")),
+            "Windows drive-qualified path entry must be rejected"
         );
     }
 
