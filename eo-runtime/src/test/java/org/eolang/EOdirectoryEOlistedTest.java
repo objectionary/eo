@@ -71,7 +71,7 @@ final class EOdirectoryEOlistedTest {
         final List<String> names = new ArrayList<>(0);
         for (int index = 0; index < 8; ++index) {
             final String name = String.format("файл %04d %d ~", random.nextInt(10_000), index);
-            Files.createFile(temp.resolve(name));
+            Files.write(temp.resolve(name), new byte[0]);
             names.add(name);
         }
         Collections.sort(names);
@@ -84,7 +84,10 @@ final class EOdirectoryEOlistedTest {
 
     @Test
     void skipsGrandchildrenOfTheDirectory(@TempDir final Path temp) throws IOException {
-        Files.createFile(Files.createDirectory(temp.resolve("вложенная")).resolve("глубина"));
+        Files.write(
+            Files.createDirectory(temp.resolve("вложенная")).resolve("глубина"),
+            new byte[0]
+        );
         MatcherAssert.assertThat(
             "listed names reach deeper than the direct children of the directory",
             this.names(temp),

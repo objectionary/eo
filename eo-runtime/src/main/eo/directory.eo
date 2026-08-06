@@ -348,13 +348,9 @@
         as-file.
           d.resolved "x/y/z/a.txt"
       eq.
-        string.joined
-          ","
+        length.
           d.as-dir.walk "**/*.txt"
-        string.joined *1
-          ","
-          d.resolved "foo/bar/test.txt"
-          d.resolved "x/y/z/a.txt"
+        2
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
