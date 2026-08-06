@@ -24,7 +24,7 @@ final class GlobPatterns implements Scalar<List<PathMatcher>> {
 
     /**
      * Ctor.
-     * @param glbs Globs.
+     * @param glbs Globs
      */
     GlobPatterns(final Collection<String> glbs) {
         this.globs = glbs;
@@ -33,16 +33,7 @@ final class GlobPatterns implements Scalar<List<PathMatcher>> {
     @Override
     public List<PathMatcher> value() {
         return this.globs.stream()
-            .map(GlobPatterns::compile)
+            .map(glob -> FileSystems.getDefault().getPathMatcher(String.format("glob:%s", glob)))
             .collect(Collectors.toList());
-    }
-
-    /**
-     * Compile glob to pattern.
-     * @param glob Glob
-     * @return Matcher for compiled pattern
-     */
-    private static PathMatcher compile(final String glob) {
-        return FileSystems.getDefault().getPathMatcher(String.format("glob:%s", glob));
     }
 }

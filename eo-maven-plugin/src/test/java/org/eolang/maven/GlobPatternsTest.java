@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link GlobPatterns}.
- *
  * @since 0.62.3
  */
 final class GlobPatternsTest {
