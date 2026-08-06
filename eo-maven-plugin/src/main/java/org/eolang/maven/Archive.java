@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -33,16 +35,20 @@ final class Archive {
 
     /**
      * Extract entries into {@code dest}, refusing anything outside it.
+     * If a Zip Slip entry is detected partway through, already-extracted
+     * entries are deleted so the destination is left clean.
      * @param dest Destination directory
      * @throws IOException If extraction fails or an entry escapes {@code dest}
      */
     void extract(final Path dest) throws IOException {
         final Path root = dest.toAbsolutePath().normalize();
         Files.createDirectories(root);
+        final Collection<Path> written = new ArrayList<>(0);
         try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(this.file))) {
             for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry()) {
                 final Path target = root.resolve(entry.getName()).normalize();
                 if (!target.startsWith(root)) {
+                    Archive.cleanup(written);
                     throw new IOException(
                         String.format(
                             "Zip entry '%s' would write outside '%s'",
@@ -52,11 +58,27 @@ final class Archive {
                 }
                 if (entry.isDirectory()) {
                     Files.createDirectories(target);
+                    written.add(target);
                 } else {
                     Files.createDirectories(target.getParent());
                     Files.copy(zip, target, StandardCopyOption.REPLACE_EXISTING);
+                    written.add(target);
                 }
                 zip.closeEntry();
+            }
+        }
+    }
+
+    /**
+     * Delete every path that was already written, best-effort.
+     * @param paths Paths to delete
+     */
+    private static void cleanup(final Collection<Path> paths) {
+        for (final Path path : paths) {
+            try {
+                Files.deleteIfExists(path);
+            } catch (final IOException ignored) {
+                // best-effort cleanup
             }
         }
     }
