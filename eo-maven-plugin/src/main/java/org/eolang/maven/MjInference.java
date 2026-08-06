@@ -77,13 +77,6 @@ public final class MjInference extends MjSafe {
     )
     private File inferenceDir;
 
-    /**
-     * Ctor.
-     */
-    public MjInference() {
-        // nothing
-    }
-
     @Override
     void exec() throws IOException {
         new Inferring(
