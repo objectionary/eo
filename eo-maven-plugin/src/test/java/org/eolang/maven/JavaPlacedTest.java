@@ -74,4 +74,34 @@ final class JavaPlacedTest {
             Matchers.equalTo(expected)
         );
     }
+
+    @Test
+    void placesClassMarkedOnlyWithParameterized(@Mktmp final Path temp) throws Exception {
+        final String expected = String.join(
+            System.lineSeparator(),
+            "final class FooTest {",
+            "  @ParameterizedTest",
+            "  @ValueSource(ints = {1, 2})",
+            "  void testsSomething(final int arg) {}",
+            "}"
+        );
+        final Path target = temp.resolve("target");
+        final Path generated = target.resolve("generated-sources");
+        final Path utest = target.resolve("FooTest.java");
+        final Xnav java = new Xnav(
+            new Xembler(
+                new Directives().add("class").attr("java-name", "Foo").add("tests").set(expected)
+            ).xml()
+        ).element("class");
+        new JavaPlaced(
+            new FpJavaGenerated(java, generated, utest), utest, generated
+        ).exec(java, true);
+        MatcherAssert.assertThat(
+            "A generated class marked only with @ParameterizedTest was silently skipped",
+            new TextOf(
+                target.resolve("generated-test-sources").resolve("FooTest.java")
+            ).asString(),
+            Matchers.equalTo(expected)
+        );
+    }
 }

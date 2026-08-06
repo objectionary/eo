@@ -200,12 +200,12 @@ final class MjPlaceTest {
     }
 
     @Test
-    void placesAgainIfWasUnplaced(@Mktmp final Path temp) throws Exception {
+    void placesAgainIfWasUnplacedWithSameLength(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         final String binary = "some.class";
-        MjPlaceTest.saveBinary(temp, "with old content", binary);
+        MjPlaceTest.saveBinary(temp, "old content", binary);
         maven.execute(MjPlace.class).result();
-        final String updated = "with some new content";
+        final String updated = "new content";
         MjPlaceTest.saveBinary(temp, updated, binary);
         maven.placed().unplaceAll();
         maven.execute(MjPlace.class).result();

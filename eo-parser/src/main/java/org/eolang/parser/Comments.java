@@ -56,7 +56,7 @@ final class Comments {
             );
         }
         if (!pending.isEmpty()) {
-            emit.comment(pending, span.line());
+            emit.comment(pending, pending.get(pending.size() - 1).line());
             globals.clearComments();
         }
         globals.seal();
