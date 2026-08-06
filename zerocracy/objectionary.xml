@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fb version="0.19.6" size="8644251">
+<fb version="0.19.6" size="8636537">
   <f>
     <added t="I">8</added>
     <cycles t="I">1</cycles>
     <deleted t="I">8</deleted>
     <inserted t="I">8</inserted>
-    <seconds t="F">2160.362973378</seconds>
+    <seconds t="F">2160.558072414</seconds>
     <version t="S">0.61.1</version>
     <what t="S">judges-summary</what>
-    <when t="T">2026-08-06T00:06:32Z</when>
+    <when t="T">2026-08-06T01:29:10Z</when>
   </f>
   <f>
     <_id t="I">671</_id>
@@ -216,21 +216,6 @@
     <repository t="I">798766850</repository>
     <what t="S">issue-was-opened</what>
     <when t="T">2024-10-30T14:18:17Z</when>
-    <where t="S">github</where>
-    <who t="I">24456188</who>
-  </f>
-  <f>
-    <_id t="I">774007</_id>
-    <_job t="I">32815</_job>
-    <_time t="T">2025-08-12T13:28:29Z</_time>
-    <_version t="S">0.14.7/0.52.2/0.15.10</_version>
-    <details t="S">The issue objectionary/eo2js#77 has been opened by @0pdd.</details>
-    <is_human t="I">0</is_human>
-    <issue t="I">77</issue>
-    <repository t="I">798766850</repository>
-    <tombstone t="T">2026-08-05T22:27:58Z</tombstone>
-    <what t="S">issue-was-opened</what>
-    <when t="T">2024-05-29T16:33:33Z</when>
     <where t="S">github</where>
     <who t="I">24456188</who>
   </f>
@@ -529,22 +514,6 @@
     <repository t="I">798766850</repository>
     <what t="S">label-was-attached</what>
     <when t="T">2024-05-29T16:33:31Z</when>
-    <where t="S">github</where>
-    <who t="I">24456188</who>
-  </f>
-  <f>
-    <_id t="I">780545</_id>
-    <_job t="I">32991</_job>
-    <_time t="T">2025-08-13T18:05:12Z</_time>
-    <_version t="S">0.14.7/0.52.2/0.15.10</_version>
-    <details t="S">The '#bug' label was attached by @0pdd to the issue objectionary/eo2js#77.</details>
-    <is_human t="I">0</is_human>
-    <issue t="I">77</issue>
-    <label t="S">bug</label>
-    <repository t="I">798766850</repository>
-    <tombstone t="T">2026-08-05T22:27:58Z</tombstone>
-    <what t="S">label-was-attached</what>
-    <when t="T">2024-05-29T16:33:33Z</when>
     <where t="S">github</where>
     <who t="I">24456188</who>
   </f>
@@ -46041,103 +46010,6 @@
     <who t="I">66840575</who>
   </f>
   <f>
-    <_id t="I">1047403</_id>
-    <_job t="I">19628281790</_job>
-    <_time t="T">2025-11-24T08:51:33Z</_time>
-    <_version t="S">0.16.8/0.55.0/0.16.1</_version>
-    <comments t="I">1</comments>
-    <commits t="I">1</commits>
-    <details t="S">The pull request objectionary/eo2js#176 has been reviewed by @maxonfjvipon with 24 HoC and 1 comments.</details>
-    <event_id t="I">4853002651</event_id>
-    <event_type t="S">PullRequestReviewEvent</event_type>
-    <files t="I">1</files>
-    <hoc t="I">24</hoc>
-    <is_human t="I">1</is_human>
-    <issue t="I">176</issue>
-    <repository t="I">798766850</repository>
-    <review_comments t="I">0</review_comments>
-    <tombstone t="T">2026-08-05T22:27:58Z</tombstone>
-    <what t="S">pull-was-reviewed</what>
-    <when t="T">2025-11-22T21:15:47Z</when>
-    <where t="S">github</where>
-    <who t="I">37025995</who>
-  </f>
-  <f>
-    <_id t="I">1047404</_id>
-    <_job t="I">19628281790</_job>
-    <_time t="T">2025-11-24T08:51:38Z</_time>
-    <_version t="S">0.16.8/0.55.0/0.16.1</_version>
-    <details t="S">The issue objectionary/eo2js#77 has been closed by @maxonfjvipon.</details>
-    <event_id t="I">4853000135</event_id>
-    <event_type t="S">IssuesEvent</event_type>
-    <is_human t="I">1</is_human>
-    <issue t="I">77</issue>
-    <repository t="I">798766850</repository>
-    <tombstone t="T">2026-08-05T22:27:58Z</tombstone>
-    <what t="S">issue-was-closed</what>
-    <when t="T">2025-11-22T21:15:15Z</when>
-    <where t="S">github</where>
-    <who t="I">37025995</who>
-  </f>
-  <f>
-    <_id t="I">1047405</_id>
-    <_job t="I">19628281790</_job>
-    <_time t="T">2025-11-24T08:51:40Z</_time>
-    <_version t="S">0.16.8/0.55.0/0.16.1</_version>
-    <comments t="I">2</comments>
-    <commits t="I">1</commits>
-    <details t="S">The pull request objectionary/eo2js#175 has been reviewed by @maxonfjvipon with 78 HoC and 2 comments.</details>
-    <event_id t="I">4852999556</event_id>
-    <event_type t="S">PullRequestReviewEvent</event_type>
-    <files t="I">1</files>
-    <hoc t="I">78</hoc>
-    <is_human t="I">1</is_human>
-    <issue t="I">175</issue>
-    <repository t="I">798766850</repository>
-    <review_comments t="I">0</review_comments>
-    <tombstone t="T">2026-08-05T22:27:58Z</tombstone>
-    <what t="S">pull-was-reviewed</what>
-    <when t="T">2025-11-22T21:15:07Z</when>
-    <where t="S">github</where>
-    <who t="I">37025995</who>
-  </f>
-  <f>
-    <_id t="I">1047406</_id>
-    <_job t="I">19628281790</_job>
-    <_time t="T">2025-11-24T08:51:43Z</_time>
-    <_version t="S">0.16.8/0.55.0/0.16.1</_version>
-    <branch t="S">174-remove-as-phi</branch>
-    <details t="S">The pull request objectionary/eo2js#176 has been opened by @r0bari.</details>
-    <event_id t="I">4852995084</event_id>
-    <event_type t="S">PullRequestEvent</event_type>
-    <is_human t="I">1</is_human>
-    <issue t="I">176</issue>
-    <repository t="I">798766850</repository>
-    <tombstone t="T">2026-08-05T22:27:58Z</tombstone>
-    <what t="S">pull-was-opened</what>
-    <when t="T">2025-11-22T21:14:03Z</when>
-    <where t="S">github</where>
-    <who t="I">56538398</who>
-  </f>
-  <f>
-    <_id t="I">1047407</_id>
-    <_job t="I">19628281790</_job>
-    <_time t="T">2025-11-24T08:51:46Z</_time>
-    <_version t="S">0.16.8/0.55.0/0.16.1</_version>
-    <branch t="S">77-remove-traced-from-code</branch>
-    <details t="S">The pull request objectionary/eo2js#175 has been opened by @r0bari.</details>
-    <event_id t="I">4852979405</event_id>
-    <event_type t="S">PullRequestEvent</event_type>
-    <is_human t="I">1</is_human>
-    <issue t="I">175</issue>
-    <repository t="I">798766850</repository>
-    <tombstone t="T">2026-08-05T22:27:58Z</tombstone>
-    <what t="S">pull-was-opened</what>
-    <when t="T">2025-11-22T21:10:18Z</when>
-    <where t="S">github</where>
-    <who t="I">56538398</who>
-  </f>
-  <f>
     <_id t="I">1047412</_id>
     <_job t="I">19628281790</_job>
     <_time t="T">2025-11-24T08:52:22Z</_time>
@@ -46467,46 +46339,6 @@
     <seconds t="I">502</seconds>
     <what t="S">code-was-reviewed</what>
     <when t="T">2025-11-23T14:04:43Z</when>
-    <where t="S">github</where>
-    <who t="I">37025995</who>
-  </f>
-  <f>
-    <_id t="I">1047582</_id>
-    <_job t="I">50466</_job>
-    <_time t="T">2025-11-24T11:21:40Z</_time>
-    <_version t="S">0.16.8/0.57.1/0.16.1</_version>
-    <author t="I">56538398</author>
-    <comments t="I">1</comments>
-    <details t="S">The pull request objectionary/eo2js#176 with 24 HoC created by @r0bari was reviewed by @maxonfjvipon after 1m43s and 1 comments.</details>
-    <done t="T">2026-08-05T22:27:58Z</done>
-    <hoc t="I">24</hoc>
-    <is_human t="I">1</is_human>
-    <issue t="I">176</issue>
-    <repository t="I">798766850</repository>
-    <review_comments t="I">0</review_comments>
-    <seconds t="I">104</seconds>
-    <what t="S">code-was-reviewed</what>
-    <when t="T">2025-11-22T21:15:47Z</when>
-    <where t="S">github</where>
-    <who t="I">37025995</who>
-  </f>
-  <f>
-    <_id t="I">1047583</_id>
-    <_job t="I">50466</_job>
-    <_time t="T">2025-11-24T11:21:40Z</_time>
-    <_version t="S">0.16.8/0.57.1/0.16.1</_version>
-    <author t="I">56538398</author>
-    <comments t="I">2</comments>
-    <details t="S">The pull request objectionary/eo2js#175 with 78 HoC created by @r0bari was reviewed by @maxonfjvipon after 4m48s and 2 comments.</details>
-    <done t="T">2026-08-05T22:27:58Z</done>
-    <hoc t="I">78</hoc>
-    <is_human t="I">1</is_human>
-    <issue t="I">175</issue>
-    <repository t="I">798766850</repository>
-    <review_comments t="I">0</review_comments>
-    <seconds t="I">289</seconds>
-    <what t="S">code-was-reviewed</what>
-    <when t="T">2025-11-22T21:15:07Z</when>
     <where t="S">github</where>
     <who t="I">37025995</who>
   </f>
@@ -47649,22 +47481,6 @@
     <who t="I">29139614</who>
   </f>
   <f>
-    <_id t="I">1048407</_id>
-    <_job t="I">19731851394</_job>
-    <_time t="T">2025-11-27T09:49:15Z</_time>
-    <_version t="S">0.16.8/0.57.2/0.16.2</_version>
-    <assigner t="I">37025995</assigner>
-    <details t="S">objectionary/eo2js#77 was assigned to @r0bari by @maxonfjvipon.</details>
-    <is_human t="I">1</is_human>
-    <issue t="I">77</issue>
-    <repository t="I">798766850</repository>
-    <tombstone t="T">2026-08-05T22:27:58Z</tombstone>
-    <what t="S">issue-was-assigned</what>
-    <when t="T">2025-11-22T21:05:14Z</when>
-    <where t="S">github</where>
-    <who t="I">56538398</who>
-  </f>
-  <f>
     <_id t="I">1048417</_id>
     <_job t="I">19731851394</_job>
     <_time t="T">2025-11-27T09:49:47Z</_time>
@@ -47987,34 +47803,6 @@
     <who t="I">8086956</who>
   </f>
   <f>
-    <_id t="I">1048442</_id>
-    <_job t="I">19731851394</_job>
-    <_time t="T">2025-11-27T09:56:23Z</_time>
-    <_version t="S">0.16.8/0.57.2/0.16.2</_version>
-    <branch t="S">77-remove-traced-from-code</branch>
-    <comments t="I">2</comments>
-    <comments_appreciated t="I">0</comments_appreciated>
-    <comments_by_author t="I">1</comments_by_author>
-    <comments_by_reviewers t="I">1</comments_by_reviewers>
-    <comments_resolved t="I">0</comments_resolved>
-    <comments_to_code t="I">0</comments_to_code>
-    <details t="S">Apparently, objectionary/eo2js#175 has been "pull-was-merged".</details>
-    <failed_builds t="I">0</failed_builds>
-    <files t="I">1</files>
-    <hoc t="I">78</hoc>
-    <is_human t="I">1</is_human>
-    <issue t="I">175</issue>
-    <repository t="I">798766850</repository>
-    <review t="T">2025-11-22T21:15:05Z</review>
-    <review_comments t="I">0</review_comments>
-    <succeeded_builds t="I">11</succeeded_builds>
-    <tombstone t="T">2026-08-05T22:27:58Z</tombstone>
-    <what t="S">pull-was-merged</what>
-    <when t="T">2025-11-22T21:15:13Z</when>
-    <where t="S">github</where>
-    <who t="I">37025995</who>
-  </f>
-  <f>
     <_id t="I">1048444</_id>
     <_job t="I">19731851394</_job>
     <_time t="T">2025-11-27T09:56:54Z</_time>
@@ -48066,34 +47854,6 @@
     <when t="T">2025-11-23T05:15:18Z</when>
     <where t="S">github</where>
     <who t="I">8086956</who>
-  </f>
-  <f>
-    <_id t="I">1048447</_id>
-    <_job t="I">19731851394</_job>
-    <_time t="T">2025-11-27T09:57:40Z</_time>
-    <_version t="S">0.16.8/0.57.2/0.16.2</_version>
-    <branch t="S">174-remove-as-phi</branch>
-    <comments t="I">1</comments>
-    <comments_appreciated t="I">0</comments_appreciated>
-    <comments_by_author t="I">0</comments_by_author>
-    <comments_by_reviewers t="I">1</comments_by_reviewers>
-    <comments_resolved t="I">0</comments_resolved>
-    <comments_to_code t="I">0</comments_to_code>
-    <details t="S">Apparently, objectionary/eo2js#176 has been "pull-was-merged".</details>
-    <failed_builds t="I">0</failed_builds>
-    <files t="I">1</files>
-    <hoc t="I">24</hoc>
-    <is_human t="I">1</is_human>
-    <issue t="I">176</issue>
-    <repository t="I">798766850</repository>
-    <review t="T">2025-11-22T21:15:46Z</review>
-    <review_comments t="I">0</review_comments>
-    <succeeded_builds t="I">11</succeeded_builds>
-    <tombstone t="T">2026-08-05T22:27:58Z</tombstone>
-    <what t="S">pull-was-merged</what>
-    <when t="T">2025-11-22T21:15:54Z</when>
-    <where t="S">github</where>
-    <who t="I">37025995</who>
   </f>
   <f>
     <_id t="I">1048449</_id>
@@ -48430,25 +48190,6 @@
     <when t="T">2025-11-24T11:20:50Z</when>
     <where t="S">github</where>
     <who t="I">24456188</who>
-  </f>
-  <f>
-    <_id t="I">1048538</_id>
-    <_job t="I">50912</_job>
-    <_time t="T">2025-11-27T10:22:27Z</_time>
-    <_version t="S">0.16.8/0.57.1/0.16.2</_version>
-    <closer t="I">37025995</closer>
-    <details t="S">The bug/feature in the issue objectionary/eo2js#77 opened @0pdd by was resolved, after 10m of waiting, because it was closed by @maxonfjvipon and earlier it was assigned to @r0bari and the label '#bug' was attached.</details>
-    <done t="T">2026-08-05T22:27:58Z</done>
-    <is_human t="I">1</is_human>
-    <issue t="I">77</issue>
-    <label t="S">bug</label>
-    <opener t="I">24456188</opener>
-    <repository t="I">798766850</repository>
-    <seconds t="I">601</seconds>
-    <what t="S">bug-was-resolved</what>
-    <when t="T">2025-11-22T21:15:15Z</when>
-    <where t="S">github</where>
-    <who t="I">56538398</who>
   </f>
   <f>
     <_id t="I">1048539</_id>
@@ -49052,26 +48793,6 @@
     <who t="I">29139614</who>
   </f>
   <f>
-    <_id t="I">1048667</_id>
-    <_job t="I">50951</_job>
-    <_time t="T">2025-11-27T17:21:29Z</_time>
-    <_version t="S">0.16.8/0.57.1/0.16.2</_version>
-    <comments t="I">2</comments>
-    <details t="S">The pull request objectionary/eo2js#175 with 78 HoC created by @r0bari was merged by @maxonfjvipon after 4m54s of being in review and 2 comments.</details>
-    <hoc t="I">78</hoc>
-    <is_human t="I">1</is_human>
-    <issue t="I">175</issue>
-    <merger t="I">37025995</merger>
-    <repository t="I">798766850</repository>
-    <review_comments t="I">0</review_comments>
-    <seconds t="I">295</seconds>
-    <tombstone t="T">2026-08-05T22:27:58Z</tombstone>
-    <what t="S">code-was-contributed</what>
-    <when t="T">2025-11-22T21:15:13Z</when>
-    <where t="S">github</where>
-    <who t="I">56538398</who>
-  </f>
-  <f>
     <_id t="I">1048669</_id>
     <_job t="I">50951</_job>
     <_time t="T">2025-11-27T17:21:31Z</_time>
@@ -49156,26 +48877,6 @@
     <when t="T">2025-11-27T16:56:38Z</when>
     <where t="S">github</where>
     <who t="I">526301</who>
-  </f>
-  <f>
-    <_id t="I">1048692</_id>
-    <_job t="I">50956</_job>
-    <_time t="T">2025-11-27T18:18:02Z</_time>
-    <_version t="S">0.16.8/0.57.1/0.16.2</_version>
-    <comments t="I">1</comments>
-    <details t="S">The pull request objectionary/eo2js#176 with 24 HoC created by @r0bari was merged by @maxonfjvipon after 1m50s of being in review and 1 comments.</details>
-    <hoc t="I">24</hoc>
-    <is_human t="I">1</is_human>
-    <issue t="I">176</issue>
-    <merger t="I">37025995</merger>
-    <repository t="I">798766850</repository>
-    <review_comments t="I">0</review_comments>
-    <seconds t="I">111</seconds>
-    <tombstone t="T">2026-08-05T22:27:58Z</tombstone>
-    <what t="S">code-was-contributed</what>
-    <when t="T">2025-11-22T21:15:54Z</when>
-    <where t="S">github</where>
-    <who t="I">56538398</who>
   </f>
   <f>
     <_id t="I">1048693</_id>
@@ -80836,22 +80537,6 @@
     <who t="I">29139614</who>
   </f>
   <f>
-    <_id t="I">1067111</_id>
-    <_job t="I">20555255051</_job>
-    <_time t="T">2025-12-28T15:01:06Z</_time>
-    <_version t="S">0.19.2/0.58.1/0.17.8</_version>
-    <branch t="S">632</branch>
-    <details t="S">The missing pull objectionary/lints#784 has been opened by @h1alexbel.</details>
-    <is_human t="I">1</is_human>
-    <issue t="I">784</issue>
-    <repository t="I">889819508</repository>
-    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
-    <what t="S">pull-was-opened</what>
-    <when t="T">2025-11-22T14:51:06Z</when>
-    <where t="S">github</where>
-    <who t="I">83453843</who>
-  </f>
-  <f>
     <_id t="I">1067112</_id>
     <_job t="I">20555255051</_job>
     <_time t="T">2025-12-28T15:01:08Z</_time>
@@ -81502,27 +81187,6 @@
     <where t="S">github</where>
     <who t="I">526301</who>
     <why t="S">Reviewed code in objectionary/eo#4776</why>
-  </f>
-  <f>
-    <_id t="I">1067210</_id>
-    <_job t="I">20558616798</_job>
-    <_time t="T">2025-12-28T20:06:28Z</_time>
-    <_version t="S">0.19.2/0.58.1/0.17.8</_version>
-    <author t="I">83453843</author>
-    <comments t="I">3</comments>
-    <details t="S">The pull request objectionary/lints#784 with 160 HoC created by @h1alexbel was reviewed by @coderabbitai[bot] after 0h4m and 1 comments.</details>
-    <done t="T">2026-08-05T19:36:37Z</done>
-    <hoc t="I">160</hoc>
-    <is_human t="I">0</is_human>
-    <issue t="I">784</issue>
-    <repository t="I">889819508</repository>
-    <review_comments t="I">1</review_comments>
-    <seconds t="I">255</seconds>
-    <tombstone t="T">2026-08-05T20:48:34Z</tombstone>
-    <what t="S">code-was-reviewed</what>
-    <when t="T">2025-11-22T14:55:21Z</when>
-    <where t="S">github</where>
-    <who t="I">136622811</who>
   </f>
   <f>
     <_id t="I">1067211</_id>
@@ -302666,6 +302330,7 @@
       <v t="S">767-768</v>
       <v t="S">770-775</v>
       <v t="S">777-779</v>
+      <v t="S">784</v>
     </issues>
     <repository t="I">889819508</repository>
     <what t="S">tombstone</what>
@@ -328357,14 +328022,14 @@
       <v t="S">35</v>
       <v t="S">37-67</v>
       <v t="S">69-75</v>
-      <v t="S">78-90</v>
+      <v t="S">77-90</v>
       <v t="S">92-96</v>
       <v t="S">98-108</v>
       <v t="S">115-116</v>
       <v t="S">118-140</v>
       <v t="S">142-152</v>
       <v t="S">157-167</v>
-      <v t="S">173-174</v>
+      <v t="S">173-176</v>
     </issues>
     <repository t="I">798766850</repository>
     <what t="S">tombstone</what>
@@ -328578,7 +328243,7 @@
     <_job t="I">28918253257</_job>
     <_time t="T">2026-07-08T04:55:42Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">0</assignees_were_scanned>
+    <assignees_were_scanned t="I">831</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">12827163891</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
@@ -332629,7 +332294,7 @@
     <_job t="I">29014863301</_job>
     <_time t="T">2026-07-09T11:37:47Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">999</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">12833767117</events_were_scanned>
     <issues_were_scanned t="I">982</issues_were_scanned>
@@ -335715,7 +335380,7 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:00Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">0</assignees_were_scanned>
+    <assignees_were_scanned t="I">1120</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">16856532194</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
@@ -335753,13 +335418,13 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:01Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">4939</assignees_were_scanned>
+    <assignees_were_scanned t="I">5298</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">16856185849</events_were_scanned>
+    <events_were_scanned t="I">16861086198</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
-    <labels_were_scanned t="I">0</labels_were_scanned>
+    <labels_were_scanned t="I">6095</labels_were_scanned>
     <latest_issue_was_found t="I">4591</latest_issue_was_found>
-    <merges_were_scanned t="I">0</merges_were_scanned>
+    <merges_were_scanned t="I">6391</merges_were_scanned>
     <min_issue_was_found t="I">4341</min_issue_was_found>
     <min_pull_was_found t="I">5337</min_pull_was_found>
     <repository t="I">73056727</repository>
@@ -483915,21 +483580,6 @@ The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
     <who t="I">51804353</who>
   </f>
   <f>
-    <_id t="I">1116608</_id>
-    <_job t="I">30987360868</_job>
-    <_time t="T">2026-08-05T08:10:17Z</_time>
-    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
-    <details t="S">The issue objectionary/lints#744 has been opened earlier by @volodya-lombrozo.</details>
-    <is_human t="I">1</is_human>
-    <issue t="I">744</issue>
-    <repository t="I">889819508</repository>
-    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
-    <what t="S">issue-was-opened</what>
-    <when t="T">2025-09-09T07:57:58Z</when>
-    <where t="S">github</where>
-    <who t="I">51804353</who>
-  </f>
-  <f>
     <_id t="I">1116609</_id>
     <_job t="I">30987360868</_job>
     <_time t="T">2026-08-05T08:13:07Z</_time>
@@ -483971,22 +483621,6 @@ The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
     <when t="T">2026-08-05T07:12:36Z</when>
     <where t="S">github</where>
     <who t="I">51804353</who>
-  </f>
-  <f>
-    <_id t="I">1116611</_id>
-    <_job t="I">30987360868</_job>
-    <_time t="T">2026-08-05T08:22:17Z</_time>
-    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
-    <details t="S">The "bug" label was attached by @h1alexbel to the issue objectionary/lints#744.</details>
-    <is_human t="I">1</is_human>
-    <issue t="I">744</issue>
-    <label t="S">bug</label>
-    <repository t="I">889819508</repository>
-    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
-    <what t="S">label-was-attached</what>
-    <when t="T">2025-09-10T08:03:14Z</when>
-    <where t="S">github</where>
-    <who t="I">83453843</who>
   </f>
   <f>
     <_id t="I">1116612</_id>
@@ -484059,23 +483693,6 @@ The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
     <when t="T">2026-08-05T04:42:03Z</when>
     <where t="S">github</where>
     <who t="I">29139614</who>
-  </f>
-  <f>
-    <_id t="I">1116616</_id>
-    <_job t="I">85201</_job>
-    <_time t="T">2026-08-05T08:40:49Z</_time>
-    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
-    <details t="S">@h1alexbel attached the '#bug' label to objectionary/lints#744 reported by @volodya-lombrozo; this means that a bug was accepted as valid, by the project team.</details>
-    <done t="T">2026-08-05T19:36:37Z</done>
-    <is_human t="I">1</is_human>
-    <issue t="I">744</issue>
-    <reporter t="I">51804353</reporter>
-    <repository t="I">889819508</repository>
-    <tombstone t="T">2026-08-05T20:48:34Z</tombstone>
-    <what t="S">bug-was-accepted</what>
-    <when t="T">2025-09-10T08:03:14Z</when>
-    <where t="S">github</where>
-    <who t="I">83453843</who>
   </f>
   <f>
     <_id t="I">1116617</_id>
@@ -484628,22 +484245,6 @@ The average monthly zents/points ratio (0.40) is decreasing (R=0.88).</text>
     <when t="T">2026-08-05T09:42:33Z</when>
     <where t="S">github</where>
     <who t="I">8086956</who>
-  </f>
-  <f>
-    <_id t="I">1116647</_id>
-    <_job t="I">30999712442</_job>
-    <_time t="T">2026-08-05T11:53:52Z</_time>
-    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
-    <assigner t="I">83453843</assigner>
-    <details t="S">objectionary/lints#744 was assigned to @h1alexbel by @h1alexbel.</details>
-    <is_human t="I">1</is_human>
-    <issue t="I">744</issue>
-    <repository t="I">889819508</repository>
-    <tombstone t="T">2026-08-05T19:36:37Z</tombstone>
-    <what t="S">issue-was-assigned</what>
-    <when t="T">2025-09-10T08:03:15Z</when>
-    <where t="S">github</where>
-    <who t="I">83453843</who>
   </f>
   <f>
     <_id t="I">1116648</_id>
