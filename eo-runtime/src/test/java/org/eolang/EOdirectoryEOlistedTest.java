@@ -5,8 +5,14 @@
 
 package org.eolang;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -56,6 +62,47 @@ final class EOdirectoryEOlistedTest {
             ).take(),
             "listing a directory that is not there must fail with ExFailure, not a raw IOException"
         );
+    }
+
+    @Test
+    void sortsNamesOfDirectChildren(@TempDir final Path temp) throws IOException {
+        final long seed = System.nanoTime();
+        final Random random = new Random(seed);
+        final List<String> names = new ArrayList<>(0);
+        for (int index = 0; index < 8; ++index) {
+            final String name = String.format("файл %04d %d ~", random.nextInt(10_000), index);
+            Files.createFile(temp.resolve(name));
+            names.add(name);
+        }
+        Collections.sort(names);
+        MatcherAssert.assertThat(
+            String.format("listed names are not the children in sorted order, seed is %d", seed),
+            this.names(temp),
+            Matchers.equalTo(names)
+        );
+    }
+
+    @Test
+    void skipsGrandchildrenOfTheDirectory(@TempDir final Path temp) throws IOException {
+        Files.createFile(Files.createDirectory(temp.resolve("вложенная")).resolve("глубина"));
+        MatcherAssert.assertThat(
+            "listed names reach deeper than the direct children of the directory",
+            this.names(temp),
+            Matchers.equalTo(Collections.singletonList("вложенная"))
+        );
+    }
+
+    /**
+     * The names the atom lists for the directory at this path.
+     * @param path The path of the directory to list
+     * @return The listed names, in the order the atom returns them
+     */
+    private List<String> names(final Path path) {
+        final List<String> names = new ArrayList<>(0);
+        for (final Phi name : new TupleToArray(this.listing(path.toString())).get()) {
+            names.add(new Dataized(name).asString());
+        }
+        return names;
     }
 
     /**
