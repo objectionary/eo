@@ -57,41 +57,44 @@ final class Sha {
      */
     private String hash() throws IOException, NoSuchAlgorithmException {
         final MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        final boolean tree = Files.isDirectory(this.path);
         try (Stream<Path> walk = Files.walk(this.path)) {
             walk.filter(Files::isRegularFile)
-                .sorted(Comparator.comparing(this::relative)).forEach(
-                    file -> {
-                        try (InputStream input = Files.newInputStream(file)) {
-                            if (tree) {
-                                digest.update(
-                                    String.format("%s\0", this.relative(file))
-                                        .getBytes(StandardCharsets.UTF_8)
-                                );
-                            }
-                            final byte[] buffer = new byte[8192];
-                            long length = 0L;
-                            int read = input.read(buffer);
-                            while (read != -1) {
-                                digest.update(buffer, 0, read);
-                                length = length + read;
-                                read = input.read(buffer);
-                            }
-                            if (tree) {
-                                digest.update(
-                                    String.format("\0%d\0", length)
-                                        .getBytes(StandardCharsets.UTF_8)
-                                );
-                            }
-                        } catch (final IOException ex) {
-                            throw new IllegalStateException(
-                                String.format("Failed to read '%s'", file), ex
-                            );
-                        }
-                    }
-                );
+                .sorted(Comparator.comparing(this::relative))
+                .forEach(file -> this.feed(digest, file));
         }
         return Base64.getEncoder().encodeToString(digest.digest());
+    }
+
+    /**
+     * Feeds the bytes of the file into the digest, framed by the relative path of the file and
+     * by the amount of bytes read, unless the file is the hashed path itself.
+     * @param digest Digest to feed
+     * @param file File to read
+     */
+    private void feed(final MessageDigest digest, final Path file) {
+        final String relative = this.relative(file);
+        try (InputStream input = Files.newInputStream(file)) {
+            if (!relative.isEmpty()) {
+                digest.update(
+                    String.format("%s\0", relative).getBytes(StandardCharsets.UTF_8)
+                );
+            }
+            final byte[] buffer = new byte[8192];
+            long length = 0L;
+            int read = input.read(buffer);
+            while (read != -1) {
+                digest.update(buffer, 0, read);
+                length = length + read;
+                read = input.read(buffer);
+            }
+            if (!relative.isEmpty()) {
+                digest.update(
+                    String.format("\0%d\0", length).getBytes(StandardCharsets.UTF_8)
+                );
+            }
+        } catch (final IOException ex) {
+            throw new IllegalStateException(String.format("Failed to read '%s'", file), ex);
+        }
     }
 
     /**

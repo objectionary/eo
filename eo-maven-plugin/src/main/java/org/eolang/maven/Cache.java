@@ -135,9 +135,9 @@ final class Cache {
 
     /**
      * Calculate SHA-256 hash of a directory by hashing all regular files inside it.
-     * @todo #5254:30min Hash directories through Sha, once Sha can skip files this method skips.
      * @param dir Directory path
      * @return Base64-encoded SHA-256 hash of the directory contents
+     * @todo #5254:30min Hash directories through Sha, once Sha can skip files this method skips.
      */
     private String dirSha(final Path dir) {
         try {
