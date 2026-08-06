@@ -17,9 +17,10 @@ public final class EOchunk$EOwrite extends PhDefault implements Atom {
 
     /**
      * Ctor.
+     * @param stats Where this object reports its birth
      */
-    public EOchunk$EOwrite() {
-        super(new Attrs(
+    public EOchunk$EOwrite(final Statistics stats) {
+        super(stats, new Attrs(
             new Attr("offset", new AtVoid("offset")),
             new Attr("data", new AtVoid("data"))
         ));

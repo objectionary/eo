@@ -12,6 +12,10 @@ package org.eolang;
 @FunctionalInterface
 public interface Syscall {
 
+    // @todo #3489:30min Every implementation of this interface wraps its return code in a bare
+    //  new PhDefault(), which gets a Silent statistics and therefore never reaches the counters
+    //  the program reports. Hand each syscall the statistics of the atom that calls it.
+
     /**
      * Makes native method call.
      * @param params Native methods parameters

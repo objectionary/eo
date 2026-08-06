@@ -17,9 +17,10 @@ public final class EOmalloc$EOof extends PhDefault implements Atom {
 
     /**
      * Ctor.
+     * @param stats Where this object reports its birth
      */
-    public EOmalloc$EOof() {
-        super(new Attrs(
+    public EOmalloc$EOof(final Statistics stats) {
+        super(stats, new Attrs(
             new Attr("size", new AtVoid("size")),
             new Attr("scope", new AtVoid("scope"))
         ));

@@ -110,6 +110,11 @@ public final class PhTerminator implements Phi {
     }
 
     @Override
+    public Statistics statistics() {
+        return new Silent();
+    }
+
+    @Override
     public byte[] delta() {
         final String reason;
         if (this.cause == null) {

@@ -7,52 +7,61 @@ package org.eolang;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Isolated;
 
 /**
- * Test case for {@link Statistics}, the running one that {@link PhDefault}
- * feeds. The class runs alone, since the statistics it reads are shared by
- * every object in the JVM.
+ * Test case for {@link Statistics}, the one an object is handed when it is
+ * made and reports its births and dispatches to.
  * @since 0.62
  */
-@Isolated
 final class StatisticsTest {
 
     @Test
     void countsOneAllocationPerObjectComingAlive() {
-        final Phi phi = new PhDefault("org.eolang.bytes");
-        final long before = Statistics.RUNNING.allocations();
+        final Statistics stats = new Counters();
+        final Phi phi = new PhDefault(stats, "org.eolang.bytes");
         phi.hasRho();
         phi.hasRho();
         MatcherAssert.assertThat(
             "an object came alive as other than exactly one allocation",
-            Statistics.RUNNING.allocations() - before,
+            stats.allocations(),
             Matchers.equalTo(1L)
         );
     }
 
     @Test
     void countsOneAllocationPerCopy() {
-        final Phi phi = new PhDefault("org.eolang.bytes");
+        final Statistics stats = new Counters();
+        final Phi phi = new PhDefault(stats, "org.eolang.bytes");
         phi.hasRho();
-        final long before = Statistics.RUNNING.allocations();
         phi.copy();
         MatcherAssert.assertThat(
             "copying one object moved the statistics by other than one allocation",
-            Statistics.RUNNING.allocations() - before,
-            Matchers.equalTo(1L)
+            stats.allocations(),
+            Matchers.equalTo(2L)
         );
     }
 
     @Test
     void countsOneDispatchPerTake() {
-        final Phi phi = new PhDefault(new Attrs(new Attr("x", new AtVoid("x"))));
-        final long before = Statistics.RUNNING.dispatches();
+        final Statistics stats = new Counters();
+        final Phi phi = new PhDefault(stats, new Attrs(new Attr("x", new AtVoid("x"))));
         phi.take("x");
         MatcherAssert.assertThat(
             "taking one attribute moved the statistics by other than one dispatch",
-            Statistics.RUNNING.dispatches() - before,
+            stats.dispatches(),
             Matchers.equalTo(1L)
+        );
+    }
+
+    @Test
+    void dontCountIntoTheStatisticsOfAnotherProgram() {
+        final Statistics mine = new Counters();
+        final Statistics yours = new Counters();
+        new PhDefault(mine, new Attrs(new Attr("x", new AtVoid("x")))).take("x");
+        MatcherAssert.assertThat(
+            "an object born and dispatched in one program was counted in another",
+            yours.allocations() + yours.dispatches(),
+            Matchers.equalTo(0L)
         );
     }
 }

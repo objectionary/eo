@@ -20,9 +20,10 @@ public final class EOrecovered extends PhDefault implements Atom {
 
     /**
      * Ctor.
+     * @param stats Where this object reports its birth
      */
-    public EOrecovered() {
-        super(new Attrs(
+    public EOrecovered(final Statistics stats) {
+        super(stats, new Attrs(
             new Attr("value", new AtVoid("value")),
             new Attr("alternative", new AtVoid("alternative"))
         ));

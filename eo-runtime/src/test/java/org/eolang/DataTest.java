@@ -90,7 +90,7 @@ final class DataTest {
     void comparesVertexWithFormation() {
         MatcherAssert.assertThat(
             "Hash code of a formation should differ from the one of a data object, but it didn't",
-            new EOnumber().hashCode(),
+            new EOnumber(new Silent()).hashCode(),
             Matchers.not(new Data.ToPhi(0L).hashCode())
         );
     }

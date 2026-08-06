@@ -19,12 +19,6 @@ package org.eolang;
 public interface Statistics {
 
     /**
-     * The statistics of the program running in this JVM, shared by every
-     * object it creates, the same way {@link Phi#Φ} is shared.
-     */
-    Statistics RUNNING = new Counters();
-
-    /**
      * Record the birth of one object.
      */
     void allocate();

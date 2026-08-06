@@ -25,6 +25,7 @@ import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.PhTerminator;
 import org.eolang.Phi;
+import org.eolang.Statistics;
 import org.eolang.XmirObject;
 
 /**
@@ -50,9 +51,11 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
 
     /**
      * Ctor.
+     * @param stats Where this object reports its birth
      */
-    public EOregex$EOpattern$EOmatch$EOmatched_from_index() {
+    public EOregex$EOpattern$EOmatch$EOmatched_from_index(final Statistics stats) {
         super(
+            stats,
             new Attrs(
                 new Attr(
                     EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,

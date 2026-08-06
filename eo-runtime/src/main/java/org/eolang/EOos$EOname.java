@@ -22,9 +22,10 @@ public final class EOos$EOname extends PhDefault implements Atom {
 
     /**
      * Ctor.
+     * @param stats Where this object reports its birth
      */
-    public EOos$EOname() {
-        // nothing
+    public EOos$EOname(final Statistics stats) {
+        super(stats);
     }
 
     @Override

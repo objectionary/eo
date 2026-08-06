@@ -211,6 +211,9 @@ public final class Main {
             }
             app.put(0, args);
         }
+        final Statistics stats = Phi.Φ.statistics();
+        final long born = stats.allocations();
+        final long taken = stats.dispatches();
         final long start = System.currentTimeMillis();
         final byte[] ret = new Dataized(app).take();
         Main.LOGGER.info(
@@ -219,8 +222,8 @@ public final class Main {
                 new VerboseBytesAsString(ret).get(),
                 (System.currentTimeMillis() - start) / 1000.0,
                 ret.length,
-                Statistics.RUNNING.allocations(),
-                Statistics.RUNNING.dispatches()
+                stats.allocations() - born,
+                stats.dispatches() - taken
             )
         );
     }

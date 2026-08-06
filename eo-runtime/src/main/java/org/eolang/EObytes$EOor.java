@@ -17,9 +17,10 @@ public final class EObytes$EOor extends PhDefault implements Atom {
 
     /**
      * Ctor.
+     * @param stats Where this object reports its birth
      */
-    public EObytes$EOor() {
-        super(new Attrs(new Attr("b", new AtVoid("b"))));
+    public EObytes$EOor(final Statistics stats) {
+        super(stats, new Attrs(new Attr("b", new AtVoid("b"))));
     }
 
     @Override
