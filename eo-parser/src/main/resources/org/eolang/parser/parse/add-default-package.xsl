@@ -59,7 +59,7 @@
   -->
   <xsl:param name="objects" as="xs:string" select="''"/>
   <!-- The package of the current program (empty if there is no "+package" meta). -->
-  <xsl:variable name="package" select="string(/object/metas/meta[head='package']/part[1])"/>
+  <xsl:variable name="package" select="string((/object/metas/meta[head='package']/part[1])[1])"/>
   <!-- Qualified names of all local package objects as a sequence. -->
   <xsl:variable name="known" select="tokenize($objects, '\s+')[. != '']"/>
   <!--
