@@ -606,6 +606,20 @@ final class PhDefaultTest {
     }
 
     @Test
+    void letsSubclassObserveConstructorSuppliedAttributeOnFirstAccess() {
+        final Observant kid = new Observant();
+        kid.take("x");
+        MatcherAssert.assertThat("constructor attribute lost", kid.seen(), Matchers.hasItems("x"));
+    }
+
+    @Test
+    void letsSubclassObserveExplicitAttributeAddition() {
+        final Observant kid = new Observant();
+        kid.add("extra", new AtVoid("extra"));
+        MatcherAssert.assertThat("added attribute lost", kid.seen(), Matchers.hasItems("extra"));
+    }
+
+    @Test
     void verifiesThreadLocalInMultipleThreads() {
         final int threads = 10;
         final int cnt = 100;

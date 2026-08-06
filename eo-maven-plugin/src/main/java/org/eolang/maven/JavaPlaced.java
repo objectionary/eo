@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.stream.Stream;
 import org.cactoos.BiProc;
 
 /**
@@ -101,6 +102,10 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
      * @return True or False
      */
     private static boolean testsPresent(final Xnav clazz) {
-        return clazz.element("tests").text().map(s -> s.contains("@Test")).orElse(false);
+        return clazz.element("tests").text().map(
+            s -> Stream.of(
+                "@Test", "@ParameterizedTest", "@RepeatedTest", "@TestFactory", "@TestTemplate"
+            ).anyMatch(s::contains)
+        ).orElse(false);
     }
 }
