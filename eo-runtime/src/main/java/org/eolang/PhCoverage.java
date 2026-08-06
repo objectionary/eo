@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Set;
@@ -132,20 +132,28 @@ public final class PhCoverage implements Phi {
 
     /** Record one hit of this location, at most once per JVM. */
     private void hit() {
-        final Path target = PhCoverage.target();
-        if (target != null) {
+        final String property = PhCoverage.property();
+        if (property != null) {
             final String record = String.format("%s:%d:%d%n", this.loc, this.line, this.pos);
             if (PhCoverage.SEEN.add(record)) {
                 try {
                     Files.write(
-                        target,
+                        Paths.get(property),
                         record.getBytes(StandardCharsets.UTF_8),
                         StandardOpenOption.CREATE,
                         StandardOpenOption.APPEND
                     );
                 } catch (final IOException ex) {
                     throw new UncheckedIOException(
-                        String.format("Failed to append a coverage hit to '%s'", target),
+                        String.format("Failed to append a coverage hit to '%s'", property),
+                        ex
+                    );
+                } catch (final InvalidPathException ex) {
+                    throw new IllegalArgumentException(
+                        String.format(
+                            "Invalid path '%s' in the 'eo.coverageFile' system property",
+                            property
+                        ),
                         ex
                     );
                 }
@@ -154,16 +162,16 @@ public final class PhCoverage implements Phi {
     }
 
     /**
-     * Target file from the {@code eo.coverageFile} property.
-     * @return The path, or NULL when recording is disabled
+     * Value of the {@code eo.coverageFile} property.
+     * @return The value, or NULL when recording is disabled
      */
-    private static Path target() {
+    private static String property() {
         final String path = System.getProperty("eo.coverageFile");
-        final Path result;
+        final String result;
         if (path == null || path.isEmpty()) {
             result = null;
         } else {
-            result = Paths.get(path);
+            result = path;
         }
         return result;
     }
