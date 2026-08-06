@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2160.558072414
+  seconds: 2160.93619807
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-06 01:29:10.752273416 Z
+  when: 2026-08-06 05:22:10.372641301 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -305198,7 +305198,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 831
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12827163891
   issues_were_scanned: 0
@@ -308962,7 +308962,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 999
   earliest_issue_was_found: 1
   events_were_scanned: 12833767117
   issues_were_scanned: 982
@@ -311496,7 +311496,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 12736673500
+  events_were_scanned: 16875761625
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 361
@@ -311913,7 +311913,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1120
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 16856532194
   issues_were_scanned: 0
@@ -311947,13 +311947,13 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5298
+  assignees_were_scanned: 5484
   earliest_issue_was_found: 1
-  events_were_scanned: 16861086198
+  events_were_scanned: 12855326605
   issues_were_scanned: 0
-  labels_were_scanned: 6095
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
-  merges_were_scanned: 6391
+  merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
@@ -450948,3 +450948,18 @@
   when: 2026-08-05 21:58:44.000000000 Z
   where: github
   who: 125282851
+- _id: 1116726
+  _job: 31072108487
+  _time: 2026-08-06 04:47:15.114058180 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/python-3.x
+  details: The pull request objectionary/home#428 has been opened by @renovate[bot].
+  event_id: 12860159275
+  event_type: PullRequestEvent
+  is_human: 0
+  issue: 428
+  repository: 13623548
+  what: pull-was-opened
+  when: 2026-08-06 04:31:20.000000000 Z
+  where: github
+  who: 29139614
