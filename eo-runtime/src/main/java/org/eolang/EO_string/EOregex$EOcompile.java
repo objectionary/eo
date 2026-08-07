@@ -27,6 +27,17 @@ import org.eolang.XmirObject;
 /**
  * Regex.compile object.
  * @since 0.39.0
+ * @todo #6388:90min Parse the {@code /pattern/flags} envelope in EO instead of here.
+ *  This atom currently does two separate things: validating and splitting the
+ *  leading/trailing slash and flag-letter suffix off {@code expression} (pure string
+ *  work, no JVM dependency), then handing the assembled search string to
+ *  {@link java.util.regex.Pattern#compile}. Move the first part into {@code regex.eo}'s
+ *  {@code compile} formation — reject a missing opening/closing slash via the existing
+ *  {@code cant-compile} fallback, and build the same {@code (?flags)body} string EO-side
+ *  using {@code string.last-index-of}/{@code .slice} — so this atom shrinks to just
+ *  compile-and-serialize on an already-assembled string. First step of the rewrite
+ *  #6388 asks for; see the {@code @todo} chain on
+ *  {@code EOregex$EOpattern$EOmatch$EOmatched_from_index} for the rest (matching itself).
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
