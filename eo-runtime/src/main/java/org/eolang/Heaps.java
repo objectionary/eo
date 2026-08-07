@@ -197,6 +197,14 @@ final class Heaps {
                     )
                 );
             }
+            if (offset < 0) {
+                throw new ExFailure(
+                    String.format(
+                        "Block '%d': can't write at negative offset '%d'",
+                        identifier, offset
+                    )
+                );
+            }
             final long end = (long) offset + data.length;
             if (end > Integer.MAX_VALUE) {
                 throw new ExFailure(

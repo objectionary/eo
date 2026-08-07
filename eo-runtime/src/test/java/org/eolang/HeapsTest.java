@@ -85,6 +85,34 @@ final class HeapsTest {
     }
 
     @Test
+    void failsCleanlyOnWriteWithNegativeOffset() {
+        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 10);
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> Heaps.INSTANCE.write(idx, -1, new byte[] {0x01}),
+            "Heaps must reject a negative write offset with a clean ExFailure, not a raw JVM exception"
+        );
+        Heaps.INSTANCE.free(idx);
+    }
+
+    @Test
+    void keepsBlockIntactAfterWriteWithNegativeOffset() {
+        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 3);
+        Heaps.INSTANCE.write(idx, 0, new byte[] {7, 8, 9});
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> Heaps.INSTANCE.write(idx, -2, new byte[] {1, 2}),
+            "Heaps must reject a negative write offset before touching the block, but it didn't"
+        );
+        MatcherAssert.assertThat(
+            "Heaps must leave the block untouched after a rejected negative-offset write, but it didn't",
+            Heaps.INSTANCE.read(idx, 0, 3),
+            Matchers.equalTo(new byte[] {7, 8, 9})
+        );
+        Heaps.INSTANCE.free(idx);
+    }
+
+    @Test
     void failsOnReadFromEmptyBlock() {
         Assertions.assertThrows(
             ExFailure.class,
