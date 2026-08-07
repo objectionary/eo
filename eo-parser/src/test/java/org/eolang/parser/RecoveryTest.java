@@ -47,4 +47,21 @@ final class RecoveryTest {
             Matchers.equalTo(4)
         );
     }
+
+    @Test
+    void skipsFromAnIndexOtherThanTheFailedLineItself() {
+        MatcherAssert.assertThat(
+            "skip must scan from the given index using the given indent, "
+                .concat("not the indent of the line at that index"),
+            new Recovery(
+                Arrays.asList(
+                    new Span("01-02-", 1),
+                    new Span("03-04", 2),
+                    new Span("  child", 3),
+                    new Span("sibling", 4)
+                )
+            ).skip(2, 0),
+            Matchers.equalTo(3)
+        );
+    }
 }
