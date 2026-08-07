@@ -80,25 +80,30 @@ final class Parsing implements Step {
     /**
      * Where the results of earlier builds are looked for and kept.
      */
-    private final GlobalCache cache;
+    private final Caching cache;
 
     /**
      * Constructor.
      * @param srcs Foreign tojos catalog
      * @param target Target directory
      * @param sources EO sources directory
-     * @param store Where the results of earlier builds are looked for and kept
+     * @param enabled Whether the machine-wide cache is enabled
+     * @param store Directory of the machine-wide cache
+     * @param version Version of the compiler, folded into the cache key
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
     Parsing(
         final TjsForeign srcs,
         final Path target,
         final Path sources,
-        final GlobalCache store
+        final boolean enabled,
+        final Path store,
+        final String version
     ) {
         this.tojos = srcs;
         this.targetDir = target;
         this.sourcesDir = sources;
-        this.cache = store;
+        this.cache = new Caching(enabled, store, version);
     }
 
     @Override
@@ -113,7 +118,7 @@ final class Parsing implements Step {
         final int total = this.parsed(
             sources,
             new Canonical(objects),
-            this.cache.with(
+            this.cache.store(Parsing.CACHE).with(
                 new Fingerprint(
                     Stream.concat(
                         Canonical.XSLS.stream(), Canonical.IMPORTS.stream()

@@ -27,7 +27,9 @@ final class CompilingTest {
                         new TjsForeign(),
                         temp,
                         temp,
-                        new GlobalCache.GcFresh()
+                        false,
+                        temp,
+                        Parsing.ZERO
                     ),
                     new Probing(new TjsForeign(), new Objectionary.Fake(), false),
                     new Pulling(

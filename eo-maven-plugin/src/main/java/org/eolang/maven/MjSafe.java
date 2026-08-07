@@ -27,16 +27,6 @@ import org.slf4j.impl.StaticLoggerBinder;
 /**
  * Abstract Mojo for all others.
  * @since 0.1
- * @todo #6125:60min Take the fan-out suppression below off again.
- *  This class sat at exactly 30 referenced types, the maximum, so naming
- *  {@link GlobalCache} and {@link GcShared} in {@link #caching(String)}
- *  pushed it to 32 and the suppression had to be added. Unload the class
- *  instead, the way the puzzle about the tojos lifecycle below asks, and
- *  the suppression can go, together with the {@code @SuppressWarnings}
- *  for the field count right below it, which the same unloading fixes.
- *  Until then no further step can be moved to {@link GlobalCache}
- *  without making this worse.
- * @checkstyle ClassFanOutComplexityCheck (5 lines)
  */
 @SuppressWarnings("PMD.TooManyFields")
 abstract class MjSafe extends AbstractMojo {
@@ -546,7 +536,9 @@ abstract class MjSafe extends AbstractMojo {
                     this.scopedTojos(),
                     this.targetDir.toPath(),
                     this.sourcesDir.toPath(),
-                    this.caching(Parsing.CACHE)
+                    this.cacheEnabled,
+                    this.cache.toPath(),
+                    this.plugin.getVersion()
                 )
             ),
             new Timed(
@@ -566,25 +558,6 @@ abstract class MjSafe extends AbstractMojo {
                 )
             )
         );
-    }
-
-    /**
-     * The cache of one step, as configured by the user. This is the only
-     * place where {@code eo.cacheEnabled} is read, so that no step below
-     * has to know that the option exists.
-     * @param sub Directory of that step inside the machine-wide cache
-     * @return The cache of that step
-     */
-    GlobalCache caching(final String sub) {
-        final GlobalCache store;
-        if (this.cacheEnabled) {
-            store = new GcShared(
-                this.cache.toPath().resolve(sub), this.plugin.getVersion()
-            );
-        } else {
-            store = new GlobalCache.GcFresh();
-        }
-        return store;
     }
 
     /**
