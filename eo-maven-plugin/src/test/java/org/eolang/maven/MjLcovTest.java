@@ -41,7 +41,7 @@ final class MjLcovTest {
     }
 
     @Test
-    void savesEmptyTracefileWhenNoTestRecordedAnything(@Mktmp final Path temp) throws Exception {
+    void savesEmptyTracefileWhenNothingWasRecorded(@Mktmp final Path temp) throws Exception {
         final Path lcov = temp.resolve("eo-lcov.info");
         new FakeMaven(temp)
             .with("coverageFile", temp.resolve("absent.txt").toFile())
