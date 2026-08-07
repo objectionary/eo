@@ -1,7 +1,12 @@
 # Sine of `num` radians as `org.eolang.number`.
-# The argument is reduced into the [-pi, pi] range and the Taylor series
-# is summed through Horner's scheme, so the result stays accurate for
-# angles of any magnitude, while non-finite arguments collapse to nan.
+# The argument is reduced into the [-pi, pi] range with a Cody-Waite style
+# two-part reduction constant, and the Taylor series is summed through
+# Horner's scheme. The reduction is exact to within a few ULPs for
+# |num| up to about 1e10, and stays noticeably better than a plain
+# single-double reduction up to about 1e15, but beyond that consecutive
+# `double` values are already spaced further apart than a full turn, so
+# no reduction algorithm can meaningfully recover sub-turn precision.
+# Non-finite arguments collapse to nan.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -13,14 +18,16 @@
 [num] > sine
   times. > @
     minus. >> reduced
-      number num.as-bytes >> arg
-      times.
-        floor.
-          plus.
-            arg.div
-              pi.times 2 >> tau
-            0.5
-        tau
+      minus.
+        number num.as-bytes >> arg
+        times.
+          floor. >> k
+            plus.
+              arg.div
+                pi.times 2
+              0.5
+          6.283185303211212
+      k.times 3.968374318722162E-9
     if. > [depth] >> factor
       depth.gt 15
       1
@@ -57,6 +64,15 @@
               pi.div 6
           1000
         500
+    1
+
+  lt. ++> can-reduce-a-very-large-angle-with-cody-waite-precision
+    abs
+      minus.
+        times.
+          sine 1000000000000000
+          1000
+        858
     1
 
   lt. ++> can-take-a-sine-of-minus-pi-halves
