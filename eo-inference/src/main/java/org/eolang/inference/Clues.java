@@ -6,8 +6,8 @@ package org.eolang.inference;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * Every clue the checker knows how to follow.
@@ -26,9 +26,21 @@ import java.util.Collections;
  *
  * <p>Three clues are planned, one per kind of object, and each fills a
  * table of its own: what an object certainly has ({@link Provides}), what
- * it must have judging by how it is used, and which types are copies of
- * which. Keeping the tables apart is what lets a smarter rule add rows,
- * or read them differently, without touching anything else.</p>
+ * it must have judging by how it is used ({@link Needs}), and which types
+ * are copies of which. Keeping the tables apart is what lets a smarter
+ * rule add rows, or read them differently, without touching anything
+ * else.</p>
+ *
+ * <p>Every clue reads the program as text, writing a row for an object
+ * because it is <em>there</em>, not because something reaches it. The
+ * alternative — starting from a root and following what actually runs —
+ * gives sharper answers, since every question is then asked in a context
+ * where the types are concrete, but it cannot be used here: eo-runtime is
+ * a library with no entry point, so a checker that waits to be reached
+ * has nothing to pull on and reports a clean bill of health for code it
+ * never opened. Reading the text costs precision, which the checking loop
+ * buys back later by resolving each site in its own context; reading only
+ * what runs costs coverage, which nothing buys back.</p>
  *
  * <p>Then the checks are drained one by one, each of them either
  * deciding, splitting into smaller checks, or waiting for facts that may
@@ -50,7 +62,7 @@ public final class Clues implements Clue {
      * Ctor.
      */
     public Clues() {
-        this(Collections.singletonList(new Provides()));
+        this(Arrays.asList(new Provides(), new Needs()));
     }
 
     /**

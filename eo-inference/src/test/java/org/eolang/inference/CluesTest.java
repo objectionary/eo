@@ -42,6 +42,24 @@ final class CluesTest {
     }
 
     @Test
+    void writesTableOfWhatIsNeeded(@Mktmp final Path temp) throws IOException {
+        Files.writeString(
+            Files.createDirectories(temp.resolve("xmirs")).resolve("cup.xmir"),
+            String.join(
+                "",
+                "<object><o loc='Φ.cup.φ' base='.lid'>",
+                "<o loc='Φ.cup.φ.ρ' base='ξ.cup'/></o></object>"
+            )
+        );
+        new Clues().follow(temp.resolve("xmirs"), temp.resolve("tables"));
+        MatcherAssert.assertThat(
+            "the clues we know must write down what every object is asked for, but they didnt",
+            Files.exists(temp.resolve("tables").resolve("needs.xml")),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
     void writesTableOfWhatIsProvided(@Mktmp final Path temp) throws IOException {
         Files.writeString(
             Files.createDirectories(temp.resolve("xmirs")).resolve("cup.xmir"),
