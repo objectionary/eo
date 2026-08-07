@@ -88,11 +88,7 @@ final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
                     final String[] row = CommitHashesMap.WHITESPACE.split(rows.asString());
                     return new MapEntry<>(
                         row[1],
-                        new ChCached(
-                            new ChNarrow(
-                                new CommitHash.ChConstant(row[0])
-                            )
-                        )
+                        new ChBrief(new CommitHash.ChConstant(row[0]))
                     );
                 },
                 new Split(table::value, "\\n")
