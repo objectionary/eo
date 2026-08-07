@@ -51,15 +51,7 @@ final class MjLintTest {
 
     @Test
     void includesDefectDetailsInExceptionMessage(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp).withProgram(
-            String.join(
-                System.lineSeparator(),
-                "+package foo.x",
-                "",
-                "[] > main",
-                "  cti true \"error\" \"msg\" > @"
-            )
-        );
+        final FakeMaven maven = new FakeMaven(temp).withProgram(MjLintTest.erroneous());
         final IllegalStateException thrown = Assertions.assertThrows(
             IllegalStateException.class,
             () -> maven.execute(new FakeMaven.Lint()),
@@ -74,22 +66,14 @@ final class MjLintTest {
             root.getMessage(),
             Matchers.allOf(
                 Matchers.containsString("foo.x.main"),
-                Matchers.containsString("(cti)")
+                Matchers.containsString("(unique-metas/S)")
             )
         );
     }
 
     @Test
     void detectsErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp).withProgram(
-            String.join(
-                System.lineSeparator(),
-                "+package foo.x",
-                "",
-                "[] > main",
-                "  cti true \"error\" \"msg\" > @"
-            )
-        );
+        final FakeMaven maven = new FakeMaven(temp).withProgram(MjLintTest.erroneous());
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> maven.execute(new FakeMaven.Lint()),
@@ -325,15 +309,7 @@ final class MjLintTest {
     void detectsErrorsSuccessfullyEvenAfterSecondRun(
         @Mktmp final Path temp
     ) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp).withProgram(
-            String.join(
-                System.lineSeparator(),
-                "+package foo.x",
-                "",
-                "[] > main",
-                "  cti true \"error\" \"msg\" > @"
-            )
-        );
+        final FakeMaven maven = new FakeMaven(temp).withProgram(MjLintTest.erroneous());
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> maven.execute(new FakeMaven.Lint()),
@@ -557,15 +533,33 @@ final class MjLintTest {
     }
 
     /**
-     * Program with a critical defect.
+     * Program with a critical defect: its top object is named differently
+     * from the source file, so {@code EoSource} rejects the mismatch with
+     * a critical {@code validate-object-name} error.
      * @return Program with a critical defect
      */
     private static String[] critical() {
         return new String[]{
             "+package foo.x",
             "",
+            "[] > wrong",
+            "  42 > @",
+        };
+    }
+
+    /**
+     * Program with a plain-severity defect: a duplicate "+home" meta,
+     * caught by the "unique-metas" lint.
+     * @return Program with a plain-severity defect
+     */
+    private static String[] erroneous() {
+        return new String[]{
+            "+package foo.x",
+            "+home https://www.eolang.org",
+            "+home https://www.eolang.org",
+            "",
             "[] > main",
-            "  cti true \"critical\" \"msg\" > @",
+            "  42 > @",
         };
     }
 

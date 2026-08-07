@@ -121,6 +121,19 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <!--
+      Provides ComponentSetDescriptor, the superclass of MjSafe's
+      PluginDescriptor field. maven-core brings it in transitively, but
+      qulice resolves its Checkstyle/PMD type-checking classpath from
+      directly declared dependencies only (#6316), so it must be
+      declared explicitly here too.
+      -->
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.plexus</artifactId>
+      <version>1.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
       <version>3.15.2</version>
@@ -178,6 +191,11 @@
     <dependency>
       <groupId>org.junit-pioneer</groupId>
       <artifactId>junit-pioneer</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>org.opentest4j</groupId>
+      <artifactId>opentest4j</artifactId>
       <!-- version from parent POM -->
     </dependency>
     <dependency>

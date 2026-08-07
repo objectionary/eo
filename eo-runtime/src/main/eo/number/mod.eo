@@ -1,7 +1,15 @@
 # Calculate MOD.
 # An operation that finds the remainder after dividing `x` by `y`. When `y`
 # is zero, the result is the caller-supplied `cant-mod` fallback, or the
-# bottom object when none was provided, which terminates on use.
+# bottom object when none was provided, which terminates on use. For a
+# dividend below 2^52 the remainder is computed the fast, direct way; a
+# double is exact for every integer in that range, so this always matches
+# the true remainder. A larger dividend switches to a bit-by-bit reduction,
+# subtracting decreasing powers of two times the divisor, which stays exact
+# up to 2^63 (about 9.2e18) regardless of how small the divisor is, at the
+# cost of up to 63 recursive steps; a dividend beyond 2^63 is not
+# guaranteed exact, since determining more quotient bits exactly would need
+# a matching increase in recursion depth.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -24,12 +32,37 @@
           number x.as-bytes >> dividend
           0
         [] >> abs-mod
-          minus. > @
-            abs dividend >> absx
-            times.
-              abs divisor >> absy
-              floor.
-                absx.div absy
+          if. > @
+            lt.
+              abs dividend >> absx
+              4503599627370496
+            absx.minus
+              times.
+                abs divisor >> absy
+                floor.
+                  absx.div absy
+            reduce 62 absx
+          [level p] > reduce
+            if. > @
+              level.lt 0
+              p
+              if.
+                p.gte
+                  chunk level
+                reduce
+                  level.minus 1
+                  p.minus
+                    chunk level
+                reduce
+                  level.minus 1
+                  p
+            [lvl] > chunk
+              if. > @
+                lvl.eq 0
+                absy
+                prev.plus prev
+              chunk > prev
+                lvl.minus 1
         abs-mod.neg
 
   is-nan. ++> can-return-nan-when-the-divisor-is-nan
@@ -110,6 +143,30 @@
       0
       5
     0
+
+  eq. ++> can-take-an-exact-modulo-of-a-large-dividend-by-thirteen
+    mod
+      10000000000000000
+      13
+    3
+
+  eq. ++> can-take-an-exact-modulo-of-a-large-dividend-by-three
+    mod
+      10000000000000000
+      3
+    1
+
+  eq. ++> can-take-an-exact-modulo-of-a-very-large-dividend-by-seven
+    mod
+      9200000000000000000
+      7
+    5
+
+  eq. ++> can-take-an-exact-modulo-of-a-very-large-dividend-by-three
+    mod
+      9200000000000000000
+      3
+    2
 
   eq. ++> rejects-a-modulo-by-zero
     "recovered"

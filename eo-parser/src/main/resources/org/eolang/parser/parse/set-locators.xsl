@@ -33,7 +33,7 @@
           <xsl:value-of select="$eo:program"/>
           <xsl:if test="root($o)/object/metas/meta[head='package']">
             <xsl:text>.</xsl:text>
-            <xsl:value-of select="root($o)/object/metas/meta[head='package']/tail"/>
+            <xsl:value-of select="root($o)/object/metas/meta[head='package']/part[1]"/>
           </xsl:if>
         </xsl:otherwise>
       </xsl:choose>
