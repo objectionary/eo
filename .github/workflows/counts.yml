@@ -24,7 +24,7 @@ jobs:
           - metric: smells
             files: '*.java'
             pattern: 'static|null'
-            count: 844
+            count: 843
           - metric: atoms
             files: '*.java'
             pattern: '@XmirObject'
