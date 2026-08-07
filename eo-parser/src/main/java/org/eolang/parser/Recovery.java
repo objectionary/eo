@@ -15,7 +15,10 @@ import java.util.List;
  * standing under its parent. This object holds the lines of the program
  * and answers where the walk picks up again: the first line standing
  * back at or above the indent of the one that failed. A blank line
- * carries no indent of its own and never ends the skipped block.</p>
+ * carries no indent of its own, so it is resolved by looking past it to
+ * the next real line: genuinely nested inside the block if that line is
+ * indented deeper, but a file-level separator in front of an unrelated
+ * sibling otherwise — and a separator does not extend the skip.</p>
  *
  * <p>The blanks trailing the block are handed back, though. A blank
  * standing between the last skipped line and the line the walk resumes
@@ -102,6 +105,31 @@ final class Recovery {
      */
     private boolean skipped(final int idx, final int indent) {
         final Span span = this.spans.get(idx);
-        return span.blank() || span.indent() > indent;
+        final boolean result;
+        if (span.blank()) {
+            result = this.blankBelongsToBlock(idx, indent);
+        } else {
+            result = span.indent() > indent;
+        }
+        return result;
+    }
+
+    /**
+     * Whether a blank line at {@code idx} still belongs to the block of a
+     * line at {@code indent} — true only when the next non-blank line is
+     * itself indented deeper than {@code indent}. A blank line whose next
+     * real line stands back at or above {@code indent} is a file-level
+     * separator between the block and an unrelated sibling, not part of
+     * the block, and must not be skipped.
+     * @param idx Index of the blank line
+     * @param indent Indent of the failed line
+     * @return True when the blank line must be skipped
+     */
+    private boolean blankBelongsToBlock(final int idx, final int indent) {
+        int next = idx + 1;
+        while (next < this.spans.size() && this.spans.get(next).blank()) {
+            next = next + 1;
+        }
+        return next < this.spans.size() && this.spans.get(next).indent() > indent;
     }
 }

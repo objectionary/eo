@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object/errors[count(error)=2]
+  - /object/errors/error[contains(text(),'expected identifier')]
+  - /object/errors/error[contains(text(),'blank line before a plain object is forbidden')]
+input: |
+  [] > app
+    x..y > z
+
+    42 > w

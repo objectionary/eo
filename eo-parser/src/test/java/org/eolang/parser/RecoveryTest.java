@@ -80,6 +80,23 @@ final class RecoveryTest {
     }
 
     @Test
+    void stopsAtABlankLineThatSeparatesTheBlockFromAnUnrelatedSibling() {
+        MatcherAssert.assertThat(
+            "a blank line before an unrelated sibling is a separator, not part of the block"
+                .concat(", and must not be skipped"),
+            new Recovery(
+                Arrays.asList(
+                    new Span("bad!!!", 1),
+                    new Span("  child", 2),
+                    new Span("", 3),
+                    new Span("sibling", 4)
+                )
+            ).after(0),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
     void skipsFromAnIndexOtherThanTheFailedLineItself() {
         MatcherAssert.assertThat(
             "skip must scan from the given index using the given indent, "
