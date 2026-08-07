@@ -23,7 +23,6 @@ public interface Statistics {
 
     /**
      * Statistics of the program running in this JVM.
-     * @checkstyle ConstantNameCheck (3 lines)
      */
     Statistics PROGRAM = new Counters();
 
