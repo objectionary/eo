@@ -309,14 +309,17 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Add new attribute.
      *
-     * <p>This method can only be called from child classes, in their
-     * constructors, when they declare their attributes. This is why it's
-     * protected.</p>
+     * <p>Public and overridable, so a subclass substituted for this one
+     * (via the {@code eo.phiDefaultClass} compiler option) can observe
+     * every attribute addition. {@link #loaded()} calls this method for
+     * each attribute passed to the constructor, lazily on first access
+     * rather than during construction, so an override sees the initial
+     * attribute set materialize here too, not only later additions.</p>
      *
      * @param name The name
      * @param attr The attr
      */
-    public final void add(final String name, final Attribute attr) {
+    public void add(final String name, final Attribute attr) {
         if (PhDefault.SORTABLE.matcher(name).matches()) {
             this.order.put(this.order.size(), name);
         }

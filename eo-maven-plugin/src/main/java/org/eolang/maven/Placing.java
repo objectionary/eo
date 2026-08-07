@@ -197,7 +197,7 @@ final class Placing implements Step {
             final boolean res;
             if (tojo.isPresent()
                 && Files.exists(target)
-                && (this.sameLength(target, file) || !tojo.get().unplaced())
+                && !tojo.get().unplaced()
             ) {
                 Logger.debug(
                     this,
