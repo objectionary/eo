@@ -66,26 +66,16 @@ public final class SockaddrIn extends Structure {
      * @param zero Zero 8 bytes
      */
     public SockaddrIn(final short family, final short port, final int addr, final byte[] zero) {
-        this(family, port, addr, SockaddrIn.checked(zero), true);
-    }
-
-    /**
-     * Primary ctor.
-     * @param family Family
-     * @param port Port
-     * @param addr Address
-     * @param zero Validated padding
-     * @param valid Padding validation marker
-     */
-    private SockaddrIn(
-        final short family, final short port, final int addr, final byte[] zero,
-        final boolean valid
-    ) {
         super();
         this.family = family;
         this.port = port;
         this.addr = addr;
-        this.zero = zero;
+        this.zero = SockaddrIn.checked(zero);
+    }
+
+    @Override
+    public List<String> getFieldOrder() {
+        return Arrays.asList("family", "port", "addr", "zero");
     }
 
     /**
@@ -103,10 +93,5 @@ public final class SockaddrIn extends Structure {
             );
         }
         return Arrays.copyOf(zero, zero.length);
-    }
-
-    @Override
-    public List<String> getFieldOrder() {
-        return Arrays.asList("family", "port", "addr", "zero");
     }
 }
