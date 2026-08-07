@@ -30,8 +30,8 @@ final class MjLcovTest {
             hits, String.format("org.eolang.числò:7:2%n").getBytes(StandardCharsets.UTF_8)
         );
         new FakeMaven(temp)
-            .with("coverageFile", hits.toFile())
-            .with("lcovFile", lcov.toFile())
+            .with("hits", hits.toFile())
+            .with("tracefile", lcov.toFile())
             .execute(MjLcov.class);
         MatcherAssert.assertThat(
             "the hit the tests recorded is not saved as a tracefile record",
@@ -44,8 +44,8 @@ final class MjLcovTest {
     void savesEmptyTracefileWhenNothingWasRecorded(@Mktmp final Path temp) throws Exception {
         final Path lcov = temp.resolve("eo-lcov.info");
         new FakeMaven(temp)
-            .with("coverageFile", temp.resolve("absent.txt").toFile())
-            .with("lcovFile", lcov.toFile())
+            .with("hits", temp.resolve("absent.txt").toFile())
+            .with("tracefile", lcov.toFile())
             .execute(MjLcov.class);
         MatcherAssert.assertThat(
             "a run that recorded nothing is not saved as an empty tracefile",

@@ -49,13 +49,12 @@ public final class MjLcov extends MjSafe {
      *  position, which is the same set {@code to-java.xsl} decided on
      *  while emitting them and survives on disk between this goal and
      *  {@code transpile}, two separate Maven executions.
-     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
         property = "eo.coverageFile",
         defaultValue = "${project.build.directory}/coverage.txt"
     )
-    private File coverageFile;
+    private File hits;
 
     /**
      * Where to save the LCOV tracefile.
@@ -65,13 +64,12 @@ public final class MjLcov extends MjSafe {
      *  never turns them into a report. Add an execution binding this goal
      *  to {@code verify}, next to the {@code compile} one, once
      *  {@code coverageTracking} is on and the puzzle above is done.
-     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
         property = "eo.lcovFile",
         defaultValue = "${project.build.directory}/eo-lcov.info"
     )
-    private File lcovFile;
+    private File tracefile;
 
     /**
      * Ctor.
@@ -82,7 +80,7 @@ public final class MjLcov extends MjSafe {
 
     @Override
     public void exec() throws IOException {
-        final Path target = this.lcovFile.toPath();
+        final Path target = this.tracefile.toPath();
         Files.createDirectories(target.getParent());
         Files.write(
             target,
@@ -98,10 +96,10 @@ public final class MjLcov extends MjSafe {
      * @throws IOException If fails to read them
      */
     private Collection<String> recorded() throws IOException {
-        final Path hits = this.coverageFile.toPath();
+        final Path path = this.hits.toPath();
         final Collection<String> records;
-        if (Files.exists(hits)) {
-            records = Files.readAllLines(hits, StandardCharsets.UTF_8);
+        if (Files.exists(path)) {
+            records = Files.readAllLines(path, StandardCharsets.UTF_8);
         } else {
             records = Collections.emptyList();
         }
