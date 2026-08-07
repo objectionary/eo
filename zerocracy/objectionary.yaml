@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 441.719147687
+  seconds: 2163.689136874
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-07 22:15:15.483720097 Z
+  when: 2026-08-07 23:43:44.226654870 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -274633,7 +274633,7 @@
   latest_issue_was_found: 46
   min_issue_was_found: 25
   repository: 531151981
-  types_were_scanned: 0
+  types_were_scanned: 36
   what: iterate
   where: github
 - _id: 1105351
@@ -296301,7 +296301,7 @@
   min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 0
+  types_were_scanned: 446
   what: iterate
   where: github
 - _id: 1107889
@@ -303206,9 +303206,9 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1016
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 12956643219
+  events_were_scanned: 12961171097
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 365
@@ -303216,7 +303216,7 @@
   min_issue_was_found: 471
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 0
+  types_were_scanned: 491
   what: iterate
   where: github
 - _id: 1108618
@@ -306963,14 +306963,14 @@
   min_issue_was_found: 520
   min_pull_was_found: 0
   repository: 721146770
-  types_were_scanned: 0
+  types_were_scanned: 276
   what: iterate
   where: github
 - _id: 1108977
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 999
   earliest_issue_was_found: 1
   events_were_scanned: 12957367992
   issues_were_scanned: 982
@@ -306980,7 +306980,7 @@
   min_issue_was_found: 636
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 1180
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108989
@@ -309921,7 +309921,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1121
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 17073728626
   issues_were_scanned: 0
@@ -309931,7 +309931,7 @@
   min_issue_was_found: 0
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 0
+  types_were_scanned: 857
   what: iterate
   where: github
 - _id: 1109065
@@ -309948,24 +309948,24 @@
   min_issue_was_found: 413
   min_pull_was_found: 409
   repository: 970961472
-  types_were_scanned: 0
+  types_were_scanned: 362
   what: iterate
   where: github
 - _id: 1109066
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5804
+  assignees_were_scanned: 6064
   earliest_issue_was_found: 1
-  events_were_scanned: 12957825272
+  events_were_scanned: 17091145445
   issues_were_scanned: 0
-  labels_were_scanned: 6095
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
-  merges_were_scanned: 6464
+  merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 4708
+  types_were_scanned: 4812
   what: iterate
   where: github
 - _id: 1109067
@@ -460121,12 +460121,6 @@
   comments: 85
   details: It's time to reward @maxonfjvipon for the code contributed in objectionary/eo#6350,
     the reward amount is 5.
-  greeting: 'Thanks for the contribution! You''ve earned +5 points for this: +16 as
-    a basis; -4 for too many hits-of-code (1480 >= 100); -8 for way too many hits-of-code
-    (1480 >= 400); -8 for too many (85 > 4) comments that were made during review;
-    +9 to give you at least something. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+694](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 1480
   href: https://github.com/objectionary/eo/issues/6350/#issuecomment-5222345456
   is_human: 1
@@ -460170,6 +460164,7 @@
     -5 for very few (1) comments.  Your running score is [+2870](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 282
+  href: https://github.com/objectionary/eo/issues/6251/#issuecomment-5222672078
   is_human: 1
   issue: 6251
   repository: 73056727
@@ -460192,8 +460187,10 @@
     -5 for very few (3) comments.  Your running score is [+994](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 282
+  href: https://github.com/objectionary/eo/issues/6251/#issuecomment-5222672425
   is_human: 1
   issue: 6251
+  receipt: receipt-#84991
   repository: 73056727
   review_comments: 3
   seconds: 50482
@@ -460214,8 +460211,10 @@
     is [+3709](https://www.eolang.org/zerocracy/objectionary-vitals.html); don''t
     forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 282
+  href: https://github.com/objectionary/eo/issues/6251/#issuecomment-5222672735
   is_human: 1
   issue: 6251
+  receipt: receipt-#84992
   repository: 73056727
   review_comments: 12
   seconds: 297289
@@ -460236,8 +460235,10 @@
     -8 for absolutely no comments posted.  Your running score is [+998](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 201
+  href: https://github.com/objectionary/eo/issues/6474/#issuecomment-5222673043
   is_human: 1
   issue: 6474
+  receipt: receipt-#84993
   repository: 73056727
   review_comments: 0
   seconds: 413
@@ -460259,8 +460260,10 @@
     you at least something.  Your running score is [+1002](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 2
+  href: https://github.com/objectionary/eo/issues/6466/#issuecomment-5222673368
   is_human: 1
   issue: 6466
+  receipt: receipt-#84994
   repository: 73056727
   review_comments: 0
   seconds: 4868
@@ -460281,8 +460284,10 @@
     -8 for absolutely no comments posted.  Your running score is [+1006](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 38
+  href: https://github.com/objectionary/eo/issues/6472/#issuecomment-5222673771
   is_human: 1
   issue: 6472
+  receipt: receipt-#84995
   repository: 73056727
   review_comments: 0
   seconds: 2246
@@ -460297,9 +460302,77 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: 4673-return-back-PhWithRho
   details: The pull objectionary/eo#4688 has been opened earlier by @r0bari.
+  is_human: 1
   issue: 4688
   repository: 73056727
   what: pull-was-opened
   when: 2025-11-24 14:42:37.000000000 Z
   where: github
   who: 56538398
+- _id: 1117309
+  _job: 85597
+  _time: 2026-08-07 22:17:06.032302760 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  comments: 5
+  details: It's time to reward @maxonfjvipon for the code contributed in objectionary/phino#1014,
+    the reward amount is 12.
+  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
+    as a basis; -4 for too many hits-of-code (161 >= 100). Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
+    them coming. Your running score is [+706](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 161
+  is_human: 1
+  issue: 1014
+  repository: 977982682
+  review_comments: 0
+  seconds: 73971
+  what: code-contribution-was-rewarded
+  when: 2026-08-07 22:17:06.039765490 Z
+  where: github
+  who: 37025995
+  why: Contributed code in objectionary/phino#1014
+- _id: 1117310
+  _job: 31226062947
+  _time: 2026-08-07 23:08:08.161057487 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: bug/#1020/replace-all-loop
+  details: The pull request objectionary/phino#1026 has been opened by @vasilevnstas.
+  event_id: 12960881874
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 1026
+  repository: 977982682
+  what: pull-was-opened
+  when: 2026-08-07 22:52:43.000000000 Z
+  where: github
+  who: 33578155
+- _id: 1117311
+  _job: 31226062947
+  _time: 2026-08-07 23:08:09.337897107 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: bug/#1016/shuffle-seed
+  details: The pull request objectionary/phino#1025 has been opened by @vasilevnstas.
+  event_id: 12959709312
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 1025
+  repository: 977982682
+  what: pull-was-opened
+  when: 2026-08-07 22:11:36.000000000 Z
+  where: github
+  who: 33578155
+- _id: 1117312
+  _job: 31226062947
+  _time: 2026-08-07 23:08:10.097591199 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/phino#1024 has been opened by @vasilevnstas.
+  event_id: 12959241910
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 1024
+  repository: 977982682
+  what: issue-was-opened
+  when: 2026-08-07 21:57:10.000000000 Z
+  where: github
+  who: 33578155
