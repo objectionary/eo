@@ -6,8 +6,6 @@ package org.eolang;
 
 import codes.ivanov.ephpo.Ephemeral;
 import codes.ivanov.ephpo.EphemeralResolver;
-import codes.ivanov.ephpo.Ports;
-import codes.ivanov.ephpo.Reservation;
 import com.jcabi.log.Logger;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
@@ -45,8 +43,8 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 final class SyscallTest {
 
     @Test
-    void connectsToLocalServerViaSocketObject() throws IOException {
-        final SyscallTest.RandomServer server = new SyscallTest.RandomServer().started();
+    void connectsToLocalServerViaSocketObject(@Ephemeral final int port) throws IOException {
+        final SyscallTest.RandomServer server = new SyscallTest.RandomServer(port).started();
         try {
             final Phi socket = Phi.Φ.take("socket").copy();
             socket.put(0, new Data.ToPhi(this.localhost()));
@@ -97,8 +95,8 @@ final class SyscallTest {
     }
 
     @Test
-    void tellsTheFallbackWhichAddressItFailedToBind() throws IOException {
-        final SyscallTest.RandomServer taken = new SyscallTest.RandomServer().started();
+    void tellsTheFallbackWhichAddressItFailedToBind(@Ephemeral final int port) throws IOException {
+        final SyscallTest.RandomServer taken = new SyscallTest.RandomServer(port).started();
         try {
             final Phi socket = Phi.Φ.take("socket").copy();
             socket.put(0, new Data.ToPhi(this.localhost()));
@@ -197,8 +195,8 @@ final class SyscallTest {
     final class WindowsSocketTest {
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        void connectsToLocalServerViaSyscall() throws IOException {
-            final SyscallTest.RandomServer server = new SyscallTest.RandomServer().started();
+        void connectsToLocalServerViaSyscall(@Ephemeral final int port) throws IOException {
+            final SyscallTest.RandomServer server = new SyscallTest.RandomServer(port).started();
             try {
                 this.ensure(this.startup() == 0);
                 final int socket = this.openSocket();
@@ -544,8 +542,8 @@ final class SyscallTest {
     final class PosixSocketTest {
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        void connectsToLocalServerViaSyscall() throws IOException {
-            final SyscallTest.RandomServer server = new SyscallTest.RandomServer().started();
+        void connectsToLocalServerViaSyscall(@Ephemeral final int port) throws IOException {
+            final SyscallTest.RandomServer server = new SyscallTest.RandomServer(port).started();
             final int socket = this.openSocket();
             try {
                 this.ensure(socket > 0);
@@ -820,15 +818,15 @@ final class SyscallTest {
     }
 
     /**
-     * Server on random port.
+     * Server on a given port.
      * @since 0.40.0
      */
     private static final class RandomServer {
 
         /**
-         * Reserved port.
+         * Port to bind to.
          */
-        private final Reservation reservation;
+        private final int port;
 
         /**
          * Server socket.
@@ -836,10 +834,11 @@ final class SyscallTest {
         private ServerSocket socket;
 
         /**
-         * Ctor, reserves a random port.
+         * Ctor.
+         * @param port Port to bind to
          */
-        RandomServer() {
-            this.reservation = new Ports().acquire();
+        RandomServer(final int port) {
+            this.port = port;
         }
 
         /**
@@ -847,26 +846,25 @@ final class SyscallTest {
          * @return Port number
          */
         int port() {
-            return this.reservation.port();
+            return this.port;
         }
 
         /**
-         * Start server on the reserved port.
+         * Start server on the given port.
          * @return Self
          */
         RandomServer started() throws IOException {
             this.socket = new ServerSocket();
             this.socket.setReuseAddress(true);
-            this.socket.bind(new InetSocketAddress("127.0.0.1", this.port()));
-            Logger.debug(this, "Server started on port %d", this.port());
+            this.socket.bind(new InetSocketAddress("127.0.0.1", this.port));
+            Logger.debug(this, "Server started on port %d", this.port);
             return this;
         }
 
         /**
-         * Close server socket and release the reserved port.
+         * Close server socket.
          */
         void stop() throws IOException {
-            this.reservation.close();
             if (this.socket != null && !this.socket.isClosed()) {
                 this.socket.close();
             }
