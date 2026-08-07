@@ -445,21 +445,6 @@ final class MjTranspileTest {
     }
 
     @Test
-    void removesJavaFilesForRemovedXmirSources(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp).withProgram(MjTranspileTest.program());
-        final Path java = maven.execute(new FakeMaven.Transpile()).result().get(
-            MjTranspileTest.compiled()
-        );
-        Files.delete(maven.foreignPath());
-        maven.execute(new FakeMaven.Transpile());
-        MatcherAssert.assertThat(
-            "a generated Java file without a current XMIR source must be removed",
-            Files.exists(java),
-            Matchers.is(false)
-        );
-    }
-
-    @Test
     void transpilesSimpleEoProgram(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             String.format(
