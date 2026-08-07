@@ -333,7 +333,9 @@ public class PhDefault implements Phi, Cloneable {
         if (this.literal(name)) {
             final byte[] raw = this.loaded().get("as-bytes").get().delta();
             if ("string".equals(name)) {
-                result = String.format("\"%s\"", new String(raw, StandardCharsets.UTF_8));
+                result = String.format(
+                    "\"%s\"", this.escaped(new String(raw, StandardCharsets.UTF_8))
+                );
             } else {
                 result = PhDefault.numeral(new BytesOf(raw).asNumber());
             }
@@ -356,6 +358,35 @@ public class PhDefault implements Phi, Cloneable {
             txt = Double.toString(value);
         }
         return txt;
+    }
+
+    /**
+     * Escape a string for safe embedding inside a double-quoted φ-term
+     * literal: a quote or backslash is escaped so it cannot be mistaken
+     * for the literal's own delimiter or escape marker, and a control
+     * character is escaped so the term stays on one visual line.
+     * @param raw The unescaped string
+     * @return The same string, safe to wrap in double quotes
+     * @checkstyle NonStaticMethodCheck (2 lines)
+     */
+    private String escaped(final String raw) {
+        final StringBuilder out = new StringBuilder(raw.length());
+        for (final char chr : raw.toCharArray()) {
+            if (chr == '"' || chr == '\\') {
+                out.append('\\').append(chr);
+            } else if (chr == '\n') {
+                out.append("\\n");
+            } else if (chr == '\r') {
+                out.append("\\r");
+            } else if (chr == '\t') {
+                out.append("\\t");
+            } else if (chr < 0x20 || chr == 0x7F) {
+                out.append(String.format("\\u%04x", (int) chr));
+            } else {
+                out.append(chr);
+            }
+        }
+        return out.toString();
     }
 
     /**

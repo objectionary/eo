@@ -65,6 +65,15 @@ final class DataTest {
     }
 
     @Test
+    void escapesQuotesBackslashesAndControlCharsInTerm() {
+        MatcherAssert.assertThat(
+            "A quote, a backslash and a control character must be escaped in φ-term",
+            new Data.ToPhi("a\"b\\c".concat(String.valueOf('\n'))).φTerm(),
+            Matchers.equalTo("\"a\\\"b\\\\c\\n\"")
+        );
+    }
+
+    @Test
     void distinguishesDifferentNumbersInTerm() {
         MatcherAssert.assertThat(
             "Different numbers must produce different φ-terms, but they didnt",
