@@ -72,7 +72,7 @@ final class LnTextBlockTest {
     }
 
     @Test
-    void emitsOctalHighByteWithoutUtf8Expansion() {
+    void emitsHighOctalByteWithoutUtf8Expansion() {
         final Globals globals = new Globals();
         globals.openTextBlock(1, 0);
         globals.appendTextLine("\\377");
