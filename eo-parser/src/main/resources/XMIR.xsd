@@ -506,16 +506,6 @@
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
-    <xs:attribute name="source" type="xs:string">
-      <xs:annotation>
-        <xs:appinfo>The path to the ".eo" source file this document was parsed from</xs:appinfo>
-        <xs:documentation>
-          The attribute contains the path to the original ".eo" (or ".phi") source
-          file, relative to the location of this XMIR file. This information
-          is valuable for debugging purposes and may be omitted in production systems.
-        </xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
   </xs:complexType>
   <xs:element name="object" type="object"/>
 </xs:schema>
