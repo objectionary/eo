@@ -10,13 +10,10 @@ name: Post Benchmark Comment
       - completed
 jobs:
   post-comment:
+    if: github.event.workflow_run.conclusion == 'success'
     timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
       - name: Download PR Number and Benchmark Comment
         uses: actions/download-artifact@v8
         with:
