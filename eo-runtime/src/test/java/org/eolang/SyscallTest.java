@@ -4,6 +4,10 @@
  */
 package org.eolang;
 
+import codes.ivanov.ephpo.Ephemeral;
+import codes.ivanov.ephpo.EphemeralResolver;
+import codes.ivanov.ephpo.Ports;
+import codes.ivanov.ephpo.Reservation;
 import com.jcabi.log.Logger;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
@@ -27,6 +31,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
@@ -36,6 +41,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * @since 0.40
  */
 @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
+@ExtendWith(EphemeralResolver.class)
 final class SyscallTest {
 
     @Test
@@ -62,12 +68,10 @@ final class SyscallTest {
     }
 
     @Test
-    void returnsFallbackWhenConnectionIsRefused() throws IOException {
-        final SyscallTest.RandomServer refused = new SyscallTest.RandomServer().started();
-        refused.stop();
+    void returnsFallbackWhenConnectionIsRefused(@Ephemeral final int port) {
         final Phi socket = Phi.Φ.take("socket").copy();
         socket.put(0, new Data.ToPhi(this.localhost()));
-        socket.put(1, new Data.ToPhi(refused.port));
+        socket.put(1, new Data.ToPhi(port));
         final Phi connect = socket.take("connect").copy();
         connect.put(0, new SyscallTest.Simple());
         connect.put(1, new SyscallTest.Simple());
@@ -79,18 +83,16 @@ final class SyscallTest {
     }
 
     @Test
-    void tellsTheFallbackWhichAddressItFailedToReach() throws IOException {
-        final SyscallTest.RandomServer refused = new SyscallTest.RandomServer().started();
-        refused.stop();
+    void tellsTheFallbackWhichAddressItFailedToReach(@Ephemeral final int port) {
         final Phi socket = Phi.Φ.take("socket").copy();
         socket.put(0, new Data.ToPhi(this.localhost()));
-        socket.put(1, new Data.ToPhi(refused.port));
+        socket.put(1, new Data.ToPhi(port));
         final Phi connect = socket.take("connect").copy();
         connect.put(1, Phi.Φ.take("dataized").copy());
         MatcherAssert.assertThat(
             "the refused connection should have told the fallback which address it failed to reach, but it didnt",
             new Dataized(connect).asString(),
-            Matchers.containsString(String.format("%s:%d", this.localhost(), refused.port))
+            Matchers.containsString(String.format("%s:%d", this.localhost(), port))
         );
     }
 
@@ -114,12 +116,10 @@ final class SyscallTest {
     }
 
     @Test
-    void sendsAndReceivesMessageViaSocketObject() throws InterruptedException, IOException {
+    void sendsAndReceivesMessageViaSocketObject(@Ephemeral final int port)
+        throws InterruptedException {
         final String msg = "Hello, Socket!";
         final AtomicReference<byte[]> bytes = new AtomicReference<>();
-        final SyscallTest.RandomServer random = new SyscallTest.RandomServer().started();
-        random.stop();
-        final int port = random.port;
         final Thread server = new Thread(
             () -> {
                 final Phi socket = Phi.Φ.take("socket").copy();
@@ -248,7 +248,8 @@ final class SyscallTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        void bindsSocketSuccessfullyViaSyscall() throws UnknownHostException {
+        void bindsSocketSuccessfullyViaSyscall(@Ephemeral final int port)
+            throws UnknownHostException {
             try {
                 this.ensure(this.startup() == 0);
                 final int socket = this.openSocket();
@@ -259,7 +260,7 @@ final class SyscallTest {
                             "Win socket should have been bound to localhost via syscall, but it didn't, error code is: %d",
                             this.getError()
                         ),
-                        this.bindSocket(socket, new Port().number()),
+                        this.bindSocket(socket, port),
                         Matchers.equalTo(0)
                     );
                 } finally {
@@ -271,13 +272,14 @@ final class SyscallTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        void startsListenOnPosixSocket() throws UnknownHostException {
+        void startsListenOnPosixSocket(@Ephemeral final int port)
+            throws UnknownHostException {
             try {
                 this.ensure(this.startup() == 0);
                 final int socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
-                    this.ensure(this.bindSocket(socket, new Port().number()) == 0);
+                    this.ensure(this.bindSocket(socket, port) == 0);
                     MatcherAssert.assertThat(
                         String.format(
                             "Posix socket should have been bound to localhost via syscall, but it didn't, reason: %s",
@@ -295,12 +297,12 @@ final class SyscallTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        void acceptsConnectionOnSocket() throws InterruptedException, UnknownHostException {
+        void acceptsConnectionOnSocket(@Ephemeral final int port)
+            throws InterruptedException, UnknownHostException {
             try {
                 this.ensure(this.startup() == 0);
                 final AtomicInteger accept = new AtomicInteger(0);
                 final AtomicInteger error = new AtomicInteger();
-                final AtomicInteger port = new AtomicInteger(new Port().number());
                 final Thread server = new Thread(
                     () -> this.acceptViaWinsock(port, accept, error)
                 );
@@ -309,7 +311,7 @@ final class SyscallTest {
                 final int client = this.openSocket();
                 try {
                     this.ensure(client >= 0);
-                    final SockaddrIn sockaddr = this.sockaddr(port.get());
+                    final SockaddrIn sockaddr = this.sockaddr(port);
                     MatcherAssert.assertThat(
                         String.format(
                             "Socket should have been connected to local server on sockets, but it didn't, reason: %s",
@@ -336,13 +338,12 @@ final class SyscallTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        void sendsAndReceivesMessagesViaSyscalls()
+        void sendsAndReceivesMessagesViaSyscalls(@Ephemeral final int port)
             throws InterruptedException, UnknownHostException {
             try {
                 this.ensure(this.startup() == 0);
                 final AtomicInteger received = new AtomicInteger(-1);
                 final AtomicReference<byte[]> bytes = new AtomicReference<>();
-                final AtomicInteger port = new AtomicInteger(new Port().number());
                 final Thread server = new Thread(
                     () -> this.recvViaWinsock(port, received, bytes)
                 );
@@ -351,7 +352,7 @@ final class SyscallTest {
                 final int client = this.openSocket();
                 try {
                     this.ensure(client >= 0);
-                    final SockaddrIn sockaddr = this.sockaddr(port.get());
+                    final SockaddrIn sockaddr = this.sockaddr(port);
                     this.ensure(Winsock.INSTANCE.connect(client, sockaddr, sockaddr.size()) == 0);
                     final byte[] buf = "Hello, Socket!".getBytes(StandardCharsets.UTF_8);
                     final int sent = Winsock.INSTANCE.send(client, buf, buf.length, 0);
@@ -478,14 +479,12 @@ final class SyscallTest {
         }
 
         private void acceptViaWinsock(
-            final AtomicInteger port, final AtomicInteger accept, final AtomicInteger error
+            final int port, final AtomicInteger accept, final AtomicInteger error
         ) {
             final int socket = this.openSocket();
             try {
                 this.ensure(socket > 0);
-                while (this.bindSocket(socket, port.get()) != 0) {
-                    port.set(new Port().number());
-                }
+                this.ensure(this.bindSocket(socket, port) == 0);
                 this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
                 final int accepted = Winsock.INSTANCE.accept(
@@ -507,16 +506,14 @@ final class SyscallTest {
         }
 
         private void recvViaWinsock(
-            final AtomicInteger port, final AtomicInteger received,
+            final int port, final AtomicInteger received,
             final AtomicReference<byte[]> bytes
         ) {
             final int socket = this.openSocket();
             int accepted = 0;
             try {
                 this.ensure(socket > 0);
-                while (this.bindSocket(socket, port.get()) != 0) {
-                    port.set(new Port().number());
-                }
+                this.ensure(this.bindSocket(socket, port) == 0);
                 this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
                 accepted = Winsock.INSTANCE.accept(
@@ -584,7 +581,7 @@ final class SyscallTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        void bindsSocketSuccessfullyViaSyscall() {
+        void bindsSocketSuccessfullyViaSyscall(@Ephemeral final int port) {
             final int socket = this.openSocket();
             try {
                 this.ensure(socket > 0);
@@ -593,7 +590,7 @@ final class SyscallTest {
                         "Posix socket should have been bound to localhost via syscall, but it didn't, reason: %s",
                         this.getError()
                     ),
-                    this.bindSocket(socket, new Port().number()),
+                    this.bindSocket(socket, port),
                     Matchers.equalTo(0)
                 );
             } finally {
@@ -602,11 +599,11 @@ final class SyscallTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        void startsListenOnPosixSocket() {
+        void startsListenOnPosixSocket(@Ephemeral final int port) {
             final int socket = this.openSocket();
             try {
                 this.ensure(socket > 0);
-                this.ensure(this.bindSocket(socket, new Port().number()) == 0);
+                this.ensure(this.bindSocket(socket, port) == 0);
                 MatcherAssert.assertThat(
                     String.format(
                         "Posix socket should have been bound to localhost via syscall, but it didn't, reason: %s",
@@ -621,10 +618,9 @@ final class SyscallTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        void acceptsConnectionOnSocket() throws InterruptedException {
+        void acceptsConnectionOnSocket(@Ephemeral final int port) throws InterruptedException {
             final AtomicInteger accept = new AtomicInteger(0);
             final AtomicReference<String> error = new AtomicReference<>();
-            final AtomicInteger port = new AtomicInteger(new Port().number());
             final Thread server = new Thread(
                 () -> this.acceptViaCStdLib(port, accept, error)
             );
@@ -633,7 +629,7 @@ final class SyscallTest {
             final int client = this.openSocket();
             try {
                 this.ensure(client >= 0);
-                final SockaddrIn sockaddr = this.sockaddr(port.get());
+                final SockaddrIn sockaddr = this.sockaddr(port);
                 MatcherAssert.assertThat(
                     String.format(
                         "Socket should have been connected to local server on sockets, but it didn't, reason: %s",
@@ -657,10 +653,10 @@ final class SyscallTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        void sendsAndReceivesMessagesViaSyscalls() throws InterruptedException {
+        void sendsAndReceivesMessagesViaSyscalls(@Ephemeral final int port)
+            throws InterruptedException {
             final AtomicInteger received = new AtomicInteger(-1);
             final AtomicReference<byte[]> bytes = new AtomicReference<>();
-            final AtomicInteger port = new AtomicInteger(new Port().number());
             final Thread server = new Thread(
                 () -> this.recvViaCStdLib(port, received, bytes)
             );
@@ -669,7 +665,7 @@ final class SyscallTest {
             final int client = this.openSocket();
             try {
                 this.ensure(client >= 0);
-                final SockaddrIn sockaddr = this.sockaddr(port.get());
+                final SockaddrIn sockaddr = this.sockaddr(port);
                 this.ensure(CStdLib.INSTANCE.connect(client, sockaddr, sockaddr.size()) == 0);
                 final byte[] buf = "Hello, Socket!".getBytes(StandardCharsets.UTF_8);
                 MatcherAssert.assertThat(
@@ -772,15 +768,13 @@ final class SyscallTest {
         }
 
         private void acceptViaCStdLib(
-            final AtomicInteger port, final AtomicInteger accept,
+            final int port, final AtomicInteger accept,
             final AtomicReference<String> error
         ) {
             final int socket = this.openSocket();
             try {
                 this.ensure(socket > 0);
-                while (this.bindSocket(socket, port.get()) != 0) {
-                    port.set(new Port().number());
-                }
+                this.ensure(this.bindSocket(socket, port) == 0);
                 this.ensure(CStdLib.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
                 final int accepted = CStdLib.INSTANCE.accept(
@@ -800,16 +794,14 @@ final class SyscallTest {
         }
 
         private void recvViaCStdLib(
-            final AtomicInteger port, final AtomicInteger received,
+            final int port, final AtomicInteger received,
             final AtomicReference<byte[]> bytes
         ) {
             final int socket = this.openSocket();
             int accepted = 0;
             try {
                 this.ensure(socket > 0);
-                while (this.bindSocket(socket, port.get()) != 0) {
-                    port.set(new Port().number());
-                }
+                this.ensure(this.bindSocket(socket, port) == 0);
                 this.ensure(CStdLib.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
                 accepted = CStdLib.INSTANCE.accept(
@@ -834,6 +826,11 @@ final class SyscallTest {
     private static final class RandomServer {
 
         /**
+         * Reserved port.
+         */
+        private final Reservation reservation;
+
+        /**
          * Server socket.
          */
         private ServerSocket socket;
@@ -844,30 +841,30 @@ final class SyscallTest {
         private int port;
 
         /**
-         * Start server on random port.
+         * Ctor, reserves a random port.
+         */
+        RandomServer() {
+            this.reservation = new Ports().acquire();
+        }
+
+        /**
+         * Start server on the reserved port.
          * @return Self
          */
-        RandomServer started() {
-            boolean bound = false;
-            while (!bound) {
-                this.port = new Port().number();
-                try {
-                    this.socket = new ServerSocket();
-                    this.socket.setReuseAddress(true);
-                    this.socket.bind(new InetSocketAddress("127.0.0.1", this.port));
-                    bound = true;
-                    Logger.debug(this, "Server started on port %d", this.port);
-                } catch (final IOException exception) {
-                    Logger.debug(this, "Port %d is unavailable, trying another port...", this.port);
-                }
-            }
+        RandomServer started() throws IOException {
+            this.port = this.reservation.port();
+            this.socket = new ServerSocket();
+            this.socket.setReuseAddress(true);
+            this.socket.bind(new InetSocketAddress("127.0.0.1", this.port));
+            Logger.debug(this, "Server started on port %d", this.port);
             return this;
         }
 
         /**
-         * Close server socket.
+         * Close server socket and release the reserved port.
          */
         void stop() throws IOException {
+            this.reservation.close();
             if (this.socket != null && !this.socket.isClosed()) {
                 this.socket.close();
             }
