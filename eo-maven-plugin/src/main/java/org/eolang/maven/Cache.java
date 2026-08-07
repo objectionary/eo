@@ -137,7 +137,11 @@ final class Cache {
      * Calculate SHA-256 hash of a directory by hashing all regular files inside it.
      * @param dir Directory path
      * @return Base64-encoded SHA-256 hash of the directory contents
-     * @todo #5254:30min Hash directories through Sha, once Sha can skip files this method skips.
+     * @todo #5254:30min Hash directories through Sha instead of here.
+     *  This method now frames every file the same way Sha does, so the two
+     *  digests agree, yet it stays because Sha hashes every file it walks
+     *  while this one drops the ones the filter rejects. Teach Sha to take
+     *  that filter and let this method delegate the whole walk to it.
      */
     private String dirSha(final Path dir) {
         try {
