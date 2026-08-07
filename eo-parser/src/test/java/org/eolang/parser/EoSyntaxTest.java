@@ -84,10 +84,7 @@ final class EoSyntaxTest {
         try {
             Assertions.assertDoesNotThrow(
                 new EoSyntax(
-                    String.join(
-                        System.lineSeparator(),
-                        "[] > x-н, 1".concat(System.lineSeparator())
-                    )
+                    "[] > x-н, 1".concat(System.lineSeparator())
                 )::parsed,
                 "EO syntax should not fail in debug mode when program has errors"
             );
@@ -123,10 +120,7 @@ final class EoSyntaxTest {
 
     @Test
     void printsProperListingEvenWhenSyntaxIsBroken() throws Exception {
-        final String src = String.join(
-            System.lineSeparator(),
-            "[] > x-н, 1".concat(System.lineSeparator())
-        );
+        final String src = "[] > x-н, 1".concat(System.lineSeparator());
         MatcherAssert.assertThat(
             "EO syntax is broken, but listing should be printed",
             XhtmlMatchers.xhtml(
@@ -530,10 +524,7 @@ final class EoSyntaxTest {
                 new String(
                     new EoSyntax(
                         new InputOf(
-                            String.join(
-                                System.lineSeparator(),
-                                "[] > foo🌵bar".concat(System.lineSeparator())
-                            )
+                            "[] > foo🌵bar".concat(System.lineSeparator())
                         )
                     ).parsed().toString().getBytes(StandardCharsets.UTF_8),
                     StandardCharsets.UTF_8
