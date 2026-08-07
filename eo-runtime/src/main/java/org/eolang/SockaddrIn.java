@@ -66,11 +66,23 @@ public final class SockaddrIn extends Structure {
      * @param zero Zero 8 bytes
      */
     public SockaddrIn(final short family, final short port, final int addr, final byte[] zero) {
+        this(SockaddrIn.checked(zero), family, port, addr);
+    }
+
+    /**
+     * Primary ctor, receiving an already validated padding. The padding
+     * comes first so this signature differs from the public one above.
+     * @param zero Validated padding
+     * @param family Family
+     * @param port Port
+     * @param addr Address
+     */
+    private SockaddrIn(final byte[] zero, final short family, final short port, final int addr) {
         super();
         this.family = family;
         this.port = port;
         this.addr = addr;
-        this.zero = SockaddrIn.checked(zero);
+        this.zero = zero;
     }
 
     @Override
