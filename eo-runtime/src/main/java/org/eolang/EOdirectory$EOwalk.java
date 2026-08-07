@@ -27,10 +27,9 @@ public final class EOdirectory$EOwalk extends PhDefault implements Atom {
 
     /**
      * Ctor.
-     * @param stats Where this object reports its birth
      */
-    public EOdirectory$EOwalk(final Statistics stats) {
-        super(stats, new Attrs(new Attr("glob", new AtVoid("glob"))));
+    public EOdirectory$EOwalk() {
+        super(new Attrs(new Attr("glob", new AtVoid("glob"))));
     }
 
     @Override

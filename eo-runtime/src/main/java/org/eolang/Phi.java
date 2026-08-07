@@ -39,7 +39,7 @@ public interface Phi extends Data, Term {
      * @checkstyle ConstantNameCheck (5 lines)
      */
     @SuppressWarnings("PMD.FieldNamingConventions")
-    Phi Φ = new PhPackage(PhPackage.GLOBAL, new Counters());
+    Phi Φ = new PhPackage(PhPackage.GLOBAL);
 
     /**
      * Make a copy, leaving it at the same parent.
@@ -85,17 +85,6 @@ public interface Phi extends Data, Term {
      * @return Forma of it as {@link String}
      */
     String forma();
-
-    /**
-     * The statistics this object reports its births and dispatches to.
-     *
-     * <p>Every object takes it from the one that made it, so the whole graph
-     * grown from {@link Phi#Φ} counts into the same place, and an object built
-     * on its own counts into a {@link Silent} nobody reads.</p>
-     *
-     * @return The statistics of the program this object belongs to
-     */
-    Statistics statistics();
 
     /**
      * Resolve this object to its normal form, running dispatch, λ and φ but

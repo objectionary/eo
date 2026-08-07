@@ -18,10 +18,9 @@ public final class EOposix$EOφ extends PhDefault implements Atom {
 
     /**
      * Ctor.
-     * @param stats Where this object reports its birth
      */
-    public EOposix$EOφ(final Statistics stats) {
-        super(stats);
+    public EOposix$EOφ() {
+        // nothing
     }
 
     @Override

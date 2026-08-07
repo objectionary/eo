@@ -19,7 +19,7 @@ final class EOosEOnameTest {
         MatcherAssert.assertThat(
             "Dataization of uname object should not return null",
             new Dataized(
-                new EOos$EOname(new Silent())
+                new EOos$EOname()
             ).take(String.class),
             Matchers.is(Matchers.notNullValue())
         );
@@ -30,7 +30,7 @@ final class EOosEOnameTest {
         MatcherAssert.assertThat(
             "Object uname returns incorrect system name",
             new Dataized(
-                new EOos$EOname(new Silent())
+                new EOos$EOname()
             ).take(String.class),
             Matchers.equalTo(System.getProperty("os.name"))
         );

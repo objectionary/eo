@@ -104,11 +104,6 @@ public interface Data {
         }
 
         @Override
-        public Statistics statistics() {
-            return this.object.statistics();
-        }
-
-        @Override
         public byte[] delta() {
             return this.object.delta();
         }
@@ -122,10 +117,6 @@ public interface Data {
         public String φTerm() {
             return this.object.φTerm();
         }
-
-        // @todo #3489:30min The byte holders made below are built with a bare new PhDefault(),
-        //  so every number, string and bytes leaf carries a Silent statistics and stays out of
-        //  the count the program reports. Hand this factory the statistics of its caller.
 
         /**
          * Convert to Phi object.

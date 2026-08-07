@@ -18,10 +18,9 @@ public final class EOwin32$EOφ extends PhDefault implements Atom {
 
     /**
      * Ctor.
-     * @param stats Where this object reports its birth
      */
-    public EOwin32$EOφ(final Statistics stats) {
-        super(stats);
+    public EOwin32$EOφ() {
+        // nothing
     }
 
     @Override

@@ -53,7 +53,7 @@ final class PhNestTest {
     void refusesPackageThatWasNeverTranspiled() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new PhNest("Φ.org.eolang", new Silent()).take("dummy"),
+            () -> new PhNest("Φ.org.eolang").take("dummy"),
             "A Java package carrying no @XmirPackage must not pass for an EO package, but it did"
         );
     }

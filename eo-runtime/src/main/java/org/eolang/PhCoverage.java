@@ -115,11 +115,6 @@ public final class PhCoverage implements Phi {
     }
 
     @Override
-    public Statistics statistics() {
-        return this.origin.statistics();
-    }
-
-    @Override
     public Phi normalized() {
         return this.origin.normalized();
     }

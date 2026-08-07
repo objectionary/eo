@@ -25,7 +25,7 @@ final class EOchunkEOreadTest {
                 ExAbstract.class,
                 () -> new Dataized(
                     new PhApplication(
-                        new EOchunk$EOread(new Silent()),
+                        new EOchunk$EOread(),
                         Phi.RHO,
                         new PhApplication(
                             new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),
@@ -85,7 +85,7 @@ final class EOchunkEOreadTest {
         return new PhApplication(
             new PhApplication(
                 new PhApplication(
-                    new EOchunk$EOread(new Silent()),
+                    new EOchunk$EOread(),
                     Phi.RHO,
                     new PhApplication(
                         new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),

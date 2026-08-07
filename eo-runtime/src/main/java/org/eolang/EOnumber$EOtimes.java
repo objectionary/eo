@@ -17,10 +17,9 @@ public final class EOnumber$EOtimes extends PhDefault implements Atom {
 
     /**
      * Ctor.
-     * @param stats Where this object reports its birth
      */
-    public EOnumber$EOtimes(final Statistics stats) {
-        super(stats, new Attrs(new Attr("x", new AtVoid("x"))));
+    public EOnumber$EOtimes() {
+        super(new Attrs(new Attr("x", new AtVoid("x"))));
     }
 
     @Override

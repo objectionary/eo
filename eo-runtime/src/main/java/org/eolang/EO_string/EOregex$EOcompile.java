@@ -22,7 +22,6 @@ import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Statistics;
 import org.eolang.XmirObject;
 
 /**
@@ -42,10 +41,9 @@ public final class EOregex$EOcompile extends PhDefault implements Atom {
 
     /**
      * Ctor.
-     * @param stats Where this object reports its birth
      */
-    public EOregex$EOcompile(final Statistics stats) {
-        super(stats, new Attrs(
+    public EOregex$EOcompile() {
+        super(new Attrs(
             new Attr(
                 EOregex$EOcompile.FALLBACK,
                 new AtVoid(EOregex$EOcompile.FALLBACK)

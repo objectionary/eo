@@ -22,11 +22,9 @@ public final class EOchunk$EOresized extends PhDefault implements Atom {
 
     /**
      * Ctor.
-     * @param stats Where this object reports its birth
      */
-    public EOchunk$EOresized(final Statistics stats) {
+    public EOchunk$EOresized() {
         super(
-            stats,
             new Attrs(
                 new Attr(
                     EOchunk$EOresized.CAPACITY,

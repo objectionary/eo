@@ -17,10 +17,9 @@ public final class EObytes$EOnot extends PhDefault implements Atom {
 
     /**
      * Ctor.
-     * @param stats Where this object reports its birth
      */
-    public EObytes$EOnot(final Statistics stats) {
-        super(stats);
+    public EObytes$EOnot() {
+        // nothing
     }
 
     @Override

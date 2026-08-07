@@ -25,7 +25,7 @@ final class EOchunkEOwriteTest {
                 ExAbstract.class,
                 () -> new Dataized(
                     new PhApplication(
-                        new EOchunk$EOwrite(new Silent()),
+                        new EOchunk$EOwrite(),
                         Phi.RHO,
                         new PhApplication(
                             new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),
@@ -49,7 +49,7 @@ final class EOchunkEOwriteTest {
                 () -> new Dataized(
                     new PhApplication(
                         new PhApplication(
-                            new EOchunk$EOwrite(new Silent()),
+                            new EOchunk$EOwrite(),
                             Phi.RHO,
                             new PhApplication(
                                 new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),

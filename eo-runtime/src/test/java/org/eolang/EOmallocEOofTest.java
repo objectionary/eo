@@ -60,7 +60,7 @@ final class EOmallocEOofTest {
                 ExAbstract.class,
                 () -> new Dataized(
                     new PhApplication(
-                        new EOmalloc$EOof(new Silent()),
+                        new EOmalloc$EOof(),
                         "size",
                         new Data.ToPhi(true)
                     )
@@ -79,7 +79,7 @@ final class EOmallocEOofTest {
                 ExAbstract.class,
                 () -> new Dataized(
                     new PhApplication(
-                        new EOmalloc$EOof(new Silent()),
+                        new EOmalloc$EOof(),
                         "size",
                         new Data.ToPhi(-1)
                     )

@@ -27,7 +27,7 @@ final class EOdirectoryEOwalkTest {
             ExFailure.class,
             () -> new Dataized(
                 new PhApplication(
-                    new PhApplication(new EOdirectory$EOwalk(new Silent()), Phi.RHO, dir),
+                    new PhApplication(new EOdirectory$EOwalk(), Phi.RHO, dir),
                     "glob", new Data.ToPhi("[")
                 )
             ).take(),
@@ -68,7 +68,7 @@ final class EOdirectoryEOwalkTest {
         final Phi directory = Phi.Φ.take("directory").copy();
         directory.put(0, file);
         return new PhApplication(
-            new PhApplication(new EOdirectory$EOwalk(new Silent()), Phi.RHO, directory),
+            new PhApplication(new EOdirectory$EOwalk(), Phi.RHO, directory),
             "glob", new Data.ToPhi("*")
         );
     }

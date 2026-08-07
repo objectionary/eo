@@ -71,20 +71,6 @@ final class MainTest {
     }
 
     @Test
-    void printsExecutionStatistics() {
-        MatcherAssert.assertThat(
-            "The report of dataizing \"true\" carries no object and dispatch counters",
-            MainTest.stderr("true"),
-            Matchers.matchesPattern(
-                Pattern.compile(
-                    ".+Finished in .+, [1-9][0-9]* objects, [1-9][0-9]* dispatches.*",
-                    Pattern.DOTALL
-                )
-            )
-        );
-    }
-
-    @Test
     void executesJvmFullRun() {
         MatcherAssert.assertThat(
             "Incorrect verbose output when dataizing \"false\" object",
@@ -92,6 +78,20 @@ final class MainTest {
             Matchers.allOf(
                 Matchers.containsString("EOLANG"),
                 Matchers.containsString("false")
+            )
+        );
+    }
+
+    @Test
+    void reportsBirthsAndDispatches() {
+        MatcherAssert.assertThat(
+            "The run does not say how many objects were born and how many attributes were taken",
+            MainTest.stderr("true"),
+            Matchers.matchesPattern(
+                Pattern.compile(
+                    ".*Finished in .+s \\(\\d+ bytes\\), [1-9]\\d* objects, [1-9]\\d* dispatches.*",
+                    Pattern.DOTALL
+                )
             )
         );
     }
