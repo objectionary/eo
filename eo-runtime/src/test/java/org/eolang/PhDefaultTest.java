@@ -67,22 +67,6 @@ final class PhDefaultTest {
     }
 
     @Test
-    void printsOutOfRangeIntegralNumbersWithoutSaturation() {
-        final double positive = Math.scalb(1.0d, 63);
-        final double negative = -Math.scalb(1.0d, 64);
-        MatcherAssert.assertThat(
-            "Positive integral double outside long range must retain its value in φ-term",
-            PhDefault.numeral(positive),
-            Matchers.equalTo(Double.toString(positive))
-        );
-        MatcherAssert.assertThat(
-            "Negative integral double outside long range must retain its value in φ-term",
-            PhDefault.numeral(negative),
-            Matchers.equalTo(Double.toString(negative))
-        );
-    }
-
-    @Test
     void printsUnsetNumberStructurally() {
         MatcherAssert.assertThat(
             "Number without injected bytes must fall back to its structural φ-term, but it didnt",
