@@ -18,7 +18,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
 import org.cactoos.Scalar;
-import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.eclipse.aether.RepositorySystem;
@@ -27,16 +26,9 @@ import org.slf4j.impl.StaticLoggerBinder;
 /**
  * Abstract Mojo for all others.
  * @since 0.1
- * @todo #6125:60min Take the fan-out suppression below off again.
- *  This class sat at exactly 30 referenced types, the maximum, so naming
- *  {@link GlobalCache} and {@link GcShared} in {@link #caching(String)}
- *  pushed it to 32 and the suppression had to be added. Unload the class
- *  instead, the way the puzzle about the tojos lifecycle below asks, and
- *  the suppression can go, together with the {@code @SuppressWarnings}
- *  for the field count right below it, which the same unloading fixes.
- *  Until then no further step can be moved to {@link GlobalCache}
- *  without making this worse.
- * @checkstyle ClassFanOutComplexityCheck (5 lines)
+ * @todo #6428:60min Take the caching decision out of this class. It names 30 types
+ *  now, the maximum, so the next one moved to {@link GlobalCache} brings the fan-out
+ *  suppression back. A cache of its own for {@link #caching(String)} would drop two.
  */
 @SuppressWarnings("PMD.TooManyFields")
 abstract class MjSafe extends AbstractMojo {
@@ -394,7 +386,7 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     protected final TjsPlaced placedTojos = new TjsPlaced(
-        new Sticky<>(() -> Catalogs.INSTANCE.make(this.placed.toPath(), this.placedFormat))
+        () -> Catalogs.INSTANCE.make(this.placed.toPath(), this.placedFormat)
     );
 
     /**
@@ -402,9 +394,7 @@ abstract class MjSafe extends AbstractMojo {
      * If not set, will be computed from {@code tag} field.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    protected CommitHash hash = new ChCached(
-        new ChNarrow(new ChRemote(this.tag))
-    );
+    protected CommitHash hash = new ChBrief(this.tag);
 
     /**
      * Resolve default JNA dependency or not.

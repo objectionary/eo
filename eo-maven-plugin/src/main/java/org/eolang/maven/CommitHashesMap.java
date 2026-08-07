@@ -97,11 +97,7 @@ final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
                     matcher.find();
                     return new MapEntry<>(
                         row.substring(matcher.end()),
-                        new ChCached(
-                            new ChNarrow(
-                                new CommitHash.ChConstant(row.substring(0, matcher.start()))
-                            )
-                        )
+                        new ChBrief(new CommitHash.ChConstant(row.substring(0, matcher.start())))
                     );
                 },
                 new Split(table::value, "\\R")
