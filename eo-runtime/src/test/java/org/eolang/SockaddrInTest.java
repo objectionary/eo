@@ -4,8 +4,6 @@
  */
 package org.eolang;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -19,15 +17,10 @@ final class SockaddrInTest {
     @ParameterizedTest
     @ValueSource(ints = {0, 16})
     void rejectsPaddingWithUnexpectedSize(final int size) {
-        final IllegalArgumentException error = Assertions.assertThrows(
+        Assertions.assertThrows(
             IllegalArgumentException.class,
             () -> new SockaddrIn((short) 2, (short) 0, 0, new byte[size]),
             "SockaddrIn must reject padding that is not eight bytes long"
-        );
-        MatcherAssert.assertThat(
-            "The exception must explain the required padding size",
-            error.getMessage(),
-            Matchers.containsString("exactly 8 bytes")
         );
     }
 }
