@@ -12,10 +12,11 @@ name: runtime
       - master
 jobs:
   runtime:
+    timeout-minutes: 15
     strategy:
       matrix:
         os: [ubuntu-24.04, windows-2022]
-        java: [26]
+        java: [23]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
