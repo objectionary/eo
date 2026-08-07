@@ -20,6 +20,11 @@
   <dependencies>
     <dependency>
       <groupId>org.eolang</groupId>
+      <artifactId>eo-inference</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
       <artifactId>eo-parser</artifactId>
       <version>${project.version}</version>
     </dependency>
