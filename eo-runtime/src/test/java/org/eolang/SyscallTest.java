@@ -50,7 +50,7 @@ final class SyscallTest {
         try {
             final Phi socket = Phi.Φ.take("socket").copy();
             socket.put(0, new Data.ToPhi(this.localhost()));
-            socket.put(1, new Data.ToPhi(server.port));
+            socket.put(1, new Data.ToPhi(server.port()));
             final Phi connected = socket.take("connect").copy();
             connected.put(0, new SyscallTest.Simple());
             final byte[] actual = new Dataized(connected).take();
@@ -102,13 +102,13 @@ final class SyscallTest {
         try {
             final Phi socket = Phi.Φ.take("socket").copy();
             socket.put(0, new Data.ToPhi(this.localhost()));
-            socket.put(1, new Data.ToPhi(taken.port));
+            socket.put(1, new Data.ToPhi(taken.port()));
             final Phi listen = socket.take("listen").copy();
             listen.put(1, Phi.Φ.take("dataized").copy());
             MatcherAssert.assertThat(
                 "the taken port should have told the fallback which address it failed to bind to, but it didnt",
                 new Dataized(listen).asString(),
-                Matchers.containsString(String.format("%s:%d", this.localhost(), taken.port))
+                Matchers.containsString(String.format("%s:%d", this.localhost(), taken.port()))
             );
         } finally {
             taken.stop();
@@ -204,7 +204,7 @@ final class SyscallTest {
                 final int socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
-                    final SockaddrIn addr = this.sockaddr(server.port);
+                    final SockaddrIn addr = this.sockaddr(server.port());
                     MatcherAssert.assertThat(
                         String.format(
                             "Windows socket should have been connected to local server via syscall, but it didn't, error code is: %d",
@@ -549,7 +549,7 @@ final class SyscallTest {
             final int socket = this.openSocket();
             try {
                 this.ensure(socket > 0);
-                final SockaddrIn addr = this.sockaddr(server.port);
+                final SockaddrIn addr = this.sockaddr(server.port());
                 MatcherAssert.assertThat(
                     String.format(
                         "Posix socket should have been connected to local server via syscall, but it didn't, reason: %s",
@@ -836,11 +836,6 @@ final class SyscallTest {
         private ServerSocket socket;
 
         /**
-         * Port.
-         */
-        private int port;
-
-        /**
          * Ctor, reserves a random port.
          */
         RandomServer() {
@@ -848,15 +843,22 @@ final class SyscallTest {
         }
 
         /**
+         * Port the server is bound to.
+         * @return Port number
+         */
+        int port() {
+            return this.reservation.port();
+        }
+
+        /**
          * Start server on the reserved port.
          * @return Self
          */
         RandomServer started() throws IOException {
-            this.port = this.reservation.port();
             this.socket = new ServerSocket();
             this.socket.setReuseAddress(true);
-            this.socket.bind(new InetSocketAddress("127.0.0.1", this.port));
-            Logger.debug(this, "Server started on port %d", this.port);
+            this.socket.bind(new InetSocketAddress("127.0.0.1", this.port()));
+            Logger.debug(this, "Server started on port %d", this.port());
             return this;
         }
 
