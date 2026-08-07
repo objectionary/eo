@@ -200,6 +200,22 @@ final class StackTest {
         );
     }
 
+    @Test
+    void restoreReinstatesTheEntryDisplacedByReplace() {
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        final Level displaced = stack.push(2, 2, Kind.HEAD, Openness.OPEN);
+        final List<Level> snapshot = stack.snapshot();
+        stack.replace(3, Kind.COMPACT_TUPLE, Openness.OPEN);
+        stack.restore(snapshot);
+        MatcherAssert.assertThat(
+            "restore must bring back the exact entry replace displaced"
+                .concat(", not merely one at the same indent"),
+            stack.top(),
+            Matchers.sameInstance(displaced)
+        );
+    }
+
     /**
      * Trigger the first-push-at-non-zero-indent violation and capture it.
      * @return The thrown error
