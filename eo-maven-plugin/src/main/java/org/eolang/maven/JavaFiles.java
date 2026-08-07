@@ -133,7 +133,6 @@ final class JavaFiles {
 
     /**
      * Delete generated Java files absent from the current XMIR collection.
-     *
      * @throws IOException If fails to inspect or remove a generated file
      */
     void removeStale() throws IOException {
