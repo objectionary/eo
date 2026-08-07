@@ -56,8 +56,9 @@ final class Inferring implements Step {
 
     /**
      * The directory for the prepared XMIR files, which keep the names they
-     * had; nothing is deleted from it, so a file left there by an earlier run
-     * would outlive its source.
+     * had. It is emptied first, because the clues read it back as the whole
+     * program: a file left there by an earlier run would put the types of a
+     * deleted source into the tables.
      */
     private final Path prepared;
 
@@ -82,6 +83,7 @@ final class Inferring implements Step {
     @Override
     public void exec() throws IOException {
         if (Files.exists(this.input)) {
+            new Deleted(this.prepared.toFile()).get();
             final int ready = this.ready();
             new Clues().follow(this.prepared, this.tables);
             Logger.info(

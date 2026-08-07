@@ -43,8 +43,8 @@ import org.apache.maven.plugins.annotations.Parameter;
  * <p>
  *     Only the first of those rules is implemented so far, together with the
  *     preparation the rest of them will need. The XMIR prepared for the rules
- *     is saved in {@link #preInferenceDir} and the tables in
- *     {@link #inferenceDir}, a document each.
+ *     is saved in {@link #prepared} and the tables in
+ *     {@link #tables}, a document each.
  * </p>
  * @since 0.67.0
  */

@@ -147,6 +147,31 @@ final class InferringTest {
     }
 
     @Test
+    void forgetsSourceThatIsGone(@Mktmp final Path temp) throws IOException {
+        final Path sources = Files.createDirectories(temp.resolve("shed"));
+        Files.writeString(
+            sources.resolve("rake.xmir"),
+            new EoSyntax(
+                String.join(System.lineSeparator(), "[] > rake", "  [] > teeth", "")
+            ).parsed().toString()
+        );
+        new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec();
+        Files.delete(sources.resolve("rake.xmir"));
+        Files.writeString(
+            sources.resolve("hoe.xmir"),
+            new EoSyntax(
+                String.join(System.lineSeparator(), "[] > hoe", "  [] > blade", "")
+            ).parsed().toString()
+        );
+        new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec();
+        MatcherAssert.assertThat(
+            "a file whose source is gone must leave the table, but it stayed",
+            new XMLDocument(temp.resolve("rows").resolve("provides.xml")),
+            XhtmlMatchers.hasXPath("/provides[not(type[@id='Φ.rake'])]")
+        );
+    }
+
+    @Test
     void keepsFoldersOfProgram(@Mktmp final Path temp) throws IOException {
         Files.writeString(
             Files.createDirectories(temp.resolve("tree").resolve("one")).resolve("leaf.xmir"),
