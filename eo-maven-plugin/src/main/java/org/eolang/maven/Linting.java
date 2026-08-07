@@ -13,7 +13,6 @@ import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -396,14 +395,20 @@ final class Linting implements Step {
         }
         final List<org.eolang.wpa.Defect> defects;
         if (this.cacheEnabled) {
-            final Path wpa = Paths.get("wpa.xmir");
+            final Path wpa = Path.of("wpa.xmir");
             final Path base = this.targetDir.resolve(Linting.DIR);
             final Path target = base.resolve(wpa);
             Files.createDirectories(base);
             this.guard.apply(
                 base, target, wpa,
                 new Cache(
-                    this.cacheDir.resolve(Linting.CACHE).resolve(this.version),
+                    new CachePath(
+                        this.cacheDir.resolve(Linting.CACHE),
+                        this.version,
+                        new WpaCacheKey(
+                            paths, this.skipProgramLints, this.skipExperimentalLints
+                        ).get()
+                    ).get(),
                     root -> {
                         Logger.info(this, "Linting a package");
                         final Directives all = new Directives().add("defects");
@@ -414,7 +419,7 @@ final class Linting implements Step {
                         return new Xembler(all).xmlQuietly();
                     },
                     p -> p.getFileName().toString().endsWith(".xmir")
-                        && !p.getFileName().equals(wpa)
+                        && !p.equals(target)
                 )
             );
             defects = Linting.read(target);

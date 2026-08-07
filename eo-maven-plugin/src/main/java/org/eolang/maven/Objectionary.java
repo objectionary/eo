@@ -77,10 +77,7 @@ interface Objectionary {
         Fake() {
             this(
                 s -> new InputOf(
-                    String.join(
-                        System.lineSeparator(),
-                        "[] > sprintf".concat(System.lineSeparator())
-                    )
+                    "[] > sprintf".concat(System.lineSeparator())
                 )
             );
         }

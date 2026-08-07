@@ -24,10 +24,6 @@ import org.xembly.Directive;
  * with no parser-grammar dependency: classification, validation, and
  * emission all happen here against the spec rules directly.</p>
  *
- * <p>The classifier in this initial implementation covers the three
- * trivial line shapes — blank, comment, meta. Other shapes from §3.1
- * fall through to a placeholder error pending later additions.</p>
- *
  * @since 0.1
  */
 final class Eo implements Iterable<Directive> {
@@ -312,8 +308,10 @@ final class Eo implements Iterable<Directive> {
             Eo.continueTextBlock(span, stack, globals, emit);
         } else if (span.tab()) {
             emit.error(span.line(), 0, "tab character in leading whitespace");
+            failed = true;
         } else if (!span.blank() && span.indent() % 2 == 1) {
             emit.error(span.line(), 0, "unexpected odd indent");
+            failed = true;
         } else if (Eo.opensTextBlock(span)) {
             globals.openTextBlock(span.line(), span.indent());
             globals.markEmitted();

@@ -17,7 +17,7 @@ final class Unplace {
     /**
      * Pattern to catch .eo files.
      */
-    private static final Pattern EO = Pattern.compile(".eo$");
+    private static final Pattern EO = Pattern.compile("\\.eo$");
 
     /**
      * The parent dir.

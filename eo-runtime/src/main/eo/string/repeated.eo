@@ -20,20 +20,19 @@
       "Can't repeat text %f times".printf
         * times
     string
-      if. >> result!
-        0.eq
-          times >> amount!
-        --
-        if. > [accum index] >> rec-repeated
-          amount.eq index
-          accum
-          rec-repeated
-            accum.concat b
-            as-number.
-              index.plus 1
-        |
-          text >> b!
-          1
+      [n] >> rec-repeated
+        if. > @
+          0.eq n
+          --
+          if.
+            0.eq
+              n.mod 2
+            twice
+            concat.
+              half.concat >> twice
+                rec-repeated (n.div 2).floor >> half!
+              text.as-bytes
+      | times
 
   eq. ++> can-format-the-error-message-of-a-negative-count
     "Can't repeat text -1.000000 times"
@@ -47,6 +46,18 @@
     repeated
       "hey"
       5
+
+  eq. ++> can-repeat-a-text-six-times
+    "zxzxzxzxzxzx"
+    repeated
+      "zx"
+      6
+
+  eq. ++> can-repeat-a-text-twenty-thousand-times
+    20000
+    size.
+      as-bytes.
+        repeated "x" 20000
 
   eq. ++> can-repeat-a-text-zero-times
     ""

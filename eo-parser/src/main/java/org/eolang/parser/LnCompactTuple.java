@@ -80,7 +80,7 @@ final class LnCompactTuple implements Line {
             );
         }
         tokens.seek(tokens.cursor() + 1);
-        final int count = LnCompactTuple.readCount(tokens);
+        final int count = LnCompactTuple.readCount(tokens, this.span);
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
@@ -112,23 +112,31 @@ final class LnCompactTuple implements Line {
      * Read the {@code N} count after {@code *}. Defaults to 0 when
      * absent.
      * @param tokens Token reader (cursor just past the {@code *})
+     * @param span Source span, for a ParseError on overflow
      * @return The N value
      */
-    private static int readCount(final Tokens tokens) {
-        int count = 0;
+    private static int readCount(final Tokens tokens, final Span span) {
+        long count = 0;
         boolean any = false;
+        final int start = tokens.cursor();
         while (!tokens.atEnd()) {
             final char glyph = tokens.current();
             if (glyph < '0' || glyph > '9') {
                 break;
             }
             count = count * 10 + glyph - '0';
+            if (count > Integer.MAX_VALUE) {
+                throw new ParseError(
+                    span.line(), span.indent() + start,
+                    "compact tuple count is too large"
+                );
+            }
             tokens.seek(tokens.cursor() + 1);
             any = true;
         }
         if (!any) {
             count = 0;
         }
-        return count;
+        return (int) count;
     }
 }
