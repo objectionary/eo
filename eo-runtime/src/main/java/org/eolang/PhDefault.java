@@ -157,7 +157,11 @@ public class PhDefault implements Phi, Cloneable {
         final String forma, final byte[] dta, final Map<String, Attribute> attributes
     ) {
         this.fqn = forma;
-        this.data = dta == null ? null : Arrays.copyOf(dta, dta.length);
+        if (dta == null) {
+            this.data = null;
+        } else {
+            this.data = Arrays.copyOf(dta, dta.length);
+        }
         this.initial = attributes;
         this.order = new HashMap<>(0);
     }

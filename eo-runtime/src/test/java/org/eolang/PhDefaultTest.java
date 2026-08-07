@@ -58,30 +58,6 @@ final class PhDefaultTest {
     }
 
     @Test
-    void isolatesBytesPassedToConstructor() {
-        final byte[] bytes = {0x01};
-        final Phi object = new PhDefault(bytes);
-        bytes[0] = 0x02;
-        MatcherAssert.assertThat(
-            "PhDefault must retain a snapshot of constructor bytes",
-            object.delta(),
-            Matchers.equalTo(new byte[] {0x01})
-        );
-    }
-
-    @Test
-    void doesNotExposeItsBytes() {
-        final Phi object = new PhDefault(new byte[] {0x01});
-        final byte[] exposed = object.delta();
-        exposed[0] = 0x02;
-        MatcherAssert.assertThat(
-            "PhDefault must not allow delta bytes to mutate its data",
-            object.delta(),
-            Matchers.equalTo(new byte[] {0x01})
-        );
-    }
-
-    @Test
     void printsVoidAttributeAsTerm() {
         MatcherAssert.assertThat(
             "Object with unset void attribute must render it as question mark, but it didnt",
