@@ -69,10 +69,30 @@ final class LnMeta implements Line {
                 body.substring(space + 1), this.span, space + 1
             );
         }
+        this.checkHead(head, parts);
+        Comments.seal(globals, emit, this.span);
+        globals.markMeta();
+        globals.clearBlanks();
+        emit.meta(this.span.line(), head, parts);
+    }
+
+    /**
+     * Validate the meta directive name against the NAME grammar and the
+     * {@code +package} arity rule.
+     * @param head The meta directive name
+     * @param parts The directive arguments
+     */
+    private void checkHead(final String head, final List<String> parts) {
         if (head.isEmpty()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "meta directive requires a name"
+            );
+        }
+        if (!head.matches("[a-z][^ \\t,.|':;!?\\[\\]{}()]*")) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + 1,
+                "meta name must be a NAME starting with a lowercase letter"
             );
         }
         if ("package".equals(head) && parts.isEmpty()) {
@@ -81,10 +101,6 @@ final class LnMeta implements Line {
                 "'+package' directive requires exactly one argument"
             );
         }
-        Comments.seal(globals, emit, this.span);
-        globals.markMeta();
-        globals.clearBlanks();
-        emit.meta(this.span.line(), head, parts);
     }
 
     /**
