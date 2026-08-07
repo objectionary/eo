@@ -124,6 +124,9 @@ public interface Data {
          * @return Constructed Phi
          */
         private static Phi toPhi(final Object obj) {
+            if (obj == null) {
+                throw new IllegalArgumentException("Cannot convert null data to Phi");
+            }
             final Phi phi;
             if (obj instanceof Boolean) {
                 if (obj.equals(true)) {
