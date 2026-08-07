@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.maven;
+package org.eolang.inference;
 
 import com.jcabi.xml.XML;
 import com.yegor256.tojos.MnMemory;
@@ -10,8 +10,10 @@ import com.yegor256.tojos.TjCached;
 import com.yegor256.tojos.TjDefault;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * What every object certainly has.
@@ -62,28 +64,13 @@ import java.util.Collection;
  *
  * @since 0.67.0
  */
-final class Provides implements Table {
-
-    /**
-     * The prepared XMIR files of the program.
-     */
-    private final Collection<XML> xmirs;
-
-    /**
-     * Ctor.
-     * @param prepared The prepared XMIR files of the whole program, since
-     *  one table covers all of them: a locator names one object of one
-     *  file and no other
-     */
-    Provides(final Collection<XML> prepared) {
-        this.xmirs = prepared;
-    }
+final class Provides implements Clue {
 
     @Override
-    public Tojos rows() {
+    public void follow(final Path xmirs, final Path tables) throws IOException {
         final Tojos rows = new TjCached(new TjDefault(new MnMemory()));
         int seen = 0;
-        for (final XML formation : this.formations()) {
+        for (final XML formation : new Xmirs(xmirs).formations()) {
             final String owner = formation.xpath("@loc").get(0);
             rows.add(owner)
                 .set("index", Integer.toString(seen))
@@ -102,30 +89,10 @@ final class Provides implements Table {
                 seen = seen + 1;
             }
         }
-        return rows;
-    }
-
-    /**
-     * Every formation of the program.
-     *
-     * <p>A formation is an object with no {@code @base}: it is not a copy
-     * of anything, it is written down as it is. Two other kinds of
-     * objects have no base either and are not formations: data, which
-     * carries its bytes as text, and the {@code λ} marker of an atom,
-     * which names a body implemented in Java.</p>
-     *
-     * @return The formations, file by file, in the order they appear in
-     *  the code
-     */
-    private Collection<XML> formations() {
-        final Collection<XML> found = new ArrayList<>(0);
-        for (final XML xmir : this.xmirs) {
-            found.addAll(
-                xmir.nodes(
-                    "//o[not(@base) and not(@name='λ') and not(text()[normalize-space()])]"
-                )
-            );
-        }
-        return found;
+        Files.createDirectories(tables);
+        Files.write(
+            tables.resolve("provides.xml"),
+            new Grouped(rows, "provides").asXml().toString().getBytes(StandardCharsets.UTF_8)
+        );
     }
 }

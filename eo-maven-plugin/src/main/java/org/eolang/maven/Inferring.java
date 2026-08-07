@@ -5,7 +5,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrDefault;
@@ -14,10 +13,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.eolang.inference.Clues;
 import org.eolang.parser.TrFull;
 
 /**
@@ -83,18 +82,11 @@ final class Inferring implements Step {
     @Override
     public void exec() throws IOException {
         if (Files.exists(this.input)) {
-            final Collection<XML> ready = this.ready();
-            Files.createDirectories(this.tables);
-            Files.write(
-                this.tables.resolve("provides.xml"),
-                new Grouped(new Provides(ready).rows(), "provides")
-                    .asXml()
-                    .toString()
-                    .getBytes(StandardCharsets.UTF_8)
-            );
+            final int ready = this.ready();
+            new Clues().follow(this.prepared, this.tables);
             Logger.info(
                 this, "Inferred the types of %d XMIR(s), tables are in %[file]s",
-                ready.size(), this.tables
+                ready, this.tables
             );
         } else {
             Logger.info(
@@ -106,10 +98,10 @@ final class Inferring implements Step {
 
     /**
      * Every XMIR file of the program, prepared for the rules and saved.
-     * @return The prepared documents
+     * @return How many files were prepared
      * @throws IOException If a file cannot be read or written
      */
-    private Collection<XML> ready() throws IOException {
+    private int ready() throws IOException {
         final Xsline train = new Xsline(
             new TrFull(
                 new TrDefault<>(
@@ -118,13 +110,15 @@ final class Inferring implements Step {
                 )
             )
         );
-        final Collection<XML> done = new ArrayList<>(0);
+        int done = 0;
         for (final Path source : this.sources()) {
-            final XML passed = train.pass(new XMLDocument(source));
             final Path target = this.prepared.resolve(this.input.relativize(source));
             Files.createDirectories(target.getParent());
-            Files.write(target, passed.toString().getBytes(StandardCharsets.UTF_8));
-            done.add(passed);
+            Files.write(
+                target,
+                train.pass(new XMLDocument(source)).toString().getBytes(StandardCharsets.UTF_8)
+            );
+            done = done + 1;
         }
         return done;
     }
