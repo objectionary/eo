@@ -34,8 +34,10 @@
         [] >> abs-mod
           if. > @
             lt.
-              abs dividend >> absx
-              4503599627370496
+              div.
+                abs dividend >> absx
+                absy
+              9007199254740992
             absx.minus
               times.
                 abs divisor >> absy
