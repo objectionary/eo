@@ -41,7 +41,7 @@ public final class RecvSyscall implements Syscall {
             new Dataized(params[2]).asNumber().intValue()
         );
         result.put(0, new Data.ToPhi(received));
-        result.put(1, new Data.ToPhi(Arrays.copyOf(buf, received)));
+        result.put(1, new Data.ToPhi(Arrays.copyOf(buf, Math.max(received, 0))));
         return result;
     }
 }
