@@ -8,6 +8,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Random;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -67,14 +68,12 @@ final class JavaFilesTest {
         current.total(true, second, "", false);
         current.removeStale();
         MatcherAssert.assertThat(
-            "a Java file for an XMIR absent from the current transpilation must be deleted",
-            generated.resolve("org/eolang/EOfirst.java").toFile().exists(),
-            Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            "a Java file still generated from a current XMIR must remain",
-            generated.resolve("org/eolang/EOsecond.java").toFile().exists(),
-            Matchers.is(true)
+            "a stale Java file must be deleted while a currently-generated one must remain",
+            Arrays.asList(
+                generated.resolve("org/eolang/EOfirst.java").toFile().exists(),
+                generated.resolve("org/eolang/EOsecond.java").toFile().exists()
+            ),
+            Matchers.equalTo(Arrays.asList(false, true))
         );
     }
 }

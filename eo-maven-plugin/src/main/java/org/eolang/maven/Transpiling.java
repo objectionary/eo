@@ -180,6 +180,7 @@ final class Transpiling implements Step {
     /**
      * Transpile a single tojo.
      * @param tojo Tojo that should be transpiled
+     * @param files Generated Java files
      * @return Number of generated Java files
      * @throws IOException If any issues with I/O
      */

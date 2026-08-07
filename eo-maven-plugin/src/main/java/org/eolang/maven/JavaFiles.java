@@ -133,7 +133,6 @@ final class JavaFiles {
 
     /**
      * Delete generated Java files absent from the current XMIR collection.
-     *
      * @throws IOException If fails to inspect or remove a generated file
      */
     void removeStale() throws IOException {
@@ -151,8 +150,8 @@ final class JavaFiles {
                     .filter(path -> path.toString().endsWith(JavaFiles.JAVA)).collect(
                         Collectors.toList()
                     )) {
-                    if (!expected.contains(file) && (!file.getFileName().toString().equals(
-                        "package-info.java"
+                    if (!expected.contains(file) && (!"package-info.java".equals(
+                        file.getFileName().toString()
                     ) || !dirs.contains(file.getParent()))) {
                         Files.delete(file);
                         Logger.debug(this, "Deleted stale generated Java file %[file]s", file);
