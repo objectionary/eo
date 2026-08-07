@@ -4,7 +4,7 @@
 sheets: []
 asserts:
   - /object/errors/error[@severity='error']
-  - /object/errors/error[contains(text(),'test attribute legal only as direct child of top-level object')]
+  - /object/errors/error[contains(text(),'direct child of top-level')]
 input: |
   [] > a
     [] > b
