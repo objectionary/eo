@@ -66,4 +66,40 @@ final class MjAtomsTableTest {
             Matchers.emptyString()
         );
     }
+
+    @Test
+    void writesAtomsTableToParentlessFile(@Mktmp final Path temp) throws Exception {
+        final Path output = Path.of(
+            String.format("atoms-%s.csv", temp.getFileName())
+        );
+        try {
+            new Saved(
+                new EoSyntax(
+                    new InputOf(
+                        String.join(
+                            System.lineSeparator(),
+                            "+package foo",
+                            "",
+                            "[] > thing",
+                            "  [] > size /number"
+                        )
+                    )
+                ).parsed().toString(),
+                temp.resolve("xmir/foo/thing.xmir")
+            ).value();
+            new FakeMaven(temp)
+                .with("atomsInputDir", temp.resolve("xmir").toFile())
+                .with("atomsOutput", output.toFile())
+                .execute(MjAtomsTable.class);
+            MatcherAssert.assertThat(
+                "Parentless output must be written in the working directory",
+                Files.readString(output),
+                Matchers.equalTo(
+                    String.format("Φ.foo.thing.size,Φ.number%c", '\n')
+                )
+            );
+        } finally {
+            Files.deleteIfExists(output);
+        }
+    }
 }
