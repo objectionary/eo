@@ -118,6 +118,23 @@
           "127.0.0.1"
       16777343
 
+  --> stops-on-read-size-being-negative
+    os.is-windows.if > @
+      1.div 0
+      seq *
+        code.
+          posix *1
+            "read"
+            fd
+            -1
+        true
+    code. > fd
+      posix *1
+        "open"
+        "/dev/null"
+        0
+        0
+
   --> stops-on-write-size-being-negative
     os.is-windows.if > @
       1.div 0
