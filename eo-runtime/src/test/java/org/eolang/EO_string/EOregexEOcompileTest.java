@@ -21,7 +21,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link EOregex$EOcompile}.
+ * Test case for {@code regex.compile}, whose envelope parsing lives in
+ * {@code regex.eo} and whose native tail is {@link EOregex$EOcompile$EOassembled}.
  * @since 0.57.4
  */
 final class EOregexEOcompileTest {
