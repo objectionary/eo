@@ -52,8 +52,23 @@ final class Recovery {
      * @return Index of the resumption point
      */
     int after(final int failed) {
-        final int indent = this.spans.get(failed).indent();
-        int idx = failed + 1;
+        return this.skip(failed + 1, this.spans.get(failed).indent());
+    }
+
+    /**
+     * The index the walk resumes at, skipping forward from {@code from}
+     * while a line still belongs to the block of a line at {@code indent}.
+     * Unlike {@link #after(int)}, the scan start and the reference indent
+     * are given separately — needed when the failed line's own index does
+     * not carry its indent (e.g. a merged multi-line literal, where the
+     * block belongs to the head line but scanning must start past every
+     * already-merged continuation line).
+     * @param from Index to start scanning from
+     * @param indent Indent of the line whose block is being skipped
+     * @return Index of the resumption point
+     */
+    int skip(final int from, final int indent) {
+        int idx = from;
         while (idx < this.spans.size() && this.skipped(idx, indent)) {
             idx = idx + 1;
         }
