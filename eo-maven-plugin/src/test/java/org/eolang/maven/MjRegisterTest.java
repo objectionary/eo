@@ -112,15 +112,14 @@ final class MjRegisterTest {
         final Throwable err,
         final Class<T> type
     ) {
-        Optional<T> found = Optional.empty();
-        Throwable current = err;
-        while (current != null && found.isEmpty()) {
-            if (type.isInstance(current)) {
-                found = Optional.of(type.cast(current));
-            } else {
-                current = current.getCause();
+        Optional<Throwable> current = Optional.of(err);
+        Optional<T> result = Optional.empty();
+        while (current.isPresent()) {
+            if (type.isInstance(current.get())) {
+                result = Optional.of(type.cast(current.get()));
             }
+            current = Optional.ofNullable(current.get().getCause());
         }
-        return found;
+        return result;
     }
 }
