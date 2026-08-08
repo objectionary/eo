@@ -72,6 +72,24 @@ final class LnTextBlockTest {
     }
 
     @Test
+    void emitsHighOctalByteWithoutUtf8Expansion() {
+        final Globals globals = new Globals();
+        globals.openTextBlock(1, 0);
+        globals.appendTextLine("\\377");
+        final Emit emit = new Emit();
+        new LnTextBlock(new Span("\"\"\" > bytes", 3))
+            .into(new Stack(), globals, emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "an octal escape in a text block must contribute its raw byte",
+            LnTextBlockTest.render(emit),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='bytes']/o[@base='Φ.bytes']/o[text()='FF-']"
+            )
+        );
+    }
+
+    @Test
     void resetsTextBlockStateAfterEmission() {
         final Globals globals = new Globals();
         globals.openTextBlock(1, 0);
