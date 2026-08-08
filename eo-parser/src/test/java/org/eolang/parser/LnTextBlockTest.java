@@ -162,12 +162,14 @@ final class LnTextBlockTest {
     @Test
     void acceptsAttributeAfterBlankLine() {
         final Globals globals = new Globals();
-        globals.openTextBlock(1, 0);
+        globals.openTextBlock(1, 2);
         globals.appendTextLine("hello");
         globals.blank();
         final Emit emit = new Emit();
-        new LnTextBlock(new Span("\"\"\" +> t", 3))
-            .into(new Stack(), globals, emit);
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        new LnTextBlock(new Span("  \"\"\" +> t", 3))
+            .into(stack, globals, emit);
         emit.close();
         MatcherAssert.assertThat(
             "a `+>` test attribute on a text-block closer preceded by one blank line must not emit any error",

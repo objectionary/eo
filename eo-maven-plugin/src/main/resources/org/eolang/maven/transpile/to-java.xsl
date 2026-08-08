@@ -265,8 +265,6 @@
         <xsl:value-of select="@name"/>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>", source = "</xsl:text>
-    <xsl:value-of select="replace(/object/@source, '\\', '\\\\')"/>
     <xsl:text>")</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>public final class </xsl:text>
