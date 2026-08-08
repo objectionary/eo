@@ -53,13 +53,37 @@ final class Xmirs {
      * @throws IOException If a file cannot be read
      */
     Collection<XML> formations() throws IOException {
+        return this.matching(
+            "//o[not(@base) and not(@name='λ') and not(text()[normalize-space()])]"
+        );
+    }
+
+    /**
+     * Every dispatch of the program.
+     *
+     * <p>A dispatch is an object whose base begins with a dot: it takes an
+     * attribute from the object below it. Every composite base was split
+     * into one such object per step before any clue looked at the XMIR, so
+     * a chain like {@code x.next.foo} is three objects here and not one.</p>
+     *
+     * @return The dispatches, file by file, in the order they appear in
+     *  the code
+     * @throws IOException If a file cannot be read
+     */
+    Collection<XML> dispatches() throws IOException {
+        return this.matching("//o[starts-with(@base, '.')]");
+    }
+
+    /**
+     * Every object of the program the given XPath matches.
+     * @param xpath The XPath
+     * @return The objects, file by file
+     * @throws IOException If a file cannot be read
+     */
+    private Collection<XML> matching(final String xpath) throws IOException {
         final Collection<XML> found = new ArrayList<>(0);
         for (final XML xmir : this.documents()) {
-            found.addAll(
-                xmir.nodes(
-                    "//o[not(@base) and not(@name='λ') and not(text()[normalize-space()])]"
-                )
-            );
+            found.addAll(xmir.nodes(xpath));
         }
         return found;
     }

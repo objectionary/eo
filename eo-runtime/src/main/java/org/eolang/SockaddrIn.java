@@ -17,6 +17,11 @@ import java.util.List;
 public final class SockaddrIn extends Structure {
 
     /**
+     * Size of the padding in a C {@code sockaddr_in}.
+     */
+    private static final int PADDING_SIZE = 8;
+
+    /**
      * Address family (e.g., AF_INET).
      */
     public short family;
@@ -40,7 +45,7 @@ public final class SockaddrIn extends Structure {
      * Ctor.
      */
     public SockaddrIn() {
-        this((short) 0, (short) 0, 0, new byte[]{0, 0, 0, 0, 0, 0, 0, 0});
+        this((short) 0, (short) 0, 0, new byte[SockaddrIn.PADDING_SIZE]);
     }
 
     /**
@@ -50,7 +55,7 @@ public final class SockaddrIn extends Structure {
      * @param addr Address
      */
     public SockaddrIn(final short family, final short port, final int addr) {
-        this(family, port, addr, new byte[]{0, 0, 0, 0, 0, 0, 0, 0});
+        this(family, port, addr, new byte[SockaddrIn.PADDING_SIZE]);
     }
 
     /**
@@ -61,15 +66,44 @@ public final class SockaddrIn extends Structure {
      * @param zero Zero 8 bytes
      */
     public SockaddrIn(final short family, final short port, final int addr, final byte[] zero) {
+        this(SockaddrIn.checked(zero), family, port, addr);
+    }
+
+    /**
+     * Primary ctor, receiving an already validated padding. The padding
+     * comes first so this signature differs from the public one above.
+     * @param zero Validated padding
+     * @param family Family
+     * @param port Port
+     * @param addr Address
+     */
+    private SockaddrIn(final byte[] zero, final short family, final short port, final int addr) {
         super();
         this.family = family;
         this.port = port;
         this.addr = addr;
-        this.zero = Arrays.copyOf(zero, zero.length);
+        this.zero = zero;
     }
 
     @Override
     public List<String> getFieldOrder() {
         return Arrays.asList("family", "port", "addr", "zero");
+    }
+
+    /**
+     * Validate and copy padding.
+     * @param zero Padding
+     * @return Safe padding copy
+     */
+    private static byte[] checked(final byte[] zero) {
+        if (zero.length != SockaddrIn.PADDING_SIZE) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "The sockaddr_in padding must contain exactly %d bytes, not %d",
+                    SockaddrIn.PADDING_SIZE, zero.length
+                )
+            );
+        }
+        return Arrays.copyOf(zero, zero.length);
     }
 }

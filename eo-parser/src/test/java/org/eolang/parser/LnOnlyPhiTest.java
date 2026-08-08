@@ -72,8 +72,10 @@ final class LnOnlyPhiTest {
         final Emit emit = new Emit();
         final Globals globals = new Globals();
         globals.blank();
-        new LnOnlyPhi(new Span("false > [] +> throws-on", 2))
-            .into(new Stack(), globals, emit);
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        new LnOnlyPhi(new Span("  false > [] +> throws-on", 2))
+            .into(stack, globals, emit);
         emit.close();
         MatcherAssert.assertThat(
             "an inline-phi `+>` test attribute preceded by one blank line must not emit any error",
