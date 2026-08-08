@@ -54,12 +54,20 @@ final class Blanks {
     /**
      * Report a missing blank line in front of a {@code +>} test
      * attribute — illegal per R-6.5.3, which requires exactly one
-     * blank line before every test attribute.
+     * blank line before every test attribute — and a test attribute
+     * that sits deeper than a direct child of the top-level object,
+     * illegal per R-6.3.3.
      * @param span The offending line's span (used for error position)
      * @param globals The global parser state
      * @param emit The directives sink
      */
     static void checkTest(final Span span, final Globals globals, final Emit emit) {
+        if (span.indent() != 2) {
+            emit.error(
+                span.line(), span.indent(),
+                "test attribute legal only as direct child of top-level object"
+            );
+        }
         if (globals.pendingBlanks() == 0) {
             emit.error(
                 span.line(), span.indent(),

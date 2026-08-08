@@ -29,10 +29,4 @@ public @interface XmirObject {
      * @return The name as it is in EO
      */
     String name() default "";
-
-    /**
-     * The name of the source file where this Java code was generated from.
-     * @return The absolute path
-     */
-    String source() default "";
 }
