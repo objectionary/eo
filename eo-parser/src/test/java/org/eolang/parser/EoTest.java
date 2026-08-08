@@ -883,6 +883,17 @@ final class EoTest {
     }
 
     @Test
+    void mergesNamedMultiLineBytesWithSuffixOnFinalChunk() {
+        MatcherAssert.assertThat(
+            "a name on the final BYTES chunk must apply to the whole merged token, not drop the earlier chunks",
+            EoTest.render("[] > main", "  CA-FE-", "  BE-BE > ml"),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='main']/o[@base='Φ.bytes' and @name='ml']/o[text()='CA-FE-BE-BE']"
+            )
+        );
+    }
+
+    @Test
     void leavesSingleLineBytesAlone() {
         MatcherAssert.assertThat(
             "a single-line BYTES literal without trailing dash must NOT consume the next line",
