@@ -76,7 +76,7 @@ final class Recovery {
             idx = idx + 1;
         }
         if (idx < this.spans.size()) {
-            idx = this.rewound(idx, failed);
+            idx = this.rewound(idx, from - 1);
         }
         return idx;
     }
