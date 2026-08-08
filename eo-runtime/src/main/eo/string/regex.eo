@@ -26,8 +26,63 @@
 
 [expression] > regex
   compile > @
-  [] > compile /Q.string.regex.pattern
-    ? > cant-compile /{Q.string}
+  [cant-compile] > compile
+    opens.as-bool.if > @
+      if.
+        eq.
+          number last
+          0
+        cant-compile
+          "regex is missing the closing slash"
+        assembled
+      cant-compile
+        "regex is missing the opening slash"
+    [] > assembled /Q.string.regex.pattern
+    raw.slice > body!
+      1
+      minus.
+        number last
+        1
+    raw.slice > flags!
+      plus.
+        number last
+        1
+      minus.
+        number span
+        plus.
+          number last
+          1
+    scan > last!
+      minus.
+        number span
+        1
+    and. > opens!
+      gt.
+        number span
+        0
+      eq.
+        raw.slice 0 1
+        2F-
+    expression > raw!
+    if. > [index] > scan
+      index.lt 0
+      -1
+      if.
+        eq.
+          raw.slice index 1
+          2F-
+        index
+        scan
+          index.minus 1
+    string > search!
+      if.
+        flags.size.eq 0
+        body
+        concat.
+          "(?".as-bytes.concat
+            flags.concat ")".as-bytes
+          body
+    raw.size > span!
   [serialized] > pattern
     pattern serialized > compiled
     [txt] > match

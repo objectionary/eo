@@ -19,7 +19,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOregex$EOcompile}.
+ * Test case for {@code regex.compile}, whose envelope parsing lives in
+ * {@code regex.eo} and whose native tail is {@link EOregex$EOcompile$EOassembled}.
  * @since 0.57.4
  */
 final class EOregexEOcompileTest {

@@ -31,8 +31,8 @@ import org.eolang.XmirObject;
  * Regex.pattern.match.matched-from-index.
  * @since 0.39.0
  * @todo #6388:90min Build an EO-native literal matcher as the first real step off
- *  {@link java.util.regex.Matcher}. Once {@code compile} hands over an EO-parsed
- *  {@code body}/{@code flags} pair (see the {@code @todo} on {@code EOregex$EOcompile}),
+ *  {@link java.util.regex.Matcher}. {@code compile} already parses the envelope in EO
+ *  and exposes the {@code body}/{@code flags} pair as its own attributes, so
  *  start a new {@code string/regex/} EO object that walks {@code txt} for an exact
  *  literal substring of {@code body} (no metacharacters yet) and fills the same
  *  {@code matched} protocol this atom fills today (position, start, from, to, groups,
@@ -54,9 +54,10 @@ import org.eolang.XmirObject;
  *  {@link java.util.regex.Pattern} as an inline {@code (?flags)} prefix.
  * @todo #6388:90min Handle supplementary characters (surrogate pairs) and the
  *  zero-width-match advancement {@code regex.eo}'s {@code next} already encodes, then
- *  delete this class, {@code EOregex$EOcompile}, and the {@code +rt jvm}/{@code +rt node}
- *  split in {@code regex.eo} — the tests already sitting in {@code regex.eo:89-343} are
- *  the acceptance criteria and must pass unchanged against the EO-only engine.
+ *  delete this class, {@code EOregex$EOcompile$EOassembled}, and the {@code +rt jvm}
+ *  and {@code +rt node} split in {@code regex.eo} — the tests already sitting in
+ *  {@code regex.eo} are the acceptance criteria and must pass unchanged against
+ *  the EO-only engine.
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
