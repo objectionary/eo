@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fb version="0.19.6" size="8843632">
+<fb version="0.19.6" size="8842595">
   <f>
     <added t="I">8</added>
     <cycles t="I">1</cycles>
     <deleted t="I">8</deleted>
-    <error t="S">deadlock; recursive locking</error>
     <inserted t="I">8</inserted>
-    <seconds t="F">1373.372009906</seconds>
+    <seconds t="F">2160.989180886</seconds>
     <version t="S">0.61.1</version>
     <what t="S">judges-summary</what>
-    <when t="T">2026-08-08T16:21:12Z</when>
+    <when t="T">2026-08-08T17:40:26Z</when>
   </f>
   <f>
     <_id t="I">671</_id>
@@ -27878,21 +27877,6 @@
     <who t="I">29139614</who>
   </f>
   <f>
-    <_id t="I">927157</_id>
-    <_job t="I">35741</_job>
-    <_time t="T">2025-09-03T11:25:00Z</_time>
-    <_version t="S">0.15.8/0.53.6/0.15.30</_version>
-    <details t="S">The issue objectionary/eoc#13 has been opened by @yegor256.</details>
-    <is_human t="I">1</is_human>
-    <issue t="I">13</issue>
-    <repository t="I">489321585</repository>
-    <tombstone t="T">2026-08-08T15:39:20Z</tombstone>
-    <what t="S">issue-was-opened</what>
-    <when t="T">2022-06-22T04:35:36Z</when>
-    <where t="S">github</where>
-    <who t="I">526301</who>
-  </f>
-  <f>
     <_id t="I">927279</_id>
     <_job t="I">35744</_job>
     <_time t="T">2025-09-03T12:23:14Z</_time>
@@ -44501,39 +44485,6 @@
     <who t="I">216743020</who>
   </f>
   <f>
-    <_id t="I">1024522</_id>
-    <_job t="I">18883955402</_job>
-    <_time t="T">2025-10-28T17:41:31Z</_time>
-    <_version t="S">0.16.8/0.54.0/0.16.0</_version>
-    <details t="S">The issue objectionary/phino#403 has been opened by @0pdd.</details>
-    <event_id t="I">4313618136</event_id>
-    <event_type t="S">IssuesEvent</event_type>
-    <is_human t="I">0</is_human>
-    <issue t="I">403</issue>
-    <repository t="I">977982682</repository>
-    <tombstone t="T">2026-08-08T15:39:20Z</tombstone>
-    <what t="S">issue-was-opened</what>
-    <when t="T">2025-10-28T17:07:25Z</when>
-    <where t="S">github</where>
-    <who t="I">24456188</who>
-  </f>
-  <f>
-    <_id t="I">1024582</_id>
-    <_job t="I">18887074411</_job>
-    <_time t="T">2025-10-28T19:42:00Z</_time>
-    <_version t="S">0.16.8/0.54.0/0.16.0</_version>
-    <details t="S">The "bug" label was attached by @0pdd to the issue objectionary/phino#403.</details>
-    <is_human t="I">0</is_human>
-    <issue t="I">403</issue>
-    <label t="S">bug</label>
-    <repository t="I">977982682</repository>
-    <tombstone t="T">2026-08-08T15:39:20Z</tombstone>
-    <what t="S">label-was-attached</what>
-    <when t="T">2025-10-28T17:07:25Z</when>
-    <where t="S">github</where>
-    <who t="I">24456188</who>
-  </f>
-  <f>
     <_id t="I">1027821</_id>
     <_job t="I">18959346454</_job>
     <_time t="T">2025-10-31T01:01:18Z</_time>
@@ -45731,41 +45682,6 @@
     <who t="I">29139614</who>
   </f>
   <f>
-    <_id t="I">1047755</_id>
-    <_job t="I">19673391018</_job>
-    <_time t="T">2025-11-25T14:46:13Z</_time>
-    <_version t="S">0.16.8/0.57.2/0.16.2</_version>
-    <details t="S">The issue objectionary/phino#403 has been closed by @rultor.</details>
-    <done t="T">2026-08-08T15:39:20Z</done>
-    <event_id t="I">4902462378</event_id>
-    <event_type t="S">IssuesEvent</event_type>
-    <is_human t="I">0</is_human>
-    <issue t="I">403</issue>
-    <repository t="I">977982682</repository>
-    <what t="S">issue-was-closed</what>
-    <when t="T">2025-11-25T14:35:58Z</when>
-    <where t="S">github</where>
-    <who t="I">8086956</who>
-  </f>
-  <f>
-    <_id t="I">1047756</_id>
-    <_job t="I">19673391018</_job>
-    <_time t="T">2025-11-25T14:46:18Z</_time>
-    <_version t="S">0.16.8/0.57.2/0.16.2</_version>
-    <branch t="S">bug/#403/formation-with-inline-voids</branch>
-    <details t="S">The pull request objectionary/phino#465 has been opened by @maxonfjvipon.</details>
-    <event_id t="I">4901870594</event_id>
-    <event_type t="S">PullRequestEvent</event_type>
-    <is_human t="I">1</is_human>
-    <issue t="I">465</issue>
-    <repository t="I">977982682</repository>
-    <tombstone t="T">2026-08-08T15:39:19Z</tombstone>
-    <what t="S">pull-was-opened</what>
-    <when t="T">2025-11-25T14:12:33Z</when>
-    <where t="S">github</where>
-    <who t="I">37025995</who>
-  </f>
-  <f>
     <_id t="I">1047776</_id>
     <_job t="I">19675263171</_job>
     <_time t="T">2025-11-25T15:43:13Z</_time>
@@ -46461,34 +46377,6 @@
     <who t="I">8086956</who>
   </f>
   <f>
-    <_id t="I">1048455</_id>
-    <_job t="I">19731851394</_job>
-    <_time t="T">2025-11-27T09:59:13Z</_time>
-    <_version t="S">0.16.8/0.57.2/0.16.2</_version>
-    <branch t="S">bug/#403/formation-with-inline-voids</branch>
-    <comments t="I">4</comments>
-    <comments_appreciated t="I">1</comments_appreciated>
-    <comments_by_author t="I">1</comments_by_author>
-    <comments_by_reviewers t="I">3</comments_by_reviewers>
-    <comments_resolved t="I">0</comments_resolved>
-    <comments_to_code t="I">0</comments_to_code>
-    <details t="S">Apparently, objectionary/phino#465 has been "pull-was-merged".</details>
-    <failed_builds t="I">0</failed_builds>
-    <files t="I">11</files>
-    <hoc t="I">105</hoc>
-    <is_human t="I">0</is_human>
-    <issue t="I">465</issue>
-    <repository t="I">977982682</repository>
-    <review t="T">2025-11-25T14:18:43Z</review>
-    <review_comments t="I">0</review_comments>
-    <succeeded_builds t="I">13</succeeded_builds>
-    <tombstone t="T">2026-08-08T15:39:19Z</tombstone>
-    <what t="S">pull-was-merged</what>
-    <when t="T">2025-11-25T14:35:55Z</when>
-    <where t="S">github</where>
-    <who t="I">8086956</who>
-  </f>
-  <f>
     <_id t="I">1048457</_id>
     <_job t="I">19731851394</_job>
     <_time t="T">2025-11-27T09:59:57Z</_time>
@@ -47166,26 +47054,6 @@
     <who t="I">29139614</who>
   </f>
   <f>
-    <_id t="I">1048698</_id>
-    <_job t="I">50956</_job>
-    <_time t="T">2025-11-27T18:18:08Z</_time>
-    <_version t="S">0.16.8/0.57.1/0.16.2</_version>
-    <comments t="I">4</comments>
-    <details t="S">The pull request objectionary/phino#465 with 105 HoC created by @maxonfjvipon was merged by @rultor after 23m21s of being in review and 4 comments.</details>
-    <hoc t="I">105</hoc>
-    <is_human t="I">1</is_human>
-    <issue t="I">465</issue>
-    <merger t="I">8086956</merger>
-    <repository t="I">977982682</repository>
-    <review_comments t="I">0</review_comments>
-    <seconds t="I">1402</seconds>
-    <tombstone t="T">2026-08-08T15:39:19Z</tombstone>
-    <what t="S">code-was-contributed</what>
-    <when t="T">2025-11-25T14:35:55Z</when>
-    <where t="S">github</where>
-    <who t="I">37025995</who>
-  </f>
-  <f>
     <_id t="I">1048701</_id>
     <_job t="I">19745431911</_job>
     <_time t="T">2025-11-27T18:46:46Z</_time>
@@ -47449,21 +47317,6 @@
     <repository t="I">977982682</repository>
     <what t="S">dud-was-closed</what>
     <when t="T">2025-11-28T06:22:48Z</when>
-    <where t="S">github</where>
-    <who t="I">526301</who>
-  </f>
-  <f>
-    <_id t="I">1048913</_id>
-    <_job t="I">19762730965</_job>
-    <_time t="T">2025-11-28T12:11:00Z</_time>
-    <_version t="S">0.16.8/0.57.2/0.16.2</_version>
-    <details t="S">Apparently, objectionary/eoc#13 has been "issue-was-closed".</details>
-    <done t="T">2026-08-08T15:39:20Z</done>
-    <is_human t="I">1</is_human>
-    <issue t="I">13</issue>
-    <repository t="I">489321585</repository>
-    <what t="S">issue-was-closed</what>
-    <when t="T">2025-11-25T14:18:48Z</when>
     <where t="S">github</where>
     <who t="I">526301</who>
   </f>
@@ -56483,22 +56336,6 @@
     <who t="I">24456188</who>
   </f>
   <f>
-    <_id t="I">1056261</_id>
-    <_job t="I">20186377966</_job>
-    <_time t="T">2025-12-13T04:28:25Z</_time>
-    <_version t="S">0.19.2/0.58.1/0.17.5</_version>
-    <branch t="S">renovate/com.github.volodya-lombrozo-jtcop-maven-plugin-1.x</branch>
-    <details t="S">The missing pull objectionary/jeo-maven-plugin#1440 has been opened by @renovate[bot].</details>
-    <is_human t="I">0</is_human>
-    <issue t="I">1440</issue>
-    <repository t="I">671896902</repository>
-    <tombstone t="T">2026-08-08T15:39:20Z</tombstone>
-    <what t="S">pull-was-opened</what>
-    <when t="T">2025-11-25T14:43:36Z</when>
-    <where t="S">github</where>
-    <who t="I">29139614</who>
-  </f>
-  <f>
     <_id t="I">1056262</_id>
     <_job t="I">20186377966</_job>
     <_time t="T">2025-12-13T04:28:26Z</_time>
@@ -56876,34 +56713,6 @@
     <who t="I">37025995</who>
   </f>
   <f>
-    <_id t="I">1056305</_id>
-    <_job t="I">20186975537</_job>
-    <_time t="T">2025-12-13T05:09:06Z</_time>
-    <_version t="S">0.19.2/0.58.1/0.17.6</_version>
-    <branch t="S">renovate/com.github.volodya-lombrozo-jtcop-maven-plugin-1.x</branch>
-    <comments t="I">5</comments>
-    <comments_appreciated t="I">1</comments_appreciated>
-    <comments_by_author t="I">0</comments_by_author>
-    <comments_by_reviewers t="I">5</comments_by_reviewers>
-    <comments_resolved t="I">0</comments_resolved>
-    <comments_to_code t="I">0</comments_to_code>
-    <details t="S">Apparently, objectionary/jeo-maven-plugin#1440 has been "pull-was-merged".</details>
-    <failed_builds t="I">0</failed_builds>
-    <files t="I">1</files>
-    <hoc t="I">2</hoc>
-    <is_human t="I">0</is_human>
-    <issue t="I">1440</issue>
-    <repository t="I">671896902</repository>
-    <review_comments t="I">0</review_comments>
-    <succeeded_builds t="I">19</succeeded_builds>
-    <suggestions t="I">0</suggestions>
-    <tombstone t="T">2026-08-08T15:39:20Z</tombstone>
-    <what t="S">pull-was-merged</what>
-    <when t="T">2025-11-25T15:34:21Z</when>
-    <where t="S">github</where>
-    <who t="I">8086956</who>
-  </f>
-  <f>
     <_id t="I">1056306</_id>
     <_job t="I">20186975537</_job>
     <_time t="T">2025-12-13T05:09:40Z</_time>
@@ -57038,26 +56847,6 @@
     <when t="T">2025-12-13T05:33:05Z</when>
     <where t="S">github</where>
     <who t="I">526301</who>
-  </f>
-  <f>
-    <_id t="I">1056420</_id>
-    <_job t="I">53493</_job>
-    <_time t="T">2025-12-13T06:18:53Z</_time>
-    <_version t="S">0.18.0/0.58.1/0.17.6</_version>
-    <comments t="I">5</comments>
-    <details t="S">The pull request objectionary/jeo-maven-plugin#1440 with 2 HoC created by @renovate[bot] was merged by @rultor after 50m44s of being in review and 5 comments.</details>
-    <done t="T">2026-08-08T15:39:20Z</done>
-    <hoc t="I">2</hoc>
-    <is_human t="I">0</is_human>
-    <issue t="I">1440</issue>
-    <merger t="I">8086956</merger>
-    <repository t="I">671896902</repository>
-    <review_comments t="I">0</review_comments>
-    <seconds t="I">3045</seconds>
-    <what t="S">code-was-contributed</what>
-    <when t="T">2025-11-25T15:34:21Z</when>
-    <where t="S">github</where>
-    <who t="I">29139614</who>
   </f>
   <f>
     <_id t="I">1056421</_id>
@@ -71639,26 +71428,6 @@
     <who t="I">526301</who>
   </f>
   <f>
-    <_id t="I">1065430</_id>
-    <_job t="I">20510000789</_job>
-    <_time t="T">2025-12-25T20:09:15Z</_time>
-    <_version t="S">0.19.2/0.58.1/0.17.8</_version>
-    <author t="I">37025995</author>
-    <comments t="I">4</comments>
-    <details t="S">The pull request objectionary/phino#465 with 105 HoC created by @maxonfjvipon was reviewed by @coderabbitai[bot] after 0h6m and 0 comments.</details>
-    <done t="T">2026-08-08T15:39:19Z</done>
-    <hoc t="I">105</hoc>
-    <is_human t="I">0</is_human>
-    <issue t="I">465</issue>
-    <repository t="I">977982682</repository>
-    <review_comments t="I">0</review_comments>
-    <seconds t="I">370</seconds>
-    <what t="S">code-was-reviewed</what>
-    <when t="T">2025-11-25T14:18:43Z</when>
-    <where t="S">github</where>
-    <who t="I">136622811</who>
-  </f>
-  <f>
     <_id t="I">1065431</_id>
     <_job t="I">20510000789</_job>
     <_time t="T">2025-12-25T20:09:17Z</_time>
@@ -72794,6 +72563,7 @@
     <repository t="I">73056727</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">73338</seconds>
+    <tombstone t="T">2026-08-08T16:22:48Z</tombstone>
     <what t="S">code-was-reviewed</what>
     <when t="T">2025-11-25T11:04:55Z</when>
     <where t="S">github</where>
@@ -114989,25 +114759,6 @@
     <when t="T">2026-03-25T14:31:32Z</when>
     <where t="S">github</where>
     <who t="I">526301</who>
-  </f>
-  <f>
-    <_id t="I">1079233</_id>
-    <_job t="I">23550531609</_job>
-    <_time t="T">2026-03-25T16:01:07Z</_time>
-    <_version t="S">0.19.9/0.60.1/0.17.15</_version>
-    <tombstone t="T">2026-07-31T16:16:44Z</tombstone>
-    <total_active_contributors t="I">10</total_active_contributors>
-    <total_commits t="I">48872</total_commits>
-    <total_contributors t="I">490</total_contributors>
-    <total_files t="I">14332</total_files>
-    <total_forks t="I">366</total_forks>
-    <total_issues t="I">4441</total_issues>
-    <total_pulls t="I">8075</total_pulls>
-    <total_releases t="I">838</total_releases>
-    <total_repositories t="I">37</total_repositories>
-    <total_stars t="I">1743</total_stars>
-    <what t="S">dimensions-of-terrain</what>
-    <when t="T">2026-03-25T16:01:07Z</when>
   </f>
   <f>
     <_id t="I">1079239</_id>
@@ -239833,26 +239584,6 @@
     <who t="I">526301</who>
   </f>
   <f>
-    <_id t="I">1098570</_id>
-    <_job t="I">27223617344</_job>
-    <_time t="T">2026-06-09T17:28:54Z</_time>
-    <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <commit t="S">f9631d3c025a718177747d45d6b95aba561dfc8e</commit>
-    <default_branch t="S">master</default_branch>
-    <details t="S">A new Git push #35347554282 has arrived to objectionary/sabj25, made by @yegor256 (default branch is "master"), not associated with any pull request.</details>
-    <event_id t="I">13058197075</event_id>
-    <event_type t="S">PushEvent</event_type>
-    <is_human t="I">1</is_human>
-    <push_id t="I">35347554282</push_id>
-    <ref t="S">refs/heads/master</ref>
-    <repository t="I">1260338737</repository>
-    <to_master t="I">1</to_master>
-    <what t="S">git-was-pushed</what>
-    <when t="T">2026-06-09T16:07:19Z</when>
-    <where t="S">github</where>
-    <who t="I">526301</who>
-  </f>
-  <f>
     <_id t="I">1098583</_id>
     <_job t="I">27223617344</_job>
     <_time t="T">2026-06-09T17:31:58Z</_time>
@@ -315775,7 +315506,7 @@
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
     <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">17125651280</events_were_scanned>
+    <events_were_scanned t="I">17139655613</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">347</latest_issue_was_found>
@@ -316731,8 +316462,7 @@
     <_time t="T">2026-07-05T10:05:00Z</_time>
     <_version t="S">0.19.13/0.60.4/0.17.17</_version>
     <issues>
-      <v t="S">1-12</v>
-      <v t="S">14-40</v>
+      <v t="S">1-40</v>
       <v t="S">42-93</v>
       <v t="S">95-252</v>
       <v t="S">254-256</v>
@@ -316801,7 +316531,7 @@
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
     <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">16680801777</events_were_scanned>
+    <events_were_scanned t="I">12980225388</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">110</latest_issue_was_found>
@@ -316968,9 +316698,8 @@
       <v t="S">197-203</v>
       <v t="S">205-217</v>
       <v t="S">219-355</v>
-      <v t="S">358-402</v>
-      <v t="S">404-457</v>
-      <v t="S">459-464</v>
+      <v t="S">358-457</v>
+      <v t="S">459-465</v>
     </issues>
     <repository t="I">977982682</repository>
     <what t="S">tombstone</what>
@@ -322936,6 +322665,7 @@
       <v t="S">1138-1168</v>
       <v t="S">1171-1194</v>
       <v t="S">1196-1437</v>
+      <v t="S">1440</v>
     </issues>
     <repository t="I">671896902</repository>
     <what t="S">tombstone</what>
@@ -323089,9 +322819,9 @@
     <_job t="I">28918253257</_job>
     <_time t="T">2026-07-08T04:55:42Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">0</assignees_were_scanned>
+    <assignees_were_scanned t="I">1019</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">12972008147</events_were_scanned>
+    <events_were_scanned t="I">12980457136</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">365</latest_issue_was_found>
@@ -327140,7 +326870,7 @@
     <_job t="I">29014863301</_job>
     <_time t="T">2026-07-09T11:37:47Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">999</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">12974252509</events_were_scanned>
     <issues_were_scanned t="I">982</issues_were_scanned>
@@ -330226,9 +329956,9 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:00Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">0</assignees_were_scanned>
+    <assignees_were_scanned t="I">1122</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">12970548874</events_were_scanned>
+    <events_were_scanned t="I">12980440688</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">686</latest_issue_was_found>
@@ -330264,13 +329994,13 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:01Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">4939</assignees_were_scanned>
+    <assignees_were_scanned t="I">5298</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">12977765116</events_were_scanned>
+    <events_were_scanned t="I">12979716252</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
-    <labels_were_scanned t="I">0</labels_were_scanned>
+    <labels_were_scanned t="I">6095</labels_were_scanned>
     <latest_issue_was_found t="I">4591</latest_issue_was_found>
-    <merges_were_scanned t="I">0</merges_were_scanned>
+    <merges_were_scanned t="I">6491</merges_were_scanned>
     <min_issue_was_found t="I">4341</min_issue_was_found>
     <min_pull_was_found t="I">5337</min_pull_was_found>
     <repository t="I">73056727</repository>
@@ -497618,6 +497348,7 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.90).</text>
     <_time t="T">2026-08-08T16:01:58Z</_time>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <details t="S">The "enhancement" label was attached by @maxonfjvipon to the issue objectionary/eo#6490.</details>
+    <is_human t="I">1</is_human>
     <issue t="I">6490</issue>
     <label t="S">enhancement</label>
     <repository t="I">73056727</repository>
@@ -497625,5 +497356,236 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.90).</text>
     <when t="T">2026-08-08T11:24:33Z</when>
     <where t="S">github</where>
     <who t="I">37025995</who>
+  </f>
+  <f>
+    <_id t="I">1117432</_id>
+    <_job t="I">31268461956</_job>
+    <_time t="T">2026-08-08T17:04:53Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">bug/#1022/must-roundtrip</branch>
+    <details t="S">The pull request objectionary/phino#1028 has been opened by @vasilevnstas.</details>
+    <event_id t="I">12980457136</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">1028</issue>
+    <repository t="I">977982682</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-08T17:04:33Z</when>
+    <where t="S">github</where>
+    <who t="I">33578155</who>
+  </f>
+  <f>
+    <_id t="I">1117433</_id>
+    <_job t="I">31268461956</_job>
+    <_time t="T">2026-08-08T17:05:21Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">renovate/jamesives-github-pages-deploy-action-4.x</branch>
+    <details t="S">The pull request objectionary/eo#6493 has been opened by @renovate[bot].</details>
+    <event_id t="I">12979703541</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">0</is_human>
+    <issue t="I">6493</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-08T16:26:00Z</when>
+    <where t="S">github</where>
+    <who t="I">29139614</who>
+  </f>
+  <f>
+    <_id t="I">1117434</_id>
+    <_job t="I">31268461956</_job>
+    <_time t="T">2026-08-08T17:05:22Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <comments t="I">3</comments>
+    <commits t="I">1</commits>
+    <details t="S">The pull request objectionary/eo#6492 has been reviewed by @gemshrine with 2 HoC and 3 comments.</details>
+    <event_id t="I">12979642185</event_id>
+    <event_type t="S">PullRequestReviewEvent</event_type>
+    <files t="I">1</files>
+    <hoc t="I">2</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">6492</issue>
+    <repository t="I">73056727</repository>
+    <review_comments t="I">0</review_comments>
+    <what t="S">pull-was-reviewed</what>
+    <when t="T">2026-08-08T16:22:55Z</when>
+    <where t="S">github</where>
+    <who t="I">113778529</who>
+  </f>
+  <f>
+    <_id t="I">1117435</_id>
+    <_job t="I">31268461956</_job>
+    <_time t="T">2026-08-08T17:05:25Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <comments t="I">3</comments>
+    <commits t="I">1</commits>
+    <details t="S">The pull request objectionary/eo#6492 has been reviewed by @maxonfjvipon with 2 HoC and 3 comments.</details>
+    <event_id t="I">12978488416</event_id>
+    <event_type t="S">PullRequestReviewEvent</event_type>
+    <files t="I">1</files>
+    <hoc t="I">2</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">6492</issue>
+    <repository t="I">73056727</repository>
+    <review_comments t="I">0</review_comments>
+    <what t="S">pull-was-reviewed</what>
+    <when t="T">2026-08-08T15:23:48Z</when>
+    <where t="S">github</where>
+    <who t="I">37025995</who>
+  </f>
+  <f>
+    <_id t="I">1117436</_id>
+    <_job t="I">31268461956</_job>
+    <_time t="T">2026-08-08T17:05:38Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">version-up</branch>
+    <comments t="I">0</comments>
+    <comments_appreciated t="I">0</comments_appreciated>
+    <comments_by_author t="I">0</comments_by_author>
+    <comments_by_reviewers t="I">0</comments_by_reviewers>
+    <comments_resolved t="I">0</comments_resolved>
+    <comments_to_code t="I">0</comments_to_code>
+    <details t="S">The pull request objectionary/eoc#1179 has been closed by @github-actions[bot], with 4 HoC and 0 comments.</details>
+    <event_id t="I">12980431363</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <failed_builds t="I">0</failed_builds>
+    <files t="I">1</files>
+    <hoc t="I">4</hoc>
+    <is_human t="I">0</is_human>
+    <issue t="I">1179</issue>
+    <repository t="I">489321585</repository>
+    <succeeded_builds t="I">0</succeeded_builds>
+    <suggestions t="I">0</suggestions>
+    <what t="S">pull-was-closed</what>
+    <when t="T">2026-08-08T17:03:13Z</when>
+    <where t="S">github</where>
+    <who t="I">41898282</who>
+  </f>
+  <f>
+    <_id t="I">1117437</_id>
+    <_job t="I">31268461956</_job>
+    <_time t="T">2026-08-08T17:05:46Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">version-up</branch>
+    <details t="S">The pull request objectionary/eoc#1179 has been opened by @github-actions[bot].</details>
+    <event_id t="I">12980429482</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">0</is_human>
+    <issue t="I">1179</issue>
+    <repository t="I">489321585</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-08T17:03:13Z</when>
+    <where t="S">github</where>
+    <who t="I">41898282</who>
+  </f>
+  <f>
+    <_id t="I">1117438</_id>
+    <_job t="I">31268461956</_job>
+    <_time t="T">2026-08-08T17:05:48Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <comments t="I">1</comments>
+    <commits t="I">1</commits>
+    <details t="S">The pull request objectionary/eoc#1177 has been reviewed by @yegor256 with 2 HoC and 1 comments.</details>
+    <event_id t="I">12980115783</event_id>
+    <event_type t="S">PullRequestReviewEvent</event_type>
+    <files t="I">1</files>
+    <hoc t="I">2</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">1177</issue>
+    <repository t="I">489321585</repository>
+    <review_comments t="I">0</review_comments>
+    <what t="S">pull-was-reviewed</what>
+    <when t="T">2026-08-08T16:47:36Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1117439</_id>
+    <_job t="I">31268461956</_job>
+    <_time t="T">2026-08-08T17:05:50Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <comments t="I">3</comments>
+    <commits t="I">1</commits>
+    <details t="S">The pull request objectionary/eoc#1178 has been reviewed by @yegor256 with 78 HoC and 3 comments.</details>
+    <event_id t="I">12980114999</event_id>
+    <event_type t="S">PullRequestReviewEvent</event_type>
+    <files t="I">2</files>
+    <hoc t="I">78</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">1178</issue>
+    <repository t="I">489321585</repository>
+    <review_comments t="I">0</review_comments>
+    <what t="S">pull-was-reviewed</what>
+    <when t="T">2026-08-08T16:47:33Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1117440</_id>
+    <_job t="I">31268461956</_job>
+    <_time t="T">2026-08-08T17:09:16Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">bug/#6490/links-clue</branch>
+    <details t="S">The missing pull objectionary/eo#6491 has been opened by @maxonfjvipon.</details>
+    <issue t="I">6491</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-08T11:35:38Z</when>
+    <where t="S">github</where>
+    <who t="I">37025995</who>
+  </f>
+  <f>
+    <_id t="I">1117441</_id>
+    <_job t="I">31268461956</_job>
+    <_time t="T">2026-08-08T17:09:30Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">6485-recovery-skip-undefined-failed</branch>
+    <details t="S">The pull objectionary/eo#6492 has been opened earlier by @morphqdd.</details>
+    <issue t="I">6492</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-08T14:45:27Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1117442</_id>
+    <_job t="I">31268461956</_job>
+    <_time t="T">2026-08-08T17:09:31Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">renovate/eslint-plugin-jsdoc-64.x</branch>
+    <details t="S">The pull objectionary/eoc#1178 has been opened earlier by @renovate[bot].</details>
+    <issue t="I">1178</issue>
+    <repository t="I">489321585</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-08T01:11:14Z</when>
+    <where t="S">github</where>
+    <who t="I">29139614</who>
+  </f>
+  <f>
+    <_id t="I">1117443</_id>
+    <_job t="I">31268461956</_job>
+    <_time t="T">2026-08-08T17:11:01Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">renovate/eslint-plugin-jsdoc-64.x</branch>
+    <comments t="I">3</comments>
+    <comments_appreciated t="I">1</comments_appreciated>
+    <comments_by_author t="I">0</comments_by_author>
+    <comments_by_reviewers t="I">3</comments_by_reviewers>
+    <comments_resolved t="I">0</comments_resolved>
+    <comments_to_code t="I">0</comments_to_code>
+    <details t="S">Apparently, objectionary/eoc#1178 has been "pull-was-merged".</details>
+    <failed_builds t="I">0</failed_builds>
+    <files t="I">2</files>
+    <hoc t="I">78</hoc>
+    <issue t="I">1178</issue>
+    <repository t="I">489321585</repository>
+    <review t="T">2026-08-08T16:47:32Z</review>
+    <succeeded_builds t="I">18</succeeded_builds>
+    <suggestions t="I">0</suggestions>
+    <what t="S">pull-was-merged</what>
+    <when t="T">2026-08-08T17:03:00Z</when>
+    <where t="S">github</where>
+    <who t="I">8086956</who>
   </f>
 </fb>
