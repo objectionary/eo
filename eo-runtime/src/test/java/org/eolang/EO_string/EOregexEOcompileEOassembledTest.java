@@ -19,10 +19,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOregex$EOcompile}.
+ * Test case for {@link EOregex$EOcompile$EOassembled} — exercised end to end
+ * through {@code regex.compile}, whose envelope parsing (the part that does
+ * not need this class) lives in {@code regex.eo}.
  * @since 0.57.4
  */
-final class EOregexEOcompileTest {
+final class EOregexEOcompileEOassembledTest {
 
     @Test
     void compilesRegexWithSlashes() {

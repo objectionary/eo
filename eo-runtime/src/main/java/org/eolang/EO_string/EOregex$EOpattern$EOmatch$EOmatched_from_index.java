@@ -30,6 +30,34 @@ import org.eolang.XmirObject;
 /**
  * Regex.pattern.match.matched-from-index.
  * @since 0.39.0
+ * @todo #6388:90min Build an EO-native literal matcher as the first real step off
+ *  {@link java.util.regex.Matcher}. {@code compile} already parses the envelope in EO
+ *  and exposes the {@code body}/{@code flags} pair as its own attributes, so
+ *  start a new {@code string/regex/} EO object that walks {@code txt} for an exact
+ *  literal substring of {@code body} (no metacharacters yet) and fills the same
+ *  {@code matched} protocol this atom fills today (position, start, from, to, groups,
+ *  next, text, count, exists). Wire it as the real implementation for patterns that
+ *  contain none of {@code . ^ $ * + ? ( ) [ ] \ |}, falling back to this atom otherwise,
+ *  so the swap is incremental and every existing test keeps passing throughout.
+ * @todo #6388:90min Add {@code ^}/{@code $} anchors and the {@code .} wildcard to the
+ *  EO matcher from the puzzle above.
+ * @todo #6388:90min Add character classes ({@code [abc]}, {@code [^abc]}, and the
+ *  predefined {@code \d \w \s} and their negations) to the EO matcher.
+ * @todo #6388:90min Add quantifiers ({@code * + ? {n,m}}, greedy only — Java's
+ *  reluctant/possessive forms are out of scope until a real caller asks for them) to
+ *  the EO matcher.
+ * @todo #6388:90min Add capturing groups to the EO matcher, filling {@code groups} and
+ *  {@code group(index)} the way {@link #fill(Phi, Matcher, String)} does today.
+ * @todo #6388:90min Add alternation ({@code |}) to the EO matcher.
+ * @todo #6388:90min Apply the six flag semantics ({@code /d /i /m /s /u /x} — see
+ *  {@code regex.eo}'s header) to the EO matcher; today they only ever reach
+ *  {@link java.util.regex.Pattern} as an inline {@code (?flags)} prefix.
+ * @todo #6388:90min Handle supplementary characters (surrogate pairs) and the
+ *  zero-width-match advancement {@code regex.eo}'s {@code next} already encodes, then
+ *  delete this class, {@code EOregex$EOcompile$EOassembled}, and the {@code +rt jvm}
+ *  and {@code +rt node} split in {@code regex.eo} — the tests already sitting in
+ *  {@code regex.eo} are the acceptance criteria and must pass unchanged against
+ *  the EO-only engine.
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
