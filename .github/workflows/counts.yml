@@ -20,11 +20,11 @@ jobs:
           - metric: suppressions
             files: '*.java'
             pattern: '@SuppressWarnings|@checkstyle'
-            count: 364
+            count: 361
           - metric: smells
             files: '*.java'
             pattern: 'static|null'
-            count: 847
+            count: 844
           - metric: atoms
             files: '*.java'
             pattern: '@XmirObject'
