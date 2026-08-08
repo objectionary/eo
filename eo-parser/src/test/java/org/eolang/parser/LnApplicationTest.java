@@ -793,8 +793,10 @@ final class LnApplicationTest {
         final Emit emit = new Emit();
         final Globals globals = new Globals();
         globals.blank();
-        new LnApplication(new Span("foo +> t", 2))
-            .into(new Stack(), globals, emit);
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        new LnApplication(new Span("  foo +> t", 2))
+            .into(stack, globals, emit);
         emit.close();
         MatcherAssert.assertThat(
             "a `+>` test attribute on an application line preceded by one blank line must not emit any error",

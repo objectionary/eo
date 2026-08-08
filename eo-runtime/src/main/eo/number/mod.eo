@@ -1,15 +1,14 @@
 # Calculate MOD.
 # An operation that finds the remainder after dividing `x` by `y`. When `y`
 # is zero, the result is the caller-supplied `cant-mod` fallback, or the
-# bottom object when none was provided, which terminates on use. For a
-# dividend below 2^52 the remainder is computed the fast, direct way; a
-# double is exact for every integer in that range, so this always matches
-# the true remainder. A larger dividend switches to a bit-by-bit reduction,
-# subtracting decreasing powers of two times the divisor, which stays exact
-# up to 2^63 (about 9.2e18) regardless of how small the divisor is, at the
-# cost of up to 63 recursive steps; a dividend beyond 2^63 is not
-# guaranteed exact, since determining more quotient bits exactly would need
-# a matching increase in recursion depth.
+# bottom object when none was provided, which terminates on use. Otherwise
+# the divisor is doubled until it reaches the dividend and then halved back
+# down, subtracting it from the dividend whenever it fits. Doubling and
+# halving a double are exact, and every subtraction happens while the
+# remainder is below twice the subtracted value, which is exact too, so the
+# answer matches the true remainder for any pair of finite numbers, however
+# far apart their magnitudes are, at the cost of two recursive steps per
+# bit of the quotient.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -32,37 +31,24 @@
           number x.as-bytes >> dividend
           0
         [] >> abs-mod
-          if. > @
-            lt.
-              abs dividend >> absx
-              4503599627370496
-            absx.minus
-              times.
-                abs divisor >> absy
-                floor.
-                  absx.div absy
-            reduce 62 absx
-          [level p] > reduce
-            if. > @
-              level.lt 0
-              p
+          shrink > @
+            grow
+              abs divisor >> absy
+            abs dividend >> absx
+          if. > [chunk] > grow
+            chunk.gte absx
+            chunk
+            grow
+              chunk.plus chunk
+          if. > [chunk rest] > shrink
+            chunk.lt absy
+            rest
+            shrink
+              chunk.div 2
               if.
-                p.gte
-                  chunk level
-                reduce
-                  level.minus 1
-                  p.minus
-                    chunk level
-                reduce
-                  level.minus 1
-                  p
-            [lvl] > chunk
-              if. > @
-                lvl.eq 0
-                absy
-                prev.plus prev
-              chunk > prev
-                lvl.minus 1
+                rest.gte chunk
+                rest.minus chunk
+                rest
         abs-mod.neg
 
   is-nan. ++> can-return-nan-when-the-divisor-is-nan
@@ -96,11 +82,23 @@
       5
     -1
 
+  eq. ++> can-take-a-modulo-of-a-large-dividend-by-a-fractional-divisor
+    mod
+      1000000000000000
+      0.1
+    0.04448884876874218
+
   eq. ++> can-take-a-modulo-of-a-negative-by-positive-infinity
     mod
       -5
       pinf
     -5
+
+  eq. ++> can-take-a-modulo-of-a-negative-large-dividend-by-a-fractional-divisor
+    mod
+      -1000000000000000
+      0.1
+    -0.04448884876874218
 
   eq. ++> can-take-a-modulo-of-a-positive-by-negative-infinity
     mod
