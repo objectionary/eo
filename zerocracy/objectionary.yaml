@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2163.689136874
+  seconds: 477.558111126
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-07 23:43:44.226654870 Z
+  when: 2026-08-08 00:08:55.854546083 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -274633,7 +274633,7 @@
   latest_issue_was_found: 46
   min_issue_was_found: 25
   repository: 531151981
-  types_were_scanned: 36
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1105351
@@ -296301,7 +296301,7 @@
   min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 446
+  types_were_scanned: 657
   what: iterate
   where: github
 - _id: 1107889
@@ -303206,7 +303206,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1016
   earliest_issue_was_found: 1
   events_were_scanned: 12961171097
   issues_were_scanned: 0
@@ -303216,7 +303216,7 @@
   min_issue_was_found: 471
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 491
+  types_were_scanned: 725
   what: iterate
   where: github
 - _id: 1108618
@@ -306963,14 +306963,14 @@
   min_issue_was_found: 520
   min_pull_was_found: 0
   repository: 721146770
-  types_were_scanned: 276
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108977
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 999
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12957367992
   issues_were_scanned: 982
@@ -306980,7 +306980,7 @@
   min_issue_was_found: 636
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 0
+  types_were_scanned: 816
   what: iterate
   where: github
 - _id: 1108989
@@ -309921,7 +309921,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1121
   earliest_issue_was_found: 1
   events_were_scanned: 17073728626
   issues_were_scanned: 0
@@ -309931,7 +309931,7 @@
   min_issue_was_found: 0
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 857
+  types_were_scanned: 1147
   what: iterate
   where: github
 - _id: 1109065
@@ -309948,24 +309948,24 @@
   min_issue_was_found: 413
   min_pull_was_found: 409
   repository: 970961472
-  types_were_scanned: 362
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109066
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6064
+  assignees_were_scanned: 6232
   earliest_issue_was_found: 1
   events_were_scanned: 17091145445
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6095
   latest_issue_was_found: 4591
-  merges_were_scanned: 0
+  merges_were_scanned: 6464
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 4812
+  types_were_scanned: 5061
   what: iterate
   where: github
 - _id: 1109067
@@ -452275,6 +452275,18 @@
   _time: 2026-08-06 23:56:32.925972161 Z
   _version: 0.19.16/0.61.1/0.17.21
   since: *4021
+  some_merged_pulls:
+  - 0
+  - 0
+  - 3
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 6
+  - 0
   some_pull_files_size:
   - 4
   - 1
@@ -453201,6 +453213,18 @@
   - 1
   - 1
   - 1
+  some_unmerged_pulls:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
   what: quality-of-service
   when: 2026-08-06 23:56:32.898741506 Z
 - _id: 1116926
@@ -459156,7 +459180,13 @@
   _time: 2026-08-07 14:27:03.181109181 Z
   _version: 0.19.16/0.61.1/0.17.21
   total_active_contributors: 30
+  total_commits: 53560
+  total_contributors: 537
+  total_files: 15207
   total_forks: 515
+  total_issues: 5541
+  total_pulls: 10620
+  total_releases: 939
   total_repositories: 39
   total_stars: 1820
   what: dimensions-of-terrain
@@ -460160,9 +460190,6 @@
   comments: 4
   details: It's time to reward @yegor256 for the code review in objectionary/eo#6251,
     the reward amount is 7.
-  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
-    -5 for very few (1) comments.  Your running score is [+2870](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 282
   href: https://github.com/objectionary/eo/issues/6251/#issuecomment-5222672078
   is_human: 1
@@ -460183,9 +460210,6 @@
   comments: 4
   details: It's time to reward @thayorns for the code review in objectionary/eo#6251,
     the reward amount is 7.
-  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
-    -5 for very few (3) comments.  Your running score is [+994](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 282
   href: https://github.com/objectionary/eo/issues/6251/#issuecomment-5222672425
   is_human: 1
@@ -460207,9 +460231,6 @@
   comments: 4
   details: It's time to reward @morphqdd for the code review in objectionary/eo#6251,
     the reward amount is 12.
-  greeting: 'Thanks for the review! You''ve earned +12 points.  Your running score
-    is [+3709](https://www.eolang.org/zerocracy/objectionary-vitals.html); don''t
-    forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 282
   href: https://github.com/objectionary/eo/issues/6251/#issuecomment-5222672735
   is_human: 1
@@ -460231,9 +460252,6 @@
   comments: 1
   details: It's time to reward @thayorns for the code review in objectionary/eo#6474,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted.  Your running score is [+998](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 201
   href: https://github.com/objectionary/eo/issues/6474/#issuecomment-5222673043
   is_human: 1
@@ -460255,10 +460273,6 @@
   comments: 1
   details: It's time to reward @thayorns for the code review in objectionary/eo#6466,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted; -4 for too few (2) hits-of-code; +4 to give
-    you at least something.  Your running score is [+1002](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 2
   href: https://github.com/objectionary/eo/issues/6466/#issuecomment-5222673368
   is_human: 1
@@ -460280,9 +460294,6 @@
   comments: 1
   details: It's time to reward @thayorns for the code review in objectionary/eo#6472,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted.  Your running score is [+1006](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 38
   href: https://github.com/objectionary/eo/issues/6472/#issuecomment-5222673771
   is_human: 1
@@ -460322,8 +460333,10 @@
     them coming. Your running score is [+706](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 161
+  href: https://github.com/objectionary/phino/issues/1014/#issuecomment-5223275128
   is_human: 1
   issue: 1014
+  receipt: receipt-#85012
   repository: 977982682
   review_comments: 0
   seconds: 73971
