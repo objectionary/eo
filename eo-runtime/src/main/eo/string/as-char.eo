@@ -1,17 +1,30 @@
 # Writes the ASCII `code` (0-255) as its single byte, the inverse of `as-ascii`.
-# The number is read as a 64-bit integer and its least-significant byte is taken.
+# The `code` must be an integer within the range [0, 255]; any other value
+# (negative, above 255, or fractional) fails instead of being silently
+# truncated to its least-significant byte.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
++unlint redundant-object
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [code] > as-char
-  code.as-i64.as-bytes.slice > @
-    7
-    1
+  valid.if > @
+    code.as-i64.as-bytes.slice
+      7
+      1
+    T
+      "The 'code' passed to as-char must be an integer within the range [0, 255]"
+  and. > valid
+    and.
+      not.
+        0.gt code
+      not.
+        code.gt 255
+    code.eq code.as-i64.as-number
 
   eq. ++> can-round-trip-through-as-ascii
     "!"
