@@ -201,7 +201,7 @@ final class StackTest {
     }
 
     @Test
-    void restoreReinstatesTheEntryDisplacedByReplace() {
+    void reinstatesTheEntryDisplacedByReplaceOnRestore() {
         final Stack stack = new Stack();
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
         final Level displaced = stack.push(2, 2, Kind.HEAD, Openness.OPEN);
