@@ -68,7 +68,19 @@ final class Blanks {
                 "test attribute legal only as direct child of top-level object"
             );
         }
-        if (globals.pendingBlanks() == 0) {
+        checkTest(span, globals.pendingBlanks(), emit);
+    }
+
+    /**
+     * Report a missing blank line in front of a {@code +>} test
+     * attribute — illegal per R-6.5.3, which requires exactly one
+     * blank line before every test attribute.
+     * @param span The offending line's span (used for error position)
+     * @param blanks The number of blank lines preceding this attribute
+     * @param emit The directives sink
+     */
+    static void checkTest(final Span span, final int blanks, final Emit emit) {
+        if (blanks == 0) {
             emit.error(
                 span.line(), span.indent(),
                 "missing blank line before a `+>` test attribute (R-6.5.3); exactly one blank line must precede every test attribute"
@@ -83,10 +95,12 @@ final class Blanks {
      * @param span The first post-meta line's span
      * @param globals The global parser state
      * @param emit The directives sink
+     * @return The pending blanks count before any potential clearance
      */
-    static void enterAfterMeta(final Span span, final Globals globals, final Emit emit) {
+    static int enterAfterMeta(final Span span, final Globals globals, final Emit emit) {
+        final int blanks = globals.pendingBlanks();
         if (globals.inMetaHeader()) {
-            if (globals.pendingBlanks() == 0) {
+            if (blanks == 0) {
                 emit.error(
                     span.line(), span.indent(),
                     "missing blank line between meta header and the first non-meta line (R-6.5.5); exactly one blank must separate them"
@@ -96,5 +110,6 @@ final class Blanks {
             }
             globals.closeMetaHeader();
         }
+        return blanks;
     }
 }
