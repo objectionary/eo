@@ -1,0 +1,48 @@
+# Decorates `object` and behaves exactly like it, while letting only one
+# thread walk into it at a time:
+#
+# ```
+# sync a > b
+# ```
+#
+# Here, while `b.hello` is being dispatched, no other thread is dispatching
+# on `a`. Only the dispatch is guarded, since the object that comes back is
+# dataized by whoever asked for it, outside the lock.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
+
+[] > sync /A
+  ? > object /A
+
+  eq. ++> can-behave-as-the-empty-string-it-decorates
+    sync ""
+    ""
+
+  eq. ++> can-behave-as-the-non-ascii-string-it-decorates
+    sync
+      "Привет, друг!"
+    "Привет, друг!"
+
+  eq. ++> can-behave-as-the-number-it-decorates
+    sync 42
+    42
+
+  eq. ++> can-guard-a-sync-inside-a-sync
+    length.
+      sync
+        sync
+          "Привет, друг!"
+    13
+
+  eq. ++> can-take-an-attribute-of-the-decorated-object
+    length.
+      sync
+        "Привет, друг!"
+    13
