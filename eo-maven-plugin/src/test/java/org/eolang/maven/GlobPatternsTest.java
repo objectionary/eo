@@ -23,7 +23,7 @@ final class GlobPatternsTest {
             "Globs must be compiled to patterns",
             new GlobPatterns(
                 new ListOf<>("config-[!a-z].yaml", "{src,test}/{main,test}/**/*.java")
-            ).value(),
+            ),
             Matchers.hasSize(2)
         );
     }
@@ -32,7 +32,7 @@ final class GlobPatternsTest {
     void failsOnInvalidGlobs() {
         Assertions.assertThrows(
             PatternSyntaxException.class,
-            () -> new GlobPatterns(new ListOf<>("{foo")).value(),
+            () -> new GlobPatterns(new ListOf<>("{foo")),
             "Exception must be thrown for invalid glob pattern"
         );
     }

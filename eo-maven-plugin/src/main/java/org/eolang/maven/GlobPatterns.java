@@ -9,31 +9,31 @@ import java.nio.file.PathMatcher;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.cactoos.Scalar;
+import org.cactoos.list.ListEnvelope;
 
 /**
  * Globs, compiled to {@link java.util.regex.Pattern}.
  * @since 0.62.3
  */
-final class GlobPatterns implements Scalar<List<PathMatcher>> {
-
-    /**
-     * Globs.
-     */
-    private final Collection<String> globs;
+final class GlobPatterns extends ListEnvelope<PathMatcher> {
 
     /**
      * Ctor.
-     * @param glbs Globs
+     * @param globs Globs
      */
-    GlobPatterns(final Collection<String> glbs) {
-        this.globs = glbs;
+    GlobPatterns(final Collection<String> globs) {
+        this(
+            globs.stream().map(
+                glob -> FileSystems.getDefault().getPathMatcher(String.format("glob:%s", glob))
+            ).collect(Collectors.toList())
+        );
     }
 
-    @Override
-    public List<PathMatcher> value() {
-        return this.globs.stream()
-            .map(glob -> FileSystems.getDefault().getPathMatcher(String.format("glob:%s", glob)))
-            .collect(Collectors.toList());
+    /**
+     * Ctor.
+     * @param matchers Matchers
+     */
+    GlobPatterns(final List<PathMatcher> matchers) {
+        super(matchers);
     }
 }

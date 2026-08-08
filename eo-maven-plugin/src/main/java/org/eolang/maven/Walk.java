@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.list.ListEnvelope;
@@ -53,11 +52,12 @@ final class Walk extends ListEnvelope<Path> {
      */
     @SuppressWarnings("PMD.LooseCoupling")
     Walk includes(final Collection<String> globs) {
-        final List<PathMatcher> matchers = new GlobPatterns(globs).value();
-        return this.filtered(
-            path -> matchers.stream().anyMatch(
-                matcher -> this.matches(matcher, path)
-            )
+        final List<PathMatcher> matchers = new GlobPatterns(globs);
+        return new Walk(
+            this.home,
+            this.stream().filter(
+                path -> matchers.stream().anyMatch(matcher -> this.matches(matcher, path))
+            ).collect(Collectors.toList())
         );
     }
 
@@ -68,24 +68,12 @@ final class Walk extends ListEnvelope<Path> {
      */
     @SuppressWarnings("PMD.LooseCoupling")
     Walk excludes(final Collection<String> globs) {
-        final List<PathMatcher> matchers = new GlobPatterns(globs).value();
-        return this.filtered(
-            path -> matchers.stream().noneMatch(
-                matcher -> this.matches(matcher, path)
-            )
-        );
-    }
-
-    /**
-     * Filtered walk.
-     * @param path Path predicate
-     * @return Filtered walk
-     */
-    @SuppressWarnings("PMD.LooseCoupling")
-    private Walk filtered(final Predicate<Path> path) {
+        final List<PathMatcher> matchers = new GlobPatterns(globs);
         return new Walk(
             this.home,
-            this.stream().filter(path).collect(Collectors.toList())
+            this.stream().filter(
+                path -> matchers.stream().noneMatch(matcher -> this.matches(matcher, path))
+            ).collect(Collectors.toList())
         );
     }
 
