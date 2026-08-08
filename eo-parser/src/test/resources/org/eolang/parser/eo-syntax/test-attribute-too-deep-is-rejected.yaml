@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object/errors/error[@severity='error']
+  - /object/errors/error[contains(text(),'direct child of top-level')]
+input: |
+  [] > a
+    [] > b
+
+      [] > c
+
+        [] +> deep
