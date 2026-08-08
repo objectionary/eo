@@ -621,7 +621,10 @@ final class Linting implements Step {
         final Xnav xnav, final org.eolang.wpa.Defect defect
     ) {
         return xnav.path(
-            String.format("/object/metas/meta[head='unlint' and tail='%s']", defect.rule())
+            String.format(
+                "/object/metas/meta[head='unlint' and tail='%s']",
+                Linting.baseRule(defect.rule())
+            )
         ).findAny().isEmpty();
     }
 
