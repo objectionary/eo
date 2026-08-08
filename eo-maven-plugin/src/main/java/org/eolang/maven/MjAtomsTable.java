@@ -125,7 +125,10 @@ public final class MjAtomsTable extends MjSafe {
      */
     private void write(final Map<String, String> table) throws IOException {
         final Path target = this.atomsOutput.toPath();
-        Files.createDirectories(target.getParent());
+        final Path parent = target.getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
+        }
         final StringBuilder out = new StringBuilder();
         for (final Map.Entry<String, String> entry : table.entrySet()) {
             out.append(entry.getKey())
