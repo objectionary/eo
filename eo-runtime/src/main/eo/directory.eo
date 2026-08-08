@@ -1,5 +1,18 @@
 # Directory in the file system.
 # Apparently every directory is a file.
+#
+# @todo #5751:45min Translate the rest of the glob syntax below. The `translated`
+#  object handles star, double star, question mark and the separator, but a brace
+#  group like {a,b} and a character class like [a-z] or [!a] reach the regex
+#  engine neither translated nor escaped, so a bracket or a brace in the glob
+#  either refuses to compile or matches the wrong entries.
+# @todo #5751:30min Stop descending into a symbolic link to a directory. The
+#  `walk` below asks stat, which follows the link, so a link to its own ancestor
+#  recurses forever, while the `Files.walk` it replaced only listed such a link.
+# @todo #5751:60min Walk a directory without growing the EO call stack. The
+#  `stepped` below recurses once per entry and `walked` once per level, so a
+#  directory with many entries overflows the stack the way `string.repeated`
+#  does in #6239, while the `Files.walk` they replace iterated instead.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -13,6 +26,7 @@
 
 [file] > directory
   file > @
+  [] > listed /Q.tuple
   [dir time process random] > retried
     [index] >> attempted
       if. > @
@@ -78,8 +92,106 @@
             "getpid"
             *
       number.random clock
-  [] > walk /Q.tuple
-    ? > glob /Q.string
+  [glob] > walk
+    tuple.reduced > @
+      [accum prefix dir] >> walked
+        dir.listed >> names
+        [index acc] >> stepped
+          if. > @
+            index.gte names.length
+            acc
+            stepped
+              index.plus 1
+              if.
+                child.as-file.is-directory false
+                walked acc sub child.as-dir
+                acc.with sub
+          dir.as-path.resolved name > child
+          names.at index > name
+          if. > sub
+            prefix.length.eq 0
+            name
+            string.joined *1
+              path.separator
+              prefix
+              name
+        | > @
+          0
+          accum.with prefix
+      |
+        *
+        ""
+        ^
+      *
+      if. > [accum rel] >>
+        matched rel
+        accum.with
+          Q.file (base.resolved rel).as-bytes
+        accum
+    ^.as-path >> base
+    if. > [char] >> escaped
+      string.contains ".+()|^$\\" char
+      string.joined *1
+        ""
+        "\\"
+        char
+      char
+    [text] >> matched
+      as-bool. > @
+        exists.
+          next.
+            match.
+              compile.
+                string.regex
+                  string.joined *1 >>!
+                    ""
+                    "/^"
+                    translated 0 ""
+                    "$/"
+                T > [message] >>
+                  "Can't parse '%s' as a glob pattern, %s".printf
+                    * ^.glob message
+              text
+    string.joined *1 >> single
+      ""
+      "[^"
+      escaped path.separator >> literal
+      "]"
+    [index acc] >> translated
+      if. > @
+        index.gte glob.length
+        acc
+        translated
+          index.plus
+            double.if 2 1
+          string.joined *1
+            ""
+            acc
+            token
+      string.at glob index > char
+      and. > double
+        char.eq "*"
+        eq.
+          string.at
+            glob
+            index.plus 1
+            "" > [message]
+          "*"
+      double.if > token
+        ".*"
+        if.
+          char.eq "*"
+          string.joined *1
+            ""
+            single
+            "*"
+          if.
+            char.eq "?"
+            single
+            if.
+              char.eq "/"
+              literal
+              escaped char
 
   ++> can-create-a-regular-tmpfile
     seq * > @
@@ -149,6 +261,24 @@
     Q.file candidate.as-bytes > next
     mktemp.tmpfile.deleted.as-path.as-dir.made > parent
     Q.file created.as-bytes > temp
+
+  ++> can-list-only-the-direct-children-of-a-directory
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "плюшка.txt"
+      made.
+        as-dir.
+          d.resolved "sub"
+      touched.
+        as-file.
+          d.resolved "sub/deep.txt"
+      eq.
+        string.joined "," d.as-dir.listed
+        "sub,плюшка.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
 
   ++> can-retry-tmpfile-creation-after-a-collision
     seq * > @
@@ -237,9 +367,10 @@
         as-file.
           d.resolved "sub/b.txt"
       eq.
-        length.
+        string.joined
+          ","
           d.as-dir.walk "*.txt"
-        1
+        d.resolved "a.txt"
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
