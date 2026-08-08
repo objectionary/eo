@@ -185,10 +185,11 @@ final class LnMethodTest {
     void acceptsAttributeAfterBlankLine() {
         final Emit emit = new Emit();
         final Stack stack = new Stack();
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
         final Globals globals = new Globals();
-        new LnApplication(new Span("foo", 1)).into(stack, globals, emit);
+        new LnApplication(new Span("  foo", 1)).into(stack, globals, emit);
         globals.blank();
-        new LnMethod(new Span(".bar +> t", 2)).into(stack, globals, emit);
+        new LnMethod(new Span("  .bar +> t", 2)).into(stack, globals, emit);
         emit.close();
         MatcherAssert.assertThat(
             "a `+>` test attribute on a method-continuation line preceded by one blank line must not emit any error",
