@@ -2,11 +2,12 @@
 - added: 8
   cycles: 1
   deleted: 8
+  error: deadlock; recursive locking
   inserted: 8
-  seconds: 2160.843782572
+  seconds: 1373.372009906
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-08 15:36:13.553173326 Z
+  when: 2026-08-08 16:21:12.083983590 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -25163,6 +25164,7 @@
   is_human: 1
   issue: 13
   repository: 489321585
+  tombstone: 2026-08-08 15:39:20.318093389 Z
   what: issue-was-opened
   when: 2022-06-22 04:35:36.000000000 Z
   where: github
@@ -39654,6 +39656,7 @@
   is_human: 0
   issue: 403
   repository: 977982682
+  tombstone: 2026-08-08 15:39:20.349508217 Z
   what: issue-was-opened
   when: 2025-10-28 17:07:25.000000000 Z
   where: github
@@ -39667,6 +39670,7 @@
   issue: 403
   label: bug
   repository: 977982682
+  tombstone: 2026-08-08 15:39:20.351601427 Z
   what: label-was-attached
   when: 2025-10-28 17:07:25.000000000 Z
   where: github
@@ -40812,6 +40816,7 @@
   _time: 2025-11-25 14:46:13.904425401 Z
   _version: 0.16.8/0.57.2/0.16.2
   details: The issue objectionary/phino#403 has been closed by @rultor.
+  done: 2026-08-08 15:39:20.320356228 Z
   event_id: 4902462378
   event_type: IssuesEvent
   is_human: 0
@@ -40832,6 +40837,7 @@
   is_human: 1
   issue: 465
   repository: 977982682
+  tombstone: 2026-08-08 15:39:19.969886836 Z
   what: pull-was-opened
   when: 2025-11-25 14:12:33.000000000 Z
   where: github
@@ -41496,6 +41502,7 @@
   review: 2025-11-25 14:18:43.000000000 Z
   review_comments: 0
   succeeded_builds: 13
+  tombstone: 2026-08-08 15:39:19.973765885 Z
   what: pull-was-merged
   when: &224 2025-11-25 14:35:55.000000000 Z
   where: github
@@ -42140,6 +42147,7 @@
   repository: 977982682
   review_comments: 0
   seconds: 1402
+  tombstone: 2026-08-08 15:39:19.977321881 Z
   what: code-was-contributed
   when: *224
   where: github
@@ -42393,6 +42401,7 @@
   _time: 2025-11-28 12:11:00.551486556 Z
   _version: 0.16.8/0.57.2/0.16.2
   details: Apparently, objectionary/eoc#13 has been "issue-was-closed".
+  done: 2026-08-08 15:39:20.288183025 Z
   is_human: 1
   issue: 13
   repository: 489321585
@@ -50692,6 +50701,7 @@
   is_human: 0
   issue: 1440
   repository: 671896902
+  tombstone: 2026-08-08 15:39:20.080655794 Z
   what: pull-was-opened
   when: 2025-11-25 14:43:36.000000000 Z
   where: github
@@ -51084,6 +51094,7 @@
   review_comments: 0
   succeeded_builds: 19
   suggestions: 0
+  tombstone: 2026-08-08 15:39:20.082913077 Z
   what: pull-was-merged
   when: &383 2025-11-25 15:34:21.000000000 Z
   where: github
@@ -51220,6 +51231,7 @@
   details: The pull request objectionary/jeo-maven-plugin#1440 with 2 HoC created
     by @renovate[bot] was merged by @rultor after 50m44s of being in review and 5
     comments.
+  done: 2026-08-08 15:39:20.049444200 Z
   hoc: 2
   is_human: 0
   issue: 1440
@@ -56643,6 +56655,7 @@
   repository: 977982682
   review_comments: 0
   seconds: 1402
+  tombstone: 2026-08-08 15:39:19.982085026 Z
   what: code-contribution-was-rewarded
   when: 2025-12-14 12:17:23.379726902 Z
   where: github
@@ -64771,6 +64784,7 @@
   comments: 4
   details: The pull request objectionary/phino#465 with 105 HoC created by @maxonfjvipon
     was reviewed by @coderabbitai[bot] after 0h6m and 0 comments.
+  done: 2026-08-08 15:39:19.930279245 Z
   hoc: 105
   is_human: 0
   issue: 465
@@ -65851,6 +65865,7 @@
   comments: 8
   details: The pull request objectionary/eo#4688 with 159 HoC created by @r0bari was
     reviewed by @maxonfjvipon after 20h22m and 0 comments.
+  done: 2026-08-08 15:39:19.890642945 Z
   hoc: 159
   is_human: 1
   issue: 4688
@@ -221898,25 +221913,6 @@
   when: 2026-06-09 14:33:40.000000000 Z
   where: github
   who: 41898282
-- _id: 1098515
-  _job: 27217574988
-  _time: 2026-06-09 15:39:08.131905694 Z
-  _version: 0.19.9/0.60.2/0.17.17
-  commit: 14c696a52edc3640ef920b247d9c7ca3d7d8b1f9
-  default_branch: master
-  details: 'A new Git push #35342676510 has arrived to objectionary/sabj25, made by
-    @yegor256 (default branch is "master"), not associated with any pull request.'
-  event_id: 13053262126
-  event_type: PushEvent
-  is_human: 1
-  push_id: 35342676510
-  ref: refs/heads/master
-  repository: 1260338737
-  to_master: 1
-  what: git-was-pushed
-  when: 2026-06-09 14:32:09.000000000 Z
-  where: github
-  who: 526301
 - _id: 1098516
   _job: 27217574988
   _time: 2026-06-09 15:39:09.822656420 Z
@@ -293402,7 +293398,7 @@
   min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 556
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1107889
@@ -300311,7 +300307,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1018
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12972008147
   issues_were_scanned: 0
@@ -300321,7 +300317,7 @@
   min_issue_was_found: 471
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 1017
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108618
@@ -304075,7 +304071,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 999
   earliest_issue_was_found: 1
   events_were_scanned: 12974252509
   issues_were_scanned: 982
@@ -304085,7 +304081,7 @@
   min_issue_was_found: 636
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 816
+  types_were_scanned: 1081
   what: iterate
   where: github
 - _id: 1108989
@@ -307026,7 +307022,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1121
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12970548874
   issues_were_scanned: 0
@@ -307036,7 +307032,7 @@
   min_issue_was_found: 0
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 1089
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109065
@@ -307060,17 +307056,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 4939
   earliest_issue_was_found: 1
   events_were_scanned: 12977765116
   issues_were_scanned: 0
-  labels_were_scanned: 6095
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
-  merges_were_scanned: 6489
+  merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 5943
+  types_were_scanned: 6096
   what: iterate
   where: github
 - _id: 1109067
@@ -459923,6 +459919,7 @@
   is_human: 1
   issue: 4688
   repository: 73056727
+  tombstone: 2026-08-08 15:39:19.925777191 Z
   what: pull-was-opened
   when: 2025-11-24 14:42:37.000000000 Z
   where: github
@@ -462200,6 +462197,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: fix/6444-heaps-malloc-negative-size
   details: The missing pull objectionary/eo#6489 has been opened by @kalayciburak.
+  is_human: 1
   issue: 6489
   repository: 73056727
   what: pull-was-opened
@@ -462221,6 +462219,7 @@
   failed_builds: 2
   files: 1
   hoc: 2
+  is_human: 1
   issue: 6486
   repository: 73056727
   review: 2026-08-08 07:10:29.000000000 Z
@@ -462234,5 +462233,23 @@
   _job: 31263303714
   _time: 2026-08-08 15:36:13.353992347 Z
   _version: 0.19.16/0.61.1/0.17.21
+  total_active_contributors: 29
+  total_commits: 53601
+  total_files: 15218
+  total_issues: 5552
+  total_pulls: 10633
+  total_repositories: 39
   what: dimensions-of-terrain
   when: 2026-08-08 15:36:13.363659130 Z
+- _id: 1117431
+  _job: 31265727952
+  _time: 2026-08-08 16:01:58.085102207 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "enhancement" label was attached by @maxonfjvipon to the issue objectionary/eo#6490.
+  issue: 6490
+  label: enhancement
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-08 11:24:33.000000000 Z
+  where: github
+  who: 37025995
