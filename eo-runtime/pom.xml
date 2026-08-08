@@ -23,6 +23,12 @@
     cannot express; set to true to verify return types.
     -->
     <eo.typing>false</eo.typing>
+    <!--
+    Wraps every located object into PhCoverage, so that the tests record
+    which EO objects they touch and the lcov goal below turns the records
+    into a tracefile. Off here, on in the codecov workflow (see #5466).
+    -->
+    <eo.coverageTracking>false</eo.coverageTracking>
   </properties>
   <dependencies>
     <dependency>
@@ -242,9 +248,21 @@
           <!-- Tests assert on precise .eo locations in panics (off by default). -->
           <trackLocations>true</trackLocations>
           <!-- Wrap located objects into PhCoverage so tests record EO coverage. -->
-          <coverageTracking>false</coverageTracking>
+          <coverageTracking>${eo.coverageTracking}</coverageTracking>
         </configuration>
         <executions>
+          <execution>
+            <!--
+            Turns the hits the tests appended to eo.coverageFile above into an
+            LCOV tracefile. It reads the same file surefire names, so both ends
+            keep the default of the goal.
+            -->
+            <id>lcov</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>lcov</goal>
+            </goals>
+          </execution>
           <execution>
             <id>compile</id>
             <goals>

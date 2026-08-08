@@ -653,7 +653,7 @@
       <xsl:text> = new PhCoverage(</xsl:text>
       <xsl:value-of select="$name"/>
       <xsl:text>, "</xsl:text>
-      <xsl:value-of select="@loc"/>
+      <xsl:value-of select="$object-name"/>
       <xsl:text>", </xsl:text>
       <xsl:value-of select="@line"/>
       <xsl:text>, </xsl:text>

@@ -36,7 +36,7 @@ final class PhCoverageTest {
         final Phi origin = new Data.ToPhi(42L);
         MatcherAssert.assertThat(
             "a coverage wrapper must compare equal to the object it wraps, but it didnt",
-            new PhCoverage(origin, "Φ.n", 1, 1),
+            new PhCoverage(origin, "org.eolang.числò", 1, 1),
             Matchers.equalTo(origin)
         );
     }
@@ -48,17 +48,17 @@ final class PhCoverageTest {
         System.setProperty("eo.coverageFile", hits.toString());
         try {
             final Phi first = new PhCoverage(
-                new PhDefault(new byte[] {(byte) 0x2A}), "Φ.foo", 7, 3
+                new PhDefault(new byte[] {(byte) 0x2A}), "org.eolang.foo", 7, 3
             );
             new Dataized(first).take();
             new Dataized(first.copy()).take();
             new Dataized(
-                new PhCoverage(new PhDefault(new byte[] {(byte) 0x01}), "Φ.bar", 9, 5)
+                new PhCoverage(new PhDefault(new byte[] {(byte) 0x01}), "org.eolang.bar", 9, 5)
             ).take();
             MatcherAssert.assertThat(
                 "every location, hit repeatedly and through a copy, must be recorded exactly once",
                 Files.readAllLines(hits, StandardCharsets.UTF_8),
-                Matchers.containsInAnyOrder("Φ.foo:7:3", "Φ.bar:9:5")
+                Matchers.containsInAnyOrder("org.eolang.foo:7:3", "org.eolang.bar:9:5")
             );
         } finally {
             if (before == null) {

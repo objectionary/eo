@@ -21,19 +21,20 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * <p>The transpiler emits it around every located object. Recording is
  * enabled by the {@code eo.coverageFile} system property: on the first
- * touch, one {@code loc:line:pos} line is appended, at most once per
+ * touch, one {@code program:line:pos} line is appended, at most once per
  * JVM; without the property every hit is a silent no-op. The property
  * is re-read on every touch (not cached at class load), since this
  * class is now instantiated around every located object in every EO
  * program: the very first one touched anywhere in the JVM would
  * otherwise freeze a stale answer for the rest of the run. Thread-safe.</p>
  *
- * <p>The {@code coverageFile} parameter of eo-maven-plugin's
+ * <p>The {@code coverageTracking} parameter of eo-maven-plugin's
  * {@code transpile} goal ({@code MjTranspile}) controls whether the
  * transpiler wraps located objects into this decorator in the first
- * place; see its javadoc for the remaining gaps (the LCOV report and
- * threading this same file to the process that runs the compiled
- * program).</p>
+ * place, and its {@code lcov} goal turns the file this class appends to
+ * into an LCOV tracefile. What is still missing is the untouched objects
+ * in that tracefile and a threshold that fails the build on poor
+ * coverage; see the javadoc of {@code MjLcov}.</p>
  *
  * @since 0.58
  */
@@ -45,8 +46,11 @@ public final class PhCoverage implements Phi {
     /** The origin. */
     private final Phi origin;
 
-    /** The fully qualified location of the object. */
-    private final String loc;
+    /**
+     * The name of the EO program that holds the object, dot separated.
+     * Together with {@link #line} and {@link #pos} it identifies the object.
+     */
+    private final String program;
 
     /** Source line. */
     private final int line;
@@ -57,13 +61,13 @@ public final class PhCoverage implements Phi {
     /**
      * Ctor.
      * @param phi The origin
-     * @param location The fully qualified location of the object
+     * @param name The name of the EO program that holds the object
      * @param lne Source line
      * @param position Source column
      */
-    public PhCoverage(final Phi phi, final String location, final int lne, final int position) {
+    public PhCoverage(final Phi phi, final String name, final int lne, final int position) {
         this.origin = phi;
-        this.loc = location;
+        this.program = name;
         this.line = lne;
         this.pos = position;
     }
@@ -80,7 +84,7 @@ public final class PhCoverage implements Phi {
 
     @Override
     public Phi copy() {
-        return new PhCoverage(this.origin.copy(), this.loc, this.line, this.pos);
+        return new PhCoverage(this.origin.copy(), this.program, this.line, this.pos);
     }
 
     @Override
@@ -134,7 +138,7 @@ public final class PhCoverage implements Phi {
     private void hit() {
         final String property = PhCoverage.property();
         if (property != null) {
-            final String record = String.format("%s:%d:%d%n", this.loc, this.line, this.pos);
+            final String record = String.format("%s:%d:%d%n", this.program, this.line, this.pos);
             if (PhCoverage.SEEN.add(record)) {
                 try {
                     Files.write(
