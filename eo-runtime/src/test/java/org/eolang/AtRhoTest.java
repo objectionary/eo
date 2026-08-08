@@ -69,4 +69,16 @@ final class AtRhoTest {
             Matchers.equalTo(obj)
         );
     }
+
+    @Test
+    void rejectsNullValue() {
+        MatcherAssert.assertThat(
+            "AtRho must reject null instead of silently keeping rho unset",
+            Assertions.assertThrows(
+                NullPointerException.class,
+                () -> new AtRho().put(null)
+            ).getMessage(),
+            Matchers.containsString("can't be null")
+        );
+    }
 }
