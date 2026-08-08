@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2160.895767657
+  seconds: 2160.792655163
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-08 19:44:54.562862468 Z
+  when: 2026-08-08 21:36:41.293577344 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -222554,25 +222554,6 @@
   when: 2026-06-09 20:06:10.000000000 Z
   where: github
   who: 526301
-- _id: 1098641
-  _job: 27261824864
-  _time: 2026-06-10 07:59:06.551269162 Z
-  _version: 0.19.9/0.60.2/0.17.17
-  commit: 22c6ab0e9c951c0c6e9d302d5238fac8053f9a95
-  default_branch: master
-  details: 'A new Git push #35356577331 has arrived to objectionary/sabj25, made by
-    @yegor256 (default branch is "master"), not associated with any pull request.'
-  event_id: 13067272478
-  event_type: PushEvent
-  is_human: 1
-  push_id: 35356577331
-  ref: refs/heads/master
-  repository: 1260338737
-  to_master: 1
-  what: git-was-pushed
-  when: 2026-06-09 19:31:23.000000000 Z
-  where: github
-  who: 526301
 - _id: 1098642
   _job: 27261824864
   _time: 2026-06-10 07:59:28.629215057 Z
@@ -299730,7 +299711,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1019
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12982805869
   issues_were_scanned: 0
@@ -303494,9 +303475,9 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 999
   earliest_issue_was_found: 1
-  events_were_scanned: 12981715486
+  events_were_scanned: 12983282863
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
@@ -306445,9 +306426,9 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1122
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 12981204000
+  events_were_scanned: 12983561117
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 686
@@ -306479,13 +306460,13 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5804
+  assignees_were_scanned: 6064
   earliest_issue_was_found: 1
-  events_were_scanned: 17142845906
+  events_were_scanned: 17146861680
   issues_were_scanned: 0
-  labels_were_scanned: 6095
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
-  merges_were_scanned: 6491
+  merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
@@ -462059,8 +462040,10 @@
     you at least something.  Your running score is [+2091](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 2
+  href: https://github.com/objectionary/eo/issues/6492/#issuecomment-5227806333
   is_human: 1
   issue: 6492
+  receipt: receipt-#85209
   repository: 73056727
   review_comments: 0
   seconds: 5848
@@ -462082,8 +462065,10 @@
     you at least something.  Your running score is [+683](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 2
+  href: https://github.com/objectionary/eo/issues/6492/#issuecomment-5227806423
   is_human: 1
   issue: 6492
+  receipt: receipt-#85210
   repository: 73056727
   review_comments: 0
   seconds: 2301
@@ -462105,6 +462090,7 @@
     you at least something.  Your running score is [+2825](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 2
+  href: https://github.com/objectionary/eoc/issues/1177/#issuecomment-5227806540
   is_human: 1
   issue: 1177
   repository: 489321585
@@ -462127,6 +462113,7 @@
     -8 for absolutely no comments posted.  Your running score is [+2829](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 78
+  href: https://github.com/objectionary/eoc/issues/1178/#issuecomment-5227806625
   is_human: 1
   issue: 1178
   repository: 489321585
@@ -462375,6 +462362,7 @@
   branch: renovate/reviewdog-action-actionlint-1.x
   details: The missing pull objectionary/reducing-programs-to-objects#74 has been
     opened by @renovate[bot].
+  is_human: 0
   issue: 74
   repository: 493235807
   what: pull-was-opened
@@ -462388,6 +462376,7 @@
   branch: renovate/crate-ci-typos-1.x
   details: The missing pull objectionary/reducing-programs-to-objects#75 has been
     opened by @renovate[bot].
+  is_human: 0
   issue: 75
   repository: 493235807
   what: pull-was-opened
@@ -462400,6 +462389,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: 4679-phi-to-attr-back
   details: The pull objectionary/eo#4694 has been opened earlier by @r0bari.
+  is_human: 1
   issue: 4694
   repository: 73056727
   what: pull-was-opened
@@ -462412,6 +462402,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: renovate/com.qulice-qulice-maven-plugin-0.x
   details: The pull objectionary/lints#1215 has been opened earlier by @renovate[bot].
+  is_human: 0
   issue: 1215
   repository: 889819508
   what: pull-was-opened
@@ -462433,9 +462424,11 @@
   failed_builds: 0
   files: 1
   hoc: 2
+  is_human: 0
   issue: 1177
   repository: 489321585
   review: 2026-08-08 16:47:35.000000000 Z
+  review_comments: 0
   succeeded_builds: 18
   suggestions: 0
   what: pull-was-merged
@@ -462448,6 +462441,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   assigner: 51804353
   details: objectionary/lints#1220 was assigned to @volodya-lombrozo by @volodya-lombrozo.
+  is_human: 1
   issue: 1220
   repository: 889819508
   what: issue-was-assigned
@@ -462459,6 +462453,7 @@
   _time: 2026-08-08 19:27:59.715320805 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @volodya-lombrozo to the issue objectionary/lints#1219.
+  is_human: 1
   issue: 1219
   label: bug
   repository: 889819508
@@ -462471,6 +462466,7 @@
   _time: 2026-08-08 19:28:01.575201326 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @volodya-lombrozo to the issue objectionary/lints#1220.
+  is_human: 1
   issue: 1220
   label: bug
   repository: 889819508
@@ -462478,3 +462474,41 @@
   when: 2026-08-08 17:53:55.000000000 Z
   where: github
   who: 51804353
+- _id: 1117480
+  _job: 31278218672
+  _time: 2026-08-08 21:01:52.316436394 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 1219-fix-ci-checks-deep-infer
+  details: The pull request objectionary/lints#1222 has been opened by @volodya-lombrozo.
+  event_id: 12983062335
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 1222
+  repository: 889819508
+  what: pull-was-opened
+  when: 2026-08-08 19:19:05.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1117481
+  _job: 31278218672
+  _time: 2026-08-08 21:06:41.440997588 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 1219-fix-ci-checks-deep-infer
+  comments: 3
+  comments_appreciated: 1
+  comments_by_author: 1
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/lints#1222 has been "pull-was-merged".
+  failed_builds: 0
+  files: 6
+  hoc: 14
+  issue: 1222
+  repository: 889819508
+  succeeded_builds: 20
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-08 19:30:50.000000000 Z
+  where: github
+  who: 8086956
