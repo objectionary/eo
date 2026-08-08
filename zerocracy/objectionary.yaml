@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 477.558111126
+  seconds: 2163.092760279
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-08 00:08:55.854546083 Z
+  when: 2026-08-08 03:05:40.146464487 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -296301,7 +296301,7 @@
   min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 657
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1107889
@@ -301167,6 +301167,7 @@
   - 4.787567751025907
   - 4.787567751025907
   - 4.787567751025907
+  - 4.787567751025907
   qod_per_day:
   - 20.262571430008
   - 42.95057143129291
@@ -301877,8 +301878,9 @@
   - 110.1867884948815
   - 110.1867884948815
   - 110.1867884948815
+  - 110.1867884948815
   what: learn-eva
-  when: 2026-08-07 16:10:57.081290664 Z
+  when: 2026-08-08 00:12:43.652483603 Z
 - _id: 1108432
   _job: 28880449411
   _time: 2026-07-07 16:03:53.193694149 Z
@@ -302250,7 +302252,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 17075824354
+  events_were_scanned: 12961938980
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 97
@@ -303206,9 +303208,9 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1016
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 12961171097
+  events_were_scanned: 12962148544
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 365
@@ -303216,7 +303218,7 @@
   min_issue_was_found: 471
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 725
+  types_were_scanned: 879
   what: iterate
   where: github
 - _id: 1108618
@@ -306963,14 +306965,14 @@
   min_issue_was_found: 520
   min_pull_was_found: 0
   repository: 721146770
-  types_were_scanned: 0
+  types_were_scanned: 520
   what: iterate
   where: github
 - _id: 1108977
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 999
   earliest_issue_was_found: 1
   events_were_scanned: 12957367992
   issues_were_scanned: 982
@@ -306980,7 +306982,7 @@
   min_issue_was_found: 636
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 816
+  types_were_scanned: 1047
   what: iterate
   where: github
 - _id: 1108989
@@ -309921,9 +309923,9 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1121
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 17073728626
+  events_were_scanned: 12964011679
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 686
@@ -309931,7 +309933,7 @@
   min_issue_was_found: 0
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 1147
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109065
@@ -309955,17 +309957,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6232
+  assignees_were_scanned: 6374
   earliest_issue_was_found: 1
-  events_were_scanned: 17091145445
+  events_were_scanned: 17094060997
   issues_were_scanned: 0
-  labels_were_scanned: 6095
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
-  merges_were_scanned: 6464
+  merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 5061
+  types_were_scanned: 5209
   what: iterate
   where: github
 - _id: 1109067
@@ -448685,28 +448687,6 @@
   when: 2026-08-05 16:04:37.000000000 Z
   where: github
   who: 125282851
-- _id: 1116709
-  _job: 85257
-  _time: 2026-08-05 19:34:42.470813914 Z
-  _version: 0.19.16/0.61.1/0.17.21
-  analyzers: 18
-  text: |-
-    The average reward per task (8.8 points) is increasing (R=0.15).
-    The average punishment per task (7.0 points) is decreasing (R=-0.20).
-    The average number of builds per week (9090.9) is increasing (R=0.76).
-    The average number of commits per week (232.3) is increasing (R=0.75).
-    The average bugs accepted per month (41.0) is increasing (R=0.71).
-    The average monthly punishment (379 points) is increasing (R=0.23).
-    The average monthly wage (10.4 points) is increasing (R=0.56).
-    The average issue cycle time (1w) is staying still.
-    The average pull cycle time (6d1h) is staying still.
-    The average quality of service (82%) is decreasing (R=0.76).
-    The average number of releases per month (23.2) is increasing (R=0.47).
-    The average monthly turnover (24.0 developers) is increasing (R=0.83).
-    The average weekly cost of HoC (5.99 points) is staying still.
-    The average monthly zents/points ratio (0.40) is decreasing (R=0.88).
-  what: assessment
-  when: 2026-08-05 19:34:42.487002541 Z
 - _id: 1116710
   _job: 85257
   _time: 2026-08-05 19:35:20.717034344 Z
@@ -460328,10 +460308,6 @@
   comments: 5
   details: It's time to reward @maxonfjvipon for the code contributed in objectionary/phino#1014,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too many hits-of-code (161 >= 100). Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+706](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 161
   href: https://github.com/objectionary/phino/issues/1014/#issuecomment-5223275128
   is_human: 1
@@ -460389,3 +460365,25 @@
   when: 2026-08-07 21:57:10.000000000 Z
   where: github
   who: 33578155
+- _id: 1117313
+  _job: 85628
+  _time: 2026-08-08 00:10:21.128081693 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  analyzers: 18
+  text: |-
+    The average reward per task (8.8 points) is increasing (R=0.16).
+    The average punishment per task (7.0 points) is decreasing (R=-0.18).
+    The average number of builds per week (10268.0) is increasing (R=0.81).
+    The average number of commits per week (252.4) is increasing (R=0.78).
+    The average bugs accepted per month (43.0) is increasing (R=0.74).
+    The average monthly punishment (384 points) is increasing (R=0.30).
+    The average monthly wage (10.3 points) is increasing (R=0.63).
+    The average issue cycle time (1w) is staying still.
+    The average pull cycle time (5d22h) is staying still.
+    The average quality of service (82%) is decreasing (R=0.76).
+    The average number of releases per month (24.1) is increasing (R=0.41).
+    The average monthly turnover (24.0 developers) is increasing (R=0.83).
+    The average weekly cost of HoC (5.97 points) is staying still.
+    The average monthly zents/points ratio (0.39) is decreasing (R=0.90).
+  what: assessment
+  when: 2026-08-08 00:10:21.145229502 Z
