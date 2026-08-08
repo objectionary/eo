@@ -27,7 +27,7 @@ import java.util.Collection;
  * <p>Three clues are planned, one per kind of object, and each fills a
  * table of its own: what an object certainly has ({@link Provides}), what
  * it must have judging by how it is used ({@link Needs}), and which types
- * are copies of which. Keeping the tables apart is what lets a smarter
+ * are copies of which ({@link Links}). Keeping the tables apart is what lets a smarter
  * rule add rows, or read them differently, without touching anything
  * else.</p>
  *
@@ -62,7 +62,7 @@ public final class Clues implements Clue {
      * Ctor.
      */
     public Clues() {
-        this(Arrays.asList(new Provides(), new Needs()));
+        this(Arrays.asList(new Provides(), new Needs(), new Links()));
     }
 
     /**
