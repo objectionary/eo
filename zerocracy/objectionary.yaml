@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2160.792655163
+  seconds: 2176.747624162
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-08 21:36:41.293577344 Z
+  when: 2026-08-08 23:35:35.312732857 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -64386,6 +64386,7 @@
   comments: 4
   details: The pull request objectionary/eo#4694 with 315 HoC created by @r0bari was
     reviewed by @maxonfjvipon after 2h28m and 0 comments.
+  done: 2026-08-08 21:40:04.531492821 Z
   hoc: 315
   is_human: 1
   issue: 4694
@@ -172473,7 +172474,7 @@
   _time: 2026-05-18 11:53:16.844370701 Z
   _version: 0.19.9/0.60.2/0.17.17
   events_were_scanned: 16756597275
-  min_issue_was_found: 3
+  min_issue_was_found: 0
   repository: 1239730762
   what: iterate
   where: github
@@ -222535,25 +222536,6 @@
   when: 2026-06-10 04:40:09.000000000 Z
   where: github
   who: 526301
-- _id: 1098640
-  _job: 27261824864
-  _time: 2026-06-10 07:59:05.227757743 Z
-  _version: 0.19.9/0.60.2/0.17.17
-  commit: 6a62a3be6d2894d584909d9e7c6a9c523a95e93a
-  default_branch: master
-  details: 'A new Git push #35358073805 has arrived to objectionary/sabj25, made by
-    @yegor256 (default branch is "master"), not associated with any pull request.'
-  event_id: 13068777058
-  event_type: PushEvent
-  is_human: 1
-  push_id: 35358073805
-  ref: refs/heads/master
-  repository: 1260338737
-  to_master: 1
-  what: git-was-pushed
-  when: 2026-06-09 20:06:10.000000000 Z
-  where: github
-  who: 526301
 - _id: 1098642
   _job: 27261824864
   _time: 2026-06-10 07:59:28.629215057 Z
@@ -253822,7 +253804,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 5
   merges_were_scanned: 0
-  min_issue_was_found: 3
+  min_issue_was_found: 6
   min_pull_was_found: 0
   repository: 510082372
   types_were_scanned: 0
@@ -256652,7 +256634,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 16
   merges_were_scanned: 0
-  min_issue_was_found: 13
+  min_issue_was_found: 18
   min_pull_was_found: 0
   repository: 519246071
   types_were_scanned: 0
@@ -292780,7 +292762,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 66
   merges_were_scanned: 0
-  min_issue_was_found: 89
+  min_issue_was_found: 90
   min_pull_was_found: 0
   repository: 574459304
   types_were_scanned: 0
@@ -292792,7 +292774,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 17141330552
+  events_were_scanned: 17151421957
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 347
@@ -292800,7 +292782,7 @@
   min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 556
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1107889
@@ -295228,7 +295210,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 34
   merges_were_scanned: 0
-  min_issue_was_found: 6
+  min_issue_was_found: 40
   min_pull_was_found: 0
   repository: 570457023
   types_were_scanned: 0
@@ -298759,7 +298741,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 97
   merges_were_scanned: 0
-  min_issue_was_found: 102
+  min_issue_was_found: 104
   min_pull_was_found: 0
   repository: 955159947
   types_were_scanned: 0
@@ -299711,17 +299693,17 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1019
   earliest_issue_was_found: 1
   events_were_scanned: 12982805869
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 365
   merges_were_scanned: 0
-  min_issue_was_found: 471
+  min_issue_was_found: 472
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 624
+  types_were_scanned: 870
   what: iterate
   where: github
 - _id: 1108618
@@ -303475,9 +303457,9 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 999
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 12983282863
+  events_were_scanned: 12985595145
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
@@ -303485,7 +303467,7 @@
   min_issue_was_found: 637
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 0
+  types_were_scanned: 816
   what: iterate
   where: github
 - _id: 1108989
@@ -305897,7 +305879,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 6
   merges_were_scanned: 0
-  min_issue_was_found: 5
+  min_issue_was_found: 10
   min_pull_was_found: 0
   repository: 1219806055
   types_were_scanned: 0
@@ -305914,7 +305896,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 236
   merges_were_scanned: 0
-  min_issue_was_found: 0
+  min_issue_was_found: 18
   min_pull_was_found: 0
   repository: 543969974
   types_were_scanned: 0
@@ -305931,7 +305913,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 63
   merges_were_scanned: 0
-  min_issue_was_found: 0
+  min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 731516758
   types_were_scanned: 0
@@ -306065,7 +306047,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 77
   merges_were_scanned: 0
-  min_issue_was_found: 56
+  min_issue_was_found: 69
   min_pull_was_found: 0
   repository: 492899189
   types_were_scanned: 0
@@ -306099,7 +306081,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 43
   merges_were_scanned: 0
-  min_issue_was_found: 16
+  min_issue_was_found: 39
   min_pull_was_found: 0
   repository: 501942888
   types_were_scanned: 0
@@ -306116,7 +306098,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 51
   merges_were_scanned: 0
-  min_issue_was_found: 0
+  min_issue_was_found: 21
   min_pull_was_found: 0
   repository: 499536612
   types_were_scanned: 0
@@ -306426,9 +306408,9 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1122
   earliest_issue_was_found: 1
-  events_were_scanned: 12983561117
+  events_were_scanned: 12985606707
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 686
@@ -306436,7 +306418,7 @@
   min_issue_was_found: 41
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 1100
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109065
@@ -306450,7 +306432,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 122
   merges_were_scanned: 0
-  min_issue_was_found: 414
+  min_issue_was_found: 426
   min_pull_was_found: 409
   repository: 970961472
   types_were_scanned: 0
@@ -306460,17 +306442,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6064
+  assignees_were_scanned: 6232
   earliest_issue_was_found: 1
-  events_were_scanned: 17146861680
+  events_were_scanned: 12986756950
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6095
   latest_issue_was_found: 4591
-  merges_were_scanned: 0
+  merges_were_scanned: 6491
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 6229
+  types_were_scanned: 6369
   what: iterate
   where: github
 - _id: 1109067
@@ -462035,10 +462017,6 @@
   comments: 3
   details: It's time to reward @gemshrine for the code review in objectionary/eo#6492,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted; -4 for too few (2) hits-of-code; +4 to give
-    you at least something.  Your running score is [+2091](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 2
   href: https://github.com/objectionary/eo/issues/6492/#issuecomment-5227806333
   is_human: 1
@@ -462060,10 +462038,6 @@
   comments: 3
   details: It's time to reward @maxonfjvipon for the code review in objectionary/eo#6492,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted; -4 for too few (2) hits-of-code; +4 to give
-    you at least something.  Your running score is [+683](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 2
   href: https://github.com/objectionary/eo/issues/6492/#issuecomment-5227806423
   is_human: 1
@@ -462085,10 +462059,6 @@
   comments: 1
   details: It's time to reward @yegor256 for the code review in objectionary/eoc#1177,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted; -4 for too few (2) hits-of-code; +4 to give
-    you at least something.  Your running score is [+2825](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 2
   href: https://github.com/objectionary/eoc/issues/1177/#issuecomment-5227806540
   is_human: 1
@@ -462109,9 +462079,6 @@
   comments: 3
   details: It's time to reward @yegor256 for the code review in objectionary/eoc#1178,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted.  Your running score is [+2829](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 78
   href: https://github.com/objectionary/eoc/issues/1178/#issuecomment-5227806625
   is_human: 1
@@ -462392,6 +462359,7 @@
   is_human: 1
   issue: 4694
   repository: 73056727
+  tombstone: 2026-08-08 21:40:04.560645128 Z
   what: pull-was-opened
   when: 2025-11-25 17:19:53.000000000 Z
   where: github
@@ -462432,7 +462400,7 @@
   succeeded_builds: 18
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-08 17:17:56.000000000 Z
+  when: &4108 2026-08-08 17:17:56.000000000 Z
   where: github
   who: 8086956
 - _id: 1117477
@@ -462504,11 +462472,87 @@
   failed_builds: 0
   files: 6
   hoc: 14
+  is_human: 0
   issue: 1222
   repository: 889819508
+  review_comments: 0
   succeeded_builds: 20
   suggestions: 0
   what: pull-was-merged
   when: 2026-08-08 19:30:50.000000000 Z
   where: github
   who: 8086956
+- _id: 1117482
+  _job: 85848
+  _time: 2026-08-08 21:38:14.691529991 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  details: The pull request objectionary/eoc#1177 with 2 HoC created by @renovate[bot]
+    was merged by @rultor after 1d of being in review and 3 comments.
+  hoc: 2
+  is_human: 0
+  issue: 1177
+  merger: 8086956
+  repository: 489321585
+  review_comments: 0
+  seconds: 87936
+  what: code-was-contributed
+  when: *4108
+  where: github
+  who: 29139614
+- _id: 1117483
+  _job: 31282911875
+  _time: 2026-08-08 23:00:04.593401568 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: fix/issue-1216-apostrophe-in-unlint
+  details: The pull request objectionary/lints#1223 has been opened by @vasilevnstas.
+  event_id: 12985595145
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 1223
+  repository: 889819508
+  what: pull-was-opened
+  when: 2026-08-08 21:34:45.000000000 Z
+  where: github
+  who: 33578155
+- _id: 1117484
+  _job: 31282911875
+  _time: 2026-08-08 23:05:04.282772623 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6427-recovery-blank-line-separator
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 2
+  details: Apparently, objectionary/eo#6479 has been "pull-was-closed".
+  failed_builds: 5
+  files: 3
+  hoc: 65
+  issue: 6479
+  repository: 73056727
+  review: 2026-08-08 05:49:29.000000000 Z
+  succeeded_builds: 23
+  suggestions: 2
+  what: pull-was-closed
+  when: 2026-08-08 22:41:35.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1117485
+  _job: 31282911875
+  _time: 2026-08-08 23:30:22.525546696 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 125282851
+  comments: 1
+  details: The pull request objectionary/eo#6479 with 65 HoC created by @morphqdd
+    was reviewed by @thayorns after 0h23m and 2 comments.
+  hoc: 65
+  issue: 6479
+  repository: 73056727
+  review_comments: 2
+  seconds: 1384
+  what: code-was-reviewed
+  when: 2026-08-08 05:49:29.000000000 Z
+  where: github
+  who: 96509556
