@@ -245,15 +245,13 @@ final class Globals {
      * @param raw Raw line text
      */
     void appendTextLine(final String raw) {
-        final String stripped;
-        if (raw.length() >= this.tindent
-            && raw.substring(0, Math.min(this.tindent, raw.length()))
-                .chars().allMatch(c -> c == ' ')) {
-            stripped = raw.substring(Math.min(this.tindent, raw.length()));
-        } else {
-            stripped = raw;
+        int strip = 0;
+        while (strip < raw.length()
+            && strip < this.tindent
+            && raw.charAt(strip) == ' ') {
+            strip += 1;
         }
-        this.tbody.add(stripped);
+        this.tbody.add(raw.substring(strip));
     }
 
     /**
