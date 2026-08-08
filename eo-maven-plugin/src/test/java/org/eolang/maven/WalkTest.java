@@ -7,9 +7,11 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.nio.file.Path;
+import java.util.regex.PatternSyntaxException;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -34,6 +36,15 @@ final class WalkTest {
             ),
             new Walk(temp).includes(new ListOf<>(pattern)),
             Matchers.iterableWithSize(count)
+        );
+    }
+
+    @Test
+    void throwsOnInvalidGlobBeforeWalkingFiles(@Mktmp final Path empty) {
+        Assertions.assertThrows(
+            PatternSyntaxException.class,
+            () -> new Walk(empty).includes(new ListOf<>("{eager")),
+            "Exception must be thrown for invalid glob pattern"
         );
     }
 }
