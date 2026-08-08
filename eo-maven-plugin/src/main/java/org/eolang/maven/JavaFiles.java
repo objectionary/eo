@@ -81,7 +81,7 @@ final class JavaFiles {
             final Xnav object = new Xnav(target).element("object");
             final Collection<Xnav> classes = object.elements(Filter.withName("class"))
                 .collect(Collectors.toList());
-            final boolean atom = object.path("/object/o/o[@name='λ']").findAny().isPresent();
+            final boolean atom = object.path("o/o[@name='λ']").findAny().isPresent();
             for (final Xnav clazz : classes) {
                 final String jname = clazz.attribute("java-name").text().get();
                 if (!atom || jname.endsWith("Test")) {
