@@ -44,9 +44,9 @@ final class EoSourceRun implements Proc<Object> {
             .phase("generate-sources")
             .goals("register", "compile", "transpile")
             .configuration()
-            .set("failOnWarning", Boolean.FALSE.toString())
-            .set("offline", Boolean.TRUE.toString())
-            .set("skipLinting", Boolean.TRUE.toString());
+            .set("failOnWarning", "false")
+            .set("offline", "true")
+            .set("skipLinting", "true");
         this.farea.build()
             .plugins()
             .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")

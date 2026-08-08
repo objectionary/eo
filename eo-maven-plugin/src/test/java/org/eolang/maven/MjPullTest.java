@@ -13,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
-import java.util.LinkedList;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.scalar.ScalarOf;
@@ -80,7 +79,7 @@ final class MjPullTest {
             .execute(MjPull.class);
         MatcherAssert.assertThat(
             "PullMojo should have pulled using offline hash file, but it didn't",
-            new LinkedList<>(new MnCsv(maven.foreignPath()).read()).getFirst().get("hash"),
+            new MnCsv(maven.foreignPath()).read().iterator().next().get("hash"),
             Matchers.equalTo("mmmmmmm")
         );
     }
@@ -98,7 +97,7 @@ final class MjPullTest {
             .execute(MjPull.class);
         MatcherAssert.assertThat(
             "PullMojo should have pulled using provided hash, but it didn't",
-            new LinkedList<>(new MnCsv(maven.foreignPath()).read()).getFirst().get("hash"),
+            new MnCsv(maven.foreignPath()).read().iterator().next().get("hash"),
             Matchers.equalTo("abcdefg")
         );
     }

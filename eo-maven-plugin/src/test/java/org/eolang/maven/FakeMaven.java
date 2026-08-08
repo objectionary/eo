@@ -126,8 +126,8 @@ final class FakeMaven {
     /**
      * Executes mojos in the workspace.
      * You can use utility classes to run predefined maven pipelines:
-     *  - {@link org.eolang.maven.FakeMaven.Parse} to parse eo code
-     *  - see other inner classes below.
+     * - {@link org.eolang.maven.FakeMaven.Parse} to parse eo code
+     * - see other inner classes below.
      * @param mojo Several mojos to execute
      * @return Workspace after executing Mojo
      * @throws IOException If some problem with filesystem is happened.
@@ -364,15 +364,17 @@ final class FakeMaven {
      */
     Map<String, Path> result() throws IOException {
         final Path root = this.workspace.resolve("");
-        return Files.walk(root).collect(
-            Collectors.toMap(
-                p -> String.join(
-                    "/",
-                    root.relativize(p).toString().split(Pattern.quote(File.separator))
-                ),
-                Function.identity()
-            )
-        );
+        try (Stream<Path> stream = Files.walk(root)) {
+            return stream.collect(
+                Collectors.toMap(
+                    p -> String.join(
+                        "/",
+                        root.relativize(p).toString().split(Pattern.quote(File.separator))
+                    ),
+                    Function.identity()
+                )
+            );
+        }
     }
 
     /**

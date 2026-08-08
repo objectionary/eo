@@ -76,8 +76,8 @@ final class TranspileIT {
             .execution("transpile-it")
             .goals("register", "compile", "transpile")
             .configuration()
-            .set("failOnWarning", Boolean.FALSE.toString())
-            .set("skipLinting", Boolean.TRUE.toString());
+            .set("failOnWarning", "false")
+            .set("skipLinting", "true");
         farea.exec("clean", "compile");
     }
 

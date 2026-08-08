@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.sun.net.httpserver.HttpServer;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -115,7 +116,9 @@ final class OyRemoteTest {
 
     @Test
     void doesNotReturnThrottledResponseBodyAsSource() throws Exception {
-        final HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        final HttpServer server = HttpServer.create(
+            new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0
+        );
         server.createContext(
             "/",
             exchange -> {
@@ -186,7 +189,9 @@ final class OyRemoteTest {
      * @throws Exception If the test setup itself fails
      */
     private static String notFoundMessage() throws Exception {
-        final HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        final HttpServer server = HttpServer.create(
+            new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0
+        );
         server.createContext(
             "/",
             exchange -> {

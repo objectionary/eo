@@ -398,7 +398,6 @@ final class Eo implements Iterable<Directive> {
      * @return True when the line failed to parse
      * @checkstyle ParameterNumberCheck (3 lines)
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static boolean dispatch(
         final Span span, final Stack stack, final Globals globals, final Emit emit
     ) {
@@ -609,7 +608,7 @@ final class Eo implements Iterable<Directive> {
      * <p>Reports unclosed text blocks (R-8.2) and excessive trailing
      * blanks (R-8.4), and flushes a top comment block left pending in a
      * comment-only file (R-8.3). EOF stack popping with close-time checks
-     * already ran via {@link Stack#close(Stack.Closer)}.</p>
+     * already ran via {@link Stack#close()}.</p>
      *
      * @param globals The global parser state
      * @param emit The directives sink

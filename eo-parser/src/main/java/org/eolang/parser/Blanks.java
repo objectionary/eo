@@ -16,7 +16,7 @@ package org.eolang.parser;
  * {@link #checkPlain}.</p>
  *
  * <p>R-6.5.5 requires exactly one blank line between the meta header
- * and whatever follows; enforced by {@link #checkAfterMetas}, which
+ * and whatever follows; enforced by {@link #enterAfterMeta}, which
  * fires from the first non-meta non-blank line when the parser has
  * accumulated meta directives but not yet seen any blank.</p>
  *

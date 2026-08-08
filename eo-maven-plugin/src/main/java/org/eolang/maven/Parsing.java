@@ -30,16 +30,13 @@ import org.w3c.dom.Node;
 /**
  * Parse EO to XML.
  *
- * <p>
- *     This class parses all found EO sources to XMIRs.
- *     You can read more about XMIR format
- *     <a href="https://www.eolang.org/XMIR.html">here</a>
- * </p>
- * <p>
- *    The class scans all the EO sources registered in the foreign file catalog
- *    and then parses those that were not parsed before (i.e. do not have XMIRs yet)
- *    to XMIR format. The resulting XMIR files are stored in the {@link #DIR} directory.
- * </p>
+ * <p>This class parses all found EO sources to XMIRs.
+ * You can read more about XMIR format
+ * <a href="https://www.eolang.org/XMIR.html">here</a></p>
+ *
+ * <p>The class scans all the EO sources registered in the foreign file catalog
+ * and then parses those that were not parsed before (i.e. do not have XMIRs yet)
+ * to XMIR format. The resulting XMIR files are stored in the {@link #DIR} directory.</p>
  *
  * @since 0.1
  */

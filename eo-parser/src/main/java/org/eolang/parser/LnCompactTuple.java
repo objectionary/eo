@@ -19,11 +19,11 @@ import java.util.List;
  * <p>Cross-line semantics (R-3.9.2):</p>
  *
  * <ul>
- *   <li>The first {@code N} deeper-indent children stay as direct
- *   positional args of the head.</li>
- *   <li>The {@code (N+1)}-th and later children are wrapped in a
- *   synthesised {@code <o base='Φ.tuple' star=''>} appended as the
- *   <em>last</em> child of the head.</li>
+ * <li>The first {@code N} deeper-indent children stay as direct
+ * positional args of the head.</li>
+ * <li>The {@code (N+1)}-th and later children are wrapped in a
+ * synthesised {@code <o base='Φ.tuple' star=''>} appended as the
+ * <em>last</em> child of the head.</li>
  * </ul>
  *
  * <p>The wrapper open/close is handled by the {@link Stack.Opener} /
