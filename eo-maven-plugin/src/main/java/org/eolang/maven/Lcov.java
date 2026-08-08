@@ -9,8 +9,6 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.cactoos.set.SetOf;
 
@@ -33,9 +31,6 @@ import org.cactoos.set.SetOf;
  * @since 0.74.0
  */
 final class Lcov {
-
-    /** The shape of a record {@code PhCoverage} appends. */
-    private static final Pattern RECORD = Pattern.compile("([^:]+):(\\d+):(\\d+)");
 
     /** The directory that holds the {@code .eo} sources. */
     private final Path sources;
@@ -77,11 +72,11 @@ final class Lcov {
     private Map<String, Map<Integer, Integer>> counted() {
         final Map<String, Map<Integer, Integer>> counts = new TreeMap<>();
         for (final String record : this.hits) {
-            final Matcher parts = Lcov.RECORD.matcher(record);
-            if (parts.matches()) {
+            final String[] parts = record.split(":", 3);
+            if (parts.length == 3 && parts[1].matches("\\d+")) {
                 counts
-                    .computeIfAbsent(parts.group(1), program -> new TreeMap<>())
-                    .merge(Integer.valueOf(parts.group(2)), 1, Integer::sum);
+                    .computeIfAbsent(parts[0], program -> new TreeMap<>())
+                    .merge(Integer.valueOf(parts[1]), 1, Integer::sum);
             } else {
                 Logger.warn(
                     this,
