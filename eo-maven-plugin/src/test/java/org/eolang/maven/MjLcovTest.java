@@ -17,7 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjLcov}.
- * @since 0.58
+ * @since 0.74.0
  */
 @ExtendWith(MktmpResolver.class)
 final class MjLcovTest {

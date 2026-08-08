@@ -4,38 +4,36 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Random;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Lcov}.
- * @since 0.58
+ * @since 0.74.0
  */
+@ExtendWith(MktmpResolver.class)
 final class LcovTest {
 
     @Test
-    void namesEoSourceOfTouchedProgram() {
-        final long seed = System.nanoTime();
-        final int line = 1 + new Random(seed).nextInt(1000);
+    void namesEoSourceThatExistsOnDisk(@Mktmp final Path temp) throws Exception {
+        final Path sources = temp.resolve("eo");
+        Files.createDirectories(sources.resolve("числò"));
+        final Path source = sources.resolve("числò/plus.eo");
+        Files.write(source, "+package числò\n".getBytes(StandardCharsets.UTF_8));
         MatcherAssert.assertThat(
-            String.format("the touched program does not name its own .eo source, seed: %d", seed),
-            new Lcov(
-                Paths.get("src/main/eo"),
-                Collections.singleton(String.format("org.eolang.числò:%d:5", line))
-            ).toString(),
-            Matchers.equalTo(
-                String.format(
-                    "TN:%nSF:%s%nDA:%d,1%nLF:1%nLH:1%nend_of_record%n",
-                    Paths.get("src/main/eo").resolve("org/eolang/числò.eo"),
-                    line
-                )
-            )
+            "the .eo file the report names for the touched program does not exist on disk",
+            new Lcov(sources, Collections.singleton("числò.plus:7:2")).toString(),
+            Matchers.containsString(String.format("SF:%s%n", source))
         );
     }
 
@@ -45,14 +43,12 @@ final class LcovTest {
             "the two objects touched on one line are not counted into one line record",
             new Lcov(
                 Paths.get("src/main/eo"),
-                Arrays.asList(
-                    "org.eolang.number:12:5", "org.eolang.number:12:9", "org.eolang.number:12:5"
-                )
+                Arrays.asList("number:12:5", "number:12:9", "number:12:5")
             ).toString(),
             Matchers.equalTo(
                 String.format(
                     "TN:%nSF:%s%nDA:12,2%nLF:1%nLH:1%nend_of_record%n",
-                    Paths.get("src/main/eo").resolve("org/eolang/number.eo")
+                    Paths.get("src/main/eo").resolve("number.eo")
                 )
             )
         );
@@ -68,13 +64,19 @@ final class LcovTest {
     }
 
     @Test
-    void refusesMalformedRecord() {
-        Assertions.assertThrows(
-            IllegalArgumentException.class,
-            () -> new Lcov(
-                Paths.get("src/main/eo"), Collections.singleton("org.eolang.числò:4")
+    void skipsTornRecordAndKeepsTheRest() {
+        MatcherAssert.assertThat(
+            "the record torn by a concurrent append is not left out of the report",
+            new Lcov(
+                Paths.get("src/main/eo"),
+                Arrays.asList("числò:4", "числò:9:1")
             ).toString(),
-            "a record that is not program:line:pos is not refused"
+            Matchers.equalTo(
+                String.format(
+                    "TN:%nSF:%s%nDA:9,1%nLF:1%nLH:1%nend_of_record%n",
+                    Paths.get("src/main/eo").resolve("числò.eo")
+                )
+            )
         );
     }
 }

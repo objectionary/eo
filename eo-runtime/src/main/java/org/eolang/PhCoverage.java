@@ -46,7 +46,10 @@ public final class PhCoverage implements Phi {
     /** The origin. */
     private final Phi origin;
 
-    /** The name of the EO program that holds the object, dot separated. */
+    /**
+     * The name of the EO program that holds the object, dot separated.
+     * Together with {@link #line} and {@link #pos} it identifies the object.
+     */
     private final String program;
 
     /** Source line. */

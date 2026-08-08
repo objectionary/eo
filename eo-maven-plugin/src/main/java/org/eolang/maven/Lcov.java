@@ -4,10 +4,13 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.cactoos.set.SetOf;
 
@@ -19,11 +22,20 @@ import org.cactoos.set.SetOf;
  *     read as is: a program becomes an {@code SF:} path under the
  *     directory of {@code .eo} sources it is given, and a line becomes a
  *     {@code DA:} counter of how many objects of that line were touched.
- *     A record that arrives twice still counts once.
+ *     A record that arrives twice still counts once, and a record that is
+ *     not {@code program:line:pos} is left out, since the tests append to
+ *     that file from more than one thread and a torn line must not cost
+ *     the whole report. The {@code DA:} counter deliberately reuses the
+ *     execution-count field of LCOV, and until the untouched objects are
+ *     named too, {@code LH} equals {@code LF} and every consumer of this
+ *     file shows a hundred per cent.
  * </p>
- * @since 0.58
+ * @since 0.74.0
  */
 final class Lcov {
+
+    /** The shape of a record {@code PhCoverage} appends. */
+    private static final Pattern RECORD = Pattern.compile("([^:]+):(\\d+):(\\d+)");
 
     /** The directory that holds the {@code .eo} sources. */
     private final Path sources;
@@ -65,17 +77,18 @@ final class Lcov {
     private Map<String, Map<Integer, Integer>> counted() {
         final Map<String, Map<Integer, Integer>> counts = new TreeMap<>();
         for (final String record : this.hits) {
-            final String[] parts = record.split(":");
-            if (parts.length != 3) {
-                throw new IllegalArgumentException(
-                    String.format(
-                        "The coverage record is '%s', while 'program:line:pos' is expected", record
-                    )
+            final Matcher parts = Lcov.RECORD.matcher(record);
+            if (parts.matches()) {
+                counts
+                    .computeIfAbsent(parts.group(1), program -> new TreeMap<>())
+                    .merge(Integer.valueOf(parts.group(2)), 1, Integer::sum);
+            } else {
+                Logger.warn(
+                    this,
+                    "The coverage record '%s' is skipped, while 'program:line:pos' is expected",
+                    record
                 );
             }
-            counts
-                .computeIfAbsent(parts[0], program -> new TreeMap<>())
-                .merge(Integer.valueOf(parts[1]), 1, Integer::sum);
         }
         return counts;
     }
