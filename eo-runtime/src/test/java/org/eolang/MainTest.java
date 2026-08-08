@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Pattern;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -77,6 +78,20 @@ final class MainTest {
             Matchers.allOf(
                 Matchers.containsString("EOLANG"),
                 Matchers.containsString("false")
+            )
+        );
+    }
+
+    @Test
+    void reportsBirthsAndDispatches() {
+        MatcherAssert.assertThat(
+            "The run does not say how many objects were born and how many attributes were taken",
+            MainTest.stderr("true"),
+            Matchers.matchesPattern(
+                Pattern.compile(
+                    ".*Finished in .+s \\(\\d+ bytes\\), [1-9]\\d* objects, [1-9]\\d* dispatches.*",
+                    Pattern.DOTALL
+                )
             )
         );
     }

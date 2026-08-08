@@ -180,6 +180,7 @@ public class PhDefault implements Phi, Cloneable {
                 map.put(ent.getKey(), ent.getValue().copy(copy));
             }
             copy.attrs = map;
+            Statistics.PROGRAM.allocate();
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new ExFailure("cannot copy the object", ex);
@@ -217,6 +218,7 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public Phi take(final String name) {
+        Statistics.PROGRAM.dispatch();
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         try {
             final Phi resolved;
@@ -559,12 +561,15 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Activate the lazy state: initialize attrs/order from the constructor-supplied
-     * map, wrapping each entry with {@link AtWithRho}. Idempotent.
+     * map, wrapping each entry with {@link AtWithRho}. Idempotent. This is also
+     * where the object is counted as born, since it happens once per object and,
+     * unlike a constructor, may do work.
      * @return Map of attrs
      */
     private Map<String, Attribute> loaded() {
         if (this.attrs == null) {
             this.attrs = PhDefault.defaults();
+            Statistics.PROGRAM.allocate();
             for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
                 this.add(ent.getKey(), ent.getValue());
             }
