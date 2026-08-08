@@ -24,10 +24,6 @@ import org.xembly.Directive;
  * with no parser-grammar dependency: classification, validation, and
  * emission all happen here against the spec rules directly.</p>
  *
- * <p>The classifier in this initial implementation covers the three
- * trivial line shapes — blank, comment, meta. Other shapes from §3.1
- * fall through to a placeholder error pending later additions.</p>
- *
  * @since 0.1
  */
 final class Eo implements Iterable<Directive> {
@@ -80,8 +76,7 @@ final class Eo implements Iterable<Directive> {
         while (idx < spans.size()) {
             final Span span = spans.get(idx);
             if (!globals.inTextBlock() && Eo.isBytesContinuation(span.body())) {
-                final int next = Eo.mergeBytesContinuation(spans, idx, stack, globals, emit);
-                idx = next;
+                idx = Eo.mergeBytesContinuation(spans, idx, stack, globals, emit, recovery);
             } else if (Eo.process(span, stack, globals, emit)) {
                 idx = recovery.after(idx);
             } else {
@@ -204,12 +199,13 @@ final class Eo implements Iterable<Directive> {
      * @param stack Indent stack
      * @param globals Global parser state
      * @param emit Directives sink
-     * @return Next index to process (past the merged region)
+     * @param recovery Where the walk resumes if the merged line fails
+     * @return Next index to process
      * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static int mergeBytesContinuation(
-        final java.util.List<Span> spans, final int start,
-        final Stack stack, final Globals globals, final Emit emit
+        final java.util.List<Span> spans, final int start, final Stack stack,
+        final Globals globals, final Emit emit, final Recovery recovery
     ) {
         final Span head = spans.get(start);
         final StringBuilder body = new StringBuilder(head.body());
@@ -225,13 +221,16 @@ final class Eo implements Iterable<Directive> {
                 break;
             }
         }
-        Eo.process(
-            new Span(
-                " ".repeat(head.indent()).concat(body.toString()), head.line()
-            ),
+        final int resumption;
+        if (Eo.process(
+            new Span(" ".repeat(head.indent()).concat(body.toString()), head.line()),
             stack, globals, emit
-        );
-        return idx;
+        )) {
+            resumption = recovery.skip(idx, head.indent());
+        } else {
+            resumption = idx;
+        }
+        return resumption;
     }
 
     /**
@@ -312,8 +311,10 @@ final class Eo implements Iterable<Directive> {
             Eo.continueTextBlock(span, stack, globals, emit);
         } else if (span.tab()) {
             emit.error(span.line(), 0, "tab character in leading whitespace");
+            failed = true;
         } else if (!span.blank() && span.indent() % 2 == 1) {
             emit.error(span.line(), 0, "unexpected odd indent");
+            failed = true;
         } else if (Eo.opensTextBlock(span)) {
             globals.openTextBlock(span.line(), span.indent());
             globals.markEmitted();

@@ -38,6 +38,15 @@ final class DataTest {
     }
 
     @Test
+    void failsFastWhenDataIsNull() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new Data.ToPhi(null),
+            "null data was converted instead of rejected"
+        );
+    }
+
+    @Test
     void printsFractionalNumberValueAsTerm() {
         MatcherAssert.assertThat(
             "Fractional number must render with its decimals in φ-term, but it didnt",
@@ -52,6 +61,15 @@ final class DataTest {
             "String must render as a quoted value in φ-term, but it didnt",
             new Data.ToPhi("hello").φTerm(),
             Matchers.equalTo("\"hello\"")
+        );
+    }
+
+    @Test
+    void printsStringWithSpecialCharactersAsTerm() {
+        MatcherAssert.assertThat(
+            "String with quotes, backslashes and control chars must render escaped, but it didnt",
+            new Data.ToPhi(String.format("a\"b\\c%cd%ce%cf", 0x09, 0x0D, 0x0A)).φTerm(),
+            Matchers.equalTo("\"a\\\"b\\\\c\\td\\re\\nf\"")
         );
     }
 
