@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
@@ -56,6 +57,16 @@ public final class Main {
      * EO app-wide logger.
      */
     private static final Logger EOLOG = Logger.getLogger("org.eolang");
+
+    /**
+     * Handler for EO runtime logs.
+     */
+    private static final Handler HANDLER = Main.handler();
+
+    /**
+     * Lock guarding the EO runtime logger configuration.
+     */
+    private static final ReentrantLock LOCK = new ReentrantLock();
 
     /**
      * Not for instantiation.
@@ -142,6 +153,24 @@ public final class Main {
      * Setup logs.
      */
     private static void setup() {
+        Main.LOCK.lock();
+        try {
+            if (Arrays.stream(Main.EOLOG.getHandlers()).noneMatch(
+                handler -> handler == Main.HANDLER
+            )) {
+                Main.EOLOG.addHandler(Main.HANDLER);
+            }
+        } finally {
+            Main.LOCK.unlock();
+        }
+        Main.EOLOG.setUseParentHandlers(false);
+    }
+
+    /**
+     * Make a handler for EO runtime logs.
+     * @return Configured handler
+     */
+    private static Handler handler() {
         final Handler handler = new ConsoleHandler();
         handler.setFormatter(
             new Formatter() {
@@ -151,8 +180,7 @@ public final class Main {
                 }
             }
         );
-        Main.EOLOG.addHandler(handler);
-        Main.EOLOG.setUseParentHandlers(false);
+        return handler;
     }
 
     /**

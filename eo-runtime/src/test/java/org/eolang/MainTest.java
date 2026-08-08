@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Logger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -182,6 +183,17 @@ final class MainTest {
                 Matchers.containsString("at org.eolang.PhPackage.take"),
                 Matchers.containsString("at org.eolang.Main.run")
             )
+        );
+    }
+
+    @Test
+    void configuresRuntimeLoggerOnlyOnce() throws Exception {
+        Main.main("--version");
+        Main.main("--version");
+        MatcherAssert.assertThat(
+            "Repeated Main.main calls must not add another EO log handler",
+            Logger.getLogger("org.eolang").getHandlers().length,
+            Matchers.equalTo(1)
         );
     }
 
