@@ -339,6 +339,8 @@ mvn clean install -Pqulice
 You will need [Maven] 3.3+ and [Java] 21+ installed,
   because the `qulice` profile requires it; a build without
   that profile needs [Java] 17+.
+You will also need [git] installed and on your `PATH`,
+  since some of the quality checks the `qulice` profile runs shell out to it.
 Also, if you have [xcop] installed, make sure it is version `0.8.0`+.
 
 A few rules we ask you to follow:
@@ -374,6 +376,7 @@ to enhance the performance of EO components:
 [eo-maven-plugin]: https://github.com/objectionary/eo/tree/master/eo-maven-plugin
 [eoc]: https://github.com/objectionary/eoc
 [Esperanto]: https://en.wikipedia.org/wiki/Esperanto
+[git]: https://git-scm.com
 [guidelines]: https://www.yegor256.com/2014/04/15/github-guidelines.html
 [home]: https://github.com/objectionary/home
 [Io]: https://en.wikipedia.org/wiki/Io_(programming_language)
