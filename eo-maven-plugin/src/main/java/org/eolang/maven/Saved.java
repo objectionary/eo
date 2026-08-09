@@ -88,9 +88,10 @@ final class Saved implements Scalar<Path> {
 
     @Override
     public Path value() throws IOException {
+        final Path abs = Objects.requireNonNull(this.target, "target").toAbsolutePath();
         final Path dir = Objects.requireNonNull(
-            this.target.toAbsolutePath().getParent(),
-            () -> String.format("%s has no parent directory", this.target)
+            abs.getParent(),
+            () -> String.format("%s has no parent directory", abs)
         );
         final long bytes;
         try {
