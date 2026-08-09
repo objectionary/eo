@@ -27,13 +27,13 @@ jobs:
           restore-keys: ubuntu-qulice-jdk-26-maven-
       - run: mvn install -DskipTests -Dinvoker.skip --errors --batch-mode
       - run: .github/objectionary.sh ${{ github.ref_name }}
-      - uses: JamesIves/github-pages-deploy-action@v4.8.0
+      - uses: JamesIves/github-pages-deploy-action@v4.9.0
         with:
           branch: gh-pages
           folder: gh-pages-objectionary
           target-folder: objectionary
           clean: true
-      - uses: JamesIves/github-pages-deploy-action@v4.8.0
+      - uses: JamesIves/github-pages-deploy-action@v4.9.0
         with:
           branch: gh-pages
           folder: gh-pages

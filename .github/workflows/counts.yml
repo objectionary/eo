@@ -20,7 +20,7 @@ jobs:
           - metric: suppressions
             files: '*.java'
             pattern: '@SuppressWarnings|@checkstyle'
-            count: 365
+            count: 362
           - metric: smells
             files: '*.java'
             pattern: 'static|null'

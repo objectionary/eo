@@ -53,6 +53,9 @@ public class XslBench {
         ).back()
     );
 
+    /**
+     * Run all sheets on a large XMIR document.
+     */
     @Benchmark
     public final void manySheetsOnLargeXmir() {
         XslBench.LINE.pass(XslBench.INPUT);

@@ -4,8 +4,8 @@
  */
 package org.eolang.parser;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.xembly.Directive;
@@ -23,17 +23,17 @@ import org.xembly.Directives;
  * <p>The class exposes two families of methods:</p>
  *
  * <ul>
- *   <li><strong>Side-panel</strong> ({@link #meta}, {@link #comment},
- *   {@link #error}) — append directives to fixed paths under
- *   {@code /object} (metas, comments, errors). These wrap their
- *   navigation in {@code push}/{@code pop} so the caller's cursor
- *   position survives the call. Safe to invoke at any depth.</li>
- *   <li><strong>Object tree</strong> ({@link #object}, {@link #close},
- *   {@link #voidParam}, {@link #atomMarker}) — emit relative to the
- *   current cursor, descending into the new {@code <o>} on
- *   {@link #object} and ascending on {@link #close}. The caller must
- *   open the {@code <object>} root and position the cursor inside it
- *   before invoking these.</li>
+ * <li><strong>Side-panel</strong> ({@link #meta}, {@link #comment},
+ * {@link #error}) — append directives to fixed paths under
+ * {@code /object} (metas, comments, errors). These wrap their
+ * navigation in {@code push}/{@code pop} so the caller's cursor
+ * position survives the call. Safe to invoke at any depth.</li>
+ * <li><strong>Object tree</strong> ({@link #object}, {@link #close},
+ * {@link #voidParam}, {@link #atomMarker}) — emit relative to the
+ * current cursor, descending into the new {@code <o>} on
+ * {@link #object} and ascending on {@link #close}. The caller must
+ * open the {@code <object>} root and position the cursor inside it
+ * before invoking these.</li>
  * </ul>
  *
  * @since 0.1
@@ -79,7 +79,7 @@ final class Emit {
      * @param src Pre-split source lines
      */
     private Emit(final List<String> src) {
-        this.sink = new LinkedList<>();
+        this.sink = new ArrayList<>(0);
         this.lines = src;
     }
 
@@ -373,7 +373,7 @@ final class Emit {
 
     /**
      * Set the text content of the most recently opened {@code <o>}.
-     * Used for {@code <o base='Φ.bytes'>HEX&lt;/o>} value carriers (R-9.4
+     * Used for {@code <o base='Φ.bytes'>HEX</o>} value carriers (R-9.4
      * data carriers).
      * @param text Text content
      */

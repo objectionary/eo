@@ -4,9 +4,9 @@
  */
 package org.eolang.maven;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -64,7 +64,7 @@ final class Causes implements Iterable<String> {
      * @return Messages, in the order they wrap each other
      */
     private static List<String> all(final Throwable problem) {
-        final List<String> causes = new LinkedList<>();
+        final List<String> causes = new ArrayList<>(0);
         causes.add(problem.getMessage());
         final Throwable cause = problem.getCause();
         if (cause != null) {

@@ -30,6 +30,7 @@ final class Unspiling implements Step {
 
     /**
      * Inner auto generated classes.
+     *
      * <p>These globs are used for inner classes which may look like:
      * - EO_org/EO_eolang/EOnumber$1$2$4.class
      * - EO_org/EO_eolang/EO_sm/EOsocket$EOΦorgeolangsyssocketα0ρ.class</p>

@@ -10,15 +10,14 @@ import java.util.Set;
  * A parsed name suffix — §3.10 of the spec.
  *
  * <p>Recognises the four base forms (mutually exclusive on any line)
- * plus the {@code !} const modifier and the {@code /sig} atom signature:
- * </p>
+ * plus the {@code !} const modifier and the {@code /sig} atom signature:</p>
  *
  * <ul>
- *   <li>{@code > name} — explicit name binding.</li>
- *   <li>{@code >>} — auto-generated name, optional handle (§3.10).</li>
- *   <li>{@code +> name} — truthy test attribute.</li>
- *   <li>{@code -> name} — throwing test attribute (expected to throw).</li>
- *   <li>(empty) — no suffix.</li>
+ * <li>{@code > name} — explicit name binding.</li>
+ * <li>{@code >>} — auto-generated name, optional handle (§3.10).</li>
+ * <li>{@code +> name} — truthy test attribute.</li>
+ * <li>{@code -> name} — throwing test attribute (expected to throw).</li>
+ * <li>(empty) — no suffix.</li>
  * </ul>
  *
  * <p>The composite only-phi forms ({@code > [params] > name}) are
@@ -29,14 +28,14 @@ import java.util.Set;
  * <p>Validation enforced at construction time:</p>
  *
  * <ul>
- *   <li>R-3.10.2 — {@code >>} cannot carry {@code /sig}.</li>
- *   <li>R-3.10.3 — {@code > name!} cannot combine with {@code /sig}.</li>
- *   <li>R-3.10.10 — {@code /sig} must be a non-empty dotted name
- *   (optionally rooted at {@code Q}) or a generic type variable
- *   {@code A}–{@code F}; a bare {@code /}, {@code /Q} alone, or a
- *   {@code ?} optional marker (void-only) is rejected.</li>
- *   <li>R-6.3.5 — a {@code +>} test name must be a {@code NAME} token,
- *   not {@code @} (PHI).</li>
+ * <li>R-3.10.2 — {@code >>} cannot carry {@code /sig}.</li>
+ * <li>R-3.10.3 — {@code > name!} cannot combine with {@code /sig}.</li>
+ * <li>R-3.10.10 — {@code /sig} must be a non-empty dotted name
+ * (optionally rooted at {@code Q}) or a generic type variable
+ * {@code A}–{@code F}; a bare {@code /}, {@code /Q} alone, or a
+ * {@code ?} optional marker (void-only) is rejected.</li>
+ * <li>R-6.3.5 — a {@code +>} test name must be a {@code NAME} token,
+ * not {@code @} (PHI).</li>
  * </ul>
  *
  * @since 0.1

@@ -9,6 +9,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.stream.Stream;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
@@ -58,8 +59,8 @@ final class ContainsFiles extends TypeSafeMatcher<Path> {
      * @return True if the item matches the glob
      */
     private static boolean matchesGlob(final Path item, final String glob) {
-        try {
-            return Files.walk(item).anyMatch(
+        try (Stream<Path> stream = Files.walk(item)) {
+            return stream.anyMatch(
                 FileSystems
                     .getDefault().getPathMatcher(
                         String.format(

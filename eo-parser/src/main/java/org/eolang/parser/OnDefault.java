@@ -13,8 +13,10 @@ import java.util.Optional;
  * Function that builds object name from:
  * 1. /object/metas/meta[head='package']/tail/text()
  * 2. /object/o/@name
+ *
  * <p>If package is present - it'll be joined with object name by dot.
  * Otherwise, only object name without package is returned.</p>
+ *
  * @since 0.52
  */
 public final class OnDefault implements ObjectName {
