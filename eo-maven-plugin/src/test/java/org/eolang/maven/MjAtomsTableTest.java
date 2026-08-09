@@ -22,6 +22,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(MktmpResolver.class)
 final class MjAtomsTableTest {
 
+    /**
+     * Execute the parentless output scenario in an isolated working directory.
+     * @param args Temporary directory path
+     * @throws Exception If execution fails
+     */
+    public static void main(final String... args) throws Exception {
+        final Path temp = Path.of(args[0]);
+        new FakeMaven(temp)
+            .with("atomsInputDir", temp.resolve("xmir").toFile())
+            .with("atomsOutput", Path.of("atoms.csv").toFile())
+            .execute(MjAtomsTable.class);
+    }
+
     @Test
     void generatesAtomsTableFromXmir(@Mktmp final Path temp) throws Exception {
         new Saved(
@@ -69,37 +82,38 @@ final class MjAtomsTableTest {
 
     @Test
     void writesAtomsTableToParentlessFile(@Mktmp final Path temp) throws Exception {
-        final Path output = Path.of(
-            String.format("atoms-%s.csv", temp.getFileName())
-        );
-        try {
-            new Saved(
-                new EoSyntax(
-                    new InputOf(
-                        String.join(
-                            System.lineSeparator(),
-                            "+package foo",
-                            "",
-                            "[] > thing",
-                            "  [] > size /number"
-                        )
+        new Saved(
+            new EoSyntax(
+                new InputOf(
+                    String.join(
+                        System.lineSeparator(),
+                        "+package foo",
+                        "",
+                        "[] > thing",
+                        "  [] > size /number"
                     )
-                ).parsed().toString(),
-                temp.resolve("xmir/foo/thing.xmir")
-            ).value();
-            new FakeMaven(temp)
-                .with("atomsInputDir", temp.resolve("xmir").toFile())
-                .with("atomsOutput", output.toFile())
-                .execute(MjAtomsTable.class);
-            MatcherAssert.assertThat(
-                "Parentless output must be written in the working directory",
-                Files.readString(output),
-                Matchers.equalTo(
-                    String.format("Φ.foo.thing.size,Φ.number%c", '\n')
                 )
-            );
-        } finally {
-            Files.deleteIfExists(output);
-        }
+            ).parsed().toString(),
+            temp.resolve("xmir/foo/thing.xmir")
+        ).value();
+        MatcherAssert.assertThat(
+            "Parentless output must be written in an isolated directory",
+            String.format(
+                "%d:%s",
+                new ProcessBuilder(
+                    Path.of(
+                        System.getProperty("java.home"), "bin", "java"
+                    ).toString(),
+                    "-cp",
+                    System.getProperty("java.class.path"),
+                    MjAtomsTableTest.class.getName(),
+                    temp.toString()
+                ).directory(temp.toFile()).inheritIO().start().waitFor(),
+                Files.readString(temp.resolve("atoms.csv"))
+            ),
+            Matchers.equalTo(
+                String.format("0:Φ.foo.thing.size,Φ.number%c", '\n')
+            )
+        );
     }
 }
