@@ -2,12 +2,11 @@
 - added: 8
   cycles: 1
   deleted: 8
-  error: deadlock; recursive locking
   inserted: 8
-  seconds: 2160.466229078
+  seconds: 2160.809023238
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-09 09:49:22.544197276 Z
+  when: 2026-08-09 11:39:56.430644452 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -223023,25 +223022,6 @@
   when: 2026-06-10 09:49:34.000000000 Z
   where: github
   who: 41898282
-- _id: 1098698
-  _job: 27273975268
-  _time: 2026-06-10 11:50:36.087197928 Z
-  _version: 0.19.9/0.60.2/0.17.17
-  commit: 20da7843b911ded889056b32f19c63f706d6decd
-  default_branch: master
-  details: 'A new Git push #35387295956 has arrived to objectionary/sabj25, made by
-    @yegor256 (default branch is "master"), not associated with any pull request.'
-  event_id: 13098162088
-  event_type: PushEvent
-  is_human: 1
-  push_id: 35387295956
-  ref: refs/heads/master
-  repository: 1260338737
-  to_master: 1
-  what: git-was-pushed
-  when: 2026-06-10 09:43:02.000000000 Z
-  where: github
-  who: 526301
 - _id: 1098699
   _job: 27273975268
   _time: 2026-06-10 11:50:37.207491252 Z
@@ -223057,25 +223037,6 @@
   when: 2026-06-10 09:16:42.000000000 Z
   where: github
   who: 41898282
-- _id: 1098700
-  _job: 27273975268
-  _time: 2026-06-10 11:50:37.733749187 Z
-  _version: 0.19.9/0.60.2/0.17.17
-  commit: cae189510d23c02fd0326cbfd3fd6d11f73de269
-  default_branch: master
-  details: 'A new Git push #35385592271 has arrived to objectionary/sabj25, made by
-    @yegor256 (default branch is "master"), not associated with any pull request.'
-  event_id: 13096458670
-  event_type: PushEvent
-  is_human: 1
-  push_id: 35385592271
-  ref: refs/heads/master
-  repository: 1260338737
-  to_master: 1
-  what: git-was-pushed
-  when: 2026-06-10 09:06:59.000000000 Z
-  where: github
-  who: 526301
 - _id: 1098701
   _job: 27273975268
   _time: 2026-06-10 11:51:06.809052920 Z
@@ -223088,25 +223049,6 @@
   repository: 840332960
   what: issue-was-opened
   when: 2026-06-10 10:13:25.000000000 Z
-  where: github
-  who: 526301
-- _id: 1098702
-  _job: 27273975268
-  _time: 2026-06-10 11:51:07.421995771 Z
-  _version: 0.19.9/0.60.2/0.17.17
-  commit: f5774844bd7b991ef9cde4fd79a7fd3b13da8d9f
-  default_branch: master
-  details: 'A new Git push #35387639339 has arrived to objectionary/hone-maven-plugin,
-    made by @yegor256 (default branch is "master"), not associated with any pull request.'
-  event_id: 13098505249
-  event_type: PushEvent
-  is_human: 1
-  push_id: 35387639339
-  ref: refs/heads/master
-  repository: 840332960
-  to_master: 1
-  what: git-was-pushed
-  when: 2026-06-10 09:50:16.000000000 Z
   where: github
   who: 526301
 - _id: 1098703
@@ -223165,63 +223107,6 @@
   repository: 840332960
   what: issue-was-opened
   when: 2026-06-10 08:09:09.000000000 Z
-  where: github
-  who: 526301
-- _id: 1098707
-  _job: 27273975268
-  _time: 2026-06-10 11:51:42.336155608 Z
-  _version: 0.19.9/0.60.2/0.17.17
-  commit: 69a84ffaa4f68710a188a9cee69442f4424ad938
-  default_branch: master
-  details: 'A new Git push #35386145010 has arrived to objectionary/calculus-paper,
-    made by @yegor256 (default branch is "master"), not associated with any pull request.'
-  event_id: 13097011442
-  event_type: PushEvent
-  is_human: 1
-  push_id: 35386145010
-  ref: refs/heads/master
-  repository: 784310467
-  to_master: 1
-  what: git-was-pushed
-  when: 2026-06-10 09:18:41.000000000 Z
-  where: github
-  who: 526301
-- _id: 1098708
-  _job: 27273975268
-  _time: 2026-06-10 11:51:42.770409527 Z
-  _version: 0.19.9/0.60.2/0.17.17
-  commit: 5b2e69a4edd3761727be39d90cefdbdcecd23b1f
-  default_branch: master
-  details: 'A new Git push #35385977020 has arrived to objectionary/calculus-paper,
-    made by @yegor256 (default branch is "master"), not associated with any pull request.'
-  event_id: 13096842404
-  event_type: PushEvent
-  is_human: 1
-  push_id: 35385977020
-  ref: refs/heads/master
-  repository: 784310467
-  to_master: 1
-  what: git-was-pushed
-  when: 2026-06-10 09:15:09.000000000 Z
-  where: github
-  who: 526301
-- _id: 1098709
-  _job: 27273975268
-  _time: 2026-06-10 11:51:43.222905718 Z
-  _version: 0.19.9/0.60.2/0.17.17
-  commit: eb0cea832161c462605fa62af89bd05a05640b97
-  default_branch: master
-  details: 'A new Git push #35385865509 has arrived to objectionary/calculus-paper,
-    made by @yegor256 (default branch is "master"), not associated with any pull request.'
-  event_id: 13096731964
-  event_type: PushEvent
-  is_human: 1
-  push_id: 35385865509
-  ref: refs/heads/master
-  repository: 784310467
-  to_master: 1
-  what: git-was-pushed
-  when: 2026-06-10 09:12:46.000000000 Z
   where: github
   who: 526301
 - _id: 1098722
@@ -275638,30 +275523,6 @@
   when: *2359
   where: github
   who: 29139614
-- _id: 1106245
-  _job: 28423602703
-  _time: 2026-06-30 06:01:34.382267225 Z
-  _version: 0.19.9/0.60.2/0.17.17
-  commits: 5
-  contributors:
-  - 526301
-  - 8086956
-  details: A new release "explain --normalize renders contextualize as \\ctx{...}
-    instead of \\phinoContextualize{...}" has been published in objectionary/phino
-    by @rultor.
-  event_id: 11152027454
-  event_type: ReleaseEvent
-  hoc: 124
-  is_human: 0
-  last_commit: 693ef8024cf13f9ab371eaa48687a28b9b205910
-  release: 346641410
-  repository: 977982682
-  tag: 0.0.92
-  tombstone: 2026-08-01 08:20:21.903304484 Z
-  what: release-published
-  when: 2026-06-30 05:59:30.000000000 Z
-  where: github
-  who: 8086956
 - _id: 1106246
   _job: 28423602703
   _time: 2026-06-30 06:01:36.572895390 Z
@@ -299584,7 +299445,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1019
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12982805869
   issues_were_scanned: 0
@@ -303348,7 +303209,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 999
   earliest_issue_was_found: 1
   events_were_scanned: 12995920612
   issues_were_scanned: 982
@@ -306299,7 +306160,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1122
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12985606707
   issues_were_scanned: 0
@@ -306333,13 +306194,13 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5804
+  assignees_were_scanned: 6064
   earliest_issue_was_found: 1
-  events_were_scanned: 12996668075
+  events_were_scanned: 12999185585
   issues_were_scanned: 0
-  labels_were_scanned: 6095
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
-  merges_were_scanned: 6492
+  merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
@@ -462612,10 +462473,6 @@
   comments: 3
   details: It's time to reward @yegor256 for the code review in objectionary/eolang.sty#152,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted; -4 for too few (2) hits-of-code; +4 to give
-    you at least something.  Your running score is [+2821](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 2
   href: https://github.com/objectionary/eolang.sty/issues/152/#issuecomment-5230522058
   is_human: 1
@@ -462740,6 +462597,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: fix/6487-remove-dead-commit-hashes-map
   details: The missing pull objectionary/eo#6495 has been opened by @androvonx95.
+  is_human: 1
   issue: 6495
   repository: 73056727
   what: pull-was-opened
@@ -462751,6 +462609,7 @@
   _time: 2026-08-09 09:18:24.364386997 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The missing issue objectionary/eo#6496 has been opened by @androvonx95.
+  is_human: 1
   issue: 6496
   repository: 73056727
   what: issue-was-opened
@@ -462762,9 +462621,126 @@
   _time: 2026-08-09 09:18:24.994259596 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The missing issue objectionary/eo#6497 has been opened by @yegor256.
+  is_human: 1
   issue: 6497
   repository: 73056727
   what: issue-was-opened
   when: 2026-08-09 07:20:04.000000000 Z
+  where: github
+  who: 526301
+- _id: 1117507
+  _job: 31309814773
+  _time: 2026-08-09 11:04:39.875550323 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6506 has been opened by @thayorns.
+  event_id: 12999185585
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6506
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-09 11:04:26.000000000 Z
+  where: github
+  who: 96509556
+- _id: 1117508
+  _job: 31309814773
+  _time: 2026-08-09 11:04:40.811475885 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6505 has been opened by @thayorns.
+  event_id: 12999172831
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6505
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-09 11:03:50.000000000 Z
+  where: github
+  who: 96509556
+- _id: 1117509
+  _job: 31309814773
+  _time: 2026-08-09 11:04:41.577990411 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6504 has been opened by @thayorns.
+  event_id: 12999164505
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6504
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-09 11:03:25.000000000 Z
+  where: github
+  who: 96509556
+- _id: 1117510
+  _job: 31309814773
+  _time: 2026-08-09 11:04:43.004373514 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: claude/resolve-local-names-perf-1woeta
+  details: The pull request objectionary/eo#6503 has been opened by @yegor256.
+  event_id: 12999107320
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6503
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-08-09 11:00:33.000000000 Z
+  where: github
+  who: 526301
+- _id: 1117511
+  _job: 31309814773
+  _time: 2026-08-09 11:04:44.379658786 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6502 has been opened by @yegor256.
+  event_id: 12998970557
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6502
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-09 10:53:40.000000000 Z
+  where: github
+  who: 526301
+- _id: 1117512
+  _job: 31309814773
+  _time: 2026-08-09 11:04:45.195297579 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  commit: 98647bd6ee093038fccf3fd354e5db1abd010bdd
+  default_branch: master
+  details: 'A new Git push #39503064041 has arrived to objectionary/eo, made by @yegor256
+    (default branch is "master"), not associated with any pull request.'
+  event_id: 17185637156
+  event_type: PushEvent
+  is_human: 1
+  push_id: 39503064041
+  ref: refs/heads/master
+  repository: 73056727
+  to_master: 1
+  what: git-was-pushed
+  when: 2026-08-09 10:43:31.000000000 Z
+  where: github
+  who: 526301
+- _id: 1117513
+  _job: 31309814773
+  _time: 2026-08-09 11:04:45.710917051 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6501 has been opened by @thayorns.
+  event_id: 12998438639
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6501
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-09 10:26:08.000000000 Z
+  where: github
+  who: 96509556
+- _id: 1117514
+  _job: 31309814773
+  _time: 2026-08-09 11:16:27.215770213 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#6502.
+  issue: 6502
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-09 10:58:10.000000000 Z
   where: github
   who: 526301

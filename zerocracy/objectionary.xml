@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fb version="0.19.6" size="8854833">
+<fb version="0.19.6" size="8853568">
   <f>
     <added t="I">8</added>
     <cycles t="I">1</cycles>
     <deleted t="I">8</deleted>
-    <error t="S">deadlock; recursive locking</error>
     <inserted t="I">8</inserted>
-    <seconds t="F">2160.466229078</seconds>
+    <seconds t="F">2160.809023238</seconds>
     <version t="S">0.61.1</version>
     <what t="S">judges-summary</what>
-    <when t="T">2026-08-09T09:49:22Z</when>
+    <when t="T">2026-08-09T11:39:56Z</when>
   </f>
   <f>
     <_id t="I">671</_id>
@@ -240452,26 +240451,6 @@
     <who t="I">41898282</who>
   </f>
   <f>
-    <_id t="I">1098698</_id>
-    <_job t="I">27273975268</_job>
-    <_time t="T">2026-06-10T11:50:36Z</_time>
-    <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <commit t="S">20da7843b911ded889056b32f19c63f706d6decd</commit>
-    <default_branch t="S">master</default_branch>
-    <details t="S">A new Git push #35387295956 has arrived to objectionary/sabj25, made by @yegor256 (default branch is "master"), not associated with any pull request.</details>
-    <event_id t="I">13098162088</event_id>
-    <event_type t="S">PushEvent</event_type>
-    <is_human t="I">1</is_human>
-    <push_id t="I">35387295956</push_id>
-    <ref t="S">refs/heads/master</ref>
-    <repository t="I">1260338737</repository>
-    <to_master t="I">1</to_master>
-    <what t="S">git-was-pushed</what>
-    <when t="T">2026-06-10T09:43:02Z</when>
-    <where t="S">github</where>
-    <who t="I">526301</who>
-  </f>
-  <f>
     <_id t="I">1098699</_id>
     <_job t="I">27273975268</_job>
     <_time t="T">2026-06-10T11:50:37Z</_time>
@@ -240489,26 +240468,6 @@
     <who t="I">41898282</who>
   </f>
   <f>
-    <_id t="I">1098700</_id>
-    <_job t="I">27273975268</_job>
-    <_time t="T">2026-06-10T11:50:37Z</_time>
-    <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <commit t="S">cae189510d23c02fd0326cbfd3fd6d11f73de269</commit>
-    <default_branch t="S">master</default_branch>
-    <details t="S">A new Git push #35385592271 has arrived to objectionary/sabj25, made by @yegor256 (default branch is "master"), not associated with any pull request.</details>
-    <event_id t="I">13096458670</event_id>
-    <event_type t="S">PushEvent</event_type>
-    <is_human t="I">1</is_human>
-    <push_id t="I">35385592271</push_id>
-    <ref t="S">refs/heads/master</ref>
-    <repository t="I">1260338737</repository>
-    <to_master t="I">1</to_master>
-    <what t="S">git-was-pushed</what>
-    <when t="T">2026-06-10T09:06:59Z</when>
-    <where t="S">github</where>
-    <who t="I">526301</who>
-  </f>
-  <f>
     <_id t="I">1098701</_id>
     <_job t="I">27273975268</_job>
     <_time t="T">2026-06-10T11:51:06Z</_time>
@@ -240521,26 +240480,6 @@
     <repository t="I">840332960</repository>
     <what t="S">issue-was-opened</what>
     <when t="T">2026-06-10T10:13:25Z</when>
-    <where t="S">github</where>
-    <who t="I">526301</who>
-  </f>
-  <f>
-    <_id t="I">1098702</_id>
-    <_job t="I">27273975268</_job>
-    <_time t="T">2026-06-10T11:51:07Z</_time>
-    <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <commit t="S">f5774844bd7b991ef9cde4fd79a7fd3b13da8d9f</commit>
-    <default_branch t="S">master</default_branch>
-    <details t="S">A new Git push #35387639339 has arrived to objectionary/hone-maven-plugin, made by @yegor256 (default branch is "master"), not associated with any pull request.</details>
-    <event_id t="I">13098505249</event_id>
-    <event_type t="S">PushEvent</event_type>
-    <is_human t="I">1</is_human>
-    <push_id t="I">35387639339</push_id>
-    <ref t="S">refs/heads/master</ref>
-    <repository t="I">840332960</repository>
-    <to_master t="I">1</to_master>
-    <what t="S">git-was-pushed</what>
-    <when t="T">2026-06-10T09:50:16Z</when>
     <where t="S">github</where>
     <who t="I">526301</who>
   </f>
@@ -240606,66 +240545,6 @@
     <repository t="I">840332960</repository>
     <what t="S">issue-was-opened</what>
     <when t="T">2026-06-10T08:09:09Z</when>
-    <where t="S">github</where>
-    <who t="I">526301</who>
-  </f>
-  <f>
-    <_id t="I">1098707</_id>
-    <_job t="I">27273975268</_job>
-    <_time t="T">2026-06-10T11:51:42Z</_time>
-    <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <commit t="S">69a84ffaa4f68710a188a9cee69442f4424ad938</commit>
-    <default_branch t="S">master</default_branch>
-    <details t="S">A new Git push #35386145010 has arrived to objectionary/calculus-paper, made by @yegor256 (default branch is "master"), not associated with any pull request.</details>
-    <event_id t="I">13097011442</event_id>
-    <event_type t="S">PushEvent</event_type>
-    <is_human t="I">1</is_human>
-    <push_id t="I">35386145010</push_id>
-    <ref t="S">refs/heads/master</ref>
-    <repository t="I">784310467</repository>
-    <to_master t="I">1</to_master>
-    <what t="S">git-was-pushed</what>
-    <when t="T">2026-06-10T09:18:41Z</when>
-    <where t="S">github</where>
-    <who t="I">526301</who>
-  </f>
-  <f>
-    <_id t="I">1098708</_id>
-    <_job t="I">27273975268</_job>
-    <_time t="T">2026-06-10T11:51:42Z</_time>
-    <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <commit t="S">5b2e69a4edd3761727be39d90cefdbdcecd23b1f</commit>
-    <default_branch t="S">master</default_branch>
-    <details t="S">A new Git push #35385977020 has arrived to objectionary/calculus-paper, made by @yegor256 (default branch is "master"), not associated with any pull request.</details>
-    <event_id t="I">13096842404</event_id>
-    <event_type t="S">PushEvent</event_type>
-    <is_human t="I">1</is_human>
-    <push_id t="I">35385977020</push_id>
-    <ref t="S">refs/heads/master</ref>
-    <repository t="I">784310467</repository>
-    <to_master t="I">1</to_master>
-    <what t="S">git-was-pushed</what>
-    <when t="T">2026-06-10T09:15:09Z</when>
-    <where t="S">github</where>
-    <who t="I">526301</who>
-  </f>
-  <f>
-    <_id t="I">1098709</_id>
-    <_job t="I">27273975268</_job>
-    <_time t="T">2026-06-10T11:51:43Z</_time>
-    <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <commit t="S">eb0cea832161c462605fa62af89bd05a05640b97</commit>
-    <default_branch t="S">master</default_branch>
-    <details t="S">A new Git push #35385865509 has arrived to objectionary/calculus-paper, made by @yegor256 (default branch is "master"), not associated with any pull request.</details>
-    <event_id t="I">13096731964</event_id>
-    <event_type t="S">PushEvent</event_type>
-    <is_human t="I">1</is_human>
-    <push_id t="I">35385865509</push_id>
-    <ref t="S">refs/heads/master</ref>
-    <repository t="I">784310467</repository>
-    <to_master t="I">1</to_master>
-    <what t="S">git-was-pushed</what>
-    <when t="T">2026-06-10T09:12:46Z</when>
     <where t="S">github</where>
     <who t="I">526301</who>
   </f>
@@ -296769,31 +296648,6 @@
     <who t="I">29139614</who>
   </f>
   <f>
-    <_id t="I">1106245</_id>
-    <_job t="I">28423602703</_job>
-    <_time t="T">2026-06-30T06:01:34Z</_time>
-    <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <commits t="I">5</commits>
-    <contributors>
-      <v t="I">526301</v>
-      <v t="I">8086956</v>
-    </contributors>
-    <details t="S">A new release "explain --normalize renders contextualize as \\ctx{...} instead of \\phinoContextualize{...}" has been published in objectionary/phino by @rultor.</details>
-    <event_id t="I">11152027454</event_id>
-    <event_type t="S">ReleaseEvent</event_type>
-    <hoc t="I">124</hoc>
-    <is_human t="I">0</is_human>
-    <last_commit t="S">693ef8024cf13f9ab371eaa48687a28b9b205910</last_commit>
-    <release t="I">346641410</release>
-    <repository t="I">977982682</repository>
-    <tag t="S">0.0.92</tag>
-    <tombstone t="T">2026-08-01T08:20:21Z</tombstone>
-    <what t="S">release-published</what>
-    <when t="T">2026-06-30T05:59:30Z</when>
-    <where t="S">github</where>
-    <who t="I">8086956</who>
-  </f>
-  <f>
     <_id t="I">1106246</_id>
     <_job t="I">28423602703</_job>
     <_time t="T">2026-06-30T06:01:36Z</_time>
@@ -322311,7 +322165,7 @@
     <_job t="I">28918253257</_job>
     <_time t="T">2026-07-08T04:55:42Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">1019</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">12982805869</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
@@ -326362,7 +326216,7 @@
     <_job t="I">29014863301</_job>
     <_time t="T">2026-07-09T11:37:47Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">0</assignees_were_scanned>
+    <assignees_were_scanned t="I">999</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">12995920612</events_were_scanned>
     <issues_were_scanned t="I">982</issues_were_scanned>
@@ -329448,7 +329302,7 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:00Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">1122</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">12985606707</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
@@ -329486,13 +329340,13 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:01Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">5804</assignees_were_scanned>
+    <assignees_were_scanned t="I">6064</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">12996668075</events_were_scanned>
+    <events_were_scanned t="I">12999185585</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
-    <labels_were_scanned t="I">6095</labels_were_scanned>
+    <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">4591</latest_issue_was_found>
-    <merges_were_scanned t="I">6492</merges_were_scanned>
+    <merges_were_scanned t="I">0</merges_were_scanned>
     <min_issue_was_found t="I">4341</min_issue_was_found>
     <min_pull_was_found t="I">5337</min_pull_was_found>
     <repository t="I">73056727</repository>
@@ -498024,7 +497878,6 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.90).</text>
     <award t="I">4</award>
     <comments t="I">3</comments>
     <details t="S">It's time to reward @yegor256 for the code review in objectionary/eolang.sty#152, the reward amount is 4.</details>
-    <greeting t="S">Thanks for the review! You've earned +4 points for this: +12 as a basis; -8 for absolutely no comments posted; -4 for too few (2) hits-of-code; +4 to give you at least something.  Your running score is [+2821](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">2</hoc>
     <href t="S">https://github.com/objectionary/eolang.sty/issues/152/#issuecomment-5230522058</href>
     <is_human t="I">1</is_human>
@@ -498164,6 +498017,7 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.90).</text>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <branch t="S">fix/6487-remove-dead-commit-hashes-map</branch>
     <details t="S">The missing pull objectionary/eo#6495 has been opened by @androvonx95.</details>
+    <is_human t="I">1</is_human>
     <issue t="I">6495</issue>
     <repository t="I">73056727</repository>
     <what t="S">pull-was-opened</what>
@@ -498177,6 +498031,7 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.90).</text>
     <_time t="T">2026-08-09T09:18:24Z</_time>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <details t="S">The missing issue objectionary/eo#6496 has been opened by @androvonx95.</details>
+    <is_human t="I">1</is_human>
     <issue t="I">6496</issue>
     <repository t="I">73056727</repository>
     <what t="S">issue-was-opened</what>
@@ -498190,10 +498045,142 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.90).</text>
     <_time t="T">2026-08-09T09:18:24Z</_time>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <details t="S">The missing issue objectionary/eo#6497 has been opened by @yegor256.</details>
+    <is_human t="I">1</is_human>
     <issue t="I">6497</issue>
     <repository t="I">73056727</repository>
     <what t="S">issue-was-opened</what>
     <when t="T">2026-08-09T07:20:04Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1117507</_id>
+    <_job t="I">31309814773</_job>
+    <_time t="T">2026-08-09T11:04:39Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6506 has been opened by @thayorns.</details>
+    <event_id t="I">12999185585</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6506</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-08-09T11:04:26Z</when>
+    <where t="S">github</where>
+    <who t="I">96509556</who>
+  </f>
+  <f>
+    <_id t="I">1117508</_id>
+    <_job t="I">31309814773</_job>
+    <_time t="T">2026-08-09T11:04:40Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6505 has been opened by @thayorns.</details>
+    <event_id t="I">12999172831</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6505</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-08-09T11:03:50Z</when>
+    <where t="S">github</where>
+    <who t="I">96509556</who>
+  </f>
+  <f>
+    <_id t="I">1117509</_id>
+    <_job t="I">31309814773</_job>
+    <_time t="T">2026-08-09T11:04:41Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6504 has been opened by @thayorns.</details>
+    <event_id t="I">12999164505</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6504</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-08-09T11:03:25Z</when>
+    <where t="S">github</where>
+    <who t="I">96509556</who>
+  </f>
+  <f>
+    <_id t="I">1117510</_id>
+    <_job t="I">31309814773</_job>
+    <_time t="T">2026-08-09T11:04:43Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">claude/resolve-local-names-perf-1woeta</branch>
+    <details t="S">The pull request objectionary/eo#6503 has been opened by @yegor256.</details>
+    <event_id t="I">12999107320</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6503</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-09T11:00:33Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1117511</_id>
+    <_job t="I">31309814773</_job>
+    <_time t="T">2026-08-09T11:04:44Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6502 has been opened by @yegor256.</details>
+    <event_id t="I">12998970557</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6502</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-08-09T10:53:40Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1117512</_id>
+    <_job t="I">31309814773</_job>
+    <_time t="T">2026-08-09T11:04:45Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <commit t="S">98647bd6ee093038fccf3fd354e5db1abd010bdd</commit>
+    <default_branch t="S">master</default_branch>
+    <details t="S">A new Git push #39503064041 has arrived to objectionary/eo, made by @yegor256 (default branch is "master"), not associated with any pull request.</details>
+    <event_id t="I">17185637156</event_id>
+    <event_type t="S">PushEvent</event_type>
+    <is_human t="I">1</is_human>
+    <push_id t="I">39503064041</push_id>
+    <ref t="S">refs/heads/master</ref>
+    <repository t="I">73056727</repository>
+    <to_master t="I">1</to_master>
+    <what t="S">git-was-pushed</what>
+    <when t="T">2026-08-09T10:43:31Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1117513</_id>
+    <_job t="I">31309814773</_job>
+    <_time t="T">2026-08-09T11:04:45Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6501 has been opened by @thayorns.</details>
+    <event_id t="I">12998438639</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6501</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-08-09T10:26:08Z</when>
+    <where t="S">github</where>
+    <who t="I">96509556</who>
+  </f>
+  <f>
+    <_id t="I">1117514</_id>
+    <_job t="I">31309814773</_job>
+    <_time t="T">2026-08-09T11:16:27Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6502.</details>
+    <issue t="I">6502</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-09T10:58:10Z</when>
     <where t="S">github</where>
     <who t="I">526301</who>
   </f>
