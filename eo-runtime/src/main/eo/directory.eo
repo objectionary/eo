@@ -175,6 +175,18 @@
               char.eq "}"
               false
               braced
+      if. > alternated
+        char.eq "{"
+        "("
+        if.
+          braced.and
+            char.eq "}"
+          ")"
+          if.
+            braced.and
+              char.eq ","
+            "|"
+            escaped char
       string.at glob index > char
       and. > double
         char.eq "*"
@@ -199,20 +211,6 @@
               char.eq "/"
               literal
               alternated
-      if. > alternated
-        char.eq "{"
-        "("
-        if.
-          and.
-            braced
-            char.eq "}"
-          ")"
-          if.
-            and.
-              braced
-              char.eq ","
-            "|"
-            escaped char
 
   ++> can-create-a-regular-tmpfile
     seq * > @
@@ -376,22 +374,19 @@
       made.
         directory mktemp.tmpfile.deleted
 
-  ++> can-walk-with-a-plain-glob-matching-direct-children-only
+  ++> can-walk-with-a-comma-outside-a-glob-brace-group
     seq * > @
       touched.
         as-file.
-          d.resolved "a.txt"
-      made.
-        as-dir.
-          d.resolved "sub"
+          d.resolved "a,b.txt"
       touched.
         as-file.
-          d.resolved "sub/b.txt"
+          d.resolved "ab.txt"
       eq.
         string.joined
           ","
-          d.as-dir.walk "*.txt"
-        d.resolved "a.txt"
+          d.as-dir.walk "a,b.txt"
+        d.resolved "a,b.txt"
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
@@ -415,19 +410,22 @@
       made.
         directory mktemp.tmpfile.deleted
 
-  ++> can-walk-with-a-comma-outside-a-glob-brace-group
+  ++> can-walk-with-a-plain-glob-matching-direct-children-only
     seq * > @
       touched.
         as-file.
-          d.resolved "a,b.txt"
+          d.resolved "a.txt"
+      made.
+        as-dir.
+          d.resolved "sub"
       touched.
         as-file.
-          d.resolved "ab.txt"
+          d.resolved "sub/b.txt"
       eq.
         string.joined
           ","
-          d.as-dir.walk "a,b.txt"
-        d.resolved "a,b.txt"
+          d.as-dir.walk "*.txt"
+        d.resolved "a.txt"
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
