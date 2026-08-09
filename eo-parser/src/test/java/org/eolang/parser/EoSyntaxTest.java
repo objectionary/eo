@@ -138,6 +138,62 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void recoversFromBrokenEscapeThatReplacedItsSibling() throws Exception {
+        MatcherAssert.assertThat(
+            "a failed only-phi line replacing a sibling must not corrupt the directive stream",
+            XhtmlMatchers.xhtml(
+                new String(
+                    new EoSyntax(
+                        new InputOf(
+                            String.join(
+                                System.lineSeparator(),
+                                "[] > pl",
+                                "  b",
+                                "    \"x\"",
+                                "    \"r\\c\" > [m]"
+                            )
+                        )
+                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
+                    StandardCharsets.UTF_8
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object[@ms='0']",
+                "/object/errors/error[contains(text(),'invalid unicode or octal escape')]",
+                "/object/o[@name='pl']/o[@base='Φ.b']/o[@as='α0' and @base='Φ.string']"
+            )
+        );
+    }
+
+    @Test
+    void recoversFromBrokenEscapeReplacingAnOnlyPhi() throws Exception {
+        MatcherAssert.assertThat(
+            "a failed plain line replacing an only-phi sibling must not land ms on a child object",
+            XhtmlMatchers.xhtml(
+                new String(
+                    new EoSyntax(
+                        new InputOf(
+                            String.join(
+                                System.lineSeparator(),
+                                "[] > pl",
+                                "  b",
+                                "    \"x\" > [m]",
+                                "    \"r\\c\""
+                            )
+                        )
+                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
+                    StandardCharsets.UTF_8
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object[@ms='0']",
+                "/object/errors/error[contains(text(),'invalid unicode or octal escape')]",
+                "/object/o[@name='pl']/o[@base='Φ.b']/o[@as='α0']"
+            )
+        );
+    }
+
+    @Test
     void copiesListingCorrectly() throws Exception {
         final String src = new TextOf(
             new ResourceOf("org/eolang/parser/factorial.eo")

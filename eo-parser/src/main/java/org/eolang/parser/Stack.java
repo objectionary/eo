@@ -40,6 +40,13 @@ final class Stack {
     private final List<Level> levels;
 
     /**
+     * The top level captured by the most recent {@link #checkpoint()},
+     * reinstated by {@link #silentTruncate} when a failed line
+     * {@link #replace}d it.
+     */
+    private Level saved;
+
+    /**
      * Close-time check hook, invoked whenever a level is popped or
      * replaced. Injected once at construction so per-call wiring stays
      * out of the API.
@@ -108,25 +115,52 @@ final class Stack {
     }
 
     /**
-     * Current number of entries on the stack — savepoint for per-line
-     * rollback (R-7.3).
-     * @return Entry count
+     * The top entry, or {@code null} when the stack is empty.
+     * @return Top, or null
      */
-    int size() {
+    Level topOrNull() {
+        final Level top;
+        if (this.levels.isEmpty()) {
+            top = null;
+        } else {
+            top = this.levels.get(this.levels.size() - 1);
+        }
+        return top;
+    }
+
+    /**
+     * Record the top level as the per-line rollback savepoint (R-7.3)
+     * and return the current depth. Taken before a line runs so a
+     * {@link ParseError} can undo its {@link #push} / {@link #replace}
+     * side effects.
+     * @return Stack depth at the checkpoint
+     */
+    int checkpoint() {
+        this.saved = this.topOrNull();
         return this.levels.size();
     }
 
     /**
-     * Pop entries silently until {@code size()} equals {@code target}.
-     * Used by {@link Eo} to undo {@link #push} / {@link #replace} side
-     * effects of a line that threw a {@link ParseError} (R-7.3) — the
-     * closer is <em>not</em> invoked here because the rolled-back open
-     * directives never reached the sink.
-     * @param target Target stack size
+     * Undo the structural side effects of a line that threw a
+     * {@link ParseError} (R-7.3) — the closer is <em>not</em> invoked
+     * here because the rolled-back open directives never reached the
+     * sink. Pops every entry pushed beyond {@code target} and then
+     * reconciles the top with the savepoint: a {@link #replace} leaves
+     * the depth unchanged yet swaps the level, and a replace that threw
+     * mid-way (before the fresh level landed) even leaves the depth one
+     * short, so a size-based truncation alone cannot model either — the
+     * displaced level is put back and its close-time check will fire
+     * when it genuinely closes.
+     * @param target Stack depth at the checkpoint
      */
     void silentTruncate(final int target) {
         while (this.levels.size() > target) {
             this.levels.remove(this.levels.size() - 1);
+        }
+        if (this.levels.size() < target) {
+            this.levels.add(this.saved);
+        } else if (target > 0 && this.levels.get(target - 1) != this.saved) {
+            this.levels.set(target - 1, this.saved);
         }
     }
 

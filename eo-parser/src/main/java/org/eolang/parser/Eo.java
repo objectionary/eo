@@ -341,7 +341,7 @@ final class Eo implements Iterable<Directive> {
         if (Eo.closesTextBlock(span, globals)) {
             stack.popDeeperThan(span.indent());
             final int tstartsen = emit.savepoint();
-            final int frame = stack.size();
+            final int frame = stack.checkpoint();
             try {
                 new LnTextBlock(span).into(stack, globals, emit);
             } catch (final ParseError err) {
@@ -408,7 +408,7 @@ final class Eo implements Iterable<Directive> {
             stack.popDeeperThan(span.indent());
         }
         final int tstartsen = emit.savepoint();
-        final int frame = stack.size();
+        final int frame = stack.checkpoint();
         boolean failed = false;
         try {
             Eo.classify(span).into(stack, globals, emit);
