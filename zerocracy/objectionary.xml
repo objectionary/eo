@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fb version="0.19.6" size="8850692">
+<fb version="0.19.6" size="8852086">
   <f>
     <added t="I">8</added>
     <cycles t="I">1</cycles>
     <deleted t="I">8</deleted>
     <inserted t="I">8</inserted>
-    <seconds t="F">2160.993944309</seconds>
+    <seconds t="F">2160.528790355</seconds>
     <version t="S">0.61.1</version>
     <what t="S">judges-summary</what>
-    <when t="T">2026-08-09T06:06:24Z</when>
+    <when t="T">2026-08-09T08:11:08Z</when>
   </f>
   <f>
     <_id t="I">671</_id>
@@ -239792,26 +239792,6 @@
     <who t="I">29139614</who>
   </f>
   <f>
-    <_id t="I">1098639</_id>
-    <_job t="I">27261824864</_job>
-    <_time t="T">2026-06-10T07:59:04Z</_time>
-    <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <commit t="S">1e6d9b7e1b954b5dbc38ca800abc66004fd89ac6</commit>
-    <default_branch t="S">master</default_branch>
-    <details t="S">A new Git push #35375004984 has arrived to objectionary/sabj25, made by @yegor256 (default branch is "master"), not associated with any pull request.</details>
-    <event_id t="I">13085818280</event_id>
-    <event_type t="S">PushEvent</event_type>
-    <is_human t="I">1</is_human>
-    <push_id t="I">35375004984</push_id>
-    <ref t="S">refs/heads/master</ref>
-    <repository t="I">1260338737</repository>
-    <to_master t="I">1</to_master>
-    <what t="S">git-was-pushed</what>
-    <when t="T">2026-06-10T04:40:09Z</when>
-    <where t="S">github</where>
-    <who t="I">526301</who>
-  </f>
-  <f>
     <_id t="I">1098642</_id>
     <_job t="I">27261824864</_job>
     <_time t="T">2026-06-10T07:59:28Z</_time>
@@ -322329,7 +322309,7 @@
     <_job t="I">28918253257</_job>
     <_time t="T">2026-07-08T04:55:42Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">1019</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">12982805869</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
@@ -326380,9 +326360,9 @@
     <_job t="I">29014863301</_job>
     <_time t="T">2026-07-09T11:37:47Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">0</assignees_were_scanned>
+    <assignees_were_scanned t="I">999</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">12991041922</events_were_scanned>
+    <events_were_scanned t="I">12994756290</events_were_scanned>
     <issues_were_scanned t="I">982</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">765</latest_issue_was_found>
@@ -329466,7 +329446,7 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:00Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">1122</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">12985606707</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
@@ -329504,13 +329484,13 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:01Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">5298</assignees_were_scanned>
+    <assignees_were_scanned t="I">5484</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">17165412131</events_were_scanned>
+    <events_were_scanned t="I">12995155740</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
-    <labels_were_scanned t="I">6095</labels_were_scanned>
+    <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">4591</latest_issue_was_found>
-    <merges_were_scanned t="I">6492</merges_were_scanned>
+    <merges_were_scanned t="I">0</merges_were_scanned>
     <min_issue_was_found t="I">4341</min_issue_was_found>
     <min_pull_was_found t="I">5337</min_pull_was_found>
     <repository t="I">73056727</repository>
@@ -498014,5 +497994,78 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.90).</text>
     <when t="T">2026-08-09T03:36:29Z</when>
     <where t="S">github</where>
     <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1117495</_id>
+    <_job t="I">85905</_job>
+    <_time t="T">2026-08-09T06:07:16Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <comments t="I">3</comments>
+    <details t="S">The pull request objectionary/eolang.sty#152 with 2 HoC created by @renovate[bot] was merged by @rultor after 10h52m of being in review and 3 comments.</details>
+    <hoc t="I">2</hoc>
+    <is_human t="I">0</is_human>
+    <issue t="I">152</issue>
+    <merger t="I">8086956</merger>
+    <repository t="I">546194972</repository>
+    <review_comments t="I">0</review_comments>
+    <seconds t="I">39164</seconds>
+    <what t="S">code-was-contributed</what>
+    <when t="T">2026-08-09T03:45:54Z</when>
+    <where t="S">github</where>
+    <who t="I">29139614</who>
+  </f>
+  <f>
+    <_id t="I">1117496</_id>
+    <_job t="I">85905</_job>
+    <_time t="T">2026-08-09T06:07:53Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <award t="I">4</award>
+    <comments t="I">3</comments>
+    <details t="S">It's time to reward @yegor256 for the code review in objectionary/eolang.sty#152, the reward amount is 4.</details>
+    <greeting t="S">Thanks for the review! You've earned +4 points for this: +12 as a basis; -8 for absolutely no comments posted; -4 for too few (2) hits-of-code; +4 to give you at least something.  Your running score is [+2821](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
+    <hoc t="I">2</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">152</issue>
+    <repository t="I">546194972</repository>
+    <review_comments t="I">0</review_comments>
+    <seconds t="I">38599</seconds>
+    <what t="S">code-review-was-rewarded</what>
+    <when t="T">2026-08-09T06:07:53Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+    <why t="S">Reviewed code in objectionary/eolang.sty#152</why>
+  </f>
+  <f>
+    <_id t="I">1117497</_id>
+    <_job t="I">31301437977</_job>
+    <_time t="T">2026-08-09T07:36:04Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">fix/issue-1217-bad-test-name-throwing</branch>
+    <details t="S">The pull request objectionary/lints#1224 has been opened by @vasilevnstas.</details>
+    <event_id t="I">12994756290</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">1224</issue>
+    <repository t="I">889819508</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-09T07:10:04Z</when>
+    <where t="S">github</where>
+    <who t="I">33578155</who>
+  </f>
+  <f>
+    <_id t="I">1117498</_id>
+    <_job t="I">31301437977</_job>
+    <_time t="T">2026-08-09T07:36:05Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/lints#1219 has been closed by @volodya-lombrozo.</details>
+    <event_id t="I">12993205211</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">1219</issue>
+    <repository t="I">889819508</repository>
+    <what t="S">issue-was-closed</what>
+    <when t="T">2026-08-09T05:36:09Z</when>
+    <where t="S">github</where>
+    <who t="I">51804353</who>
   </f>
 </fb>
