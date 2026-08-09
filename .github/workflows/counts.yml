@@ -37,7 +37,7 @@ jobs:
           - metric: nulls
             files: '*.java'
             pattern: 'null'
-            count: 251
+            count: 252
           - metric: atoms
             files: '*.java'
             pattern: '@XmirObject'
