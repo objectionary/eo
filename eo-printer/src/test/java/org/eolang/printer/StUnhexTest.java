@@ -235,6 +235,30 @@ final class StUnhexTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("shifts")
+    void unhexesIndentedLiteralWithAnArgument(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must keep the argument of an indented literal and unhex it cleanly",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<p> <o base='Φ.number'> ",
+                        "<o as='α0' base='Φ.bytes'> <o as='α0'>40-45-00-00-00-00-00-00</o> </o> ",
+                        "<o as='α1' base='Φ.bytes'> <o as='α0'>2A-</o> </o> </o> </p>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                "//o[@base='Φ.number' and text()='42' and o[@as='α0' and text()='2A-']]"
+            )
+        );
+    }
+
     private static Stream<Arguments> shifts() {
         return Stream.of(
             Arguments.of(StUnhex.XNAV, "xnav")

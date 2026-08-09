@@ -34,7 +34,7 @@ final class StUnhex extends StEnvelope {
         StUnhex.class.getSimpleName(),
         new StXnav(
             StUnhex.BYTES,
-            xnav -> xnav.node().setTextContent(
+            xnav -> new Payload(xnav).replace(
                 xnav.element("o").text().orElse("")
             )
         ),
@@ -47,7 +47,7 @@ final class StUnhex extends StEnvelope {
                 if (buffer.remaining() == Double.BYTES) {
                     final double number = buffer.getDouble();
                     if (!Double.isNaN(number) && !Double.isInfinite(number)) {
-                        xnav.node().setTextContent(StUnhex.number(number));
+                        new Payload(xnav).replace(StUnhex.number(number));
                     }
                 }
             }
@@ -59,7 +59,7 @@ final class StUnhex extends StEnvelope {
                     StUnhex.undash(xnav.element("o").text().orElse(""))
                 ).array()
             ).ifPresent(
-                decoded -> xnav.node().setTextContent(
+                decoded -> new Payload(xnav).replace(
                     String.format("\"%s\"", StUnhex.escape(decoded))
                 )
             )
