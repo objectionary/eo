@@ -20,5 +20,6 @@ provides:
   - "/provides/type[@id='Φ.app.t.next' and @complete='true' and not(attr)]"
   - "/provides/type[@id='Φ.app.inc']/attr[@name='x' and @void='true']"
 needs:
-  - "/needs/type[@id='Φ.app.inc.φ.ρ.ρ']/attr[@name='next' and @type='Φ.app.inc.φ.ρ']"
+  - "/needs/type[@id='Φ.app.inc.φ.ρ.ρ']/attr[@name='next']"
+  - "/needs//attr[@name='next' and @type='Φ.app.inc.φ.ρ']"
   - "/needs/type[@id='Φ.app.inc.φ.ρ']/attr[@name='foo' and @type='Φ.app.inc.φ']"
