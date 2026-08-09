@@ -143,7 +143,7 @@ final class Cache {
             final MessageDigest digest = MessageDigest.getInstance("SHA-256");
             try (Stream<Path> stream = Files.walk(dir)) {
                 stream.filter(Files::isRegularFile)
-                    .filter(this.filter::test)
+                    .filter(this.filter)
                     .sorted(Comparator.comparing(Path::toString))
                     .map(p -> String.format("%s\0%s", dir.relativize(p), new Sha(p)))
                     .map(s -> s.getBytes(StandardCharsets.UTF_8))

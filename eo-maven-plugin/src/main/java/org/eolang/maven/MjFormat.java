@@ -10,9 +10,9 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
-import java.util.LinkedList;
 import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -106,7 +106,7 @@ public final class MjFormat extends MjSafe {
     void exec() throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> sources = this.scopedTojos().withSources();
-        final Collection<Path> divergent = new LinkedList<>();
+        final Collection<Path> divergent = new ArrayList<>(0);
         for (final TjForeign tojo : sources) {
             if (this.reformat(tojo.source())) {
                 divergent.add(tojo.source());

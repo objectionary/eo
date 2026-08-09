@@ -32,23 +32,22 @@ import org.xembly.Xembler;
 
 /**
  * Runs all lints and checks errors and warnings.
- * <p>
- *     This class goes through all XMIR files generated in the previous steps (see {@link MjParse}
- *     or {@link MjPull} goals) and runs all available lints on them.
- *     If any errors or warnings are found, they are logged to the console,
- *     and depending on the configuration, the build may fail.
- *     The linting results are also embedded back into the XMIR files for future reference.
- *     Lints might use caching to speed up the process on subsequent runs.
- *     Cached files are stored in the {@link #CACHE} directory.
- *     The results of linting are saved in the {@link #DIR} directory.
- * </p>
- * <p>
- *     Note: this class is intentionally named {@code Linting} rather than {@code Lint} to avoid
- *     a conflict with Maven's Plexus configurator. When a class named {@code Lint} exists in the
- *     plugin package, Plexus tries to instantiate it (via no-arg constructor) as the element type
- *     for any {@code lint} XML child element it encounters in plugin configuration.
- *     Naming the class {@code Linting} avoids this collision.
- * </p>
+ *
+ * <p>This class goes through all XMIR files generated in the previous steps (see {@link MjParse}
+ * or {@link MjPull} goals) and runs all available lints on them.
+ * If any errors or warnings are found, they are logged to the console,
+ * and depending on the configuration, the build may fail.
+ * The linting results are also embedded back into the XMIR files for future reference.
+ * Lints might use caching to speed up the process on subsequent runs.
+ * Cached files are stored in the {@link #CACHE} directory.
+ * The results of linting are saved in the {@link #DIR} directory.</p>
+ *
+ * <p>Note: this class is intentionally named {@code Linting} rather than {@code Lint} to avoid
+ * a conflict with Maven's Plexus configurator. When a class named {@code Lint} exists in the
+ * plugin package, Plexus tries to instantiate it (via no-arg constructor) as the element type
+ * for any {@code lint} XML child element it encounters in plugin configuration.
+ * Naming the class {@code Linting} avoids this collision.</p>
+ *
  * @since 0.31.0
  */
 @SuppressWarnings("PMD.GodClass")

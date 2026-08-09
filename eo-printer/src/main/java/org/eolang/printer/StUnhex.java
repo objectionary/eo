@@ -12,7 +12,6 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.regex.Pattern;
 import org.eolang.parser.StXnav;
 
 /**
@@ -27,11 +26,6 @@ final class StUnhex extends StEnvelope {
      */
     private static final String BYTES =
         "//o[@base='Φ.bytes' and o[1][string-length(normalize-space(text()))>0]]";
-
-    /**
-     * Regex for splitting hex pairs.
-     */
-    private static final Pattern HEX_PAIR = Pattern.compile("(?<=\\G.{2})");
 
     /**
      * Unexing via {@link com.github.lombrozo.xnav.Xnav}.
@@ -115,17 +109,12 @@ final class StUnhex extends StEnvelope {
      * @return The buffer of bytes
      */
     private static ByteBuffer buffer(final String txt) {
-        final ByteBuffer buffer;
-        if (txt.isEmpty()) {
-            buffer = ByteBuffer.allocate(0);
-        } else {
-            final String[] parts = StUnhex.HEX_PAIR.split(txt);
-            buffer = ByteBuffer.allocate(parts.length);
-            for (final String pair : parts) {
-                buffer.put((byte) Integer.parseInt(pair, 16));
-            }
-            buffer.position(0);
+        final int len = txt.length();
+        final ByteBuffer buffer = ByteBuffer.allocate(len / 2);
+        for (int idx = 0; idx < len; idx += 2) {
+            buffer.put((byte) Integer.parseInt(txt.substring(idx, idx + 2), 16));
         }
+        buffer.position(0);
         return buffer;
     }
 
@@ -214,7 +203,8 @@ final class StUnhex extends StEnvelope {
      */
     private static String undash(final String txt) {
         final StringBuilder out = new StringBuilder(txt.length());
-        for (final char chr : txt.toCharArray()) {
+        for (int idx = 0; idx < txt.length(); ++idx) {
+            final char chr = txt.charAt(idx);
             if (chr == '-') {
                 continue;
             }

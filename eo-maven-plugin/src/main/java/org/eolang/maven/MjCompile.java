@@ -11,13 +11,11 @@ import org.apache.maven.plugins.annotations.Mojo;
 /**
  * Compile and lint all EO files.
  *
- * <p>
- *     This goal combines {@link MjAssemble}, {@link MjLint}, {@link MjResolve} and
- *     {@link MjPlace} goals.
- *     See their documentation to find out more details.
- *     The {@link MjCompile} is useful to run the whole compilation process in one go without
- *     the need to call each goal separately.
- * </p>
+ * <p>This goal combines {@link MjAssemble}, {@link MjLint}, {@link MjResolve} and
+ * {@link MjPlace} goals.
+ * See their documentation to find out more details.
+ * The {@link MjCompile} is useful to run the whole compilation process in one go without
+ * the need to call each goal separately.</p>
  *
  * @since 0.52
  */

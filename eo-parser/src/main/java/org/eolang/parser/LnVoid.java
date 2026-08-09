@@ -25,14 +25,14 @@ package org.eolang.parser;
  * void may carry exactly one type annotation (R-3.4.8):</p>
  *
  * <ul>
- *   <li>{@code /type} — the void's own type: a concrete forma or a
- *   generic type variable ({@code A}–{@code F}), with an optional
- *   trailing {@code ?} marking a maybe-bottom value. Emits
- *   {@code @type}.</li>
- *   <li>{@code /&#123;type …&#125;} — the void is a callback formation;
- *   the brace list gives the types of its void parameters (the arguments
- *   the atom supplies to that branch). No {@code ?} inside. Emits
- *   {@code @args}.</li>
+ * <li>{@code /type} — the void's own type: a concrete forma or a
+ * generic type variable ({@code A}–{@code F}), with an optional
+ * trailing {@code ?} marking a maybe-bottom value. Emits
+ * {@code @type}.</li>
+ * <li>{@code /{type …}} — the void is a callback formation;
+ * the brace list gives the types of its void parameters (the arguments
+ * the atom supplies to that branch). No {@code ?} inside. Emits
+ * {@code @args}.</li>
  * </ul>
  *
  * <p>A concrete forma has a leading {@code Q.} promoted to {@code Φ.};
@@ -175,7 +175,7 @@ final class LnVoid implements Line {
     }
 
     /**
-     * Parse the brace {@code /&#123;type …&#125;} argument list (R-3.4.8):
+     * Parse the brace {@code /{type …}} argument list (R-3.4.8):
      * one or more type atoms, single-space separated, no {@code ?}.
      * @param tail The line body after the {@code ?}
      * @param slash Index of the {@code /} marker in {@code tail}

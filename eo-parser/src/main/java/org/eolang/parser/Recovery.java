@@ -73,7 +73,7 @@ final class Recovery {
             idx = idx + 1;
         }
         if (idx < this.spans.size()) {
-            idx = this.rewound(idx, failed);
+            idx = this.rewound(idx, from - 1);
         }
         return idx;
     }
@@ -82,12 +82,12 @@ final class Recovery {
      * Step back over the run of blank lines trailing the skipped block,
      * so the walk meets them again as the separators they are.
      * @param stop Index the skip stopped at
-     * @param failed Index of the line that failed to parse
+     * @param floor Last index the block covers before the skip began
      * @return Index of the first blank of the trailing run
      */
-    private int rewound(final int stop, final int failed) {
+    private int rewound(final int stop, final int floor) {
         int idx = stop;
-        while (idx - 1 > failed && this.spans.get(idx - 1).blank()) {
+        while (idx - 1 > floor && this.spans.get(idx - 1).blank()) {
             idx = idx - 1;
         }
         return idx;

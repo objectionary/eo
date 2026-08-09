@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.cactoos.Scalar;
 import org.cactoos.iterable.Mapped;
@@ -85,12 +86,14 @@ final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
         return new MapOf<>(
             new Mapped<>(
                 rows -> {
-                    final String[] row = CommitHashesMap.WHITESPACE.split(rows.asString());
+                    final String row = rows.asString();
+                    final Matcher matcher = CommitHashesMap.WHITESPACE.matcher(row);
+                    matcher.find();
                     return new MapEntry<>(
-                        row[1],
+                        row.substring(matcher.end()),
                         new ChCached(
                             new ChNarrow(
-                                new CommitHash.ChConstant(row[0])
+                                new CommitHash.ChConstant(row.substring(0, matcher.start()))
                             )
                         )
                     );
