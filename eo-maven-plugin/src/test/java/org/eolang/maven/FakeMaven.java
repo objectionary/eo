@@ -468,7 +468,7 @@ final class FakeMaven {
      */
     private static Set<String> mojoFields(final Class<?> mojo, final Set<String> fields) {
         final Set<String> res;
-        if (mojo == null) {
+        if (Object.class.equals(mojo)) {
             res = fields;
         } else {
             Stream.of(mojo.getDeclaredFields()).map(Field::getName).forEach(fields::add);
