@@ -79,6 +79,21 @@ final class SavedTest {
     }
 
     @Test
+    void savesContentToFilenameOnlyRelativePath() throws IOException {
+        final Path target = Path.of("saved-probe.txt");
+        try {
+            new Saved("hello-6441", target).value();
+            MatcherAssert.assertThat(
+                "a filename-only relative path must be written into the current working directory",
+                Files.readString(target, StandardCharsets.UTF_8),
+                Matchers.equalTo("hello-6441")
+            );
+        } finally {
+            Files.deleteIfExists(target);
+        }
+    }
+
+    @Test
     void overwritesContentOfExistingFile(@Mktmp final Path temp) throws Exception {
         final Path target = temp.resolve("twice.txt");
         new Saved("first-7", target).value();

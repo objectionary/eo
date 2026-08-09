@@ -12,6 +12,7 @@ import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
 import org.cactoos.Scalar;
@@ -86,16 +87,17 @@ final class Saved implements Scalar<Path> {
 
     @Override
     public Path value() throws IOException {
+        final Path dir = Objects.requireNonNull(this.target).toAbsolutePath().getParent();
         final long bytes;
         try {
-            if (this.target.toFile().getParentFile().mkdirs()) {
+            if (dir != null && dir.toFile().mkdirs()) {
                 Logger.debug(
                     this, "Directory created: %[file]s",
-                    this.target.getParent()
+                    dir
                 );
             }
             final Path tmp = Files.createTempFile(
-                this.target.getParent(),
+                dir,
                 this.target.getFileName().toString(),
                 ".tmp"
             );
