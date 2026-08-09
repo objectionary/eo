@@ -94,7 +94,6 @@
       number.random clock
   [glob] > walk
     [accum prefix dir] >> walked
-      dir.listed >> names
       [rest] >> stepped
         if. > @
           rest.length.eq 0
@@ -103,8 +102,8 @@
             child.as-file.is-directory false
             walked earlier sub child.as-dir
             picked earlier sub
-        stepped rest.tail > earlier
         dir.as-path.resolved name > child
+        stepped rest.tail > earlier
         rest.head > name
         if. > sub
           prefix.length.eq 0
@@ -113,7 +112,7 @@
             path.separator
             prefix
             name
-      | names > @
+      | dir.listed > @
     | > @
       *
       ""
