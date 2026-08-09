@@ -17,6 +17,17 @@ import java.util.List;
  * back at or above the indent of the one that failed. A blank line
  * carries no indent of its own and never ends the skipped block.</p>
  *
+ * <p>The blanks trailing the block are handed back, though. A blank
+ * standing between the last skipped line and the line the walk resumes
+ * at separates two objects instead of sitting inside either, and §6.5
+ * reads its rules off exactly such separators — R-6.5.4 forbids one in
+ * front of a plain object. Swallowing it would drop that diagnostic
+ * from whatever follows the failed block, since the line never reaches
+ * the blank-line bookkeeping. Blanks with skipped lines still under
+ * them are nested and stay skipped, and a block running to the end of
+ * the file keeps its trailing blanks, no object being left for them to
+ * separate.</p>
+ *
  * @since 0.1
  */
 final class Recovery {
@@ -41,10 +52,43 @@ final class Recovery {
      * @return Index of the resumption point
      */
     int after(final int failed) {
-        final int indent = this.spans.get(failed).indent();
-        int idx = failed + 1;
+        return this.skip(failed + 1, this.spans.get(failed).indent());
+    }
+
+    /**
+     * The index the walk resumes at, skipping forward from {@code from}
+     * while a line still belongs to the block of a line at {@code indent}.
+     * Unlike {@link #after(int)}, the scan start and the reference indent
+     * are given separately — needed when the failed line's own index does
+     * not carry its indent (e.g. a merged multi-line literal, where the
+     * block belongs to the head line but scanning must start past every
+     * already-merged continuation line).
+     * @param from Index to start scanning from
+     * @param indent Indent of the line whose block is being skipped
+     * @return Index of the resumption point
+     */
+    int skip(final int from, final int indent) {
+        int idx = from;
         while (idx < this.spans.size() && this.skipped(idx, indent)) {
             idx = idx + 1;
+        }
+        if (idx < this.spans.size()) {
+            idx = this.rewound(idx, failed);
+        }
+        return idx;
+    }
+
+    /**
+     * Step back over the run of blank lines trailing the skipped block,
+     * so the walk meets them again as the separators they are.
+     * @param stop Index the skip stopped at
+     * @param failed Index of the line that failed to parse
+     * @return Index of the first blank of the trailing run
+     */
+    private int rewound(final int stop, final int failed) {
+        int idx = stop;
+        while (idx - 1 > failed && this.spans.get(idx - 1).blank()) {
+            idx = idx - 1;
         }
         return idx;
     }

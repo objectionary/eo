@@ -187,6 +187,12 @@ final class FakeMaven {
                 "cache", this.workspace.resolve("eo/cache/parsed").toFile()
             );
             this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
+            this.params.putIfAbsent(
+                "prepared", this.targetPath().resolve("6-pre-inference").toFile()
+            );
+            this.params.putIfAbsent(
+                "tables", this.targetPath().resolve("6-inference").toFile()
+            );
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
             this.params.putIfAbsent(
