@@ -37,6 +37,29 @@
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <!--
+  Every handle, indexed by its name together with the formation that owns
+  it - the same "name in this scope" pair the search below asks about. The
+  question "does this formation declare a handle of this name" is then a
+  hash lookup, where it used to be a walk of the formation's entire subtree
+  ("some $d in descendant::o[@local=$name] ..."), repeated for every
+  ancestor of every reference. That walk made the pass quadratic in the size
+  of the file, so a few tens of thousands of objects took tens of seconds
+  (#6502).
+
+  The pair is spelled as a string because "xsl:key" indexes by atomic value,
+  and "generate-id" is the only way to name a node in one: two formations
+  are the same scope exactly when their generated ids are equal. A handle
+  written at the top level, outside any formation, has no owner and lands
+  under the id-less "name#" bucket, which no formation ever asks for.
+  -->
+  <xsl:key name="handles" match="o[@local]" use="concat(@local, '#', generate-id(ancestor::o[not(@base)][1]))"/>
+  <!--
+  Every named object, indexed by its name together with its parent, so the
+  "does this formation have an attribute of this name" test is a hash lookup
+  as well, rather than a scan of the formation's children.
+  -->
+  <xsl:key name="attributes" match="o[@name]" use="concat(@name, '#', generate-id(..))"/>
+  <!--
   The file-local handle that captures the given reference, or the empty
   sequence when the reference resolves to something else (a public attribute
   or a global). The nearest enclosing formation (an "o" without "@base") that
@@ -49,15 +72,24 @@
   written nested inside an application (`42.plus > x` with `a &gt;&gt; b!`
   beneath it, the moniker spelling the printer emits, #5828) still belongs to
   the enclosing formation. So a formation owns a handle when some "@local"
-  descendant has that formation as its nearest enclosing formation - the "is"
-  test stops the search at a nested formation boundary, so a handle never
-  leaks up out of, or sideways between, nested formations (#5780).
+  descendant has that formation as its nearest enclosing formation - which is
+  exactly the owner the "handles" key files each handle under, so a handle
+  never leaks up out of, or sideways between, nested formations (#5780).
+
+  Both questions the search asks - "does this formation own an attribute of
+  this name" and "does it own a handle of this name" - go through the keys
+  above, so each ancestor costs a hash lookup instead of a subtree walk. The
+  nearest such ancestor is taken with "[1]" on the (reverse) ancestor axis
+  rather than "[last()]" on a parenthesized, document-ordered sequence: the
+  two name the same formation, but the former lets the search stop at the
+  first ancestor that declares the name, while the latter has to test every
+  ancestor up to the root before it can tell which one came last.
   -->
   <xsl:function name="eo:captor" as="element()?">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="name" as="xs:string" select="if (exists($ref/@method)) then substring-after($ref/@base, '.') else string($ref/@base)"/>
-    <xsl:variable name="scope" as="element()?" select="if (exists($ref/@method)) then eo:scope($ref) else ($ref/ancestor::o[not(@base)][o[@name=$name] or (some $d in descendant::o[@local=$name] satisfies $d/ancestor::o[not(@base)][1] is .)])[last()]"/>
-    <xsl:sequence select="$scope/descendant::o[@local=$name][ancestor::o[not(@base)][1] is $scope][1]"/>
+    <xsl:variable name="scope" as="element()?" select="if (exists($ref/@method)) then eo:scope($ref) else $ref/ancestor::o[not(@base)][exists(key('attributes', concat($name, '#', generate-id(.)))) or exists(key('handles', concat($name, '#', generate-id(.))))][1]"/>
+    <xsl:sequence select="for $found in $scope return key('handles', concat($name, '#', generate-id($found)), $found)[1]"/>
   </xsl:function>
   <!--
   The formation that the explicit receiver of a dispatch names: "ξ" (written
@@ -83,13 +115,28 @@
   <xsl:function name="eo:scope" as="element()?">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="receiver" as="element()?" select="$ref/preceding-sibling::o[1]"/>
-    <xsl:variable name="owner" as="element()?" select="$ref/ancestor::o[not(@base)][@name=$receiver/@base or o[@name=$receiver/@base]][1]"/>
+    <xsl:variable name="owner" as="element()?" select="$ref/ancestor::o[not(@base)][@name=$receiver/@base or exists(key('attributes', concat($receiver/@base, '#', generate-id(.))))][1]"/>
     <xsl:sequence select="if (empty($receiver/@base)) then () else if ($receiver/@base='ξ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][1] else if ($receiver/@base='ρ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][2] else if ($receiver/@base='.ρ' and exists($receiver/@method)) then eo:scope($receiver)/ancestor::o[not(@base)][1] else if (empty($receiver/@method) and $owner/@name=$receiver/@base) then $owner else ()"/>
   </xsl:function>
-  <xsl:template match="o[@base and exists(eo:captor(.))]">
+  <!--
+  Matches every reference and rewrites the ones a handle captures. The
+  captor is looked up once, into a variable, instead of once in the match
+  pattern and again in the body: the search is the expensive part of this
+  pass, and a pattern that calls it cannot share its answer with the
+  template it selects, so every captured reference paid for it twice.
+  -->
+  <xsl:template match="o[@base]">
+    <xsl:variable name="captor" as="element()?" select="eo:captor(.)"/>
     <xsl:copy>
-      <xsl:attribute name="base" select="concat(if (exists(@method)) then '.' else '', eo:captor(.)/@name)"/>
-      <xsl:apply-templates select="@* except @base"/>
+      <xsl:choose>
+        <xsl:when test="exists($captor)">
+          <xsl:attribute name="base" select="concat(if (exists(@method)) then '.' else '', $captor/@name)"/>
+          <xsl:apply-templates select="@* except @base"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="@*"/>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
