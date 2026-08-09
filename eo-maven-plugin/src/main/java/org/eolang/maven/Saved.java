@@ -12,6 +12,7 @@ import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
 import org.cactoos.Scalar;
@@ -87,7 +88,10 @@ final class Saved implements Scalar<Path> {
 
     @Override
     public Path value() throws IOException {
-        final Path dir = this.target.toAbsolutePath().getParent();
+        final Path dir = Objects.requireNonNull(
+            this.target.toAbsolutePath().getParent(),
+            () -> String.format("%s has no parent directory", this.target)
+        );
         final long bytes;
         try {
             if (dir.toFile().mkdirs()) {
