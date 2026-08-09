@@ -6,9 +6,10 @@
 #  group like {a,b} and a character class like [a-z] or [!a] reach the regex
 #  engine neither translated nor escaped, so a bracket or a brace in the glob
 #  either refuses to compile or matches the wrong entries.
-# @todo #5751:30min Stop descending into a symbolic link to a directory. The
-#  `walk` below asks stat, which follows the link, so a link to its own ancestor
-#  recurses forever, while the `Files.walk` it replaced only listed such a link.
+# @todo #6483:30min Stop descending into a symbolic link on Windows. The `walk`
+#  below asks `lstat`, which reports the link itself, so on POSIX a link to its
+#  own ancestor is listed instead of followed, while `_stat64` on Windows knows
+#  nothing about links and still lets such a link recurse forever.
 # @todo #5751:60min Walk a directory without growing the EO call stack. The
 #  `stepped` below recurses once per entry and `walked` once per level, so a
 #  directory with many entries overflows the stack the way `string.repeated`
@@ -103,10 +104,14 @@
             stepped
               index.plus 1
               if.
-                child.as-file.is-directory false
+                and.
+                  entry.is-directory false
+                  not.
+                    entry.is-symlink false
                 walked acc sub child.as-dir
                 acc.with sub
           dir.as-path.resolved name > child
+          child.as-file > entry
           names.at index > name
           if. > sub
             prefix.length.eq 0
