@@ -9,10 +9,12 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.IntFunction;
 
 /**
  * Dynamic memory.
  * @since 0.19
+ * @todo #6507:30min Move the remaining tests onto the scoped malloc and make free private.
  */
 final class Heaps {
 
@@ -63,6 +65,23 @@ final class Heaps {
             this.lock.unlock();
         }
         return identifier;
+    }
+
+    /**
+     * Allocate a block in memory, let the scope use it, and free it afterwards.
+     * @param phi Object
+     * @param size How many bytes
+     * @param scope What to do with the identifier of the block
+     * @param <T> Type of what the scope returns
+     * @return What the scope returns
+     */
+    <T> T malloc(final Phi phi, final int size, final IntFunction<T> scope) {
+        final int identifier = this.malloc(phi, size);
+        try {
+            return scope.apply(identifier);
+        } finally {
+            this.free(identifier);
+        }
     }
 
     /**

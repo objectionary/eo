@@ -76,9 +76,12 @@ final class HeapsTest {
     void failsOnWriteIfOffsetPlusLengthOverflows() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> Heaps.INSTANCE.write(
-                Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 10),
-                Integer.MAX_VALUE, new byte[] {0x01}
+            () -> Heaps.INSTANCE.malloc(
+                new HeapsTest.PhFake(), 10,
+                idx -> {
+                    Heaps.INSTANCE.write(idx, Integer.MAX_VALUE, new byte[] {0x01});
+                    return idx;
+                }
             ),
             "Heaps should throw an exception on write when offset + data.length overflows int, but it didn't"
         );
@@ -125,8 +128,8 @@ final class HeapsTest {
     void failsOnReadIfOutOfBounds() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> Heaps.INSTANCE.read(
-                Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 2), 1, 3
+            () -> Heaps.INSTANCE.malloc(
+                new HeapsTest.PhFake(), 2, idx -> Heaps.INSTANCE.read(idx, 1, 3)
             ),
             "Heaps should throw an exception on out-of-bounds read, but it didn't"
         );
@@ -136,9 +139,9 @@ final class HeapsTest {
     void failsOnReadIfOffsetPlusLengthOverflows() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> Heaps.INSTANCE.read(
-                Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 10),
-                Integer.MAX_VALUE - 1, Integer.MAX_VALUE - 1
+            () -> Heaps.INSTANCE.malloc(
+                new HeapsTest.PhFake(), 10,
+                idx -> Heaps.INSTANCE.read(idx, Integer.MAX_VALUE - 1, Integer.MAX_VALUE - 1)
             ),
             "Heaps must fail on out-of-bounds read when offset + length overflows int"
         );
@@ -162,12 +165,42 @@ final class HeapsTest {
 
     @Test
     void readsByOffsetAndLength() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5);
-        Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
         MatcherAssert.assertThat(
             "Heaps should successfully read correct slice when reading with offset and length, but it didn't",
-            Heaps.INSTANCE.read(idx, 1, 3),
+            Heaps.INSTANCE.malloc(
+                new HeapsTest.PhFake(), 5,
+                idx -> {
+                    Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
+                    return Heaps.INSTANCE.read(idx, 1, 3);
+                }
+            ),
             Matchers.equalTo(new byte[] {2, 3, 4})
+        );
+    }
+
+    @Test
+    void reusesObjectAfterScopeEnds() {
+        final Phi phi = new HeapsTest.PhFake();
+        Heaps.INSTANCE.malloc(phi, 10, Heaps.INSTANCE::size);
+        MatcherAssert.assertThat(
+            "Heaps must free the block when the scope ends, but the same object could not allocate",
+            Heaps.INSTANCE.malloc(phi, 5, Heaps.INSTANCE::size),
+            Matchers.equalTo(5)
+        );
+    }
+
+    @Test
+    void reusesObjectAfterScopeThrows() {
+        final Phi phi = new HeapsTest.PhFake();
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> Heaps.INSTANCE.malloc(phi, 10, idx -> Heaps.INSTANCE.read(idx, 0, 20)),
+            "Heaps should propagate the failure raised inside the scope, but it didn't"
+        );
+        MatcherAssert.assertThat(
+            "Heaps must free the block when the scope throws, but the same object could not allocate",
+            Heaps.INSTANCE.malloc(phi, 5, Heaps.INSTANCE::size),
+            Matchers.equalTo(5)
         );
     }
 
