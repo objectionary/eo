@@ -12,9 +12,9 @@ import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -199,7 +199,7 @@ final class TjsForeign implements Closeable {
             Attribute.XMIR,
             Attribute.PROBED,
         };
-        final Collection<String> parts = new LinkedList<>();
+        final Collection<String> parts = new ArrayList<>(0);
         for (final Attribute attr : attrs) {
             parts.add(
                 String.format(
@@ -268,21 +268,22 @@ final class TjsForeign implements Closeable {
         /**
          * How many objects were probed in the tojo.
          * Let's consider the next eo code:
-         * <p>
-         * {@code
+         *
+         * <p>{@code
          * [] > main
-         *   Q.io.stdout > @
-         *     Q.string.sprintf "I am %d years old"
-         *       plus.
-         *         1337
-         *         228
-         * }
-         * </p>
+         * Q.io.stdout > @
+         * Q.string.sprintf "I am %d years old"
+         * plus.
+         * 1337
+         * 228
+         * }</p>
+         *
          * <p>In this code there are 5 objects that were probed:</p>
-         *  - "io"
-         *  - "string"
-         *  - "io.stdout"
-         *  - "string.sprintf"
+         * - "io"
+         * - "string"
+         * - "io.stdout"
+         * - "string.sprintf"
+         *
          * <p>For more info see {@link MjProbe}. </p>
          */
         PROBED("probed"),

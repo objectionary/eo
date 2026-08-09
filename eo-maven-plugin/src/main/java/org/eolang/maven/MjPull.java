@@ -10,11 +10,11 @@ import org.apache.maven.plugins.annotations.Mojo;
 
 /**
  * Pull EO files from Objectionary.
- * <p>
- *     This goal goes through all objects from "foreign" catalog and looks for those without
- *     sources and pulls them from Objectionary remote repository.
- *     The pulled sources are stored in the {@link Pulling#DIR} directory.
- * </p>
+ *
+ * <p>This goal goes through all objects from "foreign" catalog and looks for those without
+ * sources and pulls them from Objectionary remote repository.
+ * The pulled sources are stored in the {@link Pulling#DIR} directory.</p>
+ *
  * @since 0.1
  */
 @Mojo(

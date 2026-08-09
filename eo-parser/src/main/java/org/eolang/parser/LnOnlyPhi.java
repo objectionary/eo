@@ -17,20 +17,19 @@ import java.util.List;
  * {@code lhs ++> name} (R-3.10.8 / R-6.3.6) is accepted as sugar for
  * {@code lhs > [] +> name} — a parameterless test attribute whose sole
  * binding is the {@code φ} decoratee {@code lhs}. The throwing
- * counterpart {@code lhs --> name} is sugar for {@code lhs > [] -> name}.
- * </p>
+ * counterpart {@code lhs --> name} is sugar for {@code lhs > [] -> name}.</p>
  *
  * <p>Mechanics (R-3.10.1):</p>
  *
  * <ul>
- *   <li>LHS is parsed as an application expression (head + optional
- *   chain + optional hargs) or a reversed dispatch ({@code if.}) via
- *   {@link Emissions#expression}. Its outermost {@code <o>} carries
- *   {@code @name='φ'} per the emission shape.</li>
- *   <li>Params inside the brackets become void children of the
- *   formation, emitted before the φ slot.</li>
- *   <li>The right-hand suffix names the formation (or auto-names with
- *   {@code >>}).</li>
+ * <li>LHS is parsed as an application expression (head + optional
+ * chain + optional hargs) or a reversed dispatch ({@code if.}) via
+ * {@link Emissions#expression}. Its outermost {@code <o>} carries
+ * {@code @name='φ'} per the emission shape.</li>
+ * <li>Params inside the brackets become void children of the
+ * formation, emitted before the φ slot.</li>
+ * <li>The right-hand suffix names the formation (or auto-names with
+ * {@code >>}).</li>
  * </ul>
  *
  * <p>Outer kind: {@link Kind#ONLY_PHI_FORMATION}. Openness depends on

@@ -15,19 +15,15 @@ import org.apache.maven.plugins.annotations.Mojo;
  * them from Maven Central, unpack and place to the {@code target/eo}
  * directory.
  *
- * <p>
- *     The motivation for this mojo is simple: Maven doesn't have
- *     a mechanism for adding .JAR files to transpile/test classpath in
- *     runtime.
- * </p>
+ * <p>The motivation for this mojo is simple: Maven doesn't have
+ * a mechanism for adding .JAR files to transpile/test classpath in
+ * runtime.</p>
  *
- * <p>
- *     This goal goes through all dependencies found in the
- *     {@link MjPull} goal, finds their implementations
- *     (i.e. transitive dependencies), downloads them from Maven Central,
- *     unpacks them and places the resulting files to the
- *     {@link MjResolve#DIR} directory.
- * </p>
+ * <p>This goal goes through all dependencies found in the
+ * {@link MjPull} goal, finds their implementations
+ * (i.e. transitive dependencies), downloads them from Maven Central,
+ * unpacks them and places the resulting files to the
+ * {@link MjResolve#DIR} directory.</p>
  *
  * @since 0.1
  */

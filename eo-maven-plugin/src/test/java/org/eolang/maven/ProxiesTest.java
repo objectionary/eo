@@ -23,7 +23,10 @@ final class ProxiesTest {
             "Active proxy of settings must keep its address",
             new Proxies(ProxiesTest.settings("prox.eolang.org", 8431, true)).value(),
             Matchers.arrayContaining(
-                new Proxy(Proxy.Type.HTTP, new InetSocketAddress("prox.eolang.org", 8431))
+                new Proxy(
+                    Proxy.Type.HTTP,
+                    InetSocketAddress.createUnresolved("prox.eolang.org", 8431)
+                )
             )
         );
     }

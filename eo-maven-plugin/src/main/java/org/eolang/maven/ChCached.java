@@ -24,7 +24,7 @@ final class ChCached implements CommitHash {
      * @param delegate Delegate
      */
     ChCached(final CommitHash delegate) {
-        this.delegate = new Unchecked<>(new Synced<>(new Sticky<>(delegate::value)));
+        this.delegate = new Unchecked<>(new Synced<>(new Sticky<>(delegate)));
     }
 
     @Override

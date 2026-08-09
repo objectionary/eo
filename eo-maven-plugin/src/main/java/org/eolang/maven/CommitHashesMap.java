@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.cactoos.Scalar;
 import org.cactoos.iterable.Mapped;
@@ -78,6 +79,12 @@ final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
      * Prestructor from hashes table.
      * You can read more about prestructors and why they are needed right
      * <a href="https://www.yegor256.com/2021/08/04/prestructors.html">here</a>
+     * The rows are split on "\R", which matches a line ending of any
+     * flavour, so the table parses the same however it was assembled.
+     * Splitting on a bare "\n" left a trailing "\r" glued to every tag when
+     * the table carried Windows line endings - as {@link #FAKES} does, being
+     * joined with {@link System#lineSeparator()} - and a lookup by a clean
+     * tag then found nothing.
      * @param table Commit hashes table as string value
      * @return Map of commit hashes
      */
@@ -85,17 +92,19 @@ final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
         return new MapOf<>(
             new Mapped<>(
                 rows -> {
-                    final String[] row = CommitHashesMap.WHITESPACE.split(rows.asString());
+                    final String row = rows.asString();
+                    final Matcher matcher = CommitHashesMap.WHITESPACE.matcher(row);
+                    matcher.find();
                     return new MapEntry<>(
-                        row[1],
+                        row.substring(matcher.end()),
                         new ChCached(
                             new ChNarrow(
-                                new CommitHash.ChConstant(row[0])
+                                new CommitHash.ChConstant(row.substring(0, matcher.start()))
                             )
                         )
                     );
                 },
-                new Split(table::value, "\\n")
+                new Split(table::value, "\\R")
             )
         );
     }
