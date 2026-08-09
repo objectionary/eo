@@ -6,6 +6,10 @@
 #  group like {a,b} and a character class like [a-z] or [!a] reach the regex
 #  engine neither translated nor escaped, so a bracket or a brace in the glob
 #  either refuses to compile or matches the wrong entries.
+# @todo #6483:30min Test that `walk` below halts at a symbolic link. EO cannot
+#  make one, because `posix` has no `symlink` syscall yet, so the halting is
+#  covered only through `lstat` in `StatSyscallTest`, while the walk that leans
+#  on it has no test of its own.
 # @todo #6483:30min Stop descending into a symbolic link on Windows. The `walk`
 #  below asks `lstat`, which reports the link itself, so on POSIX a link to its
 #  own ancestor is listed instead of followed, while `_stat64` on Windows knows
