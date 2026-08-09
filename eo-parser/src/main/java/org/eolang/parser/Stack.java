@@ -108,26 +108,30 @@ final class Stack {
     }
 
     /**
-     * Current number of entries on the stack — savepoint for per-line
-     * rollback (R-7.3).
-     * @return Entry count
+     * A copy of the current levels — savepoint for per-line rollback
+     * (R-7.3). A plain entry count cannot serve as that savepoint:
+     * {@link #replace(int, Kind, Openness)} removes one entry and adds
+     * one back, so the count is unchanged even though the top entry
+     * itself is a different object. Snapshotting the entries themselves
+     * survives that case.
+     * @return Snapshot of the levels, bottom-to-top
      */
-    int size() {
-        return this.levels.size();
+    List<Level> snapshot() {
+        return new ArrayList<>(this.levels);
     }
 
     /**
-     * Pop entries silently until {@code size()} equals {@code target}.
-     * Used by {@link Eo} to undo {@link #push} / {@link #replace} side
-     * effects of a line that threw a {@link ParseError} (R-7.3) — the
-     * closer is <em>not</em> invoked here because the rolled-back open
-     * directives never reached the sink.
-     * @param target Target stack size
+     * Restore the levels to a previously taken {@link #snapshot()},
+     * discarding whatever {@link #push} / {@link #replace} side effects
+     * happened since. Used by {@link Eo} to undo those side effects for
+     * a line that threw a {@link ParseError} (R-7.3) — the closer is
+     * <em>not</em> invoked here because the rolled-back open directives
+     * never reached the sink.
+     * @param snapshot A snapshot taken earlier via {@link #snapshot()}
      */
-    void silentTruncate(final int target) {
-        while (this.levels.size() > target) {
-            this.levels.remove(this.levels.size() - 1);
-        }
+    void restore(final List<Level> snapshot) {
+        this.levels.clear();
+        this.levels.addAll(snapshot);
     }
 
     /**
