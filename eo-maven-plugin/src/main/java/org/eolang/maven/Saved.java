@@ -38,7 +38,8 @@ import org.cactoos.scalar.LengthOf;
 final class Saved implements Scalar<Path> {
 
     /**
-     * Absolute path to save content to.
+     * Path to save content to, absolute or relative to the current
+     * working directory.
      */
     private final Path target;
 
@@ -77,7 +78,7 @@ final class Saved implements Scalar<Path> {
     /**
      * Ctor.
      * @param content Content as lambda
-     * @param target Absolute path to save content to
+     * @param target Path to save content to
      */
     Saved(final Input content, final Path target) {
         this.content = content;
@@ -86,16 +87,14 @@ final class Saved implements Scalar<Path> {
 
     @Override
     public Path value() throws IOException {
+        final Path dir = this.target.toAbsolutePath().getParent();
         final long bytes;
         try {
-            if (this.target.toFile().getParentFile().mkdirs()) {
-                Logger.debug(
-                    this, "Directory created: %[file]s",
-                    this.target.getParent()
-                );
+            if (dir.toFile().mkdirs()) {
+                Logger.debug(this, "Directory created: %[file]s", dir);
             }
             final Path tmp = Files.createTempFile(
-                this.target.getParent(),
+                dir,
                 this.target.getFileName().toString(),
                 ".tmp"
             );
