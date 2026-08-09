@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2160.471520948
+  seconds: 2161.154401627
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-09 03:12:41.694636745 Z
+  when: 2026-08-09 04:39:02.149059407 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -292680,7 +292680,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 17151421957
+  events_were_scanned: 17162703385
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 347
@@ -293645,7 +293645,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 12980225388
+  events_were_scanned: 17163265418
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 110
@@ -297556,6 +297556,7 @@
   - 4.787567751025907
   - 4.787567751025907
   - 4.787567751025907
+  - 4.787567751025907
   qod_per_day:
   - 20.262571430008
   - 42.95057143129291
@@ -298269,8 +298270,9 @@
   - 110.1867884948815
   - 110.1867884948815
   - 110.1867884948815
+  - 110.1867884948815
   what: learn-eva
-  when: 2026-08-08 18:12:55.542835015 Z
+  when: 2026-08-09 03:16:05.847275850 Z
 - _id: 1108432
   _job: 28880449411
   _time: 2026-07-07 16:03:53.193694149 Z
@@ -299599,7 +299601,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1019
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12982805869
   issues_were_scanned: 0
@@ -303363,9 +303365,9 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 999
   earliest_issue_was_found: 1
-  events_were_scanned: 12985595145
+  events_were_scanned: 12991041922
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
@@ -305897,7 +305899,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 17142267022
+  events_were_scanned: 12991034706
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 361
@@ -306314,7 +306316,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1122
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12985606707
   issues_were_scanned: 0
@@ -306348,13 +306350,13 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 4939
   earliest_issue_was_found: 1
-  events_were_scanned: 12990225655
+  events_were_scanned: 17162145454
   issues_were_scanned: 0
-  labels_were_scanned: 6095
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
-  merges_were_scanned: 6492
+  merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
@@ -452158,28 +452160,6 @@
   when: *4004
   where: github
   who: 96509556
-- _id: 1116928
-  _job: 85357
-  _time: 2026-08-06 23:57:22.746043239 Z
-  _version: 0.19.16/0.61.1/0.17.21
-  analyzers: 18
-  text: |-
-    The average reward per task (8.8 points) is increasing (R=0.16).
-    The average punishment per task (7.0 points) is decreasing (R=-0.19).
-    The average number of builds per week (9964.8) is increasing (R=0.80).
-    The average number of commits per week (245.3) is increasing (R=0.78).
-    The average bugs accepted per month (41.0) is increasing (R=0.71).
-    The average monthly punishment (382 points) is increasing (R=0.27).
-    The average monthly wage (10.3 points) is increasing (R=0.61).
-    The average issue cycle time (1w) is staying still.
-    The average pull cycle time (5d22h) is staying still.
-    The average quality of service (82%) is decreasing (R=0.76).
-    The average number of releases per month (23.3) is increasing (R=0.44).
-    The average monthly turnover (24.0 developers) is increasing (R=0.83).
-    The average weekly cost of HoC (5.99 points) is staying still.
-    The average monthly zents/points ratio (0.39) is decreasing (R=0.89).
-  what: assessment
-  when: 2026-08-06 23:57:22.763448441 Z
 - _id: 1116929
   _job: 85357
   _time: 2026-08-06 23:57:36.401374183 Z
@@ -462481,6 +462461,7 @@
     them coming. Your running score is [+595](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 14
+  href: https://github.com/objectionary/lints/issues/1222/#issuecomment-5229526952
   is_human: 1
   issue: 1222
   repository: 889819508
@@ -462503,8 +462484,10 @@
     -5 for very few (2) comments.  Your running score is [+1052](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 65
+  href: https://github.com/objectionary/eo/issues/6479/#issuecomment-5229527072
   is_human: 1
   issue: 6479
+  receipt: receipt-#85266
   repository: 73056727
   review_comments: 2
   seconds: 1384
@@ -462528,3 +462511,81 @@
   when: 2026-08-09 01:13:57.000000000 Z
   where: github
   who: 90545043
+- _id: 1117490
+  _job: 85886
+  _time: 2026-08-09 03:13:39.482085548 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  analyzers: 18
+  text: |-
+    The average reward per task (8.9 points) is increasing (R=0.15).
+    The average punishment per task (7.0 points) is decreasing (R=-0.18).
+    The average number of builds per week (10268.0) is increasing (R=0.81).
+    The average number of commits per week (252.4) is increasing (R=0.78).
+    The average bugs accepted per month (43.0) is increasing (R=0.74).
+    The average monthly punishment (385 points) is increasing (R=0.31).
+    The average monthly wage (10.4 points) is increasing (R=0.66).
+    The average issue cycle time (1w) is staying still.
+    The average pull cycle time (5d21h) is staying still.
+    The average quality of service (83%) is decreasing (R=0.74).
+    The average number of releases per month (24.1) is increasing (R=0.41).
+    The average monthly turnover (24.0 developers) is increasing (R=0.83).
+    The average weekly cost of HoC (5.93 points) is staying still.
+    The average monthly zents/points ratio (0.39) is decreasing (R=0.90).
+  what: assessment
+  when: 2026-08-09 03:13:39.517849669 Z
+- _id: 1117491
+  _job: 31293671948
+  _time: 2026-08-09 04:04:09.053555841 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  commits: 1
+  details: The pull request objectionary/eolang.sty#152 has been reviewed by @yegor256
+    with 2 HoC and 3 comments.
+  event_id: 12991374778
+  event_type: PullRequestReviewEvent
+  files: 1
+  hoc: 2
+  is_human: 1
+  issue: 152
+  repository: 546194972
+  review_comments: 0
+  what: pull-was-reviewed
+  when: 2026-08-09 03:36:29.000000000 Z
+  where: github
+  who: 526301
+- _id: 1117492
+  _job: 31293671948
+  _time: 2026-08-09 04:08:36.587816650 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/jamesives-github-pages-deploy-action-4.x
+  details: The pull objectionary/eolang.sty#152 has been opened earlier by @renovate[bot].
+  issue: 152
+  repository: 546194972
+  what: pull-was-opened
+  when: 2026-08-08 16:53:10.000000000 Z
+  where: github
+  who: 29139614
+- _id: 1117493
+  _job: 31293671948
+  _time: 2026-08-09 04:08:51.417362629 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/jamesives-github-pages-deploy-action-4.x
+  comments: 3
+  comments_appreciated: 1
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eolang.sty#152 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 2
+  issue: 152
+  repository: 546194972
+  review: 2026-08-09 03:36:27.000000000 Z
+  succeeded_builds: 11
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-09 03:45:54.000000000 Z
+  where: github
+  who: 8086956
