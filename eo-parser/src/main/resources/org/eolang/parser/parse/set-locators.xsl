@@ -8,69 +8,68 @@
   Here we go through all objects and add @loc attributes
   to all of them. The value of the attribute is a unique locator
   of the object.
-  The locator function takes the object only and reaches the
-  program through it, instead of taking the program as a second
-  argument. Saxon 13.0 binds the arguments of a multi-argument
-  function to the wrong values, once in a while, when one compiled
-  stylesheet transforms many documents in parallel threads (which is
-  what the "parse" goal does).
+  The locator of an object is the locator of its parent plus one more
+  segment, so we build them top-down: every "o" receives the locator
+  already built for its parent through the "eo:parent" tunnel parameter
+  and only appends its own segment. Reaching the program from every
+  object instead re-derives all of its ancestors, which costs O(depth)
+  per object rather than O(1), and hits the limit on nested calls that
+  Saxon imposes once objects nest a few hundred levels deep (#6509).
+  The "Φ.package" prefix is likewise computed once, on the "object"
+  element, and tunnelled down, instead of being looked up again for
+  every object in the document.
+  Both values travel as template parameters, not as extra arguments of
+  a locator function. Saxon 13.0 binds the arguments of a
+  multi-argument function to the wrong values, once in a while, when
+  one compiled stylesheet transforms many documents in parallel threads
+  (which is what the "parse" goal does), so eo:segment below stays
+  single-argument. Nothing here reads the global context item either,
+  since that item is absent when the stylesheet is driven through
+  xsl:apply-templates rather than through a whole-document transform.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_specials.xsl"/>
-  <xsl:function name="eo:locator" as="xs:string">
-    <xsl:param name="o" as="node()"/>
-    <xsl:if test="name($o) != 'o'">
-      <xsl:message terminate="yes">
-        <xsl:text>Only 'o' XML elements are accepted here</xsl:text>
-      </xsl:message>
-    </xsl:if>
-    <xsl:variable name="ret">
-      <xsl:choose>
-        <xsl:when test="$o/parent::o">
-          <xsl:value-of select="eo:locator($o/parent::o)"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$eo:program"/>
-          <xsl:if test="root($o)/object/metas/meta[head='package']">
-            <xsl:text>.</xsl:text>
-            <xsl:value-of select="root($o)/object/metas/meta[head='package']/part[1]"/>
-          </xsl:if>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:text>.</xsl:text>
-      <xsl:choose>
-        <xsl:when test="$o/@name">
-          <xsl:choose>
-            <xsl:when test="$o/@name = '@'">
-              <xsl:value-of select="$eo:phi"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="$o/@name"/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:choose>
-            <xsl:when test="$o/@as">
-              <xsl:value-of select="$o/@as"/>
-            </xsl:when>
-            <xsl:when test="starts-with($o/parent::o/@base, '.') and not($o/preceding-sibling::o)">
-              <xsl:value-of select="$eo:rho"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="$eo:alpha"/>
-              <xsl:value-of select="count($o/preceding-sibling::o) - count($o/parent::o[starts-with(@base, '.')])"/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:value-of select="$ret"/>
+  <!--
+  The trailing segment of the locator of the given object, without the
+  dot that joins it to the locator of its parent.
+  -->
+  <xsl:function name="eo:segment" as="xs:string">
+    <xsl:param name="o" as="element(o)"/>
+    <xsl:variable name="dotted" as="xs:boolean" select="starts-with($o/parent::o/@base, '.')"/>
+    <xsl:choose>
+      <xsl:when test="$o/@name = '@'">
+        <xsl:sequence select="$eo:phi"/>
+      </xsl:when>
+      <xsl:when test="$o/@name">
+        <xsl:sequence select="string($o/@name)"/>
+      </xsl:when>
+      <xsl:when test="$o/@as">
+        <xsl:sequence select="string($o/@as)"/>
+      </xsl:when>
+      <xsl:when test="$dotted and not($o/preceding-sibling::o)">
+        <xsl:sequence select="$eo:rho"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="concat($eo:alpha, count($o/preceding-sibling::o) - (if ($dotted) then 1 else 0))"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
-  <xsl:template match="o">
+  <xsl:template match="object">
+    <xsl:variable name="pkg" select="metas/meta[head='package'][1]/part[1]"/>
     <xsl:copy>
-      <xsl:attribute name="loc" select="eo:locator(.)"/>
-      <xsl:apply-templates select="node()|@* except @loc"/>
+      <xsl:apply-templates select="node()|@*">
+        <xsl:with-param name="eo:parent" as="xs:string" tunnel="yes" select="if ($pkg) then concat($eo:program, '.', $pkg) else $eo:program"/>
+      </xsl:apply-templates>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="o">
+    <xsl:param name="eo:parent" as="xs:string" select="$eo:program" tunnel="yes"/>
+    <xsl:variable name="loc" as="xs:string" select="concat($eo:parent, '.', eo:segment(.))"/>
+    <xsl:copy>
+      <xsl:attribute name="loc" select="$loc"/>
+      <xsl:apply-templates select="node()|@* except @loc">
+        <xsl:with-param name="eo:parent" as="xs:string" tunnel="yes" select="$loc"/>
+      </xsl:apply-templates>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">

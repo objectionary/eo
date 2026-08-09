@@ -19,8 +19,7 @@ import java.util.List;
  * including the atom-signature form {@code > name /sig}. The shorthand
  * {@code ++> name} is accepted as sugar for {@code [] +> name} — a
  * parameterless formation carrying a truthy test suffix (R-6.3.6); its
- * throwing counterpart {@code --> name} is sugar for {@code [] -> name}.
- * </p>
+ * throwing counterpart {@code --> name} is sugar for {@code [] -> name}.</p>
  *
  * <p>Cross-line behaviour: pushes a new {@link Level} at this line's
  * indent (Step C/D) or replaces the current top (Step B), with

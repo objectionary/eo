@@ -20,31 +20,31 @@ import java.util.Map;
  * <p>The score is a sum of several components, computed over all lines:</p>
  *
  * <ul>
- *   <li>every level of indentation on a line costs
- *   {@link PenaltyKey#INDENT} points;</li>
- *   <li>every opening parenthesis costs {@link PenaltyKey#BRACKET}
- *   points, multiplied by its nesting depth plus one, so a top-level
- *   bracket costs the flat weight, a bracket nested one level deep costs
- *   twice as much, two levels deep three times, and so on, since deeper
- *   nesting hurts readability more; a parenthesis that is the first
- *   non-space character of its line pays an extra {@link PenaltyKey#LEADING}
- *   factor on top, since a group opening a line, before the reader knows
- *   what it applies to, is the worst place for a bracket;</li>
- *   <li>every explicit phi attribute {@code @} costs
- *   {@link PenaltyKey#PHI} points;</li>
- *   <li>every {@code if} dispatched in suffix position ({@code foo.if})
- *   costs {@link PenaltyKey#IF} points, so the printer keeps {@code if}
- *   in prefix form ({@code if. foo});</li>
- *   <li>every character sitting past the {@link PenaltyKey#WIDTH}-th
- *   column costs {@link PenaltyKey#EXCESS} point;</li>
- *   <li>every symbol in the block costs {@link PenaltyKey#SYMBOL}
- *   point;</li>
- *   <li>every space on a line past the leading indentation costs
- *   {@link PenaltyKey#SPACE} points, and the genuine argument-applying
- *   spaces among them (name bindings such as {@code >} do not count) pay
- *   an extra super-linear surcharge: r such spaces cost r squared, rather
- *   than r, times the weight, so longer applications grow super-linearly
- *   more expensive while name bindings are left alone.</li>
+ * <li>every level of indentation on a line costs
+ * {@link PenaltyKey#INDENT} points;</li>
+ * <li>every opening parenthesis costs {@link PenaltyKey#BRACKET}
+ * points, multiplied by its nesting depth plus one, so a top-level
+ * bracket costs the flat weight, a bracket nested one level deep costs
+ * twice as much, two levels deep three times, and so on, since deeper
+ * nesting hurts readability more; a parenthesis that is the first
+ * non-space character of its line pays an extra {@link PenaltyKey#LEADING}
+ * factor on top, since a group opening a line, before the reader knows
+ * what it applies to, is the worst place for a bracket;</li>
+ * <li>every explicit phi attribute {@code @} costs
+ * {@link PenaltyKey#PHI} points;</li>
+ * <li>every {@code if} dispatched in suffix position ({@code foo.if})
+ * costs {@link PenaltyKey#IF} points, so the printer keeps {@code if}
+ * in prefix form ({@code if. foo});</li>
+ * <li>every character sitting past the {@link PenaltyKey#WIDTH}-th
+ * column costs {@link PenaltyKey#EXCESS} point;</li>
+ * <li>every symbol in the block costs {@link PenaltyKey#SYMBOL}
+ * point;</li>
+ * <li>every space on a line past the leading indentation costs
+ * {@link PenaltyKey#SPACE} points, and the genuine argument-applying
+ * spaces among them (name bindings such as {@code >} do not count) pay
+ * an extra super-linear surcharge: r such spaces cost r squared, rather
+ * than r, times the weight, so longer applications grow super-linearly
+ * more expensive while name bindings are left alone.</li>
  * </ul>
  *
  * <p>All of these weights, together with the indentation

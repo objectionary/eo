@@ -894,9 +894,9 @@ final class SyscallTest {
     /**
      * Scoped server socket.
      * [s]
-     *   s.accept > @
-     *     [client]
-     *       client.recv 14 > @
+     * s.accept > @
+     * [client]
+     * client.recv 14 > @
      * @since 0.40.0
      */
     private static final class Server extends PhDefault implements Atom {

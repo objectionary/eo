@@ -8,18 +8,17 @@ import java.util.Collections;
 
 /**
  * Underlined message.
- * <p>
- * For example, if you have a message "Problem is here" and you want to underline
+ *
+ * <p>For example, if you have a message "Problem is here" and you want to underline
  * the word "is", you can create an instance of this class with the following
  * parameters: origin="Problem is here", from=8, length=2.
- * </p>
- * <p>
- * The result will be:
+ *
+ * <p>The result will be:
  * {@code
  * Problem is here
- *         ^^
- * }
- * </p>
+ * ^^
+ * }</p>
+ *
  * @since 0.50
  */
 final class MsgUnderlined {

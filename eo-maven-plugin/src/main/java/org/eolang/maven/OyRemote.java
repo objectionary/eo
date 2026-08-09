@@ -25,7 +25,9 @@ import org.cactoos.iterable.IterableOf;
 
 /**
  * The simple HTTP Objectionary server.
+ *
  * <p>This class is supposed to be used together with {@link OyCached}.</p>
+ *
  * @since 0.1
  */
 final class OyRemote implements Objectionary {

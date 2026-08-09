@@ -16,16 +16,16 @@ import java.util.List;
  * because they are program-wide concerns:</p>
  *
  * <ul>
- *   <li>{@link #firstObjectEmitted()} flips true once any non-meta object
- *   has been parsed; consulted by R-3.2.2 (no meta after a real object).</li>
- *   <li>{@link #pendingBlanks()} counts blank lines seen since the last
- *   non-blank line; consumed by R-6.5 timing.</li>
- *   <li>{@link #trailingBlanks()} counts blank lines since EOF; checked by
- *   R-6.5.6 / R-8.4.</li>
- *   <li>{@link #inTextBlock()} is true while parsing inside an open
- *   triple-quoted block (§3.11).</li>
- *   <li>{@link #pendingComments()} buffers comment lines awaiting
- *   attachment to the next named object (§6.4).</li>
+ * <li>{@link #firstObjectEmitted()} flips true once any non-meta object
+ * has been parsed; consulted by R-3.2.2 (no meta after a real object).</li>
+ * <li>{@link #pendingBlanks()} counts blank lines seen since the last
+ * non-blank line; consumed by R-6.5 timing.</li>
+ * <li>{@link #trailingBlanks()} counts blank lines since EOF; checked by
+ * R-6.5.6 / R-8.4.</li>
+ * <li>{@link #inTextBlock()} is true while parsing inside an open
+ * triple-quoted block (§3.11).</li>
+ * <li>{@link #pendingComments()} buffers comment lines awaiting
+ * attachment to the next named object (§6.4).</li>
  * </ul>
  *
  * @since 0.1
