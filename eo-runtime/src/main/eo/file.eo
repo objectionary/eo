@@ -254,9 +254,7 @@
     mktemp.as-path.resolved "foo/bar" > resolved
 
   not. ++> can-tell-that-a-regular-file-is-not-a-symbolic-link
-    is-symlink.
-      mktemp.tmpfile
-      true
+    mktemp.tmpfile.is-symlink true
 
   not. ++> can-tell-that-an-absent-file-does-not-exist
     exists.
