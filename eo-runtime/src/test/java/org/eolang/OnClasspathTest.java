@@ -4,6 +4,8 @@
  */
 package org.eolang;
 
+import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.Optional;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -34,13 +36,24 @@ final class OnClasspathTest {
     }
 
     @Test
-    void returnsSameAnswerOnRepeatedLookup() {
-        final String cls = "org.eolang.PhNest";
-        MatcherAssert.assertThat(
-            "The cached lookup must agree with itself on repeat, but it didn't",
-            OnClasspath.has(cls),
-            Matchers.is(OnClasspath.has(cls))
-        );
+    @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
+    void returnsCachedAnswerInsteadOfProbingClasspathAgain() throws ReflectiveOperationException {
+        final String cls = "org.eolang.OnClasspathTest$CacheProbe";
+        OnClasspath.has(cls);
+        final Field field = OnClasspath.class.getDeclaredField("CACHE");
+        field.setAccessible(true);
+        @SuppressWarnings("unchecked")
+        final Map<String, Boolean> cache = (Map<String, Boolean>) field.get(null);
+        cache.put(cls, false);
+        try {
+            MatcherAssert.assertThat(
+                "The cached answer must be returned instead of probing the classpath again",
+                OnClasspath.has(cls),
+                Matchers.is(false)
+            );
+        } finally {
+            cache.put(cls, true);
+        }
     }
 
     @Test
@@ -77,5 +90,13 @@ final class OnClasspathTest {
         static {
             System.setProperty("eo.onclasspath.marked", "true");
         }
+    }
+
+    /**
+     * A class used only to give the caching test a cache entry of its own, so
+     * tampering with it cannot leak into other tests.
+     * @since 0.74.0
+     */
+    final class CacheProbe {
     }
 }
