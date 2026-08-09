@@ -15,11 +15,13 @@ import java.nio.file.Path;
 
 /**
  * Train that spies.
+ *
  * <p>The directory is fixed for the whole train, because a document halfway
  * through it no longer carries the name of the object it came from: after
  * {@code classes.xsl} an XMIR holding two objects has two {@code class}
  * elements and no {@code /object/o/@name} at all, and deriving the directory
  * from such a document breaks the build, see #4370.</p>
+ *
  * @since 0.23
  */
 final class TrSpy extends TrEnvelope {

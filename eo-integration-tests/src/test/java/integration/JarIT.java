@@ -228,9 +228,9 @@ final class JarIT {
             .execution("compile")
             .goals("register", "compile", "transpile")
             .configuration()
-            .set("ignoreRuntime", Boolean.TRUE.toString())
-            .set("failOnWarning", Boolean.FALSE.toString())
-            .set("skipLinting", Boolean.TRUE.toString());
+            .set("ignoreRuntime", "true")
+            .set("failOnWarning", "false")
+            .set("skipLinting", "true");
         farea.exec("clean", "compile", "jar:jar");
         MatcherAssert.assertThat(
             "Project must be successfully built and packaged into jar",

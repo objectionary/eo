@@ -12,14 +12,14 @@ package org.eolang.parser;
  * same-indent {@code .method} continuations land. Three values:</p>
  *
  * <ul>
- *   <li>{@link #OPEN} — may still receive deeper-indent children or a
- *   same-indent {@code .method} continuation.</li>
- *   <li>{@link #VERTICAL_COMPLETED} — child block has ended; a same-indent
- *   {@code .method} may still wrap it, but no more vertical args may be
- *   added.</li>
- *   <li>{@link #HORIZONTAL_COMPLETED} — cannot be extended in any
- *   direction. {@link Kind#horizontallyCompleted()} pins which kinds
- *   start out in this state.</li>
+ * <li>{@link #OPEN} — may still receive deeper-indent children or a
+ * same-indent {@code .method} continuation.</li>
+ * <li>{@link #VERTICAL_COMPLETED} — child block has ended; a same-indent
+ * {@code .method} may still wrap it, but no more vertical args may be
+ * added.</li>
+ * <li>{@link #HORIZONTAL_COMPLETED} — cannot be extended in any
+ * direction. {@link Kind#horizontallyCompleted()} pins which kinds
+ * start out in this state.</li>
  * </ul>
  *
  * @since 0.1

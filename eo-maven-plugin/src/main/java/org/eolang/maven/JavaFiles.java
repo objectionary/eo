@@ -17,12 +17,12 @@ import java.util.stream.Collectors;
 
 /**
  * The Java files that a transpiled XMIR is written out as.
- * <p>
- *     One XMIR carries a class per object, and every one of them becomes
- *     a Java file under the generated sources directory, taken from the
- *     global cache when the tojo is at a released hash and put there when
- *     it is not.
- * </p>
+ *
+ * <p>One XMIR carries a class per object, and every one of them becomes
+ * a Java file under the generated sources directory, taken from the
+ * global cache when the tojo is at a released hash and put there when
+ * it is not.</p>
+ *
  * @since 0.74
  */
 final class JavaFiles {

@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,9 +18,11 @@ import java.util.stream.Collectors;
 
 /**
  * List of default dependencies.
+ *
  * <p>The dependencies are:
  * 1. net.java.dev.jna:jna:5.14.0 which is we need for syscalls
  * 2. all the dependencies extracted from "+rt" metas from XMIRs noted in all the tojos</p>
+ *
  * @since 0.29.0
  */
 final class DpsDefault implements Dependencies {
@@ -127,7 +130,7 @@ final class DpsDefault implements Dependencies {
             dep = Optional.empty();
         } else {
             final String location = coords.iterator().next();
-            final String[] parts = location.split(":");
+            final String[] parts = DpsDefault.columns(location, ':');
             if (parts.length != 3 && parts.length != 4) {
                 throw new IllegalStateException(
                     Logger.format(
@@ -145,6 +148,25 @@ final class DpsDefault implements Dependencies {
             dep = Optional.of(dependency.withScope("transpile"));
         }
         return dep;
+    }
+
+    /**
+     * Split text into columns by a delimiter character.
+     * @param text Text to split
+     * @param delimiter Delimiter character
+     * @return Columns, in order
+     */
+    private static String[] columns(final String text, final char delimiter) {
+        final List<String> parts = new ArrayList<>(4);
+        int start = 0;
+        for (int idx = 0; idx < text.length(); ++idx) {
+            if (text.charAt(idx) == delimiter) {
+                parts.add(text.substring(start, idx));
+                start = idx + 1;
+            }
+        }
+        parts.add(text.substring(start));
+        return parts.toArray(new String[0]);
     }
 
     /**

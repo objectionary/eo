@@ -18,12 +18,12 @@ package org.eolang.parser;
  * <p>Cross-line rules enforced here:</p>
  *
  * <ul>
- *   <li>R-3.3.6 — a comment is allowed only in the top block. Once the
- *   header zone is sealed ({@link Globals#sealed()}), or the comment
- *   is indented, it is rejected.</li>
- *   <li>R-3.3.4 / R-6.5.1 — no blank line inside the comment block. A
- *   blank arriving mid-block (buffer non-empty and
- *   {@code pendingBlanks() > 0}) breaks it apart and is rejected.</li>
+ * <li>R-3.3.6 — a comment is allowed only in the top block. Once the
+ * header zone is sealed ({@link Globals#sealed()}), or the comment
+ * is indented, it is rejected.</li>
+ * <li>R-3.3.4 / R-6.5.1 — no blank line inside the comment block. A
+ * blank arriving mid-block (buffer non-empty and
+ * {@code pendingBlanks() > 0}) breaks it apart and is rejected.</li>
  * </ul>
  *
  * @since 0.1

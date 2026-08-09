@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -45,7 +45,7 @@ final class DepDirs extends ListEnvelope<String> {
      * @throws IOException If fails
      */
     private static List<String> list(final Path dir) throws IOException {
-        final List<String> names = new LinkedList<>();
+        final List<String> names = new ArrayList<>(0);
         if (Files.exists(dir)) {
             final String home = dir.toAbsolutePath().toString();
             try (Stream<Path> paths = Files.find(dir, 4, (t, u) -> true)) {
