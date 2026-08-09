@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An application provides nothing of its own: what it has is what the object it
+# copies has, which is the business of the links table. So it gets no row of its
+# own, while the attribute it is bound to does.
+eo: |
+  [] > lamp
+    bulb 1 > @
+    [n] > bulb
+      n > @
+provides:
+  - "/provides[not(type[@id='Φ.lamp.φ.α0'])]"
+  - "/provides/type[@id='Φ.lamp']/attr[@name='φ']"
