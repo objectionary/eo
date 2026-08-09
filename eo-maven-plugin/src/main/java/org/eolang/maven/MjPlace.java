@@ -12,10 +12,8 @@ import org.apache.maven.plugins.annotations.Mojo;
  * Take binary files from where {@link MjResolve} placed them and
  * copy to the {@code target/classes} directory.
  *
- * <p>
- *     Input directory is {@link MjResolve#DIR}.
- *     Output directory is {@link MjPlace#targetDir}/classes.
- * </p>
+ * <p>Input directory is {@link MjResolve#DIR}.
+ * Output directory is {@link MjPlace#targetDir}/classes.</p>
  *
  * @see <a href="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
  * @since 0.11

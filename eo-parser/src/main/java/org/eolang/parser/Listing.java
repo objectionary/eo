@@ -12,7 +12,7 @@ import org.xembly.Directives;
 /**
  * Source-text {@code <listing>} directive — wraps the original EO
  * source as an {@code Iterable<Directive>} that appends a
- * {@code <listing>…&lt;/listing>} element under {@code /object}.
+ * {@code <listing>…</listing>} element under {@code /object}.
  * @since 0.1
  */
 final class Listing implements Iterable<Directive> {

@@ -10,7 +10,9 @@ import com.yegor256.WeAreOnline;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.Stream;
 import org.eolang.parser.StrictXmir;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -27,14 +29,16 @@ final class XmirIT {
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void validatesWithXsd() throws IOException {
-        Files.walk(
-            Paths.get("").toAbsolutePath().getParent()
-                .resolve("eo-runtime")
-                .resolve("target")
-                .resolve("eo")
-                .resolve("1-parse")
+        try (
+            Stream<Path> stream = Files.walk(
+                Paths.get("").toAbsolutePath().getParent()
+                    .resolve("eo-runtime")
+                    .resolve("target")
+                    .resolve("eo")
+                    .resolve("1-parse")
             )
-            .filter(Files::isRegularFile).forEach(
+        ) {
+            stream.filter(Files::isRegularFile).forEach(
                 xmir -> {
                     try {
                         Assertions.assertDoesNotThrow(
@@ -48,5 +52,6 @@ final class XmirIT {
                     }
                 }
             );
+        }
     }
 }

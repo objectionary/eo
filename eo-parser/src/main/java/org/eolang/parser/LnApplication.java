@@ -17,12 +17,12 @@ import java.util.List;
  * <p>Outer kinds produced (Appendix A):</p>
  *
  * <ul>
- *   <li>{@link Kind#HEAD} — head only, no chain, no args. Open for
- *   deeper-indent children (promotes to {@code VAPPLICATION}).</li>
- *   <li>{@link Kind#HMETHOD} — head with {@code .method} chain, 0
- *   horizontal args. Open for deeper-indent children.</li>
- *   <li>{@link Kind#HAPPLICATION} — head (with or without chain) plus one
- *   or more horizontal args. {@link Openness#HORIZONTAL_COMPLETED}.</li>
+ * <li>{@link Kind#HEAD} — head only, no chain, no args. Open for
+ * deeper-indent children (promotes to {@code VAPPLICATION}).</li>
+ * <li>{@link Kind#HMETHOD} — head with {@code .method} chain, 0
+ * horizontal args. Open for deeper-indent children.</li>
+ * <li>{@link Kind#HAPPLICATION} — head (with or without chain) plus one
+ * or more horizontal args. {@link Openness#HORIZONTAL_COMPLETED}.</li>
  * </ul>
  *
  * <p>Emission follows §9.0.3: method-dispatch chains emit as

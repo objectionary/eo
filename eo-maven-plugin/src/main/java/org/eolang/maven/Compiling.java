@@ -9,11 +9,9 @@ import java.io.IOException;
 /**
  * Core compilation orchestration: runs Assembling, Linting, Resolving, and Placing in sequence.
  *
- * <p>
- *     This class combines {@link Assembling}, {@link Linting}, {@link Resolving} and
- *     {@link Placing} steps into a single sequential execution.
- *     See their documentation for more details.
- * </p>
+ * <p>This class combines {@link Assembling}, {@link Linting}, {@link Resolving} and
+ * {@link Placing} steps into a single sequential execution.
+ * See their documentation for more details.</p>
  *
  * @since 0.61.0
  */

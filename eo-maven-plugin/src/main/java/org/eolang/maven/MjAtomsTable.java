@@ -25,13 +25,13 @@ import org.cactoos.text.UncheckedText;
 
 /**
  * Generate the atom return types table from XMIR sources.
- * <p>
- * Walks the XMIR sources in {@link #atomsInputDir}, extracts the
+ *
+ * <p>Walks the XMIR sources in {@link #atomsInputDir}, extracts the
  * {@code forma} of every lambda atom together with its declared return
  * type, and writes the result as a CSV file at {@link #atomsOutput}.
  * Each output line has the form {@code <forma>,<return-type>}; entries
- * are sorted by {@code forma} to make the file stable across builds.
- * </p>
+ * are sorted by {@code forma} to make the file stable across builds.</p>
+ *
  * @since 0.57
  */
 @Mojo(
