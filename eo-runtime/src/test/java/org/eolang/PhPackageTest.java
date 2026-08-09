@@ -68,6 +68,30 @@ final class PhPackageTest {
     }
 
     @Test
+    void hasRhoReportsAbsenceOnGlobalObject() {
+        MatcherAssert.assertThat(
+            String.format(
+                "hasRho() must agree with take(%s) and report the global object as unset",
+                Phi.RHO
+            ),
+            Phi.Φ.hasRho(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void hasRhoReportsPresenceAfterDispatch() {
+        MatcherAssert.assertThat(
+            String.format(
+                "hasRho() must report %s as set once dispatch has bound it",
+                Phi.RHO
+            ),
+            Phi.Φ.take("nop").hasRho(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
     void findsLongClass() {
         MatcherAssert.assertThat(
             "Package should resolve class with '$' in the name, but it didn't",

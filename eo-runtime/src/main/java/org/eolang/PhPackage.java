@@ -56,7 +56,7 @@ final class PhPackage implements Phi {
 
     @Override
     public boolean hasRho() {
-        return true;
+        return this.objects.containsKey(Phi.RHO);
     }
 
     @Override
