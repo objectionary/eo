@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2161.154401627
+  seconds: 2160.993944309
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-09 04:39:02.149059407 Z
+  when: 2026-08-09 06:06:24.578226698 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -292680,7 +292680,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 17162703385
+  events_were_scanned: 17164438538
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 347
@@ -299601,7 +299601,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1019
   earliest_issue_was_found: 1
   events_were_scanned: 12982805869
   issues_were_scanned: 0
@@ -303365,7 +303365,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 999
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12991041922
   issues_were_scanned: 982
@@ -306316,7 +306316,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1122
   earliest_issue_was_found: 1
   events_were_scanned: 12985606707
   issues_were_scanned: 0
@@ -306350,13 +306350,13 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 4939
+  assignees_were_scanned: 5298
   earliest_issue_was_found: 1
-  events_were_scanned: 17162145454
+  events_were_scanned: 17165412131
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6095
   latest_issue_was_found: 4591
-  merges_were_scanned: 0
+  merges_were_scanned: 6492
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
@@ -462456,10 +462456,6 @@
   comments: 3
   details: It's time to reward @volodya-lombrozo for the code contributed in objectionary/lints#1222,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too few (14) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+595](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 14
   href: https://github.com/objectionary/lints/issues/1222/#issuecomment-5229526952
   is_human: 1
@@ -462480,9 +462476,6 @@
   comments: 1
   details: It's time to reward @thayorns for the code review in objectionary/eo#6479,
     the reward amount is 7.
-  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
-    -5 for very few (2) comments.  Your running score is [+1052](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 65
   href: https://github.com/objectionary/eo/issues/6479/#issuecomment-5229527072
   is_human: 1
@@ -462550,7 +462543,7 @@
   repository: 546194972
   review_comments: 0
   what: pull-was-reviewed
-  when: 2026-08-09 03:36:29.000000000 Z
+  when: &4109 2026-08-09 03:36:29.000000000 Z
   where: github
   who: 526301
 - _id: 1117492
@@ -462559,6 +462552,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: renovate/jamesives-github-pages-deploy-action-4.x
   details: The pull objectionary/eolang.sty#152 has been opened earlier by @renovate[bot].
+  is_human: 0
   issue: 152
   repository: 546194972
   what: pull-was-opened
@@ -462580,12 +462574,32 @@
   failed_builds: 0
   files: 1
   hoc: 2
+  is_human: 0
   issue: 152
   repository: 546194972
   review: 2026-08-09 03:36:27.000000000 Z
+  review_comments: 0
   succeeded_builds: 11
   suggestions: 0
   what: pull-was-merged
   when: 2026-08-09 03:45:54.000000000 Z
   where: github
   who: 8086956
+- _id: 1117494
+  _job: 85892
+  _time: 2026-08-09 04:39:44.625824487 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 29139614
+  comments: 3
+  details: The pull request objectionary/eolang.sty#152 with 2 HoC created by @renovate[bot]
+    was reviewed by @yegor256 after 10h43m and 3 comments.
+  hoc: 2
+  is_human: 1
+  issue: 152
+  repository: 546194972
+  review_comments: 0
+  seconds: 38599
+  what: code-was-reviewed
+  when: *4109
+  where: github
+  who: 526301
