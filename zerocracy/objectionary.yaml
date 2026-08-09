@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2176.747624162
+  seconds: 659.474167849
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-08 23:35:35.312732857 Z
+  when: 2026-08-09 00:07:43.308940873 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -40763,6 +40763,7 @@
   is_human: 1
   issue: 466
   repository: 977982682
+  tombstone: 2026-08-08 23:38:08.472145459 Z
   what: pull-was-opened
   when: 2025-11-25 21:38:18.000000000 Z
   where: github
@@ -41331,6 +41332,7 @@
   review: 2025-11-25 21:42:34.000000000 Z
   review_comments: 1
   succeeded_builds: 13
+  tombstone: 2026-08-08 23:38:08.474501090 Z
   what: pull-was-merged
   when: &222 2025-11-25 22:04:09.000000000 Z
   where: github
@@ -41958,6 +41960,7 @@
   repository: 977982682
   review_comments: 1
   seconds: 1551
+  tombstone: 2026-08-08 23:38:08.476757753 Z
   what: code-was-contributed
   when: *222
   where: github
@@ -56295,6 +56298,7 @@
   repository: 977982682
   review_comments: 1
   seconds: 1551
+  tombstone: 2026-08-08 23:38:08.478948391 Z
   what: code-contribution-was-rewarded
   when: 2025-12-14 12:17:31.260590050 Z
   where: github
@@ -64368,6 +64372,7 @@
   comments: 4
   details: The pull request objectionary/phino#466 with 292 HoC created by @maxonfjvipon
     was reviewed by @coderabbitai[bot] after 0h4m and 1 comments.
+  done: 2026-08-08 23:38:08.442447846 Z
   hoc: 292
   is_human: 0
   issue: 466
@@ -64378,25 +64383,6 @@
   when: 2025-11-25 21:42:34.000000000 Z
   where: github
   who: 136622811
-- _id: 1065433
-  _job: 20510000789
-  _time: 2025-12-25 20:09:22.218674619 Z
-  _version: 0.19.2/0.58.1/0.17.8
-  author: 56538398
-  comments: 4
-  details: The pull request objectionary/eo#4694 with 315 HoC created by @r0bari was
-    reviewed by @maxonfjvipon after 2h28m and 0 comments.
-  done: 2026-08-08 21:40:04.531492821 Z
-  hoc: 315
-  is_human: 1
-  issue: 4694
-  repository: 73056727
-  review_comments: 0
-  seconds: 8928
-  what: code-was-reviewed
-  when: 2025-11-25 19:48:41.000000000 Z
-  where: github
-  who: 37025995
 - _id: 1065438
   _job: 20510000789
   _time: 2025-12-25 20:09:32.007781612 Z
@@ -168286,7 +168272,7 @@
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 6
-  min_issue_was_found: 0
+  min_issue_was_found: 6
   min_pull_was_found: 0
   repository: 568705267
   types_were_scanned: 0
@@ -172474,7 +172460,7 @@
   _time: 2026-05-18 11:53:16.844370701 Z
   _version: 0.19.9/0.60.2/0.17.17
   events_were_scanned: 16756597275
-  min_issue_was_found: 0
+  min_issue_was_found: 3
   repository: 1239730762
   what: iterate
   where: github
@@ -271284,7 +271270,7 @@
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 46
-  min_issue_was_found: 27
+  min_issue_was_found: 28
   repository: 531151981
   types_were_scanned: 0
   what: iterate
@@ -277192,7 +277178,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 34
   merges_were_scanned: 0
-  min_issue_was_found: 40
+  min_issue_was_found: 41
   min_pull_was_found: 0
   repository: 482612876
   types_were_scanned: 0
@@ -291005,7 +290991,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 94
   merges_were_scanned: 0
-  min_issue_was_found: 111
+  min_issue_was_found: 137
   min_pull_was_found: 0
   repository: 447446664
   types_were_scanned: 0
@@ -292762,7 +292748,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 66
   merges_were_scanned: 0
-  min_issue_was_found: 90
+  min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 574459304
   types_were_scanned: 0
@@ -292782,7 +292768,7 @@
   min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 0
+  types_were_scanned: 556
   what: iterate
   where: github
 - _id: 1107889
@@ -299693,17 +299679,17 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1019
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12982805869
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 365
   merges_were_scanned: 0
-  min_issue_was_found: 472
+  min_issue_was_found: 477
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 870
+  types_were_scanned: 1018
   what: iterate
   where: github
 - _id: 1108618
@@ -300136,7 +300122,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 13
   merges_were_scanned: 0
-  min_issue_was_found: 0
+  min_issue_was_found: 2
   min_pull_was_found: 0
   repository: 784310467
   types_were_scanned: 0
@@ -300751,7 +300737,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 160
   merges_were_scanned: 0
-  min_issue_was_found: 9
+  min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 574534248
   types_were_scanned: 0
@@ -303457,7 +303443,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 999
   earliest_issue_was_found: 1
   events_were_scanned: 12985595145
   issues_were_scanned: 982
@@ -303467,7 +303453,7 @@
   min_issue_was_found: 637
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 816
+  types_were_scanned: 1081
   what: iterate
   where: github
 - _id: 1108989
@@ -305930,7 +305916,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 34
   merges_were_scanned: 0
-  min_issue_was_found: 46
+  min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 396732517
   types_were_scanned: 0
@@ -305947,7 +305933,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 1356
   merges_were_scanned: 0
-  min_issue_was_found: 8
+  min_issue_was_found: 272
   min_pull_was_found: 1572
   repository: 671896902
   types_were_scanned: 0
@@ -305962,7 +305948,7 @@
   events_were_scanned: 12239775879
   latest_issue_was_found: 5
   merges_were_scanned: 0
-  min_issue_was_found: 25
+  min_issue_was_found: 27
   min_pull_was_found: 0
   repository: 1260338737
   types_were_scanned: 0
@@ -305996,7 +305982,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 361
   merges_were_scanned: 0
-  min_issue_was_found: 277
+  min_issue_was_found: 281
   min_pull_was_found: 0
   repository: 13623548
   types_were_scanned: 0
@@ -306013,7 +305999,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 54
   merges_were_scanned: 0
-  min_issue_was_found: 0
+  min_issue_was_found: 14
   min_pull_was_found: 0
   repository: 493235807
   types_were_scanned: 0
@@ -306047,7 +306033,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 77
   merges_were_scanned: 0
-  min_issue_was_found: 69
+  min_issue_was_found: 74
   min_pull_was_found: 0
   repository: 492899189
   types_were_scanned: 0
@@ -306064,7 +306050,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 184
   merges_were_scanned: 0
-  min_issue_was_found: 74
+  min_issue_was_found: 178
   min_pull_was_found: 0
   repository: 519299365
   types_were_scanned: 0
@@ -306081,7 +306067,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 43
   merges_were_scanned: 0
-  min_issue_was_found: 39
+  min_issue_was_found: 50
   min_pull_was_found: 0
   repository: 501942888
   types_were_scanned: 0
@@ -306408,17 +306394,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1122
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 12985606707
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 686
   merges_were_scanned: 0
-  min_issue_was_found: 41
+  min_issue_was_found: 94
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 0
+  types_were_scanned: 1100
   what: iterate
   where: github
 - _id: 1109065
@@ -306432,7 +306418,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 122
   merges_were_scanned: 0
-  min_issue_was_found: 426
+  min_issue_was_found: 427
   min_pull_was_found: 409
   repository: 970961472
   types_were_scanned: 0
@@ -306442,17 +306428,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6232
+  assignees_were_scanned: 6374
   earliest_issue_was_found: 1
   events_were_scanned: 12986756950
   issues_were_scanned: 0
-  labels_were_scanned: 6095
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
-  merges_were_scanned: 6491
+  merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 6369
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109067
@@ -462350,20 +462336,6 @@
   when: 2026-08-03 16:44:04.000000000 Z
   where: github
   who: 29139614
-- _id: 1117474
-  _job: 31273656194
-  _time: 2026-08-08 19:16:11.296413423 Z
-  _version: 0.19.16/0.61.1/0.17.21
-  branch: 4679-phi-to-attr-back
-  details: The pull objectionary/eo#4694 has been opened earlier by @r0bari.
-  is_human: 1
-  issue: 4694
-  repository: 73056727
-  tombstone: 2026-08-08 21:40:04.560645128 Z
-  what: pull-was-opened
-  when: 2025-11-25 17:19:53.000000000 Z
-  where: github
-  who: 56538398
 - _id: 1117475
   _job: 31273656194
   _time: 2026-08-08 19:16:12.891112968 Z
@@ -462479,7 +462451,7 @@
   succeeded_builds: 20
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-08 19:30:50.000000000 Z
+  when: &4109 2026-08-08 19:30:50.000000000 Z
   where: github
   who: 8086956
 - _id: 1117482
@@ -462530,6 +462502,7 @@
   failed_builds: 5
   files: 3
   hoc: 65
+  is_human: 1
   issue: 6479
   repository: 73056727
   review: 2026-08-08 05:49:29.000000000 Z
@@ -462548,6 +462521,7 @@
   details: The pull request objectionary/eo#6479 with 65 HoC created by @morphqdd
     was reviewed by @thayorns after 0h23m and 2 comments.
   hoc: 65
+  is_human: 1
   issue: 6479
   repository: 73056727
   review_comments: 2
@@ -462556,3 +462530,21 @@
   when: 2026-08-08 05:49:29.000000000 Z
   where: github
   who: 96509556
+- _id: 1117486
+  _job: 85865
+  _time: 2026-08-08 23:36:18.260457402 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  details: The pull request objectionary/lints#1222 with 14 HoC created by @volodya-lombrozo
+    was merged by @rultor after 11m45s of being in review and 3 comments.
+  hoc: 14
+  is_human: 1
+  issue: 1222
+  merger: 8086956
+  repository: 889819508
+  review_comments: 0
+  seconds: 705
+  what: code-was-contributed
+  when: *4109
+  where: github
+  who: 51804353
