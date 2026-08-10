@@ -481,9 +481,7 @@ final class Suffix {
                 "cactus emoji is reserved for auto-names; not allowed in identifiers"
             );
         }
-        if (!handle.isEmpty()) {
-            Suffix.checkLowercaseStart(handle, span, home, begin);
-        }
+        Suffix.checkLowercaseStart(handle, span, home, begin);
         if (!cnst && tail.startsWith("!", rest)) {
             cnst = true;
             rest = rest + 1;
@@ -617,6 +615,12 @@ final class Suffix {
             throw new ParseError(
                 span.line(), home + after,
                 "atom signature requires a name"
+            );
+        }
+        if (raw.startsWith(".") || raw.endsWith(".") || raw.contains("..")) {
+            throw new ParseError(
+                span.line(), home + after,
+                "atom signature must be a dotted name with no leading, trailing, or empty segment"
             );
         }
         return Suffix.typeAtom(raw, span, home + after);

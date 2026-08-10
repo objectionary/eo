@@ -4,8 +4,10 @@
 # The objects born from splitting a chain have no locator of their own, so the
 # locators are set again afterwards - every row of every table points into the
 # prepared XMIR, and a row pointing at nothing would be worthless.
-eo: |
-  [x] > box
-    x.lid.hinge > @
+eo:
+  box.eo: |
+    [x] > box
+      x.lid.hinge > @
 xmir:
-  - "//o[@base='ξ.x' and @loc='Φ.box.φ.ρ.ρ']"
+  box.eo:
+    - "//o[@base='ξ.x' and @loc='Φ.box.φ.ρ.ρ']"

@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="to-eo-tree" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="to-eo-tree" version="2.0">
   <!-- An EO-source printer; its tree templates form one cohesive module. -->
   <!-- xslint-disable-file too-many-templates -->
   <!--
@@ -286,10 +286,12 @@
       <xsl:when test="@base=$eo:bottom">
         <xsl:text>T</xsl:text>
       </xsl:when>
-      <xsl:when test="starts-with(@base, concat($eo:program, '.')) and exists(ancestor::o/o[@name = eo:root-name(current()/@base)])">
+      <xsl:when test="starts-with(@base, concat($eo:program, '.')) and (exists(ancestor::o/o[@name = eo:root-name(current()/@base)]) or /object/metas/meta[head = 'alias']/part[1] = eo:root-name(current()/@base))">
         <!--
         The plain top-level name would be shadowed by an in-scope
-        attribute, so keep the explicit Q. root to disambiguate.
+        attribute, or reinterpreted through a "+alias" declaring that
+        same short name for a different object (#6211), so keep the
+        explicit Q. root to disambiguate.
         -->
         <xsl:value-of select="concat('Q.', eo:translate-path(substring-after(@base, concat($eo:program, '.'))))"/>
       </xsl:when>
