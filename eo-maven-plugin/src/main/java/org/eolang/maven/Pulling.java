@@ -15,11 +15,9 @@ import java.util.function.Supplier;
 /**
  * Pulls EO sources from Objectionary.
  *
- * <p>
- *     Goes through all objects from "foreign" catalog that lack sources and
- *     pulls them from the Objectionary remote repository. The pulled sources
- *     are stored in the {@link #DIR} directory.
- * </p>
+ * <p>Goes through all objects from "foreign" catalog that lack sources and
+ * pulls them from the Objectionary remote repository. The pulled sources
+ * are stored in the {@link #DIR} directory.</p>
  *
  * @since 0.61.0
  */

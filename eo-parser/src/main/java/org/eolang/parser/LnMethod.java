@@ -15,21 +15,21 @@ import java.util.List;
  * resolves it:</p>
  *
  * <ul>
- *   <li>{@link Kind#VMETHOD} when this {@code .method} has 0 horizontal
- *   args — the chain stays open for further {@code .method} continuations
- *   or deeper-indent vapplication children.</li>
- *   <li>{@link Kind#VMETHOD_WITH_HARGS} when this {@code .method}
- *   carries one or more horizontal args — the chain becomes
- *   {@link Openness#HORIZONTAL_COMPLETED}.</li>
+ * <li>{@link Kind#VMETHOD} when this {@code .method} has 0 horizontal
+ * args — the chain stays open for further {@code .method} continuations
+ * or deeper-indent vapplication children.</li>
+ * <li>{@link Kind#VMETHOD_WITH_HARGS} when this {@code .method}
+ * carries one or more horizontal args — the chain becomes
+ * {@link Openness#HORIZONTAL_COMPLETED}.</li>
  * </ul>
  *
  * <p>Rejection paths owned here:</p>
  *
  * <ul>
- *   <li>R-5.2.3(b) — same-indent {@code .method} after a horizontally
- *   completed predecessor.</li>
- *   <li>R-5.2.5 — {@code .method} as a deeper-indent line.</li>
- *   <li>R-5.2.10 — {@code .method} at top level (empty stack).</li>
+ * <li>R-5.2.3(b) — same-indent {@code .method} after a horizontally
+ * completed predecessor.</li>
+ * <li>R-5.2.5 — {@code .method} as a deeper-indent line.</li>
+ * <li>R-5.2.10 — {@code .method} at top level (empty stack).</li>
  * </ul>
  *
  * <p>Emission follows §9.0.3: each chain link is a separate flat

@@ -45,14 +45,17 @@ public class XslBench {
         new TrClasspath<>(
             "/org/eolang/parser/parse/move-voids-up.xsl",
             "/org/eolang/parser/parse/validate-before-stars.xsl",
-            "/org/eolang/parser/parse/resolve-before-star.xsl",
+            "/org/eolang/parser/parse/resolve-before-stars.xsl",
             "/org/eolang/parser/parse/wrap-method-calls.xsl",
             "/org/eolang/parser/parse/const-to-dataized.xsl",
             "/org/eolang/parser/parse/stars-to-tuples.xsl",
-            "/org/eolang/parser/shake/build-fqns.xsl"
+            "/org/eolang/parser/parse/build-fqns.xsl"
         ).back()
     );
 
+    /**
+     * Run all sheets on a large XMIR document.
+     */
     @Benchmark
     public final void manySheetsOnLargeXmir() {
         XslBench.LINE.pass(XslBench.INPUT);

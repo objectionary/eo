@@ -9,8 +9,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -88,7 +88,7 @@ final class Walk extends ListEnvelope<Path> {
      */
     private static List<Path> list(final Path dir) {
         try {
-            final List<Path> files = new LinkedList<>();
+            final List<Path> files = new ArrayList<>(0);
             if (Files.exists(dir)) {
                 files.addAll(Walk.regular(dir));
             }

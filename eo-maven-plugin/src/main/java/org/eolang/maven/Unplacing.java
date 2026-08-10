@@ -15,10 +15,8 @@ import java.util.Set;
 /**
  * Core unplacing logic: removes binary files that were previously placed by {@link Placing}.
  *
- * <p>
- *     Goes through all entries in the placed-binaries catalog, compares file hashes,
- *     and deletes files that are still in the same state as when they were placed.
- * </p>
+ * <p>Goes through all entries in the placed-binaries catalog, compares file hashes,
+ * and deletes files that are still in the same state as when they were placed.</p>
  *
  * @since 0.61.0
  */

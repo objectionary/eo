@@ -17,10 +17,10 @@ import java.nio.charset.StandardCharsets;
  * <p>Three constructions are supported:</p>
  *
  * <ul>
- *   <li>From a {@code double} — produces 8-byte IEEE-754 big-endian.</li>
- *   <li>From a UTF-8 string — produces the variable-length UTF-8 byte
- *   sequence.</li>
- *   <li>From a raw byte array — direct encoding.</li>
+ * <li>From a {@code double} — produces 8-byte IEEE-754 big-endian.</li>
+ * <li>From a UTF-8 string — produces the variable-length UTF-8 byte
+ * sequence.</li>
+ * <li>From a raw byte array — direct encoding.</li>
  * </ul>
  *
  * @since 0.1

@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# "Complete" means the whole formation has been seen, so there is nothing in it
+# besides the attributes listed. It is what later keeps the checker honest: a
+# missing attribute is a mistake only on an object that is complete.
+eo: |
+  [] > lid
+provides:
+  - "/provides/type[@id='Φ.lid' and @complete='true']"

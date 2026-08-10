@@ -5,117 +5,65 @@
 package org.eolang.maven;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtYaml;
+import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link Inferring}.
+ *
+ * <p>What the clues understand about a program is checked by the packs in
+ * {@code inference-packs}: each one carries the EO source and the XPaths its
+ * tables must satisfy, so a rule is described by the program it reads rather
+ * than by XMIR written out by hand. What is left here are the mechanics no EO
+ * source can express — how many files there are, where they land, and what
+ * happens to a file whose source is gone.</p>
+ *
  * @since 0.67.0
  */
 @ExtendWith(MktmpResolver.class)
 final class InferringTest {
 
-    @Test
-    void splitsCompositeBase(@Mktmp final Path temp) throws IOException {
-        final Path input = Files.createDirectories(temp.resolve("chain"));
-        Files.writeString(
-            input.resolve("inc.xmir"),
-            new EoSyntax(
-                String.join(
-                    System.lineSeparator(),
-                    "[x] > inc",
-                    "  x.next.foo > @",
-                    ""
-                )
-            ).parsed().toString()
-        );
-        new Inferring(input, temp.resolve("out"), temp.resolve("rows")).exec();
-        MatcherAssert.assertThat(
-            "a chain of dispatches must become one object per step, but it didnt",
-            new XMLDocument(temp.resolve("out").resolve("inc.xmir")),
-            XhtmlMatchers.hasXPath("//o[@base='.foo']/o[@base='.next']/o[@base='ξ.x']")
-        );
-    }
+    /**
+     * Temp directory, injected into every test instance, since a
+     * parameterized test cannot also take one as an argument.
+     */
+    @Mktmp
+    private Path dir;
 
-    @Test
-    void keepsReferenceWhole(@Mktmp final Path temp) throws IOException {
-        final Path input = Files.createDirectories(temp.resolve("plumbing"));
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/inference-packs/", glob = "**.yaml")
+    void understandsProgramOfPack(final String yaml) throws IOException {
+        final Xtory pack = new XtSticky(new XtYaml(yaml));
         Files.writeString(
-            input.resolve("tap.xmir"),
-            new EoSyntax(
-                String.join(
-                    System.lineSeparator(),
-                    "[] > tap",
-                    "  water > @",
-                    "  [] > water",
-                    ""
-                )
-            ).parsed().toString()
+            Files.createDirectories(this.dir.resolve("parsed")).resolve("main.xmir"),
+            new EoSyntax(pack.map().get("eo").toString()).parsed().toString()
         );
-        new Inferring(input, temp.resolve("ready"), temp.resolve("rows")).exec();
+        new Inferring(
+            this.dir.resolve("parsed"), this.dir.resolve("pre"), this.dir.resolve("tables")
+        ).exec();
         MatcherAssert.assertThat(
-            "a reference takes no attribute from anything, so it must stay whole, but it didnt",
-            new XMLDocument(temp.resolve("ready").resolve("tap.xmir")),
-            XhtmlMatchers.hasXPath("//o[@base='ξ.water']")
-        );
-    }
-
-    @Test
-    void locatesObjectsBornFromSplitting(@Mktmp final Path temp) throws IOException {
-        final Path sources = Files.createDirectories(temp.resolve("deep"));
-        Files.writeString(
-            sources.resolve("box.xmir"),
-            new EoSyntax(
-                String.join(
-                    System.lineSeparator(),
-                    "[x] > box",
-                    "  x.lid.hinge > @",
-                    ""
-                )
-            ).parsed().toString()
-        );
-        new Inferring(sources, temp.resolve("done"), temp.resolve("rows")).exec();
-        MatcherAssert.assertThat(
-            "the receiver of a new dispatch must get a locator of its own, but it didnt",
-            new XMLDocument(temp.resolve("done").resolve("box.xmir")),
-            XhtmlMatchers.hasXPath("//o[@base='ξ.x' and @loc='Φ.box.φ.ρ.ρ']")
-        );
-    }
-
-    @Test
-    void buildsProvidesTableForWholeProgram(@Mktmp final Path temp) throws IOException {
-        final Path folder = Files.createDirectories(temp.resolve("program"));
-        Files.writeString(
-            folder.resolve("app.xmir"),
-            new EoSyntax(
-                String.join(
-                    System.lineSeparator(),
-                    "[] > app",
-                    "  inc t > @",
-                    "  [] > t",
-                    "    [] > next",
-                    "  [x] > inc",
-                    "    x.next.foo > @",
-                    ""
-                )
-            ).parsed().toString()
-        );
-        new Inferring(folder, temp.resolve("xmir"), temp.resolve("tables")).exec();
-        MatcherAssert.assertThat(
-            "the innermost formation must be known to have nothing, but it isnt",
-            new XMLDocument(temp.resolve("tables").resolve("provides.xml")),
-            XhtmlMatchers.hasXPath(
-                "/provides/type[@id='Φ.app.t.next' and @complete='true' and not(attr)]"
-            )
+            "every XPath of the pack must match what the clues wrote, but some didnt",
+            this.unmatched(pack, this.dir),
+            Matchers.empty()
         );
     }
 
@@ -185,5 +133,45 @@ final class InferringTest {
             Files.exists(temp.resolve("copy").resolve("one").resolve("leaf.xmir")),
             Matchers.is(true)
         );
+    }
+
+    /**
+     * The XPaths of the pack that match nothing, each named by the document it
+     * was asked of.
+     * @param pack The pack
+     * @param temp The directory the clues have just written into
+     * @return The XPaths that failed, empty when the pack is satisfied
+     * @throws IOException If a document cannot be read
+     */
+    private Collection<String> unmatched(final Xtory pack, final Path temp) throws IOException {
+        final Collection<String> failed = new ArrayList<>(0);
+        for (final String key : Arrays.asList("xmir", "provides", "needs", "links")) {
+            if (pack.map().containsKey(key)) {
+                final XML written = this.written(temp, key);
+                for (final String xpath : (List<String>) pack.map().get(key)) {
+                    if (written.nodes(xpath).isEmpty()) {
+                        failed.add(String.format("%s: %s", key, xpath));
+                    }
+                }
+            }
+        }
+        return failed;
+    }
+
+    /**
+     * The document the given key of a pack talks about.
+     * @param temp The directory the clues have just written into
+     * @param key The key, either {@code xmir} or the name of a table
+     * @return The document
+     * @throws IOException If it cannot be read
+     */
+    private XML written(final Path temp, final String key) throws IOException {
+        final Path path;
+        if ("xmir".equals(key)) {
+            path = temp.resolve("pre").resolve("main.xmir");
+        } else {
+            path = temp.resolve("tables").resolve(String.format("%s.xml", key));
+        }
+        return new XMLDocument(path);
     }
 }

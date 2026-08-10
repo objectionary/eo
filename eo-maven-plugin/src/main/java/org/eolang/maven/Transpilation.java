@@ -71,16 +71,15 @@ final class Transpilation {
     /**
      * Parsing trains with XSLs, one per thread, keyed by whether source
      * locations are tracked.
-     * <p>
-     *     A single shared instance is deliberately avoided: {@link TrClasspath}
-     *     and {@link StClasspath} compile their XSL stylesheets lazily on
-     *     first use, and that lazy compilation is not thread-safe. Sharing one
-     *     instance across the {@link Threaded} worker pool races on the same
-     *     underlying compilation cache and can produce truncated or garbled
-     *     Java output. Keeping one instance per thread still lets each worker
-     *     thread reuse its own compiled stylesheets across the sources it
-     *     processes.
-     * </p>
+     *
+     * <p>A single shared instance is deliberately avoided: {@link TrClasspath}
+     * and {@link StClasspath} compile their XSL stylesheets lazily on
+     * first use, and that lazy compilation is not thread-safe. Sharing one
+     * instance across the {@link Threaded} worker pool races on the same
+     * underlying compilation cache and can produce truncated or garbled
+     * Java output. Keeping one instance per thread still lets each worker
+     * thread reuse its own compiled stylesheets across the sources it
+     * processes.</p>
      */
     private static final ThreadLocal<Map<String, Train<Shift>>> TRAINS =
         ThreadLocal.withInitial(HashMap::new);
@@ -196,7 +195,7 @@ final class Transpilation {
      * @return Measured train
      */
     private Train<Shift> measured(final Train<Shift> base) {
-        final Path parent = this.xslMeasures.getParent();
+        final Path parent = this.xslMeasures.toAbsolutePath().getParent();
         if (parent.toFile().mkdirs()) {
             Logger.debug(this, "Directory created for %[file]s", this.xslMeasures);
         }

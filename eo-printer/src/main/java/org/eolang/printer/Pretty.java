@@ -286,12 +286,7 @@ final class Pretty {
             result = Optional.empty();
         } else {
             result = Pretty.inlined(node.children).map(
-                args -> new StringBuilder(this.tab.repeat(indent))
-                    .append(node.base)
-                    .append(' ')
-                    .append(args)
-                    .append(node.tail)
-                    .toString()
+                args -> this.tab.repeat(indent) + node.base + ' ' + args + node.tail
             );
         }
         return result;
@@ -320,7 +315,7 @@ final class Pretty {
      * arguments laid out beneath, mirroring the ordinary {@code head > name}
      * plus vertical-args layout and saving one line and one indent level
      * over the verbose shape (issue #5594); when those arguments are a lone
-     * tuple the star is glued onto the head line too ({@link #hybrid}). The
+     * tuple the star is glued onto the head line too ({@link Node#hybrid}). The
      * flat one-liner and the hybrid are both built and the lower-penalty of
      * the two is returned, rather than discriminating between them by whether
      * the one-liner fits the {@code WIDTH} limit: the hybrid drops the
@@ -422,7 +417,7 @@ final class Pretty {
      * siblings into the tuple and the head must be a plain base, not a
      * dotted method dispatch: after {@code "literal".printf *} the parser
      * reads a complete application with an empty tuple and drops the
-     * indented element, so {@link #tuply()} bars that case (issues #5622,
+     * indented element, so {@link Node#tuply()} bars that case (issues #5622,
      * #5624). The {@code *N} marker ({@code N >= 1}) sits on the head line
      * rather than being glued after arguments, so it round-trips after a
      * dotted dispatch too ({@code string.sprintf *1}). The genuinely

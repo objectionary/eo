@@ -11,6 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -70,6 +72,36 @@ final class PhCoverageTest {
     }
 
     @Test
+    void writesToEachConfiguredDestinationOnce(@Mktmp final Path temp) throws Exception {
+        final Path first = temp.resolve("first.txt");
+        final Path second = temp.resolve("second.txt");
+        final String before = System.getProperty("eo.coverageFile");
+        final Phi covered = new PhCoverage(
+            new PhDefault(new byte[] {(byte) 0x2A}), "Φ.foo", 7, 3
+        );
+        try {
+            System.setProperty("eo.coverageFile", first.toString());
+            new Dataized(covered).take();
+            System.setProperty("eo.coverageFile", second.toString());
+            new Dataized(covered).take();
+            MatcherAssert.assertThat(
+                "the same location must be recorded once per configured destination",
+                Stream.concat(
+                    Files.readAllLines(first, StandardCharsets.UTF_8).stream(),
+                    Files.readAllLines(second, StandardCharsets.UTF_8).stream()
+                ).collect(Collectors.toList()),
+                Matchers.contains("Φ.foo:7:3", "Φ.foo:7:3")
+            );
+        } finally {
+            if (before == null) {
+                System.clearProperty("eo.coverageFile");
+            } else {
+                System.setProperty("eo.coverageFile", before);
+            }
+        }
+    }
+
+    @Test
     void convertsInvalidCoveragePathIntoIllegalArgumentException() {
         MatcherAssert.assertThat(
             "a raw InvalidPathException leaked through unconverted",
@@ -93,9 +125,11 @@ final class PhCoverageTest {
 
     /**
      * Failure raised while dataizing with the given value in the property.
+     *
      * <p>Each caller must pass its own location: {@link PhCoverage} writes a
      * given location at most once per JVM, so a shared one would make the
      * second test see no attempt to write at all.</p>
+     *
      * @param path Value to put into the {@code eo.coverageFile} property
      * @param loc Location to record, unique per caller
      * @return The exception thrown, or a placeholder if nothing was thrown
