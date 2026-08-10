@@ -6,12 +6,10 @@ package org.eolang.inference;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +26,9 @@ import org.xembly.Xembler;
  * keeps two cells that say nothing about the attribute and only place the
  * row in the table: its {@code id}, which is bookkeeping (the owner and
  * the name, since neither alone is unique), and its {@code owner}, which
- * the document says by nesting instead. The {@code index} of a row is
- * placement too — it decides what comes before what. Those cells are
- * dropped, and every other one becomes an attribute of its own, whatever
- * it happens to be called:</p>
+ * the document says by nesting instead. Those cells are dropped, and every
+ * other one becomes an attribute of its own, whatever it happens to be
+ * called:</p>
  *
  * <pre> &lt;provides&gt;
  *   &lt;type id="Φ.t" complete="true"&gt;
@@ -52,7 +49,7 @@ final class Grouped {
     /**
      * The rows.
      */
-    private final Tojos table;
+    private final Collection<Row> table;
 
     /**
      * The name of the table.
@@ -64,7 +61,7 @@ final class Grouped {
      * @param rows The rows to render
      * @param name The name of the table, which the document is named after
      */
-    Grouped(final Tojos rows, final String name) {
+    Grouped(final Collection<Row> rows, final String name) {
         this.table = rows;
         this.root = name;
     }
@@ -74,17 +71,14 @@ final class Grouped {
      * @return The document
      */
     XML asXml() {
-        final Map<String, List<Map<String, String>>> attrs = this.attributes();
+        final Map<String, List<Row>> attrs = this.attributes();
         final Directives dirs = new Directives().add(this.root);
-        for (final Tojo type : this.types()) {
-            final Map<String, String> cells = type.toMap();
-            dirs.add("type").append(
-                new Cells(cells, Collections.singletonList("index")).directives()
-            );
-            for (final Map<String, String> attr
-                : attrs.getOrDefault(cells.get("id"), Collections.emptyList())) {
+        for (final Row type : this.types()) {
+            dirs.add("type").append(new Cells(type.all()).directives());
+            for (final Row attr
+                : attrs.getOrDefault(type.cell("id"), Collections.emptyList())) {
                 dirs.add("attr")
-                    .append(new Cells(attr, Arrays.asList("id", "owner", "index")).directives())
+                    .append(new Cells(attr.all(), Arrays.asList("id", "owner")).directives())
                     .up();
             }
             dirs.up();
@@ -97,10 +91,9 @@ final class Grouped {
      * document follows the code.
      * @return The rows without an owner
      */
-    private List<Tojo> types() {
-        return this.table.select(row -> !row.exists("owner"))
-            .stream()
-            .sorted(Comparator.comparingInt(row -> Integer.parseInt(row.get("index"))))
+    private List<Row> types() {
+        return this.table.stream()
+            .filter(row -> !row.has("owner"))
             .collect(Collectors.toList());
     }
 
@@ -109,15 +102,14 @@ final class Grouped {
      * belong to, each group in the order the attributes were declared.
      * @return The rows with an owner, by owner
      */
-    private Map<String, List<Map<String, String>>> attributes() {
-        final Map<String, List<Map<String, String>>> gathered = new LinkedHashMap<>();
-        for (final Tojo row : this.table.select(one -> one.exists("owner"))) {
-            gathered.computeIfAbsent(
-                row.get("owner"), key -> new ArrayList<>(1)
-            ).add(row.toMap());
-        }
-        for (final List<Map<String, String>> group : gathered.values()) {
-            group.sort(Comparator.comparingInt(cells -> Integer.parseInt(cells.get("index"))));
+    private Map<String, List<Row>> attributes() {
+        final Map<String, List<Row>> gathered = new LinkedHashMap<>(0);
+        for (final Row row : this.table) {
+            if (row.has("owner")) {
+                gathered.computeIfAbsent(
+                    row.cell("owner"), key -> new ArrayList<>(1)
+                ).add(row);
+            }
         }
         return gathered;
     }

@@ -5,14 +5,12 @@
 package org.eolang.inference;
 
 import com.jcabi.xml.XML;
-import com.yegor256.tojos.MnMemory;
-import com.yegor256.tojos.TjCached;
-import com.yegor256.tojos.TjDefault;
-import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * What has to be checked later, and about which objects.
@@ -44,20 +42,18 @@ final class Checks implements Clue {
 
     @Override
     public void follow(final Path xmirs, final Path tables) throws IOException {
-        final Tojos rows = new TjCached(new TjDefault(new MnMemory()));
-        int seen = 0;
+        final Collection<Row> rows = new ArrayList<>(0);
         for (final XML application : new Xmirs(xmirs).applications()) {
             final String owner = application.xpath("@loc").get(0);
-            rows.add(owner).set("index", Integer.toString(seen));
-            seen = seen + 1;
+            rows.add(new Row(owner));
             for (final XML argument : application.nodes("o[@as]")) {
                 final String binding = argument.xpath("@as").get(0);
-                rows.add(String.join(" ", owner, binding))
-                    .set("owner", owner)
-                    .set("index", Integer.toString(seen))
-                    .set("name", binding)
-                    .set("type", argument.xpath("@loc").get(0));
-                seen = seen + 1;
+                rows.add(
+                    new Row(String.join(" ", owner, binding))
+                        .with("owner", owner)
+                        .with("name", binding)
+                        .with("type", argument.xpath("@loc").get(0))
+                );
             }
         }
         Files.createDirectories(tables);

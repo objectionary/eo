@@ -5,10 +5,6 @@
 package org.eolang.inference;
 
 import com.jcabi.xml.XML;
-import com.yegor256.tojos.MnMemory;
-import com.yegor256.tojos.TjCached;
-import com.yegor256.tojos.TjDefault;
-import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -65,16 +61,12 @@ final class Links implements Clue {
             made.add(formation.xpath("@loc").get(0));
         }
         final Scope scope = new Scope(new HashSet<>(world.locators()), new HashSet<>(made));
-        final Tojos rows = new TjCached(new TjDefault(new MnMemory()));
-        int seen = 0;
+        final Collection<Row> rows = new ArrayList<>(0);
         for (final XML reference : world.references()) {
             final String from = reference.xpath("@loc").get(0);
             final String target = scope.target(from, reference.xpath("@base").get(0));
             if (!target.isEmpty()) {
-                rows.add(from)
-                    .set("index", Integer.toString(seen))
-                    .set("copy", target);
-                seen = seen + 1;
+                rows.add(new Row(from).with("copy", target));
             }
         }
         Files.createDirectories(tables);
