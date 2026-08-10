@@ -12,6 +12,8 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.Together;
 import com.yegor256.WeAreOnline;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
@@ -133,6 +135,28 @@ final class StrictXmirTest {
             ).toFile().exists(),
             Matchers.is(true)
         );
+    }
+
+    @Test
+    void validatesXmirWithLocalSchemaAndEmptyCacheDirectory() throws IOException {
+        try {
+            Assertions.assertDoesNotThrow(
+                new StrictXmir(
+                    StrictXmirTest.xmir(
+                        String.format(
+                            "https://www.eolang.org/xsd/XMIR-%s.xsd",
+                            StrictXmirTest.version()
+                        )
+                    ),
+                    Path.of("")
+                )::inner,
+                "validation should not fail on a cache directory with no parent"
+            );
+        } finally {
+            Files.deleteIfExists(
+                Path.of(String.format("XMIR-%s.xsd", StrictXmirTest.version()))
+            );
+        }
     }
 
     @RepeatedTest(20)
