@@ -39,10 +39,15 @@
     <xsl:sequence select="for $t in //o/@type return replace($t, '\?$', '')"/>
     <xsl:sequence select="/object/metas/meta[head = 'also']/part/string()"/>
   </xsl:variable>
-  <!-- Whether an alias's short name reads back unambiguously: no bound name and no bare global claims it. -->
+  <!--
+  Whether an alias's short name reads back unambiguously: no bound name
+  claims it, no bare global claims it, and it is not the first segment of
+  some other, longer fully-qualified reference in the file either (#6211)
+  — restoring it there would rebind that longer reference onto this alias.
+  -->
   <xsl:function name="eo:free" as="xs:boolean">
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="not($name = $bound) and not($refs = concat($eo:program, '.', $name))"/>
+    <xsl:sequence select="not($name = $bound) and not(some $r in $refs satisfies $r = concat($eo:program, '.', $name) or starts-with($r, concat($eo:program, '.', $name, '.')))"/>
   </xsl:function>
   <!-- The fully-qualified names worth restoring: a free-named alias referenced more than once. -->
   <xsl:variable name="kept" as="xs:string*" select="for $m in $aliases return if (eo:free($m/part[1]) and count($refs[. = $m/part[last()]]) gt 1) then string($m/part[last()]) else ()"/>
