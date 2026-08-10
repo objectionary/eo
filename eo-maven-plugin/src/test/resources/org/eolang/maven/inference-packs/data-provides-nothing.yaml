@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Bytes carry their value as text and are not a formation, so they provide
+# nothing and get no row.
+eo: |
+  [] > two
+    01- > @
+provides:
+  - "/provides/type[@id='Φ.two']/attr[@name='φ']"

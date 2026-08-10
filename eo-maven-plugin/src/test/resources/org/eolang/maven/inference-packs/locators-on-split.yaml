@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The objects born from splitting a chain have no locator of their own, so the
+# locators are set again afterwards - every row of every table points into the
+# prepared XMIR, and a row pointing at nothing would be worthless.
+eo: |
+  [x] > box
+    x.lid.hinge > @
+xmir:
+  - "//o[@base='ξ.x' and @loc='Φ.box.φ.ρ.ρ']"
