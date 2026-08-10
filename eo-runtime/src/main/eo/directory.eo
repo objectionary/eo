@@ -9,10 +9,10 @@
 # @todo #5751:30min Stop descending into a symbolic link to a directory. The
 #  `walk` below asks stat, which follows the link, so a link to its own ancestor
 #  recurses forever, while the `Files.walk` it replaced only listed such a link.
-# @todo #5751:60min Walk a directory without growing the EO call stack. The
-#  `stepped` below recurses once per entry and `walked` once per level, so a
-#  directory with many entries overflows the stack the way `string.repeated`
-#  does in #6239, while the `Files.walk` they replace iterated instead.
+# @todo #6484:60min Walk a directory in constant stack space. The `stepped`
+#  below still costs one frame per entry, because every loop EO has grows the
+#  stack: `while` nests a frame per cycle and `tuple.reducedi` one per element,
+#  so a directory of a few thousand entries still overflows.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -93,41 +93,35 @@
             *
       number.random clock
   [glob] > walk
-    tuple.reduced > @
-      [accum prefix dir] >> walked
-        dir.listed >> names
-        [index acc] >> stepped
-          if. > @
-            index.gte names.length
-            acc
-            stepped
-              index.plus 1
-              if.
-                child.as-file.is-directory false
-                walked acc sub child.as-dir
-                acc.with sub
-          dir.as-path.resolved name > child
-          names.at index > name
-          if. > sub
-            prefix.length.eq 0
+    [accum prefix dir] >> walked
+      [rest] >> stepped
+        if. > @
+          rest.length.eq 0
+          picked accum prefix
+          if.
+            child.as-file.is-directory false
+            walked earlier sub child.as-dir
+            picked earlier sub
+        dir.as-path.resolved name > child
+        stepped rest.tail > earlier
+        rest.head > name
+        if. > sub
+          prefix.length.eq 0
+          name
+          string.joined *1
+            path.separator
+            prefix
             name
-            string.joined *1
-              path.separator
-              prefix
-              name
-        | > @
-          0
-          accum.with prefix
-      |
-        *
-        ""
-        ^
+      | dir.listed > @
+    | > @
       *
-      if. > [accum rel] >>
-        matched rel
-        accum.with
-          Q.file (base.resolved rel).as-bytes
-        accum
+      ""
+      ^
+    if. > [accum rel] >> picked
+      matched rel
+      accum.with
+        Q.file (base.resolved rel).as-bytes
+      accum
     ^.as-path >> base
     if. > [char] >> escaped
       string.contains ".+()|^$\\" char
@@ -351,6 +345,29 @@
     is-directory.
       directory mktemp.tmpfile
       true
+
+  ++> can-walk-a-directory-before-its-children
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "sub"
+      touched.
+        as-file.
+          d.resolved "sub/b.txt"
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq.
+        string.joined
+          ","
+          d.as-dir.walk "**b*"
+        string.joined *1
+          ","
+          d.resolved "sub"
+          d.resolved "sub/b.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
 
   ++> can-walk-recursively
     seq * > @
