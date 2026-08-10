@@ -47,4 +47,16 @@ final class MergeMonikersTest {
             )
         );
     }
+
+    @Test
+    void guardsExpensiveTemplatePredicates() {
+        MatcherAssert.assertThat(
+            "Cheap predicates must reject nodes before hosted/applied lookups",
+            this.sheet,
+            XhtmlMatchers.hasXPaths(
+                "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(eo:hosted-binding(.))]\"]",
+                "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))][exists(eo:applied-handle(.))]\"]"
+            )
+        );
+    }
 }
