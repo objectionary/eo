@@ -23,3 +23,7 @@ needs:
   - "/needs/type[@id='Φ.app.inc.φ.ρ.ρ']/attr[@name='next']"
   - "/needs//attr[@name='next' and @type='Φ.app.inc.φ.ρ']"
   - "/needs/type[@id='Φ.app.inc.φ.ρ']/attr[@name='foo' and @type='Φ.app.inc.φ']"
+links:
+  - "/links/type[@id='Φ.app.φ' and @copy='Φ.app.inc']"
+  - "/links/type[@id='Φ.app.φ.α0' and @copy='Φ.app.t']"
+  - "/links/type[@id='Φ.app.inc.φ.ρ.ρ' and @copy='Φ.app.inc.x']"
