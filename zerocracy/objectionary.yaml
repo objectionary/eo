@@ -2,11 +2,12 @@
 - added: 8
   cycles: 1
   deleted: 8
+  error: 'Judge find-all-issues stopped by timeout after 11m55s: execution expired'
   inserted: 8
-  seconds: 2160.780459991
+  seconds: 2406.612085368
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-10 19:28:12.422585089 Z
+  when: 2026-08-10 20:14:32.047889018 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -103899,23 +103900,6 @@
   where: github
   who: 37025995
   why: Contributed code in objectionary/eo#4943
-- _id: 1079561
-  _job: 23657661663
-  _time: 2026-03-27 16:59:09.348088948 Z
-  _version: 0.19.9/0.60.1/0.17.15
-  tombstone: 2026-08-02 18:16:47.508443305 Z
-  total_active_contributors: 10
-  total_commits: 48900
-  total_contributors: 490
-  total_files: 14327
-  total_forks: 368
-  total_issues: 4454
-  total_pulls: 8107
-  total_releases: 838
-  total_repositories: 37
-  total_stars: 1743
-  what: dimensions-of-terrain
-  when: 2026-03-27 16:59:09.366761805 Z
 - _id: 1079698
   _job: 23700658643
   _time: 2026-03-29 03:45:04.224934887 Z
@@ -251926,7 +251910,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 5
   merges_were_scanned: 0
-  min_issue_was_found: 6
+  min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 510082372
   types_were_scanned: 0
@@ -254756,7 +254740,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 16
   merges_were_scanned: 0
-  min_issue_was_found: 18
+  min_issue_was_found: 19
   min_pull_was_found: 0
   repository: 519246071
   types_were_scanned: 0
@@ -269406,7 +269390,7 @@
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 46
-  min_issue_was_found: 28
+  min_issue_was_found: 31
   repository: 531151981
   types_were_scanned: 0
   what: iterate
@@ -275288,7 +275272,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 34
   merges_were_scanned: 0
-  min_issue_was_found: 41
+  min_issue_was_found: 44
   min_pull_was_found: 0
   repository: 482612876
   types_were_scanned: 0
@@ -278458,29 +278442,6 @@
   when: 2026-07-01 19:26:15.000000000 Z
   where: github
   who: 526301
-- _id: 1106872
-  _job: 28569945339
-  _time: 2026-07-02 06:29:12.552613442 Z
-  _version: 0.19.9/0.60.2/0.17.17
-  commits: 1
-  contributors: 8086956
-  details: "A new release \"In-range positional application ⟦\U0001D4351, \U0001D70F
-    ↦ \U0001D4521, \U0001D4352⟧(α\U0001D456 ↦ \U0001D4522) onto an attached slot stays
-    in normal form instead of reducing to ⊥\" has been published in objectionary/phino
-    by @rultor."
-  event_id: 11233537375
-  event_type: ReleaseEvent
-  hoc: 2
-  is_human: 0
-  last_commit: 00312e2a981dbc914b471474036d9eb017f6de8a
-  release: 347598126
-  repository: 977982682
-  tag: 0.0.98
-  tombstone: 2026-08-02 18:16:47.515527251 Z
-  what: release-published
-  when: 2026-07-01 16:45:03.000000000 Z
-  where: github
-  who: 8086956
 - _id: 1106873
   _job: 28569945339
   _time: 2026-07-02 06:29:15.686609816 Z
@@ -289080,7 +289041,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 94
   merges_were_scanned: 0
-  min_issue_was_found: 137
+  min_issue_was_found: 139
   min_pull_was_found: 0
   repository: 447446664
   types_were_scanned: 0
@@ -290854,10 +290815,10 @@
   labels_were_scanned: 0
   latest_issue_was_found: 347
   merges_were_scanned: 0
-  min_issue_was_found: 0
+  min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 556
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1107889
@@ -293282,7 +293243,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 34
   merges_were_scanned: 0
-  min_issue_was_found: 40
+  min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 570457023
   types_were_scanned: 0
@@ -296823,7 +296784,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 97
   merges_were_scanned: 0
-  min_issue_was_found: 104
+  min_issue_was_found: 157
   min_pull_was_found: 0
   repository: 955159947
   types_were_scanned: 0
@@ -297775,7 +297736,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1019
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13009557602
   issues_were_scanned: 0
@@ -297785,7 +297746,7 @@
   min_issue_was_found: 479
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 1018
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108618
@@ -301540,7 +301501,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1000
   earliest_issue_was_found: 1
   events_were_scanned: 13060566402
   issues_were_scanned: 982
@@ -301550,7 +301511,7 @@
   min_issue_was_found: 637
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 0
+  types_were_scanned: 833
   what: iterate
   where: github
 - _id: 1108989
@@ -303963,7 +303924,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 6
   merges_were_scanned: 0
-  min_issue_was_found: 27
+  min_issue_was_found: 46
   min_pull_was_found: 0
   repository: 1219806055
   types_were_scanned: 0
@@ -303997,7 +303958,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 63
   merges_were_scanned: 0
-  min_issue_was_found: 5
+  min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 731516758
   types_were_scanned: 0
@@ -304014,7 +303975,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 34
   merges_were_scanned: 0
-  min_issue_was_found: 0
+  min_issue_was_found: 11
   min_pull_was_found: 0
   repository: 396732517
   types_were_scanned: 0
@@ -304046,7 +304007,7 @@
   events_were_scanned: 12239775879
   latest_issue_was_found: 5
   merges_were_scanned: 0
-  min_issue_was_found: 27
+  min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 1260338737
   types_were_scanned: 0
@@ -304165,7 +304126,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 43
   merges_were_scanned: 0
-  min_issue_was_found: 50
+  min_issue_was_found: 53
   min_pull_was_found: 0
   repository: 501942888
   types_were_scanned: 0
@@ -304492,7 +304453,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1122
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13040000276
   issues_were_scanned: 0
@@ -304502,7 +304463,7 @@
   min_issue_was_found: 253
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 1100
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109065
@@ -304516,7 +304477,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 122
   merges_were_scanned: 0
-  min_issue_was_found: 427
+  min_issue_was_found: 0
   min_pull_was_found: 409
   repository: 970961472
   types_were_scanned: 0
@@ -304526,17 +304487,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6232
+  assignees_were_scanned: 6374
   earliest_issue_was_found: 1
   events_were_scanned: 13062381316
   issues_were_scanned: 0
-  labels_were_scanned: 6095
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 5331
+  types_were_scanned: 5474
   what: iterate
   where: github
 - _id: 1109067
@@ -466340,7 +466301,7 @@
   succeeded_builds: 22
   suggestions: 4
   what: pull-was-merged
-  when: 2026-08-10 16:00:46.000000000 Z
+  when: &4146 2026-08-10 16:00:46.000000000 Z
   where: github
   who: 526301
 - _id: 1117815
@@ -466366,7 +466327,7 @@
   succeeded_builds: 22
   suggestions: 5
   what: pull-was-merged
-  when: 2026-08-10 16:04:45.000000000 Z
+  when: &4147 2026-08-10 16:04:45.000000000 Z
   where: github
   who: 526301
 - _id: 1117816
@@ -466392,7 +466353,7 @@
   succeeded_builds: 22
   suggestions: 9
   what: pull-was-merged
-  when: 2026-08-10 16:13:06.000000000 Z
+  when: &4148 2026-08-10 16:13:06.000000000 Z
   where: github
   who: 526301
 - _id: 1117817
@@ -466418,7 +466379,7 @@
   succeeded_builds: 22
   suggestions: 8
   what: pull-was-merged
-  when: 2026-08-10 16:12:09.000000000 Z
+  when: &4149 2026-08-10 16:12:09.000000000 Z
   where: github
   who: 526301
 - _id: 1117818
@@ -466444,7 +466405,7 @@
   succeeded_builds: 22
   suggestions: 5
   what: pull-was-merged
-  when: 2026-08-10 15:17:21.000000000 Z
+  when: &4150 2026-08-10 15:17:21.000000000 Z
   where: github
   who: 526301
 - _id: 1117819
@@ -466469,7 +466430,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-10 14:44:32.000000000 Z
+  when: &4151 2026-08-10 14:44:32.000000000 Z
   where: github
   who: 526301
 - _id: 1117820
@@ -466494,7 +466455,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-10 14:41:59.000000000 Z
+  when: &4152 2026-08-10 14:41:59.000000000 Z
   where: github
   who: 526301
 - _id: 1117821
@@ -466519,7 +466480,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-10 14:37:52.000000000 Z
+  when: &4153 2026-08-10 14:37:52.000000000 Z
   where: github
   who: 526301
 - _id: 1117822
@@ -466892,6 +466853,10 @@
   total_contributors: 540
   total_files: 15261
   total_forks: 521
+  total_issues: 5591
+  total_pulls: 10719
+  total_releases: 939
+  total_repositories: 39
   total_stars: 1823
   what: dimensions-of-terrain
   when: 2026-08-10 17:56:40.197118015 Z
@@ -467064,6 +467029,7 @@
     them coming. Your running score is [+615](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 197
+  href: https://github.com/objectionary/lints/issues/1229/#issuecomment-5244978998
   is_human: 1
   issue: 1229
   repository: 889819508
@@ -467086,8 +467052,10 @@
     them coming. Your running score is [+16](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 96
+  href: https://github.com/objectionary/eo/issues/6554/#issuecomment-5244979312
   is_human: 1
   issue: 6554
+  receipt: receipt-#85598
   repository: 73056727
   review_comments: 0
   seconds: 3958
@@ -467110,6 +467078,7 @@
     to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
     bugs. Your running score is [+1125](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/eo/issues/6499/#issuecomment-5244979600
   is_human: 1
   issue: 6499
   repository: 73056727
@@ -467300,6 +467269,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: fix/issue-553-test-word
   details: The missing pull objectionary/lints#1237 has been opened by @vasilevnstas.
+  is_human: 1
   issue: 1237
   repository: 889819508
   what: pull-was-opened
@@ -467312,6 +467282,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: fix/issue-1100-broad-scope
   details: The missing pull objectionary/lints#1238 has been opened by @vasilevnstas.
+  is_human: 1
   issue: 1238
   repository: 889819508
   what: pull-was-opened
@@ -467333,11 +467304,853 @@
   failed_builds: 0
   files: 3
   hoc: 6
+  is_human: 1
   issue: 6571
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
   when: 2026-08-10 18:01:24.000000000 Z
   where: github
   who: 526301
+- _id: 1117873
+  _job: 86201
+  _time: 2026-08-10 19:29:12.113767290 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 9
+  details: The pull request objectionary/eo#6394 with 28 HoC created by @gemshrine
+    was merged by @yegor256 after 5d4h of being in review and 9 comments.
+  hoc: 28
+  is_human: 1
+  issue: 6394
+  merger: 526301
+  repository: 73056727
+  review_comments: 4
+  seconds: 447514
+  what: code-was-contributed
+  when: *4146
+  where: github
+  who: 113778529
+- _id: 1117874
+  _job: 86201
+  _time: 2026-08-10 19:29:13.092582373 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 11
+  details: The pull request objectionary/eo#6399 with 44 HoC created by @gemshrine
+    was merged by @yegor256 after 5d3h of being in review and 11 comments.
+  hoc: 44
+  is_human: 1
+  issue: 6399
+  merger: 526301
+  repository: 73056727
+  review_comments: 5
+  seconds: 444304
+  what: code-was-contributed
+  when: *4147
+  where: github
+  who: 113778529
+- _id: 1117875
+  _job: 86201
+  _time: 2026-08-10 19:29:13.393163357 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 14
+  details: The pull request objectionary/eo#6400 with 98 HoC created by @gemshrine
+    was merged by @yegor256 after 5d3h of being in review and 14 comments.
+  hoc: 98
+  is_human: 1
+  issue: 6400
+  merger: 526301
+  repository: 73056727
+  review_comments: 9
+  seconds: 444779
+  what: code-was-contributed
+  when: *4148
+  where: github
+  who: 113778529
+- _id: 1117876
+  _job: 86201
+  _time: 2026-08-10 19:29:13.682107108 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 13
+  details: The pull request objectionary/eo#6402 with 84 HoC created by @gemshrine
+    was merged by @yegor256 after 5d1h of being in review and 13 comments.
+  hoc: 84
+  is_human: 1
+  issue: 6402
+  merger: 526301
+  repository: 73056727
+  review_comments: 8
+  seconds: 435949
+  what: code-was-contributed
+  when: *4149
+  where: github
+  who: 113778529
+- _id: 1117877
+  _job: 86201
+  _time: 2026-08-10 19:29:13.973330221 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 8
+  details: The pull request objectionary/eo#6405 with 131 HoC created by @gemshrine
+    was merged by @yegor256 after 4d23h of being in review and 8 comments.
+  hoc: 131
+  is_human: 1
+  issue: 6405
+  merger: 526301
+  repository: 73056727
+  review_comments: 5
+  seconds: 431145
+  what: code-was-contributed
+  when: *4150
+  where: github
+  who: 113778529
+- _id: 1117878
+  _job: 86201
+  _time: 2026-08-10 19:29:14.272049943 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 5
+  details: The pull request objectionary/eo#6525 with 3 HoC created by @morphqdd was
+    merged by @yegor256 after 20h45m of being in review and 5 comments.
+  hoc: 3
+  is_human: 1
+  issue: 6525
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 74723
+  what: code-was-contributed
+  when: *4151
+  where: github
+  who: 125282851
+- _id: 1117879
+  _job: 86201
+  _time: 2026-08-10 19:29:14.698233246 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 2
+  details: The pull request objectionary/eo#6533 with 25 HoC created by @morphqdd
+    was merged by @yegor256 after 19h32m of being in review and 2 comments.
+  hoc: 25
+  is_human: 1
+  issue: 6533
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 70342
+  what: code-was-contributed
+  when: *4152
+  where: github
+  who: 125282851
+- _id: 1117880
+  _job: 86201
+  _time: 2026-08-10 19:29:14.986821801 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 6
+  details: The pull request objectionary/eo#6534 with 40 HoC created by @vasilevnstas
+    was merged by @yegor256 after 19h17m of being in review and 6 comments.
+  hoc: 40
+  is_human: 1
+  issue: 6534
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 69440
+  what: code-was-contributed
+  when: *4153
+  where: github
+  who: 33578155
+- _id: 1117881
+  _job: 86201
+  _time: 2026-08-10 19:29:49.091861867 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  details: It's time to reward @morphqdd for the bug reported in objectionary/eo#6560,
+    the reward amount is 12.
+  greeting: 'Thanks for reporting a new bug! You''ve earned +12 points. By reporting
+    bugs, you help our project improve its quality. If you find anything else in the
+    repository that [doesn''t look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
+    as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
+    to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
+    it. Your running score is [+3692](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  is_human: 1
+  issue: 6560
+  repository: 73056727
+  what: bug-report-was-rewarded
+  when: 2026-08-10 19:29:49.093870582 Z
+  where: github
+  who: 125282851
+  why: Reported bug in objectionary/eo#6560
+- _id: 1117882
+  _job: 86201
+  _time: 2026-08-10 19:29:49.659291375 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  details: It's time to reward @morphqdd for the bug reported in objectionary/eo#6561,
+    the reward amount is 12.
+  greeting: 'Thanks for reporting a new bug! You''ve earned +12 points. By reporting
+    bugs, you help our project improve its quality. If you find anything else in the
+    repository that [doesn''t look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
+    as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
+    to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
+    it. Your running score is [+3704](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  is_human: 1
+  issue: 6561
+  repository: 73056727
+  what: bug-report-was-rewarded
+  when: 2026-08-10 19:29:49.661335939 Z
+  where: github
+  who: 125282851
+  why: Reported bug in objectionary/eo#6561
+- _id: 1117883
+  _job: 86201
+  _time: 2026-08-10 19:29:50.126972511 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  details: It's time to reward @morphqdd for the bug reported in objectionary/eo#6562,
+    the reward amount is 12.
+  greeting: 'Thanks for reporting a new bug! You''ve earned +12 points. By reporting
+    bugs, you help our project improve its quality. If you find anything else in the
+    repository that [doesn''t look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
+    as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
+    to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
+    it. Your running score is [+3716](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  is_human: 1
+  issue: 6562
+  repository: 73056727
+  what: bug-report-was-rewarded
+  when: 2026-08-10 19:29:50.129160093 Z
+  where: github
+  who: 125282851
+  why: Reported bug in objectionary/eo#6562
+- _id: 1117884
+  _job: 86201
+  _time: 2026-08-10 19:29:50.863625617 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  details: It's time to reward @morphqdd for the bug reported in objectionary/eo#6563,
+    the reward amount is 12.
+  greeting: 'Thanks for reporting a new bug! You''ve earned +12 points. By reporting
+    bugs, you help our project improve its quality. If you find anything else in the
+    repository that [doesn''t look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
+    as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
+    to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
+    it. Your running score is [+3728](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  is_human: 1
+  issue: 6563
+  repository: 73056727
+  what: bug-report-was-rewarded
+  when: 2026-08-10 19:29:50.865742628 Z
+  where: github
+  who: 125282851
+  why: Reported bug in objectionary/eo#6563
+- _id: 1117885
+  _job: 86201
+  _time: 2026-08-10 19:29:51.257708499 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  details: It's time to reward @morphqdd for the bug reported in objectionary/eo#6564,
+    the reward amount is 12.
+  greeting: 'Thanks for reporting a new bug! You''ve earned +12 points. By reporting
+    bugs, you help our project improve its quality. If you find anything else in the
+    repository that [doesn''t look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
+    as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
+    to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
+    it. Your running score is [+3740](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  is_human: 1
+  issue: 6564
+  repository: 73056727
+  what: bug-report-was-rewarded
+  when: 2026-08-10 19:29:51.259652223 Z
+  where: github
+  who: 125282851
+  why: Reported bug in objectionary/eo#6564
+- _id: 1117886
+  _job: 86201
+  _time: 2026-08-10 19:29:51.657047445 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  details: It's time to reward @morphqdd for the bug reported in objectionary/eo#6565,
+    the reward amount is 12.
+  greeting: 'Thanks for reporting a new bug! You''ve earned +12 points. By reporting
+    bugs, you help our project improve its quality. If you find anything else in the
+    repository that [doesn''t look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
+    as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
+    to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
+    it. Your running score is [+3752](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  is_human: 1
+  issue: 6565
+  repository: 73056727
+  what: bug-report-was-rewarded
+  when: 2026-08-10 19:29:51.659150697 Z
+  where: github
+  who: 125282851
+  why: Reported bug in objectionary/eo#6565
+- _id: 1117887
+  _job: 86201
+  _time: 2026-08-10 19:29:53.468353093 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  comments: 2
+  details: It's time to reward @maxonfjvipon for the code contributed in objectionary/eo#6555,
+    the reward amount is 12.
+  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
+    as a basis; -4 for too many hits-of-code (277 >= 100). Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
+    them coming. Your running score is [+700](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 277
+  is_human: 1
+  issue: 6555
+  repository: 73056727
+  review_comments: 0
+  seconds: 13377
+  what: code-contribution-was-rewarded
+  when: 2026-08-10 19:29:53.474915555 Z
+  where: github
+  who: 37025995
+  why: Contributed code in objectionary/eo#6555
+- _id: 1117888
+  _job: 86201
+  _time: 2026-08-10 19:29:54.129422076 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 16
+  comments: 3
+  details: It's time to reward @morphqdd for the code contributed in objectionary/eo#6556,
+    the reward amount is 16.
+  greeting: 'Thanks for the contribution! You''ve earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
+    them coming. Your running score is [+3768](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 53
+  is_human: 1
+  issue: 6556
+  repository: 73056727
+  review_comments: 0
+  seconds: 11540
+  what: code-contribution-was-rewarded
+  when: 2026-08-10 19:29:54.137025968 Z
+  where: github
+  who: 125282851
+  why: Contributed code in objectionary/eo#6556
+- _id: 1117889
+  _job: 86201
+  _time: 2026-08-10 19:29:54.603783058 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  comments: 2
+  details: It's time to reward @zhaoxinyi02 for the code contributed in objectionary/eo#6557,
+    the reward amount is 12.
+  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
+    as a basis; -4 for too many hits-of-code (100 >= 100). Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
+    them coming. Your running score is [+12](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 100
+  is_human: 1
+  issue: 6557
+  repository: 73056727
+  review_comments: 0
+  seconds: 18757
+  what: code-contribution-was-rewarded
+  when: 2026-08-10 19:29:54.610954730 Z
+  where: github
+  who: 98445030
+  why: Contributed code in objectionary/eo#6557
+- _id: 1117890
+  _job: 86201
+  _time: 2026-08-10 19:29:55.177249196 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 16
+  comments: 2
+  details: It's time to reward @zhaoxinyi02 for the code contributed in objectionary/eo#6558,
+    the reward amount is 16.
+  greeting: 'Thanks for the contribution! You''ve earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
+    them coming. Your running score is [+28](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 51
+  is_human: 1
+  issue: 6558
+  repository: 73056727
+  review_comments: 0
+  seconds: 18753
+  what: code-contribution-was-rewarded
+  when: 2026-08-10 19:29:55.189711118 Z
+  where: github
+  who: 98445030
+  why: Contributed code in objectionary/eo#6558
+- _id: 1117891
+  _job: 86201
+  _time: 2026-08-10 19:29:57.134558763 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 4
+  comments: 3
+  details: It's time to reward @yegor256 for the code review in objectionary/hone-maven-plugin#782,
+    the reward amount is 4.
+  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
+    -8 for absolutely no comments posted; -4 for too few (2) hits-of-code; +4 to give
+    you at least something.  Your running score is [+2811](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 2
+  is_human: 1
+  issue: 782
+  repository: 840332960
+  review_comments: 0
+  seconds: 48272
+  what: code-review-was-rewarded
+  when: 2026-08-10 19:29:57.140135887 Z
+  where: github
+  who: 526301
+  why: Reviewed code in objectionary/hone-maven-plugin#782
+- _id: 1117892
+  _job: 86201
+  _time: 2026-08-10 19:29:57.856929416 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 4
+  comments: 3
+  details: It's time to reward @yegor256 for the code review in objectionary/hone-maven-plugin#784,
+    the reward amount is 4.
+  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
+    -8 for absolutely no comments posted; -4 for too few (4) hits-of-code; +4 to give
+    you at least something.  Your running score is [+2815](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 4
+  is_human: 1
+  issue: 784
+  repository: 840332960
+  review_comments: 0
+  seconds: 36823
+  what: code-review-was-rewarded
+  when: 2026-08-10 19:29:57.862621728 Z
+  where: github
+  who: 526301
+  why: Reviewed code in objectionary/hone-maven-plugin#784
+- _id: 1117893
+  _job: 86201
+  _time: 2026-08-10 19:29:58.457871898 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 4
+  comments: 3
+  details: It's time to reward @yegor256 for the code review in objectionary/hone-maven-plugin#785,
+    the reward amount is 4.
+  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
+    -8 for absolutely no comments posted; -4 for too few (2) hits-of-code; +4 to give
+    you at least something.  Your running score is [+2819](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 2
+  is_human: 1
+  issue: 785
+  repository: 840332960
+  review_comments: 0
+  seconds: 18961
+  what: code-review-was-rewarded
+  when: 2026-08-10 19:29:58.463492641 Z
+  where: github
+  who: 526301
+  why: Reviewed code in objectionary/hone-maven-plugin#785
+- _id: 1117894
+  _job: 86201
+  _time: 2026-08-10 19:29:59.134327222 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 4
+  comments: 5
+  details: It's time to reward @morphqdd for the code review in objectionary/eo#6394,
+    the reward amount is 4.
+  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
+    -5 for very few (1) comments; -4 for too few (28) hits-of-code; +1 to give you
+    at least something.  Your running score is [+3772](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 28
+  is_human: 1
+  issue: 6394
+  repository: 73056727
+  review_comments: 1
+  seconds: 38173
+  what: code-review-was-rewarded
+  when: 2026-08-10 19:29:59.140020151 Z
+  where: github
+  who: 125282851
+  why: Reviewed code in objectionary/eo#6394
+- _id: 1117895
+  _job: 86201
+  _time: 2026-08-10 19:29:59.607175817 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 4
+  comments: 5
+  details: It's time to reward @thayorns for the code review in objectionary/eo#6394,
+    the reward amount is 4.
+  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
+    -5 for very few (3) comments; -4 for too few (28) hits-of-code; +1 to give you
+    at least something.  Your running score is [+1129](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 28
+  is_human: 1
+  issue: 6394
+  repository: 73056727
+  review_comments: 3
+  seconds: 88910
+  what: code-review-was-rewarded
+  when: 2026-08-10 19:29:59.612675101 Z
+  where: github
+  who: 96509556
+  why: Reviewed code in objectionary/eo#6394
+- _id: 1117896
+  _job: 86201
+  _time: 2026-08-10 19:30:00.137198062 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 7
+  comments: 6
+  details: It's time to reward @morphqdd for the code review in objectionary/eo#6399,
+    the reward amount is 7.
+  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
+    -5 for very few (2) comments.  Your running score is [+3779](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 44
+  is_human: 1
+  issue: 6399
+  repository: 73056727
+  review_comments: 2
+  seconds: 34478
+  what: code-review-was-rewarded
+  when: 2026-08-10 19:30:00.142931101 Z
+  where: github
+  who: 125282851
+  why: Reviewed code in objectionary/eo#6399
+- _id: 1117897
+  _job: 86201
+  _time: 2026-08-10 19:30:00.566701420 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 7
+  comments: 6
+  details: It's time to reward @thayorns for the code review in objectionary/eo#6399,
+    the reward amount is 7.
+  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
+    -5 for very few (3) comments.  Your running score is [+1136](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 44
+  is_human: 1
+  issue: 6399
+  repository: 73056727
+  review_comments: 3
+  seconds: 85820
+  what: code-review-was-rewarded
+  when: 2026-08-10 19:30:00.572325386 Z
+  where: github
+  who: 96509556
+  why: Reviewed code in objectionary/eo#6399
+- _id: 1117898
+  _job: 86201
+  _time: 2026-08-10 19:30:00.999227580 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 7
+  comments: 5
+  details: It's time to reward @morphqdd for the code review in objectionary/eo#6400,
+    the reward amount is 7.
+  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
+    -5 for very few (5) comments.  Your running score is [+3786](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 98
+  is_human: 1
+  issue: 6400
+  repository: 73056727
+  review_comments: 5
+  seconds: 17430
+  what: code-review-was-rewarded
+  when: 2026-08-10 19:30:01.004645318 Z
+  where: github
+  who: 125282851
+  why: Reviewed code in objectionary/eo#6400
+- _id: 1117899
+  _job: 86201
+  _time: 2026-08-10 19:30:01.489130143 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 7
+  comments: 5
+  details: It's time to reward @thayorns for the code review in objectionary/eo#6400,
+    the reward amount is 7.
+  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
+    -5 for very few (4) comments.  Your running score is [+1143](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 98
+  is_human: 1
+  issue: 6400
+  repository: 73056727
+  review_comments: 4
+  seconds: 86021
+  what: code-review-was-rewarded
+  when: 2026-08-10 19:30:01.495664896 Z
+  where: github
+  who: 96509556
+  why: Reviewed code in objectionary/eo#6400
+- _id: 1117900
+  _job: 86201
+  _time: 2026-08-10 19:30:01.934145318 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 7
+  comments: 5
+  details: It's time to reward @morphqdd for the code review in objectionary/eo#6402,
+    the reward amount is 7.
+  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
+    -5 for very few (6) comments.  Your running score is [+3793](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 84
+  is_human: 1
+  issue: 6402
+  repository: 73056727
+  review_comments: 6
+  seconds: 25425
+  what: code-review-was-rewarded
+  when: 2026-08-10 19:30:01.939801820 Z
+  where: github
+  who: 125282851
+  why: Reviewed code in objectionary/eo#6402
+- _id: 1117901
+  _job: 86201
+  _time: 2026-08-10 19:30:02.400048685 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 7
+  comments: 5
+  details: It's time to reward @thayorns for the code review in objectionary/eo#6402,
+    the reward amount is 7.
+  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
+    -5 for very few (2) comments.  Your running score is [+1150](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 84
+  is_human: 1
+  issue: 6402
+  repository: 73056727
+  review_comments: 2
+  seconds: 77379
+  what: code-review-was-rewarded
+  when: 2026-08-10 19:30:02.405643102 Z
+  where: github
+  who: 96509556
+  why: Reviewed code in objectionary/eo#6402
+- _id: 1117902
+  _job: 86201
+  _time: 2026-08-10 19:30:02.864256546 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 7
+  comments: 3
+  details: It's time to reward @morphqdd for the code review in objectionary/eo#6405,
+    the reward amount is 7.
+  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
+    -5 for very few (3) comments.  Your running score is [+3800](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 131
+  is_human: 1
+  issue: 6405
+  repository: 73056727
+  review_comments: 3
+  seconds: 7801
+  what: code-review-was-rewarded
+  when: 2026-08-10 19:30:02.869899169 Z
+  where: github
+  who: 125282851
+  why: Reviewed code in objectionary/eo#6405
+- _id: 1117903
+  _job: 86201
+  _time: 2026-08-10 19:30:03.586216906 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 7
+  comments: 3
+  details: It's time to reward @thayorns for the code review in objectionary/eo#6405,
+    the reward amount is 7.
+  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
+    -5 for very few (2) comments.  Your running score is [+1157](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 131
+  is_human: 1
+  issue: 6405
+  repository: 73056727
+  review_comments: 2
+  seconds: 76497
+  what: code-review-was-rewarded
+  when: 2026-08-10 19:30:03.592671961 Z
+  where: github
+  who: 96509556
+  why: Reviewed code in objectionary/eo#6405
+- _id: 1117904
+  _job: 31424576161
+  _time: 2026-08-10 19:35:47.074815618 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6247-transpiling-atom
+  comments: 10
+  comments_appreciated: 0
+  comments_by_author: 2
+  comments_by_reviewers: 8
+  comments_resolved: 0
+  comments_to_code: 4
+  details: Apparently, objectionary/eo#6311 has been "pull-was-merged".
+  failed_builds: 0
+  files: 2
+  hoc: 55
+  issue: 6311
+  repository: 73056727
+  review: 2026-08-02 22:26:56.000000000 Z
+  succeeded_builds: 22
+  suggestions: 4
+  what: pull-was-merged
+  when: 2026-08-10 18:42:23.000000000 Z
+  where: github
+  who: 526301
+- _id: 1117905
+  _job: 31424576161
+  _time: 2026-08-10 19:36:19.575273063 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6299-recv-negative-size
+  comments: 9
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 8
+  comments_resolved: 0
+  comments_to_code: 3
+  details: Apparently, objectionary/eo#6318 has been "pull-was-merged".
+  failed_builds: 0
+  files: 6
+  hoc: 122
+  issue: 6318
+  repository: 73056727
+  review: 2026-08-03 14:11:19.000000000 Z
+  succeeded_builds: 22
+  suggestions: 3
+  what: pull-was-merged
+  when: 2026-08-10 18:41:47.000000000 Z
+  where: github
+  who: 526301
+- _id: 1117906
+  _job: 31424576161
+  _time: 2026-08-10 19:36:46.441734219 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6306-tuple-length-validation
+  comments: 7
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 6
+  comments_resolved: 0
+  comments_to_code: 2
+  details: Apparently, objectionary/eo#6320 has been "pull-was-merged".
+  failed_builds: 0
+  files: 2
+  hoc: 71
+  issue: 6320
+  repository: 73056727
+  review: 2026-08-04 09:50:20.000000000 Z
+  succeeded_builds: 22
+  suggestions: 2
+  what: pull-was-merged
+  when: 2026-08-10 18:17:50.000000000 Z
+  where: github
+  who: 526301
+- _id: 1117907
+  _job: 31424576161
+  _time: 2026-08-10 19:40:30.545523725 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#6568.
+  issue: 6568
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-10 18:02:26.000000000 Z
+  where: github
+  who: 526301
+- _id: 1117908
+  _job: 31424576161
+  _time: 2026-08-10 19:40:31.675412877 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#6569.
+  issue: 6569
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-10 18:02:22.000000000 Z
+  where: github
+  who: 526301
+- _id: 1117909
+  _job: 31424576161
+  _time: 2026-08-10 19:40:32.753915681 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#6570.
+  issue: 6570
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-10 18:02:14.000000000 Z
+  where: github
+  who: 526301
+- _id: 1117910
+  _job: 31424576161
+  _time: 2026-08-10 19:40:33.631979574 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#6572.
+  issue: 6572
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-10 18:02:06.000000000 Z
+  where: github
+  who: 526301
+- _id: 1117911
+  _job: 31424576161
+  _time: 2026-08-10 19:40:34.514138355 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#6573.
+  issue: 6573
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-10 18:01:52.000000000 Z
+  where: github
+  who: 526301
+- _id: 1117912
+  _job: 31424576161
+  _time: 2026-08-10 19:56:45.616496579 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 113778529
+  comments: 6
+  details: The pull request objectionary/eo#6311 with 55 HoC created by @gemshrine
+    was reviewed by @thayorns after 0h23m and 3 comments.
+  hoc: 55
+  issue: 6311
+  repository: 73056727
+  review_comments: 3
+  seconds: 1398
+  what: code-was-reviewed
+  when: 2026-08-02 22:26:56.000000000 Z
+  where: github
+  who: 96509556
+- _id: 1117913
+  _job: 31424576161
+  _time: 2026-08-10 19:56:46.817622184 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 113778529
+  comments: 6
+  details: The pull request objectionary/eo#6311 with 55 HoC created by @gemshrine
+    was reviewed by @morphqdd after 35h46m and 1 comments.
+  hoc: 55
+  issue: 6311
+  repository: 73056727
+  review_comments: 1
+  seconds: 128777
+  what: code-was-reviewed
+  when: 2026-08-04 09:49:55.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1117914
+  _job: 31424576161
+  _time: 2026-08-10 19:56:47.933899735 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 113778529
+  comments: 5
+  details: The pull request objectionary/eo#6320 with 71 HoC created by @gemshrine
+    was reviewed by @morphqdd after 19h24m and 2 comments.
+  hoc: 71
+  issue: 6320
+  repository: 73056727
+  review_comments: 2
+  seconds: 69850
+  what: code-was-reviewed
+  when: 2026-08-04 09:50:20.000000000 Z
+  where: github
+  who: 125282851
