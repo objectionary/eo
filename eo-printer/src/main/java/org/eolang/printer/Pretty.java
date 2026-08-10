@@ -274,6 +274,11 @@ final class Pretty {
     /**
      * Render a node horizontally on a single line, if all of its
      * arguments can be inlined.
+     *
+     * <p>A label tail cannot follow inlined arguments: {@code b c:lbl}
+     * binds {@code lbl} to {@code c}, not {@code b}. Such a node keeps its
+     * vertical rendering, where the label stays next to its owner.</p>
+     *
      * @param node The node
      * @param indent The indentation level
      * @return The single line, or empty if inlining is impossible
@@ -282,7 +287,7 @@ final class Pretty {
         final Optional<String> result;
         if (node.abstractt) {
             result = this.phi(node, indent);
-        } else if (node.children.isEmpty()) {
+        } else if (node.children.isEmpty() || node.tail.startsWith(":")) {
             result = Optional.empty();
         } else {
             result = Pretty.inlined(node.children).map(
@@ -425,7 +430,9 @@ final class Pretty {
      * result is only a candidate: {@link #shaped} keeps it only when its
      * penalty beats the plain vertical and horizontal renderings, so a short
      * tuple whose one-line {@code * 1 2} form is no worse than the vertical one
-     * stays inline as that bare tuple rather than the hybrid star.</p>
+     * stays inline as that bare tuple rather than the hybrid star. A labeled
+     * node cannot use this form because the marker would separate its label
+     * from the node's head.</p>
      *
      * @param node The node
      * @param indent The indentation level
