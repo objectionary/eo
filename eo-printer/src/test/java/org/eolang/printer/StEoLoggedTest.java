@@ -7,9 +7,9 @@ package org.eolang.printer;
 import com.jcabi.xml.XML;
 import com.yegor256.xsline.StFailure;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.Queue;
 import java.util.function.Consumer;
 import org.cactoos.Fallback;
@@ -32,10 +32,7 @@ final class StEoLoggedTest {
     void hasTheSameUid() {
         final StUnhex origin = new StUnhex();
         MatcherAssert.assertThat(
-            String.format(
-                "We expect, that the uid() calculation will be delegated to the origin: %s",
-                origin
-            ),
+            "We expect that the uid() calculation will be delegated to the origin",
             new StEoLogged(origin).uid(),
             Matchers.equalTo(origin.uid())
         );
@@ -97,11 +94,11 @@ final class StEoLoggedTest {
 
     /**
      * Example XMIR.
-     * <p>
-     * {@code
+     *
+     * <p>{@code
      * [] > bar
-     * }
-     * </p>
+     * }</p>
+     *
      * @return XML
      * @throws IOException If fails to parse
      */
@@ -111,7 +108,9 @@ final class StEoLoggedTest {
 
     /**
      * Fake log.
+     *
      * <p>Used for testing purposes.</p>
+     *
      * @since 0.30
      */
     private static final class FakeLog implements Consumer<String> {
@@ -125,7 +124,7 @@ final class StEoLoggedTest {
          * Ctor.
          */
         private FakeLog() {
-            this(new LinkedList<>());
+            this(new ArrayDeque<>(0));
         }
 
         /**

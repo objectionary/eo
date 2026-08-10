@@ -103,19 +103,19 @@ final class Emissions {
      * <p>Per-kind emission:</p>
      *
      * <ul>
-     *   <li>{@link Value.Kind#IDENTIFIER} — {@code <o base='<raw>'>}.</li>
-     *   <li>{@link Value.Kind#INTEGER} / {@link Value.Kind#FLOAT} —
-     *   {@code <o base='Φ.number'>} with a {@code <o
-     *   base='Φ.bytes'>HEX&lt;/o>} child.</li>
-     *   <li>{@link Value.Kind#STRING} — {@code <o base='Φ.string'>}
-     *   with a {@code <o base='Φ.bytes'>HEX&lt;/o>} child carrying UTF-8
-     *   bytes of the unescaped text.</li>
-     *   <li>{@link Value.Kind#STAR} — {@code <o base='Φ.tuple'
-     *   star=''>}.</li>
-     *   <li>{@link Value.Kind#ROOT} — {@code <o base='X'>} per §9.3.</li>
-     *   <li>{@link Value.Kind#GROUP} — the inner expression is parsed
-     *   and emitted recursively; {@code name} attaches to its
-     *   outermost {@code <o>}.</li>
+     * <li>{@link Value.Kind#IDENTIFIER} — {@code <o base='<raw>'>}.</li>
+     * <li>{@link Value.Kind#INTEGER} / {@link Value.Kind#FLOAT} —
+     * {@code <o base='Φ.number'>} with a {@code <o
+     * base='Φ.bytes'>HEX</o>} child.</li>
+     * <li>{@link Value.Kind#STRING} — {@code <o base='Φ.string'>}
+     * with a {@code <o base='Φ.bytes'>HEX</o>} child carrying UTF-8
+     * bytes of the unescaped text.</li>
+     * <li>{@link Value.Kind#STAR} — {@code <o base='Φ.tuple'
+     * star=''>}.</li>
+     * <li>{@link Value.Kind#ROOT} — {@code <o base='X'>} per §9.3.</li>
+     * <li>{@link Value.Kind#GROUP} — the inner expression is parsed
+     * and emitted recursively; {@code name} attaches to its
+     * outermost {@code <o>}.</li>
      * </ul>
      *
      * @param emit Emitter
@@ -211,7 +211,7 @@ final class Emissions {
     }
 
     /**
-     * Emit the inner {@code <o base='Φ.bytes'><o>HEX&lt;/o>&lt;/o>}
+     * Emit the inner {@code <o base='Φ.bytes'><o>HEX</o></o>}
      * data carrier used by numeric, hex and string literals to hold
      * the IEEE-754/UTF-8 byte representation. The cursor is left back
      * at the parent (both nested elements are closed).

@@ -11,12 +11,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 /**
  * Pull all necessary EO XML files from Objectionary and parse them all.
  *
- * <p>
- *     This goal combines {@link MjParse}, {@link MjProbe} and {@link MjPull}.
- *     See their documentation to find out more details.
- *     The {@link MjAssemble} runs these goals repeatedly until no new objects are
- *     pulled or parsed in a cycle.
- * </p>
+ * <p>This goal combines {@link MjParse}, {@link MjProbe} and {@link MjPull}.
+ * See their documentation to find out more details.
+ * The {@link MjAssemble} runs these goals repeatedly until no new objects are
+ * pulled or parsed in a cycle.</p>
  *
  * @since 0.1
  */

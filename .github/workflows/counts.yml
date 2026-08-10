@@ -3,57 +3,104 @@
 ---
 name: counts
 'on':
-  push:
+  pull_request_target:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
+permissions:
+  contents: read
+  pull-requests: write
+concurrency:
+  group: counts-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 jobs:
   counts:
     timeout-minutes: 15
     runs-on: ubuntu-24.04
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - metric: suppressions
-            files: '*.java'
-            pattern: '@SuppressWarnings|@checkstyle'
-            count: 364
-          - metric: smells
-            files: '*.java'
-            pattern: 'static|null'
-            count: 847
-          - metric: atoms
-            files: '*.java'
-            pattern: '@XmirObject'
-            count: 26
-          - metric: nodelists
-            files: '*.java'
-            pattern: 'org\.w3c\.dom\.NodeList'
-            count: 0
-          - metric: unlints
-            files: '*.eo'
-            pattern: '\+unlint'
-            count: 86
-          - metric: disabled
-            files: '*.java'
-            pattern: '@Disabled\b'
-            count: 5
     steps:
+      # The pull request is checked out only to be read by `grep`, nothing
+      # from it is executed, thus `pull_request_target` is safe here.
       - uses: actions/checkout@v7
-      - env:
-          METRIC: ${{ matrix.metric }}
-          FILES: ${{ matrix.files }}
-          PATTERN: ${{ matrix.pattern }}
-          COUNT: ${{ matrix.count }}
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+          fetch-depth: 0
+      # Every metric must track exactly one pattern. Merging a few of them
+      # into a single alternation hides movement: adding five `null` and
+      # removing five `static` keeps the total intact, while the code gets
+      # worse. Separate counters also tell us which particular smell grew,
+      # instead of pointing at a vague bucket. No expected numbers are kept
+      # here, since they would conflict in every other pull request.
+      - id: counts
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
         run: |
-          found=$(( $(git ls-files -z "${FILES}" \
-            | xargs -0 grep -Eoh "${PATTERN}" \
-            | wc -l) ))
-          echo "Found ${found} ${METRIC}, expecting ${COUNT}"
-          if [ "${found}" -ne "${COUNT}" ]; then
-            echo "Expected ${COUNT} ${METRIC}, found ${found}"
-            exit 1
+          metrics=${RUNNER_TEMP}/metrics.txt
+          cat > "${metrics}" <<'EOF'
+          suppressions *.java @SuppressWarnings
+          checkstyles *.java @checkstyle
+          statics *.java static
+          nulls *.java null
+          atoms *.java @XmirObject
+          nodelists *.java org\.w3c\.dom\.NodeList
+          unlints *.eo \+unlint
+          disabled *.java @Disabled\b
+          EOF
+          tally() {
+            git checkout --quiet --force "$1"
+            while read -r metric files pattern; do
+              echo "${metric} $(( $(git ls-files -z -- "${files}" \
+                | xargs -0 -r grep -Eoh -- "${pattern}" | wc -l) ))"
+            done < "${metrics}"
+          }
+          head=$(git rev-parse HEAD)
+          tally "${BASE}" > "${RUNNER_TEMP}/master.txt"
+          tally "${head}" > "${RUNNER_TEMP}/branch.txt"
+          declare -A was
+          while read -r metric total; do
+            was[${metric}]=${total}
+          done < "${RUNNER_TEMP}/master.txt"
+          rows=${RUNNER_TEMP}/rows.md
+          : > "${rows}"
+          while read -r metric total; do
+            before=${was[${metric}]}
+            if [ "${total}" -ne "${before}" ]; then
+              printf '| %s | %d | %d | %+d |\n' "${metric}" \
+                "${before}" "${total}" "$(( total - before ))" >> "${rows}"
+            fi
+          done < "${RUNNER_TEMP}/branch.txt"
+          report=${RUNNER_TEMP}/counts.md
+          if [ -s "${rows}" ]; then
+            {
+              echo 'These counts changed in this branch,'
+              echo 'while the lower each one of them, the better:'
+              echo ''
+              echo '| Metric | master | branch | change |'
+              echo '|:--|--:|--:|--:|'
+              cat "${rows}"
+              echo ''
+              echo 'They are defined in .github/workflows/counts.yml'
+            } > "${report}"
+            echo 'changed=true' >> "${GITHUB_OUTPUT}"
+          else
+            echo 'None of the counts changed in this branch' > "${report}"
+            echo 'changed=false' >> "${GITHUB_OUTPUT}"
+          fi
+          cat "${report}"
+      - uses: mshick/add-pr-comment@v3
+        with:
+          issue: ${{ github.event.pull_request.number }}
+          message-id: counts
+          message-path: ${{ runner.temp }}/counts.md
+          update-only: ${{ steps.counts.outputs.changed == 'false' }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          CHANGED: ${{ steps.counts.outputs.changed }}
+        run: |
+          if [ "${CHANGED}" = 'true' ]; then
+            gh pr edit "${PR}" -R "${REPO}" --add-label counts
+          elif gh pr view "${PR}" -R "${REPO}" --json labels \
+            --jq '.labels[].name' | grep -qx counts; then
+            gh pr edit "${PR}" -R "${REPO}" --remove-label counts
           fi

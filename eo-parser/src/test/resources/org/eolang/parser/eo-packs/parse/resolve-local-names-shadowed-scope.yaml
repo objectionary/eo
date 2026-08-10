@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A nested formation that declares the name as a public attribute shadows a
+# file-local handle of the same name in a more distant scope (#5780), however
+# deep the reference sits. The nearest enclosing formation that declares the
+# name at all is the reference's scope, and here that scope declares an
+# attribute rather than a handle, so the reference is left alone.
+sheets:
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+asserts:
+  - /object[not(errors)]
+  # the file-local handle keeps its "@local" marker and gets a cactus name
+  - //o[@local='shared' and @name]
+  # only the reference in the handle's own scope binds to the cactus name
+  - /object[count(//o[@base=//o[@local='shared']/@name])=1]
+  # the shadowed reference still resolves to the nearer public attribute
+  - /object[count(//o[@base='shared'])=1]
+  - //o[@name='inner']//o[@base='shared']
+input: |
+  [] > app
+    [n] >> shared
+      n > @
+    shared > direct
+      42
+    [] > inner
+      [] > shared
+        42 > @
+      shared > blocked

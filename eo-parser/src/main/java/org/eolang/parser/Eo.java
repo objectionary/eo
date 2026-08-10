@@ -76,8 +76,7 @@ final class Eo implements Iterable<Directive> {
         while (idx < spans.size()) {
             final Span span = spans.get(idx);
             if (!globals.inTextBlock() && Eo.isBytesContinuation(span.body())) {
-                final int next = Eo.mergeBytesContinuation(spans, idx, stack, globals, emit);
-                idx = next;
+                idx = Eo.mergeBytesContinuation(spans, idx, stack, globals, emit, recovery);
             } else if (Eo.process(span, stack, globals, emit)) {
                 idx = recovery.after(idx);
             } else {
@@ -200,12 +199,13 @@ final class Eo implements Iterable<Directive> {
      * @param stack Indent stack
      * @param globals Global parser state
      * @param emit Directives sink
-     * @return Next index to process (past the merged region)
+     * @param recovery Where the walk resumes if the merged line fails
+     * @return Next index to process
      * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static int mergeBytesContinuation(
-        final java.util.List<Span> spans, final int start,
-        final Stack stack, final Globals globals, final Emit emit
+        final java.util.List<Span> spans, final int start, final Stack stack,
+        final Globals globals, final Emit emit, final Recovery recovery
     ) {
         final Span head = spans.get(start);
         final StringBuilder body = new StringBuilder(head.body());
@@ -221,13 +221,16 @@ final class Eo implements Iterable<Directive> {
                 break;
             }
         }
-        Eo.process(
-            new Span(
-                " ".repeat(head.indent()).concat(body.toString()), head.line()
-            ),
+        final int resumption;
+        if (Eo.process(
+            new Span(" ".repeat(head.indent()).concat(body.toString()), head.line()),
             stack, globals, emit
-        );
-        return idx;
+        )) {
+            resumption = recovery.skip(idx, head.indent());
+        } else {
+            resumption = idx;
+        }
+        return resumption;
     }
 
     /**
@@ -338,12 +341,12 @@ final class Eo implements Iterable<Directive> {
         if (Eo.closesTextBlock(span, globals)) {
             stack.popDeeperThan(span.indent());
             final int tstartsen = emit.savepoint();
-            final int frame = stack.size();
+            final java.util.List<Level> frame = stack.snapshot();
             try {
                 new LnTextBlock(span).into(stack, globals, emit);
             } catch (final ParseError err) {
                 emit.rollback(tstartsen);
-                stack.silentTruncate(frame);
+                stack.restore(frame);
                 emit.error(err.line(), err.pos(), err.getMessage());
                 globals.closeTextBlock();
             }
@@ -398,7 +401,6 @@ final class Eo implements Iterable<Directive> {
      * @return True when the line failed to parse
      * @checkstyle ParameterNumberCheck (3 lines)
      */
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static boolean dispatch(
         final Span span, final Stack stack, final Globals globals, final Emit emit
     ) {
@@ -406,13 +408,13 @@ final class Eo implements Iterable<Directive> {
             stack.popDeeperThan(span.indent());
         }
         final int tstartsen = emit.savepoint();
-        final int frame = stack.size();
+        final java.util.List<Level> frame = stack.snapshot();
         boolean failed = false;
         try {
             Eo.classify(span).into(stack, globals, emit);
         } catch (final ParseError err) {
             emit.rollback(tstartsen);
-            stack.silentTruncate(frame);
+            stack.restore(frame);
             emit.error(err.line(), err.pos(), err.getMessage());
             failed = true;
         }
@@ -609,7 +611,7 @@ final class Eo implements Iterable<Directive> {
      * <p>Reports unclosed text blocks (R-8.2) and excessive trailing
      * blanks (R-8.4), and flushes a top comment block left pending in a
      * comment-only file (R-8.3). EOF stack popping with close-time checks
-     * already ran via {@link Stack#close(Stack.Closer)}.</p>
+     * already ran via {@link Stack#close()}.</p>
      *
      * @param globals The global parser state
      * @param emit The directives sink

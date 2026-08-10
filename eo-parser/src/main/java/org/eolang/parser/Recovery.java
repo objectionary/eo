@@ -52,13 +52,28 @@ final class Recovery {
      * @return Index of the resumption point
      */
     int after(final int failed) {
-        final int indent = this.spans.get(failed).indent();
-        int idx = failed + 1;
+        return this.skip(failed + 1, this.spans.get(failed).indent());
+    }
+
+    /**
+     * The index the walk resumes at, skipping forward from {@code from}
+     * while a line still belongs to the block of a line at {@code indent}.
+     * Unlike {@link #after(int)}, the scan start and the reference indent
+     * are given separately — needed when the failed line's own index does
+     * not carry its indent (e.g. a merged multi-line literal, where the
+     * block belongs to the head line but scanning must start past every
+     * already-merged continuation line).
+     * @param from Index to start scanning from
+     * @param indent Indent of the line whose block is being skipped
+     * @return Index of the resumption point
+     */
+    int skip(final int from, final int indent) {
+        int idx = from;
         while (idx < this.spans.size() && this.skipped(idx, indent)) {
             idx = idx + 1;
         }
         if (idx < this.spans.size()) {
-            idx = this.rewound(idx, failed);
+            idx = this.rewound(idx, from - 1);
         }
         return idx;
     }
@@ -67,12 +82,12 @@ final class Recovery {
      * Step back over the run of blank lines trailing the skipped block,
      * so the walk meets them again as the separators they are.
      * @param stop Index the skip stopped at
-     * @param failed Index of the line that failed to parse
+     * @param floor Last index the block covers before the skip began
      * @return Index of the first blank of the trailing run
      */
-    private int rewound(final int stop, final int failed) {
+    private int rewound(final int stop, final int floor) {
         int idx = stop;
-        while (idx - 1 > failed && this.spans.get(idx - 1).blank()) {
+        while (idx - 1 > floor && this.spans.get(idx - 1).blank()) {
             idx = idx - 1;
         }
         return idx;

@@ -18,16 +18,16 @@ import java.util.List;
  * <p>Two flavours by argument count:</p>
  *
  * <ul>
- *   <li><strong>Horizontal</strong> ({@code name. arg1 arg2}) —
- *   {@code arg1} is the receiver, {@code arg2…} are method args. Outer
- *   kind {@link Kind#REVERSED_WITH_HARGS},
- *   {@link Openness#HORIZONTAL_COMPLETED}. No deeper-indent
- *   children.</li>
- *   <li><strong>Vertical</strong> ({@code name.} with no hargs) — the
- *   next deeper-indent line is the receiver (R-5.2.9), subsequent
- *   deeper-indent siblings are method args. Outer kind
- *   {@link Kind#BARE_REVERSED}, {@link Openness#OPEN}. R-5.3.2 fires
- *   at close time if no receiver appeared.</li>
+ * <li><strong>Horizontal</strong> ({@code name. arg1 arg2}) —
+ * {@code arg1} is the receiver, {@code arg2…} are method args. Outer
+ * kind {@link Kind#REVERSED_WITH_HARGS},
+ * {@link Openness#HORIZONTAL_COMPLETED}. No deeper-indent
+ * children.</li>
+ * <li><strong>Vertical</strong> ({@code name.} with no hargs) — the
+ * next deeper-indent line is the receiver (R-5.2.9), subsequent
+ * deeper-indent siblings are method args. Outer kind
+ * {@link Kind#BARE_REVERSED}, {@link Openness#OPEN}. R-5.3.2 fires
+ * at close time if no receiver appeared.</li>
  * </ul>
  *
  * <p>Emission: opens {@code <o base='.<name>' method=''>} at the

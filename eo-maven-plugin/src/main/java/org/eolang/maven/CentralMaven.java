@@ -30,15 +30,15 @@ import org.eclipse.aether.supplier.RepositorySystemSupplier;
  *
  * <p>Supports two modes:</p>
  * <ul>
- *   <li><b>Standalone</b> – use the no-arg constructor; a fresh
- *       {@link RepositorySystem} is built internally. Suitable for running
- *       outside a Maven build (tests, command-line tools, etc.).</li>
- *   <li><b>Maven-plugin</b> – pass the {@link RepositorySystem},
- *       {@link RepositorySystemSession}, and remote repositories that Maven
- *       already has configured. This avoids the
- *       {@code NoClassDefFoundError} for connector classes that arise when
- *       the plugin tries to bootstrap its own resolver inside Maven's
- *       classloader hierarchy.</li>
+ * <li><b>Standalone</b> – use the no-arg constructor; a fresh
+ * {@link RepositorySystem} is built internally. Suitable for running
+ * outside a Maven build (tests, command-line tools, etc.).</li>
+ * <li><b>Maven-plugin</b> – pass the {@link RepositorySystem},
+ * {@link RepositorySystemSession}, and remote repositories that Maven
+ * already has configured. This avoids the
+ * {@code NoClassDefFoundError} for connector classes that arise when
+ * the plugin tries to bootstrap its own resolver inside Maven's
+ * classloader hierarchy.</li>
  * </ul>
  *
  * @since 0.55

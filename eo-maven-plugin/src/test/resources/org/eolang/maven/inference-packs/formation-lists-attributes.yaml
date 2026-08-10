@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation shows its attributes in the code, so every one of them gets a row
+# without any thinking. Two attributes, two rows.
+eo: |
+  [] > kettle
+    [] > steam
+    [] > whistle
+provides:
+  - "/provides/type[@id='Φ.kettle' and count(attr)=2]"
+  - "/provides/type[@id='Φ.kettle']/attr[@name='steam']"
+  - "/provides//attr[@name='steam' and @type='Φ.kettle.steam']"
