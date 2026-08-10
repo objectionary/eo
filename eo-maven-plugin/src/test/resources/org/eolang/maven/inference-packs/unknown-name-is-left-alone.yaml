@@ -4,8 +4,9 @@
 # A name that resolves to nothing gets no row and no complaint. A missing
 # row leaves a later check undecided, while a wrong row would make it
 # decide wrongly.
-eo: |
-  [] > jarref
-    nowhere > @
+eo:
+  jarref.eo: |
+    [] > jarref
+      nowhere > @
 links:
   - "/links[not(type)]"

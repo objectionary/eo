@@ -3,9 +3,11 @@
 ---
 # A reference takes no attribute from anything, so the splitting leaves it
 # alone: one name after the head is not a dispatch.
-eo: |
-  [] > tap
-    water > @
-    [] > water
+eo:
+  tap.eo: |
+    [] > tap
+      water > @
+      [] > water
 xmir:
-  - "//o[@base='ξ.water']"
+  tap.eo:
+    - "//o[@base='ξ.water']"

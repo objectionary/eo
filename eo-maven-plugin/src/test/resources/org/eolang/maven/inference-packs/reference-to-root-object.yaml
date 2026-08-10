@@ -3,9 +3,10 @@
 ---
 # A name the whole program knows is a reference to a root object, and the
 # locator it points at is the base itself.
-eo: |
-  [] > tworef
-    number > @
-  [] > number
+eo:
+  tworef.eo: |
+    [] > tworef
+      number > @
+    [] > number
 links:
   - "/links/type[@id='Φ.tworef.φ' and @copy='Φ.number']"
