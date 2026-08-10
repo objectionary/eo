@@ -193,7 +193,9 @@ final class Eo implements Iterable<Directive> {
      * Merge a BYTES continuation starting at index {@code start} —
      * concatenates the trailing-dash chunk with subsequent BYTES-only
      * lines at &gt;= the same indent until a chunk without trailing
-     * dash terminates the tstartsen (R-3.13).
+     * dash terminates the sequence (R-3.13). Continuation lines may
+     * start with a leading dash ({@code -HH-HH}), which merges with
+     * the trailing dash of the previous line into one separator.
      * @param spans Materialised list of source spans
      * @param start Index of the continuation start
      * @param stack Indent stack
@@ -215,9 +217,15 @@ final class Eo implements Iterable<Directive> {
             if (next.indent() < head.indent() || !Eo.isBytesOnly(next.body())) {
                 break;
             }
-            body.append(next.body());
+            final String chunk = next.body();
+            if (chunk.startsWith("-") && body.length() > 0
+                && body.charAt(body.length() - 1) == '-') {
+                body.append(chunk, 1, chunk.length());
+            } else {
+                body.append(chunk);
+            }
             idx = idx + 1;
-            if (!next.body().endsWith("-")) {
+            if (!chunk.endsWith("-")) {
                 break;
             }
         }
@@ -235,27 +243,34 @@ final class Eo implements Iterable<Directive> {
 
     /**
      * Whether a span body is the start of a multi-line BYTES literal —
-     * purely bytes-only content, length &gt;= 6, ending with {@code -}.
-     * Per R-3.13.1, single-byte form ({@code BB-}) never continues, so
-     * we require &gt;=2 bytes (6 chars or more).
+     * purely bytes-only content, length &gt;= 3, ending with {@code -}.
+     * Per R-3.13.1, a single-byte form ({@code BB-}) can now continue
+     * on the next line. The continuation line may start with a leading
+     * dash ({@code -HH-HH-...}), which merges with the trailing dash
+     * of the previous line into one separator.
      * @param body The line body
      * @return True if a BYTES continuation starts here
      */
     private static boolean isBytesContinuation(final String body) {
-        return body.length() >= 6
+        return body.length() >= 3
             && body.endsWith("-")
             && Eo.isBytesOnly(body);
     }
 
     /**
      * Whether the body is purely a sequence of hex bytes with dash
-     * separators — {@code HH-HH} or {@code HH-HH-} etc.
+     * separators — {@code HH-HH} or {@code HH-HH-} etc., or a
+     * continuation line starting with a dash — {@code -HH-HH} or
+     * {@code -HH-HH-}.
      * @param body The line body
      * @return True if the body matches the bytes-only pattern
      */
     private static boolean isBytesOnly(final String body) {
         boolean valid = !body.isEmpty();
         int idx = 0;
+        if (idx < body.length() && body.charAt(idx) == '-') {
+            idx = idx + 1;
+        }
         while (valid && idx < body.length()) {
             if (idx + 1 >= body.length()
                 || !Eo.hex(body.charAt(idx))

@@ -895,6 +895,50 @@ final class EoTest {
     }
 
     @Test
+    void mergesMultiLineBytesWithLeadingDash() {
+        MatcherAssert.assertThat(
+            "continuation lines starting with dash must merge correctly",
+            EoTest.render("foo > main", "  CA-FE-", "  -BE-BE"),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='main']/o[@base='Φ.bytes']/o[text()='CA-FE-BE-BE']"
+            )
+        );
+    }
+
+    @Test
+    void mergesMultiLineBytesWithLeadingDashThreeLines() {
+        MatcherAssert.assertThat(
+            "three-line BYTES continuation with leading dashes must concatenate correctly",
+            EoTest.render("foo > main", "  CA-FE-", "  -BE-BE-", "  -AB-CD"),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='main']/o[@base='Φ.bytes']/o[text()='CA-FE-BE-BE-AB-CD']"
+            )
+        );
+    }
+
+    @Test
+    void mergesSingleByteStartWithContinuation() {
+        MatcherAssert.assertThat(
+            "a single-byte start (BB-) must continue on the next line",
+            EoTest.render("foo > main", "  44-", "  43-FE"),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='main']/o[@base='Φ.bytes']/o[text()='44-43-FE']"
+            )
+        );
+    }
+
+    @Test
+    void mergesSingleByteStartWithLeadingDashContinuation() {
+        MatcherAssert.assertThat(
+            "a single-byte start with leading-dash continuation must merge correctly",
+            EoTest.render("foo > main", "  44-", "  -43-FE"),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='main']/o[@base='Φ.bytes']/o[text()='44-43-FE']"
+            )
+        );
+    }
+
+    @Test
     void parsesAbsEoStyleProgram() {
         MatcherAssert.assertThat(
             "an abs.eo-style program must parse cleanly with no /object/errors element",
