@@ -164,10 +164,18 @@
     <xsl:param name="attr" as="element()"/>
     <xsl:variable name="owner" select="$attr/.."/>
     <xsl:variable name="refs" select="key('moniker-ref', concat(generate-id($owner), ' ', $attr/@name), root($attr))[not(ancestor::o[. is $attr])]"/>
+    <xsl:variable name="dispatches" select="$refs[eo:dispatch-seg(.) != '']"/>
     <xsl:variable name="dispatch" as="element()*">
-      <xsl:perform-sort select="$refs[eo:dispatch-seg(.) != '']">
-        <xsl:sort select="count(tokenize(eo:dispatch-seg(.), '\.'))" data-type="number" order="ascending"/>
-      </xsl:perform-sort>
+      <xsl:choose>
+        <xsl:when test="exists($dispatches[2])">
+          <xsl:perform-sort select="$dispatches">
+            <xsl:sort select="count(tokenize(eo:dispatch-seg(.), '\.'))" data-type="number" order="ascending"/>
+          </xsl:perform-sort>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:sequence select="$dispatches"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:variable>
     <xsl:sequence select="if (eo:named-handle($attr)) then ($dispatch, $refs[eo:dispatch-seg(.) = '']) else ($refs[eo:dispatch-seg(.) = ''], $dispatch)"/>
   </xsl:function>
