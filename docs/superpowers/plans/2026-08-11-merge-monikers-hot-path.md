@@ -12,7 +12,7 @@
 
 ## File Structure
 
-- Create `eo-printer/src/test/java/org/eolang/printer/MergeMonikersTest.java`: structural regression tests for the stylesheet's hot-path contract.
+- Modify `eo-printer/src/test/java/org/eolang/printer/XmirTest.java`: structural regression tests for the stylesheet's hot-path contract.
 - Modify `eo-printer/src/main/resources/org/eolang/printer/print/merge-monikers.xsl`: guarded templates, a direct hosted-binding key lookup, and conditional dispatch sorting.
 - Keep `docs/superpowers/specs/2026-08-11-merge-monikers-hot-path-design.md` as the approved scope and acceptance criteria.
 
@@ -94,12 +94,12 @@ Delete `MergeMonikersBenchmarkTest.java` with `apply_patch` and confirm `git sta
 ### Task 1: Avoid repeating the hosted first-reference lookup
 
 **Files:**
-- Create: `eo-printer/src/test/java/org/eolang/printer/MergeMonikersTest.java`
+- Modify: `eo-printer/src/test/java/org/eolang/printer/XmirTest.java`
 - Modify: `eo-printer/src/main/resources/org/eolang/printer/print/merge-monikers.xsl:405,520`
 
 - [ ] **Step 1: Write the failing hosted-lookup contract test**
 
-Create the test class with this first test:
+Add the stylesheet loader and first test to the existing test class:
 
 ```java
 /*
@@ -120,7 +120,7 @@ import org.junit.jupiter.api.Test;
  * Test case for the merge-monikers stylesheet.
  * @since 0.60.0
  */
-final class MergeMonikersTest {
+final class XmirTest {
 
     /** Stylesheet under test. */
     private final XML sheet;
@@ -129,10 +129,10 @@ final class MergeMonikersTest {
      * New test instance.
      * @throws IOException If the stylesheet cannot be read
      */
-    MergeMonikersTest() throws IOException {
+    XmirTest() throws IOException {
         this.sheet = new XMLDocument(
             Objects.requireNonNull(
-                MergeMonikersTest.class.getResourceAsStream(
+                XmirTest.class.getResourceAsStream(
                     "/org/eolang/printer/print/merge-monikers.xsl"
                 )
             )
@@ -158,7 +158,7 @@ final class MergeMonikersTest {
 Run:
 
 ```powershell
-mvn -pl eo-printer -Dtest=MergeMonikersTest test
+mvn -pl eo-printer -Dtest=XmirTest test
 ```
 
 Expected: FAIL because the hosted template body still calls `eo:hosted-binding(.)` a second time.
@@ -180,7 +180,7 @@ Keep the first-host proof in the guarded pattern, then use the existing key in t
 Run:
 
 ```powershell
-mvn -pl eo-printer -Dtest=MergeMonikersTest test
+mvn -pl eo-printer -Dtest=XmirTest test
 ```
 
 Expected: the hosted-lookup test passes with 0 failures and BUILD SUCCESS.
@@ -188,19 +188,19 @@ Expected: the hosted-lookup test passes with 0 failures and BUILD SUCCESS.
 - [ ] **Step 5: Commit the single-evaluation change**
 
 ```powershell
-git add -- eo-printer/src/test/java/org/eolang/printer/MergeMonikersTest.java eo-printer/src/main/resources/org/eolang/printer/print/merge-monikers.xsl
+git add -- eo-printer/src/test/java/org/eolang/printer/XmirTest.java eo-printer/src/main/resources/org/eolang/printer/print/merge-monikers.xsl
 git commit -m '#6512: avoid repeating hosted first-reference lookup'
 ```
 
 ### Task 2: Reject irrelevant nodes before expensive template predicates
 
 **Files:**
-- Modify: `eo-printer/src/test/java/org/eolang/printer/MergeMonikersTest.java`
+- Modify: `eo-printer/src/test/java/org/eolang/printer/XmirTest.java`
 - Modify: `eo-printer/src/main/resources/org/eolang/printer/print/merge-monikers.xsl:405,520`
 
 - [ ] **Step 1: Add the failing guard contract test**
 
-Add this method to `MergeMonikersTest`:
+Add this method to `XmirTest`:
 
 ```java
 @Test
@@ -221,7 +221,7 @@ void guardsExpensiveTemplatePredicates() {
 Run:
 
 ```powershell
-mvn -pl eo-printer -Dtest=MergeMonikersTest#guardsExpensiveTemplatePredicates test
+mvn -pl eo-printer '-Dtest=XmirTest#guardsExpensiveTemplatePredicates' test
 ```
 
 Expected: FAIL because both match patterns still contain their expensive function predicate.
@@ -241,7 +241,7 @@ Replace the two template declarations with:
 Run:
 
 ```powershell
-mvn -pl eo-printer -Dtest=MergeMonikersTest test
+mvn -pl eo-printer -Dtest=XmirTest test
 ```
 
 Expected: 2 tests, 0 failures, BUILD SUCCESS.
@@ -249,19 +249,19 @@ Expected: 2 tests, 0 failures, BUILD SUCCESS.
 - [ ] **Step 5: Commit the guard change**
 
 ```powershell
-git add -- eo-printer/src/test/java/org/eolang/printer/MergeMonikersTest.java eo-printer/src/main/resources/org/eolang/printer/print/merge-monikers.xsl
+git add -- eo-printer/src/test/java/org/eolang/printer/XmirTest.java eo-printer/src/main/resources/org/eolang/printer/print/merge-monikers.xsl
 git commit -m '#6512: guard merge-monikers template lookups'
 ```
 
 ### Task 3: Skip sorting fewer than two dispatch candidates
 
 **Files:**
-- Modify: `eo-printer/src/test/java/org/eolang/printer/MergeMonikersTest.java`
+- Modify: `eo-printer/src/test/java/org/eolang/printer/XmirTest.java`
 - Modify: `eo-printer/src/main/resources/org/eolang/printer/print/merge-monikers.xsl:166-172`
 
 - [ ] **Step 1: Add the failing conditional-sort contract test**
 
-Add this method to `MergeMonikersTest`:
+Add this method to `XmirTest`:
 
 ```java
 @Test
@@ -282,7 +282,7 @@ void sortsOnlyMultipleDispatches() {
 Run:
 
 ```powershell
-mvn -pl eo-printer -Dtest=MergeMonikersTest#sortsOnlyMultipleDispatches test
+mvn -pl eo-printer '-Dtest=XmirTest#sortsOnlyMultipleDispatches' test
 ```
 
 Expected: FAIL because `xsl:perform-sort` currently runs unconditionally.
@@ -312,7 +312,7 @@ Replace the current dispatch variable with:
 Run:
 
 ```powershell
-mvn -pl eo-printer -Dtest=MergeMonikersTest test
+mvn -pl eo-printer -Dtest=XmirTest test
 ```
 
 Expected: 3 tests, 0 failures, BUILD SUCCESS.
@@ -320,20 +320,20 @@ Expected: 3 tests, 0 failures, BUILD SUCCESS.
 - [ ] **Step 5: Commit the conditional-sort change**
 
 ```powershell
-git add -- eo-printer/src/test/java/org/eolang/printer/MergeMonikersTest.java eo-printer/src/main/resources/org/eolang/printer/print/merge-monikers.xsl
+git add -- eo-printer/src/test/java/org/eolang/printer/XmirTest.java eo-printer/src/main/resources/org/eolang/printer/print/merge-monikers.xsl
 git commit -m '#6512: skip trivial merge-monikers sorts'
 ```
 
 ### Task 4: Verify behavior, performance, quality, and scope
 
 **Files:**
-- Verify: `eo-printer/src/test/java/org/eolang/printer/MergeMonikersTest.java`
+- Verify: `eo-printer/src/test/java/org/eolang/printer/XmirTest.java`
 - Verify: `eo-printer/src/main/resources/org/eolang/printer/print/merge-monikers.xsl`
 
 - [ ] **Step 1: Run the focused structural tests**
 
 ```powershell
-mvn -pl eo-printer -Dtest=MergeMonikersTest test
+mvn -pl eo-printer -Dtest=XmirTest test
 ```
 
 Expected: 3 tests, 0 failures, BUILD SUCCESS.
@@ -370,7 +370,7 @@ Expected: BUILD SUCCESS and a post-change `merge-monikers-1000-pairs-best-ms=<va
 git status -sb
 git diff upstream/master...HEAD --check
 git diff upstream/master...HEAD --stat
-git diff upstream/master...HEAD -- eo-printer/src/main/resources/org/eolang/printer/print/merge-monikers.xsl eo-printer/src/test/java/org/eolang/printer/MergeMonikersTest.java
+git diff upstream/master...HEAD -- eo-printer/src/main/resources/org/eolang/printer/print/merge-monikers.xsl eo-printer/src/test/java/org/eolang/printer/XmirTest.java
 ```
 
 Expected: only the approved design/plan, one stylesheet, and one focused test class differ; `git diff --check` emits nothing.

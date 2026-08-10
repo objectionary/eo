@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.log4j.Appender;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
@@ -73,6 +74,45 @@ final class XmirTest {
             Matchers.allOf(
                 Matchers.not(Matchers.containsString("xmlns:eo=")),
                 Matchers.not(Matchers.containsString("xmlns:xs="))
+            )
+        );
+    }
+
+    @Test
+    void avoidsRepeatingHostedLookup() throws IOException {
+        MatcherAssert.assertThat(
+            "The hosted template must not repeat the full first-host lookup",
+            this.mergeMonikers(),
+            XhtmlMatchers.hasXPaths(
+                "/*[local-name()='stylesheet' and @version='2.0']",
+                "/*/*[local-name()='function' and @name='eo:moniker-refs' and not(@cache)]",
+                "/*/*[local-name()='function' and @name='eo:hosted-binding' and not(@cache)]",
+                "/*/*[local-name()='template' and @priority='1']/*[local-name()='variable' and @name='owner' and @select='ancestor::o[eo:abstract(.)][1]']",
+                "/*/*[local-name()='template' and @priority='1']/*[local-name()='variable' and @name='binding' and @select=\"key('moniker-binding', concat(generate-id($owner), ' ', eo:resolved-ref(.)), root(.))[1]\"]"
+            )
+        );
+    }
+
+    @Test
+    void guardsExpensiveTemplatePredicates() throws IOException {
+        MatcherAssert.assertThat(
+            "Cheap predicates must reject nodes before hosted/applied lookups",
+            this.mergeMonikers(),
+            XhtmlMatchers.hasXPaths(
+                "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(eo:hosted-binding(.))]\"]",
+                "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))][exists(eo:applied-handle(.))]\"]"
+            )
+        );
+    }
+
+    @Test
+    void sortsOnlyMultipleDispatches() throws IOException {
+        MatcherAssert.assertThat(
+            "Dispatch ordering must sort only when at least two candidates exist",
+            this.mergeMonikers(),
+            XhtmlMatchers.hasXPaths(
+                "/*/*[local-name()='function' and @name='eo:moniker-refs']/*[local-name()='variable' and @name='dispatch']/*[local-name()='choose']/*[local-name()='when' and @test='exists($dispatches[2])']/*[local-name()='perform-sort' and @select='$dispatches']",
+                "/*/*[local-name()='function' and @name='eo:moniker-refs']/*[local-name()='variable' and @name='dispatch']/*[local-name()='choose']/*[local-name()='otherwise']/*[local-name()='sequence' and @select='$dispatches']"
             )
         );
     }
@@ -241,6 +281,21 @@ final class XmirTest {
             Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
         );
         return new Xmir(xml, config);
+    }
+
+    /**
+     * Load the merge-monikers stylesheet.
+     * @return Stylesheet XML
+     * @throws IOException If the stylesheet cannot be read
+     */
+    private XML mergeMonikers() throws IOException {
+        return new XMLDocument(
+            Objects.requireNonNull(
+                XmirTest.class.getResourceAsStream(
+                    "/org/eolang/printer/print/merge-monikers.xsl"
+                )
+            )
+        );
     }
 
     /**
