@@ -36,14 +36,18 @@ final class MergeMonikersTest {
     }
 
     @Test
-    void cachesRepeatedHotFunctions() {
+    void computesTemplateLookupsOnce() {
         MatcherAssert.assertThat(
-            "The repeated merge-monikers lookups must use XSLT 3.0 memoization",
+            "Each guarded template must compute its expensive lookup once",
             this.sheet,
             XhtmlMatchers.hasXPaths(
-                "/*[local-name()='stylesheet' and @version='3.0']",
-                "/*/*[local-name()='function' and @name='eo:moniker-refs' and @cache='yes']",
-                "/*/*[local-name()='function' and @name='eo:hosted-binding' and @cache='yes']"
+                "/*[local-name()='stylesheet' and @version='2.0']",
+                "/*/*[local-name()='function' and @name='eo:moniker-refs' and not(@cache)]",
+                "/*/*[local-name()='function' and @name='eo:hosted-binding' and not(@cache)]",
+                "/*/*[local-name()='template' and @priority='1']/*[local-name()='variable' and @name='binding' and @select='eo:hosted-binding(.)']",
+                "/*/*[local-name()='template' and @priority='1']/*[local-name()='choose']/*[local-name()='otherwise']/*[local-name()='next-match']",
+                "/*/*[local-name()='template' and @priority='2']/*[local-name()='variable' and @name='binding' and @select='eo:applied-handle(.)']",
+                "/*/*[local-name()='template' and @priority='2']/*[local-name()='choose']/*[local-name()='otherwise']/*[local-name()='next-match']"
             )
         );
     }
@@ -54,8 +58,8 @@ final class MergeMonikersTest {
             "Cheap predicates must reject nodes before hosted/applied lookups",
             this.sheet,
             XhtmlMatchers.hasXPaths(
-                "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(eo:hosted-binding(.))]\"]",
-                "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))][exists(eo:applied-handle(.))]\"]"
+                "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)]\"]",
+                "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))]\"]"
             )
         );
     }

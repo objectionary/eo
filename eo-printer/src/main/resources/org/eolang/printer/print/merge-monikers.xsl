@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs eo" id="merge-monikers" version="3.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs eo" id="merge-monikers" version="2.0">
   <!--
   Merges a standalone named binding back onto its bare-reference use site,
   restoring the shorter "moniker" spelling. The parser hoists a `> name`
@@ -160,7 +160,7 @@
   in the keep-list), so the bare reference hosts when no dispatch does (#5996),
   and the readable `&gt;&gt; name` still travels to whichever use site wins.
   -->
-  <xsl:function name="eo:moniker-refs" as="element()*" cache="yes">
+  <xsl:function name="eo:moniker-refs" as="element()*">
     <xsl:param name="attr" as="element()"/>
     <xsl:variable name="owner" select="$attr/.."/>
     <xsl:variable name="refs" select="key('moniker-ref', concat(generate-id($owner), ' ', $attr/@name), root($attr))[not(ancestor::o[. is $attr])]"/>
@@ -198,7 +198,7 @@
   sequence when `$ref` hosts no binding (not a bare reference, no eligible
   binding, or not the first hosting reference).
   -->
-  <xsl:function name="eo:hosted-binding" as="element()*" cache="yes">
+  <xsl:function name="eo:hosted-binding" as="element()*">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
     <xsl:variable name="binding" select="key('moniker-binding', concat(generate-id($owner), ' ', eo:resolved-ref($ref)), root($ref))[1]"/>
@@ -410,33 +410,40 @@
   The binding lands at the reference through the "merged" mode below, which
   carries whatever the binding hosts down with it (#5918).
   -->
-  <xsl:template match="o[starts-with(@base, $eo:xi-dot)][exists(eo:hosted-binding(.))]" priority="1">
+  <xsl:template match="o[starts-with(@base, $eo:xi-dot)]" priority="1">
     <xsl:variable name="binding" select="eo:hosted-binding(.)"/>
-    <xsl:variable name="seg" select="eo:dispatch-seg(.)"/>
     <xsl:choose>
-      <xsl:when test="$seg = ''">
-        <xsl:variable name="merged" as="element()">
-          <xsl:apply-templates select="$binding" mode="merged"/>
-        </xsl:variable>
-        <o>
-          <xsl:apply-templates select="@as"/>
-          <xsl:copy-of select="$merged/@*[eo:abstract($merged) or eo:const-handle($merged) or eo:named-handle($merged) or (name() != 'name' and name() != 'local')]"/>
-          <xsl:copy-of select="$merged/node()"/>
-        </o>
+      <xsl:when test="exists($binding)">
+        <xsl:variable name="seg" select="eo:dispatch-seg(.)"/>
+        <xsl:choose>
+          <xsl:when test="$seg = ''">
+            <xsl:variable name="merged" as="element()">
+              <xsl:apply-templates select="$binding" mode="merged"/>
+            </xsl:variable>
+            <o>
+              <xsl:apply-templates select="@as"/>
+              <xsl:copy-of select="$merged/@*[eo:abstract($merged) or eo:const-handle($merged) or eo:named-handle($merged) or (name() != 'name' and name() != 'local')]"/>
+              <xsl:copy-of select="$merged/node()"/>
+            </o>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:variable name="receiver" as="node()*">
+              <xsl:apply-templates select="$binding" mode="merged"/>
+            </xsl:variable>
+            <xsl:variable name="args" as="node()*">
+              <xsl:apply-templates select="o"/>
+            </xsl:variable>
+            <xsl:call-template name="eo:wrap-dispatch">
+              <xsl:with-param name="segs" select="tokenize($seg, '\.')"/>
+              <xsl:with-param name="receiver" select="$receiver"/>
+              <xsl:with-param name="args" select="$args"/>
+              <xsl:with-param name="attrs" select="@as|@name|@local|@const"/>
+            </xsl:call-template>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:variable name="receiver" as="node()*">
-          <xsl:apply-templates select="$binding" mode="merged"/>
-        </xsl:variable>
-        <xsl:variable name="args" as="node()*">
-          <xsl:apply-templates select="o"/>
-        </xsl:variable>
-        <xsl:call-template name="eo:wrap-dispatch">
-          <xsl:with-param name="segs" select="tokenize($seg, '\.')"/>
-          <xsl:with-param name="receiver" select="$receiver"/>
-          <xsl:with-param name="args" select="$args"/>
-          <xsl:with-param name="attrs" select="@as|@name|@local|@const"/>
-        </xsl:call-template>
+        <xsl:next-match/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -525,19 +532,26 @@
   kept on the pipe so an argument slot survives; the standalone binding is
   dropped below.
   -->
-  <xsl:template match="o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))][exists(eo:applied-handle(.))]" priority="2">
+  <xsl:template match="o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))]" priority="2">
     <xsl:variable name="binding" select="eo:applied-handle(.)"/>
-    <xsl:for-each select="$binding">
-      <xsl:copy>
-        <xsl:apply-templates select="node()|@*"/>
-      </xsl:copy>
-    </xsl:for-each>
-    <o>
-      <xsl:apply-templates select="@as"/>
-      <xsl:attribute name="pipe"/>
-      <xsl:attribute name="base" select="@base"/>
-      <xsl:apply-templates select="o"/>
-    </o>
+    <xsl:choose>
+      <xsl:when test="exists($binding)">
+        <xsl:for-each select="$binding">
+          <xsl:copy>
+            <xsl:apply-templates select="node()|@*"/>
+          </xsl:copy>
+        </xsl:for-each>
+        <o>
+          <xsl:apply-templates select="@as"/>
+          <xsl:attribute name="pipe"/>
+          <xsl:attribute name="base" select="@base"/>
+          <xsl:apply-templates select="o"/>
+        </o>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:next-match/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <!--
   Rewrite a non-hosting reference to a const file-local handle from the
