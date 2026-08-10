@@ -60,6 +60,11 @@
     string
       as-decimal 42.987
 
+  eq. ++> can-write-a-large-exact-counterexample
+    "38802277692848472"
+    string
+      as-decimal 38802277692848472
+
   eq. ++> can-write-a-multi-digit-number
     "31415"
     string
@@ -80,17 +85,37 @@
     string
       as-decimal 7
 
+  eq. ++> can-write-ten-to-the-16th
+    "10000000000000000"
+    string
+      as-decimal 10000000000000000
+
+  eq. ++> can-write-the-largest-double-below-the-long-maximum
+    "9223372036854774784"
+    string
+      as-decimal 9223372036854774784
+
   eq. ++> can-write-the-largest-exactly-representable-magnitude
     "9007199254740991"
     string
       as-decimal 9007199254740991
+
+  eq. ++> can-write-the-long-minimum
+    "-9223372036854775808"
+    string
+      as-decimal -9.223372036854776e18
+
+  eq. ++> can-write-two-to-the-53rd
+    "9007199254740992"
+    string
+      as-decimal 9007199254740992
 
   eq. ++> can-write-zero
     "0"
     string
       as-decimal 0
 
-  as-decimal 9007199254740992 --> stops-on-a-magnitude-of-two-to-the-53rd
+  as-decimal -9.223372036854778e18 --> stops-below-the-long-minimum-boundary
 
   as-decimal 1.0e30 --> stops-on-a-magnitude-too-large-to-represent-exactly
 
@@ -99,3 +124,5 @@
   as-decimal ninf --> stops-on-negative-infinity
 
   as-decimal pinf --> stops-on-positive-infinity
+
+  as-decimal 9.223372036854776e18 --> stops-on-the-long-maximum-boundary
