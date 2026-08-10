@@ -49,10 +49,16 @@ final class StrictXmirTest {
         Assertions.assertDoesNotThrow(
             new Together<>(
                 thread -> {
-                    return new StrictXmir(
-                        StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"),
-                        tmp
-                    ).inner();
+                    final String schema;
+                    if (thread % 2 == 0) {
+                        schema = "https://www.eolang.org/XMIR.xsd";
+                    } else {
+                        schema = String.format(
+                            "https://www.eolang.org/xsd/XMIR-%s.xsd",
+                            StrictXmirTest.version()
+                        );
+                    }
+                    return new StrictXmir(StrictXmirTest.xmir(schema), tmp).inner();
                 }
             )::asList,
             "StrictXmir should not fail in different threads with different xmls"
