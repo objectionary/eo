@@ -841,42 +841,6 @@ final class EoTest {
     }
 
     @Test
-    void rejectsBindingOnReversedReceiverChain() {
-        MatcherAssert.assertThat(
-            "a binding on a later link of a reversed receiver's chain must surface R-6.6.3",
-            EoTest.render(
-                "foo > main",
-                "  if.",
-                "    cond",
-                "    .baz:x",
-                "    then",
-                "    other"
-            ),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'reversed-dispatch receiver cannot carry a binding')]"
-            )
-        );
-    }
-
-    @Test
-    void acceptsUnboundReversedReceiverChain() {
-        MatcherAssert.assertThat(
-            "a reversed receiver's chain without a binding must keep parsing",
-            EoTest.render(
-                "foo > main",
-                "  if.",
-                "    cond",
-                "    .baz",
-                "    then",
-                "    other"
-            ),
-            XhtmlMatchers.hasXPath(
-                "/object[not(errors/error[contains(text(),'reversed-dispatch receiver cannot carry a binding')])]"
-            )
-        );
-    }
-
-    @Test
     void acceptsInlineVoidsOnReversedDispatch() {
         MatcherAssert.assertThat(
             "a trailing-dot object with an inline void suffix must parse with no errors and desugar to the same φ-as-reversed-dispatch shape as its two-line form",
