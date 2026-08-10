@@ -265,6 +265,16 @@ final class LnOnlyPhiTest {
         );
     }
 
+    @Test
+    void rejectsCompactTupleCountThatOverflowsInt() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnOnlyPhi(new Span("seq *4294967297 > [m] > bar", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "a compact-tuple `*N` count above Integer.MAX_VALUE must be rejected, not silently wrapped"
+        );
+    }
+
     /**
      * Render the emit's directives under a fresh {@code <object/>}.
      * @param emit The emit
