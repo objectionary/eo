@@ -47,7 +47,8 @@
   -->
   <xsl:function name="eo:free" as="xs:boolean">
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="not($name = $bound) and not(some $r in $refs satisfies $r = concat($eo:program, '.', $name) or starts-with($r, concat($eo:program, '.', $name, '.')))"/>
+    <xsl:variable name="prefixed" select="concat($eo:program, '.', $name)"/>
+    <xsl:sequence select="not($name = $bound) and not(some $r in $refs satisfies $r = $prefixed or (starts-with($r, $prefixed) and substring($r, string-length($prefixed) + 1, 1) = '.'))"/>
   </xsl:function>
   <!-- The fully-qualified names worth restoring: a free-named alias referenced more than once. -->
   <xsl:variable name="kept" as="xs:string*" select="for $m in $aliases return if (eo:free($m/part[1]) and count($refs[. = $m/part[last()]]) gt 1) then string($m/part[last()]) else ()"/>
