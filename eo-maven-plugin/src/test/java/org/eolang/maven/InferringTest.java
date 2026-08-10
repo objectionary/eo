@@ -15,7 +15,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
 import org.eolang.xax.XtSticky;
@@ -53,10 +55,13 @@ final class InferringTest {
     @ClasspathSource(value = "org/eolang/maven/inference-packs/", glob = "**.yaml")
     void understandsProgramOfPack(final String yaml) throws IOException {
         final Xtory pack = new XtSticky(new XtYaml(yaml));
-        Files.writeString(
-            Files.createDirectories(this.dir.resolve("parsed")).resolve("main.xmir"),
-            new EoSyntax(pack.map().get("eo").toString()).parsed().toString()
-        );
+        final Path parsed = Files.createDirectories(this.dir.resolve("parsed"));
+        for (final Map.Entry<String, String> source : this.sources(pack).entrySet()) {
+            Files.writeString(
+                parsed.resolve(source.getKey()),
+                new EoSyntax(source.getValue()).parsed().toString()
+            );
+        }
         new Inferring(
             this.dir.resolve("parsed"), this.dir.resolve("pre"), this.dir.resolve("tables")
         ).exec();
@@ -136,6 +141,24 @@ final class InferringTest {
     }
 
     /**
+     * The files of the program the pack describes, named as they are on disk,
+     * since one table covers all of them and a locator names one object of
+     * one file.
+     * @param pack The pack
+     * @return The sources, by the name their XMIR takes
+     */
+    private Map<String, String> sources(final Xtory pack) {
+        final Map<String, String> found = new LinkedHashMap<>(0);
+        for (final Map.Entry<?, ?> entry : ((Map<?, ?>) pack.map().get("eo")).entrySet()) {
+            found.put(
+                entry.getKey().toString().replace(".eo", ".xmir"),
+                entry.getValue().toString()
+            );
+        }
+        return found;
+    }
+
+    /**
      * The XPaths of the pack that match nothing, each named by the document it
      * was asked of.
      * @param pack The pack
@@ -145,13 +168,46 @@ final class InferringTest {
      */
     private Collection<String> unmatched(final Xtory pack, final Path temp) throws IOException {
         final Collection<String> failed = new ArrayList<>(0);
-        for (final String key : Arrays.asList("xmir", "provides", "needs", "links")) {
-            if (pack.map().containsKey(key)) {
-                final XML written = this.written(temp, key);
-                for (final String xpath : (List<String>) pack.map().get(key)) {
-                    if (written.nodes(xpath).isEmpty()) {
-                        failed.add(String.format("%s: %s", key, xpath));
-                    }
+        for (final String table : Arrays.asList("provides", "needs", "links")) {
+            if (pack.map().containsKey(table)) {
+                failed.addAll(
+                    this.absent(
+                        new XMLDocument(temp.resolve("tables").resolve(table.concat(".xml"))),
+                        table,
+                        (List<String>) pack.map().get(table)
+                    )
+                );
+            }
+        }
+        failed.addAll(this.unprepared(pack, temp));
+        return failed;
+    }
+
+    /**
+     * The XPaths the pack asks of the XMIR prepared for the rules, which is
+     * per file, that match nothing.
+     * @param pack The pack
+     * @param temp The directory the clues have just written into
+     * @return The XPaths that failed, and every file named that the program
+     *  does not have
+     * @throws IOException If a document cannot be read
+     */
+    private Collection<String> unprepared(final Xtory pack, final Path temp) throws IOException {
+        final Collection<String> failed = new ArrayList<>(0);
+        if (pack.map().containsKey("xmir")) {
+            final Map<String, String> sources = this.sources(pack);
+            for (final Map.Entry<?, ?> entry : ((Map<?, ?>) pack.map().get("xmir")).entrySet()) {
+                final String name = entry.getKey().toString().replace(".eo", ".xmir");
+                if (sources.containsKey(name)) {
+                    failed.addAll(
+                        this.absent(
+                            new XMLDocument(temp.resolve("pre").resolve(name)),
+                            entry.getKey().toString(),
+                            (List<String>) entry.getValue()
+                        )
+                    );
+                } else {
+                    failed.add(String.format("unknown file: %s", entry.getKey()));
                 }
             }
         }
@@ -159,19 +215,21 @@ final class InferringTest {
     }
 
     /**
-     * The document the given key of a pack talks about.
-     * @param temp The directory the clues have just written into
-     * @param key The key, either {@code xmir} or the name of a table
-     * @return The document
-     * @throws IOException If it cannot be read
+     * The XPaths that match nothing in the given document.
+     * @param document The document
+     * @param about What the document is, for the message
+     * @param xpaths The XPaths
+     * @return The XPaths that failed
      */
-    private XML written(final Path temp, final String key) throws IOException {
-        final Path path;
-        if ("xmir".equals(key)) {
-            path = temp.resolve("pre").resolve("main.xmir");
-        } else {
-            path = temp.resolve("tables").resolve(String.format("%s.xml", key));
+    private Collection<String> absent(
+        final XML document, final String about, final List<String> xpaths
+    ) {
+        final Collection<String> failed = new ArrayList<>(0);
+        for (final String xpath : xpaths) {
+            if (document.nodes(xpath).isEmpty()) {
+                failed.add(String.format("%s: %s", about, xpath));
+            }
         }
-        return new XMLDocument(path);
+        return failed;
     }
 }

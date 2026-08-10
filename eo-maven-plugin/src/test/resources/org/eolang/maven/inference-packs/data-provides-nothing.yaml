@@ -3,8 +3,9 @@
 ---
 # Bytes carry their value as text and are not a formation, so they provide
 # nothing and get no row.
-eo: |
-  [] > two
-    01- > @
+eo:
+  two.eo: |
+    [] > two
+      01- > @
 provides:
   - "/provides/type[@id='Φ.two']/attr[@name='φ']"

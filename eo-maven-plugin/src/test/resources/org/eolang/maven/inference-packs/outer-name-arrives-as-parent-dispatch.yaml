@@ -7,13 +7,15 @@
 # resolve - no formation binds `ρ` as an attribute. It is the whole of what
 # stays unlinked in the runtime, and the checking loop, which knows what
 # object it is inside of, is where it belongs.
-eo: |
-  [] > outer
-    [] > held
-    [] > inner
-      held > @
+eo:
+  outer.eo: |
+    [] > outer
+      [] > held
+      [] > inner
+        held > @
 xmir:
-  - "//o[@base='.held']/o[@base='ξ.ρ']"
+  outer.eo:
+    - "//o[@base='.held']/o[@base='ξ.ρ']"
 needs:
   - "/needs/type[@id='Φ.outer.inner.φ.ρ']/attr[@name='held']"
 links:

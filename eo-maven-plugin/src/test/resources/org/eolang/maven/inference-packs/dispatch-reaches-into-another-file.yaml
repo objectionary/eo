@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The object a dispatch takes from may live in another file, and the two
+# rows still meet: `plus` is asked of something the links table knows to be
+# the `number` of the other file, which does provide it.
+eo:
+  sum.eo: |
+    [] > sum
+      number.plus > @
+  number.eo: |
+    [] > number
+      [] > plus
+needs:
+  - "/needs/type[@id='Φ.sum.φ.ρ']/attr[@name='plus']"
+links:
+  - "/links/type[@id='Φ.sum.φ.ρ' and @copy='Φ.number']"
+provides:
+  - "/provides/type[@id='Φ.number']/attr[@name='plus']"

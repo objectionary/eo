@@ -3,9 +3,10 @@
 ---
 # The attribute is taken from the receiver, never from an argument: `x.plus 5`
 # asks `x` for `plus` and asks the `5` for nothing.
-eo: |
-  [x] > sum
-    x.plus 5 > @
+eo:
+  sum.eo: |
+    [x] > sum
+      x.plus 5 > @
 needs:
   - "/needs/type[@id='Φ.sum.φ.ρ']/attr[@name='plus']"
   - "/needs[not(type[@id='Φ.sum.φ.α0'])]"
