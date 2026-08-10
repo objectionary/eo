@@ -1,11 +1,11 @@
 # Directory in the file system.
 # Apparently every directory is a file.
 #
-# @todo #5751:45min Translate the rest of the glob syntax below. The `translated`
-#  object handles star, double star, question mark and the separator, but a brace
-#  group like {a,b} and a character class like [a-z] or [!a] reach the regex
-#  engine neither translated nor escaped, so a bracket or a brace in the glob
-#  either refuses to compile or matches the wrong entries.
+# @todo #6482:45min Translate a character class in the glob below. The
+#  `translated` object now turns a brace group into an alternation, but a class
+#  like [a-z] or [!a] reaches the regex engine neither translated nor escaped,
+#  so a negation matches nothing it should and a lone bracket refuses to
+#  compile, while a star inside a class keeps its glob meaning by mistake.
 # @todo #5751:30min Stop descending into a symbolic link to a directory. The
 #  `walk` below asks stat, which follows the link, so a link to its own ancestor
 #  recurses forever, while the `Files.walk` it replaced only listed such a link.
@@ -146,7 +146,7 @@
                   string.joined *1 >>!
                     ""
                     "/^"
-                    translated 0 ""
+                    translated 0 "" false
                     "$/"
                 T > [message] >>
                   "Can't parse '%s' as a glob pattern, %s".printf
@@ -157,7 +157,7 @@
       "[^"
       escaped path.separator >> literal
       "]"
-    [index acc] >> translated
+    [index acc braced] >> translated
       if. > @
         index.gte glob.length
         acc
@@ -168,6 +168,25 @@
             ""
             acc
             token
+          if.
+            char.eq "{"
+            true
+            if.
+              char.eq "}"
+              false
+              braced
+      if. > alternated
+        char.eq "{"
+        "("
+        if.
+          braced.and
+            char.eq "}"
+          ")"
+          if.
+            braced.and
+              char.eq ","
+            "|"
+            escaped char
       string.at glob index > char
       and. > double
         char.eq "*"
@@ -191,7 +210,7 @@
             if.
               char.eq "/"
               literal
-              escaped char
+              alternated
 
   ++> can-create-a-regular-tmpfile
     seq * > @
@@ -350,6 +369,42 @@
       eq.
         length.
           d.as-dir.walk "**/*.txt"
+        2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-a-comma-outside-a-glob-brace-group
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a,b.txt"
+      touched.
+        as-file.
+          d.resolved "ab.txt"
+      eq.
+        string.joined
+          ","
+          d.as-dir.walk "a,b.txt"
+        d.resolved "a,b.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-a-glob-brace-group
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "привет.txt"
+      touched.
+        as-file.
+          d.resolved "мир.log"
+      touched.
+        as-file.
+          d.resolved "c.md"
+      eq.
+        length.
+          d.as-dir.walk "{привет.txt,мир.log}"
         2
     as-path. > d
       made.
