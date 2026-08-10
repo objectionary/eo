@@ -75,7 +75,8 @@ final class Eo implements Iterable<Directive> {
         int idx = 0;
         while (idx < spans.size()) {
             final Span span = spans.get(idx);
-            if (!globals.inTextBlock() && Eo.isBytesContinuation(span.body())) {
+            if (!globals.inTextBlock() && Bytes.continuation(span.body())
+                && (stack.empty() || span.indent() <= stack.top().indent() + 2)) {
                 idx = Eo.mergeBytesContinuation(spans, idx, stack, globals, emit, recovery);
             } else if (Eo.process(span, stack, globals, emit)) {
                 idx = recovery.after(idx);
@@ -208,83 +209,22 @@ final class Eo implements Iterable<Directive> {
         final Globals globals, final Emit emit, final Recovery recovery
     ) {
         final Span head = spans.get(start);
-        final StringBuilder body = new StringBuilder(head.body());
-        int idx = start + 1;
-        while (idx < spans.size()) {
-            final Span next = spans.get(idx);
-            if (next.indent() < head.indent() || !Eo.isBytesOnly(next.body())) {
-                break;
-            }
-            body.append(next.body());
-            idx = idx + 1;
-            if (!next.body().endsWith("-")) {
-                break;
-            }
-        }
+        final Bytes.Continuation merged = Bytes.merge(spans, start);
         final int resumption;
-        if (Eo.process(
-            new Span(" ".repeat(head.indent()).concat(body.toString()), head.line()),
+        if (merged.unterminated()) {
+            emit.error(
+                head.line(), head.indent(), "unterminated bytes continuation"
+            );
+            resumption = merged.next();
+        } else if (Eo.process(
+            new Span(" ".repeat(head.indent()).concat(merged.body()), head.line()),
             stack, globals, emit
         )) {
-            resumption = recovery.skip(idx, head.indent());
+            resumption = recovery.skip(merged.next(), head.indent());
         } else {
-            resumption = idx;
+            resumption = merged.next();
         }
         return resumption;
-    }
-
-    /**
-     * Whether a span body is the start of a multi-line BYTES literal —
-     * purely bytes-only content, length &gt;= 6, ending with {@code -}.
-     * Per R-3.13.1, single-byte form ({@code BB-}) never continues, so
-     * we require &gt;=2 bytes (6 chars or more).
-     * @param body The line body
-     * @return True if a BYTES continuation starts here
-     */
-    private static boolean isBytesContinuation(final String body) {
-        return body.length() >= 6
-            && body.endsWith("-")
-            && Eo.isBytesOnly(body);
-    }
-
-    /**
-     * Whether the body is purely a sequence of hex bytes with dash
-     * separators — {@code HH-HH} or {@code HH-HH-} etc.
-     * @param body The line body
-     * @return True if the body matches the bytes-only pattern
-     */
-    private static boolean isBytesOnly(final String body) {
-        boolean valid = !body.isEmpty();
-        int idx = 0;
-        while (valid && idx < body.length()) {
-            if (idx + 1 >= body.length()
-                || !Eo.hex(body.charAt(idx))
-                || !Eo.hex(body.charAt(idx + 1))) {
-                valid = false;
-            } else {
-                idx = idx + 2;
-                if (idx < body.length() && body.charAt(idx) != '-') {
-                    valid = false;
-                } else {
-                    idx = idx + 1;
-                }
-            }
-        }
-        return valid;
-    }
-
-    /**
-     * Whether a character is a valid BYTES hex digit. Per the grammar
-     * (matching ANTLR's {@code BYTE : [0-9A-F][0-9A-F]}), BYTES accept
-     * only uppercase hex — lowercase letters belong to {@code NAME}
-     * tstartsens. Compare with the case-insensitive
-     * {@link Tstartsens#hexDigit(char)} used for the {@code 0x...} HEX
-     * literal (R-9.8.3).
-     * @param glyph The character
-     * @return True if 0-9 or A-F
-     */
-    private static boolean hex(final char glyph) {
-        return glyph >= '0' && glyph <= '9' || glyph >= 'A' && glyph <= 'F';
     }
 
     /**
