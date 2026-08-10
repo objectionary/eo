@@ -17,12 +17,16 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
-      # The pull request is checked out only to be read by `grep`, nothing
-      # from it is executed, thus `pull_request_target` is safe here.
+      # The branch is checked out only to be read by `grep`, nothing from
+      # it is executed and the token is not left in the workspace, thus
+      # the checkout is safe here. Never add a build step to this job: it
+      # runs with write permissions and would then be a "pwn request".
       - uses: actions/checkout@v7
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
           fetch-depth: 0
+          persist-credentials: false
+          allow-unsafe-pr-checkout: true
       # Every metric must track exactly one pattern. Merging a few of them
       # into a single alternation hides movement: adding five `null` and
       # removing five `static` keeps the total intact, while the code gets
