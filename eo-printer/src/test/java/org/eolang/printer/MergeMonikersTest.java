@@ -36,18 +36,16 @@ final class MergeMonikersTest {
     }
 
     @Test
-    void computesTemplateLookupsOnce() {
+    void avoidsRepeatingHostedLookup() {
         MatcherAssert.assertThat(
-            "Each guarded template must compute its expensive lookup once",
+            "The hosted template must not repeat the full first-host lookup",
             this.sheet,
             XhtmlMatchers.hasXPaths(
                 "/*[local-name()='stylesheet' and @version='2.0']",
                 "/*/*[local-name()='function' and @name='eo:moniker-refs' and not(@cache)]",
                 "/*/*[local-name()='function' and @name='eo:hosted-binding' and not(@cache)]",
-                "/*/*[local-name()='template' and @priority='1']/*[local-name()='variable' and @name='binding' and @select='eo:hosted-binding(.)']",
-                "/*/*[local-name()='template' and @priority='1']/*[local-name()='choose']/*[local-name()='otherwise']/*[local-name()='next-match']",
-                "/*/*[local-name()='template' and @priority='2']/*[local-name()='variable' and @name='binding' and @select='eo:applied-handle(.)']",
-                "/*/*[local-name()='template' and @priority='2']/*[local-name()='choose']/*[local-name()='otherwise']/*[local-name()='next-match']"
+                "/*/*[local-name()='template' and @priority='1']/*[local-name()='variable' and @name='owner' and @select='ancestor::o[eo:abstract(.)][1]']",
+                "/*/*[local-name()='template' and @priority='1']/*[local-name()='variable' and @name='binding' and @select=\"key('moniker-binding', concat(generate-id($owner), ' ', eo:resolved-ref(.)), root(.))[1]\"]"
             )
         );
     }
@@ -58,8 +56,8 @@ final class MergeMonikersTest {
             "Cheap predicates must reject nodes before hosted/applied lookups",
             this.sheet,
             XhtmlMatchers.hasXPaths(
-                "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)]\"]",
-                "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))]\"]"
+                "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(eo:hosted-binding(.))]\"]",
+                "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))][exists(eo:applied-handle(.))]\"]"
             )
         );
     }

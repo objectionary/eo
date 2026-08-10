@@ -4,7 +4,7 @@
 
 **Goal:** Remove the three remaining local constant-factor costs identified in #6512 without changing printer output.
 
-**Architecture:** Keep the existing key-based lookup and template-priority design. Move expensive binding lookups from match patterns into one local variable per guarded template, fall through with `xsl:next-match`, and conditionally sort dispatch candidates only when ordering work is necessary.
+**Architecture:** Keep the existing key-based lookup and template-priority design. Guard expensive match predicates with cheap node-shape checks, retrieve the already-proven hosted binding directly in the selected template, and conditionally sort dispatch candidates only when ordering work is necessary.
 
 **Tech Stack:** XSLT 2.0, Saxon-HE 13.0, Java 8, JUnit 5, jcabi XML matchers, Maven.
 
@@ -13,7 +13,7 @@
 ## File Structure
 
 - Create `eo-printer/src/test/java/org/eolang/printer/MergeMonikersTest.java`: structural regression tests for the stylesheet's hot-path contract.
-- Modify `eo-printer/src/main/resources/org/eolang/printer/print/merge-monikers.xsl`: single-evaluation guarded templates and conditional dispatch sorting.
+- Modify `eo-printer/src/main/resources/org/eolang/printer/print/merge-monikers.xsl`: guarded templates, a direct hosted-binding key lookup, and conditional dispatch sorting.
 - Keep `docs/superpowers/specs/2026-08-11-merge-monikers-hot-path-design.md` as the approved scope and acceptance criteria.
 
 ### Task 0: Capture the pre-change synthetic baseline
@@ -91,13 +91,13 @@ Expected: BUILD SUCCESS and a `merge-monikers-1000-pairs-best-ms=<value>` line i
 
 Delete `MergeMonikersBenchmarkTest.java` with `apply_patch` and confirm `git status --short` contains no benchmark file. Retain the recorded value for the PR body.
 
-### Task 1: Compute hot template lookups once
+### Task 1: Avoid repeating the hosted first-reference lookup
 
 **Files:**
 - Create: `eo-printer/src/test/java/org/eolang/printer/MergeMonikersTest.java`
 - Modify: `eo-printer/src/main/resources/org/eolang/printer/print/merge-monikers.xsl:405,520`
 
-- [ ] **Step 1: Write the failing single-evaluation contract test**
+- [ ] **Step 1: Write the failing hosted-lookup contract test**
 
 Create the test class with this first test:
 
@@ -140,15 +140,13 @@ final class MergeMonikersTest {
     }
 
     @Test
-    void computesTemplateLookupsOnce() {
+    void avoidsRepeatingHostedLookup() {
         MatcherAssert.assertThat(
-            "Each guarded template must compute its expensive lookup once",
+            "The hosted template must not repeat the full first-host lookup",
             this.sheet,
             XhtmlMatchers.hasXPaths(
-                "/*/*[local-name()='template' and @priority='1']/*[local-name()='variable' and @name='binding' and @select='eo:hosted-binding(.)']",
-                "/*/*[local-name()='template' and @priority='1']/*[local-name()='choose']/*[local-name()='otherwise']/*[local-name()='next-match']",
-                "/*/*[local-name()='template' and @priority='2']/*[local-name()='variable' and @name='binding' and @select='eo:applied-handle(.)']",
-                "/*/*[local-name()='template' and @priority='2']/*[local-name()='choose']/*[local-name()='otherwise']/*[local-name()='next-match']"
+                "/*/*[local-name()='template' and @priority='1']/*[local-name()='variable' and @name='owner' and @select='ancestor::o[eo:abstract(.)][1]']",
+                "/*/*[local-name()='template' and @priority='1']/*[local-name()='variable' and @name='binding' and @select=\"key('moniker-binding', concat(generate-id($owner), ' ', eo:resolved-ref(.)), root(.))[1]\"]"
             )
         );
     }
@@ -163,27 +161,17 @@ Run:
 mvn -pl eo-printer -Dtest=MergeMonikersTest test
 ```
 
-Expected: FAIL because both expensive lookups still appear in match patterns and the templates have no `xsl:next-match` fallback.
+Expected: FAIL because the hosted template body still calls `eo:hosted-binding(.)` a second time.
 
-- [ ] **Step 3: Move each lookup into its template body**
+- [ ] **Step 3: Retrieve the proven binding directly**
 
-Use a cheap match pattern, compute the binding once, and fall through when it is absent:
+Keep the first-host proof in the guarded pattern, then use the existing key in the body:
 
 ```xml
-<xsl:template match="o[starts-with(@base, $eo:xi-dot)]" priority="1">
-  <xsl:variable name="binding" select="eo:hosted-binding(.)"/>
-  <xsl:choose>
-    <xsl:when test="exists($binding)">...</xsl:when>
-    <xsl:otherwise><xsl:next-match/></xsl:otherwise>
-  </xsl:choose>
-</xsl:template>
-
-<xsl:template match="o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))]" priority="2">
-  <xsl:variable name="binding" select="eo:applied-handle(.)"/>
-  <xsl:choose>
-    <xsl:when test="exists($binding)">...</xsl:when>
-    <xsl:otherwise><xsl:next-match/></xsl:otherwise>
-  </xsl:choose>
+<xsl:template match="o[starts-with(@base, $eo:xi-dot)][exists(eo:hosted-binding(.))]" priority="1">
+  <xsl:variable name="owner" select="ancestor::o[eo:abstract(.)][1]"/>
+  <xsl:variable name="binding" select="key('moniker-binding', concat(generate-id($owner), ' ', eo:resolved-ref(.)), root(.))[1]"/>
+  ...
 </xsl:template>
 ```
 
@@ -195,13 +183,13 @@ Run:
 mvn -pl eo-printer -Dtest=MergeMonikersTest test
 ```
 
-Expected: the single-evaluation test passes with 0 failures and BUILD SUCCESS.
+Expected: the hosted-lookup test passes with 0 failures and BUILD SUCCESS.
 
 - [ ] **Step 5: Commit the single-evaluation change**
 
 ```powershell
 git add -- eo-printer/src/test/java/org/eolang/printer/MergeMonikersTest.java eo-printer/src/main/resources/org/eolang/printer/print/merge-monikers.xsl
-git commit -m '#6512: compute merge-monikers lookups once'
+git commit -m '#6512: avoid repeating hosted first-reference lookup'
 ```
 
 ### Task 2: Reject irrelevant nodes before expensive template predicates
@@ -221,8 +209,8 @@ void guardsExpensiveTemplatePredicates() {
         "Cheap predicates must reject nodes before hosted/applied lookups",
         this.sheet,
         XhtmlMatchers.hasXPaths(
-            "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)]\"]",
-            "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))]\"]"
+            "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(eo:hosted-binding(.))]\"]",
+            "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))][exists(eo:applied-handle(.))]\"]"
         )
     );
 }
@@ -243,9 +231,9 @@ Expected: FAIL because both match patterns still contain their expensive functio
 Replace the two template declarations with:
 
 ```xml
-<xsl:template match="o[starts-with(@base, $eo:xi-dot)]" priority="1">
+<xsl:template match="o[starts-with(@base, $eo:xi-dot)][exists(eo:hosted-binding(.))]" priority="1">
 ...
-<xsl:template match="o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))]" priority="2">
+<xsl:template match="o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))][exists(eo:applied-handle(.))]" priority="2">
 ```
 
 - [ ] **Step 4: Run all structural tests and verify GREEN**
