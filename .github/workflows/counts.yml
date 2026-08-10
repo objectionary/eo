@@ -16,15 +16,28 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # Every metric must track exactly one pattern. Merging a few of them
+        # into a single alternation hides movement: adding five `null` and
+        # removing five `static` keeps the total intact, while the code gets
+        # worse. Separate counters also tell us which particular smell grew,
+        # instead of pointing at a vague bucket.
         include:
           - metric: suppressions
             files: '*.java'
-            pattern: '@SuppressWarnings|@checkstyle'
-            count: 362
-          - metric: smells
+            pattern: '@SuppressWarnings'
+            count: 114
+          - metric: checkstyles
             files: '*.java'
-            pattern: 'static|null'
-            count: 850
+            pattern: '@checkstyle'
+            count: 248
+          - metric: statics
+            files: '*.java'
+            pattern: 'static'
+            count: 599
+          - metric: nulls
+            files: '*.java'
+            pattern: 'null'
+            count: 251
           - metric: atoms
             files: '*.java'
             pattern: '@XmirObject'
