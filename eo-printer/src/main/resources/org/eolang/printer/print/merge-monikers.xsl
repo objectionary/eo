@@ -416,7 +416,7 @@
   The binding lands at the reference through the "merged" mode below, which
   carries whatever the binding hosts down with it (#5918).
   -->
-  <xsl:template match="o[exists(eo:hosted-binding(.))]" priority="1">
+  <xsl:template match="o[starts-with(@base, $eo:xi-dot)][exists(eo:hosted-binding(.))]" priority="1">
     <xsl:variable name="binding" select="eo:hosted-binding(.)"/>
     <xsl:variable name="seg" select="eo:dispatch-seg(.)"/>
     <xsl:choose>
@@ -531,7 +531,7 @@
   kept on the pipe so an argument slot survives; the standalone binding is
   dropped below.
   -->
-  <xsl:template match="o[exists(eo:applied-handle(.))]" priority="2">
+  <xsl:template match="o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))][exists(eo:applied-handle(.))]" priority="2">
     <xsl:variable name="binding" select="eo:applied-handle(.)"/>
     <xsl:for-each select="$binding">
       <xsl:copy>
