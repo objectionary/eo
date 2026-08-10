@@ -2,14 +2,22 @@
 # SPDX-License-Identifier: MIT
 ---
 # Each bound argument is a check of its own, named by the binding as it was
-# written. Which void it lands in is not decided here: that depends on the
-# object being copied and on what is already bound, which the checking loop
-# works out with the other tables in hand.
-eo: |
-  [] > pair
+# written. Both arguments here are the same `t`, and still they are two rows
+# with two types: a type is a place in the code, not a name, so the same
+# object used twice is asked about twice.
+eo:
+  pair.eo: |
+    [] > pair
+      both t t > @
+  both.eo: |
     [a b] > both
       a > @
-    both 1 2 > @
+  t.eo: |
+    [] > t
+      [] > next
 checks:
-  - "/checks/type[@id='Φ.pair.φ']/attr[@name='α0']"
-  - "/checks/type[@id='Φ.pair.φ']/attr[@name='α1']"
+  - "/checks/type[@id='Φ.pair.φ']/attr[@name='α0' and @type='Φ.pair.φ.α0']"
+  - "/checks/type[@id='Φ.pair.φ']/attr[@name='α1' and @type='Φ.pair.φ.α1']"
+links:
+  - "/links/type[@id='Φ.pair.φ.α0' and @copy='Φ.t']"
+  - "/links/type[@id='Φ.pair.φ.α1' and @copy='Φ.t']"

@@ -1,9 +1,15 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# Nothing is applied here, so there is nothing to check later.
-eo: |
-  [] > lone
-    [] > inside
+# Nothing is applied anywhere in this program, so there is nothing to check
+# later and the table is empty. There is not a number in sight either, on
+# purpose: a number is an application of its own, and would be a row.
+eo:
+  lone.eo: |
+    [] > lone
+      [] > inside
+  quiet.eo: |
+    [] > quiet
+      [] > still
 checks:
   - "/checks[not(type)]"

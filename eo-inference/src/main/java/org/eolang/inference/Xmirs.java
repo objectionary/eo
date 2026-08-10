@@ -110,7 +110,9 @@ final class Xmirs {
      * <p>An application is an object with something bound into a copy of
      * what it names: its arguments are the children carrying {@code as}. A
      * dispatch can be one too — {@code x.plus 5} applies the {@code 5} to
-     * whatever {@code x.plus} turns out to be.</p>
+     * whatever {@code x.plus} turns out to be. So is that {@code 5}, which
+     * is bytes put into a copy of {@code number} and nothing else, which is
+     * why a program with a number in it is never short of applications.</p>
      *
      * @return The applications, file by file, in the order they appear in
      *  the code
