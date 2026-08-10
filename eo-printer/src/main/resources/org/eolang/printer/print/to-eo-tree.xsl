@@ -286,10 +286,12 @@
       <xsl:when test="@base=$eo:bottom">
         <xsl:text>T</xsl:text>
       </xsl:when>
-      <xsl:when test="starts-with(@base, concat($eo:program, '.')) and exists(ancestor::o/o[@name = eo:root-name(current()/@base)])">
+      <xsl:when test="starts-with(@base, concat($eo:program, '.')) and (exists(ancestor::o/o[@name = eo:root-name(current()/@base)]) or /object/metas/meta[head = 'alias']/part[1] = eo:root-name(current()/@base))">
         <!--
         The plain top-level name would be shadowed by an in-scope
-        attribute, so keep the explicit Q. root to disambiguate.
+        attribute, or reinterpreted through a "+alias" declaring that
+        same short name for a different object (#6211), so keep the
+        explicit Q. root to disambiguate.
         -->
         <xsl:value-of select="concat('Q.', eo:translate-path(substring-after(@base, concat($eo:program, '.'))))"/>
       </xsl:when>
