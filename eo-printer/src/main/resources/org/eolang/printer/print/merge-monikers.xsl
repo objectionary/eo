@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs eo" id="merge-monikers" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs eo" id="merge-monikers" version="3.0">
   <!--
   Merges a standalone named binding back onto its bare-reference use site,
   restoring the shorter "moniker" spelling. The parser hoists a `> name`
@@ -160,7 +160,7 @@
   in the keep-list), so the bare reference hosts when no dispatch does (#5996),
   and the readable `&gt;&gt; name` still travels to whichever use site wins.
   -->
-  <xsl:function name="eo:moniker-refs" as="element()*">
+  <xsl:function name="eo:moniker-refs" as="element()*" cache="yes">
     <xsl:param name="attr" as="element()"/>
     <xsl:variable name="owner" select="$attr/.."/>
     <xsl:variable name="refs" select="key('moniker-ref', concat(generate-id($owner), ' ', $attr/@name), root($attr))[not(ancestor::o[. is $attr])]"/>
@@ -190,7 +190,7 @@
   sequence when `$ref` hosts no binding (not a bare reference, no eligible
   binding, or not the first hosting reference).
   -->
-  <xsl:function name="eo:hosted-binding" as="element()*">
+  <xsl:function name="eo:hosted-binding" as="element()*" cache="yes">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
     <xsl:variable name="binding" select="key('moniker-binding', concat(generate-id($owner), ' ', eo:resolved-ref($ref)), root($ref))[1]"/>
