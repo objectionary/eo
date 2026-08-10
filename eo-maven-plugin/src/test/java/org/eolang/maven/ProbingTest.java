@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import org.cactoos.Input;
 import org.cactoos.set.SetOf;
 import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
@@ -60,11 +63,19 @@ final class ProbingTest {
             true
         ).exec();
         MatcherAssert.assertThat(
-            "Probe should register only direct siblings from the same package",
-            tojos.contains("tuple.eachi")
-                && tojos.contains("tuple.withouti")
-                && !tojos.contains("tuple.nested.object"),
+            "Probe should register tuple.eachi from the same package",
+            tojos.contains("tuple.eachi"),
             Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "Probe should register tuple.withouti from the same package",
+            tojos.contains("tuple.withouti"),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "Probe should not register an object from a nested package",
+            tojos.contains("tuple.nested.object"),
+            Matchers.is(false)
         );
     }
 
@@ -94,11 +105,19 @@ final class ProbingTest {
             true
         ).exec();
         MatcherAssert.assertThat(
-            "Probe should register the root sibling but not a nested object",
-            tojos.contains("foo")
-                && tojos.contains("bar")
-                && !tojos.contains("nested.object"),
+            "Probe should register the probed root object itself",
+            tojos.contains("foo"),
             Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "Probe should register a sibling from the root package",
+            tojos.contains("bar"),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "Probe should not register an object from a nested package",
+            tojos.contains("nested.object"),
+            Matchers.is(false)
         );
     }
 
@@ -118,22 +137,66 @@ final class ProbingTest {
         );
         final TjsForeign tojos = new TjsForeign();
         tojos.add("test").withXmir(xmir);
+        final Collection<String> completions = new ConcurrentLinkedQueue<>();
+        final Objectionary indexed = new OyIndexed(
+            new Objectionary.Fake(),
+            new ObjectsIndex(
+                () -> new SetOf<>("foo", "bar", "baz", "nested.object")
+            )
+        );
         new Probing(
             tojos,
-            new OyIndexed(
-                new Objectionary.Fake(),
-                new ObjectsIndex(
-                    () -> new SetOf<>("foo", "bar", "baz", "nested.object")
-                )
-            ),
+            new Objectionary() {
+                @Override
+                public Input get(final String name) throws IOException {
+                    return indexed.get(name);
+                }
+
+                @Override
+                public boolean contains(final String name) throws IOException {
+                    return indexed.contains(name);
+                }
+
+                @Override
+                public boolean isDirectory(
+                    final String name
+                ) throws IOException {
+                    return indexed.isDirectory(name);
+                }
+
+                @Override
+                public Iterable<String> children(
+                    final String pkg
+                ) throws IOException {
+                    completions.add(pkg);
+                    return indexed.children(pkg);
+                }
+            },
             true
         ).exec();
         MatcherAssert.assertThat(
-            "Multiple root probes should produce one complete root object set",
-            tojos.size() == 4
-                && tojos.contains("foo")
-                && tojos.contains("bar")
-                && tojos.contains("baz"),
+            "Multiple root probes should complete the root package exactly once",
+            completions,
+            Matchers.contains("")
+        );
+        MatcherAssert.assertThat(
+            "That single completion should still register every root object",
+            tojos.size(),
+            Matchers.is(4)
+        );
+        MatcherAssert.assertThat(
+            "Root object foo should be registered",
+            tojos.contains("foo"),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "Root object bar should be registered",
+            tojos.contains("bar"),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "Root object baz should be registered",
+            tojos.contains("baz"),
             Matchers.is(true)
         );
     }
