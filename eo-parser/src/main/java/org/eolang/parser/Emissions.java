@@ -282,7 +282,6 @@ final class Emissions {
      * @param name Name attribute (or {@code null})
      * @param value The value
      * @param line Source line
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static void openBase(
         final Emit emit, final String name, final Value value, final int line
@@ -313,7 +312,6 @@ final class Emissions {
      * @param name Name attribute (or {@code null})
      * @param value Hex value
      * @param line Source line
-     * @checkstyle ParameterNumberCheck (6 lines)
      */
     @SuppressWarnings({
         "PMD.AvoidDecimalLiteralsInBigDecimalConstructor",
@@ -358,7 +356,6 @@ final class Emissions {
      * @param name Name attribute (or {@code null})
      * @param value String value
      * @param line Source line
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static void string(
         final Emit emit, final String name, final Value value, final int line
@@ -422,7 +419,6 @@ final class Emissions {
      * @param name Name attribute (or {@code null})
      * @param value Integer or float value
      * @param line Source line
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static void number(
         final Emit emit, final String name, final Value value, final int line
@@ -505,7 +501,6 @@ final class Emissions {
      * @param name Name attribute (or {@code null})
      * @param value The group value
      * @param line Source line
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static void group(
         final Emit emit, final String name, final Value value, final int line
@@ -583,7 +578,6 @@ final class Emissions {
      * @param body Whole string body
      * @param start First octal digit
      * @return Index past the octal escape
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static int rawOctal(
         final ByteArrayOutputStream out, final StringBuilder text,
@@ -780,7 +774,6 @@ final class Emissions {
      * @param phi Index of the {@code >} that begins {@code > [}
      * @param column Absolute source column of the first body char
      * @param line Source line
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static void inlinePhi(
         final Emit emit, final String name, final String inner,

@@ -634,7 +634,6 @@ final class Linting implements Step {
      * @param line Line number
      * @param text Defect message
      * @return Formatted string
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     private static String format(
         final String object, final String rule, final int line, final String text

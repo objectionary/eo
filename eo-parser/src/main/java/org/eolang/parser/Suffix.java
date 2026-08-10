@@ -360,7 +360,6 @@ final class Suffix {
      * @param home Source column where tail begins
      * @param form The form to record ({@code TEST} or {@code THROWS})
      * @return Parsed result
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static Parsed test(
         final String tail, final int after, final Span span, final int home, final Form form
@@ -401,7 +400,6 @@ final class Suffix {
      * @param span Source span
      * @param home Source column where the enclosing tail begins
      * @param pos Source column of the name's first character
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static void checkLowercaseStart(
         final String name, final Span span, final int home, final int pos
@@ -430,7 +428,6 @@ final class Suffix {
      * @param idx Index {@link #skipName} stopped at
      * @param span Source span
      * @param home Source column where tail begins
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static void checkNamePresent(
         final String tail, final int begin, final int idx, final Span span, final int home
@@ -453,7 +450,6 @@ final class Suffix {
      * @param span Source span
      * @param home Source column where tail begins
      * @return Parsed result
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static Parsed auto(
         final String tail, final int after, final Span span, final int home
@@ -504,7 +500,6 @@ final class Suffix {
      * @param span Source span
      * @param home Source column where tail begins
      * @return Parsed result
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static Parsed named(
         final String tail, final int from, final Span span, final int home
@@ -558,7 +553,6 @@ final class Suffix {
      * @param from Index after the consumed suffix
      * @param span Source span
      * @param home Source column where tail begins
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static void endsClean(
         final String tail, final int from, final Span span, final int home
@@ -589,7 +583,6 @@ final class Suffix {
      * @param span Source span
      * @param home Source column where tail begins
      * @return Promoted signature
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static String signature(
         final String tail, final int after, final Span span, final int home
