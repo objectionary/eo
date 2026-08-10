@@ -430,7 +430,9 @@ final class Pretty {
      * result is only a candidate: {@link #shaped} keeps it only when its
      * penalty beats the plain vertical and horizontal renderings, so a short
      * tuple whose one-line {@code * 1 2} form is no worse than the vertical one
-     * stays inline as that bare tuple rather than the hybrid star.</p>
+     * stays inline as that bare tuple rather than the hybrid star. A labeled
+     * node cannot use this form because the marker would separate its label
+     * from the node's head.</p>
      *
      * @param node The node
      * @param indent The indentation level

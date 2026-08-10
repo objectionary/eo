@@ -223,16 +223,24 @@ final class Node {
      * #5624). With {@code N >= 1} the count sits on the head's line, so
      * the {@code *N} marker round-trips after a dotted dispatch too
      * ({@code string.sprintf *1}) and a dotted base is allowed
-     * (issue #5648).</p>
+     * (issue #5648). A labeled application is also excluded because placing
+     * the marker before its label would bind the label to the marker instead
+     * of the application.</p>
      *
      * @return True when the trailing-star hybrid form is applicable
      */
     boolean tuply() {
-        final int size = this.children.size();
-        return size > 0
-            && this.marked()
-            && this.children.get(size - 1).stars()
-            && this.absorbed(size);
+        final boolean result;
+        if (this.tail.startsWith(":")) {
+            result = false;
+        } else {
+            final int size = this.children.size();
+            result = size > 0
+                && this.marked()
+                && this.children.get(size - 1).stars()
+                && this.absorbed(size);
+        }
+        return result;
     }
 
     /**
