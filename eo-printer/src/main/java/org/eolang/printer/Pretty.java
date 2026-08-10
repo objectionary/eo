@@ -274,6 +274,11 @@ final class Pretty {
     /**
      * Render a node horizontally on a single line, if all of its
      * arguments can be inlined.
+     *
+     * <p>A label tail cannot follow inlined arguments: {@code b c:lbl}
+     * binds {@code lbl} to {@code c}, not {@code b}. Such a node keeps its
+     * vertical rendering, where the label stays next to its owner.</p>
+     *
      * @param node The node
      * @param indent The indentation level
      * @return The single line, or empty if inlining is impossible
@@ -282,7 +287,7 @@ final class Pretty {
         final Optional<String> result;
         if (node.abstractt) {
             result = this.phi(node, indent);
-        } else if (node.children.isEmpty()) {
+        } else if (node.children.isEmpty() || node.tail.startsWith(":")) {
             result = Optional.empty();
         } else {
             result = Pretty.inlined(node.children).map(
