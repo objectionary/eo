@@ -59,4 +59,16 @@ final class MergeMonikersTest {
             )
         );
     }
+
+    @Test
+    void sortsOnlyMultipleDispatches() {
+        MatcherAssert.assertThat(
+            "Dispatch ordering must sort only when at least two candidates exist",
+            this.sheet,
+            XhtmlMatchers.hasXPaths(
+                "/*/*[local-name()='function' and @name='eo:moniker-refs']/*[local-name()='variable' and @name='dispatch']/*[local-name()='choose']/*[local-name()='when' and @test='exists($dispatches[2])']/*[local-name()='perform-sort' and @select='$dispatches']",
+                "/*/*[local-name()='function' and @name='eo:moniker-refs']/*[local-name()='variable' and @name='dispatch']/*[local-name()='choose']/*[local-name()='otherwise']/*[local-name()='sequence' and @select='$dispatches']"
+            )
+        );
+    }
 }
