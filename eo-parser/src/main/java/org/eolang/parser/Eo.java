@@ -75,7 +75,7 @@ final class Eo implements Iterable<Directive> {
         int idx = 0;
         while (idx < spans.size()) {
             final Span span = spans.get(idx);
-            if (!globals.inTextBlock() && Bytes.continuation(span.body())
+            if (!globals.inTextBlock() && Eo.isBytesContinuation(span.body())
                 && (stack.empty() || span.indent() <= stack.top().indent() + 2)) {
                 idx = Eo.mergeBytesContinuation(spans, idx, stack, globals, emit, recovery);
             } else if (Eo.process(span, stack, globals, emit)) {
@@ -209,22 +209,75 @@ final class Eo implements Iterable<Directive> {
         final Globals globals, final Emit emit, final Recovery recovery
     ) {
         final Span head = spans.get(start);
-        final Bytes.Continuation merged = Bytes.merge(spans, start);
+        final StringBuilder body = new StringBuilder(head.body());
+        final int idx = Eo.bytesEnd(spans, head, body, start + 1);
         final int resumption;
-        if (merged.unterminated()) {
+        if (body.toString().endsWith("-")
+            && (idx >= spans.size() || spans.get(idx).blank())) {
             emit.error(
                 head.line(), head.indent(), "unterminated bytes continuation"
             );
-            resumption = merged.next();
+            resumption = idx;
         } else if (Eo.process(
-            new Span(" ".repeat(head.indent()).concat(merged.body()), head.line()),
+            new Span(" ".repeat(head.indent()).concat(body.toString()), head.line()),
             stack, globals, emit
         )) {
-            resumption = recovery.skip(merged.next(), head.indent());
+            resumption = recovery.skip(idx, head.indent());
         } else {
-            resumption = merged.next();
+            resumption = idx;
         }
         return resumption;
+    }
+
+    /**
+     * Where merged BYTES continuation ends.
+     * @param spans Materialised list of source spans
+     * @param head Continuation head
+     * @param body Merged body
+     * @param start First candidate span index
+     * @return Next index to process
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    private static int bytesEnd(
+        final java.util.List<Span> spans, final Span head,
+        final StringBuilder body, final int start
+    ) {
+        int idx = start;
+        while (idx < spans.size() && Eo.partOfBytes(spans.get(idx), head, body)) {
+            final String line = spans.get(idx).body();
+            body.append(line);
+            idx = idx + 1;
+            if (!line.endsWith("-")) {
+                break;
+            }
+        }
+        return idx;
+    }
+
+    /**
+     * Whether span continues the merged BYTES body.
+     * @param span Candidate span
+     * @param head Continuation head
+     * @param body Current merged body
+     * @return True if candidate belongs to the BYTES body
+     */
+    private static boolean partOfBytes(
+        final Span span, final Span head, final StringBuilder body
+    ) {
+        return span.indent() >= head.indent()
+            && (span.body().matches("[0-9A-F]{2}(-[0-9A-F]{2})*-?")
+                || body.toString().endsWith("-")
+                && span.body().matches("[0-9A-F]{2}(-[0-9A-F]{2})*\\s.*"));
+    }
+
+    /**
+     * Whether a span body starts a multi-line BYTES literal.
+     * @param body The line body
+     * @return True if a BYTES continuation starts here
+     */
+    private static boolean isBytesContinuation(final String body) {
+        return body.length() >= 6 && body.endsWith("-")
+            && body.matches("[0-9A-F]{2}(-[0-9A-F]{2})*-?");
     }
 
     /**

@@ -933,14 +933,12 @@ final class Tokens {
     }
 
     /**
-     * Scan the non-empty form of a BYTES literal at the cursor — one
-     * {@code BB} pair, any number of {@code -BB} pairs after it, and an
-     * single-byte trailing {@code -} per §3.13.1.
+     * Scan the non-empty form of a BYTES literal at the cursor.
      * @param start Index the literal starts at, for error reporting
      * @return The literal text
      */
     private String readPairs(final int start) {
-        if (!Bytes.pair(this.body, this.cursor)) {
+        if (!this.bytePair(this.cursor)) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + start,
                 "invalid bytes literal"
@@ -950,7 +948,7 @@ final class Tokens {
         int pairs = 1;
         while (this.cursor < this.body.length()
             && this.body.charAt(this.cursor) == '-'
-            && Bytes.pair(this.body, this.cursor + 1)) {
+            && this.bytePair(this.cursor + 1)) {
             this.cursor = this.cursor + 3;
             pairs = pairs + 1;
         }
@@ -966,6 +964,17 @@ final class Tokens {
             }
         }
         return this.body.substring(start, this.cursor);
+    }
+
+    /**
+     * Whether a {@code BB} pair of byte digits sits at the given index.
+     * @param idx Index of the first digit
+     * @return True if both characters are there and both are byte digits
+     */
+    private boolean bytePair(final int idx) {
+        return idx + 1 < this.body.length()
+            && Tokens.byteDigit(this.body.charAt(idx))
+            && Tokens.byteDigit(this.body.charAt(idx + 1));
     }
 
     /**
