@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Each bound argument is a check of its own, named by the binding as it was
+# written. Which void it lands in is not decided here: that depends on the
+# object being copied and on what is already bound, which the checking loop
+# works out with the other tables in hand.
+eo: |
+  [] > pair
+    [a b] > both
+      a > @
+    both 1 2 > @
+checks:
+  - "/checks/type[@id='Φ.pair.φ']/attr[@name='α0']"
+  - "/checks/type[@id='Φ.pair.φ']/attr[@name='α1']"

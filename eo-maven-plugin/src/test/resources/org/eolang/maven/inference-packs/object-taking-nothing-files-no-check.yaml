@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Nothing is applied here, so there is nothing to check later.
+eo: |
+  [] > lone
+    [] > inside
+checks:
+  - "/checks[not(type)]"
