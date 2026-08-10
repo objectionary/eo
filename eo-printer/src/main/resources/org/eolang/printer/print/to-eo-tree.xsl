@@ -32,6 +32,18 @@
     <xsl:param name="base" as="xs:string"/>
     <xsl:sequence select="if (starts-with($base, '.')) then concat(eo:translate-path(substring($base, 2)), '.') else if (starts-with($base, concat($eo:program, '.'))) then eo:translate-path(substring-after($base, concat($eo:program, '.'))) else if (starts-with($base, concat($eo:xi, '.'))) then eo:translate-path(substring-after($base, concat($eo:xi, '.'))) else if ($base = $eo:xi) then '$' else if ($base = $eo:program) then 'Q' else eo:translate-path($base)"/>
   </xsl:function>
+  <!--
+  A surface head with its last dot turned into "?." when the dispatch it
+  ends in is fragile (R-3.5 / §9.4): "foo.first" becomes "foo?.first" and
+  the reversed "first." becomes "first?.". A surface with no dot at all
+  (nothing to mark) passes through unchanged.
+  -->
+  <xsl:function name="eo:fragile-marked" as="xs:string">
+    <xsl:param name="surface" as="xs:string"/>
+    <xsl:param name="fragile" as="xs:boolean"/>
+    <xsl:variable name="last" select="tokenize($surface, '\.')[last()]"/>
+    <xsl:sequence select="if ($fragile and contains($surface, '.')) then concat(substring($surface, 1, string-length($surface) - string-length($last) - 1), '?.', $last) else $surface"/>
+  </xsl:function>
   <!-- First name segment of a program-rooted base (Φ.foo.bar -> foo). -->
   <xsl:function name="eo:root-name" as="xs:string">
     <xsl:param name="base" as="xs:string"/>
@@ -348,7 +360,7 @@
         <xsl:value-of select="concat('$.', eo:translate-path($hop-rest))"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="eo:surface(@base)"/>
+        <xsl:value-of select="eo:fragile-marked(eo:surface(@base), exists(@fragile))"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
