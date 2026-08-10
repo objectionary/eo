@@ -30,6 +30,13 @@ final class EOregexEOcompileTest {
     @CsvSource({
         "/a|ab/, ab, true",
         "/a+?/, aaa, true",
+        "/a|ab/i, AB, true",
+        "/([0-9]) #ignore this comment/x, 4, true",
+        "/(?x)([0-9]) #ignore this comment/, 4, true",
+        "/a(?x) #tail/, a, true",
+        "/(?x)a(?-x)/, a, true",
+        "/\\Qa|ab/, a|ab, true",
+        "/a/b|a/bc/, a/bc, true",
         "/[a-z]+/, 1abc, false"
     })
     void matchesEntireTextAfterBacktracking(
