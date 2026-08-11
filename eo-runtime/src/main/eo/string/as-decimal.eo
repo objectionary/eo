@@ -13,32 +13,55 @@
     T
       "Can't write a non-finite number as decimal"
     if.
-      n.abs.gte 9007199254740992
+      or.
+        n.gte 9.223372036854776e18
+        n.lt -9.223372036854776e18
       T
-        "Can't write this number as decimal digits exactly: its magnitude is 2^53 or larger, past the largest integer a double can hold exactly"
+        "Can't write this number as decimal digits: it is outside the signed 64-bit range"
       if.
-        n.lt 0
-        if. > [m] >> negative
-          m.floor.eq 0
-          digits m
-          "-".as-bytes.concat
-            digits m
-        | (n.times -1)
-        [n] >> digits
-          if. > @
-            n.lt 10
-            as-char
-              n.floor.plus 48
-            concat.
-              digits q
-              as-char
-                plus.
-                  floor.
-                    n.minus (q.times 10)
-                  48
-          floor. > q
-            n.div 10
-        | n
+        lt.
+          i64 integer
+          0.as-i64
+        "-".as-bytes.concat unsigned
+        unsigned
+  n.as-i64 > integer!
+  times. > product!
+    i64 quotient
+    1000000000.as-i64
+  div. > quotient!
+    i64 integer
+    1000000000.as-i64
+  plus. > remainder!
+    i64 integer
+    plus.
+      i64 (i64 product).as-bytes.not
+      1.as-i64
+  if. > unsigned
+    n.abs.lt 1000000000
+    [value] >> small-digits
+      if. > @
+        value.lt 10
+        as-char
+          value.floor.plus 48
+        concat.
+          small-digits q
+          as-char
+            plus.
+              floor.
+                value.minus
+                  q.times 10
+              48
+      floor. > q
+        value.div 10
+    | (i64 integer).as-number.abs
+    concat.
+      small-digits (i64 quotient).as-number.abs
+      as-bytes.
+        padded-left
+          string
+            small-digits (i64 remainder).as-number.abs
+          9
+          "0"
 
   eq. ++> can-drop-the-sign-of-a-negative-below-one
     "0"
