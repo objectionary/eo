@@ -73,6 +73,11 @@
     string
       as-decimal -0.5
 
+  eq. ++> can-truncate-a-large-positive-fraction
+    "1000000042"
+    string
+      as-decimal 1.00000004275E9
+
   eq. ++> can-truncate-a-negative-fraction
     "-7"
     string
@@ -107,6 +112,46 @@
     "7"
     string
       as-decimal 7
+
+  eq. ++> can-write-negative-value-at-the-chunk-base
+    "-1000000000"
+    string
+      as-decimal -1000000000
+
+  eq. ++> can-write-negative-value-below-the-chunk-base
+    "-999999999"
+    string
+      as-decimal -999999999
+
+  eq. ++> can-write-negative-value-forty-two-past-the-chunk-base
+    "-1000000042"
+    string
+      as-decimal -1000000042
+
+  eq. ++> can-write-negative-value-one-past-the-chunk-base
+    "-1000000001"
+    string
+      as-decimal -1000000001
+
+  eq. ++> can-write-positive-value-at-the-chunk-base
+    "1000000000"
+    string
+      as-decimal 1000000000
+
+  eq. ++> can-write-positive-value-below-the-chunk-base
+    "999999999"
+    string
+      as-decimal 999999999
+
+  eq. ++> can-write-positive-value-forty-two-past-the-chunk-base
+    "1000000042"
+    string
+      as-decimal 1000000042
+
+  eq. ++> can-write-positive-value-one-past-the-chunk-base
+    "1000000001"
+    string
+      as-decimal 1000000001
 
   eq. ++> can-write-ten-to-the-16th
     "10000000000000000"

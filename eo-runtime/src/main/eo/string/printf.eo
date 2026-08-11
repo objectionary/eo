@@ -480,6 +480,24 @@
       "%.0f"
       10000000000000000
 
+  eq. ++> can-format-the-long-minimum-as-a-float
+    "-9223372036854775808.000000"
+    printf *1
+      "%f"
+      -9.223372036854776e18
+
+  eq. ++> can-format-the-long-minimum-as-an-integer
+    "-9223372036854775808"
+    printf *1
+      "%d"
+      -9.223372036854776e18
+
+  eq. ++> can-format-the-long-minimum-without-fraction-digits
+    "-9223372036854775808"
+    printf *1
+      "%.0f"
+      -9.223372036854776e18
+
   eq. ++> can-format-two-to-the-53rd-as-a-float
     "9007199254740992.000000"
     printf *1
