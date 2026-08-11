@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.function.Predicate;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -108,6 +109,21 @@ final class ShaTest {
             String.format("hashes of two identical dirs differ, seed=%d", seed),
             new Sha(temp.resolve("first")).toString(),
             Matchers.equalTo(new Sha(temp.resolve("second")).toString())
+        );
+    }
+
+    @Test
+    void keepsRejectedFilesOutOfDirHash(@Mktmp final Path temp) throws IOException {
+        final long seed = System.nanoTime();
+        final String text = String.format("%s-Ωμέγα-съешь", Long.toHexString(seed));
+        final Predicate<Path> filter = file -> file.getFileName().toString().endsWith(".xmir");
+        new Saved(text, temp.resolve("first/a.xmir")).value();
+        new Saved(text, temp.resolve("first/nested/b.txt")).value();
+        new Saved(text, temp.resolve("second/a.xmir")).value();
+        MatcherAssert.assertThat(
+            String.format("hash of a filtered dir counts the rejected file, seed=%d", seed),
+            new Sha(temp.resolve("first"), filter).toString(),
+            Matchers.equalTo(new Sha(temp.resolve("second"), filter).toString())
         );
     }
 }

@@ -14,11 +14,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Comparator;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
  * SHA-256 hash of a file or directory.
- * For a directory, hashes every file sorted by its relative path, framed by that path and by
+ * For a directory, hashes the accepted files, sorted by relative path, framed by that path and by
  * the amount of bytes read from it, so that trees differing in file names or in file boundaries
  * never collide. Only files speak into the digest, hence a directory holding none of them stays
  * invisible to the hash, the way Git also sees it.
@@ -32,11 +33,26 @@ final class Sha {
     private final Path path;
 
     /**
+     * Files that speak into the digest.
+     */
+    private final Predicate<Path> filter;
+
+    /**
      * Ctor.
      * @param path File or directory to hash
      */
     Sha(final Path path) {
+        this(path, file -> true);
+    }
+
+    /**
+     * Ctor.
+     * @param path File or directory to hash
+     * @param filter Files that speak into the digest
+     */
+    Sha(final Path path, final Predicate<Path> filter) {
         this.path = path;
+        this.filter = filter;
     }
 
     @Override
@@ -49,7 +65,7 @@ final class Sha {
     }
 
     /**
-     * Hashes all regular files reachable from the path, sorted by relative path.
+     * Hashes the accepted regular files reachable from the path, sorted by relative path.
      * A file of a directory is framed by its relative path and length, a lone file is not.
      * @return Base64-encoded SHA-256 hash
      * @throws IOException If reading fails
@@ -59,6 +75,7 @@ final class Sha {
         final MessageDigest digest = MessageDigest.getInstance("SHA-256");
         try (Stream<Path> walk = Files.walk(this.path)) {
             walk.filter(Files::isRegularFile)
+                .filter(this.filter)
                 .sorted(Comparator.comparing(this::relative))
                 .forEach(file -> this.feed(digest, file));
         }
