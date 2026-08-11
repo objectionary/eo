@@ -5,12 +5,13 @@
 package org.eolang.inference;
 
 import com.jcabi.xml.XML;
+import com.yegor256.tojos.MnMemory;
+import com.yegor256.tojos.TjDeferred;
+import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * What every object must have, judging by how it is used.
@@ -44,21 +45,20 @@ final class Needs implements Clue {
 
     @Override
     public void follow(final Path xmirs, final Path tables) throws IOException {
-        final Collection<Row> rows = new ArrayList<>(0);
-        for (final XML dispatch : new Xmirs(xmirs).dispatches()) {
-            final String owner = dispatch.xpath("o[not(@as)][1]/@loc").get(0);
-            rows.add(new Row(owner));
-            rows.add(
-                new Row(String.join(" ", owner, dispatch.xpath("@base").get(0)))
-                    .with("owner", owner)
-                    .with("name", dispatch.xpath("@base").get(0).substring(1))
-                    .with("type", dispatch.xpath("@loc").get(0))
+        try (Tojos rows = new TjDeferred(new MnMemory())) {
+            for (final XML dispatch : new Xmirs(xmirs).dispatches()) {
+                final String owner = dispatch.xpath("o[not(@as)][1]/@loc").get(0);
+                rows.add(owner);
+                rows.add(String.join(" ", owner, dispatch.xpath("@base").get(0)))
+                    .set("owner", owner)
+                    .set("name", dispatch.xpath("@base").get(0).substring(1))
+                    .set("type", dispatch.xpath("@loc").get(0));
+            }
+            Files.createDirectories(tables);
+            Files.write(
+                tables.resolve("needs.xml"),
+                new Grouped(rows, "needs").asXml().toString().getBytes(StandardCharsets.UTF_8)
             );
         }
-        Files.createDirectories(tables);
-        Files.write(
-            tables.resolve("needs.xml"),
-            new Grouped(rows, "needs").asXml().toString().getBytes(StandardCharsets.UTF_8)
-        );
     }
 }

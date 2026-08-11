@@ -5,12 +5,14 @@
 package org.eolang.inference;
 
 import com.jcabi.xml.XML;
+import com.yegor256.tojos.MnMemory;
+import com.yegor256.tojos.TjDeferred;
+import com.yegor256.tojos.Tojo;
+import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * What every object certainly has.
@@ -56,31 +58,28 @@ final class Provides implements Clue {
 
     @Override
     public void follow(final Path xmirs, final Path tables) throws IOException {
-        final Collection<Row> rows = new ArrayList<>(0);
-        for (final XML formation : new Xmirs(xmirs).formations()) {
-            final String owner = formation.xpath("@loc").get(0);
-            rows.add(
-                new Row(owner).with(
+        try (Tojos rows = new TjDeferred(new MnMemory())) {
+            for (final XML formation : new Xmirs(xmirs).formations()) {
+                final String owner = formation.xpath("@loc").get(0);
+                rows.add(owner).set(
                     "complete", Boolean.toString(formation.nodes("o[@name='λ']").isEmpty())
-                )
-            );
-            for (final XML attr : formation.nodes("o[@name and not(@name='λ')]")) {
-                final String name = attr.xpath("@name").get(0);
-                final Row row = new Row(String.join(" ", owner, name))
-                    .with("owner", owner)
-                    .with("name", name)
-                    .with("type", attr.xpath("@loc").get(0));
-                if (attr.xpath("@base").contains("∅")) {
-                    rows.add(row.with("void", "true"));
-                } else {
-                    rows.add(row);
+                );
+                for (final XML attr : formation.nodes("o[@name and not(@name='λ')]")) {
+                    final String name = attr.xpath("@name").get(0);
+                    final Tojo row = rows.add(String.join(" ", owner, name))
+                        .set("owner", owner)
+                        .set("name", name)
+                        .set("type", attr.xpath("@loc").get(0));
+                    if (attr.xpath("@base").contains("∅")) {
+                        row.set("void", "true");
+                    }
                 }
             }
+            Files.createDirectories(tables);
+            Files.write(
+                tables.resolve("provides.xml"),
+                new Grouped(rows, "provides").asXml().toString().getBytes(StandardCharsets.UTF_8)
+            );
         }
-        Files.createDirectories(tables);
-        Files.write(
-            tables.resolve("provides.xml"),
-            new Grouped(rows, "provides").asXml().toString().getBytes(StandardCharsets.UTF_8)
-        );
     }
 }

@@ -5,6 +5,9 @@
 package org.eolang.inference;
 
 import com.jcabi.xml.XML;
+import com.yegor256.tojos.MnMemory;
+import com.yegor256.tojos.TjDeferred;
+import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -61,18 +64,19 @@ final class Links implements Clue {
             made.add(formation.xpath("@loc").get(0));
         }
         final Scope scope = new Scope(new HashSet<>(world.locators()), new HashSet<>(made));
-        final Collection<Row> rows = new ArrayList<>(0);
-        for (final XML reference : world.references()) {
-            final String from = reference.xpath("@loc").get(0);
-            final String target = scope.target(from, reference.xpath("@base").get(0));
-            if (!target.isEmpty()) {
-                rows.add(new Row(from).with("copy", target));
+        try (Tojos rows = new TjDeferred(new MnMemory())) {
+            for (final XML reference : world.references()) {
+                final String from = reference.xpath("@loc").get(0);
+                final String target = scope.target(from, reference.xpath("@base").get(0));
+                if (!target.isEmpty()) {
+                    rows.add(from).set("copy", target);
+                }
             }
+            Files.createDirectories(tables);
+            Files.write(
+                tables.resolve("links.xml"),
+                new Grouped(rows, "links").asXml().toString().getBytes(StandardCharsets.UTF_8)
+            );
         }
-        Files.createDirectories(tables);
-        Files.write(
-            tables.resolve("links.xml"),
-            new Grouped(rows, "links").asXml().toString().getBytes(StandardCharsets.UTF_8)
-        );
     }
 }

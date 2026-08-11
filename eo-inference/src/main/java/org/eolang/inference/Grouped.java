@@ -6,14 +6,14 @@ package org.eolang.inference;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.tojos.Tojo;
+import com.yegor256.tojos.Tojos;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -49,7 +49,7 @@ final class Grouped {
     /**
      * The rows.
      */
-    private final Collection<Row> table;
+    private final Tojos table;
 
     /**
      * The name of the table.
@@ -61,7 +61,7 @@ final class Grouped {
      * @param rows The rows to render
      * @param name The name of the table, which the document is named after
      */
-    Grouped(final Collection<Row> rows, final String name) {
+    Grouped(final Tojos rows, final String name) {
         this.table = rows;
         this.root = name;
     }
@@ -71,14 +71,15 @@ final class Grouped {
      * @return The document
      */
     XML asXml() {
-        final Map<String, List<Row>> attrs = this.attributes();
+        final Map<String, List<Map<String, String>>> attrs = this.attributes();
         final Directives dirs = new Directives().add(this.root);
-        for (final Row type : this.types()) {
-            dirs.add("type").append(new Cells(type.all()).directives());
-            for (final Row attr
-                : attrs.getOrDefault(type.cell("id"), Collections.emptyList())) {
+        for (final Tojo type : this.types()) {
+            final Map<String, String> cells = type.toMap();
+            dirs.add("type").append(new Cells(cells).directives());
+            for (final Map<String, String> attr
+                : attrs.getOrDefault(cells.get("id"), Collections.emptyList())) {
                 dirs.add("attr")
-                    .append(new Cells(attr.all(), Arrays.asList("id", "owner")).directives())
+                    .append(new Cells(attr, Arrays.asList("id", "owner")).directives())
                     .up();
             }
             dirs.up();
@@ -91,10 +92,8 @@ final class Grouped {
      * document follows the code.
      * @return The rows without an owner
      */
-    private List<Row> types() {
-        return this.table.stream()
-            .filter(row -> !row.has("owner"))
-            .collect(Collectors.toList());
+    private List<Tojo> types() {
+        return this.table.select(row -> !row.exists("owner"));
     }
 
     /**
@@ -102,14 +101,12 @@ final class Grouped {
      * belong to, each group in the order the attributes were declared.
      * @return The rows with an owner, by owner
      */
-    private Map<String, List<Row>> attributes() {
-        final Map<String, List<Row>> gathered = new LinkedHashMap<>(0);
-        for (final Row row : this.table) {
-            if (row.has("owner")) {
-                gathered.computeIfAbsent(
-                    row.cell("owner"), key -> new ArrayList<>(1)
-                ).add(row);
-            }
+    private Map<String, List<Map<String, String>>> attributes() {
+        final Map<String, List<Map<String, String>>> gathered = new LinkedHashMap<>(0);
+        for (final Tojo row : this.table.select(one -> one.exists("owner"))) {
+            gathered.computeIfAbsent(
+                row.get("owner"), key -> new ArrayList<>(1)
+            ).add(row.toMap());
         }
         return gathered;
     }

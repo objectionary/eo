@@ -26,6 +26,11 @@
       <!-- version from parent POM -->
     </dependency>
     <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>tojos</artifactId>
+      <version>0.20.0</version>
+    </dependency>
+    <dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>Saxon-HE</artifactId>
       <!-- version from parent POM -->
