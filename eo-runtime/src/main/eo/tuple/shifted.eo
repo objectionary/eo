@@ -41,7 +41,7 @@
       6
     *
 
-  eq. ++> dont-shift-by-a-negative-number
+  eq. ++> can-ignore-a-negative-shift
     shifted
       *
         "привет"
@@ -55,7 +55,7 @@
       0
       "ξ"
 
-  eq. ++> dont-shift-by-a-number-below-the-negative-length
+  eq. ++> can-ignore-a-shift-below-the-negative-length
     shifted
       *
         82.42
@@ -67,7 +67,7 @@
       ""
       "日本"
 
-  eq. ++> dont-shift-by-zero
+  eq. ++> can-ignore-a-zero-shift
     shifted
       *
         "a"
