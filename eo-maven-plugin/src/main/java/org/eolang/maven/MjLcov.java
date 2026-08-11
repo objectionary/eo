@@ -71,13 +71,6 @@ public final class MjLcov extends MjSafe {
     )
     private File tracefile;
 
-    /**
-     * Ctor.
-     */
-    public MjLcov() {
-        // nothing
-    }
-
     @Override
     void exec() throws IOException {
         final Path target = this.tracefile.toPath().toAbsolutePath();
