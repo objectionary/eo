@@ -123,7 +123,6 @@ interface Dependencies extends Iterable<Dep> {
          * @param version Version
          * @param scope Scope
          * @return Dependency
-         * @checkstyle ParameterNumberCheck (5 lines)
          */
         private static Dep dep(
             final String group,

@@ -11,9 +11,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * The Java files that a transpiled XMIR is written out as.
@@ -49,6 +53,15 @@ final class JavaFiles {
     private final boolean enabled;
 
     /**
+     * Java files generated during the current transpilation.
+     *
+     * <p>The collection is shared by parallel {@link #total(boolean, Path,
+     * String, boolean)} calls. It is reconciled only after all XMIRs have
+     * been processed.</p>
+     */
+    private final Collection<Path> fresh;
+
+    /**
      * Ctor.
      * @param dir Generated sources directory
      * @param cached Cache directory for this transpile version
@@ -58,6 +71,7 @@ final class JavaFiles {
         this.generated = dir;
         this.cache = cached;
         this.enabled = caching;
+        this.fresh = new ConcurrentLinkedQueue<>();
     }
 
     /**
@@ -81,13 +95,14 @@ final class JavaFiles {
             final Xnav object = new Xnav(target).element("object");
             final Collection<Xnav> classes = object.elements(Filter.withName("class"))
                 .collect(Collectors.toList());
-            final boolean atom = object.path("/object/o/o[@name='λ']").findAny().isPresent();
+            final boolean atom = object.path("o/o[@name='λ']").findAny().isPresent();
             for (final Xnav clazz : classes) {
                 final String jname = clazz.attribute("java-name").text().get();
                 if (!atom || jname.endsWith("Test")) {
                     final Path tgt = new Place(jname).make(
                         this.generated, JavaFiles.JAVA
                     );
+                    this.fresh.add(tgt);
                     final Footprint java = new FpJavaGenerated(
                         clazz, new FileGenerationReport(saved, tgt, target)
                     );
@@ -114,6 +129,36 @@ final class JavaFiles {
             );
         }
         return saved.get();
+    }
+
+    /**
+     * Delete generated Java files absent from the current XMIR collection.
+     * @throws IOException If fails to inspect or remove a generated file
+     */
+    void removeStale() throws IOException {
+        if (Files.exists(this.generated)) {
+            final Set<Path> expected = new HashSet<>(this.fresh);
+            final Set<Path> dirs = new HashSet<>();
+            for (final Path file : expected) {
+                for (Path dir = file.getParent(); dir != null && dir.startsWith(this.generated);
+                    dir = dir.getParent()) {
+                    dirs.add(dir);
+                }
+            }
+            try (Stream<Path> walk = Files.walk(this.generated)) {
+                for (final Path file : walk.filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith(JavaFiles.JAVA)).collect(
+                        Collectors.toList()
+                    )) {
+                    if (!expected.contains(file) && (!"package-info.java".equals(
+                        file.getFileName().toString()
+                    ) || !dirs.contains(file.getParent()))) {
+                        Files.delete(file);
+                        Logger.debug(this, "Deleted stale generated Java file %[file]s", file);
+                    }
+                }
+            }
+        }
     }
 
     /**

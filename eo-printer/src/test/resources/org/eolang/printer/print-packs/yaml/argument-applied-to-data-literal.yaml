@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A bare data literal may be the head of an application, so its XMIR wrapper
+# holds the applied argument next to its own byte payload. Unhexing the payload
+# must leave that argument where it is (#5721).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > main
+    42 5 > a
+    "str" 5 > b
+    01-02 5 > c
+    42 * > d
+      1
+      2
+
+printed: |
+  [] > main
+    42 5 > a
+    "str" 5 > b
+    01-02 5 > c
+    42 * > d
+      1
+      2

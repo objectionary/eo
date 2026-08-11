@@ -88,6 +88,18 @@ final class AtVoidTest {
     }
 
     @Test
+    void rejectsNullValue() {
+        MatcherAssert.assertThat(
+            "AtVoid must reject null instead of leaving the attribute vacant",
+            Assertions.assertThrows(
+                NullPointerException.class,
+                () -> new AtVoid("void").put(null)
+            ).getMessage(),
+            Matchers.containsString("can't be null")
+        );
+    }
+
+    @Test
     void isVacantWhenUnset() {
         MatcherAssert.assertThat(
             "Unset void attribute must be vacant, but it wasn't",

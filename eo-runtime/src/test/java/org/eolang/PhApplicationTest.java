@@ -116,6 +116,38 @@ final class PhApplicationTest {
     }
 
     @Test
+    void escapesStringLiteralCharacters() {
+        MatcherAssert.assertThat(
+            "String φ-term must escape EO string literal characters",
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "string"), 0,
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "bytes"), 0,
+                    new PhDefault(
+                        new byte[] {'a', '"', '\\', '\b', '\f', '\n', '\r', '\t'}
+                    )
+                )
+            ).φTerm(),
+            Matchers.equalTo("\"a\\\"\\\\\\b\\f\\n\\r\\t\"")
+        );
+    }
+
+    @Test
+    void rendersInvalidUtfAsBytes() {
+        MatcherAssert.assertThat(
+            "Invalid UTF-8 must not be rendered as a misleading string literal",
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "string"), 0,
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "bytes"), 0,
+                    new PhDefault(new byte[] {(byte) 0xC3, (byte) 0x28})
+                )
+            ).φTerm(),
+            Matchers.equalTo("Φ.string(0->Φ.bytes(0->[D> C3-28]))")
+        );
+    }
+
+    @Test
     void rendersPositionalBindingAsTerm() {
         MatcherAssert.assertThat(
             "PhApplication must render positional binding in φ-term, but it didnt",

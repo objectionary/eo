@@ -961,7 +961,6 @@ final class PhDefaultTest {
         /**
          * Count.
          */
-        @SuppressWarnings("PMD.UnusedPrivateField")
         private static int count;
 
         /**
@@ -978,7 +977,7 @@ final class PhDefaultTest {
                             rho -> {
                                 --PhDefaultTest.RecursivePhiViaNew.count;
                                 final Phi result;
-                                if (PhDefaultTest.RecursivePhi.count <= 0) {
+                                if (PhDefaultTest.RecursivePhiViaNew.count <= 0) {
                                     result = new Data.ToPhi(0L);
                                 } else {
                                     result = new Data.ToPhi(
