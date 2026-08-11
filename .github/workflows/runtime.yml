@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         java: [23]
-    runs-on: windows-2022
+    runs-on: windows-2025
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
