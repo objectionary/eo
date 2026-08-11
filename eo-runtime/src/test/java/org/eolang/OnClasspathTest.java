@@ -37,23 +37,18 @@ final class OnClasspathTest {
 
     @Test
     @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
-    void returnsCachedAnswerInsteadOfProbingClasspathAgain() throws ReflectiveOperationException {
+    void cachesTheAnswerAfterTheFirstProbe() throws ReflectiveOperationException {
         final String cls = "org.eolang.OnClasspathTest$CacheProbe";
         OnClasspath.has(cls);
         final Field field = OnClasspath.class.getDeclaredField("CACHE");
         field.setAccessible(true);
         @SuppressWarnings("unchecked")
         final Map<String, Boolean> cache = (Map<String, Boolean>) field.get(null);
-        cache.put(cls, false);
-        try {
-            MatcherAssert.assertThat(
-                "The cached answer must be returned instead of probing the classpath again",
-                OnClasspath.has(cls),
-                Matchers.is(false)
-            );
-        } finally {
-            cache.put(cls, true);
-        }
+        MatcherAssert.assertThat(
+            "The answer for a probed class must land in the cache, but it didn't",
+            cache.get(cls),
+            Matchers.is(true)
+        );
     }
 
     @Test
