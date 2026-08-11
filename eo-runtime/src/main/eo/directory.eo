@@ -10,10 +10,10 @@
 #  `walk` below asks stat, which follows the link, so a link to its own ancestor
 #  recurses forever, while the `Files.walk` it replaced only listed such a link.
 # @todo #6550:60min Walk a directory in constant stack space. The `stepped`
-#  below still costs one frame per entry, even though `while` no longer nests
-#  one per cycle: the walk carries a tuple as its accumulator and `malloc` holds
-#  bytes only, so a cycle has nowhere to keep it. Joining the matched paths into
-#  one string and splitting it at the end would fit into a cycle.
+#  below still costs one frame per entry, even though `while` now nests only as
+#  deep as the logarithm of its cycles: the walk carries a tuple as its
+#  accumulator and `malloc` holds bytes only, so a cycle has nowhere to keep it.
+#  Joining the matched paths into one string and splitting it at the end fits.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
