@@ -23,7 +23,7 @@ public final class Deadline implements TestExecutionExceptionHandler {
         try {
             throw error;
         } catch (final TimeoutException ex) {
-            throw new TestAbortedException(ex.getMessage());
+            throw new TestAbortedException(ex.getMessage(), ex);
         }
     }
 }
