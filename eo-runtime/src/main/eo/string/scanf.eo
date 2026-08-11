@@ -64,7 +64,8 @@
                 digits-lte normalized "9223372036854775808"
                 digits-lte normalized "9223372036854775807"
         T
-          "The number doesn't fit into long range for the '%%d' conversion"
+          "The number doesn't fit into long range for the '%%d' conversion".printf
+            *
         negative.if negated folded
       [a b] > digits-lte
         if. > [index] >> rec
