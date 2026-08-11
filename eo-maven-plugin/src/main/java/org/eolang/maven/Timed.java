@@ -30,11 +30,14 @@ final class Timed implements Step {
     public void exec() throws IOException {
         final long start = System.currentTimeMillis();
         this.origin.exec();
-        Logger.info(
-            this,
-            "%s took %[ms]s",
-            this.origin.getClass().getSimpleName(),
-            System.currentTimeMillis() - start
-        );
+        final long msec = System.currentTimeMillis() - start;
+        if (Logger.isInfoEnabled(this) && msec > 100) {
+            Logger.info(
+                this,
+                "%s took %[ms]s",
+                this.origin.getClass().getSimpleName(),
+                msec
+            );
+        }
     }
 }

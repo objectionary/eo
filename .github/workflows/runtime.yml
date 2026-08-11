@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-name: runtime-windows
+name: runtime
 'on':
   push:
     branches:
@@ -12,7 +12,7 @@ name: runtime-windows
       - master
 jobs:
   runtime:
-    timeout-minutes: 5
+    timeout-minutes: 25
     strategy:
       matrix:
         java: [23]
