@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-name: runtime-ubuntu
+name: ec2
 'on':
   push:
     branches:
