@@ -86,12 +86,10 @@ final class Provides implements Clue {
         int seen = 0;
         for (final XML formation : new Xmirs(xmirs).formations()) {
             final String owner = formation.xpath("@loc").get(0);
+            final boolean whole = formation.nodes("o[@name='λ' or @name='φ']").isEmpty();
             rows.add(owner)
                 .set("index", Integer.toString(seen))
-                .set(
-                    "complete",
-                    Boolean.toString(formation.nodes("o[@name='λ' or @name='φ']").isEmpty())
-                );
+                .set("complete", Boolean.toString(whole));
             seen = seen + 1;
             for (final XML attr : formation.nodes("o[@name and not(@name='λ')]")) {
                 final String name = attr.xpath("@name").get(0);
