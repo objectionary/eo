@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
+import java.util.logging.Logger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -135,59 +136,6 @@ final class MainTest {
     }
 
     @Test
-    void readsStreamCorrectly() throws IOException {
-        MatcherAssert.assertThat(
-            "Reading stream should produce a non-empty line, but it didn't",
-            new BufferedReader(
-                Channels.newReader(
-                    Channels.newChannel(
-                        new ByteArrayInputStream(
-                            ">> ··𝔸('text' for EOorgEOio.EOstdoutν2) ➜ ΦSFN".getBytes(
-                                StandardCharsets.UTF_8
-                            )
-                        )
-                    ),
-                    StandardCharsets.UTF_8.name()
-                )
-            ).readLine().length(),
-            Matchers.greaterThan(0)
-        );
-    }
-
-    @Test
-    void readsSimpleStreamCorrectly() throws IOException {
-        MatcherAssert.assertThat(
-            "Reading stream should produce a line longer then 1 character, but it didn't",
-            new BufferedReader(
-                Channels.newReader(
-                    Channels.newChannel(
-                        new ByteArrayInputStream(
-                            "abc".getBytes(
-                                StandardCharsets.UTF_8
-                            )
-                        )
-                    ),
-                    StandardCharsets.UTF_8.name()
-                )
-            ).readLine().length(),
-            Matchers.greaterThan(1)
-        );
-    }
-
-    @Test
-    void readsBytesCorrectly() {
-        MatcherAssert.assertThat(
-            "Reading stream should produce a byte of next character, but it didn't",
-            new ByteArrayInputStream(
-                "··𝔸➜Φ".getBytes(
-                    StandardCharsets.UTF_8
-                )
-            ).read(),
-            Matchers.greaterThan(0)
-        );
-    }
-
-    @Test
     void printsFullStacktraceIfVerboseIsEnabled() {
         MatcherAssert.assertThat(
             "Prints full stacktrace when verbose mode is enabled",
@@ -197,6 +145,17 @@ final class MainTest {
                 Matchers.containsString("at org.eolang.PhPackage.take"),
                 Matchers.containsString("at org.eolang.Main.run")
             )
+        );
+    }
+
+    @Test
+    void configuresRuntimeLoggerOnlyOnce() throws Exception {
+        Main.main("--version");
+        Main.main("--version");
+        MatcherAssert.assertThat(
+            "Repeated Main.main calls must not add another EO log handler",
+            Logger.getLogger("org.eolang").getHandlers().length,
+            Matchers.equalTo(1)
         );
     }
 

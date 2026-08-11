@@ -61,6 +61,14 @@
           "127.0.0.1"
       16777343
 
+  os.is-windows.not.or ++> rejects-an-ipv6-address-as-invalid
+    eq.
+      code.
+        win32 *1
+          "inet_addr"
+          "::1"
+      win32.invalid
+
   --> stops-on-write-size-being-negative
     os.is-windows.not.if > @
       1.div 0

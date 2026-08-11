@@ -214,11 +214,11 @@ public final class StrictXmir implements XML {
      * @return Where it was saved
      */
     private static File copied(final String uri, final Path path) {
-        final File file = path.toFile();
+        final File abs = path.toFile().getAbsoluteFile();
         StrictXmir.LOCK.lock();
         try {
-            if (!file.exists()) {
-                if (file.getParentFile().mkdirs()) {
+            if (!abs.exists()) {
+                if (abs.getParentFile().mkdirs()) {
                     Logger.debug(StrictXmir.class, "Directory for %[file]s created", path);
                 }
                 try {
@@ -239,7 +239,7 @@ public final class StrictXmir implements XML {
         } finally {
             StrictXmir.LOCK.unlock();
         }
-        return file;
+        return abs;
     }
 
     /**

@@ -5,6 +5,7 @@
 
 package org.eolang;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -53,6 +54,7 @@ final class AtRho implements Attribute {
 
     @Override
     public void put(final Phi phi) {
+        Objects.requireNonNull(phi, "Attribute value can't be null");
         this.rho.compareAndSet(null, phi);
     }
 

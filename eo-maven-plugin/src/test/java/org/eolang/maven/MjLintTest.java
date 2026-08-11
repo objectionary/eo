@@ -306,6 +306,30 @@ final class MjLintTest {
     }
 
     @Test
+    void suppressesWholeProgramAnalysisDefectViaUnlint(@Mktmp final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("lintAsPackage", true)
+            .with("failOnWarning", false).withProgram(
+                "+package foo.x",
+                "+alias a.b.nowhere",
+                "+unlint unused-alias",
+                "+unlint incorrect-alias",
+                "+unlint incorrect-unlint",
+                "+unlint unlint-non-existing-defect",
+                "",
+                "[] > main"
+            );
+        maven.execute(new FakeMaven.Lint());
+        MatcherAssert.assertThat(
+            "A plain +unlint incorrect-alias must suppress the WPA defect reported as incorrect-alias/W",
+            new Xnav(maven.programTojo().linted())
+                .path("/object/errors/error[@check='incorrect-alias/W']").count(),
+            Matchers.equalTo(0L)
+        );
+    }
+
+    @Test
     void detectsErrorsSuccessfullyEvenAfterSecondRun(
         @Mktmp final Path temp
     ) throws IOException {
