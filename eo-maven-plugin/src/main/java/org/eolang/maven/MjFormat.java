@@ -10,7 +10,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
@@ -38,7 +37,21 @@ import org.eolang.printer.Xmir;
  * files with their canonical form instead of failing, much like
  * {@code gofmt -w} or {@code spotless:apply}.</p>
  *
+ * <p>Parsing a source is by far the costliest thing this goal does, so it
+ * does it as few times as it can: the sources are checked concurrently,
+ * through {@link Threaded}, the way every other goal walks them, and each
+ * settling pass keeps the tree it parsed instead of parsing the same text
+ * again to lay it out.</p>
+ *
  * @since 0.57.0
+ * @todo #6263:30min Parse every {@code .eo} source once per build.
+ *  This goal parses each source and throws the tree away, and then the
+ *  {@code compile} goal parses the very same text again seconds later,
+ *  so a clean build of {@code eo-runtime} parses its 170 sources twice.
+ *  Hand the settled tree of {@link #canonical(Path, String)} over to
+ *  {@link Parsing} instead, keyed by the source hash the way
+ *  {@link GlobalCache} already keys its footprints, so that the second
+ *  parse is skipped when the format goal has just produced the same tree.
  */
 @Mojo(
     name = "format",
@@ -106,36 +119,39 @@ public final class MjFormat extends MjSafe {
     void exec() throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> sources = this.scopedTojos().withSources();
-        final Collection<Path> divergent = new ArrayList<>(0);
-        for (final TjForeign tojo : sources) {
-            if (this.reformat(tojo.source())) {
-                divergent.add(tojo.source());
-            }
-        }
+        final int divergent = new Threaded<>(
+            sources,
+            tojo -> this.reformat(tojo.source())
+        ).total();
         this.report(sources.size(), divergent, System.currentTimeMillis() - start);
     }
 
     /**
      * Reformat a single source, either fixing it or reporting the diff.
      * @param source The path of the {@code .eo} file
-     * @return TRUE if the file diverged from the canonical form
+     * @return One if the file diverged from the canonical form, zero otherwise
      * @throws IOException If fails to read or write the file
      */
-    private boolean reformat(final Path source) throws IOException {
+    private int reformat(final Path source) throws IOException {
         final String actual = new UncheckedText(new TextOf(source)).asString();
         final String canonical = this.canonical(source, actual);
         final Diff diff = new Diff(actual, canonical);
-        final boolean diverged = !diff.same();
-        if (diverged && this.autoFix) {
-            new Saved(canonical, source).value();
-            Logger.info(this, "Reformatted %[file]s", source);
-        } else if (diverged) {
-            Logger.warn(
-                this,
-                "%[file]s is not formatted canonically:%n%s",
-                source,
-                diff.colored()
-            );
+        final int diverged;
+        if (diff.same()) {
+            diverged = 0;
+        } else {
+            diverged = 1;
+            if (this.autoFix) {
+                new Saved(canonical, source).value();
+                Logger.info(this, "Reformatted %[file]s", source);
+            } else {
+                Logger.warn(
+                    this,
+                    "%[file]s is not formatted canonically:%n%s",
+                    source,
+                    diff.colored()
+                );
+            }
         }
         return diverged;
     }
@@ -161,14 +177,16 @@ public final class MjFormat extends MjSafe {
      */
     private String canonical(final Path path, final String source) throws IOException {
         String structure = source;
+        XML tree = MjFormat.parsed(path, structure);
         for (int pass = 0; pass < MjFormat.SETTLE; ++pass) {
-            final String next = new Xmir(MjFormat.parsed(path, structure)).toEO();
+            final String next = new Xmir(tree).toEO();
             if (next.equals(structure)) {
                 break;
             }
             structure = next;
+            tree = MjFormat.parsed(path, structure);
         }
-        return new Xmir(MjFormat.parsed(path, structure), this.weights()).toEO();
+        return new Xmir(tree, this.weights()).toEO();
     }
 
     /**
@@ -318,11 +336,11 @@ public final class MjFormat extends MjSafe {
     /**
      * Report the outcome, failing the build if needed.
      * @param total The number of registered sources
-     * @param divergent The sources that diverged from the canonical form
+     * @param divergent How many sources diverged from the canonical form
      * @param millis The elapsed time, in milliseconds
      */
-    private void report(final int total, final Collection<Path> divergent, final long millis) {
-        if (divergent.isEmpty()) {
+    private void report(final int total, final int divergent, final long millis) {
+        if (divergent == 0) {
             Logger.info(
                 this,
                 "All %d EO source(s) are formatted canonically, took %[ms]s to check",
@@ -332,13 +350,13 @@ public final class MjFormat extends MjSafe {
             Logger.info(
                 this,
                 "Reformatted %d of %d EO source(s), took %[ms]s",
-                divergent.size(), total, millis
+                divergent, total, millis
             );
         } else {
             throw new IllegalStateException(
                 String.format(
                     "%d of %d EO source(s) are not formatted canonically; %s",
-                    divergent.size(),
+                    divergent,
                     total,
                     "run with -Deo.autoFix to reformat them automatically"
                 )
