@@ -24,8 +24,8 @@ public enum PenaltyKey {
     INDENT(2),
 
     /**
-     * Points charged per opening parenthesis, progressively: the k-th
-     * parenthesis on a line costs k times this weight.
+     * Points charged per opening parenthesis, progressively: a parenthesis
+     * nested k levels deep costs k plus one times this weight.
      */
     BRACKET(19),
 

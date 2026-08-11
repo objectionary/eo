@@ -1,11 +1,11 @@
 # Directory in the file system.
 # Apparently every directory is a file.
 #
-# @todo #5751:45min Translate the rest of the glob syntax below. The `translated`
-#  object handles star, double star, question mark and the separator, but a brace
-#  group like {a,b} and a character class like [a-z] or [!a] reach the regex
-#  engine neither translated nor escaped, so a bracket or a brace in the glob
-#  either refuses to compile or matches the wrong entries.
+# @todo #6482:45min Translate a character class in the glob below. The
+#  `translated` object now turns a brace group into an alternation, but a class
+#  like [a-z] or [!a] reaches the regex engine neither translated nor escaped,
+#  so a negation matches nothing it should and a lone bracket refuses to
+#  compile, while a star inside a class keeps its glob meaning by mistake.
 # @todo #6483:30min Test that `walk` below halts at a symbolic link. EO cannot
 #  make one, because `posix` has no `symlink` syscall yet, so the halting is
 #  covered only through `lstat` in `StatSyscallTest`, while the walk that leans
@@ -14,10 +14,10 @@
 #  below asks `lstat`, which reports the link itself, so on POSIX a link to its
 #  own ancestor is listed instead of followed, while `_stat64` on Windows knows
 #  nothing about links and still lets such a link recurse forever.
-# @todo #5751:60min Walk a directory without growing the EO call stack. The
-#  `stepped` below recurses once per entry and `walked` once per level, so a
-#  directory with many entries overflows the stack the way `string.repeated`
-#  does in #6239, while the `Files.walk` they replace iterated instead.
+# @todo #6484:60min Walk a directory in constant stack space. The `stepped`
+#  below still costs one frame per entry, because every loop EO has grows the
+#  stack: `while` nests a frame per cycle and `tuple.reducedi` one per element,
+#  so a directory of a few thousand entries still overflows.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -98,45 +98,39 @@
             *
       number.random clock
   [glob] > walk
-    tuple.reduced > @
-      [accum prefix dir] >> walked
-        dir.listed >> names
-        [index acc] >> stepped
-          if. > @
-            index.gte names.length
-            acc
-            stepped
-              index.plus 1
-              if.
-                and.
-                  entry.is-directory false
-                  not.
-                    entry.is-symlink false
-                walked acc sub child.as-dir
-                acc.with sub
-          dir.as-path.resolved name > child
-          child.as-file > entry
-          names.at index > name
-          if. > sub
-            prefix.length.eq 0
+    [accum prefix dir] >> walked
+      [rest] >> stepped
+        if. > @
+          rest.length.eq 0
+          picked accum prefix
+          if.
+            and.
+              entry.is-directory false
+              not.
+                entry.is-symlink false
+            walked earlier sub child.as-dir
+            picked earlier sub
+        dir.as-path.resolved name > child
+        stepped rest.tail > earlier
+        child.as-file > entry
+        rest.head > name
+        if. > sub
+          prefix.length.eq 0
+          name
+          string.joined *1
+            path.separator
+            prefix
             name
-            string.joined *1
-              path.separator
-              prefix
-              name
-        | > @
-          0
-          accum.with prefix
-      |
-        *
-        ""
-        ^
+      | dir.listed > @
+    | > @
       *
-      if. > [accum rel] >>
-        matched rel
-        accum.with
-          Q.file (base.resolved rel).as-bytes
-        accum
+      ""
+      ^
+    if. > [accum rel] >> picked
+      matched rel
+      accum.with
+        Q.file (base.resolved rel).as-bytes
+      accum
     ^.as-path >> base
     if. > [char] >> escaped
       string.contains ".+()|^$\\" char
@@ -155,7 +149,7 @@
                   string.joined *1 >>!
                     ""
                     "/^"
-                    translated 0 ""
+                    translated 0 "" false
                     "$/"
                 T > [message] >>
                   "Can't parse '%s' as a glob pattern, %s".printf
@@ -166,7 +160,7 @@
       "[^"
       escaped path.separator >> literal
       "]"
-    [index acc] >> translated
+    [index acc braced] >> translated
       if. > @
         index.gte glob.length
         acc
@@ -177,6 +171,25 @@
             ""
             acc
             token
+          if.
+            char.eq "{"
+            true
+            if.
+              char.eq "}"
+              false
+              braced
+      if. > alternated
+        char.eq "{"
+        "("
+        if.
+          braced.and
+            char.eq "}"
+          ")"
+          if.
+            braced.and
+              char.eq ","
+            "|"
+            escaped char
       string.at glob index > char
       and. > double
         char.eq "*"
@@ -200,7 +213,7 @@
             if.
               char.eq "/"
               literal
-              escaped char
+              alternated
 
   ++> can-create-a-regular-tmpfile
     seq * > @
@@ -342,6 +355,29 @@
       directory mktemp.tmpfile
       true
 
+  ++> can-walk-a-directory-before-its-children
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "sub"
+      touched.
+        as-file.
+          d.resolved "sub/b.txt"
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq.
+        string.joined
+          ","
+          d.as-dir.walk "**b*"
+        string.joined *1
+          ","
+          d.resolved "sub"
+          d.resolved "sub/b.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
   ++> can-walk-recursively
     seq * > @
       made.
@@ -359,6 +395,42 @@
       eq.
         length.
           d.as-dir.walk "**/*.txt"
+        2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-a-comma-outside-a-glob-brace-group
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a,b.txt"
+      touched.
+        as-file.
+          d.resolved "ab.txt"
+      eq.
+        string.joined
+          ","
+          d.as-dir.walk "a,b.txt"
+        d.resolved "a,b.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-a-glob-brace-group
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "привет.txt"
+      touched.
+        as-file.
+          d.resolved "мир.log"
+      touched.
+        as-file.
+          d.resolved "c.md"
+      eq.
+        length.
+          d.as-dir.walk "{привет.txt,мир.log}"
         2
     as-path. > d
       made.

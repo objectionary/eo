@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6563: an object labeled with an inline ":label" binding, whose own
+# argument was inlined onto the same line, used to have the label glued
+# straight onto the end of that argument's text ("b c:lbl"). Since ":label"
+# binds to whatever token sits immediately before it, that silently rebound
+# the label from the labeled object to its last inlined argument on
+# reparse. Pretty.horizontal now scores parenthesizing the base and its
+# inlined arguments before a ":label" tail against the vertical rendering;
+# here the vertical form scores lower and wins, keeping "b" and "c" on
+# separate lines so the label unambiguously stays with "b".
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  +package sandbox
+
+  [] > app
+    a (b c):lbl > x
+
+printed: |
+  +package sandbox
+
+  [] > app
+    a > x
+      b:lbl
+        c

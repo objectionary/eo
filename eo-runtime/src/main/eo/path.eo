@@ -195,9 +195,17 @@
         string ubts > pth
       ^.separator > separator
 
-  not. ++> can-detect-a-drive-relative-win32-path-as-not-absolute
-    is-absolute.
-      path.win32 "C:foo"
+  and. ++> can-classify-a-drive-relative-win32-path-as-non-absolute
+    and.
+      not.
+        is-absolute.
+          path.win32 "C:foo"
+      not.
+        is-absolute.
+          path.win32 "C:.\\foo"
+    not.
+      is-absolute.
+        path.win32 "C:..\\foo"
 
   and. ++> can-detect-an-absolute-posix-path
     is-absolute.
