@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 909.418654073
+  seconds: 2161.094121347
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-11 20:35:38.620533673 Z
+  when: 2026-08-11 21:59:30.158248235 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -288716,7 +288716,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 17419302151
+  events_were_scanned: 17428120280
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 347
@@ -295647,7 +295647,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1020
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13009557602
   issues_were_scanned: 0
@@ -299412,9 +299412,9 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1001
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 13125487000
+  events_were_scanned: 13130119233
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
@@ -302364,7 +302364,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1122
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13078145912
   issues_were_scanned: 0
@@ -302398,13 +302398,13 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5806
+  assignees_were_scanned: 6065
   earliest_issue_was_found: 1
-  events_were_scanned: 17419810802
+  events_were_scanned: 17426162596
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6179
   latest_issue_was_found: 4591
-  merges_were_scanned: 0
+  merges_were_scanned: 6618
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
@@ -469233,11 +469233,6 @@
   comments: 2
   details: It's time to reward @maxonfjvipon for the code contributed in objectionary/eo#6551,
     the reward amount is 4.
-  greeting: 'Thanks for the contribution! You''ve earned +4 points for this: +16 as
-    a basis; -4 for too many hits-of-code (518 >= 100); -8 for way too many hits-of-code
-    (518 >= 400). Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+689](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 518
   href: https://github.com/objectionary/eo/issues/6551/#issuecomment-5258319027
   is_human: 1
@@ -469259,10 +469254,6 @@
   comments: 5
   details: It's time to reward @morphqdd for the code contributed in objectionary/eo#6604,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too few (7) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+3781](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 7
   href: https://github.com/objectionary/eo/issues/6604/#issuecomment-5258319367
   is_human: 1
@@ -469403,8 +469394,10 @@
     them coming. Your running score is [+12](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 21
+  href: https://github.com/objectionary/hone-maven-plugin/issues/786/#issuecomment-5258567808
   is_human: 1
   issue: 786
+  receipt: receipt-#85841
   repository: 840332960
   review_comments: 0
   seconds: 109292
@@ -469413,3 +469406,48 @@
   where: github
   who: 33363574
   why: Contributed code in objectionary/hone-maven-plugin#786
+- _id: 1118116
+  _job: 31537549464
+  _time: 2026-08-11 21:24:36.504828656 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: fix/issue-586-without
+  details: The pull request objectionary/lints#1252 has been opened by @vasilevnstas.
+  event_id: 13129912951
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 1252
+  repository: 889819508
+  what: pull-was-opened
+  when: 2026-08-11 20:58:41.000000000 Z
+  where: github
+  who: 33578155
+- _id: 1118117
+  _job: 31537549464
+  _time: 2026-08-11 21:24:38.312305105 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: fix/issue-536-download-timeout
+  details: The pull request objectionary/lints#1251 has been opened by @vasilevnstas.
+  event_id: 13128635554
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 1251
+  repository: 889819508
+  what: pull-was-opened
+  when: 2026-08-11 20:32:28.000000000 Z
+  where: github
+  who: 33578155
+- _id: 1118118
+  _job: 31537549464
+  _time: 2026-08-11 21:24:39.331180157 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: fix/issue-509-bcsource-dedup
+  details: The pull request objectionary/lints#1250 has been opened by @vasilevnstas.
+  event_id: 13127284408
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 1250
+  repository: 889819508
+  what: pull-was-opened
+  when: 2026-08-11 20:05:11.000000000 Z
+  where: github
+  who: 33578155
