@@ -22,9 +22,7 @@
         * places
     if.
       n.is-finite.and
-        and.
-          n.lt 0
-          n.abs.gte 9007199254740992
+        n.abs.gte 9007199254740992
       if. > [a] >> signed-large
         places.eq 0
         as-decimal a
