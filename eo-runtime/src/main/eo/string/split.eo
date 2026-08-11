@@ -13,7 +13,7 @@
       size. >> len!
         text >> bts!
       0
-    *
+    * ""
     [accum start current] >> rec-split
       if. > @
         len.eq current
@@ -82,6 +82,12 @@
       "a"
       "b"
       "c"
+
+  eq. ++> can-split-an-empty-text-into-one-empty-string
+    split
+      ""
+      "-"
+    * ""
 
   eq. ++> can-split-into-strings
     length.
