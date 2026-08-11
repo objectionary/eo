@@ -5,15 +5,9 @@
 package org.eolang.maven;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.Comparator;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 import org.cactoos.Func;
 import org.cactoos.func.UncheckedFunc;
 
@@ -137,34 +131,8 @@ final class Cache {
      * Calculate SHA-256 hash of a directory by hashing all regular files inside it.
      * @param dir Directory path
      * @return Base64-encoded SHA-256 hash of the directory contents
-     * @todo #5254:30min Hash directories through Sha instead of here.
-     *  This method now frames every file the same way Sha does, so the two
-     *  digests agree, yet it stays because Sha hashes every file it walks
-     *  while this one drops the ones the filter rejects. Teach Sha to take
-     *  that filter and let this method delegate the whole walk to it.
      */
     private String dirSha(final Path dir) {
-        try {
-            final MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            try (Stream<Path> stream = Files.walk(dir)) {
-                stream.filter(Files::isRegularFile)
-                    .filter(this.filter)
-                    .sorted(Comparator.comparing(Path::toString))
-                    .map(p -> String.format("%s\0%s", dir.relativize(p), new Sha(p)))
-                    .map(s -> s.getBytes(StandardCharsets.UTF_8))
-                    .forEach(digest::update);
-            }
-            return Base64.getEncoder().encodeToString(digest.digest());
-        } catch (final NoSuchAlgorithmException exception) {
-            throw new IllegalStateException(
-                "SHA-256 algorithm is not available for dir hashing",
-                exception
-            );
-        } catch (final IOException exception) {
-            throw new IllegalStateException(
-                String.format("Failed to read directory '%s' for hashing", dir),
-                exception
-            );
-        }
+        return new Sha(dir, this.filter).toString();
     }
 }

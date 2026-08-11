@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Two files copy the same object, and each files a check of its own. Both land
+# in one table, side by side, because the locator says which file the promise
+# was made in and nothing has to be kept apart per file.
+eo:
+  flask.eo: |
+    [] > flask
+      fill drop > @
+  jar.eo: |
+    [] > jar
+      fill drop > @
+  fill.eo: |
+    [n] > fill
+      n > @
+  drop.eo: |
+    [] > drop
+checks:
+  - "/checks/type[@id='Φ.flask.φ']/attr[@name='α0']"
+  - "/checks/type[@id='Φ.jar.φ']/attr[@name='α0']"
+links:
+  - "/links/type[@id='Φ.flask.φ' and @copy='Φ.fill']"
+  - "/links/type[@id='Φ.jar.φ' and @copy='Φ.fill']"

@@ -29,3 +29,5 @@ links:
   - "/links/type[@id='Φ.app.φ' and @copy='Φ.app.inc']"
   - "/links/type[@id='Φ.app.φ.α0' and @copy='Φ.app.t']"
   - "/links/type[@id='Φ.app.inc.φ.ρ.ρ' and @copy='Φ.app.inc.x']"
+checks:
+  - "/checks/type[@id='Φ.app.φ']/attr[@name='α0' and @type='Φ.app.φ.α0']"
