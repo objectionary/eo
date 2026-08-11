@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6211: `com.example.string`'s alias short name is `string`, and `c`'s
+# fully-qualified base `string.sprintf` (via the separate, single-use
+# `string.sprintf` alias) shares that same first segment. Restoring
+# `com.example.string` down to bare `string` would make `c`'s printed form
+# read back through the alias table on reparse, landing on
+# `com.example.string.sprintf` instead of the original `string.sprintf`, so
+# `a` and `b` are left fully qualified too and `c` keeps an explicit `Q.`
+# root.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  +package sandbox
+  +alias com.example.string
+  +alias string.sprintf
+
+  [] > app
+    string > a
+    string > b
+    sprintf > c
+
+printed: |
+  +package sandbox
+  +alias com.example.string
+
+  [] > app
+    com.example.string > a
+    com.example.string > b
+    Q.string.sprintf > c

@@ -218,6 +218,44 @@ final class StUnhexTest {
 
     @ParameterizedTest
     @MethodSource("shifts")
+    void keepsOddLengthNumberPayloadUnconverted(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must not crash on a number payload with an odd number of hex digits, but it did",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    "<p><o base='Φ.number'><o base='Φ.bytes'><o>40-49-0F-D</o></o></o></p>"
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                "//o[@base='Φ.number' and o[@base='Φ.bytes' and not(o) and text()='40-49-0F-D']]"
+            )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
+    void keepsOddLengthStringPayloadUnconverted(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must not crash on a string payload with an odd number of hex digits, but it did",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    "<p><o base='Φ.string'><o base='Φ.bytes'><o>41-42-0</o></o></o></p>"
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                "//o[@base='Φ.string' and o[@base='Φ.bytes' and not(o) and text()='41-42-0']]"
+            )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
     void keepsMalformedBytesUnconverted(final Shift shift, final String type) {
         MatcherAssert.assertThat(
             String.format(

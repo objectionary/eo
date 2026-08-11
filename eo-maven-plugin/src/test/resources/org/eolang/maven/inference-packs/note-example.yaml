@@ -6,15 +6,17 @@
 # `x.next.foo` asks for something that will never be there. Nobody reports it
 # yet: the tables only write down what is known, and comparing them is the job
 # of the checking loop.
-eo: |
-  [] > app
-    inc t > @
-    [] > t
-      [] > next
-    [x] > inc
-      x.next.foo > @
+eo:
+  app.eo: |
+    [] > app
+      inc t > @
+      [] > t
+        [] > next
+      [x] > inc
+        x.next.foo > @
 xmir:
-  - "//o[@base='.foo']/o[@base='.next']/o[@base='ξ.x']"
+  app.eo:
+    - "//o[@base='.foo']/o[@base='.next']/o[@base='ξ.x']"
 provides:
   - "/provides/type[@id='Φ.app.t']/attr[@name='next' and @type='Φ.app.t.next']"
   - "/provides/type[@id='Φ.app.t.next' and @complete='true' and not(attr)]"

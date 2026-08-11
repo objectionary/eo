@@ -3,8 +3,9 @@
 ---
 # An atom hides its body in Java, which this prototype cannot read, so the
 # object is not complete and nothing about it will ever be reported.
-eo: |
-  [] > tick /Q.number
-    ? > x /Q.number
+eo:
+  tick.eo: |
+    [] > tick /Q.number
+      ? > x /Q.number
 provides:
   - "/provides/type[@id='Φ.tick' and @complete='false']"

@@ -80,8 +80,11 @@ final class LnMethod implements Line {
             Blanks.checkPlain(this.span, globals, emit);
         }
         Comments.seal(globals, emit, this.span);
-        if (outer != null && stack.below() != null) {
-            stack.below().upgradeArgBinding();
+        if (outer != null) {
+            Bindings.checkReceiverUpgrade(stack.below(), this.span);
+            if (stack.below() != null) {
+                stack.below().upgradeArgBinding();
+            }
         }
         emit.close();
         emit.object(

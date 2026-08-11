@@ -206,7 +206,6 @@ final class LnFormation implements Line {
      * @param suffix The parsed suffix
      * @param params Parameter names in source order
      * @param binding Outer inline-binding label, or {@code null}
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private void emit(
         final Emit emit, final Suffix suffix, final List<String> params, final String binding

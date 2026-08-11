@@ -203,7 +203,6 @@ final class Eo implements Iterable<Directive> {
      * @param emit Directives sink
      * @param recovery Where the walk resumes if the merged line fails
      * @return Next index to process
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static int mergeBytesContinuation(
         final java.util.List<Span> spans, final int start, final Stack stack,
@@ -316,7 +315,6 @@ final class Eo implements Iterable<Directive> {
      * @param globals The global parser state
      * @param emit The directives sink
      * @return True when the line failed to parse
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static boolean process(
         final Span span, final Stack stack, final Globals globals, final Emit emit
@@ -347,7 +345,6 @@ final class Eo implements Iterable<Directive> {
      * @param stack The indent stack
      * @param globals The global parser state
      * @param emit The directives sink
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static void continueTextBlock(
@@ -414,7 +411,6 @@ final class Eo implements Iterable<Directive> {
      * @param globals The global parser state
      * @param emit The directives sink
      * @return True when the line failed to parse
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static boolean dispatch(
         final Span span, final Stack stack, final Globals globals, final Emit emit

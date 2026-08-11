@@ -226,7 +226,7 @@
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>tojos</artifactId>
-      <version>0.19.1</version>
+      <version>0.19.2</version>
     </dependency>
     <dependency>
       <groupId>javax.json</groupId>
@@ -344,6 +344,8 @@
               junit.jupiter.execution.parallel.enabled = true
               junit.jupiter.execution.parallel.mode.default = concurrent
               junit.jupiter.execution.parallel.mode.classes.default = concurrent
+              junit.jupiter.execution.parallel.config.strategy = dynamic
+              junit.jupiter.execution.parallel.config.dynamic.factor = 1
             </configurationParameters>
           </properties>
         </configuration>
