@@ -28,7 +28,9 @@
     dividend.is-finite.not.if
       nan
       divisor.is-finite.not.if
-        divisor.is-nan.if nan x
+        divisor.is-nan.if
+          nan
+          x.plus 0
         if.
           gte.
             number x.as-bytes >> dividend
@@ -68,6 +70,16 @@
     mod
       5
       nan
+
+  eq. ++> can-return-positive-zero-for-negative-zero-dividend-and-negative-infinite-divisor
+    as-bytes.
+      0.neg.mod ninf
+    0.as-bytes
+
+  eq. ++> can-return-positive-zero-for-negative-zero-dividend-and-positive-infinite-divisor
+    as-bytes.
+      0.neg.mod pinf
+    0.as-bytes
 
   eq. ++> can-return-positive-zero-when-dividend-is-zero
     as-bytes.
