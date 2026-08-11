@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object/errors/error[@severity='error']
+  - /object/errors/error[contains(text(),'too large')]
+input: |
+  [] > app
+    seq *4294967297 > [m] > bar

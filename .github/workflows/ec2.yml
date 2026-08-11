@@ -1,0 +1,79 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: ec2
+'on':
+  push:
+    branches:
+      - master
+concurrency:
+  group: ec2-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  start-instance:
+    runs-on: ubuntu-24.04
+    outputs:
+      label: ${{ steps.start.outputs.label }}
+      ec2-instance-id: ${{ steps.start.outputs.ec2-instance-id }}
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - id: start
+        uses: machulav/ec2-github-runner@v2
+        with:
+          mode: start
+          aws-resource-tags: '[{"Key":"Name","Value":"eo-runtime"}]'
+          github-token: ${{ secrets.AWS_PAT }}
+          ec2-image-id: ${{ secrets.AWS_AMI }}
+          ec2-instance-type: c8i.24xlarge
+          subnet-id: ${{ secrets.AWS_SUBNET }}
+          security-group-id: ${{ secrets.AWS_SGROUP }}
+  runtime:
+    needs: start-instance
+    runs-on: ${{ needs.start-instance.outputs.label }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: 23
+      - run: |
+          set -x
+          curl --silent --show-error --location --output "${RUNNER_TEMP}/maven.tgz" \
+            "https://archive.apache.org/dist/maven/maven-3/${MAVEN}/binaries/apache-maven-${MAVEN}-bin.tar.gz"
+          tar xzf "${RUNNER_TEMP}/maven.tgz" --directory "${RUNNER_TEMP}"
+          echo "${RUNNER_TEMP}/apache-maven-${MAVEN}/bin" >> "${GITHUB_PATH}"
+        env:
+          MAVEN: 3.9.16
+      - uses: actions/cache@v6
+        with:
+          path: ~/.m2/repository
+          key: ubuntu-jdk-23-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ubuntu-jdk-23-maven-
+      - uses: JesseTG/rm@v1.0.3
+        with:
+          path: ~/.m2/repository/org/eolang
+      - run: mvn -ntp -PskipITs -DskipTests --errors --batch-mode '-Deo.coverageTracking=false' clean install -pl '!:eo-integration-tests'
+      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.deadline=1200' '-Dheap-size=64G' clean install -pl :eo-runtime
+  terminate-instance:
+    needs:
+      - start-instance
+      - runtime
+    runs-on: ubuntu-24.04
+    if: ${{ always() }}
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - uses: machulav/ec2-github-runner@v2
+        with:
+          mode: stop
+          github-token: ${{ secrets.AWS_PAT }}
+          label: ${{ needs.start-instance.outputs.label }}
+          ec2-instance-id: ${{ needs.start-instance.outputs.ec2-instance-id }}

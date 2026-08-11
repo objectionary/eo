@@ -23,6 +23,12 @@
     cannot express; set to true to verify return types.
     -->
     <eo.typing>false</eo.typing>
+    <!--
+    How many seconds a single test may run before Deadline skips it. Raise
+    it on a box that has all the time in the world, so that a slow test
+    runs to its end instead of being skipped.
+    -->
+    <eo.deadline>5</eo.deadline>
   </properties>
   <dependencies>
     <dependency>
@@ -122,6 +128,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.opentest4j</groupId>
+      <artifactId>opentest4j</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>jping</artifactId>
       <!-- version from parent POM -->
@@ -194,6 +206,7 @@
           <systemPropertyVariables>
             <eo.version>${project.version}</eo.version>
             <eo.typing>${eo.typing}</eo.typing>
+            <junit.jupiter.execution.timeout.test.method.default>${eo.deadline}s</junit.jupiter.execution.timeout.test.method.default>
             <!--
             Where PhCoverage.hit() appends coverage records at runtime. It
             pairs with coverageTracking on eo-maven-plugin below, which wraps
@@ -218,6 +231,8 @@
               junit.jupiter.execution.parallel.enabled = true
               junit.jupiter.execution.parallel.mode.default = concurrent
               junit.jupiter.execution.parallel.mode.classes.default = concurrent
+              junit.jupiter.execution.parallel.config.strategy = dynamic
+              junit.jupiter.execution.parallel.config.dynamic.factor = 1
             </configurationParameters>
           </properties>
         </configuration>

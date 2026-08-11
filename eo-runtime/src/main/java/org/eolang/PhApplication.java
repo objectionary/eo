@@ -5,7 +5,11 @@
 
 package org.eolang;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -80,15 +84,55 @@ public final class PhApplication extends PhOnce {
         final String body = PhApplication.body(binds);
         final Matcher data = PhApplication.DATA.matcher(body);
         final boolean literal = binds.length == 1 && data.find();
-        final String result;
+        final String string;
         if (literal && "Φ.string".equals(head)) {
-            result = String.format(
-                "\"%s\"", new String(PhApplication.bytes(data.group(1)), StandardCharsets.UTF_8)
-            );
+            string = PhApplication.string(PhApplication.bytes(data.group(1)));
+        } else {
+            string = null;
+        }
+        final String result;
+        if (string != null) {
+            result = string;
         } else if (literal && "Φ.number".equals(head)) {
             result = PhDefault.numeral(new BytesOf(PhApplication.bytes(data.group(1))).asNumber());
         } else {
             result = String.format("%s(%s)", head, body);
+        }
+        return result;
+    }
+
+    /**
+     * Render UTF-8 bytes as an EO string literal.
+     * @param bytes Bytes to render
+     * @return Escaped literal, or null if bytes are not valid UTF-8
+     */
+    private static String string(final byte[] bytes) {
+        Optional<String> text;
+        try {
+            text = Optional.of(
+                StandardCharsets.UTF_8.newDecoder()
+                    .onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT)
+                    .decode(ByteBuffer.wrap(bytes)).toString()
+            );
+        } catch (final CharacterCodingException ignored) {
+            text = Optional.empty();
+        }
+        final String result;
+        if (text.isPresent()) {
+            result = String.format(
+                "\"%s\"",
+                text.get()
+                    .replace("\\", "\\\\")
+                    .replace("\"", "\\\"")
+                    .replace("\b", "\\b")
+                    .replace("\f", "\\f")
+                    .replace(String.valueOf('\n'), "\\n")
+                    .replace(String.valueOf('\r'), "\\r")
+                    .replace("\t", "\\t")
+            );
+        } else {
+            result = null;
         }
         return result;
     }
