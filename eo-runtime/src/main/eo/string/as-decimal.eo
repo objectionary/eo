@@ -1,5 +1,9 @@
 # Writes the number `n` as signed decimal digits, truncating its fraction
 # towards zero, so that `42.7` becomes `42` and `-42.7` becomes `-42`.
+#
+# The digits are peeled off an `i64`, where division by ten is exact, so every
+# magnitude below `2^63` is written exactly, and not only the magnitudes below
+# `2^53` that a double divides without losing a digit.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -13,32 +17,34 @@
     T
       "Can't write a non-finite number as decimal"
     if.
-      n.abs.gte 9007199254740992
+      gte.
+        n.abs
+        2.power 63
       T
-        "Can't write this number as decimal digits exactly: its magnitude is 2^53 or larger, past the largest integer a double can hold exactly"
+        "Can't write this number as decimal digits: its magnitude is 2^63 or larger, past the range of a signed 64-bit integer"
       if.
         n.lt 0
         if. > [m] >> negative
-          m.floor.eq 0
+          m.as-number.eq 0
           digits m
           "-".as-bytes.concat
             digits m
-        | (n.times -1)
+        | (n.times -1).as-i64
         [n] >> digits
           if. > @
-            n.lt 10
+            n.lt ten
             as-char
-              n.floor.plus 48
+              n.as-number.plus 48
             concat.
               digits q
               as-char
                 plus.
-                  floor.
-                    n.minus (q.times 10)
+                  as-number.
+                    n.minus (q.times ten)
                   48
-          floor. > q
-            n.div 10
-        | n
+          n.div ten > q!
+        | n.as-i64
+  10.as-i64 > ten!
 
   eq. ++> can-drop-the-sign-of-a-negative-below-one
     "0"
@@ -59,6 +65,16 @@
     "42"
     string
       as-decimal 42.987
+
+  eq. ++> can-write-a-large-negative-magnitude
+    "-9007199254740992"
+    string
+      as-decimal -9007199254740992
+
+  eq. ++> can-write-a-magnitude-above-two-to-the-53rd
+    "9007199254740992"
+    string
+      as-decimal 9007199254740992
 
   eq. ++> can-write-a-multi-digit-number
     "31415"
@@ -85,14 +101,19 @@
     string
       as-decimal 9007199254740991
 
+  eq. ++> can-write-the-largest-magnitude-below-two-to-the-63rd
+    "9223372036854774784"
+    string
+      as-decimal 9223372036854774784
+
   eq. ++> can-write-zero
     "0"
     string
       as-decimal 0
 
-  as-decimal 9007199254740992 --> stops-on-a-magnitude-of-two-to-the-53rd
+  as-decimal 1.0e30 --> stops-on-a-magnitude-far-past-the-long-range
 
-  as-decimal 1.0e30 --> stops-on-a-magnitude-too-large-to-represent-exactly
+  as-decimal 9.223372036854776e18 --> stops-on-a-magnitude-of-two-to-the-63rd
 
   as-decimal nan --> stops-on-nan
 
