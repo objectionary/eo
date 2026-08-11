@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A program is a directory, not a file. One table covers both of these,
+# because a locator names one object of one file and no other, so nothing
+# has to be merged or renamed to put them together.
+eo:
+  kettle.eo: |
+    [] > kettle
+      [] > steam
+  cup.eo: |
+    [] > cup
+      [] > handle
+provides:
+  - "/provides/type[@id='Φ.kettle']/attr[@name='steam']"
+  - "/provides/type[@id='Φ.cup']/attr[@name='handle']"

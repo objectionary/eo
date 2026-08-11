@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -37,6 +38,21 @@ final class SavedTest {
             Files.readString(target, StandardCharsets.UTF_8),
             Matchers.equalTo("hello")
         );
+    }
+
+    @Test
+    void savesContentToRelativeFilenameWithoutParentDirectory() throws IOException {
+        final Path target = Path.of(String.format("saved-%s.tmp", UUID.randomUUID()));
+        try {
+            new Saved("hello", target).value();
+            MatcherAssert.assertThat(
+                "a relative filename with no parent directory must be saved as-is",
+                Files.readString(target, StandardCharsets.UTF_8),
+                Matchers.equalTo("hello")
+            );
+        } finally {
+            Files.deleteIfExists(target);
+        }
     }
 
     @Test

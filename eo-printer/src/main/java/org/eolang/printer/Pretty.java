@@ -274,6 +274,15 @@ final class Pretty {
     /**
      * Render a node horizontally on a single line, if all of its
      * arguments can be inlined.
+     *
+     * <p>A {@code :label} tail (#6563) binds to whatever token sits
+     * immediately before it, so gluing it straight onto the end of the
+     * inlined argument text would silently rebind it from this node's own
+     * head to its last inlined argument on reparse. The base and its
+     * inlined arguments are parenthesized first in that case, so the
+     * label reads back attached to the group, matching what it named
+     * before printing.</p>
+     *
      * @param node The node
      * @param indent The indentation level
      * @return The single line, or empty if inlining is impossible
@@ -286,7 +295,16 @@ final class Pretty {
             result = Optional.empty();
         } else {
             result = Pretty.inlined(node.children).map(
-                args -> this.tab.repeat(indent) + node.base + ' ' + args + node.tail
+                args -> {
+                    final String glued;
+                    if (node.tail.startsWith(":")) {
+                        glued = "(".concat(node.base).concat(" ").concat(args)
+                            .concat(")").concat(node.tail);
+                    } else {
+                        glued = node.base.concat(" ").concat(args).concat(node.tail);
+                    }
+                    return this.tab.repeat(indent).concat(glued);
+                }
             );
         }
         return result;

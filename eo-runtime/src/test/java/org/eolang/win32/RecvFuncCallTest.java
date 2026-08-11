@@ -1,0 +1,49 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+package org.eolang.win32;
+
+import java.util.Arrays;
+import java.util.List;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.Phi;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
+
+/**
+ * Test case for {@link RecvFuncCall}.
+ * @since 0.57.0
+ */
+final class RecvFuncCallTest {
+
+    @Test
+    @DisabledOnOs({OS.MAC, OS.LINUX})
+    void survivesFailedRecvWithoutCrashing() {
+        MatcherAssert.assertThat(
+            "A failed win32 recv must report code -1 with empty output, not crash",
+            RecvFuncCallTest.outcome(
+                new RecvFuncCall(Phi.Φ.take("win32").copy()).make(
+                    new Data.ToPhi(-1), new Data.ToPhi(16), new Data.ToPhi(0)
+                )
+            ),
+            Matchers.contains(-1, 0)
+        );
+    }
+
+    /**
+     * The recv outcome as a {@code [code, output-length]} pair.
+     * @param result The dataizable recv result
+     * @return The exit code followed by the output byte count
+     */
+    private static List<Integer> outcome(final Phi result) {
+        return Arrays.asList(
+            new Dataized(result.take("code")).asNumber().intValue(),
+            ((byte[]) new Dataized(result.take("output")).take()).length
+        );
+    }
+}

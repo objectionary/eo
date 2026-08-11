@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A void provides nothing until something is put into it, and the row says so.
+# The order of voids decides what an application binds to what, which is why
+# the rows remember when they were written.
+eo:
+  pipe.eo: |
+    [x] > pipe
+      x > @
+provides:
+  - "/provides/type[@id='Φ.pipe']/attr[@name='x' and @void='true']"
