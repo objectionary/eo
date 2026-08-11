@@ -30,7 +30,7 @@
       divisor.is-finite.not.if
         divisor.is-nan.if nan x
         if.
-          gt.
+          gte.
             number x.as-bytes >> dividend
             0
           [] >> abs-mod
@@ -68,6 +68,16 @@
     mod
       5
       nan
+
+  eq. ++> can-return-positive-zero-when-dividend-is-zero
+    as-bytes.
+      0.mod 3
+    0.as-bytes
+
+  eq. ++> can-return-positive-zero-when-dividend-is-zero-and-divisor-is-negative
+    as-bytes.
+      0.mod -3
+    0.as-bytes
 
   ++> can-stay-compatible-with-division
     eq. > @
@@ -131,10 +141,22 @@
       7
     -1
 
+  eq. ++> can-take-a-modulo-of-minus-seven-by-three
+    mod
+      -7
+      3
+    -1
+
   eq. ++> can-take-a-modulo-of-one-by-two
     mod
       1
       2
+    1
+
+  eq. ++> can-take-a-modulo-of-seven-by-three
+    mod
+      7
+      3
     1
 
   eq. ++> can-take-a-modulo-of-sixteen-by-a-large-negative
