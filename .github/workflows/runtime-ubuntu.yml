@@ -7,9 +7,6 @@ name: runtime-ubuntu
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
 jobs:
   start-instance:
     runs-on: ubuntu-24.04
