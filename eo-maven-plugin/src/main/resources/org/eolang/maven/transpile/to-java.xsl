@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="to-java" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="to-java" version="2.0">
   <!-- A code transpiler; its 26 match templates form one cohesive module. -->
   <!-- xslint-disable-file too-many-templates -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
@@ -654,11 +654,11 @@
       <xsl:value-of select="$name"/>
       <xsl:text>, "</xsl:text>
       <xsl:value-of select="@loc"/>
-      <xsl:text>", </xsl:text>
+      <xsl:text>:</xsl:text>
       <xsl:value-of select="@line"/>
-      <xsl:text>, </xsl:text>
+      <xsl:text>:</xsl:text>
       <xsl:value-of select="@pos"/>
-      <xsl:text>);</xsl:text>
+      <xsl:text>");</xsl:text>
     </xsl:if>
   </xsl:template>
   <!-- Application -->

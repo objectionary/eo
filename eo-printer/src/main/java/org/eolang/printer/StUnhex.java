@@ -34,33 +34,34 @@ final class StUnhex extends StEnvelope {
         StUnhex.class.getSimpleName(),
         new StXnav(
             StUnhex.BYTES,
-            xnav -> xnav.node().setTextContent(
+            xnav -> new Payload(xnav).replace(
                 xnav.element("o").text().orElse("")
             )
         ),
         new StXnav(
             StUnhex.elements("number"),
-            xnav -> {
-                final ByteBuffer buffer = StUnhex.buffer(
-                    StUnhex.undash(xnav.element("o").text().orElse(""))
-                );
-                if (buffer.remaining() == Double.BYTES) {
-                    final double number = buffer.getDouble();
-                    if (!Double.isNaN(number) && !Double.isInfinite(number)) {
-                        xnav.node().setTextContent(StUnhex.number(number));
+            xnav -> StUnhex.buffer(
+                StUnhex.undash(xnav.element("o").text().orElse(""))
+            ).ifPresent(
+                buffer -> {
+                    if (buffer.remaining() == Double.BYTES) {
+                        final double number = buffer.getDouble();
+                        if (!Double.isNaN(number) && !Double.isInfinite(number)) {
+                            new Payload(xnav).replace(StUnhex.number(number));
+                        }
                     }
                 }
-            }
+            )
         ),
         new StXnav(
             StUnhex.elements("string"),
-            xnav -> StUnhex.decode(
-                StUnhex.buffer(
-                    StUnhex.undash(xnav.element("o").text().orElse(""))
-                ).array()
+            xnav -> StUnhex.buffer(
+                StUnhex.undash(xnav.element("o").text().orElse(""))
             ).ifPresent(
-                decoded -> xnav.node().setTextContent(
-                    String.format("\"%s\"", StUnhex.escape(decoded))
+                buffer -> StUnhex.decode(buffer.array()).ifPresent(
+                    decoded -> new Payload(xnav).replace(
+                        String.format("\"%s\"", StUnhex.escape(decoded))
+                    )
                 )
             )
         )
@@ -104,18 +105,33 @@ final class StUnhex extends StEnvelope {
     }
 
     /**
-     * Make a byte buffer from a string.
+     * Make a byte buffer from a hex string.
+     *
+     * <p>Each byte is two hex characters, so a payload with an odd number of
+     * digits has a stray trailing nibble that cannot form a complete byte.
+     * Rather than reading past the end of the string and throwing, this
+     * method returns {@link Optional#empty()} for such a payload, so that
+     * callers leave the offending {@code Φ.number}/{@code Φ.string} node
+     * untouched - the same strategy the number branch already uses for a
+     * wrong byte count.</p>
+     *
      * @param txt The text
-     * @return The buffer of bytes
+     * @return The buffer of bytes, or empty if the payload has odd length
      */
-    private static ByteBuffer buffer(final String txt) {
+    private static Optional<ByteBuffer> buffer(final String txt) {
         final int len = txt.length();
-        final ByteBuffer buffer = ByteBuffer.allocate(len / 2);
-        for (int idx = 0; idx < len; idx += 2) {
-            buffer.put((byte) Integer.parseInt(txt.substring(idx, idx + 2), 16));
+        final Optional<ByteBuffer> result;
+        if (len % 2 == 0) {
+            final ByteBuffer buffer = ByteBuffer.allocate(len / 2);
+            for (int idx = 0; idx < len; idx += 2) {
+                buffer.put((byte) Integer.parseInt(txt.substring(idx, idx + 2), 16));
+            }
+            buffer.position(0);
+            result = Optional.of(buffer);
+        } else {
+            result = Optional.empty();
         }
-        buffer.position(0);
-        return buffer;
+        return result;
     }
 
     /**

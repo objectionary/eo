@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The program of the design note, which is the whole prototype in one place.
+# `t` does have `next`, but the object attached to `next` has nothing, so
+# `x.next.foo` asks for something that will never be there. Nobody reports it
+# yet: the tables only write down what is known, and comparing them is the job
+# of the checking loop.
+eo:
+  app.eo: |
+    [] > app
+      inc t > @
+      [] > t
+        [] > next
+      [x] > inc
+        x.next.foo > @
+xmir:
+  app.eo:
+    - "//o[@base='.foo']/o[@base='.next']/o[@base='ξ.x']"
+provides:
+  - "/provides/type[@id='Φ.app.t']/attr[@name='next' and @type='Φ.app.t.next']"
+  - "/provides/type[@id='Φ.app.t.next' and @complete='true' and not(attr)]"
+  - "/provides/type[@id='Φ.app.inc']/attr[@name='x' and @void='true']"
+needs:
+  - "/needs/type[@id='Φ.app.inc.φ.ρ.ρ']/attr[@name='next']"
+  - "/needs//attr[@name='next' and @type='Φ.app.inc.φ.ρ']"
+  - "/needs/type[@id='Φ.app.inc.φ.ρ']/attr[@name='foo' and @type='Φ.app.inc.φ']"
+links:
+  - "/links/type[@id='Φ.app.φ' and @copy='Φ.app.inc']"
+  - "/links/type[@id='Φ.app.φ.α0' and @copy='Φ.app.t']"
+  - "/links/type[@id='Φ.app.inc.φ.ρ.ρ' and @copy='Φ.app.inc.x']"

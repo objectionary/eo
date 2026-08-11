@@ -11,6 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -36,7 +38,7 @@ final class PhCoverageTest {
         final Phi origin = new Data.ToPhi(42L);
         MatcherAssert.assertThat(
             "a coverage wrapper must compare equal to the object it wraps, but it didnt",
-            new PhCoverage(origin, "Φ.n", 1, 1),
+            new PhCoverage(origin, "Φ.n:1:1"),
             Matchers.equalTo(origin)
         );
     }
@@ -48,12 +50,12 @@ final class PhCoverageTest {
         System.setProperty("eo.coverageFile", hits.toString());
         try {
             final Phi first = new PhCoverage(
-                new PhDefault(new byte[] {(byte) 0x2A}), "Φ.foo", 7, 3
+                new PhDefault(new byte[] {(byte) 0x2A}), "Φ.foo:7:3"
             );
             new Dataized(first).take();
             new Dataized(first.copy()).take();
             new Dataized(
-                new PhCoverage(new PhDefault(new byte[] {(byte) 0x01}), "Φ.bar", 9, 5)
+                new PhCoverage(new PhDefault(new byte[] {(byte) 0x01}), "Φ.bar:9:5")
             ).take();
             MatcherAssert.assertThat(
                 "every location, hit repeatedly and through a copy, must be recorded exactly once",
@@ -70,20 +72,50 @@ final class PhCoverageTest {
     }
 
     @Test
-    void recordsTheSameLocationInALaterRun(@Mktmp final Path temp) throws Exception {
-        final Path hits = temp.resolve("second.txt");
+    void writesToEachConfiguredDestinationOnce(@Mktmp final Path temp) throws Exception {
+        final Path first = temp.resolve("first.txt");
+        final Path second = temp.resolve("second.txt");
         final String before = System.getProperty("eo.coverageFile");
-        System.setProperty("eo.coverageFile", temp.resolve("first.txt").toString());
+        final Phi covered = new PhCoverage(
+            new PhDefault(new byte[] {(byte) 0x2A}), "Φ.foo:7:3"
+        );
+        try {
+            System.setProperty("eo.coverageFile", first.toString());
+            new Dataized(covered).take();
+            System.setProperty("eo.coverageFile", second.toString());
+            new Dataized(covered).take();
+            MatcherAssert.assertThat(
+                "the same location must be recorded once per configured destination",
+                Stream.concat(
+                    Files.readAllLines(first, StandardCharsets.UTF_8).stream(),
+                    Files.readAllLines(second, StandardCharsets.UTF_8).stream()
+                ).collect(Collectors.toList()),
+                Matchers.contains("Φ.foo:7:3", "Φ.foo:7:3")
+            );
+        } finally {
+            if (before == null) {
+                System.clearProperty("eo.coverageFile");
+            } else {
+                System.setProperty("eo.coverageFile", before);
+            }
+        }
+    }
+
+    @Test
+    void recordsTheSameLocationInALaterRun(@Mktmp final Path temp) throws Exception {
+        final Path hits = temp.resolve("hits.txt");
+        final String before = System.getProperty("eo.coverageFile");
+        System.setProperty("eo.coverageFile", hits.toString());
         try {
             new Dataized(
-                new PhCoverage(new PhDefault(new byte[] {(byte) 0x2A}), "Φ.später", 13, 7)
+                new PhCoverage(new PhDefault(new byte[] {(byte) 0x2A}), "Φ.später:13:7")
             ).take();
-            System.setProperty("eo.coverageFile", hits.toString());
+            Files.delete(hits);
             new Dataized(
-                new PhCoverage(new PhDefault(new byte[] {(byte) 0x2A}), "Φ.später", 13, 7)
+                new PhCoverage(new PhDefault(new byte[] {(byte) 0x2A}), "Φ.später:13:7")
             ).take();
             MatcherAssert.assertThat(
-                "a location already seen by an earlier object must be recorded again, but it wasnt",
+                "a location an earlier object recorded must be recorded again, but it wasnt",
                 Files.readAllLines(hits, StandardCharsets.UTF_8),
                 Matchers.contains("Φ.später:13:7")
             );
@@ -130,7 +162,7 @@ final class PhCoverageTest {
         try {
             new Dataized(
                 new PhCoverage(
-                    new PhDefault(new byte[] {(byte) 0x03}), "Φ.invalid", 11, 1
+                    new PhDefault(new byte[] {(byte) 0x03}), "Φ.invalid:11:1"
                 )
             ).take();
         } catch (final IllegalArgumentException ex) {

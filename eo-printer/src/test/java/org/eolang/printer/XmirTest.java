@@ -60,6 +60,24 @@ final class XmirTest {
     }
 
     @Test
+    void doesNotLeakHelperNamespaces() {
+        MatcherAssert.assertThat(
+            "XSL helper namespaces must not be serialized into printer XML",
+            new Xsline(
+                new StClasspath("/org/eolang/printer/print/to-eo-tree.xsl")
+            ).pass(
+                new XMLDocument(
+                    "<object><metas/><o name='main'/></object>"
+                )
+            ).toString(),
+            Matchers.allOf(
+                Matchers.not(Matchers.containsString("xmlns:eo=")),
+                Matchers.not(Matchers.containsString("xmlns:xs="))
+            )
+        );
+    }
+
+    @Test
     void doesNotWarnOnLocalWithoutName() {
         final List<String> warnings = new ArrayList<>(0);
         final Appender appender = new AppenderSkeleton() {
