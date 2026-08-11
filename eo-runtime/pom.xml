@@ -24,11 +24,11 @@
     -->
     <eo.typing>false</eo.typing>
     <!--
-    Whether the deadline from junit-platform.properties applies. Set it to
-    "disabled" on a box that has all the time in the world, so that a slow
-    test runs to its end instead of being skipped by Deadline.
+    How many seconds a single test may run before Deadline skips it. Raise
+    it on a box that has all the time in the world, so that a slow test
+    runs to its end instead of being skipped.
     -->
-    <eo.deadline>enabled</eo.deadline>
+    <eo.deadline>5</eo.deadline>
   </properties>
   <dependencies>
     <dependency>
@@ -206,7 +206,7 @@
           <systemPropertyVariables>
             <eo.version>${project.version}</eo.version>
             <eo.typing>${eo.typing}</eo.typing>
-            <junit.jupiter.execution.timeout.mode>${eo.deadline}</junit.jupiter.execution.timeout.mode>
+            <junit.jupiter.execution.timeout.test.method.default>${eo.deadline}s</junit.jupiter.execution.timeout.test.method.default>
             <!--
             Where PhCoverage.hit() appends coverage records at runtime. It
             pairs with coverageTracking on eo-maven-plugin below, which wraps

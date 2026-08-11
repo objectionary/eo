@@ -6,8 +6,7 @@ package org.eolang.inference;
 
 import com.jcabi.xml.XML;
 import com.yegor256.tojos.MnMemory;
-import com.yegor256.tojos.TjCached;
-import com.yegor256.tojos.TjDefault;
+import com.yegor256.tojos.TjDeferred;
 import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -46,23 +45,20 @@ final class Needs implements Clue {
 
     @Override
     public void follow(final Path xmirs, final Path tables) throws IOException {
-        final Tojos rows = new TjCached(new TjDefault(new MnMemory()));
-        int seen = 0;
-        for (final XML dispatch : new Xmirs(xmirs).dispatches()) {
-            final String owner = dispatch.xpath("o[not(@as)][1]/@loc").get(0);
-            rows.add(owner).set("index", Integer.toString(seen));
-            seen = seen + 1;
-            rows.add(String.join(" ", owner, dispatch.xpath("@base").get(0)))
-                .set("owner", owner)
-                .set("index", Integer.toString(seen))
-                .set("name", dispatch.xpath("@base").get(0).substring(1))
-                .set("type", dispatch.xpath("@loc").get(0));
-            seen = seen + 1;
+        try (Tojos rows = new TjDeferred(new MnMemory())) {
+            for (final XML dispatch : new Xmirs(xmirs).dispatches()) {
+                final String owner = dispatch.xpath("o[not(@as)][1]/@loc").get(0);
+                rows.add(owner);
+                rows.add(String.join(" ", owner, dispatch.xpath("@base").get(0)))
+                    .set("owner", owner)
+                    .set("name", dispatch.xpath("@base").get(0).substring(1))
+                    .set("type", dispatch.xpath("@loc").get(0));
+            }
+            Files.createDirectories(tables);
+            Files.write(
+                tables.resolve("needs.xml"),
+                new Grouped(rows, "needs").asXml().toString().getBytes(StandardCharsets.UTF_8)
+            );
         }
-        Files.createDirectories(tables);
-        Files.write(
-            tables.resolve("needs.xml"),
-            new Grouped(rows, "needs").asXml().toString().getBytes(StandardCharsets.UTF_8)
-        );
     }
 }
