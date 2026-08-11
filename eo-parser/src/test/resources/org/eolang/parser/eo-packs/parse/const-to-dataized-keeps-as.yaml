@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6561: const-to-dataized.xsl copied every attribute except "const" and
+# "name" onto the object nested inside the "Φ.dataized" wrapper, including
+# "@as" - the inline binding label. That put the label on the wrong object:
+# the one inside "dataized", where it has no effect, instead of on the
+# floated ".as-bytes" wrapper that actually occupies the argument slot after
+# vars-float-up runs. The label must survive on the outer wrapper instead.
+sheets:
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+asserts:
+  - //o[@base='.as-bytes' and @as='lbl' and o[@base='Φ.dataized' and o[@base='b' and not(@as)]]]
+input: |
+  [] > foo
+    a b:lbl! > x
