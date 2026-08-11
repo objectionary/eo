@@ -29,7 +29,10 @@ final class LcovTest {
         final Path sources = temp.resolve("eo");
         Files.createDirectories(sources.resolve("числò"));
         final Path source = sources.resolve("числò/plus.eo");
-        Files.write(source, "+package числò\n".getBytes(StandardCharsets.UTF_8));
+        Files.write(
+            source,
+            String.format("+package числò%n").getBytes(StandardCharsets.UTF_8)
+        );
         MatcherAssert.assertThat(
             "the .eo file the report names for the touched program does not exist on disk",
             new Lcov(sources, Collections.singleton("числò.plus:7:2")).toString(),

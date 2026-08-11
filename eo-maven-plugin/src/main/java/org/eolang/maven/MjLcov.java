@@ -18,15 +18,15 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * Save an LCOV tracefile of EO object coverage.
- * <p>
- *     This Maven Mojo reads the hits {@code PhCoverage} appended while the
- *     tests ran and saves them as LCOV. It runs after the tests, so it is
- *     bound to {@code verify}, and it needs {@code coverageTracking} on
- *     the {@code transpile} goal, since otherwise nothing is instrumented
- *     and no hit is ever recorded. In {@code eo-runtime} both ends are
- *     wired: surefire names the file, this goal reads it, and the
- *     {@code codecov} workflow turns {@code coverageTracking} on.
- * </p>
+ *
+ * <p>This Maven Mojo reads the hits {@code PhCoverage} appended while the
+ * tests ran and saves them as LCOV. It runs after the tests, so it is
+ * bound to {@code verify}, and it needs {@code coverageTracking} on
+ * the {@code transpile} goal, since otherwise nothing is instrumented
+ * and no hit is ever recorded. In {@code eo-runtime} both ends are
+ * wired: surefire names the file, this goal reads it, and the
+ * {@code codecov} workflow turns {@code coverageTracking} on.</p>
+ *
  * @since 0.74.0
  */
 @Mojo(
