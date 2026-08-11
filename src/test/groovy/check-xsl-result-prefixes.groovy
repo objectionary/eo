@@ -19,7 +19,7 @@ factory.namespaceAware = true
 project.traverse(
     type: FileType.FILES,
     preDir: { file ->
-        if (file.name == 'target') {
+        if (file.name == 'target' || file.name.startsWith('.')) {
             return FileVisitResult.SKIP_SUBTREE
         }
     },
