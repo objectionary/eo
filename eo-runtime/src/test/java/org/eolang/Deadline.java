@@ -20,10 +20,9 @@ public final class Deadline implements TestExecutionExceptionHandler {
     @Override
     public void handleTestExecutionException(final ExtensionContext context,
         final Throwable error) throws Throwable {
-        try {
-            throw error;
-        } catch (final TimeoutException ex) {
-            throw new TestAbortedException(ex.getMessage(), ex);
+        if (error instanceof TimeoutException) {
+            throw new TestAbortedException(error.getMessage(), error);
         }
+        throw error;
     }
 }
