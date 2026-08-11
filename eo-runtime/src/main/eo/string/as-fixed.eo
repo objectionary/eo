@@ -21,40 +21,52 @@
       "Can't write a fixed-point decimal with %f fraction places".printf
         * places
     if.
-      n.lt 0
-      if. > [a] >> signed
-        eq.
-          floor.
-            plus.
-              a.times
-                pow10 places
-              0.5
-          0
-        positive a
-        "-".as-bytes.concat
-          positive a
-      | (n.times -1)
-      [a] >> positive
-        if. > @
-          places.eq 0
-          as-decimal ip
+      n.is-finite.and
+        n.abs.gte 9007199254740992
+      if. > [a] >> signed-large
+        places.eq 0
+        as-decimal a
+        concat.
           concat.
-            concat.
-              as-decimal ip
-              ".".as-bytes
-            rec-pad
-              m.minus
-                ip.times scale
-              places
-              --
-        floor. > ip
-          m.div scale
-        floor. > m
-          plus.
-            a.times scale
-            0.5
-        pow10 places > scale
+            as-decimal a
+            ".".as-bytes
+          rec-pad 0 places --
       | n
+      if.
+        n.lt 0
+        if. > [a] >> signed
+          eq.
+            floor.
+              plus.
+                a.times
+                  pow10 places
+                0.5
+            0
+          positive a
+          "-".as-bytes.concat
+            positive a
+        | (n.times -1)
+        [a] >> positive
+          if. > @
+            places.eq 0
+            as-decimal ip
+            concat.
+              concat.
+                as-decimal ip
+                ".".as-bytes
+              rec-pad
+                m.minus
+                  ip.times scale
+                places
+                --
+          floor. > ip
+            m.div scale
+          floor. > m
+            plus.
+              a.times scale
+              0.5
+          pow10 places > scale
+        | n
   if. > [p] >> pow10
     p.eq 0
     1

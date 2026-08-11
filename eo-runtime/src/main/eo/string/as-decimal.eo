@@ -4,6 +4,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
@@ -13,32 +15,18 @@
     T
       "Can't write a non-finite number as decimal"
     if.
-      n.abs.gte 9007199254740992
+      n.gte 9.223372036854776e18
       T
-        "Can't write this number as decimal digits exactly: its magnitude is 2^53 or larger, past the largest integer a double can hold exactly"
+        "Can't write this number as decimal digits: it is outside the signed 64-bit range"
       if.
-        n.lt 0
-        if. > [m] >> negative
-          m.floor.eq 0
-          digits m
-          "-".as-bytes.concat
-            digits m
-        | (n.times -1)
-        [n] >> digits
-          if. > @
-            n.lt 10
-            as-char
-              n.floor.plus 48
-            concat.
-              digits q
-              as-char
-                plus.
-                  floor.
-                    n.minus (q.times 10)
-                  48
-          floor. > q
-            n.div 10
-        | n
+        n.lt -9.223372036854776e18
+        T
+          "Can't write this number as decimal digits: it is outside the signed 64-bit range"
+        from-i64
+          i64 integer
+  [] > from-i64 /Q.bytes
+    ? > value /Q.i64
+  n.as-i64 > integer!
 
   eq. ++> can-drop-the-sign-of-a-negative-below-one
     "0"
@@ -50,6 +38,11 @@
     string
       as-decimal -0.5
 
+  eq. ++> can-truncate-a-large-positive-fraction
+    "1000000042"
+    string
+      as-decimal 1.00000004275E9
+
   eq. ++> can-truncate-a-negative-fraction
     "-7"
     string
@@ -59,6 +52,11 @@
     "42"
     string
       as-decimal 42.987
+
+  eq. ++> can-write-a-large-exact-counterexample
+    "38802277692848472"
+    string
+      as-decimal 38802277692848472
 
   eq. ++> can-write-a-multi-digit-number
     "31415"
@@ -80,17 +78,77 @@
     string
       as-decimal 7
 
+  eq. ++> can-write-negative-value-at-the-chunk-base
+    "-1000000000"
+    string
+      as-decimal -1000000000
+
+  eq. ++> can-write-negative-value-below-the-chunk-base
+    "-999999999"
+    string
+      as-decimal -999999999
+
+  eq. ++> can-write-negative-value-forty-two-past-the-chunk-base
+    "-1000000042"
+    string
+      as-decimal -1000000042
+
+  eq. ++> can-write-negative-value-one-past-the-chunk-base
+    "-1000000001"
+    string
+      as-decimal -1000000001
+
+  eq. ++> can-write-positive-value-at-the-chunk-base
+    "1000000000"
+    string
+      as-decimal 1000000000
+
+  eq. ++> can-write-positive-value-below-the-chunk-base
+    "999999999"
+    string
+      as-decimal 999999999
+
+  eq. ++> can-write-positive-value-forty-two-past-the-chunk-base
+    "1000000042"
+    string
+      as-decimal 1000000042
+
+  eq. ++> can-write-positive-value-one-past-the-chunk-base
+    "1000000001"
+    string
+      as-decimal 1000000001
+
+  eq. ++> can-write-ten-to-the-16th
+    "10000000000000000"
+    string
+      as-decimal 10000000000000000
+
+  eq. ++> can-write-the-largest-double-below-the-long-maximum
+    "9223372036854774784"
+    string
+      as-decimal 9223372036854774784
+
   eq. ++> can-write-the-largest-exactly-representable-magnitude
     "9007199254740991"
     string
       as-decimal 9007199254740991
+
+  eq. ++> can-write-the-long-minimum
+    "-9223372036854775808"
+    string
+      as-decimal -9.223372036854776e18
+
+  eq. ++> can-write-two-to-the-53rd
+    "9007199254740992"
+    string
+      as-decimal 9007199254740992
 
   eq. ++> can-write-zero
     "0"
     string
       as-decimal 0
 
-  as-decimal 9007199254740992 --> stops-on-a-magnitude-of-two-to-the-53rd
+  as-decimal -9.223372036854778e18 --> stops-below-the-long-minimum-boundary
 
   as-decimal 1.0e30 --> stops-on-a-magnitude-too-large-to-represent-exactly
 
@@ -99,3 +157,5 @@
   as-decimal ninf --> stops-on-negative-infinity
 
   as-decimal pinf --> stops-on-positive-infinity
+
+  as-decimal 9.223372036854776e18 --> stops-on-the-long-maximum-boundary
