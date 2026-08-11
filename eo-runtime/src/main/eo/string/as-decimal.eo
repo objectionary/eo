@@ -28,7 +28,7 @@
           digits m
           "-".as-bytes.concat
             digits m
-        | (n.times -1).as-i64
+        | (n.times -1).as-i64 failure
         [n] >> digits
           if. > @
             n.lt ten
@@ -41,9 +41,10 @@
                   as-number.
                     n.minus (q.times ten)
                   48
-          n.div ten > q!
-        | n.as-i64
-  10.as-i64 > ten!
+          n.div ten failure > q!
+        | n.as-i64 failure
+  T message > [message] >> failure
+  10.as-i64 failure > ten!
 
   eq. ++> can-drop-the-sign-of-a-negative-below-one
     "0"
