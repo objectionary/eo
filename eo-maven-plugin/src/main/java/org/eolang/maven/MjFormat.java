@@ -119,11 +119,11 @@ public final class MjFormat extends MjSafe {
     void exec() throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> sources = this.scopedTojos().withSources();
-        final int divergent = new Threaded<>(
-            sources,
-            tojo -> this.reformat(tojo.source())
-        ).total();
-        this.report(sources.size(), divergent, System.currentTimeMillis() - start);
+        this.report(
+            sources.size(),
+            new Threaded<>(sources, tojo -> this.reformat(tojo.source())).total(),
+            System.currentTimeMillis() - start
+        );
     }
 
     /**
