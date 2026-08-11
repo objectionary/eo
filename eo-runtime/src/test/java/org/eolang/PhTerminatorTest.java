@@ -105,11 +105,10 @@ final class PhTerminatorTest {
     }
 
     @Test
-    void rejectsPutAtOtherPositions() {
-        Assertions.assertThrows(
-            ExFailure.class,
+    void toleratesPutAtOtherPositions() {
+        Assertions.assertDoesNotThrow(
             () -> new PhTerminator().put(1, new Data.ToPhi("nope")),
-            "putting into the bottom object anywhere but position 0 must abort"
+            "putting into the bottom object away from position 0 must not abort"
         );
     }
 

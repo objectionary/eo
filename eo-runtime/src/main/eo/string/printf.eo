@@ -37,6 +37,13 @@
 # which are how `false` and `true` dataize, together with the two control
 # characters that share that encoding, because an object knows its own bytes
 # here and not its type.
+#
+# @todo #6359:60min Format a large magnitude with the `%f` conversion. A call
+#  like `printf "%f" 1e30` collapses into a chain of some forty `Error in "..."`
+#  links ending in `the 'x' attribute must be a number`, while `1e20` and `1e25`
+#  print fine, so `as-fixed` loses its argument somewhere above `1e26`. This also
+#  keeps `printf "%d" 1e30` from ever naming its own reason, because the `%d`
+#  guard below renders that reason through `%f`.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
