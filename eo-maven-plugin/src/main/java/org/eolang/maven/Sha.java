@@ -73,9 +73,15 @@ final class Sha {
      */
     private String hash() throws IOException, NoSuchAlgorithmException {
         final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        final Predicate<Path> active;
+        if (Files.isDirectory(this.path)) {
+            active = this.filter;
+        } else {
+            active = any -> true;
+        }
         try (Stream<Path> walk = Files.walk(this.path)) {
             walk.filter(Files::isRegularFile)
-                .filter(this.filter)
+                .filter(active)
                 .sorted(Comparator.comparing(this::relative))
                 .forEach(file -> this.feed(digest, file));
         }
