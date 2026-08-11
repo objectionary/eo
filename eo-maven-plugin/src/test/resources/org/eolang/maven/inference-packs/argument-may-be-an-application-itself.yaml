@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The argument of one check can be a check of its own. Nothing here is decided
+# in an order: the inner promise is a row like any other, and what the outer
+# one receives is whatever the inner copy turns out to have.
+eo:
+  box.eo: |
+    [] > box
+      wrap (wrap t) > @
+  wrap.eo: |
+    [n] > wrap
+      n > @
+  t.eo: |
+    [] > t
+      [] > next
+checks:
+  - "/checks/type[@id='Φ.box.φ']/attr[@name='α0' and @type='Φ.box.φ.α0']"
+  - "/checks/type[@id='Φ.box.φ.α0']/attr[@name='α0']"
+links:
+  - "/links/type[@id='Φ.box.φ.α0' and @copy='Φ.wrap']"
+  - "/links/type[@id='Φ.box.φ.α0.α0' and @copy='Φ.t']"
