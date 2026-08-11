@@ -17,8 +17,7 @@
     T
       "Can't write a non-finite number as decimal"
     if.
-      gte.
-        n.abs
+      n.abs.gte
         2.power 63
       T
         "Can't write this number as decimal digits: its magnitude is 2^63 or larger, past the range of a signed 64-bit integer"
