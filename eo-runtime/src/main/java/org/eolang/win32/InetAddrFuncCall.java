@@ -36,15 +36,18 @@ public final class InetAddrFuncCall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.win.take("return").copy();
+        byte[] address;
         try {
-            final ByteBuffer buffer = ByteBuffer.allocate(4);
-            buffer.put(
-                InetAddress.getByName(
-                    new Dataized(params[0]).asString()
-                ).getAddress()
-            );
-            result.put(0, new Data.ToPhi(Integer.reverseBytes(buffer.getInt(0))));
+            address = InetAddress.getByName(new Dataized(params[0]).asString()).getAddress();
         } catch (final UnknownHostException exception) {
+            address = new byte[0];
+        }
+        if (address.length == 4) {
+            result.put(
+                0,
+                new Data.ToPhi(Integer.reverseBytes(ByteBuffer.wrap(address).getInt(0)))
+            );
+        } else {
             Winsock.INSTANCE.WSASetLastError(Winsock.WSAEINVAL);
             result.put(0, new Data.ToPhi(-1));
         }

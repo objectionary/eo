@@ -1391,6 +1391,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Type variable outside A–F | `type variable must be one of A-F` |
 | `?` optional marker on an atom return signature | `optional marker ? is allowed only on a void attribute` |
 | `?` inside a `/{…}` argument list | `? is not allowed inside a /{…} argument list` |
+| Empty member in a `/{…}` argument list: a double space, or a separator with no type after it (e.g. `/{string }`) | `types in a /{…} list must be separated by exactly one space` |
 | Type annotation on a void outside an atom | `a void type annotation is allowed only inside an atom` |
 | Two type annotations on one void | `a void attribute may carry at most one type annotation` |
 | Unexpected odd character after a name suffix | `unexpected content after name suffix` |

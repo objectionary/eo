@@ -75,6 +75,36 @@ final class Xmirs {
     }
 
     /**
+     * Every reference of the program.
+     *
+     * <p>A reference names an object instead of taking an attribute from
+     * one: {@code ξ.t} names something bound nearby, {@code Φ.number}
+     * names what the whole program knows. Both carry exactly one name,
+     * since a longer path was split into dispatches before any clue looked
+     * at the XMIR.</p>
+     *
+     * @return The references, file by file, in the order they appear in
+     *  the code
+     * @throws IOException If a file cannot be read
+     */
+    Collection<XML> references() throws IOException {
+        return this.matching("//o[starts-with(@base, 'ξ.') or starts-with(@base, 'Φ.')]");
+    }
+
+    /**
+     * The locator of every object of the program.
+     * @return The locators
+     * @throws IOException If a file cannot be read
+     */
+    Collection<String> locators() throws IOException {
+        final Collection<String> found = new ArrayList<>(0);
+        for (final XML xmir : this.documents()) {
+            found.addAll(xmir.xpath("//o/@loc"));
+        }
+        return found;
+    }
+
+    /**
      * Every object of the program the given XPath matches.
      * @param xpath The XPath
      * @return The objects, file by file

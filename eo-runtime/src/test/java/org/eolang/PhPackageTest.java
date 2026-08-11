@@ -55,6 +55,26 @@ final class PhPackageTest {
     }
 
     @Test
+    void reportsNoRhoOnGlobalObject() {
+        MatcherAssert.assertThat(
+            "hasRho() must agree with take(RHO) and report the global object as lacking ρ",
+            Phi.Φ.hasRho(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void reportsRhoOnceBound() {
+        final Phi pckg = new PhPackage("test-rho");
+        pckg.put(Phi.RHO, Phi.Φ);
+        MatcherAssert.assertThat(
+            "hasRho() must turn true as soon as ρ is bound into the package",
+            pckg.hasRho(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
     void setsRhoToObject() {
         final Phi pckg = Phi.Φ;
         MatcherAssert.assertThat(
@@ -64,6 +84,30 @@ final class PhPackageTest {
             ),
             pckg.take("nop").take(Phi.RHO),
             Matchers.equalTo(pckg)
+        );
+    }
+
+    @Test
+    void hasRhoReportsAbsenceOnGlobalObject() {
+        MatcherAssert.assertThat(
+            String.format(
+                "hasRho() must agree with take(%s) and report the global object as unset",
+                Phi.RHO
+            ),
+            Phi.Φ.hasRho(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void hasRhoReportsPresenceAfterDispatch() {
+        MatcherAssert.assertThat(
+            String.format(
+                "hasRho() must report %s as set once dispatch has bound it",
+                Phi.RHO
+            ),
+            Phi.Φ.take("nop").hasRho(),
+            Matchers.is(true)
         );
     }
 

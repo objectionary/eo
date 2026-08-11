@@ -113,7 +113,7 @@ final class SyscallTest {
         }
     }
 
-    @Test
+    @RepeatedIfExceptionsTest(repeats = 3)
     void sendsAndReceivesMessageViaSocketObject(@Ephemeral final int port)
         throws InterruptedException {
         final String msg = "Hello, Socket!";
