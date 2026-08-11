@@ -74,6 +74,25 @@ final class Bindings {
     }
 
     /**
+     * Reject a binding that a same-indent {@code .method} chain
+     * continuation would attach through a bare-reversed receiver host —
+     * R-6.6.3. When the chain being extended is the receiver of a
+     * reversed dispatch, a binding on a later link names the whole
+     * reversed expression, which is the same as binding the receiver.
+     * @param below The chain head's parent (what the upgrade would
+     *  touch), or {@code null} when there is none
+     * @param span Source span of the continuation line
+     */
+    static void checkReceiverUpgrade(final Level below, final Span span) {
+        if (below != null && below.kind() == Kind.BARE_REVERSED) {
+            throw new ParseError(
+                span.line(), span.indent(),
+                "reversed-dispatch receiver cannot carry a binding"
+            );
+        }
+    }
+
+    /**
      * Observe a freshly-pushed child line's outer binding against its
      * parent context — cross-line R-6.6.2 / R-6.6.3 / R-3.12.3.
      *

@@ -59,9 +59,9 @@ final class LnTextBlock implements Line {
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
-        final String joined;
+        final byte[] joined;
         try {
-            joined = Emissions.unescapeBody(
+            joined = Emissions.unescapeBytes(
                 String.join(String.valueOf('\n'), globals.tbody())
             );
         } catch (final NumberFormatException ex) {

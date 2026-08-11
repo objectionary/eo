@@ -28,7 +28,15 @@ public final class TupleToArray implements Supplier<Phi[]> {
 
     @Override
     public Phi[] get() {
-        final int length = new Dataized(this.tuple.take("length")).asNumber().intValue();
+        final double raw = new Dataized(this.tuple.take("length")).asNumber().doubleValue();
+        if (!Double.isFinite(raw) || raw < 0.0 || Math.rint(raw) != raw
+            || raw > Integer.MAX_VALUE) {
+            throw new ExFailure(
+                "The tuple length must be a finite non-negative integer within int range, but it was %s",
+                raw
+            );
+        }
+        final int length = (int) raw;
         final Phi[] arguments = new Phi[length];
         Phi tup = this.tuple;
         for (int idx = length - 1; idx >= 0; --idx) {

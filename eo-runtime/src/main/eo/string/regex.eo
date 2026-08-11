@@ -83,8 +83,34 @@
         and.
           found.to.eq txt.length
           found.from.eq 0
+      "/(?:%s)(?![\\s\\S])/%s".printf > anchored
+        *
+          parsed.group 1
+          parsed.group 2
+      "/(?:%s\n)(?![\\s\\S])/%s".printf > commented
+        *
+          parsed.group 1
+          parsed.group 2
       next. > found
-        match txt
+        match.
+          compile.
+            regex anchored
+            retry-commented
+          txt
+      next. > parsed
+        match.
+          compiled.
+            regex "/^\\/([\\s\\S]*)\\/([dimsux]*)$/"
+          expression
+      "/(?:%s\\E)(?![\\s\\S])/%s".printf > quoted
+        *
+          parsed.group 1
+          parsed.group 2
+      compile. > [message] > retry-commented
+        regex commented
+        retry-quoted
+      compile. > [message] > retry-quoted
+        regex quoted
 
   eq. ++> can-advance-after-a-zero-width-match
     1

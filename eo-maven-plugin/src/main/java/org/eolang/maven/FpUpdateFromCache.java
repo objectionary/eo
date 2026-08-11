@@ -31,11 +31,12 @@ final class FpUpdateFromCache implements Footprint {
 
     @Override
     public Path apply(final Path source, final Path target) throws IOException {
+        final Path cached = this.cache.get();
         Logger.debug(
             FpUpdateFromCache.class,
             "Updating only target %[file]s from cache %[file]s",
-            target, source
+            target, cached
         );
-        return new Saved(new TextOf(this.cache.get()), target).value();
+        return new Saved(new TextOf(cached), target).value();
     }
 }

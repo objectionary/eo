@@ -21,8 +21,9 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * <p>The transpiler emits it around every located object. Recording is
  * enabled by the {@code eo.coverageFile} system property: on the first
- * touch, one {@code program:line:pos} line is appended, at most once per
- * JVM; without the property every hit is a silent no-op. The property
+ * touch, one {@code program:line:pos} line is appended, at most once
+ * per JVM per configured destination; without the property every hit is
+ * a silent no-op. The property
  * is re-read on every touch (not cached at class load), since this
  * class is now instantiated around every located object in every EO
  * program: the very first one touched anywhere in the JVM would
@@ -40,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class PhCoverage implements Phi {
 
-    /** Locations already written in this JVM. */
+    /** Locations already written in this JVM, per coverage destination. */
     private static final Set<String> SEEN = ConcurrentHashMap.newKeySet();
 
     /** The origin. */
@@ -134,12 +135,12 @@ public final class PhCoverage implements Phi {
         return this.origin.φTerm();
     }
 
-    /** Record one hit of this location, at most once per JVM. */
+    /** Record one hit of this location, at most once per destination. */
     private void hit() {
         final String property = PhCoverage.property();
         if (property != null) {
             final String record = String.format("%s:%d:%d%n", this.program, this.line, this.pos);
-            if (PhCoverage.SEEN.add(record)) {
+            if (PhCoverage.SEEN.add(property + '\0' + record)) {
                 try {
                     Files.write(
                         Paths.get(property),

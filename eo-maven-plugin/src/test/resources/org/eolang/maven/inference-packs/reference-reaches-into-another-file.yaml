@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An object in one file is used by objects in others, which is the reason a
+# clue is given the whole program: on its own, `two.eo` cannot say what
+# `number` is, and the link would be missing.
+eo:
+  two.eo: |
+    [] > two
+      number > @
+  number.eo: |
+    [] > number
+      [] > plus
+links:
+  - "/links/type[@id='Φ.two.φ' and @copy='Φ.number']"
