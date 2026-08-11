@@ -42,10 +42,7 @@
           -1
           [stop] >>
             seq * > @
-              doubled 0 1
-              stop.as-number
-            [from count] >> doubled
-              seq * > @
+              seq * > [from count] >> doubled
                 stepped from count
                 if.
                   0.gt stop.as-number
@@ -53,6 +50,8 @@
                     from.plus count
                     count.times 2
                   true
+              | 0 1
+              stop.as-number
             [from count] >> stepped
               if. > @
                 0.gt stop.as-number
@@ -60,15 +59,12 @@
                   count.eq 1
                   if.
                     as-bool.
-                      condition
-                        from.plus 1
+                      condition (from.plus 1)
                     body from
                     stop.put from
                   seq *
                     stepped from half
-                    stepped
-                      from.plus half
-                      half
+                    stepped (from.plus half) half
                 true
               count.div 2 > half!
     false
