@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2163.801782786
+  seconds: 2163.482143166
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-10 22:57:01.827932418 Z
+  when: 2026-08-11 00:38:26.603941899 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -229944,25 +229944,6 @@
   when: *2032
   where: github
   who: 41898282
-- _id: 1099364
-  _job: 27383096422
-  _time: 2026-06-11 23:08:07.214025527 Z
-  _version: 0.19.9/0.60.2/0.17.17
-  commit: 45bf9bd95533a36a357426c69c57328c6b6b3584
-  default_branch: master
-  details: 'A new Git push #35482117256 has arrived to objectionary/hone-maven-plugin,
-    made by @yegor256 (default branch is "master"), not associated with any pull request.'
-  event_id: 13193847104
-  event_type: PushEvent
-  is_human: 1
-  push_id: 35482117256
-  ref: refs/heads/master
-  repository: 840332960
-  to_master: 1
-  what: git-was-pushed
-  when: 2026-06-11 22:06:47.000000000 Z
-  where: github
-  who: 526301
 - _id: 1099365
   _job: 27383096422
   _time: 2026-06-11 23:11:13.466647857 Z
@@ -290817,7 +290798,7 @@
   min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 466
+  types_were_scanned: 649
   what: iterate
   where: github
 - _id: 1107889
@@ -295687,6 +295668,7 @@
   - 4.787567751025907
   - 4.787567751025907
   - 4.787567751025907
+  - 4.787567751025907
   qod_per_day:
   - 20.262571430008
   - 42.95057143129291
@@ -296405,8 +296387,9 @@
   - 110.1867884948815
   - 110.1867884948815
   - 110.1867884948815
+  - 110.1867884948815
   what: learn-eva
-  when: 2026-08-10 14:36:25.218698591 Z
+  when: 2026-08-10 23:00:13.525903059 Z
 - _id: 1108432
   _job: 28880449411
   _time: 2026-07-07 16:03:53.193694149 Z
@@ -297735,7 +297718,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1019
   earliest_issue_was_found: 1
   events_were_scanned: 13009557602
   issues_were_scanned: 0
@@ -297745,7 +297728,7 @@
   min_issue_was_found: 479
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 521
+  types_were_scanned: 714
   what: iterate
   where: github
 - _id: 1108618
@@ -301493,14 +301476,14 @@
   min_issue_was_found: 3
   min_pull_was_found: 0
   repository: 721146770
-  types_were_scanned: 323
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108977
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1000
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13070511521
   issues_were_scanned: 982
@@ -301510,7 +301493,7 @@
   min_issue_was_found: 637
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 963
+  types_were_scanned: 1144
   what: iterate
   where: github
 - _id: 1108989
@@ -304452,7 +304435,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1122
   earliest_issue_was_found: 1
   events_were_scanned: 13040000276
   issues_were_scanned: 0
@@ -304462,7 +304445,7 @@
   min_issue_was_found: 253
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 939
+  types_were_scanned: 1141
   what: iterate
   where: github
 - _id: 1109065
@@ -304479,24 +304462,24 @@
   min_issue_was_found: 0
   min_pull_was_found: 409
   repository: 970961472
-  types_were_scanned: 391
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109066
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 4939
   earliest_issue_was_found: 1
-  events_were_scanned: 13071889683
+  events_were_scanned: 17341276190
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6095
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 5556
+  types_were_scanned: 5671
   what: iterate
   where: github
 - _id: 1109067
@@ -467781,9 +467764,6 @@
   comments: 5
   details: It's time to reward @morphqdd for the code review in objectionary/eo#6400,
     the reward amount is 7.
-  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
-    -5 for very few (5) comments.  Your running score is [+3786](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 98
   href: https://github.com/objectionary/eo/issues/6400/#issuecomment-5245901917
   is_human: 1
@@ -467805,9 +467785,6 @@
   comments: 5
   details: It's time to reward @thayorns for the code review in objectionary/eo#6400,
     the reward amount is 7.
-  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
-    -5 for very few (4) comments.  Your running score is [+1143](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 98
   href: https://github.com/objectionary/eo/issues/6400/#issuecomment-5245902351
   is_human: 1
@@ -467829,9 +467806,6 @@
   comments: 5
   details: It's time to reward @morphqdd for the code review in objectionary/eo#6402,
     the reward amount is 7.
-  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
-    -5 for very few (6) comments.  Your running score is [+3793](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 84
   href: https://github.com/objectionary/eo/issues/6402/#issuecomment-5245902783
   is_human: 1
@@ -467853,13 +467827,11 @@
   comments: 5
   details: It's time to reward @thayorns for the code review in objectionary/eo#6402,
     the reward amount is 7.
-  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
-    -5 for very few (2) comments.  Your running score is [+1150](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 84
   href: https://github.com/objectionary/eo/issues/6402/#issuecomment-5245903170
   is_human: 1
   issue: 6402
+  receipt: receipt-#85650
   repository: 73056727
   review_comments: 2
   seconds: 77379
@@ -467876,13 +467848,11 @@
   comments: 3
   details: It's time to reward @morphqdd for the code review in objectionary/eo#6405,
     the reward amount is 7.
-  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
-    -5 for very few (3) comments.  Your running score is [+3800](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 131
   href: https://github.com/objectionary/eo/issues/6405/#issuecomment-5245903562
   is_human: 1
   issue: 6405
+  receipt: receipt-#85651
   repository: 73056727
   review_comments: 3
   seconds: 7801
@@ -467899,13 +467869,11 @@
   comments: 3
   details: It's time to reward @thayorns for the code review in objectionary/eo#6405,
     the reward amount is 7.
-  greeting: 'Thanks for the review! You''ve earned +7 points for this: +12 as a basis;
-    -5 for very few (2) comments.  Your running score is [+1157](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 131
   href: https://github.com/objectionary/eo/issues/6405/#issuecomment-5245903923
   is_human: 1
   issue: 6405
+  receipt: receipt-#85652
   repository: 73056727
   review_comments: 2
   seconds: 76497
@@ -468207,14 +468175,11 @@
   comments: 9
   details: It's time to reward @gemshrine for the code contributed in objectionary/eo#6394,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too few (28) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+2127](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 28
   href: https://github.com/objectionary/eo/issues/6394/#issuecomment-5245904356
   is_human: 1
   issue: 6394
+  receipt: receipt-#85653
   repository: 73056727
   review_comments: 4
   seconds: 447514
@@ -468231,13 +468196,11 @@
   comments: 11
   details: It's time to reward @gemshrine for the code contributed in objectionary/eo#6399,
     the reward amount is 16.
-  greeting: 'Thanks for the contribution! You''ve earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+2143](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 44
   href: https://github.com/objectionary/eo/issues/6399/#issuecomment-5245904834
   is_human: 1
   issue: 6399
+  receipt: receipt-#85654
   repository: 73056727
   review_comments: 5
   seconds: 444304
@@ -468254,13 +468217,11 @@
   comments: 14
   details: It's time to reward @gemshrine for the code contributed in objectionary/eo#6400,
     the reward amount is 16.
-  greeting: 'Thanks for the contribution! You''ve earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+2159](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 98
   href: https://github.com/objectionary/eo/issues/6400/#issuecomment-5245905282
   is_human: 1
   issue: 6400
+  receipt: receipt-#85655
   repository: 73056727
   review_comments: 9
   seconds: 444779
@@ -468277,13 +468238,11 @@
   comments: 13
   details: It's time to reward @gemshrine for the code contributed in objectionary/eo#6402,
     the reward amount is 16.
-  greeting: 'Thanks for the contribution! You''ve earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+2175](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 84
   href: https://github.com/objectionary/eo/issues/6402/#issuecomment-5245905673
   is_human: 1
   issue: 6402
+  receipt: receipt-#85656
   repository: 73056727
   review_comments: 8
   seconds: 435949
@@ -468300,14 +468259,11 @@
   comments: 8
   details: It's time to reward @gemshrine for the code contributed in objectionary/eo#6405,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too many hits-of-code (131 >= 100). Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+2187](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 131
   href: https://github.com/objectionary/eo/issues/6405/#issuecomment-5245906021
   is_human: 1
   issue: 6405
+  receipt: receipt-#85657
   repository: 73056727
   review_comments: 5
   seconds: 431145
@@ -468324,14 +468280,11 @@
   comments: 5
   details: It's time to reward @morphqdd for the code contributed in objectionary/eo#6525,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too few (3) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+3812](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 3
   href: https://github.com/objectionary/eo/issues/6525/#issuecomment-5245906389
   is_human: 1
   issue: 6525
+  receipt: receipt-#85658
   repository: 73056727
   review_comments: 0
   seconds: 74723
@@ -468348,10 +468301,6 @@
   comments: 2
   details: It's time to reward @morphqdd for the code contributed in objectionary/eo#6533,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too few (25) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+3824](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 25
   href: https://github.com/objectionary/eo/issues/6533/#issuecomment-5245906941
   is_human: 1
@@ -468372,9 +468321,6 @@
   comments: 6
   details: It's time to reward @vasilevnstas for the code contributed in objectionary/eo#6534,
     the reward amount is 16.
-  greeting: 'Thanks for the contribution! You''ve earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+56](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 40
   href: https://github.com/objectionary/eo/issues/6534/#issuecomment-5245907365
   is_human: 1
@@ -468527,7 +468473,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-10 19:51:02.000000000 Z
+  when: &4163 2026-08-10 19:51:02.000000000 Z
   where: github
   who: 526301
 - _id: 1117938
@@ -468552,7 +468498,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-10 19:51:23.000000000 Z
+  when: &4164 2026-08-10 19:51:23.000000000 Z
   where: github
   who: 526301
 - _id: 1117939
@@ -468623,6 +468569,7 @@
     to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
     it. Your running score is [+3836](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/eo/issues/6568/#issuecomment-5246966427
   is_human: 1
   issue: 6568
   repository: 73056727
@@ -468645,6 +468592,7 @@
     to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
     it. Your running score is [+3848](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/eo/issues/6569/#issuecomment-5246966593
   is_human: 1
   issue: 6569
   repository: 73056727
@@ -468667,6 +468615,7 @@
     to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
     it. Your running score is [+3860](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/eo/issues/6570/#issuecomment-5246966761
   is_human: 1
   issue: 6570
   repository: 73056727
@@ -468689,6 +468638,7 @@
     to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
     it. Your running score is [+3872](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/eo/issues/6572/#issuecomment-5246966945
   is_human: 1
   issue: 6572
   repository: 73056727
@@ -468711,6 +468661,7 @@
     to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
     it. Your running score is [+3884](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/eo/issues/6573/#issuecomment-5246967149
   is_human: 1
   issue: 6573
   repository: 73056727
@@ -468731,6 +468682,7 @@
     -5 for very few (3) comments.  Your running score is [+1164](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 55
+  href: https://github.com/objectionary/eo/issues/6311/#issuecomment-5246967311
   is_human: 1
   issue: 6311
   repository: 73056727
@@ -468753,6 +468705,7 @@
     -5 for very few (1) comments.  Your running score is [+3891](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 55
+  href: https://github.com/objectionary/eo/issues/6311/#issuecomment-5246967493
   is_human: 1
   issue: 6311
   repository: 73056727
@@ -468775,6 +468728,7 @@
     -5 for very few (2) comments.  Your running score is [+3898](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 71
+  href: https://github.com/objectionary/eo/issues/6320/#issuecomment-5246967683
   is_human: 1
   issue: 6320
   repository: 73056727
@@ -468860,3 +468814,106 @@
   when: 2026-08-10 20:50:13.000000000 Z
   where: github
   who: 263808434
+- _id: 1117955
+  _job: 86235
+  _time: 2026-08-10 22:58:23.235506529 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 2
+  details: The pull request objectionary/eo#6574 with 67 HoC created by @morphqdd
+    was merged by @yegor256 after 49m41s of being in review and 2 comments.
+  hoc: 67
+  is_human: 1
+  issue: 6574
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 2981
+  what: code-was-contributed
+  when: *4163
+  where: github
+  who: 125282851
+- _id: 1117956
+  _job: 86235
+  _time: 2026-08-10 22:58:23.616738480 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 2
+  details: The pull request objectionary/eo#6575 with 37 HoC created by @morphqdd
+    was merged by @yegor256 after 33m51s of being in review and 2 comments.
+  hoc: 37
+  is_human: 1
+  issue: 6575
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 2031
+  what: code-was-contributed
+  when: *4164
+  where: github
+  who: 125282851
+- _id: 1117957
+  _job: 86235
+  _time: 2026-08-10 22:58:58.444850656 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 16
+  comments: 10
+  details: It's time to reward @gemshrine for the code contributed in objectionary/eo#6311,
+    the reward amount is 16.
+  greeting: 'Thanks for the contribution! You''ve earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
+    them coming. Your running score is [+2203](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 55
+  is_human: 1
+  issue: 6311
+  repository: 73056727
+  review_comments: 4
+  seconds: 679125
+  what: code-contribution-was-rewarded
+  when: 2026-08-10 22:58:58.448912497 Z
+  where: github
+  who: 113778529
+  why: Contributed code in objectionary/eo#6311
+- _id: 1117958
+  _job: 86235
+  _time: 2026-08-10 22:58:59.092810696 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  comments: 9
+  details: It's time to reward @gemshrine for the code contributed in objectionary/eo#6318,
+    the reward amount is 12.
+  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
+    as a basis; -4 for too many hits-of-code (122 >= 100). Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
+    them coming. Your running score is [+2215](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 122
+  is_human: 1
+  issue: 6318
+  repository: 73056727
+  review_comments: 3
+  seconds: 622548
+  what: code-contribution-was-rewarded
+  when: 2026-08-10 22:58:59.096917075 Z
+  where: github
+  who: 113778529
+  why: Contributed code in objectionary/eo#6318
+- _id: 1117959
+  _job: 86235
+  _time: 2026-08-10 22:58:59.524662235 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 16
+  comments: 7
+  details: It's time to reward @gemshrine for the code contributed in objectionary/eo#6320,
+    the reward amount is 16.
+  greeting: 'Thanks for the contribution! You''ve earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
+    them coming. Your running score is [+2231](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 71
+  is_human: 1
+  issue: 6320
+  repository: 73056727
+  review_comments: 2
+  seconds: 618700
+  what: code-contribution-was-rewarded
+  when: 2026-08-10 22:58:59.529812380 Z
+  where: github
+  who: 113778529
+  why: Contributed code in objectionary/eo#6320
