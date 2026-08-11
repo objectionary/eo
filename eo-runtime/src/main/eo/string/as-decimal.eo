@@ -4,6 +4,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
@@ -13,55 +15,18 @@
     T
       "Can't write a non-finite number as decimal"
     if.
-      or.
-        n.gte 9.223372036854776e18
-        n.lt -9.223372036854776e18
+      n.gte 9.223372036854776e18
       T
         "Can't write this number as decimal digits: it is outside the signed 64-bit range"
       if.
-        lt.
+        n.lt -9.223372036854776e18
+        T
+          "Can't write this number as decimal digits: it is outside the signed 64-bit range"
+        from-i64
           i64 integer
-          0.as-i64
-        "-".as-bytes.concat unsigned
-        unsigned
+  [] > from-i64 /Q.bytes
+    ? > value /Q.i64
   n.as-i64 > integer!
-  times. > product!
-    i64 quotient
-    1000000000.as-i64
-  div. > quotient!
-    i64 integer
-    1000000000.as-i64
-  plus. > remainder!
-    i64 integer
-    plus.
-      i64 (i64 product).as-bytes.not
-      1.as-i64
-  if. > unsigned
-    n.abs.lt 1000000000
-    [value] >> small-digits
-      if. > @
-        value.lt 10
-        as-char
-          value.floor.plus 48
-        concat.
-          small-digits q
-          as-char
-            plus.
-              floor.
-                value.minus
-                  q.times 10
-              48
-      floor. > q
-        value.div 10
-    | (i64 integer).as-number.abs
-    concat.
-      small-digits (i64 quotient).as-number.abs
-      as-bytes.
-        padded-left
-          string
-            small-digits (i64 remainder).as-number.abs
-          9
-          "0"
 
   eq. ++> can-drop-the-sign-of-a-negative-below-one
     "0"
