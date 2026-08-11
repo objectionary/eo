@@ -4,7 +4,7 @@
 
 **Goal:** Make `string.printf` render finite signed-long `number` values above `2^53` correctly for `%d` and `%f`, while preserving truncation and deliberate failures.
 
-**Architecture:** Keep `string.as-decimal` as the shared integer-rendering path for `%d` and `string.as-fixed`. Convert each accepted `number` once to `i64`. Render safe values below `1_000_000_000` with the original fast `number` digit loop; split larger values with exactly one signed `i64.div` by `1_000_000_000`, render the exact safe quotient and remainder through that loop, and left-pad the remainder to nine digits. Never negate the full input, so the signed minimum remains representable.
+**Architecture:** Keep `string.as-decimal` as the shared integer-rendering path for `%d` and `string.as-fixed`. Convert each accepted `number` once to `i64`. Render safe values below a once-bound base of `1_000_000_000` with the original fast `number` digit loop. For larger values, estimate the bounded quotient with `number` arithmetic, validate and correct it at most one unit with exact `i64` multiplication and addition, render the safe exact chunks, and left-pad the remainder to nine digits. Never negate the full integer. `string.as-fixed` renders finite negative doubles at or above `2^53` directly as signed integral values and appends zero fraction digits, preserving the existing rounding path below that threshold.
 
 **Tech Stack:** EO standard-library objects, embedded EO test declarations, Maven Surefire, Java 21.
 
@@ -12,9 +12,9 @@
 
 ## File map
 
-- Modify `eo-runtime/src/main/eo/string/as-decimal.eo`: replace floating-point full-value digit extraction and the `2^53` guard with signed-long validation plus one exact base-`1_000_000_000` split; extend its embedded regression tests.
+- Modify `eo-runtime/src/main/eo/string/as-decimal.eo`: replace floating-point full-value digit extraction and the `2^53` guard with signed-long validation plus an estimated and exactly corrected base-`1_000_000_000` split; extend its embedded regression tests.
 - Modify `eo-runtime/src/main/eo/string/printf.eo`: add issue-level `%d` and `%f` regression tests only; production routing remains unchanged.
-- Reference `eo-runtime/src/main/eo/string/as-fixed.eo`: verify that `%f` still reaches `string.as-decimal` through its integer part; no source change is planned.
+- Modify `eo-runtime/src/main/eo/string/as-fixed.eo`: avoid negating finite negative integral doubles whose magnitude is at least `2^53`; keep ordinary rounding unchanged.
 
 ### Task 1: Add failing regressions for the documented range
 
@@ -115,7 +115,7 @@ git commit -m '#6572: reproduce long-range printf failures'
 
 Expected: one commit containing only the two EO test files.
 
-### Task 2: Render signed-long decimals with one exact base-`1_000_000_000` split
+### Task 2: Render signed-long decimals with an exact corrected base-`1_000_000_000` split
 
 **Files:**
 - Modify: `eo-runtime/src/main/eo/string/as-decimal.eo:11-42`
@@ -130,14 +130,16 @@ Leave the file header and all Task 1 embedded test declarations intact. Replace 
 2. Dataize `n.as-i64` exactly once as `integer!`; redecorate every typed use as `i64 integer` because a `!` binding retains bytes rather than its decoration.
 3. Determine whether to prefix `-` from the truncated `i64`, not from `n`. This keeps negative fractions that truncate to zero unsigned.
 4. Define `small-digits` by retaining the original fast `number`-level division, floor, remainder, and ASCII conversion loop. Call it only with exact nonnegative integers below `2^53`.
-5. If `n.abs < 1_000_000_000`, render the absolute value of `(i64 integer).as-number` directly through `small-digits`.
-6. Otherwise perform exactly one signed `(i64 integer).div 1000000000.as-i64`. Cache and redecorate the quotient bytes. Cache `quotient * base`, then compute and cache the signed remainder as `integer - product`. Prefer the established two's-complement `not`-plus-one addition pattern if it keeps the EO structure clear; do not introduce repeated `i64.div` or negate the full input.
-7. Convert only the cached quotient and remainder to `number`, take their `number`-level absolute values, and render them with `small-digits`. The quotient magnitude is at most `9_223_372_036`; the remainder magnitude is at most `999_999_999`, so both paths are exact.
-8. Left-pad the tail string to exactly nine characters with zeroes and concatenate the unsigned head and tail. Prefix one minus sign only when the truncated `i64` is negative.
+5. Bind numeric base `1_000_000_000` once. If `n.abs < base`, render the absolute value of `(i64 integer).as-number` directly through `small-digits`.
+6. Otherwise compute `floor(n.abs / base)`, apply the sign using safe `number` arithmetic, convert the bounded estimate to `i64`, and cache its bytes. Do not use `i64.div` and do not negate the full integer.
+7. Cache the exact `i64` product `estimate * base`, then cache the signed remainder as `integer - product` with two's-complement `not`-plus-one addition.
+8. Correct at most one unit using exact signed-remainder invariants. Positive inputs require `0 <= remainder < base`: decrement/add-base for a negative remainder or increment/subtract-base for a remainder at least base. Negative inputs require `-base < remainder <= 0`: increment/subtract-base for a positive remainder or decrement/add-base for a remainder at or below negative base. Cache the corrected quotient and remainder bytes.
+9. Convert only the corrected quotient and remainder to `number`, take their `number`-level absolute values, and render them with `small-digits`. The quotient magnitude is at most `9_223_372_036`; the remainder magnitude is at most `999_999_999`, so both paths are exact. An overestimate near the maximum quotient cannot reach `9_223_372_037`, because the `2^63` magnitude boundary is still `145_224_192` below that base multiple, while the estimate error is sub-micro-unit.
+10. Left-pad the tail string to exactly nine characters with zeroes and concatenate the unsigned head and tail. Prefix one minus sign only when the truncated `i64` is negative.
 
 The chunk boundary behavior must include `10000000000000000 -> 10000000 | 000000000`, `9007199254740992 -> 9007199 | 254740992`, `38802277692848472 -> 38802277 | 692848472`, `9223372036854774784 -> 9223372036 | 854774784`, and `-9223372036854775808 -> -9223372036 | -854775808` before magnitude rendering and the single sign prefix.
 
-Do not revive the rejected per-decimal-digit algorithm. With quotient and remainder caching, it still produced `EOas_decimalTest 21/0F/5E` and `EOprintfTest 49/0F/1E`; all six errors were 20-minute JUnit timeouts while the other 64 focused tests passed.
+Do not revive either rejected division algorithm. Per-decimal-digit division produced `EOas_decimalTest 21/0F/5E` and `EOprintfTest 49/0F/1E`; all six errors were 20-minute timeouts while the other 64 focused tests passed. The later one-division base split was correct but still required 58–88 seconds for isolated large values and hundreds of seconds for individual contended suite cases, which is not acceptable for production formatting.
 
 - [ ] **Step 2: Inspect the implementation diff for accidental caller changes**
 
@@ -148,7 +150,7 @@ git diff --check
 git diff -- eo-runtime/src/main/eo/string/as-decimal.eo eo-runtime/src/main/eo/string/printf.eo eo-runtime/src/main/eo/string/as-fixed.eo
 ```
 
-Expected: production changes appear only in `as-decimal.eo`; `printf.eo` contains test additions only; `as-fixed.eo` has no diff.
+Expected: production changes appear only in `as-decimal.eo` and `as-fixed.eo`; `printf.eo` contains test additions only.
 
 Do not run the complete focused classes or commit the production source yet. Task 3 applies the performance gates in increasing scope before staging the implementation.
 
@@ -177,7 +179,7 @@ exit $code
 
 Record both the Maven wall time and the testcase duration from `eo-runtime/target/surefire-reports/TEST-org.eolang.EO_string.EOas_decimalTest.xml`.
 
-Expected: the test passes and its Surefire testcase duration is less than five minutes. If it exceeds five minutes, stop before any broader run and redesign the implementation; do not weaken the existing timeout.
+Expected: the test passes and its Surefire testcase duration is less than ten seconds, preferably substantially lower. If it reaches ten seconds, stop before any broader run and redesign the implementation; do not weaken the existing timeout.
 
 - [ ] **Step 2: Run the largest positive and signed-minimum methods together**
 
@@ -199,10 +201,10 @@ Expected: both pass under contention, and neither approaches the 20-minute JUnit
 Run:
 
 ```powershell
-mvn -o -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Dtest=org.eolang.EO_string.EOas_decimalTest,org.eolang.EO_string.EOprintfTest' test -pl :eo-runtime
+mvn -o -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Dtest=org.eolang.EO_string.EOas_decimalTest,org.eolang.EO_string.EOas_fixedTest,org.eolang.EO_string.EOprintfTest' test -pl :eo-runtime
 ```
 
-Expected: `EOas_decimalTest` reports `21` tests, zero failures, and zero errors; `EOprintfTest` reports `49` tests, zero failures, and zero errors. Record each class duration from the Surefire reports. The rejected per-digit baseline was `21/0F/5E` and `49/0F/1E`, with all six errors caused by 20-minute timeouts.
+Expected: all three focused classes report zero failures and zero errors. Record each class count and duration from the Surefire reports. The rejected per-digit baseline was `EOas_decimalTest 21/0F/5E` and `EOprintfTest 49/0F/1E`, with all six errors caused by 20-minute timeouts.
 
 - [ ] **Step 4: Stage and commit only the verified formatter implementation**
 
@@ -212,13 +214,13 @@ Run:
 git diff --check
 git diff --name-only
 git diff -- eo-runtime/src/main/eo/string/as-decimal.eo eo-runtime/src/main/eo/string/printf.eo eo-runtime/src/main/eo/string/as-fixed.eo
-git add -- eo-runtime/src/main/eo/string/as-decimal.eo
+git add -- eo-runtime/src/main/eo/string/as-decimal.eo eo-runtime/src/main/eo/string/as-fixed.eo
 git diff --cached --name-only
 git diff --cached --check
-git commit -m '#6572: format signed long numbers exactly'
+git commit -m '#6572: avoid long division in decimal formatting'
 ```
 
-Expected: before staging, the only uncommitted production file is `as-decimal.eo`, with no uncommitted `printf.eo` or `as-fixed.eo` diff. The commit contains only `as-decimal.eo`; the regression tests are already in Task 1.
+Expected: before staging, the only uncommitted production files are `as-decimal.eo` and `as-fixed.eo`, with `printf.eo` containing tests only. The production commit contains only `as-decimal.eo` and `as-fixed.eo`; the regressions are already committed separately.
 
 - [ ] **Step 5: Run repository hygiene checks and inspect the complete branch diff**
 
@@ -236,6 +238,13 @@ Expected: no whitespace errors, no uncommitted source changes, and only the desi
 - [ ] **Step 6: Request a code review and address only verified findings**
 
 Use `superpowers:requesting-code-review` against `upstream/master...HEAD`. Check the review against the issue scope, rerun the focused tests after any correction, and create a narrowly scoped follow-up commit only if a concrete defect is found.
+
+### Review follow-up: reject pure-EO division latency and cover the signed minimum
+
+- [ ] Amend this plan and the design before source changes. Record the one-division latency, the number estimate plus exact `i64` correction, the ten-second isolated gate, the base seams, and the `as-fixed` signed-minimum path. Commit docs only as `#6572: refine decimal formatting performance design`.
+- [ ] Add positive and negative `as-decimal` regressions for `999999999`, `1000000000`, `1000000001`, and `1000000042`, plus a large fractional truncation case. Add `printf` regressions for `%d`, `%f`, and `%.0f` at `-2^63`. Run the three focused classes before production edits and verify that only the `%f` and `%.0f` signed-minimum cases fail. Commit tests only as `#6572: cover decimal chunk boundaries`.
+- [ ] Replace the general `i64.div` split with the bounded estimate and exact one-unit correction. Add the narrow finite-negative-large branch to `as-fixed`; retain its rounding path for smaller magnitudes.
+- [ ] Run the signed-minimum `as-decimal` method alone and require its testcase duration below ten seconds. Then run seam methods, the largest-positive/signed-minimum pair, and the exact three focused classes. Inspect counts and timings, production diffs, branch cleanliness, and owned processes before committing production only as `#6572: avoid long division in decimal formatting`.
 
 - [ ] **Step 7: Push and open the requested Draft PR**
 
