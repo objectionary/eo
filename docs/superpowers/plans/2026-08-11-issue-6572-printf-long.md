@@ -4,7 +4,7 @@
 
 **Goal:** Make `string.printf` render finite signed-long `number` values above `2^53` exactly and fast enough for production by delegating the already-validated `i64` bytes to one narrow JVM atom.
 
-**Architecture:** Keep all non-finite/range checks and the sole `number.as-i64` conversion in `string.as-decimal`; pass the cached bytes, redecorated as `i64`, to a nested atom that decodes one Java `long` and returns its locale-independent decimal text as UTF-8 `Q.bytes`. Avoid `Long.MIN_VALUE` overflow in `string.as-fixed` with one finite-negative-large helper that renders the signed integral value directly and appends zero fraction digits. Do not change production `string.printf`.
+**Architecture:** Keep all non-finite/range checks and the sole `number.as-i64` conversion in `string.as-decimal`; pass the cached bytes, redecorated as `i64`, to a nested atom that decodes one Java `long` and returns its locale-independent decimal text as UTF-8 `Q.bytes`. Route every finite value whose magnitude is at least `2^53` through one `string.as-fixed` helper that renders the integral value directly and appends zero fraction digits, avoiding both positive-value double scaling drift and `Long.MIN_VALUE` negation overflow. Do not change production `string.printf`.
 
 **Tech Stack:** EO standard-library objects, Java runtime atoms, JUnit 5, Hamcrest, Maven Surefire, Java 21.
 
@@ -15,7 +15,7 @@
 - Modify `docs/superpowers/specs/2026-08-11-issue-6572-printf-long-design.md`: replace the rejected estimate/chunk design with the measured JVM-atom exception, exact API, performance gate, and Node parity debt.
 - Modify `docs/superpowers/plans/2026-08-11-issue-6572-printf-long.md`: define the test-first implementation and validation sequence.
 - Modify `eo-runtime/src/main/eo/string/as-decimal.eo`: retain the guards and sole `n.as-i64`, declare and call `from-i64 /Q.bytes`.
-- Modify `eo-runtime/src/main/eo/string/as-fixed.eo`: avoid whole-value negation for finite negative integral doubles at or above `2^53`.
+- Modify `eo-runtime/src/main/eo/string/as-fixed.eo`: render finite positive and negative integral doubles whose magnitude is at least `2^53` directly, avoiding positive double scaling drift and whole-value negation of `Long.MIN_VALUE`.
 - Create `eo-runtime/src/main/java/org/eolang/EO_string/EOas_decimal$EOfrom_i64.java`: exact signed-long-to-UTF-8 atom.
 - Create `eo-runtime/src/test/java/org/eolang/EO_string/EOas_decimalEOfrom_i64Test.java`: direct atom contract tests.
 - Preserve `eo-runtime/src/main/eo/string/printf.eo`: its issue regressions are already committed; no production edit is permitted.
@@ -35,7 +35,7 @@ The JVM atom is therefore a measured performance exception. Recent `dataized` an
 
 - [ ] **Step 1: Replace pure-EO production experiments without losing committed tests**
 
-Use `apply_patch` to reduce the uncommitted `as-decimal.eo` production body to the guarded cached conversion and nested declaration shown in Task 3. Retain every embedded EO test already committed in `b163d32d6`. Keep only the narrow signed-large `as-fixed` branch shown in Task 3. Leave these production files unstaged during the documentation commit.
+Use `apply_patch` to reduce the uncommitted `as-decimal.eo` production body to the guarded cached conversion and nested declaration shown in Task 3. Retain every embedded EO test already committed in `b163d32d6`. Keep only the narrow finite-large `as-fixed` branch shown in Task 3. Leave these production files unstaged during the documentation commit.
 
 - [ ] **Step 2: Record the final architecture and evidence**
 
@@ -179,7 +179,7 @@ Do not return `Data.ToPhi(Long)` or `Data.ToPhi(Number)`, because those paths co
 
 - [ ] **Step 3: Keep the narrow `as-fixed` helper**
 
-After places validation and before the existing signed/positive rounding path, branch only on `n.is-finite.and (n.lt 0 and n.abs.gte 9007199254740992)`. Apply this helper to signed `n`:
+After places validation and before the existing signed/positive rounding path, branch on `n.is-finite.and n.abs.gte 9007199254740992`. Every such value is integral on the IEEE-754 grid, so apply this helper directly to positive or negative `n`; this avoids positive-value double scaling drift as well as whole-value negation of `Long.MIN_VALUE`:
 
 ```eo
 if. > [a] >> signed-large

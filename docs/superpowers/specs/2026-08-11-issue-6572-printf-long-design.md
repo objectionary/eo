@@ -85,7 +85,7 @@ The atom must never return `new Data.ToPhi(value)` or any other `Number`. `Data.
 
 ### `string.as-fixed`
 
-Places validation remains first. After it succeeds, one narrow helper handles a finite negative value whose magnitude is at least `2^53`. Such a value is integral on the IEEE-754 grid, so the helper passes the signed `n` directly to `as-decimal`. It returns only those digits for `places = 0`; otherwise it appends `.` and exactly `places` zeroes. The helper never evaluates `n.times -1`.
+Places validation remains first. After it succeeds, one narrow helper handles every finite value whose magnitude is at least `2^53`. Such a value is integral on the IEEE-754 grid, so the helper passes `n` directly to `as-decimal`. It returns only those digits for `places = 0`; otherwise it appends `.` and exactly `places` zeroes. This common positive-and-negative path avoids both double scaling drift for large positive values and whole-value negation of `Long.MIN_VALUE`.
 
 All smaller magnitudes retain the existing rounding path and sign-dropping behavior for values that round to zero. The shortcut is explicitly finite, so `nan` and infinities continue through the deliberate existing non-finite path.
 
