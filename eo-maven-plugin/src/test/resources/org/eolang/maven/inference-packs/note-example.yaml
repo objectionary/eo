@@ -32,4 +32,5 @@ links:
 checks:
   - "/checks/type[@id='Φ.app.φ']/attr[@name='α0' and @type='Φ.app.φ.α0']"
 problems:
-  - "/problems/type[@id='Φ.app.t.next']/attr[@name='foo' and @asked='Φ.app.inc.φ']"
+  - "/problems/type[@id='Φ.app.t.next']/attr[@name='foo']"
+  - "/problems//attr[@asked='Φ.app.inc.φ']"
