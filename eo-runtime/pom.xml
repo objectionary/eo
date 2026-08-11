@@ -23,6 +23,12 @@
     cannot express; set to true to verify return types.
     -->
     <eo.typing>false</eo.typing>
+    <!--
+    Whether the deadline from junit-platform.properties applies. Set it to
+    "disabled" on a box that has all the time in the world, so that a slow
+    test runs to its end instead of being skipped by Deadline.
+    -->
+    <eo.timeout>enabled</eo.timeout>
   </properties>
   <dependencies>
     <dependency>
@@ -200,6 +206,7 @@
           <systemPropertyVariables>
             <eo.version>${project.version}</eo.version>
             <eo.typing>${eo.typing}</eo.typing>
+            <junit.jupiter.execution.timeout.mode>${eo.timeout}</junit.jupiter.execution.timeout.mode>
             <!--
             Where PhCoverage.hit() appends coverage records at runtime. It
             pairs with coverageTracking on eo-maven-plugin below, which wraps
