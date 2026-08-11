@@ -38,6 +38,14 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 23
+      - run: |
+          set -x
+          curl --silent --show-error --location --output "${RUNNER_TEMP}/maven.tgz" \
+            "https://archive.apache.org/dist/maven/maven-3/${MAVEN}/binaries/apache-maven-${MAVEN}-bin.tar.gz"
+          tar xzf "${RUNNER_TEMP}/maven.tgz" --directory "${RUNNER_TEMP}"
+          echo "${RUNNER_TEMP}/apache-maven-${MAVEN}/bin" >> "${GITHUB_PATH}"
+        env:
+          MAVEN: 3.9.16
       - uses: actions/cache@v6
         with:
           path: ~/.m2/repository
