@@ -1,4 +1,6 @@
 # Returns a `tuple` of `strings`: `text` separated by `delimiter`.
+# If `delimiter` is empty, the `cant-split` fallback is returned, or the
+# bottom object when unbound.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -7,51 +9,51 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text delimiter] > split
+[text delimiter cant-split] > split
   if. > @
-    eq.
-      size. >> len!
-        text >> bts!
-      0
-    * ""
-    [accum start current] >> rec-split
-      if. > @
-        len.eq current
-        appended
-        if.
-          or.
-            size.eq 0
-            gt.
-              current.plus size
-              len
-          rec-split
-            accum
-            start
-            as-number.
-              current.plus 1
+    delimiter.size.eq 0
+    cant-split
+      "The delimiter must not be empty"
+    if.
+      eq.
+        size. >> len!
+          text >> bts!
+        0
+      * ""
+      [accum start current] >> rec-split
+        if. > @
+          len.eq current
+          appended
           if.
-            delim.eq
-              bts.slice current size
-            rec-split
-              appended
-              as-number.
+            or.
+              size.eq 0
+              gt.
                 current.plus size
-              as-number.
-                current.plus size
+                len
             rec-split
               accum
               start
               as-number.
                 current.plus 1
-      accum.with > appended
-        string
-          bts.slice
-            start
-            current.minus start
-    |
-      *
-      0
-      0
+            if.
+              delim.eq
+                bts.slice current size
+              rec-split
+                appended
+                as-number.
+                  current.plus size
+                as-number.
+                  current.plus size
+              rec-split accum start (current.plus 1).as-number
+        accum.with > appended
+          string
+            bts.slice
+              start
+              current.minus start
+      |
+        *
+        0
+        0
   size. >> size!
     delimiter >> delim!
 
@@ -97,3 +99,14 @@
           " "
         1
     6
+
+  eq. ++> rejects-an-empty-delimiter
+    "recovered"
+    split
+      "abc"
+      ""
+      "recovered" > [message]
+
+  split --> stops-on-an-empty-delimiter
+    "abc"
+    ""
