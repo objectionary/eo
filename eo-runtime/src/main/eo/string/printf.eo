@@ -439,6 +439,12 @@
       "%f"
       0
 
+  eq. ++> can-format-large-positive-integer-exactly-as-float
+    "1369471683233246720.000000"
+    printf *1
+      "%f"
+      1369471683233246720
+
   eq. ++> can-format-left-justified-with-trailing-spaces
     "x         "
     printf *1
