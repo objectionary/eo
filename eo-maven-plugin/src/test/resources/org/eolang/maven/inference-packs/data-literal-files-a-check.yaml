@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A number is not a thing of its own: `5` is bytes put into a copy of `number`,
+# so it files checks of its own, one per layer. This program says nothing about
+# what `number` is, though, so no link is written for that copy - and the
+# checking loop, reading these rows, will keep quiet about them rather than
+# guess. That is the shape of the whole prototype: a row is a question, and a
+# question nobody can answer yet is left alone.
+eo:
+  five.eo: |
+    [] > five
+      fill 5 > @
+  fill.eo: |
+    [n] > fill
+      n > @
+checks:
+  - "/checks/type[@id='Φ.five.φ']/attr[@name='α0' and @type='Φ.five.φ.α0']"
+  - "/checks/type[@id='Φ.five.φ.α0']/attr[@name='α0']"
+links:
+  - "/links[not(type[@id='Φ.five.φ.α0'])]"
