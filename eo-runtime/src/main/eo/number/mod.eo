@@ -8,7 +8,8 @@
 # remainder is below twice the subtracted value, which is exact too, so the
 # answer matches the true remainder for any pair of finite numbers, however
 # far apart their magnitudes are, at the cost of two recursive steps per
-# bit of the quotient.
+# bit of the quotient. When the dividend is `nan` or infinite, the result is
+# `nan`, regardless of the divisor.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -24,37 +25,71 @@
       0
     cant-mod
       "cannot calculate mod by zero"
-    divisor.is-finite.not.if
-      divisor.is-nan.if nan x
-      if.
-        gt.
-          number x.as-bytes >> dividend
-          0
-        [] >> abs-mod
-          shrink > @
-            grow
-              abs divisor >> absy
-            abs dividend >> absx
-          if. > [chunk] > grow
-            chunk.gte absx
-            chunk
-            grow
-              chunk.plus chunk
-          if. > [chunk rest] > shrink
-            chunk.lt absy
-            rest
-            shrink
-              chunk.div 2
-              if.
-                rest.gte chunk
-                rest.minus chunk
-                rest
-        abs-mod.neg
+    dividend.is-finite.not.if
+      nan
+      divisor.is-finite.not.if
+        divisor.is-nan.if
+          nan
+          x.plus 0
+        if.
+          gte.
+            number x.as-bytes >> dividend
+            0
+          [] >> abs-mod
+            shrink > @
+              grow
+                abs divisor >> absy
+              abs dividend >> absx
+            if. > [chunk] > grow
+              chunk.gte absx
+              chunk
+              grow
+                chunk.plus chunk
+            if. > [chunk rest] > shrink
+              chunk.lt absy
+              rest
+              shrink
+                chunk.div 2
+                if.
+                  rest.gte chunk
+                  rest.minus chunk
+                  rest
+          abs-mod.neg
+
+  is-nan. ++> can-return-nan-when-the-dividend-is-infinite
+    mod
+      pinf
+      5
+
+  is-nan. ++> can-return-nan-when-the-dividend-is-nan
+    mod
+      nan
+      5
 
   is-nan. ++> can-return-nan-when-the-divisor-is-nan
     mod
       5
       nan
+
+  eq. ++> can-return-positive-zero-for-negative-zero-dividend-and-negative-infinite-divisor
+    as-bytes.
+      0.neg.mod ninf
+    0.as-bytes
+
+  eq. ++> can-return-positive-zero-for-negative-zero-dividend-and-positive-infinite-divisor
+    as-bytes.
+      0.neg.mod pinf
+    0.as-bytes
+
+  eq. ++> can-return-positive-zero-when-dividend-is-zero
+    as-bytes.
+      0.mod 3
+    0.as-bytes
+
+  eq. ++> can-return-positive-zero-when-dividend-is-zero-and-divisor-is-negative
+    as-bytes.
+      0.mod -3
+    0.as-bytes
 
   ++> can-stay-compatible-with-division
     eq. > @
@@ -118,10 +153,22 @@
       7
     -1
 
+  eq. ++> can-take-a-modulo-of-minus-seven-by-three
+    mod
+      -7
+      3
+    -1
+
   eq. ++> can-take-a-modulo-of-one-by-two
     mod
       1
       2
+    1
+
+  eq. ++> can-take-a-modulo-of-seven-by-three
+    mod
+      7
+      3
     1
 
   eq. ++> can-take-a-modulo-of-sixteen-by-a-large-negative

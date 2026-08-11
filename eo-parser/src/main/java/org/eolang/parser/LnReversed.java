@@ -114,7 +114,6 @@ final class LnReversed implements Line {
      * @param fragile Whether the dispatch carries the fragile marker
      * @param args Horizontal args in source order
      * @param outer Outer inline-binding label, or {@code null}
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private void emit(
         final Emit emit, final Suffix suffix, final String base,
@@ -147,7 +146,6 @@ final class LnReversed implements Line {
      * @param suffix The parsed suffix
      * @param kind Initial outer kind
      * @param openness Initial openness
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private void transition(
         final Stack stack, final Suffix suffix, final Kind kind, final Openness openness

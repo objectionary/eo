@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A name that resolves to nothing gets no row and no complaint. A missing
+# row leaves a later check undecided, while a wrong row would make it
+# decide wrongly.
+eo:
+  jarref.eo: |
+    [] > jarref
+      nowhere > @
+links:
+  - "/links[not(type)]"
