@@ -16,31 +16,6 @@
       shift
     list.length
 
-  eq. ++> can-shift-by-less-than-the-length
-    shifted
-      *
-        8
-        2
-        3
-        4
-        5
-      2
-    *
-      3
-      4
-      5
-
-  eq. ++> can-shift-by-more-than-the-length
-    shifted
-      *
-        8
-        2
-        3
-        4
-        5
-      6
-    *
-
   eq. ++> can-ignore-a-negative-shift
     shifted
       *
@@ -78,3 +53,28 @@
       "a"
       -0.5
       "Ω"
+
+  eq. ++> can-shift-by-less-than-the-length
+    shifted
+      *
+        8
+        2
+        3
+        4
+        5
+      2
+    *
+      3
+      4
+      5
+
+  eq. ++> can-shift-by-more-than-the-length
+    shifted
+      *
+        8
+        2
+        3
+        4
+        5
+      6
+    *
