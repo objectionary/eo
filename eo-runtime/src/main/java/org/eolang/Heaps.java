@@ -14,7 +14,9 @@ import java.util.function.IntFunction;
 /**
  * Dynamic memory.
  * @since 0.19
- * @todo #6507:30min Move the remaining tests onto the scoped malloc and make free private.
+ * @todo #6507:30min Move the remaining tests in HeapsTest and EOmallocEOofTest onto the
+ *  scoped malloc, so that every block is released by the same object that allocated it,
+ *  and then make the free method private, since nobody outside will call it any more.
  */
 final class Heaps {
 
