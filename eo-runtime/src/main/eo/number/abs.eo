@@ -16,26 +16,15 @@
     value.neg
 
   eq. ++> can-normalize-the-sign-of-negative-zero
-    as-bytes.
-      abs -0
+    -0.abs.as-bytes
     00-00-00-00-00-00-00-00
 
-  eq. ++> can-take-the-absolute-value-of-a-negative-float
-    abs -17.9
-    17.9
+  -17.9.abs.eq 17.9 ++> can-take-the-absolute-value-of-a-negative-float
 
-  eq. ++> can-take-the-absolute-value-of-a-negative-integer
-    abs -3
-    3
+  -3.abs.eq 3 ++> can-take-the-absolute-value-of-a-negative-integer
 
-  eq. ++> can-take-the-absolute-value-of-a-positive-float
-    abs 13.5
-    13.5
+  13.5.abs.eq 13.5 ++> can-take-the-absolute-value-of-a-positive-float
 
-  eq. ++> can-take-the-absolute-value-of-a-positive-integer
-    abs 3
-    3
+  3.abs.eq 3 ++> can-take-the-absolute-value-of-a-positive-integer
 
-  eq. ++> can-take-the-absolute-value-of-zero
-    abs 0
-    0
+  0.abs.eq 0 ++> can-take-the-absolute-value-of-zero

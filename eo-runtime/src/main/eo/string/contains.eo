@@ -33,11 +33,10 @@
     number length
     size
 
-  contains ++> can-contain-a-substring
+  contains. ++> can-contain-a-substring
     "Hello, world!"
     "o, wo"
 
   not. ++> cannot-contain-an-absent-substring
-    contains
-      "Hello, world!"
+    "Hello, world!".contains
       "Hey"

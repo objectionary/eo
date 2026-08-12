@@ -17,7 +17,7 @@
       accum.with item
 
   eq. ++> can-drop-an-item-by-index
-    withouti
+    withouti.
       *
         1
         2
@@ -34,12 +34,10 @@
         "text"
         "f"
       * "text" "f"
-    withouti > [a] > foo
-      a
-      0
+    a.withouti 0 > [a] > foo
 
   eq. ++> can-drop-an-item-by-index-in-a-nested-list
-    withouti
+    withouti.
       *
         "smthg"
         27

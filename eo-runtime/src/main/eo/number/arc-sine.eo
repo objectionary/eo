@@ -48,31 +48,25 @@
     base
 
   lt. ++> can-behave-as-an-odd-function-when-taking-arc-sine
-    abs
+    abs.
       times.
-        plus.
-          arc-sine 0.6
-          arc-sine -0.6
+        0.6.arc-sine.plus -0.6.arc-sine
         1000
     1
 
   lt. ++> can-take-an-arc-sine-of-a-half
-    abs
+    abs.
       minus.
-        times.
-          arc-sine 0.5
-          1000
+        0.5.arc-sine.times 1000
         times.
           pi.div 6
           1000
     1
 
   lt. ++> can-take-an-arc-sine-of-minus-a-half
-    abs
+    abs.
       minus.
-        times.
-          arc-sine -0.5
-          1000
+        -0.5.arc-sine.times 1000
         times.
           neg.
             pi.div 6
@@ -80,11 +74,9 @@
     1
 
   lt. ++> can-take-an-arc-sine-of-minus-one
-    abs
+    abs.
       minus.
-        times.
-          arc-sine -1
-          1000
+        -1.arc-sine.times 1000
         times.
           neg.
             pi.div 2
@@ -92,40 +84,29 @@
     1
 
   lt. ++> can-take-an-arc-sine-of-one
-    abs
+    abs.
       minus.
-        times.
-          arc-sine 1
-          1000
+        1.arc-sine.times 1000
         times.
           pi.div 2
           1000
     1
 
-  eq. ++> can-take-an-arc-sine-of-zero
-    arc-sine 0
-    0
+  0.arc-sine.eq 0 ++> can-take-an-arc-sine-of-zero
 
   lt. ++> can-take-an-arc-sine-of-zero-point-six
-    abs
+    abs.
       minus.
-        times.
-          arc-sine 0.6
-          1000
+        0.6.arc-sine.times 1000
         643.5
     1
 
-  is-nan. ++> cannot-take-an-arc-sine-above-one
-    arc-sine 2
+  2.arc-sine.is-nan ++> cannot-take-an-arc-sine-above-one
 
-  is-nan. ++> cannot-take-an-arc-sine-below-minus-one
-    arc-sine -2
+  -2.arc-sine.is-nan ++> cannot-take-an-arc-sine-below-minus-one
 
-  is-nan. ++> cannot-take-an-arc-sine-of-nan
-    arc-sine nan
+  nan.arc-sine.is-nan ++> cannot-take-an-arc-sine-of-nan
 
-  is-nan. ++> cannot-take-an-arc-sine-of-negative-infinity
-    arc-sine ninf
+  ninf.arc-sine.is-nan ++> cannot-take-an-arc-sine-of-negative-infinity
 
-  is-nan. ++> cannot-take-an-arc-sine-of-positive-infinity
-    arc-sine pinf
+  pinf.arc-sine.is-nan ++> cannot-take-an-arc-sine-of-positive-infinity

@@ -20,11 +20,10 @@
         size
       substring >> part!
 
-  starts-with ++> can-start-with-a-substring
+  starts-with. ++> can-start-with-a-substring
     "Hello, world"
     "Hello"
 
   not. ++> cannot-start-with-an-absent-substring
-    starts-with
-      "Hello, world"
+    "Hello, world".starts-with
       "world"

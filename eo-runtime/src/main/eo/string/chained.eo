@@ -20,14 +20,13 @@
 
   eq. ++> can-chain-with-other-strings
     "Hello, world!"
-    chained *1
-      "Hello"
-      ", "
-      "world"
-      "!"
+    "Hello".chained
+      *
+        ", "
+        "world"
+        "!"
 
   eq. ++> can-return-the-same-text-without-other-strings
     "Some"
-    chained
-      "Some"
+    "Some".chained
       *
