@@ -25,10 +25,11 @@ import org.cactoos.set.SetOf;
  * <p>It reads the {@code program:line:pos} records {@code PhCoverage}
  * appends while the tests run and saves them as LCOV, which Codecov,
  * Coveralls and {@code genhtml} read as is: a program becomes an
- * {@code SF:} path under the directory of {@code .eo} sources, and a
- * line becomes a {@code DA:} counter of how many objects of that line
- * were touched. It runs after the tests and needs {@code coverageTracking}
- * on the {@code transpile} goal, since nothing is instrumented otherwise.
+ * {@code SF:} path under the directory of {@code .eo} sources, slashed
+ * the same way on every platform, and a line becomes a {@code DA:}
+ * counter of how many objects of that line were touched. It runs after
+ * the tests and needs {@code coverageTracking} on the {@code transpile}
+ * goal, since nothing is instrumented otherwise.
  * A torn record is skipped, since the tests append concurrently.</p>
  *
  * @since 0.74.0
@@ -73,7 +74,7 @@ public final class MjLcov extends MjSafe {
                 "TN:%nSF:%s%n%sLF:%d%nLH:%d%nend_of_record%n",
                 this.sourcesDir.toPath().resolve(
                     String.format("%s.eo", program.getKey().replace('.', '/'))
-                ),
+                ).toString().replace(File.separatorChar, '/'),
                 program.getValue().entrySet().stream().map(
                     line -> String.format("DA:%d,%d%n", line.getKey(), line.getValue())
                 ).collect(Collectors.joining()),
