@@ -26,10 +26,26 @@
   `ξ.ρ.a🌵4-2`, everything up to the cactus prefix is stripped, so the
   resolved name is the trailing `a🌵4-2`. This mirrors the `$name`
   computation in the inlining template below.
+
+  Every call site hands over the `@base` attribute node itself, and it is turned
+  into a string here rather than declared as `xs:string` and left to the function
+  conversion rules (#6669). Saxon may bind a parameter to a closure over the
+  argument expression instead of over its converted value, and the node then
+  arrives in the body, where an expression compiled on the strength of a
+  statically atomic parameter (the `substring-before` below, or the
+  `ValueComparison` against `$name` in `eo:references`) casts it straight to an
+  atomic value and kills the whole sheet with `DOMNodeWrapper cannot be cast to
+  AtomicValue`. The `[2]` of #6638 is what made that reachable: it moved such a
+  predicate into a lazy subscript, which is exactly the context where the
+  deferred conversion is lost. Nothing is read differently for it: `string()` of
+  an attribute node is the value the conversion rules would have produced, and a
+  node carrying no `@base` at all now resolves to the empty string, which no
+  reference to an auto-name can equal, rather than raising a type error.
   -->
   <xsl:function name="eo:resolved-name" as="xs:string">
-    <xsl:param name="base" as="xs:string"/>
-    <xsl:sequence select="substring-after($base, substring-before($base, $auto))"/>
+    <xsl:param name="base" as="item()?"/>
+    <xsl:variable name="text" as="xs:string" select="string($base)"/>
+    <xsl:sequence select="substring-after($text, substring-before($text, $auto))"/>
   </xsl:function>
   <!--
   The based `&gt;&gt; name` handle that `$target` ultimately denotes, chasing a
@@ -310,9 +326,20 @@
   never moved its value anywhere: dropping it deletes the declaration from the
   printed source, so a private helper formation or const cache that nothing
   reads yet would silently vanish (#5914).
+
+  The handle name is atomised once here, for the reason spelled out on
+  `eo:resolved-name` above (#6669). Each of the nine questions below declares its
+  `$name` as `xs:string`, and this template is the only place that answered them
+  with the `@name` attribute node rather than its string value — every other
+  caller passes the `$name` variable of the inlining template, itself the string
+  returned by `eo:resolved-name`. Handing over the node is what let a
+  `DOMNodeWrapper` reach the `ValueComparison` inside `eo:references` and crash
+  the whole sheet. The match pattern requires `@name`, so the string is always
+  the name the nine were asked about before.
   -->
   <xsl:template match="o[starts-with(@name, $auto) and not(eo:void(.))]" priority="1">
-    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or eo:vertical-const(.) or eo:unreferenced(., @name) or (eo:multi-referenced(., @name) and eo:rebuilt(.)) or eo:piped(., @name) or eo:arg-applied(., @name) or eo:nested-applied(., @name) or eo:reapplied(., @name)">
+    <xsl:variable name="name" as="xs:string" select="string(@name)"/>
+    <xsl:if test="eo:recursive(., $name) or eo:dispatched(., $name) or eo:vertical-const(.) or eo:unreferenced(., $name) or (eo:multi-referenced(., $name) and eo:rebuilt(.)) or eo:piped(., $name) or eo:arg-applied(., $name) or eo:nested-applied(., $name) or eo:reapplied(., $name)">
       <xsl:copy>
         <xsl:apply-templates select="node()|@*"/>
       </xsl:copy>
