@@ -5,7 +5,8 @@
 # returns a `org.eolang.tuple` of formatted values (e.g. * "John").
 # Supported formatters are:
 # - %d - parse as integer and convert to `number`
-# - %f - parse as float and convert to `number`
+# - %f - parse as float and convert to `number`, in plain or exponent
+#   notation (e.g. "1e3", "-2.5E-3")
 # - %s - parse as string and convert to `string`.
 
 +architect yegor256@gmail.com
@@ -18,35 +19,60 @@
 [format read] > scanf
   [pattern specifiers] >>
     [text] > as-float
-      negative.if negated magnitude > @
-      index-of unsigned "." > dot
+      negative.if negated scaled > @
+      index-of significand "." > dot
+      if. > exponent
+        marker.eq -1
+        0
+        as-integer
+          slice
+            unsigned
+            marker.plus 1
+            unsigned.length.minus
+              marker.plus 1
       if. > magnitude
         not.
           dot.eq -1
         plus.
           fold-digits
-            slice unsigned 0 dot
+            slice significand 0 dot
           div.
             fold-digits
               slice
-                unsigned
+                significand
                 dot.plus 1
                 places
             10.power places
-        fold-digits unsigned
-      magnitude.times -1 > negated
+        fold-digits significand
+      index-of > marker
+        lower unsigned
+        "e"
+      scaled.times -1 > negated
       eq. > negative
         slice
           text
           0
           1
         "-"
-      unsigned.length.minus > places
+      significand.length.minus > places
         dot.plus 1
+      if. > scaled
+        exponent.lt 0
+        magnitude.div
+          10.power exponent.neg
+        magnitude.times
+          10.power exponent
       negative.or > signed
         eq.
           slice text 0 1
           "+"
+      if. > significand
+        marker.eq -1
+        unsigned
+        slice
+          unsigned
+          0
+          marker
       signed.if > unsigned
         slice
           text
@@ -224,7 +250,7 @@
                 position.plus 1
                 chained *1
                   accumulated
-                  "([+-]?\\d+(?:\\.\\d+)?)"
+                  "([+-]?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)"
                 found.with "f"
                 false
               if.
@@ -293,6 +319,21 @@
     0.24
     head.
       scanf "%f" "0.24"
+
+  eq. ++> can-scan-a-float-in-exponent-form
+    1000
+    head.
+      scanf "%f" "1e3"
+
+  eq. ++> can-scan-a-float-with-a-negative-exponent
+    -0.0025
+    head.
+      scanf "%f" "-2.5E-3"
+
+  eq. ++> can-scan-a-float-with-a-signed-exponent
+    150
+    head.
+      scanf "%f" "1.5e+2"
 
   eq. ++> can-scan-an-integer
     33
