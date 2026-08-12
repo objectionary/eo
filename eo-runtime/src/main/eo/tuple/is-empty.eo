@@ -10,23 +10,19 @@
 [list] > is-empty
   0.eq list.length > @
 
-  is-empty ++> can-be-empty-when-built-empty
-    *
+  tuple.empty.is-empty ++> can-be-empty-when-built-empty
 
   ++> cannot-be-empty-with-one-anonymous-object
-    not. > @
-      is-empty xs
+    xs.is-empty.not > @
     * > xs
       [f]
 
   not. ++> cannot-be-empty-with-one-item
-    is-empty *
-      1
-      2
+    is-empty.
+      * 1 2
 
   ++> cannot-be-empty-with-three-objects
-    not. > @
-      is-empty xs
+    xs.is-empty.not > @
     * > xs
       [x]
       [y]

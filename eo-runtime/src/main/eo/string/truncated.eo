@@ -32,62 +32,46 @@
 
   eq. ++> can-count-characters-and-not-bytes-when-truncating
     "Жу"
-    truncated
-      "Жук"
-      2
+    "Жук".truncated 2
 
   eq. ++> can-format-the-error-message-of-a-negative-limit
     "Can't truncate text to -3.000000 characters"
-    truncated
-      "Jeff"
+    "Jeff".truncated
       -3
       message > [message]
 
   eq. ++> can-return-a-shorter-text-unchanged
     "hi"
-    truncated
-      "hi"
-      9
+    "hi".truncated 9
 
   eq. ++> can-return-a-text-of-the-exact-limit-unchanged
     "hey"
-    truncated
-      "hey"
-      3
+    "hey".truncated 3
 
   eq. ++> can-truncate-to-an-empty-text
     ""
-    truncated
-      "Jeffrey"
-      0
+    "Jeffrey".truncated 0
 
   eq. ++> can-truncate-to-fewer-characters
     "Jef"
-    truncated
-      "Jeffrey"
-      3
+    "Jeffrey".truncated 3
 
   eq. ++> rejects-a-negative-limit
     "recovered"
-    truncated
-      "Jeff"
+    "Jeff".truncated
       -3
       "recovered" > [message]
 
   eq. ++> rejects-a-non-integer-limit
     "recovered"
-    truncated
-      "Jeff"
+    "Jeff".truncated
       1.75
       "recovered" > [message]
 
   eq. ++> rejects-an-infinite-limit-when-truncating
     "recovered"
-    truncated
-      "Jeff"
+    "Jeff".truncated
       pinf
       "recovered" > [message]
 
-  truncated --> stops-on-a-negative-limit-when-truncating
-    "Jeff"
-    -3
+  "Jeff".truncated -3 --> stops-on-a-negative-limit-when-truncating

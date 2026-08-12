@@ -19,55 +19,38 @@
       0.5
 
   lt. ++> can-approximate-a-square-root-of-four
-    abs
-      2.minus
-        sqrt 4
+    abs.
+      2.minus 4.sqrt
     1.0E-11
 
   lt. ++> can-approximate-a-square-root-of-zero
-    abs
-      0.minus
-        sqrt 0
+    abs.
+      0.minus 0.sqrt
     1.0E-11
 
   lt. ++> can-take-a-square-root-of-a-half
-    abs
-      minus.
-        sqrt 0.25
-        0.5
+    abs.
+      0.25.sqrt.minus 0.5
     1.0E-9
 
   lt. ++> can-take-a-square-root-of-four
-    abs
-      minus.
-        sqrt 4
-        2
+    abs.
+      4.sqrt.minus 2
     1.0E-9
 
-  eq. ++> can-take-a-square-root-of-one
-    sqrt 1
-    1
+  1.sqrt.eq 1 ++> can-take-a-square-root-of-one
 
-  eq. ++> can-take-a-square-root-of-positive-infinity
-    sqrt pinf
-    pinf
+  pinf.sqrt.eq pinf ++> can-take-a-square-root-of-positive-infinity
 
   lt. ++> can-take-a-square-root-of-two
-    abs
-      minus.
-        sqrt 2
-        1.4142135623730951
+    abs.
+      2.sqrt.minus 1.4142135623730951
     1.0E-9
 
-  eq. ++> can-take-a-square-root-of-zero
-    sqrt 0
-    0
+  0.sqrt.eq 0 ++> can-take-a-square-root-of-zero
 
-  is-nan. ++> cannot-take-a-square-root-of-a-negative
-    sqrt -0.1
+  -0.1.sqrt.is-nan ++> cannot-take-a-square-root-of-a-negative
 
-  is-nan. ++> cannot-take-a-square-root-of-nan
-    sqrt nan
+  nan.sqrt.is-nan ++> cannot-take-a-square-root-of-nan
 
-  is-nan. ++> cannot-take-a-square-root-of-negative-infinity
-    sqrt ninf
+  ninf.sqrt.is-nan ++> cannot-take-a-square-root-of-negative-infinity
