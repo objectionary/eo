@@ -609,6 +609,7 @@ final class Linting implements Step {
         dirs.add("error")
             .attr("check", defect.rule())
             .attr("severity", defect.severity().mnemo())
+            .attr("object", defect.object())
             .set(defect.text());
         if (defect.line() > 0) {
             dirs.attr("line", defect.line());

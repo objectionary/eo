@@ -208,6 +208,28 @@ final class MjLintTest {
     }
 
     @Test
+    void namesTheProgramInAWholeProgramAnalysisDefectFromCache(@Mktmp final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("lintAsPackage", true)
+            .withProgram(MjLintTest.problematic());
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven.execute(new FakeMaven.Lint()),
+            "First (uncached) run must report the WPA error"
+        );
+        MatcherAssert.assertThat(
+            "A WPA defect read back from the cache must still name its program, but it didn't",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> maven.execute(new FakeMaven.Lint()),
+                "Second (cached) run must report the WPA error too"
+            ).getCause().getCause().getMessage(),
+            Matchers.containsString("foo.x.main")
+        );
+    }
+
+    @Test
     void savesForWholeProgramAnalysisResultsToCache(@Mktmp final Path temp) throws IOException {
         final Path cache = temp.resolve("wpa-cache");
         final FakeMaven maven = new FakeMaven(temp)
