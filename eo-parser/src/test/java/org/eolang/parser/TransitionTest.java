@@ -80,7 +80,7 @@ final class TransitionTest {
     }
 
     @Test
-    void permitsATestAttributeChildUnderAnAtom() {
+    void permitsAPermittedChildUnderAnAtom() {
         final Stack stack = new Stack();
         new Transition(stack, new Span("theta", 1))
             .apply(Kind.BARE_FORMATION, Openness.OPEN, new Admission(null, false))
