@@ -217,6 +217,14 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public Phi take(final String name) {
+        if (Thread.currentThread().isInterrupted()) {
+            throw new ExInterrupted(
+                String.format(
+                    "Can't take \"%s\" from %s, because the thread was interrupted",
+                    name, this.forma()
+                )
+            );
+        }
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         try {
             final Phi resolved;
