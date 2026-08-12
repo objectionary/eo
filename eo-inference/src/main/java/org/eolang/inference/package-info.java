@@ -36,10 +36,12 @@
  *
  * <p>Each rule is a {@link org.eolang.inference.Clue}, which reads the
  * XMIR of a whole program from one directory and writes what it has
- * understood into another. The Maven plugin prepares that XMIR and
- * follows every clue we know through
- * {@link org.eolang.inference.Clues}, which is the entry point. Only the
- * first rule is implemented so far.</p>
+ * understood into another. The Maven plugin prepares that XMIR and follows
+ * every clue we know through {@link org.eolang.inference.Clues}, wrapped in
+ * {@link org.eolang.inference.Concluded}, which drains the checks once the
+ * tables are written. Nothing is renamed and nothing fails the build; a
+ * copy is still the same object as what it copies, and what an atom returns
+ * is still unknown, so the checker is often quiet.</p>
  *
  * @since 0.67.0
  * @see <a href="https://www.eolang.org">Project site www.eolang.org</a>

@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The same program with the second step removed: `inc` asks its argument for
+# `next`, and the `t` it is given has one. Nothing is reported, which is the
+# answer the loop has to give most of the time.
+eo:
+  app.eo: |
+    [] > app
+      inc t > @
+  inc.eo: |
+    [x] > inc
+      x.next > @
+  t.eo: |
+    [] > t
+      [] > next
+problems:
+  - "/problems[not(type)]"

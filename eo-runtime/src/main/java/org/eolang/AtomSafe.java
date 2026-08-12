@@ -21,23 +21,23 @@ package org.eolang;
 public final class AtomSafe implements Atom {
 
     /**
-     * Original atom.
+     * Original object, expected to also be an atom.
      */
-    private final Atom origin;
+    private final Phi origin;
 
     /**
      * Ctor.
      * @param atom Phi as atom
      */
     public AtomSafe(final Phi atom) {
-        this.origin = (Atom) atom;
+        this.origin = atom;
     }
 
     // @checkstyle IllegalCatchCheck (12 lines)
     @Override
     public Phi lambda() {
         try {
-            return this.origin.lambda();
+            return ((Atom) this.origin).lambda();
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw AtomSafe.failure(ex);

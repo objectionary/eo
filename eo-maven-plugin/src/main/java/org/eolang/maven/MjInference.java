@@ -39,10 +39,10 @@ import org.apache.maven.plugins.annotations.Parameter;
  * complete, so that parts of the program this goal cannot see — atoms,
  * delegation through {@code φ} — make it silent rather than wrong.</p>
  *
- * <p>Only the first of those rules is implemented so far, together with the
- * preparation the rest of them will need. The XMIR prepared for the rules
- * is saved in {@link #prepared} and the tables in
- * {@link #tables}, a document each.</p>
+ * <p>The XMIR prepared for the rules is saved in {@link #prepared} and the
+ * tables in {@link #tables}, a document each, the mistakes among them. Not
+ * one of them fails the build: the checker is a prototype, and what it
+ * understands is worth reading before it is worth obeying.</p>
  *
  * @since 0.67.0
  */

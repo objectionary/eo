@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The mistake of the design note, found by the loop instead of being left in
+# the tables. `inc` is given a `t`, `inc` takes `next` from what it is given,
+# and then `foo` from that — while the `next` of a `t` has nothing at all and
+# is complete, so `foo` will never be there. Three files, three steps: the
+# check says the `t` fills the void `x`, the void is asked for `next`, and the
+# `next` it finds is asked for `foo`.
+eo:
+  app.eo: |
+    [] > app
+      inc t > @
+  inc.eo: |
+    [x] > inc
+      x.next.foo > @
+  t.eo: |
+    [] > t
+      [] > next
+problems:
+  - "/problems/type[@id='Φ.t.next']/attr[@name='foo' and @asked='Φ.inc.φ']"

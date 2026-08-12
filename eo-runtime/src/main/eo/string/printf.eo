@@ -196,7 +196,7 @@
               gte.
                 number numeric
                 number limit
-              lt.
+              lte.
                 number numeric
                 times.
                   number limit
@@ -406,11 +406,29 @@
       "%s"
       "ab".concat "cd"
 
+  eq. ++> can-format-a-decimal-above-two-to-the-53rd
+    "9007199254740992"
+    printf *1
+      "%d"
+      9007199254740992
+
+  eq. ++> can-format-a-float-above-two-to-the-53rd
+    "9007199254740992.000000"
+    printf *1
+      "%f"
+      9007199254740992
+
   eq. ++> can-format-a-float-with-six-fraction-digits
     "1.250000"
     printf *1
       "%f"
       1.25
+
+  eq. ++> can-format-a-large-negative-decimal
+    "-9007199254740992"
+    printf *1
+      "%d"
+      -9007199254740992
 
   eq. ++> can-format-a-numbered-substitution
     "Hello, Jeff! Bye, Jeff!"
@@ -616,3 +634,7 @@
   printf *1 --> stops-on-formatting-nan-as-a-decimal
     "%d"
     nan
+
+  printf *1 --> stops-on-the-negative-long-boundary-as-a-decimal
+    "%d"
+    -9.223372036854776e18
