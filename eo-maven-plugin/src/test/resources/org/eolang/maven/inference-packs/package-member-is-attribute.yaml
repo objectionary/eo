@@ -14,6 +14,7 @@ eo:
 
     [] > minus
 provides:
-  - "/provides/type[@id='Φ.number']/attr[@name='minus' and @type='Φ.number.minus']"
+  - "/provides/type[@id='Φ.number']/attr[@name='minus']"
+  - "/provides//attr[@name='minus' and @type='Φ.number.minus']"
   - "/provides/type[@id='Φ.number' and @complete='true' and count(attr)=2]"
   - "/provides/type[@id='Φ.number.minus' and @complete='true']"

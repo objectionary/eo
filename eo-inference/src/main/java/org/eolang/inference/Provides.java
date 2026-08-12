@@ -14,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashSet;
 
 /**
  * What every object certainly has.
@@ -56,13 +55,12 @@ import java.util.HashSet;
  * written in Java, so its rows will have to be given to this table from
  * outside one day, and until they are, the checker simply knows less.</p>
  *
- * <p>Not every attribute is written inside the formation it belongs to. A
- * package is a prefix of a locator, so {@code minus} in the package
- * {@code number} is {@code Φ.number.minus} and belongs to {@code Φ.number}
- * without ever appearing among its children. Those rows come from the
- * top-level object of every file, and only when the program forms
- * something under that prefix: a package nobody declares as an object is a
- * prefix and nothing else.</p>
+ * <p>Not every attribute is written inside the formation it belongs to:
+ * {@code minus} in the package {@code number} is {@code Φ.number.minus} and
+ * belongs to {@code Φ.number} without ever appearing among its children.
+ * {@link Members} finds those and they go into this table too, last, since
+ * the order of attributes is what binds the arguments of an application and
+ * a file of a package binds none of them.</p>
  *
  * @since 0.67.0
  * @todo #6565:35min Write down the {@code ρ} every object has. An outer
@@ -93,41 +91,12 @@ final class Provides implements Clue {
                     }
                 }
             }
-            this.adopt(made, world.roots(), rows);
+            new Members(made, world.roots()).fill(rows);
             Files.createDirectories(tables);
             Files.write(
                 tables.resolve("provides.xml"),
                 new Grouped(rows, "provides").asXml().toString().getBytes(StandardCharsets.UTF_8)
             );
-        }
-    }
-
-    /**
-     * Write down what a package hands to the object it is named after,
-     * after every attribute the formations write out themselves, since the
-     * order of attributes is what binds the arguments of an application and
-     * a file of a package binds none of them.
-     * @param made The formations of the program
-     * @param roots The object every file is about
-     * @param rows The table to fill
-     */
-    private void adopt(
-        final Collection<XML> made, final Collection<XML> roots, final Tojos rows
-    ) {
-        final Collection<String> owners = new HashSet<>(0);
-        for (final XML formation : made) {
-            owners.add(formation.xpath("@loc").get(0));
-        }
-        for (final XML root : roots) {
-            final String type = root.xpath("@loc").get(0);
-            final String owner = type.substring(0, type.lastIndexOf('.'));
-            if (owners.contains(owner)) {
-                final String name = root.xpath("@name").get(0);
-                rows.add(String.join(" ", owner, name))
-                    .set("owner", owner)
-                    .set("name", name)
-                    .set("type", type);
-            }
         }
     }
 }
