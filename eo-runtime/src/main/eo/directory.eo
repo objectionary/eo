@@ -9,11 +9,10 @@
 # @todo #5751:30min Stop descending into a symbolic link to a directory. The
 #  `walk` below asks stat, which follows the link, so a link to its own ancestor
 #  recurses forever, while the `Files.walk` it replaced only listed such a link.
-# @todo #6550:60min Walk a directory in constant stack space. The `stepped`
-#  below still costs one frame per entry, even though `while` now nests only as
-#  deep as the logarithm of its cycles: the walk carries a tuple as its
-#  accumulator and `malloc` holds bytes only, so a cycle has nowhere to keep it.
-#  Joining the matched paths into one string and splitting it at the end fits.
+# @todo #6484:60min Walk a directory in constant stack space. The `stepped`
+#  below still costs one frame per entry, because every loop EO has grows the
+#  stack: `while` nests a frame per cycle and `tuple.reducedi` one per element,
+#  so a directory of a few thousand entries still overflows.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
