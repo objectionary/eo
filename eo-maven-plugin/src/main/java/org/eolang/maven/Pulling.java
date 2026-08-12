@@ -150,7 +150,7 @@ final class Pulling implements Step {
             Logger.info(
                 this,
                 "%d program(s) were pulled: %s",
-                sources.size(),
+                names.size(),
                 names
             );
         }
