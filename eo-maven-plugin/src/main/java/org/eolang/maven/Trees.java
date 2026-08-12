@@ -22,17 +22,23 @@ import org.eolang.parser.EoSyntax;
  * <p>Walking a source is the costliest half of making an XMIR and does not
  * depend on the pipeline applied afterwards, yet {@link MjFormat} and
  * {@link Parsing} walk the same text twice, seconds apart, each for its own
- * pipeline. This walks the text once, remembering the tree by the SHA-256 of
- * the text that produced it, the way {@link GlobalCache} keys its footprints,
- * and lays each caller's pipeline over a copy of it. The copy is what keeps
- * the goals apart: a pipeline is free to rewrite the tree it is given, so
- * handing the remembered one out twice would let the second caller start
- * from the leftovers of the first.</p>
+ * pipeline. {@link MjFormat} walks first, and hands what it walked over
+ * here, keyed by the SHA-256 of the text that produced it, the way
+ * {@link GlobalCache} keys its footprints; {@link Parsing} then lays its own
+ * pipeline over a copy of that tree instead of walking the text again. Only
+ * copies leave this place, so no goal can hand another one the leftovers of
+ * its own pipeline.</p>
  *
  * @since 0.74
  */
-@FunctionalInterface
 interface Trees {
+
+    /**
+     * Remember the tree that was walked out of this text.
+     * @param text The text of the {@code .eo} source
+     * @param tree The tree walked out of it
+     */
+    void remember(String text, XML tree);
 
     /**
      * The tree of this text, with this pipeline applied to it.
@@ -71,12 +77,17 @@ interface Trees {
         }
 
         @Override
+        public void remember(final String text, final XML tree) {
+            this.memo.put(
+                TsShared.hash(text), new XMLDocument(tree.inner().cloneNode(true))
+            );
+        }
+
+        @Override
         public XML tree(
             final String text, final UnaryOperator<XML> pipeline
         ) throws IOException {
-            final String hash = new UncheckedText(
-                new HexOf(new Sha256DigestOf(new InputOf(text)))
-            ).asString();
+            final String hash = TsShared.hash(text);
             if (!this.memo.containsKey(hash)) {
                 this.memo.put(
                     hash, new EoSyntax(new InputOf(text), UnaryOperator.<XML>identity()).parsed()
@@ -85,6 +96,17 @@ interface Trees {
             return pipeline.apply(
                 new XMLDocument(this.memo.get(hash).inner().cloneNode(true))
             );
+        }
+
+        /**
+         * The key one text is remembered under.
+         * @param text The text of the {@code .eo} source
+         * @return The SHA-256 of it, in hex
+         */
+        private static String hash(final String text) {
+            return new UncheckedText(
+                new HexOf(new Sha256DigestOf(new InputOf(text)))
+            ).asString();
         }
     }
 }

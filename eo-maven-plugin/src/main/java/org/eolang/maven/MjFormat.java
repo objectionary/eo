@@ -17,9 +17,11 @@ import java.util.function.UnaryOperator;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.parser.Canonical;
+import org.eolang.parser.EoSyntax;
 import org.eolang.printer.PenaltyKey;
 import org.eolang.printer.Xmir;
 
@@ -42,8 +44,8 @@ import org.eolang.printer.Xmir;
  * does it as few times as it can: the sources are checked concurrently,
  * through {@link Threaded}, the way every other goal walks them, and each
  * settling pass keeps the tree it parsed instead of parsing the same text
- * again to lay it out, while {@link Trees} keeps the {@code parse} goal
- * from walking the same text over again.</p>
+ * again to lay it out, and what it walked goes to {@link Trees}, so that
+ * the {@code parse} goal does not walk the same text over again.</p>
  *
  * @since 0.57.0
  */
@@ -222,7 +224,11 @@ public final class MjFormat extends MjSafe {
      * @throws IOException If fails to parse the source
      */
     private XML parsed(final Path source, final String structure) throws IOException {
-        final XML xmir = Trees.TsShared.INSTANCE.tree(structure, this.pipeline);
+        final XML raw = new EoSyntax(
+            new InputOf(structure), UnaryOperator.<XML>identity()
+        ).parsed();
+        Trees.TsShared.INSTANCE.remember(structure, raw);
+        final XML xmir = this.pipeline.apply(raw);
         final long errors = new Xnav(xmir.inner())
             .element("object")
             .element("errors")
