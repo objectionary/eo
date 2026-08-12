@@ -24,12 +24,6 @@
     -->
     <eo.typing>false</eo.typing>
     <!--
-    Wraps every located object into PhCoverage, so that the tests record
-    which EO objects they touch and the lcov goal below turns the records
-    into a tracefile. Off here, on in the codecov workflow (see #5466).
-    -->
-    <eo.coverageTracking>false</eo.coverageTracking>
-    <!--
     How many seconds a single test may run before Deadline skips it. Raise
     it on a box that has all the time in the world, so that a slow test
     runs to its end instead of being skipped.
@@ -262,16 +256,10 @@
           <cacheEnabled>false</cacheEnabled>
           <!-- Tests assert on precise .eo locations in panics (off by default). -->
           <trackLocations>true</trackLocations>
-          <!-- Wrap located objects into PhCoverage so tests record EO coverage. -->
-          <coverageTracking>${eo.coverageTracking}</coverageTracking>
         </configuration>
         <executions>
           <execution>
-            <!--
-            Turns the hits the tests appended to eo.coverageFile above into an
-            LCOV tracefile. It reads the same file surefire names, so both ends
-            keep the default of the goal.
-            -->
+            <!-- Turns the hits appended to eo.coverageFile above into LCOV. -->
             <id>lcov</id>
             <phase>verify</phase>
             <goals>

@@ -81,17 +81,17 @@ public final class MjTranspile extends MjSafe {
      * lean. The hits are appended to the file named by the
      * {@code eo.coverageFile} system property of the JVM that runs the
      * compiled program; when that property is absent, every hit is a
-     * silent no-op. In {@code eo-runtime} surefire forwards that property
-     * to the tests (see its {@code pom.xml}), and {@link MjLcov} turns the
-     * hits into an LCOV tracefile.
+     * silent no-op. In {@code eo-runtime} surefire names that file to the
+     * tests (see its {@code pom.xml}) and {@link MjLcov} turns the hits
+     * into an LCOV tracefile.
      * @todo #5466:30min Enforce a minimum EO object coverage in eo-runtime.
-     *  Once the LCOV report names the untouched objects too, turn
-     *  {@code eo.coverageTracking} on in {@code eo-runtime/pom.xml} for
-     *  every build, not only the {@code codecov} one, and fail the build
-     *  when the covered percentage of dataized {@code .eo} objects drops
-     *  below a threshold (for example 80 percent), mirroring how the
-     *  existing {@code jacoco} profile binds a {@code check} goal with
-     *  per-metric thresholds.
+     *  Once {@link MjLcov} names the untouched objects too, turn
+     *  {@code eo.coverageTracking} on for every {@code eo-runtime} build
+     *  rather than the {@code codecov} one alone, and fail the build when
+     *  the covered percentage of dataized {@code .eo} objects drops below
+     *  a threshold (for example 80 percent), mirroring how the existing
+     *  {@code jacoco} profile binds a {@code check} goal with per-metric
+     *  thresholds.
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.coverageTracking")

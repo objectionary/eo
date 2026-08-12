@@ -10,51 +10,43 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.set.SetOf;
 
 /**
- * Save an LCOV tracefile of EO object coverage.
+ * Save an LCOV tracefile of the EO objects the tests touched.
  *
- * <p>This Maven Mojo reads the hits {@code PhCoverage} appended while the
- * tests ran and saves them as LCOV. It runs after the tests, so it is
- * bound to {@code verify}, and it needs {@code coverageTracking} on
- * the {@code transpile} goal, since otherwise nothing is instrumented
- * and no hit is ever recorded. In {@code eo-runtime} both ends are
- * wired: surefire names the file, this goal reads it, and the
- * {@code codecov} workflow turns {@code coverageTracking} on.</p>
+ * <p>It reads the {@code program:line:pos} records {@code PhCoverage}
+ * appends while the tests run and saves them as LCOV, which Codecov,
+ * Coveralls and {@code genhtml} read as is: a program becomes an
+ * {@code SF:} path under the directory of {@code .eo} sources, and a
+ * line becomes a {@code DA:} counter of how many objects of that line
+ * were touched. It runs after the tests and needs {@code coverageTracking}
+ * on the {@code transpile} goal, since nothing is instrumented otherwise.
+ * A torn record is skipped, since the tests append concurrently.</p>
  *
  * @since 0.74.0
  */
-@Mojo(
-    name = "lcov",
-    defaultPhase = LifecyclePhase.VERIFY,
-    threadSafe = true
-)
+@Mojo(name = "lcov", defaultPhase = LifecyclePhase.VERIFY, threadSafe = true)
 public final class MjLcov extends MjSafe {
 
     /**
-     * The file where {@code PhCoverage} appended one record per touched
-     * object, named by the {@code eo.coverageFile} system property of the
-     * JVM that ran the tests. Nothing truncates it, so a second
-     * {@code mvn verify} without {@code clean} reports the objects both
-     * runs touched.
-     * @todo #5466:60min Report the objects the run never touched.
-     *  The tracefile now lists only the lines the tests reached, so every
-     *  line it names is covered and {@code LH} always equals {@code LF}.
-     *  Merge these hits against every location the transpiler
-     *  instrumented, so an untouched line is reported as {@code DA:n,0}
-     *  and the percentage means something. That set is the one
-     *  {@code to-java.xsl} decides from {@code @line}, {@code @pos} and
-     *  {@code $coverage} while emitting the wrappers, so let it write the
-     *  locations out as a table beside the generated Java in the same
-     *  pass, rather than recovering them by reading {@code new
-     *  PhCoverage(..)} back out of the Java text, which any reformatting
-     *  would quietly break. Truncate the file above at the same time, so
-     *  that a run reports its own tests and no earlier ones.
+     * The file where {@code PhCoverage} appends one record per touched object,
+     * named to the tests through the {@code eo.coverageFile} property.
+     * @todo #5466:60min Report the objects the run never touched. The tracefile
+     *  names only the lines the tests reached, so {@code LH} equals {@code LF}
+     *  and every reader sees a hundred per cent. Merge these hits against the
+     *  locations the transpiler instrumented, so an untouched line is reported
+     *  as {@code DA:n,0}. Let {@code to-java.xsl} write those out beside the
+     *  generated Java, since it already decides them while it emits the
+     *  wrappers. Truncate this file then too, since nothing does and a second
+     *  {@code verify} without a {@code clean} reports what both runs touched.
      */
     @Parameter(
         property = "eo.coverageFile",
@@ -62,40 +54,58 @@ public final class MjLcov extends MjSafe {
     )
     private File hits;
 
-    /**
-     * Where to save the LCOV tracefile.
-     */
-    @Parameter(
-        property = "eo.lcovFile",
-        defaultValue = "${project.build.directory}/eo-lcov.info"
-    )
-    private File tracefile;
-
     @Override
     void exec() throws IOException {
-        final Path target = this.tracefile.toPath().toAbsolutePath();
-        Files.createDirectories(target.getParent());
-        Files.write(
-            target,
-            new Lcov(this.sourcesDir.toPath(), this.recorded())
-                .toString().getBytes(StandardCharsets.UTF_8)
-        );
-        Logger.info(this, "EO object coverage saved to %[file]s", target);
+        final Path saved = this.targetDir.toPath().resolve("eo-lcov.info");
+        Files.createDirectories(saved.getParent());
+        Files.write(saved, this.lcov().getBytes(StandardCharsets.UTF_8));
+        Logger.info(this, "EO object coverage saved to %[file]s", saved);
     }
 
     /**
-     * Every location the run touched.
-     * @return The records, or nothing when no test recorded any
-     * @throws IOException If fails to read them
+     * The tracefile of everything the run touched.
+     * @return LCOV text, empty when nothing was recorded
+     * @throws IOException If fails to read the records
      */
-    private Collection<String> recorded() throws IOException {
+    private String lcov() throws IOException {
+        return this.counted().entrySet().stream().map(
+            program -> String.format(
+                "TN:%nSF:%s%n%sLF:%d%nLH:%d%nend_of_record%n",
+                this.sourcesDir.toPath().resolve(
+                    String.format("%s.eo", program.getKey().replace('.', '/'))
+                ),
+                program.getValue().entrySet().stream().map(
+                    line -> String.format("DA:%d,%d%n", line.getKey(), line.getValue())
+                ).collect(Collectors.joining()),
+                program.getValue().size(),
+                program.getValue().size()
+            )
+        ).collect(Collectors.joining());
+    }
+
+    /**
+     * How many objects of each line of each program the run touched.
+     * @return Programs in alphabetical order, each with its lines in order
+     * @throws IOException If fails to read the records
+     */
+    private Map<String, Map<Integer, Integer>> counted() throws IOException {
         final Path path = this.hits.toPath();
-        final Collection<String> records;
+        final Iterable<String> records;
         if (Files.exists(path)) {
-            records = Files.readAllLines(path, StandardCharsets.UTF_8);
+            records = new SetOf<>(Files.readAllLines(path));
         } else {
-            records = Collections.emptyList();
+            records = Collections.emptySet();
         }
-        return records;
+        final Map<String, Map<Integer, Integer>> counts = new TreeMap<>();
+        for (final String record : records) {
+            final String[] parts = record.split(":", 3);
+            if (parts.length == 3 && parts[1].matches("\\d+")) {
+                counts.computeIfAbsent(parts[0], program -> new TreeMap<>())
+                    .merge(Integer.valueOf(parts[1]), 1, Integer::sum);
+            } else {
+                Logger.warn(this, "The coverage record '%s' is skipped", record);
+            }
+        }
+        return counts;
     }
 }

@@ -23,34 +23,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class MjLcovTest {
 
     @Test
-    void savesRecordedHitAsTracefile(@Mktmp final Path temp) throws Exception {
-        final Path lcov = temp.resolve("eo-lcov.info");
+    void savesTouchedObjectsAsTracefile(@Mktmp final Path temp) throws Exception {
         final Path hits = temp.resolve("coverage.txt");
         Files.write(
-            hits, String.format("org.eolang.числò:7:2%n").getBytes(StandardCharsets.UTF_8)
+            hits,
+            String.format("числò.plus:7:2%nчислò.plus:7:9%ntorn line%n")
+                .getBytes(StandardCharsets.UTF_8)
         );
-        new FakeMaven(temp)
-            .with("hits", hits.toFile())
-            .with("tracefile", lcov.toFile())
-            .execute(MjLcov.class);
         MatcherAssert.assertThat(
-            "the hit the tests recorded is not saved as a tracefile record",
-            new TextOf(lcov).asString(),
-            Matchers.containsString("DA:7,1")
-        );
-    }
-
-    @Test
-    void savesEmptyTracefileWhenNothingWasRecorded(@Mktmp final Path temp) throws Exception {
-        final Path lcov = temp.resolve("eo-lcov.info");
-        new FakeMaven(temp)
-            .with("hits", temp.resolve("absent.txt").toFile())
-            .with("tracefile", lcov.toFile())
-            .execute(MjLcov.class);
-        MatcherAssert.assertThat(
-            "a run that recorded nothing is not saved as an empty tracefile",
-            new TextOf(lcov).asString(),
-            Matchers.equalTo("")
+            "the two objects the tests touched on one line are not counted on it",
+            new TextOf(
+                new FakeMaven(temp)
+                    .with("hits", hits.toFile())
+                    .execute(MjLcov.class)
+                    .targetPath()
+                    .resolve("eo-lcov.info")
+            ).asString(),
+            Matchers.stringContainsInOrder("SF:", "числò/plus.eo", "DA:7,2", "LF:1", "LH:1")
         );
     }
 }

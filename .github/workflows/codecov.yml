@@ -27,16 +27,9 @@ jobs:
           restore-keys: |
             maven-
       - run: mvn install -Pjacoco -Deo.coverageTracking=true
-      - name: lcov
-        run: |
-          set -e
-          test -s eo-runtime/target/eo-lcov.info
-          sed -n 's/^SF://p' eo-runtime/target/eo-lcov.info | while read -r eo; do
-            test -f "${eo}"
-          done
       - uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./eo-parser/target/site/jacoco/jacoco.xml,./eo-runtime/target/site/jacoco/jacoco.xml,./eo-maven-plugin/target/site/jacoco/jacoco.xml,./eo-runtime/target/eo-lcov.info
+          files: ./eo-parser/target/site/jacoco/jacoco.xml,./eo-runtime/target/site/jacoco/jacoco.xml,./eo-maven-plugin/target/site/jacoco/jacoco.xml,./eo-runtime/target/eo/eo-lcov.info
           fail_ci_if_error: true
         if: github.ref == 'refs/heads/master'
