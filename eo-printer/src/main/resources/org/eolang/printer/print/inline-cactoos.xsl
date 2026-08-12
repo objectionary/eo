@@ -475,11 +475,18 @@
   kept whole rather than folded into each use, which would change the object
   graph and drop the shared handle name, and "merge-monikers" then hosts the
   kept binding onto its first reference.
+
+  The second item is asked for instead of the size (#6638): Saxon may back the
+  sequence with a "MemoSequence", whose iterator refuses "getLength()", so
+  counting it crashes the whole sheet on the runs where the optimiser picks
+  that representation. Asking for "[2]" answers the same question, never counts
+  and short-circuits, the way the neighbouring "eo:unreferenced" already leans
+  on "empty()".
   -->
   <xsl:function name="eo:multi-referenced" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="count(eo:references($target, $name)) &gt; 1"/>
+    <xsl:sequence select="exists(eo:references($target, $name)[2])"/>
   </xsl:function>
   <!--
   Whether `$target` is built anew at every site it is folded into, so that

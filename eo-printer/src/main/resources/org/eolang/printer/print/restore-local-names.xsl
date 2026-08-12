@@ -101,11 +101,14 @@
   print one object twice (#5956). The binding therefore outlives that sheet and
   only the hosting reference is merged into it — the others read the handle by
   name and would otherwise print a synthetic "vL_P".
+
+  The second item is asked for instead of the size, for the reason spelled out
+  on the twin function in "inline-cactoos" (#6638).
   -->
   <xsl:function name="eo:multi-referenced" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string?"/>
-    <xsl:sequence select="count(eo:references($target, $name)) &gt; 1"/>
+    <xsl:sequence select="exists(eo:references($target, $name)[2])"/>
   </xsl:function>
   <!--
   Whether no reference in the binding's owner resolves to the auto-name
@@ -215,9 +218,16 @@
   therefore restored here, exactly as a void's are. A formation applied as a
   dispatch receiver (#5844) is deliberately excluded: its cactus name must
   survive so "inline-cactoos" still recognises the reference and pipes it.
+
+  Both branches hand back a string (#6650). The handle branch is an attribute
+  node and the fallback branch an atomic string, and Saxon is free to type the
+  body of the "for" from either one; when it takes the atomic side, the node
+  from the other side reaches "string-join" unatomised and the sheet dies with
+  "DOMNodeWrapper cannot be cast to AtomicValue". Wrapping the node in
+  "string()" leaves nothing mixed to type, as in "eo:signature".
   -->
   <xsl:template match="@base">
-    <xsl:attribute name="base" select="string-join(for $seg in tokenize(., '\.') return (if (key('void-handle', $seg)) then key('void-handle', $seg)[1]/@local else $seg), '.')"/>
+    <xsl:attribute name="base" select="string-join(for $seg in tokenize(., '\.') return (if (key('void-handle', $seg)) then string(key('void-handle', $seg)[1]/@local) else $seg), '.')"/>
   </xsl:template>
   <!--
   Handled declaration (void or recursive formation): promote the handle
