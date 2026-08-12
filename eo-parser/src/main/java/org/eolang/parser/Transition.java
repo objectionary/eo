@@ -4,6 +4,8 @@
  */
 package org.eolang.parser;
 
+import java.util.Optional;
+
 /**
  * The stack transition triggered when a {@link Line} adopts the
  * parser cursor — §5.2 (Step B/C/D) of the spec.
@@ -44,14 +46,13 @@ final class Transition {
     /**
      * Push a fresh level (when stepping deeper) or replace the level
      * on top (when staying at the same indent), and mark it named if
-     * {@code named} is true.
+     * the suffix is present.
      * @param kind Outer kind for the level
      * @param openness Openness for the level
-     * @param label The suffix's source name, or {@code null} when the
-     *  line carries no name suffix
+     * @param suffix Parsed suffix, or {@code null} when absent
      * @return The pushed-or-replaced level
      */
-    Level apply(final Kind kind, final Openness openness, final String label) {
+    Level apply(final Kind kind, final Openness openness, final Suffix suffix) {
         final Level level;
         if (this.stack.empty() || this.stack.top().indent() < this.span.indent()) {
             if (!this.stack.empty() && this.span.indent() != this.stack.top().indent() + 2) {
@@ -66,13 +67,30 @@ final class Transition {
                     "unexpected deeper-indent line — previous expression is closed for children"
                 );
             }
+            if (!this.stack.empty() && this.forbidden(kind, suffix)) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent(),
+                    "Atom cannot contain inner objects; only `+>` test attributes are allowed in an atom body"
+                );
+            }
             level = this.stack.push(this.span.indent(), this.span.line(), kind, openness);
         } else {
             level = this.stack.replace(this.span.line(), kind, openness);
         }
-        if (label != null) {
-            level.name(label);
+        if (Optional.ofNullable(suffix).filter(Suffix::present).isPresent()) {
+            level.name(suffix.label());
         }
         return level;
+    }
+
+    /**
+     * Whether this child is forbidden in an atom body.
+     * @param kind Outer kind for the child
+     * @param suffix Parsed suffix, or {@code null} when absent
+     * @return True if the atom cannot contain this child
+     */
+    private boolean forbidden(final Kind kind, final Suffix suffix) {
+        return this.stack.top().atom() && kind != Kind.VOID
+            && (suffix == null || !suffix.test());
     }
 }

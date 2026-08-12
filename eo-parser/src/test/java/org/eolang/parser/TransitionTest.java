@@ -85,7 +85,7 @@ final class TransitionTest {
         MatcherAssert.assertThat(
             "applying with a non-null label must record the level as carrying a name suffix",
             new Transition(new Stack(), new Span("kappa", 1))
-                .apply(Kind.HEAD, Openness.OPEN, "mu")
+                .apply(Kind.HEAD, Openness.OPEN, new Suffix(" > mu", new Span("kappa > mu", 1), 5))
                 .named(),
             Matchers.is(true)
         );

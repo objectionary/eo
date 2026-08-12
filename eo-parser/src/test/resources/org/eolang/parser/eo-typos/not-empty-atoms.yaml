@@ -5,8 +5,8 @@
 line: 2
 message: |-
   [2:2] error: 'Atom cannot contain inner objects; only `+>` test attributes are allowed in an atom body'
-    [] > inner
+    42 > inner
     ^
 input: |
   [] > test /bytes
-    [] > inner
+    42 > inner

@@ -284,7 +284,7 @@ final class LnOnlyPhi implements Line {
             openness = Openness.HORIZONTAL_COMPLETED;
         }
         return new Transition(stack, this.span).apply(
-            Kind.ONLY_PHI_FORMATION, openness, suffix.named()
+            Kind.ONLY_PHI_FORMATION, openness, suffix
         );
     }
 

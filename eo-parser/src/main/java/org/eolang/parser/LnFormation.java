@@ -147,54 +147,11 @@ final class LnFormation implements Line {
      * @param suffix The parsed suffix (sets named/atom flags)
      */
     private void transition(final Stack stack, final Suffix suffix) {
-        final Level level;
-        if (stack.empty() || stack.top().indent() < this.span.indent()) {
-            this.checkChildAllowed(stack, suffix);
-            level = stack.push(
-                this.span.indent(), this.span.line(),
-                Kind.BARE_FORMATION, Openness.OPEN
-            );
-        } else {
-            level = stack.replace(
-                this.span.line(), Kind.BARE_FORMATION, Openness.OPEN
-            );
-        }
-        if (suffix.present()) {
-            level.name(suffix.label());
-        }
+        final Level level = new Transition(stack, this.span).apply(
+            Kind.BARE_FORMATION, Openness.OPEN, suffix
+        );
         if (suffix.atom()) {
             level.mark();
-        }
-    }
-
-    /**
-     * Validate that a deeper-indent formation is legal under its
-     * pending parent — indent step is exactly one, parent is open, and
-     * (per R-3.10.13) the parent is not an atom unless this child is
-     * itself a test attribute.
-     * @param stack The stack
-     * @param suffix The parsed suffix
-     */
-    private void checkChildAllowed(final Stack stack, final Suffix suffix) {
-        if (!stack.empty()
-            && this.span.indent() != stack.top().indent() + 2) {
-            throw new ParseError(
-                this.span.line(), 0,
-                "indent increased by more than one level"
-            );
-        }
-        if (!stack.empty()
-            && stack.top().openness() != Openness.OPEN) {
-            throw new ParseError(
-                this.span.line(), 0,
-                "unexpected deeper-indent line — previous expression is closed for children"
-            );
-        }
-        if (!stack.empty() && stack.top().atom() && !suffix.test()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "Atom cannot contain inner objects; only `+>` test attributes are allowed in an atom body"
-            );
         }
     }
 

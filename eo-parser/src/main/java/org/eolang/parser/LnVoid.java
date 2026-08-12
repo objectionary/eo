@@ -81,7 +81,7 @@ final class LnVoid implements Line {
         }
         Comments.seal(globals, emit, this.span);
         final Level level = new Transition(stack, this.span).apply(
-            Kind.VOID, Openness.VERTICAL_COMPLETED, suffix.named()
+            Kind.VOID, Openness.VERTICAL_COMPLETED, suffix
         );
         if (slash >= 0 && !level.patom()) {
             throw new ParseError(
