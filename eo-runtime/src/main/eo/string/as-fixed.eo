@@ -124,7 +124,7 @@
     string
       as-fixed -2.5 0
 
-  eq. ++> can-pad-with-trailing-zeros
+  eq. ++> can-pad-the-fraction-with-trailing-zeros
     "1.250000"
     string
       as-fixed 1.25 6

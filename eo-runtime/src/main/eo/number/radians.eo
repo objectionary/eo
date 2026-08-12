@@ -29,7 +29,7 @@
         pi
     1.0E-4
 
-  lt. ++> can-convert-a-large-value-without-overflow
+  lt. ++> can-convert-a-large-value-to-radians-without-overflow
     abs
       minus.
         radians 1.0e308

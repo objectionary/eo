@@ -54,25 +54,9 @@
     "x".eq "x"
     true
 
-  contains. ++> can-contain-a-word-in-a-sentence
-    "hello, world, how are you?"
-    "how"
-
-  "eEo".is-alpha ++> can-detect-alphabetic-text
-
-  "2026".is-digit ++> can-detect-digits
-
-  ends-with. ++> can-end-with-a-suffix
-    "hello, world"
-    "world"
-
   D0-B4-D1-80-D1-83-D0-B3.eq "друг" ++> can-equal-a-string-through-bytes
 
   "друг".eq D0-B4-D1-80-D1-83-D0-B3 ++> can-equal-bytes
-
-  eq. ++> can-find-the-index-of-a-character
-    "hello".index-of "l"
-    2
 
   "Abc".eq "Abc" ++> can-hold-a-one-line-text-block
 
@@ -86,14 +70,6 @@
     "a\n b\n  c"
     "a\n b\n  c"
 
-  eq. ++> can-repeat-text
-    "ha".repeated 3
-    "hahaha"
-
-  starts-with. ++> can-start-with-a-prefix
-    "hello, world"
-    "hello"
-
   "\n".eq "\n" ++> can-support-a-line-break-escape-sequence
 
   "Ф".eq "Ф" ++> can-support-a-unicode-escape-sequence
@@ -105,14 +81,6 @@
   eq. ++> can-support-escape-sequences-in-a-text-block
     "Hello, друг!\n"
     "Hello, друг!\n"
-
-  eq. ++> can-take-a-character-at-an-index
-    "some".at 1
-    "o"
-
-  eq. ++> can-trim-surrounding-spaces
-    "  spaced  ".trimmed
-    "spaced"
 
   eq. ++> can-turn-into-bytes
     "€ друг".as-bytes

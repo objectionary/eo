@@ -64,7 +64,7 @@
       "     "
     ""
 
-  eq. ++> can-trim-an-empty-text
+  eq. ++> can-trim-an-empty-text-from-the-left
     trimmed-left ""
     ""
 
@@ -78,7 +78,7 @@
       " \t\n\f\rvalue"
     "value"
 
-  eq. ++> can-trim-one-leading-space
+  eq. ++> can-trim-one-leading-space-from-the-left
     trimmed-left
       " s"
     "s"

@@ -62,7 +62,7 @@
     trimmed-right "value\t"
     "value"
 
-  eq. ++> can-trim-an-empty-text
+  eq. ++> can-trim-an-empty-text-from-the-right
     trimmed-right ""
     ""
 
@@ -76,7 +76,7 @@
       "value \t\n\f\r"
     "value"
 
-  eq. ++> can-trim-one-trailing-space
+  eq. ++> can-trim-one-trailing-space-from-the-right
     trimmed-right
       "s "
     "s"

@@ -39,14 +39,14 @@
           text.as-bytes
       text
 
-  eq. ++> can-count-characters-and-not-bytes
+  eq. ++> can-count-characters-and-not-bytes-when-padding-left
     "  Ж"
     padded-left
       "Ж"
       3
       " "
 
-  eq. ++> can-format-the-error-message-of-a-negative-width
+  eq. ++> can-format-the-error-message-of-a-negative-width-when-padding-left
     "Can't pad text to -1.000000 characters with x"
     padded-left
       "y"
@@ -68,28 +68,28 @@
       4
       "0"
 
-  eq. ++> can-return-a-longer-text-unchanged
+  eq. ++> can-return-a-longer-text-unchanged-when-padding-left
     "hello"
     padded-left
       "hello"
       3
       " "
 
-  eq. ++> can-return-a-text-of-the-exact-width-unchanged
+  eq. ++> can-return-a-text-of-the-exact-width-unchanged-when-padding-left
     "hey"
     padded-left
       "hey"
       3
       " "
 
-  eq. ++> can-return-a-text-unchanged-at-zero-width
+  eq. ++> can-return-a-text-unchanged-at-zero-width-when-padding-left
     "x"
     padded-left
       "x"
       0
       " "
 
-  eq. ++> rejects-a-multi-character-fill
+  eq. ++> rejects-a-multi-character-fill-when-padding-left
     "recovered"
     padded-left
       "y"
@@ -97,7 +97,7 @@
       "ab"
       "recovered" > [message]
 
-  eq. ++> rejects-a-negative-width
+  eq. ++> rejects-a-negative-width-when-padding-left
     "recovered"
     padded-left
       "y"
@@ -105,7 +105,7 @@
       "x"
       "recovered" > [message]
 
-  eq. ++> rejects-a-non-integer-width
+  eq. ++> rejects-a-non-integer-width-when-padding-left
     "recovered"
     padded-left
       "y"
@@ -113,7 +113,7 @@
       "x"
       "recovered" > [message]
 
-  eq. ++> rejects-an-infinite-width
+  eq. ++> rejects-an-infinite-width-when-padding-left
     "recovered"
     padded-left
       "y"
@@ -121,7 +121,7 @@
       "x"
       "recovered" > [message]
 
-  padded-left --> stops-on-a-negative-width
+  padded-left --> stops-on-a-negative-width-when-padding-left
     "y"
     -1
     "x"

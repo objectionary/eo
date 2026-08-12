@@ -19,4 +19,4 @@
 
   00-33.as-i16.as-bytes.eq 00-33 ++> can-convert-bytes-to-i16-and-back
 
-  01-01-01.as-i16 --> stops-on-bytes-of-wrong-size
+  01-01-01.as-i16 --> stops-on-bytes-of-wrong-size-when-converting-to-i16
