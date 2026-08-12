@@ -68,7 +68,8 @@ public final class Concluded implements Clue {
             new Worklist(
                 names,
                 new Provided(
-                    new Ungrouped(new XMLDocument(tables.resolve("provides.xml")), names).rows()
+                    new Ungrouped(new XMLDocument(tables.resolve("provides.xml")), names).rows(),
+                    names
                 ),
                 new Ungrouped(new XMLDocument(tables.resolve("needs.xml")), names).rows(),
                 new Ungrouped(new XMLDocument(tables.resolve("checks.xml")), names).rows()

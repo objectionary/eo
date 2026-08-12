@@ -9,6 +9,7 @@ import java.util.Collections;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 /**
  * Test case for {@link Provided}.
@@ -38,7 +39,8 @@ final class ProvidedTest {
                         )
                     ),
                     Collections.emptyMap()
-                ).rows()
+                ).rows(),
+                Collections.emptyMap()
             ).voids("Φ.jar"),
             Matchers.contains("Φ.jar.lid", "Φ.jar.spout")
         );
@@ -60,7 +62,8 @@ final class ProvidedTest {
                         )
                     ),
                     Collections.emptyMap()
-                ).rows()
+                ).rows(),
+                Collections.emptyMap()
             ).voids("Φ.jar"),
             Matchers.contains("Φ.jar.lid")
         );
@@ -82,7 +85,8 @@ final class ProvidedTest {
                         )
                     ),
                     Collections.singletonMap("Φ.tin", "Φ.jar")
-                ).rows()
+                ).rows(),
+                Collections.emptyMap()
             ).complete("Φ.jar"),
             Matchers.is(false)
         );
@@ -104,9 +108,82 @@ final class ProvidedTest {
                         )
                     ),
                     Collections.emptyMap()
-                ).rows()
+                ).rows(),
+                Collections.emptyMap()
             ).attribute("Φ.jar", "lid"),
             Matchers.equalTo("Φ.jar.lid")
+        );
+    }
+
+    @Test
+    void findsAttributeBehindDelegation() {
+        MatcherAssert.assertThat(
+            "what stands behind the decoratee answers for a name the object does not bind",
+            new Provided(
+                new Ungrouped(
+                    new XMLDocument(
+                        String.join(
+                            "",
+                            "<provides>",
+                            "<type id='Φ.jar' complete='false'>",
+                            "<attr name='φ' type='Φ.jar.φ'/></type>",
+                            "<type id='Φ.base' complete='true'>",
+                            "<attr name='lid' type='Φ.base.lid'/></type>",
+                            "</provides>"
+                        )
+                    ),
+                    Collections.emptyMap()
+                ).rows(),
+                Collections.singletonMap("Φ.jar.φ", "Φ.base")
+            ).attribute("Φ.jar", "lid"),
+            Matchers.equalTo("Φ.base.lid")
+        );
+    }
+
+    @Test
+    void seesWholeOfTypeThroughItsDecoratee() {
+        MatcherAssert.assertThat(
+            "an object that hands its answers to one that was seen whole was seen whole too",
+            new Provided(
+                new Ungrouped(
+                    new XMLDocument(
+                        String.join(
+                            "",
+                            "<provides>",
+                            "<type id='Φ.jar' complete='false'>",
+                            "<attr name='φ' type='Φ.jar.φ'/></type>",
+                            "<type id='Φ.base' complete='true'/>",
+                            "</provides>"
+                        )
+                    ),
+                    Collections.emptyMap()
+                ).rows(),
+                Collections.singletonMap("Φ.jar.φ", "Φ.base")
+            ).complete("Φ.jar"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    @Timeout(10L)
+    void walksOutOfDelegationThatComesBack() {
+        MatcherAssert.assertThat(
+            "an object whose decoratee leads back to it must be walked once and left alone",
+            new Provided(
+                new Ungrouped(
+                    new XMLDocument(
+                        String.join(
+                            "",
+                            "<provides><type id='Φ.jar' complete='false'>",
+                            "<attr name='φ' type='Φ.jar.φ'/>",
+                            "</type></provides>"
+                        )
+                    ),
+                    Collections.emptyMap()
+                ).rows(),
+                Collections.singletonMap("Φ.jar.φ", "Φ.jar")
+            ).complete("Φ.jar"),
+            Matchers.is(false)
         );
     }
 
@@ -120,7 +197,8 @@ final class ProvidedTest {
                         "<provides><type id='Φ.jar' complete='true'/></provides>"
                     ),
                     Collections.emptyMap()
-                ).rows()
+                ).rows(),
+                Collections.emptyMap()
             ).attribute("Φ.jar", "lid"),
             Matchers.emptyString()
         );

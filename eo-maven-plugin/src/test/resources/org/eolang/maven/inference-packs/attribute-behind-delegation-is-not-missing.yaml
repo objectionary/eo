@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The same four files as `mistake-behind-delegation-is-reported`, asking for
+# `next` instead of `foo`. `t` binds no `next` either, and yet there is nothing
+# to report, because the object behind its `φ` does.
+eo:
+  app.eo: |
+    [] > app
+      inc t > @
+  inc.eo: |
+    [x] > inc
+      x.next > @
+  t.eo: |
+    [] > t
+      base > @
+  base.eo: |
+    [] > base
+      [] > next
+problems:
+  - "/problems[not(type)]"

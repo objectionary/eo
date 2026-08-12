@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `t` binds nothing itself and hands everything to `base`, which has been seen
+# whole and has no `foo` anywhere in it. So `foo` will never be there, and the
+# loop says so: what stands behind `φ` is the third place an attribute can come
+# from, after the object itself and its package.
+eo:
+  app.eo: |
+    [] > app
+      inc t > @
+  inc.eo: |
+    [x] > inc
+      x.foo > @
+  t.eo: |
+    [] > t
+      base > @
+  base.eo: |
+    [] > base
+      [] > next
+problems:
+  - "/problems/type[@id='Φ.t']/attr[@name='foo']"

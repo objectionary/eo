@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Following `φ` buys nothing when it ends at an atom: the body is written in
+# Java, this prototype cannot read it, and so neither `t` nor what it delegates
+# to has been seen whole. The chain carries the doubt along with the answers.
+eo:
+  app.eo: |
+    [] > app
+      inc t > @
+  inc.eo: |
+    [x] > inc
+      x.foo > @
+  t.eo: |
+    [] > t
+      base > @
+  base.eo: |
+    [] > base /Q.number
+problems:
+  - "/problems[not(type)]"

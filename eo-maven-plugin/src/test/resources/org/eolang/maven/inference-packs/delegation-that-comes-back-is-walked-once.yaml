@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An object whose `φ` leads back to itself is a circle, and a circle is walked
+# once. Nothing is known about `t` at the end of it, so nothing is said.
+eo:
+  app.eo: |
+    [] > app
+      inc t > @
+  inc.eo: |
+    [x] > inc
+      x.foo > @
+  t.eo: |
+    [] > t
+      t > @
+problems:
+  - "/problems[not(type)]"
