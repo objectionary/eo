@@ -227,8 +227,7 @@ public final class MjFormat extends MjSafe {
         final XML raw = new EoSyntax(
             new InputOf(structure), UnaryOperator.<XML>identity()
         ).parsed();
-        new Trees.TsSaved(this.targetDir.toPath().resolve(Trees.TsSaved.DIR))
-            .remember(structure, raw);
+        new Trees.TsSaved(this.targetDir.toPath()).remember(structure, raw);
         final XML xmir = this.pipeline.apply(raw);
         final long errors = new Xnav(xmir.inner())
             .element("object")

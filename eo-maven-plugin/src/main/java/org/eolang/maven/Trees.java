@@ -21,10 +21,8 @@ import org.eolang.parser.EoSyntax;
  *
  * <p>Walking a source is the costliest half of making an XMIR and does not
  * depend on the pipeline applied afterwards, yet {@link MjFormat} and
- * {@link Parsing} walk the same text twice, each for its own pipeline. So
- * {@link MjFormat} walks first and hands what it walked over here, keyed by the
- * text that produced it, and {@link Parsing} lays its pipeline over that tree
- * instead of walking the text again.</p>
+ * {@link Parsing} walk the same text twice. So the first to walk hands the tree
+ * over here, keyed by its text, and the other lays its own pipeline over it.</p>
  *
  * @since 0.74
  */
@@ -53,30 +51,35 @@ interface Trees {
      * <p>The goals of one build are separate objects that Maven makes one after
      * another, so whatever they share they share through the filesystem, the way
      * {@link GcShared} shares the footprints of earlier builds. A tree waits in
-     * {@code dir/hash.xmir}, named after the SHA-256 of the text it was walked
-     * out of, so the tree a goal finds there is the tree of the very text it
-     * holds. Only {@code format} writes here, ahead of every goal that reads.</p>
+     * {@code 0-walk/hash.xmir} under the target directory, named after the
+     * SHA-256 of the text it was walked out of. Only {@code format} writes
+     * there, ahead of every goal that reads, and {@code clean} takes it away.</p>
+     *
+     * <p>Printing a tree indents it, so the file gives back blanks between the
+     * elements that the walked tree never had, and a pipeline laid over those
+     * yields a different XMIR. XMIR holds no mixed content, so a blank beside an
+     * element came from the printer and is dropped on the way in.</p>
      *
      * @since 0.74
      */
     final class TsSaved implements Trees {
 
         /**
-         * Where the trees of one build wait, under its target directory.
+         * Where the trees wait, inside the target directory.
          */
-        static final String DIR = "0-walk";
+        private static final String DIR = "0-walk";
 
         /**
-         * That directory.
+         * The target directory of this build.
          */
-        private final Path dir;
+        private final Path target;
 
         /**
          * Ctor.
-         * @param path Where the trees of this build wait
+         * @param path The target directory of this build
          */
         TsSaved(final Path path) {
-            this.dir = path;
+            this.target = path;
         }
 
         @Override
@@ -90,6 +93,9 @@ interface Trees {
             final XML walked;
             if (Files.exists(file)) {
                 walked = new XMLDocument(file);
+                for (final XML blank : walked.nodes("//text()[not(normalize-space())][../*]")) {
+                    blank.inner().getParentNode().removeChild(blank.inner());
+                }
             } else {
                 walked = new EoSyntax(new InputOf(text), UnaryOperator.<XML>identity()).parsed();
             }
@@ -102,10 +108,9 @@ interface Trees {
          * @return The path of it, named after the SHA-256 of the text
          */
         private Path file(final String text) {
-            return this.dir.resolve(
-                new UncheckedText(
-                    new HexOf(new Sha256DigestOf(new InputOf(text)))
-                ).asString().concat(".xmir")
+            return this.target.resolve(TsSaved.DIR).resolve(
+                new UncheckedText(new HexOf(new Sha256DigestOf(new InputOf(text))))
+                    .asString().concat(".xmir")
             );
         }
     }
