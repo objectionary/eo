@@ -15,8 +15,7 @@
 
 [n] > as-scientific
   n.is-finite.not.if > @
-    if.
-      n.is-nan
+    n.is-nan.if
       "nan".as-bytes
       if.
         n.lt 0
@@ -26,10 +25,12 @@
       concat.
         as-fixed
           n.div
-            10.power (number exponent)
+            10.power
+              number exponent
           6
         "e".as-bytes
-      as-decimal (number exponent)
+      as-decimal
+        number exponent
   rec-exponent > exponent!
     n.abs
     0

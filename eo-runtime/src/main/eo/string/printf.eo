@@ -202,8 +202,7 @@
               "The number %s doesn't fit into the long range of the '%%d' conversion".printf
                 *
                   string
-                    as-scientific
-                      number numeric
+                    as-scientific (number numeric)
             number numeric
         if.
           66-.eq conv
