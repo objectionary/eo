@@ -70,8 +70,7 @@
     "The 😀 smile" > str
 
   eq. ++> can-count-the-characters-of-the-origin-text
-    length
-      "Hello, world!"
+    "Hello, world!".length
     13
 
   ++> can-count-three-byte-characters
@@ -86,5 +85,5 @@
       str.as-bytes.size.eq 16
     "Hello, друг!" > str
 
-  length --> stops-on-an-incomplete-four-byte-character
+  length. --> stops-on-an-incomplete-four-byte-character
     string F0-9F-98

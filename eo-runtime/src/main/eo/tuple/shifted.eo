@@ -17,7 +17,7 @@
     list.length
 
   eq. ++> can-ignore-a-negative-shift
-    shifted
+    shifted.
       *
         "привет"
         -42
@@ -31,7 +31,7 @@
       "ξ"
 
   eq. ++> can-ignore-a-shift-below-the-negative-length
-    shifted
+    shifted.
       *
         82.42
         ""
@@ -43,7 +43,7 @@
       "日本"
 
   eq. ++> can-ignore-a-zero-shift
-    shifted
+    shifted.
       *
         "a"
         -0.5
@@ -55,7 +55,7 @@
       "Ω"
 
   eq. ++> can-shift-by-less-than-the-length
-    shifted
+    shifted.
       *
         8
         2
@@ -69,7 +69,7 @@
       5
 
   eq. ++> can-shift-by-more-than-the-length
-    shifted
+    shifted.
       *
         8
         2

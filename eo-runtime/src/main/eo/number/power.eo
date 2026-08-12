@@ -3,6 +3,14 @@
 # results stay exact, and a fractional exponent of a positive base is taken as
 # e raised to `x` times the natural logarithm of the base. Zeros, infinities and
 # nan follow the same IEEE rules that Math.pow obeys.
+#
+# @todo #6651:30min Cache `k` and `y` in `expon` the same way `half` is now
+#  cached in `ipow`. `k` is read once per comparison and once per each of the
+#  twenty `fraction` levels, and `y` (a void, so it cannot itself carry `!`)
+#  is read directly inside `fraction` too, so one call to `expon` still pays
+#  for about forty evaluations of `ln`. Bind `y` to a const local first, then
+#  cache `k` as `k!` and re-wrap every read with `number`, mirroring the
+#  `half`/`bts` idiom from #6224.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -49,10 +57,12 @@
                         1
                         if.
                           is-integer. (n.div 2)
-                          half.times half
+                          times.
+                            number half
+                            number half
                           b.times
                             ipow b (n.minus 1)
-                      ipow b (n.div 2) > half
+                      ipow b (n.div 2) > half!
                     | base (abs expo)
                   ipow base (abs expo)
                 if.
@@ -122,302 +132,207 @@
     9
 
   eq. ++> can-be-reached-through-the-package
-    power
-      2
-      4
+    2.power 4
     16
 
   eq. ++> can-raise-a-float-to-zero
-    power
-      42.5
-      0
+    42.5.power 0
     1
 
   eq. ++> can-raise-a-negative-float-to-negative-infinity
-    power
-      -42.5
-      ninf
+    -42.5.power ninf
     0
 
   eq. ++> can-raise-a-negative-float-to-positive-infinity
-    power
-      -4.2
-      pinf
+    -4.2.power pinf
     pinf
 
   eq. ++> can-raise-a-negative-integer-to-negative-infinity
-    power
-      -42
-      ninf
+    -42.power ninf
     0
 
   eq. ++> can-raise-a-negative-integer-to-positive-infinity
-    power
-      -10
-      pinf
+    -10.power pinf
     pinf
 
   eq. ++> can-raise-a-positive-float-to-a-positive-integer
-    power
-      3.5
-      4
+    3.5.power 4
     150.0625
 
   eq. ++> can-raise-a-positive-float-to-negative-infinity
-    power
-      42.5
-      ninf
+    42.5.power ninf
     0
 
   eq. ++> can-raise-a-positive-float-to-positive-infinity
-    power
-      42.5
-      pinf
+    42.5.power pinf
     pinf
 
   eq. ++> can-raise-a-positive-integer-to-a-positive-integer
-    power
-      2
-      3
+    2.power 3
     8
 
   eq. ++> can-raise-a-positive-integer-to-negative-infinity
-    power
-      42
-      ninf
+    42.power ninf
     0
 
   eq. ++> can-raise-a-positive-integer-to-positive-infinity
-    power
-      42
-      pinf
+    42.power pinf
     pinf
 
   eq. ++> can-raise-a-zero-base
-    power
-      0
-      145
+    0.power 145
     0
 
   eq. ++> can-raise-an-integer-to-zero
-    power
-      42
-      0
+    42.power 0
     1
 
   eq. ++> can-raise-four-to-five
-    power
-      4
-      5
+    4.power 5
     1024
 
   eq. ++> can-raise-four-to-minus-three
-    power
-      4
-      -3
+    4.power -3
     0.015625
 
   eq. ++> can-raise-negative-infinity-to-a-positive-float
-    power
-      ninf
-      9.9
+    ninf.power 9.9
     pinf
 
   eq. ++> can-raise-negative-infinity-to-an-even-integer
-    power
-      ninf
-      10
+    ninf.power 10
     pinf
 
   eq. ++> can-raise-negative-infinity-to-an-odd-integer
-    power
-      ninf
-      9
+    ninf.power 9
     ninf
 
   eq. ++> can-raise-negative-infinity-to-negative-infinity
-    power
-      ninf
-      ninf
+    ninf.power ninf
     0
 
   eq. ++> can-raise-negative-zero-to-even-negative
-    power
-      -0
-      -4
+    -0.power -4
     pinf
 
   eq. ++> can-raise-negative-zero-to-even-positive
-    power
-      -0
-      4
+    -0.power 4
     0
 
   eq. ++> can-raise-negative-zero-to-odd-negative
-    power
-      -0
-      -3
+    -0.power -3
     ninf
 
   eq. ++> can-raise-negative-zero-to-odd-positive
-    power
-      -0
-      3
+    -0.power 3
     -0
 
   eq. ++> can-raise-positive-infinity-to-a-negative-float
-    power
-      pinf
-      -42.2
+    pinf.power -42.2
     0
 
   eq. ++> can-raise-positive-infinity-to-a-negative-integer
-    power
-      pinf
-      -42
+    pinf.power -42
     0
 
   eq. ++> can-raise-positive-infinity-to-a-positive-float
-    power
-      pinf
-      10.8
+    pinf.power 10.8
     pinf
 
   eq. ++> can-raise-positive-infinity-to-a-positive-integer
-    power
-      pinf
-      42
+    pinf.power 42
     pinf
 
   eq. ++> can-raise-positive-infinity-to-negative-infinity
-    power
-      pinf
-      ninf
+    pinf.power ninf
     0
 
   eq. ++> can-raise-positive-infinity-to-positive-infinity
-    power
-      pinf
-      pinf
+    pinf.power pinf
     pinf
 
   eq. ++> can-raise-three-to-two
-    power
-      3
-      2
+    3.power 2
     9
 
   eq. ++> can-raise-to-a-large-negative-exponent
-    power
-      984782
-      -12341
+    984782.power -12341
     0
 
   eq. ++> can-raise-to-a-zero-exponent
-    power
-      2
-      0
+    2.power 0
     1
 
   eq. ++> can-raise-two-to-four
-    power
-      2
-      4
+    2.power 4
     16
 
   eq. ++> can-raise-two-to-minus-one
-    power
-      2
-      -1
+    2.power -1
     0.5
 
   eq. ++> can-raise-two-to-minus-three
-    power
-      2
-      -3
+    2.power -3
     0.125
 
   eq. ++> can-raise-two-to-minus-two
-    power
-      2
-      -2
+    2.power -2
     0.25
 
   eq. ++> can-raise-zero-to-a-negative
-    power
-      0
-      -52
+    0.power -52
     pinf
 
   eq. ++> can-raise-zero-to-a-negative-odd-integer
-    power
-      0
-      -567
+    0.power -567
     pinf
 
   eq. ++> can-raise-zero-to-a-positive-float
-    power
-      0
-      4.2
+    0.power 4.2
     0
 
   eq. ++> can-raise-zero-to-a-positive-integer
-    power
-      0
-      4
+    0.power 4
     0
 
   eq. ++> can-raise-zero-to-negative-infinity
-    power
-      0
-      ninf
+    0.power ninf
     pinf
 
   eq. ++> can-raise-zero-to-positive-infinity
-    power
-      0
-      pinf
+    0.power pinf
     0
 
   lt. ++> can-take-a-cube-root-of-twenty-seven
-    abs
+    abs.
       minus.
-        power
-          27
+        27.power
           1.div 3
         3
     1.0E-9
 
   lt. ++> can-take-a-square-root-of-nine
-    abs
+    abs.
       minus.
-        power 9 0.5
+        9.power 0.5
         3
     1.0E-9
 
   lt. ++> can-take-a-square-root-of-two-by-raising-to-a-power
-    abs
+    abs.
       minus.
-        power 2 0.5
+        2.power 0.5
         1.4142135623730951
     1.0E-9
 
   is-nan. ++> cannot-raise-a-negative-to-a-fraction
-    power
-      -4
-      0.5
+    -4.power 0.5
 
   is-nan. ++> cannot-raise-anything-to-nan
-    power
-      52
-      nan
+    52.power nan
 
   is-nan. ++> cannot-raise-nan-to-anything
-    power
-      nan
-      42
+    nan.power 42
 
   is-nan. ++> cannot-raise-nan-to-nan
-    power
-      nan
-      nan
+    nan.power nan

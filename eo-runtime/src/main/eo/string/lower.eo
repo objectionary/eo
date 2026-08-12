@@ -23,6 +23,4 @@
     "good evening"
     "Good evening".lower
 
-  eq. ++> can-lower-case-text-through-the-package
-    "hello"
-    lower "HELLO"
+  "hello".eq "HELLO".lower ++> can-lower-case-text-through-the-package

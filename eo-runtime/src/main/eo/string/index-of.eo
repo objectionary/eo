@@ -45,36 +45,28 @@
 
   eq. ++> can-find-a-present-substring-in-utf-text
     3
-    index-of
-      "привет, друг!"
+    "привет, друг!".index-of
       "в"
 
   eq. ++> can-return-the-index-of-a-substring
     6
-    index-of
-      "Hello \n world"
+    "Hello \n world".index-of
       "\n"
 
   eq. ++> can-return-the-index-of-a-substring-at-the-end
     6
-    index-of
-      "Hello world"
+    "Hello world".index-of
       "world"
 
   eq. ++> cannot-find-a-longer-substring
     -1
-    index-of
-      "Hello"
-      "Somebody"
+    "Hello".index-of "Somebody"
 
   eq. ++> cannot-find-an-absent-substring-in-utf-text
     -1
-    index-of
-      "привет, друг!"
+    "привет, друг!".index-of
       "x"
 
   eq. ++> cannot-find-an-absent-substring-of-the-same-length
     -1
-    index-of
-      "Hello"
-      "world"
+    "Hello".index-of "world"

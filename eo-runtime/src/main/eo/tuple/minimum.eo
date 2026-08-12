@@ -23,36 +23,37 @@
         min
 
   eq. ++> can-take-a-minimum-of-one-item
-    minimum
+    minimum.
       * 42
     42
 
   eq. ++> can-take-a-minimum-that-is-first
-    minimum *
-      -2
-      25
-      12
+    minimum.
+      *
+        -2
+        25
+        12
     -2
 
   eq. ++> can-take-a-minimum-that-is-in-the-middle
-    minimum *
-      12
-      -2
-      25
+    minimum.
+      *
+        12
+        -2
+        25
     -2
 
   eq. ++> can-take-a-minimum-that-is-last
-    minimum *
-      12
-      25
-      -2
+    minimum.
+      *
+        12
+        25
+        -2
     -2
 
   eq. ++> rejects-an-empty-list-when-taking-the-minimum
     "recovered"
-    minimum
-      *
+    tuple.empty.minimum
       "recovered" > [msg]
 
-  minimum --> stops-on-an-empty-list-when-taking-the-minimum
-    *
+  tuple.empty.minimum --> stops-on-an-empty-list-when-taking-the-minimum

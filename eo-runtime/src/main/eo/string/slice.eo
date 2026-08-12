@@ -172,8 +172,7 @@
     ""
 
   eq. ++> can-slice-the-origin-string
-    slice
-      "Hello, world!"
+    "Hello, world!".slice
       7
       5
     "world"
@@ -190,17 +189,17 @@
       2
     "ри"
 
-  slice --> stops-on-a-start-below-zero
+  slice. --> stops-on-a-start-below-zero
     "some string"
     -1
     1
 
-  slice --> stops-on-an-end-below-the-start
+  slice. --> stops-on-an-end-below-the-start
     "some string"
     2
     -1
 
-  slice --> stops-on-an-end-beyond-the-length
+  slice. --> stops-on-an-end-beyond-the-length
     "some string"
     7
     5

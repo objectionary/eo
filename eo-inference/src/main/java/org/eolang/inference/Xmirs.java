@@ -59,6 +59,22 @@ final class Xmirs {
     }
 
     /**
+     * The object every file of the program is about.
+     *
+     * <p>A file carries one object at the top and the package it declares
+     * goes into the locator of that object, so {@code minus} in the package
+     * {@code number} is {@code Φ.number.minus}. That is how an attribute
+     * comes to live in a file of its own.</p>
+     *
+     * @return The named top-level objects, one per file, in the order the
+     *  files come in
+     * @throws IOException If a file cannot be read
+     */
+    Collection<XML> roots() throws IOException {
+        return this.matching("/object/o[@name]");
+    }
+
+    /**
      * Every dispatch of the program.
      *
      * <p>A dispatch is an object whose base begins with a dot: it takes an
