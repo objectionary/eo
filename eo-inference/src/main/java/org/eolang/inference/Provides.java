@@ -73,25 +73,19 @@ final class Provides implements Clue {
     @Override
     public void follow(final Path xmirs, final Path tables) throws IOException {
         try (Tojos rows = new TjDeferred(new MnMemory())) {
-            int seen = 0;
             for (final XML formation : new Xmirs(xmirs).formations()) {
                 final String owner = formation.xpath("@loc").get(0);
                 final boolean whole = formation.nodes("o[@name='λ' or @name='φ']").isEmpty();
-                rows.add(owner)
-                    .set("index", Integer.toString(seen))
-                    .set("complete", Boolean.toString(whole));
-                seen = seen + 1;
+                rows.add(owner).set("complete", Boolean.toString(whole));
                 for (final XML attr : formation.nodes("o[@name and not(@name='λ')]")) {
                     final String name = attr.xpath("@name").get(0);
                     final Tojo row = rows.add(String.join(" ", owner, name))
                         .set("owner", owner)
-                        .set("index", Integer.toString(seen))
                         .set("name", name)
                         .set("type", attr.xpath("@loc").get(0));
                     if (attr.xpath("@base").contains("∅")) {
                         row.set("void", "true");
                     }
-                    seen = seen + 1;
                 }
             }
             Files.createDirectories(tables);
