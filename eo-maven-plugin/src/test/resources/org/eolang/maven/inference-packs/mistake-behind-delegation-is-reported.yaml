@@ -5,6 +5,14 @@
 # whole and has no `foo` anywhere in it. So `foo` will never be there, and the
 # loop says so: what stands behind `φ` is the third place an attribute can come
 # from, after the object itself and its package.
+#
+# The four tables below are the whole basis of that verdict, and none of them
+# holds it alone. The provides rows say `t` binds only `φ` and was not seen
+# whole on its own, while `base` was and has nothing but `next`. The links row
+# says what that `φ` of `t` is, which is what turns "not seen whole" into "seen
+# whole through `base`". The needs row says somebody asks `foo` of whatever
+# fills the void `x`, and the checks row says a `t` is what fills it. Read
+# together they leave one answer, and the loop writes it down.
 eo:
   app.eo: |
     [] > app
@@ -18,5 +26,17 @@ eo:
   base.eo: |
     [] > base
       [] > next
+provides:
+  - "/provides/type[@id='Φ.t' and @complete='false']/attr[@name='φ' and @type='Φ.t.φ']"
+  - "/provides/type[@id='Φ.base' and @complete='true']/attr[@name='next']"
+  - "/provides/type[@id='Φ.base'][not(attr[@name='foo'])]"
+  - "/provides/type[@id='Φ.inc']/attr[@name='x' and @void='true']"
+links:
+  - "/links/type[@id='Φ.t.φ' and @copy='Φ.base']"
+  - "/links/type[@id='Φ.app.φ.α0' and @copy='Φ.t']"
+needs:
+  - "/needs/type[@id='Φ.inc.φ.ρ']/attr[@name='foo' and @type='Φ.inc.φ']"
+checks:
+  - "/checks/type[@id='Φ.app.φ']/attr[@name='α0' and @type='Φ.app.φ.α0']"
 problems:
   - "/problems/type[@id='Φ.t']/attr[@name='foo']"
