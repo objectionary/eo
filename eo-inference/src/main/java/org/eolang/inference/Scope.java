@@ -58,6 +58,8 @@ final class Scope {
         final String found;
         if (base.startsWith("Φ.")) {
             found = this.rooted(base);
+        } else if ("ξ.ρ".equals(base)) {
+            found = this.around(this.around(reference));
         } else {
             found = this.outwards(reference, base.substring(base.indexOf('.') + 1));
         }
@@ -75,6 +77,32 @@ final class Scope {
             found = base;
         } else {
             found = "";
+        }
+        return found;
+    }
+
+    /**
+     * The nearest formation around the given locator.
+     *
+     * <p>Applied to a reference it answers with the object being formed
+     * around it, which is what {@code ξ} names; applied to that answer it
+     * gives what the object sits in, which is what {@code ξ.ρ} names. A
+     * top-level object sits in a package rather than in a formation, and
+     * nothing is answered about it.</p>
+     *
+     * @param locator The locator to walk out of
+     * @return The locator of the formation, or an empty string when no
+     *  formation is around it
+     */
+    private String around(final String locator) {
+        String walked = locator;
+        String found = "";
+        while (walked.contains(".")) {
+            walked = walked.substring(0, walked.lastIndexOf('.'));
+            if (this.formations.contains(walked)) {
+                found = walked;
+                break;
+            }
         }
         return found;
     }
