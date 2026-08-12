@@ -19,48 +19,51 @@ final class HeapsTest {
 
     @Test
     void allocatesMemory() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 10);
         Assertions.assertDoesNotThrow(
-            () -> Heaps.INSTANCE.read(idx, 0, 10),
+            () -> Heaps.INSTANCE.malloc(
+                new HeapsTest.PhFake(), 10, idx -> Heaps.INSTANCE.read(idx, 0, 10)
+            ),
             "Heaps should successfully read from allocated memory, but it didn't"
         );
-        Heaps.INSTANCE.free(idx);
     }
 
     @Test
     void failsOnDoubleAllocation() {
         final Phi phi = new HeapsTest.PhFake();
-        final int idx = Heaps.INSTANCE.malloc(phi, 10);
         Assertions.assertThrows(
             ExFailure.class,
-            () -> Heaps.INSTANCE.malloc(phi, 10),
+            () -> Heaps.INSTANCE.malloc(
+                phi, 10, idx -> Heaps.INSTANCE.malloc(phi, 10, Heaps.INSTANCE::size)
+            ),
             "Heaps should throw an exception on attempting to allocate already allocated memory, but it didn't"
         );
-        Heaps.INSTANCE.free(idx);
     }
 
     @Test
     void allocatesAndReadsEmptyBytes() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5);
         MatcherAssert.assertThat(
             "Heaps should return empty bytes after memory allocation, but it didn't",
-            Heaps.INSTANCE.read(idx, 0, 5),
+            Heaps.INSTANCE.malloc(
+                new HeapsTest.PhFake(), 5, idx -> Heaps.INSTANCE.read(idx, 0, 5)
+            ),
             Matchers.equalTo(new byte[] {0, 0, 0, 0, 0})
         );
-        Heaps.INSTANCE.free(idx);
     }
 
     @Test
     void writesAndReads() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5);
         final byte[] bytes = {1, 2, 3, 4, 5};
-        Heaps.INSTANCE.write(idx, 0, bytes);
         MatcherAssert.assertThat(
             "Heaps should successfully read exactly same bytes that were written, but it didn't",
-            Heaps.INSTANCE.read(idx, 0, bytes.length),
+            Heaps.INSTANCE.malloc(
+                new HeapsTest.PhFake(), 5,
+                idx -> {
+                    Heaps.INSTANCE.write(idx, 0, bytes);
+                    return Heaps.INSTANCE.read(idx, 0, bytes.length);
+                }
+            ),
             Matchers.equalTo(bytes)
         );
-        Heaps.INSTANCE.free(idx);
     }
 
     @Test
@@ -89,13 +92,17 @@ final class HeapsTest {
 
     @Test
     void failsCleanlyOnWriteWithNegativeOffset() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 10);
         Assertions.assertThrows(
             ExFailure.class,
-            () -> Heaps.INSTANCE.write(idx, -1, new byte[] {0x01}),
+            () -> Heaps.INSTANCE.malloc(
+                new HeapsTest.PhFake(), 10,
+                idx -> {
+                    Heaps.INSTANCE.write(idx, -1, new byte[] {0x01});
+                    return idx;
+                }
+            ),
             "Heaps must reject a negative write offset with a clean ExFailure, not a raw JVM exception"
         );
-        Heaps.INSTANCE.free(idx);
     }
 
     @Test
@@ -179,17 +186,6 @@ final class HeapsTest {
     }
 
     @Test
-    void reusesObjectAfterScopeEnds() {
-        final Phi phi = new HeapsTest.PhFake();
-        Heaps.INSTANCE.malloc(phi, 10, Heaps.INSTANCE::size);
-        MatcherAssert.assertThat(
-            "Heaps must free the block when the scope ends, but the same object could not allocate",
-            Heaps.INSTANCE.malloc(phi, 5, Heaps.INSTANCE::size),
-            Matchers.equalTo(5)
-        );
-    }
-
-    @Test
     void reusesObjectAfterScopeThrows() {
         final Phi phi = new HeapsTest.PhFake();
         Assertions.assertThrows(
@@ -206,45 +202,53 @@ final class HeapsTest {
 
     @Test
     void resizesOnWriteMoreThanAllocated() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 2);
-        Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
         MatcherAssert.assertThat(
             "Heaps should resize block when writing more bytes than allocated, but it didn't",
-            Heaps.INSTANCE.read(idx, 0, 5),
+            Heaps.INSTANCE.malloc(
+                new HeapsTest.PhFake(), 2,
+                idx -> {
+                    Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
+                    return Heaps.INSTANCE.read(idx, 0, 5);
+                }
+            ),
             Matchers.equalTo(new byte[] {1, 2, 3, 4, 5})
         );
-        Heaps.INSTANCE.free(idx);
     }
 
     @Test
     void resizesOnWriteMoreThanAllocatedWithOffset() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 3);
-        Heaps.INSTANCE.write(idx, 1, new byte[] {1, 2, 3});
         MatcherAssert.assertThat(
             "Heaps should resize block when writing past allocated boundary using offset, but it didn't",
-            Heaps.INSTANCE.read(idx, 1, 3),
+            Heaps.INSTANCE.malloc(
+                new HeapsTest.PhFake(), 3,
+                idx -> {
+                    Heaps.INSTANCE.write(idx, 1, new byte[] {1, 2, 3});
+                    return Heaps.INSTANCE.read(idx, 1, 3);
+                }
+            ),
             Matchers.equalTo(new byte[] {1, 2, 3})
         );
-        Heaps.INSTANCE.free(idx);
     }
 
     @Test
     void concatsOnWriteLessThanAllocated() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5);
-        Heaps.INSTANCE.write(idx, 0, new byte[] {1, 1, 3, 4, 5});
-        Heaps.INSTANCE.write(idx, 2, new byte[] {2, 2});
         MatcherAssert.assertThat(
             "Heaps should return correct bytes after partial overwrite preserving trailing bytes, but it didn't",
-            Heaps.INSTANCE.read(idx, 0, 5),
+            Heaps.INSTANCE.malloc(
+                new HeapsTest.PhFake(), 5,
+                idx -> {
+                    Heaps.INSTANCE.write(idx, 0, new byte[] {1, 1, 3, 4, 5});
+                    Heaps.INSTANCE.write(idx, 2, new byte[] {2, 2});
+                    return Heaps.INSTANCE.read(idx, 0, 5);
+                }
+            ),
             Matchers.equalTo(new byte[] {1, 1, 2, 2, 5})
         );
-        Heaps.INSTANCE.free(idx);
     }
 
     @Test
     void freesSuccessfully() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5);
-        Heaps.INSTANCE.free(idx);
+        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5, ident -> ident);
         Assertions.assertThrows(
             ExFailure.class,
             () -> Heaps.INSTANCE.read(idx, 0, 5),
