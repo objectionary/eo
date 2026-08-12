@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fb version="0.19.6" size="9120430">
+<fb version="0.19.6" size="9133774">
   <f>
     <added t="I">8</added>
     <cycles t="I">1</cycles>
     <deleted t="I">8</deleted>
-    <error t="S">deadlock; recursive locking</error>
+    <error t="S">Failure in repository #840332960 at #819: GET https://api.github.com/repos/objectionary/hone-maven-plugin/actions/jobs/94145699062: 502 - Server Error</error>
     <inserted t="I">8</inserted>
-    <seconds t="F">2160.724407367</seconds>
+    <seconds t="F">2160.867661225</seconds>
     <version t="S">0.61.1</version>
     <what t="S">judges-summary</what>
-    <when t="T">2026-08-12T16:06:40Z</when>
+    <when t="T">2026-08-12T17:10:57Z</when>
   </f>
   <f>
     <_id t="I">671</_id>
@@ -294133,7 +294133,7 @@
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">34</latest_issue_was_found>
-    <merges_were_scanned t="I">0</merges_were_scanned>
+    <merges_were_scanned t="I">51</merges_were_scanned>
     <min_issue_was_found t="I">45</min_issue_was_found>
     <min_pull_was_found t="I">0</min_pull_was_found>
     <repository t="I">482612876</repository>
@@ -308705,7 +308705,7 @@
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">94</latest_issue_was_found>
-    <merges_were_scanned t="I">0</merges_were_scanned>
+    <merges_were_scanned t="I">134</merges_were_scanned>
     <min_issue_was_found t="I">0</min_issue_was_found>
     <min_pull_was_found t="I">0</min_pull_was_found>
     <repository t="I">447446664</repository>
@@ -310629,13 +310629,13 @@
     <_job t="I">28730971104</_job>
     <_time t="T">2026-07-05T05:47:35Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">0</assignees_were_scanned>
+    <assignees_were_scanned t="I">822</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">13175019961</events_were_scanned>
+    <events_were_scanned t="I">13179116042</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">347</latest_issue_was_found>
-    <merges_were_scanned t="I">0</merges_were_scanned>
+    <merges_were_scanned t="I">818</merges_were_scanned>
     <min_issue_was_found t="I">5</min_issue_was_found>
     <min_pull_was_found t="I">0</min_pull_was_found>
     <repository t="I">840332960</repository>
@@ -316946,7 +316946,7 @@
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">97</latest_issue_was_found>
-    <merges_were_scanned t="I">0</merges_were_scanned>
+    <merges_were_scanned t="I">171</merges_were_scanned>
     <min_issue_was_found t="I">159</min_issue_was_found>
     <min_pull_was_found t="I">0</min_pull_was_found>
     <repository t="I">955159947</repository>
@@ -317963,13 +317963,13 @@
     <_job t="I">28918253257</_job>
     <_time t="T">2026-07-08T04:55:42Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">0</assignees_were_scanned>
+    <assignees_were_scanned t="I">1020</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">13009557602</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">365</latest_issue_was_found>
-    <merges_were_scanned t="I">0</merges_were_scanned>
+    <merges_were_scanned t="I">1029</merges_were_scanned>
     <min_issue_was_found t="I">479</min_issue_was_found>
     <min_pull_was_found t="I">0</min_pull_was_found>
     <repository t="I">977982682</repository>
@@ -322002,7 +322002,7 @@
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">480</latest_issue_was_found>
-    <merges_were_scanned t="I">0</merges_were_scanned>
+    <merges_were_scanned t="I">515</merges_were_scanned>
     <min_issue_was_found t="I">5</min_issue_was_found>
     <min_pull_was_found t="I">0</min_pull_was_found>
     <repository t="I">721146770</repository>
@@ -322015,13 +322015,13 @@
     <_job t="I">29014863301</_job>
     <_time t="T">2026-07-09T11:37:47Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">0</assignees_were_scanned>
+    <assignees_were_scanned t="I">1001</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">13175507632</events_were_scanned>
+    <events_were_scanned t="I">13178832205</events_were_scanned>
     <issues_were_scanned t="I">982</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">765</latest_issue_was_found>
-    <merges_were_scanned t="I">0</merges_were_scanned>
+    <merges_were_scanned t="I">1235</merges_were_scanned>
     <min_issue_was_found t="I">654</min_issue_was_found>
     <min_pull_was_found t="I">1018</min_pull_was_found>
     <repository t="I">889819508</repository>
@@ -324520,7 +324520,7 @@
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">6</latest_issue_was_found>
-    <merges_were_scanned t="I">0</merges_were_scanned>
+    <merges_were_scanned t="I">80</merges_were_scanned>
     <min_issue_was_found t="I">46</min_issue_was_found>
     <min_pull_was_found t="I">0</min_pull_was_found>
     <repository t="I">1219806055</repository>
@@ -324539,7 +324539,7 @@
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">236</latest_issue_was_found>
-    <merges_were_scanned t="I">0</merges_were_scanned>
+    <merges_were_scanned t="I">281</merges_were_scanned>
     <min_issue_was_found t="I">68</min_issue_was_found>
     <min_pull_was_found t="I">0</min_pull_was_found>
     <repository t="I">543969974</repository>
@@ -324596,7 +324596,7 @@
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">1356</latest_issue_was_found>
-    <merges_were_scanned t="I">0</merges_were_scanned>
+    <merges_were_scanned t="I">1556</merges_were_scanned>
     <min_issue_was_found t="I">396</min_issue_was_found>
     <min_pull_was_found t="I">1572</min_pull_was_found>
     <repository t="I">671896902</repository>
@@ -324651,7 +324651,7 @@
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">361</latest_issue_was_found>
-    <merges_were_scanned t="I">0</merges_were_scanned>
+    <merges_were_scanned t="I">430</merges_were_scanned>
     <min_issue_was_found t="I">322</min_issue_was_found>
     <min_pull_was_found t="I">0</min_pull_was_found>
     <repository t="I">13623548</repository>
@@ -324689,7 +324689,7 @@
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">69</latest_issue_was_found>
-    <merges_were_scanned t="I">0</merges_were_scanned>
+    <merges_were_scanned t="I">192</merges_were_scanned>
     <min_issue_was_found t="I">12</min_issue_was_found>
     <min_pull_was_found t="I">0</min_pull_was_found>
     <repository t="I">551486781</repository>
@@ -325102,13 +325102,13 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:00Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">0</assignees_were_scanned>
+    <assignees_were_scanned t="I">1122</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">13078145912</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">686</latest_issue_was_found>
-    <merges_were_scanned t="I">0</merges_were_scanned>
+    <merges_were_scanned t="I">1151</merges_were_scanned>
     <min_issue_was_found t="I">434</min_issue_was_found>
     <min_pull_was_found t="I">1039</min_pull_was_found>
     <repository t="I">489321585</repository>
@@ -325127,7 +325127,7 @@
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">122</latest_issue_was_found>
-    <merges_were_scanned t="I">0</merges_were_scanned>
+    <merges_were_scanned t="I">419</merges_were_scanned>
     <min_issue_was_found t="I">6</min_issue_was_found>
     <min_pull_was_found t="I">409</min_pull_was_found>
     <repository t="I">970961472</repository>
@@ -325140,13 +325140,13 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:01Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">5806</assignees_were_scanned>
+    <assignees_were_scanned t="I">6065</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">13175818262</events_were_scanned>
+    <events_were_scanned t="I">13179206911</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
-    <labels_were_scanned t="I">0</labels_were_scanned>
+    <labels_were_scanned t="I">6179</labels_were_scanned>
     <latest_issue_was_found t="I">4591</latest_issue_was_found>
-    <merges_were_scanned t="I">0</merges_were_scanned>
+    <merges_were_scanned t="I">5767</merges_were_scanned>
     <min_issue_was_found t="I">4341</min_issue_was_found>
     <min_pull_was_found t="I">5337</min_pull_was_found>
     <repository t="I">73056727</repository>
@@ -509620,7 +509620,6 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <award t="I">12</award>
     <comments t="I">6</comments>
     <details t="S">It's time to reward @vasilevnstas for the code contributed in objectionary/lints#1253, the reward amount is 12.</details>
-    <greeting t="S">Thanks for the contribution! You've earned +12 points for this: +16 as a basis; -4 for too few (7) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+96](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">7</hoc>
     <href t="S">https://github.com/objectionary/lints/issues/1253/#issuecomment-5268305555</href>
     <is_human t="I">1</is_human>
@@ -509642,7 +509641,6 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <award t="I">-8</award>
     <details t="S">It's time to punish @thayorns for the dud submitted in objectionary/eo#6606, the fee amount is -8.</details>
-    <greeting t="S">Thanks for submitting this ticket! However, as you see, it was not accepted by the team, which is sad. You've earned -8 points. By reporting bugs or suggesting enhancements, you help our project improve its quality. Please, don't be discouraged. Instead, try to be more careful next time, and [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) bugs. Your running score is [+1157](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <href t="S">https://github.com/objectionary/eo/issues/6606/#issuecomment-5268306023</href>
     <is_human t="I">1</is_human>
     <issue t="I">6606</issue>
@@ -510619,7 +510617,6 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <award t="I">12</award>
     <comments t="I">4</comments>
     <details t="S">It's time to reward @titanism0v0 for the code contributed in objectionary/eo#6498, the reward amount is 12.</details>
-    <greeting t="S">Thanks for the contribution! You've earned +12 points for this: +16 as a basis; -4 for too many hits-of-code (210 &gt;= 100). Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+136](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">210</hoc>
     <href t="S">https://github.com/objectionary/eo/issues/6498/#issuecomment-5268306314</href>
     <is_human t="I">1</is_human>
@@ -510642,7 +510639,6 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <award t="I">12</award>
     <comments t="I">4</comments>
     <details t="S">It's time to reward @thayorns for the code contributed in objectionary/eo#6524, the reward amount is 12.</details>
-    <greeting t="S">Thanks for the contribution! You've earned +12 points for this: +16 as a basis; -4 for too many hits-of-code (147 &gt;= 100). Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+1169](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">147</hoc>
     <href t="S">https://github.com/objectionary/eo/issues/6524/#issuecomment-5268306715</href>
     <is_human t="I">1</is_human>
@@ -510665,7 +510661,6 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <award t="I">16</award>
     <comments t="I">3</comments>
     <details t="S">It's time to reward @morphqdd for the code contributed in objectionary/eo#6576, the reward amount is 16.</details>
-    <greeting t="S">Thanks for the contribution! You've earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+3821](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">53</hoc>
     <href t="S">https://github.com/objectionary/eo/issues/6576/#issuecomment-5268307082</href>
     <is_human t="I">1</is_human>
@@ -510688,7 +510683,6 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <award t="I">16</award>
     <comments t="I">5</comments>
     <details t="S">It's time to reward @thayorns for the code contributed in objectionary/eo#6596, the reward amount is 16.</details>
-    <greeting t="S">Thanks for the contribution! You've earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+1185](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">65</hoc>
     <href t="S">https://github.com/objectionary/eo/issues/6596/#issuecomment-5268307474</href>
     <is_human t="I">1</is_human>
@@ -510711,7 +510705,6 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <award t="I">4</award>
     <comments t="I">2</comments>
     <details t="S">It's time to reward @maxonfjvipon for the code contributed in objectionary/eo#6615, the reward amount is 4.</details>
-    <greeting t="S">Thanks for the contribution! You've earned +4 points for this: +16 as a basis; -4 for too many hits-of-code (1049 &gt;= 100); -8 for way too many hits-of-code (1049 &gt;= 400). Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+662](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">1049</hoc>
     <href t="S">https://github.com/objectionary/eo/issues/6615/#issuecomment-5268307950</href>
     <is_human t="I">1</is_human>
@@ -510734,11 +510727,11 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <award t="I">12</award>
     <comments t="I">2</comments>
     <details t="S">It's time to reward @morphqdd for the code contributed in objectionary/eo#6618, the reward amount is 12.</details>
-    <greeting t="S">Thanks for the contribution! You've earned +12 points for this: +16 as a basis; -4 for too few (29) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+3833](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">29</hoc>
     <href t="S">https://github.com/objectionary/eo/issues/6618/#issuecomment-5268308318</href>
     <is_human t="I">1</is_human>
     <issue t="I">6618</issue>
+    <receipt t="S">receipt-#85965</receipt>
     <repository t="I">73056727</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">49455</seconds>
@@ -510756,11 +510749,11 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <award t="I">12</award>
     <comments t="I">2</comments>
     <details t="S">It's time to reward @morphqdd for the code contributed in objectionary/eo#6623, the reward amount is 12.</details>
-    <greeting t="S">Thanks for the contribution! You've earned +12 points for this: +16 as a basis; -4 for too few (21) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+3845](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">21</hoc>
     <href t="S">https://github.com/objectionary/eo/issues/6623/#issuecomment-5268308669</href>
     <is_human t="I">1</is_human>
     <issue t="I">6623</issue>
+    <receipt t="S">receipt-#85966</receipt>
     <repository t="I">73056727</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">46879</seconds>
@@ -510778,11 +510771,11 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <award t="I">12</award>
     <comments t="I">2</comments>
     <details t="S">It's time to reward @thayorns for the code contributed in objectionary/eo#6626, the reward amount is 12.</details>
-    <greeting t="S">Thanks for the contribution! You've earned +12 points for this: +16 as a basis; -4 for too many hits-of-code (102 &gt;= 100). Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+1197](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">102</hoc>
     <href t="S">https://github.com/objectionary/eo/issues/6626/#issuecomment-5268308992</href>
     <is_human t="I">1</is_human>
     <issue t="I">6626</issue>
+    <receipt t="S">receipt-#85967</receipt>
     <repository t="I">73056727</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">33506</seconds>
@@ -511273,7 +511266,6 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <award t="I">12</award>
     <details t="S">It's time to reward @yegor256 for the bug resolved in objectionary/hone-maven-plugin#807 in 2 hours, the reward amount is 12.</details>
-    <greeting t="S">Thanks for closing this issue! You've earned +12 points for this: +8 as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2830](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <href t="S">https://github.com/objectionary/hone-maven-plugin/issues/807/#issuecomment-5268309397</href>
     <is_human t="I">1</is_human>
     <issue t="I">807</issue>
@@ -511291,7 +511283,6 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <award t="I">12</award>
     <details t="S">It's time to reward @yegor256 for the bug resolved in objectionary/hone-maven-plugin#805 in 2 hours, the reward amount is 12.</details>
-    <greeting t="S">Thanks for closing this issue! You've earned +12 points for this: +8 as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2842](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <href t="S">https://github.com/objectionary/hone-maven-plugin/issues/805/#issuecomment-5268309825</href>
     <is_human t="I">1</is_human>
     <issue t="I">805</issue>
@@ -511445,6 +511436,7 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <details t="S">It's time to reward @yegor256 for the code contributed in objectionary/hone-maven-plugin#793, the reward amount is 4.</details>
     <greeting t="S">Thanks for the contribution! You've earned +4 points for this: +16 as a basis; -4 for too many hits-of-code (986 &gt;= 100); -8 for way too many hits-of-code (986 &gt;= 400); -8 for the lack of code review; +8 to give you at least something. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+2846](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">986</hoc>
+    <href t="S">https://github.com/objectionary/hone-maven-plugin/issues/793/#issuecomment-5269333448</href>
     <is_human t="I">1</is_human>
     <issue t="I">793</issue>
     <repository t="I">840332960</repository>
@@ -511466,6 +511458,7 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <details t="S">It's time to reward @yegor256 for the code contributed in objectionary/hone-maven-plugin#806, the reward amount is 4.</details>
     <greeting t="S">Thanks for the contribution! You've earned +4 points for this: +16 as a basis; -4 for too many hits-of-code (1923 &gt;= 100); -8 for way too many hits-of-code (1923 &gt;= 400); -8 for the lack of code review; +8 to give you at least something. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+2850](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
     <hoc t="I">1923</hoc>
+    <href t="S">https://github.com/objectionary/hone-maven-plugin/issues/806/#issuecomment-5269333705</href>
     <is_human t="I">1</is_human>
     <issue t="I">806</issue>
     <repository t="I">840332960</repository>
@@ -511845,9 +511838,11 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <failed_builds t="I">0</failed_builds>
     <files t="I">2</files>
     <hoc t="I">46</hoc>
+    <is_human t="I">1</is_human>
     <issue t="I">6667</issue>
     <repository t="I">73056727</repository>
     <review t="T">2026-08-12T13:58:00Z</review>
+    <review_comments t="I">2</review_comments>
     <succeeded_builds t="I">22</succeeded_builds>
     <suggestions t="I">1</suggestions>
     <what t="S">pull-was-merged</what>
@@ -511871,9 +511866,11 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <failed_builds t="I">0</failed_builds>
     <files t="I">3</files>
     <hoc t="I">87</hoc>
+    <is_human t="I">1</is_human>
     <issue t="I">6671</issue>
     <repository t="I">73056727</repository>
     <review t="T">2026-08-12T14:11:01Z</review>
+    <review_comments t="I">1</review_comments>
     <succeeded_builds t="I">24</succeeded_builds>
     <suggestions t="I">1</suggestions>
     <what t="S">pull-was-merged</what>
@@ -511897,9 +511894,11 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <failed_builds t="I">1</failed_builds>
     <files t="I">1</files>
     <hoc t="I">34</hoc>
+    <is_human t="I">1</is_human>
     <issue t="I">6676</issue>
     <repository t="I">73056727</repository>
     <review t="T">2026-08-12T15:04:27Z</review>
+    <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">23</succeeded_builds>
     <suggestions t="I">0</suggestions>
     <what t="S">pull-was-merged</what>
@@ -511923,9 +511922,11 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <failed_builds t="I">0</failed_builds>
     <files t="I">3</files>
     <hoc t="I">82</hoc>
+    <is_human t="I">1</is_human>
     <issue t="I">6679</issue>
     <repository t="I">73056727</repository>
     <review t="T">2026-08-12T15:22:39Z</review>
+    <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">17</succeeded_builds>
     <suggestions t="I">0</suggestions>
     <what t="S">pull-was-merged</what>
@@ -511939,6 +511940,7 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <_time t="T">2026-08-12T15:43:07Z</_time>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <details t="S">We found out that the user #100508620 is known in GitHub as @fzlzjerry.</details>
+    <is_human t="I">1</is_human>
     <name t="S">fzlzjerry</name>
     <what t="S">who-has-name</what>
     <when t="T">2026-08-12T15:43:07Z</when>
@@ -511951,6 +511953,7 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <_time t="T">2026-08-12T15:45:53Z</_time>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6628.</details>
+    <is_human t="I">1</is_human>
     <issue t="I">6628</issue>
     <label t="S">bug</label>
     <repository t="I">73056727</repository>
@@ -511965,6 +511968,7 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <_time t="T">2026-08-12T15:45:58Z</_time>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6664.</details>
+    <is_human t="I">1</is_human>
     <issue t="I">6664</issue>
     <label t="S">bug</label>
     <repository t="I">73056727</repository>
@@ -511979,6 +511983,7 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <_time t="T">2026-08-12T15:45:59Z</_time>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6665.</details>
+    <is_human t="I">1</is_human>
     <issue t="I">6665</issue>
     <label t="S">bug</label>
     <repository t="I">73056727</repository>
@@ -511993,6 +511998,7 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <_time t="T">2026-08-12T15:46:00Z</_time>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6669.</details>
+    <is_human t="I">1</is_human>
     <issue t="I">6669</issue>
     <label t="S">bug</label>
     <repository t="I">73056727</repository>
@@ -512007,6 +512013,7 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <_time t="T">2026-08-12T15:46:02Z</_time>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6670.</details>
+    <is_human t="I">1</is_human>
     <issue t="I">6670</issue>
     <label t="S">bug</label>
     <repository t="I">73056727</repository>
@@ -512021,11 +512028,735 @@ The average monthly zents/points ratio (0.39) is decreasing (R=0.91).</text>
     <_time t="T">2026-08-12T15:46:03Z</_time>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6674.</details>
+    <is_human t="I">1</is_human>
     <issue t="I">6674</issue>
     <label t="S">bug</label>
     <repository t="I">73056727</repository>
     <what t="S">label-was-attached</what>
     <when t="T">2026-08-12T14:46:20Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118477</_id>
+    <_job t="I">86590</_job>
+    <_time t="T">2026-08-12T16:07:42Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <comments t="I">4</comments>
+    <details t="S">The pull request objectionary/hone-maven-plugin#814 with 83 HoC created by @yegor256 was merged by @yegor256 after 38m14s of being in review and 4 comments.</details>
+    <hoc t="I">83</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">814</issue>
+    <merger t="I">526301</merger>
+    <repository t="I">840332960</repository>
+    <review_comments t="I">4</review_comments>
+    <seconds t="I">2294</seconds>
+    <what t="S">code-was-contributed</what>
+    <when t="T">2026-08-12T12:42:54Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118478</_id>
+    <_job t="I">86590</_job>
+    <_time t="T">2026-08-12T16:07:42Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <comments t="I">2</comments>
+    <details t="S">The pull request objectionary/eo#6646 with 27 HoC created by @morphqdd was merged by @yegor256 after 3h37m of being in review and 2 comments.</details>
+    <hoc t="I">27</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">6646</issue>
+    <merger t="I">526301</merger>
+    <repository t="I">73056727</repository>
+    <review_comments t="I">0</review_comments>
+    <seconds t="I">13056</seconds>
+    <what t="S">code-was-contributed</what>
+    <when t="T">2026-08-12T13:56:29Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+  </f>
+  <f>
+    <_id t="I">1118479</_id>
+    <_job t="I">86590</_job>
+    <_time t="T">2026-08-12T16:07:42Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <comments t="I">2</comments>
+    <details t="S">The pull request objectionary/eo#6662 with 1341 HoC created by @maxonfjvipon was merged by @yegor256 after 16m37s of being in review and 2 comments.</details>
+    <hoc t="I">1341</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">6662</issue>
+    <merger t="I">526301</merger>
+    <repository t="I">73056727</repository>
+    <review_comments t="I">0</review_comments>
+    <seconds t="I">997</seconds>
+    <what t="S">code-was-contributed</what>
+    <when t="T">2026-08-12T13:16:25Z</when>
+    <where t="S">github</where>
+    <who t="I">37025995</who>
+  </f>
+  <f>
+    <_id t="I">1118480</_id>
+    <_job t="I">86590</_job>
+    <_time t="T">2026-08-12T16:07:43Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <comments t="I">4</comments>
+    <details t="S">The pull request objectionary/eo#6666 with 83 HoC created by @yegor256 was merged by @yegor256 after 21m33s of being in review and 4 comments.</details>
+    <hoc t="I">83</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">6666</issue>
+    <merger t="I">526301</merger>
+    <repository t="I">73056727</repository>
+    <review_comments t="I">2</review_comments>
+    <seconds t="I">1293</seconds>
+    <what t="S">code-was-contributed</what>
+    <when t="T">2026-08-12T13:54:50Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118481</_id>
+    <_job t="I">86590</_job>
+    <_time t="T">2026-08-12T16:08:18Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <award t="I">4</award>
+    <comments t="I">0</comments>
+    <details t="S">It's time to reward @yegor256 for the code contributed in objectionary/hone-maven-plugin#808, the reward amount is 4.</details>
+    <greeting t="S">Thanks for the contribution! You've earned +4 points for this: +16 as a basis; -4 for too many hits-of-code (238 &gt;= 100); -8 for the lack of code review. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+2842](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
+    <hoc t="I">238</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">808</issue>
+    <repository t="I">840332960</repository>
+    <review_comments t="I">0</review_comments>
+    <seconds t="I">1344</seconds>
+    <what t="S">code-contribution-was-rewarded</what>
+    <when t="T">2026-08-12T16:08:18Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+    <why t="S">Contributed code in objectionary/hone-maven-plugin#808</why>
+  </f>
+  <f>
+    <_id t="I">1118482</_id>
+    <_job t="I">86590</_job>
+    <_time t="T">2026-08-12T16:08:19Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <award t="I">4</award>
+    <comments t="I">2</comments>
+    <details t="S">It's time to reward @yegor256 for the code contributed in objectionary/hone-maven-plugin#809, the reward amount is 4.</details>
+    <greeting t="S">Thanks for the contribution! You've earned +4 points for this: +16 as a basis; -4 for too many hits-of-code (1293 &gt;= 100); -8 for way too many hits-of-code (1293 &gt;= 400); -8 for the lack of code review; +8 to give you at least something. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+2846](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
+    <hoc t="I">1293</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">809</issue>
+    <repository t="I">840332960</repository>
+    <review_comments t="I">2</review_comments>
+    <seconds t="I">4135</seconds>
+    <what t="S">code-contribution-was-rewarded</what>
+    <when t="T">2026-08-12T16:08:19Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+    <why t="S">Contributed code in objectionary/hone-maven-plugin#809</why>
+  </f>
+  <f>
+    <_id t="I">1118483</_id>
+    <_job t="I">86590</_job>
+    <_time t="T">2026-08-12T16:08:19Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <award t="I">4</award>
+    <comments t="I">0</comments>
+    <details t="S">It's time to reward @yegor256 for the code contributed in objectionary/hone-maven-plugin#812, the reward amount is 4.</details>
+    <greeting t="S">Thanks for the contribution! You've earned +4 points for this: +16 as a basis; -4 for too many hits-of-code (101 &gt;= 100); -8 for the lack of code review. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+2850](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
+    <hoc t="I">101</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">812</issue>
+    <repository t="I">840332960</repository>
+    <review_comments t="I">0</review_comments>
+    <seconds t="I">2236</seconds>
+    <what t="S">code-contribution-was-rewarded</what>
+    <when t="T">2026-08-12T16:08:19Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+    <why t="S">Contributed code in objectionary/hone-maven-plugin#812</why>
+  </f>
+  <f>
+    <_id t="I">1118484</_id>
+    <_job t="I">86590</_job>
+    <_time t="T">2026-08-12T16:08:20Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <award t="I">16</award>
+    <comments t="I">14</comments>
+    <details t="S">It's time to reward @gemshrine for the code contributed in objectionary/eo#6404, the reward amount is 16.</details>
+    <greeting t="S">Thanks for the contribution! You've earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+2060](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
+    <hoc t="I">90</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">6404</issue>
+    <repository t="I">73056727</repository>
+    <review_comments t="I">9</review_comments>
+    <seconds t="I">583238</seconds>
+    <what t="S">code-contribution-was-rewarded</what>
+    <when t="T">2026-08-12T16:08:20Z</when>
+    <where t="S">github</where>
+    <who t="I">113778529</who>
+    <why t="S">Contributed code in objectionary/eo#6404</why>
+  </f>
+  <f>
+    <_id t="I">1118485</_id>
+    <_job t="I">86590</_job>
+    <_time t="T">2026-08-12T16:08:20Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <award t="I">16</award>
+    <comments t="I">23</comments>
+    <details t="S">It's time to reward @thayorns for the code contributed in objectionary/eo#6460, the reward amount is 16.</details>
+    <greeting t="S">Thanks for the contribution! You've earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+1213](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
+    <hoc t="I">96</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">6460</issue>
+    <repository t="I">73056727</repository>
+    <review_comments t="I">17</review_comments>
+    <seconds t="I">419924</seconds>
+    <what t="S">code-contribution-was-rewarded</what>
+    <when t="T">2026-08-12T16:08:20Z</when>
+    <where t="S">github</where>
+    <who t="I">96509556</who>
+    <why t="S">Contributed code in objectionary/eo#6460</why>
+  </f>
+  <f>
+    <_id t="I">1118486</_id>
+    <_job t="I">86590</_job>
+    <_time t="T">2026-08-12T16:08:21Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <award t="I">16</award>
+    <comments t="I">10</comments>
+    <details t="S">It's time to reward @morphqdd for the code contributed in objectionary/eo#6603, the reward amount is 16.</details>
+    <greeting t="S">Thanks for the contribution! You've earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+3861](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
+    <hoc t="I">44</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">6603</issue>
+    <repository t="I">73056727</repository>
+    <review_comments t="I">1</review_comments>
+    <seconds t="I">89223</seconds>
+    <what t="S">code-contribution-was-rewarded</what>
+    <when t="T">2026-08-12T16:08:21Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+    <why t="S">Contributed code in objectionary/eo#6603</why>
+  </f>
+  <f>
+    <_id t="I">1118487</_id>
+    <_job t="I">86590</_job>
+    <_time t="T">2026-08-12T16:08:21Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <award t="I">8</award>
+    <comments t="I">2</comments>
+    <details t="S">It's time to reward @yegor256 for the code contributed in objectionary/eo#6660, the reward amount is 8.</details>
+    <greeting t="S">Thanks for the contribution! You've earned +8 points for this: +16 as a basis; -8 for the lack of code review. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+2858](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
+    <hoc t="I">65</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">6660</issue>
+    <repository t="I">73056727</repository>
+    <review_comments t="I">1</review_comments>
+    <seconds t="I">26</seconds>
+    <what t="S">code-contribution-was-rewarded</what>
+    <when t="T">2026-08-12T16:08:21Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+    <why t="S">Contributed code in objectionary/eo#6660</why>
+  </f>
+  <f>
+    <_id t="I">1118488</_id>
+    <_job t="I">86590</_job>
+    <_time t="T">2026-08-12T16:08:22Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <award t="I">-8</award>
+    <details t="S">It's time to punish @maxonfjvipon for the dud submitted in objectionary/eo#6661, the fee amount is -8.</details>
+    <greeting t="S">Thanks for submitting this ticket! However, as you see, it was not accepted by the team, which is sad. You've earned -8 points. By reporting bugs or suggesting enhancements, you help our project improve its quality. Please, don't be discouraged. Instead, try to be more careful next time, and [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) bugs. Your running score is [+654](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too). </greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">6661</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">dud-was-punished</what>
+    <when t="T">2026-08-12T16:08:22Z</when>
+    <where t="S">github</where>
+    <who t="I">37025995</who>
+    <why t="S">Submitted dud in objectionary/eo#6661</why>
+  </f>
+  <f>
+    <_id t="I">1118489</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:35:57Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6684 has been opened by @maxonfjvipon.</details>
+    <event_id t="I">13179162784</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6684</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-08-12T16:34:50Z</when>
+    <where t="S">github</where>
+    <who t="I">37025995</who>
+  </f>
+  <f>
+    <_id t="I">1118490</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:36:00Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">6631</branch>
+    <details t="S">The pull request objectionary/eo#6683 has been opened by @thayorns.</details>
+    <event_id t="I">13178864503</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6683</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-12T16:29:14Z</when>
+    <where t="S">github</where>
+    <who t="I">96509556</who>
+  </f>
+  <f>
+    <_id t="I">1118491</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:36:01Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6653 has been closed by @yegor256.</details>
+    <event_id t="I">13178594893</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6653</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-closed</what>
+    <when t="T">2026-08-12T16:23:45Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118492</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:36:04Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6682 has been opened by @maxonfjvipon.</details>
+    <event_id t="I">13178347706</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6682</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-08-12T16:18:37Z</when>
+    <where t="S">github</where>
+    <who t="I">37025995</who>
+  </f>
+  <f>
+    <_id t="I">1118493</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:36:06Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">bug/#6653/parent-reference</branch>
+    <details t="S">The pull request objectionary/eo#6681 has been opened by @maxonfjvipon.</details>
+    <event_id t="I">13177968779</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6681</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-12T16:10:49Z</when>
+    <where t="S">github</where>
+    <who t="I">37025995</who>
+  </f>
+  <f>
+    <_id t="I">1118494</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:36:07Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">bug/#6654/rename-clashing-test-names</branch>
+    <details t="S">The pull request objectionary/eo#6680 has been opened by @maxonfjvipon.</details>
+    <event_id t="I">13177958196</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6680</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-12T16:10:35Z</when>
+    <where t="S">github</where>
+    <who t="I">37025995</who>
+  </f>
+  <f>
+    <_id t="I">1118495</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:36:09Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/eo#6650 has been closed by @maxonfjvipon.</details>
+    <event_id t="I">13177459748</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">6650</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-closed</what>
+    <when t="T">2026-08-12T16:00:44Z</when>
+    <where t="S">github</where>
+    <who t="I">37025995</who>
+  </f>
+  <f>
+    <_id t="I">1118496</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:36:09Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <commit t="S">a43e4e7dd5417fc8290c7e3ee8fdb45a509d06ed</commit>
+    <default_branch t="S">master</default_branch>
+    <details t="S">A new Git push #39815885996 has arrived to objectionary/eo, made by @yegor256 (default branch is "master"), not associated with any pull request.</details>
+    <event_id t="I">17495821153</event_id>
+    <event_type t="S">PushEvent</event_type>
+    <is_human t="I">1</is_human>
+    <push_id t="I">39815885996</push_id>
+    <ref t="S">refs/heads/master</ref>
+    <repository t="I">73056727</repository>
+    <to_master t="I">1</to_master>
+    <what t="S">git-was-pushed</what>
+    <when t="T">2026-08-12T15:56:59Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118497</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:36:10Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <commit t="S">f5758dd5318030efb646a9c18df9eb8fe50c8874</commit>
+    <default_branch t="S">master</default_branch>
+    <details t="S">A new Git push #39815845728 has arrived to objectionary/eo, made by @yegor256 (default branch is "master"), not associated with any pull request.</details>
+    <event_id t="I">17495781108</event_id>
+    <event_type t="S">PushEvent</event_type>
+    <is_human t="I">1</is_human>
+    <push_id t="I">39815845728</push_id>
+    <ref t="S">refs/heads/master</ref>
+    <repository t="I">73056727</repository>
+    <to_master t="I">1</to_master>
+    <what t="S">git-was-pushed</what>
+    <when t="T">2026-08-12T15:56:26Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118498</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:36:27Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/hone-maven-plugin#821 has been closed by @yegor256.</details>
+    <event_id t="I">13179041462</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">821</issue>
+    <repository t="I">840332960</repository>
+    <what t="S">issue-was-closed</what>
+    <when t="T">2026-08-12T16:32:37Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118499</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:36:28Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">claude/issue-822-fix-yh8au2</branch>
+    <details t="S">The pull request objectionary/hone-maven-plugin#824 has been opened by @yegor256.</details>
+    <event_id t="I">13178598141</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">824</issue>
+    <repository t="I">840332960</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-12T16:23:48Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118500</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:36:29Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">claude/issue-821-fix-pr-gh707r</branch>
+    <details t="S">The pull request objectionary/hone-maven-plugin#823 has been opened by @yegor256.</details>
+    <event_id t="I">13178247816</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">823</issue>
+    <repository t="I">840332960</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-12T16:16:33Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118501</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:36:31Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/hone-maven-plugin#822 has been opened by @yegor256.</details>
+    <event_id t="I">13177668677</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">822</issue>
+    <repository t="I">840332960</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-08-12T16:04:48Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118502</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:36:32Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/hone-maven-plugin#821 has been opened by @yegor256.</details>
+    <event_id t="I">13176662205</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">821</issue>
+    <repository t="I">840332960</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-08-12T15:46:14Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118503</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:40:05Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">claude/issue-811-fix-pr-p0h2k6</branch>
+    <details t="S">The missing pull objectionary/hone-maven-plugin#815 has been opened by @yegor256.</details>
+    <issue t="I">815</issue>
+    <repository t="I">840332960</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-12T12:41:11Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118504</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:40:06Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The missing issue objectionary/hone-maven-plugin#816 has been opened by @yegor256.</details>
+    <issue t="I">816</issue>
+    <repository t="I">840332960</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-08-12T13:35:02Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118505</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:40:07Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The missing issue objectionary/hone-maven-plugin#817 has been opened by @yegor256.</details>
+    <issue t="I">817</issue>
+    <repository t="I">840332960</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-08-12T13:36:54Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118506</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:40:08Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">claude/issue-817-fix-pr-6vfzrf</branch>
+    <details t="S">The missing pull objectionary/hone-maven-plugin#818 has been opened by @yegor256.</details>
+    <issue t="I">818</issue>
+    <repository t="I">840332960</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-12T14:11:22Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118507</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:40:09Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">claude/issue-816-fix-pr-3rchjg</branch>
+    <details t="S">The missing pull objectionary/hone-maven-plugin#819 has been opened by @yegor256.</details>
+    <issue t="I">819</issue>
+    <repository t="I">840332960</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-12T14:20:10Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118508</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:40:10Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">claude/issue-817-fix-pr-6vfzrf</branch>
+    <details t="S">The missing pull objectionary/hone-maven-plugin#820 has been opened by @yegor256.</details>
+    <issue t="I">820</issue>
+    <repository t="I">840332960</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-12T14:40:19Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118509</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:41:17Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">claude/issue-811-fix-pr-p0h2k6</branch>
+    <comments t="I">0</comments>
+    <comments_appreciated t="I">0</comments_appreciated>
+    <comments_by_author t="I">0</comments_by_author>
+    <comments_by_reviewers t="I">0</comments_by_reviewers>
+    <comments_resolved t="I">0</comments_resolved>
+    <comments_to_code t="I">0</comments_to_code>
+    <details t="S">Apparently, objectionary/hone-maven-plugin#815 has been "pull-was-merged".</details>
+    <failed_builds t="I">0</failed_builds>
+    <files t="I">25</files>
+    <hoc t="I">849</hoc>
+    <issue t="I">815</issue>
+    <repository t="I">840332960</repository>
+    <review t="T">2026-08-12T13:45:31Z</review>
+    <succeeded_builds t="I">19</succeeded_builds>
+    <suggestions t="I">0</suggestions>
+    <what t="S">pull-was-merged</what>
+    <when t="T">2026-08-12T14:03:20Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118510</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:41:45Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">claude/issue-817-fix-pr-6vfzrf</branch>
+    <comments t="I">3</comments>
+    <comments_appreciated t="I">0</comments_appreciated>
+    <comments_by_author t="I">1</comments_by_author>
+    <comments_by_reviewers t="I">2</comments_by_reviewers>
+    <comments_resolved t="I">0</comments_resolved>
+    <comments_to_code t="I">3</comments_to_code>
+    <details t="S">Apparently, objectionary/hone-maven-plugin#818 has been "pull-was-merged".</details>
+    <failed_builds t="I">0</failed_builds>
+    <files t="I">3</files>
+    <hoc t="I">277</hoc>
+    <issue t="I">818</issue>
+    <repository t="I">840332960</repository>
+    <review t="T">2026-08-12T14:29:14Z</review>
+    <succeeded_builds t="I">19</succeeded_builds>
+    <suggestions t="I">2</suggestions>
+    <what t="S">pull-was-merged</what>
+    <when t="T">2026-08-12T14:33:33Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118511</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:45:17Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <assigner t="I">526301</assigner>
+    <details t="S">objectionary/hone-maven-plugin#816 was assigned to @yegor256 by @yegor256.</details>
+    <issue t="I">816</issue>
+    <repository t="I">840332960</repository>
+    <what t="S">issue-was-assigned</what>
+    <when t="T">2026-08-12T13:39:04Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118512</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:45:19Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <assigner t="I">526301</assigner>
+    <details t="S">objectionary/hone-maven-plugin#817 was assigned to @yegor256 by @yegor256.</details>
+    <issue t="I">817</issue>
+    <repository t="I">840332960</repository>
+    <what t="S">issue-was-assigned</what>
+    <when t="T">2026-08-12T13:38:28Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118513</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:45:21Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <assigner t="I">526301</assigner>
+    <details t="S">objectionary/hone-maven-plugin#821 was assigned to @yegor256 by @yegor256.</details>
+    <issue t="I">821</issue>
+    <repository t="I">840332960</repository>
+    <what t="S">issue-was-assigned</what>
+    <when t="T">2026-08-12T15:47:59Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118514</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:45:23Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <assigner t="I">526301</assigner>
+    <details t="S">objectionary/hone-maven-plugin#822 was assigned to @yegor256 by @yegor256.</details>
+    <issue t="I">822</issue>
+    <repository t="I">840332960</repository>
+    <what t="S">issue-was-assigned</what>
+    <when t="T">2026-08-12T16:07:07Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118515</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:49:41Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/hone-maven-plugin#816.</details>
+    <issue t="I">816</issue>
+    <label t="S">bug</label>
+    <repository t="I">840332960</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-12T13:39:06Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118516</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:49:43Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/hone-maven-plugin#817.</details>
+    <issue t="I">817</issue>
+    <label t="S">bug</label>
+    <repository t="I">840332960</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-12T13:38:30Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118517</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:49:45Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/hone-maven-plugin#821.</details>
+    <issue t="I">821</issue>
+    <label t="S">bug</label>
+    <repository t="I">840332960</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-12T15:48:02Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1118518</_id>
+    <_job t="I">31617552829</_job>
+    <_time t="T">2026-08-12T16:49:47Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/hone-maven-plugin#822.</details>
+    <issue t="I">822</issue>
+    <label t="S">bug</label>
+    <repository t="I">840332960</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-12T16:07:09Z</when>
     <where t="S">github</where>
     <who t="I">526301</who>
   </f>
