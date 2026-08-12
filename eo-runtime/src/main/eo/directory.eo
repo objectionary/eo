@@ -1,11 +1,6 @@
 # Directory in the file system.
 # Apparently every directory is a file.
 #
-# @todo #6482:45min Translate a character class in the glob below. The
-#  `translated` object now turns a brace group into an alternation, but a class
-#  like [a-z] or [!a] reaches the regex engine neither translated nor escaped,
-#  so a negation matches nothing it should and a lone bracket refuses to
-#  compile, while a star inside a class keeps its glob meaning by mistake.
 # @todo #5751:30min Stop descending into a symbolic link to a directory. The
 #  `walk` below asks stat, which follows the link, so a link to its own ancestor
 #  recurses forever, while the `Files.walk` it replaced only listed such a link.
@@ -141,7 +136,7 @@
                   string.joined *1 >>!
                     ""
                     "/^"
-                    translated 0 "" false
+                    translated 0 "" false false
                     "$/"
                 T > [message] >>
                   "Can't parse '%s' as a glob pattern, %s".printf
@@ -152,7 +147,7 @@
       "[^"
       escaped path.separator >> literal
       "]"
-    [index acc braced] >> translated
+    [index acc braced classed] >> translated
       if. > @
         index.gte glob.length
         acc
@@ -163,49 +158,66 @@
             ""
             acc
             token
-          if.
-            char.eq "{"
-            true
+          classed.if
+            braced
             if.
-              char.eq "}"
-              false
-              braced
-      if. > alternated
-        char.eq "{"
-        "("
+              char.eq "{"
+              true
+              if.
+                char.eq "}"
+                false
+                braced
+          classed.if (char.eq "]").not (char.eq "[")
+      classed.if > alternated
+        escaped char
         if.
-          braced.and
-            char.eq "}"
-          ")"
+          char.eq "{"
+          "("
           if.
             braced.and
-              char.eq ","
-            "|"
-            escaped char
-      string.at glob index > char
-      and. > double
-        char.eq "*"
-        eq.
-          string.at
-            glob
-            index.plus 1
-            "" > [message]
-          "*"
-      double.if > token
-        ".*"
-        if.
-          char.eq "*"
-          string.joined *1
-            ""
-            single
-            "*"
-          if.
-            char.eq "?"
-            single
+              char.eq "}"
+            ")"
             if.
-              char.eq "/"
-              literal
-              alternated
+              braced.and
+                char.eq ","
+              "|"
+              escaped char
+      string.at glob index > char
+      classed.not.and > double
+        and.
+          char.eq "*"
+          eq.
+            string.at
+              glob
+              index.plus 1
+              "" > [message]
+            "*"
+      classed.if > token
+        if.
+          and.
+            char.eq "!"
+            eq.
+              string.at
+                glob
+                index.minus 1
+              "["
+          "^"
+          escaped char
+        double.if
+          ".*"
+          if.
+            char.eq "*"
+            string.joined *1
+              ""
+              single
+              "*"
+            if.
+              char.eq "?"
+              single
+              if.
+                char.eq "/"
+                literal
+                alternated
 
   ++> can-create-a-regular-tmpfile
     seq * > @
@@ -275,6 +287,23 @@
     Q.file candidate.as-bytes > next
     mktemp.tmpfile.deleted.as-path.as-dir.made > parent
     Q.file created.as-bytes > temp
+
+  ++> can-keep-a-star-literal-inside-a-character-class
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      touched.
+        as-file.
+          d.resolved "b.txt"
+      eq.
+        string.joined
+          ","
+          d.as-dir.walk "[a*].txt"
+        d.resolved "a.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
 
   ++> can-list-only-the-direct-children-of-a-directory
     seq * > @
@@ -392,6 +421,23 @@
       made.
         directory mktemp.tmpfile.deleted
 
+  ++> can-walk-with-a-character-class-range
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      touched.
+        as-file.
+          d.resolved "1.txt"
+      eq.
+        string.joined
+          ","
+          d.as-dir.walk "[a-z].txt"
+        d.resolved "a.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
   ++> can-walk-with-a-comma-outside-a-glob-brace-group
     seq * > @
       touched.
@@ -424,6 +470,23 @@
         length.
           d.as-dir.walk "{привет.txt,мир.log}"
         2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-a-negated-character-class
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      touched.
+        as-file.
+          d.resolved "b.txt"
+      eq.
+        string.joined
+          ","
+          d.as-dir.walk "[!a].txt"
+        d.resolved "b.txt"
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
