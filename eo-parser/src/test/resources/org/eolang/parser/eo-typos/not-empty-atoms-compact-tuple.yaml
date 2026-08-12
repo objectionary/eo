@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 2
+message: |-
+  [2:2] error: 'Atom cannot contain inner objects; only `+>` test attributes are allowed in an atom body'
+    seq * > bar
+    ^
+input: |
+  [] > test /bytes
+    seq * > bar
+      1
+      2
