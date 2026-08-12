@@ -136,6 +136,13 @@
       </eo>
     </object>
   </xsl:template>
+  <!--
+  The blank line after the top comment block (R-6.5.2) and the one after
+  the metas (R-6.5.5) separate them from what follows, so each is emitted
+  only when something does follow. A program of comments or metas alone
+  ends at its last written line, and a blank line there reparses as a
+  trailing one the parser rejects (#6713).
+  -->
   <!-- TOP COMMENT BLOCK -->
   <xsl:template match="comments">
     <xsl:for-each select="comment">
@@ -152,7 +159,7 @@
         <xsl:value-of select="$eol"/>
       </xsl:for-each>
     </xsl:for-each>
-    <xsl:if test="comment">
+    <xsl:if test="comment and (../metas/meta or ../o)">
       <xsl:value-of select="$eol"/>
     </xsl:if>
   </xsl:template>
@@ -170,7 +177,9 @@
   <!-- METAS -->
   <xsl:template match="metas">
     <xsl:apply-templates select="meta"/>
-    <xsl:value-of select="$eol"/>
+    <xsl:if test="meta and ../o">
+      <xsl:value-of select="$eol"/>
+    </xsl:if>
   </xsl:template>
   <!-- META -->
   <xsl:template match="meta">
