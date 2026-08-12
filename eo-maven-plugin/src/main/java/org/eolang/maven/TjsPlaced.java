@@ -37,7 +37,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Ctor.
-     * @param tojos Tojos source
+     * @param tojos Tojos source, read at most once
      */
     TjsPlaced(final Scalar<? extends Tojos> tojos) {
         this(new Unchecked<>(new Sticky<>(tojos)));
@@ -48,7 +48,7 @@ final class TjsPlaced implements Closeable {
      * @param tojos Tojos
      */
     private TjsPlaced(final Tojos tojos) {
-        this(new Sticky<>(() -> tojos));
+        this(() -> tojos);
     }
 
     /**
