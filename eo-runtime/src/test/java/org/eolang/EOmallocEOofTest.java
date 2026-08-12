@@ -27,8 +27,8 @@ final class EOmallocEOofTest {
         ).take();
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> Heaps.INSTANCE.free((int) dummy.id),
-            "Heaps should throw an exception on attempt to free already freed memory, but it didn't"
+            () -> Heaps.INSTANCE.size((int) dummy.id),
+            "Heaps should have released the block when the scope ended, but it was still allocated"
         );
     }
 
@@ -47,8 +47,8 @@ final class EOmallocEOofTest {
         );
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> Heaps.INSTANCE.free((int) dummy.id),
-            "Heaps should throw an exception on attempting to free already freed memory after failure, but it didn't"
+            () -> Heaps.INSTANCE.size((int) dummy.id),
+            "Heaps should have released the block after the scope failed, but it was still allocated"
         );
     }
 
