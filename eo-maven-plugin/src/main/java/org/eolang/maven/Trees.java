@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,7 +24,10 @@ import org.eolang.parser.EoSyntax;
  * {@link Parsing} walk the same text twice, seconds apart, each for its own
  * pipeline. This walks the text once, remembering the tree by the SHA-256 of
  * the text that produced it, the way {@link GlobalCache} keys its footprints,
- * and lays each caller's pipeline over that one tree.</p>
+ * and lays each caller's pipeline over a copy of it. The copy is what keeps
+ * the goals apart: a pipeline is free to rewrite the tree it is given, so
+ * handing the remembered one out twice would let the second caller start
+ * from the leftovers of the first.</p>
  *
  * @since 0.74
  */
@@ -78,7 +82,9 @@ interface Trees {
                     hash, new EoSyntax(new InputOf(text), UnaryOperator.<XML>identity()).parsed()
                 );
             }
-            return pipeline.apply(this.memo.get(hash));
+            return pipeline.apply(
+                new XMLDocument(this.memo.get(hash).inner().cloneNode(true))
+            );
         }
     }
 }
