@@ -1,11 +1,13 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# The program of the design note, which is the whole prototype in one place.
+# The program of the design note, and everything the rules can say about it.
 # `t` does have `next`, but the object attached to `next` has nothing, so
-# `x.next.foo` asks for something that will never be there. The four tables
-# write down what is known and the loop reads them together, reaching the
-# mistake in the three steps the note describes.
+# `x.next.foo` asks for something that will never be there. Every fact needed
+# to know that is in the rows below — that the `next` of a `t` is complete and
+# empty, that `foo` is asked of what `next` gives, that the `x` it is asked of
+# is the `t` — and no row says it. Reading them together is what was parked in
+# #6661.
 eo:
   app.eo: |
     [] > app
@@ -29,8 +31,3 @@ links:
   - "/links/type[@id='Φ.app.φ' and @copy='Φ.app.inc']"
   - "/links/type[@id='Φ.app.φ.α0' and @copy='Φ.app.t']"
   - "/links/type[@id='Φ.app.inc.φ.ρ.ρ' and @copy='Φ.app.inc.x']"
-checks:
-  - "/checks/type[@id='Φ.app.φ']/attr[@name='α0' and @type='Φ.app.φ.α0']"
-problems:
-  - "/problems/type[@id='Φ.app.t.next']/attr[@name='foo']"
-  - "/problems//attr[@asked='Φ.app.inc.φ']"
