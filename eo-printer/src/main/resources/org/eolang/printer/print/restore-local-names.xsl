@@ -208,6 +208,20 @@
     <xsl:variable name="value" select="$wrapper/o[@base='Φ.dataized']/o[1]"/>
     <xsl:sequence select="exists($wrapper) and $wrapper/@base='.as-bytes' and exists($wrapper/@name) and exists($value/@local) and count($wrapper/..//o[contains(@base, concat('.', $auto)) and (eo:resolved-name(@base) = $wrapper/@name or starts-with(eo:resolved-name(@base), concat($wrapper/@name, '.'))) and not(ancestor-or-self::o[. is $wrapper])]) &gt; 1"/>
   </xsl:function>
+  <!--
+  Whether the applied reference "$ref" resolves to a recursive "&gt;&gt;" handle
+  standing among its following siblings, so that it has to be relocated just
+  below that handle and piped (#5848, below). The test belongs in the pattern
+  rather than in the template body: asking only whether SOME recursive handle
+  follows makes the relocating template match a reference that resolves to its
+  own preceding handle too, and such a reference is already claimed by the
+  tag-in-place template of the same priority. Saxon then reports an ambiguous
+  rule match, picks the relocating template, and the reference loses its pipe.
+  -->
+  <xsl:function name="eo:relocated" as="xs:boolean">
+    <xsl:param name="ref" as="element()"/>
+    <xsl:sequence select="exists($ref/following-sibling::o[@local and eo:recursive(., @name) and @name = eo:resolved-name($ref/@base)])"/>
+  </xsl:function>
   <xsl:key name="void-handle" match="o[@local and (@base=$eo:empty or eo:recursive(., @name) or @pipe)]" use="@name"/>
   <!--
   References: rewrite each cactus segment that names a handled void, a
@@ -300,18 +314,12 @@
   not be the handle's immediate sibling; any applied reference resolving to the
   handle among its preceding siblings folds, mirroring #5840's separated case.
 
-  Suppress the reference at its origin. Match any applied reference (one
-  carrying arguments or a name) with a recursive handle among its following
-  siblings, then keep only those that resolve to it — a reference resolving to a
-  different binding still prints in place.
+  Suppress the reference at its origin. Match an applied reference (one carrying
+  arguments or a name) that resolves to a recursive handle among its following
+  siblings ("eo:relocated"); a reference resolving to a different binding still
+  prints in place, through the identity template.
   -->
-  <xsl:template match="o[contains(@base, concat('.', $auto)) and (o or @name) and following-sibling::o[@local and eo:recursive(., @name)]]">
-    <xsl:if test="not(following-sibling::o[@local and eo:recursive(., @name) and @name = eo:resolved-name(current()/@base)])">
-      <xsl:copy>
-        <xsl:apply-templates select="node()|@*"/>
-      </xsl:copy>
-    </xsl:if>
-  </xsl:template>
+  <xsl:template match="o[contains(@base, concat('.', $auto)) and (o or @name) and eo:relocated(.)]"/>
   <!--
   Re-emit the suppressed reference below the handle. Match the recursive handle,
   copy it, then for each applied reference among its preceding siblings that
