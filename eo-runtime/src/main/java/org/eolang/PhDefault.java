@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -156,7 +157,8 @@ public class PhDefault implements Phi, Cloneable {
         final String forma, final byte[] dta, final Map<String, Attribute> attributes
     ) {
         this.fqn = forma;
-        this.data = dta;
+        // @checkstyle AvoidInlineConditionalsCheck (1 line)
+        this.data = dta == null ? null : Arrays.copyOf(dta, dta.length);
         this.initial = attributes;
         this.order = new HashMap<>(0);
     }
@@ -264,7 +266,7 @@ public class PhDefault implements Phi, Cloneable {
     public byte[] delta() {
         final byte[] bytes;
         if (this.data != null) {
-            bytes = this.data;
+            bytes = Arrays.copyOf(this.data, this.data.length);
         } else if (this instanceof Atom) {
             bytes = this.take(Phi.LAMBDA).delta();
         } else if (this.loaded().containsKey(Phi.PHI)) {
