@@ -45,8 +45,8 @@
   cheaper than walking it node by node through the rule chain (Saxon
   copies the subtree wholesale instead of matching three patterns against
   every node). Most programs have no pipe line at all - 128 of the 170
-  sources in eo-runtime - so the one //o[@pipe] scan the guard costs pays
-  for itself many times over (#6665).
+  sources in eo-runtime - and the guard costs only one //o[@pipe] scan,
+  far less than the walk it skips (#6665).
   -->
   <xsl:template match="/">
     <xsl:choose>
