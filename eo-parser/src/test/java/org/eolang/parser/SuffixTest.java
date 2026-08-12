@@ -145,6 +145,24 @@ final class SuffixTest {
     }
 
     @Test
+    void reportsNoneFormForBareConstMarker() {
+        MatcherAssert.assertThat(
+            "a bare `!` with no name suffix must still yield Form.NONE",
+            new Suffix(" !", new Span("[] !", 1), 2).form(),
+            Matchers.equalTo(Suffix.Form.NONE)
+        );
+    }
+
+    @Test
+    void detectsConstMarkerOnBareTail() {
+        MatcherAssert.assertThat(
+            "a bare `!` (#6562, the vertical-argument counterpart of #5821) must report constant() == true",
+            new Suffix(" !", new Span("[] !", 1), 2).constant(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
     void parsesAtomSignature() {
         MatcherAssert.assertThat(
             "`> name /sig` must record the atom signature as sig()",
