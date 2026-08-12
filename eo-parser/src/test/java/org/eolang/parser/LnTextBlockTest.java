@@ -162,6 +162,17 @@ final class LnTextBlockTest {
     }
 
     @Test
+    void stripsBlankIndent() {
+        final Globals globals = new Globals();
+        globals.openTextBlock(1, 4);
+        globals.appendTextLine("  ");
+        MatcherAssert.assertThat(
+            "Blank indent must be stripped",
+            globals.tbody().get(0),
+            Matchers.equalTo("")
+    }
+
+    @Test
     void rejectsAttributeWithoutPrecedingBlankLine() {
         final Globals globals = new Globals();
         globals.openTextBlock(1, 0);
