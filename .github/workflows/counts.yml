@@ -70,6 +70,7 @@ jobs:
           suppressions *.java @SuppressWarnings
           checkstyles *.java @checkstyle
           statics *.java static
+          instanceofs *.java instanceof
           nulls *.java null
           atoms *.java @XmirObject
           nodelists *.java org\.w3c\.dom\.NodeList

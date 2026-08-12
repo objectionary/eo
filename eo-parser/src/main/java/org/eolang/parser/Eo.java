@@ -41,6 +41,11 @@ final class Eo implements Iterable<Directive> {
     private static final String ROOT_TOKENS = "*(QT@^$%";
 
     /**
+     * Initial capacity of the source line buffer, {@link java.util.ArrayList}'s own default.
+     */
+    private static final int SPANS_CAPACITY = 10;
+
+    /**
      * Raw EO source text.
      */
     private final String source;
@@ -69,7 +74,7 @@ final class Eo implements Iterable<Directive> {
             level -> Eo.checkOnClose(level, emit),
             parent -> Eo.beforeChild(parent, emit)
         );
-        final java.util.List<Span> spans = new java.util.ArrayList<>(16);
+        final java.util.List<Span> spans = new java.util.ArrayList<>(Eo.SPANS_CAPACITY);
         new Source(this.source).forEach(spans::add);
         final Recovery recovery = new Recovery(spans);
         int idx = 0;

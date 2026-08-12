@@ -14,6 +14,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Comparator;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -32,11 +33,26 @@ final class Sha {
     private final Path path;
 
     /**
+     * Files filter, applied only when hashing a directory.
+     */
+    private final Predicate<Path> filter;
+
+    /**
      * Ctor.
      * @param path File or directory to hash
      */
     Sha(final Path path) {
+        this(path, p -> true);
+    }
+
+    /**
+     * Ctor.
+     * @param path File or directory to hash
+     * @param filter Files filter, applied only when hashing a directory
+     */
+    Sha(final Path path, final Predicate<Path> filter) {
         this.path = path;
+        this.filter = filter;
     }
 
     @Override
@@ -57,8 +73,15 @@ final class Sha {
      */
     private String hash() throws IOException, NoSuchAlgorithmException {
         final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        final Predicate<Path> active;
+        if (Files.isDirectory(this.path)) {
+            active = this.filter;
+        } else {
+            active = any -> true;
+        }
         try (Stream<Path> walk = Files.walk(this.path)) {
             walk.filter(Files::isRegularFile)
+                .filter(active)
                 .sorted(Comparator.comparing(this::relative))
                 .forEach(file -> this.feed(digest, file));
         }

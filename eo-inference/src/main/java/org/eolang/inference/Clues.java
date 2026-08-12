@@ -24,12 +24,13 @@ import java.util.Collection;
  *   [x] &gt; inc
  *     x.next.foo &gt; @</pre>
  *
- * <p>Three clues are planned, one per kind of object, and each fills a
- * table of its own: what an object certainly has ({@link Provides}), what
- * it must have judging by how it is used ({@link Needs}), and which types
- * are copies of which ({@link Links}). Keeping the tables apart is what lets a smarter
- * rule add rows, or read them differently, without touching anything
- * else.</p>
+ * <p>There is a clue per kind of object, and each fills a table of its
+ * own: what an object certainly has ({@link Provides}), what it must have
+ * judging by how it is used ({@link Needs}), which types are copies of
+ * which ({@link Links}), and what has to be checked once those three are
+ * read together ({@link Checks}). Keeping the tables apart is what lets a
+ * smarter rule add rows, or read them differently, without touching
+ * anything else.</p>
  *
  * <p>Every clue reads the program as text, writing a row for an object
  * because it is <em>there</em>, not because something reaches it. The
@@ -42,12 +43,10 @@ import java.util.Collection;
  * buys back later by resolving each site in its own context; reading only
  * what runs costs coverage, which nothing buys back.</p>
  *
- * <p>Then the checks are drained one by one, each of them either
- * deciding, splitting into smaller checks, or waiting for facts that may
- * never come. A mistake is reported only when the object that misses an
- * attribute is complete, so that parts of the program the checker cannot
- * see — atoms, delegation through {@code φ} — make it silent rather than
- * wrong. Only the first clue is here so far.</p>
+ * <p>No clue decides anything, which is why they can be read one after
+ * another in any order. Draining the checks the last of them files is the
+ * work of {@link Concluded}, which follows all of them first and then reads
+ * their tables together.</p>
  *
  * @since 0.67.0
  */
@@ -62,7 +61,7 @@ public final class Clues implements Clue {
      * Ctor.
      */
     public Clues() {
-        this(Arrays.asList(new Provides(), new Needs(), new Links()));
+        this(Arrays.asList(new Provides(), new Needs(), new Links(), new Checks()));
     }
 
     /**
