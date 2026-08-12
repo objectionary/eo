@@ -2,11 +2,12 @@
 - added: 8
   cycles: 1
   deleted: 8
+  error: deadlock; recursive locking
   inserted: 8
-  seconds: 2160.841091804
+  seconds: 2160.891041794
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-12 09:25:16.267401949 Z
+  when: 2026-08-12 11:18:59.362485899 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -110952,6 +110953,7 @@
   _job: 24024259989
   _time: 2026-04-06 08:13:17.216191164 Z
   _version: 0.19.9/0.60.1/0.17.15
+  tombstone: 2026-08-12 09:27:24.120856266 Z
   total_active_contributors: 9
   total_commits: 49050
   total_contributors: 489
@@ -110976,6 +110978,7 @@
   qod_per_day: 19.537279843487163
   qod_per_sec: 0.00017076015516816803
   start: &1002 2025-04-29 17:12:10.873573122 Z
+  tombstone: 2026-08-12 09:27:24.126246222 Z
   what: earned-value
   when: 2026-04-06 08:31:56.813777836 Z
 - _id: 1081109
@@ -284712,33 +284715,6 @@
   when: 2026-07-03 07:42:51.000000000 Z
   where: github
   who: 41898282
-- _id: 1107433
-  _job: 28648759918
-  _time: 2026-07-03 08:41:20.574005558 Z
-  _version: 0.19.9/0.60.2/0.17.17
-  commits: 20
-  contributors:
-  - 41898282
-  - 526301
-  - 9535571
-  - 29139614
-  - 125282851
-  - 8086956
-  details: A new release "get rid of α0" has been published in objectionary/hone-maven-plugin
-    by @rultor.
-  event_id: 11311348698
-  event_type: ReleaseEvent
-  hoc: 1444
-  is_human: 0
-  last_commit: 3294164889da6c740144750abd1e5def00fbc649
-  release: 348455193
-  repository: 840332960
-  tag: 0.28.0
-  tombstone: 2026-08-04 08:54:56.908528638 Z
-  what: release-published
-  when: 2026-07-03 06:56:45.000000000 Z
-  where: github
-  who: 8086956
 - _id: 1107434
   _job: 28648759918
   _time: 2026-07-03 08:41:22.497606128 Z
@@ -288639,7 +288615,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 17462807427
+  events_were_scanned: 13160514426
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 347
@@ -295572,7 +295548,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1020
   earliest_issue_was_found: 1
   events_were_scanned: 13009557602
   issues_were_scanned: 0
@@ -299337,9 +299313,9 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1001
   earliest_issue_was_found: 1
-  events_were_scanned: 13155240753
+  events_were_scanned: 13156968713
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
@@ -302289,7 +302265,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1122
   earliest_issue_was_found: 1
   events_were_scanned: 13078145912
   issues_were_scanned: 0
@@ -302308,7 +302284,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 13139092439
+  events_were_scanned: 13156962898
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 122
@@ -302323,13 +302299,13 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 4945
   earliest_issue_was_found: 1
-  events_were_scanned: 13154581257
+  events_were_scanned: 13160465357
   issues_were_scanned: 0
-  labels_were_scanned: 6179
+  labels_were_scanned: 6647
   latest_issue_was_found: 4591
-  merges_were_scanned: 6626
+  merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
@@ -467708,7 +467684,7 @@
   issue: 6606
   repository: 73056727
   what: issue-was-opened
-  when: 2026-08-11 11:45:05.000000000 Z
+  when: &4183 2026-08-11 11:45:05.000000000 Z
   where: github
   who: 96509556
 - _id: 1118027
@@ -469643,7 +469619,7 @@
   issue: 801
   repository: 840332960
   what: issue-was-closed
-  when: 2026-08-12 07:07:24.000000000 Z
+  when: &4158 2026-08-12 07:07:24.000000000 Z
   where: github
   who: 526301
 - _id: 1118136
@@ -469687,7 +469663,7 @@
   issue: 798
   repository: 840332960
   what: issue-was-closed
-  when: 2026-08-12 06:42:26.000000000 Z
+  when: &4159 2026-08-12 06:42:26.000000000 Z
   where: github
   who: 526301
 - _id: 1118139
@@ -469701,7 +469677,7 @@
   issue: 799
   repository: 840332960
   what: issue-was-closed
-  when: 2026-08-12 06:35:46.000000000 Z
+  when: &4160 2026-08-12 06:35:46.000000000 Z
   where: github
   who: 526301
 - _id: 1118140
@@ -469789,7 +469765,7 @@
   issue: 794
   repository: 840332960
   what: issue-was-closed
-  when: 2026-08-12 05:06:56.000000000 Z
+  when: &4161 2026-08-12 05:06:56.000000000 Z
   where: github
   who: 526301
 - _id: 1118146
@@ -470004,7 +469980,7 @@
   succeeded_builds: 10
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 03:53:53.000000000 Z
+  when: &4163 2026-08-12 03:53:53.000000000 Z
   where: github
   who: 8086956
 - _id: 1118161
@@ -470029,7 +470005,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 06:52:57.000000000 Z
+  when: &4164 2026-08-12 06:52:57.000000000 Z
   where: github
   who: 526301
 - _id: 1118162
@@ -470054,7 +470030,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 06:52:55.000000000 Z
+  when: &4165 2026-08-12 06:52:55.000000000 Z
   where: github
   who: 526301
 - _id: 1118163
@@ -470080,7 +470056,7 @@
   succeeded_builds: 10
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 03:41:02.000000000 Z
+  when: &4166 2026-08-12 03:41:02.000000000 Z
   where: github
   who: 8086956
 - _id: 1118164
@@ -470105,7 +470081,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 06:50:57.000000000 Z
+  when: &4167 2026-08-12 06:50:57.000000000 Z
   where: github
   who: 526301
 - _id: 1118165
@@ -470131,7 +470107,7 @@
   succeeded_builds: 19
   suggestions: 1
   what: pull-was-merged
-  when: 2026-08-11 17:39:28.000000000 Z
+  when: &4168 2026-08-11 17:39:28.000000000 Z
   where: github
   who: 526301
 - _id: 1118166
@@ -470156,7 +470132,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 05:53:46.000000000 Z
+  when: &4169 2026-08-12 05:53:46.000000000 Z
   where: github
   who: 526301
 - _id: 1118167
@@ -470182,7 +470158,7 @@
   succeeded_builds: 19
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-11 17:58:40.000000000 Z
+  when: &4170 2026-08-11 17:58:40.000000000 Z
   where: github
   who: 526301
 - _id: 1118168
@@ -470208,7 +470184,7 @@
   succeeded_builds: 10
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 03:26:44.000000000 Z
+  when: &4171 2026-08-12 03:26:44.000000000 Z
   where: github
   who: 8086956
 - _id: 1118169
@@ -470233,7 +470209,7 @@
   succeeded_builds: 18
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 05:53:10.000000000 Z
+  when: &4172 2026-08-12 05:53:10.000000000 Z
   where: github
   who: 526301
 - _id: 1118170
@@ -470259,7 +470235,7 @@
   succeeded_builds: 19
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 05:06:18.000000000 Z
+  when: &4173 2026-08-12 05:06:18.000000000 Z
   where: github
   who: 526301
 - _id: 1118171
@@ -470284,7 +470260,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 05:53:08.000000000 Z
+  when: &4174 2026-08-12 05:53:08.000000000 Z
   where: github
   who: 526301
 - _id: 1118172
@@ -470310,7 +470286,7 @@
   succeeded_builds: 19
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 05:06:55.000000000 Z
+  when: &4175 2026-08-12 05:06:55.000000000 Z
   where: github
   who: 526301
 - _id: 1118173
@@ -470335,7 +470311,7 @@
   succeeded_builds: 19
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 05:07:14.000000000 Z
+  when: &4176 2026-08-12 05:07:14.000000000 Z
   where: github
   who: 526301
 - _id: 1118174
@@ -470361,7 +470337,7 @@
   succeeded_builds: 19
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 06:35:45.000000000 Z
+  when: &4177 2026-08-12 06:35:45.000000000 Z
   where: github
   who: 526301
 - _id: 1118175
@@ -470387,7 +470363,7 @@
   succeeded_builds: 19
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 06:42:24.000000000 Z
+  when: &4178 2026-08-12 06:42:24.000000000 Z
   where: github
   who: 526301
 - _id: 1118176
@@ -470413,7 +470389,7 @@
   succeeded_builds: 19
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 07:07:23.000000000 Z
+  when: &4179 2026-08-12 07:07:23.000000000 Z
   where: github
   who: 526301
 - _id: 1118177
@@ -470439,7 +470415,7 @@
   succeeded_builds: 19
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 06:57:38.000000000 Z
+  when: &4180 2026-08-12 06:57:38.000000000 Z
   where: github
   who: 8086956
 - _id: 1118178
@@ -470465,7 +470441,7 @@
   succeeded_builds: 20
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 06:43:13.000000000 Z
+  when: &4181 2026-08-12 06:43:13.000000000 Z
   where: github
   who: 8086956
 - _id: 1118179
@@ -470491,7 +470467,7 @@
   succeeded_builds: 19
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-12 06:50:22.000000000 Z
+  when: &4182 2026-08-12 06:50:22.000000000 Z
   where: github
   who: 8086956
 - _id: 1118180
@@ -470944,6 +470920,7 @@
     give you at least something.  Your running score is [+2738](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 14
+  href: https://github.com/objectionary/eo-lsp-server/issues/420/#issuecomment-5264864646
   is_human: 1
   issue: 420
   repository: 970961472
@@ -471148,7 +471125,7 @@
   issue: 6614
   repository: 73056727
   what: issue-was-closed
-  when: 2026-08-12 07:23:35.000000000 Z
+  when: &4162 2026-08-12 07:23:35.000000000 Z
   where: github
   who: 526301
 - _id: 1118222
@@ -471242,6 +471219,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: '6263'
   details: The missing pull objectionary/eo#6626 has been opened by @thayorns.
+  is_human: 1
   issue: 6626
   repository: 73056727
   what: pull-was-opened
@@ -471253,6 +471231,7 @@
   _time: 2026-08-12 08:58:06.263090630 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The missing issue objectionary/eo#6627 has been opened by @0pdd.
+  is_human: 0
   issue: 6627
   repository: 73056727
   what: issue-was-opened
@@ -471264,6 +471243,7 @@
   _time: 2026-08-12 08:58:06.921159280 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The missing issue objectionary/eo#6628 has been opened by @yegor256.
+  is_human: 1
   issue: 6628
   repository: 73056727
   what: issue-was-opened
@@ -471276,6 +471256,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: '6627'
   details: The missing pull objectionary/eo#6629 has been opened by @thayorns.
+  is_human: 1
   issue: 6629
   repository: 73056727
   what: pull-was-opened
@@ -471288,6 +471269,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: '6224'
   details: The missing pull objectionary/eo#6630 has been opened by @thayorns.
+  is_human: 1
   issue: 6630
   repository: 73056727
   what: pull-was-opened
@@ -471299,6 +471281,7 @@
   _time: 2026-08-12 08:58:09.865512901 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The missing issue objectionary/eo#6631 has been opened by @0pdd.
+  is_human: 0
   issue: 6631
   repository: 73056727
   what: issue-was-opened
@@ -471310,6 +471293,7 @@
   _time: 2026-08-12 08:58:10.586451573 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The missing issue objectionary/eo#6632 has been opened by @0pdd.
+  is_human: 0
   issue: 6632
   repository: 73056727
   what: issue-was-opened
@@ -471321,6 +471305,7 @@
   _time: 2026-08-12 08:58:11.411335715 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The missing issue objectionary/eo#6633 has been opened by @0pdd.
+  is_human: 0
   issue: 6633
   repository: 73056727
   what: issue-was-opened
@@ -471332,6 +471317,7 @@
   _time: 2026-08-12 08:58:12.042768858 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The missing issue objectionary/eo#6634 has been opened by @0pdd.
+  is_human: 0
   issue: 6634
   repository: 73056727
   what: issue-was-opened
@@ -471353,8 +471339,10 @@
   failed_builds: 1
   files: 3
   hoc: 210
+  is_human: 1
   issue: 6498
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
@@ -471376,8 +471364,10 @@
   failed_builds: 0
   files: 3
   hoc: 147
+  is_human: 1
   issue: 6524
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
@@ -471399,8 +471389,10 @@
   failed_builds: 0
   files: 3
   hoc: 53
+  is_human: 1
   issue: 6576
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
@@ -471422,9 +471414,11 @@
   failed_builds: 0
   files: 2
   hoc: 65
+  is_human: 1
   issue: 6596
   repository: 73056727
   review: 2026-08-11 11:25:00.000000000 Z
+  review_comments: 2
   succeeded_builds: 22
   suggestions: 1
   what: pull-was-merged
@@ -471446,8 +471440,10 @@
   failed_builds: 0
   files: 2
   hoc: 4
+  is_human: 1
   issue: 6613
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 23
   suggestions: 0
   what: pull-was-merged
@@ -471469,8 +471465,10 @@
   failed_builds: 1
   files: 22
   hoc: 1049
+  is_human: 1
   issue: 6615
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
@@ -471492,8 +471490,10 @@
   failed_builds: 0
   files: 2
   hoc: 29
+  is_human: 1
   issue: 6618
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
@@ -471515,8 +471515,10 @@
   failed_builds: 0
   files: 2
   hoc: 21
+  is_human: 1
   issue: 6623
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
@@ -471538,8 +471540,10 @@
   failed_builds: 0
   files: 2
   hoc: 102
+  is_human: 1
   issue: 6626
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
@@ -471552,6 +471556,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   assigner: 526301
   details: objectionary/hone-maven-plugin#794 was assigned to @yegor256 by @yegor256.
+  is_human: 1
   issue: 794
   repository: 840332960
   what: issue-was-assigned
@@ -471564,6 +471569,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   assigner: 526301
   details: objectionary/hone-maven-plugin#798 was assigned to @yegor256 by @yegor256.
+  is_human: 1
   issue: 798
   repository: 840332960
   what: issue-was-assigned
@@ -471576,6 +471582,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   assigner: 526301
   details: objectionary/hone-maven-plugin#799 was assigned to @yegor256 by @yegor256.
+  is_human: 1
   issue: 799
   repository: 840332960
   what: issue-was-assigned
@@ -471588,9 +471595,1112 @@
   _version: 0.19.16/0.61.1/0.17.21
   assigner: 526301
   details: objectionary/hone-maven-plugin#801 was assigned to @yegor256 by @yegor256.
+  is_human: 1
   issue: 801
   repository: 840332960
   what: issue-was-assigned
   when: 2026-08-12 06:36:33.000000000 Z
   where: github
   who: 526301
+- _id: 1118250
+  _job: 86550
+  _time: 2026-08-12 09:26:14.030606906 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  closer: 526301
+  details: The bug/feature in the issue objectionary/hone-maven-plugin#801 opened
+    @yegor256 by was resolved, after 30m51s of waiting, because it was closed by @yegor256
+    and earlier it was assigned to @yegor256 and the label '#bug' was attached.
+  is_human: 1
+  issue: 801
+  label: bug
+  opener: 526301
+  repository: 840332960
+  seconds: 1851
+  what: bug-was-resolved
+  when: *4158
+  where: github
+  who: 526301
+- _id: 1118251
+  _job: 86550
+  _time: 2026-08-12 09:26:14.711365005 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  closer: 526301
+  details: The bug/feature in the issue objectionary/hone-maven-plugin#798 opened
+    @yegor256 by was resolved, after 53m27s of waiting, because it was closed by @yegor256
+    and earlier it was assigned to @yegor256 and the label '#bug' was attached.
+  is_human: 1
+  issue: 798
+  label: bug
+  opener: 526301
+  repository: 840332960
+  seconds: 3207
+  what: bug-was-resolved
+  when: *4159
+  where: github
+  who: 526301
+- _id: 1118252
+  _job: 86550
+  _time: 2026-08-12 09:26:15.026398312 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  closer: 526301
+  details: The bug/feature in the issue objectionary/hone-maven-plugin#799 opened
+    @yegor256 by was resolved, after 47m28s of waiting, because it was closed by @yegor256
+    and earlier it was assigned to @yegor256 and the label '#bug' was attached.
+  is_human: 1
+  issue: 799
+  label: bug
+  opener: 526301
+  repository: 840332960
+  seconds: 2848
+  what: bug-was-resolved
+  when: *4160
+  where: github
+  who: 526301
+- _id: 1118253
+  _job: 86550
+  _time: 2026-08-12 09:26:15.440616712 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  closer: 526301
+  details: The bug/feature in the issue objectionary/hone-maven-plugin#794 opened
+    @yegor256 by was resolved, after 9h26m of waiting, because it was closed by @yegor256
+    and earlier it was assigned to @yegor256 and the label '#bug' was attached.
+  is_human: 1
+  issue: 794
+  label: bug
+  opener: 526301
+  repository: 840332960
+  seconds: 33975
+  what: bug-was-resolved
+  when: *4161
+  where: github
+  who: 526301
+- _id: 1118254
+  _job: 86550
+  _time: 2026-08-12 09:26:15.750114847 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  closer: 526301
+  details: The bug/feature in the issue objectionary/eo#6614 opened @maxonfjvipon
+    by was resolved, after 16h47m of waiting, because it was closed by @yegor256 and
+    earlier it was assigned to @maxonfjvipon and the label '#bug' was attached.
+  is_human: 1
+  issue: 6614
+  label: bug
+  opener: 37025995
+  repository: 73056727
+  seconds: 60443
+  what: bug-was-resolved
+  when: *4162
+  where: github
+  who: 37025995
+- _id: 1118255
+  _job: 86550
+  _time: 2026-08-12 09:26:18.719061152 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 7
+  details: It's time to reward @volodya-lombrozo for the bug resolved in objectionary/lints#1220
+    in 84 hours, the reward amount is 7.
+  greeting: 'Thanks for closing this issue! You''ve earned +7 points for this: +8
+    as a basis; -1 for 3 days of delay. Your running score is [+554](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/lints/issues/1220/#issuecomment-5264864982
+  is_human: 1
+  issue: 1220
+  repository: 889819508
+  what: resolved-bug-was-rewarded
+  when: 2026-08-12 09:26:18.722425228 Z
+  where: github
+  who: 51804353
+  why: Resolved bug in objectionary/lints#1220
+- _id: 1118256
+  _job: 86550
+  _time: 2026-08-12 09:26:19.483162325 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 4
+  details: It's time to reward @marat-tim for the bug resolved in objectionary/lints#540
+    in 11144 hours, the reward amount is 4.
+  greeting: 'Thanks for closing this issue! You''ve earned +4 points for this: +8
+    as a basis; -20 for 464 days of delay; +16 to give you at least something. Your
+    running score is [+4](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/lints/issues/540/#issuecomment-5264865286
+  is_human: 1
+  issue: 540
+  repository: 889819508
+  what: resolved-bug-was-rewarded
+  when: 2026-08-12 09:26:19.486140904 Z
+  where: github
+  who: 108345628
+  why: Resolved bug in objectionary/lints#540
+- _id: 1118257
+  _job: 86550
+  _time: 2026-08-12 09:26:20.038642123 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 4
+  details: It's time to reward @h1alexbel for the bug resolved in objectionary/lints#519
+    in 11297 hours, the reward amount is 4.
+  greeting: 'Thanks for closing this issue! You''ve earned +4 points for this: +8
+    as a basis; -20 for 470 days of delay; +16 to give you at least something. Your
+    running score is [+81](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/lints/issues/519/#issuecomment-5264865598
+  is_human: 1
+  issue: 519
+  repository: 889819508
+  what: resolved-bug-was-rewarded
+  when: 2026-08-12 09:26:20.042259533 Z
+  where: github
+  who: 83453843
+  why: Resolved bug in objectionary/lints#519
+- _id: 1118258
+  _job: 86550
+  _time: 2026-08-12 09:26:20.581506728 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 4
+  details: It's time to reward @h1alexbel for the bug resolved in objectionary/lints#515
+    in 11365 hours, the reward amount is 4.
+  greeting: 'Thanks for closing this issue! You''ve earned +4 points for this: +8
+    as a basis; -20 for 473 days of delay; +16 to give you at least something. Your
+    running score is [+85](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/lints/issues/515/#issuecomment-5264865974
+  is_human: 1
+  issue: 515
+  repository: 889819508
+  what: resolved-bug-was-rewarded
+  when: 2026-08-12 09:26:20.585439908 Z
+  where: github
+  who: 83453843
+  why: Resolved bug in objectionary/lints#515
+- _id: 1118259
+  _job: 86550
+  _time: 2026-08-12 09:26:20.940072112 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  details: It's time to reward @yegor256 for the bug resolved in objectionary/hone-maven-plugin#790
+    in 9 hours, the reward amount is 12.
+  greeting: 'Thanks for closing this issue! You''ve earned +12 points for this: +8
+    as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2750](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/hone-maven-plugin/issues/790/#issuecomment-5264866325
+  is_human: 1
+  issue: 790
+  repository: 840332960
+  what: resolved-bug-was-rewarded
+  when: 2026-08-12 09:26:20.943447400 Z
+  where: github
+  who: 526301
+  why: Resolved bug in objectionary/hone-maven-plugin#790
+- _id: 1118260
+  _job: 86550
+  _time: 2026-08-12 09:26:36.888658072 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  details: The pull request objectionary/reo#206 with 4 HoC created by @renovate[bot]
+    was merged by @rultor after 1mo2w of being in review and 3 comments.
+  hoc: 4
+  is_human: 0
+  issue: 206
+  merger: 8086956
+  repository: 519299365
+  review_comments: 0
+  seconds: 4051142
+  what: code-was-contributed
+  when: *4163
+  where: github
+  who: 29139614
+- _id: 1118261
+  _job: 86550
+  _time: 2026-08-12 09:26:37.627167116 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 2
+  details: The pull request objectionary/eo#6619 with 47 HoC created by @morphqdd
+    was merged by @yegor256 after 13h42m of being in review and 2 comments.
+  hoc: 47
+  is_human: 1
+  issue: 6619
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 49330
+  what: code-was-contributed
+  when: *4164
+  where: github
+  who: 125282851
+- _id: 1118262
+  _job: 86550
+  _time: 2026-08-12 09:26:38.056394023 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  details: The pull request objectionary/eo#6620 with 69 HoC created by @morphqdd
+    was merged by @yegor256 after 13h39m of being in review and 3 comments.
+  hoc: 69
+  is_human: 1
+  issue: 6620
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 49172
+  what: code-was-contributed
+  when: *4165
+  where: github
+  who: 125282851
+- _id: 1118263
+  _job: 86550
+  _time: 2026-08-12 09:26:38.419691445 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  details: The pull request objectionary/reo#224 with 4 HoC created by @renovate[bot]
+    was merged by @rultor after 3w of being in review and 3 comments.
+  hoc: 4
+  is_human: 0
+  issue: 224
+  merger: 8086956
+  repository: 519299365
+  review_comments: 0
+  seconds: 1850476
+  what: code-was-contributed
+  when: *4166
+  where: github
+  who: 29139614
+- _id: 1118264
+  _job: 86550
+  _time: 2026-08-12 09:26:38.722503568 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  details: The pull request objectionary/eo#6621 with 75 HoC created by @thayorns
+    was merged by @yegor256 after 13h25m of being in review and 3 comments.
+  hoc: 75
+  is_human: 1
+  issue: 6621
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 48308
+  what: code-was-contributed
+  when: *4167
+  where: github
+  who: 96509556
+- _id: 1118265
+  _job: 86550
+  _time: 2026-08-12 09:26:39.123896743 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 1
+  details: The pull request objectionary/hone-maven-plugin#789 with 224 HoC created
+    by @yegor256 was merged by @yegor256 after 12m57s of being in review and 1 comments.
+  hoc: 224
+  is_human: 1
+  issue: 789
+  merger: 526301
+  repository: 840332960
+  review_comments: 1
+  seconds: 777
+  what: code-was-contributed
+  when: *4168
+  where: github
+  who: 526301
+- _id: 1118266
+  _job: 86550
+  _time: 2026-08-12 09:26:39.424165116 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 2
+  details: The pull request objectionary/eo#6622 with 74 HoC created by @morphqdd
+    was merged by @yegor256 after 11h40m of being in review and 2 comments.
+  hoc: 74
+  is_human: 1
+  issue: 6622
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 42027
+  what: code-was-contributed
+  when: *4169
+  where: github
+  who: 125282851
+- _id: 1118267
+  _job: 86550
+  _time: 2026-08-12 09:26:39.711001883 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 0
+  details: The pull request objectionary/hone-maven-plugin#792 with 163 HoC created
+    by @yegor256 was merged by @yegor256 after 16m8s of being in review and 0 comments.
+  hoc: 163
+  is_human: 1
+  issue: 792
+  merger: 526301
+  repository: 840332960
+  review_comments: 0
+  seconds: 968
+  what: code-was-contributed
+  when: *4170
+  where: github
+  who: 526301
+- _id: 1118268
+  _job: 86550
+  _time: 2026-08-12 09:26:40.017587212 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  details: The pull request objectionary/reo#227 with 2 HoC created by @renovate[bot]
+    was merged by @rultor after 1w2d of being in review and 3 comments.
+  hoc: 2
+  is_human: 0
+  issue: 227
+  merger: 8086956
+  repository: 519299365
+  review_comments: 0
+  seconds: 785661
+  what: code-was-contributed
+  when: *4171
+  where: github
+  who: 29139614
+- _id: 1118269
+  _job: 86550
+  _time: 2026-08-12 09:26:40.305996146 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 2
+  details: The pull request objectionary/eo#6624 with 8 HoC created by @morphqdd was
+    merged by @yegor256 after 11h19m of being in review and 2 comments.
+  hoc: 8
+  is_human: 1
+  issue: 6624
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 40745
+  what: code-was-contributed
+  when: *4172
+  where: github
+  who: 125282851
+- _id: 1118270
+  _job: 86550
+  _time: 2026-08-12 09:26:40.604544690 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 0
+  details: The pull request objectionary/hone-maven-plugin#795 with 129 HoC created
+    by @yegor256 was merged by @yegor256 after 8h50m of being in review and 0 comments.
+  hoc: 129
+  is_human: 1
+  issue: 795
+  merger: 526301
+  repository: 840332960
+  review_comments: 0
+  seconds: 31823
+  what: code-was-contributed
+  when: *4173
+  where: github
+  who: 526301
+- _id: 1118271
+  _job: 86550
+  _time: 2026-08-12 09:26:40.898973889 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 2
+  details: The pull request objectionary/eo#6625 with 93 HoC created by @morphqdd
+    was merged by @yegor256 after 11h of being in review and 2 comments.
+  hoc: 93
+  is_human: 1
+  issue: 6625
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 39609
+  what: code-was-contributed
+  when: *4174
+  where: github
+  who: 125282851
+- _id: 1118272
+  _job: 86550
+  _time: 2026-08-12 09:26:41.198340023 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 0
+  details: The pull request objectionary/hone-maven-plugin#796 with 247 HoC created
+    by @yegor256 was merged by @yegor256 after 8h35m of being in review and 0 comments.
+  hoc: 247
+  is_human: 1
+  issue: 796
+  merger: 526301
+  repository: 840332960
+  review_comments: 0
+  seconds: 30910
+  what: code-was-contributed
+  when: *4175
+  where: github
+  who: 526301
+- _id: 1118273
+  _job: 86550
+  _time: 2026-08-12 09:26:41.486950323 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 0
+  details: The pull request objectionary/hone-maven-plugin#797 with 2 HoC created
+    by @renovate[bot] was merged by @yegor256 after 19m44s of being in review and
+    0 comments.
+  hoc: 2
+  is_human: 0
+  issue: 797
+  merger: 526301
+  repository: 840332960
+  review_comments: 0
+  seconds: 1184
+  what: code-was-contributed
+  when: *4176
+  where: github
+  who: 29139614
+- _id: 1118274
+  _job: 86550
+  _time: 2026-08-12 09:26:41.787453544 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 0
+  details: The pull request objectionary/hone-maven-plugin#800 with 275 HoC created
+    by @yegor256 was merged by @yegor256 after 28m10s of being in review and 0 comments.
+  hoc: 275
+  is_human: 1
+  issue: 800
+  merger: 526301
+  repository: 840332960
+  review_comments: 0
+  seconds: 1690
+  what: code-was-contributed
+  when: *4177
+  where: github
+  who: 526301
+- _id: 1118275
+  _job: 86550
+  _time: 2026-08-12 09:26:42.079200823 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 0
+  details: The pull request objectionary/hone-maven-plugin#802 with 730 HoC created
+    by @yegor256 was merged by @yegor256 after 8m13s of being in review and 0 comments.
+  hoc: 730
+  is_human: 1
+  issue: 802
+  merger: 526301
+  repository: 840332960
+  review_comments: 0
+  seconds: 493
+  what: code-was-contributed
+  when: *4178
+  where: github
+  who: 526301
+- _id: 1118276
+  _job: 86550
+  _time: 2026-08-12 09:26:42.377452591 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 0
+  details: The pull request objectionary/hone-maven-plugin#803 with 150 HoC created
+    by @yegor256 was merged by @yegor256 after 20m25s of being in review and 0 comments.
+  hoc: 150
+  is_human: 1
+  issue: 803
+  merger: 526301
+  repository: 840332960
+  review_comments: 0
+  seconds: 1225
+  what: code-was-contributed
+  when: *4179
+  where: github
+  who: 526301
+- _id: 1118277
+  _job: 86550
+  _time: 2026-08-12 09:26:42.671404867 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 4
+  details: The pull request objectionary/lints#1250 with 75 HoC created by @vasilevnstas
+    was merged by @rultor after 10h52m of being in review and 4 comments.
+  hoc: 75
+  is_human: 1
+  issue: 1250
+  merger: 8086956
+  repository: 889819508
+  review_comments: 0
+  seconds: 39147
+  what: code-was-contributed
+  when: *4180
+  where: github
+  who: 33578155
+- _id: 1118278
+  _job: 86550
+  _time: 2026-08-12 09:26:43.081125395 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 4
+  details: The pull request objectionary/lints#1251 with 2 HoC created by @vasilevnstas
+    was merged by @rultor after 10h10m of being in review and 4 comments.
+  hoc: 2
+  is_human: 1
+  issue: 1251
+  merger: 8086956
+  repository: 889819508
+  review_comments: 0
+  seconds: 36645
+  what: code-was-contributed
+  when: *4181
+  where: github
+  who: 33578155
+- _id: 1118279
+  _job: 86550
+  _time: 2026-08-12 09:26:43.368632940 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 6
+  details: The pull request objectionary/lints#1253 with 7 HoC created by @vasilevnstas
+    was merged by @rultor after 29m40s of being in review and 6 comments.
+  hoc: 7
+  is_human: 1
+  issue: 1253
+  merger: 8086956
+  repository: 889819508
+  review_comments: 0
+  seconds: 1780
+  what: code-was-contributed
+  when: *4182
+  where: github
+  who: 33578155
+- _id: 1118280
+  _job: 86550
+  _time: 2026-08-12 09:27:19.946182355 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 4
+  comments: 4
+  details: It's time to reward @volodya-lombrozo for the code review in objectionary/lints#1250,
+    the reward amount is 4.
+  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
+    -8 for absolutely no comments posted.  Your running score is [+558](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 75
+  is_human: 1
+  issue: 1250
+  repository: 889819508
+  review_comments: 0
+  seconds: 38885
+  what: code-review-was-rewarded
+  when: 2026-08-12 09:27:19.958657727 Z
+  where: github
+  who: 51804353
+  why: Reviewed code in objectionary/lints#1250
+- _id: 1118281
+  _job: 86550
+  _time: 2026-08-12 09:27:20.824901509 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 4
+  comments: 6
+  details: It's time to reward @volodya-lombrozo for the code review in objectionary/lints#1253,
+    the reward amount is 4.
+  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
+    -8 for absolutely no comments posted; -4 for too few (7) hits-of-code; +4 to give
+    you at least something.  Your running score is [+562](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 7
+  is_human: 1
+  issue: 1253
+  repository: 889819508
+  review_comments: 0
+  seconds: 1355
+  what: code-review-was-rewarded
+  when: 2026-08-12 09:27:20.829460044 Z
+  where: github
+  who: 51804353
+  why: Reviewed code in objectionary/lints#1253
+- _id: 1118282
+  _job: 86550
+  _time: 2026-08-12 09:27:21.281540924 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 4
+  comments: 4
+  details: It's time to reward @volodya-lombrozo for the code review in objectionary/lints#1251,
+    the reward amount is 4.
+  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
+    -8 for absolutely no comments posted; -4 for too few (2) hits-of-code; +4 to give
+    you at least something.  Your running score is [+566](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 2
+  is_human: 1
+  issue: 1251
+  repository: 889819508
+  review_comments: 0
+  seconds: 36438
+  what: code-review-was-rewarded
+  when: 2026-08-12 09:27:21.286554684 Z
+  where: github
+  who: 51804353
+  why: Reviewed code in objectionary/lints#1251
+- _id: 1118283
+  _job: 86550
+  _time: 2026-08-12 09:27:23.701719318 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  closer: 526301
+  details: 'In the repository #73056727, the user #96509556 submitted the issue #6606
+    which was later closed by the user #526301 not becoming a bug or enhancement;
+    this means that the issue was not valid, maybe a duplicate or simply a mistake.'
+  is_human: 1
+  issue: 6606
+  repository: 73056727
+  what: dud-was-closed
+  when: *4183
+  where: github
+  who: 96509556
+- _id: 1118284
+  _job: 31588089765
+  _time: 2026-08-12 10:43:38.776657364 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: bug/#6644/dead-index-cell
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: The pull request objectionary/eo#6645 has been closed by @maxonfjvipon,
+    with 8 HoC and 2 comments.
+  event_id: 13160187673
+  event_type: PullRequestEvent
+  failed_builds: 4
+  files: 1
+  hoc: 8
+  is_human: 1
+  issue: 6645
+  repository: 73056727
+  succeeded_builds: 26
+  suggestions: 0
+  what: pull-was-closed
+  when: 2026-08-12 10:14:38.000000000 Z
+  where: github
+  who: 37025995
+- _id: 1118285
+  _job: 31588089765
+  _time: 2026-08-12 10:44:11.268870199 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: bug/#6643/behind-phi
+  details: The pull request objectionary/eo#6648 has been opened by @maxonfjvipon.
+  event_id: 13159558203
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6648
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-08-12 10:19:37.000000000 Z
+  where: github
+  who: 37025995
+- _id: 1118286
+  _job: 31588089765
+  _time: 2026-08-12 10:44:12.006849205 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6647 has been opened by @maxonfjvipon.
+  event_id: 13159542468
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6647
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-12 10:19:18.000000000 Z
+  where: github
+  who: 37025995
+- _id: 1118287
+  _job: 31588089765
+  _time: 2026-08-12 10:44:12.598126932 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '6608'
+  details: The pull request objectionary/eo#6646 has been opened by @morphqdd.
+  event_id: 13159523531
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6646
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-08-12 10:18:53.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1118288
+  _job: 31588089765
+  _time: 2026-08-12 10:44:14.129581751 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: bug/#6644/dead-index-cell
+  details: The pull request objectionary/eo#6645 has been opened by @maxonfjvipon.
+  event_id: 13159191114
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6645
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-08-12 10:11:50.000000000 Z
+  where: github
+  who: 37025995
+- _id: 1118289
+  _job: 31588089765
+  _time: 2026-08-12 10:44:15.222387868 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6644 has been opened by @maxonfjvipon.
+  event_id: 13159123536
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6644
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-12 10:10:24.000000000 Z
+  where: github
+  who: 37025995
+- _id: 1118290
+  _job: 31588089765
+  _time: 2026-08-12 10:44:15.990205906 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6643 has been opened by @maxonfjvipon.
+  event_id: 13159108458
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6643
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-12 10:10:06.000000000 Z
+  where: github
+  who: 37025995
+- _id: 1118291
+  _job: 31588089765
+  _time: 2026-08-12 10:44:19.884120302 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6373 has been closed by @yegor256.
+  event_id: 13157251788
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6373
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-12 09:32:13.000000000 Z
+  where: github
+  who: 526301
+- _id: 1118292
+  _job: 31588089765
+  _time: 2026-08-12 10:44:21.038375987 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '6600'
+  details: The pull request objectionary/eo#6642 has been opened by @morphqdd.
+  event_id: 13157222361
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6642
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-08-12 09:31:35.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1118293
+  _job: 31588089765
+  _time: 2026-08-12 10:44:22.929418341 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6641 has been opened by @0pdd.
+  event_id: 13157219120
+  event_type: IssuesEvent
+  is_human: 0
+  issue: 6641
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-12 09:31:32.000000000 Z
+  where: github
+  who: 24456188
+- _id: 1118294
+  _job: 31588089765
+  _time: 2026-08-12 10:44:23.924131539 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6428 has been closed by @yegor256.
+  event_id: 13157210614
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6428
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-12 09:31:22.000000000 Z
+  where: github
+  who: 526301
+- _id: 1118295
+  _job: 31588089765
+  _time: 2026-08-12 10:44:26.532343851 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6640 has been opened by @0pdd.
+  event_id: 13157032668
+  event_type: IssuesEvent
+  is_human: 0
+  issue: 6640
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-12 09:27:47.000000000 Z
+  where: github
+  who: 24456188
+- _id: 1118296
+  _job: 31588089765
+  _time: 2026-08-12 10:44:27.782655748 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6507 has been closed by @yegor256.
+  event_id: 13157025516
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6507
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-12 09:27:38.000000000 Z
+  where: github
+  who: 526301
+- _id: 1118297
+  _job: 31588089765
+  _time: 2026-08-12 10:44:30.493915245 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  commit: 94bca93bd54e8839cc078fed7bc17b9739af8a31
+  default_branch: master
+  details: 'A new Git push #39788023531 has arrived to objectionary/eo, made by @yegor256
+    (default branch is "master"), not associated with any pull request.'
+  event_id: 17468008270
+  event_type: PushEvent
+  is_human: 1
+  push_id: 39788023531
+  ref: refs/heads/master
+  repository: 73056727
+  to_master: 1
+  what: git-was-pushed
+  when: 2026-08-12 09:21:45.000000000 Z
+  where: github
+  who: 526301
+- _id: 1118298
+  _job: 31588089765
+  _time: 2026-08-12 10:49:39.667539280 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '791'
+  comments: 5
+  comments_appreciated: 0
+  comments_by_author: 2
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 3
+  details: Apparently, objectionary/hone-maven-plugin#793 has been "pull-was-merged".
+  failed_builds: 0
+  files: 3
+  hoc: 986
+  issue: 793
+  repository: 840332960
+  review: 2026-08-11 18:11:19.000000000 Z
+  succeeded_builds: 19
+  suggestions: 3
+  what: pull-was-merged
+  when: 2026-08-12 09:33:32.000000000 Z
+  where: github
+  who: 526301
+- _id: 1118299
+  _job: 31588089765
+  _time: 2026-08-12 10:50:06.113702227 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: claude/issue-668-puzzle-f2gfsw
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 2
+  details: Apparently, objectionary/hone-maven-plugin#806 has been "pull-was-merged".
+  failed_builds: 0
+  files: 48
+  hoc: 1923
+  issue: 806
+  repository: 840332960
+  review: 2026-08-12 09:22:12.000000000 Z
+  succeeded_builds: 19
+  suggestions: 2
+  what: pull-was-merged
+  when: 2026-08-12 09:19:26.000000000 Z
+  where: github
+  who: 526301
+- _id: 1118300
+  _job: 31588089765
+  _time: 2026-08-12 10:54:17.233837360 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  assigner: 526301
+  details: objectionary/hone-maven-plugin#804 was assigned to @yegor256 by @yegor256.
+  issue: 804
+  repository: 840332960
+  what: issue-was-assigned
+  when: 2026-08-12 09:37:41.000000000 Z
+  where: github
+  who: 526301
+- _id: 1118301
+  _job: 31588089765
+  _time: 2026-08-12 10:54:19.077847338 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  assigner: 526301
+  details: objectionary/hone-maven-plugin#805 was assigned to @yegor256 by @yegor256.
+  issue: 805
+  repository: 840332960
+  what: issue-was-assigned
+  when: 2026-08-12 09:37:26.000000000 Z
+  where: github
+  who: 526301
+- _id: 1118302
+  _job: 31588089765
+  _time: 2026-08-12 10:58:40.332049632 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/hone-maven-plugin#804.
+  issue: 804
+  label: bug
+  repository: 840332960
+  what: label-was-attached
+  when: 2026-08-12 09:37:44.000000000 Z
+  where: github
+  who: 526301
+- _id: 1118303
+  _job: 31588089765
+  _time: 2026-08-12 10:58:42.437800438 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/hone-maven-plugin#805.
+  issue: 805
+  label: bug
+  repository: 840332960
+  what: label-was-attached
+  when: 2026-08-12 09:37:28.000000000 Z
+  where: github
+  who: 526301
+- _id: 1118304
+  _job: 31588089765
+  _time: 2026-08-12 10:58:44.681137184 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @0pdd to the issue objectionary/eo#6627.
+  issue: 6627
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-12 05:52:40.000000000 Z
+  where: github
+  who: 24456188
+- _id: 1118305
+  _job: 31588089765
+  _time: 2026-08-12 10:58:47.116032602 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @0pdd to the issue objectionary/eo#6631.
+  issue: 6631
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-12 06:51:07.000000000 Z
+  where: github
+  who: 24456188
+- _id: 1118306
+  _job: 31588089765
+  _time: 2026-08-12 10:58:48.567702512 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @0pdd to the issue objectionary/eo#6632.
+  issue: 6632
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-12 06:51:10.000000000 Z
+  where: github
+  who: 24456188
+- _id: 1118307
+  _job: 31588089765
+  _time: 2026-08-12 10:58:49.927659481 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @0pdd to the issue objectionary/eo#6633.
+  issue: 6633
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-12 07:02:41.000000000 Z
+  where: github
+  who: 24456188
+- _id: 1118308
+  _job: 31588089765
+  _time: 2026-08-12 10:58:51.300947980 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @0pdd to the issue objectionary/eo#6634.
+  issue: 6634
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-12 07:08:50.000000000 Z
+  where: github
+  who: 24456188
+- _id: 1118309
+  _job: 31588089765
+  _time: 2026-08-12 10:58:52.826051219 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @0pdd to the issue objectionary/eo#6635.
+  issue: 6635
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-12 07:15:08.000000000 Z
+  where: github
+  who: 24456188
+- _id: 1118310
+  _job: 31588089765
+  _time: 2026-08-12 10:58:54.118989776 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @0pdd to the issue objectionary/eo#6636.
+  issue: 6636
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-12 07:15:11.000000000 Z
+  where: github
+  who: 24456188
+- _id: 1118311
+  _job: 31588089765
+  _time: 2026-08-12 10:58:55.643413236 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @0pdd to the issue objectionary/eo#6637.
+  issue: 6637
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-12 07:38:08.000000000 Z
+  where: github
+  who: 24456188
+- _id: 1118312
+  _job: 31588089765
+  _time: 2026-08-12 10:58:57.567454579 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @0pdd to the issue objectionary/eo#6640.
+  issue: 6640
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-12 09:27:46.000000000 Z
+  where: github
+  who: 24456188
+- _id: 1118313
+  _job: 31588089765
+  _time: 2026-08-12 10:58:58.431834124 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @0pdd to the issue objectionary/eo#6641.
+  issue: 6641
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-12 09:31:32.000000000 Z
+  where: github
+  who: 24456188
+- _id: 1118314
+  _job: 31588089765
+  _time: 2026-08-12 10:58:59.390786872 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @maxonfjvipon to the issue objectionary/eo#6643.
+  issue: 6643
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-12 10:10:06.000000000 Z
+  where: github
+  who: 37025995
+- _id: 1118315
+  _job: 31588089765
+  _time: 2026-08-12 10:59:00.217449780 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @maxonfjvipon to the issue objectionary/eo#6644.
+  issue: 6644
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-12 10:10:24.000000000 Z
+  where: github
+  who: 37025995
+- _id: 1118316
+  _job: 31588089765
+  _time: 2026-08-12 10:59:01.007849463 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @maxonfjvipon to the issue objectionary/eo#6647.
+  issue: 6647
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-12 10:19:18.000000000 Z
+  where: github
+  who: 37025995
