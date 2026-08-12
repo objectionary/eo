@@ -43,42 +43,28 @@
             c.eq 0C-
             c.eq 0D-
 
-  eq. ++> can-trim-a-leading-carriage-return
-    trimmed-left "\rvalue"
-    "value"
+  "\rvalue".trimmed-left.eq "value" ++> can-trim-a-leading-carriage-return
 
-  eq. ++> can-trim-a-leading-form-feed
-    trimmed-left "\fvalue"
-    "value"
+  "\fvalue".trimmed-left.eq "value" ++> can-trim-a-leading-form-feed
 
-  eq. ++> can-trim-a-leading-line-feed
-    trimmed-left "\nvalue"
-    "value"
+  "\nvalue".trimmed-left.eq "value" ++> can-trim-a-leading-line-feed
 
-  eq. ++> can-trim-a-leading-tab
-    trimmed-left "\tvalue"
-    "value"
+  "\tvalue".trimmed-left.eq "value" ++> can-trim-a-leading-tab
 
   eq. ++> can-trim-a-text-of-leading-spaces-only
-    trimmed-left
-      "     "
+    "     ".trimmed-left
     ""
 
-  eq. ++> can-trim-an-empty-text
-    trimmed-left ""
-    ""
+  "".trimmed-left.eq "" ++> can-trim-an-empty-text-from-the-left
 
   eq. ++> can-trim-many-leading-spaces
-    trimmed-left
-      "     some"
+    "     some".trimmed-left
     "some"
 
   eq. ++> can-trim-mixed-leading-whitespace
-    trimmed-left
-      " \t\n\f\rvalue"
+    " \t\n\f\rvalue".trimmed-left
     "value"
 
-  eq. ++> can-trim-one-leading-space
-    trimmed-left
-      " s"
+  eq. ++> can-trim-one-leading-space-from-the-left
+    " s".trimmed-left
     "s"

@@ -114,25 +114,11 @@ final class Cache {
      * @return Base64-encoded SHA-256 hash of the file or directory contents
      */
     private String sha(final Path any) {
-        final String result;
-        if (Files.isDirectory(any)) {
-            result = this.dirSha(any);
-        } else if (Files.isRegularFile(any)) {
-            result = new Sha(any).toString();
-        } else {
+        if (!Files.isDirectory(any) && !Files.isRegularFile(any)) {
             throw new IllegalArgumentException(
                 String.format("Path '%s' is neither a regular file nor a directory", any)
             );
         }
-        return result;
-    }
-
-    /**
-     * Calculate SHA-256 hash of a directory by hashing all regular files inside it.
-     * @param dir Directory path
-     * @return Base64-encoded SHA-256 hash of the directory contents
-     */
-    private String dirSha(final Path dir) {
-        return new Sha(dir, this.filter).toString();
+        return new Sha(any, this.filter).toString();
     }
 }

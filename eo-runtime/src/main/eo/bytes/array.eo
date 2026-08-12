@@ -25,7 +25,7 @@
     0
 
   eq. ++> can-convert-bytes-to-an-array
-    array 20-1F-EE-B5-FF
+    20-1F-EE-B5-FF.array
     *
       20-
       1F-
@@ -34,9 +34,9 @@
       FF-
 
   eq. ++> can-convert-a-single-byte-to-an-array
-    array 1F-
+    1F-.array
     * 1F-
 
   eq. ++> can-convert-zero-bytes-to-an-array
-    array --
+    --.array
     *

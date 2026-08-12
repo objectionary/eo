@@ -37,6 +37,29 @@
   pipe application reaches the enclosing application or tuple.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
+  <!--
+  Both reshaping templates below need a @pipe marker to fire: the first
+  one matches it directly, the second one only matches a node whose next
+  sibling carries it. A program without a single @pipe therefore leaves
+  this sheet an identity transform, and copying the tree in bulk is much
+  cheaper than walking it node by node through the rule chain (Saxon
+  copies the subtree wholesale instead of matching three patterns against
+  every node). Most programs have no pipe line at all - 128 of the 170
+  sources in eo-runtime - and the guard costs only one //o[@pipe] scan,
+  far less than the walk it skips (#6665).
+  -->
+  <xsl:template match="/">
+    <xsl:choose>
+      <xsl:when test="//o[@pipe]">
+        <xsl:copy>
+          <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:copy-of select="."/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
   <xsl:template match="o[@pipe]">
     <xsl:copy>
       <xsl:attribute name="base">

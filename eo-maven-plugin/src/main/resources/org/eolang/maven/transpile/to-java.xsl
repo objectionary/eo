@@ -219,18 +219,42 @@
     <xsl:text>import org.eolang.*;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <!-- Class. Entry point -->
+  <!--
+  Class. Entry point.
+
+  The Java of a class is assembled from thousands of small "xsl:text" and
+  "xsl:value-of" pieces by the templates below, and it must reach "<java>" as
+  one text node. Each piece is handed to the result tree as it is produced,
+  and that tree is a DOM, where merging a piece into the text node already
+  there copies everything accumulated so far - so writing the pieces straight
+  into "<java>" was quadratic in the size of the generated Java. The biggest
+  class of "eo-runtime" ends up at ~485k characters, and paying for all of it
+  again on every piece made this one pass four fifths of the whole transpile
+  train (#6674).
+
+  Collecting the pieces in a variable first costs nothing, because a temporary
+  tree is Saxon's own, where appending text grows a buffer instead of copying
+  one, and the single "xsl:value-of" then hands the DOM the finished string in
+  one piece. Both bodies are pure text, so a variable holds exactly what the
+  element would have held.
+  -->
   <xsl:template match="class">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <tests>
-        <xsl:call-template name="commonclass"/>
-        <xsl:apply-templates select="." mode="testing"/>
+        <xsl:variable name="code">
+          <xsl:call-template name="commonclass"/>
+          <xsl:apply-templates select="." mode="testing"/>
+        </xsl:variable>
+        <xsl:value-of select="$code"/>
       </tests>
       <xsl:if test="not(@skip-java)">
         <java>
-          <xsl:call-template name="commonclass"/>
-          <xsl:apply-templates select="." mode="body"/>
+          <xsl:variable name="code">
+            <xsl:call-template name="commonclass"/>
+            <xsl:apply-templates select="." mode="body"/>
+          </xsl:variable>
+          <xsl:value-of select="$code"/>
         </java>
       </xsl:if>
     </xsl:copy>
@@ -654,11 +678,11 @@
       <xsl:value-of select="$name"/>
       <xsl:text>, "</xsl:text>
       <xsl:value-of select="@loc"/>
-      <xsl:text>", </xsl:text>
+      <xsl:text>:</xsl:text>
       <xsl:value-of select="@line"/>
-      <xsl:text>, </xsl:text>
+      <xsl:text>:</xsl:text>
       <xsl:value-of select="@pos"/>
-      <xsl:text>);</xsl:text>
+      <xsl:text>");</xsl:text>
     </xsl:if>
   </xsl:template>
   <!-- Application -->

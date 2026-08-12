@@ -8,6 +8,7 @@ import com.sun.jna.Platform;
 import com.sun.jna.Structure;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.ToIntBiFunction;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Phi;
@@ -16,10 +17,11 @@ import org.eolang.Syscall;
 /**
  * Stat syscall.
  *
- * <p>Fills a {@code struct stat} for the file at the given path and hands its
- * mode bits and byte size to EO. Linux x86-64, Linux aarch64 and macOS lay that
- * struct out differently, so each keeps its own {@link FileStat}; the divergence
- * is spelled out rather than papered over.</p>
+ * <p>Fills a {@code struct stat} for the file at the given path, through
+ * {@code stat} or through {@code lstat} when a symbolic link has to be seen as
+ * itself, and hands its mode bits and byte size to EO. Linux x86-64, Linux
+ * aarch64 and macOS lay that struct out differently, so each keeps its own
+ * {@link FileStat}; the divergence is spelled out rather than papered over.</p>
  *
  * @since 0.57.0
  */
@@ -31,11 +33,19 @@ public final class StatSyscall implements Syscall {
     private final Phi posix;
 
     /**
+     * The C function filling the struct, either following a symbolic link or
+     * reporting the link itself.
+     */
+    private final ToIntBiFunction<String, Structure> call;
+
+    /**
      * Ctor.
      * @param posix Posix object
+     * @param call The C function filling the struct
      */
-    public StatSyscall(final Phi posix) {
+    public StatSyscall(final Phi posix, final ToIntBiFunction<String, Structure> call) {
         this.posix = posix;
+        this.call = call;
     }
 
     @Override
@@ -46,15 +56,15 @@ public final class StatSyscall implements Syscall {
         final int code;
         if (Platform.isMac()) {
             final StatSyscall.Mac mac = new StatSyscall.Mac();
-            code = CStdLib.INSTANCE.stat(path, mac);
+            code = this.call.applyAsInt(path, mac);
             info = mac;
         } else if (Platform.isARM()) {
             final StatSyscall.LinuxArm arm = new StatSyscall.LinuxArm();
-            code = CStdLib.INSTANCE.stat(path, arm);
+            code = this.call.applyAsInt(path, arm);
             info = arm;
         } else {
             final StatSyscall.Linux linux = new StatSyscall.Linux();
-            code = CStdLib.INSTANCE.stat(path, linux);
+            code = this.call.applyAsInt(path, linux);
             info = linux;
         }
         result.put(0, new Data.ToPhi(code));

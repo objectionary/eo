@@ -19,14 +19,14 @@
       malloc.for
         0
         [m]
-          each > @
+          each. > @
             * 1 2 3
             m.put > [i] >>
               m.as-number.plus i
       6
 
   eq. ++> can-return-the-result-of-the-last-call
-    each
+    each.
       *
         1
         2
@@ -39,7 +39,7 @@
       malloc.for
         0
         [m]
-          each > @
+          each. > @
             * 10 20 30
             m.put > [i] >>
               m.as-number.plus i
@@ -50,12 +50,11 @@
       malloc.for
         0
         [m]
-          each > @
+          each. > @
             * 7
             m.put > [i] >>
               m.as-number.plus i
       7
 
-  each ++> can-walk-an-empty-list
-    *
+  tuple.empty.each ++> can-walk-an-empty-list
     false > [x]

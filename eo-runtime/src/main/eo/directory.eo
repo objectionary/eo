@@ -6,9 +6,14 @@
 #  like [a-z] or [!a] reaches the regex engine neither translated nor escaped,
 #  so a negation matches nothing it should and a lone bracket refuses to
 #  compile, while a star inside a class keeps its glob meaning by mistake.
-# @todo #5751:30min Stop descending into a symbolic link to a directory. The
-#  `walk` below asks stat, which follows the link, so a link to its own ancestor
-#  recurses forever, while the `Files.walk` it replaced only listed such a link.
+# @todo #6483:30min Test that `walk` below halts at a symbolic link. EO cannot
+#  make one, because `posix` has no `symlink` syscall yet, so the halting is
+#  covered only through `lstat` in `StatSyscallTest`, while the walk that leans
+#  on it has no test of its own.
+# @todo #6483:30min Stop descending into a symbolic link on Windows. The `walk`
+#  below asks `lstat`, which reports the link itself, so on POSIX a link to its
+#  own ancestor is listed instead of followed, while `_stat64` on Windows knows
+#  nothing about links and still lets such a link recurse forever.
 # @todo #6484:60min Walk a directory in constant stack space. The `stepped`
 #  below still costs one frame per entry, because every loop EO has grows the
 #  stack: `while` nests a frame per cycle and `tuple.reducedi` one per element,
@@ -99,11 +104,15 @@
           rest.length.eq 0
           picked accum prefix
           if.
-            child.as-file.is-directory false
+            and.
+              entry.is-directory false
+              not.
+                entry.is-symlink false
             walked earlier sub child.as-dir
             picked earlier sub
         dir.as-path.resolved name > child
         stepped rest.tail > earlier
+        child.as-file > entry
         rest.head > name
         if. > sub
           prefix.length.eq 0

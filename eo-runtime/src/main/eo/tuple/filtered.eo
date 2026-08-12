@@ -17,7 +17,7 @@
     func item > [item index] >>
 
   eq. ++> can-filter-a-list
-    filtered
+    filtered.
       *
         3
         1
@@ -31,7 +31,7 @@
       5
 
   eq. ++> can-filter-bools
-    filtered
+    filtered.
       *
         true
         false

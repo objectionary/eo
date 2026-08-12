@@ -40,6 +40,22 @@
         posix *1
           "stat"
           path
+  [cant-check] > is-symlink
+    if. > @
+      info.code.eq 0
+      eq.
+        floor.
+          info.output.mode.div 4096
+        10
+      cant-check
+    called. > info
+      os.is-windows.if
+        win32 *1
+          "_stat64"
+          path
+        posix *1
+          "lstat"
+          path
   [mode scope cant-open] > open
     known.not.if > @
       T
@@ -236,6 +252,9 @@
           "foo"
           "bar"
     mktemp.as-path.resolved "foo/bar" > resolved
+
+  not. ++> can-tell-that-a-regular-file-is-not-a-symbolic-link
+    mktemp.tmpfile.is-symlink true
 
   not. ++> can-tell-that-an-absent-file-does-not-exist
     exists.

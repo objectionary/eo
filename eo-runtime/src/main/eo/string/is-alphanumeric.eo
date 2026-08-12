@@ -13,12 +13,10 @@
     regex "/^[A-Za-z0-9]+$/"
     text
 
-  is-alphanumeric "eEo" ++> can-be-alphanumeric-when-simple-text
+  "eEo".is-alphanumeric ++> can-be-alphanumeric-when-simple-text
 
-  is-alphanumeric "ab3d" ++> can-be-alphanumeric-with-a-number
+  "ab3d".is-alphanumeric ++> can-be-alphanumeric-with-a-number
 
-  not. ++> cannot-be-alphanumeric-when-empty
-    is-alphanumeric ""
+  "".is-alphanumeric.not ++> cannot-be-alphanumeric-when-empty
 
-  not. ++> cannot-be-alphanumeric-with-dashes
-    is-alphanumeric "-w-"
+  "-w-".is-alphanumeric.not ++> cannot-be-alphanumeric-with-dashes

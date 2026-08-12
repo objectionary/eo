@@ -40,43 +40,32 @@
 
   eq. ++> can-return-a-character-at-a-negative-index
     "m"
-    at
-      "some"
-      -2
+    "some".at -2
 
   eq. ++> can-return-the-first-character
     "s"
-    at
-      "some"
-      0
+    "some".at 0
 
   eq. ++> can-return-the-third-character
     "m"
-    at
-      "some"
-      2
+    "some".at 2
 
   eq. ++> rejects-a-fractional-index-in-bounds
     "recovered"
-    at
-      "some"
+    "some".at
       1.5
       "recovered" > [message]
 
   eq. ++> rejects-a-negative-fractional-index-in-bounds
     "recovered"
-    at
-      "some"
+    "some".at
       -1.5
       "recovered" > [message]
 
   eq. ++> rejects-an-out-of-bounds-index
     "recovered"
-    at
-      "some"
+    "some".at
       10
       "recovered" > [message]
 
-  at --> stops-on-an-index-beyond-the-length
-    "some"
-    10
+  "some".at 10 --> stops-on-an-index-beyond-the-length

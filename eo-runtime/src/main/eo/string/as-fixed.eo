@@ -4,6 +4,13 @@
 # If `places` is not a finite non-negative integer (negative, fractional, nan
 # or infinite), the `cant-print` fallback is returned, or the bottom object
 # when unbound.
+#
+# @todo #6572:30min Scale a large value without losing its last digits. The
+#  `positive` object below multiplies the value by a power of ten in double
+#  arithmetic, so a product above 2^53 is rounded and the integer part handed
+#  to `as-decimal` can be off by one, which makes `printf`'s `%f` misprint a
+#  magnitude past 2^53 that `%d` now prints exactly; split the value into its
+#  integer and fraction parts over `i64` before scaling.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -117,7 +124,7 @@
     string
       as-fixed -2.5 0
 
-  eq. ++> can-pad-with-trailing-zeros
+  eq. ++> can-pad-the-fraction-with-trailing-zeros
     "1.250000"
     string
       as-fixed 1.25 6
