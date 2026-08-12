@@ -310,9 +310,21 @@
   never moved its value anywhere: dropping it deletes the declaration from the
   printed source, so a private helper formation or const cache that nothing
   reads yet would silently vanish (#5914).
+
+  The name is atomized once here, before any of those functions is asked
+  (#6669). Each declares its `$name` as `xs:string`, so handing over the
+  `@name` node left the conversion to the function conversion rules, and Saxon
+  is free to bind the parameter to a closure over the argument expression
+  rather than over its converted value. The node then arrives inside the
+  function, where `eo:resolved-name(@base) = $name` has already been compiled
+  to a `ValueComparison` on the strength of the declared types — it casts
+  straight to `AtomicValue` and the sheet dies with "DOMNodeWrapper cannot be
+  cast to AtomicValue". A string leaves the conversion with nothing to lose,
+  as at the `eo:signature` call in "to-eo-tree".
   -->
   <xsl:template match="o[starts-with(@name, $auto) and not(eo:void(.))]" priority="1">
-    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or eo:vertical-const(.) or eo:unreferenced(., @name) or (eo:multi-referenced(., @name) and eo:rebuilt(.)) or eo:piped(., @name) or eo:arg-applied(., @name) or eo:nested-applied(., @name) or eo:reapplied(., @name)">
+    <xsl:variable name="name" as="xs:string" select="string(@name)"/>
+    <xsl:if test="eo:recursive(., $name) or eo:dispatched(., $name) or eo:vertical-const(.) or eo:unreferenced(., $name) or (eo:multi-referenced(., $name) and eo:rebuilt(.)) or eo:piped(., $name) or eo:arg-applied(., $name) or eo:nested-applied(., $name) or eo:reapplied(., $name)">
       <xsl:copy>
         <xsl:apply-templates select="node()|@*"/>
       </xsl:copy>
