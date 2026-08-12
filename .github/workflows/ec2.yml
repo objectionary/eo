@@ -21,7 +21,6 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET }}
-          aws-region: ${{ secrets.AWS_REGION }}
       - id: start
         uses: machulav/ec2-github-runner@v2
         with:
@@ -71,7 +70,6 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET }}
-          aws-region: ${{ secrets.AWS_REGION }}
       - uses: machulav/ec2-github-runner@v2
         with:
           mode: stop
