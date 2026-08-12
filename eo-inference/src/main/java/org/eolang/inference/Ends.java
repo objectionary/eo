@@ -1,0 +1,55 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+package org.eolang.inference;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
+/**
+ * Every chain of copies, walked to its end.
+ *
+ * <p>A copy of a copy is a copy of the same thing, and the pairs come in one
+ * at a time: {@code a} is a copy of {@code b}, {@code b} of {@code c}. Asking
+ * the table about {@code a} has to arrive at {@code c}, so each pair is
+ * followed as far as it goes and the end is written down against every name on
+ * the way. A chain that comes back on itself is walked once and stops where it
+ * started, since an object that is a copy of itself is nothing new.</p>
+ *
+ * @since 0.68.0
+ */
+final class Ends {
+
+    /**
+     * The pairs, each name against the one it is a copy of.
+     */
+    private final Map<String, String> copies;
+
+    /**
+     * Ctor.
+     * @param pairs The pairs, each name against the one it is a copy of
+     */
+    Ends(final Map<String, String> pairs) {
+        this.copies = pairs;
+    }
+
+    /**
+     * The name every type goes by.
+     * @return The names, each type against the end of its chain of copies
+     */
+    Map<String, String> names() {
+        final Map<String, String> ends = new HashMap<>(this.copies.size());
+        for (final Map.Entry<String, String> link : this.copies.entrySet()) {
+            final Collection<String> walked = new HashSet<>(0);
+            String end = link.getValue();
+            while (this.copies.containsKey(end) && walked.add(end)) {
+                end = this.copies.get(end);
+            }
+            ends.put(link.getKey(), end);
+        }
+        return ends;
+    }
+}
