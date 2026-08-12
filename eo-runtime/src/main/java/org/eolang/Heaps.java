@@ -9,10 +9,15 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.IntFunction;
 
 /**
  * Dynamic memory.
  * @since 0.19
+ * @todo #6507:30min Move the negative-argument, size and resize tests in HeapsTest and
+ *  both free probes in EOmallocEOofTest onto the scoped malloc, then make malloc with two
+ *  arguments and free private, so that a block can only be taken through a scope that
+ *  releases it, and drop failsOnClearingEmptyBlock, which nobody can reach any more.
  */
 final class Heaps {
 
@@ -63,6 +68,23 @@ final class Heaps {
             this.lock.unlock();
         }
         return identifier;
+    }
+
+    /**
+     * Allocate a block in memory, let the scope use it, and free it afterwards.
+     * @param phi Object
+     * @param size How many bytes
+     * @param scope What to do with the identifier of the block
+     * @param <T> Type of what the scope returns
+     * @return What the scope returns
+     */
+    <T> T malloc(final Phi phi, final int size, final IntFunction<T> scope) {
+        final int identifier = this.malloc(phi, size);
+        try {
+            return scope.apply(identifier);
+        } finally {
+            this.free(identifier);
+        }
     }
 
     /**

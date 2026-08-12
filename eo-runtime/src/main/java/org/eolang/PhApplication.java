@@ -120,17 +120,7 @@ public final class PhApplication extends PhOnce {
         }
         final String result;
         if (text.isPresent()) {
-            result = String.format(
-                "\"%s\"",
-                text.get()
-                    .replace("\\", "\\\\")
-                    .replace("\"", "\\\"")
-                    .replace("\b", "\\b")
-                    .replace("\f", "\\f")
-                    .replace(String.valueOf('\n'), "\\n")
-                    .replace(String.valueOf('\r'), "\\r")
-                    .replace("\t", "\\t")
-            );
+            result = new Quoted(bytes).get();
         } else {
             result = null;
         }

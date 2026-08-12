@@ -37,6 +37,13 @@
 # which are how `false` and `true` dataize, together with the two control
 # characters that share that encoding, because an object knows its own bytes
 # here and not its type.
+#
+# @todo #6359:60min Name the number that does not fit into the long range. The
+#  `%d` guard below used to render its own reason through `%f`, but `as-fixed`
+#  refuses any magnitude of 2^53 or larger, and every number that guard rejects is
+#  past that threshold, so the reason destroyed itself and the caller saw a chain
+#  of some forty `Error in "..."` links instead. The reason now carries no number
+#  at all; give it one back once `%f` can print a magnitude that big.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -189,15 +196,13 @@
               gte.
                 number numeric
                 number limit
-              lt.
+              lte.
                 number numeric
                 times.
                   number limit
                   -1
             T
-              "The number %f doesn't fit into the long range of the %%d conversion".printf
-                *
-                  number numeric
+              "The number doesn't fit into the long range of the '%d' conversion"
             number numeric
         if.
           66-.eq conv
@@ -401,11 +406,29 @@
       "%s"
       "ab".concat "cd"
 
+  eq. ++> can-format-a-decimal-above-two-to-the-53rd
+    "9007199254740992"
+    printf *1
+      "%d"
+      9007199254740992
+
+  eq. ++> can-format-a-float-above-two-to-the-53rd
+    "9007199254740992.000000"
+    printf *1
+      "%f"
+      9007199254740992
+
   eq. ++> can-format-a-float-with-six-fraction-digits
     "1.250000"
     printf *1
       "%f"
       1.25
+
+  eq. ++> can-format-a-large-negative-decimal
+    "-9007199254740992"
+    printf *1
+      "%d"
+      -9007199254740992
 
   eq. ++> can-format-a-numbered-substitution
     "Hello, Jeff! Bye, Jeff!"
@@ -611,3 +634,7 @@
   printf *1 --> stops-on-formatting-nan-as-a-decimal
     "%d"
     nan
+
+  printf *1 --> stops-on-the-negative-long-boundary-as-a-decimal
+    "%d"
+    -9.223372036854776e18

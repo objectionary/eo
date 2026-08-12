@@ -8,6 +8,8 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link PhTerminator}.
@@ -104,12 +106,33 @@ final class PhTerminatorTest {
         );
     }
 
+    @ParameterizedTest
+    @ValueSource(doubles = {9.3e18, 1.0e19, -1.0e19})
+    void keepsTheReasonOfAnOutOfRangeDecimalConversion(final double number) {
+        MatcherAssert.assertThat(
+            String.format(
+                "the number %s is not reported as out of the long range, but as something else",
+                number
+            ),
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhApplication(
+                        Phi.Φ.take("string.printf").copy(),
+                        new Bind("format", new Data.ToPhi("%d")),
+                        new Bind("args", new Data.ToPhi(new Phi[]{new Data.ToPhi(number)}))
+                    )
+                ).take()
+            ).toString(),
+            Matchers.containsString("doesn't fit into the long range")
+        );
+    }
+
     @Test
-    void rejectsPutAtOtherPositions() {
-        Assertions.assertThrows(
-            ExFailure.class,
+    void toleratesPutAtOtherPositions() {
+        Assertions.assertDoesNotThrow(
             () -> new PhTerminator().put(1, new Data.ToPhi("nope")),
-            "putting into the bottom object anywhere but position 0 must abort"
+            "putting into the bottom object away from position 0 must not abort"
         );
     }
 

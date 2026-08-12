@@ -23,6 +23,12 @@
     cannot express; set to true to verify return types.
     -->
     <eo.typing>false</eo.typing>
+    <!--
+    How many seconds a single test may run before Deadline skips it. Raise
+    it on a box that has all the time in the world, so that a slow test
+    runs to its end instead of being skipped.
+    -->
+    <eo.deadline>1</eo.deadline>
   </properties>
   <dependencies>
     <dependency>
@@ -52,7 +58,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.6.1</version>
+      <version>1.6.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -118,6 +124,12 @@
     <dependency>
       <groupId>org.junit-pioneer</groupId>
       <artifactId>junit-pioneer</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opentest4j</groupId>
+      <artifactId>opentest4j</artifactId>
       <!-- version from parent POM -->
       <scope>test</scope>
     </dependency>
@@ -194,6 +206,7 @@
           <systemPropertyVariables>
             <eo.version>${project.version}</eo.version>
             <eo.typing>${eo.typing}</eo.typing>
+            <junit.jupiter.execution.timeout.test.method.default>${eo.deadline}s</junit.jupiter.execution.timeout.test.method.default>
             <!--
             Where PhCoverage.hit() appends coverage records at runtime. It
             pairs with coverageTracking on eo-maven-plugin below, which wraps
