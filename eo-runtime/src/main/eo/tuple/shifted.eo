@@ -8,13 +8,16 @@
 +spdx SPDX-License-Identifier: MIT
 
 [list shift] > shifted
-  slice > @
-    list
-    if.
-      shift.lt 0
-      0
-      shift
-    list.length
+  shift.is-integer.if > @
+    slice
+      list
+      if.
+        shift.lt 0
+        0
+        shift
+      list.length
+    T
+      "Given shift must be an integer"
 
   eq. ++> can-ignore-a-negative-shift
     shifted
@@ -78,3 +81,15 @@
         5
       6
     *
+
+  shifted --> stops-on-a-negative-fractional-shift
+    *
+      "a"
+      "b"
+    -0.5
+
+  shifted --> stops-on-a-positive-fractional-shift
+    *
+      "a"
+      "b"
+    0.5
