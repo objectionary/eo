@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+line: 1
+message: |-
+  [1:0] error: 'the bottom term `T` is self-contained and cannot take arguments'
+  T 42 > result
+  ^
+input: |
+  T 42 > result

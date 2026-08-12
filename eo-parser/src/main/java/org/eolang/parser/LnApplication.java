@@ -61,6 +61,12 @@ final class LnApplication implements Line {
         final Value head = tokens.readValue();
         final List<MethodChain> chain = tokens.readChain();
         final List<Value> args = tokens.readArgs();
+        if (head.kind() == Value.Kind.TERM && !args.isEmpty()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "the bottom term `T` is self-contained and cannot take arguments"
+            );
+        }
         Bindings.checkAllOrNothing(args, this.span);
         final String outer = LnApplication.readOuterBinding(tokens);
         final Suffix suffix = new Suffix(
