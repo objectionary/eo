@@ -4,14 +4,15 @@
  */
 package org.eolang.maven;
 
-import com.github.lombrozo.xnav.Xnav;
+import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Random;
 import java.util.function.UnaryOperator;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.w3c.dom.Node;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test for {@link Trees}.
@@ -20,24 +21,17 @@ import org.w3c.dom.Node;
 final class TreesTest {
 
     @Test
-    void keepsRememberedTreeIntact() throws IOException {
+    void servesTreeRememberedByAnotherObject(@TempDir final Path tmp) throws IOException {
         final long seed = System.nanoTime();
-        final String text = String.format(
-            "# Комментарий %d.%n[] > obj%d%n  42 > @%n", seed, new Random(seed).nextInt(1000)
-        );
-        final Trees trees = new Trees.TsShared();
-        trees.tree(
-            text,
-            xml -> {
-                final Node root = new Xnav(xml.inner()).element("object").node();
-                root.getParentNode().removeChild(root);
-                return xml;
-            }
+        final String mark = String.format("метка-%d", new Random(seed).nextInt(1000));
+        final String text = String.format("# Комментарий %d.%n[] > obj%n  42 > @%n", seed);
+        new Trees.TsSaved(tmp).remember(
+            text, new XMLDocument(String.format("<object mark=\"%s\"/>", mark))
         );
         MatcherAssert.assertThat(
-            String.format("the remembered tree was damaged by an earlier pipeline, seed %d", seed),
-            trees.tree(text, UnaryOperator.identity()).nodes("/object").size(),
-            Matchers.equalTo(1)
+            String.format("the tree one goal walked did not reach the next one, seed %d", seed),
+            new Trees.TsSaved(tmp).tree(text, UnaryOperator.identity()).xpath("/object/@mark"),
+            Matchers.contains(mark)
         );
     }
 }

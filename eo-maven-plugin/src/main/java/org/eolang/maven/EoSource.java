@@ -87,11 +87,12 @@ final class EoSource {
 
     /**
      * Parse the source code into XMIR.
+     * @param walked The trees walked out of the sources of this build
      * @return Parsed XMIR
      * @throws IOException If fails
      */
-    Xmir parsed() throws IOException {
-        final XML xmir = Trees.TsShared.INSTANCE.tree(
+    Xmir parsed(final Trees walked) throws IOException {
+        final XML xmir = walked.tree(
             new UncheckedText(new TextOf(this.input)).asString(), this.transform
         );
         final List<String> errors = new ArrayList<>(0);
