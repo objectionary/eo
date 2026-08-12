@@ -13,12 +13,13 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.parser.EoSyntax;
+import org.eolang.parser.Canonical;
 import org.eolang.printer.PenaltyKey;
 import org.eolang.printer.Xmir;
 
@@ -41,17 +42,10 @@ import org.eolang.printer.Xmir;
  * does it as few times as it can: the sources are checked concurrently,
  * through {@link Threaded}, the way every other goal walks them, and each
  * settling pass keeps the tree it parsed instead of parsing the same text
- * again to lay it out.</p>
+ * again to lay it out, while {@link Trees} keeps the {@code parse} goal
+ * from walking the same text over again.</p>
  *
  * @since 0.57.0
- * @todo #6263:30min Parse every {@code .eo} source once per build.
- *  This goal parses each source and throws the tree away, and then the
- *  {@code compile} goal parses the very same text again seconds later,
- *  so a clean build of {@code eo-runtime} parses its 170 sources twice.
- *  Hand the settled tree of {@link #canonical(Path, String)} over to
- *  {@link Parsing} instead, keyed by the source hash the way
- *  {@link GlobalCache} already keys its footprints, so that the second
- *  parse is skipped when the format goal has just produced the same tree.
  */
 @Mojo(
     name = "format",
@@ -109,10 +103,16 @@ public final class MjFormat extends MjSafe {
     private Integer width;
 
     /**
+     * Turns a walked tree into canonical XMIR, built once and reused by
+     * every source this goal checks.
+     */
+    private final UnaryOperator<XML> pipeline;
+
+    /**
      * Ctor.
      */
     public MjFormat() {
-        // nothing
+        this.pipeline = new Canonical();
     }
 
     @Override
@@ -177,14 +177,14 @@ public final class MjFormat extends MjSafe {
      */
     private String canonical(final Path path, final String source) throws IOException {
         String structure = source;
-        XML tree = MjFormat.parsed(path, structure);
+        XML tree = this.parsed(path, structure);
         for (int pass = 0; pass < MjFormat.SETTLE; ++pass) {
             final String next = new Xmir(tree).toEO();
             if (next.equals(structure)) {
                 break;
             }
             structure = next;
-            tree = MjFormat.parsed(path, structure);
+            tree = this.parsed(path, structure);
         }
         return new Xmir(tree, this.weights()).toEO();
     }
@@ -221,8 +221,8 @@ public final class MjFormat extends MjSafe {
      * @return The parsed XMIR
      * @throws IOException If fails to parse the source
      */
-    private static XML parsed(final Path source, final String structure) throws IOException {
-        final XML xmir = new EoSyntax(structure).parsed();
+    private XML parsed(final Path source, final String structure) throws IOException {
+        final XML xmir = this.pipeline.apply(Trees.TsShared.INSTANCE.of(structure));
         final long errors = new Xnav(xmir.inner())
             .element("object")
             .element("errors")
