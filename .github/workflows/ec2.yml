@@ -29,7 +29,7 @@ jobs:
           aws-resource-tags: '[{"Key":"Name","Value":"eo-runtime"}]'
           github-token: ${{ secrets.AWS_PAT }}
           ec2-image-id: ${{ secrets.AWS_AMI }}
-          ec2-instance-type: c8i.24xlarge
+          ec2-instance-type: c8i.8xlarge
           subnet-id: ${{ secrets.AWS_SUBNET }}
           security-group-id: ${{ secrets.AWS_SGROUP }}
   runtime:
@@ -59,7 +59,7 @@ jobs:
         with:
           path: ~/.m2/repository/org/eolang
       - run: mvn -ntp -PskipITs -DskipTests --errors --batch-mode '-Deo.coverageTracking=false' clean install -pl '!:eo-integration-tests'
-      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.deadline=1200' '-Dheap-size=64G' clean install -pl :eo-runtime
+      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.deadline=120' '-Dheap-size=64G' clean install -pl :eo-runtime
   terminate-instance:
     needs:
       - start-instance

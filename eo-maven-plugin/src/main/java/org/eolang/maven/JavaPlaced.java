@@ -51,8 +51,12 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
         if (clazz.element("java").text().isPresent()) {
             this.footprint.apply(Paths.get(""), this.target);
         }
-        if (tests && JavaPlaced.testsPresent(clazz)) {
-            this.placeJavaTests(clazz);
+        if (tests) {
+            if (JavaPlaced.testsPresent(clazz)) {
+                this.placeJavaTests(clazz);
+            } else {
+                this.removeJavaTests(clazz);
+            }
         }
     }
 
@@ -94,6 +98,38 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
             content = clazz.element("tests").text().get();
         }
         new Saved(content, resulted).value();
+        this.removeJavaTests(clazz, resulted);
+    }
+
+    /**
+     * Remove Java tests that are no longer generated.
+     * @param clazz Transpiled class
+     * @throws IOException If I/O fails
+     */
+    private void removeJavaTests(final Xnav clazz) throws IOException {
+        this.removeJavaTests(clazz, null);
+    }
+
+    /**
+     * Remove Java tests except the one currently generated.
+     * @param clazz Transpiled class
+     * @param retained Generated test to retain, if any
+     * @throws IOException If I/O fails
+     */
+    private void removeJavaTests(final Xnav clazz, final Path retained) throws IOException {
+        final String[] parts = clazz.attribute("java-name").text().get().split("\\.");
+        final Path base = Arrays.stream(parts, 0, parts.length - 1).reduce(
+            this.generated.getParent().resolve("generated-test-sources"),
+            Path::resolve,
+            Path::resolve
+        );
+        final String name = parts[parts.length - 1];
+        for (final String suffix : new String[]{"Test.java", "EOAtomTest.java"}) {
+            final Path test = base.resolve(String.format("%s%s", name, suffix));
+            if (!test.equals(retained)) {
+                Files.deleteIfExists(test);
+            }
+        }
     }
 
     /**

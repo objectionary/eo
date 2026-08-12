@@ -38,19 +38,40 @@ public final class Xmir implements XML {
 
     /**
      * Train of transformations that prepare XMIR for conversion to EO.
+     *
+     * <p>Every thread compiles a train of its own, because Saxon 13.0 keeps
+     * mutable evaluation state on each compiled expression and reads it
+     * without synchronization: its {@code LearningEvaluator} counts how many
+     * times the expression was evaluated, how many of those were consumed in
+     * full, and replaces its own strategy with the eager one once the two
+     * counts meet. Sharing one compiled stylesheet between the threads of
+     * {@code MjFormat} races on that state, and the counts of concurrent
+     * evaluations hardly ever meet, so the shared sheet stays on the lazy
+     * strategy for the whole build. Two defects live on that path: the
+     * arguments of a multi-argument {@code xsl:function} are bound to the
+     * wrong values, once in a while (the same bug that keeps
+     * {@code eo:segment} of "set-locators" single-argument, seen here as
+     * {@code if.} printed {@code if?.} through a wrong boolean reaching
+     * {@code eo:fragile-marked}), and a node reaches a parameter the function
+     * declared {@code xs:string}, which kills "inline-cactoos" with
+     * {@code DOMNodeWrapper cannot be cast to AtomicValue} (#6669, #6638).
+     * A train per thread is evaluated the way a single-threaded run evaluates
+     * it, where neither has ever been observed.</p>
      */
-    private static final Xsline FOR_EO = new Xsline(
-        new TrFull(
-            new TrDefault<>(
-                new StUnhex(),
-                new StClasspath("/org/eolang/printer/print/restore-local-names.xsl"),
-                new StClasspath("/org/eolang/printer/print/tuples-to-stars.xsl"),
-                new StClasspath("/org/eolang/printer/print/inline-cactoos.xsl"),
-                new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl"),
-                new StClasspath("/org/eolang/printer/print/unnecessary-as.xsl"),
-                new StClasspath("/org/eolang/printer/print/merge-monikers.xsl"),
-                new StClasspath("/org/eolang/printer/print/restore-aliases.xsl"),
-                new StClasspath("/org/eolang/printer/print/to-eo-tree.xsl")
+    private static final ThreadLocal<Xsline> FOR_EO = ThreadLocal.withInitial(
+        () -> new Xsline(
+            new TrFull(
+                new TrDefault<>(
+                    new StUnhex(),
+                    new StClasspath("/org/eolang/printer/print/restore-local-names.xsl"),
+                    new StClasspath("/org/eolang/printer/print/tuples-to-stars.xsl"),
+                    new StClasspath("/org/eolang/printer/print/inline-cactoos.xsl"),
+                    new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl"),
+                    new StClasspath("/org/eolang/printer/print/unnecessary-as.xsl"),
+                    new StClasspath("/org/eolang/printer/print/merge-monikers.xsl"),
+                    new StClasspath("/org/eolang/printer/print/restore-aliases.xsl"),
+                    new StClasspath("/org/eolang/printer/print/to-eo-tree.xsl")
+                )
             )
         )
     );
@@ -150,7 +171,7 @@ public final class Xmir implements XML {
      * @return EO representation as {@link String}
      */
     public String toEO() {
-        final XML xmir = Xmir.FOR_EO.pass(this.xml);
+        final XML xmir = Xmir.FOR_EO.get().pass(this.xml);
         Logger.debug(this, "XMIR after converting to EO tree:%n%s", xmir);
         return new Pretty(
             new Xnav(xmir.inner()).element("object").element("eo"),

@@ -21,9 +21,9 @@
     00-00-00-00-00-00-00-33.as-u64.as-bytes
     00-00-00-00-00-00-00-33
 
-  eq. ++> rejects-bytes-of-wrong-size
+  eq. ++> rejects-bytes-of-wrong-size-when-converting-to-u64
     "recovered"
     01-01-01-01.as-u64
       "recovered" > [message]
 
-  01-01-01-01.as-u64 --> stops-on-bytes-of-wrong-size
+  01-01-01-01.as-u64 --> stops-on-bytes-of-wrong-size-when-converting-to-u64

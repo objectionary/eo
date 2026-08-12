@@ -70,10 +70,7 @@
     -9.223372036854776e18.as-i64.as-bytes
     80-00-00-00-00-00-00-00
 
-  eq. ++> can-convert-the-origin-number
-    as-bytes.
-      as-i64 42
-    00-00-00-00-00-00-00-2A
+  42.as-i64.as-bytes.eq 00-00-00-00-00-00-00-2A ++> can-convert-the-origin-number
 
   eq. ++> can-truncate-a-negative-toward-zero
     -3.7.as-i64.as-bytes

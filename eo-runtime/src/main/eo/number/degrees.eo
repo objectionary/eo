@@ -15,46 +15,37 @@
       pi
     180
 
-  lt. ++> can-convert-a-large-value-without-overflow
-    abs
-      minus.
-        degrees 1.0e306
-        5.729577951308232e307
+  lt. ++> can-convert-a-large-value-to-degrees-without-overflow
+    abs.
+      1.0e306.degrees.minus 5.729577951308232e307
     1.0e294
 
   lt. ++> can-convert-minus-pi-to-degrees
-    abs
-      minus.
-        degrees pi.neg
-        -180
+    abs.
+      pi.neg.degrees.minus -180
     1.0E-4
 
   lt. ++> can-convert-pi-halves-to-degrees
-    abs
+    abs.
       minus.
-        degrees
+        degrees.
           pi.div 2
         90
     1.0E-4
 
   lt. ++> can-convert-pi-to-degrees
-    abs
-      minus.
-        degrees pi
-        180
+    abs.
+      pi.degrees.minus 180
     1.0E-4
 
   lt. ++> can-convert-two-pi-to-degrees
-    abs
+    abs.
       minus.
-        degrees
+        degrees.
           pi.times 2
         360
     1.0E-4
 
-  eq. ++> can-convert-zero-to-degrees
-    degrees 0
-    0
+  0.degrees.eq 0 ++> can-convert-zero-to-degrees
 
-  is-nan. ++> cannot-convert-nan-to-degrees
-    degrees nan
+  nan.degrees.is-nan ++> cannot-convert-nan-to-degrees

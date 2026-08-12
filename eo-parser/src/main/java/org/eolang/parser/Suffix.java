@@ -309,6 +309,13 @@ final class Suffix {
 
     /**
      * Parse a suffix tail into a result struct.
+     *
+     * <p>A bare {@code !} with no name suffix — the vertical-argument
+     * counterpart of the horizontal {@code a b!} form (#5821), which
+     * {@link #named} already accepts inline but which the unnamed tail of
+     * a vertical argument line never reached (#6562) — yields
+     * {@link Form#NONE} with the const marker set.</p>
+     *
      * @param tail Tail substring
      * @param span Source span
      * @param home Source column where {@code tail} begins
@@ -327,6 +334,9 @@ final class Suffix {
             result = Suffix.auto(tail, idx + 2, span, home);
         } else if (tail.charAt(idx) == '>') {
             result = Suffix.named(tail, idx + 1, span, home);
+        } else if (tail.charAt(idx) == '!') {
+            Suffix.endsClean(tail, idx + 1, span, home);
+            result = new Suffix.Parsed(Form.NONE, "", "", true);
         } else {
             throw new ParseError(
                 span.line(), home + idx,

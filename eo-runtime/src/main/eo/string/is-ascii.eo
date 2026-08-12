@@ -12,12 +12,10 @@
     regex "/^[\\x00-\\x7F]+$/"
     text
 
-  is-ascii "123" ++> can-be-ascii-when-digits
+  "123".is-ascii ++> can-be-ascii-when-digits
 
-  is-ascii "H311oW" ++> can-be-ascii-when-plain-text
+  "H311oW".is-ascii ++> can-be-ascii-when-plain-text
 
-  not. ++> cannot-be-ascii-when-empty
-    is-ascii ""
+  "".is-ascii.not ++> cannot-be-ascii-when-empty
 
-  not. ++> cannot-be-ascii-with-an-emoji
-    is-ascii "🌵"
+  "🌵".is-ascii.not ++> cannot-be-ascii-with-an-emoji

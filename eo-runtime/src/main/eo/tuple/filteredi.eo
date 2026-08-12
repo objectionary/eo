@@ -25,7 +25,7 @@
   | list > @
 
   eq. ++> can-filter-by-a-less-than-condition
-    filteredi
+    filteredi.
       *
         3
         1
@@ -38,7 +38,7 @@
       2
 
   eq. ++> can-filter-by-string-length
-    filteredi
+    filteredi.
       *
         "Hello"
         "Name"
@@ -47,13 +47,12 @@
       v.length.gt 4 > [v i]
     * "Hello"
 
-  is-empty ++> can-filter-an-empty-list
-    filteredi
-      *
+  is-empty. ++> can-filter-an-empty-list
+    tuple.empty.filteredi
       v.lt 3 > [v i]
 
   eq. ++> can-filter-by-index
-    filteredi
+    filteredi.
       *
         3
         1
@@ -64,7 +63,7 @@
       4
 
   eq. ++> can-filter-bools-with-indexes
-    filteredi
+    filteredi.
       *
         true
         false

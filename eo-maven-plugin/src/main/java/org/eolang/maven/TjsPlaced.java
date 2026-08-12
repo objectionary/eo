@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 
@@ -36,10 +37,10 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Ctor.
-     * @param tojos Tojos source
+     * @param tojos Tojos source, read at most once
      */
-    TjsPlaced(final Sticky<? extends Tojos> tojos) {
-        this(new Unchecked<>(tojos));
+    TjsPlaced(final Scalar<? extends Tojos> tojos) {
+        this(new Unchecked<>(new Sticky<>(tojos)));
     }
 
     /**
@@ -47,7 +48,7 @@ final class TjsPlaced implements Closeable {
      * @param tojos Tojos
      */
     private TjsPlaced(final Tojos tojos) {
-        this(new Sticky<>(() -> tojos));
+        this(() -> tojos);
     }
 
     /**
