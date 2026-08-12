@@ -41,21 +41,29 @@
           "stat"
           path
   [cant-check] > is-symlink
-    if. > @
-      info.code.eq 0
-      eq.
-        floor.
-          info.output.mode.div 4096
-        10
-      cant-check
+    os.is-windows.if > @
+      if.
+        attributes.eq win32.invalid
+        cant-check
+        not.
+          eq.
+            attributes.as-i64.as-bytes.and win32.reparse
+            00-00-00-00-00-00-00-00
+      if.
+        info.code.eq 0
+        eq.
+          floor.
+            info.output.mode.div 4096
+          10
+        cant-check
+    code. > attributes
+      win32 *1
+        "GetFileAttributesW"
+        path
     called. > info
-      os.is-windows.if
-        win32 *1
-          "_stat64"
-          path
-        posix *1
-          "lstat"
-          path
+      posix *1
+        "lstat"
+        path
   [mode scope cant-open] > open
     known.not.if > @
       T
@@ -272,6 +280,9 @@
               m
     temp.path > source
     mktemp.tmpfile > temp
+
+  mktemp.tmpfile.deleted.is-symlink ++> can-recover-from-checking-a-symbolic-link-of-an-absent-file
+    true
 
   mktemp.tmpfile.deleted.is-directory ++> can-recover-from-checking-an-absent-file
     true
