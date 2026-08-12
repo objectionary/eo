@@ -5,12 +5,9 @@
 # or infinite), the `cant-print` fallback is returned, or the bottom object
 # when unbound.
 #
-# @todo #6572:30min Scale a large value without losing its last digits. The
-#  `positive` object below multiplies the value by a power of ten in double
-#  arithmetic, so a product above 2^53 is rounded and the integer part handed
-#  to `as-decimal` can be off by one, which makes `printf`'s `%f` misprint a
-#  magnitude past 2^53 that `%d` now prints exactly; split the value into its
-#  integer and fraction parts over `i64` before scaling.
+# The value is split into its integer and fraction parts before scaling, so
+# only the fraction is multiplied by a power of ten and every magnitude that
+# `as-decimal` writes exactly is written exactly here too.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -43,23 +40,29 @@
       | (n.times -1)
       [a] >> positive
         if. > @
+          digits.eq scale
+          written
+            whole.plus 1
+            0
+          written whole digits
+        if. > [unit rest] >> written
           places.eq 0
-          as-decimal ip
+          as-decimal unit
           concat.
             concat.
-              as-decimal ip
+              as-decimal unit
               ".".as-bytes
             rec-pad
-              m.minus
-                ip.times scale
+              rest
               places
               --
-        floor. > ip
-          m.div scale
-        floor. > m
+        floor. > digits
           plus.
-            a.times scale
+            times.
+              a.minus whole
+              scale
             0.5
+        a.floor > whole
         pow10 places > scale
       | n
   if. > [p] >> pow10
@@ -91,6 +94,11 @@
     "1.000000"
     string
       as-fixed 0.9999999 6
+
+  eq. ++> can-carry-rounding-into-the-integer-part-with-zero-places
+    "1"
+    string
+      as-fixed 0.9999999 0
 
   eq. ++> can-drop-the-sign-of-a-negative-rounding-to-zero
     "0.00"
@@ -133,6 +141,16 @@
     "0.123457"
     string
       as-fixed 0.123456789 6
+
+  eq. ++> can-scale-a-magnitude-above-two-to-the-53rd
+    "100000000000000000.000000"
+    string
+      as-fixed 1.0e17 6
+
+  eq. ++> can-scale-a-negative-magnitude-above-two-to-the-53rd
+    "-100000000000000000.000000"
+    string
+      as-fixed -1.0e17 6
 
   eq. ++> can-write-a-negative-value
     "-2.500000"
