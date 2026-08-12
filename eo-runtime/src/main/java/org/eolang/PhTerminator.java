@@ -129,7 +129,6 @@ public final class PhTerminator implements Phi {
     /**
      * The reason to panic with, either the cause this bottom was given or the
      * plain explanation of a bottom that was born without one.
-     *
      * @return The reason as an object
      */
     private Phi reason() {
