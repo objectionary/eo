@@ -36,9 +36,7 @@
     false
 
   eq. ++> can-compare-two-numbers-through-the-package
-    eq
-      42
-      42
+    42.eq 42
     true
 
   42.eq 42.as-bytes ++> can-equal-an-integer-through-bytes

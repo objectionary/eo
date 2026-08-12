@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A package is a prefix of a locator and nothing more. When the program forms
+# nothing under that prefix, there is no object for the file to be an attribute
+# of, and the table says nothing rather than inventing an owner.
+eo:
+  minus.eo: |
+    +package number
+
+    [] > minus
+provides:
+  - "/provides/type[@id='Φ.number.minus']"
+  - "/provides[not(//attr)]"

@@ -8,16 +8,19 @@
 +spdx SPDX-License-Identifier: MIT
 
 [list i] > withouti
-  reducedi > @
-    list
-    *
-    if. > [accum item index] >>
-      i.eq index
-      accum
-      accum.with item
+  i.is-integer.if > @
+    reducedi
+      list
+      *
+      if. > [accum item index] >>
+        i.eq index
+        accum
+        accum.with item
+    T
+      "Given index must be an integer"
 
   eq. ++> can-drop-an-item-by-index
-    withouti
+    withouti.
       *
         1
         2
@@ -34,12 +37,10 @@
         "text"
         "f"
       * "text" "f"
-    withouti > [a] > foo
-      a
-      0
+    a.withouti 0 > [a] > foo
 
   eq. ++> can-drop-an-item-by-index-in-a-nested-list
-    withouti
+    withouti.
       *
         "smthg"
         27
@@ -51,3 +52,9 @@
     *
       "smthg"
       27
+
+  withouti --> stops-on-a-fractional-index
+    *
+      "a"
+      "b"
+    0.5

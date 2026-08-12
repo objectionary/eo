@@ -129,6 +129,24 @@ final class PhTerminatorTest {
     }
 
     @Test
+    void namesTheNumberOutOfTheLongRange() {
+        MatcherAssert.assertThat(
+            "the number out of the long range is not named in the reason",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhApplication(
+                        Phi.Φ.take("string.printf").copy(),
+                        new Bind("format", new Data.ToPhi("%d")),
+                        new Bind("args", new Data.ToPhi(new Phi[]{new Data.ToPhi(1.0e19)}))
+                    )
+                ).take()
+            ).toString(),
+            Matchers.containsString("1.000000e19")
+        );
+    }
+
+    @Test
     void keepsDispatchArgumentsOutOfTheCause() {
         MatcherAssert.assertThat(
             "a bottom reached by a dispatch names the argument it was handed, not the termination",

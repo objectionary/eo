@@ -21,6 +21,4 @@
 
   "HELLO".eq "hello".upper ++> can-upper-case-text
 
-  eq. ++> can-upper-case-text-through-the-package
-    "HELLO"
-    upper "hello"
+  "HELLO".eq "hello".upper ++> can-upper-case-text-through-the-package

@@ -12,7 +12,7 @@
     -1.eq
       index-of list element
 
-  contains ++> can-contain-a-number
+  contains. ++> can-contain-a-number
     *
       "qwerty"
       "asdfgh"
@@ -20,7 +20,7 @@
       "qwerty"
     3
 
-  contains ++> can-contain-a-string
+  contains. ++> can-contain-a-string
     *
       "qwerty"
       "asdfgh"
@@ -29,7 +29,7 @@
     "qwerty"
 
   not. ++> cannot-contain-an-absent-item
-    contains
+    contains.
       *
         "Привет"
         "asdfgh"

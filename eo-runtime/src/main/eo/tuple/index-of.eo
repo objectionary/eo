@@ -25,7 +25,7 @@
 
   eq. ++> can-find-the-index-of-a-non-symmetric-match
     1
-    index-of
+    index-of.
       *
         10
         20
@@ -36,7 +36,7 @@
 
   eq. ++> can-find-the-index-of-a-string
     1
-    index-of
+    index-of.
       *
         "asdfgh"
         "qwerty"
@@ -45,7 +45,7 @@
 
   eq. ++> can-return-the-first-index-of-an-element
     0
-    index-of
+    index-of.
       *
         -1
         2
@@ -54,7 +54,7 @@
 
   eq. ++> can-return-the-index-of-an-element
     1
-    index-of
+    index-of.
       *
         1
         2
@@ -63,7 +63,7 @@
 
   eq. ++> cannot-find-the-index-of-an-absent-item
     -1
-    index-of
+    index-of.
       *
         "qwerty"
         2

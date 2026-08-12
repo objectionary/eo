@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 
 /**
  * What every object certainly has.
@@ -54,14 +55,14 @@ import java.nio.file.Path;
  * written in Java, so its rows will have to be given to this table from
  * outside one day, and until they are, the checker simply knows less.</p>
  *
+ * <p>Not every attribute is written inside the formation it belongs to:
+ * {@code minus} in the package {@code number} is {@code Φ.number.minus} and
+ * belongs to {@code Φ.number} without ever appearing among its children.
+ * {@link Members} finds those and they go into this table too, last, since
+ * the order of attributes is what binds the arguments of an application and
+ * a file of a package binds none of them.</p>
+ *
  * @since 0.67.0
- * @todo #6565:35min Account for attributes reached through the package.
- *  An attribute of {@code Φ.number} like {@code minus} lives in the same
- *  package as a top-level object {@code Φ.number.minus}, so it never
- *  shows up among the children of the formation and this table calls the
- *  object complete while listing a strict subset of what it has. Either
- *  write those package members down as attributes of their owner, or
- *  leave the owner incomplete until they are.
  * @todo #6565:35min Write down the {@code ρ} every object has. An outer
  *  name lowers to a dispatch of {@code ρ}, so the needs table asks for
  *  it, while no row here ever lists it and the owner is called complete
@@ -72,8 +73,10 @@ final class Provides implements Clue {
 
     @Override
     public void follow(final Path xmirs, final Path tables) throws IOException {
+        final Xmirs world = new Xmirs(xmirs);
+        final Collection<XML> made = world.formations();
         try (Tojos rows = new TjDeferred(new MnMemory())) {
-            for (final XML formation : new Xmirs(xmirs).formations()) {
+            for (final XML formation : made) {
                 final String owner = formation.xpath("@loc").get(0);
                 final boolean whole = formation.nodes("o[@name='λ' or @name='φ']").isEmpty();
                 rows.add(owner).set("complete", Boolean.toString(whole));
@@ -88,6 +91,7 @@ final class Provides implements Clue {
                     }
                 }
             }
+            new Members(made, world.roots()).fill(rows);
             Files.createDirectories(tables);
             Files.write(
                 tables.resolve("provides.xml"),

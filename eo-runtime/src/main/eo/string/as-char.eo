@@ -16,8 +16,7 @@
   eq. ++> can-round-trip-through-as-ascii
     "!"
     string
-      as-char
-        as-ascii "!"
+      as-char "!".as-ascii
 
   eq. ++> can-write-the-byte-of-a-lowercase-letter
     "z"
