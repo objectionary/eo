@@ -195,9 +195,10 @@ public final class MjFormat extends MjSafe {
      * {@code <errors>} (see {@link Parsing}), but the parser also recovers
      * from many purely cosmetic layout violations (e.g. extra blank lines,
      * exactly what this goal exists to fix) the same way, tagged with the
-     * same {@code severity="error"} and no other distinguishing marker.
-     * Rejecting every {@code <errors>} entry, as suggested by the issue this
-     * fixes, would therefore also reject this goal's own core use case.
+     * same {@code severity="error"}; only lossy recovery also carries
+     * {@code lost="true"}. Rejecting every {@code <errors>} entry, as
+     * suggested by the issue this fixes, would therefore also reject this
+     * goal's own core use case.
      *
      * <p>What actually matters is whether the recovered tree still covers
      * the whole source: a genuine syntax error (e.g. an unterminated paren
@@ -207,7 +208,8 @@ public final class MjFormat extends MjSafe {
      * that some {@code <o>} element references a line at or past the
      * source's last non-blank line; if none does, part of the source was
      * never parsed at all, and this goal would otherwise print back (or, in
-     * {@code -Deo.autoFix} mode, save) a truncated version of it.</p>
+     * {@code -Deo.autoFix} mode, save) a truncated version of it, while
+     * {@code lost} catches discarded fragments within complete coverage.</p>
      *
      * <p>Line coverage is necessary but not sufficient: the parser recovers
      * from some <em>structural</em> errors not by dropping the remaining
@@ -230,7 +232,9 @@ public final class MjFormat extends MjSafe {
             .filter(MjFormat::severe)
             .count();
         if (errors > 0L
-            && (MjFormat.truncated(xmir, structure) || MjFormat.placeholder(xmir))) {
+            && (MjFormat.truncated(xmir, structure)
+                || MjFormat.placeholder(xmir)
+                || !xmir.nodes("/object/errors/error[@lost='true']").isEmpty())) {
             throw new IllegalStateException(
                 String.format(
                     "%s does not fully parse (%d error(s) found) and part of it was lost, won't format it",

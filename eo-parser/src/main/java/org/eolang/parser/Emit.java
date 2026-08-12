@@ -225,6 +225,32 @@ final class Emit {
     }
 
     /**
+     * Append an error for a line the parser discarded during recovery.
+     * @param line Line where the error occurred
+     * @param pos Column where the error occurred
+     * @param message Canonical message text
+     */
+    void lost(final int line, final int pos, final String message) {
+        this.append(
+            new Directives()
+                .push()
+                .xpath("/object")
+                .strict(1)
+                .addIf("errors")
+                .strict(1)
+                .add("error")
+                .attr("line", line)
+                .attr("pos", pos)
+                .attr("check", "parser")
+                .attr("severity", "error")
+                .attr("lost", true)
+                .set(this.formatted(line, pos, message))
+                .up().up()
+                .pop()
+        );
+    }
+
+    /**
      * Open an {@code <o>} element at the current cursor — §9.0.2 /
      * §9.4.2.
      *

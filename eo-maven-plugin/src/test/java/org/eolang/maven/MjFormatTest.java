@@ -158,6 +158,34 @@ final class MjFormatTest {
         );
     }
 
+    @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
+    void rejectsLossyRecoveryWithoutOverwriting(@Mktmp final Path temp) throws Exception {
+        final String source = MjFormatTest.lossy();
+        for (final boolean fixing : new boolean[]{false, true}) {
+            final Path home = temp.resolve(Boolean.toString(fixing));
+            final IllegalStateException exception = Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new FakeMaven(home)
+                    .with("autoFix", fixing)
+                    .withProgram(source)
+                    .execute(MjFormat.class)
+            );
+            final StringWriter writer = new StringWriter();
+            exception.printStackTrace(new PrintWriter(writer));
+            MatcherAssert.assertThat(
+                "a source recovered by dropping a binding must fail the format check",
+                writer.toString(),
+                Matchers.containsString("does not fully parse")
+            );
+        }
+        MatcherAssert.assertThat(
+            "the source must remain byte-for-byte intact after the rejected auto-fix",
+            new TextOf(temp.resolve("true/foo/x/main.eo")).asString(),
+            Matchers.equalTo(source)
+        );
+    }
+
     /**
      * Reformat a program into its canonical EO layout.
      * @param program The EO program
@@ -206,6 +234,25 @@ final class MjFormatTest {
             "    true",
             "    1",
             "    2",
+            ""
+        );
+    }
+
+    /**
+     * A source the parser recovers by dropping a binding in the middle.
+     * @return The EO text
+     */
+    private static String lossy() {
+        return String.join(
+            System.lineSeparator(),
+            "+package foo.x",
+            "",
+            "[x] > foo",
+            "  seq * > @",
+            "    last",
+            "    last.plus 1",
+            "  x! > last",
+            "  42 > tail",
             ""
         );
     }

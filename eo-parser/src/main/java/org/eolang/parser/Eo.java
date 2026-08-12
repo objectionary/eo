@@ -313,10 +313,10 @@ final class Eo implements Iterable<Directive> {
         if (globals.inTextBlock()) {
             Eo.continueTextBlock(span, stack, globals, emit);
         } else if (span.tab()) {
-            emit.error(span.line(), 0, "tab character in leading whitespace");
+            emit.lost(span.line(), 0, "tab character in leading whitespace");
             failed = true;
         } else if (!span.blank() && span.indent() % 2 == 1) {
-            emit.error(span.line(), 0, "unexpected odd indent");
+            emit.lost(span.line(), 0, "unexpected odd indent");
             failed = true;
         } else if (Eo.opensTextBlock(span)) {
             globals.openTextBlock(span.line(), span.indent());
@@ -349,7 +349,7 @@ final class Eo implements Iterable<Directive> {
             } catch (final ParseError err) {
                 emit.rollback(tstartsen);
                 stack.restore(frame);
-                emit.error(err.line(), err.pos(), err.getMessage());
+                emit.lost(err.line(), err.pos(), err.getMessage());
                 globals.closeTextBlock();
             }
         } else {
@@ -416,7 +416,7 @@ final class Eo implements Iterable<Directive> {
         } catch (final ParseError err) {
             emit.rollback(tstartsen);
             stack.restore(frame);
-            emit.error(err.line(), err.pos(), err.getMessage());
+            emit.lost(err.line(), err.pos(), err.getMessage());
             failed = true;
         }
         return failed;
