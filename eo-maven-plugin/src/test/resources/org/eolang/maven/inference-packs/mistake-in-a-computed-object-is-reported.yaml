@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# What `use` hands to `ask` is not an object anybody wrote down: it is
+# `x.next`, worked out while the program runs. No table says what it turns out
+# to be, and the loop is the only one who ever finds out — a `t` fills the void
+# `x`, and a `t` has `next`. Once that is written down, the object `ask` is
+# given goes by the name of the `next` of a `t`, which is complete and has
+# nothing, so asking it for `foo` is the mistake.
+eo:
+  app.eo: |
+    [] > app
+      use t > @
+  use.eo: |
+    [x] > use
+      ask x.next > @
+  ask.eo: |
+    [y] > ask
+      y.foo > @
+  t.eo: |
+    [] > t
+      [] > next
+problems:
+  - "/problems/type[@id='Φ.t.next']/attr[@name='foo' and @asked='Φ.ask.φ']"

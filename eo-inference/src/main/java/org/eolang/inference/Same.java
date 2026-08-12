@@ -5,9 +5,7 @@
 package org.eolang.inference;
 
 import com.jcabi.xml.XML;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -53,15 +51,6 @@ final class Same {
         for (final XML link : this.table.nodes("/links/type")) {
             copies.put(link.xpath("@id").get(0), link.xpath("@copy").get(0));
         }
-        final Map<String, String> ends = new HashMap<>(copies.size());
-        for (final Map.Entry<String, String> link : copies.entrySet()) {
-            final Collection<String> walked = new HashSet<>(0);
-            String end = link.getValue();
-            while (copies.containsKey(end) && walked.add(end)) {
-                end = copies.get(end);
-            }
-            ends.put(link.getKey(), end);
-        }
-        return ends;
+        return new Ends(copies).names();
     }
 }

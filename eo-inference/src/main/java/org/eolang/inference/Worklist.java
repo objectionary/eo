@@ -9,6 +9,7 @@ import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -39,12 +40,22 @@ import java.util.Map;
  * said about them. It is better to miss a mistake than to complain about
  * correct code.</p>
  *
- * <p>A check already started is dropped rather than started again. Nothing new
- * is learned while the list is drained, since all four tables were written
- * before it started, so a check nobody can decide now will not become
- * decidable later: the list only ever grows by splitting a check into smaller
- * ones, of which there are finitely many. Remembering the ones already started
- * is what keeps an object that refers to itself from being walked forever.</p>
+ * <p>A check already started is dropped rather than started again. Within one
+ * draining nothing new arrives, since the tables were all written before it
+ * began and the list only ever grows by splitting a check into smaller ones,
+ * of which there are finitely many. Remembering the ones already started is
+ * what keeps an object that refers to itself from being walked forever.</p>
+ *
+ * <p>Deciding a check works something out that no table holds. When {@code t}
+ * is asked for {@code next} and answers with the {@code next} of a {@code t},
+ * the dispatch that asked — an object the program computes and nobody names —
+ * has just turned out to be that very attribute. The tables say nothing about
+ * such an object, so every question about it is answered by an empty row until
+ * this is written down. It is handed back rather than used here, because the
+ * same locator can come out two ways: the dispatch stands in a formation, and
+ * a formation copied twice asks its question of two different objects. Only
+ * whoever sees every answer can tell a fact from a coincidence, which is
+ * {@link Settled}.</p>
  *
  * @since 0.68.0
  */
@@ -90,10 +101,16 @@ final class Worklist {
     }
 
     /**
-     * Drain the checks into the given table, a row per mistake.
+     * Drain the checks into the given table, a row per mistake, and hand back
+     * what was worked out on the way about the objects nobody wrote down.
      * @param rows The table to write the mistakes into
+     * @return What every computed object turned out to be, by its locator;
+     *  more than one answer against a locator means the object is not one
+     *  thing, since the dispatch that made it stands in a formation that was
+     *  copied more than once
      */
-    void drain(final Tojos rows) {
+    Map<String, Collection<String>> drain(final Tojos rows) {
+        final Map<String, Collection<String>> learned = new HashMap<>(0);
         final Deque<String> todo = new ArrayDeque<>(0);
         for (final Map.Entry<String, Collection<Map<String, String>>> copy
             : this.pending.entrySet()) {
@@ -103,7 +120,9 @@ final class Worklist {
                     if (!hole.isEmpty()) {
                         todo.add(
                             String.join(
-                                " ", this.name(argument.getOrDefault("type", "")), hole
+                                " ",
+                                this.name(argument.getOrDefault("type", "")),
+                                this.name(hole)
                             )
                         );
                     }
@@ -114,9 +133,10 @@ final class Worklist {
         while (!todo.isEmpty()) {
             final String check = todo.poll();
             if (started.add(check)) {
-                this.decide(check, todo, rows);
+                this.decide(check, todo, rows, learned);
             }
         }
+        return learned;
     }
 
     /**
@@ -124,8 +144,14 @@ final class Worklist {
      * @param check The name of the object and the name of the void, together
      * @param todo The list to put the smaller checks into
      * @param rows The table to write a mistake into, if there is one
+     * @param learned What every computed object turns out to be
      */
-    private void decide(final String check, final Collection<String> todo, final Tojos rows) {
+    private void decide(
+        final String check,
+        final Collection<String> todo,
+        final Tojos rows,
+        final Map<String, Collection<String>> learned
+    ) {
         final String has = check.substring(0, check.indexOf(' '));
         final String want = check.substring(check.indexOf(' ') + 1);
         for (final Map<String, String> need
@@ -140,8 +166,13 @@ final class Worklist {
                         .set("asked", need.getOrDefault("type", ""));
                 }
                 if (!owned.isEmpty()) {
+                    learned.computeIfAbsent(
+                        need.getOrDefault("type", ""), made -> new HashSet<>(1)
+                    ).add(this.name(owned));
                     todo.add(
-                        String.join(" ", this.name(owned), need.getOrDefault("type", ""))
+                        String.join(
+                            " ", this.name(owned), this.name(need.getOrDefault("type", ""))
+                        )
                     );
                 }
             }

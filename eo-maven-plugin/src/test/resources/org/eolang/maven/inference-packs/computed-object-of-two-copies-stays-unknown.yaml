@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# One `x.next` stands in the text of `use`, and `use` is copied twice, with a
+# `t` and with a `u`. The loop finds it is the `next` of a `t`, and finds it is
+# the `next` of a `u`, and both answers are true of their own copy while
+# neither is true of the locator. So nothing is written down about it, and
+# every question about it goes on being unanswered.
+eo:
+  app.eo: |
+    [] > app
+      use t > first
+      use u > second
+  use.eo: |
+    [x] > use
+      x.next > @
+  t.eo: |
+    [] > t
+      [] > next
+  u.eo: |
+    [] > u
+      [] > next
+copies:
+  - "/copies[not(type[@id='Φ.use.φ'])]"

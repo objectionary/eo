@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Nobody writes down what `x.next` is: it is made while the program runs, out
+# of whatever `x` happens to be. The loop is where it comes out — a `t` fills
+# the void `x`, and the `next` of a `t` is an object with a name — and what it
+# comes out as is written down beside the links the rules wrote, in a table of
+# its own, because no rule could have written it.
+eo:
+  app.eo: |
+    [] > app
+      use t > @
+  use.eo: |
+    [x] > use
+      x.next > @
+  t.eo: |
+    [] > t
+      [] > next
+copies:
+  - "/copies/type[@id='Φ.use.φ' and @copy='Φ.t.next']"
