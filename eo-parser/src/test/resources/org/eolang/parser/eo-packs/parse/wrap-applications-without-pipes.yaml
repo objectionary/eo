@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A program with no pipe line at all takes the bulk-copy fast path of the
+# sheet, so it must come out of it byte for byte the same: metas, listing
+# and every object still in place, and no @pipe or @float-up invented.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+asserts:
+  - /object[not(errors)]
+  - /object[listing]
+  - /object[metas/meta[head='package' and tail='foo']]
+  - /object[not(//o[@pipe]) and not(//o[@float-up])]
+  - //o[@name='app']/o[@name='foo' and not(@base)]
+  - //o[@name='foo5' and @base='foo' and count(o)=1]
+input: |
+  +package foo
+
+  [] > app
+    [x] > foo
+      x > @
+    foo 5 > foo5
