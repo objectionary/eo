@@ -36,6 +36,15 @@
     arc-cosine 0
     pi.div 2
 
+  lt. ++> can-take-an-arc-cosine-of-zero-point-nine-nine-nine
+    abs
+      minus.
+        times.
+          arc-cosine 0.999
+          1000
+        44.7251
+    1
+
   lt. ++> can-take-an-arc-cosine-of-zero-point-six
     abs
       minus.

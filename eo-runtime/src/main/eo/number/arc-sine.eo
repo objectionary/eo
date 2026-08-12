@@ -25,7 +25,9 @@
           pi.div 2
           2.times
             [point] >> series
-              point.times > @
+              times. > @
+                number
+                  point >> bts!
                 poly 1
               if. > [depth] > poly
                 depth.gt 30
@@ -42,7 +44,9 @@
                         depth.times 2
                         plus. (depth.times 2) 1
                     poly (depth.plus 1)
-              point.times point > squared
+              times. > squared!
+                number bts
+                number bts
             | (sqrt ((1.minus magnitude).div 2))
         series magnitude
     base
@@ -91,6 +95,15 @@
           1000
     1
 
+  lt. ++> can-take-an-arc-sine-of-minus-zero-point-nine
+    abs
+      minus.
+        times.
+          arc-sine -0.9
+          1000
+        -1119.7695
+    1
+
   lt. ++> can-take-an-arc-sine-of-one
     abs
       minus.
@@ -105,6 +118,24 @@
   eq. ++> can-take-an-arc-sine-of-zero
     arc-sine 0
     0
+
+  lt. ++> can-take-an-arc-sine-of-zero-point-nine
+    abs
+      minus.
+        times.
+          arc-sine 0.9
+          1000
+        1119.7695
+    1
+
+  lt. ++> can-take-an-arc-sine-of-zero-point-nine-nine-nine
+    abs
+      minus.
+        times.
+          arc-sine 0.999
+          1000
+        1526.0712
+    1
 
   lt. ++> can-take-an-arc-sine-of-zero-point-six
     abs

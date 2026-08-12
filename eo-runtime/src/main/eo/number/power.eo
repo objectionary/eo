@@ -3,6 +3,11 @@
 # results stay exact, and a fractional exponent of a positive base is taken as
 # e raised to `x` times the natural logarithm of the base. Zeros, infinities and
 # nan follow the same IEEE rules that Math.pow obeys.
+#
+# @todo #6224:30min Memoise the repeated halves below. Neither `half` in `ipow`
+#  nor `k` in `expon` is a constant, so `half.times half` dataizes the same
+#  recursive branch twice and every one of the twenty `fraction` levels re-runs
+#  the `ln` that `k` sits on, which is why `sqrt` and `exp` stay slow.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
