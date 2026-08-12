@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 import org.cactoos.text.TextOf;
 import org.eolang.parser.EoSyntax;
 import org.eolang.printer.Xmir;
@@ -79,6 +82,31 @@ final class MjFormatTest {
                     .get("foo/x/main.eo")
             ).asString(),
             Matchers.equalTo(MjFormatTest.canonical(new HelloWorld().asString()))
+        );
+    }
+
+    @Test
+    void reformatsEverySourceOfABatch(@Mktmp final Path temp) throws Exception {
+        final int total = 24;
+        final String canonical = MjFormatTest.canonical(new HelloWorld().asString());
+        final String divergent = MjFormatTest.divergent(new HelloWorld().asString());
+        final FakeMaven maven = new FakeMaven(temp).with("autoFix", true);
+        for (int idx = 0; idx < total; ++idx) {
+            maven.withProgram(divergent);
+        }
+        final Map<String, Path> result = maven.execute(MjFormat.class).result();
+        final Collection<String> formatted = new ArrayList<>(total);
+        for (int idx = 0; idx < total; ++idx) {
+            formatted.add(
+                new TextOf(
+                    result.get(String.format("foo/x/main%s.eo", FakeMaven.suffix(idx)))
+                ).asString()
+            );
+        }
+        MatcherAssert.assertThat(
+            "every source of the batch must be rewritten into its canonical form",
+            formatted,
+            Matchers.everyItem(Matchers.equalTo(canonical))
         );
     }
 
