@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+line: 2
+message: |-
+  [2:12] error: 'reversed-dispatch compact tuple requires N ≥ 1'
+    joined. *0 > sixth
+              ^
+input: |
+  [] > app
+    joined. *0 > sixth
+      "receiver"

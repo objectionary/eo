@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='sixth' and @base='.joined']
+  - //o[@loc='Φ.app.sixth.ρ' and @base='Φ.string']
+  - //o[@base='Φ.tuple.empty']
+input: |
+  [] > app
+    joined. *1 > sixth
+      "receiver"
+      "x"
+      "y"

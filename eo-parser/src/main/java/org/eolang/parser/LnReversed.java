@@ -68,7 +68,13 @@ final class LnReversed implements Line {
             );
         }
         final boolean fragile = tokens.consumeDispatch();
-        final List<Value> args = tokens.readArgs();
+        final int star = this.compactStar(tokens);
+        final List<Value> args;
+        if (star >= 0) {
+            args = new java.util.ArrayList<>(0);
+        } else {
+            args = tokens.readArgs();
+        }
         if (!args.isEmpty()) {
             Bindings.checkReceiver(args.get(0), this.span);
             Bindings.checkAllOrNothing(
@@ -95,7 +101,11 @@ final class LnReversed implements Line {
             kind = Kind.REVERSED_WITH_HARGS;
             openness = Openness.HORIZONTAL_COMPLETED;
         }
-        this.transition(stack, suffix, kind, openness);
+        final Level level = this.transition(stack, suffix, kind, openness);
+        if (star >= 0) {
+            level.compact(star);
+            level.markStar();
+        }
         Bindings.observeChild(stack, outer, this.span);
         globals.clearBlanks();
         globals.markEmitted();
@@ -146,11 +156,46 @@ final class LnReversed implements Line {
      * @param suffix The parsed suffix
      * @param kind Initial outer kind
      * @param openness Initial openness
+     * @return The pushed-or-replaced level
      */
-    private void transition(
+    private Level transition(
         final Stack stack, final Suffix suffix, final Kind kind, final Openness openness
     ) {
-        new Transition(stack, this.span).apply(kind, openness, suffix.named());
+        return new Transition(stack, this.span).apply(kind, openness, suffix.named());
+    }
+
+    /**
+     * Read a trailing compact-tuple marker {@code *N} on a bare (vertical)
+     * reversed dispatch (R-3.8.5 + R-3.9.1): the first deeper-indent child
+     * stays the receiver, the remaining {@code N-1} children before the
+     * synthesised tuple are ordinary method args, and the rest are
+     * collected into a {@code Φ.tuple} child. Per R-3.9.4, {@code N} must
+     * be at least one for the reversed form, since a receiver-less
+     * {@code joined. *0} has no legal reading.
+     * @param tokens Token reader positioned right after the dispatch dot
+     * @return N, or -1 when no compact-tuple marker follows
+     */
+    private int compactStar(final Tokens tokens) {
+        final int start = tokens.cursor();
+        final boolean space = !tokens.atEnd() && tokens.current() == ' ';
+        tokens.seek(start + 1);
+        final boolean marker = space && !tokens.atEnd() && tokens.current() == '*';
+        final int result;
+        if (marker) {
+            tokens.seek(start + 2);
+            final int count = LnCompactTuple.readCount(tokens, this.span);
+            if (count < 1) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent() + tokens.cursor(),
+                    "reversed-dispatch compact tuple requires N ≥ 1"
+                );
+            }
+            result = count;
+        } else {
+            tokens.seek(start);
+            result = -1;
+        }
+        return result;
     }
 
     /**
