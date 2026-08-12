@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# yamllint disable rule:trailing-spaces
 sheets: []
 asserts:
   - //o[@base='Φ.string' and o/o[text()='48-69-2C-20-74-68-65-72-65-0A-41-64-69-C3-B3-73']]
@@ -10,28 +9,10 @@ asserts:
   - //o[@base='Φ.string' and o/o[text()='20-20-20-74-68-69-72-64']]
   - //o[@base='Φ.string' and o/o[text()='0A-73-65-63-6F-6E-64']]
   - //o[@name='blank-under-indented']//o[@base='Φ.string' and o/o[text()='0A-73-65-63-6F-6E-64']]
-input: |
-  [] > main
-    """
-    Hi, there
-    Adiós
-    """ > txt
-    stdout > marg
-      """
-      first
-       second
-      """
-    stdout > mrg
-      """
-         third
-      """
-    stdout > blank
-      """
-
-      second
-      """
-    stdout > blank-under-indented
-      """
-    
-      second
-      """
+# The "blank-under-indented" case needs a literal blank line whose
+# indentation (2 spaces) is less than the text-block marker's (4 spaces).
+# A YAML block scalar would put those 2 spaces at the end of a physical
+# line, where any trailing-whitespace pre-commit tool would strip them
+# and silently break this test. Encoding the whole input as one quoted
+# scalar with explicit \n keeps the meaningful spaces mid-line instead.
+input: "[] > main\n  \"\"\"\n  Hi, there\n  Adiós\n  \"\"\" > txt\n  stdout > marg\n    \"\"\"\n    first\n     second\n    \"\"\"\n  stdout > mrg\n    \"\"\"\n       third\n    \"\"\"\n  stdout > blank\n    \"\"\"\n\n    second\n    \"\"\"\n  stdout > blank-under-indented\n    \"\"\"\n  \n    second\n    \"\"\"\n"
