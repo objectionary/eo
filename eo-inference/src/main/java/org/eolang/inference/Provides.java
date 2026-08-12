@@ -41,7 +41,9 @@ import java.nio.file.Path;
  * the checker honest later: a missing attribute is a mistake only when
  * the object that misses it is complete. An atom is not complete, since
  * its {@code λ} attribute stands for a body written in Java, which this
- * module cannot read.</p>
+ * module cannot read. Neither is a formation that binds {@code φ}: what
+ * it delegates to answers for every name it does not bind itself, and
+ * that object is the business of the links table, not of this one.</p>
  *
  * <p>Three kinds of objects are deliberately absent from this table.
  * Applications and references (anything with a {@code @base}) provide
@@ -53,26 +55,43 @@ import java.nio.file.Path;
  * outside one day, and until they are, the checker simply knows less.</p>
  *
  * @since 0.67.0
+ * @todo #6565:35min Account for attributes reached through the package.
+ *  An attribute of {@code Φ.number} like {@code minus} lives in the same
+ *  package as a top-level object {@code Φ.number.minus}, so it never
+ *  shows up among the children of the formation and this table calls the
+ *  object complete while listing a strict subset of what it has. Either
+ *  write those package members down as attributes of their owner, or
+ *  leave the owner incomplete until they are.
+ * @todo #6565:35min Write down the {@code ρ} every object has. An outer
+ *  name lowers to a dispatch of {@code ρ}, so the needs table asks for
+ *  it, while no row here ever lists it and the owner is called complete
+ *  all the same. Give every type a {@code ρ} attribute, or say in this
+ *  table that {@code ρ} is not a name the checker judges.
  */
 final class Provides implements Clue {
 
     @Override
     public void follow(final Path xmirs, final Path tables) throws IOException {
         try (Tojos rows = new TjDeferred(new MnMemory())) {
+            int seen = 0;
             for (final XML formation : new Xmirs(xmirs).formations()) {
                 final String owner = formation.xpath("@loc").get(0);
-                rows.add(owner).set(
-                    "complete", Boolean.toString(formation.nodes("o[@name='λ']").isEmpty())
-                );
+                final boolean whole = formation.nodes("o[@name='λ' or @name='φ']").isEmpty();
+                rows.add(owner)
+                    .set("index", Integer.toString(seen))
+                    .set("complete", Boolean.toString(whole));
+                seen = seen + 1;
                 for (final XML attr : formation.nodes("o[@name and not(@name='λ')]")) {
                     final String name = attr.xpath("@name").get(0);
                     final Tojo row = rows.add(String.join(" ", owner, name))
                         .set("owner", owner)
+                        .set("index", Integer.toString(seen))
                         .set("name", name)
                         .set("type", attr.xpath("@loc").get(0));
                     if (attr.xpath("@base").contains("∅")) {
                         row.set("void", "true");
                     }
+                    seen = seen + 1;
                 }
             }
             Files.createDirectories(tables);

@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation that binds `φ` answers every name it does not bind itself through
+# the object it delegates to, and that object is nowhere in this table. Here
+# `holder.extra` resolves at runtime through `φ → base → extra`, while the row
+# of `holder` lists only `φ` and `base`, so the object is not complete and
+# nothing about it will ever be reported.
+eo:
+  app.eo: |
+    [] > app
+      holder.extra > @
+      [] > holder
+        base > @
+        [] > base
+          [] > extra
+provides:
+  - "/provides/type[@id='Φ.app.holder' and @complete='false']"
+  - "/provides/type[@id='Φ.app.holder.base.extra' and @complete='true']"
