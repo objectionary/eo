@@ -110,6 +110,19 @@ final class PhSafeTest {
     }
 
     @Test
+    void catchesNonAtomOriginOnLambda() {
+        MatcherAssert.assertThat(
+            "wraps a non-atom origin's cast failure into ExFailure instead of letting it escape",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new PhSafe(new PhDefault()).lambda(),
+                "was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.containsString(".λ")
+        );
+    }
+
+    @Test
     void showsFileNameAndLineNumber() {
         MatcherAssert.assertThat(
             "shows file name, line number and the original cause",
