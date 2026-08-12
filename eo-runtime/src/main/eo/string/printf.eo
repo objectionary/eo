@@ -37,6 +37,13 @@
 # which are how `false` and `true` dataize, together with the two control
 # characters that share that encoding, because an object knows its own bytes
 # here and not its type.
+#
+# @todo #6359:60min Name the number that does not fit into the long range. The
+#  `%d` guard below used to render its own reason through `%f`, but `as-fixed`
+#  refuses any magnitude of 2^53 or larger, and every number that guard rejects is
+#  past that threshold, so the reason destroyed itself and the caller saw a chain
+#  of some forty `Error in "..."` links instead. The reason now carries no number
+#  at all; give it one back once `%f` can print a magnitude that big.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -195,9 +202,7 @@
                   number limit
                   -1
             T
-              "The number %f doesn't fit into the long range of the %%d conversion".printf
-                *
-                  number numeric
+              "The number doesn't fit into the long range of the '%d' conversion"
             number numeric
         if.
           66-.eq conv
