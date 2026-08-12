@@ -10,38 +10,42 @@
 
 [list start end] > slice
   if. > @
-    gte.
-      number
-        if. >> s!
-          start.gte 0
+    start.is-integer.and end.is-integer
+    if.
+      gte.
+        number
+          if. >> s!
+            start.gte 0
+            if.
+              start.gte list.length
+              list.length
+              start
+            if.
+              list.length.neg.lte start
+              start.plus list.length
+              0
+        if. >> e!
+          end.gte 0
           if.
-            start.gte list.length
+            end.gte list.length
             list.length
-            start
+            end
           if.
-            list.length.neg.lte start
-            start.plus list.length
+            list.length.neg.lte end
+            end.plus list.length
             0
-      if. >> e!
-        end.gte 0
-        if.
-          end.gte list.length
-          list.length
-          end
-        if.
-          list.length.neg.lte end
-          end.plus list.length
-          0
-    *
-    reducedi
-      list
       *
-      if. > [accum item index] >>
-        and.
-          index.gte s
-          index.lt e
-        accum.with item
-        accum
+      reducedi
+        list
+        *
+        if. > [accum item index] >>
+          and.
+            index.gte s
+            index.lt e
+          accum.with item
+          accum
+    T
+      "Given slice start and end must both be integers"
 
   eq. ++> can-slice-a-list
     slice
@@ -197,3 +201,19 @@
     *
       "bar"
       "buzz"
+
+  slice --> stops-on-a-fractional-end
+    *
+      1
+      2
+      3
+    0
+    2.5
+
+  slice --> stops-on-a-fractional-start
+    *
+      1
+      2
+      3
+    0.5
+    2

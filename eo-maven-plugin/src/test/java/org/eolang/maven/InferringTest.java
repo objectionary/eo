@@ -160,7 +160,8 @@ final class InferringTest {
 
     /**
      * The XPaths of the pack that match nothing, each named by the document it
-     * was asked of.
+     * was asked of, plus any key of the pack this runner does not know - a key
+     * nobody reads would silently switch its assertions off.
      * @param pack The pack
      * @param temp The directory the clues have just written into
      * @return The XPaths that failed, empty when the pack is satisfied
@@ -168,7 +169,15 @@ final class InferringTest {
      */
     private Collection<String> unmatched(final Xtory pack, final Path temp) throws IOException {
         final Collection<String> failed = new ArrayList<>(0);
-        for (final String table : Arrays.asList("provides", "needs", "links")) {
+        final Collection<String> tables = Arrays.asList(
+            "provides", "needs", "links", "checks", "problems"
+        );
+        for (final Object key : pack.map().keySet()) {
+            if (!"eo".equals(key) && !"xmir".equals(key) && !tables.contains(key)) {
+                failed.add(String.format("unknown key: %s", key));
+            }
+        }
+        for (final String table : tables) {
             if (pack.map().containsKey(table)) {
                 failed.addAll(
                     this.absent(

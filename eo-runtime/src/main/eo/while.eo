@@ -21,6 +21,9 @@
 # Only the first three strings are dataized for side effects while the last one
 # is returned as the result value assigned to the `last` object.
 # The `while` loop example produces identical behavior.
+# The cycles are made in blocks that double in size, and a block is a balanced
+# tree of cycles, so a million of them nest about forty deep instead of a
+# million deep. The index of the last cycle is the only thing the loop keeps.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -33,18 +36,37 @@
   if. > @
     as-bool.
       condition 0
-    [index] >> loop
-      if. > @
-        as-bool.
-          condition
-            index.plus 1
-        seq *
-          current
-          loop
-            index.plus 1
-        current
-      body index > current
-    | 0
+    body
+      as-number.
+        malloc.for
+          -1
+          [stop] >>
+            seq * > @
+              seq * > [from count] >> doubled
+                stepped from count
+                if.
+                  0.gt stop.as-number
+                  doubled
+                    from.plus count
+                    count.times 2
+                  true
+              | 0 1
+              stop.as-number
+            [from count] >> stepped
+              if. > @
+                0.gt stop.as-number
+                if.
+                  count.eq 1
+                  if.
+                    as-bool.
+                      condition (from.plus 1)
+                    body from
+                    stop.put from
+                  seq *
+                    stepped from half
+                    stepped (from.plus half) half
+                true
+              count.div 2 > half!
     false
 
   ++> can-dataize-only-the-first-cycle
@@ -154,6 +176,16 @@
                 true > [i]
               acc
     array.length > max
+
+  ++> can-loop-five-thousand-times
+    eq. > @
+      malloc.for
+        0
+        [m]
+          while > @
+            i.lt 5000 > [i]
+            m.put i > [i] >>
+      4999
 
   ++> can-loop-on-a-bool-expression-kept-in-malloc
     eq. > @

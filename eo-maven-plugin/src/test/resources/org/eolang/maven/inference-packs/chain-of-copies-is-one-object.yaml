@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The `t` reaches `inc` under a second name, and a copy of a copy is still the
+# same object for now, so the loop follows the chain to its end and finds the
+# same mistake it would have found without the detour.
+eo:
+  app.eo: |
+    [] > app
+      inc lid > @
+      t > lid
+  inc.eo: |
+    [x] > inc
+      x.next.foo > @
+  t.eo: |
+    [] > t
+      [] > next
+problems:
+  - "/problems/type[@id='Φ.t.next']/attr[@name='foo']"

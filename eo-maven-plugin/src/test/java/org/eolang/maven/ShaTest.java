@@ -99,6 +99,27 @@ final class ShaTest {
     }
 
     @Test
+    void ignoresTheFilterForALoneFile(@Mktmp final Path temp)
+        throws IOException, NoSuchAlgorithmException {
+        final long seed = System.nanoTime();
+        final String text = String.format("%s-λόγος", Long.toHexString(seed));
+        final Path file = temp.resolve("rejected.txt");
+        new Saved(text, file).value();
+        MatcherAssert.assertThat(
+            String.format(
+                "a lone file must hash its own bytes even if the filter rejects it, seed=%d", seed
+            ),
+            new Sha(file, path -> false).toString(),
+            Matchers.equalTo(
+                Base64.getEncoder().encodeToString(
+                    MessageDigest.getInstance("SHA-256")
+                        .digest(text.getBytes(StandardCharsets.UTF_8))
+                )
+            )
+        );
+    }
+
+    @Test
     void hashesEqualDirsEqually(@Mktmp final Path temp) throws IOException {
         final long seed = System.nanoTime();
         final String text = String.format("%s-שלום", Long.toHexString(seed));

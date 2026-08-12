@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.github.lombrozo.xnav.Xnav;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.text.TextOf;
@@ -103,5 +104,54 @@ final class JavaPlacedTest {
             ).asString(),
             Matchers.equalTo(expected)
         );
+    }
+
+    @Test
+    void removesObsoleteJavaCompanions(@Mktmp final Path temp) throws Exception {
+        final Path target = temp.resolve("target");
+        final Path generated = target.resolve("generated-sources");
+        final Path utest = target.resolve("FooTest.java");
+        final JavaPlaced placed = new JavaPlaced(
+            new FpJavaGenerated(this.clazz("@Test"), generated, utest), utest, generated
+        );
+        placed.exec(this.clazz("@Test"), true);
+        final Path test = target.resolve("generated-test-sources").resolve("FooTest.java");
+        final boolean created = Files.exists(test);
+        placed.exec(this.clazz(""), true);
+        MatcherAssert.assertThat(
+            "Obsolete Java test was not removed", created && Files.notExists(test)
+        );
+    }
+
+    @Test
+    void removesObsoleteAtomJavaCompanions(@Mktmp final Path temp) throws Exception {
+        final Path target = temp.resolve("target");
+        final Path generated = target.resolve("generated-sources");
+        final Path utest = target.resolve("FooTest.java");
+        final JavaPlaced placed = new JavaPlaced(
+            new FpJavaGenerated(this.clazz("@Test"), generated, utest), utest, generated
+        );
+        Files.createDirectories(temp.resolve("src/test/java"));
+        new Saved("", temp.resolve("src/test/java/FooTest.java")).value();
+        placed.exec(this.clazz("@Test"), true);
+        final Path atom = target.resolve("generated-test-sources").resolve("FooEOAtomTest.java");
+        final boolean created = Files.exists(atom);
+        placed.exec(this.clazz(""), true);
+        MatcherAssert.assertThat(
+            "Obsolete atom Java test was not removed", created && Files.notExists(atom)
+        );
+    }
+
+    /**
+     * Create transpiled class.
+     * @param tests Test code
+     * @return Class XML
+     */
+    private Xnav clazz(final String tests) throws Exception {
+        return new Xnav(
+            new Xembler(
+                new Directives().add("class").attr("java-name", "Foo").add("tests").set(tests)
+            ).xml()
+        ).element("class");
     }
 }
