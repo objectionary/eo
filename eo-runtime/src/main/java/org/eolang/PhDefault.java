@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -84,7 +83,7 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Data.
      */
-    private final byte[] data;
+    private final Snapshot data;
 
     /**
      * The forma of this object, taken from its XMIR locator; empty when the
@@ -157,8 +156,7 @@ public class PhDefault implements Phi, Cloneable {
         final String forma, final byte[] dta, final Map<String, Attribute> attributes
     ) {
         this.fqn = forma;
-        // @checkstyle AvoidInlineConditionalsCheck (1 line)
-        this.data = dta == null ? null : Arrays.copyOf(dta, dta.length);
+        this.data = new Snapshot(dta);
         this.initial = attributes;
         this.order = new HashMap<>(0);
     }
@@ -265,8 +263,8 @@ public class PhDefault implements Phi, Cloneable {
     @Override
     public byte[] delta() {
         final byte[] bytes;
-        if (this.data != null) {
-            bytes = Arrays.copyOf(this.data, this.data.length);
+        if (this.data.present()) {
+            bytes = this.data.bytes();
         } else if (this instanceof Atom) {
             bytes = this.take(Phi.LAMBDA).delta();
         } else if (this.loaded().containsKey(Phi.PHI)) {
@@ -287,7 +285,7 @@ public class PhDefault implements Phi, Cloneable {
         final Phi result;
         if (this instanceof Atom) {
             result = this.take(Phi.LAMBDA).normalized();
-        } else if (this.data == null && this.loaded().containsKey(Phi.PHI)) {
+        } else if (this.data.empty() && this.loaded().containsKey(Phi.PHI)) {
             final Phi phi = this.take(Phi.PHI).normalized();
             if (phi instanceof PhTerminator) {
                 result = phi;
@@ -599,8 +597,8 @@ public class PhDefault implements Phi, Cloneable {
      */
     private String structural() {
         final List<String> list = new ArrayList<>(this.loaded().size());
-        if (this.data != null) {
-            list.add(String.format("D> %s", PhDefault.termBytes(this.data)));
+        if (this.data.present()) {
+            list.add(String.format("D> %s", PhDefault.termBytes(this.data.bytes())));
         }
         for (final Map.Entry<String, Attribute> ent : this.loaded().entrySet().stream().filter(
             e -> !e.getKey().equals(Phi.RHO)
