@@ -48,11 +48,11 @@
       25
     25
 
-  eq. ++> rejects-an-empty-list
+  eq. ++> rejects-an-empty-list-when-taking-the-maximum
     "recovered"
     maximum
       *
       "recovered" > [msg]
 
-  maximum --> stops-on-an-empty-list
+  maximum --> stops-on-an-empty-list-when-taking-the-maximum
     *

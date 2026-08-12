@@ -30,7 +30,7 @@
         limit
       text
 
-  eq. ++> can-count-characters-and-not-bytes
+  eq. ++> can-count-characters-and-not-bytes-when-truncating
     "Жу"
     truncated
       "Жук"
@@ -81,13 +81,13 @@
       1.75
       "recovered" > [message]
 
-  eq. ++> rejects-an-infinite-limit
+  eq. ++> rejects-an-infinite-limit-when-truncating
     "recovered"
     truncated
       "Jeff"
       pinf
       "recovered" > [message]
 
-  truncated --> stops-on-a-negative-limit
+  truncated --> stops-on-a-negative-limit-when-truncating
     "Jeff"
     -3

@@ -146,7 +146,7 @@
       1.5
       "recovered" > [message]
 
-  eq. ++> rejects-an-infinite-limit
+  eq. ++> rejects-an-infinite-limit-when-splitting
     "recovered"
     nsplit
       "a-b-c"
@@ -167,7 +167,7 @@
     "-"
     0
 
-  nsplit --> stops-on-a-negative-limit
+  nsplit --> stops-on-a-negative-limit-when-splitting
     "text"
     "-"
     -1

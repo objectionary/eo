@@ -17,7 +17,7 @@
   lower. > @
     english text
 
-  "äöü".eq "äöü".lower ++> can-keep-non-ascii-letters
+  "äöü".eq "äöü".lower ++> can-keep-non-ascii-letters-when-lower-casing
 
   eq. ++> can-lower-case-text
     "good evening"

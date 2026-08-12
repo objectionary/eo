@@ -50,13 +50,13 @@
         "0"
         cant-pad
 
-  eq. ++> can-count-characters-and-not-bytes
+  eq. ++> can-count-characters-and-not-bytes-when-padding-with-zeros
     "00Ж"
     padded-zeros
       "Ж"
       3
 
-  eq. ++> can-format-the-error-message-of-a-negative-width
+  eq. ++> can-format-the-error-message-of-a-negative-width-when-padding-with-zeros
     "Can't pad text to -4.000000 characters with zeros"
     padded-zeros
       "7"
@@ -81,7 +81,7 @@
       ""
       3
 
-  eq. ++> can-return-a-longer-text-unchanged
+  eq. ++> can-return-a-longer-text-unchanged-when-padding-with-zeros
     "12345"
     padded-zeros
       "12345"
@@ -93,27 +93,27 @@
       "-42"
       3
 
-  eq. ++> rejects-a-negative-width
+  eq. ++> rejects-a-negative-width-when-padding-with-zeros
     "recovered"
     padded-zeros
       "7"
       -4
       "recovered" > [message]
 
-  eq. ++> rejects-a-non-integer-width
+  eq. ++> rejects-a-non-integer-width-when-padding-with-zeros
     "recovered"
     padded-zeros
       "7"
       3.5
       "recovered" > [message]
 
-  eq. ++> rejects-an-infinite-width
+  eq. ++> rejects-an-infinite-width-when-padding-with-zeros
     "recovered"
     padded-zeros
       "7"
       pinf
       "recovered" > [message]
 
-  padded-zeros --> stops-on-a-negative-width
+  padded-zeros --> stops-on-a-negative-width-when-padding-with-zeros
     "7"
     -4

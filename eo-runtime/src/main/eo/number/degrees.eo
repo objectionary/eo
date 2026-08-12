@@ -15,7 +15,7 @@
       pi
     180
 
-  lt. ++> can-convert-a-large-value-without-overflow
+  lt. ++> can-convert-a-large-value-to-degrees-without-overflow
     abs
       minus.
         degrees 1.0e306

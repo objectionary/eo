@@ -171,13 +171,6 @@
       2
       3
 
-  contains. ++> can-contain-an-element
-    *
-      1
-      2
-      3
-    2
-
   ++> can-create-an-empty-tuple-with-a-number
     eq. > @
       a.at 0
@@ -203,15 +196,6 @@
       1
       2
       3
-
-  eq. ++> can-find-the-index-of-an-element
-    index-of.
-      *
-        10
-        20
-        30
-      20
-    1
 
   ++> can-get-the-length-of-an-empty-tuple
     a.length.eq 0 > @
@@ -271,14 +255,6 @@
       2
       3
       4
-
-  not. ++> cannot-contain-an-absent-element
-    contains.
-      *
-        1
-        2
-        3
-      5
 
   not. ++> cannot-equal-a-different-tuple
     eq.

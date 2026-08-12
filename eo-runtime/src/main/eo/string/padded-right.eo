@@ -38,14 +38,14 @@
               cant-pad
       text
 
-  eq. ++> can-count-characters-and-not-bytes
+  eq. ++> can-count-characters-and-not-bytes-when-padding-right
     "Ж  "
     padded-right
       "Ж"
       3
       " "
 
-  eq. ++> can-format-the-error-message-of-a-negative-width
+  eq. ++> can-format-the-error-message-of-a-negative-width-when-padding-right
     "Can't pad text to -1.000000 characters with x"
     padded-right
       "y"
@@ -60,35 +60,35 @@
       10
       " "
 
-  eq. ++> can-pad-with-trailing-zeros
+  eq. ++> can-pad-with-trailing-zeros-when-padding-right
     "4200"
     padded-right
       "42"
       4
       "0"
 
-  eq. ++> can-return-a-longer-text-unchanged
+  eq. ++> can-return-a-longer-text-unchanged-when-padding-right
     "hello"
     padded-right
       "hello"
       3
       " "
 
-  eq. ++> can-return-a-text-of-the-exact-width-unchanged
+  eq. ++> can-return-a-text-of-the-exact-width-unchanged-when-padding-right
     "hey"
     padded-right
       "hey"
       3
       " "
 
-  eq. ++> can-return-a-text-unchanged-at-zero-width
+  eq. ++> can-return-a-text-unchanged-at-zero-width-when-padding-right
     "x"
     padded-right
       "x"
       0
       " "
 
-  eq. ++> rejects-a-multi-character-fill
+  eq. ++> rejects-a-multi-character-fill-when-padding-right
     "recovered"
     padded-right
       "y"
@@ -96,7 +96,7 @@
       "ab"
       "recovered" > [message]
 
-  eq. ++> rejects-a-negative-width
+  eq. ++> rejects-a-negative-width-when-padding-right
     "recovered"
     padded-right
       "y"
@@ -104,7 +104,7 @@
       "x"
       "recovered" > [message]
 
-  eq. ++> rejects-a-non-integer-width
+  eq. ++> rejects-a-non-integer-width-when-padding-right
     "recovered"
     padded-right
       "y"
@@ -112,7 +112,7 @@
       "x"
       "recovered" > [message]
 
-  eq. ++> rejects-an-infinite-width
+  eq. ++> rejects-an-infinite-width-when-padding-right
     "recovered"
     padded-right
       "y"
@@ -120,7 +120,7 @@
       "x"
       "recovered" > [message]
 
-  padded-right --> stops-on-a-negative-width
+  padded-right --> stops-on-a-negative-width-when-padding-right
     "y"
     -1
     "x"

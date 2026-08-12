@@ -38,7 +38,7 @@
         regex "/ı/"
         "I"
 
-  eq. ++> can-behave-like-the-wrapped-string
+  eq. ++> can-behave-like-the-wrapped-turkish-string
     8
     length.
       turkish "İSTANBUL"

@@ -67,7 +67,7 @@
           as-ascii byte > code
     as-ascii "a" >> mincode!
 
-  eq. ++> can-behave-like-the-wrapped-string
+  eq. ++> can-behave-like-the-wrapped-english-string
     5
     length.
       english "hello"
@@ -102,12 +102,12 @@
     upper.
       english "HELLO"
 
-  eq. ++> can-keep-non-ascii-letters-when-lower-casing
+  eq. ++> can-keep-non-ascii-letters-when-lower-casing-in-english
     "ÄÖÜ"
     lower.
       english "ÄÖÜ"
 
-  eq. ++> can-keep-non-ascii-letters-when-upper-casing
+  eq. ++> can-keep-non-ascii-letters-when-upper-casing-in-english
     "äöü"
     upper.
       english "äöü"

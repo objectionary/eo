@@ -48,11 +48,11 @@
       -2
     -2
 
-  eq. ++> rejects-an-empty-list
+  eq. ++> rejects-an-empty-list-when-taking-the-minimum
     "recovered"
     minimum
       *
       "recovered" > [msg]
 
-  minimum --> stops-on-an-empty-list
+  minimum --> stops-on-an-empty-list-when-taking-the-minimum
     *
