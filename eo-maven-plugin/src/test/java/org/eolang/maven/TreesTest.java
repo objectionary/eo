@@ -20,7 +20,7 @@ import org.w3c.dom.Node;
 final class TreesTest {
 
     @Test
-    void dontLeakOnePipelineIntoTheNext() throws IOException {
+    void keepsRememberedTreeIntact() throws IOException {
         final long seed = System.nanoTime();
         final String text = String.format(
             "# Комментарий %d.%n[] > obj%d%n  42 > @%n", seed, new Random(seed).nextInt(1000)
