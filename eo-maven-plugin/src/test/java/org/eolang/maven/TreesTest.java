@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.util.Random;
+import java.util.function.UnaryOperator;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -25,8 +26,8 @@ final class TreesTest {
         final Trees trees = new Trees.TsShared();
         MatcherAssert.assertThat(
             String.format("the same text was walked more than once, seed %d", seed),
-            trees.of(text),
-            Matchers.sameInstance(trees.of(text))
+            trees.tree(text, UnaryOperator.identity()),
+            Matchers.sameInstance(trees.tree(text, UnaryOperator.identity()))
         );
     }
 }

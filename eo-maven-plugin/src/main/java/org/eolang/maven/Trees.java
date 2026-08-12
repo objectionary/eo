@@ -21,25 +21,26 @@ import org.eolang.parser.EoSyntax;
  * <p>Walking a source is the costliest half of making an XMIR and does not
  * depend on the pipeline applied afterwards, yet {@link MjFormat} and
  * {@link Parsing} walk the same text twice, seconds apart, each for its own
- * pipeline. This remembers the tree by the SHA-256 of the text that produced
- * it, the way {@link GlobalCache} keys its footprints, so the second walk is
- * skipped.</p>
+ * pipeline. This walks the text once, remembering the tree by the SHA-256 of
+ * the text that produced it, the way {@link GlobalCache} keys its footprints,
+ * and lays each caller's pipeline over that one tree.</p>
  *
  * @since 0.74
  */
+@FunctionalInterface
 interface Trees {
 
     /**
-     * The tree of this text, before any pipeline is applied to it.
+     * The tree of this text, with this pipeline applied to it.
      * @param text The text of the {@code .eo} source
-     * @return The walked XMIR
+     * @param pipeline The XSL pipeline of the goal that asks
+     * @return The XMIR
      * @throws IOException If fails to walk the text
      */
-    XML of(String text) throws IOException;
+    XML tree(String text, UnaryOperator<XML> pipeline) throws IOException;
 
     /**
      * The trees of one build, kept in memory and shared by its goals.
-     *
      * @since 0.74
      * @todo #6627:30min Bound how much this remembers, since the plugin
      *  realm outlives one module and a settling pass leaves its
@@ -51,7 +52,7 @@ interface Trees {
         /**
          * The one that every goal of one build shares.
          */
-        static final Trees INSTANCE = new TsShared();
+        static final Trees INSTANCE = new Trees.TsShared();
 
         /**
          * Trees, by the SHA-256 of the text that produced them.
@@ -66,7 +67,9 @@ interface Trees {
         }
 
         @Override
-        public XML of(final String text) throws IOException {
+        public XML tree(
+            final String text, final UnaryOperator<XML> pipeline
+        ) throws IOException {
             final String hash = new UncheckedText(
                 new HexOf(new Sha256DigestOf(new InputOf(text)))
             ).asString();
@@ -75,7 +78,7 @@ interface Trees {
                     hash, new EoSyntax(new InputOf(text), UnaryOperator.<XML>identity()).parsed()
                 );
             }
-            return this.memo.get(hash);
+            return pipeline.apply(this.memo.get(hash));
         }
     }
 }

@@ -91,8 +91,8 @@ final class EoSource {
      * @throws IOException If fails
      */
     Xmir parsed() throws IOException {
-        final XML xmir = this.transform.apply(
-            Trees.TsShared.INSTANCE.of(new UncheckedText(new TextOf(this.input)).asString())
+        final XML xmir = Trees.TsShared.INSTANCE.tree(
+            new UncheckedText(new TextOf(this.input)).asString(), this.transform
         );
         final List<String> errors = new ArrayList<>(0);
         final Node document = xmir.inner();

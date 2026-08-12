@@ -222,7 +222,7 @@ public final class MjFormat extends MjSafe {
      * @throws IOException If fails to parse the source
      */
     private XML parsed(final Path source, final String structure) throws IOException {
-        final XML xmir = this.pipeline.apply(Trees.TsShared.INSTANCE.of(structure));
+        final XML xmir = Trees.TsShared.INSTANCE.tree(structure, this.pipeline);
         final long errors = new Xnav(xmir.inner())
             .element("object")
             .element("errors")
