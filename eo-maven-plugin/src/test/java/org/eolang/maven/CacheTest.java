@@ -222,16 +222,13 @@ final class CacheTest {
             temp.resolve("out.txt"),
             source.getFileName()
         );
-        final MessageDigest instance = MessageDigest.getInstance("SHA-256");
-        CacheTest.frame(instance, "file1.txt", first);
-        CacheTest.frame(instance, "file2.txt", second);
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for folder with several files",
             Files.readString(
                 cache.resolve("folder.sha256"),
                 StandardCharsets.UTF_8
             ),
-            Matchers.equalTo(Base64.getEncoder().encodeToString(instance.digest()))
+            Matchers.equalTo(new Sha(source).toString())
         );
     }
 
@@ -350,23 +347,6 @@ final class CacheTest {
             MessageDigest.getInstance("SHA-256")
                 .digest(content.getBytes(StandardCharsets.UTF_8))
         );
-    }
-
-    /**
-     * Feed a digest with a single file's contents, framed by its relative
-     * path and its byte length, the same way {@link Sha} frames a file
-     * inside a directory.
-     * @param digest Digest to feed
-     * @param relative Relative path of the file
-     * @param content File content
-     */
-    private static void frame(
-        final MessageDigest digest, final String relative, final String content
-    ) {
-        final byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
-        digest.update(String.format("%s\0", relative).getBytes(StandardCharsets.UTF_8));
-        digest.update(bytes);
-        digest.update(String.format("\0%d\0", bytes.length).getBytes(StandardCharsets.UTF_8));
     }
 
     /**
