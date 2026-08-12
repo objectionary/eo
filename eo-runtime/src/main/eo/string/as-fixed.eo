@@ -41,29 +41,24 @@
       [a] >> positive
         if. > @
           digits.eq scale
-          written
-            whole.plus 1
-            0
-          written whole digits
-        if. > [unit rest] >> written
-          places.eq 0
-          as-decimal unit
-          concat.
+          if. > [unit rest] >> written
+            places.eq 0
+            as-decimal unit
             concat.
-              as-decimal unit
-              ".".as-bytes
-            rec-pad
-              rest
-              places
-              --
+              concat.
+                as-decimal unit
+                ".".as-bytes
+              rec-pad rest places --
+          | (whole.plus 1) 0
+          written whole digits
         floor. > digits
           plus.
             times.
               a.minus whole
               scale
             0.5
-        a.floor > whole
         pow10 places > scale
+        a.floor > whole
       | n
   if. > [p] >> pow10
     p.eq 0
@@ -145,12 +140,12 @@
   eq. ++> can-scale-a-magnitude-above-two-to-the-53rd
     "100000000000000000.000000"
     string
-      as-fixed 1.0e17 6
+      as-fixed 100000000000000000 6
 
   eq. ++> can-scale-a-negative-magnitude-above-two-to-the-53rd
     "-100000000000000000.000000"
     string
-      as-fixed -1.0e17 6
+      as-fixed -100000000000000000 6
 
   eq. ++> can-write-a-negative-value
     "-2.500000"
