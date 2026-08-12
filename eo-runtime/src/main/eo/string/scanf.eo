@@ -64,7 +64,8 @@
                 digits-lte normalized "9223372036854775808"
                 digits-lte normalized "9223372036854775807"
         T
-          "The number doesn't fit into long range for the '%%d' conversion"
+          "The number doesn't fit into long range for the '%%d' conversion".printf
+            *
         negative.if negated folded
       [a b] > digits-lte
         if. > [index] >> rec
@@ -372,9 +373,12 @@
     "hello%"
     "hello"
 
-  scanf --> stops-on-an-oversized-integer
-    "%d"
-    "99999999999999999999"
+  eq. ++> stops-on-an-oversized-integer
+    recovered
+      head.
+        scanf "%d" "99999999999999999999"
+      42
+    42
 
   gt. ++> can-scan-a-nineteen-digit-value-at-long-max
     head.
@@ -386,17 +390,26 @@
       scanf "%d" "-9223372036854775808"
     -9000000000000000000
 
-  scanf --> stops-on-a-nineteen-digit-value-above-long-max
-    "%d"
-    "9223372036854775808"
+  eq. ++> stops-on-a-nineteen-digit-value-above-long-max
+    recovered
+      head.
+        scanf "%d" "9223372036854775808"
+      42
+    42
 
-  scanf --> stops-on-a-nineteen-digit-value-below-long-min
-    "%d"
-    "-9223372036854775809"
+  eq. ++> stops-on-a-nineteen-digit-value-below-long-min
+    recovered
+      head.
+        scanf "%d" "-9223372036854775809"
+      42
+    42
 
-  scanf --> stops-on-a-zero-padded-integer-above-long-max
-    "%d"
-    "00009223372036854775808"
+  eq. ++> stops-on-a-zero-padded-integer-above-long-max
+    recovered
+      head.
+        scanf "%d" "00009223372036854775808"
+      42
+    42
 
   scanf --> stops-on-a-wrong-format
     "%l"
