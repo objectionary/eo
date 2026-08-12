@@ -3,9 +3,9 @@
 ---
 # The program of the design note, which is the whole prototype in one place.
 # `t` does have `next`, but the object attached to `next` has nothing, so
-# `x.next.foo` asks for something that will never be there. Nobody reports it
-# yet: the tables only write down what is known, and comparing them is the job
-# of the checking loop.
+# `x.next.foo` asks for something that will never be there. The four tables
+# write down what is known and the loop reads them together, reaching the
+# mistake in the three steps the note describes.
 eo:
   app.eo: |
     [] > app
@@ -31,3 +31,6 @@ links:
   - "/links/type[@id='Φ.app.inc.φ.ρ.ρ' and @copy='Φ.app.inc.x']"
 checks:
   - "/checks/type[@id='Φ.app.φ']/attr[@name='α0' and @type='Φ.app.φ.α0']"
+problems:
+  - "/problems/type[@id='Φ.app.t.next']/attr[@name='foo']"
+  - "/problems//attr[@asked='Φ.app.inc.φ']"

@@ -169,7 +169,9 @@ final class InferringTest {
      */
     private Collection<String> unmatched(final Xtory pack, final Path temp) throws IOException {
         final Collection<String> failed = new ArrayList<>(0);
-        final Collection<String> tables = Arrays.asList("provides", "needs", "links", "checks");
+        final Collection<String> tables = Arrays.asList(
+            "provides", "needs", "links", "checks", "problems"
+        );
         for (final Object key : pack.map().keySet()) {
             if (!"eo".equals(key) && !"xmir".equals(key) && !tables.contains(key)) {
                 failed.add(String.format("unknown key: %s", key));
