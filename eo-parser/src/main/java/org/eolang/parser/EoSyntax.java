@@ -10,6 +10,7 @@ import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.function.UnaryOperator;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -97,7 +98,7 @@ public final class EoSyntax implements Syntax {
     @Override
     public XML parsed() throws IOException {
         final String text = new UncheckedText(new TextOf(this.input)).asString();
-        return this.transform.apply(
+        return Objects.requireNonNull(this.transform, "transform").apply(
             new XMLDocument(
                 new Xembler(
                     new Directives()

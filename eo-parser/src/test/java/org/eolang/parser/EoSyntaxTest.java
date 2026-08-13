@@ -76,6 +76,15 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void rejectsANullTransform() {
+        Assertions.assertThrows(
+            NullPointerException.class,
+            () -> new EoSyntax(new InputOf(""), (UnaryOperator<XML>) null).parsed(),
+            "EoSyntax must reject a null transform, but it didn't"
+        );
+    }
+
+    @Test
     void parsesSimpleCodeWithDebugMode() {
         final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(EoSyntax.class);
         final Level previous = logger.getLevel();
