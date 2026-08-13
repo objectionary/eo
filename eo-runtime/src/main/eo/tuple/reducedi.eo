@@ -28,7 +28,7 @@
 
   ++> can-reduce-a-list-with-indexes
     6.eq > @
-      reducedi
+      reducedi.
         * 1 1
         0
         x.plus > [a x i] >>
@@ -38,7 +38,7 @@
               i
 
   eq. ++> can-reduce-a-long-integer-list-with-indexes
-    reducedi
+    reducedi.
       *
         0
         0
@@ -90,7 +90,7 @@
     1
 
   not. ++> can-reduce-bools-with-indexes
-    reducedi
+    reducedi.
       *
         true
         true
@@ -100,7 +100,7 @@
 
   ++> can-reduce-with-nested-functions
     eq. > @
-      reducedi
+      reducedi.
         * 10 500
         0
         [acc x i]

@@ -262,8 +262,7 @@
     false
 
   eq. ++> can-scan-a-complex-format
-    scanf
-      "Im%d %s old and this is! Let's calculate %f + %f= %f"
+    "Im%d %s old and this is! Let's calculate %f + %f= %f".scanf
       "Im18 years old and this is! Let's calculate 99999999.99 + 0.01= 100000000.0"
     *
       18
@@ -275,62 +274,58 @@
   eq. ++> can-scan-a-complex-float
     1991.01
     head.
-      scanf
-        "this will be=%f"
+      "this will be=%f".scanf
         "this will be=1991.01"
 
   eq. ++> can-scan-a-complex-integer
     734987259
     head.
-      scanf "!%d!" "!734987259!"
+      "!%d!".scanf "!734987259!"
 
   eq. ++> can-scan-a-complex-string
     "test"
     head.
-      scanf "some%sstring" "someteststring"
+      "some%sstring".scanf "someteststring"
 
   eq. ++> can-scan-a-float
     0.24
     head.
-      scanf "%f" "0.24"
+      "%f".scanf "0.24"
 
   eq. ++> can-scan-an-integer
     33
     head.
-      scanf "%d" "33"
+      "%d".scanf "33"
 
   eq. ++> can-scan-a-negative-integer
     -42
     head.
-      scanf "%d" "-42"
+      "%d".scanf "-42"
 
   eq. ++> can-scan-a-positive-signed-integer
     42
     head.
-      scanf "%d" "+42"
+      "%d".scanf "+42"
 
   eq. ++> can-scan-a-zero-padded-integer
     42
     head.
-      scanf "%d" "00000000000000000042"
+      "%d".scanf "00000000000000000042"
 
   eq. ++> can-scan-a-zero-padded-negative-integer
     -42
     head.
-      scanf "%d" "-00000000000000000042"
+      "%d".scanf "-00000000000000000042"
 
   eq. ++> can-scan-many-zeroes-as-zero
     0
     head.
-      scanf "%d" "00000000000000000000"
+      "%d".scanf "00000000000000000000"
 
   eq. ++> can-scan-what-printf-wrote
-    scanf
-      "%s is about %d?"
-      printf *1
-        "%s is about %d?"
-        "This"
-        8
+    "%s is about %d?".scanf
+      "%s is about %d?".printf
+        * "This" 8
     *
       "This"
       8
@@ -338,11 +333,10 @@
   eq. ++> can-scan-a-string
     "hello"
     head.
-      scanf "%s" "hello"
+      "%s".scanf "hello"
 
   eq. ++> can-scan-a-string-an-integer-and-a-float
-    scanf
-      "%s %d %f"
+    "%s %d %f".scanf
       "hello 33 0.24"
     *
       "hello"
@@ -352,52 +346,44 @@
   eq. ++> can-scan-a-string-followed-by-a-literal
     "hello"
     head.
-      scanf "%s!" "hello!"
+      "%s!".scanf "hello!"
 
   eq. ++> can-scan-while-ignoring-trailing-text
     42
     head.
-      scanf
-        "id=%d"
+      "id=%d".scanf
         "id=42 suffix"
 
   eq. ++> cannot-scan-past-unmatched-leading-text
     length.
-      scanf
-        "id=%d"
+      "id=%d".scanf
         "prefix id=42"
     0
 
-  scanf --> stops-on-a-dangling-percent
-    "hello%"
-    "hello"
+  "hello%".scanf "hello" --> stops-on-a-dangling-percent
 
-  scanf --> stops-on-an-oversized-integer
-    "%d"
-    "99999999999999999999"
+  "%d".scanf "99999999999999999999" --> stops-on-an-oversized-integer
 
   gt. ++> can-scan-a-nineteen-digit-value-at-long-max
     head.
-      scanf "%d" "9223372036854775807"
+      "%d".scanf "9223372036854775807"
     9000000000000000000
 
   lt. ++> can-scan-a-nineteen-digit-value-at-long-min
     head.
-      scanf "%d" "-9223372036854775808"
+      "%d".scanf "-9223372036854775808"
     -9000000000000000000
 
-  scanf --> stops-on-a-nineteen-digit-value-above-long-max
+  scanf. --> stops-on-a-nineteen-digit-value-above-long-max
     "%d"
     "9223372036854775808"
 
-  scanf --> stops-on-a-nineteen-digit-value-below-long-min
+  scanf. --> stops-on-a-nineteen-digit-value-below-long-min
     "%d"
     "-9223372036854775809"
 
-  scanf --> stops-on-a-zero-padded-integer-above-long-max
+  scanf. --> stops-on-a-zero-padded-integer-above-long-max
     "%d"
     "00009223372036854775808"
 
-  scanf --> stops-on-a-wrong-format
-    "%l"
-    "error"
+  "%l".scanf "error" --> stops-on-a-wrong-format

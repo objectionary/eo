@@ -29,48 +29,37 @@
         at.
           scanf "%f" text
 
-  eq. ++> can-convert-float-text
-    3.14
-    as-number "3.14"
+  3.14.eq "3.14".as-number ++> can-convert-float-text
 
-  eq. ++> can-convert-negative-text
-    -42
-    as-number "-42"
+  -42.eq "-42".as-number ++> can-convert-negative-text
 
-  eq. ++> can-convert-text
-    5
-    as-number "5"
+  5.eq "5".as-number ++> can-convert-text
 
   42.5.eq "42.5".as-number ++> can-convert-text-through-an-implicit-dispatch
 
   eq. ++> rejects-currency-prefixed-text
     42
-    as-number
-      "$100"
+    "$100".as-number
       42 > [message]
 
   eq. ++> rejects-non-numeric-text
     42
-    as-number
-      "Hello"
+    "Hello".as-number
       42 > [message]
 
   eq. ++> rejects-space-separated-numbers
     42
-    as-number
-      "1 2 3"
+    "1 2 3".as-number
       42 > [message]
 
   eq. ++> rejects-text-with-an-embedded-number
     42
-    as-number
-      "abc5"
+    "abc5".as-number
       42 > [message]
 
   eq. ++> rejects-text-with-multiple-dots
     42
-    as-number
-      "12.34.56"
+    "12.34.56".as-number
       42 > [message]
 
-  as-number "Hello" --> stops-on-converting-non-numeric-text
+  "Hello".as-number --> stops-on-converting-non-numeric-text

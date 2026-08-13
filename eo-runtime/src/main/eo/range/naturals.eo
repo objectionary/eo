@@ -21,7 +21,7 @@
     r.end
 
   eq. ++> can-build-a-range-of-negatives
-    naturals
+    naturals.
       range -5 0
     *
       -5
@@ -31,15 +31,15 @@
       -1
 
   is-empty ++> can-build-an-empty-range-from-ten-to-ten
-    naturals
+    naturals.
       range 10 10
 
   is-empty ++> can-build-an-empty-range-when-descending
-    naturals
+    naturals.
       range 10 1
 
   eq. ++> can-build-naturals-from-one-to-ten
-    naturals
+    naturals.
       range 1 10
     *
       1

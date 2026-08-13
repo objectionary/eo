@@ -61,8 +61,7 @@
   ++> can-reach-the-upper-half
     not. > @
       rand.lt 0.5
-    next. > rand
-      random 178609
+    178609.random.next > rand
 
   eq. ++> can-repeat-itself-with-the-same-seed
     next. (random 1654).next.next
@@ -83,10 +82,9 @@
         rand.next.next.lt 1
         not.
           rand.next.next.lt 0
-    next. > rand
-      random 123
+    123.random.next > rand
 
   ++> can-use-a-seed
     not. > @
       r.next.eq r.next.next
-    random 51 > r
+    51.random > r

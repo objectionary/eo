@@ -133,6 +133,21 @@ final class PhApplicationTest {
     }
 
     @Test
+    void escapesControlCharactersOutsideTheSevenHandwritten() {
+        MatcherAssert.assertThat(
+            "String φ-term must escape control characters like ESC and DEL, but it didn't",
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "string"), 0,
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "bytes"), 0,
+                    new PhDefault(new byte[] {0x1B, 0x7F})
+                )
+            ).φTerm(),
+            Matchers.equalTo("\"\\u001b\\u007f\"")
+        );
+    }
+
+    @Test
     void rendersInvalidUtfAsBytes() {
         MatcherAssert.assertThat(
             "Invalid UTF-8 must not be rendered as a misleading string literal",

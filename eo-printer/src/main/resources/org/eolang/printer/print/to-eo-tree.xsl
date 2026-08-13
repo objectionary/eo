@@ -27,9 +27,20 @@
   <!--
   Render a base as an EO head: drop implicit ξ./Φ. roots, render a
   leading dot as reversed dispatch, map ξ/ρ/φ/Φ and every segment.
+
+  The parameter takes the "@base" attribute node as it stands and atomises it
+  here, rather than declaring "xs:string" and leaving that to the function
+  conversion rules (#6669): Saxon may bind a parameter to a closure over the
+  argument expression instead of over its converted value, and the node then
+  reaches the "$base = $eo:xi" comparison below, which was compiled as a
+  "ValueComparison" on the strength of a statically atomic parameter and casts
+  straight to an atomic value. That is how the same shape killed
+  "inline-cactoos" in #6669. "eo:root-name" is hardened the same way, being the
+  other function this sheet asks about a raw "@base".
   -->
   <xsl:function name="eo:surface" as="xs:string">
-    <xsl:param name="base" as="xs:string"/>
+    <xsl:param name="raw" as="item()?"/>
+    <xsl:variable name="base" as="xs:string" select="string($raw)"/>
     <xsl:sequence select="if (starts-with($base, '.')) then concat(eo:translate-path(substring($base, 2)), '.') else if (starts-with($base, concat($eo:program, '.'))) then eo:translate-path(substring-after($base, concat($eo:program, '.'))) else if (starts-with($base, concat($eo:xi, '.'))) then eo:translate-path(substring-after($base, concat($eo:xi, '.'))) else if ($base = $eo:xi) then '$' else if ($base = $eo:program) then 'Q' else eo:translate-path($base)"/>
   </xsl:function>
   <!--
@@ -44,9 +55,14 @@
     <xsl:variable name="last" select="tokenize($surface, '\.')[last()]"/>
     <xsl:sequence select="if ($fragile and contains($surface, '.')) then concat(substring($surface, 1, string-length($surface) - string-length($last) - 1), '?.', $last) else $surface"/>
   </xsl:function>
-  <!-- First name segment of a program-rooted base (Φ.foo.bar -> foo). -->
+  <!--
+  First name segment of a program-rooted base (Φ.foo.bar -> foo). The raw
+  "@base" node is atomised here for the reason spelled out on "eo:surface"
+  above (#6669).
+  -->
   <xsl:function name="eo:root-name" as="xs:string">
-    <xsl:param name="base" as="xs:string"/>
+    <xsl:param name="raw" as="item()?"/>
+    <xsl:variable name="base" as="xs:string" select="string($raw)"/>
     <xsl:variable name="rest" select="substring-after($base, concat($eo:program, '.'))"/>
     <xsl:sequence select="if (contains($rest, '.')) then substring-before($rest, '.') else $rest"/>
   </xsl:function>

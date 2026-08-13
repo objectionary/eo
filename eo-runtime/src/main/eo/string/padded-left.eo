@@ -39,89 +39,78 @@
           text.as-bytes
       text
 
-  eq. ++> can-count-characters-and-not-bytes
+  eq. ++> can-count-characters-and-not-bytes-when-padding-left
     "  Ж"
-    padded-left
-      "Ж"
+    "Ж".padded-left
       3
       " "
 
-  eq. ++> can-format-the-error-message-of-a-negative-width
+  eq. ++> can-format-the-error-message-of-a-negative-width-when-padding-left
     "Can't pad text to -1.000000 characters with x"
-    padded-left
-      "y"
+    "y".padded-left
       -1
       "x"
       message > [message]
 
   eq. ++> can-pad-a-number-with-leading-spaces
     "   42"
-    padded-left
-      "42"
+    "42".padded-left
       5
       " "
 
   eq. ++> can-pad-with-leading-zeros
     "0042"
-    padded-left
-      "42"
+    "42".padded-left
       4
       "0"
 
-  eq. ++> can-return-a-longer-text-unchanged
+  eq. ++> can-return-a-longer-text-unchanged-when-padding-left
     "hello"
-    padded-left
-      "hello"
+    "hello".padded-left
       3
       " "
 
-  eq. ++> can-return-a-text-of-the-exact-width-unchanged
+  eq. ++> can-return-a-text-of-the-exact-width-unchanged-when-padding-left
     "hey"
-    padded-left
-      "hey"
+    "hey".padded-left
       3
       " "
 
-  eq. ++> can-return-a-text-unchanged-at-zero-width
+  eq. ++> can-return-a-text-unchanged-at-zero-width-when-padding-left
     "x"
-    padded-left
-      "x"
+    "x".padded-left
       0
       " "
 
-  eq. ++> rejects-a-multi-character-fill
+  eq. ++> rejects-a-multi-character-fill-when-padding-left
     "recovered"
-    padded-left
-      "y"
+    "y".padded-left
       5
       "ab"
       "recovered" > [message]
 
-  eq. ++> rejects-a-negative-width
+  eq. ++> rejects-a-negative-width-when-padding-left
     "recovered"
-    padded-left
-      "y"
+    "y".padded-left
       -1
       "x"
       "recovered" > [message]
 
-  eq. ++> rejects-a-non-integer-width
+  eq. ++> rejects-a-non-integer-width-when-padding-left
     "recovered"
-    padded-left
-      "y"
+    "y".padded-left
       2.5
       "x"
       "recovered" > [message]
 
-  eq. ++> rejects-an-infinite-width
+  eq. ++> rejects-an-infinite-width-when-padding-left
     "recovered"
-    padded-left
-      "y"
+    "y".padded-left
       pinf
       "x"
       "recovered" > [message]
 
-  padded-left --> stops-on-a-negative-width
+  padded-left. --> stops-on-a-negative-width-when-padding-left
     "y"
     -1
     "x"

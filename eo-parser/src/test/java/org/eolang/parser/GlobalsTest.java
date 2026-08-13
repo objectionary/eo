@@ -94,6 +94,18 @@ final class GlobalsTest {
     }
 
     @Test
+    void collapsesUnderIndentedBlankLineToEmpty() {
+        final Globals globals = new Globals();
+        globals.openTextBlock(1, 6);
+        globals.appendTextLine("  ");
+        MatcherAssert.assertThat(
+            "a blank line shorter than the opener's indent must collapse to an empty line",
+            globals.tbody(),
+            Matchers.contains("")
+        );
+    }
+
+    @Test
     void closesTextBlockState() {
         final Globals globals = new Globals();
         globals.openTextBlock(3);

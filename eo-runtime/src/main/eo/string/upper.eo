@@ -17,10 +17,8 @@
   upper. > @
     english text
 
-  "ÄÖÜ".eq "ÄÖÜ".upper ++> can-keep-non-ascii-letters
+  "ÄÖÜ".eq "ÄÖÜ".upper ++> can-keep-non-ascii-letters-when-upper-casing
 
   "HELLO".eq "hello".upper ++> can-upper-case-text
 
-  eq. ++> can-upper-case-text-through-the-package
-    "HELLO"
-    upper "hello"
+  "HELLO".eq "hello".upper ++> can-upper-case-text-through-the-package

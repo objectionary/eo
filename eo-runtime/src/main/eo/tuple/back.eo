@@ -22,7 +22,7 @@
         accum
 
   eq. ++> can-take-a-back-slice
-    back
+    back.
       *
         1
         2
@@ -35,7 +35,7 @@
       5
 
   eq. ++> can-take-a-back-slice-with-a-large-index
-    back
+    back.
       *
         1
         2
@@ -50,8 +50,8 @@
       4
       5
 
-  is-empty ++> can-take-a-back-slice-with-a-zero-index
-    back
+  is-empty. ++> can-take-a-back-slice-with-a-zero-index
+    back.
       *
         1
         2

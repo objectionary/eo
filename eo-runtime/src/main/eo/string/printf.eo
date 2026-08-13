@@ -38,12 +38,9 @@
 # characters that share that encoding, because an object knows its own bytes
 # here and not its type.
 #
-# @todo #6359:60min Name the number that does not fit into the long range. The
-#  `%d` guard below used to render its own reason through `%f`, but `as-fixed`
-#  refuses any magnitude of 2^53 or larger, and every number that guard rejects is
-#  past that threshold, so the reason destroyed itself and the caller saw a chain
-#  of some forty `Error in "..."` links instead. The reason now carries no number
-#  at all; give it one back once `%f` can print a magnitude that big.
+# The `%d` guard names the number it rejects through `as-scientific` and not
+# through `%f`, because every magnitude it rejects is past the range `as-fixed`
+# writes, and a reason rendered with `%f` destroyed itself instead of arriving.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -202,7 +199,10 @@
                   number limit
                   -1
             T
-              "The number doesn't fit into the long range of the '%d' conversion"
+              "The number %s doesn't fit into the long range of the '%%d' conversion".printf
+                *
+                  string
+                    as-scientific (number numeric)
             number numeric
         if.
           66-.eq conv
@@ -377,264 +377,236 @@
 
   eq. ++> can-answer-the-size-of-the-formatted-text
     size.
-      printf *1
-        "Hello, %s"
-        "Jeff"
+      "Hello, %s".printf
+        * "Jeff"
     11
 
   eq. ++> can-apply-a-precision-to-a-string
     "Jef"
-    printf *1
-      "%.3s"
-      "Jeffrey"
+    "%.3s".printf
+      * "Jeffrey"
 
   eq. ++> can-apply-a-precision-to-bytes
     "40-"
-    printf *1
-      "%.3x"
-      42.as-bytes
+    "%.3x".printf
+      * 42.as-bytes
 
   eq. ++> can-apply-a-width-to-bytes
     "  40-45-00-00-00-00-00-00"
-    printf *1
-      "%25x"
-      42.as-bytes
+    "%25x".printf
+      * 42.as-bytes
 
   eq. ++> can-format-a-computed-string
     "abcd"
-    printf *1
-      "%s"
-      "ab".concat "cd"
+    "%s".printf
+      *
+        "ab".concat "cd"
 
   eq. ++> can-format-a-decimal-above-two-to-the-53rd
     "9007199254740992"
-    printf *1
-      "%d"
-      9007199254740992
+    "%d".printf
+      * 9007199254740992
 
   eq. ++> can-format-a-float-above-two-to-the-53rd
     "9007199254740992.000000"
-    printf *1
-      "%f"
-      9007199254740992
+    "%f".printf
+      * 9007199254740992
 
   eq. ++> can-format-a-float-with-six-fraction-digits
     "1.250000"
-    printf *1
-      "%f"
-      1.25
+    "%f".printf
+      * 1.25
 
   eq. ++> can-format-a-large-negative-decimal
     "-9007199254740992"
-    printf *1
-      "%d"
-      -9007199254740992
+    "%d".printf
+      * -9007199254740992
 
   eq. ++> can-format-a-numbered-substitution
     "Hello, Jeff! Bye, Jeff!"
-    printf *1
-      "Hello, %s! Bye, %1$s!"
-      "Jeff"
+    "Hello, %s! Bye, %1$s!".printf
+      * "Jeff"
 
   eq. ++> can-format-a-numbered-substitution-with-many-arguments
     "This is the first; This is the first as well; The second; and the 3"
-    printf *1
-      "This is the %s; This is the %1$s as well; The %s; and the %d"
-      "first"
-      "second"
-      3
+    "This is the %s; This is the %1$s as well; The %s; and the %d".printf
+      *
+        "first"
+        "second"
+        3
 
   eq. ++> can-format-a-precision-of-two-decimals
     "3.14"
-    printf *1
-      "%.2f"
-      3.1415
+    "%.2f".printf
+      * 3.1415
 
   eq. ++> can-format-a-width-with-leading-spaces
     "   42"
-    printf *1
-      "%5d"
-      42
+    "%5d".printf
+      * 42
 
   eq. ++> can-format-a-zero-float-with-six-fraction-digits
     "0.000000"
-    printf *1
-      "%f"
-      0
+    "%f".printf
+      * 0
 
   eq. ++> can-format-left-justified-with-trailing-spaces
     "x         "
-    printf *1
-      "%-10s"
-      "x"
+    "%-10s".printf
+      * "x"
 
   eq. ++> can-format-objects-of-every-type
     "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
-    printf *1
-      "string %s, bytes %x, float %f, int %d, bool %b"
-      "Jeff"
-      "Jeff".as-bytes
-      42.3
-      14
-      false
+    "string %s, bytes %x, float %f, int %d, bool %b".printf
+      *
+        "Jeff"
+        "Jeff".as-bytes
+        42.3
+        14
+        false
 
   eq. ++> can-format-ordered-numbered-substitutions
     "first second second is after first"
-    printf *1
-      "%s %s %2$s is after %1$s"
-      "first"
-      "second"
+    "%s %s %2$s is after %1$s".printf
+      * "first" "second"
 
   eq. ++> can-ignore-extra-arguments
     "Hey"
-    printf *1
-      "%s"
-      "Hey"
-      "Jeff"
+    "%s".printf
+      * "Hey" "Jeff"
 
   eq. ++> can-left-align-bytes
     "40-45-00-00-00-00-00-00  "
-    printf *1
-      "%-25x"
-      42.as-bytes
+    "%-25x".printf
+      * 42.as-bytes
 
   eq. ++> can-preserve-an-escaped-bytes-format
     "%x"
-    printf
-      "%%x"
+    "%%x".printf
       *
 
   eq. ++> can-print-a-complex-string
     "Привет 3.140000 Jeff X!"
-    printf *1
-      "Привет %f %s %s!"
-      3.14
-      "Jeff"
-      "X"
+    "Привет %f %s %s!".printf
+      *
+        3.14
+        "Jeff"
+        "X"
 
   eq. ++> can-print-a-percent-sign
     "%Jeff"
-    printf *1
-      "%%%s"
-      "Jeff"
+    "%%%s".printf
+      * "Jeff"
 
   eq. ++> can-print-a-simple-string
     "Hello, Jeffrey!"
-    printf *1
-      "Hello, %s!"
-      "Jeffrey"
+    "Hello, %s!".printf
+      * "Jeffrey"
 
   eq. ++> can-print-an-i64-as-a-number
     "42"
-    printf *1
-      "%d"
-      42.as-i64.as-number
+    "%d".printf
+      * 42.as-i64.as-number
 
   eq. ++> can-print-bytes
     "40-45-00-00-00-00-00-00"
-    printf *1
-      "%x"
-      42.as-bytes
+    "%x".printf
+      * 42.as-bytes
 
   eq. ++> can-round-a-float-carrying-into-the-integer-part
     "1.000000"
-    printf *1
-      "%f"
-      0.9999999
+    "%f".printf
+      * 0.9999999
 
   eq. ++> can-truncate-a-negative-float-toward-zero
     "-7"
-    printf *1
-      "%d"
-      -7.89
+    "%d".printf
+      * -7.89
 
   eq. ++> can-truncate-a-positive-float-toward-zero
     "42"
-    printf *1
-      "%d"
-      42.321
+    "%d".printf
+      * 42.321
 
   eq. ++> can-truncate-rather-than-round-a-float
     "9"
-    printf *1
-      "%d"
-      9.99
+    "%d".printf
+      * 9.99
 
   not. ++> cannot-print-an-i64
     eq.
-      printf *1
-        "%d"
-        42.as-i64
+      "%d".printf
+        * 42.as-i64
       "42"
 
-  printf *1 --> stops-on-a-bool-as-a-string
+  printf. --> stops-on-a-bool-as-a-string
     "%s"
-    true
+    * true
 
-  printf *1 --> stops-on-a-comma-flag-with-s
+  printf. --> stops-on-a-comma-flag-with-s
     "%,s"
-    "Jeff"
+    * "Jeff"
 
-  printf *1 --> stops-on-a-comma-flag-with-x
+  printf. --> stops-on-a-comma-flag-with-x
     "%,x"
-    5
+    * 5
 
-  printf *1 --> stops-on-a-hash-flag-with-s
+  printf. --> stops-on-a-hash-flag-with-s
     "%#s"
-    "Jeff"
+    * "Jeff"
 
-  printf *1 --> stops-on-a-hash-flag-with-x
+  printf. --> stops-on-a-hash-flag-with-x
     "%#x"
-    5
+    * 5
 
-  printf *1 --> stops-on-a-non-utf8-byte-argument-as-a-string
+  printf. --> stops-on-a-non-utf8-byte-argument-as-a-string
     "%s"
-    3.14
+    * 3.14
 
-  printf *1 --> stops-on-a-number-as-a-string
+  printf. --> stops-on-a-number-as-a-string
     "%s"
-    42
+    * 42
 
-  printf *1 --> stops-on-a-paren-flag-with-s
+  printf. --> stops-on-a-paren-flag-with-s
     "%(s"
-    "Jeff"
+    * "Jeff"
 
-  printf *1 --> stops-on-a-precision-with-d
+  printf. --> stops-on-a-precision-with-d
     "%.2d"
-    5
+    * 5
 
-  printf *1 --> stops-on-a-zero-flag-with-x
+  printf. --> stops-on-a-zero-flag-with-x
     "%0x"
-    5
+    * 5
 
-  printf *1 --> stops-on-a-zero-positional-index
+  printf. --> stops-on-a-zero-positional-index
     "%0$s"
-    "first"
+    * "first"
 
-  printf *1 --> stops-on-an-i64-as-a-string
+  printf. --> stops-on-an-i64-as-a-string
     "%s"
-    42.as-i64
+    * 42.as-i64
 
-  printf *1 --> stops-on-an-oversized-positional-index
+  printf. --> stops-on-an-oversized-positional-index
     "%99999999999999999999$s"
-    "Jeff"
+    * "Jeff"
 
-  printf --> stops-on-an-unsupported-format
+  printf. --> stops-on-an-unsupported-format
     "%o"
     *
 
-  printf *1 --> stops-on-arguments-that-do-not-match
+  printf. --> stops-on-arguments-that-do-not-match
     "%s%s"
-    "Jeff"
+    * "Jeff"
 
-  printf *1 --> stops-on-formatting-a-huge-number-as-a-decimal
+  printf. --> stops-on-formatting-a-huge-number-as-a-decimal
     "%d"
-    1.0e30
+    * 1.0e30
 
-  printf *1 --> stops-on-formatting-nan-as-a-decimal
+  printf. --> stops-on-formatting-nan-as-a-decimal
     "%d"
-    nan
+    * nan
 
-  printf *1 --> stops-on-the-negative-long-boundary-as-a-decimal
+  printf. --> stops-on-the-negative-long-boundary-as-a-decimal
     "%d"
-    -9.223372036854776e18
+    * -9.223372036854776e18

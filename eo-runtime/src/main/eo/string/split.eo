@@ -58,9 +58,7 @@
     delimiter >> delim!
 
   eq. ++> can-split-a-text-into-empty-strings
-    split
-      "-a-b-"
-      "-"
+    "-a-b-".split "-"
     *
       ""
       "a"
@@ -68,45 +66,35 @@
       ""
 
   eq. ++> can-split-a-text-on-a-dash
-    split
-      "a-b-c"
-      "-"
+    "a-b-c".split "-"
     *
       "a"
       "b"
       "c"
 
   eq. ++> can-split-a-text-on-a-multi-character-delimiter
-    split
-      "a::b::c"
-      "::"
+    "a::b::c".split "::"
     *
       "a"
       "b"
       "c"
 
   eq. ++> can-split-an-empty-text-into-one-empty-string
-    split
-      ""
-      "-"
+    "".split "-"
     * ""
 
   eq. ++> can-split-into-strings
     length.
       at.
-        split
-          "hello world!"
+        "hello world!".split
           " "
         1
     6
 
   eq. ++> rejects-an-empty-delimiter
     "recovered"
-    split
-      "abc"
+    "abc".split
       ""
       "recovered" > [message]
 
-  split --> stops-on-an-empty-delimiter
-    "abc"
-    ""
+  "abc".split "" --> stops-on-an-empty-delimiter

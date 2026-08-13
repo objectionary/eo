@@ -30,7 +30,14 @@ public final class NamedSyscall implements Syscall {
         NamedSyscall.ALL.put("getpid", GetpidSyscall::new);
         NamedSyscall.ALL.put("open", OpenSyscall::new);
         NamedSyscall.ALL.put("access", AccessSyscall::new);
-        NamedSyscall.ALL.put("stat", StatSyscall::new);
+        NamedSyscall.ALL.put(
+            "stat",
+            posix -> new StatSyscall(posix, (path, buf) -> CStdLib.INSTANCE.stat(path, buf))
+        );
+        NamedSyscall.ALL.put(
+            "lstat",
+            posix -> new StatSyscall(posix, (path, buf) -> CStdLib.INSTANCE.lstat(path, buf))
+        );
         NamedSyscall.ALL.put("creat", CreatSyscall::new);
         NamedSyscall.ALL.put("unlink", UnlinkSyscall::new);
         NamedSyscall.ALL.put("rmdir", RmdirSyscall::new);

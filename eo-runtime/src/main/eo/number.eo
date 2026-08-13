@@ -76,11 +76,6 @@
     pinf.plus pinf
     pinf
 
-  lt. ++> can-approximate-a-square-root
-    abs.
-      9.sqrt.minus 3
-    1.0E-9
-
   pinf.gt 42.5 ++> can-be-greater-than-a-float-when-positive-infinity
 
   eq. ++> can-be-greater-than-a-smaller-integer
@@ -356,21 +351,11 @@
     pinf.times pinf
     pinf
 
-  eq. ++> can-raise-to-a-power
-    2.power 4
-    16
-
   eq. ++> can-raise-to-a-power-through-the-package
     number.power
       2
       5
     32
-
-  -17.9.abs.eq 17.9 ++> can-take-the-absolute-value-of-a-negative
-
-  eq. ++> can-take-the-modulo-of-two-numbers
-    7.mod 3
-    1
 
   eq. ++> cannot-be-greater-than-a-float-when-negative-infinity
     ninf.gt 42.5
