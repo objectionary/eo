@@ -246,6 +246,18 @@
           <foreignFormat>csv</foreignFormat>
           <!-- Every lint warning is an error here; nothing may be tolerated. -->
           <failOnWarning>true</failOnWarning>
+          <!--
+          The "redundant-attachment" lint of lints 0.4.2 contradicts
+          "anonymous-formation": it asks to drop the auto-generated name of
+          an inline formation, while the other one demands a name for every
+          formation that reads its enclosing scope. Dropping the 120 `>>`
+          handles here raises 196 complaints of the other kind. On top of
+          that, it flags the auto-named wrapper that the parser synthesises
+          for an inline const argument, which no source edit can rename.
+          -->
+          <skipSourceLints>
+            <lint>redundant-attachment</lint>
+          </skipSourceLints>
           <offline>true</offline>
           <ignoreRuntime>true</ignoreRuntime>
           <!--

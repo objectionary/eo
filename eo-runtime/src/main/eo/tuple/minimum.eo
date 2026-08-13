@@ -22,6 +22,11 @@
         item
         min
 
+  eq. ++> can-recover-from-an-empty-list-when-taking-the-minimum
+    "recovered"
+    tuple.empty.minimum
+      "recovered" > [msg]
+
   eq. ++> can-take-a-minimum-of-one-item
     minimum.
       * 42
@@ -50,10 +55,5 @@
         25
         -2
     -2
-
-  eq. ++> rejects-an-empty-list-when-taking-the-minimum
-    "recovered"
-    tuple.empty.minimum
-      "recovered" > [msg]
 
   tuple.empty.minimum --> stops-on-an-empty-list-when-taking-the-minimum

@@ -302,6 +302,10 @@
       made.
         directory mktemp.tmpfile.deleted
 
+  is-directory. ++> can-recover-from-checking-an-absent-directory
+    directory mktemp.tmpfile.deleted
+    true
+
   ++> can-retry-tmpfile-creation-after-a-collision
     seq * > @
       collision.touched
@@ -456,11 +460,7 @@
       made.
         directory mktemp.tmpfile.deleted
 
-  is-directory. ++> rejects-checking-an-absent-directory
-    directory mktemp.tmpfile.deleted
-    true
-
-  tmpfile. --> on-tmpfile-touching-absent-directory
+  tmpfile. --> stops-on-a-tmpfile-in-an-absent-directory
     @.
       mktemp.tmpfile.deleted.as-path.resolved "child"
 

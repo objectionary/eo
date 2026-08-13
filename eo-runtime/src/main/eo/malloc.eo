@@ -258,6 +258,15 @@
                 m.read 2 5
                 "Hello"
 
+  eq. ++> can-recover-from-reading-over-the-limit
+    01-02
+    malloc.of
+      1
+      m.read > [m]
+        0
+        10
+        01-02 > [ex]
+
   ++> can-recurse-without-arguments
     eq. > @
       malloc.for
@@ -334,15 +343,6 @@
       42
       m > [m]
     42
-
-  eq. ++> rejects-reading-over-the-limit
-    01-02
-    malloc.of
-      1
-      m.read > [m]
-        0
-        10
-        01-02 > [ex]
 
   malloc.of --> stops-on-changing-the-size-to-a-fraction
     1

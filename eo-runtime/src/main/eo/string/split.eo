@@ -57,6 +57,12 @@
   size. >> size!
     delimiter >> delim!
 
+  eq. ++> can-recover-from-an-empty-delimiter
+    "recovered"
+    "abc".split
+      ""
+      "recovered" > [message]
+
   eq. ++> can-split-a-text-into-empty-strings
     "-a-b-".split "-"
     *
@@ -90,11 +96,5 @@
           " "
         1
     6
-
-  eq. ++> rejects-an-empty-delimiter
-    "recovered"
-    "abc".split
-      ""
-      "recovered" > [message]
 
   "abc".split "" --> stops-on-an-empty-delimiter

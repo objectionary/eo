@@ -48,4 +48,4 @@
 
   0.degrees.eq 0 ++> can-convert-zero-to-degrees
 
-  nan.degrees.is-nan ++> cannot-convert-nan-to-degrees
+  nan.degrees.is-nan ++> can-return-nan-when-converting-nan-to-degrees

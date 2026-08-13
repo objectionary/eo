@@ -38,6 +38,24 @@
       index
       1
 
+  eq. ++> can-recover-from-a-fractional-index-in-bounds
+    "recovered"
+    "some".at
+      1.5
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-a-negative-fractional-index-in-bounds
+    "recovered"
+    "some".at
+      -1.5
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-out-of-bounds-index
+    "recovered"
+    "some".at
+      10
+      "recovered" > [message]
+
   eq. ++> can-return-a-character-at-a-negative-index
     "m"
     "some".at -2
@@ -49,23 +67,5 @@
   eq. ++> can-return-the-third-character
     "m"
     "some".at 2
-
-  eq. ++> rejects-a-fractional-index-in-bounds
-    "recovered"
-    "some".at
-      1.5
-      "recovered" > [message]
-
-  eq. ++> rejects-a-negative-fractional-index-in-bounds
-    "recovered"
-    "some".at
-      -1.5
-      "recovered" > [message]
-
-  eq. ++> rejects-an-out-of-bounds-index
-    "recovered"
-    "some".at
-      10
-      "recovered" > [message]
 
   "some".at 10 --> stops-on-an-index-beyond-the-length

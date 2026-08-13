@@ -24,6 +24,6 @@
     "Hello, world"
     "Hello"
 
-  not. ++> cannot-start-with-an-absent-substring
+  not. ++> can-tell-it-does-not-start-with-an-absent-substring
     "Hello, world".starts-with
       "world"

@@ -43,6 +43,16 @@
       txt.slice idx size
       part
 
+  eq. ++> can-find-no-last-index-of-an-absent-substring
+    -1
+    "Hello, world".last-index-of
+      "somebody"
+
+  eq. ++> can-find-no-last-index-of-an-absent-substring-in-utf-text
+    -1
+    "привет, друг!".last-index-of
+      "x"
+
   eq. ++> can-find-the-last-index-of-a-substring
     5
     "Hey, Hey, Hey".last-index-of
@@ -56,13 +66,3 @@
   eq. ++> can-find-the-last-index-of-the-whole-string
     0
     "Hello".last-index-of "Hello"
-
-  eq. ++> cannot-find-the-last-index-of-an-absent-substring
-    -1
-    "Hello, world".last-index-of
-      "somebody"
-
-  eq. ++> cannot-find-the-last-index-of-an-absent-substring-in-utf-text
-    -1
-    "привет, друг!".last-index-of
-      "x"

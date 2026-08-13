@@ -92,6 +92,7 @@ final class MjLintTest {
     void ignoresLintNamedInSkipSourceLints(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .with("skipSourceLints", new SetOf<>("mandatory-spdx")).withProgram(
+                "+architect yegor256@gmail.com",
                 "+home https://www.eolang.org",
                 "+package foo.x",
                 "+version 0.0.0",
@@ -118,6 +119,7 @@ final class MjLintTest {
         throws IOException {
         final Path cache = temp.resolve("lint-cache");
         final String[] source = {
+            "+architect yegor256@gmail.com",
             "+home https://www.eolang.org",
             "+package foo.x",
             "+version 0.0.0",
@@ -236,6 +238,7 @@ final class MjLintTest {
             .with("lintAsPackage", true)
             .allTojosWithHash(() -> "abcdefq")
             .with("cache", cache.toFile()).withProgram(
+                "+architect yegor256@gmail.com",
                 "+home https://www.eolang.org",
                 "+package foo.x",
                 "+version 0.0.0",
@@ -333,6 +336,7 @@ final class MjLintTest {
         final FakeMaven maven = new FakeMaven(temp)
             .with("lintAsPackage", true)
             .with("failOnWarning", false).withProgram(
+                "+architect yegor256@gmail.com",
                 "+package foo.x",
                 "+alias a.b.nowhere",
                 "+unlint unused-alias",
@@ -403,7 +407,7 @@ final class MjLintTest {
     @Test
     void detectsWarningWithCorrespondingFlag(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
-            String.format("+package foo.x%n"),
+            String.format("+architect yegor256@gmail.com%n+package foo.x%n"),
             "[] > main",
             "  [] > @",
             "    \"Hello world\" > @"
@@ -427,7 +431,7 @@ final class MjLintTest {
     void doesNotDetectWarningWithoutCorrespondingFlag(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp).withProgram(
-                String.format("+package foo.x%n"),
+                String.format("+architect yegor256@gmail.com%n+package foo.x%n"),
                 "[] > main",
                 "  [] > x",
                 "    \"Hello world\" > @"
@@ -441,7 +445,7 @@ final class MjLintTest {
     @Test
     void failsParsingOnError(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
-            String.format("+package foo.x%n"),
+            String.format("+architect yegor256@gmail.com%n+package foo.x%n"),
             "[] > main",
             "  seq *-1 > @",
             "    true"
@@ -558,6 +562,7 @@ final class MjLintTest {
     @Test
     void failsOnUnusedAlias(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "+architect yegor256@gmail.com",
             "+package foo.x",
             "+alias a.b.foo",
             "",
@@ -586,6 +591,7 @@ final class MjLintTest {
      */
     private static String[] critical() {
         return new String[]{
+            "+architect yegor256@gmail.com",
             "+package foo.x",
             "",
             "[] > wrong",
@@ -600,6 +606,7 @@ final class MjLintTest {
      */
     private static String[] erroneous() {
         return new String[]{
+            "+architect yegor256@gmail.com",
             "+package foo.x",
             "+home https://www.eolang.org",
             "+home https://www.eolang.org",
@@ -637,6 +644,7 @@ final class MjLintTest {
      */
     private static String[] suppressed(final String pkg, final String name) {
         return new String[]{
+            "+architect yegor256@gmail.com",
             "+home https://www.eolang.org",
             String.format("+package %s", pkg),
             "+version 0.0.0",
@@ -656,6 +664,7 @@ final class MjLintTest {
      */
     private static String[] problematic() {
         return new String[]{
+            "+architect yegor256@gmail.com",
             "+package foo.x",
             "+alias a.b.nowhere",
             "+unlint unused-alias",

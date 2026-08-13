@@ -48,6 +48,19 @@
     "привет, друг!".index-of
       "в"
 
+  eq. ++> can-find-no-index-of-a-longer-substring
+    -1
+    "Hello".index-of "Somebody"
+
+  eq. ++> can-find-no-index-of-an-absent-substring-in-utf-text
+    -1
+    "привет, друг!".index-of
+      "x"
+
+  eq. ++> can-find-no-index-of-an-absent-substring-of-the-same-length
+    -1
+    "Hello".index-of "world"
+
   eq. ++> can-return-the-index-of-a-substring
     6
     "Hello \n world".index-of
@@ -57,16 +70,3 @@
     6
     "Hello world".index-of
       "world"
-
-  eq. ++> cannot-find-a-longer-substring
-    -1
-    "Hello".index-of "Somebody"
-
-  eq. ++> cannot-find-an-absent-substring-in-utf-text
-    -1
-    "привет, друг!".index-of
-      "x"
-
-  eq. ++> cannot-find-an-absent-substring-of-the-same-length
-    -1
-    "Hello".index-of "world"

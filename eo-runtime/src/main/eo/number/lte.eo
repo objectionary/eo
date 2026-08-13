@@ -41,35 +41,35 @@
     pinf.lte pinf
     true
 
-  eq. ++> cannot-be-less-than-or-equal-to-a-float-when-positive-infinity
+  eq. ++> can-tell-it-is-not-less-than-or-equal-to-a-float-when-positive-infinity
     pinf.lte 42.5
     false
 
-  eq. ++> cannot-be-less-than-or-equal-to-a-number-when-nan
+  eq. ++> can-tell-it-is-not-less-than-or-equal-to-a-number-when-nan
     nan.lte 42
     false
 
-  eq. ++> cannot-be-less-than-or-equal-to-a-smaller-integer
+  eq. ++> can-tell-it-is-not-less-than-or-equal-to-a-smaller-integer
     not.
       0.lte -10
     true
 
-  eq. ++> cannot-be-less-than-or-equal-to-an-integer-when-positive-infinity
+  eq. ++> can-tell-it-is-not-less-than-or-equal-to-an-integer-when-positive-infinity
     pinf.lte 42
     false
 
-  eq. ++> cannot-be-less-than-or-equal-to-nan-when-nan
+  eq. ++> can-tell-it-is-not-less-than-or-equal-to-nan-when-nan
     nan.lte nan
     false
 
-  eq. ++> cannot-be-less-than-or-equal-to-nan-when-negative-infinity
+  eq. ++> can-tell-it-is-not-less-than-or-equal-to-nan-when-negative-infinity
     ninf.lte nan
     false
 
-  eq. ++> cannot-be-less-than-or-equal-to-nan-when-positive-infinity
+  eq. ++> can-tell-it-is-not-less-than-or-equal-to-nan-when-positive-infinity
     pinf.lte nan
     false
 
-  eq. ++> cannot-be-less-than-or-equal-to-negative-infinity-when-positive-infinity
+  eq. ++> can-tell-it-is-not-less-than-or-equal-to-negative-infinity-when-positive-infinity
     pinf.lte ninf
     false

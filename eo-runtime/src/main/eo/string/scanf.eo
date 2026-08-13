@@ -354,7 +354,7 @@
       "id=%d".scanf
         "id=42 suffix"
 
-  eq. ++> cannot-scan-past-unmatched-leading-text
+  eq. ++> can-scan-nothing-past-unmatched-leading-text
     length.
       "id=%d".scanf
         "prefix id=42"

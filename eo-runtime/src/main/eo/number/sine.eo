@@ -73,6 +73,12 @@
         858
     1
 
+  nan.sine.is-nan ++> can-return-nan-for-a-sine-of-nan
+
+  ninf.sine.is-nan ++> can-return-nan-for-a-sine-of-negative-infinity
+
+  pinf.sine.is-nan ++> can-return-nan-for-a-sine-of-positive-infinity
+
   lt. ++> can-take-a-sine-of-minus-pi-halves
     abs.
       minus.
@@ -133,9 +139,3 @@
     1
 
   0.sine.eq 0 ++> can-take-a-sine-of-zero
-
-  nan.sine.is-nan ++> cannot-take-a-sine-of-nan
-
-  ninf.sine.is-nan ++> cannot-take-a-sine-of-negative-infinity
-
-  pinf.sine.is-nan ++> cannot-take-a-sine-of-positive-infinity

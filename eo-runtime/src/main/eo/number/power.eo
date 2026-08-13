@@ -332,6 +332,18 @@
     0.power pinf
     0
 
+  is-nan. ++> can-return-nan-when-raising-a-negative-to-a-fraction
+    -4.power 0.5
+
+  is-nan. ++> can-return-nan-when-raising-anything-to-nan
+    52.power nan
+
+  is-nan. ++> can-return-nan-when-raising-nan-to-anything
+    nan.power 42
+
+  is-nan. ++> can-return-nan-when-raising-nan-to-nan
+    nan.power nan
+
   lt. ++> can-take-a-cube-root-of-twenty-seven
     abs.
       minus.
@@ -353,15 +365,3 @@
         2.power 0.5
         1.4142135623730951
     1.0E-9
-
-  is-nan. ++> cannot-raise-a-negative-to-a-fraction
-    -4.power 0.5
-
-  is-nan. ++> cannot-raise-anything-to-nan
-    52.power nan
-
-  is-nan. ++> cannot-raise-nan-to-anything
-    nan.power 42
-
-  is-nan. ++> cannot-raise-nan-to-nan
-    nan.power nan

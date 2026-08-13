@@ -36,7 +36,7 @@
         24
       24
 
-  eq. ++> cannot-find-the-last-index-of-an-absent-item
+  eq. ++> can-find-no-last-index-of-an-absent-item
     -1
     last-index-of.
       *
@@ -45,7 +45,7 @@
         3
       0
 
-  eq. ++> cannot-find-the-last-index-in-an-empty-list
+  eq. ++> can-find-no-last-index-in-an-empty-list
     -1
     tuple.empty.last-index-of "abc"
 

@@ -90,6 +90,12 @@
     255.as-i64.as-i32.as-i16
     FF-.as-u8.as-i16
 
+  eq. ++> can-recover-from-division-by-zero
+    "recovered"
+    02-.as-u8.div
+      00-.as-u8
+      "recovered" > [message]
+
   eq. ++> can-subtract
     05-.as-u8.minus 03-.as-u8
     02-.as-u8
@@ -97,6 +103,18 @@
   eq. ++> can-subtract-with-underflow
     00-.as-u8.minus 01-.as-u8
     FF-.as-u8
+
+  not. ++> can-tell-it-does-not-equal-a-different-u8
+    2A-.as-u8.eq 2B-.as-u8
+
+  not. ++> can-tell-it-is-not-greater-than-or-equal-to-a-larger-u8
+    00-.as-u8.gte 0A-.as-u8
+
+  not. ++> can-tell-it-is-not-less-than-an-equal-u8
+    0A-.as-u8.lt 0A-.as-u8
+
+  not. ++> can-tell-it-is-not-less-than-one-with-a-high-bit
+    FF-.as-u8.lt 01-.as-u8
 
   FF-.as-u8.gt 01-.as-u8 ++> can-treat-a-high-bit-as-magnitude-when-greater
 
@@ -109,23 +127,5 @@
   eq. ++> can-wrap-a-product-modulo-two-to-the-eighth
     10-.as-u8.times 10-.as-u8
     00-.as-u8
-
-  not. ++> cannot-be-greater-than-or-equal-to-a-larger-u8
-    00-.as-u8.gte 0A-.as-u8
-
-  not. ++> cannot-be-less-than-an-equal-u8
-    0A-.as-u8.lt 0A-.as-u8
-
-  not. ++> cannot-be-less-than-one-with-a-high-bit
-    FF-.as-u8.lt 01-.as-u8
-
-  not. ++> cannot-equal-a-different-u8
-    2A-.as-u8.eq 2B-.as-u8
-
-  eq. ++> rejects-division-by-zero
-    "recovered"
-    02-.as-u8.div
-      00-.as-u8
-      "recovered" > [message]
 
   02-.as-u8.div 00-.as-u8 --> stops-on-division-by-zero

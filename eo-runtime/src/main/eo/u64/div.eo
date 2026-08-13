@@ -64,7 +64,7 @@
     FF-FF-FF-FF-FF-FF-FF-FF.as-u64.div 00-00-00-00-00-00-00-02.as-u64
     7F-FF-FF-FF-FF-FF-FF-FF.as-u64
 
-  eq. ++> rejects-division-by-zero
+  eq. ++> can-recover-from-division-by-zero
     "recovered"
     00-00-00-00-00-00-00-02.as-u64.div
       00-00-00-00-00-00-00-00.as-u64

@@ -60,6 +60,16 @@
         1000
     1
 
+  2.arc-sine.is-nan ++> can-return-nan-for-an-arc-sine-above-one
+
+  -2.arc-sine.is-nan ++> can-return-nan-for-an-arc-sine-below-minus-one
+
+  nan.arc-sine.is-nan ++> can-return-nan-for-an-arc-sine-of-nan
+
+  ninf.arc-sine.is-nan ++> can-return-nan-for-an-arc-sine-of-negative-infinity
+
+  pinf.arc-sine.is-nan ++> can-return-nan-for-an-arc-sine-of-positive-infinity
+
   lt. ++> can-take-an-arc-sine-of-a-half
     abs.
       minus.
@@ -131,13 +141,3 @@
         0.6.arc-sine.times 1000
         643.5
     1
-
-  2.arc-sine.is-nan ++> cannot-take-an-arc-sine-above-one
-
-  -2.arc-sine.is-nan ++> cannot-take-an-arc-sine-below-minus-one
-
-  nan.arc-sine.is-nan ++> cannot-take-an-arc-sine-of-nan
-
-  ninf.arc-sine.is-nan ++> cannot-take-an-arc-sine-of-negative-infinity
-
-  pinf.arc-sine.is-nan ++> cannot-take-an-arc-sine-of-positive-infinity

@@ -22,6 +22,11 @@
         item
         max
 
+  eq. ++> can-recover-from-an-empty-list-when-taking-the-maximum
+    "recovered"
+    tuple.empty.maximum
+      "recovered" > [msg]
+
   eq. ++> can-take-a-maximum-of-one-item
     maximum.
       * 42
@@ -50,10 +55,5 @@
         -2
         25
     25
-
-  eq. ++> rejects-an-empty-list-when-taking-the-maximum
-    "recovered"
-    tuple.empty.maximum
-      "recovered" > [msg]
 
   tuple.empty.maximum --> stops-on-an-empty-list-when-taking-the-maximum

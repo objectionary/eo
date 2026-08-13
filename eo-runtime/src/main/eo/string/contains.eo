@@ -37,6 +37,6 @@
     "Hello, world!"
     "o, wo"
 
-  not. ++> cannot-contain-an-absent-substring
+  not. ++> can-tell-it-does-not-contain-an-absent-substring
     "Hello, world!".contains
       "Hey"

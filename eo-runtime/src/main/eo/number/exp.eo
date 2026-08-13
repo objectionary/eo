@@ -42,4 +42,4 @@
 
   pinf.exp.eq pinf ++> can-exponentiate-positive-infinity
 
-  nan.exp.is-nan ++> cannot-exponentiate-nan
+  nan.exp.is-nan ++> can-return-nan-when-exponentiating-nan

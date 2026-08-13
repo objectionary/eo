@@ -23,6 +23,15 @@
           recidx tup.tail >> next!
     | list
 
+  eq. ++> can-find-no-index-of-an-absent-item
+    -1
+    index-of.
+      *
+        "qwerty"
+        2
+        3
+      7
+
   eq. ++> can-find-the-index-of-a-non-symmetric-match
     1
     index-of.
@@ -60,12 +69,3 @@
         2
         3
       2
-
-  eq. ++> cannot-find-the-index-of-an-absent-item
-    -1
-    index-of.
-      *
-        "qwerty"
-        2
-        3
-      7

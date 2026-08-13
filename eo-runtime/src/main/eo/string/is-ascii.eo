@@ -16,6 +16,6 @@
 
   "H311oW".is-ascii ++> can-be-ascii-when-plain-text
 
-  "".is-ascii.not ++> cannot-be-ascii-when-empty
+  "".is-ascii.not ++> can-tell-it-is-not-ascii-when-empty
 
-  "🌵".is-ascii.not ++> cannot-be-ascii-with-an-emoji
+  "🌵".is-ascii.not ++> can-tell-it-is-not-ascii-with-an-emoji

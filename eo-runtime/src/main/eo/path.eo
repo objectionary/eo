@@ -493,17 +493,17 @@
       path.posix ".config.json"
     ".json"
 
-  eq. ++> cannot-take-an-extname-from-a-dotdot
+  eq. ++> can-take-no-extname-from-a-dotdot
     extname.
       path.posix ".."
     ""
 
-  eq. ++> cannot-take-an-extname-from-a-dotfile
+  eq. ++> can-take-no-extname-from-a-dotfile
     extname.
       path.posix ".gitignore"
     ""
 
-  eq. ++> cannot-take-an-extname-from-a-file-without-an-extension
+  eq. ++> can-take-no-extname-from-a-file-without-an-extension
     extname.
       path.joined
         *
@@ -512,7 +512,7 @@
           "html"
     ""
 
-  eq. ++> cannot-take-an-extname-from-a-path-ending-with-a-separator
+  eq. ++> can-take-no-extname-from-a-path-ending-with-a-separator
     extname.
       path.joined
         *

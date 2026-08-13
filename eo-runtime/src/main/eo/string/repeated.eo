@@ -40,6 +40,24 @@
       -1
       message > [message]
 
+  eq. ++> can-recover-from-a-negative-count
+    "recovered"
+    "x".repeated
+      -1
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-a-non-integer-count
+    "recovered"
+    "x".repeated
+      2.5
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-infinite-count
+    "recovered"
+    "x".repeated
+      pinf
+      "recovered" > [message]
+
   eq. ++> can-repeat-a-text-five-times
     "heyheyheyheyhey"
     "hey".repeated 5
@@ -57,23 +75,5 @@
   eq. ++> can-repeat-a-text-zero-times
     ""
     "some".repeated 0
-
-  eq. ++> rejects-a-negative-count
-    "recovered"
-    "x".repeated
-      -1
-      "recovered" > [message]
-
-  eq. ++> rejects-a-non-integer-count
-    "recovered"
-    "x".repeated
-      2.5
-      "recovered" > [message]
-
-  eq. ++> rejects-an-infinite-count
-    "recovered"
-    "x".repeated
-      pinf
-      "recovered" > [message]
 
   "".repeated -1 --> stops-on-a-negative-count

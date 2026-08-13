@@ -17,6 +17,6 @@
 
   "ab3d".is-alphanumeric ++> can-be-alphanumeric-with-a-number
 
-  "".is-alphanumeric.not ++> cannot-be-alphanumeric-when-empty
+  "".is-alphanumeric.not ++> can-tell-it-is-not-alphanumeric-when-empty
 
-  "-w-".is-alphanumeric.not ++> cannot-be-alphanumeric-with-dashes
+  "-w-".is-alphanumeric.not ++> can-tell-it-is-not-alphanumeric-with-dashes

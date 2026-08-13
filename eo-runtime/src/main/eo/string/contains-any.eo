@@ -28,15 +28,15 @@
       " "
       "o"
 
-  not. ++> cannot-contain-any-of-no-substrings
+  not. ++> can-tell-it-does-not-contain-any-of-no-substrings
     "text".contains-any
       *
 
-  not. ++> cannot-contain-any-of-no-substrings-when-empty
+  not. ++> can-tell-it-does-not-contain-any-of-no-substrings-when-empty
     "".contains-any
       *
 
-  not. ++> cannot-contain-any-substring
+  not. ++> can-tell-it-does-not-contain-any-substring
     "xyzw".contains-any
       *
         "yx"

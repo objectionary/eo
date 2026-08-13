@@ -28,6 +28,12 @@
       0.minus 0.sqrt
     1.0E-11
 
+  -0.1.sqrt.is-nan ++> can-return-nan-for-a-square-root-of-a-negative
+
+  nan.sqrt.is-nan ++> can-return-nan-for-a-square-root-of-nan
+
+  ninf.sqrt.is-nan ++> can-return-nan-for-a-square-root-of-negative-infinity
+
   lt. ++> can-take-a-square-root-of-a-half
     abs.
       0.25.sqrt.minus 0.5
@@ -52,9 +58,3 @@
     1.0E-9
 
   0.sqrt.eq 0 ++> can-take-a-square-root-of-zero
-
-  -0.1.sqrt.is-nan ++> cannot-take-a-square-root-of-a-negative
-
-  nan.sqrt.is-nan ++> cannot-take-a-square-root-of-nan
-
-  ninf.sqrt.is-nan ++> cannot-take-a-square-root-of-negative-infinity

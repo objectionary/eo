@@ -189,6 +189,36 @@
         f.write "!" > [f]
     13
 
+  eq. ++> can-keep-the-size-of-a-file-opened-for-appending
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "a"
+        true > [f]
+    12
+
+  eq. ++> can-keep-the-size-of-a-file-opened-for-reading
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "r"
+        true > [f]
+    12
+
+  eq. ++> can-keep-the-size-of-a-file-opened-for-reading-or-appending
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "a+"
+        true > [f]
+    12
+
   ++> can-read-from-a-file
     eq. > @
       malloc.of
@@ -242,6 +272,16 @@
               m
     temp.path > source
     mktemp.tmpfile > temp
+
+  mktemp.tmpfile.deleted.is-directory ++> can-recover-from-checking-an-absent-file
+    true
+
+  eq. ++> can-recover-from-opening-a-missing-file
+    "recovered"
+    mktemp.tmpfile.deleted.open
+      "r"
+      f > [f]
+      "recovered" > [reason]
 
   ++> can-resolve-a-path-and-touch-it
     resolved.as-dir.made.tmpfile.exists.and > @
@@ -344,45 +384,6 @@
         "Shrek is love!"
     temp.path > source
     mktemp.tmpfile > temp
-
-  eq. ++> cannot-truncate-a-file-opened-for-appending
-    size.
-      open.
-        mktemp.tmpfile.open
-          "w"
-          f.write "Hello, world" > [f]
-        "a"
-        true > [f]
-    12
-
-  eq. ++> cannot-truncate-a-file-opened-for-reading
-    size.
-      open.
-        mktemp.tmpfile.open
-          "w"
-          f.write "Hello, world" > [f]
-        "r"
-        true > [f]
-    12
-
-  eq. ++> cannot-truncate-a-file-opened-for-reading-or-appending
-    size.
-      open.
-        mktemp.tmpfile.open
-          "w"
-          f.write "Hello, world" > [f]
-        "a+"
-        true > [f]
-    12
-
-  mktemp.tmpfile.deleted.is-directory true ++> rejects-checking-an-absent-file
-
-  eq. ++> rejects-opening-a-missing-file
-    "recovered"
-    mktemp.tmpfile.deleted.open
-      "r"
-      f > [f]
-      "recovered" > [reason]
 
   mktemp.tmpfile.deleted.is-directory --> stops-on-checking-the-directory-of-an-absent-file
 

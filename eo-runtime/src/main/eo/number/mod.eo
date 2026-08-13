@@ -56,6 +56,12 @@
                   rest
           abs-mod.neg
 
+  eq. ++> can-recover-from-a-modulo-by-zero
+    "recovered"
+    5.mod
+      0
+      "recovered" > [message]
+
   is-nan. ++> can-return-nan-when-the-dividend-is-infinite
     pinf.mod 5
 
@@ -168,11 +174,5 @@
   eq. ++> can-take-an-exact-modulo-of-a-very-large-dividend-by-three
     9200000000000000000.mod 3
     2
-
-  eq. ++> rejects-a-modulo-by-zero
-    "recovered"
-    5.mod
-      0
-      "recovered" > [message]
 
   5.mod 0 --> stops-on-a-modulo-by-zero

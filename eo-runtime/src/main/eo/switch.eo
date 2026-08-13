@@ -51,6 +51,12 @@
       fallback
         "No switch case matched"
 
+  eq. ++> can-recover-from-an-empty-switch
+    "recovered"
+    switch
+      *
+      "recovered" > [message]
+
   ++> can-switch-on-a-complex-case
     eq. > @
       switch *
@@ -103,12 +109,6 @@
       * false "FALSE"
       * true "TRUE2"
     "TRUE1"
-
-  eq. ++> rejects-an-empty-switch
-    "recovered"
-    switch
-      *
-      "recovered" > [message]
 
   switch * --> stops-on-all-false-cases-without-fallback
     *

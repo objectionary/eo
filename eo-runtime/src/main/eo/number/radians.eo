@@ -44,4 +44,4 @@
 
   0.radians.eq 0 ++> can-convert-zero-to-radians
 
-  nan.radians.is-nan ++> cannot-convert-nan-to-radians
+  nan.radians.is-nan ++> can-return-nan-when-converting-nan-to-radians

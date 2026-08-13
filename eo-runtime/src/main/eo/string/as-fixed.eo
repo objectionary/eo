@@ -132,6 +132,27 @@
     string
       as-fixed 1.25 6
 
+  eq. ++> can-recover-from-infinite-places
+    "recovered"
+    as-fixed
+      1.25
+      pinf
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-negative-places
+    "recovered"
+    as-fixed
+      3.14159
+      -2
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-non-integer-places
+    "recovered"
+    as-fixed
+      3.14159
+      2.5
+      "recovered" > [message]
+
   eq. ++> can-round-to-the-last-place
     "0.123457"
     string
@@ -161,27 +182,6 @@
     "0.000000"
     string
       as-fixed 0 6
-
-  eq. ++> rejects-infinite-places
-    "recovered"
-    as-fixed
-      1.25
-      pinf
-      "recovered" > [message]
-
-  eq. ++> rejects-negative-places
-    "recovered"
-    as-fixed
-      3.14159
-      -2
-      "recovered" > [message]
-
-  eq. ++> rejects-non-integer-places
-    "recovered"
-    as-fixed
-      3.14159
-      2.5
-      "recovered" > [message]
 
   as-fixed --> stops-on-negative-places
     3.14159

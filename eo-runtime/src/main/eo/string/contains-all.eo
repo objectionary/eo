@@ -37,7 +37,7 @@
       ","
       "d!"
 
-  not. ++> cannot-contain-all-substrings
+  not. ++> can-tell-it-does-not-contain-all-substrings
     "qwerty".contains-all
       *
         "qer"

@@ -20,12 +20,12 @@
   is-digit. ++> can-be-digits-when-a-very-long-number
     "123456789012345678901234567890123456789012345678901234567890"
 
-  "".is-digit.not ++> cannot-be-digits-when-empty
+  "".is-digit.not ++> can-tell-it-is-not-digits-when-empty
 
-  "1a2".is-digit.not ++> cannot-be-digits-with-a-letter
+  "1a2".is-digit.not ++> can-tell-it-is-not-digits-with-a-letter
 
-  "12 34".is-digit.not ++> cannot-be-digits-with-a-space
+  "12 34".is-digit.not ++> can-tell-it-is-not-digits-with-a-space
 
-  "1🌵2".is-digit.not ++> cannot-be-digits-with-a-special-character
+  "1🌵2".is-digit.not ++> can-tell-it-is-not-digits-with-a-special-character
 
-  "123\n".is-digit.not ++> cannot-be-digits-with-a-trailing-newline
+  "123\n".is-digit.not ++> can-tell-it-is-not-digits-with-a-trailing-newline

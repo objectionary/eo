@@ -212,6 +212,27 @@
       * 1 2
     2
 
+  eq. ++> can-recover-from-a-fractional-index
+    "recovered"
+    at.
+      *
+        "zero"
+        "one"
+        "two"
+      1.5
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-out-of-bounds-index
+    "recovered"
+    at.
+      *
+        1
+        2
+        3
+        4
+      20
+      "recovered" > [message]
+
   ++> can-report-the-length-of-a-non-empty-tuple
     eq. > @
       length.
@@ -256,7 +277,7 @@
       3
       4
 
-  not. ++> cannot-equal-a-different-tuple
+  not. ++> can-tell-it-does-not-equal-a-different-tuple
     eq.
       *
         1
@@ -266,27 +287,6 @@
         3
         2
         1
-
-  eq. ++> rejects-a-fractional-index
-    "recovered"
-    at.
-      *
-        "zero"
-        "one"
-        "two"
-      1.5
-      "recovered" > [message]
-
-  eq. ++> rejects-an-out-of-bounds-index
-    "recovered"
-    at.
-      *
-        1
-        2
-        3
-        4
-      20
-      "recovered" > [message]
 
   at. --> stops-on-a-wrong-index
     *

@@ -15,8 +15,8 @@
 
   "eEo".is-alpha ++> can-be-alphabetic-when-simple-text
 
-  "".is-alpha.not ++> cannot-be-alphabetic-when-empty
+  "".is-alpha.not ++> can-tell-it-is-not-alphabetic-when-empty
 
-  "ab3d".is-alpha.not ++> cannot-be-alphabetic-with-a-number
+  "ab3d".is-alpha.not ++> can-tell-it-is-not-alphabetic-with-a-number
 
-  "-w-".is-alpha.not ++> cannot-be-alphabetic-with-dashes
+  "-w-".is-alpha.not ++> can-tell-it-is-not-alphabetic-with-dashes

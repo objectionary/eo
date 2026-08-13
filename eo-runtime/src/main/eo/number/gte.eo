@@ -41,35 +41,35 @@
     pinf.gte pinf
     true
 
-  eq. ++> cannot-be-greater-than-or-equal-to-a-float-when-negative-infinity
+  eq. ++> can-tell-it-is-not-greater-than-or-equal-to-a-float-when-negative-infinity
     ninf.gte 42.5
     false
 
-  eq. ++> cannot-be-greater-than-or-equal-to-a-larger-integer
+  eq. ++> can-tell-it-is-not-greater-than-or-equal-to-a-larger-integer
     not.
       0.gte 10
     true
 
-  eq. ++> cannot-be-greater-than-or-equal-to-a-number-when-nan
+  eq. ++> can-tell-it-is-not-greater-than-or-equal-to-a-number-when-nan
     nan.gte 42
     false
 
-  eq. ++> cannot-be-greater-than-or-equal-to-an-integer-when-negative-infinity
+  eq. ++> can-tell-it-is-not-greater-than-or-equal-to-an-integer-when-negative-infinity
     ninf.gte 42
     false
 
-  eq. ++> cannot-be-greater-than-or-equal-to-nan-when-nan
+  eq. ++> can-tell-it-is-not-greater-than-or-equal-to-nan-when-nan
     nan.gte nan
     false
 
-  eq. ++> cannot-be-greater-than-or-equal-to-nan-when-negative-infinity
+  eq. ++> can-tell-it-is-not-greater-than-or-equal-to-nan-when-negative-infinity
     ninf.gte nan
     false
 
-  eq. ++> cannot-be-greater-than-or-equal-to-nan-when-positive-infinity
+  eq. ++> can-tell-it-is-not-greater-than-or-equal-to-nan-when-positive-infinity
     pinf.gte nan
     false
 
-  eq. ++> cannot-be-greater-than-or-equal-to-positive-infinity-when-negative-infinity
+  eq. ++> can-tell-it-is-not-greater-than-or-equal-to-positive-infinity-when-negative-infinity
     ninf.gte pinf
     false

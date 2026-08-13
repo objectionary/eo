@@ -16,12 +16,12 @@
 
   32.is-finite ++> can-be-finite-when-a-simple-number
 
-  not. ++> cannot-be-finite-when-built-of-infinite-bytes
+  not. ++> can-tell-it-is-not-finite-when-built-of-infinite-bytes
     is-finite.
       number pinf.as-bytes
 
-  nan.is-finite.not ++> cannot-be-finite-when-nan
+  nan.is-finite.not ++> can-tell-it-is-not-finite-when-nan
 
-  ninf.is-finite.not ++> cannot-be-finite-when-negative-infinity
+  ninf.is-finite.not ++> can-tell-it-is-not-finite-when-negative-infinity
 
-  pinf.is-finite.not ++> cannot-be-finite-when-positive-infinity
+  pinf.is-finite.not ++> can-tell-it-is-not-finite-when-positive-infinity

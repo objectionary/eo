@@ -53,6 +53,12 @@
       "o"
     "Hello, world"
 
+  eq. ++> can-replace-nothing-when-the-pattern-is-absent
+    "Hello, world".replaced
+      "/[0-9]+/".regex
+      "12345"
+    "Hello, world"
+
   eq. ++> can-replace-slashes-with-a-windows-separator
     "C:\\Windows/foo\\bar/hello.txt".replaced
       "/\\//".regex
@@ -64,9 +70,3 @@
       "/[<>:\\\"\\/\\|\\?\\*\\x00-\\x1F]/".regex
       ""
     "foo\\barbaz\\asdf"
-
-  eq. ++> cannot-replace-when-the-pattern-is-absent
-    "Hello, world".replaced
-      "/[0-9]+/".regex
-      "12345"
-    "Hello, world"

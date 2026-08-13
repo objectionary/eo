@@ -508,6 +508,12 @@
     "%d".printf
       * 42.as-i64.as-number
 
+  not. ++> can-print-an-i64-not-as-a-number
+    eq.
+      "%d".printf
+        * 42.as-i64
+      "42"
+
   eq. ++> can-print-bytes
     "40-45-00-00-00-00-00-00"
     "%x".printf
@@ -532,12 +538,6 @@
     "9"
     "%d".printf
       * 9.99
-
-  not. ++> cannot-print-an-i64
-    eq.
-      "%d".printf
-        * 42.as-i64
-      "42"
 
   printf. --> stops-on-a-bool-as-a-string
     "%s"

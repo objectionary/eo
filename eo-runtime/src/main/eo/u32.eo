@@ -92,6 +92,12 @@
     00-00-00-06.as-u32.times 00-00-00-07.as-u32
     00-00-00-2A.as-u32
 
+  eq. ++> can-recover-from-division-by-zero
+    "recovered"
+    00-00-00-02.as-u32.div
+      00-00-00-00.as-u32
+      "recovered" > [message]
+
   eq. ++> can-subtract
     00-00-00-05.as-u32.minus 00-00-00-03.as-u32
     00-00-00-02.as-u32
@@ -99,6 +105,18 @@
   eq. ++> can-subtract-with-underflow
     00-00-00-00.as-u32.minus 00-00-00-01.as-u32
     FF-FF-FF-FF.as-u32
+
+  not. ++> can-tell-it-does-not-equal-a-different-u32
+    00-00-00-2A.as-u32.eq 00-00-00-2B.as-u32
+
+  not. ++> can-tell-it-is-not-greater-than-or-equal-to-a-larger-u32
+    00-00-00-00.as-u32.gte 00-00-00-0A.as-u32
+
+  not. ++> can-tell-it-is-not-less-than-an-equal-u32
+    00-00-00-0A.as-u32.lt 00-00-00-0A.as-u32
+
+  not. ++> can-tell-it-is-not-less-than-one-with-a-high-bit
+    FF-FF-FF-FF.as-u32.lt 00-00-00-01.as-u32
 
   gt. ++> can-treat-a-high-bit-as-magnitude-when-greater
     FF-FF-FF-FF.as-u32
@@ -111,23 +129,5 @@
   eq. ++> can-wrap-a-product-modulo-two-to-the-thirty-second
     00-01-00-00.as-u32.times 00-01-00-00.as-u32
     00-00-00-00.as-u32
-
-  not. ++> cannot-be-greater-than-or-equal-to-a-larger-u32
-    00-00-00-00.as-u32.gte 00-00-00-0A.as-u32
-
-  not. ++> cannot-be-less-than-an-equal-u32
-    00-00-00-0A.as-u32.lt 00-00-00-0A.as-u32
-
-  not. ++> cannot-be-less-than-one-with-a-high-bit
-    FF-FF-FF-FF.as-u32.lt 00-00-00-01.as-u32
-
-  not. ++> cannot-equal-a-different-u32
-    00-00-00-2A.as-u32.eq 00-00-00-2B.as-u32
-
-  eq. ++> rejects-division-by-zero
-    "recovered"
-    00-00-00-02.as-u32.div
-      00-00-00-00.as-u32
-      "recovered" > [message]
 
   00-00-00-02.as-u32.div 00-00-00-00.as-u32 --> stops-on-division-by-zero

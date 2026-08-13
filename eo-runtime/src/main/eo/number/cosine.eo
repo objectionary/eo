@@ -35,6 +35,12 @@
         500
     1
 
+  nan.cosine.is-nan ++> can-return-nan-for-a-cosine-of-nan
+
+  ninf.cosine.is-nan ++> can-return-nan-for-a-cosine-of-negative-infinity
+
+  pinf.cosine.is-nan ++> can-return-nan-for-a-cosine-of-positive-infinity
+
   lt. ++> can-take-a-cosine-of-pi
     abs.
       minus.
@@ -73,9 +79,3 @@
         0.cosine.times 1000
         1000
     1
-
-  nan.cosine.is-nan ++> cannot-take-a-cosine-of-nan
-
-  ninf.cosine.is-nan ++> cannot-take-a-cosine-of-negative-infinity
-
-  pinf.cosine.is-nan ++> cannot-take-a-cosine-of-positive-infinity

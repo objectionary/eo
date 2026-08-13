@@ -15,6 +15,16 @@
     pi.div 2
     arc-sine num
 
+  2.arc-cosine.is-nan ++> can-return-nan-for-an-arc-cosine-above-one
+
+  -2.arc-cosine.is-nan ++> can-return-nan-for-an-arc-cosine-below-minus-one
+
+  nan.arc-cosine.is-nan ++> can-return-nan-for-an-arc-cosine-of-nan
+
+  ninf.arc-cosine.is-nan ++> can-return-nan-for-an-arc-cosine-of-negative-infinity
+
+  pinf.arc-cosine.is-nan ++> can-return-nan-for-an-arc-cosine-of-positive-infinity
+
   -1.arc-cosine.eq pi ++> can-take-an-arc-cosine-of-minus-one
 
   lt. ++> can-take-an-arc-cosine-of-minus-zero-point-nine-nine-nine
@@ -50,13 +60,3 @@
         0.6.arc-cosine.times 1000
         927.295
     1
-
-  2.arc-cosine.is-nan ++> cannot-take-an-arc-cosine-above-one
-
-  -2.arc-cosine.is-nan ++> cannot-take-an-arc-cosine-below-minus-one
-
-  nan.arc-cosine.is-nan ++> cannot-take-an-arc-cosine-of-nan
-
-  ninf.arc-cosine.is-nan ++> cannot-take-an-arc-cosine-of-negative-infinity
-
-  pinf.arc-cosine.is-nan ++> cannot-take-an-arc-cosine-of-positive-infinity

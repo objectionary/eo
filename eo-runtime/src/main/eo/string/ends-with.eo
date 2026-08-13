@@ -26,6 +26,6 @@
     "Hello world!"
     "world!"
 
-  not. ++> cannot-end-with-an-absent-substring
+  not. ++> can-tell-it-does-not-end-with-an-absent-substring
     "Hello world!".ends-with
       "Hello"
