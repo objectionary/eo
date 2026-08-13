@@ -105,7 +105,7 @@ final class LnCompactTuple implements Line {
      */
     private Level transition(final Stack stack, final Suffix suffix) {
         return new Transition(stack, this.span)
-            .apply(Kind.COMPACT_TUPLE, Openness.OPEN, suffix.named());
+            .apply(Kind.COMPACT_TUPLE, Openness.OPEN, new Admission(suffix.named(), suffix.test()));
     }
 
     /**

@@ -10,13 +10,13 @@
 
 [num] > sqrt
   if. > @
-    lt.
-      number num.as-bytes
-      0
+    arg.lt 0
     nan
-    power
-      num
-      0.5
+    if.
+      arg.as-bytes.eq 80-00-00-00-00-00-00-00
+      arg
+      power arg 0.5
+  number num.as-bytes > arg
 
   lt. ++> can-approximate-a-square-root-of-four
     abs.
@@ -37,6 +37,10 @@
     abs.
       4.sqrt.minus 2
     1.0E-9
+
+  eq. ++> can-take-a-square-root-of-negative-zero-preserving-sign
+    0.neg.sqrt.as-bytes
+    80-00-00-00-00-00-00-00
 
   1.sqrt.eq 1 ++> can-take-a-square-root-of-one
 
