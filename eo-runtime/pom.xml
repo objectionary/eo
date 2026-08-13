@@ -294,6 +294,19 @@
               <skipProgramLints>
                 <lint>inconsistent-args</lint>
               </skipProgramLints>
+              <!--
+              A package is named here once its members reach their receiver
+              through '^' instead of through a first void, since the two only
+              work together: with the void still there the merged member never
+              gets a receiver, and with '^' but no merge it has no rho to read.
+              -->
+              <mergedPackages>
+                <mergedPackage>chunk</mergedPackage>
+                <mergedPackage>i64</mergedPackage>
+                <mergedPackage>output</mergedPackage>
+                <mergedPackage>range</mergedPackage>
+                <mergedPackage>u64</mergedPackage>
+              </mergedPackages>
               <keepBinaries>
                 <glob>org/eolang/EO_number/package-info.class</glob>
                 <glob>org/eolang/EO_string/package-info.class</glob>

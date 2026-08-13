@@ -1,8 +1,5 @@
-# Makes an output from a `chunk` of memory. Here `allocated` is a `chunk`.
-#
-# Because this object lives in the `chunk` package, it is available on any
-# chunk as `chunk.to-output` (package extension), so there is no need to
-# reference it explicitly:
+# Makes an output from a `chunk` of memory. It is a method of `chunk`, and
+# `allocated` is the chunk it is taken off:
 #
 # ```
 # malloc.of > result
@@ -21,8 +18,10 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint package-member-without-void
 
-[allocated] > to-output
+[] > to-output
+  ^ > allocated
   [buffer] > write
     write. > @
       [offset] >> output-block
