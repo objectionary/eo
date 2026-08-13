@@ -14,9 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link EOfile$EOis_symlink}.
+ * Test case for the {@code is-symlink} attribute of {@code file} in
+ * {@code file.eo}, which no Java atom stands behind.
  * @since 0.75.0
  */
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOfileEOissymlinkTest {
 
     @Test
