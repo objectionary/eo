@@ -270,12 +270,12 @@
       uri "http://host:abc/"
     ""
 
-  eq. ++> cannot-treat-a-digit-led-prefix-as-a-scheme
+  eq. ++> can-treat-a-digit-led-prefix-as-schemeless
     scheme.
       uri "1http://host/path"
     ""
 
-  eq. ++> cannot-treat-a-plus-led-prefix-as-a-scheme
+  eq. ++> can-treat-a-plus-led-prefix-as-schemeless
     scheme.
       uri "+foo:bar"
     ""
