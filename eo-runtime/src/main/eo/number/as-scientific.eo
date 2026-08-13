@@ -12,6 +12,7 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-object
 
 [n] > as-scientific
   n.is-finite.not.if > @
@@ -21,19 +22,25 @@
         n.lt 0
         "-infinity".as-bytes
         "infinity".as-bytes
-    concat.
+    if.
+      mantissa.eq "10.000000".as-bytes
       concat.
-        as-fixed
-          n.div
-            10.power
-              number exponent
-          6
-        "e".as-bytes
-      as-decimal
-        number exponent
+        "1.000000".as-bytes.concat "e".as-bytes
+        as-decimal
+          number bumped
+      concat.
+        mantissa.concat "e".as-bytes
+        as-decimal
+          number exponent
+  wrapped.plus 1 > bumped
   rec-exponent > exponent!
     n.abs
     0
+  as-fixed > mantissa
+    n.div
+      10.power
+        number exponent
+    6
   if. > [m count] >> rec-exponent
     m.lt 10
     count
@@ -41,6 +48,15 @@
       m.div 10
       as-number.
         count.plus 1
+  number exponent > wrapped
+
+  eq. ++> can-carry-a-rounded-mantissa-into-the-next-power-of-ten
+    "1.000000e1"
+    string 9.9999996.as-scientific
+
+  eq. ++> can-carry-a-rounded-mantissa-past-the-long-range
+    "1.000000e20"
+    string 9.9999996e19.as-scientific
 
   eq. ++> can-name-a-magnitude-past-the-long-range
     "1.000000e19"
