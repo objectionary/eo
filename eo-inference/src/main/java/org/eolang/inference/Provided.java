@@ -22,8 +22,9 @@ import java.util.Map;
  * through to the object of that name beside it — {@code Φ.number} binds eight
  * attributes and answers to forty, the rest of them being objects of their own
  * in the same package, {@code Φ.number.eq} among them, and a locator names both
- * kinds the same way. And whatever stands behind its {@code φ}, which answers
- * for every name the object does not bind itself.</p>
+ * kinds the same way. And whatever the type hands its answers to, which is
+ * what stands behind its {@code φ}, or, for an atom, the type it says it comes
+ * back with.</p>
  *
  * <p>The walk stops at a type it has already passed, so an object that
  * delegates in a circle is walked once and answers nothing. A void answers
@@ -91,13 +92,39 @@ final class Provided {
 
     /**
      * The type this one hands its answers to.
+     *
+     * <p>A formation hands them to what stands behind its {@code φ}. An atom
+     * has no {@code φ} to stand behind, since its body is written in Java, but
+     * it says what it comes back with, and a copy of it answers for every name
+     * that type answers for.</p>
+     *
      * @param type The name the type goes by
-     * @return The name of the type behind its {@code φ}, or an empty string
-     *  when the type binds no {@code φ} and answers for itself
+     * @return The name of the type behind its {@code φ} or of the one it comes
+     *  back with, or an empty string when the type answers for itself
      */
     private String behind(final String type) {
-        final String decoratee = this.bound(type, "φ");
-        return this.names.getOrDefault(decoratee, decoratee);
+        String next = this.bound(type, "φ");
+        if (next.isEmpty()) {
+            next = this.cell(type, "returns");
+        }
+        return this.names.getOrDefault(next, next);
+    }
+
+    /**
+     * What the row about the type itself says under the given name.
+     * @param type The name the type goes by
+     * @param cell The name of the cell
+     * @return What the cell says, or an empty string when the table has no
+     *  such cell about this type
+     */
+    private String cell(final String type, final String cell) {
+        String found = "";
+        for (final Map<String, String> row : this.own(type)) {
+            if (row.containsKey("id")) {
+                found = row.getOrDefault(cell, "");
+            }
+        }
+        return found;
     }
 
     /**
