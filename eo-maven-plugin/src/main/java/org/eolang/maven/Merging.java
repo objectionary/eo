@@ -9,6 +9,7 @@ import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,14 +38,6 @@ import org.w3c.dom.Node;
  * arguments, stay as they were.</p>
  *
  * @since 0.68.0
- * @todo #6656:30min Write the merged XMIR only when it differs.
- *  The file is written on every build, so its timestamp always moves and
- *  {@link Transpiling} compiles the object again even when neither the object
- *  nor any member of it was touched. It is done this way because the opposite
- *  mistake is worse: a merged object left over from an earlier build would
- *  quietly compile yesterday's member. Comparing the text with what is
- *  already there, and writing only on a difference, would give the
- *  incremental build back without that risk.
  */
 final class Merging implements Step {
 
@@ -175,10 +168,10 @@ final class Merging implements Step {
             );
         }
         final Path target = new Place(pkg).make(this.dir, MjAssemble.XMIR);
-        new Saved(
-            new XMLDocument(formation.getOwnerDocument()).toString(),
-            target
-        ).value();
+        final String merged = new XMLDocument(formation.getOwnerDocument()).toString();
+        if (!Files.exists(target) || !new Diff(Files.readString(target), merged).same()) {
+            new Saved(merged, target).value();
+        }
         object.withXmir(target);
         for (final TjForeign member : members.values()) {
             member.withMerged(pkg);
