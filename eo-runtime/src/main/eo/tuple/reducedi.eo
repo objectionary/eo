@@ -26,16 +26,16 @@
         tup.tail.length
     | list
 
-  ++> can-reduce-a-list-with-indexes
-    6.eq > @
-      reducedi.
-        * 1 1
-        0
-        x.plus > [a x i] >>
-          a.plus
-            at.
-              * 2 2
-              i
+  eq. ++> can-reduce-a-list-with-indexes
+    6
+    reducedi.
+      * 1 1
+      0
+      x.plus > [a x i]
+        a.plus
+          at.
+            * 2 2
+            i
 
   eq. ++> can-reduce-a-long-integer-list-with-indexes
     reducedi.
