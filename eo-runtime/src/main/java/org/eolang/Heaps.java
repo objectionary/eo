@@ -222,13 +222,11 @@ final class Heaps {
             final int length = source.length;
             if (length < end) {
                 throw new ExFailure(
-                    String.format(
-                        "Can't write '%d' bytes with offset '%d' to the block with identifier '%d', because only '%d' were allocated",
-                        data.length,
-                        offset,
-                        identifier,
-                        length
-                    )
+                    "Can't write '%d' bytes with offset '%d' to the block with identifier '%d', because only '%d' were allocated",
+                    data.length,
+                    offset,
+                    identifier,
+                    length
                 );
             }
             final byte[] result = new byte[length];

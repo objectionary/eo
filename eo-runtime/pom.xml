@@ -437,6 +437,17 @@
               <excludes>
                 <exclude>dependencies:org.eolang:eo-maven-plugin</exclude>
               </excludes>
+              <errorprone>
+                <!--
+                PhDefault.equals() compares hash codes on purpose. Every
+                decorator of Phi (PhOnce, PhSafe, PhCoverage, Data.ToPhi)
+                delegates both equals() and hashCode() to its origin, so a
+                wrapper has to compare equal to what it wraps. Comparing
+                identities instead breaks that, and even breaks reflexivity:
+                x.equals(x) turns into origin == x for every wrapper.
+                -->
+                <errorprone>-Xep:EqualsUsingHashCode:OFF</errorprone>
+              </errorprone>
             </configuration>
           </plugin>
           <plugin>
