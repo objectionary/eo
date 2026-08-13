@@ -41,6 +41,16 @@ public final class PhTerminator implements Phi {
     private Phi cause;
 
     /**
+     * The reason to fall back to if nothing is ever {@code put} into this
+     * bottom, or {@code null} for the plain generic explanation. Unlike
+     * {@link #cause}, a birth-site default never blocks a later, more
+     * specific {@code put} — a caller that takes a void attribute's bottom
+     * and immediately puts its own reason (as {@code bytes.slice} does with
+     * its {@code cant-slice} fallback) must still win.
+     */
+    private Phi fallback;
+
+    /**
      * Ctor.
      */
     public PhTerminator() {
@@ -60,6 +70,20 @@ public final class PhTerminator implements Phi {
     public static PhTerminator withCause(final String cause) {
         final PhTerminator term = new PhTerminator();
         term.put(0, new Data.ToPhi(cause));
+        return term;
+    }
+
+    /**
+     * Make a bottom that explains, by default, why it was born without a
+     * dispatch ever reaching it, while still letting a caller that takes it
+     * and puts its own, more specific reason override that default.
+     * @param reason The default reason for the termination
+     * @return A bottom carrying the default reason
+     */
+    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
+    public static PhTerminator withDefaultCause(final String reason) {
+        final PhTerminator term = new PhTerminator();
+        term.fallback = new Data.ToPhi(reason);
         return term;
     }
 
@@ -122,16 +146,18 @@ public final class PhTerminator implements Phi {
     }
 
     /**
-     * The reason to panic with, either the cause this bottom was given or the
-     * plain explanation of a bottom that was born without one.
+     * The reason to panic with: the cause this bottom was explicitly given,
+     * else its birth-site default, else the plain generic explanation.
      * @return The reason as an object
      */
     private Phi reason() {
         final Phi reason;
-        if (this.cause == null) {
-            reason = new Data.ToPhi("the ⊥ object is a terminated computation and cannot be used");
-        } else {
+        if (this.cause != null) {
             reason = this.cause;
+        } else if (this.fallback != null) {
+            reason = this.fallback;
+        } else {
+            reason = new Data.ToPhi("the ⊥ object is a terminated computation and cannot be used");
         }
         return reason;
     }
