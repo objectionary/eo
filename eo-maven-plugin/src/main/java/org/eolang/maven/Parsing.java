@@ -101,12 +101,7 @@ final class Parsing implements Step {
     @Override
     public void exec() {
         final Collection<TjForeign> sources = this.tojos.withSources();
-        final String objects = sources.stream()
-            .map(TjForeign::identifier)
-            .filter(id -> id.contains("."))
-            .distinct()
-            .sorted()
-            .collect(Collectors.joining(" "));
+        final String objects = new Locals(sources).names();
         final int total = this.parsed(
             sources,
             new Canonical(objects),

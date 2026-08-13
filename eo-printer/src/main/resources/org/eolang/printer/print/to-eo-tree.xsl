@@ -276,6 +276,7 @@
     <xsl:variable name="package" select="string(/object/metas/meta[head='package']/part[1])"/>
     <xsl:variable name="self-prefix" select="concat($eo:program, '.', $package, '.')"/>
     <xsl:variable name="self-rest" select="substring-after(@base, $self-prefix)"/>
+    <xsl:variable name="self-first" select="if (contains($self-rest, '.')) then substring-before($self-rest, '.') else $self-rest"/>
     <!--
     Whether some formation this reference is actually nested inside (not
     just the innermost one - a zero-hop reference here can legitimately
@@ -306,15 +307,16 @@
         -->
         <xsl:value-of select="concat('Q.', eo:translate-path(substring-after(@base, concat($eo:program, '.'))))"/>
       </xsl:when>
-      <xsl:when test="@bare and starts-with(@base, $self-prefix)">
+      <xsl:when test="$package != '' and starts-with(@base, $self-prefix) and $self-first = /object/o[1]/@name and empty(ancestor::o/o[@name = $self-first])">
         <!--
-        "add-default-package" homed this reference into the current
-        package and left its "bare" marker saying the source wrote the
-        name bare, so the redundant "Φ.<package>." prefix comes off and
-        the bare name is rendered. The marker is the only thing that can
-        decide this: a name written out in full ("foo.bar" inside package
-        "foo") rolls into the very same base, and it carries no marker, so
-        it falls through and prints qualified exactly as it was written.
+        The base names this program's own top-level object through its
+        fully-qualified "Φ.<package>.<name>…" form. The source wrote it
+        bare and every other same-package reference prints bare, so drop
+        the redundant "Φ.<package>." prefix and render the bare name. If
+        an in-scope attribute shadows that name, this branch is skipped:
+        either the package segment is shadowed too (kept "Q."-rooted by
+        the branch above) or the qualified "<package>.<name>" survives
+        through the otherwise branch, both of which resolve correctly.
         -->
         <xsl:value-of select="eo:translate-path($self-rest)"/>
       </xsl:when>

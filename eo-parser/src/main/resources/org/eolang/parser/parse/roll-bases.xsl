@@ -149,14 +149,6 @@
       <xsl:otherwise>
         <o>
           <xsl:apply-templates select="@* except @base"/>
-          <!--
-          The receiver carries the "bare" marker of "add-default-package"
-          when the source wrote its name bare and it was homed into the
-          current package. Rolling keeps only the receiver's @base, so the
-          marker has to travel with it, or the printer loses the one thing
-          that tells "foo.bar" apart from a bare "bar" homed into "foo".
-          -->
-          <xsl:apply-templates select="$arg/@bare"/>
           <xsl:attribute name="base">
             <xsl:value-of select="concat($arg/@base, @base)"/>
           </xsl:attribute>

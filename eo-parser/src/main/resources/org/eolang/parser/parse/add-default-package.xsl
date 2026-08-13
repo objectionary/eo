@@ -69,19 +69,8 @@
   -->
   <xsl:function name="eo:homed" as="xs:string">
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="concat('Φ.', if (eo:local($name)) then concat($package, '.', $name) else $name)"/>
-  </xsl:function>
-  <!--
-  Whether a bare name is homed into the current package rather than into
-  the root "Φ". The printer cannot tell the two apart afterwards, because
-  a name written out in full ("foo.bar" inside package "foo") rolls into
-  the very same "Φ.foo.bar", so every reference this answers TRUE for is
-  marked with a "bare" attribute and the printer reads that instead of
-  guessing.
-  -->
-  <xsl:function name="eo:local" as="xs:boolean">
-    <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="$package != '' and concat($package, '.', $name) = $known"/>
+    <xsl:variable name="local" select="concat($package, '.', $name)"/>
+    <xsl:sequence select="concat('Φ.', if ($package != '' and $local = $known) then $local else $name)"/>
   </xsl:function>
   <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>
@@ -125,9 +114,6 @@
   <xsl:template match="o[not(@base=/object/metas/meta[head='alias']/part[1])]" mode="no-specials">
     <xsl:copy>
       <xsl:attribute name="base" select="eo:homed(@base)"/>
-      <xsl:if test="eo:local(@base)">
-        <xsl:attribute name="bare"/>
-      </xsl:if>
       <xsl:apply-templates select="node()|@* except @base"/>
     </xsl:copy>
   </xsl:template>
@@ -140,9 +126,6 @@
   <xsl:template match="o[not(@atom=/object/metas/meta[head='alias']/part[1])]" mode="atom-no-specials">
     <xsl:copy>
       <xsl:attribute name="atom" select="eo:homed(@atom)"/>
-      <xsl:if test="eo:local(@atom)">
-        <xsl:attribute name="bare"/>
-      </xsl:if>
       <xsl:apply-templates select="node()|@* except @atom"/>
     </xsl:copy>
   </xsl:template>

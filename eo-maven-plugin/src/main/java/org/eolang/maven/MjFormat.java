@@ -46,7 +46,7 @@ import org.eolang.printer.Xmir;
  * settling pass keeps the tree it parsed instead of parsing the same text
  * again to lay it out. The first pass parses nothing at all when the
  * {@code parse} goal has already run over the same text: what it left in
- * {@link Parsing#DIR} is read back through {@link Walked} instead. A
+ * {@link Parsing#DIR} is read back through {@link Unhomed} instead. A
  * project that does not bind {@code parse} ahead of this goal still gets
  * the same answer, it just walks the source here to reach it.</p>
  *
@@ -124,9 +124,10 @@ public final class MjFormat extends MjSafe {
     void exec() throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> sources = this.scopedTojos().withSources();
+        final String objects = new Locals(sources).names();
         this.report(
             sources.size(),
-            new Threaded<>(sources, this::reformat).total(),
+            new Threaded<>(sources, tojo -> this.reformat(tojo, objects)).total(),
             System.currentTimeMillis() - start
         );
     }
@@ -134,13 +135,14 @@ public final class MjFormat extends MjSafe {
     /**
      * Reformat a single source, either fixing it or reporting the diff.
      * @param tojo The tojo of the {@code .eo} file
+     * @param objects Qualified names of the local package objects
      * @return One if the file diverged from the canonical form, zero otherwise
      * @throws IOException If fails to read or write the file
      */
-    private int reformat(final TjForeign tojo) throws IOException {
+    private int reformat(final TjForeign tojo, final String objects) throws IOException {
         final Path source = tojo.source();
         final String actual = new UncheckedText(new TextOf(source)).asString();
-        final String canonical = this.canonical(tojo, actual);
+        final String canonical = this.canonical(tojo, actual, objects);
         final Diff diff = new Diff(actual, canonical);
         final int diverged;
         if (diff.same()) {
@@ -178,13 +180,16 @@ public final class MjFormat extends MjSafe {
      *
      * @param tojo The tojo of the {@code .eo} file
      * @param source The current text of the {@code .eo} file
+     * @param objects Qualified names of the local package objects
      * @return The canonical text
      * @throws IOException If fails to parse the source
      */
-    private String canonical(final TjForeign tojo, final String source) throws IOException {
+    private String canonical(
+        final TjForeign tojo, final String source, final String objects
+    ) throws IOException {
         final Path path = tojo.source();
         String structure = source;
-        XML tree = this.walked(tojo, structure);
+        XML tree = this.walked(tojo, structure, objects);
         for (int pass = 0; pass < MjFormat.SETTLE; ++pass) {
             final String next = new Xmir(tree).toEO();
             if (next.equals(structure)) {
@@ -220,12 +225,11 @@ public final class MjFormat extends MjSafe {
      *
      * <p>The {@code parse} goal, when a project binds it ahead of this one,
      * has already walked this very text and left its tree in
-     * {@link Parsing#DIR}, so {@link Walked} reads that tree back instead
-     * of walking the text a second time. The tree it left homes a bare
-     * reference into the program's own package, and the printer puts that
-     * back the way it was written by reading the {@code bare} marker that
-     * {@code add-default-package.xsl} leaves on it. When no such tree is
-     * waiting,
+     * {@link Parsing#DIR}, so {@link Unhomed} reads that tree back instead
+     * of walking the text a second time. That tree homes a bare reference
+     * into the program's own package and this goal prints from one that
+     * does not, which is what {@link Unhomed} settles between them. When
+     * no such tree is waiting,
      * because nothing parsed this source yet or because the source has
      * changed since (both of which {@link TjForeign#notParsed()} already
      * decides for the {@code parse} goal itself), the text is walked
@@ -233,16 +237,19 @@ public final class MjFormat extends MjSafe {
      *
      * @param tojo The tojo of the {@code .eo} file
      * @param structure The current text of the {@code .eo} file
+     * @param objects Qualified names of the local package objects
      * @return The parsed XMIR
      * @throws IOException If fails to parse the source
      */
-    private XML walked(final TjForeign tojo, final String structure) throws IOException {
+    private XML walked(
+        final TjForeign tojo, final String structure, final String objects
+    ) throws IOException {
         final XML tree;
         if (tojo.notParsed()) {
             tree = this.parsed(tojo.source(), structure);
         } else {
             tree = MjFormat.checked(
-                new Walked(tojo.xmir()).tree(), tojo.source(), structure
+                new Unhomed(tojo.xmir(), objects).tree(), tojo.source(), structure
             );
         }
         return tree;

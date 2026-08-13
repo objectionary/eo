@@ -18,7 +18,7 @@
   malloc.of > @
     0
     seq * > [m] >>
-      Q.input.copied input m.to-output
+      copied input m.to-output
       m
 
   ++> can-convert-bytes-to-an-input-and-back

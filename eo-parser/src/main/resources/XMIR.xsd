@@ -196,21 +196,6 @@
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="bare" type="xs:string">
-      <xs:annotation>
-        <xs:appinfo>The marker of a reference the source wrote bare before it was homed into the current package</xs:appinfo>
-        <xs:documentation>
-          A cosmetic marker set by "add-default-package" on a reference whose
-          bare name belongs to the current "+package" and was therefore
-          resolved into that package. Homing is not reversible on its own,
-          because a name written out in full ("foo.bar" inside package "foo")
-          rolls into the very same "Φ.foo.bar" as a bare "bar" does, so this
-          records which of the two the source held and lets the printer put
-          each back as it was written. Downstream passes and the compiler read
-          "base" and ignore this marker.
-        </xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
     <xs:attribute name="loc" type="locator"/>
     <xs:attribute name="atom" type="signature">
       <xs:annotation>

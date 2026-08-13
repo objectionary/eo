@@ -286,46 +286,6 @@ final class EoSyntaxTest {
     }
 
     @Test
-    void marksBareReferenceHomedIntoPackage() throws IOException {
-        MatcherAssert.assertThat(
-            "bare reference homed into the package must carry the marker that says so",
-            new EoSyntax(
-                new InputOf(
-                    String.join(
-                        System.lineSeparator(),
-                        "+package foo",
-                        "",
-                        "[] > x",
-                        "  bar 42 > @".concat(System.lineSeparator())
-                    )
-                ),
-                new Canonical("foo.bar")
-            ).parsed(),
-            XhtmlMatchers.hasXPath("//o[@base='Φ.foo.bar' and @bare]")
-        );
-    }
-
-    @Test
-    void keepsQualifiedReferenceUnmarked() throws IOException {
-        MatcherAssert.assertThat(
-            "reference written out in full must not be marked as bare",
-            new EoSyntax(
-                new InputOf(
-                    String.join(
-                        System.lineSeparator(),
-                        "+package foo",
-                        "",
-                        "[] > x",
-                        "  foo.bar 42 > @".concat(System.lineSeparator())
-                    )
-                ),
-                new Canonical("foo.bar")
-            ).parsed(),
-            XhtmlMatchers.hasXPath("//o[@base='Φ.foo.bar' and not(@bare)]")
-        );
-    }
-
-    @Test
     void parsesMethodCalls() throws IOException {
         MatcherAssert.assertThat(
             "We expect EO object as method call is parsed successfully",
