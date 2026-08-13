@@ -99,12 +99,12 @@ final class MjTranspileIT {
                     .set("trackTransformationSteps", "true")
                     .set("cacheEnabled", "false");
                 f.exec("process-sources");
-                MatcherAssert.assertThat(
-                    "the plugin must still understand the old name of the tracking option",
-                    temp.resolve("target/eo/5-pre-transpile").toFile().exists(),
-                    Matchers.is(true)
-                );
             }
+        );
+        MatcherAssert.assertThat(
+            "the plugin must still understand the old name of the tracking option",
+            temp.resolve("target/eo/5-pre-transpile").toFile().exists(),
+            Matchers.is(true)
         );
     }
 
