@@ -30,11 +30,19 @@
 
 [id] > chunk
   get > @
-  write > [source target length] > copy
-    target
-    read
-      source
-      length
+  [source target length] > copy
+    seq * > @
+      read source length >> data!
+      if.
+        gt.
+          target.plus length
+          size
+        write.
+          resized
+            target.plus length
+          target
+          data
+        write target data
   read > get
     0
     size
@@ -45,9 +53,17 @@
     T
       "Can't put %d bytes into a chunk sized %d bytes; call .resized first to grow it".printf
         * object.size size
-    seq *
-      write 0 object
-      get
+    if.
+      size.eq 0
+      seq *
+        write.
+          resized object.size
+          0
+          object
+        get
+      seq *
+        write 0 object
+        get
   [] > read /Q.bytes
     ? > offset /Q.number
     ? > length /Q.number
