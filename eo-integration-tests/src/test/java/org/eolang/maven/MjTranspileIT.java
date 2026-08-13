@@ -74,6 +74,28 @@ final class MjTranspileIT {
         );
     }
 
+    @Test
+    void acceptsOldNameOfTrackingOption(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/foo.eo").write(
+                    MjTranspileIT.simpleApp().getBytes(StandardCharsets.UTF_8)
+                );
+                new AppendedPlugin(f).value()
+                    .goals("register", "parse", "transpile")
+                    .configuration()
+                    .set("trackTransformationSteps", "true");
+                f.exec("process-sources");
+                MatcherAssert.assertThat(
+                    "the plugin must still understand the old name of the tracking option",
+                    temp.resolve("target/eo/5-pre-transpile").toFile().exists(),
+                    Matchers.is(true)
+                );
+            }
+        );
+    }
+
     private static void transpile(
         final Farea farea, final String path, final String source
     ) throws java.io.IOException {

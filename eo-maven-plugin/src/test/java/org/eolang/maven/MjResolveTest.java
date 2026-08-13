@@ -253,7 +253,7 @@ final class MjResolveTest {
                     "[] > main-1 /bytes"
                 )
             );
-        maven.with("ignoreVersionConflicts", true)
+        maven.with("ignoreConflicts", true)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
