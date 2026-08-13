@@ -165,8 +165,8 @@ final class BytesRaw implements Bytes {
         final boolean result;
         if (this == other) {
             result = true;
-        } else if (other instanceof Bytes) {
-            result = Arrays.equals(this.data, ((Bytes) other).take());
+        } else if (other instanceof Bytes bytes) {
+            result = Arrays.equals(this.data, bytes.take());
         } else {
             result = false;
         }
@@ -258,7 +258,7 @@ final class BytesRaw implements Bytes {
         } else if (num < 0) {
             result = (byte) 0;
         } else {
-            byte temp = num;
+            int temp = num;
             int bts = Byte.SIZE - 1;
             if (temp >= 1 << 4) {
                 bts -= 4;
@@ -294,10 +294,8 @@ final class BytesRaw implements Bytes {
         }
         if (bytes.length != expected) {
             throw new ExFailure(
-                String.format(
-                    "Can't convert %d bytes to %s, exactly %d bytes expected",
-                    bytes.length, type.getName(), expected
-                )
+                "Can't convert %d bytes to %s, exactly %d bytes expected",
+                bytes.length, type.getName(), expected
             );
         }
         return buf;

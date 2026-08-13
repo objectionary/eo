@@ -168,7 +168,7 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public int hashCode() {
-        return super.hashCode() + 1;
+        return System.identityHashCode(this) + 1;
     }
 
     @Override
@@ -271,10 +271,8 @@ public class PhDefault implements Phi, Cloneable {
             bytes = this.take(Phi.PHI).delta();
         } else {
             throw new ExFailure(
-                String.format(
-                    "There's no \"Δ\" in the object of \"%s\"",
-                    this.forma()
-                )
+                "There's no \"Δ\" in the object of \"%s\"",
+                this.forma()
             );
         }
         return bytes;
@@ -522,28 +520,22 @@ public class PhDefault implements Phi, Cloneable {
         this.loaded();
         if (0 > pos) {
             throw new ExFailure(
-                String.format(
-                    "The attribute position can't be negative (%d)",
-                    pos
-                )
+                "The attribute position can't be negative (%d)",
+                pos
             );
         }
         if (this.order.isEmpty()) {
             throw new ExFailure(
-                String.format(
-                    "There are no attributes here, can't read the %d-th one",
-                    pos
-                )
+                "There are no attributes here, can't read the %d-th one",
+                pos
             );
         }
         if (!this.order.containsKey(pos)) {
             throw new ExFailure(
-                String.format(
-                    "%s has just %d attribute(s), can't read the %d-th one",
-                    this,
-                    this.order.size(),
-                    pos
-                )
+                "%s has just %d attribute(s), can't read the %d-th one",
+                this,
+                this.order.size(),
+                pos
             );
         }
         return this.order.get(pos);

@@ -77,7 +77,7 @@ final class PhPackage implements Phi {
         } else if (this.objects.containsKey(fqn)) {
             taken = PhPackage.dispatched(this.objects.get(fqn));
         } else if (name.contains(".")) {
-            final String[] parts = name.split("\\.");
+            final String[] parts = name.split("\\.", -1);
             Phi next = this.take(parts[0]);
             for (int idx = 1; idx < parts.length; ++idx) {
                 next = next.take(parts[idx]);
@@ -155,7 +155,8 @@ final class PhPackage implements Phi {
             }
         } catch (final ClassNotFoundException pckg) {
             try {
-                loaded = (Phi) Class.forName(target)
+                loaded = Class.forName(target)
+                    .asSubclass(Phi.class)
                     .getConstructor()
                     .newInstance();
             } catch (final ClassNotFoundException phi) {

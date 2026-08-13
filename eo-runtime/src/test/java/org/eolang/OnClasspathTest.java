@@ -78,7 +78,7 @@ final class OnClasspathTest {
      *
      * @since 0.74.0
      */
-    final class Marking {
+    static final class Marking {
 
         static {
             System.setProperty("eo.onclasspath.marked", "true");
@@ -90,6 +90,6 @@ final class OnClasspathTest {
      * tampering with it cannot leak into other tests.
      * @since 0.74.0
      */
-    final class CacheProbe {
+    static final class CacheProbe {
     }
 }

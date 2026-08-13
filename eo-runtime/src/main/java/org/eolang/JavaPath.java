@@ -64,7 +64,7 @@ final class JavaPath {
      * @return Java notation of the path
      */
     private String java(final boolean wrap) {
-        final String[] parts = JavaPath.PHI.matcher(this.object).replaceAll("").split("\\.");
+        final String[] parts = JavaPath.PHI.matcher(this.object).replaceAll("").split("\\.", -1);
         final StringBuilder out = new StringBuilder("org.eolang");
         for (int idx = 0; idx < parts.length; ++idx) {
             final String prefix;

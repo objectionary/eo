@@ -155,11 +155,10 @@ public class Expect<T> {
 
         /**
          * Ctor.
-         * @param cause Exception cause
-         * @param args Arguments for {@link String#format(String, Object...)}
+         * @param message Error message
          */
-        ExMust(final String cause, final Object... args) {
-            super(String.format(cause, args));
+        ExMust(final String message) {
+            super(message);
         }
     }
 
@@ -172,11 +171,11 @@ public class Expect<T> {
 
         /**
          * Ctor.
-         * @param cause Exception cause
-         * @param args Arguments for {@link String#format(String, Object...)}
+         * @param message Error message
+         * @param root The exception that caused this one
          */
-        ExThat(final String cause, final Object... args) {
-            super(String.format(cause, args));
+        ExThat(final String message, final Throwable root) {
+            super(message, root);
         }
     }
 
@@ -189,19 +188,19 @@ public class Expect<T> {
 
         /**
          * Ctor.
-         * @param cause Exception cause
-         * @param args Arguments for {@link String#format(String, Object...)}
+         * @param message Error message
+         * @param root The exception that caused this one
          */
-        ExOtherwise(final String cause, final Object... args) {
-            super(String.format(cause, args));
+        ExOtherwise(final String message, final Throwable root) {
+            super(message, root);
         }
     }
 
     /**
-     * Transform Expect to Number.
+     * Transform Expect to a floating-point number.
      * @since 0.51
      */
-    public static final class Number {
+    public static final class Numeric {
 
         /**
          * Expect.
@@ -212,7 +211,7 @@ public class Expect<T> {
          * Ctor.
          * @param expect Expect
          */
-        public Number(final Expect<Phi> expect) {
+        public Numeric(final Expect<Phi> expect) {
             this.expect = expect;
         }
 

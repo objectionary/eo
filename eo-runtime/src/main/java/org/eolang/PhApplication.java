@@ -26,6 +26,11 @@ public final class PhApplication extends PhOnce {
     private static final Pattern DATA = Pattern.compile("\\[D> ([0-9A-F-]*)]");
 
     /**
+     * The dash that terminates a single-byte hex string.
+     */
+    private static final Pattern TRAILING = Pattern.compile("-$");
+
+    /**
      * Ctor.
      * @param phi The object
      * @param binds The bindings to apply, in order
@@ -145,15 +150,23 @@ public final class PhApplication extends PhOnce {
 
     /**
      * Parse a dash-separated hex string into bytes.
+     *
+     * <p>A single byte is written with a trailing dash ("BB-") and no bytes
+     * at all as a lone pair of them ("--"), so both are taken apart before
+     * the rest is split.</p>
+     *
      * @param hex The hex, like "40-45-00"
      * @return The byte array
      */
     private static byte[] bytes(final String hex) {
         final byte[] bytes;
-        if (hex.isEmpty()) {
+        if (hex.isEmpty() || "--".equals(hex)) {
             bytes = new byte[0];
         } else {
-            final String[] parts = hex.split("-");
+            final String[] parts = PhApplication.TRAILING
+                .matcher(hex)
+                .replaceAll("")
+                .split("-", -1);
             bytes = new byte[parts.length];
             for (int idx = 0; idx < parts.length; ++idx) {
                 bytes[idx] = (byte) Integer.parseInt(parts[idx], 16);
