@@ -48,9 +48,16 @@ import org.eolang.printer.Xmir;
  * again to lay it out.</p>
  *
  * @since 0.57.0
- * @todo #6627:30min Verify the tree read back from {@link Parsing#DIR} the way {@link #parsed(Path, String)} verifies the one it walks, so that a truncated or placeholder-carrying tree is not printed back over its source.
- * @todo #6627:30min Give the local package object names to both this goal and {@link Parsing} from one object, instead of each building the same list its own way, so the two cannot drift apart.
- * @todo #6627:30min Read the tree of {@link #walked(TjForeign, String, String)} through an object of its own rather than inside this goal, so that the reading and the un-homing can be tested apart from the mojo.
+ * @todo #6627:30min Verify the tree read back from {@link Parsing#DIR}.
+ *  The one this goal walks itself goes through {@link #parsed(Path, String)},
+ *  which rejects a truncated or placeholder-carrying tree; the one read back
+ *  is printed over its source unchecked.
+ * @todo #6627:30min Name the local package objects in one place.
+ *  This goal and {@link Parsing} each build the same list their own way, and
+ *  the un-homing is only exact while the two agree, so they must not drift.
+ * @todo #6627:30min Read the parsed tree through an object of its own.
+ *  It is read and un-homed inside {@link #walked(TjForeign, String, String)},
+ *  where neither half can be tested apart from the mojo.
  */
 @Mojo(
     name = "format",
