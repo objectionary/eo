@@ -8,19 +8,20 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.parser.Canonical;
 import org.eolang.parser.EoSyntax;
 import org.eolang.printer.PenaltyKey;
 import org.eolang.printer.Xmir;
@@ -44,13 +45,12 @@ import org.eolang.printer.Xmir;
  * does it as few times as it can: the sources are checked concurrently,
  * through {@link Threaded}, the way every other goal walks them, and each
  * settling pass keeps the tree it parsed instead of parsing the same text
- * again to lay it out. The first pass parses nothing at all when the
- * {@code parse} goal has already run over the same text: what it left in
- * {@link Parsing#DIR} is read back through {@link Unhomed} instead. A
- * project that does not bind {@code parse} ahead of this goal still gets
- * the same answer, it just walks the source here to reach it.</p>
+ * again to lay it out.</p>
  *
  * @since 0.57.0
+ * @todo #6627:30min Verify the tree read back from {@link Parsing#DIR} the way {@link #parsed(Path, String)} verifies the one it walks, so that a truncated or placeholder-carrying tree is not printed back over its source.
+ * @todo #6627:30min Give the local package object names to both this goal and {@link Parsing} from one object, instead of each building the same list its own way, so the two cannot drift apart.
+ * @todo #6627:30min Read the tree of {@link #walked(TjForeign, String, String)} through an object of its own rather than inside this goal, so that the reading and the un-homing can be tested apart from the mojo.
  */
 @Mojo(
     name = "format",
@@ -108,23 +108,22 @@ public final class MjFormat extends MjSafe {
     private Integer width;
 
     /**
-     * Turns a walked tree into canonical XMIR, built once and reused by
-     * every source this goal checks.
-     */
-    private final UnaryOperator<XML> pipeline;
-
-    /**
      * Ctor.
      */
     public MjFormat() {
-        this.pipeline = new Canonical();
+        // nothing
     }
 
     @Override
     void exec() throws IOException {
         final long start = System.currentTimeMillis();
         final Collection<TjForeign> sources = this.scopedTojos().withSources();
-        final String objects = new Locals(sources).names();
+        final String objects = sources.stream()
+            .map(TjForeign::identifier)
+            .filter(id -> id.contains("."))
+            .distinct()
+            .sorted()
+            .collect(Collectors.joining(" "));
         this.report(
             sources.size(),
             new Threaded<>(sources, tojo -> this.reformat(tojo, objects)).total(),
@@ -189,51 +188,27 @@ public final class MjFormat extends MjSafe {
     ) throws IOException {
         final Path path = tojo.source();
         String structure = source;
-        XML tree = this.walked(tojo, structure, objects);
+        XML tree = MjFormat.walked(tojo, structure, objects);
         for (int pass = 0; pass < MjFormat.SETTLE; ++pass) {
             final String next = new Xmir(tree).toEO();
             if (next.equals(structure)) {
                 break;
             }
             structure = next;
-            tree = this.parsed(path, structure);
+            tree = MjFormat.parsed(path, structure);
         }
         return new Xmir(tree, this.weights()).toEO();
     }
 
     /**
-     * Walk a text and lay this goal's pipeline over what came out.
-     * @param source The path of the {@code .eo} file, for the error message
-     * @param structure The current text of the {@code .eo} file
-     * @return The parsed XMIR
-     * @throws IOException If fails to parse the source
-     */
-    private XML parsed(final Path source, final String structure) throws IOException {
-        return MjFormat.checked(
-            this.pipeline.apply(
-                new EoSyntax(
-                    new InputOf(structure), UnaryOperator.<XML>identity()
-                ).parsed()
-            ),
-            source,
-            structure
-        );
-    }
-
-    /**
      * The tree of the text this source currently holds.
      *
-     * <p>The {@code parse} goal, when a project binds it ahead of this one,
-     * has already walked this very text and left its tree in
-     * {@link Parsing#DIR}, so {@link Unhomed} reads that tree back instead
-     * of walking the text a second time. That tree homes a bare reference
-     * into the program's own package and this goal prints from one that
-     * does not, which is what {@link Unhomed} settles between them. When
-     * no such tree is waiting,
-     * because nothing parsed this source yet or because the source has
-     * changed since (both of which {@link TjForeign#notParsed()} already
-     * decides for the {@code parse} goal itself), the text is walked
-     * here.</p>
+     * <p>The {@code parse} goal, bound ahead of this one, has already walked
+     * this text into {@link Parsing#DIR}, so that tree is read back instead
+     * of the text being walked again. It homes a bare reference into the
+     * program's own package, which {@code unhome-package.xsl} undoes. When
+     * {@link TjForeign#notParsed()} says no such tree is waiting, the text
+     * is walked here.</p>
      *
      * @param tojo The tojo of the {@code .eo} file
      * @param structure The current text of the {@code .eo} file
@@ -241,22 +216,29 @@ public final class MjFormat extends MjSafe {
      * @return The parsed XMIR
      * @throws IOException If fails to parse the source
      */
-    private XML walked(
+    private static XML walked(
         final TjForeign tojo, final String structure, final String objects
     ) throws IOException {
         final XML tree;
         if (tojo.notParsed()) {
-            tree = this.parsed(tojo.source(), structure);
+            tree = MjFormat.parsed(tojo.source(), structure);
         } else {
-            tree = MjFormat.checked(
-                new Unhomed(tojo.xmir(), objects).tree(), tojo.source(), structure
-            );
+            final XML saved = new XMLDocument(tojo.xmir());
+            for (final XML blank : saved.nodes("//text()[not(normalize-space())][../*]")) {
+                blank.inner().getParentNode().removeChild(blank.inner());
+            }
+            tree = new Xsline(
+                new StClasspath(
+                    "/org/eolang/maven/format/unhome-package.xsl",
+                    String.format("objects %s", objects)
+                )
+            ).pass(saved);
         }
         return tree;
     }
 
     /**
-     * Verify none of the source was lost in the tree that describes it.
+     * Parse a source and verify none of the source was lost in the process.
      * A source with a genuine syntax error still yields an XMIR carrying
      * {@code <errors>} (see {@link Parsing}), but the parser also recovers
      * from many purely cosmetic layout violations (e.g. extra blank lines,
@@ -282,12 +264,13 @@ public final class MjFormat extends MjSafe {
      * yet the tree no longer describes the source, so this also rejects a
      * tree carrying such a {@link #placeholder(XML) placeholder}.</p>
      *
-     * @param xmir The tree of the source
      * @param source The path of the {@code .eo} file, for the error message
      * @param structure The current text of the {@code .eo} file
-     * @return The very same tree
+     * @return The parsed XMIR
+     * @throws IOException If fails to parse the source
      */
-    private static XML checked(final XML xmir, final Path source, final String structure) {
+    private static XML parsed(final Path source, final String structure) throws IOException {
+        final XML xmir = new EoSyntax(structure).parsed();
         final long errors = new Xnav(xmir.inner())
             .element("object")
             .element("errors")
