@@ -60,19 +60,16 @@ import java.util.Collection;
  * skipped: {@code [] > recovered /A} comes back with whatever the caller put
  * in, and that is a variable, which nothing here understands yet.</p>
  *
- * <p>Not every attribute is written inside the formation it belongs to:
+ * <p>Not every attribute is written inside the formation it belongs to.
+ * {@code ρ}, the object something sits in, is written nowhere and every
+ * object has one, which {@link Parents} reads off the locator. And
  * {@code minus} in the package {@code number} is {@code Φ.number.minus} and
- * belongs to {@code Φ.number} without ever appearing among its children.
- * {@link Members} finds those and they go into this table too, last, since
- * the order of attributes is what binds the arguments of an application and
- * a file of a package binds none of them.</p>
+ * belongs to {@code Φ.number} without ever appearing among its children,
+ * which {@link Members} finds. Both go into this table after the attributes
+ * a formation binds itself, since the order of those is what binds the
+ * arguments of an application and neither of these two is one of them.</p>
  *
  * @since 0.67.0
- * @todo #6565:35min Write down the {@code ρ} every object has. An outer
- *  name lowers to a dispatch of {@code ρ}, so the needs table asks for
- *  it, while no row here ever lists it and the owner is called complete
- *  all the same. Give every type a {@code ρ} attribute, or say in this
- *  table that {@code ρ} is not a name the checker judges.
  */
 final class Provides implements Clue {
 
@@ -100,6 +97,7 @@ final class Provides implements Clue {
                     }
                 }
             }
+            new Parents(made).fill(rows);
             new Members(made, world.roots()).fill(rows);
             Files.createDirectories(tables);
             Files.write(
