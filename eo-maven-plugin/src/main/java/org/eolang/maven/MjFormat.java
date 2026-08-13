@@ -44,11 +44,8 @@ import org.eolang.printer.Xmir;
  * does it as few times as it can: the sources are checked concurrently,
  * through {@link Threaded}, the way every other goal walks them, and each
  * settling pass keeps the tree it parsed instead of parsing the same text
- * again to lay it out. The first pass parses nothing at all when the
- * {@code parse} goal has already run over the same text: what it left in
- * {@link Parsing#DIR} is read back through {@link Unhomed} instead. A
- * project that does not bind {@code parse} ahead of this goal still gets
- * the same answer, it just walks the source here to reach it.</p>
+ * again to lay it out, and what it walked goes to {@link Trees}, so that
+ * the {@code parse} goal does not walk the same text over again.</p>
  *
  * @since 0.57.0
  */
@@ -126,21 +123,20 @@ public final class MjFormat extends MjSafe {
         final Collection<TjForeign> sources = this.scopedTojos().withSources();
         this.report(
             sources.size(),
-            new Threaded<>(sources, this::reformat).total(),
+            new Threaded<>(sources, tojo -> this.reformat(tojo.source())).total(),
             System.currentTimeMillis() - start
         );
     }
 
     /**
      * Reformat a single source, either fixing it or reporting the diff.
-     * @param tojo The tojo of the {@code .eo} file
+     * @param source The path of the {@code .eo} file
      * @return One if the file diverged from the canonical form, zero otherwise
      * @throws IOException If fails to read or write the file
      */
-    private int reformat(final TjForeign tojo) throws IOException {
-        final Path source = tojo.source();
+    private int reformat(final Path source) throws IOException {
         final String actual = new UncheckedText(new TextOf(source)).asString();
-        final String canonical = this.canonical(tojo, actual);
+        final String canonical = this.canonical(source, actual);
         final Diff diff = new Diff(actual, canonical);
         final int diverged;
         if (diff.same()) {
@@ -176,15 +172,14 @@ public final class MjFormat extends MjSafe {
      * source that has not settled by then is laid out as-is and reported
      * divergent, so it fails loudly instead of looping.</p>
      *
-     * @param tojo The tojo of the {@code .eo} file
+     * @param path The path of the {@code .eo} file, for the error message
      * @param source The current text of the {@code .eo} file
      * @return The canonical text
      * @throws IOException If fails to parse the source
      */
-    private String canonical(final TjForeign tojo, final String source) throws IOException {
-        final Path path = tojo.source();
+    private String canonical(final Path path, final String source) throws IOException {
         String structure = source;
-        XML tree = this.walked(tojo, structure);
+        XML tree = this.parsed(path, structure);
         for (int pass = 0; pass < MjFormat.SETTLE; ++pass) {
             final String next = new Xmir(tree).toEO();
             if (next.equals(structure)) {
@@ -197,57 +192,7 @@ public final class MjFormat extends MjSafe {
     }
 
     /**
-     * Walk a text and lay this goal's pipeline over what came out.
-     * @param source The path of the {@code .eo} file, for the error message
-     * @param structure The current text of the {@code .eo} file
-     * @return The parsed XMIR
-     * @throws IOException If fails to parse the source
-     */
-    private XML parsed(final Path source, final String structure) throws IOException {
-        return MjFormat.checked(
-            this.pipeline.apply(
-                new EoSyntax(
-                    new InputOf(structure), UnaryOperator.<XML>identity()
-                ).parsed()
-            ),
-            source,
-            structure
-        );
-    }
-
-    /**
-     * The tree of the text this source currently holds.
-     *
-     * <p>The {@code parse} goal, when a project binds it ahead of this one,
-     * has already walked this very text and left its tree in
-     * {@link Parsing#DIR}, so this reads that tree back instead of walking
-     * the text a second time. The tree it left is homed into the program's
-     * own package and the tree this goal prints from is not, which is what
-     * {@link Unhomed} settles between them. When no such tree is waiting,
-     * because nothing parsed this source yet or because the source has
-     * changed since (both of which {@link TjForeign#notParsed()} already
-     * decides for the {@code parse} goal itself), the text is walked
-     * here.</p>
-     *
-     * @param tojo The tojo of the {@code .eo} file
-     * @param structure The current text of the {@code .eo} file
-     * @return The parsed XMIR
-     * @throws IOException If fails to parse the source
-     */
-    private XML walked(final TjForeign tojo, final String structure) throws IOException {
-        final XML tree;
-        if (tojo.notParsed()) {
-            tree = this.parsed(tojo.source(), structure);
-        } else {
-            tree = MjFormat.checked(
-                new Unhomed(tojo.xmir()).tree(), tojo.source(), structure
-            );
-        }
-        return tree;
-    }
-
-    /**
-     * Verify none of the source was lost in the tree that describes it.
+     * Parse a source and verify none of the source was lost in the process.
      * A source with a genuine syntax error still yields an XMIR carrying
      * {@code <errors>} (see {@link Parsing}), but the parser also recovers
      * from many purely cosmetic layout violations (e.g. extra blank lines,
@@ -273,12 +218,17 @@ public final class MjFormat extends MjSafe {
      * yet the tree no longer describes the source, so this also rejects a
      * tree carrying such a {@link #placeholder(XML) placeholder}.</p>
      *
-     * @param xmir The tree of the source
      * @param source The path of the {@code .eo} file, for the error message
      * @param structure The current text of the {@code .eo} file
-     * @return The very same tree
+     * @return The parsed XMIR
+     * @throws IOException If fails to parse the source
      */
-    private static XML checked(final XML xmir, final Path source, final String structure) {
+    private XML parsed(final Path source, final String structure) throws IOException {
+        final XML raw = new EoSyntax(
+            new InputOf(structure), UnaryOperator.<XML>identity()
+        ).parsed();
+        new Trees.TsSaved(this.targetDir.toPath()).remember(structure, raw);
+        final XML xmir = this.pipeline.apply(raw);
         final long errors = new Xnav(xmir.inner())
             .element("object")
             .element("errors")
