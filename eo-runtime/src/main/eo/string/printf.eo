@@ -187,7 +187,7 @@
               string datum
       if.
         64-.eq conv
-        as-decimal
+        as-decimal.
           if.
             or.
               gte.
@@ -201,12 +201,11 @@
             T
               "The number %s doesn't fit into the long range of the '%%d' conversion".printf
                 *
-                  string
-                    as-scientific (number numeric)
+                  string (number numeric).as-scientific
             number numeric
         if.
           66-.eq conv
-          as-fixed
+          as-fixed.
             number numeric
             precise.as-bool.if
               number precision
@@ -214,9 +213,7 @@
             failure
           if.
             78-.eq conv
-            capped
-              as-hex
-                bytes datum
+            capped (bytes datum).as-hex
             if.
               62-.eq conv
               capped
