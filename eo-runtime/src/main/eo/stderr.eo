@@ -37,13 +37,18 @@
                       "Failed to write to standard error"
                     output-block
                   code
-                  output-block
+                  remainder
                 code. > code
                   win32 *1
                     "_write"
                     win32.stderr
                     buffer
                     buffer.size
+                if. > remainder
+                  code.lt buffer.size
+                  output-block.write
+                    buffer.slice code (buffer.size.minus code)
+                  output-block
         [] >>
           [buffer] > write
             @. > @
@@ -58,13 +63,18 @@
                       "Failed to write to standard error"
                     output-block
                   code
-                  output-block
+                  remainder
                 code. > code
                   posix *1
                     "write"
                     posix.stderr
                     buffer
                     buffer.size
+                if. > remainder
+                  code.lt buffer.size
+                  output-block.write
+                    buffer.slice code (buffer.size.minus code)
+                  output-block
       text
     true
 
