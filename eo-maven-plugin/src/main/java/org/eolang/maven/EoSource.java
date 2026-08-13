@@ -15,9 +15,8 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
 import org.eolang.parser.Canonical;
+import org.eolang.parser.EoSyntax;
 import org.eolang.parser.OnDefault;
 import org.eolang.parser.OnDetailed;
 import org.w3c.dom.Node;
@@ -87,14 +86,11 @@ final class EoSource {
 
     /**
      * Parse the source code into XMIR.
-     * @param walked The trees walked out of the sources of this build
      * @return Parsed XMIR
      * @throws IOException If fails
      */
-    Xmir parsed(final Trees walked) throws IOException {
-        final XML xmir = walked.tree(
-            new UncheckedText(new TextOf(this.input)).asString(), this.transform
-        );
+    Xmir parsed() throws IOException {
+        final XML xmir = new EoSyntax(this.input, this.transform).parsed();
         final List<String> errors = new ArrayList<>(0);
         final Node document = xmir.inner();
         final String name = new OnDetailed(
