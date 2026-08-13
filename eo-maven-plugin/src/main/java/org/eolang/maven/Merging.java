@@ -12,10 +12,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 import org.w3c.dom.Node;
 
 /**
@@ -87,7 +89,7 @@ final class Merging implements Step {
         } else {
             final Map<String, TjForeign> all = this.indexed();
             int done = 0;
-            for (final String pkg : this.packages) {
+            for (final String pkg : this.deepest()) {
                 done = done + this.spliced(pkg, all);
             }
             Logger.info(
@@ -95,6 +97,25 @@ final class Merging implements Step {
                 done, this.packages.size(), this.dir
             );
         }
+    }
+
+    /**
+     * The packages to merge, the deeper ones first.
+     *
+     * <p>A package can be a member of another one, as {@code Φ.number.i64} is
+     * a member of {@code Φ.number}, and then the order decides what
+     * {@code number} takes in: merged last, {@code i64} would arrive without
+     * the members it had just been given. Depth puts every package after the
+     * ones it holds, whatever order they were named in.</p>
+     *
+     * @return The names of the packages
+     */
+    private Collection<String> deepest() {
+        return this.packages.stream().sorted(
+            Comparator.comparingInt((String pkg) -> pkg.split("\\.").length)
+                .reversed()
+                .thenComparing(Comparator.naturalOrder())
+        ).collect(Collectors.toList());
     }
 
     /**
@@ -129,7 +150,9 @@ final class Merging implements Step {
         final Node formation = Merging.formation(object.xmir());
         final Collection<String> taken = Merging.names(formation);
         for (final Map.Entry<String, TjForeign> member : members.entrySet()) {
-            final Xnav top = Merging.top(member.getValue().xmir());
+            final Xnav top = Merging.top(
+                member.getValue().xmir()
+            );
             final String name = top.attribute("name").text().orElseThrow(
                 () -> new IllegalStateException(
                     String.format(

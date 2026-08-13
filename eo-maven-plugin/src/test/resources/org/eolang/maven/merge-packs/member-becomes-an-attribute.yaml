@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A member of a package is a file of its own, and after the merge it is an
+# attribute of the object the package names. Nothing else about it changes:
+# it keeps its name, its voids and its body.
+merged:
+  - number
+eo:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+  number/lt.eo: |
+    +package number
+
+    [n x] > lt
+      n.gt x > @
+xmir:
+  number.eo:
+    - "/object/o[@name='number']/o[@name='lt']"
+    - "/object/o[@name='number']/o[@name='lt']/o[@base='∅' and @name='n']"
+    - "/object/o[@name='number']/o[@name='lt']/o[@base='∅' and @name='x']"
+    - "/object/o[@name='number']/o[@name='lt']/o[@name='φ']"

@@ -127,7 +127,7 @@ final class TjsForeign implements Closeable {
      * object of their package, since those are compiled as a part of it.
      * @return The tojos
      */
-    Collection<TjForeign> unmerged() {
+    Collection<TjForeign> standalone() {
         return this.select(
             row -> row.exists(Attribute.XMIR.getKey())
                 && !row.exists(Attribute.MERGED.getKey())
