@@ -137,7 +137,16 @@
     ""
   if. > scheme
     eq.
-      string.index-of text ":" >> scheme-colon
+      if. >> scheme-colon
+        or.
+          eq.
+            string.index-of text ":" >> raw-colon
+            -1
+          not.
+            "/[A-Za-z][A-Za-z0-9+.-]*/".regex.compiled.matches
+              text.slice 0 raw-colon
+        -1
+        raw-colon
       -1
     ""
     text.slice
@@ -190,6 +199,11 @@
     port.
       uri "http://host:/"
     ""
+
+  eq. ++> can-parse-a-scheme-with-a-plus-and-a-dot
+    scheme.
+      uri "a+b.c:part"
+    "a+b.c"
 
   eq. ++> can-parse-the-empty-host-of-a-triple-slash-uri
     host.
@@ -254,4 +268,14 @@
   eq. ++> can-treat-a-non-digit-port-as-invalid
     port.
       uri "http://host:abc/"
+    ""
+
+  eq. ++> cannot-treat-a-digit-led-prefix-as-a-scheme
+    scheme.
+      uri "1http://host/path"
+    ""
+
+  eq. ++> cannot-treat-a-plus-led-prefix-as-a-scheme
+    scheme.
+      uri "+foo:bar"
     ""
