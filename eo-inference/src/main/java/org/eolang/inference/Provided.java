@@ -46,16 +46,24 @@ final class Provided {
     private final Map<String, String> names;
 
     /**
+     * The locator of every void, from {@link Hollows}.
+     */
+    private final Collection<String> hollows;
+
+    /**
      * Ctor.
      * @param rows The rows of the provides table, by the name of their owner
      * @param aliases The name every type goes by, from {@link Same}
+     * @param voids The locator of every void, from {@link Hollows}
      */
     Provided(
         final Map<String, Collection<Map<String, String>>> rows,
-        final Map<String, String> aliases
+        final Map<String, String> aliases,
+        final Collection<String> voids
     ) {
         this.table = rows;
         this.names = aliases;
+        this.hollows = voids;
     }
 
     /**
@@ -70,6 +78,49 @@ final class Provided {
     }
 
     /**
+     * The void this type keeps in the given place.
+     * @param type The name the type goes by
+     * @param place The place of the void among the voids of this type
+     * @return The locator of the void, or an empty string when this type keeps
+     *  fewer voids than that
+     */
+    String slot(final String type, final int place) {
+        String found = "";
+        int seen = 0;
+        for (final Map<String, String> row : this.own(type)) {
+            if ("true".equals(row.get("void"))) {
+                if (seen == place) {
+                    found = row.getOrDefault("type", "");
+                    break;
+                }
+                seen += 1;
+            }
+        }
+        return found;
+    }
+
+    /**
+     * Whether this type is a void, or a name taken from one.
+     * @param type The name the type goes by
+     * @return True when nothing but a caller can say what it is
+     */
+    private boolean hollow(final String type) {
+        boolean found = false;
+        String walked = type;
+        while (!walked.isEmpty()) {
+            if (this.hollows.contains(walked)) {
+                found = true;
+                break;
+            }
+            if (!walked.contains(".")) {
+                break;
+            }
+            walked = walked.substring(0, walked.lastIndexOf('.'));
+        }
+        return found;
+    }
+
+    /**
      * The type of the attribute this type keeps, looking behind what it
      * delegates to when it keeps none.
      * @param type The name the type goes by
@@ -80,7 +131,7 @@ final class Provided {
     private String kept(final String type, final String name, final Collection<String> walked) {
         String found = this.bound(type, name);
         final String member = String.join(".", type, name);
-        if (found.isEmpty() && this.table.containsKey(member)) {
+        if (found.isEmpty() && (this.table.containsKey(member) || this.hollow(type))) {
             found = member;
         }
         final String behind = this.behind(type);

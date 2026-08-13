@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# What `x` holds is decided by whoever fills it, so `x.next` is a different
+# object for every caller. It is the same thing said of all of them, though —
+# the `next` of whatever `x` holds — and the locator of the void is the name
+# that says it. Nothing is claimed here about what that object has.
+eo:
+  inc.eo: |
+    [x] > inc
+      x.next > @
+links:
+  - "/links/type[@id='Φ.inc.φ' and @copy='Φ.inc.x.next']"

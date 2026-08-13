@@ -4,6 +4,7 @@
  */
 package org.eolang.inference;
 
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.MnMemory;
 import com.yegor256.tojos.TjDeferred;
@@ -12,6 +13,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -57,16 +61,17 @@ public final class Resolved implements Clue {
     public void follow(final Path xmirs, final Path tables) throws IOException {
         this.origin.follow(xmirs, tables);
         final Path links = tables.resolve("links.xml");
-        final Map<String, String> pairs = new Pairs(new XMLDocument(links)).all();
-        final Dispatched made = new Dispatched(
-            new XMLDocument(tables.resolve("provides.xml")),
-            new Xmirs(xmirs).dispatches()
+        final Xmirs world = new Xmirs(xmirs);
+        final XML given = new XMLDocument(tables.resolve("provides.xml"));
+        final Collection<XML> dispatches = world.dispatches();
+        final Map<String, List<String>> args = new Given(world.applications()).arguments();
+        final Map<String, String> pairs = new Settled(
+            new Dispatched(given, dispatches, args, given.xpath("//attr[@void='true']/@type"))
+        ).from(
+            new Settled(
+                new Dispatched(given, dispatches, args, Collections.emptyList())
+            ).from(new Pairs(new XMLDocument(links)).all())
         );
-        Map<String, String> answers = made.answers(pairs);
-        while (!answers.isEmpty()) {
-            pairs.putAll(answers);
-            answers = made.answers(pairs);
-        }
         try (Tojos rows = new TjDeferred(new MnMemory())) {
             for (final Map.Entry<String, String> pair : pairs.entrySet()) {
                 rows.add(pair.getKey()).set("copy", pair.getValue());

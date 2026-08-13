@@ -7,6 +7,7 @@ package org.eolang.inference;
 import com.jcabi.xml.XML;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,13 +43,33 @@ final class Dispatched {
     private final Collection<XML> all;
 
     /**
+     * The arguments of every application, from {@link Given}.
+     */
+    private final Map<String, List<String>> args;
+
+    /**
+     * The locator of every void this pass may look into.
+     */
+    private final Collection<String> hollows;
+
+    /**
      * Ctor.
      * @param provides The provides table
      * @param dispatches Every dispatch of the program
+     * @param arguments The arguments of every application, from {@link Given}
+     * @param voids The locator of every void this pass may look into, empty
+     *  when it may look into none
      */
-    Dispatched(final XML provides, final Collection<XML> dispatches) {
+    Dispatched(
+        final XML provides,
+        final Collection<XML> dispatches,
+        final Map<String, List<String>> arguments,
+        final Collection<String> voids
+    ) {
         this.given = provides;
         this.all = dispatches;
+        this.args = arguments;
+        this.hollows = voids;
     }
 
     /**
@@ -59,17 +80,23 @@ final class Dispatched {
      */
     Map<String, String> answers(final Map<String, String> pairs) {
         final Map<String, String> names = new Ends(pairs).names();
-        final Provided owned = new Provided(new Ungrouped(this.given, names).rows(), names);
+        final Provided owned = new Provided(
+            new Ungrouped(this.given, names).rows(), names, this.hollows
+        );
+        final Filled filled = new Filled(this.args, pairs, owned);
         final Map<String, String> found = new HashMap<>(0);
         for (final XML dispatch : this.all) {
             final String made = dispatch.xpath("@loc").get(0);
             if (!pairs.containsKey(made)) {
                 final String bearer = dispatch.xpath("o[not(@as)][1]/@loc").get(0);
-                final String kept = owned.attribute(
-                    names.getOrDefault(bearer, bearer),
-                    dispatch.xpath("@base").get(0).substring(1)
+                final String kept = filled.instead(
+                    owned.attribute(
+                        names.getOrDefault(bearer, bearer),
+                        dispatch.xpath("@base").get(0).substring(1)
+                    ),
+                    bearer
                 );
-                if (!kept.isEmpty()) {
+                if (!kept.isEmpty() && !kept.equals(made)) {
                     found.put(made, kept);
                 }
             }
