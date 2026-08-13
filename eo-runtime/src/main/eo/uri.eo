@@ -246,12 +246,12 @@
       uri "http://user:pass@host:80/some/path"
     "user:pass"
 
-  eq. ++> cannot-treat-a-letter-suffixed-port-as-numeric
+  eq. ++> can-treat-a-letter-suffixed-port-as-invalid
     port.
       uri "http://host:12x/"
     ""
 
-  eq. ++> cannot-treat-a-non-digit-port-as-numeric
+  eq. ++> can-treat-a-non-digit-port-as-invalid
     port.
       uri "http://host:abc/"
     ""
