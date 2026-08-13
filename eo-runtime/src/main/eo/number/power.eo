@@ -3,14 +3,6 @@
 # results stay exact, and a fractional exponent of a positive base is taken as
 # e raised to `x` times the natural logarithm of the base. Zeros, infinities and
 # nan follow the same IEEE rules that Math.pow obeys.
-#
-# @todo #6651:30min Cache `k` and `y` in `expon` the same way `half` is now
-#  cached in `ipow`. `k` is read once per comparison and once per each of the
-#  twenty `fraction` levels, and `y` (a void, so it cannot itself carry `!`)
-#  is read directly inside `fraction` too, so one call to `expon` still pays
-#  for about forty evaluations of `ln`. Bind `y` to a const local first, then
-#  cache `k` as `k!` and re-wrap every read with `number`, mirroring the
-#  `half`/`bts` idiom from #6224.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -70,19 +62,28 @@
                   [y] >> expon
                     times. > @
                       if.
-                        k.lt 0
+                        lt. (number k) 0
                         1.div
-                          ipow e (abs k)
-                        ipow e (abs k)
+                          ipow
+                            e
+                            abs (number k)
+                        ipow
+                          e
+                          abs (number k)
                       fraction 1
+                    y > arg!
                     if. > [j] > fraction
                       j.gt 20
                       1
                       1.plus
                         times.
-                          div. (y.minus k) j
+                          div.
+                            minus.
+                              number arg
+                              number k
+                            j
                           fraction (j.plus 1)
-                    floor. (y.plus 0.5) > k
+                    floor. ((number arg).plus 0.5) > k!
                   | (expo.times (ln base))
                   nan
             if.
@@ -138,6 +139,13 @@
   eq. ++> can-raise-a-float-to-zero
     42.5.power 0
     1
+
+  lt. ++> can-raise-a-fraction-to-a-fraction
+    abs.
+      minus.
+        0.5.power 1.5
+        0.35355339059327373
+    1.0E-9
 
   eq. ++> can-raise-a-negative-float-to-negative-infinity
     -42.5.power ninf
@@ -227,6 +235,13 @@
     -0.power 3
     -0
 
+  lt. ++> can-raise-one-to-a-fraction
+    abs.
+      minus.
+        1.power 0.75
+        1
+    1.0E-9
+
   eq. ++> can-raise-positive-infinity-to-a-negative-float
     pinf.power -42.2
     0
@@ -263,6 +278,13 @@
     2.power 0
     1
 
+  lt. ++> can-raise-two-to-a-negative-fraction
+    abs.
+      minus.
+        2.power -0.5
+        0.7071067811865476
+    1.0E-9
+
   eq. ++> can-raise-two-to-four
     2.power 4
     16
@@ -278,6 +300,13 @@
   eq. ++> can-raise-two-to-minus-two
     2.power -2
     0.25
+
+  lt. ++> can-raise-two-to-three-and-a-half
+    abs.
+      minus.
+        2.power 3.5
+        11.313708498984761
+    1.0E-9
 
   eq. ++> can-raise-zero-to-a-negative
     0.power -52
