@@ -377,9 +377,7 @@
   ++> can-walk-past-a-symbolic-link-to-its-own-parent
     os.is-windows.or > @
       seq *
-        touched.
-          as-file.
-            d.resolved "щи.txt"
+        touched. (d.resolved "щи.txt").as-file
         code.
           posix *1
             "symlink"
