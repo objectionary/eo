@@ -17,6 +17,13 @@
 
   -1.arc-cosine.eq pi ++> can-take-an-arc-cosine-of-minus-one
 
+  lt. ++> can-take-an-arc-cosine-of-minus-zero-point-nine-nine-nine
+    abs.
+      minus.
+        -0.999.arc-cosine.times 1000
+        3096.8675
+    1
+
   lt. ++> can-take-an-arc-cosine-of-minus-zero-point-six
     abs.
       minus.
@@ -29,6 +36,13 @@
   eq. ++> can-take-an-arc-cosine-of-zero
     0.arc-cosine
     pi.div 2
+
+  lt. ++> can-take-an-arc-cosine-of-zero-point-nine-nine-nine
+    abs.
+      minus.
+        0.999.arc-cosine.times 1000
+        44.7251
+    1
 
   lt. ++> can-take-an-arc-cosine-of-zero-point-six
     abs.
