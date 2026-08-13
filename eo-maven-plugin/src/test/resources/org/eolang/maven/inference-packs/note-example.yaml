@@ -22,7 +22,8 @@ xmir:
     - "//o[@base='.foo']/o[@base='.next']/o[@base='ξ.x']"
 provides:
   - "/provides/type[@id='Φ.app.t']/attr[@name='next' and @type='Φ.app.t.next']"
-  - "/provides/type[@id='Φ.app.t.next' and @complete='true' and not(attr[@name!='ρ'])]"
+  - "/provides/type[@id='Φ.app.t.next' and @complete='true']"
+  - "/provides/type[@id='Φ.app.t.next'][not(attr[@name!='ρ'])]"
   - "/provides/type[@id='Φ.app.inc']/attr[@name='x' and @void='true']"
 needs:
   - "/needs/type[@id='Φ.app.inc.φ.ρ.ρ']/attr[@name='next']"
