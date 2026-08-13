@@ -281,8 +281,8 @@
     temp.path > source
     mktemp.tmpfile > temp
 
-  mktemp.tmpfile.deleted.is-symlink ++> can-recover-from-checking-a-symbolic-link-of-an-absent-file
-    true
+  ++> can-recover-from-checking-a-symbolic-link-of-an-absent-file
+    mktemp.tmpfile.deleted.is-symlink true > @
 
   mktemp.tmpfile.deleted.is-directory ++> can-recover-from-checking-an-absent-file
     true
