@@ -147,7 +147,7 @@ public final class MjTranspile extends MjSafe {
     public void exec() throws IOException {
         new Timed(
             new Transpiling(
-                this.scopedTojos().withXmir(),
+                this.scopedTojos().standalone(),
                 this.targetDir.toPath(),
                 this.generatedDir.toPath(),
                 this.cache.toPath(),
