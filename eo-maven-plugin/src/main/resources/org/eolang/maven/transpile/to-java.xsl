@@ -41,7 +41,7 @@
   <xsl:function name="eo:identifier" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
     <xsl:variable name="escaped">
-      <xsl:analyze-string select="$n" regex="[^\p{{L}}\p{{Nd}}_$]">
+      <xsl:analyze-string select="$n" regex="[^\p{{L}}\d_$]">
         <xsl:matching-substring>
           <xsl:value-of select="eo:escape-char(.)"/>
         </xsl:matching-substring>
