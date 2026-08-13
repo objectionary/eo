@@ -312,12 +312,6 @@
                 m.read 0 12
                 "Hello, Jeff!"
 
-  malloc.of ++> can-write-beyond-an-offset-and-resize
-    1
-    seq * > [m]
-      m.write 1 true
-      m.size.eq 2
-
   ++> can-write-into-a-block-made-by-of
     mem.eq 10 > @
     malloc.of > mem
@@ -380,3 +374,9 @@
     m.read > [m]
       0
       100
+
+  malloc.of --> stops-on-writing-beyond-an-offset
+    1
+    m.write > [m]
+      1
+      true

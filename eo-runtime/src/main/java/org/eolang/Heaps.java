@@ -236,11 +236,19 @@ final class Heaps {
                     )
                 );
             }
-            if (this.blocks.get(identifier).length < end) {
-                this.resize(identifier, (int) end);
-            }
             final byte[] source = this.blocks.get(identifier);
             final int length = source.length;
+            if (length < end) {
+                throw new ExFailure(
+                    String.format(
+                        "Can't write '%d' bytes with offset '%d' to the block with identifier '%d', because only '%d' were allocated",
+                        data.length,
+                        offset,
+                        identifier,
+                        length
+                    )
+                );
+            }
             final byte[] result = new byte[length];
             System.arraycopy(source, 0, result, 0, length);
             System.arraycopy(data, 0, result, offset, data.length);

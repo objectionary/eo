@@ -28,7 +28,16 @@
       [offset] >> output-block
         true > @
         seq * > [buffer] > write
-          allocated.write offset buffer
+          if.
+            gt.
+              offset.plus buffer.size
+              allocated.size
+            write.
+              allocated.resized
+                offset.plus buffer.size
+              offset
+              buffer
+            allocated.write offset buffer
           output-block
             offset.plus buffer.size
       | 0

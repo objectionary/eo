@@ -201,32 +201,30 @@ final class HeapsTest {
     }
 
     @Test
-    void resizesOnWriteMoreThanAllocated() {
+    void rejectsWritePastAllocatedBlock() {
+        final byte[] original = {7, 8, 9};
         MatcherAssert.assertThat(
-            "Heaps should resize block when writing more bytes than allocated, but it didn't",
+            "Heaps must leave the allocated block unchanged after rejecting an out-of-bounds write",
             Heaps.INSTANCE.malloc(
-                new HeapsTest.PhFake(), 2,
-                idx -> {
-                    Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
-                    return Heaps.INSTANCE.read(idx, 0, 5);
-                }
+                new HeapsTest.PhFake(), original.length,
+                idx -> HeapsTest.rejectedWrite(idx, original)
             ),
-            Matchers.equalTo(new byte[] {1, 2, 3, 4, 5})
+            Matchers.equalTo(original)
         );
     }
 
     @Test
-    void resizesOnWriteMoreThanAllocatedWithOffset() {
-        MatcherAssert.assertThat(
-            "Heaps should resize block when writing past allocated boundary using offset, but it didn't",
-            Heaps.INSTANCE.malloc(
-                new HeapsTest.PhFake(), 3,
+    void rejectsWritePastZeroSizedBlock() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> Heaps.INSTANCE.malloc(
+                new HeapsTest.PhFake(), 0,
                 idx -> {
-                    Heaps.INSTANCE.write(idx, 1, new byte[] {1, 2, 3});
-                    return Heaps.INSTANCE.read(idx, 1, 3);
+                    Heaps.INSTANCE.write(idx, 0, new byte[] {1});
+                    return idx;
                 }
             ),
-            Matchers.equalTo(new byte[] {1, 2, 3})
+            "Heaps must not implicitly grow a zero-sized block"
         );
     }
 
@@ -342,6 +340,35 @@ final class HeapsTest {
             Matchers.equalTo(3)
         );
         Heaps.INSTANCE.free(idx);
+    }
+
+    /**
+     * Reject an out-of-bounds write and return the unchanged block.
+     * @param identifier Block identifier
+     * @param original Original bytes
+     * @return Bytes left in the block
+     */
+    private static byte[] rejectedWrite(final int identifier, final byte[] original) {
+        Heaps.INSTANCE.write(identifier, 0, original);
+        MatcherAssert.assertThat(
+            "The failure must describe the rejected write and allocated block",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> Heaps.INSTANCE.write(identifier, 100, new byte[] {1})
+            ).getMessage(),
+            Matchers.equalTo(
+                String.format(
+                    "Can't write '1' bytes with offset '100' to the block with identifier '%d', because only '3' were allocated",
+                    identifier
+                )
+            )
+        );
+        MatcherAssert.assertThat(
+            "A rejected write must not change the allocated size",
+            Heaps.INSTANCE.size(identifier),
+            Matchers.equalTo(original.length)
+        );
+        return Heaps.INSTANCE.read(identifier, 0, original.length);
     }
 
     /**
