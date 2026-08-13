@@ -74,6 +74,17 @@ final class MjTranspileIT {
         );
     }
 
+    /**
+     * The plugin must keep understanding the old name of the tracking option.
+     *
+     * <p>Caching is off on purpose: a cache hit returns the Java without
+     * running the XSL train, and it is the train that leaves the tracked
+     * XMIRs behind. The machine-wide cache is shared with the other tests
+     * of this class, which transpile the very same source.</p>
+     *
+     * @param temp Temporary directory
+     * @throws Exception If fails
+     */
     @Test
     void acceptsOldNameOfTrackingOption(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
@@ -85,7 +96,8 @@ final class MjTranspileIT {
                 new AppendedPlugin(f).value()
                     .goals("register", "parse", "transpile")
                     .configuration()
-                    .set("trackTransformationSteps", "true");
+                    .set("trackTransformationSteps", "true")
+                    .set("cacheEnabled", "false");
                 f.exec("process-sources");
                 MatcherAssert.assertThat(
                     "the plugin must still understand the old name of the tracking option",
