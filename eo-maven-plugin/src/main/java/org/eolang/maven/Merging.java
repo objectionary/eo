@@ -19,15 +19,16 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Put the members of a package inside the object that the package names.
  *
  * <p>The parsed XMIR of the object and of its members are all on disk by the
- * time this runs, and the splice is a matter of moving one element: the
+ * time this runs, and the splice is a matter of moving elements: the
  * top-level {@code <o>} of {@code number/lt.xmir} becomes a child of the
- * top-level {@code <o>} of {@code number.xmir}. Nothing inside the moved tree
- * is touched, because the parser leaves every name fully qualified and every
+ * top-level {@code <o>} of {@code number.xmir}. No name inside the moved tree
+ * is rewritten, because the parser leaves every name fully qualified and every
  * {@code loc} already reads as the locator the node will carry once it is an
  * attribute of {@code Φ.number}, so no reference can be captured by an
  * attribute of the object it lands in.</p>
@@ -35,6 +36,14 @@ import org.w3c.dom.Node;
  * <p>A member arrives after the attributes the object already had, so the
  * places of the voids, and with them the meaning of applying the object to
  * arguments, stay as they were.</p>
+ *
+ * <p>The tests a member declares do not travel with it. A test is legal only
+ * as a direct child of the top-level object of a file, which is what the
+ * parser demands and what the transpiler reads when it writes the test class,
+ * so each one is lifted out of the member and appended to the object beside
+ * the tests the object declares itself. The member is merged before the
+ * package that holds it, so a test written three files deep arrives at the top
+ * one level at a time and nothing has to look for it.</p>
  *
  * @since 0.68.0
  * @todo #6656:30min Write the merged XMIR only when it differs.
@@ -150,29 +159,24 @@ final class Merging implements Step {
         final Node formation = Merging.formation(object.xmir());
         final Collection<String> taken = Merging.names(formation);
         for (final Map.Entry<String, TjForeign> member : members.entrySet()) {
-            final Xnav top = Merging.top(
-                member.getValue().xmir()
+            final Node top = formation.getOwnerDocument().importNode(
+                Merging.top(member.getValue().xmir()).node(), true
             );
-            final String name = top.attribute("name").text().orElseThrow(
-                () -> new IllegalStateException(
+            final String name = Merging.named(top);
+            if (name.isEmpty()) {
+                throw new IllegalStateException(
                     String.format(
                         "The member '%s' has no name, while only a named object can become an attribute of '%s'",
                         member.getKey(), pkg
                     )
-                )
-            );
-            if (taken.contains(name)) {
-                throw new IllegalStateException(
-                    String.format(
-                        "The name '%s' of the member '%s' is already an attribute of '%s', while one object cannot hold two attributes under one name",
-                        name, member.getKey(), pkg
-                    )
                 );
             }
-            taken.add(name);
-            formation.appendChild(
-                formation.getOwnerDocument().importNode(top.node(), true)
-            );
+            Merging.claimed(taken, name, member.getKey(), pkg);
+            formation.appendChild(top);
+            for (final Node test : Merging.tests(top)) {
+                Merging.claimed(taken, Merging.named(test), member.getKey(), pkg);
+                formation.appendChild(top.removeChild(test));
+            }
         }
         final Path target = new Place(pkg).make(this.dir, MjAssemble.XMIR);
         new Saved(
@@ -188,6 +192,64 @@ final class Merging implements Step {
             members.size(), pkg, target
         );
         return members.size();
+    }
+
+    /**
+     * Take a name for one object, refusing a name that is taken already.
+     * @param taken The names the object holds, added to
+     * @param name The name to take
+     * @param member The member the name comes from, for the message
+     * @param pkg The name of the package, for the message
+     */
+    private static void claimed(
+        final Collection<String> taken, final String name, final String member, final String pkg
+    ) {
+        if (taken.contains(name)) {
+            throw new IllegalStateException(
+                String.format(
+                    "The name '%s' arriving from the member '%s' is already an attribute of '%s', while one object cannot hold two attributes under one name",
+                    name, member, pkg
+                )
+            );
+        }
+        taken.add(name);
+    }
+
+    /**
+     * The tests one object declares.
+     *
+     * <p>A test is an attribute whose name the parser prefixed with a plus or a
+     * minus, which is what it does to the name of every {@code ++>} and
+     * {@code -->} it reads and to nothing else. They are collected before any
+     * of them moves, since the children of a node are a live list.</p>
+     *
+     * @param object The object
+     * @return The tests
+     */
+    private static Collection<Node> tests(final Node object) {
+        final Collection<Node> found = new ArrayList<>(0);
+        final NodeList kids = object.getChildNodes();
+        for (int idx = 0; idx < kids.getLength(); ++idx) {
+            final Node kid = kids.item(idx);
+            final String name = Merging.named(kid);
+            if (name.startsWith("+") || name.startsWith("-")) {
+                found.add(kid);
+            }
+        }
+        return found;
+    }
+
+    /**
+     * The name an object carries, empty when it carries none, which is what
+     * the indentation between two objects comes back as too.
+     * @param object The object
+     * @return The name
+     */
+    private static String named(final Node object) {
+        return Optional.ofNullable(object.getAttributes())
+            .map(attrs -> attrs.getNamedItem("name"))
+            .map(Node::getNodeValue)
+            .orElse("");
     }
 
     /**
