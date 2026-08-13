@@ -35,8 +35,9 @@ import org.junit.jupiter.params.ParameterizedTest;
  * <p>What the merge does to a program is described by the packs in
  * {@code merge-packs}: each one carries the files of a program, the packages to
  * merge, and the XPaths the merged XMIR must satisfy, plus the text the
- * generated Java must hold, so the behaviour is stated as the program a human
- * would write rather than as XMIR by hand. What is left here are the mechanics
+ * generated Java must hold, both of the object and of its tests, so the
+ * behaviour is stated as the program a human would write rather than as XMIR
+ * by hand. What is left here are the mechanics
  * no EO source can express: where the merged XMIR is pointed to from, what
  * stops being compiled apart, and what the mojo refuses to do at all.</p>
  *
@@ -117,6 +118,37 @@ final class MjMergeTest {
     }
 
     @Test
+    void refusesToLiftOneNameOutOfTwoMembers(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "two members declaring one name for their tests must stop the build and name it",
+            MjMergeTest.root(
+                Assertions.assertThrows(
+                    IllegalStateException.class,
+                    () -> new FakeMaven(temp).withProgram(
+                        MjMergeTest.program("[n] > foo", "  n > @"),
+                        "foo",
+                        "foo.eo"
+                    ).withProgram(
+                        MjMergeTest.program(
+                            "+package foo", "", "[] > bar", "  42 > @", "  1.eq 1 ++> can-be-one"
+                        ),
+                        "foo.bar",
+                        "foo/bar.eo"
+                    ).withProgram(
+                        MjMergeTest.program(
+                            "+package foo", "", "[] > baz", "  42 > @", "  1.eq 1 ++> can-be-one"
+                        ),
+                        "foo.baz",
+                        "foo/baz.eo"
+                    ).with("mergedPackages", Collections.singletonList("foo"))
+                        .execute(new FakeMaven.Merge())
+                )
+            ),
+            Matchers.stringContainsInOrder("can-be-one", "foo.baz", "foo")
+        );
+    }
+
+    @Test
     void refusesToMergeAPackageWithoutAnObject(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "a package named for merging with no object of its own must not pass silently",
@@ -151,7 +183,8 @@ final class MjMergeTest {
         }
         maven.with("mergedPackages", pack.map().get("merged"))
             .execute(new FakeMaven.Merge());
-        if (!MjMergeTest.asked(pack, "java").isEmpty()) {
+        if (!MjMergeTest.asked(pack, "java").isEmpty()
+            || !MjMergeTest.asked(pack, "tests").isEmpty()) {
             maven.execute(MjTranspile.class);
         }
         return maven;
@@ -171,7 +204,7 @@ final class MjMergeTest {
         throws IOException {
         final Collection<String> failed = new ArrayList<>(0);
         for (final Object key : pack.map().keySet()) {
-            if (!Arrays.asList("eo", "merged", "xmir", "java", "absent").contains(key)) {
+            if (!Arrays.asList("eo", "merged", "xmir", "java", "tests", "absent").contains(key)) {
                 failed.add(String.format("unknown key: %s", key));
             }
         }
@@ -222,30 +255,48 @@ final class MjMergeTest {
     private static Collection<String> untranspiled(final Xtory pack, final FakeMaven maven)
         throws IOException {
         final Collection<String> failed = new ArrayList<>(0);
-        for (final Map.Entry<?, ?> entry : MjMergeTest.asked(pack, "java").entrySet()) {
-            final String name = entry.getKey().toString();
-            final Path file = MjMergeTest.generated(maven, name);
-            if (Files.exists(file)) {
-                failed.addAll(
-                    MjMergeTest.missing(Files.readString(file), name, (List<?>) entry.getValue())
-                );
-            } else {
-                failed.add(String.format("no Java generated for %s", name));
+        for (final String kind : Arrays.asList("java", "tests")) {
+            for (final Map.Entry<?, ?> entry : MjMergeTest.asked(pack, kind).entrySet()) {
+                final String name = entry.getKey().toString();
+                final Path file = MjMergeTest.generated(maven, name, kind);
+                if (Files.exists(file)) {
+                    failed.addAll(
+                        MjMergeTest.missing(
+                            Files.readString(file), name, (List<?>) entry.getValue()
+                        )
+                    );
+                } else {
+                    failed.add(String.format("nothing generated for %s under %s", name, kind));
+                }
             }
         }
         return failed;
     }
 
     /**
-     * The Java class a file of the program is transpiled into.
+     * The class a file of the program is transpiled into, either the object
+     * itself or the tests it declares, which land in a source root of their own.
      * @param maven The workspace
      * @param name The name of the file
+     * @param kind Either the object or its tests
      * @return The path to the class
      * @throws IOException If the workspace cannot be read
      */
-    private static Path generated(final FakeMaven maven, final String name) throws IOException {
-        return maven.generatedPath().resolve("org").resolve("eolang").resolve(
-            String.format("EO%s.java", name.replace(".eo", "").replace("/", "$EO"))
+    private static Path generated(final FakeMaven maven, final String name, final String kind)
+        throws IOException {
+        final Path base;
+        final String suffix;
+        if ("tests".equals(kind)) {
+            base = maven.generatedPath().getParent().resolve("generated-test-sources");
+            suffix = "Test";
+        } else {
+            base = maven.generatedPath();
+            suffix = "";
+        }
+        return base.resolve("org").resolve("eolang").resolve(
+            String.format(
+                "EO%s%s.java", name.replace(".eo", "").replace("/", "$EO"), suffix
+            )
         );
     }
 
