@@ -147,6 +147,41 @@ final class PhTerminatorTest {
     }
 
     @Test
+    void keepsDispatchArgumentsOutOfTheCause() {
+        MatcherAssert.assertThat(
+            "a bottom reached by a dispatch names the argument it was handed, not the termination",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(
+                    new PhApplication(
+                        new PhDispatch(new PhTerminator(), "if"),
+                        new Bind(0, new Data.ToPhi("первый")),
+                        new Bind(1, new Data.ToPhi("второй"))
+                    )
+                ).take()
+            ).getMessage(),
+            Matchers.containsString("terminated computation")
+        );
+    }
+
+    @Test
+    void carriesTheCauseThroughDispatch() {
+        MatcherAssert.assertThat(
+            "the reason a bottom was born with is lost once it travels through a dispatch",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(
+                    new PhApplication(
+                        new PhDispatch(PhTerminator.withCause("cannot open Ω"), "eq"),
+                        new Bind(0, new Data.ToPhi("другое"))
+                    )
+                ).take()
+            ).getMessage(),
+            Matchers.equalTo("cannot open Ω")
+        );
+    }
+
+    @Test
     void toleratesPutAtOtherPositions() {
         Assertions.assertDoesNotThrow(
             () -> new PhTerminator().put(1, new Data.ToPhi("nope")),
