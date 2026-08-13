@@ -122,6 +122,19 @@ final class TjsForeign implements Closeable {
     }
 
     /**
+     * Get the tojos that have an XMIR of their own to compile, which is every
+     * tojo with XMIR but the members that {@link MjMerge} has put inside the
+     * object of their package, since those are compiled as a part of it.
+     * @return The tojos
+     */
+    Collection<TjForeign> unmerged() {
+        return this.select(
+            row -> row.exists(Attribute.XMIR.getKey())
+                && !row.exists(Attribute.MERGED.getKey())
+        );
+    }
+
+    /**
      * Get the tojos that doesn't have dependency.
      * @return The tojos
      */
@@ -287,6 +300,13 @@ final class TjsForeign implements Closeable {
          * <p>For more info see {@link MjProbe}. </p>
          */
         PROBED("probed"),
+
+        /**
+         * The name of the object this one was put inside of by {@link MjMerge},
+         * which is the package it belongs to. A member that carries it is no
+         * longer compiled apart, since it is now an attribute of that object.
+         */
+        MERGED("merged"),
 
         /**
          * The scope of compilation, either {@code compile} or {@code test}.

@@ -509,6 +509,21 @@ final class FakeMaven {
     }
 
     /**
+     * Put the members of a package inside the object it names.
+     * @since 0.68.0
+     */
+    static final class Merge implements Iterable<Class<? extends AbstractMojo>> {
+
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                MjParse.class,
+                MjMerge.class
+            ).iterator();
+        }
+    }
+
+    /**
      * Transpile full pipeline.
      * @since 0.29.0
      */
