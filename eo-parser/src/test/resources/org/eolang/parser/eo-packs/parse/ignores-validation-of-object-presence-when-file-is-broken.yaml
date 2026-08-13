@@ -9,6 +9,6 @@ asserts:
 document: |
   <object>
     <errors>
-      <error check="parser" line="1" severity="error">the syntax is broken</error>
+      <error check="parser" line="1" severity="error">broken syntax</error>
     </errors>
   </object>
