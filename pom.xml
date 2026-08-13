@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.73.3</version>
+    <version>0.73.4</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>eo-parent</artifactId>
@@ -426,6 +426,8 @@
               <configurationParameters>
                 junit.jupiter.execution.parallel.enabled = true
                 junit.jupiter.execution.parallel.mode.default = concurrent
+                junit.jupiter.execution.parallel.config.strategy = dynamic
+                junit.jupiter.execution.parallel.config.dynamic.factor = 1
               </configurationParameters>
             </properties>
           </configuration>
@@ -507,7 +509,7 @@
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
-            <version>0.30.6</version>
+            <version>0.30.10</version>
             <configuration>
               <excludes combine.children="append">
                 <exclude>checkstyle:/src/site/resources/.*</exclude>

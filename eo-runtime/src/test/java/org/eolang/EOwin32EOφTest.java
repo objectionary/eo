@@ -41,7 +41,7 @@ final class EOwin32EOφTest {
             Matchers.equalTo(
                 Integer.parseInt(
                     ManagementFactory.getRuntimeMXBean()
-                        .getName().split("@")[0]
+                        .getName().split("@", -1)[0]
                 )
             )
         );

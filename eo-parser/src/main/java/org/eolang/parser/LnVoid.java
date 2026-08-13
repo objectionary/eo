@@ -81,7 +81,7 @@ final class LnVoid implements Line {
         }
         Comments.seal(globals, emit, this.span);
         final Level level = new Transition(stack, this.span).apply(
-            Kind.VOID, Openness.VERTICAL_COMPLETED, suffix.named()
+            Kind.VOID, Openness.VERTICAL_COMPLETED, new Admission(suffix.named(), true)
         );
         if (slash >= 0 && !level.patom()) {
             throw new ParseError(
@@ -198,8 +198,8 @@ final class LnVoid implements Line {
     /**
      * Split a brace argument list on single spaces, promoting each type
      * atom (variable verbatim, forma {@code Q.} promoted to {@code Φ.})
-     * and rejecting empty entries, double spaces, and the {@code ?}
-     * optional marker.
+     * and rejecting empty entries, double spaces, a trailing space with
+     * no member after it, and the {@code ?} optional marker.
      * @param inside The text inside the braces
      * @param span The source span (for errors)
      * @return The space-separated promoted arguments
@@ -236,6 +236,12 @@ final class LnVoid implements Line {
             }
             out.append(Suffix.typeAtom(member, span, span.indent()));
             idx = end + 1;
+            if (idx == inside.length()) {
+                throw new ParseError(
+                    span.line(), span.indent(),
+                    "types in a `/{…}` list must be separated by exactly one space"
+                );
+            }
         }
         return out.toString();
     }

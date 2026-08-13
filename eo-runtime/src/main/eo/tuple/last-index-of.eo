@@ -20,7 +20,7 @@
 
   eq. ++> can-find-the-last-index-of-an-item
     1
-    last-index-of
+    last-index-of.
       *
         "qwerty"
         2
@@ -29,31 +29,29 @@
 
   eq. ++> can-find-the-last-index-of-a-repeated-item
     2
-    last-index-of
+    last-index-of.
       *
         24
         42
         24
       24
 
-  eq. ++> cannot-find-the-last-index-of-an-absent-item
+  eq. ++> can-find-no-last-index-of-an-absent-item
     -1
-    last-index-of
+    last-index-of.
       *
         1
         2
         3
       0
 
-  eq. ++> cannot-find-the-last-index-in-an-empty-list
+  eq. ++> can-find-no-last-index-in-an-empty-list
     -1
-    last-index-of
-      *
-      "abc"
+    tuple.empty.last-index-of "abc"
 
   eq. ++> can-find-the-last-index-of-a-unicode-item
     3
-    last-index-of
+    last-index-of.
       *
         "Hi"
         "Привет"
@@ -64,7 +62,7 @@
 
   eq. ++> can-find-the-last-index-of-a-non-symmetric-match
     4
-    last-index-of
+    last-index-of.
       *
         10
         20

@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="const-to-dataized" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="eo" id="const-to-dataized" version="2.0">
   <!--
   Replace @const with dataized.as-bytes
   1. a > b!     => (dataized a).as-bytes > b
@@ -61,10 +61,14 @@
       <xsl:attribute name="name" select="$cname"/>
       <xsl:attribute name="line" select="@line"/>
       <xsl:attribute name="pos" select="@pos + 8"/>
+      <xsl:if test="@as">
+        <xsl:attribute name="as" select="@as"/>
+      </xsl:if>
       <o>
         <xsl:attribute name="base" select="'Φ.dataized'"/>
+        <xsl:attribute name="line" select="@line"/>
         <o>
-          <xsl:for-each select="@*[name()!='const' and name()!='name']">
+          <xsl:for-each select="@*[name()!='const' and name()!='name' and name()!='as']">
             <xsl:attribute name="{name()}">
               <xsl:value-of select="."/>
             </xsl:attribute>

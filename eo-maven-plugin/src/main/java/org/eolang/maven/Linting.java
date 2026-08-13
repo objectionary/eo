@@ -64,6 +64,13 @@ final class Linting implements Step {
     static final String CACHE = "linted";
 
     /**
+     * The XMIR {@code object} element/attribute name, used both for
+     * navigating a source XMIR and for round-tripping a WPA defect's
+     * program name through {@code wpa.xmir}.
+     */
+    private static final String OBJECT = "object";
+
+    /**
      * Scoped foreign tojos.
      */
     private final TjsForeign tojos;
@@ -537,7 +544,7 @@ final class Linting implements Step {
      */
     private static Collection<Defect> existing(final Xnav xnav) {
         return xnav
-            .element("object")
+            .element(Linting.OBJECT)
             .elements(Filter.withName("errors"))
             .findFirst().map(
                 errors -> errors
@@ -609,6 +616,7 @@ final class Linting implements Step {
         dirs.add("error")
             .attr("check", defect.rule())
             .attr("severity", defect.severity().mnemo())
+            .attr(Linting.OBJECT, defect.object())
             .set(defect.text());
         if (defect.line() > 0) {
             dirs.attr("line", defect.line());
@@ -620,7 +628,10 @@ final class Linting implements Step {
         final Xnav xnav, final org.eolang.wpa.Defect defect
     ) {
         return xnav.path(
-            String.format("/object/metas/meta[head='unlint' and tail='%s']", defect.rule())
+            String.format(
+                "/object/metas/meta[head='unlint' and tail='%s']",
+                Linting.baseRule(defect.rule())
+            )
         ).findAny().isEmpty();
     }
 
@@ -631,7 +642,6 @@ final class Linting implements Step {
      * @param line Line number
      * @param text Defect message
      * @return Formatted string
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     private static String format(
         final String object, final String rule, final int line, final String text
@@ -651,7 +661,7 @@ final class Linting implements Step {
                 org.eolang.wpa.Severity.parsed(
                     node.attribute("severity").text().orElseThrow()
                 ),
-                node.attribute("object").text().orElse(""),
+                node.attribute(Linting.OBJECT).text().orElse(""),
                 Integer.parseInt(node.attribute("line").text().orElse("0")),
                 node.text().orElse("")
             )

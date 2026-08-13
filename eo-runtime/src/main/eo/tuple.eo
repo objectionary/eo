@@ -171,13 +171,6 @@
       2
       3
 
-  contains. ++> can-contain-an-element
-    *
-      1
-      2
-      3
-    2
-
   ++> can-create-an-empty-tuple-with-a-number
     eq. > @
       a.at 0
@@ -204,15 +197,6 @@
       2
       3
 
-  eq. ++> can-find-the-index-of-an-element
-    index-of.
-      *
-        10
-        20
-        30
-      20
-    1
-
   ++> can-get-the-length-of-an-empty-tuple
     a.length.eq 0 > @
     * > a
@@ -227,6 +211,27 @@
     length.
       * 1 2
     2
+
+  eq. ++> can-recover-from-a-fractional-index
+    "recovered"
+    at.
+      *
+        "zero"
+        "one"
+        "two"
+      1.5
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-out-of-bounds-index
+    "recovered"
+    at.
+      *
+        1
+        2
+        3
+        4
+      20
+      "recovered" > [message]
 
   ++> can-report-the-length-of-a-non-empty-tuple
     eq. > @
@@ -272,15 +277,7 @@
       3
       4
 
-  not. ++> cannot-contain-an-absent-element
-    contains.
-      *
-        1
-        2
-        3
-      5
-
-  not. ++> cannot-equal-a-different-tuple
+  not. ++> can-tell-it-does-not-equal-a-different-tuple
     eq.
       *
         1
@@ -290,27 +287,6 @@
         3
         2
         1
-
-  eq. ++> rejects-a-fractional-index
-    "recovered"
-    at.
-      *
-        "zero"
-        "one"
-        "two"
-      1.5
-      "recovered" > [message]
-
-  eq. ++> rejects-an-out-of-bounds-index
-    "recovered"
-    at.
-      *
-        1
-        2
-        3
-        4
-      20
-      "recovered" > [message]
 
   at. --> stops-on-a-wrong-index
     *

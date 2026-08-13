@@ -30,9 +30,9 @@ final class CommitHashesText extends TextEnvelope {
     private static final String HOME = "https://home.objectionary.com/tags.txt";
 
     /**
-     * Fake hashes.
+     * Fallback hashes.
      */
-    static final String FAKES = String.join(
+    private static final String FALLBACK = String.join(
         System.lineSeparator(),
         "5fe5ad8d21dbe418038fa4c86e096fb037f290a9 0.23.15",
         "15c85d7f8cffe15b0deba96e90bdac98a76293bb 0.23.17",
@@ -84,7 +84,7 @@ final class CommitHashesText extends TextEnvelope {
                 "Can't load hashes: %[exception]s",
                 ex
             );
-            hashes = CommitHashesText.FAKES;
+            hashes = CommitHashesText.FALLBACK;
         }
         return hashes;
     }

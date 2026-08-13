@@ -26,21 +26,19 @@
 
   eq. ++> can-join-many-strings
     "hello-world-dear-friend"
-    joined *1
-      "-"
-      "hello"
-      "world"
-      "dear"
-      "friend"
+    "-".joined
+      *
+        "hello"
+        "world"
+        "dear"
+        "friend"
 
   eq. ++> can-join-no-strings
     ""
-    joined
-      "-"
+    "-".joined
       *
 
   eq. ++> can-join-one-string
     "some"
-    joined *1
-      "-"
-      "some"
+    "-".joined
+      * "some"

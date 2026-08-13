@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `held` is an `inc` whose `x` holds a `t`, and an `inc` hands its answers to
+# its `x`. So `held.next` is the `next` of a `t`, found by putting what fills
+# the void in place of the void and asking again.
+eo:
+  app.eo: |
+    [] > app
+      inc t > held
+      held.next > @
+  inc.eo: |
+    [x] > inc
+      x > @
+  t.eo: |
+    [] > t
+      [] > next
+links:
+  - "/links/type[@id='Φ.app.φ' and @copy='Φ.t.next']"

@@ -4,7 +4,9 @@
  */
 package org.eolang.parser;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
 
@@ -232,35 +234,12 @@ final class Emissions {
     }
 
     /**
-     * Decode escape sequences from a raw string body (without
-     * surrounding quotes). Supports {@code \n}, {@code \t}, {@code \r},
-     * {@code \b}, {@code \f}, {@code \"}, {@code \'}, {@code \\},
-     * {@code \\uXXXX} unicode, and {@code \NNN} octal escapes.
-     * @param inner Source body (no quotes)
-     * @return Decoded text
+     * Decode a string body to its raw byte representation.
+     * @param inner Source body without surrounding quotes
+     * @return Decoded bytes
      */
-    static String unescapeBody(final String inner) {
-        final StringBuilder out = new StringBuilder(inner.length());
-        int idx = 0;
-        while (idx < inner.length()) {
-            final char glyph = inner.charAt(idx);
-            if (glyph != '\\' || idx + 1 >= inner.length()) {
-                out.append(glyph);
-                idx = idx + 1;
-                continue;
-            }
-            final char next = inner.charAt(idx + 1);
-            if (next == 'u') {
-                idx = Emissions.appendUnicode(out, inner, idx + 1);
-            } else if (next >= '0' && next <= '7') {
-                idx = Emissions.appendOctal(out, inner, idx + 1);
-            } else {
-                out.append(Emissions.singleCharEscape(glyph, next));
-                idx = idx + 2;
-            }
-        }
-        Emissions.rejectLoneSurrogates(out);
-        return out.toString();
+    static byte[] unescapeBytes(final String inner) {
+        return Emissions.unescapeRawBytes(inner);
     }
 
     /**
@@ -271,7 +250,6 @@ final class Emissions {
      * @param name Name attribute (or {@code null})
      * @param value The value
      * @param line Source line
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static void openBase(
         final Emit emit, final String name, final Value value, final int line
@@ -302,7 +280,6 @@ final class Emissions {
      * @param name Name attribute (or {@code null})
      * @param value Hex value
      * @param line Source line
-     * @checkstyle ParameterNumberCheck (6 lines)
      */
     @SuppressWarnings({
         "PMD.AvoidDecimalLiteralsInBigDecimalConstructor",
@@ -347,15 +324,16 @@ final class Emissions {
      * @param name Name attribute (or {@code null})
      * @param value String value
      * @param line Source line
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static void string(
         final Emit emit, final String name, final Value value, final int line
     ) {
         emit.object(name, "Φ.string", line, value.pos());
-        final String unescaped;
+        final byte[] unescaped;
         try {
-            unescaped = Emissions.unescape(value.raw());
+            unescaped = Emissions.unescapeBytes(
+                value.raw().substring(1, value.raw().length() - 1)
+            );
         } catch (final NumberFormatException ex) {
             final ParseError error = new ParseError(
                 line, value.pos(), "invalid unicode or octal escape in string literal"
@@ -409,7 +387,6 @@ final class Emissions {
      * @param name Name attribute (or {@code null})
      * @param value Integer or float value
      * @param line Source line
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static void number(
         final Emit emit, final String name, final Value value, final int line
@@ -492,7 +469,6 @@ final class Emissions {
      * @param name Name attribute (or {@code null})
      * @param value The group value
      * @param line Source line
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static void group(
         final Emit emit, final String name, final Value value, final int line
@@ -532,32 +508,53 @@ final class Emissions {
     }
 
     /**
-     * Unescape a string literal's body. The {@code raw} text is the
-     * source form including surrounding quotes; the returned string is
-     * the decoded content.
-     * @param raw Source text including the surrounding quotes
-     * @return Decoded text
+     * Decode a string body to its byte representation. Text and Unicode
+     * escapes are UTF-8 encoded, while octal escapes contribute their raw
+     * one-byte values.
+     * @param inner Source body without surrounding quotes
+     * @return Decoded bytes
      */
-    private static String unescape(final String raw) {
-        return Emissions.unescapeBody(raw.substring(1, raw.length() - 1));
+    private static byte[] unescapeRawBytes(final String inner) {
+        final ByteArrayOutputStream out = new ByteArrayOutputStream(inner.length());
+        final StringBuilder text = new StringBuilder(inner.length());
+        int idx = 0;
+        while (idx < inner.length()) {
+            final char glyph = inner.charAt(idx);
+            if (glyph != '\\' || idx + 1 >= inner.length()) {
+                text.append(glyph);
+                idx = idx + 1;
+                continue;
+            }
+            final char next = inner.charAt(idx + 1);
+            if (next == 'u') {
+                idx = Emissions.appendUnicode(text, inner, idx + 1);
+            } else if (next >= '0' && next <= '7') {
+                idx = Emissions.rawOctal(out, text, inner, idx + 1);
+            } else {
+                text.append(Emissions.singleCharEscape(glyph, next));
+                idx = idx + 2;
+            }
+        }
+        Emissions.appendText(out, text);
+        return out.toByteArray();
     }
 
     /**
-     * Decode an octal escape {@code \NNN} (1 to 3 octal digits)
-     * starting at the first digit position and append the resulting
-     * codepoint to {@code out}.
-     * @param out Output buffer
-     * @param body String body
-     * @param start Index of the first octal digit
-     * @return Index past the consumed digits
+     * Append one octal escape as a raw byte.
+     * @param out Output bytes
+     * @param text Text waiting for encoding
+     * @param body Whole string body
+     * @param start First octal digit
+     * @return Index past the octal escape
      */
-    private static int appendOctal(
-        final StringBuilder out, final String body, final int start
+    private static int rawOctal(
+        final ByteArrayOutputStream out, final StringBuilder text,
+        final String body, final int start
     ) {
+        Emissions.appendText(out, text);
         int cursor = start;
         int value = 0;
-        while (cursor < body.length()
-            && cursor < start + 3
+        while (cursor < body.length() && cursor < start + 3
             && body.charAt(cursor) >= '0' && body.charAt(cursor) <= '7') {
             value = value * 8 + body.charAt(cursor) - '0';
             cursor = cursor + 1;
@@ -570,8 +567,22 @@ final class Emissions {
                 )
             );
         }
-        out.append((char) value);
+        out.write(value);
         return cursor;
+    }
+
+    /**
+     * Append valid UTF-16 text as UTF-8 bytes and clear the text buffer.
+     * @param out Output bytes
+     * @param text Text waiting for encoding
+     */
+    private static void appendText(
+        final ByteArrayOutputStream out, final StringBuilder text
+    ) {
+        Emissions.rejectLoneSurrogates(text);
+        final byte[] bytes = text.toString().getBytes(StandardCharsets.UTF_8);
+        out.write(bytes, 0, bytes.length);
+        text.setLength(0);
     }
 
     /**
@@ -699,7 +710,6 @@ final class Emissions {
      * @param phi Index of the {@code >} that begins {@code > [}
      * @param column Absolute source column of the first body char
      * @param line Source line
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static void inlinePhi(
         final Emit emit, final String name, final String inner,

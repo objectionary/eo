@@ -36,56 +36,44 @@
 
   eq. ++> can-format-the-error-message-of-a-negative-count
     "Can't repeat text -1.000000 times"
-    repeated
-      "x"
+    "x".repeated
       -1
       message > [message]
 
+  eq. ++> can-recover-from-a-negative-count
+    "recovered"
+    "x".repeated
+      -1
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-a-non-integer-count
+    "recovered"
+    "x".repeated
+      2.5
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-infinite-count
+    "recovered"
+    "x".repeated
+      pinf
+      "recovered" > [message]
+
   eq. ++> can-repeat-a-text-five-times
     "heyheyheyheyhey"
-    repeated
-      "hey"
-      5
+    "hey".repeated 5
 
   eq. ++> can-repeat-a-text-six-times
     "zxzxzxzxzxzx"
-    repeated
-      "zx"
-      6
+    "zx".repeated 6
 
   eq. ++> can-repeat-a-text-twenty-thousand-times
     20000
     size.
       as-bytes.
-        repeated "x" 20000
+        "x".repeated 20000
 
   eq. ++> can-repeat-a-text-zero-times
     ""
-    repeated
-      "some"
-      0
+    "some".repeated 0
 
-  eq. ++> rejects-a-negative-count
-    "recovered"
-    repeated
-      "x"
-      -1
-      "recovered" > [message]
-
-  eq. ++> rejects-a-non-integer-count
-    "recovered"
-    repeated
-      "x"
-      2.5
-      "recovered" > [message]
-
-  eq. ++> rejects-an-infinite-count
-    "recovered"
-    repeated
-      "x"
-      pinf
-      "recovered" > [message]
-
-  repeated --> stops-on-a-negative-count
-    ""
-    -1
+  "".repeated -1 --> stops-on-a-negative-count

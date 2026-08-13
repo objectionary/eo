@@ -29,28 +29,42 @@
               output-block.write buffer
             [] > output-block
               true > @
-              seq * > [buffer] > write
-                code.
+              [buffer] > write
+                seq * > @
+                  if. >>!
+                    code.eq -1
+                    T
+                      "Failed to write to standard error"
+                    output-block
+                  code
+                  output-block
+                code. > code
                   win32 *1
                     "_write"
                     win32.stderr
                     buffer
                     buffer.size
-                output-block
         [] >>
           [buffer] > write
             @. > @
               output-block.write buffer
             [] > output-block
               true > @
-              seq * > [buffer] > write
-                code.
+              [buffer] > write
+                seq * > @
+                  if. >>!
+                    code.eq -1
+                    T
+                      "Failed to write to standard error"
+                    output-block
+                  code
+                  output-block
+                code. > code
                   posix *1
                     "write"
                     posix.stderr
                     buffer
                     buffer.size
-                output-block
       text
     true
 

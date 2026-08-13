@@ -36,7 +36,7 @@ final class EOposixEOφTest {
             Matchers.equalTo(
                 Integer.parseInt(
                     ManagementFactory.getRuntimeMXBean()
-                        .getName().split("@")[0]
+                        .getName().split("@", -1)[0]
                 )
             )
         );

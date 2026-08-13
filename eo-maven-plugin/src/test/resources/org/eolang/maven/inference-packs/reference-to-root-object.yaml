@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A name the whole program knows is a reference to a root object, and the
+# locator it points at is the base itself.
+eo:
+  tworef.eo: |
+    [] > tworef
+      number > @
+    [] > number
+links:
+  - "/links/type[@id='Φ.tworef.φ' and @copy='Φ.number']"

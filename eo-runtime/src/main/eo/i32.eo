@@ -155,6 +155,17 @@
     2147483647.as-i64.as-i32.times 2.as-i64.as-i32
     -2.as-i64.as-i32
 
+  eq. ++> can-recover-from-an-out-of-bounds-conversion-to-i16
+    "recovered"
+    247483647.as-i64.as-i32.as-i16
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-division-by-zero
+    "recovered"
+    2.as-i64.as-i32.div
+      0.as-i64.as-i32
+      "recovered" > [message]
+
   eq. ++> can-subtract-one-from-one
     1.as-i64.as-i32.minus 1.as-i64.as-i32
     0.as-i64.as-i32
@@ -162,6 +173,27 @@
   eq. ++> can-subtract-with-overflow
     -2147483648.as-i64.as-i32.minus 1.as-i64.as-i32
     2147483647.as-i64.as-i32
+
+  not. ++> can-tell-it-does-not-equal-a-different-i32
+    123.as-i64.as-i32.eq 42.as-i64.as-i32
+
+  not. ++> can-tell-it-is-not-greater-than-a-larger-i32
+    0.as-i64.as-i32.gt 100.as-i64.as-i32
+
+  not. ++> can-tell-it-is-not-greater-than-an-equal-i32
+    0.as-i64.as-i32.gt 0.as-i64.as-i32
+
+  not. ++> can-tell-it-is-not-greater-than-or-equal-to-a-larger-i32
+    0.as-i64.as-i32.gte 10.as-i64.as-i32
+
+  not. ++> can-tell-it-is-not-less-than-a-smaller-i32
+    10.as-i64.as-i32.lt -5.as-i64.as-i32
+
+  not. ++> can-tell-it-is-not-less-than-an-equal-i32
+    10.as-i64.as-i32.lt 10.as-i64.as-i32
+
+  not. ++> can-tell-it-is-not-less-than-or-equal-to-a-smaller-i32
+    0.as-i64.as-i32.lte -10.as-i64.as-i32
 
   eq. ++> can-widen-a-negative-to-i64-with-sign-extension
     -200.as-i64.as-i32.as-i64.as-bytes
@@ -178,38 +210,6 @@
   eq. ++> can-wrap-a-product-modulo-two-to-the-thirty-second
     65536.as-i64.as-i32.times 65536.as-i64.as-i32
     0.as-i64.as-i32
-
-  not. ++> cannot-be-greater-than-a-larger-i32
-    0.as-i64.as-i32.gt 100.as-i64.as-i32
-
-  not. ++> cannot-be-greater-than-an-equal-i32
-    0.as-i64.as-i32.gt 0.as-i64.as-i32
-
-  not. ++> cannot-be-greater-than-or-equal-to-a-larger-i32
-    0.as-i64.as-i32.gte 10.as-i64.as-i32
-
-  not. ++> cannot-be-less-than-a-smaller-i32
-    10.as-i64.as-i32.lt -5.as-i64.as-i32
-
-  not. ++> cannot-be-less-than-an-equal-i32
-    10.as-i64.as-i32.lt 10.as-i64.as-i32
-
-  not. ++> cannot-be-less-than-or-equal-to-a-smaller-i32
-    0.as-i64.as-i32.lte -10.as-i64.as-i32
-
-  not. ++> cannot-equal-a-different-i32
-    123.as-i64.as-i32.eq 42.as-i64.as-i32
-
-  eq. ++> rejects-an-out-of-bounds-conversion-to-i16
-    "recovered"
-    247483647.as-i64.as-i32.as-i16
-      "recovered" > [message]
-
-  eq. ++> rejects-division-by-zero
-    "recovered"
-    2.as-i64.as-i32.div
-      0.as-i64.as-i32
-      "recovered" > [message]
 
   32768.as-i64.as-i32.as-i16 --> stops-on-converting-i16-max-plus-one-to-i16
 

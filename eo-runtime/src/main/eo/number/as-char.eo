@@ -3,7 +3,7 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package string
++package number
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
@@ -15,36 +15,28 @@
 
   eq. ++> can-round-trip-through-as-ascii
     "!"
-    string
-      as-char
-        as-ascii "!"
+    string "!".as-ascii.as-char
 
   eq. ++> can-write-the-byte-of-a-lowercase-letter
     "z"
-    string
-      as-char 122
+    string 122.as-char
 
   eq. ++> can-write-the-byte-of-a-space
     " "
-    string
-      as-char 32
+    string 32.as-char
 
   eq. ++> can-write-the-byte-of-an-uppercase-letter
     "A"
-    string
-      as-char 65
+    string 65.as-char
 
   eq. ++> can-write-the-byte-of-the-last-printable-character
     "~"
-    string
-      as-char 126
+    string 126.as-char
 
   eq. ++> can-write-the-byte-of-the-last-uppercase-letter
     "Z"
-    string
-      as-char 90
+    string 90.as-char
 
   eq. ++> can-write-the-byte-of-the-zero-digit
     "0"
-    string
-      as-char 48
+    string 48.as-char

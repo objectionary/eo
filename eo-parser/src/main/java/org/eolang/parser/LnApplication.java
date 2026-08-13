@@ -143,12 +143,13 @@ final class LnApplication implements Line {
      * @param suffix The parsed suffix
      * @param kind Initial outer kind for the pushed level
      * @param openness Initial openness for the pushed level
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     private void transition(
         final Stack stack, final Suffix suffix, final Kind kind, final Openness openness
     ) {
-        new Transition(stack, this.span).apply(kind, openness, suffix.named());
+        new Transition(stack, this.span).apply(
+            kind, openness, new Admission(suffix.named(), suffix.test())
+        );
     }
 
     /**
@@ -161,7 +162,6 @@ final class LnApplication implements Line {
      * @param head The head value
      * @param chain The chain links (may be empty)
      * @param args The horizontal arguments (may be empty)
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     private void emit(
         final Emit emit, final Suffix suffix, final Value head,

@@ -11,6 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -36,7 +38,7 @@ final class PhCoverageTest {
         final Phi origin = new Data.ToPhi(42L);
         MatcherAssert.assertThat(
             "a coverage wrapper must compare equal to the object it wraps, but it didnt",
-            new PhCoverage(origin, "Φ.n", 1, 1),
+            new PhCoverage(origin, "Φ.n:1:1"),
             Matchers.equalTo(origin)
         );
     }
@@ -48,12 +50,12 @@ final class PhCoverageTest {
         System.setProperty("eo.coverageFile", hits.toString());
         try {
             final Phi first = new PhCoverage(
-                new PhDefault(new byte[] {(byte) 0x2A}), "Φ.foo", 7, 3
+                new PhDefault(new byte[] {(byte) 0x2A}), "Φ.foo:7:3"
             );
             new Dataized(first).take();
             new Dataized(first.copy()).take();
             new Dataized(
-                new PhCoverage(new PhDefault(new byte[] {(byte) 0x01}), "Φ.bar", 9, 5)
+                new PhCoverage(new PhDefault(new byte[] {(byte) 0x01}), "Φ.bar:9:5")
             ).take();
             MatcherAssert.assertThat(
                 "every location, hit repeatedly and through a copy, must be recorded exactly once",
@@ -70,10 +72,67 @@ final class PhCoverageTest {
     }
 
     @Test
+    void writesToEachConfiguredDestinationOnce(@Mktmp final Path temp) throws Exception {
+        final Path first = temp.resolve("first.txt");
+        final Path second = temp.resolve("second.txt");
+        final String before = System.getProperty("eo.coverageFile");
+        final Phi covered = new PhCoverage(
+            new PhDefault(new byte[] {(byte) 0x2A}), "Φ.foo:7:3"
+        );
+        try {
+            System.setProperty("eo.coverageFile", first.toString());
+            new Dataized(covered).take();
+            System.setProperty("eo.coverageFile", second.toString());
+            new Dataized(covered).take();
+            MatcherAssert.assertThat(
+                "the same location must be recorded once per configured destination",
+                Stream.concat(
+                    Files.readAllLines(first, StandardCharsets.UTF_8).stream(),
+                    Files.readAllLines(second, StandardCharsets.UTF_8).stream()
+                ).collect(Collectors.toList()),
+                Matchers.contains("Φ.foo:7:3", "Φ.foo:7:3")
+            );
+        } finally {
+            if (before == null) {
+                System.clearProperty("eo.coverageFile");
+            } else {
+                System.setProperty("eo.coverageFile", before);
+            }
+        }
+    }
+
+    @Test
+    void recordsTheSameLocationInALaterRun(@Mktmp final Path temp) throws Exception {
+        final Path hits = temp.resolve("hits.txt");
+        final String before = System.getProperty("eo.coverageFile");
+        System.setProperty("eo.coverageFile", hits.toString());
+        try {
+            new Dataized(
+                new PhCoverage(new PhDefault(new byte[] {(byte) 0x2A}), "Φ.später:13:7")
+            ).take();
+            Files.delete(hits);
+            new Dataized(
+                new PhCoverage(new PhDefault(new byte[] {(byte) 0x2A}), "Φ.später:13:7")
+            ).take();
+            MatcherAssert.assertThat(
+                "a location an earlier object recorded must be recorded again, but it wasnt",
+                Files.readAllLines(hits, StandardCharsets.UTF_8),
+                Matchers.contains("Φ.später:13:7")
+            );
+        } finally {
+            if (before == null) {
+                System.clearProperty("eo.coverageFile");
+            } else {
+                System.setProperty("eo.coverageFile", before);
+            }
+        }
+    }
+
+    @Test
     void convertsInvalidCoveragePathIntoIllegalArgumentException() {
         MatcherAssert.assertThat(
             "a raw InvalidPathException leaked through unconverted",
-            this.failure(String.format("/tmp/%cinvalid", (char) 0), "Φ.invalid-path").getClass(),
+            this.failure(String.format("/tmp/%cinvalid", (char) 0)).getClass(),
             Matchers.<Class<?>>equalTo(IllegalArgumentException.class)
         );
     }
@@ -83,7 +142,7 @@ final class PhCoverageTest {
         final String bad = String.format("/tmp/%cinvalid", (char) 0);
         MatcherAssert.assertThat(
             "the failure must name the offending property and its value",
-            this.failure(bad, "Φ.invalid-value").getMessage(),
+            this.failure(bad).getMessage(),
             Matchers.allOf(
                 Matchers.containsString("eo.coverageFile"),
                 Matchers.containsString(bad)
@@ -93,23 +152,17 @@ final class PhCoverageTest {
 
     /**
      * Failure raised while dataizing with the given value in the property.
-     *
-     * <p>Each caller must pass its own location: {@link PhCoverage} writes a
-     * given location at most once per JVM, so a shared one would make the
-     * second test see no attempt to write at all.</p>
-     *
      * @param path Value to put into the {@code eo.coverageFile} property
-     * @param loc Location to record, unique per caller
      * @return The exception thrown, or a placeholder if nothing was thrown
      */
-    private RuntimeException failure(final String path, final String loc) {
+    private RuntimeException failure(final String path) {
         final Optional<String> before = Optional.ofNullable(System.getProperty("eo.coverageFile"));
         System.setProperty("eo.coverageFile", path);
         RuntimeException thrown = new IllegalStateException("nothing was thrown at all");
         try {
             new Dataized(
                 new PhCoverage(
-                    new PhDefault(new byte[] {(byte) 0x03}), loc, 11, 1
+                    new PhDefault(new byte[] {(byte) 0x03}), "Φ.invalid:11:1"
                 )
             ).take();
         } catch (final IllegalArgumentException ex) {

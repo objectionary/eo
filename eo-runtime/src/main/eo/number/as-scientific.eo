@@ -1,0 +1,63 @@
+# Writes the number `n` in scientific notation, as a mantissa with six fraction
+# digits, the letter `e`, and the power of ten that scales the mantissa back to
+# `n`, so that `1.0e19` becomes `1.000000e19`. A magnitude past the range of a
+# signed 64-bit integer is named this way, since `as-decimal` writes only what
+# it spells out digit by digit, and a non-finite number becomes `nan`,
+# `infinity` or `-infinity`, having no digits at all. The power is never
+# negative, so a magnitude below one keeps it at zero, as `0.500000e0` for `0.5`.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[n] > as-scientific
+  n.is-finite.not.if > @
+    n.is-nan.if
+      "nan".as-bytes
+      if.
+        n.lt 0
+        "-infinity".as-bytes
+        "infinity".as-bytes
+    concat.
+      concat.
+        as-fixed
+          n.div
+            10.power
+              number exponent
+          6
+        "e".as-bytes
+      as-decimal
+        number exponent
+  rec-exponent > exponent!
+    n.abs
+    0
+  if. > [m count] >> rec-exponent
+    m.lt 10
+    count
+    rec-exponent
+      m.div 10
+      as-number.
+        count.plus 1
+
+  eq. ++> can-name-a-magnitude-past-the-long-range
+    "1.000000e19"
+    string 1.0e19.as-scientific
+
+  eq. ++> can-name-a-negative-magnitude
+    "-9.223372e18"
+    string -9.223372036854776e18.as-scientific
+
+  eq. ++> can-name-nan
+    "nan"
+    string nan.as-scientific
+
+  eq. ++> can-name-negative-infinity
+    "-infinity"
+    string ninf.as-scientific
+
+  eq. ++> can-name-positive-infinity
+    "infinity"
+    string pinf.as-scientific

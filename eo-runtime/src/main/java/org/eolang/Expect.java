@@ -155,11 +155,10 @@ public class Expect<T> {
 
         /**
          * Ctor.
-         * @param cause Exception cause
-         * @param args Arguments for {@link String#format(String, Object...)}
+         * @param message Error message
          */
-        ExMust(final String cause, final Object... args) {
-            super(String.format(cause, args));
+        ExMust(final String message) {
+            super(message);
         }
     }
 
@@ -172,11 +171,11 @@ public class Expect<T> {
 
         /**
          * Ctor.
-         * @param cause Exception cause
-         * @param args Arguments for {@link String#format(String, Object...)}
+         * @param message Error message
+         * @param root The exception that caused this one
          */
-        ExThat(final String cause, final Object... args) {
-            super(String.format(cause, args));
+        ExThat(final String message, final Throwable root) {
+            super(message, root);
         }
     }
 
@@ -189,19 +188,19 @@ public class Expect<T> {
 
         /**
          * Ctor.
-         * @param cause Exception cause
-         * @param args Arguments for {@link String#format(String, Object...)}
+         * @param message Error message
+         * @param root The exception that caused this one
          */
-        ExOtherwise(final String cause, final Object... args) {
-            super(String.format(cause, args));
+        ExOtherwise(final String message, final Throwable root) {
+            super(message, root);
         }
     }
 
     /**
-     * Transform Expect to Number.
+     * Transform Expect to a floating-point number.
      * @since 0.51
      */
-    public static final class Number {
+    public static final class Numeric {
 
         /**
          * Expect.
@@ -212,7 +211,7 @@ public class Expect<T> {
          * Ctor.
          * @param expect Expect
          */
-        public Number(final Expect<Phi> expect) {
+        public Numeric(final Expect<Phi> expect) {
             this.expect = expect;
         }
 
@@ -262,102 +261,6 @@ public class Expect<T> {
                 .must(number -> number >= Integer.MIN_VALUE && number <= Integer.MAX_VALUE)
                 .otherwise("must fit into int range")
                 .that(Double::intValue)
-                .it();
-        }
-    }
-
-    /**
-     * Transform Expect to Short (i16).
-     * @since 0.51
-     */
-    public static final class I16 {
-
-        /**
-         * Expect.
-         */
-        private final Expect<Phi> expect;
-
-        /**
-         * Ctor.
-         * @param expect Expect
-         */
-        public I16(final Expect<Phi> expect) {
-            this.expect = expect;
-        }
-
-        /**
-         * Return it.
-         * @return The token
-         * @checkstyle MethodNameCheck (5 lines)
-         */
-        public Short it() {
-            return this.expect
-                .that(phi -> new Dataized(phi).take(Short.class))
-                .otherwise("must be an i16")
-                .it();
-        }
-    }
-
-    /**
-     * Transform Expect to Integer (i32).
-     * @since 0.51
-     */
-    public static final class I32 {
-
-        /**
-         * Expect.
-         */
-        private final Expect<Phi> expect;
-
-        /**
-         * Ctor.
-         * @param expect Expect
-         */
-        public I32(final Expect<Phi> expect) {
-            this.expect = expect;
-        }
-
-        /**
-         * Return it.
-         * @return The token
-         * @checkstyle MethodNameCheck (5 lines)
-         */
-        public Integer it() {
-            return this.expect
-                .that(phi -> new Dataized(phi).take(Integer.class))
-                .otherwise("must be an i32")
-                .it();
-        }
-    }
-
-    /**
-     * Transform Expect to Long (i64).
-     * @since 0.51
-     */
-    public static final class I64 {
-
-        /**
-         * Expect.
-         */
-        private final Expect<Phi> expect;
-
-        /**
-         * Ctor.
-         * @param expect Expect
-         */
-        public I64(final Expect<Phi> expect) {
-            this.expect = expect;
-        }
-
-        /**
-         * Return it.
-         * @return The token
-         * @checkstyle MethodNameCheck (5 lines)
-         */
-        public Long it() {
-            return this.expect
-                .that(phi -> new Dataized(phi).take(Long.class))
-                .otherwise("must be an i64")
                 .it();
         }
     }

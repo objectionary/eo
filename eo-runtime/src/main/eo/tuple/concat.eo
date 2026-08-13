@@ -22,18 +22,16 @@
           1
           2
           3
-    withouti > list3
-      concat *1
+    withouti. > list3
+      concat.
         * 0 1
-        2
-        3
+        * 2 3
       0
 
   eq. ++> can-concat-with-a-tuple
-    concat *1
+    concat.
       * 0 1
-      2
-      4
+      * 2 4
     *
       0
       1

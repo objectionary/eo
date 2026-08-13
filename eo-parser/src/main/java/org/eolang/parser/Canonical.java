@@ -10,6 +10,7 @@ import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrJoined;
+import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.util.List;
 import java.util.function.UnaryOperator;
@@ -37,17 +38,15 @@ public final class Canonical implements UnaryOperator<XML> {
 
     /**
      * The classpath resources of every XSL this pipeline applies, in the
-     * order they run (mirroring {@link Canonical.Pipeline#value()}), so a
-     * caller that caches this pipeline's output (see {@code Parsing} in
-     * {@code eo-maven-plugin}, #6236) can fold a fingerprint of them into
-     * its cache key. Kept as a plain data list, separate from the grouped
-     * {@code TrClasspath}/{@code TrDefault} calls in
-     * {@link Canonical.Pipeline#value()} that actually build the pipeline,
-     * so must be kept in sync with them by hand — the same trade-off
-     * already accepted for {@code Transpilation.XSLS}/{@code IMPORTS} in
-     * {@code eo-maven-plugin}. An immutable {@link List}, not an array,
-     * since this is exported as public API of eo-parser and an array
-     * field would let any caller silently corrupt it for everyone.
+     * order they run, so a caller that caches this pipeline's output (see
+     * {@code Parsing} in {@code eo-maven-plugin}, #6236) can fold a
+     * fingerprint of them into its cache key. This very list also builds
+     * the pipeline in {@link Canonical.Pipeline#value()}, so the two can
+     * never drift apart, the same way {@code Transpilation.XSLS} feeds
+     * both the train and the cache key in {@code eo-maven-plugin}. An
+     * immutable {@link List}, not an array, since this is exported as
+     * public API of eo-parser and an array field would let any caller
+     * silently corrupt it for everyone.
      */
     public static final List<String> XSLS = List.of(
         "/org/eolang/parser/parse/wrap-applications.xsl",
@@ -62,6 +61,7 @@ public final class Canonical implements UnaryOperator<XML> {
         "/org/eolang/parser/parse/vars-float-up.xsl",
         "/org/eolang/parser/parse/move-voids-up.xsl",
         "/org/eolang/parser/parse/validate-objects-count.xsl",
+        "/org/eolang/parser/parse/validate-object-presence.xsl",
         "/org/eolang/parser/parse/build-fqns.xsl",
         "/org/eolang/parser/parse/expand-aliases.xsl",
         "/org/eolang/parser/parse/resolve-aliases.xsl",
@@ -87,6 +87,16 @@ public final class Canonical implements UnaryOperator<XML> {
     public static final List<String> IMPORTS = List.of(
         "/org/eolang/parser/_funcs.xsl",
         "/org/eolang/parser/_specials.xsl"
+    );
+
+    /**
+     * The position in {@link #XSLS} of {@code add-default-package.xsl},
+     * the only stylesheet of the pipeline that takes a parameter and
+     * therefore can't travel in a plain {@link TrClasspath} run, but has
+     * to be wrapped into an {@link StClasspath} of its own.
+     */
+    private static final int PACKAGED = Canonical.XSLS.indexOf(
+        "/org/eolang/parser/parse/add-default-package.xsl"
     );
 
     /**
@@ -121,6 +131,19 @@ public final class Canonical implements UnaryOperator<XML> {
     }
 
     /**
+     * The train of those {@link #XSLS} that live in the given half-open
+     * range and take no parameters.
+     * @param from The index of the first XSL, inclusive
+     * @param till The index right after the last XSL, exclusive
+     * @return The train of shifts
+     */
+    private static Train<Shift> classpath(final int from, final int till) {
+        return new TrClasspath<Shift>(
+            Canonical.XSLS.subList(from, till).toArray(new String[0])
+        ).back();
+    }
+
+    /**
      * The scalar that builds the canonical pipeline.
      * @since 0.60
      */
@@ -144,37 +167,20 @@ public final class Canonical implements UnaryOperator<XML> {
             return new Xsline(
                 new TrFull(
                     new TrJoined<>(
-                        new TrClasspath<>(
-                            "/org/eolang/parser/parse/wrap-applications.xsl",
-                            "/org/eolang/parser/parse/resolve-self.xsl",
-                            "/org/eolang/parser/parse/resolve-local-names.xsl",
-                            "/org/eolang/parser/parse/validate-before-stars.xsl",
-                            "/org/eolang/parser/parse/resolve-before-stars.xsl",
-                            "/org/eolang/parser/parse/fragile-dispatch.xsl",
-                            "/org/eolang/parser/parse/wrap-method-calls.xsl",
-                            "/org/eolang/parser/parse/const-to-dataized.xsl",
-                            "/org/eolang/parser/parse/stars-to-tuples.xsl",
-                            "/org/eolang/parser/parse/vars-float-up.xsl",
-                            "/org/eolang/parser/parse/move-voids-up.xsl",
-                            "/org/eolang/parser/parse/validate-objects-count.xsl",
-                            "/org/eolang/parser/parse/build-fqns.xsl",
-                            "/org/eolang/parser/parse/expand-aliases.xsl",
-                            "/org/eolang/parser/parse/resolve-aliases.xsl"
-                        ).back(),
+                        Canonical.classpath(0, Canonical.PACKAGED),
                         new TrDefault<Shift>(
                             new StClasspath(
-                                "/org/eolang/parser/parse/add-default-package.xsl",
+                                Canonical.XSLS.get(Canonical.PACKAGED),
                                 String.format("objects %s", this.objects)
                             )
                         ),
-                        new TrClasspath<>(
-                            "/org/eolang/parser/parse/roll-bases.xsl",
-                            "/org/eolang/parser/parse/mandatory-as.xsl"
-                        ).back(),
+                        Canonical.classpath(
+                            Canonical.PACKAGED + 1, Canonical.XSLS.size() - 1
+                        ),
                         new TrDefault<>(new StHex()),
-                        new TrClasspath<>(
-                            "/org/eolang/parser/parse/set-locators.xsl"
-                        ).back()
+                        Canonical.classpath(
+                            Canonical.XSLS.size() - 1, Canonical.XSLS.size()
+                        )
                     )
                 )
             )::pass;

@@ -23,12 +23,12 @@
     00-00-00-00-00-00-00-33.as-i64.as-bytes
     00-00-00-00-00-00-00-33
 
-  not. ++> cannot-match-the-bytes-of-the-same-number
-    00-00-00-00-00-00-00-2A.as-i64.as-bytes.eq 42.as-bytes
-
-  eq. ++> rejects-bytes-of-wrong-size
+  eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-i64
     "recovered"
     01-01-01-01.as-i64
       "recovered" > [message]
 
-  01-01-01-01.as-i64 --> stops-on-bytes-of-wrong-size
+  not. ++> can-tell-it-does-not-match-the-bytes-of-the-same-number
+    00-00-00-00-00-00-00-2A.as-i64.as-bytes.eq 42.as-bytes
+
+  01-01-01-01.as-i64 --> stops-on-bytes-of-wrong-size-when-converting-to-i64

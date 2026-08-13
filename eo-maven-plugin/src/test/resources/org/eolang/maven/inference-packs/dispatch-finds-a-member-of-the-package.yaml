@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `bool` binds no `if` of its own, and `if` is an object of its own beside it in
+# the same package, which is where an unbound name falls through to. A dispatch
+# that lands there is a copy of that member, exactly as one that lands on an own
+# attribute is.
+eo:
+  app.eo: |
+    [] > app
+      bool.if > @
+  bool.eo: |
+    [] > bool
+      [] > if
+links:
+  - "/links/type[@id='Φ.app.φ' and @copy='Φ.bool.if']"

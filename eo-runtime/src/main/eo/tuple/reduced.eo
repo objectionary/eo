@@ -19,7 +19,7 @@
       item
 
   eq. ++> can-reduce-a-list
-    reduced
+    reduced.
       *
         1
         2
@@ -30,7 +30,7 @@
     -24
 
   eq. ++> can-reduce-a-list-into-a-string
-    reduced
+    reduced.
       * 0 1
       ""
       acc.concat > [acc item]

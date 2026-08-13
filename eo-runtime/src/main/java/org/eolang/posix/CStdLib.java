@@ -140,6 +140,14 @@ public interface CStdLib extends Library {
     int stat(String path, Structure statbuf);
 
     /**
+     * Get file status by path, without following a symbolic link.
+     * @param path Path to the file
+     * @param statbuf Structure to fill with the file's metadata
+     * @return Zero on success, -1 on error
+     */
+    int lstat(String path, Structure statbuf);
+
+    /**
      * Delete a name from the filesystem.
      * @param path Path to the file
      * @return Zero on success, -1 on error
@@ -176,6 +184,14 @@ public interface CStdLib extends Library {
      * @return Zero on success, -1 on error
      */
     int rename(String from, String target);
+
+    /**
+     * Create a symbolic link pointing at a file or a directory.
+     * @param target Path the link leads to
+     * @param path Path of the link itself
+     * @return Zero on success, -1 on error
+     */
+    int symlink(String target, String path);
 
     /**
      * Get environment variable.
@@ -282,9 +298,9 @@ public interface CStdLib extends Library {
      *
      * <p>On Intel macOS, {@code dlsym("stat")} resolves to the legacy
      * 32-bit-inode version whose struct layout differs from the 64-bit-inode
-     * one used by {@link StatSyscall.Mac}. We remap {@code stat} to
-     * {@code stat$INODE64} to get the right layout. On arm64 macOS and
-     * Linux the plain {@code stat} symbol already uses that layout.</p>
+     * one used by {@link StatSyscall.Mac}. We remap {@code stat} and
+     * {@code lstat} to their {@code $INODE64} twins to get the right layout.
+     * On arm64 macOS and Linux the plain symbols already use that layout.</p>
      *
      * @return Loaded CStdLib instance
      */
@@ -297,11 +313,12 @@ public interface CStdLib extends Library {
                 Collections.singletonMap(
                     Library.OPTION_FUNCTION_MAPPER,
                     (FunctionMapper) (lib, method) -> {
+                        final String name = method.getName();
                         final String mapped;
-                        if ("stat".equals(method.getName())) {
-                            mapped = "stat$INODE64";
+                        if ("stat".equals(name) || "lstat".equals(name)) {
+                            mapped = String.format("%s$INODE64", name);
                         } else {
-                            mapped = method.getName();
+                            mapped = name;
                         }
                         return mapped;
                     }

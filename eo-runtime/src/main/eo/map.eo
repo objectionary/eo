@@ -145,6 +145,14 @@
       map.entry "two" 2
       map.entry "three" 3
 
+  not. ++> can-find-no-element-by-an-absent-key
+    exists.
+      found.
+        map *
+          map.entry "one" 1
+          map.entry "two" 2
+        "three"
+
   ++> can-find-the-value-of-each-key-with-colliding-hashes
     and. > @
       1.eq first.get
@@ -160,6 +168,19 @@
       map.entry "one" 1
       map.entry "two" 2
     "two"
+
+  not. ++> can-have-no-absent-key-colliding-with-a-stored-one
+    has.
+      map *
+        map.entry "Aa" 1
+      "BB"
+
+  not. ++> can-have-no-element-by-an-absent-key
+    has.
+      map *
+        map.entry "one" 1
+        map.entry "two" 2
+      "three"
 
   ++> can-keep-both-keys-with-colliding-hashes
     2.eq mp.size > @
@@ -200,6 +221,23 @@
               m.put
                 m.as-number.plus 1
               1
+
+  eq. ++> can-recover-from-an-absent-key-colliding-with-a-stored-one
+    "recovered"
+    get.
+      found.
+        map *
+          map.entry "Aa" 1
+        "BB"
+      "recovered" > [message]
+
+  ++> can-recover-from-getting-a-missing-key
+    "recovered".eq > @
+      get.
+        mp.found "absent"
+        "recovered" > [message]
+    map * > mp
+      map.entry "one" 1
 
   ++> can-remove-an-element-by-a-key
     and. > @
@@ -258,51 +296,13 @@
       3
       4
 
-  eq. ++> cannot-change-without-an-absent-element
+  eq. ++> can-stay-unchanged-without-an-absent-element
     size.
       without.
         map *
           map.entry "one" 1
         "two"
     1
-
-  not. ++> cannot-find-an-element-by-an-absent-key
-    exists.
-      found.
-        map *
-          map.entry "one" 1
-          map.entry "two" 2
-        "three"
-
-  not. ++> cannot-have-an-absent-key-colliding-with-a-stored-one
-    has.
-      map *
-        map.entry "Aa" 1
-      "BB"
-
-  not. ++> cannot-have-an-element-by-an-absent-key
-    has.
-      map *
-        map.entry "one" 1
-        map.entry "two" 2
-      "three"
-
-  eq. ++> rejects-an-absent-key-colliding-with-a-stored-one
-    "recovered"
-    get.
-      found.
-        map *
-          map.entry "Aa" 1
-        "BB"
-      "recovered" > [message]
-
-  ++> rejects-getting-a-missing-key
-    "recovered".eq > @
-      get.
-        mp.found "absent"
-        "recovered" > [message]
-    map * > mp
-      map.entry "one" 1
 
   --> stops-on-getting-a-missing-key
     get. > @

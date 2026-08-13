@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Nothing inside a moved member is rewritten, and it does not have to be. The
+# parser leaves every name fully qualified, so a reference to another object
+# still reads the same after the move, and every `loc` already says where the
+# node will be once it is an attribute of `Φ.number`. That is what makes the
+# splice a matter of moving one element.
+merged:
+  - number
+eo:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+  number/gte.eo: |
+    +package number
+
+    [n x] > gte
+      or. > @
+        n.gt x
+        n.eq x
+xmir:
+  number.eo:
+    - "/object/o[@name='number']/o[@name='gte' and @loc='Φ.number.gte']"
+    - "//o[@name='gte']/o[@name='n' and @loc='Φ.number.gte.n']"
+    - "//o[@name='gte']/o[@name='φ' and @loc='Φ.number.gte.φ']"
+    - "//o[@name='gte']/o[@name='φ' and @base='.or']"
+    - "//o[@name='gte']//o[@base='ξ.n.gt']"
+    - "//o[@name='gte']//o[@base='ξ.n.eq']"

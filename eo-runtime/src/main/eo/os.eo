@@ -37,7 +37,7 @@
     os.is-windows.or os.is-macos
     os.is-linux
 
-  not. ++> cannot-belong-to-two-os-families-at-once
+  not. ++> can-tell-it-does-not-belong-to-two-os-families-at-once
     or.
       or.
         os.is-linux.and os.is-macos

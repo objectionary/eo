@@ -107,6 +107,15 @@
     00-00-00-00-00-00-00-00.as-u64.minus 00-00-00-00-00-00-00-01.as-u64
     FF-FF-FF-FF-FF-FF-FF-FF.as-u64
 
+  not. ++> can-tell-it-is-not-greater-than-or-equal-to-a-larger-u64
+    00-00-00-00-00-00-00-00.as-u64.gte 00-00-00-00-00-00-00-0A.as-u64
+
+  not. ++> can-tell-it-is-not-less-than-an-equal-u64
+    00-00-00-00-00-00-00-0A.as-u64.lt 00-00-00-00-00-00-00-0A.as-u64
+
+  not. ++> can-tell-it-is-not-less-than-one-with-a-high-bit
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.lt 00-00-00-00-00-00-00-01.as-u64
+
   gt. ++> can-treat-a-high-bit-as-magnitude-when-greater
     FF-FF-FF-FF-FF-FF-FF-FF.as-u64
     00-00-00-00-00-00-00-01.as-u64
@@ -114,12 +123,3 @@
   eq. ++> can-wrap-a-product-modulo-two-to-the-sixty-fourth
     00-00-00-01-00-00-00-00.as-u64.times 00-00-00-01-00-00-00-00.as-u64
     00-00-00-00-00-00-00-00.as-u64
-
-  not. ++> cannot-be-greater-than-or-equal-to-a-larger-u64
-    00-00-00-00-00-00-00-00.as-u64.gte 00-00-00-00-00-00-00-0A.as-u64
-
-  not. ++> cannot-be-less-than-an-equal-u64
-    00-00-00-00-00-00-00-0A.as-u64.lt 00-00-00-00-00-00-00-0A.as-u64
-
-  not. ++> cannot-be-less-than-one-with-a-high-bit
-    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.lt 00-00-00-00-00-00-00-01.as-u64

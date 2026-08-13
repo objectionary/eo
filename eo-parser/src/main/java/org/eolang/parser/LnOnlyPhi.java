@@ -155,7 +155,7 @@ final class LnOnlyPhi implements Line {
      * @return The φ token reader rewound to the head
      */
     private Tokens slot(final Stack stack, final Suffix suffix, final Span inner) {
-        final int stars = LnOnlyPhi.compactStar(inner.body());
+        final int stars = LnOnlyPhi.compactStar(inner.body(), inner);
         final Tokens tokens = LnOnlyPhi.reader(inner, stars);
         final Level level = this.transition(
             stack, suffix, stars >= 0 || LnOnlyPhi.bare(tokens)
@@ -284,7 +284,7 @@ final class LnOnlyPhi implements Line {
             openness = Openness.HORIZONTAL_COMPLETED;
         }
         return new Transition(stack, this.span).apply(
-            Kind.ONLY_PHI_FORMATION, openness, suffix.named()
+            Kind.ONLY_PHI_FORMATION, openness, new Admission(suffix.named(), suffix.test())
         );
     }
 
@@ -294,14 +294,15 @@ final class LnOnlyPhi implements Line {
      * the LHS is not a compact-tuple head — its head must be a single
      * space-free token that is not a reversed dispatch (no trailing dot).
      * @param lhs The LHS body
+     * @param span Source span, for a ParseError on overflow
      * @return The N count, or -1 when not a compact-tuple head
      */
-    private static int compactStar(final String lhs) {
+    private static int compactStar(final String lhs, final Span span) {
         final int space = lhs.indexOf(' ');
         final int result;
         if (space > 0 && lhs.charAt(space - 1) != '.'
             && space + 1 < lhs.length() && lhs.charAt(space + 1) == '*') {
-            result = LnOnlyPhi.starCount(lhs, space + 2);
+            result = LnOnlyPhi.starCount(lhs, space + 2, span);
         } else {
             result = -1;
         }
@@ -334,24 +335,36 @@ final class LnOnlyPhi implements Line {
      * The non-negative integer {@code N} spelled from {@code from} to the
      * end of {@code lhs} (0 when empty, R-3.9.1), or -1 when any character
      * is not a digit (which also rejects trailing horizontal arguments).
+     * The digits accumulate in a {@code long} and a {@link ParseError} is
+     * thrown the moment {@code N} would exceed {@link Integer#MAX_VALUE},
+     * pointing at the digit run - mirroring {@code LnCompactTuple.readCount}
+     * for the sibling {@code *N} marker, so the count can never silently
+     * wrap and collide with the {@code -1} "not-a-digit" sentinel.
      * @param lhs The LHS body
      * @param from Index of the first character after {@code *}
+     * @param span Source span, for a ParseError on overflow
      * @return The N count, or -1 when the tail is not all digits
      */
-    private static int starCount(final String lhs, final int from) {
-        int count = 0;
+    private static int starCount(final String lhs, final int from, final Span span) {
+        long count = 0;
         boolean digits = true;
         for (int idx = from; idx < lhs.length(); idx = idx + 1) {
             final char glyph = lhs.charAt(idx);
-            if (glyph >= '0' && glyph <= '9') {
-                count = count * 10 + glyph - '0';
-            } else {
+            if (glyph < '0' || glyph > '9') {
                 digits = false;
+                break;
+            }
+            count = count * 10 + glyph - '0';
+            if (count > Integer.MAX_VALUE) {
+                throw new ParseError(
+                    span.line(), span.indent() + from,
+                    "compact tuple count is too large"
+                );
             }
         }
         final int result;
         if (digits) {
-            result = count;
+            result = (int) count;
         } else {
             result = -1;
         }

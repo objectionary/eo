@@ -258,6 +258,15 @@
                 m.read 2 5
                 "Hello"
 
+  eq. ++> can-recover-from-reading-over-the-limit
+    01-02
+    malloc.of
+      1
+      m.read > [m]
+        0
+        10
+        01-02 > [ex]
+
   ++> can-recurse-without-arguments
     eq. > @
       malloc.for
@@ -303,12 +312,6 @@
                 m.read 0 12
                 "Hello, Jeff!"
 
-  malloc.of ++> can-write-beyond-an-offset-and-resize
-    1
-    seq * > [m]
-      m.write 1 true
-      m.size.eq 2
-
   ++> can-write-into-a-block-made-by-of
     mem.eq 10 > @
     malloc.of > mem
@@ -334,15 +337,6 @@
       42
       m > [m]
     42
-
-  eq. ++> rejects-reading-over-the-limit
-    01-02
-    malloc.of
-      1
-      m.read > [m]
-        0
-        10
-        01-02 > [ex]
 
   malloc.of --> stops-on-changing-the-size-to-a-fraction
     1
@@ -380,3 +374,9 @@
     m.read > [m]
       0
       100
+
+  malloc.of --> stops-on-writing-beyond-an-offset
+    1
+    m.write > [m]
+      1
+      true

@@ -36,7 +36,7 @@
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>lints</artifactId>
-      <version>0.4.1</version>
+      <version>0.4.3</version>
       <exclusions>
         <exclusion>
           <groupId>org.codehaus.groovy</groupId>
@@ -135,7 +135,7 @@
       -->
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.plexus</artifactId>
-      <version>1.0.0</version>
+      <version>1.1.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -226,7 +226,7 @@
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>tojos</artifactId>
-      <version>0.19.1</version>
+      <version>0.20.0</version>
     </dependency>
     <dependency>
       <groupId>javax.json</groupId>
@@ -344,6 +344,8 @@
               junit.jupiter.execution.parallel.enabled = true
               junit.jupiter.execution.parallel.mode.default = concurrent
               junit.jupiter.execution.parallel.mode.classes.default = concurrent
+              junit.jupiter.execution.parallel.config.strategy = dynamic
+              junit.jupiter.execution.parallel.config.dynamic.factor = 1
             </configurationParameters>
           </properties>
         </configuration>

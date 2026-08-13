@@ -209,7 +209,7 @@ final class PhNest implements Phi {
      */
     private static Phi load(final String target) {
         try {
-            return (Phi) Class.forName(target).getConstructor().newInstance();
+            return Class.forName(target).asSubclass(Phi.class).getConstructor().newInstance();
         } catch (final ClassNotFoundException | NoSuchMethodException
             | InvocationTargetException | InstantiationException
             | IllegalAccessException ex) {

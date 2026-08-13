@@ -59,6 +59,22 @@ final class Xmirs {
     }
 
     /**
+     * The object every file of the program is about.
+     *
+     * <p>A file carries one object at the top and the package it declares
+     * goes into the locator of that object, so {@code minus} in the package
+     * {@code number} is {@code Φ.number.minus}. That is how an attribute
+     * comes to live in a file of its own.</p>
+     *
+     * @return The named top-level objects, one per file, in the order the
+     *  files come in
+     * @throws IOException If a file cannot be read
+     */
+    Collection<XML> roots() throws IOException {
+        return this.matching("/object/o[@name]");
+    }
+
+    /**
      * Every dispatch of the program.
      *
      * <p>A dispatch is an object whose base begins with a dot: it takes an
@@ -72,6 +88,52 @@ final class Xmirs {
      */
     Collection<XML> dispatches() throws IOException {
         return this.matching("//o[starts-with(@base, '.')]");
+    }
+
+    /**
+     * Every application of the program.
+     *
+     * <p>An application puts something into the voids of the object it
+     * copies, and the place of an argument is what says which void it goes
+     * into. That is the only place in the text where a void is answered, so
+     * it is where a name taken from one stops being a question.</p>
+     *
+     * @return The applications, file by file, in the order they appear in
+     *  the code
+     * @throws IOException If a file cannot be read
+     */
+    Collection<XML> applications() throws IOException {
+        return this.matching("//o[@loc][o[starts-with(@as, 'α')][@loc]]");
+    }
+
+    /**
+     * Every reference of the program.
+     *
+     * <p>A reference names an object instead of taking an attribute from
+     * one: {@code ξ.t} names something bound nearby, {@code Φ.number}
+     * names what the whole program knows. Both carry exactly one name,
+     * since a longer path was split into dispatches before any clue looked
+     * at the XMIR.</p>
+     *
+     * @return The references, file by file, in the order they appear in
+     *  the code
+     * @throws IOException If a file cannot be read
+     */
+    Collection<XML> references() throws IOException {
+        return this.matching("//o[starts-with(@base, 'ξ.') or starts-with(@base, 'Φ.')]");
+    }
+
+    /**
+     * The locator of every object of the program.
+     * @return The locators
+     * @throws IOException If a file cannot be read
+     */
+    Collection<String> locators() throws IOException {
+        final Collection<String> found = new ArrayList<>(0);
+        for (final XML xmir : this.documents()) {
+            found.addAll(xmir.xpath("//o/@loc"));
+        }
+        return found;
     }
 
     /**

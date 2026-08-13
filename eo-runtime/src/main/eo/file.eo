@@ -40,6 +40,22 @@
         posix *1
           "stat"
           path
+  [cant-check] > is-symlink
+    if. > @
+      info.code.eq 0
+      eq.
+        floor.
+          info.output.mode.div 4096
+        10
+      cant-check
+    called. > info
+      os.is-windows.if
+        win32 *1
+          "_stat64"
+          path
+        posix *1
+          "lstat"
+          path
   [mode scope cant-open] > open
     known.not.if > @
       T
@@ -173,6 +189,36 @@
         f.write "!" > [f]
     13
 
+  eq. ++> can-keep-the-size-of-a-file-opened-for-appending
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "a"
+        true > [f]
+    12
+
+  eq. ++> can-keep-the-size-of-a-file-opened-for-reading
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "r"
+        true > [f]
+    12
+
+  eq. ++> can-keep-the-size-of-a-file-opened-for-reading-or-appending
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "a+"
+        true > [f]
+    12
+
   ++> can-read-from-a-file
     eq. > @
       malloc.of
@@ -227,6 +273,16 @@
     temp.path > source
     mktemp.tmpfile > temp
 
+  mktemp.tmpfile.deleted.is-directory ++> can-recover-from-checking-an-absent-file
+    true
+
+  eq. ++> can-recover-from-opening-a-missing-file
+    "recovered"
+    mktemp.tmpfile.deleted.open
+      "r"
+      f > [f]
+      "recovered" > [reason]
+
   ++> can-resolve-a-path-and-touch-it
     resolved.as-dir.made.tmpfile.exists.and > @
       string.contains
@@ -236,6 +292,9 @@
           "foo"
           "bar"
     mktemp.as-path.resolved "foo/bar" > resolved
+
+  not. ++> can-tell-that-a-regular-file-is-not-a-symbolic-link
+    mktemp.tmpfile.is-symlink true
 
   not. ++> can-tell-that-an-absent-file-does-not-exist
     exists.
@@ -325,45 +384,6 @@
         "Shrek is love!"
     temp.path > source
     mktemp.tmpfile > temp
-
-  eq. ++> cannot-truncate-a-file-opened-for-appending
-    size.
-      open.
-        mktemp.tmpfile.open
-          "w"
-          f.write "Hello, world" > [f]
-        "a"
-        true > [f]
-    12
-
-  eq. ++> cannot-truncate-a-file-opened-for-reading
-    size.
-      open.
-        mktemp.tmpfile.open
-          "w"
-          f.write "Hello, world" > [f]
-        "r"
-        true > [f]
-    12
-
-  eq. ++> cannot-truncate-a-file-opened-for-reading-or-appending
-    size.
-      open.
-        mktemp.tmpfile.open
-          "w"
-          f.write "Hello, world" > [f]
-        "a+"
-        true > [f]
-    12
-
-  mktemp.tmpfile.deleted.is-directory true ++> rejects-checking-an-absent-file
-
-  eq. ++> rejects-opening-a-missing-file
-    "recovered"
-    mktemp.tmpfile.deleted.open
-      "r"
-      f > [f]
-      "recovered" > [reason]
 
   mktemp.tmpfile.deleted.is-directory --> stops-on-checking-the-directory-of-an-absent-file
 

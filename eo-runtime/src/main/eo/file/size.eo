@@ -25,7 +25,7 @@
   mktemp.tmpfile.deleted.touched.size.eq ++> can-measure-an-empty-file-after-touching
     0
 
-  eq. ++> rejects-sizing-an-absent-file
+  eq. ++> can-recover-from-sizing-an-absent-file
     -1
     mktemp.tmpfile.deleted.size -1
 

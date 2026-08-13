@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The "Φ.dataized" wrapper synthesised by const-to-dataized.xsl carried no
+# "@line", while every object in XMIR must have one (the "line-is-absent"
+# lint). The wrapper stands exactly where the const marker was, so it takes
+# the coordinates of the object it dataizes.
+sheets:
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+asserts:
+  - /object[count(//o[not(@line)])=0]
+  - //o[@base='Φ.dataized' and @line='4' and o[@base='b']]
+input: |
+  [] > foo
+    number > x!
+    5 > num!
+    a b! > y

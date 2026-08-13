@@ -12,22 +12,11 @@ import java.util.Collection;
 /**
  * Every clue the checker knows how to follow.
  *
- * <p>The checker looks for one kind of mistake: an attribute is taken
- * from an object that certainly doesn't have it. In this program, for
- * example, {@code t} does have {@code next}, but the object attached to
- * {@code next} has no {@code foo}:</p>
- *
- * <pre> [] &gt; app
- *   inc t &gt; @
- *   [] &gt; t
- *     [] &gt; next
- *   [x] &gt; inc
- *     x.next.foo &gt; @</pre>
- *
- * <p>Three clues are planned, one per kind of object, and each fills a
- * table of its own: what an object certainly has ({@link Provides}), what
- * it must have judging by how it is used ({@link Needs}), and which types
- * are copies of which. Keeping the tables apart is what lets a smarter
+ * <p>A clue reads a program and writes down one kind of fact about the
+ * objects in it. There is a clue per kind of object, and each fills a table
+ * of its own: what an object certainly has ({@link Provides}), what it must
+ * have judging by how it is used ({@link Needs}), and which types are copies
+ * of which ({@link Links}). Keeping the tables apart is what lets a smarter
  * rule add rows, or read them differently, without touching anything
  * else.</p>
  *
@@ -42,12 +31,13 @@ import java.util.Collection;
  * buys back later by resolving each site in its own context; reading only
  * what runs costs coverage, which nothing buys back.</p>
  *
- * <p>Then the checks are drained one by one, each of them either
- * deciding, splitting into smaller checks, or waiting for facts that may
- * never come. A mistake is reported only when the object that misses an
- * attribute is complete, so that parts of the program the checker cannot
- * see — atoms, delegation through {@code φ} — make it silent rather than
- * wrong. Only the first clue is here so far.</p>
+ * <p>No clue decides anything, which is why they can be read one after
+ * another in any order, and why nothing here says whether a program is
+ * wrong. Judging used to live beside these rules and was taken out again
+ * in #6661: it reported nothing, because a verdict needs the object that
+ * misses an attribute to have been seen whole, and almost none of them have
+ * been. It comes back when every object can be given a type, rather than
+ * only those a call site happens to reach.</p>
  *
  * @since 0.67.0
  */
@@ -62,7 +52,7 @@ public final class Clues implements Clue {
      * Ctor.
      */
     public Clues() {
-        this(Arrays.asList(new Provides(), new Needs()));
+        this(Arrays.asList(new Provides(), new Needs(), new Links()));
     }
 
     /**

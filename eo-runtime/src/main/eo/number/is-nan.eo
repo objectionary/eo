@@ -76,8 +76,8 @@
 
   nan.floor.as-bytes.eq nan.as-bytes ++> can-be-nan-when-the-floor-of-nan
 
-  42.5.is-nan.not ++> cannot-be-nan-when-a-simple-number
+  42.5.is-nan.not ++> can-tell-it-is-not-nan-when-a-simple-number
 
-  ninf.is-nan.not ++> cannot-be-nan-when-negative-infinity
+  ninf.is-nan.not ++> can-tell-it-is-not-nan-when-negative-infinity
 
-  pinf.is-nan.not ++> cannot-be-nan-when-positive-infinity
+  pinf.is-nan.not ++> can-tell-it-is-not-nan-when-positive-infinity

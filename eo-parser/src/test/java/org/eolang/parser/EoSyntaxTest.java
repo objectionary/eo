@@ -76,6 +76,15 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void rejectsANullTransform() {
+        Assertions.assertThrows(
+            NullPointerException.class,
+            () -> new EoSyntax(new InputOf(""), (UnaryOperator<XML>) null).parsed(),
+            "EoSyntax must reject a null transform, but it didn't"
+        );
+    }
+
+    @Test
     void parsesSimpleCodeWithDebugMode() {
         final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(EoSyntax.class);
         final Level previous = logger.getLevel();
@@ -132,7 +141,29 @@ final class EoSyntaxTest {
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/errors/error",
-                String.format("/object[listing='%s']", StringEscapeUtils.escapeXml11(src))
+                String.format("/object[listing='%s']", src)
+            )
+        );
+    }
+
+    @Test
+    void rejectsProgramOfMetasAlone() throws Exception {
+        MatcherAssert.assertThat(
+            "a file of metas alone declares no object and must be refused",
+            new EoSyntax(new InputOf(String.format("+package foo%n"))).parsed(),
+            XhtmlMatchers.hasXPaths(
+                "/object/errors/error[@check='validate-object-presence' and @severity='critical']"
+            )
+        );
+    }
+
+    @Test
+    void rejectsProgramOfCommentsAlone() throws Exception {
+        MatcherAssert.assertThat(
+            "a file of a top comment block alone declares no object and must be refused",
+            new EoSyntax(new InputOf(String.format("# just a note%n"))).parsed(),
+            XhtmlMatchers.hasXPaths(
+                "/object/errors/error[@check='validate-object-presence' and @severity='critical']"
             )
         );
     }
@@ -154,7 +185,25 @@ final class EoSyntaxTest {
                     )
                 ).inner()
             ).element("object").element("listing").text().get(),
-            Matchers.containsString(StringEscapeUtils.escapeXml11(src))
+            Matchers.equalTo(src)
+        );
+    }
+
+    @Test
+    void keepsListingVerbatimWithXmlSpecialCharacters() throws Exception {
+        final String src = String.join(
+            System.lineSeparator(),
+            "# Sample.",
+            "[] > app",
+            "  \"a < b & c > d\" > x",
+            ""
+        );
+        MatcherAssert.assertThat(
+            "listing must hold the source verbatim, not XML-escaped",
+            new Xnav(
+                new EoSyntax(new InputOf(src)).parsed().inner()
+            ).element("object").element("listing").text().get(),
+            Matchers.equalTo(src)
         );
     }
 

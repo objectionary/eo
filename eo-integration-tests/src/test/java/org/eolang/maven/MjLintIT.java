@@ -79,6 +79,7 @@ final class MjLintIT {
     private static String program() {
         return String.join(
             System.lineSeparator(),
+            "+architect yegor256@gmail.com",
             "+home https://www.eolang.org",
             "+package foo.x",
             "+version 0.0.0",

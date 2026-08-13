@@ -22,11 +22,10 @@
         size
       substring >> part!
 
-  ends-with ++> can-end-with-a-substring
+  ends-with. ++> can-end-with-a-substring
     "Hello world!"
     "world!"
 
-  not. ++> cannot-end-with-an-absent-substring
-    ends-with
-      "Hello world!"
+  not. ++> can-tell-it-does-not-end-with-an-absent-substring
+    "Hello world!".ends-with
       "Hello"

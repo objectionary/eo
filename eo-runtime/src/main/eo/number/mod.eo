@@ -8,7 +8,8 @@
 # remainder is below twice the subtracted value, which is exact too, so the
 # answer matches the true remainder for any pair of finite numbers, however
 # far apart their magnitudes are, at the cost of two recursive steps per
-# bit of the quotient.
+# bit of the quotient. When the dividend is `nan` or infinite, the result is
+# `nan`, regardless of the divisor.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -24,155 +25,154 @@
       0
     cant-mod
       "cannot calculate mod by zero"
-    divisor.is-finite.not.if
-      divisor.is-nan.if nan x
-      if.
-        gt.
-          number x.as-bytes >> dividend
-          0
-        [] >> abs-mod
-          shrink > @
-            grow
-              abs divisor >> absy
-            abs dividend >> absx
-          if. > [chunk] > grow
-            chunk.gte absx
-            chunk
-            grow
-              chunk.plus chunk
-          if. > [chunk rest] > shrink
-            chunk.lt absy
-            rest
-            shrink
-              chunk.div 2
-              if.
-                rest.gte chunk
-                rest.minus chunk
-                rest
-        abs-mod.neg
+    dividend.is-finite.not.if
+      nan
+      divisor.is-finite.not.if
+        divisor.is-nan.if
+          nan
+          x.plus 0
+        if.
+          gte.
+            number x.as-bytes >> dividend
+            0
+          [] >> abs-mod
+            shrink > @
+              grow
+                abs divisor >> absy
+              abs dividend >> absx
+            if. > [chunk] > grow
+              chunk.gte absx
+              chunk
+              grow
+                chunk.plus chunk
+            if. > [chunk rest] > shrink
+              chunk.lt absy
+              rest
+              shrink
+                chunk.div 2
+                if.
+                  rest.gte chunk
+                  rest.minus chunk
+                  rest
+          abs-mod.neg
+
+  eq. ++> can-recover-from-a-modulo-by-zero
+    "recovered"
+    5.mod
+      0
+      "recovered" > [message]
+
+  is-nan. ++> can-return-nan-when-the-dividend-is-infinite
+    pinf.mod 5
+
+  is-nan. ++> can-return-nan-when-the-dividend-is-nan
+    nan.mod 5
 
   is-nan. ++> can-return-nan-when-the-divisor-is-nan
-    mod
-      5
-      nan
+    5.mod nan
+
+  eq. ++> can-return-positive-zero-for-negative-zero-dividend-and-negative-infinite-divisor
+    as-bytes.
+      0.neg.mod ninf
+    0.as-bytes
+
+  eq. ++> can-return-positive-zero-for-negative-zero-dividend-and-positive-infinite-divisor
+    as-bytes.
+      0.neg.mod pinf
+    0.as-bytes
+
+  eq. ++> can-return-positive-zero-when-dividend-is-zero
+    as-bytes.
+      0.mod 3
+    0.as-bytes
+
+  eq. ++> can-return-positive-zero-when-dividend-is-zero-and-divisor-is-negative
+    as-bytes.
+      0.mod -3
+    0.as-bytes
 
   ++> can-stay-compatible-with-division
     eq. > @
       plus.
-        mod dividend divisor
+        dividend.mod divisor
         divisor.times (dividend.div divisor).as-i64.as-number
       dividend
     -13 > dividend
     5 > divisor
 
   is-nan. ++> can-take-a-modulo-by-nan
-    mod
-      5
-      nan
+    5.mod nan
 
   eq. ++> can-take-a-modulo-by-one
-    mod
-      133
-      1
+    133.mod 1
     0
 
   eq. ++> can-take-a-modulo-of-a-dividend-below-the-divisor
-    mod
-      -1
-      5
+    -1.mod 5
     -1
 
   eq. ++> can-take-a-modulo-of-a-large-dividend-by-a-fractional-divisor
-    mod
-      1000000000000000
-      0.1
+    1000000000000000.mod 0.1
     0.04448884876874218
 
   eq. ++> can-take-a-modulo-of-a-negative-by-positive-infinity
-    mod
-      -5
-      pinf
+    -5.mod pinf
     -5
 
   eq. ++> can-take-a-modulo-of-a-negative-large-dividend-by-a-fractional-divisor
-    mod
-      -1000000000000000
-      0.1
+    -1000000000000000.mod 0.1
     -0.04448884876874218
 
   eq. ++> can-take-a-modulo-of-a-positive-by-negative-infinity
-    mod
-      5
-      ninf
+    5.mod ninf
     5
 
   eq. ++> can-take-a-modulo-of-a-positive-by-positive-infinity
-    mod
-      5
-      pinf
+    5.mod pinf
     5
 
   eq. ++> can-take-a-modulo-of-minus-one-by-seven
-    mod
-      -1
-      7
+    -1.mod 7
+    -1
+
+  eq. ++> can-take-a-modulo-of-minus-seven-by-three
+    -7.mod 3
     -1
 
   eq. ++> can-take-a-modulo-of-one-by-two
-    mod
-      1
-      2
+    1.mod 2
+    1
+
+  eq. ++> can-take-a-modulo-of-seven-by-three
+    7.mod 3
     1
 
   eq. ++> can-take-a-modulo-of-sixteen-by-a-large-negative
-    mod
-      16
-      -200
+    16.mod -200
     16
 
   eq. ++> can-take-a-modulo-of-zero-by-a-negative
-    mod
-      0
-      -15
+    0.mod -15
     0
 
   eq. ++> can-take-a-modulo-of-zero-by-five
-    mod
-      0
-      5
+    0.mod 5
     0
 
   eq. ++> can-take-an-exact-modulo-of-a-large-dividend-by-thirteen
-    mod
-      10000000000000000
-      13
+    10000000000000000.mod 13
     3
 
   eq. ++> can-take-an-exact-modulo-of-a-large-dividend-by-three
-    mod
-      10000000000000000
-      3
+    10000000000000000.mod 3
     1
 
   eq. ++> can-take-an-exact-modulo-of-a-very-large-dividend-by-seven
-    mod
-      9200000000000000000
-      7
+    9200000000000000000.mod 7
     5
 
   eq. ++> can-take-an-exact-modulo-of-a-very-large-dividend-by-three
-    mod
-      9200000000000000000
-      3
+    9200000000000000000.mod 3
     2
 
-  eq. ++> rejects-a-modulo-by-zero
-    "recovered"
-    mod
-      5
-      0
-      "recovered" > [message]
-
-  mod --> stops-on-a-modulo-by-zero
-    5
-    0
+  5.mod 0 --> stops-on-a-modulo-by-zero

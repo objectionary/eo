@@ -5,7 +5,11 @@
 
 package org.eolang;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,6 +24,11 @@ public final class PhApplication extends PhOnce {
      * Matcher of raw bytes inside a φ-term, like {@code [D> 40-45-00]}.
      */
     private static final Pattern DATA = Pattern.compile("\\[D> ([0-9A-F-]*)]");
+
+    /**
+     * The dash that terminates a single-byte hex string.
+     */
+    private static final Pattern TRAILING = Pattern.compile("-$");
 
     /**
      * Ctor.
@@ -80,15 +89,45 @@ public final class PhApplication extends PhOnce {
         final String body = PhApplication.body(binds);
         final Matcher data = PhApplication.DATA.matcher(body);
         final boolean literal = binds.length == 1 && data.find();
-        final String result;
+        final String string;
         if (literal && "Φ.string".equals(head)) {
-            result = String.format(
-                "\"%s\"", new String(PhApplication.bytes(data.group(1)), StandardCharsets.UTF_8)
-            );
+            string = PhApplication.string(PhApplication.bytes(data.group(1)));
+        } else {
+            string = null;
+        }
+        final String result;
+        if (string != null) {
+            result = string;
         } else if (literal && "Φ.number".equals(head)) {
             result = PhDefault.numeral(new BytesOf(PhApplication.bytes(data.group(1))).asNumber());
         } else {
             result = String.format("%s(%s)", head, body);
+        }
+        return result;
+    }
+
+    /**
+     * Render UTF-8 bytes as an EO string literal.
+     * @param bytes Bytes to render
+     * @return Escaped literal, or null if bytes are not valid UTF-8
+     */
+    private static String string(final byte[] bytes) {
+        Optional<String> text;
+        try {
+            text = Optional.of(
+                StandardCharsets.UTF_8.newDecoder()
+                    .onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT)
+                    .decode(ByteBuffer.wrap(bytes)).toString()
+            );
+        } catch (final CharacterCodingException ignored) {
+            text = Optional.empty();
+        }
+        final String result;
+        if (text.isPresent()) {
+            result = new Quoted(bytes).get();
+        } else {
+            result = null;
         }
         return result;
     }
@@ -111,15 +150,23 @@ public final class PhApplication extends PhOnce {
 
     /**
      * Parse a dash-separated hex string into bytes.
+     *
+     * <p>A single byte is written with a trailing dash ("BB-") and no bytes
+     * at all as a lone pair of them ("--"), so both are taken apart before
+     * the rest is split.</p>
+     *
      * @param hex The hex, like "40-45-00"
      * @return The byte array
      */
     private static byte[] bytes(final String hex) {
         final byte[] bytes;
-        if (hex.isEmpty()) {
+        if (hex.isEmpty() || "--".equals(hex)) {
             bytes = new byte[0];
         } else {
-            final String[] parts = hex.split("-");
+            final String[] parts = PhApplication.TRAILING
+                .matcher(hex)
+                .replaceAll("")
+                .split("-", -1);
             bytes = new byte[parts.length];
             for (int idx = 0; idx < parts.length; ++idx) {
                 bytes[idx] = (byte) Integer.parseInt(parts[idx], 16);
