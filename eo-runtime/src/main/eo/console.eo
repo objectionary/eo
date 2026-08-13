@@ -55,12 +55,6 @@
 # ```
 #
 # Sequential reuse maintains the console state across operations.
-#
-# @todo #6600:30min Keep writing the remaining bytes on a partial write. Right
-#  now `write` panics only when the `write` syscall returns -1; a successful
-#  write of fewer bytes than `buffer.size` is accepted as if the whole buffer
-#  went out, same as `stderr.write`. Both should retry with the unwritten
-#  tail until the buffer is fully flushed or a syscall fails.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -106,13 +100,18 @@
                       "Failed to write to standard output"
                     output-block
                   code
-                  output-block
+                  remainder
                 code. > code
                   win32 *1
                     "_write"
                     win32.stdout
                     buffer
                     buffer.size
+                if. > remainder
+                  code.lt buffer.size
+                  output-block.write
+                    buffer.slice code (buffer.size.minus code)
+                  output-block
             buffer
     [] >>
       [size] > read
@@ -149,14 +148,27 @@
                       "Failed to write to standard output"
                     output-block
                   code
-                  output-block
+                  remainder
                 code. > code
                   posix *1
                     "write"
                     posix.stdout
                     buffer
                     buffer.size
+                if. > remainder
+                  code.lt buffer.size
+                  output-block.write
+                    buffer.slice code (buffer.size.minus code)
+                  output-block
             buffer
+
+  ++> can-chain-writes-across-output-blocks
+    seq * > @
+      o1
+      o1.write
+        "part two.\n"
+    console.write > o1
+      "part one, "
 
   console.write ++> can-write-to-the-console
     "Hello, console-test!\n"
