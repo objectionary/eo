@@ -31,11 +31,6 @@ package org.eolang;
  * exists only to explain the termination at the very top.</p>
  *
  * @since 0.73.1
- * @todo #6632:45min Give a bottom its reason at every birth site.
- *  {@link AtVoid} and {@link PhDefault} both hand out a causeless bottom, and one
- *  of those, applied without a dispatch in between as in {@code obj.missing a b},
- *  still swallows the {@code a} as its cause; each site should say what went
- *  missing instead of leaving the slot open.
  */
 public final class PhTerminator implements Phi {
 

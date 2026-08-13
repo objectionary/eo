@@ -402,7 +402,9 @@ public class PhDefault implements Phi, Cloneable {
         } else if (this.loaded().containsKey(Phi.PHI)) {
             object = this.take(Phi.PHI).take(name);
         } else {
-            object = new PhTerminator();
+            object = PhTerminator.withCause(
+                String.format("the attribute \"%s\" is not found in %s", name, this.forma())
+            );
         }
         return object;
     }
