@@ -76,12 +76,6 @@ final class Pretty {
 
     /**
      * Render the whole program as pretty EO source.
-     *
-     * <p>The last newline terminates the object body, whose layout carries
-     * none of its own. Every line of the preamble already ends with one, so
-     * a program of metas or comments alone is finished as it stands and one
-     * more newline would leave a trailing blank line there (#6713).</p>
-     *
      * @return EO source code
      */
     String asString() {
@@ -91,8 +85,8 @@ final class Pretty {
         this.root.elements(Filter.withName("line"))
             .findFirst()
             .map(line -> this.layout(Node.parse(line), 0))
-            .ifPresent(body -> out.append(body).append('\n'));
-        return out.toString();
+            .ifPresent(out::append);
+        return out.append('\n').toString();
     }
 
     /**

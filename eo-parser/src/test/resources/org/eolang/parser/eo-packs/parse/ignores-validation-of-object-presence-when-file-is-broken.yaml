@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets:
+  - /org/eolang/parser/parse/validate-object-presence.xsl
+asserts:
+  - /object/errors[count(error)=1]
+  - /object/errors/error[@check='parser']
+document: |
+  <object>
+    <errors>
+      <error check="parser" line="1" severity="error">the syntax is broken</error>
+    </errors>
+  </object>

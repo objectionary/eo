@@ -138,6 +138,28 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void rejectsProgramOfMetasAlone() throws Exception {
+        MatcherAssert.assertThat(
+            "a file of metas alone declares no object and must be refused",
+            new EoSyntax(new InputOf(String.format("+package foo%n"))).parsed(),
+            XhtmlMatchers.hasXPaths(
+                "/object/errors/error[@check='validate-object-presence' and @severity='critical']"
+            )
+        );
+    }
+
+    @Test
+    void rejectsProgramOfCommentsAlone() throws Exception {
+        MatcherAssert.assertThat(
+            "a file of a top comment block alone declares no object and must be refused",
+            new EoSyntax(new InputOf(String.format("# just a note%n"))).parsed(),
+            XhtmlMatchers.hasXPaths(
+                "/object/errors/error[@check='validate-object-presence' and @severity='critical']"
+            )
+        );
+    }
+
+    @Test
     void copiesListingCorrectly() throws Exception {
         final String src = new TextOf(
             new ResourceOf("org/eolang/parser/factorial.eo")
