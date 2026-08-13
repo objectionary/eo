@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Every object sits in another one and answers to `ρ` for it. The text says
+# which, since the locator of an object is the path to where it is written, so
+# the row is there to be had without asking anybody.
+eo:
+  outer.eo: |
+    [] > outer
+      [] > inner
+provides:
+  - "/provides/type[@id='Φ.outer.inner']/attr[@name='ρ' and @type='Φ.outer']"

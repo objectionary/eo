@@ -9,6 +9,6 @@ eo:
       [] > steam
       [] > whistle
 provides:
-  - "/provides/type[@id='Φ.kettle' and count(attr)=2]"
+  - "/provides/type[@id='Φ.kettle' and count(attr[@name!='ρ'])=2]"
   - "/provides/type[@id='Φ.kettle']/attr[@name='steam']"
   - "/provides//attr[@name='steam' and @type='Φ.kettle.steam']"

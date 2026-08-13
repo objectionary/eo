@@ -11,4 +11,4 @@ eo:
     [] > minus
 provides:
   - "/provides/type[@id='Φ.number.minus']"
-  - "/provides[not(//attr)]"
+  - "/provides[not(//attr[@name!='ρ'])]"
