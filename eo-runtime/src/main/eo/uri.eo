@@ -195,15 +195,15 @@
       uri "http://host/some/path?x=1#top"
     "x=1"
 
-  eq. ++> can-parse-an-empty-port
-    port.
-      uri "http://host:/"
-    ""
-
   eq. ++> can-parse-a-scheme-with-a-plus-and-a-dot
     scheme.
       uri "a+b.c:part"
     "a+b.c"
+
+  eq. ++> can-parse-an-empty-port
+    port.
+      uri "http://host:/"
+    ""
 
   eq. ++> can-parse-the-empty-host-of-a-triple-slash-uri
     host.
@@ -260,6 +260,11 @@
       uri "http://user:pass@host:80/some/path"
     "user:pass"
 
+  eq. ++> can-treat-a-digit-led-prefix-as-schemeless
+    scheme.
+      uri "1http://host/path"
+    ""
+
   eq. ++> can-treat-a-letter-suffixed-port-as-invalid
     port.
       uri "http://host:12x/"
@@ -268,11 +273,6 @@
   eq. ++> can-treat-a-non-digit-port-as-invalid
     port.
       uri "http://host:abc/"
-    ""
-
-  eq. ++> can-treat-a-digit-led-prefix-as-schemeless
-    scheme.
-      uri "1http://host/path"
     ""
 
   eq. ++> can-treat-a-plus-led-prefix-as-schemeless
