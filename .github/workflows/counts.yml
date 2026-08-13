@@ -47,8 +47,8 @@ jobs:
           atoms *.java @XmirObject
           nodelists *.java org\.w3c\.dom\.NodeList
           unlints *.eo \+unlint
-          dash-arrows *.eo [ ]-->[ ]
-          plus-arrows *.eo [ ]\+\+>[ ]
+          negative-tests *.eo [ ]-->[ ]
+          positive-tests *.eo [ ]\+\+>[ ]
           disabled *.java @Disabled\b
           EOF
           tally() {
