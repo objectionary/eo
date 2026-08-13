@@ -6,10 +6,6 @@
 #  like [a-z] or [!a] reaches the regex engine neither translated nor escaped,
 #  so a negation matches nothing it should and a lone bracket refuses to
 #  compile, while a star inside a class keeps its glob meaning by mistake.
-# @todo #6483:30min Test that `walk` below halts at a symbolic link. EO cannot
-#  make one, because `posix` has no `symlink` syscall yet, so the halting is
-#  covered only through `lstat` in `StatSyscallTest`, while the walk that leans
-#  on it has no test of its own.
 # @todo #6483:30min Stop descending into a symbolic link on Windows. The `walk`
 #  below asks `lstat`, which reports the link itself, so on POSIX a link to its
 #  own ancestor is listed instead of followed, while `_stat64` on Windows knows
@@ -378,6 +374,23 @@
           ","
           d.resolved "sub"
           d.resolved "sub/b.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-past-a-symbolic-link-to-its-own-parent
+    os.is-windows.or > @
+      seq *
+        touched. (d.resolved "щи.txt").as-file
+        code.
+          posix *1
+            "symlink"
+            d
+            d.resolved "ссылка"
+        eq.
+          length.
+            d.as-dir.walk "**"
+          2
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
