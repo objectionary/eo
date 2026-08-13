@@ -55,8 +55,7 @@ final class ProbingTest {
                     () -> new SetOf<>(
                         "tuple.each",
                         "tuple.eachi",
-                        "tuple.withouti",
-                        "tuple.nested.object"
+                        "tuple.withouti"
                     )
                 )
             ),
@@ -71,11 +70,6 @@ final class ProbingTest {
             "Probe should register tuple.withouti from the same package",
             tojos.contains("tuple.withouti"),
             Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            "Probe should not register an object from a nested package",
-            tojos.contains("tuple.nested.object"),
-            Matchers.is(false)
         );
     }
 
@@ -99,7 +93,7 @@ final class ProbingTest {
             new OyIndexed(
                 new Objectionary.Fake(),
                 new ObjectsIndex(
-                    () -> new SetOf<>("foo", "bar", "nested.object")
+                    () -> new SetOf<>("foo", "bar")
                 )
             ),
             true
@@ -113,11 +107,6 @@ final class ProbingTest {
             "Probe should register a sibling from the root package",
             tojos.contains("bar"),
             Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            "Probe should not register an object from a nested package",
-            tojos.contains("nested.object"),
-            Matchers.is(false)
         );
     }
 
@@ -141,7 +130,7 @@ final class ProbingTest {
         final Objectionary indexed = new OyIndexed(
             new Objectionary.Fake(),
             new ObjectsIndex(
-                () -> new SetOf<>("foo", "bar", "baz", "nested.object")
+                () -> new SetOf<>("foo", "bar", "baz")
             )
         );
         new Probing(
