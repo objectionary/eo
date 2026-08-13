@@ -62,19 +62,27 @@
                   [y] >> expon
                     times. > @
                       if.
-                        (number k).lt 0
+                        lt. (number k) 0
                         1.div
-                          ipow e (abs (number k))
-                        ipow e (abs (number k))
+                          ipow
+                            e
+                            abs (number k)
+                        ipow
+                          e
+                          abs (number k)
                       fraction 1
+                    y > arg!
                     if. > [j] > fraction
                       j.gt 20
                       1
                       1.plus
                         times.
-                          div. ((number arg).minus (number k)) j
+                          div.
+                            minus.
+                              number arg
+                              number k
+                            j
                           fraction (j.plus 1)
-                    y > arg!
                     floor. ((number arg).plus 0.5) > k!
                   | (expo.times (ln base))
                   nan
