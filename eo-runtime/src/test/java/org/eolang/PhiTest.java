@@ -69,7 +69,7 @@ final class PhiTest {
                 ExAbstract.class,
                 () -> new Dataized(
                     new PhApplication(
-                        Phi.Φ.take("string.as-decimal").copy(),
+                        Phi.Φ.take("number.as-decimal").copy(),
                         "n",
                         new Data.ToPhi(Double.NaN)
                     )

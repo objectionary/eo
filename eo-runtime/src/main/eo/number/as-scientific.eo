@@ -8,7 +8,7 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package string
++package number
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
@@ -44,25 +44,20 @@
 
   eq. ++> can-name-a-magnitude-past-the-long-range
     "1.000000e19"
-    string
-      as-scientific 1.0e19
+    string 1.0e19.as-scientific
 
   eq. ++> can-name-a-negative-magnitude
     "-9.223372e18"
-    string
-      as-scientific -9.223372036854776e18
+    string -9.223372036854776e18.as-scientific
 
   eq. ++> can-name-nan
     "nan"
-    string
-      as-scientific nan
+    string nan.as-scientific
 
   eq. ++> can-name-negative-infinity
     "-infinity"
-    string
-      as-scientific ninf
+    string ninf.as-scientific
 
   eq. ++> can-name-positive-infinity
     "infinity"
-    string
-      as-scientific pinf
+    string pinf.as-scientific

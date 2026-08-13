@@ -11,7 +11,7 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package string
++package number
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
@@ -88,101 +88,95 @@
   eq. ++> can-carry-rounding-into-the-integer-part
     "1.000000"
     string
-      as-fixed 0.9999999 6
+      0.9999999.as-fixed 6
 
   eq. ++> can-carry-rounding-into-the-integer-part-with-zero-places
     "1"
     string
-      as-fixed 0.9999999 0
+      0.9999999.as-fixed 0
 
   eq. ++> can-drop-the-sign-of-a-negative-rounding-to-zero
     "0.00"
     string
-      as-fixed -1.0E-4 2
+      -1.0E-4.as-fixed 2
 
   eq. ++> can-drop-the-sign-of-a-tiny-negative-rounding-to-zero
     "0.00"
     string
-      as-fixed -0.001 2
+      -0.001.as-fixed 2
 
   eq. ++> can-format-the-error-message-of-negative-places
     "Can't write a fixed-point decimal with -2.000000 fraction places"
-    as-fixed
-      3.14159
+    3.14159.as-fixed
       -2
       message > [message]
 
   eq. ++> can-honour-custom-places
     "3.14"
     string
-      as-fixed 3.14159 2
+      3.14159.as-fixed 2
 
   eq. ++> can-omit-the-decimal-point-with-zero-places
     "3"
     string
-      as-fixed 2.5 0
+      2.5.as-fixed 0
 
   eq. ++> can-omit-the-decimal-point-with-zero-places-when-negative
     "-3"
     string
-      as-fixed -2.5 0
+      -2.5.as-fixed 0
 
   eq. ++> can-pad-the-fraction-with-trailing-zeros
     "1.250000"
     string
-      as-fixed 1.25 6
+      1.25.as-fixed 6
 
   eq. ++> can-recover-from-infinite-places
     "recovered"
-    as-fixed
-      1.25
+    1.25.as-fixed
       pinf
       "recovered" > [message]
 
   eq. ++> can-recover-from-negative-places
     "recovered"
-    as-fixed
-      3.14159
+    3.14159.as-fixed
       -2
       "recovered" > [message]
 
   eq. ++> can-recover-from-non-integer-places
     "recovered"
-    as-fixed
-      3.14159
+    3.14159.as-fixed
       2.5
       "recovered" > [message]
 
   eq. ++> can-round-to-the-last-place
     "0.123457"
     string
-      as-fixed 0.123456789 6
+      0.123456789.as-fixed 6
 
   eq. ++> can-scale-a-magnitude-above-two-to-the-53rd
     "100000000000000000.000000"
     string
-      as-fixed 100000000000000000 6
+      100000000000000000.as-fixed 6
 
   eq. ++> can-scale-a-negative-magnitude-above-two-to-the-53rd
     "-100000000000000000.000000"
     string
-      as-fixed -100000000000000000 6
+      -100000000000000000.as-fixed 6
 
   eq. ++> can-write-a-negative-value
     "-2.500000"
     string
-      as-fixed -2.5 6
+      -2.5.as-fixed 6
 
   eq. ++> can-write-a-single-place
     "2.5"
     string
-      as-fixed 2.5 1
+      2.5.as-fixed 1
 
   eq. ++> can-write-zero-with-places
     "0.000000"
     string
-      as-fixed 0 6
+      0.as-fixed 6
 
-  as-fixed --> stops-on-negative-places
-    3.14159
-    -2
+  3.14159.as-fixed -2 --> stops-on-negative-places

@@ -7,7 +7,7 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package string
++package number
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
@@ -51,75 +51,62 @@
 
   eq. ++> can-drop-the-sign-of-a-negative-below-one
     "0"
-    string
-      as-decimal -0.9
+    string -0.9.as-decimal
 
   eq. ++> can-drop-the-sign-of-a-negative-truncating-to-zero
     "0"
-    string
-      as-decimal -0.5
+    string -0.5.as-decimal
 
   eq. ++> can-truncate-a-negative-fraction
     "-7"
-    string
-      as-decimal -7.89
+    string -7.89.as-decimal
 
   eq. ++> can-truncate-a-positive-fraction
     "42"
-    string
-      as-decimal 42.987
+    string 42.987.as-decimal
 
   eq. ++> can-write-a-large-negative-magnitude
     "-9007199254740992"
-    string
-      as-decimal -9007199254740992
+    string -9007199254740992.as-decimal
 
   eq. ++> can-write-a-magnitude-above-two-to-the-53rd
     "9007199254740992"
-    string
-      as-decimal 9007199254740992
+    string 9007199254740992.as-decimal
 
   eq. ++> can-write-a-multi-digit-number
     "31415"
-    string
-      as-decimal 31415
+    string 31415.as-decimal
 
   eq. ++> can-write-a-negative-number
     "-42"
-    string
-      as-decimal -42
+    string -42.as-decimal
 
   eq. ++> can-write-a-number-with-an-inner-zero
     "105"
-    string
-      as-decimal 105
+    string 105.as-decimal
 
   eq. ++> can-write-a-single-digit
     "7"
-    string
-      as-decimal 7
+    string 7.as-decimal
 
   eq. ++> can-write-the-largest-exactly-representable-magnitude
     "9007199254740991"
-    string
-      as-decimal 9007199254740991
+    string 9007199254740991.as-decimal
 
   eq. ++> can-write-the-largest-magnitude-below-two-to-the-63rd
     "9223372036854774784"
-    string
-      as-decimal 9223372036854774784
+    string 9223372036854774784.as-decimal
 
   eq. ++> can-write-zero
     "0"
-    string
-      as-decimal 0
+    string 0.as-decimal
 
-  as-decimal 1.0e30 --> stops-on-a-magnitude-far-past-the-long-range
+  1.0e30.as-decimal --> stops-on-a-magnitude-far-past-the-long-range
 
-  as-decimal 9.223372036854776e18 --> stops-on-a-magnitude-of-two-to-the-63rd
+  9.223372036854776e18.as-decimal --> stops-on-a-magnitude-of-two-to-the-63rd
 
-  as-decimal nan --> stops-on-nan
+  nan.as-decimal --> stops-on-nan
 
-  as-decimal ninf --> stops-on-negative-infinity
+  ninf.as-decimal --> stops-on-negative-infinity
 
-  as-decimal pinf --> stops-on-positive-infinity
+  pinf.as-decimal --> stops-on-positive-infinity
