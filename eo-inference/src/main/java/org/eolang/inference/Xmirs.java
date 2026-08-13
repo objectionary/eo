@@ -91,6 +91,22 @@ final class Xmirs {
     }
 
     /**
+     * Every application of the program.
+     *
+     * <p>An application puts something into the voids of the object it
+     * copies, and the place of an argument is what says which void it goes
+     * into. That is the only place in the text where a void is answered, so
+     * it is where a name taken from one stops being a question.</p>
+     *
+     * @return The applications, file by file, in the order they appear in
+     *  the code
+     * @throws IOException If a file cannot be read
+     */
+    Collection<XML> applications() throws IOException {
+        return this.matching("//o[@loc][o[starts-with(@as, 'α')][@loc]]");
+    }
+
+    /**
      * Every reference of the program.
      *
      * <p>A reference names an object instead of taking an attribute from

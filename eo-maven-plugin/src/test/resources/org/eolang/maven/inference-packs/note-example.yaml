@@ -7,7 +7,8 @@
 # to know that is in the rows below — that the `next` of a `t` is complete and
 # empty, that `foo` is asked of what `next` gives, that the `x` it is asked of
 # is the `t` — and no row says it. Reading them together is what was parked in
-# #6661.
+# #6661. The links now name the two computed objects as well: `x.next` is the
+# `next` of whatever fills `x`, and `x.next.foo` the `foo` of that.
 eo:
   app.eo: |
     [] > app
@@ -31,3 +32,5 @@ links:
   - "/links/type[@id='Φ.app.φ' and @copy='Φ.app.inc']"
   - "/links/type[@id='Φ.app.φ.α0' and @copy='Φ.app.t']"
   - "/links/type[@id='Φ.app.inc.φ.ρ.ρ' and @copy='Φ.app.inc.x']"
+  - "/links/type[@id='Φ.app.inc.φ.ρ' and @copy='Φ.app.inc.x.next']"
+  - "/links/type[@id='Φ.app.inc.φ' and @copy='Φ.app.inc.x.next.foo']"
