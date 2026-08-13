@@ -68,7 +68,25 @@
     ""
   if. > host
     not. >> has-port
-      port-colon-idx.eq -1
+      eq.
+        if. >> port-colon-idx
+          string.starts-with host-port "[" >>
+          if.
+            eq.
+              string.index-of >> rel-colon
+                host-port.slice
+                  bracket-start
+                  host-port.length.minus
+                    number bracket-start
+                ":"
+              -1
+            -1
+            rel-colon.plus
+              plus. >> bracket-start
+                string.index-of host-port "]" >>
+                1
+          string.index-of host-port ":"
+        -1
     slice.
       has-userinfo.if >> host-port
         authority.slice
@@ -91,29 +109,17 @@
       ""
     hier-part
   has-port.if > port
-    host-port.slice
-      plus.
-        if. >> port-colon-idx
-          string.starts-with host-port "[" >>
-          if.
-            eq.
-              string.index-of >> rel-colon
-                host-port.slice
-                  bracket-start
-                  host-port.length.minus
-                    number bracket-start
-                ":"
-              -1
-            -1
-            rel-colon.plus
-              plus. >> bracket-start
-                string.index-of host-port "]" >>
-                1
-          string.index-of host-port ":"
-        1
-      host-port.length.minus
-        number
-          port-colon-idx.plus 1
+    if.
+      raw-port.is-digit.or
+        eq.
+          host-port.slice >> raw-port
+            port-colon-idx.plus 1
+            host-port.length.minus
+              number
+                port-colon-idx.plus 1
+          ""
+      raw-port
+      ""
     ""
   if. > query
     not. >> has-query
@@ -180,6 +186,11 @@
       uri "http://host/some/path?x=1#top"
     "x=1"
 
+  eq. ++> can-parse-an-empty-port
+    port.
+      uri "http://host:/"
+    ""
+
   eq. ++> can-parse-the-empty-host-of-a-triple-slash-uri
     host.
       uri "file:///etc/passwd"
@@ -234,3 +245,13 @@
     userinfo.
       uri "http://user:pass@host:80/some/path"
     "user:pass"
+
+  eq. ++> cannot-treat-a-letter-suffixed-port-as-numeric
+    port.
+      uri "http://host:12x/"
+    ""
+
+  eq. ++> cannot-treat-a-non-digit-port-as-numeric
+    port.
+      uri "http://host:abc/"
+    ""
