@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `t` binds no `extra`, and yet `t.extra` is no mistake: an attribute nobody
+# binds falls through to the object of that name beside it in the package, and
+# a locator names such an object the same way it names an attribute. Both
+# places are looked in before anything is said, which is what keeps this quiet
+# about `Φ.number` answering to forty names while binding eight.
+eo:
+  app.eo: |
+    [] > app
+      t.extra > @
+  t.eo: |
+    [] > t
+      [] > next
+  extra.eo: |
+    +package t
+
+    [y] > extra
+      y > @
+provides:
+  - "/provides/type[@id='Φ.t.extra']"
+problems:
+  - "/problems[not(type)]"

@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `held` is a `box`, so asking it for `extra` is asking a `box`, and the row
+# is written about the formation rather than about the copy. Nobody would be
+# helped by being told that `Φ.app.held` has no `extra`, since that object is
+# nowhere in the code and the mistake is in `box` for as long as it stands.
+eo:
+  app.eo: |
+    [] > app
+      box t > held
+      held.extra > @
+  box.eo: |
+    [x] > box
+      [] > kept
+        x > @
+  t.eo: |
+    [] > t
+      [] > next
+problems:
+  - "/problems/type[@id='Φ.box']/attr[@name='extra']"

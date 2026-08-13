@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The attribute is missing and nothing is said, because the object that misses
+# it is an atom: its body is written in Java, which this module cannot read,
+# so `foo` may well be there. Better to miss a mistake than to complain about
+# correct code.
+eo:
+  app.eo: |
+    [] > app
+      t.next.foo > @
+  t.eo: |
+    [] > t
+      [] > next /Q.number
+problems:
+  - "/problems[not(type)]"

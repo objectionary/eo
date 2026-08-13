@@ -26,19 +26,22 @@
  * a copy of another. A dispatch ({@code .next}) says that the object it
  * is taken from must have that attribute.</p>
  *
- * <p>Nothing here decides whether the program is wrong. Reading the tables
- * together, draining the checks an application files and reporting what is
- * certainly missing was written and taken out again in #6661, because it
- * reported nothing: a verdict needs the object that misses an attribute to
- * have been seen whole, and on a runtime build 48 objects out of 2,505
- * have. The tables have to describe the program before anything can judge
- * it, and that is what this module is for until then.</p>
+ * <p>Then the tables are read together and one kind of mistake is looked
+ * for: a name taken from an object that will never have it. A verdict is
+ * given only about an object the whole of which has been seen, so that the
+ * parts of a program this module cannot see — atoms, delegation through
+ * {@code φ}, a void nobody has filled — make it quiet rather than wrong.
+ * The mistake of the program above is not among them: {@code foo} is taken
+ * from a void and is a mistake for this caller only, while what is reported
+ * holds for every caller of the code it is about.</p>
  *
  * <p>Each rule is a {@link org.eolang.inference.Clue}, which reads the
  * XMIR of a whole program from one directory and writes what it has
  * understood into another. The Maven plugin prepares that XMIR and follows
- * every clue we know through {@link org.eolang.inference.Clues}. Nothing is
- * renamed and nothing fails the build.</p>
+ * every clue we know through {@link org.eolang.inference.Clues}, wrapped in
+ * {@link org.eolang.inference.Resolved}, which works out what the dispatches
+ * are, and in {@link org.eolang.inference.Concluded}, which reads the tables
+ * for mistakes. Nothing is renamed and nothing fails the build.</p>
  *
  * @since 0.67.0
  * @see <a href="https://www.eolang.org">Project site www.eolang.org</a>

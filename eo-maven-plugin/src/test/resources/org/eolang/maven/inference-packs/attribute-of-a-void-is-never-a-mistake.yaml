@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `x.next` is the `next` of whatever fills `x`, which is a question and not a
+# claim: only a caller can say what such a name holds, and no caller is being
+# read. So a name rooted at a void is never whole, and nothing taken from one
+# is ever a mistake — which is what keeps this quiet about a runtime whose
+# core objects are voids.
+eo:
+  inc.eo: |
+    [x] > inc
+      x.next.foo > @
+problems:
+  - "/problems[not(type)]"

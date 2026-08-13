@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `extra` is taken from a `t`, the whole of a `t` has been seen, and there is
+# no `extra` in it. That is the one thing the tables are read for, and the row
+# says where it was asked as well as what was asked of, since the mistake is
+# in the asking and the object is innocent.
+eo:
+  app.eo: |
+    [] > app
+      t.extra > @
+  t.eo: |
+    [] > t
+      [] > next
+problems:
+  - "/problems/type[@id='Φ.t']/attr[@name='extra' and @asked='Φ.app.φ']"

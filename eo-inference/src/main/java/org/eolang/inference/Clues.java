@@ -33,11 +33,11 @@ import java.util.Collection;
  *
  * <p>No clue decides anything, which is why they can be read one after
  * another in any order, and why nothing here says whether a program is
- * wrong. Judging used to live beside these rules and was taken out again
- * in #6661: it reported nothing, because a verdict needs the object that
- * misses an attribute to have been seen whole, and almost none of them have
- * been. It comes back when every object can be given a type, rather than
- * only those a call site happens to reach.</p>
+ * wrong. Judging it is {@link Concluded}, which reads the tables back once
+ * they are written and puts what it is sure of into a table of its own. A
+ * rule that decided while it read would have to be handed answers no rule
+ * has found yet, and there would be nowhere to put a second reading of the
+ * same rows.</p>
  *
  * @since 0.67.0
  */

@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The same program with the name spelled the way `t` spells it. Nothing is
+# reported, which is the answer this has to give about almost every dispatch
+# of almost every program.
+eo:
+  app.eo: |
+    [] > app
+      t.next > @
+  t.eo: |
+    [] > t
+      [] > next
+problems:
+  - "/problems[not(type)]"

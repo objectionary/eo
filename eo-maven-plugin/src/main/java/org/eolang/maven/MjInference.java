@@ -32,11 +32,11 @@ import org.apache.maven.plugins.annotations.Parameter;
  * that one type is a copy of another. A dispatch ({@code .next}) says that
  * the object it is taken from must have that attribute.</p>
  *
- * <p>Nothing here says whether the program is wrong. Judging it was written
- * and taken out again in #6661, because a verdict needs the object that
- * misses an attribute to have been seen whole, and almost none of them have
- * been; the tables have to describe the program before anything can read
- * them for mistakes.</p>
+ * <p>The tables are then read together for one kind of mistake: a name taken
+ * from an object that will never have it. Nothing is said about an object the
+ * whole of which has not been seen — an atom, one that delegates, a void
+ * nobody has filled — so that what this goal cannot see makes it quiet rather
+ * than wrong.</p>
  *
  * <p>The XMIR prepared for the rules is saved in {@link #prepared} and the
  * tables in {@link #tables}, a document each. Not one of them fails the

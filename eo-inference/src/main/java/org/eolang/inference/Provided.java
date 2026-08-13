@@ -4,6 +4,7 @@
  */
 package org.eolang.inference;
 
+import com.jcabi.xml.XML;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -14,8 +15,9 @@ import java.util.Map;
  *
  * <p>This is the table {@link Provides} wrote, read by the name a type and
  * its copies go by, so that a question about a copy is answered by the
- * formation it is a copy of. One question is asked of it: what the type of an
- * attribute is, or nothing at all when the type has no such attribute.</p>
+ * formation it is a copy of. Two questions are asked of it: what the type of
+ * an attribute is, or nothing at all when the type has no such attribute, and
+ * whether the whole of a type has been seen.</p>
  *
  * <p>An attribute is looked for in three places, because there are three. The
  * type itself. Its package, since an attribute nobody binds falls
@@ -46,15 +48,28 @@ final class Provided {
     private final Map<String, String> names;
 
     /**
-     * The locator of every void, from {@link Hollows}.
+     * The locator of every void the table knows.
      */
     private final Collection<String> hollows;
 
     /**
      * Ctor.
+     * @param provides The provides table, as {@link Provides} wrote it
+     * @param aliases The name every type goes by, from {@link Ends}
+     */
+    Provided(final XML provides, final Map<String, String> aliases) {
+        this(
+            new Ungrouped(provides, aliases).rows(),
+            aliases,
+            provides.xpath("//attr[@void='true']/@type")
+        );
+    }
+
+    /**
+     * Ctor.
      * @param rows The rows of the provides table, by the name of their owner
-     * @param aliases The name every type goes by, from {@link Same}
-     * @param voids The locator of every void, from {@link Hollows}
+     * @param aliases The name every type goes by, from {@link Ends}
+     * @param voids The locator of every void the table knows
      */
     Provided(
         final Map<String, Collection<Map<String, String>>> rows,
@@ -75,6 +90,29 @@ final class Provided {
      */
     String attribute(final String type, final String name) {
         return this.kept(type, name, new HashSet<>(0));
+    }
+
+    /**
+     * Has the whole of this type been seen?
+     *
+     * <p>A type nothing in the table is about has not, which is what keeps a
+     * name taken from a void out of every verdict: nobody but a caller can say
+     * what such a name is, and no caller is being read here.</p>
+     *
+     * @param type The name the type goes by
+     * @return TRUE when nothing about the type is hidden
+     */
+    boolean complete(final String type) {
+        boolean whole = false;
+        for (final Map<String, String> row : this.own(type)) {
+            if (row.containsKey("complete")) {
+                whole = Boolean.parseBoolean(row.get("complete"));
+                if (!whole) {
+                    break;
+                }
+            }
+        }
+        return whole;
     }
 
     /**

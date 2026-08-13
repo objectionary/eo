@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A name from two scopes out is lowered into a dispatch of `ρ` and then of the
+# name, so `Φ.app.outer` is asked for the object it sits in. Every object has
+# one and no formation binds it, which made this the only thing the tables
+# ever complained about until #6636 wrote it down.
+eo:
+  app.eo: |
+    [] > app
+      [] > label
+      [] > outer
+        [] > inner
+          label > @
+problems:
+  - "/problems[not(type)]"

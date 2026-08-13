@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eolang.inference.Clues;
+import org.eolang.inference.Concluded;
 import org.eolang.inference.Resolved;
 import org.eolang.parser.TrFull;
 
@@ -45,6 +46,9 @@ import org.eolang.parser.TrFull;
  * locators are set again, because the objects that the splitting has just
  * created have none. That is what the prepared files hold, and they are worth
  * keeping: every row of every table points into them.</p>
+ *
+ * <p>The tables are then read back for mistakes, and what is found goes into
+ * one more of them. Nothing fails the build over it.</p>
  *
  * @since 0.67.0
  */
@@ -86,10 +90,11 @@ final class Inferring implements Step {
         if (Files.exists(this.input)) {
             new Deleted(this.prepared.toFile()).get();
             final int ready = this.ready();
-            new Resolved(new Clues()).follow(this.prepared, this.tables);
+            new Concluded(new Resolved(new Clues())).follow(this.prepared, this.tables);
             Logger.info(
-                this, "Inferred the types of %d XMIR(s), tables are in %[file]s",
-                ready, this.tables
+                this,
+                "Inferred the types of %d XMIR(s) and found %d mistake(s), tables are in %[file]s",
+                ready, this.mistakes(), this.tables
             );
         } else {
             Logger.info(
@@ -97,6 +102,17 @@ final class Inferring implements Step {
                 this.input
             );
         }
+    }
+
+    /**
+     * How many names the program takes from objects that will never have them.
+     * @return The number of mistakes the tables were read for
+     * @throws IOException If the table cannot be read
+     */
+    private int mistakes() throws IOException {
+        return new XMLDocument(this.tables.resolve("problems.xml"))
+            .nodes("/problems/type/attr")
+            .size();
     }
 
     /**
