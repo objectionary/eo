@@ -1,5 +1,7 @@
 # Cosine of `num` radians as `org.eolang.number`, taken from the sine of the
-# argument advanced by a quarter turn, since cos(x) equals sin(x + pi/2).
+# argument advanced by a quarter turn, since cos(x) equals sin(x + pi/2). The
+# finite approximation of `pi` used in that shift misses the exact extremum
+# at zero, so zero is special-cased to return the exact unit value.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -9,9 +11,12 @@
 +spdx SPDX-License-Identifier: MIT
 
 [num] > cosine
-  sine > @
-    num.plus
-      pi.div 2
+  if. > @
+    num.eq 0
+    1
+    sine.
+      num.plus
+        pi.div 2
 
   lt. ++> can-behave-as-an-even-function
     abs.
@@ -79,3 +84,5 @@
         0.cosine.times 1000
         1000
     1
+
+  1.eq 0.cosine ++> can-take-an-exact-cosine-of-zero
