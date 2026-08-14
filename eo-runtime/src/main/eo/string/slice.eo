@@ -1,8 +1,10 @@
 # Takes a piece of the `text` as another `text`, counting characters and not
-# bytes. Here `start` must be a non-negative index to start slicing from, while
-# `len` must be a non-negative amount of characters to take. Both of them walk
-# the UTF-8 sequence character by character, so a multi-byte character counts
-# as one. An index outside the bounds of the `text` terminates the computation.
+# bytes. Here `start` must be a non-negative integer index to start slicing
+# from, while `len` must be a non-negative integer amount of characters to
+# take. A fractional, `nan` or infinite `start` or `len` terminates the
+# computation immediately. Both of them walk the UTF-8 sequence character by
+# character, so a multi-byte character counts as one. An index outside the
+# bounds of the `text` terminates the computation.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -14,14 +16,18 @@
 
 [text start len] > slice
   if. > @
-    nstart.lt 0
+    or.
+      nstart.lt 0
+      nstart.is-integer.not
     T
-      "Start index must be >= 0, but was %d".printf
+      "Start index must be a non-negative integer, but was %f".printf
         * nstart
     if.
-      nlen.lt 0
+      or.
+        nlen.lt 0
+        nlen.is-integer.not
       T
-        "Length to slice must be >= 0, but was %d".printf
+        "Length to slice must be a non-negative integer, but was %f".printf
           * nlen
       seq *
         recidx >> bstart!
@@ -188,6 +194,16 @@
       1
       2
     "ри"
+
+  slice. --> stops-on-a-fractional-length
+    "some"
+    0
+    1.5
+
+  slice. --> stops-on-a-fractional-start
+    "some"
+    0.5
+    1
 
   slice. --> stops-on-a-start-below-zero
     "some string"
