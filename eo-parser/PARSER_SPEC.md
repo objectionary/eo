@@ -1285,7 +1285,7 @@ R-9.4.2. The "source order" of vertical children is the order their head lines a
 
 R-9.5.1. The top comment block emits one `<comment>` element inside `/object/comments`, documenting the program. At most one block exists per program.
 R-9.5.2. The comment's body is the concatenation of the comment lines with the leading `#` removed from each. Per the `COMMENTARY` token rule (§2.3), a comment line ends on a non-whitespace character — trailing whitespace is already excluded at the token level. The body text is preserved verbatim after the `#`; leading whitespace immediately after the `#` is implementation-defined (typical: strip exactly one space if present).
-R-9.5.3. The `<comment>` carries a `line` attribute pointing at the first meta or object that flushed it (the construct it precedes).
+R-9.5.3. The `<comment>` carries a `line` attribute pointing at the comment block's own last line, matching the line reported when the same block is flushed at end of file with no meta or object following it.
 
 ### 9.6 Errors
 

@@ -16,10 +16,22 @@
     sequence.reduced
       pinf
       if. > [min item]
-        min.gt item.as-number
+        item.as-number.is-nan.or
+          min.gt item.as-number
         item
         min
   ^ > sequence
+
+  is-nan. ++> can-be-nan-when-taking-the-minimum-of-a-lone-nan
+    minimum.
+      * nan
+
+  is-nan. ++> can-be-nan-when-taking-the-minimum-of-a-nan-alongside-numbers
+    minimum.
+      *
+        5
+        nan
+        -3
 
   eq. ++> can-recover-from-an-empty-list-when-taking-the-minimum
     "recovered"

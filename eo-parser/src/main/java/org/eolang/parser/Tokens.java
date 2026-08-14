@@ -900,6 +900,12 @@ final class Tokens {
      * @return Parsed value
      */
     private Value readGlyph(final char first) {
+        if (first == '[') {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + this.cursor,
+                "horizontal formation not allowed as argument"
+            );
+        }
         final Value value;
         if (first == '*') {
             value = this.reserved(Value.Kind.STAR, "*");

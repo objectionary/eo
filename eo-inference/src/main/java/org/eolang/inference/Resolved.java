@@ -37,6 +37,11 @@ import java.util.Map;
  * writes {@code links.xml} back, with the pairs it worked out added to the
  * ones the rules found.</p>
  *
+ * <p>What every application fills is written here as well, and not by a rule
+ * of its own, for want of anywhere earlier to write it: naming the void an
+ * argument lands in means knowing which formation is being copied, and that is
+ * what the pairs have just settled.</p>
+ *
  * @since 0.68.0
  */
 public final class Resolved implements Clue {
@@ -62,18 +67,20 @@ public final class Resolved implements Clue {
         final XML given = new XMLDocument(tables.resolve("provides.xml"));
         final Collection<XML> dispatches = world.dispatches();
         final Map<String, List<String>> args = new Given(world.applications()).arguments();
+        final List<String> voids = given.xpath("//attr[@void='true']/@type");
+        final Map<String, String> pairs = new Settled(
+            new Dispatched(given, dispatches, args, voids)
+        ).from(
+            new Settled(
+                new Dispatched(given, dispatches, args, Collections.emptyList())
+            ).from(new Pairs(new XMLDocument(links)).all())
+        );
+        final Map<String, String> names = new Ends(pairs).names();
         Files.write(
             links,
             new Types(
-                new Settled(
-                    new Dispatched(
-                        given, dispatches, args, given.xpath("//attr[@void='true']/@type")
-                    )
-                ).from(
-                    new Settled(
-                        new Dispatched(given, dispatches, args, Collections.emptyList())
-                    ).from(new Pairs(new XMLDocument(links)).all())
-                )
+                pairs,
+                new Bound(args, names, new Provided(given, names, voids)).all()
             ).asXml().toString().getBytes(StandardCharsets.UTF_8)
         );
     }
