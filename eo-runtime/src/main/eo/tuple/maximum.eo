@@ -16,10 +16,22 @@
     sequence.reduced
       ninf
       if. > [max item]
-        item.as-number.gt max
+        item.as-number.is-nan.or
+          item.as-number.gt max
         item
         max
   ^ > sequence
+
+  is-nan. ++> can-be-nan-when-taking-the-maximum-of-a-lone-nan
+    maximum.
+      * nan
+
+  is-nan. ++> can-be-nan-when-taking-the-maximum-of-a-nan-alongside-numbers
+    maximum.
+      *
+        5
+        nan
+        -3
 
   eq. ++> can-recover-from-an-empty-list-when-taking-the-maximum
     "recovered"
