@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,8 @@ public final class Depth {
         final Pairs pairs = new Pairs(new XMLDocument(this.tables.resolve("links.xml")));
         final Rung rung = new Rung(
             new Ungrouped(given, Collections.emptyMap()).rows(),
-            given.xpath("//attr[@void='true']/@type"),
+            new HashSet<>(given.xpath("//attr[@void='true']/@type")),
+            new HashSet<>(pairs.data()),
             new Ends(pairs.all()).names()
         );
         final Map<String, Integer> filled = pairs.binds();
@@ -66,7 +68,7 @@ public final class Depth {
             "a name rooted at a void",
             "a formation, voids still free",
             "a formation, nothing left free",
-            "a formation seen whole"
+            "nothing left to find out"
         );
         final Map<String, Integer> counts = new LinkedHashMap<>(names.size());
         for (final String name : names) {

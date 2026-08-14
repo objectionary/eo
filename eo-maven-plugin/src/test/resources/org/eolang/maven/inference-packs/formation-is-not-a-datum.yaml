@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation has no base either, and carries no bytes, so nothing in a program
+# without a literal in it is a datum.
+eo:
+  cup.eo: |
+    [] > cup
+  lid.eo: |
+    [] > lid
+links:
+  - "/links[not(type/data)]"

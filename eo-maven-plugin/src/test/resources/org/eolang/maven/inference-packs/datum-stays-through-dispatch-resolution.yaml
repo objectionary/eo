@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Working out what a dispatch is means reading the table and writing it again,
+# and a row saying an object is a datum is not a pair: it has to be put back
+# where it was found, or it falls out of the document the second time round.
+eo:
+  app.eo: |
+    [] > app
+      inc t > held
+      held.next > @
+      42 > answer
+  inc.eo: |
+    [x] > inc
+      x > @
+  t.eo: |
+    [] > t
+      [] > next
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.t.next']"
+  - "/links/type[@id='Φ.app.answer.α0.α0']/data"

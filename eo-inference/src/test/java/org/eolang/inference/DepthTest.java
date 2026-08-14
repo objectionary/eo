@@ -40,6 +40,25 @@ final class DepthTest {
     }
 
     @Test
+    void leavesNothingUnknownInAProgramOfBytes(@Mktmp final Path temp) throws IOException {
+        Files.writeString(
+            Files.createDirectories(temp.resolve("xmirs")).resolve("cup.xmir"),
+            String.join(
+                "",
+                "<object><o loc='Φ.cup' name='cup'><o loc='Φ.cup.lid' name='lid'>",
+                "<o loc='Φ.cup.lid.α0' as='α0'>01-</o></o></o></object>"
+            )
+        );
+        new Resolved(new Clues()).follow(temp.resolve("xmirs"), temp.resolve("tables"));
+        MatcherAssert.assertThat(
+            "the bytes of a program must be understood as they stand, but they werent",
+            new Depth(temp.resolve("xmirs"), temp.resolve("tables"))
+                .ladder().rungs().get("nothing at all"),
+            Matchers.equalTo(0)
+        );
+    }
+
+    @Test
     void putsNamesTakenFromAVoidOnTheirOwnRung(@Mktmp final Path temp) throws IOException {
         Files.writeString(
             Files.createDirectories(temp.resolve("xmirs")).resolve("inc.xmir"),

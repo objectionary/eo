@@ -5,6 +5,7 @@
 package org.eolang.inference;
 
 import com.jcabi.xml.XML;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -49,6 +50,19 @@ final class Pairs {
             found.put(link.xpath("@id").get(0), link.xpath("ref/@loc").get(0));
         }
         return found;
+    }
+
+    /**
+     * Every object of the table that is a datum.
+     *
+     * <p>A pass that reads the table and writes it again must put these back
+     * where it found them: a row saying an object is a datum is not a pair and
+     * would fall out of a document rebuilt from pairs alone.</p>
+     *
+     * @return The locators
+     */
+    Collection<String> data() {
+        return this.table.xpath("/links/type[data]/@id");
     }
 
     /**
