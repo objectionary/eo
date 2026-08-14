@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EOscanf} diagnostics.
  * @since 0.61.0
  */
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOscanfDiagnosticTest {
 
     @Test
