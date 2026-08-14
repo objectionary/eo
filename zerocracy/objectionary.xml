@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fb version="0.19.6" size="9370395">
+<fb version="0.19.6" size="9378474">
   <f>
     <added t="I">8</added>
     <cycles t="I">1</cycles>
     <deleted t="I">8</deleted>
-    <error t="S">Failure in repository #955159947 at #13251060140: GET https://api.github.com/repositories/955159947/events?per_page=100: 401 - Bad credentials // See: https://docs.github.com/rest</error>
     <inserted t="I">8</inserted>
-    <seconds t="F">2161.411035376</seconds>
+    <seconds t="F">2160.622342119</seconds>
     <version t="S">0.61.1</version>
     <what t="S">judges-summary</what>
-    <when t="T">2026-08-14T07:35:20Z</when>
+    <when t="T">2026-08-14T09:22:24Z</when>
   </f>
   <f>
     <_id t="I">671</_id>
@@ -309552,7 +309551,7 @@
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
     <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">17620003736</events_were_scanned>
+    <events_were_scanned t="I">13277425866</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">347</latest_issue_was_found>
@@ -316890,7 +316889,7 @@
     <_job t="I">28918253257</_job>
     <_time t="T">2026-07-08T04:55:42Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">1020</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">13009557602</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
@@ -320942,9 +320941,9 @@
     <_job t="I">29014863301</_job>
     <_time t="T">2026-07-09T11:37:47Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">1002</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">13253833922</events_were_scanned>
+    <events_were_scanned t="I">13273282597</events_were_scanned>
     <issues_were_scanned t="I">982</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">765</latest_issue_was_found>
@@ -324029,9 +324028,9 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:00Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">1124</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">13251076167</events_were_scanned>
+    <events_were_scanned t="I">13277492370</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">686</latest_issue_was_found>
@@ -324067,11 +324066,11 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:01Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">6734</assignees_were_scanned>
+    <assignees_were_scanned t="I">0</assignees_were_scanned>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">13273052227</events_were_scanned>
+    <events_were_scanned t="I">13277474999</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
-    <labels_were_scanned t="I">6179</labels_were_scanned>
+    <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">4591</latest_issue_was_found>
     <merges_were_scanned t="I">0</merges_were_scanned>
     <min_issue_was_found t="I">4341</min_issue_was_found>
@@ -523567,9 +523566,11 @@ The average monthly zents/points ratio (0.38) is decreasing (R=0.91).</text>
     <failed_builds t="I">0</failed_builds>
     <files t="I">1</files>
     <hoc t="I">8</hoc>
+    <is_human t="I">0</is_human>
     <issue t="I">1256</issue>
     <repository t="I">889819508</repository>
     <review t="T">2026-08-14T06:40:27Z</review>
+    <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">19</succeeded_builds>
     <suggestions t="I">0</suggestions>
     <what t="S">pull-was-merged</what>
@@ -523593,8 +523594,10 @@ The average monthly zents/points ratio (0.38) is decreasing (R=0.91).</text>
     <failed_builds t="I">0</failed_builds>
     <files t="I">2</files>
     <hoc t="I">50</hoc>
+    <is_human t="I">1</is_human>
     <issue t="I">6750</issue>
     <repository t="I">73056727</repository>
+    <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">22</succeeded_builds>
     <suggestions t="I">0</suggestions>
     <what t="S">pull-was-merged</what>
@@ -523618,8 +523621,10 @@ The average monthly zents/points ratio (0.38) is decreasing (R=0.91).</text>
     <failed_builds t="I">0</failed_builds>
     <files t="I">2</files>
     <hoc t="I">82</hoc>
+    <is_human t="I">1</is_human>
     <issue t="I">6752</issue>
     <repository t="I">73056727</repository>
+    <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">22</succeeded_builds>
     <suggestions t="I">0</suggestions>
     <what t="S">pull-was-merged</what>
@@ -523643,8 +523648,10 @@ The average monthly zents/points ratio (0.38) is decreasing (R=0.91).</text>
     <failed_builds t="I">0</failed_builds>
     <files t="I">9</files>
     <hoc t="I">92</hoc>
+    <is_human t="I">1</is_human>
     <issue t="I">6758</issue>
     <repository t="I">73056727</repository>
+    <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">22</succeeded_builds>
     <suggestions t="I">0</suggestions>
     <what t="S">pull-was-merged</what>
@@ -523668,9 +523675,11 @@ The average monthly zents/points ratio (0.38) is decreasing (R=0.91).</text>
     <failed_builds t="I">0</failed_builds>
     <files t="I">8</files>
     <hoc t="I">77</hoc>
+    <is_human t="I">1</is_human>
     <issue t="I">6770</issue>
     <repository t="I">73056727</repository>
     <review t="T">2026-08-14T06:41:49Z</review>
+    <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">22</succeeded_builds>
     <suggestions t="I">0</suggestions>
     <what t="S">pull-was-merged</what>
@@ -523694,8 +523703,10 @@ The average monthly zents/points ratio (0.38) is decreasing (R=0.91).</text>
     <failed_builds t="I">0</failed_builds>
     <files t="I">3</files>
     <hoc t="I">144</hoc>
+    <is_human t="I">1</is_human>
     <issue t="I">6771</issue>
     <repository t="I">73056727</repository>
+    <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">22</succeeded_builds>
     <suggestions t="I">0</suggestions>
     <what t="S">pull-was-merged</what>
@@ -523710,6 +523721,7 @@ The average monthly zents/points ratio (0.38) is decreasing (R=0.91).</text>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <assigner t="I">51804353</assigner>
     <details t="S">objectionary/lints#797 was assigned to @volodya-lombrozo by @volodya-lombrozo.</details>
+    <is_human t="I">1</is_human>
     <issue t="I">797</issue>
     <repository t="I">889819508</repository>
     <what t="S">issue-was-assigned</what>
@@ -523723,6 +523735,7 @@ The average monthly zents/points ratio (0.38) is decreasing (R=0.91).</text>
     <_time t="T">2026-08-14T07:19:45Z</_time>
     <_version t="S">0.19.16/0.61.1/0.17.21</_version>
     <details t="S">The "enhancement" label was attached by @volodya-lombrozo to the issue objectionary/lints#797.</details>
+    <is_human t="I">1</is_human>
     <issue t="I">797</issue>
     <label t="S">enhancement</label>
     <repository t="I">889819508</repository>
@@ -523730,5 +523743,441 @@ The average monthly zents/points ratio (0.38) is decreasing (R=0.91).</text>
     <when t="T">2026-08-14T05:41:43Z</when>
     <where t="S">github</where>
     <who t="I">51804353</who>
+  </f>
+  <f>
+    <_id t="I">1119162</_id>
+    <_job t="I">86854</_job>
+    <_time t="T">2026-08-14T07:36:10Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">In the repository #889819508, the user #51804353 attached the '#enhancement' label to the issue #797 reported by the user #526301; this means that a feature request was-accepted as valid, by the project team.</details>
+    <is_human t="I">1</is_human>
+    <issue t="I">797</issue>
+    <reporter t="I">526301</reporter>
+    <repository t="I">889819508</repository>
+    <what t="S">enhancement-was-accepted</what>
+    <when t="T">2026-08-14T05:41:43Z</when>
+    <where t="S">github</where>
+    <who t="I">51804353</who>
+  </f>
+  <f>
+    <_id t="I">1119163</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:46:57Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <comments t="I">1</comments>
+    <commits t="I">1</commits>
+    <details t="S">The pull request objectionary/eoc#1185 has been reviewed by @yegor256 with 14 HoC and 1 comments.</details>
+    <event_id t="I">13277491468</event_id>
+    <event_type t="S">PullRequestReviewEvent</event_type>
+    <files t="I">1</files>
+    <hoc t="I">14</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">1185</issue>
+    <repository t="I">489321585</repository>
+    <review_comments t="I">0</review_comments>
+    <what t="S">pull-was-reviewed</what>
+    <when t="T">2026-08-14T08:46:04Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1119164</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:47:31Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <commits t="I">5</commits>
+    <contributors>
+      <v t="I">33578155</v>
+      <v t="I">51804353</v>
+      <v t="I">8086956</v>
+    </contributors>
+    <details t="S">A new release "0.4.5" has been published in objectionary/lints by @rultor.</details>
+    <event_id t="I">13273279218</event_id>
+    <event_type t="S">ReleaseEvent</event_type>
+    <hoc t="I">349</hoc>
+    <is_human t="I">0</is_human>
+    <last_commit t="S">6a989c392ba5d08fa211dd122d25281011b0df26</last_commit>
+    <release t="I">370404272</release>
+    <repository t="I">889819508</repository>
+    <tag t="S">0.4.5</tag>
+    <what t="S">release-published</what>
+    <when t="T">2026-08-14T07:05:09Z</when>
+    <where t="S">github</where>
+    <who t="I">8086956</who>
+  </f>
+  <f>
+    <_id t="I">1119165</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:47:34Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/lints#769 has been closed by @0pdd.</details>
+    <event_id t="I">13272808451</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">0</is_human>
+    <issue t="I">769</issue>
+    <repository t="I">889819508</repository>
+    <what t="S">issue-was-closed</what>
+    <when t="T">2026-08-14T06:53:17Z</when>
+    <where t="S">github</where>
+    <who t="I">24456188</who>
+  </f>
+  <f>
+    <_id t="I">1119166</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:47:37Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/lints#1273 has been opened by @maxonfjvipon.</details>
+    <event_id t="I">13272518403</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">1273</issue>
+    <repository t="I">889819508</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-08-14T06:45:32Z</when>
+    <where t="S">github</where>
+    <who t="I">37025995</who>
+  </f>
+  <f>
+    <_id t="I">1119167</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:47:38Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <comments t="I">4</comments>
+    <commits t="I">1</commits>
+    <details t="S">The pull request objectionary/lints#1256 has been reviewed by @volodya-lombrozo with 8 HoC and 4 comments.</details>
+    <event_id t="I">13272335126</event_id>
+    <event_type t="S">PullRequestReviewEvent</event_type>
+    <files t="I">1</files>
+    <hoc t="I">8</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">1256</issue>
+    <repository t="I">889819508</repository>
+    <review_comments t="I">0</review_comments>
+    <what t="S">pull-was-reviewed</what>
+    <when t="T">2026-08-14T06:40:29Z</when>
+    <where t="S">github</where>
+    <who t="I">51804353</who>
+  </f>
+  <f>
+    <_id t="I">1119168</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:47:39Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">797-syntax-meta</branch>
+    <details t="S">The pull request objectionary/lints#1272 has been opened by @volodya-lombrozo.</details>
+    <event_id t="I">13271924543</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">1272</issue>
+    <repository t="I">889819508</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-08-14T06:29:19Z</when>
+    <where t="S">github</where>
+    <who t="I">51804353</who>
+  </f>
+  <f>
+    <_id t="I">1119169</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:47:40Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The issue objectionary/lints#1271 has been opened by @volodya-lombrozo.</details>
+    <event_id t="I">13270856374</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">1271</issue>
+    <repository t="I">889819508</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-08-14T05:57:51Z</when>
+    <where t="S">github</where>
+    <who t="I">51804353</who>
+  </f>
+  <f>
+    <_id t="I">1119170</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:51:38Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">825-invalid-grep-in-pattern</branch>
+    <comments t="I">4</comments>
+    <comments_appreciated t="I">0</comments_appreciated>
+    <comments_by_author t="I">3</comments_by_author>
+    <comments_by_reviewers t="I">1</comments_by_reviewers>
+    <comments_resolved t="I">0</comments_resolved>
+    <comments_to_code t="I">2</comments_to_code>
+    <details t="S">Apparently, objectionary/hone-maven-plugin#826 has been "pull-was-merged".</details>
+    <failed_builds t="I">0</failed_builds>
+    <files t="I">2</files>
+    <hoc t="I">89</hoc>
+    <issue t="I">826</issue>
+    <repository t="I">840332960</repository>
+    <review t="T">2026-08-12T21:18:11Z</review>
+    <succeeded_builds t="I">18</succeeded_builds>
+    <suggestions t="I">1</suggestions>
+    <what t="S">pull-was-merged</what>
+    <when t="T">2026-08-14T07:57:06Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1119171</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:52:53Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <branch t="S">797-syntax-meta</branch>
+    <comments t="I">3</comments>
+    <comments_appreciated t="I">1</comments_appreciated>
+    <comments_by_author t="I">1</comments_by_author>
+    <comments_by_reviewers t="I">2</comments_by_reviewers>
+    <comments_resolved t="I">0</comments_resolved>
+    <comments_to_code t="I">0</comments_to_code>
+    <details t="S">Apparently, objectionary/lints#1272 has been "pull-was-merged".</details>
+    <failed_builds t="I">0</failed_builds>
+    <files t="I">7</files>
+    <hoc t="I">339</hoc>
+    <issue t="I">1272</issue>
+    <repository t="I">889819508</repository>
+    <succeeded_builds t="I">19</succeeded_builds>
+    <suggestions t="I">0</suggestions>
+    <what t="S">pull-was-merged</what>
+    <when t="T">2026-08-14T06:45:47Z</when>
+    <where t="S">github</where>
+    <who t="I">8086956</who>
+  </f>
+  <f>
+    <_id t="I">1119172</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:55:05Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <assigner t="I">37025995</assigner>
+    <details t="S">objectionary/lints#1273 was assigned to @maxonfjvipon by @maxonfjvipon.</details>
+    <issue t="I">1273</issue>
+    <repository t="I">889819508</repository>
+    <what t="S">issue-was-assigned</what>
+    <when t="T">2026-08-14T06:45:30Z</when>
+    <where t="S">github</where>
+    <who t="I">37025995</who>
+  </f>
+  <f>
+    <_id t="I">1119173</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:58:11Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6584.</details>
+    <issue t="I">6584</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-14T05:41:57Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1119174</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:58:40Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6760.</details>
+    <issue t="I">6760</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-14T05:41:33Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1119175</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:58:41Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6761.</details>
+    <issue t="I">6761</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-14T05:41:24Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1119176</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:58:42Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6762.</details>
+    <issue t="I">6762</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-14T05:41:14Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1119177</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:58:43Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6763.</details>
+    <issue t="I">6763</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-14T05:41:05Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1119178</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:58:44Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6764.</details>
+    <issue t="I">6764</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-14T05:40:57Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1119179</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:58:45Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6765.</details>
+    <issue t="I">6765</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-14T05:40:46Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1119180</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:58:46Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6766.</details>
+    <issue t="I">6766</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-14T05:40:35Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1119181</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:58:48Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6772.</details>
+    <issue t="I">6772</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-14T05:36:43Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1119182</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:58:49Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6773.</details>
+    <issue t="I">6773</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-14T05:36:28Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1119183</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:58:50Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6774.</details>
+    <issue t="I">6774</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-14T05:36:14Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1119184</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:58:51Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6775.</details>
+    <issue t="I">6775</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-14T05:35:59Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1119185</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:58:51Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "enhancement" label was attached by @volodya-lombrozo to the issue objectionary/lints#1271.</details>
+    <issue t="I">1271</issue>
+    <label t="S">enhancement</label>
+    <repository t="I">889819508</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-14T05:57:51Z</when>
+    <where t="S">github</where>
+    <who t="I">51804353</who>
+  </f>
+  <f>
+    <_id t="I">1119186</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:58:52Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6776.</details>
+    <issue t="I">6776</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-14T05:35:51Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1119187</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:58:53Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @maxonfjvipon to the issue objectionary/lints#1273.</details>
+    <issue t="I">1273</issue>
+    <label t="S">bug</label>
+    <repository t="I">889819508</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-14T06:45:32Z</when>
+    <where t="S">github</where>
+    <who t="I">37025995</who>
+  </f>
+  <f>
+    <_id t="I">1119188</_id>
+    <_job t="I">31785211312</_job>
+    <_time t="T">2026-08-14T08:58:53Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.21</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#6777.</details>
+    <issue t="I">6777</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-08-14T05:35:43Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
   </f>
 </fb>
