@@ -16,4 +16,4 @@ eo:
     [] > number
       [] > plus
 links:
-  - "/links/type[@id='Φ.app.φ' and @copy='Φ.number.plus']"
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.number.plus']"

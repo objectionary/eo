@@ -30,8 +30,8 @@ needs:
   - "/needs//attr[@name='next' and @type='Φ.app.inc.φ.ρ']"
   - "/needs/type[@id='Φ.app.inc.φ.ρ']/attr[@name='foo' and @type='Φ.app.inc.φ']"
 links:
-  - "/links/type[@id='Φ.app.φ' and @copy='Φ.app.inc']"
-  - "/links/type[@id='Φ.app.φ.α0' and @copy='Φ.app.t']"
-  - "/links/type[@id='Φ.app.inc.φ.ρ.ρ' and @copy='Φ.app.inc.x']"
-  - "/links/type[@id='Φ.app.inc.φ.ρ' and @copy='Φ.app.inc.x.next']"
-  - "/links/type[@id='Φ.app.inc.φ' and @copy='Φ.app.inc.x.next.foo']"
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.app.inc']"
+  - "/links/type[@id='Φ.app.φ.α0']/ref[@loc='Φ.app.t']"
+  - "/links/type[@id='Φ.app.inc.φ.ρ.ρ']/ref[@loc='Φ.app.inc.x']"
+  - "/links/type[@id='Φ.app.inc.φ.ρ']/ref[@loc='Φ.app.inc.x.next']"
+  - "/links/type[@id='Φ.app.inc.φ']/ref[@loc='Φ.app.inc.x.next.foo']"
