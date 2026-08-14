@@ -26,9 +26,6 @@ import org.slf4j.impl.StaticLoggerBinder;
 /**
  * Abstract Mojo for all others.
  * @since 0.1
- * @todo #6428:60min Take the caching decision out of this class. It names 30 types
- *  now, the maximum, so the next one moved to {@link GlobalCache} brings the fan-out
- *  suppression back. A cache of its own for {@link #caching(String)} would drop two.
  */
 @SuppressWarnings("PMD.TooManyFields")
 abstract class MjSafe extends AbstractMojo {
@@ -566,15 +563,7 @@ abstract class MjSafe extends AbstractMojo {
      * @return The cache of that step
      */
     GlobalCache caching(final String sub) {
-        final GlobalCache store;
-        if (this.cacheEnabled) {
-            store = new GcShared(
-                this.cache.toPath().resolve(sub), this.plugin.getVersion()
-            );
-        } else {
-            store = new GlobalCache.GcFresh();
-        }
-        return store;
+        return new Caching(this.cache, this.cacheEnabled, this.plugin.getVersion()).forStep(sub);
     }
 
     /**
