@@ -7,16 +7,17 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint package-member-without-void
 
-[num] > sqrt
+[] > sqrt
   if. > @
     arg.lt 0
     nan
     if.
       arg.as-bytes.eq 80-00-00-00-00-00-00-00
       arg
-      power arg 0.5
-  number num.as-bytes > arg
+      arg.power 0.5
+  number ^.as-bytes > arg
 
   lt. ++> can-approximate-a-square-root-of-four
     abs.

@@ -9,8 +9,9 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint package-member-without-void
 
-[n] > is-finite
+[] > is-finite
   and. > @
     n.as-bytes.size.eq 8
     n.is-nan.not.and
@@ -18,6 +19,7 @@
         or.
           n.as-bytes.eq 7F-F0-00-00-00-00-00-00
           n.as-bytes.eq FF-F0-00-00-00-00-00-00
+  ^ > n
 
   32.is-finite ++> can-be-finite-when-a-simple-number
 

@@ -6,9 +6,10 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint package-member-without-void
 
-[n] > neg
-  n.times -1 > @
+[] > neg
+  ^.times -1 > @
 
   ninf.neg.eq pinf ++> can-negate-negative-infinity
 

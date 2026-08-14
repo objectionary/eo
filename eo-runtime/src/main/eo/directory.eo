@@ -86,7 +86,7 @@
           posix
             "getpid"
             *
-      number.random clock
+      clock.as-number.random
   [glob] > walk
     [accum prefix dir] >> walked
       [rest] >> stepped

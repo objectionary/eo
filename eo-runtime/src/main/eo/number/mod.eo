@@ -18,7 +18,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[x y cant-mod] > mod
+[y cant-mod] > mod
   if. > @
     eq.
       number y.as-bytes >> divisor
@@ -56,6 +56,7 @@
                     rest.minus chunk
                     rest
             abs-mod.neg
+  ^ > x
 
   eq. ++> can-recover-from-a-modulo-by-zero
     "recovered"
