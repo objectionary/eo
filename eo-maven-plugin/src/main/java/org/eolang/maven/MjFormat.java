@@ -216,6 +216,18 @@ public final class MjFormat extends MjSafe {
      * yet the tree no longer describes the source, so this also rejects a
      * tree carrying such a {@link #placeholder(XML) placeholder}.</p>
      *
+     * <p>Neither heuristic catches every lossy recovery: the parser can
+     * also drop a single binding line entirely and carry straight on to
+     * its siblings, which neither truncates line coverage (later siblings
+     * still reach the source's last line) nor leaves a placeholder (there
+     * is simply nothing where the binding used to be) — see #6649. That
+     * one recovery site tags its own {@code <error>} with {@code lossy}
+     * (see {@link Emit#error(int, int, String, boolean)}), so this also
+     * rejects a tree carrying such an error, without having to reject
+     * every {@code <errors>} entry the way the issue that reported this
+     * gap first suggested, which would also reject this goal's own core
+     * use case of recovering from purely cosmetic layout violations.</p>
+     *
      * @param source The path of the {@code .eo} file, for the error message
      * @param structure The current text of the {@code .eo} file
      * @return The parsed XMIR
@@ -230,7 +242,9 @@ public final class MjFormat extends MjSafe {
             .filter(MjFormat::severe)
             .count();
         if (errors > 0L
-            && (MjFormat.truncated(xmir, structure) || MjFormat.placeholder(xmir))) {
+            && (MjFormat.truncated(xmir, structure)
+                || MjFormat.placeholder(xmir)
+                || MjFormat.lossy(xmir))) {
             throw new IllegalStateException(
                 String.format(
                     "%s does not fully parse (%d error(s) found) and part of it was lost, won't format it",
@@ -239,6 +253,19 @@ public final class MjFormat extends MjSafe {
             );
         }
         return xmir;
+    }
+
+    /**
+     * Whether any error carries the {@code lossy} marker, meaning its own
+     * recovery dropped the whole construct it was building.
+     * @param xmir The parsed XMIR
+     * @return TRUE if such an error is present
+     */
+    private static boolean lossy(final XML xmir) {
+        return new Xnav(xmir.inner())
+            .path("//errors/error[@lossy]")
+            .findAny()
+            .isPresent();
     }
 
     /**

@@ -189,9 +189,18 @@ final class Emit {
     }
 
     /**
-     * Append an error directive to {@code /object/errors} — §9.6.
-     *
-     * <p>Records the {@code line}, {@code pos} (0-indexed column per
+     * Append a non-lossy error directive to {@code /object/errors} — see
+     * {@link #error(int, int, String, boolean)}.
+     * @param line Line where the error occurred
+     * @param pos Column where the error occurred (0-indexed)
+     * @param message Canonical message text (no position prefix)
+     */
+    void error(final int line, final int pos, final String message) {
+        this.error(line, pos, message, false);
+    }
+
+    /**
+     * Emit a parser {@code <error>} at the current line/position (R-9.9.1 /
      * R-9.1.2), and the canonical message text from §9.9 prefixed with
      * {@code [L:P]} per R-9.9.2. Wraps absolute navigation in
      * {@code push}/{@code pop}. The {@code check} attribute is always set
@@ -199,26 +208,33 @@ final class Emit {
      * one raised by a named lint rule (#6215): downstream code (see
      * {@code Linting.toDefect} in eo-maven-plugin) fails fast if
      * {@code check} is ever missing, so it must be set here rather than
-     * defaulted downstream.</p>
-     *
+     * defaulted downstream.
      * @param line Line where the error occurred
      * @param pos Column where the error occurred (0-indexed)
      * @param message Canonical message text (no position prefix)
+     * @param lossy Whether recovering from this error dropped the whole
+     *  construct it was building, rather than merely flagging a cosmetic
+     *  or informational issue with a construct that still made it into
+     *  the tree intact (#6649)
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    void error(final int line, final int pos, final String message) {
+    void error(final int line, final int pos, final String message, final boolean lossy) {
+        final Directives dirs = new Directives()
+            .push()
+            .xpath("/object")
+            .strict(1)
+            .addIf("errors")
+            .strict(1)
+            .add("error")
+            .attr("line", line)
+            .attr("pos", pos)
+            .attr("check", "parser")
+            .attr("severity", "error");
+        if (lossy) {
+            dirs.attr("lossy", "");
+        }
         this.append(
-            new Directives()
-                .push()
-                .xpath("/object")
-                .strict(1)
-                .addIf("errors")
-                .strict(1)
-                .add("error")
-                .attr("line", line)
-                .attr("pos", pos)
-                .attr("check", "parser")
-                .attr("severity", "error")
-                .set(this.formatted(line, pos, message))
+            dirs.set(this.formatted(line, pos, message))
                 .up().up()
                 .pop()
         );
