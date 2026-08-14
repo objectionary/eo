@@ -77,13 +77,13 @@ public final class Resolved implements Clue {
             ).from(written.all())
         );
         final Map<String, String> names = new Ends(pairs).names();
+        final Map<String, Type> rows = new Refs(
+            pairs, new Bound(args, names, new Provided(given, names, voids)).all()
+        ).all();
+        rows.putAll(written.others());
         Files.write(
             links,
-            new Types(
-                pairs,
-                new Bound(args, names, new Provided(given, names, voids)).all(),
-                written.data()
-            ).asXml().toString().getBytes(StandardCharsets.UTF_8)
+            new Types(rows).asXml().toString().getBytes(StandardCharsets.UTF_8)
         );
     }
 }
