@@ -2,11 +2,14 @@
 - added: 8
   cycles: 1
   deleted: 8
+  error:
+  - end of file reached
+  - end of file reached
   inserted: 8
-  seconds: 2160.867875487
+  seconds: 1475.973758783
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-13 23:49:28.674501665 Z
+  when: 2026-08-14 00:33:33.526282245 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -15892,6 +15895,7 @@
   is_human: 1
   issue: 196
   repository: 977982682
+  tombstone: 2026-08-13 23:52:26.296201616 Z
   what: issue-was-opened
   when: 2025-07-09 04:38:48.000000000 Z
   where: github
@@ -40714,6 +40718,7 @@
   is_human: 0
   issue: 202
   repository: 970961472
+  tombstone: 2026-08-13 23:52:26.498756419 Z
   what: pull-was-opened
   when: 2025-11-29 08:55:37.000000000 Z
   where: github
@@ -41267,6 +41272,7 @@
   is_human: 1
   issue: 196
   repository: 977982682
+  tombstone: 2026-08-13 23:52:26.301028360 Z
   what: issue-was-assigned
   when: 2025-11-29 21:23:43.000000000 Z
   where: github
@@ -41317,6 +41323,7 @@
   review_comments: 0
   succeeded_builds: 8
   suggestions: 0
+  tombstone: 2026-08-13 23:52:26.501073636 Z
   what: pull-was-merged
   when: &207 2025-11-29 17:09:27.000000000 Z
   where: github
@@ -41860,6 +41867,7 @@
   repository: 970961472
   review_comments: 0
   seconds: 29630
+  tombstone: 2026-08-13 23:52:26.503179118 Z
   what: code-was-contributed
   when: *207
   where: github
@@ -44497,6 +44505,7 @@
   is_human: 0
   issue: 196
   repository: 977982682
+  tombstone: 2026-08-13 23:52:26.303830144 Z
   what: issue-was-closed
   when: &260 2025-12-10 15:13:40.000000000 Z
   where: github
@@ -44511,6 +44520,7 @@
   issue: 196
   label: enhancement
   repository: 977982682
+  tombstone: 2026-08-13 23:52:26.306596268 Z
   what: label-was-attached
   when: &261 2025-11-29 21:23:47.000000000 Z
   where: github
@@ -44529,6 +44539,7 @@
   opener: 526301
   repository: 977982682
   seconds: 928197
+  tombstone: 2026-08-13 23:52:26.309054185 Z
   what: bug-was-resolved
   when: *260
   where: github
@@ -44540,6 +44551,7 @@
   details: 'In the repository #977982682, the user #37025995 attached the ''#enhancement''
     label to the issue #196 reported by the user #526301; this means that a feature
     request was-accepted as valid, by the project team.'
+  done: 2026-08-13 23:52:26.250386154 Z
   is_human: 1
   issue: 196
   reporter: 526301
@@ -48284,6 +48296,7 @@
   is_human: 0
   issue: 246
   repository: 543969974
+  tombstone: 2026-08-13 23:52:26.538095525 Z
   what: pull-was-opened
   when: 2025-11-30 02:45:03.000000000 Z
   where: github
@@ -48495,6 +48508,7 @@
   is_human: 0
   issue: 137
   repository: 551486781
+  tombstone: 2026-08-13 23:52:26.458371271 Z
   what: pull-was-opened
   when: 2025-11-29 09:44:31.000000000 Z
   where: github
@@ -49113,6 +49127,7 @@
   review_comments: 0
   succeeded_builds: 10
   suggestions: 0
+  tombstone: 2026-08-13 23:52:26.460778355 Z
   what: pull-was-merged
   when: &346 2025-11-29 16:40:42.000000000 Z
   where: github
@@ -49923,6 +49938,7 @@
   repository: 551486781
   review_comments: 0
   seconds: 24971
+  tombstone: 2026-08-13 23:52:26.463103625 Z
   what: code-was-contributed
   when: *346
   where: github
@@ -51802,6 +51818,7 @@
   is_human: 1
   issue: 196
   repository: 977982682
+  tombstone: 2026-08-13 23:52:26.311491341 Z
   what: enhancement-suggestion-was-rewarded
   when: 2025-12-14 02:38:47.928987233 Z
   where: github
@@ -52044,6 +52061,7 @@
   is_human: 1
   issue: 196
   repository: 977982682
+  tombstone: 2026-08-13 23:52:26.313943513 Z
   what: resolved-bug-was-rewarded
   when: 2025-12-14 06:18:41.205221089 Z
   where: github
@@ -61146,6 +61164,7 @@
   comments: 3
   details: The pull request objectionary/eo-lsp-server#202 with 52 HoC created by
     @renovate[bot] was reviewed by @yegor256 after 8h7m and 0 comments.
+  done: 2026-08-13 23:52:26.467895126 Z
   hoc: 52
   is_human: 1
   issue: 202
@@ -61956,6 +61975,7 @@
   comments: 3
   details: The pull request objectionary/eo-vscode#137 with 119 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 6h46m and 0 comments.
+  done: 2026-08-13 23:52:26.427174531 Z
   hoc: 119
   is_human: 1
   issue: 137
@@ -62046,6 +62066,7 @@
   comments: 5
   details: The pull request objectionary/eo#4704 with 2 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 1h57m and 0 comments.
+  done: 2026-08-13 23:52:26.544325424 Z
   hoc: 2
   is_human: 1
   issue: 4704
@@ -65403,6 +65424,7 @@
   repository: 970961472
   review_comments: 0
   seconds: 29220
+  tombstone: 2026-08-13 23:52:26.505559027 Z
   what: code-review-was-rewarded
   when: 2025-12-26 10:19:37.835909290 Z
   where: github
@@ -66324,6 +66346,7 @@
   repository: 551486781
   review_comments: 0
   seconds: 24386
+  tombstone: 2026-08-13 23:52:26.465670325 Z
   what: code-review-was-rewarded
   when: 2025-12-26 19:24:06.892468960 Z
   where: github
@@ -164828,7 +164851,7 @@
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 6
-  min_issue_was_found: 0
+  min_issue_was_found: 6
   min_pull_was_found: 0
   repository: 568705267
   types_were_scanned: 0
@@ -266896,7 +266919,7 @@
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 46
-  min_issue_was_found: 42
+  min_issue_was_found: 43
   repository: 531151981
   types_were_scanned: 0
   what: iterate
@@ -272778,7 +272801,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 34
   merges_were_scanned: 0
-  min_issue_was_found: 46
+  min_issue_was_found: 47
   min_pull_was_found: 0
   repository: 482612876
   types_were_scanned: 0
@@ -286460,7 +286483,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 94
   merges_were_scanned: 0
-  min_issue_was_found: 28
+  min_issue_was_found: 33
   min_pull_was_found: 0
   repository: 447446664
   types_were_scanned: 0
@@ -288234,7 +288257,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 347
   merges_were_scanned: 0
-  min_issue_was_found: 0
+  min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 840332960
   types_were_scanned: 821
@@ -289199,7 +289222,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 110
   merges_were_scanned: 0
-  min_issue_was_found: 136
+  min_issue_was_found: 139
   min_pull_was_found: 0
   repository: 546194972
   types_were_scanned: 0
@@ -290661,7 +290684,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 34
   merges_were_scanned: 0
-  min_issue_was_found: 40
+  min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 570457023
   types_were_scanned: 0
@@ -295170,14 +295193,14 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1020
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13009557602
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 365
   merges_were_scanned: 0
-  min_issue_was_found: 480
+  min_issue_was_found: 481
   min_pull_was_found: 0
   repository: 977982682
   types_were_scanned: 0
@@ -296228,7 +296251,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 160
   merges_were_scanned: 0
-  min_issue_was_found: 0
+  min_issue_was_found: 9
   min_pull_was_found: 0
   repository: 574534248
   types_were_scanned: 0
@@ -298935,7 +298958,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1001
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13253833922
   issues_were_scanned: 982
@@ -301392,7 +301415,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 63
   merges_were_scanned: 0
-  min_issue_was_found: 0
+  min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 731516758
   types_were_scanned: 0
@@ -301426,7 +301449,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 1356
   merges_were_scanned: 0
-  min_issue_was_found: 549
+  min_issue_was_found: 716
   min_pull_was_found: 1572
   repository: 671896902
   types_were_scanned: 0
@@ -301441,7 +301464,7 @@
   events_were_scanned: 12239775879
   latest_issue_was_found: 5
   merges_were_scanned: 0
-  min_issue_was_found: 23
+  min_issue_was_found: 25
   min_pull_was_found: 0
   repository: 1260338737
   types_were_scanned: 0
@@ -301458,7 +301481,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 85
   merges_were_scanned: 0
-  min_issue_was_found: 40
+  min_issue_was_found: 42
   min_pull_was_found: 0
   repository: 501259435
   types_were_scanned: 0
@@ -301475,7 +301498,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 361
   merges_were_scanned: 0
-  min_issue_was_found: 397
+  min_issue_was_found: 398
   min_pull_was_found: 0
   repository: 13623548
   types_were_scanned: 0
@@ -301509,7 +301532,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 69
   merges_were_scanned: 0
-  min_issue_was_found: 25
+  min_issue_was_found: 27
   min_pull_was_found: 0
   repository: 551486781
   types_were_scanned: 0
@@ -301543,7 +301566,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 184
   merges_were_scanned: 0
-  min_issue_was_found: 187
+  min_issue_was_found: 212
   min_pull_was_found: 0
   repository: 519299365
   types_were_scanned: 0
@@ -301887,7 +301910,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1122
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13251076167
   issues_were_scanned: 0
@@ -301911,7 +301934,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 122
   merges_were_scanned: 0
-  min_issue_was_found: 6
+  min_issue_was_found: 47
   min_pull_was_found: 409
   repository: 970961472
   types_were_scanned: 0
@@ -301921,11 +301944,11 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6066
+  assignees_were_scanned: 6234
   earliest_issue_was_found: 1
   events_were_scanned: 13257994744
   issues_were_scanned: 0
-  labels_were_scanned: 6179
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
@@ -309477,6 +309500,7 @@
   review_comments: 0
   succeeded_builds: 10
   suggestions: 0
+  tombstone: 2026-08-13 23:52:26.540285291 Z
   what: pull-was-merged
   when: &2655 2026-04-27 09:43:22.000000000 Z
   where: github
@@ -312939,6 +312963,7 @@
   repository: 543969974
   review_comments: 0
   seconds: 12812299
+  tombstone: 2026-08-13 23:52:26.542294385 Z
   what: code-was-contributed
   when: *2655
   where: github
@@ -322333,6 +322358,7 @@
   comments: 3
   details: The pull request objectionary/sodg.rs#246 with 53 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 0h15m and 0 comments.
+  done: 2026-08-13 23:52:26.507627544 Z
   hoc: 53
   is_human: 1
   issue: 246
@@ -447697,7 +447723,7 @@
   - 0
   - 0
   what: quality-of-service
-  when: 2026-08-06 23:56:32.898741506 Z
+  when: &4327 2026-08-06 23:56:32.898741506 Z
 - _id: 1116926
   _job: 85357
   _time: 2026-08-06 23:57:14.390085488 Z
@@ -486263,8 +486289,14 @@
   _time: 2026-08-13 20:11:42.976467527 Z
   _version: 0.19.16/0.61.1/0.17.21
   total_active_contributors: 27
+  total_commits: 54136
+  total_contributors: 542
+  total_files: 15390
   total_forks: 528
+  total_issues: 5715
+  total_pulls: 10885
   total_releases: 944
+  total_repositories: 39
   total_stars: 1829
   what: dimensions-of-terrain
   when: 2026-08-13 20:11:42.992505221 Z
@@ -486392,10 +486424,6 @@
   comments: 6
   details: It's time to reward @morphqdd for the code contributed in objectionary/eo#6742,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too few (26) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+4196](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 26
   href: https://github.com/objectionary/eo/issues/6742/#issuecomment-5286901149
   is_human: 1
@@ -486417,9 +486445,6 @@
   comments: 3
   details: It's time to reward @morphqdd for the code contributed in objectionary/eo#6751,
     the reward amount is 16.
-  greeting: 'Thanks for the contribution! You''ve earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+4212](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 42
   href: https://github.com/objectionary/eo/issues/6751/#issuecomment-5286901347
   is_human: 1
@@ -486645,8 +486670,10 @@
     them coming. Your running score is [+687](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 6
+  href: https://github.com/objectionary/eo/issues/6756/#issuecomment-5287697001
   is_human: 1
   issue: 6756
+  receipt: receipt-#86248
   repository: 73056727
   review_comments: 0
   seconds: 14310
@@ -486739,3 +486766,29 @@
   when: 2026-08-13 22:11:12.000000000 Z
   where: github
   who: 125282851
+- _id: 1119152
+  _job: 86809
+  _time: 2026-08-13 23:50:25.843511050 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 8
+  details: It's time to reward @maxonfjvipon for the bug resolved in objectionary/eo#6654
+    in 31 hours, the reward amount is 8.
+  greeting: 'Thanks for closing this issue! You''ve earned +8 points for this: +8
+    as a basis; +0 for 1 days of delay. Your running score is [+695](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/eo/issues/6654/#issuecomment-5287697185
+  is_human: 1
+  issue: 6654
+  repository: 73056727
+  what: resolved-bug-was-rewarded
+  when: 2026-08-13 23:50:25.847218621 Z
+  where: github
+  who: 37025995
+  why: Resolved bug in objectionary/eo#6654
+- _id: 1119153
+  _job: 31756304311
+  _time: 2026-08-14 00:25:41.421397779 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  since: *4327
+  what: quality-of-service
+  when: 2026-08-14 00:25:41.380599655 Z
