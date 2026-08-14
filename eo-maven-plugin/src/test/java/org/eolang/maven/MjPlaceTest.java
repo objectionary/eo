@@ -54,7 +54,7 @@ final class MjPlaceTest {
         ).toFile().lastModified();
         MatcherAssert.assertThat(
             "PlaceMojo must skip already placed binaries, but it doesn't",
-            new FakeMaven(temp).withPlacedBinary(
+            new FakeMaven(temp).with("rewriteBinaries", false).withPlacedBinary(
                 temp.resolve(this.targetClasses()).resolve(binary)
                 )
             .execute(MjPlace.class)
@@ -184,8 +184,26 @@ final class MjPlaceTest {
     }
 
     @Test
-    void doesNotPlacesAgainIfWasNotUnplaced(@Mktmp final Path temp) throws Exception {
+    void rewritesAgainIfNotUnplacedButRewriteBinariesIsOn(@Mktmp final Path temp)
+        throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
+        final String binary = "some.class";
+        final String updated = "new content";
+        MjPlaceTest.saveBinary(temp, "some old content", binary);
+        maven.execute(MjPlace.class).result();
+        MjPlaceTest.saveBinary(temp, updated, binary);
+        maven.execute(MjPlace.class).result();
+        MatcherAssert.assertThat(
+            "The binary file must be replaced with new content because rewriteBinaries is on by default, but it was not",
+            new TextOf(MjPlaceTest.pathToPlacedBinary(temp, binary)).asString(),
+            Matchers.equalTo(updated)
+        );
+    }
+
+    @Test
+    void doesNotPlaceAgainIfNotUnplacedAndRewriteBinariesIsOff(@Mktmp final Path temp)
+        throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).with("rewriteBinaries", false);
         final String binary = "some.class";
         final String old = "some old content";
         MjPlaceTest.saveBinary(temp, old, binary);
@@ -193,7 +211,7 @@ final class MjPlaceTest {
         MjPlaceTest.saveBinary(temp, "new content", binary);
         maven.execute(MjPlace.class).result();
         MatcherAssert.assertThat(
-            "The binary file must not be replaced with new content, but it was not",
+            "The binary file must not be replaced with new content because rewriteBinaries is off, but it was",
             new TextOf(MjPlaceTest.pathToPlacedBinary(temp, binary)).asString(),
             Matchers.equalTo(old)
         );
