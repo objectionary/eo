@@ -301,10 +301,12 @@
               gets a receiver, and with '^' but no merge it has no rho to read.
               -->
               <mergedPackages>
+                <mergedPackage>bytes</mergedPackage>
                 <mergedPackage>chunk</mergedPackage>
                 <mergedPackage>directory</mergedPackage>
                 <mergedPackage>file</mergedPackage>
                 <mergedPackage>i64</mergedPackage>
+                <mergedPackage>input</mergedPackage>
                 <mergedPackage>output</mergedPackage>
                 <mergedPackage>range</mergedPackage>
                 <mergedPackage>u64</mergedPackage>
