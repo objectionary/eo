@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# "tuples-to-stars" matched every base of "Φ.tuple.empty" and lowered it to
+# the "*" star shorthand, on the assumption that only the star could have
+# produced that base. "resolve-aliases" puts the very same base on a bare
+# reference whenever the program declares "+alias tuple.empty", so an
+# ordinary reference read back as "*" instead of the name the author wrote,
+# and the alias meta was left dead (#6797).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  +alias tuple.empty
+  +package foo
+
+  [] > app
+    empty > a
+    empty > b
+
+printed: |
+  +alias tuple.empty
+  +package foo
+
+  [] > app
+    empty > a
+    empty > b
