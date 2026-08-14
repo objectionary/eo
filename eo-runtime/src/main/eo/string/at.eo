@@ -31,12 +31,18 @@
               number index
             number index
     fallback
-      "Given index %d is out of text bounds".printf
+      "Given index %f is out of text bounds".printf
         * i
     slice
       text
       index
       1
+
+  eq. ++> can-format-the-error-message-of-a-fractional-index-in-bounds
+    "Given index 1.500000 is out of text bounds"
+    "some".at
+      1.5
+      message > [message]
 
   eq. ++> can-recover-from-a-fractional-index-in-bounds
     "recovered"
