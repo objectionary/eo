@@ -167,12 +167,16 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * Track optimization steps into intermediate XMIR files?
      * @since 0.24.0
-     * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (5 lines)
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (9 lines)
      */
-    @SuppressWarnings("PMD.LongVariable")
-    @Parameter(property = "eo.trackTransformationSteps", required = true, defaultValue = "false")
-    protected boolean trackTransformationSteps;
+    @Parameter(
+        alias = "trackTransformationSteps",
+        property = "eo.trackTransformationSteps",
+        required = true,
+        defaultValue = "false"
+    )
+    protected boolean trackSteps;
 
     /**
      * If set to TRUE, the exception on exit will be printed in details
@@ -229,11 +233,15 @@ abstract class MjSafe extends AbstractMojo {
      * If set to TRUE, experimental lints are skipped during the linting.
      * @since 0.57.0
      * @checkstyle VisibilityModifierCheck (10 lines)
-     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle MemberNameCheck (9 lines)
      */
-    @Parameter(property = "eo.skipExperimentalLints", required = true, defaultValue = "false")
-    @SuppressWarnings("PMD.LongVariable")
-    protected boolean skipExperimentalLints;
+    @Parameter(
+        alias = "skipExperimentalLints",
+        property = "eo.skipExperimentalLints",
+        required = true,
+        defaultValue = "false"
+    )
+    protected boolean skipExperimental;
 
     /**
      * Pull again even if the .eo file is already present?
@@ -257,11 +265,15 @@ abstract class MjSafe extends AbstractMojo {
      * Fail resolution process on conflicting dependencies.
      * @since 0.1.0
      * @checkstyle MemberNameCheck (10 lines)
-     * @checkstyle VisibilityModifierCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (9 lines)
      */
-    @Parameter(property = "eo.ignoreVersionConflicts", required = true, defaultValue = "false")
-    @SuppressWarnings("PMD.LongVariable")
-    protected boolean ignoreVersionConflicts;
+    @Parameter(
+        alias = "ignoreVersionConflicts",
+        property = "eo.ignoreVersionConflicts",
+        required = true,
+        defaultValue = "false"
+    )
+    protected boolean ignoreConflicts;
 
     /**
      * Shall we discover JAR artifacts for .EO sources?

@@ -48,7 +48,7 @@ public final class MjLint extends MjSafe {
             this.plugin.getVersion(),
             this.skipSourceLints,
             this.skipProgramLints,
-            this.skipExperimentalLints,
+            this.skipExperimental,
             this.failOnWarning,
             this.lintAsPackage,
             this.skipLinting

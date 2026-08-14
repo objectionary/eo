@@ -65,7 +65,7 @@ public final class MjResolve extends MjSafe {
             this.resolveJna,
             this.ignoreRuntime,
             this.runtime(),
-            this.ignoreVersionConflicts
+            this.ignoreConflicts
         ).exec();
     }
 }

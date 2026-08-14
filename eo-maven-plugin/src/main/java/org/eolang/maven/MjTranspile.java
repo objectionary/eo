@@ -155,7 +155,7 @@ public final class MjTranspile extends MjSafe {
                 this.plugin.getVersion(),
                 this.transpileTests,
                 this.xslMeasures.toPath(),
-                new Tracking(this.trackTransformationSteps, this.trackLocations),
+                new Tracking(this.trackSteps, this.trackLocations),
                 this.coverageTracking,
                 this.base(),
                 this.roots()

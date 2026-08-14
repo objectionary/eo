@@ -74,7 +74,7 @@ final class MjTranspileTest {
                     "",
                     "[] > x"
                 )
-                ).with("trackTransformationSteps", true)
+                ).with("trackSteps", true)
                 .execute(MjParse.class)
                 .execute(MjTranspile.class),
             "We should be able to transpile a simple EO program without exceptions when tracking transformation steps"
@@ -86,7 +86,7 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "the first tracked step of a program holding two objects did not leave its XMIR in the pre-transpile directory",
             new FakeMaven(temp).withProgram(MjTranspileTest.pair())
-                .with("trackTransformationSteps", true)
+                .with("trackSteps", true)
                 .execute(MjParse.class)
                 .execute(MjTranspile.class)
                 .result(),
@@ -102,7 +102,7 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "the second object of a tracked program did not reach the generated Java",
             new FakeMaven(temp).withProgram(MjTranspileTest.pair())
-                .with("trackTransformationSteps", true)
+                .with("trackSteps", true)
                 .execute(MjParse.class)
                 .execute(MjTranspile.class)
                 .result(),
