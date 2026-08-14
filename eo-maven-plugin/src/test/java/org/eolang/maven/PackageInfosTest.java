@@ -101,6 +101,20 @@ final class PackageInfosTest {
         );
     }
 
+    @Test
+    void keepsEoInsideAnObjectsOwnName(@Mktmp final Path tmp) throws IOException {
+        Files.createDirectories(tmp.resolve("org").resolve("eolang").resolve("EO_xEOy"));
+        new PackageInfos(tmp, Collections.emptyList()).create();
+        MatcherAssert.assertThat(
+            "only the leading EO_ transpiler prefix should be stripped, not the EO inside xEOy",
+            Files.readString(
+                tmp.resolve("org").resolve("eolang").resolve("EO_xEOy")
+                    .resolve("package-info.java")
+            ),
+            Matchers.containsString("@org.eolang.XmirPackage(\"xEOy\")")
+        );
+    }
+
     @ParameterizedTest
     @CsvSource({
         "invalid-dir, invalid_dir",
