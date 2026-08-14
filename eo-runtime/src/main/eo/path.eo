@@ -107,7 +107,7 @@
                 is-absolute.if separator --
               string.joined >> body!
                 separator
-                tuple.reduced
+                reduced.
                   string.split driveless separator
                   *
                   if. > [accum segment] >>

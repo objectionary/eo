@@ -9,9 +9,7 @@
 # hash code is derived from those bytes rather than from the key itself,
 # so that keys with side effects are never evaluated more than once.
 
-+alias tuple.filtered
 +alias bytes.hash
-+alias tuple.mapped
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -40,8 +38,7 @@
                   tup.head.value > value
             bytes.hash >> hash!
               tup.head.key.as-bytes >> kbts!
-            filtered > others
-              prev
+            prev.filtered > others
               not. > [ent] >>
                 and.
                   ent.hash.eq hash
@@ -80,18 +77,15 @@
             * hash
     exists. > [key] > has
       found key
-    mapped > keys
-      entries
+    entries.mapped > keys
       entry.key > [entry]
     entries.length > size
-    mapped > values
-      entries
+    entries.mapped > values
       entry.value > [entry]
     [key value] > with
       map.ctor > @
         with.
-          filtered
-            entries
+          entries.filtered
             not. > [entry] >>
               and.
                 hash.eq entry.hash
@@ -105,8 +99,7 @@
         key.as-bytes >> kbts!
     [key] > without
       map.ctor > @
-        filtered
-          entries
+        entries.filtered
           not. > [entry] >>
             and.
               hash.eq entry.hash

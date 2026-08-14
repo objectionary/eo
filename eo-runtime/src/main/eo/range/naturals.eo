@@ -2,7 +2,6 @@
 # It is a method of `range`, so it reads `start` and `end` from the range it
 # is taken from.
 
-+alias tuple.is-empty
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package range
@@ -33,11 +32,11 @@
       -2
       -1
 
-  is-empty ++> can-build-an-empty-range-from-ten-to-ten
+  is-empty. ++> can-build-an-empty-range-from-ten-to-ten
     naturals.
       range 10 10
 
-  is-empty ++> can-build-an-empty-range-when-descending
+  is-empty. ++> can-build-an-empty-range-when-descending
     naturals.
       range 10 1
 

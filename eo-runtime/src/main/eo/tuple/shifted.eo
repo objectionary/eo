@@ -7,10 +7,9 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list shift] > shifted
+[shift] > shifted
   shift.is-integer.if > @
-    slice
-      list
+    list.slice
       if.
         shift.lt 0
         0
@@ -18,6 +17,7 @@
       list.length
     T
       "Given shift must be an integer"
+  ^ > list
 
   eq. ++> can-ignore-a-negative-shift
     shifted.
