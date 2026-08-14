@@ -33,6 +33,15 @@ final class PhOnceTest {
     }
 
     @Test
+    void letsANormalizedBottomPropagateBare() {
+        MatcherAssert.assertThat(
+            "normalized() must not re-wrap a bottom, so callers can still detect it with instanceof, but it did",
+            new PhOnce(PhTerminator::new).normalized(),
+            Matchers.instanceOf(PhTerminator.class)
+        );
+    }
+
+    @Test
     void doesNotEvaluateWrappedObjectForTerm() {
         MatcherAssert.assertThat(
             "PhOnce with explicit term must render it without evaluating the wrapped object, but it didnt",
