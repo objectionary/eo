@@ -1,5 +1,8 @@
 # Creates a directory, making missing parent directories as needed. It is a
-# method of `directory`, and `d` is the directory it is taken off.
+# method of `directory`, and `d` is the directory it is taken off. When the
+# path already exists, it must already be a directory: if a regular file (or
+# any non-directory entry) occupies the path, the computation terminates
+# instead of returning that entry decorated as a directory.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -11,7 +14,11 @@
 
 [] > made
   d.exists.if > @
-    d
+    d.is-directory.if
+      d
+      T
+        "Cant make the directory '%s': a file already occupies that path".printf
+          * d.path
     seq *
       made.
         directory
@@ -40,3 +47,5 @@
     made. > dir
       as-dir.
         mktemp.tmpfile.deleted.as-path.resolved "foo-new"
+
+  mktemp.tmpfile.as-path.as-dir.made --> rejects-a-path-occupied-by-a-regular-file
