@@ -109,17 +109,22 @@ final class Resolving implements Step {
     @Override
     public void exec() {
         final Collection<Dep> deps = this.deps();
+        final int unpacked;
         if (deps.isEmpty()) {
-            Logger.info(this, "No new dependencies unpacked");
+            unpacked = 0;
         } else {
-            new Threaded<>(
+            unpacked = new Threaded<>(
                 deps,
                 dep -> this.resolved(dep, this.target)
             ).total();
+        }
+        if (unpacked == 0) {
+            Logger.info(this, "No new dependencies unpacked");
+        } else {
             Logger.info(
                 this,
                 "New %d dependenc(ies) unpacked to %[file]s: %s",
-                deps.size(), this.target,
+                unpacked, this.target,
                 new Joined(", ", new Mapped<>(Dep::toString, deps))
             );
         }

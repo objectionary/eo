@@ -9,7 +9,14 @@ import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import org.apache.log4j.Appender;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggingEvent;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.hamcrest.MatcherAssert;
@@ -25,6 +32,49 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 @ExtendWith(MktmpResolver.class)
 final class MjResolveTest {
+
+    @Test
+    void reportsNoNewDependenciesWhenAllAreCached(@Mktmp final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "+package foo.x",
+            "+rt jvm org.eolang:eo-runtime:0.7.0",
+            "[] > main /bytes"
+        );
+        maven.execute(new FakeMaven.Resolve());
+        final List<String> messages = new ArrayList<>(0);
+        final Appender appender = new AppenderSkeleton() {
+            @Override
+            protected void append(final LoggingEvent event) {
+                messages.add(String.valueOf(event.getRenderedMessage()));
+            }
+
+            @Override
+            public void close() {
+                // Nothing to release.
+            }
+
+            @Override
+            public boolean requiresLayout() {
+                return false;
+            }
+        };
+        final Logger logger = Logger.getLogger(Resolving.class);
+        final Level level = logger.getLevel();
+        logger.setLevel(Level.INFO);
+        logger.addAppender(appender);
+        try {
+            maven.execute(new FakeMaven.Resolve());
+        } finally {
+            logger.removeAppender(appender);
+            logger.setLevel(level);
+        }
+        MatcherAssert.assertThat(
+            "A cached dependency must not be reported as newly unpacked",
+            messages,
+            Matchers.hasItem("No new dependencies unpacked")
+        );
+    }
 
     @Test
     void resolvesWithSingleDependency(@Mktmp final Path temp) throws IOException {
