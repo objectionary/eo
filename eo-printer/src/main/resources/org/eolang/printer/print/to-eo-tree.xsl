@@ -131,6 +131,12 @@
   prints as the same one glyph. A φ that is applied to something, that
   is const, or that reaches any other name keeps the ordinary formation
   layout, since "I" cannot spell it.
+
+  The two tests that look over-tight are load-bearing. Exactly two
+  children: a third one is an argument applied to the formation, and the
+  glyph leaves nowhere to put it, so such an object must keep the long
+  layout. And the φ base rooted at "ξ": an unrooted name denotes some
+  other object entirely, not the void beside it.
   -->
   <xsl:function name="eo:identity" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
