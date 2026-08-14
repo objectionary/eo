@@ -25,41 +25,45 @@
       "Can't write a fixed-point decimal with %f fraction places".printf
         * places
     if.
-      n.lt 0
-      if. > [a] >> signed
-        eq.
-          floor.
-            plus.
-              a.times
-                pow10 places
-              0.5
-          0
-        positive a
-        "-".as-bytes.concat
-          positive a
-      | (n.times -1)
-      [a] >> positive
-        if. > @
-          digits.eq scale
-          if. > [unit rest] >> written
-            places.eq 0
-            as-decimal unit
-            concat.
+      n.as-bytes.eq 80-00-00-00-00-00-00-00
+      "-".as-bytes.concat
+        [a] >> positive
+          if. > @
+            digits.eq scale
+            if. > [unit rest] >> written
+              places.eq 0
+              as-decimal unit
               concat.
-                as-decimal unit
-                ".".as-bytes
-              rec-pad rest places --
-          | (whole.plus 1) 0
-          written whole digits
-        floor. > digits
-          plus.
-            times.
-              a.minus whole
-              scale
-            0.5
-        pow10 places > scale
-        a.floor > whole
-      | n
+                concat.
+                  as-decimal unit
+                  ".".as-bytes
+                rec-pad rest places --
+            | (whole.plus 1) 0
+            written whole digits
+          floor. > digits
+            plus.
+              times.
+                a.minus whole
+                scale
+              0.5
+          pow10 places > scale
+          a.floor > whole
+        | 0
+      if.
+        n.lt 0
+        if. > [a] >> signed
+          eq.
+            floor.
+              plus.
+                a.times
+                  pow10 places
+                0.5
+            0
+          positive a
+          "-".as-bytes.concat
+            positive a
+        | (n.times -1)
+        positive n
   if. > [p] >> pow10
     p.eq 0
     1
@@ -131,6 +135,11 @@
     string
       1.25.as-fixed 6
 
+  eq. ++> can-preserve-the-sign-of-an-exact-negative-zero
+    "-0.00"
+    string
+      0.neg.as-fixed 2
+
   eq. ++> can-recover-from-infinite-places
     "recovered"
     1.25.as-fixed
@@ -163,6 +172,11 @@
     "-100000000000000000.000000"
     string
       -100000000000000000.as-fixed 6
+
+  eq. ++> can-tell-positive-zero-from-negative-zero
+    "0.00"
+    string
+      0.as-fixed 2
 
   eq. ++> can-write-a-negative-value
     "-2.500000"
