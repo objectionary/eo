@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2160.590189483
+  seconds: 1579.730183978
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-14 21:33:50.259696832 Z
+  when: 2026-08-14 22:18:17.609934098 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -108601,7 +108601,7 @@
   - 1
   tombstone: 2026-08-07 09:13:42.834981277 Z
   what: quality-of-service
-  when: &4402 2026-04-01 08:14:51.000000000 Z
+  when: &4404 2026-04-01 08:14:51.000000000 Z
 - _id: 1080539
   _job: 23842872424
   _time: 2026-04-01 09:57:00.155146650 Z
@@ -114007,7 +114007,7 @@
   _version: 0.19.9/0.60.1/0.17.15
   composite: 0.6
   ffact: 942584
-  since: &4403 2026-04-08 08:19:24.000000000 Z
+  since: &4405 2026-04-08 08:19:24.000000000 Z
   some_backlog_size:
   - 7
   - 7
@@ -285263,7 +285263,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 835
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13298021855
   issues_were_scanned: 0
@@ -285273,7 +285273,7 @@
   min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 556
+  types_were_scanned: 794
   what: iterate
   where: github
 - _id: 1107889
@@ -292210,7 +292210,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1020
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13009557602
   issues_were_scanned: 0
@@ -292220,7 +292220,7 @@
   min_issue_was_found: 481
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 635
+  types_were_scanned: 879
   what: iterate
   where: github
 - _id: 1108618
@@ -295975,7 +295975,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1020
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13310633051
   issues_were_scanned: 982
@@ -295985,7 +295985,7 @@
   min_issue_was_found: 654
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 1103
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108989
@@ -298927,7 +298927,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1124
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13287434319
   issues_were_scanned: 0
@@ -298937,7 +298937,7 @@
   min_issue_was_found: 435
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 0
+  types_were_scanned: 1103
   what: iterate
   where: github
 - _id: 1109065
@@ -298961,17 +298961,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 4945
+  assignees_were_scanned: 5299
   earliest_issue_was_found: 1
   events_were_scanned: 17686648550
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6179
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 5409
+  types_were_scanned: 5567
   what: iterate
   where: github
 - _id: 1109067
@@ -483780,6 +483780,478 @@
   - 0
   - 0
   - 2
+  some_pull_files_size:
+  - 1
+  - 1
+  - 2
+  - 1
+  - 3
+  - 3
+  - 6
+  - 3
+  - 25
+  - 3
+  - 1
+  - 12
+  - 5
+  - 48
+  - 4
+  - 8
+  - 6
+  - 1
+  - 7
+  - 3
+  - 3
+  - 3
+  - 4
+  - 2
+  - 1
+  - 1
+  - 1
+  - 19
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 3
+  - 1
+  - 9
+  - 1
+  - 1
+  - 1
+  - 2
+  - 1
+  - 1
+  - 1
+  - 1
+  - 7
+  - 1
+  - 1
+  - 12
+  - 6
+  - 2
+  - 1
+  - 9
+  - 1
+  - 265
+  - 7
+  - 5
+  - 1
+  - 1
+  - 1
+  - 3
+  - 3
+  - 10
+  - 1
+  - 2
+  - 12
+  - 1
+  - 5
+  - 14
+  - 1
+  - 11
+  - 5
+  - 1
+  - 2
+  - 1
+  - 2
+  - 2
+  - 5
+  - 2
+  - 4
+  - 2
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 5
+  - 3
+  - 1
+  - 2
+  - 1
+  - 2
+  - 1
+  - 79
+  - 14
+  - 3
+  - 3
+  - 32
+  - 3
+  - 11
+  - 1
+  - 3
+  - 2
+  - 1
+  - 31
+  - 2
+  - 2
+  - 1
+  - 2
+  - 2
+  - 2
+  - 1
+  - 1
+  - 2
+  - 1
+  - 3
+  - 4
+  - 3
+  - 2
+  - 22
+  - 2
+  - 1
+  - 3
+  - 3
+  - 1
+  - 2
+  - 2
+  - 1
+  - 3
+  - 1
+  - 1
+  - 2
+  - 2
+  - 2
+  - 3
+  - 2
+  - 1
+  - 3
+  - 3
+  - 2
+  - 3
+  - 17
+  - 1
+  - 21
+  - 2
+  - 4
+  - 3
+  - 2
+  - 1
+  - 2
+  - 2
+  - 2
+  - 3
+  - 2
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 3
+  - 3
+  - 4
+  - 1
+  - 6
+  - 1
+  - 13
+  - 1
+  - 1
+  - 1
+  - 4
+  - 3
+  - 3
+  - 4
+  - 1
+  - 9
+  - 6
+  - 2
+  - 5
+  - 1
+  - 5
+  - 4
+  - 1
+  - 3
+  - 3
+  - 1
+  - 4
+  - 4
+  - 1
+  - 1
+  - 3
+  - 1
+  - 6
+  - 9
+  - 1
+  - 1
+  - 1
+  - 2
+  - 2
+  - 1
+  - 1
+  - 5
+  - 4
+  - 2
+  - 2
+  - 3
+  - 2
+  - 3
+  - 4
+  - 5
+  - 23
+  - 4
+  - 3
+  - 2
+  - 2
+  - 2
+  - 6
+  - 2
+  - 1
+  - 26
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 2
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  some_pull_hoc_size:
+  - 3
+  - 2
+  - 13
+  - 101
+  - 198
+  - 131
+  - 347
+  - 277
+  - 849
+  - 83
+  - 101
+  - 1293
+  - 238
+  - 1923
+  - 150
+  - 730
+  - 275
+  - 2
+  - 247
+  - 129
+  - 986
+  - 163
+  - 224
+  - 21
+  - 2
+  - 4
+  - 2
+  - 151
+  - 2
+  - 2
+  - 18
+  - 2
+  - 4
+  - 33
+  - 2
+  - 183
+  - 2
+  - 2
+  - 2
+  - 291
+  - 7
+  - 2
+  - 75
+  - 2
+  - 112
+  - 2
+  - 2
+  - 197
+  - 14
+  - 60
+  - 2
+  - 146
+  - 2
+  - 722
+  - 101
+  - 92
+  - 2
+  - 2
+  - 14
+  - 6
+  - 225
+  - 210
+  - 20
+  - 42
+  - 450
+  - 69
+  - 128
+  - 917
+  - 26
+  - 183
+  - 108
+  - 125
+  - 4
+  - 2
+  - 34
+  - 85
+  - 176
+  - 4
+  - 76
+  - 12
+  - 55
+  - 29
+  - 29
+  - 45
+  - 23
+  - 16
+  - 70
+  - 25
+  - 141
+  - 125
+  - 53
+  - 23
+  - 64
+  - 95
+  - 14
+  - 2225
+  - 613
+  - 100
+  - 67
+  - 206
+  - 82
+  - 199
+  - 34
+  - 87
+  - 46
+  - 83
+  - 1341
+  - 65
+  - 27
+  - 8
+  - 58
+  - 43
+  - 102
+  - 93
+  - 8
+  - 21
+  - 74
+  - 75
+  - 69
+  - 47
+  - 29
+  - 1049
+  - 4
+  - 7
+  - 44
+  - 78
+  - 14
+  - 65
+  - 46
+  - 45
+  - 81
+  - 2
+  - 24
+  - 61
+  - 53
+  - 23
+  - 53
+  - 37
+  - 67
+  - 6
+  - 51
+  - 100
+  - 53
+  - 277
+  - 96
+  - 518
+  - 33
+  - 184
+  - 43
+  - 22
+  - 2
+  - 26
+  - 32
+  - 36
+  - 40
+  - 25
+  - 4
+  - 58
+  - 14
+  - 4
+  - 5
+  - 24
+  - 3
+  - 147
+  - 166
+  - 124
+  - 91
+  - 163
+  - 71
+  - 594
+  - 14
+  - 63
+  - 113
+  - 105
+  - 210
+  - 20
+  - 10
+  - 2
+  - 339
+  - 201
+  - 36
+  - 275
+  - 76
+  - 73
+  - 75
+  - 2
+  - 57
+  - 76
+  - 10
+  - 96
+  - 216
+  - 2
+  - 2
+  - 27
+  - 3
+  - 62
+  - 67
+  - 71
+  - 79
+  - 38
+  - 8
+  - 14
+  - 54
+  - 2
+  - 166
+  - 131
+  - 90
+  - 84
+  - 98
+  - 44
+  - 68
+  - 28
+  - 496
+  - 1480
+  - 35
+  - 195
+  - 39
+  - 17
+  - 71
+  - 122
+  - 55
+  - 14
+  - 107
+  - 2
+  - 2
+  - 4
+  - 4
+  - 22
+  - 78
+  - 2
+  - 2
+  - 2
+  - 2
+  - 2
+  - 2
   some_release_commits_size:
   - 38
   - 10
@@ -490762,6 +491234,7 @@
   href: https://github.com/objectionary/eo/issues/6811/#issuecomment-5297788485
   is_human: 1
   issue: 6811
+  receipt: receipt-#86442
   repository: 73056727
   review_comments: 0
   seconds: 4414
@@ -490782,6 +491255,7 @@
   href: https://github.com/objectionary/eo/issues/6818/#issuecomment-5297788682
   is_human: 1
   issue: 6818
+  receipt: receipt-#86443
   repository: 73056727
   review_comments: 0
   seconds: 2367
@@ -490802,6 +491276,7 @@
   href: https://github.com/objectionary/eo/issues/6819/#issuecomment-5297788888
   is_human: 1
   issue: 6819
+  receipt: receipt-#86444
   repository: 73056727
   review_comments: 0
   seconds: 2448
@@ -491198,7 +491673,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-14 18:36:37.000000000 Z
+  when: &4402 2026-08-14 18:36:37.000000000 Z
   where: github
   who: 526301
 - _id: 1119548
@@ -491223,7 +491698,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-14 18:37:01.000000000 Z
+  when: &4403 2026-08-14 18:37:01.000000000 Z
   where: github
   who: 526301
 - _id: 1119549
@@ -491442,8 +491917,10 @@
     them coming. Your running score is [+4596](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 66
+  href: https://github.com/objectionary/eo/issues/6836/#issuecomment-5298394838
   is_human: 1
   issue: 6836
+  receipt: receipt-#86445
   repository: 73056727
   review_comments: 0
   seconds: 7225
@@ -491465,8 +491942,10 @@
     them coming. Your running score is [+2352](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 37
+  href: https://github.com/objectionary/eo/issues/6839/#issuecomment-5298395027
   is_human: 1
   issue: 6839
+  receipt: receipt-#86446
   repository: 73056727
   review_comments: 0
   seconds: 4383
@@ -491488,8 +491967,10 @@
     them coming. Your running score is [+2364](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 25
+  href: https://github.com/objectionary/eo/issues/6840/#issuecomment-5298395228
   is_human: 1
   issue: 6840
+  receipt: receipt-#86447
   repository: 73056727
   review_comments: 0
   seconds: 3283
@@ -491510,8 +491991,10 @@
     them coming. Your running score is [+4612](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 61
+  href: https://github.com/objectionary/eo/issues/6841/#issuecomment-5298395402
   is_human: 1
   issue: 6841
+  receipt: receipt-#86448
   repository: 73056727
   review_comments: 0
   seconds: 2985
@@ -491532,8 +492015,10 @@
     them coming. Your running score is [+4628](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 43
+  href: https://github.com/objectionary/eo/issues/6842/#issuecomment-5298395569
   is_human: 1
   issue: 6842
+  receipt: receipt-#86449
   repository: 73056727
   review_comments: 0
   seconds: 2408
@@ -491557,6 +492042,7 @@
     coming. Your running score is [+2568](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 432
+  href: https://github.com/objectionary/eo/issues/6843/#issuecomment-5298395797
   is_human: 1
   issue: 6843
   repository: 73056727
@@ -491580,8 +492066,10 @@
     them coming. Your running score is [+2376](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 13
+  href: https://github.com/objectionary/eo/issues/6844/#issuecomment-5298395985
   is_human: 1
   issue: 6844
+  receipt: receipt-#86450
   repository: 73056727
   review_comments: 0
   seconds: 1948
@@ -491678,9 +492166,102 @@
   where: github
   who: 125282851
 - _id: 1119575
-  _job: 31840207396
-  _time: 2026-08-14 21:33:50.064329914 Z
+  _job: 86974
+  _time: 2026-08-14 21:34:57.628228515 Z
   _version: 0.19.16/0.61.1/0.17.21
-  since: *4402
-  what: quality-of-service
+  award: 12
+  details: It's time to reward @maxonfjvipon for the bug resolved in objectionary/eo#6786
+    in 0 hours, the reward amount is 12.
+  greeting: 'Thanks for closing this issue! You''ve earned +12 points for this: +8
+    as a basis; +4 for resolving it in less than 12 hours. Your running score is [+787](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/eo/issues/6786/#issuecomment-5298396147
+  is_human: 1
+  issue: 6786
+  repository: 73056727
+  what: resolved-bug-was-rewarded
+  when: 2026-08-14 21:34:57.637369188 Z
+  where: github
+  who: 37025995
+  why: Resolved bug in objectionary/eo#6786
+- _id: 1119576
+  _job: 86974
+  _time: 2026-08-14 21:34:58.531147278 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  details: It's time to reward @maxonfjvipon for the bug resolved in objectionary/eo#6783
+    in 0 hours, the reward amount is 12.
+  greeting: 'Thanks for closing this issue! You''ve earned +12 points for this: +8
+    as a basis; +4 for resolving it in less than 12 hours. Your running score is [+799](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/eo/issues/6783/#issuecomment-5298396330
+  is_human: 1
+  issue: 6783
+  repository: 73056727
+  what: resolved-bug-was-rewarded
+  when: 2026-08-14 21:34:58.538677770 Z
+  where: github
+  who: 37025995
+  why: Resolved bug in objectionary/eo#6783
+- _id: 1119577
+  _job: 86974
+  _time: 2026-08-14 21:34:58.982324008 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 12
+  details: It's time to reward @yegor256 for the bug resolved in objectionary/eo#6834
+    in 0 hours, the reward amount is 12.
+  greeting: 'Thanks for closing this issue! You''ve earned +12 points for this: +8
+    as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2580](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/eo/issues/6834/#issuecomment-5298396517
+  is_human: 1
+  issue: 6834
+  repository: 73056727
+  what: resolved-bug-was-rewarded
+  when: 2026-08-14 21:34:58.987244229 Z
+  where: github
+  who: 526301
+  why: Resolved bug in objectionary/eo#6834
+- _id: 1119578
+  _job: 86974
+  _time: 2026-08-14 21:35:20.247664762 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 4
+  details: The pull request objectionary/eo#6835 with 78 HoC created by @morphqdd
+    was merged by @yegor256 after 2h11m of being in review and 4 comments.
+  hoc: 78
+  is_human: 1
+  issue: 6835
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 7870
+  what: code-was-contributed
+  when: *4402
+  where: github
+  who: 125282851
+- _id: 1119579
+  _job: 86974
+  _time: 2026-08-14 21:35:20.565303380 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 4
+  details: The pull request objectionary/eo#6837 with 15 HoC created by @morphqdd
+    was merged by @yegor256 after 1h51m of being in review and 4 comments.
+  hoc: 15
+  is_human: 1
+  issue: 6837
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 6682
+  what: code-was-contributed
   when: *4403
+  where: github
+  who: 125282851
+- _id: 1119580
+  _job: 31844144736
+  _time: 2026-08-14 22:16:23.509279846 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  since: *4404
+  what: quality-of-service
+  when: *4405
