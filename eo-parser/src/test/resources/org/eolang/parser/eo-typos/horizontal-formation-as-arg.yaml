@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 line: 2
 message: |-
-  [2:15] error: 'expected value'
+  [2:15] error: 'horizontal formation not allowed as argument'
     malloc.for 4 [m]>>
                  ^
 input: |
