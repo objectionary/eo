@@ -75,6 +75,40 @@ final class ProbingTest {
     }
 
     @Test
+    void avoidsDuplicateTojoForAnOrgEolangPrefixedReference(
+        @TempDir final Path temp
+    ) throws IOException {
+        final Path xmir = temp.resolve("test.xmir");
+        Files.write(
+            xmir,
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[] > test",
+                    "  Q.org.eolang.number.gte > @"
+                )
+            ).parsed().toString().getBytes(StandardCharsets.UTF_8)
+        );
+        final TjsForeign tojos = new TjsForeign();
+        tojos.add("test").withXmir(xmir);
+        new Probing(
+            tojos,
+            new OyIndexed(
+                new Objectionary.Fake(),
+                new ObjectsIndex(
+                    () -> new SetOf<>("number", "number.gte", "number.sqrt", "number.abs")
+                )
+            ),
+            true
+        ).exec();
+        MatcherAssert.assertThat(
+            "Probe should not also track the sibling under its short, unqualified name",
+            tojos.contains("number.gte"),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void skipsWhenOffline(@TempDir final Path temp) throws IOException {
         final Path xmir = temp.resolve("test.xmir");
         Files.write(
