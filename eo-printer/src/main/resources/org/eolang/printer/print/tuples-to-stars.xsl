@@ -37,8 +37,17 @@
   An empty tuple is stored as the bare "Φ.tuple.empty" base. Render it as
   the "*" star shorthand with no elements, mirroring how non-empty tuples
   are lowered to stars above.
+
+  The same base is what "resolve-aliases.xsl" puts on an ordinary
+  reference whenever the program declares "+alias tuple.empty", so a node
+  carrying it is not necessarily a "*" in the source — it may just be a
+  name the author wrote that happens to resolve to this base. Lowering it
+  to a star anyway would print the wrong shorthand and leave the alias
+  meta dangling with nothing left referring to it. Skip a node whose base
+  is the target of such an alias, leaving it for "restore-aliases.xsl" to
+  print back under its declared short name instead.
   -->
-  <xsl:template match="o[@base = 'Φ.tuple.empty']">
+  <xsl:template match="o[@base = 'Φ.tuple.empty' and not(/object/metas/meta[head = 'alias' and part[last()] = 'Φ.tuple.empty'])]">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:attribute name="star"/>
