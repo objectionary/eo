@@ -19,4 +19,4 @@ xmir:
 needs:
   - "/needs/type[@id='Φ.outer.inner.φ.ρ']/attr[@name='held']"
 links:
-  - "/links/type[@id='Φ.outer.inner.φ.ρ' and @copy='Φ.outer']"
+  - "/links/type[@id='Φ.outer.inner.φ.ρ']/ref[@loc='Φ.outer']"

@@ -6,9 +6,6 @@ package org.eolang.inference;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.tojos.MnMemory;
-import com.yegor256.tojos.TjDeferred;
-import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -65,21 +62,19 @@ public final class Resolved implements Clue {
         final XML given = new XMLDocument(tables.resolve("provides.xml"));
         final Collection<XML> dispatches = world.dispatches();
         final Map<String, List<String>> args = new Given(world.applications()).arguments();
-        final Map<String, String> pairs = new Settled(
-            new Dispatched(given, dispatches, args, given.xpath("//attr[@void='true']/@type"))
-        ).from(
-            new Settled(
-                new Dispatched(given, dispatches, args, Collections.emptyList())
-            ).from(new Pairs(new XMLDocument(links)).all())
+        Files.write(
+            links,
+            new Types(
+                new Settled(
+                    new Dispatched(
+                        given, dispatches, args, given.xpath("//attr[@void='true']/@type")
+                    )
+                ).from(
+                    new Settled(
+                        new Dispatched(given, dispatches, args, Collections.emptyList())
+                    ).from(new Pairs(new XMLDocument(links)).all())
+                )
+            ).asXml().toString().getBytes(StandardCharsets.UTF_8)
         );
-        try (Tojos rows = new TjDeferred(new MnMemory())) {
-            for (final Map.Entry<String, String> pair : pairs.entrySet()) {
-                rows.add(pair.getKey()).set("copy", pair.getValue());
-            }
-            Files.write(
-                links,
-                new Grouped(rows, "links").asXml().toString().getBytes(StandardCharsets.UTF_8)
-            );
-        }
     }
 }

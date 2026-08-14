@@ -36,12 +36,17 @@ final class Pairs {
 
     /**
      * Every pair of the table.
+     *
+     * <p>A row whose type is not an object of the program is passed over: it
+     * says something true, and nothing that a chain of copies can be walked
+     * through.</p>
+     *
      * @return The pairs, each name against the one it is a copy of
      */
     Map<String, String> all() {
         final Map<String, String> found = new LinkedHashMap<>(0);
-        for (final XML link : this.table.nodes("/links/type")) {
-            found.put(link.xpath("@id").get(0), link.xpath("@copy").get(0));
+        for (final XML link : this.table.nodes("/links/type[ref]")) {
+            found.put(link.xpath("@id").get(0), link.xpath("ref/@loc").get(0));
         }
         return found;
     }

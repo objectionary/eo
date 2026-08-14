@@ -5,9 +5,6 @@
 package org.eolang.inference;
 
 import com.jcabi.xml.XML;
-import com.yegor256.tojos.MnMemory;
-import com.yegor256.tojos.TjDeferred;
-import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -15,6 +12,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Which types are copies of which.
@@ -44,6 +43,11 @@ import java.util.HashSet;
  * where the checker later gets smarter, when a copy starts receiving types
  * of its own, and then nothing else has to change.</p>
  *
+ * <p>Which is why a row carries what an object is as an element of its own
+ * rather than as a cell, and what {@link Types} makes of it. Being a copy is
+ * one of the things an object turns out to be, and the others — a datum, a
+ * termination, a choice between several objects — arrive beside it.</p>
+ *
  * <p>A name that resolves to nothing gets no row and no complaint: a
  * missing row makes a later check stay undecided, while a wrong row would
  * make it decide wrongly. On the runtime this happens to 730 references out
@@ -64,19 +68,18 @@ final class Links implements Clue {
             made.add(formation.xpath("@loc").get(0));
         }
         final Scope scope = new Scope(new HashSet<>(world.locators()), new HashSet<>(made));
-        try (Tojos rows = new TjDeferred(new MnMemory())) {
-            for (final XML reference : world.references()) {
-                final String from = reference.xpath("@loc").get(0);
-                final String target = scope.target(from, reference.xpath("@base").get(0));
-                if (!target.isEmpty()) {
-                    rows.add(from).set("copy", target);
-                }
+        final Map<String, String> found = new LinkedHashMap<>(0);
+        for (final XML reference : world.references()) {
+            final String from = reference.xpath("@loc").get(0);
+            final String target = scope.target(from, reference.xpath("@base").get(0));
+            if (!target.isEmpty()) {
+                found.put(from, target);
             }
-            Files.createDirectories(tables);
-            Files.write(
-                tables.resolve("links.xml"),
-                new Grouped(rows, "links").asXml().toString().getBytes(StandardCharsets.UTF_8)
-            );
         }
+        Files.createDirectories(tables);
+        Files.write(
+            tables.resolve("links.xml"),
+            new Types(found).asXml().toString().getBytes(StandardCharsets.UTF_8)
+        );
     }
 }
