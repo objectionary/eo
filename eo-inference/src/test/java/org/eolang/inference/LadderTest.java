@@ -52,4 +52,13 @@ final class LadderTest {
             Matchers.closeTo(0.0d, 0.001d)
         );
     }
+
+    @Test
+    void describesAnEmptyProgramAsZero() {
+        MatcherAssert.assertThat(
+            "a program with no rungs at all has a zero described share, but it threw",
+            new Ladder(new LinkedHashMap<>(0)).described(),
+            Matchers.closeTo(0.0d, 0.001d)
+        );
+    }
 }
