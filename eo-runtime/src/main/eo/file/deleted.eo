@@ -22,13 +22,31 @@
   called. > removed
     os.is-windows.if
       win32 *1
-        f.is-directory.if "_rmdir" "_unlink"
+        f.is-symlink.if
+          "_unlink"
+          f.is-directory.if "_rmdir" "_unlink"
         f.path
       posix *1
-        f.is-directory.if "rmdir" "unlink"
+        f.is-symlink.if
+          "unlink"
+          f.is-directory.if "rmdir" "unlink"
         f.path
 
   mktemp.tmpfile.deleted.deleted.exists.not ++> can-delete-a-file-twice
+
+  ++> can-delete-a-symlink-to-a-directory
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            d
+            link
+        link.as-file.deleted
+        link.as-file.exists.not
+        d.as-file.exists
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "ссылка" > link
 
   ++> can-return-itself-after-deleting
     temp.deleted.path.eq temp.path > @
