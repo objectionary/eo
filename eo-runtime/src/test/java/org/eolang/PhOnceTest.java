@@ -24,6 +24,15 @@ final class PhOnceTest {
     }
 
     @Test
+    void keepsOnceWrapperAfterNormalized() {
+        MatcherAssert.assertThat(
+            "normalized() must remain wrapped in PhOnce, so the once-caching guarantee survives, but it didn't",
+            new PhOnce(() -> new PhDefault()).normalized(),
+            Matchers.instanceOf(PhOnce.class)
+        );
+    }
+
+    @Test
     void doesNotEvaluateWrappedObjectForTerm() {
         MatcherAssert.assertThat(
             "PhOnce with explicit term must render it without evaluating the wrapped object, but it didnt",
