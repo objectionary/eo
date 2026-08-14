@@ -287,6 +287,41 @@
             </goals>
             <configuration>
               <!--
+              These five lints are unsatisfiable for the standard library, so
+              they are turned off here once instead of being suppressed by a
+              '+unlint' meta in every second file:
+
+              'mandatory-package' demands a '+package' meta, while the root
+              objects of the library live in the root package on purpose and
+              the transpiler hardcodes 'org.eolang' for them, so a '+package'
+              would nest them one level too deep.
+
+              'redundant-object' sees one file at a time and counts only the
+              references written relative to the current object, so every
+              public attribute of a library object, from 'win32.rdonly' to
+              'tuple.empty', looks unused to it (objectionary/lints#1276).
+
+              'package-member-without-void' expects a package member to reach
+              its receiver through a first void, while the members listed in
+              'mergedPackages' below reach it through '^'
+              (objectionary/lints#1273).
+
+              'decorated-formation' forbids a formation as a decoratee, which
+              is exactly what 'map' hides its constructor behind and what the
+              'bool' test on taking a parent through an attribute exercises.
+
+              'unit-test-missing' asks for a test in 'stdin', whose every
+              attribute reads the standard input, so a test would block on the
+              'read' syscall until the deadline aborts it.
+              -->
+              <skipSourceLints>
+                <lint>decorated-formation</lint>
+                <lint>mandatory-package</lint>
+                <lint>package-member-without-void</lint>
+                <lint>redundant-object</lint>
+                <lint>unit-test-missing</lint>
+              </skipSourceLints>
+              <!--
               Objects with an optional fallback argument, like 'string.as-fixed'
               or 'win32', are applied with and without it on purpose, and the
               lint reads every such pair as an inconsistency.
