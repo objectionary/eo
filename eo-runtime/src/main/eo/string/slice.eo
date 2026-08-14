@@ -3,6 +3,9 @@
 # `len` must be a non-negative amount of characters to take. Both of them walk
 # the UTF-8 sequence character by character, so a multi-byte character counts
 # as one. An index outside the bounds of the `text` terminates the computation.
+# The `text` must itself be well-formed UTF-8, validated the same way
+# `string.length` validates it; a malformed sequence anywhere in `text`
+# terminates the computation before any slicing happens.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -24,6 +27,7 @@
         "Length to slice must be >= 0, but was %d".printf
           * nlen
       seq *
+        text.length
         recidx >> bstart!
           0
           0
@@ -189,9 +193,19 @@
       2
     "ри"
 
+  slice. --> stops-on-a-broken-continuation-byte
+    string E1-80-41
+    0
+    1
+
   slice. --> stops-on-a-start-below-zero
     "some string"
     -1
+    1
+
+  slice. --> stops-on-a-surrogate-encoding
+    string ED-A0-80
+    0
     1
 
   slice. --> stops-on-an-end-below-the-start
@@ -203,3 +217,8 @@
     "some string"
     7
     5
+
+  slice. --> stops-on-an-overlong-two-byte-encoding
+    string C0-80
+    0
+    1
