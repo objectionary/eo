@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -102,7 +103,7 @@ public final class MjPrint extends MjSafe {
     @Override
     void exec() throws IOException {
         final int total = new Threaded<>(
-            new Walk(this.printSourcesDir.toPath()),
+            new Walk(this.printSourcesDir.toPath()).includes(Set.of("**.xmir")),
             this::print
         ).total();
         if (total == 0) {
