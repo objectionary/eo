@@ -21,19 +21,26 @@
         n.lt 0
         "-infinity".as-bytes
         "infinity".as-bytes
-    concat.
+    if.
+      mantissa.eq "10.000000".as-bytes
       concat.
-        as-fixed
-          n.div
-            10.power
-              number exponent
-          6
-        "e".as-bytes
-      as-decimal
-        number exponent
+        "1.000000".as-bytes.concat "e".as-bytes
+        as-decimal
+          plus.
+            number exponent
+            1
+      concat.
+        mantissa.concat "e".as-bytes
+        as-decimal
+          number exponent
   rec-exponent > exponent!
     n.abs
     0
+  as-fixed > mantissa
+    n.div
+      10.power
+        number exponent
+    6
   if. > [m count] >> rec-exponent
     m.lt 10
     count
@@ -41,6 +48,14 @@
       m.div 10
       as-number.
         count.plus 1
+
+  eq. ++> can-carry-a-rounded-mantissa-into-the-next-power-of-ten
+    "1.000000e1"
+    string 9.9999996.as-scientific
+
+  eq. ++> can-carry-a-rounded-mantissa-past-the-long-range
+    "1.000000e20"
+    string 9.9999996e19.as-scientific
 
   eq. ++> can-name-a-magnitude-past-the-long-range
     "1.000000e19"
