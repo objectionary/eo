@@ -13,8 +13,7 @@
     0.eq others.length
     text
     string
-      tuple.reduced
-        others
+      others.reduced
         text.as-bytes
         accum.concat str.as-bytes > [accum str]
 

@@ -419,12 +419,9 @@ R-3.8.3. **Vertical form** — `name.` with no horizontal args:
 
 R-3.8.4. The horizontal and vertical forms are **mutually exclusive** — no mixing on the same dispatch.
 
-R-3.8.5. **Compact tuple suffix** `*N` may follow the dot only in the vertical form (§3.9). For reversed dispatch with `*N`, `N ≥ 1` is required (the receiver occupies the first direct slot).
-
 Outer kinds produced:
-- Vertical form, no compact tuple → **`bare-reversed`**.
+- Vertical form → **`bare-reversed`**.
 - Horizontal form (with hargs) → **`reversed-with-hargs`**.
-- Vertical form with compact tuple → **`compact-tuple`** (with sub-flavor *reversed*).
 
 ```
 if. > @                               ← vertical bare-reversed, name @
@@ -436,11 +433,6 @@ if. cond then else                    ← horizontal form, receiver=cond, args=t
 
 if. false 1:a 2:b > second            ← horizontal form, receiver=false (no binding per R-6.6.3),
                                       ← method args 1:a and 2:b (both bound)
-
-joined. *1 > sixth                    ← compact-tuple-reversed, N=1
-  text ""                             ← receiver (occupies the 1 direct slot)
-  x                                   ← tuple element
-  y                                   ← tuple element
 ```
 
 
@@ -458,17 +450,15 @@ name. > @                             ← bare reversed waiting for receiver
 
 R-3.9.1. Syntactic form: a *head expression* followed by `*` and an optional integer `N` (default `0`). The head expression on a compact-tuple line is one of:
   - a `head` (bare identifier, `*`, or literal — though `*` as head is unusual on a compact-tuple line; see §9.4.2);
-  - an `hmethod` with 0 horizontal args (e.g., `foo.bar *`);
-  - a `bare-reversed` (e.g., `name. *N`, with the additional constraint of R-3.9.4).
+  - an `hmethod` with 0 horizontal args (e.g., `foo.bar *`).
 
-  These are the same forms the grammar's `compactTuple : (hmethod | applicable | reversed) SPACE STAR INT?` admits. Heads carrying horizontal args (`happlication`, `reversed-with-hargs`) cannot also carry `*N` — the compact-tuple marker comes after the head and before any args.
+  These are the same forms the grammar's `compactTuple : (hmethod | applicable) SPACE STAR INT?` admits. Heads carrying horizontal args (`happlication`, `reversed-with-hargs`) cannot also carry `*N` — the compact-tuple marker comes after the head and before any args. A reversed-dispatch head (`bare-reversed`) is not a valid compact-tuple head; `name. *N` is not legal syntax.
 R-3.9.2. The head's vertical children are partitioned:
   - The first `N` children become direct positional arguments of the head.
   - The remaining children are collected into a single `Φ.tuple @star` argument appended at the end.
 R-3.9.3. If the number of children is less than `N`, the line is reported as an error.
-R-3.9.4. **Reversed-dispatch heads need `N ≥ 1`.** If the head is a reversed dispatch, the receiver must occupy at least one direct slot. Stated once in R-3.8.5; reproduced here only as a cross-reference. Specifically: `name. *` (no `N`, defaults to 0) and `name. *0` are rejected at the classifier — the receiver would have no place to live.
 
-R-3.9.5. **For non-reversed heads, `N = 0` is legal.** A 3-line block
+R-3.9.4. **`N = 0` is legal.** A 3-line block
 
 ```
 seq * > @
@@ -476,7 +466,7 @@ seq * > @
   false
 ```
 
-is a perfectly valid compact tuple: the head is `seq` (a `head`-kind expression), `N` defaults to 0, and the two vertical children become elements of the synthesised `Φ.tuple`. This is the canonical "tuple of N elements as one arg" form. The N=0 restriction in R-3.9.4 applies *only* when the head is `bare-reversed` — for `head` and `hmethod`-with-0-hargs heads, N=0 is the default and supported shape.
+is a perfectly valid compact tuple: the head is `seq` (a `head`-kind expression), `N` defaults to 0, and the two vertical children become elements of the synthesised `Φ.tuple`. This is the canonical "tuple of N elements as one arg" form.
 
 Outer kind: **`compact-tuple`** (open for vertical children; closed for `.method` continuation until the block ends).
 

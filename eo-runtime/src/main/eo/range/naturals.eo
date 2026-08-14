@@ -1,16 +1,17 @@
 # Range of natural numbers from `start` to `end` (soft border) with step = 1.
-# The `r` is an instance of `range`, which provides `start` and `end`.
+# It is a method of `range`, so it reads `start` and `end` from the range it
+# is taken from.
 
-+alias tuple.is-empty
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package range
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint package-member-without-void
 +unlint redundant-object
 
-[r] > naturals
+[] > naturals
   range > @
     [] >>
       build r.start > @
@@ -19,6 +20,7 @@
         build > next
           1.plus @
     r.end
+  ^ > r
 
   eq. ++> can-build-a-range-of-negatives
     naturals.
@@ -30,11 +32,11 @@
       -2
       -1
 
-  is-empty ++> can-build-an-empty-range-from-ten-to-ten
+  is-empty. ++> can-build-an-empty-range-from-ten-to-ten
     naturals.
       range 10 10
 
-  is-empty ++> can-build-an-empty-range-when-descending
+  is-empty. ++> can-build-an-empty-range-when-descending
     naturals.
       range 10 1
 

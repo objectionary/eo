@@ -48,7 +48,7 @@ public final class MjCompile extends MjSafe {
                         this.plugin.getVersion(),
                         this.skipSourceLints,
                         this.skipProgramLints,
-                        this.skipExperimentalLints,
+                        this.skipExperimental,
                         this.failOnWarning,
                         this.lintAsPackage,
                         this.skipLinting
@@ -64,7 +64,7 @@ public final class MjCompile extends MjSafe {
                         this.resolveJna,
                         this.ignoreRuntime,
                         this.runtime(),
-                        this.ignoreVersionConflicts
+                        this.ignoreConflicts
                     )
                 ),
                 new Timed(

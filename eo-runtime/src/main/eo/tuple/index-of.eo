@@ -8,7 +8,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list wanted] > index-of
+[wanted] > index-of
   number > @
     [tup] >> recidx
       if. > @
@@ -21,7 +21,7 @@
             tup.length.minus 1
             -1
           recidx tup.tail >> next!
-    | list
+    | ^
 
   eq. ++> can-find-no-index-of-an-absent-item
     -1

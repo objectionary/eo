@@ -13,4 +13,4 @@ eo:
     [] > outer
       [] > held
 links:
-  - "/links/type[@id='Φ.app.φ' and @copy='Φ.outer.held']"
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.outer.held']"

@@ -1,4 +1,5 @@
-# Recursively deletes the directory `d` and all of its contents.
+# Recursively deletes a directory and all of its contents. It is a method of
+# `directory`, and `d` is the directory it is taken off.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -6,8 +7,9 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint package-member-without-void
 
-[d] > deleted
+[] > deleted
   d.exists.if > @
     seq *
       if. > [tup] >> r
@@ -19,6 +21,7 @@
       | (d.walk "**").at.^
       d
     d
+  ^ > d
 
   ++> can-delete-a-directory-with-a-file-and-a-directory
     and. > @

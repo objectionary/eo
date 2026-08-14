@@ -7,7 +7,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list index] > front
+[index] > front
   index.is-integer.if > @
     if.
       idx.eq 0
@@ -15,10 +15,7 @@
       if.
         0.gt
           index >> idx!
-        back
-          list
-          neg.
-            number idx
+        list.back (number idx).neg
         if.
           gte.
             number idx
@@ -31,6 +28,7 @@
           | list
     T
       "Given index must be an integer"
+  ^ > list
 
   eq. ++> can-take-a-front-slice
     front.
@@ -97,7 +95,7 @@
       2
       3
 
-  front. --> stops-on-a-fractional-index
+  front. --> stops-on-a-fractional-index-when-taking-the-front
     *
       "a"
       "b"

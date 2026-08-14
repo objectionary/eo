@@ -26,9 +26,6 @@ import org.slf4j.impl.StaticLoggerBinder;
 /**
  * Abstract Mojo for all others.
  * @since 0.1
- * @todo #6428:60min Take the caching decision out of this class. It names 30 types
- *  now, the maximum, so the next one moved to {@link GlobalCache} brings the fan-out
- *  suppression back. A cache of its own for {@link #caching(String)} would drop two.
  */
 @SuppressWarnings("PMD.TooManyFields")
 abstract class MjSafe extends AbstractMojo {
@@ -170,12 +167,16 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * Track optimization steps into intermediate XMIR files?
      * @since 0.24.0
-     * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (5 lines)
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (9 lines)
      */
-    @SuppressWarnings("PMD.LongVariable")
-    @Parameter(property = "eo.trackTransformationSteps", required = true, defaultValue = "false")
-    protected boolean trackTransformationSteps;
+    @Parameter(
+        alias = "trackTransformationSteps",
+        property = "eo.trackTransformationSteps",
+        required = true,
+        defaultValue = "false"
+    )
+    protected boolean trackSteps;
 
     /**
      * If set to TRUE, the exception on exit will be printed in details
@@ -232,11 +233,15 @@ abstract class MjSafe extends AbstractMojo {
      * If set to TRUE, experimental lints are skipped during the linting.
      * @since 0.57.0
      * @checkstyle VisibilityModifierCheck (10 lines)
-     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle MemberNameCheck (9 lines)
      */
-    @Parameter(property = "eo.skipExperimentalLints", required = true, defaultValue = "false")
-    @SuppressWarnings("PMD.LongVariable")
-    protected boolean skipExperimentalLints;
+    @Parameter(
+        alias = "skipExperimentalLints",
+        property = "eo.skipExperimentalLints",
+        required = true,
+        defaultValue = "false"
+    )
+    protected boolean skipExperimental;
 
     /**
      * Pull again even if the .eo file is already present?
@@ -260,11 +265,15 @@ abstract class MjSafe extends AbstractMojo {
      * Fail resolution process on conflicting dependencies.
      * @since 0.1.0
      * @checkstyle MemberNameCheck (10 lines)
-     * @checkstyle VisibilityModifierCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (9 lines)
      */
-    @Parameter(property = "eo.ignoreVersionConflicts", required = true, defaultValue = "false")
-    @SuppressWarnings("PMD.LongVariable")
-    protected boolean ignoreVersionConflicts;
+    @Parameter(
+        alias = "ignoreVersionConflicts",
+        property = "eo.ignoreVersionConflicts",
+        required = true,
+        defaultValue = "false"
+    )
+    protected boolean ignoreConflicts;
 
     /**
      * Shall we discover JAR artifacts for .EO sources?
@@ -566,15 +575,7 @@ abstract class MjSafe extends AbstractMojo {
      * @return The cache of that step
      */
     GlobalCache caching(final String sub) {
-        final GlobalCache store;
-        if (this.cacheEnabled) {
-            store = new GcShared(
-                this.cache.toPath().resolve(sub), this.plugin.getVersion()
-            );
-        } else {
-            store = new GlobalCache.GcFresh();
-        }
-        return store;
+        return new Caching(this.cache, this.cacheEnabled, this.plugin.getVersion()).forStep(sub);
     }
 
     /**

@@ -172,7 +172,7 @@ final class FakeMaven {
             this.params.putIfAbsent("skipZeroVersions", true);
             this.params.putIfAbsent("cacheEnabled", true);
             this.params.putIfAbsent("discoverSelf", false);
-            this.params.putIfAbsent("ignoreVersionConflicts", false);
+            this.params.putIfAbsent("ignoreConflicts", false);
             this.params.putIfAbsent("central", new FakeMaven.DummyCentral());
             this.params.putIfAbsent("resolveInCentral", false);
             this.params.putIfAbsent(

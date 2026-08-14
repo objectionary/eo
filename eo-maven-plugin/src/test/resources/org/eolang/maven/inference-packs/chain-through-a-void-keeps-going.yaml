@@ -9,5 +9,5 @@ eo:
     [x] > inc
       x.next.foo > @
 links:
-  - "/links/type[@id='Φ.inc.φ.ρ' and @copy='Φ.inc.x.next']"
-  - "/links/type[@id='Φ.inc.φ' and @copy='Φ.inc.x.next.foo']"
+  - "/links/type[@id='Φ.inc.φ.ρ']/ref[@loc='Φ.inc.x.next']"
+  - "/links/type[@id='Φ.inc.φ']/ref[@loc='Φ.inc.x.next.foo']"
