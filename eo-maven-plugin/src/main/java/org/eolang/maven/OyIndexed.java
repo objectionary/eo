@@ -85,7 +85,7 @@ final class OyIndexed implements Objectionary {
                             name,
                             ex
                         );
-                        return this.delegate.isDirectory(name);
+                        return !this.delegate.contains(name) && this.delegate.isDirectory(name);
                     }
                 )
             )
