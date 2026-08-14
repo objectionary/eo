@@ -102,7 +102,9 @@
           concat.
             concat.
               drive.concat
-                is-absolute.if separator --
+                is-absolute.if
+                  unc.if (separator.concat separator) separator
+                  --
               string.joined >> body!
                 separator
                 reduced.
@@ -165,6 +167,10 @@
               0
               uri.length.minus separator.length
           uri
+    and. > unc
+      driveless.size.gt 1
+      driveless.starts-with
+        separator.concat separator
   [paths] > joined
     normalized. > @
       os.is-windows.if
@@ -279,6 +285,21 @@
     normalized.
       path.win32 "..\\..\\foo\\bar\\..\\x\\y\\\\"
     "..\\..\\foo\\x\\y\\"
+
+  eq. ++> can-normalize-a-root-relative-win32-path-keeping-a-single-separator
+    normalized.
+      path.win32 "\\server\\share"
+    "\\server\\share"
+
+  eq. ++> can-normalize-a-unc-win32-path-keeping-its-double-separator-prefix
+    normalized.
+      path.win32 "\\\\server\\share"
+    "\\\\server\\share"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-a-child-directory
+    normalized.
+      path.win32 "\\\\server\\share\\folder"
+    "\\\\server\\share\\folder"
 
   eq. ++> can-normalize-a-win32-path-collapsing-to-the-current-directory
     normalized.
