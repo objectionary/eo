@@ -8,12 +8,11 @@
 +spdx SPDX-License-Identifier: MIT
 
 [index item] > withi
-  concat > @
+  concat. > @
     with.
-      front list bounded
+      list.front bounded
       item
-    back
-      list
+    list.back
       list.length.minus bounded
   if. > bounded
     0.gt index

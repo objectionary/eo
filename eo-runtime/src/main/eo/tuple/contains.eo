@@ -10,7 +10,7 @@
 [element] > contains
   not. > @
     -1.eq
-      index-of ^ element
+      ^.index-of element
 
   contains. ++> can-contain-a-number
     *

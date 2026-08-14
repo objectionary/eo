@@ -8,8 +8,7 @@
 +spdx SPDX-License-Identifier: MIT
 
 [element] > without
-  reduced > @
-    ^
+  ^.reduced > @
     *
     if. > [accum item] >>
       element.eq item

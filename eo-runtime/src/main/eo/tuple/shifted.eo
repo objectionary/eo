@@ -9,8 +9,7 @@
 
 [shift] > shifted
   shift.is-integer.if > @
-    slice
-      list
+    list.slice
       if.
         shift.lt 0
         0

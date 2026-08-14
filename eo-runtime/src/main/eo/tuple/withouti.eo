@@ -9,8 +9,7 @@
 
 [i] > withouti
   i.is-integer.if > @
-    reducedi
-      ^
+    ^.reducedi
       *
       if. > [accum item index] >>
         i.eq index

@@ -10,12 +10,10 @@
 +spdx SPDX-License-Identifier: MIT
 
 [cant-min] > minimum
-  if. > @
-    is-empty sequence
+  sequence.is-empty.if > @
     cant-min
       "cannot get the minimum number from an empty sequence"
-    reduced
-      sequence
+    sequence.reduced
       pinf
       if. > [min item]
         min.gt item.as-number

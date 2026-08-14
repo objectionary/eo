@@ -35,8 +35,7 @@
             end.plus list.length
             0
       *
-      reducedi
-        list
+      list.reducedi
         *
         if. > [accum item index] >>
           and.

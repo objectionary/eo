@@ -15,10 +15,7 @@
       if.
         0.gt
           index >> idx!
-        back
-          list
-          neg.
-            number idx
+        list.back (number idx).neg
         if.
           gte.
             number idx
