@@ -116,7 +116,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="Φ(\.(ρ|φ|α[0-9]+|[a-z]\S*))*"/>
+      <xs:pattern value="Φ(\.(ρ|φ|λ|α[0-9]+|[a-z+-][^\s.]*))*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:complexType name="o" mixed="true">

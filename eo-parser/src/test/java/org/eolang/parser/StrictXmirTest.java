@@ -22,6 +22,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -114,6 +116,31 @@ final class StrictXmirTest {
             )::inner,
             "validation should pass as normal"
         );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "'Φ.chunk.read.λ', true",
+        "'Φ.set.+can-append-a-new-item.φ.ρ.ρ.α0', true",
+        "'Φ.foo.bar', true",
+        "'Φ', true",
+        "'Φ.a.WRONG', false",
+        "'Φ.a.λEXTRA', false"
+    })
+    void validatesLocatorAttribute(final String loc, final boolean valid) {
+        final XML xml = new StrictXmir(StrictXmirTest.xmirWithLocator(loc));
+        if (valid) {
+            Assertions.assertDoesNotThrow(
+                xml::inner,
+                String.format("locator '%s' should have been accepted, but wasn't", loc)
+            );
+        } else {
+            Assertions.assertThrows(
+                IllegalArgumentException.class,
+                xml::inner,
+                String.format("locator '%s' should have been rejected, but wasn't", loc)
+            );
+        }
     }
 
     @Test
@@ -234,6 +261,30 @@ final class StrictXmirTest {
                         schema
                     )
                     .add("o")
+                    .up()
+            ).xmlQuietly()
+        );
+    }
+
+    /**
+     * Make an XMIR, validated against the local (current-version) schema,
+     * with a single top-level object carrying the given {@code loc}.
+     * @param loc The locator to put into the {@code loc} attribute
+     * @return XMIR
+     */
+    private static XML xmirWithLocator(final String loc) {
+        return new XMLDocument(
+            new Xembler(
+                new Directives()
+                    .append(new DrProgram())
+                    .xpath("/object")
+                    .attr("author", "noname").attr(
+                        "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
+                        String.format(
+                            "https://www.eolang.org/xsd/XMIR-%s.xsd", StrictXmirTest.version()
+                        )
+                    )
+                    .add("o").attr("loc", loc)
                     .up()
             ).xmlQuietly()
         );
