@@ -28,33 +28,34 @@
     dividend.is-finite.not.if
       nan
       divisor.is-finite.not.if
-        divisor.is-nan.if
-          nan
-          x.plus 0
+        divisor.is-nan.if nan x
         if.
-          gte.
-            number x.as-bytes >> dividend
-            0
-          [] >> abs-mod
-            shrink > @
-              grow
-                abs divisor >> absy
-              abs dividend >> absx
-            if. > [chunk] > grow
-              chunk.gte absx
-              chunk
-              grow
-                chunk.plus chunk
-            if. > [chunk rest] > shrink
-              chunk.lt absy
-              rest
-              shrink
-                chunk.div 2
-                if.
-                  rest.gte chunk
-                  rest.minus chunk
-                  rest
-          abs-mod.neg
+          x.as-bytes.eq 80-00-00-00-00-00-00-00
+          x
+          if.
+            gte.
+              number x.as-bytes >> dividend
+              0
+            [] >> abs-mod
+              shrink > @
+                grow
+                  abs divisor >> absy
+                abs dividend >> absx
+              if. > [chunk] > grow
+                chunk.gte absx
+                chunk
+                grow
+                  chunk.plus chunk
+              if. > [chunk rest] > shrink
+                chunk.lt absy
+                rest
+                shrink
+                  chunk.div 2
+                  if.
+                    rest.gte chunk
+                    rest.minus chunk
+                    rest
+            abs-mod.neg
 
   eq. ++> can-recover-from-a-modulo-by-zero
     "recovered"
@@ -71,15 +72,20 @@
   is-nan. ++> can-return-nan-when-the-divisor-is-nan
     5.mod nan
 
-  eq. ++> can-return-positive-zero-for-negative-zero-dividend-and-negative-infinite-divisor
+  eq. ++> can-return-negative-zero-for-negative-zero-dividend-and-a-finite-divisor
+    as-bytes.
+      0.neg.mod 3
+    80-00-00-00-00-00-00-00
+
+  eq. ++> can-return-negative-zero-for-negative-zero-dividend-and-negative-infinite-divisor
     as-bytes.
       0.neg.mod ninf
-    0.as-bytes
+    80-00-00-00-00-00-00-00
 
-  eq. ++> can-return-positive-zero-for-negative-zero-dividend-and-positive-infinite-divisor
+  eq. ++> can-return-negative-zero-for-negative-zero-dividend-and-positive-infinite-divisor
     as-bytes.
       0.neg.mod pinf
-    0.as-bytes
+    80-00-00-00-00-00-00-00
 
   eq. ++> can-return-positive-zero-when-dividend-is-zero
     as-bytes.
