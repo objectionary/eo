@@ -22,11 +22,11 @@
         max
   ^ > sequence
 
-  is-nan. ++> can-be-nan-when-the-sequence-holds-a-lone-nan
+  is-nan. ++> can-be-nan-when-taking-the-maximum-of-a-lone-nan
     maximum.
       * nan
 
-  is-nan. ++> can-be-nan-when-the-sequence-holds-a-nan-alongside-numbers
+  is-nan. ++> can-be-nan-when-taking-the-maximum-of-a-nan-alongside-numbers
     maximum.
       *
         5
