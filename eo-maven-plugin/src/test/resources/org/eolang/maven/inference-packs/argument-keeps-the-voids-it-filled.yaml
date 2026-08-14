@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# What fills a void is written down as the argument itself, not as what the
+# argument turns out to be, since an argument is sometimes an application of its
+# own: the `x` of the `inc` holds a `dec` whose `y` is filled, and both halves
+# survive because the argument has a row of its own.
+eo:
+  app.eo: |
+    [] > app
+      inc (dec 1) > got
+  inc.eo: |
+    [x] > inc
+      x > @
+  dec.eo: |
+    [y] > dec
+      y > @
+links:
+  - "//type[@id='Φ.app.got']//bind[@void='Φ.inc.x']"
+  - "//bind[@void='Φ.inc.x']/ref[@loc='Φ.app.got.α0']"
+  - "//bind[@void='Φ.dec.y']/ref[@loc='Φ.app.got.α0.α0']"

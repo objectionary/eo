@@ -4,6 +4,7 @@
  */
 package org.eolang.inference;
 
+import com.jcabi.xml.XML;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -49,6 +50,20 @@ final class Provided {
      * The locator of every void, from {@link Hollows}.
      */
     private final Collection<String> hollows;
+
+    /**
+     * Ctor.
+     * @param provides The provides table, as {@link Provides} wrote it
+     * @param aliases The name every type goes by, from {@link Same}
+     * @param voids The locator of every void, from {@link Hollows}
+     */
+    Provided(
+        final XML provides,
+        final Map<String, String> aliases,
+        final Collection<String> voids
+    ) {
+        this(new Ungrouped(provides, aliases).rows(), aliases, voids);
+    }
 
     /**
      * Ctor.

@@ -80,9 +80,7 @@ final class Dispatched {
      */
     Map<String, String> answers(final Map<String, String> pairs) {
         final Map<String, String> names = new Ends(pairs).names();
-        final Provided owned = new Provided(
-            new Ungrouped(this.given, names).rows(), names, this.hollows
-        );
+        final Provided owned = new Provided(this.given, names, this.hollows);
         final Filled filled = new Filled(this.args, pairs, owned);
         final Map<String, String> found = new HashMap<>(0);
         for (final XML dispatch : this.all) {
