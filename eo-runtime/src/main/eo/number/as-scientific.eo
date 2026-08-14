@@ -12,7 +12,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
 
 [n] > as-scientific
   n.is-finite.not.if > @
@@ -27,12 +26,13 @@
       concat.
         "1.000000".as-bytes.concat "e".as-bytes
         as-decimal
-          number bumped
+          plus.
+            number exponent
+            1
       concat.
         mantissa.concat "e".as-bytes
         as-decimal
           number exponent
-  wrapped.plus 1 > bumped
   rec-exponent > exponent!
     n.abs
     0
@@ -48,7 +48,6 @@
       m.div 10
       as-number.
         count.plus 1
-  number exponent > wrapped
 
   eq. ++> can-carry-a-rounded-mantissa-into-the-next-power-of-ten
     "1.000000e1"
