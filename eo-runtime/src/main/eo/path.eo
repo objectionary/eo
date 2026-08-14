@@ -169,7 +169,7 @@
     "/" > separator
     [] > sys
       -- > [uri] > drive
-      uri > [uri] > sanitized
+      I > sanitized
       ^.separator > separator
   os.is-windows.if > separator
     win32.separator

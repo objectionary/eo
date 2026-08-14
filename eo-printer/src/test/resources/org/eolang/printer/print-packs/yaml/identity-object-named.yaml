@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
+# A named identity object (#6834) keeps its name and loses its void's
+# spelling, so `uri > [uri] > sanitized` prints as `I > sanitized`.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -11,12 +13,8 @@ penalties:
   SPACE: 7
 origin: |
   [] > app
-    and > result
-      [x] > bar
-        x > @
-      | 5 > baz
+    uri > [uri] > sanitized
+
 printed: |
   [] > app
-    and baz > result
-    I > bar
-    | 5 > baz
+    I > sanitized

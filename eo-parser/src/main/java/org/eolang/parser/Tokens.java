@@ -894,8 +894,7 @@ final class Tokens {
 
     /**
      * Read a value that no delimiter, digit, or root token introduces —
-     * one of the reserved glyphs {@code *}, {@code T}, {@code %}, or a
-     * NAME — rejecting a head that starts no value at all.
+     * a reserved glyph ({@code *}, {@code T}, {@code I}, {@code %}) or a NAME.
      * @param first The character at the cursor
      * @return Parsed value
      */
@@ -911,6 +910,8 @@ final class Tokens {
             value = this.reserved(Value.Kind.STAR, "*");
         } else if (first == 'T') {
             value = this.reserved(Value.Kind.TERM, "T");
+        } else if (first == 'I') {
+            value = this.reserved(Value.Kind.IDENTITY, "I");
         } else if (first == '%') {
             value = this.reserved(Value.Kind.SELF, "%");
         } else if (first >= 'a' && first <= 'z') {

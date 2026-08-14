@@ -96,13 +96,13 @@
           hash >> objhash!
             obj 42
         number objhash
-    x > [x] > obj
+    I > obj
 
   ++> can-hash-equal-abstract-objects-alike
     eq. > @
       hash value
       hash value
-    x > [x] > obj
+    I > obj
     obj 42 > value
 
   ++> can-hash-different-abstract-objects-apart
@@ -112,7 +112,7 @@
           obj 42
         hash
           obj "42"
-    x > [x] > obj
+    I > obj
 
   ++> can-hash-a-float-into-an-integer
     1.eq > @

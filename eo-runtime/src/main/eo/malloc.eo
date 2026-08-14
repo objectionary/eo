@@ -335,7 +335,7 @@
   eq. ++> can-write-the-initial-value
     malloc.for
       42
-      m > [m]
+      I
     42
 
   malloc.of --> stops-on-changing-the-size-to-a-fraction

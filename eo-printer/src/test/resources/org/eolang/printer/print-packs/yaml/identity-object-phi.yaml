@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
+# An identity object standing as the sole φ of a formation (#6834) folds
+# into the inline-phi form, just as a bare `T` decoratee does.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -11,12 +13,7 @@ penalties:
   SPACE: 7
 origin: |
   [] > app
-    and > result
-      [x] > bar
-        x > @
-      | 5 > baz
+    m > [m] > @
+
 printed: |
-  [] > app
-    and baz > result
-    I > bar
-    | 5 > baz
+  I > [] > app

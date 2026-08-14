@@ -50,7 +50,7 @@
     "y".padded-left
       -1
       "x"
-      message > [message]
+      I
 
   eq. ++> can-pad-a-number-with-leading-spaces
     "   42"

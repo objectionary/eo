@@ -4,7 +4,10 @@
 # yamllint disable rule:line-length
 # The "tests-malloc-for-writes-first-init-value" test attribute from
 # malloc.eo: its phi (the reversed "eq.") applies regular arguments, one of
-# which is an anonymous formation "m > [m]" nested inside "malloc.for". The
+# which is an anonymous formation nested inside "malloc.for". The argument
+# is spelled "m.as-bytes > [m]" rather than the bare "m > [m]" malloc.eo
+# writes, because the latter is an identity object and prints as the "I"
+# glyph (#6834) — a leaf, which no longer nests an anonymous object here. The
 # only-phi fold used to be withheld because the recursive "nameless" guard
 # treated the anonymous object's inner " > @" phi decoratee as a name. A phi
 # decoratee is exactly what an only-phi formation binds, so a nested anonymous
@@ -29,7 +32,7 @@ origin: |
       eq. > @
         malloc.for
           42
-          m > [m]
+          m.as-bytes > [m]
         42
 
 printed: |
@@ -40,5 +43,5 @@ printed: |
     eq. ++> tests-malloc-for-writes-first-init-value
       malloc.for
         42
-        m > [m]
+        m.as-bytes > [m]
       42

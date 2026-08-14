@@ -123,6 +123,19 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
+  <!--
+  Whether an object is an identity object (#6834) — an anonymous
+  formation that binds one void and decorates that very void, the shape
+  "x &gt; [x]" the "I" glyph spells. Nothing but the φ ever reads that
+  void, so its spelling carries no meaning and every spelling of it
+  prints as the same one glyph. A φ that is applied to something, that
+  is const, or that reaches any other name keeps the ordinary formation
+  layout, since "I" cannot spell it.
+  -->
+  <xsl:function name="eo:identity" as="xs:boolean">
+    <xsl:param name="o" as="element()"/>
+    <xsl:sequence select="eo:abstract($o) and not(eo:has-data($o)) and count($o/o) = 2 and eo:void($o/o[1]) and empty($o/o[1]/(@local, @type, @args)) and $o/o[2]/@name = $eo:phi and empty($o/o[2]/o) and empty($o/o[2]/@const) and $o/o[2]/@base = concat($eo:xi, '.', $o/o[1]/@name)"/>
+  </xsl:function>
   <!-- PROGRAM -->
   <xsl:template match="object">
     <object>
@@ -241,6 +254,30 @@
         <xsl:sort select="if (not($sortable) or eo:void(.) or @name = $eo:phi) then '' else string((@local, @name)[1])"/>
       </xsl:apply-templates>
     </line>
+  </xsl:template>
+  <!-- IDENTITY OBJECT -->
+  <!--
+  An identity object is a leaf on the line tree: its void and its φ are
+  both spelled by the "I" glyph itself, so neither becomes a body line
+  and the node lays out exactly like a bare "T" — inlined as an
+  argument wherever the penalty allows it.
+  -->
+  <xsl:template match="o[eo:identity(.)]" mode="tree" priority="2">
+    <xsl:variable name="suffix">
+      <xsl:apply-templates select="." mode="tail"/>
+    </xsl:variable>
+    <line abstract="no" data="no" reversed="no">
+      <xsl:attribute name="base">
+        <xsl:apply-templates select="." mode="head"/>
+      </xsl:attribute>
+      <xsl:attribute name="tail" select="eo:printable(string($suffix))"/>
+      <xsl:attribute name="test">
+        <xsl:value-of select="if (eo:test-attr(.)) then 'yes' else 'no'"/>
+      </xsl:attribute>
+    </line>
+  </xsl:template>
+  <xsl:template match="o[eo:identity(.)]" mode="head" priority="2">
+    <xsl:text>I</xsl:text>
   </xsl:template>
   <!-- VOID AS A VERTICAL BODY LINE -->
   <!--

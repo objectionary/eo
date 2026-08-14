@@ -80,7 +80,7 @@ final class LnApplication implements Line {
             );
         }
         Comments.seal(globals, emit, this.span);
-        final Kind kind = LnApplication.classify(chain, args);
+        final Kind kind = LnApplication.classify(head, chain, args);
         final Openness openness;
         if (kind == Kind.HAPPLICATION) {
             openness = Openness.HORIZONTAL_COMPLETED;
@@ -118,21 +118,42 @@ final class LnApplication implements Line {
     }
 
     /**
-     * Decide the outer kind based on chain and argument presence.
+     * Decide the outer kind based on head, chain and argument presence.
+     * @param head The line head
      * @param chain Method-dispatch chain (may be empty)
      * @param args Horizontal arguments (may be empty)
      * @return Outer kind
      */
-    private static Kind classify(final List<MethodChain> chain, final List<Value> args) {
+    private static Kind classify(
+        final Value head, final List<MethodChain> chain, final List<Value> args
+    ) {
         final Kind kind;
         if (args.isEmpty()) {
             if (chain.isEmpty()) {
-                kind = Kind.HEAD;
+                kind = LnApplication.bare(head);
             } else {
                 kind = Kind.HMETHOD;
             }
         } else {
             kind = Kind.HAPPLICATION;
+        }
+        return kind;
+    }
+
+    /**
+     * Decide the outer kind of a head that carries neither arguments nor
+     * a chain. An {@code I} head is an identity object, a formation a
+     * pipe may apply arguments to (R-3.16.4); every other head is a
+     * plain {@link Kind#HEAD}.
+     * @param head The line head
+     * @return Outer kind
+     */
+    private static Kind bare(final Value head) {
+        final Kind kind;
+        if (head.kind() == Value.Kind.IDENTITY) {
+            kind = Kind.IDENTITY_OBJECT;
+        } else {
+            kind = Kind.HEAD;
         }
         return kind;
     }

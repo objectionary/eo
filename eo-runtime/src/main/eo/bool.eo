@@ -193,7 +193,7 @@
                                                                                 blah38 (x.plus 1) > @
                                                                                 [x] > blah38
                                                                                   blah39 (x.plus 1) > @
-                                                                                  x > [x] > blah39
+                                                                                  I > blah39
 
   ++> can-take-a-parent-object
     eq. > @
@@ -211,5 +211,5 @@
 
   --> stops-on-applying-to-a-closed-object
     closed true > @
-    x > [x] > a
+    I > a
     a false > closed

@@ -30,6 +30,11 @@ final class Emissions {
     private static final int MAX_OCTAL_BYTE = 0xFF;
 
     /**
+     * The void the identity object {@code I} binds and decorates.
+     */
+    private static final String IDENTITY = "x";
+
+    /**
      * Kinds of head value that a {@code .method} chain may follow.
      */
     private static final Set<Value.Kind> CHAINABLE = Set.of(
@@ -264,11 +269,35 @@ final class Emissions {
             emit.self();
         } else if (value.kind() == Value.Kind.TERM) {
             emit.object(name, "⊥", line, value.pos());
+        } else if (value.kind() == Value.Kind.IDENTITY) {
+            Emissions.identity(emit, name, value, line);
         } else if (value.kind() == Value.Kind.GROUP) {
             Emissions.group(emit, name, value, line);
         } else {
             emit.object(name, value.raw(), line, value.pos());
         }
+    }
+
+    /**
+     * Open the {@code <o>} for the identity object {@code I} (§3.16) —
+     * an anonymous formation that binds one void and decorates it, the
+     * one-glyph spelling of {@code x > [x]}. The void is always named
+     * {@link Emissions#IDENTITY}, since the glyph carries no name of
+     * its own and the body it decorates is that very void. The element
+     * stays open, so horizontal arguments land on the identity exactly
+     * as they land on a parenthesised {@code (x > [x])}.
+     * @param emit Emitter
+     * @param name Name attribute (or {@code null})
+     * @param value The identity value
+     * @param line Source line
+     */
+    private static void identity(
+        final Emit emit, final String name, final Value value, final int line
+    ) {
+        emit.object(name, null, line, value.pos());
+        emit.voidParam(Emissions.IDENTITY, line, value.pos());
+        emit.object("φ", Emissions.IDENTITY, line, value.pos());
+        emit.close();
     }
 
     /**

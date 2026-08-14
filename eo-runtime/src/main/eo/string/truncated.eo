@@ -38,7 +38,7 @@
     "Can't truncate text to -3.000000 characters"
     "Jeff".truncated
       -3
-      message > [message]
+      I
 
   eq. ++> can-recover-from-a-negative-limit
     "recovered"

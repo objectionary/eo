@@ -38,7 +38,7 @@
     "Can't repeat text -1.000000 times"
     "x".repeated
       -1
-      message > [message]
+      I
 
   eq. ++> can-recover-from-a-negative-count
     "recovered"

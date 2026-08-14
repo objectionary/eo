@@ -49,7 +49,7 @@
     "y".padded-right
       -1
       "x"
-      message > [message]
+      I
 
   eq. ++> can-pad-a-text-with-trailing-spaces
     "x         "
