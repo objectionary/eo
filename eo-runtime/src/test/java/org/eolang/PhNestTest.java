@@ -70,7 +70,7 @@ final class PhNestTest {
     void handsOutExtensionWithoutBindingPackageAsRho() {
         MatcherAssert.assertThat(
             "Explicit dispatch must leave ρ unbound so the receiver convention stays α0-only, but ρ was set",
-            Phi.Φ.take("number").take("power").hasRho(),
+            Phi.Φ.take("string").take("printf").hasRho(),
             Matchers.is(false)
         );
     }
