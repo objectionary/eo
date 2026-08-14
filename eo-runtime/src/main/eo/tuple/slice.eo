@@ -8,7 +8,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list start end] > slice
+[start end] > slice
   if. > @
     start.is-integer.and end.is-integer
     if.
@@ -46,6 +46,7 @@
           accum
     T
       "Given slice start and end must both be integers"
+  ^ > list
 
   eq. ++> can-slice-a-list
     slice.

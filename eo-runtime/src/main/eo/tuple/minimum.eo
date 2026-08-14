@@ -9,7 +9,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[sequence cant-min] > minimum
+[cant-min] > minimum
   if. > @
     is-empty sequence
     cant-min
@@ -21,6 +21,7 @@
         min.gt item.as-number
         item
         min
+  ^ > sequence
 
   eq. ++> can-recover-from-an-empty-list-when-taking-the-minimum
     "recovered"

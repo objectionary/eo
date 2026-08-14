@@ -96,7 +96,7 @@
       10
 
   ++> can-build-an-empty-range-from-wrong-items
-    tuple.is-empty rng > @
+    rng.is-empty > @
     range > rng
       []
         y 10 > @

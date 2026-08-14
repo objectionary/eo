@@ -10,7 +10,6 @@
 # Each conversion hoists its lower letter bound into a `mincode` constant, so
 # the bound is computed once rather than for every byte walked.
 
-+alias tuple.reduced
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
@@ -22,8 +21,7 @@
   s > @
   [] > lower
     string > @
-      reduced
-        s.as-bytes.array
+      s.as-bytes.array.reduced
         --
         [accum byte] >>
           accum.concat > @
@@ -45,8 +43,7 @@
     as-ascii "A" >> mincode!
   [] > upper
     string > @
-      reduced
-        s.as-bytes.array
+      s.as-bytes.array.reduced
         --
         [accum byte] >>
           accum.concat > @

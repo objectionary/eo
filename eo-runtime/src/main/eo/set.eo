@@ -19,8 +19,7 @@
       mp.without item
   | > @
     map
-      tuple.mapped
-        lst
+      lst.mapped
         map.entry item true > [item]
 
   has. ++> can-append-a-new-item

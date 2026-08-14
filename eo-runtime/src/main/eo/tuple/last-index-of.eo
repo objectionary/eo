@@ -8,7 +8,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list wanted] > last-index-of
+[wanted] > last-index-of
   if. > [t] >> rec
     t.length.eq 0
     -1
@@ -16,7 +16,7 @@
       t.head.eq wanted
       t.length.minus 1
       rec t.tail
-  | list > @
+  | ^ > @
 
   eq. ++> can-find-the-last-index-of-an-item
     1
