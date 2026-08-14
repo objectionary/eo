@@ -123,7 +123,14 @@ public class PhOnce implements Phi {
 
     @Override
     public Phi normalized() {
-        return this.object.get().normalized();
+        final Phi result = this.object.get().normalized();
+        final Phi normalized;
+        if (result instanceof PhTerminator) {
+            normalized = result;
+        } else {
+            normalized = new PhOnce(() -> result, this.term);
+        }
+        return normalized;
     }
 
     @Override
