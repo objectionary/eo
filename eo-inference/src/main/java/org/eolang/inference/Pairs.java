@@ -50,4 +50,17 @@ final class Pairs {
         }
         return found;
     }
+
+    /**
+     * How many voids every object of the table has filled.
+     * @return The counts, by the locator of the object, without the ones that
+     *  filled none
+     */
+    Map<String, Integer> binds() {
+        final Map<String, Integer> found = new LinkedHashMap<>(0);
+        for (final XML link : this.table.nodes("/links/type[ref/bind]")) {
+            found.put(link.xpath("@id").get(0), link.nodes("ref/bind").size());
+        }
+        return found;
+    }
 }
