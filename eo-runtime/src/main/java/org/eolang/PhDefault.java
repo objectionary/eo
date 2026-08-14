@@ -225,7 +225,10 @@ public class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
+        final boolean logging = PhDefault.LOGGER.isLoggable(Level.FINE);
+        if (logging) {
+            PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
+        }
         try {
             final Phi resolved;
             if (this.loaded().containsKey(name)) {
@@ -237,7 +240,7 @@ public class PhDefault implements Phi, Cloneable {
             } else {
                 resolved = this.absent(name);
             }
-            if (PhDefault.LOGGER.isLoggable(Level.FINE)) {
+            if (logging) {
                 PhDefault.LOGGER.log(
                     Level.FINE,
                     String.format(
@@ -251,11 +254,8 @@ public class PhDefault implements Phi, Cloneable {
             }
             return resolved;
         } finally {
-            final int current = PhDefault.NESTING.get();
-            if (current > 0) {
-                PhDefault.NESTING.set(current - 1);
-            } else {
-                PhDefault.NESTING.set(0);
+            if (logging) {
+                PhDefault.NESTING.set(Math.max(0, PhDefault.NESTING.get() - 1));
             }
         }
     }
