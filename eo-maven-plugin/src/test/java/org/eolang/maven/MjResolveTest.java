@@ -37,9 +37,12 @@ final class MjResolveTest {
     void reportsNoNewDependenciesWhenAllAreCached(@Mktmp final Path temp)
         throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
-            "+package foo.x",
-            "+rt jvm org.eolang:eo-runtime:0.7.0",
-            "[] > main /bytes"
+            String.join(
+                System.lineSeparator(),
+                "+package foo.x",
+                "+rt jvm org.eolang:eo-runtime:0.7.0",
+                "[] > main /bytes"
+            )
         );
         maven.execute(new FakeMaven.Resolve());
         final List<String> messages = new ArrayList<>(0);
