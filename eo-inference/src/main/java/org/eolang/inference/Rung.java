@@ -21,9 +21,13 @@ import java.util.Map;
  * <p>The rungs run: nothing at all; a name rooted at a void, true of every
  * caller and concrete for none; a formation with voids still free, so it is
  * known which object this is but not what it holds; a formation with nothing
- * left free; and a formation every attribute of which was seen. A formation
- * needs no rung of its own: it is a copy of itself that has filled none of its
- * own voids, and lands where that puts it.</p>
+ * left free; and, at the top, an object with nothing left to find out about
+ * it. A formation needs no rung of its own: it is a copy of itself that has
+ * filled none of its own voids, and lands where that puts it.</p>
+ *
+ * <p>A datum goes straight to the top. The bytes of a literal are the ground
+ * the program stands on, and asking what more there is to know about
+ * {@code 01-} is asking nothing.</p>
  *
  * @since 0.69.0
  */
@@ -40,6 +44,11 @@ final class Rung {
     private final Collection<String> hollows;
 
     /**
+     * The objects that are data.
+     */
+    private final Collection<String> ground;
+
+    /**
      * Every chain of copies, walked to its end, from {@link Ends}.
      */
     private final Map<String, String> ends;
@@ -49,15 +58,18 @@ final class Rung {
      * @param rows The rows of the provides table, by the locator of their
      *  owner, from {@link Ungrouped}
      * @param voids The locator of every void
+     * @param data The objects that are data
      * @param names Every chain of copies, walked to its end
      */
     Rung(
         final Map<String, Collection<Map<String, String>>> rows,
         final Collection<String> voids,
+        final Collection<String> data,
         final Map<String, String> names
     ) {
         this.table = rows;
         this.hollows = voids;
+        this.ground = data;
         this.ends = names;
     }
 
@@ -65,12 +77,14 @@ final class Rung {
      * The rung this object stands on.
      * @param locator The locator of the object
      * @param filled How many voids this object has filled itself
-     * @return The rung, from nothing at all up to a formation seen whole
+     * @return The rung, from nothing at all up to nothing left to find out
      */
     int reached(final String locator, final int filled) {
         final String end = this.ends.getOrDefault(locator, locator);
         final int found;
-        if (this.table.containsKey(end)) {
+        if (this.ground.contains(end)) {
+            found = 4;
+        } else if (this.table.containsKey(end)) {
             found = this.depth(end, this.voids(end) - filled);
         } else if (this.rooted(end)) {
             found = 1;

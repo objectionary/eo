@@ -45,8 +45,10 @@ import java.util.Map;
  *
  * <p>Which is why a row carries what an object is as an element of its own
  * rather than as a cell, and what {@link Types} makes of it. Being a copy is
- * one of the things an object turns out to be, and the others — a datum, a
- * termination, a choice between several objects — arrive beside it.</p>
+ * one of the things an object turns out to be, and the second one arrives
+ * here as well: a datum. It is a copy of nothing — the bytes of a literal are
+ * the ground the program stands on — so it is the one row this clue writes
+ * without a reference to look at.</p>
  *
  * <p>A name that resolves to nothing gets no row and no complaint: a
  * missing row makes a later check stay undecided, while a wrong row would
@@ -76,10 +78,14 @@ final class Links implements Clue {
                 found.put(from, target);
             }
         }
+        final Collection<String> ground = new ArrayList<>(0);
+        for (final XML datum : world.data()) {
+            ground.add(datum.xpath("@loc").get(0));
+        }
         Files.createDirectories(tables);
         Files.write(
             tables.resolve("links.xml"),
-            new Types(found).asXml().toString().getBytes(StandardCharsets.UTF_8)
+            new Types(found, ground).asXml().toString().getBytes(StandardCharsets.UTF_8)
         );
     }
 }

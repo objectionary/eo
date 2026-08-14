@@ -68,19 +68,21 @@ public final class Resolved implements Clue {
         final Collection<XML> dispatches = world.dispatches();
         final Map<String, List<String>> args = new Given(world.applications()).arguments();
         final List<String> voids = given.xpath("//attr[@void='true']/@type");
+        final Pairs written = new Pairs(new XMLDocument(links));
         final Map<String, String> pairs = new Settled(
             new Dispatched(given, dispatches, args, voids)
         ).from(
             new Settled(
                 new Dispatched(given, dispatches, args, Collections.emptyList())
-            ).from(new Pairs(new XMLDocument(links)).all())
+            ).from(written.all())
         );
         final Map<String, String> names = new Ends(pairs).names();
         Files.write(
             links,
             new Types(
                 pairs,
-                new Bound(args, names, new Provided(given, names, voids)).all()
+                new Bound(args, names, new Provided(given, names, voids)).all(),
+                written.data()
             ).asXml().toString().getBytes(StandardCharsets.UTF_8)
         );
     }

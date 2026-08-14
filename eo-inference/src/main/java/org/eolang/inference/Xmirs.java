@@ -59,6 +59,21 @@ final class Xmirs {
     }
 
     /**
+     * Every datum of the program.
+     *
+     * <p>A datum has no {@code @base}, like a formation, and carries its
+     * bytes as text, unlike one. It is the ground the whole program stands
+     * on and the one kind of object that is not a copy of anything: there is
+     * nothing to know about {@code 01-} beyond that it is what it is.</p>
+     *
+     * @return The data, file by file, in the order they appear in the code
+     * @throws IOException If a file cannot be read
+     */
+    Collection<XML> data() throws IOException {
+        return this.matching("//o[@loc and not(@base) and text()[normalize-space()]]");
+    }
+
+    /**
      * The object every file of the program is about.
      *
      * <p>A file carries one object at the top and the package it declares

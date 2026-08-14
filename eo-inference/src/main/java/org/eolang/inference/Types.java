@@ -6,6 +6,7 @@ package org.eolang.inference;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import org.xembly.Directives;
@@ -15,9 +16,9 @@ import org.xembly.Xembler;
  * What every object of a program turns out to be, as a document.
  *
  * <p>A row is keyed by the locator of an object and holds a type. There are
- * two forms of type so far — an object being a copy of another one, and the
- * voids of that copy it has filled — and both are written as elements rather
- * than as cells of the row:</p>
+ * three forms of type so far — an object being a copy of another one, the
+ * voids of that copy it has filled, and a datum — and every one of them is
+ * written as an element rather than as a cell of the row:</p>
  *
  * <pre> &lt;type id="Φ.app.held"&gt;
  *   &lt;ref loc="Φ.inc"&gt;
@@ -25,6 +26,9 @@ import org.xembly.Xembler;
  *       &lt;ref loc="Φ.app.held.α0"/&gt;
  *     &lt;/bind&gt;
  *   &lt;/ref&gt;
+ * &lt;/type&gt;
+ * &lt;type id="Φ.app.held.α0.α0"&gt;
+ *   &lt;data/&gt;
  * &lt;/type&gt;</pre>
  *
  * <p>A cell would have been shorter and is what this table used to write. It
@@ -52,11 +56,17 @@ final class Types {
     private final Map<String, Map<String, String>> filled;
 
     /**
+     * The objects that are data.
+     */
+    private final Collection<String> ground;
+
+    /**
      * Ctor.
      * @param pairs The pairs, each object against the one it is a copy of
+     * @param data The objects that are data
      */
-    Types(final Map<String, String> pairs) {
-        this(pairs, Collections.emptyMap());
+    Types(final Map<String, String> pairs, final Collection<String> data) {
+        this(pairs, Collections.emptyMap(), data);
     }
 
     /**
@@ -64,10 +74,16 @@ final class Types {
      * @param pairs The pairs, each object against the one it is a copy of
      * @param binds What every application put into the voids of what it
      *  copies, from {@link Bound}
+     * @param data The objects that are data
      */
-    Types(final Map<String, String> pairs, final Map<String, Map<String, String>> binds) {
+    Types(
+        final Map<String, String> pairs,
+        final Map<String, Map<String, String>> binds,
+        final Collection<String> data
+    ) {
         this.copies = pairs;
         this.filled = binds;
+        this.ground = data;
     }
 
     /**
@@ -84,6 +100,9 @@ final class Types {
                 .append(this.binds(pair.getKey()))
                 .up()
                 .up();
+        }
+        for (final String datum : this.ground) {
+            dirs.add("type").attr("id", datum).add("data").up().up();
         }
         return new XMLDocument(new Xembler(dirs).domQuietly());
     }
