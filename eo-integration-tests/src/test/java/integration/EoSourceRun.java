@@ -4,13 +4,24 @@
  */
 package integration;
 
+import com.jcabi.xml.XMLDocument;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.Proc;
 
 /**
  * Execution of EO source.
+ *
+ * <p>The sandbox compiles the {@code .eo} sources of the eo-runtime from
+ * scratch, so it must merge the same packages the runtime's own build merges.
+ * A member that reaches its receiver through {@code ^} has no rho until the
+ * merge gives it one, and unmerged it is applied to the receiver through the
+ * first void it does not have any more, which shifts every argument by one.
+ * The list is read from the pom that declares it, so that a package named for
+ * merging there needs no second mention here.</p>
+ *
  * @since 0.56.3
  */
 final class EoSourceRun implements Proc<Object> {
@@ -30,23 +41,26 @@ final class EoSourceRun implements Proc<Object> {
 
     @Override
     public void exec(final Object args) throws IOException {
+        final Path runtime = Paths.get(
+            System.getProperty("basedir", System.getProperty("user.dir"))
+        ).getParent().resolve("eo-runtime");
         new RuntimeSources(
-            Paths.get(System.getProperty("basedir", System.getProperty("user.dir")))
-                .getParent()
-                .resolve("eo-runtime")
-                .resolve("src")
-                .resolve("main")
-                .resolve("eo")
+            runtime.resolve("src").resolve("main").resolve("eo")
         ).exec(this.farea);
         new EoMavenPlugin(this.farea)
             .appended()
             .execution("compile")
             .phase("generate-sources")
-            .goals("register", "compile", "transpile")
+            .goals("register", "compile", "merge", "transpile")
             .configuration()
             .set("failOnWarning", "false")
             .set("offline", "true")
-            .set("skipLinting", "true");
+            .set("skipLinting", "true")
+            .set(
+                "mergedPackages",
+                new XMLDocument(runtime.resolve("pom.xml"))
+                    .xpath("//*[local-name()='mergedPackage']/text()")
+            );
         this.farea.build()
             .plugins()
             .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")
