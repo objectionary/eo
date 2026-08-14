@@ -900,6 +900,12 @@ final class Tokens {
      * @return Parsed value
      */
     private Value readGlyph(final char first) {
+        if (first == '[') {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + this.cursor,
+                "horizontal formation not allowed as argument"
+            );
+        }
         final Value value;
         if (first == '*') {
             value = this.reserved(Value.Kind.STAR, "*");
@@ -909,11 +915,6 @@ final class Tokens {
             value = this.reserved(Value.Kind.SELF, "%");
         } else if (first >= 'a' && first <= 'z') {
             value = this.readName();
-        } else if (first == '[') {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + this.cursor,
-                "horizontal formation not allowed as argument"
-            );
         } else {
             throw new ParseError(
                 this.span.line(), this.span.indent() + this.cursor,
