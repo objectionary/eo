@@ -63,7 +63,7 @@ public final class AtVoid implements Attribute {
         final Phi phi = this.object.get();
         final Phi result;
         if (phi == null) {
-            result = PhTerminator.withDefaultCause(
+            result = new PhTerminator(
                 String.format("the attribute \"%s\" is not set", this.name)
             );
         } else {
