@@ -6,10 +6,6 @@
 #  like [a-z] or [!a] reaches the regex engine neither translated nor escaped,
 #  so a negation matches nothing it should and a lone bracket refuses to
 #  compile, while a star inside a class keeps its glob meaning by mistake.
-# @todo #6483:30min Stop descending into a symbolic link on Windows. The `walk`
-#  below asks `lstat`, which reports the link itself, so on POSIX a link to its
-#  own ancestor is listed instead of followed, while `_stat64` on Windows knows
-#  nothing about links and still lets such a link recurse forever.
 # @todo #6484:60min Walk a directory in constant stack space. The `stepped`
 #  below still costs one frame per entry, because every loop EO has grows the
 #  stack: `while` nests a frame per cycle and `tuple.reducedi` one per element,

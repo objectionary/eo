@@ -41,21 +41,29 @@
           "stat"
           path
   [cant-check] > is-symlink
-    if. > @
-      info.code.eq 0
-      eq.
-        floor.
-          info.output.mode.div 4096
-        10
-      cant-check
+    os.is-windows.if > @
+      if.
+        attributes.eq win32.invalid
+        cant-check
+        not.
+          eq.
+            attributes.as-i64.as-bytes.and win32.reparse
+            00-00-00-00-00-00-00-00
+      if.
+        info.code.eq 0
+        eq.
+          floor.
+            info.output.mode.div 4096
+          10
+        cant-check
+    code. > attributes
+      win32 *1
+        "GetFileAttributesW"
+        path
     called. > info
-      os.is-windows.if
-        win32 *1
-          "_stat64"
-          path
-        posix *1
-          "lstat"
-          path
+      posix *1
+        "lstat"
+        path
   [mode scope cant-open] > open
     known.not.if > @
       T
@@ -273,6 +281,9 @@
     temp.path > source
     mktemp.tmpfile > temp
 
+  ++> can-recover-from-checking-a-symbolic-link-of-an-absent-file
+    mktemp.tmpfile.deleted.is-symlink true > @
+
   mktemp.tmpfile.deleted.is-directory ++> can-recover-from-checking-an-absent-file
     true
 
@@ -293,8 +304,32 @@
           "bar"
     mktemp.as-path.resolved "foo/bar" > resolved
 
+  ++> can-tell-that-a-directory-beside-a-symbolic-link-is-not-one
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            d
+            d.resolved "ссылка"
+        not.
+          d.as-file.is-symlink true
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+
   not. ++> can-tell-that-a-regular-file-is-not-a-symbolic-link
     mktemp.tmpfile.is-symlink true
+
+  ++> can-tell-that-a-symbolic-link-is-one
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            d
+            link
+        link.as-file.is-symlink false
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "ссылка" > link
 
   not. ++> can-tell-that-an-absent-file-does-not-exist
     exists.
