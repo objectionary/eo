@@ -65,6 +65,18 @@ final class AtVoidTest {
     }
 
     @Test
+    void namesTheUnsetAttributeInTheTerminatorsCause() {
+        MatcherAssert.assertThat(
+            "The bottom object returned for an unset attribute must name it in its cause",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(new AtVoid("attr").get()).take()
+            ).getMessage(),
+            Matchers.containsString("attr")
+        );
+    }
+
+    @Test
     void putsAndReturnsObject() {
         final Phi obj = new PhDefault();
         final Attribute attr = new AtVoid("foo");
