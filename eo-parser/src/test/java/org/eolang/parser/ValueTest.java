@@ -55,7 +55,7 @@ final class ValueTest {
         MatcherAssert.assertThat(
             "Value.Kind must enumerate every kind the parser currently recognises",
             Value.Kind.values().length,
-            Matchers.equalTo(11)
+            Matchers.equalTo(12)
         );
     }
 
@@ -137,6 +137,15 @@ final class ValueTest {
             "TERM must be one of the recognised value kinds for the bottom term T",
             new Value(Value.Kind.TERM, "T", 0, 1).kind(),
             Matchers.equalTo(Value.Kind.TERM)
+        );
+    }
+
+    @Test
+    void retainsIdentityKind() {
+        MatcherAssert.assertThat(
+            "IDENTITY must be one of the recognised value kinds for the identity object I",
+            new Value(Value.Kind.IDENTITY, "I", 0, 1).kind(),
+            Matchers.equalTo(Value.Kind.IDENTITY)
         );
     }
 }

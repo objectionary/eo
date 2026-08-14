@@ -58,7 +58,7 @@
     "Can't pad text to -4.000000 characters with zeros"
     "7".padded-zeros
       -4
-      message > [message]
+      I
 
   eq. ++> can-keep-a-minus-sign-in-front-of-the-zeros
     "-0042"

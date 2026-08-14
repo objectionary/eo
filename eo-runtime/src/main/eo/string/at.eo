@@ -42,7 +42,7 @@
     "Given index 1.500000 is out of text bounds"
     "some".at
       1.5
-      message > [message]
+      I
 
   eq. ++> can-recover-from-a-fractional-index-in-bounds
     "recovered"

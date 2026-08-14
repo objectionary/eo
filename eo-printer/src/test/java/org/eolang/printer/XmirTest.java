@@ -79,6 +79,27 @@ final class XmirTest {
         );
     }
 
+    @Test
+    void keepsArgumentsOfAnIdentityShapedFormation() {
+        MatcherAssert.assertThat(
+            "a formation that decorates its own void but also carries arguments cannot fold into the I glyph, which leaves nowhere for those arguments to go",
+            new Xsline(
+                new StClasspath("/org/eolang/printer/print/to-eo-tree.xsl")
+            ).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<object><metas/><o name='y'>",
+                        "<o base='∅' name='m'/><o base='ξ.m' name='φ'/>",
+                        "<o base='Φ.number'>5</o>",
+                        "</o></object>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath("//line[@base='[m]']")
+        );
+    }
+
     @RepeatedTest(3)
     void printsSameEoInManyThreads() {
         final XML xml = new XMLDocument(

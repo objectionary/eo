@@ -291,7 +291,7 @@
     "recovered"
     mktemp.tmpfile.deleted.open
       "r"
-      f > [f]
+      I
       "recovered" > [reason]
 
   ++> can-resolve-a-path-and-touch-it
@@ -438,11 +438,11 @@
 
   mktemp.tmpfile.deleted.open --> stops-on-reading-from-a-missing-file
     "r"
-    f > [f]
+    I
 
   mktemp.tmpfile.deleted.open --> stops-on-reading-or-writing-a-missing-file
     "r+"
-    f > [f]
+    I
 
   tmpfile. --> stops-on-touching-a-temp-file-in-an-absent-directory
     @.

@@ -44,11 +44,13 @@
 
   eq. ++> can-recover-from-a-multi-byte-character
     "recovered"
-    "Ж".as-ascii "recovered" > [message]
+    "Ж".as-ascii
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-empty-string
     "recovered"
-    "".as-ascii "recovered" > [message]
+    "".as-ascii
+      "recovered" > [message]
 
   "Ж".as-ascii --> stops-on-a-multi-byte-character
 

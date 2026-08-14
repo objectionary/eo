@@ -169,6 +169,7 @@ The parser recognises the following lexical tokens:
 | `ROOT` | `Q` |
 | `XI` | `$` |
 | `TERM` | `T` — the bottom term (§9.3), similar to `⊥` in 𝜑-calculus. A self-contained single-character token; carries no arguments and no chain. |
+| `IDENTITY` | `I` — the identity object (§3.16), the one-character spelling of `x > [x]`. A value: it may carry arguments (`I 5`) and a `.method` chain, like any other head. |
 | `SELF` | `%` — self-reference (§3.15). Sugar for the auto-name of the enclosing anonymous (`>>`-named) formation; substituted at compile time. A value: it may carry arguments (`% 5`) and a `.method` chain, like any other head. |
 | `VOID` | `?` — the vertical-void marker (§3.4). A `? > name` body line declares a void attribute, equivalent to listing `name` in `[…]`. |
 | `QDOT` | `?.` — the fragile-dispatch operator (§3.5). Accepted in every position the plain `.` dispatch is, recorded as `@fragile` in XMIR. A `?` immediately followed by `.` is `QDOT`; a `?` followed by space (`? > name`) is `VOID`. |
@@ -215,6 +216,7 @@ Each non-blank, non-comment line is classified into exactly one shape, determine
 | `*` | — | star tuple as application head (§3.6) |
 | `(` | — | application starting with group (§3.6) |
 | `%` | — | self-reference as application head (§3.15) |
+| `I` | — | identity object as application head (§3.16) |
 
 The classifier emits a **line-shape record**:
 
@@ -615,7 +617,7 @@ A line whose first non-space character is `|` is a *pipe-application line*. It a
 
 R-3.14.1. The `|` is followed by a single space, then either a horizontal argument list (§3.6) or nothing, then an optional name suffix (§3.10). Its tail is parsed exactly as an application's argument list plus suffix — the pipe supplies the arguments; the *head* is the implicit predecessor.
 
-R-3.14.2. **Predecessor requirement.** The stack top at the pipe's indent must be a **formation** (`bare-formation` or `inline-phi-formation`) or another **pipe-application**, and it must be **named** (an explicit `> name` or an auto-generated `>>`). A pipe with no predecessor (top-level / empty stack), a deeper-indent ("descending") pipe, or a pipe whose predecessor is an unnamed formation, a plain value, an application, or any `.method` dispatch is an error. The named requirement is what lets the pipe refer to the predecessor by name (R-3.14.7); an unnamed formation cannot be a pipe target — give it a `>>`.
+R-3.14.2. **Predecessor requirement.** The stack top at the pipe's indent must be a **formation** (`bare-formation`, `inline-phi-formation` or `identity-object`) or another **pipe-application**, and it must be **named** (an explicit `> name` or an auto-generated `>>`). A pipe with no predecessor (top-level / empty stack), a deeper-indent ("descending") pipe, or a pipe whose predecessor is an unnamed formation, a plain value, an application, or any `.method` dispatch is an error. The named requirement is what lets the pipe refer to the predecessor by name (R-3.14.7); an unnamed formation cannot be a pipe target — give it a `>>`.
 
 R-3.14.3. **Two forms**, distinguished by whether horizontal args are present on the line:
   - **Horizontal form** — `| arg1 arg2 … [> name]` (≥1 arg): the args are the application arguments. The line takes no deeper-indent children (`vertical-completed`), but may still be wrapped by a same-indent `.method` (§3.5) or extended by a following pipe (chained application, R-3.14.5).
@@ -703,6 +705,22 @@ io.stdout > @                         ← prints the 5th Fibonacci number
 ```
 
 Outer kind: that of the underlying application (§3.6), since `%` is just a head value.
+
+### 3.16 Identity object — `I`
+
+An `I` token is *the one-character spelling of the identity object* `x > [x]` — the formation that binds a single void and decorates it, so that dataizing it dataizes whatever was applied to it. It is the object counterpart of the [identity function](https://mathworld.wolfram.com/IdentityFunction.html), and it reads best where a callback is asked for but nothing is to be done with the value:
+
+```
+"hello".at 1.5 I                      ← the error branch hands the message back
+```
+
+R-3.16.1. `I` is a value: it is recognised wherever a value is expected — as a line head, as a horizontal argument, as a vertical one, and inside a paren group — and takes horizontal arguments (`I 5`) and a `.method` chain with the ordinary application shape (§3.6).
+
+R-3.16.2. **The void.** The void `I` binds is always named `x`, since nothing but the φ ever reads it. A same-named attribute of an enclosing formation does not capture that φ: the void is the nearest declaration of `x`, so scope resolution binds to it.
+
+R-3.16.3. **Emission / XMIR.** The parser emits a base-less `<o>` with two children in this order — the void `<o name='x' base='∅'/>` and the decoratee `<o name='φ' base='x'/>` — which is exactly what the spelled-out `x > [x]` emits.
+
+R-3.16.4. **Outer kind.** A bare `I` line is an `identity-object` (Appendix A): a pipe may apply arguments to it (R-3.14.2), because `I` names a formation, while its own deeper-indent children stay arguments, not bindings, as under any other head. An `I` carrying a chain or horizontal args takes the outer kind of the underlying application (§3.6).
 
 ---
 
@@ -865,7 +883,7 @@ R-5.2.3. **MethodDispatch line dispatch.** If the line's kind is `MethodDispatch
 
 R-5.2.4. **Non-MethodDispatch same-indent line.** If the line's kind is **not** MethodDispatch: the top entry is a *completed previous sibling*. Run close-time checks (§5.3) on it, then **replace** it with a new entry built from the new line. The new entry's `parent_kind` is read from the stack entry below.
 
-R-5.2.4a. **PipeApplication same-indent line.** A `PipeApplication` line (§3.14) is a Non-MethodDispatch line and so replaces the top per R-5.2.4, but first the top must satisfy R-3.14.2: its kind must be `bare-formation`, `inline-phi-formation`, or `pipe-application`, and it must be named. Otherwise error `a pipe must follow a named formation or another pipe` (§9.9). In particular a top whose kind is `vmethod` / `vmethod-with-hargs` (a `.method` was taken off the predecessor) fails this check — R-3.14.4.
+R-5.2.4a. **PipeApplication same-indent line.** A `PipeApplication` line (§3.14) is a Non-MethodDispatch line and so replaces the top per R-5.2.4, but first the top must satisfy R-3.14.2: its kind must be `bare-formation`, `inline-phi-formation`, `identity-object`, or `pipe-application`, and it must be named. Otherwise error `a pipe must follow a named formation or another pipe` (§9.9). In particular a top whose kind is `vmethod` / `vmethod-with-hargs` (a `.method` was taken off the predecessor) fails this check — R-3.14.4.
 
 **Step C — Deeper line.** If the top entry now has indent < `N`:
 
@@ -1237,6 +1255,7 @@ R-9.2.3. **File-local handles (R-3.10.12).** A `>> name` suffix emits the object
 | `$` (XI) | `ξ` | `@base='ξ'` for self reference |
 | `%` (SELF) | — | base-less `<o self=''>` marker; `resolve-self` (§9) later sets `@base` to the enclosing anonymous formation's auto-name (§3.15) |
 | `T` (TERM) | `⊥` | `@base='⊥'` for the bottom term |
+| `I` (IDENTITY) | — | base-less `<o>` with a single void `<o name='x' base='∅'/>` and the decoratee `<o name='φ' base='x'/>` — the identity object (§3.16) |
 | atom signature head `Q` | `Φ` | `@atom='Φ....'` |
 | generic type variable `A`–`F` | (verbatim) | `@atom`, `@type`, `@args` member — never `Φ`-promoted or alias-expanded (§3.10.11) |
 
@@ -1411,6 +1430,7 @@ R-9.9.3. New error conditions added to the spec must extend this table with a ca
 | `vmethod` | multi-line | yes while in progress (only if last `.method` has 0 hargs) | yes (more `.method`s extend the chain; same-indent `.method` after block closes wraps it) | chain of `.method` continuations |
 | `vmethod-with-hargs` | multi-line | **no** | **no** | a `.method` continuation line that itself carries ≥1 horizontal args — closes the chain immediately |
 | `pipe-application` | 1 line (+ body if 0 hargs) | yes if 0 hargs (vertical form's args) | yes (after) | `\| [args] [> name]`; applies args to the same-indent named formation/pipe above (§3.14) |
+| `identity-object` | 1 line | yes (its vertical args) | yes (after) | a bare `I` (§3.16); a formation a pipe may apply args to, whose own children are arguments |
 | `text-block` | multi-line | n/a | yes (after closing `"""`) | `"""…"""` |
 
 **Horizontally-completed kinds (the single source of truth)** — these never receive deeper children and cannot be wrapped by same-indent `.method`:
@@ -1438,6 +1458,7 @@ Reproduced from §3.1 for convenience:
 | identifier | otherwise | application or just-an-identifier (§3.6) |
 | literal | — | application (§3.6) |
 | `*` | — | star tuple (§3.6) |
+| `I` | — | identity object (§3.16) |
 | `(` | — | group application (§3.6) |
 
 ## Appendix C — Worked examples

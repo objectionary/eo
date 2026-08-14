@@ -36,9 +36,9 @@ final class Eo implements Iterable<Directive> {
 
     /**
      * Head characters of §3.1 that open a root-headed line without
-     * opening a literal — the group, star, root, and self tokens.
+     * opening a literal — group, star, root, identity, and self tokens.
      */
-    private static final String ROOT_TOKENS = "*(QT@^$%";
+    private static final String ROOT_TOKENS = "*(QTI@^$%";
 
     /**
      * Initial capacity of the source line buffer, {@link java.util.ArrayList}'s own default.

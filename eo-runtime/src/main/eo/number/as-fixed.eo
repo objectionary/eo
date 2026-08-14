@@ -109,7 +109,7 @@
     "Can't write a fixed-point decimal with -2.000000 fraction places"
     3.14159.as-fixed
       -2
-      message > [message]
+      I
 
   eq. ++> can-honour-custom-places
     "3.14"
