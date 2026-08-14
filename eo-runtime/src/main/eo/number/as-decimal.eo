@@ -17,36 +17,39 @@
     T
       "Can't write a non-finite number as decimal"
     if.
-      n.abs.gte
-        2.power 63
-      T
-        "Can't write this number as decimal digits: its magnitude is 2^63 or larger, past the range of a signed 64-bit integer"
+      n.eq -9.223372036854776e18
+      "-9223372036854775808".as-bytes
       if.
-        n.lt 0
-        if. > [m] >> negative
-          m.as-number.eq 0
-          digits m
-          "-".as-bytes.concat
+        n.abs.gte
+          2.power 63
+        T
+          "Can't write this number as decimal digits: its magnitude is 2^63 or larger, past the range of a signed 64-bit integer"
+        if.
+          n.lt 0
+          if. > [m] >> negative
+            m.as-number.eq 0
             digits m
-        |
-          as-i64.
-            n.times -1
-            T message > [message] >> failure
-        [n] >> digits
-          if. > @
-            n.lt ten
-            as-char
-              n.as-number.plus 48
-            concat.
-              digits q
+            "-".as-bytes.concat
+              digits m
+          |
+            as-i64.
+              n.times -1
+              T message > [message] >> failure
+          [n] >> digits
+            if. > @
+              n.lt ten
               as-char
-                plus.
-                  as-number.
-                    n.minus (q.times ten)
-                  48
-          n.div ten failure > bits!
-          i64 bits > q
-        | (n.as-i64 failure)
+                n.as-number.plus 48
+              concat.
+                digits q
+                as-char
+                  plus.
+                    as-number.
+                      n.minus (q.times ten)
+                    48
+            n.div ten failure > bits!
+            i64 bits > q
+          | (n.as-i64 failure)
   10.as-i64 failure > ten!
 
   eq. ++> can-drop-the-sign-of-a-negative-below-one
@@ -96,6 +99,10 @@
   eq. ++> can-write-the-largest-magnitude-below-two-to-the-63rd
     "9223372036854774784"
     string 9223372036854774784.as-decimal
+
+  eq. ++> can-write-the-minimum-signed-64-bit-value
+    "-9223372036854775808"
+    string 80-00-00-00-00-00-00-00.as-i64.as-number.as-decimal
 
   eq. ++> can-write-zero
     "0"
