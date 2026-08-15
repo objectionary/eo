@@ -53,11 +53,18 @@ final class Pairs {
     }
 
     /**
-     * Every object of the table that is a datum.
+     * Every object the table answers by itself.
+     *
+     * <p>A row holding a reference is an answer only once the reference has
+     * been followed, and where it leads may be a void or nothing at all. A
+     * datum and a termination are answers as they stand: the bytes of a
+     * literal are what they are, and an object that never comes back with a
+     * value has nothing further to say.</p>
+     *
      * @return The locators
      */
-    Collection<String> data() {
-        return this.table.xpath("/links/type[data]/@id");
+    Collection<String> certain() {
+        return this.table.xpath("/links/type[data or bottom]/@id");
     }
 
     /**

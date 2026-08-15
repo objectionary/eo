@@ -25,9 +25,10 @@ import java.util.Map;
  * it. A formation needs no rung of its own: it is a copy of itself that has
  * filled none of its own voids, and lands where that puts it.</p>
  *
- * <p>A datum goes straight to the top. The bytes of a literal are the ground
- * the program stands on, and asking what more there is to know about
- * {@code 01-} is asking nothing.</p>
+ * <p>A datum and a termination go straight to the top. The bytes of a literal
+ * are the ground the program stands on, and asking what more there is to know
+ * about {@code 01-} is asking nothing; an object that never comes back with a
+ * value has nothing further to say either.</p>
  *
  * @since 0.69.0
  */
@@ -44,7 +45,7 @@ final class Rung {
     private final Collection<String> hollows;
 
     /**
-     * The objects that are data.
+     * The objects the table answers by itself.
      */
     private final Collection<String> ground;
 
@@ -58,18 +59,19 @@ final class Rung {
      * @param rows The rows of the provides table, by the locator of their
      *  owner, from {@link Ungrouped}
      * @param voids The locator of every void
-     * @param data The objects that are data
+     * @param answered The objects the table answers by itself, from
+     *  {@link Pairs}
      * @param names Every chain of copies, walked to its end
      */
     Rung(
         final Map<String, Collection<Map<String, String>>> rows,
         final Collection<String> voids,
-        final Collection<String> data,
+        final Collection<String> answered,
         final Map<String, String> names
     ) {
         this.table = rows;
         this.hollows = voids;
-        this.ground = data;
+        this.ground = answered;
         this.ends = names;
     }
 

@@ -59,7 +59,7 @@ public final class Depth {
         final Rung rung = new Rung(
             new Ungrouped(given, Collections.emptyMap()).rows(),
             new HashSet<>(given.xpath("//attr[@void='true']/@type")),
-            new HashSet<>(pairs.data()),
+            new HashSet<>(pairs.certain()),
             new Ends(pairs.all()).names()
         );
         final Map<String, Integer> filled = pairs.binds();

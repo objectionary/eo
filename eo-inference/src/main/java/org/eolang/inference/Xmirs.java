@@ -74,6 +74,22 @@ final class Xmirs {
     }
 
     /**
+     * Every termination of the program.
+     *
+     * <p>The {@code T} of the code, which the parser writes down as an
+     * object based on the bottom sign. It names no other object, so nothing
+     * looks for what it is a copy of: it is not a copy of anything, it is
+     * the one answer that fits everywhere.</p>
+     *
+     * @return The terminations, file by file, in the order they appear in
+     *  the code
+     * @throws IOException If a file cannot be read
+     */
+    Collection<XML> bottoms() throws IOException {
+        return this.matching("//o[@loc and @base='⊥']");
+    }
+
+    /**
      * The object every file of the program is about.
      *
      * <p>A file carries one object at the top and the package it declares
