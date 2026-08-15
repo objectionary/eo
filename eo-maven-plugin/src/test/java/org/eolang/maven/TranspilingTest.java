@@ -38,16 +38,17 @@ final class TranspilingTest {
     private static Transpiling transpiling() {
         return new Transpiling(
             Collections.emptyList(),
-            Paths.get("target"),
-            Paths.get("target/generated"),
-            Paths.get("target/cache"),
+            new Outputs(
+                Paths.get("target"),
+                Paths.get("target/generated"),
+                Paths.get("target/cache"),
+                Paths.get("target/xsl-measures.csv")
+            ),
             true,
             "1.0-SNAPSHOT",
             false,
-            Paths.get("target/xsl-measures.csv"),
             new Tracking(false, false),
-            false,
-            "PhDefault",
+            new PhiSettings(false, "PhDefault"),
             Collections.singleton(Paths.get("src/main/java"))
         );
     }

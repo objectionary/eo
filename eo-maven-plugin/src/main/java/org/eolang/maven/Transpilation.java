@@ -95,50 +95,32 @@ final class Transpilation {
     private final Tracking tracking;
 
     /**
-     * Whether located objects are wrapped into {@code PhCoverage}.
+     * What the transpiler writes into the generated Java.
      */
-    private final boolean coverage;
+    private final PhiSettings settings;
 
     /**
-     * The class that a generated class extends instead of {@code PhDefault},
-     * where {@code to-java.xsl} writes an {@code extends} clause of its own.
+     * Where the transpiler writes.
      */
-    private final String superclass;
-
-    /**
-     * File where XSL measurements are stored.
-     * @checkstyle MemberNameCheck (5 lines)
-     */
-    private final Path xslMeasures;
-
-    /**
-     * The target directory of the build, where tracked steps leave their XMIRs.
-     */
-    private final Path target;
+    private final Outputs outputs;
 
     /**
      * Ctor.
      * @param ver Plugin version string
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
-     * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
-     * @param base The class that a generated class extends instead of {@code PhDefault}
-     * @param measures Path to the file where XSL measurements are stored
-     * @param dir The target directory of the build
+     * @param settings What the transpiler writes into the generated Java
+     * @param outputs Where the transpiler writes
      */
     Transpilation(
         final String ver,
         final Tracking diagnostics,
-        final boolean cvrg,
-        final String base,
-        final Path measures,
-        final Path dir
+        final PhiSettings settings,
+        final Outputs outputs
     ) {
         this.version = ver;
         this.tracking = diagnostics;
-        this.coverage = cvrg;
-        this.superclass = base;
-        this.xslMeasures = measures;
-        this.target = dir;
+        this.settings = settings;
+        this.outputs = outputs;
     }
 
     /**
@@ -166,7 +148,7 @@ final class Transpilation {
                     Arrays.stream(Transpilation.XSLS), Arrays.stream(Transpilation.IMPORTS)
                 ).toArray(String[]::new)
             ).get(),
-            this.tracking.locations(), this.coverage, this.superclass
+            this.tracking.locations(), this.settings.coverage(), this.settings.superclass()
         );
     }
 
@@ -181,7 +163,9 @@ final class Transpilation {
         final Train<Shift> measured = this.measured(this.train());
         final Function<XML, XML> func;
         if (this.tracking.steps()) {
-            final Path dir = new Place(name).make(this.target.resolve(Transpiling.PRE), "");
+            final Path dir = new Place(name).make(
+                this.outputs.target().resolve(Transpiling.PRE), ""
+            );
             func = xml -> new Xsline(new TrSpy(measured, dir)).pass(xml);
         } else {
             func = new Xsline(measured)::pass;
@@ -195,30 +179,30 @@ final class Transpilation {
      * @return Measured train
      */
     private Train<Shift> measured(final Train<Shift> base) {
-        final Path parent = this.xslMeasures.toAbsolutePath().getParent();
+        final Path parent = this.outputs.measures().toAbsolutePath().getParent();
         if (parent.toFile().mkdirs()) {
-            Logger.debug(this, "Directory created for %[file]s", this.xslMeasures);
+            Logger.debug(this, "Directory created for %[file]s", this.outputs.measures());
         }
         if (!Files.exists(parent)) {
             throw new IllegalArgumentException(
                 String.format(
                     "For some reason, the directory %s is absent, can't write measures to %s",
                     parent,
-                    this.xslMeasures
+                    this.outputs.measures()
                 )
             );
         }
-        if (Files.isDirectory(this.xslMeasures)) {
+        if (Files.isDirectory(this.outputs.measures())) {
             throw new IllegalArgumentException(
                 String.format(
                     "This is not a file but a directory, can't write to it: %s",
-                    this.xslMeasures
+                    this.outputs.measures()
                 )
             );
         }
         return new TrLambda(
             base,
-            shift -> new StMeasured(shift, this.xslMeasures)
+            shift -> new StMeasured(shift, this.outputs.measures())
         );
     }
 
@@ -228,8 +212,8 @@ final class Transpilation {
      */
     private Train<Shift> train() {
         final boolean track = this.tracking.locations();
-        final boolean instrument = this.coverage;
-        final String base = this.superclass;
+        final boolean instrument = this.settings.coverage();
+        final String base = this.settings.superclass();
         return Transpilation.TRAINS.get().computeIfAbsent(
             String.format("%b|%b|%s", track, instrument, base),
             ignored -> Transpilation.compiled(track, instrument, base)

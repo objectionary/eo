@@ -20,10 +20,13 @@ final class TranspilationTest {
             () -> new Transpilation(
                 "1.0-SNAPSHOT",
                 new Tracking(false, false),
-                false,
-                "PhDefault",
-                Paths.get("xsl-measures.csv"),
-                Paths.get("target")
+                new PhiSettings(false, "PhDefault"),
+                new Outputs(
+                    Paths.get("target"),
+                    Paths.get("target/generated"),
+                    Paths.get("target/cache"),
+                    Paths.get("xsl-measures.csv")
+                )
             ).forSource("foo"),
             "forSource() must not throw when eo.xslMeasuresFile is a bare relative path with no parent directory"
         );

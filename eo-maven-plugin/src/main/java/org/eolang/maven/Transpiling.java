@@ -57,22 +57,9 @@ final class Transpiling implements Step {
     private final Collection<TjForeign> sources;
 
     /**
-     * Target directory.
-     * @checkstyle MemberNameCheck (5 lines)
+     * Where the transpiler writes.
      */
-    private final Path targetDir;
-
-    /**
-     * Generated sources directory.
-     * @checkstyle MemberNameCheck (5 lines)
-     */
-    private final Path generatedDir;
-
-    /**
-     * Base cache directory.
-     * @checkstyle MemberNameCheck (5 lines)
-     */
-    private final Path cacheDir;
+    private final Outputs outputs;
 
     /**
      * Whether caching is enabled.
@@ -109,51 +96,39 @@ final class Transpiling implements Step {
     /**
      * Constructor.
      * @param srcs XMIR sources to transpile
-     * @param target Target directory
-     * @param generated Generated sources directory
-     * @param cache Base cache directory
+     * @param outputs Where the transpiler writes
      * @param enabled Whether caching is enabled
      * @param ver Plugin version string
      * @param tests Whether to transpile tests
-     * @param measures Path to the file where XSL measurements are stored
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
-     * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
-     * @param base The class that a generated class extends instead of {@code PhDefault}
+     * @param settings What the transpiler writes into the generated Java
      * @param java Directories with the Java sources a human wrote
-     * @checkstyle ParameterNumberCheck (22 lines)
      */
-    @SuppressWarnings("PMD.ExcessiveParameterList")
     Transpiling(
         final Collection<TjForeign> srcs,
-        final Path target,
-        final Path generated,
-        final Path cache,
+        final Outputs outputs,
         final boolean enabled,
         final String ver,
         final boolean tests,
-        final Path measures,
         final Tracking diagnostics,
-        final boolean cvrg,
-        final String base,
+        final PhiSettings settings,
         final Collection<Path> java
     ) {
         this.sources = srcs;
-        this.targetDir = target;
-        this.generatedDir = generated;
-        this.cacheDir = cache;
+        this.outputs = outputs;
         this.cacheEnabled = enabled;
         this.transpileTests = tests;
         this.version = ver;
         this.roots = java;
-        this.train = new Transpilation(ver, diagnostics, cvrg, base, measures, target);
+        this.train = new Transpilation(ver, diagnostics, settings, outputs);
         this.guard = new ConcurrentCache();
     }
 
     @Override
     public void exec() throws IOException {
         final JavaFiles files = new JavaFiles(
-            this.generatedDir,
-            this.cacheDir.resolve(Transpiling.CACHE).resolve(this.version()),
+            this.outputs.generated(),
+            this.outputs.cache().resolve(Transpiling.CACHE).resolve(this.version()),
             this.cacheEnabled
         );
         final int transpiled = new Threaded<>(
@@ -164,8 +139,8 @@ final class Transpiling implements Step {
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
             this.sources.size(),
-            transpiled + new PackageInfos(this.generatedDir, this.roots).create(),
-            this.generatedDir
+            transpiled + new PackageInfos(this.outputs.generated(), this.roots).create(),
+            this.outputs.generated()
         );
     }
 
@@ -187,13 +162,13 @@ final class Transpiling implements Step {
     private int transpiled(final TjForeign tojo, final JavaFiles files) throws IOException {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
-        final Path base = this.targetDir.resolve(Transpiling.DIR);
+        final Path base = this.outputs.target().resolve(Transpiling.DIR);
         final String name = new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get();
         final Path target = new Place(name).make(base, MjAssemble.XMIR);
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
         final Function<XML, XML> transform = this.train.forSource(name);
-        final Path cdir = this.cacheDir.resolve(Transpiling.CACHE);
+        final Path cdir = this.outputs.cache().resolve(Transpiling.CACHE);
         final Path tail = base.relativize(target);
         if (this.cacheEnabled) {
             this.guard.apply(
