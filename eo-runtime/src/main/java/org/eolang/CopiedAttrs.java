@@ -50,33 +50,45 @@ final class CopiedAttrs extends AbstractMap<String, Attribute> {
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidSynchronizedStatement")
     public boolean containsKey(final Object key) {
-        return this.taken.containsKey(key) || this.origin.containsKey(key);
+        synchronized (this.taken) {
+            return this.taken.containsKey(key) || this.origin.containsKey(key);
+        }
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidSynchronizedStatement")
     public Attribute get(final Object key) {
-        final Attribute ready = this.taken.get(key);
-        final Attribute attr;
-        if (ready == null) {
-            attr = this.copied(key);
-        } else {
-            attr = ready;
+        synchronized (this.taken) {
+            final Attribute ready = this.taken.get(key);
+            final Attribute attr;
+            if (ready == null) {
+                attr = this.copied(key);
+            } else {
+                attr = ready;
+            }
+            return attr;
         }
-        return attr;
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidSynchronizedStatement")
     public Attribute put(final String key, final Attribute value) {
-        return this.taken.put(key, value);
+        synchronized (this.taken) {
+            return this.taken.put(key, value);
+        }
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidSynchronizedStatement")
     public Set<Map.Entry<String, Attribute>> entrySet() {
-        for (final String key : this.origin.keySet()) {
-            this.taken.put(key, this.get(key));
+        synchronized (this.taken) {
+            for (final String key : this.origin.keySet()) {
+                this.taken.put(key, this.get(key));
+            }
+            return this.taken.entrySet();
         }
-        return this.taken.entrySet();
     }
 
     /**
