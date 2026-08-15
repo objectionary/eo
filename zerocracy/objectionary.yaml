@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2160.80139242
+  seconds: 2160.863333551
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-15 11:26:32.253620665 Z
+  when: 2026-08-15 13:45:39.851914232 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -109329,6 +109329,7 @@
   _job: 24184153455
   _time: 2026-04-09 10:05:02.748172818 Z
   _version: 0.19.9/0.60.1/0.17.15
+  tombstone: 2026-08-15 11:29:16.938130468 Z
   total_active_contributors: 8
   total_commits: 49075
   total_contributors: 489
@@ -282533,7 +282534,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 835
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13313865444
   issues_were_scanned: 0
@@ -287422,6 +287423,7 @@
   - 3.873620028638736
   - 3.873620028638736
   - 3.873620028638736
+  - 3.873620028638736
   qod_per_day:
   - 20.262571430008
   - 42.95057143129291
@@ -288152,8 +288154,9 @@
   - 154.23669796377845
   - 154.23669796377845
   - 154.23669796377845
+  - 154.23669796377845
   what: learn-eva
-  when: 2026-08-15 02:37:09.940423417 Z
+  when: 2026-08-15 11:30:54.882866530 Z
 - _id: 1108432
   _job: 28880449411
   _time: 2026-07-07 16:03:53.193694149 Z
@@ -289482,7 +289485,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1023
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13009557602
   issues_were_scanned: 0
@@ -293247,9 +293250,9 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1020
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 13327317005
+  events_were_scanned: 13327950408
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
@@ -296199,7 +296202,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1124
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 17714600463
   issues_were_scanned: 0
@@ -296233,11 +296236,11 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5487
+  assignees_were_scanned: 5807
   earliest_issue_was_found: 1
-  events_were_scanned: 13327712270
+  events_were_scanned: 13330022990
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6179
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
@@ -476455,28 +476458,6 @@
   when: *4252
   where: github
   who: 526301
-- _id: 1118893
-  _job: 86688
-  _time: 2026-08-13 09:38:36.742685034 Z
-  _version: 0.19.16/0.61.1/0.17.21
-  analyzers: 18
-  text: |-
-    The average reward per task (8.9 points) is increasing (R=0.17).
-    The average punishment per task (7.0 points) is decreasing (R=-0.19).
-    The average number of builds per week (10268.0) is increasing (R=0.81).
-    The average number of commits per week (252.4) is increasing (R=0.78).
-    The average bugs accepted per month (51.0) is increasing (R=0.80).
-    The average monthly punishment (386 points) is increasing (R=0.38).
-    The average monthly wage (10.4 points) is increasing (R=0.70).
-    The average issue cycle time (6d20h) is staying still.
-    The average pull cycle time (5d14h) is staying still.
-    The average quality of service (83%) is decreasing (R=0.74).
-    The average number of releases per month (24.1) is increasing (R=0.41).
-    The average monthly turnover (25.0 developers) is increasing (R=0.79).
-    The average weekly cost of HoC (5.91 points) is staying still.
-    The average monthly zents/points ratio (0.38) is decreasing (R=0.91).
-  what: assessment
-  when: 2026-08-13 09:38:36.761312284 Z
 - _id: 1118894
   _job: 86688
   _time: 2026-08-13 09:38:37.090758402 Z
@@ -492526,10 +492507,6 @@
   comments: 0
   details: It's time to reward @yegor256 for the code contributed in objectionary/lints#1275,
     the reward amount is 8.
-  greeting: 'Thanks for the contribution! You''ve earned +8 points for this: +16 as
-    a basis; -8 for the lack of code review. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+2564](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 80
   href: https://github.com/objectionary/lints/issues/1275/#issuecomment-5301621599
   is_human: 1
@@ -492550,9 +492527,6 @@
   comments: 2
   details: It's time to reward @gemshrine for the code contributed in objectionary/eo#6847,
     the reward amount is 16.
-  greeting: 'Thanks for the contribution! You''ve earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+2392](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 42
   href: https://github.com/objectionary/eo/issues/6847/#issuecomment-5301621691
   is_human: 1
@@ -492574,10 +492548,6 @@
   comments: 3
   details: It's time to reward @morphqdd for the code contributed in objectionary/eo#6852,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too many hits-of-code (156 >= 100). Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+4668](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 156
   href: https://github.com/objectionary/eo/issues/6852/#issuecomment-5301621778
   is_human: 1
@@ -492599,9 +492569,6 @@
   comments: 3
   details: It's time to reward @morphqdd for the code contributed in objectionary/eo#6854,
     the reward amount is 16.
-  greeting: 'Thanks for the contribution! You''ve earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+4684](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 84
   href: https://github.com/objectionary/eo/issues/6854/#issuecomment-5301621855
   is_human: 1
@@ -492623,11 +492590,6 @@
   comments: 3
   details: It's time to reward @yegor256 for the code contributed in objectionary/eo#6856,
     the reward amount is 4.
-  greeting: 'Thanks for the contribution! You''ve earned +4 points for this: +16 as
-    a basis; -4 for too many hits-of-code (149 >= 100); -8 for the lack of code review.
-    Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them
-    coming. Your running score is [+2568](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 149
   href: https://github.com/objectionary/eo/issues/6856/#issuecomment-5301621942
   is_human: 1
@@ -492648,10 +492610,6 @@
   comments: 3
   details: It's time to reward @morphqdd for the code contributed in objectionary/eo#6857,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too few (32) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+4696](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 32
   href: https://github.com/objectionary/eo/issues/6857/#issuecomment-5301622030
   is_human: 1
@@ -492673,10 +492631,6 @@
   comments: 3
   details: It's time to reward @morphqdd for the code contributed in objectionary/eo#6859,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too few (39) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+4708](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 39
   href: https://github.com/objectionary/eo/issues/6859/#issuecomment-5301622108
   is_human: 1
@@ -492859,7 +492813,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-15 08:30:51.000000000 Z
+  when: &4405 2026-08-15 08:30:51.000000000 Z
   where: github
   who: 526301
 - _id: 1119636
@@ -492884,7 +492838,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-15 05:44:27.000000000 Z
+  when: &4406 2026-08-15 05:44:27.000000000 Z
   where: github
   who: 526301
 - _id: 1119637
@@ -492909,7 +492863,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-15 05:44:46.000000000 Z
+  when: &4407 2026-08-15 05:44:46.000000000 Z
   where: github
   who: 526301
 - _id: 1119638
@@ -492934,7 +492888,7 @@
   succeeded_builds: 23
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-15 05:44:58.000000000 Z
+  when: &4408 2026-08-15 05:44:58.000000000 Z
   where: github
   who: 526301
 - _id: 1119639
@@ -493038,9 +492992,11 @@
   failed_builds: 1
   files: 7
   hoc: 467
+  is_human: 1
   issue: 6851
   repository: 73056727
   review: 2026-08-15 09:02:35.000000000 Z
+  review_comments: 4
   succeeded_builds: 21
   suggestions: 2
   what: pull-was-merged
@@ -493062,8 +493018,10 @@
   failed_builds: 0
   files: 1
   hoc: 23
+  is_human: 1
   issue: 6860
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
@@ -493075,11 +493033,12 @@
   _time: 2026-08-15 11:09:43.888956289 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#6862.
+  is_human: 1
   issue: 6862
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-15 05:56:44.000000000 Z
+  when: &4409 2026-08-15 05:56:44.000000000 Z
   where: github
   who: 526301
 - _id: 1119648
@@ -493087,11 +493046,12 @@
   _time: 2026-08-15 11:09:45.753737606 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#6863.
+  is_human: 1
   issue: 6863
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-15 05:56:32.000000000 Z
+  when: &4410 2026-08-15 05:56:32.000000000 Z
   where: github
   who: 526301
 - _id: 1119649
@@ -493099,11 +493059,12 @@
   _time: 2026-08-15 11:09:47.487490288 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#6864.
+  is_human: 1
   issue: 6864
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-15 05:56:09.000000000 Z
+  when: &4411 2026-08-15 05:56:09.000000000 Z
   where: github
   who: 526301
 - _id: 1119650
@@ -493111,6 +493072,7 @@
   _time: 2026-08-15 11:09:49.590953320 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @maxonfjvipon to the issue objectionary/eo#6869.
+  is_human: 1
   issue: 6869
   label: bug
   repository: 73056727
@@ -493118,3 +493080,243 @@
   when: 2026-08-15 08:40:51.000000000 Z
   where: github
   who: 37025995
+- _id: 1119651
+  _job: 87069
+  _time: 2026-08-15 11:28:29.165283993 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  analyzers: 18
+  text: |-
+    The average reward per task (9.1 points) is increasing (R=0.19).
+    The average punishment per task (7.0 points) is decreasing (R=-0.17).
+    The average number of builds per week (11930.1) is increasing (R=0.84).
+    The average number of commits per week (284.5) is increasing (R=0.80).
+    The average bugs accepted per month (56.0) is increasing (R=0.82).
+    The average monthly punishment (389 points) is increasing (R=0.43).
+    The average monthly wage (10.4 points) is increasing (R=0.72).
+    The average issue cycle time (6d19h) is staying still.
+    The average pull cycle time (5d11h) is staying still.
+    The average quality of service (85%) is decreasing (R=0.68).
+    The average number of releases per month (25.3) is increasing (R=0.33).
+    The average monthly turnover (26.0 developers) is increasing (R=0.87).
+    The average weekly cost of HoC (5.88 points) is staying still.
+    The average monthly zents/points ratio (0.38) is decreasing (R=0.91).
+  what: assessment
+  when: 2026-08-15 11:28:29.180920966 Z
+- _id: 1119652
+  _job: 87069
+  _time: 2026-08-15 11:28:34.483353489 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 5
+  details: The pull request objectionary/eo#6853 with 431 HoC created by @maxonfjvipon
+    was merged by @yegor256 after 13h58m of being in review and 5 comments.
+  hoc: 431
+  is_human: 1
+  issue: 6853
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 50311
+  what: code-was-contributed
+  when: *4405
+  where: github
+  who: 37025995
+- _id: 1119653
+  _job: 87069
+  _time: 2026-08-15 11:28:35.238145729 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  details: The pull request objectionary/eo#6865 with 22 HoC created by @vasilevnstas
+    was merged by @yegor256 after 7h19m of being in review and 3 comments.
+  hoc: 22
+  is_human: 1
+  issue: 6865
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 26367
+  what: code-was-contributed
+  when: *4406
+  where: github
+  who: 33578155
+- _id: 1119654
+  _job: 87069
+  _time: 2026-08-15 11:28:35.704717298 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 4
+  details: The pull request objectionary/eo#6866 with 8 HoC created by @morphqdd was
+    merged by @yegor256 after 7h3m of being in review and 4 comments.
+  hoc: 8
+  is_human: 1
+  issue: 6866
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 25396
+  what: code-was-contributed
+  when: *4407
+  where: github
+  who: 125282851
+- _id: 1119655
+  _job: 87069
+  _time: 2026-08-15 11:28:36.163008377 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 2
+  details: The pull request objectionary/eo#6867 with 10 HoC created by @renovate[bot]
+    was merged by @yegor256 after 1h17m of being in review and 2 comments.
+  hoc: 10
+  is_human: 0
+  issue: 6867
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 4627
+  what: code-was-contributed
+  when: *4408
+  where: github
+  who: 29139614
+- _id: 1119656
+  _job: 87069
+  _time: 2026-08-15 11:28:38.561703676 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#6862 reported by
+    @morphqdd; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 6862
+  reporter: 125282851
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4409
+  where: github
+  who: 526301
+- _id: 1119657
+  _job: 87069
+  _time: 2026-08-15 11:28:38.870233256 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#6863 reported by
+    @morphqdd; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 6863
+  reporter: 125282851
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4410
+  where: github
+  who: 526301
+- _id: 1119658
+  _job: 87069
+  _time: 2026-08-15 11:28:39.180687592 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#6864 reported by
+    @morphqdd; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 6864
+  reporter: 125282851
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4411
+  where: github
+  who: 526301
+- _id: 1119659
+  _job: 31886403106
+  _time: 2026-08-15 13:10:34.535620309 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6862 has been closed by @yegor256.
+  event_id: 13328637670
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6862
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-15 11:39:32.000000000 Z
+  where: github
+  who: 526301
+- _id: 1119660
+  _job: 31886403106
+  _time: 2026-08-15 13:10:36.590851954 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6863 has been closed by @yegor256.
+  event_id: 13328601614
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6863
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-15 11:37:14.000000000 Z
+  where: github
+  who: 526301
+- _id: 1119661
+  _job: 31886403106
+  _time: 2026-08-15 13:10:38.821443930 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '6566'
+  details: The pull request objectionary/eo#6876 has been opened by @morphqdd.
+  event_id: 13328281703
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6876
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-08-15 11:17:27.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1119662
+  _job: 31886403106
+  _time: 2026-08-15 13:10:40.261862253 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '4520'
+  details: The pull request objectionary/eo#6875 has been opened by @vasilevnstas.
+  event_id: 13328193639
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6875
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-08-15 11:12:13.000000000 Z
+  where: github
+  who: 33578155
+- _id: 1119663
+  _job: 31886403106
+  _time: 2026-08-15 13:18:14.820328455 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '6862'
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#6872 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 22
+  issue: 6872
+  repository: 73056727
+  succeeded_builds: 22
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-15 11:39:31.000000000 Z
+  where: github
+  who: 526301
+- _id: 1119664
+  _job: 31886403106
+  _time: 2026-08-15 13:18:36.875351127 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '6863'
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#6873 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 10
+  issue: 6873
+  repository: 73056727
+  succeeded_builds: 22
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-15 11:37:12.000000000 Z
+  where: github
+  who: 526301
