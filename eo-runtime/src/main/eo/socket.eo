@@ -253,9 +253,17 @@
         output-block.write buffer
       [] > output-block
         true > @
-        seq * > [buffer] > write
-          send buffer
-          output-block
+        [buffer] > write
+          seq > @
+            * sent remainder
+          if. > remainder
+            sent.lt buffer.size
+            output-block.write
+              buffer.slice
+                sent
+                buffer.size.minus sent
+            output-block
+          send buffer > sent
   port.is-integer.not.if > [] > checked-port
     T
       "Port must be an integer in 0 to 65535, but was %f".printf
@@ -284,6 +292,24 @@
   eq. ++> can-convert-a-port-above-the-signed-short-limit-in-htons
     40-9C
     socket.htons 40000
+
+  ++> can-resend-the-remaining-bytes-after-a-short-send
+    eq. > @
+      malloc.of
+        2
+        [c]
+          seq * > @
+            write.
+              socket.as-output
+                partial-send c
+              01-02
+            c.get
+          seq * > [acc buffer] > partial-send
+            acc.write
+              2.minus buffer.size
+              buffer.slice 0 1
+            1
+      01-02
 
   checked-port. --> rejects-a-fractional-port
     socket
