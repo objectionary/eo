@@ -27,12 +27,6 @@ import java.util.LinkedHashSet;
  * rather than by pattern-matching the Java it emits.</p>
  *
  * @since 0.75.0
- * @todo #5757:30min Wire this into a Maven goal that reads the raw
- *  {@code loc:line:pos} hits file {@code PhCoverage} appends to at
- *  runtime, matches it against {@link #locations(XML)} for every
- *  transpiled source, and renders an LCOV tracefile. Split out of this
- *  PR solely to respect the 200-line pull request size cap; the wiring
- *  is a separate, immediately-following PR against the same issue.
  */
 final class CoverageManifest {
 
