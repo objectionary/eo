@@ -82,29 +82,25 @@
         and.
           found.to.eq txt.length
           found.from.eq 0
-      "/(?:%s)(?![\\s\\S])/%s".printf > anchored!
-        *
-          parsed.group 1
-          parsed.group 2
-      "/(?:%s\n)(?![\\s\\S])/%s".printf > commented!
-        *
-          parsed.group 1
-          parsed.group 2
+      "/(?:%s)(?![\\s\\S])/%s".printf > anchored
+        * group1 group2
+      "/(?:%s\n)(?![\\s\\S])/%s".printf > commented
+        * group1 group2
       next. > found
         match.
           compile.
             regex anchored
             retry-commented
           txt
-      next. > parsed!
+      parsed.group 1 > group1!
+      parsed.group 2 > group2!
+      next. > parsed
         match.
           compiled.
             regex "/^\\/([\\s\\S]*)\\/([dimsux]*)$/"
           expression
-      "/(?:%s\\E)(?![\\s\\S])/%s".printf > quoted!
-        *
-          parsed.group 1
-          parsed.group 2
+      "/(?:%s\\E)(?![\\s\\S])/%s".printf > quoted
+        * group1 group2
       compile. > [message] > retry-commented
         regex commented
         retry-quoted
