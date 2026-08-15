@@ -315,7 +315,6 @@
               'read' syscall until the deadline aborts it.
               -->
               <skipSourceLints>
-                <lint>decorated-formation</lint>
                 <lint>mandatory-package</lint>
                 <lint>package-member-without-void</lint>
                 <lint>redundant-object</lint>

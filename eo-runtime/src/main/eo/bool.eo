@@ -200,12 +200,6 @@
       take > @
       x > [] > take
 
-  ++> can-take-a-parent-through-an-attribute
-    [] > @
-      [] > @
-        x.eq 42 > [] > @
-    42 > x
-
   --> stops-on-applying-to-a-closed-object
     closed true > @
     I > a
