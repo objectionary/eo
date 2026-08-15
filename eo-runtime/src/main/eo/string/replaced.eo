@@ -36,43 +36,37 @@
           target.match reinit
 
   eq. ++> can-replace-a-nullable-pattern-like-java
-    replaced
-      "abc"
-      regex "/x*/"
+    "abc".replaced
+      "/x*/".regex
       "-"
     "-a-b-c-"
 
   eq. ++> can-replace-a-windows-separator-with-a-slash
-    replaced
-      "C:\\Windows\\Users\\AppLocal\\shrek"
-      regex "/[\\\\:]+/"
+    "C:\\Windows\\Users\\AppLocal\\shrek".replaced
+      "/[\\\\:]+/".regex
       "/"
     "C/Windows/Users/AppLocal/shrek"
 
   eq. ++> can-replace-digits-with-a-string
-    replaced
-      "Hell0, w0rld"
-      regex "/[0-9]+/"
+    "Hell0, w0rld".replaced
+      "/[0-9]+/".regex
       "o"
     "Hello, world"
 
+  eq. ++> can-replace-nothing-when-the-pattern-is-absent
+    "Hello, world".replaced
+      "/[0-9]+/".regex
+      "12345"
+    "Hello, world"
+
   eq. ++> can-replace-slashes-with-a-windows-separator
-    replaced
-      "C:\\Windows/foo\\bar/hello.txt"
-      regex "/\\//"
+    "C:\\Windows/foo\\bar/hello.txt".replaced
+      "/\\//".regex
       "\\"
     "C:\\Windows\\foo\\bar\\hello.txt"
 
   eq. ++> can-sanitize-a-windows-path
-    replaced
-      "foo\\bar<:>?*\"|baz\\asdf"
-      regex "/[<>:\\\"\\/\\|\\?\\*\\x00-\\x1F]/"
+    "foo\\bar<:>?*\"|baz\\asdf".replaced
+      "/[<>:\\\"\\/\\|\\?\\*\\x00-\\x1F]/".regex
       ""
     "foo\\barbaz\\asdf"
-
-  eq. ++> cannot-replace-when-the-pattern-is-absent
-    replaced
-      "Hello, world"
-      regex "/[0-9]+/"
-      "12345"
-    "Hello, world"

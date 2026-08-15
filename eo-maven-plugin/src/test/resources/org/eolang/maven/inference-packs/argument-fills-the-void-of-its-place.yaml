@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An argument goes into a void by its place, counted through the voids in the
+# order the formation declares them. So the first argument fills `left` and the
+# second fills `right`, and nothing but the order says which is which.
+eo:
+  app.eo: |
+    [] > app
+      pair 1 2 > both
+  pair.eo: |
+    [left right] > pair
+      left > @
+links:
+  - "//bind[@void='Φ.pair.left']/ref[@loc='Φ.app.both.α0']"
+  - "//bind[@void='Φ.pair.right']/ref[@loc='Φ.app.both.α1']"

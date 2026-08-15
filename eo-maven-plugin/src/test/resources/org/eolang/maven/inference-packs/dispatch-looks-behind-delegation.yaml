@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `t` binds nothing but `φ` and hands every name it is asked for to `base`. So
+# `t.next` is the `next` of a `base`, and the object the dispatch makes is a
+# copy of that, found by following what stands behind the delegation.
+eo:
+  app.eo: |
+    [] > app
+      t.next > @
+  t.eo: |
+    [] > t
+      base > @
+  base.eo: |
+    [] > base
+      [] > next
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.base.next']"

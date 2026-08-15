@@ -9,9 +9,8 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list func] > each
-  eachi > @
-    list
+[func] > each
+  ^.eachi > @
     func item > [item index] >>
 
   ++> can-iterate-over-a-list
@@ -19,19 +18,19 @@
       malloc.for
         0
         [m]
-          each > @
+          each. > @
             * 1 2 3
             m.put > [i] >>
               m.as-number.plus i
       6
 
   eq. ++> can-return-the-result-of-the-last-call
-    each
+    each.
       *
         1
         2
         3
-      x > [x]
+      I
     3
 
   ++> can-sum-many-numbers
@@ -39,7 +38,7 @@
       malloc.for
         0
         [m]
-          each > @
+          each. > @
             * 10 20 30
             m.put > [i] >>
               m.as-number.plus i
@@ -50,12 +49,11 @@
       malloc.for
         0
         [m]
-          each > @
+          each. > @
             * 7
             m.put > [i] >>
               m.as-number.plus i
       7
 
-  each ++> can-walk-an-empty-list
-    *
+  tuple.empty.each ++> can-walk-an-empty-list
     false > [x]

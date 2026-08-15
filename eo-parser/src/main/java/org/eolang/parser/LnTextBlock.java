@@ -97,7 +97,9 @@ final class LnTextBlock implements Line {
      */
     private void transition(final Stack stack, final Suffix suffix) {
         new Transition(stack, this.span).apply(
-            Kind.TEXT_BLOCK, Openness.VERTICAL_COMPLETED, suffix.named()
+            Kind.TEXT_BLOCK,
+            Openness.VERTICAL_COMPLETED,
+            new Admission(suffix.named(), suffix.test())
         );
     }
 }

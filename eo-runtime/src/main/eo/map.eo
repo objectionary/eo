@@ -9,46 +9,39 @@
 # hash code is derived from those bytes rather than from the key itself,
 # so that keys with side effects are never evaluated more than once.
 
-+alias tuple.filtered
 +alias bytes.hash
-+alias tuple.mapped
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint decorated-formation
-+unlint mandatory-package
 
 [pairs] > map
-  [] > @
-    ctor > @
-      if.
-        pairs.length.eq 0
-        *
-        @.
-          [tup] >> rec-rebuild
-            if. > @
-              tup.length.eq 0
-              *
-              others.with
-                [] >>
-                  ^.hash > hash
-                  ^.kbts > kbts
-                  tup.head.key > key
-                  tup.head.value > value
-            bytes.hash >> hash!
-              tup.head.key.as-bytes >> kbts!
-            filtered > others
-              prev
-              not. > [ent] >>
-                and.
-                  ent.hash.eq hash
-                  ent.kbts.eq kbts
-            @. > prev
-              rec-rebuild tup.tail
-          | pairs
+  ctor > @
+    if.
+      pairs.length.eq 0
+      *
+      @.
+        [tup] >> rec-rebuild
+          if. > @
+            tup.length.eq 0
+            *
+            others.with
+              [] >>
+                ^.hash > hash
+                ^.kbts > kbts
+                tup.head.key > key
+                tup.head.value > value
+          bytes.hash >> hash!
+            tup.head.key.as-bytes >> kbts!
+          prev.filtered > others
+            not. > [ent] >>
+              and.
+                ent.hash.eq hash
+                ent.kbts.eq kbts
+          @. > prev
+            rec-rebuild tup.tail
+        | pairs
   [entries] > ctor
     [key] > found
       if. > @
@@ -80,18 +73,15 @@
             * hash
     exists. > [key] > has
       found key
-    mapped > keys
-      entries
+    entries.mapped > keys
       entry.key > [entry]
     entries.length > size
-    mapped > values
-      entries
+    entries.mapped > values
       entry.value > [entry]
     [key value] > with
       map.ctor > @
         with.
-          filtered
-            entries
+          entries.filtered
             not. > [entry] >>
               and.
                 hash.eq entry.hash
@@ -105,8 +95,7 @@
         key.as-bytes >> kbts!
     [key] > without
       map.ctor > @
-        filtered
-          entries
+        entries.filtered
           not. > [entry] >>
             and.
               hash.eq entry.hash
@@ -145,6 +134,14 @@
       map.entry "two" 2
       map.entry "three" 3
 
+  not. ++> can-find-no-element-by-an-absent-key
+    exists.
+      found.
+        map *
+          map.entry "one" 1
+          map.entry "two" 2
+        "three"
+
   ++> can-find-the-value-of-each-key-with-colliding-hashes
     and. > @
       1.eq first.get
@@ -160,6 +157,19 @@
       map.entry "one" 1
       map.entry "two" 2
     "two"
+
+  not. ++> can-have-no-absent-key-colliding-with-a-stored-one
+    has.
+      map *
+        map.entry "Aa" 1
+      "BB"
+
+  not. ++> can-have-no-element-by-an-absent-key
+    has.
+      map *
+        map.entry "one" 1
+        map.entry "two" 2
+      "three"
 
   ++> can-keep-both-keys-with-colliding-hashes
     2.eq mp.size > @
@@ -200,6 +210,23 @@
               m.put
                 m.as-number.plus 1
               1
+
+  eq. ++> can-recover-from-an-absent-key-colliding-with-a-stored-one
+    "recovered"
+    get.
+      found.
+        map *
+          map.entry "Aa" 1
+        "BB"
+      "recovered" > [message]
+
+  ++> can-recover-from-getting-a-missing-key
+    "recovered".eq > @
+      get.
+        mp.found "absent"
+        "recovered" > [message]
+    map * > mp
+      map.entry "one" 1
 
   ++> can-remove-an-element-by-a-key
     and. > @
@@ -258,51 +285,13 @@
       3
       4
 
-  eq. ++> cannot-change-without-an-absent-element
+  eq. ++> can-stay-unchanged-without-an-absent-element
     size.
       without.
         map *
           map.entry "one" 1
         "two"
     1
-
-  not. ++> cannot-find-an-element-by-an-absent-key
-    exists.
-      found.
-        map *
-          map.entry "one" 1
-          map.entry "two" 2
-        "three"
-
-  not. ++> cannot-have-an-absent-key-colliding-with-a-stored-one
-    has.
-      map *
-        map.entry "Aa" 1
-      "BB"
-
-  not. ++> cannot-have-an-element-by-an-absent-key
-    has.
-      map *
-        map.entry "one" 1
-        map.entry "two" 2
-      "three"
-
-  eq. ++> rejects-an-absent-key-colliding-with-a-stored-one
-    "recovered"
-    get.
-      found.
-        map *
-          map.entry "Aa" 1
-        "BB"
-      "recovered" > [message]
-
-  ++> rejects-getting-a-missing-key
-    "recovered".eq > @
-      get.
-        mp.found "absent"
-        "recovered" > [message]
-    map * > mp
-      map.entry "one" 1
 
   --> stops-on-getting-a-missing-key
     get. > @

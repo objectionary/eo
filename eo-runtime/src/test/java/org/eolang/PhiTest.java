@@ -68,11 +68,7 @@ final class PhiTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhApplication(
-                        Phi.Φ.take("string.as-decimal").copy(),
-                        "n",
-                        new Data.ToPhi(Double.NaN)
-                    )
+                    new Data.ToPhi(Double.NaN).take("as-decimal")
                 ).take()
             ).getMessage(),
             Matchers.containsString("Can't write a non-finite number as decimal")

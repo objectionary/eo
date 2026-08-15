@@ -5,6 +5,8 @@
 
 package org.eolang;
 
+import com.google.errorprone.annotations.FormatMethod;
+
 /**
  * Common exception.
  * @since 0.21
@@ -21,6 +23,7 @@ public class ExFailure extends ExAbstract {
      * @param cause Exception cause
      * @param args Arguments for {@link String#format(String, Object...)}
      */
+    @FormatMethod
     public ExFailure(final String cause, final Object... args) {
         this(String.format(cause, args), (Throwable) null);
     }

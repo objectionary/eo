@@ -10,9 +10,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint decorated-formation
-+unlint mandatory-package
 
 [if] > bool
   if > @
@@ -193,7 +190,7 @@
                                                                                 blah38 (x.plus 1) > @
                                                                                 [x] > blah38
                                                                                   blah39 (x.plus 1) > @
-                                                                                  x > [x] > blah39
+                                                                                  I > blah39
 
   ++> can-take-a-parent-object
     eq. > @
@@ -203,13 +200,7 @@
       take > @
       x > [] > take
 
-  ++> can-take-a-parent-through-an-attribute
-    [] > @
-      [] > @
-        x.eq 42 > [] > @
-    42 > x
-
   --> stops-on-applying-to-a-closed-object
     closed true > @
-    x > [x] > a
+    I > a
     a false > closed

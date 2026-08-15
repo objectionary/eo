@@ -31,52 +31,47 @@
               number index
             number index
     fallback
-      "Given index %d is out of text bounds".printf
+      "Given index %f is out of text bounds".printf
         * i
     slice
       text
       index
       1
 
-  eq. ++> can-return-a-character-at-a-negative-index
-    "m"
-    at
-      "some"
-      -2
+  eq. ++> can-format-the-error-message-of-a-fractional-index-in-bounds
+    "Given index 1.500000 is out of text bounds"
+    "some".at
+      1.5
+      I
 
-  eq. ++> can-return-the-first-character
-    "s"
-    at
-      "some"
-      0
-
-  eq. ++> can-return-the-third-character
-    "m"
-    at
-      "some"
-      2
-
-  eq. ++> rejects-a-fractional-index-in-bounds
+  eq. ++> can-recover-from-a-fractional-index-in-bounds
     "recovered"
-    at
-      "some"
+    "some".at
       1.5
       "recovered" > [message]
 
-  eq. ++> rejects-a-negative-fractional-index-in-bounds
+  eq. ++> can-recover-from-a-negative-fractional-index-in-bounds
     "recovered"
-    at
-      "some"
+    "some".at
       -1.5
       "recovered" > [message]
 
-  eq. ++> rejects-an-out-of-bounds-index
+  eq. ++> can-recover-from-an-out-of-bounds-index
     "recovered"
-    at
-      "some"
+    "some".at
       10
       "recovered" > [message]
 
-  at --> stops-on-an-index-beyond-the-length
-    "some"
-    10
+  eq. ++> can-return-a-character-at-a-negative-index
+    "m"
+    "some".at -2
+
+  eq. ++> can-return-the-first-character
+    "s"
+    "some".at 0
+
+  eq. ++> can-return-the-third-character
+    "m"
+    "some".at 2
+
+  "some".at 10 --> stops-on-an-index-beyond-the-length

@@ -1,27 +1,36 @@
 # Range of natural numbers from `start` to `end` (soft border) with step = 1.
-# The `r` is an instance of `range`, which provides `start` and `end`.
+# It is a method of `range`, so it reads `start` and `end` from the range it
+# is taken from. Both bounds must be integers, otherwise the computation
+# terminates: a fractional or non-finite seed would otherwise stay fractional
+# or non-finite through the whole generated sequence, contradicting the range
+# of natural numbers. `is-integer` already excludes `nan` and the infinities,
+# so it doubles as the finiteness check.
 
-+alias tuple.is-empty
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package range
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
 
-[r] > naturals
-  range > @
-    [] >>
-      build r.start > @
-      [num] > build
-        num > @
-        build > next
-          1.plus @
-    r.end
+[] > naturals
+  if. > @
+    r.start.is-integer.and r.end.is-integer
+    range
+      [] >>
+        build r.start > @
+        [num] > build
+          num > @
+          build > next
+            1.plus @
+      r.end
+    T
+      "Range bounds must be integers, but were %f and %f".printf
+        * r.start r.end
+  ^ > r
 
   eq. ++> can-build-a-range-of-negatives
-    naturals
+    naturals.
       range -5 0
     *
       -5
@@ -30,16 +39,16 @@
       -2
       -1
 
-  is-empty ++> can-build-an-empty-range-from-ten-to-ten
-    naturals
+  is-empty. ++> can-build-an-empty-range-from-ten-to-ten
+    naturals.
       range 10 10
 
-  is-empty ++> can-build-an-empty-range-when-descending
-    naturals
+  is-empty. ++> can-build-an-empty-range-when-descending
+    naturals.
       range 10 1
 
   eq. ++> can-build-naturals-from-one-to-ten
-    naturals
+    naturals.
       range 1 10
     *
       1
@@ -51,3 +60,13 @@
       7
       8
       9
+
+  naturals. --> rejects-a-fractional-lower-bound
+    range
+      0.5
+      2
+
+  naturals. --> rejects-a-fractional-upper-bound
+    range
+      1
+      3.5

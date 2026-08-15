@@ -13,13 +13,10 @@
     regex "/^[a-zA-Z]+$/"
     text
 
-  is-alpha "eEo" ++> can-be-alphabetic-when-simple-text
+  "eEo".is-alpha ++> can-be-alphabetic-when-simple-text
 
-  not. ++> cannot-be-alphabetic-when-empty
-    is-alpha ""
+  "".is-alpha.not ++> can-tell-it-is-not-alphabetic-when-empty
 
-  not. ++> cannot-be-alphabetic-with-a-number
-    is-alpha "ab3d"
+  "ab3d".is-alpha.not ++> can-tell-it-is-not-alphabetic-with-a-number
 
-  not. ++> cannot-be-alphabetic-with-dashes
-    is-alpha "-w-"
+  "-w-".is-alpha.not ++> can-tell-it-is-not-alphabetic-with-dashes

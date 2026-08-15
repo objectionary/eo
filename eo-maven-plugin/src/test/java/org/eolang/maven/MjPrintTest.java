@@ -103,6 +103,37 @@ final class MjPrintTest {
         );
     }
 
+    @Test
+    void skipsNonXmirFilesInPrintSourcesDir(@Mktmp final Path temp) throws Exception {
+        final Path source = temp.resolve("xmir/main.xmir");
+        Files.createDirectories(source.getParent());
+        new Saved(
+            new EoSyntax(
+                new InputOf(
+                    String.join(
+                        System.lineSeparator(),
+                        "+package foo",
+                        "",
+                        "[] > main"
+                    )
+                )
+            ).parsed().toString(),
+            source
+        ).value();
+        new Saved(new InputOf("not xml at all"), temp.resolve("xmir/README.md")).value();
+        final Path output = temp.resolve("eo");
+        new FakeMaven(temp)
+            .with("printSourcesDir", temp.resolve("xmir").toFile())
+            .with("printOutputDir", output.toFile())
+            .execute(new FakeMaven.Print())
+            .result();
+        MatcherAssert.assertThat(
+            "the .xmir file should have been printed despite a non-XMIR file sitting next to it",
+            Files.exists(output.resolve("main.eo")),
+            Matchers.is(true)
+        );
+    }
+
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/print-packs", glob = "**.yaml")
     void printsXmirToEo(final String pack) throws Exception {

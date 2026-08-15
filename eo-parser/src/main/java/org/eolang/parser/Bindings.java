@@ -126,7 +126,8 @@ final class Bindings {
      * @return True if the parent tracks binding consistency
      */
     private static boolean tracksBindings(final Kind kind) {
-        return kind == Kind.HEAD || kind == Kind.HMETHOD || kind == Kind.VAPPLICATION;
+        return kind == Kind.HEAD || kind == Kind.HMETHOD
+            || kind == Kind.VAPPLICATION || kind == Kind.IDENTITY_OBJECT;
     }
 
     /**

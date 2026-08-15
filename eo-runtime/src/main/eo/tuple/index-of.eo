@@ -8,7 +8,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list wanted] > index-of
+[wanted] > index-of
   number > @
     [tup] >> recidx
       if. > @
@@ -21,11 +21,20 @@
             tup.length.minus 1
             -1
           recidx tup.tail >> next!
-    | list
+    | ^
+
+  eq. ++> can-find-no-index-of-an-absent-item
+    -1
+    index-of.
+      *
+        "qwerty"
+        2
+        3
+      7
 
   eq. ++> can-find-the-index-of-a-non-symmetric-match
     1
-    index-of
+    index-of.
       *
         10
         20
@@ -36,7 +45,7 @@
 
   eq. ++> can-find-the-index-of-a-string
     1
-    index-of
+    index-of.
       *
         "asdfgh"
         "qwerty"
@@ -45,7 +54,7 @@
 
   eq. ++> can-return-the-first-index-of-an-element
     0
-    index-of
+    index-of.
       *
         -1
         2
@@ -54,18 +63,9 @@
 
   eq. ++> can-return-the-index-of-an-element
     1
-    index-of
+    index-of.
       *
         1
         2
         3
       2
-
-  eq. ++> cannot-find-the-index-of-an-absent-item
-    -1
-    index-of
-      *
-        "qwerty"
-        2
-        3
-      7

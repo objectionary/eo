@@ -58,6 +58,9 @@ final class Scope {
         final String found;
         if (base.startsWith("Φ.")) {
             found = this.rooted(base);
+        } else if ("ξ.ρ".equals(base)) {
+            final Nesting nesting = new Nesting(this.formations);
+            found = nesting.around(nesting.around(reference));
         } else {
             found = this.outwards(reference, base.substring(base.indexOf('.') + 1));
         }

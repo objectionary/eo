@@ -17,12 +17,10 @@
   lower. > @
     english text
 
-  "äöü".eq "äöü".lower ++> can-keep-non-ascii-letters
+  "äöü".eq "äöü".lower ++> can-keep-non-ascii-letters-when-lower-casing
 
   eq. ++> can-lower-case-text
     "good evening"
     "Good evening".lower
 
-  eq. ++> can-lower-case-text-through-the-package
-    "hello"
-    lower "HELLO"
+  "hello".eq "HELLO".lower ++> can-lower-case-text-through-the-package

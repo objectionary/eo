@@ -38,36 +38,20 @@
         regex "/ı/"
         "I"
 
-  eq. ++> can-behave-like-the-wrapped-string
-    8
-    length.
-      turkish "İSTANBUL"
+  8.eq "İSTANBUL".turkish.length ++> can-behave-like-the-wrapped-turkish-string
 
-  eq. ++> can-lower-case-dotted-and-dotless-i
-    "ıistanbul"
-    lower.
-      turkish "IİSTANBUL"
+  "ıistanbul".eq "IİSTANBUL".turkish.lower ++> can-lower-case-dotted-and-dotless-i
 
   eq. ++> can-lower-case-every-occurrence-of-a-mapped-character
     "ıııı"
-    lower.
-      turkish "IIII"
+    "IIII".turkish.lower
 
   eq. ++> can-round-trip-a-lower-cased-word
     "ıstanbul"
-    lower.
-      turkish
-        upper.
-          turkish "ıstanbul"
+    "ıstanbul".turkish.upper.turkish.lower
 
   eq. ++> can-round-trip-an-upper-cased-word
     "İSTANBUL"
-    upper.
-      turkish
-        lower.
-          turkish "İSTANBUL"
+    "İSTANBUL".turkish.lower.turkish.upper
 
-  eq. ++> can-upper-case-dotted-and-dotless-i
-    "İSTANBUL"
-    upper.
-      turkish "istanbul"
+  "İSTANBUL".eq "istanbul".turkish.upper ++> can-upper-case-dotted-and-dotless-i

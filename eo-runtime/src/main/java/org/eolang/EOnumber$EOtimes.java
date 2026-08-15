@@ -26,8 +26,8 @@ public final class EOnumber$EOtimes extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            new Expect.Number(Expect.at(this, Phi.RHO)).it()
-                * new Expect.Number(Expect.at(this, "x")).it()
+            new Expect.Numeric(Expect.at(this, Phi.RHO)).it()
+                * new Expect.Numeric(Expect.at(this, "x")).it()
         );
     }
 }

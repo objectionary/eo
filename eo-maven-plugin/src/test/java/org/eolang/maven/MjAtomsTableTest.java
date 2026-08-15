@@ -55,6 +55,24 @@ final class MjAtomsTableTest {
     }
 
     @Test
+    void writesTableWhenOutputHasNoParentDirectory(@Mktmp final Path temp) throws Exception {
+        final Path output = Path.of("mjatomstable-6447-test.csv");
+        try {
+            new FakeMaven(temp)
+                .with("atomsInputDir", temp.resolve("nothing").toFile())
+                .with("atomsOutput", output.toFile())
+                .execute(MjAtomsTable.class);
+            MatcherAssert.assertThat(
+                "A parentless atomsOutput must not throw and must produce the file",
+                Files.exists(output),
+                Matchers.is(true)
+            );
+        } finally {
+            Files.deleteIfExists(output);
+        }
+    }
+
+    @Test
     void writesEmptyTableWhenNoXmirSources(@Mktmp final Path temp) throws Exception {
         new FakeMaven(temp)
             .with("atomsInputDir", temp.resolve("nothing").toFile())

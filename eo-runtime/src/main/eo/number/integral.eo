@@ -66,7 +66,7 @@
     [value operand err] > close-to
       lte. > @
         minus.
-          abs
+          abs.
             value.minus operand
           err
         0
@@ -79,7 +79,7 @@
     close-to > @
       as-number.
         integral
-          x > [x]
+          I
           1
           10
           15
@@ -88,7 +88,7 @@
     [value operand err] > close-to
       lte. > @
         minus.
-          abs
+          abs.
             value.minus operand
           err
         0
@@ -110,7 +110,7 @@
     [value operand err] > close-to
       lte. > @
         minus.
-          abs
+          abs.
             value.minus operand
           err
         0
@@ -123,7 +123,7 @@
     close-to > @
       as-number.
         integral
-          x > [x]
+          I
           0
           1
           1
@@ -132,7 +132,7 @@
     [value operand err] > close-to
       lte. > @
         minus.
-          abs
+          abs.
             value.minus operand
           err
         0
@@ -145,7 +145,7 @@
     close-to > @
       as-number.
         integral
-          x > [x]
+          I
           0
           10
           10
@@ -154,7 +154,7 @@
     [value operand err] > close-to
       lte. > @
         minus.
-          abs
+          abs.
             value.minus operand
           err
         0
@@ -164,37 +164,37 @@
         value.neg
 
   integral --> stops-on-fractional-partitions
-    x > [x]
+    I
     0
     1
     1.5
 
   integral --> stops-on-nan-partitions
-    x > [x]
+    I
     0
     1
     nan
 
   integral --> stops-on-negative-partitions
-    x > [x]
+    I
     0
     1
     -1
 
   integral --> stops-on-negatively-infinite-partitions
-    x > [x]
+    I
     0
     1
     ninf
 
   integral --> stops-on-positively-infinite-partitions
-    x > [x]
+    I
     0
     1
     pinf
 
   integral --> stops-on-zero-partitions
-    x > [x]
+    I
     0
     1
     0

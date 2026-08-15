@@ -30,6 +30,11 @@ final class Emissions {
     private static final int MAX_OCTAL_BYTE = 0xFF;
 
     /**
+     * The void the identity object {@code I} binds and decorates.
+     */
+    private static final String IDENTITY = "x";
+
+    /**
      * Kinds of head value that a {@code .method} chain may follow.
      */
     private static final Set<Value.Kind> CHAINABLE = Set.of(
@@ -234,38 +239,6 @@ final class Emissions {
     }
 
     /**
-     * Decode escape sequences from a raw string body (without
-     * surrounding quotes). Supports {@code \n}, {@code \t}, {@code \r},
-     * {@code \b}, {@code \f}, {@code \"}, {@code \'}, {@code \\},
-     * {@code \\uXXXX} unicode, and {@code \NNN} octal escapes.
-     * @param inner Source body (no quotes)
-     * @return Decoded text
-     */
-    static String unescapeBody(final String inner) {
-        final StringBuilder out = new StringBuilder(inner.length());
-        int idx = 0;
-        while (idx < inner.length()) {
-            final char glyph = inner.charAt(idx);
-            if (glyph != '\\' || idx + 1 >= inner.length()) {
-                out.append(glyph);
-                idx = idx + 1;
-                continue;
-            }
-            final char next = inner.charAt(idx + 1);
-            if (next == 'u') {
-                idx = Emissions.appendUnicode(out, inner, idx + 1);
-            } else if (next >= '0' && next <= '7') {
-                idx = Emissions.appendOctal(out, inner, idx + 1);
-            } else {
-                out.append(Emissions.singleCharEscape(glyph, next));
-                idx = idx + 2;
-            }
-        }
-        Emissions.rejectLoneSurrogates(out);
-        return out.toString();
-    }
-
-    /**
      * Decode a string body to its raw byte representation.
      * @param inner Source body without surrounding quotes
      * @return Decoded bytes
@@ -296,11 +269,35 @@ final class Emissions {
             emit.self();
         } else if (value.kind() == Value.Kind.TERM) {
             emit.object(name, "⊥", line, value.pos());
+        } else if (value.kind() == Value.Kind.IDENTITY) {
+            Emissions.identity(emit, name, value, line);
         } else if (value.kind() == Value.Kind.GROUP) {
             Emissions.group(emit, name, value, line);
         } else {
             emit.object(name, value.raw(), line, value.pos());
         }
+    }
+
+    /**
+     * Open the {@code <o>} for the identity object {@code I} (§3.16) —
+     * an anonymous formation that binds one void and decorates it, the
+     * one-glyph spelling of {@code x > [x]}. The void is always named
+     * {@link Emissions#IDENTITY}, since the glyph carries no name of
+     * its own and the body it decorates is that very void. The element
+     * stays open, so horizontal arguments land on the identity exactly
+     * as they land on a parenthesised {@code (x > [x])}.
+     * @param emit Emitter
+     * @param name Name attribute (or {@code null})
+     * @param value The identity value
+     * @param line Source line
+     */
+    private static void identity(
+        final Emit emit, final String name, final Value value, final int line
+    ) {
+        emit.object(name, null, line, value.pos());
+        emit.voidParam(Emissions.IDENTITY, line, value.pos());
+        emit.object("φ", Emissions.IDENTITY, line, value.pos());
+        emit.close();
     }
 
     /**
@@ -615,38 +612,6 @@ final class Emissions {
         final byte[] bytes = text.toString().getBytes(StandardCharsets.UTF_8);
         out.write(bytes, 0, bytes.length);
         text.setLength(0);
-    }
-
-    /**
-     * Decode an octal escape {@code \NNN} (1 to 3 octal digits)
-     * starting at the first digit position and append the resulting
-     * codepoint to {@code out}.
-     * @param out Output buffer
-     * @param body String body
-     * @param start Index of the first octal digit
-     * @return Index past the consumed digits
-     */
-    private static int appendOctal(
-        final StringBuilder out, final String body, final int start
-    ) {
-        int cursor = start;
-        int value = 0;
-        while (cursor < body.length()
-            && cursor < start + 3
-            && body.charAt(cursor) >= '0' && body.charAt(cursor) <= '7') {
-            value = value * 8 + body.charAt(cursor) - '0';
-            cursor = cursor + 1;
-        }
-        if (value > Emissions.MAX_OCTAL_BYTE) {
-            throw new NumberFormatException(
-                String.format(
-                    "octal escape \\%s is out of range: value %d exceeds the 1-byte limit of 0o377 (255)",
-                    body.substring(start, cursor), value
-                )
-            );
-        }
-        out.append((char) value);
-        return cursor;
     }
 
     /**

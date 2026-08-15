@@ -36,7 +36,7 @@
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>lints</artifactId>
-      <version>0.4.1</version>
+      <version>0.4.5</version>
       <exclusions>
         <exclusion>
           <groupId>org.codehaus.groovy</groupId>
@@ -458,7 +458,6 @@
           <execution>
             <goals>
               <goal>helpmojo</goal>
-              <goal>descriptor</goal>
             </goals>
           </execution>
         </executions>
@@ -482,7 +481,7 @@
           <dependency>
             <groupId>org.apache.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>5.0.8</version>
+            <version>5.1.0</version>
           </dependency>
         </dependencies>
       </plugin>

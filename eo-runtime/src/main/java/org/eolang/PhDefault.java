@@ -10,8 +10,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -83,7 +83,7 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Data.
      */
-    private final byte[] data;
+    private final Snapshot data;
 
     /**
      * The forma of this object, taken from its XMIR locator; empty when the
@@ -99,7 +99,7 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Order of their names.
      */
-    private final Map<Integer, String> order;
+    private final List<String> order;
 
     /**
      * The statistics this object reports its birth and its dispatches to.
@@ -148,7 +148,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param attributes Initial attributes to register
      */
     public PhDefault(final byte[] dta, final Map<String, Attribute> attributes) {
-        this(new Silent(), "", dta, attributes);
+        this(new Silent(), "", Arrays.copyOf(dta, dta.length), attributes);
     }
 
     /**
@@ -183,7 +183,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param dta        Object data
      */
     public PhDefault(final Statistics statistics, final byte[] dta) {
-        this(statistics, "", dta, PhDefault.NONE);
+        this(statistics, "", Arrays.copyOf(dta, dta.length), PhDefault.NONE);
     }
 
     /**
@@ -200,9 +200,9 @@ public class PhDefault implements Phi, Cloneable {
     ) {
         this.stats = statistics;
         this.fqn = forma;
-        this.data = dta;
+        this.data = new Snapshot(dta);
         this.initial = attributes;
-        this.order = new HashMap<>(0);
+        this.order = new ArrayList<>(0);
     }
 
     @Override
@@ -212,18 +212,14 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public int hashCode() {
-        return super.hashCode() + 1;
+        return System.identityHashCode(this) + 1;
     }
 
     @Override
     public final Phi copy() {
         try {
             final PhDefault copy = (PhDefault) this.clone();
-            final Map<String, Attribute> map = new HashMap<>(this.loaded().size());
-            for (final Map.Entry<String, Attribute> ent : this.loaded().entrySet()) {
-                map.put(ent.getKey(), ent.getValue().copy(copy));
-            }
-            copy.attrs = map;
+            copy.attrs = new CopiedAttrs(this.loaded(), copy);
             this.stats.allocate();
             return copy;
         } catch (final CloneNotSupportedException ex) {
@@ -249,7 +245,8 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public void put(final String name, final Phi object) {
-        if (!this.loaded().containsKey(name)) {
+        final Attribute attr = this.loaded().get(name);
+        if (attr == null) {
             throw new ExUnset(
                 String.format(
                     "Can't #put(\"%s\", %s) to %s, because the attribute is absent",
@@ -257,7 +254,7 @@ public class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        this.loaded().get(name).put(object);
+        attr.put(object);
     }
 
     @Override
@@ -271,11 +268,15 @@ public class PhDefault implements Phi, Cloneable {
             );
         }
         this.stats.dispatch();
-        PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
+        final boolean logging = PhDefault.LOGGER.isLoggable(Level.FINE);
+        if (logging) {
+            PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
+        }
         try {
             final Phi resolved;
-            if (this.loaded().containsKey(name)) {
-                resolved = this.loaded().get(name).get();
+            final Attribute attr = this.loaded().get(name);
+            if (attr != null) {
+                resolved = attr.get();
             } else if (name.equals(Phi.LAMBDA)) {
                 resolved = new AtomTyped(
                     this, PhDefault.ATOMS.declared(this.forma())
@@ -283,7 +284,7 @@ public class PhDefault implements Phi, Cloneable {
             } else {
                 resolved = this.absent(name);
             }
-            if (PhDefault.LOGGER.isLoggable(Level.FINE)) {
+            if (logging) {
                 PhDefault.LOGGER.log(
                     Level.FINE,
                     String.format(
@@ -297,11 +298,8 @@ public class PhDefault implements Phi, Cloneable {
             }
             return resolved;
         } finally {
-            final int current = PhDefault.NESTING.get();
-            if (current > 0) {
-                PhDefault.NESTING.set(current - 1);
-            } else {
-                PhDefault.NESTING.set(0);
+            if (logging) {
+                PhDefault.NESTING.set(Math.max(0, PhDefault.NESTING.get() - 1));
             }
         }
     }
@@ -309,21 +307,19 @@ public class PhDefault implements Phi, Cloneable {
     @Override
     public byte[] delta() {
         final byte[] bytes;
-        if (this.data != null) {
-            bytes = this.data;
+        if (this.data.present()) {
+            bytes = this.data.bytes();
         } else if (this instanceof Atom) {
             bytes = this.take(Phi.LAMBDA).delta();
         } else if (this.loaded().containsKey(Phi.PHI)) {
             bytes = this.take(Phi.PHI).delta();
         } else {
             throw new ExFailure(
-                String.format(
-                    "There's no \"Δ\" in the object of \"%s\"",
-                    this.forma()
-                )
+                "There's no \"Δ\" in the object of \"%s\"",
+                this.forma()
             );
         }
-        return bytes;
+        return Arrays.copyOf(bytes, bytes.length);
     }
 
     @Override
@@ -331,7 +327,7 @@ public class PhDefault implements Phi, Cloneable {
         final Phi result;
         if (this instanceof Atom) {
             result = this.take(Phi.LAMBDA).normalized();
-        } else if (this.data == null && this.loaded().containsKey(Phi.PHI)) {
+        } else if (this.data.empty() && this.loaded().containsKey(Phi.PHI)) {
             final Phi phi = this.take(Phi.PHI).normalized();
             if (phi instanceof PhTerminator) {
                 result = phi;
@@ -380,7 +376,7 @@ public class PhDefault implements Phi, Cloneable {
      */
     public void add(final String name, final Attribute attr) {
         if (PhDefault.SORTABLE.matcher(name).matches()) {
-            this.order.put(this.order.size(), name);
+            this.order.add(name);
         }
         this.loaded().put(name, new AtWithRho(attr, this));
     }
@@ -394,27 +390,12 @@ public class PhDefault implements Phi, Cloneable {
             if ("string".equals(name)) {
                 result = new Quoted(raw).get();
             } else {
-                result = PhDefault.numeral(new BytesOf(raw).asNumber());
+                result = new Numeral(new BytesOf(raw).asNumber()).get();
             }
         } else {
             result = this.structural();
         }
         return result;
-    }
-
-    /**
-     * Render a number value as a φ-term.
-     * @param value The number
-     * @return Whole values without a fraction, decimals otherwise
-     */
-    static String numeral(final double value) {
-        final String txt;
-        if (value == Math.floor(value) && !Double.isInfinite(value)) {
-            txt = Long.toString((long) value);
-        } else {
-            txt = Double.toString(value);
-        }
-        return txt;
     }
 
     /**
@@ -455,7 +436,9 @@ public class PhDefault implements Phi, Cloneable {
         } else if (this.loaded().containsKey(Phi.PHI)) {
             object = this.take(Phi.PHI).take(name);
         } else {
-            object = new PhTerminator();
+            object = new PhTerminator(
+                String.format("the attribute \"%s\" is not found in %s", name, this.forma())
+            );
         }
         return object;
     }
@@ -573,28 +556,22 @@ public class PhDefault implements Phi, Cloneable {
         this.loaded();
         if (0 > pos) {
             throw new ExFailure(
-                String.format(
-                    "The attribute position can't be negative (%d)",
-                    pos
-                )
+                "The attribute position can't be negative (%d)",
+                pos
             );
         }
         if (this.order.isEmpty()) {
             throw new ExFailure(
-                String.format(
-                    "There are no attributes here, can't read the %d-th one",
-                    pos
-                )
+                "There are no attributes here, can't read the %d-th one",
+                pos
             );
         }
-        if (!this.order.containsKey(pos)) {
+        if (pos >= this.order.size()) {
             throw new ExFailure(
-                String.format(
-                    "%s has just %d attribute(s), can't read the %d-th one",
-                    this,
-                    this.order.size(),
-                    pos
-                )
+                "%s has just %d attribute(s), can't read the %d-th one",
+                this,
+                this.order.size(),
+                pos
             );
         }
         return this.order.get(pos);
@@ -655,8 +632,8 @@ public class PhDefault implements Phi, Cloneable {
      */
     private String structural() {
         final List<String> list = new ArrayList<>(this.loaded().size());
-        if (this.data != null) {
-            list.add(String.format("D> %s", PhDefault.termBytes(this.data)));
+        if (this.data.present()) {
+            list.add(String.format("D> %s", PhDefault.termBytes(this.data.bytes())));
         }
         for (final Map.Entry<String, Attribute> ent : this.loaded().entrySet().stream().filter(
             e -> !e.getKey().equals(Phi.RHO)
@@ -704,7 +681,7 @@ public class PhDefault implements Phi, Cloneable {
      * @return Default attributes hash map
      */
     private static Map<String, Attribute> defaults() {
-        final Map<String, Attribute> attrs = new HashMap<>(0);
+        final Map<String, Attribute> attrs = new Bindings();
         attrs.put(Phi.RHO, new AtRho());
         return attrs;
     }

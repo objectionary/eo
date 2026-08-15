@@ -183,9 +183,10 @@ final class Placing implements Step {
         }
 
         /**
-         * Check if the file has not been placed yet.
+         * Check if the file has not been placed yet, or {@link #rwte} forces
+         * it to be placed again regardless.
          * @param file The file to check
-         * @return True if the file is not already placed
+         * @return True if the file is not already placed, or rewriting is on
          */
         private boolean isNotAlreadyPlaced(final Path file) {
             final Path target = Placing.this.classes.resolve(
@@ -193,7 +194,8 @@ final class Placing implements Step {
             );
             final Optional<TjPlaced> tojo = Placing.this.placed.find(target);
             final boolean res;
-            if (tojo.isPresent()
+            if (!this.rwte
+                && tojo.isPresent()
                 && Files.exists(target)
                 && !tojo.get().unplaced()
             ) {

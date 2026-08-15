@@ -59,6 +59,53 @@ final class Xmirs {
     }
 
     /**
+     * Every datum of the program.
+     *
+     * <p>A datum has no {@code @base}, like a formation, and carries its
+     * bytes as text, unlike one. It is the ground the whole program stands
+     * on and the one kind of object that is not a copy of anything: there is
+     * nothing to know about {@code 01-} beyond that it is what it is.</p>
+     *
+     * @return The data, file by file, in the order they appear in the code
+     * @throws IOException If a file cannot be read
+     */
+    Collection<XML> data() throws IOException {
+        return this.matching("//o[@loc and not(@base) and text()[normalize-space()]]");
+    }
+
+    /**
+     * Every termination of the program.
+     *
+     * <p>The {@code T} of the code, which the parser writes down as an
+     * object based on the bottom sign. It names no other object, so nothing
+     * looks for what it is a copy of: it is not a copy of anything, it is
+     * the one answer that fits everywhere.</p>
+     *
+     * @return The terminations, file by file, in the order they appear in
+     *  the code
+     * @throws IOException If a file cannot be read
+     */
+    Collection<XML> bottoms() throws IOException {
+        return this.matching("//o[@loc and @base='⊥']");
+    }
+
+    /**
+     * The object every file of the program is about.
+     *
+     * <p>A file carries one object at the top and the package it declares
+     * goes into the locator of that object, so {@code minus} in the package
+     * {@code number} is {@code Φ.number.minus}. That is how an attribute
+     * comes to live in a file of its own.</p>
+     *
+     * @return The named top-level objects, one per file, in the order the
+     *  files come in
+     * @throws IOException If a file cannot be read
+     */
+    Collection<XML> roots() throws IOException {
+        return this.matching("/object/o[@name]");
+    }
+
+    /**
      * Every dispatch of the program.
      *
      * <p>A dispatch is an object whose base begins with a dot: it takes an
@@ -72,6 +119,22 @@ final class Xmirs {
      */
     Collection<XML> dispatches() throws IOException {
         return this.matching("//o[starts-with(@base, '.')]");
+    }
+
+    /**
+     * Every application of the program.
+     *
+     * <p>An application puts something into the voids of the object it
+     * copies, and the place of an argument is what says which void it goes
+     * into. That is the only place in the text where a void is answered, so
+     * it is where a name taken from one stops being a question.</p>
+     *
+     * @return The applications, file by file, in the order they appear in
+     *  the code
+     * @throws IOException If a file cannot be read
+     */
+    Collection<XML> applications() throws IOException {
+        return this.matching("//o[@loc][o[starts-with(@as, 'α')][@loc]]");
     }
 
     /**

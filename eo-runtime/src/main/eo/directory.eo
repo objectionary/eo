@@ -6,9 +6,6 @@
 #  like [a-z] or [!a] reaches the regex engine neither translated nor escaped,
 #  so a negation matches nothing it should and a lone bracket refuses to
 #  compile, while a star inside a class keeps its glob meaning by mistake.
-# @todo #5751:30min Stop descending into a symbolic link to a directory. The
-#  `walk` below asks stat, which follows the link, so a link to its own ancestor
-#  recurses forever, while the `Files.walk` it replaced only listed such a link.
 # @todo #6484:60min Walk a directory in constant stack space. The `stepped`
 #  below still costs one frame per entry, because every loop EO has grows the
 #  stack: `while` nests a frame per cycle and `tuple.reducedi` one per element,
@@ -21,8 +18,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [file] > directory
   file > @
@@ -91,7 +86,7 @@
           posix
             "getpid"
             *
-      number.random clock
+      clock.as-number.random
   [glob] > walk
     [accum prefix dir] >> walked
       [rest] >> stepped
@@ -99,11 +94,15 @@
           rest.length.eq 0
           picked accum prefix
           if.
-            child.as-file.is-directory false
+            and.
+              entry.is-directory false
+              not.
+                entry.is-symlink false
             walked earlier sub child.as-dir
             picked earlier sub
         dir.as-path.resolved name > child
         stepped rest.tail > earlier
+        child.as-file > entry
         rest.head > name
         if. > sub
           prefix.length.eq 0
@@ -293,6 +292,10 @@
       made.
         directory mktemp.tmpfile.deleted
 
+  is-directory. ++> can-recover-from-checking-an-absent-directory
+    directory mktemp.tmpfile.deleted
+    true
+
   ++> can-retry-tmpfile-creation-after-a-collision
     seq * > @
       collision.touched
@@ -365,6 +368,23 @@
           ","
           d.resolved "sub"
           d.resolved "sub/b.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-past-a-symbolic-link-to-its-own-parent
+    os.is-windows.or > @
+      seq *
+        touched. (d.resolved "щи.txt").as-file
+        code.
+          posix *1
+            "symlink"
+            d
+            d.resolved "ссылка"
+        eq.
+          length.
+            d.as-dir.walk "**"
+          2
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
@@ -447,11 +467,7 @@
       made.
         directory mktemp.tmpfile.deleted
 
-  is-directory. ++> rejects-checking-an-absent-directory
-    directory mktemp.tmpfile.deleted
-    true
-
-  tmpfile. --> on-tmpfile-touching-absent-directory
+  tmpfile. --> stops-on-a-tmpfile-in-an-absent-directory
     @.
       mktemp.tmpfile.deleted.as-path.resolved "child"
 

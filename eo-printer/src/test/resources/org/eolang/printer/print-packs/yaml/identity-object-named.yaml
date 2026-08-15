@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A named identity object (#6834) keeps its name and loses its void's
+# spelling, so `uri > [uri] > sanitized` prints as `I > sanitized`.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    uri > [uri] > sanitized
+
+printed: |
+  [] > app
+    I > sanitized

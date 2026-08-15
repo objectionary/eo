@@ -22,8 +22,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [text] > uri
   text > @
@@ -68,7 +66,25 @@
     ""
   if. > host
     not. >> has-port
-      port-colon-idx.eq -1
+      eq.
+        if. >> port-colon-idx
+          string.starts-with host-port "[" >>
+          if.
+            eq.
+              string.index-of >> rel-colon
+                host-port.slice
+                  bracket-start
+                  host-port.length.minus
+                    number bracket-start
+                ":"
+              -1
+            -1
+            rel-colon.plus
+              plus. >> bracket-start
+                string.index-of host-port "]" >>
+                1
+          string.index-of host-port ":"
+        -1
     slice.
       has-userinfo.if >> host-port
         authority.slice
@@ -91,29 +107,17 @@
       ""
     hier-part
   has-port.if > port
-    host-port.slice
-      plus.
-        if. >> port-colon-idx
-          string.starts-with host-port "[" >>
-          if.
-            eq.
-              string.index-of >> rel-colon
-                host-port.slice
-                  bracket-start
-                  host-port.length.minus
-                    number bracket-start
-                ":"
-              -1
-            -1
-            rel-colon.plus
-              plus. >> bracket-start
-                string.index-of host-port "]" >>
-                1
-          string.index-of host-port ":"
-        1
-      host-port.length.minus
-        number
-          port-colon-idx.plus 1
+    if.
+      raw-port.is-digit.or
+        eq.
+          host-port.slice >> raw-port
+            port-colon-idx.plus 1
+            host-port.length.minus
+              number
+                port-colon-idx.plus 1
+          ""
+      raw-port
+      ""
     ""
   if. > query
     not. >> has-query
@@ -131,7 +135,16 @@
     ""
   if. > scheme
     eq.
-      string.index-of text ":" >> scheme-colon
+      if. >> scheme-colon
+        or.
+          eq.
+            string.index-of text ":" >> raw-colon
+            -1
+          not.
+            "/[A-Za-z][A-Za-z0-9+.-]*/".regex.compiled.matches
+              text.slice 0 raw-colon
+        -1
+        raw-colon
       -1
     ""
     text.slice
@@ -179,6 +192,16 @@
     query.
       uri "http://host/some/path?x=1#top"
     "x=1"
+
+  eq. ++> can-parse-a-scheme-with-a-plus-and-a-dot
+    scheme.
+      uri "a+b.c:part"
+    "a+b.c"
+
+  eq. ++> can-parse-an-empty-port
+    port.
+      uri "http://host:/"
+    ""
 
   eq. ++> can-parse-the-empty-host-of-a-triple-slash-uri
     host.
@@ -234,3 +257,23 @@
     userinfo.
       uri "http://user:pass@host:80/some/path"
     "user:pass"
+
+  eq. ++> can-treat-a-digit-led-prefix-as-schemeless
+    scheme.
+      uri "1http://host/path"
+    ""
+
+  eq. ++> can-treat-a-letter-suffixed-port-as-invalid
+    port.
+      uri "http://host:12x/"
+    ""
+
+  eq. ++> can-treat-a-non-digit-port-as-invalid
+    port.
+      uri "http://host:abc/"
+    ""
+
+  eq. ++> can-treat-a-plus-led-prefix-as-schemeless
+    scheme.
+      uri "+foo:bar"
+    ""

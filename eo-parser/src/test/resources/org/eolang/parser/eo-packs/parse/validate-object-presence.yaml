@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/validate-object-presence.xsl
+asserts:
+  - /object/errors/error[@check='validate-object-presence' and @severity='critical' and @line='0']
+input: |
+  +package foo

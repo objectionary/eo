@@ -13,7 +13,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[num] > ln
+[] > ln
   n.is-nan.if > @
     nan
     if.
@@ -98,64 +98,42 @@
         prev.plus prev
       step > prev
         level.minus 1
-  number num.as-bytes > n
+  number ^.as-bytes > n
 
-  lt. ++> can-stay-monotonic
-    ln 2
-    ln 3
+  -2.2.ln.is-nan ++> can-return-nan-for-a-logarithm-of-a-negative-float
+
+  -42.ln.is-nan ++> can-return-nan-for-a-logarithm-of-a-negative-integer
+
+  nan.ln.is-nan ++> can-return-nan-for-a-logarithm-of-nan
+
+  ninf.ln.is-nan ++> can-return-nan-for-a-logarithm-of-negative-infinity
+
+  2.ln.lt 3.ln ++> can-stay-monotonic
 
   lt. ++> can-take-a-logarithm-of-a-fraction
-    abs
-      minus.
-        ln 0.5
-        -0.6931471805599453
+    abs.
+      0.5.ln.minus -0.6931471805599453
     1.0E-11
 
   lt. ++> can-take-a-logarithm-of-a-very-large-number-without-overflowing-the-stack
-    abs
-      minus.
-        ln 1.0e300
-        690.7755278982137
+    abs.
+      1.0e300.ln.minus 690.7755278982137
     1.0E-9
 
   lt. ++> can-take-a-logarithm-of-a-very-small-fraction-without-overflowing-the-stack
-    abs
-      minus.
-        ln 1.0E-300
-        -690.7755278982137
+    abs.
+      1.0E-300.ln.minus -690.7755278982137
     1.0E-9
 
-  eq. ++> can-take-a-logarithm-of-e
-    ln e
-    1
+  e.ln.eq 1 ++> can-take-a-logarithm-of-e
 
-  eq. ++> can-take-a-logarithm-of-one
-    ln 1
-    0
+  1.ln.eq 0 ++> can-take-a-logarithm-of-one
 
-  eq. ++> can-take-a-logarithm-of-positive-infinity
-    ln pinf
-    pinf
+  pinf.ln.eq pinf ++> can-take-a-logarithm-of-positive-infinity
 
   lt. ++> can-take-a-logarithm-of-twenty
-    abs
-      minus.
-        ln 20
-        2.995732273553991
+    abs.
+      20.ln.minus 2.995732273553991
     1.0E-11
 
-  eq. ++> can-take-a-logarithm-of-zero
-    ln 0
-    ninf
-
-  is-nan. ++> cannot-take-a-logarithm-of-a-negative-float
-    ln -2.2
-
-  is-nan. ++> cannot-take-a-logarithm-of-a-negative-integer
-    ln -42
-
-  is-nan. ++> cannot-take-a-logarithm-of-nan
-    ln nan
-
-  is-nan. ++> cannot-take-a-logarithm-of-negative-infinity
-    ln ninf
+  0.ln.eq ninf ++> can-take-a-logarithm-of-zero

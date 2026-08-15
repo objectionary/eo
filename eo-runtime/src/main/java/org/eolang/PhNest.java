@@ -221,7 +221,8 @@ final class PhNest implements Phi {
      */
     private Phi load(final String target) {
         try {
-            return (Phi) Class.forName(target)
+            return Class.forName(target)
+                .asSubclass(Phi.class)
                 .getConstructor(Statistics.class)
                 .newInstance(this.stats);
         } catch (final ClassNotFoundException | NoSuchMethodException

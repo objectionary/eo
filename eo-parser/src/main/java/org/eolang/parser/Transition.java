@@ -44,35 +44,53 @@ final class Transition {
     /**
      * Push a fresh level (when stepping deeper) or replace the level
      * on top (when staying at the same indent), and mark it named if
-     * {@code named} is true.
+     * {@code admission} carries a label.
      * @param kind Outer kind for the level
      * @param openness Openness for the level
-     * @param label The suffix's source name, or {@code null} when the
-     *  line carries no name suffix
+     * @param admission The line's naming suffix and atom-body permission
      * @return The pushed-or-replaced level
      */
-    Level apply(final Kind kind, final Openness openness, final String label) {
+    Level apply(final Kind kind, final Openness openness, final Admission admission) {
         final Level level;
         if (this.stack.empty() || this.stack.top().indent() < this.span.indent()) {
-            if (!this.stack.empty() && this.span.indent() != this.stack.top().indent() + 2) {
-                throw new ParseError(
-                    this.span.line(), 0,
-                    "indent increased by more than one level"
-                );
-            }
-            if (!this.stack.empty() && this.stack.top().openness() != Openness.OPEN) {
-                throw new ParseError(
-                    this.span.line(), 0,
-                    "unexpected deeper-indent line — previous expression is closed for children"
-                );
-            }
-            level = this.stack.push(this.span.indent(), this.span.line(), kind, openness);
+            level = this.pushed(kind, openness, admission);
         } else {
             level = this.stack.replace(this.span.line(), kind, openness);
         }
-        if (label != null) {
-            level.name(label);
+        if (admission.label() != null) {
+            level.name(admission.label());
         }
         return level;
+    }
+
+    /**
+     * Push a fresh level after validating the indent step (R-5.1.3), the
+     * parent's openness (R-5.2.4) and, when the parent is an atom, that
+     * this child is permitted under it (R-3.10.13).
+     * @param kind Outer kind for the level
+     * @param openness Openness for the level
+     * @param admission The line's naming suffix and atom-body permission
+     * @return The pushed level
+     */
+    private Level pushed(final Kind kind, final Openness openness, final Admission admission) {
+        if (!this.stack.empty() && this.span.indent() != this.stack.top().indent() + 2) {
+            throw new ParseError(
+                this.span.line(), 0,
+                "indent increased by more than one level"
+            );
+        }
+        if (!this.stack.empty() && this.stack.top().openness() != Openness.OPEN) {
+            throw new ParseError(
+                this.span.line(), 0,
+                "unexpected deeper-indent line — previous expression is closed for children"
+            );
+        }
+        if (!this.stack.empty() && this.stack.top().atom() && !admission.permitted()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "Atom cannot contain inner objects; only `+>` test attributes are allowed in an atom body"
+            );
+        }
+        return this.stack.push(this.span.indent(), this.span.line(), kind, openness);
     }
 }

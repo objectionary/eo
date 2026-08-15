@@ -166,14 +166,16 @@ public interface Msvcrt extends Library {
 
     /**
      * Gets the current time as seconds and milliseconds since the Unix epoch,
-     * filling a {@code struct __timeb32}. It replaces Kernel32's wall-clock
+     * filling a {@code struct __timeb64}. It replaces Kernel32's wall-clock
      * {@code GetSystemTime}, lining the win32 clock up with the posix
      * {@code gettimeofday}: like {@code gettimeofday} it hands back the raw
      * status code, unlike the older {@code _ftime} that returns {@code void}.
+     * The 64-bit variant is used because the 32-bit {@code _ftime32_s} can
+     * only represent dates through 18 January 2038.
      * @param timeb Structure to fill with the current time
      * @return Zero on success, an errno value on failure
      */
-    int _ftime32_s(Structure timeb);
+    int _ftime64_s(Structure timeb);
 
     /**
      * Duplicates a file descriptor.

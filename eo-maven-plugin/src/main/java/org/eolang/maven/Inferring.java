@@ -14,9 +14,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eolang.inference.Clues;
+import org.eolang.inference.Depth;
+import org.eolang.inference.Ladder;
+import org.eolang.inference.Resolved;
 import org.eolang.parser.TrFull;
 
 /**
@@ -85,16 +89,40 @@ final class Inferring implements Step {
         if (Files.exists(this.input)) {
             new Deleted(this.prepared.toFile()).get();
             final int ready = this.ready();
-            new Clues().follow(this.prepared, this.tables);
+            new Resolved(new Clues()).follow(this.prepared, this.tables);
             Logger.info(
                 this, "Inferred the types of %d XMIR(s), tables are in %[file]s",
                 ready, this.tables
             );
+            this.measured();
         } else {
             Logger.info(
                 this, "The directory %[file]s is absent, nothing to infer from it",
                 this.input
             );
+        }
+    }
+
+    /**
+     * Say how much of the program the tables turned out to say.
+     *
+     * <p>The summary is one line, because a build that says nothing about how
+     * well it understood the sources leaves every reader to open the tables and
+     * guess. The rungs it is the mean of go to the debug log, since a number
+     * nobody can take apart is a number that gets gamed: writing an empty row
+     * for every object would take the share described to a hundred and move the
+     * depth not at all.</p>
+     *
+     * @throws IOException If a table cannot be read
+     */
+    private void measured() throws IOException {
+        final Ladder ladder = new Depth(this.prepared, this.tables).ladder();
+        Logger.info(
+            this, "%d objects, %.1f%% of them described, depth %.1f%%",
+            ladder.total(), ladder.described(), ladder.percent()
+        );
+        for (final Map.Entry<String, Integer> rung : ladder.rungs().entrySet()) {
+            Logger.debug(this, "  %6d  %s", rung.getValue(), rung.getKey());
         }
     }
 
