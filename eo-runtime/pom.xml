@@ -286,21 +286,17 @@
               <goal>unspile</goal>
             </goals>
             <configuration>
-              <!--
-              'redundant-object' sees one file at a time and counts only the
-              references written relative to the current object, so every
-              public attribute of a library object, from 'win32.rdonly' to
-              'tuple.empty', looks unused to it (objectionary/lints#1276).
-
-              'package-member-without-void' expects a package member to reach
-              its receiver through a first void, while the members listed in
-              'mergedPackages' below reach it through '^'
-              (objectionary/lints#1273).
-              -->
               <skipSourceLints>
                 <!-- https://github.com/objectionary/lints/issues/1279 -->
                 <lint>mandatory-package</lint>
+                <!-- https://github.com/objectionary/lints/issues/1273 -->
                 <lint>package-member-without-void</lint>
+                <!--
+                'redundant-object' sees one file at a time and counts only the
+                references written relative to the current object, so every
+                public attribute of a library object, from 'win32.rdonly' to
+                'tuple.empty', looks unused to it (objectionary/lints#1276).
+                -->
                 <lint>redundant-object</lint>
               </skipSourceLints>
               <!--
