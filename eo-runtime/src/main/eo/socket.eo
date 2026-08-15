@@ -256,14 +256,18 @@
         seq * > [buffer] > write
           send buffer
           output-block
-  if. > [] > checked-port
-    or.
-      port.lt 0
-      port.gt 65535
+  port.is-integer.not.if > [] > checked-port
     T
-      "Port %d is out of range; it must be 0 to 65535".printf
+      "Port must be an integer in 0 to 65535, but was %f".printf
         * port
-    port
+    if.
+      or.
+        port.lt 0
+        port.gt 65535
+      T
+        "Port %d is out of range; it must be 0 to 65535".printf
+          * port
+      port
   [port] > htons
     as-i16. > @
       or.
@@ -280,6 +284,11 @@
   eq. ++> can-convert-a-port-above-the-signed-short-limit-in-htons
     40-9C
     socket.htons 40000
+
+  checked-port. --> rejects-a-fractional-port
+    socket
+      "127.0.0.1"
+      1.5
 
   checked-port. --> rejects-a-port-above-the-valid-range
     socket
