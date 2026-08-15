@@ -1,0 +1,104 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+package org.eolang;
+
+import java.util.concurrent.atomic.AtomicInteger;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+
+/**
+ * Test case for {@link CopiedAttrs}.
+ * @since 0.63
+ */
+final class CopiedAttrsTest {
+
+    @Test
+    void copiesNoAttributeThatNobodyTakes() {
+        final AtomicInteger copies = new AtomicInteger();
+        new PhDefault(
+            new Attrs(new Attr("x", new CopiedAttrsTest.AtCounting(copies)))
+        ).copy();
+        MatcherAssert.assertThat(
+            "copying an object must leave an attribute nobody takes alone, but it copied it",
+            copies.get(),
+            Matchers.equalTo(0)
+        );
+    }
+
+    @Test
+    void copiesTheAttributeThatIsTaken() {
+        final AtomicInteger copies = new AtomicInteger();
+        new PhDefault(
+            new Attrs(new Attr("x", new CopiedAttrsTest.AtCounting(copies)))
+        ).copy().take("x");
+        MatcherAssert.assertThat(
+            "taking an attribute out of a copy must copy it once, but it didnt",
+            copies.get(),
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void copiesTheSameAttributeOnlyOnce() {
+        final AtomicInteger copies = new AtomicInteger();
+        final Phi copy = new PhDefault(
+            new Attrs(new Attr("x", new CopiedAttrsTest.AtCounting(copies)))
+        ).copy();
+        copy.take("x");
+        copy.take("x");
+        MatcherAssert.assertThat(
+            "taking one attribute twice must copy it once, but it copied it again",
+            copies.get(),
+            Matchers.equalTo(1)
+        );
+    }
+
+    /**
+     * Attribute that remembers how many times it was copied.
+     * @since 0.63
+     */
+    private static final class AtCounting implements Attribute {
+
+        /**
+         * Where the copies are counted.
+         */
+        private final AtomicInteger copies;
+
+        /**
+         * Ctor.
+         * @param count Where to count the copies
+         */
+        AtCounting(final AtomicInteger count) {
+            this.copies = count;
+        }
+
+        @Override
+        public Attribute copy(final Phi self) {
+            this.copies.incrementAndGet();
+            return this;
+        }
+
+        @Override
+        public Phi get() {
+            return new PhDefault();
+        }
+
+        @Override
+        public void put(final Phi phi) {
+            throw new UnsupportedOperationException("this attribute takes nothing");
+        }
+
+        @Override
+        public boolean vacant() {
+            return false;
+        }
+
+        @Override
+        public String φTerm() {
+            return "counting";
+        }
+    }
+}

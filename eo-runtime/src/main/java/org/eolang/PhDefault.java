@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -99,7 +98,7 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Order of their names.
      */
-    private final Map<Integer, String> order;
+    private final List<String> order;
 
     /**
      * Attributes.
@@ -158,7 +157,7 @@ public class PhDefault implements Phi, Cloneable {
         this.fqn = forma;
         this.data = new Snapshot(dta);
         this.initial = attributes;
-        this.order = new HashMap<>(0);
+        this.order = new ArrayList<>(0);
     }
 
     @Override
@@ -175,11 +174,7 @@ public class PhDefault implements Phi, Cloneable {
     public final Phi copy() {
         try {
             final PhDefault copy = (PhDefault) this.clone();
-            final Map<String, Attribute> map = new HashMap<>(this.loaded().size());
-            for (final Map.Entry<String, Attribute> ent : this.loaded().entrySet()) {
-                map.put(ent.getKey(), ent.getValue().copy(copy));
-            }
-            copy.attrs = map;
+            copy.attrs = new CopiedAttrs(this.loaded(), copy);
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new ExFailure("cannot copy the object", ex);
@@ -327,7 +322,7 @@ public class PhDefault implements Phi, Cloneable {
      */
     public void add(final String name, final Attribute attr) {
         if (PhDefault.SORTABLE.matcher(name).matches()) {
-            this.order.put(this.order.size(), name);
+            this.order.add(name);
         }
         this.loaded().put(name, new AtWithRho(attr, this));
     }
@@ -532,7 +527,7 @@ public class PhDefault implements Phi, Cloneable {
                 pos
             );
         }
-        if (!this.order.containsKey(pos)) {
+        if (pos >= this.order.size()) {
             throw new ExFailure(
                 "%s has just %d attribute(s), can't read the %d-th one",
                 this,
@@ -640,7 +635,7 @@ public class PhDefault implements Phi, Cloneable {
      * @return Default attributes hash map
      */
     private static Map<String, Attribute> defaults() {
-        final Map<String, Attribute> attrs = new HashMap<>(0);
+        final Map<String, Attribute> attrs = new Bindings();
         attrs.put(Phi.RHO, new AtRho());
         return attrs;
     }
