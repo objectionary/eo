@@ -360,6 +360,15 @@ final class TokensTest {
     }
 
     @Test
+    void rejectsMultiByteBytesWithADanglingDash() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Tokens("00-11-22-33-", new Span("00-11-22-33-", 1)).readBytes(),
+            "readBytes must reject a multi-byte literal ending in a dangling dash per R-3.13.1"
+        );
+    }
+
+    @Test
     void rejectsLowercaseHexAsBytesStart() {
         final String body = "c4-5";
         MatcherAssert.assertThat(
