@@ -259,13 +259,13 @@ final class Tokens {
     Value readInt() {
         final int start = this.cursor;
         int idx = start;
-        if (idx < this.body.length()
-            && (this.body.charAt(idx) == '+' || this.body.charAt(idx) == '-')) {
+        final boolean sign = idx < this.body.length()
+            && (this.body.charAt(idx) == '+' || this.body.charAt(idx) == '-');
+        if (sign) {
             idx = idx + 1;
         }
         final int from = idx;
-        while (idx < this.body.length()
-            && this.body.charAt(idx) >= '0' && this.body.charAt(idx) <= '9') {
+        while (Tokens.digitAt(this.body, idx)) {
             idx = idx + 1;
         }
         if (idx == from) {
@@ -601,8 +601,7 @@ final class Tokens {
      * @return True if {@code ?.} starts here
      */
     private static boolean fragileAhead(final String body, final int idx) {
-        return idx + 1 < body.length()
-            && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
+        return idx + 1 < body.length() && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
     }
 
     /**
@@ -626,10 +625,8 @@ final class Tokens {
      * @return True if {@code HH-} appears here
      */
     private static boolean byteChunk(final String body, final int idx) {
-        return idx + 2 < body.length()
-            && Tokens.byteDigit(body.charAt(idx))
-            && Tokens.byteDigit(body.charAt(idx + 1))
-            && body.charAt(idx + 2) == '-';
+        return idx + 2 < body.length() && Tokens.byteDigit(body.charAt(idx))
+            && Tokens.byteDigit(body.charAt(idx + 1)) && body.charAt(idx + 2) == '-';
     }
 
     /**
@@ -673,8 +670,7 @@ final class Tokens {
      * @return True if a NAME character follows the root
      */
     private static boolean glued(final String body, final int idx) {
-        return idx + 1 < body.length()
-            && !Tokens.terminates(body.charAt(idx + 1));
+        return idx + 1 < body.length() && !Tokens.terminates(body.charAt(idx + 1));
     }
 
     /**
@@ -712,8 +708,7 @@ final class Tokens {
      */
     private static boolean signedStart(final String body, final int idx) {
         return idx < body.length()
-            && Tokens.sign(body.charAt(idx))
-            && Tokens.digitAt(body, idx + 1);
+            && Tokens.sign(body.charAt(idx)) && Tokens.digitAt(body, idx + 1);
     }
 
     /**
@@ -940,9 +935,8 @@ final class Tokens {
     }
 
     /**
-     * Scan the non-empty form of a BYTES literal at the cursor — one
-     * {@code BB} pair, any number of {@code -BB} pairs after it, and an
-     * optional trailing {@code -} per §3.13.1.
+     * Scan the non-empty BYTES form — {@code BB}, more {@code -BB} pairs,
+     * then a trailing {@code -} only for a single pair; §3.13.1 rejects one after 2+ pairs.
      * @param start Index the literal starts at, for error reporting
      * @return The literal text
      */
@@ -959,8 +953,13 @@ final class Tokens {
             && this.bytePair(this.cursor + 1)) {
             this.cursor = this.cursor + 3;
         }
-        if (this.cursor < this.body.length()
-            && this.body.charAt(this.cursor) == '-') {
+        if (this.cursor < this.body.length() && this.body.charAt(this.cursor) == '-') {
+            if (this.cursor - start > 2) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent() + this.cursor,
+                    "bytes literal ends with a dangling continuation dash"
+                );
+            }
             this.cursor = this.cursor + 1;
         }
         return this.body.substring(start, this.cursor);
