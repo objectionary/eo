@@ -12,7 +12,7 @@ import org.eolang.Phi;
 import org.eolang.Syscall;
 
 /**
- * The msvcrt _ftime32_s function call.
+ * The msvcrt _ftime64_s function call.
  * @since 0.74.0
  */
 public final class FtimeFuncCall implements Syscall {
@@ -34,7 +34,7 @@ public final class FtimeFuncCall implements Syscall {
     public Phi make(final Phi... params) {
         final Phi result = this.win.take("return").copy();
         final FtimeFuncCall.Timeb timeb = new FtimeFuncCall.Timeb();
-        result.put(0, new Data.ToPhi(Msvcrt.INSTANCE._ftime32_s(timeb)));
+        result.put(0, new Data.ToPhi(Msvcrt.INSTANCE._ftime64_s(timeb)));
         final Phi struct = this.win.take("timeb");
         struct.put(0, new Data.ToPhi(timeb.time));
         struct.put(1, new Data.ToPhi(timeb.millitm));
@@ -43,7 +43,7 @@ public final class FtimeFuncCall implements Syscall {
     }
 
     /**
-     * The {@code struct __timeb32} filled by {@code _ftime32_s}.
+     * The {@code struct __timeb64} filled by {@code _ftime64_s}.
      * @since 0.74.0
      * @checkstyle VisibilityModifierCheck (100 lines)
      */
@@ -52,7 +52,7 @@ public final class FtimeFuncCall implements Syscall {
         /**
          * Seconds since the Unix epoch.
          */
-        public int time;
+        public long time;
 
         /**
          * Fraction of a second, in milliseconds.
