@@ -287,15 +287,6 @@
             </goals>
             <configuration>
               <!--
-              These five lints are unsatisfiable for the standard library, so
-              they are turned off here once instead of being suppressed by a
-              '+unlint' meta in every second file:
-
-              'mandatory-package' demands a '+package' meta, while the root
-              objects of the library live in the root package on purpose and
-              the transpiler hardcodes 'org.eolang' for them, so a '+package'
-              would nest them one level too deep.
-
               'redundant-object' sees one file at a time and counts only the
               references written relative to the current object, so every
               public attribute of a library object, from 'win32.rdonly' to
@@ -307,6 +298,7 @@
               (objectionary/lints#1273).
               -->
               <skipSourceLints>
+                <!-- https://github.com/objectionary/lints/issues/1279 -->
                 <lint>mandatory-package</lint>
                 <lint>package-member-without-void</lint>
                 <lint>redundant-object</lint>
