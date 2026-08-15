@@ -38,17 +38,15 @@
               0
             [] >> abs-mod
               shrink > @
-                grow absy
-                absx
-              dividend.abs > absx!
-              divisor.abs > absy!
+                grow divisor.abs
+                dividend.abs
               if. > [chunk] > grow
-                chunk.gte absx
+                chunk.gte dividend.abs
                 chunk
                 grow
                   chunk.plus chunk
               if. > [chunk rest] > shrink
-                chunk.lt absy
+                chunk.lt divisor.abs
                 rest
                 shrink
                   chunk.div 2
