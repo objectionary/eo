@@ -6,7 +6,6 @@
 package org.eolang;
 
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 /**
@@ -25,11 +24,6 @@ public class PhOnce implements Phi {
      * Reference.
      */
     private final AtomicReference<Phi> ref;
-
-    /**
-     * Lock for thread-safe initialization.
-     */
-    private final ReentrantLock lock;
 
     /**
      * Supplier of the φ-term, or {@code null} to delegate to the wrapped object.
@@ -51,21 +45,8 @@ public class PhOnce implements Phi {
      */
     public PhOnce(final Supplier<Phi> obj, final Supplier<String> term) {
         this.ref = new AtomicReference<>(null);
-        this.lock = new ReentrantLock();
         this.term = term;
-        this.object = () -> {
-            if (this.ref.get() == null) {
-                this.lock.lock();
-                try {
-                    if (this.ref.get() == null) {
-                        this.ref.set(obj.get());
-                    }
-                } finally {
-                    this.lock.unlock();
-                }
-            }
-            return this.ref.get();
-        };
+        this.object = () -> this.loaded(obj);
     }
 
     @Override
@@ -142,5 +123,22 @@ public class PhOnce implements Phi {
             result = this.term.get();
         }
         return result;
+    }
+
+    /**
+     * The wrapped object, made by the supplier the first time it is wanted.
+     * @param obj Supplier of the object
+     * @return The object
+     */
+    @SuppressWarnings("PMD.AvoidSynchronizedStatement")
+    private Phi loaded(final Supplier<Phi> obj) {
+        if (this.ref.get() == null) {
+            synchronized (this.ref) {
+                if (this.ref.get() == null) {
+                    this.ref.set(obj.get());
+                }
+            }
+        }
+        return this.ref.get();
     }
 }
