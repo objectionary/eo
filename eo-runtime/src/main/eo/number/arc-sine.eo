@@ -11,7 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[num] > arc-sine
+[] > arc-sine
   if. > @
     arg.as-bytes.eq 80-00-00-00-00-00-00-00
     arg
@@ -19,9 +19,7 @@
       arg.lt 0
       neg.
         if. >> base
-          gt.
-            abs arg >> magnitude
-            0.5
+          arg.abs.gt 0.5
           minus.
             pi.div 2
             2.times
@@ -48,10 +46,10 @@
                 times. > squared!
                   number bts
                   number bts
-              | (sqrt ((1.minus magnitude).div 2))
-          series magnitude
+              | ((1.minus arg.abs).div 2).sqrt
+          series arg.abs
       base
-  number num.as-bytes > arg
+  number ^.as-bytes > arg
 
   lt. ++> can-behave-as-an-odd-function-when-taking-arc-sine
     abs.

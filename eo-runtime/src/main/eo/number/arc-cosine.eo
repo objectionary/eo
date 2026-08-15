@@ -10,10 +10,10 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[num] > arc-cosine
+[] > arc-cosine
   minus. > @
     pi.div 2
-    arc-sine num
+    ^.arc-sine
 
   2.arc-cosine.is-nan ++> can-return-nan-for-an-arc-cosine-above-one
 

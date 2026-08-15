@@ -12,8 +12,7 @@
 [as-bytes] > number
   as-bytes > @
   as-i32.as-i16 > as-i16
-  as-i32. > as-i32
-    number.as-i64 $
+  $.as-i64.as-i32 > as-i32
   [] > div /Q.number
     ? > x /Q.number
   [] > gt /Q.bool
@@ -348,12 +347,6 @@
   eq. ++> can-multiply-positive-infinity-by-positive-infinity
     pinf.times pinf
     pinf
-
-  eq. ++> can-raise-to-a-power-through-the-package
-    number.power
-      2
-      5
-    32
 
   eq. ++> can-tell-it-is-not-greater-than-a-float-when-negative-infinity
     ninf.gt 42.5

@@ -12,7 +12,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[n] > as-decimal
+[] > as-decimal
   n.is-finite.not.if > @
     T
       "Can't write a non-finite number as decimal"
@@ -38,11 +38,11 @@
           [n] >> digits
             if. > @
               n.lt ten
-              as-char
+              as-char.
                 n.as-number.plus 48
               concat.
                 digits q
-                as-char
+                as-char.
                   plus.
                     as-number.
                       n.minus (q.times ten)
@@ -50,6 +50,7 @@
             n.div ten failure > bits!
             i64 bits > q
           | (n.as-i64 failure)
+  ^ > n
   10.as-i64 failure > ten!
 
   eq. ++> can-drop-the-sign-of-a-negative-below-one

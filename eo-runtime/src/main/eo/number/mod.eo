@@ -18,7 +18,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[x y cant-mod] > mod
+[y cant-mod] > mod
   if. > @
     eq.
       number y.as-bytes >> divisor
@@ -38,16 +38,15 @@
               0
             [] >> abs-mod
               shrink > @
-                grow
-                  abs divisor >> absy
-                abs dividend >> absx
+                grow divisor.abs
+                dividend.abs
               if. > [chunk] > grow
-                chunk.gte absx
+                chunk.gte dividend.abs
                 chunk
                 grow
                   chunk.plus chunk
               if. > [chunk rest] > shrink
-                chunk.lt absy
+                chunk.lt divisor.abs
                 rest
                 shrink
                   chunk.div 2
@@ -56,6 +55,7 @@
                     rest.minus chunk
                     rest
             abs-mod.neg
+  ^ > x
 
   eq. ++> can-recover-from-a-modulo-by-zero
     "recovered"

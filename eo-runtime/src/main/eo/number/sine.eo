@@ -15,11 +15,11 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[num] > sine
+[] > sine
   times. > @
     minus. >> reduced
       minus.
-        number num.as-bytes >> arg
+        number ^.as-bytes >> arg
         times.
           floor. >> k
             plus.

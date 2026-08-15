@@ -16,7 +16,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[n places cant-print] > as-fixed
+[places cant-print] > as-fixed
   if. > @
     or.
       0.gt places
@@ -32,11 +32,9 @@
             digits.eq scale
             if. > [unit rest] >> written
               places.eq 0
-              as-decimal unit
+              unit.as-decimal
               concat.
-                concat.
-                  as-decimal unit
-                  ".".as-bytes
+                unit.as-decimal.concat ".".as-bytes
                 rec-pad rest places --
             | (whole.plus 1) 0
             written whole digits
@@ -64,6 +62,7 @@
             positive a
         | (n.times -1)
         positive n
+  ^ > n
   if. > [p] >> pow10
     p.eq 0
     1
@@ -81,7 +80,7 @@
       as-number.
         count.minus 1
       concat.
-        as-char
+        as-char.
           plus.
             floor.
               value.minus

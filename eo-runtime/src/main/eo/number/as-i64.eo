@@ -11,7 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[n cant-convert] > as-i64
+[cant-convert] > as-i64
   if. > @
     or.
       eq.
@@ -53,6 +53,7 @@
                 exp.minus 1075
               mantissa.right
                 1075.minus exp
+  ^ > n
 
   eq. ++> can-convert-a-fraction-below-one-to-zero
     0.5.as-i64.as-bytes
