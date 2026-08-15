@@ -14,9 +14,10 @@ public final class EOdataized extends PhDefault implements Atom {
 
     /**
      * Ctor.
+     * @param stats Where this object reports its birth
      */
-    public EOdataized() {
-        super(new Attrs(new Attr("target", new AtVoid("target"))));
+    public EOdataized(final Statistics stats) {
+        super(stats, new Attrs(new Attr("target", new AtVoid("target"))));
     }
 
     @Override

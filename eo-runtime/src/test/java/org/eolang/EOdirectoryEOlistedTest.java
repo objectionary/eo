@@ -118,6 +118,6 @@ final class EOdirectoryEOlistedTest {
         file.put(0, new Data.ToPhi(path));
         final Phi directory = Phi.Φ.take("directory").copy();
         directory.put(0, file);
-        return new PhApplication(new EOdirectory$EOlisted(), Phi.RHO, directory);
+        return new PhApplication(new EOdirectory$EOlisted(new Silent()), Phi.RHO, directory);
     }
 }

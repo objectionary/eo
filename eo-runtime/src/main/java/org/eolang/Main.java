@@ -230,6 +230,10 @@ public final class Main {
                 "The name of the object is an empty string, why?"
             );
         }
+        final Statistics stats = Phi.Φ.statistics();
+        final long born = stats.allocations();
+        final long taken = stats.dispatches();
+        final long start = System.currentTimeMillis();
         final Phi app = Phi.Φ.take(obj);
         if (opts.size() > 1) {
             Phi args = Phi.Φ.take("tuple").take("empty");
@@ -239,9 +243,6 @@ public final class Main {
             }
             app.put(0, args);
         }
-        final long start = System.currentTimeMillis();
-        final long births = Statistics.PROGRAM.allocations();
-        final long lookups = Statistics.PROGRAM.dispatches();
         final byte[] ret = new Dataized(app).take();
         Main.LOGGER.info(
             String.format(
@@ -249,8 +250,8 @@ public final class Main {
                 new VerboseBytesAsString(ret).get(),
                 (System.currentTimeMillis() - start) / 1000.0,
                 ret.length,
-                Statistics.PROGRAM.allocations() - births,
-                Statistics.PROGRAM.dispatches() - lookups
+                stats.allocations() - born,
+                stats.dispatches() - taken
             )
         );
     }

@@ -17,9 +17,10 @@ public final class EObytes$EOsize extends PhDefault implements Atom {
 
     /**
      * Ctor.
+     * @param stats Where this object reports its birth
      */
-    public EObytes$EOsize() {
-        // nothing
+    public EObytes$EOsize(final Statistics stats) {
+        super(stats);
     }
 
     @Override

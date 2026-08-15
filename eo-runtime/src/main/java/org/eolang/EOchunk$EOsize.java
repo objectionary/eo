@@ -17,9 +17,10 @@ public final class EOchunk$EOsize extends PhDefault implements Atom {
 
     /**
      * Ctor.
+     * @param stats Where this object reports its birth
      */
-    public EOchunk$EOsize() {
-        // nothing
+    public EOchunk$EOsize(final Statistics stats) {
+        super(stats);
     }
 
     @Override

@@ -9,49 +9,49 @@ import java.util.concurrent.atomic.LongAdder;
 /**
  * Statistics kept in a pair of adders.
  *
- * <p>Either counter may be incremented by many threads at once. The two are
- * read one after another, so a pair taken while the program still runs does
- * not belong to one instant.</p>
+ * <p>Each of the two counters is thread-safe on its own. They are read
+ * independently, so a caller that asks for both while the program is still
+ * running gets two numbers taken at two different instants.</p>
  *
- * @since 0.73.3
+ * @since 0.62
  */
 public final class Counters implements Statistics {
 
     /**
      * How many objects were born.
      */
-    private final LongAdder births;
+    private final LongAdder born;
 
     /**
-     * How many attributes were looked up.
+     * How many attributes were taken.
      */
-    private final LongAdder lookups;
+    private final LongAdder taken;
 
     /**
      * Ctor.
      */
     public Counters() {
-        this.births = new LongAdder();
-        this.lookups = new LongAdder();
+        this.born = new LongAdder();
+        this.taken = new LongAdder();
     }
 
     @Override
     public void allocate() {
-        this.births.increment();
+        this.born.increment();
     }
 
     @Override
     public void dispatch() {
-        this.lookups.increment();
+        this.taken.increment();
     }
 
     @Override
     public long allocations() {
-        return this.births.sum();
+        return this.born.sum();
     }
 
     @Override
     public long dispatches() {
-        return this.lookups.sum();
+        return this.taken.sum();
     }
 }

@@ -102,6 +102,11 @@ public class PhDefault implements Phi, Cloneable {
     private final Map<Integer, String> order;
 
     /**
+     * The statistics this object reports its birth and its dispatches to.
+     */
+    private final Statistics stats;
+
+    /**
      * Attributes.
      */
     private Map<String, Attribute> attrs;
@@ -110,7 +115,7 @@ public class PhDefault implements Phi, Cloneable {
      * Default ctor.
      */
     public PhDefault() {
-        this("", null, PhDefault.NONE);
+        this(new Silent());
     }
 
     /**
@@ -118,7 +123,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param forma The forma of the object
      */
     public PhDefault(final String forma) {
-        this(forma, null, PhDefault.NONE);
+        this(new Silent(), forma);
     }
 
     /**
@@ -126,7 +131,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param attributes Initial attributes to register
      */
     public PhDefault(final Map<String, Attribute> attributes) {
-        this("", null, attributes);
+        this(new Silent(), attributes);
     }
 
     /**
@@ -134,7 +139,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param dta Object data
      */
     public PhDefault(final byte[] dta) {
-        this("", dta, PhDefault.NONE);
+        this(new Silent(), dta);
     }
 
     /**
@@ -143,18 +148,57 @@ public class PhDefault implements Phi, Cloneable {
      * @param attributes Initial attributes to register
      */
     public PhDefault(final byte[] dta, final Map<String, Attribute> attributes) {
-        this("", dta, attributes);
+        this(new Silent(), "", dta, attributes);
+    }
+
+    /**
+     * Ctor of an object that counts into the program it belongs to.
+     * @param statistics Where to report the birth and the dispatches
+     */
+    public PhDefault(final Statistics statistics) {
+        this(statistics, "", null, PhDefault.NONE);
+    }
+
+    /**
+     * Ctor with the forma taken from XMIR.
+     * @param statistics Where to report the birth and the dispatches
+     * @param forma      The forma of the object
+     */
+    public PhDefault(final Statistics statistics, final String forma) {
+        this(statistics, forma, null, PhDefault.NONE);
+    }
+
+    /**
+     * Ctor with initial attributes.
+     * @param statistics Where to report the birth and the dispatches
+     * @param attributes Initial attributes to register
+     */
+    public PhDefault(final Statistics statistics, final Map<String, Attribute> attributes) {
+        this(statistics, "", null, attributes);
+    }
+
+    /**
+     * Ctor.
+     * @param statistics Where to report the birth and the dispatches
+     * @param dta        Object data
+     */
+    public PhDefault(final Statistics statistics, final byte[] dta) {
+        this(statistics, "", dta, PhDefault.NONE);
     }
 
     /**
      * Primary ctor.
+     * @param statistics Where to report the birth and the dispatches
      * @param forma      The forma of the object, taken from XMIR
      * @param dta        Object data
      * @param attributes Initial attributes to register
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
     private PhDefault(
-        final String forma, final byte[] dta, final Map<String, Attribute> attributes
+        final Statistics statistics, final String forma,
+        final byte[] dta, final Map<String, Attribute> attributes
     ) {
+        this.stats = statistics;
         this.fqn = forma;
         this.data = dta;
         this.initial = attributes;
@@ -180,7 +224,7 @@ public class PhDefault implements Phi, Cloneable {
                 map.put(ent.getKey(), ent.getValue().copy(copy));
             }
             copy.attrs = map;
-            Statistics.PROGRAM.allocate();
+            this.stats.allocate();
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new ExFailure("cannot copy the object", ex);
@@ -226,7 +270,7 @@ public class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        Statistics.PROGRAM.dispatch();
+        this.stats.dispatch();
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         try {
             final Phi resolved;
@@ -314,6 +358,11 @@ public class PhDefault implements Phi, Cloneable {
             form = this.fqn;
         }
         return form;
+    }
+
+    @Override
+    public Statistics statistics() {
+        return this.stats;
     }
 
     /**
@@ -569,15 +618,19 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Activate the lazy state: initialize attrs/order from the constructor-supplied
-     * map, wrapping each entry with {@link AtWithRho}. Idempotent. This is also
-     * where the object is counted as born, since it happens once per object and,
-     * unlike a constructor, may do work.
+     * map, wrapping each entry with {@link AtWithRho}. Idempotent.
+     *
+     * <p>This is also where an object is counted as born, since it happens
+     * exactly once per object and, unlike a constructor, may do work. An
+     * object that never reaches this point has no attributes and takes no
+     * part in dataization, so it stays out of the statistics.</p>
+     *
      * @return Map of attrs
      */
     private Map<String, Attribute> loaded() {
         if (this.attrs == null) {
             this.attrs = PhDefault.defaults();
-            Statistics.PROGRAM.allocate();
+            this.stats.allocate();
             for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
                 this.add(ent.getKey(), ent.getValue());
             }

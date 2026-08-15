@@ -13,7 +13,7 @@ sheets:
 asserts:
   - /object[not(errors)]
   - //java[contains(text(), 'public final class EOmain extends PhOnce {')]
-  - //java[contains(text(), '  public EOmain() {')]
+  - //java[contains(text(), '  public EOmain(final Statistics stats) {')]
   - //java[contains(text(), '    super(')]
   - //java[contains(text(), '      () -> {')]
   - //java[contains(text(), '        return r;')]

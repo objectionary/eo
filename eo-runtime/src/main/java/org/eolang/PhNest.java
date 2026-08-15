@@ -48,13 +48,20 @@ final class PhNest implements Phi {
     private final Map<String, Phi> origin;
 
     /**
+     * The statistics every object loaded from this package reports to.
+     */
+    private final Statistics stats;
+
+    /**
      * Ctor.
      * @param name The forma of the package
+     * @param statistics Where the objects of this package report to
      */
-    PhNest(final String name) {
+    PhNest(final String name, final Statistics statistics) {
         this.pkg = name;
         this.objects = new ConcurrentHashMap<>(0);
         this.origin = new ConcurrentHashMap<>(1);
+        this.stats = statistics;
     }
 
     @Override
@@ -114,6 +121,11 @@ final class PhNest implements Phi {
     }
 
     @Override
+    public Statistics statistics() {
+        return this.stats;
+    }
+
+    @Override
     public String locator() {
         return this.object().locator();
     }
@@ -153,7 +165,7 @@ final class PhNest implements Phi {
         final String fqn = String.join(".", this.pkg, name);
         if (!this.objects.containsKey(fqn)) {
             this.attest();
-            this.objects.put(fqn, PhNest.load(new JavaPath(fqn).toString()));
+            this.objects.put(fqn, this.load(new JavaPath(fqn).toString()));
         }
         return this.objects.get(fqn).copy();
     }
@@ -198,7 +210,7 @@ final class PhNest implements Phi {
      */
     private Phi object() {
         return this.origin.computeIfAbsent(
-            this.pkg, key -> PhNest.load(new JavaPath(key).toString())
+            this.pkg, key -> this.load(new JavaPath(key).toString())
         );
     }
 
@@ -207,9 +219,11 @@ final class PhNest implements Phi {
      * @param target The fully-qualified Java name
      * @return The object
      */
-    private static Phi load(final String target) {
+    private Phi load(final String target) {
         try {
-            return (Phi) Class.forName(target).getConstructor().newInstance();
+            return (Phi) Class.forName(target)
+                .getConstructor(Statistics.class)
+                .newInstance(this.stats);
         } catch (final ClassNotFoundException | NoSuchMethodException
             | InvocationTargetException | InstantiationException
             | IllegalAccessException ex) {

@@ -22,9 +22,10 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
 
     /**
      * Ctor.
+     * @param stats Where this object reports its birth
      */
-    public EOchunk$EOread() {
-        super(new Attrs(
+    public EOchunk$EOread(final Statistics stats) {
+        super(stats, new Attrs(
             new Attr("offset", new AtVoid("offset")),
             new Attr("length", new AtVoid("length")),
             new Attr(
