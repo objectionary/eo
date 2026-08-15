@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eolang.inference.Clues;
+import org.eolang.inference.Demanded;
 import org.eolang.inference.Depth;
 import org.eolang.inference.Ladder;
 import org.eolang.inference.Resolved;
@@ -89,7 +90,7 @@ final class Inferring implements Step {
         if (Files.exists(this.input)) {
             new Deleted(this.prepared.toFile()).get();
             final int ready = this.ready();
-            new Resolved(new Clues()).follow(this.prepared, this.tables);
+            new Demanded(new Resolved(new Clues())).follow(this.prepared, this.tables);
             Logger.info(
                 this, "Inferred the types of %d XMIR(s), tables are in %[file]s",
                 ready, this.tables

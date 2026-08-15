@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Nothing can be said about what a void holds, since a caller decides that.
+# What its value will have to offer is another matter, and the program says
+# that out loud: `next` is taken from `x`, so whatever fills `x` must have a
+# `next`, and what comes back of it goes by a name of its own.
+eo:
+  inc.eo: |
+    [x] > inc
+      x.next > @
+provides:
+  - "/provides/type[@id='Φ.inc']/attr[@void='true']/demand[@name='next']"
+  - "//demand[@name='next' and @type='Φ.inc.x.next']"
