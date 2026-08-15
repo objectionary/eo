@@ -26,7 +26,7 @@
           or.
             pth.size.eq 0
             index.eq 0
-          uri >> pth!
+          trimmed >> pth!
           as-bytes.
             text.slice
               plus. >> index!
@@ -39,7 +39,7 @@
       string > @
         if.
           pth.size.eq 0
-          uri >> pth!
+          trimmed >> pth!
           if.
             len.eq -1
             "."
@@ -152,6 +152,19 @@
         as-bytes.
           sys.sanitized other
     sys.separator > separator
+    string > [] > trimmed
+      if.
+        or.
+          uri.size.eq 0
+          uri.eq separator
+        uri
+        if.
+          uri.ends-with separator
+          as-bytes.
+            uri.slice
+              0
+              uri.length.minus separator.length
+          uri
   [paths] > joined
     normalized. > @
       os.is-windows.if
@@ -402,7 +415,7 @@
       path.posix "/var/www/html/foo\\bar"
     "foo\\bar"
 
-  eq. ++> can-return-an-empty-basename-from-a-path-ending-with-a-separator
+  eq. ++> can-return-the-basename-ignoring-a-trailing-separator
     basename.
       path.joined
         *
@@ -410,7 +423,12 @@
           "www"
           "html"
           path.separator
-    ""
+    "html"
+
+  eq. ++> can-return-the-basename-of-a-root-relative-path-ending-with-a-separator
+    basename.
+      path.posix "/foo/"
+    "foo"
 
   eq. ++> can-return-the-current-dirname-of-a-hidden-relative-posix-file
     dirname.
@@ -422,6 +440,11 @@
       path.posix "plain"
     "."
 
+  eq. ++> can-return-the-current-dirname-of-a-relative-posix-file-ending-with-a-separator
+    dirname.
+      path.posix "foo/"
+    "."
+
   eq. ++> can-return-the-dirname-of-a-directory-path
     dirname.
       path.joined
@@ -429,8 +452,7 @@
           "var"
           "www"
           path.separator
-    path.joined
-      * "var" "www"
+    "var"
 
   eq. ++> can-return-the-dirname-of-a-file-path
     dirname.
@@ -460,6 +482,11 @@
   eq. ++> can-return-the-root-dirname-of-a-single-component-posix-path
     dirname.
       path.posix "/foo"
+    "/"
+
+  eq. ++> can-return-the-root-dirname-of-a-single-component-posix-path-ending-with-a-separator
+    dirname.
+      path.posix "/foo/"
     "/"
 
   eq. ++> can-return-the-same-string-without-a-separator
