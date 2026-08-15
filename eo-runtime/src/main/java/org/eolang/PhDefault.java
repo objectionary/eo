@@ -338,27 +338,12 @@ public class PhDefault implements Phi, Cloneable {
             if ("string".equals(name)) {
                 result = new Quoted(raw).get();
             } else {
-                result = PhDefault.numeral(new BytesOf(raw).asNumber());
+                result = new Numeral(new BytesOf(raw).asNumber()).get();
             }
         } else {
             result = this.structural();
         }
         return result;
-    }
-
-    /**
-     * Render a number value as a φ-term.
-     * @param value The number
-     * @return Whole values without a fraction, decimals otherwise
-     */
-    static String numeral(final double value) {
-        final String txt;
-        if (value == Math.floor(value) && !Double.isInfinite(value)) {
-            txt = Long.toString((long) value);
-        } else {
-            txt = Double.toString(value);
-        }
-        return txt;
     }
 
     /**

@@ -99,7 +99,9 @@ public final class PhApplication extends PhOnce {
         if (string != null) {
             result = string;
         } else if (literal && "Φ.number".equals(head)) {
-            result = PhDefault.numeral(new BytesOf(PhApplication.bytes(data.group(1))).asNumber());
+            result = new Numeral(
+                new BytesOf(PhApplication.bytes(data.group(1))).asNumber()
+            ).get();
         } else {
             result = String.format("%s(%s)", head, body);
         }
