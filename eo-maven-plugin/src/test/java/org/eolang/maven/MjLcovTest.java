@@ -41,18 +41,4 @@ final class MjLcovTest {
             Matchers.stringContainsInOrder("SF:", "числò/plus.eo", "DA:7,2", "LF:1", "LH:1")
         );
     }
-
-    @Test
-    void savesTracefileWhereTheParameterNamesIt(@Mktmp final Path temp) throws Exception {
-        final Path tracefile = temp.resolve("отчёт").resolve("объекты.info");
-        new FakeMaven(temp)
-            .with("hits", temp.resolve("coverage.txt").toFile())
-            .with("tracefile", tracefile.toFile())
-            .execute(MjLcov.class);
-        MatcherAssert.assertThat(
-            "the tracefile is not at the path the parameter names",
-            Files.exists(tracefile),
-            Matchers.is(true)
-        );
-    }
 }

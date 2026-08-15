@@ -86,10 +86,10 @@ public final class MjTranspile extends MjSafe {
      * into an LCOV tracefile.
      * @todo #5466:30min Enforce a minimum EO object coverage in eo-runtime.
      *  Once {@link MjLcov} names the untouched objects too, turn
-     *  {@code eo.coverageTracking} on for every {@code eo-runtime} build
-     *  rather than the {@code codecov} one alone, and fail the build when
-     *  the covered percentage of dataized {@code .eo} objects drops below
-     *  a threshold (for example 80 percent), mirroring how the existing
+     *  {@code eo.coverageTracking} on for every build in
+     *  {@code eo-runtime/pom.xml} and fail the build when the covered
+     *  percentage of dataized {@code .eo} objects drops below a
+     *  threshold (for example 80 percent), mirroring how the existing
      *  {@code jacoco} profile binds a {@code check} goal with per-metric
      *  thresholds.
      * @checkstyle MemberNameCheck (7 lines)
