@@ -92,7 +92,7 @@
             normalized.size.eq 0
             "."
             string normalized
-      as-bytes. > normalized
+      as-bytes. > normalized!
         if.
           driveless.size.eq 0
           if.
