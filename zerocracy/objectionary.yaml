@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2163.732746467
+  seconds: 357.47529076
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-14 23:29:39.336238033 Z
+  when: 2026-08-14 23:56:12.120180014 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -285263,7 +285263,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 835
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13313865444
   issues_were_scanned: 0
@@ -285273,7 +285273,7 @@
   min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 0
+  types_were_scanned: 556
   what: iterate
   where: github
 - _id: 1107889
@@ -292210,7 +292210,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1020
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13009557602
   issues_were_scanned: 0
@@ -292220,7 +292220,7 @@
   min_issue_was_found: 481
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 971
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108618
@@ -295968,14 +295968,14 @@
   min_issue_was_found: 74
   min_pull_was_found: 0
   repository: 721146770
-  types_were_scanned: 383
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108977
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1020
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13314374773
   issues_were_scanned: 982
@@ -295985,7 +295985,7 @@
   min_issue_was_found: 654
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 680
+  types_were_scanned: 1020
   what: iterate
   where: github
 - _id: 1108989
@@ -298927,7 +298927,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1124
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 17693553333
   issues_were_scanned: 0
@@ -298937,7 +298937,7 @@
   min_issue_was_found: 435
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 0
+  types_were_scanned: 1103
   what: iterate
   where: github
 - _id: 1109065
@@ -298961,17 +298961,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5487
+  assignees_were_scanned: 5807
   earliest_issue_was_found: 1
   events_were_scanned: 13314203806
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6179
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 5657
+  types_were_scanned: 5794
   what: iterate
   where: github
 - _id: 1109067
@@ -485062,6 +485062,87 @@
   - 1
   - 1
   - 1
+  some_triage_time:
+  - 2567.0
+  - 142.0
+  - 110.0
+  - 96.0
+  - 244.0
+  - 402.0
+  - 8985.0
+  - 9640.0
+  - 642.0
+  - 121.0
+  - 3223.0
+  - 7548.0
+  - 87.0
+  - 171073.0
+  - 24720.0
+  - 24843.0
+  - 24866.0
+  - 26672.0
+  - 26702.0
+  - 26733.0
+  - 49788.0
+  - 49811.0
+  - 49835.0
+  - 49855.0
+  - 49880.0
+  - 49901.0
+  - 49922.0
+  - 90.0
+  - 7807.0
+  - 3647.0
+  - 3673.0
+  - 3703.0
+  - 3724.0
+  - 3749.0
+  - 6332.0
+  - 7296.0
+  - 8433.0
+  - 8504.0
+  - 8624.0
+  - 8819.0
+  - 8912.0
+  - 8986.0
+  - 9174.0
+  - 9261.0
+  - 9328.0
+  - 22360.0
+  - 22395.0
+  - 374.0
+  - 1188.0
+  - 3722.0
+  - 132.0
+  - 301.0
+  - 79180.0
+  - 4277.0
+  - 90112.0
+  - 90116.0
+  - 24065.0
+  - 161303.0
+  - 163284.0
+  - 274674.0
+  - 456.0
+  - 478.0
+  - 4413.0
+  - 4488.0
+  - 4502.0
+  - 809.0
+  - 5953.0
+  - 5997.0
+  - 6065.0
+  - 6083.0
+  - 6104.0
+  - 6120.0
+  - 1011.0
+  - 32365.0
+  - 20899.0
+  - 21145.0
+  - 271.0
+  - 340721.0
+  - 504824.0
+  - 10173.0
   some_unmerged_pulls:
   - 0
   - 0
@@ -492236,8 +492317,10 @@
     them coming. Your running score is [+4644](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 78
+  href: https://github.com/objectionary/eo/issues/6835/#issuecomment-5299168023
   is_human: 1
   issue: 6835
+  receipt: receipt-#86466
   repository: 73056727
   review_comments: 0
   seconds: 7870
@@ -492259,8 +492342,10 @@
     them coming. Your running score is [+4656](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 15
+  href: https://github.com/objectionary/eo/issues/6837/#issuecomment-5299168152
   is_human: 1
   issue: 6837
+  receipt: receipt-#86467
   repository: 73056727
   review_comments: 0
   seconds: 6682
@@ -492346,8 +492431,8 @@
   where: github
   who: 29139614
 - _id: 1119587
-  _job: 31848194703
-  _time: 2026-08-14 23:29:39.139208536 Z
+  _job: 31851634864
+  _time: 2026-08-14 23:55:43.062385448 Z
   _version: 0.19.16/0.61.1/0.17.21
   since: *4404
   what: quality-of-service
