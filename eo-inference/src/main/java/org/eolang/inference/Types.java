@@ -6,8 +6,6 @@ package org.eolang.inference;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -15,9 +13,7 @@ import org.xembly.Xembler;
 /**
  * What every object of a program turns out to be, as a document.
  *
- * <p>A row is keyed by the locator of an object and holds a type. There are
- * three forms of type so far — an object being a copy of another one, the
- * voids of that copy it has filled, and a datum — and every one of them is
+ * <p>A row is keyed by the locator of an object and holds one {@link Type},
  * written as an element rather than as a cell of the row:</p>
  *
  * <pre> &lt;type id="Φ.app.held"&gt;
@@ -34,9 +30,9 @@ import org.xembly.Xembler;
  * <p>A cell would have been shorter and is what this table used to write. It
  * cannot survive the other forms, though: an object is sometimes a datum,
  * sometimes a termination, sometimes a choice between several objects, and a
- * choice is not one answer. Since every one of those wants an element of its
- * own, the one form there was got an element too, and the ones that follow are
- * added beside it rather than by rewriting this.</p>
+ * choice is not one answer. Nor can a collection per form, which is what
+ * replaced it: three of them for three forms, and four more forms coming.
+ * A row holds one type, and so does this.</p>
  *
  * <p>The rows come out in the order they were worked out, so that two builds
  * of the same program can be compared as text.</p>
@@ -46,44 +42,16 @@ import org.xembly.Xembler;
 final class Types {
 
     /**
-     * The pairs, each object against the one it is a copy of.
+     * What every object turns out to be, by its locator.
      */
-    private final Map<String, String> copies;
-
-    /**
-     * What every application put into the voids of what it copies.
-     */
-    private final Map<String, Map<String, String>> filled;
-
-    /**
-     * The objects that are data.
-     */
-    private final Collection<String> ground;
+    private final Map<String, Type> rows;
 
     /**
      * Ctor.
-     * @param pairs The pairs, each object against the one it is a copy of
-     * @param data The objects that are data
+     * @param types What every object turns out to be, by its locator
      */
-    Types(final Map<String, String> pairs, final Collection<String> data) {
-        this(pairs, Collections.emptyMap(), data);
-    }
-
-    /**
-     * Ctor.
-     * @param pairs The pairs, each object against the one it is a copy of
-     * @param binds What every application put into the voids of what it
-     *  copies, from {@link Bound}
-     * @param data The objects that are data
-     */
-    Types(
-        final Map<String, String> pairs,
-        final Map<String, Map<String, String>> binds,
-        final Collection<String> data
-    ) {
-        this.copies = pairs;
-        this.filled = binds;
-        this.ground = data;
+    Types(final Map<String, Type> types) {
+        this.rows = types;
     }
 
     /**
@@ -92,38 +60,12 @@ final class Types {
      */
     XML asXml() {
         final Directives dirs = new Directives().add("links");
-        for (final Map.Entry<String, String> pair : this.copies.entrySet()) {
+        for (final Map.Entry<String, Type> row : this.rows.entrySet()) {
             dirs.add("type")
-                .attr("id", pair.getKey())
-                .add("ref")
-                .attr("loc", pair.getValue())
-                .append(this.binds(pair.getKey()))
-                .up()
+                .attr("id", row.getKey())
+                .append(row.getValue().directives())
                 .up();
-        }
-        for (final String datum : this.ground) {
-            dirs.add("type").attr("id", datum).add("data").up().up();
         }
         return new XMLDocument(new Xembler(dirs).domQuietly());
-    }
-
-    /**
-     * The voids this object has filled.
-     * @param id The locator of the object
-     * @return The directives that put them inside its type, empty when it
-     *  fills none
-     */
-    private Directives binds(final String id) {
-        final Directives dirs = new Directives();
-        for (final Map.Entry<String, String> bind
-            : this.filled.getOrDefault(id, Collections.emptyMap()).entrySet()) {
-            dirs.add("bind")
-                .attr("void", bind.getKey())
-                .add("ref")
-                .attr("loc", bind.getValue())
-                .up()
-                .up();
-        }
-        return dirs;
     }
 }

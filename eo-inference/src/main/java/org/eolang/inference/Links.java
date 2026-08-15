@@ -70,22 +70,21 @@ final class Links implements Clue {
             made.add(formation.xpath("@loc").get(0));
         }
         final Scope scope = new Scope(new HashSet<>(world.locators()), new HashSet<>(made));
-        final Map<String, String> found = new LinkedHashMap<>(0);
+        final Map<String, Type> found = new LinkedHashMap<>(0);
         for (final XML reference : world.references()) {
             final String from = reference.xpath("@loc").get(0);
             final String target = scope.target(from, reference.xpath("@base").get(0));
             if (!target.isEmpty()) {
-                found.put(from, target);
+                found.put(from, new Ref(target));
             }
         }
-        final Collection<String> ground = new ArrayList<>(0);
         for (final XML datum : world.data()) {
-            ground.add(datum.xpath("@loc").get(0));
+            found.put(datum.xpath("@loc").get(0), new Data());
         }
         Files.createDirectories(tables);
         Files.write(
             tables.resolve("links.xml"),
-            new Types(found, ground).asXml().toString().getBytes(StandardCharsets.UTF_8)
+            new Types(found).asXml().toString().getBytes(StandardCharsets.UTF_8)
         );
     }
 }

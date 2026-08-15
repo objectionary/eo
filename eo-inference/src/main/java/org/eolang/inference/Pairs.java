@@ -54,15 +54,28 @@ final class Pairs {
 
     /**
      * Every object of the table that is a datum.
-     *
-     * <p>A pass that reads the table and writes it again must put these back
-     * where it found them: a row saying an object is a datum is not a pair and
-     * would fall out of a document rebuilt from pairs alone.</p>
-     *
      * @return The locators
      */
     Collection<String> data() {
         return this.table.xpath("/links/type[data]/@id");
+    }
+
+    /**
+     * Every row of the table that is not a pair.
+     *
+     * <p>A pass that reads the table and writes it again can only build the
+     * kinds of answer it knows about, and it knows about pairs. Everything
+     * else comes back as {@link Kept}, to be written as it was found rather
+     * than dropped for being none of that pass's business.</p>
+     *
+     * @return The types, by the locator of the object they are about
+     */
+    Map<String, Type> others() {
+        final Map<String, Type> found = new LinkedHashMap<>(0);
+        for (final XML row : this.table.nodes("/links/type[not(ref)]")) {
+            found.put(row.xpath("@id").get(0), new Kept(row));
+        }
+        return found;
     }
 
     /**
