@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 357.47529076
+  seconds: 2162.906548947
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-14 23:56:12.120180014 Z
+  when: 2026-08-15 02:34:03.089301160 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -40616,6 +40616,7 @@
   is_human: 1
   issue: 479
   repository: 977982682
+  tombstone: 2026-08-14 23:58:48.311578845 Z
   what: issue-was-opened
   when: &264 2025-12-01 13:31:40.000000000 Z
   where: github
@@ -41014,6 +41015,7 @@
   is_human: 0
   issue: 479
   repository: 977982682
+  tombstone: 2026-08-14 23:58:48.313526453 Z
   what: issue-was-closed
   when: 2025-12-02 14:35:39.000000000 Z
   where: github
@@ -44518,6 +44520,7 @@
   details: 'In the repository #977982682, the user #526301 submitted the issue #479
     which was later closed by the user #8086956 not becoming a bug or enhancement;
     this means that the issue was not valid, maybe a duplicate or simply a mistake.'
+  done: 2026-08-14 23:58:48.283028619 Z
   is_human: 1
   issue: 479
   repository: 977982682
@@ -47803,6 +47806,7 @@
   is_human: 1
   issue: 4706
   repository: 73056727
+  tombstone: 2026-08-14 23:58:48.175396909 Z
   what: pull-was-opened
   when: 2025-12-01 13:34:20.000000000 Z
   where: github
@@ -48787,6 +48791,7 @@
   review_comments: 1
   succeeded_builds: 23
   suggestions: 1
+  tombstone: 2026-08-14 23:58:48.177403756 Z
   what: pull-was-merged
   when: &345 2025-12-02 06:35:54.000000000 Z
   where: github
@@ -49881,6 +49886,7 @@
   repository: 73056727
   review_comments: 1
   seconds: 61294
+  tombstone: 2026-08-14 23:58:48.179266935 Z
   what: code-was-contributed
   when: *345
   where: github
@@ -52743,6 +52749,7 @@
   is_human: 1
   issue: 479
   repository: 977982682
+  tombstone: 2026-08-14 23:58:48.315405582 Z
   what: dud-was-punished
   when: 2025-12-14 14:20:21.256306149 Z
   where: github
@@ -54003,6 +54010,7 @@
   repository: 73056727
   review_comments: 1
   seconds: 61294
+  tombstone: 2026-08-14 23:58:48.181166582 Z
   what: code-contribution-was-rewarded
   when: 2025-12-15 03:01:28.277955280 Z
   where: github
@@ -61410,6 +61418,7 @@
   comments: 7
   details: The pull request objectionary/eo#4706 with 40 HoC created by @volodya-lombrozo
     was reviewed by @coderabbitai[bot] after 0h3m and 0 comments.
+  done: 2026-08-14 23:58:48.146219756 Z
   hoc: 40
   is_human: 0
   issue: 4706
@@ -61428,6 +61437,7 @@
   comments: 7
   details: The pull request objectionary/eo#4706 with 40 HoC created by @volodya-lombrozo
     was reviewed by @copilot after 0h4m and 1 comments.
+  done: 2026-08-14 23:58:48.184892096 Z
   hoc: 40
   is_human: 0
   issue: 4706
@@ -65944,6 +65954,7 @@
   repository: 73056727
   review_comments: 0
   seconds: 61066
+  tombstone: 2026-08-14 23:58:48.182995472 Z
   what: code-review-was-rewarded
   when: 2025-12-26 22:17:36.793967872 Z
   where: github
@@ -285263,7 +285274,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 835
   earliest_issue_was_found: 1
   events_were_scanned: 13313865444
   issues_were_scanned: 0
@@ -285273,7 +285284,7 @@
   min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 556
+  types_were_scanned: 788
   what: iterate
   where: github
 - _id: 1107889
@@ -292210,7 +292221,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1021
   earliest_issue_was_found: 1
   events_were_scanned: 13009557602
   issues_were_scanned: 0
@@ -292220,7 +292231,7 @@
   min_issue_was_found: 481
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 0
+  types_were_scanned: 628
   what: iterate
   where: github
 - _id: 1108618
@@ -295975,9 +295986,9 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1020
   earliest_issue_was_found: 1
-  events_were_scanned: 13314374773
+  events_were_scanned: 13314593871
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
@@ -295985,7 +295996,7 @@
   min_issue_was_found: 654
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 1020
+  types_were_scanned: 1216
   what: iterate
   where: github
 - _id: 1108989
@@ -298927,7 +298938,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1124
   earliest_issue_was_found: 1
   events_were_scanned: 17693553333
   issues_were_scanned: 0
@@ -298937,7 +298948,7 @@
   min_issue_was_found: 435
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 1103
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109065
@@ -298961,17 +298972,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5807
+  assignees_were_scanned: 6066
   earliest_issue_was_found: 1
-  events_were_scanned: 13314203806
+  events_were_scanned: 13318454767
   issues_were_scanned: 0
-  labels_were_scanned: 6179
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 5794
+  types_were_scanned: 5930
   what: iterate
   where: github
 - _id: 1109067
@@ -492313,9 +492324,6 @@
   comments: 4
   details: It's time to reward @morphqdd for the code contributed in objectionary/eo#6835,
     the reward amount is 16.
-  greeting: 'Thanks for the contribution! You''ve earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+4644](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 78
   href: https://github.com/objectionary/eo/issues/6835/#issuecomment-5299168023
   is_human: 1
@@ -492337,10 +492345,6 @@
   comments: 4
   details: It's time to reward @morphqdd for the code contributed in objectionary/eo#6837,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too few (15) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+4656](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 15
   href: https://github.com/objectionary/eo/issues/6837/#issuecomment-5299168152
   is_human: 1
@@ -492431,8 +492435,8 @@
   where: github
   who: 29139614
 - _id: 1119587
-  _job: 31851634864
-  _time: 2026-08-14 23:55:43.062385448 Z
+  _job: 31857878090
+  _time: 2026-08-15 02:34:02.915192670 Z
   _version: 0.19.16/0.61.1/0.17.21
   since: *4404
   what: quality-of-service
