@@ -38,11 +38,11 @@
           [n] >> digits
             if. > @
               n.lt ten
-              as-char
+              as-char.
                 n.as-number.plus 48
               concat.
                 digits q
-                as-char
+                as-char.
                   plus.
                     as-number.
                       n.minus (q.times ten)

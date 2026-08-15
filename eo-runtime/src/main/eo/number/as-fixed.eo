@@ -32,11 +32,9 @@
             digits.eq scale
             if. > [unit rest] >> written
               places.eq 0
-              as-decimal unit
+              unit.as-decimal
               concat.
-                concat.
-                  as-decimal unit
-                  ".".as-bytes
+                unit.as-decimal.concat ".".as-bytes
                 rec-pad rest places --
             | (whole.plus 1) 0
             written whole digits

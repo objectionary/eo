@@ -38,9 +38,10 @@
               0
             [] >> abs-mod
               shrink > @
-                grow
-                  abs divisor >> absy
-                abs dividend >> absx
+                grow absy
+                absx
+              dividend.abs > absx!
+              divisor.abs > absy!
               if. > [chunk] > grow
                 chunk.gte absx
                 chunk

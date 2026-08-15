@@ -25,18 +25,18 @@
       mantissa.eq "10.000000".as-bytes
       concat.
         "1.000000".as-bytes.concat "e".as-bytes
-        as-decimal
+        as-decimal.
           plus.
             number exponent
             1
       concat.
         mantissa.concat "e".as-bytes
-        as-decimal
+        as-decimal.
           number exponent
   rec-exponent > exponent!
     n.abs
     0
-  as-fixed > mantissa
+  as-fixed. > mantissa
     n.div
       10.power
         number exponent
