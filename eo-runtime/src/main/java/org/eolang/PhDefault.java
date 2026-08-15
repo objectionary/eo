@@ -322,11 +322,14 @@ public class PhDefault implements Phi, Cloneable {
      * @param name The name
      * @param attr The attr
      */
+    @SuppressWarnings("PMD.AvoidSynchronizedStatement")
     public void add(final String name, final Attribute attr) {
-        if (PhDefault.SORTABLE.matcher(name).matches()) {
-            this.order.add(name);
+        synchronized (this.order) {
+            if (PhDefault.SORTABLE.matcher(name).matches()) {
+                this.order.add(name);
+            }
+            this.loaded().put(name, new AtWithRho(attr, this));
         }
-        this.loaded().put(name, new AtWithRho(attr, this));
     }
 
     @Override
@@ -561,14 +564,17 @@ public class PhDefault implements Phi, Cloneable {
      * map, wrapping each entry with {@link AtWithRho}. Idempotent.
      * @return Map of attrs
      */
+    @SuppressWarnings("PMD.AvoidSynchronizedStatement")
     private Map<String, Attribute> loaded() {
-        if (this.attrs == null) {
-            this.attrs = PhDefault.defaults();
-            for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
-                this.add(ent.getKey(), ent.getValue());
+        synchronized (this.order) {
+            if (this.attrs == null) {
+                this.attrs = PhDefault.defaults();
+                for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
+                    this.add(ent.getKey(), ent.getValue());
+                }
             }
+            return this.attrs;
         }
-        return this.attrs;
     }
 
     /**
