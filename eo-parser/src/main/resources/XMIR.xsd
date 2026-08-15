@@ -286,6 +286,19 @@
             </xs:restriction>
           </xs:simpleType>
         </xs:attribute>
+        <xs:attribute name="lossy" type="empty">
+          <xs:annotation>
+            <xs:appinfo>The error came from a recovery that dropped source content</xs:appinfo>
+            <xs:documentation>
+              Present when the parser recovered from this error by discarding
+              the whole construct it was building (e.g. a binding line), as
+              opposed to a purely cosmetic or informational error that leaves
+              every construct intact. A consumer deciding whether it is safe
+              to trust the recovered tree should treat this attribute, not
+              severity alone, as the sign that part of the source was lost.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>

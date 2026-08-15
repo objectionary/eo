@@ -416,7 +416,7 @@ final class Eo implements Iterable<Directive> {
         } catch (final ParseError err) {
             emit.rollback(tstartsen);
             stack.restore(frame);
-            emit.error(err.line(), err.pos(), err.getMessage());
+            emit.error(err.line(), err.pos(), err.getMessage(), true);
             failed = true;
         }
         return failed;

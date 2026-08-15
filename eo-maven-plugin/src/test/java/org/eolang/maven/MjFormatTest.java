@@ -147,6 +147,36 @@ final class MjFormatTest {
     }
 
     @Test
+    void failsWhenErrorRecoveredByDroppingABinding(@Mktmp final Path temp) {
+        final IllegalStateException exception = Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(MjFormatTest.droppedBinding())
+                .execute(MjFormat.class),
+            "a source recovered by dropping a whole binding must not be silently formatted"
+        );
+        final StringWriter writer = new StringWriter();
+        exception.printStackTrace(new PrintWriter(writer));
+        MatcherAssert.assertThat(
+            "the failure must explain that the source does not fully parse",
+            writer.toString(),
+            Matchers.containsString("does not fully parse")
+        );
+    }
+
+    @Test
+    void doesNotOverwriteDroppedBindingRecoveryWhenAutoFixIsOn(@Mktmp final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .with("autoFix", true)
+                .withProgram(MjFormatTest.droppedBinding())
+                .execute(MjFormat.class),
+            "a source the parser only recovered by dropping a binding must not be rewritten"
+        );
+    }
+
+    @Test
     void doesNotOverwritePlaceholderRecoveryWhenAutoFixIsOn(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -218,5 +248,35 @@ final class MjFormatTest {
      */
     private static String divergent(final String program) throws IOException {
         return String.format("%s%n%n", MjFormatTest.canonical(program));
+    }
+
+    /**
+     * A source the parser recovers from by dropping a whole binding line and
+     * carrying straight on to its siblings.
+     *
+     * <p>{@code x! > last} is a const suffix on the wrong side (the correct
+     * form is {@code x > last!}), so it fails to parse. The parser's
+     * per-line recovery rolls back and skips that one line entirely, but
+     * later sibling lines still reach the source's last line, so the loss
+     * shows up neither as truncated line coverage nor as an empty
+     * placeholder (see #6649).</p>
+     *
+     * @return The EO text
+     */
+    private static String droppedBinding() {
+        return String.join(
+            System.lineSeparator(),
+            "+package foo.x",
+            "",
+            "[x] > foo",
+            "  seq * > @",
+            "    last",
+            "    last.plus 1",
+            "  x! > last",
+            "",
+            "[] > bar",
+            "  42 > @",
+            ""
+        );
     }
 }
