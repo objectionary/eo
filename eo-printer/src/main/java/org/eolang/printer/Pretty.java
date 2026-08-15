@@ -219,14 +219,13 @@ final class Pretty {
     private static Optional<Node> suffixed(final Node node) {
         Optional<Node> result = Optional.empty();
         if (node.reversed && !node.children.isEmpty()) {
-            final Node receiver = node.children.get(0);
-            result = Pretty.flat(receiver).map(
-                inline -> {
+            result = Pretty.flattened(node.children.get(0)).map(
+                flat -> {
                     final String glued;
-                    if (Pretty.suffixed(receiver).orElse(receiver).children.isEmpty()) {
-                        glued = inline;
+                    if (flat.node.children.isEmpty()) {
+                        glued = flat.text;
                     } else {
-                        glued = "(".concat(inline).concat(")");
+                        glued = "(".concat(flat.text).concat(")");
                     }
                     return new Node(
                         String.join(
@@ -486,11 +485,11 @@ final class Pretty {
         Optional<String> result = Optional.of("");
         for (final Node arg : args) {
             final boolean cnst = "!".equals(arg.tail);
-            final Optional<String> flat;
+            final Optional<Pretty.Flattened> flat;
             if (cnst) {
-                flat = Pretty.flat(arg.bare());
+                flat = Pretty.flattened(arg.bare());
             } else {
-                flat = Pretty.flat(arg);
+                flat = Pretty.flattened(arg);
             }
             if (flat.isEmpty()) {
                 result = Optional.empty();
@@ -499,10 +498,10 @@ final class Pretty {
             if (joined.length() > 0) {
                 joined.append(' ');
             }
-            if (Pretty.suffixed(arg).orElse(arg).children.isEmpty()) {
-                joined.append(flat.get());
+            if (flat.get().node.children.isEmpty()) {
+                joined.append(flat.get().text);
             } else {
-                joined.append('(').append(flat.get()).append(')');
+                joined.append('(').append(flat.get().text).append(')');
             }
             if (cnst) {
                 joined.append('!');
@@ -526,18 +525,58 @@ final class Pretty {
      * @return The inlined content, or empty
      */
     private static Optional<String> flat(final Node given) {
-        final Optional<String> result;
+        return Pretty.flattened(given).map(flat -> flat.text);
+    }
+
+    /**
+     * Render a node inline, together with its suffix-resolved form, so a
+     * caller that also needs to know whether that resolved node still has
+     * children (to decide on wrapping parentheses around it) does not have
+     * to resolve the suffix shape a second time.
+     * @param given The node
+     * @return The inlined content paired with its resolved node, or empty
+     * @see #flat(Node)
+     */
+    private static Optional<Pretty.Flattened> flattened(final Node given) {
+        final Optional<String> text;
         final Node node = Pretty.suffixed(given).orElse(given);
         if (node.reversed && node.children.size() <= 1) {
-            result = Optional.empty();
+            text = Optional.empty();
         } else if (node.abstractt || !node.tail.isEmpty() || "*".equals(node.base)) {
-            result = Optional.empty();
+            text = Optional.empty();
         } else if (node.children.isEmpty()) {
-            result = Optional.of(node.base);
+            text = Optional.of(node.base);
         } else {
-            result = Pretty.inlined(node.children)
+            text = Pretty.inlined(node.children)
                 .map(args -> String.join(" ", node.base, args));
         }
-        return result;
+        return text.map(value -> new Pretty.Flattened(node, value));
+    }
+
+    /**
+     * A node flattened to one line, paired with its suffix-resolved form.
+     * @since 0.1
+     */
+    private static final class Flattened {
+
+        /**
+         * The suffix-resolved node.
+         */
+        private final Node node;
+
+        /**
+         * The node's one-line inline text.
+         */
+        private final String text;
+
+        /**
+         * Ctor.
+         * @param node The suffix-resolved node
+         * @param text The node's one-line inline text
+         */
+        Flattened(final Node node, final String text) {
+            this.node = node;
+            this.text = text;
+        }
     }
 }
