@@ -1,5 +1,5 @@
 # Wall-clock time source backed by the operating system.
-# Reads the underlying syscall: `gettimeofday` on POSIX, `_ftime32_s` on Windows.
+# Reads the underlying syscall: `gettimeofday` on POSIX, `_ftime64_s` on Windows.
 # Decorates an `i64` holding the current time in milliseconds since the Unix epoch.
 
 +architect yegor256@gmail.com
@@ -16,7 +16,7 @@
         millitm.
           output. >> timeb
             win32
-              "_ftime32_s"
+              "_ftime64_s"
               *
       plus.
         times.

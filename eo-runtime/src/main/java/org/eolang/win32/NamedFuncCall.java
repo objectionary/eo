@@ -41,7 +41,7 @@ public final class NamedFuncCall implements Syscall {
         NamedFuncCall.ALL.put("_write", WriteFuncCall::new);
         NamedFuncCall.ALL.put("_close", CloseFuncCall::new);
         NamedFuncCall.ALL.put("getenv", GetenvFuncCall::new);
-        NamedFuncCall.ALL.put("_ftime32_s", FtimeFuncCall::new);
+        NamedFuncCall.ALL.put("_ftime64_s", FtimeFuncCall::new);
         NamedFuncCall.ALL.put("WSAStartup", WSAStartupFuncCall::new);
         NamedFuncCall.ALL.put("WSACleanup", WSACleanupFuncCall::new);
         NamedFuncCall.ALL.put("WSAGetLastError", WSAGetLastErrorFuncCall::new);
