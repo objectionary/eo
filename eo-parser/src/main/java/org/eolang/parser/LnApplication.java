@@ -72,13 +72,7 @@ final class LnApplication implements Line {
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
-        if (head.kind() == Value.Kind.GROUP
-            && chain.isEmpty() && args.isEmpty() && outer == null) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "redundant parentheses around a top-level expression — drop the outer `(` and `)`"
-            );
-        }
+        this.checkGroupHead(head, chain, args, outer);
         Comments.seal(globals, emit, this.span);
         final Kind kind = LnApplication.classify(head, chain, args);
         final Openness openness;
@@ -156,6 +150,70 @@ final class LnApplication implements Line {
             kind = Kind.HEAD;
         }
         return kind;
+    }
+
+    /**
+     * Reject a paren-group head that cannot carry what follows it: bare
+     * redundant parentheses around a whole top-level expression, or a
+     * horizontal argument list applied to an inline-phi formation the
+     * group wraps.
+     * @param head The head value
+     * @param chain Method-dispatch chain following the head (may be empty)
+     * @param args Horizontal arguments following the head (may be empty)
+     * @param outer The outer {@code :binding} label, or {@code null}
+     */
+    private void checkGroupHead(
+        final Value head, final List<MethodChain> chain, final List<Value> args,
+        final String outer
+    ) {
+        if (head.kind() == Value.Kind.GROUP
+            && chain.isEmpty() && args.isEmpty() && outer == null) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "redundant parentheses around a top-level expression — drop the outer `(` and `)`"
+            );
+        }
+        if (head.kind() == Value.Kind.GROUP && !args.isEmpty() && this.wrapsInlinePhi(head)) {
+            throw new ParseError(
+                this.span.line(), head.pos(),
+                "horizontal formation not allowed as argument"
+            );
+        }
+    }
+
+    /**
+     * Whether a paren-group head's own content is a top-level inline-phi
+     * expression ({@code body > [params]}, §3.10.10a) — the one paren-group
+     * shape that opens a formation without going through {@code [} at the
+     * head of {@link Tokens#readValue()}, so {@code ([x]) 5} is already
+     * rejected there but {@code (m > [m]) 5} is not (#6848). Scans depth-
+     * and string-aware, the same way {@code Emissions.topLevelInlinePhi}
+     * does for the group's own printing.
+     * @param head The paren-group head
+     * @return TRUE when the group wraps an inline-phi expression
+     * @checkstyle NonStaticMethodCheck (2 lines)
+     */
+    private boolean wrapsInlinePhi(final Value head) {
+        final String raw = head.raw();
+        final String inner = raw.substring(1, raw.length() - 1);
+        boolean found = false;
+        int depth = 0;
+        int idx = 0;
+        while (idx < inner.length() - 2 && !found) {
+            final char glyph = inner.charAt(idx);
+            if (glyph == '"') {
+                idx = Tokens.closingQuote(inner, idx);
+            } else if (glyph == '(') {
+                depth = depth + 1;
+            } else if (glyph == ')') {
+                depth = depth - 1;
+            } else if (depth == 0 && glyph == '>'
+                && inner.charAt(idx + 1) == ' ' && inner.charAt(idx + 2) == '[') {
+                found = true;
+            }
+            idx = idx + 1;
+        }
+        return found;
     }
 
     /**
