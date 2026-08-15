@@ -306,10 +306,6 @@
               'mergedPackages' below reach it through '^'
               (objectionary/lints#1273).
 
-              'decorated-formation' forbids a formation as a decoratee, which
-              is exactly what 'map' hides its constructor behind and what the
-              'bool' test on taking a parent through an attribute exercises.
-
               'unit-test-missing' asks for a test in 'stdin', whose every
               attribute reads the standard input, so a test would block on the
               'read' syscall until the deadline aborts it.
