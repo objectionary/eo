@@ -90,6 +90,20 @@ final class Xmirs {
     }
 
     /**
+     * Every void of the program.
+     *
+     * <p>An object with nothing behind it, written as a base of its own in
+     * the text. It names no other object, since what it holds is not decided
+     * here but by whoever fills it.</p>
+     *
+     * @return The voids, file by file, in the order they appear in the code
+     * @throws IOException If a file cannot be read
+     */
+    Collection<XML> voids() throws IOException {
+        return this.matching("//o[@loc and @base='∅']");
+    }
+
+    /**
      * The object every file of the program is about.
      *
      * <p>A file carries one object at the top and the package it declares
