@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -168,7 +169,10 @@ public final class MjFormat extends MjSafe {
      * structure out once with the configured weights. The settling is
      * bounded by {@link #SETTLE}; a
      * source that has not settled by then is laid out as-is and reported
-     * divergent, so it fails loudly instead of looping.</p>
+     * divergent, so it fails loudly instead of looping. When no weight is
+     * overridden, the default layout used to detect settling already is
+     * the final layout, so the last settling pass is reused instead of
+     * printing the same tree a second time.</p>
      *
      * @param path The path of the {@code .eo} file, for the error message
      * @param source The current text of the {@code .eo} file
@@ -178,15 +182,23 @@ public final class MjFormat extends MjSafe {
     private String canonical(final Path path, final String source) throws IOException {
         String structure = source;
         XML tree = MjFormat.parsed(path, structure);
+        Optional<String> settled = Optional.empty();
         for (int pass = 0; pass < MjFormat.SETTLE; ++pass) {
-            final String next = new Xmir(tree).toEO();
-            if (next.equals(structure)) {
+            final String printed = new Xmir(tree).toEO();
+            if (printed.equals(structure)) {
+                settled = Optional.of(printed);
                 break;
             }
-            structure = next;
+            structure = printed;
             tree = MjFormat.parsed(path, structure);
         }
-        return new Xmir(tree, this.weights()).toEO();
+        final String canon;
+        if (settled.isPresent() && this.weights().isEmpty()) {
+            canon = settled.get();
+        } else {
+            canon = new Xmir(tree, this.weights()).toEO();
+        }
+        return canon;
     }
 
     /**
