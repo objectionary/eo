@@ -305,16 +305,11 @@
               its receiver through a first void, while the members listed in
               'mergedPackages' below reach it through '^'
               (objectionary/lints#1273).
-
-              'unit-test-missing' asks for a test in 'stdin', whose every
-              attribute reads the standard input, so a test would block on the
-              'read' syscall until the deadline aborts it.
               -->
               <skipSourceLints>
                 <lint>mandatory-package</lint>
                 <lint>package-member-without-void</lint>
                 <lint>redundant-object</lint>
-                <lint>unit-test-missing</lint>
               </skipSourceLints>
               <!--
               Objects with an optional fallback argument, like 'string.as-fixed'
