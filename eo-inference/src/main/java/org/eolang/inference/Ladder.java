@@ -54,7 +54,13 @@ public final class Ladder {
      * @return The share, out of a hundred
      */
     public double described() {
-        return this.share(this.total() - this.counts.values().iterator().next());
+        final double result;
+        if (this.counts.isEmpty()) {
+            result = 0.0d;
+        } else {
+            result = this.share(this.total() - this.counts.values().iterator().next());
+        }
+        return result;
     }
 
     /**
