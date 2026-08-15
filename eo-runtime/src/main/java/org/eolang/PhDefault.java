@@ -204,7 +204,8 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public void put(final String name, final Phi object) {
-        if (!this.loaded().containsKey(name)) {
+        final Attribute attr = this.loaded().get(name);
+        if (attr == null) {
             throw new ExUnset(
                 String.format(
                     "Can't #put(\"%s\", %s) to %s, because the attribute is absent",
@@ -212,7 +213,7 @@ public class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        this.loaded().get(name).put(object);
+        attr.put(object);
     }
 
     @Override
@@ -231,8 +232,9 @@ public class PhDefault implements Phi, Cloneable {
         }
         try {
             final Phi resolved;
-            if (this.loaded().containsKey(name)) {
-                resolved = this.loaded().get(name).get();
+            final Attribute attr = this.loaded().get(name);
+            if (attr != null) {
+                resolved = attr.get();
             } else if (name.equals(Phi.LAMBDA)) {
                 resolved = new AtomTyped(
                     this, PhDefault.ATOMS.declared(this.forma())
