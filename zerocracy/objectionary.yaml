@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2160.55250243
+  seconds: 992.79440384
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-15 03:55:30.237656272 Z
+  when: 2026-08-15 04:22:27.488291368 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -285191,7 +285191,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 835
   earliest_issue_was_found: 1
   events_were_scanned: 13313865444
   issues_were_scanned: 0
@@ -285201,7 +285201,7 @@
   min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 788
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1107889
@@ -292140,7 +292140,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1021
   earliest_issue_was_found: 1
   events_were_scanned: 13009557602
   issues_were_scanned: 0
@@ -292150,7 +292150,7 @@
   min_issue_was_found: 481
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 628
+  types_were_scanned: 873
   what: iterate
   where: github
 - _id: 1108618
@@ -295905,7 +295905,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1020
   earliest_issue_was_found: 1
   events_were_scanned: 13314593871
   issues_were_scanned: 982
@@ -295915,7 +295915,7 @@
   min_issue_was_found: 654
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 1216
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108989
@@ -298857,7 +298857,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1124
   earliest_issue_was_found: 1
   events_were_scanned: 17693553333
   issues_were_scanned: 0
@@ -298867,7 +298867,7 @@
   min_issue_was_found: 435
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 0
+  types_were_scanned: 1103
   what: iterate
   where: github
 - _id: 1109065
@@ -298891,17 +298891,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6234
+  assignees_were_scanned: 6376
   earliest_issue_was_found: 1
   events_were_scanned: 17705666227
   issues_were_scanned: 0
-  labels_were_scanned: 6179
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 5930
+  types_were_scanned: 6083
   what: iterate
   where: github
 - _id: 1109067
@@ -483698,6 +483698,181 @@
   - 0
   - 0
   - 0
+  some_issue_lifetime:
+  - 8345.0
+  - 6956.0
+  - 3950.0
+  - 1644.0
+  - 32321.0
+  - 54192.0
+  - 46879.0
+  - 57213.0
+  - 41870.0
+  - 85270.0
+  - 41882.0
+  - 48671.0
+  - 68733.0
+  - 79668.0
+  - 13043.0
+  - 13976.0
+  - 1752.0
+  - 2843.0
+  - 5964.0
+  - 3260.0
+  - 1587.0
+  - 1206.0
+  - 91081.0
+  - 86153.0
+  - 114872.0
+  - 17487.0
+  - 18294.0
+  - 9655.0
+  - 6148.0
+  - 10205.0
+  - 113380.0
+  - 46735.0
+  - 90855.0
+  - 17907.0
+  - 90919.0
+  - 48645.0
+  - 91366.0
+  - 60679.0
+  - 66547.0
+  - 66563.0
+  - 66578.0
+  - 181925.0
+  - 74699.0
+  - 70643.0
+  - 177724.0
+  - 164084.0
+  - 71292.0
+  - 71261.0
+  - 71264.0
+  - 133527.0
+  - 133526.0
+  - 13691.0
+  - 134073.0
+  - 138339.0
+  - 46375.0
+  - 44875.0
+  - 151480.0
+  - 24050.0
+  - 55211.0
+  - 152899.0
+  - 55188.0
+  - 24099.0
+  - 13825.0
+  - 96562.0
+  - 167917.0
+  - 108146.0
+  - 24255.0
+  - 27421.0
+  - 55820.0
+  - 53363.0
+  - 48143.0
+  - 11098.0
+  - 246752.0
+  - 253369.0
+  - 69764.0
+  - 69829.0
+  - 69889.0
+  - 11228.0
+  - 361465.0
+  - 346175.0
+  - 109131.0
+  - 84636.0
+  - 114.0
+  - 160822.0
+  - 346501.0
+  - 112943.0
+  - 183403.0
+  - 400338.0
+  - 183359.0
+  - 198499.0
+  - 42249.0
+  - 173.0
+  - 2962.0
+  - 79582.0
+  - 111625.0
+  - 112147.0
+  - 115977.0
+  - 294584.0
+  - 299878.0
+  - 292875.0
+  - 293141.0
+  - 525992.0
+  - 200366.0
+  - 201195.0
+  - 319711.0
+  - 120450.0
+  - 222973.0
+  - 252716.0
+  - 290765.0
+  - 518743.0
+  - 519516.0
+  - 306413.0
+  - 521083.0
+  - 521544.0
+  - 518274.0
+  - 670388.0
+  - 676310.0
+  - 233041.0
+  - 233199.0
+  - 234324.0
+  - 274878.0
+  - 522795.0
+  - 318673.0
+  - 678825.0
+  - 680879.0
+  - 649022.0
+  - 649597.0
+  - 840780.0
+  - 774632.0
+  - 800301.0
+  - 538660.0
+  - 539732.0
+  - 1073257.0
+  - 542386.0
+  - 837166.0
+  - 568206.0
+  - 968652.0
+  - 1143044.0
+  - 1045153.0
+  - 1448558.0
+  - 1446286.0
+  - 1670247.0
+  - 1680391.0
+  - 4062985.0
+  - 10261.0
+  - 16312.0
+  - 261751.0
+  - 304221.0
+  - 42136.0
+  - 236452.0
+  - 237062.0
+  - 286079.0
+  - 714767.0
+  - 1184467.0
+  - 2291513.0
+  - 2757414.0
+  - 32277000.0
+  - 36943882.0
+  - 38952862.0
+  - 39407081.0
+  - 39551039.0
+  - 39564073.0
+  - 39972464.0
+  - 40149379.0
+  - 40922318.0
+  - 40832104.0
+  - 40832802.0
+  - 40924410.0
+  - 41000670.0
+  - 44184145.0
+  - 44463393.0
+  - 48703700.0
+  - 52438163.0
+  - 52527374.0
   some_merged_pulls:
   - 0
   - 0
@@ -492359,6 +492534,7 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: 4702-add-logging
   details: The pull objectionary/eo#4706 has been opened earlier by @volodya-lombrozo.
+  is_human: 1
   issue: 4706
   repository: 73056727
   what: pull-was-opened
@@ -492366,8 +492542,8 @@
   where: github
   who: 51804353
 - _id: 1119588
-  _job: 31861450259
-  _time: 2026-08-15 03:55:29.979516171 Z
+  _job: 31863486572
+  _time: 2026-08-15 04:21:26.583074071 Z
   _version: 0.19.16/0.61.1/0.17.21
   since: *4403
   what: quality-of-service
