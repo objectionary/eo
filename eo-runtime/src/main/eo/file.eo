@@ -159,14 +159,26 @@
             output-block.write buffer > @
             [] > output-block
               true > @
-              writable.not.if > [buffer] > write
-                T
-                  "Can't write to file with provided access mode '%s'".printf
-                    * access
-                seq *
-                  code.
-                    syscall.write
-                      * descriptor buffer buffer.size
+              [buffer] > write
+                writable.not.if > @
+                  T
+                    "Can't write to file with provided access mode '%s'".printf
+                      * access
+                  seq *
+                    if. >>!
+                      code.eq -1
+                      T
+                        "Failed to write to file"
+                      output-block
+                    code
+                    remainder
+                code. > code
+                  syscall.write
+                    * descriptor buffer buffer.size
+                if. > remainder
+                  code.lt buffer.size
+                  output-block.write
+                    buffer.slice code (buffer.size.minus code)
                   output-block
         truncate.if syscall.trunc 0 > trunc
     and. > readable
