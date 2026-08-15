@@ -139,6 +139,15 @@ final class MainTest {
         );
     }
 
+    @Test
+    void treatsOptionAfterObjectNameAsArgument() {
+        MatcherAssert.assertThat(
+            "A --verbose placed after the object name must be an argument, not the verbose option, so no stacktrace is printed",
+            MainTest.stderr("org.eolang.examples.app", Main.VERBOSE),
+            Matchers.not(Matchers.containsString("at org.eolang.Main.run"))
+        );
+    }
+
     private static String stderr(final String... cmds) {
         return MainTest.exec(cmds).stderr();
     }

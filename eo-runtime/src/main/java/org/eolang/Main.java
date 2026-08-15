@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -19,7 +20,6 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * Bridge between Java CLI and EO.
@@ -81,18 +81,21 @@ public final class Main {
      */
     public static void main(final String... args) throws Exception {
         Main.setup();
-        final List<String> opts = Arrays.stream(args)
-            .filter(Main::isOption)
-            .collect(Collectors.toList());
+        final List<String> opts = new ArrayList<>(0);
+        final List<String> arguments = new ArrayList<>(0);
+        for (final String arg : args) {
+            if (arguments.isEmpty() && Main.isOption(arg)) {
+                opts.add(arg);
+            } else {
+                arguments.add(arg);
+            }
+        }
         for (final String opt : opts) {
             if (Main.parse(opt)) {
                 return;
             }
         }
         Main.LOGGER.log(Level.FINE, String.format("EOLANG Runtime %s", Main.ver()));
-        final List<String> arguments = Arrays.stream(args)
-            .filter(Main::isArgument)
-            .collect(Collectors.toList());
         if (arguments.isEmpty()) {
             throw new ExFailure(
                 "The name of an object is expected as a command line argument"
@@ -104,15 +107,6 @@ public final class Main {
             Main.report(opts, ex);
             System.exit(1);
         }
-    }
-
-    /**
-     * Is it an argument?
-     * @param arg The arg
-     * @return TRUE if it's an argument
-     */
-    private static boolean isArgument(final String arg) {
-        return !Main.isOption(arg);
     }
 
     /**
