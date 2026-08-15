@@ -30,16 +30,29 @@ final class MjLcovTest {
             String.format("числò.plus:7:2%nчислò.plus:7:9%ntorn line%n")
                 .getBytes(StandardCharsets.UTF_8)
         );
+        final Path tracefile = temp.resolve("eo-lcov.info");
+        new FakeMaven(temp)
+            .with("hits", hits.toFile())
+            .with("tracefile", tracefile.toFile())
+            .execute(MjLcov.class);
         MatcherAssert.assertThat(
             "the two objects the tests touched on one line are not counted on it",
-            new TextOf(
-                new FakeMaven(temp)
-                    .with("hits", hits.toFile())
-                    .execute(MjLcov.class)
-                    .targetPath()
-                    .resolve("eo-lcov.info")
-            ).asString(),
+            new TextOf(tracefile).asString(),
             Matchers.stringContainsInOrder("SF:", "числò/plus.eo", "DA:7,2", "LF:1", "LH:1")
+        );
+    }
+
+    @Test
+    void savesTracefileWhereTheParameterNamesIt(@Mktmp final Path temp) throws Exception {
+        final Path tracefile = temp.resolve("отчёт").resolve("объекты.info");
+        new FakeMaven(temp)
+            .with("hits", temp.resolve("coverage.txt").toFile())
+            .with("tracefile", tracefile.toFile())
+            .execute(MjLcov.class);
+        MatcherAssert.assertThat(
+            "the tracefile is not at the path the parameter names",
+            Files.exists(tracefile),
+            Matchers.is(true)
         );
     }
 }

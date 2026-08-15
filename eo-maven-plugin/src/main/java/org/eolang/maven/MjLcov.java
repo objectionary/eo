@@ -55,12 +55,28 @@ public final class MjLcov extends MjSafe {
     )
     private File hits;
 
+    /**
+     * The LCOV tracefile to save, named through the {@code eo.lcovFile}
+     * property, so a build whose coverage tool looks somewhere else may
+     * put it there instead.
+     */
+    @Parameter(
+        property = "eo.lcovFile",
+        defaultValue = "${project.build.directory}/eo/eo-lcov.info"
+    )
+    private File tracefile;
+
     @Override
     void exec() throws IOException {
-        final Path saved = this.targetDir.toPath().resolve("eo-lcov.info");
+        final Path saved = this.tracefile.toPath();
         Files.createDirectories(saved.getParent());
         Files.write(saved, this.lcov().getBytes(StandardCharsets.UTF_8));
-        Logger.info(this, "EO object coverage saved to %[file]s", saved);
+        Logger.info(
+            this,
+            "EO object coverage saved to %[file]s (%[size]s)",
+            saved,
+            saved.toFile().length()
+        );
     }
 
     /**

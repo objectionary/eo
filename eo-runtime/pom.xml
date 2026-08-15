@@ -256,6 +256,13 @@
           <cacheEnabled>false</cacheEnabled>
           <!-- Tests assert on precise .eo locations in panics (off by default). -->
           <trackLocations>true</trackLocations>
+          <!--
+          There is deliberately no coverageTracking here. Wrapping every
+          located object into PhCoverage slows the build down, and only the
+          codecov job needs the hits, so that job alone turns it on with
+          -Deo.coverageTracking=true (see .github/workflows/codecov.yml).
+          A value here would win over that flag and switch it off again.
+          -->
         </configuration>
         <executions>
           <execution>
