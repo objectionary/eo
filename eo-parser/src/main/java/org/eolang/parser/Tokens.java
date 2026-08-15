@@ -940,9 +940,7 @@ final class Tokens {
     }
 
     /**
-     * Scan the non-empty form of a BYTES literal at the cursor — one
-     * {@code BB} pair, any number of {@code -BB} pairs after it, and an
-     * optional trailing {@code -} per §3.13.1.
+     * Scan the non-empty form of a BYTES literal at the cursor.
      * @param start Index the literal starts at, for error reporting
      * @return The literal text
      */
@@ -954,14 +952,23 @@ final class Tokens {
             );
         }
         this.cursor = this.cursor + 2;
+        int pairs = 1;
         while (this.cursor < this.body.length()
             && this.body.charAt(this.cursor) == '-'
             && this.bytePair(this.cursor + 1)) {
             this.cursor = this.cursor + 3;
+            pairs = pairs + 1;
         }
         if (this.cursor < this.body.length()
             && this.body.charAt(this.cursor) == '-') {
-            this.cursor = this.cursor + 1;
+            if (pairs == 1 || this.cursor + 1 == this.body.length()) {
+                this.cursor = this.cursor + 1;
+            } else {
+                throw new ParseError(
+                    this.span.line(), this.span.indent() + start,
+                    "unterminated bytes continuation"
+                );
+            }
         }
         return this.body.substring(start, this.cursor);
     }
