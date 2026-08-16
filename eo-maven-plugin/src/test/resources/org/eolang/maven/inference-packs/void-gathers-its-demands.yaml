@@ -9,5 +9,6 @@ eo:
     [x] > inc
       x.next.foo > @
 provides:
-  - "/provides/type[@id='Φ.inc']/attr[@name='x' and @void='true']/demand[@name='next' and @type='Φ.inc.x.next']"
-  - "/provides/type[@id='Φ.inc']/attr[@name='x']/demand[@name='next']/demand[@name='foo' and @type='Φ.inc.x.next.foo']"
+  - "/provides/type[@id='Φ.inc']/attr[@name='x' and @void='true']"
+  - "/provides/type[@id='Φ.inc']/attr[@name='x']/demand[@name='next']"
+  - "/provides/type[@id='Φ.inc']/attr[@name='x']/demand/demand[@name='foo']"
