@@ -18,26 +18,18 @@ import org.junit.jupiter.api.Test;
  */
 final class EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest {
 
-    /**
-     * Name of the void holding the index the match starts at.
-     */
-    private static final String START = "start";
-
-    /**
-     * Name of the void holding the index of the match in the text.
-     */
-    private static final String POSITION = "position";
-
     @Test
     void rejectsStartIndexOutOfIntRange() {
         MatcherAssert.assertThat(
             String.format(
                 "matched-from-index must reject a %s index outside int range",
-                START
+                EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start()
             ),
             EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.rejection(new Data.ToPhi(1.0e15)),
             Matchers.allOf(
-                Matchers.containsString(START),
+                Matchers.containsString(
+                    EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start()
+                ),
                 Matchers.containsString("must fit into int range")
             )
         );
@@ -48,11 +40,13 @@ final class EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest {
         MatcherAssert.assertThat(
             String.format(
                 "matched-from-index must reject a fractional %s index",
-                START
+                EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start()
             ),
             EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.rejection(new Data.ToPhi(2.7)),
             Matchers.allOf(
-                Matchers.containsString(START),
+                Matchers.containsString(
+                    EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start()
+                ),
                 Matchers.containsString("must be an integer")
             )
         );
@@ -63,11 +57,13 @@ final class EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest {
         MatcherAssert.assertThat(
             String.format(
                 "matched-from-index must reject a negative %s index cleanly",
-                START
+                EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start()
             ),
             EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.rejection(new Data.ToPhi(-1)),
             Matchers.allOf(
-                Matchers.containsString(START),
+                Matchers.containsString(
+                    EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start()
+                ),
                 Matchers.containsString("must be greater or equal to zero")
             )
         );
@@ -117,11 +113,13 @@ final class EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest {
         MatcherAssert.assertThat(
             String.format(
                 "matched-from-index must reject a %s index after text end cleanly",
-                START
+                EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start()
             ),
             EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.rejection(new Data.ToPhi(6)),
             Matchers.allOf(
-                Matchers.containsString(START),
+                Matchers.containsString(
+                    EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start()
+                ),
                 Matchers.containsString("must be less than or equal to text length")
             )
         );
@@ -146,11 +144,11 @@ final class EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest {
                             "txt", new Data.ToPhi("hello")
                         ).take("matched-from-index").copy(),
                         new Bind(
-                            POSITION,
+                            EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.position(),
                             new Data.ToPhi(1)
                         ),
                         new Bind(
-                            START,
+                            EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start(),
                             new Data.ToPhi(0)
                         )
                     ).take("from")
@@ -172,8 +170,14 @@ final class EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest {
                     .take("regex").take("compiled").take("match").copy(),
                 "txt", new Data.ToPhi("a")
             ).take("matched-from-index").copy(),
-            new Bind(POSITION, new Data.ToPhi(1)),
-            new Bind(START, new Data.ToPhi(0))
+            new Bind(
+                EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.position(),
+                new Data.ToPhi(1)
+            ),
+            new Bind(
+                EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start(),
+                new Data.ToPhi(0)
+            )
         );
     }
 
@@ -205,8 +209,27 @@ final class EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest {
                     .take("regex").take("compiled").take("match").copy(),
                 "txt", new Data.ToPhi("hello")
             ).take("matched-from-index").copy(),
-            new Bind(POSITION, new Data.ToPhi(1)),
-            new Bind(START, start)
+            new Bind(
+                EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.position(),
+                new Data.ToPhi(1)
+            ),
+            new Bind(EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start(), start)
         );
+    }
+
+    /**
+     * Start attribute name.
+     * @return Start attribute name
+     */
+    private static String start() {
+        return "start";
+    }
+
+    /**
+     * Position attribute name.
+     * @return Position attribute name
+     */
+    private static String position() {
+        return "position";
     }
 }
