@@ -142,11 +142,14 @@
                 gt. (sys.drive valid).size 0
                 valid
                 if.
-                  eq.
-                    valid.slice 0 1
-                    separator
-                  drive.concat valid
-                  concat. (uri.concat separator) valid
+                  valid.starts-with (separator.concat separator)
+                  valid
+                  if.
+                    eq.
+                      valid.slice 0 1
+                      separator
+                    drive.concat valid
+                    concat. (uri.concat separator) valid
       string > valid!
         as-bytes.
           sys.sanitized other
@@ -409,6 +412,24 @@
       path.win32 "\\users\\local"
       "\\hello\\var"
     "\\hello\\var"
+
+  eq. ++> can-resolve-a-unc-win32-path-against-a-drive-qualified-path
+    resolved.
+      path.win32 "C:\\work\\project"
+      "\\\\server\\share\\report.txt"
+    "\\\\server\\share\\report.txt"
+
+  eq. ++> can-resolve-a-unc-win32-path-against-a-relative-path
+    resolved.
+      path.win32 ".\\temp\\var"
+      "\\\\server\\share\\report.txt"
+    "\\\\server\\share\\report.txt"
+
+  eq. ++> can-resolve-a-unc-win32-path-against-another-unc-path
+    resolved.
+      path.win32 "\\\\server\\share\\project"
+      "\\\\other\\share\\report.txt"
+    "\\\\other\\share\\report.txt"
 
   eq. ++> can-resolve-a-win32-path-against-an-empty-one
     resolved.
