@@ -42,6 +42,13 @@
     eo-maven-plugin goal (Maven parameter) agree on one path (see #5673).
     -->
     <eo.coverageFile>${project.build.directory}/coverage.txt</eo.coverageFile>
+    <!--
+    Minimum percentage of dataized .eo objects that must be covered, or
+    the coverage-report goal fails the build. Only bites when coverage
+    tracking is actually on (see eo.coverageTracking above), so a build
+    that never opts in never trips it (see #5466).
+    -->
+    <eo.minCoverage>0</eo.minCoverage>
   </properties>
   <dependencies>
     <dependency>
@@ -351,6 +358,9 @@
             <goals>
               <goal>coverage-report</goal>
             </goals>
+            <configuration>
+              <minCoverage>${eo.minCoverage}</minCoverage>
+            </configuration>
           </execution>
         </executions>
       </plugin>

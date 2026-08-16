@@ -56,6 +56,19 @@ public final class MjCoverageReport extends MjSafe {
     )
     private File lcovFile;
 
+    /**
+     * The minimum percentage of dataized {@code .eo} objects that must be
+     * covered, or the build fails. Zero by default, so a build with
+     * coverage tracking off (the common case, see {@code coverageTracking}
+     * on {@link MjTranspile}) never fails on a threshold it never opted
+     * into; {@code eo-runtime} raises it once tracking is on, mirroring
+     * how the {@code jacoco} profile binds a {@code check} goal with its
+     * own per-metric thresholds.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.minCoverage", defaultValue = "0")
+    private double minCoverage;
+
     @Override
     public void exec() throws IOException {
         if (this.coverageFile == null || !this.coverageFile.exists()) {
@@ -71,8 +84,10 @@ public final class MjCoverageReport extends MjSafe {
 
     /**
      * Build the manifest of every instrumented location, match it against
-     * the raw hits, and save the LCOV tracefile.
-     * @throws IOException If reading the hits file or writing the report fails
+     * the raw hits, save the LCOV tracefile, and enforce the minimum
+     * coverage threshold.
+     * @throws IOException If reading the hits file or writing the report
+     *  fails, or the covered percentage is below {@link #minCoverage}
      */
     private void report() throws IOException {
         final Map<String, Map<Integer, Integer>> perfile = new LinkedHashMap<>(0);
@@ -102,9 +117,18 @@ public final class MjCoverageReport extends MjSafe {
         }
         final LcovReport report = new LcovReport(perfile);
         new Saved(report.text(), this.lcovFile.toPath()).value();
+        final double covered = report.covered();
         Logger.info(
             this, "EO object coverage: %.1f%%, LCOV report saved to %[file]s",
-            report.covered(), this.lcovFile
+            covered, this.lcovFile
         );
+        if (covered < this.minCoverage) {
+            throw new IOException(
+                String.format(
+                    "EO object coverage is %.1f%%, below the required %.1f%% minimum",
+                    covered, this.minCoverage
+                )
+            );
+        }
     }
 }
