@@ -42,6 +42,12 @@ import java.util.Map;
  * argument lands in means knowing which formation is being copied, and that is
  * what the pairs have just settled.</p>
  *
+ * <p>So is the admission that a dispatch could not be worked out, for the same
+ * reason in reverse: only here, when the passes have stopped adding pairs, is
+ * it known that no pass will answer it. A row saying nothing is known is worth
+ * writing, since an absent row says that and also says "nobody looked", and a
+ * reader has no way of telling which.</p>
+ *
  * @since 0.68.0
  */
 public final class Resolved implements Clue {
@@ -81,6 +87,9 @@ public final class Resolved implements Clue {
             pairs, new Bound(args, names, new Provided(given, names, voids)).all()
         ).all();
         rows.putAll(written.others());
+        for (final XML dispatch : dispatches) {
+            rows.putIfAbsent(dispatch.xpath("@loc").get(0), new Unknown());
+        }
         Files.write(
             links,
             new Types(rows).asXml().toString().getBytes(StandardCharsets.UTF_8)

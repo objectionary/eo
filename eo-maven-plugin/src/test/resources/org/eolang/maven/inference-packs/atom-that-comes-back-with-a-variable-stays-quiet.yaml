@@ -2,8 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 # `A` names no object. It stands for whatever the caller puts in, and which
-# object that is cannot be read off the text of `keep` alone. So nothing is
-# written down and `keep.plus` waits for the day variables are understood.
+# object that is cannot be read off the text of `keep` alone. So the atom says
+# nothing about what it comes back with, and the row for `keep.plus` says that
+# nothing is known, which is not the same as saying nothing.
 eo:
   app.eo: |
     [] > app
@@ -14,4 +15,4 @@ eo:
 provides:
   - "/provides/type[@id='Φ.keep'][not(@returns)]"
 links:
-  - "/links[not(type[@id='Φ.app.φ'])]"
+  - "/links/type[@id='Φ.app.φ']/unknown"
