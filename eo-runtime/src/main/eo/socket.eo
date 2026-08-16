@@ -136,9 +136,13 @@
           cant
             "Couldn't start up the sockets subsystem because %s".printf
               * sys.message
-          guarded
-            opened
-            sys.cleanup
+          guarded opened sys.cleanup
+        if. > converted
+          addr.eq sys.none
+          cant
+            "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s".printf
+              * address sys.message
+          scope
         if. > opened
           sd.eq -1
           cant
@@ -147,12 +151,6 @@
           guarded
             converted
             closed-socket sd
-        if. > converted
-          addr.eq sys.none
-          cant
-            "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s".printf
-              * address sys.message
-          scope
       [descriptor] > scoped-socket
         ^.^.as-input recv > as-input
         ^.^.as-output send > as-output
