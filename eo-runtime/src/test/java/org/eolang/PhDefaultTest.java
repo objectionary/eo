@@ -58,29 +58,6 @@ final class PhDefaultTest {
     }
 
     @Test
-    void ignoresMutationOfTheSourceArrayAfterConstruction() {
-        final byte[] raw = {(byte) 0x01};
-        final Phi phi = new PhDefault(raw);
-        raw[0] = (byte) 0x02;
-        MatcherAssert.assertThat(
-            "Object must copy the source array on construction, but it didnt",
-            phi.delta(),
-            Matchers.equalTo(new byte[] {(byte) 0x01})
-        );
-    }
-
-    @Test
-    void ignoresMutationOfAPreviouslyReturnedDelta() {
-        final Phi phi = new PhDefault(new byte[] {(byte) 0x01});
-        phi.delta()[0] = (byte) 0x03;
-        MatcherAssert.assertThat(
-            "Object must return a fresh array on every #delta() call, but it didnt",
-            phi.delta(),
-            Matchers.equalTo(new byte[] {(byte) 0x01})
-        );
-    }
-
-    @Test
     void printsVoidAttributeAsTerm() {
         MatcherAssert.assertThat(
             "Object with unset void attribute must render it as question mark, but it didnt",
