@@ -49,6 +49,30 @@ final class RecvFuncCallTest {
         );
     }
 
+    @Test
+    @DisabledOnOs({OS.MAC, OS.LINUX})
+    void rejectsFractionalSizeOnWindowsRecv() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new RecvFuncCall(Phi.Φ.take("win32").copy()).make(
+                new Data.ToPhi(0), new Data.ToPhi(1.5), new Data.ToPhi(0)
+            ),
+            "A fractional win32 recv size must fail with ExFailure, not receive a truncated count"
+        );
+    }
+
+    @Test
+    @DisabledOnOs({OS.MAC, OS.LINUX})
+    void rejectsInfiniteSizeOnWindowsRecv() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new RecvFuncCall(Phi.Φ.take("win32").copy()).make(
+                new Data.ToPhi(0), new Data.ToPhi(Double.POSITIVE_INFINITY), new Data.ToPhi(0)
+            ),
+            "An infinite win32 recv size must fail with ExFailure, not allocate the largest int"
+        );
+    }
+
     /**
      * The recv outcome as a {@code [code, output-length]} pair.
      * @param result The dataizable recv result

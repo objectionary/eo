@@ -49,6 +49,30 @@ final class RecvSyscallTest {
         );
     }
 
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void rejectsFractionalSizeOnPosixRecv() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new RecvSyscall(Phi.Φ.take("posix").copy()).make(
+                new Data.ToPhi(0), new Data.ToPhi(1.5), new Data.ToPhi(0)
+            ),
+            "A fractional posix recv size must fail with ExFailure, not receive a truncated count"
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void rejectsInfiniteSizeOnPosixRecv() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new RecvSyscall(Phi.Φ.take("posix").copy()).make(
+                new Data.ToPhi(0), new Data.ToPhi(Double.POSITIVE_INFINITY), new Data.ToPhi(0)
+            ),
+            "An infinite posix recv size must fail with ExFailure, not allocate the largest int"
+        );
+    }
+
     /**
      * The recv outcome as a {@code [code, output-length]} pair.
      * @param result The dataizable recv result
