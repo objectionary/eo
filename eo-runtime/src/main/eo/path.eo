@@ -151,19 +151,19 @@
         as-bytes.
           sys.sanitized other
     sys.separator > separator
-    string > [] > trimmed
-      if.
-        or.
-          uri.size.eq 0
-          uri.eq separator
-        uri
+    [] > trimmed
+      string > @
         if.
-          uri.ends-with separator
-          as-bytes.
-            uri.slice
-              0
-              [index] >> first-non-separator
-                if. > @
+          or.
+            uri.size.eq 0
+            uri.eq separator
+          uri
+          if.
+            uri.ends-with separator
+            as-bytes.
+              uri.slice
+                0
+                if. > [index] >> first-non-separator
                   index.eq 0
                   1
                   if.
@@ -172,8 +172,8 @@
                       separator
                     first-non-separator (index.plus -1).as-number
                     index.plus 1
-              | ((number uri.length).plus -1)
-          uri
+                | ((number uri.length).plus -1)
+            uri
     and. > unc
       driveless.size.gt 1
       driveless.starts-with
