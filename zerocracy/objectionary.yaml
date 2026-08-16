@@ -2,12 +2,12 @@
 - added: 8
   cycles: 1
   deleted: 8
-  error: deadlock; recursive locking
+  error: 'Judge find-all-issues stopped by timeout after 17m54s: execution expired'
   inserted: 8
-  seconds: 2160.462853474
+  seconds: 2429.96508103
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-16 07:46:05.301804750 Z
+  when: 2026-08-16 08:36:07.126458332 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -158775,7 +158775,7 @@
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 6
-  min_issue_was_found: 0
+  min_issue_was_found: 6
   min_pull_was_found: 0
   repository: 568705267
   types_were_scanned: 0
@@ -162964,7 +162964,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   events_were_scanned: 16756597275
-  min_issue_was_found: 3
+  min_issue_was_found: 0
   repository: 1239730762
   what: iterate
   where: github
@@ -243344,7 +243344,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 5
   merges_were_scanned: 0
-  min_issue_was_found: 3
+  min_issue_was_found: 6
   min_pull_was_found: 0
   repository: 510082372
   types_were_scanned: 0
@@ -246174,7 +246174,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 16
   merges_were_scanned: 0
-  min_issue_was_found: 18
+  min_issue_was_found: 19
   min_pull_was_found: 0
   repository: 519246071
   types_were_scanned: 0
@@ -260824,7 +260824,7 @@
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 46
-  min_issue_was_found: 0
+  min_issue_was_found: 1
   repository: 531151981
   types_were_scanned: 0
   what: iterate
@@ -266705,7 +266705,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 34
   merges_were_scanned: 0
-  min_issue_was_found: 0
+  min_issue_was_found: 7
   min_pull_was_found: 0
   repository: 482612876
   types_were_scanned: 0
@@ -280387,7 +280387,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 94
   merges_were_scanned: 0
-  min_issue_was_found: 59
+  min_issue_was_found: 108
   min_pull_was_found: 0
   repository: 447446664
   types_were_scanned: 0
@@ -282154,7 +282154,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 835
   earliest_issue_was_found: 1
   events_were_scanned: 17798462013
   issues_were_scanned: 0
@@ -282164,7 +282164,7 @@
   min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 0
+  types_were_scanned: 556
   what: iterate
   where: github
 - _id: 1107889
@@ -283125,7 +283125,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 110
   merges_were_scanned: 0
-  min_issue_was_found: 139
+  min_issue_was_found: 141
   min_pull_was_found: 0
   repository: 546194972
   types_were_scanned: 0
@@ -284560,7 +284560,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 34
   merges_were_scanned: 0
-  min_issue_was_found: 6
+  min_issue_was_found: 40
   min_pull_was_found: 0
   repository: 570457023
   types_were_scanned: 0
@@ -288131,7 +288131,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 97
   merges_were_scanned: 0
-  min_issue_was_found: 161
+  min_issue_was_found: 170
   min_pull_was_found: 0
   repository: 955159947
   types_were_scanned: 0
@@ -289083,7 +289083,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1023
   earliest_issue_was_found: 1
   events_were_scanned: 13009557602
   issues_were_scanned: 0
@@ -289093,7 +289093,7 @@
   min_issue_was_found: 487
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 597
+  types_were_scanned: 854
   what: iterate
   where: github
 - _id: 1108618
@@ -292838,27 +292838,27 @@
   labels_were_scanned: 0
   latest_issue_was_found: 480
   merges_were_scanned: 0
-  min_issue_was_found: 74
+  min_issue_was_found: 84
   min_pull_was_found: 0
   repository: 721146770
-  types_were_scanned: 482
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108977
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1020
   earliest_issue_was_found: 1
   events_were_scanned: 13348539168
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
   merges_were_scanned: 0
-  min_issue_was_found: 680
+  min_issue_was_found: 682
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 1273
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108989
@@ -295305,7 +295305,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 63
   merges_were_scanned: 0
-  min_issue_was_found: 0
+  min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 731516758
   types_were_scanned: 0
@@ -295339,7 +295339,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 1356
   merges_were_scanned: 0
-  min_issue_was_found: 1087
+  min_issue_was_found: 1101
   min_pull_was_found: 1572
   repository: 671896902
   types_were_scanned: 0
@@ -295354,7 +295354,7 @@
   events_were_scanned: 12239775879
   latest_issue_was_found: 5
   merges_were_scanned: 0
-  min_issue_was_found: 27
+  min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 1260338737
   types_were_scanned: 0
@@ -295388,7 +295388,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 361
   merges_were_scanned: 0
-  min_issue_was_found: 399
+  min_issue_was_found: 400
   min_pull_was_found: 0
   repository: 13623548
   types_were_scanned: 0
@@ -295439,7 +295439,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 77
   merges_were_scanned: 0
-  min_issue_was_found: 87
+  min_issue_was_found: 90
   min_pull_was_found: 0
   repository: 492899189
   types_were_scanned: 0
@@ -295456,7 +295456,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 184
   merges_were_scanned: 0
-  min_issue_was_found: 213
+  min_issue_was_found: 214
   min_pull_was_found: 0
   repository: 519299365
   types_were_scanned: 0
@@ -295800,7 +295800,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1124
   earliest_issue_was_found: 1
   events_were_scanned: 13347136124
   issues_were_scanned: 0
@@ -295810,7 +295810,7 @@
   min_issue_was_found: 435
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 1065
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109065
@@ -295824,7 +295824,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 122
   merges_were_scanned: 0
-  min_issue_was_found: 47
+  min_issue_was_found: 64
   min_pull_was_found: 409
   repository: 970961472
   types_were_scanned: 0
@@ -295834,17 +295834,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6066
+  assignees_were_scanned: 6234
   earliest_issue_was_found: 1
   events_were_scanned: 13348798536
   issues_were_scanned: 0
-  labels_were_scanned: 6179
+  labels_were_scanned: 6893
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 6895
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109067
@@ -494892,6 +494892,10 @@
   total_contributors: 543
   total_files: 15439
   total_forks: 529
+  total_issues: 5800
+  total_pulls: 10974
+  total_releases: 945
+  total_repositories: 39
   total_stars: 1832
   what: dimensions-of-terrain
   when: 2026-08-15 21:38:10.736533636 Z
@@ -496133,3 +496137,31 @@
   when: 2026-08-16 05:24:25.000000000 Z
   where: github
   who: 29139614
+- _id: 1119846
+  _job: 31935080536
+  _time: 2026-08-16 08:15:06.066282570 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 29139614
+  comments: 2
+  details: The pull request objectionary/jucs#99 with 2 HoC created by @renovate[bot]
+    was reviewed by @yegor256 after 6h19m and 0 comments.
+  hoc: 2
+  issue: 99
+  repository: 574459304
+  review_comments: 0
+  seconds: 22792
+  what: code-was-reviewed
+  when: 2026-07-29 16:57:37.000000000 Z
+  where: github
+  who: 526301
+- _id: 1119847
+  _job: 31935080536
+  _time: 2026-08-16 08:23:12.074924326 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6919 has been earlier opened by @yegor256.
+  issue: 6919
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-16 06:16:49.000000000 Z
+  where: github
+  who: 526301
