@@ -24,8 +24,7 @@
   all-lines > @
   [] > all-lines
     [scan buffer is-first] >> rec-read
-      if. > @
-        scan.eof
+      scan.eof.if > @
         string buffer
         rec-read
           line-or-eof
@@ -39,12 +38,11 @@
       line-or-eof
       ""
       true
-  [] > next-line
-    line-or-eof.line > @
   [] > line-or-eof
     first.as-bytes.size.eq 0 > eof
-    if. > line
-      eof
+    @. > first
+      console.read 1
+    eof.if > line
       ""
       [input buffer] >> rec-read
         if. > @
@@ -63,5 +61,4 @@
         @. > next
           input.read 1
       | first --
-    @. > first
-      console.read 1
+  line-or-eof.line > [] > next-line
