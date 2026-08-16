@@ -438,10 +438,25 @@
       "/www/html"
     "/www/html"
 
+  eq. ++> can-return-a-basename-ignoring-repeated-posix-separators
+    basename.
+      path.posix "foo//"
+    "foo"
+
+  eq. ++> can-return-a-basename-ignoring-repeated-win32-separators
+    basename.
+      path.win32 "foo\\\\"
+    "foo"
+
   eq. ++> can-return-a-basename-with-a-backslash-on-posix
     basename.
       path.posix "/var/www/html/foo\\bar"
     "foo\\bar"
+
+  eq. ++> can-return-an-absolute-basename-ignoring-repeated-posix-separators
+    basename.
+      path.posix "/foo//"
+    "foo"
 
   eq. ++> can-return-the-basename-ignoring-a-trailing-separator
     basename.
@@ -458,20 +473,15 @@
       path.posix "/foo/"
     "foo"
 
-  eq. ++> can-return-a-basename-ignoring-repeated-posix-separators
-    basename.
+  eq. ++> can-return-the-current-dirname-ignoring-repeated-posix-separators
+    dirname.
       path.posix "foo//"
-    "foo"
+    "."
 
-  eq. ++> can-return-an-absolute-basename-ignoring-repeated-posix-separators
-    basename.
-      path.posix "/foo//"
-    "foo"
-
-  eq. ++> can-return-a-basename-ignoring-repeated-win32-separators
-    basename.
+  eq. ++> can-return-the-current-dirname-ignoring-repeated-win32-separators
+    dirname.
       path.win32 "foo\\\\"
-    "foo"
+    "."
 
   eq. ++> can-return-the-current-dirname-of-a-hidden-relative-posix-file
     dirname.
@@ -486,16 +496,6 @@
   eq. ++> can-return-the-current-dirname-of-a-relative-posix-file-ending-with-a-separator
     dirname.
       path.posix "foo/"
-    "."
-
-  eq. ++> can-return-the-current-dirname-ignoring-repeated-posix-separators
-    dirname.
-      path.posix "foo//"
-    "."
-
-  eq. ++> can-return-the-current-dirname-ignoring-repeated-win32-separators
-    dirname.
-      path.win32 "foo\\\\"
     "."
 
   eq. ++> can-return-the-dirname-of-a-directory-path
@@ -527,6 +527,11 @@
     path.joined
       * "var" "www"
 
+  eq. ++> can-return-the-root-dirname-ignoring-repeated-posix-separators
+    dirname.
+      path.posix "/foo//"
+    "/"
+
   eq. ++> can-return-the-root-dirname-of-a-root-relative-win32-path
     dirname.
       path.win32 "\\foo"
@@ -540,11 +545,6 @@
   eq. ++> can-return-the-root-dirname-of-a-single-component-posix-path-ending-with-a-separator
     dirname.
       path.posix "/foo/"
-    "/"
-
-  eq. ++> can-return-the-root-dirname-ignoring-repeated-posix-separators
-    dirname.
-      path.posix "/foo//"
     "/"
 
   eq. ++> can-return-the-same-string-without-a-separator
