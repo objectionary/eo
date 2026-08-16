@@ -14,14 +14,13 @@
   ? > scope
   ? > cleanup
 
-  ++> can-run-cleanup-after-a-successful-scope
-    eq. > @
-      malloc.for
-        0
-        [m]
-          seq * > @
-            guarded
-              42
-              m.put (m.as-number.plus 1)
-            m.as-number
-      1
+  eq. ++> can-run-cleanup-after-a-successful-scope
+    malloc.for
+      0
+      seq * > [m]
+        guarded
+          42
+          m.put
+            m.as-number.plus 1
+        m.as-number
+    1
