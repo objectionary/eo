@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6912: the same-package shortening arm of to-eo-tree.xsl's head choice
+# (drops the "Φ.<package>." prefix a same-file self-reference gets homed
+# into) never looked at "@fragile", so a fragile dispatch through it lost
+# its "?." marker.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  +package pkg
+
+  [] > app
+    5 > bar
+    [] > nested
+      app?.bar > @
+
+printed: |
+  +package pkg
+
+  [] > app
+    5 > bar
+    app?.bar > [] > nested

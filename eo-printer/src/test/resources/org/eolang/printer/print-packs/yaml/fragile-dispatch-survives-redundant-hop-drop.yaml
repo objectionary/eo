@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6912: the redundant-ρ-hop arm of to-eo-tree.xsl's head choice (drops a
+# leading run of "^." hops that plain scope resolution would re-derive on
+# its own) never looked at "@fragile", so a fragile dispatch through it
+# lost its "?." marker. "bar" has no "x" of its own, so the "^." hop to
+# the enclosing "foo"'s "x" is redundant and dropped; the marker must
+# survive the drop.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  +package org.eolang
+
+  [x] > foo
+    [] > bar
+      ^.x?.y > @
+
+printed: |
+  +package org.eolang
+
+  [x] > foo
+    x?.y > [] > bar
