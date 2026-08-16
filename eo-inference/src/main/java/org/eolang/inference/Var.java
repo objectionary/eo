@@ -7,24 +7,49 @@ package org.eolang.inference;
 import org.xembly.Directives;
 
 /**
- * An object whose type only a caller can say.
+ * A variable: an object whose type only a caller can decide.
  *
- * <p>A void is the one thing in a program that is deliberately left open, and
- * what it holds is decided by whoever fills it. So the row says that and
- * nothing more, and says it under the locator of the void, which is the name
- * every mention of that variable is written with: {@code Φ.inc.x.next} is the
- * {@code next} of whatever fills {@code x}, true of every caller and concrete
- * for none.</p>
+ * <p>A void is one. What it holds is put there by whoever copies the object
+ * that keeps it, so the text of the program says nothing about what it is —
+ * which is a fact, and a different one from the silence around an object
+ * nobody looked at.</p>
  *
- * <p>Nothing is carried here, not even the name, since the row is keyed by the
- * locator and the locator is the name.</p>
+ * <p>In the row of the void itself the variable needs no name: the row is
+ * keyed by the locator, and saying the same locator twice would only invite
+ * the two to disagree. Written anywhere else — inside a choice of what a void
+ * is ever filled with, say — it carries the locator, since there is nothing
+ * else there to say which variable it is.</p>
  *
  * @since 0.69.0
  */
 final class Var implements Type {
 
+    /**
+     * The locator of the void, empty when the place it is written says it.
+     */
+    private final String name;
+
+    /**
+     * Ctor.
+     */
+    Var() {
+        this("");
+    }
+
+    /**
+     * Ctor.
+     * @param id The locator of the void
+     */
+    Var(final String id) {
+        this.name = id;
+    }
+
     @Override
     public Directives directives() {
-        return new Directives().add("var").up();
+        final Directives dirs = new Directives().add("var");
+        if (!this.name.isEmpty()) {
+            dirs.attr("id", this.name);
+        }
+        return dirs.up();
     }
 }
