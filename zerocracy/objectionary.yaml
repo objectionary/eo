@@ -2,11 +2,12 @@
 - added: 8
   cycles: 1
   deleted: 8
+  error: deadlock; recursive locking
   inserted: 8
-  seconds: 2160.490232437
+  seconds: 2160.462853474
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-16 05:38:13.807000946 Z
+  when: 2026-08-16 07:46:05.301804750 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -282153,9 +282154,9 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 835
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 17795586898
+  events_were_scanned: 17798462013
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 347
@@ -289082,7 +289083,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1023
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13009557602
   issues_were_scanned: 0
@@ -292847,9 +292848,9 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1020
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 17795075563
+  events_were_scanned: 13348539168
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
@@ -295799,9 +295800,9 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1124
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 13340329684
+  events_were_scanned: 13347136124
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 686
@@ -295833,11 +295834,11 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5807
+  assignees_were_scanned: 6066
   earliest_issue_was_found: 1
-  events_were_scanned: 17792770069
+  events_were_scanned: 13348798536
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6179
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
@@ -496044,6 +496045,7 @@
   failed_builds: 3
   files: 1
   hoc: 2
+  is_human: 0
   issue: 99
   repository: 574459304
   review: 2026-07-29 16:57:37.000000000 Z
@@ -496068,6 +496070,7 @@
   failed_builds: 1
   files: 1
   hoc: 2
+  is_human: 0
   issue: 75
   repository: 1219806055
   succeeded_builds: 16
@@ -496091,11 +496094,42 @@
   failed_builds: 0
   files: 1
   hoc: 2
+  is_human: 0
   issue: 1264
   repository: 889819508
   succeeded_builds: 19
   suggestions: 0
   what: pull-was-closed
   when: 2026-08-16 04:49:52.000000000 Z
+  where: github
+  who: 29139614
+- _id: 1119844
+  _job: 31933140825
+  _time: 2026-08-16 07:10:50.014775270 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/fast-xml-parser-5.x-lockfile
+  details: The pull request objectionary/eoc#1192 has been opened by @renovate[bot].
+  event_id: 13347136124
+  event_type: PullRequestEvent
+  is_human: 0
+  issue: 1192
+  repository: 489321585
+  what: pull-was-opened
+  when: 2026-08-16 05:24:34.000000000 Z
+  where: github
+  who: 29139614
+- _id: 1119845
+  _job: 31933140825
+  _time: 2026-08-16 07:10:51.412478778 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/fast-xml-parser-5.x
+  details: The pull request objectionary/eoc#1191 has been opened by @renovate[bot].
+  event_id: 13347134040
+  event_type: PullRequestEvent
+  is_human: 0
+  issue: 1191
+  repository: 489321585
+  what: pull-was-opened
+  when: 2026-08-16 05:24:25.000000000 Z
   where: github
   who: 29139614
