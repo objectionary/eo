@@ -4,18 +4,12 @@
  */
 package org.eolang;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
+import org.cactoos.Scalar;
+import org.cactoos.experimental.Threads;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -68,45 +62,31 @@ final class CopiedAttrsTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.CloseResource")
-    void copiesTheSameAttributeOnlyOnceUnderConcurrentTake() throws InterruptedException {
+    void copiesTheSameAttributeOnlyOnceUnderConcurrentTake() {
         final int threads = 64;
         final AtomicInteger copies = new AtomicInteger();
         final Phi copy = new PhDefault(
             new Attrs(new Attr("x", new CopiedAttrsTest.AtCounting(copies)))
         ).copy();
-        final CountDownLatch ready = new CountDownLatch(threads);
-        final CountDownLatch start = new CountDownLatch(1);
-        final CountDownLatch done = new CountDownLatch(threads);
-        final ExecutorService pool = Executors.newFixedThreadPool(threads);
-        try {
-            for (int idx = 0; idx < threads; ++idx) {
-                pool.execute(
-                    () -> {
-                        ready.countDown();
-                        this.awaited(start);
-                        copy.take("x");
-                        done.countDown();
-                    }
-                );
-            }
-            ready.await();
-            start.countDown();
-            done.await(10, TimeUnit.SECONDS);
-        } finally {
-            pool.shutdownNow();
-        }
         MatcherAssert.assertThat(
             "taking one attribute from many threads at once must copy it once, but it copied more",
-            copies.get(),
-            Matchers.equalTo(1)
+            new long[] {
+                StreamSupport.stream(
+                    new Threads<Phi>(
+                        threads,
+                        IntStream.range(0, threads).mapToObj(
+                            idx -> (Scalar<Phi>) () -> copy.take("x")
+                        ).collect(Collectors.toList())
+                    ).spliterator(), false
+                ).count(),
+                copies.get(),
+            },
+            Matchers.equalTo(new long[] {threads, 1})
         );
     }
 
     @Test
-    @SuppressWarnings("PMD.CloseResource")
-    void losesNoAttributeUnderConcurrentTakeOfDifferentNames()
-        throws InterruptedException, ExecutionException, TimeoutException {
+    void losesNoAttributeUnderConcurrentTakeOfDifferentNames() {
         final int threads = 64;
         final Phi copy = new PhDefault(
             new Attrs(
@@ -117,61 +97,18 @@ final class CopiedAttrsTest {
                 ).toArray(Attr[]::new)
             )
         ).copy();
-        final CountDownLatch ready = new CountDownLatch(threads);
-        final CountDownLatch start = new CountDownLatch(1);
-        final List<Boolean> found;
-        final ExecutorService pool = Executors.newFixedThreadPool(threads);
-        try {
-            final List<Future<Boolean>> futures = IntStream.range(0, threads).mapToObj(
-                idx -> pool.submit(
-                    () -> {
-                        ready.countDown();
-                        this.awaited(start);
-                        return copy.take(String.format("a%d", idx)) != null;
-                    }
-                )
-            ).collect(Collectors.toList());
-            ready.await();
-            start.countDown();
-            found = this.resolved(futures);
-        } finally {
-            pool.shutdownNow();
-        }
         MatcherAssert.assertThat(
             "taking every attribute at once must find all of them, but some were lost",
-            found,
+            StreamSupport.stream(
+                new Threads<Boolean>(
+                    threads,
+                    IntStream.range(0, threads).mapToObj(
+                        idx -> (Scalar<Boolean>) () -> copy.take(String.format("a%d", idx)) != null
+                    ).collect(Collectors.toList())
+                ).spliterator(), false
+            ).collect(Collectors.toList()),
             Matchers.everyItem(Matchers.is(true))
         );
-    }
-
-    /**
-     * Wait on a latch, converting the checked interruption into an unchecked one.
-     * @param latch The latch to wait on
-     */
-    private void awaited(final CountDownLatch latch) {
-        try {
-            latch.await();
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(ex);
-        }
-    }
-
-    /**
-     * Resolve every future, letting its checked exceptions propagate.
-     * @param futures The futures to resolve
-     * @return Their resolved values, in the same order
-     * @throws ExecutionException If any future failed
-     * @throws TimeoutException If any future did not finish in time
-     * @throws InterruptedException If interrupted while waiting
-     */
-    private List<Boolean> resolved(final List<Future<Boolean>> futures)
-        throws ExecutionException, TimeoutException, InterruptedException {
-        final List<Boolean> values = new ArrayList<>(futures.size());
-        for (final Future<Boolean> future : futures) {
-            values.add(future.get(10, TimeUnit.SECONDS));
-        }
-        return values;
     }
 
     /**
