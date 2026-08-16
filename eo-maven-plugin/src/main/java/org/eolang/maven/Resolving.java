@@ -251,7 +251,6 @@ final class Resolving implements Step {
      * the same run.
      * @param deps Dependencies resolved in this run
      * @return Every version, by coordinate
-     * @checkstyle NonStaticMethodCheck (2 lines)
      */
     private Map<String, Set<String>> versionsByCoordinate(final Collection<Dep> deps) {
         final Map<String, Set<String>> result = new HashMap<>(0);
@@ -270,7 +269,6 @@ final class Resolving implements Step {
      * @param dependency Dependency
      * @param classifier Its classifier, already normalized
      * @return The coordinate
-     * @checkstyle NonStaticMethodCheck (2 lines)
      */
     private String coordinate(final Dependency dependency, final String classifier) {
         return String.join(
@@ -282,7 +280,6 @@ final class Resolving implements Step {
      * A dependency's classifier, normalized to "-" when absent.
      * @param dependency Dependency
      * @return The classifier
-     * @checkstyle NonStaticMethodCheck (2 lines)
      */
     private String classifier(final Dependency dependency) {
         final String classifier;
