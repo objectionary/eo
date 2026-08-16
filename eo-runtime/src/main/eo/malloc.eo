@@ -361,7 +361,7 @@
 
   malloc.for --> stops-on-overflowing-a-bool-block
     false
-    m.put 8.612486788E7 > [m]
+    m.put 8.612486788e7 > [m]
 
   malloc.for --> stops-on-overflowing-a-string-block
     "Hello"
