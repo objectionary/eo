@@ -306,12 +306,9 @@
 
   ++> can-resolve-a-path-and-touch-it
     resolved.as-dir.made.tmpfile.exists.and > @
-      string.contains
-        resolved
-        string.joined *1
-          Q.path.separator
-          "foo"
-          "bar"
+      resolved.contains
+        Q.path.separator.joined
+          * "foo" "bar"
     mktemp.as-path.resolved "foo/bar" > resolved
 
   ++> can-tell-that-a-directory-beside-a-symbolic-link-is-not-one

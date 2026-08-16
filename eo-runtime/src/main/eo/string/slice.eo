@@ -21,7 +21,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text start len] > slice
+[start len] > slice
   if. > @
     or.
       nstart.lt 0
@@ -189,6 +189,7 @@
   E0- > r3
   F0- > r4
   text.as-bytes.size >> size!
+  ^ > text
 
   eq. ++> can-slice-a-line-break-escape-sequence
     "\n".slice
@@ -268,7 +269,7 @@
       2
     "ри"
 
-  slice. --> rejects-a-non-continuation-after-a-three-byte-lead
+  slice. --> rejects-a-non-continuation-after-a-three-byte-lead-when-slicing
     string E1-80-41
     0
     1
@@ -278,7 +279,7 @@
     0
     1
 
-  slice. --> rejects-an-overlong-two-byte-encoding
+  slice. --> rejects-an-overlong-two-byte-encoding-when-slicing
     string C0-80
     0
     1

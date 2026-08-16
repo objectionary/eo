@@ -29,8 +29,9 @@
           concat.
             acc.concat "-".as-bytes
             pair
-    string.as-ascii > bval
-      b.slice index 1
+    as-ascii. > bval
+      string
+        b.slice index 1
     concat. > pair
       hex-digit
         floor.

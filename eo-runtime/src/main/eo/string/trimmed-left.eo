@@ -11,7 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text] > trimmed-left
+[] > trimmed-left
   if. > @
     0.eq
       b.size >> len!
@@ -42,6 +42,7 @@
           or.
             c.eq 0C-
             c.eq 0D-
+  ^ > text
 
   "\rvalue".trimmed-left.eq "value" ++> can-trim-a-leading-carriage-return
 

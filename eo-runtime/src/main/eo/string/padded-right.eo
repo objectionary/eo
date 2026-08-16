@@ -14,7 +14,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text width fill cant-pad] > padded-right
+[width fill cant-pad] > padded-right
   if. > @
     or.
       or.
@@ -31,12 +31,9 @@
       string
         text.as-bytes.concat
           as-bytes.
-            repeated
-              fill
-              as-number.
-                width.minus len
-              cant-pad
+            fill.repeated (width.minus len).as-number cant-pad
       text
+  ^ > text
 
   eq. ++> can-count-characters-and-not-bytes-when-padding-right
     "Ж  "

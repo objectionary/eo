@@ -10,7 +10,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text i fallback] > at
+[i fallback] > at
   if. > @
     or.
       0.gt
@@ -33,10 +33,10 @@
     fallback
       "Given index %f is out of text bounds".printf
         * i
-    slice
-      text
+    text.slice
       index
       1
+  ^ > text
 
   eq. ++> can-format-the-error-message-of-a-fractional-index-in-bounds
     "Given index 1.500000 is out of text bounds"

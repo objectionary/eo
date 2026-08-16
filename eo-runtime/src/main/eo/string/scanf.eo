@@ -15,41 +15,37 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[format read] > scanf
+[read] > scanf
+  ^ > format
   [pattern specifiers] >>
     [text] > as-float
       negative.if negated magnitude > @
-      index-of unsigned "." > dot
+      unsigned.index-of "." > dot
       if. > magnitude
         not.
           dot.eq -1
         plus.
           fold-digits
-            slice unsigned 0 dot
+            unsigned.slice 0 dot
           div.
             fold-digits
-              slice
-                unsigned
+              unsigned.slice
                 dot.plus 1
                 places
             10.power places
         fold-digits unsigned
       magnitude.times -1 > negated
       eq. > negative
-        slice
-          text
-          0
-          1
+        text.slice 0 1
         "-"
       unsigned.length.minus > places
         dot.plus 1
       negative.or > signed
         eq.
-          slice text 0 1
+          text.slice 0 1
           "+"
       signed.if > unsigned
-        slice
-          text
+        text.slice
           1
           text.length.minus 1
         text
@@ -73,17 +69,17 @@
           true
           if.
             lt.
-              as-ascii
-                slice a index 1
-              as-ascii
-                slice b index 1
+              as-ascii.
+                a.slice index 1
+              as-ascii.
+                b.slice index 1
             true
             if.
               gt.
-                as-ascii
-                  slice a index 1
-                as-ascii
-                  slice b index 1
+                as-ascii.
+                  a.slice index 1
+                as-ascii.
+                  b.slice index 1
               false
               rec
                 index.plus 1
@@ -91,10 +87,7 @@
       fold-digits normalized > folded
       folded.times -1 > negated
       eq. > negative
-        slice
-          text
-          0
-          1
+        text.slice 0 1
         "-"
       if. > normalized
         stripped.eq ""
@@ -102,16 +95,15 @@
         stripped
       negative.or > signed
         eq.
-          slice text 0 1
+          text.slice 0 1
           "+"
-      replaced > stripped
+      replaced. > stripped
         signed.if
-          slice
-            text
+          text.slice
             1
             text.length.minus 1
           text
-        regex "/^0+/"
+        "/^0+/".regex
         ""
     [group acc] >> convert
       matched.exists.not.if > @
@@ -149,17 +141,14 @@
           plus.
             acc.times 10
             minus.
-              as-ascii
-                slice text index 1
+              as-ascii.
+                text.slice index 1
               48
       | 0 0 > @
     match. > found
-      regex
-        chained *1
-          "/"
-          "^"
-          pattern
-          "/"
+      regex.
+        "/".chained
+          * "^" pattern "/"
       read
     found.next > matched
   | > @
@@ -188,9 +177,8 @@
         "}"
         "/"
       ch
-    chained *1
-      "\\"
-      ch
+    "\\".chained
+      * ch
     ch
   [position accumulated found pending] >> tokenize
     if. > @
@@ -205,36 +193,32 @@
           ch.eq "%"
           tokenize
             position.plus 1
-            chained *1
-              accumulated
-              "%"
+            accumulated.chained
+              * "%"
             found
             false
           if.
             ch.eq "d"
             tokenize
               position.plus 1
-              chained *1
-                accumulated
-                "([+-]?\\d+)"
+              accumulated.chained
+                * "([+-]?\\d+)"
               found.with "d"
               false
             if.
               ch.eq "f"
               tokenize
                 position.plus 1
-                chained *1
-                  accumulated
-                  "([+-]?\\d+(?:\\.\\d+)?)"
+                accumulated.chained
+                  * "([+-]?\\d+(?:\\.\\d+)?)"
                 found.with "f"
                 false
               if.
                 ch.eq "s"
                 tokenize
                   position.plus 1
-                  chained *1
-                    accumulated
-                    "(\\S+)"
+                  accumulated.chained
+                    * "(\\S+)"
                   found.with "s"
                   false
                 T "Unsupported format specifier"
@@ -247,13 +231,12 @@
             true
           tokenize
             position.plus 1
-            chained *1
-              accumulated
-              escaped ch
+            accumulated.chained
+              *
+                escaped ch
             found
             false
-    slice > ch
-      format
+    format.slice > ch
       position
       1
   | >> tokens
