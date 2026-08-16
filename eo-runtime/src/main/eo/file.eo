@@ -219,9 +219,12 @@
         f.write "!" > [f]
     13
 
-  eq. ++> can-close-a-descriptor-when-the-scope-fails
-    drain 300
-    true
+  ++> can-close-a-descriptor-when-the-scope-fails
+    eq. > @
+      drain 300
+      true
+      drain
+      tmp
     if. > [n] > drain
       n.lte 0
       true
