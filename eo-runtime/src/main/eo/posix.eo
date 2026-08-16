@@ -19,6 +19,7 @@
   os.is-macos.if > creat
     512
     64
+  17 > eexist
   os.is-macos.if > exclusive
     2048
     128
