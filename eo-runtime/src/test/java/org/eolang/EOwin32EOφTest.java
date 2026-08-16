@@ -75,7 +75,7 @@ final class EOwin32EOφTest {
 
     @Test
     @DisabledOnOs({OS.LINUX, OS.MAC})
-    void acceptsDottedIpv4Literal() {
+    void acceptsDottedIpAddress() {
         MatcherAssert.assertThat(
             "The \"inet_addr\" function call should have parsed a dotted IPv4 literal",
             this.inetAddr("1.2.3.4"),
@@ -95,7 +95,7 @@ final class EOwin32EOφTest {
 
     @Test
     @DisabledOnOs({OS.LINUX, OS.MAC})
-    void rejectsIpv6Literal() {
+    void rejectsIpvSixLiteral() {
         MatcherAssert.assertThat(
             "The \"inet_addr\" function call should have rejected an IPv6 literal",
             this.inetAddr("::1"),

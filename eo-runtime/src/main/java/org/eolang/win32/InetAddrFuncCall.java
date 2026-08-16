@@ -43,8 +43,7 @@ public final class InetAddrFuncCall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.win.take("return").copy();
-        final String address = new Dataized(params[0]).asString();
-        final Matcher matcher = InetAddrFuncCall.IPV4.matcher(address);
+        final Matcher matcher = InetAddrFuncCall.IPV4.matcher(new Dataized(params[0]).asString());
         if (matcher.matches() && InetAddrFuncCall.octetsValid(matcher)) {
             final ByteBuffer buffer = ByteBuffer.allocate(4);
             for (int octet = 1; octet <= 4; ++octet) {
