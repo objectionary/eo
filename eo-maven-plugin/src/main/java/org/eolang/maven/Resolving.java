@@ -11,6 +11,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -113,9 +117,10 @@ final class Resolving implements Step {
         if (deps.isEmpty()) {
             unpacked = 0;
         } else {
+            final Map<String, Set<String>> versions = this.versionsByCoordinate(deps);
             unpacked = new Threaded<>(
                 deps,
-                dep -> this.resolved(dep, this.target)
+                dep -> this.resolved(dep, this.target, versions)
             ).total();
         }
         if (unpacked == 0) {
@@ -134,23 +139,22 @@ final class Resolving implements Step {
      * Resolve a single dependency.
      * @param dep Dependency
      * @param dest Destination directory
+     * @param versions Every version legitimately resolved in this run, by coordinate
      * @return Count resolved
      * @throws IOException If fails
      */
-    private int resolved(final Dep dep, final Path dest) throws IOException {
-        final String classifier;
+    private int resolved(
+        final Dep dep, final Path dest, final Map<String, Set<String>> versions
+    ) throws IOException {
         final Dependency dependency = dep.get();
-        if (dependency.getClassifier() == null || dependency.getClassifier().isEmpty()) {
-            classifier = "-";
-        } else {
-            classifier = dependency.getClassifier();
-        }
+        final String classifier = this.classifier(dependency);
         final Path place = this.cleanPlace(
             dest
                 .resolve(dependency.getGroupId())
                 .resolve(dependency.getArtifactId())
                 .resolve(classifier),
-            dependency.getVersion()
+            dependency.getVersion(),
+            versions.get(this.coordinate(dependency, classifier))
         );
         final int total;
         if (Files.exists(place)) {
@@ -200,18 +204,27 @@ final class Resolving implements Step {
     }
 
     /**
-     * Returns directory where files should be unpacked, removing outdated versions.
+     * Returns directory where files should be unpacked, removing stale versions:
+     * ones no longer requested by any dependency of this coordinate in the
+     * current run, not merely ones other than the version being resolved right
+     * now. With {@code eo.ignoreVersionConflicts} on, two versions of the same
+     * coordinate can both be legitimately part of the resolution set, and
+     * neither may delete the other's just-unpacked files (#6904).
      * @param dir Directory
      * @param version Version
+     * @param keep Every version of this coordinate legitimately resolved in
+     *  this run
      * @return Full path
      * @throws IOException If fails
      */
-    private Path cleanPlace(final Path dir, final String version) throws IOException {
+    private Path cleanPlace(
+        final Path dir, final String version, final Set<String> keep
+    ) throws IOException {
         final File[] subs = dir.toFile().listFiles();
         if (subs != null) {
             for (final File sub : subs) {
                 final String base = sub.getName();
-                if (base.equals(version)) {
+                if (keep.contains(base)) {
                     continue;
                 }
                 final Path bad = dir.resolve(base);
@@ -223,12 +236,62 @@ final class Resolving implements Step {
                 }
                 Logger.info(
                     this,
-                    "Directory %[file]s deleted because it contained wrong version files (not %s)",
-                    bad, version
+                    "Directory %[file]s deleted because it contained a stale version (not %s)",
+                    bad, keep
                 );
             }
         }
         return dir.resolve(version);
+    }
+
+    /**
+     * Group every resolved dependency's version by its coordinate, so
+     * {@link #cleanPlace} can tell a stale version (absent from the whole
+     * set) from a sibling version legitimately resolved alongside it in
+     * the same run.
+     * @param deps Dependencies resolved in this run
+     * @return Every version, by coordinate
+     * @checkstyle NonStaticMethodCheck (2 lines)
+     */
+    private Map<String, Set<String>> versionsByCoordinate(final Collection<Dep> deps) {
+        final Map<String, Set<String>> result = new HashMap<>(0);
+        for (final Dep dep : deps) {
+            final Dependency dependency = dep.get();
+            result.computeIfAbsent(
+                this.coordinate(dependency, this.classifier(dependency)),
+                key -> new HashSet<>(0)
+            ).add(dependency.getVersion());
+        }
+        return result;
+    }
+
+    /**
+     * A dependency's coordinate, without its version.
+     * @param dependency Dependency
+     * @param classifier Its classifier, already normalized
+     * @return The coordinate
+     * @checkstyle NonStaticMethodCheck (2 lines)
+     */
+    private String coordinate(final Dependency dependency, final String classifier) {
+        return String.join(
+            ":", dependency.getGroupId(), dependency.getArtifactId(), classifier
+        );
+    }
+
+    /**
+     * A dependency's classifier, normalized to "-" when absent.
+     * @param dependency Dependency
+     * @return The classifier
+     * @checkstyle NonStaticMethodCheck (2 lines)
+     */
+    private String classifier(final Dependency dependency) {
+        final String classifier;
+        if (dependency.getClassifier() == null || dependency.getClassifier().isEmpty()) {
+            classifier = "-";
+        } else {
+            classifier = dependency.getClassifier();
+        }
+        return classifier;
     }
 
     /**
