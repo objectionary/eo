@@ -25,6 +25,7 @@ import org.eolang.win32.WSAStartupFuncCall;
 import org.eolang.win32.Winsock;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -144,6 +145,24 @@ final class SyscallTest {
             ),
             new String(bytes.get(), StandardCharsets.UTF_8),
             Matchers.equalTo(msg)
+        );
+    }
+
+    @Test
+    void releasesTheListeningSocketWhenScopeFails(@Ephemeral final int port) {
+        final Phi socket = Phi.Φ.take("socket").copy();
+        socket.put(0, new Data.ToPhi(this.localhost()));
+        socket.put(1, new Data.ToPhi(port));
+        final Phi listen = socket.take("listen").copy();
+        listen.put(0, new SyscallTest.Failing());
+        Assertions.assertThrows(
+            ExAbstract.class,
+            () -> new Dataized(listen).take(),
+            "a failing listen scope must still propagate, but it didn't"
+        );
+        Assertions.assertDoesNotThrow(
+            () -> new SyscallTest.RandomServer(port).started().stop(),
+            "the port had to be free again after the failing scope, but it wasn't"
         );
     }
 
@@ -888,6 +907,26 @@ final class SyscallTest {
         @Override
         public Phi lambda() {
             return new Data.ToPhi(true);
+        }
+    }
+
+    /**
+     * Scoped object that always fails.
+     * T "scope failed on purpose" > [s]
+     * @since 0.74.0
+     */
+    private static final class Failing extends PhDefault implements Atom {
+
+        /**
+         * Ctor.
+         */
+        Failing() {
+            super(new Attrs(new Attr("s", new AtVoid("s"))));
+        }
+
+        @Override
+        public Phi lambda() {
+            throw new ExFailure("scope failed on purpose");
         }
     }
 

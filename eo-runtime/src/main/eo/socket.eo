@@ -107,10 +107,9 @@
                         cant-accept
                           "Failed to accept a connection on the socket #%d because %s".printf
                             * sock.sd sock.sys.message
-                        seq *
-                          scope (sock.scoped-socket client) >> handled!
+                        guarded
+                          scope (sock.scoped-socket client)
                           sock.closed-socket client
-                          handled
                       code. > client
                         sock.sys.raw *1
                           "accept"
@@ -137,23 +136,21 @@
           cant
             "Couldn't start up the sockets subsystem because %s".printf
               * sys.message
-          seq *
-            if. >> result!
+          guarded
+            if. > @
               sd.eq -1
               cant
                 "Couldn't create a socket because %s".printf
                   * sys.message
-              seq *
-                if. >> used!
+              guarded
+                if. > @
                   addr.eq sys.none
                   cant
                     "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s".printf
                       * address sys.message
                   scope
                 closed-socket sd
-                used
             sys.cleanup
-            result
       [descriptor] > scoped-socket
         ^.^.as-input recv > as-input
         ^.^.as-output send > as-output
