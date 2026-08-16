@@ -9,7 +9,6 @@
 # hash code is derived from those bytes rather than from the key itself,
 # so that keys with side effects are never evaluated more than once.
 
-+alias bytes.hash
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -32,7 +31,7 @@
                 ^.kbts > kbts
                 tup.head.key > key
                 tup.head.value > value
-          bytes.hash >> hash!
+          hash. >> hash!
             tup.head.key.as-bytes >> kbts!
           prev.filtered > others
             not. > [ent] >>
@@ -64,7 +63,7 @@
           @. > prev
             rec-key-search tup.tail
         | entries
-      bytes.hash >> hash!
+      hash. >> hash!
         key.as-bytes >> kbts!
       [] > not-found
         false > exists
@@ -91,7 +90,7 @@
             ^.kbts > kbts
             ^.key > key
             ^.value > value
-      bytes.hash >> hash!
+      hash. >> hash!
         key.as-bytes >> kbts!
     [key] > without
       map.ctor > @
@@ -100,7 +99,7 @@
             and.
               hash.eq entry.hash
               kbts.eq entry.kbts
-      bytes.hash >> hash!
+      hash. >> hash!
         key.as-bytes >> kbts!
   [key value] > entry
 
