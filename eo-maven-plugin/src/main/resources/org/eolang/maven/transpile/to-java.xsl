@@ -329,7 +329,7 @@
     </xsl:choose>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:if test="$coverage='true'">
-      <xsl:text>    private static final java.util.Set&lt;String&gt; HITS = java.util.concurrent.ConcurrentHashMap.newKeySet();</xsl:text>
+      <xsl:text>    private final java.util.Set&lt;String&gt; hits = java.util.concurrent.ConcurrentHashMap.newKeySet();</xsl:text>
       <xsl:value-of select="eo:eol(1)"/>
     </xsl:if>
     <xsl:apply-templates select="." mode="ctors"/>
@@ -346,7 +346,7 @@
     <xsl:value-of select="concat(' extends ', $phiDefaultClass, ' {')"/>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:if test="$coverage='true'">
-      <xsl:text>        private static final java.util.Set&lt;String&gt; HITS = java.util.concurrent.ConcurrentHashMap.newKeySet();</xsl:text>
+      <xsl:text>        private final java.util.Set&lt;String&gt; hits = java.util.concurrent.ConcurrentHashMap.newKeySet();</xsl:text>
       <xsl:value-of select="eo:eol(2)"/>
     </xsl:if>
     <xsl:text>/**</xsl:text>
@@ -710,7 +710,7 @@
       <xsl:value-of select="$name"/>
       <xsl:text> = new PhCoverage(</xsl:text>
       <xsl:value-of select="$name"/>
-      <xsl:text>, HITS, "</xsl:text>
+      <xsl:text>, this.hits, "</xsl:text>
       <xsl:value-of select="eo:literal(@loc)"/>
       <xsl:text>:</xsl:text>
       <xsl:value-of select="@line"/>

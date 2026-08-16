@@ -122,7 +122,7 @@ final class MjTranspileTest {
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
-            Matchers.containsString("HITS")
+            Matchers.containsString("this.hits")
         );
     }
 
