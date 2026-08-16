@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6912: the `?.` marker was put back only by the branch that prints a base as
+# it stands, so a fragile dispatch on any of the shortening branches printed as
+# a hard one. The kept `Q.` root, the dropped `Φ.<package>.` prefix, the dropped
+# run of redundant `^.` hops and the kept `$.` marker all keep their marker here.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  +package sandbox
+  +alias com.example.string
+  +alias string.sprintf
+
+  [] > app
+    42 > a
+    string > s
+    sprintf?.fmt > b
+    Q.sandbox.app?.a > c
+    [] > inner
+      $.a?.bar > @
+    [x] > outer
+      [] > deep
+        ^.x?.y > @
+
+printed: |
+  +package sandbox
+  +alias com.example.string
+
+  [] > app
+    42 > a
+    Q.string.sprintf?.fmt > b
+    app?.a > c
+    $.a?.bar > [] > inner
+    [x] > outer
+      x?.y > [] > deep
+    com.example.string > s
