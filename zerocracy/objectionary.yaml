@@ -2,12 +2,11 @@
 - added: 8
   cycles: 1
   deleted: 8
-  error: deadlock; recursive locking
   inserted: 8
-  seconds: 2165.523147943
+  seconds: 2160.396799997
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-16 11:28:56.471292427 Z
+  when: 2026-08-16 13:46:57.294488047 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -106391,23 +106390,6 @@
   when: *929
   where: github
   who: 87902365
-- _id: 1080711
-  _job: 23886445778
-  _time: 2026-04-02 06:04:23.763588805 Z
-  _version: 0.19.9/0.60.1/0.17.15
-  tombstone: 2026-08-08 09:54:15.963701020 Z
-  total_active_contributors: 10
-  total_commits: 49034
-  total_contributors: 490
-  total_files: 14338
-  total_forks: 368
-  total_issues: 4458
-  total_pulls: 8154
-  total_releases: 840
-  total_repositories: 37
-  total_stars: 1746
-  what: dimensions-of-terrain
-  when: 2026-04-02 06:04:23.772462444 Z
 - _id: 1080713
   _job: 66658
   _time: 2026-04-02 06:09:47.638505874 Z
@@ -109391,6 +109373,7 @@
   _job: 24239451284
   _time: 2026-04-10 10:56:23.831043598 Z
   _version: 0.19.9/0.60.1/0.17.15
+  tombstone: 2026-08-16 11:30:26.384064402 Z
   total_active_contributors: 8
   total_commits: 49081
   total_contributors: 489
@@ -282139,7 +282122,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 13352194938
+  events_were_scanned: 17830753463
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 66
@@ -282154,9 +282137,9 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 835
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 17818329405
+  events_were_scanned: 17830734590
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 347
@@ -285343,28 +285326,6 @@
   when: 2026-07-07 08:01:33.000000000 Z
   where: github
   who: 526301
-- _id: 1108350
-  _job: 28868057080
-  _time: 2026-07-07 13:06:33.186803007 Z
-  _version: 0.19.9/0.60.2/0.17.17
-  commits: 1
-  contributors: 8086956
-  details: A new release "`--margin` line-breaks inside `\\phinoMeet{}` bodies, so
-    compressed meets are no longer atomic" has been published in objectionary/phino
-    by @rultor.
-  event_id: 11445264202
-  event_type: ReleaseEvent
-  hoc: 2
-  is_human: 0
-  last_commit: 7d1cc9425209de5a9339b8888dad04c799e1d783
-  release: 350072375
-  repository: 977982682
-  tag: 0.0.104
-  tombstone: 2026-08-08 09:54:15.970814215 Z
-  what: release-published
-  when: 2026-07-07 07:09:26.000000000 Z
-  where: github
-  who: 8086956
 - _id: 1108351
   _job: 28868057080
   _time: 2026-07-07 13:06:35.483757096 Z
@@ -289083,7 +289044,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1023
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13009557602
   issues_were_scanned: 0
@@ -290136,7 +290097,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 13350559241
+  events_were_scanned: 17830841660
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 160
@@ -292848,9 +292809,9 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1020
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 17812701749
+  events_were_scanned: 13355231542
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
@@ -295266,7 +295227,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 13346683342
+  events_were_scanned: 17830784328
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 6
@@ -295800,7 +295761,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1124
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13347136124
   issues_were_scanned: 0
@@ -295834,11 +295795,11 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6560
+  assignees_were_scanned: 6734
   earliest_issue_was_found: 1
-  events_were_scanned: 13352469623
+  events_were_scanned: 13354933329
   issues_were_scanned: 0
-  labels_were_scanned: 6179
+  labels_were_scanned: 6893
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
@@ -485798,28 +485759,6 @@
   when: *4329
   where: github
   who: 526301
-- _id: 1119244
-  _job: 86880
-  _time: 2026-08-14 11:12:29.451722028 Z
-  _version: 0.19.16/0.61.1/0.17.21
-  analyzers: 18
-  text: |-
-    The average reward per task (9.0 points) is increasing (R=0.17).
-    The average punishment per task (7.0 points) is decreasing (R=-0.18).
-    The average number of builds per week (11930.1) is increasing (R=0.84).
-    The average number of commits per week (284.5) is increasing (R=0.80).
-    The average bugs accepted per month (54.0) is increasing (R=0.81).
-    The average monthly punishment (389 points) is increasing (R=0.40).
-    The average monthly wage (10.4 points) is increasing (R=0.71).
-    The average issue cycle time (6d21h) is staying still.
-    The average pull cycle time (5d12h) is staying still.
-    The average quality of service (83%) is decreasing (R=0.74).
-    The average number of releases per month (25.3) is increasing (R=0.33).
-    The average monthly turnover (26.0 developers) is increasing (R=0.87).
-    The average weekly cost of HoC (5.88 points) is staying still.
-    The average monthly zents/points ratio (0.38) is decreasing (R=0.91).
-  what: assessment
-  when: 2026-08-14 11:12:29.470946034 Z
 - _id: 1119245
   _job: 86880
   _time: 2026-08-14 11:12:36.524747965 Z
@@ -496238,6 +496177,7 @@
     you at least something.  Your running score is [+2572](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 2
+  href: https://github.com/objectionary/jucs/issues/99/#issuecomment-5307210602
   is_human: 1
   issue: 99
   repository: 574459304
@@ -496263,3 +496203,227 @@
   when: 2026-08-16 09:34:58.000000000 Z
   where: github
   who: 33578155
+- _id: 1119854
+  _job: 87264
+  _time: 2026-08-16 11:29:40.872128704 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  analyzers: 18
+  text: |-
+    The average reward per task (9.1 points) is increasing (R=0.19).
+    The average punishment per task (7.0 points) is decreasing (R=-0.17).
+    The average number of builds per week (11930.1) is increasing (R=0.84).
+    The average number of commits per week (284.5) is increasing (R=0.80).
+    The average bugs accepted per month (56.0) is increasing (R=0.82).
+    The average monthly punishment (390 points) is increasing (R=0.44).
+    The average monthly wage (10.4 points) is increasing (R=0.71).
+    The average issue cycle time (6d15h) is staying still.
+    The average pull cycle time (5d8h) is staying still.
+    The average quality of service (85%) is decreasing (R=0.68).
+    The average number of releases per month (25.3) is increasing (R=0.33).
+    The average monthly turnover (26.0 developers) is increasing (R=0.87).
+    The average weekly cost of HoC (5.87 points) is staying still.
+    The average monthly zents/points ratio (0.38) is decreasing (R=0.91).
+  what: assessment
+  when: 2026-08-16 11:29:40.891813958 Z
+- _id: 1119855
+  _job: 31949030663
+  _time: 2026-08-16 13:11:29.526042275 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#5723 has been closed by @yegor256.
+  event_id: 13354459814
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 5723
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-16 12:32:27.000000000 Z
+  where: github
+  who: 526301
+- _id: 1119856
+  _job: 31949030663
+  _time: 2026-08-16 13:11:31.314205733 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#6919 has been closed by @yegor256.
+  event_id: 13354445712
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 6919
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-16 12:31:43.000000000 Z
+  where: github
+  who: 526301
+- _id: 1119857
+  _job: 31949030663
+  _time: 2026-08-16 13:11:53.086057352 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  commit: 55e6bee138acb009ffd604339dfcee6920047453
+  default_branch: master
+  details: 'A new Git push #40155035557 has arrived to objectionary/xax, made by @yegor256
+    (default branch is "master"), not associated with any pull request.'
+  event_id: 17830789839
+  event_type: PushEvent
+  is_human: 1
+  push_id: 40155035557
+  ref: refs/heads/master
+  repository: 574534248
+  to_master: 1
+  what: git-was-pushed
+  when: 2026-08-16 13:03:06.000000000 Z
+  where: github
+  who: 526301
+- _id: 1119858
+  _job: 31949030663
+  _time: 2026-08-16 13:12:13.445623501 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  commit: aed0f8bd201a3021aec3df36a3abefe4fc856662
+  default_branch: master
+  details: 'A new Git push #40154951879 has arrived to objectionary/jucs, made by
+    @yegor256 (default branch is "master"), not associated with any pull request.'
+  event_id: 17830706940
+  event_type: PushEvent
+  is_human: 1
+  push_id: 40154951879
+  ref: refs/heads/master
+  repository: 574459304
+  to_master: 1
+  what: git-was-pushed
+  when: 2026-08-16 13:02:03.000000000 Z
+  where: github
+  who: 526301
+- _id: 1119859
+  _job: 31949030663
+  _time: 2026-08-16 13:12:20.507731273 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  commit: 963bb0ffd4fdb13f2ac1241b721dd0126dfd64ca
+  default_branch: master
+  details: 'A new Git push #40155029831 has arrived to objectionary/wpa, made by @yegor256
+    (default branch is "master"), not associated with any pull request.'
+  event_id: 17830784328
+  event_type: PushEvent
+  is_human: 1
+  push_id: 40155029831
+  ref: refs/heads/master
+  repository: 1219806055
+  to_master: 1
+  what: git-was-pushed
+  when: 2026-08-16 13:03:02.000000000 Z
+  where: github
+  who: 526301
+- _id: 1119860
+  _job: 31949030663
+  _time: 2026-08-16 13:17:19.723313675 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: fix/issue-1216-apostrophe-in-unlint
+  comments: 5
+  comments_appreciated: 1
+  comments_by_author: 1
+  comments_by_reviewers: 4
+  comments_resolved: 1
+  comments_to_code: 2
+  details: Apparently, objectionary/lints#1230 has been "pull-was-merged".
+  failed_builds: 0
+  files: 3
+  hoc: 43
+  issue: 1230
+  repository: 889819508
+  review: 2026-08-11 05:22:04.000000000 Z
+  succeeded_builds: 19
+  suggestions: 1
+  what: pull-was-merged
+  when: 2026-08-16 12:18:03.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1119861
+  _job: 31949030663
+  _time: 2026-08-16 13:19:08.638848100 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/reviewdog-action-actionlint-1.x
+  comments: 3
+  comments_appreciated: 1
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/lints#1278 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 2
+  issue: 1278
+  repository: 889819508
+  succeeded_builds: 20
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-16 12:10:41.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1119862
+  _job: 31949030663
+  _time: 2026-08-16 13:19:38.162674166 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6881-phdefault-loaded-race
+  comments: 6
+  comments_appreciated: 0
+  comments_by_author: 2
+  comments_by_reviewers: 4
+  comments_resolved: 0
+  comments_to_code: 2
+  details: Apparently, objectionary/eo#6882 has been "pull-was-merged".
+  failed_builds: 0
+  files: 2
+  hoc: 71
+  issue: 6882
+  repository: 73056727
+  review: 2026-08-15 20:33:25.000000000 Z
+  succeeded_builds: 22
+  suggestions: 1
+  what: pull-was-merged
+  when: 2026-08-16 12:32:26.000000000 Z
+  where: github
+  who: 526301
+- _id: 1119863
+  _job: 31949030663
+  _time: 2026-08-16 13:20:00.210624441 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6919-phdefault-double-copy
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#6920 has been "pull-was-merged".
+  failed_builds: 0
+  files: 2
+  hoc: 30
+  issue: 6920
+  repository: 73056727
+  succeeded_builds: 22
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-16 12:31:42.000000000 Z
+  where: github
+  who: 526301
+- _id: 1119864
+  _job: 31949030663
+  _time: 2026-08-16 13:20:16.730303657 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/com.qulice-qulice-maven-plugin-0.x
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#6921 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 2
+  issue: 6921
+  repository: 73056727
+  succeeded_builds: 23
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-16 12:29:15.000000000 Z
+  where: github
+  who: 526301
