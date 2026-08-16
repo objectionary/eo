@@ -354,6 +354,13 @@
     themselves — the whole choice is wrapped in "eo:fragile-marked" after
     it, so a fragile dispatch keeps its "?." marker no matter which arm's
     shortening it takes (#6912, the remainder of #6560).
+    @todo #6912:30min Add regression tests for the other three
+     head-shortening arms this fix covers: same-package shortening
+     (the "$package != ''" arm), redundant-ρ-hop drop (the
+     "$rho-prefix" arm), and the explicit "$.name" marker (the
+     "$eo:xi" arm). Only the "Q." disambiguation arm has a print-pack
+     test (fragile-dispatch-survives-q-root.yaml) so far, split out
+     to keep this PR under the 200-line size cap.
     -->
     <xsl:variable name="head" as="xs:string">
       <xsl:choose>
