@@ -2,12 +2,11 @@
 - added: 8
   cycles: 1
   deleted: 8
-  error: 'Judge find-all-issues stopped by timeout after 17m54s: execution expired'
   inserted: 8
-  seconds: 2429.96508103
+  seconds: 2160.872242403
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-16 08:36:07.126458332 Z
+  when: 2026-08-16 09:35:23.684872154 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -279805,7 +279804,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 17757048884
+  events_were_scanned: 17811973072
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 151
@@ -282154,7 +282153,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 835
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 17798462013
   issues_were_scanned: 0
@@ -289083,7 +289082,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1023
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13009557602
   issues_were_scanned: 0
@@ -290136,7 +290135,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 17795105136
+  events_were_scanned: 13350559241
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 160
@@ -292833,7 +292832,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 14
-  events_were_scanned: 17759241106
+  events_were_scanned: 17811605516
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 480
@@ -292848,7 +292847,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1020
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13348539168
   issues_were_scanned: 982
@@ -295434,7 +295433,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 17317040868
+  events_were_scanned: 17805733697
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 77
@@ -295800,7 +295799,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1124
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13347136124
   issues_were_scanned: 0
@@ -295834,11 +295833,11 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6234
+  assignees_were_scanned: 6376
   earliest_issue_was_found: 1
-  events_were_scanned: 13348798536
+  events_were_scanned: 13350593030
   issues_were_scanned: 0
-  labels_were_scanned: 6893
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
@@ -496146,6 +496145,7 @@
   details: The pull request objectionary/jucs#99 with 2 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 6h19m and 0 comments.
   hoc: 2
+  is_human: 1
   issue: 99
   repository: 574459304
   review_comments: 0
@@ -496159,9 +496159,67 @@
   _time: 2026-08-16 08:23:12.074924326 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#6919 has been earlier opened by @yegor256.
+  is_human: 1
   issue: 6919
   repository: 73056727
   what: issue-was-opened
   when: 2026-08-16 06:16:49.000000000 Z
   where: github
   who: 526301
+- _id: 1119848
+  _job: 31937759111
+  _time: 2026-08-16 08:59:30.446773894 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '6905'
+  details: The pull request objectionary/eo#6923 has been opened by @vasilevnstas.
+  event_id: 13350581515
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6923
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-08-16 08:55:19.000000000 Z
+  where: github
+  who: 33578155
+- _id: 1119849
+  _job: 31937759111
+  _time: 2026-08-16 08:59:32.604693239 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '6915'
+  details: The pull request objectionary/eo#6922 has been opened by @vasilevnstas.
+  event_id: 13349684711
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6922
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-08-16 08:02:40.000000000 Z
+  where: github
+  who: 33578155
+- _id: 1119850
+  _job: 31937759111
+  _time: 2026-08-16 08:59:33.847782261 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/com.qulice-qulice-maven-plugin-0.x
+  details: The pull request objectionary/eo#6921 has been opened by @renovate[bot].
+  event_id: 13349499249
+  event_type: PullRequestEvent
+  is_human: 0
+  issue: 6921
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-08-16 07:51:39.000000000 Z
+  where: github
+  who: 29139614
+- _id: 1119851
+  _job: 31937759111
+  _time: 2026-08-16 09:03:58.516426868 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 6919-phdefault-double-copy
+  details: The missing pull objectionary/eo#6920 has been opened by @morphqdd.
+  issue: 6920
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-08-16 07:04:51.000000000 Z
+  where: github
+  who: 125282851
