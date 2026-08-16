@@ -4,11 +4,6 @@
  */
 package org.eolang;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -192,7 +187,6 @@ public class PhDefault implements Phi, Cloneable {
      * @param forma      The forma of the object, taken from XMIR
      * @param dta        Object data
      * @param attributes Initial attributes to register
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     private PhDefault(
         final Statistics statistics, final String forma,
@@ -691,27 +685,7 @@ public class PhDefault implements Phi, Cloneable {
      * @return The atom types table, empty when the table is absent
      */
     private static AtomTypes atoms() {
-        final Map<String, String> table;
-        final InputStream source = PhDefault.class.getResourceAsStream("atoms.csv");
-        if (source == null) {
-            table = Collections.emptyMap();
-        } else {
-            try (
-                BufferedReader lines = new BufferedReader(
-                    new InputStreamReader(source, StandardCharsets.UTF_8)
-                )
-            ) {
-                table = lines.lines().filter(line -> line.contains(",")).collect(
-                    Collectors.toMap(
-                        line -> line.substring(0, line.indexOf(',')),
-                        line -> line.substring(line.indexOf(',') + 1)
-                    )
-                );
-            } catch (final IOException ex) {
-                throw new ExFailure("Failed to read the atom types table", ex);
-            }
-        }
-        return new AtomTypes(table);
+        return new AtomTypes(PhDefault.class);
     }
 
     /**
