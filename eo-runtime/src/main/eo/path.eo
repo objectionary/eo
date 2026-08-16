@@ -114,9 +114,7 @@
                         accum.length.gt 0
                         not. (accum.head.eq "..")
                       if.
-                        and.
-                          unc
-                          accum.length.lte 2
+                        unc.and (accum.length.lte 2)
                         accum
                         accum.tail
                       is-absolute.not.if (accum.with segment) accum
@@ -303,6 +301,21 @@
       path.win32 "\\\\server\\share\\folder"
     "\\\\server\\share\\folder"
 
+  eq. ++> can-normalize-a-unc-win32-path-with-a-current-and-a-parent-segment-at-the-share-root
+    normalized.
+      path.win32 "\\\\server\\share\\.\\..\\folder"
+    "\\\\server\\share\\folder"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-a-parent-segment-alone-at-the-share-root
+    normalized.
+      path.win32 "\\\\server\\share\\.."
+    "\\\\server\\share"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-a-parent-segment-and-a-trailing-separator
+    normalized.
+      path.win32 "\\\\server\\share\\..\\"
+    "\\\\server\\share\\"
+
   eq. ++> can-normalize-a-unc-win32-path-with-a-parent-segment-at-the-share-root
     normalized.
       path.win32 "\\\\server\\share\\..\\folder"
@@ -313,30 +326,15 @@
       path.win32 "\\\\server\\share\\a\\..\\folder"
     "\\\\server\\share\\folder"
 
-  eq. ++> can-normalize-a-unc-win32-path-with-repeated-parent-segments-at-the-share-root
-    normalized.
-      path.win32 "\\\\server\\share\\..\\..\\folder"
-    "\\\\server\\share\\folder"
-
-  eq. ++> can-normalize-a-unc-win32-path-with-a-parent-segment-and-a-trailing-separator
-    normalized.
-      path.win32 "\\\\server\\share\\..\\"
-    "\\\\server\\share\\"
-
   eq. ++> can-normalize-a-unc-win32-path-with-parent-segments-past-two-child-directories
     normalized.
       path.win32 "\\\\server\\share\\a\\b\\..\\..\\..\\folder"
     "\\\\server\\share\\folder"
 
-  eq. ++> can-normalize-a-unc-win32-path-with-a-current-and-a-parent-segment-at-the-share-root
+  eq. ++> can-normalize-a-unc-win32-path-with-repeated-parent-segments-at-the-share-root
     normalized.
-      path.win32 "\\\\server\\share\\.\\..\\folder"
+      path.win32 "\\\\server\\share\\..\\..\\folder"
     "\\\\server\\share\\folder"
-
-  eq. ++> can-normalize-a-unc-win32-path-with-a-parent-segment-alone-at-the-share-root
-    normalized.
-      path.win32 "\\\\server\\share\\.."
-    "\\\\server\\share"
 
   eq. ++> can-normalize-a-win32-path-collapsing-to-the-current-directory
     normalized.
