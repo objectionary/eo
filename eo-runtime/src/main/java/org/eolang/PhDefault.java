@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -134,7 +133,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param dta Object data
      */
     public PhDefault(final byte[] dta) {
-        this("", Arrays.copyOf(dta, dta.length), PhDefault.NONE);
+        this("", dta, PhDefault.NONE);
     }
 
     /**
@@ -143,7 +142,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param attributes Initial attributes to register
      */
     public PhDefault(final byte[] dta, final Map<String, Attribute> attributes) {
-        this("", Arrays.copyOf(dta, dta.length), attributes);
+        this("", dta, attributes);
     }
 
     /**
@@ -273,7 +272,7 @@ public class PhDefault implements Phi, Cloneable {
                 this.forma()
             );
         }
-        return Arrays.copyOf(bytes, bytes.length);
+        return bytes;
     }
 
     @Override
