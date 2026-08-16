@@ -31,6 +31,7 @@ public final class NamedFuncCall implements Syscall {
         NamedFuncCall.ALL.put("_open", OpenFuncCall::new);
         NamedFuncCall.ALL.put("_access", AccessFuncCall::new);
         NamedFuncCall.ALL.put("_stat64", Stat64FuncCall::new);
+        NamedFuncCall.ALL.put("GetFileAttributesW", GetFileAttributesFuncCall::new);
         NamedFuncCall.ALL.put("_creat", CreatFuncCall::new);
         NamedFuncCall.ALL.put("_unlink", UnlinkFuncCall::new);
         NamedFuncCall.ALL.put("_rmdir", RmdirFuncCall::new);
@@ -40,7 +41,7 @@ public final class NamedFuncCall implements Syscall {
         NamedFuncCall.ALL.put("_write", WriteFuncCall::new);
         NamedFuncCall.ALL.put("_close", CloseFuncCall::new);
         NamedFuncCall.ALL.put("getenv", GetenvFuncCall::new);
-        NamedFuncCall.ALL.put("_ftime32_s", FtimeFuncCall::new);
+        NamedFuncCall.ALL.put("_ftime64_s", FtimeFuncCall::new);
         NamedFuncCall.ALL.put("WSAStartup", WSAStartupFuncCall::new);
         NamedFuncCall.ALL.put("WSACleanup", WSACleanupFuncCall::new);
         NamedFuncCall.ALL.put("WSAGetLastError", WSAGetLastErrorFuncCall::new);

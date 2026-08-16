@@ -4,14 +4,15 @@
  */
 package org.eolang.inference;
 
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.tojos.MnMemory;
-import com.yegor256.tojos.TjDeferred;
-import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,6 +37,17 @@ import java.util.Map;
  * writes {@code links.xml} back, with the pairs it worked out added to the
  * ones the rules found.</p>
  *
+ * <p>What every application fills is written here as well, and not by a rule
+ * of its own, for want of anywhere earlier to write it: naming the void an
+ * argument lands in means knowing which formation is being copied, and that is
+ * what the pairs have just settled.</p>
+ *
+ * <p>So is the admission that a dispatch could not be worked out, for the same
+ * reason in reverse: only here, when the passes have stopped adding pairs, is
+ * it known that no pass will answer it. A row saying nothing is known is worth
+ * writing, since an absent row says that and also says "nobody looked", and a
+ * reader has no way of telling which.</p>
+ *
  * @since 0.68.0
  */
 public final class Resolved implements Clue {
@@ -57,24 +69,30 @@ public final class Resolved implements Clue {
     public void follow(final Path xmirs, final Path tables) throws IOException {
         this.origin.follow(xmirs, tables);
         final Path links = tables.resolve("links.xml");
-        final Map<String, String> pairs = new Pairs(new XMLDocument(links)).all();
-        final Dispatched made = new Dispatched(
-            new XMLDocument(tables.resolve("provides.xml")),
-            new Xmirs(xmirs).dispatches()
+        final Xmirs world = new Xmirs(xmirs);
+        final XML given = new XMLDocument(tables.resolve("provides.xml"));
+        final Collection<XML> dispatches = world.dispatches();
+        final Map<String, List<String>> args = new Given(world.applications()).arguments();
+        final List<String> voids = given.xpath("//attr[@void='true']/@type");
+        final Pairs written = new Pairs(new XMLDocument(links));
+        final Map<String, String> pairs = new Settled(
+            new Dispatched(given, dispatches, args, voids)
+        ).from(
+            new Settled(
+                new Dispatched(given, dispatches, args, Collections.emptyList())
+            ).from(written.all())
         );
-        Map<String, String> answers = made.answers(pairs);
-        while (!answers.isEmpty()) {
-            pairs.putAll(answers);
-            answers = made.answers(pairs);
+        final Map<String, String> names = new Ends(pairs).names();
+        final Map<String, Type> rows = new Refs(
+            pairs, new Bound(args, names, new Provided(given, names, voids)).all()
+        ).all();
+        rows.putAll(written.others());
+        for (final XML dispatch : dispatches) {
+            rows.putIfAbsent(dispatch.xpath("@loc").get(0), new Unknown());
         }
-        try (Tojos rows = new TjDeferred(new MnMemory())) {
-            for (final Map.Entry<String, String> pair : pairs.entrySet()) {
-                rows.add(pair.getKey()).set("copy", pair.getValue());
-            }
-            Files.write(
-                links,
-                new Grouped(rows, "links").asXml().toString().getBytes(StandardCharsets.UTF_8)
-            );
-        }
+        Files.write(
+            links,
+            new Types(rows).asXml().toString().getBytes(StandardCharsets.UTF_8)
+        );
     }
 }

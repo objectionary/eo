@@ -10,9 +10,8 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list start func] > reducedi
-  if. > @
-    is-empty list
+[start func] > reducedi
+  list.is-empty.if > @
     start
     if. > [tup] >> rec-reducedi
       tup.length.eq 1
@@ -25,17 +24,18 @@
         tup.head
         tup.tail.length
     | list
+  ^ > list
 
-  ++> can-reduce-a-list-with-indexes
-    6.eq > @
-      reducedi.
-        * 1 1
-        0
-        x.plus > [a x i] >>
-          a.plus
-            at.
-              * 2 2
-              i
+  eq. ++> can-reduce-a-list-with-indexes
+    6
+    reducedi.
+      * 1 1
+      0
+      x.plus > [a x i]
+        a.plus
+          at.
+            * 2 2
+            i
 
   eq. ++> can-reduce-a-long-integer-list-with-indexes
     reducedi.

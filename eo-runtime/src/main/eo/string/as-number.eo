@@ -14,20 +14,15 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text cant-parse] > as-number
+[cant-parse] > as-number
   if. > @
     not.
-      matches.
-        compiled.
-          regex "/^[+-]?\\d+(?:\\.\\d+)?$/"
-        text
+      "/^[+-]?\\d+(?:\\.\\d+)?$/".regex.compiled.matches text
     cant-parse
       "Can't convert text %s to number".printf
         * text
-    head.
-      ^.
-        at.
-          scanf "%f" text
+    head. ("%f".scanf text).at.^
+  ^ > text
 
   3.14.eq "3.14".as-number ++> can-convert-float-text
 
@@ -37,27 +32,27 @@
 
   42.5.eq "42.5".as-number ++> can-convert-text-through-an-implicit-dispatch
 
-  eq. ++> rejects-currency-prefixed-text
+  eq. ++> can-recover-from-currency-prefixed-text
     42
     "$100".as-number
       42 > [message]
 
-  eq. ++> rejects-non-numeric-text
+  eq. ++> can-recover-from-non-numeric-text
     42
     "Hello".as-number
       42 > [message]
 
-  eq. ++> rejects-space-separated-numbers
+  eq. ++> can-recover-from-space-separated-numbers
     42
     "1 2 3".as-number
       42 > [message]
 
-  eq. ++> rejects-text-with-an-embedded-number
+  eq. ++> can-recover-from-text-with-an-embedded-number
     42
     "abc5".as-number
       42 > [message]
 
-  eq. ++> rejects-text-with-multiple-dots
+  eq. ++> can-recover-from-text-with-multiple-dots
     42
     "12.34.56".as-number
       42 > [message]

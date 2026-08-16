@@ -11,7 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text times cant-repeat] > repeated
+[times cant-repeat] > repeated
   if. > @
     or.
       0.gt times
@@ -33,12 +33,31 @@
                 rec-repeated (n.div 2).floor >> half!
               text.as-bytes
       | times
+  ^ > text
 
   eq. ++> can-format-the-error-message-of-a-negative-count
     "Can't repeat text -1.000000 times"
     "x".repeated
       -1
-      message > [message]
+      I
+
+  eq. ++> can-recover-from-a-negative-count
+    "recovered"
+    "x".repeated
+      -1
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-a-non-integer-count
+    "recovered"
+    "x".repeated
+      2.5
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-infinite-count
+    "recovered"
+    "x".repeated
+      pinf
+      "recovered" > [message]
 
   eq. ++> can-repeat-a-text-five-times
     "heyheyheyheyhey"
@@ -57,23 +76,5 @@
   eq. ++> can-repeat-a-text-zero-times
     ""
     "some".repeated 0
-
-  eq. ++> rejects-a-negative-count
-    "recovered"
-    "x".repeated
-      -1
-      "recovered" > [message]
-
-  eq. ++> rejects-a-non-integer-count
-    "recovered"
-    "x".repeated
-      2.5
-      "recovered" > [message]
-
-  eq. ++> rejects-an-infinite-count
-    "recovered"
-    "x".repeated
-      pinf
-      "recovered" > [message]
 
   "".repeated -1 --> stops-on-a-negative-count

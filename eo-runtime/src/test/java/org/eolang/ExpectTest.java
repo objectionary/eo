@@ -146,10 +146,10 @@ final class ExpectTest {
     @Test
     void failsInTransformingToNumberForNotNumber() {
         MatcherAssert.assertThat(
-            "inner class Number working throws error if attr is not a number",
+            "inner class Numeric working throws error if attr is not a number",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Number(
+                () -> new Expect.Numeric(
                     Expect.at(
                         new PhApplication(
                             new PhDefault(),

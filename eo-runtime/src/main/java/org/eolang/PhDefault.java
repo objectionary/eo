@@ -11,10 +11,10 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -99,12 +99,19 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Order of their names.
      */
-    private final Map<Integer, String> order;
+    private final List<String> order;
 
     /**
      * Attributes.
      */
     private Map<String, Attribute> attrs;
+
+    /**
+     * Guards {@link #attrs} and {@link #order} against concurrent lazy init.
+     * Not final: {@link #copy()} gives the copy its own, since a copy's
+     * lazy init is independent of the origin's.
+     */
+    private ReentrantLock lock;
 
     /**
      * Default ctor.
@@ -158,7 +165,8 @@ public class PhDefault implements Phi, Cloneable {
         this.fqn = forma;
         this.data = new Snapshot(dta);
         this.initial = attributes;
-        this.order = new HashMap<>(0);
+        this.order = new ArrayList<>(0);
+        this.lock = new ReentrantLock();
     }
 
     @Override
@@ -168,18 +176,15 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public int hashCode() {
-        return super.hashCode() + 1;
+        return System.identityHashCode(this) + 1;
     }
 
     @Override
     public final Phi copy() {
         try {
             final PhDefault copy = (PhDefault) this.clone();
-            final Map<String, Attribute> map = new HashMap<>(this.loaded().size());
-            for (final Map.Entry<String, Attribute> ent : this.loaded().entrySet()) {
-                map.put(ent.getKey(), ent.getValue().copy(copy));
-            }
-            copy.attrs = map;
+            copy.lock = new ReentrantLock();
+            copy.attrs = new CopiedAttrs(this.loaded(), copy);
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new ExFailure("cannot copy the object", ex);
@@ -204,7 +209,8 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public void put(final String name, final Phi object) {
-        if (!this.loaded().containsKey(name)) {
+        final Attribute attr = this.loaded().get(name);
+        if (attr == null) {
             throw new ExUnset(
                 String.format(
                     "Can't #put(\"%s\", %s) to %s, because the attribute is absent",
@@ -212,7 +218,7 @@ public class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        this.loaded().get(name).put(object);
+        attr.put(object);
     }
 
     @Override
@@ -225,11 +231,15 @@ public class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
+        final boolean logging = PhDefault.LOGGER.isLoggable(Level.FINE);
+        if (logging) {
+            PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
+        }
         try {
             final Phi resolved;
-            if (this.loaded().containsKey(name)) {
-                resolved = this.loaded().get(name).get();
+            final Attribute attr = this.loaded().get(name);
+            if (attr != null) {
+                resolved = attr.get();
             } else if (name.equals(Phi.LAMBDA)) {
                 resolved = new AtomTyped(
                     this, PhDefault.ATOMS.declared(this.forma())
@@ -237,7 +247,7 @@ public class PhDefault implements Phi, Cloneable {
             } else {
                 resolved = this.absent(name);
             }
-            if (PhDefault.LOGGER.isLoggable(Level.FINE)) {
+            if (logging) {
                 PhDefault.LOGGER.log(
                     Level.FINE,
                     String.format(
@@ -251,11 +261,8 @@ public class PhDefault implements Phi, Cloneable {
             }
             return resolved;
         } finally {
-            final int current = PhDefault.NESTING.get();
-            if (current > 0) {
-                PhDefault.NESTING.set(current - 1);
-            } else {
-                PhDefault.NESTING.set(0);
+            if (logging) {
+                PhDefault.NESTING.set(Math.max(0, PhDefault.NESTING.get() - 1));
             }
         }
     }
@@ -271,10 +278,8 @@ public class PhDefault implements Phi, Cloneable {
             bytes = this.take(Phi.PHI).delta();
         } else {
             throw new ExFailure(
-                String.format(
-                    "There's no \"Δ\" in the object of \"%s\"",
-                    this.forma()
-                )
+                "There's no \"Δ\" in the object of \"%s\"",
+                this.forma()
             );
         }
         return bytes;
@@ -328,10 +333,15 @@ public class PhDefault implements Phi, Cloneable {
      * @param attr The attr
      */
     public void add(final String name, final Attribute attr) {
-        if (PhDefault.SORTABLE.matcher(name).matches()) {
-            this.order.put(this.order.size(), name);
+        this.lock.lock();
+        try {
+            if (PhDefault.SORTABLE.matcher(name).matches()) {
+                this.order.add(name);
+            }
+            this.loaded().put(name, new AtWithRho(attr, this));
+        } finally {
+            this.lock.unlock();
         }
-        this.loaded().put(name, new AtWithRho(attr, this));
     }
 
     @Override
@@ -343,27 +353,12 @@ public class PhDefault implements Phi, Cloneable {
             if ("string".equals(name)) {
                 result = new Quoted(raw).get();
             } else {
-                result = PhDefault.numeral(new BytesOf(raw).asNumber());
+                result = new Numeral(new BytesOf(raw).asNumber()).get();
             }
         } else {
             result = this.structural();
         }
         return result;
-    }
-
-    /**
-     * Render a number value as a φ-term.
-     * @param value The number
-     * @return Whole values without a fraction, decimals otherwise
-     */
-    static String numeral(final double value) {
-        final String txt;
-        if (value == Math.floor(value) && !Double.isInfinite(value)) {
-            txt = Long.toString((long) value);
-        } else {
-            txt = Double.toString(value);
-        }
-        return txt;
     }
 
     /**
@@ -404,7 +399,9 @@ public class PhDefault implements Phi, Cloneable {
         } else if (this.loaded().containsKey(Phi.PHI)) {
             object = this.take(Phi.PHI).take(name);
         } else {
-            object = new PhTerminator();
+            object = new PhTerminator(
+                String.format("the attribute \"%s\" is not found in %s", name, this.forma())
+            );
         }
         return object;
     }
@@ -522,28 +519,22 @@ public class PhDefault implements Phi, Cloneable {
         this.loaded();
         if (0 > pos) {
             throw new ExFailure(
-                String.format(
-                    "The attribute position can't be negative (%d)",
-                    pos
-                )
+                "The attribute position can't be negative (%d)",
+                pos
             );
         }
         if (this.order.isEmpty()) {
             throw new ExFailure(
-                String.format(
-                    "There are no attributes here, can't read the %d-th one",
-                    pos
-                )
+                "There are no attributes here, can't read the %d-th one",
+                pos
             );
         }
-        if (!this.order.containsKey(pos)) {
+        if (pos >= this.order.size()) {
             throw new ExFailure(
-                String.format(
-                    "%s has just %d attribute(s), can't read the %d-th one",
-                    this,
-                    this.order.size(),
-                    pos
-                )
+                "%s has just %d attribute(s), can't read the %d-th one",
+                this,
+                this.order.size(),
+                pos
             );
         }
         return this.order.get(pos);
@@ -571,13 +562,18 @@ public class PhDefault implements Phi, Cloneable {
      * @return Map of attrs
      */
     private Map<String, Attribute> loaded() {
-        if (this.attrs == null) {
-            this.attrs = PhDefault.defaults();
-            for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
-                this.add(ent.getKey(), ent.getValue());
+        this.lock.lock();
+        try {
+            if (this.attrs == null) {
+                this.attrs = PhDefault.defaults();
+                for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
+                    this.add(ent.getKey(), ent.getValue());
+                }
             }
+            return this.attrs;
+        } finally {
+            this.lock.unlock();
         }
-        return this.attrs;
     }
 
     /**
@@ -646,7 +642,7 @@ public class PhDefault implements Phi, Cloneable {
      * @return Default attributes hash map
      */
     private static Map<String, Attribute> defaults() {
-        final Map<String, Attribute> attrs = new HashMap<>(0);
+        final Map<String, Attribute> attrs = new Bindings();
         attrs.put(Phi.RHO, new AtRho());
         return attrs;
     }

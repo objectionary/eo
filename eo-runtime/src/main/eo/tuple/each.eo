@@ -9,9 +9,8 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list func] > each
-  eachi > @
-    list
+[func] > each
+  ^.eachi > @
     func item > [item index] >>
 
   ++> can-iterate-over-a-list
@@ -31,7 +30,7 @@
         1
         2
         3
-      x > [x]
+      I
     3
 
   ++> can-sum-many-numbers

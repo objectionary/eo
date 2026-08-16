@@ -7,8 +7,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [as-bytes] > u16
   as-bytes > @
@@ -86,6 +84,12 @@
     00-06.as-u16.times 00-07.as-u16
     00-2A.as-u16
 
+  eq. ++> can-recover-from-division-by-zero
+    "recovered"
+    00-02.as-u16.div
+      00-00.as-u16
+      "recovered" > [message]
+
   eq. ++> can-subtract
     00-05.as-u16.minus 00-03.as-u16
     00-02.as-u16
@@ -93,6 +97,18 @@
   eq. ++> can-subtract-with-underflow
     00-00.as-u16.minus 00-01.as-u16
     FF-FF.as-u16
+
+  not. ++> can-tell-it-does-not-equal-a-different-u16
+    00-2A.as-u16.eq 00-2B.as-u16
+
+  not. ++> can-tell-it-is-not-greater-than-or-equal-to-a-larger-u16
+    00-00.as-u16.gte 00-0A.as-u16
+
+  not. ++> can-tell-it-is-not-less-than-an-equal-u16
+    00-0A.as-u16.lt 00-0A.as-u16
+
+  not. ++> can-tell-it-is-not-less-than-one-with-a-high-bit
+    FF-FF.as-u16.lt 00-01.as-u16
 
   FF-FF.as-u16.gt 00-01.as-u16 ++> can-treat-a-high-bit-as-magnitude-when-greater
 
@@ -103,23 +119,5 @@
   eq. ++> can-wrap-a-product-modulo-two-to-the-sixteenth
     01-00.as-u16.times 01-00.as-u16
     00-00.as-u16
-
-  not. ++> cannot-be-greater-than-or-equal-to-a-larger-u16
-    00-00.as-u16.gte 00-0A.as-u16
-
-  not. ++> cannot-be-less-than-an-equal-u16
-    00-0A.as-u16.lt 00-0A.as-u16
-
-  not. ++> cannot-be-less-than-one-with-a-high-bit
-    FF-FF.as-u16.lt 00-01.as-u16
-
-  not. ++> cannot-equal-a-different-u16
-    00-2A.as-u16.eq 00-2B.as-u16
-
-  eq. ++> rejects-division-by-zero
-    "recovered"
-    00-02.as-u16.div
-      00-00.as-u16
-      "recovered" > [message]
 
   00-02.as-u16.div 00-00.as-u16 --> stops-on-division-by-zero

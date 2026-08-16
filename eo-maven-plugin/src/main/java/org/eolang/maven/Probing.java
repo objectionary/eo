@@ -144,12 +144,18 @@ final class Probing implements Step {
         final Set<String> completed
     ) throws IOException {
         final int split = object.lastIndexOf('.');
-        if (split > 0) {
-            final String pkg = object.substring(0, split);
-            if (completed.add(pkg)) {
-                for (final String sibling : this.objectionary.children(pkg)) {
-                    this.tojos.add(sibling).withDiscoveredAt(src);
+        final String pkg = object.substring(0, Math.max(split, 0));
+        if (split > 0 && completed.add(pkg)) {
+            final String root = "org.eolang.";
+            final boolean rooted = object.startsWith(root);
+            for (final String sibling : this.objectionary.children(pkg)) {
+                final String qualified;
+                if (rooted && !sibling.startsWith(root)) {
+                    qualified = root.concat(sibling);
+                } else {
+                    qualified = sibling;
                 }
+                this.tojos.add(qualified).withDiscoveredAt(src);
             }
         }
     }

@@ -1,15 +1,11 @@
 # Path `path` that is hierarchical and composed of a sequence of
 # directory and file name elements separated by a special separator or delimiter.
 
-+alias string.last-index-of
-+alias string.regex
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [uri] > path
   os.is-windows.if > @
@@ -28,11 +24,11 @@
           or.
             pth.size.eq 0
             index.eq 0
-          uri >> pth!
+          trimmed >> pth!
           as-bytes.
             text.slice
               plus. >> index!
-                last-index-of text separator
+                text.last-index-of separator
                 1
               text.length.minus
                 number index
@@ -41,7 +37,7 @@
       string > @
         if.
           pth.size.eq 0
-          uri >> pth!
+          trimmed >> pth!
           if.
             len.eq -1
             "."
@@ -51,7 +47,7 @@
               as-bytes.
                 text.slice
                   0
-                  last-index-of text separator >> len!
+                  text.last-index-of separator >> len!
       string pth > text
     sys.drive uri > drive
     if. > driveless
@@ -73,7 +69,7 @@
         string
           as-bytes.
             text.slice
-              last-index-of text "." >> index!
+              text.last-index-of "." >> index!
               text.length.minus
                 number index
       string > text
@@ -94,7 +90,7 @@
             normalized.size.eq 0
             "."
             string normalized
-      as-bytes. > normalized
+      as-bytes. > normalized!
         if.
           driveless.size.eq 0
           if.
@@ -104,11 +100,12 @@
           concat.
             concat.
               drive.concat
-                is-absolute.if separator --
-              string.joined >> body!
-                separator
-                tuple.reduced
-                  string.split driveless separator
+                is-absolute.if
+                  unc.if (separator.concat separator) separator
+                  --
+              separator.joined >> body!
+                reduced.
+                  driveless.split separator
                   *
                   if. > [accum segment] >>
                     segment.eq ".."
@@ -154,6 +151,23 @@
         as-bytes.
           sys.sanitized other
     sys.separator > separator
+    string > [] > trimmed
+      if.
+        or.
+          uri.size.eq 0
+          uri.eq separator
+        uri
+        if.
+          uri.ends-with separator
+          as-bytes.
+            uri.slice
+              0
+              uri.length.minus separator.length
+          uri
+    and. > unc
+      driveless.size.gt 1
+      driveless.starts-with
+        separator.concat separator
   [paths] > joined
     normalized. > @
       os.is-windows.if
@@ -161,7 +175,7 @@
         posix jpath
     string > jpath
       as-bytes.
-        string.joined separator paths
+        separator.joined paths
   [uri] > posix
     impl > @
       sys
@@ -169,7 +183,7 @@
     "/" > separator
     [] > sys
       -- > [uri] > drive
-      uri > [uri] > sanitized
+      I > sanitized
       ^.separator > separator
   os.is-windows.if > separator
     win32.separator
@@ -181,17 +195,17 @@
     "\\" > separator
     [] > sys
       if. > [uri] > drive
-        as-bool. ((regex "/^[a-zA-Z]:/").match uri).next.exists
+        as-bool. ("/^[a-zA-Z]:/".regex.match uri).next.exists
         uri.slice 0 2
         --
       [uri] > sanitized
         if. > @
           eq.
-            string.index-of pth path.posix.separator
+            pth.index-of path.posix.separator
             -1
           string
             uri >> ubts!
-          string (string.replaced pth (regex "/\\//") separator)!
+          string (pth.replaced "/\\//".regex separator)!
         string ubts > pth
       ^.separator > separator
 
@@ -268,6 +282,21 @@
     normalized.
       path.win32 "..\\..\\foo\\bar\\..\\x\\y\\\\"
     "..\\..\\foo\\x\\y\\"
+
+  eq. ++> can-normalize-a-root-relative-win32-path-keeping-a-single-separator
+    normalized.
+      path.win32 "\\server\\share"
+    "\\server\\share"
+
+  eq. ++> can-normalize-a-unc-win32-path-keeping-its-double-separator-prefix
+    normalized.
+      path.win32 "\\\\server\\share"
+    "\\\\server\\share"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-a-child-directory
+    normalized.
+      path.win32 "\\\\server\\share\\folder"
+    "\\\\server\\share\\folder"
 
   eq. ++> can-normalize-a-win32-path-collapsing-to-the-current-directory
     normalized.
@@ -404,7 +433,7 @@
       path.posix "/var/www/html/foo\\bar"
     "foo\\bar"
 
-  eq. ++> can-return-an-empty-basename-from-a-path-ending-with-a-separator
+  eq. ++> can-return-the-basename-ignoring-a-trailing-separator
     basename.
       path.joined
         *
@@ -412,7 +441,12 @@
           "www"
           "html"
           path.separator
-    ""
+    "html"
+
+  eq. ++> can-return-the-basename-of-a-root-relative-path-ending-with-a-separator
+    basename.
+      path.posix "/foo/"
+    "foo"
 
   eq. ++> can-return-the-current-dirname-of-a-hidden-relative-posix-file
     dirname.
@@ -424,6 +458,11 @@
       path.posix "plain"
     "."
 
+  eq. ++> can-return-the-current-dirname-of-a-relative-posix-file-ending-with-a-separator
+    dirname.
+      path.posix "foo/"
+    "."
+
   eq. ++> can-return-the-dirname-of-a-directory-path
     dirname.
       path.joined
@@ -431,8 +470,7 @@
           "var"
           "www"
           path.separator
-    path.joined
-      * "var" "www"
+    "var"
 
   eq. ++> can-return-the-dirname-of-a-file-path
     dirname.
@@ -464,6 +502,11 @@
       path.posix "/foo"
     "/"
 
+  eq. ++> can-return-the-root-dirname-of-a-single-component-posix-path-ending-with-a-separator
+    dirname.
+      path.posix "/foo/"
+    "/"
+
   eq. ++> can-return-the-same-string-without-a-separator
     basename.
       path "Somebody"
@@ -493,17 +536,17 @@
       path.posix ".config.json"
     ".json"
 
-  eq. ++> cannot-take-an-extname-from-a-dotdot
+  eq. ++> can-take-no-extname-from-a-dotdot
     extname.
       path.posix ".."
     ""
 
-  eq. ++> cannot-take-an-extname-from-a-dotfile
+  eq. ++> can-take-no-extname-from-a-dotfile
     extname.
       path.posix ".gitignore"
     ""
 
-  eq. ++> cannot-take-an-extname-from-a-file-without-an-extension
+  eq. ++> can-take-no-extname-from-a-file-without-an-extension
     extname.
       path.joined
         *
@@ -512,7 +555,7 @@
           "html"
     ""
 
-  eq. ++> cannot-take-an-extname-from-a-path-ending-with-a-separator
+  eq. ++> can-take-no-extname-from-a-path-ending-with-a-separator
     extname.
       path.joined
         *

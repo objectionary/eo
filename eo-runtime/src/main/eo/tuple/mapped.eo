@@ -9,9 +9,8 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list func] > mapped
-  mappedi > @
-    list
+[func] > mapped
+  ^.mappedi > @
     func item > [item idx] >>
 
   eq. ++> can-map-a-list

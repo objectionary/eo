@@ -10,7 +10,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text target replacement] > replaced
+[target replacement] > replaced
   matched.exists.not.if > @
     string text! >> reinit
     block.exists.if > [block accum start] >> rec-replaced
@@ -34,6 +34,7 @@
       start.
         next. >> matched
           target.match reinit
+  ^ > text
 
   eq. ++> can-replace-a-nullable-pattern-like-java
     "abc".replaced
@@ -53,6 +54,12 @@
       "o"
     "Hello, world"
 
+  eq. ++> can-replace-nothing-when-the-pattern-is-absent
+    "Hello, world".replaced
+      "/[0-9]+/".regex
+      "12345"
+    "Hello, world"
+
   eq. ++> can-replace-slashes-with-a-windows-separator
     "C:\\Windows/foo\\bar/hello.txt".replaced
       "/\\//".regex
@@ -64,9 +71,3 @@
       "/[<>:\\\"\\/\\|\\?\\*\\x00-\\x1F]/".regex
       ""
     "foo\\barbaz\\asdf"
-
-  eq. ++> cannot-replace-when-the-pattern-is-absent
-    "Hello, world".replaced
-      "/[0-9]+/".regex
-      "12345"
-    "Hello, world"

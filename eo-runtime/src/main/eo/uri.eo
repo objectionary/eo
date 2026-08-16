@@ -22,26 +22,23 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [text] > uri
   text > @
   if. > authority
-    string.starts-with >> has-authority
-      hier-part
+    starts-with. >> has-authority
+      has-query.if >> hier-part
+        before-fragment.slice 0 question-idx
+        before-fragment
       "//"
     if.
       not. >> has-authority-path
         eq.
-          string.index-of after-slashes "/" >> authority-path-idx
+          after-slashes.index-of "/" >> authority-path-idx
           -1
       slice.
         has-authority.if >> after-slashes
-          slice.
-            has-query.if >> hier-part
-              before-fragment.slice 0 question-idx
-              before-fragment
+          hier-part.slice
             2
             hier-part.length.minus
               number 2
@@ -60,7 +57,7 @@
           number
             scheme-colon.plus 1
       plus.
-        string.index-of rest "#" >> hash-idx
+        rest.index-of "#" >> hash-idx
         1
       rest.length.minus
         number
@@ -68,12 +65,30 @@
     ""
   if. > host
     not. >> has-port
-      port-colon-idx.eq -1
+      eq.
+        if. >> port-colon-idx
+          host-port.starts-with "[" >>
+          if.
+            eq.
+              index-of. >> rel-colon
+                host-port.slice
+                  bracket-start
+                  host-port.length.minus
+                    number bracket-start
+                ":"
+              -1
+            -1
+            rel-colon.plus
+              plus. >> bracket-start
+                host-port.index-of "]" >>
+                1
+          host-port.index-of ":"
+        -1
     slice.
       has-userinfo.if >> host-port
         authority.slice
           plus.
-            string.index-of authority "@" >> userinfo-at-idx
+            authority.index-of "@" >> userinfo-at-idx
             1
           authority.length.minus
             number
@@ -91,29 +106,17 @@
       ""
     hier-part
   has-port.if > port
-    host-port.slice
-      plus.
-        if. >> port-colon-idx
-          string.starts-with host-port "[" >>
-          if.
-            eq.
-              string.index-of >> rel-colon
-                host-port.slice
-                  bracket-start
-                  host-port.length.minus
-                    number bracket-start
-                ":"
-              -1
-            -1
-            rel-colon.plus
-              plus. >> bracket-start
-                string.index-of host-port "]" >>
-                1
-          string.index-of host-port ":"
-        1
-      host-port.length.minus
-        number
-          port-colon-idx.plus 1
+    if.
+      raw-port.is-digit.or
+        eq.
+          host-port.slice >> raw-port
+            port-colon-idx.plus 1
+            host-port.length.minus
+              number
+                port-colon-idx.plus 1
+          ""
+      raw-port
+      ""
     ""
   if. > query
     not. >> has-query
@@ -123,7 +126,7 @@
         rest.slice 0 hash-idx
         rest
       plus.
-        string.index-of before-fragment "?" >> question-idx
+        before-fragment.index-of "?" >> question-idx
         1
       before-fragment.length.minus
         number
@@ -131,7 +134,16 @@
     ""
   if. > scheme
     eq.
-      string.index-of text ":" >> scheme-colon
+      if. >> scheme-colon
+        or.
+          eq.
+            text.index-of ":" >> raw-colon
+            -1
+          not.
+            "/[A-Za-z][A-Za-z0-9+.-]*/".regex.compiled.matches
+              text.slice 0 raw-colon
+        -1
+        raw-colon
       -1
     ""
     text.slice
@@ -179,6 +191,16 @@
     query.
       uri "http://host/some/path?x=1#top"
     "x=1"
+
+  eq. ++> can-parse-a-scheme-with-a-plus-and-a-dot
+    scheme.
+      uri "a+b.c:part"
+    "a+b.c"
+
+  eq. ++> can-parse-an-empty-port
+    port.
+      uri "http://host:/"
+    ""
 
   eq. ++> can-parse-the-empty-host-of-a-triple-slash-uri
     host.
@@ -234,3 +256,23 @@
     userinfo.
       uri "http://user:pass@host:80/some/path"
     "user:pass"
+
+  eq. ++> can-treat-a-digit-led-prefix-as-schemeless
+    scheme.
+      uri "1http://host/path"
+    ""
+
+  eq. ++> can-treat-a-letter-suffixed-port-as-invalid
+    port.
+      uri "http://host:12x/"
+    ""
+
+  eq. ++> can-treat-a-non-digit-port-as-invalid
+    port.
+      uri "http://host:abc/"
+    ""
+
+  eq. ++> can-treat-a-plus-led-prefix-as-schemeless
+    scheme.
+      uri "+foo:bar"
+    ""

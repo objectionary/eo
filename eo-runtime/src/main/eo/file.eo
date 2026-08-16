@@ -5,8 +5,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [path] > file
   path > @
@@ -41,21 +39,29 @@
           "stat"
           path
   [cant-check] > is-symlink
-    if. > @
-      info.code.eq 0
-      eq.
-        floor.
-          info.output.mode.div 4096
-        10
-      cant-check
+    os.is-windows.if > @
+      if.
+        attributes.eq win32.invalid
+        cant-check
+        not.
+          eq.
+            attributes.as-i64.as-bytes.and win32.reparse
+            00-00-00-00-00-00-00-00
+      if.
+        info.code.eq 0
+        eq.
+          floor.
+            info.output.mode.div 4096
+          10
+        cant-check
+    code. > attributes
+      win32 *1
+        "GetFileAttributesW"
+        path
     called. > info
-      os.is-windows.if
-        win32 *1
-          "_stat64"
-          path
-        posix *1
-          "lstat"
-          path
+      posix *1
+        "lstat"
+        path
   [mode scope cant-open] > open
     known.not.if > @
       T
@@ -153,14 +159,26 @@
             output-block.write buffer > @
             [] > output-block
               true > @
-              writable.not.if > [buffer] > write
-                T
-                  "Can't write to file with provided access mode '%s'".printf
-                    * access
-                seq *
-                  code.
-                    syscall.write
-                      * descriptor buffer buffer.size
+              [buffer] > write
+                writable.not.if > @
+                  T
+                    "Can't write to file with provided access mode '%s'".printf
+                      * access
+                  seq *
+                    if. >>!
+                      code.eq -1
+                      T
+                        "Failed to write to file"
+                      output-block
+                    code
+                    remainder
+                code. > code
+                  syscall.write
+                    * descriptor buffer buffer.size
+                if. > remainder
+                  code.lt buffer.size
+                  output-block.write
+                    buffer.slice code (buffer.size.minus code)
                   output-block
         truncate.if syscall.trunc 0 > trunc
     and. > readable
@@ -188,6 +206,36 @@
         "a"
         f.write "!" > [f]
     13
+
+  eq. ++> can-keep-the-size-of-a-file-opened-for-appending
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "a"
+        true > [f]
+    12
+
+  eq. ++> can-keep-the-size-of-a-file-opened-for-reading
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "r"
+        true > [f]
+    12
+
+  eq. ++> can-keep-the-size-of-a-file-opened-for-reading-or-appending
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "a+"
+        true > [f]
+    12
 
   ++> can-read-from-a-file
     eq. > @
@@ -243,18 +291,52 @@
     temp.path > source
     mktemp.tmpfile > temp
 
+  ++> can-recover-from-checking-a-symbolic-link-of-an-absent-file
+    mktemp.tmpfile.deleted.is-symlink true > @
+
+  mktemp.tmpfile.deleted.is-directory ++> can-recover-from-checking-an-absent-file
+    true
+
+  eq. ++> can-recover-from-opening-a-missing-file
+    "recovered"
+    mktemp.tmpfile.deleted.open
+      "r"
+      I
+      "recovered" > [reason]
+
   ++> can-resolve-a-path-and-touch-it
     resolved.as-dir.made.tmpfile.exists.and > @
-      string.contains
-        resolved
-        string.joined *1
-          Q.path.separator
-          "foo"
-          "bar"
+      resolved.contains
+        Q.path.separator.joined
+          * "foo" "bar"
     mktemp.as-path.resolved "foo/bar" > resolved
+
+  ++> can-tell-that-a-directory-beside-a-symbolic-link-is-not-one
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            d
+            d.resolved "ссылка"
+        not.
+          d.as-file.is-symlink true
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
 
   not. ++> can-tell-that-a-regular-file-is-not-a-symbolic-link
     mktemp.tmpfile.is-symlink true
+
+  ++> can-tell-that-a-symbolic-link-is-one
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            d
+            link
+        link.as-file.is-symlink false
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "ссылка" > link
 
   not. ++> can-tell-that-an-absent-file-does-not-exist
     exists.
@@ -345,45 +427,6 @@
     temp.path > source
     mktemp.tmpfile > temp
 
-  eq. ++> cannot-truncate-a-file-opened-for-appending
-    size.
-      open.
-        mktemp.tmpfile.open
-          "w"
-          f.write "Hello, world" > [f]
-        "a"
-        true > [f]
-    12
-
-  eq. ++> cannot-truncate-a-file-opened-for-reading
-    size.
-      open.
-        mktemp.tmpfile.open
-          "w"
-          f.write "Hello, world" > [f]
-        "r"
-        true > [f]
-    12
-
-  eq. ++> cannot-truncate-a-file-opened-for-reading-or-appending
-    size.
-      open.
-        mktemp.tmpfile.open
-          "w"
-          f.write "Hello, world" > [f]
-        "a+"
-        true > [f]
-    12
-
-  mktemp.tmpfile.deleted.is-directory true ++> rejects-checking-an-absent-file
-
-  eq. ++> rejects-opening-a-missing-file
-    "recovered"
-    mktemp.tmpfile.deleted.open
-      "r"
-      f > [f]
-      "recovered" > [reason]
-
   mktemp.tmpfile.deleted.is-directory --> stops-on-checking-the-directory-of-an-absent-file
 
   seq * --> stops-on-opening-with-a-wrong-mode
@@ -402,11 +445,11 @@
 
   mktemp.tmpfile.deleted.open --> stops-on-reading-from-a-missing-file
     "r"
-    f > [f]
+    I
 
   mktemp.tmpfile.deleted.open --> stops-on-reading-or-writing-a-missing-file
     "r+"
-    f > [f]
+    I
 
   tmpfile. --> stops-on-touching-a-temp-file-in-an-absent-directory
     @.

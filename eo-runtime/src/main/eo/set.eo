@@ -5,8 +5,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [lst] > set
   [mp] >> ctor
@@ -19,8 +17,7 @@
       mp.without item
   | > @
     map
-      tuple.mapped
-        lst
+      lst.mapped
         map.entry item true > [item]
 
   has. ++> can-append-a-new-item
@@ -31,7 +28,7 @@
       3
     3
 
-  eq. ++> cannot-append-an-existing-item
+  eq. ++> can-skip-an-existing-item-when-appending
     size.
       with.
         set *

@@ -18,7 +18,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[x y cant-mod] > mod
+[y cant-mod] > mod
   if. > @
     eq.
       number y.as-bytes >> divisor
@@ -28,33 +28,40 @@
     dividend.is-finite.not.if
       nan
       divisor.is-finite.not.if
-        divisor.is-nan.if
-          nan
-          x.plus 0
+        divisor.is-nan.if nan x
         if.
-          gte.
-            number x.as-bytes >> dividend
-            0
-          [] >> abs-mod
-            shrink > @
-              grow
-                abs divisor >> absy
-              abs dividend >> absx
-            if. > [chunk] > grow
-              chunk.gte absx
-              chunk
-              grow
-                chunk.plus chunk
-            if. > [chunk rest] > shrink
-              chunk.lt absy
-              rest
-              shrink
-                chunk.div 2
-                if.
-                  rest.gte chunk
-                  rest.minus chunk
-                  rest
-          abs-mod.neg
+          x.as-bytes.eq 80-00-00-00-00-00-00-00
+          x
+          if.
+            gte.
+              number x.as-bytes >> dividend
+              0
+            [] >> abs-mod
+              shrink > @
+                grow divisor.abs
+                dividend.abs
+              if. > [chunk] > grow
+                chunk.gte dividend.abs
+                chunk
+                grow
+                  chunk.plus chunk
+              if. > [chunk rest] > shrink
+                chunk.lt divisor.abs
+                rest
+                shrink
+                  chunk.div 2
+                  if.
+                    rest.gte chunk
+                    rest.minus chunk
+                    rest
+            abs-mod.neg
+  ^ > x
+
+  eq. ++> can-recover-from-a-modulo-by-zero
+    "recovered"
+    5.mod
+      0
+      "recovered" > [message]
 
   is-nan. ++> can-return-nan-when-the-dividend-is-infinite
     pinf.mod 5
@@ -65,15 +72,20 @@
   is-nan. ++> can-return-nan-when-the-divisor-is-nan
     5.mod nan
 
-  eq. ++> can-return-positive-zero-for-negative-zero-dividend-and-negative-infinite-divisor
+  eq. ++> can-return-negative-zero-for-negative-zero-dividend-and-a-finite-divisor
+    as-bytes.
+      0.neg.mod 3
+    80-00-00-00-00-00-00-00
+
+  eq. ++> can-return-negative-zero-for-negative-zero-dividend-and-negative-infinite-divisor
     as-bytes.
       0.neg.mod ninf
-    0.as-bytes
+    80-00-00-00-00-00-00-00
 
-  eq. ++> can-return-positive-zero-for-negative-zero-dividend-and-positive-infinite-divisor
+  eq. ++> can-return-negative-zero-for-negative-zero-dividend-and-positive-infinite-divisor
     as-bytes.
       0.neg.mod pinf
-    0.as-bytes
+    80-00-00-00-00-00-00-00
 
   eq. ++> can-return-positive-zero-when-dividend-is-zero
     as-bytes.
@@ -168,11 +180,5 @@
   eq. ++> can-take-an-exact-modulo-of-a-very-large-dividend-by-three
     9200000000000000000.mod 3
     2
-
-  eq. ++> rejects-a-modulo-by-zero
-    "recovered"
-    5.mod
-      0
-      "recovered" > [message]
 
   5.mod 0 --> stops-on-a-modulo-by-zero

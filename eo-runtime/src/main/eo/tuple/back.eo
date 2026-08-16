@@ -8,18 +8,21 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list index] > back
-  if. > @
-    0.gt
-      list.length.minus index! >> start!
-    list
-    reducedi
+[index] > back
+  index.is-integer.if > @
+    if.
+      0.gt
+        list.length.minus index! >> start!
       list
-      *
-      if. > [accum item idx] >>
-        idx.gte start
-        accum.with item
-        accum
+      list.reducedi
+        *
+        if. > [accum item idx] >>
+          idx.gte start
+          accum.with item
+          accum
+    T
+      "Given index must be an integer"
+  ^ > list
 
   eq. ++> can-take-a-back-slice
     back.
@@ -59,3 +62,9 @@
         4
         5
       0
+
+  back. --> stops-on-a-fractional-index-when-taking-the-back
+    *
+      "a"
+      "b"
+    0.5

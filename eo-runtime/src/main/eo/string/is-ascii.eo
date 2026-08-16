@@ -7,15 +7,14 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text] > is-ascii
-  matches. > @
-    regex "/^[\\x00-\\x7F]+$/"
-    text
+[] > is-ascii
+  "/^[\\x00-\\x7F]+$/".regex.matches text > @
+  ^ > text
 
   "123".is-ascii ++> can-be-ascii-when-digits
 
   "H311oW".is-ascii ++> can-be-ascii-when-plain-text
 
-  "".is-ascii.not ++> cannot-be-ascii-when-empty
+  "".is-ascii.not ++> can-tell-it-is-not-ascii-when-empty
 
-  "🌵".is-ascii.not ++> cannot-be-ascii-with-an-emoji
+  "🌵".is-ascii.not ++> can-tell-it-is-not-ascii-with-an-emoji

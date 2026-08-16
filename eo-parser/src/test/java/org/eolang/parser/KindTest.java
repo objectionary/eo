@@ -39,13 +39,35 @@ final class KindTest {
         names = {
             "TOP_LEVEL", "HEAD", "HMETHOD", "BARE_FORMATION", "BARE_REVERSED",
             "COMPACT_TUPLE", "ONLY_PHI_FORMATION", "VAPPLICATION", "VMETHOD",
-            "TEXT_BLOCK"
+            "TEXT_BLOCK", "IDENTITY_OBJECT"
         }
     )
     void leavesOtherKindsOutOfHorizontallyCompletedSet(final Kind kind) {
         MatcherAssert.assertThat(
             "kinds outside Appendix A's horizontally-completed set must report false",
             kind.horizontallyCompleted(),
+            Matchers.is(false)
+        );
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+        value = Kind.class,
+        names = {"BARE_FORMATION", "ONLY_PHI_FORMATION", "PIPE_APPLICATION", "IDENTITY_OBJECT"}
+    )
+    void acceptsPipeAfterFormationLikeKinds(final Kind kind) {
+        MatcherAssert.assertThat(
+            "a pipe must attach to every formation-like kind, the identity object included",
+            kind.pipeable(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void keepsIdentityObjectOutOfFormationSet() {
+        MatcherAssert.assertThat(
+            "an identity object binds no body, so its children stay arguments rather than bindings",
+            Kind.IDENTITY_OBJECT.formation(),
             Matchers.is(false)
         );
     }

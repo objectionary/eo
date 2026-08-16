@@ -5,6 +5,7 @@
 package org.eolang.inference;
 
 import com.jcabi.xml.XML;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -36,12 +37,63 @@ final class Pairs {
 
     /**
      * Every pair of the table.
+     *
+     * <p>A row whose type is not an object of the program is passed over: it
+     * says something true, and nothing that a chain of copies can be walked
+     * through.</p>
+     *
      * @return The pairs, each name against the one it is a copy of
      */
     Map<String, String> all() {
         final Map<String, String> found = new LinkedHashMap<>(0);
-        for (final XML link : this.table.nodes("/links/type")) {
-            found.put(link.xpath("@id").get(0), link.xpath("@copy").get(0));
+        for (final XML link : this.table.nodes("/links/type[ref]")) {
+            found.put(link.xpath("@id").get(0), link.xpath("ref/@loc").get(0));
+        }
+        return found;
+    }
+
+    /**
+     * Every object the table answers by itself.
+     *
+     * <p>A row holding a reference is an answer only once the reference has
+     * been followed, and where it leads may be a void or nothing at all. A
+     * datum and a termination are answers as they stand: the bytes of a
+     * literal are what they are, and an object that never comes back with a
+     * value has nothing further to say.</p>
+     *
+     * @return The locators
+     */
+    Collection<String> certain() {
+        return this.table.xpath("/links/type[data or bottom]/@id");
+    }
+
+    /**
+     * Every row of the table that is not a pair.
+     *
+     * <p>A pass that reads the table and writes it again can only build the
+     * kinds of answer it knows about, and it knows about pairs. Everything
+     * else comes back as {@link Kept}, to be written as it was found rather
+     * than dropped for being none of that pass's business.</p>
+     *
+     * @return The types, by the locator of the object they are about
+     */
+    Map<String, Type> others() {
+        final Map<String, Type> found = new LinkedHashMap<>(0);
+        for (final XML row : this.table.nodes("/links/type[not(ref)]")) {
+            found.put(row.xpath("@id").get(0), new Kept(row));
+        }
+        return found;
+    }
+
+    /**
+     * How many voids every object of the table has filled.
+     * @return The counts, by the locator of the object, without the ones that
+     *  filled none
+     */
+    Map<String, Integer> binds() {
+        final Map<String, Integer> found = new LinkedHashMap<>(0);
+        for (final XML link : this.table.nodes("/links/type[ref/bind]")) {
+            found.put(link.xpath("@id").get(0), link.nodes("ref/bind").size());
         }
         return found;
     }

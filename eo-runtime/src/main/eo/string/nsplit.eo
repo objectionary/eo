@@ -10,7 +10,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text delimiter limit cant-split] > nsplit
+[delimiter limit cant-split] > nsplit
   if. > @
     or.
       1.gt limit
@@ -73,6 +73,28 @@
           0
   text.as-bytes >> bts!
   delimiter.size >> size!
+  ^ > text
+
+  eq. ++> can-recover-from-a-fractional-limit
+    "recovered"
+    "a-b-c".nsplit
+      "-"
+      1.5
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-infinite-limit-when-splitting
+    "recovered"
+    "a-b-c".nsplit
+      "-"
+      pinf
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-invalid-limit
+    "fallback"
+    "text".nsplit
+      "-"
+      0
+      "fallback" > [message]
 
   eq. ++> can-split-into-empty-strings
     "-a-b-c".nsplit
@@ -130,27 +152,6 @@
     *
       "Cookie:"
       "a=1; b=2"
-
-  eq. ++> rejects-a-fractional-limit
-    "recovered"
-    "a-b-c".nsplit
-      "-"
-      1.5
-      "recovered" > [message]
-
-  eq. ++> rejects-an-infinite-limit-when-splitting
-    "recovered"
-    "a-b-c".nsplit
-      "-"
-      pinf
-      "recovered" > [message]
-
-  eq. ++> rejects-an-invalid-limit
-    "fallback"
-    "text".nsplit
-      "-"
-      0
-      "fallback" > [message]
 
   nsplit. --> stops-on-a-limit-of-zero
     "text"

@@ -22,12 +22,12 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
 
-[expression] > regex
+[] > regex
   compile > @
   [] > compile /Q.string.regex.pattern
     ? > cant-compile /{Q.string}
+  ^ > expression
   [serialized] > pattern
     pattern serialized > compiled
     [txt] > match
@@ -84,33 +84,21 @@
           found.to.eq txt.length
           found.from.eq 0
       "/(?:%s)(?![\\s\\S])/%s".printf > anchored
-        *
-          parsed.group 1
-          parsed.group 2
+        * group1 group2
       "/(?:%s\n)(?![\\s\\S])/%s".printf > commented
-        *
-          parsed.group 1
-          parsed.group 2
+        * group1 group2
       next. > found
         match.
-          compile.
-            regex anchored
-            retry-commented
+          anchored.regex.compile retry-commented
           txt
+      parsed.group 1 > group1!
+      parsed.group 2 > group2!
       next. > parsed
-        match.
-          compiled.
-            regex "/^\\/([\\s\\S]*)\\/([dimsux]*)$/"
-          expression
+        "/^\\/([\\s\\S]*)\\/([dimsux]*)$/".regex.compiled.match expression
       "/(?:%s\\E)(?![\\s\\S])/%s".printf > quoted
-        *
-          parsed.group 1
-          parsed.group 2
-      compile. > [message] > retry-commented
-        regex commented
-        retry-quoted
-      compile. > [message] > retry-quoted
-        regex quoted
+        * group1 group2
+      commented.regex.compile retry-quoted > [message] > retry-commented
+      quoted.regex.compile > [message] > retry-quoted
 
   eq. ++> can-advance-after-a-zero-width-match
     1
@@ -188,6 +176,16 @@
     "/(.+)/d".regex.compiled
     "A\\r\\nB\\rC\\nD"
 
+  eq. ++> can-recover-from-a-pattern-with-a-missing-slash
+    "no-slash"
+    "(.)+".regex.compile
+      "no-slash" > [message]
+
+  eq. ++> can-recover-from-invalid-regex-syntax
+    "recovered"
+    "/[a-z/".regex.compile
+      "recovered" > [message]
+
   ++> can-report-the-border-indexes-of-a-match
     and. > @
       0.eq n.start
@@ -217,27 +215,17 @@
       next.
         "/[a-z]+/".regex.match "!hello!world!"
 
-  not. ++> cannot-match-a-text-against-a-wrong-pattern
+  not. ++> can-stop-at-a-terminal-zero-width-match
+    exists. ("/$/".regex.match "x").next.next
+
+  not. ++> can-tell-it-does-not-match-a-text-against-a-wrong-pattern
     "/[a-z]+/".regex.compiled.matches "123"
 
-  not. ++> cannot-match-an-anchored-pattern-with-a-trailing-newline
+  not. ++> can-tell-it-does-not-match-an-anchored-pattern-with-a-trailing-newline
     "/^[0-9]+$/".regex.compiled.matches "123\n"
 
-  not. ++> cannot-match-with-unmatched-leading-characters
+  not. ++> can-tell-it-does-not-match-with-unmatched-leading-characters
     "/[a-z]+/".regex.compiled.matches "1abc"
-
-  eq. ++> rejects-a-pattern-with-a-missing-slash
-    "no-slash"
-    "(.)+".regex.compile
-      "no-slash" > [message]
-
-  eq. ++> rejects-invalid-regex-syntax
-    "recovered"
-    "/[a-z/".regex.compile
-      "recovered" > [message]
-
-  not. ++> stops-on-a-terminal-zero-width-match
-    exists. ("/$/".regex.match "x").next.next
 
   next. --> rejects-serialized-bytes-of-the-wrong-type
     match.

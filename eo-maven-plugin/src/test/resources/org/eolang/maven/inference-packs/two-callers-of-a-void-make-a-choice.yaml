@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# One caller puts an `oak` in and another an `elm`, so what the void is seen
+# to hold is neither of them alone and not nothing: it is the choice between
+# the two, written the way a choice is written everywhere else.
+eo:
+  first.eo: |
+    [] > first
+      inc oak > @
+  second.eo: |
+    [] > second
+      inc elm > @
+  inc.eo: |
+    [x] > inc
+      x > @
+  oak.eo: |
+    [] > oak
+  elm.eo: |
+    [] > elm
+provides:
+  - "//attr[@void='true']/witnessed/union/ref[@loc='Φ.oak']"
+  - "//attr[@void='true']/witnessed/union/ref[@loc='Φ.elm']"

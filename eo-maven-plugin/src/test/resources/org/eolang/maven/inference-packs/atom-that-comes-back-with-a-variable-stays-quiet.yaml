@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `A` names no object. It stands for whatever the caller puts in, and which
+# object that is cannot be read off the text of `keep` alone. So the atom says
+# nothing about what it comes back with, and the row for `keep.plus` says that
+# nothing is known, which is not the same as saying nothing.
+eo:
+  app.eo: |
+    [] > app
+      keep.plus > @
+  keep.eo: |
+    [] > keep /A
+      ? > value
+provides:
+  - "/provides/type[@id='Φ.keep'][not(@returns)]"
+links:
+  - "/links/type[@id='Φ.app.φ']/unknown"

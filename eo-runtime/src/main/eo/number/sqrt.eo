@@ -8,15 +8,15 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[num] > sqrt
+[] > sqrt
   if. > @
-    lt.
-      number num.as-bytes
-      0
+    arg.lt 0
     nan
-    power
-      num
-      0.5
+    if.
+      arg.as-bytes.eq 80-00-00-00-00-00-00-00
+      arg
+      arg.power 0.5
+  number ^.as-bytes > arg
 
   lt. ++> can-approximate-a-square-root-of-four
     abs.
@@ -28,6 +28,12 @@
       0.minus 0.sqrt
     1.0E-11
 
+  -0.1.sqrt.is-nan ++> can-return-nan-for-a-square-root-of-a-negative
+
+  nan.sqrt.is-nan ++> can-return-nan-for-a-square-root-of-nan
+
+  ninf.sqrt.is-nan ++> can-return-nan-for-a-square-root-of-negative-infinity
+
   lt. ++> can-take-a-square-root-of-a-half
     abs.
       0.25.sqrt.minus 0.5
@@ -37,6 +43,10 @@
     abs.
       4.sqrt.minus 2
     1.0E-9
+
+  eq. ++> can-take-a-square-root-of-negative-zero-preserving-sign
+    0.neg.sqrt.as-bytes
+    80-00-00-00-00-00-00-00
 
   1.sqrt.eq 1 ++> can-take-a-square-root-of-one
 
@@ -48,9 +58,3 @@
     1.0E-9
 
   0.sqrt.eq 0 ++> can-take-a-square-root-of-zero
-
-  -0.1.sqrt.is-nan ++> cannot-take-a-square-root-of-a-negative
-
-  nan.sqrt.is-nan ++> cannot-take-a-square-root-of-nan
-
-  ninf.sqrt.is-nan ++> cannot-take-a-square-root-of-negative-infinity

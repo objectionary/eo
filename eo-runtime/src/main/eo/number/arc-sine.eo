@@ -11,7 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[num] > arc-sine
+[] > arc-sine
   if. > @
     arg.as-bytes.eq 80-00-00-00-00-00-00-00
     arg
@@ -19,14 +19,14 @@
       arg.lt 0
       neg.
         if. >> base
-          gt.
-            abs arg >> magnitude
-            0.5
+          arg.abs.gt 0.5
           minus.
             pi.div 2
             2.times
               [point] >> series
-                point.times > @
+                times. > @
+                  number
+                    point >> bts!
                   poly 1
                 if. > [depth] > poly
                   depth.gt 30
@@ -43,11 +43,13 @@
                           depth.times 2
                           plus. (depth.times 2) 1
                       poly (depth.plus 1)
-                point.times point > squared
-              | (sqrt ((1.minus magnitude).div 2))
-          series magnitude
+                times. > squared!
+                  number bts
+                  number bts
+              | ((1.minus arg.abs).div 2).sqrt
+          series arg.abs
       base
-  number num.as-bytes > arg
+  number ^.as-bytes > arg
 
   lt. ++> can-behave-as-an-odd-function-when-taking-arc-sine
     abs.
@@ -55,6 +57,16 @@
         0.6.arc-sine.plus -0.6.arc-sine
         1000
     1
+
+  2.arc-sine.is-nan ++> can-return-nan-for-an-arc-sine-above-one
+
+  -2.arc-sine.is-nan ++> can-return-nan-for-an-arc-sine-below-minus-one
+
+  nan.arc-sine.is-nan ++> can-return-nan-for-an-arc-sine-of-nan
+
+  ninf.arc-sine.is-nan ++> can-return-nan-for-an-arc-sine-of-negative-infinity
+
+  pinf.arc-sine.is-nan ++> can-return-nan-for-an-arc-sine-of-positive-infinity
 
   lt. ++> can-take-an-arc-sine-of-a-half
     abs.
@@ -85,6 +97,13 @@
           1000
     1
 
+  lt. ++> can-take-an-arc-sine-of-minus-zero-point-nine
+    abs.
+      minus.
+        -0.9.arc-sine.times 1000
+        -1119.7695
+    1
+
   eq. ++> can-take-an-arc-sine-of-negative-zero-preserving-sign
     0.neg.arc-sine.as-bytes
     80-00-00-00-00-00-00-00
@@ -100,19 +119,23 @@
 
   0.arc-sine.eq 0 ++> can-take-an-arc-sine-of-zero
 
+  lt. ++> can-take-an-arc-sine-of-zero-point-nine
+    abs.
+      minus.
+        0.9.arc-sine.times 1000
+        1119.7695
+    1
+
+  lt. ++> can-take-an-arc-sine-of-zero-point-nine-nine-nine
+    abs.
+      minus.
+        0.999.arc-sine.times 1000
+        1526.0712
+    1
+
   lt. ++> can-take-an-arc-sine-of-zero-point-six
     abs.
       minus.
         0.6.arc-sine.times 1000
         643.5
     1
-
-  2.arc-sine.is-nan ++> cannot-take-an-arc-sine-above-one
-
-  -2.arc-sine.is-nan ++> cannot-take-an-arc-sine-below-minus-one
-
-  nan.arc-sine.is-nan ++> cannot-take-an-arc-sine-of-nan
-
-  ninf.arc-sine.is-nan ++> cannot-take-an-arc-sine-of-negative-infinity
-
-  pinf.arc-sine.is-nan ++> cannot-take-an-arc-sine-of-positive-infinity

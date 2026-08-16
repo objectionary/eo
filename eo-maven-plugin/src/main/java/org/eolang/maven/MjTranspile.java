@@ -82,16 +82,14 @@ public final class MjTranspile extends MjSafe {
      * {@code eo.coverageFile} system property of the JVM that runs the
      * compiled program; when that property is absent, every hit is a
      * silent no-op. In {@code eo-runtime} surefire names that file to the
-     * tests (see its {@code pom.xml}) and {@link MjLcov} turns the hits
-     * into an LCOV tracefile.
-     * @todo #5466:30min Enforce a minimum EO object coverage in eo-runtime.
-     *  Once {@link MjLcov} names the untouched objects too, turn
-     *  {@code eo.coverageTracking} on for every build in
-     *  {@code eo-runtime/pom.xml} and fail the build when the covered
-     *  percentage of dataized {@code .eo} objects drops below a
-     *  threshold (for example 80 percent), mirroring how the existing
-     *  {@code jacoco} profile binds a {@code check} goal with per-metric
-     *  thresholds.
+     * tests (see its {@code pom.xml}); {@link MjLcov} turns the raw hits
+     * into an LCOV tracefile of the objects the run touched, while the
+     * {@code coverage-report} Maven goal ({@link MjCoverageReport}) turns
+     * the same hits into an LCOV tracefile bound to {@code minCoverage},
+     * failing the build when the covered percentage of dataized
+     * {@code .eo} objects drops below a threshold, mirroring how the
+     * {@code jacoco} profile binds a {@code check} goal with its own
+     * per-metric thresholds.
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.coverageTracking")
@@ -138,7 +136,7 @@ public final class MjTranspile extends MjSafe {
     public void exec() throws IOException {
         new Timed(
             new Transpiling(
-                this.scopedTojos().withXmir(),
+                this.scopedTojos().standalone(),
                 this.targetDir.toPath(),
                 this.generatedDir.toPath(),
                 this.cache.toPath(),
@@ -146,7 +144,7 @@ public final class MjTranspile extends MjSafe {
                 this.plugin.getVersion(),
                 this.transpileTests,
                 this.xslMeasures.toPath(),
-                new Tracking(this.trackTransformationSteps, this.trackLocations),
+                new Tracking(this.trackSteps, this.trackLocations),
                 this.coverageTracking,
                 this.base(),
                 this.roots()

@@ -172,7 +172,7 @@ final class FakeMaven {
             this.params.putIfAbsent("skipZeroVersions", true);
             this.params.putIfAbsent("cacheEnabled", true);
             this.params.putIfAbsent("discoverSelf", false);
-            this.params.putIfAbsent("ignoreVersionConflicts", false);
+            this.params.putIfAbsent("ignoreConflicts", false);
             this.params.putIfAbsent("central", new FakeMaven.DummyCentral());
             this.params.putIfAbsent("resolveInCentral", false);
             this.params.putIfAbsent(
@@ -504,6 +504,21 @@ final class FakeMaven {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 MjParse.class,
                 MjLint.class
+            ).iterator();
+        }
+    }
+
+    /**
+     * Put the members of a package inside the object it names.
+     * @since 0.68.0
+     */
+    static final class Merge implements Iterable<Class<? extends AbstractMojo>> {
+
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                MjParse.class,
+                MjMerge.class
             ).iterator();
         }
     }

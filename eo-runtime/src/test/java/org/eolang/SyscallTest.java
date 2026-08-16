@@ -856,7 +856,7 @@ final class SyscallTest {
         RandomServer started() throws IOException {
             this.socket = new ServerSocket();
             this.socket.setReuseAddress(true);
-            this.socket.bind(new InetSocketAddress("127.0.0.1", this.port));
+            this.socket.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), this.port));
             Logger.debug(this, "Server started on port %d", this.port);
             return this;
         }

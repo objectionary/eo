@@ -134,10 +134,10 @@ public interface Data {
                 } else {
                     phi = Phi.Φ.take("false");
                 }
-            } else if (obj instanceof Phi[]) {
+            } else if (obj instanceof Phi[] elements) {
                 Phi tuple = Phi.Φ.take("tuple").take("empty");
                 int length = 0;
-                for (final Phi element : (Phi[]) obj) {
+                for (final Phi element : elements) {
                     length += 1;
                     final Phi cell = Phi.Φ.take("tuple").copy();
                     cell.put(0, tuple);
@@ -146,15 +146,15 @@ public interface Data {
                     tuple = cell;
                 }
                 phi = tuple;
-            } else if (obj instanceof byte[]) {
+            } else if (obj instanceof byte[] bytes) {
                 phi = Phi.Φ.take("bytes").copy();
-                phi.put(0, new PhDefault((byte[]) obj));
-            } else if (obj instanceof Number) {
-                phi = Data.ToPhi.number(((Number) obj).doubleValue());
-            } else if (obj instanceof String) {
+                phi.put(0, new PhDefault(bytes));
+            } else if (obj instanceof Number number) {
+                phi = Data.ToPhi.number(number.doubleValue());
+            } else if (obj instanceof String text) {
                 phi = Phi.Φ.take("string").copy();
                 final Phi bts = Phi.Φ.take("bytes").copy();
-                bts.put(0, new PhDefault(((String) obj).getBytes(StandardCharsets.UTF_8)));
+                bts.put(0, new PhDefault(text.getBytes(StandardCharsets.UTF_8)));
                 phi.put(0, bts);
             } else {
                 throw new ExFailure(

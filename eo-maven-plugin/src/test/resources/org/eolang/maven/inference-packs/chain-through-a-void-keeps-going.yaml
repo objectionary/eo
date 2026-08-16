@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A name taken from a void is a name like any other, so the chain does not stop
+# at the first one: `foo` is taken from the `next` of whatever `x` holds, and
+# both steps are written down.
+eo:
+  inc.eo: |
+    [x] > inc
+      x.next.foo > @
+links:
+  - "/links/type[@id='Φ.inc.φ.ρ']/ref[@loc='Φ.inc.x.next']"
+  - "/links/type[@id='Φ.inc.φ']/ref[@loc='Φ.inc.x.next.foo']"

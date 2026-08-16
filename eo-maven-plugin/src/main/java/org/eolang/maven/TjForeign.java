@@ -228,6 +228,17 @@ final class TjForeign {
     }
 
     /**
+     * Say that this object now lives inside another one and is compiled as a
+     * part of it.
+     * @param object The name of the object it was put inside of
+     * @return The tojo itself
+     */
+    TjForeign withMerged(final String object) {
+        this.delegate.set(TjsForeign.Attribute.MERGED.getKey(), object);
+        return this;
+    }
+
+    /**
      * Set the xmir.
      * @param xmir The xmir
      * @return The tojo itself

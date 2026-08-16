@@ -186,6 +186,14 @@ public interface CStdLib extends Library {
     int rename(String from, String target);
 
     /**
+     * Create a symbolic link pointing at a file or a directory.
+     * @param target Path the link leads to
+     * @param path Path of the link itself
+     * @return Zero on success, -1 on error
+     */
+    int symlink(String target, String path);
+
+    /**
      * Get environment variable.
      * @param name Name of the variable
      * @return Name of the environment variable

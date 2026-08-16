@@ -7,13 +7,13 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text substrings] > contains-any
-  tuple.reduced > @
-    tuple.mapped
-      substrings
-      contains text! x > [x] >>
+[substrings] > contains-any
+  reduced. > @
+    substrings.mapped
+      text.contains x > [x] >>
     false
     x.or a > [a x]
+  ^ > text
 
   contains-any. ++> can-contain-any-substring
     "Good morning"
@@ -28,15 +28,15 @@
       " "
       "o"
 
-  not. ++> cannot-contain-any-of-no-substrings
+  not. ++> can-tell-it-does-not-contain-any-of-no-substrings
     "text".contains-any
       *
 
-  not. ++> cannot-contain-any-of-no-substrings-when-empty
+  not. ++> can-tell-it-does-not-contain-any-of-no-substrings-when-empty
     "".contains-any
       *
 
-  not. ++> cannot-contain-any-substring
+  not. ++> can-tell-it-does-not-contain-any-substring
     "xyzw".contains-any
       *
         "yx"

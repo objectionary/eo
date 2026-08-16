@@ -49,7 +49,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[format args] > printf
+[args] > printf
   string > @
     [index auto acc] >> walk
       if. > @
@@ -80,7 +80,7 @@
     bytes raw
     i
     1
-  as-ascii > [i] >> code
+  as-ascii. > [i] >> code
     string
       byte i
   if. > [i] >> digits-end
@@ -125,6 +125,7 @@
         as-number.
           i.plus 1
       i
+  ^ > format
   2.power 63 >> limit!
   size. >> span!
     bytes
@@ -164,7 +165,7 @@
       73-.eq conv
       as-bytes. > [text] >> capped
         precise.as-bool.if
-          truncated
+          truncated.
             string text
             number precision
             failure
@@ -187,7 +188,7 @@
               string datum
       if.
         64-.eq conv
-        as-decimal
+        as-decimal.
           if.
             or.
               gte.
@@ -201,12 +202,11 @@
             T
               "The number %s doesn't fit into the long range of the '%%d' conversion".printf
                 *
-                  string
-                    as-scientific (number numeric)
+                  string (number numeric).as-scientific
             number numeric
         if.
           66-.eq conv
-          as-fixed
+          as-fixed.
             number numeric
             precise.as-bool.if
               number precision
@@ -214,9 +214,7 @@
             failure
           if.
             78-.eq conv
-            capped
-              as-hex
-                bytes datum
+            capped (bytes datum).as-hex
             if.
               62-.eq conv
               capped
@@ -241,7 +239,7 @@
             1
       number dot
     as-bytes. > filled!
-      padded-zeros
+      padded-zeros.
         string value
         number width
         failure
@@ -278,7 +276,7 @@
             c
       | (number flags) 2D-
       as-bytes.
-        padded-right
+        padded-right.
           string value
           number width
           " "
@@ -286,7 +284,7 @@
       zero.as-bool.if
         filled
         as-bytes.
-          padded-left
+          padded-left.
             string value
             number width
             " "
@@ -508,6 +506,12 @@
     "%d".printf
       * 42.as-i64.as-number
 
+  not. ++> can-print-an-i64-not-as-a-number
+    eq.
+      "%d".printf
+        * 42.as-i64
+      "42"
+
   eq. ++> can-print-bytes
     "40-45-00-00-00-00-00-00"
     "%x".printf
@@ -532,12 +536,6 @@
     "9"
     "%d".printf
       * 9.99
-
-  not. ++> cannot-print-an-i64
-    eq.
-      "%d".printf
-        * 42.as-i64
-      "42"
 
   printf. --> stops-on-a-bool-as-a-string
     "%s"

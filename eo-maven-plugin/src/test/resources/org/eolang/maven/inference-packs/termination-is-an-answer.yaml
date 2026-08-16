@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `T` never comes back with a value, which is a thing we know about it and not
+# a thing we failed to find out. It is a copy of nothing, so its row holds no
+# reference to follow.
+eo:
+  app.eo: |
+    [] > app
+      T > dead
+links:
+  - "/links/type[@id='Φ.app.dead']/bottom"
+  - "/links/type[@id='Φ.app.dead'][not(ref)]"

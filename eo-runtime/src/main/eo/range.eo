@@ -25,8 +25,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [start end] > range
   if. > @
@@ -96,7 +94,7 @@
       10
 
   ++> can-build-an-empty-range-from-wrong-items
-    tuple.is-empty rng > @
+    rng.is-empty > @
     range > rng
       []
         y 10 > @

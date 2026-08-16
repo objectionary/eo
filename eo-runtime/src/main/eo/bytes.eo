@@ -19,7 +19,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
 
 [@] > bytes
   [] > and /Q.bytes
@@ -161,6 +160,20 @@
     -11.as-bytes.or 0.as-bytes
     C0-26-00-00-00-00-00-00
 
+  eq. ++> can-recover-from-a-slice-whose-start-plus-length-overflows
+    "recovered"
+    20-1F-EE-B5-90.slice
+      2000000000
+      2000000000
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-out-of-bounds-slice
+    "recovered"
+    20-1F-EE-B5-90.slice
+      3
+      10
+      "recovered" > [message]
+
   eq. ++> can-shift-right-an-even-negative
     -38.as-bytes.right 1
     60-21-80-00-00-00-00-00
@@ -200,20 +213,6 @@
   eq. ++> can-turn-bytes-into-a-string
     "你好, друг!"
     "你好, друг!"
-
-  eq. ++> rejects-a-slice-whose-start-plus-length-overflows
-    "recovered"
-    20-1F-EE-B5-90.slice
-      2000000000
-      2000000000
-      "recovered" > [message]
-
-  eq. ++> rejects-an-out-of-bounds-slice
-    "recovered"
-    20-1F-EE-B5-90.slice
-      3
-      10
-      "recovered" > [message]
 
   slice. --> stops-on-a-slice-offset-exceeding-the-int-range
     20-1F-EE-B5-90

@@ -114,7 +114,17 @@ enum Kind {
      * Vertical void attribute {@code ? > name} (R-3.4.7). A closed leaf
      * that must precede every non-void child of its formation.
      */
-    VOID;
+    VOID,
+
+    /**
+     * The identity object {@code I} standing alone as a line head
+     * (§3.16) — a formation that binds nothing but its own void, so a
+     * pipe may apply arguments to it (R-3.14.2). It is not a
+     * {@link #formation()}: its deeper-indent children are arguments
+     * applied to the identity, not bindings, exactly as under
+     * {@link #HEAD}.
+     */
+    IDENTITY_OBJECT;
 
     /**
      * Whether this kind is in the horizontally-completed set.
@@ -149,11 +159,11 @@ enum Kind {
 
     /**
      * Whether a pipe application (§3.14) may attach to a predecessor of
-     * this kind — a formation or another pipe. Read by {@link LnPipe} to
-     * enforce R-3.14.2 / R-5.2.4a.
+     * this kind — a formation, an identity object, or another pipe.
+     * Read by {@link LnPipe} to enforce R-3.14.2 / R-5.2.4a.
      * @return True iff this kind may be a pipe's predecessor
      */
     boolean pipeable() {
-        return this.formation() || this == PIPE_APPLICATION;
+        return this.formation() || this == PIPE_APPLICATION || this == IDENTITY_OBJECT;
     }
 }

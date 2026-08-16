@@ -6,8 +6,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [as-bytes] > i64
   as-bytes > @
@@ -258,6 +256,11 @@
     -7.as-i64.times -6.as-i64
     42.as-i64
 
+  eq. ++> can-recover-from-an-out-of-bounds-conversion-to-i32
+    "recovered"
+    3147483647.as-i64.as-i32
+      "recovered" > [message]
+
   eq. ++> can-round-a-tie-to-even-when-converting-to-a-number
     as-number.
       i64 00-20-00-00-00-00-00-01
@@ -277,6 +280,37 @@
     1.as-i64.minus 1.as-i64
     0.as-i64
 
+  not. ++> can-tell-it-does-not-equal-a-different-i64
+    123.@.eq 42.@
+
+  not. ++> can-tell-it-does-not-match-the-bytes-of-the-same-number
+    eq.
+      i64 234.as-bytes
+      234.as-i64.as-bytes
+
+  not. ++> can-tell-it-is-not-greater-than-a-larger-i64
+    0.as-i64.gt 100.as-i64
+
+  not. ++> can-tell-it-is-not-greater-than-an-equal-i64
+    0.as-i64.gt 0.as-i64
+
+  not. ++> can-tell-it-is-not-greater-than-or-equal-to-a-larger-i64
+    0.as-i64.gte 10.as-i64
+
+  not. ++> can-tell-it-is-not-greater-when-min-is-under-max
+    gt.
+      i64 80-00-00-00-00-00-00-00
+      i64 7F-FF-FF-FF-FF-FF-FF-FF
+
+  not. ++> can-tell-it-is-not-less-than-a-smaller-i64
+    10.as-i64.lt -5.as-i64
+
+  not. ++> can-tell-it-is-not-less-than-an-equal-i64
+    10.as-i64.lt 10.as-i64
+
+  not. ++> can-tell-it-is-not-less-than-or-equal-to-a-smaller-i64
+    0.as-i64.lte -10.as-i64
+
   eq. ++> can-wrap-a-product-modulo-two-to-the-sixty-fourth
     times.
       i64 40-00-00-00-00-00-00-00
@@ -288,42 +322,6 @@
       i64 7F-FF-FF-FF-FF-FF-FF-FF
       1.as-i64
     i64 80-00-00-00-00-00-00-00
-
-  not. ++> cannot-be-greater-than-a-larger-i64
-    0.as-i64.gt 100.as-i64
-
-  not. ++> cannot-be-greater-than-an-equal-i64
-    0.as-i64.gt 0.as-i64
-
-  not. ++> cannot-be-greater-than-or-equal-to-a-larger-i64
-    0.as-i64.gte 10.as-i64
-
-  not. ++> cannot-be-greater-when-min-is-under-max
-    gt.
-      i64 80-00-00-00-00-00-00-00
-      i64 7F-FF-FF-FF-FF-FF-FF-FF
-
-  not. ++> cannot-be-less-than-a-smaller-i64
-    10.as-i64.lt -5.as-i64
-
-  not. ++> cannot-be-less-than-an-equal-i64
-    10.as-i64.lt 10.as-i64
-
-  not. ++> cannot-be-less-than-or-equal-to-a-smaller-i64
-    0.as-i64.lte -10.as-i64
-
-  not. ++> cannot-equal-a-different-i64
-    123.@.eq 42.@
-
-  not. ++> cannot-match-the-bytes-of-the-same-number
-    eq.
-      i64 234.as-bytes
-      234.as-i64.as-bytes
-
-  eq. ++> rejects-an-out-of-bounds-conversion-to-i32
-    "recovered"
-    3147483647.as-i64.as-i32
-      "recovered" > [message]
 
   2147483648.as-i64.as-i32 --> stops-on-converting-i32-max-plus-one-to-i32
 

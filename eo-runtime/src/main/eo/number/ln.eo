@@ -13,7 +13,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[num] > ln
+[] > ln
   n.is-nan.if > @
     nan
     if.
@@ -98,7 +98,15 @@
         prev.plus prev
       step > prev
         level.minus 1
-  number num.as-bytes > n
+  number ^.as-bytes > n
+
+  -2.2.ln.is-nan ++> can-return-nan-for-a-logarithm-of-a-negative-float
+
+  -42.ln.is-nan ++> can-return-nan-for-a-logarithm-of-a-negative-integer
+
+  nan.ln.is-nan ++> can-return-nan-for-a-logarithm-of-nan
+
+  ninf.ln.is-nan ++> can-return-nan-for-a-logarithm-of-negative-infinity
 
   2.ln.lt 3.ln ++> can-stay-monotonic
 
@@ -129,11 +137,3 @@
     1.0E-11
 
   0.ln.eq ninf ++> can-take-a-logarithm-of-zero
-
-  -2.2.ln.is-nan ++> cannot-take-a-logarithm-of-a-negative-float
-
-  -42.ln.is-nan ++> cannot-take-a-logarithm-of-a-negative-integer
-
-  nan.ln.is-nan ++> cannot-take-a-logarithm-of-nan
-
-  ninf.ln.is-nan ++> cannot-take-a-logarithm-of-negative-infinity

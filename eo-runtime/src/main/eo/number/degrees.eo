@@ -8,10 +8,10 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[num] > degrees
+[] > degrees
   times. > @
     div.
-      number num.as-bytes
+      number ^.as-bytes
       pi
     180
 
@@ -48,4 +48,4 @@
 
   0.degrees.eq 0 ++> can-convert-zero-to-degrees
 
-  nan.degrees.is-nan ++> cannot-convert-nan-to-degrees
+  nan.degrees.is-nan ++> can-return-nan-when-converting-nan-to-degrees

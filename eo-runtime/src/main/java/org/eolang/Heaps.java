@@ -57,10 +57,8 @@ final class Heaps {
         try {
             if (this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
-                    String.format(
-                        "Can't allocate block in memory with identifier '%d' because it's already allocated",
-                        identifier
-                    )
+                    "Can't allocate block in memory with identifier '%d' because it's already allocated",
+                    identifier
                 );
             }
             this.blocks.put(identifier, new byte[size]);
@@ -97,10 +95,8 @@ final class Heaps {
         try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
-                    String.format(
-                        "Block in memory by identifier '%d' is not allocated, can't get size",
-                        identifier
-                    )
+                    "Block in memory by identifier '%d' is not allocated, can't get size",
+                    identifier
                 );
             }
             return this.blocks.get(identifier).length;
@@ -117,20 +113,16 @@ final class Heaps {
     void resize(final int identifier, final int size) {
         if (size < 0) {
             throw new ExFailure(
-                String.format(
-                    "Can't change size of block in memory by identifier '%d' to negative '%d'",
-                    identifier, size
-                )
+                "Can't change size of block in memory by identifier '%d' to negative '%d'",
+                identifier, size
             );
         }
         this.lock.lock();
         try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
-                    String.format(
-                        "Block in memory by identifier '%d' is not allocated, can't get size",
-                        identifier
-                    )
+                    "Block in memory by identifier '%d' is not allocated, can't get size",
+                    identifier
                 );
             }
             final byte[] bytes = this.blocks.get(identifier);
@@ -162,10 +154,8 @@ final class Heaps {
         try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
-                    String.format(
-                        "Block in memory by identifier '%d' is not allocated, can't read",
-                        identifier
-                    )
+                    "Block in memory by identifier '%d' is not allocated, can't read",
+                    identifier
                 );
             }
             return offset >= 0
@@ -188,12 +178,10 @@ final class Heaps {
         try {
             if (!this.fits(identifier, offset, length)) {
                 throw new ExFailure(
-                    String.format(
-                        "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
-                        length,
-                        offset,
-                        this.blocks.get(identifier).length
-                    )
+                    "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
+                    length,
+                    offset,
+                    this.blocks.get(identifier).length
                 );
             }
             return Arrays.copyOfRange(this.blocks.get(identifier), offset, offset + length);
@@ -213,34 +201,34 @@ final class Heaps {
         try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
-                    String.format(
-                        "Can't read a block in memory with identifier '%d' because it's not allocated",
-                        identifier
-                    )
+                    "Can't read a block in memory with identifier '%d' because it's not allocated",
+                    identifier
                 );
             }
             if (offset < 0) {
                 throw new ExFailure(
-                    String.format(
-                        "Block '%d': can't write at negative offset '%d'",
-                        identifier, offset
-                    )
+                    "Block '%d': can't write at negative offset '%d'",
+                    identifier, offset
                 );
             }
             final long end = (long) offset + data.length;
             if (end > Integer.MAX_VALUE) {
                 throw new ExFailure(
-                    String.format(
-                        "Block '%d': can't write at offset '%d', resulting size '%d' is too large for int",
-                        identifier, offset, end
-                    )
+                    "Block '%d': can't write at offset '%d', resulting size '%d' is too large for int",
+                    identifier, offset, end
                 );
-            }
-            if (this.blocks.get(identifier).length < end) {
-                this.resize(identifier, (int) end);
             }
             final byte[] source = this.blocks.get(identifier);
             final int length = source.length;
+            if (length < end) {
+                throw new ExFailure(
+                    "Can't write '%d' bytes with offset '%d' to the block with identifier '%d', because only '%d' were allocated",
+                    data.length,
+                    offset,
+                    identifier,
+                    length
+                );
+            }
             final byte[] result = new byte[length];
             System.arraycopy(source, 0, result, 0, length);
             System.arraycopy(data, 0, result, offset, data.length);
@@ -259,10 +247,8 @@ final class Heaps {
         try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
-                    String.format(
-                        "Can't free a block in memory with identifier '%d' because it's not allocated",
-                        identifier
-                    )
+                    "Can't free a block in memory with identifier '%d' because it's not allocated",
+                    identifier
                 );
             }
             this.blocks.remove(identifier);

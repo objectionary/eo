@@ -9,18 +9,34 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[sequence cant-max] > maximum
-  if. > @
-    is-empty sequence
+[cant-max] > maximum
+  sequence.is-empty.if > @
     cant-max
       "cannot get the maximum number from an empty sequence"
-    reduced
-      sequence
+    sequence.reduced
       ninf
       if. > [max item]
-        item.as-number.gt max
+        item.as-number.is-nan.or
+          item.as-number.gt max
         item
         max
+  ^ > sequence
+
+  is-nan. ++> can-be-nan-when-taking-the-maximum-of-a-lone-nan
+    maximum.
+      * nan
+
+  is-nan. ++> can-be-nan-when-taking-the-maximum-of-a-nan-alongside-numbers
+    maximum.
+      *
+        5
+        nan
+        -3
+
+  eq. ++> can-recover-from-an-empty-list-when-taking-the-maximum
+    "recovered"
+    tuple.empty.maximum
+      "recovered" > [msg]
 
   eq. ++> can-take-a-maximum-of-one-item
     maximum.
@@ -50,10 +66,5 @@
         -2
         25
     25
-
-  eq. ++> rejects-an-empty-list-when-taking-the-maximum
-    "recovered"
-    tuple.empty.maximum
-      "recovered" > [msg]
 
   tuple.empty.maximum --> stops-on-an-empty-list-when-taking-the-maximum

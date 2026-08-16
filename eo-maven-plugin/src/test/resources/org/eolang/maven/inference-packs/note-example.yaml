@@ -7,7 +7,8 @@
 # to know that is in the rows below — that the `next` of a `t` is complete and
 # empty, that `foo` is asked of what `next` gives, that the `x` it is asked of
 # is the `t` — and no row says it. Reading them together is what was parked in
-# #6661.
+# #6661. The links now name the two computed objects as well: `x.next` is the
+# `next` of whatever fills `x`, and `x.next.foo` the `foo` of that.
 eo:
   app.eo: |
     [] > app
@@ -21,13 +22,16 @@ xmir:
     - "//o[@base='.foo']/o[@base='.next']/o[@base='ξ.x']"
 provides:
   - "/provides/type[@id='Φ.app.t']/attr[@name='next' and @type='Φ.app.t.next']"
-  - "/provides/type[@id='Φ.app.t.next' and @complete='true' and not(attr)]"
+  - "/provides/type[@id='Φ.app.t.next' and @complete='true']"
+  - "/provides/type[@id='Φ.app.t.next'][not(attr[@name!='ρ'])]"
   - "/provides/type[@id='Φ.app.inc']/attr[@name='x' and @void='true']"
 needs:
   - "/needs/type[@id='Φ.app.inc.φ.ρ.ρ']/attr[@name='next']"
   - "/needs//attr[@name='next' and @type='Φ.app.inc.φ.ρ']"
   - "/needs/type[@id='Φ.app.inc.φ.ρ']/attr[@name='foo' and @type='Φ.app.inc.φ']"
 links:
-  - "/links/type[@id='Φ.app.φ' and @copy='Φ.app.inc']"
-  - "/links/type[@id='Φ.app.φ.α0' and @copy='Φ.app.t']"
-  - "/links/type[@id='Φ.app.inc.φ.ρ.ρ' and @copy='Φ.app.inc.x']"
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.app.inc']"
+  - "/links/type[@id='Φ.app.φ.α0']/ref[@loc='Φ.app.t']"
+  - "/links/type[@id='Φ.app.inc.φ.ρ.ρ']/ref[@loc='Φ.app.inc.x']"
+  - "/links/type[@id='Φ.app.inc.φ.ρ']/ref[@loc='Φ.app.inc.x.next']"
+  - "/links/type[@id='Φ.app.inc.φ']/ref[@loc='Φ.app.inc.x.next.foo']"

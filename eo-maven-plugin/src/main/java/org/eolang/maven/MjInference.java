@@ -73,10 +73,12 @@ public final class MjInference extends MjSafe {
 
     @Override
     void exec() throws IOException {
-        new Inferring(
-            this.targetDir.toPath().resolve(Parsing.DIR),
-            this.prepared.toPath(),
-            this.tables.toPath()
+        new Timed(
+            new Inferring(
+                this.targetDir.toPath().resolve(Parsing.DIR),
+                this.prepared.toPath(),
+                this.tables.toPath()
+            )
         ).exec();
     }
 }

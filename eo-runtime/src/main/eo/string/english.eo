@@ -10,7 +10,6 @@
 # Each conversion hoists its lower letter bound into a `mincode` constant, so
 # the bound is computed once rather than for every byte walked.
 
-+alias tuple.reduced
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
@@ -18,54 +17,50 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[s] > english
+[] > english
   s > @
   [] > lower
     string > @
-      reduced
-        s.as-bytes.array
+      s.as-bytes.array.reduced
         --
         [accum byte] >>
           accum.concat > @
             if.
               and.
-                code.lte (as-ascii "Z")!
+                code.lte "Z".as-ascii!
                 code.gte mincode
               slice.
                 as-bytes.
                   as-i64.
                     code.plus
-                      minus.
-                        as-ascii "a"
-                        number mincode
+                      "a".as-ascii.minus (number mincode)
                 7
                 1
               byte
-          as-ascii byte > code
-    as-ascii "A" >> mincode!
+          as-ascii. > code
+            string byte
+    "A".as-ascii >> mincode!
+  ^ > s
   [] > upper
     string > @
-      reduced
-        s.as-bytes.array
+      s.as-bytes.array.reduced
         --
         [accum byte] >>
           accum.concat > @
             if.
               and.
-                code.lte (as-ascii "z")!
+                code.lte "z".as-ascii!
                 code.gte mincode
               slice.
                 as-bytes.
                   as-i64.
-                    code.minus
-                      minus.
-                        number mincode
-                        as-ascii "A"
+                    code.minus ((number mincode).minus "A".as-ascii)
                 7
                 1
               byte
-          as-ascii byte > code
-    as-ascii "a" >> mincode!
+          as-ascii. > code
+            string byte
+    "a".as-ascii >> mincode!
 
   5.eq "hello".english.length ++> can-behave-like-the-wrapped-english-string
 

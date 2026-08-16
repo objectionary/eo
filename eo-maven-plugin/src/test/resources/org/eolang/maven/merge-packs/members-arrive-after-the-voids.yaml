@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A member arrives after every attribute the object already had, so the voids
+# keep the places they were counted from. If a member landed before them,
+# applying `number` to an argument would bind it to the member instead of to
+# the first void, and every application in the program would mean something
+# else.
+merged:
+  - number
+eo:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+  number/lt.eo: |
+    +package number
+
+    [n x] > lt
+      n.gt x > @
+  number/neg.eo: |
+    +package number
+
+    [n] > neg
+      n.times -1 > @
+xmir:
+  number.eo:
+    - "/object/o[@name='number']/o[1][@base='∅' and @name='as-bytes']"
+    - "/object/o[@name='number']/o[@name='as-bytes']/following-sibling::o[@name='lt']"
+    - "/object/o[@name='number']/o[@name='as-bytes']/following-sibling::o[@name='neg']"
+    - "/object/o[@name='number']/o[last()][@name='neg']"

@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `half` binds nothing but a void and a body written in Java, so `plus` is not
+# among its attributes and never will be. It is among the attributes of what a
+# `half` comes back with, though, and the text says what that is. So the object
+# `half.plus` makes is a copy of the `plus` of a `number`.
+eo:
+  app.eo: |
+    [] > app
+      half.plus > @
+  half.eo: |
+    [] > half /Q.number
+      ? > x
+  number.eo: |
+    [] > number
+      [] > plus
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.number.plus']"

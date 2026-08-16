@@ -46,28 +46,30 @@ import java.util.Collection;
  * it delegates to answers for every name it does not bind itself, and
  * that object is the business of the links table, not of this one.</p>
  *
- * <p>Three kinds of objects are deliberately absent from this table.
+ * <p>Two kinds of objects are deliberately absent from this table.
  * Applications and references (anything with a {@code @base}) provide
  * nothing on their own — what they have is what the object they copy
- * has, which is the business of the links table. A void attribute
- * provides nothing either, until something is put into it. And the
- * results of atoms are not here at all yet: what an atom returns is
- * written in Java, so its rows will have to be given to this table from
- * outside one day, and until they are, the checker simply knows less.</p>
+ * has, which is the business of the links table. And a void attribute
+ * provides nothing either, until something is put into it.</p>
  *
- * <p>Not every attribute is written inside the formation it belongs to:
+ * <p>What an atom comes back with is written down, though its body is not.
+ * {@code [] > div /Q.number} says that a {@code div} is a {@code Φ.number}
+ * once it has run, and the parser carries that annotation into the XMIR, so
+ * the row keeps it and whoever reads the table can ask a {@code number} what
+ * the atom itself cannot answer. An annotation that names no object is
+ * skipped: {@code [] > recovered /A} comes back with whatever the caller put
+ * in, and that is a variable, which nothing here understands yet.</p>
+ *
+ * <p>Not every attribute is written inside the formation it belongs to.
+ * {@code ρ}, the object something sits in, is written nowhere and every
+ * object has one, which {@link Parents} reads off the locator. And
  * {@code minus} in the package {@code number} is {@code Φ.number.minus} and
- * belongs to {@code Φ.number} without ever appearing among its children.
- * {@link Members} finds those and they go into this table too, last, since
- * the order of attributes is what binds the arguments of an application and
- * a file of a package binds none of them.</p>
+ * belongs to {@code Φ.number} without ever appearing among its children,
+ * which {@link Members} finds. Both go into this table after the attributes
+ * a formation binds itself, since the order of those is what binds the
+ * arguments of an application and neither of these two is one of them.</p>
  *
  * @since 0.67.0
- * @todo #6565:35min Write down the {@code ρ} every object has. An outer
- *  name lowers to a dispatch of {@code ρ}, so the needs table asks for
- *  it, while no row here ever lists it and the owner is called complete
- *  all the same. Give every type a {@code ρ} attribute, or say in this
- *  table that {@code ρ} is not a name the checker judges.
  */
 final class Provides implements Clue {
 
@@ -80,6 +82,10 @@ final class Provides implements Clue {
                 final String owner = formation.xpath("@loc").get(0);
                 final boolean whole = formation.nodes("o[@name='λ' or @name='φ']").isEmpty();
                 rows.add(owner).set("complete", Boolean.toString(whole));
+                for (final String back
+                    : formation.xpath("o[@name='λ']/@atom[starts-with(., 'Φ.')]")) {
+                    rows.add(owner).set("returns", back);
+                }
                 for (final XML attr : formation.nodes("o[@name and not(@name='λ')]")) {
                     final String name = attr.xpath("@name").get(0);
                     final Tojo row = rows.add(String.join(" ", owner, name))
@@ -91,6 +97,7 @@ final class Provides implements Clue {
                     }
                 }
             }
+            new Parents(made).fill(rows);
             new Members(made, world.roots()).fill(rows);
             Files.createDirectories(tables);
             Files.write(

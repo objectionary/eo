@@ -14,31 +14,23 @@ package org.eolang;
  * nothing intercepts, so forcing bottom terminates the program for good.</p>
  *
  * <p>The remaining operations are tolerant on purpose: {@link #copy()}
- * yields the same bottom and {@link #take(String)} yields bottom again, so it
- * propagates through copying and dispatch and surfaces the failure at
- * the outer dataization, not at the point it was produced.</p>
+ * yields the same bottom and {@link #take(String)} yields another one carrying
+ * the same reason, so it propagates through copying and dispatch and surfaces
+ * the failure at the outer dataization, not at the point it was produced.</p>
  *
  * <p>A bottom may carry a <em>cause</em>: it has a single slot, addressable only
- * at position 0 (as in {@code T "why it failed"}). A {@code put} at any other
- * position is ignored rather than rejected, because a propagated bottom answers
- * every take with itself and then receives the arguments of whatever dispatch
- * follows it: a two-argument one, such as {@code .if a b}, would otherwise abort
- * on its second argument and destroy the cause it was carrying. A {@code put} by
+ * at position 0 (as in {@code T "why it failed"}). Only a bottom without a cause
+ * listens to that slot, and a dispatch hands one to the bottom it yields, so the
+ * arguments that follow a propagated bottom, as in {@code (T).if a b}, are
+ * dropped instead of being read as the reason it terminated. A {@code put} by
  * name other than ρ aborts — bottom has no named attributes. The ρ-binding the
  * runtime attempts on every take (via {@link AtWithRho}) is silently ignored,
  * since a bottom has no ρ; this keeps its cause from being masked by a
- * ρ-rejection while it propagates. The first object put at position 0 is
- * remembered and used as the panic message when the bottom is finally forced.
- * The cause is write-once and never handed back by {@link #take(String)}, so
- * EO code can neither read it nor catch it — it exists only to explain the
- * termination at the very top.</p>
+ * ρ-rejection while it propagates. The cause is write-once and never handed back
+ * by {@link #take(String)}, so EO code can neither read it nor catch it — it
+ * exists only to explain the termination at the very top.</p>
  *
  * @since 0.73.1
- * @todo #6359:45min Keep a causeless bottom from adopting a dispatch argument.
- *  Position 0 is both the cause slot of {@code T "why"} and the first argument
- *  of whatever dispatch follows a propagated bottom, so {@code (T).if 1 2} takes
- *  the {@code 1} as its cause and panics with those bytes read as text, instead
- *  of saying that the computation was terminated.
  */
 public final class PhTerminator implements Phi {
 
@@ -49,10 +41,30 @@ public final class PhTerminator implements Phi {
     private Phi cause;
 
     /**
+     * The reason to fall back to if nothing is ever {@code put} into this
+     * bottom. Unlike {@link #cause}, a birth-site default never blocks a
+     * later, more specific {@code put} — a caller that takes a void
+     * attribute's bottom and immediately puts its own reason (as
+     * {@code bytes.slice} does with its {@code cant-slice} fallback) must
+     * still win.
+     */
+    private final Phi fallback;
+
+    /**
      * Ctor.
      */
     public PhTerminator() {
-        // nothing
+        this("the ⊥ object is a terminated computation and cannot be used");
+    }
+
+    /**
+     * Make a bottom that explains, by default, why it was born without a
+     * dispatch ever reaching it, while still letting a caller that takes it
+     * and puts its own, more specific reason override that default.
+     * @param reason The default reason for the termination
+     */
+    public PhTerminator(final String reason) {
+        this.fallback = new Data.ToPhi(reason);
     }
 
     /**
@@ -83,7 +95,9 @@ public final class PhTerminator implements Phi {
 
     @Override
     public Phi take(final String name) {
-        return this;
+        final PhTerminator term = new PhTerminator();
+        term.put(0, this.reason());
+        return term;
     }
 
     @Override
@@ -114,13 +128,7 @@ public final class PhTerminator implements Phi {
 
     @Override
     public byte[] delta() {
-        final String reason;
-        if (this.cause == null) {
-            reason = "the ⊥ object is a terminated computation and cannot be used";
-        } else {
-            reason = new Dataized(this.cause).asString();
-        }
-        throw new ExFailure("%s", reason);
+        throw new ExFailure("%s", new Dataized(this.reason()).asString());
     }
 
     @Override
@@ -131,5 +139,20 @@ public final class PhTerminator implements Phi {
     @Override
     public String φTerm() {
         return "⊥";
+    }
+
+    /**
+     * The reason to panic with: the cause this bottom was explicitly given,
+     * else its birth-site default.
+     * @return The reason as an object
+     */
+    private Phi reason() {
+        final Phi reason;
+        if (this.cause != null) {
+            reason = this.cause;
+        } else {
+            reason = this.fallback;
+        }
+        return reason;
     }
 }

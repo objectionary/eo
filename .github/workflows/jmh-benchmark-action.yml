@@ -18,6 +18,9 @@ jobs:
           java-version: 21
           base-ref: "master"
           benchmark-command: |
+            mvn install -pl eo-parser -am -DskipTests -q
             mvn jmh:benchmark -pl eo-parser -Djmh.rf=json -Djmh.rff=benchmark.json
-            cp eo-parser/benchmark.json .
+            mvn jmh:benchmark -pl eo-printer -Djmh.rf=json -Djmh.rff=benchmark.json || true
+            jq -s 'add' eo-parser/benchmark.json eo-printer/benchmark.json 2>/dev/null > benchmark.json \
+              || cp eo-parser/benchmark.json benchmark.json
           benchmark-file: "benchmark.json"
