@@ -12,12 +12,12 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text] > trimmed
+[] > trimmed
   if. > @
     0.eq text.as-bytes.size
     text
-    trimmed-left
-      trimmed-right text
+    text.trimmed-right.trimmed-left
+  ^ > text
 
   "no-whitespace".trimmed.eq "no-whitespace" ++> can-preserve-inner-content
 

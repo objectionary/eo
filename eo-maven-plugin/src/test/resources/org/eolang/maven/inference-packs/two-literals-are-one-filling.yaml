@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Two literals are two objects and one type. What goes into a void is gathered
+# as a type, so filling `inc` with `42` and then with `7` is one thing seen
+# twice and the choice never grows. The bytes of both go into the void of
+# `bytes` itself, and those are one thing too, however many literals there are.
+eo:
+  app.eo: |
+    [] > app
+      inc 42 > first
+      inc 7 > second
+  inc.eo: |
+    [x] > inc
+      x > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+  bytes.eo: |
+    [b] > bytes
+      b > @
+provides:
+  - "//type[@id='Φ.inc']/attr[@void='true']/witnessed/ref[@loc='Φ.number']"
+  - "//type[@id='Φ.bytes']/attr[@void='true']/witnessed/data"

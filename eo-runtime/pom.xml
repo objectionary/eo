@@ -29,6 +29,26 @@
     runs to its end instead of being skipped.
     -->
     <eo.deadline>1</eo.deadline>
+    <!--
+    Whether to wrap located objects into PhCoverage at transpile time, so
+    tests record EO-level coverage hits. Off by default; codecov.yml flips
+    it to true for the coverage CI job (see #5757).
+    -->
+    <eo.coverageTracking>false</eo.coverageTracking>
+    <!--
+    Where PhCoverage.hit() appends coverage records at runtime, and where
+    the coverage-report goal reads them back from afterwards. Shared as a
+    project property so both the surefire JVM (system property) and the
+    eo-maven-plugin goal (Maven parameter) agree on one path (see #5673).
+    -->
+    <eo.coverageFile>${project.build.directory}/coverage.txt</eo.coverageFile>
+    <!--
+    Minimum percentage of dataized .eo objects that must be covered, or
+    the coverage-report goal fails the build. Only bites when coverage
+    tracking is actually on (see eo.coverageTracking above), so a build
+    that never opts in never trips it (see #5466).
+    -->
+    <eo.minCoverage>0</eo.minCoverage>
   </properties>
   <dependencies>
     <dependency>
@@ -225,7 +245,7 @@
             located objects into PhCoverage at transpile time, so both ends
             agree on one file (see #5673).
             -->
-            <eo.coverageFile>${project.build.directory}/coverage.txt</eo.coverageFile>
+            <eo.coverageFile>${eo.coverageFile}</eo.coverageFile>
             <java.util.logging.config.file>
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>
@@ -269,7 +289,7 @@
           <!-- Tests assert on precise .eo locations in panics (off by default). -->
           <trackLocations>true</trackLocations>
           <!-- Wrap located objects into PhCoverage so tests record EO coverage. -->
-          <coverageTracking>false</coverageTracking>
+          <coverageTracking>${eo.coverageTracking}</coverageTracking>
         </configuration>
         <executions>
           <execution>
@@ -314,6 +334,7 @@
               gets a receiver, and with '^' but no merge it has no rho to read.
               -->
               <mergedPackages>
+                <mergedPackage>bytes</mergedPackage>
                 <mergedPackage>chunk</mergedPackage>
                 <mergedPackage>directory</mergedPackage>
                 <mergedPackage>file</mergedPackage>
@@ -322,13 +343,23 @@
                 <mergedPackage>number</mergedPackage>
                 <mergedPackage>output</mergedPackage>
                 <mergedPackage>range</mergedPackage>
+                <mergedPackage>string</mergedPackage>
                 <mergedPackage>tuple</mergedPackage>
                 <mergedPackage>u64</mergedPackage>
               </mergedPackages>
               <keepBinaries>
-                <glob>org/eolang/EO_string/package-info.class</glob>
                 <glob>org/eolang/package-info.class</glob>
               </keepBinaries>
+            </configuration>
+          </execution>
+          <execution>
+            <id>coverage-report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>coverage-report</goal>
+            </goals>
+            <configuration>
+              <minCoverage>${eo.minCoverage}</minCoverage>
             </configuration>
           </execution>
         </executions>

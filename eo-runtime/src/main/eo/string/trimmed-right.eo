@@ -11,7 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text] > trimmed-right
+[] > trimmed-right
   if. > @
     0.eq
       b.size >> len!
@@ -40,6 +40,7 @@
           or.
             c.eq 0C-
             c.eq 0D-
+  ^ > text
 
   eq. ++> can-trim-a-text-of-trailing-spaces-only
     "     ".trimmed-right

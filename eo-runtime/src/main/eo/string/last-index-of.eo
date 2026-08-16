@@ -8,7 +8,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text substring] > last-index-of
+[substring] > last-index-of
   if. > @
     or.
       or.
@@ -42,6 +42,7 @@
     eq. > includes
       txt.slice idx size
       part
+  ^ > text
 
   eq. ++> can-find-no-last-index-of-an-absent-substring
     -1

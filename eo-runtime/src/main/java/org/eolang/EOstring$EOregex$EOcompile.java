@@ -3,27 +3,13 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle TrailingCommentCheck (3 lines)
- */
-package org.eolang.EO_string; // NOPMD
+package org.eolang;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import org.eolang.AtVoid;
-import org.eolang.Atom;
-import org.eolang.Attr;
-import org.eolang.Attrs;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.ExFailure;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.Statistics;
-import org.eolang.XmirObject;
 
 /**
  * Regex.compile object.
@@ -31,9 +17,9 @@ import org.eolang.XmirObject;
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "regex.compile")
+@XmirObject(oname = "string.regex.compile")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOregex$EOcompile extends PhDefault implements Atom {
+public final class EOstring$EOregex$EOcompile extends PhDefault implements Atom {
 
     /**
      * Name of the error-branch void that holds the caller's compile fallback.
@@ -44,11 +30,11 @@ public final class EOregex$EOcompile extends PhDefault implements Atom {
      * Ctor.
      * @param stats Where this object reports its birth
      */
-    public EOregex$EOcompile(final Statistics stats) {
+    public EOstring$EOregex$EOcompile(final Statistics stats) {
         super(stats, new Attrs(
             new Attr(
-                EOregex$EOcompile.FALLBACK,
-                new AtVoid(EOregex$EOcompile.FALLBACK)
+                EOstring$EOregex$EOcompile.FALLBACK,
+                new AtVoid(EOstring$EOregex$EOcompile.FALLBACK)
             )
         ));
     }
@@ -77,7 +63,7 @@ public final class EOregex$EOcompile extends PhDefault implements Atom {
      * @return The fallback object carrying the message
      */
     private Phi fallback(final String message) {
-        final Phi cant = this.take(EOregex$EOcompile.FALLBACK);
+        final Phi cant = this.take(EOstring$EOregex$EOcompile.FALLBACK);
         cant.put(0, new Data.ToPhi(message));
         return cant;
     }

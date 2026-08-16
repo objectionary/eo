@@ -23,10 +23,11 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[expression] > regex
+[] > regex
   compile > @
   [] > compile /Q.string.regex.pattern
     ? > cant-compile /{Q.string}
+  ^ > expression
   [serialized] > pattern
     pattern serialized > compiled
     [txt] > match
@@ -88,24 +89,16 @@
         * group1 group2
       next. > found
         match.
-          compile.
-            regex anchored
-            retry-commented
+          anchored.regex.compile retry-commented
           txt
       parsed.group 1 > group1!
       parsed.group 2 > group2!
       next. > parsed
-        match.
-          compiled.
-            regex "/^\\/([\\s\\S]*)\\/([dimsux]*)$/"
-          expression
+        "/^\\/([\\s\\S]*)\\/([dimsux]*)$/".regex.compiled.match expression
       "/(?:%s\\E)(?![\\s\\S])/%s".printf > quoted
         * group1 group2
-      compile. > [message] > retry-commented
-        regex commented
-        retry-quoted
-      compile. > [message] > retry-quoted
-        regex quoted
+      commented.regex.compile retry-quoted > [message] > retry-commented
+      quoted.regex.compile > [message] > retry-quoted
 
   eq. ++> can-advance-after-a-zero-width-match
     1

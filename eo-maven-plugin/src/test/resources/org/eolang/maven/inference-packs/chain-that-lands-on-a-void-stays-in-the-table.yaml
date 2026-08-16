@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The phi of `inc` is a copy of its `x`, and following that reference used to
+# arrive at a locator no row was keyed by. Both ends of the step are in the
+# table now, so a reader never has to leave it to find out where a chain
+# stopped.
+eo:
+  inc.eo: |
+    [x] > inc
+      x > @
+links:
+  - "/links/type[@id='Φ.inc.φ']/ref[@loc='Φ.inc.x']"
+  - "/links/type[@id='Φ.inc.x']/var"

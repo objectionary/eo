@@ -3,16 +3,8 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle TrailingCommentCheck (3 lines)
- */
-package org.eolang.EO_string; // NOPMD
+package org.eolang;
 
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.ExAbstract;
-import org.eolang.PhApplication;
-import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -21,10 +13,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link EOregex$EOcompile}.
+ * Test case for {@link EOstring$EOregex$EOcompile}.
  * @since 0.57.4
  */
-final class EOregexEOcompileTest {
+final class EOstringEOregexEOcompileTest {
 
     @ParameterizedTest
     @CsvSource({
@@ -46,10 +38,8 @@ final class EOregexEOcompileTest {
             String.format("regex %s must match the entire text %s", expression, text),
             new Dataized(
                 new PhApplication(
-                    new PhApplication(
-                        Phi.Φ.take("string.regex").copy(),
-                        "expression", new Data.ToPhi(expression)
-                    ).take("compiled").take("matches").copy(),
+                    new Data.ToPhi(expression)
+                        .take("regex").take("compiled").take("matches").copy(),
                     "txt", new Data.ToPhi(text)
                 )
             ).asBool(),
@@ -63,10 +53,8 @@ final class EOregexEOcompileTest {
             "regex \"/[a-z]+/\" should compile and match \"hello\"",
             new Dataized(
                 new PhApplication(
-                    new PhApplication(
-                        Phi.Φ.take("string.regex").copy(),
-                        "expression", new Data.ToPhi("/[a-z]+/")
-                    ).take("compiled").take("matches").copy(),
+                    new Data.ToPhi("/[a-z]+/")
+                        .take("regex").take("compiled").take("matches").copy(),
                     "txt", new Data.ToPhi("hello")
                 )
             ).asBool(),
@@ -81,10 +69,7 @@ final class EOregexEOcompileTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhApplication(
-                        Phi.Φ.take("string.regex").copy(),
-                        "expression", new Data.ToPhi("/pattern")
-                    ).take("compiled")
+                    new Data.ToPhi("/pattern").take("regex").take("compiled")
                 ).take()
             ).toString(),
             Matchers.allOf(

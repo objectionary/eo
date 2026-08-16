@@ -45,4 +45,27 @@ final class SnapshotTest {
             Matchers.equalTo(new byte[] {(byte) 0x01})
         );
     }
+
+    @Test
+    void keepsPhDefaultImmuneToMutationOfTheSourceArray() {
+        final byte[] raw = {(byte) 0x01};
+        final Phi phi = new PhDefault(raw);
+        raw[0] = (byte) 0x02;
+        MatcherAssert.assertThat(
+            "PhDefault must copy the source array via Snapshot, but it didn't",
+            phi.delta(),
+            Matchers.equalTo(new byte[] {(byte) 0x01})
+        );
+    }
+
+    @Test
+    void keepsPhDefaultImmuneToMutationOfAPreviouslyReturnedDelta() {
+        final Phi phi = new PhDefault(new byte[] {(byte) 0x01});
+        phi.delta()[0] = (byte) 0x03;
+        MatcherAssert.assertThat(
+            "PhDefault must return a fresh array via Snapshot on every #delta() call, but it didn't",
+            phi.delta(),
+            Matchers.equalTo(new byte[] {(byte) 0x01})
+        );
+    }
 }

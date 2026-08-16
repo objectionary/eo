@@ -49,7 +49,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[format args] > printf
+[args] > printf
   string > @
     [index auto acc] >> walk
       if. > @
@@ -80,7 +80,7 @@
     bytes raw
     i
     1
-  as-ascii > [i] >> code
+  as-ascii. > [i] >> code
     string
       byte i
   if. > [i] >> digits-end
@@ -125,6 +125,7 @@
         as-number.
           i.plus 1
       i
+  ^ > format
   2.power 63 >> limit!
   size. >> span!
     bytes
@@ -164,7 +165,7 @@
       73-.eq conv
       as-bytes. > [text] >> capped
         precise.as-bool.if
-          truncated
+          truncated.
             string text
             number precision
             failure
@@ -238,7 +239,7 @@
             1
       number dot
     as-bytes. > filled!
-      padded-zeros
+      padded-zeros.
         string value
         number width
         failure
@@ -275,7 +276,7 @@
             c
       | (number flags) 2D-
       as-bytes.
-        padded-right
+        padded-right.
           string value
           number width
           " "
@@ -283,7 +284,7 @@
       zero.as-bool.if
         filled
         as-bytes.
-          padded-left
+          padded-left.
             string value
             number width
             " "

@@ -17,7 +17,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text] > length
+[] > length
   if. > @
     eq.
       text.as-bytes.size >> size!
@@ -135,6 +135,7 @@
           *
             text.as-bytes.slice idx csize
             idx
+  ^ > text
 
   eq. ++> can-count-a-text-of-spaces-only
     " ".length
@@ -165,13 +166,13 @@
   length. --> rejects-a-non-continuation-after-a-four-byte-lead
     string F0-90-80-41
 
-  length. --> rejects-a-non-continuation-after-a-three-byte-lead
+  length. --> rejects-a-non-continuation-after-a-three-byte-lead-when-measuring
     string E1-80-41
 
   length. --> rejects-a-non-continuation-after-a-two-byte-lead
     string C2-41
 
-  length. --> rejects-an-overlong-two-byte-encoding
+  length. --> rejects-an-overlong-two-byte-encoding-when-measuring
     string C0-80
 
   length. --> stops-on-an-incomplete-four-byte-character

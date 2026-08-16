@@ -1,6 +1,5 @@
 # Represents the current operating system.
 
-+alias string.regex
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +rt jvm org.eolang:eo-runtime:0.0.0
@@ -14,21 +13,15 @@
   as-bool. > is-linux
     exists.
       next.
-        match.
-          regex "/linux/i"
-          name
+        "/linux/i".regex.match name
   as-bool. > is-macos
     exists.
       next.
-        match.
-          regex "/mac/i"
-          name
+        "/mac/i".regex.match name
   as-bool. > is-windows
     exists.
       next.
-        match.
-          regex "/windows/i"
-          name
+        "/windows/i".regex.match name
   [] > name /Q.string
 
   or. ++> can-check-the-os-family

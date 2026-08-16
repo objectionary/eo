@@ -1,8 +1,6 @@
 # Path `path` that is hierarchical and composed of a sequence of
 # directory and file name elements separated by a special separator or delimiter.
 
-+alias string.last-index-of
-+alias string.regex
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
@@ -30,7 +28,7 @@
           as-bytes.
             text.slice
               plus. >> index!
-                last-index-of text separator
+                text.last-index-of separator
                 1
               text.length.minus
                 number index
@@ -49,7 +47,7 @@
               as-bytes.
                 text.slice
                   0
-                  last-index-of text separator >> len!
+                  text.last-index-of separator >> len!
       string pth > text
     sys.drive uri > drive
     if. > driveless
@@ -71,7 +69,7 @@
         string
           as-bytes.
             text.slice
-              last-index-of text "." >> index!
+              text.last-index-of "." >> index!
               text.length.minus
                 number index
       string > text
@@ -105,10 +103,9 @@
                 is-absolute.if
                   unc.if (separator.concat separator) separator
                   --
-              string.joined >> body!
-                separator
+              separator.joined >> body!
                 reduced.
-                  string.split driveless separator
+                  driveless.split separator
                   *
                   if. > [accum segment] >>
                     segment.eq ".."
@@ -178,7 +175,7 @@
         posix jpath
     string > jpath
       as-bytes.
-        string.joined separator paths
+        separator.joined paths
   [uri] > posix
     impl > @
       sys
@@ -198,17 +195,17 @@
     "\\" > separator
     [] > sys
       if. > [uri] > drive
-        as-bool. ((regex "/^[a-zA-Z]:/").match uri).next.exists
+        as-bool. ("/^[a-zA-Z]:/".regex.match uri).next.exists
         uri.slice 0 2
         --
       [uri] > sanitized
         if. > @
           eq.
-            string.index-of pth path.posix.separator
+            pth.index-of path.posix.separator
             -1
           string
             uri >> ubts!
-          string (string.replaced pth (regex "/\\//") separator)!
+          string (pth.replaced "/\\//".regex separator)!
         string ubts > pth
       ^.separator > separator
 

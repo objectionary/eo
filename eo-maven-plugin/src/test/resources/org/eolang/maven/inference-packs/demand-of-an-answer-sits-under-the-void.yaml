@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A name taken from an answer is a demand in its turn. `x.next.foo` says two
+# things — that `x` must have a `next`, and that the `next` must have a `foo` —
+# and the second is about the answer rather than about the void, so it says
+# whose it is. Both stand under the void, since both are its business.
+eo:
+  inc.eo: |
+    [x] > inc
+      x.next.foo > @
+provides:
+  - "//attr[@void='true']/demand[@of='Φ.inc.x' and @name='next']"
+  - "//attr[@void='true']/demand[@of='Φ.inc.x.next' and @name='foo']"

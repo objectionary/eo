@@ -3,40 +3,33 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle TrailingCommentCheck (3 lines)
- */
-package org.eolang.EO_string; // NOPMD
+package org.eolang;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
-import org.eolang.Bind;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.ExAbstract;
-import org.eolang.PhApplication;
-import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOregex$EOpattern$EOmatch$EOmatched_from_index}.
+ * Test case for {@link EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index}.
  * @since 0.57.4
  */
-final class EOregexEOpatternEOmatchEOmatchedfromindexTest {
+final class EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest {
 
     @Test
     void rejectsStartIndexOutOfIntRange() {
         MatcherAssert.assertThat(
             String.format(
                 "matched-from-index must reject a %s index outside int range",
-                EOregexEOpatternEOmatchEOmatchedfromindexTest.start()
+                EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start()
             ),
-            EOregexEOpatternEOmatchEOmatchedfromindexTest.rejection(new Data.ToPhi(1.0e15)),
+            EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.rejection(new Data.ToPhi(1.0e15)),
             Matchers.allOf(
-                Matchers.containsString(EOregexEOpatternEOmatchEOmatchedfromindexTest.start()),
+                Matchers.containsString(
+                    EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start()
+                ),
                 Matchers.containsString("must fit into int range")
             )
         );
@@ -47,11 +40,13 @@ final class EOregexEOpatternEOmatchEOmatchedfromindexTest {
         MatcherAssert.assertThat(
             String.format(
                 "matched-from-index must reject a fractional %s index",
-                EOregexEOpatternEOmatchEOmatchedfromindexTest.start()
+                EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start()
             ),
-            EOregexEOpatternEOmatchEOmatchedfromindexTest.rejection(new Data.ToPhi(2.7)),
+            EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.rejection(new Data.ToPhi(2.7)),
             Matchers.allOf(
-                Matchers.containsString(EOregexEOpatternEOmatchEOmatchedfromindexTest.start()),
+                Matchers.containsString(
+                    EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start()
+                ),
                 Matchers.containsString("must be an integer")
             )
         );
@@ -62,11 +57,13 @@ final class EOregexEOpatternEOmatchEOmatchedfromindexTest {
         MatcherAssert.assertThat(
             String.format(
                 "matched-from-index must reject a negative %s index cleanly",
-                EOregexEOpatternEOmatchEOmatchedfromindexTest.start()
+                EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start()
             ),
-            EOregexEOpatternEOmatchEOmatchedfromindexTest.rejection(new Data.ToPhi(-1)),
+            EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.rejection(new Data.ToPhi(-1)),
             Matchers.allOf(
-                Matchers.containsString(EOregexEOpatternEOmatchEOmatchedfromindexTest.start()),
+                Matchers.containsString(
+                    EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start()
+                ),
                 Matchers.containsString("must be greater or equal to zero")
             )
         );
@@ -77,7 +74,7 @@ final class EOregexEOpatternEOmatchEOmatchedfromindexTest {
         MatcherAssert.assertThat(
             "match with a non-participating optional group must not crash when reading from",
             new Dataized(
-                EOregexEOpatternEOmatchEOmatchedfromindexTest
+                EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest
                     .optionalGroupMatch().take("from")
             ).asNumber(),
             Matchers.equalTo(0.0)
@@ -90,7 +87,7 @@ final class EOregexEOpatternEOmatchEOmatchedfromindexTest {
             "non-participating optional capture must be an empty string, not absent",
             new Dataized(
                 new PhApplication(
-                    EOregexEOpatternEOmatchEOmatchedfromindexTest
+                    EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest
                         .optionalGroupMatch().take("group").copy(),
                     new Bind("index", new Data.ToPhi(2))
                 )
@@ -104,7 +101,7 @@ final class EOregexEOpatternEOmatchEOmatchedfromindexTest {
         MatcherAssert.assertThat(
             "group slots must stay aligned with groupCount+1 even when a group does not participate",
             new Dataized(
-                EOregexEOpatternEOmatchEOmatchedfromindexTest
+                EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest
                     .optionalGroupMatch().take("count")
             ).asNumber(),
             Matchers.equalTo(3.0)
@@ -116,11 +113,13 @@ final class EOregexEOpatternEOmatchEOmatchedfromindexTest {
         MatcherAssert.assertThat(
             String.format(
                 "matched-from-index must reject a %s index after text end cleanly",
-                EOregexEOpatternEOmatchEOmatchedfromindexTest.start()
+                EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start()
             ),
-            EOregexEOpatternEOmatchEOmatchedfromindexTest.rejection(new Data.ToPhi(6)),
+            EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.rejection(new Data.ToPhi(6)),
             Matchers.allOf(
-                Matchers.containsString(EOregexEOpatternEOmatchEOmatchedfromindexTest.start()),
+                Matchers.containsString(
+                    EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start()
+                ),
                 Matchers.containsString("must be less than or equal to text length")
             )
         );
@@ -132,7 +131,7 @@ final class EOregexEOpatternEOmatchEOmatchedfromindexTest {
         try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject("not a pattern");
         }
-        final Phi pattern = Phi.Φ.take("string.regex").take("pattern").copy();
+        final Phi pattern = new Data.ToPhi("/x/").take("regex").take("pattern").copy();
         pattern.put(0, new Data.ToPhi(baos.toByteArray()));
         MatcherAssert.assertThat(
             "a raw ClassCastException leaked instead of the clean deserialize failure",
@@ -145,11 +144,11 @@ final class EOregexEOpatternEOmatchEOmatchedfromindexTest {
                             "txt", new Data.ToPhi("hello")
                         ).take("matched-from-index").copy(),
                         new Bind(
-                            EOregexEOpatternEOmatchEOmatchedfromindexTest.position(),
+                            EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.position(),
                             new Data.ToPhi(1)
                         ),
                         new Bind(
-                            EOregexEOpatternEOmatchEOmatchedfromindexTest.start(),
+                            EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start(),
                             new Data.ToPhi(0)
                         )
                     ).take("from")
@@ -167,14 +166,18 @@ final class EOregexEOpatternEOmatchEOmatchedfromindexTest {
     private static Phi optionalGroupMatch() {
         return new PhApplication(
             new PhApplication(
-                new PhApplication(
-                    Phi.Φ.take("string.regex").copy(),
-                    "expression", new Data.ToPhi("/(a)(b)?/")
-                ).take("compiled").take("match").copy(),
+                new Data.ToPhi("/(a)(b)?/")
+                    .take("regex").take("compiled").take("match").copy(),
                 "txt", new Data.ToPhi("a")
             ).take("matched-from-index").copy(),
-            new Bind(EOregexEOpatternEOmatchEOmatchedfromindexTest.position(), new Data.ToPhi(1)),
-            new Bind(EOregexEOpatternEOmatchEOmatchedfromindexTest.start(), new Data.ToPhi(0))
+            new Bind(
+                EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.position(),
+                new Data.ToPhi(1)
+            ),
+            new Bind(
+                EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start(),
+                new Data.ToPhi(0)
+            )
         );
     }
 
@@ -187,7 +190,7 @@ final class EOregexEOpatternEOmatchEOmatchedfromindexTest {
         return Assertions.assertThrows(
             ExAbstract.class,
             () -> new Dataized(
-                EOregexEOpatternEOmatchEOmatchedfromindexTest
+                EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest
                     .matchedFromIndex(start).take("from")
             ).take(),
             "start index must be rejected before Matcher.find(int)"
@@ -202,14 +205,15 @@ final class EOregexEOpatternEOmatchEOmatchedfromindexTest {
     private static Phi matchedFromIndex(final Phi start) {
         return new PhApplication(
             new PhApplication(
-                new PhApplication(
-                    Phi.Φ.take("string.regex").copy(),
-                    "expression", new Data.ToPhi("/[a-z]+/")
-                ).take("compiled").take("match").copy(),
+                new Data.ToPhi("/[a-z]+/")
+                    .take("regex").take("compiled").take("match").copy(),
                 "txt", new Data.ToPhi("hello")
             ).take("matched-from-index").copy(),
-            new Bind(EOregexEOpatternEOmatchEOmatchedfromindexTest.position(), new Data.ToPhi(1)),
-            new Bind(EOregexEOpatternEOmatchEOmatchedfromindexTest.start(), start)
+            new Bind(
+                EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.position(),
+                new Data.ToPhi(1)
+            ),
+            new Bind(EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest.start(), start)
         );
     }
 

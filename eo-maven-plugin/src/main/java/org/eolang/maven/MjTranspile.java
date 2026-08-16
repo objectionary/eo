@@ -83,24 +83,14 @@ public final class MjTranspile extends MjSafe {
      * compiled program; when that property is absent, every hit is a
      * silent no-op. In {@code eo-runtime} the {@code coverage-file}
      * profile turns this on and forwards that property to surefire in
-     * one step (see its {@code pom.xml}).
-     * @todo #5466:60min Turn raw coverage hits into an LCOV report.
-     *  Right now the runtime only produces a raw, append-only
-     *  {@code loc:line:pos} file: the {@code PhCoverage} decorator
-     *  writes every touched location into it, but nothing consumes that
-     *  file yet. Add a reporter step that merges those raw hits against
-     *  the full set of instrumented locations, which the transpiler
-     *  already knows because it emits every wrapper, and produces an
-     *  LCOV ({@code .info}) tracefile plus the covered percentage. LCOV
-     *  is chosen because Codecov and Coveralls consume it directly.
-     * @todo #5466:30min Enforce a minimum EO object coverage in eo-runtime.
-     *  Once the LCOV report from the puzzle above exists, set
-     *  {@code coverageTracking} on the {@code transpile} execution in
-     *  {@code eo-runtime/pom.xml} and fail the build when the covered
-     *  percentage of dataized {@code .eo} objects drops below a
-     *  threshold (for example 80 percent), mirroring how the existing
-     *  {@code jacoco} profile binds a {@code check} goal with per-metric
-     *  thresholds.
+     * one step (see its {@code pom.xml}). The {@code coverage-report}
+     * Maven goal ({@link MjCoverageReport}) turns the raw hits into an
+     * LCOV tracefile, bound to the {@code verify} phase since the hits
+     * only exist after tests actually run. {@code eo-runtime} pairs it
+     * with {@code minCoverage} on that same goal, failing the build when
+     * the covered percentage of dataized {@code .eo} objects drops below
+     * a threshold, mirroring how the {@code jacoco} profile binds a
+     * {@code check} goal with its own per-metric thresholds.
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.coverageTracking")
