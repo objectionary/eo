@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6912: the "Q." disambiguation arm of to-eo-tree.xsl's head choice (kept
+# for a Φ-rooted base whose plain name is shadowed by an in-scope
+# attribute) never looked at "@fragile", so a fragile dispatch through it
+# lost its "?." marker. "nested" shadows "app" with its own attribute, so
+# "Q.app?.foo" keeps its explicit "Q." root; the marker must survive too.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    5 > foo
+    [] > nested
+      9 > app
+      Q.app?.foo > @
+
+printed: |
+  [] > app
+    5 > foo
+    [] > nested
+      Q.app?.foo > @
+      9 > app
