@@ -110,13 +110,25 @@
           cant-open
             "Couldn't open file '%s': %s".printf
               * path opened.output
-          seq *
-            scope
-              stream descriptor
-            code.
-              syscall.close
-                * descriptor
-            true
+          if.
+            recovered
+              seq *
+                scope
+                  stream descriptor
+                true
+              false
+            seq *
+              code.
+                syscall.close
+                  * descriptor
+              true
+            seq *
+              code.
+                syscall.close
+                  * descriptor
+              cant-open
+                "The scope given to '%s'.open() failed; the descriptor was closed before propagating the failure".printf
+                  * path
         appending.if syscall.append 0 > append
         existing.not.if syscall.creat 0 > creat
         opened.code > descriptor
@@ -206,6 +218,22 @@
         "a"
         f.write "!" > [f]
     13
+
+  eq. ++> can-close-a-descriptor-when-the-scope-fails
+    drain 300
+    true
+  if. > [n] > drain
+    n.lte 0
+    true
+    seq *
+      recovered
+        tmp.open
+          "r"
+          T "boom" > [f]
+        true
+      drain
+        n.minus 1
+  mktemp.tmpfile > tmp
 
   eq. ++> can-keep-the-size-of-a-file-opened-for-appending
     size.
