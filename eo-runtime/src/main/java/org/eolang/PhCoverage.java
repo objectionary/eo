@@ -40,18 +40,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class PhCoverage implements Phi {
 
-    /**
-     * The locations written by the whole program, per destination. One set
-     * for every {@link PhCoverage} wrapper the transpiler builds, so a
-     * location touched through many instances of the same object is
-     * recorded once instead of once per instance. Shared by deliberate
-     * design: the generated code passes it to every wrapper it builds, so
-     * it must be reachable from every generated package, which a private
-     * or protected member is not.
-     */
-    @SuppressWarnings("java:S2386")
-    public static final Set<String> HITS = ConcurrentHashMap.newKeySet();
-
     /** The origin. */
     private final Phi origin;
 
