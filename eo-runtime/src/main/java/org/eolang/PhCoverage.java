@@ -37,14 +37,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * program).</p>
  *
  * @since 0.58
- * @todo #6508:30min Let one set of hits span the whole program. Every wrapper
- *  the transpiler builds starts with an empty set of its own, so a location
- *  touched through many instances of the same object is appended to the file
- *  once per instance, the file fills up with duplicates, and every wrapper
- *  pays for a set it shares with nobody. The generated code should hand the
- *  same set to every wrapper it builds.
  */
 public final class PhCoverage implements Phi {
+
+    /**
+     * The locations written by the whole program, per destination. One set
+     * for every {@link PhCoverage} wrapper the transpiler builds, so a
+     * location touched through many instances of the same object is
+     * recorded once instead of once per instance.
+     */
+    public static final Set<String> HITS = ConcurrentHashMap.newKeySet();
 
     /** The origin. */
     private final Phi origin;

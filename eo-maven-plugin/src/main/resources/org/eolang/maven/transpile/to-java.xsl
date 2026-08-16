@@ -702,7 +702,7 @@
       <xsl:value-of select="$name"/>
       <xsl:text> = new PhCoverage(</xsl:text>
       <xsl:value-of select="$name"/>
-      <xsl:text>, "</xsl:text>
+      <xsl:text>, PhCoverage.HITS, "</xsl:text>
       <xsl:value-of select="eo:literal(@loc)"/>
       <xsl:text>:</xsl:text>
       <xsl:value-of select="@line"/>

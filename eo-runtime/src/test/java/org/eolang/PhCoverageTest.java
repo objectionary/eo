@@ -11,6 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
@@ -118,6 +120,36 @@ final class PhCoverageTest {
                 "a location an earlier object recorded must be recorded again, but it wasnt",
                 Files.readAllLines(hits, StandardCharsets.UTF_8),
                 Matchers.contains("Φ.später:13:7")
+            );
+        } finally {
+            if (before == null) {
+                System.clearProperty("eo.coverageFile");
+            } else {
+                System.setProperty("eo.coverageFile", before);
+            }
+        }
+    }
+
+    @Test
+    void recordsLocationOnceAcrossWrappersSharingOneSet(@Mktmp final Path temp) throws Exception {
+        final Path hits = temp.resolve("hits.txt");
+        final String before = System.getProperty("eo.coverageFile");
+        final Set<String> seen = ConcurrentHashMap.newKeySet();
+        System.setProperty("eo.coverageFile", hits.toString());
+        try {
+            new Dataized(
+                new PhCoverage(new PhDefault(new byte[] {(byte) 0x2A}), seen, "Φ.foo:7:3")
+            ).take();
+            new Dataized(
+                new PhCoverage(new PhDefault(new byte[] {(byte) 0x2B}), seen, "Φ.foo:7:3")
+            ).take();
+            new Dataized(
+                new PhCoverage(new PhDefault(new byte[] {(byte) 0x2C}), seen, "Φ.bar:9:5")
+            ).take();
+            MatcherAssert.assertThat(
+                "wrappers sharing one set, as the transpiler builds them, must record a shared location exactly once",
+                Files.readAllLines(hits, StandardCharsets.UTF_8),
+                Matchers.containsInAnyOrder("Φ.foo:7:3", "Φ.bar:9:5")
             );
         } finally {
             if (before == null) {
