@@ -1,7 +1,8 @@
 # Returns a `tuple` of `strings`: `text` is split by `delimiter` with a maximum of `limit` parts.
 # The last element contains the remainder of the string after splitting.
-# If `limit` is not a finite integer of at least 1 (fractional, nan, infinite,
-# zero or negative), the `cant-split` fallback is returned, or the bottom object when unbound.
+# If `delimiter` is empty, or `limit` is not a finite integer of at least 1
+# (fractional, nan, infinite, zero or negative), the `cant-split` fallback is
+# returned, or the bottom object when unbound, the same way `split` behaves.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -13,11 +14,18 @@
 [delimiter limit cant-split] > nsplit
   if. > @
     or.
-      1.gt limit
-      limit.is-integer.not
+      eq.
+        delimiter.size >> size!
+        0
+      or.
+        1.gt limit
+        limit.is-integer.not
     cant-split
-      "Invalid limit %d for nsplit, must be at least 1".printf
-        * limit
+      if.
+        size.eq 0
+        "The delimiter must not be empty"
+        "Invalid limit %d for nsplit, must be at least 1".printf
+          * limit
     if.
       text.size.eq 0
       *
@@ -72,7 +80,6 @@
           0
           0
   text.as-bytes >> bts!
-  delimiter.size >> size!
   ^ > text
 
   eq. ++> can-recover-from-a-fractional-limit
@@ -80,6 +87,13 @@
     "a-b-c".nsplit
       "-"
       1.5
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-empty-delimiter-when-nsplitting
+    "recovered"
+    "abc".nsplit
+      ""
+      3
       "recovered" > [message]
 
   eq. ++> can-recover-from-an-infinite-limit-when-splitting
