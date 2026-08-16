@@ -168,7 +168,7 @@ The parser recognises the following lexical tokens:
 | `RHO` | `^` |
 | `ROOT` | `Q` |
 | `XI` | `$` |
-| `TERM` | `T` — the bottom term (§9.3), similar to `⊥` in 𝜑-calculus. A self-contained single-character token; carries no arguments and no chain. |
+| `TERM` | `T` — the bottom term (§9.3), similar to `⊥` in 𝜑-calculus. A value: it may carry arguments, horizontal (`T 42`) or vertical, which are the cause of the bottom, the way `T "why it failed"` is used across the runtime, and a `.method` chain (`T.foo` parses as `⊥.foo`), like any other head. |
 | `IDENTITY` | `I` — the identity object (§3.16), the one-character spelling of `x > [x]`. A value: it may carry arguments (`I 5`) and a `.method` chain, like any other head. |
 | `SELF` | `%` — self-reference (§3.15). Sugar for the auto-name of the enclosing anonymous (`>>`-named) formation; substituted at compile time. A value: it may carry arguments (`% 5`) and a `.method` chain, like any other head. |
 | `VOID` | `?` — the vertical-void marker (§3.4). A `? > name` body line declares a void attribute, equivalent to listing `name` in `[…]`. |
