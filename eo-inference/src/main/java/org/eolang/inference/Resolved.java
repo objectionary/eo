@@ -81,6 +81,9 @@ public final class Resolved implements Clue {
             pairs, new Bound(args, names, new Provided(given, names, voids)).all()
         ).all();
         rows.putAll(written.others());
+        for (final XML dispatch : dispatches) {
+            rows.putIfAbsent(dispatch.xpath("@loc").get(0), new Unknown());
+        }
         Files.write(
             links,
             new Types(rows).asXml().toString().getBytes(StandardCharsets.UTF_8)

@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A dispatch that was answered keeps its ref row and gains no unknown: the
+# unknown is written only where nothing could be worked out.
+eo:
+  app.eo: |
+    [] > app
+      x > @
+      [] > x
+        [] > next
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.app.x']"
+  - "/links[not(type[@id='Φ.app.φ']/unknown)]"

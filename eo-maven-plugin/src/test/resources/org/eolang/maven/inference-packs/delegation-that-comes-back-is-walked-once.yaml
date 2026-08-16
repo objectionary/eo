@@ -3,7 +3,7 @@
 ---
 # `one` hands its answers to `two` and `two` hands them back, so looking for a
 # name behind the delegation walks in a circle. It is walked once and answers
-# nothing, which leaves the dispatch unnamed rather than the pass unfinished.
+# nothing, which leaves the dispatch unknown rather than the pass unfinished.
 eo:
   app.eo: |
     [] > app
@@ -15,4 +15,4 @@ eo:
     [] > two
       one > @
 links:
-  - "/links[not(type[@id='Φ.app.φ'])]"
+  - "/links/type[@id='Φ.app.φ']/unknown"

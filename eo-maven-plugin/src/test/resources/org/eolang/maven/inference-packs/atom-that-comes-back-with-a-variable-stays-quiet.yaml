@@ -3,7 +3,8 @@
 ---
 # `A` names no object. It stands for whatever the caller puts in, and which
 # object that is cannot be read off the text of `keep` alone. So nothing is
-# written down and `keep.plus` waits for the day variables are understood.
+# written down about what `keep` returns, and `keep.plus` is written as a
+# dispatch nothing could answer.
 eo:
   app.eo: |
     [] > app
@@ -14,4 +15,4 @@ eo:
 provides:
   - "/provides/type[@id='Φ.keep'][not(@returns)]"
 links:
-  - "/links[not(type[@id='Φ.app.φ'])]"
+  - "/links/type[@id='Φ.app.φ']/unknown"

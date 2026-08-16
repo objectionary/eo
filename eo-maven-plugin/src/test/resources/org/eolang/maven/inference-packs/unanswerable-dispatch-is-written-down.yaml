@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A dispatch whose receiver nothing describes is written down as unknown once
+# the passes have settled, so a reader can tell "not looked at" from "looked
+# at, nothing known".
+eo:
+  app.eo: |
+    [] > app
+      arg.if > @
+      arg > @
+links:
+  - "/links/type[@id='Φ.app.φ']/unknown"
