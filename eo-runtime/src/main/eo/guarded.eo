@@ -1,18 +1,33 @@
-# Object that dataizes `scope` and, whether that dataization succeeds or
-# fails, dataizes `cleanup` afterwards. The bytes of `scope` are returned on
-# success; on failure `cleanup` still runs and the original failure is
-# re-raised.
+# Scope paired with a cleanup that always runs.
+# Dataizes `scope` and then dataizes `cleanup`, no matter whether the
+# dataization of `scope` succeeded or terminated. Behaves as `scope` when it
+# is not terminated; when it is, `cleanup` still runs and the termination
+# propagates. This is how an object that owns a descriptor releases it even
+# when the scope it was handed to fails:
+#
+# ```
+# guarded
+#   scope (scoped-socket sd)
+#   closed-socket sd
+# ```
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > guarded /Q.bytes
-  ? > scope
-  ? > cleanup
+[scope cleanup] > guarded
+  seq * > @
+    recovered scope true
+    cleanup
+    scope
+
+  eq. ++> can-behave-as-the-scope
+    guarded
+      42
+      true
+    42
 
   eq. ++> can-run-cleanup-after-a-successful-scope
     malloc.for
@@ -24,3 +39,20 @@
             m.as-number.plus 1
         m.as-number
     1
+
+  eq. ++> can-run-cleanup-after-a-terminated-scope
+    malloc.for
+      0
+      seq * > [m]
+        recovered
+          guarded
+            2.as-i64.div 0.as-i64
+            m.put
+              m.as-number.plus 1
+          true
+        m.as-number
+    1
+
+  guarded --> stops-on-a-terminated-scope
+    2.as-i64.div 0.as-i64
+    true
