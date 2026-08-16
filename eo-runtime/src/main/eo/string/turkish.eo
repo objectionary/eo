@@ -19,23 +19,20 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[s] > turkish
+[] > turkish
   s > @
   lower. > [] > lower
-    english
+    english.
       replaced.
-        s.replaced
-          regex "/I/"
-          "ı"
-        regex "/İ/"
+        s.replaced "/I/".regex "ı"
+        "/İ/".regex
         "i"
+  ^ > s
   upper. > [] > upper
-    english
+    english.
       replaced.
-        s.replaced
-          regex "/i/"
-          "İ"
-        regex "/ı/"
+        s.replaced "/i/".regex "İ"
+        "/ı/".regex
         "I"
 
   8.eq "İSTANBUL".turkish.length ++> can-behave-like-the-wrapped-turkish-string

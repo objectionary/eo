@@ -8,7 +8,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text others] > chained
+[others] > chained
   if. > @
     0.eq others.length
     text
@@ -16,6 +16,7 @@
       others.reduced
         text.as-bytes
         accum.concat str.as-bytes > [accum str]
+  ^ > text
 
   eq. ++> can-chain-with-other-strings
     "Hello, world!"

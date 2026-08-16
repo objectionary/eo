@@ -6,7 +6,7 @@
 /*
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package org.eolang.EO_string; // NOPMD
+package org.eolang;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -14,18 +14,6 @@ import java.io.ObjectInputStream;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eolang.AtVoid;
-import org.eolang.Atom;
-import org.eolang.Attr;
-import org.eolang.Attrs;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.ExFailure;
-import org.eolang.Expect;
-import org.eolang.PhDefault;
-import org.eolang.PhTerminator;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
 
 /**
  * Regex.pattern.match.matched-from-index.
@@ -33,9 +21,9 @@ import org.eolang.XmirObject;
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "regex.pattern.match.matched-from-index")
+@XmirObject(oname = "string.regex.pattern.match.matched-from-index")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefault
+public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefault
     implements Atom {
 
     /**
@@ -51,16 +39,16 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
     /**
      * Ctor.
      */
-    public EOregex$EOpattern$EOmatch$EOmatched_from_index() {
+    public EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index() {
         super(
             new Attrs(
                 new Attr(
-                    EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
-                    new AtVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
+                    EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
+                    new AtVoid(EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
                 ),
                 new Attr(
-                    EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
-                    new AtVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
+                    EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
+                    new AtVoid(EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
                 )
             )
         );
@@ -82,7 +70,7 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
             throw new ExFailure("cannot deserialize the compiled regex pattern", ex);
         }
         final int start = new Expect.Natural(
-            Expect.at(this, EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
+            Expect.at(this, EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
         ).it();
         final int length = text.codePointCount(0, text.length());
         if (start > length) {
@@ -110,12 +98,12 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
      */
     private void fill(final Phi result, final Matcher matcher, final String text) {
         result.put(
-            EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
-            this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
+            EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
+            this.take(EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
         );
         result.put(
-            EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
-            this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
+            EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
+            this.take(EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
         );
         result.put("from", new Data.ToPhi(text.codePointCount(0, matcher.start())));
         result.put("to", new Data.ToPhi(text.codePointCount(0, matcher.end())));
@@ -141,11 +129,11 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
      */
     private void blank(final Phi result) {
         result.put(
-            EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
-            this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
+            EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
+            this.take(EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
         );
         result.put(
-            EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
+            EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
             new Data.ToPhi(-1)
         );
         result.put(

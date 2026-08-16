@@ -336,11 +336,11 @@
                 <mergedPackage>number</mergedPackage>
                 <mergedPackage>output</mergedPackage>
                 <mergedPackage>range</mergedPackage>
+                <mergedPackage>string</mergedPackage>
                 <mergedPackage>tuple</mergedPackage>
                 <mergedPackage>u64</mergedPackage>
               </mergedPackages>
               <keepBinaries>
-                <glob>org/eolang/EO_string/package-info.class</glob>
                 <glob>org/eolang/package-info.class</glob>
               </keepBinaries>
             </configuration>

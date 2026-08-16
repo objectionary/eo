@@ -26,20 +26,19 @@
 [text] > uri
   text > @
   if. > authority
-    string.starts-with >> has-authority
-      hier-part
+    starts-with. >> has-authority
+      has-query.if >> hier-part
+        before-fragment.slice 0 question-idx
+        before-fragment
       "//"
     if.
       not. >> has-authority-path
         eq.
-          string.index-of after-slashes "/" >> authority-path-idx
+          after-slashes.index-of "/" >> authority-path-idx
           -1
       slice.
         has-authority.if >> after-slashes
-          slice.
-            has-query.if >> hier-part
-              before-fragment.slice 0 question-idx
-              before-fragment
+          hier-part.slice
             2
             hier-part.length.minus
               number 2
@@ -58,7 +57,7 @@
           number
             scheme-colon.plus 1
       plus.
-        string.index-of rest "#" >> hash-idx
+        rest.index-of "#" >> hash-idx
         1
       rest.length.minus
         number
@@ -68,10 +67,10 @@
     not. >> has-port
       eq.
         if. >> port-colon-idx
-          string.starts-with host-port "[" >>
+          host-port.starts-with "[" >>
           if.
             eq.
-              string.index-of >> rel-colon
+              index-of. >> rel-colon
                 host-port.slice
                   bracket-start
                   host-port.length.minus
@@ -81,15 +80,15 @@
             -1
             rel-colon.plus
               plus. >> bracket-start
-                string.index-of host-port "]" >>
+                host-port.index-of "]" >>
                 1
-          string.index-of host-port ":"
+          host-port.index-of ":"
         -1
     slice.
       has-userinfo.if >> host-port
         authority.slice
           plus.
-            string.index-of authority "@" >> userinfo-at-idx
+            authority.index-of "@" >> userinfo-at-idx
             1
           authority.length.minus
             number
@@ -127,7 +126,7 @@
         rest.slice 0 hash-idx
         rest
       plus.
-        string.index-of before-fragment "?" >> question-idx
+        before-fragment.index-of "?" >> question-idx
         1
       before-fragment.length.minus
         number
@@ -138,7 +137,7 @@
       if. >> scheme-colon
         or.
           eq.
-            string.index-of text ":" >> raw-colon
+            text.index-of ":" >> raw-colon
             -1
           not.
             "/[A-Za-z][A-Za-z0-9+.-]*/".regex.compiled.matches

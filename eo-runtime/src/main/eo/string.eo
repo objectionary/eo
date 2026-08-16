@@ -26,10 +26,6 @@
 [as-bytes] > string
   as-bytes > @
 
-  string.contains ++> can-check-containment-through-the-package
-    "hello, world"
-    "world"
-
   not. ++> can-compare-a-string-with-nan
     nan.eq "друг"
 

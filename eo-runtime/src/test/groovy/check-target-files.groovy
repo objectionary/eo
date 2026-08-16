@@ -11,7 +11,6 @@ List<String> expected = [
   'generated-sources/org/eolang/EOsocket.java',
   'generated-test-sources/org/eolang/EObytesTest.java',
   'classes/org/eolang/package-info.class',
-  'classes/org/eolang/EO_string/package-info.class',
 ]
 
 for (path in expected) {

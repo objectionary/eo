@@ -7,7 +7,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text substring] > ends-with
+[substring] > ends-with
   and. > @
     lte.
       number
@@ -21,6 +21,7 @@
           size
         size
       substring >> part!
+  ^ > text
 
   ends-with. ++> can-end-with-a-substring
     "Hello world!"
