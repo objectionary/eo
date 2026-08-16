@@ -226,11 +226,12 @@ final class JarIT {
         new EoMavenPlugin(farea)
             .appended()
             .execution("compile")
-            .goals("register", "compile", "transpile")
+            .goals("register", "compile", "merge", "transpile")
             .configuration()
             .set("ignoreRuntime", "true")
             .set("failOnWarning", "false")
-            .set("skipLinting", "true");
+            .set("skipLinting", "true")
+            .set("mergedPackages", new MergedPackages().names());
         farea.exec("clean", "compile", "jar:jar");
         MatcherAssert.assertThat(
             "Project must be successfully built and packaged into jar",

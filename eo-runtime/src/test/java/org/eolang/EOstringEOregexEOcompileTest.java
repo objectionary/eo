@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle TrailingCommentCheck (3 lines)
- */
 package org.eolang;
 
 import org.hamcrest.MatcherAssert;

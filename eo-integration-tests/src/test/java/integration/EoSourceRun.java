@@ -4,12 +4,10 @@
  */
 package integration;
 
-import com.jcabi.xml.XMLDocument;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import org.cactoos.Proc;
 
 /**
@@ -45,9 +43,6 @@ final class EoSourceRun implements Proc<Object> {
         final Path runtime = Paths.get(
             System.getProperty("basedir", System.getProperty("user.dir"))
         ).getParent().resolve("eo-runtime");
-        final List<String> merged = new XMLDocument(
-            runtime.resolve("pom.xml")
-        ).xpath("//*[local-name()='mergedPackage']/text()");
         new RuntimeSources(
             runtime.resolve("src").resolve("main").resolve("eo")
         ).exec(this.farea);
@@ -60,7 +55,7 @@ final class EoSourceRun implements Proc<Object> {
             .set("failOnWarning", "false")
             .set("offline", "true")
             .set("skipLinting", "true")
-            .set("mergedPackages", merged);
+            .set("mergedPackages", new MergedPackages().names());
         this.farea.build()
             .plugins()
             .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")
