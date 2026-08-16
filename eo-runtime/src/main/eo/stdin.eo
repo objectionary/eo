@@ -23,25 +23,28 @@
 [] > stdin
   all-lines > @
   [] > all-lines
-    [line buffer first] >> rec-read
+    [scan buffer is-first] >> rec-read
       if. > @
-        line.length.eq 0
+        scan.eof
         string buffer
         rec-read
-          next-line
-          first.if
-            buffer.concat line
+          line-or-eof
+          is-first.if
+            buffer.concat scan.line
             concat.
               buffer.concat eol!
-              line
+              scan.line
           false
     | > @
-      next-line
-      --
+      line-or-eof
+      ""
       true
   [] > next-line
-    if. > @
-      first.as-bytes.size.eq 0
+    line-or-eof.line > @
+  [] > line-or-eof
+    first.as-bytes.size.eq 0 > eof
+    if. > line
+      eof
       ""
       [input buffer] >> rec-read
         if. > @
