@@ -5,6 +5,11 @@
 package org.eolang;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
+import org.cactoos.Scalar;
+import org.cactoos.experimental.Threads;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -53,6 +58,56 @@ final class CopiedAttrsTest {
             "taking one attribute twice must copy it once, but it copied it again",
             copies.get(),
             Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void copiesTheSameAttributeOnlyOnceUnderConcurrentTake() {
+        final int threads = 64;
+        final AtomicInteger copies = new AtomicInteger();
+        final Phi copy = new PhDefault(
+            new Attrs(new Attr("x", new CopiedAttrsTest.AtCounting(copies)))
+        ).copy();
+        MatcherAssert.assertThat(
+            "taking one attribute from many threads at once must copy it once, but it copied more",
+            new long[] {
+                StreamSupport.stream(
+                    new Threads<Phi>(
+                        threads,
+                        IntStream.range(0, threads).mapToObj(
+                            idx -> (Scalar<Phi>) () -> copy.take("x")
+                        ).collect(Collectors.toList())
+                    ).spliterator(), false
+                ).count(),
+                copies.get(),
+            },
+            Matchers.equalTo(new long[] {threads, 1})
+        );
+    }
+
+    @Test
+    void losesNoAttributeUnderConcurrentTakeOfDifferentNames() {
+        final int threads = 64;
+        final Phi copy = new PhDefault(
+            new Attrs(
+                IntStream.range(0, threads).mapToObj(
+                    idx -> new Attr(
+                        String.format("a%d", idx), new AtVoid(String.format("a%d", idx))
+                    )
+                ).toArray(Attr[]::new)
+            )
+        ).copy();
+        MatcherAssert.assertThat(
+            "taking every attribute at once must find all of them, but some were lost",
+            StreamSupport.stream(
+                new Threads<Boolean>(
+                    threads,
+                    IntStream.range(0, threads).mapToObj(
+                        idx -> (Scalar<Boolean>) () -> copy.take(String.format("a%d", idx)) != null
+                    ).collect(Collectors.toList())
+                ).spliterator(), false
+            ).collect(Collectors.toList()),
+            Matchers.everyItem(Matchers.is(true))
         );
     }
 

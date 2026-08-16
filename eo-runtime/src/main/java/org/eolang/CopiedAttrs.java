@@ -7,6 +7,7 @@ package org.eolang;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * The attributes of a copy, taken out of the origin one at a time.
@@ -38,6 +39,11 @@ final class CopiedAttrs extends AbstractMap<String, Attribute> {
     private final Bindings taken;
 
     /**
+     * Guards {@link #taken} against concurrent readers.
+     */
+    private final ReentrantLock lock;
+
+    /**
      * Ctor.
      * @param from Attributes of the origin object
      * @param phi The object these attributes belong to
@@ -47,36 +53,57 @@ final class CopiedAttrs extends AbstractMap<String, Attribute> {
         this.origin = from;
         this.owner = phi;
         this.taken = new Bindings();
+        this.lock = new ReentrantLock();
     }
 
     @Override
     public boolean containsKey(final Object key) {
-        return this.taken.containsKey(key) || this.origin.containsKey(key);
+        this.lock.lock();
+        try {
+            return this.taken.containsKey(key) || this.origin.containsKey(key);
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     @Override
     public Attribute get(final Object key) {
-        final Attribute ready = this.taken.get(key);
-        final Attribute attr;
-        if (ready == null) {
-            attr = this.copied(key);
-        } else {
-            attr = ready;
+        this.lock.lock();
+        try {
+            final Attribute ready = this.taken.get(key);
+            final Attribute attr;
+            if (ready == null) {
+                attr = this.copied(key);
+            } else {
+                attr = ready;
+            }
+            return attr;
+        } finally {
+            this.lock.unlock();
         }
-        return attr;
     }
 
     @Override
     public Attribute put(final String key, final Attribute value) {
-        return this.taken.put(key, value);
+        this.lock.lock();
+        try {
+            return this.taken.put(key, value);
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     @Override
     public Set<Map.Entry<String, Attribute>> entrySet() {
-        for (final String key : this.origin.keySet()) {
-            this.taken.put(key, this.get(key));
+        this.lock.lock();
+        try {
+            for (final String key : this.origin.keySet()) {
+                this.taken.put(key, this.get(key));
+            }
+            return this.taken.entrySet();
+        } finally {
+            this.lock.unlock();
         }
-        return this.taken.entrySet();
     }
 
     /**
