@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A demand asked of a void is gathered onto the void, and a demand asked of a
+# name rooted at one nests under the demand that named it: `foo` is asked of
+# `x.next`, so it reads as a `foo` under `next`, and `next` under the void.
+eo:
+  inc.eo: |
+    [x] > inc
+      x.next.foo > @
+provides:
+  - "/provides/type[@id='Φ.inc']/attr[@name='x' and @void='true']/demand[@name='next' and @type='Φ.inc.x.next']"
+  - "/provides/type[@id='Φ.inc']/attr[@name='x']/demand[@name='next']/demand[@name='foo' and @type='Φ.inc.x.next.foo']"

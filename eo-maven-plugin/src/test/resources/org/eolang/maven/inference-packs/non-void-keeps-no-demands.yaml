@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A demand asked of an ordinary attribute is not gathered anywhere: the tables
+# record what a program asks of a void, not every dispatch it makes.
+eo:
+  use.eo: |
+    [] > use
+      t.next > @
+      [] > t
+        [] > next
+provides:
+  - "/provides/type[@id='Φ.use']/attr[@name='t' and not(demand)]"
+needs:
+  - "/needs/type[@id='Φ.use.φ.ρ']/attr[@name='next']"
