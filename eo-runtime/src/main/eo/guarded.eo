@@ -3,13 +3,8 @@
 # dataization of `scope` succeeded or terminated. Behaves as `scope` when it
 # is not terminated; when it is, `cleanup` still runs and the termination
 # propagates. This is how an object that owns a descriptor releases it even
-# when the scope it was handed to fails:
-#
-# ```
-# guarded
-#   scope (scoped-socket sd)
-#   closed-socket sd
-# ```
+# when the scope it was handed to fails, as `scoped-socket` does when it
+# hands its descriptor to a scope and closes it afterwards.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
