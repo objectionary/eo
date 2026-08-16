@@ -44,15 +44,19 @@ public final class PhCoverage implements Phi {
      * The locations written by the whole program, per destination. One set
      * for every {@link PhCoverage} wrapper the transpiler builds, so a
      * location touched through many instances of the same object is
-     * recorded once instead of once per instance.
+     * recorded once instead of once per instance. Shared by deliberate
+     * design: the generated code passes it to every wrapper it builds, so
+     * it must be reachable from every generated package, which a private
+     * or protected member is not.
      */
+    @SuppressWarnings("java:S2386")
     public static final Set<String> HITS = ConcurrentHashMap.newKeySet();
 
     /** The origin. */
     private final Phi origin;
 
     /** Locations written by this object and its copies, per destination. */
-    private final Set<String> hits;
+    private final Set<String> seen;
 
     /** The location to write, as {@code loc:line:pos}. */
     private final String record;
@@ -74,7 +78,7 @@ public final class PhCoverage implements Phi {
      */
     public PhCoverage(final Phi phi, final Set<String> seen, final String mark) {
         this.origin = phi;
-        this.hits = seen;
+        this.seen = seen;
         this.record = mark;
     }
 
@@ -90,7 +94,7 @@ public final class PhCoverage implements Phi {
 
     @Override
     public Phi copy() {
-        return new PhCoverage(this.origin.copy(), this.hits, this.record);
+        return new PhCoverage(this.origin.copy(), this.seen, this.record);
     }
 
     @Override
@@ -143,7 +147,7 @@ public final class PhCoverage implements Phi {
     /** Record one hit, at most once per wrapper per destination. */
     private void hit() {
         final String property = PhCoverage.property();
-        if (property != null && this.hits.add(property + '\0' + this.record)) {
+        if (property != null && this.seen.add(property + '\0' + this.record)) {
             try {
                 Files.write(
                     Paths.get(property),
