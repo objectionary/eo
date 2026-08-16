@@ -153,10 +153,11 @@ final class LnApplication implements Line {
     }
 
     /**
-     * Reject a paren-group head that cannot carry what follows it: bare
-     * redundant parentheses around a whole top-level expression, or a
-     * horizontal argument list applied to an inline-phi formation the
-     * group wraps.
+     * Reject a head that cannot carry what follows it: bare redundant
+     * parentheses around a whole top-level expression, or a horizontal
+     * argument list applied to a head that opens a formation body of its
+     * own — a paren-group wrapping an inline-phi expression, or the
+     * identity glyph {@code I}, itself sugar for one (#6848, #6918).
      * @param head The head value
      * @param chain Method-dispatch chain following the head (may be empty)
      * @param args Horizontal arguments following the head (may be empty)
@@ -173,12 +174,24 @@ final class LnApplication implements Line {
                 "redundant parentheses around a top-level expression — drop the outer `(` and `)`"
             );
         }
-        if (head.kind() == Value.Kind.GROUP && !args.isEmpty() && this.wrapsInlinePhi(head)) {
+        if (!args.isEmpty() && this.opensFormationBody(head)) {
             throw new ParseError(
                 this.span.line(), head.pos(),
                 "horizontal formation not allowed as argument"
             );
         }
+    }
+
+    /**
+     * Whether a head opens a formation body of its own, so any horizontal
+     * argument that follows it would land as an unnamed formation child
+     * instead of an argument (#6848, #6918).
+     * @param head The head value
+     * @return TRUE when the head opens a formation body
+     */
+    private boolean opensFormationBody(final Value head) {
+        return head.kind() == Value.Kind.IDENTITY
+            || head.kind() == Value.Kind.GROUP && this.wrapsInlinePhi(head);
     }
 
     /**
