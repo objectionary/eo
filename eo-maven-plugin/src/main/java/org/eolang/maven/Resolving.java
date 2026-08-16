@@ -147,14 +147,14 @@ final class Resolving implements Step {
         final Dep dep, final Path dest, final Map<String, Set<String>> versions
     ) throws IOException {
         final Dependency dependency = dep.get();
-        final String classifier = this.classifier(dependency);
+        final DepCoordinate coords = new DepCoordinate(dependency);
         final Path place = this.cleanPlace(
             dest
                 .resolve(dependency.getGroupId())
                 .resolve(dependency.getArtifactId())
-                .resolve(classifier),
+                .resolve(coords.classifier()),
             dependency.getVersion(),
-            versions.get(this.coordinate(dependency, classifier))
+            versions.get(coords.value())
         );
         final int total;
         if (Files.exists(place)) {
@@ -257,38 +257,11 @@ final class Resolving implements Step {
         for (final Dep dep : deps) {
             final Dependency dependency = dep.get();
             result.computeIfAbsent(
-                this.coordinate(dependency, this.classifier(dependency)),
+                new DepCoordinate(dependency).value(),
                 key -> new HashSet<>(0)
             ).add(dependency.getVersion());
         }
         return result;
-    }
-
-    /**
-     * A dependency's coordinate, without its version.
-     * @param dependency Dependency
-     * @param classifier Its classifier, already normalized
-     * @return The coordinate
-     */
-    private String coordinate(final Dependency dependency, final String classifier) {
-        return String.join(
-            ":", dependency.getGroupId(), dependency.getArtifactId(), classifier
-        );
-    }
-
-    /**
-     * A dependency's classifier, normalized to "-" when absent.
-     * @param dependency Dependency
-     * @return The classifier
-     */
-    private String classifier(final Dependency dependency) {
-        final String classifier;
-        if (dependency.getClassifier() == null || dependency.getClassifier().isEmpty()) {
-            classifier = "-";
-        } else {
-            classifier = dependency.getClassifier();
-        }
-        return classifier;
     }
 
     /**
