@@ -222,18 +222,18 @@
   eq. ++> can-close-a-descriptor-when-the-scope-fails
     drain 300
     true
-  if. > [n] > drain
-    n.lte 0
-    true
-    seq *
-      recovered
-        tmp.open
-          "r"
-          T "boom" > [f]
-        true
-      drain
-        n.minus 1
-  mktemp.tmpfile > tmp
+    if. > [n] > drain
+      n.lte 0
+      true
+      seq *
+        recovered
+          tmp.open
+            "r"
+            T "boom" > [f]
+          true
+        drain
+          n.minus 1
+    mktemp.tmpfile > tmp
 
   eq. ++> can-keep-the-size-of-a-file-opened-for-appending
     size.
