@@ -86,15 +86,11 @@ public final class MjTranspile extends MjSafe {
      * one step (see its {@code pom.xml}). The {@code coverage-report}
      * Maven goal ({@link MjCoverageReport}) turns the raw hits into an
      * LCOV tracefile, bound to the {@code verify} phase since the hits
-     * only exist after tests actually run.
-     * @todo #5466:30min Enforce a minimum EO object coverage in eo-runtime.
-     *  Now that the LCOV report exists ({@link MjCoverageReport}), set
-     *  {@code coverageTracking} on the {@code transpile} execution in
-     *  {@code eo-runtime/pom.xml} and fail the build when the covered
-     *  percentage of dataized {@code .eo} objects drops below a
-     *  threshold (for example 80 percent), mirroring how the existing
-     *  {@code jacoco} profile binds a {@code check} goal with per-metric
-     *  thresholds.
+     * only exist after tests actually run. {@code eo-runtime} pairs it
+     * with {@code minCoverage} on that same goal, failing the build when
+     * the covered percentage of dataized {@code .eo} objects drops below
+     * a threshold, mirroring how the {@code jacoco} profile binds a
+     * {@code check} goal with its own per-metric thresholds.
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.coverageTracking")

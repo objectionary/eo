@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -52,6 +53,23 @@ final class MjCoverageReportTest {
             "the LCOV report must record at least one hit line, but LH:0 everywhere",
             Files.readString(lcov),
             Matchers.not(Matchers.containsString("LH:0"))
+        );
+    }
+
+    @Test
+    void failsTheBuildWhenCoverageIsBelowTheMinimum(@Mktmp final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > x", "  42 > y")
+        ).execute(MjParse.class);
+        final Path hits = temp.resolve("coverage.txt");
+        Files.writeString(hits, "");
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven.with("coverageFile", hits.toFile())
+                .with("lcovFile", temp.resolve("coverage.info").toFile())
+                .with("minCoverage", 1.0d)
+                .execute(MjCoverageReport.class),
+            "coverage-report must fail the build when coverage is below the minimum, but it didnt"
         );
     }
 }
