@@ -19,7 +19,9 @@
 
 [scope cleanup] > guarded
   seq * > @
-    recovered scope true
+    recovered
+      scope
+      true
     cleanup
     scope
 
