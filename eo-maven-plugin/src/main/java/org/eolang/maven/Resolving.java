@@ -11,8 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -117,7 +115,7 @@ final class Resolving implements Step {
         if (deps.isEmpty()) {
             unpacked = 0;
         } else {
-            final Map<String, Set<String>> versions = this.versionsByCoordinate(deps);
+            final Map<String, Set<String>> versions = new ResolvedVersions(deps).byCoordinate();
             unpacked = new Threaded<>(
                 deps,
                 dep -> this.resolved(dep, this.target, versions)
@@ -242,26 +240,6 @@ final class Resolving implements Step {
             }
         }
         return dir.resolve(version);
-    }
-
-    /**
-     * Group every resolved dependency's version by its coordinate, so
-     * {@link #cleanPlace} can tell a stale version (absent from the whole
-     * set) from a sibling version legitimately resolved alongside it in
-     * the same run.
-     * @param deps Dependencies resolved in this run
-     * @return Every version, by coordinate
-     */
-    private Map<String, Set<String>> versionsByCoordinate(final Collection<Dep> deps) {
-        final Map<String, Set<String>> result = new HashMap<>(0);
-        for (final Dep dep : deps) {
-            final Dependency dependency = dep.get();
-            result.computeIfAbsent(
-                new DepCoordinate(dependency).value(),
-                key -> new HashSet<>(0)
-            ).add(dependency.getVersion());
-        }
-        return result;
     }
 
     /**
