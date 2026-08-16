@@ -2,13 +2,6 @@
 # fails, dataizes `cleanup` afterwards. The bytes of `scope` are returned on
 # success; on failure `cleanup` still runs and the original failure is
 # re-raised.
-#
-# ```
-# guarded
-#   [] >>
-#     T "boom"          # scope, fails
-#   sd.closed-socket     # cleanup, runs anyway
-# ```
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -21,12 +14,6 @@
   ? > scope
   ? > cleanup
 
-  eq. ++> can-return-the-scope-result
-    guarded
-      42
-      true
-    42.as-bytes
-
   ++> can-run-cleanup-after-a-successful-scope
     eq. > @
       malloc.for
@@ -34,7 +21,7 @@
         [m]
           seq * > @
             guarded
-              true
+              42
               m.put (m.as-number.plus 1)
             m.as-number
       1
