@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2160.88440409
+  seconds: 2160.500930241
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-16 02:43:36.649534407 Z
+  when: 2026-08-16 04:04:26.902757006 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -282153,7 +282153,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 835
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13338778933
   issues_were_scanned: 0
@@ -289080,7 +289080,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1023
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13009557602
   issues_were_scanned: 0
@@ -292845,7 +292845,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1020
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 17762979023
   issues_were_scanned: 982
@@ -295797,7 +295797,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1124
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13340329684
   issues_were_scanned: 0
@@ -295831,11 +295831,11 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5299
+  assignees_were_scanned: 5487
   earliest_issue_was_found: 1
-  events_were_scanned: 13343497489
+  events_were_scanned: 17788578403
   issues_were_scanned: 0
-  labels_were_scanned: 6179
+  labels_were_scanned: 6893
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
@@ -495346,13 +495346,6 @@
   award: -8
   details: It's time to punish @morphqdd for the dud submitted in objectionary/eo#6883,
     the fee amount is -8.
-  greeting: 'Thanks for submitting this ticket! However, as you see, it was not accepted
-    by the team, which is sad. You''ve earned -8 points. By reporting bugs or suggesting
-    enhancements, you help our project improve its quality. Please, don''t be discouraged.
-    Instead, try to be more careful next time, and [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
-    to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
-    bugs. Your running score is [+4812](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   href: https://github.com/objectionary/eo/issues/6883/#issuecomment-5304727503
   is_human: 1
   issue: 6883
@@ -495600,8 +495593,10 @@
     them coming. Your running score is [+2404](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 35
+  href: https://github.com/objectionary/eo/issues/6326/#issuecomment-5305386715
   is_human: 1
   issue: 6326
+  receipt: receipt-#86665
   repository: 73056727
   review_comments: 1
   seconds: 1056619
@@ -495623,8 +495618,10 @@
     them coming. Your running score is [+2416](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 7
+  href: https://github.com/objectionary/eo/issues/6396/#issuecomment-5305386807
   is_human: 1
   issue: 6396
+  receipt: receipt-#86666
   repository: 73056727
   review_comments: 4
   seconds: 894222
@@ -495646,8 +495643,10 @@
     them coming. Your running score is [+2428](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 108
+  href: https://github.com/objectionary/eo/issues/6397/#issuecomment-5305386892
   is_human: 1
   issue: 6397
+  receipt: receipt-#86667
   repository: 73056727
   review_comments: 6
   seconds: 894149
@@ -495669,8 +495668,10 @@
     them coming. Your running score is [+819](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 210
+  href: https://github.com/objectionary/eo/issues/6789/#issuecomment-5305387005
   is_human: 1
   issue: 6789
+  receipt: receipt-#86668
   repository: 73056727
   review_comments: 0
   seconds: 121785
@@ -495692,8 +495693,10 @@
     them coming. Your running score is [+2440](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 28
+  href: https://github.com/objectionary/eo/issues/6845/#issuecomment-5305387111
   is_human: 1
   issue: 6845
+  receipt: receipt-#86669
   repository: 73056727
   review_comments: 0
   seconds: 95636
@@ -495715,8 +495718,10 @@
     them coming. Your running score is [+2452](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 32
+  href: https://github.com/objectionary/eo/issues/6849/#issuecomment-5305387200
   is_human: 1
   issue: 6849
+  receipt: receipt-#86670
   repository: 73056727
   review_comments: 0
   seconds: 94637
@@ -495738,8 +495743,10 @@
     them coming. Your running score is [+2464](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 17
+  href: https://github.com/objectionary/eo/issues/6850/#issuecomment-5305387287
   is_human: 1
   issue: 6850
+  receipt: receipt-#86671
   repository: 73056727
   review_comments: 0
   seconds: 94434
@@ -495761,8 +495768,10 @@
     them coming. Your running score is [+831](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 116
+  href: https://github.com/objectionary/eo/issues/6870/#issuecomment-5305387383
   is_human: 1
   issue: 6870
+  receipt: receipt-#86672
   repository: 73056727
   review_comments: 0
   seconds: 42330
@@ -495784,8 +495793,10 @@
     them coming. Your running score is [+4824](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 14
+  href: https://github.com/objectionary/eo/issues/6878/#issuecomment-5305387493
   is_human: 1
   issue: 6878
+  receipt: receipt-#86673
   repository: 73056727
   review_comments: 0
   seconds: 17454
@@ -495807,6 +495818,7 @@
     them coming. Your running score is [+4836](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 20
+  href: https://github.com/objectionary/eo/issues/6879/#issuecomment-5305387580
   is_human: 1
   issue: 6879
   repository: 73056727
@@ -495830,6 +495842,7 @@
     them coming. Your running score is [+4848](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 2
+  href: https://github.com/objectionary/eo/issues/6884/#issuecomment-5305387668
   is_human: 1
   issue: 6884
   repository: 73056727
@@ -495853,6 +495866,7 @@
     at least something.  Your running score is [+4852](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 7
+  href: https://github.com/objectionary/eo/issues/6396/#issuecomment-5305387764
   is_human: 1
   issue: 6396
   repository: 73056727
@@ -495876,6 +495890,7 @@
     at least something.  Your running score is [+1392](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 7
+  href: https://github.com/objectionary/eo/issues/6396/#issuecomment-5305387835
   is_human: 1
   issue: 6396
   repository: 73056727
@@ -495899,6 +495914,7 @@
     at least something.  Your running score is [+2601](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 7
+  href: https://github.com/objectionary/eo/issues/6396/#issuecomment-5305387926
   is_human: 1
   issue: 6396
   repository: 73056727
@@ -495921,6 +495937,7 @@
     -5 for very few (2) comments.  Your running score is [+4859](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 108
+  href: https://github.com/objectionary/eo/issues/6397/#issuecomment-5305388007
   is_human: 1
   issue: 6397
   repository: 73056727
@@ -495943,6 +495960,7 @@
     -5 for very few (2) comments.  Your running score is [+1399](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 108
+  href: https://github.com/objectionary/eo/issues/6397/#issuecomment-5305388092
   is_human: 1
   issue: 6397
   repository: 73056727
@@ -495965,6 +495983,7 @@
     -5 for very few (1) comments.  Your running score is [+2608](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 108
+  href: https://github.com/objectionary/eo/issues/6397/#issuecomment-5305388160
   is_human: 1
   issue: 6397
   repository: 73056727
