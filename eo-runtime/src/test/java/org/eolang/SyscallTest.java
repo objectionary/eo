@@ -221,19 +221,15 @@ final class SyscallTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        void refusesConnectionViaSyscall() throws UnknownHostException {
+        void refusesConnectionViaSyscall(@Ephemeral final int port) throws UnknownHostException {
             try {
                 this.ensure(this.startup() == 0);
                 final int socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
-                    final SockaddrIn addr = new SockaddrIn(
-                        (short) Winsock.AF_INET,
-                        SyscallTest.htons(8080),
-                        this.inetAddr("192.0.2.1")
-                    );
+                    final SockaddrIn addr = this.sockaddr(port);
                     MatcherAssert.assertThat(
-                        "Connection via windows syscall to Test-Net (192.0.2.1) must be refused",
+                        "Connection via windows syscall to a loopback port nobody listens on must be refused",
                         Winsock.INSTANCE.connect(socket, addr, addr.size()),
                         Matchers.equalTo(-1)
                     );
