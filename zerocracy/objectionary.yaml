@@ -2,11 +2,12 @@
 - added: 8
   cycles: 1
   deleted: 8
+  error: deadlock; recursive locking
   inserted: 8
-  seconds: 2160.872242403
+  seconds: 2165.523147943
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-16 09:35:23.684872154 Z
+  when: 2026-08-16 11:28:56.471292427 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -260825,7 +260826,7 @@
   latest_issue_was_found: 46
   min_issue_was_found: 1
   repository: 531151981
-  types_were_scanned: 0
+  types_were_scanned: 27
   what: iterate
   where: github
 - _id: 1105351
@@ -282138,7 +282139,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 17795047194
+  events_were_scanned: 13352194938
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 66
@@ -282153,9 +282154,9 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 835
   earliest_issue_was_found: 1
-  events_were_scanned: 17798462013
+  events_were_scanned: 17818329405
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 347
@@ -282163,7 +282164,7 @@
   min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 556
+  types_were_scanned: 640
   what: iterate
   where: github
 - _id: 1107889
@@ -288125,7 +288126,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 17757268791
+  events_were_scanned: 17818041903
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 97
@@ -288133,7 +288134,7 @@
   min_issue_was_found: 170
   min_pull_was_found: 0
   repository: 955159947
-  types_were_scanned: 0
+  types_were_scanned: 192
   what: iterate
   where: github
 - _id: 1108492
@@ -289082,7 +289083,7 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1023
   earliest_issue_was_found: 1
   events_were_scanned: 13009557602
   issues_were_scanned: 0
@@ -289092,7 +289093,7 @@
   min_issue_was_found: 487
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 854
+  types_were_scanned: 885
   what: iterate
   where: github
 - _id: 1108618
@@ -289528,7 +289529,7 @@
   min_issue_was_found: 16
   min_pull_was_found: 0
   repository: 784310467
-  types_were_scanned: 0
+  types_were_scanned: 44
   what: iterate
   where: github
 - _id: 1108670
@@ -292840,16 +292841,16 @@
   min_issue_was_found: 84
   min_pull_was_found: 0
   repository: 721146770
-  types_were_scanned: 0
+  types_were_scanned: 220
   what: iterate
   where: github
 - _id: 1108977
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1020
   earliest_issue_was_found: 1
-  events_were_scanned: 13348539168
+  events_were_scanned: 17812701749
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
@@ -292857,7 +292858,7 @@
   min_issue_was_found: 682
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 0
+  types_were_scanned: 256
   what: iterate
   where: github
 - _id: 1108989
@@ -295273,7 +295274,7 @@
   min_issue_was_found: 46
   min_pull_was_found: 0
   repository: 1219806055
-  types_were_scanned: 0
+  types_were_scanned: 62
   what: iterate
   where: github
 - _id: 1109036
@@ -295341,7 +295342,7 @@
   min_issue_was_found: 1101
   min_pull_was_found: 1572
   repository: 671896902
-  types_were_scanned: 0
+  types_were_scanned: 1470
   what: iterate
   where: github
 - _id: 1109041
@@ -295799,7 +295800,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1124
   earliest_issue_was_found: 1
   events_were_scanned: 13347136124
   issues_were_scanned: 0
@@ -295809,7 +295810,7 @@
   min_issue_was_found: 435
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 0
+  types_were_scanned: 851
   what: iterate
   where: github
 - _id: 1109065
@@ -295826,24 +295827,24 @@
   min_issue_was_found: 64
   min_pull_was_found: 409
   repository: 970961472
-  types_were_scanned: 0
+  types_were_scanned: 340
   what: iterate
   where: github
 - _id: 1109066
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6376
+  assignees_were_scanned: 6560
   earliest_issue_was_found: 1
-  events_were_scanned: 13350593030
+  events_were_scanned: 13352469623
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6179
   latest_issue_was_found: 4591
   merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 0
+  types_were_scanned: 3671
   what: iterate
   where: github
 - _id: 1109067
@@ -496217,9 +496218,48 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: 6919-phdefault-double-copy
   details: The missing pull objectionary/eo#6920 has been opened by @morphqdd.
+  is_human: 1
   issue: 6920
   repository: 73056727
   what: pull-was-opened
   when: 2026-08-16 07:04:51.000000000 Z
   where: github
   who: 125282851
+- _id: 1119852
+  _job: 87252
+  _time: 2026-08-16 09:37:09.825278228 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 4
+  comments: 2
+  details: It's time to reward @yegor256 for the code review in objectionary/jucs#99,
+    the reward amount is 4.
+  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
+    -8 for absolutely no comments posted; -4 for too few (2) hits-of-code; +4 to give
+    you at least something.  Your running score is [+2572](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 2
+  is_human: 1
+  issue: 99
+  repository: 574459304
+  review_comments: 0
+  seconds: 22792
+  what: code-review-was-rewarded
+  when: 2026-08-16 09:37:09.831272288 Z
+  where: github
+  who: 526301
+  why: Reviewed code in objectionary/jucs#99
+- _id: 1119853
+  _job: 31942685400
+  _time: 2026-08-16 10:53:53.303185311 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '6637'
+  details: The pull request objectionary/eo#6924 has been opened by @vasilevnstas.
+  event_id: 13351272601
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 6924
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-08-16 09:34:58.000000000 Z
+  where: github
+  who: 33578155
