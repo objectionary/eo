@@ -39,7 +39,7 @@ final class AtomTypesTest {
     void returnsEmptyWhenResourceIsAbsent() {
         MatcherAssert.assertThat(
             "Table must return empty forma when atoms.csv is absent from the class package, but it didnt",
-            new AtomTypes(AtomTypesTest.class).declared("Φ.number.plus"),
+            new AtomTypes(Object.class).declared("Φ.number.plus"),
             Matchers.equalTo("")
         );
     }
