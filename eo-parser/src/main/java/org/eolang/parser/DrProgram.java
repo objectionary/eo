@@ -92,10 +92,7 @@ final class DrProgram implements Iterable<Directive> {
             }
             final Path path = Paths.get(opt).toAbsolutePath();
             if (path.toFile().exists()) {
-                schema = String.format(
-                    "file:///%s",
-                    path.toString().replace("\\", "/")
-                );
+                schema = path.toUri().toString();
                 break;
             }
         }
