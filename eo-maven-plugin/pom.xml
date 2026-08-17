@@ -592,4 +592,25 @@
       </build>
     </profile>
   </profiles>
+  <reporting>
+    <plugins>
+      <plugin>
+        <!--
+        The "site" profile of the parent runs javadoc with "-Xdoclint:all"
+        and fails the build on any warning, and a mojo has to have a public
+        no-argument constructor for Maven to build it with. Javadoc warns
+        about every implicit one of those, which stopped the site build and
+        left the last two releases without a published site. The "missing"
+        group is what warns, and qulice checks the same thing on every
+        build anyway, class by class, method by method and field by field,
+        so nothing goes unwatched by dropping it here.
+        -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <doclint>all,-missing</doclint>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>
