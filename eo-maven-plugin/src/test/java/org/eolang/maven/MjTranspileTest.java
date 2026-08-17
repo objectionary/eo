@@ -127,7 +127,7 @@ final class MjTranspileTest {
     }
 
     @Test
-    void excludesThrowingTestsFromPhCoverageWhenTrackingEnabled(@Mktmp final Path temp)
+    void excludesThrowingCasesFromPhCoverageWhenTrackingEnabled(@Mktmp final Path temp)
         throws Exception {
         MatcherAssert.assertThat(
             "the generated Java must not wrap a throwing test's body into PhCoverage when coverageTracking is on",
@@ -144,7 +144,7 @@ final class MjTranspileTest {
     }
 
     @Test
-    void excludesTruthyTestsFromPhCoverageWhenTrackingEnabled(@Mktmp final Path temp)
+    void excludesTruthyCasesFromPhCoverageWhenTrackingEnabled(@Mktmp final Path temp)
         throws Exception {
         MatcherAssert.assertThat(
             "the generated Java must not wrap a truthy test's body into PhCoverage when coverageTracking is on",
@@ -622,7 +622,8 @@ final class MjTranspileTest {
             "+package foo.x",
             "",
             "[] > main",
-            "  --> throwing-test",
+            "",
+            "  --> stops-on-dispatching-on-a-number",
             "    42.plus 1 > @"
         );
     }
@@ -639,7 +640,8 @@ final class MjTranspileTest {
             "+package foo.x",
             "",
             "[] > main",
-            "  ++> truthy-test",
+            "",
+            "  ++> can-dispatch-on-a-number",
             "    42.plus 1 > @"
         );
     }
