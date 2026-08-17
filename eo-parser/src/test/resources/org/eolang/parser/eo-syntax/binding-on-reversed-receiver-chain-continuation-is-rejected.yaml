@@ -3,11 +3,10 @@
 ---
 sheets: []
 asserts:
-  - /object[not(errors)]
-  - //o[@base='?.then.baz' and @as='x' and @name='z']
+  - /object/errors/error[@severity='error']
+  - /object/errors/error[contains(text(),'receiver cannot carry a binding')]
 input: |
   [] > main
     if. > first
       cond
-      then
       .baz:x > z

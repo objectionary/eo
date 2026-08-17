@@ -792,37 +792,6 @@ final class EoTest {
     }
 
     @Test
-    void acceptsBindingOnReversedArgChainContinuation() {
-        MatcherAssert.assertThat(
-            "a same-indent .method continuation of a non-receiver reversed arg may carry a binding per R-6.6.3",
-            EoTest.render(
-                "foo > main",
-                "  if.",
-                "    cond",
-                "    then",
-                "    .baz:x > z"
-            ),
-            XhtmlMatchers.hasXPath("/object[not(errors)]")
-        );
-    }
-
-    @Test
-    void rejectsBindingOnReversedReceiverChainContinuation() {
-        MatcherAssert.assertThat(
-            "a same-indent .method continuation of the receiver's own chain must still surface R-6.6.3",
-            EoTest.render(
-                "foo > main",
-                "  if.",
-                "    cond",
-                "    .baz:x > z"
-            ),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'reversed-dispatch receiver cannot carry a binding')]"
-            )
-        );
-    }
-
-    @Test
     void emitsAsForVerticalBindingOnIdentifier() {
         MatcherAssert.assertThat(
             "a vertical-arg line ending with `:label` must emit @as on the line's outermost <o>",
