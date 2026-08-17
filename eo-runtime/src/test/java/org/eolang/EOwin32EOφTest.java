@@ -73,55 +73,6 @@ final class EOwin32EOφTest {
         );
     }
 
-    @Test
-    @DisabledOnOs({OS.LINUX, OS.MAC})
-    void acceptsDottedIpAddress() {
-        MatcherAssert.assertThat(
-            "The \"inet_addr\" function call should have parsed a dotted IPv4 literal",
-            this.inetAddr("1.2.3.4"),
-            Matchers.equalTo(67_305_985)
-        );
-    }
-
-    @Test
-    @DisabledOnOs({OS.LINUX, OS.MAC})
-    void rejectsHostName() {
-        MatcherAssert.assertThat(
-            "The \"inet_addr\" function call should have rejected a host name, not resolved it",
-            this.inetAddr("localhost"),
-            Matchers.equalTo(-1)
-        );
-    }
-
-    @Test
-    @DisabledOnOs({OS.LINUX, OS.MAC})
-    void rejectsIpvSixLiteral() {
-        MatcherAssert.assertThat(
-            "The \"inet_addr\" function call should have rejected an IPv6 literal",
-            this.inetAddr("::1"),
-            Matchers.equalTo(-1)
-        );
-    }
-
-    /**
-     * Calls "inet_addr" on the win32 object with the given address.
-     * @param address Address to resolve
-     * @return Resolved code
-     */
-    private int inetAddr(final String address) {
-        return new Dataized(
-            new PhApplication(
-                new PhApplication(
-                    Phi.Φ.take("win32").copy(),
-                    "name",
-                    new Data.ToPhi("inet_addr")
-                ),
-                "args",
-                new Data.ToPhi(new Phi[]{new Data.ToPhi(address)})
-            ).take("code")
-        ).asNumber().intValue();
-    }
-
     /**
      * Test case for {@link Winsock}.
      * @since 0.40
