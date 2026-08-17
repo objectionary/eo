@@ -130,7 +130,9 @@ final class Tokens {
     /**
      * Read a BYTES literal at the cursor — {@code --}, {@code BB-}, or
      * {@code BB-BB(-BB)*} per §3.13.1. Multi-line continuation
-     * (R-3.13.2/R-3.13.3) is not yet supported here.
+     * (R-3.13.2/R-3.13.3) is handled by {@link Eo#mergeBytesContinuation}
+     * which concatenates trailing-dash chunks with subsequent lines,
+     * including lines that start with a leading dash.
      * @return BYTES value
      */
     Value readBytes() {
