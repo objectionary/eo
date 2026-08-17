@@ -416,7 +416,7 @@ final class Tokens {
             }
             this.consumeDispatch();
             final Value name = this.readMethodName();
-            chain.add(new MethodChain(name.raw(), dot, name.end(), fragile));
+            chain.add(new MethodChain(name.raw(), dot, fragile));
         }
         return chain;
     }
