@@ -278,11 +278,24 @@ final class EoTest {
     }
 
     @Test
-    void rejectsFormaListOutsideAtom() {
+    void parsesFormaListOnFormationVoid() {
         MatcherAssert.assertThat(
-            "a `/{…}` forma-list on a void outside an atom must be rejected",
+            "a `/{…}` forma-list on the void of a formation must be kept as it is written",
             EoTest.render("[] > foo", "  ? > x /{string}"),
-            XhtmlMatchers.hasXPath("/object/errors/error")
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='foo']/o[@name='x' and @base='∅' and @args='string']"
+            )
+        );
+    }
+
+    @Test
+    void parsesTypeOnFormationVoid() {
+        MatcherAssert.assertThat(
+            "a formation that Java alone copies must be able to say what its void holds",
+            EoTest.render("[] > return", "  ? > code /Q.number"),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='return']/o[@name='code' and @base='∅' and @type='Φ.number']"
+            )
         );
     }
 

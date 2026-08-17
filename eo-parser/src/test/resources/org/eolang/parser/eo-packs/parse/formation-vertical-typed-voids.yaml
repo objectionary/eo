@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/move-voids-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+asserts:
+  - /object[not(errors)]
+  # a formation nobody but Java ever copies says what its voids hold
+  - /object/o[@name='return']/o[1][@name='code' and @base='∅' and @type='Φ.number']
+  - /object/o[@name='return']/o[2][@name='self' and @base='∅' and not(@type)]
+  # the brace form says what a callback void is handed
+  - /object/o[@name='walk']/o[1][@name='step' and @base='∅' and @args='Φ.string']
+  # a generic variable stays as it is written
+  - /object/o[@name='hold']/o[1][@name='it' and @base='∅' and @type='A']
+input: |
+  [] > return
+    ? > code /Q.number
+    ? > self
+    code > @
+  [] > walk
+    ? > step /{Q.string}
+    step > @
+  [] > hold
+    ? > it /A
+    it > @

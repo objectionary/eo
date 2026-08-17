@@ -7,7 +7,7 @@ package org.eolang.parser;
 /**
  * A vertical void-attribute line — R-3.4.7 / R-3.4.8 of the spec.
  *
- * <p>Form: {@code ? > name} with an optional atom-only type annotation.
+ * <p>Form: {@code ? > name} with an optional type annotation.
  * The {@code ?} declares a void attribute on the enclosing formation,
  * equivalent to listing {@code name} among the bracket parameters; it
  * emits the same empty-set-based void child named {@code name} (§9.4),
@@ -21,8 +21,8 @@ package org.eolang.parser;
  * name and no handle. Filling stays positional, so the auto-generated
  * external name does not affect how callers bind the void.</p>
  *
- * <p>Inside an atom (a formation whose head carries {@code /sig}) the
- * void may carry exactly one type annotation (R-3.4.8):</p>
+ * <p>A void may carry exactly one type annotation (R-3.4.8), saying what
+ * whoever fills it will have to put there:</p>
  *
  * <ul>
  * <li>{@code /type} — the void's own type: a concrete forma or a
@@ -36,8 +36,10 @@ package org.eolang.parser;
  * </ul>
  *
  * <p>A concrete forma has a leading {@code Q.} promoted to {@code Φ.};
- * a generic type variable stays verbatim. Both annotation forms are
- * rejected outside an atom.</p>
+ * a generic type variable stays verbatim. Neither form asks where the
+ * void is: an atom fills its voids from Java and says so, and a
+ * formation that Java alone ever copies has the same fact to tell and
+ * nowhere else to tell it (#6189).</p>
  *
  * <p>{@code ? > name} and {@code ? >> name} — each optionally followed
  * by one type annotation — are the only shapes the {@code ?} marker may
@@ -80,15 +82,9 @@ final class LnVoid implements Line {
             );
         }
         Comments.seal(globals, emit, this.span);
-        final Level level = new Transition(stack, this.span).apply(
+        new Transition(stack, this.span).apply(
             Kind.VOID, Openness.VERTICAL_COMPLETED, new Admission(suffix.named(), true)
         );
-        if (slash >= 0 && !level.patom()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "a void type annotation is allowed only inside an atom"
-            );
-        }
         globals.clearBlanks();
         globals.markEmitted();
         emit.object(
@@ -118,9 +114,9 @@ final class LnVoid implements Line {
     }
 
     /**
-     * Emit the void's type annotation (R-3.4.8), if any. Atom-only-ness
-     * is validated by the caller; a bare {@code /type} emits
-     * {@code @type}, a brace {@code /{…}} emits {@code @args}.
+     * Emit the void's type annotation (R-3.4.8), if any: a bare
+     * {@code /type} emits {@code @type}, a brace {@code /{…}} emits
+     * {@code @args}.
      * @param emit The directives sink
      * @param tail The line body after the {@code ?}
      * @param slash Index of the first {@code /} in {@code tail}, or -1
