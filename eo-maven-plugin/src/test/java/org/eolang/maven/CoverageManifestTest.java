@@ -48,9 +48,9 @@ final class CoverageManifestTest {
     }
 
     @Test
-    void excludesLocationOfAnAtomAttribute() throws Exception {
+    void excludesLocationOfAnAtomsLambdaMarker() throws Exception {
         MatcherAssert.assertThat(
-            "an atom attribute never gets a PhCoverage hit, but its location was still found",
+            "the lambda marker of an atom attribute never gets a PhCoverage hit, but its location was still found",
             new CoverageManifest().locations(
                 new EoSyntax(
                     String.join(
@@ -61,7 +61,7 @@ final class CoverageManifestTest {
                     )
                 ).parsed()
             ),
-            Matchers.iterableWithSize(1)
+            Matchers.iterableWithSize(2)
         );
     }
 
@@ -74,6 +74,7 @@ final class CoverageManifestTest {
                     String.join(
                         System.lineSeparator(),
                         "[] > foo /Q.bytes",
+                        "",
                         "  true.eq true ++> works",
                         ""
                     )
