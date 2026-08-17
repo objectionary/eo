@@ -24,7 +24,12 @@ import java.util.LinkedHashSet;
  * attributes are already present by the time every shift except the last
  * one has run, so running that same prefix here and reading the result
  * gets the exact same set {@code to-java.xsl} would act on, structurally,
- * rather than by pattern-matching the Java it emits.</p>
+ * rather than by pattern-matching the Java it emits. An atom never gets a
+ * hit: {@code classes.xsl} marks a whole atomic class {@code @skip-java}
+ * and {@code to-java.xsl} then writes no {@code <java>} for it, while
+ * {@code attrs.xsl} wraps an atomic attribute into an {@code atom} element
+ * whose own line {@code to-java.xsl} never runs through {@code located}
+ * mode. Both are left out here.</p>
  *
  * @since 0.75.0
  */
@@ -48,7 +53,7 @@ final class CoverageManifest {
         final XML passed = new Xsline(this.train).pass(xmir);
         final Collection<String> found = new LinkedHashSet<>();
         for (final XML located : passed.nodes(
-            "//*[@line and @pos and not(contains(@loc,'+'))]"
+            "//*[@line and @pos and not(contains(@loc,'+')) and not(self::atom) and not(@skip-java)]"
         )) {
             found.add(
                 String.format(

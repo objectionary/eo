@@ -47,6 +47,42 @@ final class CoverageManifestTest {
         );
     }
 
+    @Test
+    void excludesLocationOfAnAtomAttribute() throws Exception {
+        MatcherAssert.assertThat(
+            "an atom attribute never gets a PhCoverage hit, but its location was still found",
+            new CoverageManifest().locations(
+                new EoSyntax(
+                    String.join(
+                        System.lineSeparator(),
+                        "[] > foo",
+                        "  [] > bar /Q.bytes",
+                        ""
+                    )
+                ).parsed()
+            ),
+            Matchers.iterableWithSize(1)
+        );
+    }
+
+    @Test
+    void excludesLocationOfAWholeAtomClass() throws Exception {
+        MatcherAssert.assertThat(
+            "a class that is itself an atom never gets a PhCoverage hit for its own line, but the location was still found",
+            new CoverageManifest().locations(
+                new EoSyntax(
+                    String.join(
+                        System.lineSeparator(),
+                        "[] > foo /Q.bytes",
+                        "  true.eq true ++> works",
+                        ""
+                    )
+                ).parsed()
+            ),
+            Matchers.everyItem(Matchers.not(Matchers.matchesPattern("^[^:]+:1:\\d+$")))
+        );
+    }
+
     /**
      * Locations found in a small formation with one attribute.
      * @return The locations
