@@ -199,7 +199,7 @@ final class SyscallTest {
             final SyscallTest.RandomServer server = new SyscallTest.RandomServer(port).started();
             try {
                 this.ensure(this.startup() == 0);
-                final int socket = this.openSocket();
+                final long socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
                     final SockaddrIn addr = this.sockaddr(server.port());
@@ -224,7 +224,7 @@ final class SyscallTest {
         void refusesConnectionViaSyscall(@Ephemeral final int port) throws UnknownHostException {
             try {
                 this.ensure(this.startup() == 0);
-                final int socket = this.openSocket();
+                final long socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
                     final SockaddrIn addr = this.sockaddr(port);
@@ -246,7 +246,7 @@ final class SyscallTest {
             throws UnknownHostException {
             try {
                 this.ensure(this.startup() == 0);
-                final int socket = this.openSocket();
+                final long socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
                     MatcherAssert.assertThat(
@@ -270,7 +270,7 @@ final class SyscallTest {
             throws UnknownHostException {
             try {
                 this.ensure(this.startup() == 0);
-                final int socket = this.openSocket();
+                final long socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
                     this.ensure(this.bindSocket(socket, port) == 0);
@@ -302,7 +302,7 @@ final class SyscallTest {
                 );
                 server.start();
                 Thread.sleep(2000);
-                final int client = this.openSocket();
+                final long client = this.openSocket();
                 try {
                     this.ensure(client >= 0);
                     final SockaddrIn sockaddr = this.sockaddr(port);
@@ -343,7 +343,7 @@ final class SyscallTest {
                 );
                 server.start();
                 Thread.sleep(2000);
-                final int client = this.openSocket();
+                final long client = this.openSocket();
                 try {
                     this.ensure(client >= 0);
                     final SockaddrIn sockaddr = this.sockaddr(port);
@@ -372,8 +372,8 @@ final class SyscallTest {
          * Open socket.
          * @return Socket descriptor
          */
-        private int openSocket() {
-            final int socket = Winsock.INSTANCE.socket(
+        private long openSocket() {
+            final long socket = Winsock.INSTANCE.socket(
                 Winsock.AF_INET,
                 Winsock.SOCK_STREAM,
                 Winsock.IPPROTO_TCP
@@ -387,7 +387,7 @@ final class SyscallTest {
          * @param socket Socket descriptor
          * @return Zero on success, -1 on error
          */
-        private int closeSocket(final int socket) {
+        private int closeSocket(final long socket) {
             final int closed = Winsock.INSTANCE.closesocket(socket);
             if (closed == 0) {
                 Logger.debug(this, "Closed socket: %d", socket);
@@ -440,7 +440,7 @@ final class SyscallTest {
          * @param port Port
          * @return Zero on success, -1 on error
          */
-        private int bindSocket(final int socket, final int port) throws UnknownHostException {
+        private int bindSocket(final long socket, final int port) throws UnknownHostException {
             return Winsock.INSTANCE.bind(
                 socket,
                 this.sockaddr(port),
@@ -475,17 +475,17 @@ final class SyscallTest {
         private void acceptViaWinsock(
             final int port, final AtomicInteger accept, final AtomicInteger error
         ) {
-            final int socket = this.openSocket();
+            final long socket = this.openSocket();
             try {
                 this.ensure(socket > 0);
                 this.ensure(this.bindSocket(socket, port) == 0);
                 this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
-                final int accepted = Winsock.INSTANCE.accept(
+                final long accepted = Winsock.INSTANCE.accept(
                     socket, addr, new IntByReference(addr.size())
                 );
                 Logger.debug(this, "Accepted socket: %d", accepted);
-                accept.set(accepted);
+                accept.set((int) accepted);
                 if (accepted < 0) {
                     error.set(this.getError());
                 }
@@ -503,8 +503,8 @@ final class SyscallTest {
             final int port, final AtomicInteger received,
             final AtomicReference<byte[]> bytes
         ) {
-            final int socket = this.openSocket();
-            int accepted = 0;
+            final long socket = this.openSocket();
+            long accepted = 0L;
             try {
                 this.ensure(socket > 0);
                 this.ensure(this.bindSocket(socket, port) == 0);

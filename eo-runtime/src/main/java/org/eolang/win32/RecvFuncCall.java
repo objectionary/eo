@@ -39,7 +39,7 @@ public final class RecvFuncCall implements Syscall {
         ).it();
         final byte[] buf = new byte[size];
         final int received = Winsock.INSTANCE.recv(
-            new Dataized(params[0]).asNumber().intValue(),
+            new Dataized(params[0]).asNumber().longValue(),
             buf,
             size,
             new Dataized(params[2]).asNumber().intValue()

@@ -37,7 +37,7 @@ public final class ListenFuncCall implements Syscall {
             0,
             new Data.ToPhi(
                 Winsock.INSTANCE.listen(
-                    new Dataized(params[0]).asNumber().intValue(),
+                    new Dataized(params[0]).asNumber().longValue(),
                     new Dataized(params[1]).asNumber().intValue()
                 )
             )
