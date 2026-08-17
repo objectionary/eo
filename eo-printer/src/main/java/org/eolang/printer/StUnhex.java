@@ -99,7 +99,7 @@ final class StUnhex extends StEnvelope {
                 str = Double.toString(num).replace('E', 'e');
             }
         } else {
-            str = Double.toString(num);
+            str = Double.toString(num).replace('E', 'e');
         }
         return str;
     }

@@ -21,12 +21,12 @@
   lt. ++> can-approximate-a-square-root-of-four
     abs.
       2.minus 4.sqrt
-    1.0E-11
+    1.0e-11
 
   lt. ++> can-approximate-a-square-root-of-zero
     abs.
       0.minus 0.sqrt
-    1.0E-11
+    1.0e-11
 
   -0.1.sqrt.is-nan ++> can-return-nan-for-a-square-root-of-a-negative
 
@@ -37,12 +37,12 @@
   lt. ++> can-take-a-square-root-of-a-half
     abs.
       0.25.sqrt.minus 0.5
-    1.0E-9
+    1.0e-9
 
   lt. ++> can-take-a-square-root-of-four
     abs.
       4.sqrt.minus 2
-    1.0E-9
+    1.0e-9
 
   eq. ++> can-take-a-square-root-of-negative-zero-preserving-sign
     0.neg.sqrt.as-bytes
@@ -55,6 +55,6 @@
   lt. ++> can-take-a-square-root-of-two
     abs.
       2.sqrt.minus 1.4142135623730951
-    1.0E-9
+    1.0e-9
 
   0.sqrt.eq 0 ++> can-take-a-square-root-of-zero

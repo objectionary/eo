@@ -139,6 +139,23 @@ final class StUnhexTest {
 
     @ParameterizedTest
     @MethodSource("shifts")
+    void convertsFractionalExponentWithLowercaseE(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must lower-case the exponent marker of a fractional value, but it didn't",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    "<p><o base='Φ.number'><o base='Φ.bytes'><o>3F-1A-36-E2-EB-1C-43-2D</o></o></o></p>"
+                )
+            ),
+            XhtmlMatchers.hasXPath("//o[text()='1.0e-4']")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
     void convertsFloatFromHexToEo(final Shift shift, final String type) {
         MatcherAssert.assertThat(
             String.format("StUnhex by %s must convert float", type),

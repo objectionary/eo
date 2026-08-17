@@ -101,7 +101,7 @@
   eq. ++> can-drop-the-sign-of-a-negative-rounding-to-zero
     "0.00"
     string
-      -1.0E-4.as-fixed 2
+      -1.0e-4.as-fixed 2
 
   eq. ++> can-drop-the-sign-of-a-tiny-negative-rounding-to-zero
     "0.00"

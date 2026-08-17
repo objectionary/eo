@@ -130,7 +130,7 @@
       minus.
         0.5.power 1.5
         0.35355339059327373
-    1.0E-9
+    1.0e-9
 
   eq. ++> can-raise-a-negative-float-to-negative-infinity
     -42.5.power ninf
@@ -225,7 +225,7 @@
       minus.
         1.power 0.75
         1
-    1.0E-9
+    1.0e-9
 
   eq. ++> can-raise-positive-infinity-to-a-negative-float
     pinf.power -42.2
@@ -268,7 +268,7 @@
       minus.
         2.power -0.5
         0.7071067811865476
-    1.0E-9
+    1.0e-9
 
   eq. ++> can-raise-two-to-four
     2.power 4
@@ -291,7 +291,7 @@
       minus.
         2.power 3.5
         11.313708498984761
-    1.0E-9
+    1.0e-9
 
   eq. ++> can-raise-zero-to-a-negative
     0.power -52
@@ -335,18 +335,18 @@
         27.power
           1.div 3
         3
-    1.0E-9
+    1.0e-9
 
   lt. ++> can-take-a-square-root-of-nine
     abs.
       minus.
         9.power 0.5
         3
-    1.0E-9
+    1.0e-9
 
   lt. ++> can-take-a-square-root-of-two-by-raising-to-a-power
     abs.
       minus.
         2.power 0.5
         1.4142135623730951
-    1.0E-9
+    1.0e-9

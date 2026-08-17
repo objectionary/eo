@@ -113,17 +113,17 @@
   lt. ++> can-take-a-logarithm-of-a-fraction
     abs.
       0.5.ln.minus -0.6931471805599453
-    1.0E-11
+    1.0e-11
 
   lt. ++> can-take-a-logarithm-of-a-very-large-number-without-overflowing-the-stack
     abs.
       1.0e300.ln.minus 690.7755278982137
-    1.0E-9
+    1.0e-9
 
   lt. ++> can-take-a-logarithm-of-a-very-small-fraction-without-overflowing-the-stack
     abs.
-      1.0E-300.ln.minus -690.7755278982137
-    1.0E-9
+      1.0e-300.ln.minus -690.7755278982137
+    1.0e-9
 
   e.ln.eq 1 ++> can-take-a-logarithm-of-e
 
@@ -134,6 +134,6 @@
   lt. ++> can-take-a-logarithm-of-twenty
     abs.
       20.ln.minus 2.995732273553991
-    1.0E-11
+    1.0e-11
 
   0.ln.eq ninf ++> can-take-a-logarithm-of-zero
