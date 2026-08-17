@@ -53,6 +53,14 @@
   02-02 > version
   32769 > wronly
 
+  os.is-windows.not.or ++> can-report-a-host-name-as-invalid
+    eq.
+      code.
+        win32 *1
+          "inet_addr"
+          "localhost"
+      win32.invalid
+
   os.is-windows.not.or ++> can-report-an-ipv6-address-as-invalid
     eq.
       code.
