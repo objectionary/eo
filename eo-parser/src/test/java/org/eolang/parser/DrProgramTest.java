@@ -39,14 +39,12 @@ final class DrProgramTest {
     }
 
     @Test
-    @DisabledOnOs(OS.WINDOWS)
     void setsSchemaLocation() throws Exception {
         MatcherAssert.assertThat(
             "XSD location is set",
-            new XMLDocument(new Xembler(new DrProgram()).xml()).toString(),
-            Matchers.containsString(
-                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-            )
+            new Xnav(new XMLDocument(new Xembler(new DrProgram()).xml()).inner())
+                .element("object").attribute("xsi:noNamespaceSchemaLocation").text().get(),
+            Matchers.not(Matchers.emptyString())
         );
     }
 
