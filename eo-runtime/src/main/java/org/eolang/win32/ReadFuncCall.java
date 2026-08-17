@@ -7,7 +7,7 @@ package org.eolang.win32;
 import java.util.Arrays;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.ExFailure;
+import org.eolang.Expect;
 import org.eolang.Phi;
 import org.eolang.Syscall;
 
@@ -32,13 +32,9 @@ public final class ReadFuncCall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
-        final int size = new Dataized(params[1]).asNumber().intValue();
-        if (size < 0) {
-            throw new ExFailure(
-                "Can't read a negative number of bytes '%d'",
-                size
-            );
-        }
+        final int size = new Expect.Natural(
+            new Expect<>("the 'size' argument of read", () -> params[1])
+        ).it();
         final byte[] buf = new byte[size];
         final int count = Msvcrt.INSTANCE._read(
             new Dataized(params[0]).asNumber().intValue(), buf, size
