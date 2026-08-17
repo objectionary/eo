@@ -7,7 +7,6 @@ package org.eolang.win32;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import org.eolang.ExFailure;
 import org.eolang.Phi;
 import org.eolang.Syscall;
 
@@ -28,6 +27,7 @@ public final class NamedFuncCall implements Syscall {
 
     static {
         NamedFuncCall.ALL.put("_getpid", GetpidFuncCall::new);
+        NamedFuncCall.ALL.put("_errno", ErrnoFuncCall::new);
         NamedFuncCall.ALL.put("_open", OpenFuncCall::new);
         NamedFuncCall.ALL.put("_access", AccessFuncCall::new);
         NamedFuncCall.ALL.put("_stat64", Stat64FuncCall::new);
@@ -42,18 +42,6 @@ public final class NamedFuncCall implements Syscall {
         NamedFuncCall.ALL.put("_close", CloseFuncCall::new);
         NamedFuncCall.ALL.put("getenv", GetenvFuncCall::new);
         NamedFuncCall.ALL.put("_ftime64_s", FtimeFuncCall::new);
-        NamedFuncCall.ALL.put("WSAStartup", WSAStartupFuncCall::new);
-        NamedFuncCall.ALL.put("WSACleanup", WSACleanupFuncCall::new);
-        NamedFuncCall.ALL.put("WSAGetLastError", WSAGetLastErrorFuncCall::new);
-        NamedFuncCall.ALL.put("socket", SocketFuncCall::new);
-        NamedFuncCall.ALL.put("connect", ConnectFuncCall::new);
-        NamedFuncCall.ALL.put("accept", AcceptFuncCall::new);
-        NamedFuncCall.ALL.put("bind", BindFuncCall::new);
-        NamedFuncCall.ALL.put("listen", ListenFuncCall::new);
-        NamedFuncCall.ALL.put("send", SendFuncCall::new);
-        NamedFuncCall.ALL.put("recv", RecvFuncCall::new);
-        NamedFuncCall.ALL.put("closesocket", ClosesocketFuncCall::new);
-        NamedFuncCall.ALL.put("inet_addr", InetAddrFuncCall::new);
     }
 
     /**
@@ -78,12 +66,12 @@ public final class NamedFuncCall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
-        if (!NamedFuncCall.ALL.containsKey(this.name)) {
-            throw new ExFailure(
-                "Can't make win32 function call '%s' because it's either not supported yet or does not exist",
-                this.name
-            );
+        final Syscall call;
+        if (NamedFuncCall.ALL.containsKey(this.name)) {
+            call = NamedFuncCall.ALL.get(this.name).apply(this.rho);
+        } else {
+            call = new NamedSocketFuncCall(this.name, this.rho);
         }
-        return NamedFuncCall.ALL.get(this.name).apply(this.rho).make(params);
+        return call.make(params);
     }
 }

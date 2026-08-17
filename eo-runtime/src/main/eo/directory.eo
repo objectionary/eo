@@ -26,12 +26,26 @@
     [index] >> attempted
       if. > @
         descriptor.eq -1
-        attempted
-          index.plus 1
+        if.
+          errno.eq
+            os.is-windows.if win32.eexist posix.eexist
+          attempted
+            index.plus 1
+          T
+            "Can't create a unique file in %s, OS error %d".printf
+              * dir errno
         seq *
           closed descriptor
           path
       opened path > descriptor!
+      code. > errno
+        os.is-windows.if
+          win32
+            "_errno"
+            *
+          posix
+            "errno"
+            *
       candidate index > path!
     | 0 > @
     [index] > candidate
@@ -452,6 +466,14 @@
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
+
+  --> stops-on-a-permanent-open-failure
+    parent.retried > @
+      parent.path
+      42
+      9
+      0.5
+    mktemp.tmpfile.deleted.as-path.as-dir > parent
 
   tmpfile. --> stops-on-a-tmpfile-in-an-absent-directory
     @.

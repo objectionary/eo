@@ -20,6 +20,7 @@
   [] > @ /Q.win32.return
   8 > append
   256 > creat
+  17 > eexist
   1024 > exclusive
   -1 > failure
   2 > inet
