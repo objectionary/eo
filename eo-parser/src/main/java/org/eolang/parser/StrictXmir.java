@@ -167,15 +167,12 @@ public final class StrictXmir implements XML {
             final String before = location.get();
             final String after;
             if (before.startsWith("http")) {
-                after = String.format(
-                    "file:///%s",
-                    StrictXmir.fetch(
-                        before,
-                        tmp.resolve(
-                            before.substring(before.lastIndexOf('/') + 1)
-                        )
-                    ).getAbsoluteFile().toString().replace("\\", "/")
-                );
+                after = StrictXmir.fetch(
+                    before,
+                    tmp.resolve(
+                        before.substring(before.lastIndexOf('/') + 1)
+                    )
+                ).getAbsoluteFile().toPath().toUri().toString();
             } else {
                 after = before;
             }
