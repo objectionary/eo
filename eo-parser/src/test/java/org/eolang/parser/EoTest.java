@@ -792,6 +792,15 @@ final class EoTest {
     }
 
     @Test
+    void acceptsBindingOnReversedArgChainContinuation() {
+        MatcherAssert.assertThat(
+            "a same-indent .method continuation of a non-receiver reversed arg may carry a binding per R-6.6.3",
+            EoTest.render("[] > main", "  if. cond then", "  .baz:x > z"),
+            XhtmlMatchers.hasXPath("/object[not(errors)]")
+        );
+    }
+
+    @Test
     void emitsAsForVerticalBindingOnIdentifier() {
         MatcherAssert.assertThat(
             "a vertical-arg line ending with `:label` must emit @as on the line's outermost <o>",
