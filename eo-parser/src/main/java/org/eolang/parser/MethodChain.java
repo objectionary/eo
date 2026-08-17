@@ -13,7 +13,6 @@ package org.eolang.parser;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.DataClass")
 final class MethodChain {
 
     /**
