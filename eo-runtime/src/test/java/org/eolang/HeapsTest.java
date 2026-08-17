@@ -107,19 +107,22 @@ final class HeapsTest {
 
     @Test
     void keepsBlockIntactAfterWriteWithNegativeOffset() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 3);
-        Heaps.INSTANCE.write(idx, 0, new byte[] {7, 8, 9});
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> Heaps.INSTANCE.write(idx, -2, new byte[] {1, 2}),
-            "Heaps must reject a negative write offset before touching the block, but it didn't"
-        );
         MatcherAssert.assertThat(
             "Heaps must leave the block untouched after a rejected negative-offset write, but it didn't",
-            Heaps.INSTANCE.read(idx, 0, 3),
+            Heaps.INSTANCE.malloc(
+                new HeapsTest.PhFake(), 3,
+                idx -> {
+                    Heaps.INSTANCE.write(idx, 0, new byte[] {7, 8, 9});
+                    Assertions.assertThrows(
+                        ExFailure.class,
+                        () -> Heaps.INSTANCE.write(idx, -2, new byte[] {1, 2}),
+                        "Heaps must reject a negative write offset before touching the block, but it didn't"
+                    );
+                    return Heaps.INSTANCE.read(idx, 0, 3);
+                }
+            ),
             Matchers.equalTo(new byte[] {7, 8, 9})
         );
-        Heaps.INSTANCE.free(idx);
     }
 
     @Test
@@ -156,18 +159,21 @@ final class HeapsTest {
 
     @Test
     void failsCleanlyOnNegativeReadArguments() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 10);
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> Heaps.INSTANCE.read(idx, -5, 3),
-            "Heaps must reject a negative offset with a clean ExFailure, not a raw JVM exception"
+        Heaps.INSTANCE.malloc(
+            new HeapsTest.PhFake(), 10,
+            idx -> {
+                Assertions.assertThrows(
+                    ExFailure.class,
+                    () -> Heaps.INSTANCE.read(idx, -5, 3),
+                    "Heaps must reject a negative offset with a clean ExFailure, not a raw JVM exception"
+                );
+                return Assertions.assertThrows(
+                    ExFailure.class,
+                    () -> Heaps.INSTANCE.read(idx, 2, -3),
+                    "Heaps must reject a negative length with a clean ExFailure, not a raw JVM exception"
+                );
+            }
         );
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> Heaps.INSTANCE.read(idx, 2, -3),
-            "Heaps must reject a negative length with a clean ExFailure, not a raw JVM exception"
-        );
-        Heaps.INSTANCE.free(idx);
     }
 
     @Test
@@ -255,15 +261,6 @@ final class HeapsTest {
     }
 
     @Test
-    void failsOnClearingEmptyBlock() {
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> Heaps.INSTANCE.free(new HeapsTest.PhFake().hashCode()),
-            "Heaps should throw an exception on attempting to free a non-existent block, but it didn't"
-        );
-    }
-
-    @Test
     void throwsOnGettingSizeOfEmptyBlock() {
         Assertions.assertThrows(
             ExFailure.class,
@@ -274,24 +271,26 @@ final class HeapsTest {
 
     @Test
     void returnsValidSize() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5);
         MatcherAssert.assertThat(
             "Heaps should return valid size of allocated block, but it didn't",
-            Heaps.INSTANCE.size(idx),
+            Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5, Heaps.INSTANCE::size),
             Matchers.equalTo(5)
         );
-        Heaps.INSTANCE.free(idx);
     }
 
     @Test
     void throwsOnChangingSizeToNegative() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5);
         Assertions.assertThrows(
             ExFailure.class,
-            () -> Heaps.INSTANCE.resize(idx, -1),
+            () -> Heaps.INSTANCE.malloc(
+                new HeapsTest.PhFake(), 5,
+                idx -> {
+                    Heaps.INSTANCE.resize(idx, -1);
+                    return idx;
+                }
+            ),
             "Heaps should throw an exception on trying to changing size to negative, but it didn't"
         );
-        Heaps.INSTANCE.free(idx);
     }
 
     @Test
@@ -305,41 +304,50 @@ final class HeapsTest {
 
     @Test
     void increasesSizeSuccessfully() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5);
-        Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
-        Heaps.INSTANCE.resize(idx, 7);
         MatcherAssert.assertThat(
             "Heaps should successfully increase size of allocated block, but it didn't",
-            Heaps.INSTANCE.read(idx, 0, 7),
+            Heaps.INSTANCE.malloc(
+                new HeapsTest.PhFake(), 5,
+                idx -> {
+                    Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
+                    Heaps.INSTANCE.resize(idx, 7);
+                    return Heaps.INSTANCE.read(idx, 0, 7);
+                }
+            ),
             Matchers.equalTo(new byte[] {1, 2, 3, 4, 5, 0, 0})
         );
-        Heaps.INSTANCE.free(idx);
     }
 
     @Test
     void decreasesSizeSuccessfully() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5);
-        Heaps.INSTANCE.write(idx, 0, new byte[]{1, 2, 3, 4, 5});
-        Heaps.INSTANCE.resize(idx, 3);
         MatcherAssert.assertThat(
             "Heaps should successfully decrease size of allocated block, but it didn't",
-            Heaps.INSTANCE.read(idx, 0, 3),
+            Heaps.INSTANCE.malloc(
+                new HeapsTest.PhFake(), 5,
+                idx -> {
+                    Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
+                    Heaps.INSTANCE.resize(idx, 3);
+                    return Heaps.INSTANCE.read(idx, 0, 3);
+                }
+            ),
             Matchers.equalTo(new byte[] {1, 2, 3})
         );
-        Heaps.INSTANCE.free(idx);
     }
 
     @Test
     void returnsValidSizeAfterDecreasing() {
-        final int idx = Heaps.INSTANCE.malloc(new HeapsTest.PhFake(), 5);
-        Heaps.INSTANCE.write(idx, 0, new byte[]{1, 2, 3, 4, 5});
-        Heaps.INSTANCE.resize(idx, 3);
         MatcherAssert.assertThat(
             "Heaps should return valid size after decreasing, but it didn't",
-            Heaps.INSTANCE.size(idx),
+            Heaps.INSTANCE.malloc(
+                new HeapsTest.PhFake(), 5,
+                idx -> {
+                    Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
+                    Heaps.INSTANCE.resize(idx, 3);
+                    return Heaps.INSTANCE.size(idx);
+                }
+            ),
             Matchers.equalTo(3)
         );
-        Heaps.INSTANCE.free(idx);
     }
 
     /**

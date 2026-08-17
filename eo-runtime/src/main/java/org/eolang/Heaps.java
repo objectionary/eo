@@ -14,10 +14,6 @@ import java.util.function.IntFunction;
 /**
  * Dynamic memory.
  * @since 0.19
- * @todo #6507:30min Move the negative-argument, size and resize tests in HeapsTest and
- *  both free probes in EOmallocEOofTest onto the scoped malloc, then make malloc with two
- *  arguments and free private, so that a block can only be taken through a scope that
- *  releases it, and drop failsOnClearingEmptyBlock, which nobody can reach any more.
  */
 final class Heaps {
 
@@ -43,29 +39,6 @@ final class Heaps {
     private Heaps() {
         this.blocks = new ConcurrentHashMap<>(0);
         this.lock = new ReentrantLock();
-    }
-
-    /**
-     * Allocate a block in memory.
-     * @param phi Object
-     * @param size How many bytes
-     * @return The identifier of pointer to the block in memory
-     */
-    int malloc(final Phi phi, final int size) {
-        final int identifier = phi.hashCode();
-        this.lock.lock();
-        try {
-            if (this.blocks.containsKey(identifier)) {
-                throw new ExFailure(
-                    "Can't allocate block in memory with identifier '%d' because it's already allocated",
-                    identifier
-                );
-            }
-            this.blocks.put(identifier, new byte[size]);
-        } finally {
-            this.lock.unlock();
-        }
-        return identifier;
     }
 
     /**
@@ -239,10 +212,33 @@ final class Heaps {
     }
 
     /**
+     * Allocate a block in memory.
+     * @param phi Object
+     * @param size How many bytes
+     * @return The identifier of pointer to the block in memory
+     */
+    private int malloc(final Phi phi, final int size) {
+        final int identifier = phi.hashCode();
+        this.lock.lock();
+        try {
+            if (this.blocks.containsKey(identifier)) {
+                throw new ExFailure(
+                    "Can't allocate block in memory with identifier '%d' because it's already allocated",
+                    identifier
+                );
+            }
+            this.blocks.put(identifier, new byte[size]);
+        } finally {
+            this.lock.unlock();
+        }
+        return identifier;
+    }
+
+    /**
      * Free it.
      * @param identifier Identifier of pointer
      */
-    void free(final int identifier) {
+    private void free(final int identifier) {
         this.lock.lock();
         try {
             if (!this.blocks.containsKey(identifier)) {
