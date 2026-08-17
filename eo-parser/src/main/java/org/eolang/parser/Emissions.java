@@ -81,21 +81,7 @@ final class Emissions {
         }
         final List<MethodChain> chain = tokens.readChain();
         final List<Value> args = tokens.readArgs();
-        if (chain.isEmpty()) {
-            Emissions.openValue(emit, name, head, line);
-        } else {
-            Emissions.openValue(emit, null, head, line);
-            emit.close();
-            for (int idx = 0; idx < chain.size() - 1; idx = idx + 1) {
-                final MethodChain link = chain.get(idx);
-                emit.object(null, ".".concat(link.name()), line, link.dot());
-                emit.method(link.fragile());
-                emit.close();
-            }
-            final MethodChain last = chain.get(chain.size() - 1);
-            emit.object(name, ".".concat(last.name()), line, last.dot());
-            emit.method(last.fragile());
-        }
+        ChainEmission.link(emit, line, head, chain, name);
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, line);
         }
@@ -170,17 +156,7 @@ final class Emissions {
             }
             emit.close();
         } else {
-            Emissions.openValue(emit, null, value, line);
-            emit.close();
-            for (int idx = 0; idx < tail.size() - 1; idx = idx + 1) {
-                final MethodChain link = tail.get(idx);
-                emit.object(null, ".".concat(link.name()), line, link.dot());
-                emit.method(link.fragile());
-                emit.close();
-            }
-            final MethodChain last = tail.get(tail.size() - 1);
-            emit.object(null, ".".concat(last.name()), line, last.dot());
-            emit.method(last.fragile());
+            ChainEmission.link(emit, line, value, tail, null);
             if (value.binding() != null) {
                 emit.slot(Emissions.bindingTag(value.binding()));
             }
