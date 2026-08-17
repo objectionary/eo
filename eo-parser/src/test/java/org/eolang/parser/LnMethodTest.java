@@ -101,7 +101,7 @@ final class LnMethodTest {
     @Test
     void emitsFlatSiblingForLink() {
         final Emit emit = new Emit();
-        final Stack stack = new Stack();
+        final Stack stack = new Stack((level, naming) -> emit.close());
         new LnApplication(new Span("foo", 1))
             .into(stack, new Globals(), emit);
         new LnMethod(new Span(".bar > x", 2))
@@ -153,7 +153,7 @@ final class LnMethodTest {
     @Test
     void emitsHargsAsChildrenOfLastLink() {
         final Emit emit = new Emit();
-        final Stack stack = new Stack();
+        final Stack stack = new Stack((level, naming) -> emit.close());
         new LnApplication(new Span("foo", 1))
             .into(stack, new Globals(), emit);
         new LnMethod(new Span(".bar 42 > x", 2))

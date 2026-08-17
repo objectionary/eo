@@ -71,7 +71,7 @@ final class Eo implements Iterable<Directive> {
         final Globals globals = new Globals();
         final Emit emit = new Emit(this.source);
         final Stack stack = new Stack(
-            level -> Eo.checkOnClose(level, emit),
+            (level, naming) -> Eo.checkOnClose(level, emit, naming),
             parent -> Eo.beforeChild(parent, emit)
         );
         final java.util.List<Span> spans = new java.util.ArrayList<>(Eo.SPANS_CAPACITY);
@@ -893,19 +893,19 @@ final class Eo implements Iterable<Directive> {
      * <p>Checks: R-5.3.1 (naming requirement for plain children of
      * formations and top-level objects), the only-phi argument-naming
      * ban (§4.5), bare-reversed receiver presence, and the compact-tuple
-     * count. Atom-body and test-depth checks attach as their owning line
-     * shapes are implemented.</p>
+     * count.</p>
      *
      * @param level The level being closed
      * @param emit The directives sink
+     * @param naming Whether the naming requirement applies yet
      */
-    private static void checkOnClose(final Level level, final Emit emit) {
+    private static void checkOnClose(final Level level, final Emit emit, final boolean naming) {
         try {
             level.commitArg(null);
         } catch (final ParseError err) {
             emit.error(err.line(), err.pos(), err.getMessage());
         }
-        Eo.checkNaming(level, emit);
+        Eo.checkNaming(level, emit, naming);
         if (level.kind() == Kind.BARE_REVERSED && !level.taken()) {
             emit.error(
                 level.start(), level.indent(),
@@ -925,13 +925,13 @@ final class Eo implements Iterable<Directive> {
     /**
      * Report naming violations on the popped level: a plain child of a
      * formation or top-level object that lacks a name (R-5.3.1), and an
-     * only-phi argument that carries one — the formation binds only φ,
-     * so its φ's arguments may not be named (§4.5).
+     * only-phi argument that carries one, which §4.5 bans.
      * @param level The level being closed
      * @param emit The directives sink
+     * @param naming False while a level is only sealed - a chain is named on its last link
      */
-    private static void checkNaming(final Level level, final Emit emit) {
-        if (!level.named()
+    private static void checkNaming(final Level level, final Emit emit, final boolean naming) {
+        if (naming && !level.named()
             && (level.parent() == Kind.TOP_LEVEL
                 || level.parent() == Kind.BARE_FORMATION)) {
             emit.error(
@@ -939,7 +939,7 @@ final class Eo implements Iterable<Directive> {
                 "object inside formation must have a name"
             );
         }
-        if (level.argument() && level.named()) {
+        if (naming && level.argument() && level.named()) {
             emit.error(
                 level.start(), level.indent(),
                 level.onlyPhiNamingError()

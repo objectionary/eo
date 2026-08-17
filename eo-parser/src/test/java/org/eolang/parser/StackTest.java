@@ -109,7 +109,7 @@ final class StackTest {
     @Test
     void popsDeeperLevelsAndRunsCloser() {
         final List<Integer> closed = new ArrayList<>(0);
-        final Stack stack = new Stack(level -> closed.add(level.indent()));
+        final Stack stack = new Stack((level, naming) -> closed.add(level.indent()));
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
         stack.push(2, 2, Kind.HEAD, Openness.OPEN);
         stack.push(4, 3, Kind.HEAD, Openness.OPEN);
@@ -151,7 +151,7 @@ final class StackTest {
     @Test
     void replacesTopAndClosesOld() {
         final List<Integer> closed = new ArrayList<>(0);
-        final Stack stack = new Stack(level -> closed.add(level.start()));
+        final Stack stack = new Stack((level, naming) -> closed.add(level.start()));
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
         stack.push(2, 2, Kind.HEAD, Openness.OPEN);
         stack.replace(5, Kind.BARE_FORMATION, Openness.OPEN);
@@ -177,7 +177,7 @@ final class StackTest {
     @Test
     void runsCloserOnEveryRemainingEntryAtClose() {
         final List<Integer> closed = new ArrayList<>(0);
-        final Stack stack = new Stack(level -> closed.add(level.indent()));
+        final Stack stack = new Stack((level, naming) -> closed.add(level.indent()));
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
         stack.push(2, 2, Kind.HEAD, Openness.OPEN);
         stack.close();
