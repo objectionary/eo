@@ -83,10 +83,11 @@ final class EoTest {
     @Test
     void rejectsTopCommentWithoutBlankBelow() {
         MatcherAssert.assertThat(
-            "a top comment block not separated from the object by a blank line cannot be accepted",
+            "a top comment block not separated from the object by a blank line cannot be accepted, must not linger in the xmir, and must be reported once",
             EoTest.render("# top doc", "[] > foo"),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'a blank line must separate the top comment block from the rest of the file')]"
+            XhtmlMatchers.hasXPaths(
+                "/object[not(comments)]",
+                "/object[count(errors/error[contains(text(),'a blank line must separate the top comment block from the rest of the file')])=1]"
             )
         );
     }
