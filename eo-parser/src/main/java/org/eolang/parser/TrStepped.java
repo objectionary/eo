@@ -4,20 +4,17 @@
  */
 package org.eolang.parser;
 
-import com.jcabi.xml.XSL;
-import com.jcabi.xml.XSLDocument;
+import com.github.lombrozo.xnav.Xnav;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StAfter;
 import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
-import java.util.concurrent.CountDownLatch;
-import org.cactoos.Scalar;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.scalar.Sticky;
-import org.cactoos.scalar.Synced;
-import org.cactoos.text.TextOf;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Train that adds sheet names that were processed.
@@ -26,32 +23,10 @@ import org.cactoos.text.TextOf;
 final class TrStepped extends TrEnvelope {
 
     /**
-     * Apply changes to each XML after processing.
-     */
-    private static final Scalar<XSL> STEPPED = new Sticky<>(
-        new TrStepped.Once<>(
-            () -> new XSLDocument(
-                new TextOf(
-                    new ResourceOf("org/eolang/parser/_stepped.xsl")
-                ).asString()
-            )
-        )
-    );
-
-    /**
      * Ctor.
      * @param train Original train
      */
     TrStepped(final Train<Shift> train) {
-        this(train, TrStepped.STEPPED);
-    }
-
-    /**
-     * Ctor.
-     * @param train Original train
-     * @param stepped XSL to apply
-     */
-    TrStepped(final Train<Shift> train, final Scalar<XSL> stepped) {
         super(
             new TrLambda(
                 train,
@@ -59,10 +34,7 @@ final class TrStepped extends TrEnvelope {
                     shift,
                     new StLambda(
                         shift::uid,
-                        (pos, xml) -> new Synced<>(stepped).value()
-                            .with("step", pos)
-                            .with("sheet", shift.uid())
-                            .transform(xml)
+                        (pos, xml) -> new TrStepped.Sheets(shift.uid()).added(xml)
                     )
                 )
             )
@@ -70,49 +42,42 @@ final class TrStepped extends TrEnvelope {
     }
 
     /**
-     * Scalar that loads the value only once.
-     * @param <T> Type of the value
-     * @since 0.51
+     * The bookkeeping list of sheets a document has been through. Every
+     * shift appends its own name here, to a copy of the document -
+     * nothing else about the tree is read or rebuilt.
+     * @since 0.62.2
      */
-    static final class Once<T> implements Scalar<T> {
+    static final class Sheets {
 
         /**
-         * Origin scalar.
+         * The name of the sheet to record.
          */
-        private final Scalar<T> origin;
-
-        /**
-         * Latch to count down.
-         */
-        private final CountDownLatch latch;
+        private final String name;
 
         /**
          * Ctor.
-         * @param origin Origin scalar
+         * @param sheet The name to record
          */
-        Once(final Scalar<T> origin) {
-            this(origin, new CountDownLatch(1));
+        Sheets(final String sheet) {
+            this.name = sheet;
         }
 
         /**
-         * Ctor.
-         * @param origin Origin scalar
-         * @param latch Latch to count down
+         * The document with the sheet recorded in it - one whose root is
+         * not an object keeps no record and comes back as it is.
+         * @param xml The document
+         * @return A copy with one more {@code sheet} in its {@code sheets}
          */
-        private Once(final Scalar<T> origin, final CountDownLatch latch) {
-            this.origin = origin;
-            this.latch = latch;
-        }
-
-        @Override
-        public T value() throws Exception {
-            if (this.latch.getCount() < 1) {
-                throw new IllegalStateException(
-                    String.format("Resource '%s' should be loaded only once", this.origin)
-                );
-            }
-            this.latch.countDown();
-            return this.origin.value();
+        XML added(final XML xml) {
+            return new XMLDocument(
+                new Xembler(
+                    new Directives()
+                        .xpath("/object")
+                        .addIf("sheets")
+                        .add("sheet")
+                        .set(this.name)
+                ).applyQuietly(new Xnav(xml.inner()).copy().node())
+            );
         }
     }
 }
