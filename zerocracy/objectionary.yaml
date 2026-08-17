@@ -2,12 +2,11 @@
 - added: 8
   cycles: 1
   deleted: 8
-  error: 'Judge find-all-issues stopped by timeout after 16m13s: execution expired'
   inserted: 8
-  seconds: 2477.400002148
+  seconds: 2161.22179928
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-17 05:02:10.263483074 Z
+  when: 2026-08-17 05:46:32.667283110 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -40612,6 +40611,7 @@
   is_human: 1
   issue: 482
   repository: 977982682
+  tombstone: 2026-08-17 05:06:51.859097590 Z
   what: issue-was-opened
   when: 2025-12-02 07:04:37.000000000 Z
   where: github
@@ -40641,6 +40641,7 @@
   is_human: 0
   issue: 487
   repository: 977982682
+  tombstone: 2026-08-17 05:06:52.374637529 Z
   what: issue-was-closed
   when: 2025-12-03 16:16:23.000000000 Z
   where: github
@@ -40656,6 +40657,7 @@
   is_human: 1
   issue: 488
   repository: 977982682
+  tombstone: 2026-08-17 05:06:52.012569448 Z
   what: pull-was-opened
   when: 2025-12-03 15:50:32.000000000 Z
   where: github
@@ -40670,6 +40672,7 @@
   is_human: 1
   issue: 487
   repository: 977982682
+  tombstone: 2026-08-17 05:06:52.378523417 Z
   what: issue-was-opened
   when: &258 2025-12-03 15:49:10.000000000 Z
   where: github
@@ -40685,6 +40688,7 @@
   is_human: 1
   issue: 490
   repository: 977982682
+  tombstone: 2026-08-17 05:06:52.092670228 Z
   what: pull-was-opened
   when: 2025-12-03 17:21:28.000000000 Z
   where: github
@@ -40699,6 +40703,7 @@
   is_human: 1
   issue: 489
   repository: 977982682
+  tombstone: 2026-08-17 05:06:52.441376108 Z
   what: issue-was-opened
   when: &259 2025-12-03 17:15:10.000000000 Z
   where: github
@@ -40715,6 +40720,7 @@
   is_human: 0
   issue: 1444
   repository: 671896902
+  tombstone: 2026-08-17 05:06:52.293885804 Z
   what: pull-was-opened
   when: 2025-12-03 19:13:09.000000000 Z
   where: github
@@ -40744,6 +40750,7 @@
   is_human: 0
   issue: 489
   repository: 977982682
+  tombstone: 2026-08-17 05:06:52.445128132 Z
   what: issue-was-closed
   when: &297 2025-12-04 08:33:53.000000000 Z
   where: github
@@ -40896,6 +40903,7 @@
   review_comments: 0
   succeeded_builds: 19
   suggestions: 0
+  tombstone: 2026-08-17 05:06:52.297707595 Z
   what: pull-was-merged
   when: &206 2025-12-03 19:32:38.000000000 Z
   where: github
@@ -41008,6 +41016,7 @@
   is_human: 1
   issue: 489
   repository: 977982682
+  tombstone: 2026-08-17 05:06:52.449834118 Z
   what: issue-was-assigned
   when: 2025-12-03 17:15:11.000000000 Z
   where: github
@@ -41073,6 +41082,7 @@
   review_comments: 0
   succeeded_builds: 14
   suggestions: 0
+  tombstone: 2026-08-17 05:06:52.015015882 Z
   what: pull-was-merged
   when: &207 2025-12-03 16:16:22.000000000 Z
   where: github
@@ -41099,6 +41109,7 @@
   review_comments: 2
   succeeded_builds: 14
   suggestions: 2
+  tombstone: 2026-08-17 05:06:52.095121463 Z
   what: pull-was-merged
   when: &208 2025-12-04 08:33:52.000000000 Z
   where: github
@@ -41298,6 +41309,7 @@
   details: The pull request objectionary/jeo-maven-plugin#1444 with 2 HoC created
     by @renovate[bot] was merged by @rultor after 19m28s of being in review and 5
     comments.
+  done: 2026-08-17 05:06:52.254431910 Z
   hoc: 2
   is_human: 0
   issue: 1444
@@ -41323,6 +41335,7 @@
   repository: 977982682
   review_comments: 0
   seconds: 1550
+  tombstone: 2026-08-17 05:06:52.017463088 Z
   what: code-was-contributed
   when: *207
   where: github
@@ -41354,6 +41367,7 @@
   repository: 977982682
   review_comments: 2
   seconds: 54744
+  tombstone: 2026-08-17 05:06:52.097277004 Z
   what: code-was-contributed
   when: *208
   where: github
@@ -44061,6 +44075,7 @@
   details: 'In the repository #977982682, the user #526301 submitted the issue #487
     which was later closed by the user #8086956 not becoming a bug or enhancement;
     this means that the issue was not valid, maybe a duplicate or simply a mistake.'
+  done: 2026-08-17 05:06:52.333841466 Z
   is_human: 1
   issue: 487
   repository: 977982682
@@ -44076,6 +44091,7 @@
   details: 'In the repository #977982682, the user #526301 submitted the issue #489
     which was later closed by the user #8086956 not becoming a bug or enhancement;
     this means that the issue was not valid, maybe a duplicate or simply a mistake.'
+  done: 2026-08-17 05:06:52.385611365 Z
   is_human: 1
   issue: 489
   repository: 977982682
@@ -46422,6 +46438,7 @@
   issue: 482
   label: enhancement
   repository: 977982682
+  tombstone: 2026-08-17 05:06:51.861667397 Z
   what: label-was-attached
   when: &302 2025-12-03 16:29:09.000000000 Z
   where: github
@@ -46435,6 +46452,7 @@
   issue: 482
   label: question
   repository: 977982682
+  tombstone: 2026-08-17 05:06:51.863955203 Z
   what: label-was-attached
   when: 2025-12-03 16:29:09.000000000 Z
   where: github
@@ -46448,6 +46466,7 @@
   issue: 489
   label: bug
   repository: 977982682
+  tombstone: 2026-08-17 05:06:52.452814191 Z
   what: label-was-attached
   when: 2025-12-03 17:15:13.000000000 Z
   where: github
@@ -46743,6 +46762,7 @@
   opener: 526301
   repository: 977982682
   seconds: 55122
+  tombstone: 2026-08-17 05:06:52.456087828 Z
   what: bug-was-resolved
   when: *297
   where: github
@@ -46826,6 +46846,7 @@
   details: 'In the repository #977982682, the user #37025995 attached the ''#enhancement''
     label to the issue #482 reported by the user #526301; this means that a feature
     request was-accepted as valid, by the project team.'
+  done: 2026-08-17 05:06:51.825948274 Z
   is_human: 1
   issue: 482
   reporter: 526301
@@ -48261,6 +48282,7 @@
   is_human: 0
   issue: 4711
   repository: 73056727
+  tombstone: 2026-08-17 05:06:52.053141354 Z
   what: pull-was-opened
   when: 2025-12-03 13:41:58.000000000 Z
   where: github
@@ -48676,6 +48698,7 @@
   review_comments: 0
   succeeded_builds: 23
   suggestions: 0
+  tombstone: 2026-08-17 05:06:52.055490905 Z
   what: pull-was-merged
   when: &333 2025-12-03 17:23:42.000000000 Z
   where: github
@@ -49374,6 +49397,7 @@
   repository: 73056727
   review_comments: 0
   seconds: 13304
+  tombstone: 2026-08-17 05:06:52.057592421 Z
   what: code-was-contributed
   when: *333
   where: github
@@ -50593,6 +50617,7 @@
   is_human: 1
   issue: 482
   repository: 977982682
+  tombstone: 2026-08-17 05:06:51.866170862 Z
   what: enhancement-suggestion-was-rewarded
   when: 2025-12-14 06:19:46.286998410 Z
   where: github
@@ -50728,6 +50753,7 @@
   is_human: 1
   issue: 489
   repository: 977982682
+  tombstone: 2026-08-17 05:06:52.459291928 Z
   what: resolved-bug-was-rewarded
   when: 2025-12-14 07:23:42.195898629 Z
   where: github
@@ -51981,6 +52007,7 @@
   is_human: 1
   issue: 487
   repository: 977982682
+  tombstone: 2026-08-17 05:06:52.381846923 Z
   what: dud-was-punished
   when: 2025-12-14 15:19:07.763300357 Z
   where: github
@@ -52001,6 +52028,7 @@
   repository: 977982682
   review_comments: 0
   seconds: 1550
+  tombstone: 2026-08-17 05:06:52.019697580 Z
   what: code-contribution-was-rewarded
   when: 2025-12-14 16:17:28.281563727 Z
   where: github
@@ -52021,6 +52049,7 @@
   repository: 977982682
   review_comments: 2
   seconds: 54744
+  tombstone: 2026-08-17 05:06:52.110819379 Z
   what: code-contribution-was-rewarded
   when: 2025-12-14 16:17:35.693418468 Z
   where: github
@@ -52057,6 +52086,7 @@
   is_human: 1
   issue: 489
   repository: 977982682
+  tombstone: 2026-08-17 05:06:52.462017175 Z
   what: dud-was-punished
   when: 2025-12-14 16:17:59.573382435 Z
   where: github
@@ -59658,6 +59688,7 @@
   comments: 5
   details: The pull request objectionary/phino#488 with 3030 HoC created by @yegor256
     was reviewed by @copilot after 0h2m and 0 comments.
+  done: 2026-08-17 05:06:51.979227400 Z
   hoc: 3030
   is_human: 0
   issue: 488
@@ -59676,6 +59707,7 @@
   comments: 5
   details: The pull request objectionary/phino#490 with 64 HoC created by @yegor256
     was reviewed by @copilot after 0h1m and 0 comments.
+  done: 2026-08-17 05:06:52.061994883 Z
   hoc: 64
   is_human: 0
   issue: 490
@@ -59694,6 +59726,7 @@
   comments: 5
   details: The pull request objectionary/phino#490 with 64 HoC created by @yegor256
     was reviewed by @coderabbitai[bot] after 0h4m and 1 comments.
+  done: 2026-08-17 05:06:52.117673233 Z
   hoc: 64
   is_human: 0
   issue: 490
@@ -60468,6 +60501,7 @@
   comments: 5
   details: The pull request objectionary/eo#4711 with 2 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 3h26m and 0 comments.
+  done: 2026-08-17 05:06:52.021970706 Z
   hoc: 2
   is_human: 1
   issue: 4711
@@ -64901,6 +64935,7 @@
   repository: 73056727
   review_comments: 0
   seconds: 12417
+  tombstone: 2026-08-17 05:06:52.059681019 Z
   what: code-review-was-rewarded
   when: 2025-12-26 22:17:48.484301250 Z
   where: github
@@ -281681,7 +281716,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 835
   earliest_issue_was_found: 1
   events_were_scanned: 17835388133
   issues_were_scanned: 0
@@ -292335,7 +292370,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1020
   earliest_issue_was_found: 1
   events_were_scanned: 13363339123
   issues_were_scanned: 982
@@ -295287,7 +295322,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1124
   earliest_issue_was_found: 1
   events_were_scanned: 13365475246
   issues_were_scanned: 0
@@ -295321,13 +295356,13 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6561
+  assignees_were_scanned: 6735
   earliest_issue_was_found: 1
-  events_were_scanned: 17881498566
+  events_were_scanned: 17891587418
   issues_were_scanned: 0
-  labels_were_scanned: 6179
+  labels_were_scanned: 6951
   latest_issue_was_found: 4591
-  merges_were_scanned: 0
+  merges_were_scanned: 6955
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
