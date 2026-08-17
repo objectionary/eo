@@ -58,17 +58,19 @@ final class Blanks {
      * that sits deeper than a direct child of the top-level object,
      * illegal per R-6.3.3.
      * @param span The offending line's span (used for error position)
-     * @param globals The global parser state
+     * @param blanks How many blank lines precede the line - read by the
+     *  caller before {@link #enterAfterMeta(Span, Globals, Emit)} had a
+     *  chance to consume them
      * @param emit The directives sink
      */
-    static void checkTest(final Span span, final Globals globals, final Emit emit) {
+    static void checkTest(final Span span, final int blanks, final Emit emit) {
         if (span.indent() != 2) {
             emit.error(
                 span.line(), span.indent(),
                 "test attribute legal only as direct child of top-level object"
             );
         }
-        if (globals.pendingBlanks() == 0) {
+        if (blanks == 0) {
             emit.error(
                 span.line(), span.indent(),
                 "missing blank line before a `+>` test attribute (R-6.5.3); exactly one blank line must precede every test attribute"
@@ -83,8 +85,11 @@ final class Blanks {
      * @param span The first post-meta line's span
      * @param globals The global parser state
      * @param emit The directives sink
+     * @return How many blank lines preceded the line, counted before
+     *  this method consumed them
      */
-    static void enterAfterMeta(final Span span, final Globals globals, final Emit emit) {
+    static int enterAfterMeta(final Span span, final Globals globals, final Emit emit) {
+        final int blanks = globals.pendingBlanks();
         if (globals.inMetaHeader()) {
             if (globals.pendingBlanks() == 0) {
                 emit.error(
@@ -96,5 +101,6 @@ final class Blanks {
             }
             globals.closeMetaHeader();
         }
+        return blanks;
     }
 }
