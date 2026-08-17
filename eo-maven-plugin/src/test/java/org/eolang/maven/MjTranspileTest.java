@@ -127,6 +127,40 @@ final class MjTranspileTest {
     }
 
     @Test
+    void excludesThrowingTestsFromPhCoverageWhenTrackingEnabled(@Mktmp final Path temp)
+        throws Exception {
+        MatcherAssert.assertThat(
+            "the generated Java must not wrap a throwing test's body into PhCoverage when coverageTracking is on",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(MjTranspileTest.throwing())
+                    .with("coverageTracking", true)
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.not(Matchers.containsString("new PhCoverage("))
+        );
+    }
+
+    @Test
+    void excludesTruthyTestsFromPhCoverageWhenTrackingEnabled(@Mktmp final Path temp)
+        throws Exception {
+        MatcherAssert.assertThat(
+            "the generated Java must not wrap a truthy test's body into PhCoverage when coverageTracking is on",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(MjTranspileTest.truthy())
+                    .with("coverageTracking", true)
+                    .execute(new FakeMaven.Transpile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.not(Matchers.containsString("new PhCoverage("))
+        );
+    }
+
+    @Test
     void keepsGeneratedJavaFreeOfPhCoverageByDefault(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "the generated Java must not mention PhCoverage when coverageTracking is off",
@@ -573,6 +607,40 @@ final class MjTranspileTest {
             "",
             "[] > main",
             "  42.plus 1 > @"
+        );
+    }
+
+    /**
+     * An EO program whose only attribute is a throwing test dispatching on
+     * a number.
+     * @return Source code of the program
+     */
+    private static String throwing() {
+        return String.join(
+            System.lineSeparator(),
+            "+architect yegor256@gmail.com",
+            "+package foo.x",
+            "",
+            "[] > main",
+            "  --> throwing-test",
+            "    42.plus 1 > @"
+        );
+    }
+
+    /**
+     * An EO program whose only attribute is a truthy test dispatching on
+     * a number.
+     * @return Source code of the program
+     */
+    private static String truthy() {
+        return String.join(
+            System.lineSeparator(),
+            "+architect yegor256@gmail.com",
+            "+package foo.x",
+            "",
+            "[] > main",
+            "  ++> truthy-test",
+            "    42.plus 1 > @"
         );
     }
 
