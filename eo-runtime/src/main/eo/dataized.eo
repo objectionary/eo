@@ -70,3 +70,46 @@
         true
         m.put
           m.as-number.plus 1
+
+  eq. ++> can-dataize-a-plain-number
+    as-number.
+      dataized 42
+    42
+
+  eq. ++> can-dataize-a-nested-attribute
+    as-number.
+      dataized
+        [] > foo
+          [] > @
+            inner.five > @
+          [] > inner
+            5 > five
+    5
+
+  eq. ++> can-dataize-a-number-to-the-same-bytes-as-as-bytes
+    as-bytes.
+      dataized 42
+    42.as-bytes
+
+  eq. ++> can-dataize-the-same-target-consistently
+    as-bytes.
+      dataized 7
+    as-bytes.
+      dataized 7
+
+  as-bool. ++> can-dataize-true-as-bool
+    dataized true
+
+  not. ++> can-dataize-false-as-bool
+    as-bool.
+      dataized false
+
+  eq. ++> can-dataize-a-string
+    as-bytes.
+      dataized "hello"
+    "hello".as-bytes
+
+  eq. ++> can-dataize-a-target-that-is-already-bytes
+    as-bytes.
+      dataized 42.as-bytes
+    42.as-bytes
