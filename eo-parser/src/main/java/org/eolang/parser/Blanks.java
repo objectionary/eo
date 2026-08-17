@@ -62,12 +62,6 @@ final class Blanks {
      * @param emit The directives sink
      */
     static void checkTest(final Span span, final Globals globals, final Emit emit) {
-        if (span.indent() != 2) {
-            emit.error(
-                span.line(), span.indent(),
-                "test attribute legal only as direct child of top-level object"
-            );
-        }
         checkTest(span, globals.pendingBlanks(), emit);
     }
 
@@ -80,6 +74,12 @@ final class Blanks {
      * @param emit The directives sink
      */
     static void checkTest(final Span span, final int blanks, final Emit emit) {
+        if (span.indent() > 2) {
+            emit.error(
+                span.line(), span.indent(),
+                "test attribute legal only as direct child of top-level object"
+            );
+        }
         if (blanks == 0) {
             emit.error(
                 span.line(), span.indent(),
