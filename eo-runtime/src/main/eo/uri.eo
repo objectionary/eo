@@ -167,6 +167,11 @@
       uri "http://[2001:db8::1]/p"
     "[2001:db8::1]"
 
+  eq. ++> can-parse-a-fragment-that-is-empty-after-a-trailing-hash
+    fragment.
+      uri "http://host/path#"
+    ""
+
   eq. ++> can-parse-a-fragment-without-a-leading-hash
     fragment.
       uri "http://host/some/path?x=1#top"
@@ -187,6 +192,11 @@
       uri "http://user:pass@host:80/some/path"
     "80"
 
+  eq. ++> can-parse-a-query-that-is-empty-after-a-trailing-question-mark
+    query.
+      uri "http://host/path?"
+    ""
+
   eq. ++> can-parse-a-query-without-a-leading-question-mark
     query.
       uri "http://host/some/path?x=1#top"
@@ -197,10 +207,50 @@
       uri "a+b.c:part"
     "a+b.c"
 
+  eq. ++> can-parse-a-scheme-with-uppercase-letters
+    scheme.
+      uri "HTTP://host/path"
+    "HTTP"
+
+  eq. ++> can-parse-a-userinfo-without-a-password
+    userinfo.
+      uri "http://user@host/path"
+    "user"
+
+  eq. ++> can-parse-an-empty-fragment-when-absent
+    fragment.
+      uri "http://host/path"
+    ""
+
   eq. ++> can-parse-an-empty-port
     port.
       uri "http://host:/"
     ""
+
+  eq. ++> can-parse-an-empty-query-when-absent
+    query.
+      uri "http://host/path"
+    ""
+
+  eq. ++> can-parse-an-empty-userinfo-when-absent
+    userinfo.
+      uri "http://host/path"
+    ""
+
+  eq. ++> can-parse-an-ipv4-host-without-a-port
+    host.
+      uri "http://192.168.1.1/path"
+    "192.168.1.1"
+
+  eq. ++> can-parse-the-authority-of-a-bare-authority-uri
+    authority.
+      uri "http://host/path"
+    "host"
+
+  eq. ++> can-parse-the-authority-of-a-userinfo-and-port-uri
+    authority.
+      uri "http://user:pass@host:80/some/path"
+    "user:pass@host:80"
 
   eq. ++> can-parse-the-empty-host-of-a-triple-slash-uri
     host.
@@ -212,6 +262,21 @@
       uri "pgsql://localhost:899"
     ""
 
+  eq. ++> can-parse-the-host-of-a-bare-authority-uri
+    host.
+      uri "http://host/path"
+    "host"
+
+  eq. ++> can-parse-the-host-of-a-bracketed-ipv6-authority-with-userinfo
+    host.
+      uri "http://user:pass@[::1]:80/path"
+    "[::1]"
+
+  eq. ++> can-parse-the-host-of-a-protocol-relative-uri
+    host.
+      uri "//host/path"
+    "host"
+
   eq. ++> can-parse-the-host-of-an-authority-with-a-port
     host.
       uri "pgsql://localhost:899"
@@ -222,15 +287,35 @@
       uri "pgsql:localhost:899"
     "localhost:899"
 
+  eq. ++> can-parse-the-path-of-a-relative-uri-without-a-scheme
+    path.
+      uri "foo/bar"
+    "foo/bar"
+
+  eq. ++> can-parse-the-path-of-a-scheme-only-uri-with-an-at-sign
+    path.
+      uri "mailto:user@example.com"
+    "user@example.com"
+
   eq. ++> can-parse-the-path-of-a-triple-slash-uri
     path.
       uri "file:///etc/passwd"
     "/etc/passwd"
 
+  eq. ++> can-parse-the-path-of-an-authority-with-a-trailing-slash
+    path.
+      uri "http://host/"
+    "/"
+
   eq. ++> can-parse-the-port-of-a-bracketed-ipv6-host
     port.
       uri "http://[::1]:8080/p"
     "8080"
+
+  eq. ++> can-parse-the-port-of-a-schemeless-uri-as-empty
+    port.
+      uri "foo/bar"
+    ""
 
   eq. ++> can-parse-the-port-of-an-authority
     port.
@@ -251,6 +336,16 @@
     scheme.
       uri "file:///etc/passwd"
     "file"
+
+  eq. ++> can-parse-the-scheme-of-a-uri-with-digits-after-the-first-letter
+    scheme.
+      uri "http2://host/path"
+    "http2"
+
+  eq. ++> can-parse-the-userinfo-of-a-bracketed-ipv6-authority
+    userinfo.
+      uri "http://user:pass@[::1]:80/path"
+    "user:pass"
 
   eq. ++> can-parse-the-userinfo-of-an-authority
     userinfo.
@@ -275,4 +370,9 @@
   eq. ++> can-treat-a-plus-led-prefix-as-schemeless
     scheme.
       uri "+foo:bar"
+    ""
+
+  eq. ++> can-treat-a-scheme-with-an-underscore-as-invalid
+    scheme.
+      uri "ht_tp:foo"
     ""
