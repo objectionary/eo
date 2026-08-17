@@ -483,7 +483,9 @@ final class EoTest {
         MatcherAssert.assertThat(
             "a `.method` chain on a horizontal argument must emit as a flat sibling under the argument's parent",
             EoTest.render("[] > main", "  foo bar.baz > x"),
-            XhtmlMatchers.hasXPath("/object/o[@name='main']/o[@base='foo'][o[@base='bar']][o[@base='.baz' and @method='']]")
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='main']/o[@base='foo'][o[@base='bar']][o[@base='.baz' and @method='']]"
+            )
         );
     }
 

@@ -77,10 +77,10 @@ final class ChainEmission {
      * the caller can attach horizontal args, then close.
      */
     void run() {
-        final String name = this.suffix.attribute(
-            this.span.line(), this.span.indent()
+        ChainEmission.link(
+            this.emit, this.span.line(), this.head, this.chain,
+            this.suffix.attribute(this.span.line(), this.span.indent())
         );
-        ChainEmission.link(this.emit, this.span.line(), this.head, this.chain, name);
         if (!this.suffix.handle().isEmpty()) {
             this.emit.local(this.suffix.handle());
         }
