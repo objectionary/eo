@@ -30,10 +30,12 @@ import java.util.LinkedHashSet;
  * {@code <java>} for it at all; the lambda marker of any atom (the
  * {@code o[@name='λ']} carrying {@code @atom}, whether the atom is a whole
  * class or a single attribute) is never the argument {@code to-java.xsl}
- * runs through {@code located} mode, only its parent is; and a file's own
- * root object, since {@code classes.xsl} turns it into a {@code <class>}
- * whose constructor is called once from Java itself, never through the
- * {@code located} mode any of its attributes go through (#6995).</p>
+ * runs through {@code located} mode, only its parent is; and a free
+ * attribute {@code attrs.xsl} wraps into a {@code <void>}, since
+ * {@code to-java.xsl} compiles it to a bare {@code AtVoid} and never runs
+ * it through {@code located} mode either — the formal attributes a file's
+ * root object declares are free this same way, which is why its own
+ * declaration line never gets a hit (#6995).</p>
  *
  * @since 0.75.0
  */
@@ -57,7 +59,7 @@ final class CoverageManifest {
         final XML passed = new Xsline(this.train).pass(xmir);
         final Collection<String> found = new LinkedHashSet<>();
         for (final XML located : passed.nodes(
-            "//*[@line and @pos and not(contains(@loc,'+')) and not(@atom) and not(@skip-java) and not(self::class)]"
+            "//*[@line and @pos and not(contains(@loc,'+')) and not(@atom) and not(@skip-java) and not(self::class) and not(ancestor::void)]"
         )) {
             found.add(
                 String.format(
