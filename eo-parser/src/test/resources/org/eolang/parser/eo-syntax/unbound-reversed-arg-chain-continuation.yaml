@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='?.then.baz' and @name='z']
+input: |
+  [] > main
+    if. > first
+      cond
+      then
+      .baz > z
