@@ -68,7 +68,7 @@ final class MjMergeTest {
     void pointsTheObjectAtTheMergedXmir(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "the object must be transpiled from the merged XMIR and not from the parsed one",
-            MjMergeTest.merged(temp, "foo").foreignTojos().find("foo").xmir().toString(),
+            MjMergeTest.merged(temp).foreignTojos().find("foo").xmir().toString(),
             Matchers.endsWith(Paths.get("4-merge/foo.xmir").toString())
         );
     }
@@ -77,7 +77,7 @@ final class MjMergeTest {
     void takesTheMergedMemberAwayFromTranspiling(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "a member that now lives inside its package object must not be transpiled apart",
-            MjMergeTest.merged(temp, "foo")
+            MjMergeTest.merged(temp)
                 .execute(MjTranspile.class)
                 .result()
                 .keySet(),
@@ -86,10 +86,16 @@ final class MjMergeTest {
     }
 
     @Test
-    void leavesEveryPackageAloneByDefault(@Mktmp final Path temp) throws Exception {
+    void leavesAPackageWithoutAnObjectAlone(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            "no package is merged until one is named, so nothing may be written",
-            Files.exists(MjMergeTest.merged(temp).targetPath().resolve(Merging.DIR)),
+            "a package no object is named after has nothing to merge into, so nothing may be written",
+            Files.exists(
+                new FakeMaven(temp).withProgram(
+                    MjMergeTest.program("+package foo", "", "[] > bar", "  42 > @"),
+                    "foo.bar",
+                    "foo/bar.eo"
+                ).execute(new FakeMaven.Merge()).targetPath().resolve(Merging.DIR)
+            ),
             Matchers.is(false)
         );
     }
@@ -109,8 +115,7 @@ final class MjMergeTest {
                         MjMergeTest.program("+package foo", "", "[] > bar", "  42 > @"),
                         "foo.bar",
                         "foo/bar.eo"
-                    ).with("mergedPackages", Collections.singletonList("foo"))
-                        .execute(new FakeMaven.Merge())
+                    ).execute(new FakeMaven.Merge())
                 )
             ),
             Matchers.stringContainsInOrder("bar", "foo")
@@ -140,30 +145,10 @@ final class MjMergeTest {
                         ),
                         "foo.baz",
                         "foo/baz.eo"
-                    ).with("mergedPackages", Collections.singletonList("foo"))
-                        .execute(new FakeMaven.Merge())
+                    ).execute(new FakeMaven.Merge())
                 )
             ),
             Matchers.stringContainsInOrder("can-be-one", "foo.baz", "foo")
-        );
-    }
-
-    @Test
-    void refusesToMergeAPackageWithoutAnObject(@Mktmp final Path temp) throws Exception {
-        MatcherAssert.assertThat(
-            "a package named for merging with no object of its own must not pass silently",
-            MjMergeTest.root(
-                Assertions.assertThrows(
-                    IllegalStateException.class,
-                    () -> new FakeMaven(temp).withProgram(
-                        MjMergeTest.program("+package foo", "", "[] > bar", "  42 > @"),
-                        "foo.bar",
-                        "foo/bar.eo"
-                    ).with("mergedPackages", Collections.singletonList("foo"))
-                        .execute(new FakeMaven.Merge())
-                )
-            ),
-            Matchers.containsString("foo")
         );
     }
 
@@ -181,8 +166,7 @@ final class MjMergeTest {
             final String name = source.getKey().toString();
             maven.withProgram(source.getValue().toString(), MjMergeTest.identifier(name), name);
         }
-        maven.with("mergedPackages", pack.map().get("merged"))
-            .execute(new FakeMaven.Merge());
+        maven.execute(new FakeMaven.Merge());
         if (!MjMergeTest.asked(pack, "java").isEmpty()
             || !MjMergeTest.asked(pack, "tests").isEmpty()) {
             maven.execute(MjTranspile.class);
@@ -204,7 +188,7 @@ final class MjMergeTest {
         throws IOException {
         final Collection<String> failed = new ArrayList<>(0);
         for (final Object key : pack.map().keySet()) {
-            if (!Arrays.asList("eo", "merged", "xmir", "java", "tests", "absent").contains(key)) {
+            if (!Arrays.asList("eo", "xmir", "java", "tests", "absent").contains(key)) {
                 failed.add(String.format("unknown key: %s", key));
             }
         }
@@ -385,8 +369,7 @@ final class MjMergeTest {
      * @return The workspace, after the merge
      * @throws IOException If the pipeline fails
      */
-    private static FakeMaven merged(final Path temp, final String... packages)
-        throws IOException {
+    private static FakeMaven merged(final Path temp) throws IOException {
         return new FakeMaven(temp).withProgram(
             MjMergeTest.program("[n] > foo", "  n > @"),
             "foo",
@@ -395,8 +378,7 @@ final class MjMergeTest {
             MjMergeTest.program("+package foo", "", "[] > bar", "  42 > @"),
             "foo.bar",
             "foo/bar.eo"
-        ).with("mergedPackages", Arrays.asList(packages))
-            .execute(new FakeMaven.Merge());
+        ).execute(new FakeMaven.Merge());
     }
 
     /**

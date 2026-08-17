@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,17 +67,6 @@ public class PhDefault implements Phi, Cloneable {
      * No initial attributes.
      */
     private static final Map<String, Attribute> NONE = Collections.emptyMap();
-
-    /**
-     * Structural attribute names that can never be a package extension, so a
-     * miss on them must not probe the classpath.
-     */
-    private static final Set<String> SPECIAL = Set.of(Phi.LAMBDA, Phi.PHI, Phi.RHO);
-
-    /**
-     * The prefix of every forma that lives in the global scope.
-     */
-    private static final String SCOPE = String.format("%s.", PhPackage.GLOBAL);
 
     /**
      * Data.
@@ -379,12 +367,9 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Resolve a name that this object doesn't declare among its own attributes.
      *
-     * <p>The object's own package goes first, because a package object belongs
-     * to the surface of the object itself and must shadow whatever the
-     * decoratee happens to expose under the same name: {@code "42.5".as-number}
-     * has to reach {@code Φ.string.as-number} and not {@code Φ.bytes.as-number}
-     * through the bytes that a string decorates. Only when the package knows
-     * nothing does the lookup descend, into the λ of an atom or into the
+     * <p>Every object carries what it can answer: a package member is an
+     * attribute of the object the package names, put there at compile time.
+     * So a miss here can only descend, into the λ of an atom or into the
      * decoratee. A name that nobody knows terminates the computation.</p>
      *
      * @param name The name of the absent attribute
@@ -392,9 +377,7 @@ public class PhDefault implements Phi, Cloneable {
      */
     private Phi absent(final String name) {
         final Phi object;
-        if (this.extended(name)) {
-            object = this.extension(name);
-        } else if (this instanceof Atom) {
+        if (this instanceof Atom) {
             object = this.take(Phi.LAMBDA).take(name);
         } else if (this.loaded().containsKey(Phi.PHI)) {
             object = this.take(Phi.PHI).take(name);
@@ -404,62 +387,6 @@ public class PhDefault implements Phi, Cloneable {
             );
         }
         return object;
-    }
-
-    /**
-     * Does this object's own package hold an object with this name?
-     * @param name The name of the absent attribute
-     * @return TRUE if the package extends this object with such an object
-     */
-    private boolean extended(final String name) {
-        return !PhDefault.SPECIAL.contains(name)
-            && this.forma().startsWith(PhDefault.SCOPE)
-            && OnClasspath.object(this.path(name));
-    }
-
-    /**
-     * Take an object living in this object's own package.
-     *
-     * <p>When {@code (number 42).power} finds no {@code power} attribute, the
-     * runtime looks for an object {@code Φ.number.power} in the package named
-     * after this object's forma. It is returned with this object bound as its
-     * first argument ({@code α0}), so {@code (number 42).power 3} reads as
-     * {@code number.power 42 3}. The receiver of a package extension always
-     * lives in {@code α0}: implicit dispatch binds it here, while explicit
-     * dispatch through the namespace ({@code number.power 42 3}) leaves the
-     * slot for the caller to fill (see {@code PhNest.extension}). Every package
-     * member declares at least one void, so that the implicit form always has a
-     * slot to bind the receiver to; when it doesn't, a clear error is raised
-     * instead of the low-level "attribute is already set / no attributes here"
-     * message.</p>
-     *
-     * @param name The name of the absent attribute
-     * @return The package object with this one bound to it
-     */
-    private Phi extension(final String name) {
-        final String full = this.path(name);
-        final Phi taken = Phi.Φ.take(full.substring(PhDefault.SCOPE.length()));
-        try {
-            taken.put(0, this);
-        } catch (final ExAbstract ex) {
-            throw new ExFailure(
-                String.format(
-                    "Object '%s' takes no arguments, so it can't be applied to '%s' via the implicit '%s' form",
-                    full, this.forma(), name
-                ),
-                ex
-            );
-        }
-        return taken;
-    }
-
-    /**
-     * The fully-qualified name of an object in this object's own package.
-     * @param name The name of the object
-     * @return The name, as {@code Φ.string.as-number}
-     */
-    private String path(final String name) {
-        return String.join(".", this.forma(), name);
     }
 
     /**
