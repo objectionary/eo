@@ -795,7 +795,13 @@ final class EoTest {
     void acceptsBindingOnReversedArgChainContinuation() {
         MatcherAssert.assertThat(
             "a same-indent .method continuation of a non-receiver reversed arg may carry a binding per R-6.6.3",
-            EoTest.render("[] > main", "  if. cond then", "  .baz:x > z"),
+            EoTest.render(
+                "[] > main",
+                "  if.",
+                "    cond",
+                "    then",
+                "    .baz:x > z"
+            ),
             XhtmlMatchers.hasXPath("/object[not(errors)]")
         );
     }
