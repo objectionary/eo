@@ -106,7 +106,7 @@ final class EOwin32EOφTest {
         @Test
         void opensTcpSocket() {
             this.startupsWSA();
-            final int socket = this.createsSocket();
+            final long socket = this.createsSocket();
             MatcherAssert.assertThat(
                 "Winsock library should successfully create a TCP socket, but it didn't",
                 socket,
@@ -131,7 +131,7 @@ final class EOwin32EOφTest {
          * Creates socket.
          * @return Closes socket
          */
-        private int createsSocket() {
+        private long createsSocket() {
             return Winsock.INSTANCE.socket(
                 Winsock.AF_INET,
                 Winsock.SOCK_STREAM,
@@ -144,7 +144,7 @@ final class EOwin32EOφTest {
          * @param socket Socket descriptor
          * @return Status code
          */
-        private int closesSocket(final int socket) {
+        private int closesSocket(final long socket) {
             return Winsock.INSTANCE.closesocket(socket);
         }
 

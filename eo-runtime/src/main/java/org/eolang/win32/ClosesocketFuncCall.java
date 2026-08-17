@@ -36,7 +36,7 @@ public final class ClosesocketFuncCall implements Syscall {
         result.put(
             0,
             new Data.ToPhi(
-                Winsock.INSTANCE.closesocket(new Dataized(params[0]).asNumber().intValue())
+                Winsock.INSTANCE.closesocket(new Dataized(params[0]).asNumber().longValue())
             )
         );
         result.put(1, new PhDefault());
