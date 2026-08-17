@@ -796,7 +796,7 @@ final class EoTest {
         MatcherAssert.assertThat(
             "a same-indent .method continuation of a non-receiver reversed arg may carry a binding per R-6.6.3",
             EoTest.render(
-                "[] > main",
+                "foo > main",
                 "  if.",
                 "    cond",
                 "    then",
