@@ -86,7 +86,7 @@ final class LnMethod implements Line {
                 stack.below().upgradeArgBinding();
             }
         }
-        emit.close();
+        stack.seal();
         emit.object(
             suffix.attribute(this.span.line(), this.span.indent()),
             ".".concat(method.raw()),

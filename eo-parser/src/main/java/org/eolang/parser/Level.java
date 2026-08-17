@@ -449,6 +449,19 @@ final class Level {
     }
 
     /**
+     * Forget the compact-tuple state, after the closer has already
+     * accounted for it - the entry stays on the stack as the wrapper a
+     * same-indent {@code .method} continuation put around it, and the
+     * wrapper is no tuple of its own.
+     */
+    void sealed() {
+        this.star = false;
+        this.tupled = false;
+        this.children = 0;
+        this.count = 0;
+    }
+
+    /**
      * Mark the compact-tuple wrapper as opened — emission of the
      * {@code Φ.tuple} wrapper has fired and any further children land
      * inside it.

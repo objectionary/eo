@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6871: the compact-tuple count was not checked when a same-indent `.method`
+# continuation closed the tuple, so a tuple that promised three children and
+# got one passed without a word.
+sheets: []
+asserts:
+  - /object/errors/error[contains(text(),'compact tuple requires at least 3 children, got 1')]
+input: |
+  [] > foo
+    seq *3
+      1
+    .m > x
