@@ -11,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -113,9 +115,10 @@ final class Resolving implements Step {
         if (deps.isEmpty()) {
             unpacked = 0;
         } else {
+            final Map<String, Set<String>> versions = new ResolvedVersions(deps).byCoordinate();
             unpacked = new Threaded<>(
                 deps,
-                dep -> this.resolved(dep, this.target)
+                dep -> this.resolved(dep, this.target, versions)
             ).total();
         }
         if (unpacked == 0) {
@@ -134,23 +137,22 @@ final class Resolving implements Step {
      * Resolve a single dependency.
      * @param dep Dependency
      * @param dest Destination directory
+     * @param versions Every version legitimately resolved in this run, by coordinate
      * @return Count resolved
      * @throws IOException If fails
      */
-    private int resolved(final Dep dep, final Path dest) throws IOException {
-        final String classifier;
+    private int resolved(
+        final Dep dep, final Path dest, final Map<String, Set<String>> versions
+    ) throws IOException {
         final Dependency dependency = dep.get();
-        if (dependency.getClassifier() == null || dependency.getClassifier().isEmpty()) {
-            classifier = "-";
-        } else {
-            classifier = dependency.getClassifier();
-        }
+        final DepCoordinate coords = new DepCoordinate(dependency);
         final Path place = this.cleanPlace(
             dest
                 .resolve(dependency.getGroupId())
                 .resolve(dependency.getArtifactId())
-                .resolve(classifier),
-            dependency.getVersion()
+                .resolve(coords.classifier()),
+            dependency.getVersion(),
+            versions.get(coords.value())
         );
         final int total;
         if (Files.exists(place)) {
@@ -200,18 +202,27 @@ final class Resolving implements Step {
     }
 
     /**
-     * Returns directory where files should be unpacked, removing outdated versions.
+     * Returns directory where files should be unpacked, removing stale versions:
+     * ones no longer requested by any dependency of this coordinate in the
+     * current run, not merely ones other than the version being resolved right
+     * now. With {@code eo.ignoreVersionConflicts} on, two versions of the same
+     * coordinate can both be legitimately part of the resolution set, and
+     * neither may delete the other's just-unpacked files (#6904).
      * @param dir Directory
      * @param version Version
+     * @param keep Every version of this coordinate legitimately resolved in
+     *  this run
      * @return Full path
      * @throws IOException If fails
      */
-    private Path cleanPlace(final Path dir, final String version) throws IOException {
+    private Path cleanPlace(
+        final Path dir, final String version, final Set<String> keep
+    ) throws IOException {
         final File[] subs = dir.toFile().listFiles();
         if (subs != null) {
             for (final File sub : subs) {
                 final String base = sub.getName();
-                if (base.equals(version)) {
+                if (keep.contains(base)) {
                     continue;
                 }
                 final Path bad = dir.resolve(base);
@@ -223,8 +234,8 @@ final class Resolving implements Step {
                 }
                 Logger.info(
                     this,
-                    "Directory %[file]s deleted because it contained wrong version files (not %s)",
-                    bad, version
+                    "Directory %[file]s deleted because it contained a stale version (not %s)",
+                    bad, keep
                 );
             }
         }

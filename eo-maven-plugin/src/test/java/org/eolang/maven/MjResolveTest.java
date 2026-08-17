@@ -314,4 +314,36 @@ final class MjResolveTest {
             new ContainsFiles("**/eo-runtime-*.class")
         );
     }
+
+    @Test
+    void keepsBothSiblingVersionsWithConflictsIgnored(@Mktmp final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "+package foo.x",
+                "+rt jvm org.eolang:eo-runtime:0.22.0",
+                String.format("+version 0.25.0%n"),
+                "[] > main /bytes"
+            )
+        ).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "+package foo.x",
+                "+rt jvm org.eolang:eo-runtime:0.22.1",
+                String.format("+version 0.25.0%n"),
+                "[] > main-1 /bytes"
+            )
+        );
+        maven.with("ignoreConflicts", true)
+            .execute(new FakeMaven.Resolve());
+        MatcherAssert.assertThat(
+            "Both sibling versions must survive resolving, but one was deleted",
+            maven.targetPath(),
+            Matchers.allOf(
+                new ContainsFiles("**/eo-runtime-0.22.0.class"),
+                new ContainsFiles("**/eo-runtime-0.22.1.class")
+            )
+        );
+    }
 }
