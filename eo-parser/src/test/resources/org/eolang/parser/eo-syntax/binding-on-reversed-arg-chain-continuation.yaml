@@ -4,7 +4,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='?.then.baz' and @as='x' and @name='z']
+  - //o[@base='Φ.then.baz' and @as='x' and @name='z']
 input: |
   [] > main
     if. > first
