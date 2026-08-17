@@ -59,7 +59,7 @@ final class BindingsTest {
             () -> Bindings.checkAllOrNothing(
                 Arrays.asList(
                     new Value(Value.Kind.IDENTIFIER, "a", 4, 5, "x"),
-                    new Value(Value.Kind.IDENTIFIER, "b", 6, 7, "y")
+                    new Value(Value.Kind.IDENTIFIER, "b", 8, 9, "y")
                 ),
                 new Span("foo a:x b:y", 1)
             ),
@@ -69,16 +69,20 @@ final class BindingsTest {
 
     @Test
     void rejectsMixedBoundAndUnbound() {
-        Assertions.assertThrows(
-            ParseError.class,
-            () -> Bindings.checkAllOrNothing(
-                Arrays.asList(
-                    new Value(Value.Kind.IDENTIFIER, "a", 4, 5, "x"),
-                    new Value(Value.Kind.IDENTIFIER, "b", 6, 7)
+        MatcherAssert.assertThat(
+            "the divergent arg's column must be reported",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> Bindings.checkAllOrNothing(
+                    Arrays.asList(
+                        new Value(Value.Kind.IDENTIFIER, "a", 4, 5, "x"),
+                        new Value(Value.Kind.IDENTIFIER, "b", 8, 9)
+                    ),
+                    new Span("foo a:x b", 1)
                 ),
-                new Span("foo a:x b", 1)
-            ),
-            "a bound arg followed by an unbound one must be rejected per R-6.6.2"
+                "a bound arg followed by an unbound one must be rejected per R-6.6.2"
+            ).pos(),
+            Matchers.equalTo(8)
         );
     }
 
