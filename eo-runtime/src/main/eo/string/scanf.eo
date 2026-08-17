@@ -19,27 +19,76 @@
   ^ > format
   [pattern specifiers] >>
     [text] > as-float
-      negative.if negated magnitude > @
-      unsigned.index-of "." > dot
+      negative.if negated scaled > @
+      mantissa.index-of "." > dot
+      esign.index-of "e" > eloc
+      unsigned.replaced "/[eE]/".regex "e" > esign
+      [txt] > exp-value
+        if. > @
+          eq.
+            txt.slice 0 1
+            "-"
+          folded.times -1
+          if.
+            eq.
+              txt.slice 0 1
+              "+"
+            folded
+            folded
+        fold-digits > folded
+          signed.if
+            txt.slice
+              1
+              txt.length.minus 1
+            txt
+        or. > signed
+          eq.
+            txt.slice 0 1
+            "-"
+          eq.
+            txt.slice 0 1
+            "+"
+      if. > exponent
+        eloc.eq -1
+        0
+        exp-value
+          esign.slice
+            eloc.plus 1
+            esign.length.minus
+              eloc.plus 1
       if. > magnitude
         not.
           dot.eq -1
         plus.
           fold-digits
-            unsigned.slice 0 dot
+            mantissa.slice 0 dot
           div.
             fold-digits
-              unsigned.slice
+              mantissa.slice
                 dot.plus 1
                 places
             10.power places
-        fold-digits unsigned
-      magnitude.times -1 > negated
+        fold-digits mantissa
+      if. > mantissa
+        eloc.eq -1
+        esign
+        esign.slice 0 eloc
+      scaled.times -1 > negated
       eq. > negative
         text.slice 0 1
         "-"
-      unsigned.length.minus > places
+      mantissa.length.minus > places
         dot.plus 1
+      if. > scaled
+        exponent.eq 0
+        magnitude
+        if.
+          exponent.gt 0
+          magnitude.times
+            10.power exponent
+          magnitude.div
+            10.power
+              exponent.times -1
       negative.or > signed
         eq.
           text.slice 0 1
@@ -210,7 +259,7 @@
               tokenize
                 position.plus 1
                 accumulated.chained
-                  * "([+-]?\\d+(?:\\.\\d+)?)"
+                  * "([+-]?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)"
                 found.with "f"
                 false
               if.
@@ -376,3 +425,23 @@
     "00009223372036854775808"
 
   "%l".scanf "error" --> stops-on-a-wrong-format
+
+  eq. ++> can-scan-a-float-in-scientific-notation
+    1000
+    head.
+      "%f".scanf "1e3"
+
+  eq. ++> can-scan-a-float-in-scientific-notation-with-a-negative-exponent
+    -0.02
+    head.
+      "%f".scanf "-2E-2"
+
+  eq. ++> can-scan-a-float-in-scientific-notation-with-a-signed-exponent
+    150
+    head.
+      "%f".scanf "1.5e+2"
+
+  eq. ++> can-scan-a-float-in-scientific-notation-with-a-zero-exponent
+    1
+    head.
+      "%f".scanf "1e0"
