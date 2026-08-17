@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Random;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -64,6 +65,54 @@ final class BindingsTest {
                 new Span("foo a:x b:y", 1)
             ),
             "all-bound is a valid uniform mode"
+        );
+    }
+
+    @Test
+    void acceptsAllBoundArgsWithNumericBinding() {
+        final long seed = System.nanoTime();
+        final int slot = new Random(seed).nextInt(10);
+        Assertions.assertDoesNotThrow(
+            () -> Bindings.checkAllOrNothing(
+                Arrays.asList(
+                    new Value(Value.Kind.IDENTIFIER, "a", 4, 5, Integer.toString(slot)),
+                    new Value(Value.Kind.IDENTIFIER, "b", 6, 7, Integer.toString(slot))
+                ),
+                new Span(String.format("foo a:%1$d b:%1$d", slot), 1)
+            ),
+            String.format("a numeric binding is a valid uniform mode, seed is %d", seed)
+        );
+    }
+
+    @Test
+    void acceptsAllBoundArgsWithEmptyLabel() {
+        Assertions.assertDoesNotThrow(
+            () -> Bindings.checkAllOrNothing(
+                Arrays.asList(
+                    new Value(Value.Kind.IDENTIFIER, "a", 4, 5, ""),
+                    new Value(Value.Kind.IDENTIFIER, "b", 6, 7, "")
+                ),
+                new Span("foo a: b:", 1)
+            ),
+            "an empty binding label is still a binding, not its absence"
+        );
+    }
+
+    @Test
+    void rejectsEmptyLabelFollowedByUnbound() {
+        MatcherAssert.assertThat(
+            "an empty label counts as bound, so an unbound successor must be rejected",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> Bindings.checkAllOrNothing(
+                    Arrays.asList(
+                        new Value(Value.Kind.IDENTIFIER, "a", 4, 5, ""),
+                        new Value(Value.Kind.IDENTIFIER, "b", 6, 7)
+                    ),
+                    new Span("foo a: b", 1)
+                )
+            ).pos(),
+            Matchers.equalTo(6)
         );
     }
 
