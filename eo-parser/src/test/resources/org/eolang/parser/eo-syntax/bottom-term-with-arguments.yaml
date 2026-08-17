@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6707: `T` takes arguments - they are the cause of the bottom, the way
+# `T "why it failed"` is used across the runtime. Both the horizontal and the
+# vertical form are accepted, the arguments land under the `⊥` object, and a
+# `.method` chain on `T` is read as a dispatch on the bottom.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object//o[@base='⊥' and @name='result']/o[@base='Φ.number']
+  - /object//o[@base='⊥' and @name='failure']/o[@base='Φ.string']
+  - /object//o[@base='⊥.foo' and @name='dispatched']
+input: |
+  [] > main
+    T 42 > result
+    T > failure
+      "why it failed"
+      43
+    T.foo > dispatched

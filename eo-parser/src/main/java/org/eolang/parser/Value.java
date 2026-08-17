@@ -225,8 +225,9 @@ final class Value {
         ROOT,
 
         /**
-         * {@code T} — the bottom term of 𝜑-calculus (§9.3). A
-         * self-contained leaf carrying no arguments;
+         * {@code T} — the bottom term of 𝜑-calculus (§9.3). A value:
+         * it may carry arguments, which are the cause of the bottom,
+         * as in {@code T "why it failed"};
          * {@link Emissions} maps it to a bottom-based object.
          */
         TERM,
