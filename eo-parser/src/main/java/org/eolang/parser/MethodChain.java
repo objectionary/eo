@@ -27,11 +27,6 @@ final class MethodChain {
     private final int dot;
 
     /**
-     * Index past this link in the source body.
-     */
-    private final int end;
-
-    /**
      * Whether this link is a fragile dispatch ({@code ?.} instead of
      * {@code .}) — R-3.5 / §9.4.
      */
@@ -41,13 +36,11 @@ final class MethodChain {
      * Ctor.
      * @param ident Method name
      * @param dot Column of the dot
-     * @param after Index past this link
      * @param weak Whether the link is a fragile {@code ?.} dispatch
      */
-    MethodChain(final String ident, final int dot, final int after, final boolean weak) {
+    MethodChain(final String ident, final int dot, final boolean weak) {
         this.name = ident;
         this.dot = dot;
-        this.end = after;
         this.fragile = weak;
     }
 
@@ -73,13 +66,5 @@ final class MethodChain {
      */
     int dot() {
         return this.dot;
-    }
-
-    /**
-     * Index past this link.
-     * @return End index
-     */
-    int end() {
-        return this.end;
     }
 }
