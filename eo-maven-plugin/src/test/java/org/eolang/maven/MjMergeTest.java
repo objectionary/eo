@@ -365,7 +365,6 @@ final class MjMergeTest {
      * A workspace holding the object {@code foo} with a void and the member
      * {@code foo.bar}, taken through parsing and merging.
      * @param temp The temporary directory
-     * @param packages The packages to merge
      * @return The workspace, after the merge
      * @throws IOException If the pipeline fails
      */

@@ -117,12 +117,18 @@ final class Merging implements Step {
             .map(name -> name.substring(0, name.lastIndexOf('.')))
             .distinct()
             .filter(all::containsKey)
-            .sorted(
-                Comparator.comparingInt((String pkg) -> pkg.split("\\.").length)
-                    .reversed()
-                    .thenComparing(Comparator.naturalOrder())
-            )
+            .sorted(Merging.deeper())
             .collect(Collectors.toList());
+    }
+
+    /**
+     * The order that puts a package after every package it holds.
+     * @return The comparator
+     */
+    private static Comparator<String> deeper() {
+        return Comparator.comparingInt((String pkg) -> pkg.split("\\.").length)
+            .reversed()
+            .thenComparing(Comparator.naturalOrder());
     }
 
     /**
