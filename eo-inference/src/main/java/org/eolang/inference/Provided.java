@@ -30,7 +30,10 @@ import java.util.Map;
  * <p>The walk stops at a type it has already passed, so an object that
  * delegates in a circle is walked once and answers nothing. A void answers
  * nothing either: the table has no row for one, since what a void holds is
- * decided by whoever fills it.</p>
+ * decided by whoever fills it — unless the source has said what will go in,
+ * which a formation only Java ever copies has to do (#6189). Such a void is
+ * walked through like a delegation, and the answer is the same for every
+ * caller, which is what an annotation claims.</p>
  *
  * @since 0.68.0
  */
@@ -52,6 +55,11 @@ final class Provided {
     private final Collection<String> hollows;
 
     /**
+     * What every void that says so will hold, from {@link Held}.
+     */
+    private final Map<String, String> held;
+
+    /**
      * Ctor.
      * @param provides The provides table, as {@link Provides} wrote it
      * @param aliases The name every type goes by, from {@link Same}
@@ -62,7 +70,10 @@ final class Provided {
         final Map<String, String> aliases,
         final Collection<String> voids
     ) {
-        this(new Ungrouped(provides, aliases).rows(), aliases, voids);
+        this(
+            new Ungrouped(provides, aliases).rows(), aliases, voids,
+            new Held(provides).all()
+        );
     }
 
     /**
@@ -70,15 +81,18 @@ final class Provided {
      * @param rows The rows of the provides table, by the name of their owner
      * @param aliases The name every type goes by, from {@link Same}
      * @param voids The locator of every void, from {@link Hollows}
+     * @param holds What every void that says so will hold, from {@link Held}
      */
     Provided(
         final Map<String, Collection<Map<String, String>>> rows,
         final Map<String, String> aliases,
-        final Collection<String> voids
+        final Collection<String> voids,
+        final Map<String, String> holds
     ) {
         this.table = rows;
         this.names = aliases;
         this.hollows = voids;
+        this.held = holds;
     }
 
     /**
@@ -146,7 +160,7 @@ final class Provided {
     private String kept(final String type, final String name, final Collection<String> walked) {
         String found = this.bound(type, name);
         final String member = String.join(".", type, name);
-        if (found.isEmpty() && (this.table.containsKey(member) || this.hollow(type))) {
+        if (found.isEmpty() && (this.table.containsKey(member) || this.blank(type))) {
             found = member;
         }
         final String behind = this.behind(type);
@@ -173,7 +187,20 @@ final class Provided {
         if (next.isEmpty()) {
             next = this.cell(type, "returns");
         }
+        if (next.isEmpty()) {
+            next = this.held.getOrDefault(type, "");
+        }
         return this.names.getOrDefault(next, next);
+    }
+
+    /**
+     * Whether this type is a void nothing says anything about.
+     * @param type The name the type goes by
+     * @return True when only a caller can say what it is, and the source has
+     *  not said it either
+     */
+    private boolean blank(final String type) {
+        return this.hollow(type) && !this.held.containsKey(type);
     }
 
     /**
