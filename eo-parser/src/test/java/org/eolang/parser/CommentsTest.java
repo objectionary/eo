@@ -33,6 +33,21 @@ final class CommentsTest {
     }
 
     @Test
+    void reportsFirstLineOfMultiLineBlock() {
+        final Globals globals = new Globals();
+        globals.addComment(new Span("# first", 1));
+        globals.addComment(new Span("# second", 2));
+        globals.blank();
+        final Emit emit = new Emit();
+        Comments.seal(globals, emit, new Span("+package foo", 4));
+        MatcherAssert.assertThat(
+            "a multi-line top comment block must report the line of its first span, not its last",
+            CommentsTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/comments/comment[@line='1']")
+        );
+    }
+
+    @Test
     void clearsBufferAfterFlush() {
         final Globals globals = new Globals();
         globals.addComment(new Span("# x", 1));
