@@ -372,8 +372,7 @@
       uri "+foo:bar"
     ""
 
-  eq. ++> can-treat-a-scheme-with-a-space-as-invalid
+  eq. ++> can-treat-a-scheme-with-an-underscore-as-invalid
     scheme.
-      uri
-        "ht tp:foo"
+      uri "ht_tp:foo"
     ""
