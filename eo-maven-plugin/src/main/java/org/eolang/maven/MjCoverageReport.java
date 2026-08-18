@@ -94,18 +94,20 @@ public final class MjCoverageReport extends MjSafe {
         final Map<String, Integer> lineof = new HashMap<>(0);
         final Map<String, String> fileof = new HashMap<>(0);
         final CoverageManifest manifest = new CoverageManifest();
-        for (final TjForeign tojo : this.scopedTojos().standalone()) {
-            final String source = tojo.source().toString();
-            final XML xmir = new XMLDocument(tojo.xmir());
-            for (final String location : manifest.locations(xmir)) {
-                final int last = location.lastIndexOf(':');
-                final int line = Integer.parseInt(
-                    location.substring(location.lastIndexOf(':', last - 1) + 1, last)
-                );
-                perfile.computeIfAbsent(source, key -> new LinkedHashMap<>(0))
-                    .putIfAbsent(line, 0);
-                lineof.put(location, line);
-                fileof.put(location, source);
+        try (TjsForeign tojos = this.tojos()) {
+            for (final TjForeign tojo : tojos.standalone()) {
+                final String source = tojo.source().toString();
+                final XML xmir = new XMLDocument(tojo.xmir());
+                for (final String location : manifest.locations(xmir)) {
+                    final int last = location.lastIndexOf(':');
+                    final int line = Integer.parseInt(
+                        location.substring(location.lastIndexOf(':', last - 1) + 1, last)
+                    );
+                    perfile.computeIfAbsent(source, key -> new LinkedHashMap<>(0))
+                        .putIfAbsent(line, 0);
+                    lineof.put(location, line);
+                    fileof.put(location, source);
+                }
             }
         }
         final List<String> hits = Files.readAllLines(this.coverageFile.toPath());
