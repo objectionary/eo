@@ -273,6 +273,14 @@
         "Port %d is out of range; it must be 0 to 65535".printf
           * port
       port
+  [scope cleanup] > guarded
+    seq * > @
+      recovered
+        value
+        true
+      cleanup
+      value
+    scope > value!
   [port] > htons
     as-i16. > @
       or.
@@ -289,6 +297,23 @@
   eq. ++> can-convert-a-port-above-the-signed-short-limit-in-htons
     40-9C
     socket.htons 40000
+
+  eq. ++> can-dataize-a-guarded-scope-once
+    malloc.for
+      0
+      seq * > [m]
+        socket.guarded
+          m.put
+            m.as-number.plus 1
+          true
+        m.as-number
+    1
+
+  eq. ++> can-guard-a-scope-and-behave-as-it
+    socket.guarded
+      42
+      true
+    42
 
   ++> can-resend-the-remaining-bytes-after-a-short-send
     eq. > @
@@ -308,6 +333,30 @@
             1
       01-02
 
+  eq. ++> can-run-a-guard-cleanup-after-a-successful-scope
+    malloc.for
+      0
+      seq * > [m]
+        socket.guarded
+          42
+          m.put
+            m.as-number.plus 1
+        m.as-number
+    1
+
+  eq. ++> can-run-a-guard-cleanup-after-a-terminated-scope
+    malloc.for
+      0
+      seq * > [m]
+        recovered
+          socket.guarded
+            2.as-i64.div 0.as-i64
+            m.put
+              m.as-number.plus 1
+          true
+        m.as-number
+    1
+
   checked-port. --> rejects-a-fractional-port
     socket
       "127.0.0.1"
@@ -317,3 +366,7 @@
     socket
       "127.0.0.1"
       70000
+
+  socket.guarded --> stops-on-a-terminated-guarded-scope
+    2.as-i64.div 0.as-i64
+    true
