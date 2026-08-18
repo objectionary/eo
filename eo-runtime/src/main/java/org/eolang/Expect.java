@@ -41,7 +41,6 @@ public class Expect<T> {
      * @param phi The object
      * @param attr Attribute name
      * @return Expect pipeline
-     * @checkstyle MethodNameCheck (5 lines)
      */
     @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
     public static Expect<Phi> at(final Phi phi, final String attr) {
@@ -105,7 +104,6 @@ public class Expect<T> {
     /**
      * Return it.
      * @return The token
-     * @checkstyle MethodNameCheck (5 lines)
      */
     public T it() {
         try {
@@ -218,7 +216,6 @@ public class Expect<T> {
         /**
          * Return it.
          * @return The token
-         * @checkstyle MethodNameCheck (5 lines)
          */
         public Double it() {
             return this.expect
@@ -250,7 +247,6 @@ public class Expect<T> {
         /**
          * Return it.
          * @return The token
-         * @checkstyle MethodNameCheck (5 lines)
          */
         public Integer it() {
             return this.expect
@@ -288,7 +284,6 @@ public class Expect<T> {
         /**
          * Return it.
          * @return The token
-         * @checkstyle MethodNameCheck (5 lines)
          */
         public Integer it() {
             return this.expect

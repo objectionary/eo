@@ -18,7 +18,6 @@ import org.eolang.SockaddrIn;
  * C standard library with unix syscalls.
  * @since 0.40
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public interface CStdLib extends Library {
 
     /**
@@ -73,7 +72,6 @@ public interface CStdLib extends Library {
      * @param descriptor Old file descriptor
      * @param other New file descriptor
      * @return Duplicated file descriptor
-     * @checkstyle MethodNameCheck (5 lines)
      */
     int dup2(int descriptor, int other);
 
@@ -262,7 +260,6 @@ public interface CStdLib extends Library {
      * @param len Size of received data
      * @param flags Flags
      * @return The number of received bytes on success, -1 on error
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     int recv(int sockfd, byte[] buf, int len, int flags);
 
@@ -273,7 +270,6 @@ public interface CStdLib extends Library {
      * @param len Size of sent data
      * @param flags Flags
      * @return The number of sent bytes on success, -1 on error
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     int send(int sockfd, byte[] buf, int len, int flags);
 
@@ -281,7 +277,6 @@ public interface CStdLib extends Library {
      * Convert IP string to binary form.
      * @param address IP address
      * @return IP address in binary form
-     * @checkstyle MethodNameCheck (5 lines)
      */
     @SuppressWarnings("PMD.MethodNamingConventions")
     int inet_addr(String address);

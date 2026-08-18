@@ -32,7 +32,6 @@ public interface Bytes {
      * OR operation.
      * @param other Bytes
      * @return Bytes
-     * @checkstyle MethodNameCheck (3 lines)
      */
     Bytes or(Bytes other);
 
