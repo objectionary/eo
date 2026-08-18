@@ -135,15 +135,19 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index exten
         );
         result.put(
             "from",
-            PhTerminator.withCause("Matched block does not exist, can't get 'from' position")
+            new PhTerminator(
+                new Data.ToPhi("Matched block does not exist, can't get 'from' position")
+            )
         );
         result.put(
             "to",
-            PhTerminator.withCause("Matched block does not exist, can't get 'to' position")
+            new PhTerminator(
+                new Data.ToPhi("Matched block does not exist, can't get 'to' position")
+            )
         );
         result.put(
             "groups",
-            PhTerminator.withCause("Matched block does not exist, can't get groups")
+            new PhTerminator(new Data.ToPhi("Matched block does not exist, can't get groups"))
         );
     }
 }

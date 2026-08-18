@@ -74,13 +74,10 @@ public final class PhTerminator implements Phi {
      * is finally forced; until then it flows like any other bottom.</p>
      *
      * @param cause The reason for the termination
-     * @return A bottom carrying the cause
      */
-    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
-    public static PhTerminator withCause(final String cause) {
-        final PhTerminator term = new PhTerminator();
-        term.put(0, new Data.ToPhi(cause));
-        return term;
+    public PhTerminator(final Phi cause) {
+        this();
+        this.cause = cause;
     }
 
     @Override
