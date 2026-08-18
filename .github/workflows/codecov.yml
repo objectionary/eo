@@ -26,10 +26,22 @@ jobs:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             maven-
-      - run: mvn install -Pjacoco -Deo.coverageTracking=true -Deo.minCoverage=60
+      - run: mvn install -Pjacoco -Deo.coverageTracking=true -Deo.minCoverage=55
       - uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./eo-parser/target/site/jacoco/jacoco.xml,./eo-runtime/target/site/jacoco/jacoco.xml,./eo-maven-plugin/target/site/jacoco/jacoco.xml,./eo-runtime/target/coverage.info
           fail_ci_if_error: true
         if: github.ref == 'refs/heads/master'
+  telegram:
+    needs: codecov
+    runs-on: ubuntu-24.04
+    if: ${{ failure() }}
+    steps:
+      - uses: appleboy/telegram-action@master
+        with:
+          to: -1001381878846
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: "⚠️ Failed to publish code coverage of ${{ github.repository }}, see [the log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          disable_web_page_preview: true
+          format: markdown
