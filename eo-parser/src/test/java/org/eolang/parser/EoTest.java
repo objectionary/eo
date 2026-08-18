@@ -93,6 +93,19 @@ final class EoTest {
     }
 
     @Test
+    void rejectsTopCommentWithoutBlankBelowFollowedByAnotherObject() {
+        MatcherAssert.assertThat(
+            "a second object right after the rejected top comment block must not repeat the error",
+            EoTest.render("# top doc", "[] > foo", "[] > bar"),
+            XhtmlMatchers.hasXPaths(
+                "/object[not(comments)]",
+                "/object[count(o)=2]",
+                "/object[count(errors/error[contains(text(),'a blank line must separate the top comment block from the rest of the file')])=1]"
+            )
+        );
+    }
+
+    @Test
     void reportsOddIndentError() {
         MatcherAssert.assertThat(
             "a line whose indent is an odd number of spaces must surface the odd-indent error",
