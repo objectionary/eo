@@ -218,6 +218,12 @@ final class Heaps {
      * @return The identifier of pointer to the block in memory
      */
     private int malloc(final Phi phi, final int size) {
+        if (size < 0) {
+            throw new ExFailure(
+                "Can't allocate block in memory with negative size '%d'",
+                size
+            );
+        }
         final int identifier = phi.hashCode();
         this.lock.lock();
         try {
