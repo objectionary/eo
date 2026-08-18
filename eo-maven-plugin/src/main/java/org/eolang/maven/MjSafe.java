@@ -151,7 +151,7 @@ abstract class MjSafe extends AbstractMojo {
     @Parameter(
         property = "eo.xslMeasuresFile",
         required = true,
-        defaultValue = "${project.build.directory}/eo/xsl-measures.json"
+        defaultValue = "${project.build.directory}/eo/xsl-measures.csv"
     )
     protected File xslMeasures;
 
