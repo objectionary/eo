@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -81,41 +82,46 @@ public final class MjRegister extends MjSafe {
     }
 
     @Override
-    public void exec() {
+    public void exec() throws IOException {
         if (this.sourcesDir == null) {
             throw new IllegalArgumentException(
                 String.format("sourcesDir is null. Please specify a valid sourcesDir for %s", this)
             );
         }
-        this.removeOldFiles();
-        final int before = this.scopedTojos().size();
-        if (before > 0) {
-            Logger.info(this, "There are %d EO sources registered already", before);
+        try (TjsForeign tojos = this.tojos()) {
+            this.removeOldFiles();
+            final int before = tojos.size();
+            if (before > 0) {
+                Logger.info(this, "There are %d EO sources registered already", before);
+            }
+            final Unplace unplace = new Unplace(this.sourcesDir);
+            Logger.info(
+                this,
+                "Registered %d EO sources from %[file]s to %[file]s, included %s, excluded %s",
+                new Threaded<>(
+                    new Walk(this.sourcesDir.toPath())
+                        .includes(this.includeSources)
+                        .excludes(this.excludeSources),
+                    file -> this.register(file, unplace, tojos)
+                ).total(),
+                this.sourcesDir,
+                this.foreign,
+                this.includeSources,
+                this.excludeSources
+            );
         }
-        final Unplace unplace = new Unplace(this.sourcesDir);
-        Logger.info(
-            this,
-            "Registered %d EO sources from %[file]s to %[file]s, included %s, excluded %s",
-            new Threaded<>(
-                new Walk(this.sourcesDir.toPath())
-                    .includes(this.includeSources)
-                    .excludes(this.excludeSources),
-                file -> this.register(file, unplace)
-            ).total(),
-            this.sourcesDir,
-            this.foreign,
-            this.includeSources,
-            this.excludeSources
-        );
     }
 
     /**
      * Register a single EO source file.
      * @param file Source file
      * @param unplace Unplace builder for naming
+     * @param tojos The foreign catalog to register into
      * @return Always 1, to count the registered files
      */
-    private int register(final Path file, final Unplace unplace) {
+    private int register(
+        final Path file, final Unplace unplace, final TjsForeign tojos
+    ) {
         if (
             this.strictFileNames
                 && !MjRegister.PATTERN.matcher(file.getFileName().toString()).matches()
@@ -129,10 +135,10 @@ public final class MjRegister extends MjSafe {
             );
         }
         final String name = unplace.make(file);
-        if (this.scopedTojos().contains(name)) {
+        if (tojos.contains(name)) {
             Logger.debug(this, "EO source %s already registered", name);
         } else {
-            this.scopedTojos()
+            tojos
                 .add(name)
                 .withSource(file.toAbsolutePath())
                 .withHash(new ChSource(file));

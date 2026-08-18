@@ -135,22 +135,24 @@ public final class MjTranspile extends MjSafe {
 
     @Override
     public void exec() throws IOException {
-        new Timed(
-            new Transpiling(
-                this.scopedTojos().standalone(),
-                this.targetDir.toPath(),
-                this.generatedDir.toPath(),
-                this.cache.toPath(),
-                this.cacheEnabled,
-                this.plugin.getVersion(),
-                this.transpileTests,
-                this.xslMeasures.toPath(),
-                new Tracking(this.trackSteps, this.trackLocations),
-                this.coverageTracking,
-                this.base(),
-                this.roots()
-            )
-        ).exec();
+        try (TjsForeign tojos = this.tojos()) {
+            new Timed(
+                new Transpiling(
+                    tojos.standalone(),
+                    this.targetDir.toPath(),
+                    this.generatedDir.toPath(),
+                    this.cache.toPath(),
+                    this.cacheEnabled,
+                    this.plugin.getVersion(),
+                    this.transpileTests,
+                    this.xslMeasures.toPath(),
+                    new Tracking(this.trackSteps, this.trackLocations),
+                    this.coverageTracking,
+                    this.base(),
+                    this.roots()
+                )
+            ).exec();
+        }
         if (this.addSourcesRoot) {
             this.project.addCompileSourceRoot(
                 this.generatedDir.toPath().toAbsolutePath().toString()

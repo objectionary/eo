@@ -33,16 +33,18 @@ public final class MjPull extends MjSafe {
 
     @Override
     public void exec() throws IOException {
-        new Pulling(
-            this.scopedTojos(),
-            this.targetDir.toPath().resolve(Pulling.DIR),
-            this.hash,
-            this.objectionary(),
-            this.cache.toPath().resolve(Pulling.CACHE),
-            this.plugin.getVersion(),
-            this.overWrite,
-            this.cacheEnabled,
-            this.offline
-        ).exec();
+        try (TjsForeign tojos = this.tojos()) {
+            new Pulling(
+                tojos,
+                this.targetDir.toPath().resolve(Pulling.DIR),
+                this.hash,
+                this.objectionary(),
+                this.cache.toPath().resolve(Pulling.CACHE),
+                this.plugin.getVersion(),
+                this.overWrite,
+                this.cacheEnabled,
+                this.offline
+            ).exec();
+        }
     }
 }
