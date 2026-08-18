@@ -481,9 +481,6 @@
               </execution>
             </executions>
             <configuration>
-              <excludes>
-                <exclude>dependencies:org.eolang:eo-maven-plugin</exclude>
-              </excludes>
               <errorprone>
                 <!--
                 PhDefault.equals() compares hash codes on purpose. Every
