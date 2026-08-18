@@ -72,4 +72,47 @@ final class MjCoverageReportTest {
             "coverage-report must fail the build when coverage is below the minimum, but it didnt"
         );
     }
+
+    @Test
+    void doesNotAttributeMergedMembersToThePackageFile(@Mktmp final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "+architect me@example.com",
+                "+version 0.0.0",
+                "",
+                "[n] > foo",
+                "  42 > x",
+                "  n > @"
+            ),
+            "foo",
+            "foo.eo"
+        ).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "+package foo",
+                "",
+                "[] > bar",
+                "  42 > @"
+            ),
+            "foo.bar",
+            "foo/bar.eo"
+        ).execute(MjParse.class).execute(new FakeMaven.Merge());
+        final Path hits = temp.resolve("coverage.txt");
+        Files.writeString(hits, "");
+        final Path lcov = temp.resolve("coverage.info");
+        maven.with("coverageFile", hits.toFile())
+            .with("lcovFile", lcov.toFile())
+            .execute(MjCoverageReport.class);
+        MatcherAssert.assertThat(
+            "the meta directives of the package file must not be reported as DA misses, while its merged member must get a coverage block of its own",
+            Files.readString(lcov),
+            Matchers.allOf(
+                Matchers.matchesPattern(
+                    "(?s).*SF:[^\\n]*foo\\.eo\\r?\\n(?:(?!DA:[123],0).)*end_of_record.*"
+                ),
+                Matchers.containsString("bar.eo")
+            )
+        );
+    }
 }
