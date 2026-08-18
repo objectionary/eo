@@ -34,4 +34,13 @@ final class NumeralTest {
             Matchers.equalTo(Double.toString(number))
         );
     }
+
+    @Test
+    void printsNegativeZeroWithItsSign() {
+        MatcherAssert.assertThat(
+            "Negative zero must keep its sign in φ-term",
+            new Numeral(-0.0d).get(),
+            Matchers.equalTo("-0.0")
+        );
+    }
 }

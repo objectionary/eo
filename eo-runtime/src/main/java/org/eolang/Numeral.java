@@ -40,6 +40,7 @@ final class Numeral implements Supplier<String> {
                 && !Double.isInfinite(this.value)
                 && Long.MIN_VALUE <= this.value
                 && this.value < Long.MAX_VALUE
+                && Double.doubleToRawLongBits(this.value) != Double.doubleToRawLongBits(-0.0d)
         ) {
             txt = Long.toString((long) this.value);
         } else {
