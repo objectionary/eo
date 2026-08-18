@@ -53,6 +53,15 @@ final class LintingTest {
     }
 
     @Test
+    void reportsNonExperimentalDefectEvenWhenSkipExperimentalIsTrue() {
+        MatcherAssert.assertThat(
+            "a non-experimental defect must still be reported when eo.skipExperimentalLints is TRUE",
+            Linting.reportable(true, false),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
     void skipsLintingWhenFlagIsSet(@TempDir final Path temp) {
         final TjsForeign tojos = new TjsForeign();
         Assertions.assertDoesNotThrow(
