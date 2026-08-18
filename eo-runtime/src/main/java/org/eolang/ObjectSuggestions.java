@@ -21,7 +21,7 @@ import java.util.jar.JarFile;
  * Suggests the closest EO object names when an object is not found, so the
  * "Couldn't find object ..." error points the user at what was meant (#4520).
  * The candidates are the EO objects available on the classpath, collected
- * once per JVM.
+ * when this object is built.
  * @since 0.74.0
  */
 @SuppressWarnings({"PMD.GodClass", "PMD.EmptyCatchBlock"})
@@ -35,13 +35,21 @@ final class ObjectSuggestions {
     /**
      * The EO object names found on the classpath.
      */
-    private static final List<String> NAMES = ObjectSuggestions.scan();
+    private final List<String> names;
+
+    /**
+     * Ctor.
+     * @param loader The class loader to scan for EO objects
+     */
+    ObjectSuggestions(final ClassLoader loader) {
+        this.names = ObjectSuggestions.scan(loader);
+    }
 
     /**
      * Ctor.
      */
-    private ObjectSuggestions() {
-        // no instances of a utility class
+    ObjectSuggestions() {
+        this(Thread.currentThread().getContextClassLoader());
     }
 
     /**
@@ -49,7 +57,7 @@ final class ObjectSuggestions {
      * @param fqn FQN of the missing object, e.g. {@code Φ.org.eolang.io.std1out}
      * @return A "Did you mean?" block, or an empty string
      */
-    static String suggest(final String fqn) {
+    String suggest(final String fqn) {
         String target = fqn;
         if (target.startsWith("Φ.")) {
             target = target.substring(2);
@@ -58,7 +66,7 @@ final class ObjectSuggestions {
             target = target.substring("org.eolang.".length());
         }
         final List<Map.Entry<String, Integer>> ranked = new ArrayList<>(0);
-        for (final String name : ObjectSuggestions.NAMES) {
+        for (final String name : this.names) {
             ranked.add(
                 new AbstractMap.SimpleImmutableEntry<>(
                     name, ObjectSuggestions.dist(target, name)
@@ -83,13 +91,14 @@ final class ObjectSuggestions {
      * Collect every EO object name on the classpath by scanning the
      * {@link #ROOT} package — a directory when running from classes, or an
      * entry inside a jar.
+     * @param loader The class loader to scan
      * @return The EO object names found
      */
-    private static List<String> scan() {
+    private static List<String> scan(final ClassLoader loader) {
         final List<String> found = new ArrayList<>(0);
         try {
-            final Enumeration<URL> res = Thread.currentThread()
-                .getContextClassLoader().getResources(ObjectSuggestions.ROOT);
+            final Enumeration<URL> res = loader
+                .getResources(ObjectSuggestions.ROOT);
             while (res.hasMoreElements()) {
                 final URL url = res.nextElement();
                 if ("file".equals(url.getProtocol())) {

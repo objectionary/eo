@@ -163,7 +163,8 @@ final class PhPackage implements Phi {
                 throw new ExFailure(
                     String.format(
                         "Couldn't find object '%s' because there's no class '%s' or package-info class: '%s', at least one of them must exist%s",
-                        fqn, target, pinfo, ObjectSuggestions.suggest(fqn)
+                        fqn, target, pinfo,
+                        new ObjectSuggestions().suggest(fqn)
                     ),
                     phi
                 );

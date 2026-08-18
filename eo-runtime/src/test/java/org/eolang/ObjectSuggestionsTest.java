@@ -18,7 +18,7 @@ final class ObjectSuggestionsTest {
     void suggestsTheClosestObjectForATypo() {
         MatcherAssert.assertThat(
             "a typo must be answered with the closest real object name",
-            ObjectSuggestions.suggest("Φ.org.eolang.io.std1out"),
+            new ObjectSuggestions().suggest("Φ.org.eolang.io.std1out"),
             Matchers.containsString("- stdout")
         );
     }
@@ -27,7 +27,7 @@ final class ObjectSuggestionsTest {
     void prefixesSuggestionsWithDidYouMean() {
         MatcherAssert.assertThat(
             "suggestions must be introduced by a 'Did you mean?' heading",
-            ObjectSuggestions.suggest("Φ.org.eolang.io.std1out"),
+            new ObjectSuggestions().suggest("Φ.org.eolang.io.std1out"),
             Matchers.startsWith(String.format("%n%nDid you mean?"))
         );
     }
@@ -36,7 +36,7 @@ final class ObjectSuggestionsTest {
     void suggestsSomethingEvenForAnUnknownName() {
         MatcherAssert.assertThat(
             "an object far from every candidate must still be answered",
-            ObjectSuggestions.suggest("Φ.org.eolang.nothing-remotely-similar"),
+            new ObjectSuggestions().suggest("Φ.org.eolang.nothing-remotely-similar"),
             Matchers.containsString("Did you mean?")
         );
     }
