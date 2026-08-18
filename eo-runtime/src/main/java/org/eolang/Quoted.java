@@ -45,21 +45,28 @@ final class Quoted implements Supplier<Optional<String>> {
 
     @Override
     public Optional<String> get() {
-        final Optional<String> result;
         try {
-            final String text = StandardCharsets.UTF_8.newDecoder()
-                .onMalformedInput(CodingErrorAction.REPORT)
-                .onUnmappableCharacter(CodingErrorAction.REPORT)
-                .decode(ByteBuffer.wrap(this.data))
-                .toString();
-            final StringBuilder out = new StringBuilder("\"");
-            for (final char glyph : text.toCharArray()) {
-                out.append(new Escaped(glyph).get());
-            }
-            result = Optional.of(out.append('"').toString());
+            return Optional.of(this.quoted());
         } catch (final CharacterCodingException ex) {
-            result = Optional.empty();
+            return Optional.empty();
         }
-        return result;
+    }
+
+    /**
+     * Decode the bytes as UTF-8 and quote every glyph.
+     * @return The quoted literal
+     * @throws CharacterCodingException If the bytes are not valid UTF-8
+     */
+    private String quoted() throws CharacterCodingException {
+        final String text = StandardCharsets.UTF_8.newDecoder()
+            .onMalformedInput(CodingErrorAction.REPORT)
+            .onUnmappableCharacter(CodingErrorAction.REPORT)
+            .decode(ByteBuffer.wrap(this.data))
+            .toString();
+        final StringBuilder out = new StringBuilder("\"");
+        for (final char glyph : text.toCharArray()) {
+            out.append(new Escaped(glyph).get());
+        }
+        return out.append('"').toString();
     }
 }
