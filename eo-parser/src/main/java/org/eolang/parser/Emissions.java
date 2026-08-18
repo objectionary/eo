@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Shared {@link Value}-to-XMIR rendering helpers.
@@ -40,21 +39,6 @@ final class Emissions {
      * The void the identity object {@code I} binds and decorates.
      */
     private static final String IDENTITY = "x";
-
-    /**
-     * Kinds of head value that a {@code .method} chain may follow.
-     */
-    private static final Set<Value.Kind> CHAINABLE = Set.of(
-        Value.Kind.IDENTIFIER,
-        Value.Kind.ROOT,
-        Value.Kind.SELF,
-        Value.Kind.GROUP,
-        Value.Kind.INTEGER,
-        Value.Kind.FLOAT,
-        Value.Kind.STRING,
-        Value.Kind.BYTES,
-        Value.Kind.HEX
-    );
 
     /**
      * No instances.
@@ -216,15 +200,6 @@ final class Emissions {
             tag = raw;
         }
         return tag;
-    }
-
-    /**
-     * Whether a head value can carry a {@code .method} chain.
-     * @param head The head value
-     * @return True if chain may follow
-     */
-    static boolean chainable(final Value head) {
-        return Emissions.CHAINABLE.contains(head.kind());
     }
 
     /**

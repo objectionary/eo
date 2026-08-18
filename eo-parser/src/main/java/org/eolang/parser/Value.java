@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * One parsed value in an EO expression — identifier, INT, STAR, etc.
@@ -16,14 +17,20 @@ import java.util.List;
  * Φ.bytes} wrapper, STAR to {@code Φ.tuple} with {@code @star=''}, and
  * so on as more shapes land.</p>
  *
- * <p>Used both as the line's head and as horizontal argument slots; the
- * {@link Head} role is just a {@link Value} promoted to head position
- * for readability. *
+ * <p>Used both as the line's head and as horizontal argument slots.</p>
  *
  * @since 0.1
  */
 @SuppressWarnings("PMD.DataClass")
 final class Value {
+
+    /**
+     * Kinds of value that may carry a {@code .method} chain behind them.
+     */
+    private static final Set<Kind> CHAINABLE = Set.of(
+        Kind.IDENTIFIER, Kind.ROOT, Kind.SELF, Kind.GROUP,
+        Kind.INTEGER, Kind.FLOAT, Kind.STRING, Kind.BYTES
+    );
 
     /**
      * Empty chain shared by all bare values.
@@ -197,6 +204,18 @@ final class Value {
         return this.constant;
     }
 
+    /**
+     * Whether this value may carry a {@code .method} chain behind it.
+     * @return True if a chain may follow
+     */
+    boolean chainable() {
+        return Value.CHAINABLE.contains(this.kind);
+    }
+
+    // @todo #7016:30min Move the remaining kind()/raw()-driven decisions out
+    //  of Emissions, LnMethod, LnPipe, LnCompactTuple, LnApplication and
+    //  LnOnlyPhi onto Value, then drop the @SuppressWarnings("PMD.DataClass")
+    //  above along with the accessors it no longer needs.
     /**
      * The kinds of value recognised by the parser. Further kinds
      * (HEX, BYTES, paren groups) attach as the corresponding line
