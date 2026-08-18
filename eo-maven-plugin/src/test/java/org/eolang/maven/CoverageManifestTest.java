@@ -35,15 +35,70 @@ final class CoverageManifestTest {
     }
 
     @Test
-    void findsExactlyOneLocationInAnEmptyFormation() throws Exception {
+    void findsNoLocationsInAnEmptyFormation() throws Exception {
         MatcherAssert.assertThat(
-            "an empty formation with no body still has itself to instrument, but the count was off",
+            "an empty formation has no body and is never dispatched itself, so it must have no locations",
             new CoverageManifest().locations(
                 new EoSyntax(
                     String.join(System.lineSeparator(), "[] > foo", "")
                 ).parsed()
             ),
+            Matchers.iterableWithSize(0)
+        );
+    }
+
+    @Test
+    void excludesLocationOfAFilesRootObject() throws Exception {
+        MatcherAssert.assertThat(
+            "a file's root object is constructed once from Java and never dispatched through PhCoverage, but its own location was still found",
+            new CoverageManifest().locations(
+                new EoSyntax(
+                    String.join(
+                        System.lineSeparator(),
+                        "[x] > foo",
+                        "  x > @",
+                        ""
+                    )
+                ).parsed()
+            ),
+            Matchers.everyItem(Matchers.not(Matchers.matchesPattern("^[^:]+:1:\\d+$")))
+        );
+    }
+
+    @Test
+    void excludesLocationOfAnAtomsLambdaMarker() throws Exception {
+        MatcherAssert.assertThat(
+            "the lambda marker of an atom attribute never gets a PhCoverage hit, but its location was still found",
+            new CoverageManifest().locations(
+                new EoSyntax(
+                    String.join(
+                        System.lineSeparator(),
+                        "[] > foo",
+                        "  [] > bar /Q.bytes",
+                        ""
+                    )
+                ).parsed()
+            ),
             Matchers.iterableWithSize(1)
+        );
+    }
+
+    @Test
+    void excludesLocationOfAWholeAtomClass() throws Exception {
+        MatcherAssert.assertThat(
+            "a class that is itself an atom never gets a PhCoverage hit for its own line, but the location was still found",
+            new CoverageManifest().locations(
+                new EoSyntax(
+                    String.join(
+                        System.lineSeparator(),
+                        "[] > foo /Q.bytes",
+                        "",
+                        "  true.eq true ++> works",
+                        ""
+                    )
+                ).parsed()
+            ),
+            Matchers.everyItem(Matchers.not(Matchers.matchesPattern("^[^:]+:1:\\d+$")))
         );
     }
 

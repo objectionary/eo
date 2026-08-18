@@ -5,7 +5,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -390,15 +389,6 @@ abstract class MjSafe extends AbstractMojo {
     protected Settings settings = new Settings();
 
     /**
-     * Placed tojos.
-     * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    protected final TjsPlaced placedTojos = new TjsPlaced(
-        () -> Catalogs.INSTANCE.make(this.placed.toPath(), this.placedFormat)
-    );
-
-    /**
      * The Git hash to pull objects from.
      * If not set, will be computed from {@code tag} field.
      * @checkstyle VisibilityModifierCheck (5 lines)
@@ -430,20 +420,6 @@ abstract class MjSafe extends AbstractMojo {
     );
 
     /**
-     * Cached tojos.
-     * @todo #5098:90min Extract tojos lifecycle out of MjSafe.
-     *  TjsForeign and TjsPlaced are created, scoped, and closed here,
-     *  mixing Maven plumbing with catalog state management. Move their
-     *  construction and closing into each Mojo (or a dedicated owner)
-     *  so MjSafe is not responsible for their lifecycle. Ensure that
-     *  close() is still guaranteed even when exec() throws.
-     */
-    private final TjsForeign tojos = new TjsForeign(
-        () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat),
-        () -> this.scope
-    );
-
-    /**
      * Whether we should skip goal execution.
      */
     @Parameter(property = "eo.skip", defaultValue = "false")
@@ -469,39 +445,45 @@ abstract class MjSafe extends AbstractMojo {
                 );
             }
         } else {
-            try {
-                final long start = System.nanoTime();
-                new Deadline(this, this.timeout, this.unrollExitError).spent(
-                    () -> {
-                        this.exec();
-                        return new Object();
-                    }
+            final long start = System.nanoTime();
+            new Deadline(this, this.timeout, this.unrollExitError).spent(
+                () -> {
+                    this.exec();
+                    return new Object();
+                }
+            );
+            if (Logger.isDebugEnabled(this)) {
+                Logger.debug(
+                    this,
+                    "Execution of %s took %[nano]s",
+                    this.getClass().getSimpleName(),
+                    System.nanoTime() - start
                 );
-                if (Logger.isDebugEnabled(this)) {
-                    Logger.debug(
-                        this,
-                        "Execution of %s took %[nano]s",
-                        this.getClass().getSimpleName(),
-                        System.nanoTime() - start
-                    );
-                }
-            } finally {
-                if (this.foreign != null) {
-                    MjSafe.closeTojos(this.tojos);
-                }
-                if (this.placed != null) {
-                    MjSafe.closeTojos(this.placedTojos);
-                }
             }
         }
     }
 
     /**
-     * Tojos to use, in my scope only.
-     * @return Tojos to use
+     * A fresh foreign catalog in this mojo's scope, to be closed by the
+     * caller once the mojo is done with it.
+     * @return The catalog
      */
-    protected final TjsForeign scopedTojos() {
-        return this.tojos;
+    protected final TjsForeign tojos() {
+        return new TjsForeign(
+            () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat),
+            () -> this.scope
+        );
+    }
+
+    /**
+     * A fresh placed catalog, to be closed by the caller once the mojo is
+     * done with it.
+     * @return The catalog
+     */
+    protected final TjsPlaced placed() {
+        return new TjsPlaced(
+            () -> Catalogs.INSTANCE.make(this.placed.toPath(), this.placedFormat)
+        );
     }
 
     /**
@@ -535,25 +517,26 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Build the assembling step from this mojo's configuration.
+     * @param tojos The foreign catalog to assemble through
      * @return Configured Assembling instance
      */
-    Assembling assembling() {
+    Assembling assembling(final TjsForeign tojos) {
         return new Assembling(
-            this.scopedTojos(),
+            tojos,
             new Timed(
                 new Parsing(
-                    this.scopedTojos(),
+                    tojos,
                     this.targetDir.toPath(),
                     this.sourcesDir.toPath(),
                     this.caching(Parsing.CACHE)
                 )
             ),
             new Timed(
-                new Probing(this.scopedTojos(), this.objectionary(), !this.offline)
+                new Probing(tojos, this.objectionary(), !this.offline)
             ),
             new Timed(
                 new Pulling(
-                    this.scopedTojos(),
+                    tojos,
                     this.targetDir.toPath().resolve(Pulling.DIR),
                     this.hash,
                     this.objectionary(),
@@ -576,18 +559,5 @@ abstract class MjSafe extends AbstractMojo {
      */
     GlobalCache caching(final String sub) {
         return new Caching(this.cache, this.cacheEnabled, this.plugin.getVersion()).forStep(sub);
-    }
-
-    /**
-     * Close it safely.
-     * @param res The resource
-     * @throws MojoFailureException If fails
-     */
-    private static void closeTojos(final Closeable res) throws MojoFailureException {
-        try {
-            res.close();
-        } catch (final IOException ex) {
-            throw new MojoFailureException(ex);
-        }
     }
 }

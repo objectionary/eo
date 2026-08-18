@@ -38,7 +38,7 @@ public final class ConnectFuncCall implements Syscall {
             0,
             new Data.ToPhi(
                 Winsock.INSTANCE.connect(
-                    new Dataized(params[0]).asNumber().intValue(),
+                    new Dataized(params[0]).asNumber().longValue(),
                     new SockaddrIn(
                         new Dataized(params[1].take("family")).take(Short.class),
                         new Dataized(params[1].take("port")).take(Short.class),
