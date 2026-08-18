@@ -7,6 +7,7 @@ package org.eolang;
 
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.IntFunction;
@@ -25,8 +26,7 @@ final class Heaps {
     /**
      * All.
      */
-    @SuppressWarnings("PMD.LooseCoupling")
-    private final ConcurrentHashMap<Integer, byte[]> blocks;
+    private final ConcurrentMap<Integer, byte[]> blocks;
 
     /**
      * Lock.
