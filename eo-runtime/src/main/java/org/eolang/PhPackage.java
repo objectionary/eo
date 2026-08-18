@@ -124,7 +124,6 @@ final class PhPackage implements Phi {
      * @param fqn FQN of the EO object
      * @return Phi
      */
-    @SuppressWarnings("PMD.PreserveStackTrace")
     private Phi loadPhi(final String fqn) {
         final String target = new JavaPath(fqn).toString();
         final String pinfo = String.format("%s.package-info", new JavaPath(fqn).pkg());
@@ -139,13 +138,15 @@ final class PhPackage implements Phi {
                 Class.forName(pinfo);
                 loaded = new PhPackage(fqn);
             } catch (final ClassNotFoundException pckg) {
-                throw new ExFailure(
+                final ExFailure failure = new ExFailure(
                     String.format(
                         "Couldn't find object '%s' because there's no class '%s' or package-info class: '%s', at least one of them must exist",
                         fqn, target, pinfo
                     ),
                     pckg
                 );
+                failure.addSuppressed(phi);
+                throw failure;
             }
         } catch (final NoSuchMethodException | InvocationTargetException
             | InstantiationException | IllegalAccessException ex
