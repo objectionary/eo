@@ -10,18 +10,20 @@
   path > @
   @. > as-path
     Q.path path
-  eq. > [] > exists
-    code.
-      os.is-windows.if
-        win32 *1
-          "_access"
-          path
-          0
-        posix *1
-          "access"
-          path
-          0
-    0
+  or. > [] > exists
+    eq.
+      code.
+        os.is-windows.if
+          win32 *1
+            "_access"
+            path
+            0
+          posix *1
+            "access"
+            path
+            0
+      0
+    is-symlink false
   [cant-check] > is-directory
     if. > @
       info.code.eq 0
