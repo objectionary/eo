@@ -33,8 +33,7 @@ public interface Winsock extends StdCallLibrary {
     /**
      * Winsock version.
      */
-    @SuppressWarnings("PMD.LongVariable")
-    short WINSOCK_VERSION_2_2 = (short) 0x0202;
+    short VERSION_2_2 = (short) 0x0202;
 
     /**
      * The Internet Protocol version 4 (IPv4) address family.

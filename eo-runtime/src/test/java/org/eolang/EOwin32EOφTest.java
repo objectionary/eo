@@ -154,7 +154,7 @@ final class EOwin32EOφTest {
          */
         private int startupsWSA() {
             return Winsock.INSTANCE.WSAStartup(
-                Winsock.WINSOCK_VERSION_2_2,
+                Winsock.VERSION_2_2,
                 new WSAStartupFuncCall.WSAData()
             );
         }

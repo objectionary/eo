@@ -403,7 +403,7 @@ final class SyscallTest {
          */
         private int startup() {
             return Winsock.INSTANCE.WSAStartup(
-                Winsock.WINSOCK_VERSION_2_2, new WSAStartupFuncCall.WSAData()
+                Winsock.VERSION_2_2, new WSAStartupFuncCall.WSAData()
             );
         }
 
