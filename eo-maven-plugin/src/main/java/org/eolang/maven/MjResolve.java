@@ -55,7 +55,7 @@ public final class MjResolve extends MjSafe {
     @Override
     public void exec() throws IOException {
         if (this.central == null) {
-            this.central = new CentralMaven(this.system);
+            this.central = new CentralMaven(this.system, this.session, this.repositories);
         }
         try (TjsForeign tojos = this.tojos()) {
             new Resolving(
