@@ -279,13 +279,13 @@ final class EmitTest {
     }
 
     @Test
-    void marksObjectWithAsAttribute() {
+    void marksObjectWithSlotAttribute() {
         final Emit emit = new Emit();
         emit.object(null, "foo", 1, 0);
         emit.slot("label");
         emit.close();
         MatcherAssert.assertThat(
-            "as() must attach @as='label' for the inline-binding marker",
+            "slot() must attach @as='label' for the inline-binding marker",
             EmitTest.render(emit),
             XhtmlMatchers.hasXPath("/object/o[@base='foo' and @as='label']")
         );
