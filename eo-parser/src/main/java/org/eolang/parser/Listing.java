@@ -27,7 +27,7 @@ final class Listing implements Iterable<Directive> {
      * Characters that are not allowed inside an XML text node.
      */
     private static final Pattern FORBIDDEN = Pattern.compile(
-        "[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F-\\x84\\x86-\\x9F\\uFFFE\\uFFFF]"
+        "[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\uFFFE\\uFFFF]"
     );
 
     /**

@@ -37,17 +37,37 @@ final class ListingTest {
     @Test
     void dropsCharactersForbiddenInXml() {
         MatcherAssert.assertThat(
-            "characters that XML text nodes can't hold must be dropped",
+            "characters that XML 1.0 text nodes can't hold must be dropped",
             ListingTest.listing(
                 String.format(
-                    "[] > x%c%c%c%c",
+                    "[] > x%c%c%c",
                     (char) 0x01,
                     (char) 0x07,
-                    (char) 0x1F,
-                    (char) 0x7F
+                    (char) 0x1F
                 )
             ),
             Matchers.equalTo("[] > x")
+        );
+    }
+
+    @Test
+    void keepsCharactersLegalInXml10() {
+        MatcherAssert.assertThat(
+            "characters legal in an XML 1.0 text node must survive in the listing",
+            ListingTest.listing(
+                String.format(
+                    "[] > x%c%c",
+                    (char) 0x7F,
+                    (char) 0x9F
+                )
+            ),
+            Matchers.equalTo(
+                String.format(
+                    "[] > x%c%c",
+                    (char) 0x7F,
+                    (char) 0x9F
+                )
+            )
         );
     }
 
@@ -79,12 +99,7 @@ final class ListingTest {
             0x0E,
             0x1F,
             0xFFFE,
-            0xFFFF,
-            0x7F,
-            0x80,
-            0x84,
-            0x86,
-            0x9F
+            0xFFFF
         }
     )
     void removesForbiddenCharacters(final int codepoint) {
