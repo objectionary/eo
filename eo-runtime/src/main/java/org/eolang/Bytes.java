@@ -45,7 +45,7 @@ public interface Bytes {
 
     /**
      * Big-endian unsigned shift.
-     * Shifts left if value is positive, or right otherwise.
+     * Shifts right if the value is positive, or left otherwise.
      * Does not perform sign extension.
      * @param bits Bits to shift, negative to shift left
      * @return Bytes
