@@ -14,8 +14,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -49,7 +47,6 @@ final class DrProgramTest {
     }
 
     @Test
-    @DisabledOnOs(OS.WINDOWS)
     void checksThatSchemaLocationPointToFile() throws Exception {
         MatcherAssert.assertThat(
             "URL of XSD is set to file",
@@ -60,7 +57,6 @@ final class DrProgramTest {
     }
 
     @Test
-    @DisabledOnOs(OS.WINDOWS)
     void checksThatSchemaLocationPointToExistingFile() throws Exception {
         MatcherAssert.assertThat(
             "XSD file exists",
