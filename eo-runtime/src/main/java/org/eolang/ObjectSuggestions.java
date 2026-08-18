@@ -39,17 +39,25 @@ final class ObjectSuggestions {
 
     /**
      * Ctor.
-     * @param loader The class loader to scan for EO objects
      */
-    ObjectSuggestions(final ClassLoader loader) {
-        this.names = ObjectSuggestions.scan(loader);
+    ObjectSuggestions() {
+        this(Thread.currentThread().getContextClassLoader());
     }
 
     /**
      * Ctor.
+     * @param loader The class loader to scan for EO objects
      */
-    ObjectSuggestions() {
-        this(Thread.currentThread().getContextClassLoader());
+    ObjectSuggestions(final ClassLoader loader) {
+        this(ObjectSuggestions.scan(loader));
+    }
+
+    /**
+     * Ctor.
+     * @param names The EO object names to suggest among
+     */
+    ObjectSuggestions(final List<String> names) {
+        this.names = names;
     }
 
     /**
