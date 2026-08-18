@@ -103,7 +103,7 @@ final class CoverageManifestTest {
     }
 
     @Test
-    void excludesLocationOfAThrowingTest() throws Exception {
+    void excludesLocationOfAThrowingCase() throws Exception {
         MatcherAssert.assertThat(
             "a throwing test never gets a PhCoverage hit for its own body, but its locations were still found",
             new CoverageManifest().locations(
