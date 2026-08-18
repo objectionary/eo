@@ -8,6 +8,7 @@ import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Set;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
@@ -20,6 +21,8 @@ import org.cactoos.Scalar;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.repository.RemoteRepository;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -45,6 +48,24 @@ abstract class MjSafe extends AbstractMojo {
      */
     @Component
     protected RepositorySystem system;
+
+    /**
+     * Maven Resolver repository session, carrying the local repository,
+     * mirrors, proxies and credentials from {@code settings.xml}.
+     * Do NOT move this field to a subclass: same reason as {@link #system}.
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @Parameter(defaultValue = "${repositorySystemSession}", readonly = true, required = true)
+    protected RepositorySystemSession session;
+
+    /**
+     * Remote repositories configured for the current project, including
+     * any mirror substitutions Maven already applied.
+     * Do NOT move this field to a subclass: same reason as {@link #system}.
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @Parameter(defaultValue = "${project.remoteProjectRepositories}", readonly = true)
+    protected List<RemoteRepository> repositories;
 
     /**
      * Directory where classes are stored in target.
