@@ -13,7 +13,6 @@ import org.cactoos.Text;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.Sticky;
-import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
@@ -138,11 +137,10 @@ final class ObjectsIndex {
      * Download from the URL and return the content.
      * @param url The URL with tags
      * @return The body of the web page
+     * @throws Exception If the download fails
      */
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
-    private static Text asText(final URL url) {
-        return new TextOf(
-            new Unchecked<>(() -> new TextOf(url).asString())
-        );
+    private static Text asText(final URL url) throws Exception {
+        return new TextOf(new TextOf(url).asString());
     }
 }
