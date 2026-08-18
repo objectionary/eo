@@ -20,7 +20,8 @@ import java.util.LinkedHashSet;
  *
  * <p>{@code to-java.xsl} (the last shift of {@link Transpilation#XSLS})
  * wraps a location into {@code PhCoverage} when it carries {@code @line}
- * and {@code @pos} and its {@code @loc} has no {@code +} in it. Those
+ * and {@code @pos} and its {@code @loc} has no {@code +} and no {@code .-}
+ * in it. Those
  * attributes are already present by the time every shift except the last
  * one has run, so running that same prefix here and reading the result
  * gets the exact same set {@code to-java.xsl} would act on, structurally,
@@ -59,7 +60,7 @@ final class CoverageManifest {
         final XML passed = new Xsline(this.train).pass(xmir);
         final Collection<String> found = new LinkedHashSet<>();
         for (final XML located : passed.nodes(
-            "//*[@line and @pos and not(contains(@loc,'+')) and not(@atom) and not(@skip-java) and not(self::class) and not(ancestor::void)]"
+            "//*[@line and @pos and not(contains(@loc,'+')) and not(contains(@loc,'.-')) and not(@atom) and not(@skip-java) and not(self::class) and not(ancestor::void)]"
         )) {
             found.add(
                 String.format(
