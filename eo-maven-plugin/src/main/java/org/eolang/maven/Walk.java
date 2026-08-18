@@ -5,9 +5,9 @@
 package org.eolang.maven;
 
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,14 +52,12 @@ final class Walk extends ListEnvelope<Path> {
      */
     @SuppressWarnings("PMD.LooseCoupling")
     Walk includes(final Collection<String> globs) {
+        final List<PathMatcher> matchers = new GlobPatterns(globs);
         return new Walk(
             this.home,
             this.stream().filter(
-                file -> globs.stream().anyMatch(
-                    glob -> this.matches(glob, file)
-                )
-                )
-                .collect(Collectors.toList())
+                path -> matchers.stream().anyMatch(matcher -> this.matches(matcher, path))
+            ).collect(Collectors.toList())
         );
     }
 
@@ -70,14 +68,12 @@ final class Walk extends ListEnvelope<Path> {
      */
     @SuppressWarnings("PMD.LooseCoupling")
     Walk excludes(final Collection<String> globs) {
+        final List<PathMatcher> matchers = new GlobPatterns(globs);
         return new Walk(
             this.home,
             this.stream().filter(
-                file -> globs.stream().noneMatch(
-                    glob -> this.matches(glob, file)
-                )
-                )
-                .collect(Collectors.toList())
+                path -> matchers.stream().noneMatch(matcher -> this.matches(matcher, path))
+            ).collect(Collectors.toList())
         );
     }
 
@@ -115,13 +111,13 @@ final class Walk extends ListEnvelope<Path> {
     }
 
     /**
-     * Create glob matcher from text.
-     * @param text The pattern, e.g. "**&#47;*.java"
-     * @param file The file to match
+     * Does matcher match the path?
+     * @param matcher Matcher
+     * @param file The path to match
      * @return Matcher
      */
-    private boolean matches(final String text, final Path file) {
-        return FileSystems.getDefault().getPathMatcher(String.format("glob:%s", text)).matches(
+    private boolean matches(final PathMatcher matcher, final Path file) {
+        return matcher.matches(
             Paths.get(
                 file.toAbsolutePath().toString().substring(
                     this.home.toAbsolutePath().toString().length() + 1

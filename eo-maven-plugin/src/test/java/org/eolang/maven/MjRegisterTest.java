@@ -8,12 +8,17 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Optional;
+import java.util.regex.PatternSyntaxException;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test cases for {@link MjRegister}.
@@ -67,5 +72,54 @@ final class MjRegisterTest {
                 MjRegister.class
             )
         );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"includeSources", "excludeSources"})
+    void failsWithPatternSyntaxExceptionInCaseInvalidGlobs(
+        final String prop, @Mktmp final Path temp
+    ) {
+        MatcherAssert.assertThat(
+            String.format(
+                "Execution must fail because of %s",
+                PatternSyntaxException.class
+            ),
+            MjRegisterTest.cause(
+                Assertions.assertThrows(
+                    IllegalStateException.class,
+                    () -> new FakeMaven(temp)
+                        .with(prop, new SetOf<>("{foo"))
+                        .execute(new FakeMaven.Register()),
+                    String.format(
+                        "%s should fail since supplied globs are invalid",
+                        MjRegister.class
+                    )
+                ),
+                PatternSyntaxException.class
+            ).isPresent(),
+            Matchers.is(true)
+        );
+    }
+
+    /**
+     * Cause.
+     * @param err Error
+     * @param type Type we are looking for
+     * @param <T> Type of expected error
+     * @return Throwable
+     */
+    private static <T extends Throwable> Optional<T> cause(
+        final Throwable err,
+        final Class<T> type
+    ) {
+        Optional<Throwable> current = Optional.of(err);
+        Optional<T> result = Optional.empty();
+        while (current.isPresent()) {
+            if (type.isInstance(current.get())) {
+                result = Optional.of(type.cast(current.get()));
+            }
+            current = Optional.ofNullable(current.get().getCause());
+        }
+        return result;
     }
 }
