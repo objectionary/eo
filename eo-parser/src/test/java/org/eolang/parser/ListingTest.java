@@ -71,6 +71,20 @@ final class ListingTest {
         );
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {0x09, 0x0A, 0x0D})
+    void keepsControlCharactersLegalInXml(final int codepoint) {
+        final String source = new String(Character.toChars(codepoint));
+        MatcherAssert.assertThat(
+            String.format(
+                "Character '%s' (%s code) must survive between the forbidden C0 ranges",
+                source, codepoint
+            ),
+            ListingTest.listing(source),
+            Matchers.equalTo(source)
+        );
+    }
+
     @Test
     void doesNotThrowExceptionOnEmptySource() {
         Assertions.assertDoesNotThrow(
