@@ -16,8 +16,8 @@ import java.util.List;
  *
  * <p>This class collects the small rule set as static helpers shared
  * by every line shape that reads an argument group — {@link
- * LnApplication}, {@link LnMethod}, {@link LnReversed}, and the
- * compact-tuple flavours.</p>
+ * LnApplication}, {@link LnMethod}, {@link LnReversed}, and {@link
+ * LnPipe}.</p>
  *
  * @since 0.1
  */
