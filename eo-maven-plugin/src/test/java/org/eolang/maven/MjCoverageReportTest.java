@@ -72,4 +72,61 @@ final class MjCoverageReportTest {
             "coverage-report must fail the build when coverage is below the minimum, but it didnt"
         );
     }
+
+    @Test
+    void doesNotAttributeMergedMembersToThePackageFile(@Mktmp final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(
+                String.join(
+                    System.lineSeparator(),
+                    "+architect me@example.com",
+                    "+version 0.0.0",
+                    "",
+                    "[n] > foo",
+                    "  42 > x",
+                    "  n > @"
+                ),
+                "foo",
+                "foo.eo"
+            )
+            .withProgram(
+                String.join(
+                    System.lineSeparator(),
+                    "+package foo",
+                    "",
+                    "[] > bar",
+                    "  42 > @"
+                ),
+                "foo.bar",
+                "foo/bar.eo"
+            )
+            .execute(MjParse.class)
+            .execute(new FakeMaven.Merge());
+        final Path hits = temp.resolve("coverage.txt");
+        Files.writeString(hits, "");
+        final Path lcov = temp.resolve("coverage.info");
+        maven.with("coverageFile", hits.toFile())
+            .with("lcovFile", lcov.toFile())
+            .execute(MjCoverageReport.class);
+        final String text = Files.readString(lcov);
+        final int first = text.indexOf("SF:");
+        final int second = text.indexOf("SF:", first + 3);
+        MatcherAssert.assertThat(
+            "a package member merged into its package must have a coverage block of its own, but only one file was reported",
+            second,
+            Matchers.greaterThan(0)
+        );
+        final String foo = text.substring(first, second);
+        MatcherAssert.assertThat(
+            "the meta directives of the package file must not appear as DA lines in its coverage block, but they did",
+            foo,
+            Matchers.not(Matchers.matchesPattern("(?s).*DA:([123]),0.*"))
+        );
+        final String bar = text.substring(second);
+        MatcherAssert.assertThat(
+            "the member must be covered under its own file, but its block was not reported",
+            bar,
+            Matchers.containsString("foo/bar.eo")
+        );
+    }
 }
