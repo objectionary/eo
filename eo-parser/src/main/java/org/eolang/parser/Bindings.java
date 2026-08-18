@@ -84,7 +84,7 @@ final class Bindings {
      * @param span Source span of the continuation line
      */
     static void checkReceiverUpgrade(final Level below, final Span span) {
-        if (below != null && below.kind() == Kind.BARE_REVERSED) {
+        if (below != null && below.kind() == Kind.BARE_REVERSED && below.children() <= 1) {
             throw new ParseError(
                 span.line(), span.indent(),
                 "reversed-dispatch receiver cannot carry a binding"
