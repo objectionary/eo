@@ -184,7 +184,7 @@ final class MjRegisterIT {
             new TjSynchronized(
                 new TjCached(
                     new TjDefault(
-                        new MnCsv(temp.resolve("target/eo-foreign.json"))
+                        new MnCsv(temp.resolve("target/eo-foreign.csv"))
                     )
                 )
             )
