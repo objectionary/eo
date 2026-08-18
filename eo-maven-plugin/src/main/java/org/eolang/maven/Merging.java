@@ -34,6 +34,11 @@ import org.w3c.dom.NodeList;
  * attribute of {@code Φ.number}, so no reference can be captured by an
  * attribute of the object it lands in.</p>
  *
+ * <p>Every package this build compiles an object for is merged, and no other:
+ * a package whose name no object carries, as {@code examples} in a program
+ * that declares {@code +package examples} and nothing called {@code examples},
+ * keeps its members as objects of their own.</p>
+ *
  * <p>A member arrives after the attributes the object already had, so the
  * places of the voids, and with them the meaning of applying the object to
  * arguments, stay as they were.</p>
@@ -66,58 +71,64 @@ final class Merging implements Step {
     private final Path dir;
 
     /**
-     * The names of the packages to merge.
-     */
-    private final Collection<String> packages;
-
-    /**
      * Ctor.
      * @param foreign The tojos of everything this build compiles
      * @param target The directory for the merged XMIR
-     * @param names The names of the packages to merge
      */
-    Merging(final TjsForeign foreign, final Path target, final Collection<String> names) {
+    Merging(final TjsForeign foreign, final Path target) {
         this.tojos = foreign;
         this.dir = target;
-        this.packages = names;
     }
 
     @Override
     public void exec() throws IOException {
-        if (this.packages.isEmpty()) {
-            Logger.info(
-                this, "No package is named for merging, every member stays an object of its own"
-            );
-        } else {
-            final Map<String, TjForeign> all = this.indexed();
-            int done = 0;
-            for (final String pkg : this.deepest()) {
-                done = done + this.spliced(pkg, all);
-            }
-            Logger.info(
-                this, "Put %d member(s) into %d package object(s), XMIR is in %[file]s",
-                done, this.packages.size(), this.dir
-            );
+        final Map<String, TjForeign> all = this.indexed();
+        final Collection<String> found = Merging.deepest(all);
+        int done = 0;
+        for (final String pkg : found) {
+            done = done + this.spliced(pkg, all);
         }
+        Logger.info(
+            this, "Put %d member(s) into %d package object(s), XMIR is in %[file]s",
+            done, found.size(), this.dir
+        );
     }
 
     /**
      * The packages to merge, the deeper ones first.
      *
+     * <p>A package is worth merging when this build compiles an object of the
+     * same name for its members to go into. The names come from the members
+     * themselves: whatever sits before the last dot of a compiled name is a
+     * package, and it is kept only if an object carries that name.</p>
+     *
      * <p>A package can be a member of another one, as {@code Φ.number.i64} is
      * a member of {@code Φ.number}, and then the order decides what
      * {@code number} takes in: merged last, {@code i64} would arrive without
      * the members it had just been given. Depth puts every package after the
-     * ones it holds, whatever order they were named in.</p>
+     * ones it holds.</p>
      *
+     * @param all Every compiled object of this build, by its name
      * @return The names of the packages
      */
-    private Collection<String> deepest() {
-        return this.packages.stream().sorted(
-            Comparator.comparingInt((String pkg) -> pkg.split("\\.").length)
-                .reversed()
-                .thenComparing(Comparator.naturalOrder())
-        ).collect(Collectors.toList());
+    private static Collection<String> deepest(final Map<String, TjForeign> all) {
+        return all.keySet().stream()
+            .filter(name -> name.indexOf('.') > 0)
+            .map(name -> name.substring(0, name.lastIndexOf('.')))
+            .distinct()
+            .filter(all::containsKey)
+            .sorted(Merging.deeper())
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * The order that puts a package after every package it holds.
+     * @return The comparator
+     */
+    private static Comparator<String> deeper() {
+        return Comparator.comparingInt((String pkg) -> pkg.split("\\.").length)
+            .reversed()
+            .thenComparing(Comparator.naturalOrder());
     }
 
     /**
@@ -140,14 +151,7 @@ final class Merging implements Step {
      * @throws IOException If the XMIR cannot be read or written
      */
     private int spliced(final String pkg, final Map<String, TjForeign> all) throws IOException {
-        final TjForeign object = Optional.ofNullable(all.get(pkg)).orElseThrow(
-            () -> new IllegalStateException(
-                String.format(
-                    "The package '%s' is named for merging, while this build compiles no object '%s' for its members to go into",
-                    pkg, pkg
-                )
-            )
-        );
+        final TjForeign object = all.get(pkg);
         final Map<String, TjForeign> members = Merging.members(pkg, all);
         final Node formation = Merging.formation(object.xmir());
         final Collection<String> taken = Merging.names(formation);

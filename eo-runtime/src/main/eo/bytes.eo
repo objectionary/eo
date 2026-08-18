@@ -1,8 +1,8 @@
 # Object `bytes` encapsulates a chain of bytes, providing the bitwise and
 # structural atoms every data object relies on. Objects like `number`, `string`,
 # and the integer types (`i16`, `i32`, `i64`) use `bytes` as their internal
-# representation, while conversions and derived operations live in the
-# `bytes` package (e.g. `bytes.as-number`, `bytes.xor`).
+# representation, while conversions and derived operations arrive from the
+# `bytes` package as attributes of this object (e.g. `01-02.as-number`).
 #
 # Usage examples:
 # ```

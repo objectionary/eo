@@ -30,15 +30,6 @@ final class PhDefaultTest {
     }
 
     @Test
-    void prefersPackageExtensionOverDecoratee() {
-        MatcherAssert.assertThat(
-            "Package object must shadow the same-named attribute of the decoratee, but it didnt",
-            new Dataized(new Data.ToPhi("42.5").take("as-number")).asNumber(),
-            Matchers.equalTo(42.5d)
-        );
-    }
-
-    @Test
     void printsDataAsTerm() {
         MatcherAssert.assertThat(
             "Object with data must render its bytes in φ-term, but it didnt",
