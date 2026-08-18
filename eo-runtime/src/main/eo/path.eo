@@ -145,7 +145,8 @@
                 gt. (sys.drive valid).size 0
                 valid
                 if.
-                  valid.starts-with
+                  starts-with.
+                    string valid
                     separator.concat separator
                   valid
                   if.
