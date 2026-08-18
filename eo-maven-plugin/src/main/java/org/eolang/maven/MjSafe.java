@@ -65,7 +65,7 @@ abstract class MjSafe extends AbstractMojo {
     @Parameter(
         property = "eo.foreign",
         required = true,
-        defaultValue = "${project.build.directory}/eo-foreign.json"
+        defaultValue = "${project.build.directory}/eo-foreign.csv"
     )
     protected File foreign;
 
