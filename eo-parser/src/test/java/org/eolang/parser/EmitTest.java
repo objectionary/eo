@@ -66,7 +66,7 @@ final class EmitTest {
         final Emit emit = new Emit();
         emit.comment(Collections.singletonList(new Span("# hello", 7)), 8);
         MatcherAssert.assertThat(
-            "a single-line comment must produce <comments><comment line='8'>hello</comment>, where the line is that of the attached named object",
+            "a single-line comment must produce <comments><comment line='8'>hello</comment>, where the line is the target given by the caller",
             EmitTest.render(emit),
             XhtmlMatchers.hasXPaths(
                 "/object/comments/comment[@line='8']",
@@ -106,7 +106,7 @@ final class EmitTest {
             6
         );
         MatcherAssert.assertThat(
-            "a comment's @line attribute must point at the line of the named object it attaches to",
+            "a comment's @line attribute must record the target line given by the caller, which is the line of the last comment span in the block",
             EmitTest.render(emit),
             XhtmlMatchers.hasXPath("/object/comments/comment[@line='6']")
         );
