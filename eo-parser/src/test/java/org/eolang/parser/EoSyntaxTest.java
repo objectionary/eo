@@ -249,7 +249,7 @@ final class EoSyntaxTest {
             ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/object[count(o)=1]",
-                "/object/o[@name='base' and count(o[not(@name='xi🌵')])=2]",
+                "/object/o[@name='base' and count(o[not(starts-with(@name, 'a🌵'))])=2]",
                 "/object/o[@name='base']/o[@name='x']",
                 "/object/o[@name='base']/o[@name='f']"
             )
