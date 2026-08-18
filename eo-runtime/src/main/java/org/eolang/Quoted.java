@@ -4,8 +4,12 @@
  */
 package org.eolang;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -16,9 +20,15 @@ import java.util.function.Supplier;
  * the literal early and a line feed splits it across lines, so the
  * printed φ-term denotes a string other than the one it came from.</p>
  *
+ * <p>Decoding is strict: bytes that are not valid UTF-8 would otherwise
+ * turn into replacement characters (U+FFFD), and a term built from
+ * those denotes a different object than the one it came from. The
+ * caller gets an empty result for such bytes and is expected to print
+ * the structural form instead.</p>
+ *
  * @since 0.73.3
  */
-final class Quoted implements Supplier<String> {
+final class Quoted implements Supplier<Optional<String>> {
 
     /**
      * The bytes of the text.
@@ -34,11 +44,22 @@ final class Quoted implements Supplier<String> {
     }
 
     @Override
-    public String get() {
-        final StringBuilder out = new StringBuilder("\"");
-        for (final char glyph : new String(this.data, StandardCharsets.UTF_8).toCharArray()) {
-            out.append(new Escaped(glyph).get());
+    public Optional<String> get() {
+        final Optional<String> result;
+        try {
+            final String text = StandardCharsets.UTF_8.newDecoder()
+                .onMalformedInput(CodingErrorAction.REPORT)
+                .onUnmappableCharacter(CodingErrorAction.REPORT)
+                .decode(ByteBuffer.wrap(this.data))
+                .toString();
+            final StringBuilder out = new StringBuilder("\"");
+            for (final char glyph : text.toCharArray()) {
+                out.append(new Escaped(glyph).get());
+            }
+            result = Optional.of(out.append('"').toString());
+        } catch (final CharacterCodingException ex) {
+            result = Optional.empty();
         }
-        return out.append('"').toString();
+        return result;
     }
 }

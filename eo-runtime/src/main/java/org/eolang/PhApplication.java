@@ -5,11 +5,6 @@
 
 package org.eolang;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.CodingErrorAction;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -114,24 +109,7 @@ public final class PhApplication extends PhOnce {
      * @return Escaped literal, or null if bytes are not valid UTF-8
      */
     private static String string(final byte[] bytes) {
-        Optional<String> text;
-        try {
-            text = Optional.of(
-                StandardCharsets.UTF_8.newDecoder()
-                    .onMalformedInput(CodingErrorAction.REPORT)
-                    .onUnmappableCharacter(CodingErrorAction.REPORT)
-                    .decode(ByteBuffer.wrap(bytes)).toString()
-            );
-        } catch (final CharacterCodingException ignored) {
-            text = Optional.empty();
-        }
-        final String result;
-        if (text.isPresent()) {
-            result = new Quoted(bytes).get();
-        } else {
-            result = null;
-        }
-        return result;
+        return new Quoted(bytes).get().orElse(null);
     }
 
     /**
