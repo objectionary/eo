@@ -17,9 +17,10 @@ public final class EObytes$EOconcat extends PhDefault implements Atom {
 
     /**
      * Ctor.
+     * @param stats Where this object reports its birth
      */
-    public EObytes$EOconcat() {
-        super(new Attrs(new Attr("b", new AtVoid("b"))));
+    public EObytes$EOconcat(final Statistics stats) {
+        super(stats, new Attrs(new Attr("b", new AtVoid("b"))));
     }
 
     @Override

@@ -467,7 +467,7 @@ final class PhDefaultTest {
     void keepsSubPackageInForma() {
         MatcherAssert.assertThat(
             "forma must keep the EO sub-package without its EO marker, but it didnt",
-            new EOstring$EOregex$EOcompile().forma(),
+            new EOstring$EOregex$EOcompile(new Silent()).forma(),
             Matchers.equalTo("Φ.string.regex.compile")
         );
     }
@@ -556,7 +556,7 @@ final class PhDefaultTest {
             "the message explains what's going on",
             Assertions.assertThrows(
                 ExAbstract.class,
-                () -> new EOnumber().put(1, new Data.ToPhi(1)),
+                () -> new EOnumber(new Silent()).put(1, new Data.ToPhi(1)),
                 "fails when trying to set attribute with too big position"
             ).getMessage(),
             Matchers.containsString("Can't overwrite the cached attribute ")

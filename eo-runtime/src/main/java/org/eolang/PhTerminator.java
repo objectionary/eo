@@ -127,6 +127,11 @@ public final class PhTerminator implements Phi {
     }
 
     @Override
+    public Statistics statistics() {
+        return new Silent();
+    }
+
+    @Override
     public byte[] delta() {
         throw new ExFailure("%s", new Dataized(this.reason()).asString());
     }

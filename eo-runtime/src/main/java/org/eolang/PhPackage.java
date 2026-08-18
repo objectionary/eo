@@ -31,12 +31,19 @@ final class PhPackage implements Phi {
     private final Map<String, Phi> objects;
 
     /**
+     * The statistics every object loaded from this package reports to.
+     */
+    private final Statistics stats;
+
+    /**
      * Ctor.
      * @param name The name
+     * @param statistics Where the objects of this package report to
      */
-    PhPackage(final String name) {
+    PhPackage(final String name, final Statistics statistics) {
         this.pkg = name;
         this.objects = new ConcurrentHashMap<>(0);
+        this.stats = statistics;
     }
 
     @Override
@@ -47,6 +54,11 @@ final class PhPackage implements Phi {
     @Override
     public String forma() {
         return this.pkg;
+    }
+
+    @Override
+    public Statistics statistics() {
+        return this.stats;
     }
 
     @Override
@@ -149,16 +161,16 @@ final class PhPackage implements Phi {
             Class.forName(pinfo);
             try {
                 Class.forName(target);
-                loaded = new PhNest(fqn);
+                loaded = new PhNest(fqn, this.stats);
             } catch (final ClassNotFoundException absent) {
-                loaded = new PhPackage(fqn);
+                loaded = new PhPackage(fqn, this.stats);
             }
         } catch (final ClassNotFoundException pckg) {
             try {
                 loaded = Class.forName(target)
                     .asSubclass(Phi.class)
-                    .getConstructor()
-                    .newInstance();
+                    .getConstructor(Statistics.class)
+                    .newInstance(this.stats);
             } catch (final ClassNotFoundException phi) {
                 throw new ExFailure(
                     String.format(

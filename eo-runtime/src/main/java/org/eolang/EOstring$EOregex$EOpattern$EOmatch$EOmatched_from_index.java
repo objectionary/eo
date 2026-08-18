@@ -35,9 +35,11 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index exten
 
     /**
      * Ctor.
+     * @param stats Where this object reports its birth
      */
-    public EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index() {
+    public EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index(final Statistics stats) {
         super(
+            stats,
             new Attrs(
                 new Attr(
                     EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,

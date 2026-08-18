@@ -98,6 +98,11 @@ public class PhOnce implements Phi {
     }
 
     @Override
+    public Statistics statistics() {
+        return this.object.get().statistics();
+    }
+
+    @Override
     public byte[] delta() {
         return this.object.get().delta();
     }

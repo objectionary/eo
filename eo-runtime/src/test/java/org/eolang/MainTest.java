@@ -8,6 +8,7 @@ import com.yegor256.Jaxec;
 import com.yegor256.Jhome;
 import com.yegor256.Result;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -73,6 +74,20 @@ final class MainTest {
             Matchers.allOf(
                 Matchers.containsString("EOLANG"),
                 Matchers.containsString("false")
+            )
+        );
+    }
+
+    @Test
+    void reportsBirthsAndDispatches() {
+        MatcherAssert.assertThat(
+            "The run does not say how many objects were born and how many attributes were taken",
+            MainTest.stderr("true"),
+            Matchers.matchesPattern(
+                Pattern.compile(
+                    ".*Finished in .+s \\(\\d+ bytes\\), [1-9]\\d* objects, [1-9]\\d* dispatches.*",
+                    Pattern.DOTALL
+                )
             )
         );
     }

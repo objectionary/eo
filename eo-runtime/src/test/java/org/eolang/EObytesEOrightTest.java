@@ -27,7 +27,7 @@ final class EObytesEOrightTest {
                 () -> new Dataized(
                     new PhApplication(
                         new PhApplication(
-                            new EObytes$EOright(),
+                            new EObytes$EOright(new Silent()),
                             Phi.RHO,
                             new Data.ToPhi(new byte[]{0x01, 0x02})
                         ),
@@ -50,7 +50,7 @@ final class EObytesEOrightTest {
                 () -> new Dataized(
                     new PhApplication(
                         new PhApplication(
-                            new EObytes$EOright(),
+                            new EObytes$EOright(new Silent()),
                             Phi.RHO,
                             new Data.ToPhi(new byte[]{0x01, 0x02})
                         ),

@@ -65,7 +65,7 @@ final class PhPackageTest {
 
     @Test
     void reportsRhoOnceBound() {
-        final Phi pckg = new PhPackage("test-rho");
+        final Phi pckg = new PhPackage("test-rho", new Silent());
         pckg.put(Phi.RHO, Phi.Φ);
         MatcherAssert.assertThat(
             "hasRho() must turn true as soon as ρ is bound into the package",

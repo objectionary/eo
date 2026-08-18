@@ -4,11 +4,6 @@
  */
 package org.eolang;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -102,6 +97,11 @@ public class PhDefault implements Phi, Cloneable {
     private final List<String> order;
 
     /**
+     * The statistics this object reports its birth and its dispatches to.
+     */
+    private final Statistics stats;
+
+    /**
      * Attributes.
      */
     private Map<String, Attribute> attrs;
@@ -117,7 +117,7 @@ public class PhDefault implements Phi, Cloneable {
      * Default ctor.
      */
     public PhDefault() {
-        this("", null, PhDefault.NONE);
+        this(new Silent());
     }
 
     /**
@@ -125,7 +125,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param forma The forma of the object
      */
     public PhDefault(final String forma) {
-        this(forma, null, PhDefault.NONE);
+        this(new Silent(), forma);
     }
 
     /**
@@ -133,7 +133,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param attributes Initial attributes to register
      */
     public PhDefault(final Map<String, Attribute> attributes) {
-        this("", null, attributes);
+        this(new Silent(), attributes);
     }
 
     /**
@@ -141,7 +141,7 @@ public class PhDefault implements Phi, Cloneable {
      * @param dta Object data
      */
     public PhDefault(final byte[] dta) {
-        this("", dta, PhDefault.NONE);
+        this(new Silent(), dta);
     }
 
     /**
@@ -150,18 +150,56 @@ public class PhDefault implements Phi, Cloneable {
      * @param attributes Initial attributes to register
      */
     public PhDefault(final byte[] dta, final Map<String, Attribute> attributes) {
-        this("", dta, attributes);
+        this(new Silent(), "", dta, attributes);
+    }
+
+    /**
+     * Ctor of an object that counts into the program it belongs to.
+     * @param statistics Where to report the birth and the dispatches
+     */
+    public PhDefault(final Statistics statistics) {
+        this(statistics, "", null, PhDefault.NONE);
+    }
+
+    /**
+     * Ctor with the forma taken from XMIR.
+     * @param statistics Where to report the birth and the dispatches
+     * @param forma      The forma of the object
+     */
+    public PhDefault(final Statistics statistics, final String forma) {
+        this(statistics, forma, null, PhDefault.NONE);
+    }
+
+    /**
+     * Ctor with initial attributes.
+     * @param statistics Where to report the birth and the dispatches
+     * @param attributes Initial attributes to register
+     */
+    public PhDefault(final Statistics statistics, final Map<String, Attribute> attributes) {
+        this(statistics, "", null, attributes);
+    }
+
+    /**
+     * Ctor.
+     * @param statistics Where to report the birth and the dispatches
+     * @param dta        Object data
+     */
+    public PhDefault(final Statistics statistics, final byte[] dta) {
+        this(statistics, "", dta, PhDefault.NONE);
     }
 
     /**
      * Primary ctor.
+     * @param statistics Where to report the birth and the dispatches
      * @param forma      The forma of the object, taken from XMIR
      * @param dta        Object data
      * @param attributes Initial attributes to register
      */
     private PhDefault(
-        final String forma, final byte[] dta, final Map<String, Attribute> attributes
+        final Statistics statistics, final String forma,
+        final byte[] dta, final Map<String, Attribute> attributes
     ) {
+        this.stats = statistics;
         this.fqn = forma;
         this.data = new Snapshot(dta);
         this.initial = attributes;
@@ -185,6 +223,7 @@ public class PhDefault implements Phi, Cloneable {
             final PhDefault copy = (PhDefault) this.clone();
             copy.lock = new ReentrantLock();
             copy.attrs = new CopiedAttrs(this.loaded(), copy);
+            this.stats.allocate();
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new ExFailure("cannot copy the object", ex);
@@ -231,6 +270,7 @@ public class PhDefault implements Phi, Cloneable {
                 )
             );
         }
+        this.stats.dispatch();
         final boolean logging = PhDefault.LOGGER.isLoggable(Level.FINE);
         if (logging) {
             PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
@@ -317,6 +357,11 @@ public class PhDefault implements Phi, Cloneable {
             form = this.fqn;
         }
         return form;
+    }
+
+    @Override
+    public Statistics statistics() {
+        return this.stats;
     }
 
     /**
@@ -559,6 +604,12 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Activate the lazy state: initialize attrs/order from the constructor-supplied
      * map, wrapping each entry with {@link AtWithRho}. Idempotent.
+     *
+     * <p>This is also where an object is counted as born, since it happens
+     * exactly once per object and, unlike a constructor, may do work. An
+     * object that never reaches this point has no attributes and takes no
+     * part in dataization, so it stays out of the statistics.</p>
+     *
      * @return Map of attrs
      */
     private Map<String, Attribute> loaded() {
@@ -566,6 +617,7 @@ public class PhDefault implements Phi, Cloneable {
         try {
             if (this.attrs == null) {
                 this.attrs = PhDefault.defaults();
+                this.stats.allocate();
                 for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
                     this.add(ent.getKey(), ent.getValue());
                 }
@@ -652,27 +704,7 @@ public class PhDefault implements Phi, Cloneable {
      * @return The atom types table, empty when the table is absent
      */
     private static AtomTypes atoms() {
-        final Map<String, String> table;
-        final InputStream source = PhDefault.class.getResourceAsStream("atoms.csv");
-        if (source == null) {
-            table = Collections.emptyMap();
-        } else {
-            try (
-                BufferedReader lines = new BufferedReader(
-                    new InputStreamReader(source, StandardCharsets.UTF_8)
-                )
-            ) {
-                table = lines.lines().filter(line -> line.contains(",")).collect(
-                    Collectors.toMap(
-                        line -> line.substring(0, line.indexOf(',')),
-                        line -> line.substring(line.indexOf(',') + 1)
-                    )
-                );
-            } catch (final IOException ex) {
-                throw new ExFailure("Failed to read the atom types table", ex);
-            }
-        }
-        return new AtomTypes(table);
+        return new AtomTypes(PhDefault.class);
     }
 
     /**

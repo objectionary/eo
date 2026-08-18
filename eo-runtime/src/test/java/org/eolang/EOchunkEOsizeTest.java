@@ -25,7 +25,7 @@ final class EOchunkEOsizeTest {
                 ExAbstract.class,
                 () -> new Dataized(
                     new PhApplication(
-                        new EOchunk$EOsize(),
+                        new EOchunk$EOsize(new Silent()),
                         Phi.RHO,
                         new PhApplication(
                             new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),

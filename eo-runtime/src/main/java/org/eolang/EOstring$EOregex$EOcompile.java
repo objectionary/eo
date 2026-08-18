@@ -28,9 +28,10 @@ public final class EOstring$EOregex$EOcompile extends PhDefault implements Atom 
 
     /**
      * Ctor.
+     * @param stats Where this object reports its birth
      */
-    public EOstring$EOregex$EOcompile() {
-        super(new Attrs(
+    public EOstring$EOregex$EOcompile(final Statistics stats) {
+        super(stats, new Attrs(
             new Attr(
                 EOstring$EOregex$EOcompile.FALLBACK,
                 new AtVoid(EOstring$EOregex$EOcompile.FALLBACK)

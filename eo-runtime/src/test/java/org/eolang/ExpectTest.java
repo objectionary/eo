@@ -336,7 +336,8 @@ final class ExpectTest {
                 () -> new Dataized(
                     new PhApplication(
                         new PhApplication(
-                            (Phi) cls.getDeclaredConstructor().newInstance(),
+                            (Phi) cls.getDeclaredConstructor(Statistics.class)
+                                .newInstance(new Silent()),
                             Phi.RHO,
                             new Data.ToPhi(42)
                         ),
@@ -366,7 +367,8 @@ final class ExpectTest {
                 ExAbstract.class,
                 () -> new Dataized(
                     new PhApplication(
-                        (Phi) cls.getDeclaredConstructor().newInstance(),
+                        (Phi) cls.getDeclaredConstructor(Statistics.class)
+                            .newInstance(new Silent()),
                         Phi.RHO,
                         new Data.ToPhi(true)
                     )

@@ -345,10 +345,14 @@
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text> * Ctor.</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text> * @param stats Where this object reports its birth</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
     <xsl:text> */</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:value-of select="$name"/>
-    <xsl:text>() {</xsl:text>
+    <xsl:text>(final Statistics stats) {</xsl:text>
+    <xsl:value-of select="eo:eol(3)"/>
+    <xsl:text>super(stats);</xsl:text>
     <xsl:apply-templates select="attr">
       <xsl:with-param name="indent" select="3"/>
       <xsl:with-param name="context" select="'this'"/>
@@ -378,11 +382,13 @@
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text> * Ctor.</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> * @param stats Where this object reports its birth</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
     <xsl:text> */</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>public </xsl:text>
     <xsl:value-of select="$class"/>
-    <xsl:text>() {</xsl:text>
+    <xsl:text>(final Statistics stats) {</xsl:text>
     <xsl:choose>
       <xsl:when test="@base">
         <xsl:value-of select="eo:eol(2)"/>
@@ -401,6 +407,8 @@
         <xsl:text>);</xsl:text>
       </xsl:when>
       <xsl:otherwise>
+        <xsl:value-of select="eo:eol(2)"/>
+        <xsl:text>super(stats);</xsl:text>
         <xsl:apply-templates select="attr">
           <xsl:with-param name="indent" select="2"/>
           <xsl:with-param name="parent" select="$class"/>
@@ -492,7 +500,7 @@
     <xsl:value-of select="$variable"/>
     <xsl:text> = new </xsl:text>
     <xsl:value-of select="$class"/>
-    <xsl:text>();</xsl:text>
+    <xsl:text>(stats);</xsl:text>
     <xsl:apply-templates select="$argument" mode="located">
       <xsl:with-param name="indent" select="$indent + 2"/>
       <xsl:with-param name="name" select="$variable"/>
@@ -526,9 +534,9 @@
     <xsl:value-of select="eo:eol($indent + 2)"/>
     <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$ctx"/>
-    <xsl:value-of select="concat(' = new ', $phiDefaultClass, '(')"/>
+    <xsl:value-of select="concat(' = new ', $phiDefaultClass, '(stats')"/>
     <xsl:if test="@loc and not(contains(@loc, '🌵'))">
-      <xsl:text>"</xsl:text>
+      <xsl:text>, "</xsl:text>
       <xsl:value-of select="eo:literal(@loc)"/>
       <xsl:text>"</xsl:text>
     </xsl:if>
@@ -601,7 +609,7 @@
         <xsl:value-of select="concat('new ', $phiDefaultClass)"/>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>();</xsl:text>
+    <xsl:text>(stats);</xsl:text>
   </xsl:template>
   <!-- Attribute body: regular object, not method -->
   <xsl:template match="o[@base and @base!='' and not(starts-with(@base, '.'))]" mode="object">
@@ -765,7 +773,7 @@
     <xsl:value-of select="$name"/>
     <xsl:text> = new PhApplication(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:value-of select="concat(', 0, new ', $phiDefaultClass, '(')"/>
+    <xsl:value-of select="concat(', 0, new ', $phiDefaultClass, '(stats, ')"/>
     <xsl:value-of select="text()"/>
     <xsl:text>));</xsl:text>
   </xsl:template>
@@ -821,6 +829,23 @@
     <xsl:text>public </xsl:text>
     <xsl:value-of select="$class"/>
     <xsl:text>() {</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>this(new Silent());</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>/**</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> * Ctor.</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> * @param stats Where this object reports its birth</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> */</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>private </xsl:text>
+    <xsl:value-of select="$class"/>
+    <xsl:text>(final Statistics stats) {</xsl:text>
     <xsl:choose>
       <xsl:when test="@base">
         <xsl:value-of select="eo:eol(2)"/>
@@ -839,6 +864,8 @@
         <xsl:text>);</xsl:text>
       </xsl:when>
       <xsl:otherwise>
+        <xsl:value-of select="eo:eol(2)"/>
+        <xsl:text>super(stats);</xsl:text>
         <xsl:apply-templates select="attr" mode="tattr">
           <xsl:with-param name="indent" select="2"/>
           <xsl:with-param name="parent" select="$class"/>

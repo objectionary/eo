@@ -147,6 +147,11 @@ public final class PhSafe implements Phi, Atom {
     }
 
     @Override
+    public Statistics statistics() {
+        return this.origin.statistics();
+    }
+
+    @Override
     public byte[] delta() {
         return this.through(this.origin::delta, ".Δ");
     }

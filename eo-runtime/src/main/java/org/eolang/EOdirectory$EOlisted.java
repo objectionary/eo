@@ -24,9 +24,10 @@ public final class EOdirectory$EOlisted extends PhDefault implements Atom {
 
     /**
      * Ctor.
+     * @param stats Where this object reports its birth
      */
-    public EOdirectory$EOlisted() {
-        // nothing
+    public EOdirectory$EOlisted(final Statistics stats) {
+        super(stats);
     }
 
     @Override
