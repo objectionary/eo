@@ -12,8 +12,6 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -758,7 +756,8 @@ final class EoSyntaxTest {
      * @throws IOException if I/O fails
      */
     private static Stream<Arguments> naughty() throws IOException {
-        return Files.readAllLines(Paths.get("target/blns.txt")).stream().filter(s -> !s.isEmpty())
+        return new TextOf(new ResourceOf("org/eolang/parser/blns.txt")).asString()
+            .lines().filter(s -> !s.isEmpty())
             .map(StringEscapeUtils::escapeJava)
             .map(Arguments::of);
     }
