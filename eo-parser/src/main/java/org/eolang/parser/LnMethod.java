@@ -18,7 +18,7 @@ import java.util.List;
  * <li>{@link Kind#VMETHOD} when this {@code .method} has 0 horizontal
  * args — the chain stays open for further {@code .method} continuations
  * or deeper-indent vapplication children.</li>
- * <li>{@link Kind#VMETHOD_WITH_HARGS} when this {@code .method}
+ * <li>{@link Kind#VMETHOD_HARGS} when this {@code .method}
  * carries one or more horizontal args — the chain becomes
  * {@link Openness#HCOMPLETED}.</li>
  * </ul>
@@ -108,7 +108,7 @@ final class LnMethod implements Line {
             kind = Kind.VMETHOD;
             openness = Openness.OPEN;
         } else {
-            kind = Kind.VMETHOD_WITH_HARGS;
+            kind = Kind.VMETHOD_HARGS;
             openness = Openness.HCOMPLETED;
         }
         top.become(kind);
@@ -139,7 +139,7 @@ final class LnMethod implements Line {
                 "method continuation not allowed after horizontal application, try vertical application instead"
             );
         }
-        if (stack.top().kind() == Kind.ONLY_PHI_FORMATION) {
+        if (stack.top().kind() == Kind.ONLY_PHI) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "method continuation not allowed after only-phi formation"

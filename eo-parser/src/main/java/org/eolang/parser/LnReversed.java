@@ -20,7 +20,7 @@ import java.util.List;
  * <ul>
  * <li><strong>Horizontal</strong> ({@code name. arg1 arg2}) —
  * {@code arg1} is the receiver, {@code arg2…} are method args. Outer
- * kind {@link Kind#REVERSED_WITH_HARGS},
+ * kind {@link Kind#REVERSED_HARGS},
  * {@link Openness#HCOMPLETED}. No deeper-indent children.</li>
  * <li><strong>Vertical</strong> ({@code name.} with no hargs) — the
  * next deeper-indent line is the receiver (R-5.2.9), subsequent
@@ -91,7 +91,7 @@ final class LnReversed implements Line {
             kind = Kind.BARE_REVERSED;
             openness = Openness.OPEN;
         } else {
-            kind = Kind.REVERSED_WITH_HARGS;
+            kind = Kind.REVERSED_HARGS;
             openness = Openness.HCOMPLETED;
         }
         this.transition(stack, suffix, kind, openness);
