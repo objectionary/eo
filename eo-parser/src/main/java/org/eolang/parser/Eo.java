@@ -212,16 +212,17 @@ final class Eo implements Iterable<Directive> {
         final Globals globals, final Emit emit, final Recovery recovery
     ) {
         final Span head = spans.get(start);
-        final StringBuilder body = new StringBuilder(head.body());
+        final StringBuilder body = new StringBuilder(head.body().stripTrailing());
         int idx = start + 1;
         while (idx < spans.size()) {
             final Span next = spans.get(idx);
-            if (next.indent() < head.indent() || !Eo.isBytesOnly(next.body())) {
+            final String trimmed = next.body().stripTrailing();
+            if (next.indent() < head.indent() || !Eo.isBytesOnly(trimmed)) {
                 break;
             }
-            body.append(next.body());
+            body.append(trimmed);
             idx = idx + 1;
-            if (!next.body().endsWith("-")) {
+            if (!trimmed.endsWith("-")) {
                 break;
             }
         }
@@ -246,9 +247,8 @@ final class Eo implements Iterable<Directive> {
      * @return True if a BYTES continuation starts here
      */
     private static boolean isBytesContinuation(final String body) {
-        return body.length() >= 6
-            && body.endsWith("-")
-            && Eo.isBytesOnly(body);
+        final String trimmed = body.stripTrailing();
+        return trimmed.length() >= 6 && trimmed.endsWith("-") && Eo.isBytesOnly(trimmed);
     }
 
     /**
