@@ -224,16 +224,6 @@ final class Linting implements Step {
         return sum;
     }
 
-    /**
-     * Whether a defect must be reported, given the experimental-lints setting.
-     * @param skip Whether experimental lints must be skipped
-     * @param experimental Whether the defect itself is experimental
-     * @return TRUE if the defect must be reported
-     */
-    static boolean reportable(final boolean skip, final boolean experimental) {
-        return !skip || !experimental;
-    }
-
     private void linting() throws IOException {
         final Collection<TjForeign> programs = this.tojos.withXmir();
         final Map<Severity, Integer> counts = new ConcurrentHashMap<>();
@@ -458,7 +448,7 @@ final class Linting implements Step {
             .without(this.programlints.toArray(new String[0]))
             .defects()
             .stream()
-            .filter(defect -> Linting.reportable(this.experimental, defect.experimental())).forEach(
+            .filter(defect -> !(this.experimental && defect.experimental())).forEach(
                 defect -> {
                     final Node node = progs.get(defect.object()).inner();
                     new Xembler(
@@ -493,7 +483,7 @@ final class Linting implements Step {
             .without(this.sourcelints.toArray(new String[0]))
             .defects()
             .stream().filter(
-                defect -> Linting.reportable(this.experimental, defect.experimental())
+                defect -> !(this.experimental && defect.experimental())
             ).collect(Collectors.toList());
         defects.addAll(found);
         final Directives dirs = new Directives();
