@@ -37,17 +37,17 @@
               T message > [message] >> failure
           [n] >> digits
             if. > @
-              n.lt ten
+              n.lt ^.ten
               as-char.
                 n.as-number.plus 48
               concat.
-                digits q
+                ^.digits q
                 as-char.
                   plus.
                     as-number.
-                      n.minus (q.times ten)
+                      n.minus (q.times ^.ten)
                     48
-            n.div ten failure > bits!
+            n.div ^.ten failure > bits!
             i64 bits > q
           | (n.as-i64 failure)
   ^ > n

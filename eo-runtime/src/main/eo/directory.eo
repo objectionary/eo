@@ -24,15 +24,15 @@
         if.
           errno.eq
             os.is-windows.if win32.eexist posix.eexist
-          attempted
+          ^.attempted
             index.plus 1
           T
             "Can't create a unique file in %s, OS error %d".printf
-              * dir errno
+              * ^.dir errno
         seq *
-          closed descriptor
+          ^.closed descriptor
           path
-      opened path > descriptor!
+      ^.opened path > descriptor!
       code. > errno
         os.is-windows.if
           win32
@@ -41,17 +41,17 @@
           posix
             "errno"
             *
-      candidate index > path!
+      ^.candidate index > path!
     | 0 > @
     [index] > candidate
       path.separator.joined > @
-        * dir name
+        * ^.dir name
       "%d-%d-%d-%f".printf > name!
         *
-          time
-          process
+          ^.time
+          ^.process
           index
-          random
+          ^.random
     code. > [descriptor] > closed
       os.is-windows.if
         win32 *1
@@ -81,8 +81,8 @@
       Q.file touch.as-bytes
       T
         "Directory %s does not exist, can't create temporary file".printf
-          * file
-    retried > [] > touch
+          * ^.file
+    ^.^.retried > [] > touch
       ^.^.path
       clock.as-number
       code.
@@ -99,23 +99,23 @@
       [rest] >> stepped
         if. > @
           rest.length.eq 0
-          picked accum prefix
+          picked ^.accum ^.prefix
           if.
             and.
               entry.is-directory false
               not.
                 entry.is-symlink false
-            walked earlier sub child.as-dir
+            ^.^.walked earlier sub child.as-dir
             picked earlier sub
-        dir.as-path.resolved name > child
-        stepped rest.tail > earlier
+        ^.dir.as-path.resolved name > child
+        ^.stepped rest.tail > earlier
         child.as-file > entry
         rest.head > name
         if. > sub
-          prefix.length.eq 0
+          ^.prefix.length.eq 0
           name
           path.separator.joined
-            * prefix name
+            * ^.prefix name
       | dir.listed > @
     | > @
       *
@@ -159,22 +159,22 @@
         * "\\" char
       char
     if. > [from] >> closes
-      from.gte glob.length
+      from.gte ^.glob.length
       false
       if.
         eq.
-          glob.at
+          ^.glob.at
             from
             "" > [absent]
           "]"
         true
-        closes
+        ^.closes
           from.plus 1
     [index acc braced classed] >> translated
       if. > @
-        index.gte glob.length
+        index.gte ^.glob.length
         acc
-        translated
+        ^.translated
           index.plus advance
           "".joined
             * acc token
@@ -204,18 +204,18 @@
               char.eq ","
             "|"
             escaped char
-      glob.at index > char
+      ^.glob.at index > char
       classed.not.and > double
         and.
           char.eq "*"
           eq.
-            glob.at
+            ^.glob.at
               index.plus 1
               "" > [message]
             "*"
       opening.and > negated
         eq.
-          glob.at
+          ^.glob.at
             index.plus 1
             "" > [missing]
           "!"

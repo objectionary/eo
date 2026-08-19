@@ -19,7 +19,7 @@
   malloc.of > @
     0
     seq * > [m] >>
-      origin.copied m.to-output
+      ^.origin.copied m.to-output
       m
   ^ > origin
 

@@ -26,8 +26,8 @@
     [scan buffer is-first] >> rec-read
       scan.eof.if > @
         string buffer
-        rec-read
-          line-or-eof
+        ^.rec-read
+          ^.^.line-or-eof
           is-first.if
             buffer.concat scan.line
             concat.
@@ -35,7 +35,7 @@
               scan.line
           false
     | > @
-      line-or-eof
+      ^.line-or-eof
       ""
       true
   [] > line-or-eof
@@ -54,11 +54,11 @@
                 next.as-bytes.eq "\n"
               char.eq "\n"
           string buffer
-          rec-read
+          ^.rec-read
             next
             buffer.concat char
         input.as-bytes > char
         @. > next
           input.read 1
       | first --
-  line-or-eof.line > [] > next-line
+  ^.line-or-eof.line > [] > next-line

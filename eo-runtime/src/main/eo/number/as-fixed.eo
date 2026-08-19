@@ -31,11 +31,11 @@
           if. > @
             digits.eq scale
             if. > [unit rest] >> written
-              places.eq 0
+              ^.^.places.eq 0
               unit.as-decimal
               concat.
                 unit.as-decimal.concat ".".as-bytes
-                rec-pad rest places --
+                rec-pad rest ^.^.places --
             | (whole.plus 1) 0
             written whole digits
           floor. > digits
@@ -44,7 +44,7 @@
                 a.minus whole
                 scale
               0.5
-          pow10 places > scale
+          pow10 ^.places > scale
           a.floor > whole
         | 0
       if.
@@ -54,7 +54,7 @@
             floor.
               plus.
                 a.times
-                  pow10 places
+                  pow10 ^.places
                 0.5
             0
           positive a
@@ -67,14 +67,14 @@
     p.eq 0
     1
     times.
-      pow10
+      ^.pow10
         as-number.
           p.minus 1
       10
   if. > [value count acc] >> rec-pad
     count.eq 0
     acc
-    rec-pad
+    ^.rec-pad
       floor.
         value.div 10
       as-number.

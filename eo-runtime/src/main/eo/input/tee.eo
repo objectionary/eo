@@ -27,8 +27,8 @@
   [size] > read
     read. > @
       input-block
-        origin
-        output
+        ^.origin
+        ^.output
         --
       size
     [input output buffer] > input-block
@@ -36,9 +36,9 @@
       [size] > read
         seq * > @
           written
-          input-block chunk written chunk.as-bytes
-        ^. (input.read size).read > chunk
-        ^. (output.write chunk).write > written
+          ^.^.input-block chunk written chunk.as-bytes
+        ^. (^.input.read size).read > chunk
+        ^. (^.output.write chunk).write > written
 
   eq. ++> can-read-from-bytes-and-write-to-memory
     malloc.of
@@ -77,8 +77,8 @@
               read.
                 tee.
                   input ((input 01-02-03-04-05.as-input).tee m2.to-output)
-                  m1.to-output
+                  ^.m1.to-output
                 5
-              m1.write 5 2A-
-              m1
+              ^.m1.write 5 2A-
+              ^.m1
       01-02-03-04-05-2A

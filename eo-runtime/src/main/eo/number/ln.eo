@@ -36,33 +36,33 @@
         series p
     if. > [level p] > climb
       level.lt 0
-      series p
+      ^.series p
       if.
         p.gte
-          epow level
+          ^.epow level
         plus.
-          climb
+          ^.climb
             level.minus 1
             p.div
-              epow level
-          step level
-        climb
+              ^.epow level
+          ^.step level
+        ^.climb
           level.minus 1
           p
     if. > [level p] > descend
       level.lt 0
-      series p
+      ^.series p
       if.
         p.lt
           1.div
-            epow level
+            ^.epow level
         minus.
-          descend
+          ^.descend
             level.minus 1
             p.times
-              epow level
-          step level
-        descend
+              ^.epow level
+          ^.step level
+        ^.descend
           level.minus 1
           p
     [level] > epow
@@ -70,7 +70,7 @@
         level.eq 0
         e
         prev.times prev
-      epow > prev
+      ^.epow > prev
         level.minus 1
     [m] > series
       2.times > @
@@ -85,8 +85,8 @@
               k.times 2
               1
           times.
-            t.times t
-            horner
+            ^.t.times ^.t
+            ^.horner
               k.plus 1
       div. > t
         m.minus 1
@@ -96,7 +96,7 @@
         level.eq 0
         1
         prev.plus prev
-      step > prev
+      ^.step > prev
         level.minus 1
   number ^.as-bytes > n
 

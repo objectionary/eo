@@ -16,14 +16,14 @@
         os.is-windows.if
           win32 *1
             "_access"
-            path
+            ^.path
             0
           posix *1
             "access"
-            path
+            ^.path
             0
       0
-    is-symlink false
+    ^.is-symlink false
   [cant-check] > is-directory
     if. > @
       info.code.eq 0
@@ -36,10 +36,10 @@
       os.is-windows.if
         win32 *1
           "_stat64"
-          path
+          ^.path
         posix *1
           "stat"
-          path
+          ^.path
   [cant-check] > is-symlink
     os.is-windows.if > @
       if.
@@ -59,17 +59,17 @@
     code. > attributes
       win32 *1
         "GetFileAttributesW"
-        path
+        ^.path
     called. > info
       posix *1
         "lstat"
-        path
+        ^.path
   [mode scope cant-open] > open
     known.not.if > @
       T
         "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
-        existing.and exists.not
+        existing.and ^.exists.not
         cant-open
           "File must exist for given access mod: '%s'".printf
             *
@@ -109,13 +109,13 @@
       [syscall] > open-through
         if. > @
           descriptor.eq -1
-          cant-open
+          ^.^.cant-open
             "Couldn't open file '%s': %s".printf
-              * path opened.output
+              * ^.^.^.path opened.output
           if.
             recovered
               seq *
-                scope
+                ^.^.scope
                   stream descriptor
                 true
               false
@@ -128,16 +128,16 @@
               code.
                 syscall.close
                   * descriptor
-              cant-open
+              ^.^.cant-open
                 "The scope given to '%s'.open() failed; the descriptor was closed before propagating the failure".printf
-                  * path
-        appending.if syscall.append 0 > append
-        existing.not.if syscall.creat 0 > creat
+                  * ^.^.^.path
+        ^.^.appending.if syscall.append 0 > append
+        ^.^.existing.not.if syscall.creat 0 > creat
         opened.code > descriptor
         if. > direction
-          readable.and writable
+          ^.^.readable.and ^.^.writable
           syscall.rdwr
-          writable.if syscall.wronly syscall.rdonly
+          ^.^.writable.if syscall.wronly syscall.rdonly
         plus. > flags
           plus.
             direction.plus creat
@@ -145,7 +145,7 @@
           append
         called. > opened
           syscall.open
-            * path flags syscall.mode
+            * ^.^.^.path flags syscall.mode
         [descriptor] > stream
           [size] > read
             read. > @
@@ -154,7 +154,7 @@
             [buffer] > input-block
               buffer > @
               [size] > read
-                readable.not.if > @
+                ^.^.^.^.^.^.readable.not.if > @
                   T
                     "Can't read from file with provided access mode '%s'".printf
                       * access
@@ -165,16 +165,16 @@
                         "Failed to read from file"
                       received.output
                     received
-                    input-block chunk
+                    ^.^.input-block chunk
                 called. > received
-                  syscall.read
-                    * descriptor size
+                  ^.^.^.^.syscall.read
+                    * ^.^.^.descriptor size
           [buffer] > write
             output-block.write buffer > @
             [] > output-block
               true > @
               [buffer] > write
-                writable.not.if > @
+                ^.^.^.^.^.^.writable.not.if > @
                   T
                     "Can't write to file with provided access mode '%s'".printf
                       * access
@@ -183,18 +183,18 @@
                       code.eq -1
                       T
                         "Failed to write to file"
-                      output-block
+                      ^.^.output-block
                     code
                     remainder
                 code. > code
-                  syscall.write
-                    * descriptor buffer buffer.size
+                  ^.^.^.^.syscall.write
+                    * ^.^.^.descriptor buffer buffer.size
                 if. > remainder
                   code.lt buffer.size
-                  output-block.write
+                  ^.^.output-block.write
                     buffer.slice code (buffer.size.minus code)
-                  output-block
-        truncate.if syscall.trunc 0 > trunc
+                  ^.^.output-block
+        ^.^.truncate.if syscall.trunc 0 > trunc
     and. > readable
       not.
         as-bool.
@@ -232,11 +232,11 @@
       true
       seq *
         recovered
-          tmp.open
+          ^.tmp.open
             "r"
             T "boom" > [f]
           true
-        drain
+        ^.drain
           n.minus 1
     mktemp.tmpfile > tmp
 
@@ -281,7 +281,7 @@
                 "w"
                 f.write "Hello, world" > [f]
               "r"
-              m.put > [f] >>
+              ^.m.put > [f] >>
                 f.read 12
             m
       "Hello, world"
@@ -297,7 +297,7 @@
                 "w"
                 f.write "Hello, world" > [f]
               "r"
-              m.put > [f] >>
+              ^.m.put > [f] >>
                 read.
                   f.read 7
                   5
@@ -316,9 +316,9 @@
           [m] >>
             seq * > @
               open.
-                file source
+                file ^.source
                 "r"
-                m.put > [f] >>
+                ^.m.put > [f] >>
                   f.read 13
               m
     temp.path > source
@@ -451,9 +451,9 @@
           [m] >>
             seq * > @
               open.
-                file source
+                file ^.source
                 "r"
-                m.put > [f] >>
+                ^.m.put > [f] >>
                   f.read 14
               m
         "Shrek is love!"

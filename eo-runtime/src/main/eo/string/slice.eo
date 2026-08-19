@@ -59,42 +59,42 @@
           T cause
           if.
             eq.
-              byte.and p1
-              r1
-            recidx
-              increase index 1 true
+              byte.and ^.p1
+              ^.r1
+            ^.recidx
+              ^.increase index 1 true
               accum.plus 1
               result
               cause
             if.
               eq.
-                byte.and p2
-                r2
-              recidx
-                increase index 2 twovalid
+                byte.and ^.p2
+                ^.r2
+              ^.recidx
+                ^.increase index 2 twovalid
                 accum.plus 1
                 result
                 cause
               if.
                 eq.
-                  byte.and p3
-                  r3
-                recidx
-                  increase index 3 threevalid
+                  byte.and ^.p3
+                  ^.r3
+                ^.recidx
+                  ^.increase index 3 threevalid
                   accum.plus 1
                   result
                   cause
                 if.
-                  eq. (byte.and p4) r4
-                  recidx
-                    increase index 4 fourvalid
+                  eq. (byte.and ^.p4) ^.r4
+                  ^.recidx
+                    ^.increase index 4 fourvalid
                     accum.plus 1
                     result
                     cause
                   T
                     "Unknown byte format (%x), can't recognize character".printf
                       * byte
-      text.as-bytes.slice > b1
+      ^.text.as-bytes.slice > b1
         index.plus 1
         1
       eq. > b1808f
@@ -116,19 +116,19 @@
       eq. > b1cont
         b1.and C0-
         80-
-      text.as-bytes.slice > b2
+      ^.text.as-bytes.slice > b2
         index.plus 2
         1
       eq. > b2cont
         b2.and C0-
         80-
-      text.as-bytes.slice > b3
+      ^.text.as-bytes.slice > b3
         index.plus 3
         1
       eq. > b3cont
         b3.and C0-
         80-
-      text.as-bytes.slice index 1 > byte
+      ^.text.as-bytes.slice index 1 > byte
       b2cont.and > fourvalid
         b3cont.and second4
       eq. > leadc0c1
@@ -170,13 +170,13 @@
         *
           csize
           index
-          text.as-bytes
+          ^.text.as-bytes
     valid.if
       index.plus csize
       T
         "Malformed UTF-8 sequence (%x) at %d index".printf
           *
-            text.as-bytes.slice index csize
+            ^.text.as-bytes.slice index csize
             index
   number len! > nlen
   number start! > nstart

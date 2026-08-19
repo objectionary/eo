@@ -15,16 +15,16 @@
       ^.eq
         as-i64.
           i32 >> left
-            as-bytes.slice 4 4
+            ^.as-bytes.slice 4 4
       left
       cant-convert
         "Can't convert i64 number %d to i32 because it's out of i32 bounds".printf
-          * as-number
+          * ^.as-number
     i32 > left
-      as-bytes.slice 4 4
+      ^.as-bytes.slice 4 4
   [] > as-number
     if. > @
-      as-bytes.eq 00-00-00-00-00-00-00-00
+      ^.as-bytes.eq 00-00-00-00-00-00-00-00
       0
       number
         sign.or
@@ -55,9 +55,9 @@
       sign.eq 80-00-00-00-00-00-00-00
       as-bytes.
         plus.
-          i64 as-bytes.not
+          i64 ^.as-bytes.not
           i64 00-00-00-00-00-00-00-01
-      as-bytes
+      ^.as-bytes
     if. > mantissa
       highest.lte 52
       and.
@@ -80,7 +80,7 @@
       if. > @
         step.lt 1
         acc
-        scan
+        ^.scan
           empty.if m shifted
           empty.if
             acc
@@ -94,7 +94,7 @@
       43-30-00-00-00-00-00-00
       32
       00-00-00-00-00-00-00-20
-    as-bytes.and 80-00-00-00-00-00-00-00 > sign!
+    ^.as-bytes.and 80-00-00-00-00-00-00-00 > sign!
     not. > sticky
       eq.
         magnitude.left
@@ -104,21 +104,21 @@
     if. > @
       not.
         eq.
-          as-bytes.and 80-00-00-00-00-00-00-00 >> sign
+          ^.as-bytes.and 80-00-00-00-00-00-00-00 >> sign
           x.as-bytes.and 80-00-00-00-00-00-00-00
       sign.eq 00-00-00-00-00-00-00-00
       and.
         eq.
           and.
             as-bytes.
-              minus x >> difference
+              ^.minus x >> difference
             80-00-00-00-00-00-00-00
           00-00-00-00-00-00-00-00
         not.
           difference.as-bytes.eq 00-00-00-00-00-00-00-00
   [x] > gte
     or. > @
-      gt
+      ^.gt
         x >> value!
       ^.eq value
   gt. > [x] > lt
@@ -126,28 +126,28 @@
     ^
   [x] > lte
     or. > @
-      lt
+      ^.lt
         x >> value!
       ^.eq value
-  plus (i64 x!).neg > [x] > minus
+  ^.plus (i64 x!).neg > [x] > minus
   times -1.as-i64 > neg
   [x] > plus
     if. > [a b] >> carried
       b.eq 00-00-00-00-00-00-00-00
       i64 a
-      carried
+      ^.carried
         a.xor b
         left.
           a.and b
           1
     | > @
-      as-bytes
+      ^.as-bytes
       x.as-bytes
   [x] > times
     if. > [acc a b] > looped
       b.eq 00-00-00-00-00-00-00-00
       i64 acc
-      looped
+      ^.looped
         if.
           eq.
             b.and 00-00-00-00-00-00-00-01
@@ -161,7 +161,7 @@
         b.right 1
     | > @
       00-00-00-00-00-00-00-00
-      as-bytes
+      ^.as-bytes
       x.as-bytes
 
   eq. ++> can-add-mixed-signs
