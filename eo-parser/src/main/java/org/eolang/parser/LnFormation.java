@@ -120,51 +120,32 @@ final class LnFormation implements Line {
         }
     }
 
+    /**
+     * Push or replace the stack level per Step B/C/D of §5.2.
+     * @param stack The stack
+     * @param suffix The parsed suffix (sets named/atom flags)
+     * @return The pushed-or-replaced level
+     */
     private Level transition(final Stack stack, final Suffix suffix) {
-        final Level level;
-        if (stack.empty() || stack.top().indent() < this.span.indent()) {
-            this.checkChildAllowed(stack, suffix);
-            level = stack.push(
-                this.span.indent(), this.span.line(),
-                Kind.BARE_FORMATION, Openness.OPEN
-            );
-        } else {
-            level = stack.replace(
-                this.span.line(), Kind.BARE_FORMATION, Openness.OPEN
-            );
-        }
-        if (suffix.present()) {
-            level.name(suffix.label());
-        }
+        final Level level = new Transition(stack, this.span).apply(
+            Kind.BARE_FORMATION, Openness.OPEN,
+            new Admission(suffix.named(), suffix.test())
+        );
         if (suffix.atom()) {
             level.mark();
         }
         return level;
     }
 
-    private void checkChildAllowed(final Stack stack, final Suffix suffix) {
-        if (!stack.empty()
-            && this.span.indent() != stack.top().indent() + 2) {
-            throw new ParseError(
-                this.span.line(), 0,
-                "indent increased by more than one level"
-            );
-        }
-        if (!stack.empty()
-            && stack.top().openness() != Openness.OPEN) {
-            throw new ParseError(
-                this.span.line(), 0,
-                "unexpected deeper-indent line — previous expression is closed for children"
-            );
-        }
-        if (!stack.empty() && stack.top().atom() && !suffix.test()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "Atom cannot contain inner objects; only `+>` and `->` test attributes are allowed in an atom body"
-            );
-        }
-    }
-
+    /**
+     * Emit the formation's {@code <o>}, void params, and (if atom) the
+     * {@code λ} marker. The cursor remains inside the new {@code <o>}
+     * so deeper-indent children attach as siblings of the voids.
+     * @param emit The directives sink
+     * @param suffix The parsed suffix
+     * @param params Parameter names in source order
+     * @param binding Outer inline-binding label, or {@code null}
+     */
     private void emit(
         final Emit emit, final Suffix suffix, final List<String> params, final String binding
     ) {
