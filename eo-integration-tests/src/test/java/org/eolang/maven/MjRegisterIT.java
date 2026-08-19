@@ -29,12 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Integration tests for eo-maven-plugin:register goal.
  * @since 0.52
  */
-@SuppressWarnings(
-    {
-        "JTCOP.RuleAllTestsHaveProductionClass",
-        "JTCOP.RuleNotContainsTestWord"
-    }
-)
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjRegisterIT {
 
