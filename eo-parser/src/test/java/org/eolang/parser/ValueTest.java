@@ -168,7 +168,7 @@ final class ValueTest {
     }
 
     @Test
-    void identifierIsChainable() {
+    void marksIdentifierChainable() {
         MatcherAssert.assertThat(
             "an IDENTIFIER value must allow a .method chain behind it",
             new Value(Value.Kind.IDENTIFIER, "foo", 0, 3).chainable(),
@@ -177,7 +177,7 @@ final class ValueTest {
     }
 
     @Test
-    void starIsNotChainable() {
+    void marksStarNotChainable() {
         MatcherAssert.assertThat(
             "a STAR tuple marker must not allow a .method chain behind it",
             new Value(Value.Kind.STAR, "*", 0, 1).chainable(),
