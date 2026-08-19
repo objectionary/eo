@@ -98,7 +98,7 @@ public final class EoSyntax implements Syntax {
     @Override
     public XML parsed() throws IOException {
         final String text = new UncheckedText(new TextOf(this.input)).asString();
-        return this.transform.apply(
+        return Objects.requireNonNull(this.transform, "transform").apply(
             new XMLDocument(
                 new Xembler(
                     new Directives()
