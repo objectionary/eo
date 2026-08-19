@@ -31,10 +31,16 @@
 [] > as-input
   ^ > b
   [size] > read
-    @. > @
-      read.
-        input-block ^.b --
-        size
+    if. > @
+      size.is-finite.not.or
+        size.is-integer.not.or
+          0.gt size
+      T
+        "Can't read a non-integer, non-finite, or negative byte count"
+      @.
+        read.
+          input-block ^.b --
+          size
     [data buffer] > input-block
       buffer > @
       [size] > read
@@ -70,3 +76,11 @@
     01-02-03-04-05-06-07-08-F5-F6.as-input.read 4 > i1
     i1.read 4 > i2
     i2.read 4 > i3
+
+  01-02-03.as-input.read 3.5 --> stops-on-a-fractional-byte-count-above-available
+
+  01-02-03.as-input.read 0.5 --> stops-on-a-fractional-byte-count-below-available
+
+  01-02-03.as-input.read nan --> stops-on-a-nan-byte-count
+
+  01-02-03.as-input.read pinf --> stops-on-an-infinite-byte-count
