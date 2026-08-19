@@ -1,6 +1,17 @@
 # Touches a file, creating it if it does not exist yet, and returning the same
 # file, unchanged, if it already does. It is a method of `file`, and `f` is the
 # file it is taken off.
+#
+# @todo #7077:60min Add a synchronization-based regression test that creates
+#  the target file between the exists() probe and the exclusive open below,
+#  so the race this fixes is actually exercised. A single-threaded EO `++>`
+#  test can't trigger it: `f.exists.if` always sees a consistent snapshot in
+#  one thread. It needs a JUnit test against the generated `EOtouched` class
+#  (see PhDefaultRaceTest.java for the com.yegor256.Together idiom this repo
+#  already uses for exactly this kind of interleaving), with one thread
+#  paused right after the exists() probe while another thread creates and
+#  writes to the file, then confirms the paused thread's touched() does not
+#  truncate it.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -13,32 +24,54 @@
   f.exists.if > @
     f
     if.
-      descriptor.eq -1
+      or.
+        descriptor.gte 0
+        errno.eq eexist
+      seq *
+        if.
+          descriptor.gte 0
+          code.
+            os.is-windows.if
+              win32 *1
+                "_close"
+                descriptor
+              posix *1
+                "close"
+                descriptor
+          0
+        f
       T
         "Cant touch the file '%s': %s".printf
-          * f.path created.output
-      seq *
-        code.
-          os.is-windows.if
-            win32 *1
-              "_close"
-              descriptor
-            posix *1
-              "close"
-              descriptor
-        f
-  called. > created
+          * f.path opened.output
+  opened.code > descriptor
+  os.is-windows.if > eexist
+    win32.eexist
+    posix.eexist
+  code. > errno
+    os.is-windows.if
+      win32
+        "_errno"
+        *
+      posix
+        "errno"
+        *
+  ^ > f
+  called. > opened
     os.is-windows.if
       win32 *1
-        "_creat"
+        "_open"
         f.path
+        plus.
+          win32.creat.plus win32.exclusive
+          win32.wronly
         win32.mode
       posix *1
-        "creat"
+        "open"
         f.path
+        plus.
+          posix.creat.plus posix.exclusive
+          posix.wronly
         posix.mode
-  created.code > descriptor
-  ^ > f
 
   ++> can-return-itself-after-touching
     temp.deleted.touched.path.eq temp.path > @
