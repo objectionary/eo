@@ -353,13 +353,13 @@ final class EoSyntaxTest {
     @ClasspathSource(value = "org/eolang/parser/eo-typos/", glob = "**.yaml")
     void checksTypoPacks(final String yaml) {
         final Xtory story = EoSyntaxTest.typo(yaml);
-        final Xnav after = new Xnav(story.after().inner());
         MatcherAssert.assertThat(
             String.format(
                 "no error was reported on line %s of %s",
                 story.map().get("line"), yaml
             ),
-            after.path("/object/errors/error/@line").map(line -> line.text().get())
+            new Xnav(story.after().inner())
+                .path("/object/errors/error/@line").map(line -> line.text().get())
                 .collect(Collectors.toList()),
             Matchers.hasItem(story.map().get("line").toString())
         );
