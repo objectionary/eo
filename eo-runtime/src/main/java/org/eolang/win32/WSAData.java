@@ -13,6 +13,7 @@ import java.util.List;
  * The WSAData structure contains information about the implementation of Windows sockets.
  * @since 0.40.0
  * @checkstyle VisibilityModifierCheck (50 lines)
+ * @checkstyle AbbreviationAsWordInNameCheck (100 lines)
  * @checkstyle MemberNameCheck (100 lines)
  */
 public final class WSAData extends Structure {
