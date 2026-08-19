@@ -50,20 +50,19 @@ public final class MjCoverageReport extends MjSafe {
 
     /**
      * The raw {@code loc:line:pos} hits file {@code PhCoverage} appended to.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.coverageFile")
-    private File coverageFile;
+    @Parameter(alias = "coverageFile", property = "eo.coverageFile")
+    private File hits;
 
     /**
      * Where to write the LCOV tracefile.
-     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        alias = "lcovFile",
         property = "eo.lcovFile",
         defaultValue = "${project.build.directory}/coverage.info"
     )
-    private File lcovFile;
+    private File lcov;
 
     /**
      * The minimum percentage of dataized {@code .eo} objects that must be
@@ -73,10 +72,9 @@ public final class MjCoverageReport extends MjSafe {
      * into; {@code eo-runtime} raises it once tracking is on, mirroring
      * how the {@code jacoco} profile binds a {@code check} goal with its
      * own per-metric thresholds.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.minCoverage", defaultValue = "0")
-    private double minCoverage;
+    @Parameter(alias = "minCoverage", property = "eo.minCoverage", defaultValue = "0")
+    private double minimum;
 
     /**
      * Ctor.
@@ -87,11 +85,11 @@ public final class MjCoverageReport extends MjSafe {
 
     @Override
     public void exec() throws IOException {
-        if (this.coverageFile == null || !this.coverageFile.exists()) {
+        if (this.hits == null || !this.hits.exists()) {
             Logger.info(
                 this,
                 "No coverage hits file at %[file]s, skipping the LCOV report",
-                this.coverageFile
+                this.hits
             );
         } else {
             this.report();
@@ -119,25 +117,25 @@ public final class MjCoverageReport extends MjSafe {
                 }
             }
         }
-        final List<String> hits = Files.readAllLines(this.coverageFile.toPath());
-        for (final String hit : hits) {
+        final List<String> records = Files.readAllLines(this.hits.toPath());
+        for (final String hit : records) {
             final String source = fileof.get(hit);
             if (source != null) {
                 perfile.get(source).merge(lineof.get(hit), 1, Integer::sum);
             }
         }
         final LcovReport report = new LcovReport(perfile);
-        new Saved(report.text(), this.lcovFile.toPath()).value();
+        new Saved(report.text(), this.lcov.toPath()).value();
         final double covered = report.covered();
         Logger.info(
             this, "EO object coverage: %.1f%%, LCOV report saved to %[file]s",
-            covered, this.lcovFile
+            covered, this.lcov
         );
-        if (covered < this.minCoverage) {
+        if (covered < this.minimum) {
             throw new IOException(
                 String.format(
                     "EO object coverage is %.1f%%, below the required %.1f%% minimum",
-                    covered, this.minCoverage
+                    covered, this.minimum
                 )
             );
         }
