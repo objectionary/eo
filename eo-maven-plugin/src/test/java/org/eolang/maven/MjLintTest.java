@@ -91,7 +91,7 @@ final class MjLintTest {
     @Test
     void ignoresLintNamedInSkipSourceLints(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
-            .with("skipSourceLints", new SetOf<>("mandatory-spdx")).withProgram(
+            .with("sourcelints", new SetOf<>("mandatory-spdx")).withProgram(
                 "+architect yegor256@gmail.com",
                 "+home https://www.eolang.org",
                 "+package foo.x",
@@ -138,7 +138,7 @@ final class MjLintTest {
             .execute(new FakeMaven.Lint());
         final FakeMaven second = new FakeMaven(temp)
             .with("cache", cache.toFile())
-            .with("skipSourceLints", new SetOf<>("mandatory-spdx"))
+            .with("sourcelints", new SetOf<>("mandatory-spdx"))
             .withProgram(source)
             .allTojosWithHash(() -> "abcdefq");
         second.execute(new FakeMaven.Lint());
@@ -160,7 +160,7 @@ final class MjLintTest {
         }
         new FakeMaven(temp)
             .with("cache", cache.toFile())
-            .with("skipSourceLints", skipped)
+            .with("sourcelints", skipped)
             .withHelloWorld()
             .execute(new FakeMaven.Lint());
         try (Stream<Path> versions = Files.list(cache.resolve(Linting.CACHE))) {
@@ -176,7 +176,7 @@ final class MjLintTest {
     @Test
     void detectsWholeProgramAnalysisErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
-            .with("lintAsPackage", true)
+            .with("pkg", true)
             .withProgram(MjLintTest.problematic());
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -195,7 +195,7 @@ final class MjLintTest {
     @Test
     void detectsWholeProgramAnalysisErrorsOnSecondRun(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
-            .with("lintAsPackage", true)
+            .with("pkg", true)
             .withProgram(MjLintTest.problematic());
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -213,7 +213,7 @@ final class MjLintTest {
     void namesTheProgramInAWholeProgramAnalysisDefectFromCache(@Mktmp final Path temp)
         throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
-            .with("lintAsPackage", true)
+            .with("pkg", true)
             .withProgram(MjLintTest.problematic());
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -235,7 +235,7 @@ final class MjLintTest {
     void savesForWholeProgramAnalysisResultsToCache(@Mktmp final Path temp) throws IOException {
         final Path cache = temp.resolve("wpa-cache");
         final FakeMaven maven = new FakeMaven(temp)
-            .with("lintAsPackage", true)
+            .with("pkg", true)
             .allTojosWithHash(() -> "abcdefq")
             .with("cache", cache.toFile()).withProgram(
                 "+architect yegor256@gmail.com",
@@ -286,7 +286,7 @@ final class MjLintTest {
         final Path cache = temp.resolve("cache");
         final Path workspace = temp.resolve("project");
         final FakeMaven maven = new FakeMaven(workspace)
-            .with("lintAsPackage", true)
+            .with("pkg", true)
             .with("cache", cache.toFile())
             .with("scope", "compile");
         maven.withProgram(MjLintTest.suppressed("foo.x", "main")).execute(MjParse.class);
@@ -323,7 +323,7 @@ final class MjLintTest {
     void ignoresWholeProgramAnalysisErrors(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
-                .with("lintAsPackage", false)
+                .with("pkg", false)
                 .withProgram(MjLintTest.problematic())
                 .execute(new FakeMaven.Lint()),
             "We shouldn't get WPA error here because we disabled it with 'lintAsPackage' flag, but we got it"
@@ -334,8 +334,8 @@ final class MjLintTest {
     void suppressesWholeProgramAnalysisDefectViaUnlint(@Mktmp final Path temp)
         throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
-            .with("lintAsPackage", true)
-            .with("failOnWarning", false).withProgram(
+            .with("pkg", true)
+            .with("warning", false).withProgram(
                 "+architect yegor256@gmail.com",
                 "+package foo.x",
                 "+alias a.b.nowhere",
@@ -412,7 +412,7 @@ final class MjLintTest {
             "  [] > @",
             "    \"Hello world\" > @"
             )
-            .with("failOnWarning", true);
+            .with("warning", true);
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> maven.execute(new FakeMaven.Lint()),
@@ -436,7 +436,7 @@ final class MjLintTest {
                 "  [] > x",
                 "    \"Hello world\" > @"
                 )
-                .with("failOnWarning", false)
+                .with("warning", false)
                 .execute(new FakeMaven.Lint()),
             "Program with sparse decorated object should not have failed on warning without flag, but it does"
         );
@@ -628,7 +628,7 @@ final class MjLintTest {
         final Path workspace, final Path cache, final String... program
     ) throws IOException {
         final FakeMaven maven = new FakeMaven(workspace)
-            .with("lintAsPackage", true)
+            .with("pkg", true)
             .with("cache", cache.toFile());
         if (program.length > 0) {
             maven.withProgram(program);

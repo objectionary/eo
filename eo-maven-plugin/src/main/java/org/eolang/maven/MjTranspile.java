@@ -49,17 +49,23 @@ public final class MjTranspile extends MjSafe {
 
     /**
      * Add to source root.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.addSourcesRoot", defaultValue = "true")
-    private boolean addSourcesRoot;
+    @Parameter(
+        alias = "addSourcesRoot",
+        property = "eo.addSourcesRoot",
+        defaultValue = "true"
+    )
+    private boolean root;
 
     /**
      * Whether to transpile tests.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.transpileTests", defaultValue = "true")
-    private boolean transpileTests;
+    @Parameter(
+        alias = "transpileTests",
+        property = "eo.transpileTests",
+        defaultValue = "true"
+    )
+    private boolean tests;
 
     /**
      * Whether to wrap every dispatched object with a location-carrying
@@ -67,17 +73,16 @@ public final class MjTranspile extends MjSafe {
      * Off by default, so a production build stays lean; turn it on (as
      * {@code eo-runtime} does for its tests) to keep precise {@code .eo}
      * locations in panics.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.trackLocations")
-    private boolean trackLocations;
+    @Parameter(alias = "trackLocations", property = "eo.trackLocations")
+    private boolean locations;
 
     /**
      * Whether to wrap every located object in the generated Java into
      * {@code PhCoverage}, so it records a coverage hit the first time it
      * is touched at runtime. Off by default, so a production build stays
      * lean. The hits are appended to the file named by the
-     * {@code eo.coverageFile} system property of the JVM that runs the
+     * {@code eo.coverageTrackingFile} system property of the JVM that runs the
      * compiled program; when that property is absent, every hit is a
      * silent no-op. In {@code eo-runtime} the {@code coverage-file}
      * profile turns this on and forwards that property to surefire in
@@ -89,10 +94,9 @@ public final class MjTranspile extends MjSafe {
      * the covered percentage of dataized {@code .eo} objects drops below
      * a threshold, mirroring how the {@code jacoco} profile binds a
      * {@code check} goal with its own per-metric thresholds.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.coverageTracking")
-    private boolean coverageTracking;
+    @Parameter(alias = "coverageTracking", property = "eo.coverageTracking")
+    private boolean coverage;
 
     /**
      * The class that a generated class extends instead of {@code PhDefault},
@@ -129,29 +133,29 @@ public final class MjTranspile extends MjSafe {
             new Timed(
                 new Transpiling(
                     tojos.standalone(),
-                    this.targetDir.toPath(),
-                    this.generatedDir.toPath(),
+                    this.target.toPath(),
+                    this.generated.toPath(),
                     this.cache.toPath(),
-                    this.cacheEnabled,
+                    this.enabled,
                     this.plugin.getVersion(),
-                    this.transpileTests,
-                    this.xslMeasures.toPath(),
-                    new Tracking(this.trackSteps, this.trackLocations),
-                    this.coverageTracking,
+                    this.tests,
+                    this.measures.toPath(),
+                    new Tracking(this.steps, this.locations),
+                    this.coverage,
                     this.base(),
                     this.roots()
                 )
             ).exec();
         }
-        if (this.addSourcesRoot) {
+        if (this.root) {
             this.project.addCompileSourceRoot(
-                this.generatedDir.toPath().toAbsolutePath().toString()
+                this.generated.toPath().toAbsolutePath().toString()
             );
             Logger.info(
                 this, "The directory added to Maven 'compile-source-root': %[file]s",
-                this.generatedDir
+                this.generated
             );
-            final String gtests = this.generatedDir.toPath().getParent().resolve(
+            final String gtests = this.generated.toPath().getParent().resolve(
                 "generated-test-sources"
             ).toAbsolutePath().toString();
             this.project.addTestCompileSourceRoot(gtests);
@@ -170,10 +174,10 @@ public final class MjTranspile extends MjSafe {
      * @return The directories with hand-written Java
      */
     private Collection<Path> roots() {
-        final Path build = this.targetDir.toPath().getParent();
+        final Path build = this.target.toPath().getParent();
         return this.project.getCompileSourceRoots().stream()
             .map(Paths::get)
-            .filter(root -> !root.startsWith(build))
+            .filter(source -> !source.startsWith(build))
             .collect(Collectors.toList());
     }
 

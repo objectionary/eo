@@ -150,7 +150,7 @@ final class MjResolveTest {
             "Default JNA dependency must be resolved",
             new FakeMaven(temp)
                 .withHelloWorld()
-                .with("ignoreRuntime", true)
+                .with("runtime", true)
                 .execute(new FakeMaven.Resolve())
                 .result(),
             Matchers.hasKey(String.format("target/%s/net.java.dev.jna/jna/-/5.14.0", MjResolve.DIR))
@@ -193,7 +193,7 @@ final class MjResolveTest {
     void resolvesWithoutEoRuntimeDependency(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld()
-            .with("ignoreRuntime", true)
+            .with("runtime", true)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             "The class file must not exist, but it doesn't",
@@ -230,7 +230,7 @@ final class MjResolveTest {
                 "",
                 "[] > main"
             )
-        ).with("ignoreRuntime", true).execute(new FakeMaven.Resolve());
+        ).with("runtime", true).execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             "The class file must not exist, but it doesn't",
             maven.targetPath(),
@@ -306,7 +306,7 @@ final class MjResolveTest {
                     "[] > main-1 /bytes"
                 )
             );
-        maven.with("ignoreConflicts", true)
+        maven.with("conflicts", true)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
@@ -335,7 +335,7 @@ final class MjResolveTest {
                 "[] > main-1 /bytes"
             )
         );
-        maven.with("ignoreConflicts", true)
+        maven.with("conflicts", true)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             "Both sibling versions must survive resolving, but one was deleted",

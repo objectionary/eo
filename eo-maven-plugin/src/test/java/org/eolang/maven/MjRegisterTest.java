@@ -31,7 +31,7 @@ final class MjRegisterTest {
         MatcherAssert.assertThat(
             "The resource must exist, but it doesn't",
             new FakeMaven(temp)
-                .with("sourcesDir", temp.resolve("src/eo").toFile())
+                .with("sources", temp.resolve("src/eo").toFile())
                 .execute(new FakeMaven.Register()).foreign().getById("org.eolang.maven.abc-def")
                 .exists("id"),
             Matchers.is(true)
@@ -47,8 +47,8 @@ final class MjRegisterTest {
         MatcherAssert.assertThat(
             "The resource with incorrect id must exist, but it doesn't",
             new FakeMaven(temp)
-                .with("sourcesDir", temp.resolve("src/eo").toFile())
-                .with("strictFileNames", false)
+                .with("sources", temp.resolve("src/eo").toFile())
+                .with("strict", false)
                 .execute(new FakeMaven.Register()).foreign().getById("org.eolang.maven..abc")
                 .exists("id"),
             Matchers.is(true)

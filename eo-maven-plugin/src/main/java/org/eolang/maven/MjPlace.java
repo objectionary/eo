@@ -37,11 +37,11 @@ public final class MjPlace extends MjSafe {
         try (TjsPlaced placed = this.placed()) {
             new Placing(
                 placed,
-                this.targetDir.toPath().resolve(MjResolve.DIR),
-                this.classesDir.toPath(),
-                this.placeBinaries,
-                this.skipBinaries,
-                this.rewriteBinaries
+                this.target.toPath().resolve(MjResolve.DIR),
+                this.classes.toPath(),
+                this.placing,
+                this.excluded,
+                this.rewrite
             ).exec();
         }
     }

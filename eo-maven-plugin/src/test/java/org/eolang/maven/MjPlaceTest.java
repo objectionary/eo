@@ -54,7 +54,7 @@ final class MjPlaceTest {
         ).toFile().lastModified();
         MatcherAssert.assertThat(
             "PlaceMojo must skip already placed binaries, but it doesn't",
-            new FakeMaven(temp).with("rewriteBinaries", false).withPlacedBinary(
+            new FakeMaven(temp).with("rewrite", false).withPlacedBinary(
                 temp.resolve(this.targetClasses()).resolve(binary)
                 )
             .execute(MjPlace.class)
@@ -104,7 +104,7 @@ final class MjPlaceTest {
             "PlaceMojo have to place default Jna binary",
             new FakeMaven(temp)
                 .withHelloWorld()
-                .with("ignoreRuntime", true)
+                .with("runtime", true)
                 .execute(new FakeMaven.Place())
                 .result()
                 .get(this.targetClasses()),
@@ -161,7 +161,7 @@ final class MjPlaceTest {
         MatcherAssert.assertThat(
             "PlaceMojo have to place the runtime file, but doesn't",
             new FakeMaven(temp).withHelloWorld()
-                .with("resolveJna", false)
+                .with("jna", false)
                 .execute(new FakeMaven.Place())
                 .result()
                 .get(this.targetClasses()),
@@ -174,8 +174,8 @@ final class MjPlaceTest {
         MatcherAssert.assertThat(
             "PlaceMojo have not to place the runtime file, but doesn't",
             new FakeMaven(temp).withHelloWorld()
-                .with("ignoreRuntime", true)
-                .with("resolveJna", false)
+                .with("runtime", true)
+                .with("jna", false)
                 .execute(new FakeMaven.Place())
                 .result()
                 .get(this.targetClasses()),
@@ -203,7 +203,7 @@ final class MjPlaceTest {
     @Test
     void doesNotPlaceAgainIfNotUnplacedAndRewriteBinariesIsOff(@Mktmp final Path temp)
         throws Exception {
-        final FakeMaven maven = new FakeMaven(temp).with("rewriteBinaries", false);
+        final FakeMaven maven = new FakeMaven(temp).with("rewrite", false);
         final String binary = "some.class";
         final String old = "some old content";
         MjPlaceTest.saveBinary(temp, old, binary);

@@ -36,7 +36,7 @@ final class MjCleanTest {
             throw new IllegalStateException("Files not created.");
         }
         new FakeMaven(temp)
-            .with("targetDir", dir.toFile())
+            .with("target", dir.toFile())
             .execute(MjClean.class);
         MatcherAssert.assertThat(
             "CleanMojo should delete all temp files and directories, but it doesn't",
@@ -50,11 +50,11 @@ final class MjCleanTest {
     void makesFullCompilingLifecycleSuccessfully(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp)
             .withHelloWorld()
-            .with("includeSources", new SetOf<>("**.eo"))
-            .with("classesDir", temp.resolve("out").toFile())
+            .with("included", new SetOf<>("**.eo"))
+            .with("classes", temp.resolve("out").toFile())
             .with("placed", temp.resolve("list").toFile())
             .with("cache", temp.resolve("cache/parsed").toFile())
-            .with("skipZeroVersions", true).with(
+            .with("zeroversions", true).with(
                 "central",
                 (BiConsumer<Dependency, Path>) (dependency, path) -> {
                     assert dependency != null;
