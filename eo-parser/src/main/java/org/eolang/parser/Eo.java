@@ -311,7 +311,7 @@ final class Eo implements Iterable<Directive> {
         boolean failed = false;
         if (globals.inTextBlock()) {
             Eo.continueTextBlock(span, stack, globals, emit);
-        } else if (span.tab()) {
+        } else if (span.tab() && !span.blank()) {
             emit.error(span.line(), 0, "tab character in leading whitespace");
             failed = true;
         } else if (!span.blank() && span.indent() % 2 == 1) {
