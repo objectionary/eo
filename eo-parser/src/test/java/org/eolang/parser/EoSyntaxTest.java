@@ -762,16 +762,16 @@ final class EoSyntaxTest {
     }
 
     /**
-     * Parse a single-line EO source with no post-XSL transform — the
-     * resulting XMIR shows the raw parser output, useful for asserting
-     * directly on the parser's emission shape.
-     * @param line One EO source line
+     * Parse EO source with no post-XSL transform — the resulting XMIR
+     * shows the raw parser output, useful for asserting directly on the
+     * parser's emission shape.
+     * @param source EO source
      * @return Raw XMIR
      * @throws Exception If parsing fails
      */
-    private static XML raw(final String line) throws Exception {
+    private static XML raw(final String source) throws Exception {
         return new EoSyntax(
-            new InputOf(line.concat(String.valueOf((char) 10))),
+            new InputOf(source.concat(String.valueOf((char) 10))),
             UnaryOperator.identity()
         ).parsed();
     }
