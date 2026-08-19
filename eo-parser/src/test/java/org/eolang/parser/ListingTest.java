@@ -37,51 +37,17 @@ final class ListingTest {
     @Test
     void dropsCharactersForbiddenInXml() {
         MatcherAssert.assertThat(
-            "characters that XML 1.0 text nodes can't hold must be dropped",
+            "characters that XML text nodes can't hold must be dropped",
             ListingTest.listing(
                 String.format(
-                    "[] > x%c%c%c",
+                    "[] > x%c%c%c%c",
                     (char) 0x01,
                     (char) 0x07,
-                    (char) 0x1F
+                    (char) 0x1F,
+                    (char) 0x7F
                 )
             ),
             Matchers.equalTo("[] > x")
-        );
-    }
-
-    @Test
-    void keepsCharactersLegalInXml10() {
-        MatcherAssert.assertThat(
-            "characters legal in an XML 1.0 text node must survive in the listing",
-            ListingTest.listing(
-                String.format(
-                    "[] > x%c%c",
-                    (char) 0x7F,
-                    (char) 0x9F
-                )
-            ),
-            Matchers.equalTo(
-                String.format(
-                    "[] > x%c%c",
-                    (char) 0x7F,
-                    (char) 0x9F
-                )
-            )
-        );
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {0x09, 0x0A, 0x0D})
-    void keepsControlCharactersLegalInXml(final int codepoint) {
-        final String source = new String(Character.toChars(codepoint));
-        MatcherAssert.assertThat(
-            String.format(
-                "Character '%s' (%s code) must survive between the forbidden C0 ranges",
-                source, codepoint
-            ),
-            ListingTest.listing(source),
-            Matchers.equalTo(source)
         );
     }
 
@@ -113,7 +79,12 @@ final class ListingTest {
             0x0E,
             0x1F,
             0xFFFE,
-            0xFFFF
+            0xFFFF,
+            0x7F,
+            0x80,
+            0x84,
+            0x86,
+            0x9F
         }
     )
     void removesForbiddenCharacters(final int codepoint) {
@@ -127,6 +98,24 @@ final class ListingTest {
         );
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {0x09, 0x0A, 0x0D, 0x20, 0x85, 0xA0, 0xFFFD})
+    void keepsCharactersOutsideRestrictedRanges(final int codepoint) {
+        final String source = String.format("x%cy", codepoint);
+        MatcherAssert.assertThat(
+            String.format(
+                "Character with code %s falls between the restricted ranges and is not dropped",
+                codepoint
+            ),
+            ListingTest.listing(source),
+            Matchers.equalTo(source)
+        );
+    }
+
+    /**
+     * Sources to embed into {@code <listing>}.
+     * @return Stream of sources
+     */
     private static Stream<Arguments> sources() {
         return Stream.of(
             "[] > foo",

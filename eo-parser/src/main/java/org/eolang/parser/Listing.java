@@ -16,18 +16,19 @@ import org.xembly.Directives;
  *
  * <p>The text is set as is, without any manual escaping: the XML writer
  * escapes it exactly once, so the text value of {@code /object/listing}
- * equals the source. Only the characters that XML forbids in text nodes
- * are dropped, since they can't be represented there at all.</p>
+ * equals the source. The characters of the XML 1.1 restricted set are
+ * dropped first, because {@link Directives#set(Object)} refuses them and
+ * throws, whatever version the writer emits later.</p>
  *
  * @since 0.1
  */
 final class Listing implements Iterable<Directive> {
 
     /**
-     * Characters that are not allowed inside an XML text node.
+     * Characters that Xembly refuses to put inside an XML text node.
      */
     private static final Pattern FORBIDDEN = Pattern.compile(
-        "[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\uFFFE\\uFFFF]"
+        "[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F-\\x84\\x86-\\x9F\\uFFFE\\uFFFF]"
     );
 
     /**
