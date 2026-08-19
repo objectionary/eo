@@ -25,6 +25,13 @@
       | items.head items.tail
   ^ > text
 
+  matches. ++> can-apply-regex-to-a-joined-string
+    compiled.
+      regex.
+        "".joined
+          * "/[a-z]+/"
+    "hello"
+
   eq. ++> can-join-many-strings
     "hello-world-dear-friend"
     "-".joined
@@ -43,10 +50,3 @@
     "some"
     "-".joined
       * "some"
-
-  matches. ++> can-apply-regex-to-a-joined-string
-    compiled.
-      regex.
-        "".joined
-          * "/[a-z]+/"
-    "hello"

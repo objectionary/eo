@@ -139,16 +139,17 @@
             match.
               compile.
                 regex.
-                  Q.string chars.as-bytes
+                  string
+                    as-bytes.
+                      "".joined >>
+                        *
+                          "/^"
+                          translated 0 "" false false
+                          "$/"
                   T > [message] >>
                     "Can't parse '%s' as a glob pattern, %s".printf
                       * ^.glob message
               text
-      "".joined >> chars
-        *
-          "/^"
-          translated 0 "" false false
-          "$/"
     "".joined >> single
       *
         "[^"
