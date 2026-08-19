@@ -82,7 +82,12 @@ public final class EoSyntax implements Syntax {
      * @param transform Transform XMIR after parsing train
      */
     EoSyntax(final Input ipt, final Train<Shift> transform) {
-        this(ipt, new Xsline(Objects.requireNonNull(transform, "transform"))::pass);
+        this(
+            ipt,
+            new Xsline(
+                Objects.requireNonNull(transform, "EoSyntax train can't be null")
+            )::pass
+        );
     }
 
     /**
@@ -101,7 +106,7 @@ public final class EoSyntax implements Syntax {
     @Override
     public XML parsed() throws IOException {
         final String text = new UncheckedText(new TextOf(this.input)).asString();
-        return this.transform.apply(
+        return Objects.requireNonNull(this.transform, "EoSyntax has no transform").apply(
             new XMLDocument(
                 new Xembler(
                     new Directives()
