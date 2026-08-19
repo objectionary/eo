@@ -11,7 +11,7 @@
 
 [func] > each
   ^.eachi > @
-    func item > [item index] >>
+    ^.func item > [item index] >>
 
   ++> can-iterate-over-a-list
     eq. > @
@@ -20,8 +20,8 @@
         [m]
           each. > @
             * 1 2 3
-            m.put > [i] >>
-              m.as-number.plus i
+            ^.m.put > [i] >>
+              ^.m.as-number.plus i
       6
 
   eq. ++> can-return-the-result-of-the-last-call
@@ -40,8 +40,8 @@
         [m]
           each. > @
             * 10 20 30
-            m.put > [i] >>
-              m.as-number.plus i
+            ^.m.put > [i] >>
+              ^.m.as-number.plus i
       60
 
   ++> can-walk-a-single-element-list
@@ -51,8 +51,8 @@
         [m]
           each. > @
             * 7
-            m.put > [i] >>
-              m.as-number.plus i
+            ^.m.put > [i] >>
+              ^.m.as-number.plus i
       7
 
   tuple.empty.each ++> can-walk-an-empty-list

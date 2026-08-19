@@ -16,7 +16,7 @@
         true
         seq *
           tup.head.deleted
-          r tup.tail
+          ^.r tup.tail
       | (d.walk "**").at.^
       d
     d

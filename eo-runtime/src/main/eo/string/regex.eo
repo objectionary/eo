@@ -29,21 +29,21 @@
     ? > cant-compile /{Q.string}
   ^ > expression
   [serialized] > pattern
-    pattern serialized > compiled
+    ^.pattern serialized > compiled
     [txt] > match
       [position start from to groups] > matched
         groups.length > count
         start.gte 0 > exists
-        groups.at index > [index] > group
+        ^.groups.at index > [index] > group
         $ > matched
         exists.if > next
           if.
             and.
               from.eq to
-              to.eq txt.length
-            missing
+              to.eq ^.txt.length
+            ^.missing
             matched.
-              matched-from-index
+              ^.matched-from-index
                 position.plus 1
                 if.
                   from.eq to
@@ -94,11 +94,11 @@
       parsed.group 1 > group1!
       parsed.group 2 > group2!
       next. > parsed
-        "/^\\/([\\s\\S]*)\\/([dimsux]*)$/".regex.compiled.match expression
+        "/^\\/([\\s\\S]*)\\/([dimsux]*)$/".regex.compiled.match ^.^.expression
       "/(?:%s\\E)(?![\\s\\S])/%s".printf > quoted
         * group1 group2
-      commented.regex.compile retry-quoted > [message] > retry-commented
-      quoted.regex.compile > [message] > retry-quoted
+      ^.commented.regex.compile ^.retry-quoted > [message] > retry-commented
+      ^.quoted.regex.compile > [message] > retry-quoted
 
   eq. ++> can-advance-after-a-zero-width-match
     1
@@ -229,7 +229,7 @@
 
   next. --> rejects-serialized-bytes-of-the-wrong-type
     match.
-      pattern AC-ED-00-05-74-00-0D-6E-6F-74-20-61-20-70-61-74-74-65-72-6E
+      ^.pattern AC-ED-00-05-74-00-0D-6E-6F-74-20-61-20-70-61-74-74-65-72-6E
       "hello"
 
   "/pattern".regex.compiled --> stops-on-a-missing-closing-slash

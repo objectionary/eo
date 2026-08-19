@@ -38,7 +38,7 @@ printed: |
         oname.size.gt 6
         eq.
           slice.
-            name >> oname!
+            ^.name >> oname!
             0
             7
           "Windows"

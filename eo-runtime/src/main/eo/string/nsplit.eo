@@ -34,15 +34,15 @@
         * text
         [accum start current count] >> rec-nsplit
           if. > @
-            text.size.eq current
+            ^.text.size.eq current
             appended
             if.
               or.
                 size.eq 0
                 gt.
                   current.plus size
-                  text.size
-              rec-nsplit
+                  ^.text.size
+              ^.rec-nsplit
                 accum
                 start
                 as-number.
@@ -50,12 +50,12 @@
                 count
               if.
                 and.
-                  delimiter.eq
+                  ^.delimiter.eq
                     bts.slice current size
                   lt.
                     number count
-                    minus. (number limit) 1
-                rec-nsplit
+                    minus. (number ^.limit) 1
+                ^.rec-nsplit
                   appended
                   as-number.
                     current.plus size
@@ -63,7 +63,7 @@
                     current.plus size
                   as-number.
                     count.plus 1
-                rec-nsplit
+                ^.rec-nsplit
                   accum
                   start
                   as-number.
