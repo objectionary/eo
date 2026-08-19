@@ -121,6 +121,21 @@ final class DrProgramTest {
     }
 
     @Test
+    void ignoresEmptyXmirXsdProperty() throws Exception {
+        System.setProperty("xmir.xsd", "");
+        try {
+            MatcherAssert.assertThat(
+                "schema location falls back to a guess when the xmir.xsd property is empty",
+                new Xnav(new XMLDocument(new Xembler(new DrProgram()).xml()).inner())
+                    .element("object").attribute("xsi:noNamespaceSchemaLocation").text().get(),
+                Matchers.not(Matchers.emptyString())
+            );
+        } finally {
+            System.clearProperty("xmir.xsd");
+        }
+    }
+
+    @Test
     void validatesAgainstSchema() {
         Assertions.assertDoesNotThrow(
             new StrictXML(
