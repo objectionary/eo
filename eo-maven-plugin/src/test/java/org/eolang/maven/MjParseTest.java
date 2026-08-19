@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,6 +65,25 @@ final class MjParseTest {
             "The resource must exist, but it doesn't",
             maven.foreign().getById("foo.x.main").exists("xmir"),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void parsesAgainWhatTheMergeReplaced(@Mktmp final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[n] > foo", "  n > @"),
+            "foo",
+            "foo.eo"
+        ).withProgram(
+            String.join(System.lineSeparator(), "+package foo", "", "[] > bar", "  42 > @"),
+            "foo.bar",
+            "foo/bar.eo"
+        );
+        maven.execute(new PpMerge()).execute(MjParse.class);
+        MatcherAssert.assertThat(
+            "the merged XMIR cannot stand for a parsed one, or the next build lints the merge",
+            maven.foreignTojos().find("foo").xmir().toString(),
+            Matchers.endsWith(Paths.get(Parsing.DIR).resolve("foo.xmir").toString())
         );
     }
 

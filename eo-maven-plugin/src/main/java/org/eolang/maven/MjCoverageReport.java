@@ -78,6 +78,13 @@ public final class MjCoverageReport extends MjSafe {
     @Parameter(property = "eo.minCoverage", defaultValue = "0")
     private double minCoverage;
 
+    /**
+     * Ctor.
+     */
+    public MjCoverageReport() {
+        // nothing
+    }
+
     @Override
     public void exec() throws IOException {
         if (this.coverageFile == null || !this.coverageFile.exists()) {

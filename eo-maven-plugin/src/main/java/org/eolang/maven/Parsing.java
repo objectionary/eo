@@ -154,9 +154,25 @@ final class Parsing implements Step {
         final GlobalCache store
     ) {
         return new Threaded<>(
-            new Filtered<>(TjForeign::notParsed, sources),
+            new Filtered<>(this::unparsed, sources),
             tojo -> this.parsed(tojo, pipeline, store)
         ).total();
+    }
+
+    /**
+     * Whether the XMIR of a tojo still has to be written.
+     *
+     * <p>A tojo is parsed when it has no XMIR yet, and also when the XMIR it
+     * points at is not one of ours: {@link Merging} points a package object
+     * at its merged XMIR, and were that taken for a parsed one, the next
+     * build would lint and transpile the merge of the previous build instead
+     * of the program a human wrote.</p>
+     *
+     * @param tojo The tojo
+     * @return TRUE if the tojo has to be parsed
+     */
+    private boolean unparsed(final TjForeign tojo) {
+        return tojo.notParsed() || !tojo.xmir().startsWith(this.target.resolve(Parsing.DIR));
     }
 
     /**
