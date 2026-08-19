@@ -6,6 +6,7 @@ package org.eolang;
 
 import com.yegor256.Together;
 import java.security.SecureRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.set.SetOf;
 import org.eolang.EO_org.EO_eolang.EOdummy;
 import org.hamcrest.MatcherAssert;
@@ -376,7 +377,7 @@ final class PhDefaultTest {
 
     @Test
     void printsEndlessRecursionObject() {
-        PhDefaultTest.EndlessRecursion.count = 2;
+        PhDefaultTest.EndlessRecursion.count.set(2);
         MatcherAssert.assertThat(
             "Dataization should discover the infinite recursion, but it didn't",
             new Dataized(new PhDefaultTest.EndlessRecursion()).asNumber(),
@@ -386,7 +387,7 @@ final class PhDefaultTest {
 
     @Test
     void hesPhiRecursively() {
-        PhDefaultTest.RecursivePhi.count = 3;
+        PhDefaultTest.RecursivePhi.count.set(3);
         MatcherAssert.assertThat(
             "Dataization should discover the infinite recursion, but it didn't",
             new Dataized(PhDefaultTest.RecursivePhi.made()).asNumber(),
@@ -396,7 +397,7 @@ final class PhDefaultTest {
 
     @Test
     void cachesPhiViaNewRecursively() {
-        PhDefaultTest.RecursivePhiViaNew.count = 3;
+        PhDefaultTest.RecursivePhiViaNew.count.set(3);
         MatcherAssert.assertThat(
             "Does not cache phi via new recursively",
             new Dataized(new PhDefaultTest.RecursivePhiViaNew()).asNumber(),
@@ -870,12 +871,11 @@ final class PhDefaultTest {
         /**
          * Count.
          */
-        private static int count;
+        private static final AtomicInteger count = new AtomicInteger();
 
         /**
          * Ctor.
          */
-        @SuppressWarnings("PMD.AssignmentToNonFinalStatic")
         EndlessRecursion() {
             super(
                 new Attrs(
@@ -884,9 +884,8 @@ final class PhDefaultTest {
                         new AtComposite(
                             new PhDefault(),
                             self -> {
-                                --PhDefaultTest.EndlessRecursion.count;
                                 final Phi result;
-                                if (PhDefaultTest.EndlessRecursion.count <= 0) {
+                                if (PhDefaultTest.EndlessRecursion.count.decrementAndGet() <= 0) {
                                     result = new Data.ToPhi(0L);
                                 } else {
                                     result = new PhDefaultTest.EndlessRecursion().copy();
@@ -909,7 +908,7 @@ final class PhDefaultTest {
         /**
          * Count.
          */
-        private static int count;
+        private static final AtomicInteger count = new AtomicInteger();
 
         /**
          * Make one, with its φ in place.
@@ -927,9 +926,8 @@ final class PhDefaultTest {
                 new AtComposite(
                     made,
                     rho -> {
-                        --PhDefaultTest.RecursivePhi.count;
                         final Phi result;
-                        if (PhDefaultTest.RecursivePhi.count <= 0) {
+                        if (PhDefaultTest.RecursivePhi.count.decrementAndGet() <= 0) {
                             result = new Data.ToPhi(0L);
                         } else {
                             result = new Data.ToPhi(new Dataized(rho).asNumber());
@@ -951,12 +949,11 @@ final class PhDefaultTest {
         /**
          * Count.
          */
-        private static int count;
+        private static final AtomicInteger count = new AtomicInteger();
 
         /**
          * Ctor.
          */
-        @SuppressWarnings("PMD.AssignmentToNonFinalStatic")
         RecursivePhiViaNew() {
             super(
                 new Attrs(
@@ -965,9 +962,8 @@ final class PhDefaultTest {
                         new AtComposite(
                             new PhDefault(),
                             rho -> {
-                                --PhDefaultTest.RecursivePhiViaNew.count;
                                 final Phi result;
-                                if (PhDefaultTest.RecursivePhiViaNew.count <= 0) {
+                                if (PhDefaultTest.RecursivePhiViaNew.count.decrementAndGet() <= 0) {
                                     result = new Data.ToPhi(0L);
                                 } else {
                                     result = new Data.ToPhi(
