@@ -3,5 +3,6 @@
 
 ---
 exclude_paths:
+  - "eo-runtime/src/main/java/org/eolang/EOdirectory$EOdeleted$EOentries.java"
   - "eo-runtime/src/main/java/org/eolang/EOstring$EOregex$EOcompile.java"
   - "eo-runtime/src/main/java/org/eolang/EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.java"
