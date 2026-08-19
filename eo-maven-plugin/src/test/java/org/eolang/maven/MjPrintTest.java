@@ -54,8 +54,8 @@ final class MjPrintTest {
         }
         final Path output = temp.resolve("output");
         new FakeMaven(temp)
-            .with("printSourcesDir", temp.resolve(resources).toFile())
-            .with("printOutputDir", output.toFile())
+            .with("sources", temp.resolve(resources).toFile())
+            .with("output", output.toFile())
             .execute(new PpPrint())
             .result();
         for (final Path source : walk) {
@@ -92,8 +92,8 @@ final class MjPrintTest {
         ).value();
         final Path output = temp.resolve("eo");
         new FakeMaven(temp)
-            .with("printSourcesDir", temp.resolve("xmir").toFile())
-            .with("printOutputDir", output.toFile())
+            .with("sources", temp.resolve("xmir").toFile())
+            .with("output", output.toFile())
             .execute(new PpPrint())
             .result();
         MatcherAssert.assertThat(
@@ -123,8 +123,8 @@ final class MjPrintTest {
         new Saved(new InputOf("not xml at all"), temp.resolve("xmir/README.md")).value();
         final Path output = temp.resolve("eo");
         new FakeMaven(temp)
-            .with("printSourcesDir", temp.resolve("xmir").toFile())
-            .with("printOutputDir", output.toFile())
+            .with("sources", temp.resolve("xmir").toFile())
+            .with("output", output.toFile())
             .execute(new PpPrint())
             .result();
         MatcherAssert.assertThat(
@@ -163,8 +163,8 @@ final class MjPrintTest {
             temp.resolve("xmir/foo/x/main.xmir")
         ).value();
         final FakeMaven maven = new FakeMaven(temp)
-            .with("printSourcesDir", temp.resolve("xmir").toFile())
-            .with("printOutputDir", temp.resolve("eo").toFile())
+            .with("sources", temp.resolve("xmir").toFile())
+            .with("output", temp.resolve("eo").toFile())
             .with("printReversed", reversed);
         final Object pins = xtory.map().get("penalties");
         if (pins != null) {
@@ -190,9 +190,9 @@ final class MjPrintTest {
      */
     private static String param(final String key) {
         return new MapOf<>(
-            new MapEntry<>("INDENT", "penaltyIndent"),
-            new MapEntry<>("BRACKET", "penaltyBracket"),
-            new MapEntry<>("EXCESS", "penaltyExcess"),
+            new MapEntry<>("INDENT", "indent"),
+            new MapEntry<>("BRACKET", "bracket"),
+            new MapEntry<>("EXCESS", "excess"),
             new MapEntry<>("WIDTH", "width")
         ).getOrDefault(key, "");
     }

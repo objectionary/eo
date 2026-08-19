@@ -43,7 +43,7 @@
               shifted-sign.xor divisor-sign >> signs-differ!
               next-rem.xor 80-00-00-00-00-00-00-00 >> trial-nonnegative!
           80-00-00-00-00-00-00-00
-        looped
+        ^.looped
           index.minus 1
           as-bytes. >> next-rem!
             plus.
@@ -51,13 +51,13 @@
               i64 subtrahend
           quot.or >>!
             bit index
-        looped
+        ^.looped
           index.minus 1
           or. >> shifted!
             remainder.left 1
             and.
               right.
-                magnitude n.as-bytes
+                magnitude ^.n.as-bytes
                 index
               00-00-00-00-00-00-00-01
           quot

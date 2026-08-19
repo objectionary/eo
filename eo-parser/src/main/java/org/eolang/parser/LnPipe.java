@@ -16,7 +16,7 @@ import java.util.List;
  * predecessor is formed, then the pipe supplies its arguments.</p>
  *
  * <p>The predecessor (stack top at the pipe's indent) must be a formation
- * ({@link Kind#BARE_FORMATION} / {@link Kind#ONLY_PHI_FORMATION}) or
+ * ({@link Kind#BARE_FORMATION} / {@link Kind#ONLY_PHI}) or
  * another {@link Kind#PIPE_APPLICATION}, and must be named — a pipe refers
  * to it by name, so an unnamed formation is not a valid target (R-3.14.2).
  * A pipe after a {@code .method} dispatch is rejected (R-3.14.4): the
@@ -25,8 +25,8 @@ import java.util.List;
  *
  * <p>Two forms by whether horizontal args are present (R-3.14.3): the
  * <em>horizontal</em> form {@code | a b} carries its args on the line and
- * closes for children ({@link Openness#VERTICAL_COMPLETED}); the
- * <em>vertical</em> form {@code |} with a deeper-indent body opens for a
+ * closes for children ({@link Openness#VCOMPLETED}); the <em>vertical</em>
+ * form {@code |} with a deeper-indent body opens for a
  * vertical-argument block exactly as a {@code vapplication} head, so it
  * stays {@link Openness#OPEN}. Either way a following {@code .method} or
  * pipe may extend it.</p>
@@ -80,7 +80,7 @@ final class LnPipe implements Line {
         if (args.isEmpty()) {
             openness = Openness.OPEN;
         } else {
-            openness = Openness.VERTICAL_COMPLETED;
+            openness = Openness.VCOMPLETED;
         }
         new Transition(stack, this.span).apply(
             Kind.PIPE_APPLICATION, openness, new Admission(suffix.named(), suffix.test())

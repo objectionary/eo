@@ -30,8 +30,8 @@
             twice
             concat.
               half.concat >> twice
-                rec-repeated (n.div 2).floor >> half!
-              text.as-bytes
+                ^.rec-repeated (n.div 2).floor >> half!
+              ^.text.as-bytes
       | times
   ^ > text
 

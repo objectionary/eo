@@ -28,4 +28,4 @@ printed: |
   [] > foo
     reclen 0 > @
     reclen n > [n] > inclen
-    inclen i > [i] >> reclen
+    ^.inclen i > [i] >> reclen

@@ -78,7 +78,7 @@
                       "Failed to read from standard input"
                     received.output
                   received
-                  input-block chunk
+                  ^.^.input-block chunk
                 called. > received
                   win32 *1
                     "_read"
@@ -97,7 +97,7 @@
                     code.eq -1
                     T
                       "Failed to write to standard output"
-                    output-block
+                    ^.^.output-block
                   code
                   remainder
                 code. > code
@@ -108,9 +108,9 @@
                     buffer.size
                 if. > remainder
                   code.lt buffer.size
-                  output-block.write
+                  ^.^.output-block.write
                     buffer.slice code (buffer.size.minus code)
-                  output-block
+                  ^.^.output-block
             buffer
     [] >>
       [size] > read
@@ -126,7 +126,7 @@
                       "Failed to read from standard input"
                     received.output
                   received
-                  input-block chunk
+                  ^.^.input-block chunk
                 called. > received
                   posix *1
                     "read"
@@ -145,7 +145,7 @@
                     code.eq -1
                     T
                       "Failed to write to standard output"
-                    output-block
+                    ^.^.output-block
                   code
                   remainder
                 code. > code
@@ -156,9 +156,9 @@
                     buffer.size
                 if. > remainder
                   code.lt buffer.size
-                  output-block.write
+                  ^.^.output-block.write
                     buffer.slice code (buffer.size.minus code)
-                  output-block
+                  ^.^.output-block
             buffer
 
   ++> can-chain-writes-across-output-blocks

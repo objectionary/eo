@@ -14,17 +14,16 @@ package org.eolang.parser;
  * <ul>
  * <li>{@link #OPEN} — may still receive deeper-indent children or a
  * same-indent {@code .method} continuation.</li>
- * <li>{@link #VERTICAL_COMPLETED} — child block has ended; a same-indent
- * {@code .method} may still wrap it, but no more vertical args may be
- * added.</li>
- * <li>{@link #HORIZONTAL_COMPLETED} — cannot be extended in any
- * direction. {@link Kind#horizontallyCompleted()} pins which kinds
- * start out in this state.</li>
+ * <li>{@link #VCOMPLETED} — vertically completed: the child block has
+ * ended; a same-indent {@code .method} may still wrap it, but no more
+ * vertical args may be added.</li>
+ * <li>{@link #HCOMPLETED} — horizontally completed: cannot be extended
+ * in any direction. {@link Kind#horizontallyCompleted()} pins which
+ * kinds start out in this state.</li>
  * </ul>
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.LongVariable")
 enum Openness {
 
     /**
@@ -33,12 +32,13 @@ enum Openness {
     OPEN,
 
     /**
-     * Child block has ended; same-indent {@code .method} may wrap.
+     * Vertically completed: child block has ended; same-indent
+     * {@code .method} may wrap.
      */
-    VERTICAL_COMPLETED,
+    VCOMPLETED,
 
     /**
-     * Closed in every direction.
+     * Horizontally completed: closed in every direction.
      */
-    HORIZONTAL_COMPLETED
+    HCOMPLETED
 }

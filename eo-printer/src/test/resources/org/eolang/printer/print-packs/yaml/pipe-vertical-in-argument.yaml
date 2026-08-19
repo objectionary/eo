@@ -46,7 +46,7 @@ printed: |
       *
       stop.if > [accum current] >> rec-split
         accum
-        rec-split
+        ^.rec-split
           accum
           current.plus 1
       |

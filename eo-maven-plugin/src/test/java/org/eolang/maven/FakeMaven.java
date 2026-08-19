@@ -27,6 +27,7 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.scalar.ScalarOf;
 import org.cactoos.scalar.Synced;
+import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 
@@ -200,6 +201,7 @@ final class FakeMaven {
             this.params.putIfAbsent("attach", true);
             this.params.putIfAbsent("tests", true);
             this.params.putIfAbsent("strictFileNames", true);
+            this.params.putIfAbsent("includeSources", new SetOf<>("**.eo"));
         }
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {

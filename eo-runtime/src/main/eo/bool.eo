@@ -15,13 +15,13 @@
   if > @
     01-
     00-
-  if > [x] > and
+  ^.if > [x] > and
     01-.eq x
     false
   if > not
     false
     true
-  if > [x] > or
+  ^.if > [x] > or
     true
     01-.eq x
 
@@ -81,7 +81,7 @@
 
   ++> can-extract-an-attribute-from-a-decoratee
     a.foo.eq 43 > @
-    return > [] > a
+    ^.return > [] > a
       42.plus 1
     [foo] > return
 
@@ -198,7 +198,7 @@
       42
     [x] > a
       take > @
-      x > [] > take
+      ^.x > [] > take
 
   --> stops-on-applying-to-a-closed-object
     closed true > @
