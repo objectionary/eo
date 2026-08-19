@@ -193,7 +193,7 @@ final class LnFormation implements Line {
         if (!stack.empty() && stack.top().atom() && !suffix.test()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
-                "Atom cannot contain inner objects; only `+>` test attributes are allowed in an atom body"
+                "Atom cannot contain inner objects; only `+>` and `->` test attributes are allowed in an atom body"
             );
         }
     }
