@@ -115,12 +115,9 @@ final class Transpiling implements Step {
      * @param enabled Whether caching is enabled
      * @param ver Plugin version string
      * @param tests Whether to transpile tests
-     * @param measures Path to the file where XSL measurements are stored
-     * @param diagnostics Which diagnostic artifacts to emit while transpiling
-     * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
-     * @param base The class that a generated class extends instead of {@code PhDefault}
      * @param java Directories with the Java sources a human wrote
-     * @checkstyle ParameterNumberCheck (22 lines)
+     * @param train The XSL train that does the transpiling
+     * @param guard Cache guard, one per instance
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
     Transpiling(
@@ -131,11 +128,9 @@ final class Transpiling implements Step {
         final boolean enabled,
         final String ver,
         final boolean tests,
-        final Path measures,
-        final Tracking diagnostics,
-        final boolean cvrg,
-        final String base,
-        final Collection<Path> java
+        final Collection<Path> java,
+        final Transpilation train,
+        final ConcurrentCache guard
     ) {
         this.sources = srcs;
         this.targetDir = target;
@@ -145,8 +140,8 @@ final class Transpiling implements Step {
         this.transpileTests = tests;
         this.version = ver;
         this.roots = java;
-        this.train = new Transpilation(ver, diagnostics, cvrg, base, measures, target);
-        this.guard = new ConcurrentCache();
+        this.train = train;
+        this.guard = guard;
     }
 
     @Override

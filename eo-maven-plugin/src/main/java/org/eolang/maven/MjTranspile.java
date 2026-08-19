@@ -135,11 +135,16 @@ public final class MjTranspile extends MjSafe {
                     this.cacheEnabled,
                     this.plugin.getVersion(),
                     this.transpileTests,
-                    this.xslMeasures.toPath(),
-                    new Tracking(this.trackSteps, this.trackLocations),
-                    this.coverageTracking,
-                    this.base(),
-                    this.roots()
+                    this.roots(),
+                    new Transpilation(
+                        this.plugin.getVersion(),
+                        new Tracking(this.trackSteps, this.trackLocations),
+                        this.coverageTracking,
+                        this.base(),
+                        this.xslMeasures.toPath(),
+                        this.targetDir.toPath()
+                    ),
+                    new ConcurrentCache()
                 )
             ).exec();
         }

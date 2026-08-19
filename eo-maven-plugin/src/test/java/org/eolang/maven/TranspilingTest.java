@@ -44,11 +44,16 @@ final class TranspilingTest {
             true,
             "1.0-SNAPSHOT",
             false,
-            Paths.get("target/xsl-measures.csv"),
-            new Tracking(false, false),
-            false,
-            "PhDefault",
-            Collections.singleton(Paths.get("src/main/java"))
+            Collections.singleton(Paths.get("src/main/java")),
+            new Transpilation(
+                "1.0-SNAPSHOT",
+                new Tracking(false, false),
+                false,
+                "PhDefault",
+                Paths.get("target/xsl-measures.csv"),
+                Paths.get("target")
+            ),
+            new ConcurrentCache()
         );
     }
 }
