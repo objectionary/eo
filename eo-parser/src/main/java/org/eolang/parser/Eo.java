@@ -299,6 +299,10 @@ final class Eo implements Iterable<Directive> {
      * indent transitions run before classification when the stack is
      * non-empty.</p>
      *
+     * <p>The R-2.2.4 tab diagnostic speaks about the whitespace leading
+     * up to content, so a line made of whitespace alone stays out of it:
+     * such a line is a blank separator and gets dispatched as one.</p>
+     *
      * @param span The source span
      * @param stack The indent stack
      * @param globals The global parser state
@@ -311,7 +315,7 @@ final class Eo implements Iterable<Directive> {
         boolean failed = false;
         if (globals.inTextBlock()) {
             Eo.continueTextBlock(span, stack, globals, emit);
-        } else if (span.tab()) {
+        } else if (span.tab() && !span.blank()) {
             emit.error(span.line(), 0, "tab character in leading whitespace");
             failed = true;
         } else if (!span.blank() && span.indent() % 2 == 1) {
