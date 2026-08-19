@@ -32,19 +32,19 @@ public class MjClean extends MjSafe {
 
     @Override
     final void exec() {
-        if (!this.targetDir.exists()) {
+        if (!this.target.exists()) {
             Logger.debug(
                 this,
                 "The directory %[file]s doesn't exist",
-                this.targetDir
+                this.target
             );
             return;
         }
-        if (new Deleted(this.targetDir).get()) {
+        if (new Deleted(this.target).get()) {
             Logger.info(
                 this,
                 "Deleted all files in the %[file]s directory",
-                this.targetDir
+                this.target
             );
         }
     }

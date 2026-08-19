@@ -33,7 +33,7 @@ import org.eolang.printer.Xmir;
  * fixpoint, so the canonical form is the fixpoint of parse-and-print), and
  * compares that against what is on disk. In its default "check" mode, it
  * prints a colored unified {@link Diff} for every file that diverges from
- * the canonical form and fails the build. When {@link #autoFix} is turned
+ * the canonical form and fails the build. When {@link #fix} is turned
  * on (via the {@code eo.autoFix} property), it overwrites the divergent
  * files with their canonical form instead of failing, much like
  * {@code gofmt -w} or {@code spotless:apply}.</p>
@@ -77,31 +77,27 @@ public final class MjFormat extends MjSafe {
     /**
      * Overwrite divergent sources with their canonical form instead of
      * failing the build.
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.autoFix", required = true, defaultValue = "false")
-    private boolean autoFix;
+    @Parameter(alias = "autoFix", property = "eo.autoFix", required = true, defaultValue = "false")
+    private boolean fix;
 
     /**
      * Points charged for each level of indentation on a line.
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.penaltyIndent")
-    private Integer penaltyIndent;
+    @Parameter(alias = "penaltyIndent", property = "eo.penaltyIndent")
+    private Integer indent;
 
     /**
      * Points charged for each opening parenthesis.
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.penaltyBracket")
-    private Integer penaltyBracket;
+    @Parameter(alias = "penaltyBracket", property = "eo.penaltyBracket")
+    private Integer bracket;
 
     /**
      * Points charged for each character past the allowed width.
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.penaltyExcess")
-    private Integer penaltyExcess;
+    @Parameter(alias = "penaltyExcess", property = "eo.penaltyExcess")
+    private Integer excess;
 
     /**
      * The column after which characters start being charged.
@@ -144,7 +140,7 @@ public final class MjFormat extends MjSafe {
             diverged = 0;
         } else {
             diverged = 1;
-            if (this.autoFix) {
+            if (this.fix) {
                 new Saved(canonical, source).value();
                 Logger.info(this, "Reformatted %[file]s", source);
             } else {
@@ -359,14 +355,14 @@ public final class MjFormat extends MjSafe {
      */
     private Map<PenaltyKey, Integer> weights() {
         final Map<PenaltyKey, Integer> map = new EnumMap<>(PenaltyKey.class);
-        if (this.penaltyIndent != null) {
-            map.put(PenaltyKey.INDENT, this.penaltyIndent);
+        if (this.indent != null) {
+            map.put(PenaltyKey.INDENT, this.indent);
         }
-        if (this.penaltyBracket != null) {
-            map.put(PenaltyKey.BRACKET, this.penaltyBracket);
+        if (this.bracket != null) {
+            map.put(PenaltyKey.BRACKET, this.bracket);
         }
-        if (this.penaltyExcess != null) {
-            map.put(PenaltyKey.EXCESS, this.penaltyExcess);
+        if (this.excess != null) {
+            map.put(PenaltyKey.EXCESS, this.excess);
         }
         if (this.width != null) {
             map.put(PenaltyKey.WIDTH, this.width);
@@ -387,7 +383,7 @@ public final class MjFormat extends MjSafe {
                 "All %d EO source(s) are formatted canonically, took %[ms]s to check",
                 total, millis
             );
-        } else if (this.autoFix) {
+        } else if (this.fix) {
             Logger.info(
                 this,
                 "Reformatted %d of %d EO source(s), took %[ms]s",

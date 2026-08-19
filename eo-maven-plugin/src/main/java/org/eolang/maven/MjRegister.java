@@ -47,42 +47,40 @@ public final class MjRegister extends MjSafe {
      * pretty global (or even a root one).
      * @implNote {@code property} attribute is omitted for collection
      *  properties since there is no way of passing it via command line.
-     * @checkstyle MemberNameCheck (15 lines)
      */
-    @Parameter
-    private Set<String> includeSources;
+    @Parameter(alias = "includeSources")
+    private Set<String> included;
 
     /**
      * List of exclusion GLOB filters for finding EO files
      * in the {@code <includeSources>} directory, which can be
      * pretty global (or even a root one).
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter
-    private Set<String> excludeSources;
+    @Parameter(alias = "excludeSources")
+    private Set<String> excluded;
 
     /**
      * Whether it should fail on file names not matching required pattern.
-     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        alias = "strictFileNames",
         property = "eo.strictFileNames",
         required = true,
         defaultValue = "true"
     )
-    private boolean strictFileNames;
+    private boolean strict;
 
     /**
      * Ctor.
      */
     public MjRegister() {
-        this.includeSources = new SetOf<>("**.eo");
-        this.excludeSources = new SetOf<>();
+        this.included = new SetOf<>("**.eo");
+        this.excluded = new SetOf<>();
     }
 
     @Override
     public void exec() throws IOException {
-        if (this.sourcesDir == null) {
+        if (this.sources == null) {
             throw new IllegalArgumentException(
                 String.format("sourcesDir is null. Please specify a valid sourcesDir for %s", this)
             );
@@ -93,20 +91,20 @@ public final class MjRegister extends MjSafe {
             if (before > 0) {
                 Logger.info(this, "There are %d EO sources registered already", before);
             }
-            final Unplace unplace = new Unplace(this.sourcesDir);
+            final Unplace unplace = new Unplace(this.sources);
             Logger.info(
                 this,
                 "Registered %d EO sources from %[file]s to %[file]s, included %s, excluded %s",
                 new Threaded<>(
-                    new Walk(this.sourcesDir.toPath())
-                        .includes(this.includeSources)
-                        .excludes(this.excludeSources),
+                    new Walk(this.sources.toPath())
+                        .includes(this.included)
+                        .excludes(this.excluded),
                     file -> this.register(file, unplace, tojos)
                 ).total(),
-                this.sourcesDir,
+                this.sources,
                 this.foreign,
-                this.includeSources,
-                this.excludeSources
+                this.included,
+                this.excluded
             );
         }
     }
@@ -122,7 +120,7 @@ public final class MjRegister extends MjSafe {
         final Path file, final Unplace unplace, final TjsForeign tojos
     ) {
         if (
-            this.strictFileNames
+            this.strict
                 && !MjRegister.PATTERN.matcher(file.getFileName().toString()).matches()
         ) {
             throw new IllegalArgumentException(
@@ -149,8 +147,8 @@ public final class MjRegister extends MjSafe {
     private void removeOldFiles() {
         final File[] files = {
             this.foreign,
-            this.targetDir.toPath().resolve(Pulling.DIR).toFile(),
-            this.targetDir.toPath().resolve(MjResolve.DIR).toFile(),
+            this.target.toPath().resolve(Pulling.DIR).toFile(),
+            this.target.toPath().resolve(MjResolve.DIR).toFile(),
         };
         for (final File file : files) {
             if (file.exists()) {

@@ -74,7 +74,7 @@ final class MjTranspileTest {
                     "",
                     "[] > x"
                 )
-                ).with("trackSteps", true)
+                ).with("steps", true)
                 .execute(MjParse.class)
                 .execute(MjTranspile.class),
             "We should be able to transpile a simple EO program without exceptions when tracking transformation steps"
@@ -86,7 +86,7 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "the first tracked step of a program holding two objects did not leave its XMIR in the pre-transpile directory",
             new FakeMaven(temp).withProgram(MjTranspileTest.pair())
-                .with("trackSteps", true)
+                .with("steps", true)
                 .execute(MjParse.class)
                 .execute(MjTranspile.class)
                 .result(),
@@ -102,7 +102,7 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "the second object of a tracked program did not reach the generated Java",
             new FakeMaven(temp).withProgram(MjTranspileTest.pair())
-                .with("trackSteps", true)
+                .with("steps", true)
                 .execute(MjParse.class)
                 .execute(MjTranspile.class)
                 .result(),
@@ -117,7 +117,7 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.program())
-                    .with("coverageTracking", true)
+                    .with("coverage", true)
                     .execute(new FakeMaven.Transpile())
                     .result()
                     .get(MjTranspileTest.compiled())
@@ -134,7 +134,7 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.throwing())
-                    .with("coverageTracking", true)
+                    .with("coverage", true)
                     .execute(new FakeMaven.Transpile())
                     .result()
                     .get(MjTranspileTest.compiled())
@@ -151,7 +151,7 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.truthy())
-                    .with("coverageTracking", true)
+                    .with("coverage", true)
                     .execute(new FakeMaven.Transpile())
                     .result()
                     .get(MjTranspileTest.compiled())
@@ -383,7 +383,7 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.dispatching())
-                    .with("trackLocations", true)
+                    .with("locations", true)
                     .execute(new FakeMaven.Transpile())
                     .result()
                     .get(MjTranspileTest.compiled())
@@ -406,7 +406,7 @@ final class MjTranspileTest {
                 new FakeMaven(temp.resolve("second"))
                     .withProgram(src)
                     .with("cache", cache.toFile())
-                    .with("trackLocations", true)
+                    .with("locations", true)
                     .execute(new FakeMaven.Transpile())
                     .result()
                     .get(MjTranspileTest.compiled())
@@ -540,14 +540,14 @@ final class MjTranspileTest {
         final Path tests = target.resolve("generated-test-sources");
         final FakeMaven maven = new FakeMaven(temp);
         maven
-            .with("generatedDir", sources.toFile())
-            .with("targetDir", target.resolve("eo-sources").toFile())
+            .with("generated", sources.toFile())
+            .with("target", target.resolve("eo-sources").toFile())
             .withHelloWorld()
             .execute(new FakeMaven.Transpile());
         maven
             .with("scope", "test")
-            .with("generatedDir", tests.toFile())
-            .with("targetDir", target.resolve("eo-test-sources").toFile()).withProgram(
+            .with("generated", tests.toFile())
+            .with("target", target.resolve("eo-test-sources").toFile()).withProgram(
                 MjTranspileTest.program().replace("main", "main-1")
             )
             .execute(new FakeMaven.Transpile());

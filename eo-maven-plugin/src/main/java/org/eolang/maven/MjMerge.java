@@ -43,7 +43,7 @@ public final class MjMerge extends MjSafe {
             new Timed(
                 new Merging(
                     tojos,
-                    this.targetDir.toPath().resolve(Merging.DIR)
+                    this.target.toPath().resolve(Merging.DIR)
                 )
             ).exec();
         }

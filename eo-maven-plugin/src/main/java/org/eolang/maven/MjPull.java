@@ -36,13 +36,13 @@ public final class MjPull extends MjSafe {
         try (TjsForeign tojos = this.tojos()) {
             new Pulling(
                 tojos,
-                this.targetDir.toPath().resolve(Pulling.DIR),
+                this.target.toPath().resolve(Pulling.DIR),
                 this.hash,
                 this.objectionary(),
                 this.cache.toPath().resolve(Pulling.CACHE),
                 this.plugin.getVersion(),
-                this.overWrite,
-                this.cacheEnabled,
+                this.overwrite,
+                this.enabled,
                 this.offline
             ).exec();
         }

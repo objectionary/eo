@@ -75,7 +75,7 @@ final class MjFormatTest {
             "the divergent source must be rewritten into its canonical form",
             new TextOf(
                 new FakeMaven(temp)
-                    .with("autoFix", true)
+                    .with("fix", true)
                     .withProgram(MjFormatTest.divergent(new HelloWorld().asString()))
                     .execute(MjFormat.class)
                     .result()
@@ -90,7 +90,7 @@ final class MjFormatTest {
         final int total = 24;
         final String canonical = MjFormatTest.canonical(new HelloWorld().asString());
         final String divergent = MjFormatTest.divergent(new HelloWorld().asString());
-        final FakeMaven maven = new FakeMaven(temp).with("autoFix", true);
+        final FakeMaven maven = new FakeMaven(temp).with("fix", true);
         for (int idx = 0; idx < total; ++idx) {
             maven.withProgram(divergent);
         }
@@ -169,7 +169,7 @@ final class MjFormatTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
-                .with("autoFix", true)
+                .with("fix", true)
                 .withProgram(MjFormatTest.droppedBinding())
                 .execute(MjFormat.class),
             "a source the parser only recovered by dropping a binding must not be rewritten"
@@ -181,7 +181,7 @@ final class MjFormatTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
-                .with("autoFix", true)
+                .with("fix", true)
                 .withProgram(MjFormatTest.placeholder())
                 .execute(MjFormat.class),
             "a source the parser only recovered with a placeholder must not be rewritten"

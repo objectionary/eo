@@ -159,49 +159,49 @@ final class FakeMaven {
      */
     <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {
-            this.params.putIfAbsent("targetDir", this.targetPath().toFile());
+            this.params.putIfAbsent("target", this.targetPath().toFile());
             this.params.putIfAbsent(
-                "xslMeasures", this.targetPath().resolve("measures.csv").toFile()
+                "measures", this.targetPath().resolve("measures.csv").toFile()
             );
             this.params.putIfAbsent("foreign", this.foreignPath().toFile());
-            this.params.putIfAbsent("foreignFormat", "csv");
+            this.params.putIfAbsent("foreignfmt", "csv");
             final MavenProjectStub stub = new MavenProjectStub();
             stub.setCompileSourceRoots(new ArrayList<>(0));
             this.params.putIfAbsent("project", stub);
             this.params.putIfAbsent("transpiledFormat", "csv");
-            this.params.putIfAbsent("skipZeroVersions", true);
-            this.params.putIfAbsent("cacheEnabled", true);
-            this.params.putIfAbsent("discoverSelf", false);
-            this.params.putIfAbsent("ignoreConflicts", false);
+            this.params.putIfAbsent("zeroversions", true);
+            this.params.putIfAbsent("enabled", true);
+            this.params.putIfAbsent("discover", false);
+            this.params.putIfAbsent("conflicts", false);
             this.params.putIfAbsent("central", new FakeMaven.DummyCentral());
-            this.params.putIfAbsent("resolveInCentral", false);
+            this.params.putIfAbsent("centrally", false);
             this.params.putIfAbsent(
                 "placed",
                 this.workspace.resolve(Paths.get("placed.json")).toFile()
             );
-            this.params.putIfAbsent("placedFormat", "json");
+            this.params.putIfAbsent("placedfmt", "json");
             this.params.putIfAbsent(
-                "sourcesDir", this.workspace.resolve(".").toFile()
+                "sources", this.workspace.resolve(".").toFile()
             );
             this.params.putIfAbsent(
                 "cache", this.workspace.resolve("eo/cache/parsed").toFile()
             );
-            this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
+            this.params.putIfAbsent("generated", this.generatedPath().toFile());
             this.params.putIfAbsent(
                 "prepared", this.targetPath().resolve("6-pre-inference").toFile()
             );
             this.params.putIfAbsent(
                 "tables", this.targetPath().resolve("6-inference").toFile()
             );
-            this.params.putIfAbsent("placedFormat", "csv");
+            this.params.putIfAbsent("placedfmt", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
             this.params.putIfAbsent(
                 "objectionary",
                 new Synced<>(new ScalarOf<>(Objectionary.Fake::new))
             );
-            this.params.putIfAbsent("rewriteBinaries", true);
+            this.params.putIfAbsent("rewrite", true);
             this.params.putIfAbsent("offline", false);
-            this.params.putIfAbsent("classesDir", this.classesPath().toFile());
+            this.params.putIfAbsent("classes", this.classesPath().toFile());
             this.params.putIfAbsent("superclass", "PhDefault");
             this.params.putIfAbsent("addSourcesRoot", true);
             this.params.putIfAbsent("transpileTests", true);

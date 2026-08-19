@@ -20,7 +20,7 @@ final class MjSafeTest {
     @Test
     void failsBuildWhenUnrollExitErrorIsTrue() {
         final MjSafeTest.Failing mojo = new MjSafeTest.Failing();
-        mojo.unrollExitError = true;
+        mojo.unroll = true;
         Assertions.assertThrows(
             MojoFailureException.class,
             mojo::execute,
@@ -31,7 +31,7 @@ final class MjSafeTest {
     @Test
     void failsBuildWhenUnrollExitErrorIsFalse() {
         final MjSafeTest.Failing mojo = new MjSafeTest.Failing();
-        mojo.unrollExitError = false;
+        mojo.unroll = false;
         Assertions.assertThrows(
             MojoFailureException.class,
             mojo::execute,
