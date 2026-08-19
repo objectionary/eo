@@ -96,9 +96,6 @@ public final class EoSyntax implements Syntax {
      * @param transform Transform XMIR after parsing function
      */
     public EoSyntax(final Input ipt, final UnaryOperator<XML> transform) {
-        if (transform == null) {
-            throw new NullPointerException("EoSyntax transform can't be null");
-        }
         this.input = ipt;
         this.transform = transform;
     }
