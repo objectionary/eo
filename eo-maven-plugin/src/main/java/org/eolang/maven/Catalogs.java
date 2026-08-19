@@ -58,10 +58,16 @@ final class Catalogs {
     private final Map<Path, Tojos> all;
 
     /**
+     * The format each cached path was first built with.
+     */
+    private final Map<Path, String> formats;
+
+    /**
      * Ctor.
      */
     private Catalogs() {
         this.all = new ConcurrentHashMap<>(0);
+        this.formats = new ConcurrentHashMap<>(0);
     }
 
     /**
@@ -70,9 +76,7 @@ final class Catalogs {
      * @return The Tojos
      */
     Tojos make(final Path file) {
-        return this.all.computeIfAbsent(
-            file.toAbsolutePath(), f -> Catalogs.build(f, "csv")
-        );
+        return this.make(file, "csv");
     }
 
     /**
@@ -80,18 +84,19 @@ final class Catalogs {
      * @param file The file
      * @param fmt The format
      * @return The Tojos
-     * @todo #7023:30min This caches on the absolute path alone, so if two
-     *  callers ask for the same path with a different format, the second
-     *  format is silently dropped and the first caller's mono keeps
-     *  serving both. Key the cache on path and format together, or throw
-     *  when a path is requested again with a format that disagrees with
-     *  the one it was first built with. See
-     *  https://github.com/objectionary/eo/issues/7023.
      */
     Tojos make(final Path file, final String fmt) {
-        return this.all.computeIfAbsent(
-            file.toAbsolutePath(), f -> Catalogs.build(f, fmt)
-        );
+        final Path abs = file.toAbsolutePath();
+        final String before = this.formats.putIfAbsent(abs, fmt);
+        if (before != null && !before.equals(fmt)) {
+            throw new IllegalStateException(
+                String.format(
+                    "The file '%s' was already cached with format '%s', can't reuse it with format '%s'",
+                    abs, before, fmt
+                )
+            );
+        }
+        return this.all.computeIfAbsent(abs, f -> Catalogs.build(f, fmt));
     }
 
     /**
