@@ -96,6 +96,7 @@ public final class EoSyntax implements Syntax {
     }
 
     @Override
+    @SuppressWarnings("java:S2259")
     public XML parsed() throws IOException {
         final String text = new UncheckedText(new TextOf(this.input)).asString();
         return this.transform.apply(
