@@ -11,8 +11,8 @@ package org.eolang.parser;
  * extend the level's expression (e.g., a {@link Kind#HEAD} entry promotes
  * to {@link Kind#VAPPLICATION} once its first deeper child arrives; its
  * {@code openness} progresses from {@link Openness#OPEN OPEN} to
- * {@link Openness#VERTICAL_COMPLETED VERTICAL_COMPLETED} when the child
- * block ends).</p>
+ * {@link Openness#VCOMPLETED VCOMPLETED} when the child block
+ * ends).</p>
  *
  * <p>Per the parser-pragmatism rule, this class deliberately holds more
  * than four fields and is mutable in-place: an immutable {@code Level} +
