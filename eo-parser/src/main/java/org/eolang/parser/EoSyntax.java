@@ -91,14 +91,17 @@ public final class EoSyntax implements Syntax {
      * @param transform Transform XMIR after parsing function
      */
     public EoSyntax(final Input ipt, final UnaryOperator<XML> transform) {
+        if (transform == null) {
+            throw new NullPointerException("EoSyntax transform can't be null");
+        }
         this.input = ipt;
-        this.transform = Objects.requireNonNull(transform, "transform");
+        this.transform = transform;
     }
 
     @Override
     public XML parsed() throws IOException {
         final String text = new UncheckedText(new TextOf(this.input)).asString();
-        return Objects.requireNonNull(this.transform, "transform").apply(
+        return this.transform.apply(
             new XMLDocument(
                 new Xembler(
                     new Directives()
