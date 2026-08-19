@@ -53,9 +53,15 @@ final class Transition {
     Level apply(final Kind kind, final Openness openness, final Admission admission) {
         final Level level;
         if (this.stack.empty() || this.stack.top().indent() < this.span.indent()) {
-            level = this.pushed(kind, openness, admission);
+            level = this.pushed(kind, openness);
         } else {
             level = this.stack.replace(this.span.line(), kind, openness);
+        }
+        if (level.patom() && !admission.permitted()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "Atom cannot contain inner objects; only `+>` test attributes are allowed in an atom body"
+            );
         }
         if (admission.label() != null) {
             level.name(admission.label());
@@ -64,15 +70,13 @@ final class Transition {
     }
 
     /**
-     * Push a fresh level after validating the indent step (R-5.1.3), the
-     * parent's openness (R-5.2.4) and, when the parent is an atom, that
-     * this child is permitted under it (R-3.10.13).
+     * Push a fresh level after validating the indent step (R-5.1.3) and
+     * the parent's openness (R-5.2.4).
      * @param kind Outer kind for the level
      * @param openness Openness for the level
-     * @param admission The line's naming suffix and atom-body permission
      * @return The pushed level
      */
-    private Level pushed(final Kind kind, final Openness openness, final Admission admission) {
+    private Level pushed(final Kind kind, final Openness openness) {
         if (!this.stack.empty() && this.span.indent() != this.stack.top().indent() + 2) {
             throw new ParseError(
                 this.span.line(), 0,
@@ -83,12 +87,6 @@ final class Transition {
             throw new ParseError(
                 this.span.line(), 0,
                 "unexpected deeper-indent line — previous expression is closed for children"
-            );
-        }
-        if (!this.stack.empty() && this.stack.top().atom() && !admission.permitted()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "Atom cannot contain inner objects; only `+>` test attributes are allowed in an atom body"
             );
         }
         return this.stack.push(this.span.indent(), this.span.line(), kind, openness);

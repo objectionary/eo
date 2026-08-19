@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7120: the atom-body check only ran on the deeper-indent push branch, so
+# a same-indent sibling that follows a legit `+>` test attribute slipped
+# through unchecked.
+line: 4
+message: |-
+  [4:2] error: 'Atom cannot contain inner objects; only `+>` test attributes are allowed in an atom body'
+    42 > bar
+    ^
+input: |
+  [] > test /bytes
+    ++> one
+      true > @
+    42 > bar
