@@ -41,6 +41,13 @@ public final class MjRegister extends MjSafe {
     private static final Pattern PATTERN = Pattern.compile("^[a-zA-Z0-9\\-]+\\.eo$");
 
     /**
+     * Ctor.
+     */
+    public MjRegister() {
+        // nothing
+    }
+
+    /**
      * List of inclusion GLOB filters for finding EO files
      * in the {@code <includeSources>} directory, which can be
      * pretty global (or even a root one).
