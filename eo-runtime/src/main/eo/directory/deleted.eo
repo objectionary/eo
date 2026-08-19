@@ -47,9 +47,9 @@
     dir.tmpfile > first
     dir.tmpfile > second
 
-  d.deleted.deleted.exists.not ++> can-delete-an-already-absent-directory
-    as-dir. > d
-      mktemp.tmpfile.deleted.as-path
+  ++> can-delete-an-already-absent-directory
+    d.deleted.deleted.exists.not d > @
+    mktemp.tmpfile.deleted.as-path.as-dir > d
 
   not. ++> can-delete-an-empty-directory
     exists.
