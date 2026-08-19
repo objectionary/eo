@@ -97,20 +97,18 @@ public final class EoSyntax implements Syntax {
 
     @Override
     public XML parsed() throws IOException {
+        final long start = System.nanoTime();
         final String text = new UncheckedText(new TextOf(this.input)).asString();
+        final Directives dirs = new Directives()
+            .append(new DrProgram())
+            .append(new Listing(text))
+            .xpath("/object")
+            .strict(1)
+            .append(new Eo(text).directives())
+            .attr("ms", (System.nanoTime() - start) / (1000L * 1000L))
+            .up();
         return Objects.requireNonNull(this.transform, "transform").apply(
-            new XMLDocument(
-                new Xembler(
-                    new Directives()
-                        .append(new DrProgram())
-                        .append(new Listing(text))
-                        .xpath("/object")
-                        .strict(1)
-                        .append(new Eo(text).directives())
-                        .attr("ms", 0L)
-                        .up()
-                ).domQuietly()
-            )
+            new XMLDocument(new Xembler(dirs).domQuietly())
         );
     }
 }
