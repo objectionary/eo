@@ -51,16 +51,14 @@ public final class MjTranspile extends MjSafe {
      * Add to source root.
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.addSourcesRoot")
-    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.addSourcesRoot", defaultValue = "true")
     private boolean addSourcesRoot;
 
     /**
      * Whether to transpile tests.
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.transpileTests")
-    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.transpileTests", defaultValue = "true")
     private boolean transpileTests;
 
     /**
@@ -124,14 +122,6 @@ public final class MjTranspile extends MjSafe {
      */
     @Parameter(property = "eo.phiDefaultClass", defaultValue = "PhDefault")
     private String superclass;
-
-    /**
-     * Ctor.
-     */
-    public MjTranspile() {
-        this.addSourcesRoot = true;
-        this.transpileTests = true;
-    }
 
     @Override
     public void exec() throws IOException {

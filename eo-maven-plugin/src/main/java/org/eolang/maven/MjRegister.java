@@ -78,7 +78,6 @@ public final class MjRegister extends MjSafe {
     public MjRegister() {
         this.includeSources = new SetOf<>("**.eo");
         this.excludeSources = new SetOf<>();
-        this.strictFileNames = true;
     }
 
     @Override
