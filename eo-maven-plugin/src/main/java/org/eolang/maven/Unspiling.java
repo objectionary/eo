@@ -72,7 +72,7 @@ final class Unspiling implements Step {
 
     @Override
     public void exec() throws IOException {
-        final Walk walk = new Walk(this.classes);
+        final Walk walk = new WkDefault(this.classes);
         if (walk.isEmpty()) {
             Logger.warn(this, "No .class files in %[file]s, nothing to unspile", this.classes);
         } else {
@@ -85,7 +85,7 @@ final class Unspiling implements Step {
      * @param walk Collection of compiled classes
      */
     private void unspile(final Walk walk) {
-        final Set<String> included = new Walk(this.generated)
+        final Set<String> included = new WkDefault(this.generated)
             .stream().map(
                 path -> Unspiling.JAVA.matcher(
                     this.generated.relativize(path).toString()

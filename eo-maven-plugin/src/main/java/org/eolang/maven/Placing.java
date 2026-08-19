@@ -122,12 +122,12 @@ final class Placing implements Step {
         if (copied > 0) {
             Logger.debug(
                 this, "Placed %d binary file(s) out of %d, found in %s, to %[file]s",
-                copied, new Walk(dir).size(), dep, this.classes
+                copied, new WkDefault(dir).size(), dep, this.classes
             );
         } else {
             Logger.debug(
                 this, "No binary file(s) out of %d were placed from %s, to %[file]s",
-                new Walk(dir).size(), dep, this.classes
+                new WkDefault(dir).size(), dep, this.classes
             );
         }
         return copied;
@@ -172,7 +172,7 @@ final class Placing implements Step {
 
         @Override
         public Long get() {
-            return new Walk(this.dir)
+            return new WkDefault(this.dir)
                 .includes(Placing.this.include)
                 .excludes(Placing.this.exclude)
                 .stream()

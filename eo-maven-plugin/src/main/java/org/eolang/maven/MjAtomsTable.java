@@ -89,7 +89,7 @@ public final class MjAtomsTable extends MjSafe {
         }
         final Map<String, String> table = new TreeMap<>();
         final Xsline xsline = new Xsline(new StClasspath(MjAtomsTable.XSL));
-        for (final Path source : new Walk(home)) {
+        for (final Path source : new WkDefault(home)) {
             final XML before = new XMLDocument(
                 new UncheckedText(new TextOf(source)).asString()
             );

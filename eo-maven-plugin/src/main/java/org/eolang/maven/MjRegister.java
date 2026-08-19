@@ -98,7 +98,7 @@ public final class MjRegister extends MjSafe {
                 this,
                 "Registered %d EO sources from %[file]s to %[file]s, included %s, excluded %s",
                 new Threaded<>(
-                    new Walk(this.sourcesDir.toPath())
+                    new WkDefault(this.sourcesDir.toPath())
                         .includes(this.includeSources)
                         .excludes(this.excludeSources),
                     file -> this.register(file, unplace, tojos)

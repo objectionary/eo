@@ -103,7 +103,7 @@ public final class MjPrint extends MjSafe {
     @Override
     void exec() throws IOException {
         final int total = new Threaded<>(
-            new Walk(this.printSourcesDir.toPath()).includes(Set.of("**.xmir")),
+            new WkDefault(this.printSourcesDir.toPath()).includes(Set.of("**.xmir")),
             this::print
         ).total();
         if (total == 0) {

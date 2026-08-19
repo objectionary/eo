@@ -207,7 +207,7 @@ final class MjParseTest {
         ).execute(new FakeMaven.Parse());
         MatcherAssert.assertThat(
             "The XMIR with broken content must exist, but it doesn't",
-            new Walk(temp.resolve("target")).stream().anyMatch(
+            new WkDefault(temp.resolve("target")).stream().anyMatch(
                 path -> path.toFile().getName().startsWith("broken-")
                     && path.toFile().getName().endsWith(".xmir")
             ),

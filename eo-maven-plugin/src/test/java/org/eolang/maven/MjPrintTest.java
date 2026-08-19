@@ -47,7 +47,7 @@ final class MjPrintTest {
         final Path resources = new File(
             "../eo-printer/src/test/resources/org/eolang/printer/print-packs/xmir"
         ).toPath();
-        final Collection<Path> walk = new Walk(resources);
+        final Collection<Path> walk = new WkDefault(resources);
         Assumptions.assumeTrue(!walk.isEmpty());
         for (final Path source : walk) {
             new Saved(new TextOf(source), temp.resolve(source)).value();
