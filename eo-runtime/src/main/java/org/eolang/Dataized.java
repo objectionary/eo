@@ -20,7 +20,6 @@ import java.util.Arrays;
  * @see <a href="https://arxiv.org/abs/2111.13384">Canonical explanation of the Dataization concept</a>
  * @since 0.1
  */
-@SuppressWarnings("java:S5164")
 public final class Dataized {
 
     /**
