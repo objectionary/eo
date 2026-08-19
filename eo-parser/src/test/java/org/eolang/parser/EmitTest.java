@@ -44,7 +44,8 @@ final class EmitTest {
             EmitTest.render(emit),
             XhtmlMatchers.hasXPaths(
                 "/object/metas/meta[@line='2']/head[text()='foo']",
-                "/object/metas/meta[not(part)]"
+                "/object/metas/meta[not(part)]",
+                "/object/metas/meta[tail[not(text()) or text()='']]"
             )
         );
     }
@@ -89,7 +90,7 @@ final class EmitTest {
             "a multi-line comment must join the bodies with a newline",
             EmitTest.render(emit),
             XhtmlMatchers.hasXPath(
-                "/object/comments/comment[contains(text(),'first') and contains(text(),'second')]"
+                "/object/comments/comment[contains(text(), concat('first', codepoints-to-string(10), 'second'))]"
             )
         );
     }
