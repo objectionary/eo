@@ -9,6 +9,8 @@ import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.Train;
 import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -80,6 +82,15 @@ final class EoSyntaxTest {
             NullPointerException.class,
             () -> new EoSyntax(new InputOf(""), (UnaryOperator<XML>) null).parsed(),
             "EoSyntax must reject a null transform, but it didn't"
+        );
+    }
+
+    @Test
+    void rejectsANullTrain() {
+        Assertions.assertThrows(
+            NullPointerException.class,
+            () -> new EoSyntax(new InputOf(""), (Train<Shift>) null).parsed(),
+            "EoSyntax must reject a null train, but it didn't"
         );
     }
 
