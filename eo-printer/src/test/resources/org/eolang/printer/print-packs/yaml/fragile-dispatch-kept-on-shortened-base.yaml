@@ -39,5 +39,5 @@ printed: |
     app?.a > c
     $.a?.bar > [] > inner
     [x] > outer
-      x?.y > [] > deep
+      ^.x?.y > [] > deep
     com.example.string > s

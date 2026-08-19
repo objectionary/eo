@@ -80,6 +80,13 @@ final class Catalogs {
      * @param file The file
      * @param fmt The format
      * @return The Tojos
+     * @todo #7023:30min This caches on the absolute path alone, so if two
+     *  callers ask for the same path with a different format, the second
+     *  format is silently dropped and the first caller's mono keeps
+     *  serving both. Key the cache on path and format together, or throw
+     *  when a path is requested again with a format that disagrees with
+     *  the one it was first built with. See
+     *  https://github.com/objectionary/eo/issues/7023.
      */
     Tojos make(final Path file, final String fmt) {
         return this.all.computeIfAbsent(

@@ -63,7 +63,7 @@ public final class MjCompile extends MjSafe {
                         new Resolving(
                             tojos,
                             this.targetDir.toPath().resolve(MjResolve.DIR),
-                            new CentralMaven(this.system),
+                            new CentralMaven(this.system, this.session, this.repositories),
                             this.discoverSelf,
                             this.skipZeroVersions,
                             this.resolveJna,

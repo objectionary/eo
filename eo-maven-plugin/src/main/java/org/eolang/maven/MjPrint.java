@@ -27,8 +27,8 @@ import org.eolang.printer.Xmir;
  * <p>This goal goes through all XMIR sources found in the specified directory,
  * converts them back to EO format, and saves the resulting EO files
  * in the specified output directory, preserving the original directory structure.
- * Input XMIR files are found in {@link #printSourcesDir},
- * output EO files are saved in {@link #printOutputDir}.</p>
+ * Input XMIR files are found in {@link #sources},
+ * output EO files are saved in {@link #output}.</p>
  *
  * @since 0.33.0
  */
@@ -46,25 +46,25 @@ public final class MjPrint extends MjSafe {
 
     /**
      * Directory with XMIR sources to print.
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
+        alias = "printSourcesDir",
         property = "eo.printSourcesDir",
         required = true,
         defaultValue = "${project.basedir}/src/main/xmir"
     )
-    private File printSourcesDir;
+    private File sources;
 
     /**
      * Directory where printed EO files are placed.
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
+        alias = "printOutputDir",
         property = "eo.printOutputDir",
         required = true,
         defaultValue = "${project.build.directory}/generated-sources/eo"
     )
-    private File printOutputDir;
+    private File output;
 
     /**
      * Points charged for each level of indentation on a line.
@@ -103,7 +103,7 @@ public final class MjPrint extends MjSafe {
     @Override
     void exec() throws IOException {
         final int total = new Threaded<>(
-            new Walk(this.printSourcesDir.toPath()).includes(Set.of("**.xmir")),
+            new WkDefault(this.sources.toPath()).includes(Set.of("**.xmir")),
             this::print
         ).total();
         if (total == 0) {
@@ -120,10 +120,10 @@ public final class MjPrint extends MjSafe {
      * @throws Exception If fails
      */
     private int print(final Path source) throws Exception {
-        final Path home = this.printOutputDir.toPath();
+        final Path home = this.output.toPath();
         final Path relative = Paths.get(
             MjPrint.XMIR.matcher(
-                this.printSourcesDir.toPath().relativize(source).toString()
+                this.sources.toPath().relativize(source).toString()
             ).replaceFirst(".eo")
         );
         new Saved(

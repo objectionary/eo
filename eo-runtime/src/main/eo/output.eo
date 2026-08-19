@@ -1,8 +1,8 @@
 # Output is an abstract destination of bytes that can be written sequentially.
 # Any output decorates the object bound to its `@` attribute, which must
 # provide a `write` object that takes the bytes to write and returns an
-# output block ready to write the next portion. See `output.dead` and
-# `chunk.to-output`.
+# output block ready to write the next portion. See `dead` and the
+# `to-output` of `chunk`.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

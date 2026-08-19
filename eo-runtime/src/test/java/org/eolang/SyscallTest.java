@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.posix.CStdLib;
-import org.eolang.win32.WSAStartupFuncCall;
+import org.eolang.win32.WSAData;
 import org.eolang.win32.Winsock;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -38,7 +38,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * {@code socket} object, both the POSIX and the Windows ones.
  * @since 0.40
  */
-@SuppressWarnings("PMD.AvoidUsingHardCodedIP")
 @ExtendWith(EphemeralResolver.class)
 final class SyscallTest {
 
@@ -151,7 +150,7 @@ final class SyscallTest {
      * Returns the localhost address.
      */
     private String localhost() {
-        return "127.0.0.1";
+        return InetAddress.getLoopbackAddress().getHostAddress();
     }
 
     /**
@@ -403,7 +402,7 @@ final class SyscallTest {
          */
         private int startup() {
             return Winsock.INSTANCE.WSAStartup(
-                Winsock.WINSOCK_VERSION_2_2, new WSAStartupFuncCall.WSAData()
+                Winsock.VERSION_2_2, new WSAData()
             );
         }
 
@@ -468,7 +467,7 @@ final class SyscallTest {
             return new SockaddrIn(
                 (short) Winsock.AF_INET,
                 SyscallTest.htons(port),
-                this.inetAddr("127.0.0.1")
+                this.inetAddr(InetAddress.getLoopbackAddress().getHostAddress())
             );
         }
 
@@ -757,7 +756,7 @@ final class SyscallTest {
             return new SockaddrIn(
                 (short) CStdLib.AF_INET,
                 SyscallTest.htons(port),
-                this.inetAddr("127.0.0.1")
+                this.inetAddr(InetAddress.getLoopbackAddress().getHostAddress())
             );
         }
 

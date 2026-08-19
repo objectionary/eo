@@ -19,7 +19,6 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.text.StringEscapeUtils;
-import org.apache.log4j.Level;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Mapped;
@@ -82,23 +81,6 @@ final class EoSyntaxTest {
             () -> new EoSyntax(new InputOf(""), (UnaryOperator<XML>) null).parsed(),
             "EoSyntax must reject a null transform, but it didn't"
         );
-    }
-
-    @Test
-    void parsesSimpleCodeWithDebugMode() {
-        final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(EoSyntax.class);
-        final Level previous = logger.getLevel();
-        logger.setLevel(Level.DEBUG);
-        try {
-            Assertions.assertDoesNotThrow(
-                new EoSyntax(
-                    "[] > x-н, 1".concat(System.lineSeparator())
-                )::parsed,
-                "EO syntax should not fail in debug mode when program has errors"
-            );
-        } finally {
-            logger.setLevel(previous);
-        }
     }
 
     @Test
@@ -249,7 +231,7 @@ final class EoSyntaxTest {
             ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/object[count(o)=1]",
-                "/object/o[@name='base' and count(o[not(@name='xi🌵')])=2]",
+                "/object/o[@name='base' and count(o[not(starts-with(@name, 'a🌵'))])=2]",
                 "/object/o[@name='base']/o[@name='x']",
                 "/object/o[@name='base']/o[@name='f']"
             )

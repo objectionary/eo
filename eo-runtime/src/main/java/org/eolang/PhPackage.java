@@ -75,7 +75,7 @@ final class PhPackage implements Phi {
                 );
             }
         } else if (this.objects.containsKey(fqn)) {
-            taken = PhPackage.dispatched(this.objects.get(fqn));
+            taken = this.objects.get(fqn).copy();
         } else if (name.contains(".")) {
             final String[] parts = name.split("\\.", -1);
             Phi next = this.take(parts[0]);
@@ -120,64 +120,44 @@ final class PhPackage implements Phi {
     }
 
     /**
-     * Dispatch a cached object: a nested package stays as is, a plain value is
-     * copied so its owner can bind it.
-     * @param cached The cached object
-     * @return The object to hand out
-     */
-    private static Phi dispatched(final Phi cached) {
-        final Phi result;
-        if (cached instanceof PhNest) {
-            result = cached;
-        } else {
-            result = cached.copy();
-        }
-        return result;
-    }
-
-    /**
      * Load phi object by package name from ClassLoader.
      * @param fqn FQN of the EO object
      * @return Phi
      */
-    @SuppressWarnings("PMD.PreserveStackTrace")
     private Phi loadPhi(final String fqn) {
         final String target = new JavaPath(fqn).toString();
         final String pinfo = String.format("%s.package-info", new JavaPath(fqn).pkg());
         Phi loaded;
         try {
-            Class.forName(pinfo);
+            loaded = Class.forName(target)
+                .asSubclass(Phi.class)
+                .getConstructor()
+                .newInstance();
+        } catch (final ClassNotFoundException phi) {
             try {
-                Class.forName(target);
-                loaded = new PhNest(fqn);
-            } catch (final ClassNotFoundException absent) {
+                Class.forName(pinfo);
                 loaded = new PhPackage(fqn);
-            }
-        } catch (final ClassNotFoundException pckg) {
-            try {
-                loaded = Class.forName(target)
-                    .asSubclass(Phi.class)
-                    .getConstructor()
-                    .newInstance();
-            } catch (final ClassNotFoundException phi) {
-                throw new ExFailure(
+            } catch (final ClassNotFoundException pckg) {
+                final ExFailure failure = new ExFailure(
                     String.format(
                         "Couldn't find object '%s' because there's no class '%s' or package-info class: '%s', at least one of them must exist",
                         fqn, target, pinfo
                     ),
-                    phi
+                    pckg
                 );
-            } catch (final NoSuchMethodException | InvocationTargetException
-                | InstantiationException | IllegalAccessException ex
-            ) {
-                throw new ExFailure(
-                    String.format(
-                        "Couldn't build Java object \"%s\" in EO package \"%s\"",
-                        target, this.pkg
-                    ),
-                    ex
-                );
+                failure.addSuppressed(phi);
+                throw failure;
             }
+        } catch (final NoSuchMethodException | InvocationTargetException
+            | InstantiationException | IllegalAccessException ex
+        ) {
+            throw new ExFailure(
+                String.format(
+                    "Couldn't build Java object \"%s\" in EO package \"%s\"",
+                    target, this.pkg
+                ),
+                ex
+            );
         }
         return loaded;
     }

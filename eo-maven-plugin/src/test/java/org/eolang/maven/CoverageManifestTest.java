@@ -66,9 +66,9 @@ final class CoverageManifestTest {
     }
 
     @Test
-    void excludesLocationOfAnAtomsLambdaMarker() throws Exception {
+    void excludesLocationsOfAnAtomAttribute() throws Exception {
         MatcherAssert.assertThat(
-            "the lambda marker of an atom attribute never gets a PhCoverage hit, but its location was still found",
+            "an atom attribute has no body in .eo, so neither it nor its lambda marker may be counted, but a location was still found",
             new CoverageManifest().locations(
                 new EoSyntax(
                     String.join(
@@ -79,7 +79,46 @@ final class CoverageManifestTest {
                     )
                 ).parsed()
             ),
-            Matchers.iterableWithSize(1)
+            Matchers.iterableWithSize(0)
+        );
+    }
+
+    @Test
+    void excludesLocationsOfTheVoidsOfAnAtomAttribute() throws Exception {
+        MatcherAssert.assertThat(
+            "the voids an atom attribute declares are declarations of a Java body, so they must not be counted either",
+            new CoverageManifest().locations(
+                new EoSyntax(
+                    String.join(
+                        System.lineSeparator(),
+                        "[] > foo",
+                        "  42 > x",
+                        "  [] > bar /Q.bytes",
+                        "    ? > offset /Q.number",
+                        ""
+                    )
+                ).parsed()
+            ),
+            Matchers.everyItem(Matchers.not(Matchers.matchesPattern("^[^:]+:[34]:\\d+$")))
+        );
+    }
+
+    @Test
+    void keepsLocationsOfAnObjectHoldingAnAtomAttribute() throws Exception {
+        MatcherAssert.assertThat(
+            "only the atom attribute itself is left out, while the ordinary attributes beside it are still counted",
+            new CoverageManifest().locations(
+                new EoSyntax(
+                    String.join(
+                        System.lineSeparator(),
+                        "[] > foo",
+                        "  42 > x",
+                        "  [] > bar /Q.bytes",
+                        ""
+                    )
+                ).parsed()
+            ),
+            Matchers.hasItem(Matchers.matchesPattern("^[^:]+:2:\\d+$"))
         );
     }
 
@@ -99,6 +138,28 @@ final class CoverageManifestTest {
                 ).parsed()
             ),
             Matchers.everyItem(Matchers.not(Matchers.matchesPattern("^[^:]+:1:\\d+$")))
+        );
+    }
+
+    @Test
+    void excludesLocationOfAThrowingCase() throws Exception {
+        MatcherAssert.assertThat(
+            "a throwing test never gets a PhCoverage hit for its own body, but its locations were still found",
+            new CoverageManifest().locations(
+                new EoSyntax(
+                    String.join(
+                        System.lineSeparator(),
+                        "+package foo.x",
+                        "",
+                        "[] > main",
+                        "",
+                        "  --> stops-on-dispatching-on-a-number",
+                        "    42.plus 1 > @",
+                        ""
+                    )
+                ).parsed()
+            ),
+            Matchers.everyItem(Matchers.not(Matchers.containsString(".-")))
         );
     }
 

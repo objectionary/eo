@@ -20,7 +20,7 @@ import java.util.List;
  * or deeper-indent vapplication children.</li>
  * <li>{@link Kind#VMETHOD_WITH_HARGS} when this {@code .method}
  * carries one or more horizontal args — the chain becomes
- * {@link Openness#HORIZONTAL_COMPLETED}.</li>
+ * {@link Openness#HCOMPLETED}.</li>
  * </ul>
  *
  * <p>Rejection paths owned here:</p>
@@ -109,7 +109,7 @@ final class LnMethod implements Line {
             openness = Openness.OPEN;
         } else {
             kind = Kind.VMETHOD_WITH_HARGS;
-            openness = Openness.HORIZONTAL_COMPLETED;
+            openness = Openness.HCOMPLETED;
         }
         top.become(kind);
         top.close(openness);
@@ -133,7 +133,7 @@ final class LnMethod implements Line {
                 "method continuation has no expression to attach to"
             );
         }
-        if (stack.top().openness() == Openness.HORIZONTAL_COMPLETED) {
+        if (stack.top().openness() == Openness.HCOMPLETED) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "method continuation not allowed after horizontal application, try vertical application instead"

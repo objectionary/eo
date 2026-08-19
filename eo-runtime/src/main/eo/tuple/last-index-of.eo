@@ -13,9 +13,9 @@
     t.length.eq 0
     -1
     if.
-      t.head.eq wanted
+      t.head.eq ^.wanted
       t.length.minus 1
-      rec t.tail
+      ^.rec t.tail
   | ^ > @
 
   eq. ++> can-find-the-last-index-of-an-item

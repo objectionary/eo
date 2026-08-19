@@ -37,9 +37,9 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return this.bytes(
-            new Expect.Natural(Expect.at(this.take(Phi.RHO), "id")).it(),
-            new Expect.Natural(Expect.at(this, "offset")).it(),
-            new Expect.Natural(Expect.at(this, "length")).it()
+            new Natural(Expect.at(this.take(Phi.RHO), "id")).it(),
+            new Natural(Expect.at(this, "offset")).it(),
+            new Natural(Expect.at(this, "length")).it()
         );
     }
 

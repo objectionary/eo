@@ -9,12 +9,12 @@
 [lst] > set
   [mp] >> ctor
     mp.keys > @
-    mp.has item > [item] > has
+    ^.mp.has item > [item] > has
     mp.size > size
     set.ctor > [item] > with
-      mp.with item true
+      ^.mp.with item true
     set.ctor > [item] > without
-      mp.without item
+      ^.mp.without item
   | > @
     map
       lst.mapped

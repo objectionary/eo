@@ -4,9 +4,6 @@
  */
 package org.eolang.win32;
 
-import com.sun.jna.Structure;
-import java.util.Arrays;
-import java.util.List;
 import org.eolang.Data;
 import org.eolang.Phi;
 import org.eolang.Syscall;
@@ -33,52 +30,12 @@ public final class FtimeFuncCall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.win.take("return").copy();
-        final FtimeFuncCall.Timeb timeb = new FtimeFuncCall.Timeb();
+        final Timeb timeb = new Timeb();
         result.put(0, new Data.ToPhi(Msvcrt.INSTANCE._ftime64_s(timeb)));
         final Phi struct = this.win.take("timeb");
         struct.put(0, new Data.ToPhi(timeb.time));
         struct.put(1, new Data.ToPhi(timeb.millitm));
         result.put(1, struct);
         return result;
-    }
-
-    /**
-     * The {@code struct __timeb64} filled by {@code _ftime64_s}.
-     * @since 0.74.0
-     * @checkstyle VisibilityModifierCheck (100 lines)
-     */
-    public static final class Timeb extends Structure {
-
-        /**
-         * Seconds since the Unix epoch.
-         */
-        public long time;
-
-        /**
-         * Fraction of a second, in milliseconds.
-         */
-        public short millitm;
-
-        /**
-         * Difference in minutes between UTC and local time.
-         */
-        public short timezone;
-
-        /**
-         * Nonzero when daylight saving time is in effect.
-         */
-        public short dstflag;
-
-        /**
-         * Ctor.
-         */
-        public Timeb() {
-            // nothing
-        }
-
-        @Override
-        public List<String> getFieldOrder() {
-            return Arrays.asList("time", "millitm", "timezone", "dstflag");
-        }
     }
 }

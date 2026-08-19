@@ -322,7 +322,6 @@
     the first segment past that run and "hop-rest" is that segment plus
     any trailing segments.
     -->
-    <xsl:variable name="rho-prefix" select="concat($eo:xi, '.', $eo:rho, '.')"/>
     <xsl:variable name="segments" select="tokenize(@base, '\.')"/>
     <xsl:variable name="rho-count" select="if ($segments[1] = $eo:xi) then eo:rho-run(subsequence($segments, 2)) else 0"/>
     <xsl:variable name="hop-name" select="if (count($segments) &gt; $rho-count + 1) then $segments[$rho-count + 2] else ''"/>
@@ -386,22 +385,6 @@
           through the otherwise branch, both of which resolve correctly.
           -->
           <xsl:value-of select="eo:translate-path($self-rest)"/>
-        </xsl:when>
-        <xsl:when test="starts-with(@base, $rho-prefix) and $hop-name != '' and $hop-name != $eo:rho and $hop-name != $eo:phi and $hop-name != $eo:xi and $hop-name != $eo:program and (every $i in 1 to $rho-count satisfies empty(ancestor::o[not(@base)][$i]/o[@name=$hop-name])) and (exists(ancestor::o[not(@base)][$rho-count + 1]/o[@name=$hop-name]) or ancestor::o[not(@base)][$rho-count]/@local = $hop-name)">
-          <!--
-          The run of leading "^." parent hops is redundant: the name is
-          absent from each of the N nearer enclosing formations but
-          present in the (N+1)-th, so plain scope resolution re-derives
-          exactly the very same ρ-chain of length N. Drop the whole run.
-          The second alternative catches a recursive self-reference to a
-          file-local handle hosted as a moniker (#5848): the formation reached
-          after the run carries that very handle name in its "@local", so the
-          hops resolve back to the formation itself and the bare handle name
-          re-derives the same ρ-chain. Without it a recursive `&gt;&gt; name`
-          handle folded into a reversed-dispatch receiver would print its
-          self-reference as `^.name` instead of the readable `name`.
-          -->
-          <xsl:value-of select="eo:translate-path($hop-rest)"/>
         </xsl:when>
         <xsl:when test="not(@local) and $segments[1] = $eo:xi and $rho-count = 0 and $hop-name != '' and $hop-name != $eo:rho and $hop-name != $eo:phi and $hop-name != $eo:xi and $hop-name != $eo:program and empty(ancestor::o[not(@base)][1]/o[@name=$hop-name]) and empty($local-handle)">
           <!--

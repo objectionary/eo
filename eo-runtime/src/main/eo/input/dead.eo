@@ -14,7 +14,7 @@
   [size] > read
     [] >> input-block
       -- > @
-      input-block > [size] > read
+      ^.^.input-block > [size] > read
     | > @
 
   eq. ++> can-be-taken-off-any-input

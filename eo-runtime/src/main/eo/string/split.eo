@@ -30,7 +30,7 @@
               gt.
                 current.plus size
                 len
-            rec-split
+            ^.rec-split
               accum
               start
               as-number.
@@ -38,13 +38,13 @@
             if.
               delim.eq
                 bts.slice current size
-              rec-split
+              ^.rec-split
                 appended
                 as-number.
                   current.plus size
                 as-number.
                   current.plus size
-              rec-split accum start (current.plus 1).as-number
+              ^.rec-split accum start (current.plus 1).as-number
         accum.with > appended
           string
             bts.slice

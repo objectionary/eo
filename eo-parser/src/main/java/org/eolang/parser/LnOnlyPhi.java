@@ -38,8 +38,8 @@ import java.util.List;
  * vertical application arguments (§4.5) — {@code foo > [x] > bar} with
  * a body block is {@code [x] > bar} whose φ is {@code foo} applied to
  * that block. With horizontal args the φ is already a full application
- * and the line is {@link Openness#HORIZONTAL_COMPLETED} — no body is
- * accepted. An only-phi argument may not carry a name suffix (the
+ * and the line is {@link Openness#HCOMPLETED} — no body is accepted.
+ * An only-phi argument may not carry a name suffix (the
  * formation binds only φ); the {@link Stack} flags such arguments and
  * the close-time check in {@link Eo} rejects a name on them.</p>
  *
@@ -228,8 +228,8 @@ final class LnOnlyPhi implements Line {
      * Whether the only-phi LHS carries no horizontal args, so its φ
      * stays {@link Openness#OPEN} for deeper-indent vertical arguments
      * (§4.5); otherwise the φ is a full application and the formation is
-     * {@link Openness#HORIZONTAL_COMPLETED}. The LHS may be a reversed
-     * dispatch ({@code if. > [t] >> rec}), whose trailing dot is skipped
+     * {@link Openness#HCOMPLETED}. The LHS may be a reversed dispatch
+     * ({@code if. > [t] >> rec}), whose trailing dot is skipped
      * exactly as {@link Emissions#expression} does so both agree on the
      * arg boundary. Consumes the token stream; callers rewind before
      * emitting.
@@ -281,7 +281,7 @@ final class LnOnlyPhi implements Line {
         if (open) {
             openness = Openness.OPEN;
         } else {
-            openness = Openness.HORIZONTAL_COMPLETED;
+            openness = Openness.HCOMPLETED;
         }
         return new Transition(stack, this.span).apply(
             Kind.ONLY_PHI_FORMATION, openness, new Admission(suffix.named(), suffix.test())

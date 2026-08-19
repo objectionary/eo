@@ -5,16 +5,8 @@
 package org.eolang.parser;
 
 import com.jcabi.xml.XML;
-import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StClasspath;
-import com.yegor256.xsline.TrClasspath;
-import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.TrJoined;
-import com.yegor256.xsline.Train;
-import com.yegor256.xsline.Xsline;
 import java.util.List;
 import java.util.function.UnaryOperator;
-import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Synced;
 import org.cactoos.scalar.Unchecked;
@@ -41,7 +33,7 @@ public final class Canonical implements UnaryOperator<XML> {
      * order they run, so a caller that caches this pipeline's output (see
      * {@code Parsing} in {@code eo-maven-plugin}, #6236) can fold a
      * fingerprint of them into its cache key. This very list also builds
-     * the pipeline in {@link Canonical.Pipeline#value()}, so the two can
+     * the pipeline in {@link Pipeline#value()}, so the two can
      * never drift apart, the same way {@code Transpilation.XSLS} feeds
      * both the train and the cache key in {@code eo-maven-plugin}. An
      * immutable {@link List}, not an array, since this is exported as
@@ -90,16 +82,6 @@ public final class Canonical implements UnaryOperator<XML> {
     );
 
     /**
-     * The position in {@link #XSLS} of {@code add-default-package.xsl},
-     * the only stylesheet of the pipeline that takes a parameter and
-     * therefore can't travel in a plain {@link TrClasspath} run, but has
-     * to be wrapped into an {@link StClasspath} of its own.
-     */
-    private static final int PACKAGED = Canonical.XSLS.indexOf(
-        "/org/eolang/parser/parse/add-default-package.xsl"
-    );
-
-    /**
      * The pipeline, built lazily and only once.
      */
     private final Unchecked<UnaryOperator<XML>> pipeline;
@@ -121,69 +103,12 @@ public final class Canonical implements UnaryOperator<XML> {
      */
     public Canonical(final String objects) {
         this.pipeline = new Unchecked<>(
-            new Synced<>(new Sticky<>(new Canonical.Pipeline(objects)))
+            new Synced<>(new Sticky<>(new Pipeline(objects)))
         );
     }
 
     @Override
     public XML apply(final XML xml) {
         return this.pipeline.value().apply(xml);
-    }
-
-    /**
-     * The train of those {@link #XSLS} that live in the given half-open
-     * range and take no parameters.
-     * @param from The index of the first XSL, inclusive
-     * @param till The index right after the last XSL, exclusive
-     * @return The train of shifts
-     */
-    private static Train<Shift> classpath(final int from, final int till) {
-        return new TrClasspath<Shift>(
-            Canonical.XSLS.subList(from, till).toArray(new String[0])
-        ).back();
-    }
-
-    /**
-     * The scalar that builds the canonical pipeline.
-     * @since 0.60
-     */
-    private static final class Pipeline implements Scalar<UnaryOperator<XML>> {
-
-        /**
-         * Space separated qualified names of the local package objects.
-         */
-        private final String objects;
-
-        /**
-         * Ctor.
-         * @param objs Space separated qualified names of local package objects
-         */
-        Pipeline(final String objs) {
-            this.objects = objs;
-        }
-
-        @Override
-        public UnaryOperator<XML> value() {
-            return new Xsline(
-                new TrFull(
-                    new TrJoined<>(
-                        Canonical.classpath(0, Canonical.PACKAGED),
-                        new TrDefault<Shift>(
-                            new StClasspath(
-                                Canonical.XSLS.get(Canonical.PACKAGED),
-                                String.format("objects %s", this.objects)
-                            )
-                        ),
-                        Canonical.classpath(
-                            Canonical.PACKAGED + 1, Canonical.XSLS.size() - 1
-                        ),
-                        new TrDefault<>(new StHex()),
-                        Canonical.classpath(
-                            Canonical.XSLS.size() - 1, Canonical.XSLS.size()
-                        )
-                    )
-                )
-            )::pass;
-        }
     }
 }

@@ -82,21 +82,18 @@ final class Linting implements Step {
 
     /**
      * Target directory.
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Path targetDir;
+    private final Path target;
 
     /**
      * Cache base directory.
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Path cacheDir;
+    private final Path cache;
 
     /**
      * Whether caching is enabled.
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    private final boolean cacheEnabled;
+    private final boolean enabled;
 
     /**
      * Plugin version.
@@ -105,40 +102,33 @@ final class Linting implements Step {
 
     /**
      * Source lints to skip.
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Collection<String> skipSourceLints;
+    private final Collection<String> sourcelints;
 
     /**
      * Program (WPA) lints to skip.
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Collection<String> skipProgramLints;
+    private final Collection<String> programlints;
 
     /**
      * Whether to skip experimental lints.
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    @SuppressWarnings("PMD.LongVariable")
-    private final boolean skipExperimentalLints;
+    private final boolean experimental;
 
     /**
      * Whether to fail on warnings.
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    private final boolean failOnWarning;
+    private final boolean warning;
 
     /**
      * Whether to lint all sources as a package (WPA).
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    private final boolean lintAsPackage;
+    private final boolean pkg;
 
     /**
      * Whether to skip linting entirely.
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    private final boolean skipLinting;
+    private final boolean skip;
 
     /**
      * Cache guard, see {@link ConcurrentCache} for why it is one per instance.
@@ -177,22 +167,22 @@ final class Linting implements Step {
     ) {
         this.tojos = srcs;
         this.compile = compiled;
-        this.targetDir = target;
-        this.cacheDir = cache;
-        this.cacheEnabled = enabled;
+        this.target = target;
+        this.cache = cache;
+        this.enabled = enabled;
         this.version = ver;
-        this.skipSourceLints = sourcelints;
-        this.skipProgramLints = programlints;
-        this.skipExperimentalLints = experimental;
-        this.failOnWarning = warning;
-        this.lintAsPackage = pkg;
-        this.skipLinting = skip;
+        this.sourcelints = sourcelints;
+        this.programlints = programlints;
+        this.experimental = experimental;
+        this.warning = warning;
+        this.pkg = pkg;
+        this.skip = skip;
         this.guard = new ConcurrentCache();
     }
 
     @Override
     public void exec() throws IOException {
-        if (this.skipLinting) {
+        if (this.skip) {
             Logger.info(this, "Linting is skipped because eo:skipLinting is TRUE");
         } else {
             this.linting();
@@ -236,12 +226,12 @@ final class Linting implements Step {
 
     /**
      * Whether a defect must be reported, given the experimental-lints setting.
-     * @param skipExperimental Whether experimental lints must be skipped
+     * @param skip Whether experimental lints must be skipped
      * @param experimental Whether the defect itself is experimental
      * @return TRUE if the defect must be reported
      */
-    static boolean reportable(final boolean skipExperimental, final boolean experimental) {
-        return !skipExperimental || !experimental;
+    static boolean reportable(final boolean skip, final boolean experimental) {
+        return !skip || !experimental;
     }
 
     private void linting() throws IOException {
@@ -251,8 +241,8 @@ final class Linting implements Step {
         counts.putIfAbsent(Severity.ERROR, 0);
         counts.putIfAbsent(Severity.WARNING, 0);
         final Collection<String> seen = new ConcurrentLinkedQueue<>();
-        if (!this.skipSourceLints.isEmpty()) {
-            Logger.info(this, "Unlinting source lints: %[list]s", this.skipSourceLints);
+        if (!this.sourcelints.isEmpty()) {
+            Logger.info(this, "Unlinting source lints: %[list]s", this.sourcelints);
         }
         final int passed = new Threaded<>(
             programs,
@@ -261,7 +251,7 @@ final class Linting implements Step {
         if (programs.isEmpty()) {
             Logger.info(this, "There are no XMIR programs, nothing to lint individually");
         }
-        if (this.lintAsPackage) {
+        if (this.pkg) {
             Logger.info(
                 this,
                 "XMIR programs linted as a package: %d",
@@ -294,7 +284,7 @@ final class Linting implements Step {
             );
         }
         if (counts.get(Severity.WARNING) > 0) {
-            if (this.failOnWarning) {
+            if (this.warning) {
                 throw new IllegalStateException(
                     String.format(
                         "In %d XMIR files, we found %s (use -Deo.failOnWarning=false to ignore):%n%s",
@@ -324,14 +314,14 @@ final class Linting implements Step {
     ) throws Exception {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
-        final Path base = this.targetDir.resolve(Linting.DIR);
-        final Path target = new LintTarget(xmir, source).under(base);
-        if (this.cacheEnabled) {
+        final Path base = this.target.resolve(Linting.DIR);
+        final Path out = new LintTarget(xmir, source).under(base);
+        if (this.enabled) {
             this.guard.apply(
-                source, target, base.relativize(target),
+                source, out, base.relativize(out),
                 new Cache(
                     new CachePath(
-                        this.cacheDir.resolve(Linting.CACHE),
+                        this.cache.resolve(Linting.CACHE),
                         this.cacheVersion(),
                         new TojoHash(tojo).get()
                     ),
@@ -341,10 +331,10 @@ final class Linting implements Step {
         } else {
             new Saved(
                 this.linted(xmir).toString(),
-                target
+                out
             ).value();
         }
-        final Xnav checked = new Xnav(target);
+        final Xnav checked = new Xnav(out);
         final Collection<Defect> defects = Linting.existing(checked);
         for (final Defect defect : defects) {
             if (Linting.notSuppressed(checked, defect)) {
@@ -358,16 +348,16 @@ final class Linting implements Step {
                 );
             }
         }
-        tojo.withLinted(target);
+        tojo.withLinted(out);
         return 1;
     }
 
     /**
      * Cache-key version segment for the per-file lint cache: the plugin
-     * version combined with {@link #skipSourceLints} and
-     * {@link #skipExperimentalLints}, since both change what
+     * version combined with {@link #sourcelints} and
+     * {@link #experimental}, since both change what
      * {@link #linted(XML)} reports for the exact same source XMIR
-     * (see #6235). {@link #skipSourceLints} is hashed rather than joined
+     * (see #6235). {@link #sourcelints} is hashed rather than joined
      * in verbatim, since a project skipping a dozen full lint names would
      * otherwise push this single path segment past the 255-byte limit
      * ext4 and APFS enforce.
@@ -377,9 +367,9 @@ final class Linting implements Step {
         return String.format(
             "%s-%b-%s",
             this.version,
-            this.skipExperimentalLints,
+            this.experimental,
             new Hashed(
-                this.skipSourceLints.stream().sorted().collect(Collectors.joining(","))
+                this.sourcelints.stream().sorted().collect(Collectors.joining(","))
             ).get()
         );
     }
@@ -402,49 +392,49 @@ final class Linting implements Step {
         for (final TjForeign tojo : this.compile.withXmir()) {
             paths.put(tojo.identifier(), tojo.xmir());
         }
-        final Map<String, XML> pkg = new HashMap<>();
+        final Map<String, XML> progs = new HashMap<>();
         for (final Map.Entry<String, Path> ent : paths.entrySet()) {
-            pkg.put(ent.getKey(), new XMLDocument(ent.getValue()));
+            progs.put(ent.getKey(), new XMLDocument(ent.getValue()));
         }
-        if (!this.skipProgramLints.isEmpty()) {
-            Logger.info(this, "Unliting WPA lints: %[list]s", this.skipProgramLints);
+        if (!this.programlints.isEmpty()) {
+            Logger.info(this, "Unliting WPA lints: %[list]s", this.programlints);
         }
         final List<org.eolang.wpa.Defect> defects;
-        if (this.cacheEnabled) {
+        if (this.enabled) {
             final Path wpa = Path.of("wpa.xmir");
-            final Path base = this.targetDir.resolve(Linting.DIR);
-            final Path target = base.resolve(wpa);
+            final Path base = this.target.resolve(Linting.DIR);
+            final Path out = base.resolve(wpa);
             Files.createDirectories(base);
             this.guard.apply(
-                base, target, wpa,
+                base, out, wpa,
                 new Cache(
                     new CachePath(
-                        this.cacheDir.resolve(Linting.CACHE),
+                        this.cache.resolve(Linting.CACHE),
                         this.version,
                         new WpaCacheKey(
-                            paths, this.skipProgramLints, this.skipExperimentalLints
+                            paths, this.programlints, this.experimental
                         ).get()
                     ).get(),
                     root -> {
                         Logger.info(this, "Linting a package");
                         final Directives all = new Directives().add("defects");
-                        for (final org.eolang.wpa.Defect defect : this.wpa(pkg)) {
+                        for (final org.eolang.wpa.Defect defect : this.wpa(progs)) {
                             Linting.embedded(all, defect);
                         }
                         all.up();
                         return new Xembler(all).xmlQuietly();
                     },
                     p -> p.getFileName().toString().endsWith(".xmir")
-                        && !p.equals(target)
+                        && !p.equals(out)
                 )
             );
-            defects = Linting.read(target);
+            defects = Linting.read(out);
         } else {
             Logger.info(
                 this,
                 "Linting a package without cache, this might be slow, consider enabling cache"
             );
-            defects = this.wpa(pkg);
+            defects = this.wpa(progs);
         }
         for (final org.eolang.wpa.Defect defect : defects) {
             counts.compute(
@@ -454,24 +444,23 @@ final class Linting implements Step {
                 Linting.format(defect.object(), defect.rule(), defect.line(), defect.text())
             );
         }
-        return pkg.size();
+        return progs.size();
     }
 
     /**
      * Run whole-program analysis.
-     * @param pkg Map of program identifiers to their XMIR
+     * @param progs Map of program identifiers to their XMIR
      * @return List of defects found
      */
-    private List<org.eolang.wpa.Defect> wpa(final Map<String, XML> pkg) {
+    private List<org.eolang.wpa.Defect> wpa(final Map<String, XML> progs) {
         final List<org.eolang.wpa.Defect> defects = new ArrayList<>(0);
-        new Program(pkg)
-            .without(this.skipProgramLints.toArray(new String[0]))
+        new Program(progs)
+            .without(this.programlints.toArray(new String[0]))
             .defects()
             .stream()
-            .filter(defect -> Linting.reportable(this.skipExperimentalLints, defect.experimental()))
-            .forEach(
+            .filter(defect -> Linting.reportable(this.experimental, defect.experimental())).forEach(
                 defect -> {
-                    final Node node = pkg.get(defect.object()).inner();
+                    final Node node = progs.get(defect.object()).inner();
                     new Xembler(
                         Linting.embedded(
                             new Directives().xpath("/object").addIf("errors").strict(1),
@@ -501,10 +490,10 @@ final class Linting implements Step {
         final Node node = xmir.inner();
         final Collection<Defect> defects = Linting.existing(new Xnav(node));
         final Collection<Defect> found = new Source(xmir)
-            .without(this.skipSourceLints.toArray(new String[0]))
+            .without(this.sourcelints.toArray(new String[0]))
             .defects()
             .stream().filter(
-                defect -> Linting.reportable(this.skipExperimentalLints, defect.experimental())
+                defect -> Linting.reportable(this.experimental, defect.experimental())
             ).collect(Collectors.toList());
         defects.addAll(found);
         final Directives dirs = new Directives();

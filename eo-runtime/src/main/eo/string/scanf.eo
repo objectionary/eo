@@ -35,7 +35,7 @@
               "+"
             folded
             folded
-        fold-digits > folded
+        ^.^.fold-digits > folded
           signed.if
             txt.slice
               1
@@ -60,15 +60,15 @@
         not.
           dot.eq -1
         plus.
-          fold-digits
+          ^.fold-digits
             mantissa.slice 0 dot
           div.
-            fold-digits
+            ^.fold-digits
               mantissa.slice
                 dot.plus 1
                 places
             10.power places
-        fold-digits mantissa
+        ^.fold-digits mantissa
       if. > mantissa
         eloc.eq -1
         esign
@@ -114,26 +114,26 @@
         negative.if negated folded
       [a b] > digits-lte
         if. > [index] >> rec
-          index.eq a.length
+          index.eq ^.a.length
           true
           if.
             lt.
               as-ascii.
-                a.slice index 1
+                ^.a.slice index 1
               as-ascii.
-                b.slice index 1
+                ^.b.slice index 1
             true
             if.
               gt.
                 as-ascii.
-                  a.slice index 1
+                  ^.a.slice index 1
                 as-ascii.
-                  b.slice index 1
+                  ^.b.slice index 1
               false
-              rec
+              ^.rec
                 index.plus 1
         | 0 > @
-      fold-digits normalized > folded
+      ^.fold-digits normalized > folded
       folded.times -1 > negated
       eq. > negative
         text.slice 0 1
@@ -155,20 +155,20 @@
         "/^0+/".regex
         ""
     [group acc] >> convert
-      matched.exists.not.if > @
+      ^.matched.exists.not.if > @
         *
         if.
-          group.gt specifiers.length
+          group.gt ^.specifiers.length
           acc
           next
-      convert > next
+      ^.convert > next
         group.plus 1
         acc.with
-          converted
-            specifiers.at
+          ^.converted
+            ^.specifiers.at
               group.minus 1
               T
-            matched.group group
+            ^.matched.group group
     | > @
       1
       *
@@ -177,28 +177,28 @@
       text
       if.
         spec.eq "d"
-        as-integer text
-        as-float text
+        ^.as-integer text
+        ^.as-float text
     [text] > fold-digits
       [index acc] >> rec
         if. > @
-          index.eq text.length
+          index.eq ^.text.length
           acc
           next
-        rec > next
+        ^.rec > next
           index.plus 1
           plus.
             acc.times 10
             minus.
               as-ascii.
-                text.slice index 1
+                ^.text.slice index 1
               48
       | 0 0 > @
     match. > found
       regex.
         "/".chained
           * "^" pattern "/"
-      read
+      ^.read
     found.next > matched
   | > @
     tokens.at
@@ -231,7 +231,7 @@
     ch
   [position accumulated found pending] >> tokenize
     if. > @
-      position.gte format.length
+      position.gte ^.format.length
       pending.if *1
         T
           "The format string ends with a dangling percent and no specifier after it"
@@ -240,7 +240,7 @@
       pending.if
         if.
           ch.eq "%"
-          tokenize
+          ^.tokenize
             position.plus 1
             accumulated.chained
               * "%"
@@ -248,7 +248,7 @@
             false
           if.
             ch.eq "d"
-            tokenize
+            ^.tokenize
               position.plus 1
               accumulated.chained
                 * "([+-]?\\d+)"
@@ -256,7 +256,7 @@
               false
             if.
               ch.eq "f"
-              tokenize
+              ^.tokenize
                 position.plus 1
                 accumulated.chained
                   * "([+-]?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)"
@@ -264,7 +264,7 @@
                 false
               if.
                 ch.eq "s"
-                tokenize
+                ^.tokenize
                   position.plus 1
                   accumulated.chained
                     * "(\\S+)"
@@ -273,19 +273,19 @@
                 T "Unsupported format specifier"
         if.
           ch.eq "%"
-          tokenize
+          ^.tokenize
             position.plus 1
             accumulated
             found
             true
-          tokenize
+          ^.tokenize
             position.plus 1
             accumulated.chained
               *
                 escaped ch
             found
             false
-    format.slice > ch
+    ^.format.slice > ch
       position
       1
   | >> tokens
