@@ -11,8 +11,6 @@ import com.jcabi.xml.XML;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.EnumMap;
-import java.util.Map;
 import java.util.Optional;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -20,7 +18,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.parser.EoSyntax;
-import org.eolang.printer.PenaltyKey;
 import org.eolang.printer.Xmir;
 
 /**
@@ -59,7 +56,7 @@ import org.eolang.printer.Xmir;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class MjFormat extends MjSafe {
+public final class MjFormat extends MjPenalties {
 
     /**
      * The most parse-and-print passes taken to settle the moniker layout
@@ -81,33 +78,6 @@ public final class MjFormat extends MjSafe {
      */
     @Parameter(property = "eo.autoFix", required = true, defaultValue = "false")
     private boolean autoFix;
-
-    /**
-     * Points charged for each level of indentation on a line.
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @Parameter(property = "eo.penaltyIndent")
-    private Integer penaltyIndent;
-
-    /**
-     * Points charged for each opening parenthesis.
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @Parameter(property = "eo.penaltyBracket")
-    private Integer penaltyBracket;
-
-    /**
-     * Points charged for each character past the allowed width.
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @Parameter(property = "eo.penaltyExcess")
-    private Integer penaltyExcess;
-
-    /**
-     * The column after which characters start being charged.
-     */
-    @Parameter(property = "eo.width")
-    private Integer width;
 
     /**
      * Ctor.
@@ -346,32 +316,6 @@ public final class MjFormat extends MjSafe {
     private static boolean severe(final Xnav error) {
         final String severity = error.attribute("severity").text().orElse("");
         return "error".equals(severity) || "critical".equals(severity);
-    }
-
-    /**
-     * Assemble the overridden penalty weights from the Maven properties.
-     *
-     * <p>Only the properties that the user actually set are put into the
-     * map; every absent key falls back to its {@link PenaltyKey#fallback()}
-     * default inside the printer.</p>
-     *
-     * @return The weights, keyed by {@link PenaltyKey}
-     */
-    private Map<PenaltyKey, Integer> weights() {
-        final Map<PenaltyKey, Integer> map = new EnumMap<>(PenaltyKey.class);
-        if (this.penaltyIndent != null) {
-            map.put(PenaltyKey.INDENT, this.penaltyIndent);
-        }
-        if (this.penaltyBracket != null) {
-            map.put(PenaltyKey.BRACKET, this.penaltyBracket);
-        }
-        if (this.penaltyExcess != null) {
-            map.put(PenaltyKey.EXCESS, this.penaltyExcess);
-        }
-        if (this.width != null) {
-            map.put(PenaltyKey.WIDTH, this.width);
-        }
-        return map;
     }
 
     /**

@@ -190,9 +190,9 @@ final class MjPrintTest {
      */
     private static String param(final String key) {
         return new MapOf<>(
-            new MapEntry<>("INDENT", "penaltyIndent"),
-            new MapEntry<>("BRACKET", "penaltyBracket"),
-            new MapEntry<>("EXCESS", "penaltyExcess"),
+            new MapEntry<>("INDENT", "indent"),
+            new MapEntry<>("BRACKET", "bracket"),
+            new MapEntry<>("EXCESS", "excess"),
             new MapEntry<>("WIDTH", "width")
         ).getOrDefault(key, "");
     }
