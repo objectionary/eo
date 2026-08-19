@@ -117,7 +117,7 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.program())
-                    .with("coverageTracking", true)
+                    .with("coverage", true)
                     .execute(new PpTranspile())
                     .result()
                     .get(MjTranspileTest.compiled())
@@ -134,7 +134,7 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.throwing())
-                    .with("coverageTracking", true)
+                    .with("coverage", true)
                     .execute(new PpTranspile())
                     .result()
                     .get(MjTranspileTest.compiled())
@@ -151,7 +151,7 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.truthy())
-                    .with("coverageTracking", true)
+                    .with("coverage", true)
                     .execute(new PpTranspile())
                     .result()
                     .get(MjTranspileTest.compiled())
@@ -383,7 +383,7 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.dispatching())
-                    .with("trackLocations", true)
+                    .with("located", true)
                     .execute(new PpTranspile())
                     .result()
                     .get(MjTranspileTest.compiled())
@@ -406,7 +406,7 @@ final class MjTranspileTest {
                 new FakeMaven(temp.resolve("second"))
                     .withProgram(src)
                     .with("cache", cache.toFile())
-                    .with("trackLocations", true)
+                    .with("located", true)
                     .execute(new PpTranspile())
                     .result()
                     .get(MjTranspileTest.compiled())
