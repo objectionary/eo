@@ -36,8 +36,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -49,7 +47,6 @@ import org.xml.sax.SAXParseException;
  * Test case for {@link EoSyntax}.
  * @since 0.1
  */
-@Execution(ExecutionMode.SAME_THREAD)
 @ExtendWith(LogProgress.class)
 final class EoSyntaxTest {
 
