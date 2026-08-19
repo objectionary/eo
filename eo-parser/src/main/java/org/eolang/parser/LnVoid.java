@@ -60,6 +60,9 @@ import java.util.regex.Pattern;
  */
 final class LnVoid implements Line {
 
+    /**
+     * The shape of a head that declares the formation's receiver.
+     */
     private static final Pattern RECEIVER = Pattern.compile(" > \\^ *");
 
     /**
