@@ -123,6 +123,18 @@ public final class MjTranspile extends MjSafe {
     @Parameter(property = "eo.phiDefaultClass", defaultValue = "PhDefault")
     private String superclass;
 
+    /**
+     * Cache guard, see {@link ConcurrentCache} for why it is one per instance.
+     */
+    private final ConcurrentCache guard;
+
+    /**
+     * Ctor.
+     */
+    public MjTranspile() {
+        this.guard = new ConcurrentCache();
+    }
+
     @Override
     public void exec() throws IOException {
         try (TjsForeign tojos = this.tojos()) {
@@ -144,7 +156,7 @@ public final class MjTranspile extends MjSafe {
                         this.xslMeasures.toPath(),
                         this.targetDir.toPath()
                     ),
-                    new ConcurrentCache()
+                    this.guard
                 )
             ).exec();
         }
