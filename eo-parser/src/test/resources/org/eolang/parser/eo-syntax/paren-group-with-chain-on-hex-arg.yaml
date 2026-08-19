@@ -8,7 +8,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='f']/o[@base='g']/o[@base='.plus']/o[@base='Φ.number']
+  - //o[@base='Φ.f']/o[@base='Φ.g']/o[@base='.plus']/o[@base='Φ.number']
 input: |
   [] > main
     f (g 0xFF.plus) > x
