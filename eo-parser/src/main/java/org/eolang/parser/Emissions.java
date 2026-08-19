@@ -310,10 +310,6 @@ final class Emissions {
      * @param value Hex value
      * @param line Source line
      */
-    @SuppressWarnings({
-        "PMD.AvoidDecimalLiteralsInBigDecimalConstructor",
-        "java:S2111"
-    })
     private static void hex(
         final Emit emit, final String name, final Value value, final int line
     ) {
@@ -329,7 +325,7 @@ final class Emissions {
             throw error;
         }
         final double parsed = raw;
-        if (new BigDecimal(raw).compareTo(new BigDecimal(parsed)) != 0) {
+        if (!Emissions.exact(new BigDecimal(raw), parsed)) {
             throw new ParseError(
                 line, value.pos(),
                 String.format(
@@ -461,14 +457,28 @@ final class Emissions {
      * @param parsed Result of {@code Double.parseDouble(raw)}
      * @return True when the literal is over-precise
      */
+    private static boolean overPrecise(final String raw, final double parsed) {
+        final BigDecimal written = new BigDecimal(raw);
+        return !Emissions.exact(written, parsed)
+            && written.compareTo(BigDecimal.valueOf(parsed)) != 0;
+    }
+
+    /**
+     * Whether a decimal equals a double's exact binary value — the one
+     * legitimate use of the double-arg {@link BigDecimal} constructor,
+     * needed here precisely because, unlike {@link BigDecimal#valueOf
+     * (double)}, it does not round to the double's shortest decimal
+     * spelling first.
+     * @param decimal Exact decimal value
+     * @param value Double to compare against
+     * @return True if {@code decimal} equals the double's exact binary value
+     */
     @SuppressWarnings({
         "PMD.AvoidDecimalLiteralsInBigDecimalConstructor",
         "java:S2111"
     })
-    private static boolean overPrecise(final String raw, final double parsed) {
-        final BigDecimal written = new BigDecimal(raw);
-        return written.compareTo(new BigDecimal(parsed)) != 0
-            && written.compareTo(BigDecimal.valueOf(parsed)) != 0;
+    private static boolean exact(final BigDecimal decimal, final double value) {
+        return decimal.compareTo(new BigDecimal(value)) == 0;
     }
 
     /**
