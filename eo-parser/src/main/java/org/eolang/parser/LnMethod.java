@@ -18,9 +18,9 @@ import java.util.List;
  * <li>{@link Kind#VMETHOD} when this {@code .method} has 0 horizontal
  * args — the chain stays open for further {@code .method} continuations
  * or deeper-indent vapplication children.</li>
- * <li>{@link Kind#VMETHOD_WITH_HARGS} when this {@code .method}
+ * <li>{@link Kind#VMETHOD_HARGS} when this {@code .method}
  * carries one or more horizontal args — the chain becomes
- * {@link Openness#HORIZONTAL_COMPLETED}.</li>
+ * {@link Openness#HCOMPLETED}.</li>
  * </ul>
  *
  * <p>Rejection paths owned here:</p>
@@ -75,7 +75,7 @@ final class LnMethod implements Line {
         );
         suffix.rejectAtomOutsideFormation(this.span);
         if (suffix.test()) {
-            Blanks.checkTest(this.span, globals, emit);
+            Blanks.checkTest(this.span, globals.pendingBlanks(), emit);
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
@@ -86,7 +86,7 @@ final class LnMethod implements Line {
                 stack.below().upgradeArgBinding();
             }
         }
-        emit.close();
+        stack.seal();
         emit.object(
             suffix.attribute(this.span.line(), this.span.indent()),
             ".".concat(method.raw()),
@@ -108,8 +108,8 @@ final class LnMethod implements Line {
             kind = Kind.VMETHOD;
             openness = Openness.OPEN;
         } else {
-            kind = Kind.VMETHOD_WITH_HARGS;
-            openness = Openness.HORIZONTAL_COMPLETED;
+            kind = Kind.VMETHOD_HARGS;
+            openness = Openness.HCOMPLETED;
         }
         top.become(kind);
         top.close(openness);
@@ -133,13 +133,13 @@ final class LnMethod implements Line {
                 "method continuation has no expression to attach to"
             );
         }
-        if (stack.top().openness() == Openness.HORIZONTAL_COMPLETED) {
+        if (stack.top().openness() == Openness.HCOMPLETED) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "method continuation not allowed after horizontal application, try vertical application instead"
             );
         }
-        if (stack.top().kind() == Kind.ONLY_PHI_FORMATION) {
+        if (stack.top().kind() == Kind.ONLY_PHI) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "method continuation not allowed after only-phi formation"

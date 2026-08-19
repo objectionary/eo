@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6871: a same-indent `.method` continuation closed the line above it without
+# the emissions that closing a level normally carries, so the `Φ.tuple`
+# wrapper of a compact tuple was never built and the dispatch ended up under
+# the tuple head instead of around it.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='foo']/o[@base='.m' and @name='x']/o[@base='Φ.seq']/o[@as='α0' and @base='Φ.tuple']
+input: |
+  [] > foo
+    seq *
+      1
+    .m > x

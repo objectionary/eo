@@ -48,17 +48,17 @@ final class DrProgram implements Iterable<Directive> {
                 "on GitHub, at https://github.com/objectionary/eo (bug reports are welcome).",
                 ""
             )
-            )
-            .add("object").attr(
-                "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
-                DrProgram.schema()
-            )
-            .attr("version", Manifests.read("EO-Version"))
-            .attr("revision", Manifests.read("EO-Revision"))
-            .attr("dob", Manifests.read("EO-Dob"))
-            .attr("time", when)
-            .attr("author", "eo-parser")
-            .iterator();
+        )
+        .add("object").attr(
+            "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
+            DrProgram.schema()
+        )
+        .attr("version", Manifests.read("EO-Version"))
+        .attr("revision", Manifests.read("EO-Revision"))
+        .attr("dob", Manifests.read("EO-Dob"))
+        .attr("time", when)
+        .attr("author", "eo-parser")
+        .iterator();
     }
 
     /**
@@ -92,10 +92,7 @@ final class DrProgram implements Iterable<Directive> {
             }
             final Path path = Paths.get(opt).toAbsolutePath();
             if (path.toFile().exists()) {
-                schema = String.format(
-                    "file:///%s",
-                    path.toString().replace("\\", "/")
-                );
+                schema = path.toUri().toString();
                 break;
             }
         }

@@ -52,10 +52,17 @@ public interface Data {
          * is dataized far away from the place that made it.</p>
          *
          * @param obj Data
-         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public ToPhi(final Object obj) {
-            this.object = Data.ToPhi.toPhi(obj);
+            this(Data.ToPhi.toPhi(obj));
+        }
+
+        /**
+         * Ctor.
+         * @param phi Already converted object
+         */
+        private ToPhi(final Phi phi) {
+            this.object = phi;
         }
 
         @Override

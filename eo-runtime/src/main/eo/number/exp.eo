@@ -15,28 +15,28 @@
       minus.
         e.power 5
         5.exp
-    1.0E-7
+    1.0e-7
 
   lt. ++> can-exponentiate-minus-one
     abs.
       minus.
         1.div e
         -1.exp
-    1.0E-8
+    1.0e-8
 
   lt. ++> can-exponentiate-minus-ten
     abs.
       minus.
         e.power -10
         -10.exp
-    1.0E-12
+    1.0e-12
 
   ninf.exp.eq 0 ++> can-exponentiate-negative-infinity
 
   lt. ++> can-exponentiate-one
     abs.
       e.minus 1.exp
-    1.0E-8
+    1.0e-8
 
   pinf.exp.eq pinf ++> can-exponentiate-positive-infinity
 

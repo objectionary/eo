@@ -5,7 +5,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - /object/o[count(o[not(@name='xi🌵')])=4]
+  - /object/o[count(o[not(starts-with(@name, 'a🌵'))])=4]
   - /object/o[@name='foo']/o[@name='λ']
 input: |-
   [] > foo /bytes

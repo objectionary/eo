@@ -107,9 +107,8 @@ final class Transpilation {
 
     /**
      * File where XSL measurements are stored.
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Path xslMeasures;
+    private final Path measures;
 
     /**
      * The target directory of the build, where tracked steps leave their XMIRs.
@@ -137,7 +136,7 @@ final class Transpilation {
         this.tracking = diagnostics;
         this.coverage = cvrg;
         this.superclass = base;
-        this.xslMeasures = measures;
+        this.measures = measures;
         this.target = dir;
     }
 
@@ -195,30 +194,30 @@ final class Transpilation {
      * @return Measured train
      */
     private Train<Shift> measured(final Train<Shift> base) {
-        final Path parent = this.xslMeasures.toAbsolutePath().getParent();
+        final Path parent = this.measures.toAbsolutePath().getParent();
         if (parent.toFile().mkdirs()) {
-            Logger.debug(this, "Directory created for %[file]s", this.xslMeasures);
+            Logger.debug(this, "Directory created for %[file]s", this.measures);
         }
         if (!Files.exists(parent)) {
             throw new IllegalArgumentException(
                 String.format(
                     "For some reason, the directory %s is absent, can't write measures to %s",
                     parent,
-                    this.xslMeasures
+                    this.measures
                 )
             );
         }
-        if (Files.isDirectory(this.xslMeasures)) {
+        if (Files.isDirectory(this.measures)) {
             throw new IllegalArgumentException(
                 String.format(
                     "This is not a file but a directory, can't write to it: %s",
-                    this.xslMeasures
+                    this.measures
                 )
             );
         }
         return new TrLambda(
             base,
-            shift -> new StMeasured(shift, this.xslMeasures)
+            shift -> new StMeasured(shift, this.measures)
         );
     }
 

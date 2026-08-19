@@ -13,7 +13,7 @@
 [start func] > reduced
   ^.reducedi > @
     start
-    func > [accum item index] >>
+    ^.func > [accum item index] >>
       accum
       item
 

@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Random;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -23,7 +24,7 @@ final class BindingsTest {
             () -> Bindings.checkAllOrNothing(
                 Collections.emptyList(), new Span("foo", 1)
             ),
-            "an empty arg list must pass the all-or-nothing rule trivially"
+            "an empty arg list was rejected by the all-or-nothing rule"
         );
     }
 
@@ -34,7 +35,7 @@ final class BindingsTest {
                 Collections.singletonList(new Value(Value.Kind.IDENTIFIER, "a", 4, 5)),
                 new Span("foo a", 1)
             ),
-            "a single arg cannot violate the all-or-nothing rule"
+            "a single arg was rejected by the all-or-nothing rule"
         );
     }
 
@@ -49,7 +50,7 @@ final class BindingsTest {
                 ),
                 new Span("foo a b c", 1)
             ),
-            "all-unbound is a valid uniform mode"
+            "a group of all-unbound args was rejected"
         );
     }
 
@@ -59,26 +60,78 @@ final class BindingsTest {
             () -> Bindings.checkAllOrNothing(
                 Arrays.asList(
                     new Value(Value.Kind.IDENTIFIER, "a", 4, 5, "x"),
-                    new Value(Value.Kind.IDENTIFIER, "b", 6, 7, "y")
+                    new Value(Value.Kind.IDENTIFIER, "b", 8, 9, "y")
                 ),
                 new Span("foo a:x b:y", 1)
             ),
-            "all-bound is a valid uniform mode"
+            "a group of all-bound args was rejected"
+        );
+    }
+
+    @Test
+    void acceptsAllBoundArgsWithNumericBinding() {
+        final long seed = System.nanoTime();
+        final int slot = new Random(seed).nextInt(10);
+        Assertions.assertDoesNotThrow(
+            () -> Bindings.checkAllOrNothing(
+                Arrays.asList(
+                    new Value(Value.Kind.IDENTIFIER, "a", 4, 5, Integer.toString(slot)),
+                    new Value(Value.Kind.IDENTIFIER, "b", 6, 7, Integer.toString(slot))
+                ),
+                new Span(String.format("foo a:%1$d b:%1$d", slot), 1)
+            ),
+            String.format("a numeric binding is a valid uniform mode, seed is %d", seed)
+        );
+    }
+
+    @Test
+    void acceptsAllBoundArgsWithEmptyLabel() {
+        Assertions.assertDoesNotThrow(
+            () -> Bindings.checkAllOrNothing(
+                Arrays.asList(
+                    new Value(Value.Kind.IDENTIFIER, "a", 4, 5, ""),
+                    new Value(Value.Kind.IDENTIFIER, "b", 6, 7, "")
+                ),
+                new Span("foo a: b:", 1)
+            ),
+            "an empty binding label is still a binding, not its absence"
+        );
+    }
+
+    @Test
+    void rejectsEmptyLabelFollowedByUnbound() {
+        MatcherAssert.assertThat(
+            "an empty label counts as bound, so an unbound successor must be rejected",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> Bindings.checkAllOrNothing(
+                    Arrays.asList(
+                        new Value(Value.Kind.IDENTIFIER, "a", 4, 5, ""),
+                        new Value(Value.Kind.IDENTIFIER, "b", 6, 7)
+                    ),
+                    new Span("foo a: b", 1)
+                )
+            ).pos(),
+            Matchers.equalTo(6)
         );
     }
 
     @Test
     void rejectsMixedBoundAndUnbound() {
-        Assertions.assertThrows(
-            ParseError.class,
-            () -> Bindings.checkAllOrNothing(
-                Arrays.asList(
-                    new Value(Value.Kind.IDENTIFIER, "a", 4, 5, "x"),
-                    new Value(Value.Kind.IDENTIFIER, "b", 6, 7)
+        MatcherAssert.assertThat(
+            "the divergent arg's column must be reported",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> Bindings.checkAllOrNothing(
+                    Arrays.asList(
+                        new Value(Value.Kind.IDENTIFIER, "a", 4, 5, "x"),
+                        new Value(Value.Kind.IDENTIFIER, "b", 8, 9)
+                    ),
+                    new Span("foo a:x b", 1)
                 ),
-                new Span("foo a:x b", 1)
-            ),
-            "a bound arg followed by an unbound one must be rejected per R-6.6.2"
+                "a bound arg followed by an unbound one was accepted"
+            ).pos(),
+            Matchers.equalTo(8)
         );
     }
 
@@ -93,7 +146,7 @@ final class BindingsTest {
                 ),
                 new Span("foo a b:y", 1)
             ),
-            "an unbound arg followed by a bound one must be rejected per R-6.6.2"
+            "an unbound arg followed by a bound one was accepted"
         );
     }
 
@@ -111,7 +164,7 @@ final class BindingsTest {
                     ),
                     new Span("foo a b c:z", 1)
                 ),
-                "the divergent arg's column must be reported"
+                "the divergent arg's column was not the one reported"
             ).pos(),
             Matchers.equalTo(8)
         );
@@ -124,7 +177,7 @@ final class BindingsTest {
                 new Value(Value.Kind.IDENTIFIER, "cond", 4, 8),
                 new Span("if. cond then else", 1)
             ),
-            "a bare receiver is the canonical form for reversed dispatch"
+            "a bare receiver was rejected"
         );
     }
 
@@ -136,7 +189,7 @@ final class BindingsTest {
                 new Value(Value.Kind.IDENTIFIER, "cond", 4, 8, "x"),
                 new Span("if. cond:x then else", 1)
             ),
-            "a receiver carrying a binding must be rejected per R-6.6.3"
+            "a receiver carrying a binding was accepted"
         );
     }
 }

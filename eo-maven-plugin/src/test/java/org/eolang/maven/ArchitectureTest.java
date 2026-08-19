@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.tngtech.archunit.base.DescribedPredicate;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.domain.JavaConstructorCall;
+import com.tngtech.archunit.core.domain.JavaModifier;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import com.tngtech.archunit.lang.syntax.elements.GivenClassesConjunction;
@@ -78,13 +79,13 @@ final class ArchitectureTest {
     }
 
     /**
-     * All the project Mojos.
+     * All the project Mojos, the concrete goals; an abstract one is a base.
      * @return Mojos classes conjunction
      */
     private static GivenClassesConjunction mojos() {
         return ArchRuleDefinition.classes()
             .that().haveSimpleNameStartingWith("Mj")
-            .and().doNotHaveSimpleName("MjSafe")
+            .and().doNotHaveModifier(JavaModifier.ABSTRACT)
             .and().haveSimpleNameNotEndingWith("Test")
             .and().haveSimpleNameNotEndingWith("IT");
     }

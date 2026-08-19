@@ -445,6 +445,29 @@
       </plugins>
     </pluginManagement>
   </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <!--
+        By default the plugin contributes all of its goals, including the
+        two aggregators, which fork the "compile" lifecycle of every module
+        from the parent, before any module is built. The fork stops at
+        "compile", so eo-maven-plugin never gets its descriptor and
+        eo-runtime cannot transpile with it. The no-fork goals read what
+        the build has already compiled.
+        -->
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>jxr-no-fork</report>
+              <report>test-jxr-no-fork</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
   <profiles>
     <profile>
       <id>skipTests</id>
@@ -509,10 +532,9 @@
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
-            <version>0.30.13</version>
+            <version>0.31.0</version>
             <configuration>
               <excludes combine.children="append">
-                <exclude>checkstyle:/src/site/resources/.*</exclude>
                 <exclude>duplicatefinder:.*</exclude>
               </excludes>
             </configuration>

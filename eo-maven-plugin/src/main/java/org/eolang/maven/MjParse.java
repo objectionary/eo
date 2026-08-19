@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import java.io.IOException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -38,12 +39,14 @@ public final class MjParse extends MjSafe {
     }
 
     @Override
-    public void exec() {
-        new Parsing(
-            this.scopedTojos(),
-            this.targetDir.toPath(),
-            this.sourcesDir.toPath(),
-            this.caching(Parsing.CACHE)
-        ).exec();
+    public void exec() throws IOException {
+        try (TjsForeign tojos = this.tojos()) {
+            new Parsing(
+                tojos,
+                this.targetDir.toPath(),
+                this.sourcesDir.toPath(),
+                this.caching(Parsing.CACHE)
+            ).exec();
+        }
     }
 }

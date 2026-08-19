@@ -47,8 +47,7 @@ final class JavaPlacedTest {
     }
 
     @Test
-    @SuppressWarnings("JTCOP.RuleNotContainsTestWord")
-    void placesJavaTests(@Mktmp final Path temp) throws Exception {
+    void placesJavaChecks(@Mktmp final Path temp) throws Exception {
         final String expected = String.join(
             System.lineSeparator(),
             "final class FooTest {",

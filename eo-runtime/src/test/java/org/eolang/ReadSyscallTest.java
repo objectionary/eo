@@ -19,6 +19,54 @@ final class ReadSyscallTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void rejectsFractionalSizeOnPosixRead() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new ReadSyscall(Phi.Φ.take("posix").copy()).make(
+                new Data.ToPhi(-1), new Data.ToPhi(1.5)
+            ),
+            "A fractional posix read size must fail with ExFailure, not read a truncated count"
+        );
+    }
+
+    @Test
+    @DisabledOnOs({OS.MAC, OS.LINUX})
+    void rejectsFractionalSizeOnWindowsRead() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new ReadFuncCall(Phi.Φ.take("win32").copy()).make(
+                new Data.ToPhi(-1), new Data.ToPhi(1.5)
+            ),
+            "A fractional win32 read size must fail with ExFailure, not read a truncated count"
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void rejectsInfiniteSizeOnPosixRead() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new ReadSyscall(Phi.Φ.take("posix").copy()).make(
+                new Data.ToPhi(-1), new Data.ToPhi(Double.POSITIVE_INFINITY)
+            ),
+            "An infinite posix read size must fail with ExFailure, not allocate the largest int"
+        );
+    }
+
+    @Test
+    @DisabledOnOs({OS.MAC, OS.LINUX})
+    void rejectsInfiniteSizeOnWindowsRead() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new ReadFuncCall(Phi.Φ.take("win32").copy()).make(
+                new Data.ToPhi(-1), new Data.ToPhi(Double.POSITIVE_INFINITY)
+            ),
+            "An infinite win32 read size must fail with ExFailure, not allocate the largest int"
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void rejectsNegativeSizeOnPosixRead() {
         Assertions.assertThrows(
             ExFailure.class,

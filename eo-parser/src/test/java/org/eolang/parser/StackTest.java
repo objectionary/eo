@@ -109,7 +109,7 @@ final class StackTest {
     @Test
     void popsDeeperLevelsAndRunsCloser() {
         final List<Integer> closed = new ArrayList<>(0);
-        final Stack stack = new Stack(level -> closed.add(level.indent()));
+        final Stack stack = new Stack((level, naming) -> closed.add(level.indent()));
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
         stack.push(2, 2, Kind.HEAD, Openness.OPEN);
         stack.push(4, 3, Kind.HEAD, Openness.OPEN);
@@ -128,9 +128,9 @@ final class StackTest {
         stack.push(2, 2, Kind.HEAD, Openness.OPEN);
         stack.popDeeperThan(0);
         MatcherAssert.assertThat(
-            "after popping a deeper level, the surviving top must drop to VERTICAL_COMPLETED",
+            "after popping a deeper level, the surviving top must drop to VCOMPLETED",
             stack.top().openness(),
-            Matchers.equalTo(Openness.VERTICAL_COMPLETED)
+            Matchers.equalTo(Openness.VCOMPLETED)
         );
     }
 
@@ -138,20 +138,20 @@ final class StackTest {
     void leavesHorizontallyCompletedTopAlone() {
         final Stack stack = new Stack();
         final Level top = stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
-        top.close(Openness.HORIZONTAL_COMPLETED);
+        top.close(Openness.HCOMPLETED);
         stack.push(2, 2, Kind.HEAD, Openness.OPEN);
         stack.popDeeperThan(0);
         MatcherAssert.assertThat(
             "a horizontally-completed top must not be downgraded to vertical-completed",
             stack.top().openness(),
-            Matchers.equalTo(Openness.HORIZONTAL_COMPLETED)
+            Matchers.equalTo(Openness.HCOMPLETED)
         );
     }
 
     @Test
     void replacesTopAndClosesOld() {
         final List<Integer> closed = new ArrayList<>(0);
-        final Stack stack = new Stack(level -> closed.add(level.start()));
+        final Stack stack = new Stack((level, naming) -> closed.add(level.start()));
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
         stack.push(2, 2, Kind.HEAD, Openness.OPEN);
         stack.replace(5, Kind.BARE_FORMATION, Openness.OPEN);
@@ -177,7 +177,7 @@ final class StackTest {
     @Test
     void runsCloserOnEveryRemainingEntryAtClose() {
         final List<Integer> closed = new ArrayList<>(0);
-        final Stack stack = new Stack(level -> closed.add(level.indent()));
+        final Stack stack = new Stack((level, naming) -> closed.add(level.indent()));
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
         stack.push(2, 2, Kind.HEAD, Openness.OPEN);
         stack.close();

@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.posix.CStdLib;
-import org.eolang.win32.WSAStartupFuncCall;
+import org.eolang.win32.WSAData;
 import org.eolang.win32.Winsock;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -38,7 +38,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * {@code socket} object, both the POSIX and the Windows ones.
  * @since 0.40
  */
-@SuppressWarnings("PMD.AvoidUsingHardCodedIP")
 @ExtendWith(EphemeralResolver.class)
 final class SyscallTest {
 
@@ -151,7 +150,7 @@ final class SyscallTest {
      * Returns the localhost address.
      */
     private String localhost() {
-        return "127.0.0.1";
+        return InetAddress.getLoopbackAddress().getHostAddress();
     }
 
     /**
@@ -199,7 +198,7 @@ final class SyscallTest {
             final SyscallTest.RandomServer server = new SyscallTest.RandomServer(port).started();
             try {
                 this.ensure(this.startup() == 0);
-                final int socket = this.openSocket();
+                final long socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
                     final SockaddrIn addr = this.sockaddr(server.port());
@@ -221,19 +220,15 @@ final class SyscallTest {
         }
 
         @RepeatedIfExceptionsTest(repeats = 3)
-        void refusesConnectionViaSyscall() throws UnknownHostException {
+        void refusesConnectionViaSyscall(@Ephemeral final int port) throws UnknownHostException {
             try {
                 this.ensure(this.startup() == 0);
-                final int socket = this.openSocket();
+                final long socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
-                    final SockaddrIn addr = new SockaddrIn(
-                        (short) Winsock.AF_INET,
-                        SyscallTest.htons(8080),
-                        this.inetAddr("192.0.2.1")
-                    );
+                    final SockaddrIn addr = this.sockaddr(port);
                     MatcherAssert.assertThat(
-                        "Connection via windows syscall to Test-Net (192.0.2.1) must be refused",
+                        "Connection via windows syscall to a loopback port nobody listens on must be refused",
                         Winsock.INSTANCE.connect(socket, addr, addr.size()),
                         Matchers.equalTo(-1)
                     );
@@ -250,7 +245,7 @@ final class SyscallTest {
             throws UnknownHostException {
             try {
                 this.ensure(this.startup() == 0);
-                final int socket = this.openSocket();
+                final long socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
                     MatcherAssert.assertThat(
@@ -274,7 +269,7 @@ final class SyscallTest {
             throws UnknownHostException {
             try {
                 this.ensure(this.startup() == 0);
-                final int socket = this.openSocket();
+                final long socket = this.openSocket();
                 try {
                     this.ensure(socket > 0);
                     this.ensure(this.bindSocket(socket, port) == 0);
@@ -306,7 +301,7 @@ final class SyscallTest {
                 );
                 server.start();
                 Thread.sleep(2000);
-                final int client = this.openSocket();
+                final long client = this.openSocket();
                 try {
                     this.ensure(client >= 0);
                     final SockaddrIn sockaddr = this.sockaddr(port);
@@ -347,7 +342,7 @@ final class SyscallTest {
                 );
                 server.start();
                 Thread.sleep(2000);
-                final int client = this.openSocket();
+                final long client = this.openSocket();
                 try {
                     this.ensure(client >= 0);
                     final SockaddrIn sockaddr = this.sockaddr(port);
@@ -376,8 +371,8 @@ final class SyscallTest {
          * Open socket.
          * @return Socket descriptor
          */
-        private int openSocket() {
-            final int socket = Winsock.INSTANCE.socket(
+        private long openSocket() {
+            final long socket = Winsock.INSTANCE.socket(
                 Winsock.AF_INET,
                 Winsock.SOCK_STREAM,
                 Winsock.IPPROTO_TCP
@@ -391,7 +386,7 @@ final class SyscallTest {
          * @param socket Socket descriptor
          * @return Zero on success, -1 on error
          */
-        private int closeSocket(final int socket) {
+        private int closeSocket(final long socket) {
             final int closed = Winsock.INSTANCE.closesocket(socket);
             if (closed == 0) {
                 Logger.debug(this, "Closed socket: %d", socket);
@@ -407,7 +402,7 @@ final class SyscallTest {
          */
         private int startup() {
             return Winsock.INSTANCE.WSAStartup(
-                Winsock.WINSOCK_VERSION_2_2, new WSAStartupFuncCall.WSAData()
+                Winsock.VERSION_2_2, new WSAData()
             );
         }
 
@@ -444,7 +439,7 @@ final class SyscallTest {
          * @param port Port
          * @return Zero on success, -1 on error
          */
-        private int bindSocket(final int socket, final int port) throws UnknownHostException {
+        private int bindSocket(final long socket, final int port) throws UnknownHostException {
             return Winsock.INSTANCE.bind(
                 socket,
                 this.sockaddr(port),
@@ -472,24 +467,24 @@ final class SyscallTest {
             return new SockaddrIn(
                 (short) Winsock.AF_INET,
                 SyscallTest.htons(port),
-                this.inetAddr("127.0.0.1")
+                this.inetAddr(InetAddress.getLoopbackAddress().getHostAddress())
             );
         }
 
         private void acceptViaWinsock(
             final int port, final AtomicInteger accept, final AtomicInteger error
         ) {
-            final int socket = this.openSocket();
+            final long socket = this.openSocket();
             try {
                 this.ensure(socket > 0);
                 this.ensure(this.bindSocket(socket, port) == 0);
                 this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
-                final int accepted = Winsock.INSTANCE.accept(
+                final long accepted = Winsock.INSTANCE.accept(
                     socket, addr, new IntByReference(addr.size())
                 );
                 Logger.debug(this, "Accepted socket: %d", accepted);
-                accept.set(accepted);
+                accept.set((int) accepted);
                 if (accepted < 0) {
                     error.set(this.getError());
                 }
@@ -507,8 +502,8 @@ final class SyscallTest {
             final int port, final AtomicInteger received,
             final AtomicReference<byte[]> bytes
         ) {
-            final int socket = this.openSocket();
-            int accepted = 0;
+            final long socket = this.openSocket();
+            long accepted = 0L;
             try {
                 this.ensure(socket > 0);
                 this.ensure(this.bindSocket(socket, port) == 0);
@@ -761,7 +756,7 @@ final class SyscallTest {
             return new SockaddrIn(
                 (short) CStdLib.AF_INET,
                 SyscallTest.htons(port),
-                this.inetAddr("127.0.0.1")
+                this.inetAddr(InetAddress.getLoopbackAddress().getHostAddress())
             );
         }
 

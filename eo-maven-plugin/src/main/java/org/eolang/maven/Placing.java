@@ -122,12 +122,12 @@ final class Placing implements Step {
         if (copied > 0) {
             Logger.debug(
                 this, "Placed %d binary file(s) out of %d, found in %s, to %[file]s",
-                copied, new Walk(dir).size(), dep, this.classes
+                copied, new WkDefault(dir).size(), dep, this.classes
             );
         } else {
             Logger.debug(
                 this, "No binary file(s) out of %d were placed from %s, to %[file]s",
-                new Walk(dir).size(), dep, this.classes
+                new WkDefault(dir).size(), dep, this.classes
             );
         }
         return copied;
@@ -172,7 +172,7 @@ final class Placing implements Step {
 
         @Override
         public Long get() {
-            return new Walk(this.dir)
+            return new WkDefault(this.dir)
                 .includes(Placing.this.include)
                 .excludes(Placing.this.exclude)
                 .stream()
@@ -228,7 +228,12 @@ final class Placing implements Step {
                         file, target
                     );
                 }
-                if (Files.exists(target) && !this.sameLength(target, file)) {
+                if (
+                    Files.exists(target)
+                        && new Unchecked<>(
+                            () -> Files.size(target) != Files.size(file)
+                        ).value()
+                ) {
                     Logger.debug(
                         this,
                         "File %[file]s (%[size]s) was already placed at %[file]s (%[size]s!) by %s, replacing",
@@ -266,17 +271,6 @@ final class Placing implements Step {
                     ex
                 );
             }
-        }
-
-        /**
-         * Check if two files have the same length.
-         * @param first First file
-         * @param second Second file
-         * @return True if they have the same length
-         * @checkstyle NonStaticMethodCheck (2 lines)
-         */
-        private boolean sameLength(final Path first, final Path second) {
-            return new Unchecked<>(() -> Files.size(first) == Files.size(second)).value();
         }
     }
 }

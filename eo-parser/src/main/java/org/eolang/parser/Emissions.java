@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +29,12 @@ final class Emissions {
      * Maximum value of a {@code \NNN} octal byte escape (0o377, one byte).
      */
     private static final int MAX_OCTAL_BYTE = 0xFF;
+
+    /**
+     * Bits an IEEE-754 double keeps below the leading one of its
+     * significand.
+     */
+    private static final int SIGNIFICAND_BITS = 52;
 
     /**
      * The void the identity object {@code I} binds and decorates.
@@ -310,10 +317,6 @@ final class Emissions {
      * @param value Hex value
      * @param line Source line
      */
-    @SuppressWarnings({
-        "PMD.AvoidDecimalLiteralsInBigDecimalConstructor",
-        "java:S2111"
-    })
     private static void hex(
         final Emit emit, final String name, final Value value, final int line
     ) {
@@ -329,7 +332,7 @@ final class Emissions {
             throw error;
         }
         final double parsed = raw;
-        if (new BigDecimal(raw).compareTo(new BigDecimal(parsed)) != 0) {
+        if (!Emissions.exact(new BigDecimal(raw), parsed)) {
             throw new ParseError(
                 line, value.pos(),
                 String.format(
@@ -461,14 +464,55 @@ final class Emissions {
      * @param parsed Result of {@code Double.parseDouble(raw)}
      * @return True when the literal is over-precise
      */
-    @SuppressWarnings({
-        "PMD.AvoidDecimalLiteralsInBigDecimalConstructor",
-        "java:S2111"
-    })
     private static boolean overPrecise(final String raw, final double parsed) {
         final BigDecimal written = new BigDecimal(raw);
-        return written.compareTo(new BigDecimal(parsed)) != 0
+        return !Emissions.exact(written, parsed)
             && written.compareTo(BigDecimal.valueOf(parsed)) != 0;
+    }
+
+    /**
+     * Whether a decimal equals a double's exact binary value.
+     * @param decimal Exact decimal value
+     * @param value Double to compare against
+     * @return True if {@code decimal} equals the double's exact binary value
+     */
+    private static boolean exact(final BigDecimal decimal, final double value) {
+        return decimal.compareTo(Emissions.exactly(value)) == 0;
+    }
+
+    /**
+     * The exact value of a finite double, every bit of its binary
+     * significand spelled out in decimal.
+     *
+     * <p>{@link BigDecimal#valueOf(double)} cannot be used here: it goes
+     * through {@link Double#toString(double)} and therefore returns the
+     * double's <em>shortest</em> spelling ({@code 0.1}), not the value the
+     * bits actually hold ({@code 0.1000000000000000055511151231257827…}).
+     * The value is assembled from the significand and the binary exponent
+     * instead: {@code value} is {@code mantissa × 2^exponent}, so for a
+     * negative exponent it is also {@code mantissa × 5^-exponent} shifted
+     * {@code -exponent} decimal places to the right.</p>
+     *
+     * @param value Finite double (neither infinite nor {@code NaN})
+     * @return Its exact value as a decimal
+     */
+    private static BigDecimal exactly(final double value) {
+        final int exponent = Math.max(
+            Math.getExponent(value), Double.MIN_EXPONENT
+        ) - Emissions.SIGNIFICAND_BITS;
+        final BigInteger mantissa = BigInteger.valueOf(
+            (long) Math.scalb(value, -exponent)
+        );
+        final BigDecimal exact;
+        if (exponent < 0) {
+            exact = new BigDecimal(
+                mantissa.multiply(BigInteger.valueOf(5L).pow(-exponent)),
+                -exponent
+            );
+        } else {
+            exact = new BigDecimal(mantissa.shiftLeft(exponent));
+        }
+        return exact;
     }
 
     /**

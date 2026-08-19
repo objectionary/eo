@@ -13,11 +13,9 @@ import org.eolang.SockaddrIn;
 /**
  * Interface definitions for <code>WS2_32.dll</code>.
  * @since 0.40
- * @checkstyle MethodNameCheck (1000 lines)
- * @checkstyle ParameterNumberCheck (1000 lines)
  * @checkstyle AbbreviationAsWordInNameCheck (1000 lines)
  */
-@SuppressWarnings({"PMD.MethodNamingConventions", "PMD.TooManyMethods"})
+@SuppressWarnings("PMD.MethodNamingConventions")
 public interface Winsock extends StdCallLibrary {
 
     /**
@@ -33,8 +31,7 @@ public interface Winsock extends StdCallLibrary {
     /**
      * Winsock version.
      */
-    @SuppressWarnings("PMD.LongVariable")
-    short WINSOCK_VERSION_2_2 = (short) 0x0202;
+    short VERSION_2_2 = (short) 0x0202;
 
     /**
      * The Internet Protocol version 4 (IPv4) address family.
@@ -57,7 +54,7 @@ public interface Winsock extends StdCallLibrary {
     /**
      * Invalid socket descriptor.
      */
-    int INVALID_SOCKET = -1;
+    long INVALID_SOCKET = -1L;
 
     /**
      * Status returned on errors with socket.
@@ -70,7 +67,7 @@ public interface Winsock extends StdCallLibrary {
      * @param data Data with info about socket structure
      * @return Zero on success, error code on error
      */
-    int WSAStartup(short version, WSAStartupFuncCall.WSAData data);
+    int WSAStartup(short version, WSAData data);
 
     /**
      * Stops usage of Winsock 2 by DLL.
@@ -85,14 +82,14 @@ public interface Winsock extends StdCallLibrary {
      * @param protocol Socket protocol
      * @return Socket descriptor
      */
-    int socket(int domain, int type, int protocol);
+    long socket(int domain, int type, int protocol);
 
     /**
      * Closes a socket.
      * @param socket Socket descriptor
      * @return Zero on success, otherwise, a value of SOCKET_ERROR is returned
      */
-    int closesocket(int socket);
+    int closesocket(long socket);
 
     /**
      * Connects to the server at the specified IP address and port.
@@ -101,7 +98,7 @@ public interface Winsock extends StdCallLibrary {
      * @param addrlen The size of the address structure
      * @return Zero on success, otherwise, a value of SOCKET_ERROR is returned
      */
-    int connect(int sockfd, SockaddrIn addr, int addrlen);
+    int connect(long sockfd, SockaddrIn addr, int addrlen);
 
     /**
      * Assigns the address specified by {@code addr} to the socket referred to
@@ -111,7 +108,7 @@ public interface Winsock extends StdCallLibrary {
      * @param addrlen The size of the address structure
      * @return Zero on success, -1 on error
      */
-    int bind(int sockfd, SockaddrIn addr, int addrlen);
+    int bind(long sockfd, SockaddrIn addr, int addrlen);
 
     /**
      * Listen for incoming connections on socket.
@@ -120,7 +117,7 @@ public interface Winsock extends StdCallLibrary {
      *  waiting to be accepted
      * @return Zero on success, -1 on error
      */
-    int listen(int sockfd, int backlog);
+    int listen(long sockfd, int backlog);
 
     /**
      * Accept connection on socket.
@@ -130,7 +127,7 @@ public interface Winsock extends StdCallLibrary {
      * @return On success, file descriptor for the accepted socket (a nonnegative integer)
      *  is returned. On error, -1 is returned
      */
-    int accept(int sockfd, SockaddrIn addr, IntByReference addrlen);
+    long accept(long sockfd, SockaddrIn addr, IntByReference addrlen);
 
     /**
      * Send a message to a socket.
@@ -139,9 +136,8 @@ public interface Winsock extends StdCallLibrary {
      * @param len Size of sent data
      * @param flags Flags
      * @return The number of sent bytes on success, -1 on error
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    int send(int sockfd, byte[] buf, int len, int flags);
+    int send(long sockfd, byte[] buf, int len, int flags);
 
     /**
      * Receive a message from a socket.
@@ -150,9 +146,8 @@ public interface Winsock extends StdCallLibrary {
      * @param len Size of received data
      * @param flags Flags
      * @return The number of received bytes on success, -1 on error
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    int recv(int sockfd, byte[] buf, int len, int flags);
+    int recv(long sockfd, byte[] buf, int len, int flags);
 
     /**
      * Retrieve the last error from winsock.

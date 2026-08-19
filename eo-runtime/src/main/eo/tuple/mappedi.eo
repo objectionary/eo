@@ -14,7 +14,7 @@
   ^.reducedi > @
     *
     accum.with > [accum item idx] >>
-      func item idx
+      ^.func item idx
 
   eq. ++> can-map-a-list-with-indexes
     mappedi.

@@ -27,7 +27,7 @@
                 pi.times 2
               0.5
           6.283185303211212
-      k.times 3.968374318722162E-9
+      k.times 3.968374318722162e-9
     if. > [depth] >> factor
       depth.gt 15
       1
@@ -40,7 +40,7 @@
               plus.
                 depth.times 2
                 1
-          factor
+          ^.factor
             depth.plus 1
     | 1
 

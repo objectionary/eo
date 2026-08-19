@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6314: the blank line that follows the meta header was consumed by the
+# R-6.5.5 check before the R-6.5.3 one could read it, so the very first object
+# of a file was told a blank line was missing while it was right there. The
+# line below is still rejected, for sitting outside a top-level object, but
+# that is the only thing wrong with it.
+sheets: []
+asserts:
+  - /object/errors[count(error)=1]
+  - /object/errors/error[contains(text(),'direct child of top-level object')]
+input: |
+  +package foo
+
+  [] +> works
+    true > @

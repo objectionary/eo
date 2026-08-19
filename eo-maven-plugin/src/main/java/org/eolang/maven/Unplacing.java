@@ -66,7 +66,7 @@ final class Unplacing implements Step {
      * Unplace what's necessary.
      */
     private void unplace() {
-        final Walk binaries = new Walk(this.classes);
+        final Walk binaries = new WkDefault(this.classes);
         if (binaries.isEmpty()) {
             Logger.warn(this, "No classes found in %[file]s", this.classes);
         } else {

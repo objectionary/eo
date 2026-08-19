@@ -20,6 +20,7 @@
   [] > @ /Q.win32.return
   8 > append
   256 > creat
+  17 > eexist
   1024 > exclusive
   -1 > failure
   2 > inet
@@ -31,7 +32,7 @@
   00-00-00-00-00-00-04-00 > reparse
   [code output] > return
     output > @
-    return > called
+    ^.return > called
       code
       output
   [family port address] > sockaddr-in
@@ -51,6 +52,14 @@
   512 > trunc
   02-02 > version
   32769 > wronly
+
+  os.is-windows.not.or ++> can-report-a-host-name-as-invalid
+    eq.
+      code.
+        win32 *1
+          "inet_addr"
+          "localhost"
+      win32.invalid
 
   os.is-windows.not.or ++> can-report-an-ipv6-address-as-invalid
     eq.

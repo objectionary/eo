@@ -128,12 +128,12 @@ public final class PhSafe implements Phi, Atom {
 
     @Override
     public void put(final int pos, final Phi object) {
-        this.through(() -> this.origin.put(pos, object));
+        this.act(() -> this.origin.put(pos, object));
     }
 
     @Override
     public void put(final String nme, final Phi object) {
-        this.through(() -> this.origin.put(nme, object));
+        this.act(() -> this.origin.put(nme, object));
     }
 
     @Override
@@ -170,7 +170,7 @@ public final class PhSafe implements Phi, Atom {
      * Helper, for other methods.
      * @param action The action
      */
-    private void through(final Runnable action) {
+    private void act(final Runnable action) {
         this.through(
             () -> {
                 action.run();
@@ -186,7 +186,6 @@ public final class PhSafe implements Phi, Atom {
      * @param <T> Type of result
      * @return Result
      */
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private <T> T through(final Supplier<T> action) {
         return this.through(action, "");
     }

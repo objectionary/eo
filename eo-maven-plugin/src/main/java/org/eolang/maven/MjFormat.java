@@ -11,8 +11,6 @@ import com.jcabi.xml.XML;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.EnumMap;
-import java.util.Map;
 import java.util.Optional;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -20,7 +18,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.parser.EoSyntax;
-import org.eolang.printer.PenaltyKey;
 import org.eolang.printer.Xmir;
 
 /**
@@ -33,7 +30,7 @@ import org.eolang.printer.Xmir;
  * fixpoint, so the canonical form is the fixpoint of parse-and-print), and
  * compares that against what is on disk. In its default "check" mode, it
  * prints a colored unified {@link Diff} for every file that diverges from
- * the canonical form and fails the build. When {@link #autoFix} is turned
+ * the canonical form and fails the build. When {@link #autofix} is turned
  * on (via the {@code eo.autoFix} property), it overwrites the divergent
  * files with their canonical form instead of failing, much like
  * {@code gofmt -w} or {@code spotless:apply}.</p>
@@ -59,7 +56,7 @@ import org.eolang.printer.Xmir;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class MjFormat extends MjSafe {
+public final class MjFormat extends MjPenalties {
 
     /**
      * The most parse-and-print passes taken to settle the moniker layout
@@ -77,37 +74,14 @@ public final class MjFormat extends MjSafe {
     /**
      * Overwrite divergent sources with their canonical form instead of
      * failing the build.
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.autoFix", required = true, defaultValue = "false")
-    private boolean autoFix;
-
-    /**
-     * Points charged for each level of indentation on a line.
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @Parameter(property = "eo.penaltyIndent")
-    private Integer penaltyIndent;
-
-    /**
-     * Points charged for each opening parenthesis.
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @Parameter(property = "eo.penaltyBracket")
-    private Integer penaltyBracket;
-
-    /**
-     * Points charged for each character past the allowed width.
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @Parameter(property = "eo.penaltyExcess")
-    private Integer penaltyExcess;
-
-    /**
-     * The column after which characters start being charged.
-     */
-    @Parameter(property = "eo.width")
-    private Integer width;
+    @Parameter(
+        alias = "autoFix",
+        property = "eo.autoFix",
+        required = true,
+        defaultValue = "false"
+    )
+    private boolean autofix;
 
     /**
      * Ctor.
@@ -119,12 +93,14 @@ public final class MjFormat extends MjSafe {
     @Override
     void exec() throws IOException {
         final long start = System.currentTimeMillis();
-        final Collection<TjForeign> sources = this.scopedTojos().withSources();
-        this.report(
-            sources.size(),
-            new Threaded<>(sources, tojo -> this.reformat(tojo.source())).total(),
-            System.currentTimeMillis() - start
-        );
+        try (TjsForeign tojos = this.tojos()) {
+            final Collection<TjForeign> sources = tojos.withSources();
+            this.report(
+                sources.size(),
+                new Threaded<>(sources, tojo -> this.reformat(tojo.source())).total(),
+                System.currentTimeMillis() - start
+            );
+        }
     }
 
     /**
@@ -142,7 +118,7 @@ public final class MjFormat extends MjSafe {
             diverged = 0;
         } else {
             diverged = 1;
-            if (this.autoFix) {
+            if (this.autofix) {
                 new Saved(canonical, source).value();
                 Logger.info(this, "Reformatted %[file]s", source);
             } else {
@@ -347,32 +323,6 @@ public final class MjFormat extends MjSafe {
     }
 
     /**
-     * Assemble the overridden penalty weights from the Maven properties.
-     *
-     * <p>Only the properties that the user actually set are put into the
-     * map; every absent key falls back to its {@link PenaltyKey#fallback()}
-     * default inside the printer.</p>
-     *
-     * @return The weights, keyed by {@link PenaltyKey}
-     */
-    private Map<PenaltyKey, Integer> weights() {
-        final Map<PenaltyKey, Integer> map = new EnumMap<>(PenaltyKey.class);
-        if (this.penaltyIndent != null) {
-            map.put(PenaltyKey.INDENT, this.penaltyIndent);
-        }
-        if (this.penaltyBracket != null) {
-            map.put(PenaltyKey.BRACKET, this.penaltyBracket);
-        }
-        if (this.penaltyExcess != null) {
-            map.put(PenaltyKey.EXCESS, this.penaltyExcess);
-        }
-        if (this.width != null) {
-            map.put(PenaltyKey.WIDTH, this.width);
-        }
-        return map;
-    }
-
-    /**
      * Report the outcome, failing the build if needed.
      * @param total The number of registered sources
      * @param divergent How many sources diverged from the canonical form
@@ -385,7 +335,7 @@ public final class MjFormat extends MjSafe {
                 "All %d EO source(s) are formatted canonically, took %[ms]s to check",
                 total, millis
             );
-        } else if (this.autoFix) {
+        } else if (this.autofix) {
             Logger.info(
                 this,
                 "Reformatted %d of %d EO source(s), took %[ms]s",

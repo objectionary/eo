@@ -4,8 +4,6 @@
 # A member of a package is a file of its own, and after the merge it is an
 # attribute of the object the package names. Nothing else about it changes:
 # it keeps its name, its voids and its body.
-merged:
-  - number
 eo:
   number.eo: |
     [as-bytes] > number

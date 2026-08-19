@@ -5,7 +5,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - /object/o[@name='foo'][count(o[not(@name='xi🌵')])=3]
+  - /object/o[@name='foo'][count(o[not(starts-with(@name, 'a🌵'))])=3]
   - /object/o[@name='foo']/o[@base='Φ.true' and @name='+test-works']
   - /object/o[@name='foo']/o[@base='Φ.false' and @name='+always-fails']
   - /object/o[@name='foo']/o[@base='.eq' and @name='+compares-something']

@@ -23,7 +23,7 @@
   lt. ++> can-convert-minus-pi-to-degrees
     abs.
       pi.neg.degrees.minus -180
-    1.0E-4
+    1.0e-4
 
   lt. ++> can-convert-pi-halves-to-degrees
     abs.
@@ -31,12 +31,12 @@
         degrees.
           pi.div 2
         90
-    1.0E-4
+    1.0e-4
 
   lt. ++> can-convert-pi-to-degrees
     abs.
       pi.degrees.minus 180
-    1.0E-4
+    1.0e-4
 
   lt. ++> can-convert-two-pi-to-degrees
     abs.
@@ -44,7 +44,7 @@
         degrees.
           pi.times 2
         360
-    1.0E-4
+    1.0e-4
 
   0.degrees.eq 0 ++> can-convert-zero-to-degrees
 

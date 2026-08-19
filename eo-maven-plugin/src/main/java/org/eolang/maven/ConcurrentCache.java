@@ -20,7 +20,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * as it differs from file to file.</p>
  *
  * <p>Guards are per-instance and {@link Parsing} is built by both
- * {@link MjParse} and {@link MjSafe#assembling()}, which is enough within one
+ * {@link MjParse} and {@link MjSafe#assembling(TjsForeign)}, which is enough within one
  * module, as those mojos never overlap. Modules built in parallel still share
  * the machine-wide cache directory (#2857), which no in-process lock covers.</p>
  *

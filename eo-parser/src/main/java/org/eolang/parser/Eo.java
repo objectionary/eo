@@ -71,7 +71,7 @@ final class Eo implements Iterable<Directive> {
         final Globals globals = new Globals();
         final Emit emit = new Emit(this.source);
         final Stack stack = new Stack(
-            level -> Eo.checkOnClose(level, emit),
+            (level, naming) -> Eo.checkOnClose(level, emit, naming),
             parent -> Eo.beforeChild(parent, emit)
         );
         final java.util.List<Span> spans = new java.util.ArrayList<>(Eo.SPANS_CAPACITY);
@@ -198,7 +198,7 @@ final class Eo implements Iterable<Directive> {
      * Merge a BYTES continuation starting at index {@code start} —
      * concatenates the trailing-dash chunk with subsequent BYTES-only
      * lines at &gt;= the same indent until a chunk without trailing
-     * dash terminates the tstartsen (R-3.13).
+     * dash terminates the token (R-3.13).
      * @param spans Materialised list of source spans
      * @param start Index of the continuation start
      * @param stack Indent stack
@@ -281,9 +281,8 @@ final class Eo implements Iterable<Directive> {
      * Whether a character is a valid BYTES hex digit. Per the grammar
      * (matching ANTLR's {@code BYTE : [0-9A-F][0-9A-F]}), BYTES accept
      * only uppercase hex — lowercase letters belong to {@code NAME}
-     * tstartsens. Compare with the case-insensitive
-     * {@link Tstartsens#hexDigit(char)} used for the {@code 0x...} HEX
-     * literal (R-9.8.3).
+     * tokens. Compare with the case-insensitive {@code hexDigit}
+     * used for the {@code 0x...} HEX literal (R-9.8.3).
      * @param glyph The character
      * @return True if 0-9 or A-F
      */
@@ -312,7 +311,7 @@ final class Eo implements Iterable<Directive> {
         boolean failed = false;
         if (globals.inTextBlock()) {
             Eo.continueTextBlock(span, stack, globals, emit);
-        } else if (span.tab()) {
+        } else if (span.tab() && !span.blank()) {
             emit.error(span.line(), 0, "tab character in leading whitespace");
             failed = true;
         } else if (!span.blank() && span.indent() % 2 == 1) {
@@ -342,12 +341,12 @@ final class Eo implements Iterable<Directive> {
     ) {
         if (Eo.closesTextBlock(span, globals)) {
             stack.popDeeperThan(span.indent());
-            final int tstartsen = emit.savepoint();
+            final int token = emit.savepoint();
             final java.util.List<Level> frame = stack.snapshot();
             try {
                 new LnTextBlock(span).into(stack, globals, emit);
             } catch (final ParseError err) {
-                emit.rollback(tstartsen);
+                emit.rollback(token);
                 stack.restore(frame);
                 emit.error(err.line(), err.pos(), err.getMessage());
                 globals.closeTextBlock();
@@ -408,13 +407,13 @@ final class Eo implements Iterable<Directive> {
         if (!span.blank() && span.head() != '#') {
             stack.popDeeperThan(span.indent());
         }
-        final int tstartsen = emit.savepoint();
+        final int token = emit.savepoint();
         final java.util.List<Level> frame = stack.snapshot();
         boolean failed = false;
         try {
             Eo.classify(span).into(stack, globals, emit);
         } catch (final ParseError err) {
-            emit.rollback(tstartsen);
+            emit.rollback(token);
             stack.restore(frame);
             emit.error(err.line(), err.pos(), err.getMessage(), true);
             failed = true;
@@ -846,7 +845,7 @@ final class Eo implements Iterable<Directive> {
      * Whether a root-headed line (e.g., {@code ^.} or {@code @.}) is
      * a reversed-dispatch — the root character is immediately
      * followed by {@code .} and then a space or end-of-body. The
-     * head's source tstartsen maps to its XMIR symbol per R-9.3 inside
+     * head's source token maps to its XMIR symbol per R-9.3 inside
      * {@link LnReversed}.
      * @param span The span
      * @return True if the line shape is reversed dispatch with a
@@ -893,19 +892,19 @@ final class Eo implements Iterable<Directive> {
      * <p>Checks: R-5.3.1 (naming requirement for plain children of
      * formations and top-level objects), the only-phi argument-naming
      * ban (§4.5), bare-reversed receiver presence, and the compact-tuple
-     * count. Atom-body and test-depth checks attach as their owning line
-     * shapes are implemented.</p>
+     * count.</p>
      *
      * @param level The level being closed
      * @param emit The directives sink
+     * @param naming Whether the naming requirement applies yet
      */
-    private static void checkOnClose(final Level level, final Emit emit) {
+    private static void checkOnClose(final Level level, final Emit emit, final boolean naming) {
         try {
             level.commitArg(null);
         } catch (final ParseError err) {
             emit.error(err.line(), err.pos(), err.getMessage());
         }
-        Eo.checkNaming(level, emit);
+        Eo.checkNaming(level, emit, naming);
         if (level.kind() == Kind.BARE_REVERSED && !level.taken()) {
             emit.error(
                 level.start(), level.indent(),
@@ -915,8 +914,8 @@ final class Eo implements Iterable<Directive> {
         if (level.kind() == Kind.COMPACT_TUPLE || level.star()) {
             Eo.closeCompactTuple(level, emit);
         }
-        if (level.kind() == Kind.ONLY_PHI_FORMATION
-            && level.openness() != Openness.HORIZONTAL_COMPLETED) {
+        if (level.kind() == Kind.ONLY_PHI
+            && level.openness() != Openness.HCOMPLETED) {
             emit.close();
         }
         emit.close();
@@ -925,13 +924,13 @@ final class Eo implements Iterable<Directive> {
     /**
      * Report naming violations on the popped level: a plain child of a
      * formation or top-level object that lacks a name (R-5.3.1), and an
-     * only-phi argument that carries one — the formation binds only φ,
-     * so its φ's arguments may not be named (§4.5).
+     * only-phi argument that carries one, which §4.5 bans.
      * @param level The level being closed
      * @param emit The directives sink
+     * @param naming False while a level is only sealed - a chain is named on its last link
      */
-    private static void checkNaming(final Level level, final Emit emit) {
-        if (!level.named()
+    private static void checkNaming(final Level level, final Emit emit, final boolean naming) {
+        if (naming && !level.named()
             && (level.parent() == Kind.TOP_LEVEL
                 || level.parent() == Kind.BARE_FORMATION)) {
             emit.error(
@@ -939,7 +938,7 @@ final class Eo implements Iterable<Directive> {
                 "object inside formation must have a name"
             );
         }
-        if (level.argument() && level.named()) {
+        if (naming && level.argument() && level.named()) {
             emit.error(
                 level.start(), level.indent(),
                 level.onlyPhiNamingError()

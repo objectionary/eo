@@ -38,7 +38,7 @@
       includes.if idx -1
       includes.if
         idx
-        rec-index-of (idx.plus 1).as-number
+        ^.rec-index-of (idx.plus 1).as-number
     eq. > includes
       txt.slice idx size
       part

@@ -44,6 +44,8 @@ public final class MjAssemble extends MjSafe {
 
     @Override
     public void exec() throws IOException {
-        this.assembling().exec();
+        try (TjsForeign tojos = this.tojos()) {
+            this.assembling(tojos).exec();
+        }
     }
 }

@@ -15,21 +15,21 @@
           if. >> index!
             0.gt
               i >> idx!
-            length.plus idx
+            ^.length.plus idx
             idx
-        length.lte index
+        ^.length.lte index
       fallback
         "Given index is out of tuple bounds"
       if. > [tup] >> at-fast
         0.eq tup.length
-        fallback
+        ^.fallback
           "Given index is out of tuple bounds"
         if.
           eq.
             tup.length.plus -1
             index
           tup.head
-          at-fast tup.tail
+          ^.at-fast tup.tail
       | ^
   tuple > empty
     T
@@ -39,19 +39,19 @@
     0
   [other] > eq
     and. > @
-      length.eq other.length
+      ^.length.eq other.length
       if. > [first second] >> receq
         first.length.eq 0
         true
         and.
           first.head.eq second.head
-          receq first.tail second.tail
+          ^.receq first.tail second.tail
       | ^ other
   tuple > [x] > with
     ^
     x
     as-number.
-      length.plus 1
+      ^.length.plus 1
 
   ++> can-add-an-item
     and. > @

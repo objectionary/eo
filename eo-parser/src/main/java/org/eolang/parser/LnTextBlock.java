@@ -55,7 +55,7 @@ final class LnTextBlock implements Line {
         );
         suffix.rejectAtomOutsideFormation(this.span);
         if (suffix.test()) {
-            Blanks.checkTest(this.span, globals, emit);
+            Blanks.checkTest(this.span, globals.pendingBlanks(), emit);
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
@@ -98,7 +98,7 @@ final class LnTextBlock implements Line {
     private void transition(final Stack stack, final Suffix suffix) {
         new Transition(stack, this.span).apply(
             Kind.TEXT_BLOCK,
-            Openness.VERTICAL_COMPLETED,
+            Openness.VCOMPLETED,
             new Admission(suffix.named(), suffix.test())
         );
     }

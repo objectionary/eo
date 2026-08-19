@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - //o[not(@base) and count(o[not(@name='xi🌵')])=1 and @name='aliases']
+  - //o[not(@base) and count(o[not(starts-with(@name, 'a🌵'))])=1 and @name='aliases']
 input: |
   [] > aliases
     a (b (c d)) > scopes

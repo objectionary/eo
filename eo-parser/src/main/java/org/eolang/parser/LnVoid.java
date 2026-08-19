@@ -44,8 +44,7 @@ package org.eolang.parser;
  * take, never an argument, a method receiver, or anywhere else a value
  * is expected. The marker is therefore <em>not</em> a {@link Value}
  * kind; this line is its sole producer. Cross-line behaviour: a closed
- * leaf ({@link Openness#VERTICAL_COMPLETED}), so a void has no
- * children.</p>
+ * leaf ({@link Openness#VCOMPLETED}), so a void has no children.</p>
  *
  * @since 0.1
  */
@@ -81,7 +80,7 @@ final class LnVoid implements Line {
         }
         Comments.seal(globals, emit, this.span);
         final Level level = new Transition(stack, this.span).apply(
-            Kind.VOID, Openness.VERTICAL_COMPLETED, new Admission(suffix.named(), true)
+            Kind.VOID, Openness.VCOMPLETED, new Admission(suffix.named(), true)
         );
         if (slash >= 0 && !level.patom()) {
             throw new ParseError(

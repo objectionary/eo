@@ -24,11 +24,11 @@
           or.
             pth.size.eq 0
             index.eq 0
-          trimmed >> pth!
+          ^.trimmed >> pth!
           as-bytes.
             text.slice
               plus. >> index!
-                text.last-index-of separator
+                text.last-index-of ^.separator
                 1
               text.length.minus
                 number index
@@ -37,17 +37,17 @@
       string > @
         if.
           pth.size.eq 0
-          trimmed >> pth!
+          ^.trimmed >> pth!
           if.
             len.eq -1
             "."
             if.
               len.eq 0
-              separator
+              ^.separator
               as-bytes.
                 text.slice
                   0
-                  text.last-index-of separator >> len!
+                  text.last-index-of ^.separator >> len!
       string pth > text
     sys.drive uri > drive
     if. > driveless
@@ -73,39 +73,39 @@
               text.length.minus
                 number index
       string > text
-        basename >> base!
+        ^.basename >> base!
     and. > is-absolute
       driveless.size.gt 0
       eq.
         driveless.slice 0 1
         separator
     [] > normalized
-      impl > @
-        sys
+      ^.^.impl > @
+        ^.sys
         if.
           normalized.eq
-            separator.concat separator
-          separator
+            ^.separator.concat ^.separator
+          ^.separator
           if.
             normalized.size.eq 0
             "."
             string normalized
       as-bytes. > normalized!
         if.
-          driveless.size.eq 0
+          ^.driveless.size.eq 0
           if.
-            drive.size.eq 0
+            ^.drive.size.eq 0
             "."
-            drive
+            ^.drive
           concat.
             concat.
-              drive.concat
-                is-absolute.if
-                  unc.if (separator.concat separator) separator
+              ^.drive.concat
+                ^.is-absolute.if
+                  ^.unc.if (^.separator.concat ^.separator) ^.separator
                   --
-              separator.joined >> body!
+              ^.separator.joined >> body!
                 reduced.
-                  driveless.split separator
+                  ^.driveless.split ^.separator
                   *
                   if. > [accum segment] >>
                     segment.eq ".."
@@ -113,57 +113,68 @@
                       and.
                         accum.length.gt 0
                         not. (accum.head.eq "..")
-                      accum.tail
-                      is-absolute.not.if (accum.with segment) accum
+                      if.
+                        ^.^.unc.and (accum.length.lte 2)
+                        accum
+                        accum.tail
+                      ^.^.is-absolute.not.if (accum.with segment) accum
                     if.
                       or.
                         segment.eq "."
                         segment.eq ""
                       accum
                       accum.with segment
-            trailing.if separator --
+            trailing.if ^.separator --
       and. > trailing
         ubts.size.gt 0
         eq.
           slice.
-            uri >> ubts!
+            ^.uri >> ubts!
             ubts.size.plus -1
             1
-          separator
+          ^.separator
     [other] > resolved
       normalized. > @
-        impl
-          sys
+        ^.^.impl
+          ^.sys
           string
             if.
               valid.size.eq 0
-              uri
+              ^.uri
               if.
-                gt. (sys.drive valid).size 0
+                gt. (^.sys.drive valid).size 0
                 valid
                 if.
-                  eq.
-                    valid.slice 0 1
-                    separator
-                  drive.concat valid
-                  concat. (uri.concat separator) valid
+                  starts-with.
+                    string valid
+                    ^.separator.concat ^.separator
+                  valid
+                  if.
+                    eq.
+                      valid.slice 0 1
+                      ^.separator
+                    ^.drive.concat valid
+                    concat. (^.uri.concat ^.separator) valid
       string > valid!
         as-bytes.
-          sys.sanitized other
+          ^.sys.sanitized other
     sys.separator > separator
-    string > [] > trimmed
+    if. > [tail] > stripped
+      or.
+        tail.size.eq 0
+        tail.eq ^.separator
+      tail
       if.
-        or.
-          uri.size.eq 0
-          uri.eq separator
-        uri
-        if.
-          uri.ends-with separator
-          as-bytes.
-            uri.slice
-              0
-              uri.length.minus separator.length
-          uri
+        tail.ends-with ^.separator
+        ^.stripped
+          string
+            as-bytes.
+              tail.slice
+                0
+                tail.length.minus ^.separator.length
+        tail
+    string > [] > trimmed
+      ^.stripped ^.uri
     and. > unc
       driveless.size.gt 1
       driveless.starts-with
@@ -171,13 +182,13 @@
   [paths] > joined
     normalized. > @
       os.is-windows.if
-        win32 jpath
-        posix jpath
+        ^.win32 jpath
+        ^.posix jpath
     string > jpath
       as-bytes.
-        separator.joined paths
+        ^.separator.joined paths
   [uri] > posix
-    impl > @
+    ^.impl > @
       sys
       uri
     "/" > separator
@@ -189,7 +200,7 @@
     win32.separator
     posix.separator
   [uri] > win32
-    impl > @
+    ^.impl > @
       sys
       sys.sanitized uri
     "\\" > separator
@@ -205,7 +216,7 @@
             -1
           string
             uri >> ubts!
-          string (pth.replaced "/\\//".regex separator)!
+          string (pth.replaced "/\\//".regex ^.separator)!
         string ubts > pth
       ^.separator > separator
 
@@ -296,6 +307,41 @@
   eq. ++> can-normalize-a-unc-win32-path-with-a-child-directory
     normalized.
       path.win32 "\\\\server\\share\\folder"
+    "\\\\server\\share\\folder"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-a-current-and-a-parent-segment-at-the-share-root
+    normalized.
+      path.win32 "\\\\server\\share\\.\\..\\folder"
+    "\\\\server\\share\\folder"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-a-parent-segment-alone-at-the-share-root
+    normalized.
+      path.win32 "\\\\server\\share\\.."
+    "\\\\server\\share"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-a-parent-segment-and-a-trailing-separator
+    normalized.
+      path.win32 "\\\\server\\share\\..\\"
+    "\\\\server\\share\\"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-a-parent-segment-at-the-share-root
+    normalized.
+      path.win32 "\\\\server\\share\\..\\folder"
+    "\\\\server\\share\\folder"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-a-parent-segment-below-a-child-directory
+    normalized.
+      path.win32 "\\\\server\\share\\a\\..\\folder"
+    "\\\\server\\share\\folder"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-parent-segments-past-two-child-directories
+    normalized.
+      path.win32 "\\\\server\\share\\a\\b\\..\\..\\..\\folder"
+    "\\\\server\\share\\folder"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-repeated-parent-segments-at-the-share-root
+    normalized.
+      path.win32 "\\\\server\\share\\..\\..\\folder"
     "\\\\server\\share\\folder"
 
   eq. ++> can-normalize-a-win32-path-collapsing-to-the-current-directory
@@ -410,6 +456,24 @@
       "\\hello\\var"
     "\\hello\\var"
 
+  eq. ++> can-resolve-a-unc-win32-path-against-a-drive-qualified-path
+    resolved.
+      path.win32 "C:\\work\\project"
+      "\\\\server\\share\\report.txt"
+    "\\\\server\\share\\report.txt"
+
+  eq. ++> can-resolve-a-unc-win32-path-against-a-relative-path
+    resolved.
+      path.win32 ".\\temp\\var"
+      "\\\\server\\share\\report.txt"
+    "\\\\server\\share\\report.txt"
+
+  eq. ++> can-resolve-a-unc-win32-path-against-another-unc-path
+    resolved.
+      path.win32 "\\\\server\\share\\project"
+      "\\\\other\\share\\report.txt"
+    "\\\\other\\share\\report.txt"
+
   eq. ++> can-resolve-a-win32-path-against-an-empty-one
     resolved.
       path.win32 "C:\\a\\b"
@@ -443,9 +507,19 @@
           path.separator
     "html"
 
+  eq. ++> can-return-the-basename-ignoring-repeated-trailing-separators
+    basename.
+      path.posix "foo//"
+    "foo"
+
   eq. ++> can-return-the-basename-of-a-root-relative-path-ending-with-a-separator
     basename.
       path.posix "/foo/"
+    "foo"
+
+  eq. ++> can-return-the-basename-of-an-absolute-path-with-repeated-trailing-separators
+    basename.
+      path.posix "/foo//"
     "foo"
 
   eq. ++> can-return-the-current-dirname-of-a-hidden-relative-posix-file
@@ -461,6 +535,11 @@
   eq. ++> can-return-the-current-dirname-of-a-relative-posix-file-ending-with-a-separator
     dirname.
       path.posix "foo/"
+    "."
+
+  eq. ++> can-return-the-dirname-ignoring-repeated-trailing-separators
+    dirname.
+      path.posix "foo//"
     "."
 
   eq. ++> can-return-the-dirname-of-a-directory-path
@@ -491,6 +570,11 @@
           "html"
     path.joined
       * "var" "www"
+
+  eq. ++> can-return-the-dirname-of-an-absolute-path-with-repeated-trailing-separators
+    dirname.
+      path.posix "/foo//"
+    "/"
 
   eq. ++> can-return-the-root-dirname-of-a-root-relative-win32-path
     dirname.
