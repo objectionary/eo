@@ -38,6 +38,19 @@ import java.util.LinkedHashSet;
  * root object declares are free this same way, which is why its own
  * declaration line never gets a hit (#6995).</p>
  *
+ * <p>An atom attribute is left out along with everything it declares,
+ * even though {@code to-java.xsl} does wrap it and its voids and the
+ * runtime does record hits for them (#7055). Such an attribute has no
+ * body in {@code .eo} at all — its body is the Java class the
+ * {@code @atom} names — so the lines it occupies say nothing about how
+ * much of the {@code .eo} source the tests exercised. Counting them
+ * reads as coverage of code that is not there: the declaration line of
+ * {@code [] > read /Q.bytes} shows up uncovered while the {@code ? >
+ * offset} lines under it show up covered, both of them merely
+ * declarations. The hits the runtime still appends for those locations
+ * find no place in the manifest and are dropped, the same way a hit of
+ * any location the manifest does not name is.</p>
+ *
  * @since 0.75.0
  */
 final class CoverageManifest {
@@ -60,7 +73,7 @@ final class CoverageManifest {
         final XML passed = new Xsline(this.train).pass(xmir);
         final Collection<String> found = new LinkedHashSet<>();
         for (final XML located : passed.nodes(
-            "//*[@line and @pos and not(contains(@loc,'+')) and not(contains(@loc,'.-')) and not(@atom) and not(@skip-java) and not(self::class) and not(ancestor::void)]"
+            "//*[@line and @pos and not(contains(@loc,'+')) and not(contains(@loc,'.-')) and not(@atom) and not(@skip-java) and not(self::class) and not(ancestor::void) and not(ancestor-or-self::*[o[@atom]])]"
         )) {
             found.add(
                 String.format(
