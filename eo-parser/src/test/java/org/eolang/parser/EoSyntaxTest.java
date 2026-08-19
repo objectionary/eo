@@ -75,6 +75,43 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void measuresRealParsingTime() throws Exception {
+        final XML xml = new EoSyntax(
+            new ResourceOf("org/eolang/parser/fibonacci.eo")
+        ).parsed();
+        MatcherAssert.assertThat(
+            "ms attribute is not a measured elapsed time",
+            Long.parseLong(xml.xpath("/object/@ms").get(0)),
+            Matchers.greaterThan(0L)
+        );
+    }
+
+    @Test
+    void reportsMsWithinSaneBound() throws Exception {
+        final XML xml = new EoSyntax(
+            new ResourceOf("org/eolang/parser/fibonacci.eo")
+        ).parsed();
+        MatcherAssert.assertThat(
+            "ms attribute is not within a sane bound for a small program",
+            Long.parseLong(xml.xpath("/object/@ms").get(0)),
+            Matchers.lessThan(60_000L)
+        );
+    }
+
+    @Test
+    void measuresParsingTimeOnEveryCall() throws Exception {
+        final EoSyntax syntax = new EoSyntax(
+            new ResourceOf("org/eolang/parser/fibonacci.eo")
+        );
+        syntax.parsed();
+        MatcherAssert.assertThat(
+            "second parse of the same syntax does not measure its own elapsed time",
+            Long.parseLong(syntax.parsed().xpath("/object/@ms").get(0)),
+            Matchers.greaterThan(0L)
+        );
+    }
+
+    @Test
     void rejectsANullTransform() {
         Assertions.assertThrows(
             NullPointerException.class,
