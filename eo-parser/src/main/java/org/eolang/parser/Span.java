@@ -9,8 +9,8 @@ package org.eolang.parser;
  *
  * <p>A {@code Span} is a value object carrying a single source line's text
  * (without trailing line terminator), its 1-indexed line number, and the
- * count of leading-space characters that precede the first non-space
- * character. The text never contains {@code \n} or {@code \r}; the
+ * count of leading-whitespace characters that precede the first
+ * non-whitespace character. The text never contains {@code \n} or {@code \r}; the
  * {@link Source} that produced this span has already normalised line
  * endings (R-2.1.2).</p>
  *
@@ -38,7 +38,8 @@ final class Span {
     private final int number;
 
     /**
-     * Count of leading space characters before the first non-space.
+     * Count of leading whitespace characters before the first
+     * non-whitespace one.
      */
     private final int indent;
 
@@ -60,7 +61,7 @@ final class Span {
      * Primary ctor.
      * @param body Line text
      * @param line Line number
-     * @param leading Count of leading space chars
+     * @param leading Count of leading whitespace chars
      * @param tabbed True if any leading char is a tab
      */
     private Span(final String body, final int line, final int leading, final boolean tabbed) {
@@ -95,7 +96,7 @@ final class Span {
     }
 
     /**
-     * Leading-space count.
+     * Leading-whitespace count.
      * @return Indent
      */
     int indent() {
@@ -127,8 +128,8 @@ final class Span {
     }
 
     /**
-     * The first non-space character, or {@code '\0'} for a blank line.
-     * @return First non-space character
+     * The first non-whitespace character, or {@code '\0'} for a blank line.
+     * @return First non-whitespace character
      */
     char head() {
         final char first;
@@ -141,13 +142,20 @@ final class Span {
     }
 
     /**
-     * Compute leading-space count.
+     * Compute leading-whitespace count.
+     *
+     * <p>Every whitespace character counts, not only {@code ' '}. A line
+     * made of whitespace alone must yield {@code indent == text.length()},
+     * as {@link #blank()} reads blankness off exactly that equality; a
+     * tab-only line counted as space-only would report itself non-blank
+     * with indent zero and mislead the consumers of both queries.</p>
+     *
      * @param body Line text
-     * @return Number of leading {@code ' '} characters
+     * @return Number of leading whitespace characters
      */
     private static int leading(final String body) {
         int count = 0;
-        while (count < body.length() && body.charAt(count) == ' ') {
+        while (count < body.length() && Character.isWhitespace(body.charAt(count))) {
             count = count + 1;
         }
         return count;

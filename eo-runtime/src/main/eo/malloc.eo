@@ -70,7 +70,7 @@
         object >> bts!
       seq * > [m] >>
         m.write 0 bts
-        scope m
+        ^.scope m
   [] > of /Q.bytes
     ? > size /Q.number
     ? > scope /{Q.chunk}
@@ -81,7 +81,7 @@
       [b]
         malloc.of > @
           10
-          b.put > [m] >>
+          ^.b.put > [m] >>
             m.size.eq 10
 
   malloc.empty ++> can-allocate-an-empty-block
@@ -102,8 +102,8 @@
         a.neg.neg.neg.neg.eq 42
         m
       seq * > [] > a
-        m.put
-          m.as-number.plus 1
+        ^.m.put
+          ^.m.as-number.plus 1
         42
 
   ++> can-concat-strings-with-an-offset
@@ -115,7 +115,7 @@
           seq * > [m] >>
             m.write 0 "XXX"
             m.write 1 "Y"
-            b.put
+            ^.b.put
               eq.
                 m.read 0 3
                 "XYX"
@@ -156,8 +156,8 @@
             * second second
           malloc.of > second
             1
-            f.put > [s] >>
-              f.as-number.plus 1
+            ^.f.put > [s] >>
+              ^.f.as-number.plus 1
 
   ++> can-decrease-the-block-size
     malloc.of > @
@@ -165,7 +165,7 @@
       [b]
         malloc.for > @
           01-02-03-04-05
-          b.put > [m] >>
+          ^.b.put > [m] >>
             and.
               eq. (m.resized 3).size 3
               m.get.eq 01-02-03
@@ -177,7 +177,7 @@
         [m] >>
           m.put > @
             num.times num
-          number (inc m)! > num
+          number (^.inc m)! > num
       64
     seq * > [x] > inc
       x.put
@@ -200,7 +200,7 @@
       [b]
         malloc.for > @
           01-02-03-04
-          b.put > [m] >>
+          ^.b.put > [m] >>
             and.
               eq. (m.resized 6).size 6
               m.get.eq 01-02-03-04-00-00
@@ -252,7 +252,7 @@
           10
           seq * > [m] >>
             m.write 2 "Hello"
-            b.put
+            ^.b.put
               eq.
                 m.read 2 5
                 "Hello"
@@ -277,7 +277,7 @@
       seq *
         n.put
           n.as-number.minus 1
-        func n
+        ^.func n
       n
 
   eq. ++> can-return-the-size-from-a-scope
@@ -306,7 +306,7 @@
               0
               "Hello, "
             m.write 7 "Jeff!"
-            b.put
+            ^.b.put
               eq.
                 m.read 0 12
                 "Hello, Jeff!"

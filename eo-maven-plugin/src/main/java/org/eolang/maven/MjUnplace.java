@@ -29,12 +29,14 @@ public final class MjUnplace extends MjSafe {
 
     @Override
     public void exec() throws IOException {
-        new Timed(
-            new Unplacing(
-                this.placedTojos,
-                this.classesDir.toPath(),
-                this.keepBinaries
-            )
-        ).exec();
+        try (TjsPlaced placed = this.placed()) {
+            new Timed(
+                new Unplacing(
+                    placed,
+                    this.classesDir.toPath(),
+                    this.keepBinaries
+                )
+            ).exec();
+        }
     }
 }

@@ -96,7 +96,7 @@ final class PhSafeTest {
             Assertions.assertThrows(
                 ExFailure.class,
                 () -> new PhSafe(
-                    new PhSafe(PhTerminator.withCause("oops"), "inner.eo", 1, 2),
+                    new PhSafe(new PhTerminator(new Data.ToPhi("oops")), "inner.eo", 1, 2),
                     "outer.eo", 3, 4
                 ).delta(),
                 "was expected to fail with ExFailure"

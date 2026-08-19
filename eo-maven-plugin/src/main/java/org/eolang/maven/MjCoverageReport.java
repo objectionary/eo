@@ -6,7 +6,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,6 +16,7 @@ import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.eolang.parser.EoSyntax;
 
 /**
  * Turns the raw {@code loc:line:pos} coverage hits {@code PhCoverage}
@@ -29,6 +29,15 @@ import org.apache.maven.plugins.annotations.Parameter;
  * nothing when {@code eo.coverageFile} is not set or the file does not
  * exist yet, the same "no-op when disabled" contract {@code PhCoverage}
  * itself follows.</p>
+ *
+ * <p>Every {@code .eo} file is re-parsed from its own source instead of
+ * reading the {@code xmir} stored in its tojo, because that xmir is the
+ * {@code MjMerge} one for a package root and mixes the members it spliced
+ * in, whose lines refer to their own files. Reporting those members'
+ * locations against the package root puts lines of unrelated files where
+ * the package's meta directives are, so each file is covered under its
+ * own name (they all carry {@code @loc} with the {@code Φ} prefix of the
+ * object they name, so the runtime hits still line up).</p>
  *
  * @since 0.75.0
  */
@@ -69,6 +78,13 @@ public final class MjCoverageReport extends MjSafe {
     @Parameter(property = "eo.minCoverage", defaultValue = "0")
     private double minCoverage;
 
+    /**
+     * Ctor.
+     */
+    public MjCoverageReport() {
+        // nothing
+    }
+
     @Override
     public void exec() throws IOException {
         if (this.coverageFile == null || !this.coverageFile.exists()) {
@@ -94,18 +110,20 @@ public final class MjCoverageReport extends MjSafe {
         final Map<String, Integer> lineof = new HashMap<>(0);
         final Map<String, String> fileof = new HashMap<>(0);
         final CoverageManifest manifest = new CoverageManifest();
-        for (final TjForeign tojo : this.scopedTojos().standalone()) {
-            final String source = tojo.source().toString();
-            final XML xmir = new XMLDocument(tojo.xmir());
-            for (final String location : manifest.locations(xmir)) {
-                final int last = location.lastIndexOf(':');
-                final int line = Integer.parseInt(
-                    location.substring(location.lastIndexOf(':', last - 1) + 1, last)
-                );
-                perfile.computeIfAbsent(source, key -> new LinkedHashMap<>(0))
-                    .putIfAbsent(line, 0);
-                lineof.put(location, line);
-                fileof.put(location, source);
+        try (TjsForeign tojos = this.tojos()) {
+            for (final TjForeign tojo : tojos.withXmir()) {
+                final String source = tojo.source().toString();
+                final XML xmir = new EoSyntax(Files.readString(tojo.source())).parsed();
+                for (final String location : manifest.locations(xmir)) {
+                    final int last = location.lastIndexOf(':');
+                    final int line = Integer.parseInt(
+                        location.substring(location.lastIndexOf(':', last - 1) + 1, last)
+                    );
+                    perfile.computeIfAbsent(source, key -> new LinkedHashMap<>(0))
+                        .putIfAbsent(line, 0);
+                    lineof.put(location, line);
+                    fileof.put(location, source);
+                }
             }
         }
         final List<String> hits = Files.readAllLines(this.coverageFile.toPath());

@@ -13,6 +13,7 @@ import com.yegor256.MktmpResolver;
 import com.yegor256.Together;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -86,16 +87,17 @@ final class StrictXmirTest {
     @Test
     @ExtendWith(MktmpResolver.class)
     @ExtendWith(WeAreOnline.class)
-    void refersToAbsoluteFileName(@Mktmp final Path tmp) {
+    void refersToAbsoluteFileName(@Mktmp final Path tmp) throws Exception {
         MatcherAssert.assertThat(
             "XSD location must be absolute",
             Paths.get(
-                new Xnav(
-                    new StrictXmir(
-                        StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp
-                    ).inner()
-                ).element("object").attribute("xsi:noNamespaceSchemaLocation").text().get()
-                    .substring("file:///".length())
+                new URI(
+                    new Xnav(
+                        new StrictXmir(
+                            StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp
+                        ).inner()
+                    ).element("object").attribute("xsi:noNamespaceSchemaLocation").text().get()
+                )
             ).isAbsolute(),
             Matchers.is(true)
         );

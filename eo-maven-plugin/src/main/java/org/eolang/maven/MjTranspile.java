@@ -49,19 +49,23 @@ public final class MjTranspile extends MjSafe {
 
     /**
      * Add to source root.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.addSourcesRoot")
-    @SuppressWarnings("PMD.ImmutableField")
-    private boolean addSourcesRoot;
+    @Parameter(
+        alias = "addSourcesRoot",
+        property = "eo.addSourcesRoot",
+        defaultValue = "true"
+    )
+    private boolean attach;
 
     /**
      * Whether to transpile tests.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.transpileTests")
-    @SuppressWarnings("PMD.ImmutableField")
-    private boolean transpileTests;
+    @Parameter(
+        alias = "transpileTests",
+        property = "eo.transpileTests",
+        defaultValue = "true"
+    )
+    private boolean tests;
 
     /**
      * Whether to wrap every dispatched object with a location-carrying
@@ -69,10 +73,9 @@ public final class MjTranspile extends MjSafe {
      * Off by default, so a production build stays lean; turn it on (as
      * {@code eo-runtime} does for its tests) to keep precise {@code .eo}
      * locations in panics.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.trackLocations")
-    private boolean trackLocations;
+    @Parameter(alias = "trackLocations", property = "eo.trackLocations")
+    private boolean located;
 
     /**
      * Whether to wrap every located object in the generated Java into
@@ -91,10 +94,9 @@ public final class MjTranspile extends MjSafe {
      * the covered percentage of dataized {@code .eo} objects drops below
      * a threshold, mirroring how the {@code jacoco} profile binds a
      * {@code check} goal with its own per-metric thresholds.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.coverageTracking")
-    private boolean coverageTracking;
+    @Parameter(alias = "coverageTracking", property = "eo.coverageTracking")
+    private boolean coverage;
 
     /**
      * The class that a generated class extends instead of {@code PhDefault},
@@ -126,32 +128,43 @@ public final class MjTranspile extends MjSafe {
     private String superclass;
 
     /**
+     * Cache guard, see {@link ConcurrentCache} for why it is one per instance.
+     */
+    private final ConcurrentCache guard;
+
+    /**
      * Ctor.
      */
     public MjTranspile() {
-        this.addSourcesRoot = true;
-        this.transpileTests = true;
+        this.guard = new ConcurrentCache();
     }
 
     @Override
     public void exec() throws IOException {
-        new Timed(
-            new Transpiling(
-                this.scopedTojos().standalone(),
-                this.targetDir.toPath(),
-                this.generatedDir.toPath(),
-                this.cache.toPath(),
-                this.cacheEnabled,
-                this.plugin.getVersion(),
-                this.transpileTests,
-                this.xslMeasures.toPath(),
-                new Tracking(this.trackSteps, this.trackLocations),
-                this.coverageTracking,
-                this.base(),
-                this.roots()
-            )
-        ).exec();
-        if (this.addSourcesRoot) {
+        try (TjsForeign tojos = this.tojos()) {
+            new Timed(
+                new Transpiling(
+                    tojos.standalone(),
+                    this.targetDir.toPath(),
+                    this.generatedDir.toPath(),
+                    this.cache.toPath(),
+                    this.cacheEnabled,
+                    this.plugin.getVersion(),
+                    this.tests,
+                    this.roots(),
+                    new Transpilation(
+                        this.plugin.getVersion(),
+                        new Tracking(this.trackSteps, this.located),
+                        this.coverage,
+                        this.base(),
+                        this.xslMeasures.toPath(),
+                        this.targetDir.toPath()
+                    ),
+                    this.guard
+                )
+            ).exec();
+        }
+        if (this.attach) {
             this.project.addCompileSourceRoot(
                 this.generatedDir.toPath().toAbsolutePath().toString()
             );

@@ -69,7 +69,7 @@ final class PhTerminatorTest {
     @Test
     void preservesPercentSignsInCause() {
         final String cause = "100% complete";
-        final PhTerminator bottom = PhTerminator.withCause(cause);
+        final PhTerminator bottom = new PhTerminator(new Data.ToPhi(cause));
         MatcherAssert.assertThat(
             "forcing the bottom object must treat its cause as literal text",
             Assertions.assertThrows(
@@ -170,7 +170,7 @@ final class PhTerminatorTest {
                 ExFailure.class,
                 () -> new Dataized(
                     new PhApplication(
-                        new PhDispatch(PhTerminator.withCause("cannot open Ω"), "eq"),
+                        new PhDispatch(new PhTerminator(new Data.ToPhi("cannot open Ω")), "eq"),
                         new Bind(0, new Data.ToPhi("другое"))
                     )
                 ).take()

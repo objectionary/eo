@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Where the source says nothing, nothing is claimed: a name taken from a
+# void that carries no annotation is still the name of whatever a caller
+# puts there, and two voids of one object are read apart.
+eo:
+  app.eo: |
+    [] > app
+      reader.raw.eq > @
+  reader.eo: |
+    [] > reader /Q.bytes
+      ? > code /Q.number
+      ? > raw
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [x] > eq
+        x > @
+provides:
+  - "//attr[@name='raw' and @void='true' and not(@holds)]"
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.reader.raw.eq']"

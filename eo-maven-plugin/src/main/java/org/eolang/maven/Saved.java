@@ -24,8 +24,7 @@ import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 
 /**
- * Content saved to the file.
- * Returns path to the file
+ * Content saved to the file; returns path to the file.
  *
  * <p>The content is streamed into a sibling temporary file first, then moved
  * onto {@link #target} with {@link StandardCopyOption#ATOMIC_MOVE}. Streaming

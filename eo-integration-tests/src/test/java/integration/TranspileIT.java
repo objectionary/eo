@@ -29,15 +29,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.62
  */
 @Disabled("pulled .eo sources predate the comment-on-top rule and emit [ERROR]")
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class TranspileIT {
 
     @Test
-    void generatesTestSourcesForUserWrittenTests(final @Mktmp Path temp) throws IOException {
+    void generatesSourcesForUserWrittenChecks(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
-                TranspileIT.setup(f, TranspileIT.programWithTests());
+                TranspileIT.setup(f, TranspileIT.programWithChecks());
                 MatcherAssert.assertThat(
                     "User-written test sources must be generated",
                     TranspileIT.generatedNames(temp),
@@ -48,7 +48,7 @@ final class TranspileIT {
     }
 
     @Test
-    void doesNotGenerateRuntimeTestSourcesForUserProject(
+    void doesNotGenerateRuntimeCheckSourcesForUserProject(
         final @Mktmp Path temp
     ) throws IOException {
         new Farea(temp).together(
@@ -104,7 +104,7 @@ final class TranspileIT {
         ).getBytes(StandardCharsets.UTF_8);
     }
 
-    private static byte[] programWithTests() {
+    private static byte[] programWithChecks() {
         return String.join(
             System.lineSeparator(),
             "[] > simple",

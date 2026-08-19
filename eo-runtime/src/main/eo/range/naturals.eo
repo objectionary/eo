@@ -18,10 +18,10 @@
     r.start.is-integer.and r.end.is-integer
     range
       [] >>
-        build r.start > @
+        build ^.r.start > @
         [num] > build
           num > @
-          build > next
+          ^.build > next
             1.plus @
       r.end
     T

@@ -16,8 +16,8 @@ import java.util.List;
  *
  * <p>This class collects the small rule set as static helpers shared
  * by every line shape that reads an argument group — {@link
- * LnApplication}, {@link LnMethod}, {@link LnReversed}, and the
- * compact-tuple flavours.</p>
+ * LnApplication}, {@link LnMethod}, {@link LnReversed}, and {@link
+ * LnPipe}.</p>
  *
  * @since 0.1
  */
@@ -84,7 +84,7 @@ final class Bindings {
      * @param span Source span of the continuation line
      */
     static void checkReceiverUpgrade(final Level below, final Span span) {
-        if (below != null && below.kind() == Kind.BARE_REVERSED) {
+        if (below != null && below.kind() == Kind.BARE_REVERSED && below.children() <= 1) {
             throw new ParseError(
                 span.line(), span.indent(),
                 "reversed-dispatch receiver cannot carry a binding"

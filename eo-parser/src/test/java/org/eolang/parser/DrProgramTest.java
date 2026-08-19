@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XMLDocument;
+import java.net.URI;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -38,19 +39,16 @@ final class DrProgramTest {
     }
 
     @Test
-    @DisabledOnOs(OS.WINDOWS)
     void setsSchemaLocation() throws Exception {
         MatcherAssert.assertThat(
             "XSD location is set",
-            new XMLDocument(new Xembler(new DrProgram()).xml()).toString(),
-            Matchers.containsString(
-                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-            )
+            new Xnav(new XMLDocument(new Xembler(new DrProgram()).xml()).inner())
+                .element("object").attribute("xsi:noNamespaceSchemaLocation").text().get(),
+            Matchers.not(Matchers.emptyString())
         );
     }
 
     @Test
-    @DisabledOnOs(OS.WINDOWS)
     void checksThatSchemaLocationPointToFile() throws Exception {
         MatcherAssert.assertThat(
             "URL of XSD is set to file",
@@ -61,16 +59,27 @@ final class DrProgramTest {
     }
 
     @Test
-    @DisabledOnOs(OS.WINDOWS)
     void checksThatSchemaLocationPointToExistingFile() throws Exception {
         MatcherAssert.assertThat(
             "XSD file exists",
             Paths.get(
-                new Xnav(new XMLDocument(new Xembler(new DrProgram()).xml()).inner())
-                    .element("object").attribute("xsi:noNamespaceSchemaLocation").text().get()
-                    .substring("file:///".length())
+                new URI(
+                    new Xnav(new XMLDocument(new Xembler(new DrProgram()).xml()).inner())
+                        .element("object").attribute("xsi:noNamespaceSchemaLocation").text().get()
+                )
             ).toFile().exists(),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void doesNotDuplicateSlashesInSchemaLocation() throws Exception {
+        MatcherAssert.assertThat(
+            "URL of XSD has no redundant slash after the scheme",
+            new Xnav(new XMLDocument(new Xembler(new DrProgram()).xml()).inner()).element("object")
+                .attribute("xsi:noNamespaceSchemaLocation").text().get(),
+            Matchers.not(Matchers.startsWith("file:////"))
         );
     }
 

@@ -198,7 +198,7 @@ final class Eo implements Iterable<Directive> {
      * Merge a BYTES continuation starting at index {@code start} —
      * concatenates the trailing-dash chunk with subsequent BYTES-only
      * lines at &gt;= the same indent until a chunk without trailing
-     * dash terminates the tstartsen (R-3.13).
+     * dash terminates the token (R-3.13).
      * @param spans Materialised list of source spans
      * @param start Index of the continuation start
      * @param stack Indent stack
@@ -281,9 +281,8 @@ final class Eo implements Iterable<Directive> {
      * Whether a character is a valid BYTES hex digit. Per the grammar
      * (matching ANTLR's {@code BYTE : [0-9A-F][0-9A-F]}), BYTES accept
      * only uppercase hex — lowercase letters belong to {@code NAME}
-     * tstartsens. Compare with the case-insensitive
-     * {@link Tstartsens#hexDigit(char)} used for the {@code 0x...} HEX
-     * literal (R-9.8.3).
+     * tokens. Compare with the case-insensitive {@code hexDigit}
+     * used for the {@code 0x...} HEX literal (R-9.8.3).
      * @param glyph The character
      * @return True if 0-9 or A-F
      */
@@ -312,7 +311,7 @@ final class Eo implements Iterable<Directive> {
         boolean failed = false;
         if (globals.inTextBlock()) {
             Eo.continueTextBlock(span, stack, globals, emit);
-        } else if (span.tab()) {
+        } else if (span.tab() && !span.blank()) {
             emit.error(span.line(), 0, "tab character in leading whitespace");
             failed = true;
         } else if (!span.blank() && span.indent() % 2 == 1) {
@@ -342,12 +341,12 @@ final class Eo implements Iterable<Directive> {
     ) {
         if (Eo.closesTextBlock(span, globals)) {
             stack.popDeeperThan(span.indent());
-            final int tstartsen = emit.savepoint();
+            final int token = emit.savepoint();
             final java.util.List<Level> frame = stack.snapshot();
             try {
                 new LnTextBlock(span).into(stack, globals, emit);
             } catch (final ParseError err) {
-                emit.rollback(tstartsen);
+                emit.rollback(token);
                 stack.restore(frame);
                 emit.error(err.line(), err.pos(), err.getMessage());
                 globals.closeTextBlock();
@@ -408,13 +407,13 @@ final class Eo implements Iterable<Directive> {
         if (!span.blank() && span.head() != '#') {
             stack.popDeeperThan(span.indent());
         }
-        final int tstartsen = emit.savepoint();
+        final int token = emit.savepoint();
         final java.util.List<Level> frame = stack.snapshot();
         boolean failed = false;
         try {
             Eo.classify(span).into(stack, globals, emit);
         } catch (final ParseError err) {
-            emit.rollback(tstartsen);
+            emit.rollback(token);
             stack.restore(frame);
             emit.error(err.line(), err.pos(), err.getMessage(), true);
             failed = true;
@@ -846,7 +845,7 @@ final class Eo implements Iterable<Directive> {
      * Whether a root-headed line (e.g., {@code ^.} or {@code @.}) is
      * a reversed-dispatch — the root character is immediately
      * followed by {@code .} and then a space or end-of-body. The
-     * head's source tstartsen maps to its XMIR symbol per R-9.3 inside
+     * head's source token maps to its XMIR symbol per R-9.3 inside
      * {@link LnReversed}.
      * @param span The span
      * @return True if the line shape is reversed dispatch with a
@@ -915,8 +914,8 @@ final class Eo implements Iterable<Directive> {
         if (level.kind() == Kind.COMPACT_TUPLE || level.star()) {
             Eo.closeCompactTuple(level, emit);
         }
-        if (level.kind() == Kind.ONLY_PHI_FORMATION
-            && level.openness() != Openness.HORIZONTAL_COMPLETED) {
+        if (level.kind() == Kind.ONLY_PHI
+            && level.openness() != Openness.HCOMPLETED) {
             emit.close();
         }
         emit.close();

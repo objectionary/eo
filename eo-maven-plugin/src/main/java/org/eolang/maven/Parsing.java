@@ -64,15 +64,13 @@ final class Parsing implements Step {
 
     /**
      * Target directory.
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Path targetDir;
+    private final Path target;
 
     /**
      * EO sources directory (used for logging).
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Path sourcesDir;
+    private final Path home;
 
     /**
      * Where the results of earlier builds are looked for and kept.
@@ -93,8 +91,8 @@ final class Parsing implements Step {
         final GlobalCache store
     ) {
         this.tojos = srcs;
-        this.targetDir = target;
-        this.sourcesDir = sources;
+        this.target = target;
+        this.home = sources;
         this.cache = store;
     }
 
@@ -156,9 +154,25 @@ final class Parsing implements Step {
         final GlobalCache store
     ) {
         return new Threaded<>(
-            new Filtered<>(TjForeign::notParsed, sources),
+            new Filtered<>(this::unparsed, sources),
             tojo -> this.parsed(tojo, pipeline, store)
         ).total();
+    }
+
+    /**
+     * Whether the XMIR of a tojo still has to be written.
+     *
+     * <p>A tojo is parsed when it has no XMIR yet, and also when the XMIR it
+     * points at is not one of ours: {@link Merging} points a package object
+     * at its merged XMIR, and were that taken for a parsed one, the next
+     * build would lint and transpile the merge of the previous build instead
+     * of the program a human wrote.</p>
+     *
+     * @param tojo The tojo
+     * @return TRUE if the tojo has to be parsed
+     */
+    private boolean unparsed(final TjForeign tojo) {
+        return tojo.notParsed() || !tojo.xmir().startsWith(this.target.resolve(Parsing.DIR));
     }
 
     /**
@@ -174,26 +188,26 @@ final class Parsing implements Step {
     ) throws Exception {
         final Path source = tojo.source();
         final String name = tojo.identifier();
-        final Path base = this.targetDir.resolve(Parsing.DIR);
-        final Path target = new Place(name).make(base, MjAssemble.XMIR);
+        final Path base = this.target.resolve(Parsing.DIR);
+        final Path xmir = new Place(name).make(base, MjAssemble.XMIR);
         final List<Node> refs = new ArrayList<>(1);
         store.footprint(
-            base.relativize(target),
+            base.relativize(xmir),
             new TojoHash(tojo),
             src -> {
                 final Node node = this.parsed(src, name, pipeline);
                 refs.add(node);
                 return new XMLDocument(node).toString();
             }
-        ).apply(source, target);
-        tojo.withXmir(target).withVersion(Parsing.tojoVersion(target, refs));
-        final List<Xnav> errors = new Xnav(target)
+        ).apply(source, xmir);
+        tojo.withXmir(xmir).withVersion(Parsing.tojoVersion(xmir, refs));
+        final List<Xnav> errors = new Xnav(xmir)
             .element("object")
             .element("errors")
             .elements(Filter.withName("error"))
             .collect(Collectors.toList());
         if (errors.isEmpty()) {
-            Logger.debug(this, "Parsed %[file]s to %[file]s", source, target);
+            Logger.debug(this, "Parsed %[file]s to %[file]s", source, xmir);
         } else {
             for (final Xnav error : errors) {
                 Logger.error(
@@ -219,16 +233,16 @@ final class Parsing implements Step {
     private Node parsed(
         final Path source, final String identifier, final UnaryOperator<XML> pipeline
     ) throws IOException {
-        final EoSource.Xmir xmir = new EoSource(identifier, source, pipeline).parsed();
+        final Xmir xmir = new EoSource(identifier, source, pipeline).parsed();
         Logger.debug(
             Parsing.class,
             "Parsed program '%s' from %[file]s:%n %s",
-            identifier, this.sourcesDir.relativize(source.toAbsolutePath()), xmir
+            identifier, this.home.relativize(source.toAbsolutePath()), xmir
         );
         if (xmir.broken()) {
             new Saved(
                 new TextOf(xmir.xml().toString()),
-                this.targetDir.resolve(
+                this.target.resolve(
                     String.format("broken-%x.xmir", System.nanoTime())
                 )
             ).value();
@@ -266,9 +280,9 @@ final class Parsing implements Step {
                             Filter.withName("head"),
                             head -> head.text().map("version"::equals).orElse(false)
                         )
-                        )
-                        .findAny()
-                        .isPresent()
+                    )
+                    .findAny()
+                    .isPresent()
                 )
             )
             .findFirst()

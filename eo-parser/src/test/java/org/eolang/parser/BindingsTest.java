@@ -24,7 +24,7 @@ final class BindingsTest {
             () -> Bindings.checkAllOrNothing(
                 Collections.emptyList(), new Span("foo", 1)
             ),
-            "an empty arg list must pass the all-or-nothing rule trivially"
+            "an empty arg list was rejected by the all-or-nothing rule"
         );
     }
 
@@ -35,7 +35,7 @@ final class BindingsTest {
                 Collections.singletonList(new Value(Value.Kind.IDENTIFIER, "a", 4, 5)),
                 new Span("foo a", 1)
             ),
-            "a single arg cannot violate the all-or-nothing rule"
+            "a single arg was rejected by the all-or-nothing rule"
         );
     }
 
@@ -50,7 +50,7 @@ final class BindingsTest {
                 ),
                 new Span("foo a b c", 1)
             ),
-            "all-unbound is a valid uniform mode"
+            "a group of all-unbound args was rejected"
         );
     }
 
@@ -64,7 +64,7 @@ final class BindingsTest {
                 ),
                 new Span("foo a:x b:y", 1)
             ),
-            "all-bound is a valid uniform mode"
+            "a group of all-bound args was rejected"
         );
     }
 
@@ -129,7 +129,7 @@ final class BindingsTest {
                     ),
                     new Span("foo a:x b", 1)
                 ),
-                "a bound arg followed by an unbound one must be rejected per R-6.6.2"
+                "a bound arg followed by an unbound one was accepted"
             ).pos(),
             Matchers.equalTo(8)
         );
@@ -146,7 +146,7 @@ final class BindingsTest {
                 ),
                 new Span("foo a b:y", 1)
             ),
-            "an unbound arg followed by a bound one must be rejected per R-6.6.2"
+            "an unbound arg followed by a bound one was accepted"
         );
     }
 
@@ -164,7 +164,7 @@ final class BindingsTest {
                     ),
                     new Span("foo a b c:z", 1)
                 ),
-                "the divergent arg's column must be reported"
+                "the divergent arg's column was not the one reported"
             ).pos(),
             Matchers.equalTo(8)
         );
@@ -177,7 +177,7 @@ final class BindingsTest {
                 new Value(Value.Kind.IDENTIFIER, "cond", 4, 8),
                 new Span("if. cond then else", 1)
             ),
-            "a bare receiver is the canonical form for reversed dispatch"
+            "a bare receiver was rejected"
         );
     }
 
@@ -189,7 +189,7 @@ final class BindingsTest {
                 new Value(Value.Kind.IDENTIFIER, "cond", 4, 8, "x"),
                 new Span("if. cond:x then else", 1)
             ),
-            "a receiver carrying a binding must be rejected per R-6.6.3"
+            "a receiver carrying a binding was accepted"
         );
     }
 }

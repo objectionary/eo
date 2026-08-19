@@ -156,7 +156,7 @@ final class Resolving implements Step {
         );
         final int total;
         if (Files.exists(place)) {
-            if (new Walk(place).isEmpty()) {
+            if (new WkDefault(place).isEmpty()) {
                 Logger.debug(
                     this,
                     "Destination %[file]s exists but is empty, unpacking %s again",
@@ -189,7 +189,7 @@ final class Resolving implements Step {
         final Dep dep, final Dependency dependency, final Path place
     ) throws IOException {
         this.central.accept(dependency, place);
-        final int files = new Walk(place).size();
+        final int files = new WkDefault(place).size();
         if (files == 0) {
             Logger.warn(this, "No new files after unpacking of %s!", dep);
         } else {

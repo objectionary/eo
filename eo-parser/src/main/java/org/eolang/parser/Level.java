@@ -11,8 +11,8 @@ package org.eolang.parser;
  * extend the level's expression (e.g., a {@link Kind#HEAD} entry promotes
  * to {@link Kind#VAPPLICATION} once its first deeper child arrives; its
  * {@code openness} progresses from {@link Openness#OPEN OPEN} to
- * {@link Openness#VERTICAL_COMPLETED VERTICAL_COMPLETED} when the child
- * block ends).</p>
+ * {@link Openness#VCOMPLETED VCOMPLETED} when the child block
+ * ends).</p>
  *
  * <p>Per the parser-pragmatism rule, this class deliberately holds more
  * than four fields and is mutable in-place: an immutable {@code Level} +
@@ -113,7 +113,7 @@ final class Level {
     private boolean tupled;
 
     /**
-     * For a {@link Kind#ONLY_PHI_FORMATION} whose φ is a compact tuple
+     * For a {@link Kind#ONLY_PHI} whose φ is a compact tuple
      * ({@code seq * > [m]}, R-3.9.1 + R-3.10.6): true so the φ absorbs
      * deeper-indent lines into a {@code Φ.tuple} wrapper like a
      * {@link Kind#COMPACT_TUPLE} head, reusing {@link #count} /
@@ -237,14 +237,14 @@ final class Level {
     /**
      * The name a child of this entry should use for its governing
      * only-phi formation: this entry's own name when it is the
-     * {@link Kind#ONLY_PHI_FORMATION}, otherwise the name propagated
+     * {@link Kind#ONLY_PHI}, otherwise the name propagated
      * onto it (see {@link #argues(String)}). Never {@code null} — an
      * anonymous formation propagates as the empty string.
      * @return Governing formation name (possibly empty)
      */
     String governingFormation() {
         final String owner;
-        if (this.kind == Kind.ONLY_PHI_FORMATION) {
+        if (this.kind == Kind.ONLY_PHI) {
             owner = this.label;
         } else {
             owner = this.formation;
@@ -315,7 +315,7 @@ final class Level {
      * @return True if a child of this entry is an only-phi argument
      */
     boolean argumentative() {
-        return this.kind == Kind.ONLY_PHI_FORMATION
+        return this.kind == Kind.ONLY_PHI
             || this.formation != null && !this.kind.formation();
     }
 

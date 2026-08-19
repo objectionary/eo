@@ -17,9 +17,9 @@
         if. > @
           tup.length.eq 0
           acc
-          with-delimiter
+          ^.with-delimiter
             concat.
-              concat. (dataized tup.head) text!
+              concat. (dataized tup.head) ^.text!
               acc
             tup.tail
       | items.head items.tail

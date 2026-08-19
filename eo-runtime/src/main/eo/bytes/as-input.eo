@@ -33,17 +33,17 @@
   [size] > read
     @. > @
       read.
-        input-block b --
+        input-block ^.b --
         size
     [data buffer] > input-block
       buffer > @
       [size] > read
         if. > @
           available.eq 0
-          input-block -- --
-          input-block
+          ^.^.input-block -- --
+          ^.^.input-block
             as-bytes.
-              data.slice
+              ^.data.slice
                 if. >> next!
                   gt.
                     number available
@@ -52,10 +52,10 @@
                   available
                 minus.
                   number
-                    data.size >> available!
+                    ^.data.size >> available!
                   number next
             as-bytes.
-              data.slice 0 next
+              ^.data.slice 0 next
 
   ++> can-make-an-input-from-bytes-and-read-it
     and. > @
