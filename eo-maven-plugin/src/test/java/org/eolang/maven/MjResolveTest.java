@@ -44,7 +44,7 @@ final class MjResolveTest {
                 "[] > main /bytes"
             )
         );
-        maven.execute(new FakeMaven.Resolve());
+        maven.execute(new PpResolve());
         final List<String> messages = new ArrayList<>(0);
         final Appender appender = new AppenderSkeleton() {
             @Override
@@ -67,7 +67,7 @@ final class MjResolveTest {
         logger.setLevel(Level.INFO);
         logger.addAppender(appender);
         try {
-            maven.execute(new FakeMaven.Resolve());
+            maven.execute(new PpResolve());
         } finally {
             logger.removeAppender(appender);
             logger.setLevel(level);
@@ -86,7 +86,7 @@ final class MjResolveTest {
             "+rt jvm org.eolang:eo-runtime:0.7.0",
             String.format("+version 0.25.0%n"),
             "[] > main /bytes"
-            ).execute(new FakeMaven.Resolve());
+            ).execute(new PpResolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
             temp
@@ -110,7 +110,7 @@ final class MjResolveTest {
             "+rt jvm org.eolang:eo-runtime:0.7.0",
             String.format("+version 0.25.0%n"),
             "[] > main /bytes"
-            ).execute(new FakeMaven.Resolve());
+            ).execute(new PpResolve());
         MatcherAssert.assertThat(
             "An empty leftover directory from an interrupted unpack must not block re-resolving",
             place.resolve("eo-runtime-0.7.0.class").toFile(),
@@ -151,7 +151,7 @@ final class MjResolveTest {
             new FakeMaven(temp)
                 .withHelloWorld()
                 .with("ignoreRuntime", true)
-                .execute(new FakeMaven.Resolve())
+                .execute(new PpResolve())
                 .result(),
             Matchers.hasKey(String.format("target/%s/net.java.dev.jna/jna/-/5.14.0", MjResolve.DIR))
         );
@@ -167,7 +167,7 @@ final class MjResolveTest {
             "    b"
         );
         maven.foreignTojos().add("sum");
-        maven.execute(new FakeMaven.Resolve());
+        maven.execute(new PpResolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
             temp
@@ -181,7 +181,7 @@ final class MjResolveTest {
     @Test
     void resolvesWithEoRuntimeDependency(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
-        maven.withHelloWorld().execute(new FakeMaven.Resolve());
+        maven.withHelloWorld().execute(new PpResolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
             maven.targetPath(),
@@ -194,7 +194,7 @@ final class MjResolveTest {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld()
             .with("ignoreRuntime", true)
-            .execute(new FakeMaven.Resolve());
+            .execute(new PpResolve());
         MatcherAssert.assertThat(
             "The class file must not exist, but it doesn't",
             maven.targetPath(),
@@ -210,7 +210,7 @@ final class MjResolveTest {
             "+rt jvm org.eolang:eo-runtime:0.22.1",
             String.format("+version 0.25.0%n"),
             "[] > main"
-        ).execute(new FakeMaven.Resolve());
+        ).execute(new PpResolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
             maven.targetPath(),
@@ -230,7 +230,7 @@ final class MjResolveTest {
                 "",
                 "[] > main"
             )
-        ).with("ignoreRuntime", true).execute(new FakeMaven.Resolve());
+        ).with("ignoreRuntime", true).execute(new PpResolve());
         MatcherAssert.assertThat(
             "The class file must not exist, but it doesn't",
             maven.targetPath(),
@@ -249,7 +249,7 @@ final class MjResolveTest {
         project.setDependencies(Collections.singletonList(runtime));
         maven.withHelloWorld()
             .with("project", project)
-            .execute(new FakeMaven.Resolve());
+            .execute(new PpResolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
             maven.targetPath(),
@@ -279,7 +279,7 @@ final class MjResolveTest {
             "Expected that conflicting dependencies were found, but they were not",
             Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> maven.execute(new FakeMaven.Resolve())
+                () -> maven.execute(new PpResolve())
             ).getCause().getCause().getMessage(),
             Matchers.containsString(
                 "1 conflicting dependencies are found: {org.eolang:eo-runtime:jar:=[0.22.0, 0.22.1]}"
@@ -307,7 +307,7 @@ final class MjResolveTest {
                 )
             );
         maven.with("ignoreConflicts", true)
-            .execute(new FakeMaven.Resolve());
+            .execute(new PpResolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
             maven.targetPath(),
@@ -336,7 +336,7 @@ final class MjResolveTest {
             )
         );
         maven.with("ignoreConflicts", true)
-            .execute(new FakeMaven.Resolve());
+            .execute(new PpResolve());
         MatcherAssert.assertThat(
             "Both sibling versions must survive resolving, but one was deleted",
             maven.targetPath(),

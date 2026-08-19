@@ -63,7 +63,7 @@ public class Expect<T> {
                 try {
                     return fun.apply(this.sup.get());
                 } catch (final ExFailure ex) {
-                    throw new Expect.ExThat(ex.getMessage(), ex);
+                    throw new ExThat(ex.getMessage(), ex);
                 }
             }
         );
@@ -92,7 +92,7 @@ public class Expect<T> {
             () -> {
                 final T ret = this.sup.get();
                 if (!fun.apply(ret)) {
-                    throw new Expect.ExMust(
+                    throw new ExMust(
                         String.format("(%s)", ret)
                     );
                 }
@@ -115,7 +115,7 @@ public class Expect<T> {
 
     /**
      * Apply the otherwise transformation, wrapping {@link ExMust} and {@link ExThat}
-     * exceptions into {@link Expect.ExOtherwise}.
+     * exceptions into {@link ExOtherwise}.
      * @param message The error message
      * @return The supplied value, when no exception is thrown
      */
@@ -123,7 +123,7 @@ public class Expect<T> {
         try {
             return this.sup.get();
         } catch (final ExMust ex) {
-            throw new Expect.ExOtherwise(
+            throw new ExOtherwise(
                 String.format(
                     "%s %s %s",
                     this.subject,
@@ -133,7 +133,7 @@ public class Expect<T> {
                 ex
             );
         } catch (final ExThat ex) {
-            throw new Expect.ExOtherwise(
+            throw new ExOtherwise(
                 String.format(
                     "%s %s",
                     this.subject,
@@ -141,162 +141,6 @@ public class Expect<T> {
                 ),
                 ex
             );
-        }
-    }
-
-    /**
-     * This exception is used to enhance the error message
-     * in the {@link Expect#otherwise(String)} method.
-     * @since 0.51
-     */
-    private static final class ExMust extends RuntimeException {
-
-        /**
-         * Ctor.
-         * @param message Error message
-         */
-        ExMust(final String message) {
-            super(message);
-        }
-    }
-
-    /**
-     * This exception is used to enhance the error message
-     * in the {@link Expect#otherwise(String)} method.
-     * @since 0.51
-     */
-    private static final class ExThat extends RuntimeException {
-
-        /**
-         * Ctor.
-         * @param message Error message
-         * @param root The exception that caused this one
-         */
-        ExThat(final String message, final Throwable root) {
-            super(message, root);
-        }
-    }
-
-    /**
-     * This exception is used to enhance the error message
-     * in the {@link Expect#it()} method.
-     * @since 0.51
-     */
-    private static final class ExOtherwise extends RuntimeException {
-
-        /**
-         * Ctor.
-         * @param message Error message
-         * @param root The exception that caused this one
-         */
-        ExOtherwise(final String message, final Throwable root) {
-            super(message, root);
-        }
-    }
-
-    /**
-     * Transform Expect to a floating-point number.
-     * @since 0.51
-     */
-    public static final class Numeric {
-
-        /**
-         * Expect.
-         */
-        private final Expect<Phi> expect;
-
-        /**
-         * Ctor.
-         * @param expect Expect
-         */
-        public Numeric(final Expect<Phi> expect) {
-            this.expect = expect;
-        }
-
-        /**
-         * Return it.
-         * @return The token
-         */
-        public Double it() {
-            return this.expect
-                .that(phi -> new Dataized(phi).asNumber())
-                .otherwise("must be a number")
-                .it();
-        }
-    }
-
-    /**
-     * Transform Expect to Integer.
-     * @since 0.51
-     */
-    public static final class Int {
-
-        /**
-         * Expect.
-         */
-        private final Expect<Phi> expect;
-
-        /**
-         * Ctor.
-         * @param expect Expect
-         */
-        public Int(final Expect<Phi> expect) {
-            this.expect = expect;
-        }
-
-        /**
-         * Return it.
-         * @return The token
-         */
-        public Integer it() {
-            return this.expect
-                .that(phi -> new Dataized(phi).asNumber())
-                .otherwise("must be a number")
-                .must(number -> number % 1 == 0)
-                .otherwise("must be an integer")
-                .must(number -> number >= Integer.MIN_VALUE && number <= Integer.MAX_VALUE)
-                .otherwise("must fit into int range")
-                .that(Double::intValue)
-                .it();
-        }
-    }
-
-    /**
-     * Transform Expect to Natural number.
-     * Natural number is integer greater or equal to zero.
-     * @since 0.51
-     */
-    public static final class Natural {
-
-        /**
-         * Expect.
-         */
-        private final Expect<Phi> expect;
-
-        /**
-         * Ctor.
-         * @param expect Expect
-         */
-        public Natural(final Expect<Phi> expect) {
-            this.expect = expect;
-        }
-
-        /**
-         * Return it.
-         * @return The token
-         */
-        public Integer it() {
-            return this.expect
-                .that(phi -> new Dataized(phi).asNumber())
-                .otherwise("must be a number")
-                .must(number -> number % 1 == 0)
-                .otherwise("must be an integer")
-                .must(number -> number >= Integer.MIN_VALUE && number <= Integer.MAX_VALUE)
-                .otherwise("must fit into int range")
-                .that(Double::intValue)
-                .must(integer -> integer >= 0)
-                .otherwise("must be greater or equal to zero")
-                .it();
         }
     }
 }

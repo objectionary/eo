@@ -66,7 +66,7 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index exten
         } catch (final IOException | ClassNotFoundException | ClassCastException ex) {
             throw new ExFailure("cannot deserialize the compiled regex pattern", ex);
         }
-        final int start = new Expect.Natural(
+        final int start = new Natural(
             Expect.at(this, EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
         ).it();
         final int length = text.codePointCount(0, text.length());

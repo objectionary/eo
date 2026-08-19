@@ -27,8 +27,8 @@ final class OyRemoteTest {
     @Test
     void buildsCorrectUrlForProgram() throws Exception {
         MatcherAssert.assertThat(
-            "OyRemote.UrlOy generates correct URL for program",
-            new OyRemote.UrlOy(
+            "UrlOy generates correct URL for program",
+            new UrlOy(
                 "https://raw/objectionary/home/%s/objects/%s.eo",
                 "abcde"
             ).value("org.eolang.io.stdout"),
@@ -41,8 +41,8 @@ final class OyRemoteTest {
     @Test
     void buildsCorrectUrlForDirectory() throws Exception {
         MatcherAssert.assertThat(
-            "OyRemote.UrlOy generates correct URL for directory",
-            new OyRemote.UrlOy(
+            "UrlOy generates correct URL for directory",
+            new UrlOy(
                 "https://github.com/objectionary/home/tree/%s/objects/%s",
                 "abcde"
             ).value("org.eolang.ss"),
@@ -56,7 +56,7 @@ final class OyRemoteTest {
     void throwsExceptionOnInvalidUrlForProgram() {
         Assertions.assertThrows(
             MalformedURLException.class,
-            () -> new OyRemote.UrlOy(
+            () -> new UrlOy(
                 "hts:raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
                 "xyz"
             ).value("org.eolang.app"),
@@ -68,7 +68,7 @@ final class OyRemoteTest {
     void throwsExceptionOnInvalidUrlForDirectory() {
         Assertions.assertThrows(
             MalformedURLException.class,
-            () -> new OyRemote.UrlOy(
+            () -> new UrlOy(
                 "hts:github.com/objectionary/home/tree/%s/objects/%s",
                 "xyz"
             ).value("org.eolang.dir"),
@@ -136,8 +136,8 @@ final class OyRemoteTest {
             Assertions.assertThrows(
                 IOException.class,
                 () -> new OyRemote(
-                    new OyRemote.UrlOy(tpl, "stub"),
-                    new OyRemote.UrlOy(tpl, "stub")
+                    new UrlOy(tpl, "stub"),
+                    new UrlOy(tpl, "stub")
                 ).get("org.eolang.foo").stream(),
                 "Expected an IOException instead of the throttled HTTP body being returned as EO source"
             );
@@ -209,8 +209,8 @@ final class OyRemoteTest {
             return Assertions.assertThrows(
                 IOException.class,
                 () -> new OyRemote(
-                    new OyRemote.UrlOy(tpl, "stub"),
-                    new OyRemote.UrlOy(tpl, "stub")
+                    new UrlOy(tpl, "stub"),
+                    new UrlOy(tpl, "stub")
                 ).get("org.eolang.txt.sprintf").stream(),
                 "Expected an IOException reporting the object as not found"
             ).getMessage();

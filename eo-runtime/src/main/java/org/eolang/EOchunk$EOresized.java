@@ -38,8 +38,8 @@ public final class EOchunk$EOresized extends PhDefault implements Atom {
     public Phi lambda() {
         final Phi rho = this.take(Phi.RHO);
         Heaps.INSTANCE.resize(
-            new Expect.Natural(Expect.at(rho, "id")).it(),
-            new Expect.Natural(Expect.at(this, EOchunk$EOresized.CAPACITY)).it()
+            new Natural(Expect.at(rho, "id")).it(),
+            new Natural(Expect.at(this, EOchunk$EOresized.CAPACITY)).it()
         );
         return rho;
     }

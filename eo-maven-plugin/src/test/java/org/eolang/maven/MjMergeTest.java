@@ -94,7 +94,7 @@ final class MjMergeTest {
                     MjMergeTest.program("+package foo", "", "[] > bar", "  42 > @"),
                     "foo.bar",
                     "foo/bar.eo"
-                ).execute(new FakeMaven.Merge()).targetPath().resolve(Merging.DIR)
+                ).execute(new PpMerge()).targetPath().resolve(Merging.DIR)
             ),
             Matchers.is(false)
         );
@@ -115,7 +115,7 @@ final class MjMergeTest {
                         MjMergeTest.program("+package foo", "", "[] > bar", "  42 > @"),
                         "foo.bar",
                         "foo/bar.eo"
-                    ).execute(new FakeMaven.Merge())
+                    ).execute(new PpMerge())
                 )
             ),
             Matchers.stringContainsInOrder("bar", "foo")
@@ -145,7 +145,7 @@ final class MjMergeTest {
                         ),
                         "foo.baz",
                         "foo/baz.eo"
-                    ).execute(new FakeMaven.Merge())
+                    ).execute(new PpMerge())
                 )
             ),
             Matchers.stringContainsInOrder("can-be-one", "foo.baz", "foo")
@@ -166,7 +166,7 @@ final class MjMergeTest {
             final String name = source.getKey().toString();
             maven.withProgram(source.getValue().toString(), MjMergeTest.identifier(name), name);
         }
-        maven.execute(new FakeMaven.Merge());
+        maven.execute(new PpMerge());
         if (!MjMergeTest.asked(pack, "java").isEmpty()
             || !MjMergeTest.asked(pack, "tests").isEmpty()) {
             maven.execute(MjTranspile.class);
@@ -377,7 +377,7 @@ final class MjMergeTest {
             MjMergeTest.program("+package foo", "", "[] > bar", "  42 > @"),
             "foo.bar",
             "foo/bar.eo"
-        ).execute(new FakeMaven.Merge());
+        ).execute(new PpMerge());
     }
 
     /**
