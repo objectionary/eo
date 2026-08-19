@@ -43,3 +43,10 @@
     "some"
     "-".joined
       * "some"
+
+  matches. ++> can-apply-regex-to-a-joined-string
+    compiled.
+      regex.
+        "".joined
+          * "/[a-z]+/"
+    "hello"
