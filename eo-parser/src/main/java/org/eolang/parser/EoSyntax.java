@@ -82,7 +82,7 @@ public final class EoSyntax implements Syntax {
      * @param transform Transform XMIR after parsing train
      */
     EoSyntax(final Input ipt, final Train<Shift> transform) {
-        this(ipt, new Xsline(transform)::pass);
+        this(ipt, new Xsline(Objects.requireNonNull(transform, "transform"))::pass);
     }
 
     /**
@@ -92,13 +92,13 @@ public final class EoSyntax implements Syntax {
      */
     public EoSyntax(final Input ipt, final UnaryOperator<XML> transform) {
         this.input = ipt;
-        this.transform = transform;
+        this.transform = Objects.requireNonNull(transform, "transform");
     }
 
     @Override
     public XML parsed() throws IOException {
         final String text = new UncheckedText(new TextOf(this.input)).asString();
-        return Objects.requireNonNull(this.transform, "transform").apply(
+        return this.transform.apply(
             new XMLDocument(
                 new Xembler(
                     new Directives()
