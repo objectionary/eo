@@ -676,6 +676,24 @@ final class LnApplicationTest {
     }
 
     @Test
+    void acceptsFullBinaryExpansionOfFloatHead() {
+        Assertions.assertDoesNotThrow(
+            () -> LnApplicationTest.parseLine(
+                "0.1000000000000000055511151231257827021181583404541015625 > x"
+            ),
+            "the full decimal expansion of the double 0.1 holds exactly what the bits hold and must not be called over-precise"
+        );
+    }
+
+    @Test
+    void acceptsSmallestSubnormalFloatHead() {
+        Assertions.assertDoesNotThrow(
+            () -> LnApplicationTest.parseLine("4.9E-324 > x"),
+            "Double.MIN_VALUE in its shortest spelling must be accepted, subnormal though it is"
+        );
+    }
+
+    @Test
     void acceptsTrailingZeroFloatHead() {
         Assertions.assertDoesNotThrow(
             () -> LnApplicationTest.parseLine("1.50 > x"),
