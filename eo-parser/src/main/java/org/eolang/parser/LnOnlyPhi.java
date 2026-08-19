@@ -32,7 +32,7 @@ import java.util.List;
  * {@code >>}).</li>
  * </ul>
  *
- * <p>Outer kind: {@link Kind#ONLY_PHI_FORMATION}. Openness depends on
+ * <p>Outer kind: {@link Kind#ONLY_PHI}. Openness depends on
  * the φ (the LHS): with zero horizontal args the φ is
  * {@link Openness#OPEN}, so deeper-indent lines attach to it as
  * vertical application arguments (§4.5) — {@code foo > [x] > bar} with
@@ -284,7 +284,7 @@ final class LnOnlyPhi implements Line {
             openness = Openness.HORIZONTAL_COMPLETED;
         }
         return new Transition(stack, this.span).apply(
-            Kind.ONLY_PHI_FORMATION, openness, new Admission(suffix.named(), suffix.test())
+            Kind.ONLY_PHI, openness, new Admission(suffix.named(), suffix.test())
         );
     }
 

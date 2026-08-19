@@ -914,7 +914,7 @@ final class Eo implements Iterable<Directive> {
         if (level.kind() == Kind.COMPACT_TUPLE || level.star()) {
             Eo.closeCompactTuple(level, emit);
         }
-        if (level.kind() == Kind.ONLY_PHI_FORMATION
+        if (level.kind() == Kind.ONLY_PHI
             && level.openness() != Openness.HORIZONTAL_COMPLETED) {
             emit.close();
         }
