@@ -8,6 +8,7 @@ import java.util.Arrays;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Expect;
+import org.eolang.Natural;
 import org.eolang.Phi;
 import org.eolang.Syscall;
 

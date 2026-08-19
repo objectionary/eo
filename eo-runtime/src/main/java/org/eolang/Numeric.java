@@ -9,7 +9,7 @@ package org.eolang;
  * Transform {@link Expect} to a floating-point number.
  * @since 0.51
  */
-public final class Numeric {
+final class Numeric {
 
     /**
      * Expect.
@@ -20,7 +20,7 @@ public final class Numeric {
      * Ctor.
      * @param expect Expect
      */
-    public Numeric(final Expect<Phi> expect) {
+    Numeric(final Expect<Phi> expect) {
         this.expect = expect;
     }
 
@@ -28,7 +28,7 @@ public final class Numeric {
      * Return it.
      * @return The token
      */
-    public Double it() {
+    Double it() {
         return this.expect
             .that(phi -> new Dataized(phi).asNumber())
             .otherwise("must be a number")

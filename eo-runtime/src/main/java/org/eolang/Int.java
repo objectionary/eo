@@ -9,7 +9,7 @@ package org.eolang;
  * Transform {@link Expect} to Integer.
  * @since 0.51
  */
-public final class Int {
+final class Int {
 
     /**
      * Expect.
@@ -20,7 +20,7 @@ public final class Int {
      * Ctor.
      * @param expect Expect
      */
-    public Int(final Expect<Phi> expect) {
+    Int(final Expect<Phi> expect) {
         this.expect = expect;
     }
 
@@ -28,7 +28,7 @@ public final class Int {
      * Return it.
      * @return The token
      */
-    public Integer it() {
+    Integer it() {
         return this.expect
             .that(phi -> new Dataized(phi).asNumber())
             .otherwise("must be a number")

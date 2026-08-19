@@ -13,7 +13,7 @@ import java.util.List;
  * @since 0.74.0
  * @checkstyle VisibilityModifierCheck (60 lines)
  */
-public final class LinuxFileStat extends Structure implements StatSyscall.FileStat {
+final class LinuxFileStat extends Structure implements StatSyscall.FileStat {
 
     /**
      * Device id.
@@ -68,7 +68,7 @@ public final class LinuxFileStat extends Structure implements StatSyscall.FileSt
     /**
      * Ctor.
      */
-    public LinuxFileStat() {
+    LinuxFileStat() {
         super();
         this.rest = new byte[88];
     }

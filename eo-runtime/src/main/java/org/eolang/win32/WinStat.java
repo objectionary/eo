@@ -13,7 +13,7 @@ import java.util.List;
  * @since 0.74.0
  * @checkstyle VisibilityModifierCheck (60 lines)
  */
-public final class WinStat extends Structure {
+final class WinStat extends Structure {
 
     /**
      * Device id.
@@ -68,7 +68,7 @@ public final class WinStat extends Structure {
     /**
      * Ctor.
      */
-    public WinStat() {
+    WinStat() {
         super();
         this.times = new byte[24];
     }

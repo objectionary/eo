@@ -13,7 +13,7 @@ import java.util.List;
  * @since 0.74.0
  * @checkstyle VisibilityModifierCheck (100 lines)
  */
-public final class Timeb extends Structure {
+final class Timeb extends Structure {
 
     /**
      * Seconds since the Unix epoch.
@@ -38,7 +38,7 @@ public final class Timeb extends Structure {
     /**
      * Ctor.
      */
-    public Timeb() {
+    Timeb() {
         // nothing
     }
 

@@ -13,7 +13,7 @@ import java.util.List;
  * @since 0.74.0
  * @checkstyle VisibilityModifierCheck (60 lines)
  */
-public final class MacFileStat extends Structure implements StatSyscall.FileStat {
+final class MacFileStat extends Structure implements StatSyscall.FileStat {
 
     /**
      * Device id.
@@ -73,7 +73,7 @@ public final class MacFileStat extends Structure implements StatSyscall.FileStat
     /**
      * Ctor.
      */
-    public MacFileStat() {
+    MacFileStat() {
         super();
         this.times = new byte[64];
         this.rest = new byte[40];
