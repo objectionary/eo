@@ -56,7 +56,7 @@ final class MjPrintTest {
         new FakeMaven(temp)
             .with("printSourcesDir", temp.resolve(resources).toFile())
             .with("printOutputDir", output.toFile())
-            .execute(new FakeMaven.Print())
+            .execute(new PrintPipeline())
             .result();
         for (final Path source : walk) {
             final String src = resources.relativize(source).toString()
@@ -94,7 +94,7 @@ final class MjPrintTest {
         new FakeMaven(temp)
             .with("printSourcesDir", temp.resolve("xmir").toFile())
             .with("printOutputDir", output.toFile())
-            .execute(new FakeMaven.Print())
+            .execute(new PrintPipeline())
             .result();
         MatcherAssert.assertThat(
             "only the trailing .xmir extension should be replaced, the .xmir substring in the directory name must survive untouched",
@@ -125,7 +125,7 @@ final class MjPrintTest {
         new FakeMaven(temp)
             .with("printSourcesDir", temp.resolve("xmir").toFile())
             .with("printOutputDir", output.toFile())
-            .execute(new FakeMaven.Print())
+            .execute(new PrintPipeline())
             .result();
         MatcherAssert.assertThat(
             "the .xmir file should have been printed despite a non-XMIR file sitting next to it",

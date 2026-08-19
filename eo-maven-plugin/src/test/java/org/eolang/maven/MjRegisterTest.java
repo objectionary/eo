@@ -32,7 +32,7 @@ final class MjRegisterTest {
             "The resource must exist, but it doesn't",
             new FakeMaven(temp)
                 .with("sourcesDir", temp.resolve("src/eo").toFile())
-                .execute(new FakeMaven.Register()).foreign().getById("org.eolang.maven.abc-def")
+                .execute(new RegisterPipeline()).foreign().getById("org.eolang.maven.abc-def")
                 .exists("id"),
             Matchers.is(true)
         );
@@ -49,7 +49,7 @@ final class MjRegisterTest {
             new FakeMaven(temp)
                 .with("sourcesDir", temp.resolve("src/eo").toFile())
                 .with("strictFileNames", false)
-                .execute(new FakeMaven.Register()).foreign().getById("org.eolang.maven..abc")
+                .execute(new RegisterPipeline()).foreign().getById("org.eolang.maven..abc")
                 .exists("id"),
             Matchers.is(true)
         );
@@ -61,7 +61,7 @@ final class MjRegisterTest {
             IllegalStateException.class,
             () -> new FakeMaven(temp)
                 .withoutDefaults()
-                .execute(new FakeMaven.Register()),
+                .execute(new RegisterPipeline()),
             String.format(
                 "sourcesDir should not be set and the %s should fail, but didn't",
                 MjRegister.class

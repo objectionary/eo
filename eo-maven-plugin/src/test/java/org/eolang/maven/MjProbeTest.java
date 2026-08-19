@@ -39,7 +39,7 @@ final class MjProbeTest {
             new FakeMaven(temp)
                 .with("hash", new ChCached(new ChText(temp.resolve("tags.txt"), "0.23.15")))
                 .withHelloWorld()
-                .execute(new FakeMaven.Probe())
+                .execute(new ProbePipeline())
                 .programTojo()
                 .probed(),
             Matchers.equalTo(expected)
@@ -61,7 +61,7 @@ final class MjProbeTest {
                 (Scalar<Objectionary>) () -> new OyIndexed(new OyRemote(new ChRemote(tag)))
             )
             .withHelloWorld()
-            .execute(new FakeMaven.Probe())
+            .execute(new ProbePipeline())
             .programTojo()
             .probed();
         MatcherAssert.assertThat(

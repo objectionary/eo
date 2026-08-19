@@ -40,7 +40,6 @@ import java.util.Set;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.GodClass")
 final class Suffix {
 
     /**
@@ -98,14 +97,29 @@ final class Suffix {
     }
 
     /**
-     * Primary ctor — copies fields from a parsed result.
-     * @param result Parsed result
+     * Ctor — copies the fields of an already parsed suffix, since a
+     * constructor can't hand back an instance the parser has already
+     * built.
+     * @param result Parsed suffix
      */
-    private Suffix(final Parsed result) {
-        this.form = result.form;
-        this.label = result.label;
-        this.sig = result.sig;
-        this.constant = result.constant;
+    private Suffix(final Suffix result) {
+        this(result.form, result.label, result.sig, result.constant);
+    }
+
+    /**
+     * Primary ctor.
+     * @param sform Form
+     * @param slabel Bound name
+     * @param ssig Atom signature
+     * @param sconstant Const marker
+     */
+    private Suffix(
+        final Form sform, final String slabel, final String ssig, final boolean sconstant
+    ) {
+        this.form = sform;
+        this.label = slabel;
+        this.sig = ssig;
+        this.constant = sconstant;
     }
 
     /**
@@ -319,13 +333,13 @@ final class Suffix {
      * @param tail Tail substring
      * @param span Source span
      * @param home Source column where {@code tail} begins
-     * @return Parsed result
+     * @return Parsed suffix
      */
-    private static Parsed parse(final String tail, final Span span, final int home) {
+    private static Suffix parse(final String tail, final Span span, final int home) {
         final int idx = Suffix.start(tail);
-        final Parsed result;
+        final Suffix result;
         if (idx >= tail.length()) {
-            result = new Suffix.Parsed(Form.NONE, "", "", false);
+            result = new Suffix(Form.NONE, "", "", false);
         } else if (tail.startsWith("+>", idx)) {
             result = Suffix.test(tail, idx + 2, span, home, Form.TEST);
         } else if (tail.startsWith("->", idx)) {
@@ -336,7 +350,7 @@ final class Suffix {
             result = Suffix.named(tail, idx + 1, span, home);
         } else if (tail.charAt(idx) == '!') {
             Suffix.endsClean(tail, idx + 1, span, home);
-            result = new Suffix.Parsed(Form.NONE, "", "", true);
+            result = new Suffix(Form.NONE, "", "", true);
         } else {
             throw new ParseError(
                 span.line(), home + idx,
@@ -369,9 +383,9 @@ final class Suffix {
      * @param span Source span
      * @param home Source column where tail begins
      * @param form The form to record ({@code TEST} or {@code THROWS})
-     * @return Parsed result
+     * @return Parsed suffix
      */
-    private static Parsed test(
+    private static Suffix test(
         final String tail, final int after, final Span span, final int home, final Form form
     ) {
         int idx = Suffix.skipSpace(tail, after);
@@ -398,7 +412,7 @@ final class Suffix {
         }
         Suffix.checkLowercaseStart(name, span, home, start);
         Suffix.endsClean(tail, idx, span, home);
-        return new Suffix.Parsed(form, name, "", false);
+        return new Suffix(form, name, "", false);
     }
 
     /**
@@ -459,9 +473,9 @@ final class Suffix {
      * @param after Index immediately after {@code >>}
      * @param span Source span
      * @param home Source column where tail begins
-     * @return Parsed result
+     * @return Parsed suffix
      */
-    private static Parsed auto(
+    private static Suffix auto(
         final String tail, final int after, final Span span, final int home
     ) {
         int idx = after;
@@ -500,7 +514,7 @@ final class Suffix {
             );
         }
         Suffix.endsClean(tail, trailing, span, home);
-        return new Suffix.Parsed(Form.AUTO, handle, "", cnst);
+        return new Suffix(Form.AUTO, handle, "", cnst);
     }
 
     /**
@@ -509,9 +523,9 @@ final class Suffix {
      * @param from Index immediately after the leading {@code >}
      * @param span Source span
      * @param home Source column where tail begins
-     * @return Parsed result
+     * @return Parsed suffix
      */
-    private static Parsed named(
+    private static Suffix named(
         final String tail, final int from, final Span span, final int home
     ) {
         if (Suffix.blank(tail, from)) {
@@ -553,7 +567,7 @@ final class Suffix {
             rest = idx;
         }
         Suffix.endsClean(tail, rest, span, home);
-        return new Suffix.Parsed(Form.NAME, name, signature, cnst);
+        return new Suffix(Form.NAME, name, signature, cnst);
     }
 
     /**
@@ -739,48 +753,5 @@ final class Suffix {
          * expected to throw an exception.
          */
         THROWS
-    }
-
-    /**
-     * Internal parse result.
-     * @since 0.1
-     */
-    private static final class Parsed {
-
-        /**
-         * Form.
-         */
-        private final Form form;
-
-        /**
-         * Bound name.
-         */
-        private final String label;
-
-        /**
-         * Atom signature.
-         */
-        private final String sig;
-
-        /**
-         * Const marker.
-         */
-        private final boolean constant;
-
-        /**
-         * Ctor.
-         * @param sform Form
-         * @param slabel Label
-         * @param ssig Signature
-         * @param sconstant Const marker
-         */
-        private Parsed(
-            final Form sform, final String slabel, final String ssig, final boolean sconstant
-        ) {
-            this.form = sform;
-            this.label = slabel;
-            this.sig = ssig;
-            this.constant = sconstant;
-        }
     }
 }

@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.posix.CStdLib;
-import org.eolang.win32.WSAStartupFuncCall;
+import org.eolang.win32.WSAData;
 import org.eolang.win32.Winsock;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -402,7 +402,7 @@ final class SyscallTest {
          */
         private int startup() {
             return Winsock.INSTANCE.WSAStartup(
-                Winsock.VERSION_2_2, new WSAStartupFuncCall.WSAData()
+                Winsock.VERSION_2_2, new WSAData()
             );
         }
 

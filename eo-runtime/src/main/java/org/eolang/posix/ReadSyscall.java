@@ -32,7 +32,7 @@ public final class ReadSyscall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
-        final int size = new Expect.Natural(
+        final int size = new Natural(
             new Expect<>("the 'size' argument of read", () -> params[1])
         ).it();
         final Phi result = this.posix.take("return").copy();

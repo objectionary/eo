@@ -34,7 +34,7 @@ public final class RecvFuncCall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.win.take("return").copy();
-        final int size = new Expect.Natural(
+        final int size = new Natural(
             new Expect<>("the 'size' argument of recv", () -> params[1])
         ).it();
         final byte[] buf = new byte[size];

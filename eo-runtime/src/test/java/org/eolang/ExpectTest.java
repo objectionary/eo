@@ -149,7 +149,7 @@ final class ExpectTest {
             "inner class Numeric working throws error if attr is not a number",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Numeric(
+                () -> new Numeric(
                     Expect.at(
                         new PhApplication(
                             new PhDefault(),
@@ -171,7 +171,7 @@ final class ExpectTest {
             "inner class Integer throws error for not a number",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Int(
+                () -> new Int(
                     Expect.at(
                         new PhApplication(
                             new PhDefault(),
@@ -193,7 +193,7 @@ final class ExpectTest {
             "inner class Integer throws error for not an integer number",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Int(
+                () -> new Int(
                     Expect.at(
                         new PhApplication(
                             new PhDefault(),
@@ -215,7 +215,7 @@ final class ExpectTest {
             "inner class NonNegativeInteger throws error for not a number",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Natural(
+                () -> new Natural(
                     Expect.at(
                         new PhApplication(
                             new PhDefault(),
@@ -237,7 +237,7 @@ final class ExpectTest {
             "inner class NonNegativeInteger throws error for not an integer number",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Natural(
+                () -> new Natural(
                     Expect.at(
                         new PhApplication(
                             new PhDefault(),
@@ -259,7 +259,7 @@ final class ExpectTest {
             "inner class NonNegativeInteger throws error for a negative integer",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Natural(
+                () -> new Natural(
                     Expect.at(
                         new PhApplication(
                             new PhDefault(),
@@ -281,7 +281,7 @@ final class ExpectTest {
             "inner class Integer throws error for a number outside int range, instead of saturating",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Int(
+                () -> new Int(
                     Expect.at(
                         new PhApplication(
                             new PhDefault(),
@@ -303,7 +303,7 @@ final class ExpectTest {
             "inner class NonNegativeInteger throws error for a number outside int range, instead of saturating",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Natural(
+                () -> new Natural(
                     Expect.at(
                         new PhApplication(
                             new PhDefault(),

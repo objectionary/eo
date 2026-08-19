@@ -118,7 +118,7 @@ final class MjTranspileTest {
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.program())
                     .with("coverageTracking", true)
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new TranspilePipeline())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -135,7 +135,7 @@ final class MjTranspileTest {
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.throwing())
                     .with("coverageTracking", true)
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new TranspilePipeline())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -152,7 +152,7 @@ final class MjTranspileTest {
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.truthy())
                     .with("coverageTracking", true)
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new TranspilePipeline())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -167,7 +167,7 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.program())
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new TranspilePipeline())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -182,7 +182,7 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.plain())
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new TranspilePipeline())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -198,7 +198,7 @@ final class MjTranspileTest {
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.plain())
                     .with("superclass", "org.example.PhInspected")
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new TranspilePipeline())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -214,7 +214,7 @@ final class MjTranspileTest {
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.instantiating())
                     .with("superclass", "org.example.PhInspected")
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new TranspilePipeline())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -229,7 +229,7 @@ final class MjTranspileTest {
         new FakeMaven(temp.resolve("first"))
             .withProgram(src)
             .with("cache", cache.toFile())
-            .execute(new FakeMaven.Transpile());
+            .execute(new TranspilePipeline());
         MatcherAssert.assertThat(
             "the second run's generated Java must reflect its own phiDefaultClass instead of reusing the first run's cached PhDefault output",
             new TextOf(
@@ -237,7 +237,7 @@ final class MjTranspileTest {
                     .withProgram(src)
                     .with("cache", cache.toFile())
                     .with("superclass", "org.example.PhInspected")
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new TranspilePipeline())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -253,7 +253,7 @@ final class MjTranspileTest {
             () -> new FakeMaven(temp)
                 .withProgram(MjTranspileTest.program())
                 .with("superclass", name)
-                .execute(new FakeMaven.Transpile()),
+                .execute(new TranspilePipeline()),
             "a phiDefaultClass that is not a Java class name must not reach the generated Java"
         );
         final StringWriter writer = new StringWriter();
@@ -271,7 +271,7 @@ final class MjTranspileTest {
             IllegalStateException.class,
             () -> new FakeMaven(temp)
                 .withProgram("# Absent.")
-                .execute(new FakeMaven.Transpile()),
+                .execute(new TranspilePipeline()),
             "TranspileMojo should throw an exception on invalid EO code"
         );
         final StringWriter writer = new StringWriter();
@@ -301,7 +301,7 @@ final class MjTranspileTest {
                 "  ? > y",
                 "  ? > z"
                 )
-                .execute(new FakeMaven.Transpile())
+                .execute(new TranspilePipeline())
                 .result(),
             Matchers.not(
                 Matchers.allOf(
@@ -326,7 +326,7 @@ final class MjTranspileTest {
                     "[] > main"
                 )
             )
-            .execute(new FakeMaven.Transpile())
+            .execute(new TranspilePipeline())
             .result(),
             Matchers.allOf(
                 Matchers.hasKey("target/generated/org/eolang/EO_foo/package-info.java"),
@@ -350,7 +350,7 @@ final class MjTranspileTest {
                         "  true > @"
                     )
                 )
-                .execute(new FakeMaven.Transpile())
+                .execute(new TranspilePipeline())
                 .result()
                 .get("target/generated/org/eolang/EO_foo/EO_x/package-info.java")
             ).asString(),
@@ -368,7 +368,7 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.dispatching())
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new TranspilePipeline())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -384,7 +384,7 @@ final class MjTranspileTest {
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.dispatching())
                     .with("trackLocations", true)
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new TranspilePipeline())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -399,7 +399,7 @@ final class MjTranspileTest {
         new FakeMaven(temp.resolve("first"))
             .withProgram(src)
             .with("cache", cache.toFile())
-            .execute(new FakeMaven.Transpile());
+            .execute(new TranspilePipeline());
         MatcherAssert.assertThat(
             "the second run's generated Java must reflect its own trackLocations=true setting instead of reusing the first run's cached trackLocations=false output",
             new TextOf(
@@ -407,7 +407,7 @@ final class MjTranspileTest {
                     .withProgram(src)
                     .with("cache", cache.toFile())
                     .with("trackLocations", true)
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new TranspilePipeline())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -420,7 +420,7 @@ final class MjTranspileTest {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
             .withProgram(MjTranspileTest.program())
-            .execute(new FakeMaven.Transpile())
+            .execute(new TranspilePipeline())
             .result();
         final Path java = res.get(MjTranspileTest.compiled());
         final long before = java.toFile().lastModified();
@@ -428,7 +428,7 @@ final class MjTranspileTest {
             res.get("foo/x/main.eo").toFile().setLastModified(before + 1L),
             "The filesystem refused to touch the source, cannot tell modified from intact"
         );
-        maven.execute(new FakeMaven.Transpile());
+        maven.execute(new TranspilePipeline());
         MatcherAssert.assertThat(
             "The Java file should be recompiled",
             java.toFile().lastModified(),
@@ -441,7 +441,7 @@ final class MjTranspileTest {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
             .withProgram(MjTranspileTest.program())
-            .execute(new FakeMaven.Transpile())
+            .execute(new TranspilePipeline())
             .result();
         final Path java = res.get(MjTranspileTest.compiled());
         Assumptions.assumeTrue(
@@ -466,7 +466,7 @@ final class MjTranspileTest {
         final Path java = maven
             .withProgram(MjTranspileTest.program())
             .allTojosWithHash(CommitHash.FAKE)
-            .execute(new FakeMaven.Transpile())
+            .execute(new TranspilePipeline())
             .result()
             .get(MjTranspileTest.compiled());
         Assumptions.assumeTrue(
@@ -490,7 +490,7 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.program())
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new TranspilePipeline())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -514,7 +514,7 @@ final class MjTranspileTest {
         try (
             Stream<Path> list = Files.list(
                 maven
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new TranspilePipeline())
                     .generatedPath()
                     .resolve("org/eolang/EO_foo/EO_x")
             )
@@ -543,14 +543,14 @@ final class MjTranspileTest {
             .with("generatedDir", sources.toFile())
             .with("targetDir", target.resolve("eo-sources").toFile())
             .withHelloWorld()
-            .execute(new FakeMaven.Transpile());
+            .execute(new TranspilePipeline());
         maven
             .with("scope", "test")
             .with("generatedDir", tests.toFile())
             .with("targetDir", target.resolve("eo-test-sources").toFile()).withProgram(
                 MjTranspileTest.program().replace("main", "main-1")
             )
-            .execute(new FakeMaven.Transpile());
+            .execute(new TranspilePipeline());
         final Set<String> intersection = MjTranspileTest.classes(tests);
         intersection.retainAll(MjTranspileTest.classes(sources));
         MatcherAssert.assertThat(

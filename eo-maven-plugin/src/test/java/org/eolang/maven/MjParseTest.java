@@ -50,7 +50,7 @@ final class MjParseTest {
         MatcherAssert.assertThat(
             String.format("ParseMojo should have parsed stdout object %s, but didn't", parsed),
             new FakeMaven(temp).withHelloWorld()
-                .execute(new FakeMaven.Parse())
+                .execute(new ParsePipeline())
                 .result(),
             Matchers.hasKey(parsed)
         );
@@ -59,7 +59,7 @@ final class MjParseTest {
     @Test
     void parsesSuccessfullyAndSavesToForeign(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
-        maven.withHelloWorld().execute(new FakeMaven.Parse()).result();
+        maven.withHelloWorld().execute(new ParsePipeline()).result();
         MatcherAssert.assertThat(
             "The resource must exist, but it doesn't",
             maven.foreign().getById("foo.x.main").exists("xmir"),
@@ -108,7 +108,7 @@ final class MjParseTest {
             String.format("We expect that that %s is taken from the cache, but it didn't", actual),
             new TextOf(
                 maven.allTojosWithHash(hash)
-                    .execute(new FakeMaven.Parse())
+                    .execute(new ParsePipeline())
                     .result()
                     .get(actual)
             ).toString(),
@@ -126,7 +126,7 @@ final class MjParseTest {
                 "  seq *-1 > @",
                 "    true"
                 )
-                .execute(new FakeMaven.Parse())
+                .execute(new ParsePipeline())
                 .result(),
             Matchers.hasKey(
                 String.format("target/%s/foo/x/main.%s", Parsing.DIR, MjAssemble.XMIR)
@@ -161,7 +161,7 @@ final class MjParseTest {
         MatcherAssert.assertThat(
             "bare reference 'bar' must be resolved into the same package as 'Φ.foo.bar'",
             new XMLDocument(
-                maven.execute(new FakeMaven.Parse()).result().get(
+                maven.execute(new ParsePipeline()).result().get(
                     String.format("target/%s/foo/app.%s", Parsing.DIR, MjAssemble.XMIR)
                 )
             ),
@@ -186,7 +186,7 @@ final class MjParseTest {
         MatcherAssert.assertThat(
             "bare reference 'bar' must stay at the root when no 'Φ.foo.bar' object exists",
             new XMLDocument(
-                maven.execute(new FakeMaven.Parse()).result().get(
+                maven.execute(new ParsePipeline()).result().get(
                     String.format("target/%s/foo/app.%s", Parsing.DIR, MjAssemble.XMIR)
                 )
             ),
@@ -204,7 +204,7 @@ final class MjParseTest {
                 "[] > hello",
                 "  42 > @"
             )
-        ).execute(new FakeMaven.Parse());
+        ).execute(new ParsePipeline());
         MatcherAssert.assertThat(
             "The XMIR with broken content must exist, but it doesn't",
             new WkDefault(temp.resolve("target")).stream().anyMatch(
@@ -220,7 +220,7 @@ final class MjParseTest {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> result = maven
             .withHelloWorld()
-            .execute(new FakeMaven.Parse())
+            .execute(new ParsePipeline())
             .result();
         final File parsed = result.get(
             String.format("target/%s/foo/x/main.%s", Parsing.DIR, MjAssemble.XMIR)
@@ -260,7 +260,7 @@ final class MjParseTest {
         }
         MatcherAssert.assertThat(
             "All programs must be parsed in a single concurrent run, but some XMIRs are absent",
-            maven.execute(new FakeMaven.Parse()).result().keySet(),
+            maven.execute(new ParsePipeline()).result().keySet(),
             Matchers.hasItems(xmirs.toArray(new String[0]))
         );
     }
@@ -274,7 +274,7 @@ final class MjParseTest {
                     "[] > app",
                     "main"
                     )
-                    .execute(new FakeMaven.Parse())
+                    .execute(new ParsePipeline())
                     .result()
                     .get(String.format("target/%s/main.%s", Parsing.DIR, MjAssemble.XMIR))
             ),
@@ -293,7 +293,7 @@ final class MjParseTest {
             new XMLDocument(
                 new FakeMaven(temp)
                     .withProgram("# App.")
-                    .execute(new FakeMaven.Parse())
+                    .execute(new ParsePipeline())
                     .result()
                     .get("target/1-parse/foo/x/main.xmir")
             ),
@@ -309,14 +309,14 @@ final class MjParseTest {
         final FakeMaven maven = new FakeMaven(temp);
         final File parsed = maven
             .withHelloWorld()
-            .execute(new FakeMaven.Parse())
+            .execute(new ParsePipeline())
             .result().get(String.format("target/%s/foo/x/main.%s", Parsing.DIR, MjAssemble.XMIR))
             .toFile();
         Files.setLastModifiedTime(
             parsed.toPath(), FileTime.fromMillis(System.currentTimeMillis() + 60_000L)
         );
         final long before = parsed.lastModified();
-        maven.execute(new FakeMaven.Parse());
+        maven.execute(new ParsePipeline());
         final long after = parsed.lastModified();
         maven.withProgram(
             String.join(
@@ -326,7 +326,7 @@ final class MjParseTest {
             ),
             "foo",
             "foo/x/foo.eo"
-        ).execute(new FakeMaven.Parse());
+        ).execute(new ParsePipeline());
         MatcherAssert.assertThat(
             "Parser re-parsed sources, but it should not",
             parsed.lastModified(),

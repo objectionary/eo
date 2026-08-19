@@ -67,7 +67,7 @@ public interface Winsock extends StdCallLibrary {
      * @param data Data with info about socket structure
      * @return Zero on success, error code on error
      */
-    int WSAStartup(short version, WSAStartupFuncCall.WSAData data);
+    int WSAStartup(short version, WSAData data);
 
     /**
      * Stops usage of Winsock 2 by DLL.

@@ -5,7 +5,7 @@
 package org.eolang;
 
 import java.lang.management.ManagementFactory;
-import org.eolang.win32.WSAStartupFuncCall;
+import org.eolang.win32.WSAData;
 import org.eolang.win32.Winsock;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -155,7 +155,7 @@ final class EOwin32EOφTest {
         private int startupsWSA() {
             return Winsock.INSTANCE.WSAStartup(
                 Winsock.VERSION_2_2,
-                new WSAStartupFuncCall.WSAData()
+                new WSAData()
             );
         }
 

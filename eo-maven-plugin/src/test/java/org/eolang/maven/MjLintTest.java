@@ -40,11 +40,11 @@ final class MjLintTest {
     void doesNotFailWithNoErrorsAndWarnings(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp)
             .withHelloWorld()
-            .execute(new FakeMaven.Lint());
+            .execute(new LintPipeline());
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .withHelloWorld()
-                .execute(new FakeMaven.Lint()),
+                .execute(new LintPipeline()),
             "Correct program should not have failed, but it does"
         );
     }
@@ -54,7 +54,7 @@ final class MjLintTest {
         final FakeMaven maven = new FakeMaven(temp).withProgram(MjLintTest.erroneous());
         final IllegalStateException thrown = Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Lint()),
+            () -> maven.execute(new LintPipeline()),
             "Program with errors should have failed, but it didn't"
         );
         Throwable root = thrown;
@@ -76,7 +76,7 @@ final class MjLintTest {
         final FakeMaven maven = new FakeMaven(temp).withProgram(MjLintTest.erroneous());
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Lint()),
+            () -> maven.execute(new LintPipeline()),
             "Program with noname attributes should have failed or error, but it didn't"
         );
         MatcherAssert.assertThat(
@@ -104,7 +104,7 @@ final class MjLintTest {
                 "[x] > main",
                 "  (stdout \"Hello!\" x).print > @"
             );
-        maven.execute(new FakeMaven.Lint());
+        maven.execute(new LintPipeline());
         MatcherAssert.assertThat(
             "the lint named in eo.skipSourceLints is still reported",
             new Xnav(
@@ -135,13 +135,13 @@ final class MjLintTest {
             .with("cache", cache.toFile())
             .withProgram(source)
             .allTojosWithHash(() -> "abcdefq")
-            .execute(new FakeMaven.Lint());
+            .execute(new LintPipeline());
         final FakeMaven second = new FakeMaven(temp)
             .with("cache", cache.toFile())
             .with("skipSourceLints", new SetOf<>("mandatory-spdx"))
             .withProgram(source)
             .allTojosWithHash(() -> "abcdefq");
-        second.execute(new FakeMaven.Lint());
+        second.execute(new LintPipeline());
         MatcherAssert.assertThat(
             "changing skipSourceLints must invalidate the stale per-file lint cache",
             new Xnav(second.programTojo().linted())
@@ -162,7 +162,7 @@ final class MjLintTest {
             .with("cache", cache.toFile())
             .with("skipSourceLints", skipped)
             .withHelloWorld()
-            .execute(new FakeMaven.Lint());
+            .execute(new LintPipeline());
         try (Stream<Path> versions = Files.list(cache.resolve(Linting.CACHE))) {
             MatcherAssert.assertThat(
                 "a lint cache-key path segment must stay well under the 255-byte limit ext4 and APFS enforce, no matter how many lints are skipped",
@@ -180,7 +180,7 @@ final class MjLintTest {
             .withProgram(MjLintTest.problematic());
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Lint()),
+            () -> maven.execute(new LintPipeline()),
             "We should get WPA error here: 'Alias \"nowhere Φ.a.b.nowhere\" points to \"a.b.nowhere\", but it's not in scope (1): [\"foo.x.main\"]'"
         );
         MatcherAssert.assertThat(
@@ -199,12 +199,12 @@ final class MjLintTest {
             .withProgram(MjLintTest.problematic());
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Lint()),
+            () -> maven.execute(new LintPipeline()),
             "We should get WPA error here for the first time"
         );
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Lint()),
+            () -> maven.execute(new LintPipeline()),
             "We should get WPA error here for the second time as well"
         );
     }
@@ -217,14 +217,14 @@ final class MjLintTest {
             .withProgram(MjLintTest.problematic());
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Lint()),
+            () -> maven.execute(new LintPipeline()),
             "First (uncached) run must report the WPA error"
         );
         MatcherAssert.assertThat(
             "A WPA defect read back from the cache must still name its program, but it didn't",
             Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> maven.execute(new FakeMaven.Lint()),
+                () -> maven.execute(new LintPipeline()),
                 "Second (cached) run must report the WPA error too"
             ).getCause().getCause().getMessage(),
             Matchers.containsString("foo.x.main")
@@ -251,7 +251,7 @@ final class MjLintTest {
                 "[x] > main",
                 "  (stdout \"Hello!\" x).print > @"
             );
-        maven.execute(new FakeMaven.Lint());
+        maven.execute(new LintPipeline());
         try (
             Stream<Path> walk = Files.walk(
                 cache.resolve(Linting.CACHE).resolve(FakeMaven.pluginVersion())
@@ -270,12 +270,12 @@ final class MjLintTest {
         throws IOException {
         final Path cache = temp.resolve("shared-cache");
         MjLintTest.linting(temp.resolve("clean"), cache, MjLintTest.suppressed("foo.x", "main"))
-            .execute(new FakeMaven.Lint());
+            .execute(new LintPipeline());
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> MjLintTest.linting(
                 temp.resolve("broken"), cache, MjLintTest.problematic()
-            ).execute(new FakeMaven.Lint()),
+            ).execute(new LintPipeline()),
             "WPA error of the second project must be reported, not hidden by the cache of the first"
         );
     }
@@ -297,7 +297,7 @@ final class MjLintTest {
             ),
             "foo.x.tests",
             "foo/x/tests.eo"
-        ).execute(new FakeMaven.Lint());
+        ).execute(new LintPipeline());
         new Saved(
             String.join(System.lineSeparator(), MjLintTest.problematic()),
             workspace.resolve("foo/x/main.eo")
@@ -314,7 +314,7 @@ final class MjLintTest {
     void lintsPackageWithoutASingleProgram(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
             () -> MjLintTest.linting(temp, temp.resolve("cache"))
-                .execute(new FakeMaven.Lint()),
+                .execute(new LintPipeline()),
             "Linting a package that has no programs at all must not fail"
         );
     }
@@ -325,7 +325,7 @@ final class MjLintTest {
             () -> new FakeMaven(temp)
                 .with("lintAsPackage", false)
                 .withProgram(MjLintTest.problematic())
-                .execute(new FakeMaven.Lint()),
+                .execute(new LintPipeline()),
             "We shouldn't get WPA error here because we disabled it with 'lintAsPackage' flag, but we got it"
         );
     }
@@ -346,7 +346,7 @@ final class MjLintTest {
                 "",
                 "[] > main"
             );
-        maven.execute(new FakeMaven.Lint());
+        maven.execute(new LintPipeline());
         MatcherAssert.assertThat(
             "A plain +unlint incorrect-alias must suppress the WPA defect reported as incorrect-alias/W",
             new Xnav(maven.programTojo().linted())
@@ -362,12 +362,12 @@ final class MjLintTest {
         final FakeMaven maven = new FakeMaven(temp).withProgram(MjLintTest.erroneous());
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Lint()),
+            () -> maven.execute(new LintPipeline()),
             "Program with noname attributes should have failed or error for the first time, but it didn't"
         );
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Lint()),
+            () -> maven.execute(new LintPipeline()),
             "We expect that even if the result was cached, we still get the same error"
         );
     }
@@ -377,7 +377,7 @@ final class MjLintTest {
         final FakeMaven maven = new FakeMaven(temp).withProgram(MjLintTest.critical());
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Lint()),
+            () -> maven.execute(new LintPipeline()),
             "Wrong program should have failed or error, but it didn't"
         );
         MatcherAssert.assertThat(
@@ -394,7 +394,7 @@ final class MjLintTest {
         final FakeMaven maven = new FakeMaven(temp).withProgram(MjLintTest.critical());
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Lint()),
+            () -> maven.execute(new LintPipeline()),
             "Wrong program should have failed or error, but it didn't"
         );
         MatcherAssert.assertThat(
@@ -415,7 +415,7 @@ final class MjLintTest {
             .with("failOnWarning", true);
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Lint()),
+            () -> maven.execute(new LintPipeline()),
             "Program with sparse decorated object should have failed on warning, but it didn't"
         );
         MatcherAssert.assertThat(
@@ -437,7 +437,7 @@ final class MjLintTest {
                 "    \"Hello world\" > @"
                 )
                 .with("failOnWarning", false)
-                .execute(new FakeMaven.Lint()),
+                .execute(new LintPipeline()),
             "Program with sparse decorated object should not have failed on warning without flag, but it does"
         );
     }
@@ -452,7 +452,7 @@ final class MjLintTest {
             );
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Lint()),
+            () -> maven.execute(new LintPipeline()),
             "Program with invalid syntax should have failed, but it didn't"
         );
         MatcherAssert.assertThat(
@@ -478,7 +478,7 @@ final class MjLintTest {
                 new TextOf(
                     Assertions.assertThrows(
                         IllegalStateException.class,
-                        () -> maven.execute(new FakeMaven.Lint()),
+                        () -> maven.execute(new LintPipeline()),
                         "A plain parser syntax error must still fail the build, but through the normal reporting path"
                     )
                 )
@@ -492,7 +492,7 @@ final class MjLintTest {
         final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()
             .allTojosWithHash(CommitHash.FAKE)
-            .execute(new FakeMaven.Lint());
+            .execute(new LintPipeline());
         final Path path = maven.result().get(
             String.format("target/%s/foo/x/main.%s", Linting.DIR, MjAssemble.XMIR)
         );
@@ -518,7 +518,7 @@ final class MjLintTest {
             .withHelloWorld()
             .with("cache", cache.toFile())
             .allTojosWithHash(() -> hash)
-            .execute(new FakeMaven.Lint());
+            .execute(new LintPipeline());
         try (Stream<Path> saved = Files.walk(cache.resolve(Linting.CACHE))) {
             MatcherAssert.assertThat(
                 "Verified results must be saved to cache, under the hash of the tojo",
@@ -536,7 +536,7 @@ final class MjLintTest {
             .withHelloWorld()
             .with("cache", cache.toFile())
             .allTojosWithHash(() -> "abcdef1")
-            .execute(new FakeMaven.Lint());
+            .execute(new LintPipeline());
         final String planted = new TextOf(new ResourceOf("org/eolang/maven/main.xml")).asString();
         try (Stream<Path> saved = Files.walk(cache.resolve(Linting.CACHE))) {
             saved.filter(p -> p.endsWith(Paths.get("foo", "x", "main.xmir")))
@@ -554,7 +554,7 @@ final class MjLintTest {
     void reportsWhenObjectNameFails(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new FakeMaven(temp).withProgram("# App.").execute(new FakeMaven.Lint()),
+            () -> new FakeMaven(temp).withProgram("# App.").execute(new LintPipeline()),
             "MjLint's execution was not failed, but it should"
         );
     }
@@ -570,7 +570,7 @@ final class MjLintTest {
         );
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Lint()),
+            () -> maven.execute(new LintPipeline()),
             "Linting must fail on an unused alias"
         );
         MatcherAssert.assertThat(
