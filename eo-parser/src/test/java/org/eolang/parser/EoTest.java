@@ -180,7 +180,7 @@ final class EoTest {
     void parsesSiblingAfterTabOnlyLineInFailedBlock() {
         MatcherAssert.assertThat(
             "a tab-only line inside the block of a failed line must not swallow the next sibling",
-            EoTest.render("[] > foo", "  ???", "	", "  d > y"),
+            EoTest.render("[] > foo", "  ???", "\t", "  d > y"),
             XhtmlMatchers.hasXPath("/object/o[@name='foo']/o[@name='y']")
         );
     }

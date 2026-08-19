@@ -99,7 +99,7 @@ final class SpanTest {
     void detectsTabOnlyLineAsBlank() {
         MatcherAssert.assertThat(
             "a line made of a single tab is entirely whitespace and must report blank",
-            new Span("	", 4).blank(),
+            new Span("\t", 4).blank(),
             Matchers.is(true)
         );
     }
@@ -108,7 +108,7 @@ final class SpanTest {
     void countsTabsInIndent() {
         MatcherAssert.assertThat(
             "every leading whitespace character counts towards the indent, tabs included",
-            new Span("		", 4).indent(),
+            new Span("\t\t", 4).indent(),
             Matchers.equalTo(2)
         );
     }
@@ -117,7 +117,7 @@ final class SpanTest {
     void exposesEmptyBodyForTabOnlyLine() {
         MatcherAssert.assertThat(
             "body of a tab-only line cannot contain anything",
-            new Span(" 	 ", 1).body(),
+            new Span(" \t ", 1).body(),
             Matchers.equalTo("")
         );
     }
