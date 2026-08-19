@@ -33,7 +33,7 @@ import org.eolang.printer.Xmir;
  * fixpoint, so the canonical form is the fixpoint of parse-and-print), and
  * compares that against what is on disk. In its default "check" mode, it
  * prints a colored unified {@link Diff} for every file that diverges from
- * the canonical form and fails the build. When {@link #autoFix} is turned
+ * the canonical form and fails the build. When {@link #autofix} is turned
  * on (via the {@code eo.autoFix} property), it overwrites the divergent
  * files with their canonical form instead of failing, much like
  * {@code gofmt -w} or {@code spotless:apply}.</p>
@@ -77,10 +77,14 @@ public final class MjFormat extends MjSafe {
     /**
      * Overwrite divergent sources with their canonical form instead of
      * failing the build.
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.autoFix", required = true, defaultValue = "false")
-    private boolean autoFix;
+    @Parameter(
+        alias = "autoFix",
+        property = "eo.autoFix",
+        required = true,
+        defaultValue = "false"
+    )
+    private boolean autofix;
 
     /**
      * Points charged for each level of indentation on a line.
@@ -144,7 +148,7 @@ public final class MjFormat extends MjSafe {
             diverged = 0;
         } else {
             diverged = 1;
-            if (this.autoFix) {
+            if (this.autofix) {
                 new Saved(canonical, source).value();
                 Logger.info(this, "Reformatted %[file]s", source);
             } else {
@@ -387,7 +391,7 @@ public final class MjFormat extends MjSafe {
                 "All %d EO source(s) are formatted canonically, took %[ms]s to check",
                 total, millis
             );
-        } else if (this.autoFix) {
+        } else if (this.autofix) {
             Logger.info(
                 this,
                 "Reformatted %d of %d EO source(s), took %[ms]s",
