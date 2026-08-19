@@ -26,4 +26,4 @@ printed: |
   [] > dataized /Q.bytes
     ? > x
 
-    x.eq x --> on-something
+    ^.x.eq ^.x --> on-something
