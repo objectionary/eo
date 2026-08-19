@@ -275,9 +275,7 @@
       port
   [scope cleanup] > guarded
     seq * > @
-      recovered
-        value
-        true
+      recovered value true
       cleanup
       value
     scope > value!
