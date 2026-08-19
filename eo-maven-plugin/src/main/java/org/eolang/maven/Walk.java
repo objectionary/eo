@@ -50,6 +50,7 @@ final class Walk extends ListEnvelope<Path> {
      * @param globs List of them
      * @return New Walk
      */
+    @SuppressWarnings("PMD.LooseCoupling")
     Walk includes(final Collection<String> globs) {
         return new Walk(
             this.home,
@@ -67,6 +68,7 @@ final class Walk extends ListEnvelope<Path> {
      * @param globs List of them
      * @return New Walk
      */
+    @SuppressWarnings("PMD.LooseCoupling")
     Walk excludes(final Collection<String> globs) {
         return new Walk(
             this.home,
