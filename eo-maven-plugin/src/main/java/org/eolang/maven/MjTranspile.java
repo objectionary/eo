@@ -49,17 +49,23 @@ public final class MjTranspile extends MjSafe {
 
     /**
      * Add to source root.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.addSourcesRoot", defaultValue = "true")
-    private boolean addSourcesRoot;
+    @Parameter(
+        alias = "addSourcesRoot",
+        property = "eo.addSourcesRoot",
+        defaultValue = "true"
+    )
+    private boolean attach;
 
     /**
      * Whether to transpile tests.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.transpileTests", defaultValue = "true")
-    private boolean transpileTests;
+    @Parameter(
+        alias = "transpileTests",
+        property = "eo.transpileTests",
+        defaultValue = "true"
+    )
+    private boolean tests;
 
     /**
      * Whether to wrap every dispatched object with a location-carrying
@@ -67,10 +73,9 @@ public final class MjTranspile extends MjSafe {
      * Off by default, so a production build stays lean; turn it on (as
      * {@code eo-runtime} does for its tests) to keep precise {@code .eo}
      * locations in panics.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.trackLocations")
-    private boolean trackLocations;
+    @Parameter(alias = "trackLocations", property = "eo.trackLocations")
+    private boolean located;
 
     /**
      * Whether to wrap every located object in the generated Java into
@@ -89,10 +94,9 @@ public final class MjTranspile extends MjSafe {
      * the covered percentage of dataized {@code .eo} objects drops below
      * a threshold, mirroring how the {@code jacoco} profile binds a
      * {@code check} goal with its own per-metric thresholds.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.coverageTracking")
-    private boolean coverageTracking;
+    @Parameter(alias = "coverageTracking", property = "eo.coverageTracking")
+    private boolean coverage;
 
     /**
      * The class that a generated class extends instead of {@code PhDefault},
@@ -146,12 +150,12 @@ public final class MjTranspile extends MjSafe {
                     this.cache.toPath(),
                     this.cacheEnabled,
                     this.plugin.getVersion(),
-                    this.transpileTests,
+                    this.tests,
                     this.roots(),
                     new Transpilation(
                         this.plugin.getVersion(),
-                        new Tracking(this.trackSteps, this.trackLocations),
-                        this.coverageTracking,
+                        new Tracking(this.trackSteps, this.located),
+                        this.coverage,
                         this.base(),
                         this.xslMeasures.toPath(),
                         this.targetDir.toPath()
@@ -160,7 +164,7 @@ public final class MjTranspile extends MjSafe {
                 )
             ).exec();
         }
-        if (this.addSourcesRoot) {
+        if (this.attach) {
             this.project.addCompileSourceRoot(
                 this.generatedDir.toPath().toAbsolutePath().toString()
             );

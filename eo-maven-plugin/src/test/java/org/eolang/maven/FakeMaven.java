@@ -197,8 +197,8 @@ final class FakeMaven {
             this.params.putIfAbsent("offline", false);
             this.params.putIfAbsent("classesDir", this.classesPath().toFile());
             this.params.putIfAbsent("superclass", "PhDefault");
-            this.params.putIfAbsent("addSourcesRoot", true);
-            this.params.putIfAbsent("transpileTests", true);
+            this.params.putIfAbsent("attach", true);
+            this.params.putIfAbsent("tests", true);
             this.params.putIfAbsent("strictFileNames", true);
         }
         final Moja<T> moja = new Moja<>(mojo);
