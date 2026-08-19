@@ -28,7 +28,7 @@ import org.cactoos.text.UncheckedText;
  *
  * <p>Walks the XMIR sources in {@link #sources}, extracts the
  * {@code forma} of every lambda atom together with its declared return
- * type, and writes the result as a CSV file at {@link #table}.
+ * type, and writes the result as a CSV file at {@link #csv}.
  * Each output line has the form {@code <forma>,<return-type>}; entries
  * are sorted by {@code forma} to make the file stable across builds.</p>
  *
@@ -66,7 +66,7 @@ public final class MjAtomsTable extends MjSafe {
         required = true,
         defaultValue = "${project.build.outputDirectory}/org/eolang/atoms.csv"
     )
-    private File table;
+    private File csv;
 
     /**
      * Ctor.
@@ -114,12 +114,12 @@ public final class MjAtomsTable extends MjSafe {
             this,
             "Wrote %d atom return type(s) to %[file]s",
             table.size(),
-            this.table.toPath()
+            this.csv.toPath()
         );
     }
 
     private void write(final Map<String, String> table) throws IOException {
-        final Path target = this.table.toPath();
+        final Path target = this.csv.toPath();
         final Path parent = target.getParent();
         if (parent != null) {
             Files.createDirectories(parent);
