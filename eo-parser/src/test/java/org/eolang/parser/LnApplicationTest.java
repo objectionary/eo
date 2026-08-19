@@ -251,9 +251,9 @@ final class LnApplicationTest {
         new LnApplication(new Span("foo a b > x", 1))
             .into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "a happlication cannot receive deeper-indent children so it pushes HORIZONTAL_COMPLETED",
+            "a happlication cannot receive deeper-indent children so it pushes HCOMPLETED",
             stack.top().openness(),
-            Matchers.equalTo(Openness.HORIZONTAL_COMPLETED)
+            Matchers.equalTo(Openness.HCOMPLETED)
         );
     }
 
@@ -672,6 +672,24 @@ final class LnApplicationTest {
         Assertions.assertDoesNotThrow(
             () -> LnApplicationTest.parseLine("+42 > x"),
             "a leading + does not change the double and must not be called over-precise"
+        );
+    }
+
+    @Test
+    void acceptsFullBinaryExpansionOfFloatHead() {
+        Assertions.assertDoesNotThrow(
+            () -> LnApplicationTest.parseLine(
+                "0.1000000000000000055511151231257827021181583404541015625 > x"
+            ),
+            "the full decimal expansion of the double 0.1 holds exactly what the bits hold and must not be called over-precise"
+        );
+    }
+
+    @Test
+    void acceptsSmallestSubnormalFloatHead() {
+        Assertions.assertDoesNotThrow(
+            () -> LnApplicationTest.parseLine("4.9E-324 > x"),
+            "Double.MIN_VALUE in its shortest spelling must be accepted, subnormal though it is"
         );
     }
 

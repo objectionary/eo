@@ -92,9 +92,9 @@ final class LnMethodTest {
         new LnMethod(new Span(".bar 42", 2))
             .into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "VMETHOD_HARGS must be HORIZONTAL_COMPLETED so no further extension is allowed",
+            "VMETHOD_HARGS must be HCOMPLETED so no further extension is allowed",
             stack.top().openness(),
-            Matchers.equalTo(Openness.HORIZONTAL_COMPLETED)
+            Matchers.equalTo(Openness.HCOMPLETED)
         );
     }
 

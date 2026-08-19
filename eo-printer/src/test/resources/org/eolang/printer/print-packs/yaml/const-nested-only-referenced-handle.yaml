@@ -24,4 +24,4 @@ origin: |
 
 printed: |
   [b] > array
-    index.lt b.size! > [index] >> slice-byte
+    index.lt ^.b.size! > [index] >> slice-byte

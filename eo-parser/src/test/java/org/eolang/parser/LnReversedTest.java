@@ -59,9 +59,9 @@ final class LnReversedTest {
         new LnReversed(new Span("if. cond then > x", 1))
             .into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "REVERSED_HARGS must be HORIZONTAL_COMPLETED — no deeper continuation allowed",
+            "REVERSED_HARGS must be HCOMPLETED — no deeper continuation allowed",
             stack.top().openness(),
-            Matchers.equalTo(Openness.HORIZONTAL_COMPLETED)
+            Matchers.equalTo(Openness.HCOMPLETED)
         );
     }
 

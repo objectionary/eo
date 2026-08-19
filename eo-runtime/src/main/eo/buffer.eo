@@ -10,7 +10,7 @@
   buf > @
   buffer > [str] > with
     string
-      buf.as-bytes.concat str.as-bytes
+      ^.buf.as-bytes.concat str.as-bytes
 
   eq. ++> can-build-a-simple-string
     with.

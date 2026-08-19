@@ -915,7 +915,7 @@ final class Eo implements Iterable<Directive> {
             Eo.closeCompactTuple(level, emit);
         }
         if (level.kind() == Kind.ONLY_PHI
-            && level.openness() != Openness.HORIZONTAL_COMPLETED) {
+            && level.openness() != Openness.HCOMPLETED) {
             emit.close();
         }
         emit.close();

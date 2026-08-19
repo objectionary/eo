@@ -57,7 +57,7 @@ final class TransitionTest {
     void rejectsDeeperChildUnderHorizontallyCompletedParent() {
         final Stack stack = new Stack();
         new Transition(stack, new Span("zeta", 1))
-            .apply(Kind.HAPPLICATION, Openness.HORIZONTAL_COMPLETED, new Admission(null, false));
+            .apply(Kind.HAPPLICATION, Openness.HCOMPLETED, new Admission(null, false));
         Assertions.assertThrows(
             ParseError.class,
             () -> new Transition(stack, new Span("  eta", 2))
@@ -100,7 +100,7 @@ final class TransitionTest {
         MatcherAssert.assertThat(
             "applying at the same indent must replace the top level's kind in place",
             new Transition(stack, new Span("iota", 2))
-                .apply(Kind.HAPPLICATION, Openness.HORIZONTAL_COMPLETED, new Admission(null, false))
+                .apply(Kind.HAPPLICATION, Openness.HCOMPLETED, new Admission(null, false))
                 .kind(),
             Matchers.equalTo(Kind.HAPPLICATION)
         );
@@ -136,7 +136,7 @@ final class TransitionTest {
      */
     private Level happlicationChild(final Stack stack, final boolean permitted) {
         return new Transition(stack, new Span("  42", 2)).apply(
-            Kind.HAPPLICATION, Openness.HORIZONTAL_COMPLETED, new Admission(null, permitted)
+            Kind.HAPPLICATION, Openness.HCOMPLETED, new Admission(null, permitted)
         );
     }
 }

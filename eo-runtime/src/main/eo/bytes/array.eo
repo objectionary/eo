@@ -15,9 +15,9 @@
     b >> data!
   if. > [tup index] >> slice-byte
     index.lt len
-    slice-byte
+    ^.slice-byte
       tup.with
-        b.slice index 1
+        ^.b.slice index 1
       as-number.
         index.plus 1
     tup
