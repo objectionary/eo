@@ -10,6 +10,7 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.TrDefault;
+import fixtures.LargeProgram;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -76,33 +77,31 @@ final class EoSyntaxTest {
 
     @Test
     void measuresRealParsingTime() throws Exception {
-        final XML xml = new EoSyntax(
-            new ResourceOf("org/eolang/parser/fibonacci.eo")
-        ).parsed();
         MatcherAssert.assertThat(
             "ms attribute is not a measured elapsed time",
-            Long.parseLong(xml.xpath("/object/@ms").get(0)),
+            Long.parseLong(
+                new EoSyntax(new LargeProgram(2000)).parsed().xpath("/object/@ms").get(0)
+            ),
             Matchers.greaterThan(0L)
         );
     }
 
     @Test
     void reportsMsWithinSaneBound() throws Exception {
-        final XML xml = new EoSyntax(
-            new ResourceOf("org/eolang/parser/fibonacci.eo")
-        ).parsed();
         MatcherAssert.assertThat(
             "ms attribute is not within a sane bound for a small program",
-            Long.parseLong(xml.xpath("/object/@ms").get(0)),
+            Long.parseLong(
+                new EoSyntax(
+                    new ResourceOf("org/eolang/parser/fibonacci.eo")
+                ).parsed().xpath("/object/@ms").get(0)
+            ),
             Matchers.lessThan(60_000L)
         );
     }
 
     @Test
     void measuresParsingTimeOnEveryCall() throws Exception {
-        final EoSyntax syntax = new EoSyntax(
-            new ResourceOf("org/eolang/parser/fibonacci.eo")
-        );
+        final EoSyntax syntax = new EoSyntax(new LargeProgram(2000));
         syntax.parsed();
         MatcherAssert.assertThat(
             "second parse of the same syntax does not measure its own elapsed time",
