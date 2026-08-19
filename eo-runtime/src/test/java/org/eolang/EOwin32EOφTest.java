@@ -76,7 +76,6 @@ final class EOwin32EOφTest {
     /**
      * Test case for {@link Winsock}.
      * @since 0.40
-     * @checkstyle AbbreviationAsWordInNameCheck (300 lines)
      */
     @Nested
     @Execution(ExecutionMode.SAME_THREAD)
@@ -87,25 +86,25 @@ final class EOwin32EOφTest {
         void initializesWinsockLibrary() {
             MatcherAssert.assertThat(
                 "Winsock library should be successfully initialized, but it isn't",
-                this.startupsWSA(),
+                this.startupsWinsock(),
                 Matchers.equalTo(0)
             );
-            this.cleanupsWSA();
+            this.cleanupsWinsock();
         }
 
         @Test
         void cleansupWinsockLibrary() {
-            this.startupsWSA();
+            this.startupsWinsock();
             MatcherAssert.assertThat(
                 "Winsock library resources should be freed successfully",
-                this.cleanupsWSA(),
+                this.cleanupsWinsock(),
                 Matchers.equalTo(0)
             );
         }
 
         @Test
         void opensTcpSocket() {
-            this.startupsWSA();
+            this.startupsWinsock();
             final long socket = this.createsSocket();
             MatcherAssert.assertThat(
                 "Winsock library should successfully create a TCP socket, but it didn't",
@@ -113,18 +112,18 @@ final class EOwin32EOφTest {
                 Matchers.not(Matchers.equalTo(Winsock.INVALID_SOCKET))
             );
             this.closesSocket(socket);
-            this.cleanupsWSA();
+            this.cleanupsWinsock();
         }
 
         @Test
         void closesTcpSocket() {
-            this.startupsWSA();
+            this.startupsWinsock();
             MatcherAssert.assertThat(
                 "Winsock library should successfully close a TCP socket, but it didn't",
                 this.closesSocket(this.createsSocket()),
                 Matchers.not(Matchers.equalTo(Winsock.SOCKET_ERROR))
             );
-            this.cleanupsWSA();
+            this.cleanupsWinsock();
         }
 
         /**
@@ -152,7 +151,7 @@ final class EOwin32EOφTest {
          * Startups winsock library.
          * @return Status code
          */
-        private int startupsWSA() {
+        private int startupsWinsock() {
             return Winsock.INSTANCE.WSAStartup(
                 Winsock.VERSION_2_2,
                 new WSAData()
@@ -163,7 +162,7 @@ final class EOwin32EOφTest {
          * Cleans up winsock library.
          * @return Status code
          */
-        private int cleanupsWSA() {
+        private int cleanupsWinsock() {
             return Winsock.INSTANCE.WSACleanup();
         }
     }

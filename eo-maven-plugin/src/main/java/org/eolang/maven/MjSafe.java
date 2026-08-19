@@ -414,11 +414,6 @@ abstract class MjSafe extends AbstractMojo {
         return this.getClass().getSimpleName();
     }
 
-    /**
-     * Execute it.
-     * @throws MojoFailureException If fails during build
-     * @checkstyle NoJavadocForOverriddenMethodsCheck (10 lines)
-     */
     @Override
     public final void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
