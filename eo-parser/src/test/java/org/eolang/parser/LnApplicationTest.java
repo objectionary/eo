@@ -251,9 +251,9 @@ final class LnApplicationTest {
         new LnApplication(new Span("foo a b > x", 1))
             .into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "a happlication cannot receive deeper-indent children so it pushes HORIZONTAL_COMPLETED",
+            "a happlication cannot receive deeper-indent children so it pushes HCOMPLETED",
             stack.top().openness(),
-            Matchers.equalTo(Openness.HORIZONTAL_COMPLETED)
+            Matchers.equalTo(Openness.HCOMPLETED)
         );
     }
 
