@@ -49,7 +49,7 @@ final class ContainsFiles extends TypeSafeMatcher<Path> {
                 path,
                 glob
             )
-            );
+        );
     }
 
     /**

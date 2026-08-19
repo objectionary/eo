@@ -377,7 +377,7 @@ final class PhDefaultTest {
 
     @Test
     void printsEndlessRecursionObject() {
-        PhDefaultTest.EndlessRecursion.count.set(2);
+        PhDefaultTest.EndlessRecursion.COUNT.set(2);
         MatcherAssert.assertThat(
             "Dataization should discover the infinite recursion, but it didn't",
             new Dataized(new PhDefaultTest.EndlessRecursion()).asNumber(),
@@ -387,7 +387,7 @@ final class PhDefaultTest {
 
     @Test
     void hesPhiRecursively() {
-        PhDefaultTest.RecursivePhi.count.set(3);
+        PhDefaultTest.RecursivePhi.COUNT.set(3);
         MatcherAssert.assertThat(
             "Dataization should discover the infinite recursion, but it didn't",
             new Dataized(PhDefaultTest.RecursivePhi.made()).asNumber(),
@@ -397,7 +397,7 @@ final class PhDefaultTest {
 
     @Test
     void cachesPhiViaNewRecursively() {
-        PhDefaultTest.RecursivePhiViaNew.count.set(3);
+        PhDefaultTest.RecursivePhiViaNew.COUNT.set(3);
         MatcherAssert.assertThat(
             "Does not cache phi via new recursively",
             new Dataized(new PhDefaultTest.RecursivePhiViaNew()).asNumber(),
@@ -871,7 +871,7 @@ final class PhDefaultTest {
         /**
          * Count.
          */
-        private static final AtomicInteger count = new AtomicInteger();
+        private static final AtomicInteger COUNT = new AtomicInteger();
 
         /**
          * Ctor.
@@ -885,7 +885,7 @@ final class PhDefaultTest {
                             new PhDefault(),
                             self -> {
                                 final Phi result;
-                                if (PhDefaultTest.EndlessRecursion.count.decrementAndGet() <= 0) {
+                                if (PhDefaultTest.EndlessRecursion.COUNT.decrementAndGet() <= 0) {
                                     result = new Data.ToPhi(0L);
                                 } else {
                                     result = new PhDefaultTest.EndlessRecursion().copy();
@@ -908,7 +908,7 @@ final class PhDefaultTest {
         /**
          * Count.
          */
-        private static final AtomicInteger count = new AtomicInteger();
+        private static final AtomicInteger COUNT = new AtomicInteger();
 
         /**
          * Make one, with its φ in place.
@@ -927,7 +927,7 @@ final class PhDefaultTest {
                     made,
                     rho -> {
                         final Phi result;
-                        if (PhDefaultTest.RecursivePhi.count.decrementAndGet() <= 0) {
+                        if (PhDefaultTest.RecursivePhi.COUNT.decrementAndGet() <= 0) {
                             result = new Data.ToPhi(0L);
                         } else {
                             result = new Data.ToPhi(new Dataized(rho).asNumber());
@@ -949,7 +949,7 @@ final class PhDefaultTest {
         /**
          * Count.
          */
-        private static final AtomicInteger count = new AtomicInteger();
+        private static final AtomicInteger COUNT = new AtomicInteger();
 
         /**
          * Ctor.
@@ -963,7 +963,7 @@ final class PhDefaultTest {
                             new PhDefault(),
                             rho -> {
                                 final Phi result;
-                                if (PhDefaultTest.RecursivePhiViaNew.count.decrementAndGet() <= 0) {
+                                if (PhDefaultTest.RecursivePhiViaNew.COUNT.decrementAndGet() <= 0) {
                                     result = new Data.ToPhi(0L);
                                 } else {
                                     result = new Data.ToPhi(

@@ -325,9 +325,9 @@ final class MjTranspileTest {
                     "",
                     "[] > main"
                 )
-                )
-                .execute(new FakeMaven.Transpile())
-                .result(),
+            )
+            .execute(new FakeMaven.Transpile())
+            .result(),
             Matchers.allOf(
                 Matchers.hasKey("target/generated/org/eolang/EO_foo/package-info.java"),
                 Matchers.hasKey("target/generated/org/eolang/EO_foo/EO_x/package-info.java")
@@ -349,10 +349,10 @@ final class MjTranspileTest {
                         "[] > main",
                         "  true > @"
                     )
-                    )
-                    .execute(new FakeMaven.Transpile())
-                    .result()
-                    .get("target/generated/org/eolang/EO_foo/EO_x/package-info.java")
+                )
+                .execute(new FakeMaven.Transpile())
+                .result()
+                .get("target/generated/org/eolang/EO_foo/EO_x/package-info.java")
             ).asString(),
             Matchers.allOf(
                 Matchers.containsString("@org.eolang.XmirPackage(\"foo.x\")"),

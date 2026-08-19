@@ -150,7 +150,7 @@ public final class Main {
         Main.LOCK.lock();
         try {
             if (Arrays.stream(Main.EOLOG.getHandlers()).noneMatch(
-                handler -> handler == Main.HANDLER
+                handler -> Objects.equals(handler, Main.HANDLER)
             )) {
                 Main.EOLOG.addHandler(Main.HANDLER);
             }

@@ -93,9 +93,9 @@ final class ExpectTest {
                     i -> {
                         throw new ExFailure("Some error in operation");
                     }
-                    )
-                    .otherwise("must be converted to something")
-                    .it(),
+                )
+                .otherwise("must be converted to something")
+                .it(),
                 "fails on 'that' because of some internal error"
             ).getMessage(),
             Matchers.equalTo("attr must be converted to something")
@@ -116,9 +116,9 @@ final class ExpectTest {
                             throw new ExFailure("Can't parse to integer", ex);
                         }
                     }
-                    )
-                    .otherwise("must be an integer")
-                    .it(),
+                )
+                .otherwise("must be an integer")
+                .it(),
                 "fails on 'that' because can not parse"
             ).getMessage(),
             Matchers.equalTo("attr must be an integer")

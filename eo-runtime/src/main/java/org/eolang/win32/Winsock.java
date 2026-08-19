@@ -13,11 +13,9 @@ import org.eolang.SockaddrIn;
 /**
  * Interface definitions for <code>WS2_32.dll</code>.
  * @since 0.40
- * @checkstyle MethodNameCheck (1000 lines)
- * @checkstyle ParameterNumberCheck (1000 lines)
  * @checkstyle AbbreviationAsWordInNameCheck (1000 lines)
  */
-@SuppressWarnings({"PMD.MethodNamingConventions", "PMD.TooManyMethods"})
+@SuppressWarnings("PMD.MethodNamingConventions")
 public interface Winsock extends StdCallLibrary {
 
     /**
@@ -138,7 +136,6 @@ public interface Winsock extends StdCallLibrary {
      * @param len Size of sent data
      * @param flags Flags
      * @return The number of sent bytes on success, -1 on error
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     int send(long sockfd, byte[] buf, int len, int flags);
 
@@ -149,7 +146,6 @@ public interface Winsock extends StdCallLibrary {
      * @param len Size of received data
      * @param flags Flags
      * @return The number of received bytes on success, -1 on error
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     int recv(long sockfd, byte[] buf, int len, int flags);
 

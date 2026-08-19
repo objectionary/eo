@@ -50,6 +50,7 @@ final class Walk extends ListEnvelope<Path> {
      * @param globs List of them
      * @return New Walk
      */
+    @SuppressWarnings("PMD.LooseCoupling")
     Walk includes(final Collection<String> globs) {
         return new Walk(
             this.home,
@@ -57,8 +58,8 @@ final class Walk extends ListEnvelope<Path> {
                 file -> globs.stream().anyMatch(
                     glob -> this.matches(glob, file)
                 )
-                )
-                .collect(Collectors.toList())
+            )
+            .collect(Collectors.toList())
         );
     }
 
@@ -67,6 +68,7 @@ final class Walk extends ListEnvelope<Path> {
      * @param globs List of them
      * @return New Walk
      */
+    @SuppressWarnings("PMD.LooseCoupling")
     Walk excludes(final Collection<String> globs) {
         return new Walk(
             this.home,
@@ -74,8 +76,8 @@ final class Walk extends ListEnvelope<Path> {
                 file -> globs.stream().noneMatch(
                     glob -> this.matches(glob, file)
                 )
-                )
-                .collect(Collectors.toList())
+            )
+            .collect(Collectors.toList())
         );
     }
 

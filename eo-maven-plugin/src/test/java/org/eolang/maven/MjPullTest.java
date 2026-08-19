@@ -214,8 +214,7 @@ final class MjPullTest {
                 "[] > main",
                 "  Q.io.stdout > @"
             )
-            )
-            .with("hash", new CommitHash.ChConstant(hash))
+        ).with("hash", new CommitHash.ChConstant(hash))
             .with("cache", cache.toFile())
             .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(

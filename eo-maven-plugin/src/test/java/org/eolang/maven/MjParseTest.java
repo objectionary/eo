@@ -204,8 +204,7 @@ final class MjParseTest {
                 "[] > hello",
                 "  42 > @"
             )
-            )
-            .execute(new FakeMaven.Parse());
+        ).execute(new FakeMaven.Parse());
         MatcherAssert.assertThat(
             "The XMIR with broken content must exist, but it doesn't",
             new Walk(temp.resolve("target")).stream().anyMatch(

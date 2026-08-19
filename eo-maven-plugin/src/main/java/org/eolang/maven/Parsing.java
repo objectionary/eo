@@ -266,9 +266,9 @@ final class Parsing implements Step {
                             Filter.withName("head"),
                             head -> head.text().map("version"::equals).orElse(false)
                         )
-                        )
-                        .findAny()
-                        .isPresent()
+                    )
+                    .findAny()
+                    .isPresent()
                 )
             )
             .findFirst()
