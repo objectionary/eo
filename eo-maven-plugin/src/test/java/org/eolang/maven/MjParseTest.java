@@ -217,7 +217,6 @@ final class MjParseTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void doesNotParseIfAlreadyParsed(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> result = maven
@@ -229,11 +228,10 @@ final class MjParseTest {
         ).toFile();
         final long before = parsed.lastModified();
         maven.execute(MjParse.class);
-        final long after = parsed.lastModified();
         MatcherAssert.assertThat(
             "File was modified",
             before,
-            Matchers.equalTo(after)
+            Matchers.equalTo(parsed.lastModified())
         );
     }
 
