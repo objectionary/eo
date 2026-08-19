@@ -45,11 +45,13 @@ final class Quoted implements Supplier<Optional<String>> {
 
     @Override
     public Optional<String> get() {
+        Optional<String> result;
         try {
-            return Optional.of(this.quoted());
+            result = Optional.of(this.quoted());
         } catch (final CharacterCodingException ex) {
-            return Optional.empty();
+            result = Optional.empty();
         }
+        return result;
     }
 
     /**
@@ -64,8 +66,8 @@ final class Quoted implements Supplier<Optional<String>> {
             .decode(ByteBuffer.wrap(this.data))
             .toString();
         final StringBuilder out = new StringBuilder("\"");
-        for (final char glyph : text.toCharArray()) {
-            out.append(new Escaped(glyph).get());
+        for (int idx = 0; idx < text.length(); idx = idx + 1) {
+            out.append(new Escaped(text.charAt(idx)).get());
         }
         return out.append('"').toString();
     }
