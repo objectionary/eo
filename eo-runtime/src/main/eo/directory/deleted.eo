@@ -1,5 +1,12 @@
 # Recursively deletes a directory and all of its contents. It is a method of
 # `directory`, and `d` is the directory it is taken off.
+#
+# @todo #7102:60min Add a genuine concurrency regression test for the race
+#  this object recovers from: another process removing `d` after the initial
+#  `exists` check but before `cleared` finishes walking it. A single-threaded
+#  EO test cannot trigger that interleaving; it needs a JUnit test against the
+#  generated `EOdirectory$EOdeleted` class, racing two threads with something
+#  like `com.yegor256.Together`, the way `PhDefaultRaceTest.java` does.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -11,15 +18,20 @@
 [] > deleted
   d.exists.if > @
     seq *
-      if. > [tup] >> r
-        tup.length.eq 0
-        true
-        seq *
-          tup.head.deleted
-          ^.r tup.tail
-      | (d.walk "**").at.^
+      recovered
+        cleared
+        d.exists.not.if true cleared
       d
     d
+  seq * > cleared
+    if. > [tup] >> r
+      tup.length.eq 0
+      true
+      seq *
+        tup.head.deleted
+        ^.r tup.tail
+    | (d.walk "**").at.^
+    true
   ^ > d
 
   ++> can-delete-a-directory-with-a-file-and-a-directory
