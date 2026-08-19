@@ -80,11 +80,11 @@ final class DrProgram implements Iterable<Directive> {
             Manifests.read("EO-Version")
         );
         final String[] opts = {
+            System.getProperty("xmir.xsd", ""),
             "XMIR.xsd",
             "src/main/resources/XMIR.xsd",
             "eo-parser/src/main/resources/XMIR.xsd",
             "../eo-parser/src/main/resources/XMIR.xsd",
-            System.getProperty("xmir.xsd", ""),
         };
         for (final String opt : opts) {
             if (opt.isEmpty()) {
