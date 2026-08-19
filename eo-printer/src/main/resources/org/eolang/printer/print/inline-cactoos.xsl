@@ -582,14 +582,8 @@
   <!--
   Rewrites the bases of a folded value, counting how deep inside it each
   node sits so that a name reaching no further than the value itself is
-  left where it is.
-  @todo #7095:60min Only the based-handle fold below re-bases what it moves.
-   The four other branches of the template above, and the three merges in
-   merge-monikers.xsl, relocate a value the same way and need the same pass;
-   each wants a pack of its own before it is wired, since the shapes differ
-   (an applied reference keeps its own children, a pipe keeps the formation
-   in place). The helper will want to live somewhere both sheets can import
-   rather than being copied into the second one.
+  left where it is. Only the based-handle fold uses it so far; see the
+  puzzle on `Xmir` for the branches still to come.
   -->
   <xsl:template match="o" mode="dropped">
     <xsl:param name="drop" as="xs:integer" tunnel="yes"/>
