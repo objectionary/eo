@@ -102,6 +102,28 @@ final class CoverageManifestTest {
         );
     }
 
+    @Test
+    void excludesLocationOfAThrowingCase() throws Exception {
+        MatcherAssert.assertThat(
+            "a throwing test never gets a PhCoverage hit for its own body, but its locations were still found",
+            new CoverageManifest().locations(
+                new EoSyntax(
+                    String.join(
+                        System.lineSeparator(),
+                        "+package foo.x",
+                        "",
+                        "[] > main",
+                        "",
+                        "  --> stops-on-dispatching-on-a-number",
+                        "    42.plus 1 > @",
+                        ""
+                    )
+                ).parsed()
+            ),
+            Matchers.everyItem(Matchers.not(Matchers.containsString(".-")))
+        );
+    }
+
     /**
      * Locations found in a small formation with one attribute.
      * @return The locations
