@@ -99,7 +99,7 @@ final class EoTest {
             EoTest.render("# top doc", "[] > foo", "[] > bar"),
             XhtmlMatchers.hasXPaths(
                 "/object[not(comments)]",
-                "/object[count(o)=2]",
+                "/object[count(o)=1]",
                 "/object[count(errors/error[contains(text(),'a blank line must separate the top comment block from the rest of the file')])=1]"
             )
         );

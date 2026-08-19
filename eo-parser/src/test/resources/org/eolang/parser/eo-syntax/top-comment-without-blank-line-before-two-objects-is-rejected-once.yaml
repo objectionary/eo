@@ -6,7 +6,7 @@ sheets: []
 asserts:
   - /object[not(comments)]
   - /object[count(errors/error[contains(text(),'a blank line must separate the top comment block from the rest of the file')])=1]
-  - /object[count(o)=2]
+  - /object[count(o)=1]
 input: |
   # top doc
   [] > foo
