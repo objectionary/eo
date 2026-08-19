@@ -268,8 +268,13 @@
               <xsl:if test="@name and not($keep-name)">
                 <xsl:apply-templates select="@name"/>
               </xsl:if>
-              <xsl:apply-templates select="$value/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
-              <xsl:apply-templates select="$value/node()"/>
+              <xsl:variable name="folded" as="node()*">
+                <xsl:apply-templates select="$value/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
+                <xsl:apply-templates select="$value/node()"/>
+              </xsl:variable>
+              <xsl:apply-templates select="$folded" mode="dropped">
+                <xsl:with-param name="drop" select="eo:host-drop($target, .)" tunnel="yes"/>
+              </xsl:apply-templates>
               <!--
               The reference is the base of an application (`b 42 &gt; x` over a
               based `a.plus &gt;&gt; b` handle), so it carries its own argument
@@ -539,6 +544,74 @@
     <xsl:param name="name" as="xs:string"/>
     <xsl:sequence select="empty(eo:references($target, $name))"/>
   </xsl:function>
+  <!--
+  How many formations `$host` sits below `$bound`. A value folded onto a
+  reference deeper than the binding it came from is read again in a scope
+  that is not the one it was written in, so the names in it that reach out
+  of the value have to climb that difference (#7095).
+  -->
+  <xsl:function name="eo:host-drop" as="xs:integer">
+    <xsl:param name="bound" as="element()"/>
+    <xsl:param name="host" as="element()"/>
+    <xsl:sequence select="count($host/ancestor::o[eo:abstract(.)]) - count($bound/ancestor::o[eo:abstract(.)])"/>
+  </xsl:function>
+  <!--
+  The leading run of `ρ` segments, which is how far a base climbs before
+  it names anything.
+  -->
+  <xsl:function name="eo:rho-climb" as="xs:integer">
+    <xsl:param name="segments" as="xs:string*"/>
+    <xsl:sequence select="if (empty($segments) or $segments[1] != $eo:rho) then 0 else 1 + eo:rho-climb(subsequence($segments, 2))"/>
+  </xsl:function>
+  <!--
+  The base `$base` as it must read after the value carrying it dropped
+  `$drop` formations, from a node `$depth` formations inside that value.
+  A climb of `$depth` lands on the value's own root, so a climb that far
+  or further has left the value and gains `$drop` hops. A shorter climb
+  stays inside, and a base rooted anywhere but `ξ`, or naming nothing
+  past its climb, is left alone.
+  -->
+  <xsl:function name="eo:dropped-base" as="xs:string">
+    <xsl:param name="base" as="xs:string"/>
+    <xsl:param name="drop" as="xs:integer"/>
+    <xsl:param name="depth" as="xs:integer"/>
+    <xsl:variable name="segments" select="tokenize($base, '\.')"/>
+    <xsl:variable name="climb" select="if ($segments[1] = $eo:xi) then eo:rho-climb(subsequence($segments, 2)) else -1"/>
+    <xsl:sequence select="if ($drop &lt;= 0 or $climb &lt; $depth or count($segments) &lt;= $climb + 1) then $base else string-join(($eo:xi, for $i in 1 to ($climb + $drop) return $eo:rho, subsequence($segments, $climb + 2)), '.')"/>
+  </xsl:function>
+  <!--
+  Rewrites the bases of a folded value, counting how deep inside it each
+  node sits so that a name reaching no further than the value itself is
+  left where it is.
+  @todo #7095:60min Only the based-handle fold below re-bases what it moves.
+   The four other branches of the template above, and the three merges in
+   merge-monikers.xsl, relocate a value the same way and need the same pass;
+   each wants a pack of its own before it is wired, since the shapes differ
+   (an applied reference keeps its own children, a pipe keeps the formation
+   in place). The helper will want to live somewhere both sheets can import
+   rather than being copied into the second one.
+  -->
+  <xsl:template match="o" mode="dropped">
+    <xsl:param name="drop" as="xs:integer" tunnel="yes"/>
+    <xsl:param name="depth" as="xs:integer" select="0"/>
+    <xsl:copy>
+      <xsl:copy-of select="@*[name() != 'base']"/>
+      <xsl:if test="@base">
+        <xsl:attribute name="base" select="eo:dropped-base(@base, $drop, $depth)"/>
+      </xsl:if>
+      <xsl:apply-templates select="node()" mode="dropped">
+        <xsl:with-param name="depth" select="if (eo:abstract(.)) then $depth + 1 else $depth"/>
+      </xsl:apply-templates>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="node()|@*" mode="dropped">
+    <xsl:param name="depth" as="xs:integer" select="0"/>
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*" mode="dropped">
+        <xsl:with-param name="depth" select="$depth"/>
+      </xsl:apply-templates>
+    </xsl:copy>
+  </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
