@@ -27,5 +27,4 @@ interface Walk extends List<Path> {
      * @return New Walk
      */
     Walk excludes(Collection<String> globs);
-
 }
