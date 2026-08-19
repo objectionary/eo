@@ -105,6 +105,22 @@ final class DrProgramTest {
     }
 
     @Test
+    void ignoresMissingXmirXsdProperty() throws Exception {
+        final Path missing = Paths.get("does-not-exist-1234567890.xsd").toAbsolutePath();
+        System.setProperty("xmir.xsd", missing.toString());
+        try {
+            MatcherAssert.assertThat(
+                "schema location falls back to a guess when the xmir.xsd property does not exist",
+                new Xnav(new XMLDocument(new Xembler(new DrProgram()).xml()).inner())
+                    .element("object").attribute("xsi:noNamespaceSchemaLocation").text().get(),
+                Matchers.not(Matchers.equalTo(missing.toUri().toString()))
+            );
+        } finally {
+            System.clearProperty("xmir.xsd");
+        }
+    }
+
+    @Test
     void validatesAgainstSchema() {
         Assertions.assertDoesNotThrow(
             new StrictXML(
